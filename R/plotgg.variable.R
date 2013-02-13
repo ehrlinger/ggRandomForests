@@ -1,7 +1,7 @@
 ####**********************************************************************
 ####**********************************************************************
 ####
-####  GGPLOT FIGURES FOR RANDOM FORESTS FOR SURVIVAL, REGRESSION,
+####  GRAMMER OF GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, REGRESSION,
 ####  AND CLASSIFICATION (RF-SRC)
 ####  Version 0.5.0
 ####
@@ -40,89 +40,24 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
+#' @title Plot the marginal dependence of variables.
+#' 
+#' @description plotgg.variable generates a list of either marginal variable 
+#' dependance or partial variable dependence figures using \code{\link{ggplot}}.
+#' 
+#' @param x a marginal or partial rfsrc data object from \code{\link{pred.variable}}
+#' @param smooth.lines boolean indicating the inclusion of confidence intervals
 #'
-#' ggplot.variable Plot randomForestSRC Marginal Effect of Variables using 
-#' ggplot2
+#' @return A list of \code{\link{ggplot2}} plot objects corresponding the variables 
+#' contained within the \code{x} argument 
+#' 
+#' @seealso \code{\link{pred.variable}}, \code{\link{plot.variable}}
+#' 
+#' @export plotgg.variable.ggrfsrc
+#' @export plotgg.variable
+#' 
 #'
-#' @description Plot the marginal effect of an x-variable on the class 
-#' probability (classification), response (regression), 
-#' mortality (survival), or the expected years lost (competing risk) from 
-#' an RF-SRC analysis. 
-#' 
-#' @param x An object of class (rfsrc, marginal) or (rfsrc, partial) created
-#' by \code{\link{pred.variable.rfsrc}}.
-#' @param smooth.lines Use lowess to smooth partial plots.
-#' @param ...	Further arguments passed to or from other methods.
-#'
-#' @details The vertical axis displays the ensemble predicted value, while 
-#' x-variables are plotted on the horizontal axis.
-#' 
-#' @author John Ehrlinger john.ehrlinger@gmail.com
-#' 
-#' @return A list of ggplot figures, referenced by variable name
-#' 
-#' @details 
-#' 
-#' @references 
-#' Ishwaran H. and Kogalur U.B. (2012). Random Forests for Survival, Regression and Classification (RF-SRC),  R package version 1.0.2.
-#' 
-#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R. R News 7(2), 25--31.
-#'
-#' Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S. (2008). Random survival forests. Ann. Appl. Statist. 2(3), 841--860.
-#' 
-#' Friedman J.H. (2001). Greedy function approximation: a gradient boosting machine, Ann. of Statist., 5:1189-1232.
-#' 
-#' Ishwaran H., Gerds, T.A. Kogalur U.B., Moore R.D., Gange S.J. and Lau B.M. (2012). Random survival forests for competing risks.
-#'
-#' H. Wickham. ggplot2: elegant graphics for data analysis. Springer New York, 2009.
-#'
-#' @seealso rfsrc, predict.rfsrc, plot.variable.rfsrc, pred.variable.rfsrc
-#'
-#' @examples
-#' ## Not run: 
-#' ### survival/CR examples
-#' 
-#' # survival
-#' data(veteran, package = "randomForestSRC") 
-#' v.obj <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
-#' plot.variable(v.obj, plots.per.page = 3)
-#' plot.variable(v.obj, plots.per.page = 2, xvar.names = c("trt", "karno", "age"))
-#' plot.variable(v.obj, surv.type = "surv", nvar = 1, percentile = 75)
-#' plot.variable(v.obj, surv.type = "surv", nvar = 1, time=5) 
-#' plot.variable(v.obj, surv.type = "surv", partial = TRUE, smooth.lines = TRUE)
-#' plot.variable(v.obj, surv.type = "rel.freq", partial = TRUE, nvar = 2)
-#' 
-#' # competing risks
-#' data(follic, package = "randomForestSRC")
-#' follic.obj <- rfsrc(Surv(time, status) ~ ., follic, nsplit = 3, ntree = 100)
-#' plot.variable(follic.obj, which.outcome = 2)
-#' 
-#' ### regression examples
-#' 
-#' # airquality
-#' airq.obj <- rfsrc(Ozone ~ ., data = airquality)
-#' plot.variable(airq.obj, partial = TRUE, smooth.lines = TRUE)
-#' 
-#' # motor trend cars
-#' mtcars.obj <- rfsrc(mpg ~ ., data = mtcars)
-#' plot.variable(mtcars.obj, partial = TRUE, smooth.lines = TRUE)
-#' 
-#' ### classification example
-#' 
-#' # iris
-#' iris.obj <- rfsrc(Species ~., data = iris)
-#' plot.variable(iris.obj, partial = TRUE)
-#' 
-#' # motor trend cars: predict number of carburetors
-#' mtcars2 <- mtcars
-#' mtcars2$carb <- factor(mtcars2$carb,
-#'                        labels = paste("carb", sort(unique(mtcars$carb))))
-#' mtcars2.obj <- rfsrc(carb ~ ., data = mtcars2)
-#' plot.variable(mtcars2.obj, partial = TRUE)
-#' 
-#' ## End(Not run)
-
-ggplot.variable.rfsrc <- function(
+plotgg.variable.ggrfsrc <- function(
   x,
   smooth.lines = FALSE,
   ...)
@@ -257,6 +192,14 @@ ggplot.variable.rfsrc <- function(
             geom_smooth(aes(x=x, y=yhat), col = 2)
         }
         
+        # You ONLY want to scale continuous plots to 0,1. Scaling boxplots hides to much
+        # information right now. It is best to scale the boxplots, as required on the
+        # returned plot objects.
+        if (grepl("surv", object$family)) {
+          plt[[k]]<- plt[[k]] 
+#           + scale_y_continuous(breaks=seq(0,100,5)) +
+#             coord_cartesian(ylim=c(0,100))
+        }
       }
       else {
         if (is.factor(x)) x <- factor(x, exclude = NULL)
@@ -266,10 +209,7 @@ ggplot.variable.rfsrc <- function(
           theme_bw()+
           labs(x=colnames(xvar)[k], y=ylabel)
       }
-      if (grepl("surv", object$family)) {
-        plt[[k]]<- plt[[k]] + scale_y_continuous(breaks=seq(0,100,5)) +
-          coord_cartesian(ylim=c(0,100))
-      }
+      
       show(plt[[k]])
     }
   }
@@ -290,7 +230,7 @@ ggplot.variable.rfsrc <- function(
       name <- object$partial[[k]]$name
       
       # So that we can reference the plots by the variable name
-      name(plt[[k]]) <- name
+      #name(plt[[k]]) <- name
       
       n.x <- object$partial[[k]]$n.x
       if (n.x > 25) cex.pt <- 0.5 else cex.pt <- 0.75
@@ -298,9 +238,9 @@ ggplot.variable.rfsrc <- function(
       
       if (!factor.x) {
         dta <- as.data.frame(cbind(x.uniq=x.uniq, yhat=yhat, yhat.se=yhat.se))
-        plt[[k]] <- ggplot(dta)+ geom_point(aes(x=x.uniq, y=yhat), col=2, pch=16)+
-          labs(x=name, y=ylabel) + theme_bw()+
-          geom_rug(aes(x=x), data=as.data.frame(cbind(x=x)),side="b")
+        plt[[k]] <- ggplot(dta)+ geom_point(aes(x=x.uniq, y=yhat), col=2, pch=16, size=4)+
+          labs(x=name, y=ylabel) + theme_bw()#+
+  #        geom_rug(aes(x=x), data=as.data.frame(cbind(x=x)),side="b")
         
         if (!is.na(yhat.se) && any(yhat.se > 0)) {
           if (smooth.lines) {
@@ -308,19 +248,28 @@ ggplot.variable.rfsrc <- function(
               geom_smooth(aes(x=x.uniq, y=yhat + 2 * yhat.se), lty=3, col=2, se=FALSE)+
               geom_smooth(aes(x=x.uniq, y=yhat - 2 * yhat.se), lty=3, col=2, se=FALSE)
           }
-          else {
-            plt[[k]] <- plt[[k]] +
-              geom_line(aes(x=x.uniq, y=yhat + 2 * yhat.se), lty=3, col=2)+
-              geom_line(aes(x=x.uniq, y=yhat - 2 * yhat.se), lty=3, col=2)
-          }
+#           else {
+#             plt[[k]] <- plt[[k]] +
+#               geom_line(aes(x=x.uniq, y=yhat + 2 * yhat.se), lty=3, col=2)+
+#               geom_line(aes(x=x.uniq, y=yhat - 2 * yhat.se), lty=3, col=2)
+#           }
         }
         if (smooth.lines) {
           plt[[k]] <- plt[[k]] +
-            geom_smooth(aes(x=x.uniq, y=yhat), lty=2)
+            geom_smooth(aes(x=x.uniq, y=yhat), lty=2, lwd=1, color="yellow", se=FALSE,span = 0.9)
         }
-        else {
-          plt[[k]] <- plt[[k]] +
-            geom_line(aes(x=x.uniq, y=yhat), lty=2)
+#         else {
+#           plt[[k]] <- plt[[k]] +
+#             geom_line(aes(x=x.uniq, y=yhat), lty=2, lwd=1, color="yellow")
+#         }
+ 
+        # You ONLY want to scale continuous plots to 0,1. Scaling boxplots hides to much
+        # information right now. It is best to scale the boxplots, as required on the
+        # returned plot objects.
+        if (grepl("surv", object$family)) {
+          plt[[k]]<- plt[[k]] 
+#           + scale_y_continuous(breaks=seq(0,100,5)) +
+#             coord_cartesian(ylim=c(0,100))
         }
       }
       else {
@@ -331,10 +280,7 @@ ggplot.variable.rfsrc <- function(
           theme_bw()+
           labs(x=name, y=ylabel)
       }
-      if (grepl("surv", object$family)) {
-        plt[[k]]<- plt[[k]] + scale_y_continuous(breaks=seq(0,100,5)) +
-          coord_cartesian(ylim=c(0,100))
-      }
+    
       show(plt[[k]])
     }
   }
@@ -343,4 +289,4 @@ ggplot.variable.rfsrc <- function(
   invisible(plt)
 }
 
-ggplot.variable <- ggplot.variable.rfsrc
+plotgg.variable <- plotgg.variable.ggrfsrc

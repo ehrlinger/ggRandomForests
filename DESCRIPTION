@@ -6,15 +6,17 @@ Date: 2013-01-04
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 Depends:
-    R,
+    R (>= 2.15.0),
     ggplot2,
-    randomForestSRC
+    randomForestSRC (>= 1.0.2)
 Description: ggrfsrc is a tool for creating graphs for randomForestSRC
     objects using the ggplot2 package.
 License: GPL (>=3)
 URL: https://github.com/ehrlinger/ggrfsrc
 Packaged: 2013-01-04 14:01:10 UTC; ehrlinj
 Collate:
-    'ggplot.survival.R'
-    'ggplot.variable.R'
     'help.R'
+    'plot.variable.R'
+    'plotgg.variable.R'
+    'pred.variable.R'
+    'plot.survival.R'

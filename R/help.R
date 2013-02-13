@@ -1,12 +1,13 @@
-#' Graphical tools for display of randomForestSRC analysis.
-#'
-#' ggrfsrc is a tool for graphically display results from a randomForestSRC analysis.
-#' The package also facilitates the graphical interpretation of models by
-#' providing flexible functions to plot the results against observed variables.
-#'
-#' @references \url{http://github.com/ehrlinger/ggrfsrc}.
-#' @import plyr ggplot2 reshape randomForestSRC
+#####################################################################################################
+# Package documentation
+#####################################################################################################
+#' @title ggrfsrc package for smooth plotting of \code{\link{randomForestSRC}} objects.
+#' 
+#' @description ggrfsrc is an add on package for \code{\link{randomForestSRC}}.
+#' 
+#' 
 #' @docType package
-#' @name ggrfsrc
-#' @aliases ggrfsrc ggrfsrc-package
+#' @name ggrfsrc-package
+#' 
+################
 NULL
