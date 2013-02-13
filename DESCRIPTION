@@ -20,3 +20,8 @@ Collate:
     'plotgg.variable.R'
     'pred.variable.R'
     'plot.survival.R'
+    'dot.chart.R'
+    'plot.competing.risk.R'
+    'plot.err.R'
+    'plot.rfsrc.R'
+    'plot.roc.R'
