@@ -251,7 +251,7 @@ pred.variable.ggrfsrc <- function(
   
   ##survival families
   if (grepl("surv", object$family)) {
-    event.info <- get.event.info(object, subset)
+    event.info <- randomForestSRC:::get.event.info(object, subset)
     yvar.dim <- event.info$r.dim
     cens <- event.info$cens
     event.type <- event.info$event.type
@@ -338,7 +338,7 @@ pred.variable.ggrfsrc <- function(
   ##
   ##--------------------------------------------------------------------------------
   if (!partial) {
-    yhat <- extract.pred(object, pred.type, subset, percentile, time, which.outcome)
+    yhat <- randomForestSRC:::extract.pred(object, pred.type, subset, percentile, time, which.outcome)
     
     # Create storage data.frame
     x <- data.frame(matrix(ncol=nvar, nrow=n))
@@ -398,7 +398,7 @@ pred.variable.ggrfsrc <- function(
       factor.x <- !(!is.factor(x) & (n.x > granule))
       for (l in 1:n.x) {        
         newdata.x[, object$xvar.names == xvar.names[k]] <- rep(x.uniq[l], n)
-        pred.temp <- extract.pred(predict.rfsrc(baseForest, newdata.x), pred.type, 1:n, percentile, time, which.outcome)
+        pred.temp <- randomForestSRC:::extract.pred(predict.rfsrc(baseForest, newdata.x), pred.type, 1:n, percentile, time, which.outcome)
         mean.temp <- mean(pred.temp , na.rm = TRUE)
         if (!factor.x) {
           yhat <- c(yhat, mean.temp)

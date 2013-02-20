@@ -1,5 +1,5 @@
-export("plot.competing.risk.ggrfsrc,")
 export(plot.competing.risk)
+export(plot.competing.risk.ggrfsrc)
 export(plot.err.ggrfsrc)
 export(plot.rfsrc.ggrfsrc)
 export(plot.roc)

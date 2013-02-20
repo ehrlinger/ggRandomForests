@@ -58,8 +58,11 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#'
-#' @export plot.competing.risk.ggrfsrc, plot.competing.risk
+#' plot.competing.risk 
+#' @param x rf object
+#' 
+#' @export plot.competing.risk.ggrfsrc
+#' @export plot.competing.risk
 
 plot.competing.risk.ggrfsrc <- function (x, plots.one.page = FALSE, ...) {
 
