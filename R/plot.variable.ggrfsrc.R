@@ -1,9 +1,9 @@
 ####**********************************************************************
 ####**********************************************************************
 ####
-####  GRAMMER OF GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, REGRESSION,
-####  AND CLASSIFICATION (RF-SRC)
-####  Version 0.5.0
+####  GGRFSRC - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
+####  REGRESSION, AND CLASSIFICATION (RF-SRC)
+####  Version 0.6.0
 ####
 ####  Copyright 2012, Cleveland Clinic Foundation
 ####
@@ -35,14 +35,14 @@
 ####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
-####    URL:    http://www.kogalur.com
+####    URL:    https://github.com/ehrlinger/ggrfsrc
 ####  ----------------------------------------------------------------
 ####
 ####**********************************************************************
 ####**********************************************************************
 #' @title Plot the marginal dependence of variables.
 #' 
-#' @description plotgg.variable generates a list of either marginal variable 
+#' @description plot.variable.ggrfsrc generates a list of either marginal variable 
 #' dependance or partial variable dependence figures using \code{\link{ggplot}}.
 #' 
 #' @param x a marginal or partial rfsrc data object from \code{\link{pred.variable}}
@@ -57,7 +57,7 @@
 #' @export plotgg.variable
 #' 
 #'
-plotgg.variable.ggrfsrc <- function(
+plot.variable.ggrfsrc <- function(
   x,
   smooth.lines = FALSE,
   ...)
@@ -66,9 +66,10 @@ plotgg.variable.ggrfsrc <- function(
   ### check that object is interpretable
   ### first rename x to object to avoid confusion with x matrix
   object <- x
-  if (sum(inherits(object, c("marginal", "rfsrc"), TRUE) == c(1, 2)) != 2 &
-        sum(inherits(object, c("partial", "rfsrc"), TRUE) == c(1, 2)) != 2) {
-    stop("Function only works for objects of class '(rfsrc, marginal)' or '(rfsrc, partial)'. These objects are created with the pred.variable function.")
+  if (sum(inherits(object, c("plot.variable", "rfsrc"), TRUE) == c(1, 2)) != 2 &
+        sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2&
+        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
+    stop("Function only works for objects of class 'rfsrc' or (rfsrc,plot.variable)' These objects are created with the pred.variable function.")
   }
   
   # assign missing values to key options

@@ -25,3 +25,4 @@ Collate:
     'plot.err.R'
     'plot.rfsrc.R'
     'plot.roc.R'
+    'calc.roc.R'
