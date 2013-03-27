@@ -51,10 +51,10 @@
 #' @return A list of \code{\link{ggplot2}} plot objects corresponding the variables 
 #' contained within the \code{x} argument 
 #' 
-#' @seealso \code{\link{pred.variable}}, \code{\link{plot.variable}}
+#' @seealso \code{\link{plot.variable.rfsrc}}
 #' 
-#' @export plotgg.variable.ggrfsrc
-#' @export plotgg.variable
+#' @export plot.variable.ggrfsrc
+#' @export plot.variable
 #' 
 #'
 plot.variable.ggrfsrc <- function(
@@ -290,4 +290,4 @@ plot.variable.ggrfsrc <- function(
   invisible(plt)
 }
 
-plotgg.variable <- plotgg.variable.ggrfsrc
+plot.variable <- plot.variable.ggrfsrc

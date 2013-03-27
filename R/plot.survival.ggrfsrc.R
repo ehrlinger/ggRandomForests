@@ -1,43 +1,52 @@
 
 #' plot.survival 
 #'
+#' @param x,
+#' @param subset, 
+#' @param collapse = FALSE,
+#' @param haz.model = c("spline", "ggamma", "nonpar"),
+#' @param k = 25,
+#' @param span = "cv",
+#' @param cens.model = c("km", "rfsrc"),
+#' @param ...
+#'
 #' @export plot.survival.ggrfsrc plot.survival
 plot.survival.ggrfsrc <- function (x,
-                          subset, collapse = FALSE,
-                          haz.model = c("spline", "ggamma", "nonpar"),
-                          k = 25,
-                          span = "cv",
-                          cens.model = c("km", "rfsrc"),
-                          ...)
+                                   subset, 
+                                   collapse = FALSE,
+                                   haz.model = c("spline", "ggamma", "nonpar"),
+                                   k = 25,
+                                   span = "cv",
+                                   cens.model = c("km", "rfsrc"),
+                                   ...)
 {
-
+  
   ## Incoming parameter checks.  All are fatal.
   if (is.null(x)) {
     stop("object x is empty!")
   }
   if (sum(inherits(x, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
-      sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
+        sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
     stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
   }
-
   if (x$family != "surv") {
     stop("this function only supports right-censored survival settings")
   }
-
+  
   ## predict object does not contain OOB values
-if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
+  if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
     rfsrcPred <- TRUE
   }
   else {
     rfsrcPred <- FALSE
   }
-
+  
   ## grow objects under non-standard bootstrapping are OOB devoid
   ## treat the object as if it were predict
   if (is.null(x$predicted.oob)) {
     rfsrcPred <- TRUE
   }
-    
+  
   ## verify the haz.model option
   haz.model <- match.arg(haz.model, c("spline", "ggamma", "nonpar"))
   ##ensure that the glmnet package is available when splines are selected
@@ -50,15 +59,15 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
   
   ## verify the cens.model option
   cens.model <- match.arg(cens.model, c("km", "rfsrc"))
-
+  
   ## use imputed missing time or censoring indicators
   if (!is.null(x$yvar) && !is.null(x$imputed.indv)) {
     x$yvar[x$imputed.indv, ]=x$imputed.data[, 1:2]
   }
-
+  
   ## get the event data
   event.info <- get.event.info(x)
-    
+  
   ## Process the subsetted index
   ## Assumes the entire data set is to be used if not specified
   if (missing(subset)) {
@@ -74,7 +83,7 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
       stop("'subset' not set properly.")
     }
   }
-
+  
   ## no point in producing plots if sample size is too small
   if (!rfsrcPred && !subsetProvided && (x$n < 2 | x$ndead < 1)) {
     stop("sample size or number of deaths is too small for meaningful analysis")
@@ -101,55 +110,55 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
     title.3 <- "OOB Hazard"
     title.4 <- "OOB Mortality vs Time"
   }
-
-   
+  
+  
   ## mean ensemble survival
   if (!subsetProvided) {
     surv.mean.ensb <- apply(surv.ensb, 1, mean, na.rm = TRUE)
   }
-
+  
   ## collapse across the subset?
   if (subsetProvided && collapse) {
     surv.ensb <- apply(surv.ensb, 1, mean, na.rm = TRUE)
     chf.ensb <- rbind(apply(chf.ensb, 2, mean, na.rm = TRUE))
   }
-
-
+  
+  
   ##-------------------survival calculations------------------------
   if (!rfsrcPred && !subsetProvided) {
-      
+    
     ## KM estimator
     km.obj <- matrix(unlist(mclapply(1:length(event.info$time.interest),
-          function(j) {
-           c(sum(event.info$time >= event.info$time.interest[j], na.rm = TRUE),
-           sum(event.info$time[event.info$cens != 0] == event.info$time.interest[j], na.rm = TRUE))
-           })), ncol = 2, byrow = TRUE)
+                                     function(j) {
+                                       c(sum(event.info$time >= event.info$time.interest[j], na.rm = TRUE),
+                                         sum(event.info$time[event.info$cens != 0] == event.info$time.interest[j], na.rm = TRUE))
+                                     })), ncol = 2, byrow = TRUE)
     Y <- km.obj[, 1]
     d <- km.obj[, 2]
     r <- d / (Y + 1 * (Y == 0))
     surv.aalen <- exp(-cumsum(r))
-
+    
     ## Estimate the censoring distribution    
     sIndex <- function(x,y) {sapply(1:length(y), function(j) {sum(x <= y[j])})}
     censTime <- sort(unique(event.info$time[event.info$cens == 0]))
     censTime.pt <- c(sIndex(censTime, event.info$time.interest))
-
+    
     ## check to see if there are censoring cases
     if (length(censTime) > 0) {
       
       ## KM estimator for the censoring distribution
       if (cens.model == "km") {
         censModel.obj <- matrix(unlist(mclapply(1:length(censTime),
-              function(j) {
-                c(sum(event.info$time >= censTime[j], na.rm = TRUE),
-                  sum(event.info$time[event.info$cens == 0] == censTime[j], na.rm = TRUE))
-              })), ncol = 2, byrow = TRUE)
+                                                function(j) {
+                                                  c(sum(event.info$time >= censTime[j], na.rm = TRUE),
+                                                    sum(event.info$time[event.info$cens == 0] == censTime[j], na.rm = TRUE))
+                                                })), ncol = 2, byrow = TRUE)
         Y <- censModel.obj[, 1]
         d <- censModel.obj[, 2]
         r <- d / (Y + 1 * (Y == 0))
         cens.dist <- c(1, exp(-cumsum(r)))[1 + censTime.pt]
       }
-        
+      
       # RFSRC estimator for the censoring distribution
       else {
         newd <- cbind(x$yvar, x$xvar)
@@ -157,31 +166,31 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
         cens.dist <- t(predict(x, newd, outcome = "test")$survival.oob)
       }
     }
-
+    
     ## no censoring cases; assign a default distribution
     else {
       cens.dist <- rep(1, length(censTime.pt))
     }
-
-
+    
+    
     ##-------------------brier calculations------------------------
     ## Brier object
     brier.obj <- matrix(unlist(mclapply(1:x$n, function(i)
-      {
-        tau <-  event.info$time
-        event <- event.info$cens
-        t.unq <- event.info$time.interest
-        cens.pt <- sIndex(t.unq, tau[i])
-        if (cens.model == "km") {
-          c1 <- 1 * (tau[i] <= t.unq & event[i] != 0)/c(1, cens.dist)[1 + cens.pt]
-          c2 <- 1 * (tau[i] > t.unq)/cens.dist
-        }
-        else {
-          c1 <- 1 * (tau[i] <= t.unq & event[i] != 0)/c(1, cens.dist[, i])[1 + cens.pt]
-          c2 <- 1 * (tau[i] > t.unq)/cens.dist[, i]
-        } 
-        (1 * (tau[i] > t.unq) - surv.ensb[, i])^2 * (c1 + c2)
-      })), ncol = length(event.info$time.interest), byrow = TRUE)
+    {
+      tau <-  event.info$time
+      event <- event.info$cens
+      t.unq <- event.info$time.interest
+      cens.pt <- sIndex(t.unq, tau[i])
+      if (cens.model == "km") {
+        c1 <- 1 * (tau[i] <= t.unq & event[i] != 0)/c(1, cens.dist)[1 + cens.pt]
+        c2 <- 1 * (tau[i] > t.unq)/cens.dist
+      }
+      else {
+        c1 <- 1 * (tau[i] <= t.unq & event[i] != 0)/c(1, cens.dist[, i])[1 + cens.pt]
+        c2 <- 1 * (tau[i] > t.unq)/cens.dist[, i]
+      } 
+      (1 * (tau[i] > t.unq) - surv.ensb[, i])^2 * (c1 + c2)
+    })), ncol = length(event.info$time.interest), byrow = TRUE)
     
     ## extract the Brier score stratified by mortality percentiles
     brier.score <- matrix(NA, length(event.info$time.interest), 4)
@@ -198,58 +207,58 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
   ##-------------------hazard calculations------------------------
   if (subsetProvided) {
     ## we estimate the hazard function in three (3) different ways
-
-
+    
+    
     ##survival function of generalized gamma
     sggamma <- function(q, mu = 0, sigma = 1, Q)
-      {
-        sigma <- exp(sigma)#reparametrize sigma to be unconstrained
-        q[q < 0] <- 0
-        if (Q != 0) {
-          y <- log(q)
-          w <- (y - mu)/sigma
-          expnu <- exp(Q * w) * Q^-2
-          ret <- if (Q > 0) 
-            pgamma(expnu, Q^-2)
-          else 1 - pgamma(expnu, Q^-2)
-        }
-        else {
-          ret <- plnorm(q, mu, sigma)
-        }
-        1 - ret
+    {
+      sigma <- exp(sigma)#reparametrize sigma to be unconstrained
+      q[q < 0] <- 0
+      if (Q != 0) {
+        y <- log(q)
+        w <- (y - mu)/sigma
+        expnu <- exp(Q * w) * Q^-2
+        ret <- if (Q > 0) 
+          pgamma(expnu, Q^-2)
+        else 1 - pgamma(expnu, Q^-2)
       }
+      else {
+        ret <- plnorm(q, mu, sigma)
+      }
+      1 - ret
+    }
     
     ##density of generalized gamma
     dggamma <- function(x, mu = 0, sigma = 1, Q) 
-      {
-        sigma <- exp(sigma)#reparametrize sigma to be unconstrained
-        ret <- numeric(length(x))
-        ret[x <= 0] <- 0
-        xx <- x[x > 0]
-        if (Q != 0) {
-          y <- log(xx)
-          w <- (y - mu)/sigma
-          logdens <- -log(sigma * xx) + log(abs(Q)) + (Q^-2) * 
-            log(Q^-2) + Q^-2 * (Q * w - exp(Q * w)) - lgamma(Q^-2)
-        }
-        else logdens <- dlnorm(xx, mu, sigma, log = TRUE)
-        ret[x > 0] <- exp(logdens)
-        ret
+    {
+      sigma <- exp(sigma)#reparametrize sigma to be unconstrained
+      ret <- numeric(length(x))
+      ret[x <= 0] <- 0
+      xx <- x[x > 0]
+      if (Q != 0) {
+        y <- log(xx)
+        w <- (y - mu)/sigma
+        logdens <- -log(sigma * xx) + log(abs(Q)) + (Q^-2) * 
+          log(Q^-2) + Q^-2 * (Q * w - exp(Q * w)) - lgamma(Q^-2)
       }
-
+      else logdens <- dlnorm(xx, mu, sigma, log = TRUE)
+      ret[x > 0] <- exp(logdens)
+      ret
+    }
+    
     ##hazard of generalized gamma
     hggamma <- function(x, mu = 0, sigma = 1, Q)
-      {
-        dggamma(x = x, mu = mu, sigma = sigma, Q = Q) / sggamma(q = x, 
-                              mu = mu, sigma = sigma, Q = Q)
-      }
+    {
+      dggamma(x = x, mu = mu, sigma = sigma, Q = Q) / sggamma(q = x, 
+                                                              mu = mu, sigma = sigma, Q = Q)
+    }
     
     haz.list <- mclapply(1:nrow(chf.ensb), function(i) { 
-
+      
       ## method (1)
       ## fit a 3-parameter generalized gamma model
       ## basic functions have been shamelessly taken from library(flexsurv)
-
+      
       if (haz.model == "ggamma") {
         ##extract time and S(t)
         x <- event.info$time.interest
@@ -257,40 +266,40 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
         
         ##smooth H(t)
         ll <- supsmu(x, y, span = span)
-
+        
         ## the optimization function is the mean RSS between
         ## the survival function and the generalized gamma
         fn <- function(z) {
           mean((y - sggamma(x, mu = z[1], sigma = z[2], Q = z[3]))^2, na.rm = TRUE)
         }
-
+        
         ## initialize the parameters and optimize
         init <- c(0, 1, 0)
         optim.obj <- optim(init, fn)
-
+        
         ## extract the final parameters
         if (optim.obj$convergence != 0) warning("fit.ggamma failed to converge")
         parm <- optim.obj$par
-
+        
         ## return the hazard
         list(x = x, y = hggamma(x, parm[1], parm[2], parm[3]))
-      
+        
       }
-
+      
       ## method (2)
       ## Royston and Parmar spline approach for log H(t)
       ## log H(t) = s(x, gamma), where x = log(t)
-
+      
       else if (haz.model == "spline") {
-
-
+        
+        
         ##extract the time variable
         tm <- event.info$time.interest
-
+        
         ##shift time to the right to avoid numerical issues with log(0)
         shift.time <- ifelse(min(tm, na.rm = TRUE) < 1e-3, 1e-3, 0)
         ##shift.time <- 0
-
+        
         ##take the log of time: these are the x-values used in the glmnet call
         log.tm <- log(tm + shift.time)
         
@@ -299,18 +308,18 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
         
         ##take the log of the CHF: this is the "response" in the glmnet call
         y <- log(chf.ensb[i, ] + shift.chf)
-
-
+        
+        
         ##define the knots
         k <- max(k, 2)
         knots <- unique(c(seq(min(log.tm), max(log.tm), length = k), 5 * max(log.tm)))
-
+        
         
         ##define the spline basis functions
         m <- length(knots) 
         kmin <- min(knots)
         kmax <- max(knots)
-
+        
         if (m < 2) {
           stop("not enough knots (confirm that the number of unique event times > 2")
         }
@@ -323,7 +332,7 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
             pmax(log.tm - knots[j-1], 0)^3 - lj * pmax(log.tm - kmin, 0)^3 - (1 - lj) * pmax(log.tm - kmax, 0)^3 
           }
         }))
-
+        
         ## lasso estimation
         ## we use cross-validation with glmnet to estimate the gamma coefficients
         ## from s(x, gamma)
@@ -335,61 +344,61 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
           warning("glmnet did not converge: setting coefficients to zero")
           coeff <- rep(0, 1+ ncol(x))
         }
-
+        
         ## calculate s(x, gamma)
         sfn <- coeff[1] + x %*% coeff[-1]
-
+        
         ## theoretical s'(x, gamma)
         x.deriv <- do.call(cbind, mclapply(1:m, function(j) {
           lj <- (kmax - knots[j]) / (kmax - kmin)
           3 * (pmax(log.tm - knots[j], 0)^2 - lj * pmax(log.tm - kmin, 0)^2
-                            - (1 - lj) * pmax(log.tm - kmax, 0)^2)
+               - (1 - lj) * pmax(log.tm - kmax, 0)^2)
           
         }))
         sfn.deriv <- coeff[2] + x.deriv %*% coeff[-c(1:2)]
-
-       
+        
+        
         ## take the derivative of H(t) to obtain the estimated hazard
         ## this is (ds(x, gamma)/dt) * exp(s(x, gamma))
         ## which equals s'(x, gamma) * (dx/dt) * exp(s(x, gamma))
         ## x=log(t+shift.time), thus dx/dt = 1/(t + shift.time)
         haz <- sfn.deriv * exp(sfn) / (tm + shift.time)
-
+        
         ## negative values are set to 0
         ## smooth the hazard
         ## negative values are set to 0
         haz[haz < 0] <- 0
         haz <- supsmu(tm, haz)$y
         haz[haz < 0] <- 0
-
+        
         ##return the obj
         #supsmu(tm, haz)
         list(x = tm, y = haz)
-  
+        
       }
-
+      
       ## method (3)
       ## nonparametric estimate
       ## smooth the derivative of the smoothed H(t) 
-
+      
       else if (haz.model == "nonpar") {
-
+        
         ##extract time and H(t)
         x <- event.info$time.interest
         y <- chf.ensb[i, ]
-
+        
         ##smooth H(t)
         ll <- supsmu(x, y, span = "cv")
         ##smooth the derivative of the smoothed H(t)
         supsmu(x = ll$x[-length(x)], y = diff(ll$y) / diff(ll$x), span = span)
         
       }
-
-
+      
+      
     })
     
   }
-    
+  
   
   ## should we display the plots? 
   if (plot.it) {
@@ -412,7 +421,7 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
       par(mfrow=c(1,1))
     }
     par(cex = 1.0)
-
+    
     ###----survival plot----
     if (!subsetProvided && x$n > 500) {
       r.pt <- sample(1:x$n, 500, replace = FALSE)
@@ -443,7 +452,7 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
     if (plots.one.page) {
       title(title.1, cex.main = 1.25)
     }
-
+    
     ###----CHF plot----
     if (subsetProvided) {
       matplot(event.info$time.interest,
@@ -463,7 +472,7 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
         title(title.2, cex.main = 1.25)
       }
     }
-
+    
     ###----hazard plot----
     if (subsetProvided) {
       plot(range(haz.list[[1]]$x, na.rm = TRUE),
@@ -497,7 +506,7 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
       rug(event.info$time.interest,ticksize=0.03)
       if (plots.one.page) title("OOB Brier Score",cex.main = 1.25)
     }
-
+    
     ###----mortality plot----
     if (!subsetProvided && !is.null(x$yvar)) {
       plot(event.info$time, mort, xlab = "Time", ylab = y.lab, type = "n", ...)
@@ -520,12 +529,12 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
               cex = cex)
       rug(event.info$time.interest, ticksize=-0.03)
     }
-
+    
     ## reset par
     par(old.par)
     
   }
-
+  
   ##invisibly return the brier score
   if (!rfsrcPred && !subsetProvided) {
     
@@ -545,15 +554,15 @@ if (sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) == 2) {
     }
     
     invisible(cbind(
-       time = event.info$time.interest,
-       brier.score,
-       integrate = unlist(mclapply(1:length(event.info$time.interest),
-         function(j) {
-           Dint(f = brier.score[1:j, 4],
-                range = quantile(event.info$time.interest, probs = c(0.05, 0.95), na.rm = TRUE),
-                grid = event.info$time.interest[1:j])
-         }))
-                    ))
+      time = event.info$time.interest,
+      brier.score,
+      integrate = unlist(mclapply(1:length(event.info$time.interest),
+                                  function(j) {
+                                    Dint(f = brier.score[1:j, 4],
+                                         range = quantile(event.info$time.interest, probs = c(0.05, 0.95), na.rm = TRUE),
+                                         grid = event.info$time.interest[1:j])
+                                  }))
+    ))
   }
   
 }
