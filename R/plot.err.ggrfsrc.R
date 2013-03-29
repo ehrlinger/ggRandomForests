@@ -13,3 +13,5 @@ plot.err.ggrfsrc <- function(err, ...) {
            legend = colnames(err), col = 1:ncol(err), lty = 1, lwd = 3)
   }
 }
+
+plot.err <- plot.err.ggrfsrc

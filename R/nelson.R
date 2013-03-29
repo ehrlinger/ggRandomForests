@@ -11,7 +11,7 @@
 #' @importFrom survival Surv survfit strata 
 #' 
 #' 
-nelson <- function(interval, censor, strat=NULL, data, weight=NULL,climit=.95){
+nelson <- function(interval, censor, data, strat=NULL, weight=NULL,climit=.95){
   call <- match.call()
   
   # Make sure we've speced the confidence limit correctly

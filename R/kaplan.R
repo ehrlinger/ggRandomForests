@@ -10,7 +10,12 @@
 #' @export kaplan
 #' @importFrom survival Surv survfit strata 
 #' 
-kaplan <- function(interval, censor, strat=NULL, data){
+#' 
+require(survival)
+kaplan <- function(interval, 
+                   censor,
+                   data, 
+                   strat=NULL){
   
   # Kaplan-Meier analysis
   srv <- Surv(time=data[,interval], event=data[,censor])
@@ -22,7 +27,7 @@ kaplan <- function(interval, censor, strat=NULL, data){
   #
   # OR for stratification on 
   # srvTab <- survfit(Surv(interval, event)~strata(stratify),data, type=type)
-  cat(str(srvTab))
+  #cat(str(srvTab))
   #*******************************************************************************;
   #* Cumulative hazard and hazard estimates from transforms and slopes            ;
   #* as well as integral of survivorship and proportionate life length            ;
