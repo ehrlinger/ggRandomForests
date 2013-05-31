@@ -1,0 +1,51 @@
+extract.RFpred <- function (obj, type, subset, time, which.outcome, oob = FALSE) 
+{
+  if (oob == FALSE) {
+    pred <- obj$predicted
+    surv <- obj$survival
+    chf <- obj$chf
+    cif <- obj$cif
+  }
+  else {
+    pred <- obj$predicted.oob
+    surv <- obj$survival.oob
+    chf <- obj$chf.oob
+    cif <- obj$cif.oob
+  }
+  if (obj$family == "surv") {
+    n <- length(pred)
+    if (missing(subset)) 
+      subset <- 1:n
+    surv.type <- match.arg(type, c("mort", "rel.freq", "surv"))
+    time.idx <- max(which(obj$time.interest <= time))
+    return(switch(surv.type, mort = pred[subset], rel.freq = pred[subset]/max(n, 
+                                                                              na.omit(pred)), surv = 100 * surv[subset, time.idx]))
+  }
+  else if (obj$family == "surv-CR") {
+    n <- length(pred)
+    if (missing(subset)) 
+      subset <- 1:n
+    if (missing(which.outcome)) 
+      which.outcome <- 1
+    cr.type <- match.arg(type, c("years.lost", "cif", "chf"))
+    time.idx <- max(which(obj$time.interest <= time))
+    return(switch(cr.type, years.lost = pred[subset, which.outcome], 
+                  cif = cif[subset, time.idx, which.outcome], chf = chf[subset, 
+                                                                        time.idx, which.outcome]))
+  }
+  else if (obj$family == "class") {
+    class.type <- match.arg(type, c("response", "prob"))
+    if (missing(subset)) 
+      subset <- 1:nrow(pred)
+    if (missing(which.outcome)) 
+      which.outcome <- 1
+    prob <- pred[subset, , drop = FALSE]
+    return(switch(class.type, prob = prob[, which.outcome], 
+                  response = bayes.rule(prob)))
+  }
+  else {
+    if (missing(subset)) 
+      subset <- 1:length(pred)
+    return(pred[subset])
+  }
+}

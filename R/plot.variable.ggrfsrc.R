@@ -68,7 +68,9 @@ plot.variable.ggrfsrc <- function(
   object <- x
   if (sum(inherits(object, c("plot.variable", "rfsrc"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2&
-        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
+        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 &
+        sum(inherits(object, c("randomForest", "plot.variableå"), TRUE) == c(1, 2)) != 2 &
+        inherits(object, "randomForest")) {
     stop("Function only works for objects of class 'rfsrc' or (rfsrc,plot.variable)' These objects are created with the pred.variable function.")
   }
   
@@ -143,14 +145,14 @@ plot.variable.ggrfsrc <- function(
       if (is.character(which.outcome)) {
         which.outcome <- match(match.arg(which.outcome, levels(object$yvar)), levels(object$yvar))
       }
-      else {
-        if (which.outcome > length(levels(object$yvar)) | which.outcome < 1) {
-          stop("which.outcome is specified incorrectly: ", which.outcome, " of ", length(levels(object$yvar)) )
-        }
-      }
+#       else {
+#         if (which.outcome > length(levels(object$yvar)) | which.outcome < 1) {
+#           stop("which.outcome is specified incorrectly: ", which.outcome, " of ", length(levels(object$yvar)) )
+#         }
+#       }
       pred.type <- "prob"
       yvar.dim <- 1
-      ylabel <- paste("probability", levels(object$yhat)[which.outcome])
+      ylabel <- paste("probability", colnames(object$yhat)[which.outcome])
     }
     ## regression families
     else {
@@ -166,7 +168,7 @@ plot.variable.ggrfsrc <- function(
   ##
   ##--------------------------------------------------------------------------------
   if (is.null(object$call$partial)) {
-    xvar <- object$x
+    xvar <- object$xvar
     n <- nrow(xvar)
     nvar <- ncol(xvar)
     yhat <- object$yhat

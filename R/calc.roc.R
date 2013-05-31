@@ -52,3 +52,4 @@ calc.auc.rfsrc <- function(x){
   
   sum(auc)
 }
+calc.auc<- calc.auc.rfsrc

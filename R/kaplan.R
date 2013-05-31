@@ -11,7 +11,7 @@
 #' @importFrom survival Surv survfit strata 
 #' 
 #' 
-require(survival)
+
 kaplan <- function(interval, 
                    censor,
                    data, 

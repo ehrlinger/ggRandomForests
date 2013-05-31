@@ -1,6 +1,6 @@
 ###################################################################################
 #' 
-#' lifetable creates a nonparametric survival estimate using either the kaplan-meier or nelson-aalon '
+#' eventtable creates a nonparametric survival estimate using either the kaplan-meier or nelson-aalon '
 #' method.
 #' 
 #' @param data name of the training data.frame
@@ -10,17 +10,17 @@
 #' @param type one of ("kaplan","nelson"), defaults to kaplan-meier
 #' @param ... extra arguments passed to...
 #' 
-#' @export lifetable
+#' @export eventtable
 #' 
 #' 
 
 
-lifetable <- function(interval, censor, strat=NULL, data, type=c("kaplan","nelson"), ...){
+eventtable <- function(interval, censor, strat=NULL, data, type=c("kaplan","nelson"), ...){
   type <- match.arg(type)
   
   ltab <- switch(type,
-    kaplan=lifetable.kaplan(interval=interval, censor=censor, strat=strat, data=data, ...),
-    nelson=lifetable.nelson(interval=interval, censor=censor, strat=strat, data=data, ...)
+    kaplan=kaplan(interval=interval, censor=censor, strat=strat, data=data, ...),
+    nelson=nelson(interval=interval, censor=censor, strat=strat, data=data, ...)
   )
   return(ltab)
 }

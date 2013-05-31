@@ -1,14 +1,15 @@
 Package: ggrfsrc
 Type: Package
 Title: Graphic functions for RandomForestSRC objects.
-Version: 0.5
+Version: 0.7
 Date: 2013-01-04
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 Depends:
-    R (>= 2.15.0),
+    R (>= 3.0.0),
     ggplot2,
-    randomForestSRC (>= 1.0.2)
+    randomForestSRC (>= 1.2.0),
+    survival
 Description: ggrfsrc is a tool for creating graphs for randomForestSRC
     objects using the ggplot2 package.
 License: GPL (>=3)
@@ -27,3 +28,8 @@ Collate:
     'plot.roc.ggrfsrc.R'
     'plot.survival.ggrfsrc.R'
     'plot.variable.ggrfsrc.R'
+    'plot.variable.rfsrc.R'
+    'show.ggrfsrc.R'
+    'plot.vimp.ggrfsrc.R'
+    'extract.RFpred.R'
+    'print.ggrfsrc.R'

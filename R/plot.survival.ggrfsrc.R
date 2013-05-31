@@ -52,8 +52,8 @@
 #' @param ...
 #'
 #' @export plot.survival.ggrfsrc plot.survival
-require(ggplot2)
-require(reshape2)
+
+
 plot.survival.ggrfsrc <- function (object,
                                    prd.type=c("std", "oob"),
                                    srv.type=c("surv", "chf", "mortality", "hazard"),
