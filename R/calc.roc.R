@@ -37,6 +37,24 @@ calc.roc.rfsrc <- function(rf, dta, which.outcome=1, oob.prd=TRUE){
   
 }
 calc.roc<- calc.roc.rfsrc
+calc.roc.randomForest <- function(rf, dta, which.outcome=1){
+  prd <- predict(rf, type="prob")
+  dta.roc <- as.data.frame(cbind(res=(dta == levels(dta)[which.outcome]), prd=prd[,which.outcome]))
+  
+  pct <- sort(unique(prd[,which.outcome]))
+  pct<- pct[-length(pct)]
+  
+  spc <-mclapply(pct, function(crit){
+    tbl <- xtabs(~res+(prd>crit), dta.roc)
+    
+    spec<-tbl[2,2]/rowSums(tbl)[2]
+    sens<-tbl[1,1]/rowSums(tbl)[1]
+    cbind(spec=spec, sens=sens)
+  }, mc.cores = (detectCores()-1))
+  return(as.data.frame(do.call(rbind, spc)))
+  
+}
+
 calc.auc.rfsrc <- function(x){
   ## Use the trapeziod rule, basically
   ##

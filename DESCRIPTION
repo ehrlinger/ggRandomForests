@@ -33,3 +33,4 @@ Collate:
     'plot.vimp.ggrfsrc.R'
     'extract.RFpred.R'
     'print.ggrfsrc.R'
+    'plot.variable.randomForest.R'

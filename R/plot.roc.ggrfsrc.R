@@ -14,17 +14,26 @@
 plot.roc.ggrfsrc <- function(object, which.outcome, show=TRUE){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
-        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
-    stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
+        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 & 
+        !inherits(object, "randomForest")) {
+    stop("This function only works for objects of class `(rfsrc, grow)', '(rfsrc, predict)' or 'randomForest.")
   }
-  if(object$family != "class")
-    stop("plot.roc is intended for classification forests only.")
-  
-  
-  spc<- calc.roc(object, object$class, which.outcome=which.outcome)
+ 
+  if(inherits(object, "randomForest")){
+    if(object$type != "classification")
+      stop("plot.roc is intended for classification forests only.")
+    
+    
+    spc<- calc.roc.randomForest(object, object$y, which.outcome=which.outcome)
+  }else{
+    if(object$family != "class")
+      stop("plot.roc is intended for classification forests only.")
+    
+    spc<- calc.roc(object, object$class, which.outcome=which.outcome)
+  }
   plt<-ggplot(data=spc)+geom_line(aes(x=(1-sens), y=spec))+
     geom_abline(a=1, b=0) + coord_cartesian(xlim=c(0,1), ylim=c(0,1))
-
+  
   auc <- calc.auc(spc)
   print(auc)
   if(show) show(plt)
