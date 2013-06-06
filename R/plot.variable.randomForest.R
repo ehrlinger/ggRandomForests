@@ -238,3 +238,5 @@ plot.variable.randomForest.ggrfsrc <- function(x,
                                 fmly)
   invisible(plot.variable.obj)
 }
+
+plot.variable.randomForest <- plot.variable.randomForest.ggrfsrc

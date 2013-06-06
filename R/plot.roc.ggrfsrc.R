@@ -8,7 +8,7 @@
 #' @examples
 #' ## Edgar Anderson's iris data
 #' iris.obj <- rfsrc(Species ~., data = iris)
-#' plot.roc(iris.obj)
+#' #plot.roc(iris.obj)
 #' 
 #' @export plot.roc.ggrfsrc plot.roc
 plot.roc.ggrfsrc <- function(object, which.outcome, show=TRUE){
@@ -18,7 +18,8 @@ plot.roc.ggrfsrc <- function(object, which.outcome, show=TRUE){
         !inherits(object, "randomForest")) {
     stop("This function only works for objects of class `(rfsrc, grow)', '(rfsrc, predict)' or 'randomForest.")
   }
- 
+  
+  if(missing(which.outcome)) which.outcome=1
   if(inherits(object, "randomForest")){
     if(object$type != "classification")
       stop("plot.roc is intended for classification forests only.")

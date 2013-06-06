@@ -8,6 +8,7 @@ Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 Depends:
     R (>= 3.0.0),
     ggplot2,
+    reshape2,
     randomForestSRC (>= 1.2.0),
     survival
 Description: ggrfsrc is a tool for creating graphs for randomForestSRC
@@ -20,7 +21,6 @@ Collate:
     'dot.chart.R'
     'help.R'
     'kaplan.R'
-    'lifetable.R'
     'nelson.R'
     'plot.competing.risk.ggrfsrc.R'
     'plot.err.ggrfsrc.R'
@@ -28,9 +28,10 @@ Collate:
     'plot.roc.ggrfsrc.R'
     'plot.survival.ggrfsrc.R'
     'plot.variable.ggrfsrc.R'
-    'plot.variable.rfsrc.R'
     'show.ggrfsrc.R'
     'plot.vimp.ggrfsrc.R'
     'extract.RFpred.R'
     'print.ggrfsrc.R'
     'plot.variable.randomForest.R'
+    'eventtable.R'
+    'coplot.ggrfsrc.R'

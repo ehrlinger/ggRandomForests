@@ -1,3 +1,4 @@
+export(coplot.ggrfsrc)
 export(eventtable)
 export(kaplan)
 export(nelson)
