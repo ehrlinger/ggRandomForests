@@ -1,7 +1,7 @@
-#' plot.err
-#' @export plot.err.ggrfsrc
+#' plot_error
+#' @export plot_error.ggRandomForest
 ### error rate plot
-plot.err.ggrfsrc <- function(err, ...) {
+plot_error.ggRandomForest <- function(err, ...) {
   opar <- par("cex")
   on.exit(par(opar))
   matplot(1:nrow(err), err,
@@ -14,4 +14,4 @@ plot.err.ggrfsrc <- function(err, ...) {
   }
 }
 
-plot.err <- plot.err.ggrfsrc
+plot_error <- plot_error.ggRandomForest

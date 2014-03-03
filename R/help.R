@@ -1,13 +1,14 @@
 #####################################################################################################
 # Package documentation
 #####################################################################################################
-#' @title ggrfsrc package for smooth plotting of \code{\link{randomForestSRC}} objects.
+#' @title ggRandomForest package for plotting of random forest objects using the 
+#' \code{\link{ggplot2}}.
 #' 
-#' @description ggrfsrc is an add on package for \code{\link{randomForestSRC}}.
+#' @description ggRandomForest is an add on package for \code{\link{randomForestSRC}}.
 #' 
 #' 
 #' @docType package
-#' @name ggrfsrc-package
+#' @name ggRandomForest-package
 #' 
 ################
 NULL

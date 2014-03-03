@@ -1,6 +1,6 @@
 extract.RFpred <- function (obj, type, subset, which.outcome) 
 {
-  if(class(obj) == "matrix"){
+  if(inherits(obj,"matrix")){
     pred <- obj
   }else{
     pred <- obj$votes

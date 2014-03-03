@@ -24,7 +24,6 @@ plot.roc.ggrfsrc <- function(object, which.outcome, show=TRUE){
     if(object$type != "classification")
       stop("plot.roc is intended for classification forests only.")
     
-    
     spc<- calc.roc.randomForest(object, object$y, which.outcome=which.outcome)
   }else{
     if(object$family != "class")
@@ -33,10 +32,11 @@ plot.roc.ggrfsrc <- function(object, which.outcome, show=TRUE){
     spc<- calc.roc(object, object$class, which.outcome=which.outcome)
   }
   plt<-ggplot(data=spc)+geom_line(aes(x=(1-sens), y=spec))+
-    geom_abline(a=1, b=0) + coord_cartesian(xlim=c(0,1), ylim=c(0,1))
+    geom_abline(a=1, b=0) +coord_fixed()
+
   
   auc <- calc.auc(spc)
-  print(auc)
+  plt<-plt+annotate(x=.5,y=.2,geom="text", label=paste("AUC = ",round(auc, digits=3), sep=""), hjust=0)
   if(show) show(plt)
   invisible(plt)
   ##

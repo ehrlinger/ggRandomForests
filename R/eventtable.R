@@ -1,7 +1,7 @@
 ###################################################################################
 #' 
-#' eventtable creates a nonparametric survival estimate using either the kaplan-meier or nelson-aalon '
-#' method.
+#' eventtable creates a nonparametric survival estimate using either the 
+#' kaplan-meier or nelson-aalon method.
 #' 
 #' @param data name of the training data.frame
 #' @param interval name of the interval variable in the training dataset.

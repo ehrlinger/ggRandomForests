@@ -131,13 +131,13 @@ plot.variable.randomForest.ggrfsrc <- function(x,
     }
     pred.type <- "prob"
     yvar.dim <- 1
-    VIMP <- object$importance[, which.outcome]
+    VIMP <- importance(object)[, which.outcome]
     ylabel <- paste("probability", levels(object$y)[which.outcome])
   }else {
     pred.type <- "y"
     yvar.dim <- 1
     which.outcome <- NULL
-    VIMP <- object$importance
+    VIMP <- importance(object)
     ylabel <- expression(hat(y))
   }
   
@@ -150,7 +150,7 @@ plot.variable.randomForest.ggrfsrc <- function(x,
   if (missing(xvar.names)) {
     xvar.names <- attributes(object$terms)$term.labels
   }else {
-    # IF we have, then validate them.
+    # If we have, then validate them.
     if (length(setdiff(xvar.names, attributes(object$terms)$term.labels)) > 0) {
       stop("x-variable names supplied does not match available list:\n", 
            attributes(object$terms)$term.labels)
@@ -162,15 +162,14 @@ plot.variable.randomForest.ggrfsrc <- function(x,
   }
   if (!missing(nvar)) {
     nvar <- max(round(nvar), 1)
-    xvar.names <- xvar.names[1:min(length(xvar.names), 
-                                   nvar)]
+    xvar.names <- xvar.names[1:min(length(xvar.names), nvar)]
   }
   nvar <- length(xvar.names)
   
   # Now get the data.
   if (!partial) {
     yhat <- extract.RFpred(object, pred.type, subset,
-                         which.outcome)
+                           which.outcome)
   }
   else {
     #class(object$forest) <- c("rfsrc", "partial", class(object)[3])
@@ -222,7 +221,7 @@ plot.variable.randomForest.ggrfsrc <- function(x,
   }
   
   if(fmly=="classification")fmly<- "class"
-
+  
   plot.variable.obj <- list(family = fmly, partial = partial, 
                             which.outcome = which.outcome, 
                             ylabel = ylabel, yvar.dim = yvar.dim, n = n, xvar.names = xvar.names, 
