@@ -1,8 +1,8 @@
-Package: ggRandomForest
+Package: ggRandomForests
 Type: Package
-Title: Graphic functions for RandomForest objects.
-Version: 0.7
-Date: 2013-01-04
+Title: Graphic functions for randomForestSRC objects.
+Version: 0.8
+Date: 2014-03-06
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 Depends:
@@ -11,28 +11,8 @@ Depends:
     reshape2,
     randomForestSRC (>= 1.4.0),
     survival
-Description: ggrfsrc is a tool for creating graphs for randomForestSRC
+Description: ggRandomForests is a tool for creating graphs for randomForestSRC
     objects using the ggplot2 package.
 License: GPL (>=3)
-URL: https://github.com/ehrlinger/ggrfsrc
+URL: https://github.com/ehrlinger/ggRandomForests
 Packaged: 2013-01-04 14:01:10 UTC; ehrlinj
-Collate:
-    'calc.roc.R'
-    'dot.chart.R'
-    'help.R'
-    'kaplan.R'
-    'nelson.R'
-    'plot.competing.risk.ggrfsrc.R'
-    'plot.err.ggrfsrc.R'
-    'plot.ggrfsrc.R'
-    'plot.roc.ggrfsrc.R'
-    'plot.survival.ggrfsrc.R'
-    'plot.variable.ggrfsrc.R'
-    'show.ggrfsrc.R'
-    'plot.vimp.ggrfsrc.R'
-    'extract.RFpred.R'
-    'print.ggrfsrc.R'
-    'plot.variable.randomForest.R'
-    'eventtable.R'
-    'coplot.ggrfsrc.R'
-    'plot.interaction.ggrfsrc.R'

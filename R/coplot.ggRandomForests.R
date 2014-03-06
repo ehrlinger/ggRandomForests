@@ -1,4 +1,4 @@
-#' coplot.ggRandomForest This function produces two variants of the conditioning plots discussed
+#' coplot.ggRandomForests This function produces two variants of the conditioning plots discussed
 #' in the reference below.
 #' 
 #' @param formula, 
@@ -14,9 +14,9 @@
 #' @param ylim
 #' @param  ...
 #' 
-#' @export coplot.ggRandomForest
+#' @export coplot.ggRandomForests
 #' 
-coplot.ggRandomForest <- function(formula, 
+coplot.ggRandomForests <- function(formula, 
                                   data, 
                                   given.values, panel = points, rows, columns,
                                   show.given = TRUE, 

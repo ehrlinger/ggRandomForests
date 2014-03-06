@@ -1,9 +1,9 @@
 #'
 #' plot.rfsrc
 #' 
-#' @export plot.ggRandomForest
+#' @export plot.ggRandomForests
 
-plot.ggRandomForest <- function (x, plots.one.page = TRUE, sorted = TRUE, verbose = TRUE, ...)
+plot.ggRandomForests <- function (x, plots.one.page = TRUE, sorted = TRUE, verbose = TRUE, ...)
 {
   if (sum(inherits(x, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
       sum(inherits(x, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {

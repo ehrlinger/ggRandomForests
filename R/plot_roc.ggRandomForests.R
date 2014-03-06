@@ -1,5 +1,5 @@
 #'
-#' plot.roc create a set of classification performance plots from an rfsrc 
+#' plot_roc create a set of classification performance plots from an rfsrc 
 #' classification object
 #' 
 #' @param object an rfsrc classification object
@@ -8,10 +8,10 @@
 #' @examples
 #' ## Edgar Anderson's iris data
 #' iris.obj <- rfsrc(Species ~., data = iris)
-#' #plot.roc(iris.obj)
+#' #plot_roc(iris.obj)
 #' 
-#' @export plot.roc.ggrfsrc plot.roc
-plot.roc.ggrfsrc <- function(object, which.outcome, show=TRUE){
+#' @export plot_roc.ggRandomForests plot_roc
+plot_roc.ggRandomForests <- function(object, which.outcome, show=TRUE){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 & 
@@ -22,12 +22,12 @@ plot.roc.ggrfsrc <- function(object, which.outcome, show=TRUE){
   if(missing(which.outcome)) which.outcome=1
   if(inherits(object, "randomForest")){
     if(object$type != "classification")
-      stop("plot.roc is intended for classification forests only.")
+      stop("plot_roc is intended for classification forests only.")
     
     spc<- calc.roc.randomForest(object, object$y, which.outcome=which.outcome)
   }else{
     if(object$family != "class")
-      stop("plot.roc is intended for classification forests only.")
+      stop("plot_roc is intended for classification forests only.")
     
     spc<- calc.roc(object, object$class, which.outcome=which.outcome)
   }
@@ -49,4 +49,4 @@ plot.roc.ggrfsrc <- function(object, which.outcome, show=TRUE){
   ##   geom_line(aes(x=(1-sens), y=spec), data=mstn,col="red") + 
   ##   geom_line(aes(x=(1-sens), y=spec), data=nstn, col="blue")
 }
-plot.roc <- plot.roc.ggrfsrc
+plot_roc <- plot_roc.ggRandomForests

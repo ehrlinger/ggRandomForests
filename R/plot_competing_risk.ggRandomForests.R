@@ -61,10 +61,10 @@
 #' plot.competing.risk 
 #' @param x rf object
 #' 
-#' @export plot.competing.risk.ggrfsrc
+#' @export plot.competing.risk.ggRandomForests
 #' @export plot.competing.risk
 
-plot.competing.risk.ggrfsrc <- function (x, plots.one.page = FALSE, ...) {
+plot.competing.risk.ggRandomForests <- function (x, plots.one.page = FALSE, ...) {
   
   ## Incoming parameter checks.  All are fatal.
   if (is.null(x)) {
@@ -95,4 +95,4 @@ plot.competing.risk.ggrfsrc <- function (x, plots.one.page = FALSE, ...) {
           "Probability (%)", "CIF", 2)
 }
 
-plot.competing.risk <- plot.competing.risk.ggrfsrc
+plot.competing.risk <- plot.competing.risk.ggRandomForests

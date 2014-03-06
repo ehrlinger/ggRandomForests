@@ -1,7 +1,7 @@
 ####**********************************************************************
 ####**********************************************************************
 ####
-####  GGRFSRC - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
+####  ggrandomForests - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
 ####  REGRESSION, AND CLASSIFICATION (RF-SRC)
 ####  Version 0.6.0
 ####
@@ -35,17 +35,17 @@
 ####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
-####    URL:    https://github.com/ehrlinger/ggrfsrc
+####    URL:    https://github.com/ehrlinger/ggrandomForests
 ####  ----------------------------------------------------------------
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' @title Plot the randomForest marginal dependence of variables.
+#' @title Plot the randomForests marginal dependence of variables.
 #' 
-#' @description plot.variable.randomForest.ggrfsrc generates a list of either marginal variable 
+#' @description plot.variable.randomForests.ggrandomForests generates a list of either marginal variable 
 #' dependance or partial variable dependence figures using \code{\link{ggplot}}.
 #' 
-#' @param x an object of class randomForest, which contains a forest component.
+#' @param x an object of class randomForests, which contains a forest component.
 #' @param pred.data	a data frame used for contructing the plot, usually the training data used to contruct the random forest.
 #' @param x.var	name of the variable for which partial dependence is to be examined.
 #' @param which.class	For classification data, the class to focus on (default the first class).
@@ -57,7 +57,7 @@
 #' @param xlab	label for the x-axis.
 #' @param ylab	label for the y-axis.
 #' @param main	main title for the plot.
-#' @param ...	 other graphical parameters to be passed on to plot or lines. x a randomForest object
+#' @param ...	 other graphical parameters to be passed on to plot or lines. x a randomForests object
 #' @param smooth.lines boolean indicating the inclusion of confidence intervals
 #'
 #' @return A list of \code{\link{ggplot2}} plot objects corresponding the variables 
@@ -65,11 +65,11 @@
 #' 
 #' @seealso \code{\link{plot.variable.rfsrc}}
 #' 
-#' @export plot.variable.randomForest.ggrfsrc
-#' @export plot.variable.randomForest
+#' @export plot.variable.randomForests.ggrandomForests
+#' @export plot.variable.randomForests
 #' 
 #'
-plot.variable.randomForest.ggrfsrc <- function(x, 
+plot.variable.randomForests.ggrandomForests <- function(x, 
                                                pred.data, 
                                                xvar.names, 
                                                which.outcome,
@@ -89,11 +89,11 @@ plot.variable.randomForest.ggrfsrc <- function(x,
 {
   object <- x
   remove(x)
-  if (!inherits(object, "randomForest")){
-    stop("This function only works for objects of class `randomForest'.")
+  if (!inherits(object, "randomForests")){
+    stop("This function only works for objects of class `randomForests'.")
   }
   if (partial && is.null(object$forest)) {
-    stop("forest is empty:  re-run randomForest call with keep.forest=TRUE")
+    stop("forest is empty:  re-run randomForests call with keep.forest=TRUE")
   }
   
   # Handle subsetting the training data observations.
@@ -233,9 +233,9 @@ plot.variable.randomForest.ggrfsrc <- function(x,
     plot.variable.obj$yhat <- yhat
     plot.variable.obj$xvar <- xvar[, which(colnames(pred.data) %in% xvar.names)]
   }
-  class(plot.variable.obj) <- c("ggrfsrc", "plot.variable", 
+  class(plot.variable.obj) <- c("ggrandomForests", "plot.variable", 
                                 fmly)
   invisible(plot.variable.obj)
 }
 
-plot.variable.randomForest <- plot.variable.randomForest.ggrfsrc
+plot.variable.randomForests <- plot.variable.randomForests.ggrandomForests

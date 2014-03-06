@@ -1,4 +1,4 @@
-#' plot_interaction.ggRandomForest produces a heatmap of Find pairwise interactions between 
+#' plot_interaction.ggRandomForests produces a heatmap of Find pairwise interactions between 
 #' variables within a randomForestSRC object.
 #' 
 #' @param object a matrix object from the find.interaction.rfsrc function
@@ -16,12 +16,12 @@
 #' @examples
 #' airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' int.airq <- find.interaction(airq.obj)
-#' pl<-plot_interaction.ggRandomForest(int.airq)
+#' pl<-plot_interaction.ggRandomForests(int.airq)
 #' pl+theme_bw()
 #' @import ggplot2 reshape2
-#' @export plot_interaction.ggRandomForest
+#' @export plot_interaction.ggRandomForests
 
-plot_interaction.ggRandomForest <- function(object, nvar, color){
+plot_interaction.ggRandomForests <- function(object, nvar, color){
   if(class(object) !="matrix") stop("plot_interaction expects an matrix object produced with the find_interaction function.")
   tst <- dim(object)
   
@@ -57,4 +57,4 @@ plot_interaction.ggRandomForest <- function(object, nvar, color){
   invisible(p)
 }
 
-plot_interaction <- plot_interaction.ggRandomForest
+plot_interaction <- plot_interaction.ggRandomForests

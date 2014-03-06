@@ -1,7 +1,7 @@
 ####**********************************************************************
 ####**********************************************************************
 ####
-####  GGRFSRC - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
+####  ggRandomForests - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
 ####  REGRESSION, AND CLASSIFICATION (RF-SRC)
 ####  Version 0.6.0
 ####
@@ -35,14 +35,14 @@
 ####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
-####    URL:    https://github.com/ehrlinger/ggrfsrc
+####    URL:    https://github.com/ehrlinger/ggRandomForests
 ####  ----------------------------------------------------------------
 ####
 ####**********************************************************************
 ####**********************************************************************
 #' @title Plot the marginal dependence of variables.
 #' 
-#' @description plot.variable.ggrfsrc generates a list of either marginal variable 
+#' @description plot.variable.ggRandomForests generates a list of either marginal variable 
 #' dependance or partial variable dependence figures using \code{\link{ggplot}}.
 #' 
 #' @param x a marginal or partial rfsrc data object from \code{\link{pred.variable}}
@@ -53,11 +53,11 @@
 #' 
 #' @seealso \code{\link{plot.variable.rfsrc}}
 #' 
-#' @export plot.variable.ggrfsrc
+#' @export plot.variable.ggRandomForests
 #' @export plot.variable
 #' 
 #'
-plot.variable.ggrfsrc <- function(
+plot.variable.ggRandomForests <- function(
   x,
   smooth.lines = FALSE,
   ...)
@@ -294,4 +294,4 @@ plot.variable.ggrfsrc <- function(
   invisible(plt)
 }
 
-plot.variable <- plot.variable.ggrfsrc
+plot.variable <- plot.variable.ggRandomForests

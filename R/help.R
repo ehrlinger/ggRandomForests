@@ -1,14 +1,14 @@
 #####################################################################################################
 # Package documentation
 #####################################################################################################
-#' @title ggRandomForest package for plotting of random forest objects using the 
+#' @title ggRandomForests package for plotting of random forest objects using the 
 #' \code{\link{ggplot2}}.
 #' 
-#' @description ggRandomForest is an add on package for \code{\link{randomForestSRC}}.
+#' @description ggRandomForests is an add on package for \code{\link{randomForestSRC}}.
 #' 
 #' 
 #' @docType package
-#' @name ggRandomForest-package
+#' @name ggRandomForests-package
 #' 
 ################
 NULL
