@@ -1,4 +1,4 @@
-#' kaplan creates a nonparametric kaplan-meier curve from the data.frame dataset
+#' kaplan creates a nonparametric kaplan-meier dataset from the data.frame dataset
 #'
 #' @param data name of the training data.frame
 #' @param interval name of the interval variable in the training dataset.

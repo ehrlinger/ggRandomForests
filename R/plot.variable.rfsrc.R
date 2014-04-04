@@ -108,7 +108,7 @@ plot.variable.rfsrc <- function(
   if (grepl("surv", object$family)) {
 
     ##extract event information
-    event.info <- get.event.info(object, subset)
+    event.info <- randomForestSRC:::get.event.info(object, subset)
     yvar.dim <- event.info$r.dim
     cens <- event.info$cens
     event.type <- event.info$event.type
