@@ -14,9 +14,9 @@
 #' @param ylim
 #' @param  ...
 #' 
-#' @export coplot.ggRandomForests
+#' @export ggCoplot.ggRandomForests
 #' 
-coplot.ggRandomForests <- function(formula, 
+ggCoplot.ggRandomForests <- function(formula, 
                                   data, 
                                   given.values, panel = points, rows, columns,
                                   show.given = TRUE, 

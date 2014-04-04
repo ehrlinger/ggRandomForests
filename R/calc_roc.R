@@ -1,18 +1,18 @@
 ### plot.roc
 ##
-## spc<- calc_roc(rf, dta$sten_grp, which.outcome=3)
+## spc<- calcROC(rf, dta$sten_grp, which.outcome=3)
 ## ggplot(data=spc)+geom_line(aes(x=(1-sens), y=spec))+theme_bw()+geom_abline(a=1, b=0)
 ##
-## mstn<- calc_roc(rf, dta$sten_grp, which.outcome=2)
+## mstn<- calcROC(rf, dta$sten_grp, which.outcome=2)
 ## ggplot(data=stn)+geom_line(aes(x=(1-sens), y=spec))+theme_bw()+geom_abline(a=1, b=0)+
 ##   geom_line(aes(x=(1-sens), y=spec), data=mstn,col="red")
 ##
-## nstn<- calc_roc(rf, dta$sten_grp, which.outcome=1)
+## nstn<- calcROC(rf, dta$sten_grp, which.outcome=1)
 ## ggplot(data=stn)+geom_line(aes(x=(1-sens), y=spec))+theme_bw()+geom_abline(a=1, b=0)+
 ##   geom_line(aes(x=(1-sens), y=spec), data=mstn,col="red") + 
 ##   geom_line(aes(x=(1-sens), y=spec), data=nstn, col="blue")
 
-calc_roc.rfsrc <- function(rf, dta, which.outcome=1, oob.prd=TRUE){
+calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob.prd=TRUE){
   if(!is.factor(dta)) dta <- factor(dta)
   dta.roc <- as.data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
                                  prd=rf$predicted[, which.outcome],
@@ -40,8 +40,8 @@ calc_roc.rfsrc <- function(rf, dta, which.outcome=1, oob.prd=TRUE){
   return(data.frame(spc, row.names=pct))
   
 }
-calc_roc<- calc_roc.rfsrc
-calc_roc.randomForest <- function(rf, dta, which.outcome=1){
+calcROC<- calcROC.rfsrc
+calcROC.randomForest <- function(rf, dta, which.outcome=1){
   prd <- predict(rf, type="prob")
   dta.roc <- as.data.frame(cbind(res=(dta == levels(dta)[which.outcome]), prd=prd[,which.outcome]))
   
@@ -60,7 +60,7 @@ calc_roc.randomForest <- function(rf, dta, which.outcome=1){
   return(data.frame(spc, row.names=pct))
 }
 
-calc_auc.rfsrc <- function(x){
+calcAUC.rfsrc <- function(x){
   ## Use the trapeziod rule, basically calc
   ##
   ## auc = dx/2(f(x_{i+1}) - f(x_i))
@@ -74,4 +74,4 @@ calc_auc.rfsrc <- function(x){
   
   sum(auc)
 }
-calc_auc<- calc_auc.rfsrc
+calcAUC<- calcAUC.rfsrc

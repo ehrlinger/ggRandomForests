@@ -16,10 +16,10 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' plot_survival
+#' ggSurvival
 #' Plot survival curve from an RF-S object.  
 #'
-#' @param x An object of class (rfsrc, grow) or (rfsrc, predict).
+#' @param rfObject An object of class (rfsrc, grow) or (rfsrc, predict).
 #' @param subset Vector indicating which individuals we want estimates for. 
 #'   All individuals are used if not specified.
 #' @param collapse Collapse the survival and cumulative hazard function 
@@ -36,7 +36,7 @@
 #'   in the inverse probability of censoring weights (IPCW) for the Brier score:
 #'   km: Uses the Kaplan-Meier estimator.
 #'   rfscr: Uses random survival forests.
-#' @param ... Further arguments passed to or from other methods.
+#' @param ... Further arguments passed to other methods.
 #'
 #' @details If subset is not specified, generates the following three plots
 #'  (going from top to bottom, left to right):
@@ -64,33 +64,32 @@
 #' @returns Invisibly, the conditional and unconditional Brier scores, and 
 #' the integrated Brier score (if they are available).
 #' 
-#' @export plot_survival.ggRandomForests plot_survival
+#' @export ggSurvival.ggRandomForests ggSurvival
 #' 
-plot_survival.ggRandomForests <- function (object,
+ggSurvival.ggRandomForests <- function (rfObject,
                                    prd.type=c("std", "oob"),
                                    srv.type=c("surv", "chf", "mortality", "hazard"),
                                    pnts = c("none", "kaplan", "nelson"),
-                                   show.ind = FALSE,
+                                   show.ind = NULL,
                                    subset,
                                    strata,
                                    climits = .95, 
-                                   error = c("none", "bars", "shade"),
+                                   error = c("none", "bars", "shade", "lines"),
                                    errbars,
-                                   xlim, ylim,
-                                   xlab, ylab,
-                                   axisx, axisy,
+                                   curve=c("mean", "median", "both"),
+                                   display=TRUE,
                                    ...)
 { 
   
   ## Verify that the incoming object is of type rfsrc.
-  if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 
-        2 & sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
-    stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
+  if (sum(inherits(rfObject, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 
+        2 & sum(inherits(rfObject, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
+    stop("This function only works for RF objects from randomForestSRC.")
   }
   
   # This is supposed to create a survival plot after all.
-  if (object$family != "surv") {
-    stop(paste("this function only supports right-censored survival settings. This is a ", object$family, " forest."))
+  if (rfObject$family != "surv") {
+    stop(paste("This function only supports Random Forests for survival. This is a ", rfObject$family, " forest."))
   }
   call <- match.call()
   
@@ -99,26 +98,27 @@ plot_survival.ggRandomForests <- function (object,
   prd.type <- match.arg(prd.type)
   srv.type <- match.arg(srv.type)
   error <- match.arg(error)
+  curve <- match.arg(curve)
   
   ## What type of prediction are we looking for (OOB or not).
   rf.srv <- switch(prd.type,
-                   std=t(object$survival),
+                   std=rfObject$survival,
                    oob={
                      # In case of predict object without OOB data
-                     if(is.null(object$survival.oob)){
-                       t(object$survival) 
+                     if(is.null(rfObject$survival.oob)){
+                       rfObject$survival 
                      }else{
-                       t(object$survival.oob) 
+                       rfObject$survival.oob
                      }})
   
   rf.chf  <- switch(prd.type,
-                    std=t(object$chf),
+                    std=rfObject$chf,
                     oob={
                       # In case of predict object without OOB data
-                      if(is.null(object$chf.oob)){
-                        t(object$chf) 
+                      if(is.null(rfObject$chf.oob)){
+                        rfObject$chf 
                       }else{
-                        t(object$chf.oob) 
+                        rfObject$chf.oob
                       }
                     })
   
@@ -128,13 +128,15 @@ plot_survival.ggRandomForests <- function (object,
                      mortality = 1-rf.srv,
                      hazard = NA)
   
-  # The mean survival time is the average of all predicted survival curves.
-  
   # Get the survival information, getting the bootstrap CI at the correct measure.
   alph <- (1-climits)/2
-  fll<-t(apply(rf.data,1, function(rw){quantile(rw, prob=c(alph, .5, 1-alph))}))
-  colnames(fll) <- c("lower", "mean", "upper")
-  fll <- as.data.frame(cbind(time=object$time.interest,fll))
+  
+  # Calc all the quantiles required (dply?)
+  fll<-t(apply(rf.data,2, function(rw){quantile(rw, prob=c(alph, .5, 1-alph))}))
+  
+  colnames(fll) <- c("lower", "median", "upper")
+  fll <- data.frame(cbind(time=rfObject$time.interest,fll, mean=colMeans(rf.data)))
+ # cat(dim(fll))
   #
   
   # Now order matters, so we want to place the forest predictions on the bottom
@@ -142,16 +144,18 @@ plot_survival.ggRandomForests <- function (object,
   plt<-ggplot(fll)
   
   # Do we want to show the rfs estimates for each individual, or a subset of individuals?
-  if(show.ind | !missing(subset)){
+  if(!is.null(show.ind) | !missing(subset)){
     
     # Format ALL predictions for plotting.
     if(missing(subset)){
-      srv<- as.data.frame(cbind(time=object$time.interest,rf.data))
+      srv<- data.frame(cbind(time=rfObject$time.interest,t(rf.data)))
     }else{
-      srv<- as.data.frame(cbind(time=object$time.interest,rf.data[,subset]))
+      srv<- data.frame(cbind(time=rfObject$time.interest,t(rf.data[subset,])))
     }
+    
     srv.m <- melt(srv, id="time")
-    plt<-plt+geom_step(aes(x=time, y=value, by=variable), data=srv.m, alpha=.1)
+    
+    plt<-plt+geom_step(aes(x=time, y=value, color=variable), data=srv.m, alpha=.1)
   }
   
   # Do we want to show confidence limits?
@@ -164,16 +168,18 @@ plot_survival.ggRandomForests <- function (object,
                   if(!missing(errbars) )errFll <- errFll[errbars,]
                   plt+ geom_errorbar(aes(x=time, ymax=upper, ymin=lower), data=errFll)
                 },
+                lines= plt + geom_line(aes(x=time, y=upper), data=fll, linetype=2)+
+                  geom_line(aes(x=time, y=lower), data=fll, linetype=2), 
                 none=plt)
   
   # Finally plot the estimated curve.
-  plt <- plt +  geom_step(aes(x=time, y=mean), data= fll, size=1.5) 
-  pts.data <- as.data.frame(cbind(object$yvar,object$xvar))
+  plt <- plt +  geom_step(aes(x=time, y=mean), data= fll) 
+  pts.data <- as.data.frame(cbind(rfObject$yvar,rfObject$xvar))
   
   plt<- switch(pnts,
                none=plt,
                kaplan={
-                 kp <- kaplan(object$yvar.names[1],object$yvar.names[2], data=pts.data)
+                 kp <- kaplan(rfObject$yvar.names[1],rfObject$yvar.names[2], data=pts.data)
                  kp <- kp[which(kp$cens==0),]
                  switch(srv.type,
                         surv=plt+ geom_point(aes(x=time, y=surv), data=kp),
@@ -182,7 +188,7 @@ plot_survival.ggRandomForests <- function (object,
                         hazard=plt+ geom_point(aes(x=time, y=hazard), data=kp)
                  )},
                nelson={
-                 kp <- nelson(object$yvar.names[1],object$yvar.names[2], data=pts.data)
+                 kp <- nelson(rfObject$yvar.names[1],rfObject$yvar.names[2], data=pts.data)
                  kp <- kp[which(kp$cens==0),]
                  switch(srv.type,
                         surv=plt+ geom_point(aes(x=time, y=surv), data=kp),
@@ -192,11 +198,10 @@ plot_survival.ggRandomForests <- function (object,
                  )
                }
   )
-  show(plt)
-  rtn<-list(call = call, graph=plt)
-  class(rtn) <- "ggRandomForests"
-  invisible(rtn)
+  if(display)  show(plt)
+  
+  invisible(plt)
 }
 
 
-plot_survival <- plot_survival.ggRandomForests
+ggSurvival <- ggSurvival.ggRandomForests
