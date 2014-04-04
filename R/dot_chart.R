@@ -19,7 +19,7 @@ dotChart <- function(x, labels = NULL, cex = cex) {
 }
 
 ### workhorse for dotchart
-dot.chart.main <- function (x, labels = NULL, groups = NULL, gdata = NULL, cex = NULL,
+dot_chart.main <- function (x, labels = NULL, groups = NULL, gdata = NULL, cex = NULL,
                             pch = 21, gpch = 21, bg = par("bg"), color = par("fg"), gcolor = par("fg"), 
                             lcolor = "gray", xlim = range(x[is.finite(x)]), main = NULL, 
                             xlab = NULL, ylab = NULL, ...) 

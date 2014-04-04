@@ -1,30 +1,6 @@
 ####**********************************************************************
 ####**********************************************************************
 ####
-####  GGRFSRC - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
-####  REGRESSION, AND CLASSIFICATION (RF-SRC)
-####  Version 1.0.0
-####
-####  Copyright 2013, Cleveland Clinic Foundation
-####
-####  This program is free software; you can redistribute it and/or
-####  modify it under the terms of the GNU General Public License
-####  as published by the Free Software Foundation; either version 2
-####  of the License, or (at your option) any later version.
-####
-####  This program is distributed in the hope that it will be useful,
-####  but WITHOUT ANY WARRANTY; without even the implied warranty of
-####  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-####  GNU General Public License for more details.
-####
-####  You should have received a copy of the GNU General Public
-####  License along with this program; if not, write to the Free
-####  Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-####  Boston, MA  02110-1301, USA.
-####
-####  ----------------------------------------------------------------
-####  Project Partially Funded By: 
-####  ----------------------------------------------------------------
 ####  ----------------------------------------------------------------
 ####  Written by:
 ####  ----------------------------------------------------------------
@@ -35,26 +11,62 @@
 ####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
-####    URL:    https://github.com/ehrlinger/ggrfsrc
+####    URL:    https://github.com/ehrlinger/ggRandomForests
 ####  ----------------------------------------------------------------
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' plot.survival 
+#' plot_survival
+#' Plot survival curve from an RF-S object.  
 #'
-#' @param x,
-#' @param subset, 
-#' @param collapse = FALSE,
-#' @param haz.model = c("spline", "ggamma", "nonpar"),
-#' @param k = 25,
-#' @param span = "cv",
-#' @param cens.model = c("km", "rfsrc"),
-#' @param ...
+#' @param x An object of class (rfsrc, grow) or (rfsrc, predict).
+#' @param subset Vector indicating which individuals we want estimates for. 
+#'   All individuals are used if not specified.
+#' @param collapse Collapse the survival and cumulative hazard function 
+#'   across the individuals specified by subset? Only applies when subset
+#'   is specified. (FALSE)
+#' @param haz.model Method for estimating the hazard. See details below. 
+#'   Applies only when subset is specified.
+#' @param k The number of natural cubic spline knots used for estimating 
+#'   the hazard function. Applies only when subset is specified.
+#' @param span The fraction of the observations in the span of Friedman's 
+#'   super-smoother used for estimating the hazard function. Applies only 
+#'   when subset is specified.
+#' @param cens.model Method for estimating the censoring distribution used 
+#'   in the inverse probability of censoring weights (IPCW) for the Brier score:
+#'   km: Uses the Kaplan-Meier estimator.
+#'   rfscr: Uses random survival forests.
+#' @param ... Further arguments passed to or from other methods.
 #'
-#' @export plot.survival.ggrfsrc plot.survival
-require(ggplot2)
-require(reshape2)
-plot.survival.ggrfsrc <- function (object,
+#' @details If subset is not specified, generates the following three plots
+#'  (going from top to bottom, left to right):
+#' 
+#' Forest estimated survival function for each individual (thick red line is overall ensemble survival, thick green line is Nelson-Aalen estimator).
+#' 
+#' Brier score (0=perfect, 1=poor, and 0.25=guessing) stratified by ensemble mortality. Based on the IPCW method described in Gerds et al. (2006). Stratification is into 4 groups corresponding to the 0-25, 25-50, 50-75 and 75-100 percentile values of mortality. Red line is the overall (non-stratified) Brier score.
+#' 
+#' Plot of mortality of each individual versus observed time. Points in blue correspond to events, black points are censored observations.
+#' 
+#' When subset is specified, then for each individual in subset, the following three plots are generated:
+#' Forest estimated survival function.
+#' Forest estimated cumulative hazard function (CHF) (displayed using black lines). Blue lines are the CHF from the estimated hazard function. See the next item.
+#' 
+#' A smoothed hazard function derived from the forest estimated CHF (or survival function). The default method, haz.model="spline", models the log CHF using natural cubic splines as described in Royston and Parmar (2002). The lasso is used for model selection, implemented using the glmnet package (this package must be installed for this option to work). If haz.model="ggamma", a three-parameter generalized gamma distribution (using the parameterization described in Cox et al, 2007) is fit to the smoothed forest survival function, where smoothing is imposed using Friedman's supersmoother (implemented by supsmu). If haz.model="nonpar", Friedman's supersmoother is applied to the forest estimated hazard function (obtained by taking the crude derivative of the smoothed forest CHF). Finally, setting haz.model="none" suppresses hazard estimation and no hazard estimate is provided.
+#' 
+#' At this time, please note that all hazard estimates are considered experimental and users should interpret the results with caution.
+#' 
+#' Note that when the object x is of class (rfsrc, predict) not all plots will be produced. In particular, Brier scores are not calculated.
+#'  
+#' Only applies to survival families. In particular, fails for competing risk analyses. Use plot.competing.risk in such cases. 
+#' 
+#' Whenever possible, out-of-bag (OOB) values are used.
+#' 
+#' @returns Invisibly, the conditional and unconditional Brier scores, and 
+#' the integrated Brier score (if they are available).
+#' 
+#' @export plot_survival.ggRandomForests plot_survival
+#' 
+plot_survival.ggRandomForests <- function (object,
                                    prd.type=c("std", "oob"),
                                    srv.type=c("surv", "chf", "mortality", "hazard"),
                                    pnts = c("none", "kaplan", "nelson"),
@@ -182,9 +194,9 @@ plot.survival.ggrfsrc <- function (object,
   )
   show(plt)
   rtn<-list(call = call, graph=plt)
-  class(rtn) <- "ggrfsrc"
+  class(rtn) <- "ggRandomForests"
   invisible(rtn)
 }
 
 
-plot.survival <- plot.survival.ggrfsrc
+plot_survival <- plot_survival.ggRandomForests

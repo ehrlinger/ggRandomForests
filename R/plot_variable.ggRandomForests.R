@@ -1,7 +1,7 @@
 ####**********************************************************************
 ####**********************************************************************
 ####
-####  GGRFSRC - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
+####  ggRandomForests - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
 ####  REGRESSION, AND CLASSIFICATION (RF-SRC)
 ####  Version 0.6.0
 ####
@@ -35,14 +35,14 @@
 ####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
-####    URL:    https://github.com/ehrlinger/ggrfsrc
+####    URL:    https://github.com/ehrlinger/ggRandomForests
 ####  ----------------------------------------------------------------
 ####
 ####**********************************************************************
 ####**********************************************************************
 #' @title Plot the marginal dependence of variables.
 #' 
-#' @description plot.variable.ggrfsrc generates a list of either marginal variable 
+#' @description plot.variable.ggRandomForests generates a list of either marginal variable 
 #' dependance or partial variable dependence figures using \code{\link{ggplot}}.
 #' 
 #' @param x a marginal or partial rfsrc data object from \code{\link{pred.variable}}
@@ -53,11 +53,11 @@
 #' 
 #' @seealso \code{\link{plot.variable.rfsrc}}
 #' 
-#' @export plot.variable.ggrfsrc
+#' @export plot.variable.ggRandomForests
 #' @export plot.variable
 #' 
 #'
-plot.variable.ggrfsrc <- function(
+plot.variable.ggRandomForests <- function(
   x,
   smooth.lines = FALSE,
   ...)
@@ -68,7 +68,9 @@ plot.variable.ggrfsrc <- function(
   object <- x
   if (sum(inherits(object, c("plot.variable", "rfsrc"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2&
-        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
+        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 &
+        sum(inherits(object, c("randomForest", "plot.variableå"), TRUE) == c(1, 2)) != 2 &
+        inherits(object, "randomForest")) {
     stop("Function only works for objects of class 'rfsrc' or (rfsrc,plot.variable)' These objects are created with the pred.variable function.")
   }
   
@@ -143,14 +145,14 @@ plot.variable.ggrfsrc <- function(
       if (is.character(which.outcome)) {
         which.outcome <- match(match.arg(which.outcome, levels(object$yvar)), levels(object$yvar))
       }
-      else {
-        if (which.outcome > length(levels(object$yvar)) | which.outcome < 1) {
-          stop("which.outcome is specified incorrectly: ", which.outcome, " of ", length(levels(object$yvar)) )
-        }
-      }
+      #       else {
+      #         if (which.outcome > length(levels(object$yvar)) | which.outcome < 1) {
+      #           stop("which.outcome is specified incorrectly: ", which.outcome, " of ", length(levels(object$yvar)) )
+      #         }
+      #       }
       pred.type <- "prob"
       yvar.dim <- 1
-      ylabel <- paste("probability", levels(object$yhat)[which.outcome])
+      ylabel <- paste("probability", colnames(object$yhat)[which.outcome])
     }
     ## regression families
     else {
@@ -165,12 +167,15 @@ plot.variable.ggrfsrc <- function(
   ## Marginal Plots
   ##
   ##--------------------------------------------------------------------------------
-  if (is.null(object$call$partial)) {
-    xvar <- object$x
+  if (!object$partial){
+    xvar <- object$xvar
     n <- nrow(xvar)
     nvar <- ncol(xvar)
-    yhat <- object$yhat
-    if (n > 500) cex.pt <- 0.5 else cex.pt <- 0.75
+    if(object$family == "class")
+      yhat <- object$yhat[,which.outcome]
+    else
+      yhat <- object$yhat
+    #if (n > 500) cex.pt <- 0.5 else cex.pt <- 0.75
     plt <- vector("list", length=nvar)
     
     # So that we can reference the plots by the variable name
@@ -198,8 +203,8 @@ plot.variable.ggrfsrc <- function(
         # returned plot objects.
         if (grepl("surv", object$family)) {
           plt[[k]]<- plt[[k]] 
-#           + scale_y_continuous(breaks=seq(0,100,5)) +
-#             coord_cartesian(ylim=c(0,100))
+          #           + scale_y_continuous(breaks=seq(0,100,5)) +
+          #             coord_cartesian(ylim=c(0,100))
         }
       }
       else {
@@ -220,28 +225,27 @@ plot.variable.ggrfsrc <- function(
   ##
   ##--------------------------------------------------------------------------------
   else {
-    nvar <- length(object$partial)
+    nvar <- length(object$pData)
     plt <- vector("list", length=nvar)
     
     for (k in 1:nvar) {
-      x <- object$partial[[k]]$x
-      yhat <- object$partial[[k]]$yhat
-      yhat.se <- object$partial[[k]]$yhat.se
-      x.uniq <- object$partial[[k]]$xhat
-      name <- object$partial[[k]]$name
+      x <- object$pData[[k]]$x
+      yhat <- object$pData[[k]]$yhat
+      yhat.se <- object$pData[[k]]$yhat.se
+      x.uniq <- object$pData[[k]]$x.uniq
+      name <- object$pData[[k]]$xvar.name
       
       # So that we can reference the plots by the variable name
       #name(plt[[k]]) <- name
       
-      n.x <- object$partial[[k]]$n.x
-      if (n.x > 25) cex.pt <- 0.5 else cex.pt <- 0.75
+      n.x <- object$pData[[k]]$n.x
       factor.x <- !(length(x.uniq) == length(yhat))
       
       if (!factor.x) {
         dta <- as.data.frame(cbind(x.uniq=x.uniq, yhat=yhat, yhat.se=yhat.se))
         plt[[k]] <- ggplot(dta)+ geom_point(aes(x=x.uniq, y=yhat), col=2, pch=16, size=4)+
-          labs(x=name, y=ylabel) + theme_bw()#+
-  #        geom_rug(aes(x=x), data=as.data.frame(cbind(x=x)),side="b")
+          labs(x=name, y=ylabel)#+
+        #        geom_rug(aes(x=x), data=as.data.frame(cbind(x=x)),side="b")
         
         if (!is.na(yhat.se) && any(yhat.se > 0)) {
           if (smooth.lines) {
@@ -249,28 +253,28 @@ plot.variable.ggrfsrc <- function(
               geom_smooth(aes(x=x.uniq, y=yhat + 2 * yhat.se), lty=3, col=2, se=FALSE)+
               geom_smooth(aes(x=x.uniq, y=yhat - 2 * yhat.se), lty=3, col=2, se=FALSE)
           }
-#           else {
-#             plt[[k]] <- plt[[k]] +
-#               geom_line(aes(x=x.uniq, y=yhat + 2 * yhat.se), lty=3, col=2)+
-#               geom_line(aes(x=x.uniq, y=yhat - 2 * yhat.se), lty=3, col=2)
-#           }
+          #           else {
+          #             plt[[k]] <- plt[[k]] +
+          #               geom_line(aes(x=x.uniq, y=yhat + 2 * yhat.se), lty=3, col=2)+
+          #               geom_line(aes(x=x.uniq, y=yhat - 2 * yhat.se), lty=3, col=2)
+          #           }
         }
         if (smooth.lines) {
           plt[[k]] <- plt[[k]] +
-            geom_smooth(aes(x=x.uniq, y=yhat), lty=2, lwd=1, color="yellow", se=FALSE,span = 0.9)
+            geom_smooth(aes(x=x.uniq, y=yhat),se=FALSE,span = 0.9)
         }
-#         else {
-#           plt[[k]] <- plt[[k]] +
-#             geom_line(aes(x=x.uniq, y=yhat), lty=2, lwd=1, color="yellow")
-#         }
- 
+        #         else {
+        #           plt[[k]] <- plt[[k]] +
+        #             geom_line(aes(x=x.uniq, y=yhat), lty=2, lwd=1, color="yellow")
+        #         }
+        
         # You ONLY want to scale continuous plots to 0,1. Scaling boxplots hides to much
         # information right now. It is best to scale the boxplots, as required on the
         # returned plot objects.
         if (grepl("surv", object$family)) {
           plt[[k]]<- plt[[k]] 
-#           + scale_y_continuous(breaks=seq(0,100,5)) +
-#             coord_cartesian(ylim=c(0,100))
+          #           + scale_y_continuous(breaks=seq(0,100,5)) +
+          #             coord_cartesian(ylim=c(0,100))
         }
       }
       else {
@@ -281,7 +285,7 @@ plot.variable.ggrfsrc <- function(
           theme_bw()+
           labs(x=name, y=ylabel)
       }
-    
+      
       show(plt[[k]])
     }
   }
@@ -290,4 +294,4 @@ plot.variable.ggrfsrc <- function(
   invisible(plt)
 }
 
-plot.variable <- plot.variable.ggrfsrc
+plot.variable <- plot.variable.ggRandomForests

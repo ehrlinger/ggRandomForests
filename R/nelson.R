@@ -1,4 +1,4 @@
-#' nelson creates a nonparametric kaplan-meier curve from the data.frame dataset
+#' nelson creates a nonparametric Nelson-Aalen event.table from the data.frame dataset
 #'
 #' @param data name of the training data.frame
 #' @param interval name of the interval variable in the training dataset.
