@@ -17,14 +17,14 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' ggError.ggRandomForests
-#' Cumulative OOB error rates of the forest as a function of number of trees.
+#' plot.ggError
+#' Plot a \link{\code{ggError}} object, the cumulative OOB error rates of the forest as a function of number of trees.
 #' 
-#' @param rfObj randomForestSRC object
+#' @param x ggError object created from a randomForestSRC object
 #' 
-#' @return ggError object
+#' @return ggplot object
 #' 
-#' @export ggError.ggRandomForests ggError
+#' @export plot.ggError
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -40,7 +40,8 @@
 #' ## ------------------------------------------------------------
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
 #' ggrf.obj<- ggError(iris.obj)
-#' plot(ggrf.obj)
+#' 
+#' plot.ggError(ggrf.obj)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
@@ -54,27 +55,17 @@
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-ggError.ggRandomForests <- function(rfObj, ...) {
-  ## Check that the input obect is of the correct type.
-  if (inherits(rfObj, "rfsrc") == FALSE){
-    stop("This function only works for Forests grown with the randomForestSRC package.")
+plot.ggError<- function(obj){
+ 
+  if(class(obj)[1] == "rfsrc") obj<- ggError(obj)
+  
+  gDta <- ggplot(obj, aes(x=indx,y=value, col=variable))+
+    geom_line()+
+    labs(x = "Number of Trees",
+         y = "OOB Error Rate")
+  
+  if(length(unique(obj$variable)) ==1){
+    gDta <- gDta + theme(legend.position="none")
   }
-  if (is.null(rfObj$err.rate)) {
-    stop("Performance values are not available for this forest.")
-  }
-  
-  error <- rfObj$err.rate
-  if(is.null(dim(error))){
-    error<- data.frame(error=cbind(error))
-    legend.position="none"
-  }
-  
-  error$indx <- 1:dim(error)[1]
-  
-  dta<-melt(error, id.vars = "indx")
-  
-  class(dta) <- c("ggError",class(dta))
-  invisible(dta)
+  return(gDta)
 }
-
-ggError <- ggError.ggRandomForests

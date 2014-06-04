@@ -61,7 +61,7 @@
 #' 
 #' Whenever possible, out-of-bag (OOB) values are used.
 #' 
-#' @returns Invisibly, the conditional and unconditional Brier scores, and 
+#' @return Invisibly, the conditional and unconditional Brier scores, and 
 #' the integrated Brier score (if they are available).
 #' 
 #' @export ggSurvival.ggRandomForests ggSurvival
@@ -77,7 +77,6 @@ ggSurvival.ggRandomForests <- function (rfObject,
                                    error = c("none", "bars", "shade", "lines"),
                                    errbars,
                                    curve=c("mean", "median", "both"),
-                                   display=TRUE,
                                    ...)
 { 
   
@@ -136,71 +135,8 @@ ggSurvival.ggRandomForests <- function (rfObject,
   
   colnames(fll) <- c("lower", "median", "upper")
   fll <- data.frame(cbind(time=rfObject$time.interest,fll, mean=colMeans(rf.data)))
- # cat(dim(fll))
-  #
   
-  # Now order matters, so we want to place the forest predictions on the bottom
-  # Create the figure skeleton,
-  plt<-ggplot(fll)
   
-  # Do we want to show the rfs estimates for each individual, or a subset of individuals?
-  if(!is.null(show.ind) | !missing(subset)){
-    
-    # Format ALL predictions for plotting.
-    if(missing(subset)){
-      srv<- data.frame(cbind(time=rfObject$time.interest,t(rf.data)))
-    }else{
-      srv<- data.frame(cbind(time=rfObject$time.interest,t(rf.data[subset,])))
-    }
-    
-    srv.m <- melt(srv, id="time")
-    
-    plt<-plt+geom_step(aes(x=time, y=value, color=variable), data=srv.m, alpha=.1)
-  }
-  
-  # Do we want to show confidence limits?
-  plt <- switch(error,
-                # Shading the standard errors
-                shade = plt + geom_ribbon(aes(x=time, ymax=upper, ymin=lower), data=fll, alpha=.1),
-                # Or showing error bars
-                bars = {
-                  errFll <- fll
-                  if(!missing(errbars) )errFll <- errFll[errbars,]
-                  plt+ geom_errorbar(aes(x=time, ymax=upper, ymin=lower), data=errFll)
-                },
-                lines= plt + geom_line(aes(x=time, y=upper), data=fll, linetype=2)+
-                  geom_line(aes(x=time, y=lower), data=fll, linetype=2), 
-                none=plt)
-  
-  # Finally plot the estimated curve.
-  plt <- plt +  geom_step(aes(x=time, y=mean), data= fll) 
-  pts.data <- as.data.frame(cbind(rfObject$yvar,rfObject$xvar))
-  
-  plt<- switch(pnts,
-               none=plt,
-               kaplan={
-                 kp <- kaplan(rfObject$yvar.names[1],rfObject$yvar.names[2], data=pts.data)
-                 kp <- kp[which(kp$cens==0),]
-                 switch(srv.type,
-                        surv=plt+ geom_point(aes(x=time, y=surv), data=kp),
-                        chf=plt+ geom_point(aes(x=time, y=cum_haz), data=kp),
-                        mortality=plt+ geom_point(aes(x=time, y=1-surv), data=kp),
-                        hazard=plt+ geom_point(aes(x=time, y=hazard), data=kp)
-                 )},
-               nelson={
-                 kp <- nelson(rfObject$yvar.names[1],rfObject$yvar.names[2], data=pts.data)
-                 kp <- kp[which(kp$cens==0),]
-                 switch(srv.type,
-                        surv=plt+ geom_point(aes(x=time, y=surv), data=kp),
-                        chf=plt+ geom_point(aes(x=time, y=cum_haz), data=kp),
-                        mortality=plt+ geom_point(aes(x=time, y=1-surv), data=kp),
-                        hazard=plt+ geom_point(aes(x=time, y=hazard), data=kp)
-                 )
-               }
-  )
-  if(display)  show(plt)
-  
-  invisible(plt)
 }
 
 

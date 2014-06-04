@@ -19,9 +19,10 @@
 #' pl<-plot_interaction.ggRandomForests(int.airq)
 #' pl+theme_bw()
 #' @import ggplot2 reshape2
-#' @export plot_interaction.ggRandomForests
+#' @export ggInteraction.ggRandomForests
+#' @export ggInteraction
 
-plot_interaction.ggRandomForests <- function(object, nvar, color){
+ggInteraction.ggRandomForests <- function(object, nvar, color){
   if(class(object) !="matrix") stop("plot_interaction expects an matrix object produced with the find_interaction function.")
   tst <- dim(object)
   
@@ -57,4 +58,4 @@ plot_interaction.ggRandomForests <- function(object, nvar, color){
   invisible(p)
 }
 
-plot_interaction <- plot_interaction.ggRandomForests
+ggInteraction <- ggInteraction.ggRandomForests

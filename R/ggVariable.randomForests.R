@@ -65,11 +65,10 @@
 #' 
 #' @seealso \code{\link{plot.variable.rfsrc}}
 #' 
-#' @export plot.variable.randomForests.ggrandomForests
-#' @export plot.variable.randomForests
+#' @export ggVariable.randomForests
 #' 
 #'
-plot.variable.randomForests.ggrandomForests <- function(x, 
+ggVariable.randomForests <- function(x, 
                                                pred.data, 
                                                xvar.names, 
                                                which.outcome,
@@ -237,5 +236,3 @@ plot.variable.randomForests.ggrandomForests <- function(x,
                                 fmly)
   invisible(plot.variable.obj)
 }
-
-plot.variable.randomForests <- plot.variable.randomForests.ggrandomForests

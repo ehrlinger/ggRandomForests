@@ -25,19 +25,19 @@
 #'  (going from top to bottom, left to right):
 #' 
 #' 
-#' @returns Invisibly, the conditional and unconditional Brier scores, and 
+#' Invisibly, the conditional and unconditional Brier scores, and 
 #' the integrated Brier score (if they are available).
 #' 
-#' @export ggMinDepth.ggRandomForests ggMinDepth
+#' @export ggMinDepth.ggRandomForests 
+#' @export ggMinDepth
 #' 
-ggSurvival.ggRandomForests <- function (rfObject){
-  if(rfObject)){
-    
+ggMinDepth.ggRandomForests <- function (rfObject){
+  if(rfObject){
     vSel <- var.select(rf.obj)
     save(vSel, file=mnDpthFilename)
   }else
     load(mnDpthFilename)
-
+  
   xl <-range(vSel$varselect$depth)
   xl<- c(floor(xl[1]) -1, ceiling(xl[2])+1)
   
@@ -80,5 +80,6 @@ ggSurvival.ggRandomForests <- function (rfObject){
   
   # Display graphic
   grid.arrange(plt.MDall ,plt.MDsel, nrow=2, heights=c(.75,2) )
+  
 }
-                                        
+ggMinDepth<-ggMinDepth.ggRandomForests                         

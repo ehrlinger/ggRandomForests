@@ -16,3 +16,4 @@ Description: ggRandomForests is a tool for creating graphs for randomForestSRC
 License: GPL (>=3)
 URL: https://github.com/ehrlinger/ggRandomForests
 Packaged: 2013-01-04 14:01:10 UTC; ehrlinj
+Roxygen: list(wrap = FALSE)

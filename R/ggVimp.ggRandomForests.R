@@ -92,10 +92,10 @@
 #' data.frame(vimp.not.na, vimp.na)
 #' 
 #' 
-#' @export plot.vimp.ggRandomForests
-#' @export plot.vimp
+#' @export ggVimp.ggRandomForests
+#' @export ggVimp
 
-plot.vimp.ggRandomForests <- function(object, n.var, xvar.names, var.labels=NULL, digits, sorted=TRUE, show=TRUE){
+ggVimp.ggRandomForests <- function(object, n.var, xvar.names, var.labels=NULL, digits, sorted=TRUE, show=TRUE){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
@@ -153,4 +153,4 @@ plot.vimp.ggRandomForests <- function(object, n.var, xvar.names, var.labels=NULL
   invisible(vimp.plt)
 }
 
-plot.vimp <- plot.vimp.ggRandomForests
+ggVimp <-ggVimp.ggRandomForests

@@ -1,4 +1,4 @@
-plot_hazard.ggRandomForests <- function (x, plots.one.page = TRUE, show.plots = TRUE, subset, 
+ggHazard.ggRandomForests <- function (x, plots.one.page = TRUE, show.plots = TRUE, subset, 
                                  collapse = FALSE, haz.model = c("spline", "ggamma", "nonpar"), 
                                  k = 25, span = "cv", cens.model = c("km", "rfsrc"), ...) 
 {
