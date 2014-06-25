@@ -17,14 +17,14 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.ggError
-#' Plot a \link{\code{ggError}} object, the cumulative OOB error rates of the forest as a function of number of trees.
+#' plot.ggRFsrc
+#' Plot a \link{\code{ggRFsrc}} object, the cumulative OOB error rates of the forest as a function of number of trees.
 #' 
-#' @param x ggError object created from a randomForestSRC object
+#' @param x ggRFsrc object created from a randomForestSRC object
 #' 
 #' @return ggplot object
 #' 
-#' @export plot.ggError
+#' @export plot.ggRFsrc
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -39,9 +39,9 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' ggrf.obj<- ggError(iris.obj)
+#' ggrf.obj<- ggRFsrc(iris.obj)
 #' 
-#' plot.ggError(ggrf.obj)
+#' plot.ggRFsrc(ggrf.obj)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
@@ -51,21 +51,33 @@
 #' data(veteran, package = "randomForestSRCM")
 #' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #'
-#' ggrf.obj <- ggError(v.obj)
+#' ggrf.obj <- ggRFsrc(v.obj)
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-plot.ggError<- function(obj){
- 
-  if(class(obj)[1] == "rfsrc") obj<- ggError(obj)
+plot.ggRFsrc<- function(obj, ...){
   
-  gDta <- ggplot(obj, aes(x=indx,y=value, col=variable))+
-    geom_line()+
-    labs(x = "Number of Trees",
-         y = "OOB Error Rate")
+  if(class(obj)[1] == "rfsrc") obj<- ggRFsrc(obj, ...)
   
-  if(length(unique(obj$variable)) ==1){
-    gDta <- gDta + theme(legend.position="none")
+  if("class" %in% class(obj)){
+    gDta <- ggplot(obj)+
+      geom_jitter(aes(x=1,y=100*yhat, color=factor(y),shape=factor(y)), alpha=.5)+
+      geom_boxplot(aes(x=1,y=100*yhat), outlier.colour = "transparent", fill="transparent", notch = TRUE)
+    
+  }
+  if("surv" %in% class(obj)){
+    if("survSE" %in% class(obj)){
+      gDta <- ggplot(obj)+
+        geom_ribbon(aes(x=time, ymin=lower, ymax=upper), alpha=.25)+
+        geom_step(aes(x=time, y=median), col="green") + 
+        geom_step(aes(x=time, y=mean), col="red")
+      
+    }else{
+      gDta <- ggplot(obj)+
+        geom_step(aes(x=variable, y=value, col=!event, by=ptid), alpha=.3, size=.1)
+    }
+    gDta  +
+      labs(x="time (years)", y="OOB Survival (%)")
   }
   return(gDta)
 }

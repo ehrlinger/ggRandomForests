@@ -55,7 +55,7 @@
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-plot.ggError<- function(obj){
+plot.ggError <- function(obj){
  
   if(class(obj)[1] == "rfsrc") obj<- ggError(obj)
   

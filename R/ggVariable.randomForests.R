@@ -65,174 +65,52 @@
 #' 
 #' @seealso \code{\link{plot.variable.rfsrc}}
 #' 
-#' @export ggVariable.randomForests
+#' @export ggVariable.randomForests ggVariable.rfsrc ggVariable
 #' 
 #'
-ggVariable.randomForests <- function(x, 
-                                               pred.data, 
-                                               xvar.names, 
-                                               which.outcome,
-                                               w, 
-                                               show.plots = TRUE, 
-                                               partial = FALSE,
-                                               rug = TRUE, 
-                                               xlab=deparse(substitute(x.var)), 
-                                               ylab="",
-                                               main=paste("Partial Dependence on", deparse(substitute(x.var))),
-                                               smooth.lines = FALSE,
-                                               sorted = TRUE, 
-                                               nvar, 
-                                               npts = 25, 
-                                               subset, 
-                                               ...)
+ggVariable.randomForests <- function(object,
+                                     time,
+                                     time.labels,
+                                     ...)
 {
-  object <- x
-  remove(x)
-  if (!inherits(object, "randomForests")){
-    stop("This function only works for objects of class `randomForests'.")
-  }
-  if (partial && is.null(object$forest)) {
-    stop("forest is empty:  re-run randomForests call with keep.forest=TRUE")
+  
+  
+  if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
+        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
+    stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
   }
   
-  # Handle subsetting the training data observations.
-  if (missing(subset)) {
-    subset <- 1:nrow(pred.data)
-  }
-  else {
-    if (is.logical(subset)) 
-      subset <- which(subset)
-    subset <- unique(subset[subset >= 1 & subset <= nrow(object$xvar)])
-    if (length(subset) == 0) {
-      stop("'subset' not set properly.")
+  # ggVariable is really just cutting the data into time slices.
+  pDat <- data.frame(x=object$xvar,
+                     cens=rf.surv$yvar$dead)
+  pDat$cens <- as.logical(pDat$cens)
+  
+  lng <- length(time)
+  for(ind in 1:lng){
+    if(ind > 1){
+      pDat.t.old <- pDat.t
     }
-  }
-  object$xvar <- object$xvar[subset, , drop = FALSE]
-  
-  # Check the type of forest (classification or regression)
-  fmly <- object$type
-  if (fmly == "classification"){
+    ## For marginal plot.
+    # Plot.variable returns the resubstituted survival, not OOB. So we calculate it.
+    # Time is really straight forward since survival is a step function
+    #
+    # Get the event time occuring before or at 1 year. 
+    pDat.t <- pDat
+    inTime <-which(rf.surv$time.interest> time[ind])[1] -1
+    pDat.t$yhat=rf.surv$survival.oob[,inTime]
+    if(missing(time.labels)){
+      pDat.t$time <- time[ind]
+    }else{
+      pDat.t$time <- time.labels[ind]
+    }
     
-    # Want to change the behavior for multiclass cases without specific which.outcome
-    if (missing(which.outcome)) {
-      which.outcome <- 1
-    }
-    else if (is.character(which.outcome)) {
-      which.outcome <- match(match.arg(which.outcome, levels(object$y)), 
-                             levels(object$y))
-    }
-    else {
-      if (which.outcome > length(levels(object$y)) | 
-            which.outcome < 1) {
-        stop("which.outcome is specified incorrectly:", 
-             which.outcome)
-      }
-    }
-    pred.type <- "prob"
-    yvar.dim <- 1
-    VIMP <- importance(object)[, which.outcome]
-    ylabel <- paste("probability", levels(object$y)[which.outcome])
-  }else {
-    pred.type <- "y"
-    yvar.dim <- 1
-    which.outcome <- NULL
-    VIMP <- importance(object)
-    ylabel <- expression(hat(y))
+    if(ind > 1){
+      pDat.t<- rbind(pDat.t, pDat.old)
+    }    
   }
   
-  # Get the x variables.
-  xvar <- pred.data
+  pDat$time <- factor(pDat$time, levels=unique(pDat$time))
   
-  n <- nrow(xvar)
-  
-  #If we did not specify the variables of interest
-  if (missing(xvar.names)) {
-    xvar.names <- attributes(object$terms)$term.labels
-  }else {
-    # If we have, then validate them.
-    if (length(setdiff(xvar.names, attributes(object$terms)$term.labels)) > 0) {
-      stop("x-variable names supplied does not match available list:\n", 
-           attributes(object$terms)$term.labels)
-    }
-    xvar.names <- unique(xvar.names)
-  }
-  if (sorted & !is.null(VIMP)) {
-    xvar.names <- xvar.names[rev(order(VIMP[xvar.names]))]
-  }
-  if (!missing(nvar)) {
-    nvar <- max(round(nvar), 1)
-    xvar.names <- xvar.names[1:min(length(xvar.names), nvar)]
-  }
-  nvar <- length(xvar.names)
-  
-  # Now get the data.
-  if (!partial) {
-    yhat <- extract.RFpred(object, pred.type, subset,
-                           which.outcome)
-  }
-  else {
-    #class(object$forest) <- c("rfsrc", "partial", class(object)[3])
-    if (npts < 1) 
-      npts <- 1
-    else npts <- round(npts)
-    prtl <- lapply(1:nvar, function(k) {
-      x <- xvar[, which(colnames(xvar) == xvar.names[k])]
-      if (is.factor(x)) 
-        x <- factor(x, exclude = NULL)
-      n.x <- length(unique(x))
-      if (!is.factor(x) & n.x > npts) {
-        x.uniq <- sort(unique(x))[unique(as.integer(
-          seq(1, n.x, length = min(npts, n.x))))]
-      }
-      else {
-        x.uniq <- sort(unique(x))
-      }
-      n.x <- length(x.uniq)
-      yhat <- yhat.se <- NULL
-      newdata.x <- xvar
-      factor.x <- is.factor(x)
-      for (l in 1:n.x) {
-        cat(x.uniq, " ")
-        newdata.x[, object$xvar.names == xvar.names[k]] <- rep(x.uniq[l], n)
-        pred.temp <- extract.RFpred(predict(object, newdata.x, type=pred.type), pred.type, 1:n, 
-                                    which.outcome)
-        mean.temp <- mean(pred.temp, na.rm = TRUE)
-        if (!factor.x) {
-          yhat <- c(yhat, mean.temp)
-          if (fmly == "class") {
-            yhat.se <- c(yhat.se, mean.temp * (1 - 
-                                                 mean.temp)/sqrt(n))
-          }
-          else {
-            yhat.se <- c(yhat.se, sd(pred.temp/sqrt(n), 
-                                     na.rm = TRUE))
-          }
-        }
-        else {
-          pred.temp <- mean.temp + (pred.temp - mean.temp)/sqrt(n)
-          yhat <- c(yhat, pred.temp)
-        }
-      }
-      list(xvar.name = xvar.names[k], yhat = yhat, 
-           yhat.se = yhat.se, n.x = n.x, x.uniq = x.uniq, 
-           x = x)
-    })
-  }
-  
-  if(fmly=="classification")fmly<- "class"
-  
-  plot.variable.obj <- list(family = fmly, partial = partial, 
-                            which.outcome = which.outcome, 
-                            ylabel = ylabel, yvar.dim = yvar.dim, n = n, xvar.names = xvar.names, 
-                            nvar = nvar, 
-                            smooth.lines = smooth.lines)
-  if (partial) {
-    plot.variable.obj$pData <- prtl
-  }else {
-    plot.variable.obj$yhat <- yhat
-    plot.variable.obj$xvar <- xvar[, which(colnames(pred.data) %in% xvar.names)]
-  }
-  class(plot.variable.obj) <- c("ggrandomForests", "plot.variable", 
-                                fmly)
-  invisible(plot.variable.obj)
+  class(pDat) <- c("ggVariable", class(pDat))
+  invisible(pDat)
 }

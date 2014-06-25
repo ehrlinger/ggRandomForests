@@ -32,7 +32,7 @@ calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob.prd=TRUE){
     
     spec<-tbl[2,2]/rowSums(tbl)[2]
     sens<-tbl[1,1]/rowSums(tbl)[1]
-    cbind(spec=spec, sens=sens)
+    cbind(sens=sens,spec=spec )
   }, mc.cores = (detectCores()-1))
   
   spc <- do.call(rbind, spc)
@@ -53,7 +53,7 @@ calcROC.randomForest <- function(rf, dta, which.outcome=1){
     
     spec<-tbl[2,2]/rowSums(tbl)[2]
     sens<-tbl[1,1]/rowSums(tbl)[1]
-    cbind(spec=spec, sens=sens)
+    cbind(sens=sens, spec=spec)
   }, mc.cores = (detectCores()-1))
   spc <- do.call(rbind, spc)
   

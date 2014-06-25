@@ -17,14 +17,14 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.ggError
+#' plot.ggROC
 #' Plot a \link{\code{ggError}} object, the cumulative OOB error rates of the forest as a function of number of trees.
 #' 
-#' @param x ggError object created from a randomForestSRC object
+#' @param obj ggROC object created from a randomForestSRC object
 #' 
 #' @return ggplot object
 #' 
-#' @export plot.ggError
+#' @export plot.ggROC
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -55,17 +55,25 @@
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-plot.ggError<- function(obj){
+plot.ggROC<- function(obj){
  
-  if(class(obj)[1] == "rfsrc") obj<- ggError(obj)
+  if(class(obj)[1] == "rfsrc") obj<- ggROC(obj)
+  obj$fpr <- 1-obj$spec
+  obj <- rbind(c(0,0), obj, c(1,1))
+  obj <- obj[order(obj$sens),]
+  auc <- calcAUC(obj)
   
-  gDta <- ggplot(obj, aes(x=indx,y=value, col=variable))+
-    geom_line()+
-    labs(x = "Number of Trees",
-         y = "OOB Error Rate")
+  gDta<-ggplot(data=obj)+
+    #geom_point(aes(x=sens, y=spec))+
+    geom_line(aes(x=fpr, y=sens))+
+    #geom_smooth(aes(x=sens, y=spec))+
+    labs(x="1 - Specificity (FPR)", y="Sensitivity (TPR)")+
+    geom_abline(a=1, b=0, col="red", linetype=2, size=.5) +
+    coord_fixed()
   
-  if(length(unique(obj$variable)) ==1){
-    gDta <- gDta + theme(legend.position="none")
-  }
+  gDta <-gDta+
+    annotate(x=.5,y=.2,geom="text", 
+             label=paste("AUC = ",round(auc, digits=3), sep=""), hjust=0)
+
   return(gDta)
 }

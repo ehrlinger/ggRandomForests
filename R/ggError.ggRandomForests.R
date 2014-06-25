@@ -63,7 +63,7 @@ ggError.ggRandomForests <- function(rfObj, ...) {
     stop("Performance values are not available for this forest.")
   }
   
-  error <- rfObj$err.rate
+  error <- as.data.frame(rfObj$err.rate)
   if(is.null(dim(error))){
     error<- data.frame(error=cbind(error))
     legend.position="none"

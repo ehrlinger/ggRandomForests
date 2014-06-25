@@ -17,14 +17,14 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.ggError
-#' Plot a \link{\code{ggError}} object, the cumulative OOB error rates of the forest as a function of number of trees.
+#' plot.ggVariable
+#' Plot a \link{\code{ggVariable}} object, the cumulative OOB error rates of the forest as a function of number of trees.
 #' 
-#' @param x ggError object created from a randomForestSRC object
+#' @param x ggVariable object created from a randomForestSRC object
 #' 
 #' @return ggplot object
 #' 
-#' @export plot.ggError
+#' @export plot.ggVariable
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -39,9 +39,9 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' ggrf.obj<- ggError(iris.obj)
+#' ggrf.obj<- ggVariable(iris.obj)
 #' 
-#' plot.ggError(ggrf.obj)
+#' plot.ggVariable(ggrf.obj)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
@@ -51,21 +51,19 @@
 #' data(veteran, package = "randomForestSRCM")
 #' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #'
-#' ggrf.obj <- ggError(v.obj)
+#' ggrf.obj <- ggVariable(v.obj)
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-plot.ggError<- function(obj){
+plot.ggVariable<- function(object, var, ...){
  
-  if(class(obj)[1] == "rfsrc") obj<- ggError(obj)
+  if(inherits(object, "rfsrc")) object<- ggVariable(object, ...)
   
-  gDta <- ggplot(obj, aes(x=indx,y=value, col=variable))+
-    geom_line()+
-    labs(x = "Number of Trees",
-         y = "OOB Error Rate")
+  gDta <- ggplot(object)+
+    geom_point(aes_string(x=var, y="yhat", col="cens", shape="cens"), alpha=.5)
   
-  if(length(unique(obj$variable)) ==1){
-    gDta <- gDta + theme(legend.position="none")
-  }
+  if(length(levels(object$time)) > 1)
+    gDta<- gDta + facet_wrap(~time, ncol=1)
+  
   return(gDta)
 }

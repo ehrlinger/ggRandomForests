@@ -17,14 +17,14 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.ggError
-#' Plot a \link{\code{ggError}} object, the cumulative OOB error rates of the forest as a function of number of trees.
+#' plot.ggSurvival
+#' Plot a \link{\code{ggSurvival}} object, the cumulative OOB error rates of the forest as a function of number of trees.
 #' 
-#' @param x ggError object created from a randomForestSRC object
+#' @param x ggSurvival object created from a randomForestSRC object
 #' 
 #' @return ggplot object
 #' 
-#' @export plot.ggError
+#' @export plot.ggSurvival
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -44,7 +44,7 @@
 #' plot(ggrf.obj)
 #'
 ### Survival plots
-plot.ggError<- function(obj){
+plot.ggSurvival<- function(obj){
   
   if(class(obj)[1] == "rfsrc") obj<- ggSurvival(obj)
   

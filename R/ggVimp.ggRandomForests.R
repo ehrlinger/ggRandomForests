@@ -95,62 +95,38 @@
 #' @export ggVimp.ggRandomForests
 #' @export ggVimp
 
-ggVimp.ggRandomForests <- function(object, n.var, xvar.names, var.labels=NULL, digits, sorted=TRUE, show=TRUE){
+ggVimp.ggRandomForests <- function(object){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
     stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
   }
-  if(missing(n.var)) n.var <- dim(object$xvar)[2]
-  if(missing(digits)) digits<-4
-  
+ 
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
     warning("rfsrc object does not contain VIMP information. Calculating...")
-    rfvimp <-vimp(object)$importance
-    if(missing(var.names)){
-      rfvimp <- as.data.frame(cbind(rfvimp[order(rfvimp, decreasing=TRUE)][1:n.var]))
-    }else{
-      rfvimp <- rfvimp[which(names(rfvimp) %in% var.names)]
-    }
+    imp <-as.data.frame(sort(vimp(object)$importance, decreasing=TRUE))
   }else{
-    if(missing(var.names)){
-      rfvimp <- as.data.frame(cbind(object$importance[order(object$importance, decreasing=TRUE)][1:n.var]))
-    }else{
-      rfvimp <- object$importance[which(names(object$importance) %in% var.names)]
-    }
+    imp<- as.data.frame(sort(rf.surv$importance, decreasing=TRUE))
   }
-  rfvimp <- as.data.frame(cbind(rfvimp[order(rfvimp, decreasing=sorted)]))
-  colnames(rfvimp) <-"VIMP"
   
-  if(is.null(var.labels)){
-    rfvimp$names <- rownames(rfvimp)
-  }else{
-    ## Manually enter the labels... I could get these from bdavr.labels, but then they would be really long.
-    ##
-    ## !!! This is a one-to-one list. If you rerun rfsrc ont his data, you could end up with a bad 
-    ## variable label which may not be easily found.
-    ##
-    rfvimp$names <- var.labels
-    n.var <- length(var.labels)
-  }
-  rfvimp$names <- factor(rfvimp$names, levels=rev(rfvimp$names))
+  imp<- cbind(imp, imp/imp[1,1])
+  colnames(imp) <- c("VIMP", "relVIMP")
+  imp$names <- rownames(imp)
+  imp$names[which(is.na(imp$names))] <- rownames(imp)[which(is.na(imp$names))]
   
-  ## These plot functions will be packaged once we have them sort of finalized.
-  vimp.plt<-ggplot(rfvimp)+
-    geom_bar(aes(y=VIMP, x=names), stat="identity", width=.5, fill="blue")+ 
-    labs(x="variable", y="vimp") + 
-    coord_flip()
-  
-  
-  rfvimp.out <- cbind(rfvimp[,1], rfvimp[,1]/rfvimp[1,1])
-  colnames(rfvimp.out) <- c("Importance","Relative IMP")
-  rownames(rfvimp.out) <- rfvimp$names
-  print(rfvimp.out, digits=digits)
-  
-  if(show) show(vimp.plt)
-  
-  invisible(vimp.plt)
+  imp$names <- factor(imp$names, levels=rev(imp$names))
+  imp$positive <- TRUE
+  imp$positive[which(imp$VIMP <=0)] <- FALSE
+#   
+#     if(missing(xvar.names)){
+#       rfvimp <- as.data.frame(cbind(rfvimp[order(rfvimp, decreasing=TRUE)][1:n.var]))
+#     }else{
+#       rfvimp <- rfvimp[which(names(rfvimp) %in% var.names)]
+#     }
+
+  class(imp) <- c("ggVimp", class(imp))
+  invisible(imp)
 }
 
 ggVimp <-ggVimp.ggRandomForests

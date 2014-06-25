@@ -17,14 +17,14 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.ggError
-#' Plot a \link{\code{ggError}} object, the cumulative OOB error rates of the forest as a function of number of trees.
+#' plot.ggVimp
+#' Plot a \link{\code{ggVimp}} object, the cumulative OOB error rates of the forest as a function of number of trees.
 #' 
-#' @param x ggError object created from a randomForestSRC object
+#' @param x ggVimp object created from a randomForestSRC object
 #' 
 #' @return ggplot object
 #' 
-#' @export plot.ggError
+#' @export plot.ggVimp
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -39,9 +39,9 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' ggrf.obj<- ggError(iris.obj)
+#' ggrf.obj<- ggVimp(iris.obj)
 #' 
-#' plot.ggError(ggrf.obj)
+#' plot.ggVimp(ggrf.obj)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
@@ -51,21 +51,18 @@
 #' data(veteran, package = "randomForestSRCM")
 #' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #'
-#' ggrf.obj <- ggError(v.obj)
+#' ggrf.obj <- ggVimp(v.obj)
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-plot.ggError<- function(obj){
+plot.ggVimp<- function(object, n.var, ...){
  
-  if(class(obj)[1] == "rfsrc") obj<- ggError(obj)
+  if(!inherits(object, "ggVimp")) object<- ggVimp(object, ...)
+  if(missing(n.var)) n.var <- dim(object)[1]
   
-  gDta <- ggplot(obj, aes(x=indx,y=value, col=variable))+
-    geom_line()+
-    labs(x = "Number of Trees",
-         y = "OOB Error Rate")
-  
-  if(length(unique(obj$variable)) ==1){
-    gDta <- gDta + theme(legend.position="none")
-  }
-  return(gDta)
+  vimp.plt<-ggplot(object[1:n.var,])+
+    geom_bar(aes(y=relVIMP, x=names, fill=positive), stat="identity", width=.5, color="black")+ 
+    labs(x="", y="Relative Variable Importance") + 
+    coord_flip()
+  return(vimp.plt)
 }

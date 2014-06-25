@@ -57,241 +57,52 @@
 #' @export ggVariable
 #' 
 #'
-ggVariable.ggRandomForests <- function(
-  x,
-  smooth.lines = FALSE,
-  ...)
+ggVariable.ggRandomForests <- function(object,
+                                       time,
+                                       time.labels,
+                                       ...)
 {
-  call <- match.call()
-  ### check that object is interpretable
-  ### first rename x to object to avoid confusion with x matrix
-  object <- x
-  if (sum(inherits(object, c("plot.variable", "rfsrc"), TRUE) == c(1, 2)) != 2 &
-        sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2&
-        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 &
-        sum(inherits(object, c("randomForest", "plot.variableå"), TRUE) == c(1, 2)) != 2 &
-        inherits(object, "randomForest")) {
-    stop("Function only works for objects of class 'rfsrc' or (rfsrc,plot.variable)' These objects are created with the pred.variable function.")
+  if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
+        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
+    stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
   }
   
-  # assign missing values to key options
-  if(is.null(object$call$percentile)){
-    percentile <- 50
-  }else{
-    percentile <- object$call$percentile
-  }
+  # ggVariable is really just cutting the data into time slices.
+  pDat <- data.frame(x=object$xvar,
+                     cens=rf.surv$yvar$dead)
+  pDat$cens <- as.logical(pDat$cens)
   
-  ## process the object depending on the underlying family
-  ##survival families
-  if (grepl("surv", object$family)) {
-    event.info <- object$event.info
-    yvar.dim <- event.info$r.dim
-    cens <- as.factor(event.info$cens)
-    event.type <- event.info$event.type
-    
-    if (percentile > 1) percentile <- percentile / 100
-    if (percentile < 0 | percentile > 1) percentile <- 0.5
-    
-    ## special processing for  CR analysis
-    if (object$family == "surv-CR") {
-      if(is.null(object$which.outcome)){
-        which.outcome <- 1
-      }else{
-        which.outcome <- object$which.outcome 
-      } 
-      if (which.outcome < 1 || which.outcome > max(event.type, na.rm = TRUE)) {
-        stop("'which.outcome' is specified incorrectly")
-      }
-      
-      surv.type <- setdiff(object$call$surv.type, c("mort", "rel.freq", "surv"))
-      pred.type <- match.arg(surv.type, c("years.lost", "cif", "chf"))
-      if(is.null(object$call$time)){
-        ylabel <- switch(pred.type,
-                         "years.lost" = paste("Years lost for event ", which.outcome),
-                         "cif" = paste("CIF for event ", which.outcome, " (", round(100 * percentile), "%)", sep = ""),
-                         "chf" = paste("CHF for event ", which.outcome, " (", round(100 * percentile), "%)", sep = ""))
-      }else{
-        ylabel <- switch(pred.type,
-                         "years.lost" = paste("Years lost for event ", which.outcome),
-                         "cif" = paste("CIF for event ", which.outcome, sep = ""),
-                         "chf" = paste("CHF for event ", which.outcome, sep = ""))
-      }     
-    }
-    else {
-      which.outcome <- 1
-      surv.type <- setdiff(object$call$surv.type, c("years.lost", "cif", "chf"))
-      pred.type <- match.arg(object$call$surv.type, c("mort", "rel.freq", "surv"))
-      if(is.null(object$call$time)){
-        ylabel <- switch(pred.type,
-                         "mort"      = "mortality",
-                         "rel.freq"  = "standardized mortality",
-                         "surv"      = paste("predicted survival (", round(100 * percentile), "%)", sep = ""))
-      }else{
-        ylabel <- switch(pred.type,
-                         "mort"      = "mortality",
-                         "rel.freq"  = "standardized mortality",
-                         "surv"      = paste("predicted survival", sep = ""))
-      }
-    }
-  }
-  ## classification families
-  else {
-    if (object$family == "class") {
-      if (is.null(object$which.outcome)) {
-        which.outcome <- 1
-      }else{
-        which.outcome <- object$which.outcome
-      }
-      if (is.character(which.outcome)) {
-        which.outcome <- match(match.arg(which.outcome, levels(object$yvar)), levels(object$yvar))
-      }
-      #       else {
-      #         if (which.outcome > length(levels(object$yvar)) | which.outcome < 1) {
-      #           stop("which.outcome is specified incorrectly: ", which.outcome, " of ", length(levels(object$yvar)) )
-      #         }
-      #       }
-      pred.type <- "prob"
-      yvar.dim <- 1
-      ylabel <- paste("probability", colnames(object$yhat)[which.outcome])
-    }
-    ## regression families
-    else {
-      pred.type <- "y"
-      yvar.dim <- 1
-      ylabel <- expression(hat(y))
-    }
-  }
+  colnames(pDat) <- c(object$xvar.names, "cens")
   
-  ##--------------------------------------------------------------------------------
-  ##
-  ## Marginal Plots
-  ##
-  ##--------------------------------------------------------------------------------
-  if (!object$partial){
-    xvar <- object$xvar
-    n <- nrow(xvar)
-    nvar <- ncol(xvar)
-    if(object$family == "class")
-      yhat <- object$yhat[,which.outcome]
-    else
-      yhat <- object$yhat
-    #if (n > 500) cex.pt <- 0.5 else cex.pt <- 0.75
-    plt <- vector("list", length=nvar)
-    
-    # So that we can reference the plots by the variable name
-    names(plt) <- colnames(xvar)
-    for (k in 1:nvar) {
-      x <- xvar[, k]
-      x.uniq <- unique(x)
-      n.x <- length(x.uniq)
-      if (!is.factor(x)) {
-        if (grepl("surv", object$family)) {
-          dta<- as.data.frame(cbind(x, yhat, cens))
-          plt[[k]] <- ggplot(dta)+geom_point(aes(x=x, y=yhat, color=cens), pch = 16)+theme_bw()+
-            labs(x=colnames(xvar)[k], y=ylabel)+
-            scale_fill_brewer(type="qual",palette="Set1", na.value = "lightgrey", labels=c("Dead", "Cens"))+
-            guides(fill=guide_legend(title="Events")) + geom_smooth(aes(x=x, y=yhat), col = 2, lwd=3) 
-        }else{
-          dta<- as.data.frame(cbind(x, yhat))
-          plt[[k]] <- ggplot(dta)+geom_point(aes(x=x, y=yhat), pch = 16)+theme_bw()+
-            labs(x=colnames(xvar)[k], y=ylabel)+
-            geom_smooth(aes(x=x, y=yhat), col = 2)
-        }
-        
-        # You ONLY want to scale continuous plots to 0,1. Scaling boxplots hides to much
-        # information right now. It is best to scale the boxplots, as required on the
-        # returned plot objects.
-        if (grepl("surv", object$family)) {
-          plt[[k]]<- plt[[k]] 
-          #           + scale_y_continuous(breaks=seq(0,100,5)) +
-          #             coord_cartesian(ylim=c(0,100))
-        }
-      }
-      else {
-        if (is.factor(x)) x <- factor(x, exclude = NULL)
-        
-        dta<- as.data.frame(cbind(x, yhat))
-        plt[[k]] <- ggplot(dta) +geom_boxplot(aes(y=yhat, x=factor(x)), notch = TRUE, fill="bisque")+
-          theme_bw()+
-          labs(x=colnames(xvar)[k], y=ylabel)
-      }
-      
-      show(plt[[k]])
+  lng <- length(time)
+  for(ind in 1:lng){
+    if(ind > 1){
+      pDat.t.old <- pDat.t
     }
-  }
-  ##--------------------------------------------------------------------------------
-  ##
-  ## Partial Plots
-  ##
-  ##--------------------------------------------------------------------------------
-  else {
-    nvar <- length(object$pData)
-    plt <- vector("list", length=nvar)
-    
-    for (k in 1:nvar) {
-      x <- object$pData[[k]]$x
-      yhat <- object$pData[[k]]$yhat
-      yhat.se <- object$pData[[k]]$yhat.se
-      x.uniq <- object$pData[[k]]$x.uniq
-      name <- object$pData[[k]]$xvar.name
-      
-      # So that we can reference the plots by the variable name
-      #name(plt[[k]]) <- name
-      
-      n.x <- object$pData[[k]]$n.x
-      factor.x <- !(length(x.uniq) == length(yhat))
-      
-      if (!factor.x) {
-        dta <- as.data.frame(cbind(x.uniq=x.uniq, yhat=yhat, yhat.se=yhat.se))
-        plt[[k]] <- ggplot(dta)+ geom_point(aes(x=x.uniq, y=yhat), col=2, pch=16, size=4)+
-          labs(x=name, y=ylabel)#+
-        #        geom_rug(aes(x=x), data=as.data.frame(cbind(x=x)),side="b")
-        
-        if (!is.na(yhat.se) && any(yhat.se > 0)) {
-          if (smooth.lines) {
-            plt[[k]] <- plt[[k]] +
-              geom_smooth(aes(x=x.uniq, y=yhat + 2 * yhat.se), lty=3, col=2, se=FALSE)+
-              geom_smooth(aes(x=x.uniq, y=yhat - 2 * yhat.se), lty=3, col=2, se=FALSE)
-          }
-          #           else {
-          #             plt[[k]] <- plt[[k]] +
-          #               geom_line(aes(x=x.uniq, y=yhat + 2 * yhat.se), lty=3, col=2)+
-          #               geom_line(aes(x=x.uniq, y=yhat - 2 * yhat.se), lty=3, col=2)
-          #           }
-        }
-        if (smooth.lines) {
-          plt[[k]] <- plt[[k]] +
-            geom_smooth(aes(x=x.uniq, y=yhat),se=FALSE,span = 0.9)
-        }
-        #         else {
-        #           plt[[k]] <- plt[[k]] +
-        #             geom_line(aes(x=x.uniq, y=yhat), lty=2, lwd=1, color="yellow")
-        #         }
-        
-        # You ONLY want to scale continuous plots to 0,1. Scaling boxplots hides to much
-        # information right now. It is best to scale the boxplots, as required on the
-        # returned plot objects.
-        if (grepl("surv", object$family)) {
-          plt[[k]]<- plt[[k]] 
-          #           + scale_y_continuous(breaks=seq(0,100,5)) +
-          #             coord_cartesian(ylim=c(0,100))
-        }
-      }
-      else {
-        n <- length(x)
-        
-        dta<- as.data.frame(cbind(x=rep(x.uniq, rep(n, n.x)), yhat))
-        plt[[k]] <- ggplot(dta) +geom_boxplot(aes(y=yhat, x=factor(x)), notch = TRUE, fill="bisque")+
-          theme_bw()+
-          labs(x=name, y=ylabel)
-      }
-      
-      show(plt[[k]])
+    ## For marginal plot.
+    # Plot.variable returns the resubstituted survival, not OOB. So we calculate it.
+    # Time is really straight forward since survival is a step function
+    #
+    # Get the event time occuring before or at 1 year. 
+    pDat.t <- pDat
+    inTime <-which(rf.surv$time.interest> time[ind])[1] -1
+    pDat.t$yhat=rf.surv$survival.oob[,inTime]
+    if(missing(time.labels)){
+      pDat.t$time <- time[ind]
+    }else{
+      pDat.t$time <- time.labels[ind]
     }
+    
+    if(ind > 1){
+      pDat.t<- rbind(pDat.t.old, pDat.t)
+    }    
   }
+  pDat <- pDat.t
+  pDat$time <- factor(pDat$time, levels=unique(pDat$time))
   
-  # return the ggplot objects. Useful for customizing the graphics.
-  invisible(plt)
+  class(pDat) <- c("ggVariable", class(pDat))
+  invisible(pDat)
 }
+
 
 ggVariable <- ggVariable.ggRandomForests
