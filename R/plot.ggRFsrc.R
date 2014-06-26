@@ -65,18 +65,21 @@ plot.ggRFsrc<- function(obj, ...){
       geom_boxplot(aes(x=1,y=100*yhat), outlier.colour = "transparent", fill="transparent", notch = TRUE)
     
   }
-  if("surv" %in% class(obj)){
-    if("survSE" %in% class(obj)){
+  if(inherits(obj,"surv")){
+    if(inherits(obj,"survSE")){
+      # Summarized survival plot for the group...
       gDta <- ggplot(obj)+
         geom_ribbon(aes(x=time, ymin=lower, ymax=upper), alpha=.25)+
         geom_step(aes(x=time, y=median), col="green") + 
         geom_step(aes(x=time, y=mean), col="red")
       
     }else{
+      # Lines by observation
       gDta <- ggplot(obj)+
         geom_step(aes(x=variable, y=value, col=!event, by=ptid), alpha=.3, size=.1)
     }
-    gDta  +
+    
+    gDta<-gDta  +
       labs(x="time (years)", y="OOB Survival (%)")
   }
   return(gDta)

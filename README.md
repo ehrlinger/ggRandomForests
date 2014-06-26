@@ -1,5 +1,7 @@
 ggRandomForests Package
 ========================================================
+
+
 ggRandomForests is intended to replace the plotting functions of the randomForestSRC (RF-SRC) package with equivalent graphics using the ggplot2 package. The advantage of using ggplot2 is to allow manipulation of the figures  for reporting and publication purposes.
 
 We include a series of plot functions for working  with rfsrc objects:
