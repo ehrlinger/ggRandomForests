@@ -1,11 +1,25 @@
 ggRandomForests Package
 ========================================================
 
+Main Goal: Simplify graphical representation of randomForests.
 
-ggRandomForests is intended to replace the plotting functions of the randomForestSRC (RF-SRC) package with equivalent graphics using the ggplot2 package. The advantage of using ggplot2 is to allow manipulation of the figures  for reporting and publication purposes.
+ggRandomForests is designed to be used with the randomForestSRC (RF-SRC) package. The package has two design goals:
 
-We include a series of plot functions for working  with rfsrc objects:
+* Extract data.frame objects for analytics for the randomForest[SRC] model.
+* Encapsulate the generation of graphic elements from these data frames.
 
+We have chosen to use the ggplot2 package for graphics, as it allows the user to modify the output in an intuitive manner.
+
+We include a series of functions for working  with rfsrc objects:
+* ggRFsrc Prediction from the randomForest[SRC] 
+* ggError Track RF convergence as OOB stability
+* ggROC Receiver Operator Charactertics
+* ggVimp Variable importance
+* ggMinimalDepth Minimal Depth variable selection
+* ggVariable variable dependence 
+* ggPartial partial variable dependence
+
+We use the S3 object model to provide plot methods each of these objects.
 
 ## References
 Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival, Regression and Classification (RF-SRC),
