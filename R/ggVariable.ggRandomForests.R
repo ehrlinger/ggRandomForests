@@ -3,9 +3,6 @@
 ####
 ####  ggRandomForests - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
 ####  REGRESSION, AND CLASSIFICATION (RF-SRC)
-####  Version 0.6.0
-####
-####  Copyright 2012, Cleveland Clinic Foundation
 ####
 ####  This program is free software; you can redistribute it and/or
 ####  modify it under the terms of the GNU General Public License

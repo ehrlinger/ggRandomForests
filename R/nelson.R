@@ -74,10 +74,12 @@ nelson <- function(interval, censor, data, strat=NULL, weight=NULL,climit=.95){
     lagL <- life[ind]
   }
   prpLife <- life/tbl.e[,"time"]
-  tbl.e<- cbind(tbl.e, cll, clu, cumHazard[indx], hzrd, dnsty, midInt, life, prpLife)
+  tbl.e<- data.frame(cbind(tbl.e, cll, clu, cumHazard[indx], hzrd, dnsty, midInt, life, prpLife))
   colnames(tbl.e) <- c(colnames(tbl.e)[1:6], 
                        "lower_cl", "upper_cl", "cum_haz","hazard", "density", "mid_int", "life", "proplife")
   
-  invisible(as.data.frame(tbl.e))
+  
+  class(tbl.e) <- c("ggSurvival", class(tbl.e)) 
+  invisible(tbl.e)
 }
 

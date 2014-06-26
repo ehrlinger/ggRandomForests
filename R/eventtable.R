@@ -11,7 +11,7 @@
 #' @param ... extra arguments passed to...
 #' 
 #' @export eventtable
-
+#' 
 eventtable <- function(interval, censor, strat=NULL, data, type=c("kaplan","nelson"), ...){
   type <- match.arg(type)
   

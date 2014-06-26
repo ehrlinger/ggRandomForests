@@ -66,9 +66,10 @@ kaplan <- function(interval,
     lagL <- life[ind]
   }
   prpLife <- life/tbl.e[,"time"]
-  tbl.e<- cbind(tbl.e, hzrd, dnsty, midInt, life, prpLife)
+  tbl.e<- data.frame(cbind(tbl.e, hzrd, dnsty, midInt, life, prpLife))
   colnames(tbl.e) <- c(colnames(tbl.e)[1:9], "hazard", "density", "mid_int", "life", "proplife")
   
-  invisible(as.data.frame(tbl.e))
+  class(tbl.e) <- c("ggSurvival", class(tbl.e)) 
+  invisible(tbl.e)
 }
 
