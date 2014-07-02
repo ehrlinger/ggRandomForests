@@ -60,8 +60,7 @@ plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, type=
     object <-  ggMinimalDepth(object)
   }
   
-  xl <-range(object$varselect$depth)
-  xl<- c(floor(xl[1]) -1, ceiling(xl[2])+1)
+  xl <-c(0,ceiling(max(object$varselect$depth))+1)
   sel.th = object$md.obj$threshold
   
   if(selection){
@@ -84,7 +83,7 @@ plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, type=
                      geom_text(aes(y=rank, x=depth-.7, label=rank), size=3, hjust=0),
                    named  =gDta +
                      geom_point(aes(y=depth, x=names))+
-                     coord_cartesian(x=xl)
+                     coord_cartesian(y=xl)
     )
     
     if(list.vars){
@@ -113,7 +112,7 @@ plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, type=
                      coord_cartesian(x=xl),
                    named  =gDta +
                      geom_point(aes(y=depth, x=names))+
-                     coord_cartesian(x=xl)
+                     coord_cartesian(y=xl)
     )
     
   }
