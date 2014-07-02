@@ -59,24 +59,25 @@ plot.ggRFsrc<- function(obj, ...){
   
   if(class(obj)[1] == "rfsrc") obj<- ggRFsrc(obj, ...)
   
-  if("class" %in% class(obj)){
-    gDta <- ggplot(obj)+
-      geom_jitter(aes(x=1,y=100*yhat, color=factor(y),shape=factor(y)), alpha=.5)+
-      geom_boxplot(aes(x=1,y=100*yhat), outlier.colour = "transparent", fill="transparent", notch = TRUE)
+  if(inherits(obj, "class")){
+    gDta <- ggplot(obj, aes(x=1,y=yhat))+
+      geom_jitter(aes_string(color=colnames(obj)[2],shape=colnames(obj)[2]), alpha=.5)+
+      geom_boxplot(outlier.colour = "transparent", fill="transparent", notch = TRUE)
     
   }
   if(inherits(obj,"surv")){
     if(inherits(obj,"survSE")){
       # Summarized survival plot for the group...
-      gDta <- ggplot(obj)+
-        geom_ribbon(aes(x=time, ymin=lower, ymax=upper), alpha=.25)+
-        geom_step(aes(x=time, y=median), col="green") + 
-        geom_step(aes(x=time, y=mean), col="red")
+      obj.t <-  melt(select(obj, time, median, mean), id.vars="time")
+      
+      gDta <- ggplot(obj.t)+
+        geom_ribbon(aes(x=time, ymin=lower, ymax=upper), alpha=.25, data=obj)+
+        geom_step(aes(x=time, y=value, color=variable))
       
     }else{
       # Lines by observation
       gDta <- ggplot(obj)+
-        geom_step(aes(x=variable, y=value, col=!event, by=ptid), alpha=.3, size=.1)
+        geom_step(aes(x=variable, y=value, col=cens, by=ptid), alpha=.3, size=.1)
     }
     
     gDta<-gDta  +

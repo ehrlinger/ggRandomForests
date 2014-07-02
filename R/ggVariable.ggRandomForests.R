@@ -66,7 +66,7 @@ ggVariable.ggRandomForests <- function(object,
   
   # ggVariable is really just cutting the data into time slices.
   pDat <- data.frame(x=object$xvar,
-                     cens=rf.surv$yvar$dead)
+                     cens=object$yvar$dead)
   pDat$cens <- as.logical(pDat$cens)
   
   colnames(pDat) <- c(object$xvar.names, "cens")
@@ -82,8 +82,8 @@ ggVariable.ggRandomForests <- function(object,
     #
     # Get the event time occuring before or at 1 year. 
     pDat.t <- pDat
-    inTime <-which(rf.surv$time.interest> time[ind])[1] -1
-    pDat.t$yhat=rf.surv$survival.oob[,inTime]
+    inTime <-which(object$time.interest> time[ind])[1] -1
+    pDat.t$yhat=100*object$survival.oob[,inTime]
     if(missing(time.labels)){
       pDat.t$time <- time[ind]
     }else{

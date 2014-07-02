@@ -55,7 +55,7 @@
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, ...){
+plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, type="rank",...){
   if(!inherits(object, "ggMinimalDepth")){
     object <-  ggMinimalDepth(object)
   }
@@ -76,10 +76,16 @@ plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, ...){
     }
     vSel <- object$varselect[1:modelSize,]
     vSel$rank <- 1:dim(vSel)[1]
-    
-    gDta <- ggplot(vSel)+ 
-      geom_point(aes(y=rank, x=depth, label=rank)) + 
-      geom_text(aes(y=rank, x=depth-.7, label=rank), size=3, hjust=0)
+    gDta <- ggplot(vSel)
+    gDta <- switch(type,
+                   rank = gDta +
+                     geom_point(aes(y=rank, x=depth, label=rank))+
+                     coord_cartesian(x=xl) + 
+                     geom_text(aes(y=rank, x=depth-.7, label=rank), size=3, hjust=0),
+                   named  =gDta +
+                     geom_point(aes(y=depth, x=names))+
+                     coord_cartesian(x=xl)
+    )
     
     if(list.vars){
       
@@ -100,17 +106,27 @@ plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, ...){
     vSel <- object$varselect
     vSel$rank <- 1:dim(vSel)[1]
     
-    gDta <- ggplot(vSel)+ 
-      geom_point(aes(y=rank, x=depth))
+    gDta <- ggplot(vSel)
+    gDta <- switch(type,
+                   rank = gDta +
+                     geom_point(aes(y=rank, x=depth))+
+                     coord_cartesian(x=xl),
+                   named  =gDta +
+                     geom_point(aes(y=depth, x=names))+
+                     coord_cartesian(x=xl)
+    )
     
   }
   
-  
-  gDta <- gDta+
-    labs(y="Rank", x="Minimal Depth of a Variable")+
-    geom_vline(xintercept=sel.th, lty=2)+
-    #theme(plot.title = element_text(face = "bold", hjust = 0))+
-    coord_cartesian(x=xl)
-  
+  if(type=="named"){
+    gDta <- gDta+
+      geom_hline(yintercept=sel.th, lty=2)+
+      labs(y="Minimal Depth of a Variable", x="")+
+      coord_flip()
+  }else{
+    gDta <- gDta+
+      labs(y="Rank", x="Minimal Depth of a Variable")+
+      geom_vline(xintercept=sel.th, lty=2)
+  }
   return(gDta)
 }

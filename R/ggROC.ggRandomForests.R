@@ -36,5 +36,5 @@ ggROC.ggRandomForests <- function(rfObject, which.outcome, oob=TRUE){
   class(roc) <- c("ggROC", class(roc))
   
   invisible(roc)
-  }
+}
 ggROC <- ggROC.ggRandomForests

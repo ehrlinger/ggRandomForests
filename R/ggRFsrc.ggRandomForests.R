@@ -50,18 +50,33 @@ ggRFsrc.ggRandomForests <- function(rfObj, oob=TRUE, se=NULL, ...) {
   if(rfObj$family == "class"){
     
     # Need to add multiclass methods
-    dta <- data.frame(cbind(yhat=rf.cls$predicted.oob[,2], y = as.numeric(rf.cls$yvar)-1))
-  }
-  
-  if(rfObj$family == "surv"){
+    if(oob){
+      dta <- data.frame(cbind(100*rfObj$predicted.oob[,-1]))
+    }else{
+      dta <- data.frame(cbind(100*rfObj$predicted[,-1]))
+    }
+    if(dim(dta)[2] == 1){
+      colnames(dta)<- "yhat"
+      dta$y = as.logical(as.numeric(rfObj$yvar)-1)
+      
+    }else{
+      dta$y <- rfObj$yvar
+    }
+    colnames(dta)[-1] <- rfObj$yvar.names
+  }else if(rfObj$family == "surv"){
     if(is.null(se)){
-      rng<-data.frame(100*rfObj$survival.oob)
+      if(oob){
+        rng<-data.frame(100*rfObj$survival.oob)
+      }else{
+        rng<-data.frame(100*rfObj$survival)
+      }
+      
       colnames(rng) <- rfObj$time.interest
       
       rng$ptid <- 1:dim(rng)[1]
-      rng$event <- as.logical(rfObj$yvar[,2])
+      rng$cens <- as.logical(rfObj$yvar[,2])
       
-      dta <- melt(rng, id.vars = c("ptid", "event"))
+      dta <- melt(rng, id.vars = c("ptid", "cens"))
       dta$variable <- as.numeric(as.character(dta$variable))
       dta$ptid <- factor(dta$ptid)
     }else{
@@ -73,14 +88,15 @@ ggRFsrc.ggRandomForests <- function(rfObj, oob=TRUE, se=NULL, ...) {
         se.set <- c((1- se)/2, 1-(1-se)/2)
         se.set <- sort(se.set) 
       }
-      rng<-sapply(1:dim(rf.surv$survival.oob)[2], 
-                  function(tPt){quantile(rf.surv$survival.oob[,tPt],probs=c(se.set, .5) )})
-      mn <- sapply(1:dim(rf.surv$survival.oob)[2], function(tPt){mean(rf.surv$survival.oob[,tPt])})
-      dta<-data.frame(cbind(rf.surv$time.interest,100*t(rng),100* mn))
+      rng<-sapply(1:dim(rfObj$survival.oob)[2], 
+                  function(tPt){quantile(rfObj$survival.oob[,tPt],probs=c(se.set, .5) )})
+      mn <- sapply(1:dim(rfObj$survival.oob)[2], function(tPt){mean(rfObj$survival.oob[,tPt])})
+      dta<-data.frame(cbind(rfObj$time.interest,100*t(rng),100* mn))
       colnames(dta)<- c("time", "lower",  "upper", "median", "mean")
       class(dta) <- c("survSE", class(dta))
     }
   }
+  
   class(dta) <- c("ggRFsrc",rfObj$family, class(dta))
   invisible(dta)
 }

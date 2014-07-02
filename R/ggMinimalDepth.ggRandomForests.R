@@ -45,7 +45,9 @@ ggMinimalDepth.ggRandomForests <- function (object, ...){
   }else{
     stop("Function works only on rfsrc or var.select objects.")
   }
+  vSel$varselect$names <- rownames(vSel$varselect)
   
+  vSel$varselect$names <- factor(vSel$varselect$names, levels=unique(vSel$varselect$names))
   class(vSel) <- c("ggMinimalDepth", class(vSel))
   invisible(vSel) 
 }
