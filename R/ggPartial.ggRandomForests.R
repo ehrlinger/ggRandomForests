@@ -45,21 +45,21 @@
 #' @description plot.variable.ggRandomForests generates a list of either marginal variable 
 #' dependance or partial variable dependence figures using \code{\link{ggplot}}.
 #' 
-#' @param x a marginal or partial rfsrc data object from \code{\link{pred.variable}}
-#' @param smooth.lines boolean indicating the inclusion of confidence intervals
-#'
+#' @param object The partial rfsrc data object from plot.variable function
+#' @param ... optional arguments
+#'  
 #' @return A list of \code{\link{ggplot2}} plot objects corresponding the variables 
 #' contained within the \code{x} argument 
 #' 
-#' @seealso \code{\link{plot.variable.rfsrc}}
+#' @seealso plot.variable.rfsrc
 #' 
-#' @export ggPartial.ggRandomForests
-#' @export ggPartial
+#' @aliases ggPartial
 #' 
+#' @export ggPartial.ggRandomForests ggPartial
 #'
-ggPartial.ggRandomForests <- function()
+ggPartial.ggRandomForests <- function(object, ...)
 {
- 
+ stop("Function still in development")
 }
 
 ggPartial <- ggPartial.ggRandomForests

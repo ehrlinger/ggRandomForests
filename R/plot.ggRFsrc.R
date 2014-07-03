@@ -18,20 +18,25 @@
 ####**********************************************************************
 #'
 #' plot.ggRFsrc
-#' Plot a \link{\code{ggRFsrc}} object, the cumulative OOB error rates of the forest as a function of number of trees.
-#' 
+#' Plot a \code{\link{ggRFsrc}} object, the forest prediction, possibly 
+#' using an OOB estimator from the forest.
+#'  
 #' @param x ggRFsrc object created from a randomForestSRC object
-#' 
+#' @param ... arguments passed to \code{\link{ggRFsrc}}.
 #' @return ggplot object
 #' 
 #' @export plot.ggRFsrc
 #' 
+#' @seealso \code{\link{ggRFsrc}} rfsrc
+#' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 7(2):25-31.
+#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for 
+#' R, Rnews, 7(2):25-31.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression 
+#' and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @examples
 #' 
@@ -53,17 +58,25 @@
 #'
 #' ggrf.obj <- ggRFsrc(v.obj)
 #' plot(ggrf.obj)
-#'
+#' 
+#' 
+
 ### error rate plot
-plot.ggRFsrc<- function(obj, ...){
-  
+plot.ggRFsrc<- function(x, ...){
+  obj <- x
   if(class(obj)[1] == "rfsrc") obj<- ggRFsrc(obj, ...)
   
   if(inherits(obj, "class")){
-    gDta <- ggplot(obj, aes(x=1,y=yhat))+
-      geom_jitter(aes_string(color=colnames(obj)[2],shape=colnames(obj)[2]), alpha=.5)+
-      geom_boxplot(outlier.colour = "transparent", fill="transparent", notch = TRUE)
-    
+    if(dim(obj)[2] < 3){
+      gDta <- ggplot(obj, aes(x=1,y=yhat))+
+        geom_jitter(aes_string(color=colnames(obj)[2],shape=colnames(obj)[2]), alpha=.5)+
+        geom_boxplot(outlier.colour = "transparent", fill="transparent", notch = TRUE)
+    }else{
+      mlt <- melt(obj, id.vars = "y")
+      gDta <- ggplot(mlt, aes(x=y,y=value, by=variable))+
+        geom_jitter(aes(color=y,shape=y), alpha=.5)
+    }
+    gDta + labs(y="Predicted (%)", x="")
   }
   if(inherits(obj,"surv")){
     if(inherits(obj,"survSE")){

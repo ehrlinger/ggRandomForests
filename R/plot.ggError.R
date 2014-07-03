@@ -18,20 +18,26 @@
 ####**********************************************************************
 #'
 #' plot.ggError
-#' Plot a \link{\code{ggError}} object, the cumulative OOB error rates of the forest as a function of number of trees.
+#' Plot a \code{\link{ggError}} object, the cumulative OOB error rates of the
+#' forest as a function of number of trees.
 #' 
 #' @param x ggError object created from a randomForestSRC object
+#' @param ... extra arguments
 #' 
-#' @return ggplot object
+#' @return ggplot graph
 #' 
 #' @export plot.ggError
+#' 
+#' @seealso \code{\link{ggError.ggRandomForests}} rfsrc
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 7(2):25-31.
+#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 
+#' 7(2):25-31.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression 
+#' and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @examples
 #' 
@@ -55,16 +61,17 @@
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-plot.ggError <- function(obj){
- 
-  if(class(obj)[1] == "rfsrc") obj<- ggError(obj)
+plot.ggError <- function(x, ...){
+  obj <- x
+  if(inherits(obj, "rfsrc")) obj <- ggError(obj)
   
-  gDta <- ggplot(obj, aes(x=indx,y=value, col=variable))+
-    geom_line()+
+  # We expect the object to have the following columns
+  gDta <- ggplot(obj, aes(x=ntree,y=value, col=variable))+
+    geom_line() +
     labs(x = "Number of Trees",
          y = "OOB Error Rate")
   
-  if(length(unique(obj$variable)) ==1){
+  if(length(unique(obj$variable)) == 1){
     gDta <- gDta + theme(legend.position="none")
   }
   return(gDta)

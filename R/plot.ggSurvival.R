@@ -18,10 +18,14 @@
 ####**********************************************************************
 #'
 #' plot.ggSurvival
-#' Plot a \link{\code{ggSurvival}} object, the cumulative OOB error rates of the forest as a function of number of trees.
+#' Plot a \code{\link{ggSurvival}} object, 
 #' 
 #' @param x ggSurvival object created from a randomForestSRC object
-#' 
+#' @param type Curve family defaults "surv", other possibilities "cum_haz",
+#' "hazard","density","life","proplife".
+#' @param error "shade", "bars" or "lines"
+#' @param ... not used
+#'  
 #' @return ggplot object
 #' 
 #' @export plot.ggSurvival
@@ -29,9 +33,11 @@
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 7(2):25-31.
+#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, 
+#' Rnews, 7(2):25-31.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
+#' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @examples
 #' 
@@ -44,9 +50,12 @@
 #' plot(ggrf.obj)
 #'
 ### Survival plots
-plot.ggSurvival<- function(object, type="surv",error="lines",...){
-  
-  
+plot.ggSurvival<- function(x, 
+                           type=c("surv", "cum_haz","hazard","density","life","proplife"),
+                           error=c("shade","bars","lines"),
+                           ...){
+  object <- x
+  if(inherits(object, "rfsrc")) object<-ggSurvival(object)
   # Now order matters, so we want to place the forest predictions on the bottom
   # Create the figure skeleton,
   plt<-ggplot(object)

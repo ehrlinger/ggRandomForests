@@ -1,21 +1,35 @@
+####**********************************************************************
+####**********************************************************************
+####
+####  ----------------------------------------------------------------
+####  Written by:
+####  ----------------------------------------------------------------
+####    John Ehrlinger, Ph.D.
+####    Assistant Staff
+####    Dept of Quantitative Health Sciences
+####    Learner Research Institute
+####    Cleveland Clinic Foundation
+####
+####    email:  john.ehrlinger@gmail.com
+####    URL:    https://github.com/ehrlinger/ggRandomForests
+####  ----------------------------------------------------------------
+####
+####**********************************************************************
+####**********************************************************************
 #'
-#' @title plot variable importance (VIMP) from a RF-SRC analysis
+#' ggVimp Extracts the variable importance (VIMP) information from a
+#' RF-SRC analysis.
 #' 
-#' @description Generate a variable importance plot. Possibly for a subset of the variables used to grow the forest.
-#' 
-#' @param object randomForestSRC object
-#' @param n.var number of variables to display. 
-#' @param xvar.names Names of the x-variables to be used. If not specified all variables are used.
-#' @param var.labels vector of labels for display instead of variable names
-#' @param digits number of digits to display when printing VIMP values
-#' @param sorted should the results be sorted in descending VIMP order
-#' @param show should the graphic be displayed
+#' @param object A rfsrc object
+#' @param ... arguments passed to the vimp.rfsrc function
 #' 
 #' @return a ggplot2 graphic of the VIMP plot.
 #' 
 #' @seealso \code{\link{vimp.rfsrc}}
 #' 
-#' @references Ishwaran H. (2007). Variable importance in binary regression trees and forests, \emph{Electronic J. Statist.}, 1:519-537.
+#' @references 
+#' Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
+#' \emph{Electronic J. Statist.}, 1:519-537.
 #' 
 #' 
 #' @examples
@@ -94,8 +108,9 @@
 #' 
 #' @export ggVimp.ggRandomForests
 #' @export ggVimp
+#' @aliases ggVimp
 
-ggVimp.ggRandomForests <- function(object){
+ggVimp.ggRandomForests <- function(object, ...){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
@@ -105,9 +120,9 @@ ggVimp.ggRandomForests <- function(object){
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
     warning("rfsrc object does not contain VIMP information. Calculating...")
-    imp <-as.data.frame(sort(vimp(object)$importance, decreasing=TRUE))
+    imp <-as.data.frame(sort(vimp(object, ...)$importance, decreasing=TRUE))
   }else{
-    imp<- as.data.frame(sort(rf.surv$importance, decreasing=TRUE))
+    imp<- as.data.frame(sort(object$importance, decreasing=TRUE))
   }
   
   imp<- cbind(imp, imp/imp[1,1])

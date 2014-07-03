@@ -17,21 +17,24 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.ggROC
-#' Plot a \link{\code{ggError}} object, the cumulative OOB error rates of the forest as a function of number of trees.
+#' plot.ggROC plot a \code{\link{ggROC}} object.
 #' 
-#' @param obj ggROC object created from a randomForestSRC object
+#' @param x \code{\link{ggROC}} object created from a randomForestSRC object
+#' @param ... arguments passed to the \code{\link{ggROC}} function
 #' 
 #' @return ggplot object
 #' 
 #' @export plot.ggROC
 #' 
+#' @seealso \code{\link{ggROC}} rfsrc
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 7(2):25-31.
+#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, 
+#' Rnews, 7(2):25-31.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
+#' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @examples
 #' 
@@ -39,31 +42,29 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' ggrf.obj<- ggError(iris.obj)
 #' 
-#' plot.ggError(ggrf.obj)
+#' # ROC for setosa
+#' ggrf.obj<- ggROC(iris.obj, which.outcome=1)
+#' plot.ggROC(ggrf.obj)
 #' 
-#' ## ------------------------------------------------------------
-#' ## Survival example
-#' ## ------------------------------------------------------------
-#' ## veteran data
-#' ## randomized trial of two treatment regimens for lung cancer
-#' data(veteran, package = "randomForestSRCM")
-#' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#'
-#' ggrf.obj <- ggError(v.obj)
-#' plot(ggrf.obj)
-#'
+#' # ROC for versicolor
+#' ggrf.obj<- ggROC(iris.obj, which.outcome=2)
+#' plot.ggROC(ggrf.obj)
+#' 
+#' # ROC for virginica
+#' ggrf.obj<- ggROC(iris.obj, which.outcome=3)
+#' plot.ggROC(ggrf.obj)
+#' 
 ### error rate plot
-plot.ggROC<- function(obj){
- 
-  if(class(obj)[1] == "rfsrc") obj<- ggROC(obj)
+plot.ggROC<- function(x, ...){
+  obj <- x
+  if(inherits(obj, "rfsrc")) obj<- ggROC(obj, ...)
   obj$fpr <- 1-obj$spec
   obj <- rbind(c(0,0), obj, c(1,1))
   obj <- obj[order(obj$sens),]
   auc <- calcAUC(obj)
   
-  gDta<-ggplot(data=obj)+
+  gDta <- ggplot(data=obj)+
     #geom_point(aes(x=sens, y=spec))+
     geom_line(aes(x=fpr, y=sens))+
     #geom_smooth(aes(x=sens, y=spec))+
@@ -71,9 +72,9 @@ plot.ggROC<- function(obj){
     geom_abline(a=1, b=0, col="red", linetype=2, size=.5) +
     coord_fixed()
   
-  gDta <-gDta+
+  gDta <- gDta+
     annotate(x=.5,y=.2,geom="text", 
              label=paste("AUC = ",round(auc, digits=3), sep=""), hjust=0)
-
+  
   return(gDta)
 }

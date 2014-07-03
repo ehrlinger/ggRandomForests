@@ -18,9 +18,16 @@
 ####**********************************************************************
 #'
 #' plot.ggMinimalDepth
-#' Plot a \link{\code{ggMinimalDepth}} object, the cumulative OOB error rates of the forest as a function of number of trees.
+#' Plot a \code{\link{ggMinimalDepth}} object, the cumulative OOB error 
+#' rates of the forest as a function of number of trees.
 #' 
 #' @param x ggMinimalDepth object created from a randomForestSRC object
+#' @param selection should we restrict the plot to only include variables
+#' selected by the minimal depth criteria (boolean).
+#' @param list.vars add text list of ranked variables. Only used if 
+#' selection = TRUE (boolean)
+#' @param type select type of y axis labels c("named","rank")
+#' @param ... optional arguments passed to \code{\link{ggMinimalDepth}}
 #' 
 #' @return ggplot object
 #' 
@@ -29,9 +36,11 @@
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 7(2):25-31.
+#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, 
+#' Rnews, 7(2):25-31.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
+#' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @examples
 #' 
@@ -55,10 +64,15 @@
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, type="rank",...){
+plot.ggMinimalDepth <- function(x, selection=FALSE, 
+                                list.vars = TRUE, 
+                                type=c("named","rank"),
+                                ...){
+  object <- x
   if(!inherits(object, "ggMinimalDepth")){
-    object <-  ggMinimalDepth(object)
+    object <-  ggMinimalDepth(object, ...)
   }
+  type=match.arg(type)
   
   xl <-c(0,ceiling(max(object$varselect$depth))+1)
   sel.th = object$md.obj$threshold
@@ -79,11 +93,11 @@ plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, type=
     gDta <- switch(type,
                    rank = gDta +
                      geom_point(aes(y=rank, x=depth, label=rank))+
-                     coord_cartesian(x=xl) + 
+                     coord_cartesian(xlim=xl) + 
                      geom_text(aes(y=rank, x=depth-.7, label=rank), size=3, hjust=0),
                    named  =gDta +
                      geom_point(aes(y=depth, x=names))+
-                     coord_cartesian(y=xl)
+                     coord_cartesian(ylim=xl)
     )
     
     if(list.vars){
@@ -109,10 +123,10 @@ plot.ggMinimalDepth <- function(object, selection=FALSE, list.vars = TRUE, type=
     gDta <- switch(type,
                    rank = gDta +
                      geom_point(aes(y=rank, x=depth))+
-                     coord_cartesian(x=xl),
+                     coord_cartesian(xlim=xl),
                    named  =gDta +
                      geom_point(aes(y=depth, x=names))+
-                     coord_cartesian(y=xl)
+                     coord_cartesian(ylim=xl)
     )
     
   }

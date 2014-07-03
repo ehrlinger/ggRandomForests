@@ -18,28 +18,42 @@
 ####**********************************************************************
 #'
 #' ggError.ggRandomForests
-#' Cumulative OOB error rates of the forest as a function of number of trees.
+#' Extract the cumulative OOB randomForest error rates as a function of 
+#' number of trees.
 #' 
-#' @param rfObj randomForestSRC object
+#' The ggError function simply returns the rfsrc err.rate object as 
+#' a data.frame.
 #' 
-#' @return ggError object
+#' @param object randomForestSRC object
+#' @param ... optional arguments
+#' 
+#' @return ggError data.frame with one column indicating the tree number, 
+#' and the remaining columns from the rfsrc$err.rate return value. 
 #' 
 #' @export ggError.ggRandomForests ggError
+#' 
+#' @seealso \code{\link{plot.ggError}} rfsrc.randomForestSRC
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #' 
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 7(2):25-31.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression 
+#' and Classification (RF-SRC), R package version 1.4.
 #' 
+#' @aliases ggError
 #' @examples
 #' 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
+#' 
+#' # Get a data.frame containing error rates
 #' ggrf.obj<- ggError(iris.obj)
+#' 
+#' # Plot the ggError object
 #' plot(ggrf.obj)
 #' 
 #' ## ------------------------------------------------------------
@@ -54,24 +68,23 @@
 #' plot(ggrf.obj)
 #'
 ### error rate plot
-ggError.ggRandomForests <- function(rfObj, ...) {
+ggError.ggRandomForests <- function(object, ...) {
   ## Check that the input obect is of the correct type.
-  if (inherits(rfObj, "rfsrc") == FALSE){
+  if (inherits(object, "rfsrc") == FALSE){
     stop("This function only works for Forests grown with the randomForestSRC package.")
   }
-  if (is.null(rfObj$err.rate)) {
+  if (is.null(object$err.rate)) {
     stop("Performance values are not available for this forest.")
   }
   
-  error <- as.data.frame(rfObj$err.rate)
+  error <- as.data.frame(object$err.rate)
   if(is.null(dim(error))){
     error<- data.frame(error=cbind(error))
-    legend.position="none"
   }
   
-  error$indx <- 1:dim(error)[1]
+  error$ntree <- 1:dim(error)[1]
   
-  dta<-melt(error, id.vars = "indx")
+  dta<-melt(error, id.vars = "ntree")
   
   class(dta) <- c("ggError",class(dta))
   invisible(dta)

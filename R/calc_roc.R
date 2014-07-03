@@ -12,12 +12,12 @@
 ##   geom_line(aes(x=(1-sens), y=spec), data=mstn,col="red") + 
 ##   geom_line(aes(x=(1-sens), y=spec), data=nstn, col="blue")
 
-calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob.prd=TRUE){
+calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob=TRUE){
   if(!is.factor(dta)) dta <- factor(dta)
   dta.roc <- as.data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
                                  prd=rf$predicted[, which.outcome],
                                  oob=rf$predicted.oob[, which.outcome]))
-  if(oob.prd)
+  if(oob)
     pct <- sort(unique(rf$predicted.oob[,which.outcome]))
   else
     pct <- sort(unique(rf$predicted[,which.outcome]))
@@ -25,7 +25,7 @@ calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob.prd=TRUE){
   pct<- pct[-length(pct)]
   
   spc <-mclapply(pct, function(crit){
-    if(oob.prd) 
+    if(oob) 
       tbl <- xtabs(~res+(oob>crit), dta.roc)
     else
       tbl <- xtabs(~res+(prd>crit), dta.roc)

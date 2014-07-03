@@ -42,9 +42,12 @@
 #' @description plot.variable.ggRandomForests generates a list of either marginal variable 
 #' dependance or partial variable dependence figures using \code{\link{ggplot}}.
 #' 
-#' @param x a marginal or partial rfsrc data object from \code{\link{pred.variable}}
-#' @param smooth.lines boolean indicating the inclusion of confidence intervals
-#'
+#' @param object a randomForestSRC object 
+#' @param time point (or points) of interest
+#' @param time.labels If more than one time is specified, a vector of time.labels 
+#' for differentiating the time points
+#' @param ... extra arguments 
+#'  
 #' @return A list of \code{\link{ggplot2}} plot objects corresponding the variables 
 #' contained within the \code{x} argument 
 #' 
@@ -52,6 +55,7 @@
 #' 
 #' @export ggVariable.ggRandomForests
 #' @export ggVariable
+#' @aliases ggVariable
 #' 
 #'
 ggVariable.ggRandomForests <- function(object,

@@ -16,20 +16,18 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' ggMinimalDepth
-#' Plot minimal depth values from an RF-S object.  
+#' ggMinimalDepth Extract the minimal depth values from an rfsrc object.  
 #'
-#' @param rfObject An object of class (rfsrc, grow) or (rfsrc, predict).
+#' @param object A randomForestSRC forest object, predict object or
+#' the list from the var.select.rfsrc function
+#'  @param ... optional arguments passed to the var.select function 
+#'  of randomForestSRC
+#'  
+#' @return Invisibly, the modified list from the var.select.rfsrc
+#' function 
 #' 
-#' @details If subset is not specified, generates the following three plots
-#'  (going from top to bottom, left to right):
-#' 
-#' 
-#' Invisibly, the conditional and unconditional Brier scores, and 
-#' the integrated Brier score (if they are available).
-#' 
-#' @export ggMinimalDepth.ggRandomForests 
-#' @export ggMinimalDepth
+#' @export ggMinimalDepth.ggRandomForests ggMinimalDepth
+#' @aliases ggMinimalDepth
 #' 
 ggMinimalDepth.ggRandomForests <- function (object, ...){
   
