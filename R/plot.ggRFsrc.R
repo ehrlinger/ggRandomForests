@@ -68,9 +68,13 @@ plot.ggRFsrc<- function(x, ...){
   
   if(inherits(obj, "class")){
     if(dim(obj)[2] < 3){
-      gDta <- ggplot(obj, aes(x=1,y=yhat))+
-        geom_jitter(aes_string(color=colnames(obj)[2],shape=colnames(obj)[2]), alpha=.5)+
-        geom_boxplot(outlier.colour = "transparent", fill="transparent", notch = TRUE)
+      
+      gDta <- ggplot(obj)+
+        geom_jitter(aes_string(x=1, y=colnames(obj)[1],
+                               color=colnames(obj)[2],
+                               shape=colnames(obj)[2]), alpha=.5)+
+        geom_boxplot(aes_string(x=1, y=colnames(obj)[1]),
+                     outlier.colour = "transparent", fill="transparent", notch = TRUE)
     }else{
       mlt <- melt(obj, id.vars = "y")
       gDta <- ggplot(mlt, aes(x=y,y=value, by=variable))+
