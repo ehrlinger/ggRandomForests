@@ -38,6 +38,17 @@
 #' 
 #'
 ### error rate plot
-plot.ggPartial<- function(x, ...){
-  stop("still in development....")
+plot.ggPartial<- function(x, points=TRUE, smooth="loess", ...){
+  object <- x 
+  
+  prt.plt<- ggplot(object,aes_string(x=colnames(prt.plt)[2], y="yhat"))
+  
+  if(points)  
+    prt.plt<- prt.plt+geom_point()
+  if(!is.null(smooth)){
+    prt.plt<- prt.plt+geom_smooth(method=smooth, ...)
+  }
+  
+  invisible(prt.plt)  
+  
 }

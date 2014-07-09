@@ -63,6 +63,8 @@ ggVariable.ggRandomForests <- function(object,
                                        time.labels,
                                        ...)
 {
+  
+  # Want to also handle a plot.variable where partial!= TRUE
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
     stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")

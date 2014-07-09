@@ -42,10 +42,7 @@
 ####**********************************************************************
 #' @title Plot the randomForests marginal dependence of variables.
 #' 
-#' @description plot.variable.randomForests.ggrandomForests generates a list of either marginal variable 
-#' dependance or partial variable dependence figures using ggplot.
-#'
-#' @param object a randomForest object,
+#' @param object a randomForestSRC object
 #' @param time time of interest
 #' @param time.labels text label to title the time
 #' @param ... extra arguments

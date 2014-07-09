@@ -39,7 +39,7 @@
 #' 
 ### error rate plot
 plot.ggVariable<- function(x, var, ...){
- object <- x 
+  object <- x 
   if(inherits(object, "rfsrc")) object<- ggVariable(object, ...)
   
   gDta <- ggplot(object)+

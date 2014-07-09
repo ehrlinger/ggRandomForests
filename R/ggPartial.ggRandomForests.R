@@ -42,10 +42,12 @@
 ####**********************************************************************
 #' @title Plot the marginal dependence of variables.
 #' 
-#' @description plot.variable.ggRandomForests generates a list of either marginal variable 
-#' dependance or partial variable dependence figures using \code{\link{ggplot}}.
+#' @description plot.variable.randomForestSRC generates a 
+#' list of either marginal variable dependance or partial variable dependence. 
+#' The ggPartial object is formulated to create partial dependence plots.
 #' 
-#' @param object The partial rfsrc data object from plot.variable function
+#' @param object the partial rfsrc data object from plot.variable function
+#' @param named optional column for merging multiple plots together
 #' @param ... optional arguments
 #'  
 #' @return A list of \code{\link{ggplot2}} plot objects corresponding the variables 
@@ -57,9 +59,33 @@
 #' 
 #' @export ggPartial.ggRandomForests ggPartial
 #'
-ggPartial.ggRandomForests <- function(object, ...)
-{
- stop("Function still in development")
+ggPartial.ggRandomForests <- function(object, 
+                                      named,
+                                      ...){
+  if(!inherits(object,"plot.variable")){
+    stop("ggPartial expects a plot.variable object, Run plot.variable with partial=TRUE")
+  }
+  if(!object$partial) invisible(ggVariable(object, ...))
+  
+  n.var=length(object$pData)
+  
+  pDat <- lapply(1:n.var, function(ind){
+    data.frame(cbind(yhat=object$pData[[ind]]$yhat, x=object$pData[[ind]]$x.uniq))
+  })
+  
+  for(ind in 1:n.var){
+    colnames(pDat[[ind]])[-1] <- object$xvar.names[ind]
+    if(!missing(named)) pDat[[ind]]$id=named
+    class(pDat[[ind]]) <- c("ggPartial", class(pDat[[ind]]))
+  }
+  
+  if(n.var ==1 ){
+    invisible(pDat[[1]])
+  }else{
+    class(pDat) <- c("ggPartialList", class(pDat[[ind]]))
+    invisible(pDat)
+  }
+    
 }
 
 ggPartial <- ggPartial.ggRandomForests
