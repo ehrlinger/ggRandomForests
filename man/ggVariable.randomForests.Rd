@@ -6,7 +6,7 @@
 ggVariable.randomForests(object, time, time.labels, ...)
 }
 \arguments{
-\item{object}{a randomForest object,}
+\item{object}{a randomForestSRC object}
 
 \item{time}{time of interest}
 
@@ -18,8 +18,7 @@ ggVariable.randomForests(object, time, time.labels, ...)
 ggVariable object
 }
 \description{
-plot.variable.randomForests.ggrandomForests generates a list of either marginal variable
-dependance or partial variable dependence figures using ggplot.
+Plot the randomForests marginal dependence of variables.
 }
 \seealso{
 \code{\link{plot.ggVariable}}

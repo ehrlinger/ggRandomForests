@@ -46,6 +46,7 @@
 #' @param time point (or points) of interest
 #' @param time.labels If more than one time is specified, a vector of time.labels 
 #' for differentiating the time points
+#' @param oob indicate if predicted results should include oob or full data set.
 #' @param ... extra arguments 
 #'  
 #' @return A list of \code{\link{ggplot2}} plot objects corresponding the variables 
@@ -53,59 +54,87 @@
 #' 
 #' @seealso \code{\link{plot.variable.rfsrc}}
 #' 
-#' @export ggVariable.ggRandomForests
+#' @export ggVariable.ggRandomForests ggVariable.rfsrc
 #' @export ggVariable
+#' 
 #' @aliases ggVariable
 #' 
 #'
 ggVariable.ggRandomForests <- function(object,
                                        time,
                                        time.labels,
+                                       oob=TRUE,
                                        ...)
 {
   
   # Want to also handle a plot.variable where partial!= TRUE
-  if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
-        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
-    stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
+  if (!inherits(object, "rfsrc")) {
+    stop("ggVariable expects a randomForest or plot.variable object.")
   }
   
   # ggVariable is really just cutting the data into time slices.
-  pDat <- data.frame(x=object$xvar,
-                     cens=object$yvar$dead)
-  pDat$cens <- as.logical(pDat$cens)
+  pDat <- data.frame(object$xvar)
   
-  colnames(pDat) <- c(object$xvar.names, "cens")
-  
-  lng <- length(time)
-  for(ind in 1:lng){
-    if(ind > 1){
-      pDat.t.old <- pDat.t
-    }
-    ## For marginal plot.
-    # Plot.variable returns the resubstituted survival, not OOB. So we calculate it.
-    # Time is really straight forward since survival is a step function
-    #
-    # Get the event time occuring before or at 1 year. 
-    pDat.t <- pDat
-    inTime <-which(object$time.interest> time[ind])[1] -1
-    pDat.t$yhat=100*object$survival.oob[,inTime]
-    if(missing(time.labels)){
-      pDat.t$time <- time[ind]
+  if(object$family == "regr"){
+    if(oob)
+      pDat$yhat <- object$predicted.oob
+    else
+      pDat$yhat <- object$predicted
+    
+  }else  if(object$family == "class"){
+    if(oob){
+      colnames(object$predicted.oob) <- paste("yhat.", colnames(object$predicted.oob),
+                                              sep="")
+      pDat <- cbind(pDat, object$predicted.oob)
+      
     }else{
-      pDat.t$time <- time.labels[ind]
+      colnames(object$predicted) <- paste("yhat.", colnames(object$predicted),
+                                          sep="")
+      pDat <- object$predicted
+    }
+    pDat$yvar <- object$yvar
+    
+  }else if(object$family == "surv"){
+    pDat$cens <- as.logical(object$yvar$dead)
+    colnames(pDat) <- c(object$xvar.names, "cens")
+    
+    lng <- length(time)
+    for(ind in 1:lng){
+      if(ind > 1){
+        pDat.t.old <- pDat.t
+      }
+      ## For marginal plot.
+      # Plot.variable returns the resubstituted survival, not OOB. So we calculate it.
+      # Time is really straight forward since survival is a step function
+      #
+      # Get the event time occuring before or at 1 year. 
+      pDat.t <- pDat
+      inTime <-which(object$time.interest> time[ind])[1] -1
+      if(oob)
+        pDat.t$yhat=100*object$survival.oob[,inTime]
+      else
+        pDat.t$yhat=100*object$survival[,inTime]
+      
+      if(missing(time.labels)){
+        pDat.t$time <- time[ind]
+      }else{
+        pDat.t$time <- time.labels[ind]
+      }
+      
+      if(ind > 1){
+        pDat.t<- rbind(pDat.t.old, pDat.t)
+      }    
     }
     
-    if(ind > 1){
-      pDat.t<- rbind(pDat.t.old, pDat.t)
-    }    
+    pDat <- pDat.t
+    pDat$time <- factor(pDat$time, levels=unique(pDat$time))
   }
-  pDat <- pDat.t
-  pDat$time <- factor(pDat$time, levels=unique(pDat$time))
-  
+  pDat <- tbl_df(pDat)
   class(pDat) <- c("ggVariable", class(pDat))
   invisible(pDat)
 }
 
+
+ggVariable.rfsrc <- ggVariable.ggRandomForests
 
 ggVariable <- ggVariable.ggRandomForests

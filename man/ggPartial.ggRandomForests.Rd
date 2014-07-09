@@ -4,10 +4,12 @@
 \alias{ggPartial.ggRandomForests}
 \title{Plot the marginal dependence of variables.}
 \usage{
-ggPartial.ggRandomForests(object, ...)
+ggPartial.ggRandomForests(object, named, ...)
 }
 \arguments{
-\item{object}{The partial rfsrc data object from plot.variable function}
+\item{object}{the partial rfsrc data object from plot.variable function}
+
+\item{named}{optional column for merging multiple plots together}
 
 \item{...}{optional arguments}
 }
@@ -16,8 +18,9 @@ A list of \code{\link{ggplot2}} plot objects corresponding the variables
 contained within the \code{x} argument
 }
 \description{
-plot.variable.ggRandomForests generates a list of either marginal variable
-dependance or partial variable dependence figures using \code{\link{ggplot}}.
+plot.variable.randomForestSRC generates a
+list of either marginal variable dependance or partial variable dependence.
+The ggPartial object is formulated to create partial dependence plots.
 }
 \seealso{
 plot.variable.rfsrc

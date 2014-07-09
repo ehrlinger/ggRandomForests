@@ -4,7 +4,7 @@
 \alias{ggVariable.ggRandomForests}
 \title{Plot the marginal dependence of variables.}
 \usage{
-ggVariable.ggRandomForests(object, time, time.labels, ...)
+ggVariable.ggRandomForests(object, time, time.labels, oob = TRUE, ...)
 }
 \arguments{
 \item{object}{a randomForestSRC object}
@@ -13,6 +13,8 @@ ggVariable.ggRandomForests(object, time, time.labels, ...)
 
 \item{time.labels}{If more than one time is specified, a vector of time.labels
 for differentiating the time points}
+
+\item{oob}{indicate if predicted results should include oob or full data set.}
 
 \item{...}{extra arguments}
 }

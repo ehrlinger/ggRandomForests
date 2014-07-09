@@ -4,7 +4,7 @@
 \title{plot.ggPartial
 Plot a \code{\link{ggPartial}} object, the partial plot data object.}
 \usage{
-\method{plot}{ggPartial}(x, ...)
+\method{plot}{ggPartial}(x, points = TRUE, smooth = "loess", ...)
 }
 \arguments{
 \item{x}{ggPartial object created from a randomForestSRC object}

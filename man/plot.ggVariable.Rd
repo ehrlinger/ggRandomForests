@@ -4,7 +4,8 @@
 \title{plot.ggVariable
 Plot a \code{\link{ggVariable}} object,}
 \usage{
-\method{plot}{ggVariable}(x, var, ...)
+\method{plot}{ggVariable}(x, x.var, time, time.labels, oob = TRUE,
+  smooth = TRUE, ...)
 }
 \arguments{
 \item{x}{ggVariable object created from a randomForestSRC object}
