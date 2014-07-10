@@ -3,7 +3,6 @@
 ####
 ####  ----------------------------------------------------------------
 ####  Written by:
-####  ----------------------------------------------------------------
 ####    John Ehrlinger, Ph.D.
 ####    Assistant Staff
 ####    Dept of Quantitative Health Sciences
@@ -18,14 +17,14 @@
 ####**********************************************************************
 #'
 #' ggVimp Extracts the variable importance (VIMP) information from a
-#' RF-SRC analysis.
+#' a randomForestSRC object.
 #' 
 #' @param object A rfsrc object
 #' @param ... arguments passed to the vimp.rfsrc function
 #' 
-#' @return a ggplot2 graphic of the VIMP plot.
+#' @return a matrix of VIMP measures, in rank order.
 #' 
-#' @seealso \code{\link{vimp.rfsrc}}
+#' @seealso \code{\link{plot.ggVimp}} \code{rfsrc} \code{vimp.rfsrc}
 #' 
 #' @references 
 #' Ishwaran H. (2007). Variable importance in binary regression trees and forests, 

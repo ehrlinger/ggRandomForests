@@ -37,7 +37,7 @@
 #' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
-#' @importFrom ggplot2 ggplot aes geom_point geom_smooth labs
+#' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs
 ### error rate plot
 plot.ggVariable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, ...){
   object <- x 
@@ -71,12 +71,12 @@ plot.ggVariable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, .
     gDta[[ind]] <- ggplot(object)
     if(family == "surv"){
       gDta[[ind]] <- gDta[[ind]] +
-        geom_point(aes(x=var, y=yhat, col=cens, shape=cens), alpha=.5)+
+        geom_point(aes_string(x="var", y="yhat", col="cens", shape="cens"), alpha=.5)+
         labs(x=hName, y= "Survival")
       
       if(smooth){
         gDta[[ind]] <- gDta[[ind]] +
-          geom_smooth(aes(x=var, y=yhat))
+          geom_smooth(aes_string(x="var", y="yhat"))
       }
       if(length(levels(object$time)) > 1){
         gDta[[ind]]<- gDta[[ind]] + facet_wrap(~time, ncol=1)
@@ -87,11 +87,11 @@ plot.ggVariable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, .
     }else if(family == "class"){
       if(sum(colnames(object) == "yhat") ==1){
         gDta[[ind]] <- gDta[[ind]] +
-          geom_point(aes(x=var, y=yhat, color=yvar, shape=yvar), alpha=.5)+
+          geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), alpha=.5)+
           labs(x=hName, y="Predicted")
         if(smooth){
           gDta[[ind]] <- gDta[[ind]] +
-            geom_smooth(aes(x=var, y=yhat))
+            geom_smooth(aes_string(x="var", y="yhat"))
         }
         
       }else{
@@ -100,11 +100,11 @@ plot.ggVariable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, .
     }else{
       # assume regression
       gDta[[ind]] <- gDta[[ind]] +
-        geom_point(aes(x=var, y=yhat), alpha=.5)+
+        geom_point(aes_string(x="var", y="yhat"), alpha=.5)+
         labs(x=hName, y="Predicted")
       if(smooth){
         gDta[[ind]] <- gDta[[ind]] +
-          geom_smooth(aes(x=var, y=yhat))
+          geom_smooth(aes_string(x="var", y="yhat"))
       }
     }
     

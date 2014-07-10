@@ -18,10 +18,17 @@ eventtable(interval, censor, strat = NULL, data, type = c("kaplan",
 
 \item{type}{one of ("kaplan","nelson"), defaults to kaplan-meier}
 
-\item{...}{extra arguments passed to...}
+\item{...}{extra arguments passed to kaplan or nelson functions.}
+}
+\value{
+A ggSurvival object created using the non-parametric kaplan-meier or
+nelson-aalon estimators.
 }
 \description{
-eventtable creates a nonparametric survival estimate using either the
-kaplan-meier or nelson-aalon method.
+eventtable is a wrapper function for both nelson and kaplan
+survival estimates.
+}
+\seealso{
+\code{\link{kaplan}} \code{\link{nelson}} \code{\link{ggSurvival}}
 }
 

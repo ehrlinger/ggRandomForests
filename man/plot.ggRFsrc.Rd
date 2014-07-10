@@ -21,6 +21,7 @@ Plot a \code{\link{ggRFsrc}} object, the forest prediction, possibly
 using an OOB estimator from the forest.
 }
 \examples{
+\dontrun{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -39,6 +40,7 @@ v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 
 ggrf.obj <- ggRFsrc(v.obj)
 plot(ggrf.obj)
+}
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

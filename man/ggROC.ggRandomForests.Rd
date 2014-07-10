@@ -2,8 +2,8 @@
 \name{ggROC.ggRandomForests}
 \alias{ggROC}
 \alias{ggROC.ggRandomForests}
-\title{ggROC create a set of classification performance plots from an rfsrc
-classification object}
+\title{ggROC Generate a data from containing the sensitivity and specificity
+of a randomForests classification object.}
 \usage{
 ggROC.ggRandomForests(object, which.outcome, oob = TRUE)
 }
@@ -15,16 +15,17 @@ ggROC.ggRandomForests(object, which.outcome, oob = TRUE)
 \item{oob}{use oob estimates (default TRUE)}
 }
 \value{
-ggROC data.frame
+ggROC data.frame for plotting ROC curves.
 }
 \description{
-ggROC create a set of classification performance plots from an rfsrc
-classification object
+ggROC Generate a data from containing the sensitivity and specificity
+of a randomForests classification object.
 }
 \examples{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
+options(mc.cores=2, rf.cores=1)
 iris.obj <- rfsrc(Species ~ ., data = iris)
 
 # ROC for setosa
@@ -38,5 +39,8 @@ plot.ggROC(ggrf.obj)
 # ROC for virginica
 ggrf.obj<- ggROC(iris.obj, which.outcome=3)
 plot.ggROC(ggrf.obj)
+}
+\seealso{
+\code{\link{plot.ggROC}} \code{rfsrc}
 }
 

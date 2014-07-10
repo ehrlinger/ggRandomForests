@@ -30,6 +30,7 @@ Plot a \code{\link{ggMinimalDepth}} object, the cumulative OOB error
 rates of the forest as a function of number of trees.
 }
 \examples{
+\dontrun{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -49,13 +50,14 @@ v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 ggrf.obj <- ggMinimalDepth(v.obj)
 plot(ggrf.obj)
 }
+}
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
-Regression and Classification (RF-SRC), R package version 1.4.
+Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival,
+Regression and Classification (RF-SRC), R package version 1.5.
 }
 

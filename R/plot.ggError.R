@@ -40,7 +40,7 @@
 #' and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -54,20 +54,20 @@
 #' ## ------------------------------------------------------------
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' data(veteran, package = "randomForestSRCM")
+#' data(veteran, package = "randomForestSRC")
 #' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #'
 #' ggrf.obj <- ggError(v.obj)
 #' plot(ggrf.obj)
-#'
-#' @importFrom ggplot2 ggplot geom_line theme aes labs 
+#'}
+#' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
 ### error rate plot
 plot.ggError <- function(x, ...){
   obj <- x
   if(inherits(obj, "rfsrc")) obj <- ggError(obj)
   
   # We expect the object to have the following columns
-  gDta <- ggplot(obj, aes(x=ntree,y=value, col=variable))+
+  gDta <- ggplot(obj, aes_string(x="ntree",y="value", col="variable"))+
     geom_line() +
     labs(x = "Number of Trees",
          y = "OOB Error Rate")

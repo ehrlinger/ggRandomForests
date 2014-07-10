@@ -3,7 +3,6 @@
 ####
 ####  ----------------------------------------------------------------
 ####  Written by:
-####  ----------------------------------------------------------------
 ####    John Ehrlinger, Ph.D.
 ####    Assistant Staff
 ####    Dept of Quantitative Health Sciences
@@ -20,14 +19,21 @@
 #'
 #' @param object A randomForestSRC forest object, predict object or
 #' the list from the var.select.rfsrc function
-#'  @param ... optional arguments passed to the var.select function 
+#' @param ... optional arguments passed to the var.select function 
 #'  of randomForestSRC
+#' 
+#' @description the var.select function implements random forest variable 
+#' selection using tree minimal depth methodology. The ggMinimalDepth 
+#' function takes the output from var.select and creates a data.frame 
+#' formatted for the plot.ggMinimalDepth function.
 #'  
-#' @return Invisibly, the modified list from the var.select.rfsrc
-#' function 
+#' @return Invisibly, the modified list of variables from the 
+#' var.select.rfsrc function, ordered by minimal depth rank. 
 #' 
 #' @export ggMinimalDepth.ggRandomForests ggMinimalDepth
 #' @aliases ggMinimalDepth
+#' 
+#' @seealso \code{var.select} \code{\link{plot.ggMinimalDepth}}
 #' 
 #' @importFrom randomForestSRC var.select
 #' @importFrom dplyr tbl_df
@@ -45,11 +51,11 @@ ggMinimalDepth.ggRandomForests <- function (object, ...){
   }else{
     stop("Function works only on rfsrc or var.select objects.")
   }
+  
   vSel$varselect$names <- rownames(vSel$varselect)
   
   vSel$varselect$names <- factor(vSel$varselect$names, 
                                  levels=unique(vSel$varselect$names))
-  vSel <- tbl_df(vSel)
   
   class(vSel) <- c("ggMinimalDepth", class(vSel))
   invisible(vSel) 

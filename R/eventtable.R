@@ -1,19 +1,45 @@
-###################################################################################
+####**********************************************************************
+####**********************************************************************
+####
+####  ----------------------------------------------------------------
+####  Written by:
+####    John Ehrlinger, Ph.D.
+####    Assistant Staff
+####    Dept of Quantitative Health Sciences
+####    Learner Research Institute
+####    Cleveland Clinic Foundation
+####
+####    email:  john.ehrlinger@gmail.com
+####    URL:    https://github.com/ehrlinger/ggRandomForests
+####  ----------------------------------------------------------------
+####
+####**********************************************************************
+####**********************************************************************
 #' 
 #' eventtable creates a nonparametric survival estimate using either the 
 #' kaplan-meier or nelson-aalon method.
+#' 
+#' @description eventtable is a wrapper function for both nelson and kaplan
+#' survival estimates.  
 #' 
 #' @param data name of the training data.frame
 #' @param interval name of the interval variable in the training dataset.
 #' @param censor name of the censoring variable in the training dataset.
 #' @param strat stratifying variable in the training dataset, defaults to NULL
 #' @param type one of ("kaplan","nelson"), defaults to kaplan-meier
-#' @param ... extra arguments passed to...
+#' @param ... extra arguments passed to kaplan or nelson functions.
 #' 
+#' @return A ggSurvival object created using the non-parametric kaplan-meier or 
+#' nelson-aalon estimators.
+#' 
+#' @seealso \code{\link{kaplan}} \code{\link{nelson}} \code{\link{ggSurvival}}
 #' @export eventtable
 #' @importFrom dplyr tbl_df
 #' 
-eventtable <- function(interval, censor, strat=NULL, data, type=c("kaplan","nelson"), ...){
+eventtable <- function(interval, censor, strat=NULL, 
+                       data, 
+                       type=c("kaplan","nelson"), 
+                       ...){
   type <- match.arg(type)
   
   ltab <- switch(type,

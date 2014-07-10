@@ -40,7 +40,7 @@
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRCM")
@@ -48,8 +48,9 @@
 #'
 #' ggrf.obj <- ggSurvival(v.obj)
 #' plot(ggrf.obj)
+#'}
 #'
-#' @importFrom ggplot2 ggplot geom_ribbon aes geom_errorbar geom_step labs
+#' @importFrom ggplot2 ggplot geom_ribbon aes_string geom_errorbar geom_step labs
 #' 
 ### Survival plots
 plot.ggSurvival<- function(x, 
@@ -67,50 +68,32 @@ plot.ggSurvival<- function(x,
     # Do we want to show confidence limits?
     plt <- switch(error,
                   # Shading the standard errors
-                  shade = plt + geom_ribbon(aes(x=time, ymax=100*upper_cl, ymin=100*lower_cl), alpha=.1),
+                  shade = plt + 
+                    geom_ribbon(aes_string(x="time", ymax="upper_cl", ymin="lower_cl"),
+                                alpha=.1),
                   # Or showing error bars
                   bars = {
-                    errFll <- fll
-                    if(!missing(errbars) )errFll <- errFll[errbars,]
-                    plt+ geom_errorbar(aes(x=time, ymax=100*upper_cl, ymin=100*lower_cl))
+                    # Need to figure out how to remove some of these points when 
+                    # requesting error bars, or this will get really messy.
+#                     errFll <- fll
+#                     if(!missing(errbars) )errFll <- errFll[errbars,]
+                    plt+ 
+                      geom_errorbar(aes_string(x="time", ymax="upper_cl", ymin="lower_cl"))
                   },
-                  lines= plt + geom_step(aes(x=time, y=100*upper_cl), linetype=2)+
-                    geom_step(aes(x=time, y=100*lower_cl), linetype=2), 
+                  lines= plt + 
+                    geom_step(aes_string(x="time", y="upper_cl"), linetype=2)+
+                    geom_step(aes(x="time", y="lower_cl"), linetype=2), 
                   none=plt)
   }
   plt<- switch(type,
-               surv= plt + geom_step(aes(x=time, y=100*surv)),
-               cum_haz=   plt + geom_step(aes(x=time, y=cum_haz)),
-               hazard=  plt + geom_step(aes(x=time, y=hazard)),
-               density=  plt + geom_step(aes(x=time, y=density)),
-               life=  + geom_step(aes(x=time, y=life)),
-               proplife=  plt + geom_step(aes(x=time, y=proplife))
+               surv= plt + geom_step(aes_string(x="time", y="surv")),
+               cum_haz=   plt + geom_step(aes_string(x="time", y="cum_haz")),
+               hazard=  plt + geom_step(aes_string(x="time", y="hazard")),
+               density=  plt + geom_step(aes_string(x="time", y="density")),
+               life=  + geom_step(aes_string(x="time", y="life")),
+               proplife=  plt + geom_step(aes_string(x="time", y="proplife"))
   )
   
-  #   
-  #   plt<- switch(pnts,
-  #                none=plt,
-  #                kaplan={
-  #                  kp <- kaplan(rfObject$yvar.names[1],rfObject$yvar.names[2], data=pts.data)
-  #                  kp <- kp[which(kp$cens==0),]
-  #                  switch(srv.type,
-  #                         surv=plt+ geom_point(aes(x=time, y=surv), data=kp),
-  #                         chf=plt+ geom_point(aes(x=time, y=cum_haz), data=kp),
-  #                         mortality=plt+ geom_point(aes(x=time, y=1-surv), data=kp),
-  #                         hazard=plt+ geom_point(aes(x=time, y=hazard), data=kp)
-  #                  )},
-  #                nelson={
-  #                  kp <- nelson(rfObject$yvar.names[1],rfObject$yvar.names[2], data=pts.data)
-  #                  kp <- kp[which(kp$cens==0),]
-  #                  switch(srv.type,
-  #                         surv=plt+ geom_point(aes(x=time, y=surv), data=kp),
-  #                         chf=plt+ geom_point(aes(x=time, y=cum_haz), data=kp),
-  #                         mortality=plt+ geom_point(aes(x=time, y=1-surv), data=kp),
-  #                         hazard=plt+ geom_point(aes(x=time, y=hazard), data=kp)
-  #                  )
-  #                }
-  #   )
-  #   
   return(plt+
            labs(y=type))
 }

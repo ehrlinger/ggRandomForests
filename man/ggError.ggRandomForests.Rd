@@ -38,7 +38,7 @@ plot(ggrf.obj)
 ## ------------------------------------------------------------
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
-data(veteran, package = "randomForestSRCM")
+data(veteran, package = "randomForestSRC")
 v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 
 ggrf.obj <- ggError(v.obj)
@@ -53,6 +53,6 @@ Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
 and Classification (RF-SRC), R package version 1.4.
 }
 \seealso{
-\code{\link{plot.ggError}} rfsrc.randomForestSRC
+\code{\link{plot.ggError}} \code{rfsrc} \code{plot.rfsrc}
 }
 

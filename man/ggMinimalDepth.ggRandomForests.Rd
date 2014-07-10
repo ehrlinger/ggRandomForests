@@ -14,10 +14,16 @@ the list from the var.select.rfsrc function}
  of randomForestSRC}
 }
 \value{
-Invisibly, the modified list from the var.select.rfsrc
-function
+Invisibly, the modified list of variables from the
+var.select.rfsrc function, ordered by minimal depth rank.
 }
 \description{
-ggMinimalDepth Extract the minimal depth values from an rfsrc object.
+the var.select function implements random forest variable
+selection using tree minimal depth methodology. The ggMinimalDepth
+function takes the output from var.select and creates a data.frame
+formatted for the plot.ggMinimalDepth function.
+}
+\seealso{
+\code{var.select} \code{\link{plot.ggMinimalDepth}}
 }
 

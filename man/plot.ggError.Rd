@@ -21,6 +21,7 @@ Plot a \code{\link{ggError}} object, the cumulative OOB error rates of the
 forest as a function of number of trees.
 }
 \examples{
+\dontrun{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -34,11 +35,12 @@ plot.ggError(ggrf.obj)
 ## ------------------------------------------------------------
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
-data(veteran, package = "randomForestSRCM")
+data(veteran, package = "randomForestSRC")
 v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 
 ggrf.obj <- ggError(v.obj)
 plot(ggrf.obj)
+}
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

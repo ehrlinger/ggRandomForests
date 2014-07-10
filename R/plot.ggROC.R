@@ -19,10 +19,10 @@
 #'
 #' plot.ggROC plot a \code{\link{ggROC}} object.
 #' 
-#' @param x \code{\link{ggROC}} object created from a randomForestSRC object
+#' @param x \code{\link{ggROC}} object created from a classification forest
 #' @param ... arguments passed to the \code{\link{ggROC}} function
 #' 
-#' @return ggplot object
+#' @return ggplot object of the ROC curve
 #' 
 #' @export plot.ggROC
 #' 
@@ -37,7 +37,7 @@
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -54,8 +54,8 @@
 #' # ROC for virginica
 #' ggrf.obj<- ggROC(iris.obj, which.outcome=3)
 #' plot.ggROC(ggrf.obj)
-#' 
-#' @importFrom ggplot2 ggplot aes geom_line geom_abline labs coord_fixed annotate
+#' }
+#' @importFrom ggplot2 ggplot aes_string geom_line geom_abline labs coord_fixed annotate
 #' 
 ### error rate plot
 plot.ggROC<- function(x, ...){
@@ -67,9 +67,7 @@ plot.ggROC<- function(x, ...){
   auc <- calcAUC(obj)
   
   gDta <- ggplot(data=obj)+
-    #geom_point(aes(x=sens, y=spec))+
-    geom_line(aes(x=fpr, y=sens))+
-    #geom_smooth(aes(x=sens, y=spec))+
+    geom_line(aes_string(x="fpr", y="sens"))+
     labs(x="1 - Specificity (FPR)", y="Sensitivity (TPR)")+
     geom_abline(a=1, b=0, col="red", linetype=2, size=.5) +
     coord_fixed()

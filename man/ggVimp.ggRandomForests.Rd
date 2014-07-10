@@ -3,7 +3,7 @@
 \alias{ggVimp}
 \alias{ggVimp.ggRandomForests}
 \title{ggVimp Extracts the variable importance (VIMP) information from a
-RF-SRC analysis.}
+a randomForestSRC object.}
 \usage{
 ggVimp.ggRandomForests(object, ...)
 }
@@ -13,11 +13,11 @@ ggVimp.ggRandomForests(object, ...)
 \item{...}{arguments passed to the vimp.rfsrc function}
 }
 \value{
-a ggplot2 graphic of the VIMP plot.
+a matrix of VIMP measures, in rank order.
 }
 \description{
 ggVimp Extracts the variable importance (VIMP) information from a
-RF-SRC analysis.
+a randomForestSRC object.
 }
 \examples{
 # notrun
@@ -97,6 +97,6 @@ Ishwaran H. (2007). Variable importance in binary regression trees and forests,
 \emph{Electronic J. Statist.}, 1:519-537.
 }
 \seealso{
-\code{\link{vimp.rfsrc}}
+\code{\link{plot.ggVimp}} \code{rfsrc} \code{vimp.rfsrc}
 }
 

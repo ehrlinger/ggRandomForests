@@ -1,30 +1,7 @@
 ####**********************************************************************
 ####**********************************************************************
-####
-####  ggRandomForests - GGPLOT2 GRAPHICS FOR RANDOM FORESTS FOR SURVIVAL, 
-####  REGRESSION, AND CLASSIFICATION (RF-SRC)
-####
-####  This program is free software; you can redistribute it and/or
-####  modify it under the terms of the GNU General Public License
-####  as published by the Free Software Foundation; either version 2
-####  of the License, or (at your option) any later version.
-####
-####  This program is distributed in the hope that it will be useful,
-####  but WITHOUT ANY WARRANTY; without even the implied warranty of
-####  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-####  GNU General Public License for more details.
-####
-####  You should have received a copy of the GNU General Public
-####  License along with this program; if not, write to the Free
-####  Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-####  Boston, MA  02110-1301, USA.
-####
-####  ----------------------------------------------------------------
-####  Project Partially Funded By: 
-####  ----------------------------------------------------------------
 ####  ----------------------------------------------------------------
 ####  Written by:
-####  ----------------------------------------------------------------
 ####    John Ehrlinger, Ph.D.
 ####    Assistant Staff
 ####    Dept of Quantitative Health Sciences
@@ -37,27 +14,31 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' @title Plot the marginal dependence of variables.
+#' @title ggVariable extract the marginal variable depedencies from
+#' a randomForestSRC object, or the output from the \code{plot.variable.rfsrc}
+#' function.
 #' 
-#' @description plot.variable.ggRandomForests generates a list of either marginal variable 
-#' dependance or partial variable dependence figures using \code{\link{ggplot}}.
+#' @description \code{plot.variable} generates a list containing either the marginal
+#' variable dependance or the partial variable dependence. The ggVariable function
+#' creates a data.frame of the marginal dependence data for creating figures using 
+#' the \code{\link{plot.ggVariable}} function.
 #' 
 #' @param object a randomForestSRC object 
-#' @param time point (or points) of interest
+#' @param time point (or points) of interest (for survival forests only)
 #' @param time.labels If more than one time is specified, a vector of time.labels 
-#' for differentiating the time points
+#' for differentiating the time points (for survival forests only)
 #' @param oob indicate if predicted results should include oob or full data set.
 #' @param ... extra arguments 
 #'  
-#' @return A list of \code{\link{ggplot2}} plot objects corresponding the variables 
-#' contained within the \code{x} argument 
+#' @return A matrix for creating the marginal variable dependence plots.
 #' 
-#' @seealso \code{\link{plot.variable.rfsrc}}
+#' @seealso  \code{\link{plot.ggVariable}} \code{plot.variable.rfsrc}
 #' 
 #' @export ggVariable.ggRandomForests ggVariable.rfsrc
 #' @export ggVariable
 #' 
-#' @aliases ggVariable
+#' @aliases ggVariable ggVariable.rfsrc
+#' 
 #' @importFrom dplyr tbl_df
 #'
 ggVariable.ggRandomForests <- function(object,
@@ -71,6 +52,12 @@ ggVariable.ggRandomForests <- function(object,
   if (!inherits(object, "rfsrc")) {
     stop("ggVariable expects a randomForest or plot.variable object.")
   }
+  
+  # IF we called this with a partial plot obect, instead of marginal.
+  if(inherits(object, "plot.variable"))
+    if(object$partial) invisible(ggPartial(object, ...))
+  
+  #!! Have to verify this works with a plot.variable object...
   
   # ggVariable is really just cutting the data into time slices.
   pDat <- data.frame(object$xvar)

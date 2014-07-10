@@ -3,7 +3,6 @@
 ####
 ####  ----------------------------------------------------------------
 ####  Written by:
-####  ----------------------------------------------------------------
 ####    John Ehrlinger, Ph.D.
 ####    Assistant Staff
 ####    Dept of Quantitative Health Sciences
@@ -17,20 +16,22 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' ggROC create a set of classification performance plots from an rfsrc 
-#' classification object
+#' ggROC Generate a data from containing the sensitivity and specificity 
+#' of a randomForests classification object. 
 #' 
 #' @param object an rfsrc classification object
 #' @param which.outcome select the classification outcome of interest.
 #' @param oob use oob estimates (default TRUE)
 #' 
-#' @return ggROC data.frame 
+#' @return ggROC data.frame for plotting ROC curves.
 #' 
+#' @seealso \code{\link{plot.ggROC}} \code{rfsrc}
 #' @examples
 #' 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
+#' options(mc.cores=2, rf.cores=1)
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
 #' 
 #' # ROC for setosa
@@ -71,7 +72,7 @@ ggROC.ggRandomForests <- function(object, which.outcome, oob=TRUE){
     if(object$family != "class")
       stop("ggROC is intended for classification forests only.")
     
-    roc<- calcROC(object, object$yvar, which.outcome=which.outcome, oob=oob)
+    roc<- calcROC.rfsrc(object, object$yvar, which.outcome=which.outcome, oob=oob)
   }
   roc <- tbl_df(roc)
   class(roc) <- c("ggROC", class(roc))

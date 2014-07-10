@@ -1,3 +1,34 @@
+####**********************************************************************
+####**********************************************************************
+####
+####  ----------------------------------------------------------------
+####  Written by:
+####    John Ehrlinger, Ph.D.
+####    Assistant Staff
+####    Dept of Quantitative Health Sciences
+####    Learner Research Institute
+####    Cleveland Clinic Foundation
+####
+####    email:  john.ehrlinger@gmail.com
+####    URL:    https://github.com/ehrlinger/ggRandomForests
+####  ----------------------------------------------------------------
+####
+####**********************************************************************
+####**********************************************************************
+#' @title calcROC Reciever Operator Characteristic calculator for randomForest objects
+#' 
+#' @description Given the randomForest or randomForestSRC prediction and the actual 
+#' response value, calculate the specificty (1-False Positive Rate) and sensitivity 
+#' (True Positive Rate) of a predictor.
+#' 
+#' @param rf randomForest or prediction object containing predicted response
+#' @param dta True response variable
+#' @param which.outcome If defined, only show ROC for this response. 
+#' @param oob Use OOB estimates, the normal validation method (TRUE)
+#'  
+#' @aliases calcROC.rfsrc calcROC.randomForest calcROC
+#' 
+#' @importFrom parallel mclapply
 ### plot.roc
 ##
 ## spc<- calcROC(rf, dta$sten_grp, which.outcome=3)
@@ -33,7 +64,7 @@ calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob=TRUE){
     spec<-tbl[2,2]/rowSums(tbl)[2]
     sens<-tbl[1,1]/rowSums(tbl)[1]
     cbind(sens=sens,spec=spec )
-  }, mc.cores = (detectCores()-1))
+  })
   
   spc <- do.call(rbind, spc)
   
@@ -55,24 +86,34 @@ calcROC.randomForest <- function(rf, dta, which.outcome=1){
     spec<-tbl[2,2]/rowSums(tbl)[2]
     sens<-tbl[1,1]/rowSums(tbl)[1]
     cbind(sens=sens, spec=spec)
-  }, mc.cores = (detectCores()-1))
+  })
   spc <- do.call(rbind, spc)
   
   return(data.frame(spc, row.names=pct))
 }
 
-calcAUC.rfsrc <- function(x){
+#'
+#' @title calcAUC.ggRandomForests calculate the Area Under the ROC Curve
+#' 
+#' @details Basically integrate the area using the trapezoidal rule.
+#' 
+#' @param x output from calcROC (or ggROC) 
+#' 
+#' @return AUC. 50% is random guessing, higher is better.
+#' 
+calcAUC.ggRandomForests <- function(x){
   ## Use the trapeziod rule, basically calc
   ##
   ## auc = dx/2(f(x_{i+1}) - f(x_i))
   ##
   ## f(x) is sensitivity, x is 1-specificity
   
-  auc <- sapply(2:dim(x)[1], function(ind){
-    dx <- x$sens[ind]-x$sens[ind-1]
-    (x$spec[ind] + x$spec[ind-1])*dx/2
-  }) 
-  
-  sum(auc)
+  #   auc <- sapply(2:dim(x)[1], function(ind){
+  #     dx <- x$sens[ind]-x$sens[ind-1]
+  #     (x$spec[ind] + x$spec[ind-1])*dx/2
+  #   }) 
+  #   
+  auc <- (x$sens - lag(x$sens))/2 * (x$spec+ lag(x$spec))
+  sum(auc, na.rm=TRUE)
 }
-calcAUC<- calcAUC.rfsrc
+calcAUC<- calcAUC.ggRandomForests

@@ -45,7 +45,7 @@ plot.ggPartial <- function(x, points=TRUE, smooth="loess", ...){
   hName <- colnames(object)[2]
   
   colnames(object)[2] <- "x"
-  prt.plt<- ggplot(object,aes(x=x, y=yhat))+
+  prt.plt<- ggplot(object,aes_string(x="x", y="yhat"))+
     labs(x=hName, y="predicted")
   
   if(points)  

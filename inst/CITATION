@@ -1,0 +1,6 @@
+bibentry("Unpublished",
+title="ggRandomForests: Graphical Exploration of Random Forests, R package V0.2",
+author=as.person("John Ehrlinger"),
+note="https:/github.com/ehrlinger/ggRandomForests",
+year="2014"
+)

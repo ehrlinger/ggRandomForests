@@ -23,6 +23,7 @@ Plot a \code{\link{ggVimp}} object, extracted variable importance of a
 rfsrc object
 }
 \examples{
+\dontrun{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -41,6 +42,7 @@ v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 
 ggrf.obj <- ggVimp(v.obj)
 plot(ggrf.obj)
+}
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

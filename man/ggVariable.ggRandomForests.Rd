@@ -2,31 +2,35 @@
 \name{ggVariable.ggRandomForests}
 \alias{ggVariable}
 \alias{ggVariable.ggRandomForests}
-\title{Plot the marginal dependence of variables.}
+\alias{ggVariable.rfsrc}
+\title{ggVariable extract the marginal variable depedencies from
+a randomForestSRC object, or the output from the \code{plot.variable.rfsrc}
+function.}
 \usage{
 ggVariable.ggRandomForests(object, time, time.labels, oob = TRUE, ...)
 }
 \arguments{
 \item{object}{a randomForestSRC object}
 
-\item{time}{point (or points) of interest}
+\item{time}{point (or points) of interest (for survival forests only)}
 
 \item{time.labels}{If more than one time is specified, a vector of time.labels
-for differentiating the time points}
+for differentiating the time points (for survival forests only)}
 
 \item{oob}{indicate if predicted results should include oob or full data set.}
 
 \item{...}{extra arguments}
 }
 \value{
-A list of \code{\link{ggplot2}} plot objects corresponding the variables
-contained within the \code{x} argument
+A matrix for creating the marginal variable dependence plots.
 }
 \description{
-plot.variable.ggRandomForests generates a list of either marginal variable
-dependance or partial variable dependence figures using \code{\link{ggplot}}.
+\code{plot.variable} generates a list containing either the marginal
+variable dependance or the partial variable dependence. The ggVariable function
+creates a data.frame of the marginal dependence data for creating figures using
+the \code{\link{plot.ggVariable}} function.
 }
 \seealso{
-\code{\link{plot.variable.rfsrc}}
+\code{\link{plot.ggVariable}} \code{plot.variable.rfsrc}
 }
 

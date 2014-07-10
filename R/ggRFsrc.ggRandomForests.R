@@ -3,7 +3,6 @@
 ####
 ####  ----------------------------------------------------------------
 ####  Written by:
-####  ----------------------------------------------------------------
 ####    John Ehrlinger, Ph.D.
 ####    Assistant Staff
 ####    Dept of Quantitative Health Sciences
@@ -18,7 +17,8 @@
 ####**********************************************************************
 #'
 #' ggRFsrc.ggRandomForests
-#' Extract the predicted response values from the forest
+#' Extract the predicted response values from the forest, formatted for
+#' convergence plot using \code{\link{plot.ggRFsrc}}
 #' 
 #' @param object randomForestSRC object
 #' @param oob boolean, should we return the oob prediction , or the full
@@ -27,11 +27,11 @@
 #' interval
 #' @param ... not used
 #' 
-#' @return ggRFsrc object
+#' @return ggRFsrc object formatted for \code{\link{plot.ggRFsrc}}
 #' 
 #' @export ggRFsrc.ggRandomForests ggRFsrc
 #' 
-#' @seealso \code{\link{plot.ggRFsrc}} rfsrc
+#' @seealso \code{\link{plot.ggRFsrc}} \code{rfsrc} \code{plot.rfsrc}
 #' 
 #' @examples
 #' 
@@ -48,7 +48,7 @@
 #' ## ------------------------------------------------------------
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' data(veteran, package = "randomForestSRCM")
+#' data(veteran, package = "randomForestSRC")
 #' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #'
 #' ggrf.obj <- ggRFsrc(v.obj, se=.95)
@@ -94,7 +94,7 @@ ggRFsrc.ggRandomForests <- function(object, oob=TRUE, se=NULL, ...) {
       dta$y <- object$yvar
       
     }
-    
+    dta <- tbl_df(dta)
   }else if(object$family == "surv"){
     if(is.null(se)){
       if(oob){
@@ -111,6 +111,7 @@ ggRFsrc.ggRandomForests <- function(object, oob=TRUE, se=NULL, ...) {
       dta <- melt(rng, id.vars = c("ptid", "cens"))
       dta$variable <- as.numeric(as.character(dta$variable))
       dta$ptid <- factor(dta$ptid)
+      dta <- tbl_df(dta)
     }else{
       # If we have one value, then it's two sided.
       if(length(se) ==1 ){
@@ -125,10 +126,11 @@ ggRFsrc.ggRandomForests <- function(object, oob=TRUE, se=NULL, ...) {
       mn <- sapply(1:dim(object$survival.oob)[2], function(tPt){mean(object$survival.oob[,tPt])})
       dta<-data.frame(cbind(object$time.interest,100*t(rng),100* mn))
       colnames(dta)<- c("time", "lower",  "upper", "median", "mean")
+      dta <- tbl_df(dta)
       class(dta) <- c("survSE", class(dta))
     }
   }
-  dta <- tbl_df(dta)
+  
   class(dta) <- c("ggRFsrc",object$family, class(dta))
   invisible(dta)
 }

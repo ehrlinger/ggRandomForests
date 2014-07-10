@@ -3,7 +3,6 @@
 ####
 ####  ----------------------------------------------------------------
 ####  Written by:
-####  ----------------------------------------------------------------
 ####    John Ehrlinger, Ph.D.
 ####    Assistant Staff
 ####    Dept of Quantitative Health Sciences
@@ -17,7 +16,8 @@
 ####**********************************************************************
 ####**********************************************************************
 #' ggSurvival
-#' Plot survival curve from an RF-S object.  
+#' Create data.frame of survival data from an randomForestSRC survival object.
+#'   
 #'
 #' @param rfObject An object of class (rfsrc, grow) or (rfsrc, predict).
 #' @param subset Vector indicating which individuals we want estimates for. 
@@ -36,28 +36,8 @@
 #' @details If subset is not specified, generates the following three plots
 #'  (going from top to bottom, left to right):
 #' 
-#' Forest estimated survival function for each individual (thick red line is overall ensemble survival, thick green line is Nelson-Aalen estimator).
-#' 
-#' Brier score (0=perfect, 1=poor, and 0.25=guessing) stratified by ensemble mortality. Based on the IPCW method described in Gerds et al. (2006). Stratification is into 4 groups corresponding to the 0-25, 25-50, 50-75 and 75-100 percentile values of mortality. Red line is the overall (non-stratified) Brier score.
-#' 
-#' Plot of mortality of each individual versus observed time. Points in blue correspond to events, black points are censored observations.
-#' 
-#' When subset is specified, then for each individual in subset, the following three plots are generated:
-#' Forest estimated survival function.
-#' Forest estimated cumulative hazard function (CHF) (displayed using black lines). Blue lines are the CHF from the estimated hazard function. See the next item.
-#' 
-#' A smoothed hazard function derived from the forest estimated CHF (or survival function). The default method, haz.model="spline", models the log CHF using natural cubic splines as described in Royston and Parmar (2002). The lasso is used for model selection, implemented using the glmnet package (this package must be installed for this option to work). If haz.model="ggamma", a three-parameter generalized gamma distribution (using the parameterization described in Cox et al, 2007) is fit to the smoothed forest survival function, where smoothing is imposed using Friedman's supersmoother (implemented by supsmu). If haz.model="nonpar", Friedman's supersmoother is applied to the forest estimated hazard function (obtained by taking the crude derivative of the smoothed forest CHF). Finally, setting haz.model="none" suppresses hazard estimation and no hazard estimate is provided.
-#' 
-#' At this time, please note that all hazard estimates are considered experimental and users should interpret the results with caution.
-#' 
-#' Note that when the object x is of class (rfsrc, predict) not all plots will be produced. In particular, Brier scores are not calculated.
-#'  
-#' Only applies to survival families. In particular, fails for competing risk analyses. Use plot.competing.risk in such cases. 
-#' 
-#' Whenever possible, out-of-bag (OOB) values are used.
-#' 
-#' @return Invisibly, the conditional and unconditional Brier scores, and 
-#' the integrated Brier score (if they are available).
+#' Forest estimated survival function for each individual (red line is 
+#' overall ensemble survival, thick green line is Nelson-Aalen estimator).
 #' 
 #' @export ggSurvival.ggRandomForests ggSurvival
 #' 

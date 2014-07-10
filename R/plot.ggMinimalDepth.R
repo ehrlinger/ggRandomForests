@@ -39,11 +39,11 @@
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, 
 #' Rnews, 7(2):25-31.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
-#' Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival, 
+#' Regression and Classification (RF-SRC), R package version 1.5.
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -62,7 +62,8 @@
 #'
 #' ggrf.obj <- ggMinimalDepth(v.obj)
 #' plot(ggrf.obj)
-#' @importFrom ggplot2 ggplot geom_line theme aes labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline
+#' }
+#' @importFrom ggplot2 ggplot geom_line theme aes_string labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline
 ### error rate plot
 plot.ggMinimalDepth <- function(x, selection=FALSE, 
                                 list.vars = TRUE, 
@@ -92,11 +93,12 @@ plot.ggMinimalDepth <- function(x, selection=FALSE,
     gDta <- ggplot(vSel)
     gDta <- switch(type,
                    rank = gDta +
-                     geom_point(aes(y=rank, x=depth, label=rank))+
+                     geom_point(aes_string(y="rank", x="depth", label="rank"))+
                      coord_cartesian(xlim=xl) + 
-                     geom_text(aes(y=rank, x=depth-.7, label=rank), size=3, hjust=0),
+                     geom_text(aes_string(y="rank", x="depth"-.7, label="rank"), 
+                               size=3, hjust=0),
                    named  =gDta +
-                     geom_point(aes(y=depth, x=names))+
+                     geom_point(aes_string(y="depth", x="names"))+
                      coord_cartesian(ylim=xl)
     )
     
@@ -122,10 +124,10 @@ plot.ggMinimalDepth <- function(x, selection=FALSE,
     gDta <- ggplot(vSel)
     gDta <- switch(type,
                    rank = gDta +
-                     geom_point(aes(y=rank, x=depth))+
+                     geom_point(aes_string(y="rank", x="depth"))+
                      coord_cartesian(xlim=xl),
                    named  =gDta +
-                     geom_point(aes(y=depth, x=names))+
+                     geom_point(aes_string(y="depth", x="names"))+
                      coord_cartesian(ylim=xl)
     )
     

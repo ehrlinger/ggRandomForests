@@ -25,6 +25,7 @@ plot.ggSurvival
 Plot a \code{\link{ggSurvival}} object,
 }
 \examples{
+\dontrun{
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRCM")
@@ -32,6 +33,7 @@ v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 
 ggrf.obj <- ggSurvival(v.obj)
 plot(ggrf.obj)
+}
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

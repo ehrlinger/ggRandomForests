@@ -7,22 +7,26 @@
 ggPartial.ggRandomForests(object, named, ...)
 }
 \arguments{
-\item{object}{the partial rfsrc data object from plot.variable function}
+\item{object}{the partial rfsrc data object from \code{plot.variable} function}
 
 \item{named}{optional column for merging multiple plots together}
 
 \item{...}{optional arguments}
 }
 \value{
-A list of \code{\link{ggplot2}} plot objects corresponding the variables
-contained within the \code{x} argument
+A data.frame or list of data.frames corresponding the variables
+contained within the \code{plot.variable} output.
 }
 \description{
-plot.variable.randomForestSRC generates a
-list of either marginal variable dependance or partial variable dependence.
-The ggPartial object is formulated to create partial dependence plots.
+\code{plot.variable.rfsrc} generates a
+list of either marginal variable dependance or partial variable dependence
+data from a randomForestSRC object.
+The ggPartial function formulats this data for creation of partial dependence
+plots (where partial=TRUE) using the \code{\link{plot.ggPartial}} function.
+These plots are the risk adjusted estimates of the specified response as a
+function of a single covariate, possibly subsetted on other covariates.
 }
 \seealso{
-plot.variable.rfsrc
+\code{plot.variable.rfsrc} \code{\link{plot.ggPartial}}
 }
 

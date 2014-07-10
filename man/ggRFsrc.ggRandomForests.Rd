@@ -3,7 +3,8 @@
 \alias{ggRFsrc}
 \alias{ggRFsrc.ggRandomForests}
 \title{ggRFsrc.ggRandomForests
-Extract the predicted response values from the forest}
+Extract the predicted response values from the forest, formatted for
+convergence plot using \code{\link{plot.ggRFsrc}}}
 \usage{
 ggRFsrc.ggRandomForests(object, oob = TRUE, se = NULL, ...)
 }
@@ -19,11 +20,12 @@ interval}
 \item{...}{not used}
 }
 \value{
-ggRFsrc object
+ggRFsrc object formatted for \code{\link{plot.ggRFsrc}}
 }
 \description{
 ggRFsrc.ggRandomForests
-Extract the predicted response values from the forest
+Extract the predicted response values from the forest, formatted for
+convergence plot using \code{\link{plot.ggRFsrc}}
 }
 \examples{
 ## ------------------------------------------------------------
@@ -39,13 +41,13 @@ plot(ggrf.obj)
 ## ------------------------------------------------------------
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
-data(veteran, package = "randomForestSRCM")
+data(veteran, package = "randomForestSRC")
 v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 
 ggrf.obj <- ggRFsrc(v.obj, se=.95)
 plot(ggrf.obj)
 }
 \seealso{
-\code{\link{plot.ggRFsrc}} rfsrc
+\code{\link{plot.ggRFsrc}} \code{rfsrc} \code{plot.rfsrc}
 }
 

@@ -39,7 +39,7 @@
 #' and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @examples
-#' 
+#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -58,9 +58,9 @@
 #'
 #' ggrf.obj <- ggRFsrc(v.obj)
 #' plot(ggrf.obj)
-#' 
+#' }
 #' @importFrom reshape2 melt
-#' @importFrom ggplot2 ggplot aes aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot
+#' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot
 
 ### error rate plot
 plot.ggRFsrc<- function(x, ...){
@@ -78,8 +78,8 @@ plot.ggRFsrc<- function(x, ...){
                      outlier.colour = "transparent", fill="transparent", notch = TRUE)
     }else{
       mlt <- melt(obj, id.vars = "y")
-      gDta <- ggplot(mlt, aes(x=y,y=value, by=variable))+
-        geom_jitter(aes(color=y,shape=y), alpha=.5)
+      gDta <- ggplot(mlt, aes_string(x="y",y="value", by="variable"))+
+        geom_jitter(aes_string(color="y",shape="y"), alpha=.5)
     }
     gDta + labs(y="Predicted (%)", x="")
   }
@@ -89,13 +89,15 @@ plot.ggRFsrc<- function(x, ...){
       obj.t <-  melt(select(obj, time, median, mean), id.vars="time")
       
       gDta <- ggplot(obj.t)+
-        geom_ribbon(aes(x=time, ymin=lower, ymax=upper), alpha=.25, data=obj)+
-        geom_step(aes(x=time, y=value, color=variable))
+        geom_ribbon(aes_string(x="time", ymin="lower", ymax="upper"), 
+                    alpha=.25, data=obj)+
+        geom_step(aes_string(x="time", y="value", color="variable"))
       
     }else{
       # Lines by observation
       gDta <- ggplot(obj)+
-        geom_step(aes(x=variable, y=value, col=cens, by=ptid), alpha=.3, size=.1)
+        geom_step(aes_string(x="variable", y="value", col="cens", by="ptid"), 
+                  alpha=.3, size=.1)
     }
     
     gDta<-gDta  +

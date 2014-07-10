@@ -6,17 +6,18 @@
 \method{plot}{ggROC}(x, ...)
 }
 \arguments{
-\item{x}{\code{\link{ggROC}} object created from a randomForestSRC object}
+\item{x}{\code{\link{ggROC}} object created from a classification forest}
 
 \item{...}{arguments passed to the \code{\link{ggROC}} function}
 }
 \value{
-ggplot object
+ggplot object of the ROC curve
 }
 \description{
 plot.ggROC plot a \code{\link{ggROC}} object.
 }
 \examples{
+\dontrun{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -33,6 +34,7 @@ plot.ggROC(ggrf.obj)
 # ROC for virginica
 ggrf.obj<- ggROC(iris.obj, which.outcome=3)
 plot.ggROC(ggrf.obj)
+}
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
