@@ -36,7 +36,7 @@
 #' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
-#'
+#' @importFrom ggplot2 ggplot aes labs geom_point geom_smooth 
 ### error rate plot
 plot.ggPartial <- function(x, points=TRUE, smooth="loess", ...){
   object <- x 
@@ -54,6 +54,6 @@ plot.ggPartial <- function(x, points=TRUE, smooth="loess", ...){
     prt.plt<- prt.plt+geom_smooth(method=smooth, ...)
   }
   
-  prt.plt
+  return(prt.plt)
   
 }

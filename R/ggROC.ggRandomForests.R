@@ -47,7 +47,7 @@
 #' 
 #' @export ggROC.ggRandomForests ggROC
 #' @aliases ggROC
-#' 
+#' @importFrom dplyr tbl_df
 ggROC.ggRandomForests <- function(object, which.outcome, oob=TRUE){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
@@ -73,6 +73,7 @@ ggROC.ggRandomForests <- function(object, which.outcome, oob=TRUE){
     
     roc<- calcROC(object, object$yvar, which.outcome=which.outcome, oob=oob)
   }
+  roc <- tbl_df(roc)
   class(roc) <- c("ggROC", class(roc))
   
   invisible(roc)

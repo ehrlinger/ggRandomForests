@@ -49,6 +49,8 @@
 #' ggrf.obj <- ggSurvival(v.obj)
 #' plot(ggrf.obj)
 #'
+#' @importFrom ggplot2 ggplot geom_ribbon aes geom_errorbar geom_step labs
+#' 
 ### Survival plots
 plot.ggSurvival<- function(x, 
                            type=c("surv", "cum_haz","hazard","density","life","proplife"),

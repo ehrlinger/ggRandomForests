@@ -60,6 +60,7 @@
 #' ggrf.obj <- ggError(v.obj)
 #' plot(ggrf.obj)
 #'
+#' @importFrom ggplot2 ggplot geom_line theme aes labs 
 ### error rate plot
 plot.ggError <- function(x, ...){
   obj <- x

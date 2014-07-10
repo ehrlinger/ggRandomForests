@@ -61,6 +61,7 @@
 #' ggrf.obj <- ggVimp(v.obj)
 #' plot(ggrf.obj)
 #'
+#' @importFrom ggplot2 ggplot geom_bar aes labs coord_flip
 ### error rate plot
 plot.ggVimp<- function(x, n.var, ...){
   object  <- x
@@ -69,7 +70,8 @@ plot.ggVimp<- function(x, n.var, ...){
   if(n.var > dim(object)[1]) n.var <- dim(object)[1]
   
   vimp.plt<-ggplot(object[1:n.var,])+
-    geom_bar(aes(y=relVIMP, x=names, fill=positive), stat="identity", width=.5, color="black")+ 
+    geom_bar(aes(y=relVIMP, x=names, fill=positive), 
+             stat="identity", width=.5, color="black")+ 
     labs(x="", y="Relative Variable Importance") + 
     coord_flip()
   return(vimp.plt)

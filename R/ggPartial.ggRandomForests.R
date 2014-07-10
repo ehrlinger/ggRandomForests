@@ -58,7 +58,8 @@
 #' @aliases ggPartial
 #' 
 #' @export ggPartial.ggRandomForests ggPartial
-#'
+#' @importFrom dplyr tbl_df
+#' 
 ggPartial.ggRandomForests <- function(object, 
                                       named,
                                       ...){
@@ -70,10 +71,12 @@ ggPartial.ggRandomForests <- function(object,
   n.var=length(object$pData)
   
   pDat <- lapply(1:n.var, function(ind){
-    data.frame(cbind(yhat=object$pData[[ind]]$yhat, x=object$pData[[ind]]$x.uniq))
+    data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
+                     x=object$pData[[ind]]$x.uniq))
   })
   
   for(ind in 1:n.var){
+    pDat[[ind]] <- tbl_df(pDat[[ind]])
     colnames(pDat[[ind]])[-1] <- object$xvar.names[ind]
     if(!missing(named)) pDat[[ind]]$id=named
     class(pDat[[ind]]) <- c("ggPartial", class(pDat[[ind]]))
@@ -85,7 +88,7 @@ ggPartial.ggRandomForests <- function(object,
     class(pDat) <- c("ggPartialList", class(pDat))
     invisible(pDat)
   }
-    
+  
 }
 
 ggPartial <- ggPartial.ggRandomForests

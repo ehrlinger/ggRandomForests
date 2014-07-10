@@ -9,7 +9,7 @@
 #'
 #' @export nelson
 #' @importFrom survival Surv survfit strata 
-#' 
+#' @importFrom dplyr tbl_df
 #' 
 nelson <- function(interval, censor, data, strat=NULL, weight=NULL,climit=.95){
   call <- match.call()
@@ -78,7 +78,7 @@ nelson <- function(interval, censor, data, strat=NULL, weight=NULL,climit=.95){
   colnames(tbl.e) <- c(colnames(tbl.e)[1:6], 
                        "lower_cl", "upper_cl", "cum_haz","hazard", "density", "mid_int", "life", "proplife")
   
-  
+  tbl.e <- tbl_df(tbl.e)
   class(tbl.e) <- c("ggSurvival", class(tbl.e)) 
   invisible(tbl.e)
 }

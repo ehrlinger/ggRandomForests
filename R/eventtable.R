@@ -11,6 +11,7 @@
 #' @param ... extra arguments passed to...
 #' 
 #' @export eventtable
+#' @importFrom dplyr tbl_df
 #' 
 eventtable <- function(interval, censor, strat=NULL, data, type=c("kaplan","nelson"), ...){
   type <- match.arg(type)
@@ -19,5 +20,5 @@ eventtable <- function(interval, censor, strat=NULL, data, type=c("kaplan","nels
     kaplan=kaplan(interval=interval, censor=censor, strat=strat, data=data, ...),
     nelson=nelson(interval=interval, censor=censor, strat=strat, data=data, ...)
   )
-  return(ltab)
+  return(tbl_df(ltab))
 }

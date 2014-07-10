@@ -14,9 +14,9 @@
 
 calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob=TRUE){
   if(!is.factor(dta)) dta <- factor(dta)
-  dta.roc <- as.data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
-                                 prd=rf$predicted[, which.outcome],
-                                 oob=rf$predicted.oob[, which.outcome]))
+  dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
+                              prd=rf$predicted[, which.outcome],
+                              oob=rf$predicted.oob[, which.outcome]))
   if(oob)
     pct <- sort(unique(rf$predicted.oob[,which.outcome]))
   else
@@ -43,7 +43,8 @@ calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob=TRUE){
 calcROC<- calcROC.rfsrc
 calcROC.randomForest <- function(rf, dta, which.outcome=1){
   prd <- predict(rf, type="prob")
-  dta.roc <- as.data.frame(cbind(res=(dta == levels(dta)[which.outcome]), prd=prd[,which.outcome]))
+  dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
+                              prd=prd[,which.outcome]))
   
   pct <- sort(unique(prd[,which.outcome]))
   pct<- pct[-length(pct)]

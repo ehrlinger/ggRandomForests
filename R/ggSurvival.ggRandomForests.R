@@ -63,18 +63,20 @@
 #' 
 #' @aliases ggSurvival
 #' 
+#' @importFrom dplyr tbl_df
+#' 
 ggSurvival.ggRandomForests <- function (rfObject,
-                                   prd.type=c("std", "oob"),
-                                   srv.type=c("surv", "chf", "mortality", "hazard"),
-                                   pnts = c("none", "kaplan", "nelson"),
-                                   show.ind = NULL,
-                                   subset,
-                                   strata,
-                                   climits = .95, 
-                                   error = c("none", "bars", "shade", "lines"),
-                                   errbars,
-                                   curve=c("mean", "median", "both"),
-                                   ...)
+                                        prd.type=c("std", "oob"),
+                                        srv.type=c("surv", "chf", "mortality", "hazard"),
+                                        pnts = c("none", "kaplan", "nelson"),
+                                        show.ind = NULL,
+                                        subset,
+                                        strata,
+                                        climits = .95, 
+                                        error = c("none", "bars", "shade", "lines"),
+                                        errbars,
+                                        curve=c("mean", "median", "both"),
+                                        ...)
 { 
   
   ## Verify that the incoming object is of type rfsrc.
@@ -127,13 +129,15 @@ ggSurvival.ggRandomForests <- function (rfObject,
   # Get the survival information, getting the bootstrap CI at the correct measure.
   alph <- (1-climits)/2
   
-  # Calc all the quantiles required (dply?)
+  # Calc all the quantiles required (dplyr?)
   fll<-t(apply(rf.data,2, function(rw){quantile(rw, prob=c(alph, .5, 1-alph))}))
   
   colnames(fll) <- c("lower", "median", "upper")
   fll <- data.frame(cbind(time=rfObject$time.interest,fll, mean=colMeans(rf.data)))
   
-  
+  fll <- tbl_df(fll)
+  class(fll)  <- c("ggSurvival",class(fll))
+  invisible(fll)
 }
 
 

@@ -55,6 +55,8 @@
 #' ggrf.obj<- ggROC(iris.obj, which.outcome=3)
 #' plot.ggROC(ggrf.obj)
 #' 
+#' @importFrom ggplot2 ggplot aes geom_line geom_abline labs coord_fixed annotate
+#' 
 ### error rate plot
 plot.ggROC<- function(x, ...){
   obj <- x

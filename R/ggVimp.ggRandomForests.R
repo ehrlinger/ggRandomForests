@@ -109,6 +109,8 @@
 #' @export ggVimp.ggRandomForests
 #' @export ggVimp
 #' @aliases ggVimp
+#' @importFrom dplyr tbl_df
+#' 
 
 ggVimp.ggRandomForests <- function(object, ...){
   
@@ -120,9 +122,9 @@ ggVimp.ggRandomForests <- function(object, ...){
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
     warning("rfsrc object does not contain VIMP information. Calculating...")
-    imp <-as.data.frame(sort(vimp(object, ...)$importance, decreasing=TRUE))
+    imp <- data.frame(sort(vimp(object, ...)$importance, decreasing=TRUE))
   }else{
-    imp<- as.data.frame(sort(object$importance, decreasing=TRUE))
+    imp<-  data.frame(sort(object$importance, decreasing=TRUE))
   }
   
   imp<- cbind(imp, imp/imp[1,1])
@@ -139,7 +141,7 @@ ggVimp.ggRandomForests <- function(object, ...){
 #     }else{
 #       rfvimp <- rfvimp[which(names(rfvimp) %in% var.names)]
 #     }
-
+  imp <- tbl_df(imp)
   class(imp) <- c("ggVimp", class(imp))
   invisible(imp)
 }

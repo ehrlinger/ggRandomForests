@@ -58,7 +58,7 @@
 #' @export ggVariable
 #' 
 #' @aliases ggVariable
-#' 
+#' @importFrom dplyr tbl_df
 #'
 ggVariable.ggRandomForests <- function(object,
                                        time,

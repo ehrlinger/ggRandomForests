@@ -55,7 +55,10 @@
 #' plot(ggrf.obj)
 #'
 #' @aliases ggRFsrc
-#'  
+#'
+#' @importFrom reshape2 melt
+#' @importFrom dplyr tbl_df select
+#' 
 ggRFsrc.ggRandomForests <- function(object, oob=TRUE, se=NULL, ...) {
   ## Check that the input obect is of the correct type.
   if (inherits(object, "rfsrc") == FALSE){
@@ -125,7 +128,7 @@ ggRFsrc.ggRandomForests <- function(object, oob=TRUE, se=NULL, ...) {
       class(dta) <- c("survSE", class(dta))
     }
   }
-  
+  dta <- tbl_df(dta)
   class(dta) <- c("ggRFsrc",object$family, class(dta))
   invisible(dta)
 }

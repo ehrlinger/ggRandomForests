@@ -62,7 +62,7 @@
 #'
 #' ggrf.obj <- ggMinimalDepth(v.obj)
 #' plot(ggrf.obj)
-#'
+#' @importFrom ggplot2 ggplot geom_line theme aes labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline
 ### error rate plot
 plot.ggMinimalDepth <- function(x, selection=FALSE, 
                                 list.vars = TRUE, 

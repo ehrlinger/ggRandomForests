@@ -29,6 +29,8 @@
 #' @export ggMinimalDepth.ggRandomForests ggMinimalDepth
 #' @aliases ggMinimalDepth
 #' 
+#' @importFrom randomForestSRC var.select
+#' @importFrom dplyr tbl_df
 ggMinimalDepth.ggRandomForests <- function (object, ...){
   
   if (inherits(object, "rfsrc") == TRUE){
@@ -45,7 +47,10 @@ ggMinimalDepth.ggRandomForests <- function (object, ...){
   }
   vSel$varselect$names <- rownames(vSel$varselect)
   
-  vSel$varselect$names <- factor(vSel$varselect$names, levels=unique(vSel$varselect$names))
+  vSel$varselect$names <- factor(vSel$varselect$names, 
+                                 levels=unique(vSel$varselect$names))
+  vSel <- tbl_df(vSel)
+  
   class(vSel) <- c("ggMinimalDepth", class(vSel))
   invisible(vSel) 
 }

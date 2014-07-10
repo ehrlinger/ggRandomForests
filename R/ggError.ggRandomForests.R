@@ -66,6 +66,9 @@
 #'
 #' ggrf.obj <- ggError(v.obj)
 #' plot(ggrf.obj)
+#' 
+#' @importFrom reshape2 melt
+#' @importFrom dplyr tbl_df
 #'
 ### error rate plot
 ggError.ggRandomForests <- function(object, ...) {
@@ -77,7 +80,7 @@ ggError.ggRandomForests <- function(object, ...) {
     stop("Performance values are not available for this forest.")
   }
   
-  error <- as.data.frame(object$err.rate)
+  error <- data.frame(object$err.rate)
   if(is.null(dim(error))){
     error<- data.frame(error=cbind(error))
   }
@@ -85,6 +88,7 @@ ggError.ggRandomForests <- function(object, ...) {
   error$ntree <- 1:dim(error)[1]
   
   dta<-melt(error, id.vars = "ntree")
+  dta <- tbl_df(dta)
   
   class(dta) <- c("ggError",class(dta))
   invisible(dta)

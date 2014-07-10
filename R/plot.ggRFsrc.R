@@ -59,7 +59,8 @@
 #' ggrf.obj <- ggRFsrc(v.obj)
 #' plot(ggrf.obj)
 #' 
-#' 
+#' @importFrom reshape2 melt
+#' @importFrom ggplot2 ggplot aes aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot
 
 ### error rate plot
 plot.ggRFsrc<- function(x, ...){
