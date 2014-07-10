@@ -38,10 +38,15 @@
 #' 
 #'
 ### error rate plot
-plot.ggPartial<- function(x, points=TRUE, smooth="loess", ...){
+plot.ggPartial <- function(x, points=TRUE, smooth="loess", ...){
   object <- x 
   
-  prt.plt<- ggplot(object,aes_string(x=colnames(prt.plt)[2], y="yhat"))
+  # Get the colname of the independent variable
+  hName <- colnames(object)[2]
+  
+  colnames(object)[2] <- "x"
+  prt.plt<- ggplot(object,aes(x=x, y=yhat))+
+    labs(x=hName, y="predicted")
   
   if(points)  
     prt.plt<- prt.plt+geom_point()
@@ -49,6 +54,6 @@ plot.ggPartial<- function(x, points=TRUE, smooth="loess", ...){
     prt.plt<- prt.plt+geom_smooth(method=smooth, ...)
   }
   
-  invisible(prt.plt)  
+  prt.plt
   
 }

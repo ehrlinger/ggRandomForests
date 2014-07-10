@@ -82,7 +82,7 @@ ggPartial.ggRandomForests <- function(object,
   if(n.var ==1 ){
     invisible(pDat[[1]])
   }else{
-    class(pDat) <- c("ggPartialList", class(pDat[[ind]]))
+    class(pDat) <- c("ggPartialList", class(pDat))
     invisible(pDat)
   }
     
