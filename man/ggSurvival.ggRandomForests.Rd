@@ -10,30 +10,16 @@ ggSurvival.ggRandomForests(rfObject, prd.type = c("std", "oob"),
   "kaplan", "nelson"), climits = 0.95, ...)
 }
 \arguments{
-\item{rfObject}{An object of class (rfsrc, grow) or (rfsrc, predict).}
-
-\item{subset}{Vector indicating which individuals we want estimates for.
+\item{rfObject}{An object of class (rfsrc, grow) or (rfsrc, predict).
 All individuals are used if not specified.}
 
 \item{prd.type}{("std", "oob")}
 
 \item{srv.type}{("surv", "chf", "mortality", "hazard")}
 
-\item{pnts}{("none", "kaplan", "nelson")
-#}
+\item{pnts}{("none", "kaplan", "nelson")}
 
-\item{show.ind}{#}
-
-\item{strata}{}
-
-\item{climits}{confidence limit bands
-#}
-
-\item{error}{#}
-
-\item{errbars}{#}
-
-\item{curve}{}
+\item{climits}{confidence limit bands}
 
 \item{...}{Further arguments passed to other methods.}
 }

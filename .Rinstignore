@@ -1,0 +1,4 @@
+vignettes/JSSstyle/*
+vignettes/*.log
+vignettes/*.tex
+

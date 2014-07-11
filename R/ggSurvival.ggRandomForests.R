@@ -20,17 +20,17 @@
 #'   
 #'
 #' @param rfObject An object of class (rfsrc, grow) or (rfsrc, predict).
-#' @param subset Vector indicating which individuals we want estimates for. 
+# # @param subset Vector indicating which individuals we want estimates for. 
 #'   All individuals are used if not specified.
 #' @param prd.type ("std", "oob")
 #' @param srv.type ("surv", "chf", "mortality", "hazard")
 #' @param pnts ("none", "kaplan", "nelson")
-# #' @param show.ind 
-# #' @param strata 
+# # @param show.ind 
+# # @param strata  
 #' @param climits confidence limit bands
-# #' @param error 
-# #' @param errbars 
-# #' @param curve 
+# # @param error 
+# # @param errbars 
+# # @param curve 
 #' @param ... Further arguments passed to other methods.
 #' 
 #' @export ggSurvival.ggRandomForests ggSurvival
