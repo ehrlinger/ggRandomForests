@@ -61,9 +61,10 @@
 plot.ggROC<- function(x, ...){
   obj <- x
   if(inherits(obj, "rfsrc")) obj<- ggROC(obj, ...)
+  
+  obj <- obj[order(obj$spec),]
   obj$fpr <- 1-obj$spec
-  obj <- rbind(c(0,0), obj, c(1,1))
-  obj <- obj[order(obj$sens),]
+  
   auc <- calcAUC(obj)
   
   gDta <- ggplot(data=obj)+

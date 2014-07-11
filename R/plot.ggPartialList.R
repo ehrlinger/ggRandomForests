@@ -21,6 +21,8 @@
 #' Plot a \code{\link{ggPartial}} object, the partial plot data object.
 #' 
 #' @param x ggPartial object created from a randomForestSRC object
+#' @param points plot points (boolean)
+#' @param smooth use smooth curve (by type)
 #' @param ... extra arguments
 #' 
 #' @return ggplot object

@@ -21,7 +21,11 @@
 #' Plot a \code{\link{ggVariable}} object, 
 #' 
 #' @param x ggVariable object created from a randomForestSRC object
-#' @param var variable (or list of variables) of interest.
+#' @param x.var variable (or list of variables) of interest.
+#' @param time For survival, one or more times of interest
+#' @param time.labels string labels for times
+#' @param oob oob estimates (boolean)
+#' @param smooth type of smooth curve
 #' @param ... arguments passed to the \code{\link{ggVariable}} function.
 #' 
 #' @return ggplot object

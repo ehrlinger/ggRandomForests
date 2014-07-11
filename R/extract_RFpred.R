@@ -18,9 +18,12 @@
 #' extract.RFpred get the predicted values from a randomForest classification forest
 #' 
 #' Only works on randomForest package forests.
+#' @param obj a \code{randomForest}
+#' @param type Classification by ("response", "prob")
+#' @param subset indx of observations of interest
+#' @param which.outcome For classification, select the class index of interest
 #' 
-#' 
-extract.RFpred <- function (obj, type, subset, which.outcome) 
+extract.RFpred <- function (obj, type=c("response", "prob"), subset, which.outcome) 
 {
   if(inherits(obj,"matrix")){
     pred <- obj
@@ -28,7 +31,7 @@ extract.RFpred <- function (obj, type, subset, which.outcome)
     pred <- obj$votes
     
     if (obj$type == "classification") {
-      class.type <- match.arg(type, c("response", "prob"))
+      class.type <- match.arg(type)
       if (missing(subset)) 
         subset <- 1:nrow(pred)
       

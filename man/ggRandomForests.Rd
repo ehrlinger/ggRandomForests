@@ -10,7 +10,7 @@ ggRandomForests is an add on package for \code{randomForestSRC}.
 The package is designed to simplify the graphical analysis and exploration
 of randomForests.
 
-The randomForestSRC package provides a unified treatment of Breiman's random
+The randomForestSRC package provides a unified treatment of Breimans random
 forests (Breiman 2001) for a variety of data settings. Regression and
 classification forests are grown when the response is numeric or categorical
 (factor) while survival and competing risk forests (Ishwaran et al. 2008, 2012)
@@ -53,21 +53,21 @@ All functions have an associated plotting function that returns ggplot2 graphics
 individually or as a list, that can be further customised using standard ggplot2 commands.
 }
 \references{
-Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
+Breiman, L. (2001). Random forests, Machine Learning, 45:5-32.
 
-Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
+Ishwaran, H. and Kogalur, U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival,
+Ishwaran, H. and Kogalur, U.B. (2014). Random Forests for Survival,
 Regression and Classification (RF-SRC), R package version 1.5.
 
 Ishwaran, H., U. B. Kogalur, E. Z. Gorodeski, A. J. Minn, and M. S. Lauer (2010).
 High-dimensional variable selection for survival data. J. Amer. Statist. Assoc.
-105, 205–217.
+105, 205-217.
 
-Ishwaran H. (2007). Variable importance in binary regression trees and forests.
+Ishwaran, H. (2007). Variable importance in binary regression trees and forests.
 Electronic J. Statist., 1, 519-537.
 
-H. Wickham. ggplot2: elegant graphics for data analysis. Springer New York, 2009.
+Wickham, H. ggplot2: elegant graphics for data analysis. Springer New York, 2009.
 }
 

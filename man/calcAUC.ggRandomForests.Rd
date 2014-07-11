@@ -12,9 +12,12 @@ calcAUC.ggRandomForests(x)
 AUC. 50% is random guessing, higher is better.
 }
 \description{
-
+calcAUC uses the trapezoidal rule to calculate the area under
+the ROC curve.
 }
 \details{
-Basically integrate the area using the trapezoidal rule.
+
+
+sensitivity and specificity
 }
 

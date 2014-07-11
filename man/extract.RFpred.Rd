@@ -3,7 +3,16 @@
 \alias{extract.RFpred}
 \title{extract.RFpred get the predicted values from a randomForest classification forest}
 \usage{
-extract.RFpred(obj, type, subset, which.outcome)
+extract.RFpred(obj, type = c("response", "prob"), subset, which.outcome)
+}
+\arguments{
+\item{obj}{a \code{randomForest}}
+
+\item{type}{Classification by ("response", "prob")}
+
+\item{subset}{indx of observations of interest}
+
+\item{which.outcome}{For classification, select the class index of interest}
 }
 \description{
 Only works on randomForest package forests.

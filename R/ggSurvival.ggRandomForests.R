@@ -22,22 +22,16 @@
 #' @param rfObject An object of class (rfsrc, grow) or (rfsrc, predict).
 #' @param subset Vector indicating which individuals we want estimates for. 
 #'   All individuals are used if not specified.
-#' @param prd.type
-#' @param srv.type
-#' @param pnts
-#' @param show.ind
-#' @param strata 
-#' @param climits 
-#' @param error 
-#' @param errbars 
-#' @param curve 
+#' @param prd.type ("std", "oob")
+#' @param srv.type ("surv", "chf", "mortality", "hazard")
+#' @param pnts ("none", "kaplan", "nelson")
+# #' @param show.ind 
+# #' @param strata 
+#' @param climits confidence limit bands
+# #' @param error 
+# #' @param errbars 
+# #' @param curve 
 #' @param ... Further arguments passed to other methods.
-#'
-#' @details If subset is not specified, generates the following three plots
-#'  (going from top to bottom, left to right):
-#' 
-#' Forest estimated survival function for each individual (red line is 
-#' overall ensemble survival, thick green line is Nelson-Aalen estimator).
 #' 
 #' @export ggSurvival.ggRandomForests ggSurvival
 #' 
@@ -49,13 +43,13 @@ ggSurvival.ggRandomForests <- function (rfObject,
                                         prd.type=c("std", "oob"),
                                         srv.type=c("surv", "chf", "mortality", "hazard"),
                                         pnts = c("none", "kaplan", "nelson"),
-                                        show.ind = NULL,
-                                        subset,
-                                        strata,
+                                        #   show.ind = NULL,
+                                        # subset,
+                                        # strata,
                                         climits = .95, 
-                                        error = c("none", "bars", "shade", "lines"),
-                                        errbars,
-                                        curve=c("mean", "median", "both"),
+                                        #error = c("none", "bars", "shade", "lines"),
+                                        # errbars,
+                                        # curve=c("mean", "median", "both"),
                                         ...)
 { 
   
@@ -75,8 +69,8 @@ ggSurvival.ggRandomForests <- function (rfObject,
   pnts <- match.arg(pnts)
   prd.type <- match.arg(prd.type)
   srv.type <- match.arg(srv.type)
-  error <- match.arg(error)
-  curve <- match.arg(curve)
+  # error <- match.arg(error)
+  # curve <- match.arg(curve)
   
   ## What type of prediction are we looking for (OOB or not).
   rf.srv <- switch(prd.type,

@@ -67,7 +67,8 @@ calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob=TRUE){
   })
   
   spc <- do.call(rbind, spc)
-  
+  spc <- rbind(c(0,1), spc, c(1,0))
+  pct<- c("origin",pct,"limit")
   return(data.frame(spc, row.names=pct))
   
 }
@@ -95,7 +96,10 @@ calcROC.randomForest <- function(rf, dta, which.outcome=1){
 #'
 #' @title calcAUC.ggRandomForests calculate the Area Under the ROC Curve
 #' 
-#' @details Basically integrate the area using the trapezoidal rule.
+#' @description calcAUC uses the trapezoidal rule to calculate the area under
+#' the ROC curve.
+#' 
+#' @details sensitivity and specificity 
 #' 
 #' @param x output from calcROC (or ggROC) 
 #' 
@@ -108,12 +112,11 @@ calcAUC.ggRandomForests <- function(x){
   ##
   ## f(x) is sensitivity, x is 1-specificity
   
-  #   auc <- sapply(2:dim(x)[1], function(ind){
-  #     dx <- x$sens[ind]-x$sens[ind-1]
-  #     (x$spec[ind] + x$spec[ind-1])*dx/2
-  #   }) 
-  #   
-  auc <- (x$sens - lag(x$sens))/2 * (x$spec+ lag(x$spec))
+  # SInce we are leading vectors (x_{i+1} - x_{i}), we need to
+  # ensure we are in decreasing order of specificity (x var = 1-spec)
+  x <- x[order(x$spec, decreasing=TRUE),]
+  
+  auc <- (3*lead(x$sens) - x$sens)/2 * (x$spec - lead(x$spec))
   sum(auc, na.rm=TRUE)
 }
 calcAUC<- calcAUC.ggRandomForests

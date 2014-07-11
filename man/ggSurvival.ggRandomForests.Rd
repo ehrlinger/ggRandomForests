@@ -7,9 +7,7 @@ Create data.frame of survival data from an randomForestSRC survival object.}
 \usage{
 ggSurvival.ggRandomForests(rfObject, prd.type = c("std", "oob"),
   srv.type = c("surv", "chf", "mortality", "hazard"), pnts = c("none",
-  "kaplan", "nelson"), show.ind = NULL, subset, strata, climits = 0.95,
-  error = c("none", "bars", "shade", "lines"), errbars, curve = c("mean",
-  "median", "both"), ...)
+  "kaplan", "nelson"), climits = 0.95, ...)
 }
 \arguments{
 \item{rfObject}{An object of class (rfsrc, grow) or (rfsrc, predict).}
@@ -17,21 +15,23 @@ ggSurvival.ggRandomForests(rfObject, prd.type = c("std", "oob"),
 \item{subset}{Vector indicating which individuals we want estimates for.
 All individuals are used if not specified.}
 
-\item{prd.type}{}
+\item{prd.type}{("std", "oob")}
 
-\item{srv.type}{}
+\item{srv.type}{("surv", "chf", "mortality", "hazard")}
 
-\item{pnts}{}
+\item{pnts}{("none", "kaplan", "nelson")
+#}
 
-\item{show.ind}{}
+\item{show.ind}{#}
 
 \item{strata}{}
 
-\item{climits}{}
+\item{climits}{confidence limit bands
+#}
 
-\item{error}{}
+\item{error}{#}
 
-\item{errbars}{}
+\item{errbars}{#}
 
 \item{curve}{}
 
@@ -40,12 +40,5 @@ All individuals are used if not specified.}
 \description{
 ggSurvival
 Create data.frame of survival data from an randomForestSRC survival object.
-}
-\details{
-If subset is not specified, generates the following three plots
- (going from top to bottom, left to right):
-
-Forest estimated survival function for each individual (red line is
-overall ensemble survival, thick green line is Nelson-Aalen estimator).
 }
 

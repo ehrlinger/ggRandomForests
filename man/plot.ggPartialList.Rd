@@ -9,6 +9,10 @@ Plot a \code{\link{ggPartial}} object, the partial plot data object.}
 \arguments{
 \item{x}{ggPartial object created from a randomForestSRC object}
 
+\item{points}{plot points (boolean)}
+
+\item{smooth}{use smooth curve (by type)}
+
 \item{...}{extra arguments}
 }
 \value{

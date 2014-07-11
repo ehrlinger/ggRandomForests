@@ -10,7 +10,15 @@ Plot a \code{\link{ggVariable}} object,}
 \arguments{
 \item{x}{ggVariable object created from a randomForestSRC object}
 
-\item{var}{variable (or list of variables) of interest.}
+\item{x.var}{variable (or list of variables) of interest.}
+
+\item{time}{For survival, one or more times of interest}
+
+\item{time.labels}{string labels for times}
+
+\item{oob}{oob estimates (boolean)}
+
+\item{smooth}{type of smooth curve}
 
 \item{...}{arguments passed to the \code{\link{ggVariable}} function.}
 }

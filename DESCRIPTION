@@ -12,6 +12,9 @@ Depends:
     dplyr,
     randomForestSRC (>= 1.4.0),
     survival
+Suggests:
+    knitr
+VignetteBuilder: knitr
 Description: ggRandomForests is a tool for creating graphs for randomForestSRC
     objects using the ggplot2 package.
 License: GPL (>=3)
