@@ -1,0 +1,53 @@
+\documentclass[nojss]{jss}
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{ggRandomForests}
+
+
+<<setup,include=FALSE, cache=FALSE, echo=FALSE>>=
+library(knitr)
+# set global chunk options for knitr. These can be changed in the header for each individual R code chunk
+opts_chunk$set(fig.path='figure/beamer-', 
+               fig.align='center',
+               fig.pos="!htpb",
+               fig.show='hold', 
+               size='footnotesize',
+               comment="", echo=FALSE, results=FALSE, message=FALSE, warnings=FALSE,
+               error=FALSE, dev='pdf')
+
+# Setup the R environment
+options(replace.assign=TRUE,object.size=Inf,expressions=100000,memory=Inf, width=100)
+
+#################
+# Load_packages #
+#################
+library(ggplot2) # Graphics engine for generating all types of plots
+library(reshape2) # Used to modify the data for plotting
+library(gridExtra) # for combined ggplots
+library(RColorBrewer) # Color schemes
+library(scales) # For modifying ggplot
+
+library(xtable) # Make tables in latex
+library(reporttools) # for descriptive stats
+
+library(dplyr) # Better data manipulations
+
+library(parallel)
+options(mc.cores = detectCores()-1, rf.cores=detectCores()-1)
+
+library(devtools)
+#load_all("../ggRandomForests/")
+library(ggRandomForests)
+
+# Analysis packages.
+library(randomForestSRCM) 
+
+#########################################################################
+# Default computation settings
+#########################################################################
+@
+
+
+\begin{document}
+The document
+
+\end{document}

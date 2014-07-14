@@ -38,15 +38,15 @@ additional external, custom plotting or analysis operations.
 
 The ggRandomForests package contains the following functions:
 \itemize{
-\item ggRFsrc: randomForest[SRC] prediction
-\item ggError: randomForest[SRC] convergence rate based on the OOB error rate.
-\item ggROC: ROC curves for randomForest classification models.
-\item ggVimp: Variable Importance ranking for variable selection
-\item ggMinimalDepth: Minimal Depth ranking for variable selection
-\item ggInteractions: Minimal Depth interaction detection (under development)
-\item ggVariable: Marginal variable dependence (including conditional dependence)
-\item ggPartial: Partial variable dependence  (including conditional partial dependence)
-\item ggSurvival: Non-parameteric Kaplan-Meier and Nelson-Aalon survival estimates
+\item gg_rfsrc: randomForest[SRC] prediction
+\item gg_error: randomForest[SRC] convergence rate based on the OOB error rate.
+\item gg_roc: ROC curves for randomForest classification models.
+\item gg_vimp: Variable Importance ranking for variable selection
+\item gg_minimal_depth: Minimal Depth ranking for variable selection
+\item gg_interactions: Minimal Depth interaction detection (under development)
+\item gg_variable: Marginal variable dependence (including conditional dependence)
+\item gg_partial: Partial variable dependence  (including conditional partial dependence)
+\item gg_survival: Non-parameteric Kaplan-Meier and Nelson-Aalon survival estimates
 }
 
 All functions have an associated plotting function that returns ggplot2 graphics, either
