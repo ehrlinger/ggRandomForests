@@ -80,7 +80,7 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
       
       if(smooth){
         gDta[[ind]] <- gDta[[ind]] +
-          geom_smooth(aes_string(x="var", y="yhat"))
+          geom_smooth(aes_string(x="var", y="yhat"), se=FALSE)
       }
       if(length(levels(object$time)) > 1){
         gDta[[ind]]<- gDta[[ind]] + facet_wrap(~time, ncol=1)
@@ -95,7 +95,7 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
           labs(x=hName, y="Predicted")
         if(smooth){
           gDta[[ind]] <- gDta[[ind]] +
-            geom_smooth(aes_string(x="var", y="yhat"))
+            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE)
         }
         
       }else{
@@ -108,7 +108,7 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
         labs(x=hName, y="Predicted")
       if(smooth){
         gDta[[ind]] <- gDta[[ind]] +
-          geom_smooth(aes_string(x="var", y="yhat"))
+          geom_smooth(aes_string(x="var", y="yhat"), se=FALSE)
       }
     }
     

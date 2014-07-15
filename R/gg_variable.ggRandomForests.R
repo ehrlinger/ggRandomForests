@@ -82,7 +82,7 @@ gg_variable.ggRandomForests <- function(object,
     pDat$yvar <- object$yvar
     
   }else if(object$family == "surv"){
-    pDat$cens <- as.logical(object$yvar$dead)
+    pDat$cens <- as.logical(object$yvar[,2])
     colnames(pDat) <- c(object$xvar.names, "cens")
     
     lng <- length(time)
