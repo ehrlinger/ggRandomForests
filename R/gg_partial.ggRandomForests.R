@@ -45,7 +45,7 @@ gg_partial.ggRandomForests <- function(object,
   if(!inherits(object,"plot.variable")){
     stop("gg_partial expects a plot.variable object, Run plot.variable with partial=TRUE")
   }
-  if(!object$partial) invisible(ggVariable(object, ...))
+  if(!object$partial) invisible(gg_variable(object, ...))
   
   # How many variables
   n.var=length(object$pData)
@@ -69,7 +69,7 @@ gg_partial.ggRandomForests <- function(object,
     invisible(pDat[[1]])
   }else{
     # otherwise, add a class label so we can handle it correctly. 
-    class(pDat) <- c("gg_partialList", class(pDat))
+    class(pDat) <- c("gg_partial_list", class(pDat))
     invisible(pDat)
   }
   

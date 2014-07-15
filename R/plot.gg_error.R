@@ -61,10 +61,13 @@
 #' plot(ggrf.obj)
 #'}
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
+#' @importFrom reshape2 melt
 ### error rate plot
 plot.gg_error <- function(x, ...){
   obj <- x
   if(inherits(obj, "rfsrc")) obj <- gg_error(obj)
+  
+  obj<-melt(obj, id.vars = "ntree")
   
   # We expect the object to have the following columns
   gDta <- ggplot(obj, aes_string(x="ntree",y="value", col="variable"))+

@@ -56,7 +56,6 @@
 #'
 #' @aliases gg_rfsrc
 #'
-#' @importFrom reshape2 melt
 #' @importFrom dplyr tbl_df select
 #' 
 gg_rfsrc.ggRandomForests <- function(object, oob=TRUE, se=NULL, ...) {
@@ -108,10 +107,7 @@ gg_rfsrc.ggRandomForests <- function(object, oob=TRUE, se=NULL, ...) {
       rng$ptid <- 1:dim(rng)[1]
       rng$cens <- as.logical(object$yvar[,2])
       
-      dta <- melt(rng, id.vars = c("ptid", "cens"))
-      dta$variable <- as.numeric(as.character(dta$variable))
-      dta$ptid <- factor(dta$ptid)
-      dta <- tbl_df(dta)
+       dta <- tbl_df(dta)
     }else{
       # If we have one value, then it's two sided.
       if(length(se) ==1 ){

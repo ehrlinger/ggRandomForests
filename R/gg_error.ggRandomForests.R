@@ -66,7 +66,6 @@
 #' ggrf.obj <- gg_error(v.obj)
 #' plot(ggrf.obj)
 #' 
-#' @importFrom reshape2 melt
 #' @importFrom dplyr tbl_df
 #'
 ### error rate plot
@@ -86,11 +85,10 @@ gg_error.ggRandomForests <- function(object, ...) {
   
   error$ntree <- 1:dim(error)[1]
   
-  dta<-melt(error, id.vars = "ntree")
-  dta <- tbl_df(dta)
+  error <- tbl_df(error)
   
-  class(dta) <- c("gg_error",class(dta))
-  invisible(dta)
+  class(error) <- c("gg_error",class(error))
+  invisible(error)
 }
 
 gg_error <- gg_error.ggRandomForests

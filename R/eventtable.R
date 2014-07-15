@@ -29,10 +29,10 @@
 #' @param type one of ("kaplan","nelson"), defaults to kaplan-meier
 #' @param ... extra arguments passed to kaplan or nelson functions.
 #' 
-#' @return A ggSurvival object created using the non-parametric kaplan-meier or 
+#' @return A gg_survival object created using the non-parametric kaplan-meier or 
 #' nelson-aalon estimators.
 #' 
-#' @seealso \code{\link{kaplan}} \code{\link{nelson}} \code{\link{ggSurvival}}
+#' @seealso \code{\link{kaplan}} \code{\link{nelson}} \code{\link{gg_survival}}
 #' @export eventtable
 #' @importFrom dplyr tbl_df
 #' 

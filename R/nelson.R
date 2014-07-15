@@ -79,7 +79,7 @@ nelson <- function(interval, censor, data, strat=NULL, weight=NULL,climit=.95){
                        "lower_cl", "upper_cl", "cum_haz","hazard", "density", "mid_int", "life", "proplife")
   
   tbl.e <- tbl_df(tbl.e)
-  class(tbl.e) <- c("ggSurvival", class(tbl.e)) 
+  class(tbl.e) <- c("gg_survival", class(tbl.e)) 
   invisible(tbl.e)
 }
 

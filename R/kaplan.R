@@ -70,7 +70,7 @@ kaplan <- function(interval,
   colnames(tbl.e) <- c(colnames(tbl.e)[1:9], "hazard", "density", "mid_int", "life", "proplife")
   
   tbl.e <- tbl_df(tbl.e)
-  class(tbl.e) <- c("ggSurvival", class(tbl.e)) 
+  class(tbl.e) <- c("gg_survival", class(tbl.e)) 
   invisible(tbl.e)
 }
 

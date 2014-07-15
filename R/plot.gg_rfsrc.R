@@ -94,6 +94,10 @@ plot.gg_rfsrc<- function(x, ...){
         geom_step(aes_string(x="time", y="value", color="variable"))
       
     }else{
+      dta <- melt(obj, id.vars = c("ptid", "cens"))
+      dta$variable <- as.numeric(as.character(dta$variable))
+      dta$ptid <- factor(dta$ptid)
+      
       # Lines by observation
       gDta <- ggplot(obj)+
         geom_step(aes_string(x="variable", y="value", col="cens", by="ptid"), 
