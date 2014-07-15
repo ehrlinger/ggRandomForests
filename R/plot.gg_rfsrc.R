@@ -99,7 +99,7 @@ plot.gg_rfsrc<- function(x, ...){
       dta$ptid <- factor(dta$ptid)
       
       # Lines by observation
-      gDta <- ggplot(obj)+
+      gDta <- ggplot(dta)+
         geom_step(aes_string(x="variable", y="value", col="cens", by="ptid"), 
                   alpha=.3, size=.1)
     }
