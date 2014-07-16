@@ -2,14 +2,15 @@
 \name{gg_rfsrc.ggRandomForests}
 \alias{gg_rfsrc}
 \alias{gg_rfsrc.ggRandomForests}
-\title{gg_rfsrc.ggRandomForests
-Extract the predicted response values from the forest, formatted for
-convergence plot using \code{\link{plot.gg_rfsrc}}}
+\title{gg_rfsrc.ggRandomForests}
 \usage{
-gg_rfsrc.ggRandomForests(object, oob = TRUE, se = NULL, ...)
+gg_rfsrc.ggRandomForests(object, surv_type = c("surv", "chf", "mortality",
+  "hazard"), oob = TRUE, se, ...)
 }
 \arguments{
 \item{object}{randomForestSRC object}
+
+\item{surv_type}{("surv", "chf", "mortality", "hazard")}
 
 \item{oob}{boolean, should we return the oob prediction , or the full
 forest prediction.}
@@ -23,9 +24,8 @@ interval}
 gg_rfsrc object formatted for \code{\link{plot.gg_rfsrc}}
 }
 \description{
-gg_rfsrc.ggRandomForests
 Extract the predicted response values from the forest, formatted for
-convergence plot using \code{\link{plot.gg_rfsrc}}
+convergence plot using \code{\link{plot.gg_rfsrc}}.
 }
 \examples{
 ## ------------------------------------------------------------

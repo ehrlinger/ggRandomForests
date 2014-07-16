@@ -82,8 +82,7 @@ plot.gg_rfsrc<- function(x, ...){
         geom_jitter(aes_string(color="y",shape="y"), alpha=.5)
     }
     gDta + labs(y="Predicted (%)", x="")
-  }
-  if(inherits(obj,"surv")){
+  }else if(inherits(obj,"surv")){
     if(inherits(obj,"survSE")){
       # Summarized survival plot for the group...
       obj.t <-  melt(select(obj, time, median, mean), id.vars="time")

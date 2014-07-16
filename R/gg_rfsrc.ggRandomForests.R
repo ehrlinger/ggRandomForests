@@ -84,13 +84,13 @@ gg_rfsrc.ggRandomForests <- function(object,
     # Need to add multiclass methods
     if(oob){
       dta <- 
-        if(dim(object$predicted.oob)[2] >= 2){
+        if(dim(object$predicted.oob)[2] <= 2){
           data.frame(cbind(object$predicted.oob[,-1]))
         }else{ 
           data.frame(cbind(object$predicted.oob))
         }
     }else{
-      dta <- if(dim(object$predicted)[2] >= 2){
+      dta <- if(dim(object$predicted)[2] <= 2){
         data.frame(cbind(object$predicted[,-1]))
       }else{ 
         data.frame(cbind(object$predicted))
@@ -165,11 +165,13 @@ gg_rfsrc.ggRandomForests <- function(object,
       }
       # Easier reading data.frames (dplyr)
       dta <- tbl_df(dta)
-      class(dta) <- c("survSE", class(dta))
+      class(dta) <- c("survSE", surv_type, class(dta))
     }
+    class(dta) <- c(surv_type, class(dta))
+    
   }
   
-  class(dta) <- c("gg_rfsrc",object$family, surv_type, class(dta))
+  class(dta) <- c("gg_rfsrc",object$family, class(dta))
   invisible(dta)
 }
 
