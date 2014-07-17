@@ -56,6 +56,14 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
     family <- "class"
   }
   
+  sm_curve <- FALSE
+  if(is.logical(smooth)){ 
+    sm_curve <- smooth
+    smooth="loess"
+  }else{
+    sm_curve <- TRUE
+  }
+    
   if(sum(colnames(object) == "cens") != 0) family <- "surv"
   
   if(missing(x.var)){
@@ -78,9 +86,9 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
         geom_point(aes_string(x="var", y="yhat", col="cens", shape="cens"), alpha=.5)+
         labs(x=hName, y= "Survival")
       
-      if(smooth){
+      if(sm_curve){
         gDta[[ind]] <- gDta[[ind]] +
-          geom_smooth(aes_string(x="var", y="yhat"), se=FALSE)
+          geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
       }
       if(length(levels(object$time)) > 1){
         gDta[[ind]]<- gDta[[ind]] + facet_wrap(~time, ncol=1)
@@ -106,9 +114,9 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
       gDta[[ind]] <- gDta[[ind]] +
         geom_point(aes_string(x="var", y="yhat"), alpha=.5)+
         labs(x=hName, y="Predicted")
-      if(smooth){
+      if(sm_curve){
         gDta[[ind]] <- gDta[[ind]] +
-          geom_smooth(aes_string(x="var", y="yhat"), se=FALSE)
+          geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
       }
     }
     
