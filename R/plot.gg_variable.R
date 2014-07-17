@@ -101,9 +101,9 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
         gDta[[ind]] <- gDta[[ind]] +
           geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), alpha=.5)+
           labs(x=hName, y="Predicted")
-        if(smooth){
+        if(sm_curve){
           gDta[[ind]] <- gDta[[ind]] +
-            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE)
+            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method="smooth")
         }
         
       }else{
