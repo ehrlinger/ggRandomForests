@@ -26,7 +26,7 @@
 #'  @seealso \code{\link{plot.gg_minimal_vimp}} \code{var.select.rfsrc}
 #'  
 #'  @export gg_minimal_vimp gg_minimal_vimp.ggRandomForests
-#'  @alias gg_minimal_vimp
+#'  @aliases gg_minimal_vimp
 #'  
 gg_minimal_vimp.ggRandomForests <- function(object, event, ...){
   
