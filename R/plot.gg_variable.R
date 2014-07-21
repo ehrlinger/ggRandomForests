@@ -43,7 +43,7 @@
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs
 ### error rate plot
-plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, ...){
+plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, span, ...){
   object <- x 
   if(inherits(object, "rfsrc")) object<- gg_variable(object, ...)
   
@@ -63,7 +63,7 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
   }else{
     sm_curve <- TRUE
   }
-    
+  
   if(sum(colnames(object) == "cens") != 0) family <- "surv"
   
   if(missing(x.var)){
@@ -72,6 +72,7 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
              grep("cens", colnames(object)))
     x.var <- colnames(object)[-cls]
   }
+  
   lng <- length(x.var)
   gDta <- vector("list", length=lng)
   
@@ -87,8 +88,13 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
         labs(x=hName, y= "Survival")
       
       if(sm_curve){
-        gDta[[ind]] <- gDta[[ind]] +
-          geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+        if(missing(span)){
+          gDta[[ind]] <- gDta[[ind]] +
+            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+        }else{
+          gDta[[ind]] <- gDta[[ind]] +
+            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
+        }
       }
       if(length(levels(object$time)) > 1){
         gDta[[ind]]<- gDta[[ind]] + facet_wrap(~time, ncol=1)
@@ -102,28 +108,37 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
           geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), alpha=.5)+
           labs(x=hName, y="Predicted")
         if(sm_curve){
-          gDta[[ind]] <- gDta[[ind]] +
-            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method="smooth")
+          if(missing(span)){
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+          }else{
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
+          }
+          
+        }else{
+          stop("Multiclass variable dependence has not been implemented yet.")
+        }
+      }else{
+        # assume regression
+        gDta[[ind]] <- gDta[[ind]] +
+          geom_point(aes_string(x="var", y="yhat"), alpha=.5)+
+          labs(x=hName, y="Predicted")
+        if(sm_curve){
+          if(missing(span)){
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+          }else{
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
+          }
         }
         
-      }else{
-        stop("Multiclass variable dependence has not been implemented yet.")
-      }
-    }else{
-      # assume regression
-      gDta[[ind]] <- gDta[[ind]] +
-        geom_point(aes_string(x="var", y="yhat"), alpha=.5)+
-        labs(x=hName, y="Predicted")
-      if(sm_curve){
-        gDta[[ind]] <- gDta[[ind]] +
-          geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+        # Replace the original colname
+        colnames(object)[chIndx] <- hName
       }
     }
-    
-    # Replace the original colname
-    colnames(object)[chIndx] <- hName
-  }
-  
+  }  
   if(lng == 1) gDta <- gDta[[1]]
   else class(gDta) <- c("gg_variableList", class(gDta))
   

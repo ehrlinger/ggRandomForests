@@ -5,7 +5,7 @@
 Plot a \code{\link{gg_variable}} object,}
 \usage{
 \method{plot}{gg_variable}(x, x.var, time, time.labels, oob = TRUE,
-  smooth = TRUE, ...)
+  smooth = TRUE, span = NULL...)
 }
 \arguments{
 \item{x}{gg_variable object created from a randomForestSRC object}

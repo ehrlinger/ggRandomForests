@@ -97,6 +97,9 @@ gg_variable.ggRandomForests <- function(object,
       # Get the event time occuring before or at 1 year. 
       pDat.t <- pDat
       inTime <-which(object$time.interest> time[ind])[1] -1
+      if(inTime == 0)
+        stop("The time of interest is less than the first event time. Make sure you are using the correct time units.")
+      
       if(oob)
         pDat.t$yhat=100*object$survival.oob[,inTime]
       else
