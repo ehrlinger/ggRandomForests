@@ -59,10 +59,11 @@ plot.gg_interactions <- function(x, x.var, ...){
   if(!inherits(object, "gg_interactions")) 
     object <- gg_interactions(object, ...)
   
-  
   intPlt.dta <- data.frame(cbind(dpth=object[which(rownames(object) %in% x.var),]))
   intPlt.dta$names <- cbind(rownames(object))
   
+  if(length(x.var)==1)
+    intPlt.dta <- filter(intPlt.dta, names != x.var)
   
   #intPlt.dta <- intPlt.dta[-which(intPlt.dta$names=="viable"),]
   intPlt.dta$names <- factor(intPlt.dta$names, levels=intPlt.dta$names)
