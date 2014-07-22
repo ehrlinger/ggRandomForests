@@ -16,9 +16,8 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#'
-#' plot.gg_variable
-#' Plot a \code{\link{gg_variable}} object, 
+#' 
+#' plot.gg_variable Plot a \code{\link{gg_variable}} object,
 #' 
 #' @param x gg_variable object created from a randomForestSRC object
 #' @param x.var variable (or list of variables) of interest.
@@ -27,19 +26,18 @@
 #' @param oob oob estimates (boolean)
 #' @param smooth type of smooth curve
 #' @param ... arguments passed to the \code{\link{gg_variable}} function.
-#' 
+#'   
 #' @return ggplot object
-#' 
+#'   
 #' @export plot.gg_variable
+#'   
+#' @references Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #' 
-#' @references
-#' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
+#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews,
+#' 7(2):25-31.
 #' 
-#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for 
-#' R, Rnews, 7(2):25-31.
-#' 
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
-#' Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
+#' and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs
 ### error rate plot

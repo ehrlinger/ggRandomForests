@@ -36,8 +36,8 @@ gg_minimal_vimp.ggRandomForests <- function(object, event, ...){
   rnk.vm <- rnk.vm[order(object$varselect$vimp, decreasing=TRUE),]
   rnk.vm$vimp <- 1:dim(rnk.vm)[1]
 
-  
-  rnk.vm$col <- c("-", "+")[as.numeric(object$varselect$vimp>0)+1]
+  # Default color is by negative/positive vimp
+  rnk.vm$col <- c("-", "+")[as.numeric(object$varselect$vimp[order(object$varselect$vimp, decreasing=TRUE)]>0)+1]
   
   rnk <- merge(rnk.vm, rnk.md,by="names")
 
