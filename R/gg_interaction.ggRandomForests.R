@@ -27,7 +27,7 @@
 #' 
 #' @seealso \code{find.interaction} 
 #' 
-#' @export gg_interaction.ggRandomForests gg_interaction
+#' @export gg_interaction gg_interaction.ggRandomForests 
 #' @aliases gg_interaction
 #' @importFrom randomForestSRC find.interaction
 #' @importFrom dplyr tbl_df
@@ -89,12 +89,8 @@ gg_interaction.ggRandomForests <- function(object, ...){
     
     
     class(object) <- c("gg_interaction",  class(object))
-    
-    invisible(object)
-  }
-  
-  # Want to also handle a plot.variable where partial!= TRUE
-  if (inherits(object, "rfsrc")) {
+
+  }else if (inherits(object, "rfsrc")) {
     
     
     # If we called this with a rfsrc object, we need to run find.interaction.
@@ -106,7 +102,7 @@ gg_interaction.ggRandomForests <- function(object, ...){
   }else{
     stop("gg_interaction expects a rfsrc or find.interaction object.")
   }
-  
+
   invisible(object)
 }
 
