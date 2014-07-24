@@ -17,4 +17,7 @@ extract.RFpred(obj, type = c("response", "prob"), subset, which.outcome)
 \description{
 Only works on randomForest package forests.
 }
+\seealso{
+\code{randomForest}
+}
 

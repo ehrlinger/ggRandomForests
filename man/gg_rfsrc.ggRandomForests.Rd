@@ -31,8 +31,9 @@ convergence plot using \code{\link{plot.gg_rfsrc}}.
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
-iris.obj <- rfsrc(Species ~ ., data = iris)
-ggrf.obj<- gg_rfsrc(iris.obj)
+# iris.obj <- rfsrc(Species ~ ., data = iris)
+data(iris_rf, package="ggRandomForests")
+ggrf.obj<- gg_rfsrc(iris_rf)
 plot(ggrf.obj)
 
 

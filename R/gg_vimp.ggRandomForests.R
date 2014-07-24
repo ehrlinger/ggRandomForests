@@ -32,7 +32,7 @@
 #' 
 #' 
 #' @examples
-#' # notrun
+#'
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## showcase different vimp

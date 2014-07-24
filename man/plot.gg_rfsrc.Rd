@@ -31,6 +31,14 @@ ggrf.obj<- gg_rfsrc(iris.obj)
 plot.gg_rfsrc(ggrf.obj)
 
 ## ------------------------------------------------------------
+## Regression example
+## ------------------------------------------------------------
+airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+ggrf.obj<- gg_rfsrc(airq.obj)
+
+plot.gg_rfsrc(ggrf.obj)
+
+## ------------------------------------------------------------
 ## Survival example
 ## ------------------------------------------------------------
 ## veteran data

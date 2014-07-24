@@ -29,20 +29,14 @@
 #' @aliases calcROC.rfsrc calcROC.randomForest calcROC
 #' 
 #' @importFrom parallel mclapply
-### plot.roc
-##
-## spc<- calcROC(rf, dta$sten_grp, which.outcome=3)
-## ggplot(data=spc)+geom_line(aes(x=(1-sens), y=spec))+theme_bw()+geom_abline(a=1, b=0)
-##
-## mstn<- calcROC(rf, dta$sten_grp, which.outcome=2)
-## ggplot(data=stn)+geom_line(aes(x=(1-sens), y=spec))+theme_bw()+geom_abline(a=1, b=0)+
-##   geom_line(aes(x=(1-sens), y=spec), data=mstn,col="red")
-##
-## nstn<- calcROC(rf, dta$sten_grp, which.outcome=1)
-## ggplot(data=stn)+geom_line(aes(x=(1-sens), y=spec))+theme_bw()+geom_abline(a=1, b=0)+
-##   geom_line(aes(x=(1-sens), y=spec), data=mstn,col="red") + 
-##   geom_line(aes(x=(1-sens), y=spec), data=nstn, col="blue")
-
+#' 
+#' @examples
+#' \dontrun{
+#' ##
+#' ## Taken from the gg_roc example
+#' iris.obj <- rfsrc(Species ~ ., data = iris)
+#' roc <- calcROC.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
+#' }
 calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob=TRUE){
   if(!is.factor(dta)) dta <- factor(dta)
   dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 

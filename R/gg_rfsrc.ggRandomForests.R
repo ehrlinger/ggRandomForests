@@ -40,8 +40,9 @@
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
-#' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' ggrf.obj<- gg_rfsrc(iris.obj)
+#' # iris.obj <- rfsrc(Species ~ ., data = iris)
+#' data(iris_rf, package="ggRandomForests")
+#' ggrf.obj<- gg_rfsrc(iris_rf)
 #' plot(ggrf.obj)
 #' 
 #' 
@@ -169,9 +170,24 @@ gg_rfsrc.ggRandomForests <- function(object,
     }
     class(dta) <- c(surv_type, class(dta))
     
+  }else if(object$family == "regr"){
+   
+    # Need to add multiclass methods
+    if(oob){
+      dta <- data.frame(cbind(object$predicted.oob, object$yvar))
+    }else{
+      dta <- data.frame(cbind(object$predicted, object$yvar))
+    }
+   
+    colnames(dta) <- c("yhat", object$yvar.names)
+    
+    # Easier reading data.frames (dplyr)
+    dta <- tbl_df(dta)
+  }else{
+    stop(paste("Plotting for ", object$family, " randomForestSRC is not yet implemented.", sep=""))
   }
   
-  class(dta) <- c("gg_rfsrc",object$family, class(dta))
+  class(dta) <- c("gg_rfsrc", object$family, class(dta))
   invisible(dta)
 }
 

@@ -44,20 +44,42 @@
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
-#' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' ggrf.obj<- gg_error(iris.obj)
+#' ## You can build a randomForest
+#' # iris_rf <- rfsrc(Species ~ ., data = iris)
+#' # ... or load a cached randomForestSRC object
+#' data(iris_rf, package="ggRandomForests")
 #' 
-#' plot.gg_error(ggrf.obj)
+#' # Get a data.frame containing error rates
+#' ggrf.obj<- gg_error(iris_rf)
+#' 
+#' # Plot the gg_error object
+#' plot(ggrf.obj)
+#' 
+#' ## ------------------------------------------------------------
+#' ## Regression example
+#' ## ------------------------------------------------------------
+#' # airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' # ... or load a cached randomForestSRC object
+#' data(airq_rf, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing error rates
+#' ggrf.obj<- gg_error(airq_rf)
+#' 
+#' # Plot the gg_error object
+#' plot(ggrf.obj)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' data(veteran, package = "randomForestSRC")
-#' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#'
-#' ggrf.obj <- gg_error(v.obj)
+#' # data(veteran, package = "randomForestSRC")
+#' # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' 
+#' # Load a cached randomForestSRC object
+#' data(veteran_rf, package="ggRandomForests")
+#' 
+#' ggrf.obj <- gg_error(veteran_rf)
 #' plot(ggrf.obj)
 #'}
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
@@ -66,6 +88,8 @@
 plot.gg_error <- function(x, ...){
   obj <- x
   if(inherits(obj, "rfsrc")) obj <- gg_error(obj)
+  
+  if(!inherits(obj, "gg_error")) stop("Incorrect object type: Expects a gg_error object")
   
   obj<-melt(obj, id.vars = "ntree")
   

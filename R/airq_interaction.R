@@ -1,0 +1,42 @@
+#' New York Air Quality Measurements:RFSRC
+#' 
+#' @description An RF-S[R]C model compiled for the daily 
+#' \code{airquality} measurements in New York, May to September 1973.
+#' 
+#' The data were obtained from the New York State Department of 
+#' Conservation (ozone data) and the National Weather Service 
+#' (meteorological data).
+#' 
+#' This "data set" is a cache of the random forest model. It 
+#' makes running the CRAN checks on the ggRandomForests package
+#' faster, since we only want to test the functions within this
+#' package.
+#' 
+#' @seealso \code{airquality} \code{find.interaction}
+#' 
+#' @examples
+#' \dontrun{
+#' ## The data was built with the following command
+#' airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' }
+#' 
+#' @references 
+#' Chambers, J. M., Cleveland, W. S., Kleiner, B. and Tukey, P. A. 
+#' (1983) Graphical Methods for Data Analysis. Belmont, CA: Wadsworth.
+#' 
+#' Ishwaran H. and Kogalur U.B. (2014). Random Forests for
+#' Survival, Regression and Classification (RF-SRC), R package
+#' version 1.5.4.
+#' 
+#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests
+#' for R. R News 7(2), 25-31.
+#' 
+#' Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S.
+#' (2008). Random survival forests. Ann. Appl. Statist. 2(3),
+#' 841-860.
+#' 
+#' @docType data
+#' @keywords datasets
+#' @format A find.interaction object for regression
+#' @name airq_interaction
+NULL

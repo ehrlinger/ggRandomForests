@@ -25,6 +25,7 @@
 #' @param time.labels string labels for times
 #' @param oob oob estimates (boolean)
 #' @param smooth type of smooth curve
+#' @param span tuning parameter for loess smooths
 #' @param ... arguments passed to the \code{\link{gg_variable}} function.
 #'   
 #' @return ggplot object

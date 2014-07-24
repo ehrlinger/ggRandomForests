@@ -9,6 +9,10 @@ rates of the forest as a function of number of trees.}
 }
 \arguments{
 \item{x}{gg_minimal_depth object created from a randomForestSRC object}
+
+\item{modelsize}{should the figure be restricted to a subset of the points.}
+
+\item{...}{optional arguments (not used)}
 }
 \description{
 plot.gg_minimal_vimp

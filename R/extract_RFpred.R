@@ -23,6 +23,8 @@
 #' @param subset indx of observations of interest
 #' @param which.outcome For classification, select the class index of interest
 #' 
+#' @seealso \code{randomForest}
+#' 
 extract.RFpred <- function (obj, type=c("response", "prob"), subset, which.outcome) 
 {
   if(inherits(obj,"matrix")){

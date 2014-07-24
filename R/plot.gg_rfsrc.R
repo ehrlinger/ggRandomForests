@@ -49,6 +49,14 @@
 #' plot.gg_rfsrc(ggrf.obj)
 #' 
 #' ## ------------------------------------------------------------
+#' ## Regression example
+#' ## ------------------------------------------------------------
+#' airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' ggrf.obj<- gg_rfsrc(airq.obj)
+#' 
+#' plot.gg_rfsrc(ggrf.obj)
+#' 
+#' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
 #' ## veteran data
@@ -59,9 +67,9 @@
 #' ggrf.obj <- gg_rfsrc(v.obj)
 #' plot(ggrf.obj)
 #' }
+#' 
 #' @importFrom reshape2 melt
-#' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot
-
+#' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot theme
 ### error rate plot
 plot.gg_rfsrc<- function(x, ...){
   obj <- x
@@ -105,6 +113,15 @@ plot.gg_rfsrc<- function(x, ...){
     
     gDta<-gDta  +
       labs(x="time (years)", y="OOB Survival (%)")
+  }else if(inherits(obj, "regr")){
+    gDta <- ggplot(obj)+
+      geom_jitter(aes_string(x=1, y="yhat"), alpha=.5)+
+      geom_boxplot(aes_string(x=1, y="yhat"),
+                   outlier.colour = "transparent", fill="transparent", notch = TRUE)+
+      labs(y="Predicted Value", x=colnames(obj)[2])+
+      theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+  }else{
+    stop(paste("Plotting for ", class(obj)[2], " randomForestSRC is not yet implemented."))
   }
   return(gDta)
 }

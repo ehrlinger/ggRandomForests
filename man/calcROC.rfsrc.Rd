@@ -21,4 +21,12 @@ Given the randomForest or randomForestSRC prediction and the actual
 response value, calculate the specificty (1-False Positive Rate) and sensitivity
 (True Positive Rate) of a predictor.
 }
+\examples{
+\dontrun{
+##
+## Taken from the gg_roc example
+iris.obj <- rfsrc(Species ~ ., data = iris)
+roc <- calcROC.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
+}
+}
 

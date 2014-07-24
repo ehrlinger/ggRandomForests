@@ -20,7 +20,6 @@ gg_vimp Extracts the variable importance (VIMP) information from a
 a randomForestSRC object.
 }
 \examples{
-# notrun
 ## ------------------------------------------------------------
 ## classification example
 ## showcase different vimp
