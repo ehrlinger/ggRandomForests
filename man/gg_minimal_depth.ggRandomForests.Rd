@@ -23,6 +23,50 @@ selection using tree minimal depth methodology. The gg_minimal_depth
 function takes the output from var.select and creates a data.frame
 formatted for the plot.gg_minimal_depth function.
 }
+\examples{
+## ------------------------------------------------------------
+## classification example
+## ------------------------------------------------------------
+## You can build a randomForest
+# iris_rf <- rfsrc(Species ~ ., data = iris)
+# iris_vs <- var.select(iris_rf)
+# ... or load a cached randomForestSRC object
+data(iris_vs, package="ggRandomForests")
+
+# Get a data.frame containing minimaldepth measures
+ggrf.obj<- gg_minimal_depth(iris_vs)
+
+# Plot the gg_mkinimal_depth object
+plot(ggrf.obj)
+
+## ------------------------------------------------------------
+## Regression example
+## ------------------------------------------------------------
+# airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+# airq_vs <- var.select(airq_rf)
+# ... or load a cached randomForestSRC object
+data(airq_vs, package="ggRandomForests")
+
+# Get a data.frame containing error rates
+ggrf.obj<- gg_minimal_depth(airq_vs)
+
+# Plot the gg_error object
+plot(ggrf.obj)
+
+## ------------------------------------------------------------
+## Survival example
+## ------------------------------------------------------------
+## veteran data
+## randomized trial of two treatment regimens for lung cancer
+# data(veteran, package = "randomForestSRC")
+# veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+# veteran_vs <- var.select(veteran_rf)
+# Load a cached randomForestSRC object
+data(veteran_vs, package="ggRandomForests")
+
+ggrf.obj <- gg_minimal_depth(veteran_vs)
+plot(ggrf.obj)
+}
 \seealso{
 \code{var.select} \code{\link{plot.gg_minimal_depth}}
 }

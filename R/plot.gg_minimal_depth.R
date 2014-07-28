@@ -44,24 +44,50 @@
 #' 
 #' @examples
 #' \dontrun{
+#' 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
-#' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' ggrf.obj<- gg_minimal_depth(iris.obj)
+#' ## You can build a randomForest
+#' # iris_rf <- rfsrc(Species ~ ., data = iris)
+#' # iris_vs <- var.select(iris_rf)
+#' # ... or load a cached randomForestSRC object
+#' data(iris_vs, package="ggRandomForests")
 #' 
-#' plot.gg_minimal_depth(ggrf.obj)
+#' # Get a data.frame containing minimaldepth measures
+#' ggrf.obj<- gg_minimal_depth(iris_vs)
+#' 
+#' # Plot the gg_mkinimal_depth object
+#' plot(ggrf.obj)
+#' 
+#' ## ------------------------------------------------------------
+#' ## Regression example
+#' ## ------------------------------------------------------------
+#' # airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' # airq_vs <- var.select(airq_rf)
+#' # ... or load a cached randomForestSRC object
+#' data(airq_vs, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing error rates
+#' ggrf.obj<- gg_minimal_depth(airq_vs)
+#' 
+#' # Plot the gg_error object
+#' plot(ggrf.obj)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' data(veteran, package = "randomForestSRCM")
-#' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#'
-#' ggrf.obj <- gg_minimal_depth(v.obj)
+#' # data(veteran, package = "randomForestSRC")
+#' # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' # veteran_vs <- var.select(veteran_rf)
+#' # Load a cached randomForestSRC object
+#' data(veteran_vs, package="ggRandomForests")
+#' 
+#' ggrf.obj <- gg_minimal_depth(veteran_vs)
 #' plot(ggrf.obj)
+#' 
 #' }
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline
 ### error rate plot

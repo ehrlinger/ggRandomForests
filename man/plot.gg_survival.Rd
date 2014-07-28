@@ -4,14 +4,10 @@
 \title{plot.gg_survival
 Plot a \code{\link{gg_survival}} object,}
 \usage{
-\method{plot}{gg_survival}(x, type = c("surv", "cum_haz", "hazard", "density",
-  "life", "proplife"), error = c("shade", "bars", "lines"), ...)
+\method{plot}{gg_survival}(x, error = c("shade", "bars", "lines"), ...)
 }
 \arguments{
 \item{x}{gg_survival object created from a randomForestSRC object}
-
-\item{type}{Curve family defaults "surv", other possibilities "cum_haz",
-"hazard","density","life","proplife".}
 
 \item{error}{"shade", "bars" or "lines"}
 
@@ -28,10 +24,10 @@ Plot a \code{\link{gg_survival}} object,
 \dontrun{
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
-data(veteran, package = "randomForestSRCM")
-v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#data(veteran, package = "randomForestSRCM")
+#veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 
-ggrf.obj <- gg_survival(v.obj)
+ggrf.obj <- gg_survival(veteran_rf)
 plot(ggrf.obj)
 }
 }

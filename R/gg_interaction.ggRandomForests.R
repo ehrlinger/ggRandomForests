@@ -42,10 +42,10 @@
 #' ## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
 #' data(pbc_interaction, package="ggRandomForests")
 #' gg_int <- gg_interaction(pbc_interaction)
-#' \dontrun{
+#' 
 #' plot(gg_int, x_var="bili")
 #' plot(gg_int, x_var="copper")
-#' }
+#' 
 #' 
 #' ## ------------------------------------------------------------
 #' ## find interactions, regression setting
@@ -57,10 +57,10 @@
 #' ## airq_interaction <- find.interaction(airq.obj)
 #' data(airq_interaction, package="ggRandomForests")
 #' gg_int <- gg_interaction(airq_interaction)
-#' \dontrun{
+#' 
 #' plot(gg_int, x_var="Temp")
 #' plot(gg_int, x_var="Solar.R")
-#' }
+#' 
 #' 
 #' ## ------------------------------------------------------------
 #' ## find interactions, classification setting
@@ -71,10 +71,10 @@
 #' ## iris_interaction <- find.interaction(iris.obj)
 #' data(iris_interaction, package="ggRandomForests")
 #' gg_int <- gg_interaction(iris_interaction)
-#' \dontrun{
+#' 
 #' plot(gg_int, x_var="Petal.Width")
 #' plot(gg_int, x_var="Petal.Length")
-#' }
+#' 
 #' 
 
 gg_interaction.ggRandomForests <- function(object, ...){

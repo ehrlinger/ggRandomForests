@@ -22,8 +22,8 @@
 #' @param rfObject An object of class (rfsrc, grow) or (rfsrc, predict).
 # # @param subset Vector indicating which individuals we want estimates for. 
 #'   All individuals are used if not specified.
-#' @param prd.type ("std", "oob")
-#' @param srv.type ("surv", "chf", "mortality", "hazard")
+#' @param prd_type ("std", "oob")
+#' @param srv_type ("surv", "chf", "mortality", "hazard")
 #' @param pnts ("none", "kaplan", "nelson")
 # # @param show.ind 
 # # @param strata  
@@ -39,9 +39,19 @@
 #' 
 #' @importFrom dplyr tbl_df
 #' 
+#' @examples
+#' ## veteran data
+#' ## randomized trial of two treatment regimens for lung cancer
+#' #data(veteran, package = "randomForestSRCM")
+#' #veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' data(veteran_rf, package="ggRandomForests")
+#' 
+#' ggrf.obj <- gg_survival(veteran_rf)
+#' plot(ggrf.obj)
+#' 
 gg_survival.ggRandomForests <- function (rfObject,
-                                        prd.type=c("std", "oob"),
-                                        srv.type=c("surv", "chf", "mortality", "hazard"),
+                                        prd_type=c("std", "oob"),
+                                        srv_type=c("surv", "chf", "mortality", "hazard"),
                                         pnts = c("none", "kaplan", "nelson"),
                                         #   show.ind = NULL,
                                         # subset,
@@ -67,13 +77,13 @@ gg_survival.ggRandomForests <- function (rfObject,
   
   # Check the input arguments
   pnts <- match.arg(pnts)
-  prd.type <- match.arg(prd.type)
-  srv.type <- match.arg(srv.type)
+  prd_type <- match.arg(prd_type)
+  srv_type <- match.arg(srv_type)
   # error <- match.arg(error)
   # curve <- match.arg(curve)
   
   ## What type of prediction are we looking for (OOB or not).
-  rf.srv <- switch(prd.type,
+  rf.srv <- switch(prd_type,
                    std=rfObject$survival,
                    oob={
                      # In case of predict object without OOB data
@@ -83,7 +93,7 @@ gg_survival.ggRandomForests <- function (rfObject,
                        rfObject$survival.oob
                      }})
   
-  rf.chf  <- switch(prd.type,
+  rf.chf  <- switch(prd_type,
                     std=rfObject$chf,
                     oob={
                       # In case of predict object without OOB data
@@ -94,7 +104,7 @@ gg_survival.ggRandomForests <- function (rfObject,
                       }
                     })
   
-  rf.data  <- switch(srv.type,
+  rf.data  <- switch(srv_type,
                      surv = rf.srv,
                      chf = rf.chf,
                      mortality = 1-rf.srv,

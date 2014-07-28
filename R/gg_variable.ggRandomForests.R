@@ -41,6 +41,54 @@
 #' 
 #' @importFrom dplyr tbl_df
 #'
+#' @examples
+#' ## ------------------------------------------------------------
+#' ## survival examples
+#' ## ------------------------------------------------------------
+#' 
+#' ## survival
+#' # data(veteran, package = "randomForestSRC")
+#' # veteran_rf <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
+#' data(veteran_rf, package="ggRandomForests")
+#' 
+#' # get the 1 year survival time.
+#' ggrf.obj <- gg_variable(veteran_rf, time=1)
+#' 
+#' #plot.variable(v.obj, plots.per.page = 3)
+#' plot(ggrf.obj)
+#' 
+#' #plot.variable(v.obj, plots.per.page = 2, xvar.names = c("trt", "karno", "age"))
+#' plot.gg_variable(ggrf.obj, c("trt", "karno", "age")))
+#' 
+#' #plot.variable(v.obj, surv.type = "surv", nvar = 1, time = 200)
+#' ggrf.obj <- gg_variable(veteran_rf, time=200)
+#' plot.gg_variable(ggrf.obj, "age")
+
+#' ## ------------------------------------------------------------
+#' ## regression
+#' ## ------------------------------------------------------------
+#' 
+#' ## airquality
+#' #airq.obj <- rfsrc(Ozone ~ ., data = airquality)
+#' data(airq_rf, package="ggRandomForests")
+#' 
+#' # plot.variable(airq.obj, partial = TRUE, smooth.lines = TRUE)
+#' 
+#' ## motor trend cars
+#' #mtcars.obj <- rfsrc(mpg ~ ., data = mtcars)
+#' data(mtcars_rf, package="ggRandomForests")
+#' # plot.variable(mtcars.obj, partial = TRUE, smooth.lines = TRUE)
+#' 
+#' ## ------------------------------------------------------------
+#' ## classification
+#' ## ------------------------------------------------------------
+#' 
+#' ## iris
+#' #iris.obj <- rfsrc(Species ~., data = iris)
+#' data(iris_rf, package="ggRandomForests")
+#' 
+#' #plot.variable(iris.obj, partial = TRUE)
+#' 
 gg_variable.ggRandomForests <- function(object,
                                        time,
                                        time.labels,

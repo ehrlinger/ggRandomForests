@@ -5,17 +5,17 @@
 \title{gg_survival
 Create data.frame of survival data from an randomForestSRC survival object.}
 \usage{
-gg_survival.ggRandomForests(rfObject, prd.type = c("std", "oob"),
-  srv.type = c("surv", "chf", "mortality", "hazard"), pnts = c("none",
+gg_survival.ggRandomForests(rfObject, prd_type = c("std", "oob"),
+  srv_type = c("surv", "chf", "mortality", "hazard"), pnts = c("none",
   "kaplan", "nelson"), climits = 0.95, ...)
 }
 \arguments{
 \item{rfObject}{An object of class (rfsrc, grow) or (rfsrc, predict).
 All individuals are used if not specified.}
 
-\item{prd.type}{("std", "oob")}
+\item{prd_type}{("std", "oob")}
 
-\item{srv.type}{("surv", "chf", "mortality", "hazard")}
+\item{srv_type}{("surv", "chf", "mortality", "hazard")}
 
 \item{pnts}{("none", "kaplan", "nelson")}
 
@@ -26,5 +26,15 @@ All individuals are used if not specified.}
 \description{
 gg_survival
 Create data.frame of survival data from an randomForestSRC survival object.
+}
+\examples{
+## veteran data
+## randomized trial of two treatment regimens for lung cancer
+#data(veteran, package = "randomForestSRCM")
+#veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+data(veteran_rf, package="ggRandomForests")
+
+ggrf.obj <- gg_survival(veteran_rf)
+plot(ggrf.obj)
 }
 

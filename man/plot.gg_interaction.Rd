@@ -20,6 +20,51 @@ ggplot object
 plot.gg_variable
 Plot a \code{\link{gg_variable}} object,
 }
+\examples{
+\dontrun{
+## Examples from RFSRC package...
+## ------------------------------------------------------------
+## find interactions, survival setting
+## ------------------------------------------------------------
+## data(pbc, package = "randomForestSRC")
+## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
+## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
+data(pbc_interaction, package="ggRandomForests")
+gg_int <- gg_interaction(pbc_interaction)
+
+plot(gg_int, x_var="bili")
+plot(gg_int, x_var="copper")
+
+
+## ------------------------------------------------------------
+## find interactions, regression setting
+## ------------------------------------------------------------
+## airq.obj <- rfsrc(Ozone ~ ., data = airquality)
+##
+## TODO: VIMP interactions not handled yet....
+## find.interaction(airq.obj, method = "vimp", nrep = 3)
+## airq_interaction <- find.interaction(airq.obj)
+data(airq_interaction, package="ggRandomForests")
+gg_int <- gg_interaction(airq_interaction)
+
+plot(gg_int, x_var="Temp")
+plot(gg_int, x_var="Solar.R")
+
+
+## ------------------------------------------------------------
+## find interactions, classification setting
+## ------------------------------------------------------------
+## iris.obj <- rfsrc(Species ~., data = iris)
+## TODO: VIMP interactions not handled yet....
+## find.interaction(iris.obj, method = "vimp", nrep = 3)
+## iris_interaction <- find.interaction(iris.obj)
+data(iris_interaction, package="ggRandomForests")
+gg_int <- gg_interaction(iris_interaction)
+
+plot(gg_int, x_var="Petal.Width")
+plot(gg_int, x_var="Petal.Length")
+}
+}
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 

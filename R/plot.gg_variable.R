@@ -20,9 +20,9 @@
 #' plot.gg_variable Plot a \code{\link{gg_variable}} object,
 #' 
 #' @param x gg_variable object created from a randomForestSRC object
-#' @param x.var variable (or list of variables) of interest.
+#' @param x_var variable (or list of variables) of interest.
 #' @param time For survival, one or more times of interest
-#' @param time.labels string labels for times
+#' @param time_labels string labels for times
 #' @param oob oob estimates (boolean)
 #' @param smooth type of smooth curve
 #' @param span tuning parameter for loess smooths
@@ -42,7 +42,7 @@
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs
 ### error rate plot
-plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, span, ...){
+plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, span, ...){
   object <- x 
   if(inherits(object, "rfsrc")) object<- gg_variable(object, ...)
   
@@ -65,18 +65,18 @@ plot.gg_variable<- function(x, x.var, time, time.labels, oob=TRUE, smooth=TRUE, 
   
   if(sum(colnames(object) == "cens") != 0) family <- "surv"
   
-  if(missing(x.var)){
+  if(missing(x_var)){
     # We need to remove response variables here
     cls <- c(grep("yhat", colnames(object)),
              grep("cens", colnames(object)))
-    x.var <- colnames(object)[-cls]
+    x_var <- colnames(object)[-cls]
   }
   
-  lng <- length(x.var)
+  lng <- length(x_var)
   gDta <- vector("list", length=lng)
   
   for(ind in 1:lng){
-    chIndx <- which(colnames(object)==x.var[ind])
+    chIndx <- which(colnames(object)==x_var[ind])
     hName <- colnames(object)[chIndx]
     colnames(object)[chIndx] <- "var"
     

@@ -21,8 +21,6 @@
 #' Plot a \code{\link{gg_survival}} object, 
 #' 
 #' @param x gg_survival object created from a randomForestSRC object
-#' @param type Curve family defaults "surv", other possibilities "cum_haz",
-#' "hazard","density","life","proplife".
 #' @param error "shade", "bars" or "lines"
 #' @param ... not used
 #'  
@@ -43,10 +41,10 @@
 #' \dontrun{
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' data(veteran, package = "randomForestSRCM")
-#' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' #data(veteran, package = "randomForestSRCM")
+#' #veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #'
-#' ggrf.obj <- gg_survival(v.obj)
+#' ggrf.obj <- gg_survival(veteran_rf)
 #' plot(ggrf.obj)
 #'}
 #'
@@ -54,46 +52,38 @@
 #' 
 ### Survival plots
 plot.gg_survival<- function(x, 
-                           type=c("surv", "cum_haz","hazard","density","life","proplife"),
-                           error=c("shade","bars","lines"),
-                           ...){
+                            #  type=c("surv", "cum_haz","hazard","density","life","proplife"),
+                            error=c("shade","bars","lines"),
+                            ...){
   object <- x
   if(inherits(object, "rfsrc")) object<-gg_survival(object)
+  
+  error <- match.arg(error)
+  
   # Now order matters, so we want to place the forest predictions on the bottom
   # Create the figure skeleton,
-  plt<-ggplot(object)
+  plt<-ggplot(object)+
+    geom_step(aes_string(x="time", y="mean"))
   
+  # Do we want to show confidence limits?
+  plt <- switch(error,
+                # Shading the standard errors
+                shade = plt + 
+                  geom_ribbon(aes_string(x="time", ymax="upper", ymin="lower"),
+                              alpha=.1),
+                # Or showing error bars
+                bars = {
+                  # Need to figure out how to remove some of these points when 
+                  # requesting error bars, or this will get really messy.
+                  #                     errFll <- fll
+                  #                     if(!missing(errbars) )errFll <- errFll[errbars,]
+                  plt+ 
+                    geom_errorbar(aes_string(x="time", ymax="upper", ymin="lower"))
+                },
+                lines= plt + 
+                  geom_step(aes_string(x="time", y="upper"), linetype=2)+
+                  geom_step(aes(x="time", y="lower"), linetype=2), 
+                none=plt)
   
-  if(type=="surv"){
-    # Do we want to show confidence limits?
-    plt <- switch(error,
-                  # Shading the standard errors
-                  shade = plt + 
-                    geom_ribbon(aes_string(x="time", ymax="upper_cl", ymin="lower_cl"),
-                                alpha=.1),
-                  # Or showing error bars
-                  bars = {
-                    # Need to figure out how to remove some of these points when 
-                    # requesting error bars, or this will get really messy.
-#                     errFll <- fll
-#                     if(!missing(errbars) )errFll <- errFll[errbars,]
-                    plt+ 
-                      geom_errorbar(aes_string(x="time", ymax="upper_cl", ymin="lower_cl"))
-                  },
-                  lines= plt + 
-                    geom_step(aes_string(x="time", y="upper_cl"), linetype=2)+
-                    geom_step(aes(x="time", y="lower_cl"), linetype=2), 
-                  none=plt)
-  }
-  plt<- switch(type,
-               surv= plt + geom_step(aes_string(x="time", y="surv")),
-               cum_haz=   plt + geom_step(aes_string(x="time", y="cum_haz")),
-               hazard=  plt + geom_step(aes_string(x="time", y="hazard")),
-               density=  plt + geom_step(aes_string(x="time", y="density")),
-               life=  + geom_step(aes_string(x="time", y="life")),
-               proplife=  plt + geom_step(aes_string(x="time", y="proplife"))
-  )
-  
-  return(plt+
-           labs(y=type))
+  return(plt)
 }

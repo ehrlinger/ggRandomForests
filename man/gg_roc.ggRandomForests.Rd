@@ -25,19 +25,18 @@ of a randomForests classification object.
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
-options(mc.cores=2, rf.cores=1)
-iris.obj <- rfsrc(Species ~ ., data = iris)
-
+# iris.obj <- rfsrc(Species ~ ., data = iris)
+data(iris_rf,package="ggRandomForests")
 # ROC for setosa
-ggrf.obj<- gg_roc(iris.obj, which.outcome=1)
+ggrf.obj<- gg_roc(iris_rf, which.outcome=1)
 plot.gg_roc(ggrf.obj)
 
 # ROC for versicolor
-ggrf.obj<- gg_roc(iris.obj, which.outcome=2)
+ggrf.obj<- gg_roc(iris_rf, which.outcome=2)
 plot.gg_roc(ggrf.obj)
 
 # ROC for virginica
-ggrf.obj<- gg_roc(iris.obj, which.outcome=3)
+ggrf.obj<- gg_roc(iris_rf, which.outcome=3)
 plot.gg_roc(ggrf.obj)
 }
 \seealso{

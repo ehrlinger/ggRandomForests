@@ -3,17 +3,17 @@
 \alias{plot.gg_variable}
 \title{plot.gg_variable Plot a \code{\link{gg_variable}} object,}
 \usage{
-\method{plot}{gg_variable}(x, x.var, time, time.labels, oob = TRUE,
+\method{plot}{gg_variable}(x, x_var, time, time_labels, oob = TRUE,
   smooth = TRUE, span, ...)
 }
 \arguments{
 \item{x}{gg_variable object created from a randomForestSRC object}
 
-\item{x.var}{variable (or list of variables) of interest.}
+\item{x_var}{variable (or list of variables) of interest.}
 
 \item{time}{For survival, one or more times of interest}
 
-\item{time.labels}{string labels for times}
+\item{time_labels}{string labels for times}
 
 \item{oob}{oob estimates (boolean)}
 

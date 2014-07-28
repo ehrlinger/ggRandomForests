@@ -30,21 +30,34 @@
 plot.gg_minimal_vimp <- function(x, modelsize, ...){
   object <- x
   
-  # Test that object is a var.select object
-  
+  # Test that object is the correct class object
+  if(!inherits(object, "gg_minimal_vimp")){
+    object <- gg_minimal_vimp(x, ...)
+  }
   
   if(missing(modelsize)) modelsize <- dim(object)[1]
   if(modelsize > dim(object)[1]) modelsize <- dim(object)[1]
-  
+  if(length(unique(object$col)) > 1){
+    object$col <- factor(object$col)
+  }
   object$names <- factor(object$names, 
                          levels=object$names[order(as.numeric(object$depth))])
-  object$col <- factor(object$col)
   
   object <- object[1:modelsize, ]
-  ggplot(object, aes_string(x="names", y="vimp", col="col"))+
-    geom_point()+
-    labs(x="Minimal Depth (Rank Order)", y="VIMP Rank", color="VIMP")+
-    geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)+
-    coord_flip()
   
+  # If we only have one class for coloring, just paint them black.
+  if(length(unique(object$col)) > 1){
+    gg_dta <- ggplot(object, aes_string(x="names", y="vimp", col="col"))+
+      geom_point()+
+      labs(x="Minimal Depth (Rank Order)", y="VIMP Rank", color="VIMP")+
+      geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)+
+      coord_flip()
+  }else{
+    gg_dta <- ggplot(object, aes_string(x="names", y="vimp"))+
+      geom_point()+
+      labs(x="Minimal Depth (Rank Order)", y="VIMP Rank")+
+      geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)+
+      coord_flip()
+  }
+  gg_dta
 }

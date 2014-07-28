@@ -10,19 +10,12 @@ forest, gg_interaction first runs the \code{find.interaction} function
 with all optional arguments.}
 \usage{
 gg_interaction.ggRandomForests(object, ...)
-
-gg_interaction.ggRandomForests(object, ...)
 }
 \arguments{
 \item{object}{a randomForestSRC object or the output from the
 \code{find.interaction} function call}
 
 \item{...}{optional extra arguments passed to find.interaction}
-
-\item{object}{a randomForestSRC object or the output from the
-\code{find.interactions} function call}
-
-\item{...}{optional extra arguments passed to find.interactions}
 }
 \description{
 gg_interaction extract the variable interactions.
@@ -30,13 +23,6 @@ gg_interaction extract the variable interactions.
 Basically, this function takes adds attributes to the results of running
 \code{find.interaction} on an rfsrc random forest. If you hand it a random
 forest, gg_interaction first runs the \code{find.interaction} function
-with all optional arguments.
-
-gg_interactions extract the variable interactions.
-
-Basically, this function takes adds attributes to the results of running
-\code{find.interactions} on an rfsrc random forest. If you hand it a random
-forest, gg_interactions first runs the \code{find.interactions} function
 with all optional arguments.
 }
 \examples{
@@ -49,10 +35,10 @@ with all optional arguments.
 ## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
 data(pbc_interaction, package="ggRandomForests")
 gg_int <- gg_interaction(pbc_interaction)
-\dontrun{
+
 plot(gg_int, x_var="bili")
 plot(gg_int, x_var="copper")
-}
+
 
 ## ------------------------------------------------------------
 ## find interactions, regression setting
@@ -64,10 +50,10 @@ plot(gg_int, x_var="copper")
 ## airq_interaction <- find.interaction(airq.obj)
 data(airq_interaction, package="ggRandomForests")
 gg_int <- gg_interaction(airq_interaction)
-\dontrun{
+
 plot(gg_int, x_var="Temp")
 plot(gg_int, x_var="Solar.R")
-}
+
 
 ## ------------------------------------------------------------
 ## find interactions, classification setting
@@ -78,38 +64,11 @@ plot(gg_int, x_var="Solar.R")
 ## iris_interaction <- find.interaction(iris.obj)
 data(iris_interaction, package="ggRandomForests")
 gg_int <- gg_interaction(iris_interaction)
-\dontrun{
+
 plot(gg_int, x_var="Petal.Width")
 plot(gg_int, x_var="Petal.Length")
 }
-## Examples from RFSRC package...
-## ------------------------------------------------------------
-## find interactions, survival setting
-## ------------------------------------------------------------
-## data(pbc, package = "randomForestSRC")
-## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
-## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
-data(pbc_interaction, package="ggRandomForests")
-gg_int <- gg_interaction
-## ------------------------------------------------------------
-## find interactions, regression setting
-## ------------------------------------------------------------
-
-airq.obj <- rfsrc(Ozone ~ ., data = airquality)
-find.interaction(airq.obj, method = "vimp", nrep = 3)
-find.interaction(airq.obj)
-
-## ------------------------------------------------------------
-## find interactions, classification setting
-## ------------------------------------------------------------
-
-iris.obj <- rfsrc(Species ~., data = iris)
-find.interaction(iris.obj, method = "vimp", nrep = 3)
-find.interaction(iris.obj)
-}
 \seealso{
 \code{find.interaction}
-
-\code{find.interactions}
 }
 

@@ -37,16 +37,19 @@
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
 #' roc <- calcROC.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
 #' }
-calcROC.rfsrc <- function(rf, dta, which.outcome=1, oob=TRUE){
+calcROC.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
   if(!is.factor(dta)) dta <- factor(dta)
-  dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
-                              prd=rf$predicted[, which.outcome],
-                              oob=rf$predicted.oob[, which.outcome]))
-  if(oob)
-    pct <- sort(unique(rf$predicted.oob[,which.outcome]))
-  else
-    pct <- sort(unique(rf$predicted[,which.outcome]))
-  
+  if(which.outcome!="all"){
+    dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
+                                prd=rf$predicted[, which.outcome],
+                                oob=rf$predicted.oob[, which.outcome]))
+    if(oob)
+      pct <- sort(unique(rf$predicted.oob[,which.outcome]))
+    else
+      pct <- sort(unique(rf$predicted[,which.outcome]))
+  }else{
+    stop("Must specify which.outcome for now.")
+  }
   pct<- pct[-length(pct)]
   
   spc <-mclapply(pct, function(crit){

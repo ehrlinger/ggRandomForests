@@ -5,7 +5,7 @@
 \alias{calcROC.rfsrc}
 \title{calcROC Reciever Operator Characteristic calculator for randomForest objects}
 \usage{
-calcROC.rfsrc(rf, dta, which.outcome = 1, oob = TRUE)
+calcROC.rfsrc(rf, dta, which.outcome = "all", oob = TRUE)
 }
 \arguments{
 \item{rf}{randomForest or prediction object containing predicted response}
