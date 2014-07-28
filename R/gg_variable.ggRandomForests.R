@@ -58,7 +58,7 @@
 #' plot(ggrf.obj)
 #' 
 #' #plot.variable(v.obj, plots.per.page = 2, xvar.names = c("trt", "karno", "age"))
-#' plot.gg_variable(ggrf.obj, c("trt", "karno", "age")))
+#' plot.gg_variable(ggrf.obj, c("trt", "karno", "age"))
 #' 
 #' #plot.variable(v.obj, surv.type = "surv", nvar = 1, time = 200)
 #' ggrf.obj <- gg_variable(veteran_rf, time=200)
