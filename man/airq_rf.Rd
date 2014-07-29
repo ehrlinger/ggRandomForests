@@ -2,20 +2,23 @@
 \docType{data}
 \name{airq_rf}
 \alias{airq_rf}
-\title{New York Air Quality Measurements:RFSRC}
+\title{airq_rf}
 \format{A rfsrc object for regression}
 \description{
-An RF-S[R]C model compiled for the daily
-\code{airquality} measurements in New York, May to September 1973.
+A cached \code{rfsrc} object for the New York Air Quality Measurements. This is
+randomForestSRC regression forest.
+}
+\details{
+For ggRandomForest testing and the R CMD checks, we cache the
+computationally expensive parts of running a randomForest.
 
-The data were obtained from the New York State Department of
-Conservation (ozone data) and the National Weather Service
+We build a regression randomForest (\code{\link{airq_rf}}) with the
+\code{airquality} measurements data. The data were from New York, from
+May to September 1973. The data was obtained from the New York State
+Department of Conservation (ozone data) and the National Weather Service
 (meteorological data).
 
-This "data set" is a cache of the random forest model. It
-makes running the CRAN checks on the ggRandomForests package
-faster, since we only want to test the functions within this
-package.
+This "data set" is a cache of the \code{rfsrc} random forest model.
 }
 \examples{
 \dontrun{
@@ -39,7 +42,7 @@ Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S.
 841-860.
 }
 \seealso{
-\code{rfsrc} \code{airquality}
+\code{airquality} \code{rfsrc} \code{\link{airq_vs}} \code{\link{airq_interaction}}
 }
 \keyword{datasets}
 

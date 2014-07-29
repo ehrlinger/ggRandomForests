@@ -2,26 +2,32 @@
 \docType{data}
 \name{airq_vs}
 \alias{airq_vs}
-\title{New York Air Quality Measurements:RFSRC}
-\format{A var.select object for the regression forest using the airquality data}
+\title{airq_interaction}
+\format{A var.select object for a regression random forest}
 \description{
-A var.select object for the regression forest using the
-daily \code{airquality} measurements in New York, May to September 1973.
+A cached object from \code{var.select} function for the New York Air Quality
+Measurements randomForestSRC regression forest \code{\link{airq_rf}}.
+}
+\details{
+For ggRandomForest testing and the R CMD checks, we cache the
+computationally expensive parts of running a randomForest.
 
-The data were obtained from the New York State Department of
-Conservation (ozone data) and the National Weather Service
+We build a regression randomForest (\code{\link{airq_rf}}) with the
+\code{airquality} measurements data, then run the \code{var.select} function to
+determine minimal depth variable selection. The data were from New York, from
+May to September 1973. The data was obtained from the New York State
+Department of Conservation (ozone data) and the National Weather Service
 (meteorological data).
 
-This "data set" is a cache of the variable selection method for
-random forest models. It makes running the CRAN checks and unit
-testing on the ggRandomForests package faster, since we only
-want to test the functions within this package.
+This "data set" is a cache of the \code{var.select} function, which runs the
+minimal depth variable selection method from the \code{\link{airq_rf}} random
+forest model.
 }
 \examples{
 \dontrun{
 ## The data was built with the following command
 airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-airq_vs <- var.select(airq_rf)
+airq_vs <- var.select{airq_rf}
 }
 }
 \references{
@@ -40,7 +46,7 @@ Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S.
 841-860.
 }
 \seealso{
-\code{rfsrc} \code{var.select} \code{airquality}
+\code{airquality} \code{var.select} \code{rfsrc} \code{\link{airq_rf}}
 }
 \keyword{datasets}
 

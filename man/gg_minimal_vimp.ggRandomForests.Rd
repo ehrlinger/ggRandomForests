@@ -44,7 +44,7 @@ plot(ggrf.obj)
 data(airq_vs, package="ggRandomForests")
 
 # Get a data.frame containing error rates
-ggrf.obj<- gg_minimal_depth(airq_vs)
+ggrf.obj<- gg_minimal_vimp(airq_vs)
 
 # Plot the gg_error object
 plot(ggrf.obj)
@@ -60,7 +60,7 @@ plot(ggrf.obj)
 # Load a cached randomForestSRC object
 data(veteran_vs, package="ggRandomForests")
 
-ggrf.obj <- gg_minimal_depth(veteran_vs)
+ggrf.obj <- gg_minimal_vimp(veteran_vs)
 plot(ggrf.obj)
 }
 \seealso{
