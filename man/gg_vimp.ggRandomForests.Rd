@@ -22,74 +22,27 @@ a randomForestSRC object.
 \examples{
 ## ------------------------------------------------------------
 ## classification example
-## showcase different vimp
 ## ------------------------------------------------------------
-
-iris.obj <- rfsrc(Species ~ ., data = iris)
-
-# Breiman-Cutler permutation vimp
-vimp(iris.obj)$importance
-
-# Breiman-Cutler random daughter vimp
-vimp(iris.obj, importance = "random")$importance
-
-# Breiman-Cutler joint permutation vimp
-vimp(iris.obj, joint = TRUE)$importance
-
-# Breiman-Cuter paired vimp
-vimp(iris.obj, c("Petal.Length", "Petal.Width"), joint = TRUE)$importance
-vimp(iris.obj, c("Sepal.Length", "Petal.Width"), joint = TRUE)$importance
-
+# iris_rf <- rfsrc(Species ~ ., data = iris)
+data(iris_rf, package="ggRandomForests")
+ggrf <- gg_vimp(iris_rf)
+plot(ggrf)
 
 ## ------------------------------------------------------------
 ## regression example
-## compare Breiman-Cutler vimp to ensemble based vimp
 ## ------------------------------------------------------------
 
-airq.obj <- rfsrc(Ozone ~ ., airquality)
-vimp.all <- cbind(
-  ensemble = vimp(airq.obj, importance = "permute.ensemble")$importance,
-  breimanCutler = vimp(airq.obj, importance = "permute")$importance)
-print(vimp.all)
-
-
-## ------------------------------------------------------------
-## regression example
-## calculate VIMP on test data
-## ------------------------------------------------------------
-
-set.seed(100080)
-train <- sample(1:nrow(airquality), size = 80)
-airq.obj <- rfsrc(Ozone~., airquality[train, ])
-
-#training data vimp
-airq.obj$importance
-vimp(airq.obj)$importance
-
-#test data vimp
-vimp(airq.obj, newdata = airquality[-train, ])$importance
+# airq.obj <- rfsrc(Ozone ~ ., airquality)
+data(airq_rf, package="ggRandomForests")
+ggrf <- gg_vimp(airq_rf)
+plot(ggrf)
 
 ## ------------------------------------------------------------
 ## survival example
-## study how vimp depends on tree imputation
-## makes use of the subset option
 ## ------------------------------------------------------------
-
-data(pbc, package = "randomForestSRC")
-
-# determine which records have missing values
-which.na <- apply(pbc, 1, function(x){any(is.na(x))})
-
-# impute the data using na.action = "na.impute"
-pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 3,
-na.action = "na.impute", nimpute = 1)
-
-# compare vimp based on records with no missing values
-# to those that have missing values
-# note the option na.action="na.impute" in the vimp() call
-vimp.not.na <- vimp(pbc.obj, subset = !which.na, na.action = "na.impute")$importance
-vimp.na <- vimp(pbc.obj, subset = which.na, na.action = "na.impute")$importance
-data.frame(vimp.not.na, vimp.na)
+data(veteran_rf, package="ggRandomForests")
+ggrf <- gg_vimp(veteran_rf)
+plot(ggrf)
 }
 \references{
 Ishwaran H. (2007). Variable importance in binary regression trees and forests,

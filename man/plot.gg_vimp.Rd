@@ -27,21 +27,27 @@ rfsrc object
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
-iris.obj <- rfsrc(Species ~ ., data = iris)
-ggrf.obj<- gg_vimp(iris.obj)
-
-plot.gg_vimp(ggrf.obj)
+# iris_rf <- rfsrc(Species ~ ., data = iris)
+data(iris_rf, package="ggRandomForests")
+ggrf <- gg_vimp(iris_rf)
+plot(ggrf)
 
 ## ------------------------------------------------------------
-## Survival example
+## regression example
 ## ------------------------------------------------------------
-## veteran data
-## randomized trial of two treatment regimens for lung cancer
-data(veteran, package = "randomForestSRCM")
-v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 
-ggrf.obj <- gg_vimp(v.obj)
-plot(ggrf.obj)
+# airq.obj <- rfsrc(Ozone ~ ., airquality)
+data(airq_rf, package="ggRandomForests")
+ggrf <- gg_vimp(airq_rf)
+plot(ggrf)
+
+## ------------------------------------------------------------
+## survival example
+## ------------------------------------------------------------
+data(veteran_rf, package="ggRandomForests")
+ggrf <- gg_vimp(veteran_rf)
+plot(ggrf)
+
 }
 }
 \references{

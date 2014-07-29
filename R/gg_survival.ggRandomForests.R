@@ -19,12 +19,13 @@
 #' Create data.frame of survival data from an randomForestSRC survival object.
 #'   
 #'
-#' @param rfObject An object of class (rfsrc, grow) or (rfsrc, predict).
-# # @param subset Vector indicating which individuals we want estimates for. 
-#'   All individuals are used if not specified.
+#' @param object An object of class (rfsrc, grow) or (rfsrc, predict), or a 
+#' survival object.
 #' @param prd_type ("std", "oob")
 #' @param srv_type ("surv", "chf", "mortality", "hazard")
 #' @param pnts ("none", "kaplan", "nelson")
+# # @param subset Vector indicating which individuals we want estimates for. 
+#'   All individuals are used if not specified.
 # # @param show.ind 
 # # @param strata  
 #' @param climits confidence limit bands
@@ -49,7 +50,7 @@
 #' ggrf.obj <- gg_survival(veteran_rf)
 #' plot(ggrf.obj)
 #' 
-gg_survival.ggRandomForests <- function (rfObject,
+gg_survival.ggRandomForests <- function(object,
                                         prd_type=c("std", "oob"),
                                         srv_type=c("surv", "chf", "mortality", "hazard"),
                                         pnts = c("none", "kaplan", "nelson"),
@@ -64,14 +65,14 @@ gg_survival.ggRandomForests <- function (rfObject,
 { 
   
   ## Verify that the incoming object is of type rfsrc.
-  if (sum(inherits(rfObject, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 
-        2 & sum(inherits(rfObject, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
+  if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 & 
+        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
     stop("This function only works for RF objects from randomForestSRC.")
   }
   
   # This is supposed to create a survival plot after all.
-  if (rfObject$family != "surv") {
-    stop(paste("This function only supports Random Forests for survival. This is a ", rfObject$family, " forest."))
+  if (object$family != "surv") {
+    stop(paste("This function only supports Random Forests for survival. This is a ", object$family, " forest."))
   }
   call <- match.call()
   
@@ -84,23 +85,23 @@ gg_survival.ggRandomForests <- function (rfObject,
   
   ## What type of prediction are we looking for (OOB or not).
   rf.srv <- switch(prd_type,
-                   std=rfObject$survival,
+                   std=object$survival,
                    oob={
                      # In case of predict object without OOB data
-                     if(is.null(rfObject$survival.oob)){
-                       rfObject$survival 
+                     if(is.null(object$survival.oob)){
+                       object$survival 
                      }else{
-                       rfObject$survival.oob
+                       object$survival.oob
                      }})
   
   rf.chf  <- switch(prd_type,
-                    std=rfObject$chf,
+                    std=object$chf,
                     oob={
                       # In case of predict object without OOB data
-                      if(is.null(rfObject$chf.oob)){
-                        rfObject$chf 
+                      if(is.null(object$chf.oob)){
+                        object$chf 
                       }else{
-                        rfObject$chf.oob
+                        object$chf.oob
                       }
                     })
   
@@ -117,7 +118,7 @@ gg_survival.ggRandomForests <- function (rfObject,
   fll<-t(apply(rf.data,2, function(rw){quantile(rw, prob=c(alph, .5, 1-alph))}))
   
   colnames(fll) <- c("lower", "median", "upper")
-  fll <- data.frame(cbind(time=rfObject$time.interest,fll, mean=colMeans(rf.data)))
+  fll <- data.frame(cbind(time=object$time.interest,fll, mean=colMeans(rf.data)))
   
   fll <- tbl_df(fll)
   class(fll)  <- c("gg_survival",class(fll))

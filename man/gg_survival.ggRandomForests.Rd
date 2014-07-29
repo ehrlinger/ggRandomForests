@@ -5,19 +5,20 @@
 \title{gg_survival
 Create data.frame of survival data from an randomForestSRC survival object.}
 \usage{
-gg_survival.ggRandomForests(rfObject, prd_type = c("std", "oob"),
+gg_survival.ggRandomForests(object, prd_type = c("std", "oob"),
   srv_type = c("surv", "chf", "mortality", "hazard"), pnts = c("none",
   "kaplan", "nelson"), climits = 0.95, ...)
 }
 \arguments{
-\item{rfObject}{An object of class (rfsrc, grow) or (rfsrc, predict).
-All individuals are used if not specified.}
+\item{object}{An object of class (rfsrc, grow) or (rfsrc, predict), or a
+survival object.}
 
 \item{prd_type}{("std", "oob")}
 
 \item{srv_type}{("surv", "chf", "mortality", "hazard")}
 
-\item{pnts}{("none", "kaplan", "nelson")}
+\item{pnts}{("none", "kaplan", "nelson")
+All individuals are used if not specified.}
 
 \item{climits}{confidence limit bands}
 
