@@ -3,7 +3,7 @@
 \alias{calcROC}
 \alias{calcROC.randomForest}
 \alias{calcROC.rfsrc}
-\title{calcROC Reciever Operator Characteristic calculator for randomForest objects}
+\title{Reciever Operator Characteristic calculator for randomForest objects}
 \usage{
 calcROC.rfsrc(rf, dta, which.outcome = "all", oob = TRUE)
 }
@@ -17,8 +17,11 @@ calcROC.rfsrc(rf, dta, which.outcome = "all", oob = TRUE)
 \item{oob}{Use OOB estimates, the normal validation method (TRUE)}
 }
 \description{
+Reciever Operator Characteristic calculator for randomForest objects
+}
+\details{
 Given the randomForest or randomForestSRC prediction and the actual
-response value, calculate the specificty (1-False Positive Rate) and sensitivity
+response value, calculate the specificity (1-False Positive Rate) and sensitivity
 (True Positive Rate) of a predictor.
 }
 \examples{
@@ -28,5 +31,8 @@ response value, calculate the specificty (1-False Positive Rate) and sensitivity
 iris.obj <- rfsrc(Species ~ ., data = iris)
 roc <- calcROC.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
 }
+}
+\seealso{
+\code{\link{calcAUC}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
 }
 

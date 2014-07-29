@@ -15,9 +15,10 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' extract.RFpred get the predicted values from a randomForest classification forest
+#' Get the predicted values from a \code{randomForest} classification forest
 #' 
-#' Only works on randomForest package forests.
+#' Only works on \code{randomForest} package forests.
+#' 
 #' @param obj a \code{randomForest}
 #' @param type Classification by ("response", "prob")
 #' @param subset indx of observations of interest
@@ -25,6 +26,10 @@
 #' 
 #' @seealso \code{randomForest}
 #' 
+##
+## TODO create examples and tests.
+##
+##
 extract.RFpred <- function (obj, type=c("response", "prob"), subset, which.outcome) 
 {
   if(inherits(obj,"matrix")){

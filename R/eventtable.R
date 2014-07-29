@@ -16,10 +16,10 @@
 ####**********************************************************************
 ####**********************************************************************
 #' 
-#' eventtable creates a nonparametric survival estimate using either the 
+#' Creates nonparametric survival estimates using either the 
 #' kaplan-meier or nelson-aalon method.
 #' 
-#' @description eventtable is a wrapper function for both nelson and kaplan
+#' @details eventtable is a wrapper function for both nelson and kaplan
 #' survival estimates.  
 #' 
 #' @param data name of the training data.frame
@@ -46,5 +46,6 @@ eventtable <- function(interval, censor, strat=NULL,
     kaplan=kaplan(interval=interval, censor=censor, strat=strat, data=data, ...),
     nelson=nelson(interval=interval, censor=censor, strat=strat, data=data, ...)
   )
+  
   return(tbl_df(ltab))
 }

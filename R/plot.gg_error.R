@@ -16,10 +16,10 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#'
-#' plot.gg_error
-#' Plot a \code{\link{gg_error}} object, the cumulative OOB error rates of the
-#' forest as a function of number of trees.
+#' Plot a \code{\link{gg_error}} object
+#' 
+#' A plot of the cumulative OOB error rates of the random forest as a 
+#' function of number of trees.
 #' 
 #' @param x gg_error object created from a randomForestSRC object
 #' @param ... extra arguments
@@ -28,7 +28,11 @@
 #' 
 #' @export plot.gg_error
 #' 
-#' @seealso \code{\link{gg_error.ggRandomForests}} rfsrc
+#' @details The gg_error plot is used to track the convergence of the 
+#' randomForest. This figure is a reproduction of the error plot
+#' from the \code{plot.rfsrc} function.
+#' 
+#' @seealso \code{\link{gg_error}} \code{rfsrc} \code{plot.rfsrc}
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -85,6 +89,7 @@
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
 #' @importFrom reshape2 melt
 ### error rate plot
+
 plot.gg_error <- function(x, ...){
   obj <- x
   if(inherits(obj, "rfsrc")) obj <- gg_error(obj)

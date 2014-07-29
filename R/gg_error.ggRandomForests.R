@@ -16,12 +16,14 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' gg_error.ggRandomForests
-#' Extract the cumulative OOB randomForest error rates as a function of 
+#' randomForestSRC error rate data object
+#' 
+#' Extract the cumulative (OOB) randomForestSRC error rate as a function of 
 #' number of trees.
 #' 
-#' The gg_error function simply returns the rfsrc err.rate object as 
-#' a data.frame.
+#' @details The gg_error function simply returns the rfsrc$err.rate object as 
+#' a data.frame, and assigns the class for connecting to the \code{\link{plot.gg_error}}
+#' function. 
 #' 
 #' @param object randomForestSRC object
 #' @param ... optional arguments
@@ -42,8 +44,8 @@
 #' and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @aliases gg_error gg_error.ggRandomForests
-#' @examples
 #' 
+#' @examples
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------

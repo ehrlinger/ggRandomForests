@@ -14,23 +14,35 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' @title gg_interaction extract the variable interactions.
+#' Minimal Depth Variable Interaction data object.
 #' 
-#' Basically, this function takes adds attributes to the results of running
-#' \code{find.interaction} on an rfsrc random forest. If you hand it a random
-#' forest, gg_interaction first runs the \code{find.interaction} function 
-#' with all optional arguments.
+#' Basically, this function adds attributes to the results of running
+#' \code{find.interaction} on an \code{rfsrc} random forest. If passed  a 
+#' \code{rfsrc} object, gg_interaction first runs the \code{find.interaction} 
+#' function with all optional arguments.
 #'
 #' @param object a randomForestSRC object or the output from the
 #' \code{find.interaction} function call
 #' @param ... optional extra arguments passed to find.interaction
 #' 
-#' @seealso \code{find.interaction} 
+#' @seealso \code{find.interaction} \code{max.subtree} \code{var.select} \code{vimp}
 #' 
 #' @export gg_interaction gg_interaction.ggRandomForests 
 #' @aliases gg_interaction
+#' 
 #' @importFrom randomForestSRC find.interaction
 #' @importFrom dplyr tbl_df
+#' 
+#' @references
+#' Ishwaran H. (2007). Variable importance in binary regression trees and 
+#' forests, Electronic J. Statist., 1:519-537.
+#' 
+#' Ishwaran H., Kogalur U.B., Gorodeski E.Z, Minn A.J. and Lauer M.S. (2010).
+#' High-dimensional variable selection for survival data. J. Amer. Statist. 
+#' Assoc., 105:205-217.
+#' 
+#' Ishwaran H., Kogalur U.B., Chen X. and Minn A.J. (2011). Random survival 
+#' forests for high-dimensional data. Statist. Anal. Data Mining, 4:115-132.
 #' 
 #' @examples
 #' ## Examples from RFSRC package... 

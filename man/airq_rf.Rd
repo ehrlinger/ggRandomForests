@@ -2,7 +2,7 @@
 \docType{data}
 \name{airq_rf}
 \alias{airq_rf}
-\title{airq_rf}
+\title{air quality randomForestSRC object.}
 \format{A rfsrc object for regression}
 \description{
 A cached \code{rfsrc} object for the New York Air Quality Measurements. This is

@@ -2,7 +2,7 @@
 \docType{data}
 \name{airq_vs}
 \alias{airq_vs}
-\title{airq_interaction}
+\title{air quality minimal depth variable selection object.}
 \format{A var.select object for a regression random forest}
 \description{
 A cached object from \code{var.select} function for the New York Air Quality

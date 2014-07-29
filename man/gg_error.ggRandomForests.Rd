@@ -2,9 +2,7 @@
 \name{gg_error.ggRandomForests}
 \alias{gg_error}
 \alias{gg_error.ggRandomForests}
-\title{gg_error.ggRandomForests
-Extract the cumulative OOB randomForest error rates as a function of
-number of trees.}
+\title{randomForestSRC error rate data object}
 \usage{
 gg_error.ggRandomForests(object, ...)
 }
@@ -18,8 +16,13 @@ gg_error data.frame with one column indicating the tree number,
 and the remaining columns from the rfsrc$err.rate return value.
 }
 \description{
-The gg_error function simply returns the rfsrc err.rate object as
-a data.frame.
+Extract the cumulative (OOB) randomForestSRC error rate as a function of
+number of trees.
+}
+\details{
+The gg_error function simply returns the rfsrc$err.rate object as
+a data.frame, and assigns the class for connecting to the \code{\link{plot.gg_error}}
+function.
 }
 \examples{
 ## ------------------------------------------------------------

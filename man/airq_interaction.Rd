@@ -2,7 +2,7 @@
 \docType{data}
 \name{airq_interaction}
 \alias{airq_interaction}
-\title{airq_interaction}
+\title{air quality  minimal depth variable interaction matrix.}
 \format{A find.interaction object for regression}
 \description{
 A cached object from \code{find.interaction} for the New York Air Quality

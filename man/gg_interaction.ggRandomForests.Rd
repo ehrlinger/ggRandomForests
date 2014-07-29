@@ -2,12 +2,7 @@
 \name{gg_interaction.ggRandomForests}
 \alias{gg_interaction}
 \alias{gg_interaction.ggRandomForests}
-\title{gg_interaction extract the variable interactions.
-
-Basically, this function takes adds attributes to the results of running
-\code{find.interaction} on an rfsrc random forest. If you hand it a random
-forest, gg_interaction first runs the \code{find.interaction} function
-with all optional arguments.}
+\title{Minimal Depth Variable Interaction data object.}
 \usage{
 gg_interaction.ggRandomForests(object, ...)
 }
@@ -18,12 +13,10 @@ gg_interaction.ggRandomForests(object, ...)
 \item{...}{optional extra arguments passed to find.interaction}
 }
 \description{
-gg_interaction extract the variable interactions.
-
-Basically, this function takes adds attributes to the results of running
-\code{find.interaction} on an rfsrc random forest. If you hand it a random
-forest, gg_interaction first runs the \code{find.interaction} function
-with all optional arguments.
+Basically, this function adds attributes to the results of running
+\code{find.interaction} on an \code{rfsrc} random forest. If passed  a
+\code{rfsrc} object, gg_interaction first runs the \code{find.interaction}
+function with all optional arguments.
 }
 \examples{
 ## Examples from RFSRC package...
@@ -68,7 +61,18 @@ gg_int <- gg_interaction(iris_interaction)
 plot(gg_int, x_var="Petal.Width")
 plot(gg_int, x_var="Petal.Length")
 }
+\references{
+Ishwaran H. (2007). Variable importance in binary regression trees and
+forests, Electronic J. Statist., 1:519-537.
+
+Ishwaran H., Kogalur U.B., Gorodeski E.Z, Minn A.J. and Lauer M.S. (2010).
+High-dimensional variable selection for survival data. J. Amer. Statist.
+Assoc., 105:205-217.
+
+Ishwaran H., Kogalur U.B., Chen X. and Minn A.J. (2011). Random survival
+forests for high-dimensional data. Statist. Anal. Data Mining, 4:115-132.
+}
 \seealso{
-\code{find.interaction}
+\code{find.interaction} \code{max.subtree} \code{var.select} \code{vimp}
 }
 

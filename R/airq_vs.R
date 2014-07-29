@@ -1,4 +1,4 @@
-#' airq_interaction
+#' air quality minimal depth variable selection object.
 #' 
 #' A cached object from \code{var.select} function for the New York Air Quality 
 #' Measurements randomForestSRC regression forest \code{\link{airq_rf}}.

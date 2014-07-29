@@ -15,10 +15,10 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' @title calcROC Reciever Operator Characteristic calculator for randomForest objects
+#' Reciever Operator Characteristic calculator for randomForest objects
 #' 
-#' @description Given the randomForest or randomForestSRC prediction and the actual 
-#' response value, calculate the specificty (1-False Positive Rate) and sensitivity 
+#' @details Given the randomForest or randomForestSRC prediction and the actual 
+#' response value, calculate the specificity (1-False Positive Rate) and sensitivity 
 #' (True Positive Rate) of a predictor.
 #' 
 #' @param rf randomForest or prediction object containing predicted response
@@ -27,6 +27,8 @@
 #' @param oob Use OOB estimates, the normal validation method (TRUE)
 #'  
 #' @aliases calcROC.rfsrc calcROC.randomForest calcROC
+#' 
+#' @seealso \code{\link{calcAUC}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
 #' 
 #' @importFrom parallel mclapply
 #' 
@@ -37,6 +39,11 @@
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
 #' roc <- calcROC.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
 #' }
+#' 
+##
+## TODO update for multiple outcome classes.
+## iris has three probable outcomes, we want a curve for each, with calcAUC measures
+##
 calcROC.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
   if(!is.factor(dta)) dta <- factor(dta)
   if(which.outcome!="all"){
@@ -69,6 +76,7 @@ calcROC.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
   return(data.frame(spc, row.names=pct))
   
 }
+
 calcROC<- calcROC.rfsrc
 calcROC.randomForest <- function(rf, dta, which.outcome=1){
   prd <- predict(rf, type="prob")
@@ -91,16 +99,16 @@ calcROC.randomForest <- function(rf, dta, which.outcome=1){
 }
 
 #'
-#' @title calcAUC.ggRandomForests calculate the Area Under the ROC Curve
+#' Calculator for the Area Under the ROC Curve
 #' 
-#' @description calcAUC uses the trapezoidal rule to calculate the area under
+#' @details calcAUC uses the trapezoidal rule to calculate the area under
 #' the ROC curve.
 #' 
-#' @details sensitivity and specificity 
-#' 
-#' @param x output from calcROC (or ggROC) 
+#' @param x output from \code{\link{calcROC}} (or \code{\link{gg_roc}}) 
 #' 
 #' @return AUC. 50% is random guessing, higher is better.
+#' 
+#' @aliases calcAUC
 #' 
 calcAUC.ggRandomForests <- function(x){
   ## Use the trapeziod rule, basically calc

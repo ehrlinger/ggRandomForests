@@ -1,4 +1,4 @@
-#' airq_interaction
+#' air quality  minimal depth variable interaction matrix. 
 #' 
 #' A cached object from \code{find.interaction} for the New York Air Quality 
 #' Measurements randomForestSRC regression forest \code{\link{airq_rf}}.

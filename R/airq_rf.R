@@ -1,4 +1,4 @@
-#' airq_rf
+#' air quality randomForestSRC object.
 #' 
 #' A cached \code{rfsrc} object for the New York Air Quality Measurements. This is 
 #' randomForestSRC regression forest.
