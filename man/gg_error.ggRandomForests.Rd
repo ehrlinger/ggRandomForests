@@ -7,9 +7,9 @@
 gg_error.ggRandomForests(object, ...)
 }
 \arguments{
-\item{object}{randomForestSRC object}
+\item{object}{randomForestSRC object.}
 
-\item{...}{optional arguments}
+\item{...}{optional arguments (not used).}
 }
 \value{
 gg_error data.frame with one column indicating the tree number,
@@ -25,6 +25,7 @@ a data.frame, and assigns the class for connecting to the \code{\link{plot.gg_er
 function.
 }
 \examples{
+## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------

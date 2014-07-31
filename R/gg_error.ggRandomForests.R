@@ -25,8 +25,8 @@
 #' a data.frame, and assigns the class for connecting to the \code{\link{plot.gg_error}}
 #' function. 
 #' 
-#' @param object randomForestSRC object
-#' @param ... optional arguments
+#' @param object randomForestSRC object.
+#' @param ... optional arguments (not used).
 #' 
 #' @return gg_error data.frame with one column indicating the tree number, 
 #' and the remaining columns from the rfsrc$err.rate return value. 
@@ -46,6 +46,7 @@
 #' @aliases gg_error gg_error.ggRandomForests
 #' 
 #' @examples
+#' ## Examples from RFSRC package... 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------

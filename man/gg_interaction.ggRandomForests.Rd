@@ -8,9 +8,9 @@ gg_interaction.ggRandomForests(object, ...)
 }
 \arguments{
 \item{object}{a randomForestSRC object or the output from the
-\code{find.interaction} function call}
+\code{find.interaction} function call.}
 
-\item{...}{optional extra arguments passed to find.interaction}
+\item{...}{optional extra arguments passed to find.interaction.}
 }
 \description{
 Basically, this function adds attributes to the results of running

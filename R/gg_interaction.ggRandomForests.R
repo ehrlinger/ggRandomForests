@@ -22,8 +22,8 @@
 #' function with all optional arguments.
 #'
 #' @param object a randomForestSRC object or the output from the
-#' \code{find.interaction} function call
-#' @param ... optional extra arguments passed to find.interaction
+#' \code{find.interaction} function call.
+#' @param ... optional extra arguments passed to find.interaction.
 #' 
 #' @seealso \code{find.interaction} \code{max.subtree} \code{var.select} \code{vimp}
 #' 

@@ -2,16 +2,16 @@
 \name{gg_minimal_depth.ggRandomForests}
 \alias{gg_minimal_depth}
 \alias{gg_minimal_depth.ggRandomForests}
-\title{gg_minimal_depth Extract the minimal depth values from an rfsrc object.}
+\title{Minimal depth data object}
 \usage{
 gg_minimal_depth.ggRandomForests(object, ...)
 }
 \arguments{
 \item{object}{A randomForestSRC forest object, predict object or
-the list from the var.select.rfsrc function}
+the list from the var.select.rfsrc function.}
 
 \item{...}{optional arguments passed to the var.select function
- of randomForestSRC}
+ if operating on an rfsrc object.}
 }
 \value{
 Invisibly, the modified list of variables from the
@@ -24,6 +24,7 @@ function takes the output from var.select and creates a data.frame
 formatted for the plot.gg_minimal_depth function.
 }
 \examples{
+## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------

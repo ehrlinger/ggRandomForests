@@ -15,12 +15,12 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' gg_minimal_depth Extract the minimal depth values from an rfsrc object.  
+#' Minimal depth data object
 #'
 #' @param object A randomForestSRC forest object, predict object or
-#' the list from the var.select.rfsrc function
+#' the list from the var.select.rfsrc function.
 #' @param ... optional arguments passed to the var.select function 
-#'  of randomForestSRC
+#'  if operating on an rfsrc object. 
 #' 
 #' @description the var.select function implements random forest variable 
 #' selection using tree minimal depth methodology. The gg_minimal_depth 
@@ -39,7 +39,7 @@
 #' @importFrom dplyr tbl_df
 #' 
 #' @examples
-#' 
+#' ## Examples from RFSRC package... 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -103,7 +103,7 @@ gg_minimal_depth.ggRandomForests <- function (object, ...){
   
   vSel$varselect$names <- factor(vSel$varselect$names, 
                                  levels=unique(vSel$varselect$names))
-  
+
   class(vSel) <- c("gg_minimal_depth", class(vSel))
   invisible(vSel) 
 }

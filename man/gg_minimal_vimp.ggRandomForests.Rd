@@ -2,24 +2,25 @@
 \name{gg_minimal_vimp.ggRandomForests}
 \alias{gg_minimal_vimp}
 \alias{gg_minimal_vimp.ggRandomForests}
-\title{gg_minimal_vimp Compare ranks by minimal depth and vimp.}
+\title{Minimal depth vs VIMP camparison by variable ranks.}
 \usage{
 gg_minimal_vimp.ggRandomForests(object, event, ...)
 }
 \arguments{
-\item{object}{A var.select randomForestSRC object}
+\item{object}{A randomForestSRC forest object, predict object or
+the list from the var.select.rfsrc function.}
 
-\item{event}{an optional vector of events. For shaping the points in
-the figure.}
+\item{event}{an optional vector of logical values (event indicator) for
+shaping the points in when plotting.}
 
 \item{...}{optional arguments passed to the var.select function
- of randomForestSRC}
+ if operating on an rfsrc object.}
 }
 \description{
-gg_minimal_vimp Compare ranks by minimal depth and vimp.
+Minimal depth vs VIMP camparison by variable ranks.
 }
 \examples{
-#'
+## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------

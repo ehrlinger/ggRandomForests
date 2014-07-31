@@ -15,13 +15,14 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' gg_minimal_vimp Compare ranks by minimal depth and vimp.
-#'
-#' @param object A var.select randomForestSRC object
-#' @param event an optional vector of events. For shaping the points in 
-#' the figure.
+#' Minimal depth vs VIMP camparison by variable ranks. 
+#' 
+#' @param object A randomForestSRC forest object, predict object or
+#' the list from the var.select.rfsrc function.
+#' @param event an optional vector of logical values (event indicator) for 
+#' shaping the points in when plotting.
 #' @param ... optional arguments passed to the var.select function 
-#'  of randomForestSRC
+#'  if operating on an rfsrc object. 
 #'  
 #'  @seealso \code{\link{plot.gg_minimal_vimp}} \code{var.select.rfsrc}
 #'  
@@ -29,7 +30,7 @@
 #'  @aliases gg_minimal_vimp
 #'  
 #' @examples
-#' #' 
+#' ## Examples from RFSRC package... 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
