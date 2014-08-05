@@ -10,7 +10,7 @@
 #' 
 #' @references 
 #' Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988) The New S Language. 
-#' Wadsworth & Brooks/Cole. (has iris3 as iris.)
+#' Wadsworth \& Brooks/Cole. (has iris3 as iris.)
 #' 
 #' Fisher, R. A. (1936) The use of multiple measurements in taxonomic problems. 
 #' Annals of Eugenics, 7, Part II, 179-188.
