@@ -2,7 +2,7 @@
 \name{gg_rfsrc.ggRandomForests}
 \alias{gg_rfsrc}
 \alias{gg_rfsrc.ggRandomForests}
-\title{gg_rfsrc.ggRandomForests}
+\title{Predicted response data object}
 \usage{
 gg_rfsrc.ggRandomForests(object, surv_type = c("surv", "chf", "mortality",
   "hazard"), oob = TRUE, se, ...)
@@ -24,8 +24,8 @@ interval}
 gg_rfsrc object formatted for \code{\link{plot.gg_rfsrc}}
 }
 \description{
-Extract the predicted response values from the forest, formatted for
-convergence plot using \code{\link{plot.gg_rfsrc}}.
+Extracts the predicted response values from the random forest object,
+formatted for plotting the response using \code{\link{plot.gg_rfsrc}}.
 }
 \examples{
 ## ------------------------------------------------------------
@@ -49,6 +49,6 @@ ggrf.obj <- gg_rfsrc(v.obj, se=.95)
 plot(ggrf.obj)
 }
 \seealso{
-\code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
+\code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}
 }
 

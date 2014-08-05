@@ -14,14 +14,19 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' @title gg_variable extract the marginal variable depedencies from
-#' a randomForestSRC object, or the output from the \code{plot.variable.rfsrc}
-#' function.
+#' Marginal variable depedence data object.
 #' 
-#' @description \code{plot.variable} generates a list containing either the marginal
-#' variable dependance or the partial variable dependence. The gg_variable function
-#' creates a data.frame of the marginal dependence data for creating figures using 
-#' the \code{\link{plot.gg_variable}} function.
+#' @details The marginal variable dependence is determined by comparing relation
+#' between the predicted response from the randomforest and a covariate of interest.
+#' 
+#' The gg_variable function operates on a randomForestSRC object, or the output 
+#' from the \code{plot.variable} function.
+#' 
+#' @description \code{plot.variable} generates a data.frame containing the marginal
+#' variable dependance or the partial variable dependence. The \code{gg_variable}
+#' function creates a data.frame of containing the full set of covariate data 
+#' (predictor variables) and the predicted response for each observation. Marginal 
+#' dependence figures are created using the \code{\link{plot.gg_variable}} function.
 #' 
 #' @param object a randomForestSRC object 
 #' @param time point (or points) of interest (for survival forests only)
@@ -32,7 +37,7 @@
 #'  
 #' @return A matrix for creating the marginal variable dependence plots.
 #' 
-#' @seealso  \code{\link{plot.gg_variable}} \code{plot.variable.rfsrc}
+#' @seealso  \code{\link{plot.gg_variable}} \code{plot.variable}
 #' 
 #' @export gg_variable.ggRandomForests gg_variable.rfsrc
 #' @export gg_variable

@@ -2,7 +2,7 @@
 \name{gg_partial.ggRandomForests}
 \alias{gg_partial}
 \alias{gg_partial.ggRandomForests}
-\title{Plot the marginal dependence of variables.}
+\title{Partial variable dependence object}
 \usage{
 gg_partial.ggRandomForests(object, named, ...)
 }
@@ -18,12 +18,13 @@ A data.frame or list of data.frames corresponding the variables
 contained within the \code{plot.variable} output.
 }
 \description{
-\code{plot.variable.rfsrc} generates a
+\code{plot.variable} generates a
 list of either marginal variable dependance or partial variable dependence
 data from a randomForestSRC object.
-The gg_partial function formulats this data for creation of partial dependence
-plots (where partial=TRUE) using the \code{\link{plot.gg_partial}} function.
-These plots are the risk adjusted estimates of the specified response as a
+The \code{gg_partial} function formulats the \code{plot.variable} output
+for partial plots  (where partial=TRUE) into a data object for creation of
+partial dependence plots using the \code{\link{plot.gg_partial}} function.
+Partial variable dependence plots are the risk adjusted estimates of the specified response as a
 function of a single covariate, possibly subsetted on other covariates.
 }
 \seealso{

@@ -16,10 +16,12 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
+#' Predicted response plot generic function, operates on a 
+#' \code{\link{gg_rfsrc}} object.
+#' 
 #'
-#' plot.gg_rfsrc
-#' Plot a \code{\link{gg_rfsrc}} object, the forest prediction, possibly 
-#' using an OOB estimator from the forest.
+#' Plot the predicted response from a \code{\link{gg_rfsrc}} object, the 
+#' random forest prediction, using the OOB prediction from the forest.
 #'  
 #' @param x gg_rfsrc object created from a randomForestSRC object
 #' @param ... arguments passed to \code{\link{gg_rfsrc}}.
@@ -27,7 +29,7 @@
 #' 
 #' @export plot.gg_rfsrc
 #' 
-#' @seealso \code{\link{gg_rfsrc}} rfsrc
+#' @seealso \code{\link{gg_rfsrc}} \code{rfsrc}
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

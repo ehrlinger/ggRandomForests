@@ -2,8 +2,7 @@
 \name{gg_roc.ggRandomForests}
 \alias{gg_roc}
 \alias{gg_roc.ggRandomForests}
-\title{gg_roc Generate a data from containing the sensitivity and specificity
-of a randomForests classification object.}
+\title{ROC (Recievor operator curve) data from a classification random forest.}
 \usage{
 gg_roc.ggRandomForests(object, which.outcome, oob = TRUE)
 }
@@ -18,8 +17,7 @@ gg_roc.ggRandomForests(object, which.outcome, oob = TRUE)
 gg_roc data.frame for plotting ROC curves.
 }
 \description{
-gg_roc Generate a data from containing the sensitivity and specificity
-of a randomForests classification object.
+The sensitivity and specificity of a randomForests classification object.
 }
 \examples{
 ## ------------------------------------------------------------

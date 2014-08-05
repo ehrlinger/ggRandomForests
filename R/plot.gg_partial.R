@@ -17,8 +17,12 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.gg_partial
-#' Plot a \code{\link{gg_partial}} object, the partial plot data object.
+#' Partial plot generic function, operates on a \code{\link{gg_partial}} object.
+#' 
+#' @description Generate a risk adjusted (partial) variable dependence plot. 
+#' The function plots the randomForest response variable (y-axis) against
+#' the covariate of interest (specified when creating the
+#'  \code{\link{gg_partial}} object).
 #' 
 #' @param x gg_partial object created from a randomForestSRC object
 #' @param points plot points (boolean)
@@ -28,6 +32,8 @@
 #' @return ggplot object
 #' 
 #' @export plot.gg_partial
+#' 
+#' @seealso \code{plot.variable} \code{\link{gg_partial}} \code{\link{plot.gg_partial_list}}
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

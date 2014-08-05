@@ -1,0 +1,100 @@
+---
+title: 'Visually Exploring Random Forests: the ggRandomForests package'
+author: John Ehrlinger  
+institution: Department of Quantitative Health Sciences   Lerner Research Institute    Cleveland Clinic   
+email: john.ehrlinger@gmail.com    
+date: "August 5, 2014"
+output:
+  pdf_document:
+    highlight: zenburn
+    toc: yes
+  html_document:
+    theme: united
+    toc: yes
+---
+
+```{r setup_chunk, echo=FALSE, results=FALSE}
+library(knitr)
+# set global chunk options for knitr. These can be changed in the header for each individual R code chunk
+opts_chunk$set(fig.path='figure/beamer-', 
+               fig.align='center',
+               fig.pos="!htpb",
+               fig.show='hold', 
+               size='footnotesize',
+               comment="", echo=FALSE, results=FALSE, message=FALSE, warnings=FALSE,
+               error=FALSE, dev='pdf')
+
+# Setup the R environment
+options(replace.assign=TRUE,object.size=Inf,expressions=100000,memory=Inf, width=100)
+
+#################
+# Load_packages #
+#################
+library(ggplot2, warn.conflicts=FALSE, verbose=FALSE) # Graphics engine for generating all types of plots
+library(reshape2, warn.conflicts=FALSE, verbose=FALSE) # Used to modify the data for plotting
+suppressMessages(library(gridExtra, warn.conflicts=FALSE, verbose=FALSE)) # for combined ggplots
+library(RColorBrewer, warn.conflicts=FALSE, verbose=FALSE) # Color schemes
+library(scales, warn.conflicts=FALSE, verbose=FALSE) # For modifying ggplot
+
+library(xtable, warn.conflicts=FALSE, verbose=FALSE) # Make tables in latex
+library(reporttools, warn.conflicts=FALSE, verbose=FALSE) # for descriptive stats
+
+library(dplyr, warn.conflicts=FALSE, verbose=FALSE) # Better data manipulations
+
+library(parallel, warn.conflicts=FALSE, verbose=FALSE)
+options(mc.cores = detectCores()-1, rf.cores=detectCores()-1)
+
+#library(devtools, warn.conflicts=FALSE, verbose=FALSE)
+#load_all("../ggRandomForests/")
+suppressMessages(library(ggRandomForests, warn.conflicts=FALSE, verbose=FALSE))
+
+# Analysis packages.
+#library(randomForestSRCM, verbose=FALSE) 
+
+#######################################################################################################
+# Default computation settings
+#######################################################################################################
+trace=FALSE
+
+# For publication quality graphics.
+saveFigs <- FALSE
+
+# Set this to recalculate the RFS models, and results. THis will make compiling take much longer.
+# FALSE uses cached results if they exist and currently fails if they do not. 
+# Results are saved in the filename naming convention.
+recalcForest.orig = FALSE
+
+# We will update recalcForest if files do not exist....
+recalcForest = recalcForest.orig
+
+## This is a stub, to assign the filenames to a single naming convention
+filename = "rfs.user2014"
+datafile = "~/Dropbox/HazardModelWork/comparison-4trt/mvis_mgt.xpt"
+pathname= "./"
+#######################################################################################################
+# Default graphics settings
+#######################################################################################################
+### Figure theme. 
+theme_set(theme_bw())
+
+time.offset <- 1997
+## Set the event/censor marks. Want open circle for censored, and 
+## x for events 
+event.marks=c(1, 4)
+event.labels=c("Cens", "Dead")
+
+strCol <- brewer.pal(3, "Set1")
+siteCol <- c(strCol[2], strCol[3],strCol[1])
+strCol <- c(strCol[2], strCol[1])
+
+ntree=1000
+
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

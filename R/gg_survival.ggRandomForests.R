@@ -15,8 +15,7 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' gg_survival
-#' Create data.frame of survival data from an randomForestSRC survival object.
+#' Predicted survival data object from an randomForestSRC survival object.
 #'   
 #'
 #' @param object An object of class (rfsrc, grow) or (rfsrc, predict), or a 
@@ -35,6 +34,8 @@
 #' @param ... Further arguments passed to other methods.
 #' 
 #' @export gg_survival.ggRandomForests gg_survival
+#' 
+#' @seealso \code{\link{plot.gg_survival}} \code{\link{gg_rfsrc}} \code{rfsrc}
 #' 
 #' @aliases gg_survival
 #' 

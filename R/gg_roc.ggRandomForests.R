@@ -16,8 +16,9 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' gg_roc Generate a data from containing the sensitivity and specificity 
-#' of a randomForests classification object. 
+#' ROC (Recievor operator curve) data from a classification random forest.
+#' 
+#' The sensitivity and specificity of a randomForests classification object. 
 #' 
 #' @param object an rfsrc classification object
 #' @param which.outcome select the classification outcome of interest.
@@ -26,6 +27,7 @@
 #' @return gg_roc data.frame for plotting ROC curves.
 #' 
 #' @seealso \code{\link{plot.gg_roc}} \code{rfsrc}
+#' 
 #' @examples
 #' 
 #' ## ------------------------------------------------------------

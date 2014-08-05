@@ -2,8 +2,7 @@
 \name{gg_survival.ggRandomForests}
 \alias{gg_survival}
 \alias{gg_survival.ggRandomForests}
-\title{gg_survival
-Create data.frame of survival data from an randomForestSRC survival object.}
+\title{Predicted survival data object from an randomForestSRC survival object.}
 \usage{
 gg_survival.ggRandomForests(object, prd_type = c("std", "oob"),
   srv_type = c("surv", "chf", "mortality", "hazard"), pnts = c("none",
@@ -25,8 +24,7 @@ All individuals are used if not specified.}
 \item{...}{Further arguments passed to other methods.}
 }
 \description{
-gg_survival
-Create data.frame of survival data from an randomForestSRC survival object.
+Predicted survival data object from an randomForestSRC survival object.
 }
 \examples{
 ## veteran data
@@ -37,5 +35,8 @@ data(veteran_rf, package="ggRandomForests")
 
 ggrf.obj <- gg_survival(veteran_rf)
 plot(ggrf.obj)
+}
+\seealso{
+\code{\link{plot.gg_survival}} \code{\link{gg_rfsrc}} \code{rfsrc}
 }
 

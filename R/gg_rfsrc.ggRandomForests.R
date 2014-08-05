@@ -16,10 +16,10 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' gg_rfsrc.ggRandomForests
+#' Predicted response data object
 #' 
-#' Extract the predicted response values from the forest, formatted for
-#' convergence plot using \code{\link{plot.gg_rfsrc}}.
+#' Extracts the predicted response values from the random forest object, 
+#' formatted for plotting the response using \code{\link{plot.gg_rfsrc}}.
 #' 
 #' @param object randomForestSRC object
 #' @param surv_type ("surv", "chf", "mortality", "hazard")
@@ -33,7 +33,7 @@
 #' 
 #' @export gg_rfsrc.ggRandomForests gg_rfsrc
 #' 
-#' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
+#' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}
 #' 
 #' @examples
 #' 

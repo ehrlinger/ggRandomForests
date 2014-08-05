@@ -17,7 +17,7 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.gg_roc plot a \code{\link{gg_roc}} object.
+#' ROC plot generic function for a \code{\link{gg_roc}} object.
 #' 
 #' @param x \code{\link{gg_roc}} object created from a classification forest
 #' @param ... arguments passed to the \code{\link{gg_roc}} function
@@ -27,6 +27,7 @@
 #' @export plot.gg_roc
 #' 
 #' @seealso \code{\link{gg_roc}} rfsrc
+#' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #' 
