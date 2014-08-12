@@ -15,6 +15,7 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
+#' Variable Importance (VIMP) data object
 #'
 #' gg_vimp Extracts the variable importance (VIMP) information from a
 #' a randomForestSRC object.

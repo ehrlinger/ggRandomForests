@@ -2,8 +2,7 @@
 \name{gg_vimp.ggRandomForests}
 \alias{gg_vimp}
 \alias{gg_vimp.ggRandomForests}
-\title{gg_vimp Extracts the variable importance (VIMP) information from a
-a randomForestSRC object.}
+\title{Variable Importance (VIMP) data object}
 \usage{
 gg_vimp.ggRandomForests(object, ...)
 }

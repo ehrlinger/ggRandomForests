@@ -1,6 +1,7 @@
 Package: ggRandomForests
 Type: Package
-Title: Graphic functions for randomForestSRC objects.
+Title: Functions for creating and plotting data objects for understanding
+    Random Forests.
 Version: 0.2.0.99
 Date: 2014-07-14
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
@@ -22,8 +23,11 @@ Suggests:
     scales,
     xtable
 VignetteBuilder: knitr
-Description: ggRandomForests is a tool for creating graphs from randomForestSRC
-    objects using the ggplot2 package.
+Description: ggRandomForests is a tool for creating and plotting data
+    structures to visually understand random forest models. The functions are
+    designed for the randomForestSRC package. The package is structured to
+    first extract a data object from the forest. Plot functions, which use the
+    ggplot2 package, are included for each data object.
 License: GPL (>=3)
 URL: https://github.com/ehrlinger/ggRandomForests
 Packaged: 2013-01-04 14:01:10 UTC; ehrlinj
