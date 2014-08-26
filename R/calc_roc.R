@@ -26,9 +26,9 @@
 #' @param which.outcome If defined, only show ROC for this response. 
 #' @param oob Use OOB estimates, the normal validation method (TRUE)
 #'  
-#' @aliases calcROC.rfsrc calcROC.randomForest calcROC
+#' @aliases calc_roc.rfsrc calc_roc.randomForest calc_roc
 #' 
-#' @seealso \code{\link{calcAUC}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
+#' @seealso \code{\link{calc_auc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
 #' 
 #' @importFrom parallel mclapply
 #' 
@@ -37,14 +37,14 @@
 #' ##
 #' ## Taken from the gg_roc example
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' roc <- calcROC.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
+#' roc <- calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
 #' }
 #' 
 ##
 ## TODO update for multiple outcome classes.
-## iris has three probable outcomes, we want a curve for each, with calcAUC measures
+## iris has three probable outcomes, we want a curve for each, with calc_auc measures
 ##
-calcROC.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
+calc_roc.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
   if(!is.factor(dta)) dta <- factor(dta)
   if(which.outcome!="all"){
     dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
@@ -77,8 +77,8 @@ calcROC.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
   
 }
 
-calcROC<- calcROC.rfsrc
-calcROC.randomForest <- function(rf, dta, which.outcome=1){
+calc_roc<- calc_roc.rfsrc
+calc_roc.randomForest <- function(rf, dta, which.outcome=1){
   prd <- predict(rf, type="prob")
   dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
                               prd=prd[,which.outcome]))
@@ -101,16 +101,16 @@ calcROC.randomForest <- function(rf, dta, which.outcome=1){
 #'
 #' Calculator for the Area Under the ROC Curve
 #' 
-#' @details calcAUC uses the trapezoidal rule to calculate the area under
+#' @details calc_auc uses the trapezoidal rule to calculate the area under
 #' the ROC curve.
 #' 
-#' @param x output from \code{\link{calcROC}} (or \code{\link{gg_roc}}) 
+#' @param x output from \code{\link{calc_roc}} (or \code{\link{gg_roc}}) 
 #' 
 #' @return AUC. 50% is random guessing, higher is better.
 #' 
-#' @aliases calcAUC
+#' @aliases calc_auc
 #' 
-calcAUC.ggRandomForests <- function(x){
+calc_auc.ggRandomForests <- function(x){
   ## Use the trapeziod rule, basically calc
   ##
   ## auc = dx/2(f(x_{i+1}) - f(x_i))
@@ -124,4 +124,4 @@ calcAUC.ggRandomForests <- function(x){
   auc <- (3*lead(x$sens) - x$sens)/2 * (x$spec - lead(x$spec))
   sum(auc, na.rm=TRUE)
 }
-calcAUC<- calcAUC.ggRandomForests
+calc_auc<- calc_auc.ggRandomForests

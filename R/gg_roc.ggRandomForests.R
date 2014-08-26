@@ -68,12 +68,12 @@ gg_roc.ggRandomForests <- function(object, which.outcome, oob=TRUE){
     if(object$type != "classification")
       stop("gg_roc is intended for classification forests only.")
     
-    roc<- calcROC.randomForest(object, object$y, which.outcome=which.outcome)
+    roc<- calc_roc.randomForest(object, object$y, which.outcome=which.outcome)
   }else{
     if(object$family != "class")
       stop("gg_roc is intended for classification forests only.")
     
-    roc<- calcROC.rfsrc(object, object$yvar, which.outcome=which.outcome, oob=oob)
+    roc<- calc_roc.rfsrc(object, object$yvar, which.outcome=which.outcome, oob=oob)
   }
   roc <- tbl_df(roc)
   class(roc) <- c("gg_roc", class(roc))

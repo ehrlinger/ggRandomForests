@@ -66,7 +66,7 @@ plot.gg_roc<- function(x, ...){
   obj <- obj[order(obj$spec),]
   obj$fpr <- 1-obj$spec
   
-  auc <- calcAUC(obj)
+  auc <- calc_auc(obj)
   
   gDta <- ggplot(data=obj)+
     geom_line(aes_string(x="fpr", y="sens"))+
