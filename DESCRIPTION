@@ -2,8 +2,8 @@ Package: ggRandomForests
 Type: Package
 Title: Functions for creating and plotting data objects for understanding
     Random Forests.
-Version: 0.2.0.99
-Date: 2014-07-14
+Version: 0.3.0.99
+Date: 2014-08-12
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 Depends:
@@ -30,5 +30,5 @@ Description: ggRandomForests is a tool for creating and plotting data
     ggplot2 package, are included for each data object.
 License: GPL (>=3)
 URL: https://github.com/ehrlinger/ggRandomForests
-Packaged: 2013-01-04 14:01:10 UTC; ehrlinj
+Packaged: 2014-08-12 13:58:10 UTC; ehrlinj
 Roxygen: list(wrap = FALSE)
