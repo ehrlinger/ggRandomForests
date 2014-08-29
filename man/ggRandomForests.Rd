@@ -30,23 +30,24 @@ using the S3 object model. Alternatively, the user can use these data object for
 additional external, custom plotting or analysis operations.
 
 
-\item ggplot2 figures: We chose to use the \code{ggplot2} package for our figures.
- The plot functions all return either a single ggplot2 object, or a list of ggplot2 object.
+\item \code{ggplot2} figures: We chose to use the \code{ggplot2} package for our figures.
+ The plot functions all return either a single \code{ggplot2} object, or a \code{list} of
+ \code{ggplot2} objects.
  The user can then use additional \code{ggplot2} functions to modify and customise the
  figures to their liking.
 }
 
 The ggRandomForests package contains the following functions:
 \itemize{
-\item gg_rfsrc: randomForest[SRC] prediction
-\item gg_error: randomForest[SRC] convergence rate based on the OOB error rate.
-\item gg_roc: ROC curves for randomForest classification models.
-\item gg_vimp: Variable Importance ranking for variable selection
-\item gg_minimal_depth: Minimal Depth ranking for variable selection
-\item gg_interactions: Minimal Depth interaction detection (under development)
-\item gg_variable: Marginal variable dependence (including conditional dependence)
-\item gg_partial: Partial variable dependence  (including conditional partial dependence)
-\item gg_survival: Non-parameteric Kaplan-Meier and Nelson-Aalon survival estimates
+\item \code{\link{gg_rfsrc}}: randomForest[SRC] prediction
+\item \code{\link{gg_error}}: randomForest[SRC] convergence rate based on the OOB error rate.
+\item \code{\link{gg_roc}}: ROC curves for randomForest classification models.
+\item \code{\link{gg_vimp}}: Variable Importance ranking for variable selection
+\item \code{\link{gg_minimal_depth}}: Minimal Depth ranking for variable selection
+\item \code{\link{gg_interaction}}: Minimal Depth interaction detection (under development)
+\item \code{\link{gg_variable}}: Marginal variable dependence (including conditional dependence)
+\item \code{\link{gg_partial}}: Partial variable dependence  (including conditional partial dependence)
+\item \code{\link{gg_survival}}: Non-parameteric Kaplan-Meier and Nelson-Aalon survival estimates
 }
 
 All functions have an associated plotting function that returns ggplot2 graphics, either

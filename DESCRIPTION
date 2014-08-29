@@ -17,7 +17,6 @@ Suggests:
     knitr,
     testthat,
     RColorBrewer,
-    devtools,
     gridExtra,
     reporttools,
     scales,

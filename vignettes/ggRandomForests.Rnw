@@ -36,7 +36,7 @@ library(dplyr) # Better data manipulations
 library(parallel)
 options(mc.cores = detectCores()-1, rf.cores=detectCores()-1)
 
-library(devtools)
+#library(devtools)
 #load_all("../ggRandomForests/")
 library(ggRandomForests)
 
