@@ -1,5 +1,6 @@
 ggRandomForests Package
 ========================================================
+[![DOI](https://zenodo.org/badge/5745/ehrlinger/ggRandomForests.png)](http://dx.doi.org/10.5281/zenodo.11526)
 
 Main Goal: Simplify graphical exploration of randomForests.
 
