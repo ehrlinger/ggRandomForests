@@ -1,4 +1,53 @@
-\documentclass[nojss]{jss}
+\documentclass[nojss]{jss}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,65 +115,15 @@ We introduce the \proglang{R} package \pkg{ggRandomForests}.}
 % keep code formatting
 %\SweaveOpts{keep.source = TRUE}
 
-<<setup,include=FALSE, cache=FALSE, echo=FALSE>>=
-#' @import RColorBrewer devtools gridExtra reporttools scales xtable
 
-library(knitr)
-# set global chunk options for knitr. These can be changed in the header for each individual R code chunk
-opts_chunk$set(fig.path='figure/beamer-', 
-               fig.align='center',
-               fig.pos="!htpb",
-               fig.show='hold', 
-               size='footnotesize',
-               comment="", echo=FALSE, results=FALSE, message=FALSE, warnings=FALSE,
-               error=FALSE, dev='pdf')
 
-# Setup the R environment
-options(replace.assign=TRUE,object.size=Inf,expressions=100000,memory=Inf, width=100)
-
-#################
-# Load_packages #
-#################
-library(ggplot2) # Graphics engine for generating all types of plots
-library(reshape2) # Used to modify the data for plotting
-library(gridExtra) # for combined ggplots
-library(RColorBrewer) # Color schemes
-library(scales) # For modifying ggplot
-
-library(xtable) # Make tables in latex
-library(reporttools) # for descriptive stats
-
-library(dplyr) # Better data manipulations
-
-library(parallel)
-options(mc.cores = detectCores()-1, rf.cores=detectCores()-1)
-
-#library(devtools)
-#load_all("../ggRandomForests/")
-library(ggRandomForests)
-
-# Analysis packages.
-library(randomForestSRC) 
-
-#########################################################################
-# Default computation settings
-#########################################################################
-@
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 %% include your article here, just as usual
 %% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
 
-<<echo = FALSE, print = FALSE>>=
 
-## save initial options
-o1 <- getOption("prompt")
-o2 <- getOption("continue")
-o3 <- getOption("width")
-o4 <- getOption("digits")
-options(prompt = "R> ", continue = "+  ", width = 100, digits = 4)
-@
 
 % -----------------------------------------------------
 \section{About this document}
@@ -198,38 +197,71 @@ transplantation data.
 \subsection{Nominal variables (factors)}
 The following code lines invoke \pkg{reporttools} and prepare the variables from \code{jasa} for later use. 
 
-<<results=tex, echo=T>>=
-library(reporttools)
-data("heart", package = "survival")    # load the jasa dataset
-vars0 <- with(jasa, data.frame(
-  "Transplantation" = factor(jasa$transplant, levels = 0:1, labels = 
-  c("no", "yes")), "Age" = jasa$age, "Surgery" = factor(jasa$surgery, 
-  levels = 0:1, labels = c("no", "yes")), "Survival status" = 
-  factor(jasa$fustat, levels = 0:1, labels = c("alive", "dead")),
-  "HLA A2 score" = jasa$hla.a2, "Birthday" = jasa$birth.dt, 
-  "Acceptance into program" = jasa$accept.dt, "End of follow up" = 
-  jasa$fu.date, "Follow up time" = futime, "Mismatch score" = 
-  mscore, check.names = FALSE))
-attach(vars0, warn.conflicts = FALSE)
-@ 
+\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(reporttools)}
+\hlkwd{data}\hlstd{(}\hlstr{"heart"}\hlstd{,} \hlkwc{package} \hlstd{=} \hlstr{"survival"}\hlstd{)}    \hlcom{# load the jasa dataset}
+\hlstd{vars0} \hlkwb{<-} \hlkwd{with}\hlstd{(jasa,} \hlkwd{data.frame}\hlstd{(}
+  \hlstr{"Transplantation"} \hlstd{=} \hlkwd{factor}\hlstd{(jasa}\hlopt{$}\hlstd{transplant,} \hlkwc{levels} \hlstd{=} \hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{labels} \hlstd{=}
+  \hlkwd{c}\hlstd{(}\hlstr{"no"}\hlstd{,} \hlstr{"yes"}\hlstd{)),} \hlstr{"Age"} \hlstd{= jasa}\hlopt{$}\hlstd{age,} \hlstr{"Surgery"} \hlstd{=} \hlkwd{factor}\hlstd{(jasa}\hlopt{$}\hlstd{surgery,}
+  \hlkwc{levels} \hlstd{=} \hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{labels} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"no"}\hlstd{,} \hlstr{"yes"}\hlstd{)),} \hlstr{"Survival status"} \hlstd{=}
+  \hlkwd{factor}\hlstd{(jasa}\hlopt{$}\hlstd{fustat,} \hlkwc{levels} \hlstd{=} \hlnum{0}\hlopt{:}\hlnum{1}\hlstd{,} \hlkwc{labels} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"alive"}\hlstd{,} \hlstr{"dead"}\hlstd{)),}
+  \hlstr{"HLA A2 score"} \hlstd{= jasa}\hlopt{$}\hlstd{hla.a2,} \hlstr{"Birthday"} \hlstd{= jasa}\hlopt{$}\hlstd{birth.dt,}
+  \hlstr{"Acceptance into program"} \hlstd{= jasa}\hlopt{$}\hlstd{accept.dt,} \hlstr{"End of follow up"} \hlstd{=}
+  \hlstd{jasa}\hlopt{$}\hlstd{fu.date,} \hlstr{"Follow up time"} \hlstd{= futime,} \hlstr{"Mismatch score"} \hlstd{=}
+  \hlstd{mscore,} \hlkwc{check.names} \hlstd{=} \hlnum{FALSE}\hlstd{))}
+\hlkwd{attach}\hlstd{(vars0,} \hlkwc{warn.conflicts} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\end{kframe}
 
 To generate Table~\ref{tab: nominal1}, a summary of some nominal variables of the heart
 transplantation data, simply invoke:
  
-<<results = verbatim, echo = T, eval = F>>=
-vars1 <- vars0[, c("Surgery", "Survival status", "HLA A2 score")]
-cap1 <- "Patient characteristics: nominal variables."
-tableNominal(vars = vars1, cap = cap1, vertical = FALSE, lab = 
-  "tab: nominal1", longtable = FALSE)
-@ 
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{vars1} \hlkwb{<-} \hlstd{vars0[,} \hlkwd{c}\hlstd{(}\hlstr{"Surgery"}\hlstd{,} \hlstr{"Survival status"}\hlstd{,} \hlstr{"HLA A2 score"}\hlstd{)]}
+\hlstd{cap1} \hlkwb{<-} \hlstr{"Patient characteristics: nominal variables."}
+\hlkwd{tableNominal}\hlstd{(}\hlkwc{vars} \hlstd{= vars1,} \hlkwc{cap} \hlstd{= cap1,} \hlkwc{vertical} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{lab} \hlstd{=}
+  \hlstr{"tab: nominal1"}\hlstd{,} \hlkwc{longtable} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
-vars1 <- vars0[, c("Surgery", "Survival status", "HLA A2 score")]
-cap1 <- "Patient characteristics: nominal variables."
-tableNominal(vars = vars1, cap = cap1, vertical = FALSE, lab = "tab: nominal1", longtable = FALSE)
-@ 
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Wed Sep  3 11:43:03 2014
+\begin{table}[ht]
+\centering
+{\footnotesize
+\begin{tabular}{llrrr}
+ \textbf{Variable} & \textbf{Levels} & $\mathbf{n}$ & $\mathbf{\%}$ & $\mathbf{\sum \%}$ \\ 
+  \hline
+Surgery & no & 87 & 84.5 & 84.5 \\ 
+   & yes & 16 & 15.5 & 100.0 \\ 
+   \hline
+ & all & 103 & 100.0 &  \\ 
+   \hline
+\hline
+Survival status & alive & 28 & 27.2 & 27.2 \\ 
+   & dead & 75 & 72.8 & 100.0 \\ 
+   \hline
+ & all & 103 & 100.0 &  \\ 
+   \hline
+\hline
+HLA A2 score & 0 & 48 & 73.8 & 73.8 \\ 
+   & 1 & 17 & 26.1 & 100.0 \\ 
+   \hline
+ & all & 65 & 100.0 &  \\ 
+   \hline
+\hline
+\end{tabular}
+}
+\caption{Patient characteristics: nominal variables.} 
+\label{tab: nominal1}
+\end{table}
+
 \end{center}
 \renewcommand{\baselinestretch}{1}
 
@@ -246,24 +278,57 @@ Then, for the HLA A2 score, we consider missing values a category in computation
 \code{miss.cat} a vector containing the indices of the factor(s) in \code{vars} we want the percentages to be computed 
 this way. All these options are implemented in Table~\ref{tab: nominal2} via the following code lines:
 
-<<results = verbatim, echo = T, eval = F>>=
-cap2 <- "Patient characteristics: nominal variables, by transplantation, 
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{cap2} \hlkwb{<-} \hlstr{"Patient characteristics: nominal variables, by transplantation, 
   patients not older than 50, missings as a separate category for the 
-  $3^{\\mathrm{rd}}$ factor, $p$-values of Fisher's exact test added."
-tableNominal(vars = vars1, group = Transplantation, subset = (Age <= 50), 
-  miss.cat = 3, print.pval = "fisher", cap = cap2, lab = "tab: nominal2", 
-  longtable = FALSE)
-@ 
+  $3^\{\textbackslash{}\textbackslash{}mathrm\{rd\}\}$ factor, $p$-values of Fisher's exact test added."}
+\hlkwd{tableNominal}\hlstd{(}\hlkwc{vars} \hlstd{= vars1,} \hlkwc{group} \hlstd{= Transplantation,} \hlkwc{subset} \hlstd{= (Age} \hlopt{<=} \hlnum{50}\hlstd{),}
+  \hlkwc{miss.cat} \hlstd{=} \hlnum{3}\hlstd{,} \hlkwc{print.pval} \hlstd{=} \hlstr{"fisher"}\hlstd{,} \hlkwc{cap} \hlstd{= cap2,} \hlkwc{lab} \hlstd{=} \hlstr{"tab: nominal2"}\hlstd{,}
+  \hlkwc{longtable} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \pagebreak
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
-cap2 <- "Patient characteristics: nominal variables, by transplantation, patients not older than 50, 
-  missings as a separate category for the $3^{\\mathrm{rd}}$ factor, $p$-values of Fisher's exact test added."
-tableNominal(vars = vars1, group = Transplantation, subset = (Age <= 50), miss.cat = 3, print.pval = "fisher", cap = cap2, lab = "tab: nominal2", longtable = FALSE)
-@ 
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Wed Sep  3 11:43:03 2014
+\begin{table}[ht]
+\centering
+{\footnotesize
+\begin{tabular}{ll|rrr|rrr|rrr}
+ \textbf{Variable} & \textbf{Levels} & $\mathbf{n_{\mathrm{no}}}$ & $\mathbf{\%_{\mathrm{no}}}$ & $\mathbf{\sum \%_{\mathrm{no}}}$ & $\mathbf{n_{\mathrm{yes}}}$ & $\mathbf{\%_{\mathrm{yes}}}$ & $\mathbf{\sum \%_{\mathrm{yes}}}$ & $\mathbf{n_{\mathrm{all}}}$ & $\mathbf{\%_{\mathrm{all}}}$ & $\mathbf{\sum \%_{\mathrm{all}}}$ \\ 
+  \hline
+Surgery & no & 21 & 91.3 & 91.3 & 35 & 76.1 & 76.1 & 56 & 81.2 & 81.2 \\ 
+   & yes & 2 & 8.7 & 100.0 & 11 & 23.9 & 100.0 & 13 & 18.8 & 100.0 \\ 
+   \hline
+$p= 0.19$ & all & 23 & 100.0 &  & 46 & 100.0 &  & 69 & 100.0 &  \\ 
+   \hline
+\hline
+Survival status & alive & 4 & 17.4 & 17.4 & 21 & 45.6 & 45.6 & 25 & 36.2 & 36.2 \\ 
+   & dead & 19 & 82.6 & 100.0 & 25 & 54.4 & 100.0 & 44 & 63.8 & 100.0 \\ 
+   \hline
+$p= 0.03$ & all & 23 & 100.0 &  & 46 & 100.0 &  & 69 & 100.0 &  \\ 
+   \hline
+\hline
+HLA A2 score & 0 & 0 & 0.0 & 0.0 & 35 & 76.1 & 76.1 & 35 & 50.7 & 50.7 \\ 
+   & 1 & 0 & 0.0 & 0.0 & 8 & 17.4 & 93.5 & 8 & 11.6 & 62.3 \\ 
+   & missing & 23 & 100.0 & 100.0 & 3 & 6.5 & 100.0 & 26 & 37.7 & 100.0 \\ 
+   \hline
+$p= 0.0005$ & all & 23 & 100.0 &  & 46 & 100.0 &  & 69 & 100.0 &  \\ 
+   \hline
+\hline
+\end{tabular}
+}
+\caption{Patient characteristics: nominal variables, by transplantation, patients not older than 50, 
+  missings as a separate category for the $3^{\mathrm{rd}}$ factor, $p$-values of Fisher's exact test added.} 
+\label{tab: nominal2}
+\end{table}
+
 \end{center}
 \renewcommand{\baselinestretch}{1}
 
@@ -289,15 +354,19 @@ you want to be displayed, in the order they should appear in the table.
 As an illustration, we only display $n$, Min, Max, and $\#$NA for the variables birth date, acceptance date,
 and end of follow up date of the heart trial in Table~\ref{tab: date1}, via the following code:
 
-<<results = verbatim, echo = T, eval = F>>=
-vars3 <- vars0[, c("Birthday", "Acceptance into program", 
-  "End of follow up")]
-cap3 <- "Patient characteristics: date variables, by transplantation 
-  status."
-tableDate(vars = vars3, group = Transplantation, stats = 
-  c("n", "min", "max", "na"), print.pval = TRUE, cap = cap3, lab = 
-  "tab: date1", longtable = FALSE)
-@ 
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{vars3} \hlkwb{<-} \hlstd{vars0[,} \hlkwd{c}\hlstd{(}\hlstr{"Birthday"}\hlstd{,} \hlstr{"Acceptance into program"}\hlstd{,}
+  \hlstr{"End of follow up"}\hlstd{)]}
+\hlstd{cap3} \hlkwb{<-} \hlstr{"Patient characteristics: date variables, by transplantation 
+  status."}
+\hlkwd{tableDate}\hlstd{(}\hlkwc{vars} \hlstd{= vars3,} \hlkwc{group} \hlstd{= Transplantation,} \hlkwc{stats} \hlstd{=}
+  \hlkwd{c}\hlstd{(}\hlstr{"n"}\hlstd{,} \hlstr{"min"}\hlstd{,} \hlstr{"max"}\hlstd{,} \hlstr{"na"}\hlstd{),} \hlkwc{print.pval} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{cap} \hlstd{= cap3,} \hlkwc{lab} \hlstd{=}
+  \hlstr{"tab: date1"}\hlstd{,} \hlkwc{longtable} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
  
 As for \code{tableNominal}, the \code{vars} argument of the function is a data frame containing the variables of interest,
 but here each of \proglang{R} class \code{Date}.
@@ -309,11 +378,38 @@ characteristics are indeed equally distributed between randomized treatment arms
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
-vars3 <- vars0[, c("Birthday", "Acceptance into program", "End of follow up")]
-cap3 <- "Patient characteristics: date variables, by transplantation status."
-tableDate(vars = vars3, group = Transplantation, stats = c("n", "min", "max", "na"), print.pval = TRUE, cap = cap3, lab = "tab: date1", longtable = FALSE)
-@ 
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Wed Sep  3 11:43:03 2014
+\begin{table}[ht]
+\centering
+{\footnotesize
+\begin{tabular}{llrrrr}
+ \textbf{Variable} & \textbf{Levels} & $\mathbf{n}$ & \textbf{Min} & \textbf{Max} & \textbf{\#NA} \\ 
+  \hline
+Birthday & no &  34 & 1909-10-04 & 1960-07-21 &   0 \\ 
+   & yes &  69 & 1905-04-02 & 1952-09-03 &   0 \\ 
+   \hline
+$p= 0.47$ & all & 103 & 1905-04-02 & 1960-07-21 &   0 \\ 
+   \hline
+\hline
+Acceptance into program & no &  34 & 1967-09-13 & 1974-03-22 &   0 \\ 
+   & yes &  69 & 1968-01-06 & 1974-02-22 &   0 \\ 
+   \hline
+$p= 0.06$ & all & 103 & 1967-09-13 & 1974-03-22 &   0 \\ 
+   \hline
+\hline
+End of follow up & no &  34 & 1967-09-18 & 1974-04-01 &   0 \\ 
+   & yes &  69 & 1968-01-21 & 1974-04-01 &   0 \\ 
+   \hline
+$p= 0.00016$ & all & 103 & 1967-09-18 & 1974-04-01 &   0 \\ 
+   \hline
+\hline
+\end{tabular}
+}
+\caption{Patient characteristics: date variables, by transplantation status.} 
+\label{tab: date1}
+\end{table}
+
 \end{center}
 \renewcommand{\baselinestretch}{1}
 
@@ -336,45 +432,89 @@ as appropriate, to compare the variable under consideration between the groups g
 We give two examples summarizing descriptive statistics of some continuous patient characteristics
 of the Stanford heart transplantation data. Table~\ref{tab: cont1} is generated via 
 
-<<results = verbatim, echo = T, eval = F>>=
-vars4 <- vars0[, c("Age", "Follow up time", "Mismatch score")]
-cap4 <- "Patient characteristics: continuous variables."
-tableContinuous(vars = vars4, cap = cap4, lab = "tab: cont1", 
-  longtable = FALSE)
-@ 
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{vars4} \hlkwb{<-} \hlstd{vars0[,} \hlkwd{c}\hlstd{(}\hlstr{"Age"}\hlstd{,} \hlstr{"Follow up time"}\hlstd{,} \hlstr{"Mismatch score"}\hlstd{)]}
+\hlstd{cap4} \hlkwb{<-} \hlstr{"Patient characteristics: continuous variables."}
+\hlkwd{tableContinuous}\hlstd{(}\hlkwc{vars} \hlstd{= vars4,} \hlkwc{cap} \hlstd{= cap4,} \hlkwc{lab} \hlstd{=} \hlstr{"tab: cont1"}\hlstd{,}
+  \hlkwc{longtable} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \pagebreak
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
-vars4 <- vars0[, c("Age", "Follow up time", "Mismatch score")]
-cap4 <- "Patient characteristics: continuous variables."
-tableContinuous(vars = vars4, cap = cap4, lab = "tab: cont1", longtable = FALSE)
-@ 
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Wed Sep  3 11:43:03 2014
+\begin{table}[ht]
+\centering
+{\footnotesize
+\begin{tabular}{lrrrrrrrrrr}
+ \textbf{Variable} & $\mathbf{n}$ & \textbf{Min} & $\mathbf{q_1}$ & $\mathbf{\widetilde{x}}$ & $\mathbf{\bar{x}}$ & $\mathbf{q_3}$ & \textbf{Max} & $\mathbf{s}$ & \textbf{IQR} & \textbf{\#NA} \\ 
+  \hline
+Age & 103 & 8.8 & 41.2 & 47.8 &  45.2 &  52.1 &   64.4 &   9.8 &  10.9 &  0 \\ 
+  Follow up time & 103 & 0.0 & 32.5 & 89.0 & 309.2 & 411.5 & 1799.0 & 428.3 & 379.0 &  0 \\ 
+  Mismatch score &  65 & 0.0 &  0.8 &  1.1 &   1.2 &   1.6 &    3.0 &   0.6 &   0.8 & 38 \\ 
+  \end{tabular}
+}
+\caption{Patient characteristics: continuous variables.} 
+\label{tab: cont1}
+\end{table}
+
 \end{center}
 \renewcommand{\baselinestretch}{1}
 
 Finally, Table~\ref{tab: cont2} can be produced via:
 
-<<results = verbatim, echo = T, eval = F>>=
-cap5 <- "Patient characteristics, by transplantation: continuous 
-  variables, user-defined functions supplied."
-stats <- list("n", "min", "median", "$\\bar{x}_{\\mathrm{trim}}$" = 
-  function(x){return(mean(x, trim = .05))}, "max", "iqr", 
-  "c$_{\\mathrm{v}}$" = function(x){return(sd(x) / mean(x))}, "s", "na")
-tableContinuous(vars = vars4, group = Transplantation, stats = stats, 
-  print.pval = "kruskal", cap = cap5, lab = "tab: cont2", longtable = 
-  FALSE)
-@ 
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{cap5} \hlkwb{<-} \hlstr{"Patient characteristics, by transplantation: continuous 
+  variables, user-defined functions supplied."}
+\hlstd{stats} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlstr{"n"}\hlstd{,} \hlstr{"min"}\hlstd{,} \hlstr{"median"}\hlstd{,} \hlstr{"$\textbackslash{}\textbackslash{}bar\{x\}_\{\textbackslash{}\textbackslash{}mathrm\{trim\}\}$"} \hlstd{=}
+  \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)\{}\hlkwd{return}\hlstd{(}\hlkwd{mean}\hlstd{(x,} \hlkwc{trim} \hlstd{=} \hlnum{.05}\hlstd{))\},} \hlstr{"max"}\hlstd{,} \hlstr{"iqr"}\hlstd{,}
+  \hlstr{"c$_\{\textbackslash{}\textbackslash{}mathrm\{v\}\}$"} \hlstd{=} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)\{}\hlkwd{return}\hlstd{(}\hlkwd{sd}\hlstd{(x)} \hlopt{/} \hlkwd{mean}\hlstd{(x))\},} \hlstr{"s"}\hlstd{,} \hlstr{"na"}\hlstd{)}
+\hlkwd{tableContinuous}\hlstd{(}\hlkwc{vars} \hlstd{= vars4,} \hlkwc{group} \hlstd{= Transplantation,} \hlkwc{stats} \hlstd{= stats,}
+  \hlkwc{print.pval} \hlstd{=} \hlstr{"kruskal"}\hlstd{,} \hlkwc{cap} \hlstd{= cap5,} \hlkwc{lab} \hlstd{=} \hlstr{"tab: cont2"}\hlstd{,} \hlkwc{longtable} \hlstd{=}
+  \hlnum{FALSE}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
-cap5 <- "Patient characteristics, by transplantation: continuous variables, user-defined functions supplied."
-stats <- list("n", "min", "median", "$\\bar{x}_{\\mathrm{trim}}$" = function(x){return(mean(x, trim = .05))}, "max", "iqr", "c$_{\\mathrm{v}}$" = function(x){return(sd(x) / mean(x))}, "s", "na")
-tableContinuous(vars = vars4, group = Transplantation, stats = stats, print.pval = "kruskal", cap = cap5, lab = "tab: cont2", longtable = FALSE)
-@ 
+% latex table generated in R 3.1.1 by xtable 1.7-3 package
+% Wed Sep  3 11:43:03 2014
+\begin{table}[ht]
+\centering
+{\footnotesize
+\begin{tabular}{llrrrrrrrrr}
+ \textbf{Variable} & \textbf{Levels} & $\mathbf{n}$ & \textbf{Min} & $\mathbf{\widetilde{x}}$ & $\bar{x}_{\mathrm{trim}}$ & \textbf{Max} & \textbf{IQR} & c$_{\mathrm{v}}$ & $\mathbf{s}$ & \textbf{\#NA} \\ 
+  \hline
+Age & no &  34 &  8.8 &  46.3 &  44.0 &   59.1 &  12.5 & 0.3 &  11.4 &  0 \\ 
+   & yes &  69 & 19.6 &  48.0 &  46.4 &   64.4 &   9.5 & 0.2 &   8.9 &  0 \\ 
+   \hline
+$p= 0.39$ & all & 103 &  8.8 &  47.8 &  45.8 &   64.4 &  10.9 & 0.2 &   9.8 &  0 \\ 
+   \hline
+Follow up time & no &  34 &  0.0 &  20.0 &  57.9 & 1400.0 &  41.5 & 2.6 & 250.5 &  0 \\ 
+   & yes &  69 &  4.0 & 206.0 & 374.7 & 1799.0 & 548.0 & 1.1 & 458.9 &  0 \\ 
+   \hline
+$p< 0.0001$ & all & 103 &  0.0 &  89.0 & 259.0 & 1799.0 & 379.0 & 1.4 & 428.3 &  0 \\ 
+   \hline
+Mismatch score & no &  NA &   NA &    NA &    NA &     NA &    NA &  NA &    NA & NA \\ 
+   & yes &  65 &  0.0 &   1.1 &   1.1 &    3.0 &   0.8 & 0.5 &   0.6 &  4 \\ 
+   \hline
+ & all &  65 &  0.0 &   1.1 &   1.1 &    3.0 &   0.8 & 0.5 &   0.6 & 38 \\ 
+   \hline
+\end{tabular}
+}
+\caption{Patient characteristics, by transplantation: continuous variables, user-defined functions supplied.} 
+\label{tab: cont2}
+\end{table}
+
 \end{center}
 \renewcommand{\baselinestretch}{1}
 
@@ -398,9 +538,6 @@ the paper. I also thank Leo Held and Philipp Muri for helpful discussions.
 
 \bibliography{report}
 
-<<echo=FALSE>>=
-## re-specify initial options
-options(prompt = o1, continue = o2, width = o3, digits = o4)
-@
+
 
 \end{document}

@@ -1,0 +1,173 @@
+\documentclass[nojss]{jss}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{ggRandomForests}
+%\VignetteIndexEntry{A guide to Random Forests with the randomForestSRC and ggRandomForests packages}                                          
+%\VignetteKeywords{random forest, survival, classification, regression, VIMP, minimal depth}                                                                   
+%\VignetteDepends{ggRandomForests, randomForestsSRC, xtable, survival}                                      
+%\VignettePackage{ggRandomForests} 
+
+%% almost as usual
+\author{John Ehrlinger\\Cleveland Clinic} %\And \\Plus Affiliation}
+\title{{\pkg{ggRandomForests}}: Visually Exploring Random Forests in \proglang{R}}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{John Ehrlinger} %% comma-separated
+\Plaintitle{ggRandomForests: Visually Exploring Random Forests} %% without formatting
+\Shorttitle{{\pkg{ggRandomForests}}: Visually Exploring Random Forests in \proglang{R}}
+
+%% an abstract and keywords
+\Abstract{ 
+We introduce the \proglang{R} package \pkg{ggRandomForests}.}
+\Keywords{random forest, survival, classification, regression, VIMP, minimal depth}
+\Plainkeywords{random forest, survival, classification, regression, VIMP, minimal depth}
+%% at least one keyword must be supplied
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{13}
+%% \Issue{9}
+%% \Month{September}
+%% \Year{2004}
+%% \Submitdate{2004-09-29}
+%% \Acceptdate{2004-09-29}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  John Ehrlinger\\
+  Quantitative Health Sciences\\
+  Lerner Research Institute\\
+  Cleveland Clinic\\
+  9500 Euclid Ave\\
+  Cleveland, Ohio 44195\\
+%  Telephone: +41/0/44634-4643 \\
+%  Fax: +41/0/44634-4386 \\
+  E-mail: \email{john.ehrlinger@gmail.com}\\
+  URL: \url{http://www.biostat.uzh.ch/aboutus/people/rufibach.html}
+}
+
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/1/31336-5053
+%% Fax: +43/1/31336-734
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{longtable}
+\usepackage{lscape}
+
+% keep code formatting
+%\SweaveOpts{keep.source = TRUE}
+
+
+
+\begin{document}
+
+%% include your article here, just as usual
+%% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
+
+
+
+% -----------------------------------------------------
+\section{About this document}
+% -----------------------------------------------------
+This document is an introduction to the \proglang{R} package
+\pkg{reporttools} \citep{reporttools} based on \citet{Rufibach:2009}. It aims to provide a detailed user guide 
+based on simple, reproducible worked examples. The \pkg{reporttools} package is available from the
+Comprehensive \proglang{R} Archive Network via \url{http://CRAN.R-project.org/package=reporttools}.
+
+Compared to the package that was the base of \citet{Rufibach:2009} some minor modifications and additions 
+have been made to the package. All changes were intended to be backwards compatible.
+
+
+% -----------------------------------------------------
+\section{Introduction}
+% -----------------------------------------------------
+In statistical analysis reports and medical publications it is common practice to start statistical analyses with 
+displays of descriptive statistics of patient characteristics and further important variables. 
+The purpose of these tables is (1) to get an idea about basic features of the data and (2) especially in 
+analysis reports, data checking.
+Tables of descriptive statistics may take different formats, depending on the type of 
+variables to be displayed, which descriptive statistics are to be reported, and whether statistics should be given
+for all observations jointly or separately for the levels of a given factor, such as e.g. treatment arm. 
+To be able to efficiently generate these recurring parts of analyses when combining {\LaTeX}
+\citep{knuth_84, lamport_94} with \proglang{R} \citep{R} code via \code{Sweave} \citep{leisch_02}, the \proglang{R} package \pkg{reporttools} 
+provides functions to generate {\LaTeX} tables of descriptive statistics for nominal, date,
+and continuous variables.
+The tables are set up as data frames in \proglang{R}, then translated into {\LaTeX} code
+using the standard \proglang{R} package \pkg{xtable} \citep{xtable}. Using \code{Sweave}, these tables can be directly generated
+in {\LaTeX} documents by invoking basically only one line of \proglang{R} code.
+
+A package that offers somewhat related functionality is \pkg{r2lUniv} \citep{r2lUniv}.
+In that package, each variable gets a separate section providing descriptive statistics and corresponding plots, 
+depending on the type of variable that is analyzed. The default functions in \pkg{r2lUniv}
+directly generate an entire {\LaTeX} document, thereby reporting the descriptive statistics of only about three variables
+on one single page. Set up this way, it seems difficult to efficiently merge plain text and data analysis using \pkg{r2lUniv}.
+Additionally, we are not aware of a possibility in \pkg{r2lUniv} to compare a given variable between different groups in an
+easy way. The functions introduced in \pkg{reporttools} aim at closing these gaps. The tabulating functions 
+in \pkg{reporttools} can be applied inside a \code{.Rnw} document combining {\LaTeX} plain text and data 
+analyses in \proglang{R}.
+
+A common feature in data analysis is, that one needs to provide descriptive statistics of a large set of variables thereby
+generating tables that are larger than one page. The functions described here have by default 
+the \code{tabular.environment}-option
+in the implicitly used \proglang{R} function \code{print.xtable} set to \code{longtable}. Together
+with the {\LaTeX} package \pkg{longtable}, setting this option generates tables that may range over more than a 
+page, without additional specification or programming effort.
+
+The package \pkg{reporttools} contains several additional functions useful in setting up analyses and 
+writing reports. However, the emphasis in this article is on the tabulating functions. For a more detailed description
+of further elements of the package we refer to its \proglang{R} help files.
+
+In Section~\ref{sec: data} we introduce the dataset that is used to illustrate the tabulating functions 
+in Section~\ref{sec: heart}. Some conclusions are drawn in Section~\ref{sec: concl}.
+
+% -----------------------------------------------------
+\section{Stanford heart transplantation data} \label{sec: data}
+% -----------------------------------------------------
+We illustrate our new functions using the Stanford heart transplantation dataset \code{jasa} in the 
+standard \proglang{R} package \pkg{survival} \citep{survival}. 
+This dataset provides some patient characteristics and the survival of patients on the waiting list for the 
+Stanford heart transplantation program, see \cite{crowley_77} and the corresponding \proglang{R} help file for details.
+
+
+% -----------------------------------------------------
+\section{Descriptive statistics for heart transplantation data} \label{sec: heart}
+% -----------------------------------------------------
+To demonstrate the entire flexibility of \pkg{reporttools} we use the package to describe the Stanford heart
+transplantation data.
+
+\subsection{Nominal variables (factors)}
+The following code lines invoke \pkg{reporttools} and prepare the variables from \code{jasa} for later use. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

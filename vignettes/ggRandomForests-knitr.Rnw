@@ -60,12 +60,6 @@ We introduce the \proglang{R} package \pkg{ggRandomForests}.}
 
 %% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage{longtable}
-\usepackage{lscape}
-
-% keep code formatting
-%\SweaveOpts{keep.source = TRUE}
-
 <<setup,include=FALSE, cache=FALSE, echo=FALSE>>=
 #' @import RColorBrewer devtools gridExtra reporttools scales xtable
 
@@ -116,7 +110,7 @@ library(randomForestSRC)
 %% include your article here, just as usual
 %% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
 
-<<echo = FALSE, print = FALSE>>=
+<<echo = FALSE>>=
 
 ## save initial options
 o1 <- getOption("prompt")
@@ -198,7 +192,7 @@ transplantation data.
 \subsection{Nominal variables (factors)}
 The following code lines invoke \pkg{reporttools} and prepare the variables from \code{jasa} for later use. 
 
-<<results=tex, echo=T>>=
+<<results='asis', echo=T>>=
 library(reporttools)
 data("heart", package = "survival")    # load the jasa dataset
 vars0 <- with(jasa, data.frame(
@@ -216,7 +210,7 @@ attach(vars0, warn.conflicts = FALSE)
 To generate Table~\ref{tab: nominal1}, a summary of some nominal variables of the heart
 transplantation data, simply invoke:
  
-<<results = verbatim, echo = T, eval = F>>=
+<<results='markup', echo = T, eval = F>>=
 vars1 <- vars0[, c("Surgery", "Survival status", "HLA A2 score")]
 cap1 <- "Patient characteristics: nominal variables."
 tableNominal(vars = vars1, cap = cap1, vertical = FALSE, lab = 
@@ -225,7 +219,7 @@ tableNominal(vars = vars1, cap = cap1, vertical = FALSE, lab =
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
+<<results='asis', echo=F>>=
 vars1 <- vars0[, c("Surgery", "Survival status", "HLA A2 score")]
 cap1 <- "Patient characteristics: nominal variables."
 tableNominal(vars = vars1, cap = cap1, vertical = FALSE, lab = "tab: nominal1", longtable = FALSE)
@@ -246,7 +240,7 @@ Then, for the HLA A2 score, we consider missing values a category in computation
 \code{miss.cat} a vector containing the indices of the factor(s) in \code{vars} we want the percentages to be computed 
 this way. All these options are implemented in Table~\ref{tab: nominal2} via the following code lines:
 
-<<results = verbatim, echo = T, eval = F>>=
+<<results='markup', echo = T, eval = F>>=
 cap2 <- "Patient characteristics: nominal variables, by transplantation, 
   patients not older than 50, missings as a separate category for the 
   $3^{\\mathrm{rd}}$ factor, $p$-values of Fisher's exact test added."
@@ -259,7 +253,7 @@ tableNominal(vars = vars1, group = Transplantation, subset = (Age <= 50),
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
+<<results='asis', echo=F>>=
 cap2 <- "Patient characteristics: nominal variables, by transplantation, patients not older than 50, 
   missings as a separate category for the $3^{\\mathrm{rd}}$ factor, $p$-values of Fisher's exact test added."
 tableNominal(vars = vars1, group = Transplantation, subset = (Age <= 50), miss.cat = 3, print.pval = "fisher", cap = cap2, lab = "tab: nominal2", longtable = FALSE)
@@ -289,7 +283,7 @@ you want to be displayed, in the order they should appear in the table.
 As an illustration, we only display $n$, Min, Max, and $\#$NA for the variables birth date, acceptance date,
 and end of follow up date of the heart trial in Table~\ref{tab: date1}, via the following code:
 
-<<results = verbatim, echo = T, eval = F>>=
+<<results='markup', echo = T, eval = F>>=
 vars3 <- vars0[, c("Birthday", "Acceptance into program", 
   "End of follow up")]
 cap3 <- "Patient characteristics: date variables, by transplantation 
@@ -309,7 +303,7 @@ characteristics are indeed equally distributed between randomized treatment arms
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
+<<results='asis', echo=F>>=
 vars3 <- vars0[, c("Birthday", "Acceptance into program", "End of follow up")]
 cap3 <- "Patient characteristics: date variables, by transplantation status."
 tableDate(vars = vars3, group = Transplantation, stats = c("n", "min", "max", "na"), print.pval = TRUE, cap = cap3, lab = "tab: date1", longtable = FALSE)
@@ -336,7 +330,7 @@ as appropriate, to compare the variable under consideration between the groups g
 We give two examples summarizing descriptive statistics of some continuous patient characteristics
 of the Stanford heart transplantation data. Table~\ref{tab: cont1} is generated via 
 
-<<results = verbatim, echo = T, eval = F>>=
+<<results='markup', echo = T, eval = F>>=
 vars4 <- vars0[, c("Age", "Follow up time", "Mismatch score")]
 cap4 <- "Patient characteristics: continuous variables."
 tableContinuous(vars = vars4, cap = cap4, lab = "tab: cont1", 
@@ -347,7 +341,7 @@ tableContinuous(vars = vars4, cap = cap4, lab = "tab: cont1",
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
+<<results='asis', echo=F>>=
 vars4 <- vars0[, c("Age", "Follow up time", "Mismatch score")]
 cap4 <- "Patient characteristics: continuous variables."
 tableContinuous(vars = vars4, cap = cap4, lab = "tab: cont1", longtable = FALSE)
@@ -357,7 +351,7 @@ tableContinuous(vars = vars4, cap = cap4, lab = "tab: cont1", longtable = FALSE)
 
 Finally, Table~\ref{tab: cont2} can be produced via:
 
-<<results = verbatim, echo = T, eval = F>>=
+<<results='markup', echo = T, eval = F>>=
 cap5 <- "Patient characteristics, by transplantation: continuous 
   variables, user-defined functions supplied."
 stats <- list("n", "min", "median", "$\\bar{x}_{\\mathrm{trim}}$" = 
@@ -370,7 +364,7 @@ tableContinuous(vars = vars4, group = Transplantation, stats = stats,
 
 \renewcommand{\baselinestretch}{1.15}
 \begin{center}
-<<results=tex, echo=F>>=
+<<results='asis', echo=F>>=
 cap5 <- "Patient characteristics, by transplantation: continuous variables, user-defined functions supplied."
 stats <- list("n", "min", "median", "$\\bar{x}_{\\mathrm{trim}}$" = function(x){return(mean(x, trim = .05))}, "max", "iqr", "c$_{\\mathrm{v}}$" = function(x){return(sd(x) / mean(x))}, "s", "na")
 tableContinuous(vars = vars4, group = Transplantation, stats = stats, print.pval = "kruskal", cap = cap5, lab = "tab: cont2", longtable = FALSE)
