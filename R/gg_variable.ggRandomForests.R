@@ -173,7 +173,7 @@ gg_variable.ggRandomForests <- function(object,
     pDat$time <- factor(pDat$time, levels=unique(pDat$time))
   }
   pDat <- tbl_df(pDat)
-  class(pDat) <- c("gg_variable", class(pDat))
+  class(pDat) <- c("gg_variable", object$family, class(pDat))
   invisible(pDat)
 }
 

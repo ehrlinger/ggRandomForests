@@ -46,13 +46,19 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
   object <- x 
   if(inherits(object, "rfsrc")) object<- gg_variable(object, ...)
   
+  if(inherits(object, "surv")){
+    family <- "surv"
+  }else if(inherits(object, "regr")){
+    family <- "regr"
+  }else{
+    family <- "class"
+  }
   if(length(grep("yhat.", colnames(object))) > 0){
     # We have a classification forest with multiple outcomes.
     if(length(grep("yhat.", colnames(object))) == 2){
       object  <- object[, -grep("yhat.", colnames(object))[1]]
       colnames(object)[grep("yhat.", colnames(object))] <- "yhat"
     }
-    family <- "class"
   }
   
   sm_curve <- FALSE
@@ -114,30 +120,30 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
             gDta[[ind]] <- gDta[[ind]] +
               geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
           }
-          
-        }else{
-          stop("Multiclass variable dependence has not been implemented yet.")
-        }
+        } 
       }else{
-        # assume regression
-        gDta[[ind]] <- gDta[[ind]] +
-          geom_point(aes_string(x="var", y="yhat"), alpha=.5)+
-          labs(x=hName, y="Predicted")
-        if(sm_curve){
-          if(missing(span)){
-            gDta[[ind]] <- gDta[[ind]] +
-              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
-          }else{
-            gDta[[ind]] <- gDta[[ind]] +
-              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
-          }
-        }
-        
-        # Replace the original colname
-        colnames(object)[chIndx] <- hName
+        stop("Multiclass variable dependence has not been implemented yet.")
       }
+    }else{
+      # assume regression
+      gDta[[ind]] <- gDta[[ind]] +
+        geom_point(aes_string(x="var", y="yhat"), alpha=.5)+
+        labs(x=hName, y="Predicted")
+      if(sm_curve){
+        if(missing(span)){
+          gDta[[ind]] <- gDta[[ind]] +
+            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+        }else{
+          gDta[[ind]] <- gDta[[ind]] +
+            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
+        }
+      }
+      
+      # Replace the original colname
+      colnames(object)[chIndx] <- hName
     }
-  }  
+  }
+  
   if(lng == 1) gDta <- gDta[[1]]
   else class(gDta) <- c("gg_variableList", class(gDta))
   
