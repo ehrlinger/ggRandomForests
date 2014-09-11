@@ -7,7 +7,7 @@
 %\VignetteIndexEntry{ggRandomForests}
 %\VignetteIndexEntry{A guide to Random Forests with the randomForestSRC and ggRandomForests packages}                                          
 %\VignetteKeywords{random forest, survival, classification, regression, VIMP, minimal depth}                                                                   
-%\VignetteDepends{ggRandomForests, randomForestsSRC, xtable, survival}                                      
+%\VignetteDepends{ggRandomForests}                                      
 %\VignettePackage{ggRandomForests} 
 
 %% almost as usual
