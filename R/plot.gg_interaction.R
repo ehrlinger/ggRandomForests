@@ -22,6 +22,7 @@
 #' 
 #' @param x gg_interaction object created from a randomForestSRC object
 #' @param x_var variable (or list of variables) of interest.
+#' @param color point color (default "black")
 #' @param ... arguments passed to the \code{\link{gg_interaction}} function.
 #' 
 #' @return ggplot object
@@ -84,7 +85,7 @@
 #' plot(gg_int, x_var="Petal.Length")
 #' }
 ### error rate plot
-plot.gg_interaction <- function(x, x_var, ...){
+plot.gg_interaction <- function(x, x_var, color="black", ...){
   object <- x 
   if(is.matrix(object)){
     # Check to make sure it's the right type of matrix...
@@ -114,7 +115,7 @@ plot.gg_interaction <- function(x, x_var, ...){
   intPlt.dta$names <- rownames(intPlt.dta)
   #intPlt.dta <- intPlt.dta[-which(intPlt.dta$names=="viable"),]
   intPlt.dta$names <- factor(intPlt.dta$names, levels=intPlt.dta$names)
-  ggplot(intPlt.dta)+ geom_point(aes_string(x="names", y="dpth"))+
+  ggplot(intPlt.dta)+ geom_point(aes_string(x="names", y="dpth"), color=color)+
     theme(text = element_text(size=10),
           axis.text.x = element_text(angle=90)) +
     labs(x="", y="Minimal Depth")
