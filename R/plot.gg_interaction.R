@@ -100,14 +100,18 @@ plot.gg_interaction <- function(x, x_var, ...){
   if(sum(x_var %in% rownames(object)) == 0){
     stop(paste("Invalid x_var (",x_var, ") specified, covariate not found.", sep=""))
   }
-  intPlt.dta <- data.frame(cbind(names=rownames(object),t(object[which(rownames(object) %in% x_var),])))
   
-  if(length(x_var)==1){
-    intPlt.dta <- filter(intPlt.dta, names != x_var)
+  if(length(x_var)> 1){
+    intPlt.dta <- data.frame(cbind(names=rownames(object),t(object[which(rownames(object) %in% x_var),])))
+    colnames(intPlt.dta) <- x_var
+    intPlt.dta$rank <- 1:dim(intPlt.dta)[1]
+    intPlt.dta <- melt(intPlt.dta, id.vars = "rank")
+    
+  }else{
+    intPlt.dta <- data.frame(cbind(rank=1:dim(object)[1], object[which(rownames(object) %in% x_var),]))
+    colnames(intPlt.dta)[2] <- "dpth" 
   }
-  colnames(intPlt.dta)[2] <- "dpth" 
-  intPlt.dta$rank <- 1:dim(intPlt.dta)[1]
-  
+  intPlt.dta$names <- rownames(intPlt.dta)
   #intPlt.dta <- intPlt.dta[-which(intPlt.dta$names=="viable"),]
   intPlt.dta$names <- factor(intPlt.dta$names, levels=intPlt.dta$names)
   ggplot(intPlt.dta)+ geom_point(aes_string(x="names", y="dpth"))+
