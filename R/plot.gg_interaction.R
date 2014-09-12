@@ -17,12 +17,12 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.gg_variable
-#' Plot a \code{\link{gg_variable}} object, 
+#' plot.gg_interaction
+#' Plot a \code{\link{gg_interaction}} object, 
 #' 
-#' @param x gg_variable object created from a randomForestSRC object
+#' @param x gg_interaction object created from a randomForestSRC object
 #' @param x_var variable (or list of variables) of interest.
-#' @param ... arguments passed to the \code{\link{gg_variable}} function.
+#' @param ... arguments passed to the \code{\link{gg_interaction}} function.
 #' 
 #' @return ggplot object
 #' 
