@@ -17,9 +17,9 @@
 ####**********************************************************************
 ####**********************************************************************
 #' 
-#' plot.gg_variable Plot a \code{\link{gg_variable}} object,
+#' Plot a \code{\link{gg_variable}} object,
 #' 
-#' @param x gg_variable object created from a randomForestSRC object
+#' @param x \code{\link{gg_variable}} object created from a \code{randomForestSRC::rfsrc} object
 #' @param x_var variable (or list of variables) of interest.
 #' @param time For survival, one or more times of interest
 #' @param time_labels string labels for times
@@ -28,7 +28,7 @@
 #' @param span tuning parameter for loess smooths
 #' @param ... arguments passed to the \code{\link{gg_variable}} function.
 #'   
-#' @return ggplot object
+#' @return \code{ggplot} object
 #'   
 #' @export plot.gg_variable
 #'   
@@ -41,6 +41,71 @@
 #' and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs
+#' 
+#' @examples
+#' \dontrun{
+#' ## ------------------------------------------------------------
+#' ## classification
+#' ## ------------------------------------------------------------
+#' 
+#' ## iris
+#' #iris.obj <- rfsrc(Species ~., data = iris)
+#' data(iris_rf, package="ggRandomForests")
+#' 
+#' ## !! TODO... finish classification variable dependence 
+#' # ggrf <- gg_variable(iris_rf, which.outcome=1)
+#' 
+#' 
+#' ## ------------------------------------------------------------
+#' ## regression
+#' ## ------------------------------------------------------------
+#' 
+#' ## airquality
+#' #airq.obj <- rfsrc(Ozone ~ ., data = airquality)
+#' data(airq_rf, package="ggRandomForests")
+#' ggrf <- gg_variable(airq_rf)
+#' plot(ggrf, x_var="Wind")
+#' plot(ggrf, x_var="Temp")
+#' plot(ggrf, x_var="Solar.R")
+#' 
+#' ## motor trend cars
+#' #mtcars.obj <- rfsrc(mpg ~ ., data = mtcars)
+#' data(mtcars_rf, package="ggRandomForests")
+#' ggrf <- gg_variable(mtcars_rf)
+#' 
+#' # mtcars$cyl is an ordinal variable
+#' plot(ggrf, x_var="cyl")
+#' 
+#' # Others are continuous
+#' plot(ggrf, x_var="disp")
+#' plot(ggrf, x_var="hp")
+#' plot(ggrf, x_var="wt")
+#' 
+#' ## ------------------------------------------------------------
+#' ## survival examples
+#' ## ------------------------------------------------------------
+#' 
+#' ## survival
+#' # data(veteran, package = "randomForestSRC")
+#' # veteran_rf <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
+#' data(veteran_rf, package="ggRandomForests")
+#' 
+#' # get the 1 year survival time.
+#' ggrf <- gg_variable(veteran_rf, time=30)
+#' 
+#' # Generate variable dependance plots for age and diagtime
+#' plot(ggrf, x_var = "age")
+#' plot(ggrf, x_var = "diagtime")
+#' 
+#' # If we want to compare survival at different time points, say 30, 90 day 
+#' # and 1 year
+#' ggrf <- gg_variable(veteran_rf, time=c(30, 90, 365))
+#' 
+#' # Generate variable dependance plots for age and diagtime
+#' plot(ggrf, x_var = "age")
+#' plot(ggrf, x_var = "diagtime") 
+#'
+#' }
 ### error rate plot
 plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, span, ...){
   object <- x 

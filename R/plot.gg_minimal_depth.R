@@ -17,20 +17,18 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.gg_minimal_depth
-#' Plot a \code{\link{gg_minimal_depth}} object, the cumulative OOB error 
-#' rates of the forest as a function of number of trees.
+#' Plot a \code{\link{gg_minimal_depth}} object for random forest variable ranking.
 #' 
-#' @param x gg_minimal_depth object created from a randomForestSRC object
-#' @param selection should we restrict the plot to only include variables
-#' selected by the minimal depth criteria (boolean).
-#' @param list.vars add text list of ranked variables. Only used if 
-#' selection = TRUE (boolean)
+#' @param x \code{\link{gg_minimal_depth}} object created from a \code{randomForestSRC::rfsrc} object
+#' @param selection should we restrict the plot to only include variables selected by the 
+#' minimal depth criteria (boolean).
+#' @param list_vars add text list of ranked variables. Only used if selection = TRUE (boolean)
 #' @param type select type of y axis labels c("named","rank")
 #' @param ... optional arguments passed to \code{\link{gg_minimal_depth}}
 #' 
-#' @return ggplot object
+#' @return \code{ggplot} object
 #' 
+#' @seealso \code{randomForestSRC::var.select} \code{\link{gg_minimal_depth}}
 #' @export plot.gg_minimal_depth
 #' 
 #' @references
@@ -44,7 +42,7 @@
 #' 
 #' @examples
 #' \dontrun{
-#' 
+#' #' ## Examples from RFSRC package... 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -92,7 +90,7 @@
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline
 ### error rate plot
 plot.gg_minimal_depth <- function(x, selection=FALSE, 
-                                list.vars = TRUE, 
+                                list_vars = TRUE, 
                                 type=c("named","rank"),
                                 ...){
   object <- x
@@ -128,7 +126,7 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
                      coord_cartesian(ylim=xl)
     )
     
-    if(list.vars){
+    if(list_vars){
       
       # We will need to modify this as we get more examples.
       x.pt <- ceiling(object$md.obj$threshold)

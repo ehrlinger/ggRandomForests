@@ -30,9 +30,9 @@
 #' 
 #' @details The gg_error plot is used to track the convergence of the 
 #' randomForest. This figure is a reproduction of the error plot
-#' from the \code{plot.rfsrc} function.
+#' from the \code{randomForestSRC::plot.rfsrc} function.
 #' 
-#' @seealso \code{\link{gg_error}} \code{rfsrc} \code{plot.rfsrc}
+#' @seealso \code{\link{gg_error}} \code{randomForestSRC::rfsrc} \code{randomForestSRC::plot.rfsrc}
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -45,6 +45,7 @@
 #' 
 #' @examples
 #' \dontrun{
+#' #' ## Examples from RFSRC package... 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -85,6 +86,7 @@
 #' 
 #' ggrf.obj <- gg_error(veteran_rf)
 #' plot(ggrf.obj)
+#' 
 #'}
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
 #' @importFrom reshape2 melt

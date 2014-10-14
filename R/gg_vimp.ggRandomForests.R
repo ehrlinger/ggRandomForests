@@ -17,15 +17,16 @@
 ####**********************************************************************
 #' Variable Importance (VIMP) data object
 #'
-#' gg_vimp Extracts the variable importance (VIMP) information from a
-#' a randomForestSRC object.
+#' \code{gg_vimp} Extracts the variable importance (VIMP) information from a
+#' a \code{randomForestSRC::rfsrc} object.
 #' 
-#' @param object A rfsrc object
-#' @param ... arguments passed to the vimp.rfsrc function
+#' @param object A \code{randomForestSRC::rfsrc} object or output from \code{randomForestSRC::vimp}
+#' @param ... arguments passed to the \code{randomForestSRC::vimp.rfsrc} function if the 
+#' \code{randomForestSRC::rfsrc} object does not contain importance information.
 #' 
 #' @return a matrix of VIMP measures, in rank order.
 #' 
-#' @seealso \code{\link{plot.gg_vimp}} \code{rfsrc} \code{vimp.rfsrc}
+#' @seealso \code{\link{plot.gg_vimp}} \code{randomForestSRC::rfsrc} \code{randomForestSRC::vimp}
 #' 
 #' @references 
 #' Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
@@ -33,7 +34,6 @@
 #' 
 #' 
 #' @examples
-#'
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------

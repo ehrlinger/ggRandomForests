@@ -2,26 +2,27 @@
 \name{gg_minimal_depth.ggRandomForests}
 \alias{gg_minimal_depth}
 \alias{gg_minimal_depth.ggRandomForests}
-\title{Minimal depth data object}
+\title{Minimal depth data object (\code{randomForestSRC::var.select})}
 \usage{
 gg_minimal_depth.ggRandomForests(object, ...)
 }
 \arguments{
-\item{object}{A randomForestSRC forest object, predict object or
-the list from the var.select.rfsrc function.}
+\item{object}{A \code{randomForestSRC::rfsrc} object, \code{randomForestSRC::predict}
+object or the list from the \code{randomForestSRC::var.select.rfsrc} function.}
 
-\item{...}{optional arguments passed to the var.select function
- if operating on an rfsrc object.}
+\item{...}{optional arguments passed to the \code{randomForestSRC::var.select} function
+ if operating on an \code{randomForestSRC::rfsrc} object.}
 }
 \value{
 Invisibly, the modified list of variables from the
-var.select.rfsrc function, ordered by minimal depth rank.
+\code{randomForestSRC::var.select.rfsrc} function, ordered by minimal depth rank.
 }
 \description{
-the var.select function implements random forest variable
-selection using tree minimal depth methodology. The gg_minimal_depth
-function takes the output from var.select and creates a data.frame
-formatted for the plot.gg_minimal_depth function.
+the \code{randomForestSRC::var.select} function implements
+random forest variable selection using tree minimal depth methodology. The
+gg_minimal_depth
+function takes the output from \code{randomForestSRC::var.select} and creates a
+\code{data.frame} formatted for the \code{\link{plot.gg_minimal_depth}} function.
 }
 \examples{
 ## Examples from RFSRC package...
@@ -69,6 +70,6 @@ ggrf.obj <- gg_minimal_depth(veteran_vs)
 plot(ggrf.obj)
 }
 \seealso{
-\code{var.select} \code{\link{plot.gg_minimal_depth}}
+\code{randomForestSRC::var.select} \code{\link{plot.gg_minimal_depth}}
 }
 

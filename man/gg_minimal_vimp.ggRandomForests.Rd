@@ -7,14 +7,14 @@
 gg_minimal_vimp.ggRandomForests(object, event, ...)
 }
 \arguments{
-\item{object}{A randomForestSRC forest object, predict object or
-the list from the var.select.rfsrc function.}
+\item{object}{A \code{randomForestSRC::rfsrc} object, \code{randomForestSRC::predict}
+object or the list from the \code{randomForestSRC::var.select.rfsrc} function.}
 
 \item{event}{an optional vector of logical values (event indicator) for
 shaping the points in when plotting.}
 
-\item{...}{optional arguments passed to the var.select function
- if operating on an rfsrc object.}
+\item{...}{optional arguments passed to the \code{randomForestSRC::var.select} function
+ if operating on an \code{randomForestSRC::rfsrc} object.}
 }
 \description{
 Minimal depth vs VIMP camparison by variable ranks.
@@ -65,6 +65,6 @@ ggrf.obj <- gg_minimal_vimp(veteran_vs)
 plot(ggrf.obj)
 }
 \seealso{
-\code{\link{plot.gg_minimal_vimp}} \code{var.select.rfsrc}
+\code{\link{plot.gg_minimal_vimp}} \code{randomForestSRC::var.select}
 }
 

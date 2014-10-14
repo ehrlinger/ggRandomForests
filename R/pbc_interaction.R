@@ -1,9 +1,8 @@
-#' pbc_interaction
+#' \code{randomForestSRC::find.interaction} matrix for the pbs data.
 #' 
-#' The find.interaction data set for the pbc dataset.
+#' The \code{randomForestSRC::find.interaction} data set for the \code{pbc} survival dataset.
 #' 
 #' @references 
-#' 
 #' Ishwaran H. and Kogalur U.B. (2014). Random Forests for
 #' Survival, Regression and Classification (RF-SRC), R package
 #' version 1.5.4.
@@ -15,8 +14,21 @@
 #' (2008). Random survival forests. Ann. Appl. Statist. 2(3),
 #' 841-860.
 #' 
+#' @examples
+#' \dontrun{
+#' ## Examples from randomForestSRC::rfsrc 
+#' ##
+#' # data(pbc, package = "randomForestSRC")
+#' # pbc.obj <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10)
+#' # print(pbc.obj)
+#' # pbc_interaction <- find.interaction(pbc.oj)
+#' 
+#' data(pbc_interaction, package="ggRandomForests")
+#' plot(pbc_interaction, x_var="bili")
+#' }
+#' 
 #' @docType data
 #' @keywords datasets
-#' @format A find.interaction object for Survival
+#' @format rdata matrix from \code{randomForestSRC::find.interaction}
 #' @name pbc_interaction
 NULL

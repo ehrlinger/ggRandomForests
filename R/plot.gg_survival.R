@@ -17,14 +17,15 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.gg_survival
-#' Plot a \code{\link{gg_survival}} object, 
+#' Plot a \code{\link{gg_survival}} or a survival \code{\link{gg_rfsrc}} object. 
 #' 
-#' @param x gg_survival object created from a randomForestSRC object
+#' @param x code{\link{gg_survival}} or a survival \code{\link{gg_rfsrc}} object created from a 
+#' \code{randomForestSRC::rfsrc} object
+#' 
 #' @param error "shade", "bars" or "lines"
 #' @param ... not used
 #'  
-#' @return ggplot object
+#' @return \code{ggplot} object
 #' 
 #' @export plot.gg_survival
 #' 

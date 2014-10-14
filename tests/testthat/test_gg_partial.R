@@ -15,8 +15,11 @@ test_that("gg_partial classifications",{
   # Test the forest family
   expect_that(iris_rf$family, equals("class"))
   
+  # Load saved partial plot data.
+  data(iris_prtl, package="ggRandomForests")
+  
   ## Create the correct gg_error object
-  ggrf.obj<- gg_partial(iris_rf)
+  ggrf.obj<- gg_partial(iris_prtl)
   
   # Test object type
   expect_is(ggrf.obj, "gg_partial")
@@ -44,14 +47,14 @@ test_that("gg_partial survival",{
   # Test the cached forest type
   expect_is(veteran_rf, "rfsrc")
   
+  ## Get the partial data.
+  data(veteran_prtl, package="ggRandomForests")
+  
   ## Create the correct gg_error object
-  ggrf.obj<- gg_partial(veteran_rf)
+  ggrf.obj<- gg_partial(veteran_prtl)
   
   # Test object type
   expect_is(ggrf.obj, "gg_partial")
-  
-  # Test varselect is the same
-  expect_equal(ggrf.obj$VIMP, as.vector(sort(veteran_rf$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_partial(ggrf.obj)
@@ -73,13 +76,11 @@ test_that("gg_partial regression",{
   expect_is(airq_rf, "rfsrc")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_partial(airq_rf)
+  data(airq_prtl, package="ggRandomForests")
+  ggrf.obj<- gg_partial(airq_prtl)
   
   # Test object type
   expect_is(ggrf.obj, "gg_partial")
-  
-  # Test varselect is the same
-  expect_equal(ggrf.obj$VIMP, as.vector(sort(airq_rf$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_partial(ggrf.obj)

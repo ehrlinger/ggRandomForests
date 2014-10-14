@@ -2,9 +2,13 @@
 \docType{data}
 \name{iris_vs}
 \alias{iris_vs}
-\title{A var.select object for the iris classification random forest}
-\format{A var.select object for the iris classification random forest}
+\title{\code{randomForestSRC::var.select} minimal depth variable selection from the Iris dataset.}
+\format{A \code{randomForestSRC::var.select} object for the iris classification random forest}
 \description{
+A minimal depth variable selection object constructed by the
+\code{randomForestSRC::var.select} function for the \code{randomForestSRC::rfsrc} classification
+forest for the Iris data set.
+
 This famous (Fisher's or Anderson's) iris data set gives the
 measurements in centimeters of the variables sepal length and width and
 petal length and width, respectively, for 50 flowers from each of 3 species
@@ -12,6 +16,13 @@ of iris. The species are Iris setosa, versicolor, and virginica.
 
 iris is a data frame with 150 cases (rows) and 5 variables (columns)
 named Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, and Species.
+}
+\examples{
+\dontrun{
+iris_vs <- var.select(Species ~ ., iris)
+
+plot.gg_interaction(iris_vs)
+}
 }
 \references{
 Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988) The New S Language.
@@ -35,7 +46,7 @@ Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S.
 841-860.
 }
 \seealso{
-\code{var.select} \code{rfsrc} \code{iris}
+\code{randomForestSRC::var.select} \code{randomForestSRC::rfsrc} \code{iris}
 }
 \keyword{datasets}
 

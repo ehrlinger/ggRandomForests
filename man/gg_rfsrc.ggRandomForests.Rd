@@ -8,9 +8,9 @@ gg_rfsrc.ggRandomForests(object, surv_type = c("surv", "chf", "mortality",
   "hazard"), oob = TRUE, se, ...)
 }
 \arguments{
-\item{object}{randomForestSRC object}
+\item{object}{\code{randomForestSRC::rfsrc} object}
 
-\item{surv_type}{("surv", "chf", "mortality", "hazard")}
+\item{surv_type}{("surv", "chf", "mortality", "hazard") for survival forests}
 
 \item{oob}{boolean, should we return the oob prediction , or the full
 forest prediction.}
@@ -21,32 +21,41 @@ interval}
 \item{...}{not used}
 }
 \value{
-gg_rfsrc object formatted for \code{\link{plot.gg_rfsrc}}
+\code{gg_rfsrc} object formatted for \code{\link{plot.gg_rfsrc}}
 }
 \description{
-Extracts the predicted response values from the random forest object,
-formatted for plotting the response using \code{\link{plot.gg_rfsrc}}.
+Extracts the predicted response values from the \code{randomForestSRC::rfsrc} object,
+and formats data for plotting the response using \code{\link{plot.gg_rfsrc}}.
 }
 \examples{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
-# iris.obj <- rfsrc(Species ~ ., data = iris)
+# iris_rf <- rfsrc(Species ~ ., data = iris)
 data(iris_rf, package="ggRandomForests")
-ggrf.obj<- gg_rfsrc(iris_rf)
-plot(ggrf.obj)
+ggrf<- gg_rfsrc(iris_rf)
 
+plot.gg_rfsrc(ggrf)
+
+## ------------------------------------------------------------
+## Regression example
+## ------------------------------------------------------------
+# airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+data(airq_rf, package="ggRandomForests")
+ggrf<- gg_rfsrc(airq_rf)
+
+plot.gg_rfsrc(ggrf)
 
 ## ------------------------------------------------------------
 ## Survival example
 ## ------------------------------------------------------------
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
-data(veteran, package = "randomForestSRC")
-v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-
-ggrf.obj <- gg_rfsrc(v.obj, se=.95)
-plot(ggrf.obj)
+# data(veteran, package = "randomForestSRCM")
+# veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+data(veteran_rf, package = "ggRandomForests")
+ggrf <- gg_rfsrc(veteran_rf)
+plot(ggrf)
 }
 \seealso{
 \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}

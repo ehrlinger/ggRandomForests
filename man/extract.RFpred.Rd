@@ -15,7 +15,8 @@ extract.RFpred(obj, type = c("response", "prob"), subset, which.outcome)
 \item{which.outcome}{For classification, select the class index of interest}
 }
 \description{
-Only works on \code{randomForest} package forests.
+Only works on \code{randomForest} package forests. The beginning of
+implementation for the \code{randomForest} package.
 }
 \seealso{
 \code{randomForest}

@@ -4,17 +4,19 @@
 \title{plot.gg_interaction
 Plot a \code{\link{gg_interaction}} object,}
 \usage{
-\method{plot}{gg_interaction}(x, x_var, ...)
+\method{plot}{gg_interaction}(x, x_var, color = "black", ...)
 }
 \arguments{
-\item{x}{gg_interaction object created from a randomForestSRC object}
+\item{x}{gg_interaction object created from a \code{randomForestSRC::rfsrc} object}
 
 \item{x_var}{variable (or list of variables) of interest.}
+
+\item{color}{point color (default "black")}
 
 \item{...}{arguments passed to the \code{\link{gg_interaction}} function.}
 }
 \value{
-ggplot object
+\code{ggplot} object
 }
 \description{
 plot.gg_interaction
@@ -22,19 +24,19 @@ Plot a \code{\link{gg_interaction}} object,
 }
 \examples{
 \dontrun{
-## Examples from RFSRC package...
+#' ## Examples from randomForestSRC package...
 ## ------------------------------------------------------------
-## find interactions, survival setting
+## find interactions, classification setting
 ## ------------------------------------------------------------
-## data(pbc, package = "randomForestSRC")
-## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
-## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
-data(pbc_interaction, package="ggRandomForests")
-gg_int <- gg_interaction(pbc_interaction)
+## iris.obj <- rfsrc(Species ~., data = iris)
+## TODO: VIMP interactions not handled yet....
+## find.interaction(iris.obj, method = "vimp", nrep = 3)
+## iris_interaction <- find.interaction(iris.obj)
+data(iris_interaction, package="ggRandomForests")
+gg_int <- gg_interaction(iris_interaction)
 
-plot(gg_int, x_var="bili")
-plot(gg_int, x_var="copper")
-
+plot(gg_int, x_var="Petal.Width")
+plot(gg_int, x_var="Petal.Length")
 
 ## ------------------------------------------------------------
 ## find interactions, regression setting
@@ -50,19 +52,18 @@ gg_int <- gg_interaction(airq_interaction)
 plot(gg_int, x_var="Temp")
 plot(gg_int, x_var="Solar.R")
 
-
 ## ------------------------------------------------------------
-## find interactions, classification setting
+## find interactions, survival setting
 ## ------------------------------------------------------------
-## iris.obj <- rfsrc(Species ~., data = iris)
-## TODO: VIMP interactions not handled yet....
-## find.interaction(iris.obj, method = "vimp", nrep = 3)
-## iris_interaction <- find.interaction(iris.obj)
-data(iris_interaction, package="ggRandomForests")
-gg_int <- gg_interaction(iris_interaction)
+## data(pbc, package = "randomForestSRC")
+## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
+## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
+data(pbc_interaction, package="ggRandomForests")
+gg_int <- gg_interaction(pbc_interaction)
 
-plot(gg_int, x_var="Petal.Width")
-plot(gg_int, x_var="Petal.Length")
+plot(gg_int, x_var="bili")
+plot(gg_int, x_var="copper")
+
 }
 }
 \references{
@@ -73,5 +74,11 @@ R, Rnews, 7(2):25-31.
 
 Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
 Regression and Classification (RF-SRC), R package version 1.4.
+}
+\seealso{
+\code{\link{plot.gg_interaction}} \code{randomForestSRC::rfsrc}
+\code{randomForestSRC::find.interaction}
+\code{randomForestSRC::max.subtree} \code{randomForestSRC::var.select}
+\code{randomForestSRC::vimp}
 }
 

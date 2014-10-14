@@ -2,16 +2,24 @@
 \docType{data}
 \name{iris_rf}
 \alias{iris_rf}
-\title{Edgar Anderson's Iris Data}
-\format{A rfsrc object for classification}
+\title{\code{randomForestSRC::rfsrc} classification forest for Edgar Anderson's Iris Data}
+\format{A \code{randomForestSRC::rfsrc} object for classification}
 \description{
-This famous (Fisher's or Anderson's) iris data set gives the
+The famous (Fisher's or Anderson's) iris data set gives the
 measurements in centimeters of the variables sepal length and width and
 petal length and width, respectively, for 50 flowers from each of 3 species
 of iris. The species are Iris setosa, versicolor, and virginica.
 
 iris is a data frame with 150 cases (rows) and 5 variables (columns)
 named Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, and Species.
+}
+\examples{
+\dontrun{
+## Edgar Anderson's iris data
+iris_rf <- rfsrc(Species ~., data = iris)
+
+plot.gg_rfsrc(iris_rf)
+}
 }
 \references{
 Becker, R. A., Chambers, J. M. and Wilks, A. R. (1988) The New S Language.

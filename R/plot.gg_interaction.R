@@ -20,14 +20,19 @@
 #' plot.gg_interaction
 #' Plot a \code{\link{gg_interaction}} object, 
 #' 
-#' @param x gg_interaction object created from a randomForestSRC object
+#' @param x gg_interaction object created from a \code{randomForestSRC::rfsrc} object
 #' @param x_var variable (or list of variables) of interest.
 #' @param color point color (default "black")
 #' @param ... arguments passed to the \code{\link{gg_interaction}} function.
 #' 
-#' @return ggplot object
+#' @return \code{ggplot} object
 #' 
 #' @export plot.gg_interaction
+#' 
+#' @seealso \code{\link{plot.gg_interaction}} \code{randomForestSRC::rfsrc} 
+#' \code{randomForestSRC::find.interaction} 
+#' \code{randomForestSRC::max.subtree} \code{randomForestSRC::var.select} 
+#' \code{randomForestSRC::vimp}
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -42,19 +47,19 @@
 #' 
 #' @examples
 #' \dontrun{
-#' ## Examples from RFSRC package... 
+#' #' ## Examples from randomForestSRC package... 
 #' ## ------------------------------------------------------------
-#' ## find interactions, survival setting
+#' ## find interactions, classification setting
 #' ## ------------------------------------------------------------
-#' ## data(pbc, package = "randomForestSRC") 
-#' ## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
-#' ## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
-#' data(pbc_interaction, package="ggRandomForests")
-#' gg_int <- gg_interaction(pbc_interaction)
+#' ## iris.obj <- rfsrc(Species ~., data = iris)
+#' ## TODO: VIMP interactions not handled yet....
+#' ## find.interaction(iris.obj, method = "vimp", nrep = 3)
+#' ## iris_interaction <- find.interaction(iris.obj)
+#' data(iris_interaction, package="ggRandomForests")
+#' gg_int <- gg_interaction(iris_interaction)
 #' 
-#' plot(gg_int, x_var="bili")
-#' plot(gg_int, x_var="copper")
-#' 
+#' plot(gg_int, x_var="Petal.Width")
+#' plot(gg_int, x_var="Petal.Length")
 #' 
 #' ## ------------------------------------------------------------
 #' ## find interactions, regression setting
@@ -70,19 +75,18 @@
 #' plot(gg_int, x_var="Temp")
 #' plot(gg_int, x_var="Solar.R")
 #' 
-#' 
 #' ## ------------------------------------------------------------
-#' ## find interactions, classification setting
+#' ## find interactions, survival setting
 #' ## ------------------------------------------------------------
-#' ## iris.obj <- rfsrc(Species ~., data = iris)
-#' ## TODO: VIMP interactions not handled yet....
-#' ## find.interaction(iris.obj, method = "vimp", nrep = 3)
-#' ## iris_interaction <- find.interaction(iris.obj)
-#' data(iris_interaction, package="ggRandomForests")
-#' gg_int <- gg_interaction(iris_interaction)
+#' ## data(pbc, package = "randomForestSRC") 
+#' ## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
+#' ## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
+#' data(pbc_interaction, package="ggRandomForests")
+#' gg_int <- gg_interaction(pbc_interaction)
 #' 
-#' plot(gg_int, x_var="Petal.Width")
-#' plot(gg_int, x_var="Petal.Length")
+#' plot(gg_int, x_var="bili")
+#' plot(gg_int, x_var="copper")
+#' 
 #' }
 ### error rate plot
 plot.gg_interaction <- function(x, x_var, color="black", ...){
@@ -103,13 +107,15 @@ plot.gg_interaction <- function(x, x_var, color="black", ...){
   }
   
   if(length(x_var)> 1){
-    intPlt.dta <- data.frame(cbind(names=rownames(object),t(object[which(rownames(object) %in% x_var),])))
+    intPlt.dta <- data.frame(cbind(names=rownames(object),
+                                   t(object[which(rownames(object) %in% x_var),])))
     colnames(intPlt.dta) <- x_var
     intPlt.dta$rank <- 1:dim(intPlt.dta)[1]
     intPlt.dta <- melt(intPlt.dta, id.vars = "rank")
     
   }else{
-    intPlt.dta <- data.frame(cbind(rank=1:dim(object)[1], object[which(rownames(object) %in% x_var),]))
+    intPlt.dta <- data.frame(cbind(rank=1:dim(object)[1], 
+                                   t(object[which(rownames(object) %in% x_var),])))
     colnames(intPlt.dta)[2] <- "dpth" 
   }
   intPlt.dta$names <- rownames(intPlt.dta)

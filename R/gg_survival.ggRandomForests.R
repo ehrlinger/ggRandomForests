@@ -15,16 +15,15 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Predicted survival data object from an randomForestSRC survival object.
-#'   
+#' Predicted survival data object from an \code{randomForestSRC::rfsrc} survival object.
 #'
-#' @param object An object of class (rfsrc, grow) or (rfsrc, predict), or a 
-#' survival object.
+#' @param object An \code{randomForestSRC::rfsrc} object or \code{randomForestSRC::predict} predict, 
+#' or a survival object from \code{\link{eventtable}}.
 #' @param prd_type ("std", "oob")
 #' @param srv_type ("surv", "chf", "mortality", "hazard")
-#' @param pnts ("none", "kaplan", "nelson")
+# # @param pnts ("none", "kaplan", "nelson")
 # # @param subset Vector indicating which individuals we want estimates for. 
-#'   All individuals are used if not specified.
+# #   All individuals are used if not specified.
 # # @param show.ind 
 # # @param strata  
 #' @param climits confidence limit bands
@@ -35,7 +34,8 @@
 #' 
 #' @export gg_survival.ggRandomForests gg_survival
 #' 
-#' @seealso \code{\link{plot.gg_survival}} \code{\link{gg_rfsrc}} \code{rfsrc}
+#' @seealso \code{\link{plot.gg_survival}} \code{\link{gg_rfsrc}} \code{randomForestSRC::rfsrc}
+#' \code{randomForestSRC::predict} \code{\link{eventtable}}
 #' 
 #' @aliases gg_survival
 #' 
@@ -54,7 +54,7 @@
 gg_survival.ggRandomForests <- function(object,
                                         prd_type=c("std", "oob"),
                                         srv_type=c("surv", "chf", "mortality", "hazard"),
-                                        pnts = c("none", "kaplan", "nelson"),
+                                        #pnts = c("none", "kaplan", "nelson"),
                                         #   show.ind = NULL,
                                         # subset,
                                         # strata,
@@ -76,9 +76,9 @@ gg_survival.ggRandomForests <- function(object,
     stop(paste("This function only supports Random Forests for survival. This is a ", object$family, " forest."))
   }
   call <- match.call()
-  
+   
   # Check the input arguments
-  pnts <- match.arg(pnts)
+ # pnts <- match.arg(pnts)
   prd_type <- match.arg(prd_type)
   srv_type <- match.arg(srv_type)
   # error <- match.arg(error)

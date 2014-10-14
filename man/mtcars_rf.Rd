@@ -2,12 +2,14 @@
 \docType{data}
 \name{mtcars_rf}
 \alias{mtcars_rf}
-\title{mtcars
+\title{mtcars \code{randomForestSRC::rfsrc} for regression}
+\format{A \code{randomForestSRC::rfsrc} object for regression}
+\description{
 The data was extracted from the 1974 Motor Trend US magazine, and
 comprises fuel consumption and 10 aspects of automobile design and
-performance for 32 automobiles (1973-74 models).}
-\format{A rfsrc object for regression}
-\description{
+performance for 32 automobiles (1973-74 models).
+}
+\details{
 \itemize{
 \item mpg	 Miles/(US) gallon
 \item cyl	 Number of cylinders
@@ -22,9 +24,13 @@ performance for 32 automobiles (1973-74 models).}
 \item carb	 Number of carburetors
 }
 }
-\details{
+\examples{
+\dontrun{
 ## motor trend cars
 mtcars_rf <- rfsrc(mpg ~ ., data = mtcars)
+
+plot.gg_rfsrc(mtcars_rf
+}
 }
 \references{
 Henderson and Velleman (1981), Building multiple regression models interactively.

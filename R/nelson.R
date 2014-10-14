@@ -1,6 +1,6 @@
-#' nelson creates a nonparametric Nelson-Aalen event.table from the data.frame dataset
+#' nonparametric Nelson-Aalen estimates
 #'
-#' @param data name of the training data.frame
+#' @param data name of the survival training data.frame
 #' @param interval name of the interval variable in the training dataset.
 #' @param censor name of the censoring variable in the training dataset.
 #' @param strat stratifying variable in the training dataset, defaults to NULL

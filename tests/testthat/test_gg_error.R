@@ -60,7 +60,8 @@ test_that("gg_error survival",{
   expect_equal(dim(ggrf.obj)[2], 2)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(ggrf.obj[,1], veteran_rf$err.rate)
+  tmp <- c(ggrf.obj[,1])[[1]]
+  expect_equivalent(tmp, veteran_rf$err.rate)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_error(ggrf.obj)
@@ -97,7 +98,7 @@ test_that("gg_error regression",{
   expect_equal(dim(ggrf.obj)[2], 2)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(ggrf.obj[,1], airq_rf$err.rate)
+  expect_equivalent(c(ggrf.obj[,1])[[1]], airq_rf$err.rate)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_error(ggrf.obj)

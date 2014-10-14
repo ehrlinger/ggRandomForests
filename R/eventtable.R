@@ -16,11 +16,10 @@
 ####**********************************************************************
 ####**********************************************************************
 #' 
-#' Creates nonparametric survival estimates using either the 
-#' kaplan-meier or nelson-aalon method.
+#' Nonparametric survival estimates.
 #' 
-#' @details eventtable is a wrapper function for both nelson and kaplan
-#' survival estimates.  
+#' @details eventtable is a wrapper function for both generating nonparametric 
+#' survival estimates using either nelson-aalen or kaplan-meier estimates.  
 #' 
 #' @param data name of the training data.frame
 #' @param interval name of the interval variable in the training dataset.

@@ -1,6 +1,7 @@
-#' Veteran's Administration Lung Cancer Trial
-#' @description Randomized trial of two treatment regimens for lung cancer. This is a 
-#' standard survival analysis data set.
+#' \code{randomForestSRC::rfsrc} forest for Veteran's Administration Lung Cancer Trial 
+#' 
+#' @description A \code{randomForestSRC::rfsrc} survival forest for the randomized trial of two
+#' treatment regimens for lung cancer. This is a standard survival analysis data set.
 #' 
 #' \itemize{
 #' \item trt   treatment: 1=standard 2=test
@@ -13,10 +14,16 @@
 #' \item prior	 prior therapy 0=no, 1=yes
 #' }
 #' 
+#' @examples
+#' \dontrun{
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRC")
 #' veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' 
+#' plot.gg_rfsrc(veteran_rf)
+#' plot.gg_error(veteran_rf)
+#' }
 #' 
 #' @references 
 #' Kalbfleisch J. and Prentice R, (1980) The Statistical Analysis of Failure 

@@ -1,3 +1,7 @@
+ggRandomForests 1.0.0
+===================
+* First CRAN release.
+
 ggRandomForests 0.2.0.99
 ===================
 * correct case/underscore function names. 

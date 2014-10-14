@@ -1,22 +1,22 @@
 ###############################################################################
 # Package documentation
 ###############################################################################
-#' @title ggRandomForests package for plotting of random forest objects using 
-#' the \code{ggplot2} package.
+#' @title ggRandomForests - package for plotting of \code{randomForestSRC}
+#' objects using the \code{ggplot2} package.
 #' 
-#' @description ggRandomForests is an add on package for \code{randomForestSRC}. 
+#' @description ggRandomForests is a utility package for \code{randomForestSRC}. 
 #' The package is designed to simplify the graphical analysis and exploration 
-#' of randomForests.   
+#' of randomForests.
 #' 
-#' The randomForestSRC package provides a unified treatment of Breimans random 
+#' The \code{randomForestSRC} package provides a unified treatment of Breimans random 
 #' forests (Breiman 2001) for a variety of data settings. Regression and 
 #' classification forests are grown when the response is numeric or categorical 
 #' (factor) while survival and competing risk forests (Ishwaran et al. 2008, 2012) 
 #' are grown for right-censored survival data. Support for unsupervised and 
 #' multivariate randomForests have also recently been added.
 #' 
-#' Many of the features of the ggRandomForests package are available 
-#' within the randomForestSRC package. However, the ggRandomForests offers the 
+#' Many of the features of the \code{ggRandomForests} package are available 
+#' within the \code{randomForestSRC} package. However, the ggRandomForests offers the 
 #' following advantages:
 #' \itemize{
 #' \item Separation of data and figures: ggRandomForest contains functions that 
@@ -24,9 +24,12 @@
 #' the output from rfsrc posprocessing functions (i.e. \code{vimp.rfsrc}, 
 #' \code{var.select.rfsrc}, \code{plot.variable.rfsrc}) to generate intermediate 
 #' data.frame objects. These objects are then passed to corresponding plot functions 
-#' using the S3 object model. Alternatively, the user can use these data object for 
+#' using the S3 object model. Alternatively, a user can use these data object for 
 #' additional external, custom plotting or analysis operations.
 #' 
+#' \item Each figure is self contained. This allows modification of individual plots
+#' to meet the users specification. Figures can be grouped together using functions 
+#' from the \code{gridExtra} package.
 #' 
 #' \item \code{ggplot2} figures: We chose to use the \code{ggplot2} package for our figures. 
 #'  The plot functions all return either a single \code{ggplot2} object, or a \code{list} of 
@@ -35,7 +38,7 @@
 #'  figures to their liking. 
 #' }
 #'
-#' The ggRandomForests package contains the following functions:
+#' The \code{ggRandomForests} package contains the following functions:
 #' \itemize{
 #' \item \code{\link{gg_rfsrc}}: randomForest[SRC] prediction
 #' \item \code{\link{gg_error}}: randomForest[SRC] convergence rate based on the OOB error rate.
@@ -44,12 +47,14 @@
 #' \item \code{\link{gg_minimal_depth}}: Minimal Depth ranking for variable selection
 #' \item \code{\link{gg_interaction}}: Minimal Depth interaction detection (under development)
 #' \item \code{\link{gg_variable}}: Marginal variable dependence (including conditional dependence)
-#' \item \code{\link{gg_partial}}: Partial variable dependence  (including conditional partial dependence)
-#' \item \code{\link{gg_survival}}: Non-parameteric Kaplan-Meier and Nelson-Aalon survival estimates  
+#' \item \code{\link{gg_partial}}: Partial variable dependence (including conditional partial 
+#' dependence)
+#' \item \code{\link{gg_survival}}: Random Forest survival plots including either Kaplan-Meier or
+#'  Nelson-Aalon survival estimates  
 #' }
 #' 
-#' All functions have an associated plotting function that returns ggplot2 graphics, either 
-#' individually or as a list, that can be further customised using standard ggplot2 commands.
+#' All functions have an associated plotting function that returns \code{ggplot2} graphics, either 
+#' individually or as a list, that can be further customised using standard \code{ggplot2} commands.
 #'  
 #' @references
 #' Breiman, L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -69,8 +74,6 @@
 #' 
 #' Wickham, H. ggplot2: elegant graphics for data analysis. Springer New York, 2009.
 #' 
-
-
 #' @docType package
 #' @name ggRandomForests
 #' 

@@ -16,16 +16,14 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#'
-#' plot.gg_vimp
 #' Plot a \code{\link{gg_vimp}} object, extracted variable importance of a 
-#' rfsrc object
+#' \code{randomForestSRC::rfsrc} object
 #' 
-#' @param x gg_vimp object created from a randomForestSRC object
-#' @param n.var restrict the plot to only nvar variable importance measures
+#' @param x \code{\link{gg_vimp}} object created from a \code{randomForestSRC::rfsrc} object
+#' @param n_var restrict the plot to only nvar variable importance measures
 #' @param ... optional arguments passed to gg_vimp if necessary
 #' 
-#' @return ggplot object
+#' @return \code{ggplot} object
 #' 
 #' @export plot.gg_vimp
 #' 
@@ -42,8 +40,7 @@
 #' 
 #' @examples
 #' \dontrun{
-
-#' ## ------------------------------------------------------------
+#' #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' # iris_rf <- rfsrc(Species ~ ., data = iris)
@@ -66,17 +63,17 @@
 #' data(veteran_rf, package="ggRandomForests")
 #' ggrf <- gg_vimp(veteran_rf)
 #' plot(ggrf)
-#' 
 #'}
+#'
 #' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip
 ### error rate plot
-plot.gg_vimp<- function(x, n.var, ...){
+plot.gg_vimp<- function(x, n_var, ...){
   object  <- x
   if(!inherits(object, "gg_vimp")) object<- gg_vimp(object, ...)
-  if(missing(n.var)) n.var <- dim(object)[1]
-  if(n.var > dim(object)[1]) n.var <- dim(object)[1]
+  if(missing(n_var)) n_var <- dim(object)[1]
+  if(n_var > dim(object)[1]) n_var <- dim(object)[1]
   
-  vimp.plt<-ggplot(object[1:n.var,])+
+  vimp.plt<-ggplot(object[1:n_var,])+
     geom_bar(aes_string(y="relVIMP", x="names", fill="positive"), 
              stat="identity", width=.5, color="black")+ 
     labs(x="", y="Relative Variable Importance") + 

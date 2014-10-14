@@ -7,16 +7,17 @@
 gg_vimp.ggRandomForests(object, ...)
 }
 \arguments{
-\item{object}{A rfsrc object}
+\item{object}{A \code{randomForestSRC::rfsrc} object or output from \code{randomForestSRC::vimp}}
 
-\item{...}{arguments passed to the vimp.rfsrc function}
+\item{...}{arguments passed to the \code{randomForestSRC::vimp.rfsrc} function if the
+\code{randomForestSRC::rfsrc} object does not contain importance information.}
 }
 \value{
 a matrix of VIMP measures, in rank order.
 }
 \description{
-gg_vimp Extracts the variable importance (VIMP) information from a
-a randomForestSRC object.
+\code{gg_vimp} Extracts the variable importance (VIMP) information from a
+a \code{randomForestSRC::rfsrc} object.
 }
 \examples{
 ## ------------------------------------------------------------
@@ -48,6 +49,6 @@ Ishwaran H. (2007). Variable importance in binary regression trees and forests,
 \emph{Electronic J. Statist.}, 1:519-537.
 }
 \seealso{
-\code{\link{plot.gg_vimp}} \code{rfsrc} \code{vimp.rfsrc}
+\code{\link{plot.gg_vimp}} \code{randomForestSRC::rfsrc} \code{randomForestSRC::vimp}
 }
 

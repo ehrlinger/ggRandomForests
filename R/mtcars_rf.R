@@ -1,4 +1,5 @@
-#' mtcars
+#' mtcars \code{randomForestSRC::rfsrc} for regression
+#' 
 #' The data was extracted from the 1974 Motor Trend US magazine, and 
 #' comprises fuel consumption and 10 aspects of automobile design and 
 #' performance for 32 automobiles (1973-74 models).
@@ -17,8 +18,13 @@
 #' \item carb	 Number of carburetors
 #' }
 #' 
+#' @examples
+#' \dontrun{
 #' ## motor trend cars
 #' mtcars_rf <- rfsrc(mpg ~ ., data = mtcars)
+#' 
+#' plot.gg_rfsrc(mtcars_rf
+#' }
 #' 
 #' @references 
 #' Henderson and Velleman (1981), Building multiple regression models interactively. 
@@ -37,6 +43,6 @@
 #' 
 #' @docType data
 #' @keywords datasets
-#' @format A rfsrc object for regression
+#' @format A \code{randomForestSRC::rfsrc} object for regression
 #' @name mtcars_rf
 NULL

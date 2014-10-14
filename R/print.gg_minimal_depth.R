@@ -16,11 +16,9 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#'
-#' print.gg_minimal_depth
 #' Print a \code{\link{gg_minimal_depth}} object.
 #' 
-#' @param x a gg_minimal_depth object.
+#' @param x a \code{\link{gg_minimal_depth}} object.
 #' @param ... optional arguments
 #' 
 #' @export print.gg_minimal_depth

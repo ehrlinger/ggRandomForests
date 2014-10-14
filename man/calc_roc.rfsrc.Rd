@@ -3,12 +3,13 @@
 \alias{calc_roc}
 \alias{calc_roc.randomForest}
 \alias{calc_roc.rfsrc}
-\title{Reciever Operator Characteristic calculator for randomForest objects}
+\title{Internal Reciever Operator Characteristic calculator for randomForest objects}
 \usage{
 calc_roc.rfsrc(rf, dta, which.outcome = "all", oob = TRUE)
 }
 \arguments{
-\item{rf}{randomForest or prediction object containing predicted response}
+\item{rf}{\code{randomForestSRC::rfsrc} or \code{randomForestSRC::predict} object
+containing predicted response}
 
 \item{dta}{True response variable}
 
@@ -17,12 +18,15 @@ calc_roc.rfsrc(rf, dta, which.outcome = "all", oob = TRUE)
 \item{oob}{Use OOB estimates, the normal validation method (TRUE)}
 }
 \description{
-Reciever Operator Characteristic calculator for randomForest objects
+Internal Reciever Operator Characteristic calculator for randomForest objects
 }
 \details{
 Given the randomForest or randomForestSRC prediction and the actual
 response value, calculate the specificity (1-False Positive Rate) and sensitivity
 (True Positive Rate) of a predictor.
+
+This is a helper function for the \code{\link{gg_roc}} functions, and not intended
+for use by the end user.
 }
 \examples{
 \dontrun{

@@ -15,18 +15,18 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' @title Plot the randomForests marginal dependence of variables.
+#' @title Plot the randomForest marginal dependence of variables.
 #' 
-#' @param object a randomForestSRC object
+#' @param object a \code{randomForest::randomForest} object
 #' @param time time of interest
 #' @param time.labels text label to title the time
 #' @param ... extra arguments
 #' 
 #' @return gg_variable object
 #'
-#' @seealso \code{\link{plot.gg_variable}}
+#' @seealso \code{\link{plot.gg_variable}} \code{randomForest::randomForest}
 #' 
-#' @export gg_variable.randomForests 
+#' export gg_variable.randomForests 
 #'
 gg_variable.randomForests <- function(object,
                                      time,

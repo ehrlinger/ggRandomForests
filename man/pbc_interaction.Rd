@@ -2,10 +2,23 @@
 \docType{data}
 \name{pbc_interaction}
 \alias{pbc_interaction}
-\title{pbc_interaction}
-\format{A find.interaction object for Survival}
+\title{\code{randomForestSRC::find.interaction} matrix for the pbs data.}
+\format{rdata matrix from \code{randomForestSRC::find.interaction}}
 \description{
-The find.interaction data set for the pbc dataset.
+The \code{randomForestSRC::find.interaction} data set for the \code{pbc} survival dataset.
+}
+\examples{
+\dontrun{
+## Examples from randomForestSRC::rfsrc
+##
+# data(pbc, package = "randomForestSRC")
+# pbc.obj <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10)
+# print(pbc.obj)
+# pbc_interaction <- find.interaction(pbc.oj)
+
+data(pbc_interaction, package="ggRandomForests")
+plot(pbc_interaction, x_var="bili")
+}
 }
 \references{
 Ishwaran H. and Kogalur U.B. (2014). Random Forests for

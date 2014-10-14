@@ -1,6 +1,23 @@
 #' Edgar Anderson's Iris Data
 #' 
-#' @description This famous (Fisher's or Anderson's) iris data set gives the 
+#' 
+#' A cached object constructed from the \code{randomForestSRC::find.interaction} function 
+#' for the Iris data set. The randomForestSRC regression forest is stored in the
+#'  \code{\link{iris_rf}} object.
+#'  
+#' @details For ggRandomForests examples and tests, as well as streamlining the 
+#' R CMD CHECK for package release, we cache the computationally expensive operations
+#' from the randomForestSRC package. 
+#' 
+#' To test the interaction plots, we build a regression randomForest (\code{\link{iris_rf}}) 
+#' with the \code{iris} measurements data, then run the \code{randomForestSRC::find.interaction} 
+#' function to determine pairwise variable interaction measures. 
+#' 
+#' The iris_interation "data set" is a cache of the \code{randomForestSRC::find.interaction} function, which 
+#' measures pairwise interactions between variables from the \code{\link{iris_rf}} random 
+#' forest model.
+#' 
+#' This famous (Fisher's or Anderson's) iris data set gives the 
 #' measurements in centimeters of the variables sepal length and width and 
 #' petal length and width, respectively, for 50 flowers from each of 3 species 
 #' of iris. The species are Iris setosa, versicolor, and virginica.
@@ -29,8 +46,16 @@
 #' (2008). Random survival forests. Ann. Appl. Statist. 2(3),
 #' 841-860.
 #' 
+#' @examples
+#' \dontrun{
+#' load(iris_rf, package="ggRandomForests)
+#' iris_interaction <- find.interaction(iris_rf)
+#' 
+#' plot(iris_interaction)
+#' }
+#' 
 #' @docType data
 #' @keywords datasets
-#' @format A find.interaction object for classification 
+#' @format rdata matrix from \code{randomForestSRC::find.interaction}
 #' @name iris_interaction
 NULL

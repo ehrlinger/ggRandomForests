@@ -1,20 +1,24 @@
-#' air quality  minimal depth variable interaction matrix. 
+#' minimal depth interaction matrix from randomForestSRC::find.interaction. 
 #' 
-#' A cached object from \code{find.interaction} for the New York Air Quality 
-#' Measurements randomForestSRC regression forest \code{\link{airq_rf}}.
+#' A cached object constructed from the \code{randomForestSRC::find.interaction} function 
+#' for the New York Air Quality Measurements. The randomForestSRC regression forest 
+#' is stored in the \code{\link{airq_rf}} object.
 #'  
-#' @details For ggRandomForest testing and the R CMD checks, we cache the 
-#' computationally expensive parts of running a randomForest. 
+#' @details For ggRandomForests examples and tests, as well as streamlining the 
+#' R CMD CHECK for package release, we cache the computationally expensive operations
+#' from the randomForestSRC package. 
 #' 
-#' We build a regression randomForest (\code{\link{airq_rf}}) with the 
-#' \code{airquality} measurements data, then run the \code{find.interaction} function to
-#' determine pairwise variable interaction measures. The data were from New York, from 
-#' May to September 1973. The data was obtained from the New York State 
-#' Department of Conservation (ozone data) and the National Weather Service 
+#' To test the interaction plots, we build a regression randomForest (\code{\link{airq_rf}}) 
+#' with the \code{airquality} measurements data, then run the \code{find.interaction} function 
+#' to determine pairwise variable interaction measures. 
+#' 
+#' The airq_interation "data set" is a cache of the \code{find.interaction} function, which 
+#' measures pairwise interactions between variables from the \code{\link{airq_rf}} random 
+#' forest model.
+#' 
+#' The data were from New York, from May to September 1973. The data was obtained from the 
+#' New York State Department of Conservation (ozone data) and the National Weather Service 
 #' (meteorological data).
-#' 
-#' This "data set" is a cache of the \code{find.interaction} function, which measures
-#' pairwise interactions between variables from the \code{\link{airq_rf}} random forest model. 
 #' 
 #' @seealso \code{airquality} \code{find.interaction} \code{rfsrc} \code{\link{airq_rf}}
 #' 
@@ -22,7 +26,12 @@
 #' \dontrun{
 #' ## The data was built with the following command
 #' airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' airq_interaction <- find.interaction{airq_rf}
+#' airq_interaction <- find.interaction(airq_rf)
+#' 
+#' gg_int <- gg_interaction(airq_interaction)
+#' 
+#' plot(gg_int, x_var="Temp")
+#' plot(gg_int, x_var="Solar.R")
 #' }
 #' 
 #' @references 
@@ -42,6 +51,6 @@
 #' 
 #' @docType data
 #' @keywords datasets
-#' @format A find.interaction object for regression
+#' @format rdata matrix from \code{randomForestSRC::find.interaction}
 #' @name airq_interaction
 NULL

@@ -1,17 +1,16 @@
-#' kaplan creates a nonparametric kaplan-meier dataset from the data.frame dataset
+#' nonparametric kaplan-meier estimates
 #'
-#' @param data name of the training data.frame
+#' @param data name of the training set \code{data.frame}
 #' @param interval name of the interval variable in the training dataset.
 #' @param censor name of the censoring variable in the training dataset.
 #' @param strat stratifying variable in the training dataset, defaults to NULL
 #' 
-#' @return data.frame containing
+#' @return \code{\link{eventtable}}
 #' 
 #' @export kaplan
 #' @importFrom survival Surv survfit strata 
 #' @importFrom dplyr tbl_df
 #' 
-
 kaplan <- function(interval, 
                    censor,
                    data, 

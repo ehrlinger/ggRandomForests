@@ -16,20 +16,19 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Predicted response plot generic function, operates on a 
-#' \code{\link{gg_rfsrc}} object.
+#' Predicted response plot from a \code{\link{gg_rfsrc}} object.
 #' 
-#'
 #' Plot the predicted response from a \code{\link{gg_rfsrc}} object, the 
-#' random forest prediction, using the OOB prediction from the forest.
+#' \code{randomForestSRC::rfsrc} prediction, using the OOB prediction from the forest.
 #'  
-#' @param x gg_rfsrc object created from a randomForestSRC object
+#' @param x \code{\link{gg_rfsrc}} object created from a \code{randomForestSRC::rfsrc} object
 #' @param ... arguments passed to \code{\link{gg_rfsrc}}.
-#' @return ggplot object
+#' 
+#' @return \code{ggplot} object
 #' 
 #' @export plot.gg_rfsrc
 #' 
-#' @seealso \code{\link{gg_rfsrc}} \code{rfsrc}
+#' @seealso \code{\link{gg_rfsrc}} \code{randomForestSRC::rfsrc}
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -45,38 +44,43 @@
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
-#' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' ggrf.obj<- gg_rfsrc(iris.obj)
+#' # iris_rf <- rfsrc(Species ~ ., data = iris)
+#' data(iris_rf, package="ggRandomForests")
+#' ggrf<- gg_rfsrc(iris_rf)
 #' 
-#' plot.gg_rfsrc(ggrf.obj)
+#' plot.gg_rfsrc(ggrf)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
-#' airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' ggrf.obj<- gg_rfsrc(airq.obj)
+#' # airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' data(airq_rf, package="ggRandomForests")
+#' ggrf<- gg_rfsrc(airq_rf)
 #' 
-#' plot.gg_rfsrc(ggrf.obj)
+#' plot.gg_rfsrc(ggrf)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' data(veteran, package = "randomForestSRCM")
-#' v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#'
-#' ggrf.obj <- gg_rfsrc(v.obj)
-#' plot(ggrf.obj)
-#' }
+#' # data(veteran, package = "randomForestSRCM")
+#' # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' data(veteran_rf, package = "ggRandomForests")
+#' ggrf <- gg_rfsrc(veteran_rf)
+#' plot(ggrf)
 #' 
+#' }
 #' @importFrom reshape2 melt
 #' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot theme
 ### error rate plot
 plot.gg_rfsrc<- function(x, ...){
   obj <- x
+  
+  ## rfsrc places the class in position 1.
   if(class(obj)[1] == "rfsrc") obj<- gg_rfsrc(obj, ...)
   
+  ## Classification forest?
   if(inherits(obj, "class")){
     if(dim(obj)[2] < 3){
       
@@ -88,10 +92,10 @@ plot.gg_rfsrc<- function(x, ...){
                      outlier.colour = "transparent", fill="transparent", notch = TRUE)
     }else{
       mlt <- melt(obj, id.vars = "y")
-      gDta <- ggplot(mlt, aes_string(x="y",y="value", by="variable"))+
+      gDta <- ggplot(mlt, aes_string(x="variable",y="value"))+
         geom_jitter(aes_string(color="y",shape="y"), alpha=.5)
     }
-    gDta + labs(y="Predicted (%)", x="")
+    gDta <- gDta + labs(y="Predicted (%)", x="")
   }else if(inherits(obj,"surv")){
     if(inherits(obj,"survSE")){
       # Summarized survival plot for the group...

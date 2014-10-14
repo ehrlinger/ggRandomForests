@@ -15,13 +15,17 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Reciever Operator Characteristic calculator for randomForest objects
+#' Internal Reciever Operator Characteristic calculator for randomForest objects
 #' 
 #' @details Given the randomForest or randomForestSRC prediction and the actual 
 #' response value, calculate the specificity (1-False Positive Rate) and sensitivity 
 #' (True Positive Rate) of a predictor.
 #' 
-#' @param rf randomForest or prediction object containing predicted response
+#' This is a helper function for the \code{\link{gg_roc}} functions, and not intended 
+#' for use by the end user.
+#' 
+#' @param rf \code{randomForestSRC::rfsrc} or \code{randomForestSRC::predict} object 
+#' containing predicted response
 #' @param dta True response variable
 #' @param which.outcome If defined, only show ROC for this response. 
 #' @param oob Use OOB estimates, the normal validation method (TRUE)
@@ -40,10 +44,6 @@
 #' roc <- calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
 #' }
 #' 
-##
-## TODO update for multiple outcome classes.
-## iris has three probable outcomes, we want a curve for each, with calc_auc measures
-##
 calc_roc.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
   if(!is.factor(dta)) dta <- factor(dta)
   if(which.outcome!="all"){
@@ -99,18 +99,30 @@ calc_roc.randomForest <- function(rf, dta, which.outcome=1){
 }
 
 #'
-#' Calculator for the Area Under the ROC Curve
+#' Internal calculator for the Area Under the ROC Curve
 #' 
 #' @details calc_auc uses the trapezoidal rule to calculate the area under
 #' the ROC curve.
 #' 
+#'  This is a helper function for the \code{\link{gg_roc}} functions, and not intended 
+#' for use by the end user.
 #' @param x output from \code{\link{calc_roc}} (or \code{\link{gg_roc}}) 
 #' 
-#' @return AUC. 50% is random guessing, higher is better.
+#' @return AUC. 50\% is random guessing, higher is better.
 #' 
-#' @aliases calc_auc
 #' 
-calc_auc.ggRandomForests <- function(x){
+#' @seealso \code{\link{calc_roc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
+#' 
+#' @examples
+#' \dontrun{
+#' ##
+#' ## Taken from the gg_roc example
+#' iris.obj <- rfsrc(Species ~ ., data = iris)
+#' roc <- ggRandomForests:::calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=2, oob=TRUE)
+#' ggRandomForests:::calc_auc(roc)
+#' }
+#' 
+calc_auc <- function(x){
   ## Use the trapeziod rule, basically calc
   ##
   ## auc = dx/2(f(x_{i+1}) - f(x_i))
@@ -124,4 +136,3 @@ calc_auc.ggRandomForests <- function(x){
   auc <- (3*lead(x$sens) - x$sens)/2 * (x$spec - lead(x$spec))
   sum(auc, na.rm=TRUE)
 }
-calc_auc<- calc_auc.ggRandomForests

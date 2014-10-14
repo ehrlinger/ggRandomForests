@@ -20,10 +20,11 @@ function of number of trees.
 \details{
 The gg_error plot is used to track the convergence of the
 randomForest. This figure is a reproduction of the error plot
-from the \code{plot.rfsrc} function.
+from the \code{randomForestSRC::plot.rfsrc} function.
 }
 \examples{
 \dontrun{
+#' ## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -64,6 +65,7 @@ data(veteran_rf, package="ggRandomForests")
 
 ggrf.obj <- gg_error(veteran_rf)
 plot(ggrf.obj)
+
 }
 }
 \references{
@@ -76,6 +78,6 @@ Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
 and Classification (RF-SRC), R package version 1.4.
 }
 \seealso{
-\code{\link{gg_error}} \code{rfsrc} \code{plot.rfsrc}
+\code{\link{gg_error}} \code{randomForestSRC::rfsrc} \code{randomForestSRC::plot.rfsrc}
 }
 

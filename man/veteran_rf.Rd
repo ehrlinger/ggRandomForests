@@ -2,11 +2,11 @@
 \docType{data}
 \name{veteran_rf}
 \alias{veteran_rf}
-\title{Veteran's Administration Lung Cancer Trial}
+\title{\code{randomForestSRC::rfsrc} forest for Veteran's Administration Lung Cancer Trial}
 \format{A rfsrc object for survival}
 \description{
-Randomized trial of two treatment regimens for lung cancer. This is a
-standard survival analysis data set.
+A \code{randomForestSRC::rfsrc} survival forest for the randomized trial of two
+treatment regimens for lung cancer. This is a standard survival analysis data set.
 
 \itemize{
 \item trt   treatment: 1=standard 2=test
@@ -18,11 +18,17 @@ standard survival analysis data set.
 \item age	 age in years
 \item prior	 prior therapy 0=no, 1=yes
 }
-
+}
+\examples{
+\dontrun{
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
 veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+
+plot.gg_rfsrc(veteran_rf)
+plot.gg_error(veteran_rf)
+}
 }
 \references{
 Kalbfleisch J. and Prentice R, (1980) The Statistical Analysis of Failure

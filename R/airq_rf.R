@@ -1,10 +1,11 @@
-#' air quality randomForestSRC object.
+#' Air quality randomForestSRC object.
 #' 
-#' A cached \code{rfsrc} object for the New York Air Quality Measurements. This is 
-#' randomForestSRC regression forest.
+#' A cached \code{randomForestSRC::rfsrc} object for the New York Air Quality Measurements. This is 
+#' a randomForestSRC regression forest.
 #'  
-#' @details For ggRandomForest testing and the R CMD checks, we cache the 
-#' computationally expensive parts of running a randomForest. 
+#' @details For ggRandomForests examples and tests, as well as streamlining the 
+#' R CMD CHECK for package release, we cache the computationally expensive operations
+#' from the randomForestSRC package. 
 #' 
 #' We build a regression randomForest (\code{\link{airq_rf}}) with the 
 #' \code{airquality} measurements data. The data were from New York, from 
@@ -12,14 +13,22 @@
 #' Department of Conservation (ozone data) and the National Weather Service 
 #' (meteorological data).
 #' 
-#' This "data set" is a cache of the \code{rfsrc} random forest model. 
-#' 
 #' @seealso \code{airquality} \code{rfsrc} \code{\link{airq_vs}} \code{\link{airq_interaction}} 
+#' \code{\link{airq_prtl}} \code{\link{gg_rfsrc}} \code{\link{plot.gg_rfsrc}} \code{\link{gg_error}}
+#' \code{\link{plot.gg_error}}
 #' 
 #' @examples
 #' \dontrun{
 #' ## The data was built with the following command
 #' airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' 
+#' # Plot predicted values for the training data
+#' ggobj <- gg_rfsrc(airq_rf)
+#' plot(ggobj)
+#' 
+#' # Plot error rate for the forest 
+#' ggobj <- gg_error(airq_rf)
+#' plot(ggobj)
 #' }
 #' 
 #' @references 
@@ -39,6 +48,6 @@
 #' 
 #' @docType data
 #' @keywords datasets
-#' @format A rfsrc object for regression
+#' @format A randomForestSRC::rfsrc object for regression
 #' @name airq_rf
 NULL

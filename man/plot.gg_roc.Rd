@@ -3,15 +3,17 @@
 \alias{plot.gg_roc}
 \title{ROC plot generic function for a \code{\link{gg_roc}} object.}
 \usage{
-\method{plot}{gg_roc}(x, ...)
+\method{plot}{gg_roc}(x, which.outcome = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_roc}} object created from a classification forest}
 
+\item{which.outcome}{for multiclass problems, choose the class for plotting}
+
 \item{...}{arguments passed to the \code{\link{gg_roc}} function}
 }
 \value{
-ggplot object of the ROC curve
+\code{ggplot} object of the ROC curve
 }
 \description{
 ROC plot generic function for a \code{\link{gg_roc}} object.
@@ -21,19 +23,24 @@ ROC plot generic function for a \code{\link{gg_roc}} object.
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
-iris.obj <- rfsrc(Species ~ ., data = iris)
+#iris_rf <- rfsrc(Species ~ ., data = iris)
+data(iris_rf, package="ggRandomForests")
 
 # ROC for setosa
-ggrf.obj<- gg_roc(iris.obj, which.outcome=1)
-plot.gg_roc(ggrf.obj)
+ggrf <- gg_roc(iris_rf, which.outcome=1)
+plot.gg_roc(ggrf)
 
 # ROC for versicolor
-ggrf.obj<- gg_roc(iris.obj, which.outcome=2)
-plot.gg_roc(ggrf.obj)
+ggrf <- gg_roc(iris_rf, which.outcome=2)
+plot.gg_roc(ggrf)
 
 # ROC for virginica
-ggrf.obj<- gg_roc(iris.obj, which.outcome=3)
-plot.gg_roc(ggrf.obj)
+ggrf <- gg_roc(iris_rf, which.outcome=3)
+plot.gg_roc(ggrf)
+
+# Alternatively, you can plot all three outcomes in one go
+# by calling the plot function on the full forest.
+plot.gg_roc(iris_rf)
 }
 }
 \references{

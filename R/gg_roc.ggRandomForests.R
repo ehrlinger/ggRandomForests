@@ -20,32 +20,38 @@
 #' 
 #' The sensitivity and specificity of a randomForests classification object. 
 #' 
-#' @param object an rfsrc classification object
+#' @param object an \code{randomForestSRC::rfsrc} classification object
 #' @param which.outcome select the classification outcome of interest.
 #' @param oob use oob estimates (default TRUE)
 #' 
-#' @return gg_roc data.frame for plotting ROC curves.
+#' @return gg_roc \code{data.frame} for plotting ROC curves.
 #' 
-#' @seealso \code{\link{plot.gg_roc}} \code{rfsrc}
+#' @seealso \code{\link{plot.gg_roc}} \code{randomForestSRC::rfsrc}
 #' 
+
 #' @examples
-#' 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
-#' # iris.obj <- rfsrc(Species ~ ., data = iris)
-#' data(iris_rf,package="ggRandomForests")
+#' #iris_rf <- rfsrc(Species ~ ., data = iris)
+#' data(iris_rf, package="ggRandomForests")
+#'
 #' # ROC for setosa
-#' ggrf.obj<- gg_roc(iris_rf, which.outcome=1)
-#' plot.gg_roc(ggrf.obj)
+#' ggrf <- gg_roc(iris_rf, which.outcome=1)
+#' plot.gg_roc(ggrf)
 #' 
 #' # ROC for versicolor
-#' ggrf.obj<- gg_roc(iris_rf, which.outcome=2)
-#' plot.gg_roc(ggrf.obj)
+#' ggrf <- gg_roc(iris_rf, which.outcome=2)
+#' plot.gg_roc(ggrf)
 #' 
 #' # ROC for virginica
-#' ggrf.obj<- gg_roc(iris_rf, which.outcome=3)
-#' plot.gg_roc(ggrf.obj)
+#' ggrf <- gg_roc(iris_rf, which.outcome=3)
+#' plot.gg_roc(ggrf)
+#' 
+#' # Alternatively, you can plot all three outcomes in one go
+#' # by calling the plot function on the full forest. 
+#' plot.gg_roc(iris_rf)
+#' 
 #' 
 #' @export gg_roc.ggRandomForests gg_roc
 #' @aliases gg_roc

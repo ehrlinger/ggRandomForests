@@ -15,25 +15,26 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Minimal depth data object
+#' Minimal depth data object (\code{randomForestSRC::var.select})
 #'
-#' @param object A randomForestSRC forest object, predict object or
-#' the list from the var.select.rfsrc function.
-#' @param ... optional arguments passed to the var.select function 
-#'  if operating on an rfsrc object. 
+#' @param object A \code{randomForestSRC::rfsrc} object, \code{randomForestSRC::predict}
+#'  object or the list from the \code{randomForestSRC::var.select.rfsrc} function.
+#' @param ... optional arguments passed to the \code{randomForestSRC::var.select} function 
+#'  if operating on an \code{randomForestSRC::rfsrc} object. 
 #' 
-#' @description the var.select function implements random forest variable 
-#' selection using tree minimal depth methodology. The gg_minimal_depth 
-#' function takes the output from var.select and creates a data.frame 
-#' formatted for the plot.gg_minimal_depth function.
+#' @description the \code{randomForestSRC::var.select} function implements 
+#' random forest variable selection using tree minimal depth methodology. The 
+#' gg_minimal_depth 
+#' function takes the output from \code{randomForestSRC::var.select} and creates a 
+#' \code{data.frame} formatted for the \code{\link{plot.gg_minimal_depth}} function.
 #'  
 #' @return Invisibly, the modified list of variables from the 
-#' var.select.rfsrc function, ordered by minimal depth rank. 
+#' \code{randomForestSRC::var.select.rfsrc} function, ordered by minimal depth rank. 
 #' 
 #' @export gg_minimal_depth.ggRandomForests gg_minimal_depth
 #' @aliases gg_minimal_depth
 #' 
-#' @seealso \code{var.select} \code{\link{plot.gg_minimal_depth}}
+#' @seealso \code{randomForestSRC::var.select} \code{\link{plot.gg_minimal_depth}}
 #' 
 #' @importFrom randomForestSRC var.select
 #' @importFrom dplyr tbl_df

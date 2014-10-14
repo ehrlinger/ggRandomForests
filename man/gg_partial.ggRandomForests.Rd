@@ -7,27 +7,76 @@
 gg_partial.ggRandomForests(object, named, ...)
 }
 \arguments{
-\item{object}{the partial rfsrc data object from \code{plot.variable} function}
+\item{object}{the partial variable dependence data object from
+\code{randomForestSRC::plot.variable} function}
 
 \item{named}{optional column for merging multiple plots together}
 
 \item{...}{optional arguments}
 }
 \value{
-A data.frame or list of data.frames corresponding the variables
-contained within the \code{plot.variable} output.
+A \code{data.frame} or \code{list} of data.frames corresponding the variables
+contained within the \code{randomForestSRC::plot.variable} output.
 }
 \description{
-\code{plot.variable} generates a
+The \code{randomForestSRC::plot.variable} function returns a
 list of either marginal variable dependance or partial variable dependence
-data from a randomForestSRC object.
-The \code{gg_partial} function formulats the \code{plot.variable} output
+data from a \code{randomForestSRC::rfsrc} object.
+The \code{gg_partial} function formulates the \code{randomForestSRC::plot.variable} output
 for partial plots  (where partial=TRUE) into a data object for creation of
 partial dependence plots using the \code{\link{plot.gg_partial}} function.
+
 Partial variable dependence plots are the risk adjusted estimates of the specified response as a
 function of a single covariate, possibly subsetted on other covariates.
 }
+\examples{
+## ------------------------------------------------------------
+## classification
+## ------------------------------------------------------------
+
+## iris "Petal.Width" partial dependence plot
+##
+# iris_rf <- rfsrc(Species ~., data = iris)
+# iris_prtl <- plot.variable(iris_rf, xvar.names = "Petal.Width",
+#                            partial=TRUE)
+data(iris_prtl, package="ggRandomForests")
+
+ggrf_obj <- gg_partial(iris_prtl)
+plot(ggrf_obj)
+
+## ------------------------------------------------------------
+## regression
+## ------------------------------------------------------------
+
+## airquality "Wind" partial dependence plot
+##
+# airq_rf <- rfsrc(Ozone ~ ., data = airquality)
+# airq_prtl <- plot.variable(airq_rf, xvar.names = "Wind",
+#                            partial=TRUE, show.plot=FALSE)
+data(airq_prtl, package="ggRandomForests")
+
+ggrf_obj <- gg_partial(airq_prtl)
+plot(ggrf_obj)
+
+## ------------------------------------------------------------
+## survival examples
+## ------------------------------------------------------------
+## survival "age" partial variable dependence plot
+##
+# data(veteran, package = "randomForestSRC")
+# veteran_rf <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
+#
+## 30 day partial plot for age
+# veteran_prtl <- plot.variable(veteran_rf, surv.type = "surv",
+#                               partial = TRUE, time=30,
+#                               xvar.names = "age",
+#                               show.plots=FALSE)
+data(veteran_prtl, package="ggRandomForests")
+
+ggrf_obj <- gg_partial(veteran_prtl)
+plot(ggrf_obj)
+}
 \seealso{
-\code{plot.variable.rfsrc} \code{\link{plot.gg_partial}}
+\code{\link{plot.gg_partial}} \code{randomForestSRC::plot.variable}
 }
 

@@ -17,7 +17,8 @@
 ####**********************************************************************
 #' Get the predicted values from a \code{randomForest} classification forest
 #' 
-#' Only works on \code{randomForest} package forests.
+#' Only works on \code{randomForest} package forests. The beginning of 
+#' implementation for the \code{randomForest} package.
 #' 
 #' @param obj a \code{randomForest}
 #' @param type Classification by ("response", "prob")

@@ -17,16 +17,64 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' plot.gg_minimal_vimp
-#' Plot a \code{\link{gg_minimal_vimp}} object, the cumulative OOB error 
-#' rates of the forest as a function of number of trees.
+#' Plot a \code{\link{gg_minimal_vimp}} object for comparing the Minimal Depth and VIMP variable rankings.
 #' 
-#' @param x gg_minimal_depth object created from a randomForestSRC object
+#' @param x \code{\link{gg_minimal_depth}} object created from a \code{randomForestSRC::var.select} 
+#' object
 #' @param modelsize should the figure be restricted to a subset of the points.
 #' @param ... optional arguments (not used)
 #' 
 #' @export plot.gg_minimal_vimp
 #' @importFrom ggplot2 ggplot aes_string geom_point labs geom_abline coord_flip
+#'
+#' @seealso \code{\link{gg_minimal_vimp}} \code{randomForestSRC::var.select}
+#'  
+#' @examples
+#' \dontrun{
+#' ## Examples from RFSRC package... 
+#' ## ------------------------------------------------------------
+#' ## classification example
+#' ## ------------------------------------------------------------
+#' ## You can build a randomForest
+#' # iris_rf <- rfsrc(Species ~ ., data = iris)
+#' # iris_vs <- var.select(iris_rf)
+#' # ... or load a cached randomForestSRC object
+#' data(iris_vs, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing minimaldepth measures
+#' ggrf.obj<- gg_minimal_vimp(iris_vs)
+#' 
+#' # Plot the gg_mkinimal_depth object
+#' plot(ggrf.obj)
+#' 
+#' ## ------------------------------------------------------------
+#' ## Regression example
+#' ## ------------------------------------------------------------
+#' # airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' # airq_vs <- var.select(airq_rf)
+#' # ... or load a cached randomForestSRC object
+#' data(airq_vs, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing error rates
+#' ggrf.obj<- gg_minimal_vimp(airq_vs)
+#' 
+#' # Plot the gg_error object
+#' plot(ggrf.obj)
+#' 
+#' ## ------------------------------------------------------------
+#' ## Survival example
+#' ## ------------------------------------------------------------
+#' ## veteran data
+#' ## randomized trial of two treatment regimens for lung cancer
+#' # data(veteran, package = "randomForestSRC")
+#' # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' # veteran_vs <- var.select(veteran_rf)
+#' # Load a cached randomForestSRC object
+#' data(veteran_vs, package="ggRandomForests")
+#' 
+#' ggrf.obj <- gg_minimal_vimp(veteran_vs)
+#' plot(ggrf.obj)
+#' } 
 plot.gg_minimal_vimp <- function(x, modelsize, ...){
   object <- x
   

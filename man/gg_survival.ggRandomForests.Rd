@@ -2,29 +2,25 @@
 \name{gg_survival.ggRandomForests}
 \alias{gg_survival}
 \alias{gg_survival.ggRandomForests}
-\title{Predicted survival data object from an randomForestSRC survival object.}
+\title{Predicted survival data object from an \code{randomForestSRC::rfsrc} survival object.}
 \usage{
 gg_survival.ggRandomForests(object, prd_type = c("std", "oob"),
-  srv_type = c("surv", "chf", "mortality", "hazard"), pnts = c("none",
-  "kaplan", "nelson"), climits = 0.95, ...)
+  srv_type = c("surv", "chf", "mortality", "hazard"), climits = 0.95, ...)
 }
 \arguments{
-\item{object}{An object of class (rfsrc, grow) or (rfsrc, predict), or a
-survival object.}
+\item{object}{An \code{randomForestSRC::rfsrc} object or \code{randomForestSRC::predict} predict,
+or a survival object from \code{\link{eventtable}}.}
 
 \item{prd_type}{("std", "oob")}
 
 \item{srv_type}{("surv", "chf", "mortality", "hazard")}
-
-\item{pnts}{("none", "kaplan", "nelson")
-All individuals are used if not specified.}
 
 \item{climits}{confidence limit bands}
 
 \item{...}{Further arguments passed to other methods.}
 }
 \description{
-Predicted survival data object from an randomForestSRC survival object.
+Predicted survival data object from an \code{randomForestSRC::rfsrc} survival object.
 }
 \examples{
 ## veteran data
@@ -37,6 +33,7 @@ ggrf.obj <- gg_survival(veteran_rf)
 plot(ggrf.obj)
 }
 \seealso{
-\code{\link{plot.gg_survival}} \code{\link{gg_rfsrc}} \code{rfsrc}
+\code{\link{plot.gg_survival}} \code{\link{gg_rfsrc}} \code{randomForestSRC::rfsrc}
+\code{randomForestSRC::predict} \code{\link{eventtable}}
 }
 

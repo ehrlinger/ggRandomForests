@@ -2,36 +2,37 @@
 \name{gg_interaction.ggRandomForests}
 \alias{gg_interaction}
 \alias{gg_interaction.ggRandomForests}
-\title{Minimal Depth Variable Interaction data object.}
+\title{Minimal Depth Variable Interaction data object (\code{randomForestSRC::find.interaction}).}
 \usage{
 gg_interaction.ggRandomForests(object, ...)
 }
 \arguments{
-\item{object}{a randomForestSRC object or the output from the
-\code{find.interaction} function call.}
+\item{object}{a \code{randomForestSRC::rfsrc} object or the output from the
+\code{randomForestSRC::find.interaction} function call.}
 
 \item{...}{optional extra arguments passed to find.interaction.}
 }
 \description{
 Basically, this function adds attributes to the results of running
-\code{find.interaction} on an \code{rfsrc} random forest. If passed  a
-\code{rfsrc} object, gg_interaction first runs the \code{find.interaction}
+\code{randomForestSRC::find.interaction} on an \code{randomForestSRC::rfsrc} random forest.
+If passed  a \code{randomForestSRC::rfsrc} object, gg_interaction first runs
+the \code{randomForestSRC::find.interaction}
 function with all optional arguments.
 }
 \examples{
-## Examples from RFSRC package...
+## Examples from randomForestSRC package...
 ## ------------------------------------------------------------
-## find interactions, survival setting
+## find interactions, classification setting
 ## ------------------------------------------------------------
-## data(pbc, package = "randomForestSRC")
-## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
-## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
-data(pbc_interaction, package="ggRandomForests")
-gg_int <- gg_interaction(pbc_interaction)
+## iris.obj <- rfsrc(Species ~., data = iris)
+## TODO: VIMP interactions not handled yet....
+## find.interaction(iris.obj, method = "vimp", nrep = 3)
+## iris_interaction <- find.interaction(iris.obj)
+data(iris_interaction, package="ggRandomForests")
+gg_int <- gg_interaction(iris_interaction)
 
-plot(gg_int, x_var="bili")
-plot(gg_int, x_var="copper")
-
+plot(gg_int, x_var="Petal.Width")
+plot(gg_int, x_var="Petal.Length")
 
 ## ------------------------------------------------------------
 ## find interactions, regression setting
@@ -47,19 +48,17 @@ gg_int <- gg_interaction(airq_interaction)
 plot(gg_int, x_var="Temp")
 plot(gg_int, x_var="Solar.R")
 
-
 ## ------------------------------------------------------------
-## find interactions, classification setting
+## find interactions, survival setting
 ## ------------------------------------------------------------
-## iris.obj <- rfsrc(Species ~., data = iris)
-## TODO: VIMP interactions not handled yet....
-## find.interaction(iris.obj, method = "vimp", nrep = 3)
-## iris_interaction <- find.interaction(iris.obj)
-data(iris_interaction, package="ggRandomForests")
-gg_int <- gg_interaction(iris_interaction)
+## data(pbc, package = "randomForestSRC")
+## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
+## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
+data(pbc_interaction, package="ggRandomForests")
+gg_int <- gg_interaction(pbc_interaction)
 
-plot(gg_int, x_var="Petal.Width")
-plot(gg_int, x_var="Petal.Length")
+plot(gg_int, x_var="bili")
+plot(gg_int, x_var="copper")
 }
 \references{
 Ishwaran H. (2007). Variable importance in binary regression trees and
@@ -73,6 +72,9 @@ Ishwaran H., Kogalur U.B., Chen X. and Minn A.J. (2011). Random survival
 forests for high-dimensional data. Statist. Anal. Data Mining, 4:115-132.
 }
 \seealso{
-\code{find.interaction} \code{max.subtree} \code{var.select} \code{vimp}
+\code{\link{plot.gg_interaction}} \code{randomForestSRC::rfsrc}
+\code{randomForestSRC::find.interaction}
+\code{randomForestSRC::max.subtree} \code{randomForestSRC::var.select}
+\code{randomForestSRC::vimp}
 }
 

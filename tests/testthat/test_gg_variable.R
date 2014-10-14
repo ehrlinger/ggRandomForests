@@ -20,15 +20,12 @@ test_that("gg_variable classifications",{
   
   # Test object type
   expect_is(ggrf.obj, "gg_variable")
-  
-  # Test varselect is the same
- #expect_equivalent(select(ggrf.obj$varselect, -names), iris_rf$importance)
-  
-  ## Test plotting the gg_error object
-  gg.obj <- plot.gg_variable(ggrf.obj, )
-  
-  # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+#   
+#   ## Test plotting the gg_error object
+#   gg.obj <- plot.gg_variable(ggrf.obj, x_var = "Petal.Width", )
+#   
+#   # Test return is s ggplot object
+#   expect_is(gg.obj, "ggplot")
 })
 
 
@@ -45,16 +42,13 @@ test_that("gg_variable survival",{
   expect_is(veteran_rf, "rfsrc")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_variable(veteran_rf)
+  ggrf.obj<- gg_variable(veteran_rf, time=30)
   
   # Test object type
   expect_is(ggrf.obj, "gg_variable")
   
-  # Test varselect is the same
-  expect_equal(ggrf.obj$VIMP, as.vector(sort(veteran_rf$importance, decreasing=TRUE)))
-  
-  ## Test plotting the gg_error object
-  gg.obj <- plot.gg_variable(ggrf.obj)
+  ## Test plotting the gg_variable object
+  gg.obj <- plot.gg_variable(ggrf.obj, x_var="age")
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
@@ -78,12 +72,9 @@ test_that("gg_variable regression",{
   # Test object type
   expect_is(ggrf.obj, "gg_variable")
   
-  # Test varselect is the same
-  expect_equal(ggrf.obj$VIMP, as.vector(sort(airq_rf$importance, decreasing=TRUE)))
-  
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_variable(ggrf.obj)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg.obj[[1]], "ggplot")
 })
