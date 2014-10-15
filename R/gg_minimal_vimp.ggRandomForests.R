@@ -89,7 +89,7 @@ gg_minimal_vimp.ggRandomForests <- function(object, event, ...){
     stop("Function works only on rfsrc or var.select objects.")
   }
   
-  rnk.md <- rnk.vm <- tbl_df(data.frame(cbind(names=rownames(vSel$varselect))))
+  rnk.md <- rnk.vm <- data.frame(cbind(names=rownames(vSel$varselect)))
   rnk.md$depth <- rnk.vm$vimp <- 1:dim(rnk.md)[1]
   
   # Rename the full vimp.all column to just "vimp"
@@ -105,7 +105,6 @@ gg_minimal_vimp.ggRandomForests <- function(object, event, ...){
   
   rnk <- merge(rnk.vm, rnk.md,by="names")
 
-  rnk <- tbl_df(rnk)
   class(rnk) <- c("gg_minimal_vimp", class(rnk))
   invisible(rnk)
   

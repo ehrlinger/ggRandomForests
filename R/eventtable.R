@@ -33,7 +33,6 @@
 #' 
 #' @seealso \code{\link{kaplan}} \code{\link{nelson}} \code{\link{gg_survival}}
 #' @export eventtable
-#' @importFrom dplyr tbl_df
 #' 
 eventtable <- function(interval, censor, strat=NULL, 
                        data, 
@@ -46,5 +45,5 @@ eventtable <- function(interval, censor, strat=NULL,
     nelson=nelson(interval=interval, censor=censor, strat=strat, data=data, ...)
   )
   
-  return(tbl_df(ltab))
+  return(ltab)
 }

@@ -40,7 +40,6 @@
 #' @aliases gg_partial
 #' 
 #' @export gg_partial.ggRandomForests gg_partial
-#' @importFrom dplyr tbl_df
 #' 
 #' @examples
 #' 
@@ -108,7 +107,6 @@ gg_partial.ggRandomForests <- function(object,
   
   # name the data, so labels come out correctly.
   for(ind in 1:n.var){
-    pDat[[ind]] <- tbl_df(pDat[[ind]])
     colnames(pDat[[ind]])[-1] <- object$xvar.names[ind]
     if(!missing(named)) pDat[[ind]]$id=named
     class(pDat[[ind]]) <- c("gg_partial", class(pDat[[ind]]))

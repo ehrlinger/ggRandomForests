@@ -55,7 +55,6 @@
 #' 
 #' @export gg_roc.ggRandomForests gg_roc
 #' @aliases gg_roc
-#' @importFrom dplyr tbl_df
 gg_roc.ggRandomForests <- function(object, which.outcome, oob=TRUE){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
@@ -81,7 +80,6 @@ gg_roc.ggRandomForests <- function(object, which.outcome, oob=TRUE){
     
     roc<- calc_roc.rfsrc(object, object$yvar, which.outcome=which.outcome, oob=oob)
   }
-  roc <- tbl_df(roc)
   class(roc) <- c("gg_roc", class(roc))
   
   invisible(roc)

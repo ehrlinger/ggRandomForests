@@ -37,7 +37,6 @@
 #' @seealso \code{randomForestSRC::var.select} \code{\link{plot.gg_minimal_depth}}
 #' 
 #' @importFrom randomForestSRC var.select
-#' @importFrom dplyr tbl_df
 #' 
 #' @examples
 #' ## Examples from RFSRC package... 

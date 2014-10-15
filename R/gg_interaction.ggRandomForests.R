@@ -35,7 +35,6 @@
 #' @aliases gg_interaction
 #' 
 #' @importFrom randomForestSRC find.interaction
-#' @importFrom dplyr tbl_df
 #' 
 #' @references
 #' Ishwaran H. (2007). Variable importance in binary regression trees and 

@@ -61,8 +61,7 @@
 #' @export gg_vimp.ggRandomForests
 #' @export gg_vimp
 #' @aliases gg_vimp
-#' @importFrom dplyr tbl_df
-#' 
+#' @importFrom randomForestSRC vimp
 
 gg_vimp.ggRandomForests <- function(object, ...){
   
@@ -93,7 +92,6 @@ gg_vimp.ggRandomForests <- function(object, ...){
 #     }else{
 #       rfvimp <- rfvimp[which(names(rfvimp) %in% var.names)]
 #     }
-  imp <- tbl_df(imp)
   class(imp) <- c("gg_vimp", class(imp))
   invisible(imp)
 }

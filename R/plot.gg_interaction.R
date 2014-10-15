@@ -43,7 +43,7 @@
 #' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
-#' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs
+#' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs element_text
 #' 
 #' @examples
 #' \dontrun{

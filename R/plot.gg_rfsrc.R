@@ -72,7 +72,7 @@
 #' 
 #' }
 #' @importFrom reshape2 melt
-#' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot theme
+#' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot theme element_blank
 ### error rate plot
 plot.gg_rfsrc<- function(x, ...){
   obj <- x

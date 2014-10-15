@@ -88,7 +88,6 @@
 #' ggrf.obj <- gg_error(veteran_rf)
 #' plot(ggrf.obj)
 #' 
-#' @importFrom dplyr tbl_df
 #'
 ### error rate plot
 gg_error.ggRandomForests <- function(object, ...) {
@@ -106,8 +105,6 @@ gg_error.ggRandomForests <- function(object, ...) {
   }
   
   error$ntree <- 1:dim(error)[1]
-  
-  error <- tbl_df(error)
   
   class(error) <- c("gg_error",class(error))
   invisible(error)

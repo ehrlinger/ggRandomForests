@@ -39,8 +39,6 @@
 #' 
 #' @aliases gg_survival
 #' 
-#' @importFrom dplyr tbl_df
-#' 
 #' @examples
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
@@ -121,7 +119,6 @@ gg_survival.ggRandomForests <- function(object,
   colnames(fll) <- c("lower", "median", "upper")
   fll <- data.frame(cbind(time=object$time.interest,fll, mean=colMeans(rf.data)))
   
-  fll <- tbl_df(fll)
   class(fll)  <- c("gg_survival",class(fll))
   invisible(fll)
 }

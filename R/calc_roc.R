@@ -110,6 +110,7 @@ calc_roc.randomForest <- function(rf, dta, which.outcome=1){
 #' 
 #' @return AUC. 50\% is random guessing, higher is better.
 #' 
+#' @importFrom dplyr lead
 #' 
 #' @seealso \code{\link{calc_roc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
 #' 

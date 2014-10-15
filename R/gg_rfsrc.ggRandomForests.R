@@ -67,8 +67,7 @@
 #' 
 #' @aliases gg_rfsrc
 #'
-#' @importFrom dplyr tbl_df select
-#' 
+#' @importFrom dplyr select
 gg_rfsrc.ggRandomForests <- function(object, 
                                      surv_type=c("surv", "chf", "mortality", "hazard"), 
                                      oob=TRUE, 
@@ -118,9 +117,6 @@ gg_rfsrc.ggRandomForests <- function(object,
       
     }
     
-    # Easier reading data.frames (dplyr)
-    dta <- tbl_df(dta)
-    
   }else if(object$family == "surv"){
     
     ### Survival models
@@ -148,9 +144,7 @@ gg_rfsrc.ggRandomForests <- function(object,
       
       rng$ptid <- 1:dim(rng)[1]
       rng$cens <- as.logical(object$yvar[,2])
-      
-      # Easier reading data.frames (dplyr)
-      dta <- tbl_df(rng)
+      dta <- rng
     }else{
       # If we have one value, then it's two sided.
       if(length(se) ==1 ){
@@ -166,31 +160,28 @@ gg_rfsrc.ggRandomForests <- function(object,
       rng <-sapply(1:dim(rng)[2], 
                    function(tPt){quantile(rng[,tPt],probs=c(se.set, .5) )})
       mn <- sapply(1:dim(rng)[2], function(tPt){mean(rng[,tPt])})
-      dta<-data.frame(cbind(object$time.interest,t(rng),mn))
+      
+      dta <- data.frame(cbind(object$time.interest,t(rng),mn))
+      
       if(dim(dta)[2] == 5){
         colnames(dta)<- c("time", "lower",  "upper", "median", "mean")
       }else{
         colnames(dta)<- c("time", se.set, "mean")
       }
-      # Easier reading data.frames (dplyr)
-      dta <- tbl_df(dta)
       class(dta) <- c("survSE", surv_type, class(dta))
     }
     class(dta) <- c(surv_type, class(dta))
     
   }else if(object$family == "regr"){
-   
+    
     # Need to add multiclass methods
     if(oob){
       dta <- data.frame(cbind(object$predicted.oob, object$yvar))
     }else{
       dta <- data.frame(cbind(object$predicted, object$yvar))
     }
-   
-    colnames(dta) <- c("yhat", object$yvar.names)
     
-    # Easier reading data.frames (dplyr)
-    dta <- tbl_df(dta)
+    colnames(dta) <- c("yhat", object$yvar.names)
   }else{
     stop(paste("Plotting for ", object$family, " randomForestSRC is not yet implemented.", sep=""))
   }
