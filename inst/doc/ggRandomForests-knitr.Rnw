@@ -94,6 +94,9 @@ library(gridExtra) # for combined ggplots
 library(RColorBrewer) # Color schemes
 library(scales) # For modifying ggplot
 
+library(xtable) # Make tables in latex
+library(reporttools) # for descriptive stats
+
 library(dplyr) # Better data manipulations
 
 library(parallel)

@@ -18,12 +18,12 @@
 #' \dontrun{
 #' ## Examples from randomForestSRC::rfsrc 
 #' ##
-#' # data(pbc, package = "randomForestSRC")
-#' # pbc_rf <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10)
-#' # print(pbc.obj)
-#' # pbc_interaction <- find.interaction(pbc_rf
+#' data(pbc, package = "randomForestSRC")
+#' pbc_rf <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10)
+#' print(pbc.obj)
 #' 
-#' data(pbc_interaction, package="ggRandomForests")
+#' pbc_interaction <- find.interaction(pbc_rf
+#' 
 #' plot(pbc_interaction, x_var="bili")
 #' }
 #' 

@@ -1,6 +1,6 @@
-#' \code{randomForestSRC::rfsrc} Object for the pbc data.
+#' \code{randomForestSRC::find.interaction} matrix for the pbs data.
 #' 
-#' The \code{randomForestSRC::rfsrc} data set for the \code{pbc} survival dataset.
+#' The \code{randomForestSRC::find.interaction} data set for the \code{pbc} survival dataset.
 #' 
 #' @references 
 #' Ishwaran H. and Kogalur U.B. (2014). Random Forests for
@@ -18,15 +18,17 @@
 #' \dontrun{
 #' ## Examples from randomForestSRC::rfsrc 
 #' ##
-#' data(pbc, package = "randomForestSRC")
-#' pbc_rf <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10)
-#' print(pbc_rf)
-#' plot.gg_error(pbc_rf)
-#' plot.gg_rfsrc(pbc_rf)
+#' # data(pbc, package = "randomForestSRC")
+#' # pbc_rf <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10)
+#' # print(pbc.obj)
+#' # pbc_interaction <- find.interaction(pbc_rf
+#' 
+#' data(pbc_interaction, package="ggRandomForests")
+#' plot(pbc_interaction, x_var="bili")
 #' }
 #' 
 #' @docType data
 #' @keywords datasets
-#' @format A randomForestSRC::rfsrc object for survival
-#' @name pbc_rf
+#' @format rdata matrix from \code{randomForestSRC::find.interaction}
+#' @name veteran_interaction
 NULL

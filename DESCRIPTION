@@ -23,4 +23,9 @@ Depends:
     dplyr
 Suggests:
     testthat,
+    RColorBrewer,
+    gridExtra,
+    reporttools,
+    scales,
+    xtable,
     knitr
