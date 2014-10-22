@@ -26,8 +26,8 @@
 #' veteran_prtl <- plot.variable(veteran_rf, surv.type = "surv", 
 #'                               partial = TRUE, time=30, xvar.names = "age", 
 #'                               show.plots=FALSE)
-#'                               
-#' plot.gg_partial(veteran_prtl)
+#' ggprtl <- gg_partial(veteran_prtl)                              
+#' plot(ggprtl)
 #' }
 #'                               
 #' @references 

@@ -1,10 +1,9 @@
 ###############################################################################
 # Package documentation
 ###############################################################################
-#' @title ggRandomForests - package for plotting of \code{randomForestSRC}
-#' objects using the \code{ggplot2} package.
+#' @title Creating and Plotting Data Objects for Understanding Random Forests
 #' 
-#' @description ggRandomForests is a utility package for \code{randomForestSRC}. 
+#' @description \code{ggRandomForests} is a utility package for \code{randomForestSRC}. 
 #' The package is designed to simplify the graphical analysis and exploration 
 #' of randomForests.
 #' 
@@ -75,7 +74,7 @@
 #' Wickham, H. ggplot2: elegant graphics for data analysis. Springer New York, 2009.
 #' 
 #' @docType package
-#' @name ggRandomForests
+#' @name ggRandomForests-package
 #' 
 ################
 NULL

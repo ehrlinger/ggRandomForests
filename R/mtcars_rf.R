@@ -23,7 +23,9 @@
 #' ## motor trend cars
 #' mtcars_rf <- rfsrc(mpg ~ ., data = mtcars)
 #' 
-#' plot.gg_rfsrc(mtcars_rf
+#' plot.gg_rfsrc(mtcars_rf)
+#' plot.gg_error(mtcars_rf)
+#' 
 #' }
 #' 
 #' @references 

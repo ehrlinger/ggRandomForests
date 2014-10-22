@@ -30,7 +30,7 @@
 #' load(air1_rf, package="ggRandomForests)
 #' 
 #' # Save the "Wind" partial plot data
-#' air_prtl <- plot.variable(airq_rf, xvar.names = "Wind",
+#' airq_prtl <- plot.variable(airq_rf, xvar.names = "Wind",
 #'                           partial=TRUE, show.plot=FALSE)
 #'                     
 #' # Generate a ggRandomForests plot.                                   
