@@ -1,4 +1,53 @@
-\documentclass[nojss]{jss}
+\documentclass[nojss]{jss}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% declarations for jss.cls %%
@@ -69,62 +118,15 @@ Using both classification (RF-C) and survival (RF-S) examples from our research 
 
 %% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-<<setup,include=FALSE, cache=FALSE, echo=FALSE>>=
-#' @import RColorBrewer devtools gridExtra reporttools scales xtable
 
-library(knitr)
-# set global chunk options for knitr. These can be changed in the header for each individual R code chunk
-opts_chunk$set(fig.path='figure/beamer-', 
-               fig.align='center',
-               fig.pos="!htpb",
-               fig.show='hold', 
-               size='footnotesize',
-               comment="", echo=FALSE, results=FALSE, message=FALSE, warnings=FALSE,
-               error=FALSE, dev='pdf')
 
-# Setup the R environment
-options(replace.assign=TRUE,object.size=Inf,expressions=100000,memory=Inf, width=100)
-
-#################
-# Load_packages #
-#################
-library(ggplot2) # Graphics engine for generating all types of plots
-library(reshape2) # Used to modify the data for plotting
-library(gridExtra) # for combined ggplots
-library(RColorBrewer) # Color schemes
-library(scales) # For modifying ggplot
-
-library(dplyr) # Better data manipulations
-
-library(parallel)
-options(mc.cores = detectCores()-1, rf.cores=detectCores()-1)
-
-#library(devtools)
-#load_all("../ggRandomForests/")
-library(ggRandomForests)
-
-# Analysis packages.
-library(randomForestSRC) 
-
-#########################################################################
-# Default computation settings
-#########################################################################
-@
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
 %% include your article here, just as usual
 %% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
 
-<<echo = FALSE>>=
 
-## save initial options
-o1 <- getOption("prompt")
-o2 <- getOption("continue")
-o3 <- getOption("width")
-o4 <- getOption("digits")
-options(prompt = "R> ", continue = "+  ", width = 100, digits = 4)
-@
 
 % -----------------------------------------------------
 \section{About this document}
@@ -155,11 +157,7 @@ We use the randomForestSRC package~\citep{IshwaranRFSRC:2014} (RF-SRC) for all r
 \section{Example Datasets}
 % -----------------------------------------------------
 \subsection{Classification: IRIS}
-<<irisEDAclass>>=
-cls <- lapply(iris, class)
 
-
-@
 \subsection{Regression: Air Quality}
 
 \subsection{Regression: Cars}
@@ -251,9 +249,6 @@ By plotting the resulting interaction measures for each variable, we can detect 
 
 \bibliography{ggRandomForests}
 
-<<echo=FALSE>>=
-## re-specify initial options
-options(prompt = o1, continue = o2, width = o3, digits = o4)
-@
+
 
 \end{document}

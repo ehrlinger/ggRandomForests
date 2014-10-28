@@ -1,0 +1,86 @@
+\begin{thebibliography}{13}
+\newcommand{\enquote}[1]{``#1''}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Breiman(1996{\natexlab{a}})}]{Breiman:1996}
+Breiman L (1996{\natexlab{a}}).
+\newblock \enquote{{Bagging predictors}.}
+\newblock \emph{Machine Learning}, \textbf{26}, 123--140.
+
+\bibitem[{Breiman(1996{\natexlab{b}})}]{BreimanOOB:1996e}
+Breiman L (1996{\natexlab{b}}).
+\newblock \enquote{{Out--Of--Bag Estimation}.}
+\newblock \emph{Technical report}, Statistics Department, University of
+  California,Berkeley, CA. 94708.
+\newblock
+  \urlprefix\url{ftp://ftp.stat.berkeley.edu/pub/users/breiman/OOBestimation.ps.Z}.
+
+\bibitem[{Breiman(2001)}]{Breiman:2001}
+Breiman L (2001).
+\newblock \enquote{{Random Forests}.}
+\newblock \emph{Machine Learning}, \textbf{45}(1), 5--32.
+
+\bibitem[{Breiman \emph{et~al.}(1984)Breiman, Friedman, Olshen, and
+  Stone}]{cart:1984}
+Breiman L, Friedman JH, Olshen R, Stone C (1984).
+\newblock \emph{{Classification and Regression Trees}}.
+\newblock Wadsworth and Brooks, Monterey, CA.
+
+\bibitem[{Efron and Tibshirani(1994)}]{bootstrap:1994}
+Efron B, Tibshirani R (1994).
+\newblock \emph{An Introduction to the Bootstrap}.
+\newblock {Chapman \& Hall/CRC}.
+\newblock ISBN 0412042312.
+
+\bibitem[{Friedman(2000)}]{Friedman00greedyfunction}
+Friedman JH (2000).
+\newblock \enquote{Greedy Function Approximation: A Gradient Boosting Machine.}
+\newblock \emph{Annals of Statistics}, \textbf{29}, 1189--1232.
+
+\bibitem[{Ishwaran(2007)}]{Ishwaran:2007}
+Ishwaran H (2007).
+\newblock \enquote{{Variable importance in binary regression trees and
+  forests}.}
+\newblock \emph{Electronic Journal of Statistics}, \textbf{1}, 519--537.
+
+\bibitem[{Ishwaran and Kogalur(2007)}]{Ishwaran:2007a}
+Ishwaran H, Kogalur UB (2007).
+\newblock \enquote{{Random survival forests for R}.}
+\newblock \emph{R News}, \textbf{7}, 25--31.
+
+\bibitem[{Ishwaran and Kogalur(2014)}]{Ishwaran:RFSRC:2014}
+Ishwaran H, Kogalur UB (2014).
+\newblock \enquote{{Random Forests for Survival, Regression and Classification
+  (RF-SRC), R package version 1.5.2.}}
+
+\bibitem[{Ishwaran \emph{et~al.}(2008)Ishwaran, Kogalur, Blackstone, and
+  Lauer}]{Ishwaran:2008}
+Ishwaran H, Kogalur UB, Blackstone EH, Lauer MS (2008).
+\newblock \enquote{{Random survival forests}.}
+\newblock \emph{The Annals of Applied Statistics}, \textbf{2}(3), 841--860.
+
+\bibitem[{Ishwaran \emph{et~al.}(2010)Ishwaran, Kogalur, Gorodeski, Minn, and
+  Lauer}]{Ishwaran:2010}
+Ishwaran H, Kogalur UB, Gorodeski EZ, Minn AJ, Lauer MS (2010).
+\newblock \enquote{High-dimensional variable selection for survival data.}
+\newblock \emph{J. Amer. Statist. Assoc.}, \textbf{105}, 205--217.
+
+\bibitem[{Liaw and Wiener(2002)}]{liaw:2002}
+Liaw A, Wiener M (2002).
+\newblock \enquote{Classification and Regression by randomForest.}
+\newblock \emph{R News}, \textbf{2}(3), 18--22.
+
+\bibitem[{Wickham(2009)}]{Wickham2009}
+Wickham H (2009).
+\newblock \emph{ggplot2: elegant graphics for data analysis}.
+\newblock Springer New York.
+\newblock ISBN 978-0-387-98140-6.
+
+\end{thebibliography}

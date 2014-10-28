@@ -1,8 +1,8 @@
-This is the (second) initial submission of the ggRandomForests package.
+This is the ggRandomForests package submission version 1.0.1.
 
 --------------------------------------------------------------------------------
 
-* This is a new package submission.
-* Renamed package title, with title case.
-* Remove VignetteBuilder field until vignette is completed.
-* Modified import statements to correct "no visible global function definition" errors.
+* Update dependency version requirements.
+* Improve help files.
+* Additional examples and test data and codes.
+* Include prelimary vignette.
