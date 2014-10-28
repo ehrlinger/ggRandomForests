@@ -96,16 +96,16 @@ Using both classification (RF-C) and survival (RF-S) examples from our research 
 %% The address of (at least) one author should be given
 %% in the following format:
 \Address{
-  John Ehrlinger\\
-  Quantitative Health Sciences\\
-  Lerner Research Institute\\
-  Cleveland Clinic\\
-  9500 Euclid Ave\\
-  Cleveland, Ohio 44195\\
+John Ehrlinger\\
+Quantitative Health Sciences\\
+Lerner Research Institute\\
+Cleveland Clinic\\
+9500 Euclid Ave\\
+Cleveland, Ohio 44195\\
 %  Telephone: +41/0/44634-4643 \\
 %  Fax: +41/0/44634-4386 \\
-  E-mail: \email{john.ehrlinger@gmail.com}\\
-  URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
+E-mail: \email{john.ehrlinger@gmail.com}\\
+URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 }
 
 %% It is also possible to add a telephone and fax number
@@ -157,7 +157,13 @@ We use the randomForestSRC package~\citep{IshwaranRFSRC:2014} (RF-SRC) for all r
 \section{Example Datasets}
 % -----------------------------------------------------
 \subsection{Classification: IRIS}
-
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> cls <- lapply(iris, class)
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 \subsection{Regression: Air Quality}
 
 \subsection{Regression: Cars}
@@ -169,6 +175,150 @@ We use the randomForestSRC package~\citep{IshwaranRFSRC:2014} (RF-SRC) for all r
 % -----------------------------------------------------
 \section{Growing a Random Forest}
 % -----------------------------------------------------
+
+\subsection{Classification Forests}
+% Turn eval=FALSE for rfsrc commands...
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> iris_rf <- rfsrc(Species ~., data = iris)
+R> 
+R> # Plot predicted class probabilities for the training data
+R> plot.gg_rfsrc(iris_rf)
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+% Turn echo=FALSE and res for rfsrc commands...
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+                         Sample size: 150
+           Frequency of class labels: 50, 50, 50
+                     Number of trees: 1000
+          Minimum terminal node size: 1
+       Average no. of terminal nodes: 8.791
+No. of variables tried at each split: 2
+              Total no. of variables: 4
+                            Analysis: RF-C
+                              Family: class
+                      Splitting rule: class
+                         Brier score: 2.55 
+                          Error rate: 0.04, 0, 0.06, 0.06
+
+Confusion matrix:
+
+            predicted
+  observed   setosa versicolor virginica class.error
+  setosa         50          0         0        0.00
+  versicolor      0         47         3        0.06
+  virginica       0          3        47        0.06
+
+	Overall error rate: 4% 
+\end{verbatim}
+\end{kframe}\begin{figure}[!htpb]
+
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-rf-plot-1} 
+
+}
+
+\caption[Classification Forest]{Classification Forest: Predicted probability of IRIS class.\label{fig:iris-rf-plot}}
+\end{figure}
+
+
+\end{knitrout}
+
+\subsection{Regression Forests}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+R> 
+R> # Plot predicted values for the training data
+R> gg_rfr <- gg_rfsrc(airq_rf)
+R> plot(gg_rfr)
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+% Turn echo=FALSE and res for rfsrc commands...
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+                         Sample size: 153
+                    Was data imputed: yes
+                         Missingness: 27.45%
+                     Number of trees: 1000
+          Minimum terminal node size: 5
+       Average no. of terminal nodes: 17.78
+No. of variables tried at each split: 2
+              Total no. of variables: 5
+                            Analysis: RF-R
+                              Family: regr
+                      Splitting rule: regr
+                % variance explained: 76.09
+                          Error rate: 260.2
+\end{verbatim}
+\end{kframe}\begin{figure}[!htpb]
+
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-air1-rf-plot-1} 
+
+}
+
+\caption[Regression forest]{Regression forest: Predicted Ozone level.\label{fig:air1-rf-plot}}
+\end{figure}
+
+
+\end{knitrout}
+
+
+\subsection{Survival Forests}
+% Turn eval=FALSE for rfsrc commands...
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+R> 
+R> # Plot predicted survival probabilities for the training data
+R> plot.gg_rfsrc(veteran_rf)
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+% Turn echo=FALSE and res for rfsrc commands...
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+                         Sample size: 137
+                    Number of deaths: 128
+                     Number of trees: 100
+          Minimum terminal node size: 3
+       Average no. of terminal nodes: 34.9
+No. of variables tried at each split: 3
+              Total no. of variables: 6
+                            Analysis: RSF
+                              Family: surv
+                      Splitting rule: logrank
+                          Error rate: 30.89%
+\end{verbatim}
+\end{kframe}\begin{figure}[!htpb]
+
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-surv-rf-plot-1} 
+
+}
+
+\caption[Survival Forest]{Survival Forest: Predicted probability of IRIS class.\label{fig:surv-rf-plot}}
+\end{figure}
+
+
+\end{knitrout}
 
 \subsection{Forest Imputation}\label{S:imputation}
 

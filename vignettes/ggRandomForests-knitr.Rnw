@@ -47,16 +47,16 @@ Using both classification (RF-C) and survival (RF-S) examples from our research 
 %% The address of (at least) one author should be given
 %% in the following format:
 \Address{
-  John Ehrlinger\\
-  Quantitative Health Sciences\\
-  Lerner Research Institute\\
-  Cleveland Clinic\\
-  9500 Euclid Ave\\
-  Cleveland, Ohio 44195\\
+John Ehrlinger\\
+Quantitative Health Sciences\\
+Lerner Research Institute\\
+Cleveland Clinic\\
+9500 Euclid Ave\\
+Cleveland, Ohio 44195\\
 %  Telephone: +41/0/44634-4643 \\
 %  Fax: +41/0/44634-4386 \\
-  E-mail: \email{john.ehrlinger@gmail.com}\\
-  URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
+E-mail: \email{john.ehrlinger@gmail.com}\\
+URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 }
 
 %% It is also possible to add a telephone and fax number
@@ -70,45 +70,43 @@ Using both classification (RF-C) and survival (RF-S) examples from our research 
 %% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 <<setup,include=FALSE, cache=FALSE, echo=FALSE>>=
-#' @import RColorBrewer devtools gridExtra reporttools scales xtable
-
 library(knitr)
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
 opts_chunk$set(fig.path='figure/beamer-', 
                fig.align='center',
                fig.pos="!htpb",
-               fig.show='hold', 
+               fig.show='hold',
+               fig.height=3,
+               fig.width=4,
                size='footnotesize',
-               comment="", echo=FALSE, results=FALSE, message=FALSE, warnings=FALSE,
+               prompt=TRUE,
+               highlight=FALSE,
+               comment=NA, echo=TRUE, results=TRUE, message=FALSE, warnings=FALSE,
                error=FALSE, dev='pdf')
 
 # Setup the R environment
-options(replace.assign=TRUE,object.size=Inf,expressions=100000,memory=Inf, width=100)
+options(replace.assign=TRUE,object.size=Inf,expressions=100000,memory=Inf,
+        replace.assign=TRUE, width=90, prompt="R> ")
 
 #################
 # Load_packages #
 #################
 library(ggplot2) # Graphics engine for generating all types of plots
-library(reshape2) # Used to modify the data for plotting
-library(gridExtra) # for combined ggplots
-library(RColorBrewer) # Color schemes
-library(scales) # For modifying ggplot
 
 library(dplyr) # Better data manipulations
-
-library(parallel)
-options(mc.cores = detectCores()-1, rf.cores=detectCores()-1)
 
 #library(devtools)
 #load_all("../ggRandomForests/")
 library(ggRandomForests)
-
+library(hviPlotR)
 # Analysis packages.
 library(randomForestSRC) 
+options(mc.cores = detectCores()-1, rf.cores=detectCores()-1)
 
 #########################################################################
 # Default computation settings
 #########################################################################
+theme_set(theme_man())
 @
 
 \begin{document}
@@ -157,8 +155,6 @@ We use the randomForestSRC package~\citep{IshwaranRFSRC:2014} (RF-SRC) for all r
 \subsection{Classification: IRIS}
 <<irisEDAclass>>=
 cls <- lapply(iris, class)
-
-
 @
 \subsection{Regression: Air Quality}
 
@@ -171,6 +167,66 @@ cls <- lapply(iris, class)
 % -----------------------------------------------------
 \section{Growing a Random Forest}
 % -----------------------------------------------------
+
+\subsection{Classification Forests}
+% Turn eval=FALSE for rfsrc commands...
+<<iris-rf-class, eval=FALSE>>=
+iris_rf <- rfsrc(Species ~., data = iris)
+
+# Plot predicted class probabilities for the training data
+plot.gg_rfsrc(iris_rf)
+@
+
+% Turn echo=FALSE and res for rfsrc commands...
+
+<<iris-rf-plot, echo=FALSE, fig.cap="Classification Forest: Predicted probability of IRIS class.", fig.width=5>>=
+data(iris_rf, package="ggRandomForests")
+
+print(iris_rf)
+
+plot.gg_rfsrc(iris_rf)
+@
+
+\subsection{Regression Forests}
+
+<<airq-rf-class, eval=FALSE>>=
+airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+
+# Plot predicted values for the training data
+gg_rfr <- gg_rfsrc(airq_rf)
+plot(gg_rfr)
+@
+
+% Turn echo=FALSE and res for rfsrc commands...
+
+<<air1-rf-plot, echo=FALSE, results=FALSE, fig.cap="Regression forest: Predicted Ozone level.">>=
+data(airq_rf, package="ggRandomForests")
+
+print(airq_rf)
+
+gg_rfr <- gg_rfsrc(airq_rf)
+plot(gg_rfr)
+@
+
+
+\subsection{Survival Forests}
+% Turn eval=FALSE for rfsrc commands...
+<<surv-rf-class, eval=FALSE>>=
+veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+
+# Plot predicted survival probabilities for the training data
+plot.gg_rfsrc(veteran_rf)
+@
+
+% Turn echo=FALSE and res for rfsrc commands...
+
+<<surv-rf-plot, echo=FALSE, fig.cap="Survival Forest: Predicted probability of IRIS class.", fig.width=5>>=
+data(veteran_rf, package="ggRandomForests")
+
+print(veteran_rf)
+
+plot.gg_rfsrc(veteran_rf)
+@
 
 \subsection{Forest Imputation}\label{S:imputation}
 
