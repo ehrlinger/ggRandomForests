@@ -114,7 +114,7 @@ plot.gg_rfsrc<- function(x, ...){
       # Lines by observation
       gDta <- ggplot(dta)+
         geom_step(aes_string(x="variable", y="value", col="cens", by="ptid"), 
-                  alpha=.3, size=.1)
+                  alpha=.5, size=.5)
     }
     
     gDta<-gDta  +

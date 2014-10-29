@@ -71,7 +71,7 @@ plot.gg_survival<- function(x,
                 # Shading the standard errors
                 shade = plt + 
                   geom_ribbon(aes_string(x="time", ymax="upper", ymin="lower"),
-                              alpha=.1),
+                              alpha=.5),
                 # Or showing error bars
                 bars = {
                   # Need to figure out how to remove some of these points when 

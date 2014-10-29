@@ -220,7 +220,7 @@ plot.gg_rfsrc(veteran_rf)
 
 % Turn echo=FALSE and res for rfsrc commands...
 
-<<surv-rf-plot, echo=FALSE, fig.cap="Survival Forest: Predicted probability of IRIS class.", fig.width=5>>=
+<<surv-rf-plot, echo=FALSE, fig.cap="Survival Forest: Predicted probability of survival.", fig.width=5>>=
 data(veteran_rf, package="ggRandomForests")
 
 print(veteran_rf)

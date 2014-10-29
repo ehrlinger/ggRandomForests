@@ -32,6 +32,8 @@
 #' Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
 #' \emph{Electronic J. Statist.}, 1:519-537.
 #' 
+#' @importFrom tidyr gather
+#' @importFrom dplyr arrange desc
 #' 
 #' @examples
 #' ## ------------------------------------------------------------
@@ -69,29 +71,39 @@ gg_vimp.ggRandomForests <- function(object, ...){
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
     stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
   }
- 
+  
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
     warning("rfsrc object does not contain VIMP information. Calculating...")
     imp <- data.frame(sort(vimp(object, ...)$importance, decreasing=TRUE))
   }else{
-    imp<-  data.frame(sort(object$importance, decreasing=TRUE))
+    imp <- object$importance
   }
   
-  imp<- cbind(imp, imp/imp[1,1])
-  colnames(imp) <- c("VIMP", "relVIMP")
-  imp$names <- rownames(imp)
-  imp$names[which(is.na(imp$names))] <- rownames(imp)[which(is.na(imp$names))]
-  
-  imp$names <- factor(imp$names, levels=rev(imp$names))
+  # Handle multiclass importance
+  if(!is.null(dim(imp))){
+    imp <- data.frame(imp)
+    imp$vars <- rownames(imp)
+    imp <- imp %>% gather(cls,vimp, -vars) %>% arrange(desc(vimp))
+    colnames(imp)[2] <- "set"
+    imp$vars <- factor(imp$vars)
+  }else{
+    imp <- data.frame(sort(imp, decreasing=TRUE))
+    
+    imp<- cbind(imp, imp/imp[1,1])
+    colnames(imp) <- c("vimp", "rel_vimp")
+    imp$vars <- rownames(imp)
+    imp$vars[which(is.na(imp$vars))] <- rownames(imp)[which(is.na(imp$vars))]
+  }
+  imp$vars <- factor(imp$vars, levels=rev(unique(imp$vars)))
   imp$positive <- TRUE
   imp$positive[which(imp$VIMP <=0)] <- FALSE
-#   
-#     if(missing(xvar.names)){
-#       rfvimp <- as.data.frame(cbind(rfvimp[order(rfvimp, decreasing=TRUE)][1:n.var]))
-#     }else{
-#       rfvimp <- rfvimp[which(names(rfvimp) %in% var.names)]
-#     }
+  #   
+  #     if(missing(xvar.vars)){
+  #       rfvimp <- as.data.frame(cbind(rfvimp[order(rfvimp, decreasing=TRUE)][1:n.var]))
+  #     }else{
+  #       rfvimp <- rfvimp[which(vars(rfvimp) %in% var.vars)]
+  #     }
   class(imp) <- c("gg_vimp", class(imp))
   invisible(imp)
 }

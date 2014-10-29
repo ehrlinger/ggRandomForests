@@ -1,0 +1,57 @@
+---
+author:
+  - name: John Ehrlinger
+    affiliation: Cleveland Clinic
+    address: >
+      Quantitative Health Sciences
+      Lerner Research Institute
+      Cleveland Clinic
+      9500 Euclid Ave
+      Cleveland, Ohio 44195
+    email: john.ehrlinger@gmail.com
+    url: http://www.lerner.ccf.org/qhs/people/ehrlinj/
+  - name: Jeevanantham Rajeswaran
+    affiliation: Cleveland Clinic
+  - name: Eugene H. Blackstone
+    affiliation: Cleveland Clinic
+  - name: Hemant Ishwaran 
+    affiliation: University of Miami
+  - name: Liang Li
+    affiliation: MD Anderson Cancer Center
+title:
+  formatted: "\\pkg{ggRandomForests}: Visually Exploring Random Forests in \\proglang{R}"
+  # If you use tex in the formatted title, also supply version without
+  plain:     "ggRandomForests: Visually Exploring Random Forests"
+  # For running headers, if needed
+  short:     "\\pkg{foo}: A Capitalized Title"
+abstract: >
+  The abstract of the article.
+keywords:
+  # at least one keyword must be supplied
+  formatted: [keywords, not capitalized, "\\proglang{Java}"]
+  plain:     [keywords, not capitalized, Java]
+preamble: >
+  \usepackage{amsmath}
+output: rticles::jss_article
+---
+
+# Introduction
+
+This template demonstrates some of the basic latex you'll need to know to create a JSS article.
+
+## Code formatting
+
+Don't use markdown, instead use the more precise latex commands:
+
+* \proglang{Java}
+* \pkg{plyr}
+* \code{print("abc")}
+
+# R code
+
+Can be inserted in regular R markdown blocks.
+
+```{r}
+x <- 1:10
+x
+```

@@ -73,10 +73,22 @@ plot.gg_vimp<- function(x, n_var, ...){
   if(missing(n_var)) n_var <- dim(object)[1]
   if(n_var > dim(object)[1]) n_var <- dim(object)[1]
   
-  vimp.plt<-ggplot(object[1:n_var,])+
-    geom_bar(aes_string(y="relVIMP", x="names", fill="positive"), 
-             stat="identity", width=.5, color="black")+ 
-    labs(x="", y="Relative Variable Importance") + 
-    coord_flip()
+  vimp.plt<-ggplot(object[1:n_var,])
+  
+  if(is.null(object$rel_vimp)){
+    vimp.plt<-vimp.plt+
+      geom_bar(aes_string(y="vimp", x="vars", fill="positive"), 
+               stat="identity", width=.5, color="black")+ 
+      labs(x="", y="Variable Importance") + 
+      coord_flip()+
+      facet_grid(~set)
+  }else{
+    vimp.plt<-vimp.plt+
+      geom_bar(aes_string(y="rel_vimp", x="vars", fill="positive"), 
+               stat="identity", width=.5, color="black")+ 
+      labs(x="", y="Relative Variable Importance") + 
+      coord_flip()
+  }
+  
   return(vimp.plt)
 }

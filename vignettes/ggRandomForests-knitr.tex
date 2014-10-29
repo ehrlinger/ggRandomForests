@@ -198,24 +198,24 @@ R> plot.gg_rfsrc(iris_rf)
            Frequency of class labels: 50, 50, 50
                      Number of trees: 1000
           Minimum terminal node size: 1
-       Average no. of terminal nodes: 8.791
+       Average no. of terminal nodes: 8.848
 No. of variables tried at each split: 2
               Total no. of variables: 4
                             Analysis: RF-C
                               Family: class
                       Splitting rule: class
-                         Brier score: 2.55 
-                          Error rate: 0.04, 0, 0.06, 0.06
+                         Brier score: 2.58 
+                          Error rate: 0.05, 0.02, 0.06, 0.06
 
 Confusion matrix:
 
             predicted
   observed   setosa versicolor virginica class.error
-  setosa         50          0         0        0.00
+  setosa         49          1         0        0.02
   versicolor      0         47         3        0.06
   virginica       0          3        47        0.06
 
-	Overall error rate: 4% 
+	Overall error rate: 4.67% 
 \end{verbatim}
 \end{kframe}\begin{figure}[!htpb]
 
@@ -254,14 +254,14 @@ R> plot(gg_rfr)
                          Missingness: 27.45%
                      Number of trees: 1000
           Minimum terminal node size: 5
-       Average no. of terminal nodes: 17.78
+       Average no. of terminal nodes: 17.75
 No. of variables tried at each split: 2
               Total no. of variables: 5
                             Analysis: RF-R
                               Family: regr
                       Splitting rule: regr
-                % variance explained: 76.09
-                          Error rate: 260.2
+                % variance explained: 75.55
+                          Error rate: 266.1
 \end{verbatim}
 \end{kframe}\begin{figure}[!htpb]
 
@@ -299,13 +299,13 @@ R> plot.gg_rfsrc(veteran_rf)
                     Number of deaths: 128
                      Number of trees: 100
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 34.9
+       Average no. of terminal nodes: 34.88
 No. of variables tried at each split: 3
               Total no. of variables: 6
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank
-                          Error rate: 30.89%
+                          Error rate: 29.95%
 \end{verbatim}
 \end{kframe}\begin{figure}[!htpb]
 
