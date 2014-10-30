@@ -72,6 +72,9 @@ gg_vimp.ggRandomForests <- function(object, ...){
     stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
   }
   
+  # To quite R CMD CHECK... for gather statements 
+  cls  <- vars <- NA
+  
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
     warning("rfsrc object does not contain VIMP information. Calculating...")

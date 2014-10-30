@@ -44,6 +44,7 @@
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs element_text
+#' @importFrom tidyr gather
 #' 
 #' @examples
 #' \dontrun{
@@ -98,6 +99,8 @@ plot.gg_interaction <- function(x, x_var, color="black", ...){
     }
     class(object) <- c("gg_interaction", "rfsrc",class(object))
   }
+  # Initialize variables for gather statement... to silence R CMD CHECK
+  vars <- dpth <- NA
   
   if(!inherits(object, "gg_interaction")) 
     object <- gg_interaction(object, ...)
@@ -109,18 +112,20 @@ plot.gg_interaction <- function(x, x_var, color="black", ...){
   if(length(x_var)> 1){
     intPlt.dta <- data.frame(cbind(names=rownames(object),
                                    t(object[which(rownames(object) %in% x_var),])))
-    colnames(intPlt.dta) <- x_var
+    #colnames(intPlt.dta) <- x_var
     intPlt.dta$rank <- 1:dim(intPlt.dta)[1]
-    intPlt.dta <- melt(intPlt.dta, id.vars = "rank")
+    intPlt.dta <- intPlt.dta %>% gather(vars, dpth, -rank, -names)
+    
     
   }else{
     intPlt.dta <- data.frame(cbind(rank=1:dim(object)[1], 
                                    t(object[which(rownames(object) %in% x_var),])))
     colnames(intPlt.dta)[2] <- "dpth" 
+    intPlt.dta$names <- rownames(intPlt.dta)
   }
-  intPlt.dta$names <- rownames(intPlt.dta)
   #intPlt.dta <- intPlt.dta[-which(intPlt.dta$names=="viable"),]
-  intPlt.dta$names <- factor(intPlt.dta$names, levels=intPlt.dta$names)
+  #intPlt.dta$names <- factor(intPlt.dta$names, levels=unique(intPlt.dta$names))
+  intPlt.dta$dpth <- as.numeric(intPlt.dta$dpth)
   ggplot(intPlt.dta)+ geom_point(aes_string(x="names", y="dpth"), color=color)+
     theme(text = element_text(size=10),
           axis.text.x = element_text(angle=90)) +

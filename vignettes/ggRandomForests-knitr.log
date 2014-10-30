@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  28 OCT 2014 18:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  30 OCT 2014 13:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -446,118 +446,224 @@ LaTeX Font Info:    Try loading font information for T1+aett on input line 162.
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
 Package color Info: Redefining color shadecolor on input line 182.
-Package color Info: Redefining color shadecolor on input line 195.
+Package color Info: Redefining color shadecolor on input line 199.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 3
  []
 
-[3] <figure/beamer-iris-rf-plot-1.pdf, id=198, 361.35pt x 216.81pt>
-File: figure/beamer-iris-rf-plot-1.pdf Graphic file (type pdf)
+[3] <figure/beamer-iris-rf-error-1.pdf, id=198, 361.35pt x 216.81pt>
+File: figure/beamer-iris-rf-error-1.pdf Graphic file (type pdf)
 
-<use figure/beamer-iris-rf-plot-1.pdf>
-Package pdftex.def Info: figure/beamer-iris-rf-plot-1.pdf used on input line 22
-3.
+<use figure/beamer-iris-rf-error-1.pdf>
+Package pdftex.def Info: figure/beamer-iris-rf-error-1.pdf used on input line 2
+27.
 (pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
-Package color Info: Redefining color shadecolor on input line 236.
-Package color Info: Redefining color shadecolor on input line 250.
+Package color Info: Redefining color shadecolor on input line 239.
+
+<figure/beamer-iris-rf-pred-1.pdf, id=199, 361.35pt x 216.81pt>
+File: figure/beamer-iris-rf-pred-1.pdf Graphic file (type pdf)
+
+<use figure/beamer-iris-rf-pred-1.pdf>
+Package pdftex.def Info: figure/beamer-iris-rf-pred-1.pdf used on input line 24
+2.
+(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+Package color Info: Redefining color shadecolor on input line 256.
+Package color Info: Redefining color shadecolor on input line 275.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 4 []
  []
 
-[4 <./figure/beamer-iris-rf-plot-1.pdf>]
-<figure/beamer-air1-rf-plot-1.pdf, id=214, 289.08pt x 216.81pt>
-File: figure/beamer-air1-rf-plot-1.pdf Graphic file (type pdf)
+[4 <./figure/beamer-iris-rf-error-1.pdf>]
+<figure/beamer-airq-rf-error-1.pdf, id=212, 289.08pt x 216.81pt>
+File: figure/beamer-airq-rf-error-1.pdf Graphic file (type pdf)
 
-<use figure/beamer-air1-rf-plot-1.pdf>
-Package pdftex.def Info: figure/beamer-air1-rf-plot-1.pdf used on input line 26
-9.
+<use figure/beamer-airq-rf-error-1.pdf>
+Package pdftex.def Info: figure/beamer-airq-rf-error-1.pdf used on input line 2
+94.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-Package color Info: Redefining color shadecolor on input line 283.
-Package color Info: Redefining color shadecolor on input line 296.
+Package color Info: Redefining color shadecolor on input line 305.
 
-<figure/beamer-surv-rf-plot-1.pdf, id=215, 361.35pt x 216.81pt>
-File: figure/beamer-surv-rf-plot-1.pdf Graphic file (type pdf)
+<figure/beamer-airq-rf-plot-1.pdf, id=213, 289.08pt x 216.81pt>
+File: figure/beamer-airq-rf-plot-1.pdf Graphic file (type pdf)
 
-<use figure/beamer-surv-rf-plot-1.pdf>
-Package pdftex.def Info: figure/beamer-surv-rf-plot-1.pdf used on input line 31
-3.
-(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+<use figure/beamer-airq-rf-plot-1.pdf>
+Package pdftex.def Info: figure/beamer-airq-rf-plot-1.pdf used on input line 30
+8.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+Package color Info: Redefining color shadecolor on input line 322.
+Package color Info: Redefining color shadecolor on input line 340.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 5
  []
 
-[5 <./figure/beamer-air1-rf-plot-1.pdf>]
-
-Package natbib Warning: Citation `FriedmanGreedyfunction:2000' on page 6 undefi
-ned on input line 340.
-
-
+[5 <./figure/beamer-iris-rf-pred-1.pdf>]
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 6 []
  []
 
-[6 <./figure/beamer-surv-rf-plot-1.pdf>]
+[6 <./figure/beamer-airq-rf-error-1.pdf> <./figure/beamer-airq-rf-plot-1.pdf>]
+<figure/beamer-surv-rf-error-1.pdf, id=248, 361.35pt x 216.81pt>
+File: figure/beamer-surv-rf-error-1.pdf Graphic file (type pdf)
+
+<use figure/beamer-surv-rf-error-1.pdf>
+Package pdftex.def Info: figure/beamer-surv-rf-error-1.pdf used on input line 3
+58.
+(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+Package color Info: Redefining color shadecolor on input line 368.
+
+<figure/beamer-surv-rf-plot-1.pdf, id=249, 361.35pt x 216.81pt>
+File: figure/beamer-surv-rf-plot-1.pdf Graphic file (type pdf)
+
+<use figure/beamer-surv-rf-plot-1.pdf>
+Package pdftex.def Info: figure/beamer-surv-rf-plot-1.pdf used on input line 37
+1.
+(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 7
  []
 
-[7]
+[7 <./figure/beamer-surv-rf-error-1.pdf> <./figure/beamer-surv-rf-plot-1.pdf>]
 
 Package natbib Warning: Citation `FriedmanGreedyfunction:2000' on page 8 undefi
-ned on input line 367.
+ned on input line 399.
 
-
-Package natbib Warning: Citation `Ishwaran_HighDimension:2010' on page 8 undefi
-ned on input line 374.
-
-
-Package natbib Warning: Citation `Ishwaran_HighDimension:2011' on page 8 undefi
-ned on input line 374.
-
+Package color Info: Redefining color shadecolor on input line 403.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 8 []
  []
 
-[8] (./ggRandomForests-knitr.bbl)
+[8] <figure/beamer-iris-vimp-1.pdf, id=295, 397.485pt x 216.81pt>
+File: figure/beamer-iris-vimp-1.pdf Graphic file (type pdf)
 
-Package natbib Warning: There were undefined citations.
+<use figure/beamer-iris-vimp-1.pdf>
+Package pdftex.def Info: figure/beamer-iris-vimp-1.pdf used on input line 410.
+(pdftex.def)             Requested size: 397.48402pt x 216.81607pt.
+Package color Info: Redefining color shadecolor on input line 419.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 404.
+<figure/beamer-airq-vimp-1.pdf, id=296, 289.08pt x 216.81pt>
+File: figure/beamer-airq-vimp-1.pdf Graphic file (type pdf)
+
+<use figure/beamer-airq-vimp-1.pdf>
+Package pdftex.def Info: figure/beamer-airq-vimp-1.pdf used on input line 425.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+Package color Info: Redefining color shadecolor on input line 434.
+
+<figure/beamer-pbc-vimp-1.pdf, id=297, 289.08pt x 216.81pt>
+File: figure/beamer-pbc-vimp-1.pdf Graphic file (type pdf)
+
+<use figure/beamer-pbc-vimp-1.pdf>
+Package pdftex.def Info: figure/beamer-pbc-vimp-1.pdf used on input line 442.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 9
  []
 
-[9]
+[9 <./figure/beamer-iris-vimp-1.pdf> <./figure/beamer-airq-vimp-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 458.
+
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 10 []
  []
 
-[10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 404.
+[10 <./figure/beamer-pbc-vimp-1.pdf>]
+<figure/beamer-iris-mindepth-1.pdf, id=324, 289.08pt x 216.81pt>
+File: figure/beamer-iris-mindepth-1.pdf Graphic file (type pdf)
+
+<use figure/beamer-iris-mindepth-1.pdf>
+Package pdftex.def Info: figure/beamer-iris-mindepth-1.pdf used on input line 4
+89.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+Package color Info: Redefining color shadecolor on input line 498.
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/aer/m/n/10.95 11
+ []
+
+[11 <./figure/beamer-iris-mindepth-1.pdf>]
+<figure/beamer-airq-mindepth-1.pdf, id=334, 289.08pt x 216.81pt>
+File: figure/beamer-airq-mindepth-1.pdf Graphic file (type pdf)
+
+<use figure/beamer-airq-mindepth-1.pdf>
+Package pdftex.def Info: figure/beamer-airq-mindepth-1.pdf used on input line 5
+31.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+Package color Info: Redefining color shadecolor on input line 540.
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/aer/m/n/10.95 12 []
+ []
+
+[12 <./figure/beamer-airq-mindepth-1.pdf>]
+<figure/beamer-pbc-mindepth-1.pdf, id=344, 289.08pt x 216.81pt>
+File: figure/beamer-pbc-mindepth-1.pdf Graphic file (type pdf)
+
+<use figure/beamer-pbc-mindepth-1.pdf>
+Package pdftex.def Info: figure/beamer-pbc-mindepth-1.pdf used on input line 58
+0.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/aer/m/n/10.95 13
+ []
+
+[13 <./figure/beamer-pbc-mindepth-1.pdf>]
+
+Package natbib Warning: Citation `FriedmanGreedyfunction:2000' on page 14 undef
+ined on input line 604.
+
+
+Package natbib Warning: Citation `Ishwaran_HighDimension:2010' on page 14 undef
+ined on input line 611.
+
+
+Package natbib Warning: Citation `Ishwaran_HighDimension:2011' on page 14 undef
+ined on input line 611.
+
+(./ggRandomForests-knitr.bbl
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/aer/m/n/10.95 14 []
+ []
+
+[14])
+
+Package natbib Warning: There were undefined citations.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 641.
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/aer/m/n/10.95 15
+ []
+
+[15]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 641.
  (./ggRandomForests-knitr.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 404.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 404.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 641.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 641.
 Package rerunfilecheck Info: File `ggRandomForests-knitr.out' has not changed.
 (rerunfilecheck)             Checksum: 9FA39B4943B4C772064698116852F970;2868.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 404.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 641.
  ) 
 Here is how much of TeX's memory you used:
- 7028 strings out of 493117
- 104734 string characters out of 6135433
- 190637 words of memory out of 5000000
- 10275 multiletter control sequences out of 15000+600000
+ 7084 strings out of 493117
+ 106373 string characters out of 6135433
+ 191760 words of memory out of 5000000
+ 10314 multiletter control sequences out of 15000+600000
  50453 words of font info for 91 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,9n,34p,1247b,401s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,9n,34p,1247b,409s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmb10.pfb>
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><
 /usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></
@@ -576,10 +682,10 @@ exlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
 xlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/tex
 live/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texl
 ive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
-Output written on ggRandomForests-knitr.pdf (10 pages, 318382 bytes).
+Output written on ggRandomForests-knitr.pdf (15 pages, 468392 bytes).
 PDF statistics:
- 378 PDF objects out of 1000 (max. 8388607)
- 338 compressed objects within 4 object streams
- 81 named destinations out of 1000 (max. 500000)
- 232 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 460 PDF objects out of 1000 (max. 8388607)
+ 397 compressed objects within 4 object streams
+ 89 named destinations out of 1000 (max. 500000)
+ 277 words of extra memory for PDF output out of 10000 (max. 10000000)
 

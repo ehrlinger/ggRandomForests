@@ -104,6 +104,9 @@ gg_error.ggRandomForests <- function(object, ...) {
     error<- data.frame(error=cbind(error))
   }
   
+  if("object.err.rate" %in% colnames(error))
+    colnames(error)[which(colnames(error)=="object.err.rate")] <- "error"
+  
   error$ntree <- 1:dim(error)[1]
   
   class(error) <- c("gg_error",class(error))

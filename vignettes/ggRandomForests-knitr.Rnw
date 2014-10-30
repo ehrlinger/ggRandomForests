@@ -93,20 +93,20 @@ options(replace.assign=TRUE,object.size=Inf,expressions=100000,memory=Inf,
 #################
 library(ggplot2) # Graphics engine for generating all types of plots
 
-library(dplyr) # Better data manipulations
+# library(dplyr) # Better data manipulations
+# library(tidyr)
 
-#library(devtools)
-#load_all("../ggRandomForests/")
 library(ggRandomForests)
-library(hviPlotR)
+
 # Analysis packages.
 library(randomForestSRC) 
-options(mc.cores = detectCores()-1, rf.cores=detectCores()-1)
+
+options(mc.cores = 1, rf.cores=1)
 
 #########################################################################
 # Default computation settings
 #########################################################################
-theme_set(theme_man())
+theme_set(theme_bw())
 @
 
 \begin{document}
@@ -171,7 +171,11 @@ cls <- lapply(iris, class)
 \subsection{Classification Forests}
 % Turn eval=FALSE for rfsrc commands...
 <<iris-rf-class, eval=FALSE>>=
+# Grow the classification forest
 iris_rf <- rfsrc(Species ~., data = iris)
+
+# Plot the error convergence rate for the forest growth
+plot.gg_error(iris_rf)
 
 # Plot predicted class probabilities for the training data
 plot.gg_rfsrc(iris_rf)
@@ -179,18 +183,27 @@ plot.gg_rfsrc(iris_rf)
 
 % Turn echo=FALSE and res for rfsrc commands...
 
-<<iris-rf-plot, echo=FALSE, fig.cap="Classification Forest: Predicted probability of IRIS class.", fig.width=5>>=
+<<iris-rf-error, echo=FALSE, fig.cap="Classification Forest: Forest error convergence rate.", fig.width=5>>=
 data(iris_rf, package="ggRandomForests")
-
 print(iris_rf)
+plot.gg_error(iris_rf)+coord_cartesian(ylim=c(-.01,.2))
+@
 
+
+<<iris-rf-pred, echo=FALSE, fig.cap="Classification Forest: Predicted probability of IRIS class.", fig.width=5>>=
 plot.gg_rfsrc(iris_rf)
 @
+
 
 \subsection{Regression Forests}
 
 <<airq-rf-class, eval=FALSE>>=
+# Grow the regression forest
 airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+
+# Plot the error convergence rate for the forest growth
+gg_err <- gg_error(airq_rf)
+plot(gg_err)
 
 # Plot predicted values for the training data
 gg_rfr <- gg_rfsrc(airq_rf)
@@ -199,11 +212,16 @@ plot(gg_rfr)
 
 % Turn echo=FALSE and res for rfsrc commands...
 
-<<air1-rf-plot, echo=FALSE, results=FALSE, fig.cap="Regression forest: Predicted Ozone level.">>=
+<<airq-rf-error, echo=FALSE, results=FALSE, fig.cap="Regression forest:  Forest error convergence rate.">>=
 data(airq_rf, package="ggRandomForests")
 
 print(airq_rf)
 
+gg_err <- gg_error(airq_rf)
+plot(gg_err)
+@
+
+<<airq-rf-plot, echo=FALSE, results=FALSE, fig.cap="Regression forest: Predicted Ozone level.">>=
 gg_rfr <- gg_rfsrc(airq_rf)
 plot(gg_rfr)
 @
@@ -212,21 +230,29 @@ plot(gg_rfr)
 \subsection{Survival Forests}
 % Turn eval=FALSE for rfsrc commands...
 <<surv-rf-class, eval=FALSE>>=
-veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+# Grow the survival forest
+pbc_rf <- rfsrc(Surv(time, status) ~ ., data = pbc, ntree = 100)
+
+# Plot the error convergence rate for the forest growth
+plot.gg_error(pbc_rf)
 
 # Plot predicted survival probabilities for the training data
-plot.gg_rfsrc(veteran_rf)
+plot.gg_rfsrc(pbc_rf) +
+  theme(legend.position=c(.8,.8))
 @
 
 % Turn echo=FALSE and res for rfsrc commands...
 
-<<surv-rf-plot, echo=FALSE, fig.cap="Survival Forest: Predicted probability of survival.", fig.width=5>>=
-data(veteran_rf, package="ggRandomForests")
-
-print(veteran_rf)
-
-plot.gg_rfsrc(veteran_rf)
+<<surv-rf-error, echo=FALSE, fig.cap="Survival Forest: Predicted probability of survival.", fig.width=5>>=
+data(pbc_rf, package="ggRandomForests")
+print(pbc_rf)
+plot.gg_error(pbc_rf)
 @
+<<surv-rf-plot, echo=FALSE, fig.cap="Survival Forest: Predicted probability of survival.", fig.width=5>>=
+plot.gg_rfsrc(pbc_rf) +
+  theme(legend.position=c(.8,.8))
+@
+
 
 \subsection{Forest Imputation}\label{S:imputation}
 
@@ -248,6 +274,18 @@ Unlike the linear model settings, RF does not explicity specify the functional f
 Variable importance (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of~\cite{cart:1984}). Definitions in terms of mean overall improvement in node impurity for a tree have also been proposed. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used~\citep{FriedmanGreedyfunction:2000}. The most popular VIMP method to date, however, adopts a prediction error approach involving "noising-up" a variable. In random forests, for example, VIMP for a variable $x_v$ is the difference between prediction error when $x_v$ is noised up by permuting its value randomly, compared to prediction error under the original predictor~\citep{Breiman:2001,liaw:2002,Ishwaran:2007,Ishwaran:2008}.
 
 Given that VIMP is the absolute difference between prediction errors before and after permutation, a large VIMP value indicates that misspecification of that variable detracts from the predictive accuracy of the forest. VIMP close to zero indicates the variable has no impact on predictive accuracy, and negative values indicate the predictive accuracy improves when the variable is mispecified. In the later case, we assume noise is more informative than the variable. As such, we ignore variables with negative and zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables. 
+<<iris-vimp, fig.width=5.5>>=
+plot.gg_vimp(iris_rf)+
+  theme(legend.position="none")
+@
+
+<<airq-vimp>>=
+plot.gg_vimp(airq_rf)
+@
+
+<<pbc-vimp>>=
+plot.gg_vimp(pbc_rf)
+@
 
 \subsection{Minimal Depth}\label{S:minimalDepth}
 In VIMP, prognostic risk factors are determined by inspection of the forest, ranking the most important variables according to impact on predictive ability of the forest. An alternative method recognizes that most important variables for prediction are those that most frequently split nodes nearest to the trunks of the trees (ie, at the root node). Node levels are numbered based on their relative distance to the trunk of the tree (ie. 0, 1, 2).  A measure of important risk factors is determined by averaging the depth of first split for each variable over all trees within the forest. Lower values of this measure indicate those variables that split larger groups of patients. This method has been shown to successfully identify the strongest predictors, with no loss of overall model accuracy because of excessive parsimony.
@@ -255,6 +293,18 @@ In VIMP, prognostic risk factors are determined by inspection of the forest, ran
 The maximal subtree for a variable $x$ is the largest subtree whose root node splits on $x$. Thus, all parent nodes of $x$'s maximal subtree have nodes that split on variables other than $x$. The largest maximal subtree possible is the root node. In general, however, there can be more than one maximal subtree for a variable. A maximal subtree may also not exist if there are no splits on the variable.
 
 The minimal depth of a maximal subtree (the first order depth) measures predictiveness of a variable $x$. It equals the shortest distance (the depth) from the root node to the parent node of the maximal subtree (zero is the smallest value possible). The smaller the minimal depth, the more impact $x$ has on prediction. The mean of the minimal depth distribution is used as the threshold value for deciding whether a variable's minimal depth value is small enough for the variable to be classified as strong. 
+
+<<iris-mindepth>>=
+plot.gg_minimal_depth(iris_rf)
+@
+
+<<airq-mindepth>>=
+plot.gg_minimal_depth(airq_rf)
+@
+
+<<pbc-mindepth>>=
+plot.gg_minimal_depth(pbc_rf)
+@
 
 
 \subsection{Variable Importance and Minimal Depth}

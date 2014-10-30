@@ -181,7 +181,11 @@ R> cls <- lapply(iris, class)
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
+R> # Grow the classification forest
 R> iris_rf <- rfsrc(Species ~., data = iris)
+R> 
+R> # Plot the error convergence rate for the forest growth
+R> plot.gg_error(iris_rf)
 R> 
 R> # Plot predicted class probabilities for the training data
 R> plot.gg_rfsrc(iris_rf)
@@ -220,22 +224,43 @@ Confusion matrix:
 \end{kframe}\begin{figure}[!htpb]
 
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-rf-plot-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-rf-error-1} 
 
 }
 
-\caption[Classification Forest]{Classification Forest: Predicted probability of IRIS class.\label{fig:iris-rf-plot}}
+\caption[Classification Forest]{Classification Forest: Forest error convergence rate.\label{fig:iris-rf-error}}
 \end{figure}
 
 
 \end{knitrout}
+
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
+
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-rf-pred-1} 
+
+}
+
+\caption[Classification Forest]{Classification Forest: Predicted probability of IRIS class.\label{fig:iris-rf-pred}}
+\end{figure}
+
+
+\end{knitrout}
+
 
 \subsection{Regression Forests}
 
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
+R> # Grow the regression forest
 R> airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+R> 
+R> # Plot the error convergence rate for the forest growth
+R> gg_err <- gg_error(airq_rf)
+R> plot(gg_err)
 R> 
 R> # Plot predicted values for the training data
 R> gg_rfr <- gg_rfsrc(airq_rf)
@@ -266,11 +291,25 @@ No. of variables tried at each split: 2
 \end{kframe}\begin{figure}[!htpb]
 
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-air1-rf-plot-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-airq-rf-error-1} 
 
 }
 
-\caption[Regression forest]{Regression forest: Predicted Ozone level.\label{fig:air1-rf-plot}}
+\caption[Regression forest]{Regression forest:  Forest error convergence rate.\label{fig:airq-rf-error}}
+\end{figure}
+
+
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
+
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-airq-rf-plot-1} 
+
+}
+
+\caption[Regression forest]{Regression forest: Predicted Ozone level.\label{fig:airq-rf-plot}}
 \end{figure}
 
 
@@ -282,10 +321,15 @@ No. of variables tried at each split: 2
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-R> veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+R> # Grow the survival forest
+R> pbc_rf <- rfsrc(Surv(time, status) ~ ., data = pbc, ntree = 100)
+R> 
+R> # Plot the error convergence rate for the forest growth
+R> plot.gg_error(pbc_rf)
 R> 
 R> # Plot predicted survival probabilities for the training data
-R> plot.gg_rfsrc(veteran_rf)
+R> plot.gg_rfsrc(pbc_rf) +
++    theme(legend.position=c(.8,.8))
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -295,30 +339,45 @@ R> plot.gg_rfsrc(veteran_rf)
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-                         Sample size: 137
-                    Number of deaths: 128
-                     Number of trees: 100
+                         Sample size: 276
+                    Number of deaths: 111
+                     Number of trees: 1000
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 34.88
-No. of variables tried at each split: 3
-              Total no. of variables: 6
+       Average no. of terminal nodes: 54.35
+No. of variables tried at each split: 5
+              Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
-                      Splitting rule: logrank
-                          Error rate: 29.95%
+                      Splitting rule: logrank *random*
+       Number of random split points: 10
+                          Error rate: 16.5%
 \end{verbatim}
 \end{kframe}\begin{figure}[!htpb]
+
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-surv-rf-error-1} 
+
+}
+
+\caption[Survival Forest]{Survival Forest: Predicted probability of survival.\label{fig:surv-rf-error}}
+\end{figure}
+
+
+\end{knitrout}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
 
 
 {\centering \includegraphics[width=\maxwidth]{figure/beamer-surv-rf-plot-1} 
 
 }
 
-\caption[Survival Forest]{Survival Forest: Predicted probability of IRIS class.\label{fig:surv-rf-plot}}
+\caption[Survival Forest]{Survival Forest: Predicted probability of survival.\label{fig:surv-rf-plot}}
 \end{figure}
 
 
 \end{knitrout}
+
 
 \subsection{Forest Imputation}\label{S:imputation}
 
@@ -340,6 +399,53 @@ Unlike the linear model settings, RF does not explicity specify the functional f
 Variable importance (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of~\cite{cart:1984}). Definitions in terms of mean overall improvement in node impurity for a tree have also been proposed. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used~\citep{FriedmanGreedyfunction:2000}. The most popular VIMP method to date, however, adopts a prediction error approach involving "noising-up" a variable. In random forests, for example, VIMP for a variable $x_v$ is the difference between prediction error when $x_v$ is noised up by permuting its value randomly, compared to prediction error under the original predictor~\citep{Breiman:2001,liaw:2002,Ishwaran:2007,Ishwaran:2008}.
 
 Given that VIMP is the absolute difference between prediction errors before and after permutation, a large VIMP value indicates that misspecification of that variable detracts from the predictive accuracy of the forest. VIMP close to zero indicates the variable has no impact on predictive accuracy, and negative values indicate the predictive accuracy improves when the variable is mispecified. In the later case, we assume noise is more informative than the variable. As such, we ignore variables with negative and zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables. 
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot.gg_vimp(iris_rf)+
++    theme(legend.position="none")
+\end{verbatim}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-vimp-1} 
+
+}
+
+
+
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot.gg_vimp(airq_rf)
+\end{verbatim}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-airq-vimp-1} 
+
+}
+
+
+
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot.gg_vimp(pbc_rf)
+\end{verbatim}
+
+
+{\ttfamily\noindent\color{warningcolor}{Warning: Stacking not well defined when ymin != 0}}\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-vimp-1} 
+
+}
+
+
+
+\end{knitrout}
 
 \subsection{Minimal Depth}\label{S:minimalDepth}
 In VIMP, prognostic risk factors are determined by inspection of the forest, ranking the most important variables according to impact on predictive ability of the forest. An alternative method recognizes that most important variables for prediction are those that most frequently split nodes nearest to the trunks of the trees (ie, at the root node). Node levels are numbered based on their relative distance to the trunk of the tree (ie. 0, 1, 2).  A measure of important risk factors is determined by averaging the depth of first split for each variable over all trees within the forest. Lower values of this measure indicate those variables that split larger groups of patients. This method has been shown to successfully identify the strongest predictors, with no loss of overall model accuracy because of excessive parsimony.
@@ -347,6 +453,137 @@ In VIMP, prognostic risk factors are determined by inspection of the forest, ran
 The maximal subtree for a variable $x$ is the largest subtree whose root node splits on $x$. Thus, all parent nodes of $x$'s maximal subtree have nodes that split on variables other than $x$. The largest maximal subtree possible is the root node. In general, however, there can be more than one maximal subtree for a variable. A maximal subtree may also not exist if there are no splits on the variable.
 
 The minimal depth of a maximal subtree (the first order depth) measures predictiveness of a variable $x$. It equals the shortest distance (the depth) from the root node to the parent node of the maximal subtree (zero is the smallest value possible). The smaller the minimal depth, the more impact $x$ has on prediction. The mean of the minimal depth distribution is used as the threshold value for deciding whether a variable's minimal depth value is small enough for the variable to be classified as strong. 
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot.gg_minimal_depth(iris_rf)
+minimal depth variable selection ...
+
+
+-----------------------------------------------------------
+family             : class 
+var. selection     : Minimal Depth 
+conservativeness   : medium 
+x-weighting used?  : TRUE 
+dimension          : 4 
+sample size        : 150 
+ntree              : 1000 
+nsplit             : 0 
+mtry               : 2 
+nodesize           : 1 
+refitted forest    : FALSE 
+model size         : 2 
+depth threshold    : 2.127 
+PE (true OOB)      : 0.0467 0.02 0.06 0.06 
+
+
+Top variables:
+             depth vimp.all vimp.setosa vimp.versicolor vimp.virginica
+Petal.Width  0.936    0.298       0.119           0.110          0.098
+Petal.Length 1.084    0.305       0.117           0.108          0.110
+-----------------------------------------------------------
+\end{verbatim}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-mindepth-1} 
+
+}
+
+
+
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot.gg_minimal_depth(airq_rf)
+minimal depth variable selection ...
+
+
+-----------------------------------------------------------
+family             : regr 
+var. selection     : Minimal Depth 
+conservativeness   : medium 
+x-weighting used?  : TRUE 
+dimension          : 5 
+sample size        : 153 
+ntree              : 1000 
+nsplit             : 0 
+mtry               : 2 
+nodesize           : 5 
+refitted forest    : FALSE 
+model size         : 4 
+depth threshold    : 2.785 
+PE (true OOB)      : 266.1 
+
+
+Top variables:
+        depth  vimp
+Temp    1.027 657.8
+Wind    1.203 345.6
+Day     2.013 101.6
+Solar.R 2.235 154.8
+-----------------------------------------------------------
+\end{verbatim}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-airq-mindepth-1} 
+
+}
+
+
+
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot.gg_minimal_depth(pbc_rf)
+minimal depth variable selection ...
+
+
+-----------------------------------------------------------
+family             : surv 
+var. selection     : Minimal Depth 
+conservativeness   : medium 
+x-weighting used?  : TRUE 
+dimension          : 17 
+sample size        : 276 
+ntree              : 1000 
+nsplit             : 10 
+mtry               : 5 
+nodesize           : 3 
+refitted forest    : FALSE 
+model size         : 11 
+depth threshold    : 5.456 
+PE (true OOB)      : 16.5 
+
+
+Top variables:
+            depth   vimp
+bili        1.729  0.068
+copper      2.607  0.022
+albumin     2.672  0.010
+chol        2.996  0.007
+age         3.298  0.011
+prothrombin 3.327  0.010
+platelet    3.851 -0.001
+sgot        3.852  0.004
+alk         3.945  0.002
+trig        4.069  0.001
+edema       4.391  0.016
+-----------------------------------------------------------
+\end{verbatim}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-mindepth-1} 
+
+}
+
+
+
+\end{knitrout}
 
 
 \subsection{Variable Importance and Minimal Depth}

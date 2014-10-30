@@ -51,7 +51,7 @@ test_that("gg_vimp survival",{
   expect_is(ggrf.obj, "gg_vimp")
   
   # Test varselect is the same
-  expect_equal(ggrf.obj$VIMP, as.vector(sort(veteran_rf$importance, decreasing=TRUE)))
+  expect_equal(ggrf.obj$vimp, as.vector(sort(veteran_rf$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_vimp(ggrf.obj)
@@ -79,7 +79,7 @@ test_that("gg_vimp regression",{
   expect_is(ggrf.obj, "gg_vimp")
   
   # Test varselect is the same
-  expect_equal(ggrf.obj$VIMP, as.vector(sort(airq_rf$importance, decreasing=TRUE)))
+  expect_equal(ggrf.obj$vimp, as.vector(sort(airq_rf$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_vimp(ggrf.obj)
