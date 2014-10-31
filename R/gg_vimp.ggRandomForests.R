@@ -100,7 +100,7 @@ gg_vimp.ggRandomForests <- function(object, ...){
   }
   imp$vars <- factor(imp$vars, levels=rev(unique(imp$vars)))
   imp$positive <- TRUE
-  imp$positive[which(imp$VIMP <=0)] <- FALSE
+  imp$positive[which(imp$vimp <=0)] <- FALSE
   #   
   #     if(missing(xvar.vars)){
   #       rfvimp <- as.data.frame(cbind(rfvimp[order(rfvimp, decreasing=TRUE)][1:n.var]))

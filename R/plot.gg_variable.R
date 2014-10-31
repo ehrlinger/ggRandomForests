@@ -90,7 +90,7 @@
 #' # veteran_rf <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
 #' data(veteran_rf, package="ggRandomForests")
 #' 
-#' # get the 1 year survival time.
+#' # get the 30 day survival time.
 #' ggrf <- gg_variable(veteran_rf, time=30)
 #' 
 #' # Generate variable dependance plots for age and diagtime
@@ -154,7 +154,7 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
     gDta[[ind]] <- ggplot(object)
     if(family == "surv"){
       gDta[[ind]] <- gDta[[ind]] +
-        geom_point(aes_string(x="var", y="yhat", col="cens", shape="cens"), alpha=.5)+
+        geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), alpha=.5)+
         labs(x=hName, y= "Survival")
       
       if(sm_curve){

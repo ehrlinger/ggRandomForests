@@ -76,19 +76,37 @@ plot.gg_vimp<- function(x, n_var, ...){
   vimp.plt<-ggplot(object[1:n_var,])
   
   if(is.null(object$rel_vimp)){
-    vimp.plt<-vimp.plt+
-      geom_bar(aes_string(y="vimp", x="vars", fill="positive"), 
-               stat="identity", width=.5, color="black")+ 
-      labs(x="", y="Variable Importance") + 
-      coord_flip()+
-      facet_grid(~set)
+    if(length(unique(object$positive))>1){
+      vimp.plt<-vimp.plt+
+        geom_bar(aes_string(y="vimp", x="vars", fill="positive"), 
+                 stat="identity", width=.5, color="black")
+    }else{
+      vimp.plt<-vimp.plt+
+        geom_bar(aes_string(y="vimp", x="vars"), 
+                 stat="identity", width=.5, color="black")
+    }
+    vimp.plt<-vimp.plt+labs(x="", y="Variable Importance")
+      
   }else{
-    vimp.plt<-vimp.plt+
-      geom_bar(aes_string(y="rel_vimp", x="vars", fill="positive"), 
-               stat="identity", width=.5, color="black")+ 
-      labs(x="", y="Relative Variable Importance") + 
-      coord_flip()
+    if(length(unique(object$positive))>1){
+      vimp.plt<-vimp.plt+
+        geom_bar(aes_string(y="rel_vimp", x="vars", fill="positive"), 
+                 stat="identity", width=.5, color="black")
+    }else{
+      vimp.plt<-vimp.plt+
+        geom_bar(aes_string(y="rel_vimp", x="vars"), 
+                 stat="identity", width=.5, color="black")
+    }   
+    vimp.plt<-vimp.plt+ 
+      labs(x="", y="Relative Variable Importance") 
   }
+  
+  if(is.null(object$set))
+    vimp.plt<-vimp.plt+ 
+    coord_flip()
+  else  
+    vimp.plt<-vimp.plt+ 
+    coord_flip()+facet_grid(~set)
   
   return(vimp.plt)
 }

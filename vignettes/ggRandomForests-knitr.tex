@@ -189,9 +189,14 @@ R> plot.gg_error(iris_rf)
 R> 
 R> # Plot predicted class probabilities for the training data
 R> plot.gg_rfsrc(iris_rf)
+R> 
+R> # Plot predicted class ROC curves
+R> plot.gg_roc(iris_rf)
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
+
+@
 
 % Turn echo=FALSE and res for rfsrc commands...
 
@@ -249,6 +254,20 @@ Confusion matrix:
 
 \end{knitrout}
 
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
+
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-rf-roc-1} 
+
+}
+
+\caption[Classification Forest]{Classification Forest: ROC curves.\label{fig:iris-rf-roc}}
+\end{figure}
+
+
+\end{knitrout}
 
 \subsection{Regression Forests}
 
@@ -321,8 +340,11 @@ No. of variables tried at each split: 2
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
+R> # Load the dataset,
+R> data(pbc, package = "randomForestSRC")
+R> 
 R> # Grow the survival forest
-R> pbc_rf <- rfsrc(Surv(time, status) ~ ., data = pbc, ntree = 100)
+R> pbc_rf <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10, ntree=500)
 R> 
 R> # Plot the error convergence rate for the forest growth
 R> plot.gg_error(pbc_rf)
@@ -341,16 +363,16 @@ R> plot.gg_rfsrc(pbc_rf) +
 \begin{verbatim}
                          Sample size: 276
                     Number of deaths: 111
-                     Number of trees: 1000
+                     Number of trees: 500
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 54.35
+       Average no. of terminal nodes: 54.39
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank *random*
        Number of random split points: 10
-                          Error rate: 16.5%
+                          Error rate: 16.42%
 \end{verbatim}
 \end{kframe}\begin{figure}[!htpb]
 
@@ -364,6 +386,7 @@ No. of variables tried at each split: 5
 
 
 \end{knitrout}
+
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
 
@@ -433,11 +456,10 @@ R> plot.gg_vimp(airq_rf)
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-R> plot.gg_vimp(pbc_rf)
+R> plot.gg_vimp(pbc_rf)+
++    theme(legend.position=c(.8,.2))
 \end{verbatim}
-
-
-{\ttfamily\noindent\color{warningcolor}{Warning: Stacking not well defined when ymin != 0}}\end{kframe}
+\end{kframe}
 
 {\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-vimp-1} 
 
@@ -454,126 +476,19 @@ The maximal subtree for a variable $x$ is the largest subtree whose root node sp
 
 The minimal depth of a maximal subtree (the first order depth) measures predictiveness of a variable $x$. It equals the shortest distance (the depth) from the root node to the parent node of the maximal subtree (zero is the smallest value possible). The smaller the minimal depth, the more impact $x$ has on prediction. The mean of the minimal depth distribution is used as the threshold value for deciding whether a variable's minimal depth value is small enough for the variable to be classified as strong. 
 
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-R> plot.gg_minimal_depth(iris_rf)
-minimal depth variable selection ...
-
-
------------------------------------------------------------
-family             : class 
-var. selection     : Minimal Depth 
-conservativeness   : medium 
-x-weighting used?  : TRUE 
-dimension          : 4 
-sample size        : 150 
-ntree              : 1000 
-nsplit             : 0 
-mtry               : 2 
-nodesize           : 1 
-refitted forest    : FALSE 
-model size         : 2 
-depth threshold    : 2.127 
-PE (true OOB)      : 0.0467 0.02 0.06 0.06 
-
-
-Top variables:
-             depth vimp.all vimp.setosa vimp.versicolor vimp.virginica
-Petal.Width  0.936    0.298       0.119           0.110          0.098
-Petal.Length 1.084    0.305       0.117           0.108          0.110
------------------------------------------------------------
-\end{verbatim}
-\end{kframe}
-
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-mindepth-1} 
-
-}
-
-
-
-\end{knitrout}
+% <<iris-mindepth>>=
+% plot.gg_minimal_depth(iris_rf)
+% @
+% 
+% <<airq-mindepth>>=
+% plot.gg_minimal_depth(airq_rf)
+% @
 
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
-R> plot.gg_minimal_depth(airq_rf)
-minimal depth variable selection ...
-
-
------------------------------------------------------------
-family             : regr 
-var. selection     : Minimal Depth 
-conservativeness   : medium 
-x-weighting used?  : TRUE 
-dimension          : 5 
-sample size        : 153 
-ntree              : 1000 
-nsplit             : 0 
-mtry               : 2 
-nodesize           : 5 
-refitted forest    : FALSE 
-model size         : 4 
-depth threshold    : 2.785 
-PE (true OOB)      : 266.1 
-
-
-Top variables:
-        depth  vimp
-Temp    1.027 657.8
-Wind    1.203 345.6
-Day     2.013 101.6
-Solar.R 2.235 154.8
------------------------------------------------------------
-\end{verbatim}
-\end{kframe}
-
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-airq-mindepth-1} 
-
-}
-
-
-
-\end{knitrout}
-
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-R> plot.gg_minimal_depth(pbc_rf)
-minimal depth variable selection ...
-
-
------------------------------------------------------------
-family             : surv 
-var. selection     : Minimal Depth 
-conservativeness   : medium 
-x-weighting used?  : TRUE 
-dimension          : 17 
-sample size        : 276 
-ntree              : 1000 
-nsplit             : 10 
-mtry               : 5 
-nodesize           : 3 
-refitted forest    : FALSE 
-model size         : 11 
-depth threshold    : 5.456 
-PE (true OOB)      : 16.5 
-
-
-Top variables:
-            depth   vimp
-bili        1.729  0.068
-copper      2.607  0.022
-albumin     2.672  0.010
-chol        2.996  0.007
-age         3.298  0.011
-prothrombin 3.327  0.010
-platelet    3.851 -0.001
-sgot        3.852  0.004
-alk         3.945  0.002
-trig        4.069  0.001
-edema       4.391  0.016
------------------------------------------------------------
+R> data(pbc_vs, package="ggRandomForests")
+R> plot.gg_minimal_depth(pbc_vs)
 \end{verbatim}
 \end{kframe}
 
@@ -585,15 +500,101 @@ edema       4.391  0.016
 
 \end{knitrout}
 
-
 \subsection{Variable Importance and Minimal Depth}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot.gg_minimal_vimp(pbc_rf)
+minimal depth variable selection ...
+
+
+-----------------------------------------------------------
+family             : surv 
+var. selection     : Minimal Depth 
+conservativeness   : medium 
+x-weighting used?  : TRUE 
+dimension          : 17 
+sample size        : 276 
+ntree              : 500 
+nsplit             : 10 
+mtry               : 5 
+nodesize           : 3 
+refitted forest    : FALSE 
+model size         : 12 
+depth threshold    : 5.444 
+PE (true OOB)      : 16.42 
+
+
+Top variables:
+            depth   vimp
+bili        1.754  0.065
+copper      2.660  0.023
+albumin     2.694  0.011
+chol        3.084  0.007
+prothrombin 3.228  0.008
+age         3.246  0.011
+sgot        3.750  0.006
+platelet    3.894 -0.001
+edema       3.946  0.016
+alk         3.988  0.002
+trig        4.258  0.000
+stage       5.324  0.008
+-----------------------------------------------------------
+\end{verbatim}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-minvimp-1} 
+
+}
+
+
+
+\end{knitrout}
+
 
 \section{Variable Dependence}
 Once we have an idea of which variables contribute to the predictive accuracy of the forest, it is useful to get some idea of form of this contribution. We use graphical methods to show the predicted response given dependence on covariates. We can plot the marginal effect of an covariate on the class probability (classification), response (regression), mortality (survival), or the expected years lost (competing risk) for a RF analysis. We plot the ensemble predicted value on the vertical axis and covariates along the horizontal axis.
 
 \subsection{Marginal Dependence}\label{S:variablePlots}
 \emph{Marginal variable dependence} plots the predicted response as a function of the covariate, showing each subject as a point on the plot. For classification and regression, this is straight forward predicting the response. In survival settings, we must account for the additional dimension of time. In this case, we plot the response at a specific time point of interest, for example survival at one year. Each predicted point is dependent on the full combination of all covariates, not only on the covariate displayed in the dependence plot. So interpretation can only be in general terms.  
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> ggrf <- gg_variable(pbc_rf, time=90)
+R> 
+R> plot(ggrf, x_var = "bili") +
++    theme(legend.position=c(.8,.2))
+\end{verbatim}
+\end{kframe}
 
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-variable-plot-1} 
+
+}
+
+
+
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> ggrf <- gg_variable(pbc_rf, time=c(90,  365, 3*365))
+R> 
+R> plot(ggrf, x_var = "bili")+
++    scale_shape_manual(values=event.marks, labels=event.labels)+
++    scale_color_manual(values=strCol, na.value="lightgrey", drop=FALSE,
++                       labels=event.labels)+
++    theme(legend.position=c(.8,.2))
+\end{verbatim}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-variable-plot-stacks-1} 
+
+}
+
+
+
+\end{knitrout}
 
 \subsection{Partial Dependence}\label{S:variablePlots}
 
@@ -602,6 +603,39 @@ An alternative to marginal variable dependence is to integrate out the effects o
 \tilde{f}(x) = \frac{1}{n} \sum_{i=1}^n \hat{f}(x, x_{i,o}),
 \]
 where $\hat{f}$ is the predicted response and $x_{i,o}$ represents the value for all other covariates other than $X$ for the observation $i$~\citep{FriedmanGreedyfunction:2000}. The partial plot can be viewed as a risk adjusted estimate of the response as a function of the covariate $X$.
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> data(pbc_prtl, package="ggRandomForests")
+R> ggprtl <- gg_partial(pbc_prtl)
+R> 
+R> plot(ggprtl[[1]])
+\end{verbatim}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-partial-bili-1} 
+
+}
+
+
+
+\end{knitrout}
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot(ggprtl[[4]], se=FALSE)
+\end{verbatim}
+\end{kframe}
+
+{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-partial-albumin-1} 
+
+}
+
+
+
+\end{knitrout}
 
 
 
