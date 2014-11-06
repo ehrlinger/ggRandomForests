@@ -2,6 +2,8 @@ ggRandomForests Package
 ========================================================
 [![DOI](https://zenodo.org/badge/5745/ehrlinger/ggRandomForests.png)](http://dx.doi.org/10.5281/zenodo.11526)
 
+[![Build Status](https://travis-ci.org/ehrlinger/ggRandomForests.svg?branch=master)](https://travis-ci.org/ehrlinger/ggRandomForests)
+
 Main Goal: Simplify graphical exploration of randomForests.
 
 ggRandomForests is designed to be used with the randomForestSRC (RF-SRC) package. 
