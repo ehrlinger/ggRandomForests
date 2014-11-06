@@ -1,35 +1,38 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>ggRandomForests by ehrlinger</title>
+    <meta name="description" content="ggRandomForests : Graphical analysis of random forests with the randomForestSRC package. ">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>ggRandomForests</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>ggRandomForests</h1>
-        <p>Graphical analysis of random forests with the randomForestSRC package. </p>
 
-        <p class="view"><a href="https://github.com/ehrlinger/ggRandomForests">View the Project on GitHub <small>ehrlinger/ggRandomForests</small></a></p>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ehrlinger/ggRandomForests">View on GitHub</a>
 
+          <h1 id="project_title">ggRandomForests</h1>
+          <h2 id="project_tagline">Graphical analysis of random forests with the randomForestSRC package. </h2>
 
-        <ul>
-          <li><a href="https://github.com/ehrlinger/ggRandomForests/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/ehrlinger/ggRandomForests/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/ehrlinger/ggRandomForests">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ehrlinger/ggRandomForests/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ehrlinger/ggRandomForests/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
-<a name="ggrandomforests-package" class="anchor" href="#ggrandomforests-package"><span class="octicon octicon-link"></span></a>ggRandomForests Package</h1>
+<a id="ggrandomforests-package" class="anchor" href="#ggrandomforests-package" aria-hidden="true"><span class="octicon octicon-link"></span></a>ggRandomForests Package</h1>
 
 <p>Main Goal: Simplify graphical exploration of randomForests.</p>
 
@@ -42,7 +45,9 @@ by the randomForestSRC package using <a href="ggplot2.org">ggplot2</a>. </p>
 <ul>
 <li>Extract data.frame objects for analytics from a randomForest[SRC] model. </li>
 <li>Encapsulate the generation of graphic elements from these data frames.</li>
-</ul><p>We have chosen to use the ggplot2 package for our graphics, as it allows the user to easily modify the graphic output in an intuitive manner. </p>
+</ul>
+
+<p>We have chosen to use the ggplot2 package for our graphics, as it allows the user to easily modify the graphic output in an intuitive manner. </p>
 
 <p>We include a series of functions for working  with rfsrc objects:</p>
 
@@ -55,10 +60,12 @@ by the randomForestSRC package using <a href="ggplot2.org">ggplot2</a>. </p>
 <li>ggVariable marginal variable dependence </li>
 <li>ggPartial partial variable dependence</li>
 <li>ggInteractions Reporting minimal depth based variable interactions</li>
-</ul><p>We use the S3 object model to provide plot methods each of these objects. </p>
+</ul>
+
+<p>We use the S3 object model to provide plot methods each of these objects. </p>
 
 <h2>
-<a name="references" class="anchor" href="#references"><span class="octicon octicon-link"></span></a>References</h2>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
 
 <p>Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival, Regression and Classification (RF-SRC), R package version 1.5.</p>
 
@@ -72,12 +79,27 @@ by the randomForestSRC package using <a href="ggplot2.org">ggplot2</a>. </p>
 
 <p>Wickham H., ggplot2: elegant graphics for data analysis. Springer New York, 2009.</p>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/ehrlinger">ehrlinger</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">ggRandomForests maintained by <a href="https://github.com/ehrlinger">ehrlinger</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-6439872-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
   </body>
 </html>
