@@ -60,10 +60,12 @@
 %\VignettePackage{ggRandomForests} 
 
 %% almost as usual
-\author{John Ehrlinger \and Jeevanantham Rajeswaran\\Cleveland Clinic 
-\AND Hemant Ishwaran \\University of Miami
-\And Liang Li\\MD Anderson Cancer Center
-\AND Udaya B. Kogalur \and Eugene H. Blackstone\\Cleveland Clinic}
+\author{John Ehrlinger \and Jeevanantham Rajeswaran
+%\\Cleveland Clinic 
+%\AND Hemant Ishwaran \\University of Miami
+%\And Liang Li\\MD Anderson Cancer Center
+%\AND Udaya B. Kogalur 
+\and Eugene H. Blackstone\\Cleveland Clinic}
 
 \title{{\pkg{ggRandomForests}}: Visually Exploring Random Forests in \proglang{R}}
 
@@ -229,7 +231,7 @@ Confusion matrix:
 \end{kframe}\begin{figure}[!htpb]
 
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-rf-error-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-iris-rf-error-1} 
 
 }
 
@@ -244,7 +246,7 @@ Confusion matrix:
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
 
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-rf-pred-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-iris-rf-pred-1} 
 
 }
 
@@ -259,7 +261,7 @@ Confusion matrix:
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
 
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-rf-roc-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-iris-rf-roc-1} 
 
 }
 
@@ -310,7 +312,7 @@ No. of variables tried at each split: 2
 \end{kframe}\begin{figure}[!htpb]
 
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-airq-rf-error-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-airq-rf-error-1} 
 
 }
 
@@ -324,7 +326,7 @@ No. of variables tried at each split: 2
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
 
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-airq-rf-plot-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-airq-rf-plot-1} 
 
 }
 
@@ -377,7 +379,7 @@ No. of variables tried at each split: 5
 \end{kframe}\begin{figure}[!htpb]
 
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-surv-rf-error-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-surv-rf-error-1} 
 
 }
 
@@ -391,7 +393,7 @@ No. of variables tried at each split: 5
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
 
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-surv-rf-plot-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-surv-rf-plot-1} 
 
 }
 
@@ -430,7 +432,7 @@ R> plot.gg_vimp(iris_rf)+
 \end{verbatim}
 \end{kframe}
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-iris-vimp-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-iris-vimp-1} 
 
 }
 
@@ -445,7 +447,7 @@ R> plot.gg_vimp(airq_rf)
 \end{verbatim}
 \end{kframe}
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-airq-vimp-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-airq-vimp-1} 
 
 }
 
@@ -461,7 +463,7 @@ R> plot.gg_vimp(pbc_rf)+
 \end{verbatim}
 \end{kframe}
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-vimp-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-pbc-vimp-1} 
 
 }
 
@@ -492,7 +494,7 @@ R> plot.gg_minimal_depth(pbc_vs)
 \end{verbatim}
 \end{kframe}
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-mindepth-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-pbc-mindepth-1} 
 
 }
 
@@ -543,7 +545,7 @@ stage       5.324  0.008
 \end{verbatim}
 \end{kframe}
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-minvimp-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-pbc-minvimp-1} 
 
 }
 
@@ -567,7 +569,7 @@ R> plot(ggrf, x_var = "bili") +
 \end{verbatim}
 \end{kframe}
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-variable-plot-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-variable-plot-1} 
 
 }
 
@@ -583,12 +585,11 @@ R>
 R> plot(ggrf, x_var = "bili")+
 +    scale_shape_manual(values=event.marks, labels=event.labels)+
 +    scale_color_manual(values=strCol, na.value="lightgrey", drop=FALSE,
-+                       labels=event.labels)+
-+    theme(legend.position=c(.8,.2))
++                       labels=event.labels)
 \end{verbatim}
 \end{kframe}
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-variable-plot-stacks-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-variable-plot-stacks-1} 
 
 }
 
@@ -614,7 +615,7 @@ R> plot(ggprtl[[1]])
 \end{verbatim}
 \end{kframe}
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-partial-bili-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-pbc-partial-bili-1} 
 
 }
 
@@ -629,7 +630,7 @@ R> plot(ggprtl[[4]], se=FALSE)
 \end{verbatim}
 \end{kframe}
 
-{\centering \includegraphics[width=\maxwidth]{figure/beamer-pbc-partial-albumin-1} 
+{\centering \includegraphics[width=\maxwidth]{figure/vig-pbc-partial-albumin-1} 
 
 }
 

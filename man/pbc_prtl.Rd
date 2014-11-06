@@ -15,7 +15,7 @@ data(pbc, package = "randomForestSRC")
 pbc_rf <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10)
 
 # generate partial plot data for 4 different covariates.
-pbc_prtl <- plot.variable(pbc_rf,
+pbc_prtl <- plot.variable(pbc_rf, time=90,surv.type="surv",
                           xvar.names = c("bili", "copper", "albumin", "age"),
                           partial=TRUE, show.plot=FALSE)
 
@@ -26,6 +26,8 @@ ggprtl <- gg_partial(pbc_prtl)
 # figures.
 plot(ggprtl)
 
+plot.gg_partial(ggprtl[[1]])
+plot.gg_partial(ggprtl[[4]])
 }
 }
 \references{

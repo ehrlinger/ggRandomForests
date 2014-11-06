@@ -65,7 +65,7 @@
 #' plot(ggrf)
 #'}
 #'
-#' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip
+#' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid
 ### error rate plot
 plot.gg_vimp<- function(x, n_var, ...){
   object  <- x

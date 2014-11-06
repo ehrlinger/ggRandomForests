@@ -33,7 +33,7 @@
 #' \emph{Electronic J. Statist.}, 1:519-537.
 #' 
 #' @importFrom tidyr gather
-#' @importFrom dplyr arrange desc
+#' @importFrom dplyr arrange desc %>%
 #' 
 #' @examples
 #' ## ------------------------------------------------------------

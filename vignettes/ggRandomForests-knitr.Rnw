@@ -11,10 +11,12 @@
 %\VignettePackage{ggRandomForests} 
 
 %% almost as usual
-\author{John Ehrlinger \and Jeevanantham Rajeswaran\\Cleveland Clinic 
-\AND Hemant Ishwaran \\University of Miami
-\And Liang Li\\MD Anderson Cancer Center
-\AND Udaya B. Kogalur \and Eugene H. Blackstone\\Cleveland Clinic}
+\author{John Ehrlinger \and Jeevanantham Rajeswaran
+%\\Cleveland Clinic 
+%\AND Hemant Ishwaran \\University of Miami
+%\And Liang Li\\MD Anderson Cancer Center
+%\AND Udaya B. Kogalur 
+\and Eugene H. Blackstone\\Cleveland Clinic}
 
 \title{{\pkg{ggRandomForests}}: Visually Exploring Random Forests in \proglang{R}}
 
@@ -72,7 +74,7 @@ URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 <<setup,include=FALSE, cache=FALSE, echo=FALSE>>=
 library(knitr)
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
-opts_chunk$set(fig.path='figure/beamer-', 
+opts_chunk$set(fig.path='figure/vig-', 
                fig.align='center',
                fig.pos="!htpb",
                fig.show='hold',
@@ -328,7 +330,7 @@ plot.gg_minimal_depth(pbc_vs)
 @
 
 \subsection{Variable Importance and Minimal Depth}
-<<pbc-minvimp>>=
+<<pbc-minvimp, fig.width=6>>=
 plot.gg_minimal_vimp(pbc_rf)
 @
 
@@ -345,14 +347,13 @@ plot(ggrf, x_var = "bili") +
   theme(legend.position=c(.8,.2))
 @
 
-<<variable-plot-stacks>>=
+<<variable-plot-stacks, fig.height=6, fig.width=6>>=
 ggrf <- gg_variable(pbc_rf, time=c(90,  365, 3*365))
 
 plot(ggrf, x_var = "bili")+
   scale_shape_manual(values=event.marks, labels=event.labels)+
   scale_color_manual(values=strCol, na.value="lightgrey", drop=FALSE,
-                     labels=event.labels)+
-  theme(legend.position=c(.8,.2))
+                     labels=event.labels)
 @
 
 \subsection{Partial Dependence}\label{S:variablePlots}

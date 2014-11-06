@@ -16,12 +16,12 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Print a \code{\link{gg_minimal_depth}} object.
+#' Print a \code{\link{gg_rfsrc}} object.
 #' 
-#' @param x a \code{\link{gg_minimal_depth}} object.
+#' @param x a \code{\link{gg_rfsrc}} object.
 #' @param ... optional arguments
 #' 
-#' @export print.gg_minimal_depth
+#' @export print.gg_rfsrc
 #' 
 #' @examples
 #' ## ------------------------------------------------------------
@@ -29,49 +29,33 @@
 #' ## ------------------------------------------------------------
 #' ## You can build a randomForest
 #' # iris_rf <- rfsrc(Species ~ ., data = iris)
-#' # iris_vs <- var.select(iris_rf)
 #' # ... or load a cached randomForestSRC object
-#' data(iris_vs, package="ggRandomForests")
+#' data(iris_rf, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' ggrf_md<- gg_minimal_depth(iris_vs)
-#' print(ggrf_md)
+#' ggrf<- gg_rfsrc(iris_rf)
+#' print(ggrf)
 #' 
 #' ## ------------------------------------------------------------
 #' ## regression example
 #' ## ------------------------------------------------------------
 #' # ... or load a cached randomForestSRC object
-#' data(airq_vs, package="ggRandomForests")
+#' data(airq_rf, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' ggrf_md<- gg_minimal_depth(airq_vs)
-#' print(ggrf_md)
+#' ggrf<- gg_rfsrc(airq_rf)
+#' print(ggrf)
 #' 
-#' # To nicely print a rfsrc::var.select output... 
-#' print.gg_minimal_depth(airq_vs)
+#' # To nicely print a rfsrc output... 
+#' print.gg_rfsrc(airq_rf)
 #' 
 #' 
-print.gg_minimal_depth <- function(x, ...){
+print.gg_rfsrc <- function(x, ...){
   object <- x
   
-  # If object is not a gg_minimal_depth object, check if it is the output
+  # If object is not a gg_rfsrc object, check if it is the output
   # from rfsrc::var.select
-  if(!inherits(x, "gg_minimal_depth"))
-    object <- gg_minimal_depth(x)
-  
-  cat("-----------------------------------------------------------\n")
-  cat("gg_minimal_depth\n")
-  cat("model size         :", object$modelsize, "\n")
-  cat("depth threshold    :", round(object$md.obj$threshold, 4),  "\n")
-  cat("\n")
-  cat("PE :")
-  print(round(object$err.rate, 3))
-
-  cat("-----------------------------------------------------------\n")
-  cat("\n")
-  cat("Top variables:\n")
-  vSel <- select(object$varselect, -names)
-  print(round(vSel[1:object$modelsize, , drop = FALSE], 3))
-  cat("-----------------------------------------------------------\n")
-  
+  if(!inherits(x, "gg_rfsrc"))
+    object <- gg_rfsrc(x)
+ 
 }

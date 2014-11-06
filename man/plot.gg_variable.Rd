@@ -77,7 +77,7 @@ plot(ggrf, x_var="wt")
 # veteran_rf <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
 data(veteran_rf, package="ggRandomForests")
 
-# get the 1 year survival time.
+# get the 30 day survival time.
 ggrf <- gg_variable(veteran_rf, time=30)
 
 # Generate variable dependance plots for age and diagtime
