@@ -113,7 +113,7 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
       md.labs[ind] <- paste(ind, md.labs[ind], sep=". ")
     }
     vSel <- object$varselect[1:modelSize,]
-    vSel$rank <- seq(dim(vSel)[1],1, -1)
+    vSel$rank <- 1:nrow(vSel)
     gDta <- ggplot(vSel)
     gDta <- switch(type,
                    rank = gDta +
