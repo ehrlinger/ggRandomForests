@@ -90,9 +90,9 @@
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline
 ### error rate plot
 plot.gg_minimal_depth <- function(x, selection=FALSE, 
-                                list_vars = TRUE, 
-                                type=c("named","rank"),
-                                ...){
+                                  list_vars = TRUE, 
+                                  type=c("named","rank"),
+                                  ...){
   object <- x
   if(!inherits(object, "gg_minimal_depth")){
     object <-  gg_minimal_depth(object, ...)
@@ -113,7 +113,7 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
       md.labs[ind] <- paste(ind, md.labs[ind], sep=". ")
     }
     vSel <- object$varselect[1:modelSize,]
-    vSel$rank <- 1:dim(vSel)[1]
+    vSel$rank <- seq(dim(vSel)[1],1, -1)
     gDta <- ggplot(vSel)
     gDta <- switch(type,
                    rank = gDta +
@@ -121,7 +121,7 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
                      coord_cartesian(xlim=xl) + 
                      geom_text(aes_string(y="rank", x="depth"-.7, label="rank"), 
                                size=3, hjust=0),
-                   named  =gDta +
+                   named = gDta +
                      geom_point(aes_string(y="depth", x="names"))+
                      coord_cartesian(ylim=xl)
     )
