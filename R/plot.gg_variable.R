@@ -150,21 +150,40 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
     chIndx <- which(colnames(object)==x_var[ind])
     hName <- colnames(object)[chIndx]
     colnames(object)[chIndx] <- "var"
+    ccls <- class(object[,"var"])
     
+    # Check for logicals...
+    if(length(unique(object[,"var"])) < 3 & ccls =="numeric" ){
+      ccls <- "logical"
+      object[,"var"] <- as.logical(object[,"var"])
+    } 
     gDta[[ind]] <- ggplot(object)
+    
     if(family == "surv"){
-      gDta[[ind]] <- gDta[[ind]] +
-        geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), alpha=.5)+
+      gDta[[ind]] <- gDta[[ind]]+
         labs(x=hName, y= "Survival")
-      
-      if(sm_curve){
-        if(missing(span)){
-          gDta[[ind]] <- gDta[[ind]] +
-            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
-        }else{
-          gDta[[ind]] <- gDta[[ind]] +
-            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
+      if(ccls=="numeric"){
+        gDta[[ind]] <- gDta[[ind]]+
+          geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+                     alpha=.5)
+        
+        if(sm_curve){
+          if(missing(span)){
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+          }else{
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth,
+                          span=span)
+          }
         }
+      }else{
+        gDta[[ind]] <- gDta[[ind]]+
+          geom_boxplot(aes_string(x="var", y="yhat"), color="grey",
+                       alpha=.5,outlier.shape = NA)+
+          geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+                      alpha=.5)
+        
       }
       if(length(levels(object$time)) > 1){
         gDta[[ind]]<- gDta[[ind]] + facet_wrap(~time, ncol=1)
@@ -175,8 +194,41 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
     }else if(family == "class"){
       if(sum(colnames(object) == "yhat") ==1){
         gDta[[ind]] <- gDta[[ind]] +
-          geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), alpha=.5)+
           labs(x=hName, y="Predicted")
+        if(ccls=="numeric"){
+          gDta[[ind]] <- gDta[[ind]] +
+            geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
+                       alpha=.5)
+          
+          if(sm_curve){
+            if(missing(span)){
+              gDta[[ind]] <- gDta[[ind]] +
+                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+            }else{
+              gDta[[ind]] <- gDta[[ind]] +
+                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, 
+                            span=span)
+            }
+          }
+        }else{
+          gDta[[ind]] <- gDta[[ind]]+
+            geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
+                         alpha=.5, outlier.shape = NA)+
+            geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+                        alpha=.5)
+          
+        }
+      }else{
+        stop("Multiclass variable dependence has not been implemented yet.")
+      }
+    }else{
+      # assume regression
+      gDta[[ind]] <- gDta[[ind]] +
+        labs(x=hName, y="Predicted")
+      if(ccls=="numeric"){
+        gDta[[ind]] <- gDta[[ind]] +
+          geom_point(aes_string(x="var", y="yhat"), alpha=.5)
+        
         if(sm_curve){
           if(missing(span)){
             gDta[[ind]] <- gDta[[ind]] +
@@ -185,25 +237,14 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
             gDta[[ind]] <- gDta[[ind]] +
               geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
           }
-        } 
-      }else{
-        stop("Multiclass variable dependence has not been implemented yet.")
-      }
-    }else{
-      # assume regression
-      gDta[[ind]] <- gDta[[ind]] +
-        geom_point(aes_string(x="var", y="yhat"), alpha=.5)+
-        labs(x=hName, y="Predicted")
-      if(sm_curve){
-        if(missing(span)){
-          gDta[[ind]] <- gDta[[ind]] +
-            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
-        }else{
-          gDta[[ind]] <- gDta[[ind]] +
-            geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
         }
+      }else{
+        gDta[[ind]] <- gDta[[ind]]+
+          geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
+                       alpha=.5, outlier.shape = NA)+
+          geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+                      alpha=.5)
       }
-      
       # Replace the original colname
       colnames(object)[chIndx] <- hName
     }

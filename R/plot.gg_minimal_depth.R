@@ -95,7 +95,7 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
                                   ...){
   object <- x
   if(!inherits(object, "gg_minimal_depth")){
-    object <-  gg_minimal_depth(object, ...)
+    object <- gg_minimal_depth(object, ...)
   }
   type=match.arg(type)
   
@@ -114,6 +114,10 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
     }
     vSel <- object$varselect[1:modelSize,]
     vSel$rank <- 1:nrow(vSel)
+    
+    ## Reorder the minimal depth to place most "important" at top of figure
+    vSel$names <- factor(vSel$names, 
+                         levels=rev(levels(vSel$names )))
     gDta <- ggplot(vSel)
     gDta <- switch(type,
                    rank = gDta +
@@ -144,7 +148,8 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
   }else{ 
     vSel <- object$varselect
     vSel$rank <- 1:dim(vSel)[1]
-    
+    vSel$names <- factor(vSel$names, 
+                         levels=rev(levels(vSel$names )))
     gDta <- ggplot(vSel)
     gDta <- switch(type,
                    rank = gDta +
@@ -161,7 +166,7 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
     gDta <- gDta+
       geom_hline(yintercept=sel.th, lty=2)+
       labs(y="Minimal Depth of a Variable", x="")+
-      coord_flip()
+      coord_flip() 
   }else{
     gDta <- gDta+
       labs(y="Rank", x="Minimal Depth of a Variable")+
