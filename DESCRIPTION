@@ -15,7 +15,8 @@ Description: The ggRandomForests package contains tools for creating and
     forest. S3 Plot functions, which use the ggplot2 package, are included for
     each data object.
 Depends:
-    R (>= 3.1.0),
+    R (>= 3.1.0)
+Imports:
     ggplot2,
     randomForestSRC (>= 1.5.5),
     survival,
