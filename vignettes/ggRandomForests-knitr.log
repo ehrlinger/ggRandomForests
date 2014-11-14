@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  6 NOV 2014 10:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  13 NOV 2014 21:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -426,135 +426,148 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 
 Package natbib Warning: Citation `IshwaranRFSRC:2014' on page 2 undefined on in
-put line 155.
+put line 154.
 
+Package color Info: Redefining color shadecolor on input line 167.
 LaTeX Font Info:    Font shape `T1/aer/b/sl' in size <10.95> not available
-(Font)              Font shape `T1/aer/bx/sl' tried instead on input line 159.
+(Font)              Font shape `T1/aer/bx/sl' tried instead on input line 167.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 2 []
  []
 
 [2]
-Package color Info: Redefining color shadecolor on input line 163.
-LaTeX Font Info:    Try loading font information for T1+aett on input line 164.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 168.
 
  (/usr/local/texlive/2014/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
-Package color Info: Redefining color shadecolor on input line 184.
-Package color Info: Redefining color shadecolor on input line 206.
+Package color Info: Redefining color shadecolor on input line 189.
+
+<figure/vig-iris-rf-error-1.pdf, id=160, 361.35pt x 216.81pt>
+File: figure/vig-iris-rf-error-1.pdf Graphic file (type pdf)
+
+<use figure/vig-iris-rf-error-1.pdf>
+Package pdftex.def Info: figure/vig-iris-rf-error-1.pdf used on input line 216.
+
+(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+Package color Info: Redefining color shadecolor on input line 228.
+
+<figure/vig-iris-rf-pred-1.pdf, id=161, 361.35pt x 216.81pt>
+File: figure/vig-iris-rf-pred-1.pdf Graphic file (type pdf)
+
+<use figure/vig-iris-rf-pred-1.pdf>
+Package pdftex.def Info: figure/vig-iris-rf-pred-1.pdf used on input line 230.
+(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+Package color Info: Redefining color shadecolor on input line 242.
+
+<figure/vig-iris-rf-roc-1.pdf, id=162, 361.35pt x 216.81pt>
+File: figure/vig-iris-rf-roc-1.pdf Graphic file (type pdf)
+
+<use figure/vig-iris-rf-roc-1.pdf>
+Package pdftex.def Info: figure/vig-iris-rf-roc-1.pdf used on input line 244.
+(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+Package color Info: Redefining color shadecolor on input line 257.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 3
  []
 
-[3] <figure/vig-iris-rf-error-1.pdf, id=198, 361.35pt x 216.81pt>
-File: figure/vig-iris-rf-error-1.pdf Graphic file (type pdf)
-
-<use figure/vig-iris-rf-error-1.pdf>
-Package pdftex.def Info: figure/vig-iris-rf-error-1.pdf used on input line 234.
-
-(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
-Package color Info: Redefining color shadecolor on input line 246.
-
-<figure/vig-iris-rf-pred-1.pdf, id=199, 361.35pt x 216.81pt>
-File: figure/vig-iris-rf-pred-1.pdf Graphic file (type pdf)
-
-<use figure/vig-iris-rf-pred-1.pdf>
-Package pdftex.def Info: figure/vig-iris-rf-pred-1.pdf used on input line 249.
-(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
-Package color Info: Redefining color shadecolor on input line 261.
-
-<figure/vig-iris-rf-roc-1.pdf, id=200, 361.35pt x 216.81pt>
-File: figure/vig-iris-rf-roc-1.pdf Graphic file (type pdf)
-
-<use figure/vig-iris-rf-roc-1.pdf>
-Package pdftex.def Info: figure/vig-iris-rf-roc-1.pdf used on input line 264.
-(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
-Package color Info: Redefining color shadecolor on input line 277.
-Package color Info: Redefining color shadecolor on input line 296.
-
+[3]
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 4 []
  []
 
-[4 <./figure/vig-iris-rf-error-1.pdf>]
+[4 <./figure/vig-iris-rf-error-1.pdf> <./figure/vig-iris-rf-pred-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 276.
+
+<figure/vig-airq-rf-error-1.pdf, id=194, 289.08pt x 216.81pt>
+File: figure/vig-airq-rf-error-1.pdf Graphic file (type pdf)
+
+<use figure/vig-airq-rf-error-1.pdf>
+Package pdftex.def Info: figure/vig-airq-rf-error-1.pdf used on input line 294.
+
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+Package color Info: Redefining color shadecolor on input line 305.
+
+<figure/vig-airq-rf-plot-1.pdf, id=195, 289.08pt x 216.81pt>
+File: figure/vig-airq-rf-plot-1.pdf Graphic file (type pdf)
+
+<use figure/vig-airq-rf-plot-1.pdf>
+Package pdftex.def Info: figure/vig-airq-rf-plot-1.pdf used on input line 307.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+Package color Info: Redefining color shadecolor on input line 321.
+
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 5
  []
 
-[5 <./figure/vig-iris-rf-pred-1.pdf> <./figure/vig-iris-rf-roc-1.pdf>]
-<figure/vig-airq-rf-error-1.pdf, id=234, 289.08pt x 216.81pt>
-File: figure/vig-airq-rf-error-1.pdf Graphic file (type pdf)
-
-<use figure/vig-airq-rf-error-1.pdf>
-Package pdftex.def Info: figure/vig-airq-rf-error-1.pdf used on input line 315.
-
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-Package color Info: Redefining color shadecolor on input line 326.
-
-<figure/vig-airq-rf-plot-1.pdf, id=235, 289.08pt x 216.81pt>
-File: figure/vig-airq-rf-plot-1.pdf Graphic file (type pdf)
-
-<use figure/vig-airq-rf-plot-1.pdf>
-Package pdftex.def Info: figure/vig-airq-rf-plot-1.pdf used on input line 329.
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-Package color Info: Redefining color shadecolor on input line 343.
-
+[5 <./figure/vig-iris-rf-roc-1.pdf>]
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 6 []
  []
 
 [6 <./figure/vig-airq-rf-error-1.pdf> <./figure/vig-airq-rf-plot-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 364.
+Package color Info: Redefining color shadecolor on input line 342.
 
-<figure/vig-surv-rf-error-1.pdf, id=255, 361.35pt x 216.81pt>
+<figure/vig-surv-rf-error-1.pdf, id=227, 361.35pt x 216.81pt>
 File: figure/vig-surv-rf-error-1.pdf Graphic file (type pdf)
 
 <use figure/vig-surv-rf-error-1.pdf>
-Package pdftex.def Info: figure/vig-surv-rf-error-1.pdf used on input line 382.
+Package pdftex.def Info: figure/vig-surv-rf-error-1.pdf used on input line 359.
 
 (pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
-Package color Info: Redefining color shadecolor on input line 393.
+Package color Info: Redefining color shadecolor on input line 370.
 
-<figure/vig-surv-rf-plot-1.pdf, id=256, 361.35pt x 216.81pt>
+<figure/vig-surv-rf-plot-1.pdf, id=228, 361.35pt x 216.81pt>
 File: figure/vig-surv-rf-plot-1.pdf Graphic file (type pdf)
 
 <use figure/vig-surv-rf-plot-1.pdf>
-Package pdftex.def Info: figure/vig-surv-rf-plot-1.pdf used on input line 396.
+Package pdftex.def Info: figure/vig-surv-rf-plot-1.pdf used on input line 372.
 (pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+
+
+Package natbib Warning: Citation `FriedmanGreedyfunction:2000' on page 7 undefi
+ned on input line 390.
+
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 7
  []
 
 [7 <./figure/vig-surv-rf-error-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 394.
+
+<figure/vig-iris-vimp-1.pdf, id=252, 397.485pt x 216.81pt>
+File: figure/vig-iris-vimp-1.pdf Graphic file (type pdf)
+
+<use figure/vig-iris-vimp-1.pdf>
+Package pdftex.def Info: figure/vig-iris-vimp-1.pdf used on input line 401.
+(pdftex.def)             Requested size: 397.48402pt x 216.81607pt.
+Package color Info: Redefining color shadecolor on input line 410.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 8 []
  []
 
 [8 <./figure/vig-surv-rf-plot-1.pdf>]
-
-Package natbib Warning: Citation `FriedmanGreedyfunction:2000' on page 9 undefi
-ned on input line 424.
-
-Package color Info: Redefining color shadecolor on input line 428.
-<figure/vig-iris-vimp-1.pdf, id=300, 397.485pt x 216.81pt>
-File: figure/vig-iris-vimp-1.pdf Graphic file (type pdf)
-
-<use figure/vig-iris-vimp-1.pdf>
-Package pdftex.def Info: figure/vig-iris-vimp-1.pdf used on input line 435.
-(pdftex.def)             Requested size: 397.48402pt x 216.81607pt.
-Package color Info: Redefining color shadecolor on input line 444.
-
-<figure/vig-airq-vimp-1.pdf, id=301, 289.08pt x 216.81pt>
+<figure/vig-airq-vimp-1.pdf, id=269, 289.08pt x 216.81pt>
 File: figure/vig-airq-vimp-1.pdf Graphic file (type pdf)
 
 <use figure/vig-airq-vimp-1.pdf>
-Package pdftex.def Info: figure/vig-airq-vimp-1.pdf used on input line 450.
+Package pdftex.def Info: figure/vig-airq-vimp-1.pdf used on input line 416.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-Package color Info: Redefining color shadecolor on input line 459.
+Package color Info: Redefining color shadecolor on input line 425.
+
+<figure/vig-pbc-vimp-1.pdf, id=270, 289.08pt x 216.81pt>
+File: figure/vig-pbc-vimp-1.pdf Graphic file (type pdf)
+
+<use figure/vig-pbc-vimp-1.pdf>
+Package pdftex.def Info: figure/vig-pbc-vimp-1.pdf used on input line 432.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -563,62 +576,66 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 9
  []
 
-[9 <./figure/vig-iris-vimp-1.pdf>]
-<figure/vig-pbc-vimp-1.pdf, id=314, 289.08pt x 216.81pt>
-File: figure/vig-pbc-vimp-1.pdf Graphic file (type pdf)
+[9 <./figure/vig-iris-vimp-1.pdf> <./figure/vig-airq-vimp-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 456.
 
-<use figure/vig-pbc-vimp-1.pdf>
-Package pdftex.def Info: figure/vig-pbc-vimp-1.pdf used on input line 466.
+<figure/vig-pbc-mindepth-1.pdf, id=285, 289.08pt x 216.81pt>
+File: figure/vig-pbc-mindepth-1.pdf Graphic file (type pdf)
+
+<use figure/vig-pbc-mindepth-1.pdf>
+Package pdftex.def Info: figure/vig-pbc-mindepth-1.pdf used on input line 463.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 10 []
  []
 
-[10 <./figure/vig-airq-vimp-1.pdf> <./figure/vig-pbc-vimp-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 490.
+[10 <./figure/vig-pbc-vimp-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 473.
 
-<figure/vig-pbc-mindepth-1.pdf, id=331, 289.08pt x 216.81pt>
-File: figure/vig-pbc-mindepth-1.pdf Graphic file (type pdf)
+Overfull \vbox (1.2855pt too high) detected at line 512
+ []
 
-<use figure/vig-pbc-mindepth-1.pdf>
-Package pdftex.def Info: figure/vig-pbc-mindepth-1.pdf used on input line 497.
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-Package color Info: Redefining color shadecolor on input line 507.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 11
  []
 
 [11 <./figure/vig-pbc-mindepth-1.pdf>]
-<figure/vig-pbc-minvimp-1.pdf, id=342, 433.62pt x 216.81pt>
+<figure/vig-pbc-minvimp-1.pdf, id=308, 433.62pt x 216.81pt>
 File: figure/vig-pbc-minvimp-1.pdf Graphic file (type pdf)
 
 <use figure/vig-pbc-minvimp-1.pdf>
-Package pdftex.def Info: figure/vig-pbc-minvimp-1.pdf used on input line 548.
+Package pdftex.def Info: figure/vig-pbc-minvimp-1.pdf used on input line 514.
 (pdftex.def)             Requested size: 433.61894pt x 216.81938pt.
-Package color Info: Redefining color shadecolor on input line 563.
+Package color Info: Redefining color shadecolor on input line 529.
+
+<figure/vig-variable-plot-1.pdf, id=309, 289.08pt x 216.81pt>
+File: figure/vig-variable-plot-1.pdf Graphic file (type pdf)
+
+<use figure/vig-variable-plot-1.pdf>
+Package pdftex.def Info: figure/vig-variable-plot-1.pdf used on input line 538.
+
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+Package color Info: Redefining color shadecolor on input line 547.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 12 []
  []
 
 [12 <./figure/vig-pbc-minvimp-1.pdf>]
-<figure/vig-variable-plot-1.pdf, id=355, 289.08pt x 216.81pt>
-File: figure/vig-variable-plot-1.pdf Graphic file (type pdf)
-
-<use figure/vig-variable-plot-1.pdf>
-Package pdftex.def Info: figure/vig-variable-plot-1.pdf used on input line 572.
-
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-Package color Info: Redefining color shadecolor on input line 581.
-
-<figure/vig-variable-plot-stacks-1.pdf, id=356, 433.62pt x 433.62pt>
+<figure/vig-variable-plot-stacks-1.pdf, id=322, 433.62pt x 433.62pt>
 File: figure/vig-variable-plot-stacks-1.pdf Graphic file (type pdf)
 
 <use figure/vig-variable-plot-stacks-1.pdf>
 Package pdftex.def Info: figure/vig-variable-plot-stacks-1.pdf used on input li
-ne 592.
+ne 558.
 (pdftex.def)             Requested size: 433.61894pt x 433.63878pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -631,39 +648,39 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [13 <./figure/vig-variable-plot-1.pdf>]
 
 Package natbib Warning: Citation `FriedmanGreedyfunction:2000' on page 14 undef
-ined on input line 606.
+ined on input line 572.
 
-Package color Info: Redefining color shadecolor on input line 609.
+Package color Info: Redefining color shadecolor on input line 575.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 14 []
  []
 
 [14 <./figure/vig-variable-plot-stacks-1.pdf>]
-<figure/vig-pbc-partial-bili-1.pdf, id=387, 289.08pt x 216.81pt>
+<figure/vig-pbc-partial-bili-1.pdf, id=353, 289.08pt x 216.81pt>
 File: figure/vig-pbc-partial-bili-1.pdf Graphic file (type pdf)
 
 <use figure/vig-pbc-partial-bili-1.pdf>
-Package pdftex.def Info: figure/vig-pbc-partial-bili-1.pdf used on input line 6
-18.
+Package pdftex.def Info: figure/vig-pbc-partial-bili-1.pdf used on input line 5
+84.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-Package color Info: Redefining color shadecolor on input line 627.
+Package color Info: Redefining color shadecolor on input line 593.
 
-<figure/vig-pbc-partial-albumin-1.pdf, id=388, 289.08pt x 216.81pt>
+<figure/vig-pbc-partial-albumin-1.pdf, id=354, 289.08pt x 216.81pt>
 File: figure/vig-pbc-partial-albumin-1.pdf Graphic file (type pdf)
 
 <use figure/vig-pbc-partial-albumin-1.pdf>
 Package pdftex.def Info: figure/vig-pbc-partial-albumin-1.pdf used on input lin
-e 633.
+e 599.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
 
 
 Package natbib Warning: Citation `Ishwaran_HighDimension:2010' on page 15 undef
-ined on input line 646.
+ined on input line 612.
 
 
 Package natbib Warning: Citation `Ishwaran_HighDimension:2011' on page 15 undef
-ined on input line 646.
+ined on input line 612.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -680,31 +697,31 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 
 Package natbib Warning: There were undefined citations.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 676.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 642.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 17
  []
 
 [17]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 676.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 642.
  (./ggRandomForests-knitr.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 676.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 676.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 642.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 642.
 Package rerunfilecheck Info: File `ggRandomForests-knitr.out' has not changed.
-(rerunfilecheck)             Checksum: 9FA39B4943B4C772064698116852F970;2868.
+(rerunfilecheck)             Checksum: 7579848848ECC075F0DE3E565E98B994;2278.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 676.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 642.
  ) 
 Here is how much of TeX's memory you used:
- 7108 strings out of 493117
- 106940 string characters out of 6135433
- 191605 words of memory out of 5000000
- 10331 multiletter control sequences out of 15000+600000
- 50453 words of font info for 91 fonts, out of 8000000 for 9000
+ 7090 strings out of 493117
+ 106455 string characters out of 6135433
+ 191542 words of memory out of 5000000
+ 10324 multiletter control sequences out of 15000+600000
+ 52272 words of font info for 93 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  36i,9n,34p,1247b,427s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmb10.pfb>
@@ -725,10 +742,10 @@ exlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
 xlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/tex
 live/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texl
 ive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
-Output written on ggRandomForests-knitr.pdf (17 pages, 520885 bytes).
+Output written on ggRandomForests-knitr.pdf (17 pages, 517541 bytes).
 PDF statistics:
- 507 PDF objects out of 1000 (max. 8388607)
- 433 compressed objects within 5 object streams
- 92 named destinations out of 1000 (max. 500000)
- 297 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 470 PDF objects out of 1000 (max. 8388607)
+ 397 compressed objects within 4 object streams
+ 80 named destinations out of 1000 (max. 500000)
+ 249 words of extra memory for PDF output out of 10000 (max. 10000000)
 

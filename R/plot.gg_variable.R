@@ -214,7 +214,7 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
           gDta[[ind]] <- gDta[[ind]]+
             geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
                          alpha=.5, outlier.shape = NA)+
-            geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+            geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
                         alpha=.5)
           
         }
@@ -242,7 +242,7 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
         gDta[[ind]] <- gDta[[ind]]+
           geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
                        alpha=.5, outlier.shape = NA)+
-          geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+          geom_jitter(aes_string(x="var", y="yhat"), 
                       alpha=.5)
       }
       # Replace the original colname
