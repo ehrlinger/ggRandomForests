@@ -94,8 +94,8 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
                                   type=c("named","rank"),
                                   ...){
   object <- x
-  if(!inherits(object, "gg_minimal_depth")){
-    object <- gg_minimal_depth(object, ...)
+  if(!inherits(x, "gg_minimal_depth")){
+    object <- gg_minimal_depth(x, ...)
   }
   type=match.arg(type)
   

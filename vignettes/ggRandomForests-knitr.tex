@@ -1,4 +1,4 @@
-\documentclass[nojss]{jss}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[nojss,letterpaper]{jss}\usepackage[]{graphicx}\usepackage[]{color}
 %% maxwidth is the original width if it is less than linewidth
 %% otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -67,7 +67,7 @@
 %\AND Udaya B. Kogalur 
 \and Eugene H. Blackstone\\Cleveland Clinic}
 
-\title{{\pkg{ggRandomForests}}: Visually Exploring Random Forests in \proglang{R}}
+\title{{\pkg{ggRandomForests}}: Exploring Random Forests in \proglang{R}}
 
 %% for pretty printing and a nice hypersummary also set:
 \Plainauthor{Ehrlinger et.\ al.\ } %% comma-separated
@@ -133,7 +133,9 @@ URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 % -----------------------------------------------------
 \section{About this document}
 % -----------------------------------------------------
-This document is an introduction to the \pkg{ggRandomForests} \proglang{R} package. 
+This document is an introduction to the \pkg{ggRandomForests} \proglang{R} package. The aim of this introduction is to provide a detailed user guide to \pkg{ggRandomForests} as well as provide a tutorial to building Random Forest models with the \pkg{randomForestSRC} package. Our attempt is to use simple, reproducible worked examples with open dataset available with base \proglang{R} or the \pkg{randomForestSRC} package.
+
+This document is available as a vignette within \pkg{ggRandomForests} package, available from the Comprehensive \proglang{R} Archive Network via \url{http://CRAN.R-project.org/package=ggRandomForests}.
 
 % -----------------------------------------------------
 \section{Introduction} \label{S:introduction}
@@ -148,17 +150,27 @@ Random Forests also have a built in estimate of prediction error. Each bootstrap
 RF utilizes all variables in predicting the specified outcome, effectively weighting the most important covariates by assessing their impact on separating dissimilar groups of observations. 
 
 \subsection{Random Forests for Survival}\label{S:rfs}
-Random Forests for survival~\citep{Ishwaran:2007,Ishwaran:2008} (RF-S) are an extension of Random Forests~\citep{Breiman:2001} to survival settings, creating a forest of survival trees. Similar to RF, RF-S is a collection of $B$ survival trees. At each node of the tree, we randomly selected a subset of $m \le p$ candidate variables. The node is then split into two groups by constructing Kaplan--Meier survival curves and choosing the variable that maximizing the log-rank statistic. We split categorical variables according to their natural categories and continuous variables by comparing 10 randomly selected cut points. For each subsequent node of the tree, we repeated the same process: random selection of candidate variables, splitting of each variable with construction of survival plots and calculation of log-rank statistic, and selection of the best splitting variable. The process continued down each branch of the tree until we reached a unique subset of observations that contain no fewer than 3 deaths within a terminal node. This approach produces extensively grown trees where each terminal node includes a group of observations having similar characteristics and survival outcomes.
+Random Forests for survival~\citep{Ishwaran:2007,Ishwaran:2008} (RF-S) are an extension of Random Forests~\citep{Breiman:2001} to survival settings, creating a forest of survival trees. Each node tests a random selection of candidate variables, splitting of the node is chosen by maximizing the log-rank statistic to select the optimal candidate variable. The process continues down each branch of the tree until all observations are sorted into a unique terminal node for each tree. This approach produces extensively grown trees where each terminal node includes a small group of observations having similar characteristics and survival outcomes. The survival estimate for each observation is constructed within each terminal node at all population event times, and averaged over the entire forest of trees.
 
 \subsection{randomForestSRC package}
-We use the \pkg{randomForestSRC} package~\citep{IshwaranRFSRC:2014} (RF-SRC) for all randomForest methods. This package combines all forest types (survival, regression and classification) in one package with consistent function calls and interfaces between all three types. 
+We use the \pkg{randomForestSRC} package~\citep{Ishwaran:RFSRC:2014} (RF-SRC) for all randomForest methods. This package combines the different random forest outcomes (survival, regression and classification) in one package with consistent function calls and interfaces. 
 
 \subsection{ggRandomForests package}
+The \pkg{randomForestSRC} package is a mature analysis and research randomForest implementation under rapid development. The package includes diagnostic  and postprocessing functions for anlaysis and visualizations of randomForest model properties. However, in our research we frequently found it difficult to manipulate the standard figures directly produced with the \pkg{randomForestSRC} package. 
 
+In order to simplify these manipulations, we developed the \pkg{ggRandomForests} package. We attempted to follow two design principles in this development:
+\begin{itemize}
+\item Model/View separation: The package originally designed to generating \pkg{ggplot2}~\cite{Wickham2009} figures for random forest objects. However, some users would prefer to use other graphing methods within \proglang{R} or outside of it. To help users, we separate the data generation and the figure generation into two separate operations. 
 
+\item Modularity: We strive to create a modular design by following the \emph{do one thing well} philosphy. Each function operates on one \pkg{randomForestSRC} object to create only one data object or figure type.
+\end{itemize}
+
+To demonstrate using the \pkg{ggRandomForests} package, we organize this document as follows. In Section~\ref{S:rfsrcGrow} we outline growing a random forest for each of the classification, regression and survival settings with the \pkg{randomForestSRC} package. We use the \pkg{ggRandomForests} package to begin exploring random forest convergence and prediction. In Section~\ref{S:variableIdentification} we discuss how variables contribute to the random forest prediction using the Variable Importance (VIMP) and Minimal Depth measures.
+
+Once we have an idea which variables are most informative in minimizing forest prediction error, we turn our focus to how the variables are related to the forest prediction. Because Random Forests are non-linear and non-parametric predictors, we can use variable dependence (Section~\ref{S:variableDependence}) to examine where each observation contributes to model prediction as a function of specific covariate values. Partial dependence (Section~\ref{S:partialDependence}) gives us a risk adjust view of the preditor dependence on a variable. We then find two way interactions using minimal depth in Section~\ref{S:interactions} and use conditional plots in Section~\ref{S:coplots} to look variable interactions in an intuitive manner.
 
 % -----------------------------------------------------
-\section{Growing a Random Forest}
+\section{Growing a Random Forest}\label{S:rfsrcGrow}
 % -----------------------------------------------------
 
 \subsection{Classification Forests}
@@ -181,8 +193,6 @@ R> plot.gg_roc(iris_rf)
 \end{kframe}
 \end{knitrout}
 
-@
-
 % Turn echo=FALSE and res for rfsrc commands...
 
 \begin{knitrout}\footnotesize
@@ -192,24 +202,24 @@ R> plot.gg_roc(iris_rf)
            Frequency of class labels: 50, 50, 50
                      Number of trees: 1000
           Minimum terminal node size: 1
-       Average no. of terminal nodes: 8.848
+       Average no. of terminal nodes: 8.821
 No. of variables tried at each split: 2
               Total no. of variables: 4
                             Analysis: RF-C
                               Family: class
                       Splitting rule: class
-                         Brier score: 2.58 
-                          Error rate: 0.05, 0.02, 0.06, 0.06
+                         Brier score: 2.51 
+                          Error rate: 0.04, 0, 0.08, 0.04
 
 Confusion matrix:
 
             predicted
   observed   setosa versicolor virginica class.error
-  setosa         49          1         0        0.02
-  versicolor      0         47         3        0.06
-  virginica       0          3        47        0.06
+  setosa         50          0         0        0.00
+  versicolor      0         46         4        0.08
+  virginica       0          2        48        0.04
 
-	Overall error rate: 4.67% 
+	Overall error rate: 4% 
 \end{verbatim}
 \end{kframe}\begin{figure}[!htpb]
 
@@ -280,14 +290,14 @@ R> plot(gg_rfr)
                          Missingness: 27.45%
                      Number of trees: 1000
           Minimum terminal node size: 5
-       Average no. of terminal nodes: 17.75
+       Average no. of terminal nodes: 17.74
 No. of variables tried at each split: 2
               Total no. of variables: 5
                             Analysis: RF-R
                               Family: regr
                       Splitting rule: regr
-                % variance explained: 75.55
-                          Error rate: 266.1
+                % variance explained: 75.99
+                          Error rate: 261.3
 \end{verbatim}
 \end{kframe}\begin{figure}[!htpb]
 
@@ -316,6 +326,9 @@ No. of variables tried at each split: 2
 
 
 \subsection{Survival Forests}
+
+ Similar to RF, RF-S is a collection of $B$ survival trees. At each node of the tree, we randomly selected a subset of $m \le p$ candidate variables. The node is then split into two groups by constructing Kaplan--Meier survival curves and choosing the variable that maximizing the log-rank statistic. We split categorical variables according to their natural categories and continuous variables by comparing 10 randomly selected cut points. For each subsequent node of the tree, we repeated the same process: random selection of candidate variables, splitting of each variable with construction of survival plots and calculation of log-rank statistic, and selection of the best splitting variable. The process continued down each branch of the tree until we reached a unique subset of observations that contain no fewer than 3 deaths within a terminal node. This approach produces extensively grown trees where each terminal node includes a group of observations having similar characteristics and survival outcomes.
+ 
 % Turn eval=FALSE for rfsrc commands...
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -345,14 +358,14 @@ R> plot.gg_rfsrc(pbc_rf) +
                     Number of deaths: 111
                      Number of trees: 500
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 54.39
+       Average no. of terminal nodes: 54.3
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank *random*
        Number of random split points: 10
-                          Error rate: 16.42%
+                          Error rate: 16.67%
 \end{verbatim}
 \end{kframe}\begin{figure}[!htpb]
 
@@ -381,7 +394,7 @@ No. of variables tried at each split: 5
 
 
 % -----------------------------------------------------
-\section{Identification of Predictive Variables}
+\section{Identification of Predictive Variables}\label{S:variableIdentification}
 % -----------------------------------------------------
 Unlike the linear model settings, RF does not explicity specify the functional form of the covariate response relation. We use two seperate methods in order to determine how the RF has built the response prediction, the standard method of Variable Importance (VIMP) as well as the forest minimal depth.
 
@@ -489,24 +502,24 @@ mtry               : 5
 nodesize           : 3 
 refitted forest    : FALSE 
 model size         : 12 
-depth threshold    : 5.444 
-PE (true OOB)      : 16.42 
+depth threshold    : 5.414 
+PE (true OOB)      : 16.67 
 
 
 Top variables:
-            depth   vimp
-bili        1.754  0.065
-copper      2.660  0.023
-albumin     2.694  0.011
-chol        3.084  0.007
-prothrombin 3.228  0.008
-age         3.246  0.011
-sgot        3.750  0.006
-platelet    3.894 -0.001
-edema       3.946  0.016
-alk         3.988  0.002
-trig        4.258  0.000
-stage       5.324  0.008
+            depth  vimp
+bili        1.790 0.067
+copper      2.716 0.024
+albumin     2.726 0.011
+chol        3.138 0.006
+prothrombin 3.310 0.010
+age         3.486 0.010
+platelet    3.670 0.000
+sgot        3.726 0.005
+alk         3.974 0.000
+trig        4.102 0.001
+edema       4.578 0.016
+stage       5.282 0.007
 -----------------------------------------------------------
 \end{verbatim}
 \end{kframe}
@@ -520,10 +533,10 @@ stage       5.324  0.008
 \end{knitrout}
 
 
-\section{Variable Dependence}
+\section{Variable Dependence}\label{S:dependence}
 Once we have an idea of which variables contribute to the predictive accuracy of the forest, it is useful to get some idea of form of this contribution. We use graphical methods to show the predicted response given dependence on covariates. We can plot the marginal effect of an covariate on the class probability (classification), response (regression), mortality (survival), or the expected years lost (competing risk) for a RF analysis. We plot the ensemble predicted value on the vertical axis and covariates along the horizontal axis.
 
-\subsection{Marginal Dependence}\label{S:variablePlots}
+\subsection{Marginal Dependence}\label{S:variableDependence}
 \emph{Marginal variable dependence} plots the predicted response as a function of the covariate, showing each subject as a point on the plot. For classification and regression, this is straight forward predicting the response. In survival settings, we must account for the additional dimension of time. In this case, we plot the response at a specific time point of interest, for example survival at one year. Each predicted point is dependent on the full combination of all covariates, not only on the covariate displayed in the dependence plot. So interpretation can only be in general terms.  
 \begin{knitrout}\footnotesize
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -563,7 +576,7 @@ R> plot(ggrf, x_var = "bili")+
 
 \end{knitrout}
 
-\subsection{Partial Dependence}\label{S:variablePlots}
+\subsection{Partial Dependence}\label{S:partialDependence}
 
 An alternative to marginal variable dependence is to integrate out the effects of varaibles beside the covariate of interest. For these \emph{partial variable dependence} plots, the y-value for a variable X, evaluated at X=x, is
 \[
@@ -606,7 +619,7 @@ R> plot(ggprtl[[4]], se=FALSE)
 
 
 
-\subsection{Variable Interactions and Conditional Plots}
+\subsection{Variable Interactions and Conditional Plots}\label{S:interactions}
 Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. 
 
 Using minimal depth, we calculate the maximal subtree using the normalized minimal depth of variable $i$ relative to the root node (normalized wrt the size of the tree) the maximal subtree interaction measure  is the normalized minimal depth of a variable $j$ wrt the maximal subtree for variable $i$ (normalized wrt the size of $i$'s maximal subtree). Smaller diagonal entries indicate predictive variables. Small interaction entries having small diagonal entries are a sign of an interaction between variable $i$ and $j$~\citep{Ishwaran_HighDimension:2010,Ishwaran_HighDimension:2011} 
@@ -619,7 +632,7 @@ By plotting the resulting interaction measures for each variable, we can detect 
 \subsection{Variable Interactions}
 
 
-\subsection{Conditional Dependence}
+\subsection{Conditional Dependence}\label{S:coplots}
 
 % =======================================
 \section{Conclusions} \label{S:conclusion}
