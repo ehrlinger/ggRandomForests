@@ -1,40 +1,40 @@
 #' Minimal depth variable selection object (randomForestSRC::var.select).
 #' 
-#' A cached object from \code{randomForestSRC::var.select} function for the New York 
-#' Air Quality Measurements randomForestSRC regression forest \code{\link{airq_rf}}.
+#' A cached object from \code{randomForestSRC::var.select} function for the 
+#' randomForestSRC regression forest \code{\link{mtcars_rf}}.
 #'  
 #' @details For ggRandomForest testing and the R CMD checks, we cache the 
 #' computationally expensive parts of running a randomForest. 
 #' 
-#' We build a regression randomForest (\code{\link{airq_rf}}) with the 
-#' \code{airquality} measurements data, then run the \code{randomForestSRC::var.select} 
+#' We build a regression randomForest (\code{\link{mtcars_rf}}) with the 
+#' \code{mtcars} Motor Trend Car Road Tests data, then run the 
+#' \code{randomForestSRC::var.select} 
 #' function to determine minimal depth variable selection. 
 #' 
 #' This "data set" is a cache of the \code{var.select} function, which runs the
-#' minimal depth variable selection method from the \code{\link{airq_rf}} random 
+#' minimal depth variable selection method from the \code{\link{mtcars_rf}} random 
 #' forest model. 
 #' 
-#' The data were from New York, from May to September 1973. The data was obtained from the New York State 
-#' Department of Conservation (ozone data) and the National Weather Service 
-#' (meteorological data).
+#' The data was extracted from the 1974 Motor Trend US magazine, and comprises 
+#' fuel consumption and 10 aspects of automobile design and performance for 32 
+#' automobiles (1973-74 models).
 #' 
-#' 
-#' @seealso \code{airquality} \code{var.select} \code{rfsrc} \code{\link{airq_rf}} 
+#' @seealso \code{mtcars} \code{var.select} \code{rfsrc} \code{\link{mtcars_rf}} 
 #' \code{\link{gg_minimal_depth}} \code{\link{plot.gg_minimal_depth}}
 #' 
 #' @examples
 #' \dontrun{
 #' ## The data was built with the following command
-#' airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' airq_vs <- var.select(airq_rf)
+#' mtcars_rf <- rfsrc(mpg ~ ., data = mtcars)
+#' airq_vs <- var.select(mtcars_rf)
 #' 
-#' ggobj <- gg_minimal_depth(airq_vs)
+#' ggobj <- gg_minimal_depth(mtcars_vs)
 #' plot(ggobj)
 #' }
 #' 
 #' @references 
-#' Chambers, J. M., Cleveland, W. S., Kleiner, B. and Tukey, P. A. 
-#' (1983) Graphical Methods for Data Analysis. Belmont, CA: Wadsworth.
+#' Henderson and Velleman (1981), Building multiple regression models 
+#' interactively. Biometrics, 37, 391-411.
 #' 
 #' Ishwaran H. and Kogalur U.B. (2014). Random Forests for
 #' Survival, Regression and Classification (RF-SRC), R package

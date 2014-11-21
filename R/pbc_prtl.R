@@ -24,7 +24,7 @@
 #' # generate partial plot data for 4 different covariates.
 #' pbc_prtl <- plot.variable(pbc_rf, time=90,surv.type="surv",
 #'                           xvar.names = c("bili", "copper", "albumin", "age"),
-#'                           partial=TRUE, show.plot=FALSE)
+#'                           partial=TRUE, show.plots=FALSE)
 #'                           
 #' # Format for ggRandomForests                           
 #' ggprtl <- gg_partial(pbc_prtl)

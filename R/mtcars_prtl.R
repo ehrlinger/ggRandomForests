@@ -14,7 +14,7 @@
 #' # Save the "wt" and "hp" partial plot data
 #' mtcars_prtl <- plot.variable(mtcars_rf, 
 #'                              xvar.names = c("wt", "hp"), 
-#'                              partial=TRUE, show.plot=FALSE)
+#'                              partial=TRUE, show.plots=FALSE)
 #'                     
 #' # Generate a ggRandomForests plot.                                   
 #' ggpartial <- gg_partial(mtcars_prtl)

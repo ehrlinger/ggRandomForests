@@ -109,7 +109,7 @@
 ### error rate plot
 plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, span, ...){
   object <- x 
-  if(inherits(object, "rfsrc")) object<- gg_variable(object, ...)
+  if(inherits(x, "rfsrc")) object <- gg_variable(x, ...)
   
   if(inherits(object, "surv")){
     family <- "surv"
@@ -121,9 +121,21 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
   if(length(grep("yhat.", colnames(object))) > 0){
     # We have a classification forest with multiple outcomes.
     if(length(grep("yhat.", colnames(object))) == 2){
+      # For the case of two, we are only interested in the TRUE, not FALSE.
       object  <- object[, -grep("yhat.", colnames(object))[1]]
       colnames(object)[grep("yhat.", colnames(object))] <- "yhat"
+    }else{
+      # Else we want to split and duplicate the data... make it long format.
+      objectX <- object[, -grep("yhat.", colnames(object))]
+      objectY <- object[, grep("yhat.", colnames(object))]
+      lng <- ncol(objectY)
+      gg2 <- lapply(1:ncol(objectY),
+        function(ind){cbind(objectX, yhat=objectY[,ind], outcome=ind)})
+      gg3 <- do.call(rbind,gg2)
+      gg3$outcome <- factor(gg3$outcome)
+      object <- gg3 
     }
+    # print(object)
   }
   
   sm_curve <- FALSE
@@ -192,9 +204,10 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
           labs(x=hName, y= paste("Survival at", object$time[1], "year"))
       }
     }else if(family == "class"){
-      if(sum(colnames(object) == "yhat") ==1){
-        gDta[[ind]] <- gDta[[ind]] +
-          labs(x=hName, y="Predicted")
+      gDta[[ind]] <- gDta[[ind]] +
+        labs(x=hName, y="Predicted")
+      
+      if(sum(colnames(object) == "outcome") ==0){ 
         if(ccls=="numeric"){
           gDta[[ind]] <- gDta[[ind]] +
             geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
@@ -219,7 +232,32 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
           
         }
       }else{
-        stop("Multiclass variable dependence has not been implemented yet.")
+        
+        if(ccls=="numeric"){
+          gDta[[ind]] <- gDta[[ind]] +
+            geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
+                       alpha=.5)
+          
+#           if(sm_curve){
+#             if(missing(span)){
+#               gDta[[ind]] <- gDta[[ind]] +
+#                 geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+#             }else{
+#               gDta[[ind]] <- gDta[[ind]] +
+#                 geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, 
+#                             span=span)
+#             }
+#           }
+        }else{
+          gDta[[ind]] <- gDta[[ind]]+
+            geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
+                         alpha=.5, outlier.shape = NA)+
+            geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
+                        alpha=.5)
+          
+        }
+        
+        gDta[[ind]] <- gDta[[ind]] + facet_grid(~outcome)
       }
     }else{
       # assume regression

@@ -98,7 +98,14 @@
 #' }
 ### error rate plot
 plot.gg_partial <- function(x, points=TRUE, smooth="loess", ...){
+  
+  
   object <- x 
+  if(inherits(x, "plot.variable")){
+    object <- gg_partial(x, ...)
+  }else if(!inherits(x, "gg_partial")){
+    stop("gg_partial expects an object from the rfsrc::plot.variable function")
+  }
   
   # Get the colname of the independent variable
   hName <- colnames(object)[2]
