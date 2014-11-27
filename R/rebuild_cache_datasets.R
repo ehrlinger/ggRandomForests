@@ -43,46 +43,46 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
     cat("airq: RF partial dependence\n")
     airq_prtl <- plot.variable(airq_rf,
                                partial=TRUE, show.plots=FALSE)
-    if(save) save(airq_prtl, file="data/airq_prtl.rda", compress="bzip2")
+    if(save) save(airq_prtl, file="data/airq_prtl.rda", compress="xz")
   }
   
   if("iris" %in% set){
     cat("iris: randomForest\n")
     iris_rf <- rfsrc(Species ~., data = iris)
-    if(save) save(iris_rf, file="data/iris_rf.rda", compress="bzip2")
+    if(save) save(iris_rf, file="data/iris_rf.rda", compress="xz")
     
     cat("iris: RF minimal depth\n")
     iris_vs <- var.select(iris_rf)
-    if(save) save(iris_vs, file="data/iris_vs.rda", compress="bzip2")
+    if(save) save(iris_vs, file="data/iris_vs.rda", compress="xz")
     
     cat("iris: RF interactions\n")
     iris_interaction <- find.interaction(iris_rf)
-    if(save) save(iris_interaction, file="data/iris_interaction.rda", compress="bzip2")
+    if(save) save(iris_interaction, file="data/iris_interaction.rda", compress="xz")
     
     cat("iris: RF partial dependence\n")
     iris_prtl <- plot.variable(iris_rf,
                                partial=TRUE, show.plots=FALSE)
-    if(save) save(iris_prtl, file="data/iris_prtl.rda", compress="bzip2")
+    if(save) save(iris_prtl, file="data/iris_prtl.rda", compress="xz")
   }
   
   
   if("mtcars" %in% set){
     cat("mtcars: randomForest\n")
     mtcars_rf <- rfsrc(mpg ~ ., data = mtcars)
-    if(save) save(mtcars_rf, file="data/mtcars_rf.rda", compress="bzip2")
+    if(save) save(mtcars_rf, file="data/mtcars_rf.rda", compress="xz")
     
     cat("mtcars: RF minimal depth\n")
     mtcars_vs <- var.select(mtcars_rf)
-    if(save) save(mtcars_vs, file="data/mtcars_vs.rda", compress="bzip2")
+    if(save) save(mtcars_vs, file="data/mtcars_vs.rda", compress="xz")
     
     cat("mtcars: RF interactions\n")
     mtcars_interaction <- find.interaction(mtcars_rf)
-    if(save) save(mtcars_interaction, file="data/mtcars_interaction.rda", compress="bzip2")
+    if(save) save(mtcars_interaction, file="data/mtcars_interaction.rda", compress="xz")
     
     cat("mtcars: RF partial dependence\n")
     mtcars_prtl <- plot.variable(mtcars_rf,
                                  partial=TRUE, show.plots=FALSE)
-    if(save) save(mtcars_prtl, file="data/mtcars_prtl.rda", compress="bzip2")
+    if(save) save(mtcars_prtl, file="data/mtcars_prtl.rda", compress="xz")
   }
   
   if("pbc" %in% set){
@@ -92,22 +92,22 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
     cat("pbc: randomForest\n")
     pbc_rf <- rfsrc(Surv(days, status) ~ ., dta$pbc, nsplit = 10,
                     ntree=500)
-    if(save) save(pbc_rf, file="data/pbc_rf.rda", compress="bzip2")
+    if(save) save(pbc_rf, file="data/pbc_rf.rda", compress="xz")
     
     cat("pbc: RF minimal depth\n")
     pbc_vs <- var.select(pbc_rf)
-    if(save) save(pbc_vs, file="data/pbc_vs.rda", compress="bzip2")
+    if(save) save(pbc_vs, file="data/pbc_vs.rda", compress="xz")
     
     cat("pbc: RF interactions\n")
     pbc_interaction <- find.interaction(pbc_rf)
-    if(save) save(pbc_interaction, file="data/pbc_interaction.rda", compress="bzip2")
+    if(save) save(pbc_interaction, file="data/pbc_interaction.rda", compress="xz")
     
     cat("pbc: RF partial dependence\n")
     pbc_prtl <- plot.variable(pbc_rf, time=90,surv.type="surv",
                               xvar.names = c("bili", "copper", "albumin", "age"),
                               partial=TRUE, show.plots=FALSE)
     
-    if(save) save(pbc_prtl, file="data/pbc_prtl.rda", compress="bzip2")
+    if(save) save(pbc_prtl, file="data/pbc_prtl.rda", compress="xz")
   }
   
   if("veteran" %in% set){
@@ -116,22 +116,22 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
     cat("veteran: randomForest\n")
     veteran_rf <- rfsrc(Surv(time, status) ~ ., data = dta$veteran, ntree = 100)
     
-    if(save) save(veteran_rf, file="data/veteran_rf.rda", compress="bzip2")
+    if(save) save(veteran_rf, file="data/veteran_rf.rda", compress="xz")
     
     cat("veteran: RF minimal depth\n")
     veteran_vs <- var.select(veteran_rf)
-    if(save) save(veteran_vs, file="data/veteran_vs.rda", compress="bzip2")
+    if(save) save(veteran_vs, file="data/veteran_vs.rda", compress="xz")
     
     cat("veteran: RF interactions\n")
     veteran_interaction <- find.interaction(veteran_rf)
-    if(save) save(veteran_interaction, file="data/veteran_interaction.rda", compress="bzip2")
+    if(save) save(veteran_interaction, file="data/veteran_interaction.rda", compress="xz")
     
     cat("veteran: RF partial dependence\n")
     veteran_prtl <- plot.variable(veteran_rf, surv.type = "surv",
                                   partial = TRUE, time=30, xvar.names = "age",
                                   show.plots=FALSE)
     
-    if(save) save(veteran_prtl, file="data/veteran_prtl.rda", compress="bzip2")
+    if(save) save(veteran_prtl, file="data/veteran_prtl.rda", compress="xz")
   }
   
   

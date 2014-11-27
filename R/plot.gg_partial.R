@@ -115,7 +115,7 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess", ...){
     labs(x=hName, y="predicted")
   
   if(points)  
-    prt.plt<- prt.plt+geom_point()
+    prt.plt<- prt.plt+geom_point( ...)
   if(!is.null(smooth)){
     prt.plt<- prt.plt+geom_smooth(method=smooth, ...)
   }
