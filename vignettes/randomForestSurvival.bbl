@@ -1,4 +1,4 @@
-\begin{thebibliography}{22}
+\begin{thebibliography}{23}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -61,6 +61,11 @@ Efron B, Tibshirani R (1994).
 \newblock \emph{An Introduction to the Bootstrap}.
 \newblock {Chapman \& Hall/CRC}.
 \newblock ISBN 0412042312.
+
+\bibitem[{Fleming and Harrington(1991)}]{fleming:1991}
+Fleming TR, Harrington DP (1991).
+\newblock \emph{Counting processes and survival analysis.}
+\newblock Wiley, New York.
 
 \bibitem[{Friedman(2000{\natexlab{a}})}]{Friedman00greedyfunction}
 Friedman JH (2000{\natexlab{a}}).

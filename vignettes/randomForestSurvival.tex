@@ -1,4 +1,53 @@
-\documentclass[nojss]{jss}
+\documentclass[nojss]{jss}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 
 %\usepackage{setspace}
 % \usepackage[sc]{mathpazo}
@@ -39,7 +88,7 @@ Random Forests~\citep{Breiman:2001} (RF) are a fully non-parametric statistical 
 
 Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package, tools for creating and plotting data structures to visually understand random forest models grown in \proglang{R} with the \pkg{randomForestSRC} package. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2}~\citep{Wickham2009} graphics package.
 
-This document is formatted as a tutorial for using the \pkg{randomForestSRC} for building random forests for survival and \pkg{ggRandomForests} package for investigating how the forest is constructed. This tutorial uses the Primary Biliary Cirrhosis (PBC) Data from the Mayo Clinic~\citep{Flemming:1991} available in the  \pkg{randomForestSRC} package. We use Variable Importance measure (VIMP)~\citep{Breiman:2001} as well as  Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest, to assess the impact of variables on forest prediction. We will also demonstrate the use of variable dependence plots~\citep{Friedman00greedyfunction} to aid interpretation RF results in different response settings. We also will investigate interactions between covariates to demonstrate the strength of the Random Forest method in survival settings.
+This document is formatted as a tutorial for using the \pkg{randomForestSRC} for building random forests for survival and \pkg{ggRandomForests} package for investigating how the forest is constructed. This tutorial uses the Primary Biliary Cirrhosis (PBC) Data from the Mayo Clinic~\citep{fleming:1991} available in the  \pkg{randomForestSRC} package. We use Variable Importance measure (VIMP)~\citep{Breiman:2001} as well as  Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest, to assess the impact of variables on forest prediction. We will also demonstrate the use of variable dependence plots~\citep{Friedman00greedyfunction} to aid interpretation RF results in different response settings. We also will investigate interactions between covariates to demonstrate the strength of the Random Forest method in survival settings.
 }
 \Keywords{random forest, survival, VIMP, minimal depth}
 \Plainkeywords{random forest, survival, VIMP, minimal depth}
@@ -80,6 +129,8 @@ URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 %% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 % -----------------------------------------------------
 \section{About this document}
@@ -124,7 +175,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Thu Nov 27 11:29:37 2014
+% Thu Nov 27 12:53:59 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -450,13 +501,103 @@ R> plot(ggrf, x_var = "copper") +
 
 
 \end{knitrout}
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot(ggrf, x_var = "age") +
++   theme(legend.position="none")+
++   labs(y="Survival at 1 year", x="age")+
++   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
++                      labels=event.labels)+
++   scale_shape_manual(values=event.marks, labels=event.labels)
+\end{verbatim}
+\end{kframe}\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-variable-plotAge-1} 
+
+}
+
+\caption[Survival at 1 year]{Survival at 1 year\label{fig:variable-plotAge}}
+\end{figure}
+
+
+\end{knitrout}
+\subsection{Partial Dependence}\label{S:partialDependence}
+
+\emph{Partial dependence plots} are a risk adjusted alternative to marginal variable dependence. Partial plots are generated by integrating out the effects of variables beside the covariate of interest. The figures are constructed by selecting points evenly spaced along the distribution of the X variable. For each of these values (X=x), we calculate the average Random Forest prediction over all other covariates in X by \eqref{E:partial}.
+\begin{equation}
+\tilde{f}(x) = \frac{1}{n} \sum_{i=1}^n \hat{f}(x, x_{i,o}),
+\label{E:partial}
+\end{equation}
+where $\hat{f}$ is the predicted response from the random forest and $x_{i,o}$ is the value for all other covariates other than $X=x$ for the observation $i$~\citep{FriedmanGreedyfunction:2000}. Partial dependence plots in time to event settings are shown at specific time points, similar to variable dependence.
+
+Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month freedom from thrombosis on the surgical date covariate. 
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> pDat <- plot.variable(pbc_rf, surv.type="surv", time=c(1,3)*364.25, 
++                       xvar.names=xvar, partial=TRUE,
++                       show.plots = FALSE)
+R> ggPrtl <- gg_partial(pDat )
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 
 
 
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+R> plot(ggPrtl[[1]], se=FALSE)+
++   theme(legend.position=c(.2,.2))+
++   labs(y="Freedom from Thrombosis at 3 months", x="Surgical Date")+
++   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
++                      labels=event.labels)+
++   scale_shape_manual(values=event.marks, labels=event.labels)
+\end{verbatim}
+\end{kframe}\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-pbc-partial-bili-1} 
+
+}
+
+\caption[Risk adjusted freedom From Pump Thrombosis at 3 months]{Risk adjusted freedom From Pump Thrombosis at 3 months\label{fig:pbc-partial-bili}}
+\end{figure}
+
+
+\end{knitrout}
+
+
+\section{Variable Interactions}\label{S:interactions}
+Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. 
+
+Using minimal depth, we calculate the maximal subtree using the normalized minimal depth of variable $i$ relative to the root node (normalized with respect to the size of the tree) the maximal subtree interaction measure  is the normalized minimal depth of a variable $j$ wet the maximal subtree for variable $i$ (normalized wet the size of $i$'s maximal subtree). Smaller diagonal entries indicate predictive variables. Small interaction entries having small diagonal entries are a sign of an interaction between variable $i$ and $j$~\citep{Ishwaran_HighDimension:2010,Ishwaran_HighDimension:2011} 
+
+By plotting the resulting interaction measures for each variable (Figure~\ref{fig:interaction}), we can detect the "most interactive" pairs, and develop conditional plots~\cite{chambers:1992,cleveland:1993}. These plots are similar to stratified results, arranged in a set of panels by the interactive variable of interest. 
+
+\begin{knitrout}\footnotesize
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-interaction-1} 
+
+}
+
+\caption[Minimal Depth interaction for Surgical Date]{Minimal Depth interaction for Surgical Date\label{fig:interaction}}
+\end{figure}
+
+
+\end{knitrout}
+
+\subsection{Conditional Dependence Plots}
 
 
 
+\section{Conclusion}
 
 
+%\singlespacing
+\bibliography{ggRandomForests}
 
+\end{document}

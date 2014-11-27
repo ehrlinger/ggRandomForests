@@ -39,7 +39,7 @@ Random Forests~\citep{Breiman:2001} (RF) are a fully non-parametric statistical 
 
 Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package, tools for creating and plotting data structures to visually understand random forest models grown in \proglang{R} with the \pkg{randomForestSRC} package. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2}~\citep{Wickham2009} graphics package.
 
-This document is formatted as a tutorial for using the \pkg{randomForestSRC} for building random forests for survival and \pkg{ggRandomForests} package for investigating how the forest is constructed. This tutorial uses the Primary Biliary Cirrhosis (PBC) Data from the Mayo Clinic~\citep{Flemming:1991} available in the  \pkg{randomForestSRC} package. We use Variable Importance measure (VIMP)~\citep{Breiman:2001} as well as  Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest, to assess the impact of variables on forest prediction. We will also demonstrate the use of variable dependence plots~\citep{Friedman00greedyfunction} to aid interpretation RF results in different response settings. We also will investigate interactions between covariates to demonstrate the strength of the Random Forest method in survival settings.
+This document is formatted as a tutorial for using the \pkg{randomForestSRC} for building random forests for survival and \pkg{ggRandomForests} package for investigating how the forest is constructed. This tutorial uses the Primary Biliary Cirrhosis (PBC) Data from the Mayo Clinic~\citep{fleming:1991} available in the  \pkg{randomForestSRC} package. We use Variable Importance measure (VIMP)~\citep{Breiman:2001} as well as  Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest, to assess the impact of variables on forest prediction. We will also demonstrate the use of variable dependence plots~\citep{Friedman00greedyfunction} to aid interpretation RF results in different response settings. We also will investigate interactions between covariates to demonstrate the strength of the Random Forest method in survival settings.
 }
 \Keywords{random forest, survival, VIMP, minimal depth}
 \Plainkeywords{random forest, survival, VIMP, minimal depth}
@@ -389,8 +389,8 @@ plot(ggrf, x_var = "copper") +
   scale_shape_manual(values=event.marks, labels=event.labels)
 @
 <<variable-plotAge, echo=TRUE, fig.cap="Survival at 1 year">>=
-  theme(legend.position="none")+
 plot(ggrf, x_var = "age") +
+  theme(legend.position="none")+
   labs(y="Survival at 1 year", x="age")+
   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
                      labels=event.labels)+

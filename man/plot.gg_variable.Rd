@@ -39,9 +39,6 @@ Plot a \code{\link{gg_variable}} object,
 #iris.obj <- rfsrc(Species ~., data = iris)
 data(iris_rf, package="ggRandomForests")
 
-## !! TODO... finish classification variable dependence
-# ggrf <- gg_variable(iris_rf, which.outcome=1)
-
 
 ## ------------------------------------------------------------
 ## regression
