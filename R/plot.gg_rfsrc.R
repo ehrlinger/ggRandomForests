@@ -76,7 +76,9 @@
 ### error rate plot
 plot.gg_rfsrc<- function(x, ...){
   obj <- x
+  
   # Initialize variables for gather statement... to silence R CMD CHECK
+  #!TODO must be a better way to do this.?select
   variable <- value <- y <- ptid <- cens <- NA
   
   ## rfsrc places the class in position 1.

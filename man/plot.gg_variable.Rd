@@ -3,8 +3,8 @@
 \alias{plot.gg_variable}
 \title{Plot a \code{\link{gg_variable}} object,}
 \usage{
-\method{plot}{gg_variable}(x, x_var, time, time_labels, oob = TRUE,
-  smooth = TRUE, span, ...)
+\method{plot}{gg_variable}(x, x_var, time, time_labels, panel = FALSE,
+  oob = TRUE, smooth = TRUE, span, alpha, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_variable}} object created from a \code{randomForestSRC::rfsrc} object}
@@ -15,11 +15,15 @@
 
 \item{time_labels}{string labels for times}
 
+\item{panel}{Should plots be facetted along multiple x_var?}
+
 \item{oob}{oob estimates (boolean)}
 
 \item{smooth}{type of smooth curve}
 
 \item{span}{tuning parameter for loess smooths}
+
+\item{alpha}{transparancy alpha passed to \code{ggplot} functions}
 
 \item{...}{arguments passed to the \code{\link{gg_variable}} function.}
 }

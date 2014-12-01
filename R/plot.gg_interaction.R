@@ -110,21 +110,19 @@ plot.gg_interaction <- function(x, x_var, color="black", ...){
     stop(paste("Invalid x_var (",x_var, ") specified, covariate not found.", sep=""))
   }
   
-  vline=which(colnames(object)==x_var)
-  
   if(length(x_var)> 1){
     intPlt.dta <- data.frame(cbind(names=rownames(object),
                                    t(object[which(rownames(object) %in% x_var),])))
     #colnames(intPlt.dta) <- x_var
     intPlt.dta$rank <- 1:dim(intPlt.dta)[1]
-    intPlt.dta <- intPlt.dta %>% gather(vars, dpth, -rank, -names)
-    
+    intPlt.dta <- intPlt.dta %>% gather(vars, dpth, -rank, -names) %>% filter(names!= x_var)
     
   }else{
     intPlt.dta <- data.frame(cbind(rank=1:dim(object)[1], 
                                    t(object[which(rownames(object) %in% x_var),])))
     colnames(intPlt.dta)[2] <- "dpth" 
     intPlt.dta$names <- rownames(intPlt.dta)
+    
   }
   #intPlt.dta <- intPlt.dta[-which(intPlt.dta$names=="viable"),]
   #intPlt.dta$names <- factor(intPlt.dta$names, levels=unique(intPlt.dta$names))
@@ -132,7 +130,7 @@ plot.gg_interaction <- function(x, x_var, color="black", ...){
   
   ggplot(intPlt.dta)+ 
     geom_point(aes_string(x="names", y="dpth"), color=color)+
-    geom_vline(xintercept=vline, 
+    geom_vline(xintercept=which(intPlt.dta$names %in% x_var), 
                linetype="dashed",
                color="red")+
     theme(text = element_text(size=10),

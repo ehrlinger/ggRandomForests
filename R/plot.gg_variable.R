@@ -23,9 +23,11 @@
 #' @param x_var variable (or list of variables) of interest.
 #' @param time For survival, one or more times of interest
 #' @param time_labels string labels for times
+#' @param panel Should plots be facetted along multiple x_var?
 #' @param oob oob estimates (boolean)
 #' @param smooth type of smooth curve
 #' @param span tuning parameter for loess smooths
+#' @param alpha transparancy alpha passed to \code{ggplot} functions
 #' @param ... arguments passed to the \code{\link{gg_variable}} function.
 #'   
 #' @return \code{ggplot} object
@@ -104,9 +106,14 @@
 #'
 #' }
 ### error rate plot
-plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, span, ...){
+plot.gg_variable<- function(x, x_var, 
+                            time, time_labels, 
+                            panel=FALSE,
+                            oob=TRUE, smooth=TRUE, span, alpha, ...){
   object <- x 
   if(inherits(x, "rfsrc")) object <- gg_variable(x, ...)
+  
+  if(missing(alpha)) alpha=.5
   
   if(inherits(object, "surv")){
     family <- "surv"
@@ -127,7 +134,7 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
       objectY <- object[, grep("yhat.", colnames(object))]
       lng <- ncol(objectY)
       gg2 <- lapply(1:ncol(objectY),
-        function(ind){cbind(objectX, yhat=objectY[,ind], outcome=ind)})
+                    function(ind){cbind(objectX, yhat=objectY[,ind], outcome=ind)})
       gg3 <- do.call(rbind,gg2)
       gg3$outcome <- factor(gg3$outcome)
       object <- gg3 
@@ -153,62 +160,68 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
   }
   
   lng <- length(x_var)
-  gDta <- vector("list", length=lng)
   
-  for(ind in 1:lng){
-    chIndx <- which(colnames(object)==x_var[ind])
-    hName <- colnames(object)[chIndx]
-    colnames(object)[chIndx] <- "var"
-    ccls <- class(object[,"var"])
+  if(panel & family == "surv"){
+    variable <- value <- time <- yhat <- cens <- NA
+    ## Create a panel plot
+    wchXvar <- which(colnames(object) %in% x_var)
     
-    # Check for logicals...
-    if(length(unique(object[,"var"])) < 3 & ccls =="numeric" ){
-      ccls <- "logical"
-      object[,"var"] <- as.logical(object[,"var"])
-    } 
-    gDta[[ind]] <- ggplot(object)
+    wchYvar <- which(colnames(object) %in% c("cens", "yhat", "time"))
     
-    if(family == "surv"){
-      gDta[[ind]] <- gDta[[ind]]+
-        labs(x=hName, y= "Survival")
-      if(ccls=="numeric"){
-        gDta[[ind]] <- gDta[[ind]]+
-          geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
-                     alpha=.5)
-        
-        if(sm_curve){
-          if(missing(span)){
-            gDta[[ind]] <- gDta[[ind]] +
-              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
-          }else{
-            gDta[[ind]] <- gDta[[ind]] +
-              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth,
-                          span=span)
-          }
-        }
+    dataObject <- object %>% select(c(wchYvar, wchXvar)) %>%
+      gather(variable, value,-time, -yhat, -cens)
+    
+    gDta <- ggplot(dataObject)+
+      labs(y= "Survival") +
+      geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
+                 alpha=alpha)
+    
+    if(sm_curve){
+      if(missing(span)){
+        gDta <- gDta +
+          geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth)
       }else{
-        gDta[[ind]] <- gDta[[ind]]+
-          geom_boxplot(aes_string(x="var", y="yhat"), color="grey",
-                       alpha=.5,outlier.shape = NA)+
-          geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
-                      alpha=.5)
-        
+        gDta <- gDta +
+          geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth,
+                      span=span)
       }
-      if(length(levels(object$time)) > 1){
-        gDta[[ind]]<- gDta[[ind]] + facet_wrap(~time, ncol=1)
-      }else{
-        gDta[[ind]]<- gDta[[ind]] + 
-          labs(x=hName, y= paste("Survival at", object$time[1], "year"))
-      }
-    }else if(family == "class"){
-      gDta[[ind]] <- gDta[[ind]] +
-        labs(x=hName, y="Predicted")
+    }
+    if(length(levels(object$time)) > 1){
+      gDta<- gDta+
+        facet_grid(reformulate("variable", "time"),
+                   scales="free_x")+
+        labs(x="")
+    }else{
+      gDta<- gDta + 
+        facet_wrap(reformulate("variable", "."))+
+        labs(x="",y= paste("Survival at", object$time[1], "year"))
+    }
+    
+    
+  }else{
+    # Plot or list of plots.
+    gDta <- vector("list", length=lng)
+    
+    for(ind in 1:lng){
+      chIndx <- which(colnames(object)==x_var[ind])
+      hName <- colnames(object)[chIndx]
+      colnames(object)[chIndx] <- "var"
+      ccls <- class(object[,"var"])
       
-      if(sum(colnames(object) == "outcome") ==0){ 
+      # Check for logicals...
+      if(length(unique(object[,"var"])) < 3 & ccls =="numeric" ){
+        ccls <- "logical"
+        object[,"var"] <- as.logical(object[,"var"])
+      } 
+      gDta[[ind]] <- ggplot(object)
+      
+      if(family == "surv"){
+        gDta[[ind]] <- gDta[[ind]]+
+          labs(x=hName, y= "Survival")
         if(ccls=="numeric"){
-          gDta[[ind]] <- gDta[[ind]] +
-            geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
-                       alpha=.5)
+          gDta[[ind]] <- gDta[[ind]]+
+            geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+                       alpha=alpha)
           
           if(sm_curve){
             if(missing(span)){
@@ -216,77 +229,99 @@ plot.gg_variable<- function(x, x_var, time, time_labels, oob=TRUE, smooth=TRUE, 
                 geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
             }else{
               gDta[[ind]] <- gDta[[ind]] +
-                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, 
+                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth,
                             span=span)
             }
           }
         }else{
           gDta[[ind]] <- gDta[[ind]]+
-            geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
-                         alpha=.5, outlier.shape = NA)+
-            geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
-                        alpha=.5)
+            geom_boxplot(aes_string(x="var", y="yhat"), color="grey",
+                         alpha=alpha,outlier.shape = NA)+
+            geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+                        alpha=alpha)
           
         }
-      }else{
+        if(length(levels(object$time)) > 1){
+          gDta[[ind]]<- gDta[[ind]] + facet_wrap(~time, ncol=1)
+        }else{
+          gDta[[ind]]<- gDta[[ind]] + 
+            labs(x=hName, y= paste("Survival at", object$time[1], "year"))
+        }
+      }else if(family == "class"){
+        gDta[[ind]] <- gDta[[ind]] +
+          labs(x=hName, y="Predicted")
         
+        if(sum(colnames(object) == "outcome") ==0){ 
+          if(ccls=="numeric"){
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
+                         alpha=alpha)
+            
+            if(sm_curve){
+              if(missing(span)){
+                gDta[[ind]] <- gDta[[ind]] +
+                  geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+              }else{
+                gDta[[ind]] <- gDta[[ind]] +
+                  geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, 
+                              span=span)
+              }
+            }
+          }else{
+            gDta[[ind]] <- gDta[[ind]]+
+              geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
+                           alpha=alpha, outlier.shape = NA)+
+              geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
+                          alpha=alpha)
+            
+          }
+        }else{
+          
+          if(ccls=="numeric"){
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
+                         alpha=alpha)
+            
+          }else{
+            gDta[[ind]] <- gDta[[ind]]+
+              geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
+                           alpha=alpha, outlier.shape = NA)+
+              geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
+                          alpha=alpha)
+            
+          }
+          
+          gDta[[ind]] <- gDta[[ind]] + facet_grid(~outcome)
+        }
+      }else{
+        # assume regression
+        gDta[[ind]] <- gDta[[ind]] +
+          labs(x=hName, y="Predicted")
         if(ccls=="numeric"){
           gDta[[ind]] <- gDta[[ind]] +
-            geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
-                       alpha=.5)
+            geom_point(aes_string(x="var", y="yhat"), alpha=alpha)
           
-#           if(sm_curve){
-#             if(missing(span)){
-#               gDta[[ind]] <- gDta[[ind]] +
-#                 geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
-#             }else{
-#               gDta[[ind]] <- gDta[[ind]] +
-#                 geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, 
-#                             span=span)
-#             }
-#           }
+          if(sm_curve){
+            if(missing(span)){
+              gDta[[ind]] <- gDta[[ind]] +
+                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
+            }else{
+              gDta[[ind]] <- gDta[[ind]] +
+                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
+            }
+          }
         }else{
           gDta[[ind]] <- gDta[[ind]]+
             geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
-                         alpha=.5, outlier.shape = NA)+
-            geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
-                        alpha=.5)
-          
+                         alpha=alpha, outlier.shape = NA)+
+            geom_jitter(aes_string(x="var", y="yhat"), 
+                        alpha=alpha)
         }
-        
-        gDta[[ind]] <- gDta[[ind]] + facet_grid(~outcome)
+        # Replace the original colname
+        colnames(object)[chIndx] <- hName
       }
-    }else{
-      # assume regression
-      gDta[[ind]] <- gDta[[ind]] +
-        labs(x=hName, y="Predicted")
-      if(ccls=="numeric"){
-        gDta[[ind]] <- gDta[[ind]] +
-          geom_point(aes_string(x="var", y="yhat"), alpha=.5)
-        
-        if(sm_curve){
-          if(missing(span)){
-            gDta[[ind]] <- gDta[[ind]] +
-              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
-          }else{
-            gDta[[ind]] <- gDta[[ind]] +
-              geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
-          }
-        }
-      }else{
-        gDta[[ind]] <- gDta[[ind]]+
-          geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
-                       alpha=.5, outlier.shape = NA)+
-          geom_jitter(aes_string(x="var", y="yhat"), 
-                      alpha=.5)
-      }
-      # Replace the original colname
-      colnames(object)[chIndx] <- hName
     }
-  }
-  
-  if(lng == 1) gDta <- gDta[[1]]
-  else class(gDta) <- c("gg_variableList", class(gDta))
-  
+    if(lng == 1) gDta <- gDta[[1]]
+  }    
   return(gDta)
 }
