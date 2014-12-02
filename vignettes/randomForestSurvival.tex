@@ -141,7 +141,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Tue Dec  2 14:47:21 2014
+% Tue Dec  2 16:58:18 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -149,25 +149,25 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
   \toprule
  & label & type \\ 
   \midrule
-days & survival time in days & integer \\ 
-   \rowcolor[gray]{0.95}status & censoring indicator & logical \\ 
-  treatment & 1=D-penicillamine, 2=placebo & factor \\ 
-   \rowcolor[gray]{0.95}age & age in days & numeric \\ 
-  sex & 0=female, 1=male & logical \\ 
-   \rowcolor[gray]{0.95}ascites & presence of asictes & logical \\ 
-  hepatom & presence of hepatomegaly & logical \\ 
-   \rowcolor[gray]{0.95}spiders & presence of spiders & logical \\ 
-  edema & presence of edema & factor \\ 
-   \rowcolor[gray]{0.95}bili & serum bilirubin in mg/dl & numeric \\ 
-  chol & serum cholesterol in mg/dl & integer \\ 
-   \rowcolor[gray]{0.95}albumin & albumin in gm/dl & numeric \\ 
-  copper & urine copper in ug/day & integer \\ 
-   \rowcolor[gray]{0.95}alk & alkaline phosphatase in U/liter & numeric \\ 
-  sgot & SGOT in U/ml & numeric \\ 
-   \rowcolor[gray]{0.95}trig & triglicerides in mg/dl & integer \\ 
-  platelet & platelets per cubic ml/1000 & integer \\ 
-   \rowcolor[gray]{0.95}prothrombin & prothrombin time in seconds & numeric \\ 
-  stage & histologic stage of disease & factor \\ 
+status & censoring indicator & logical \\ 
+   \rowcolor[gray]{0.95}treatment & 1=D-penicillamine, 2=placebo & factor \\ 
+  age & age in years & numeric \\ 
+   \rowcolor[gray]{0.95}sex & 0=female, 1=male & logical \\ 
+  ascites & presence of asictes & logical \\ 
+   \rowcolor[gray]{0.95}hepatom & presence of hepatomegaly & logical \\ 
+  spiders & presence of spiders & logical \\ 
+   \rowcolor[gray]{0.95}edema & presence of edema & factor \\ 
+  bili & serum bilirubin in mg/dl & numeric \\ 
+   \rowcolor[gray]{0.95}chol & serum cholesterol in mg/dl & integer \\ 
+  albumin & albumin in gm/dl & numeric \\ 
+   \rowcolor[gray]{0.95}copper & urine copper in ug/day & integer \\ 
+  alk & alkaline phosphatase in U/liter & numeric \\ 
+   \rowcolor[gray]{0.95}sgot & SGOT in U/ml & numeric \\ 
+  trig & triglicerides in mg/dl & integer \\ 
+   \rowcolor[gray]{0.95}platelet & platelets per cubic ml/1000 & integer \\ 
+  prothrombin & prothrombin time in seconds & numeric \\ 
+   \rowcolor[gray]{0.95}stage & histologic stage of disease & factor \\ 
+  years & survival time in years & numeric \\ 
    \rowcolor[gray]{0.95} \bottomrule
 \end{tabular}
 }
@@ -220,7 +220,7 @@ days & survival time in days & integer \\
 
 \begin{Schunk}
 \begin{Sinput}
-R> pbc_rf <- rfsrc(Surv(days, status) ~ ., data = pbc, 
+R> pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc, 
 +                   ntree = 2000,
 +                   na.action="na.impute", 
 +                   fast.restore = TRUE)
@@ -230,18 +230,20 @@ R> pbc_rf <- rfsrc(Surv(days, status) ~ ., data = pbc,
 
 \begin{Schunk}
 \begin{Soutput}
-                         Sample size: 276
-                    Number of deaths: 111
+                         Sample size: 418
+                    Number of deaths: 161
+                    Was data imputed: yes
+                         Missingness: 33.97%
                      Number of trees: 500
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 54.212
+       Average no. of terminal nodes: 78.112
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank *random*
        Number of random split points: 10
-                          Error rate: 16.67%
+                          Error rate: 17.01%
 \end{Soutput}
 \end{Schunk}
 
@@ -317,25 +319,25 @@ R> ggMindepth
 -----------------------------------------------------------
 gg_minimal_depth
 model size         : 12 
-depth threshold    : 5.4163 
+depth threshold    : 5.9741 
 
-PE :[1] 16.671
+PE :[1] 17.01
 -----------------------------------------------------------
 
 Top variables:
-            depth  vimp
-bili        1.872 0.067
-copper      2.450 0.023
-albumin     2.714 0.008
-chol        2.948 0.008
-prothrombin 3.132 0.013
-age         3.444 0.010
-sgot        3.820 0.005
-platelet    3.922 0.000
-trig        3.960 0.001
-alk         3.976 0.001
-edema       4.402 0.016
-stage       5.282 0.007
+            depth   vimp
+bili        1.600  0.086
+albumin     2.408  0.012
+prothrombin 2.518  0.017
+copper      2.744  0.010
+edema       2.798  0.014
+age         3.148  0.011
+stage       3.162  0.014
+chol        3.392  0.004
+platelet    3.600  0.001
+sgot        3.858  0.004
+alk         4.124  0.000
+trig        4.644 -0.001
 -----------------------------------------------------------
 \end{Soutput}
 \end{Schunk}
@@ -361,8 +363,8 @@ Once we have an idea of which variables contribute to the predictive accuracy of
 \begin{Schunk}
 \begin{Sinput}
 R> ggRFsrc +
-+   geom_vline(aes(xintercept=364.25), linetype="dashed")+
-+   coord_cartesian(x=c(0,3*364.25))
++   geom_vline(aes(xintercept=1), linetype="dashed")+
++   coord_cartesian(x=c(0,3))
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -378,7 +380,7 @@ R> ggRFsrc +
 \begin{Sinput}
 R> xvar <- pbc_vs$topvars[1:6]
 R> ind=1
-R> ggrf <- gg_variable(pbc_rf, time=c(1,3)*364.25, time.labels = c("1 Year", "3 Years"))
+R> ggrf <- gg_variable(pbc_rf, time=c(1,3), time.labels = c("1 Year", "3 Years"))
 R> 
 R> plot(ggrf, x_var = xvar[ind]) +
 +   labs(y="Survival", x=dta.labs[which(rownames(dta.labs)==xvar[ind]), "label"])+
@@ -429,20 +431,27 @@ Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month fr
 
 \begin{Schunk}
 \begin{Sinput}
+R> # Calculate the 1 year partial dependence
 R> pbc_prtl <- plot.variable(pbc_rf, surv.type="surv",
 +                           time=364.25, 
 +                       xvar.names=xvar, partial=TRUE,
 +                       show.plots = FALSE)
+R> 
+R> 
+R> # Calculate the 3 year partial dependence
 R> pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv", 
 +                             time=3*364.25, 
 +                       xvar.names=xvar, partial=TRUE,
 +                       show.plots = FALSE)
 R> 
+R> # Create gg_partial objects
 R> ggPrtl <- gg_partial(pbc_prtl)
 R> ggPrtl.3 <- gg_partial(pbc_prtl.3)
 R> 
-R> ## Need to combine multiple time curves along variables.
-R> pbc_ggPart <- combine(ggPrtl, ggPrtl.3, labels=c("1 Year", "3 Years"))
+R> # Combine the objects to get multiple time curves 
+R> # along variables on a single figure.
+R> pbc_ggpart <- combine(ggPrtl, ggPrtl.3, 
++                       labels=c("1 Year", "3 Years"))
 \end{Sinput}
 \end{Schunk}
 
@@ -478,10 +487,9 @@ R> plot(pbc_ggpart, se=FALSE, panel=TRUE)+
 
 }
 
-\caption[Risk adjusted Survival]{Risk adjusted Survival\label{fig:pbc-partial-panel}}
+\caption[Risk adjusted Survival - panel plot]{Risk adjusted Survival - panel plot\label{fig:pbc-partial-panel}}
 \end{figure}
 \end{Schunk}
-
 
 
 \section{Variable Interactions}\label{S:interactions}
@@ -493,7 +501,9 @@ By plotting the resulting interaction measures for each variable (Figure~\ref{fi
 \begin{Schunk}
 \begin{Sinput}
 R> pbc_interaction <- find.interaction(pbc_rf)
-R> plot(gg_interaction(pbc_interaction), x_var=xvar[1])+
+R> 
+R> ggint <- gg_interaction(pbc_interaction)
+R> plot(ggint, x_var="bili")+
 +   labs(y="Interactive Minimal Depth")
 \end{Sinput}
 \end{Schunk}
@@ -505,6 +515,22 @@ R> plot(gg_interaction(pbc_interaction), x_var=xvar[1])+
 }
 
 \caption[Minimal Depth interaction for Surgical Date]{Minimal Depth interaction for Surgical Date\label{fig:interaction}}
+\end{figure}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R> plot(gg_interaction(pbc_interaction), x_var=xvar[2:5])+
++   labs(y="Interactive Minimal Depth")+
++   theme(legend.position="none")
+\end{Sinput}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-interactionPanel-1} 
+
+}
+
+\caption[Risk adjusted Survival - panel plot]{Risk adjusted Survival - panel plot\label{fig:interactionPanel}}
 \end{figure}
 \end{Schunk}
 

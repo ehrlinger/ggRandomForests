@@ -88,9 +88,41 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
   if("pbc" %in% set){
     data(pbc, package="randomForestSRC",
          envir = dta)
+    pbc <- dta$pbc
+    # For whatever reason, the age variable is in days... makes no sense to me
+    for(ind in 1:dim(pbc)[2]){
+      if(!is.factor(pbc[,ind])){
+        if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
+          if(sum(range(pbc[,ind],na.rm=TRUE) == c(0,1))==2){
+            pbc[,ind] <- as.logical(pbc[,ind])
+          }
+        }
+      }else{
+        if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
+          if(sum(sort(unique(pbc[,ind])) == c(0,1))==2){
+            pbc[,ind] <- as.logical(pbc[,ind])
+          }
+          if(sum(sort(unique(pbc[,ind])) == c(FALSE, TRUE))==2){
+            pbc[,ind] <- as.logical(pbc[,ind])
+          }
+        }
+      }
+      if(!is.logical(pbc[, ind]) & 
+           length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=5) {
+        pbc[,ind] <- factor(pbc[,ind])
+      }
+    }
+    # Convert age to years
+    pbc$age <- pbc$age/364.24
+    
+    pbc$years <- pbc$days/364.24
+    pbc <- pbc %>% select(-days)
+    
+    dta$pbc <- pbc
     
     cat("pbc: randomForest\n")
-    pbc_rf <- rfsrc(Surv(days, status) ~ ., dta$pbc, nsplit = 10,
+    pbc_rf <- rfsrc(Surv(years, status) ~ ., dta$pbc, nsplit = 10,
+                    na.action="na.impute", 
                     ntree=500)
     if(save) save(pbc_rf, file="data/pbc_rf.rda", compress="xz")
     
@@ -102,12 +134,34 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
     pbc_interaction <- find.interaction(pbc_rf)
     if(save) save(pbc_interaction, file="data/pbc_interaction.rda", compress="xz")
     
-    cat("pbc: RF partial dependence\n")
-    pbc_prtl <- plot.variable(pbc_rf, time=90,surv.type="surv",
-                              xvar.names = c("bili", "copper", "albumin", "age"),
-                              partial=TRUE, show.plots=FALSE)
+    # Calculate the 1 year partial dependence
+    xvar <- pbc_vs$topvars[1:6]
+    
+    pbc_prtl <- plot.variable(pbc_rf, surv.type="surv",
+                              time=1, 
+                              xvar.names=xvar, partial=TRUE,
+                              show.plots = FALSE)
+    
+    
+    # Calculate the 3 year partial dependence
+    pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv", 
+                                time=3, 
+                                xvar.names=xvar, partial=TRUE,
+                                show.plots = FALSE)
+    
+    # Create gg_partial objects
+    ggPrtl <- gg_partial(pbc_prtl)
+    ggPrtl.3 <- gg_partial(pbc_prtl.3)
+    
+    # Combine the objects to get multiple time curves 
+    # along variables on a single figure.
+    pbc_ggpart <- combine(ggPrtl, ggPrtl.3, 
+                          labels=c("1 Year", "3 Years"))
     
     if(save) save(pbc_prtl, file="data/pbc_prtl.rda", compress="xz")
+    
+    if(save) save(pbc_ggpart, file="data/pbc_ggpart.rda", compress="xz")
+    
   }
   
   if("veteran" %in% set){
@@ -133,7 +187,4 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
     
     if(save) save(veteran_prtl, file="data/veteran_prtl.rda", compress="xz")
   }
-  
-  
-  
 }

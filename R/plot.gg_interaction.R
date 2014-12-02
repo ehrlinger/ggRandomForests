@@ -115,26 +115,35 @@ plot.gg_interaction <- function(x, x_var, color="black", ...){
                                    t(object[which(rownames(object) %in% x_var),])))
     #colnames(intPlt.dta) <- x_var
     intPlt.dta$rank <- 1:dim(intPlt.dta)[1]
-    intPlt.dta <- intPlt.dta %>% gather(vars, dpth, -rank, -names) %>% filter(names!= x_var)
+    intPlt.dta <- intPlt.dta %>% 
+      gather(vars, dpth, -rank, -names)
     
+    intPlt.dta$dpth <- as.numeric(intPlt.dta$dpth)
+    intPlt.dta$names <- factor(intPlt.dta$names,
+                               levels=unique(intPlt.dta$names))
+    ggplot(intPlt.dta)+ 
+      geom_point(aes_string(x="names", y="dpth", shape="vars"))+
+      theme(text = element_text(size=10),
+            axis.text.x = element_text(angle=90)) +
+      labs(x="", y="Minimal Depth")+
+      facet_wrap(~vars)
   }else{
     intPlt.dta <- data.frame(cbind(rank=1:dim(object)[1], 
                                    t(object[which(rownames(object) %in% x_var),])))
     colnames(intPlt.dta)[2] <- "dpth" 
     intPlt.dta$names <- rownames(intPlt.dta)
     
+    intPlt.dta$dpth <- as.numeric(intPlt.dta$dpth)
+    intPlt.dta$names <- factor(intPlt.dta$names,
+                               levels=unique(intPlt.dta$names))
+    ggplot(intPlt.dta)+ 
+      geom_point(aes_string(x="names", y="dpth"))+
+      geom_point(aes_string(x="names", y="dpth"),
+                 data=intPlt.dta[which(rownames(intPlt.dta)==x_var),],
+                 shape=3, size=5,
+                 color="red")+
+      theme(text = element_text(size=10),
+            axis.text.x = element_text(angle=90)) +
+      labs(x="", y="Minimal Depth")
   }
-  #intPlt.dta <- intPlt.dta[-which(intPlt.dta$names=="viable"),]
-  #intPlt.dta$names <- factor(intPlt.dta$names, levels=unique(intPlt.dta$names))
-  intPlt.dta$dpth <- as.numeric(intPlt.dta$dpth)
-  
-  ggplot(intPlt.dta)+ 
-    geom_point(aes_string(x="names", y="dpth"), color=color)+
-    geom_vline(xintercept=which(intPlt.dta$names %in% x_var), 
-               linetype="dashed",
-               color="red")+
-    theme(text = element_text(size=10),
-          axis.text.x = element_text(angle=90)) +
-    labs(x="", y="Minimal Depth")
-  
 }

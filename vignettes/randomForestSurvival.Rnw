@@ -206,15 +206,18 @@ for(ind in 1:dim(pbc)[2]){
 }
 # Convert age to years
 pbc$age <- pbc$age/364.24
+pbc$years <- pbc$days/364.24
+pbc <- pbc %>% select(-days)
 
 cls <- sapply(pbc, class) 
 
-labels <- c("survival time in days","censoring indicator", "1=D-penicillamine, 2=placebo",
-"age in days","0=female, 1=male", "presence of asictes","presence of hepatomegaly",
+labels <- c("censoring indicator", "1=D-penicillamine, 2=placebo",
+"age in years","0=female, 1=male", "presence of asictes","presence of hepatomegaly",
 "presence of spiders", "presence of edema","serum bilirubin in mg/dl",
 "serum cholesterol in mg/dl","albumin in gm/dl","urine copper in ug/day",
 "alkaline phosphatase in U/liter","SGOT in U/ml","triglicerides in mg/dl",
-"platelets per cubic ml/1000","prothrombin time in seconds","histologic stage of disease")
+"platelets per cubic ml/1000","prothrombin time in seconds","histologic stage of disease",
+"survival time in years")
 
 dta.labs <- data.frame(cbind(names=colnames(pbc), label=labels, type=cls))
 @
@@ -279,7 +282,7 @@ print(xtable(dta.labs %>% select(-names),
 
 
 <<rfsrc, echo=TRUE,eval=FALSE>>=
-pbc_rf <- rfsrc(Surv(days, status) ~ ., data = pbc, 
+pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc, 
                   ntree = 2000,
                   na.action="na.impute", 
                   fast.restore = TRUE)
@@ -296,7 +299,7 @@ Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, whe
 ggRFsrc <- plot.gg_rfsrc(pbc_rf, alpha=.2)+
   scale_color_manual(values = strCol)+
   theme(legend.position="none")+
-  labs(y="Survival", x="time (days)")
+  labs(y="Survival", x="time (years)")
 ggRFsrc
 @
 \subsection{Forest Imputation for missing values}\label{S:imputation}
@@ -362,14 +365,14 @@ Once we have an idea of which variables contribute to the predictive accuracy of
 
 <<rfsrc-plot3Mnth, echo=TRUE,fig.cap="PBC Survival">>=
 ggRFsrc +
-  geom_vline(aes(xintercept=364.25), linetype="dashed")+
-  coord_cartesian(x=c(0,3*364.25))
+  geom_vline(aes(xintercept=1), linetype="dashed")+
+  coord_cartesian(x=c(0,3))
 @
 
 <<variable-plotbili, echo=TRUE, fig.cap="Variable dependence Survival vs. Bilirubin", fig.height=4>>=
 xvar <- pbc_vs$topvars[1:6]
 ind=1
-ggrf <- gg_variable(pbc_rf, time=c(1,3)*364.25, time.labels = c("1 Year", "3 Years"))
+ggrf <- gg_variable(pbc_rf, time=c(1,3), time.labels = c("1 Year", "3 Years"))
 
 plot(ggrf, x_var = xvar[ind]) +
   labs(y="Survival", x=dta.labs[which(rownames(dta.labs)==xvar[ind]), "label"])+
@@ -380,7 +383,7 @@ plot(ggrf, x_var = xvar[ind]) +
 @
 
 <<variable-plotCombines, echo=TRUE, fig.cap="Variable dependence Survival panel", fig.width=7, fig.height=4>>=
-plot(ggrf, x_var = xvar[2:5], panel=TRUE) +
+plot(ggrf, x_var = xvar[c(2:4, 6)], panel=TRUE) +
   labs(y="Survival")+
   theme(legend.position="none")+
   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
@@ -400,20 +403,27 @@ where $\hat{f}$ is the predicted response from the random forest and $x_{i,o}$ i
 Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month freedom from thrombosis on the surgical date covariate. 
 
 <<pbc-partial, echo=TRUE, eval=FALSE>>=
+# Calculate the 1 year partial dependence
 pbc_prtl <- plot.variable(pbc_rf, surv.type="surv",
                           time=364.25, 
                       xvar.names=xvar, partial=TRUE,
                       show.plots = FALSE)
+
+
+# Calculate the 3 year partial dependence
 pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv", 
                             time=3*364.25, 
                       xvar.names=xvar, partial=TRUE,
                       show.plots = FALSE)
 
+# Create gg_partial objects
 ggPrtl <- gg_partial(pbc_prtl)
 ggPrtl.3 <- gg_partial(pbc_prtl.3)
 
-## Need to combine multiple time curves along variables.
-pbc_ggPart <- combine(ggPrtl, ggPrtl.3, labels=c("1 Year", "3 Years"))
+# Combine the objects to get multiple time curves 
+# along variables on a single figure.
+pbc_ggpart <- combine(ggPrtl, ggPrtl.3, 
+                      labels=c("1 Year", "3 Years"))
 
 @
 
@@ -431,11 +441,10 @@ plot(pbc_ggpart[[nm]], se=FALSE)+
        x=dta.labs[which(rownames(dta.labs)==nm), "label"])
 @
 
-<<pbc-partial-panel, echo=TRUE, fig.cap="Risk adjusted Survival", fig.width=7, fig.height=4>>=
+<<pbc-partial-panel, echo=TRUE, fig.cap="Risk adjusted Survival - panel plot", fig.width=7, fig.height=4>>=
 plot(pbc_ggpart, se=FALSE, panel=TRUE)+
   labs(x="", y="Survival")
 @
-
 
 
 \section{Variable Interactions}\label{S:interactions}
@@ -446,16 +455,24 @@ Using minimal depth, we calculate the maximal subtree using the normalized minim
 By plotting the resulting interaction measures for each variable (Figure~\ref{fig:interaction}), we can detect the "most interactive" pairs, and develop conditional plots~\cite{chambers:1992,cleveland:1993}. These plots are similar to stratified results, arranged in a set of panels by the interactive variable of interest. 
 <<interaction-show, echo=TRUE, eval=FALSE>>=
 pbc_interaction <- find.interaction(pbc_rf)
-plot(gg_interaction(pbc_interaction), x_var=xvar[1])+
+
+ggint <- gg_interaction(pbc_interaction)
+plot(ggint, x_var="bili")+
   labs(y="Interactive Minimal Depth")
 @
 <<interaction, fig.cap="Minimal Depth interaction for Surgical Date">>=
   #pDat.int <- find.interaction(pbc_rf)
 data("pbc_interaction", package="ggRandomForests")
 
-  #pbc_interaction <- find.interaction(pbc_rf)
-plot(gg_interaction(pbc_interaction), x_var="age")+
+plot(gg_interaction(pbc_interaction), x_var="bili")+
   labs(y="Interactive Minimal Depth")
+@
+
+<<interactionPanel, echo=TRUE, fig.cap="Risk adjusted Survival - panel plot", fig.width=7, fig.height=4>>=
+
+plot(gg_interaction(pbc_interaction), x_var=xvar[2:5])+
+  labs(y="Interactive Minimal Depth")+
+  theme(legend.position="none")
 @
 
 \subsection{Conditional Dependence Plots}
