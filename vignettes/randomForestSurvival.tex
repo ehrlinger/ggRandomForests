@@ -11,43 +11,9 @@
 }
 \makeatother
 
-\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
-\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
-\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
-\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
-\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
-\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
-\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
-\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\usepackage{Sweave}
 
-\usepackage{framed}
-\makeatletter
-\newenvironment{kframe}{%
- \def\at@end@of@kframe{}%
- \ifinner\ifhmode%
-  \def\at@end@of@kframe{\end{minipage}}%
-  \begin{minipage}{\columnwidth}%
- \fi\fi%
- \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
- \colorbox{shadecolor}{##1}\hskip-\fboxsep
-     % There is no \\@totalrightmargin, so:
-     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
- \MakeFramed {\advance\hsize-\width
-   \@totalleftmargin\z@ \linewidth\hsize
-   \@setminipage}}%
- {\par\unskip\endMakeFramed%
- \at@end@of@kframe}
-\makeatother
 
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
-
-\usepackage{alltt}
 
 %\usepackage{setspace}
 % \usepackage[sc]{mathpazo}
@@ -175,7 +141,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Mon Dec  1 16:51:25 2014
+% Tue Dec  2 14:47:21 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -250,20 +216,20 @@ days & survival time in days & integer \\
 
 % \doublespacing
 \section{Growing the Random Forest}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
+
+
+\begin{Schunk}
+\begin{Sinput}
 R> pbc_rf <- rfsrc(Surv(days, status) ~ ., data = pbc, 
 +                   ntree = 2000,
 +                   na.action="na.impute", 
 +                   fast.restore = TRUE)
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+\end{Sinput}
+\end{Schunk}
 
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
+
+\begin{Schunk}
+\begin{Soutput}
                          Sample size: 276
                     Number of deaths: 111
                      Number of trees: 500
@@ -276,13 +242,12 @@ No. of variables tried at each split: 5
                       Splitting rule: logrank *random*
        Number of random split points: 10
                           Error rate: 16.67%
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+\end{Soutput}
+\end{Schunk}
 
 Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, where censored device prediction is colored in blue, and devices experiencing a thrombosis event are colored in red.  
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
+\begin{Schunk}
+\begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-rfsrc-plot-1} 
 
@@ -290,9 +255,17 @@ Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, whe
 
 \caption[PBC Survival]{PBC Survival\label{fig:rfsrc-plot}}
 \end{figure}
+\end{Schunk}
+\subsection{Forest Imputation for missing values}\label{S:imputation}
 
+The randomForests package~\citep{liaw:2002} include a forest imputation method within the randomForest package. 
 
-\end{knitrout}
+We impute missing data (both x and y-variables) using a modification of the missing data algorithm of~\cite{Ishwaran:2008}. Prior to splitting a node, missing data for a variable is imputed by randomly drawing values from non-missing in-bag data. The purpose of the imputed data is to make it possible to assign cases to daughter nodes in the event the node is split on a variable with missing data. Imputed data is however not used to calculate the split-statistic which uses non-missing data only. Following a node split, imputed data are reset to missing and the process is repeated until terminal nodes are reached. Missing data is then imputed using OOB non-missing terminal node data. For integer valued variables and censoring indicators, imputation uses a maximal class rule, whereas continuous variables and survival time use a mean rule.
+
+The proximity matrix from the randomForest is used to update the imputation of the NAs. For continuous predictors, the imputed value is the weighted average of the non-missing obervations, where the weights are the proximities. For categorical predictors, the imputed value is the category with the largest average proximity. This process is iterated iter times.
+
+Regardless of what method is used, records in which all outcome and x-variable information are missing are removed from the forest analysis. Variables having all missing values are also removed.
+
 
 \section{Variable Selection}
 Unlike in the linear model settings, Random Forests does not require explicitly specify the functional form of the covariates to the response. Instead, we ascertain which variables contribute to the Random Forest estimates by querying the forest for variable usage. 
@@ -305,13 +278,12 @@ Variable importance (VIMP) was originally defined in CART using a measure involv
 Since VIMP is the absolute difference between prediction errors before and after permutation, a large VIMP value indicates that misspecification of that variable detracts from the predictive accuracy of the forest. VIMP close to zero indicates the variable contributes nothing to predictive accuracy, and negative values indicate the predictive accuracy improves when the variable is mispecified. In the later case, we assume noise is more informative than the variable. As such, we ignore variables with negative and near zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables. 
 
 In Figure~\ref{fig:rf-vimp}, we plot VIMP measures for each of the variables used to grow the forest estimates of Figure~\ref{fig:rfsrc-plot}. Variables are shown in VIMP rank order, largest (op\_yr) at the top, to smallest (iv\_lospr) at the bottom. In this case, we would focus attention on the top three variables (op\_yr (surgical date), ld and devno).
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
+\begin{Schunk}
+\begin{Sinput}
 R> plot.gg_vimp(pbc_rf)+
 +   theme(legend.position="none")
-\end{verbatim}
-\end{kframe}\begin{figure}[!htpb]
+\end{Sinput}
+\begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-rf-vimp-1} 
 
@@ -319,9 +291,7 @@ R> plot.gg_vimp(pbc_rf)+
 
 \caption[Variable Importance]{Variable Importance\label{fig:rf-vimp}}
 \end{figure}
-
-
-\end{knitrout}
+\end{Schunk}
 
 \subsection{Minimal Depth}\label{S:minimalDepth}
 In VIMP, prognostic risk factors are determined by inspection of the forest, ranking the most important variables according to impact on predictive ability of the forest. An alternative method recognizes that most important variables for prediction are those that most frequently split nodes nearest to the trunks of the trees (ie, at the root node) since they partition the largest portions of the population. 
@@ -333,20 +303,17 @@ The maximal subtree for a variable $x$ is the largest subtree whose root node sp
 The minimal depth plot of Figure~\ref{fig:mindepth} is similar to the VIMP plot in Figure~\ref{fig:rf-vimp}, ranking variables from most important at the top (minimal depth measure), to least at the bottom (maximal minimal depth). Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be slightly different. In this case, minimal depth indicates seven most important variables (op\_yr (surgical date), age, ld, ht, wt, iv\_lospr (length of stay) and inr). The vertical dashed line indicates the minimal depth threshold where smaller minimal depth values indicate higher importance and larger indicate lower importance.
 
 
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
+\begin{Schunk}
+\begin{Sinput}
 R> pbc_vs <- var.select(pbc_rf)
 R> ggMindepth <- gg_minimal_depth(pbc_vs)
 R> 
 R> ggMindepth
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+\end{Sinput}
+\end{Schunk}
 
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
+\begin{Schunk}
+\begin{Soutput}
 -----------------------------------------------------------
 gg_minimal_depth
 model size         : 12 
@@ -370,12 +337,11 @@ alk         3.976 0.001
 edema       4.402 0.016
 stage       5.282 0.007
 -----------------------------------------------------------
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+\end{Soutput}
+\end{Schunk}
 
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
+\begin{Schunk}
+\begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-mindepth-plot-1} 
 
@@ -383,9 +349,7 @@ stage       5.282 0.007
 
 \caption[Minimal Depth Plot]{Minimal Depth Plot\label{fig:mindepth-plot}}
 \end{figure}
-
-
-\end{knitrout}
+\end{Schunk}
 
 
 \section{Variable Dependence}\label{S:dependence}
@@ -394,14 +358,13 @@ Once we have an idea of which variables contribute to the predictive accuracy of
 \subsection{Marginal Dependence}\label{S:variableDependence}
 \emph{Marginal variable dependence} plots the predicted response as a function of the covariate, showing each subject as a point on the plot. For classification and regression, this is straight forward predicting the response. In survival settings, we must account for the additional dimension of time. In this case, we plot the response at a specific time point of interest, for example survival at three months shown by the vertical dashed line in Figure~\ref{fig:rfsrc-plot3Mnth}. We take the predicted value of each curve at that time, and plot that against the covariate value for that observations, shown in Figure~\ref{fig:variable-plot}. Again censored cases are shown in blue circles, events are indicated by the red "x" symbols. Each predicted point is dependent on the full combination of all other covariates, not only on the covariate displayed in the dependence plot, so interpretation of these variable dependence plots can only be in general terms. The smooth loess line~\citep{cleveland:1981, cleveland:1988} indicates the trend of the prediction over surgical date progression.
 
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
+\begin{Schunk}
+\begin{Sinput}
 R> ggRFsrc +
 +   geom_vline(aes(xintercept=364.25), linetype="dashed")+
 +   coord_cartesian(x=c(0,3*364.25))
-\end{verbatim}
-\end{kframe}\begin{figure}[!htpb]
+\end{Sinput}
+\begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-rfsrc-plot3Mnth-1} 
 
@@ -409,13 +372,10 @@ R> ggRFsrc +
 
 \caption[PBC Survival]{PBC Survival\label{fig:rfsrc-plot3Mnth}}
 \end{figure}
+\end{Schunk}
 
-
-\end{knitrout}
-
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
+\begin{Schunk}
+\begin{Sinput}
 R> xvar <- pbc_vs$topvars[1:6]
 R> ind=1
 R> ggrf <- gg_variable(pbc_rf, time=c(1,3)*364.25, time.labels = c("1 Year", "3 Years"))
@@ -426,8 +386,8 @@ R> plot(ggrf, x_var = xvar[ind]) +
 +   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
 +                      labels=event.labels)+
 +   scale_shape_manual(values=event.marks, labels=event.labels)
-\end{verbatim}
-\end{kframe}\begin{figure}[!htpb]
+\end{Sinput}
+\begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-variable-plotbili-1} 
 
@@ -435,21 +395,18 @@ R> plot(ggrf, x_var = xvar[ind]) +
 
 \caption[Variable dependence Survival vs]{Variable dependence Survival vs. Bilirubin\label{fig:variable-plotbili}}
 \end{figure}
+\end{Schunk}
 
-
-\end{knitrout}
-
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-R> plot(ggrf, x_var = xvar[2:6], panel=TRUE) +
+\begin{Schunk}
+\begin{Sinput}
+R> plot(ggrf, x_var = xvar[2:5], panel=TRUE) +
 +   labs(y="Survival")+
 +   theme(legend.position="none")+
 +   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
 +                      labels=event.labels)+
 +   scale_shape_manual(values=event.marks, labels=event.labels)
-\end{verbatim}
-\end{kframe}\begin{figure}[!htpb]
+\end{Sinput}
+\begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-variable-plotCombines-1} 
 
@@ -457,9 +414,7 @@ R> plot(ggrf, x_var = xvar[2:6], panel=TRUE) +
 
 \caption[Variable dependence Survival panel]{Variable dependence Survival panel\label{fig:variable-plotCombines}}
 \end{figure}
-
-
-\end{knitrout}
+\end{Schunk}
 
 \subsection{Partial Dependence}\label{S:partialDependence}
 
@@ -472,40 +427,37 @@ where $\hat{f}$ is the predicted response from the random forest and $x_{i,o}$ i
 
 Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month freedom from thrombosis on the surgical date covariate. 
 
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-R> pbc_prtl <- plot.variable(pbc_rf, surv.type="surv", time=364.25, 
+\begin{Schunk}
+\begin{Sinput}
+R> pbc_prtl <- plot.variable(pbc_rf, surv.type="surv",
++                           time=364.25, 
 +                       xvar.names=xvar, partial=TRUE,
 +                       show.plots = FALSE)
-R> pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv", time=3*364.25, 
+R> pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv", 
++                             time=3*364.25, 
 +                       xvar.names=xvar, partial=TRUE,
 +                       show.plots = FALSE)
 R> 
 R> ggPrtl <- gg_partial(pbc_prtl)
 R> ggPrtl.3 <- gg_partial(pbc_prtl.3)
 R> 
-R> ## Need a merge.gg_partial function to combine multiple time curves along variables.
-R> ## pbc.prtl <- merge(ggPrtl, ggPrtl.3)
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
+R> ## Need to combine multiple time curves along variables.
+R> pbc_ggPart <- combine(ggPrtl, ggPrtl.3, labels=c("1 Year", "3 Years"))
+\end{Sinput}
+\end{Schunk}
 
 
 
 
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
-R> ind  <- 1
-R> plot(ggPrtl[[ind]], se=FALSE)+
-+   theme(legend.position=c(.2,.2))+
-+   labs(y="Survival at 1 year", x=dta.labs[which(rownames(dta.labs)==xvar[ind]), "label"])+
-+   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
-+                      labels=event.labels)+
-+   scale_shape_manual(values=event.marks, labels=event.labels)
-\end{verbatim}
-\end{kframe}\begin{figure}[!htpb]
+\begin{Schunk}
+\begin{Sinput}
+R> nm  <- "bili"
+R> plot(pbc_ggpart[[nm]], se=FALSE)+
++   theme(legend.position=c(.8,.5))+
++   labs(y="Survival", 
++        x=dta.labs[which(rownames(dta.labs)==nm), "label"])
+\end{Sinput}
+\begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-pbc-partial-bili-1} 
 
@@ -513,9 +465,24 @@ R> plot(ggPrtl[[ind]], se=FALSE)+
 
 \caption[Risk adjusted Survival]{Risk adjusted Survival\label{fig:pbc-partial-bili}}
 \end{figure}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R> plot(pbc_ggpart, se=FALSE, panel=TRUE)+
++   labs(x="", y="Survival")
+\end{Sinput}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-pbc-partial-panel-1} 
+
+}
+
+\caption[Risk adjusted Survival]{Risk adjusted Survival\label{fig:pbc-partial-panel}}
+\end{figure}
+\end{Schunk}
 
 
-\end{knitrout}
 
 \section{Variable Interactions}\label{S:interactions}
 Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. 
@@ -523,17 +490,15 @@ Using the different variable dependence measures, we can calculate pairwise inte
 Using minimal depth, we calculate the maximal subtree using the normalized minimal depth of variable $i$ relative to the root node (normalized with respect to the size of the tree) the maximal subtree interaction measure  is the normalized minimal depth of a variable $j$ wet the maximal subtree for variable $i$ (normalized wet the size of $i$'s maximal subtree). Smaller diagonal entries indicate predictive variables. Small interaction entries having small diagonal entries are a sign of an interaction between variable $i$ and $j$~\citep{Ishwaran_HighDimension:2010,Ishwaran_HighDimension:2011} 
 
 By plotting the resulting interaction measures for each variable (Figure~\ref{fig:interaction}), we can detect the "most interactive" pairs, and develop conditional plots~\cite{chambers:1992,cleveland:1993}. These plots are similar to stratified results, arranged in a set of panels by the interactive variable of interest. 
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
-\begin{verbatim}
+\begin{Schunk}
+\begin{Sinput}
 R> pbc_interaction <- find.interaction(pbc_rf)
 R> plot(gg_interaction(pbc_interaction), x_var=xvar[1])+
 +   labs(y="Interactive Minimal Depth")
-\end{verbatim}
-\end{kframe}
-\end{knitrout}
-\begin{knitrout}\footnotesize
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[!htpb]
+\end{Sinput}
+\end{Schunk}
+\begin{Schunk}
+\begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-interaction-1} 
 
@@ -541,9 +506,7 @@ R> plot(gg_interaction(pbc_interaction), x_var=xvar[1])+
 
 \caption[Minimal Depth interaction for Surgical Date]{Minimal Depth interaction for Surgical Date\label{fig:interaction}}
 \end{figure}
-
-
-\end{knitrout}
+\end{Schunk}
 
 \subsection{Conditional Dependence Plots}
 

@@ -3,7 +3,7 @@
 \alias{plot.gg_partial_list}
 \title{Partial variable dependence plot, operates on a \code{gg_partial_list} object.}
 \usage{
-\method{plot}{gg_partial_list}(x, points = TRUE, smooth = "loess", ...)
+\method{plot}{gg_partial_list}(x, points = TRUE, panel = FALSE, ...)
 }
 \arguments{
 \item{x}{\code{gg_partial_list} object created from a \code{\link{gg_partial}}
@@ -11,7 +11,7 @@ forest object}
 
 \item{points}{plot points (boolean)}
 
-\item{smooth}{use smooth curve (by type)}
+\item{panel}{should the entire list be plotted together?}
 
 \item{...}{extra arguments}
 }

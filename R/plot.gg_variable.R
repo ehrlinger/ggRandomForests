@@ -161,43 +161,79 @@ plot.gg_variable<- function(x, x_var,
   
   lng <- length(x_var)
   
-  if(panel & family == "surv"){
-    variable <- value <- time <- yhat <- cens <- NA
-    ## Create a panel plot
-    wchXvar <- which(colnames(object) %in% x_var)
-    
-    wchYvar <- which(colnames(object) %in% c("cens", "yhat", "time"))
-    
-    dataObject <- object %>% select(c(wchYvar, wchXvar)) %>%
-      gather(variable, value,-time, -yhat, -cens)
-    
-    gDta <- ggplot(dataObject)+
-      labs(y= "Survival") +
-      geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
-                 alpha=alpha)
-    
-    if(sm_curve){
-      if(missing(span)){
-        gDta <- gDta +
-          geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth)
-      }else{
-        gDta <- gDta +
-          geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth,
-                      span=span)
+  # For now, we only plot survival families as panels. 
+  if(panel){
+    if(family == "surv"){
+      variable <- value <- time <- yhat <- cens <- NA
+      ## Create a panel plot
+      wchXvar <- which(colnames(object) %in% x_var)
+      
+      wchYvar <- which(colnames(object) %in% c("cens", "yhat", "time"))
+      
+      dataObject <- object %>% select(c(wchYvar, wchXvar)) %>%
+        gather(variable, value,-time, -yhat, -cens)
+      
+      gDta <- ggplot(dataObject)+
+        labs(y= "Survival") +
+        geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
+                   alpha=alpha)
+      
+      if(sm_curve){
+        if(missing(span)){
+          gDta <- gDta +
+            geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth)
+        }else{
+          gDta <- gDta +
+            geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth,
+                        span=span)
+        }
       }
-    }
-    if(length(levels(object$time)) > 1){
-      gDta<- gDta+
-        facet_grid(reformulate("variable", "time"),
+      if(length(levels(object$time)) > 1){
+        gDta<- gDta+
+          facet_grid(reformulate("variable", "time"),
+                     scales="free_x")+
+          labs(x="")
+      }else{
+        gDta<- gDta + 
+          facet_wrap(reformulate("variable", "."),
+                     scales="free_x")+
+          labs(x="",y= paste("Survival at", object$time[1], "year"))
+      }
+      
+    }else{
+      # This will work for regression and binary classification... maybe.
+      variable <- value <- yhat <- NA
+      ## Create a panel plot
+      wchXvar <- which(colnames(object) %in% x_var)
+      
+      wchYvar <- which(colnames(object) %in% c("yhat"))
+      
+      dataObject <- object %>% select(c(wchYvar, wchXvar)) %>%
+        gather(variable, value, -yhat)
+      
+      dataObject$variable <- factor(dataObject$variable,
+                                    levels=unique(dataObject$variable))
+      
+      gDta <- ggplot(dataObject)+
+        geom_point(aes_string(x="value", y="yhat"), 
+                   alpha=alpha)
+      
+      if(sm_curve){
+        if(missing(span)){
+          gDta <- gDta +
+            geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth)
+        }else{
+          gDta <- gDta +
+            geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth,
+                        span=span)
+        }
+      }
+      
+      gDta <- gDta +
+        facet_wrap(~variable,
                    scales="free_x")+
         labs(x="")
-    }else{
-      gDta<- gDta + 
-        facet_wrap(reformulate("variable", "."))+
-        labs(x="",y= paste("Survival at", object$time[1], "year"))
     }
-    
-    
   }else{
     # Plot or list of plots.
     gDta <- vector("list", length=lng)

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  1 DEC 2014 16:51
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  2 DEC 2014 14:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -322,20 +322,22 @@ Package hyperref Warning: Option `hyperindex' has already been used,
 Package hyperref Info: Option `colorlinks' set `true' on input line 444.
 Package hyperref Info: Option `linktocpage' set `true' on input line 444.
 Package hyperref Info: Option `plainpages' set `false' on input line 444.
-) (/usr/local/texlive/2014/texmf-dist/tex/latex/framed/framed.sty
-Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
-\OuterFrameSep=\skip53
-\fb@frw=\dimen109
-\fb@frh=\dimen110
-\FrameRule=\dimen111
-\FrameSep=\dimen112
+) (./Sweave.sty
+Package: Sweave 
+ (/usr/local/texlive/2014/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
 )
-(/usr/local/texlive/2014/texmf-dist/tex/latex/base/alltt.sty
-Package: alltt 1997/06/16 v2.0g defines alltt environment
-)
+(/usr/local/texlive/2014/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(/usr/local/texlive/2014/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 43.
+))
+Environment Schunk is already defined, stay with former definition)
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2013/01/14 v2.14 AMS math features
-\@mathmargin=\skip54
+\@mathmargin=\skip53
 
 For additional information on amsmath, use the `?' option.
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amstext.sty
@@ -344,11 +346,11 @@ Package: amstext 2000/06/29 v2.01
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0
 \@emptytoks=\toks15
-\ex@=\dimen113
+\ex@=\dimen109
 ))
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d
-\pmbraise@=\dimen114
+\pmbraise@=\dimen110
 )
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
@@ -365,7 +367,7 @@ LaTeX Info: Redefining \dots on input line 381.
 LaTeX Info: Redefining \cdots on input line 466.
 \Mathstrutbox@=\box27
 \strutbox@=\box28
-\big@size=\dimen115
+\big@size=\dimen111
 LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 \macc@depth=\count107
@@ -378,27 +380,27 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 \column@=\count112
 \maxfields@=\count113
 \andhelp@=\toks17
-\eqnshift@=\dimen116
-\alignsep@=\dimen117
-\tagshift@=\dimen118
-\tagwidth@=\dimen119
-\totwidth@=\dimen120
-\lineht@=\dimen121
+\eqnshift@=\dimen112
+\alignsep@=\dimen113
+\tagshift@=\dimen114
+\tagwidth@=\dimen115
+\totwidth@=\dimen116
+\lineht@=\dimen117
 \@envbody=\toks18
-\multlinegap=\skip55
-\multlinetaggap=\skip56
+\multlinegap=\skip54
+\multlinetaggap=\skip55
 \mathdisplay@stack=\toks19
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
 (/usr/local/texlive/2014/texmf-dist/tex/latex/tools/longtable.sty
 Package: longtable 2004/02/01 v4.11 Multi-page Table package (DPC)
-\LTleft=\skip57
-\LTright=\skip58
-\LTpre=\skip59
-\LTpost=\skip60
+\LTleft=\skip56
+\LTright=\skip57
+\LTpre=\skip58
+\LTpost=\skip59
 \LTchunksize=\count114
-\LTcapwidth=\dimen122
+\LTcapwidth=\dimen118
 \LT@head=\box29
 \LT@firsthead=\box30
 \LT@foot=\box31
@@ -414,14 +416,14 @@ Package: colortbl 2012/02/13 v1.0a Color table columns (DPC)
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/tools/array.sty
 Package: array 2008/09/09 v2.4c Tabular extension package (FMi)
-\col@sep=\dimen123
-\extrarowheight=\dimen124
+\col@sep=\dimen119
+\extrarowheight=\dimen120
 \NC@list=\toks21
-\extratabsurround=\skip61
-\backup@length=\skip62
+\extratabsurround=\skip60
+\backup@length=\skip61
 )
 \everycr=\toks22
-\minrowclearance=\skip63
+\minrowclearance=\skip62
 )
 (/usr/local/texlive/2014/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
@@ -443,60 +445,60 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
 )
 (/usr/local/texlive/2014/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2005/04/14 v1.61803 publication quality tables
-\heavyrulewidth=\dimen125
-\lightrulewidth=\dimen126
-\cmidrulewidth=\dimen127
-\belowrulesep=\dimen128
-\belowbottomsep=\dimen129
-\aboverulesep=\dimen130
-\abovetopsep=\dimen131
-\cmidrulesep=\dimen132
-\cmidrulekern=\dimen133
-\defaultaddspace=\dimen134
+\heavyrulewidth=\dimen121
+\lightrulewidth=\dimen122
+\cmidrulewidth=\dimen123
+\belowrulesep=\dimen124
+\belowbottomsep=\dimen125
+\aboverulesep=\dimen126
+\abovetopsep=\dimen127
+\cmidrulesep=\dimen128
+\cmidrulekern=\dimen129
+\defaultaddspace=\dimen130
 \@cmidla=\count119
 \@cmidlb=\count120
-\@aboverulesep=\dimen135
-\@belowrulesep=\dimen136
+\@aboverulesep=\dimen131
+\@belowrulesep=\dimen132
 \@thisruleclass=\count121
 \@lastruleclass=\count122
-\@thisrulewidth=\dimen137
+\@thisrulewidth=\dimen133
 )
 (./randomForestSurvival.aux)
 \openout1 = `randomForestSurvival.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 134.
-LaTeX Font Info:    ... okay on input line 134.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 134.
-LaTeX Font Info:    ... okay on input line 134.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 134.
-LaTeX Font Info:    ... okay on input line 134.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 134.
-LaTeX Font Info:    ... okay on input line 134.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 134.
-LaTeX Font Info:    ... okay on input line 134.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 134.
-LaTeX Font Info:    ... okay on input line 134.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 134.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 134.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 100.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 100.
 
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 134.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 134.
-LaTeX Font Info:    ... okay on input line 134.
+LaTeX Font Info:    ... okay on input line 100.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 100.
+LaTeX Font Info:    ... okay on input line 100.
 
 (/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count123
-\scratchdimen=\dimen138
+\scratchdimen=\dimen134
 \scratchbox=\box33
 \nofMPsegments=\count124
 \nofMParguments=\count125
 \everyMPshowfont=\toks23
 \MPscratchCnt=\count126
-\MPscratchDim=\dimen139
+\MPscratchDim=\dimen135
 \MPnumerator=\count127
 \makeMPintoPDFobject=\count128
 \everyMPtoPDFconversion=\toks24
@@ -516,7 +518,7 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 \AtBeginShipoutBox=\box34
-Package hyperref Info: Link coloring ON on input line 134.
+Package hyperref Info: Link coloring ON on input line 100.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -526,9 +528,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count129
 )
-LaTeX Info: Redefining \ref on input line 134.
-LaTeX Info: Redefining \pageref on input line 134.
-LaTeX Info: Redefining \nameref on input line 134.
+LaTeX Info: Redefining \ref on input line 100.
+LaTeX Info: Redefining \pageref on input line 100.
+LaTeX Info: Redefining \nameref on input line 100.
 
 (./randomForestSurvival.out) (./randomForestSurvival.out)
 \@outlinefile=\write4
@@ -536,73 +538,73 @@ LaTeX Info: Redefining \nameref on input line 134.
 
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
-LaTeX Font Info:    Try loading font information for T1+aess on input line 134.
+LaTeX Font Info:    Try loading font information for T1+aess on input line 100.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/ae/t1aess.fd
 File: t1aess.fd 1997/11/16 Font definitions for T1/aess.
 )
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 134.
+Package xcolor Warning: Incompatible color definition on input line 100.
 
 
-Package xcolor Warning: Incompatible color definition on input line 140.
+Package xcolor Warning: Incompatible color definition on input line 106.
 
-LaTeX Font Info:    Try loading font information for T1+aett on input line 140.
+LaTeX Font Info:    Try loading font information for T1+aett on input line 106.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
-Overfull \hbox (24.61833pt too wide) in paragraph at lines 140--141
+Overfull \hbox (24.61833pt too wide) in paragraph at lines 106--107
 \T1/aer/m/n/10.95 Com-pre-hen-sive \T1/aess/m/n/10.95 R \T1/aer/m/n/10.95 Archi
 ve Net-work via [][]$\T1/aett/m/n/10.95 http : / / CRAN . R-[]project . org / p
 ackage = ggRandomForests$[][]\T1/aer/m/n/10.95 . 
@@ -612,70 +614,70 @@ ackage = ggRandomForests$[][]\T1/aer/m/n/10.95 .
 
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 
-Package xcolor Warning: Incompatible color definition on input line 146.
+Package xcolor Warning: Incompatible color definition on input line 112.
 
 
-Package xcolor Warning: Incompatible color definition on input line 146.
+Package xcolor Warning: Incompatible color definition on input line 112.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 114.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 114.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 114.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 114.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 114.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 114.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 114.
 
 
-Package xcolor Warning: Incompatible color definition on input line 148.
+Package xcolor Warning: Incompatible color definition on input line 114.
 
 
-Package xcolor Warning: Incompatible color definition on input line 150.
+Package xcolor Warning: Incompatible color definition on input line 116.
 
 
-Package xcolor Warning: Incompatible color definition on input line 150.
+Package xcolor Warning: Incompatible color definition on input line 116.
 
 
-Package xcolor Warning: Incompatible color definition on input line 150.
+Package xcolor Warning: Incompatible color definition on input line 116.
 
 
-Package xcolor Warning: Incompatible color definition on input line 150.
+Package xcolor Warning: Incompatible color definition on input line 116.
 
 
-Package xcolor Warning: Incompatible color definition on input line 153.
+Package xcolor Warning: Incompatible color definition on input line 119.
 
 
-Package xcolor Warning: Incompatible color definition on input line 153.
+Package xcolor Warning: Incompatible color definition on input line 119.
 
 
-Package xcolor Warning: Incompatible color definition on input line 153.
+Package xcolor Warning: Incompatible color definition on input line 119.
 
 
-Package xcolor Warning: Incompatible color definition on input line 153.
+Package xcolor Warning: Incompatible color definition on input line 119.
 
 
-Package xcolor Warning: Incompatible color definition on input line 153.
+Package xcolor Warning: Incompatible color definition on input line 119.
 
 
-Package xcolor Warning: Incompatible color definition on input line 153.
+Package xcolor Warning: Incompatible color definition on input line 119.
 
 
-Package xcolor Warning: Incompatible color definition on input line 155.
+Package xcolor Warning: Incompatible color definition on input line 121.
 
 
-Package xcolor Warning: Incompatible color definition on input line 155.
+Package xcolor Warning: Incompatible color definition on input line 121.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -683,40 +685,37 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
  []
 
 [2]
-LaTeX Font Info:    Try loading font information for TS1+aer on input line 162.
+LaTeX Font Info:    Try loading font information for TS1+aer on input line 128.
 
  (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/ts1aer.fd
 File: ts1aer.fd 
 )
 LaTeX Font Info:    Font shape `TS1/aer/m/n' in size <10.95> not available
-(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 162.
+(Font)              Font shape `TS1/cmr/m/n' tried instead on input line 128.
 
-Package xcolor Warning: Incompatible color definition on input line 162.
-
-
-Package xcolor Warning: Incompatible color definition on input line 162.
+Package xcolor Warning: Incompatible color definition on input line 128.
 
 
-LaTeX Warning: Reference `S:rfsrcGrow' on page 3 undefined on input line 167.
+Package xcolor Warning: Incompatible color definition on input line 128.
+
+
+LaTeX Warning: Reference `S:rfsrcGrow' on page 3 undefined on input line 133.
 
 
 LaTeX Warning: Reference `S:variableIdentification' on page 3 undefined on inpu
-t line 167.
+t line 133.
 
 
-Package xcolor Warning: Incompatible color definition on input line 169.
+Package xcolor Warning: Incompatible color definition on input line 135.
 
 
-Package xcolor Warning: Incompatible color definition on input line 169.
+Package xcolor Warning: Incompatible color definition on input line 135.
 
 
-Package xcolor Warning: Incompatible color definition on input line 169.
+Package xcolor Warning: Incompatible color definition on input line 135.
 
 
-LaTeX Warning: Reference `S:coplots' on page 3 undefined on input line 169.
-
-
-Package xcolor Warning: Incompatible color definition on input line 254.
+LaTeX Warning: Reference `S:coplots' on page 3 undefined on input line 135.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
@@ -725,20 +724,27 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [3]
 
-Package xcolor Warning: Incompatible color definition on input line 265.
+Package xcolor Warning: Incompatible color definition on input line 248.
 
-
-Package xcolor Warning: Incompatible color definition on input line 283.
-
-
-Package xcolor Warning: Incompatible color definition on input line 285.
-
-<figure/rfs-rfsrc-plot-1.pdf, id=165, 289.08pt x 216.81pt>
+<figure/rfs-rfsrc-plot-1.pdf, id=169, 289.08pt x 216.81pt>
 File: figure/rfs-rfsrc-plot-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-rfsrc-plot-1.pdf>
-Package pdftex.def Info: figure/rfs-rfsrc-plot-1.pdf used on input line 287.
+Package pdftex.def Info: figure/rfs-rfsrc-plot-1.pdf used on input line 252.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+
+
+Package xcolor Warning: Incompatible color definition on input line 261.
+
+
+Package xcolor Warning: Incompatible color definition on input line 261.
+
+
+Package xcolor Warning: Incompatible color definition on input line 263.
+
+
+Package xcolor Warning: Incompatible color definition on input line 263.
+
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 4 []
@@ -746,50 +752,35 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [4]
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
 
-Package xcolor Warning: Incompatible color definition on input line 303.
+Package xcolor Warning: Incompatible color definition on input line 276.
 
-
-Package xcolor Warning: Incompatible color definition on input line 307.
-
-
-Package xcolor Warning: Incompatible color definition on input line 307.
-
-
-Package xcolor Warning: Incompatible color definition on input line 309.
-
-<figure/rfs-rf-vimp-1.pdf, id=187, 289.08pt x 216.81pt>
-File: figure/rfs-rf-vimp-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-rf-vimp-1.pdf>
-Package pdftex.def Info: figure/rfs-rf-vimp-1.pdf used on input line 316.
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 5
@@ -797,14 +788,17 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [5 <./figure/rfs-rfsrc-plot-1.pdf>]
 
-LaTeX Warning: Reference `fig:mindepth' on page 6 undefined on input line 333.
+Package xcolor Warning: Incompatible color definition on input line 280.
 
 
-Package xcolor Warning: Incompatible color definition on input line 333.
+Package xcolor Warning: Incompatible color definition on input line 280.
 
+<figure/rfs-rf-vimp-1.pdf, id=209, 289.08pt x 216.81pt>
+File: figure/rfs-rf-vimp-1.pdf Graphic file (type pdf)
 
-Package xcolor Warning: Incompatible color definition on input line 337.
-
+<use figure/rfs-rf-vimp-1.pdf>
+Package pdftex.def Info: figure/rfs-rf-vimp-1.pdf used on input line 288.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 6 []
@@ -812,212 +806,205 @@ Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 
 [6 <./figure/rfs-rf-vimp-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 348.
+LaTeX Warning: Reference `fig:mindepth' on page 7 undefined on input line 303.
 
 
-Package xcolor Warning: Incompatible color definition on input line 378.
+Package xcolor Warning: Incompatible color definition on input line 303.
 
-<figure/rfs-mindepth-plot-1.pdf, id=214, 289.08pt x 216.81pt>
-File: figure/rfs-mindepth-plot-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-mindepth-plot-1.pdf>
-Package pdftex.def Info: figure/rfs-mindepth-plot-1.pdf used on input line 380.
-
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 7
  []
 
-[7 <./figure/rfs-mindepth-plot-1.pdf>]
+[7] <figure/rfs-mindepth-plot-1.pdf, id=228, 289.08pt x 216.81pt>
+File: figure/rfs-mindepth-plot-1.pdf Graphic file (type pdf)
 
-Package xcolor Warning: Incompatible color definition on input line 395.
+<use figure/rfs-mindepth-plot-1.pdf>
+Package pdftex.def Info: figure/rfs-mindepth-plot-1.pdf used on input line 346.
 
-
-LaTeX Warning: Reference `fig:variable-plot' on page 8 undefined on input line 
-395.
-
-
-Package xcolor Warning: Incompatible color definition on input line 395.
-
-
-Package xcolor Warning: Incompatible color definition on input line 395.
-
-
-Package xcolor Warning: Incompatible color definition on input line 395.
-
-
-Package xcolor Warning: Incompatible color definition on input line 395.
-
-
-Package xcolor Warning: Incompatible color definition on input line 398.
-
-<figure/rfs-rfsrc-plot3Mnth-1.pdf, id=232, 289.08pt x 216.81pt>
-File: figure/rfs-rfsrc-plot3Mnth-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-rfsrc-plot3Mnth-1.pdf>
-Package pdftex.def Info: figure/rfs-rfsrc-plot3Mnth-1.pdf used on input line 40
-6.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 417.
+Package xcolor Warning: Incompatible color definition on input line 359.
+
+
+LaTeX Warning: Reference `fig:variable-plot' on page 8 undefined on input line 
+359.
+
+
+Package xcolor Warning: Incompatible color definition on input line 359.
+
+
+Package xcolor Warning: Incompatible color definition on input line 359.
+
+
+Package xcolor Warning: Incompatible color definition on input line 359.
+
+
+Package xcolor Warning: Incompatible color definition on input line 359.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 8 []
  []
 
-[8 <./figure/rfs-rfsrc-plot3Mnth-1.pdf>]
-<figure/rfs-variable-plotbili-1.pdf, id=248, 289.08pt x 289.08pt>
+[8 <./figure/rfs-mindepth-plot-1.pdf>]
+<figure/rfs-rfsrc-plot3Mnth-1.pdf, id=246, 289.08pt x 216.81pt>
+File: figure/rfs-rfsrc-plot3Mnth-1.pdf Graphic file (type pdf)
+
+<use figure/rfs-rfsrc-plot3Mnth-1.pdf>
+Package pdftex.def Info: figure/rfs-rfsrc-plot3Mnth-1.pdf used on input line 36
+9.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+
+<figure/rfs-variable-plotbili-1.pdf, id=247, 289.08pt x 289.08pt>
 File: figure/rfs-variable-plotbili-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-variable-plotbili-1.pdf>
 Package pdftex.def Info: figure/rfs-variable-plotbili-1.pdf used on input line 
-432.
+392.
 (pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
 
-
-Package xcolor Warning: Incompatible color definition on input line 443.
-
-<figure/rfs-variable-plotCombines-1.pdf, id=249, 505.89pt x 289.08pt>
+<figure/rfs-variable-plotCombines-1.pdf, id=248, 505.89pt x 289.08pt>
 File: figure/rfs-variable-plotCombines-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-variable-plotCombines-1.pdf>
 Package pdftex.def Info: figure/rfs-variable-plotCombines-1.pdf used on input l
-ine 454.
+ine 411.
 (pdftex.def)             Requested size: 442.65375pt x 252.94878pt.
-
-
-Package xcolor Warning: Incompatible color definition on input line 466.
-
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 9
  []
 
-[9 <./figure/rfs-variable-plotbili-1.pdf>]
-
-Package xcolor Warning: Incompatible color definition on input line 471.
-
-
-Package xcolor Warning: Incompatible color definition on input line 471.
-
-
-Package xcolor Warning: Incompatible color definition on input line 473.
-
-
-Package xcolor Warning: Incompatible color definition on input line 476.
-
-
-Package xcolor Warning: Incompatible color definition on input line 498.
-
-
+[9 <./figure/rfs-rfsrc-plot3Mnth-1.pdf>]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 10 []
  []
 
-[10 <./figure/rfs-variable-plotCombines-1.pdf>]
-<figure/rfs-pbc-partial-bili-1.pdf, id=285, 289.08pt x 216.81pt>
+[10 <./figure/rfs-variable-plotbili-1.pdf> <./figure/rfs-variable-plotCombines-
+1.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 421.
+
+
+Package xcolor Warning: Incompatible color definition on input line 426.
+
+
+Package xcolor Warning: Incompatible color definition on input line 426.
+
+
+Package xcolor Warning: Incompatible color definition on input line 428.
+
+<figure/rfs-pbc-partial-bili-1.pdf, id=290, 289.08pt x 216.81pt>
 File: figure/rfs-pbc-partial-bili-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-pbc-partial-bili-1.pdf>
-Package pdftex.def Info: figure/rfs-pbc-partial-bili-1.pdf used on input line 5
-10.
+Package pdftex.def Info: figure/rfs-pbc-partial-bili-1.pdf used on input line 4
+62.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
 
+<figure/rfs-pbc-partial-panel-1.pdf, id=291, 505.89pt x 289.08pt>
+File: figure/rfs-pbc-partial-panel-1.pdf Graphic file (type pdf)
 
-Package xcolor Warning: Incompatible color definition on input line 523.
-
-
-Package xcolor Warning: Incompatible color definition on input line 523.
-
-
-Package xcolor Warning: Incompatible color definition on input line 523.
-
-
-Package xcolor Warning: Incompatible color definition on input line 523.
+<use figure/rfs-pbc-partial-panel-1.pdf>
+Package pdftex.def Info: figure/rfs-pbc-partial-panel-1.pdf used on input line 
+477.
+(pdftex.def)             Requested size: 442.65375pt x 252.94878pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 525.
+Package xcolor Warning: Incompatible color definition on input line 490.
 
 
-Package xcolor Warning: Incompatible color definition on input line 525.
+Package xcolor Warning: Incompatible color definition on input line 490.
 
 
-Package xcolor Warning: Incompatible color definition on input line 525.
+Package xcolor Warning: Incompatible color definition on input line 490.
 
 
-Package xcolor Warning: Incompatible color definition on input line 525.
+Package xcolor Warning: Incompatible color definition on input line 490.
 
 
-Package xcolor Warning: Incompatible color definition on input line 525.
-
-
-Package xcolor Warning: Incompatible color definition on input line 527.
-
-
-Package xcolor Warning: Incompatible color definition on input line 536.
-
-<figure/rfs-interaction-1.pdf, id=295, 289.08pt x 216.81pt>
-File: figure/rfs-interaction-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-interaction-1.pdf>
-Package pdftex.def Info: figure/rfs-interaction-1.pdf used on input line 538.
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
- (./randomForestSurvival.bbl
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 11
  []
 
-[11 <./figure/rfs-pbc-partial-bili-1.pdf>]
+[11]
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/aer/m/n/10.95 12 []
+ []
+
+[12 <./figure/rfs-pbc-partial-bili-1.pdf> <./figure/rfs-pbc-partial-panel-1.pdf
+>]
+
+Package xcolor Warning: Incompatible color definition on input line 492.
+
+
+Package xcolor Warning: Incompatible color definition on input line 492.
+
+
+Package xcolor Warning: Incompatible color definition on input line 492.
+
+
+Package xcolor Warning: Incompatible color definition on input line 492.
+
+
+Package xcolor Warning: Incompatible color definition on input line 492.
+
+<figure/rfs-interaction-1.pdf, id=329, 289.08pt x 216.81pt>
+File: figure/rfs-interaction-1.pdf Graphic file (type pdf)
+
+<use figure/rfs-interaction-1.pdf>
+Package pdftex.def Info: figure/rfs-interaction-1.pdf used on input line 503.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+ (./randomForestSurvival.bbl
 
 Package xcolor Warning: Incompatible color definition on input line 23.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/aer/m/n/10.95 12 []
- []
-
-[12 <./figure/rfs-interaction-1.pdf>])
-
-Package xcolor Warning: Incompatible color definition on input line 558.
-
-
-Package xcolor Warning: Incompatible color definition on input line 558.
-
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 558.
-
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 13
  []
 
-[13]
+[13 <./figure/rfs-interaction-1.pdf>]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 14 []
  []
 
-[14]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 558.
+[14])
+
+Package xcolor Warning: Incompatible color definition on input line 521.
+
+
+Package xcolor Warning: Incompatible color definition on input line 521.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 521.
+
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/aer/m/n/10.95 15
+ []
+
+[15]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 521.
  (./randomForestSurvival.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 558.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 558.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 521.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 521.
 Package rerunfilecheck Info: File `randomForestSurvival.out' has not changed.
-(rerunfilecheck)             Checksum: A0E3275066F63F8DF4E3B3E101DFD17C;1442.
+(rerunfilecheck)             Checksum: E3F5005862180396A408E4FEA3F7F0AA;1595.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 558.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 521.
  ) 
 Here is how much of TeX's memory you used:
- 8324 strings out of 493117
- 120462 string characters out of 6135433
- 217881 words of memory out of 5000000
- 11526 multiletter control sequences out of 15000+600000
- 49991 words of font info for 98 fonts, out of 8000000 for 9000
+ 8316 strings out of 493117
+ 120687 string characters out of 6135433
+ 216657 words of memory out of 5000000
+ 11511 multiletter control sequences out of 15000+600000
+ 49636 words of font info for 97 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,10n,35p,1312b,436s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,10n,35p,1312b,470s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmb10.pfb><
 /usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></
@@ -1030,16 +1017,16 @@ al/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local
 /texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/te
 xlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texli
 ve/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsl10.pfb></usr/local/texliv
-e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive
-/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/
-2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2
-014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/20
-14/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2014
-/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on randomForestSurvival.pdf (14 pages, 614250 bytes).
+e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsltt10.pfb></usr/local/texli
+ve/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texliv
+e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
+/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/
+2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2
+014/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
+Output written on randomForestSurvival.pdf (15 pages, 616363 bytes).
 PDF statistics:
- 410 PDF objects out of 1000 (max. 8388607)
- 357 compressed objects within 4 object streams
- 78 named destinations out of 1000 (max. 500000)
- 161 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 436 PDF objects out of 1000 (max. 8388607)
+ 380 compressed objects within 4 object streams
+ 82 named destinations out of 1000 (max. 500000)
+ 174 words of extra memory for PDF output out of 10000 (max. 10000000)
 

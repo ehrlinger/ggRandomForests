@@ -81,6 +81,7 @@ URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 
 <<setup,include=FALSE, cache=FALSE, echo=FALSE>>=
 library(knitr)
+knitr::render_sweave() 
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
 opts_chunk$set(fig.path='figure/rfs-', 
                fig.align='center',
@@ -93,10 +94,10 @@ opts_chunk$set(fig.path='figure/rfs-',
                highlight=FALSE,
                comment=NA, 
                echo=FALSE, results=FALSE, message=FALSE, warning=FALSE,
-               error=FALSE, dev='pdf')
+               error=FALSE, dev='pdf', prompt=TRUE)
 
 # Setup the R environment
-options(replace.assign=TRUE,object.size=Inf,expressions=100000,memory=Inf,
+options(object.size=Inf,expressions=100000,memory=Inf,
         replace.assign=TRUE, width=90, prompt="R> ")
 
 #################
@@ -275,12 +276,15 @@ print(xtable(dta.labs %>% select(-names),
 
 % \doublespacing
 \section{Growing the Random Forest}
+
+
 <<rfsrc, echo=TRUE,eval=FALSE>>=
 pbc_rf <- rfsrc(Surv(days, status) ~ ., data = pbc, 
                   ntree = 2000,
                   na.action="na.impute", 
                   fast.restore = TRUE)
 @
+
 
 <<read-forest, echo=FALSE, results=FALSE>>=
 data(pbc_rf, package="ggRandomForests")
@@ -295,6 +299,16 @@ ggRFsrc <- plot.gg_rfsrc(pbc_rf, alpha=.2)+
   labs(y="Survival", x="time (days)")
 ggRFsrc
 @
+\subsection{Forest Imputation for missing values}\label{S:imputation}
+
+The randomForests package~\citep{liaw:2002} include a forest imputation method within the randomForest package. 
+
+We impute missing data (both x and y-variables) using a modification of the missing data algorithm of~\cite{Ishwaran:2008}. Prior to splitting a node, missing data for a variable is imputed by randomly drawing values from non-missing in-bag data. The purpose of the imputed data is to make it possible to assign cases to daughter nodes in the event the node is split on a variable with missing data. Imputed data is however not used to calculate the split-statistic which uses non-missing data only. Following a node split, imputed data are reset to missing and the process is repeated until terminal nodes are reached. Missing data is then imputed using OOB non-missing terminal node data. For integer valued variables and censoring indicators, imputation uses a maximal class rule, whereas continuous variables and survival time use a mean rule.
+
+The proximity matrix from the randomForest is used to update the imputation of the NAs. For continuous predictors, the imputed value is the weighted average of the non-missing obervations, where the weights are the proximities. For categorical predictors, the imputed value is the category with the largest average proximity. This process is iterated iter times.
+
+Regardless of what method is used, records in which all outcome and x-variable information are missing are removed from the forest analysis. Variables having all missing values are also removed.
+
 
 \section{Variable Selection}
 Unlike in the linear model settings, Random Forests does not require explicitly specify the functional form of the covariates to the response. Instead, we ascertain which variables contribute to the Random Forest estimates by querying the forest for variable usage. 
@@ -366,7 +380,7 @@ plot(ggrf, x_var = xvar[ind]) +
 @
 
 <<variable-plotCombines, echo=TRUE, fig.cap="Variable dependence Survival panel", fig.width=7, fig.height=4>>=
-plot(ggrf, x_var = xvar[2:6], panel=TRUE) +
+plot(ggrf, x_var = xvar[2:5], panel=TRUE) +
   labs(y="Survival")+
   theme(legend.position="none")+
   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
@@ -386,35 +400,43 @@ where $\hat{f}$ is the predicted response from the random forest and $x_{i,o}$ i
 Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month freedom from thrombosis on the surgical date covariate. 
 
 <<pbc-partial, echo=TRUE, eval=FALSE>>=
-pbc_prtl <- plot.variable(pbc_rf, surv.type="surv", time=364.25, 
+pbc_prtl <- plot.variable(pbc_rf, surv.type="surv",
+                          time=364.25, 
                       xvar.names=xvar, partial=TRUE,
                       show.plots = FALSE)
-pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv", time=3*364.25, 
+pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv", 
+                            time=3*364.25, 
                       xvar.names=xvar, partial=TRUE,
                       show.plots = FALSE)
 
 ggPrtl <- gg_partial(pbc_prtl)
 ggPrtl.3 <- gg_partial(pbc_prtl.3)
 
-## Need a merge.gg_partial function to combine multiple time curves along variables.
-## pbc.prtl <- merge(ggPrtl, ggPrtl.3)
+## Need to combine multiple time curves along variables.
+pbc_ggPart <- combine(ggPrtl, ggPrtl.3, labels=c("1 Year", "3 Years"))
+
 @
 
 <<pbc-partial-load>>=
 data("pbc_prtl", package="ggRandomForests")
-ggPrtl <- gg_partial(pbc_prtl)
+data("pbc_ggpart", package="ggRandomForests")
 @
 
 
 <<pbc-partial-bili, echo=TRUE, fig.cap="Risk adjusted Survival">>=
-ind  <- 1
-plot(ggPrtl[[ind]], se=FALSE)+
-  theme(legend.position=c(.2,.2))+
-  labs(y="Survival at 1 year", x=dta.labs[which(rownames(dta.labs)==xvar[ind]), "label"])+
-  scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
-                     labels=event.labels)+
-  scale_shape_manual(values=event.marks, labels=event.labels)
+nm  <- "bili"
+plot(pbc_ggpart[[nm]], se=FALSE)+
+  theme(legend.position=c(.8,.5))+
+  labs(y="Survival", 
+       x=dta.labs[which(rownames(dta.labs)==nm), "label"])
 @
+
+<<pbc-partial-panel, echo=TRUE, fig.cap="Risk adjusted Survival", fig.width=7, fig.height=4>>=
+plot(pbc_ggpart, se=FALSE, panel=TRUE)+
+  labs(x="", y="Survival")
+@
+
+
 
 \section{Variable Interactions}\label{S:interactions}
 Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. 

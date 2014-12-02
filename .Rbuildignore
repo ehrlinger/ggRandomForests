@@ -4,3 +4,4 @@ cran-comments.md
 .travis.yml
 ^packrat/
 ^\.Rprofile$
+Sweave.sty

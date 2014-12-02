@@ -1,7 +1,12 @@
-ggRandomForests 1.0.1
+ggRandomForests 1.1.0
 ===================
-* Updates to include vignette, and versions of randomForestSRC. 
-
+* Add panel option for gg_variable and gg_partial
+* Rework interactions plot
+* add gg_coplot functions
+* Imports instead of depends
+* Add version dependencies for randomForestSRC
+* Include package vignette "Random Forests for Survival" 
+* Misc Bug Fixes
 
 ggRandomForests 1.0.0
 ===================

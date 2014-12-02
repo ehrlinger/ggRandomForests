@@ -2,4 +2,13 @@
 .Rproj.user
 .Rhistory
 .RData
-packrat/lib*/
+Sweave.sty
+
+vignettes/*.log
+vignettes/*.gz
+vignettes/*.bbl
+vignettes/*.tex
+
+/vignettes/figure/*.pdf
+/packrat/lib*/
+

@@ -105,6 +105,8 @@ gg_partial.ggRandomForests <- function(object,
                      x=object$pData[[ind]]$x.uniq))
   })
   
+  names(pDat) <- object$xvar.names
+  
   # name the data, so labels come out correctly.
   for(ind in 1:n.var){
     colnames(pDat[[ind]])[-1] <- object$xvar.names[ind]

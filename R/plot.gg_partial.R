@@ -111,7 +111,13 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess", ...){
   hName <- colnames(object)[2]
   
   colnames(object)[2] <- "x"
-  prt.plt<- ggplot(object,aes_string(x="x", y="yhat"))+
+  
+  if(is.null(object$group)){
+    prt.plt<- ggplot(object,aes_string(x="x", y="yhat"))
+  }else{
+    prt.plt<- ggplot(object,aes_string(x="x", y="yhat", shape="group", color="group"))
+  }
+  prt.plt <- prt.plt+
     labs(x=hName, y="predicted")
   
   if(points)  

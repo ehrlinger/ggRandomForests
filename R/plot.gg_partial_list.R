@@ -27,7 +27,7 @@
 #' @param x \code{gg_partial_list} object created from a \code{\link{gg_partial}} 
 #' forest object
 #' @param points plot points (boolean)
-#' @param smooth use smooth curve (by type)
+#' @param panel should the entire list be plotted together?
 #' @param ... extra arguments
 #' 
 #' @return \code{ggplot} object
@@ -96,18 +96,54 @@
 #' plot(ggrf_obj)
 #' }
 #'
-#' @importFrom ggplot2 ggplot aes labs geom_point geom_smooth 
+#' @importFrom ggplot2 ggplot aes labs geom_point geom_smooth facet_wrap
 #'
 ### error rate plot
-plot.gg_partial_list <- function(x, points=TRUE, smooth="loess", ...){
+plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
   object <- x 
   
   if(!inherits(object, "list")) stop("Functions expects a list object")
-  lng <- length(object)
-  gDat <- vector("list", length=lng)
-  for(ind in 1:lng){
-    gDat[[ind]] <- plot.gg_partial(object[[ind]], points, smooth, ...)
-  }
   
+  lng <- length(object)
+  
+  # One figure, with facets?
+  if(panel){
+    
+    # Go through each element of the list, and add the variable name column,
+    # and rename the value column to "value"
+    nms <- names(object)
+    
+    dataObject <- lapply(nms, function(nm){
+      obj <- object[[nm]]
+      colnames(obj)[which(colnames(obj)==nm)]  <- "value"
+      obj$variable <- nm
+      obj
+    })
+    
+    dataObject <- do.call(rbind, dataObject)
+    dataObject$variable <- factor(dataObject$variable,
+                                  levels=unique(dataObject$variable))
+    
+    if(is.null(dataObject$group)){
+      gDat <- ggplot(dataObject,
+                     aes_string(x="value", y="yhat"))
+      
+    }else{
+      gDat <- ggplot(dataObject,
+                     aes_string(x="value", y="yhat", color="group", shape="group"))
+    }
+    gDat <- gDat +
+      geom_point(...)+
+      geom_smooth(...)+
+      facet_wrap(~ variable,
+                 scales="free_x")
+  }else{
+    # OR a list of figures.
+    gDat <- vector("list", length=lng)
+    
+    for(ind in 1:lng){
+      gDat[[ind]] <- plot.gg_partial(object[[ind]], points, ...)
+    }
+  }  
   return(gDat)
 }

@@ -2,8 +2,8 @@ Package: ggRandomForests
 Type: Package
 Title: Creating and Plotting Data Objects for Understanding Random
     Forests
-Version: 1.0.1.99
-Date: 2014-10-20
+Version: 1.1.0.99
+Date: 2014-12-2
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)
