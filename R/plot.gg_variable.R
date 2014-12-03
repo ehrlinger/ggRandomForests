@@ -26,8 +26,6 @@
 #' @param panel Should plots be facetted along multiple x_var?
 #' @param oob oob estimates (boolean)
 #' @param smooth type of smooth curve
-#' @param span tuning parameter for loess smooths
-#' @param alpha transparancy alpha passed to \code{ggplot} functions
 #' @param ... arguments passed to the \code{\link{gg_variable}} function.
 #'   
 #' @return \code{ggplot} object
@@ -109,12 +107,10 @@
 plot.gg_variable<- function(x, x_var, 
                             time, time_labels, 
                             panel=FALSE,
-                            oob=TRUE, smooth=TRUE, span, alpha, ...){
+                            oob=TRUE, smooth=TRUE,  ...){
   object <- x 
   if(inherits(x, "rfsrc")) object <- gg_variable(x, ...)
-  
-  if(missing(alpha)) alpha=.5
-  
+
   if(inherits(object, "surv")){
     family <- "surv"
   }else if(inherits(object, "regr")){
@@ -140,14 +136,6 @@ plot.gg_variable<- function(x, x_var,
       object <- gg3 
     }
     # print(object)
-  }
-  
-  sm_curve <- FALSE
-  if(is.logical(smooth)){ 
-    sm_curve <- smooth
-    smooth="loess"
-  }else{
-    sm_curve <- TRUE
   }
   
   if(sum(colnames(object) == "cens") != 0) family <- "surv"
@@ -176,17 +164,11 @@ plot.gg_variable<- function(x, x_var,
       gDta <- ggplot(dataObject)+
         labs(y= "Survival") +
         geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
-                   alpha=alpha)
+                   ...)
       
-      if(sm_curve){
-        if(missing(span)){
-          gDta <- gDta +
-            geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth)
-        }else{
-          gDta <- gDta +
-            geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth,
-                        span=span)
-        }
+      if(smooth){
+        gDta <- gDta +
+          geom_smooth(aes_string(x="value", y="yhat"), ...)
       }
       if(length(levels(object$time)) > 1){
         gDta<- gDta+
@@ -216,17 +198,11 @@ plot.gg_variable<- function(x, x_var,
       
       gDta <- ggplot(dataObject)+
         geom_point(aes_string(x="value", y="yhat"), 
-                   alpha=alpha)
+                   ...)
       
-      if(sm_curve){
-        if(missing(span)){
-          gDta <- gDta +
-            geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth)
-        }else{
-          gDta <- gDta +
-            geom_smooth(aes_string(x="value", y="yhat"), se=FALSE, method=smooth,
-                        span=span)
-        }
+      if(smooth){
+        gDta <- gDta +
+          geom_smooth(aes_string(x="value", y="yhat"), ...)
       }
       
       gDta <- gDta +
@@ -257,24 +233,20 @@ plot.gg_variable<- function(x, x_var,
         if(ccls=="numeric"){
           gDta[[ind]] <- gDta[[ind]]+
             geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
-                       alpha=alpha)
+                       ...)
           
-          if(sm_curve){
-            if(missing(span)){
-              gDta[[ind]] <- gDta[[ind]] +
-                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
-            }else{
-              gDta[[ind]] <- gDta[[ind]] +
-                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth,
-                            span=span)
-            }
+          if(smooth){
+            
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_smooth(aes_string(x="var", y="yhat"), ...)
+            
           }
         }else{
           gDta[[ind]] <- gDta[[ind]]+
             geom_boxplot(aes_string(x="var", y="yhat"), color="grey",
-                         alpha=alpha,outlier.shape = NA)+
+                         ...,outlier.shape = NA)+
             geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
-                        alpha=alpha)
+                        ...)
           
         }
         if(length(levels(object$time)) > 1){
@@ -291,24 +263,19 @@ plot.gg_variable<- function(x, x_var,
           if(ccls=="numeric"){
             gDta[[ind]] <- gDta[[ind]] +
               geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
-                         alpha=alpha)
+                         ...)
             
-            if(sm_curve){
-              if(missing(span)){
-                gDta[[ind]] <- gDta[[ind]] +
-                  geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
-              }else{
-                gDta[[ind]] <- gDta[[ind]] +
-                  geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, 
-                              span=span)
-              }
+            if(smooth){
+              
+              gDta[[ind]] <- gDta[[ind]] +
+                geom_smooth(aes_string(x="var", y="yhat"), ...)
             }
           }else{
             gDta[[ind]] <- gDta[[ind]]+
               geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
-                           alpha=alpha, outlier.shape = NA)+
+                           ..., outlier.shape = NA)+
               geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
-                          alpha=alpha)
+                          ...)
             
           }
         }else{
@@ -316,14 +283,14 @@ plot.gg_variable<- function(x, x_var,
           if(ccls=="numeric"){
             gDta[[ind]] <- gDta[[ind]] +
               geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
-                         alpha=alpha)
+                         ...)
             
           }else{
             gDta[[ind]] <- gDta[[ind]]+
               geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
-                           alpha=alpha, outlier.shape = NA)+
+                           ..., outlier.shape = NA)+
               geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
-                          alpha=alpha)
+                          ...)
             
           }
           
@@ -335,23 +302,20 @@ plot.gg_variable<- function(x, x_var,
           labs(x=hName, y="Predicted")
         if(ccls=="numeric"){
           gDta[[ind]] <- gDta[[ind]] +
-            geom_point(aes_string(x="var", y="yhat"), alpha=alpha)
+            geom_point(aes_string(x="var", y="yhat"), ...)
           
-          if(sm_curve){
-            if(missing(span)){
-              gDta[[ind]] <- gDta[[ind]] +
-                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth)
-            }else{
-              gDta[[ind]] <- gDta[[ind]] +
-                geom_smooth(aes_string(x="var", y="yhat"), se=FALSE, method=smooth, span=span)
-            }
+          if(smooth){
+            
+            gDta[[ind]] <- gDta[[ind]] +
+              geom_smooth(aes_string(x="var", y="yhat"), ...)
+            
           }
         }else{
           gDta[[ind]] <- gDta[[ind]]+
             geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
-                         alpha=alpha, outlier.shape = NA)+
+                         ..., outlier.shape = NA)+
             geom_jitter(aes_string(x="var", y="yhat"), 
-                        alpha=alpha)
+                        ...)
         }
         # Replace the original colname
         colnames(object)[chIndx] <- hName

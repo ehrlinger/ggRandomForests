@@ -19,7 +19,7 @@
 % \usepackage[sc]{mathpazo}
 \usepackage{amsmath}
 % %\usepackage{geometry} 
-% %\geometry{verbose,tmargin=1.25cm,bmargin=1.25cm,lmargin=1.25cm,rmargin=1.25cm}
+% %\geometry{verbose, tmargin = 1.25cm, bmargin = 1.25cm, lmargin = 1.25cm, rmargin = 1.25cm}
 % \setcounter{secnumdepth}{2}
 % \setcounter{tocdepth}{2}
 
@@ -32,9 +32,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{ggRandomForests}
-%\VignetteIndexEntry{Random Forests for Survival ggRandomForests packages}                                          
-%\VignetteKeywords{random forest, survival, VIMP, minimal depth}                                                                   
-%\VignetteDepends{ggRandomForests}                                      
+%\VignetteIndexEntry{Random Forests for Survival ggRandomForests packages}                     
+%\VignetteKeywords{random forest, survival, VIMP, minimal depth}                                  
+%\VignetteDepends{ggRandomForests}                   
 %\VignettePackage{ggRandomForests} 
 
 %% almost as usual
@@ -50,11 +50,11 @@
 
 %% an abstract and keywords
 \Abstract{ 
-Random Forests~\citep{Breiman:2001} (RF) are a fully non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF are a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Forests for survival~\citep{Ishwaran:2007a,Ishwaran:2008} (RF-S) are an extension of Breiman's RF techniques to survival settings, allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package~\citep{Ishwaran:RFSRC:2014} is a unified treatment of Breiman's random forests for survival, regression and classification problems.
+Random Forests~\citep{Breiman:2001} (RF) are a fully non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF are a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Forests for survival~\citep{Ishwaran:2007a, Ishwaran:2008} (RF-S) are an extension of Breiman's RF techniques to survival settings, allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package~\citep{Ishwaran:RFSRC:2014} is a unified treatment of Breiman's random forests for survival, regression and classification problems.
 
 Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package, tools for creating and plotting data structures to visually understand random forest models grown in \proglang{R} with the \pkg{randomForestSRC} package. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2}~\citep{Wickham2009} graphics package.
 
-This document is formatted as a tutorial for using the \pkg{randomForestSRC} for building random forests for survival and \pkg{ggRandomForests} package for investigating how the forest is constructed. This tutorial uses the Primary Biliary Cirrhosis (PBC) Data from the Mayo Clinic~\citep{fleming:1991} available in the  \pkg{randomForestSRC} package. We use Variable Importance measure (VIMP)~\citep{Breiman:2001} as well as  Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest, to assess the impact of variables on forest prediction. We will also demonstrate the use of variable dependence plots~\citep{Friedman00greedyfunction} to aid interpretation RF results in different response settings. We also will investigate interactions between covariates to demonstrate the strength of the Random Forest method in survival settings.
+This document is formatted as a tutorial for using the \pkg{randomForestSRC} for building random forests for survival and \pkg{ggRandomForests} package for investigating how the forest is constructed. This tutorial uses the Primary Biliary Cirrhosis (PBC) Data from the Mayo Clinic~\citep{fleming:1991} available in the \pkg{randomForestSRC} package. We use Variable Importance measure (VIMP)~\citep{Breiman:2001} as well as Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest, to assess the impact of variables on forest prediction. We will also demonstrate the use of variable dependence plots~\citep{Friedman00greedyfunction} to aid interpretation RF results in different response settings. We also will investigate interactions between covariates to demonstrate the strength of the Random Forest method in survival settings.
 }
 \Keywords{random forest, survival, VIMP, minimal depth, \proglang{R}, \pkg{randomForestSRC}}
 \Plainkeywords{random forest, survival, VIMP, minimal depth, R, randomForestSRC}
@@ -78,16 +78,16 @@ Lerner Research Institute\\
 Cleveland Clinic\\
 9500 Euclid Ave\\
 Cleveland, Ohio 44195\\
-%  Telephone: +41/0/44634-4643 \\
-%  Fax: +41/0/44634-4386 \\
+% Telephone: + 41/0/44634-4643 \\
+% Fax: + 41/0/44634-4386 \\
 E-mail: \email{john.ehrlinger@gmail.com}\\
 URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 }
 
 %% It is also possible to add a telephone and fax number
 %% before the e-mail in the following format:
-%% Telephone: +43/1/31336-5053
-%% Fax: +43/1/31336-734
+%% Telephone: + 43/1/31336-5053
+%% Fax: + 43/1/31336-734
 
 %% for those who use Sweave please include the following line (with % symbols):
 %% need no \usepackage{Sweave.sty}
@@ -103,7 +103,7 @@ URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 % -----------------------------------------------------
 This document is an introduction to the \pkg{ggRandomForests} \proglang{R} package. The aim of this introduction is to provide a detailed user guide to \pkg{ggRandomForests} as well as provide a tutorial to building a Random Forest Survival model with the \pkg{randomForestSRC} package. Our attempt is to build simple, reproducible worked examples with the Primary Biliary Cirrhosis (PBC) Data from the Mayo Clinic.
 
-This document is available as a vignette within \pkg{ggRandomForests} package, available from the Comprehensive \proglang{R} Archive Network via \url{http://CRAN.R-project.org/package=ggRandomForests}.
+This document is available as a vignette within \pkg{ggRandomForests} package, available from the Comprehensive \proglang{R} Archive Network via \url{http://CRAN.R-project.org/package = ggRandomForests}.
 
 % -----------------------------------------------------
 \section{Introduction} \label{S:introduction}
@@ -111,17 +111,17 @@ This document is available as a vignette within \pkg{ggRandomForests} package, a
 
 Random Forests~\citep{Breiman:2001} (RF) are a robust, non-parametric statistical method that optimizes predictive accuracy by averaging an ensemble of tree models. Random Forests are not parsimonious, utilizing all provided variables in predicting the specified outcome. It does not require prior knowledge of the parametric relation of variables (linearity or non-linearity) to the response, or of interactions between variables. RF chooses the most important variables by assessing variable impact on the predictive ability of the forest of trees.
 
-A Random Forest is built up by bagging~\citep{Breiman:1996} a collection of classification and regression trees~\citep{cart:1984} (CART). The method uses a set of $B$ bootstrap~\citep{bootstrap:1994} samples, growing a set of independent tree models on each sub-sample of the population. Trees are grown by recursively partitioning the population based on optimization of a split rule over the $p$ dimensional covariate space. At each split, a subset of  $m \le p$ candidate variables are chosen for the splitting. Each node is split into two daughter nodes by maximizing the separation of observations according the split rule. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used~\citep{FriedmanGreedyfunction:2000}. Each subsequent daughter node is then split until the process reaches the stopping criteria of either node purity or node member size defining the set of terminal (unsplit) nodes for the tree. Random Forests sort each observation into one unique terminal node per tree. The Random Forest estimate for each observation is calculated by aggregation, averaging (regression) or votes (classification), the terminal node results across the collection of $B$ trees. 
+A Random Forest is built up by bagging~\citep{Breiman:1996} a collection of classification and regression trees~\citep{cart:1984} (CART). The method uses a set of $B$ bootstrap~\citep{bootstrap:1994} samples, growing a set of independent tree models on each sub-sample of the population. Trees are grown by recursively partitioning the population based on optimization of a split rule over the $p$ dimensional covariate space. At each split, a subset of $m \le p$ candidate variables are chosen for the splitting. Each node is split into two daughter nodes by maximizing the separation of observations according the split rule. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used~\citep{FriedmanGreedyfunction:2000}. Each subsequent daughter node is then split until the process reaches the stopping criteria of either node purity or node member size defining the set of terminal (unsplit) nodes for the tree. Random Forests sort each observation into one unique terminal node per tree. The Random Forest estimate for each observation is calculated by aggregation, averaging (regression) or votes (classification), the terminal node results across the collection of $B$ trees. 
 
-One advantage of Random Forests is a built in generalization error estimate. Each bootstrap sample selects approximately $63.2\%$ of the population  on average. The remaining $36.8\%$ of observations, the Out-of-Bag~\citep{BreimanOOB:1996e} (OOB) sample, can be used as a hold out test set for each tree. An OOB prediction error estimate can be calculated for each observation by predicting the response over the set of trees which were NOT trained with that particular observation. Out-of-Bag prediction error estimates have been shown to be nearly identical to $n$--fold cross validation estimates~\citep{StatisticalLearning:2009}. This feature of Random Forests allows us to obtain both model fit and validation in one pass of the algorithm.
+One advantage of Random Forests is a built in generalization error estimate. Each bootstrap sample selects approximately $63.2\%$ of the population on average. The remaining $36.8\%$ of observations, the Out-of-Bag~\citep{BreimanOOB:1996e} (OOB) sample, can be used as a hold out test set for each tree. An OOB prediction error estimate can be calculated for each observation by predicting the response over the set of trees which were NOT trained with that particular observation. Out-of-Bag prediction error estimates have been shown to be nearly identical to $n$--fold cross validation estimates~\citep{StatisticalLearning:2009}. This feature of Random Forests allows us to obtain both model fit and validation in one pass of the algorithm.
 
 \subsection{Random Forests for Survival}\label{S:rfs}
-Random Forests for survival~\citep{Ishwaran:2007,Ishwaran:2008} (RF-S) are an extension of~\cite{Breiman:2001} Random Forests for right censored time to event data. A forest of survival trees is grown using a log-rank splitting rule to select the optimal candidate variables. Survival estimate for each observation are constructed with a Kaplan--Meier (KM) estimator within each terminal node, at each event time. 
+Random Forests for survival~\citep{Ishwaran:2007, Ishwaran:2008} (RF-S) are an extension of~\cite{Breiman:2001} Random Forests for right censored time to event data. A forest of survival trees is grown using a log-rank splitting rule to select the optimal candidate variables. Survival estimate for each observation are constructed with a Kaplan--Meier (KM) estimator within each terminal node, at each event time. 
 
 Random Forests for survival adaptively discover nonlinear effects and interactions and are fully nonparametric. Averaging over trees, with randomizing while growing a tree, enables RF-S to approximate complex survival functions, including non-proportional hazards, while maintaining low prediction error. \cite{Ishwaran:2010a} showed that RF-S is uniformly consistent and that survival forests have a uniform approximating property in finite-sample settings, a property not possessed by individual survival trees.
 
 \subsection{ggRandomForests}
-The \pkg{randomForestSRC} package is a mature analysis and research random forest implementation under rapid development. The package includes diagnostic  and post processing functions for analysis and visualizations of randomForest model properties. However, in our research we frequently found it difficult to manipulate the standard figures directly produced with the \pkg{randomForestSRC} package. 
+The \pkg{randomForestSRC} package is a mature analysis and research random forest implementation under rapid development. The package includes diagnostic and post processing functions for analysis and visualizations of randomForest model properties. However, in our research we frequently found it difficult to manipulate the standard figures directly produced with the \pkg{randomForestSRC} package. 
 
 In order to simplify these manipulations, we developed the \pkg{ggRandomForests} package. We attempted to follow two design principles in this development:
 \begin{itemize}
@@ -141,7 +141,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Tue Dec  2 17:08:09 2014
+% Wed Dec  3 12:43:48 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -150,9 +150,9 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
  & label & type \\ 
   \midrule
 status & censoring indicator & logical \\ 
-   \rowcolor[gray]{0.95}treatment & 1=D-penicillamine, 2=placebo & factor \\ 
+   \rowcolor[gray]{0.95}treatment & 1 = D-penicillamine, 2 = placebo & factor \\ 
   age & age in years & numeric \\ 
-   \rowcolor[gray]{0.95}sex & 0=female, 1=male & logical \\ 
+   \rowcolor[gray]{0.95}sex & 0 = female, 1 = male & logical \\ 
   ascites & presence of asictes & logical \\ 
    \rowcolor[gray]{0.95}hepatom & presence of hepatomegaly & logical \\ 
   spiders & presence of spiders & logical \\ 
@@ -178,38 +178,38 @@ status & censoring indicator & logical \\
 
 %' Figure~\ref{fig:dtaViewCat} and~\ref{fig:dtaView} are included to verify the data import step. 
 %' 
-%' <<dtaViewCat, fig.cap="Categorical Variable measures over time.", fig.width=7.5, fig.height=4>>=
-%' dta.tmp<-pbc[,c(which(cls == "factor"),
-%'                 which(cls=="logical"), 
-%'                    which(colnames(pbc) %in% c("age")))]
+%' <<dtaViewCat, fig.cap = "Categorical Variable measures over time.", fig.width = 7.5, fig.height = 4>>= 
+%' dta.tmp<-pbc[, c(which(cls ==  "factor"), 
+%'         which(cls ==  "logical"), 
+%'          which(colnames(pbc) %in% c("age")))]
 %' plt.dta <- dta.tmp %>% gather(variable, value, -age)
 %' 
-%' dtaView<- ggplot(plt.dta,aes(x=age, fill=value)) + 
-%'   geom_histogram(binwidth=5, color="black")+
-%'   labs(x="Age", y="")+
-%'   facet_wrap(~variable, ncol=3)+
-%'   theme(legend.position="none") +
-%'   scale_fill_brewer(palette = "Paired", na.value="lightgrey")
+%' dtaView<- ggplot(plt.dta, aes(x = age, fill = value)) + 
+%'  geom_histogram(binwidth = 5, color = "black") + 
+%'  labs(x = "Age", y = "") + 
+%'  facet_wrap(~variable, ncol = 3) + 
+%'  theme(legend.position = "none") + 
+%'  scale_fill_brewer(palette = "Paired", na.value = "lightgrey")
 %' 
 %' suppressWarnings(show(dtaView))
 %' 
 %' @
 %' 
-%' <<dtaView, fig.cap="Continuous Variable measures over time.", fig.width=7.5, fig.height=4>>=
-%' dta.tmp <- pbc[,c(which(cls == "numeric"),which(cls == "integer"), 
-%'                      which(colnames(pbc)=="status"))]
+%' <<dtaView, fig.cap = "Continuous Variable measures over time.", fig.width = 7.5, fig.height = 4>>= 
+%' dta.tmp <- pbc[, c(which(cls ==  "numeric"), which(cls ==  "integer"), 
+%'           which(colnames(pbc) ==  "status"))]
 %' 
 %' plt.dta <- dta.tmp %>% gather(variable, value, -age, -status)
 %' 
-%' dtaView<- ggplot(plt.dta,aes(x=age, y=value, color=status, shape=status)) + 
-%'   geom_point(alpha=alpha)+
-%'   geom_rug(aes(x=age), data=plt.dta %>% filter(is.na(value)))+
-%'   labs(x="Age", y="")+
-%'   facet_wrap(~variable,scales = "free_y", ncol=3)+
-%'   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
-%'                      labels=event.labels)+
-%'   scale_shape_manual(values=event.marks, labels=event.labels)+
-%'   theme(legend.position="none")
+%' dtaView<- ggplot(plt.dta, aes(x = age, y = value, color = status, shape = status)) + 
+%'  geom_point(alpha = alpha) + 
+%'  geom_rug(aes(x = age), data = plt.dta %>% filter(is.na(value))) + 
+%'  labs(x = "Age", y = "") + 
+%'  facet_wrap(~variable, scales = "free_y", ncol = 3) + 
+%'  scale_color_manual(values = strCol, na.value = "black", drop = FALSE, 
+%'           labels = event.labels) + 
+%'  scale_shape_manual(values = event.marks, labels = event.labels) + 
+%'  theme(legend.position = "none")
 %' 
 %' suppressWarnings(show(dtaView))
 %' @
@@ -221,9 +221,9 @@ status & censoring indicator & logical \\
 \begin{Schunk}
 \begin{Sinput}
 R> pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc, 
-+                   ntree = 2000,
-+                   na.action="na.impute", 
-+                   fast.restore = TRUE)
++          ntree = 2000, 
++          na.action = "na.impute", 
++          fast.restore = TRUE)
 \end{Sinput}
 \end{Schunk}
 
@@ -236,7 +236,7 @@ R> pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc,
                          Missingness: 33.97%
                      Number of trees: 500
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 78.112
+       Average no. of terminal nodes: 78.244
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
@@ -247,7 +247,18 @@ No. of variables tried at each split: 5
 \end{Soutput}
 \end{Schunk}
 
-Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, where censored device prediction is colored in blue, and devices experiencing a thrombosis event are colored in red.  
+\begin{Schunk}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-errorPlot-1} 
+
+}
+
+\caption[RSF prediction error estimates]{RSF prediction error estimates\label{fig:errorPlot}}
+\end{figure}
+\end{Schunk}
+
+Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, where censored device prediction is colored in blue, and devices experiencing a thrombosis event are colored in red. 
 \begin{Schunk}
 \begin{figure}[!htpb]
 
@@ -275,15 +286,15 @@ Unlike in the linear model settings, Random Forests does not require explicitly 
 \subsection{Variable Importance}\label{S:vimp}
 Unlike in the linear model settings, Random Forests does not require explicitly specify the functional form of the covariates to the response. Instead, we ascertain which variables contribute to the Random Forest estimates by querying the forest for variable usage. 
 
-Variable importance (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of~\cite{cart:1984}). The most popular VIMP method to date, adopts a prediction error approach involving "noising-up" a variable. VIMP for a variable $x_v$ is the difference between prediction error when $x_v$ is noised up by permuting its value randomly, compared to prediction error under the original predictor~\citep{Breiman:2001,liaw:2002,Ishwaran:2007,Ishwaran:2008}.
+Variable importance (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of~\cite{cart:1984}). The most popular VIMP method to date, adopts a prediction error approach involving "noising-up" a variable. VIMP for a variable $x_v$ is the difference between prediction error when $x_v$ is noised up by permuting its value randomly, compared to prediction error under the original predictor~\citep{Breiman:2001, liaw:2002, Ishwaran:2007, Ishwaran:2008}.
 
 Since VIMP is the absolute difference between prediction errors before and after permutation, a large VIMP value indicates that misspecification of that variable detracts from the predictive accuracy of the forest. VIMP close to zero indicates the variable contributes nothing to predictive accuracy, and negative values indicate the predictive accuracy improves when the variable is mispecified. In the later case, we assume noise is more informative than the variable. As such, we ignore variables with negative and near zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables. 
 
 In Figure~\ref{fig:rf-vimp}, we plot VIMP measures for each of the variables used to grow the forest estimates of Figure~\ref{fig:rfsrc-plot}. Variables are shown in VIMP rank order, largest (op\_yr) at the top, to smallest (iv\_lospr) at the bottom. In this case, we would focus attention on the top three variables (op\_yr (surgical date), ld and devno).
 \begin{Schunk}
 \begin{Sinput}
-R> plot.gg_vimp(pbc_rf)+
-+   theme(legend.position="none")
+R> plot.gg_vimp(pbc_rf) + 
++  theme(legend.position = "none")
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -298,7 +309,7 @@ R> plot.gg_vimp(pbc_rf)+
 \subsection{Minimal Depth}\label{S:minimalDepth}
 In VIMP, prognostic risk factors are determined by inspection of the forest, ranking the most important variables according to impact on predictive ability of the forest. An alternative method recognizes that most important variables for prediction are those that most frequently split nodes nearest to the trunks of the trees (ie, at the root node) since they partition the largest portions of the population. 
 
-Node levels are numbered based on their relative distance to the trunk of the tree (ie. 0, 1, 2).  A measure of important risk factors is determined by averaging the depth of first split for each variable over all trees within the forest. Lower values of this measure indicate variables that split larger groups of patients. 
+Node levels are numbered based on their relative distance to the trunk of the tree (ie. 0, 1, 2). A measure of important risk factors is determined by averaging the depth of first split for each variable over all trees within the forest. Lower values of this measure indicate variables that split larger groups of patients. 
 
 The maximal subtree for a variable $x$ is the largest subtree whose root node splits on $x$. Thus, all parent nodes of $x$'s maximal subtree have nodes that split on variables other than $x$. The largest maximal subtree possible is the root node. In general, however, there can be more than one maximal subtree for a variable. A maximal subtree may also not exist if there are no splits on the variable. The minimal depth of a maximal subtree (the first order depth) measures predictiveness of a variable $x$. It equals the shortest distance (the depth) from the root node to the parent node of the maximal subtree (zero is the smallest value possible). The smaller the minimal depth, the more impact $x$ has on prediction. The mean of the minimal depth distribution is used as the threshold value for deciding whether a variable's minimal depth value is small enough for the variable to be classified as strong. 
 
@@ -319,25 +330,25 @@ R> ggMindepth
 -----------------------------------------------------------
 gg_minimal_depth
 model size         : 12 
-depth threshold    : 5.9741 
+depth threshold    : 5.9473 
 
 PE :[1] 17.01
 -----------------------------------------------------------
 
 Top variables:
             depth   vimp
-bili        1.600  0.086
-albumin     2.408  0.012
-prothrombin 2.518  0.017
-copper      2.744  0.010
-edema       2.798  0.014
-age         3.148  0.011
-stage       3.162  0.014
-chol        3.392  0.004
-platelet    3.600  0.001
-sgot        3.858  0.004
-alk         4.124  0.000
-trig        4.644 -0.001
+bili        1.376  0.087
+prothrombin 2.420  0.018
+albumin     2.438  0.010
+edema       2.792  0.014
+copper      2.886  0.008
+age         3.118  0.012
+stage       3.370  0.016
+chol        3.464  0.004
+platelet    3.506  0.000
+sgot        3.902  0.003
+alk         4.184  0.001
+trig        4.458 -0.001
 -----------------------------------------------------------
 \end{Soutput}
 \end{Schunk}
@@ -362,9 +373,9 @@ Once we have an idea of which variables contribute to the predictive accuracy of
 
 \begin{Schunk}
 \begin{Sinput}
-R> ggRFsrc +
-+   geom_vline(aes(xintercept=1), linetype="dashed")+
-+   coord_cartesian(x=c(0,3))
+R> ggRFsrc + 
++  geom_vline(aes(xintercept = c(1, 3)), linetype = "dashed") + 
++  coord_cartesian(x = c(0, 4))
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -379,15 +390,15 @@ R> ggRFsrc +
 \begin{Schunk}
 \begin{Sinput}
 R> xvar <- pbc_vs$topvars[1:6]
-R> ind=1
-R> ggrf <- gg_variable(pbc_rf, time=c(1,3), time.labels = c("1 Year", "3 Years"))
+R> ind = 1
+R> ggrf <- gg_variable(pbc_rf, time = c(1, 3), time.labels = c("1 Year", "3 Years"))
 R> 
-R> plot(ggrf, x_var = xvar[ind]) +
-+   labs(y="Survival", x=dta.labs[which(rownames(dta.labs)==xvar[ind]), "label"])+
-+   theme(legend.position="none")+
-+   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
-+                      labels=event.labels)+
-+   scale_shape_manual(values=event.marks, labels=event.labels)
+R> plot(ggrf, x_var = xvar[ind], se=FALSE, alpha=.3) + 
++  labs(y = "Survival", x = dta.labs[which(rownames(dta.labs) ==  xvar[ind]), "label"]) + 
++  theme(legend.position = "none") + 
++  scale_color_manual(values = strCol, na.value = "black", drop = FALSE, 
++            labels = event.labels) + 
++  scale_shape_manual(values = event.marks, labels = event.labels)
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -401,12 +412,14 @@ R> plot(ggrf, x_var = xvar[ind]) +
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(ggrf, x_var = xvar[c(2:4, 6)], panel=TRUE) +
-+   labs(y="Survival")+
-+   theme(legend.position="none")+
-+   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
-+                      labels=event.labels)+
-+   scale_shape_manual(values=event.marks, labels=event.labels)
+R> plot(ggrf, x_var = xvar[c(2,3,5,6)], panel = TRUE, 
++      se=FALSE, alpha=.3, 
++      method="glm", formula=y~poly(x,2)) + 
++  labs(y = "Survival") + 
++  theme(legend.position = "none") + 
++  scale_color_manual(values = strCol, na.value = "black", drop = FALSE, 
++            labels = event.labels) + 
++  scale_shape_manual(values = event.marks, labels = event.labels)
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -420,29 +433,29 @@ R> plot(ggrf, x_var = xvar[c(2:4, 6)], panel=TRUE) +
 
 \subsection{Partial Dependence}\label{S:partialDependence}
 
-\emph{Partial dependence plots} are a risk adjusted alternative to marginal variable dependence. Partial plots are generated by integrating out the effects of variables beside the covariate of interest. The figures are constructed by selecting points evenly spaced along the distribution of the X variable. For each of these values (X=x), we calculate the average Random Forest prediction over all other covariates in X by \eqref{E:partial}.
+\emph{Partial dependence plots} are a risk adjusted alternative to marginal variable dependence. Partial plots are generated by integrating out the effects of variables beside the covariate of interest. The figures are constructed by selecting points evenly spaced along the distribution of the X variable. For each of these values (X = x), we calculate the average Random Forest prediction over all other covariates in X by \eqref{E:partial}.
 \begin{equation}
-\tilde{f}(x) = \frac{1}{n} \sum_{i=1}^n \hat{f}(x, x_{i,o}),
+\tilde{f}(x) = \frac{1}{n} \sum_{i = 1}^n \hat{f}(x, x_{i, o}), 
 \label{E:partial}
 \end{equation}
-where $\hat{f}$ is the predicted response from the random forest and $x_{i,o}$ is the value for all other covariates other than $X=x$ for the observation $i$~\citep{FriedmanGreedyfunction:2000}. Partial dependence plots in time to event settings are shown at specific time points, similar to variable dependence.
+where $\hat{f}$ is the predicted response from the random forest and $x_{i, o}$ is the value for all other covariates other than $X = x$ for the observation $i$~\citep{FriedmanGreedyfunction:2000}. Partial dependence plots in time to event settings are shown at specific time points, similar to variable dependence.
 
 Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month freedom from thrombosis on the surgical date covariate. 
 
 \begin{Schunk}
 \begin{Sinput}
 R> # Calculate the 1 year partial dependence
-R> pbc_prtl <- plot.variable(pbc_rf, surv.type="surv",
-+                           time=364.25, 
-+                       xvar.names=xvar, partial=TRUE,
-+                       show.plots = FALSE)
+R> pbc_prtl <- plot.variable(pbc_rf, surv.type = "surv", 
++              time = 364.25, 
++            xvar.names = xvar, partial = TRUE, 
++            show.plots = FALSE)
 R> 
 R> 
 R> # Calculate the 3 year partial dependence
-R> pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv", 
-+                             time=3*364.25, 
-+                       xvar.names=xvar, partial=TRUE,
-+                       show.plots = FALSE)
+R> pbc_prtl.3 <- plot.variable(pbc_rf, surv.type = "surv", 
++               time = 3*364.25, 
++            xvar.names = xvar, partial = TRUE, 
++            show.plots = FALSE)
 R> 
 R> # Create gg_partial objects
 R> ggPrtl <- gg_partial(pbc_prtl)
@@ -451,7 +464,7 @@ R>
 R> # Combine the objects to get multiple time curves 
 R> # along variables on a single figure.
 R> pbc_ggpart <- combine(ggPrtl, ggPrtl.3, 
-+                       labels=c("1 Year", "3 Years"))
++            labels = c("1 Year", "3 Years"))
 \end{Sinput}
 \end{Schunk}
 
@@ -460,11 +473,11 @@ R> pbc_ggpart <- combine(ggPrtl, ggPrtl.3,
 
 \begin{Schunk}
 \begin{Sinput}
-R> nm  <- "bili"
-R> plot(pbc_ggpart[[nm]], se=FALSE)+
-+   theme(legend.position=c(.8,.5))+
-+   labs(y="Survival", 
-+        x=dta.labs[which(rownames(dta.labs)==nm), "label"])
+R> nm <- "bili"
+R> plot(pbc_ggpart[[nm]], se = FALSE) + 
++  theme(legend.position = c(.8, .5)) + 
++  labs(y = "Survival", 
++     x = dta.labs[which(rownames(dta.labs) ==  nm), "label"])
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -478,8 +491,9 @@ R> plot(pbc_ggpart[[nm]], se=FALSE)+
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(pbc_ggpart, se=FALSE, panel=TRUE)+
-+   labs(x="", y="Survival")
+R> pbc_ggpart$bili <- pbc_ggpart$edema <- NULL
+R> plot(pbc_ggpart, se = FALSE, panel = TRUE) + 
++  labs(x = "", y = "Survival")
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -495,18 +509,19 @@ R> plot(pbc_ggpart, se=FALSE, panel=TRUE)+
 \section{Variable Interactions}\label{S:interactions}
 Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. 
 
-Using minimal depth, we calculate the maximal subtree using the normalized minimal depth of variable $i$ relative to the root node (normalized with respect to the size of the tree) the maximal subtree interaction measure  is the normalized minimal depth of a variable $j$ wet the maximal subtree for variable $i$ (normalized wet the size of $i$'s maximal subtree). Smaller diagonal entries indicate predictive variables. Small interaction entries having small diagonal entries are a sign of an interaction between variable $i$ and $j$~\citep{Ishwaran_HighDimension:2010,Ishwaran_HighDimension:2011} 
+Using minimal depth, we calculate the maximal subtree using the normalized minimal depth of variable $i$ relative to the root node (normalized with respect to the size of the tree) the maximal subtree interaction measure is the normalized minimal depth of a variable $j$ wet the maximal subtree for variable $i$ (normalized wet the size of $i$'s maximal subtree). Smaller diagonal entries indicate predictive variables. Small interaction entries having small diagonal entries are a sign of an interaction between variable $i$ and $j$~\citep{Ishwaran_HighDimension:2010, Ishwaran_HighDimension:2011} 
 
-By plotting the resulting interaction measures for each variable (Figure~\ref{fig:interaction}), we can detect the "most interactive" pairs, and develop conditional plots~\cite{chambers:1992,cleveland:1993}. These plots are similar to stratified results, arranged in a set of panels by the interactive variable of interest. 
+By plotting the resulting interaction measures for each variable (Figure~\ref{fig:interaction}), we can detect the "most interactive" pairs, and develop conditional plots~\cite{chambers:1992, cleveland:1993}. These plots are similar to stratified results, arranged in a set of panels by the interactive variable of interest. 
 \begin{Schunk}
 \begin{Sinput}
 R> pbc_interaction <- find.interaction(pbc_rf)
 R> 
 R> ggint <- gg_interaction(pbc_interaction)
-R> plot(ggint, x_var="bili")+
-+   labs(y="Interactive Minimal Depth")
+R> plot(ggint, x_var = "bili") + 
++  labs(y = "Interactive Minimal Depth")
 \end{Sinput}
 \end{Schunk}
+
 \begin{Schunk}
 \begin{figure}[!htpb]
 
@@ -520,9 +535,9 @@ R> plot(ggint, x_var="bili")+
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(gg_interaction(pbc_interaction), x_var=xvar[2:5])+
-+   labs(y="Interactive Minimal Depth")+
-+   theme(legend.position="none")
+R> plot(gg_interaction(pbc_interaction), x_var = xvar[2:5]) + 
++  labs(y = "Interactive Minimal Depth") + 
++  theme(legend.position = "none")
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -536,6 +551,48 @@ R> plot(gg_interaction(pbc_interaction), x_var=xvar[2:5])+
 
 \subsection{Conditional Dependence Plots}
 
+Interactions with categorical data are more straight forward, and can be generated directly from variable dependence plots. Recall the 1 year variable dependence for Billirubin, shown in Figure~\ref{fig:var_dep}. 
+\begin{Schunk}
+\begin{Sinput}
+R> ggrf <- gg_variable(pbc_rf, time = 1)
+R> 
+R> var_dep <- plot(ggrf, x_var = "bili", smooth = TRUE, 
++         method = "glm", alpha = .5, se = FALSE) + 
++  labs(y = "Survival", x = dta.labs[which(rownames(dta.labs) ==  xvar[ind]), "label"]) + 
++  theme(legend.position = "none") + 
++  scale_color_manual(values = strCol, na.value = "black", drop = FALSE, 
++            labels = event.labels) + 
++  scale_shape_manual(values = event.marks, labels = event.labels)
+R> 
+R> var_dep
+\end{Sinput}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-var_dep-1} 
+
+}
+
+\caption[Bilirubin Variable Dependence at 1 year]{Bilirubin Variable Dependence at 1 year.\label{fig:var_dep}}
+\end{figure}
+\end{Schunk}
+
+We can view the conditional dependence of survival against bilirubin, versus other categorical covariates, say treatment (binary) and stage (categorical), by adding a facet argument.
+\begin{Schunk}
+\begin{Sinput}
+R> var_dep + 
++  facet_grid(treatment~stage)
+\end{Sinput}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-coplot_bilirubin-1} 
+
+}
+
+\caption[Conditional Variable Dependence]{Conditional Variable Dependence. Interactions between bilrubin with treatment and stage variables.\label{fig:coplot_bilirubin}}
+\end{figure}
+\end{Schunk}
+
+Interactions with continuous variables requires stratification at some level.
 
 
 \section{Conclusion}
