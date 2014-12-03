@@ -141,7 +141,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Tue Dec  2 16:58:18 2014
+% Tue Dec  2 17:08:09 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -401,7 +401,7 @@ R> plot(ggrf, x_var = xvar[ind]) +
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(ggrf, x_var = xvar[2:5], panel=TRUE) +
+R> plot(ggrf, x_var = xvar[c(2:4, 6)], panel=TRUE) +
 +   labs(y="Survival")+
 +   theme(legend.position="none")+
 +   scale_color_manual(values=strCol, na.value = "black", drop=FALSE,
