@@ -308,6 +308,7 @@ ggRFsrc <- plot.gg_rfsrc(pbc_rf, alpha = .2) +
  labs(y = "Survival Probability", x = "time (years)")
 ggRFsrc
 @
+
 \subsection{Forest Imputation for missing values}\label{S:imputation}
 
 The randomForests package~\citep{liaw:2002} include a forest imputation method within the randomForest package. 
@@ -348,8 +349,7 @@ The minimal depth plot of Figure~\ref{fig:mindepth} is similar to the VIMP plot 
 <<mindepth-view, eval = FALSE, echo = TRUE>>= 
 pbc_vs <- var.select(pbc_rf)
 ggMindepth <- gg_minimal_depth(pbc_vs)
-
-ggMindepth
+print(ggMindepth)
 @
 
 <<mindepth-load>>= 
@@ -358,8 +358,8 @@ ggMindepth <- gg_minimal_depth(pbc_vs)
 ggMindepth
 @
 
-<<mindepth-plot, fig.cap = "Minimal Depth Plot">>= 
-plot.gg_minimal_depth(ggMindepth)
+<<mindepth-plot, echo=TRUE, fig.cap = "Minimal Depth Plot">>= 
+plot(ggMindepth)
 @
 
 
@@ -381,10 +381,9 @@ ind = 1
 ggrf <- gg_variable(pbc_rf, time = c(1, 3), time.labels = c("1 Year", "3 Years"))
 
 plot(ggrf, x_var = xvar[ind], se=FALSE, alpha=.3) + 
- labs(y = "Survival", x = dta.labs[which(rownames(dta.labs) ==  xvar[ind]), "label"]) + 
+ labs(y = "Survival") + 
  theme(legend.position = "none") + 
- scale_color_manual(values = strCol, na.value = "black", drop = FALSE, 
-           labels = event.labels) + 
+ scale_color_manual(values = strCol, labels = event.labels) + 
  scale_shape_manual(values = event.marks, labels = event.labels)
 @
 
@@ -394,9 +393,9 @@ plot(ggrf, x_var = xvar[c(2,3,5,6)], panel = TRUE,
      method="glm", formula=y~poly(x,2)) + 
  labs(y = "Survival") + 
  theme(legend.position = "none") + 
- scale_color_manual(values = strCol, na.value = "black", drop = FALSE, 
-           labels = event.labels) + 
- scale_shape_manual(values = event.marks, labels = event.labels)
+ scale_color_manual(values = strCol, labels = event.labels) + 
+ scale_shape_manual(values = event.marks, labels = event.labels)+
+  coord_cartesian(y=c(1,102))
 @
 
 \subsection{Partial Dependence}\label{S:partialDependence}
@@ -416,7 +415,6 @@ pbc_prtl <- plot.variable(pbc_rf, surv.type = "surv",
              time = 364.25, 
            xvar.names = xvar, partial = TRUE, 
            show.plots = FALSE)
-
 
 # Calculate the 3 year partial dependence
 pbc_prtl.3 <- plot.variable(pbc_rf, surv.type = "surv", 
@@ -442,26 +440,26 @@ data("pbc_ggpart", package="ggRandomForests")
 
 
 <<pbc-partial-bili, echo = TRUE, fig.cap = "Risk adjusted Survival">>= 
-nm <- "bili"
-plot(pbc_ggpart[[nm]], se = FALSE) + 
+plot(pbc_ggpart[["bili"]], se = FALSE) + 
  theme(legend.position = c(.8, .5)) + 
  labs(y = "Survival", 
-    x = dta.labs[which(rownames(dta.labs) ==  nm), "label"])
+    x = dta.labs[which(rownames(dta.labs) ==  "bili"), "label"])
 @
+
+Non-proportional hazards are evident in Figure~\ref{fig:pbc-partial-bili}.
+
 
 <<pbc-partial-panel, echo = TRUE, fig.cap = "Risk adjusted Survival - panel plot", fig.width = 7, fig.height = 4>>= 
 pbc_ggpart$bili <- pbc_ggpart$edema <- NULL
 plot(pbc_ggpart, se = FALSE, panel = TRUE) + 
+  theme(legend.position=c(.6,.6))+
  labs(x = "", y = "Survival")
 @
 
 
 \section{Variable Interactions}\label{S:interactions}
-Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. 
+Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. Minimal depth is calculated as the maximal subtree using the normalized minimal depth of variable $i$ relative to the root node (normalized with respect to the size of the tree). For interactions, we calculate the maximal subtree interaction measure as the normalized minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$ (normalized with respect to the size of $i$'s maximal subtree)~\citep{Ishwaran_HighDimension:2010,Ishwaran_HighDimension:2011}.
 
-Using minimal depth, we calculate the maximal subtree using the normalized minimal depth of variable $i$ relative to the root node (normalized with respect to the size of the tree) the maximal subtree interaction measure is the normalized minimal depth of a variable $j$ wet the maximal subtree for variable $i$ (normalized wet the size of $i$'s maximal subtree). Smaller diagonal entries indicate predictive variables. Small interaction entries having small diagonal entries are a sign of an interaction between variable $i$ and $j$~\citep{Ishwaran_HighDimension:2010, Ishwaran_HighDimension:2011} 
-
-By plotting the resulting interaction measures for each variable (Figure~\ref{fig:interaction}), we can detect the "most interactive" pairs, and develop conditional plots~\cite{chambers:1992, cleveland:1993}. These plots are similar to stratified results, arranged in a set of panels by the interactive variable of interest. 
 <<interaction-show, echo = TRUE, eval = FALSE>>= 
 pbc_interaction <- find.interaction(pbc_rf)
 
@@ -478,8 +476,8 @@ plot(gg_interaction(pbc_interaction), x_var = "bili") +
  labs(y = "Interactive Minimal Depth")
 @
 
+Measuring interactions with minimal depth results a $p \times p$ matrix of interaction measures, with smaller diagonal measures relative to the root node, and off diagonal measures of pairwise interaction. We expect the covariate with smallest minimal depth to have the highest interactive depth measures, so viewed alone may not be as informative as looking at other interactive depth plots. Figure~\ref{fig:interactionPanel} combines the remaining top ranked minimal depth measures for comparison.
 <<interactionPanel, echo = TRUE, fig.cap = "Risk adjusted Survival - panel plot", fig.width = 7, fig.height = 4>>= 
-
 plot(gg_interaction(pbc_interaction), x_var = xvar[2:5]) + 
  labs(y = "Interactive Minimal Depth") + 
  theme(legend.position = "none")
@@ -487,19 +485,28 @@ plot(gg_interaction(pbc_interaction), x_var = xvar[2:5]) +
 
 \subsection{Conditional Dependence Plots}
 
+By plotting the resulting interaction measures for each variable (Figure~\ref{fig:interaction}), we can detect the "most interactive" pairs, and develop conditional plots~\cite{chambers:1992, cleveland:1993}. These plots are similar to stratified results, arranged in a set of panels by the interactive variable of interest. 
+
 Interactions with categorical data are more straight forward, and can be generated directly from variable dependence plots. Recall the 1 year variable dependence for Billirubin, shown in Figure~\ref{fig:var_dep}. 
 <<var_dep, echo = TRUE, fig.cap = "Bilirubin Variable Dependence at 1 year.">>= 
 ggrf <- gg_variable(pbc_rf, time = 1)
 
-var_dep <- plot(ggrf, x_var = "bili", smooth = TRUE, 
+ggvar <- ggrf
+ggvar$treatment <- as.numeric(ggvar$treatment)
+ggvar$treatment[which(ggvar$treatment==1)] <- "D-pen" 
+ggvar$treatment[which(ggvar$treatment==2)] <- "placebo" 
+ggvar$treatment <- factor(ggvar$treatment)
+
+ggvar$stage <- paste("stage=", ggvar$stage, sep="")
+
+var_dep <- plot(ggvar, x_var = "bili", smooth = TRUE, 
         method = "glm", alpha = .5, se = FALSE) + 
  labs(y = "Survival", x = dta.labs[which(rownames(dta.labs) ==  xvar[ind]), "label"]) + 
  theme(legend.position = "none") + 
- scale_color_manual(values = strCol, na.value = "black", drop = FALSE, 
-           labels = event.labels) + 
+ scale_color_manual(values = strCol, labels = event.labels) + 
  scale_shape_manual(values = event.marks, labels = event.labels)
 
-var_dep
+show(var_dep)
 @
 
 We can view the conditional dependence of survival against bilirubin, versus other categorical covariates, say treatment (binary) and stage (categorical), by adding a facet argument.

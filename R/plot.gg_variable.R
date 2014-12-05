@@ -177,7 +177,7 @@ plot.gg_variable<- function(x, x_var,
           labs(x="")
       }else{
         gDta<- gDta + 
-          facet_wrap(reformulate("variable", "."),
+          facet_wrap(~variable,
                      scales="free_x")+
           labs(x="",y= paste("Survival at", object$time[1], "year"))
       }
