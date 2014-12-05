@@ -21,6 +21,9 @@
 #' 
 #' @param x \code{\link{gg_vimp}} object created from a \code{randomForestSRC::rfsrc} object
 #' @param n_var restrict the plot to only nvar variable importance measures
+#' @param barcolor Vector of booleans to color vimp bars. By default the "positive" column, TRUE-> "blue". 
+#' @param label A vector of alternative variable names.
+#' @param relative should we plot vimp or relative vimp. Defaults to vimp.
 #' @param ... optional arguments passed to gg_vimp if necessary
 #' 
 #' @return \code{ggplot} object
@@ -67,15 +70,30 @@
 #'
 #' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid
 ### error rate plot
-plot.gg_vimp<- function(x, n_var, ...){
+plot.gg_vimp<- function(x, n_var, barcolor, label, relative, ...){
   object  <- x
   if(!inherits(object, "gg_vimp")) object<- gg_vimp(object, ...)
   if(missing(n_var)) n_var <- dim(object)[1]
   if(n_var > dim(object)[1]) n_var <- dim(object)[1]
   
+  if(!missing(barcolor)){
+    # We have an alternative coloring
+    if(length(barcolor)==n_var){
+      object$positive[1:n_var]  <- barcolor
+    }  
+  }
+  if(!missing(label)){
+    # We have an alternative coloring
+    if(length(label)==n_var){
+      object$vars <- as.character(object$vars)
+      object$vars[1:n_var]  <- label
+      object$vars  <- factor(object$vars, levels=object$vars[order(object$vimp)])
+    }  
+  }
+  
   vimp.plt<-ggplot(object[1:n_var,])
   
-  if(is.null(object$rel_vimp)){
+  if(missing(relative) | is.null(object$rel_vimp)){
     if(length(unique(object$positive))>1){
       vimp.plt<-vimp.plt+
         geom_bar(aes_string(y="vimp", x="vars", fill="positive"), 
