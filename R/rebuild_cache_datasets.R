@@ -116,7 +116,7 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
     pbc$age <- pbc$age/364.24
     
     pbc$years <- pbc$days/364.24
-    pbc <- pbc[, which(colnames(pbc)=="days")]
+    pbc <- pbc[, -which(colnames(pbc)=="days")]
     
     dta$pbc <- pbc
     
