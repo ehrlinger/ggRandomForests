@@ -4,14 +4,14 @@
 \title{plot.gg_interaction
 Plot a \code{\link{gg_interaction}} object,}
 \usage{
-\method{plot}{gg_interaction}(x, x_var, color = "black", ...)
+\method{plot}{gg_interaction}(x, x_var, lbls, ...)
 }
 \arguments{
 \item{x}{gg_interaction object created from a \code{randomForestSRC::rfsrc} object}
 
 \item{x_var}{variable (or list of variables) of interest.}
 
-\item{color}{point color (default "black")}
+\item{lbls}{A vector of alternative variable names.}
 
 \item{...}{arguments passed to the \code{\link{gg_interaction}} function.}
 }

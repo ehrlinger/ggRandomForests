@@ -22,8 +22,8 @@
 #' @param x \code{\link{gg_minimal_depth}} object created from a \code{randomForestSRC::rfsrc} object
 #' @param selection should we restrict the plot to only include variables selected by the 
 #' minimal depth criteria (boolean).
-#' @param list_vars add text list of ranked variables. Only used if selection = TRUE (boolean)
 #' @param type select type of y axis labels c("named","rank")
+#' @param lbls a vector of alternative variable names.
 #' @param ... optional arguments passed to \code{\link{gg_minimal_depth}}
 #' 
 #' @return \code{ggplot} object
@@ -87,11 +87,11 @@
 #' plot(ggrf.obj)
 #' 
 #' }
-#' @importFrom ggplot2 ggplot geom_line theme aes_string labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline
+#' @importFrom ggplot2 ggplot geom_line theme aes_string labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline scale_x_discrete
 ### error rate plot
 plot.gg_minimal_depth <- function(x, selection=FALSE, 
-                                  list_vars = TRUE, 
                                   type=c("named","rank"),
+                                  lbls,
                                   ...){
   object <- x
   if(!inherits(x, "gg_minimal_depth")){
@@ -130,20 +130,6 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
                      coord_cartesian(ylim=xl)
     )
     
-    if(list_vars){
-      
-      # We will need to modify this as we get more examples.
-      x.pt <- ceiling(object$md.obj$threshold)
-      
-      # Populate the text box with min.depth ordered labels
-      yPlace= object$modelsize -1
-      
-      for(ind in 1:length(md.labs)){
-        gDta <- gDta +
-          annotate(x=x.pt,y=yPlace,geom="text",label=md.labs[ind], hjust=0,size=3)
-        yPlace <- yPlace - .95
-      }
-    }
     
   }else{ 
     vSel <- object$varselect
@@ -162,7 +148,19 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
     
   }
   
+  
   if(type=="named"){
+    if(!missing(lbls)){
+      if(length(lbls) >= length(vSel$names)){
+        st.lbls <- lbls[as.character(vSel$names)]
+        names(st.lbls) <- as.character(vSel$names)
+        st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
+        
+        gDta <- gDta +
+          scale_x_discrete(labels=st.lbls)
+      }
+    }
+    
     gDta <- gDta+
       geom_hline(yintercept=sel.th, lty=2)+
       labs(y="Minimal Depth of a Variable", x="")+

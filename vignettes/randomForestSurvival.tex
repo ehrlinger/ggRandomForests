@@ -141,7 +141,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Thu Dec  4 14:26:41 2014
+% Sat Dec  6 18:24:33 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -236,14 +236,14 @@ R> pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc,
                          Missingness: 33.97%
                      Number of trees: 500
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 78.244
+       Average no. of terminal nodes: 78.368
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank *random*
        Number of random split points: 10
-                          Error rate: 17.01%
+                          Error rate: 16.72%
 \end{Soutput}
 \end{Schunk}
 
@@ -330,25 +330,25 @@ R> print(ggMindepth)
 -----------------------------------------------------------
 gg_minimal_depth
 model size         : 12 
-depth threshold    : 5.9473 
+depth threshold    : 5.9439 
 
-PE :[1] 17.01
+PE :[1] 16.724
 -----------------------------------------------------------
 
 Top variables:
-            depth   vimp
-bili        1.376  0.087
-prothrombin 2.420  0.018
-albumin     2.438  0.010
-edema       2.792  0.014
-copper      2.886  0.008
-age         3.118  0.012
-stage       3.370  0.016
-chol        3.464  0.004
-platelet    3.506  0.000
-sgot        3.902  0.003
-alk         4.184  0.001
-trig        4.458 -0.001
+            depth  vimp
+bili        1.548 0.083
+prothrombin 2.454 0.019
+albumin     2.512 0.012
+edema       2.806 0.014
+copper      2.970 0.009
+age         3.032 0.011
+stage       3.346 0.012
+chol        3.410 0.004
+platelet    3.570 0.001
+sgot        3.958 0.003
+alk         4.296 0.000
+trig        4.594 0.000
 -----------------------------------------------------------
 \end{Soutput}
 \end{Schunk}

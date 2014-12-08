@@ -3,13 +3,15 @@
 \alias{plot.gg_minimal_vimp}
 \title{Plot a \code{\link{gg_minimal_vimp}} object for comparing the Minimal Depth and VIMP variable rankings.}
 \usage{
-\method{plot}{gg_minimal_vimp}(x, modelsize, ...)
+\method{plot}{gg_minimal_vimp}(x, modelsize, lbls, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_minimal_depth}} object created from a \code{randomForestSRC::var.select}
 object}
 
 \item{modelsize}{should the figure be restricted to a subset of the points.}
+
+\item{lbls}{a vector of alternative variable names.}
 
 \item{...}{optional arguments (not used)}
 }

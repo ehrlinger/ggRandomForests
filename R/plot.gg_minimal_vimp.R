@@ -22,10 +22,11 @@
 #' @param x \code{\link{gg_minimal_depth}} object created from a \code{randomForestSRC::var.select} 
 #' object
 #' @param modelsize should the figure be restricted to a subset of the points.
+#' @param lbls a vector of alternative variable names.
 #' @param ... optional arguments (not used)
 #' 
 #' @export plot.gg_minimal_vimp
-#' @importFrom ggplot2 ggplot aes_string geom_point labs geom_abline coord_flip
+#' @importFrom ggplot2 ggplot aes_string geom_point labs geom_abline coord_flip scale_x_discrete
 #'
 #' @seealso \code{\link{gg_minimal_vimp}} \code{randomForestSRC::var.select}
 #'  
@@ -75,7 +76,7 @@
 #' ggrf.obj <- gg_minimal_vimp(veteran_vs)
 #' plot(ggrf.obj)
 #' } 
-plot.gg_minimal_vimp <- function(x, modelsize, ...){
+plot.gg_minimal_vimp <- function(x, modelsize, lbls, ...){
   object <- x
   
   # Test that object is the correct class object
@@ -96,16 +97,26 @@ plot.gg_minimal_vimp <- function(x, modelsize, ...){
   # If we only have one class for coloring, just paint them black.
   if(length(unique(object$col)) > 1){
     gg_dta <- ggplot(object, aes_string(x="names", y="vimp", col="col"))+
-      geom_point()+
-      labs(x="Minimal Depth (Rank Order)", y="VIMP Rank", color="VIMP")+
-      geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)+
-      coord_flip()
+      labs(x="Minimal Depth (Rank Order)", y="VIMP Rank", color="VIMP")
+    
   }else{
     gg_dta <- ggplot(object, aes_string(x="names", y="vimp"))+
-      geom_point()+
-      labs(x="Minimal Depth (Rank Order)", y="VIMP Rank")+
-      geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)+
-      coord_flip()
+     
+      labs(x="Minimal Depth (Rank Order)", y="VIMP Rank")
   }
-  gg_dta
+  if(!missing(lbls)){
+    if(length(lbls) >= length(object$names)){
+      st.lbls <- lbls[as.character(object$names)]
+      names(st.lbls) <- as.character(object$names)
+      st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
+      
+      gg_dta <- gg_dta +
+        scale_x_discrete(labels=st.lbls)
+    }
+  }
+  
+  gg_dta + geom_point()+
+    geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)+
+    coord_flip()
+    
 }

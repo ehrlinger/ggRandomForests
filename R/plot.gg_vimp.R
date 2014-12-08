@@ -21,9 +21,9 @@
 #' 
 #' @param x \code{\link{gg_vimp}} object created from a \code{randomForestSRC::rfsrc} object
 #' @param n_var restrict the plot to only nvar variable importance measures
-#' @param barcolor Vector of booleans to color vimp bars. By default the "positive" column, TRUE-> "blue". 
-#' @param label A vector of alternative variable names.
 #' @param relative should we plot vimp or relative vimp. Defaults to vimp.
+#' @param lbls A vector of alternative variable names.
+#' @param bars A vector of alternative variable colors.
 #' @param ... optional arguments passed to gg_vimp if necessary
 #' 
 #' @return \code{ggplot} object
@@ -68,26 +68,18 @@
 #' plot(ggrf)
 #'}
 #'
-#' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid
+#' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid scale_x_discrete
 ### error rate plot
-plot.gg_vimp<- function(x, n_var, barcolor, label, relative, ...){
+plot.gg_vimp<- function(x, n_var, relative, lbls, bars, ...){
   object  <- x
   if(!inherits(object, "gg_vimp")) object<- gg_vimp(object, ...)
   if(missing(n_var)) n_var <- dim(object)[1]
   if(n_var > dim(object)[1]) n_var <- dim(object)[1]
   
-  if(!missing(barcolor)){
+  if(!missing(bars)){
     # We have an alternative coloring
-    if(length(barcolor)==n_var){
-      object$positive[1:n_var]  <- barcolor
-    }  
-  }
-  if(!missing(label)){
-    # We have an alternative coloring
-    if(length(label)==n_var){
-      object$vars <- as.character(object$vars)
-      object$vars[1:n_var]  <- label
-      object$vars  <- factor(object$vars, levels=object$vars[order(object$vimp)])
+    if(length(bars)==n_var){
+      object$positive[1:n_var]  <- bars
     }  
   }
   
@@ -104,7 +96,7 @@ plot.gg_vimp<- function(x, n_var, barcolor, label, relative, ...){
                  stat="identity", width=.5, color="black")
     }
     vimp.plt<-vimp.plt+labs(x="", y="Variable Importance")
-      
+    
   }else{
     if(length(unique(object$positive))>1){
       vimp.plt<-vimp.plt+
@@ -119,6 +111,16 @@ plot.gg_vimp<- function(x, n_var, barcolor, label, relative, ...){
       labs(x="", y="Relative Variable Importance") 
   }
   
+  if(!missing(lbls) ){
+    if(length(lbls) >= length(object$vars)){
+      st.lbls <- lbls[as.character(object$vars)]
+      names(st.lbls) <- as.character(object$vars)
+      st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
+      
+      vimp.plt <- vimp.plt+
+        scale_x_discrete(labels=st.lbls)
+    }
+  }
   if(is.null(object$set))
     vimp.plt<-vimp.plt+ 
     coord_flip()
