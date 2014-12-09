@@ -126,67 +126,67 @@ gg_variable.ggRandomForests <- function(object,
   #!! Have to verify this works with a plot.variable object...
   
   # gg_variable is really just cutting the data into time slices.
-  pDat <- data.frame(object$xvar)
+  gg_dta <- data.frame(object$xvar)
   
   if(object$family == "regr"){
     if(oob)
-      pDat$yhat <- object$predicted.oob
+      gg_dta$yhat <- object$predicted.oob
     else
-      pDat$yhat <- object$predicted
+      gg_dta$yhat <- object$predicted
     
   }else  if(object$family == "class"){
     if(oob){
       colnames(object$predicted.oob) <- paste("yhat.", colnames(object$predicted.oob),
                                               sep="")
-      pDat <- cbind(pDat, object$predicted.oob)
+      gg_dta <- cbind(gg_dta, object$predicted.oob)
       
     }else{
       colnames(object$predicted) <- paste("yhat.", colnames(object$predicted),
                                           sep="")
-      pDat <- object$predicted
+      gg_dta <- object$predicted
     }
-    pDat$yvar <- object$yvar
+    gg_dta$yvar <- object$yvar
     
   }else if(object$family == "surv"){
-    pDat$cens <- as.logical(object$yvar[,2])
-    colnames(pDat) <- c(object$xvar.names, "cens")
+    gg_dta$cens <- as.logical(object$yvar[,2])
+    colnames(gg_dta) <- c(object$xvar.names, "cens")
     
     lng <- length(time)
     for(ind in 1:lng){
       if(ind > 1){
-        pDat.t.old <- pDat.t
+        gg_dta.t.old <- gg_dta.t
       }
       ## For marginal plot.
       # Plot.variable returns the resubstituted survival, not OOB. So we calculate it.
       # Time is really straight forward since survival is a step function
       #
       # Get the event time occuring before or at 1 year. 
-      pDat.t <- pDat
+      gg_dta.t <- gg_dta
       inTime <-which(object$time.interest> time[ind])[1] -1
       if(inTime == 0)
         stop("The time of interest is less than the first event time. Make sure you are using the correct time units.")
       
       if(oob)
-        pDat.t$yhat=100*object$survival.oob[,inTime]
+        gg_dta.t$yhat=100*object$survival.oob[,inTime]
       else
-        pDat.t$yhat=100*object$survival[,inTime]
+        gg_dta.t$yhat=100*object$survival[,inTime]
       
       if(missing(time.labels)){
-        pDat.t$time <- time[ind]
+        gg_dta.t$time <- time[ind]
       }else{
-        pDat.t$time <- time.labels[ind]
+        gg_dta.t$time <- time.labels[ind]
       }
       
       if(ind > 1){
-        pDat.t<- rbind(pDat.t.old, pDat.t)
+        gg_dta.t<- rbind(gg_dta.t.old, gg_dta.t)
       }    
     }
     
-    pDat <- pDat.t
-    pDat$time <- factor(pDat$time, levels=unique(pDat$time))
+    gg_dta <- gg_dta.t
+    gg_dta$time <- factor(gg_dta$time, levels=unique(gg_dta$time))
   }
-  class(pDat) <- c("gg_variable", object$family, class(pDat))
-  invisible(pDat)
+  class(gg_dta) <- c("gg_variable", object$family, class(gg_dta))
+  invisible(gg_dta)
 }
 
 

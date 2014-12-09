@@ -59,7 +59,7 @@ calc_roc.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
   }
   pct<- pct[-length(pct)]
   
-  spc <-mclapply(pct, function(crit){
+  gg_dta <-mclapply(pct, function(crit){
     if(oob) 
       tbl <- xtabs(~res+(oob>crit), dta.roc)
     else
@@ -70,10 +70,10 @@ calc_roc.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
     cbind(sens=sens,spec=spec )
   })
   
-  spc <- do.call(rbind, spc)
-  spc <- rbind(c(0,1), spc, c(1,0))
+  gg_dta <- do.call(rbind, gg_dta)
+  gg_dta <- rbind(c(0,1), gg_dta, c(1,0))
   pct<- c("origin",pct,"limit")
-  return(data.frame(spc, row.names=pct))
+  return(data.frame(gg_dta, row.names=pct))
   
 }
 
@@ -86,16 +86,16 @@ calc_roc.randomForest <- function(rf, dta, which.outcome=1){
   pct <- sort(unique(prd[,which.outcome]))
   pct<- pct[-length(pct)]
   
-  spc <-mclapply(pct, function(crit){
+  gg_dta <-mclapply(pct, function(crit){
     tbl <- xtabs(~res+(prd>crit), dta.roc)
     
     spec<-tbl[2,2]/rowSums(tbl)[2]
     sens<-tbl[1,1]/rowSums(tbl)[1]
     cbind(sens=sens, spec=spec)
   })
-  spc <- do.call(rbind, spc)
+  gg_dta <- do.call(rbind, gg_dta)
   
-  return(data.frame(spc, row.names=pct))
+  return(data.frame(gg_dta, row.names=pct))
 }
 
 #'

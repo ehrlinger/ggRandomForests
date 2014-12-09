@@ -77,46 +77,45 @@
 #' plot(ggrf.obj)
 #' } 
 plot.gg_minimal_vimp <- function(x, modelsize, lbls, ...){
-  object <- x
+  gg_dta <- x
   
   # Test that object is the correct class object
-  if(!inherits(object, "gg_minimal_vimp")){
-    object <- gg_minimal_vimp(x, ...)
+  if(!inherits(gg_dta, "gg_minimal_vimp")){
+    gg_dta <- gg_minimal_vimp(x, ...)
   }
   
-  if(missing(modelsize)) modelsize <- dim(object)[1]
-  if(modelsize > dim(object)[1]) modelsize <- dim(object)[1]
-  if(length(unique(object$col)) > 1){
-    object$col <- factor(object$col)
+  if(missing(modelsize)) modelsize <- dim(gg_dta)[1]
+  if(modelsize > dim(gg_dta)[1]) modelsize <- dim(gg_dta)[1]
+  if(length(unique(gg_dta$col)) > 1){
+    gg_dta$col <- factor(gg_dta$col)
   }
-  object$names <- factor(object$names, 
-                         levels=object$names[order(as.numeric(object$depth))])
+  gg_dta$names <- factor(gg_dta$names, 
+                         levels=gg_dta$names[order(as.numeric(gg_dta$depth))])
   
-  object <- object[1:modelsize, ]
+  gg_dta <- gg_dta[1:modelsize, ]
   
   # If we only have one class for coloring, just paint them black.
-  if(length(unique(object$col)) > 1){
-    gg_dta <- ggplot(object, aes_string(x="names", y="vimp", col="col"))+
+  if(length(unique(gg_dta$col)) > 1){
+    gg_plt <- ggplot(gg_dta, aes_string(x="names", y="vimp", col="col"))+
       labs(x="Minimal Depth (Rank Order)", y="VIMP Rank", color="VIMP")
     
   }else{
-    gg_dta <- ggplot(object, aes_string(x="names", y="vimp"))+
-     
+    gg_plt <- ggplot(gg_dta, aes_string(x="names", y="vimp"))+
       labs(x="Minimal Depth (Rank Order)", y="VIMP Rank")
   }
   if(!missing(lbls)){
-    if(length(lbls) >= length(object$names)){
-      st.lbls <- lbls[as.character(object$names)]
-      names(st.lbls) <- as.character(object$names)
+    if(length(lbls) >= length(gg_dta$names)){
+      st.lbls <- lbls[as.character(gg_dta$names)]
+      names(st.lbls) <- as.character(gg_dta$names)
       st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
       
-      gg_dta <- gg_dta +
+      gg_plt <- gg_plt +
         scale_x_discrete(labels=st.lbls)
     }
   }
   
-  gg_dta + geom_point()+
+  gg_plt + geom_point()+
     geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)+
     coord_flip()
-    
+  
 }

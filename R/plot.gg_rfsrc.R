@@ -75,63 +75,63 @@
 #' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot theme element_blank
 ### error rate plot
 plot.gg_rfsrc<- function(x, ...){
-  obj <- x
+  gg_dta <- x
   
   # Initialize variables for gather statement... to silence R CMD CHECK
   #!TODO must be a better way to do this.?select
   variable <- value <- y <- ptid <- cens <- NA
   
   ## rfsrc places the class in position 1.
-  if(class(obj)[1] == "rfsrc") obj<- gg_rfsrc(obj, ...)
+  if(class(gg_dta)[1] == "rfsrc") gg_dta<- gg_rfsrc(gg_dta, ...)
   
   ## Classification forest?
-  if(inherits(obj, "class")){
-    if(dim(obj)[2] < 3){
+  if(inherits(gg_dta, "class")){
+    if(dim(gg_dta)[2] < 3){
       
-      gDta <- ggplot(obj)+
-        geom_jitter(aes_string(x=1, y=colnames(obj)[1],
-                               color=colnames(obj)[2],
-                               shape=colnames(obj)[2]), ...)+
-        geom_boxplot(aes_string(x=1, y=colnames(obj)[1]),
+      gg_plt <- ggplot(gg_dta)+
+        geom_jitter(aes_string(x=1, y=colnames(gg_dta)[1],
+                               color=colnames(gg_dta)[2],
+                               shape=colnames(gg_dta)[2]), ...)+
+        geom_boxplot(aes_string(x=1, y=colnames(gg_dta)[1]),
                      outlier.colour = "transparent", fill="transparent", notch = TRUE, ...)
     }else{
-      mlt <- obj %>% gather(variable, value, -y)
-      gDta <- ggplot(mlt, aes_string(x="variable",y="value"))+
+      gg_dta.mlt <- gg_dta %>% gather(variable, value, -y)
+      gg_plt <- ggplot(gg_dta.mlt, aes_string(x="variable",y="value"))+
         geom_jitter(aes_string(color="y",shape="y"), alpha=.5)
     }
-    gDta <- gDta + labs(y="Predicted (%)", x="")
-  }else if(inherits(obj,"surv")){
-    if(inherits(obj,"survSE")){
+    gg_plt <- gg_plt + labs(y="Predicted (%)", x="")
+  }else if(inherits(gg_dta,"surv")){
+    if(inherits(gg_dta,"survSE")){
       # Summarized survival plot for the group...
-      obj.t <-  select(obj, time, median, mean)%>% gather(variable, value,-time)
+      gg_dta.t <-  select(gg_dta, time, median, mean)%>% gather(variable, value,-time)
       
-      gDta <- ggplot(obj.t)+
+      gg_plt <- ggplot(gg_dta.t)+
         geom_ribbon(aes_string(x="time", ymin="lower", ymax="upper"), 
-                    data=obj, ...)+
+                    data=gg_dta, ...)+
         geom_step(aes_string(x="time", y="value", color="variable"), ...)
       
     }else{
-      dta <- obj %>% gather(variable, value, -ptid,-cens)
-      dta$variable <- as.numeric(as.character(dta$variable))
-      dta$ptid <- factor(dta$ptid)
+      gg_dta.mlt <- gg_dta %>% gather(variable, value, -ptid,-cens)
+      gg_dta.mlt$variable <- as.numeric(as.character(gg_dta.mlt$variable))
+      gg_dta.mlt$ptid <- factor(gg_dta.mlt$ptid)
       
       # Lines by observation
-      gDta <- ggplot(dta)+
+      gg_plt <- ggplot(gg_dta.mlt)+
         geom_step(aes_string(x="variable", y="value", col="cens", by="ptid"), 
                   ...)
     }
     
-    gDta<-gDta  +
+    gg_plt<-gg_plt  +
       labs(x="time (years)", y="OOB Survival (%)")
-  }else if(inherits(obj, "regr")){
-    gDta <- ggplot(obj)+
+  }else if(inherits(gg_dta, "regr")){
+    gg_plt <- ggplot(gg_dta)+
       geom_jitter(aes_string(x=1, y="yhat"), ...)+
       geom_boxplot(aes_string(x=1, y="yhat"),
                    outlier.colour = "transparent", fill="transparent", notch = TRUE, ...)+
-      labs(y="Predicted Value", x=colnames(obj)[2])+
+      labs(y="Predicted Value", x=colnames(gg_dta)[2])+
       theme(axis.ticks = element_blank(), axis.text.x = element_blank())
   }else{
-    stop(paste("Plotting for ", class(obj)[2], " randomForestSRC is not yet implemented."))
+    stop(paste("Plotting for ", class(gg_dta)[2], " randomForestSRC is not yet implemented."))
   }
-  return(gDta)
+  return(gg_plt)
 }

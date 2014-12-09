@@ -78,39 +78,34 @@ gg_vimp.ggRandomForests <- function(object, ...){
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
     warning("rfsrc object does not contain VIMP information. Calculating...")
-    imp <- data.frame(sort(vimp(object, ...)$importance, decreasing=TRUE))
+    gg_dta <- data.frame(sort(vimp(object, ...)$importance, decreasing=TRUE))
   }else{
-    imp <- object$importance
+    gg_dta <- object$importance
   }
   
   # Handle multiclass importance
-  if(!is.null(dim(imp))){
-    imp <- data.frame(imp)
-    imp$vars <- rownames(imp)
+  if(!is.null(dim(gg_dta))){
+    gg_dta <- data.frame(gg_dta)
+    gg_dta$vars <- rownames(gg_dta)
     
-    clnms <- colnames(imp)[-which(colnames(imp)=="vars")]
-    imp <- imp %>% gather(cls, vimp, -vars) %>% arrange(desc(vimp))
-    colnames(imp)[2] <- "set"
-    imp$vars <- factor(imp$vars)
+    clnms <- colnames(gg_dta)[-which(colnames(gg_dta)=="vars")]
+    gg_dta <- gg_dta %>% gather(cls, vimp, -vars) %>% arrange(desc(vimp))
+    colnames(gg_dta)[2] <- "set"
+    gg_dta$vars <- factor(gg_dta$vars)
   }else{
-    imp <- data.frame(sort(imp, decreasing=TRUE))
+    gg_dta <- data.frame(sort(gg_dta, decreasing=TRUE))
     
-    imp<- cbind(imp, imp/imp[1,1])
-    colnames(imp) <- c("vimp", "rel_vimp")
-    imp$vars <- rownames(imp)
-    imp$vars[which(is.na(imp$vars))] <- rownames(imp)[which(is.na(imp$vars))]
+    gg_dta<- cbind(gg_dta, gg_dta/gg_dta[1,1])
+    colnames(gg_dta) <- c("vimp", "rel_vimp")
+    gg_dta$vars <- rownames(gg_dta)
+    gg_dta$vars[which(is.na(gg_dta$vars))] <- rownames(gg_dta)[which(is.na(gg_dta$vars))]
   }
-  imp$vars <- factor(imp$vars, levels=rev(unique(imp$vars)))
-  imp$positive <- TRUE
-  imp$positive[which(imp$vimp <=0)] <- FALSE
-  #   
-  #     if(missing(xvar.vars)){
-  #       rfvimp <- as.data.frame(cbind(rfvimp[order(rfvimp, decreasing=TRUE)][1:n.var]))
-  #     }else{
-  #       rfvimp <- rfvimp[which(vars(rfvimp) %in% var.vars)]
-  #     }
-  class(imp) <- c("gg_vimp", class(imp))
-  invisible(imp)
+  gg_dta$vars <- factor(gg_dta$vars, levels=rev(unique(gg_dta$vars)))
+  gg_dta$positive <- TRUE
+  gg_dta$positive[which(gg_dta$vimp <=0)] <- FALSE
+  
+  class(gg_dta) <- c("gg_vimp", class(gg_dta))
+  invisible(gg_dta)
 }
 
 gg_vimp <-gg_vimp.ggRandomForests

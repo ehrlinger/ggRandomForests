@@ -66,64 +66,64 @@
 #' 
 ### error rate plot
 plot.gg_roc<- function(x, which.outcome=NULL, ...){
-  obj <- x
+  gg_dta <- x
   
-  if(inherits(obj, "rfsrc"))
-    if(inherits(obj, "class")){
+  if(inherits(gg_dta, "rfsrc"))
+    if(inherits(gg_dta, "class")){
       # How many classes are there?
-      crv <- dim(obj$predicted)[2]
+      crv <- dim(gg_dta$predicted)[2]
       
       if(crv > 2 & is.null(which.outcome) ){
-        obj <- lapply(1:crv, function(ind){
-          gg_roc(obj, which.outcome=ind, ...)
+        gg_dta <- lapply(1:crv, function(ind){
+          gg_roc(gg_dta, which.outcome=ind, ...)
         })
         
       }else{
-        obj<- gg_roc(obj, which.outcome, ...)
+        gg_dta<- gg_roc(gg_dta, which.outcome, ...)
       }
     }else{
       stop("gg_roc expects a classification randomForest.")
     }
-  if(inherits(obj, "gg_roc")){
-    obj <- obj[order(obj$spec),]
-    obj$fpr <- 1-obj$spec
-    auc <- calc_auc(obj)
+  if(inherits(gg_dta, "gg_roc")){
+    gg_dta <- gg_dta[order(gg_dta$spec),]
+    gg_dta$fpr <- 1-gg_dta$spec
+    auc <- calc_auc(gg_dta)
     
-    gDta <- ggplot(data=obj)+
+    gg_plt <- ggplot(data=gg_dta)+
       geom_line(aes_string(x="fpr", y="sens"))+
       labs(x="1 - Specificity (FPR)", y="Sensitivity (TPR)")+
       geom_abline(a=1, b=0, col="red", linetype=2, size=.5) +
       coord_fixed()
     
     
-    gDta <- gDta+
+    gg_plt <- gg_plt+
       annotate(x=.5,y=.2,geom="text", 
                label=paste("AUC = ",round(auc, digits=3), sep=""), hjust=0)
     
   }else{
-    obj <- lapply(obj, function(st){st[order(st$spec),]
+    gg_dta <- lapply(gg_dta, function(st){st[order(st$spec),]
                                     st})
-    obj <- lapply(obj, function(st){st$fpr <- 1-st$spec
+    gg_dta <- lapply(gg_dta, function(st){st$fpr <- 1-st$spec
                                     st})
-    obj <- lapply(1:length(obj), function(ind){ obj[[ind]]$outcome <- ind
-                                                obj[[ind]]})
+    gg_dta <- lapply(1:length(gg_dta), function(ind){ gg_dta[[ind]]$outcome <- ind
+                                                gg_dta[[ind]]})
     
-    auc <- lapply(obj, function(st){calc_auc(st)})
+    auc <- lapply(gg_dta, function(st){calc_auc(st)})
     
-    oDta <- do.call(rbind, obj)
+    oDta <- do.call(rbind, gg_dta)
     oDta$outcome <- factor(oDta$outcome)
     
-    gDta <- ggplot(data=oDta)+
+    gg_plt <- ggplot(data=oDta)+
       geom_line(aes_string(x="fpr", y="sens", linetype="outcome", col="outcome"))+
       labs(x="1 - Specificity (FPR)", y="Sensitivity (TPR)")+
       geom_abline(a=1, b=0, col="red", linetype=2, size=.5) +
       coord_fixed()
     
     if(crv < 2){
-      gDta <- gDta+
+      gg_plt <- gg_plt+
         annotate(x=.5,y=.2,geom="text", 
                  label=paste("AUC = ",round(auc, digits=3), sep=""), hjust=0)
     }
   }
-  return(gDta)
+  return(gg_plt)
 }

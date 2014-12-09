@@ -52,26 +52,26 @@
 #' 
 #' 
 print.gg_minimal_depth <- function(x, ...){
-  object <- x
+  gg_dta <- x
   
-  # If object is not a gg_minimal_depth object, check if it is the output
+  # If gg_dta is not a gg_minimal_depth object, check if it is the output
   # from rfsrc::var.select
   if(!inherits(x, "gg_minimal_depth"))
-    object <- gg_minimal_depth(x)
+    gg_dta <- gg_minimal_depth(x)
   
   cat("-----------------------------------------------------------\n")
   cat("gg_minimal_depth\n")
-  cat("model size         :", object$modelsize, "\n")
-  cat("depth threshold    :", round(object$md.obj$threshold, 4),  "\n")
+  cat("model size         :", gg_dta$modelsize, "\n")
+  cat("depth threshold    :", round(gg_dta$md.obj$threshold, 4),  "\n")
   cat("\n")
   cat("PE :")
-  print(round(object$err.rate, 3))
+  print(round(gg_dta$err.rate, 3))
 
   cat("-----------------------------------------------------------\n")
   cat("\n")
   cat("Top variables:\n")
-  vSel <- select(object$varselect, -names)
-  print(round(vSel[1:object$modelsize, , drop = FALSE], 3))
+  vSel <- select(gg_dta$varselect, -names)
+  print(round(vSel[1:gg_dta$modelsize, , drop = FALSE], 3))
   cat("-----------------------------------------------------------\n")
   
 }

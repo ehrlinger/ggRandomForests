@@ -98,25 +98,14 @@ gg_minimal_vimp.ggRandomForests <- function(object, event, ...){
   
   rnk.vm <- rnk.vm[order(vSel$varselect$vimp, decreasing=TRUE),]
   rnk.vm$vimp <- 1:dim(rnk.vm)[1]
-
+  
   # Default color is by negative/positive vimp
   rnk.vm$col <- c("-", "+")[as.numeric(vSel$varselect$vimp[order(vSel$varselect$vimp, 
                                                                  decreasing=TRUE)]>0)+1]
   
-  rnk <- merge(rnk.vm, rnk.md,by="names")
-
-  class(rnk) <- c("gg_minimal_vimp", class(rnk))
-  invisible(rnk)
+  gg_dta <- merge(rnk.vm, rnk.md,by="names")
   
-  # Can I shape it by the class of the variable?
-#   cls<- tbl_df(cls=cbind(sapply(rf.surv$xvar, class)))
-#   cls$names<- rownames(cls)
-#   rnk <- merge(rnk, cls,by="names")
-#   rnk<- rnk[order(rnk$depth),]
-#   ggplot(rnk[1:vSel$modelsize, ], aes(x=names, y=vimp, col=col, shape=cls))+
-#     labs(x="Minimal Depth (Rank Order)", y="VIMP Rank", color="VIMP")+
-#     geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)+
-#     geom_point(size=2)+
-
+  class(gg_dta) <- c("gg_minimal_vimp", class(gg_dta))
+  invisible(gg_dta)
 }
 gg_minimal_vimp <- gg_minimal_vimp.ggRandomForests

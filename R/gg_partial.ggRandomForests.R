@@ -100,27 +100,27 @@ gg_partial.ggRandomForests <- function(object,
   n.var=length(object$pData)
   
   # Create a list of data
-  pDat <- lapply(1:n.var, function(ind){
+  gg_dta <- lapply(1:n.var, function(ind){
     data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
                      x=object$pData[[ind]]$x.uniq))
   })
   
-  names(pDat) <- object$xvar.names
+  names(gg_dta) <- object$xvar.names
   
   # name the data, so labels come out correctly.
   for(ind in 1:n.var){
-    colnames(pDat[[ind]])[-1] <- object$xvar.names[ind]
-    if(!missing(named)) pDat[[ind]]$id=named
-    class(pDat[[ind]]) <- c("gg_partial", class(pDat[[ind]]))
+    colnames(gg_dta[[ind]])[-1] <- object$xvar.names[ind]
+    if(!missing(named)) gg_dta[[ind]]$id=named
+    class(gg_dta[[ind]]) <- c("gg_partial", class(gg_dta[[ind]]))
   }
   
   if(n.var ==1 ){
     # If there is only one, no need for a list
-    invisible(pDat[[1]])
+    invisible(gg_dta[[1]])
   }else{
     # otherwise, add a class label so we can handle it correctly. 
-    class(pDat) <- c("gg_partial_list", class(pDat))
-    invisible(pDat)
+    class(gg_dta) <- c("gg_partial_list", class(gg_dta))
+    invisible(gg_dta)
   }
   
 }

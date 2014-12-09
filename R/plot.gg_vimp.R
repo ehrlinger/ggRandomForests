@@ -71,62 +71,62 @@
 #' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid scale_x_discrete
 ### error rate plot
 plot.gg_vimp<- function(x, n_var, relative, lbls, bars, ...){
-  object  <- x
-  if(!inherits(object, "gg_vimp")) object<- gg_vimp(object, ...)
-  if(missing(n_var)) n_var <- dim(object)[1]
-  if(n_var > dim(object)[1]) n_var <- dim(object)[1]
+  gg_dta  <- x
+  if(!inherits(gg_dta, "gg_vimp")) gg_dta<- gg_vimp(gg_dta, ...)
+  if(missing(n_var)) n_var <- dim(gg_dta)[1]
+  if(n_var > dim(gg_dta)[1]) n_var <- dim(gg_dta)[1]
   
   if(!missing(bars)){
     # We have an alternative coloring
     if(length(bars)==n_var){
-      object$positive[1:n_var]  <- bars
+      gg_dta$positive[1:n_var]  <- bars
     }  
   }
   
-  vimp.plt<-ggplot(object[1:n_var,])
+  gg_plt<-ggplot(gg_dta[1:n_var,])
   
-  if(missing(relative) | is.null(object$rel_vimp)){
-    if(length(unique(object$positive))>1){
-      vimp.plt<-vimp.plt+
+  if(missing(relative) | is.null(gg_dta$rel_vimp)){
+    if(length(unique(gg_dta$positive))>1){
+      gg_plt<-gg_plt+
         geom_bar(aes_string(y="vimp", x="vars", fill="positive"), 
                  stat="identity", width=.5, color="black")
     }else{
-      vimp.plt<-vimp.plt+
+      gg_plt<-gg_plt+
         geom_bar(aes_string(y="vimp", x="vars"), 
                  stat="identity", width=.5, color="black")
     }
-    vimp.plt<-vimp.plt+labs(x="", y="Variable Importance")
+    gg_plt<-gg_plt+labs(x="", y="Variable Importance")
     
   }else{
-    if(length(unique(object$positive))>1){
-      vimp.plt<-vimp.plt+
+    if(length(unique(gg_dta$positive))>1){
+      gg_plt<-gg_plt+
         geom_bar(aes_string(y="rel_vimp", x="vars", fill="positive"), 
                  stat="identity", width=.5, color="black")
     }else{
-      vimp.plt<-vimp.plt+
+      gg_plt<-gg_plt+
         geom_bar(aes_string(y="rel_vimp", x="vars"), 
                  stat="identity", width=.5, color="black")
     }   
-    vimp.plt<-vimp.plt+ 
+    gg_plt<-gg_plt+ 
       labs(x="", y="Relative Variable Importance") 
   }
   
   if(!missing(lbls) ){
-    if(length(lbls) >= length(object$vars)){
-      st.lbls <- lbls[as.character(object$vars)]
-      names(st.lbls) <- as.character(object$vars)
+    if(length(lbls) >= length(gg_dta$vars)){
+      st.lbls <- lbls[as.character(gg_dta$vars)]
+      names(st.lbls) <- as.character(gg_dta$vars)
       st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
       
-      vimp.plt <- vimp.plt+
+      gg_plt <- gg_plt+
         scale_x_discrete(labels=st.lbls)
     }
   }
-  if(is.null(object$set))
-    vimp.plt<-vimp.plt+ 
+  if(is.null(gg_dta$set))
+    gg_plt<-gg_plt+ 
     coord_flip()
   else  
-    vimp.plt<-vimp.plt+ 
+    gg_plt<-gg_plt+ 
     coord_flip()+facet_grid(~set)
   
-  return(vimp.plt)
+  return(gg_plt)
 }

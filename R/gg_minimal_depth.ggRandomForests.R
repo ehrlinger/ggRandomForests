@@ -102,7 +102,7 @@ gg_minimal_depth.ggRandomForests <- function (object, ...){
   
   vSel$varselect$names <- factor(vSel$varselect$names, 
                                  levels=unique(vSel$varselect$names))
-
+  
   class(vSel) <- c("gg_minimal_depth", class(vSel))
   invisible(vSel) 
 }

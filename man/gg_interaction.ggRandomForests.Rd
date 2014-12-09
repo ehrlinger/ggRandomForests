@@ -13,8 +13,8 @@ gg_interaction.ggRandomForests(object, ...)
 \item{...}{optional extra arguments passed to find.interaction.}
 }
 \description{
-Basically, this function adds attributes to the results of running
-\code{randomForestSRC::find.interaction} on an \code{randomForestSRC::rfsrc} random forest.
+Converts the matrix returned from
+\code{randomForestSRC::find.interaction} to a data.frame and add attributes for identification.
 If passed  a \code{randomForestSRC::rfsrc} object, gg_interaction first runs
 the \code{randomForestSRC::find.interaction}
 function with all optional arguments.

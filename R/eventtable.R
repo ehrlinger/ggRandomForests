@@ -40,10 +40,10 @@ eventtable <- function(interval, censor, strat=NULL,
                        ...){
   type <- match.arg(type)
   
-  ltab <- switch(type,
+  gg_dta <- switch(type,
     kaplan=kaplan(interval=interval, censor=censor, strat=strat, data=data, ...),
     nelson=nelson(interval=interval, censor=censor, strat=strat, data=data, ...)
   )
   
-  return(ltab)
+  return(gg_dta)
 }

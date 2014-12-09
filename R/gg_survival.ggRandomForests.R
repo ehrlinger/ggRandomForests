@@ -114,13 +114,13 @@ gg_survival.ggRandomForests <- function(object,
   alph <- (1-climits)/2
   
   # Calc all the quantiles required (dplyr?)
-  fll<-t(apply(rf.data,2, function(rw){quantile(rw, prob=c(alph, .5, 1-alph))}))
+  gg_dta<-t(apply(rf.data,2, function(rw){quantile(rw, prob=c(alph, .5, 1-alph))}))
   
-  colnames(fll) <- c("lower", "median", "upper")
-  fll <- data.frame(cbind(time=object$time.interest,fll, mean=colMeans(rf.data)))
+  colnames(gg_dta) <- c("lower", "median", "upper")
+  gg_dta <- data.frame(cbind(time=object$time.interest,gg_dta, mean=colMeans(rf.data)))
   
-  class(fll)  <- c("gg_survival",class(fll))
-  invisible(fll)
+  class(gg_dta)  <- c("gg_survival",class(gg_dta))
+  invisible(gg_dta)
 }
 
 

@@ -56,20 +56,20 @@ plot.gg_survival<- function(x,
                             #  type=c("surv", "cum_haz","hazard","density","life","proplife"),
                             error=c("shade","bars","lines"),
                             ...){
-  object <- x
-  if(inherits(object, "rfsrc")) object<-gg_survival(object)
+  gg_dta <- x
+  if(inherits(gg_dta, "rfsrc")) gg_dta<-gg_survival(gg_dta)
   
   error <- match.arg(error)
   
   # Now order matters, so we want to place the forest predictions on the bottom
   # Create the figure skeleton,
-  plt<-ggplot(object)+
+  gg_plt<-ggplot(gg_dta)+
     geom_step(aes_string(x="time", y="mean"))
   
   # Do we want to show confidence limits?
-  plt <- switch(error,
+  gg_plt <- switch(error,
                 # Shading the standard errors
-                shade = plt + 
+                shade = gg_plt + 
                   geom_ribbon(aes_string(x="time", ymax="upper", ymin="lower"),
                               alpha=.5),
                 # Or showing error bars
@@ -78,13 +78,13 @@ plot.gg_survival<- function(x,
                   # requesting error bars, or this will get really messy.
                   #                     errFll <- fll
                   #                     if(!missing(errbars) )errFll <- errFll[errbars,]
-                  plt+ 
+                  gg_plt+ 
                     geom_errorbar(aes_string(x="time", ymax="upper", ymin="lower"))
                 },
-                lines= plt + 
+                lines= gg_plt + 
                   geom_step(aes_string(x="time", y="upper"), linetype=2)+
                   geom_step(aes(x="time", y="lower"), linetype=2), 
-                none=plt)
+                none=gg_plt)
   
-  return(plt)
+  return(gg_plt)
 }

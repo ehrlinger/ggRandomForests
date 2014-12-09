@@ -91,29 +91,29 @@ gg_rfsrc.ggRandomForests <- function(object,
     
     # Need to add multiclass methods
     if(oob){
-      dta <- 
+      gg_dta <- 
         if(dim(object$predicted.oob)[2] <= 2){
           data.frame(cbind(object$predicted.oob[,-1]))
         }else{ 
           data.frame(cbind(object$predicted.oob))
         }
     }else{
-      dta <- if(dim(object$predicted)[2] <= 2){
+      gg_dta <- if(dim(object$predicted)[2] <= 2){
         data.frame(cbind(object$predicted[,-1]))
       }else{ 
         data.frame(cbind(object$predicted))
       }
     }
-    if(dim(dta)[2] == 1){
-      colnames(dta)<- object$yvar.names
+    if(dim(gg_dta)[2] == 1){
+      colnames(gg_dta)<- object$yvar.names
       # Force this to logical return value... 
       #
       # This may be a bug in rfsrc, as it converts all classification models
       # into factors.
-      dta$y = as.logical(as.numeric(object$yvar)-1)
+      gg_dta$y = as.logical(as.numeric(object$yvar)-1)
     }else{
-      colnames(dta) <- levels(object$yvar)
-      dta$y <- object$yvar
+      colnames(gg_dta) <- levels(object$yvar)
+      gg_dta$y <- object$yvar
       
     }
     
@@ -144,7 +144,7 @@ gg_rfsrc.ggRandomForests <- function(object,
       
       rng$ptid <- 1:dim(rng)[1]
       rng$cens <- as.logical(object$yvar[,2])
-      dta <- rng
+      gg_dta <- rng
     }else{
       # If we have one value, then it's two sided.
       if(length(se) ==1 ){
@@ -161,33 +161,33 @@ gg_rfsrc.ggRandomForests <- function(object,
                    function(tPt){quantile(rng[,tPt],probs=c(se.set, .5) )})
       mn <- sapply(1:dim(rng)[2], function(tPt){mean(rng[,tPt])})
       
-      dta <- data.frame(cbind(object$time.interest,t(rng),mn))
+      gg_dta <- data.frame(cbind(object$time.interest,t(rng),mn))
       
-      if(dim(dta)[2] == 5){
-        colnames(dta)<- c("time", "lower",  "upper", "median", "mean")
+      if(dim(gg_dta)[2] == 5){
+        colnames(gg_dta)<- c("time", "lower",  "upper", "median", "mean")
       }else{
-        colnames(dta)<- c("time", se.set, "mean")
+        colnames(gg_dta)<- c("time", se.set, "mean")
       }
-      class(dta) <- c("survSE", surv_type, class(dta))
+      class(gg_dta) <- c("survSE", surv_type, class(gg_dta))
     }
-    class(dta) <- c(surv_type, class(dta))
+    class(gg_dta) <- c(surv_type, class(gg_dta))
     
   }else if(object$family == "regr"){
     
     # Need to add multiclass methods
     if(oob){
-      dta <- data.frame(cbind(object$predicted.oob, object$yvar))
+      gg_dta <- data.frame(cbind(object$predicted.oob, object$yvar))
     }else{
-      dta <- data.frame(cbind(object$predicted, object$yvar))
+      gg_dta <- data.frame(cbind(object$predicted, object$yvar))
     }
     
-    colnames(dta) <- c("yhat", object$yvar.names)
+    colnames(gg_dta) <- c("yhat", object$yvar.names)
   }else{
     stop(paste("Plotting for ", object$family, " randomForestSRC is not yet implemented.", sep=""))
   }
   
-  class(dta) <- c("gg_rfsrc", object$family, class(dta))
-  invisible(dta)
+  class(gg_dta) <- c("gg_rfsrc", object$family, class(gg_dta))
+  invisible(gg_dta)
 }
 
 gg_rfsrc <- gg_rfsrc.ggRandomForests

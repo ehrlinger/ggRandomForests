@@ -53,31 +53,31 @@ nelson <- function(interval, censor, data, strat=NULL, weight=NULL,climit=.95){
   #*******************************************************************************;
   # Summarize the various strata
   # only look at events
-  tbl.e <- tbl[which(tbl[,"dead"]!= 0),]
+  gg_dta <- tbl[which(tbl[,"dead"]!= 0),]
   
   # Calculate the hazard estimates from transforms and slopes         
   # as well as integral of survivorship and proportionate life length
-  lagS <- c(1,tbl.e[,"surv"])[-(dim(tbl.e)[1]+1)]
-  lagT <- c(0,tbl.e[,"time"])[-(dim(tbl.e)[1]+1)]
+  lagS <- c(1,gg_dta[,"surv"])[-(dim(gg_dta)[1]+1)]
+  lagT <- c(0,gg_dta[,"time"])[-(dim(gg_dta)[1]+1)]
   
-  deltaT <- tbl.e[,"time"] - lagT
-  hzrd <- log(lagS/tbl.e[,"surv"])/deltaT
+  deltaT <- gg_dta[,"time"] - lagT
+  hzrd <- log(lagS/gg_dta[,"surv"])/deltaT
   lnHzrd <- log(hzrd)
-  dnsty <- (lagS-tbl.e[,"surv"])/deltaT
-  midInt <- (tbl.e[,"time"]+lagT)/2
+  dnsty <- (lagS-gg_dta[,"surv"])/deltaT
+  midInt <- (gg_dta[,"time"]+lagT)/2
   lagL <- 0
-  life <- vector("numeric", length=dim(tbl.e)[1])
+  life <- vector("numeric", length=dim(gg_dta)[1])
   
-  for(ind in 1:dim(tbl.e)[1]){
-    life[ind] <- lagL +deltaT[ind] *(3*tbl.e[ind,"surv"] - lagS[ind])/2
+  for(ind in 1:dim(gg_dta)[1]){
+    life[ind] <- lagL +deltaT[ind] *(3*gg_dta[ind,"surv"] - lagS[ind])/2
     lagL <- life[ind]
   }
-  prpLife <- life/tbl.e[,"time"]
-  tbl.e<- data.frame(cbind(tbl.e, cll, clu, cumHazard[indx], hzrd, dnsty, midInt, life, prpLife))
-  colnames(tbl.e) <- c(colnames(tbl.e)[1:6], 
+  prpLife <- life/gg_dta[,"time"]
+  gg_dta<- data.frame(cbind(gg_dta, cll, clu, cumHazard[indx], hzrd, dnsty, midInt, life, prpLife))
+  colnames(gg_dta) <- c(colnames(gg_dta)[1:6], 
                        "lower_cl", "upper_cl", "cum_haz","hazard", "density", "mid_int", "life", "proplife")
   
-  class(tbl.e) <- c("gg_survival", class(tbl.e)) 
-  invisible(tbl.e)
+  class(gg_dta) <- c("gg_survival", class(gg_dta)) 
+  invisible(gg_dta)
 }
 

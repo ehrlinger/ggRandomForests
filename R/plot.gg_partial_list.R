@@ -100,50 +100,50 @@
 #'
 ### error rate plot
 plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
-  object <- x 
+  gg_dta <- x 
   
-  if(!inherits(object, "list")) stop("Functions expects a list object")
+  if(!inherits(gg_dta, "list")) stop("Functions expects a list object")
   
-  lng <- length(object)
+  lng <- length(gg_dta)
   
   # One figure, with facets?
   if(panel){
     
     # Go through each element of the list, and add the variable name column,
     # and rename the value column to "value"
-    nms <- names(object)
+    nms <- names(gg_dta)
     
-    dataObject <- lapply(nms, function(nm){
-      obj <- object[[nm]]
+    gg_dta <- lapply(nms, function(nm){
+      obj <- gg_dta[[nm]]
       colnames(obj)[which(colnames(obj)==nm)]  <- "value"
       obj$variable <- nm
       obj
     })
     
-    dataObject <- do.call(rbind, dataObject)
-    dataObject$variable <- factor(dataObject$variable,
-                                  levels=unique(dataObject$variable))
+    gg_dta <- do.call(rbind, gg_dta)
+    gg_dta$variable <- factor(gg_dta$variable,
+                                  levels=unique(gg_dta$variable))
     
-    if(is.null(dataObject$group)){
-      gDat <- ggplot(dataObject,
+    if(is.null(gg_dta$group)){
+      gg_plt <- ggplot(gg_dta,
                      aes_string(x="value", y="yhat"))
       
     }else{
-      gDat <- ggplot(dataObject,
+      gg_plt <- ggplot(gg_dta,
                      aes_string(x="value", y="yhat", color="group", shape="group"))
     }
-    gDat <- gDat +
+    gg_plt <- gg_plt +
       geom_point(...)+
       geom_smooth(...)+
       facet_wrap(~ variable,
                  scales="free_x")
   }else{
     # OR a list of figures.
-    gDat <- vector("list", length=lng)
+    gg_plt <- vector("list", length=lng)
     
     for(ind in 1:lng){
-      gDat[[ind]] <- plot.gg_partial(object[[ind]], points, ...)
+      gg_plt[[ind]] <- plot.gg_partial(gg_dta[[ind]], points, ...)
     }
   }  
-  return(gDat)
+  return(gg_plt)
 }

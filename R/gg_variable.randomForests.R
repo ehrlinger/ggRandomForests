@@ -34,6 +34,6 @@ gg_variable.randomForests <- function(object,
                                      ...)
 {
   stop("Function in development...")
-  class(pDat) <- c("gg_variable", class(pDat))
-  invisible(pDat)
+  class(gg_dta) <- c("gg_variable", class(gg_dta))
+  invisible(gg_dta)
 }

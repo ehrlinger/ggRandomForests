@@ -99,18 +99,18 @@ gg_error.ggRandomForests <- function(object, ...) {
     stop("Performance values are not available for this forest.")
   }
   
-  error <- data.frame(object$err.rate)
-  if(is.null(dim(error))){
-    error<- data.frame(error=cbind(error))
+  gg_dta <- data.frame(object$err.rate)
+  if(is.null(dim(gg_dta))){
+    gg_dta<- data.frame(error=cbind(gg_dta))
   }
   
-  if("object.err.rate" %in% colnames(error))
-    colnames(error)[which(colnames(error)=="object.err.rate")] <- "error"
+  if("object.err.rate" %in% colnames(gg_dta))
+    colnames(gg_dta)[which(colnames(gg_dta)=="object.err.rate")] <- "error"
   
-  error$ntree <- 1:dim(error)[1]
+  gg_dta$ntree <- 1:dim(gg_dta)[1]
   
-  class(error) <- c("gg_error",class(error))
-  invisible(error)
+  class(gg_dta) <- c("gg_error",class(gg_dta))
+  invisible(gg_dta)
 }
 
 gg_error <- gg_error.ggRandomForests

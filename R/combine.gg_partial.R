@@ -31,22 +31,25 @@ combine.gg_partial_list <- function(x, y, labels, ...){
     stop("combine.gg_partial expects either a ggRandomForests::gg_partial or randomForestSRC::plot.variable object")
   }
   
-  # If the plot.variable object returned the time argument, 
-  # we could get it from there. Instead, we'll make something up.
   if(missing(labels)) labels=c("x1", "x2")
   cls <- class(x)
   
-  x <- lapply(x, function(st){st$group <- labels[1]; st})
-  y <- lapply(y, function(st){st$group <- labels[2]; st})
+  ### We need to check for the case when x and y already have
+  ### a group column, 
+  if(is.null(x$group))
+    x <- lapply(x, function(st){st$group <- labels[1]; st})
+  
+  if(is.null(y$group))
+    y <- lapply(y, function(st){st$group <- labels[2]; st})
   
   # By names
   nm <- names(x)
   
-  object <- lapply(nm, function(ind){
+  gg_dta <- lapply(nm, function(ind){
     rbind(x[[ind]], y[[ind]])
   })
   
-  names(object) <- names(x)
-  class(object) <- cls
-  return(object)
+  names(gg_dta) <- names(x)
+  class(gg_dta) <- cls
+  return(gg_dta)
 }

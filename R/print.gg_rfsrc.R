@@ -51,11 +51,14 @@
 #' 
 #' 
 print.gg_rfsrc <- function(x, ...){
-  object <- x
+  
+  gg_dta <- x
   
   # If object is not a gg_rfsrc object, check if it is the output
   # from rfsrc::var.select
   if(!inherits(x, "gg_rfsrc"))
-    object <- gg_rfsrc(x)
- 
+    gg_dta <- gg_rfsrc(x)
+  
+  class(gg_dta)
+  
 }
