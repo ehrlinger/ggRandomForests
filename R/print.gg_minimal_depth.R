@@ -34,8 +34,8 @@
 #' data(iris_vs, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' ggrf_md<- gg_minimal_depth(iris_vs)
-#' print(ggrf_md)
+#' gg_dta<- gg_minimal_depth(iris_vs)
+#' print(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## regression example
@@ -44,8 +44,8 @@
 #' data(airq_vs, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' ggrf_md<- gg_minimal_depth(airq_vs)
-#' print(ggrf_md)
+#' gg_dta<- gg_minimal_depth(airq_vs)
+#' print(gg_dta)
 #' 
 #' # To nicely print a rfsrc::var.select output... 
 #' print.gg_minimal_depth(airq_vs)

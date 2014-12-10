@@ -28,8 +28,8 @@ Print a \code{\link{gg_interaction}} object.
 data(iris_interaction, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-ggrf_int<- gg_interaction(iris_interaction)
-print(ggrf_int)
+gg_dta<- gg_interaction(iris_interaction)
+print(gg_dta)
 
 ## ------------------------------------------------------------
 ## regression example
@@ -37,8 +37,8 @@ print(ggrf_int)
 data(airq_interaction, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-ggrf_int<- gg_interaction(airq_interaction)
-print(ggrf_int)
+gg_dta<- gg_interaction(airq_interaction)
+print(gg_dta)
 }
 \seealso{
 \code{rfsrc} \code{tbl_df} \code{\link{gg_interaction}}

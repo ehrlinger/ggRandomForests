@@ -46,9 +46,9 @@ or the output from the \code{randomForestSRC::plot.variable} function.
 #iris.obj <- rfsrc(Species ~., data = iris)
 data(iris_rf, package="ggRandomForests")
 
-ggrf <- gg_variable(iris_rf)
-plot(ggrf, x_var="Sepal.Width")
-plot(ggrf, x_var="Sepal.Length")
+gg_dta <- gg_variable(iris_rf)
+plot(gg_dta, x_var="Sepal.Width")
+plot(gg_dta, x_var="Sepal.Length")
 
 ## ------------------------------------------------------------
 ## regression
@@ -57,23 +57,27 @@ plot(ggrf, x_var="Sepal.Length")
 ## airquality
 #airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 data(airq_rf, package="ggRandomForests")
-ggrf <- gg_variable(airq_rf)
-plot(ggrf, x_var="Wind")
-plot(ggrf, x_var="Temp")
-plot(ggrf, x_var="Solar.R")
+gg_dta <- gg_variable(airq_rf)
+plot(gg_dta, x_var="Wind")
+plot(gg_dta, x_var="Temp")
+plot(gg_dta, x_var="Solar.R")
 
 ## motor trend cars
 #mtcars.obj <- rfsrc(mpg ~ ., data = mtcars)
 data(mtcars_rf, package="ggRandomForests")
-ggrf <- gg_variable(mtcars_rf)
+gg_dta <- gg_variable(mtcars_rf)
 
 # mtcars$cyl is an ordinal variable
-plot(ggrf, x_var="cyl")
+gg_dta$cyl <- factor(gg_dta$cyl)
+plot(gg_dta, x_var="cyl")
 
 # Others are continuous
-plot(ggrf, x_var="disp")
-plot(ggrf, x_var="hp")
-plot(ggrf, x_var="wt")
+plot(gg_dta, x_var="disp")
+plot(gg_dta, x_var="hp")
+plot(gg_dta, x_var="wt")
+
+# panel
+plot(gg_dta, x_var=c("disp","hp"), panel=TRUE)
 
 ## ------------------------------------------------------------
 ## survival examples
@@ -85,19 +89,25 @@ plot(ggrf, x_var="wt")
 data(veteran_rf, package="ggRandomForests")
 
 # get the 1 year survival time.
-ggrf <- gg_variable(veteran_rf, time=30)
+gg_dta <- gg_variable(veteran_rf, time=90)
 
 # Generate variable dependance plots for age and diagtime
-plot(ggrf, x_var = "age")
-plot(ggrf, x_var = "diagtime")
+plot(gg_dta, x_var = "age")
+plot(gg_dta, x_var = "diagtime")
+
+# Generate coplots
+plot(gg_dta, x_var = c("age", "diagtime"), panel=TRUE)
 
 # If we want to compare survival at different time points, say 30, 90 day
 # and 1 year
-ggrf <- gg_variable(veteran_rf, time=c(30, 90, 365))
+gg_dta <- gg_variable(veteran_rf, time=c(30, 90, 365))
 
 # Generate variable dependance plots for age and diagtime
-plot(ggrf, x_var = "age")
-plot(ggrf, x_var = "diagtime")
+plot(gg_dta, x_var = "age")
+plot(gg_dta, x_var = "diagtime")
+
+# Generate coplots
+plot(gg_dta, x_var =  c("age", "diagtime"), panel=TRUE)
 }
 \seealso{
 \code{\link{plot.gg_variable}} \code{randomForestSRC::plot.variable}

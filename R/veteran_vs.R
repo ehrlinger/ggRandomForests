@@ -44,8 +44,8 @@
 #' 
 #' veteran_vs <- var.select(veteran_rf)
 #' 
-#' ggobj <- gg_minimal_depth(veteran_vs)
-#' plot(ggobj)
+#' gg_dta <- gg_minimal_depth(veteran_vs)
+#' plot(gg_dta)
 #' }
 #' 
 

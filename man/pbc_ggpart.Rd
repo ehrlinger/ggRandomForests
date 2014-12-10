@@ -29,12 +29,12 @@ pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv",
                             show.plots = FALSE)
 
 # Create gg_partial objects
-ggPrtl <- gg_partial(pbc_prtl)
-ggPrtl.3 <- gg_partial(pbc_prtl.3)
+gg_dta <- gg_partial(pbc_prtl)
+gg_dta.3 <- gg_partial(pbc_prtl.3)
 
 # Combine the objects to get multiple time curves
 # along variables on a single figure.
-pbc_ggpart <- combine(ggPrtl, ggPrtl.3,
+pbc_ggpart <- combine(gg_dta, gg_dta.3,
                       labels=c("1 Year", "3 Years"))
 }
 }

@@ -212,7 +212,7 @@ pbc <- pbc %>% select(-days)
 cls <- sapply(pbc, class) 
 
 labels <- c("censoring indicator", "1 = D-penicillamine, 2 = placebo", 
-"age in years", "0 = female, 1 = male", "presence of asictes", "presence of hepatomegaly", 
+"age in years", "0 = male, 1 = female", "presence of asictes", "presence of hepatomegaly", 
 "presence of spiders", "presence of edema", "serum bilirubin in mg/dl", 
 "serum cholesterol in mg/dl", "albumin in gm/dl", "urine copper in ug/day", 
 "alkaline phosphatase in U/liter", "SGOT in U/ml", "triglicerides in mg/dl", 

@@ -33,7 +33,7 @@ for use by the end user.
 ##
 ## Taken from the gg_roc example
 iris.obj <- rfsrc(Species ~ ., data = iris)
-roc <- calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
+gg_dta <- calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
 }
 }
 \seealso{

@@ -23,8 +23,8 @@
 #' 
 #' pbc_vs <- var.select(pbc_rf)
 #' 
-#' pbc_md <- gg_minimal_depth(pbc_vs)
-#' plot(pbc_md)
+#' gg_dta <- gg_minimal_depth(pbc_vs)
+#' plot(gg_dta)
 #' }
 #' 
 #' @docType data

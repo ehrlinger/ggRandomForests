@@ -54,8 +54,8 @@
 #' #                            partial=TRUE)
 #' data(iris_prtl, package="ggRandomForests")
 #' 
-#' ggrf_obj <- gg_partial(iris_prtl)
-#' plot(ggrf_obj)
+#' gg_dta <- gg_partial(iris_prtl)
+#' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## regression
@@ -68,8 +68,8 @@
 #' #                            partial=TRUE, show.plot=FALSE)
 #' data(airq_prtl, package="ggRandomForests")
 #'
-#' ggrf_obj <- gg_partial(airq_prtl)
-#' plot(ggrf_obj)
+#' gg_dta <- gg_partial(airq_prtl)
+#' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## survival examples
@@ -86,8 +86,8 @@
 #' #                               show.plots=FALSE)
 #' data(veteran_prtl, package="ggRandomForests")
 #' 
-#' ggrf_obj <- gg_partial(veteran_prtl)
-#' plot(ggrf_obj)
+#' gg_dta <- gg_partial(veteran_prtl)
+#' plot(gg_dta)
 gg_partial.ggRandomForests <- function(object, 
                                       named,
                                       ...){

@@ -41,8 +41,8 @@ function of a single covariate, possibly subsetted on other covariates.
 #                            partial=TRUE)
 data(iris_prtl, package="ggRandomForests")
 
-ggrf_obj <- gg_partial(iris_prtl)
-plot(ggrf_obj)
+gg_dta <- gg_partial(iris_prtl)
+plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## regression
@@ -55,8 +55,8 @@ plot(ggrf_obj)
 #                            partial=TRUE, show.plot=FALSE)
 data(airq_prtl, package="ggRandomForests")
 
-ggrf_obj <- gg_partial(airq_prtl)
-plot(ggrf_obj)
+gg_dta <- gg_partial(airq_prtl)
+plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## survival examples
@@ -73,8 +73,8 @@ plot(ggrf_obj)
 #                               show.plots=FALSE)
 data(veteran_prtl, package="ggRandomForests")
 
-ggrf_obj <- gg_partial(veteran_prtl)
-plot(ggrf_obj)
+gg_dta <- gg_partial(veteran_prtl)
+plot(gg_dta)
 }
 \seealso{
 \code{\link{plot.gg_partial}} \code{randomForestSRC::plot.variable}

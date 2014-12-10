@@ -33,8 +33,8 @@
 #' data(iris_rf, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' ggrf<- gg_rfsrc(iris_rf)
-#' print(ggrf)
+#' gg_dta<- gg_rfsrc(iris_rf)
+#' print(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## regression example
@@ -43,15 +43,16 @@
 #' data(airq_rf, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' ggrf<- gg_rfsrc(airq_rf)
-#' print(ggrf)
+#' gg_dta<- gg_rfsrc(airq_rf)
+#' print(gg_dta)
 #' 
 #' # To nicely print a rfsrc output... 
 #' print.gg_rfsrc(airq_rf)
 #' 
 #' 
 print.gg_rfsrc <- function(x, ...){
-  
+  ### !!TODO!! need to actually print something meaningfull... like some recreation of 
+  ### the print.rfsrc function?
   gg_dta <- x
   
   # If object is not a gg_rfsrc object, check if it is the output

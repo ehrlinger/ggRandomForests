@@ -34,8 +34,8 @@
 #'                           partial=TRUE, show.plots=FALSE)
 #'                     
 #' # Generate a ggRandomForests plot.                                   
-#' ggpartial <- gg_partial(airq_prtl)
-#' plot(ggpartial)
+#' gg_dta <- gg_partial(airq_prtl)
+#' plot(gg_dta)
 #' }
 #'                               
 #' @references 

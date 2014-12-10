@@ -47,16 +47,16 @@
 #' data(iris_rf, package="ggRandomForests")
 #'
 #' # ROC for setosa
-#' ggrf <- gg_roc(iris_rf, which.outcome=1)
-#' plot.gg_roc(ggrf)
+#' gg_dta <- gg_roc(iris_rf, which.outcome=1)
+#' plot.gg_roc(gg_dta)
 #' 
 #' # ROC for versicolor
-#' ggrf <- gg_roc(iris_rf, which.outcome=2)
-#' plot.gg_roc(ggrf)
+#' gg_dta <- gg_roc(iris_rf, which.outcome=2)
+#' plot.gg_roc(gg_dta)
 #' 
 #' # ROC for virginica
-#' ggrf <- gg_roc(iris_rf, which.outcome=3)
-#' plot.gg_roc(ggrf)
+#' gg_dta <- gg_roc(iris_rf, which.outcome=3)
+#' plot.gg_roc(gg_dta)
 #' 
 #' # Alternatively, you can plot all three outcomes in one go
 #' # by calling the plot function on the full forest. 

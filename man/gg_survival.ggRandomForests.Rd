@@ -2,38 +2,60 @@
 \name{gg_survival.ggRandomForests}
 \alias{gg_survival}
 \alias{gg_survival.ggRandomForests}
-\title{Predicted survival data object from an \code{randomForestSRC::rfsrc} survival object.}
+\title{Nonparametric survival estimates.}
 \usage{
-gg_survival.ggRandomForests(object, prd_type = c("std", "oob"),
-  srv_type = c("surv", "chf", "mortality", "hazard"), climits = 0.95, ...)
+gg_survival.ggRandomForests(interval, censor, strat = NULL, data,
+  type = c("kaplan", "nelson"), ...)
 }
 \arguments{
-\item{object}{An \code{randomForestSRC::rfsrc} object or \code{randomForestSRC::predict} predict,
-or a survival object from \code{\link{eventtable}}.}
+\item{interval}{name of the interval variable in the training dataset.}
 
-\item{prd_type}{("std", "oob")}
+\item{censor}{name of the censoring variable in the training dataset.}
 
-\item{srv_type}{("surv", "chf", "mortality", "hazard")}
+\item{strat}{stratifying variable in the training dataset, defaults to NULL}
 
-\item{climits}{confidence limit bands}
+\item{data}{name of the training data.frame}
 
-\item{...}{Further arguments passed to other methods.}
+\item{type}{one of ("kaplan","nelson"), defaults to kaplan-meier}
+
+\item{...}{extra arguments passed to kaplan or nelson functions.}
+}
+\value{
+A gg_survival object created using the non-parametric kaplan-meier or
+nelson-aalon estimators.
 }
 \description{
-Predicted survival data object from an \code{randomForestSRC::rfsrc} survival object.
+Nonparametric survival estimates.
+}
+\details{
+gg_survival is a wrapper function for both generating nonparametric
+survival estimates using either nelson-aalen or kaplan-meier estimates.
 }
 \examples{
-## veteran data
-## randomized trial of two treatment regimens for lung cancer
-#data(veteran, package = "randomForestSRCM")
-#veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-data(veteran_rf, package="ggRandomForests")
+data(pbc, package="randomForestSRC")
+pbc$time <- pbc$days/364.25
 
-ggrf.obj <- gg_survival(veteran_rf)
-plot(ggrf.obj)
+# This is the same as kaplan
+gg_dta <- gg_survival(interval="time", censor="status",
+                     data=pbc)
+
+plot(gg_dta, error="none")
+plot(gg_dta)
+
+# Stratified on treatment variable.
+gg_dta <- gg_survival(interval="time", censor="status",
+                     data=pbc, strat="treatment")
+
+plot(gg_dta, error="none")
+plot(gg_dta)
+
+# ...with smaller confidence limits.
+gg_dta <- gg_survival(interval="time", censor="status",
+                     data=pbc, strat="treatment", conf.int=.68)
+
+plot(gg_dta, error="lines")
 }
 \seealso{
-\code{\link{plot.gg_survival}} \code{\link{gg_rfsrc}} \code{randomForestSRC::rfsrc}
-\code{randomForestSRC::predict} \code{\link{eventtable}}
+\code{\link{kaplan}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
 }
 

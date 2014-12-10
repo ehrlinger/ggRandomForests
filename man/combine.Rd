@@ -21,4 +21,30 @@ The combine.gg_partial function assumes the two gg_partial object
 were generated from the same randomForestSRC::rfsrc object. Further,
 we assume the combine is along the group variable.
 }
+\examples{
+\dontrun{
+#!!TODO!! examples
+# Calculate the 1 year partial dependence
+pbc_prtl <- plot.variable(pbc_rf, surv.type = "surv",
+                          time = 364.25,
+                          xvar.names = xvar, partial = TRUE,
+                          show.plots = FALSE)
+
+# Calculate the 3 year partial dependence
+pbc_prtl.3 <- plot.variable(pbc_rf, surv.type = "surv",
+                            time = 3*364.25,
+                            xvar.names = xvar, partial = TRUE,
+                            show.plots = FALSE)
+
+# Create gg_partial objects
+ggPrtl <- gg_partial(pbc_prtl)
+ggPrtl.3 <- gg_partial(pbc_prtl.3)
+
+# Combine the objects to get multiple time curves
+# along variables on a single figure.
+pbc_ggpart <- combine(ggPrtl, ggPrtl.3,
+                      labels = c("1 Year", "3 Years"))
+
+}
+}
 

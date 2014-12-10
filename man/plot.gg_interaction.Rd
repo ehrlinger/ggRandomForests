@@ -33,10 +33,10 @@ Plot a \code{\link{gg_interaction}} object,
 ## find.interaction(iris.obj, method = "vimp", nrep = 3)
 ## iris_interaction <- find.interaction(iris.obj)
 data(iris_interaction, package="ggRandomForests")
-gg_int <- gg_interaction(iris_interaction)
+gg_dta <- gg_interaction(iris_interaction)
 
-plot(gg_int, x_var="Petal.Width")
-plot(gg_int, x_var="Petal.Length")
+plot(gg_dta, x_var="Petal.Width")
+plot(gg_dta, x_var="Petal.Length")
 
 ## ------------------------------------------------------------
 ## find interactions, regression setting
@@ -47,10 +47,10 @@ plot(gg_int, x_var="Petal.Length")
 ## find.interaction(airq.obj, method = "vimp", nrep = 3)
 ## airq_interaction <- find.interaction(airq.obj)
 data(airq_interaction, package="ggRandomForests")
-gg_int <- gg_interaction(airq_interaction)
+gg_dta <- gg_interaction(airq_interaction)
 
-plot(gg_int, x_var="Temp")
-plot(gg_int, x_var="Solar.R")
+plot(gg_dta, x_var="Temp")
+plot(gg_dta, x_var="Solar.R")
 
 ## ------------------------------------------------------------
 ## find interactions, survival setting
@@ -59,10 +59,12 @@ plot(gg_int, x_var="Solar.R")
 ## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
 ## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
 data(pbc_interaction, package="ggRandomForests")
-gg_int <- gg_interaction(pbc_interaction)
+gg_dta <- gg_interaction(pbc_interaction)
 
-plot(gg_int, x_var="bili")
-plot(gg_int, x_var="copper")
+plot(gg_dta, x_var="bili")
+plot(gg_dta, x_var="copper")
+
+plot(gg_dta, x_var=c("bili", "copper", "age", "albumin"), panel=TRUE)
 
 }
 }

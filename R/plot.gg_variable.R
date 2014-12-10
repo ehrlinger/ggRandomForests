@@ -60,23 +60,23 @@
 #' ## airquality
 #' #airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 #' data(airq_rf, package="ggRandomForests")
-#' ggrf <- gg_variable(airq_rf)
-#' plot(ggrf, x_var="Wind")
-#' plot(ggrf, x_var="Temp")
-#' plot(ggrf, x_var="Solar.R")
+#' gg_dta <- gg_variable(airq_rf)
+#' plot(gg_dta, x_var="Wind")
+#' plot(gg_dta, x_var="Temp")
+#' plot(gg_dta, x_var="Solar.R")
 #' 
 #' ## motor trend cars
 #' #mtcars.obj <- rfsrc(mpg ~ ., data = mtcars)
 #' data(mtcars_rf, package="ggRandomForests")
-#' ggrf <- gg_variable(mtcars_rf)
+#' gg_dta <- gg_variable(mtcars_rf)
 #' 
 #' # mtcars$cyl is an ordinal variable
-#' plot(ggrf, x_var="cyl")
+#' plot(gg_dta, x_var="cyl")
 #' 
 #' # Others are continuous
-#' plot(ggrf, x_var="disp")
-#' plot(ggrf, x_var="hp")
-#' plot(ggrf, x_var="wt")
+#' plot(gg_dta, x_var="disp")
+#' plot(gg_dta, x_var="hp")
+#' plot(gg_dta, x_var="wt")
 #' 
 #' ## ------------------------------------------------------------
 #' ## survival examples
@@ -88,19 +88,19 @@
 #' data(veteran_rf, package="ggRandomForests")
 #' 
 #' # get the 30 day survival time.
-#' ggrf <- gg_variable(veteran_rf, time=30)
+#' gg_dta <- gg_variable(veteran_rf, time=30)
 #' 
 #' # Generate variable dependance plots for age and diagtime
-#' plot(ggrf, x_var = "age")
-#' plot(ggrf, x_var = "diagtime")
+#' plot(gg_dta, x_var = "age")
+#' plot(gg_dta, x_var = "diagtime")
 #' 
 #' # If we want to compare survival at different time points, say 30, 90 day 
 #' # and 1 year
-#' ggrf <- gg_variable(veteran_rf, time=c(30, 90, 365))
+#' gg_dta <- gg_variable(veteran_rf, time=c(30, 90, 365))
 #' 
 #' # Generate variable dependance plots for age and diagtime
-#' plot(ggrf, x_var = "age")
-#' plot(ggrf, x_var = "diagtime") 
+#' plot(gg_dta, x_var = "age")
+#' plot(gg_dta, x_var = "diagtime") 
 #'
 #' }
 ### error rate plot

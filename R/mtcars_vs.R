@@ -28,8 +28,8 @@
 #' mtcars_rf <- rfsrc(mpg ~ ., data = mtcars)
 #' airq_vs <- var.select(mtcars_rf)
 #' 
-#' ggobj <- gg_minimal_depth(mtcars_vs)
-#' plot(ggobj)
+#' gg_dta <- gg_minimal_depth(mtcars_vs)
+#' plot(gg_dta)
 #' }
 #' 
 #' @references 

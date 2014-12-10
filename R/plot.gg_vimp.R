@@ -48,8 +48,8 @@
 #' ## ------------------------------------------------------------
 #' # iris_rf <- rfsrc(Species ~ ., data = iris)
 #' data(iris_rf, package="ggRandomForests")
-#' ggrf <- gg_vimp(iris_rf)
-#' plot(ggrf)
+#' gg_dta <- gg_vimp(iris_rf)
+#' plot(gg_dta)
 #'  
 #' ## ------------------------------------------------------------
 #' ## regression example
@@ -57,15 +57,15 @@
 #' 
 #' # airq.obj <- rfsrc(Ozone ~ ., airquality)
 #' data(airq_rf, package="ggRandomForests")
-#' ggrf <- gg_vimp(airq_rf)
-#' plot(ggrf)
+#' gg_dta <- gg_vimp(airq_rf)
+#' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## survival example
 #' ## ------------------------------------------------------------
 #' data(veteran_rf, package="ggRandomForests")
-#' ggrf <- gg_vimp(veteran_rf)
-#' plot(ggrf)
+#' gg_dta <- gg_vimp(veteran_rf)
+#' plot(gg_dta)
 #'}
 #'
 #' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid scale_x_discrete

@@ -24,18 +24,18 @@ Plot the predicted response from a \code{\link{gg_rfsrc}} object, the
 ## ------------------------------------------------------------
 # iris_rf <- rfsrc(Species ~ ., data = iris)
 data(iris_rf, package="ggRandomForests")
-ggrf<- gg_rfsrc(iris_rf)
+gg_dta<- gg_rfsrc(iris_rf)
 
-plot.gg_rfsrc(ggrf)
+plot.gg_rfsrc(gg_dta)
 
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
 # airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 data(airq_rf, package="ggRandomForests")
-ggrf<- gg_rfsrc(airq_rf)
+gg_dta<- gg_rfsrc(airq_rf)
 
-plot.gg_rfsrc(ggrf)
+plot.gg_rfsrc(gg_dta)
 
 ## ------------------------------------------------------------
 ## Survival example
@@ -45,8 +45,8 @@ plot.gg_rfsrc(ggrf)
 # data(veteran, package = "randomForestSRCM")
 # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 data(veteran_rf, package = "ggRandomForests")
-ggrf <- gg_rfsrc(veteran_rf)
-plot(ggrf)
+gg_dta <- gg_rfsrc(veteran_rf)
+plot(gg_dta)
 
 }
 }

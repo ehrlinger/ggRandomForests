@@ -19,8 +19,8 @@ mtcars_prtl <- plot.variable(mtcars_rf,
                              partial=TRUE, show.plots=FALSE)
 
 # Generate a ggRandomForests plot.
-ggpartial <- gg_partial(mtcars_prtl)
-plot(ggpartial)
+gg_dta <- gg_partial(mtcars_prtl)
+plot(gg_dta)
 }
 }
 \references{

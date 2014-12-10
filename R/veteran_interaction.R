@@ -21,10 +21,10 @@
 #' # data(pbc, package = "randomForestSRC")
 #' # pbc_rf <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10)
 #' # print(pbc.obj)
-#' # pbc_interaction <- find.interaction(pbc_rf
+#' # pbc_interaction <- find.interaction(pbc_rf)
 #' 
 #' data(pbc_interaction, package="ggRandomForests")
-#' plot(pbc_interaction, x_var="bili")
+#' plot.gg_interaction(pbc_interaction, x_var="bili")
 #' }
 #' 
 #' @docType data

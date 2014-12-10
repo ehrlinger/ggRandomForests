@@ -46,18 +46,18 @@
 #' ## ------------------------------------------------------------
 #' # iris_rf <- rfsrc(Species ~ ., data = iris)
 #' data(iris_rf, package="ggRandomForests")
-#' ggrf<- gg_rfsrc(iris_rf)
+#' gg_dta<- gg_rfsrc(iris_rf)
 #' 
-#' plot.gg_rfsrc(ggrf)
+#' plot.gg_rfsrc(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
 #' # airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' data(airq_rf, package="ggRandomForests")
-#' ggrf<- gg_rfsrc(airq_rf)
+#' gg_dta<- gg_rfsrc(airq_rf)
 #' 
-#' plot.gg_rfsrc(ggrf)
+#' plot.gg_rfsrc(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
@@ -67,8 +67,8 @@
 #' # data(veteran, package = "randomForestSRCM")
 #' # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #' data(veteran_rf, package = "ggRandomForests")
-#' ggrf <- gg_rfsrc(veteran_rf)
-#' plot(ggrf)
+#' gg_dta <- gg_rfsrc(veteran_rf)
+#' plot(gg_dta)
 #' 
 #' }
 #' @importFrom tidyr gather
@@ -77,6 +77,9 @@
 plot.gg_rfsrc<- function(x, ...){
   gg_dta <- x
   
+  # Unpack argument list
+  arg_set <- list(...)
+
   # Initialize variables for gather statement... to silence R CMD CHECK
   #!TODO must be a better way to do this.?select
   variable <- value <- y <- ptid <- cens <- NA
@@ -105,9 +108,15 @@ plot.gg_rfsrc<- function(x, ...){
       # Summarized survival plot for the group...
       gg_dta.t <-  select(gg_dta, time, median, mean)%>% gather(variable, value,-time)
       
+      if(is.null(arg_set$alpha)){
+        alph=.3
+      }else{
+        alph = arg_set$alpha*.5
+        arg_set$alpha <- NULL
+      }
       gg_plt <- ggplot(gg_dta.t)+
         geom_ribbon(aes_string(x="time", ymin="lower", ymax="upper"), 
-                    data=gg_dta, ...)+
+                    data=gg_dta, alpha=alph, ...=arg_set)+
         geom_step(aes_string(x="time", y="value", color="variable"), ...)
       
     }else{

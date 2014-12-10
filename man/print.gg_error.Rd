@@ -26,8 +26,8 @@ Print a \code{\link{gg_error}} object.
 data(iris_rf, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-ggrf_err<- gg_error(iris_rf)
-print(ggrf_err)
+gg_dta<- gg_error(iris_rf)
+print(gg_dta)
 
 ## ------------------------------------------------------------
 ## regression example
@@ -35,8 +35,8 @@ print(ggrf_err)
 data(airq_rf, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-ggrf_err<- gg_error(airq_rf)
-print(ggrf_err)
+gg_dta<- gg_error(airq_rf)
+print(gg_dta)
 }
 \seealso{
 \code{rfsrc} \code{tbl_df} \code{\link{gg_error}}

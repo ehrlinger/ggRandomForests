@@ -37,10 +37,10 @@ Plot a \code{\link{gg_minimal_depth}} object for random forest variable ranking.
 data(iris_vs, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-ggrf.obj<- gg_minimal_depth(iris_vs)
+gg_dta<- gg_minimal_depth(iris_vs)
 
 # Plot the gg_mkinimal_depth object
-plot(ggrf.obj)
+plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## Regression example
@@ -51,10 +51,10 @@ plot(ggrf.obj)
 data(airq_vs, package="ggRandomForests")
 
 # Get a data.frame containing error rates
-ggrf.obj<- gg_minimal_depth(airq_vs)
+gg_dta<- gg_minimal_depth(airq_vs)
 
 # Plot the gg_error object
-plot(ggrf.obj)
+plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## Survival example
@@ -67,8 +67,8 @@ plot(ggrf.obj)
 # Load a cached randomForestSRC object
 data(veteran_vs, package="ggRandomForests")
 
-ggrf.obj <- gg_minimal_depth(veteran_vs)
-plot(ggrf.obj)
+gg_dta <- gg_minimal_depth(veteran_vs)
+plot(gg_dta)
 
 }
 }

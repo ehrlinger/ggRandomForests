@@ -28,8 +28,8 @@
 #' airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' airq_vs <- var.select(airq_rf)
 #' 
-#' ggobj <- gg_minimal_depth(airq_vs)
-#' plot(ggobj)
+#' gg_dta <- gg_minimal_depth(airq_vs)
+#' plot(gg_dta)
 #' }
 #' 
 #' @references 

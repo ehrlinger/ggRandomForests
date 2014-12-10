@@ -3,7 +3,6 @@
 export(combine)
 export(combine.gg_partial)
 export(combine.gg_partial_list)
-export(eventtable)
 export(gg_error)
 export(gg_error.ggRandomForests)
 export(gg_interaction)

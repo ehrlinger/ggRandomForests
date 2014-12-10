@@ -3,7 +3,7 @@
 \alias{nelson}
 \title{nonparametric Nelson-Aalen estimates}
 \usage{
-nelson(interval, censor, data, strat = NULL, weight = NULL, climit = 0.95)
+nelson(interval, censor, data, strat = NULL, weight = NULL, ...)
 }
 \arguments{
 \item{interval}{name of the interval variable in the training dataset.}
@@ -16,9 +16,32 @@ nelson(interval, censor, data, strat = NULL, weight = NULL, climit = 0.95)
 
 \item{weight}{for each observation (default=NULL)}
 
-\item{climit}{confidence bounds (default=0.95)}
+\item{...}{arguments passed to the \code{survfit} function}
 }
 \description{
 nonparametric Nelson-Aalen estimates
+}
+\examples{
+\dontrun{
+data(pbc, package="randomForestSRC")
+pbc$time <- pbc$days/364.25
+
+# This is the same as gg_survival
+gg_dta <- nelson(interval="time", censor="status",
+                     data=pbc)
+
+plot(gg_dta, error="none")
+plot(gg_dta)
+
+# Stratified on treatment variable.
+gg_dta <- gg_survival(interval="time", censor="status",
+                     data=pbc, strat="treatment")
+
+plot(gg_dta, error="none")
+plot(gg_dta)
+}
+}
+\seealso{
+\code{\link{gg_survival}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
 }
 

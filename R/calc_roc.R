@@ -41,7 +41,7 @@
 #' ##
 #' ## Taken from the gg_roc example
 #' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' roc <- calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
+#' gg_dta <- calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
 #' }
 #' 
 calc_roc.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){

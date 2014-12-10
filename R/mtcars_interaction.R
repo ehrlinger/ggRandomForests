@@ -28,10 +28,10 @@
 #' airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' airq_interaction <- find.interaction(airq_rf)
 #' 
-#' gg_int <- gg_interaction(airq_interaction)
+#' gg_dta <- gg_interaction(airq_interaction)
 #' 
-#' plot(gg_int, x_var="Temp")
-#' plot(gg_int, x_var="Solar.R")
+#' plot(gg_dta, x_var="Temp")
+#' plot(gg_dta, x_var="Solar.R")
 #' }
 #' 
 #' @references 

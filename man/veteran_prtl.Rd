@@ -30,8 +30,8 @@ veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 veteran_prtl <- plot.variable(veteran_rf, surv.type = "surv",
                               partial = TRUE, time=30, xvar.names = "age",
                               show.plots=FALSE)
-ggprtl <- gg_partial(veteran_prtl)
-plot(ggprtl)
+gg_dta <- gg_partial(veteran_prtl)
+plot(gg_dta)
 }
 }
 \references{

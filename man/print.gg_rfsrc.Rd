@@ -23,8 +23,8 @@ Print a \code{\link{gg_rfsrc}} object.
 data(iris_rf, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-ggrf<- gg_rfsrc(iris_rf)
-print(ggrf)
+gg_dta<- gg_rfsrc(iris_rf)
+print(gg_dta)
 
 ## ------------------------------------------------------------
 ## regression example
@@ -33,8 +33,8 @@ print(ggrf)
 data(airq_rf, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-ggrf<- gg_rfsrc(airq_rf)
-print(ggrf)
+gg_dta<- gg_rfsrc(airq_rf)
+print(gg_dta)
 
 # To nicely print a rfsrc output...
 print.gg_rfsrc(airq_rf)

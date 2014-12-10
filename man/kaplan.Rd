@@ -3,7 +3,7 @@
 \alias{kaplan}
 \title{nonparametric kaplan-meier estimates}
 \usage{
-kaplan(interval, censor, data, strat = NULL)
+kaplan(interval, censor, data, strat = NULL, ...)
 }
 \arguments{
 \item{interval}{name of the interval variable in the training dataset.}
@@ -13,11 +13,36 @@ kaplan(interval, censor, data, strat = NULL)
 \item{data}{name of the training set \code{data.frame}}
 
 \item{strat}{stratifying variable in the training dataset, defaults to NULL}
+
+\item{...}{arguments passed to the \code{survfit} function}
 }
 \value{
-\code{\link{eventtable}}
+\code{\link{gg_survival}} object
 }
 \description{
 nonparametric kaplan-meier estimates
+}
+\examples{
+\dontrun{
+data(pbc, package="randomForestSRC")
+pbc$time <- pbc$days/364.25
+
+# This is the same as gg_survival
+gg_dta <- kaplan(interval="time", censor="status",
+                     data=pbc)
+
+plot(gg_dta, error="none")
+plot(gg_dta)
+
+# Stratified on treatment variable.
+gg_dta <- gg_survival(interval="time", censor="status",
+                     data=pbc, strat="treatment")
+
+plot(gg_dta, error="none")
+plot(gg_dta)
+}
+}
+\seealso{
+\code{\link{gg_survival}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
 }
 

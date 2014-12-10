@@ -34,10 +34,10 @@ from the \code{randomForestSRC::plot.rfsrc} function.
 data(iris_rf, package="ggRandomForests")
 
 # Get a data.frame containing error rates
-ggrf.obj<- gg_error(iris_rf)
+gg_dta<- gg_error(iris_rf)
 
 # Plot the gg_error object
-plot(ggrf.obj)
+plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## Regression example
@@ -47,10 +47,10 @@ plot(ggrf.obj)
 data(airq_rf, package="ggRandomForests")
 
 # Get a data.frame containing error rates
-ggrf.obj<- gg_error(airq_rf)
+gg_dta<- gg_error(airq_rf)
 
 # Plot the gg_error object
-plot(ggrf.obj)
+plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## Survival example
@@ -63,8 +63,8 @@ plot(ggrf.obj)
 # Load a cached randomForestSRC object
 data(veteran_rf, package="ggRandomForests")
 
-ggrf.obj <- gg_error(veteran_rf)
-plot(ggrf.obj)
+gg_dta <- gg_error(veteran_rf)
+plot(gg_dta)
 
 }
 }

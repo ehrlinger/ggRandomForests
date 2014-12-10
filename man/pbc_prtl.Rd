@@ -20,14 +20,17 @@ pbc_prtl <- plot.variable(pbc_rf, time=90,surv.type="surv",
                           partial=TRUE, show.plots=FALSE)
 
 # Format for ggRandomForests
-ggprtl <- gg_partial(pbc_prtl)
+gg_dta <- gg_partial(pbc_prtl)
 
 # Without specifying which plot, plot.gg_partial returns a list of all four
 # figures.
-plot(ggprtl)
+plot(gg_dta)
 
-plot.gg_partial(ggprtl[[1]])
-plot.gg_partial(ggprtl[[4]])
+plot.gg_partial(gg_dta[[1]])
+plot.gg_partial(gg_dta[[4]])
+
+# Or a panel of the batch
+plot(gg_dta, panel=TRUE)
 }
 }
 \references{

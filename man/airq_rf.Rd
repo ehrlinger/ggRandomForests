@@ -25,12 +25,12 @@ Department of Conservation (ozone data) and the National Weather Service
 airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 
 # Plot predicted values for the training data
-ggobj <- gg_rfsrc(airq_rf)
-plot(ggobj)
+gg_dta <- gg_rfsrc(airq_rf)
+plot(gg_dta)
 
 # Plot error rate for the forest
-ggobj <- gg_error(airq_rf)
-plot(ggobj)
+gg_dta <- gg_error(airq_rf)
+plot(gg_dta)
 }
 }
 \references{
