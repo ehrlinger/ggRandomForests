@@ -48,7 +48,7 @@
 #' 
 #' @examples
 #' \dontrun{
-#' load(iris_rf, package="ggRandomForests)
+#' load(iris_rf, package="ggRandomForests")
 #' iris_interaction <- find.interaction(iris_rf)
 #' 
 #' plot(iris_interaction)
