@@ -103,7 +103,7 @@ URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 % -----------------------------------------------------
 This document is an introduction to the \pkg{ggRandomForests} \proglang{R} package. The aim of this introduction is to provide a detailed user guide to \pkg{ggRandomForests} as well as provide a tutorial to building a Random Forest Survival model with the \pkg{randomForestSRC} package. Our attempt is to build simple, reproducible worked examples with the Primary Biliary Cirrhosis (PBC) Data from the Mayo Clinic.
 
-This document is available as a vignette within \pkg{ggRandomForests} package, available from the Comprehensive \proglang{R} Archive Network via \url{http://CRAN.R-project.org/package = ggRandomForests}.
+This document is available as a vignette within \pkg{ggRandomForests} package. The latest version is available from the Comprehensive \proglang{R} Archive Network via \url{http://CRAN.R-project.org/package = ggRandomForests}.
 
 % -----------------------------------------------------
 \section{Introduction} \label{S:introduction}
@@ -141,7 +141,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Tue Dec  9 20:49:40 2014
+% Tue Dec  9 21:46:01 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -194,8 +194,8 @@ status & censoring indicator & logical \\
 \begin{Schunk}
 \begin{Sinput}
 R> pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc, 
-+          ntree = 500,nsplit = 10, 
-+          na.action = "na.impute")
++                 ntree = 500,nsplit = 10, 
++                 na.action = "na.impute")
 \end{Sinput}
 \end{Schunk}
 
@@ -267,7 +267,7 @@ In Figure~\ref{fig:rf-vimp}, we plot VIMP measures for each of the variables use
 \begin{Schunk}
 \begin{Sinput}
 R> plot.gg_vimp(pbc_rf) + 
-+  theme(legend.position = "none")
++   theme(legend.position = "none")
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -349,8 +349,8 @@ Once we have an idea of which variables contribute to the predictive accuracy of
 \begin{Schunk}
 \begin{Sinput}
 R> ggRFsrc + 
-+  geom_vline(aes(xintercept = c(1, 3)), linetype = "dashed") + 
-+  coord_cartesian(x = c(0, 4))
++   geom_vline(aes(xintercept = c(1, 3)), linetype = "dashed") + 
++   coord_cartesian(x = c(0, 4))
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -366,13 +366,14 @@ R> ggRFsrc +
 \begin{Sinput}
 R> xvar <- pbc_vs$topvars[1:6]
 R> ind = 1
-R> ggrf <- gg_variable(pbc_rf, time = c(1, 3), time.labels = c("1 Year", "3 Years"))
+R> ggrf <- gg_variable(pbc_rf, time = c(1, 3), 
++                     time.labels = c("1 Year", "3 Years"))
 R> 
 R> plot(ggrf, x_var = xvar[ind], se=FALSE, alpha=.3) + 
-+  labs(y = "Survival") + 
-+  theme(legend.position = "none") + 
-+  scale_color_manual(values = strCol, labels = event.labels) + 
-+  scale_shape_manual(values = event.marks, labels = event.labels)
++   labs(y = "Survival") + 
++   theme(legend.position = "none") + 
++   scale_color_manual(values = strCol, labels = event.labels) + 
++   scale_shape_manual(values = event.marks, labels = event.labels)
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -389,10 +390,10 @@ R> plot(ggrf, x_var = xvar[ind], se=FALSE, alpha=.3) +
 R> plot(ggrf, x_var = xvar[c(2,3,5,6)], panel = TRUE, 
 +      se=FALSE, alpha=.3, 
 +      method="glm", formula=y~poly(x,2)) + 
-+  labs(y = "Survival") + 
-+  theme(legend.position = "none") + 
-+  scale_color_manual(values = strCol, labels = event.labels) + 
-+  scale_shape_manual(values = event.marks, labels = event.labels)+
++   labs(y = "Survival") + 
++   theme(legend.position = "none") + 
++   scale_color_manual(values = strCol, labels = event.labels) + 
++   scale_shape_manual(values = event.marks, labels = event.labels)+
 +   coord_cartesian(y=c(1,102))
 \end{Sinput}
 \begin{figure}[!htpb]
@@ -420,15 +421,15 @@ Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month su
 \begin{Sinput}
 R> # Calculate the 1 year partial dependence
 R> pbc_prtl <- plot.variable(pbc_rf, surv.type = "surv", 
-+              time = 364.25, 
-+            xvar.names = xvar, partial = TRUE, 
-+            show.plots = FALSE)
++                           time = 1, 
++                           xvar.names = xvar, partial = TRUE, 
++                           show.plots = FALSE)
 R> 
 R> # Calculate the 3 year partial dependence
 R> pbc_prtl.3 <- plot.variable(pbc_rf, surv.type = "surv", 
-+               time = 3*364.25, 
-+            xvar.names = xvar, partial = TRUE, 
-+            show.plots = FALSE)
++                             time = 3, 
++                             xvar.names = xvar, partial = TRUE, 
++                             show.plots = FALSE)
 R> 
 R> # Create gg_partial objects
 R> ggPrtl <- gg_partial(pbc_prtl)
@@ -437,7 +438,7 @@ R>
 R> # Combine the objects to get multiple time curves 
 R> # along variables on a single figure.
 R> pbc_ggpart <- combine(ggPrtl, ggPrtl.3, 
-+            labels = c("1 Year", "3 Years"))
++                       labels = c("1 Year", "3 Years"))
 \end{Sinput}
 \end{Schunk}
 
@@ -447,9 +448,9 @@ R> pbc_ggpart <- combine(ggPrtl, ggPrtl.3,
 \begin{Schunk}
 \begin{Sinput}
 R> plot(pbc_ggpart[["bili"]], se = FALSE) + 
-+  theme(legend.position = c(.8, .5)) + 
-+  labs(y = "Survival", 
-+     x = dta.labs[which(rownames(dta.labs) ==  "bili"), "label"])
++   theme(legend.position = c(.8, .5)) + 
++   labs(y = "Survival", 
++        x = dta.labs[which(rownames(dta.labs) ==  "bili"), "label"])
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -467,8 +468,7 @@ Non-proportional hazards are evident in Figure~\ref{fig:pbc-partial-bili}.
 \begin{Sinput}
 R> pbc_ggpart$bili <- pbc_ggpart$edema <- NULL
 R> plot(pbc_ggpart, se = FALSE, panel = TRUE) + 
-+   theme(legend.position=c(.6,.6))+
-+  labs(x = "", y = "Survival")
++   labs(x = "", y = "Survival")
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -490,7 +490,7 @@ R> pbc_interaction <- find.interaction(pbc_rf)
 R> 
 R> ggint <- gg_interaction(pbc_interaction)
 R> plot(ggint, x_var = "bili") + 
-+  labs(y = "Interactive Minimal Depth")
++   labs(y = "Interactive Minimal Depth")
 \end{Sinput}
 \end{Schunk}
 
@@ -509,8 +509,8 @@ Measuring interactions with minimal depth results a $p \times p$ matrix of inter
 \begin{Schunk}
 \begin{Sinput}
 R> plot(gg_interaction(pbc_interaction), x_var = xvar[2:5]) + 
-+  labs(y = "Interactive Minimal Depth") + 
-+  theme(legend.position = "none")
++   labs(y = "Interactive Minimal Depth") + 
++   theme(legend.position = "none")
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -540,11 +540,12 @@ R>
 R> ggvar$stage <- paste("stage=", ggvar$stage, sep="")
 R> 
 R> var_dep <- plot(ggvar, x_var = "bili", smooth = TRUE, 
-+         method = "glm", alpha = .5, se = FALSE) + 
-+  labs(y = "Survival", x = dta.labs[which(rownames(dta.labs) ==  xvar[ind]), "label"]) + 
-+  theme(legend.position = "none") + 
-+  scale_color_manual(values = strCol, labels = event.labels) + 
-+  scale_shape_manual(values = event.marks, labels = event.labels)
++                 method = "loess", span=1.5,alpha = .5, se = FALSE) + 
++   labs(y = "Survival", 
++        x = dta.labs["bili", "label"]) + 
++   theme(legend.position = "none") + 
++   scale_color_manual(values = strCol, labels = event.labels) + 
++   scale_shape_manual(values = event.marks, labels = event.labels)
 R> 
 R> show(var_dep)
 \end{Sinput}
@@ -562,7 +563,7 @@ We can view the conditional dependence of survival against bilirubin, versus oth
 \begin{Schunk}
 \begin{Sinput}
 R> var_dep + 
-+  facet_grid(treatment~stage)
++   facet_grid(treatment~stage)
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -577,16 +578,96 @@ R> var_dep +
 Interactions with continuous variables requires stratification at some level.
 
 \begin{Schunk}
+\begin{Sinput}
+R> age_grp <- cut(pbc_rf$xvar$age, breaks=seq(0,100,10))
+R> ggvar$age_grp <- paste("age=",age_grp, sep="")
+R> 
+R> var_dep <- plot(ggvar, x_var = "bili", smooth = TRUE, 
++                 method = "loess", span=1.5,alpha = .5, se = FALSE) + 
++   labs(y = "Survival", x = dta.labs["bili", "label"]) + 
++   theme(legend.position = "none") + 
++   scale_color_manual(values = strCol, labels = event.labels) + 
++   scale_shape_manual(values = event.marks, labels = event.labels)+ 
++   facet_wrap(~age_grp)
+R> 
+R> var_dep
+\end{Sinput}
 \begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-age-coplot-1} 
 
 }
 
-\caption[Bilirubin-age interaction coplot]{Bilirubin-age interaction coplot.\label{fig:age-coplot}}
+\caption[Bilirubin-age interaction coplot at 1 year]{Bilirubin-age interaction coplot at 1 year.\label{fig:age-coplot}}
 \end{figure}
 \end{Schunk}
 
+\begin{Schunk}
+\begin{Sinput}
+R> # Get the training data to work with...
+R> dta.train  <- pbc_rf$xvar
+R> dta.train$age_grp <- age_grp
+R> 
+R> # Create a series of coplot subsets....
+R> lng <- length(levels(age_grp))
+R> sbst <- lapply(1:lng, function(ind){
++   st <- which(dta.train$age_grp==levels(age_grp)[ind])
++   if(length(st) == 0) NULL
++   else st
++   })
+R> 
+R> lvl <- levels(age_grp)
+R> # Collapse the subset list to interesting items 
+R> # (those with observations)
+R> # If you work backwards, you do extra tests, but it 
+R> # cuts the correct items. Cute.
+R> for(ind in lng:1){
++   if(is.null(sbst[[ind]])){
++     sbst[[ind]] <- NULL
++     
++     # reset the levels, so we can label things later
++     lvl <- lvl[-ind]
++     }
++ }
+R> 
+R> pDat.partlist <- lapply(1:length(sbst), function(ind){
++   plot.variable(pbc_rf, surv.type="surv", time=1,
++                            subset = sbst[[ind]],
++                         xvar.names="bili", partial=TRUE,
++                         show.plots = FALSE)
++   })
+R> 
+R> gg_part <- lapply(pDat.partlist, gg_partial)
+R> 
+R> # Flip y-axis
+R> cls <- class(gg_part)
+R> class(gg_part) <-  c("gg_partial_list", cls)
+R> 
+R> for(ind in 1:length(gg_part)){
++ gg_part[[ind]]$age <- lvl[ind]
++ }
+R> gg_merge <- do.call(rbind, gg_part)
+R> gg_merge$age <- paste("Age=", gg_merge$age)
+R> gg_merge$age <- factor(gg_merge$age)
+R> 
+R> ggpl <- ggplot(gg_merge, aes(x=bili, y=yhat, shape=age, color=age))+
++   geom_point()+geom_smooth(se=FALSE)+
++   labs(x="Surgical Date", y="Survival 1 year")+
++   scale_color_brewer(palette="Set1")
+R> ggpl
+\end{Sinput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-bili-age-1} 
+
+}
+
+\caption[Bilirubin-age interaction partial coplot at 1 year]{Bilirubin-age interaction partial coplot at 1 year.\label{fig:bili-age}}
+\end{figure}
+\end{Schunk}
 \section{Conclusion}
 
 
