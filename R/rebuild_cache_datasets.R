@@ -117,6 +117,10 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
     
     pbc$years <- pbc$days/364.24
     pbc <- pbc[, -which(colnames(pbc)=="days")]
+    pbc$treatment <- as.numeric(pbc$treatment)
+    pbc$treatment[which(pbc$treatment==1)] <- "D-pen"
+    pbc$treatment[which(pbc$treatment==2)] <- "placebo"
+    pbc$treatment <- factor(pbc$treatment)
     
     dta$pbc <- pbc
     

@@ -208,6 +208,10 @@ for(ind in 1:dim(pbc)[2]){
 pbc$age <- pbc$age/364.24
 pbc$years <- pbc$days/364.24
 pbc <- pbc %>% select(-days)
+pbc$treatment <- as.numeric(pbc$treatment)
+pbc$treatment[which(pbc$treatment==1)] <- "D-pen"
+pbc$treatment[which(pbc$treatment==2)] <- "placebo"
+pbc$treatment <- factor(pbc$treatment)
 
 cls <- sapply(pbc, class) 
 
@@ -239,53 +243,21 @@ print(xtable(dta.labs %>% select(-names),
 )
 @
 
-%' Figure~\ref{fig:dtaViewCat} and~\ref{fig:dtaView} are included to verify the data import step. 
-%' 
-%' <<dtaViewCat, fig.cap = "Categorical Variable measures over time.", fig.width = 7.5, fig.height = 4>>= 
-%' dta.tmp<-pbc[, c(which(cls ==  "factor"), 
-%'         which(cls ==  "logical"), 
-%'          which(colnames(pbc) %in% c("age")))]
-%' plt.dta <- dta.tmp %>% gather(variable, value, -age)
-%' 
-%' dtaView<- ggplot(plt.dta, aes(x = age, fill = value)) + 
-%'  geom_histogram(binwidth = 5, color = "black") + 
-%'  labs(x = "Age", y = "") + 
-%'  facet_wrap(~variable, ncol = 3) + 
-%'  theme(legend.position = "none") + 
-%'  scale_fill_brewer(palette = "Paired", na.value = "lightgrey")
-%' 
-%' suppressWarnings(show(dtaView))
-%' 
-%' @
-%' 
-%' <<dtaView, fig.cap = "Continuous Variable measures over time.", fig.width = 7.5, fig.height = 4>>= 
-%' dta.tmp <- pbc[, c(which(cls ==  "numeric"), which(cls ==  "integer"), 
-%'           which(colnames(pbc) ==  "status"))]
-%' 
-%' plt.dta <- dta.tmp %>% gather(variable, value, -age, -status)
-%' 
-%' dtaView<- ggplot(plt.dta, aes(x = age, y = value, color = status, shape = status)) + 
-%'  geom_point(alpha = alpha) + 
-%'  geom_rug(aes(x = age), data = plt.dta %>% filter(is.na(value))) + 
-%'  labs(x = "Age", y = "") + 
-%'  facet_wrap(~variable, scales = "free_y", ncol = 3) + 
-%'  scale_color_manual(values = strCol, na.value = "black", drop = FALSE, 
-%'           labels = event.labels) + 
-%'  scale_shape_manual(values = event.marks, labels = event.labels) + 
-%'  theme(legend.position = "none")
-%' 
-%' suppressWarnings(show(dtaView))
-%' @
 
+<<gg_survival, fig.cap="Kaplan-Meier survival estimates">>=
+gg_dta <- gg_survival(interval="years",censor="status", strat="treatment", data=pbc )
+plot(gg_dta, se=.95) +
+  labs(x="Survival", y="time (years)")+
+  theme(legend.position=c(.1,.1))
+@
 % \doublespacing
 \section{Growing the Random Forest}
 
 
 <<rfsrc, echo = TRUE, eval = FALSE>>= 
 pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc, 
-         ntree = 2000, 
-         na.action = "na.impute", 
-         fast.restore = TRUE)
+         ntree = 500,nsplit = 10, 
+         na.action = "na.impute")
 @
 
 
@@ -300,9 +272,9 @@ plot(ggerr)+
   coord_cartesian(ylim=c(.09,.31))
 @
 
-Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, where censored device prediction is colored in blue, and devices experiencing a thrombosis event are colored in red. 
+Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, where censored device prediction is colored in blue, and devices experiencing an event are colored in red. 
 <<rfsrc-plot, fig.cap = "PBC Survival">>= 
-ggRFsrc <- plot.gg_rfsrc(pbc_rf, alpha = .2) + 
+ggRFsrc <- plot.gg_rfsrc(pbc_rf, alpha=.2) + 
  scale_color_manual(values = strCol) + 
  theme(legend.position = "none") + 
  labs(y = "Survival Probability", x = "time (years)")
@@ -407,7 +379,7 @@ plot(ggrf, x_var = xvar[c(2,3,5,6)], panel = TRUE,
 \end{equation}
 where $\hat{f}$ is the predicted response from the random forest and $x_{i, o}$ is the value for all other covariates other than $X = x$ for the observation $i$~\citep{FriedmanGreedyfunction:2000}. Partial dependence plots in time to event settings are shown at specific time points, similar to variable dependence.
 
-Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month freedom from thrombosis on the surgical date covariate. 
+Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month survival on bilirubin. 
 
 <<pbc-partial, echo = TRUE, eval = FALSE>>= 
 # Calculate the 1 year partial dependence
@@ -447,7 +419,6 @@ plot(pbc_ggpart[["bili"]], se = FALSE) +
 @
 
 Non-proportional hazards are evident in Figure~\ref{fig:pbc-partial-bili}.
-
 
 <<pbc-partial-panel, echo = TRUE, fig.cap = "Risk adjusted Survival - panel plot", fig.width = 7, fig.height = 4>>= 
 pbc_ggpart$bili <- pbc_ggpart$edema <- NULL
@@ -517,6 +488,20 @@ var_dep +
 
 Interactions with continuous variables requires stratification at some level.
 
+<<age-coplot, fig.cap="Bilirubin-age interaction coplot.", fig.width = 7, fig.height = 4>>=
+age_grp <- cut(pbc_rf$xvar$age, breaks=seq(0,100,10))
+ggvar$age_grp <- paste("age=",age_grp, sep="")
+
+var_dep <- plot(ggvar, x_var = "bili", smooth = TRUE, 
+        method = "loess", span=1.5,alpha = .5, se = FALSE) + 
+ labs(y = "Survival", x = dta.labs[which(rownames(dta.labs) ==  xvar[ind]), "label"]) + 
+ theme(legend.position = "none") + 
+ scale_color_manual(values = strCol, labels = event.labels) + 
+ scale_shape_manual(values = event.marks, labels = event.labels)+ 
+ facet_wrap(~age_grp)
+
+var_dep
+@
 
 \section{Conclusion}
 

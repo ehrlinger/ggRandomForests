@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  8 DEC 2014 21:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  9 DEC 2014 20:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -717,273 +717,280 @@ Package xcolor Warning: Incompatible color definition on input line 135.
 
 LaTeX Warning: Reference `S:coplots' on page 3 undefined on input line 135.
 
+<figure/rfs-gg_survival-1.pdf, id=154, 289.08pt x 216.81pt>
+File: figure/rfs-gg_survival-1.pdf Graphic file (type pdf)
+
+<use figure/rfs-gg_survival-1.pdf>
+Package pdftex.def Info: figure/rfs-gg_survival-1.pdf used on input line 183.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 3
  []
 
-[3] <figure/rfs-errorPlot-1.pdf, id=168, 289.08pt x 216.81pt>
-File: figure/rfs-errorPlot-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-errorPlot-1.pdf>
-Package pdftex.def Info: figure/rfs-errorPlot-1.pdf used on input line 253.
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-
-
-Package xcolor Warning: Incompatible color definition on input line 261.
-
-<figure/rfs-rfsrc-plot-1.pdf, id=170, 289.08pt x 216.81pt>
-File: figure/rfs-rfsrc-plot-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-rfsrc-plot-1.pdf>
-Package pdftex.def Info: figure/rfs-rfsrc-plot-1.pdf used on input line 265.
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-
-
-Package xcolor Warning: Incompatible color definition on input line 275.
-
-
-Package xcolor Warning: Incompatible color definition on input line 275.
-
-
-Package xcolor Warning: Incompatible color definition on input line 277.
-
-
-Package xcolor Warning: Incompatible color definition on input line 277.
-
-
+[3]
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 4 []
  []
 
-[4]
+[4 <./figure/rfs-gg_survival-1.pdf>]
+<figure/rfs-errorPlot-1.pdf, id=185, 289.08pt x 216.81pt>
+File: figure/rfs-errorPlot-1.pdf Graphic file (type pdf)
+
+<use figure/rfs-errorPlot-1.pdf>
+Package pdftex.def Info: figure/rfs-errorPlot-1.pdf used on input line 225.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+
+
+Package xcolor Warning: Incompatible color definition on input line 233.
+
+<figure/rfs-rfsrc-plot-1.pdf, id=187, 289.08pt x 216.81pt>
+File: figure/rfs-rfsrc-plot-1.pdf Graphic file (type pdf)
+
+<use figure/rfs-rfsrc-plot-1.pdf>
+Package pdftex.def Info: figure/rfs-rfsrc-plot-1.pdf used on input line 237.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+
+
+Package xcolor Warning: Incompatible color definition on input line 247.
+
+
+Package xcolor Warning: Incompatible color definition on input line 247.
+
+
+Package xcolor Warning: Incompatible color definition on input line 249.
+
+
+Package xcolor Warning: Incompatible color definition on input line 249.
+
+
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 5
  []
 
-[5 <./figure/rfs-errorPlot-1.pdf> <./figure/rfs-rfsrc-plot-1.pdf>]
+[5 <./figure/rfs-errorPlot-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 290.
-
-
-Package xcolor Warning: Incompatible color definition on input line 290.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 290.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 290.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 290.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 290.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 290.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 290.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 290.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 290.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 294.
-
-
-Package xcolor Warning: Incompatible color definition on input line 294.
+Package xcolor Warning: Incompatible color definition on input line 262.
 
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 6 []
  []
 
-[6] <figure/rfs-rf-vimp-1.pdf, id=222, 289.08pt x 216.81pt>
+[6 <./figure/rfs-rfsrc-plot-1.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 266.
+
+
+Package xcolor Warning: Incompatible color definition on input line 266.
+
+<figure/rfs-rf-vimp-1.pdf, id=232, 289.08pt x 216.81pt>
 File: figure/rfs-rf-vimp-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-rf-vimp-1.pdf>
-Package pdftex.def Info: figure/rfs-rf-vimp-1.pdf used on input line 302.
+Package pdftex.def Info: figure/rfs-rf-vimp-1.pdf used on input line 274.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-
-
-LaTeX Warning: Reference `fig:mindepth' on page 7 undefined on input line 317.
-
-
-Package xcolor Warning: Incompatible color definition on input line 317.
-
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 7
  []
 
 [7 <./figure/rfs-rf-vimp-1.pdf>]
-<figure/rfs-mindepth-plot-1.pdf, id=235, 289.08pt x 216.81pt>
+
+LaTeX Warning: Reference `fig:mindepth' on page 8 undefined on input line 289.
+
+
+Package xcolor Warning: Incompatible color definition on input line 289.
+
+<figure/rfs-mindepth-plot-1.pdf, id=246, 289.08pt x 216.81pt>
 File: figure/rfs-mindepth-plot-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-mindepth-plot-1.pdf>
-Package pdftex.def Info: figure/rfs-mindepth-plot-1.pdf used on input line 362.
+Package pdftex.def Info: figure/rfs-mindepth-plot-1.pdf used on input line 334.
 
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-
-
-Package xcolor Warning: Incompatible color definition on input line 375.
-
-
-LaTeX Warning: Reference `fig:variable-plot' on page 8 undefined on input line 
-375.
-
-
-Package xcolor Warning: Incompatible color definition on input line 375.
-
-
-Package xcolor Warning: Incompatible color definition on input line 375.
-
-
-Package xcolor Warning: Incompatible color definition on input line 375.
-
-
-Package xcolor Warning: Incompatible color definition on input line 375.
-
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 8 []
  []
 
-[8] <figure/rfs-rfsrc-plot3Mnth-1.pdf, id=246, 289.08pt x 216.81pt>
+[8]
+
+Package xcolor Warning: Incompatible color definition on input line 347.
+
+
+LaTeX Warning: Reference `fig:variable-plot' on page 9 undefined on input line 
+347.
+
+
+Package xcolor Warning: Incompatible color definition on input line 347.
+
+
+Package xcolor Warning: Incompatible color definition on input line 347.
+
+
+Package xcolor Warning: Incompatible color definition on input line 347.
+
+
+Package xcolor Warning: Incompatible color definition on input line 347.
+
+<figure/rfs-rfsrc-plot3Mnth-1.pdf, id=257, 289.08pt x 216.81pt>
 File: figure/rfs-rfsrc-plot3Mnth-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-rfsrc-plot3Mnth-1.pdf>
-Package pdftex.def Info: figure/rfs-rfsrc-plot3Mnth-1.pdf used on input line 38
-5.
+Package pdftex.def Info: figure/rfs-rfsrc-plot3Mnth-1.pdf used on input line 35
+7.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-
-<figure/rfs-variable-plotbili-1.pdf, id=247, 289.08pt x 289.08pt>
-File: figure/rfs-variable-plotbili-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-variable-plotbili-1.pdf>
-Package pdftex.def Info: figure/rfs-variable-plotbili-1.pdf used on input line 
-407.
-(pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
 
 Overfull \hbox (5.47499pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 9
  []
 
 [9 <./figure/rfs-mindepth-plot-1.pdf>]
-Overfull \hbox (10.94998pt too wide) has occurred while \output is active
-\T1/aer/m/n/10.95 10 []
- []
+<figure/rfs-variable-plotbili-1.pdf, id=271, 289.08pt x 289.08pt>
+File: figure/rfs-variable-plotbili-1.pdf Graphic file (type pdf)
 
-[10 <./figure/rfs-rfsrc-plot3Mnth-1.pdf> <./figure/rfs-variable-plotbili-1.pdf>
-] <figure/rfs-variable-plotCombines-1.pdf, id=282, 505.89pt x 289.08pt>
+<use figure/rfs-variable-plotbili-1.pdf>
+Package pdftex.def Info: figure/rfs-variable-plotbili-1.pdf used on input line 
+379.
+(pdftex.def)             Requested size: 289.07928pt x 289.09251pt.
+
+<figure/rfs-variable-plotCombines-1.pdf, id=272, 505.89pt x 289.08pt>
 File: figure/rfs-variable-plotCombines-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-variable-plotCombines-1.pdf>
 Package pdftex.def Info: figure/rfs-variable-plotCombines-1.pdf used on input l
-ine 428.
+ine 400.
 (pdftex.def)             Requested size: 442.65375pt x 252.94878pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 438.
+Package xcolor Warning: Incompatible color definition on input line 410.
 
 
-Package xcolor Warning: Incompatible color definition on input line 443.
+Package xcolor Warning: Incompatible color definition on input line 415.
 
 
-Package xcolor Warning: Incompatible color definition on input line 443.
+Package xcolor Warning: Incompatible color definition on input line 415.
 
 
-Package xcolor Warning: Incompatible color definition on input line 445.
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+\T1/aer/m/n/10.95 10 []
+ []
 
-
+[10 <./figure/rfs-rfsrc-plot3Mnth-1.pdf>]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 11
  []
 
-[11 <./figure/rfs-variable-plotCombines-1.pdf>]
-<figure/rfs-pbc-partial-bili-1.pdf, id=305, 289.08pt x 216.81pt>
+[11 <./figure/rfs-variable-plotbili-1.pdf> <./figure/rfs-variable-plotCombines-
+1.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 417.
+
+<figure/rfs-pbc-partial-bili-1.pdf, id=315, 289.08pt x 216.81pt>
 File: figure/rfs-pbc-partial-bili-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-pbc-partial-bili-1.pdf>
 Package pdftex.def Info: figure/rfs-pbc-partial-bili-1.pdf used on input line 4
-84.
+56.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 492.
+Package xcolor Warning: Incompatible color definition on input line 464.
+
+<figure/rfs-pbc-partial-panel-1.pdf, id=317, 505.89pt x 289.08pt>
+File: figure/rfs-pbc-partial-panel-1.pdf Graphic file (type pdf)
+
+<use figure/rfs-pbc-partial-panel-1.pdf>
+Package pdftex.def Info: figure/rfs-pbc-partial-panel-1.pdf used on input line 
+475.
+(pdftex.def)             Requested size: 442.65375pt x 252.94878pt.
+
+
+Package xcolor Warning: Incompatible color definition on input line 485.
+
+
+Package xcolor Warning: Incompatible color definition on input line 485.
+
+
+Package xcolor Warning: Incompatible color definition on input line 485.
+
+
+Package xcolor Warning: Incompatible color definition on input line 485.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 12 []
  []
 
-[12 <./figure/rfs-pbc-partial-bili-1.pdf>]
-<figure/rfs-pbc-partial-panel-1.pdf, id=317, 505.89pt x 289.08pt>
-File: figure/rfs-pbc-partial-panel-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-pbc-partial-panel-1.pdf>
-Package pdftex.def Info: figure/rfs-pbc-partial-panel-1.pdf used on input line 
-504.
-(pdftex.def)             Requested size: 442.65375pt x 252.94878pt.
-
-
-Package xcolor Warning: Incompatible color definition on input line 514.
-
-
-Package xcolor Warning: Incompatible color definition on input line 514.
-
-
-Package xcolor Warning: Incompatible color definition on input line 514.
-
-
-Package xcolor Warning: Incompatible color definition on input line 514.
-
-<figure/rfs-interaction-1.pdf, id=322, 289.08pt x 216.81pt>
-File: figure/rfs-interaction-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-interaction-1.pdf>
-Package pdftex.def Info: figure/rfs-interaction-1.pdf used on input line 529.
-(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-
-
-Package xcolor Warning: Incompatible color definition on input line 537.
-
-
+[12]
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 13
  []
 
-[13 <./figure/rfs-pbc-partial-panel-1.pdf>]
-<figure/rfs-interactionPanel-1.pdf, id=339, 505.89pt x 289.08pt>
+[13 <./figure/rfs-pbc-partial-bili-1.pdf> <./figure/rfs-pbc-partial-panel-1.pdf
+>] <figure/rfs-interaction-1.pdf, id=345, 289.08pt x 216.81pt>
+File: figure/rfs-interaction-1.pdf Graphic file (type pdf)
+
+<use figure/rfs-interaction-1.pdf>
+Package pdftex.def Info: figure/rfs-interaction-1.pdf used on input line 500.
+(pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
+
+
+Package xcolor Warning: Incompatible color definition on input line 508.
+
+<figure/rfs-interactionPanel-1.pdf, id=347, 505.89pt x 289.08pt>
 File: figure/rfs-interactionPanel-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-interactionPanel-1.pdf>
 Package pdftex.def Info: figure/rfs-interactionPanel-1.pdf used on input line 5
-46.
+17.
 (pdftex.def)             Requested size: 442.65375pt x 252.94878pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 556.
+Package xcolor Warning: Incompatible color definition on input line 527.
 
 
-Package xcolor Warning: Incompatible color definition on input line 556.
+Package xcolor Warning: Incompatible color definition on input line 527.
 
 
-Package xcolor Warning: Incompatible color definition on input line 556.
+Package xcolor Warning: Incompatible color definition on input line 527.
 
 
-Package xcolor Warning: Incompatible color definition on input line 556.
+Package xcolor Warning: Incompatible color definition on input line 527.
 
 
-Package xcolor Warning: Incompatible color definition on input line 556.
+Package xcolor Warning: Incompatible color definition on input line 527.
 
 
-Package xcolor Warning: Incompatible color definition on input line 558.
+Package xcolor Warning: Incompatible color definition on input line 529.
 
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
@@ -991,73 +998,85 @@ Overfull \hbox (10.94998pt too wide) has occurred while \output is active
  []
 
 [14 <./figure/rfs-interaction-1.pdf>]
-<figure/rfs-var_dep-1.pdf, id=361, 289.08pt x 216.81pt>
+<figure/rfs-var_dep-1.pdf, id=371, 289.08pt x 216.81pt>
 File: figure/rfs-var_dep-1.pdf Graphic file (type pdf)
 
 <use figure/rfs-var_dep-1.pdf>
-Package pdftex.def Info: figure/rfs-var_dep-1.pdf used on input line 582.
+Package pdftex.def Info: figure/rfs-var_dep-1.pdf used on input line 553.
 (pdftex.def)             Requested size: 289.07928pt x 216.81938pt.
-
-<figure/rfs-coplot_bilirubin-1.pdf, id=362, 505.89pt x 289.08pt>
-File: figure/rfs-coplot_bilirubin-1.pdf Graphic file (type pdf)
-
-<use figure/rfs-coplot_bilirubin-1.pdf>
-Package pdftex.def Info: figure/rfs-coplot_bilirubin-1.pdf used on input line 5
-98.
-(pdftex.def)             Requested size: 442.65375pt x 252.94878pt.
- (./randomForestSurvival.bbl
-
-Package xcolor Warning: Incompatible color definition on input line 23.
-
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 15
  []
 
 [15 <./figure/rfs-interactionPanel-1.pdf>]
+<figure/rfs-coplot_bilirubin-1.pdf, id=382, 505.89pt x 289.08pt>
+File: figure/rfs-coplot_bilirubin-1.pdf Graphic file (type pdf)
+
+<use figure/rfs-coplot_bilirubin-1.pdf>
+Package pdftex.def Info: figure/rfs-coplot_bilirubin-1.pdf used on input line 5
+69.
+(pdftex.def)             Requested size: 442.65375pt x 252.94878pt.
+
+<figure/rfs-age-coplot-1.pdf, id=383, 505.89pt x 289.08pt>
+File: figure/rfs-age-coplot-1.pdf Graphic file (type pdf)
+
+<use figure/rfs-age-coplot-1.pdf>
+Package pdftex.def Info: figure/rfs-age-coplot-1.pdf used on input line 582.
+(pdftex.def)             Requested size: 442.65375pt x 252.94878pt.
+ (./randomForestSurvival.bbl
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 16 []
  []
 
 [16 <./figure/rfs-var_dep-1.pdf> <./figure/rfs-coplot_bilirubin-1.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 23.
+
+
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 [] \T1/aer/m/n/10.95 17
  []
 
-[17])
+[17 <./figure/rfs-age-coplot-1.pdf>])
 
-Package xcolor Warning: Incompatible color definition on input line 615.
+Package xcolor Warning: Incompatible color definition on input line 596.
 
 
-Package xcolor Warning: Incompatible color definition on input line 615.
+Package xcolor Warning: Incompatible color definition on input line 596.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 615.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 596.
 
 Overfull \hbox (10.94998pt too wide) has occurred while \output is active
 \T1/aer/m/n/10.95 18 []
  []
 
 [18]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 615.
+Overfull \hbox (10.94998pt too wide) has occurred while \output is active
+[] \T1/aer/m/n/10.95 19
+ []
+
+[19]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 596.
  (./randomForestSurvival.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 615.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 615.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 596.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 596.
 Package rerunfilecheck Info: File `randomForestSurvival.out' has not changed.
 (rerunfilecheck)             Checksum: E3F5005862180396A408E4FEA3F7F0AA;1595.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 615.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 596.
  ) 
 Here is how much of TeX's memory you used:
- 8347 strings out of 493117
- 121444 string characters out of 6135433
- 215906 words of memory out of 5000000
- 11531 multiletter control sequences out of 15000+600000
+ 8362 strings out of 493117
+ 121801 string characters out of 6135433
+ 217018 words of memory out of 5000000
+ 11541 multiletter control sequences out of 15000+600000
  49636 words of font info for 97 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,10n,35p,1311b,485s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,10n,35p,1311b,481s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmb10.pfb><
 /usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></
@@ -1076,10 +1095,10 @@ e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
 /2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/
 2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2
 014/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on randomForestSurvival.pdf (18 pages, 1004220 bytes).
+Output written on randomForestSurvival.pdf (19 pages, 1036474 bytes).
 PDF statistics:
- 484 PDF objects out of 1000 (max. 8388607)
- 416 compressed objects within 5 object streams
- 89 named destinations out of 1000 (max. 500000)
- 194 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 511 PDF objects out of 1000 (max. 8388607)
+ 438 compressed objects within 5 object streams
+ 92 named destinations out of 1000 (max. 500000)
+ 204 words of extra memory for PDF output out of 10000 (max. 10000000)
 

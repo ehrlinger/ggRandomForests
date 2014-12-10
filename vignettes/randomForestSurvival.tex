@@ -141,7 +141,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Mon Dec  8 21:06:49 2014
+% Tue Dec  9 20:49:40 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -152,7 +152,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 status & censoring indicator & logical \\ 
    \rowcolor[gray]{0.95}treatment & 1 = D-penicillamine, 2 = placebo & factor \\ 
   age & age in years & numeric \\ 
-   \rowcolor[gray]{0.95}sex & 0 = female, 1 = male & logical \\ 
+   \rowcolor[gray]{0.95}sex & 0 = male, 1 = female & logical \\ 
   ascites & presence of asictes & logical \\ 
    \rowcolor[gray]{0.95}hepatom & presence of hepatomegaly & logical \\ 
   spiders & presence of spiders & logical \\ 
@@ -176,44 +176,17 @@ status & censoring indicator & logical \\
 \end{table}
 
 
-%' Figure~\ref{fig:dtaViewCat} and~\ref{fig:dtaView} are included to verify the data import step. 
-%' 
-%' <<dtaViewCat, fig.cap = "Categorical Variable measures over time.", fig.width = 7.5, fig.height = 4>>= 
-%' dta.tmp<-pbc[, c(which(cls ==  "factor"), 
-%'         which(cls ==  "logical"), 
-%'          which(colnames(pbc) %in% c("age")))]
-%' plt.dta <- dta.tmp %>% gather(variable, value, -age)
-%' 
-%' dtaView<- ggplot(plt.dta, aes(x = age, fill = value)) + 
-%'  geom_histogram(binwidth = 5, color = "black") + 
-%'  labs(x = "Age", y = "") + 
-%'  facet_wrap(~variable, ncol = 3) + 
-%'  theme(legend.position = "none") + 
-%'  scale_fill_brewer(palette = "Paired", na.value = "lightgrey")
-%' 
-%' suppressWarnings(show(dtaView))
-%' 
-%' @
-%' 
-%' <<dtaView, fig.cap = "Continuous Variable measures over time.", fig.width = 7.5, fig.height = 4>>= 
-%' dta.tmp <- pbc[, c(which(cls ==  "numeric"), which(cls ==  "integer"), 
-%'           which(colnames(pbc) ==  "status"))]
-%' 
-%' plt.dta <- dta.tmp %>% gather(variable, value, -age, -status)
-%' 
-%' dtaView<- ggplot(plt.dta, aes(x = age, y = value, color = status, shape = status)) + 
-%'  geom_point(alpha = alpha) + 
-%'  geom_rug(aes(x = age), data = plt.dta %>% filter(is.na(value))) + 
-%'  labs(x = "Age", y = "") + 
-%'  facet_wrap(~variable, scales = "free_y", ncol = 3) + 
-%'  scale_color_manual(values = strCol, na.value = "black", drop = FALSE, 
-%'           labels = event.labels) + 
-%'  scale_shape_manual(values = event.marks, labels = event.labels) + 
-%'  theme(legend.position = "none")
-%' 
-%' suppressWarnings(show(dtaView))
-%' @
 
+\begin{Schunk}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-gg_survival-1} 
+
+}
+
+\caption[Kaplan-Meier survival estimates]{Kaplan-Meier survival estimates\label{fig:gg_survival}}
+\end{figure}
+\end{Schunk}
 % \doublespacing
 \section{Growing the Random Forest}
 
@@ -221,9 +194,8 @@ status & censoring indicator & logical \\
 \begin{Schunk}
 \begin{Sinput}
 R> pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc, 
-+          ntree = 2000, 
-+          na.action = "na.impute", 
-+          fast.restore = TRUE)
++          ntree = 500,nsplit = 10, 
++          na.action = "na.impute")
 \end{Sinput}
 \end{Schunk}
 
@@ -258,7 +230,7 @@ No. of variables tried at each split: 5
 \end{figure}
 \end{Schunk}
 
-Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, where censored device prediction is colored in blue, and devices experiencing a thrombosis event are colored in red. 
+Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, where censored device prediction is colored in blue, and devices experiencing an event are colored in red. 
 \begin{Schunk}
 \begin{figure}[!htpb]
 
@@ -442,7 +414,7 @@ R> plot(ggrf, x_var = xvar[c(2,3,5,6)], panel = TRUE,
 \end{equation}
 where $\hat{f}$ is the predicted response from the random forest and $x_{i, o}$ is the value for all other covariates other than $X = x$ for the observation $i$~\citep{FriedmanGreedyfunction:2000}. Partial dependence plots in time to event settings are shown at specific time points, similar to variable dependence.
 
-Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month freedom from thrombosis on the surgical date covariate. 
+Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month survival on bilirubin. 
 
 \begin{Schunk}
 \begin{Sinput}
@@ -490,7 +462,6 @@ R> plot(pbc_ggpart[["bili"]], se = FALSE) +
 \end{Schunk}
 
 Non-proportional hazards are evident in Figure~\ref{fig:pbc-partial-bili}.
-
 
 \begin{Schunk}
 \begin{Sinput}
@@ -605,6 +576,16 @@ R> var_dep +
 
 Interactions with continuous variables requires stratification at some level.
 
+\begin{Schunk}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-age-coplot-1} 
+
+}
+
+\caption[Bilirubin-age interaction coplot]{Bilirubin-age interaction coplot.\label{fig:age-coplot}}
+\end{figure}
+\end{Schunk}
 
 \section{Conclusion}
 
