@@ -97,6 +97,7 @@
 #' }
 #'
 #' @importFrom ggplot2 ggplot aes labs geom_point geom_smooth facet_wrap
+#' @importFrom parallel mclapply
 #'
 ### error rate plot
 plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
@@ -113,7 +114,7 @@ plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
     # and rename the value column to "value"
     nms <- names(gg_dta)
     
-    gg_dta <- lapply(nms, function(nm){
+    gg_dta <- mclapply(nms, function(nm){
       obj <- gg_dta[[nm]]
       colnames(obj)[which(colnames(obj)==nm)]  <- "value"
       obj$variable <- nm

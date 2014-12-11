@@ -117,13 +117,19 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess", ...){
   }else{
     gg_plt<- ggplot(gg_dta,aes_string(x="x", y="yhat", shape="group", color="group"))
   }
+  
   gg_plt <- gg_plt+
     labs(x=hName, y="predicted")
-  
-  if(points)  
-    gg_plt<- gg_plt+geom_point( ...)
-  if(!is.null(smooth)){
-    gg_plt<- gg_plt+geom_smooth(method=smooth, ...)
+  if(!is.factor(gg_dta$x)){
+    if(points)  
+      gg_plt<- gg_plt+geom_point( ...)
+    if(!is.null(smooth)){
+      gg_plt<- gg_plt+geom_smooth(method=smooth, ...)
+    }
+  }else{
+    gg_plt<- gg_plt+geom_boxplot(...)
+    if(points)  
+      gg_plt<- gg_plt+geom_jitter( ...)
   }
   
   return(gg_plt)

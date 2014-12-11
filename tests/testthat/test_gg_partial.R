@@ -21,27 +21,27 @@ test_that("gg_partial classifications",{
   expect_equivalent(length(iris_prtl$pData), length(iris_rf$xvar.names))
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_partial(iris_prtl)
+  gg_dta<- gg_partial(iris_prtl)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_partial_list")
+  expect_is(gg_dta, "gg_partial_list")
   
   # Test varselect is the same
- #expect_equivalent(select(ggrf.obj$varselect, -names), iris_rf$importance)
+ #expect_equivalent(select(gg_dta$varselect, -names), iris_rf$importance)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_partial(ggrf.obj[[2]])
+  gg_plt <- plot.gg_partial(gg_dta[[2]])
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
  
  ## Test plotting the gg_error object
- gg.obj <- plot.gg_partial_list(ggrf.obj)
+ gg_plt <- plot.gg_partial_list(gg_dta)
  
  # Test return is s ggplot object
- expect_is(gg.obj[[1]], "ggplot")
+ expect_is(gg_plt[[1]], "ggplot")
  
- expect_equivalent(length(gg.obj),length(iris_prtl$pData) )
+ expect_equivalent(length(gg_plt),length(iris_prtl$pData) )
 })
 
 
@@ -61,16 +61,31 @@ test_that("gg_partial survival",{
   data(veteran_prtl, package="ggRandomForests")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_partial(veteran_prtl)
+  gg_dta <- gg_partial(veteran_prtl)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_partial")
+  expect_is(gg_dta, "gg_partial_list")
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_partial(ggrf.obj)
+  gg_plt <- plot.gg_partial(gg_dta[[1]])
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt[[1]], "ggplot")
+  
+  expect_equivalent(length(gg_plt) , length(gg_dta))
+  
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta, panel=TRUE)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
 })
 
 test_that("gg_partial regression",{
@@ -87,22 +102,22 @@ test_that("gg_partial regression",{
   
   ## Create the correct gg_error object
   data(airq_prtl, package="ggRandomForests")
-  ggrf.obj<- gg_partial(airq_prtl)
+  gg_dta<- gg_partial(airq_prtl)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_partial_list")
+  expect_is(gg_dta, "gg_partial_list")
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_partial(ggrf.obj[[1]])
+  gg_plt <- plot.gg_partial(gg_dta[[1]])
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_partial_list(ggrf.obj)
+  gg_plt <- plot.gg_partial_list(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "list")
+  expect_is(gg_plt, "list")
   
-  expect_equivalent(length(gg.obj) , length(ggrf.obj))
+  expect_equivalent(length(gg_plt) , length(gg_dta))
 })

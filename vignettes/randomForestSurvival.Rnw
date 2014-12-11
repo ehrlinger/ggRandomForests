@@ -107,6 +107,7 @@ library(ggplot2) # Graphics engine for generating all types of plots
 
 library(dplyr) # Better data manipulations
 library(tidyr)
+library(parallel)
 
 library(ggRandomForests)
 
@@ -250,7 +251,7 @@ print(xtable(dta.labs %>% select(-names),
 gg_dta <- gg_survival(interval="years",censor="status", strat="treatment", data=pbc )
 plot(gg_dta, se=.95) +
   labs(x="Survival", y="time (years)")+
-  theme(legend.position=c(.1,.1))
+  theme(legend.position=c(.2,.2))
 @
 % \doublespacing
 \section{Growing the Random Forest}
@@ -514,7 +515,7 @@ dta.train$age_grp <- age_grp
 
 # Create a series of coplot subsets....
 lng <- length(levels(age_grp))
-sbst <- lapply(1:lng, function(ind){
+sbst <- mclapply(1:lng, function(ind){
   st <- which(dta.train$age_grp==levels(age_grp)[ind])
   if(length(st) == 0) NULL
   else st
@@ -534,14 +535,14 @@ for(ind in lng:1){
     }
 }
 
-pDat.partlist <- lapply(1:length(sbst), function(ind){
+pDat.partlist <- mclapply(1:length(sbst), function(ind){
   plot.variable(pbc_rf, surv.type="surv", time=1,
                            subset = sbst[[ind]],
                         xvar.names="bili", partial=TRUE,
                         show.plots = FALSE)
   })
 
-gg_part <- lapply(pDat.partlist, gg_partial)
+gg_part <- mclapply(pDat.partlist, gg_partial)
 
 # Flip y-axis
 cls <- class(gg_part)

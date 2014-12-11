@@ -62,7 +62,9 @@
 #' # by calling the plot function on the full forest. 
 #' plot.gg_roc(iris_rf)
 #' }
+#' 
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_abline labs coord_fixed annotate
+#' @importFrom parallel mclapply
 #' 
 ### error rate plot
 plot.gg_roc<- function(x, which.outcome=NULL, ...){
@@ -74,7 +76,7 @@ plot.gg_roc<- function(x, which.outcome=NULL, ...){
       crv <- dim(gg_dta$predicted)[2]
       
       if(crv > 2 & is.null(which.outcome) ){
-        gg_dta <- lapply(1:crv, function(ind){
+        gg_dta <- mclapply(1:crv, function(ind){
           gg_roc(gg_dta, which.outcome=ind, ...)
         })
         
@@ -101,14 +103,14 @@ plot.gg_roc<- function(x, which.outcome=NULL, ...){
                label=paste("AUC = ",round(auc, digits=3), sep=""), hjust=0)
     
   }else{
-    gg_dta <- lapply(gg_dta, function(st){st[order(st$spec),]
+    gg_dta <- mclapply(gg_dta, function(st){st[order(st$spec),]
                                     st})
-    gg_dta <- lapply(gg_dta, function(st){st$fpr <- 1-st$spec
+    gg_dta <- mclapply(gg_dta, function(st){st$fpr <- 1-st$spec
                                     st})
-    gg_dta <- lapply(1:length(gg_dta), function(ind){ gg_dta[[ind]]$outcome <- ind
+    gg_dta <- mclapply(1:length(gg_dta), function(ind){ gg_dta[[ind]]$outcome <- ind
                                                 gg_dta[[ind]]})
     
-    auc <- lapply(gg_dta, function(st){calc_auc(st)})
+    auc <- mclapply(gg_dta, function(st){calc_auc(st)})
     
     oDta <- do.call(rbind, gg_dta)
     oDta$outcome <- factor(oDta$outcome)

@@ -22,7 +22,8 @@ Imports:
     randomForestSRC (>= 1.5.5),
     survival,
     tidyr,
-    dplyr
+    dplyr,
+    parallel
 Suggests:
     testthat,
     RColorBrewer,

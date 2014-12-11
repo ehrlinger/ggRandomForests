@@ -41,6 +41,7 @@
 #' and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs facet_wrap
+#' @importFrom parallel mclapply
 #' 
 #' @examples
 #' \dontrun{
@@ -129,7 +130,7 @@ plot.gg_variable<- function(x, x_var,
       gg_dtaX <- gg_dta[, -grep("yhat.", colnames(gg_dta))]
       gg_dtaY <- gg_dta[, grep("yhat.", colnames(gg_dta))]
       lng <- ncol(gg_dtaY)
-      gg2 <- lapply(1:ncol(gg_dtaY),
+      gg2 <- mclapply(1:ncol(gg_dtaY),
                     function(ind){cbind(gg_dtaX, yhat=gg_dtaY[,ind], outcome=ind)})
       gg3 <- do.call(rbind,gg2)
       gg3$outcome <- factor(gg3$outcome)

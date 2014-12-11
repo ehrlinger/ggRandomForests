@@ -171,6 +171,33 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
   if("veteran" %in% set){
     data(veteran, package="randomForestSRC",
          envir = dta)
+    vet <- dta$veteran
+    # For whatever reason, the age variable is in days... makes no sense to me
+    for(ind in 1:dim(vet)[2]){
+      if(!is.factor(vet[,ind])){
+        if(length(unique(vet[which(!is.na(vet[,ind])),ind]))<=2) {
+          if(sum(range(vet[,ind],na.rm=TRUE) == c(0,1))==2){
+            vet[,ind] <- as.logical(vet[,ind])
+          }
+        }
+      }else{
+        if(length(unique(vet[which(!is.na(vet[,ind])),ind]))<=2) {
+          if(sum(sort(unique(vet[,ind])) == c(0,1))==2){
+            vet[,ind] <- as.logical(vet[,ind])
+          }
+          if(sum(sort(unique(vet[,ind])) == c(FALSE, TRUE))==2){
+            vet[,ind] <- as.logical(vet[,ind])
+          }
+        }
+      }
+      if(!is.logical(vet[, ind]) & 
+           length(unique(vet[which(!is.na(vet[,ind])),ind]))<=5) {
+        vet[,ind] <- factor(vet[,ind])
+      }
+    }
+  
+    dta$veteran <- vet
+  
     cat("veteran: randomForest\n")
     veteran_rf <- rfsrc(Surv(time, status) ~ ., data = dta$veteran, ntree = 100)
     
@@ -186,7 +213,7 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
     
     cat("veteran: RF partial dependence\n")
     veteran_prtl <- plot.variable(veteran_rf, surv.type = "surv",
-                                  partial = TRUE, time=30, xvar.names = "age",
+                                  partial = TRUE, time=30,
                                   show.plots=FALSE)
     
     if(save) save(veteran_prtl, file="data/veteran_prtl.rda", compress="xz")

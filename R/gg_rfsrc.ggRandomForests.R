@@ -59,7 +59,7 @@
 #' ## ------------------------------------------------------------
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' # data(veteran, package = "randomForestSRCM")
+#' # data(veteran, package = "randomForestSRC")
 #' # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #' data(veteran_rf, package = "ggRandomForests")
 #' gg_dta <- gg_rfsrc(veteran_rf)

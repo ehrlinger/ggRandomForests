@@ -11,7 +11,9 @@
 #'  
 #'  @export combine.gg_partial_list combine.gg_partial combine
 #'  @aliases combine combine.gg_partial combine.gg_partial_list
-#'
+#' 
+#' @importFrom parallel mclapply
+#' 
 #' @examples 
 #' \dontrun{
 #' #!!TODO!! examples
@@ -66,15 +68,15 @@ combine.gg_partial_list <- function(x, y, labels, ...){
   ### a group column, 
   
   if(is.null(x$group))
-    x <- lapply(x, function(st){st$group <- labels[1]; st})
+    x <- mclapply(x, function(st){st$group <- labels[1]; st})
   
   if(is.null(y$group))
-    y <- lapply(y, function(st){st$group <- labels[2]; st})
+    y <- mclapply(y, function(st){st$group <- labels[2]; st})
   
   # By names
   nm <- names(x)
   
-  gg_dta <- lapply(nm, function(ind){
+  gg_dta <- mclapply(nm, function(ind){
     rbind(x[[ind]], y[[ind]])
   })
   

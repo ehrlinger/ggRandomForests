@@ -38,8 +38,9 @@
 #' @seealso \code{\link{plot.gg_partial}} \code{randomForestSRC::plot.variable}
 #' 
 #' @aliases gg_partial
-#' 
 #' @export gg_partial.ggRandomForests gg_partial
+#' 
+#' @importFrom parallel mclapply
 #' 
 #' @examples
 #' 
@@ -89,8 +90,8 @@
 #' gg_dta <- gg_partial(veteran_prtl)
 #' plot(gg_dta)
 gg_partial.ggRandomForests <- function(object, 
-                                      named,
-                                      ...){
+                                       named,
+                                       ...){
   if(!inherits(object,"plot.variable")){
     stop("gg_partial expects a plot.variable object, Run plot.variable with partial=TRUE")
   }
@@ -99,10 +100,22 @@ gg_partial.ggRandomForests <- function(object,
   # How many variables
   n.var=length(object$pData)
   
+  
   # Create a list of data
-  gg_dta <- lapply(1:n.var, function(ind){
-    data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
-                     x=object$pData[[ind]]$x.uniq))
+  gg_dta <- mclapply(1:n.var, function(ind){
+    
+    if(length(object$pData[[ind]]$x.uniq) == length(object$pData[[ind]]$yhat)){
+      data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
+                       x=object$pData[[ind]]$x.uniq))
+    }else{
+      
+      x <- rep(object$pData[[ind]]$x.uniq,
+               rep(object$n, object$pData[[ind]]$n.x))
+      tmp <- data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
+                       x=x))        
+      tmp$x <- factor(tmp$x)
+      tmp
+    }
   })
   
   names(gg_dta) <- object$xvar.names
