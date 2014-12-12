@@ -3,13 +3,17 @@
 \alias{rebuild_cache_datasets}
 \title{Recreate the cached data sets for the ggRandomForests package}
 \usage{
-rebuild_cache_datasets(set = NA, save = TRUE)
+rebuild_cache_datasets(set = NA, save = TRUE, pth, ...)
 }
 \arguments{
 \item{set}{Defaults to all sets (NA), however for individual sets specify one
 or more of c("airq", "iris", "mtcars", "pbc", "veteran")}
 
-\item{save}{Defaults to write files to the current data directory.
+\item{save}{Defaults to write files to the current data directory.}
+
+\item{pth}{the directory to store files.}
+
+\item{...}{extra arguments passed to randomForestSRC functions.
 
 ggRandomForests operates directly on randomForestSRC objects. In order to
 improve performance on function examples and package tests and checks,

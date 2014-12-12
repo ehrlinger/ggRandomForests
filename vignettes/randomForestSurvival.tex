@@ -22,7 +22,6 @@
 % %\geometry{verbose, tmargin = 1.25cm, bmargin = 1.25cm, lmargin = 1.25cm, rmargin = 1.25cm}
 % \setcounter{secnumdepth}{2}
 % \setcounter{tocdepth}{2}
-
 \usepackage{longtable}
 \usepackage{colortbl, xcolor}
 \usepackage{booktabs}
@@ -136,12 +135,12 @@ Once we have an idea which variables are most informative in minimizing forest p
 
 \section{Data Summary: Primary Biliary Cirrhosis (PBC) Data}
 
-Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. The first 312 cases in the data set participated in the randomized trial and contain largely complete data.
+Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver conducted between 1974 and 1984. A total of 424 PBC patients, referred to Mayo Clinic during that ten-year interval, met eligibility criteria for the randomized placebo controlled trial of the drug D-penicillamine. The first 312 cases in the data set participated in the randomized trial and contain largely complete data~\citep{fleming:1991}.
 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Thu Dec 11 21:27:41 2014
+% Fri Dec 12 14:37:19 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -150,24 +149,24 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
  & label & type \\ 
   \midrule
 status & censoring indicator & logical \\ 
-   \rowcolor[gray]{0.95}treatment & 1 = D-penicillamine, 2 = placebo & factor \\ 
+   \rowcolor[gray]{0.95}treatment & Treament & factor \\ 
   age & age in years & numeric \\ 
-   \rowcolor[gray]{0.95}sex & 0 = male, 1 = female & logical \\ 
-  ascites & presence of asictes & logical \\ 
-   \rowcolor[gray]{0.95}hepatom & presence of hepatomegaly & logical \\ 
-  spiders & presence of spiders & logical \\ 
-   \rowcolor[gray]{0.95}edema & presence of edema & factor \\ 
-  bili & serum bilirubin in mg/dl & numeric \\ 
-   \rowcolor[gray]{0.95}chol & serum cholesterol in mg/dl & integer \\ 
-  albumin & albumin in gm/dl & numeric \\ 
-   \rowcolor[gray]{0.95}copper & urine copper in ug/day & integer \\ 
-  alk & alkaline phosphatase in U/liter & numeric \\ 
-   \rowcolor[gray]{0.95}sgot & SGOT in U/ml & numeric \\ 
-  trig & triglicerides in mg/dl & integer \\ 
+   \rowcolor[gray]{0.95}sex & Female & logical \\ 
+  ascites & Asictes & logical \\ 
+   \rowcolor[gray]{0.95}hepatom & Hepatomegaly & logical \\ 
+  spiders & Spiders & logical \\ 
+   \rowcolor[gray]{0.95}edema & Edema & factor \\ 
+  bili & serum bilirubin (mg/dl) & numeric \\ 
+   \rowcolor[gray]{0.95}chol & serum cholesterol (mg/dl) & integer \\ 
+  albumin & albumin (gm/dl) & numeric \\ 
+   \rowcolor[gray]{0.95}copper & urine copper (ug/day) & integer \\ 
+  alk & alkaline phosphatase (U/liter) & numeric \\ 
+   \rowcolor[gray]{0.95}sgot & SGOT (U/ml) & numeric \\ 
+  trig & triglicerides (mg/dl) & integer \\ 
    \rowcolor[gray]{0.95}platelet & platelets per cubic ml/1000 & integer \\ 
-  prothrombin & prothrombin time in seconds & numeric \\ 
-   \rowcolor[gray]{0.95}stage & histologic stage of disease & factor \\ 
-  years & survival time in years & numeric \\ 
+  prothrombin & prothrombin time (sec) & numeric \\ 
+   \rowcolor[gray]{0.95}stage & histologic stage & factor \\ 
+  years & survival time (years) & numeric \\ 
    \rowcolor[gray]{0.95} \bottomrule
 \end{tabular}
 }
@@ -178,27 +177,79 @@ status & censoring indicator & logical \\
 
 
 \begin{Schunk}
+\begin{Sinput}
+R> gg_dta <- gg_survival(interval="years",censor="status", 
++                       strat="treatment", data=pbc )
+R> plot(gg_dta, se=.95) +
++   labs(y="Survival Probability", x="Observation Time (years)", 
++        color="Treatment", fill="Treatment")+
++   theme(legend.position=c(.2,.2))
+\end{Sinput}
 \begin{figure}[!htpb]
 
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-gg_survival-1} 
 
 }
 
-\caption[Kaplan-Meier survival estimates]{Kaplan-Meier survival estimates\label{fig:gg_survival}}
+\caption[Kaplan-Meier pbc data survival estimates comparing the treatment with placebo]{Kaplan-Meier pbc data survival estimates comparing the treatment with placebo. Mean survival with shaded 95\% condfidence band.\label{fig:gg_survival}}
 \end{figure}
 \end{Schunk}
-% \doublespacing
-\section{Growing the Random Forest}
 
+\begin{Schunk}
+\begin{Sinput}
+R> pbc.alt <- pbc
+R> pbc.alt$bili_grp <- cut(pbc.alt$bili, 
++                         breaks=c(0,.8,1.3,3.4,max(pbc.alt$bili)))
+R> 
+R> gg_dta <- gg_survival(interval="years",censor="status", 
++                       strat="bili_grp", data=pbc.alt )
+R> 
+R> plot(gg_dta, error="none") +
++   labs(y="Survival Probability", 
++        x="Observation Time (years)", 
++        color="Bilirubin")
+\end{Sinput}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-gg_survival-bili-1} 
+
+}
+
+\caption[Kaplan-Meier pbc data survival estimates comparing Bilirubin measures]{Kaplan-Meier pbc data survival estimates comparing Bilirubin measures.\label{fig:gg_survival-bili}}
+\end{figure}
+\end{Schunk}
+
+% latex table generated in R 3.1.2 by xtable 1.7-4 package
+% Fri Dec 12 14:37:20 2014
+\begin{table}[ht]
+\centering
+{\footnotesize
+\begin{tabular}{rrrr}
+  \toprule
+ & Coef. & Std. Err. & Z stat. \\ 
+  \midrule
+Age & 0.0333 & 0.0087 & 3.8400 \\ 
+   \rowcolor[gray]{0.95}log(Albumin) & -3.0553 & 0.7241 & -4.2200 \\ 
+  log(Bilirubin & 0.8792 & 0.0987 & 8.9000 \\ 
+   \rowcolor[gray]{0.95}Edema & 0.7847 & 0.2991 & 2.6200 \\ 
+  log(Prothrombin Time) & 3.0157 & 1.0238 & 2.9500 \\ 
+   \rowcolor[gray]{0.95} \bottomrule
+\end{tabular}
+}
+\caption{Regression model with log transformations of continuous variables, 312 randomized cases with PBC.} 
+\label{T:FHmodel}
+\end{table}
+
+\section{Growing the Random Forest}
 
 \begin{Schunk}
 \begin{Sinput}
 R> pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc, 
-+                 ntree = 500,nsplit = 10, 
++                 nsplit = 10, 
 +                 na.action = "na.impute")
+R> pbc_rf
 \end{Sinput}
 \end{Schunk}
-
 
 \begin{Schunk}
 \begin{Soutput}
@@ -206,16 +257,16 @@ R> pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc,
                     Number of deaths: 161
                     Was data imputed: yes
                          Missingness: 33.97%
-                     Number of trees: 500
+                     Number of trees: 1000
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 78.368
+       Average no. of terminal nodes: 78.353
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank *random*
        Number of random split points: 10
-                          Error rate: 16.72%
+                          Error rate: 16.74%
 \end{Soutput}
 \end{Schunk}
 
@@ -226,7 +277,7 @@ No. of variables tried at each split: 5
 
 }
 
-\caption[RSF prediction error estimates]{RSF prediction error estimates\label{fig:errorPlot}}
+\caption[Random forest prediction error estimates as a function of the number of trees in the forest]{Random forest prediction error estimates as a function of the number of trees in the forest.\label{fig:errorPlot}}
 \end{figure}
 \end{Schunk}
 
@@ -238,7 +289,18 @@ Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, whe
 
 }
 
-\caption[PBC Survival]{PBC Survival\label{fig:rfsrc-plot}}
+\caption[Random forest predicted survival]{Random forest predicted survival. Blue lines correspond to censored observations, red lines correspond to patients who experienced the event (death).\label{fig:rfsrc-plot}}
+\end{figure}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-rfsrc-mean-1} 
+
+}
+
+\caption[Mean value random forest predicted survival with shaded 95\% confidence band]{Mean value random forest predicted survival with shaded 95\% confidence band.\label{fig:rfsrc-mean}}
 \end{figure}
 \end{Schunk}
 
@@ -266,8 +328,10 @@ Since VIMP is the absolute difference between prediction errors before and after
 In Figure~\ref{fig:rf-vimp}, we plot VIMP measures for each of the variables used to grow the forest estimates of Figure~\ref{fig:rfsrc-plot}. Variables are shown in VIMP rank order, largest (op\_yr) at the top, to smallest (iv\_lospr) at the bottom. In this case, we would focus attention on the top three variables (op\_yr (surgical date), ld and devno).
 \begin{Schunk}
 \begin{Sinput}
-R> plot.gg_vimp(pbc_rf) + 
-+   theme(legend.position = "none")
+R> plot.gg_vimp(pbc_rf, lbls = st.labs) + 
++   theme(legend.position = c(.8,.2))+
++   labs(fill="VIMP > 0")+
++   scale_fill_brewer(palette="Set1")
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -275,7 +339,7 @@ R> plot.gg_vimp(pbc_rf) +
 
 }
 
-\caption[Variable Importance]{Variable Importance\label{fig:rf-vimp}}
+\caption[Random forest variable Importance (VIMP)]{Random forest variable Importance (VIMP). Blue bars indicate important variables (positive VIMP), red indicates noise variables (negative VIMP).\label{fig:rf-vimp}}
 \end{figure}
 \end{Schunk}
 
@@ -292,7 +356,7 @@ The minimal depth plot of Figure~\ref{fig:mindepth} is similar to the VIMP plot 
 \begin{Schunk}
 \begin{Sinput}
 R> pbc_vs <- var.select(pbc_rf)
-R> ggMindepth <- gg_minimal_depth(pbc_vs)
+R> ggMindepth <- gg_minimal_depth(pbc_vs, lbls = st.labs)
 R> print(ggMindepth)
 \end{Sinput}
 \end{Schunk}
@@ -302,32 +366,32 @@ R> print(ggMindepth)
 -----------------------------------------------------------
 gg_minimal_depth
 model size         : 12 
-depth threshold    : 5.9439 
+depth threshold    : 5.9421 
 
-PE :[1] 16.724
+PE :[1] 16.744
 -----------------------------------------------------------
 
 Top variables:
             depth  vimp
-bili        1.548 0.083
-prothrombin 2.454 0.019
-albumin     2.512 0.012
-edema       2.806 0.014
-copper      2.970 0.009
-age         3.032 0.011
-stage       3.346 0.012
-chol        3.410 0.004
-platelet    3.570 0.001
-sgot        3.958 0.003
-alk         4.296 0.000
-trig        4.594 0.000
+bili        1.440 0.086
+prothrombin 2.424 0.018
+albumin     2.450 0.014
+edema       2.835 0.012
+copper      2.842 0.008
+age         3.115 0.011
+stage       3.218 0.015
+chol        3.495 0.003
+platelet    3.519 0.001
+sgot        3.913 0.004
+alk         4.216 0.000
+trig        4.682 0.000
 -----------------------------------------------------------
 \end{Soutput}
 \end{Schunk}
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(ggMindepth)
+R> plot(ggMindepth, lbls = st.labs)
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -335,10 +399,20 @@ R> plot(ggMindepth)
 
 }
 
-\caption[Minimal Depth Plot]{Minimal Depth Plot\label{fig:mindepth-plot}}
+\caption[Minimal Depth variable selection]{Minimal Depth variable selection. Low minimal depth indicates important variables. The dashed line is the threshold of maximum value for variable selection.\label{fig:mindepth-plot}}
 \end{figure}
 \end{Schunk}
 
+\begin{Schunk}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-depthVimp-1} 
+
+}
+
+\caption[Comparing Minimal Depth and Vimp rankings]{Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points below have higher VIMP, those above have higher minimal depth ranking. Variables are colored by the sign of the VIMP measure.\label{fig:depthVimp}}
+\end{figure}
+\end{Schunk}
 
 \section{Variable Dependence}\label{S:dependence}
 Once we have an idea of which variables contribute to the predictive accuracy of the forest, it is useful to get some idea of form of this contribution. We use graphical methods to show the predicted response given dependence on covariates. We can plot the marginal effect of an covariate on the class probability (classification), response (regression), mortality (survival), or the expected years lost (competing risk) for a RF analysis. We plot the ensemble predicted value on the vertical axis and covariates along the horizontal axis.
@@ -358,7 +432,7 @@ R> ggRFsrc +
 
 }
 
-\caption[PBC Survival]{PBC Survival\label{fig:rfsrc-plot3Mnth}}
+\caption[Random forest OOB predicted patient survival]{Random forest OOB predicted patient survival. Red curves correspond to patients which have died, blue corresponds to alive (or censored) cases. Vertical dashed lines indicate the 1 and 3 year survival estimates.\label{fig:rfsrc-plot3Mnth}}
 \end{figure}
 \end{Schunk}
 
@@ -369,7 +443,7 @@ R> ind = 1
 R> ggrf <- gg_variable(pbc_rf, time = c(1, 3), 
 +                     time.labels = c("1 Year", "3 Years"))
 R> 
-R> plot(ggrf, x_var = xvar[ind], se=FALSE, alpha=.3) + 
+R> plot(ggrf, x_var = xvar[ind], se=.95, alpha=.3) + 
 +   labs(y = "Survival") + 
 +   theme(legend.position = "none") + 
 +   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -381,7 +455,7 @@ R> plot(ggrf, x_var = xvar[ind], se=FALSE, alpha=.3) +
 
 }
 
-\caption[Variable dependence Survival vs]{Variable dependence Survival vs. Bilirubin\label{fig:variable-plotbili}}
+\caption[Bilirubin variable dependence at 1 and 3 years]{Bilirubin variable dependence at 1 and 3 years. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve with shaded 95\% confidence band indicates the survival trend with increasing bilirubin.\label{fig:variable-plotbili}}
 \end{figure}
 \end{Schunk}
 
@@ -402,10 +476,28 @@ R> plot(ggrf, x_var = xvar[c(2,3,5,6)], panel = TRUE,
 
 }
 
-\caption[Variable dependence Survival panel]{Variable dependence Survival panel\label{fig:variable-plotCombines}}
+\caption[Variable dependence plots at 1 and 3 years for continuous variables age, albumin, copper and prothrombin]{Variable dependence plots at 1 and 3 years for continuous variables age, albumin, copper and prothrombin. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve indicates the survival trend with increasing variable value.\label{fig:variable-plotCombines}}
 \end{figure}
 \end{Schunk}
 
+\begin{Schunk}
+\begin{Sinput}
+R> plot(ggrf, x_var = "edema", notch=TRUE) + 
++   labs(y = "Survival") + 
++   theme(legend.position = "none") + 
++   scale_color_manual(values = strCol, labels = event.labels) + 
++   scale_shape_manual(values = event.marks, labels = event.labels)+
++   coord_cartesian(y=c(1,102))
+\end{Sinput}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-variable-plotEdema-1} 
+
+}
+
+\caption[Variable dependence plots at 1 and 3 years for categorical edema variable]{Variable dependence plots at 1 and 3 years for categorical edema variable. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Boxes indicate distributional properties of observations in each group.\label{fig:variable-plotEdema}}
+\end{figure}
+\end{Schunk}
 \subsection{Partial Dependence}\label{S:partialDependence}
 
 \emph{Partial dependence plots} are a risk adjusted alternative to marginal variable dependence. Partial plots are generated by integrating out the effects of variables beside the covariate of interest. The figures are constructed by selecting points evenly spaced along the distribution of the X variable. For each of these values (X = x), we calculate the average Random Forest prediction over all other covariates in X by \eqref{E:partial}.
@@ -420,7 +512,7 @@ Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month su
 \begin{Schunk}
 \begin{Sinput}
 R> # Calculate the 1, 3 and 5 year partial dependence
-R> pbc_prtl_time <- mclapply(c(1,3,5), function(tm){
+R> pbc_prtl_time <- lapply(c(1,3,5), function(tm){
 +   plot.variable(pbc_rf, surv.type = "surv", 
 +                           time = tm, 
 +                           xvar.names = xvar, partial = TRUE, 
@@ -445,7 +537,8 @@ R>
 R> plot(pbc_ggpart[["bili"]], se = FALSE) + 
 +   theme(legend.position = c(.8, .5)) + 
 +   labs(y = "Survival", 
-+        x = dta.labs["bili", "label"])+
++        x = dta.labs["bili", "label"],
++        color="Time", shape="Time")+
 +   scale_color_brewer(palette="Set1")
 \end{Sinput}
 \begin{figure}[!htpb]
@@ -454,7 +547,7 @@ R> plot(pbc_ggpart[["bili"]], se = FALSE) +
 
 }
 
-\caption[Risk adjusted Survival]{Risk adjusted Survival\label{fig:pbc-partial-bili}}
+\caption[Partial dependence plot of (risk adjusted) predicted survival probability as a function of serum bilirubin at 1 year (red circle) and 3 years (blue triangle)]{Partial dependence plot of (risk adjusted) predicted survival probability as a function of serum bilirubin at 1 year (red circle) and 3 years (blue triangle). Loess smooth curves indicates the trend.\label{fig:pbc-partial-bili}}
 \end{figure}
 \end{Schunk}
 
@@ -474,16 +567,17 @@ R> plot(ggpart, se = FALSE, panel = TRUE) +
 
 }
 
-\caption[Risk adjusted Survival - panel plot]{Risk adjusted Survival - panel plot\label{fig:pbc-partial-panel}}
+\caption[Partial dependence plot of (risk adjusted) predicted survival probability as a function continuous variables prothrombin time, albumin, age and urin copper at 1 year (red circle) and 3 years (blue triangle)]{Partial dependence plot of (risk adjusted) predicted survival probability as a function continuous variables prothrombin time, albumin, age and urin copper at 1 year (red circle) and 3 years (blue triangle).\label{fig:pbc-partial-panel}}
 \end{figure}
 \end{Schunk}
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(pbc_ggpart$edema, notch=TRUE, alpha=.3) + 
+R> plot(pbc_ggpart$edema, notch=TRUE, alpha=.3, outlier.shape = NA) + 
 +   labs(x = "Edema", y = "Survival (%)")+
 +   scale_color_brewer(palette="Set1")+
-+   facet_grid(~group)
++   facet_grid(~group)+
++   theme(legend.position="none")
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -491,9 +585,10 @@ R> plot(pbc_ggpart$edema, notch=TRUE, alpha=.3) +
 
 }
 
-\caption[Risk adjusted Survival - Edema]{Risk adjusted Survival - Edema\label{fig:pbc-partial-edema}}
+\caption[Partial dependence plot of (risk adjusted) predicted survival probability as a function of edema (categorical variable) at 1 year (red circle) and 3 years (blue triangle)]{Partial dependence plot of (risk adjusted) predicted survival probability as a function of edema (categorical variable) at 1 year (red circle) and 3 years (blue triangle). Points indicate risk adjusted prediction for all patients within each edema group. Box plots indicate distributional properties within each group.\label{fig:pbc-partial-edema}}
 \end{figure}
 \end{Schunk}
+
 \section{Variable Interactions}\label{S:interactions}
 Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. Minimal depth is calculated as the maximal subtree using the normalized minimal depth of variable $i$ relative to the root node (normalized with respect to the size of the tree). For interactions, we calculate the maximal subtree interaction measure as the normalized minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$ (normalized with respect to the size of $i$'s maximal subtree)~\citep{Ishwaran_HighDimension:2010,Ishwaran_HighDimension:2011}.
 
@@ -514,7 +609,7 @@ R> plot(ggint, x_var = "bili") +
 
 }
 
-\caption[Minimal Depth interaction for Surgical Date]{Minimal Depth interaction for Surgical Date\label{fig:interaction}}
+\caption[Minimal depth variable interaction with bilirubin (marked with red cross)]{Minimal depth variable interaction with bilirubin (marked with red cross). Higher values indicate lower interactivity with target variable.\label{fig:interaction}}
 \end{figure}
 \end{Schunk}
 
@@ -531,7 +626,7 @@ R> plot(gg_interaction(pbc_interaction), x_var = xvar[2:5]) +
 
 }
 
-\caption[Risk adjusted Survival - panel plot]{Risk adjusted Survival - panel plot\label{fig:interactionPanel}}
+\caption[Minimal depth variable interaction panel with prothrombin time, albumin, urine copper and edema]{Minimal depth variable interaction panel with prothrombin time, albumin, urine copper and edema. Higher values indicate lower interactivity with target variable.\label{fig:interactionPanel}}
 \end{figure}
 \end{Schunk}
 
@@ -546,7 +641,7 @@ R> ggrf <- gg_variable(pbc_rf, time = 1)
 R> 
 R> ggvar <- ggrf
 R> ggvar$treatment <- as.numeric(ggvar$treatment)
-R> ggvar$treatment[which(ggvar$treatment==1)] <- "D-pen" 
+R> ggvar$treatment[which(ggvar$treatment==1)] <- "DPCA" 
 R> ggvar$treatment[which(ggvar$treatment==2)] <- "placebo" 
 R> ggvar$treatment <- factor(ggvar$treatment)
 R> 
@@ -568,7 +663,7 @@ R> show(var_dep)
 
 }
 
-\caption[Bilirubin Variable Dependence at 1 year]{Bilirubin Variable Dependence at 1 year.\label{fig:var_dep}}
+\caption[Variable dependence plot]{Variable dependence plot. Survival at 1 year against bilirubin. Individual cases are marked with blue circles (alive or censored) and red x (dead). Loess smooth curve indicates the trend as bilirubin  increases.\label{fig:var_dep}}
 \end{figure}
 \end{Schunk}
 
@@ -584,7 +679,7 @@ R> var_dep +
 
 }
 
-\caption[Conditional Variable Dependence]{Conditional Variable Dependence. Interactions between bilrubin with treatment and stage variables.\label{fig:coplot_bilirubin}}
+\caption[Variable dependence coplot]{Variable dependence coplot. Survival at 1 year against bilirubin, stratified by treatment and histological stage.\label{fig:coplot_bilirubin}}
 \end{figure}
 \end{Schunk}
 
@@ -611,7 +706,7 @@ R> var_dep
 
 }
 
-\caption[Bilirubin-age interaction coplot at 1 year]{Bilirubin-age interaction coplot at 1 year.\label{fig:age-coplot}}
+\caption[Variable dependence coplot]{Variable dependence coplot. Survival at 1 year against bilirubin, stratified by continous variable age.\label{fig:age-coplot}}
 \end{figure}
 \end{Schunk}
 
@@ -643,7 +738,7 @@ R> for(ind in lng:1){
 +     }
 + }
 R> 
-R> pDat.partlist <- mclapply(1:length(sbst), function(ind){
+R> pDat.partlist <- lapply(1:length(sbst), function(ind){
 +   plot.variable(pbc_rf, surv.type="surv", time=1,
 +                            subset = sbst[[ind]],
 +                         xvar.names="bili", partial=TRUE,
@@ -659,11 +754,12 @@ R>
 R> for(ind in 1:length(gg_part)){
 + gg_part[[ind]]$age <- lvl[ind]
 + }
-R> gg_merge <- do.call(rbind, gg_part)
-R> gg_merge$age <- paste("Age=", gg_merge$age)
-R> gg_merge$age <- factor(gg_merge$age)
+R> pbc_prtl_bili_age <- do.call(rbind, gg_part)
+R> pbc_prtl_bili_age$age <- paste("Age=", gg_merge$age)
+R> pbc_prtl_bili_age$age <- factor(gg_merge$age)
 R> 
-R> ggpl <- ggplot(gg_merge, aes(x=bili, y=yhat, shape=age, color=age))+
+R> ggpl <- ggplot(pbc_prtl_bili_age, 
++                aes(x=bili, y=yhat, shape=age, color=age))+
 +   geom_point()+geom_smooth(se=FALSE)+
 +   labs(x="Surgical Date", y="Survival 1 year")+
 +   scale_color_brewer(palette="Set1")
@@ -678,7 +774,7 @@ R> ggpl
 
 }
 
-\caption[Bilirubin-age interaction partial coplot at 1 year]{Bilirubin-age interaction partial coplot at 1 year.\label{fig:bili-age}}
+\caption[Partial (risk adjusted) variable dependence coplot]{Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by age groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.\label{fig:bili-age}}
 \end{figure}
 \end{Schunk}
 \subsection{Albumin}
@@ -703,7 +799,7 @@ R> var_dep
 
 }
 
-\caption[Bilirubin-age interaction coplot at 1 year]{Bilirubin-age interaction coplot at 1 year.\label{fig:albumin-coplot}}
+\caption[Variable dependence coplot]{Variable dependence coplot. Survival at 1 year against bilirubin, stratified by continous variable albumin.\label{fig:albumin-coplot}}
 \end{figure}
 \end{Schunk}
 
@@ -712,7 +808,7 @@ R> var_dep
 \begin{Sinput}
 R> # Get the training data to work with...
 R> dta.train  <- pbc_rf$xvar
-R> dta.train$albumin_grp <- albumin_grp
+R> dta.train$albumin_grp <- ggvar$albumin_grp
 R> 
 R> # Create a series of coplot subsets....
 R> lng <- length(levels(albumin_grp))
@@ -771,7 +867,7 @@ R> ggpl
 
 }
 
-\caption[Bilirubin-albumin interaction partial coplot at 1 year]{Bilirubin-albumin interaction partial coplot at 1 year.\label{fig:bili-albumin}}
+\caption[Partial (risk adjusted) variable dependence coplot]{Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by albumin groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.\label{fig:bili-albumin}}
 \end{figure}
 \end{Schunk}
 
@@ -798,7 +894,7 @@ R> var_dep
 
 }
 
-\caption[Bilirubin-prothrombin interaction coplot at 1 year]{Bilirubin-prothrombin interaction coplot at 1 year.\label{fig:prothrombin-coplot}}
+\caption[Variable dependence coplot]{Variable dependence coplot. Survival at 1 year against bilirubin, stratified by continous variable prothrombin time.\label{fig:prothrombin-coplot}}
 \end{figure}
 \end{Schunk}
 
@@ -807,7 +903,7 @@ R> var_dep
 \begin{Sinput}
 R> # Get the training data to work with...
 R> dta.train  <- pbc_rf$xvar
-R> dta.train$prothrombin_grp <- prothrombin_grp
+R> dta.train$prothrombin_grp <- ggvar$prothrombin_grp
 R> 
 R> # Create a series of coplot subsets....
 R> lng <- length(levels(prothrombin_grp))
@@ -866,12 +962,14 @@ R> ggpl
 
 }
 
-\caption[Bilirubin-prothrombin interaction partial coplot at 1 year]{Bilirubin-prothrombin interaction partial coplot at 1 year.\label{fig:bili-prothrombin}}
+\caption[Partial (risk adjusted) variable dependence coplot]{Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by prothrombin groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.\label{fig:bili-prothrombin}}
 \end{figure}
 \end{Schunk}
+
 \section{Conclusion}
 
-
+\appendix
+\section{randomForestSRC code snippets}
 %\singlespacing
 \bibliography{ggRandomForests}
 
