@@ -109,11 +109,11 @@ gg_partial.ggRandomForests <- function(object,
                        x=object$pData[[ind]]$x.uniq))
     }else{
       
-      x <- rep(object$pData[[ind]]$x.uniq,
+      x <- rep(as.character(object$pData[[ind]]$x.uniq),
                rep(object$n, object$pData[[ind]]$n.x))
-      tmp <- data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
-                       x=x))        
+      tmp <- data.frame(cbind(yhat=x, x=x))        
       tmp$x <- factor(tmp$x)
+      tmp$yhat <- object$pData[[ind]]$yhat
       tmp
     }
   })

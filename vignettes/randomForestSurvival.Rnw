@@ -386,51 +386,53 @@ where $\hat{f}$ is the predicted response from the random forest and $x_{i, o}$ 
 Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month survival on bilirubin. 
 
 <<pbc-partial, echo = TRUE, eval = FALSE>>= 
-# Calculate the 1 year partial dependence
-pbc_prtl <- plot.variable(pbc_rf, surv.type = "surv", 
-                          time = 1, 
+# Calculate the 1, 3 and 5 year partial dependence
+pbc_prtl_time <- mclapply(c(1,3,5), function(tm){
+  plot.variable(pbc_rf, surv.type = "surv", 
+                          time = tm, 
                           xvar.names = xvar, partial = TRUE, 
                           show.plots = FALSE)
-
-# Calculate the 3 year partial dependence
-pbc_prtl.3 <- plot.variable(pbc_rf, surv.type = "surv", 
-                            time = 3, 
-                            xvar.names = xvar, partial = TRUE, 
-                            show.plots = FALSE)
-
-# Create gg_partial objects
-ggPrtl <- gg_partial(pbc_prtl)
-ggPrtl.3 <- gg_partial(pbc_prtl.3)
-
-# Combine the objects to get multiple time curves 
-# along variables on a single figure.
-pbc_ggpart <- combine(ggPrtl, ggPrtl.3, 
-                      labels = c("1 Year", "3 Years"))
+})
 
 @
 
 <<pbc-partial-load>>= 
-data("pbc_prtl", package="ggRandomForests")
-data("pbc_ggpart", package="ggRandomForests")
+data("pbc_prtl_time", package="ggRandomForests")
 @
 
 
 <<pbc-partial-bili, echo = TRUE, fig.cap = "Risk adjusted Survival">>= 
+# Convert all partial plots to gg_partial objects
+gg_dta <- lapply(pbc_prtl_time, gg_partial)
+
+# Combine the objects to get multiple time curves 
+# along variables on a single figure.
+pbc_ggpart <- combine(gg_dta[[1]],gg_dta[[2]], 
+                      lbls = c("1 Year", "3 Years"))
+
 plot(pbc_ggpart[["bili"]], se = FALSE) + 
   theme(legend.position = c(.8, .5)) + 
   labs(y = "Survival", 
-       x = dta.labs[which(rownames(dta.labs) ==  "bili"), "label"])
+       x = dta.labs["bili", "label"])+
+  scale_color_brewer(palette="Set1")
 @
 
 Non-proportional hazards are evident in Figure~\ref{fig:pbc-partial-bili}.
 
 <<pbc-partial-panel, echo = TRUE, fig.cap = "Risk adjusted Survival - panel plot", fig.width = 7, fig.height = 4>>= 
-pbc_ggpart$bili <- pbc_ggpart$edema <- NULL
-plot(pbc_ggpart, se = FALSE, panel = TRUE) + 
-  labs(x = "", y = "Survival")
+ggpart <- pbc_ggpart
+ggpart$bili <- ggpart$edema <- NULL
+plot(ggpart, se = FALSE, panel = TRUE) + 
+  labs(x = "", y = "Survival") +
+  scale_color_brewer(palette="Set1")
 @
 
-
+<<pbc-partial-edema, echo = TRUE, fig.cap = "Risk adjusted Survival - Edema", fig.width = 7>>= 
+plot(pbc_ggpart$edema, notch=TRUE, alpha=.3, outlier.shape = NA) + 
+  labs(x = "Edema", y = "Survival (%)")+
+  scale_color_brewer(palette="Set1")+
+  facet_grid(~group)
+@
 \section{Variable Interactions}\label{S:interactions}
 Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. Minimal depth is calculated as the maximal subtree using the normalized minimal depth of variable $i$ relative to the root node (normalized with respect to the size of the tree). For interactions, we calculate the maximal subtree interaction measure as the normalized minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$ (normalized with respect to the size of $i$'s maximal subtree)~\citep{Ishwaran_HighDimension:2010,Ishwaran_HighDimension:2011}.
 
@@ -491,7 +493,7 @@ var_dep +
 @
 
 Interactions with continuous variables requires stratification at some level.
-
+\subsection{Age}
 <<age-coplot, fig.cap="Bilirubin-age interaction coplot at 1 year.", fig.width = 7, fig.height = 4, echo=TRUE>>=
 age_grp <- cut(pbc_rf$xvar$age, breaks=seq(0,100,10))
 ggvar$age_grp <- paste("age=",age_grp, sep="")
@@ -563,8 +565,172 @@ ggpl
 @
 
 <<bili-age, fig.cap="Bilirubin-age interaction partial coplot at 1 year.", fig.width = 7, fig.height = 4, echo=FALSE>>=
-data(pbc_prtl_age_merge, package="ggRandomForests")
-ggpl <- ggplot(gg_merge, aes(x=bili, y=yhat, shape=age, color=age))+
+data(pbc_prtl_bili_age, package="ggRandomForests")
+ggpl <- ggplot(pbc_prtl_bili_age, aes(x=bili, y=yhat, shape=age, color=age))+
+  geom_point()+geom_smooth(se=FALSE)+
+  labs(x="Surgical Date", y="Survival 1 year")+
+  scale_color_brewer(palette="Set1")
+ggpl
+@
+\subsection{Albumin}
+<<albumin-coplot, fig.cap="Bilirubin-age interaction coplot at 1 year.", fig.width = 7, fig.height = 4, echo=TRUE>>=
+albumin_grp <- cut(pbc_rf$xvar$albumin, breaks=c(0,seq(3,3.5,.5),5))
+ggvar$albumin_grp <- paste("albumin=",albumin_grp, sep="")
+
+var_dep <- plot(ggvar, x_var = "bili", smooth = TRUE, 
+                method = "loess", span=1.5,alpha = .5, se = FALSE) + 
+  labs(y = "Survival", x = dta.labs["bili", "label"]) + 
+  theme(legend.position = "none") + 
+  scale_color_manual(values = strCol, labels = event.labels) + 
+  scale_shape_manual(values = event.marks, labels = event.labels)+ 
+  facet_wrap(~albumin_grp)
+
+var_dep
+@
+
+
+<<bilirubin-albumin-partial, echo=TRUE, eval=FALSE>>=
+
+# Get the training data to work with...
+dta.train  <- pbc_rf$xvar
+dta.train$albumin_grp <- ggvar$albumin_grp
+
+# Create a series of coplot subsets....
+lng <- length(levels(albumin_grp))
+sbst <- mclapply(1:lng, function(ind){
+  st <- which(dta.train$albumin_grp==levels(albumin_grp)[ind])
+  if(length(st) == 0) NULL
+  else st
+  })
+
+lvl <- levels(albumin_grp)
+# Collapse the subset list to interesting items 
+# (those with observations)
+# If you work backwards, you do extra tests, but it 
+# cuts the correct items. Cute.
+for(ind in lng:1){
+  if(is.null(sbst[[ind]])){
+    sbst[[ind]] <- NULL
+    
+    # reset the levels, so we can label things later
+    lvl <- lvl[-ind]
+    }
+}
+
+pDat.partlist <- mclapply(1:length(sbst), function(ind){
+  plot.variable(pbc_rf, surv.type="surv", time=1,
+                           subset = sbst[[ind]],
+                        xvar.names="bili", partial=TRUE,
+                        show.plots = FALSE)
+  })
+
+gg_part <- mclapply(pDat.partlist, gg_partial)
+
+# Flip y-axis
+cls <- class(gg_part)
+class(gg_part) <-  c("gg_partial_list", cls)
+
+for(ind in 1:length(gg_part)){
+gg_part[[ind]]$albumin <- lvl[ind]
+}
+gg_merge <- do.call(rbind, gg_part)
+gg_merge$albumin <- paste("albumin=", gg_merge$albumin)
+gg_merge$albumin <- factor(gg_merge$albumin)
+
+ggpl <- ggplot(gg_merge, aes(x=bili, y=yhat, shape=albumin, color=albumin))+
+  geom_point()+geom_smooth(se=FALSE)+
+  labs(x="Surgical Date", y="Survival 1 year")+
+  scale_color_brewer(palette="Set1")
+ggpl
+@
+
+<<bili-albumin, fig.cap="Bilirubin-albumin interaction partial coplot at 1 year.", fig.width = 7, fig.height = 4, echo=FALSE>>=
+data(pbc_prtl_bili_albumin, package="ggRandomForests")
+ggpl <- ggplot(pbc_prtl_bili_albumin, aes(x=bili, y=yhat, 
+                                          shape=albumin, color=albumin))+
+  geom_point()+geom_smooth(se=FALSE)+
+  labs(x="Surgical Date", y="Survival 1 year")+
+  scale_color_brewer(palette="Set1")
+ggpl
+@
+
+
+\subsection{prothrombin}
+<<prothrombin-coplot, fig.cap="Bilirubin-prothrombin interaction coplot at 1 year.", fig.width = 7, fig.height = 4, echo=TRUE>>=
+ggvar$prothrombin_grp <- cut(pbc_rf$xvar$prothrombin, breaks=c(8.9,10,11,12,18))
+
+var_dep <- plot(ggvar[which(!is.na(ggvar$prothrombin_grp)),],
+                x_var = "bili", smooth = TRUE, 
+                method = "loess", span=1.5,alpha = .5, se = FALSE) + 
+  labs(y = "Survival", x = dta.labs["bili", "label"]) + 
+  theme(legend.position = "none") + 
+  scale_color_manual(values = strCol, labels = event.labels) + 
+  scale_shape_manual(values = event.marks, labels = event.labels)+ 
+  facet_wrap(~prothrombin_grp)
+
+var_dep
+@
+
+
+<<bilirubin-prothrombin-partial, echo=TRUE, eval=FALSE>>=
+
+# Get the training data to work with...
+dta.train  <- pbc_rf$xvar
+dta.train$prothrombin_grp <- ggvar$prothrombin_grp
+
+# Create a series of coplot subsets....
+lng <- length(levels(prothrombin_grp))
+sbst <- mclapply(1:lng, function(ind){
+  st <- which(dta.train$prothrombin_grp==levels(prothrombin_grp)[ind])
+  if(length(st) == 0) NULL
+  else st
+  })
+
+lvl <- levels(prothrombin_grp)
+# Collapse the subset list to interesting items 
+# (those with observations)
+# If you work backwards, you do extra tests, but it 
+# cuts the correct items. Cute.
+for(ind in lng:1){
+  if(is.null(sbst[[ind]])){
+    sbst[[ind]] <- NULL
+    
+    # reset the levels, so we can label things later
+    lvl <- lvl[-ind]
+    }
+}
+
+pDat.partlist <- mclapply(1:length(sbst), function(ind){
+  plot.variable(pbc_rf, surv.type="surv", time=1,
+                           subset = sbst[[ind]],
+                        xvar.names="bili", partial=TRUE,
+                        show.plots = FALSE)
+  })
+
+gg_part <- mclapply(pDat.partlist, gg_partial)
+
+# Flip y-axis
+cls <- class(gg_part)
+class(gg_part) <-  c("gg_partial_list", cls)
+
+for(ind in 1:length(gg_part)){
+gg_part[[ind]]$prothrombin <- lvl[ind]
+}
+gg_merge <- do.call(rbind, gg_part)
+gg_merge$prothrombin <- paste("prothrombin=", gg_merge$prothrombin)
+gg_merge$prothrombin <- factor(gg_merge$prothrombin)
+
+ggpl <- ggplot(gg_merge, aes(x=bili, y=yhat, shape=prothrombin, color=prothrombin))+
+  geom_point()+geom_smooth(se=FALSE)+
+  labs(x="Surgical Date", y="Survival 1 year")+
+  scale_color_brewer(palette="Set1")
+ggpl
+@
+
+<<bili-prothrombin, fig.cap="Bilirubin-prothrombin interaction partial coplot at 1 year.", fig.width = 7, fig.height = 4, echo=FALSE>>=
+data(pbc_prtl_bili_prothrombin, package="ggRandomForests")
+ggpl <- ggplot(pbc_prtl_bili_prothrombin, aes(x=bili, y=yhat, 
+                                          shape=prothrombin, color=prothrombin))+
   geom_point()+geom_smooth(se=FALSE)+
   labs(x="Surgical Date", y="Survival 1 year")+
   scale_color_brewer(palette="Set1")

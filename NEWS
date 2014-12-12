@@ -1,3 +1,10 @@
+ggRandomForests 1.1.1
+===================
+* Fix gg_partial for categorical variables
+* Further development of package vignette "Random Forests for Survival" 
+* Improve help files
+* Misc Bug Fixes
+
 ggRandomForests 1.1.0
 ===================
 * Add panel option for gg_variable and gg_partial

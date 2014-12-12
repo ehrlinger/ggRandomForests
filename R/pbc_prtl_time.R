@@ -1,6 +1,9 @@
-#' \code{randomForestSRC::plot.variable} Object for the pbc data.
+#' A list of three \code{randomForestSRC::plot.variable} objects for the pbc data.
 #' 
-#' The \code{randomForestSRC::plot.variable} data set for the \code{pbc} survival dataset.
+#' The \code{randomForestSRC::plot.variable} data set for the \code{pbc} survival dataset. 
+#' 
+#' This cached data set is used by the vignette to demonstrate partial plots
+#' at 1, 3 and 5 year survival for the top ranked minimal depth variables.
 #' 
 #' @references 
 #' Ishwaran H. and Kogalur U.B. (2014). Random Forests for
@@ -21,13 +24,20 @@
 #' data(pbc, package = "randomForestSRC")
 #' pbc_rf <- rfsrc(Surv(days, status) ~ ., pbc, nsplit = 10)
 #' 
-#' # generate partial plot data for 4 different covariates.
-#' pbc_prtl <- plot.variable(pbc_rf, time=90,surv.type="surv",
-#'                           xvar.names = c("bili", "copper", "albumin", "age"),
-#'                           partial=TRUE, show.plots=FALSE)
-#'                           
-#' # Format for ggRandomForests                           
-#' gg_dta <- gg_partial(pbc_prtl)
+#' pbc_vs <- var.select(pbc_rf)
+#' 
+#' xvar <- pbc_vs$topvars[1:6]
+#' 
+#' pbc_prtl_time <- mclapply(c(1,3,5), function(tm){
+#' plot.variable(pbc_rf, surv.type = "surv", 
+#'              time = tm,
+#'              xvar.names = xvar, partial = TRUE,
+#'              show.plots = FALSE)
+#'              })
+#'  save(pbc_prtl_time, file="data/pbc_prtl_time.rda", compress="xz")
+
+#' # Format for 1 year survival partial plot for ggRandomForests                            
+#' gg_dta <- gg_partial(pbc_prtl_time[[1]])
 #' 
 #' # Without specifying which plot, plot.gg_partial returns a list of all four
 #' # figures. 
@@ -43,5 +53,5 @@
 #' @docType data
 #' @keywords datasets
 #' @format A randomForestSRC::plot.variable object for survival
-#' @name pbc_prtl
+#' @name pbc_prtl_time
 NULL

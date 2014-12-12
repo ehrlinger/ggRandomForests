@@ -6,7 +6,7 @@
 #' 
 #'  @param x gg_partial object
 #'  @param y gg_partial object
-#'  @param labels how to label the combined data.
+#'  @param lbls how to label the combined data.
 #'  @param ... not used
 #'  
 #'  @export combine.gg_partial_list combine.gg_partial combine
@@ -36,16 +36,16 @@
 #' # Combine the objects to get multiple time curves 
 #' # along variables on a single figure.
 #' pbc_ggpart <- combine(ggPrtl, ggPrtl.3, 
-#'                       labels = c("1 Year", "3 Years"))
+#'                       lbls = c("1 Year", "3 Years"))
 #' 
 #' }
-combine <- function(x, y, labels,...){
+combine <- function(x, y, lbls,...){
   UseMethod("combine",x)
 }
-combine.gg_partial <- function(x, y, labels, ...){
-  return(combine.gg_partial_list(x, y, labels, ...))
+combine.gg_partial <- function(x, y, lbls, ...){
+  return(combine.gg_partial_list(x, y, lbls, ...))
 }
-combine.gg_partial_list <- function(x, y, labels, ...){
+combine.gg_partial_list <- function(x, y, lbls, ...){
   
   if(inherits(x,"plot.variable"))
     x <- gg_partial(x)
@@ -57,22 +57,23 @@ combine.gg_partial_list <- function(x, y, labels, ...){
     stop("combine.gg_partial expects either a ggRandomForests::gg_partial or randomForestSRC::plot.variable object")
   }
   
-  if(missing(labels)){
-    labels=c("x1", "x2")
+  if(missing(lbls)){
+    lbls=c("x1", "x2")
   }
-  ### !!TODO!! check for labels length
+  ### !!TODO!! check for lbls length
   
   cls <- class(x)
   
   ### We need to check for the case when x and y already have
   ### a group column, 
   
-  if(is.null(x$group))
-    x <- mclapply(x, function(st){st$group <- labels[1]; st})
+  if(is.null(x[[1]]$group))
+    x <- mclapply(x, function(st){st$group <- lbls[1]; st})
   
-  if(is.null(y$group))
-    y <- mclapply(y, function(st){st$group <- labels[2]; st})
-  
+  if(is.null(y[[1]]$group)){
+    ind.l <- length(lbls)
+    y <- mclapply(y, function(st){st$group <- lbls[ind.l]; st})
+  }
   # By names
   nm <- names(x)
   

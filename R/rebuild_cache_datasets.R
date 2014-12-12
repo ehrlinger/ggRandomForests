@@ -141,30 +141,14 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE){
     # Calculate the 1 year partial dependence
     xvar <- pbc_vs$topvars[1:6]
     
-    pbc_prtl <- plot.variable(pbc_rf, surv.type="surv",
-                              time=1, 
-                              xvar.names=xvar, partial=TRUE,
-                              show.plots = FALSE)
+    pbc_prtl_time <- mclapply(c(1,3,5), function(tm){
+      plot.variable(pbc_rf, surv.type = "surv", 
+                    time = tm, 
+                    xvar.names = xvar, partial = TRUE, 
+                    show.plots = FALSE)
+    })
     
-    
-    # Calculate the 3 year partial dependence
-    pbc_prtl.3 <- plot.variable(pbc_rf, surv.type="surv", 
-                                time=3, 
-                                xvar.names=xvar, partial=TRUE,
-                                show.plots = FALSE)
-    
-    # Create gg_partial objects
-    ggPrtl <- gg_partial(pbc_prtl)
-    ggPrtl.3 <- gg_partial(pbc_prtl.3)
-    
-    # Combine the objects to get multiple time curves 
-    # along variables on a single figure.
-    pbc_ggpart <- combine(ggPrtl, ggPrtl.3, 
-                          labels=c("1 Year", "3 Years"))
-    
-    if(save) save(pbc_prtl, file="data/pbc_prtl.rda", compress="xz")
-    
-    if(save) save(pbc_ggpart, file="data/pbc_ggpart.rda", compress="xz")
+    save(pbc_prtl_time, file="data/pbc_prtl_time.rda", compress="xz")
     
   }
   

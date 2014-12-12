@@ -5,14 +5,14 @@
 \alias{combine.gg_partial_list}
 \title{combine two gg_partial objects}
 \usage{
-combine(x, y, labels, ...)
+combine(x, y, lbls, ...)
 }
 \arguments{
 \item{x}{gg_partial object}
 
 \item{y}{gg_partial object}
 
-\item{labels}{how to label the combined data.}
+\item{lbls}{how to label the combined data.}
 
 \item{...}{not used}
 }
@@ -43,7 +43,7 @@ ggPrtl.3 <- gg_partial(pbc_prtl.3)
 # Combine the objects to get multiple time curves
 # along variables on a single figure.
 pbc_ggpart <- combine(ggPrtl, ggPrtl.3,
-                      labels = c("1 Year", "3 Years"))
+                      lbls = c("1 Year", "3 Years"))
 
 }
 }

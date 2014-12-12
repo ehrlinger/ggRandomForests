@@ -1,8 +1,7 @@
-This is the ggRandomForests package submission version 1.1.0
+This is the ggRandomForests package submission version 1.1.1
 
 --------------------------------------------------------------------------------
 
-* Update dependency version requirements.
 * Improve help files.
 * combine gg_partial datasets.
 * add panel plotting for multiple gg_variable and gg_partial plots.
