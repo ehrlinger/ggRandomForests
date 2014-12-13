@@ -1,7 +1,7 @@
 Package: ggRandomForests
 Type: Package
-Title: Creating and Plotting Data Objects for Understanding Random
-    Forests
+Title: Visually Exploring Random Forests: Data and Plotting for Random
+    Forest Models
 Version: 1.1.1
 Date: 2014-12-11
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
@@ -9,12 +9,13 @@ Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)
 VignetteBuilder: knitr
 URL: https://github.com/ehrlinger/ggRandomForests
-Description: The ggRandomForests package contains tools for creating and
-    plotting data structures to visually understand random forest models. The
-    functions are designed for use with the randomForestSRC package. This
-    package is structured to extract intermediate data objects from the random
-    forest. S3 Plot functions, which use the ggplot2 package, are included for
-    each data object.
+Description: Visually exploring random forest models. Random Forests are known
+    for predictive accuracy, ggRandomForests helps uncover the associations of
+    variables with response. ggRandomForests is designed for use with the
+    randomForestSRC package for survival, regression and classification
+    forests. The package is structured to extract intermediate data objects
+    from the random forest. S3 Plot functions, using the ggplot2 package, are
+    included for visualling each data object.
 Depends:
     R (>= 3.1.0)
 Imports:
