@@ -328,17 +328,23 @@ plot(ggerr)+
 
 Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, where censored device prediction is colored in blue, and devices experiencing an event are colored in red. 
 <<rfsrc-plot, fig.cap = "Random forest predicted survival. Blue lines correspond to censored observations, red lines correspond to patients who experienced the event (death).">>= 
-ggRFsrc <- plot.gg_rfsrc(pbc_rf, alpha=.2) + 
+gg_dta <- gg_rfsrc(pbc_rf)
+ggRFsrc <- plot(gg_dta, alpha=.2) + 
   scale_color_manual(values = strCol) + 
   theme(legend.position = "none") + 
   labs(y = "Survival Probability", x = "time (years)")+
   coord_cartesian(ylim=c(-.01,1.01))
-
 ggRFsrc
 @
 
+<<rfsrc-plot-split, fig.cap = "Random forest predicted survival. Split on death event, black loess curve indicates the mean survival estimate within each group.">>= 
+ggRFsrc+
+  geom_smooth(aes(by=cens), color="black")+
+  facet_wrap(~cens, ncol=1)
+@
+
 <<rfsrc-mean, fig.cap = "Mean value random forest predicted survival with shaded 95\\% confidence band.">>= 
-gg_src <- plot.gg_rfsrc(pbc_rf,  se=.95) + 
+gg_src <- plot.gg_rfsrc(pbc_rf,   se=.95) + 
   scale_color_manual(values = strCol) + 
   theme(legend.position = "none") + 
   labs(y = "Survival Probability", x = "time (years)")+
@@ -346,6 +352,14 @@ gg_src <- plot.gg_rfsrc(pbc_rf,  se=.95) +
 gg_src
 @
 
+<<rfsrc-mean2, fig.cap = "Mean value random forest predicted survival with shaded 95\\% confidence band.">>= 
+gg_src <- plot.gg_rfsrc(pbc_rf,  se=.95) + 
+  scale_color_manual(values = strCol) + 
+  theme(legend.position = "none") + 
+  labs(y = "Survival Probability", x = "time (years)")+
+  coord_cartesian(ylim=c(-.01,1.01))
+gg_src
+@
 \subsection{Forest Imputation for missing values}\label{S:imputation}
 
 The randomForests package~\citep{liaw:2002} include a forest imputation method within the randomForest package. 

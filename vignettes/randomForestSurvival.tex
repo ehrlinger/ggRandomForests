@@ -140,7 +140,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sat Dec 13 09:26:48 2014
+% Sat Dec 13 11:22:30 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -220,7 +220,7 @@ R> plot(gg_dta, error="none") +
 \end{Schunk}
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sat Dec 13 09:26:50 2014
+% Sat Dec 13 11:22:32 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -256,17 +256,16 @@ R> pbc_rf
                          Sample size: 418
                     Number of deaths: 161
                     Was data imputed: yes
-                         Missingness: 33.97%
                      Number of trees: 1000
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 78.556
+       Average no. of terminal nodes: 78.548
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank *random*
        Number of random split points: 10
-                          Error rate: 16.67%
+                          Error rate: 16.98%
 \end{Soutput}
 \end{Schunk}
 
@@ -296,6 +295,17 @@ Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, whe
 \begin{Schunk}
 \begin{figure}[!htpb]
 
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-rfsrc-plot-split-1} 
+
+}
+
+\caption[Random forest predicted survival]{Random forest predicted survival. Split on death event, black loess curve indicates the mean survival estimate within each group.\label{fig:rfsrc-plot-split}}
+\end{figure}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{figure}[!htpb]
+
 {\centering \includegraphics[width=\maxwidth]{figure/rfs-rfsrc-mean-1} 
 
 }
@@ -304,6 +314,16 @@ Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, whe
 \end{figure}
 \end{Schunk}
 
+\begin{Schunk}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-rfsrc-mean2-1} 
+
+}
+
+\caption[Mean value random forest predicted survival with shaded 95\% confidence band]{Mean value random forest predicted survival with shaded 95\% confidence band.\label{fig:rfsrc-mean2}}
+\end{figure}
+\end{Schunk}
 \subsection{Forest Imputation for missing values}\label{S:imputation}
 
 The randomForests package~\citep{liaw:2002} include a forest imputation method within the randomForest package. 
@@ -366,25 +386,25 @@ R> print(ggMindepth)
 -----------------------------------------------------------
 gg_minimal_depth
 model size         : 12 
-depth threshold    : 5.9327 
+depth threshold    : 5.9862 
 
-PE :[1] 16.667
+PE :[1] 16.98
 -----------------------------------------------------------
 
 Top variables:
-            depth  vimp
-bili        1.491 0.082
-albumin     2.427 0.014
-prothrombin 2.534 0.016
-edema       2.708 0.012
-copper      2.794 0.009
-age         3.150 0.011
-stage       3.226 0.016
-chol        3.404 0.004
-platelet    3.490 0.001
-sgot        3.989 0.003
-alk         4.149 0.000
-trig        4.676 0.000
+            depth   vimp
+bili        1.459  0.085
+prothrombin 2.456  0.017
+albumin     2.492  0.014
+copper      2.721  0.009
+edema       2.857  0.013
+age         3.143  0.011
+stage       3.322  0.015
+chol        3.404  0.003
+platelet    3.462  0.001
+sgot        3.990  0.004
+alk         4.236  0.000
+trig        4.593 -0.001
 -----------------------------------------------------------
 \end{Soutput}
 \end{Schunk}

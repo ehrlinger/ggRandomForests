@@ -106,7 +106,7 @@ plot.gg_rfsrc<- function(x, ...){
   }else if(inherits(gg_dta,"surv")){
     if(inherits(gg_dta,"survSE")){
       # Summarized survival plot for the group...
-      gg_dta.t <-  select(gg_dta, time, median, mean)%>% gather(variable, value,-time)
+      gg_dta.t <-  select(gg_dta, time, mean)%>% gather(variable, value,-time)
       
       if(is.null(arg_set$alpha)){
         alph=.3
@@ -125,9 +125,9 @@ plot.gg_rfsrc<- function(x, ...){
       gg_dta.mlt$ptid <- factor(gg_dta.mlt$ptid)
       
       # Lines by observation
-      gg_plt <- ggplot(gg_dta.mlt)+
-        geom_step(aes_string(x="variable", y="value", col="cens", by="ptid"), 
-                  ...)
+      gg_plt <- ggplot(gg_dta.mlt,
+                       aes_string(x="variable", y="value", col="cens", by="ptid"))+
+        geom_step(...)
     }
     
     gg_plt<-gg_plt  +
