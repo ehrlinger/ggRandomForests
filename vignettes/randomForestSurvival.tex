@@ -140,7 +140,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sat Dec 13 11:22:30 2014
+% Sun Dec 14 18:57:47 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -220,7 +220,7 @@ R> plot(gg_dta, error="none") +
 \end{Schunk}
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sat Dec 13 11:22:32 2014
+% Sun Dec 14 18:57:48 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -726,11 +726,13 @@ R> var_dep
 \end{figure}
 \end{Schunk}
 
+
 \begin{Schunk}
 \begin{Sinput}
 R> data(pbc_prtl_bili_age, package="ggRandomForests")
 R> 
-R> ggpl <- ggplot(pbc_prtl_bili_age, aes(x=bili, y=yhat, shape=age, color=age))+
+R> ggpl <- ggplot(pbc_prtl_bili_age, 
++                aes(x=bili, y=yhat, shape=age, color=age))+
 +   geom_point()+geom_smooth(se=FALSE)+
 +   labs(x="Surgical Date", y="Survival 1 year")+
 +   scale_color_brewer(palette="Set1")
@@ -770,6 +772,7 @@ R> var_dep
 \caption[Variable dependence coplot]{Variable dependence coplot. Survival at 1 year against bilirubin, stratified by continous variable albumin.\label{fig:albumin-coplot}}
 \end{figure}
 \end{Schunk}
+
 
 
 \begin{Schunk}
@@ -819,6 +822,8 @@ R> var_dep
 \end{figure}
 \end{Schunk}
 
+
+
 \begin{Schunk}
 \begin{Sinput}
 R> data(pbc_prtl_bili_prothrombin, package="ggRandomForests")
@@ -842,164 +847,7 @@ R> ggpl
 \section{Conclusion}
 
 \appendix
-\section{randomForestSRC code snippets}
-
-If we copy and paste a section of code often enough, eventually it should dawn on is a function would be preferable. Until I build this particualr function, these three code snippets were used to build the partial coplots for bilirubin-age (Figure~\ref{fig:bili-age}), bilirubin-albumin (Figure~\ref{fig:bili-albumin}) and bilirubin-prothrombin (Figure~\ref{fig:bili-prothrombin}). 
-
-\subsection{Building a conditional coplot data object: Bilirubin-Age dependency.}
-\begin{Schunk}
-\begin{Sinput}
-R> # Get the training data to work with...
-R> dta.train  <- pbc_rf$xvar
-R> dta.train$age_grp <- age_grp
-R> 
-R> # Create a series of coplot subsets....
-R> lng <- length(levels(age_grp))
-R> sbst <- mclapply(1:lng, function(ind){
-+   st <- which(dta.train$age_grp==levels(age_grp)[ind])
-+   if(length(st) == 0) NULL
-+   else st
-+   })
-R> 
-R> lvl <- levels(age_grp)
-R> # Collapse the subset list to interesting items 
-R> # (those with observations)
-R> # If you work backwards, you do extra tests, but it 
-R> # cuts the correct items. Cute.
-R> for(ind in lng:1){
-+   if(is.null(sbst[[ind]])){
-+     sbst[[ind]] <- NULL
-+     
-+     # reset the levels, so we can label things later
-+     lvl <- lvl[-ind]
-+     }
-+ }
-R> 
-R> pDat.partlist <- lapply(1:length(sbst), function(ind){
-+   plot.variable(pbc_rf, surv.type="surv", time=1,
-+                            subset = sbst[[ind]],
-+                         xvar.names="bili", partial=TRUE,
-+                         show.plots = FALSE)
-+   })
-R> 
-R> gg_part <- mclapply(pDat.partlist, gg_partial)
-R> 
-R> # Flip y-axis
-R> cls <- class(gg_part)
-R> class(gg_part) <-  c("gg_partial_list", cls)
-R> 
-R> for(ind in 1:length(gg_part)){
-+ gg_part[[ind]]$age <- lvl[ind]
-+ }
-R> pbc_prtl_bili_age <- do.call(rbind, gg_part)
-R> pbc_prtl_bili_age$age <- paste("Age=", pbc_prtl_bili_age$age)
-R> pbc_prtl_bili_age$age <- factor(pbc_prtl_bili_age$age)
-\end{Sinput}
-\end{Schunk}
-
-
-\subsection{Building a conditional coplot data object: Bilirubin-Albumin dependency.}
-\begin{Schunk}
-\begin{Sinput}
-R> # Get the training data to work with...
-R> dta.train  <- pbc_rf$xvar
-R> dta.train$albumin_grp <- ggvar$albumin_grp
-R> 
-R> # Create a series of coplot subsets....
-R> lng <- length(levels(albumin_grp))
-R> sbst <- mclapply(1:lng, function(ind){
-+   st <- which(dta.train$albumin_grp==levels(albumin_grp)[ind])
-+   if(length(st) == 0) NULL
-+   else st
-+   })
-R> 
-R> lvl <- levels(albumin_grp)
-R> # Collapse the subset list to interesting items 
-R> # (those with observations)
-R> # If you work backwards, you do extra tests, but it 
-R> # cuts the correct items. Cute.
-R> for(ind in lng:1){
-+   if(is.null(sbst[[ind]])){
-+     sbst[[ind]] <- NULL
-+     
-+     # reset the levels, so we can label things later
-+     lvl <- lvl[-ind]
-+     }
-+ }
-R> 
-R> pDat.partlist <- mclapply(1:length(sbst), function(ind){
-+   plot.variable(pbc_rf, surv.type="surv", time=1,
-+                            subset = sbst[[ind]],
-+                         xvar.names="bili", partial=TRUE,
-+                         show.plots = FALSE)
-+   })
-R> 
-R> gg_part <- mclapply(pDat.partlist, gg_partial)
-R> 
-R> # Flip y-axis
-R> cls <- class(gg_part)
-R> class(gg_part) <-  c("gg_partial_list", cls)
-R> 
-R> for(ind in 1:length(gg_part)){
-+ gg_part[[ind]]$albumin <- lvl[ind]
-+ }
-R> pbc_prtl_bili_albumin <- do.call(rbind, gg_part)
-R> pbc_prtl_bili_albumin$albumin <- paste("albumin=", pbc_prtl_bili_albumin$albumin)
-R> pbc_prtl_bili_albumin$albumin <- factor(pbc_prtl_bili_albumin$albumin)
-\end{Sinput}
-\end{Schunk}
-
-\subsection{Building a conditional coplot data object: Bilirubin-Prothrombin dependency.}
-
-\begin{Schunk}
-\begin{Sinput}
-R> # Get the training data to work with...
-R> dta.train  <- pbc_rf$xvar
-R> dta.train$prothrombin_grp <- ggvar$prothrombin_grp
-R> 
-R> # Create a series of coplot subsets....
-R> lng <- length(levels(prothrombin_grp))
-R> sbst <- mclapply(1:lng, function(ind){
-+   st <- which(dta.train$prothrombin_grp==levels(prothrombin_grp)[ind])
-+   if(length(st) == 0) NULL
-+   else st
-+   })
-R> 
-R> lvl <- levels(prothrombin_grp)
-R> # Collapse the subset list to interesting items 
-R> # (those with observations)
-R> # If you work backwards, you do extra tests, but it 
-R> # cuts the correct items. Cute.
-R> for(ind in lng:1){
-+   if(is.null(sbst[[ind]])){
-+     sbst[[ind]] <- NULL
-+     
-+     # reset the levels, so we can label things later
-+     lvl <- lvl[-ind]
-+     }
-+ }
-R> 
-R> pDat.partlist <- mclapply(1:length(sbst), function(ind){
-+   plot.variable(pbc_rf, surv.type="surv", time=1,
-+                            subset = sbst[[ind]],
-+                         xvar.names="bili", partial=TRUE,
-+                         show.plots = FALSE)
-+   })
-R> 
-R> gg_part <- mclapply(pDat.partlist, gg_partial)
-R> 
-R> # Flip y-axis
-R> cls <- class(gg_part)
-R> class(gg_part) <-  c("gg_partial_list", cls)
-R> 
-R> for(ind in 1:length(gg_part)){
-+ gg_part[[ind]]$prothrombin <- lvl[ind]
-+ }
-R> gg_merge <- do.call(rbind, gg_part)
-R> gg_merge$prothrombin <- paste("prothrombin=", pbc_prtl_bili_prothrombin$prothrombin)
-R> pbc_prtl_bili_prothrombin$prothrombin <- factor(pbc_prtl_bili_prothrombin$prothrombin)
-\end{Sinput}
-\end{Schunk}
+\section{Possibly for randomForestSRC code snippets}
 
 %\singlespacing
 \bibliography{ggRandomForests}

@@ -1,4 +1,8 @@
-ggRandomForests 1.1.1
+ggRandomForests v1.1.2
+===================
+
+
+ggRandomForests v1.1.1
 ===================
 Maintenance release, mostly to fix gg_survival and gg_partial plots.
 * Fix the gg_survival functions to plot kaplan-meier estimates.
@@ -11,7 +15,7 @@ Maintenance release, mostly to fix gg_survival and gg_partial plots.
 * Misc Bug Fixes.
 
 
-ggRandomForests 1.1.0
+ggRandomForests v1.1.0
 ===================
 * Add panel option for gg_variable and gg_partial
 * Rework interactions plot
@@ -21,14 +25,14 @@ ggRandomForests 1.1.0
 * Include package vignette "Random Forests for Survival" 
 * Misc Bug Fixes
 
-ggRandomForests 1.0.0
+ggRandomForests v1.0.0
 ===================
 * First CRAN release.
 
-ggRandomForests 0.2.0.99
+ggRandomForests v0.2.0.99
 ===================
 * correct case/underscore function names. 
 
-ggRandomForests 0.2
+ggRandomForests v0.2
 ===================
 * Initial useR!2014 release. 

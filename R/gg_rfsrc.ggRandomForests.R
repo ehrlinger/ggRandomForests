@@ -27,6 +27,7 @@
 #' forest prediction.
 #' @param se for survival forests, calculated the se bootstrap confidence 
 #' interval
+#' @param strat variable name for seperate estimates
 #' @param ... not used
 #' 
 #' @return \code{gg_rfsrc} object formatted for \code{\link{plot.gg_rfsrc}}
@@ -73,6 +74,7 @@ gg_rfsrc.ggRandomForests <- function(object,
                                      surv_type=c("surv", "chf", "mortality", "hazard"), 
                                      oob=TRUE, 
                                      se, 
+                                     strat,
                                      ...) {
   ##!!TODO!! Stratified predictions...
   
