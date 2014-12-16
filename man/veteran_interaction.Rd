@@ -18,7 +18,7 @@ The \code{randomForestSRC::find.interaction} data set for the \code{pbc} surviva
 # pbc_interaction <- find.interaction(pbc_rf)
 
 data(pbc_interaction, package="ggRandomForests")
-plot.gg_interaction(pbc_interaction, x_var="bili")
+plot.gg_interaction(pbc_interaction, xvar="bili")
 }
 }
 \references{

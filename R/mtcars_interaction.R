@@ -30,8 +30,8 @@
 #' 
 #' gg_dta <- gg_interaction(airq_interaction)
 #' 
-#' plot(gg_dta, x_var="Temp")
-#' plot(gg_dta, x_var="Solar.R")
+#' plot(gg_dta, xvar="Temp")
+#' plot(gg_dta, xvar="Solar.R")
 #' }
 #' 
 #' @references 

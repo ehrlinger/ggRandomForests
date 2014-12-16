@@ -18,7 +18,7 @@ print(pbc.obj)
 
 pbc_interaction <- find.interaction(pbc_rf)
 
-plot(pbc_interaction, x_var="bili")
+plot(pbc_interaction, xvar="bili")
 }
 }
 \references{

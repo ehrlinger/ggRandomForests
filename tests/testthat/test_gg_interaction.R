@@ -22,14 +22,14 @@ test_that("gg_interaction classifications",{
   expect_equivalent(as.matrix(ggrf.obj), iris_interaction)
   
   ## Test plotting the gg_interaction object
-  gg.obj <- plot.gg_interaction(ggrf.obj, x_var="Petal.Width")
+  gg.obj <- plot.gg_interaction(ggrf.obj, xvar="Petal.Width")
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
   
   # This one should fail with a variable not found message
-  expect_that(plot.gg_interaction(ggrf.obj, x_var="Petal"),
-              #throws_error('Error in plot.gg_interaction(ggrf.obj, x_var = "Petal") : \n Invalid x_var (Petal) specified, covariate not found.\n'))
+  expect_that(plot.gg_interaction(ggrf.obj, xvar="Petal"),
+              #throws_error('Error in plot.gg_interaction(ggrf.obj, xvar = "Petal") : \n Invalid xvar (Petal) specified, covariate not found.\n'))
               throws_error())
   # "Incorrect object type: Expects a gg_interaction object"
 })
@@ -61,7 +61,7 @@ test_that("gg_interaction survival",{
   expect_equivalent(as.matrix(ggrf.obj), pbc_interaction)
   
   ## Test plotting the gg_interaction object
-  gg.obj <- plot.gg_interaction(ggrf.obj, x_var="bili")
+  gg.obj <- plot.gg_interaction(ggrf.obj, xvar="bili")
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
@@ -94,7 +94,7 @@ test_that("gg_interaction regression",{
   expect_equivalent(as.matrix(ggrf.obj), airq_interaction)
   
   ## Test plotting the gg_interaction object
-  gg.obj <- plot.gg_interaction(ggrf.obj, x_var = "Temp")
+  gg.obj <- plot.gg_interaction(ggrf.obj, xvar = "Temp")
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")

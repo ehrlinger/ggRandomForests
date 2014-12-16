@@ -140,7 +140,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sun Dec 14 18:57:47 2014
+% Mon Dec 15 16:57:07 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -220,7 +220,7 @@ R> plot(gg_dta, error="none") +
 \end{Schunk}
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sun Dec 14 18:57:48 2014
+% Mon Dec 15 16:57:08 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -256,6 +256,7 @@ R> pbc_rf
                          Sample size: 418
                     Number of deaths: 161
                     Was data imputed: yes
+                         Missingness: 33.97%
                      Number of trees: 1000
           Minimum terminal node size: 3
        Average no. of terminal nodes: 78.548
@@ -463,7 +464,7 @@ R>
 R> ggrf <- gg_variable(pbc_rf, time = c(1, 3), 
 +                     time.labels = c("1 Year", "3 Years"))
 R> 
-R> plot(ggrf, x_var = xvar[1], se=.95, alpha=.3) + 
+R> plot(ggrf, xvar = xvar[1], se=.95, alpha=.3) + 
 +   labs(y = "Survival") + 
 +   theme(legend.position = "none") + 
 +   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -481,7 +482,7 @@ R> plot(ggrf, x_var = xvar[1], se=.95, alpha=.3) +
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(ggrf, x_var = xvar[c(2,3,5,6)], panel = TRUE, 
+R> plot(ggrf, xvar = xvar[c(2,3,5,6)], panel = TRUE, 
 +      se=FALSE, alpha=.3, 
 +      method="glm", formula=y~poly(x,2)) + 
 +   labs(y = "Survival") + 
@@ -502,7 +503,7 @@ R> plot(ggrf, x_var = xvar[c(2,3,5,6)], panel = TRUE,
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(ggrf, x_var = "edema", notch=TRUE, alpha=.5) + 
+R> plot(ggrf, xvar = "edema", notch=TRUE, alpha=.5) + 
 +   labs(y = "Survival") + 
 +   theme(legend.position = "none") + 
 +   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -620,7 +621,7 @@ Using the different variable dependence measures, we can calculate pairwise inte
 R> pbc_interaction <- find.interaction(pbc_rf)
 R> 
 R> ggint <- gg_interaction(pbc_interaction)
-R> plot(ggint, x_var = "bili") + 
+R> plot(ggint, xvar = "bili") + 
 +   labs(y = "Interactive Minimal Depth")
 \end{Sinput}
 \end{Schunk}
@@ -639,7 +640,7 @@ R> plot(ggint, x_var = "bili") +
 Measuring interactions with minimal depth results a $p \times p$ matrix of interaction measures, with smaller diagonal measures relative to the root node, and off diagonal measures of pairwise interaction. We expect the covariate with smallest minimal depth to have the highest interactive depth measures, so viewed alone may not be as informative as looking at other interactive depth plots. Figure~\ref{fig:interactionPanel} combines the remaining top ranked minimal depth measures for comparison.
 \begin{Schunk}
 \begin{Sinput}
-R> plot(gg_interaction(pbc_interaction), x_var = xvar[2:5]) + 
+R> plot(gg_interaction(pbc_interaction), xvar = xvar[2:5]) + 
 +   labs(y = "Interactive Minimal Depth") + 
 +   theme(legend.position = "none")
 \end{Sinput}
@@ -663,7 +664,7 @@ Interactions with categorical data are more straight forward, and can be generat
 R> ggvar <- gg_variable(pbc_rf, time = 1)
 R> ggvar$stage <- paste("stage=", ggvar$stage, sep="")
 R> 
-R> var_dep <- plot(ggvar, x_var = "bili", smooth = TRUE, 
+R> var_dep <- plot(ggvar, xvar = "bili", smooth = TRUE, 
 +                 method = "loess", span=1.5,alpha = .5, se = FALSE) + 
 +   labs(y = "Survival", 
 +        x = st.labs["bili"]) + 
@@ -706,7 +707,7 @@ Interactions with continuous variables requires stratification at some level.
 R> age_grp <- cut(pbc_rf$xvar$age, breaks=seq(0,100,10))
 R> ggvar$age_grp <- paste("age=",age_grp, sep="")
 R> 
-R> var_dep <- plot(ggvar, x_var = "bili", smooth = TRUE, 
+R> var_dep <- plot(ggvar, xvar = "bili", smooth = TRUE, 
 +                 method = "loess", span=1.5,alpha = .5, se = FALSE) + 
 +   labs(y = "Survival", x = st.labs["bili"]) + 
 +   theme(legend.position = "none") + 
@@ -753,7 +754,7 @@ R> ggpl
 R> albumin_grp <- cut(pbc_rf$xvar$albumin, breaks=c(0,seq(3,3.5,.5),5))
 R> ggvar$albumin_grp <- paste("albumin=",albumin_grp, sep="")
 R> 
-R> var_dep <- plot(ggvar, x_var = "bili", smooth = TRUE, 
+R> var_dep <- plot(ggvar, xvar = "bili", smooth = TRUE, 
 +                 method = "loess", span=1.5,alpha = .5, se = FALSE) + 
 +   labs(y = "Survival", x = st.labs["bili"]) + 
 +   theme(legend.position = "none") + 
@@ -802,7 +803,7 @@ R> ggpl
 R> ggvar$prothrombin_grp <- cut(pbc_rf$xvar$prothrombin, breaks=c(8.9,10,11,12,18))
 R> 
 R> var_dep <- plot(ggvar[which(!is.na(ggvar$prothrombin_grp)),],
-+                 x_var = "bili", smooth = TRUE, 
++                 xvar = "bili", smooth = TRUE, 
 +                 method = "loess", span=1.5,alpha = .5, se = FALSE) + 
 +   labs(y = "Survival", x = st.labs["bili"]) + 
 +   theme(legend.position = "none") + 

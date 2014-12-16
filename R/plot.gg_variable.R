@@ -20,10 +20,10 @@
 #' Plot a \code{\link{gg_variable}} object,
 #' 
 #' @param x \code{\link{gg_variable}} object created from a \code{randomForestSRC::rfsrc} object
-#' @param x_var variable (or list of variables) of interest.
+#' @param xvar variable (or list of variables) of interest.
 #' @param time For survival, one or more times of interest
 #' @param time_labels string labels for times
-#' @param panel Should plots be facetted along multiple x_var?
+#' @param panel Should plots be facetted along multiple xvar?
 #' @param oob oob estimates (boolean)
 #' @param smooth type of smooth curve
 #' @param ... arguments passed to the \code{\link{gg_variable}} function.
@@ -62,9 +62,9 @@
 #' #airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 #' data(airq_rf, package="ggRandomForests")
 #' gg_dta <- gg_variable(airq_rf)
-#' plot(gg_dta, x_var="Wind")
-#' plot(gg_dta, x_var="Temp")
-#' plot(gg_dta, x_var="Solar.R")
+#' plot(gg_dta, xvar="Wind")
+#' plot(gg_dta, xvar="Temp")
+#' plot(gg_dta, xvar="Solar.R")
 #' 
 #' ## motor trend cars
 #' #mtcars.obj <- rfsrc(mpg ~ ., data = mtcars)
@@ -72,12 +72,12 @@
 #' gg_dta <- gg_variable(mtcars_rf)
 #' 
 #' # mtcars$cyl is an ordinal variable
-#' plot(gg_dta, x_var="cyl")
+#' plot(gg_dta, xvar="cyl")
 #' 
 #' # Others are continuous
-#' plot(gg_dta, x_var="disp")
-#' plot(gg_dta, x_var="hp")
-#' plot(gg_dta, x_var="wt")
+#' plot(gg_dta, xvar="disp")
+#' plot(gg_dta, xvar="hp")
+#' plot(gg_dta, xvar="wt")
 #' 
 #' ## ------------------------------------------------------------
 #' ## survival examples
@@ -92,20 +92,20 @@
 #' gg_dta <- gg_variable(veteran_rf, time=30)
 #' 
 #' # Generate variable dependance plots for age and diagtime
-#' plot(gg_dta, x_var = "age")
-#' plot(gg_dta, x_var = "diagtime")
+#' plot(gg_dta, xvar = "age")
+#' plot(gg_dta, xvar = "diagtime")
 #' 
 #' # If we want to compare survival at different time points, say 30, 90 day 
 #' # and 1 year
 #' gg_dta <- gg_variable(veteran_rf, time=c(30, 90, 365))
 #' 
 #' # Generate variable dependance plots for age and diagtime
-#' plot(gg_dta, x_var = "age")
-#' plot(gg_dta, x_var = "diagtime") 
+#' plot(gg_dta, xvar = "age")
+#' plot(gg_dta, xvar = "diagtime") 
 #'
 #' }
 ### error rate plot
-plot.gg_variable<- function(x, x_var, 
+plot.gg_variable<- function(x, xvar, 
                             time, time_labels, 
                             panel=FALSE,
                             oob=TRUE, smooth=TRUE,  ...){
@@ -141,21 +141,21 @@ plot.gg_variable<- function(x, x_var,
   
   if(sum(colnames(gg_dta) == "cens") != 0) family <- "surv"
   
-  if(missing(x_var)){
+  if(missing(xvar)){
     # We need to remove response variables here
     cls <- c(grep("yhat", colnames(gg_dta)),
              grep("cens", colnames(gg_dta)))
-    x_var <- colnames(gg_dta)[-cls]
+    xvar <- colnames(gg_dta)[-cls]
   }
   
-  lng <- length(x_var)
+  lng <- length(xvar)
   
   # For now, we only plot survival families as panels. 
   if(panel){
     if(family == "surv"){
       variable <- value <- time <- yhat <- cens <- NA
       ## Create a panel plot
-      wchXvar <- which(colnames(gg_dta) %in% x_var)
+      wchXvar <- which(colnames(gg_dta) %in% xvar)
       
       wchYvar <- which(colnames(gg_dta) %in% c("cens", "yhat", "time"))
       
@@ -187,7 +187,7 @@ plot.gg_variable<- function(x, x_var,
       # This will work for regression and binary classification... maybe.
       variable <- value <- yhat <- NA
       ## Create a panel plot
-      wchXvar <- which(colnames(gg_dta) %in% x_var)
+      wchXvar <- which(colnames(gg_dta) %in% xvar)
       
       wchYvar <- which(colnames(gg_dta) %in% c("yhat"))
       
@@ -216,7 +216,7 @@ plot.gg_variable<- function(x, x_var,
     gg_plt <- vector("list", length=lng)
     
     for(ind in 1:lng){
-      chIndx <- which(colnames(gg_dta)==x_var[ind])
+      chIndx <- which(colnames(gg_dta)==xvar[ind])
       hName <- colnames(gg_dta)[chIndx]
       colnames(gg_dta)[chIndx] <- "var"
       ccls <- class(gg_dta[,"var"])

@@ -6,7 +6,7 @@
 \title{Predicted response data object}
 \usage{
 gg_rfsrc.ggRandomForests(object, surv_type = c("surv", "chf", "mortality",
-  "hazard"), oob = TRUE, se, ...)
+  "hazard"), oob = TRUE, ...)
 }
 \arguments{
 \item{object}{\code{randomForestSRC::rfsrc} object}
@@ -15,9 +15,6 @@ gg_rfsrc.ggRandomForests(object, surv_type = c("surv", "chf", "mortality",
 
 \item{oob}{boolean, should we return the oob prediction , or the full
 forest prediction.}
-
-\item{se}{for survival forests, calculated the se bootstrap confidence
-interval}
 
 \item{...}{not used}
 }
@@ -57,7 +54,7 @@ plot.gg_rfsrc(gg_dta)
 data(veteran_rf, package = "ggRandomForests")
 gg_dta <- gg_rfsrc(veteran_rf)
 plot(gg_dta)
-plot(gg_dta, se=.68)
+plot(gg_dta, level=.68)
 }
 \seealso{
 \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}

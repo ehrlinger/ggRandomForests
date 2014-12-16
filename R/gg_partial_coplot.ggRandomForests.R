@@ -3,7 +3,7 @@
 #' 
 #' 
 #' @param object randomForestSRC::rfsrc object
-#' @param x_var list of partial plot variables
+#' @param xvar list of partial plot variables
 #' @param groups vector of stratification variable.
 #' @param surv_type for survival random forests,  c("mort", "rel.freq", "surv", "years.lost", "cif", "chf")
 #' @param time vector of time points for survival random forests partial plots.
@@ -22,7 +22,7 @@
 #' # Create a 3d coplot, survival as a function of bilirubin and prothrombin
 #' prothrombin_grp <- cut(pbc_rf$xvar$prothrombin, breaks=c(8.9,10,11,12,18))
 #' 
-#' gg_dta <- gg_partial_coplot(pbc_rf, x_var="bili", groups=prothrombin_grp,
+#' gg_dta <- gg_partial_coplot(pbc_rf, xvar="bili", groups=prothrombin_grp,
 #'   surv_type="surv", time=1, show.plots=FALSE)
 #' 
 #' ggpl <- ggplot(gg_dta, 
@@ -44,7 +44,7 @@
 #' # Create a 3d coplot, survival as a function of bilirubin and prothrombin
 #' prothrombin_grp <- cut(pbc_rf$xvar$prothrombin, breaks=prothrombin_pts)
 #' 
-#' gg_dta <- gg_partial_coplot(pbc_rf, x_var="bili", groups=prothrombin_grp,
+#' gg_dta <- gg_partial_coplot(pbc_rf, xvar="bili", groups=prothrombin_grp,
 #'   surv_type="surv", time=1, show.plots=FALSE)
 #' 
 #' ggpl <- ggplot(gg_dta, 
@@ -59,7 +59,7 @@
 #' }
 #'
 gg_partial_coplot.ggRandomForests <- function(object, 
-                                           x_var, 
+                                           xvar, 
                                            groups, 
                                            surv_type=c("mort", "rel.freq", "surv", "years.lost", "cif", "chf"), 
                                            time,
@@ -86,7 +86,7 @@ gg_partial_coplot.ggRandomForests <- function(object,
   # Get the training data to work with...
   dta.train  <- object$xvar
   
-  # Make sure all x_vars are in the training set.
+  # Make sure all xvars are in the training set.
   
   # If we don't have a groups variable, we may have a subsets in the ellipse list.
   if(missing(groups)){
@@ -146,11 +146,11 @@ gg_partial_coplot.ggRandomForests <- function(object,
   # what about multiple time points?
   
   # This will return a list of subseted partial plots, one for each group, 
-  # all variables in x_var.
+  # all variables in xvar.
   pDat.partlist <- lapply(1:length(sbst), function(ind){
     plot.variable(object, surv.type=surv_type, time=time,
                   subset = sbst[[ind]],
-                  xvar.names=x_var, partial=TRUE, ...)
+                  xvar.names=xvar, partial=TRUE, ...)
   })
   
   ## Make them all gg_partials.

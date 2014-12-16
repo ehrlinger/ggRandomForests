@@ -22,7 +22,7 @@ test_that("gg_variable classifications",{
   expect_is(ggrf.obj, "gg_variable")
 #   
 #   ## Test plotting the gg_error object
-#   gg.obj <- plot.gg_variable(ggrf.obj, x_var = "Petal.Width", )
+#   gg.obj <- plot.gg_variable(ggrf.obj, xvar = "Petal.Width", )
 #   
 #   # Test return is s ggplot object
 #   expect_is(gg.obj, "ggplot")
@@ -48,7 +48,7 @@ test_that("gg_variable survival",{
   expect_is(ggrf.obj, "gg_variable")
   
   ## Test plotting the gg_variable object
-  gg.obj <- plot.gg_variable(ggrf.obj, x_var="age")
+  gg.obj <- plot.gg_variable(ggrf.obj, xvar="age")
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")

@@ -32,8 +32,8 @@ function with all optional arguments.
 data(iris_interaction, package="ggRandomForests")
 gg_dta <- gg_interaction(iris_interaction)
 
-plot(gg_dta, x_var="Petal.Width")
-plot(gg_dta, x_var="Petal.Length")
+plot(gg_dta, xvar="Petal.Width")
+plot(gg_dta, xvar="Petal.Length")
 
 ## ------------------------------------------------------------
 ## find interactions, regression setting
@@ -46,8 +46,8 @@ plot(gg_dta, x_var="Petal.Length")
 data(airq_interaction, package="ggRandomForests")
 gg_dta <- gg_interaction(airq_interaction)
 
-plot(gg_dta, x_var="Temp")
-plot(gg_dta, x_var="Solar.R")
+plot(gg_dta, xvar="Temp")
+plot(gg_dta, xvar="Solar.R")
 
 ## ------------------------------------------------------------
 ## find interactions, survival setting
@@ -58,8 +58,8 @@ plot(gg_dta, x_var="Solar.R")
 data(pbc_interaction, package="ggRandomForests")
 gg_dta <- gg_interaction(pbc_interaction)
 
-plot(gg_dta, x_var="bili")
-plot(gg_dta, x_var="copper")
+plot(gg_dta, xvar="bili")
+plot(gg_dta, xvar="copper")
 }
 \references{
 Ishwaran H. (2007). Variable importance in binary regression trees and

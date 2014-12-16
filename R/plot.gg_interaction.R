@@ -21,7 +21,7 @@
 #' Plot a \code{\link{gg_interaction}} object, 
 #' 
 #' @param x gg_interaction object created from a \code{randomForestSRC::rfsrc} object
-#' @param x_var variable (or list of variables) of interest.
+#' @param xvar variable (or list of variables) of interest.
 #' @param lbls A vector of alternative variable names.
 #' @param ... arguments passed to the \code{\link{gg_interaction}} function.
 #' 
@@ -60,8 +60,8 @@
 #' data(iris_interaction, package="ggRandomForests")
 #' gg_dta <- gg_interaction(iris_interaction)
 #' 
-#' plot(gg_dta, x_var="Petal.Width")
-#' plot(gg_dta, x_var="Petal.Length")
+#' plot(gg_dta, xvar="Petal.Width")
+#' plot(gg_dta, xvar="Petal.Length")
 #' 
 #' ## ------------------------------------------------------------
 #' ## find interactions, regression setting
@@ -74,8 +74,8 @@
 #' data(airq_interaction, package="ggRandomForests")
 #' gg_dta <- gg_interaction(airq_interaction)
 #' 
-#' plot(gg_dta, x_var="Temp")
-#' plot(gg_dta, x_var="Solar.R")
+#' plot(gg_dta, xvar="Temp")
+#' plot(gg_dta, xvar="Solar.R")
 #' 
 #' ## ------------------------------------------------------------
 #' ## find interactions, survival setting
@@ -86,14 +86,14 @@
 #' data(pbc_interaction, package="ggRandomForests")
 #' gg_dta <- gg_interaction(pbc_interaction)
 #' 
-#' plot(gg_dta, x_var="bili")
-#' plot(gg_dta, x_var="copper")
+#' plot(gg_dta, xvar="bili")
+#' plot(gg_dta, xvar="copper")
 #' 
-#' plot(gg_dta, x_var=c("bili", "copper", "age", "albumin"), panel=TRUE)
+#' plot(gg_dta, xvar=c("bili", "copper", "age", "albumin"), panel=TRUE)
 #' 
 #' }
 ### error rate plot
-plot.gg_interaction <- function(x, x_var, lbls, ...){
+plot.gg_interaction <- function(x, xvar, lbls, ...){
   
   object <- x 
   if(is.matrix(x)){
@@ -108,14 +108,14 @@ plot.gg_interaction <- function(x, x_var, lbls, ...){
   if(!inherits(object, "gg_interaction")) 
     object <- gg_interaction(x, ...)
   
-  if(sum(x_var %in% rownames(object)) == 0){
-    stop(paste("Invalid x_var (",x_var, ") specified, covariate not found.", sep=""))
+  if(sum(xvar %in% rownames(object)) == 0){
+    stop(paste("Invalid xvar (",xvar, ") specified, covariate not found.", sep=""))
   }
   
-  if(length(x_var) > 1){
+  if(length(xvar) > 1){
     gg_dta <- data.frame(cbind(names=rownames(object),
-                                   t(object[which(rownames(object) %in% x_var),])))
-    #colnames(gg_dta) <- x_var
+                                   t(object[which(rownames(object) %in% xvar),])))
+    #colnames(gg_dta) <- xvar
     gg_dta$rank <- 1:dim(gg_dta)[1]
     gg_dta <- gg_dta %>% 
       gather(vars, dpth, -rank, -names)
@@ -143,7 +143,7 @@ plot.gg_interaction <- function(x, x_var, lbls, ...){
     gg_plt + facet_wrap(~vars)
   }else{
     gg_dta <- data.frame(cbind(rank=1:dim(object)[1], 
-                                   t(object[which(rownames(object) %in% x_var),])))
+                                   t(object[which(rownames(object) %in% xvar),])))
     colnames(gg_dta)[2] <- "dpth" 
     gg_dta$names <- rownames(gg_dta)
     
@@ -153,7 +153,7 @@ plot.gg_interaction <- function(x, x_var, lbls, ...){
     gg_plt <- ggplot(gg_dta)+ 
       geom_point(aes_string(x="names", y="dpth"))+
       geom_point(aes_string(x="names", y="dpth"),
-                 data=gg_dta[which(rownames(gg_dta)==x_var),],
+                 data=gg_dta[which(rownames(gg_dta)==xvar),],
                  shape=3, size=5,
                  color="red")+
       theme(text = element_text(size=10),

@@ -5,12 +5,12 @@
 \title{plot.gg_interaction
 Plot a \code{\link{gg_interaction}} object,}
 \usage{
-\method{plot}{gg_interaction}(x, x_var, lbls, ...)
+\method{plot}{gg_interaction}(x, xvar, lbls, ...)
 }
 \arguments{
 \item{x}{gg_interaction object created from a \code{randomForestSRC::rfsrc} object}
 
-\item{x_var}{variable (or list of variables) of interest.}
+\item{xvar}{variable (or list of variables) of interest.}
 
 \item{lbls}{A vector of alternative variable names.}
 
@@ -36,8 +36,8 @@ Plot a \code{\link{gg_interaction}} object,
 data(iris_interaction, package="ggRandomForests")
 gg_dta <- gg_interaction(iris_interaction)
 
-plot(gg_dta, x_var="Petal.Width")
-plot(gg_dta, x_var="Petal.Length")
+plot(gg_dta, xvar="Petal.Width")
+plot(gg_dta, xvar="Petal.Length")
 
 ## ------------------------------------------------------------
 ## find interactions, regression setting
@@ -50,8 +50,8 @@ plot(gg_dta, x_var="Petal.Length")
 data(airq_interaction, package="ggRandomForests")
 gg_dta <- gg_interaction(airq_interaction)
 
-plot(gg_dta, x_var="Temp")
-plot(gg_dta, x_var="Solar.R")
+plot(gg_dta, xvar="Temp")
+plot(gg_dta, xvar="Solar.R")
 
 ## ------------------------------------------------------------
 ## find interactions, survival setting
@@ -62,10 +62,10 @@ plot(gg_dta, x_var="Solar.R")
 data(pbc_interaction, package="ggRandomForests")
 gg_dta <- gg_interaction(pbc_interaction)
 
-plot(gg_dta, x_var="bili")
-plot(gg_dta, x_var="copper")
+plot(gg_dta, xvar="bili")
+plot(gg_dta, xvar="copper")
 
-plot(gg_dta, x_var=c("bili", "copper", "age", "albumin"), panel=TRUE)
+plot(gg_dta, xvar=c("bili", "copper", "age", "albumin"), panel=TRUE)
 
 }
 }
