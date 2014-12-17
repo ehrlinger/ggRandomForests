@@ -140,7 +140,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Mon Dec 15 16:57:07 2014
+% Tue Dec 16 21:06:04 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -220,7 +220,7 @@ R> plot(gg_dta, error="none") +
 \end{Schunk}
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Mon Dec 15 16:57:08 2014
+% Tue Dec 16 21:06:05 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -256,7 +256,6 @@ R> pbc_rf
                          Sample size: 418
                     Number of deaths: 161
                     Was data imputed: yes
-                         Missingness: 33.97%
                      Number of trees: 1000
           Minimum terminal node size: 3
        Average no. of terminal nodes: 78.548
@@ -482,14 +481,14 @@ R> plot(ggrf, xvar = xvar[1], se=.95, alpha=.3) +
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(ggrf, xvar = xvar[c(2,3,5,6)], panel = TRUE, 
+R> plot(ggrf, xvar = xvar[c(2,3,4,6)], panel = TRUE, 
 +      se=FALSE, alpha=.3, 
 +      method="glm", formula=y~poly(x,2)) + 
 +   labs(y = "Survival") + 
 +   theme(legend.position = "none") + 
 +   scale_color_manual(values = strCol, labels = event.labels) + 
 +   scale_shape_manual(values = event.marks, labels = event.labels)+
-+   coord_cartesian(y=c(1,102))
++   coord_cartesian(y=c(-.1,1.02))
 \end{Sinput}
 \begin{figure}[!htpb]
 
@@ -508,7 +507,7 @@ R> plot(ggrf, xvar = "edema", notch=TRUE, alpha=.5) +
 +   theme(legend.position = "none") + 
 +   scale_color_manual(values = strCol, labels = event.labels) + 
 +   scale_shape_manual(values = event.marks, labels = event.labels)+
-+   coord_cartesian(y=c(1,102))
++   coord_cartesian(y=c(-.1,1.02))
 \end{Sinput}
 \begin{figure}[!htpb]
 

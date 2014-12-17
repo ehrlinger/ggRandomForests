@@ -177,9 +177,9 @@ gg_variable.ggRandomForests <- function(object,
         stop("The time of interest is less than the first event time. Make sure you are using the correct time units.")
       
       if(oob)
-        gg_dta.t$yhat=100*object$survival.oob[,inTime]
+        gg_dta.t$yhat=object$survival.oob[,inTime]
       else
-        gg_dta.t$yhat=100*object$survival[,inTime]
+        gg_dta.t$yhat=object$survival[,inTime]
       
       if(missing(time.labels)){
         gg_dta.t$time <- time[ind]

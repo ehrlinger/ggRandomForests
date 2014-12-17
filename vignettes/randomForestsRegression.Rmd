@@ -1,0 +1,190 @@
+---
+title: 'ggRandomForests: Random Forests for Regression'
+author: "John Ehrlinger"
+date: "December 16, 2014"
+output: html_document
+---
+
+An example document for regression random forest.
+
+```{r setup, include = FALSE, cache = FALSE, echo = FALSE} 
+library(knitr)
+# set global chunk options for knitr. These can be changed in the header for each individual R code chunk
+opts_chunk$set(fig.path = 'fig-rfr/rfr-', 
+               fig.align = 'center', 
+               size = 'footnotesize', 
+               prompt = TRUE, 
+               comment = NA, 
+               echo = FALSE, results = FALSE, message = FALSE, warning = FALSE, 
+               error = FALSE, dev = 'pdf', prompt = TRUE)
+
+# Setup the R environment
+options(object.size = Inf, expressions = 100000, memory = Inf, 
+        replace.assign = TRUE, width = 90, prompt = "R> ")
+
+#################
+# Load_packages #
+#################
+library(ggplot2) # Graphics engine for generating all types of plots
+
+library(dplyr) # Better data manipulations
+library(tidyr)
+library(parallel)
+
+library(ggRandomForests)
+
+# Analysis packages.
+library(randomForestSRC) 
+library(RColorBrewer)
+
+library(xtable)
+
+options(mc.cores = 1, rf.cores = 1)
+
+#########################################################################
+# Default computation settings
+#########################################################################
+theme_set(theme_bw())
+```
+
+## About this document
+This document is an introduction to the ggRandomForests R package. The aim of this introduction is to provide a detailed user guide to ggRandomForests as well as provide a tutorial to building a Random Forest Regression model with the randomForestSRC package. Our attempt is to build simple, reproducible worked examples with the Boston Housing dataset.
+
+This document is available as a vignette within ggRandomForests package. The latest version is available from the Comprehensive R Archive Network via (http://CRAN.R-project.org/package=ggRandomForests).
+
+## Introduction
+
+## Data: Boston Housing Data
+
+```{r datastep} 
+data(Boston, package="MASS")
+## Set modes correctly. For binary variables: transform to logical
+## Check for range of 0, 1
+## There is probably a better way to do this.
+Boston$chas <- as.logical(Boston$chas)
+# Convert age to years
+
+cls <- sapply(Boston, class) 
+# 
+# labels <- c("censoring indicator", 
+#             "Treament", 
+#             "age in years", 
+#             "Female", 
+#             "Asictes", 
+#             "Hepatomegaly", 
+#             "Spiders", 
+#             "Edema", 
+#             "serum bilirubin (mg/dl)", 
+#             "serum cholesterol (mg/dl)", 
+#             "albumin (gm/dl)", 
+#             "urine copper (ug/day)", 
+#             "alkaline phosphatase (U/liter)", 
+#             "SGOT (U/ml)", 
+#             "triglicerides (mg/dl)", 
+#             "platelets per cubic ml/1000", 
+#             "prothrombin time (sec)", 
+#             "histologic stage", 
+#             "survival time (years)")
+# 
+# dta.labs <- data.frame(cbind(names = colnames(Boston), label = labels, type = cls))
+# 
+# st.labs <- as.character(dta.labs$label)
+# names(st.labs) <- rownames(dta.labs)
+```
+
+```{r data}
+dta <- Boston %>% gather(variable, value, -medv, -chas)
+ggplot(dta, aes(x=medv, y=value, color=chas))+
+  geom_point()+
+  labs(y="")+
+  scale_color_brewer(palette="Set2")+
+  facet_wrap(~variable, scales="free_y", ncol=3)
+```
+
+## Random Forest - Regression
+
+```{r randomforest}
+# bos_rf<- rfsrc(medv~., data=Boston)
+data(Boston_rfsrc)
+bos_rf
+```
+
+
+```{r error}
+plot.gg_error(bos_rf)
+```
+
+```{r rfsrc}
+plot(gg_rfsrc(bos_rf))
+```
+
+## Variables
+
+```{r vimp}
+plot(gg_vimp(bos_rf))
+```
+
+```{r minimaldepth}
+# bos_vs <- var.select(bos_rf)
+
+data(Boston_var)
+plot(gg_minimal_depth(bos_vs))
+```
+
+```{r minimalvimp}
+plot(gg_minimal_vimp(bos_vs))
+```
+
+
+## Dependencies
+```{r variable}
+gg_v <- gg_variable(bos_rf)
+xvar <- colnames(Boston)
+xvar <- xvar[-which(colnames(Boston)=="chas")]
+plot(gg_v, xvar=xvar,panel=TRUE, se=FALSE)+
+  labs(y="Median Value")
+
+```
+
+```{r chas}
+plot(gg_v, xvar="chas", se=FALSE, notch=TRUE)+
+  labs(y="Median Value")
+
+```
+
+
+```{r partial}
+# bos_prt <- plot.variable(bos_rf,partial=TRUE, show.plots = FALSE )
+data(Boston_partial)
+
+gg_p <- gg_partial(bos_prt , xvar=xvar)
+ggpart <- gg_p
+ggpart$chas <- NULL
+plot(ggpart, xvar=xvar,panel=TRUE, se=FALSE)+
+  labs(y="Median Value")
+
+```
+
+```{r part-chas}
+plot(gg_p$chas, xvar=xvar,notch=TRUE, se=FALSE)+
+  labs(y="Median Value")
+
+```
+
+## Interactions
+```{r interactions}
+# bos_int <- find.interactions(bos_rfsrc)
+data(Boston_int)
+
+plot(gg_interaction(bos_int), xvar=bos_vs$topvars[1:6], panel=TRUE, shape=1)+
+  theme(legend.position="none")
+```
+
+## Coplots
+
+```{r coplots}
+
+```
+
+## Conclusion
+

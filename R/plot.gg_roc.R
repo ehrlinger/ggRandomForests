@@ -70,6 +70,7 @@
 plot.gg_roc<- function(x, which.outcome=NULL, ...){
   gg_dta <- x
   
+  
   if(inherits(gg_dta, "rfsrc"))
     if(inherits(gg_dta, "class")){
       # How many classes are there?
@@ -81,6 +82,7 @@ plot.gg_roc<- function(x, which.outcome=NULL, ...){
         })
         
       }else{
+        if(is.null(which.outcome))which.outcome=2
         gg_dta<- gg_roc(gg_dta, which.outcome, ...)
       }
     }else{

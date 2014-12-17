@@ -447,14 +447,14 @@ plot(ggrf, xvar = xvar[1], se=.95, alpha=.3) +
 @
 
 <<variable-plotCombines, echo = TRUE, fig.cap = "Variable dependence plots at 1 and 3 years for continuous variables age, albumin, copper and prothrombin. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve indicates the survival trend with increasing variable value.", fig.width = 7, fig.height = 4>>= 
-plot(ggrf, xvar = xvar[c(2,3,5,6)], panel = TRUE, 
+plot(ggrf, xvar = xvar[c(2,3,4,6)], panel = TRUE, 
      se=FALSE, alpha=.3, 
      method="glm", formula=y~poly(x,2)) + 
   labs(y = "Survival") + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
   scale_shape_manual(values = event.marks, labels = event.labels)+
-  coord_cartesian(y=c(1,102))
+  coord_cartesian(y=c(-.1,1.02))
 @
 
 <<variable-plotEdema, echo = TRUE, fig.cap = "Variable dependence plots at 1 and 3 years for categorical edema variable. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Boxes indicate distributional properties of observations in each group.">>= 
@@ -463,7 +463,7 @@ plot(ggrf, xvar = "edema", notch=TRUE, alpha=.5) +
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
   scale_shape_manual(values = event.marks, labels = event.labels)+
-  coord_cartesian(y=c(1,102))
+  coord_cartesian(y=c(-.1,1.02))
 @
 \subsection{Partial Dependence}\label{S:partialDependence}
 

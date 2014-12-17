@@ -97,10 +97,10 @@ plot.gg_rfsrc<- function(x,
     if(ncol(gg_dta$yhat) < 3){
       
       gg_plt <- ggplot(gg_dta$yhat)+
-      geom_jitter(aes_string(x=1, y=colnames(gg_dta)[1],
-                             color=colnames(gg_dta)[2],
-                             shape=colnames(gg_dta)[2]), ...)+
-      geom_boxplot(aes_string(x=1, y=colnames(gg_dta)[1]),
+      geom_jitter(aes_string(x=1, y=colnames(gg_dta$yhat)[1],
+                             color=colnames(gg_dta$yhat)[2],
+                             shape=colnames(gg_dta$yhat)[2]), ...)+
+      geom_boxplot(aes_string(x=1, y=colnames(gg_dta$yhat)[1]),
                    outlier.colour = "transparent", fill="transparent", notch = TRUE, ...)
     }else{
       gg_dta.mlt <- gg_dta$yhat %>% gather(variable, value, -y)
