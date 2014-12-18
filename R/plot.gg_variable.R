@@ -244,8 +244,8 @@ plot.gg_variable<- function(x, xvar,
           }
         }else{
           gg_plt[[ind]] <- gg_plt[[ind]]+
-            geom_boxplot(aes_string(x="var", y="yhat"), color="grey",
-                         ...,outlier.shape = NA)+
+            geom_boxplot(aes_string(x="var", y="yhat"), color="black",
+                         ..., outlier.shape = NA)+
             geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
                         ...)
           

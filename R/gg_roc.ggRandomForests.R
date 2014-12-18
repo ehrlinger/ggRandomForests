@@ -16,7 +16,7 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' ROC (Recievor operator curve) data from a classification random forest.
+#' ROC (Receiver operator curve) data from a classification random forest.
 #' 
 #' The sensitivity and specificity of a randomForests classification object. 
 #' 

@@ -3,7 +3,7 @@
 \name{gg_roc.ggRandomForests}
 \alias{gg_roc}
 \alias{gg_roc.ggRandomForests}
-\title{ROC (Recievor operator curve) data from a classification random forest.}
+\title{ROC (Receiver operator curve) data from a classification random forest.}
 \usage{
 gg_roc.ggRandomForests(object, which.outcome, oob = TRUE)
 }

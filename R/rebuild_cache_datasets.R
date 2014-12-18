@@ -1,7 +1,7 @@
 #' Recreate the cached data sets for the ggRandomForests package
 #' 
 #' @param set Defaults to all sets (NA), however for individual sets specify one 
-#' or more of c("airq", "iris", "mtcars", "pbc", "veteran")
+#' or more of c("airq", "iris", "mtcars", "pbc", "veteran", "Boston")
 #' @param save Defaults to write files to the current data directory.
 #' @param pth the directory to store files.
 #' @param ... extra arguments passed to randomForestSRC functions.
@@ -42,7 +42,7 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
   }
     
   if(is.na(set))
-    set <- c("airq", "iris", "mtcars", "pbc", "veteran")
+    set <- c("airq", "iris", "mtcars", "pbc", "veteran", "Boston")
   
   if("airq" %in% set){
     cat("airq: randomForest\n")
@@ -100,6 +100,29 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     mtcars_prtl <- plot.variable(mtcars_rf,
                                  partial=TRUE, show.plots=FALSE)
     if(save) save(mtcars_prtl, file=paste(pth, "mtcars_prtl.rda", sep=""), compress="xz")
+  }
+  if("Boston" %in% set){
+    data(Boston, package="MASS",
+         envir = dta)
+    Boston <- dta$Boston
+    
+    Boston$chas <- as.logical(Boston$chas)
+    
+    cat("Boston: randomForest\n")
+    Boston_rfsrc <- rfsrc(medv~., data=Boston, ...)
+    if(save) save(Boston_rfsrc, file=paste(pth, "Boston_rfsrc.rda", sep=""), compress="xz")
+    
+    cat("Boston: RF minimal depth\n")
+    Boston_var <- var.select(Boston_rfsrc)
+    if(save) save(Boston_var, file=paste(pth, "Boston_var.rda", sep=""), compress="xz")
+    
+    cat("Boston: RF interactions\n")
+    Boston_int <- find.interaction(Boston_rfsrc)
+    if(save) save(Boston_int, file=paste(pth, "Boston_int.rda", sep=""), compress="xz")
+    
+    cat("Boston: RF partial dependence\n")
+    Boston_partial <- plot.variable(Boston_rfsrc,partial=TRUE, show.plots = FALSE )
+    if(save) save(Boston_partial, file=paste(pth, "Boston_partial.rda", sep=""), compress="xz")
   }
   
   if("pbc" %in% set){

@@ -124,7 +124,7 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
     gg_dta$names <- factor(gg_dta$names,
                                levels=unique(gg_dta$names))
     gg_plt <- ggplot(gg_dta)+ 
-      geom_point(aes_string(x="names", y="dpth", shape="vars"))+
+      geom_point(aes_string(x="names", y="dpth"))+
       theme(text = element_text(size=10),
             axis.text.x = element_text(angle=90)) +
       labs(x="", y="Minimal Depth")

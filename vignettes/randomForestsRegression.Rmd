@@ -15,12 +15,13 @@ opts_chunk$set(fig.path = 'fig-rfr/rfr-',
                size = 'footnotesize', 
                prompt = TRUE, 
                comment = NA, 
-               echo = FALSE, results = FALSE, message = FALSE, warning = FALSE, 
-               error = FALSE, dev = 'pdf', prompt = TRUE)
+               echo = TRUE, results = TRUE, 
+               message = FALSE, warning = FALSE, 
+               error = FALSE, prompt = TRUE)
 
 # Setup the R environment
 options(object.size = Inf, expressions = 100000, memory = Inf, 
-        replace.assign = TRUE, width = 90, prompt = "R> ")
+        replace.assign = TRUE, width = 90)
 
 #################
 # Load_packages #
@@ -62,35 +63,48 @@ data(Boston, package="MASS")
 ## Check for range of 0, 1
 ## There is probably a better way to do this.
 Boston$chas <- as.logical(Boston$chas)
-# Convert age to years
+```
 
+```{r cleanup, echo=FALSE, results="asis"}
 cls <- sapply(Boston, class) 
 # 
-# labels <- c("censoring indicator", 
-#             "Treament", 
-#             "age in years", 
-#             "Female", 
-#             "Asictes", 
-#             "Hepatomegaly", 
-#             "Spiders", 
-#             "Edema", 
-#             "serum bilirubin (mg/dl)", 
-#             "serum cholesterol (mg/dl)", 
-#             "albumin (gm/dl)", 
-#             "urine copper (ug/day)", 
-#             "alkaline phosphatase (U/liter)", 
-#             "SGOT (U/ml)", 
-#             "triglicerides (mg/dl)", 
-#             "platelets per cubic ml/1000", 
-#             "prothrombin time (sec)", 
-#             "histologic stage", 
-#             "survival time (years)")
-# 
-# dta.labs <- data.frame(cbind(names = colnames(Boston), label = labels, type = cls))
-# 
-# st.labs <- as.character(dta.labs$label)
-# names(st.labs) <- rownames(dta.labs)
+labels <- 
+  #crim
+  c("per capita crime rate by town.",
+    # zn
+    "proportion of residential land zoned for lots over 25,000 sq.ft.",
+    # indus
+    "proportion of non-retail business acres per town.",
+    # chas
+    "Charles River dummy variable (if tract bounds river).",
+    # nox
+    "nitrogen oxides concentration (parts per 10 million).",
+    # rm
+    "average number of rooms per dwelling.",
+    # age
+    "proportion of owner-occupied units built prior to 1940.",
+    # dis
+    "weighted mean of distances to Boston employment center.",
+    # rad
+    "index of accessibility to radial highways.",
+    # tax
+    "full-value property-tax rate per $10,000.",
+    # ptratio
+    "pupil-teacher ratio by town.",
+    # black
+    "Proportion of blacks by town.",
+    # lstat
+    "lower status of the population (percent).",
+    # medv
+    "median value of owner-occupied homes in $1000s.")
+
+dta.labs <- data.frame(cbind(names = names(cls), label = labels, type = cls))
+
+st.labs <- as.character(dta.labs$label)
+names(st.labs) <- rownames(dta.labs)
+print(xtable(dta.labs%>% select(-names)), type="html")
 ```
+
 
 ```{r data}
 dta <- Boston %>% gather(variable, value, -medv, -chas)
@@ -104,87 +118,129 @@ ggplot(dta, aes(x=medv, y=value, color=chas))+
 ## Random Forest - Regression
 
 ```{r randomforest}
-# bos_rf<- rfsrc(medv~., data=Boston)
+# Boston_rfsrc <- rfsrc(medv~., data=Boston)
 data(Boston_rfsrc)
-bos_rf
+Boston_rfsrc
 ```
 
 
 ```{r error}
-plot.gg_error(bos_rf)
+plot.gg_error(Boston_rfsrc)
 ```
 
 ```{r rfsrc}
-plot(gg_rfsrc(bos_rf))
+plot(gg_rfsrc(Boston_rfsrc))+
+  coord_cartesian(ylim=c(5,49))
 ```
 
 ## Variables
 
 ```{r vimp}
-plot(gg_vimp(bos_rf))
+plot(gg_vimp(Boston_rfsrc))
 ```
 
 ```{r minimaldepth}
-# bos_vs <- var.select(bos_rf)
+# Boston_var <- var.select(Boston_rfsrc)
 
 data(Boston_var)
-plot(gg_minimal_depth(bos_vs))
+plot(gg_minimal_depth(Boston_var))
 ```
 
 ```{r minimalvimp}
-plot(gg_minimal_vimp(bos_vs))
+plot(gg_minimal_vimp(Boston_var))
 ```
 
 
 ## Dependencies
 ```{r variable}
-gg_v <- gg_variable(bos_rf)
+gg_v <- gg_variable(Boston_rfsrc)
 xvar <- colnames(Boston)
 xvar <- xvar[-which(colnames(Boston)=="chas")]
-plot(gg_v, xvar=xvar,panel=TRUE, se=FALSE)+
-  labs(y="Median Value")
+plot(gg_v, xvar=xvar,panel=TRUE, se=FALSE, span=1.2)+
+  labs(y="Median Value", x="")
 
 ```
 
 ```{r chas}
 plot(gg_v, xvar="chas", se=FALSE, notch=TRUE)+
-  labs(y="Median Value")
-
+  labs(y="Median Value")+
+  coord_cartesian(ylim=c(5,49))
 ```
 
 
 ```{r partial}
-# bos_prt <- plot.variable(bos_rf,partial=TRUE, show.plots = FALSE )
+# Boston_partial <- plot.variable(Boston_rfsrc,partial=TRUE, show.plots = FALSE )
 data(Boston_partial)
 
-gg_p <- gg_partial(bos_prt , xvar=xvar)
+gg_p <- gg_partial(Boston_partial , xvar=xvar)
 ggpart <- gg_p
 ggpart$chas <- NULL
 plot(ggpart, xvar=xvar,panel=TRUE, se=FALSE)+
-  labs(y="Median Value")
+  labs(y="Median Value", x="")
 
 ```
 
 ```{r part-chas}
-plot(gg_p$chas, xvar=xvar,notch=TRUE, se=FALSE)+
-  labs(y="Median Value")
+plot(gg_p$chas, xvar=xvar,notch=TRUE, se=FALSE, alpha=.3)+
+  labs(y="Median Value")+
+  coord_cartesian(ylim=c(5,49))
 
 ```
 
 ## Interactions
 ```{r interactions}
-# bos_int <- find.interactions(bos_rfsrc)
+# Boston_int <- find.interactions(Boston_rfsrcsrc)
 data(Boston_int)
 
-plot(gg_interaction(bos_int), xvar=bos_vs$topvars[1:6], panel=TRUE, shape=1)+
+plot(gg_interaction(Boston_int), xvar=Boston_var$topvars[1:6], panel=TRUE, shape=1)+
   theme(legend.position="none")
 ```
 
 ## Coplots
 
 ```{r coplots}
+rm_grp <- cut(Boston_rfsrc$xvar$rm, breaks=6)
+gg_v$rm_grp <- paste("rm=",rm_grp, sep="")
 
+var_dep <- plot(gg_v, xvar = "lstat", smooth = TRUE, 
+                method = "loess", span=1.5, alpha = .5, se = FALSE) + 
+  labs(y = "Median Value") + 
+  theme(legend.position = "none") + 
+  scale_color_brewer(palette = "Set3") + 
+  #scale_shape_manual(values = event.marks, labels = event.labels)+ 
+  facet_wrap(~rm_grp)
+
+var_dep
+```
+
+```{r prtl-copl, eval=FALSE}
+Boston_prtl_coplot <- gg_partial_coplot(Boston_rfsrc, xvar="lstat", 
+                                        groups=rm_grp,
+                                        show.plots=FALSE)
+```
+
+```{r prtl-coplots}
+data(Boston_prtl_coplot)
+ggpl <- ggplot(Boston_prtl_coplot, aes(x=lstat, y=yhat, 
+                                       shape=groups, 
+                                       color=groups))+
+  geom_point()+geom_smooth(se=FALSE)+
+  labs(x=st.labs["lstat"], y="Median Value", 
+       color="rm", shape="rm")+
+  scale_color_brewer(palette="Set1")
+ggpl
 ```
 
 ## Conclusion
 
+```{r surf, echo=FALSE, eval=FALSE}
+cut.vector <- function(obj, npts){
+  n.x <- length(unique(obj))
+  if (n.x > npts) {
+    x.uniq <- sort(unique(obj))[unique(as.integer(seq(1, n.x, length = min(npts, n.x))))]
+  }
+  x.uniq
+}
+cut.vector(Boston_rfsrc$xvar$rm,npts=50)
+
+```

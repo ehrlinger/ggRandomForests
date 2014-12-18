@@ -518,7 +518,7 @@ ggpart$bili <- ggpart$edema <- NULL
 
 # Panel plot the remainder.
 plot(ggpart, se = FALSE, panel = TRUE) + 
-  labs(x = "", y = "Survival") +
+  labs(x = "", y = "Survival",color="Time", shape="Time") +
   scale_color_brewer(palette="Set1")
 @
 
@@ -583,42 +583,11 @@ var_dep +
 @
 
 Interactions with continuous variables requires stratification at some level.
-\subsection{Age}
-<<age-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by continous variable age.", fig.width = 7, fig.height = 4, echo=TRUE>>=
-age_grp <- cut(pbc_rf$xvar$age, breaks=seq(0,100,10))
-ggvar$age_grp <- paste("age=",age_grp, sep="")
 
-var_dep <- plot(ggvar, xvar = "bili", smooth = TRUE, 
-                method = "loess", span=1.5,alpha = .5, se = FALSE) + 
-  labs(y = "Survival", x = st.labs["bili"]) + 
-  theme(legend.position = "none") + 
-  scale_color_manual(values = strCol, labels = event.labels) + 
-  scale_shape_manual(values = event.marks, labels = event.labels)+ 
-  facet_wrap(~age_grp)
-
-var_dep
-@
-
-<<build-bili-age, eval=FALSE>>=
-pbc_prtl_bili_age <- gg_partial_coplot(pbc_rf, xvar="bili", 
-                                       groups=age_grp, 
-                                       surv_type="surv", 
-                                       time=1, 
-                                       show.plots=FALSE)
-@
-<<bili-age, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by age groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width = 7, fig.height = 4, echo=TRUE>>=
-data(pbc_prtl_bili_age, package="ggRandomForests")
-
-ggpl <- ggplot(pbc_prtl_bili_age, 
-               aes(x=bili, y=yhat, shape=age, color=age))+
-  geom_point()+geom_smooth(se=FALSE)+
-  labs(x="Surgical Date", y="Survival 1 year")+
-  scale_color_brewer(palette="Set1")
-ggpl
-@
 \subsection{Albumin}
 <<albumin-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by continous variable albumin.", fig.width = 7, fig.height = 4, echo=TRUE>>=
-albumin_grp <- cut(pbc_rf$xvar$albumin, breaks=c(0,seq(3,3.5,.5),5))
+# albumin_grp <- cut(pbc_rf$xvar$albumin, breaks=c(0,seq(3,3.5,.5),5))
+albumin_grp <- cut(pbc_rf$xvar$albumin, breaks=6)
 ggvar$albumin_grp <- paste("albumin=",albumin_grp, sep="")
 
 var_dep <- plot(ggvar, xvar = "bili", smooth = TRUE, 
@@ -634,53 +603,20 @@ var_dep
 
 <<build-bili-albumin, eval=FALSE>>=
 pbc_prtl_bili_albumin <- gg_partial_coplot(pbc_rf, xvar="bili", 
-                                       groups=albumin_grp, 
-                                       surv_type="surv", 
-                                       time=1, 
-                                       show.plots=FALSE)
+                                           groups=albumin_grp, 
+                                           surv_type="surv", 
+                                           time=1, 
+                                           show.plots=FALSE)
 @
 
 <<bili-albumin, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by albumin groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width = 7, fig.height = 4, echo=TRUE>>=
 data(pbc_prtl_bili_albumin, package="ggRandomForests")
 ggpl <- ggplot(pbc_prtl_bili_albumin, aes(x=bili, y=yhat, 
-                                          shape=albumin, color=albumin))+
+                                          shape=groups, 
+                                          color=groups))+
   geom_point()+geom_smooth(se=FALSE)+
-  labs(x="Surgical Date", y="Survival 1 year")+
-  scale_color_brewer(palette="Set1")
-ggpl
-@
-
-
-\subsection{prothrombin}
-<<prothrombin-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by continous variable prothrombin time.", fig.width = 7, fig.height = 4, echo=TRUE>>=
-ggvar$prothrombin_grp <- cut(pbc_rf$xvar$prothrombin, breaks=c(8.9,10,11,12,18))
-
-var_dep <- plot(ggvar[which(!is.na(ggvar$prothrombin_grp)),],
-                xvar = "bili", smooth = TRUE, 
-                method = "loess", span=1.5,alpha = .5, se = FALSE) + 
-  labs(y = "Survival", x = st.labs["bili"]) + 
-  theme(legend.position = "none") + 
-  scale_color_manual(values = strCol, labels = event.labels) + 
-  scale_shape_manual(values = event.marks, labels = event.labels)+ 
-  facet_wrap(~prothrombin_grp)
-
-var_dep
-@
-
-<<build-bili-prothrombin, eval=FALSE>>=
-pbc_prtl_bili_prothrombin <- gg_partial_coplot(pbc_rf, xvar="bili", 
-                                       groups=prothrombin_grp, 
-                                       surv_type="surv", 
-                                       time=1, 
-                                       show.plots=FALSE)
-@
-
-<<bili-prothrombin, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by prothrombin groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width = 7, fig.height = 4, echo=TRUE>>=
-data(pbc_prtl_bili_prothrombin, package="ggRandomForests")
-ggpl <- ggplot(pbc_prtl_bili_prothrombin, aes(x=bili, y=yhat, 
-                                          shape=prothrombin, color=prothrombin))+
-  geom_point()+geom_smooth(se=FALSE)+
-  labs(x="Surgical Date", y="Survival 1 year")+
+  labs(x=st.labs["bili"], y="Survival 1 year", 
+       color="Albumin", shape="Albumin")+
   scale_color_brewer(palette="Set1")
 ggpl
 @
@@ -688,7 +624,6 @@ ggpl
 \section{Conclusion}
 
 \appendix
-\section{Possibly for randomForestSRC code snippets}
 
 %\singlespacing
 \bibliography{ggRandomForests}

@@ -8,7 +8,7 @@ rebuild_cache_datasets(set = NA, save = TRUE, pth, ...)
 }
 \arguments{
 \item{set}{Defaults to all sets (NA), however for individual sets specify one
-or more of c("airq", "iris", "mtcars", "pbc", "veteran")}
+or more of c("airq", "iris", "mtcars", "pbc", "veteran", "Boston")}
 
 \item{save}{Defaults to write files to the current data directory.}
 
