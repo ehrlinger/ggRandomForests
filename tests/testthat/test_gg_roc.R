@@ -20,13 +20,12 @@ test_that("gg_roc classifications",{
   expect_is(ggrf.obj, "gg_roc")
   
   # Test classification dimensions
-  expect_equal(dim(ggrf.obj)[1], length(unique(iris_rf$predicted.oob[,which.outcome]))+1)
-  expect_equal(dim(ggrf.obj)[2], 2)
+  expect_equal(nrow(ggrf.obj), length(unique(iris_rf$predicted.oob[,which.outcome]))+1)
+  expect_equal(ncol(ggrf.obj), 3)
   
   # Test data is correctly pulled from randomForest obect.
-  vals <- suppressWarnings(na.omit(as.numeric(rownames(ggrf.obj))))
   unts <- sort(unique(iris_rf$predicted.oob[,which.outcome]))
-  expect_equivalent(vals, unts[-length(unts)])
+  expect_equivalent(ggrf.obj$pct, c(0,unts[-length(unts)],1))
   
   ## Test plotting the gg_roc object
   gg.obj <- plot.gg_roc(ggrf.obj)
