@@ -6,13 +6,13 @@
 \alias{calc_roc.rfsrc}
 \title{Internal Reciever Operator Characteristic calculator for randomForest objects}
 \usage{
-calc_roc.rfsrc(rf, dta, which.outcome = "all", oob = TRUE)
+calc_roc.rfsrc(object, yvar, which.outcome = "all", oob = TRUE)
 }
 \arguments{
-\item{rf}{\code{randomForestSRC::rfsrc} or \code{randomForestSRC::predict} object
+\item{object}{\code{randomForestSRC::rfsrc} or \code{randomForestSRC::predict} object
 containing predicted response}
 
-\item{dta}{True response variable}
+\item{yvar}{True response variable}
 
 \item{which.outcome}{If defined, only show ROC for this response.}
 

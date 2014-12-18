@@ -24,9 +24,9 @@
 #' This is a helper function for the \code{\link{gg_roc}} functions, and not intended 
 #' for use by the end user.
 #' 
-#' @param rf \code{randomForestSRC::rfsrc} or \code{randomForestSRC::predict} object 
+#' @param object \code{randomForestSRC::rfsrc} or \code{randomForestSRC::predict} object 
 #' containing predicted response
-#' @param dta True response variable
+#' @param yvar True response variable
 #' @param which.outcome If defined, only show ROC for this response. 
 #' @param oob Use OOB estimates, the normal validation method (TRUE)
 #'  
@@ -44,22 +44,22 @@
 #' gg_dta <- calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
 #' }
 #' 
-calc_roc.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
-  if(!is.factor(dta)) dta <- factor(dta)
+calc_roc.rfsrc <- function(object, yvar, which.outcome="all", oob=TRUE){
+  if(!is.factor(yvar)) yvar <- factor(yvar)
   if(which.outcome!="all"){
-    dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
-                                prd=rf$predicted[, which.outcome],
-                                oob=rf$predicted.oob[, which.outcome]))
+    dta.roc <- data.frame(cbind(res=(yvar == levels(yvar)[which.outcome]), 
+                                prd=object$predicted[, which.outcome],
+                                oob=object$predicted.oob[, which.outcome]))
     if(oob)
-      pct <- sort(unique(rf$predicted.oob[,which.outcome]))
+      pct <- sort(unique(object$predicted.oob[,which.outcome]))
     else
-      pct <- sort(unique(rf$predicted[,which.outcome]))
+      pct <- sort(unique(object$predicted[,which.outcome]))
   }else{
     stop("Must specify which.outcome for now.")
   }
   pct<- pct[-length(pct)]
   
-  gg_dta <-mclapply(pct, function(crit){
+  gg_dta <- mclapply(pct, function(crit){
     if(oob) 
       tbl <- xtabs(~res+(oob>crit), dta.roc)
     else
@@ -72,14 +72,16 @@ calc_roc.rfsrc <- function(rf, dta, which.outcome="all", oob=TRUE){
   
   gg_dta <- do.call(rbind, gg_dta)
   gg_dta <- rbind(c(0,1), gg_dta, c(1,0))
-  pct<- c("origin",pct,"limit")
-  return(data.frame(gg_dta, row.names=pct))
+  
+  gg_dta <- data.frame(gg_dta, row.names=1:nrow(gg_dta))
+  gg_dta$pct <- c(0,pct,1)
+  invisible(gg_dta)
   
 }
 
 calc_roc<- calc_roc.rfsrc
-calc_roc.randomForest <- function(rf, dta, which.outcome=1){
-  prd <- predict(rf, type="prob")
+calc_roc.randomForest <- function(object, dta, which.outcome=1){
+  prd <- predict(object, type="prob")
   dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
                               prd=prd[,which.outcome]))
   
@@ -93,9 +95,11 @@ calc_roc.randomForest <- function(rf, dta, which.outcome=1){
     sens<-tbl[1,1]/rowSums(tbl)[1]
     cbind(sens=sens, spec=spec)
   })
-  gg_dta <- do.call(rbind, gg_dta)
+  gg_dta <- data.frame(do.call(rbind, gg_dta))
   
-  return(data.frame(gg_dta, row.names=pct))
+  gg_dta$pct <- c(0,pct,1)
+  
+  invisible(gg_dta)
 }
 
 #'
