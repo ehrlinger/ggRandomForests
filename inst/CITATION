@@ -1,6 +1,7 @@
-bibentry("Unpublished",
-title="ggRandomForests: Graphical Exploration of Random Forests, R package V1.1.0",
+bibentry("Manual",
+title="ggRandomForests: Graphical Exploration of Random Forests",
 author=as.person("John Ehrlinger"),
-note="http://cran.r-project.org/web/packages/ggRandomForests/",
+url="http://cran.r-project.org/package=ggRandomForests/",
+note="R package version 1.1.2"
 year="2014"
 )

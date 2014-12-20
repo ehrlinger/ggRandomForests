@@ -114,20 +114,24 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
   
   if(length(xvar) > 1){
     gg_dta <- data.frame(cbind(names=rownames(object),
-                                   t(object[which(rownames(object) %in% xvar),])))
+                               t(object[which(rownames(object) %in% xvar),])))
     #colnames(gg_dta) <- xvar
     gg_dta$rank <- 1:dim(gg_dta)[1]
-    gg_dta <- gg_dta %>% 
-      gather(vars, dpth, -rank, -names)
+    
+    gg_dta <- gg_dta %>% gather(vars, dpth, -rank, -names)
     
     gg_dta$dpth <- as.numeric(gg_dta$dpth)
     gg_dta$names <- factor(gg_dta$names,
-                               levels=unique(gg_dta$names))
+                           levels=unique(gg_dta$names))
     gg_plt <- ggplot(gg_dta)+ 
-      geom_point(aes_string(x="names", y="dpth"))+
-      theme(text = element_text(size=10),
-            axis.text.x = element_text(angle=90)) +
-      labs(x="", y="Minimal Depth")
+    geom_point(aes_string(x="names", y="dpth"))+
+    geom_point(aes_string(x="names", y="dpth"),
+               data=gg_dta %>% filter(as.character(names)==vars),
+               shape=3, size=5,
+               color="red")+
+    theme(text = element_text(size=10),
+          axis.text.x = element_text(angle=90)) +
+    labs(x="", y="Minimal Depth")
     
     if(!missing(lbls)){
       if(length(lbls) >= length(colnames(object))){
@@ -136,29 +140,30 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
         st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
         
         gg_plt <- gg_plt +
-          scale_x_discrete(labels=st.lbls)
+        scale_x_discrete(labels=st.lbls)
       }
     }
+    
     
     gg_plt + facet_wrap(~vars)
   }else{
     gg_dta <- data.frame(cbind(rank=1:dim(object)[1], 
-                                   t(object[which(rownames(object) %in% xvar),])))
+                               t(object[which(rownames(object) %in% xvar),])))
     colnames(gg_dta)[2] <- "dpth" 
     gg_dta$names <- rownames(gg_dta)
     
     gg_dta$dpth <- as.numeric(gg_dta$dpth)
     gg_dta$names <- factor(gg_dta$names,
-                               levels=unique(gg_dta$names))
+                           levels=unique(gg_dta$names))
     gg_plt <- ggplot(gg_dta)+ 
-      geom_point(aes_string(x="names", y="dpth"))+
-      geom_point(aes_string(x="names", y="dpth"),
-                 data=gg_dta[which(rownames(gg_dta)==xvar),],
-                 shape=3, size=5,
-                 color="red")+
-      theme(text = element_text(size=10),
-            axis.text.x = element_text(angle=90)) +
-      labs(x="", y="Minimal Depth")
+    geom_point(aes_string(x="names", y="dpth"))+
+    geom_point(aes_string(x="names", y="dpth"),
+               data=gg_dta[which(rownames(gg_dta)==xvar),],
+               shape=3, size=5,
+               color="red")+
+    theme(text = element_text(size=10),
+          axis.text.x = element_text(angle=90)) +
+    labs(x="", y="Minimal Depth")
     
     
     if(!missing(lbls)){
@@ -168,7 +173,7 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
         st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
         
         gg_plt <- gg_plt +
-          scale_x_discrete(labels=st.lbls)
+        scale_x_discrete(labels=st.lbls)
       }
     }
     gg_plt

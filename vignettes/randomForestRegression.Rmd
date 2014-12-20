@@ -1,12 +1,13 @@
 ---
-title: 'ggRandomForests: Random Forests for Regression'
+title: 'ggRandomForests: Random Forest for Regression'
 author: "John Ehrlinger"
 date: "December 16, 2014"
-output:
-  html_document:
-    fig_width: 7
-    fig_height: 6
-    fig_caption: true
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{ggRandomForests}
+  \usepackage[utf8]{inputenc}
+bibliography: ggRandomForests.bib
 ---
 
 # About this document
@@ -60,28 +61,26 @@ options(mc.cores = 1, rf.cores = 1)
 theme_set(theme_bw())
 ```
 
-# Introduction.
+# Introduction
 
-Random Forests [Breiman:2001] (RF) are a fully non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF are a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Forests for survival [Ishwaran:2007a, Ishwaran:2008] (RF-S) are an extension of Breiman's RF techniques to survival settings, allowing efficient non-parametric analysis of time to event data. The [randomForestSRC](http://CRAN.R-project.org/package=ggRandomForests) package [Ishwaran:RFSRC:2014] is a unified treatment of Breiman's random forests for survival, regression and classification problems.
+Random Forests [@Breiman:2001] (RF) are a fully non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF are a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Forests for survival [@Ishwaran:2007a; @Ishwaran:2008] (RF-S) are an extension of Breiman's RF techniques to survival settings, allowing efficient non-parametric analysis of time to event data. The [randomForestSRC](http://CRAN.R-project.org/package=ggRandomForests) package [@Ishwaran:RFSRC:2014] is a unified treatment of Breiman's random forests for survival, regression and classification problems.
 
-Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) package for visually exploring random forest models. The ggRandomForests package is structured to extract intermediate data objects from randomForestSRC objects and generate figures using the[ggplot2](http://CRAN.R-project.org/package=ggplot2) graphics package [Wickham:2009].
+Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) package for visually exploring random forest models. The ggRandomForests package is structured to extract intermediate data objects from randomForestSRC objects and generate figures using the[ggplot2](http://CRAN.R-project.org/package=ggplot2) graphics package [@Wickham:2009].
 
-This document is formatted as a tutorial for using the randomForestSRC for building random forests and the ggRandomForests package for investigating how the forest is constructed. This tutorial uses the Boston Housing Data  available in the [MASS](http://CRAN.R-project.org/package=MASS) package. We use Variable Importance measure (VIMP) [Breiman:2001] as well as Minimal Depth [Ishwaran:2010], a property derived from the construction of each tree within the forest, to assess the impact of variables on forest prediction. We will also demonstrate the use of variable dependence plots [Friedman:2000] to aid interpretation RF results in different response settings. 
+This document is formatted as a tutorial for using the randomForestSRC for building random forests and the ggRandomForests package for investigating how the forest is constructed. This tutorial uses the Boston Housing Data  available in the [MASS](http://CRAN.R-project.org/package=MASS) package. We use Variable Importance measure (VIMP) [@Breiman:2001] as well as Minimal Depth [@Ishwaran:2010], a property derived from the construction of each tree within the forest, to assess the impact of variables on forest prediction. We will also demonstrate the use of variable dependence plots [@Friedman:2000] to aid interpretation RF results in different response settings. 
 
-# Data: Boston Housing Values.
+# Data: Boston Housing Values
 
-The Bostong Housing data is a standard benchmark data set for regression models. It contains data for 506 census tracts of Boston from the 1970 census. The data is available in multiple R packages, but to keep the dependencies for the ggRandomForests package down, we will use the data contained in the [MASS](http://CRAN.R-project.org/package=MASS) package available in base install of R. The following code block loads the data into the environment. 
-
+The Bostong Housing data is a standard benchmark data set for regression models. It contains data for 506 census tracts of Boston from the 1970 census [@Harrison:1978; @Belsley:1980]. The data is available in multiple R packages, but to keep the dependencies for the ggRandomForests package down, we will use the data contained in the [MASS](http://CRAN.R-project.org/package=MASS) package available in base install of R. The following code block loads the data into the environment. 
 
 ```{r datastep} 
 data(Boston, package="MASS")
 ## Set modes correctly. For binary variables: transform to logical
-## Check for range of 0, 1
-## There is probably a better way to do this.
 Boston$chas <- as.logical(Boston$chas)
 ```
 
 The table details the variable names, type and descriptions contained within the Boston data set.
+
 ```{r cleanup, echo=FALSE, results="asis"}
 cls <- sapply(Boston, class) 
 # 
@@ -122,11 +121,13 @@ names(st.labs) <- rownames(dta.labs)
 print(xtable(dta.labs%>% select(-names)), type="html")
 ```
 
-It is good practice to view your data before beginning an analysis. We create two figures, one panel set of categorical variables, and one panel set of continuous variables. These figures help to find outliers and missing values in each panel before getting to deep. We have made a [Shiny](shiny.rstudio.com) available at (https://ehrlinger.shinyapps.io/xportEDA) to create similar figures for arbitrary data set. 
+## Exploratory Data Analysis
 
-In this case the data consists almost entirely of continuous variables with the exception of tracts along the Charles river. A simple visualization for the data is then a series of panels for each variable, with observations colored by the logical Charles river variable.  Missing values are indicated by the rug marks along the x-axis. The data is plotted along a continuous variable on the X-axis, in this case the response variable medv - the median value of homes.
+It is good practice to view your data before beginning an analysis, what [@Tukey:1977] refers to as Exploratory Data Analysis (EDA). To facilitate this, we use the ggplot2::facet_wrap commands to create two sets of panel plots, one for categorical variables, and one for continuous variables. Each variable is plotted along one selected continuous variable on the X-axis. These figures help to find outliers and missing values by exploring each variable panel before getting to deep into the analyis. We have created a [Shiny](shiny.rstudio.com) app to make this process easier, available at (https://ehrlinger.shinyapps.io/xportEDA) to create similar figures for arbitrary data set. 
 
-```{r data, fig.cap="EDA variable plots. Points indicate variable value against the median home value variable. Points are colored according to the chas variable."}
+In the Boston housing case, the data consists almost entirely of continuous variables, with the exception of tracts along the Charles river. A simple visualization for this data is then a single panel plot of continuous variables, with observations colored by the logical Charles river variable.  Missing values in each variable are indicated by the rug marks along the x-axis. We use the Boston housing response variable, medv - the median value of homes for X variable.
+
+```{r data, fig.cap="EDA variable plots. Points indicate variable value against the median home value variable. Points are colored according to the chas variable.", fig.width=7, fig.height=5}
 # Use tidyr to transform the data into long format.
 dta <- Boston %>% gather(variable, value, -medv, -chas)
 
@@ -141,9 +142,9 @@ ggplot(dta, aes(x=medv, y=value, color=chas))+
 
 This figure is loosely related to the pairs plot, but only examines the relation between one variable against the remainder. Plotting the data against the response variable also gives us a "sanity check" when viewing our model results. It's pretty obvious that we should find a relation between median home values and the lstat and rm variables.
 
-# Random Forest - Regression.
+# Random Forest - Regression
 
-A Random Forest is built up by bagging [Breiman:1996] a collection of classification and regression trees [cart:1984] (CART). The method uses a set of B bootstrap [bootstrap:1994] samples, growing a set of independent tree models on each sub-sample of the population. Each trees is grown by recursively partitioning the population based on optimization of a split rule over the p-dimensional covariate space. At each split, a subset of m <= p candidate variables are chosen for the split. Each node is split into two daughter nodes by maximizing the separation of observations according the split rule. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used [Friedman:2000]. Each subsequent daughter node is then split until the process reaches the stopping criteria of either node purity or node member size, which defines the set of terminal (unsplit) nodes for the tree. 
+A Random Forest is built up by bagging [@Breiman:1996] a collection of classification and regression trees [@cart:1984] (CART). The method uses a set of B bootstrap [@bootstrap:1994] samples, growing a set of independent tree models on each sub-sample of the population. Each trees is grown by recursively partitioning the population based on optimization of a split rule over the p-dimensional covariate space. At each split, a subset of m <= p candidate variables are chosen for the split. Each node is split into two daughter nodes by maximizing the separation of observations according the split rule. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used [@Friedman:2000]. Each subsequent daughter node is then split until the process reaches the stopping criteria of either node purity or node member size, which defines the set of terminal (unsplit) nodes for the tree. 
 
 Random Forests sort each training set observation into one unique terminal node per tree. The Random Forest estimate for each observation is then  calculated by aggregating, averaging (regression) or votes (classification), the terminal node results across the collection of B trees.
 
@@ -157,7 +158,7 @@ Boston_rfsrc
 
 The randomForestSRC::print.rfsrc command details the forest parameters used for the call, and retun the generalization error estimate of the forest.
 
-One advantage of Random Forests is a built in generalization error estimate. Each bootstrap sample selects approximately 63.2% of the population on average. The remaining 36.8% of observations, the Out-of-Bag~ [BreimanOOB:1996e] (OOB) sample, can be used as a hold out test set for each tree. An OOB prediction error estimate can be calculated for each observation by predicting the response over the set of trees which were NOT trained with that particular observation. Out-of-Bag prediction error estimates have been shown to be nearly identical to n--fold cross validation estimates [StatisticalLearning:2009]. This feature of Random Forests allows us to obtain both model fit and validation in one pass of the algorithm.
+One advantage of Random Forests is a built in generalization error estimate. Each bootstrap sample selects approximately 63.2% of the population on average. The remaining 36.8% of observations, the Out-of-Bag~ [@BreimanOOB:1996e] (OOB) sample, can be used as a hold out test set for each tree. An OOB prediction error estimate can be calculated for each observation by predicting the response over the set of trees which were NOT trained with that particular observation. Out-of-Bag prediction error estimates have been shown to be nearly identical to n--fold cross validation estimates [@StatisticalLearning:2009]. This feature of Random Forests allows us to obtain both model fit and validation in one pass of the algorithm.
 
 The `gg_error` function operates on the randomForestSRC::rfsrc object to pull out the error estimates as the forest is grown. This demonstrates the design philosophy of the ggRandomForests package, to first create a data object and provide S3 functions to operate on the data. The following code block first creates a `gg_error` object, then uses the `plot.gg_error` function to createa ggplot object, which is shown directly into the document.
 
@@ -171,24 +172,25 @@ This figure shows that it does not take a large number of trees to stabilize the
 The `gg_rfsrc` function pulls out random forest the OOB prediction estimates. This call does the data extraction and plotting in one line, since we are not interested in holding the prediction estimates for later reuse. Also note that we can add in additional ggplot2 commands to modify the plot object. The S3 plot commands all return ggplot objects, which we can save for modification or resuse later in the analysis. 
 
 ```{r rfsrc, fig.cap="Random Forest OOB predicted median home values."}
-plot(gg_rfsrc(Boston_rfsrc))+
+plot(gg_rfsrc(Boston_rfsrc), alpha=.5)+
   coord_cartesian(ylim=c(5,49))
 ```
 
 The `gg_rfsrc` plot shows the predicted median home value for each observation in the training set. The estimates are OOB estimates and analogous to test set estimates. The boxplot is shown to give an indication of the distribution of these estimates. The figure is really another sanity check, as we are more interested in exploring the "why" of these predictions in this particular exercise.
 
-# Variable Selection.
+# Variable Selection
 
 Unlike in the linear model settings, Random Forests do not require explicitly specifying the functional form of the covariates to the response. Instead, RF ascertain which variables contribute to the prediction through the split rule, optimally choosing variables which separate observations. 
 
 ## Variable Importance.
 
-Variable importance (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of [cart:1984]). The most popular VIMP method uses a prediction error approach involving "noising-up" each variable in turn. VIMP for a variable `x_v` is the difference between prediction error when `x_v` is noised up by permuting its value randomly, compared to prediction error under the original predictor [Breiman:2001, liaw:2002, Ishwaran:2007, Ishwaran:2008].
+Variable importance (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of [@cart:1984]). The most popular VIMP method uses a prediction error approach involving "noising-up" each variable in turn. VIMP for a variable `x_v` is the difference between prediction error when `x_v` is noised up by permuting its value randomly, compared to prediction error under the original predictor [@Breiman:2001; @Liaw:2002; @Ishwaran:2007; @Ishwaran:2008].
 
 Since VIMP is the absolute difference between OOB prediction error before and after permutation, a large VIMP value indicates that misspecification of that variable detracts from the predictive accuracy of the forest. VIMP close to zero indicates the variable contributes nothing to predictive accuracy, and negative values indicate the predictive accuracy improves when the variable is mispecified. In the later case, we assume noise is more informative than the true variable. As such, we ignore variables with negative and near zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables. 
 
 The `gg_vimp` function is used to VIMP measures for each of the variables used to grow the forest. Variables are shown in VIMP rank order, largest (Lower Status) at the top, to smallest (Charles River) at the bottom. In this case, the top two variables (Lower Status and number of rooms) display the largest VIMP, with a sizable difference to the remaining variables all showing similar VIMP measure. This indicates we should focus attention on these two variables over the others.
-```{r vimp, fig.cap="VIMP."}
+
+```{r vimp, fig.cap="Random forest VIMP plot.", fig.width=7, fig.height=5}
 plot(gg_vimp(Boston_rfsrc), lbls=st.labs)
 ```
 
@@ -204,34 +206,32 @@ The `gg_minimal_depth` function is similar to the `gg_vimp` function. Variables 
 
 The randomForestSRC::var.select call is again a computationally expensive function, as it has to traverse the forest finding the maximal subtree within each tree for each variable. We again use the cacheing strategy to save computational time for this document. The var.select call is again included in the comment of this code block.
 
-```{r minimaldepth, fig.cap="Minimal Depth variables in rank order, most important at the top. Vertical dashed line indicates the maximal minimal depth for important variables."}
+```{r minimaldepth, fig.cap="Minimal Depth variables in rank order, most important at the top. Vertical dashed line indicates the maximal minimal depth for important variables.", fig.width=7, fig.height=5}
 # Boston_var <- var.select(Boston_rfsrc)
 
 data(Boston_var)
 plot(gg_minimal_depth(Boston_var), lbls=st.labs)
 ```
 
-The  minimal depth plot indicates ten variables which have a higher impact than the remaining three. 
+The  minimal depth plot indicates ten variables which have a higher impact than the remaining three. In general, the selection of variables according to VIMP is to rather arbitrarily examine the values, looking for some point along the ranking where there is a large difference in VIMP. The minimal depth threshold method has more of a quantitative approach, using the median value of minimal depth measures to determine the selection threshold.
 
-Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be slightly different. 
-
-
-```{r minimalvimp}
+```{r minimalvimp, fig.cap="Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points below have higher VIMP, those above have higher minimal depth ranking. Variables are colored by the sign of the VIMP measure"}
 plot(gg_minimal_vimp(Boston_var))
 ```
 
+Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be slightly different. We use `gg_minimal_vimp` function to compare rankings between minimal depth and VIMP. The points along the red dashed line indicate the measures are in agreement. Points above the line are ranked higher by VIMP than minimal depth, indicating the variables are more sensitive to mispecification. Those below the line have a higher minimal depth ranking, indicating they are better at dividing the population. The further the points are from the line, the more the discrepency. The figure is skewed towards a minimal depth approach, by ranking variables along the y-axis, though points are colored by the sign of VIMP.
 
-# Response dependency.
+# Dependencies of the predicted response.
 
 Once we have an idea of which variables contribute to the predictive accuracy of the forest, it is useful to get some idea of form of this contribution. We use graphical methods to show the predicted response given dependence on covariates. We can plot the marginal effect of an covariate on the class probability (classification), response (regression), mortality (survival), or the expected years lost (competing risk) for a RF analysis. We plot the ensemble predicted value on the vertical axis and covariates along the horizontal axis.
 
 ## Variable Dependence
 
-Variable dependence plots show the predicted response as a function of a covariate of interest, where each observation is represented by a point on the plot. Each predicted point is dependent on the full combination of all other covariates, not only on the covariate displayed in the plot, so interpretation of variable dependence plots can only be in general terms. The smooth loess line [cleveland:1981, cleveland:1988] indicates the trend of the prediction over surgical date progression.
+Variable dependence plots show the predicted response as a function of a covariate of interest, where each observation is represented by a point on the plot. Each predicted point is dependent on the full combination of all other covariates, not only on the covariate displayed in the plot, so interpretation of variable dependence plots can only be in general terms. The smooth loess line [@cleveland:1981; @cleveland:1988] indicates the trend of the prediction over surgical date progression.
 
 We panel the collection of all continuous variable dependence plots together. Here we separate the data generation of the `gg_variable` function call, storing the data object for later use. The `plot.gg_variable` function call demonstrates the use of the ellipse operator (`...`) for passing ggplot commands to the internal plotting routines. The `se` and `span` arguments are used to modify the internal call to `ggplot2::geom_smooth`. The `alpha` argument lightens the coloring points in the `ggplot2::geom_point` call, making it easier to see point over plotting. We also demonstrate modifying the plot labels using the `ggplot2::labs` function. Since ggRandomForests plot functions return the ggplot2 object, users can modify the figures as a standard ggplot object.
 
-```{r variable, fig.cap="Variable dependence panels."}
+```{r variable, fig.cap="Variable dependence plot. Individual case predictions are marked with points. Loess smooth curve indicates the trend as the variables increase with shaded 95% confidence band.", fig.width=7, fig.height=5}
 gg_v <- gg_variable(Boston_rfsrc)
 
 # We want to plot continuous variables only, so we 
@@ -240,14 +240,15 @@ xvar <- colnames(Boston)
 xvar <- xvar[-which(colnames(Boston)=="chas")]
 
 plot(gg_v, xvar=xvar, panel=TRUE, 
-     se=FALSE, span=1.2, alpha=.4)+
+     se=.95, span=1.2, alpha=.4)+
   labs(y="Median Value", x="")
 ```
 
 The Boston housing data only contains the Charles river logical variable. The variable dependence plot for categorical variables is constructed using boxplots to show the distribution of the predictions within each category. There is not a convenient method to panel scatter plots with boxplots, so we recommend panel each set separately. 
 
 ```{r chas, fig.cap="Variable dependence for Charles River logical variable."}
-plot(gg_v, xvar="chas", se=FALSE, notch=TRUE)+
+plot(gg_v, xvar="chas", 
+     se=FALSE, notch=TRUE, alpha=.4)+
   labs(y="Median Value")+
   coord_cartesian(ylim=c(5,49))
 ```
@@ -255,15 +256,12 @@ plot(gg_v, xvar="chas", se=FALSE, notch=TRUE)+
 In both VIMP and Minimal depth, the Charles river variable has very little impact on the prediction acuracy. Looking at the variable importance, we see that most housing tracts do not border the Charles river, and the distribution of the predictions shows.
 
 ## Partial Dependence.
- 
-Partial variable dependence plots are a risk adjusted alternative to variable dependence. Partial plots are generated by integrating out the effects of all variables beside the covariate of interest. The figures are constructed by selecting points evenly spaced along the distribution of the X variable. For each of these values (X = x), we calculate the average Random Forest prediction over all other covariates in X by
-\begin{equation}
-\tilde{f}(x) = \frac{1}{n} \sum_{i = 1}^n \hat{f}(x, x_{i, o}), 
-\label{E:partial}
-\end{equation}
-where f is the predicted response from the random forest and x_{i, o} is the value for all other covariates other than X = x for the observation i [Friedman:2000]. Partial dependence plots in time to event settings are shown at specific time points, similar to variable dependence.
 
-```{r partial, fig.cap="Partial dependence panels."}
+Partial variable dependence plots are a risk adjusted alternative to variable dependence. Partial plots are generated by integrating out the effects of all variables beside the covariate of interest. The figures are constructed by selecting points evenly spaced along the distribution of the $X$ variable. For each of these values ($X = x$), we calculate the average Random Forest prediction over all other covariates in $X$ by
+$$ \tilde{f}(x) = \frac{1}{n} \sum_{i = 1}^n \hat{f}(x, x_{i, o}), $$
+where $\hat{f}$ is the predicted response from the random forest and $x_{i, o}$ is the value for all other covariates other than $X = x$ for the observation $i$ [@Friedman:2000]. Partial dependence plots in time to event settings are shown at specific time points, similar to variable dependence.
+
+```{r partial, fig.cap="Partial dependence panels.", fig.width=7, fig.height=5}
 # Boston_partial <- plot.variable(Boston_rfsrc,partial=TRUE, show.plots = FALSE )
 data(Boston_partial)
 
@@ -272,38 +270,37 @@ ggpart <- gg_p
 ggpart$chas <- NULL
 plot(ggpart, xvar=xvar,panel=TRUE, se=FALSE)+
   labs(y="Median Value", x="")
-
 ```
 
 ```{r part-chas, fig.cap="Partial dependence for Charles River logical variable."}
 plot(gg_p$chas, xvar=xvar,notch=TRUE, se=FALSE, alpha=.3)+
   labs(y="Median Value")+
   coord_cartesian(ylim=c(5,49))
-
 ```
 
 # Variable Interactions
 
-Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. Minimal depth is calculated as the maximal subtree using the normalized minimal depth of variable i relative to the root node (normalized with respect to the size of the tree). For interactions, we calculate the maximal subtree interaction measure as the normalized minimal depth of a variable j with respect to the maximal subtree for variable i (normalized with respect to the size of i's maximal subtree) [Ishwaran:2010, Ishwaran:2011].
+Using the different variable dependence measures, we can calculate pairwise interactions for any pair of variables. Minimal depth is calculated as the maximal subtree using the normalized minimal depth of variable i relative to the root node (normalized with respect to the size of the tree). For interactions, we calculate the maximal subtree interaction measure as the normalized minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$ (normalized with respect to the size of $i$'s maximal subtree) [@Ishwaran:2010; @Ishwaran:2011].
 
-Measuring interactions with minimal depth results a p x p matrix of interaction measures, with smaller diagonal measures relative to the root node, and off diagonal measures of pairwise interaction. We expect the covariate with smallest minimal depth to have the highest interactive depth measures, so viewed alone may not be as informative as looking at other interactive depth plots.
+Measuring interactions with minimal depth results a $p \times p$ matrix of interaction measures, with smaller diagonal measures relative to the root node, and off diagonal measures of pairwise interaction. We expect the covariate with smallest minimal depth to have the highest interactive depth measures, so viewed alone may not be as informative as looking at other interactive depth plots.
 
-```{r interactions}
+```{r interactions, fig.cap="Minimal depth variable interactions. Reference variables are marked with red cross in each panel. Higher values indicate lower interactivity with reference variable.", fig.width=7, fig.height=5}
 # Boston_int <- find.interactions(Boston_rfsrcsrc)
 data(Boston_int)
 
-plot(gg_interaction(Boston_int), xvar=Boston_var$topvars[1:6], panel=TRUE, shape=1)+
+plot(gg_interaction(Boston_int), xvar=Boston_var$topvars[1:6], panel=TRUE)+
   theme(legend.position="none")
 ```
 
 # Coplots
 
-By plotting the resulting interaction measures for each variable, we can detect the "most interactive" pairs, and develop conditional plots [chambers:1992, cleveland:1993]. These plots are similar to stratified results, arranged in a set of panels by the interactive variable of interest. Interactions with categorical data are straight forward, and can be generated directly from variable dependence plots. 
+By plotting the resulting interaction measures for each variable, we can detect the "most interactive" pairs, and develop conditional plots [@chambers:1992; @cleveland:1993]. These plots are similar to stratified results, arranged in a set of panels by the interactive variable of interest. Interactions with categorical data are straight forward, and can be generated directly from variable dependence plots. 
 
 Interactions with continuous variables requires stratification at some level. To view the interaction of Rooms with Lower Status, we slice the room variable into 6 peices.
 
-```{r coplots}
-rm_grp <- cut(Boston_rfsrc$xvar$rm, breaks=6)
+```{r coplots, fig.cap="Variable Coplots. Predicted median value as a function of Lower Status, stratified by average number of rooms.", fig.width=7, fig.height=5}
+rm_pts <- cut_distribution(Boston_rfsrc$xvar$rm, groups=6)
+rm_grp <- cut(Boston_rfsrc$xvar$rm, breaks=rm_pts)
 gg_v$rm_grp <- paste("rm=",rm_grp, sep="")
 
 var_dep <- plot(gg_v, xvar = "lstat", smooth = TRUE, 
@@ -324,7 +321,7 @@ Boston_prtl_coplot <- gg_partial_coplot(Boston_rfsrc, xvar="lstat",
 ```
 
 
-```{r prtl-coplots}
+```{r prtl-coplots, fig.cap="Partial Coplots. Risk adjusted predicted median value as a function of Lower Status, within groups of average number of rooms.", fig.width=7, fig.height=5}
 data(Boston_prtl_coplot)
 ggpl <- ggplot(Boston_prtl_coplot, aes(x=lstat, y=yhat, 
                                        shape=groups, 
@@ -338,23 +335,5 @@ ggpl
 
 # Conclusion
 
-```{r surf, echo=FALSE, eval=FALSE}
-cut.vector <- function(obj, npts){
-  n.x <- length(unique(obj))
-  if (n.x > npts) {
-    x.uniq <- sort(unique(obj))[unique(as.integer(seq(1, n.x, length = min(npts, n.x))))]
-  }
-  x.uniq
-}
-cut.vector(Boston_rfsrc$xvar$rm,npts=50)
-
-```
-
-
 
 # References
-
-Harrison, D. and Rubinfeld, D.L. (1978) Hedonic prices and the demand for clean air. J. Environ. Economics and Management 5, 81–102.
-
-Belsley D.A., Kuh, E. and Welsch, R.E. (1980) Regression Diagnostics. Identifying Influential Data and Sources of Collinearity. New York: Wiley.
-

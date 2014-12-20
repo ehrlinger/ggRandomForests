@@ -101,7 +101,8 @@ plot.gg_rfsrc<- function(x,
                              color=colnames(gg_dta$yhat)[2],
                              shape=colnames(gg_dta$yhat)[2]), ...)+
       geom_boxplot(aes_string(x=1, y=colnames(gg_dta$yhat)[1]),
-                   outlier.colour = "transparent", fill="transparent", notch = TRUE, ...)
+                   outlier.colour = "transparent", fill="transparent", notch = TRUE, ...)+
+      theme(axis.ticks = element_blank(), axis.text.x = element_blank())
     }else{
       gg_dta.mlt <- gg_dta$yhat %>% gather(variable, value, -y)
       gg_plt <- ggplot(gg_dta.mlt, aes_string(x="variable",y="value"))+

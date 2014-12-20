@@ -1,4 +1,4 @@
-\begin{thebibliography}{23}
+\begin{thebibliography}{21}
 \newcommand{\enquote}[1]{``#1''}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -67,21 +67,10 @@ Fleming TR, Harrington DP (1991).
 \newblock \emph{Counting processes and survival analysis.}
 \newblock Wiley, New York.
 
-\bibitem[{Friedman(2000{\natexlab{a}})}]{Friedman00greedyfunction}
-Friedman JH (2000{\natexlab{a}}).
+\bibitem[{Friedman(2000)}]{Friedman:2000}
+Friedman JH (2000).
 \newblock \enquote{Greedy Function Approximation: A Gradient Boosting Machine.}
 \newblock \emph{Annals of Statistics}, \textbf{29}, 1189--1232.
-
-\bibitem[{Friedman(2000{\natexlab{b}})}]{FriedmanGreedyfunction:2000}
-Friedman JH (2000{\natexlab{b}}).
-\newblock \enquote{Greedy Function Approximation: A Gradient Boosting Machine.}
-\newblock \emph{Annals of Statistics}, \textbf{29}, 1189--1232.
-
-\bibitem[{H. \emph{et~al.}(2011)H., U.B., X., and
-  A.J.}]{Ishwaran_HighDimension:2011}
-H I, UB K, X C, AJ M (2011).
-\newblock \enquote{Random survival forests for high-dimensional data.}
-\newblock \emph{Statist. Anal. Data Mining}, \textbf{4}, 115--132.
 
 \bibitem[{Hastie \emph{et~al.}(2009)Hastie, Tibshirani, and
   Friedman}]{StatisticalLearning:2009}
@@ -118,25 +107,24 @@ Ishwaran H, Kogalur UB, Blackstone EH, Lauer MS (2008).
 \newblock \enquote{{Random survival forests}.}
 \newblock \emph{The Annals of Applied Statistics}, \textbf{2}(3), 841--860.
 
-\bibitem[{Ishwaran \emph{et~al.}(2010{\natexlab{a}})Ishwaran, Kogalur,
-  Gorodeski, Minn, and Lauer}]{Ishwaran:2010}
-Ishwaran H, Kogalur UB, Gorodeski EZ, Minn AJ, Lauer MS (2010{\natexlab{a}}).
+\bibitem[{Ishwaran \emph{et~al.}(2011)Ishwaran, Kogalur, Chen, and
+  Minn}]{Ishwaran:2011}
+Ishwaran H, Kogalur UB, Chen X, Minn AJ (2011).
+\newblock \enquote{Random survival forests for high-dimensional data.}
+\newblock \emph{Statist. Anal. Data Mining}, \textbf{4}, 115--132.
+
+\bibitem[{Ishwaran \emph{et~al.}(2010)Ishwaran, Kogalur, Gorodeski, Minn, and
+  Lauer}]{Ishwaran:2010}
+Ishwaran H, Kogalur UB, Gorodeski EZ, Minn AJ, Lauer MS (2010).
 \newblock \enquote{High-dimensional variable selection for survival data.}
 \newblock \emph{J. Amer. Statist. Assoc.}, \textbf{105}, 205--217.
-
-\bibitem[{Ishwaran \emph{et~al.}(2010{\natexlab{b}})Ishwaran, Kogalur,
-  Gorodeski, Minn, and Lauer}]{Ishwaran_HighDimension:2010}
-Ishwaran H, Kogalur UB, Gorodeski EZ, Minn AJ, Lauer MS (2010{\natexlab{b}}).
-\newblock \enquote{High-Dimensional Variable Selection for Survival Data.}
-\newblock \emph{{Journal of the American Statistical Association}},
-  \textbf{105}(489).
 
 \bibitem[{Liaw and Wiener(2002)}]{liaw:2002}
 Liaw A, Wiener M (2002).
 \newblock \enquote{Classification and Regression by randomForest.}
 \newblock \emph{R News}, \textbf{2}(3), 18--22.
 
-\bibitem[{Wickham(2009)}]{Wickham2009}
+\bibitem[{Wickham(2009)}]{Wickham:2009}
 Wickham H (2009).
 \newblock \emph{ggplot2: elegant graphics for data analysis}.
 \newblock Springer New York.
