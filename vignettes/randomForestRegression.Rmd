@@ -1,7 +1,7 @@
 ---
 title: 'ggRandomForests: Random Forest for Regression'
 author: "John Ehrlinger"
-date: "December 16, 2014"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
@@ -24,8 +24,8 @@ This vignette is available within the [ggRandomForests](http://cran.r-project.or
 library(knitr)
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
 opts_chunk$set(fig.path = 'fig-rfr/rfr-', 
-               fig.align = 'center', 
-               size = 'footnotesize', 
+              # fig.align = 'center', 
+              # size = 'footnotesize', 
                prompt = TRUE, 
                comment = NA, 
                echo = TRUE, results = TRUE, 
@@ -71,15 +71,14 @@ This document is formatted as a tutorial for using the randomForestSRC for build
 
 # Data: Boston Housing Values
 
-The Bostong Housing data is a standard benchmark data set for regression models. It contains data for 506 census tracts of Boston from the 1970 census [@Harrison:1978; @Belsley:1980]. The data is available in multiple R packages, but to keep the dependencies for the ggRandomForests package down, we will use the data contained in the [MASS](http://CRAN.R-project.org/package=MASS) package available in base install of R. The following code block loads the data into the environment. 
-
+The Bostong Housing data is a standard benchmark data set for regression models. It contains data for 506 census tracts of Boston from the 1970 census [@Harrison:1978; @Belsley:1980]. The data is available in multiple R packages, but to keep the dependencies for the ggRandomForests package down, we will use the data contained in the [MASS](http://CRAN.R-project.org/package=MASS) package, available with the base install of R. The following code block loads the data into the environment. 
+The table details the variable names, type and descriptions contained within the Boston data set.
+ 
 ```{r datastep} 
 data(Boston, package="MASS")
 ## Set modes correctly. For binary variables: transform to logical
 Boston$chas <- as.logical(Boston$chas)
 ```
-
-The table details the variable names, type and descriptions contained within the Boston data set.
 
 ```{r cleanup, echo=FALSE, results="asis"}
 cls <- sapply(Boston, class) 
@@ -123,9 +122,9 @@ print(xtable(dta.labs%>% select(-names)), type="html")
 
 ## Exploratory Data Analysis
 
-It is good practice to view your data before beginning an analysis, what [@Tukey:1977] refers to as Exploratory Data Analysis (EDA). To facilitate this, we use the ggplot2::facet_wrap commands to create two sets of panel plots, one for categorical variables, and one for continuous variables. Each variable is plotted along one selected continuous variable on the X-axis. These figures help to find outliers and missing values by exploring each variable panel before getting to deep into the analyis. We have created a [Shiny](shiny.rstudio.com) app to make this process easier, available at (https://ehrlinger.shinyapps.io/xportEDA) to create similar figures for arbitrary data set. 
+It is good practice to view your data before beginning an analysis, what @Tukey:1977 refers to as Exploratory Data Analysis (EDA). To facilitate this, we use the `ggplot` with the `ggplot2::facet_wrap` command to create two sets of panel plots, one for categorical variables with boxplots at each level, and one of scatter plots for continuous variables. Each variable is plotted along a selected continuous variable on the X-axis. These figures help to find outliers, missing values and other data anomalies in each variable before getting to deep into the analyis. We have created a separate [Shiny](shiny.rstudio.com) app, available at (https://ehrlinger.shinyapps.io/xportEDA), which creates similar figures for arbitrary data sets, to make the EDA process easier. 
 
-In the Boston housing case, the data consists almost entirely of continuous variables, with the exception of tracts along the Charles river. A simple visualization for this data is then a single panel plot of continuous variables, with observations colored by the logical Charles river variable.  Missing values in each variable are indicated by the rug marks along the x-axis. We use the Boston housing response variable, medv - the median value of homes for X variable.
+The Boston housing data consists almost entirely of continuous variables, with the exception of the "Charles river" logical variable. A simple EDA visualization for this data is only a single panel plot of continuous variables, with observations colored by the single logical variable. Missing values in each variable are indicated by the rug marks along the x-axis, of which we have none. We used the Boston housing response variable, medv - the median value of homes, for X variable.
 
 ```{r data, fig.cap="EDA variable plots. Points indicate variable value against the median home value variable. Points are colored according to the chas variable.", fig.width=7, fig.height=5}
 # Use tidyr to transform the data into long format.
@@ -144,11 +143,11 @@ This figure is loosely related to the pairs plot, but only examines the relation
 
 # Random Forest - Regression
 
-A Random Forest is built up by bagging [@Breiman:1996] a collection of classification and regression trees [@cart:1984] (CART). The method uses a set of B bootstrap [@bootstrap:1994] samples, growing a set of independent tree models on each sub-sample of the population. Each trees is grown by recursively partitioning the population based on optimization of a split rule over the p-dimensional covariate space. At each split, a subset of m <= p candidate variables are chosen for the split. Each node is split into two daughter nodes by maximizing the separation of observations according the split rule. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used [@Friedman:2000]. Each subsequent daughter node is then split until the process reaches the stopping criteria of either node purity or node member size, which defines the set of terminal (unsplit) nodes for the tree. 
+A Random Forest is built up by bagging [@Breiman:1996] a collection of classification and regression trees [@cart:1984] (CART). The method uses a set of $B$ bootstrap [@bootstrap:1994] samples, growing a set of independent tree models on each sub-sample of the population. Each trees is grown by recursively partitioning the population based on optimization of a split rule over the $p$-dimensional covariate space. At each split, a subset of $m \le p$ candidate variables are tested for the split rule optimization, dividing each node into two daughter nodes. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used [@Friedman:2000]. Each daughter node is then split until the process reaches the stopping criteria of either node purity or node member size, which defines the set of terminal (unsplit) nodes for the tree. 
 
 Random Forests sort each training set observation into one unique terminal node per tree. The Random Forest estimate for each observation is then  calculated by aggregating, averaging (regression) or votes (classification), the terminal node results across the collection of B trees.
 
-We grow the random forest using the rfsrc command. For this example we will use the default set of B=1000 trees (ntree argument), m=5 candidate variables (mtry) for each split with a stopping criteria of at most 5 observations within each terminal node. Because growing random forests are computationally expensive, and this vignette is really targetted at the visualization of the forest, we use a cached copy of the randomForestSRC::rfsrc object, available as a dataset in the ggRandomForests package. The actual rfsrc call is included in the comment in the following code block. 
+We grow the random forest using the rfsrc command. For this example we will use the default set of $B=1000$ trees (`ntree` argument), $m=5$ candidate variables (`mtry`) for each split with a stopping criteria of at most 5 observations within each terminal node. Because growing random forests are computationally expensive, and this vignette is targetted at the visualization of the forest, we will use a cached copy of the `randomForestSRC::rfsrc` objects, which we include as a data sets in the `ggRandomForests` package. The actual `rfsrc` calls are included in comments within code blocks. 
 
 ```{r randomforest}
 # Boston_rfsrc <- rfsrc(medv~., data=Boston)

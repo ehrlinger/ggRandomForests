@@ -1,27 +1,31 @@
-#' Air quality randomForestSRC object.
+#' Cached  \code{randomForestSRC::rfsrc} object for the air quality data. 
 #' 
-#' A cached \code{randomForestSRC::rfsrc} object for the New York Air Quality Measurements. This is 
-#' a randomForestSRC regression forest.
+#' The \code{airq_rf} data set is regression random forest constructed from the 
+#' \code{randomForestSRC::rfsrc} 
+#' call for the New York Air Quality Measurements. 
 #'  
-#' @details For ggRandomForests examples and tests, as well as streamlining the 
-#' R CMD CHECK for package release, we cache the computationally expensive operations
-#' from the randomForestSRC package. 
+#' @details 
+#' Many \code{randomForestSRC} functions are computationally expensive. We use cached objects to
+#' improve the \code{ggRandomForests} diagnostic and example run times (see
+#'  \code{\link{rebuild_cache_datasets}} to rebuild your own copy.)
 #' 
-#' We build a regression randomForest (\code{\link{airq_rf}}) with the 
-#' \code{airquality} measurements data. The data were from New York, from 
-#' May to September 1973. The data was obtained from the New York State 
-#' Department of Conservation (ozone data) and the National Weather Service 
+#' We build a regression random forest with the \code{airquality} data set. 
+#' 
+#' The data were from New York, from May to September 1973. The data was obtained from the 
+#' New York State Department of Conservation (ozone data) and the National Weather Service 
 #' (meteorological data).
 #' 
-#' @seealso \code{airquality} \code{rfsrc} \code{\link{airq_vs}} \code{\link{airq_interaction}} 
-#' \code{\link{airq_prtl}} \code{\link{gg_rfsrc}} \code{\link{plot.gg_rfsrc}} \code{\link{gg_error}}
-#' \code{\link{plot.gg_error}}
-#' 
+#' @seealso \code{airquality} \code{randomForestSRC::rfsrc}
+#'  \code{\link{rebuild_cache_datasets}} \code{\link{gg_rfsrc}} 
+#'  \code{\link{plot.gg_rfsrc}} \code{\link{gg_error}} 
+#'  \code{\link{plot.gg_error}}
+#'  
 #' @examples
 #' \dontrun{
 #' ## The data was built with the following command
 #' airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' 
+#' # ggRandomForests commands:
 #' # Plot predicted values for the training data
 #' gg_dta <- gg_rfsrc(airq_rf)
 #' plot(gg_dta)
@@ -37,7 +41,7 @@
 #' 
 #' Ishwaran H. and Kogalur U.B. (2014). Random Forests for
 #' Survival, Regression and Classification (RF-SRC), R package
-#' version 1.5.4.
+#' version 1.5.5.
 #' 
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests
 #' for R. R News 7(2), 25-31.
@@ -48,6 +52,6 @@
 #' 
 #' @docType data
 #' @keywords datasets
-#' @format A randomForestSRC::rfsrc object for regression
+#' @format randomForestSRC::rfsrc object for regression
 #' @name airq_rf
 NULL

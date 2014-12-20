@@ -8,7 +8,6 @@ vignettes/*.log
 vignettes/*.gz
 vignettes/*.bbl
 vignettes/*.tex
-
 /vignettes/figure/*.pdf
 /packrat/lib*/
-
+inst/doc

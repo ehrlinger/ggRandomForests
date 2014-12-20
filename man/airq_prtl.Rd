@@ -3,43 +3,44 @@
 \docType{data}
 \name{airq_prtl}
 \alias{airq_prtl}
-\title{A \code{randomForestSRC::plot.variable} object.}
+\title{Cached \code{randomForestSRC::plot.variable} object for the air quality data.}
 \format{\code{randomForestSRC::plot.variable} object for regression}
 \description{
-A cached object from \code{randomForestSRC::plot.variable} function for the
-New York Air Quality Measurements randomForestSRC regression forest \code{\link{airq_rf}}.
+The \code{airq_prtl} data is constructed from the \code{randomForestSRC::plot.variable}
+call, with \code{partial=TRUE}, on the random forest model (\code{randomForestSRC::rfsrc}
+in \code{\link{airq_rf}}) for the New York Air Quality Measurements.
 }
 \details{
-For ggRandomForests examples and tests, as well as streamlining the
-R CMD CHECK for package release, we cache the computationally expensive operations
-from the randomForestSRC package.
+Many \code{randomForestSRC} functions are computationally expensive. We use cached objects to
+improve the \code{ggRandomForests} diagnostics and example run times (see
+ \code{\link{rebuild_cache_datasets}} to rebuild your own copy.)
 
-We build a regression randomForest (\code{\link{airq_rf}}) with the
-\code{airquality} measurements data, then run the \code{plot.variable} function to
-generate the data for constructing partial dependence plots.
+We build a regression random forest (\code{\link{airq_rf}})
+with the \code{airquality} data set, then run the \code{randomForestSRC::plot.variable}
+function to determine partial dependence of the response variable on independant variables.
 
-This "data set" is a cache of the \code{plot.variable} function, with partial=TRUE for the
-"Wind" variable. The data is then a risk adjusted variable dependence curve from the
-\code{\link{airq_rf}} random forest model.
-
-The data were from
-New York, from May to September 1973. The data was obtained from the New York State
-Department of Conservation (ozone data) and the National Weather Service
+The data were from New York, from May to September 1973. The data was obtained from the
+New York State Department of Conservation (ozone data) and the National Weather Service
 (meteorological data).
 }
 \examples{
 \dontrun{
 ## airq data
-## Load the stored randomForestSRC object for airq
-load(air1_rf, package="ggRandomForests)
+airq_rf <- rfsrc(Ozone ~ ., data = airquality,
+                 na.action = "na.impute", ...)
 
-# Save the "Wind" partial plot data
-airq_prtl <- plot.variable(airq_rf, xvar.names = "Wind",
-                          partial=TRUE, show.plots=FALSE)
+# Save the partial plot data
+airq_prtl <- plot.variable(airq_rf,
+                           partial=TRUE, show.plots=FALSE)
 
-# Generate a ggRandomForests plot.
+# ggRandomForests functions.
 gg_dta <- gg_partial(airq_prtl)
+
+# Individual plots (one per page).
 plot(gg_dta)
+
+# Or as a single panel plot.
+plot(gg_dta, panel=TRUE)
 }
 }
 \references{
@@ -58,7 +59,8 @@ Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S.
 841-860.
 }
 \seealso{
-\code{airquality} \code{plot.variable} \code{rfsrc} \code{\link{airq_rf}}
+\code{airquality} \code{randomForestSRC::plot.variable} \code{randomForestSRC::rfsrc}
+ \code{\link{airq_rf}} \code{\link{rebuild_cache_datasets}}
  \code{\link{gg_partial}} \code{\link{plot.gg_partial}}
 }
 \keyword{datasets}

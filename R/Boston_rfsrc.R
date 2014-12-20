@@ -1,7 +1,67 @@
-#' Boston housing randomForestSRC
+#' Cached  \code{randomForestSRC::rfsrc} object for the Boston Housing data. 
+#' 
+#' The \code{Boston_rfsrc} data set is regression random forest constructed from the 
+#' \code{randomForestSRC::rfsrc} 
+#' call for the \code{Boston} Housing data available in the \code{MASS} package.
+#'  
+#' @details 
+#' Many \code{randomForestSRC} functions are computationally expensive. We use cached objects to
+#' improve the \code{ggRandomForests} diagnostic and example run times (see
+#'  \code{\link{rebuild_cache_datasets}} to rebuild your own copy.)
+#' 
+#' We build a regression random forest with the \code{Boston} Housing data available in the 
+#' \code{MASS} package.
+#' 
+#' Housing Values in Suburbs of Boston containing 506 rows and 14 columns.
+#' 
+#' @seealso \code{MASS::Boston} 
+#' \code{randomForestSRC::plot.variable} 
+#' \code{randomForestSRC::rfsrc}
+#' \code{\link{rebuild_cache_datasets}} 
+#' \code{\link{Boston_rfsrc}} 
+#' \code{\link{gg_rfsrc}} 
+#'  \code{\link{plot.gg_rfsrc}} 
+#'  \code{\link{gg_error}} 
+#'  \code{\link{plot.gg_error}}
+#'  
+#' @examples
+#' \dontrun{
+#' ## The data was built with the following command
+#' data(Boston, package="MASS")
+#' Boston$chas <- as.logical(Boston$chas)
+#' Boston_rfsrc <- rfsrc(medv~., data=Boston, ...)
+#' 
+#' # ggRandomForests commands:
+#' # Plot predicted values for the training data
+#' gg_dta <- gg_rfsrc(Boston_rfsrc)
+#' plot(gg_dta)
+#' 
+#' # Plot error rate for the forest 
+#' gg_dta <- gg_error(Boston_rfsrc)
+#' plot(gg_dta)
+#' }
+#' 
+#' @references 
+#' Harrison, D. and Rubinfeld, D.L. (1978) Hedonic prices and the 
+#' demand for clean air. J. Environ. Economics and Management 5, 81-102.
+#' 
+#' Belsley D.A., Kuh, E. and Welsch, R.E. (1980) Regression Diagnostics. 
+#' Identifying Influential Data and Sources of Collinearity. New York: Wiley.
+#' 
+#' Ishwaran H. and Kogalur U.B. (2014). Random Forests for
+#' Survival, Regression and Classification (RF-SRC), R package
+#' version 1.5.5.
+#' 
+#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests
+#' for R. R News 7(2), 25-31.
+#' 
+#' Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S.
+#' (2008). Random survival forests. Ann. Appl. Statist. 2(3),
+#' 841-860.
+#' 
 #' 
 #' @docType data
 #' @keywords datasets
-#' @format A randomForestSRC::rfsrc object for regression
+#' @format randomForestSRC::rfsrc object
 #' @name Boston_rfsrc
 NULL

@@ -1,7 +1,10 @@
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("R package version %s", meta$Version)
+
 bibentry("Manual",
 title="ggRandomForests: Graphical Exploration of Random Forests",
 author=as.person("John Ehrlinger"),
 url="http://cran.r-project.org/package=ggRandomForests/",
-note="R package version 1.1.2"
-year="2014"
+note=note,
+year=year
 )
