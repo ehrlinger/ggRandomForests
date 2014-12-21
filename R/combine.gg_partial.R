@@ -9,42 +9,47 @@
 #'  @param lbls how to label the combined data.
 #'  @param ... not used
 #'  
-#'  @export combine.gg_partial_list combine.gg_partial combine
-#'  @aliases combine combine.gg_partial combine.gg_partial_list
+#'  @export combine.gg_partial_list combine.gg_partial
+#'  @aliases combine.gg_partial combine.gg_partial_list
 #' 
 #' @importFrom parallel mclapply
 #' 
 #' @examples 
-#' \dontrun{
-#' #!!TODO!! examples
-#' # Calculate the 1 year partial dependence
-#' pbc_prtl <- plot.variable(pbc_rf, surv.type = "surv", 
-#'                           time = 364.25, 
-#'                           xvar.names = xvar, partial = TRUE, 
-#'                           show.plots = FALSE)
+#' # Load a set of plot.variable partial plot data
+#' data(partial_veteran)
 #' 
-#' # Calculate the 3 year partial dependence
-#' pbc_prtl.3 <- plot.variable(pbc_rf, surv.type = "surv", 
-#'                             time = 3*364.25, 
-#'                             xvar.names = xvar, partial = TRUE, 
-#'                             show.plots = FALSE)
+#' # A list of 2 plot.variable objects
+#' length(partial_veteran) 
+#' class(partial_veteran)
+#' 
+#' class(partial_veteran[[1]])
+#' class(partial_veteran[[2]])
 #' 
 #' # Create gg_partial objects
-#' ggPrtl <- gg_partial(pbc_prtl)
-#' ggPrtl.3 <- gg_partial(pbc_prtl.3)
+#' ggPrtl.1 <- gg_partial(partial_veteran[[1]])
+#' ggPrtl.2 <- gg_partial(partial_veteran[[2]])
 #' 
 #' # Combine the objects to get multiple time curves 
 #' # along variables on a single figure.
-#' pbc_ggpart <- combine(ggPrtl, ggPrtl.3, 
-#'                       lbls = c("1 Year", "3 Years"))
+#' ggpart <- combine.gg_partial(ggPrtl.1, ggPrtl.2, 
+#'                              lbls = c("30 day", "6 month"))
+#'                              
+#' # Plot each figure separately
+#' plot(ggpart)                                  
 #' 
-#' }
-combine <- function(x, y, lbls,...){
-  UseMethod("combine",x)
-}
+#' # Get the continuous data
+#' ggcont <- ggpart
+#' ggcont$celltype <- ggcont$trt <- ggcont$prior <- NULL
+#' plot(ggcont, panel=TRUE) 
+#' 
+#' # And the categorical
+#' ggpart$karno <- ggpart$diagtime <- ggpart$age <- NULL
+#' plot(ggpart, panel=TRUE) 
+#' 
 combine.gg_partial <- function(x, y, lbls, ...){
   return(combine.gg_partial_list(x, y, lbls, ...))
 }
+
 combine.gg_partial_list <- function(x, y, lbls, ...){
   
   if(inherits(x,"plot.variable"))

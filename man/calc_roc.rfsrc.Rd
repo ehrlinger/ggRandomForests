@@ -4,7 +4,7 @@
 \alias{calc_roc}
 \alias{calc_roc.randomForest}
 \alias{calc_roc.rfsrc}
-\title{Internal Reciever Operator Characteristic calculator for randomForest objects}
+\title{Reciever Operator Characteristic calculator}
 \usage{
 calc_roc.rfsrc(object, yvar, which.outcome = "all", oob = TRUE)
 }
@@ -19,10 +19,10 @@ containing predicted response}
 \item{oob}{Use OOB estimates, the normal validation method (TRUE)}
 }
 \description{
-Internal Reciever Operator Characteristic calculator for randomForest objects
+Reciever Operator Characteristic calculator
 }
 \details{
-Given the randomForest or randomForestSRC prediction and the actual
+For a randomForestSRC prediction and the actual
 response value, calculate the specificity (1-False Positive Rate) and sensitivity
 (True Positive Rate) of a predictor.
 
@@ -33,8 +33,8 @@ for use by the end user.
 \dontrun{
 ##
 ## Taken from the gg_roc example
-iris.obj <- rfsrc(Species ~ ., data = iris)
-gg_dta <- calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=TRUE)
 }
 }
 \seealso{

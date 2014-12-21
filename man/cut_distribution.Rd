@@ -22,12 +22,12 @@ The output can be passed directly into the breaks argument of the
 Find the cut points of a vector, evenly distributed along the distribution
 }
 \examples{
-data(Boston_rfsrc)
+data(rfsrc_Boston)
 
 # To create 6 intervals, we want 7 points.
 # cut_distribution will find balanced intervals
-rm_pts <- cut_distribution(Boston_rfsrc$xvar$rm, groups=6)
-rm_grp <- cut(Boston_rfsrc$xvar$rm, breaks=rm_pts)
+rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=6)
+rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
 summary(rm_grp)
 }
 \seealso{

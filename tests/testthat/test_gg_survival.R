@@ -3,19 +3,19 @@ context("gg_survival tests")
 
 test_that("gg_survival classifications",{
   ## IF we want to build the forest every time...
-  #   iris_rf <- rfsrc(Species ~ ., data = iris)
+  #   rfsrc_iris <- rfsrc(Species ~ ., data = iris)
   
   ## Load the cached forest
-  data(iris_rf, package="ggRandomForests")
+  data(rfsrc_iris, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(iris_rf, "rfsrc")
+  expect_is(rfsrc_iris, "rfsrc")
   
   # Test the forest family
-  expect_match(iris_rf$family, "class")
+  expect_match(rfsrc_iris$family, "class")
   
   ## Create the correct gg_error object
-  expect_that(gg_survival(iris_rf), throws_error())
+  expect_that(gg_survival(rfsrc_iris), throws_error())
 })
 
 
@@ -76,14 +76,14 @@ test_that("gg_survival regression",{
   #   airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
   
   ## Load the cached forest
-  data(airq_rf, package="ggRandomForests")
+  data(rfsrc_airq, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(airq_rf, "rfsrc")
+  expect_is(rfsrc_airq, "rfsrc")
   
   # Test the forest family
-  expect_match(airq_rf$family, "regr")
+  expect_match(rfsrc_airq$family, "regr")
   
   ## Create the correct gg_error object
-  expect_that(gg_survival(airq_rf), throws_error())
+  expect_that(gg_survival(rfsrc_airq), throws_error())
 })

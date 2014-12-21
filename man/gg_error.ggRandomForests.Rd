@@ -31,12 +31,12 @@ function.
 ## classification example
 ## ------------------------------------------------------------
 ## You can build a randomForest
-# iris_rf <- rfsrc(Species ~ ., data = iris)
+# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 # ... or load a cached randomForestSRC object
-data(iris_rf, package="ggRandomForests")
+data(rfsrc_iris, package="ggRandomForests")
 
 # Get a data.frame containing error rates
-gg_dta<- gg_error(iris_rf)
+gg_dta<- gg_error(rfsrc_iris)
 
 # Plot the gg_error object
 plot(gg_dta)
@@ -44,12 +44,12 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
-# airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+# rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 # ... or load a cached randomForestSRC object
-data(airq_rf, package="ggRandomForests")
+data(rfsrc_airq, package="ggRandomForests")
 
 # Get a data.frame containing error rates
-gg_dta<- gg_error(airq_rf)
+gg_dta<- gg_error(rfsrc_airq)
 
 # Plot the gg_error object
 plot(gg_dta)
@@ -60,12 +60,12 @@ plot(gg_dta)
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
 # data(veteran, package = "randomForestSRC")
-# veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+# rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 
 # Load a cached randomForestSRC object
-data(veteran_rf, package="ggRandomForests")
+data(rfsrc_veteran, package="ggRandomForests")
 
-gg_dta <- gg_error(veteran_rf)
+gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)
 }
 \references{

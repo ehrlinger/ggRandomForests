@@ -35,21 +35,21 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## You can build a randomForest
-#' # iris_rf <- rfsrc(Species ~ ., data = iris)
+#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' # ... or load a cached randomForestSRC object
-#' data(iris_rf, package="ggRandomForests")
+#' data(rfsrc_iris, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' gg_dta<- gg_error(iris_rf)
+#' gg_dta<- gg_error(rfsrc_iris)
 #' print(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## regression example
 #' ## ------------------------------------------------------------
-#' data(airq_rf, package="ggRandomForests")
+#' data(rfsrc_airq, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' gg_dta<- gg_error(airq_rf)
+#' gg_dta<- gg_error(rfsrc_airq)
 #' print(gg_dta)
 #' 
 print.gg_error <- function(x, ...){

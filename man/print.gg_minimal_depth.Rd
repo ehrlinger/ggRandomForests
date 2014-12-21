@@ -19,26 +19,26 @@ Print a \code{\link{gg_minimal_depth}} object.
 ## classification example
 ## ------------------------------------------------------------
 ## You can build a randomForest
-# iris_rf <- rfsrc(Species ~ ., data = iris)
-# iris_vs <- var.select(iris_rf)
+# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+# varsel_iris <- var.select(rfsrc_iris)
 # ... or load a cached randomForestSRC object
-data(iris_vs, package="ggRandomForests")
+data(varsel_iris, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-gg_dta<- gg_minimal_depth(iris_vs)
+gg_dta<- gg_minimal_depth(varsel_iris)
 print(gg_dta)
 
 ## ------------------------------------------------------------
 ## regression example
 ## ------------------------------------------------------------
 # ... or load a cached randomForestSRC object
-data(airq_vs, package="ggRandomForests")
+data(varsel_airq, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-gg_dta<- gg_minimal_depth(airq_vs)
+gg_dta<- gg_minimal_depth(varsel_airq)
 print(gg_dta)
 
 # To nicely print a rfsrc::var.select output...
-print.gg_minimal_depth(airq_vs)
+print.gg_minimal_depth(varsel_airq)
 }
 

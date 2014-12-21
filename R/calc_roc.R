@@ -15,9 +15,9 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Internal Reciever Operator Characteristic calculator for randomForest objects
-#' 
-#' @details Given the randomForest or randomForestSRC prediction and the actual 
+#' Reciever Operator Characteristic calculator
+#'  
+#' @details For a randomForestSRC prediction and the actual 
 #' response value, calculate the specificity (1-False Positive Rate) and sensitivity 
 #' (True Positive Rate) of a predictor.
 #' 
@@ -40,8 +40,8 @@
 #' \dontrun{
 #' ##
 #' ## Taken from the gg_roc example
-#' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' gg_dta <- calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=1, oob=TRUE)
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=TRUE)
 #' }
 #' 
 calc_roc.rfsrc <- function(object, yvar, which.outcome="all", oob=TRUE){
@@ -103,7 +103,7 @@ calc_roc.randomForest <- function(object, dta, which.outcome=1){
 }
 
 #'
-#' Internal calculator for the Area Under the ROC Curve
+#' Area Under the ROC Curve calculator
 #' 
 #' @details calc_auc uses the trapezoidal rule to calculate the area under
 #' the ROC curve.
@@ -119,13 +119,13 @@ calc_roc.randomForest <- function(object, dta, which.outcome=1){
 #' @seealso \code{\link{calc_roc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
 #' 
 #' @examples
-#' \dontrun{
 #' ##
 #' ## Taken from the gg_roc example
-#' iris.obj <- rfsrc(Species ~ ., data = iris)
-#' roc <- ggRandomForests:::calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=2, oob=TRUE)
-#' ggRandomForests:::calc_auc(roc)
-#' }
+#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' data(rfsrc_iris)
+#' gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
+#' 
+#' ggRandomForests:::calc_auc(gg_dta)
 #' 
 calc_auc <- function(x){
   ## Use the trapeziod rule, basically calc

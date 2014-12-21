@@ -37,18 +37,18 @@
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
-#' # iris_rf <- rfsrc(Species ~ ., data = iris)
-#' data(iris_rf, package="ggRandomForests")
-#' gg_dta<- gg_rfsrc(iris_rf)
+#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' data(rfsrc_iris, package="ggRandomForests")
+#' gg_dta<- gg_rfsrc(rfsrc_iris)
 #' 
 #' plot.gg_rfsrc(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
-#' # airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' data(airq_rf, package="ggRandomForests")
-#' gg_dta<- gg_rfsrc(airq_rf)
+#' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' data(rfsrc_airq, package="ggRandomForests")
+#' gg_dta<- gg_rfsrc(rfsrc_airq)
 #' 
 #' plot.gg_rfsrc(gg_dta)
 #' 
@@ -58,9 +58,9 @@
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' # data(veteran, package = "randomForestSRC")
-#' # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#' data(veteran_rf, package = "ggRandomForests")
-#' gg_dta <- gg_rfsrc(veteran_rf)
+#' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' data(rfsrc_veteran, package = "ggRandomForests")
+#' gg_dta <- gg_rfsrc(rfsrc_veteran)
 #' plot(gg_dta)
 #' plot(gg_dta, level=.68)
 #' 

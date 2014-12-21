@@ -1,7 +1,5 @@
 #' Data structures for stratified partial coplots
-#' 
-#' 
-#' 
+#'
 #' @param object randomForestSRC::rfsrc object
 #' @param xvar list of partial plot variables
 #' @param groups vector of stratification variable.
@@ -17,12 +15,12 @@
 #' 
 #' @examples
 #' \dontrun{
-#' data(pbc_rf, package="ggRandomForests")
+#' data(rfsrc_pbc, package="ggRandomForests")
 #' 
 #' # Create a 3d coplot, survival as a function of bilirubin and prothrombin
-#' prothrombin_grp <- cut(pbc_rf$xvar$prothrombin, breaks=c(8.9,10,11,12,18))
+#' prothrombin_grp <- cut(rfsrc_pbc$xvar$prothrombin, breaks=c(8.9,10,11,12,18))
 #' 
-#' gg_dta <- gg_partial_coplot(pbc_rf, xvar="bili", groups=prothrombin_grp,
+#' gg_dta <- gg_partial_coplot(rfsrc_pbc, xvar="bili", groups=prothrombin_grp,
 #'   surv_type="surv", time=1, show.plots=FALSE)
 #' 
 #' ggpl <- ggplot(gg_dta, 
@@ -35,16 +33,16 @@
 #' ggpl
 #' 
 #' ## Build a list of 25 split points
-#' prothrom <- pbc_rf$xvar %>% filter(!is.na(prothrombin))
+#' prothrom <- rfsrc_pbc$xvar %>% filter(!is.na(prothrombin))
 #' n.x <- length(unique(prothrom$prothrombin))
 #' npts <- 25
 #' prothrombin_pts <- sort(unique(prothrom$prothrombin))[
 #'    unique(as.integer(seq(1, n.x, length = min(npts, n.x))))]
 #'
 #' # Create a 3d coplot, survival as a function of bilirubin and prothrombin
-#' prothrombin_grp <- cut(pbc_rf$xvar$prothrombin, breaks=prothrombin_pts)
+#' prothrombin_grp <- cut(rfsrc_pbc$xvar$prothrombin, breaks=prothrombin_pts)
 #' 
-#' gg_dta <- gg_partial_coplot(pbc_rf, xvar="bili", groups=prothrombin_grp,
+#' gg_dta <- gg_partial_coplot(rfsrc_pbc, xvar="bili", groups=prothrombin_grp,
 #'   surv_type="surv", time=1, show.plots=FALSE)
 #' 
 #' ggpl <- ggplot(gg_dta, 
@@ -105,7 +103,7 @@ gg_partial_coplot.ggRandomForests <- function(object,
   # if not, make sure it has the correct dimension (nrow(rfsrc$xvar))
   
   
-  dta.train$groups <- groups
+  dta.train$group <- groups
   
   # make groups a factor
   
@@ -115,7 +113,7 @@ gg_partial_coplot.ggRandomForests <- function(object,
   
   # Create the subsets for the plot.variable function
   sbst <- mclapply(1:lng, function(ind){
-    st <- which(dta.train$groups==levels(groups)[ind])
+    st <- which(dta.train$group==levels(groups)[ind])
     if(length(st) == 0) NULL
     else st
   })
@@ -158,7 +156,7 @@ gg_partial_coplot.ggRandomForests <- function(object,
   
   ## With the subsets marked for plotting
   for(ind in 1:length(gg_part)){
-    gg_part[[ind]]$groups <- lvl[ind]
+    gg_part[[ind]]$group <- lvl[ind]
   }
   
   ## Collapse the grouped data into a single structure

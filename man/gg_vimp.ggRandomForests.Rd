@@ -24,25 +24,25 @@ a \code{randomForestSRC::rfsrc} object.
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
-# iris_rf <- rfsrc(Species ~ ., data = iris)
-data(iris_rf, package="ggRandomForests")
-gg_dta <- gg_vimp(iris_rf)
+# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+data(rfsrc_iris, package="ggRandomForests")
+gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## regression example
 ## ------------------------------------------------------------
 
-# airq.obj <- rfsrc(Ozone ~ ., airquality)
-data(airq_rf, package="ggRandomForests")
-gg_dta <- gg_vimp(airq_rf)
+# rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
+data(rfsrc_airq, package="ggRandomForests")
+gg_dta <- gg_vimp(rfsrc_airq)
 plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## survival example
 ## ------------------------------------------------------------
-data(veteran_rf, package="ggRandomForests")
-gg_dta <- gg_vimp(veteran_rf)
+data(rfsrc_veteran, package="ggRandomForests")
+gg_dta <- gg_vimp(rfsrc_veteran)
 plot(gg_dta)
 }
 \references{

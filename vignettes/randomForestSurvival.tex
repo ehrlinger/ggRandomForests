@@ -140,7 +140,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Fri Dec 19 20:12:16 2014
+% Sun Dec 21 15:29:15 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -220,7 +220,7 @@ R> plot(gg_dta, error="none") +
 \end{Schunk}
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Fri Dec 19 20:12:17 2014
+% Sun Dec 21 15:29:16 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -244,28 +244,28 @@ Age & 0.0333 & 0.0087 & 3.8400 \\
 
 \begin{Schunk}
 \begin{Sinput}
-R> pbc_rf <- rfsrc(Surv(years, status) ~ ., data = pbc, 
+R> rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., data = pbc, 
 +                 nsplit = 10, 
 +                 na.action = "na.impute")
-R> pbc_rf
+R> rfsrc_pbc
 \end{Sinput}
 \end{Schunk}
 
 \begin{Schunk}
 \begin{Soutput}
-                         Sample size: 418
-                    Number of deaths: 161
+                         Sample size: 312
+                    Number of deaths: 125
                     Was data imputed: yes
                      Number of trees: 1000
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 78.548
+       Average no. of terminal nodes: 59.965
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank *random*
        Number of random split points: 10
-                          Error rate: 16.98%
+                          Error rate: 16%
 \end{Soutput}
 \end{Schunk}
 
@@ -348,7 +348,7 @@ Since VIMP is the absolute difference between prediction errors before and after
 In Figure~\ref{fig:rf-vimp}, we plot VIMP measures for each of the variables used to grow the forest estimates of Figure~\ref{fig:rfsrc-plot}. Variables are shown in VIMP rank order, largest (op\_yr) at the top, to smallest (iv\_lospr) at the bottom. In this case, we would focus attention on the top three variables (op\_yr (surgical date), ld and devno).
 \begin{Schunk}
 \begin{Sinput}
-R> plot.gg_vimp(pbc_rf, lbls = st.labs) + 
+R> plot.gg_vimp(rfsrc_pbc, lbls = st.labs) + 
 +   theme(legend.position = c(.8,.2))+
 +   labs(fill="VIMP > 0")+
 +   scale_fill_brewer(palette="Set1")
@@ -375,8 +375,8 @@ The minimal depth plot of Figure~\ref{fig:mindepth} is similar to the VIMP plot 
 
 \begin{Schunk}
 \begin{Sinput}
-R> pbc_vs <- var.select(pbc_rf)
-R> ggMindepth <- gg_minimal_depth(pbc_vs, lbls = st.labs)
+R> varsel_pbc <- var.select(rfsrc_pbc)
+R> ggMindepth <- gg_minimal_depth(varsel_pbc, lbls = st.labs)
 R> print(ggMindepth)
 \end{Sinput}
 \end{Schunk}
@@ -386,25 +386,25 @@ R> print(ggMindepth)
 -----------------------------------------------------------
 gg_minimal_depth
 model size         : 12 
-depth threshold    : 5.9862 
+depth threshold    : 5.602 
 
-PE :[1] 16.98
+PE :[1] 15.998
 -----------------------------------------------------------
 
 Top variables:
             depth   vimp
-bili        1.459  0.085
-prothrombin 2.456  0.017
-albumin     2.492  0.014
-copper      2.721  0.009
-edema       2.857  0.013
-age         3.143  0.011
-stage       3.322  0.015
-chol        3.404  0.003
-platelet    3.462  0.001
-sgot        3.990  0.004
-alk         4.236  0.000
-trig        4.593 -0.001
+bili        1.640  0.068
+albumin     2.602  0.013
+copper      2.671  0.019
+prothrombin 2.954  0.012
+chol        3.214  0.005
+age         3.355  0.009
+edema       3.565  0.017
+platelet    3.638  0.002
+sgot        3.723  0.008
+alk         4.030  0.001
+stage       4.505  0.009
+trig        4.602 -0.001
 -----------------------------------------------------------
 \end{Soutput}
 \end{Schunk}
@@ -458,9 +458,9 @@ R> ggRFsrc +
 
 \begin{Schunk}
 \begin{Sinput}
-R> xvar <- pbc_vs$topvars[1:6]
+R> xvar <- varsel_pbc$topvars[1:6]
 R> 
-R> ggrf <- gg_variable(pbc_rf, time = c(1, 3), 
+R> ggrf <- gg_variable(rfsrc_pbc, time = c(1, 3), 
 +                     time.labels = c("1 Year", "3 Years"))
 R> 
 R> plot(ggrf, xvar = xvar[1], se=.95, alpha=.3) + 
@@ -532,8 +532,8 @@ Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month su
 \begin{Schunk}
 \begin{Sinput}
 R> # Calculate the 1, 3 and 5 year partial dependence
-R> pbc_prtl_time <- lapply(c(1,3,5), function(tm){
-+   plot.variable(pbc_rf, surv.type = "surv", 
+R> partial_pbc <- lapply(c(1,3,5), function(tm){
++   plot.variable(rfsrc_pbc, surv.type = "surv", 
 +                           time = tm, 
 +                           xvar.names = xvar, partial = TRUE, 
 +                           show.plots = FALSE)
@@ -547,12 +547,12 @@ R> pbc_prtl_time <- lapply(c(1,3,5), function(tm){
 \begin{Schunk}
 \begin{Sinput}
 R> # Convert all partial plots to gg_partial objects
-R> gg_dta <- lapply(pbc_prtl_time, gg_partial)
+R> gg_dta <- lapply(partial_pbc, gg_partial)
 R> 
 R> # Combine the objects to get multiple time curves 
 R> # along variables on a single figure.
-R> pbc_ggpart <- combine(gg_dta[[1]],gg_dta[[2]], 
-+                       lbls = c("1 Year", "3 Years"))
+R> pbc_ggpart <- combine.gg_partial(gg_dta[[1]],gg_dta[[2]], 
++                                  lbls = c("1 Year", "3 Years"))
 R> 
 R> plot(pbc_ggpart[["bili"]], se = FALSE) + 
 +   theme(legend.position = c(.8, .5)) + 
@@ -577,7 +577,7 @@ Non-proportional hazards are evident in Figure~\ref{fig:pbc-partial-bili}.
 \begin{Sinput}
 R> # Create a temporary holder and remove the bilirubin and edema data
 R> ggpart <- pbc_ggpart
-R> ggpart$bili <- ggpart$edema <- NULL
+R> #ggpart$bili <- ggpart$edema <- NULL
 R> 
 R> # Panel plot the remainder.
 R> plot(ggpart, se = FALSE, panel = TRUE) + 
@@ -602,14 +602,6 @@ R> plot(pbc_ggpart$edema, notch=TRUE, alpha=.3, outlier.shape = NA) +
 +   facet_grid(~group)+
 +   theme(legend.position="none")
 \end{Sinput}
-\begin{figure}[!htpb]
-
-{\centering \includegraphics[width=\maxwidth]{figure/rfs-pbc-partial-edema-1} 
-
-}
-
-\caption[Partial dependence plot of (risk adjusted) predicted survival probability as a function of edema (categorical variable) at 1 year (red circle) and 3 years (blue triangle)]{Partial dependence plot of (risk adjusted) predicted survival probability as a function of edema (categorical variable) at 1 year (red circle) and 3 years (blue triangle). Points indicate risk adjusted prediction for all patients within each edema group. Box plots indicate distributional properties within each group.\label{fig:pbc-partial-edema}}
-\end{figure}
 \end{Schunk}
 
 \section{Variable Interactions}\label{S:interactions}
@@ -617,9 +609,9 @@ Using the different variable dependence measures, we can calculate pairwise inte
 
 \begin{Schunk}
 \begin{Sinput}
-R> pbc_interaction <- find.interaction(pbc_rf)
+R> interaction_pbc <- find.interaction(rfsrc_pbc)
 R> 
-R> ggint <- gg_interaction(pbc_interaction)
+R> ggint <- gg_interaction(interaction_pbc)
 R> plot(ggint, xvar = "bili") + 
 +   labs(y = "Interactive Minimal Depth")
 \end{Sinput}
@@ -639,7 +631,7 @@ R> plot(ggint, xvar = "bili") +
 Measuring interactions with minimal depth results a $p \times p$ matrix of interaction measures, with smaller diagonal measures relative to the root node, and off diagonal measures of pairwise interaction. We expect the covariate with smallest minimal depth to have the highest interactive depth measures, so viewed alone may not be as informative as looking at other interactive depth plots. Figure~\ref{fig:interactionPanel} combines the remaining top ranked minimal depth measures for comparison.
 \begin{Schunk}
 \begin{Sinput}
-R> plot(gg_interaction(pbc_interaction), xvar = xvar[2:5]) + 
+R> plot(gg_interaction(interaction_pbc), xvar = xvar[2:5]) + 
 +   labs(y = "Interactive Minimal Depth") + 
 +   theme(legend.position = "none")
 \end{Sinput}
@@ -660,7 +652,7 @@ By plotting the resulting interaction measures for each variable (Figure~\ref{fi
 Interactions with categorical data are more straight forward, and can be generated directly from variable dependence plots. Recall the 1 year variable dependence for Billirubin, shown in Figure~\ref{fig:var_dep}. 
 \begin{Schunk}
 \begin{Sinput}
-R> ggvar <- gg_variable(pbc_rf, time = 1)
+R> ggvar <- gg_variable(rfsrc_pbc, time = 1)
 R> ggvar$stage <- paste("stage=", ggvar$stage, sep="")
 R> 
 R> var_dep <- plot(ggvar, xvar = "bili", smooth = TRUE, 
@@ -704,8 +696,8 @@ Interactions with continuous variables requires stratification at some level.
 \subsection{Albumin}
 \begin{Schunk}
 \begin{Sinput}
-R> # albumin_grp <- cut(pbc_rf$xvar$albumin, breaks=c(0,seq(3,3.5,.5),5))
-R> albumin_grp <- cut(pbc_rf$xvar$albumin, breaks=6)
+R> # albumin_grp <- cut(rfsrc_pbc$xvar$albumin, breaks=c(0,seq(3,3.5,.5),5))
+R> albumin_grp <- cut(rfsrc_pbc$xvar$albumin, breaks=6)
 R> ggvar$albumin_grp <- paste("albumin=",albumin_grp, sep="")
 R> 
 R> var_dep <- plot(ggvar, xvar = "bili", smooth = TRUE, 

@@ -3,26 +3,26 @@ context("gg_vimp tests")
 
 test_that("gg_vimp classifications",{
   ## IF we want to build the forest every time...
-  #   iris_rf <- rfsrc(Species ~ ., data = iris)
-  # iris_rf <- var.select(iris_rf)
+  #   rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+  # rfsrc_iris <- var.select(rfsrc_iris)
   
   ## Load the cached forest
-  data(iris_rf, package="ggRandomForests")
+  data(rfsrc_iris, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(iris_rf, "rfsrc")
+  expect_is(rfsrc_iris, "rfsrc")
   
   # Test the forest family
-  expect_that(iris_rf$family, equals("class"))
+  expect_that(rfsrc_iris$family, equals("class"))
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_vimp(iris_rf)
+  ggrf.obj<- gg_vimp(rfsrc_iris)
   
   # Test object type
   expect_is(ggrf.obj, "gg_vimp")
   
   # Test varselect is the same
- #expect_equivalent(select(ggrf.obj$varselect, -names), iris_rf$importance)
+ #expect_equivalent(select(ggrf.obj$varselect, -names), rfsrc_iris$importance)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_vimp(ggrf.obj)
@@ -36,22 +36,22 @@ test_that("gg_vimp survival",{
   
   ## IF we want to build the forest every time...
   #   data(veteran, package = "randomForestSRC")
-  #   veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-  #   veteran_rf <- var.select(veteran_rf)
+  #   rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+  #   rfsrc_veteran <- var.select(rfsrc_veteran)
   ## Load the cached forest
-  data(veteran_rf, package="ggRandomForests")
+  data(rfsrc_veteran, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(veteran_rf, "rfsrc")
+  expect_is(rfsrc_veteran, "rfsrc")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_vimp(veteran_rf)
+  ggrf.obj<- gg_vimp(rfsrc_veteran)
   
   # Test object type
   expect_is(ggrf.obj, "gg_vimp")
   
   # Test varselect is the same
-  expect_equal(ggrf.obj$vimp, as.vector(sort(veteran_rf$importance, decreasing=TRUE)))
+  expect_equal(ggrf.obj$vimp, as.vector(sort(rfsrc_veteran$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_vimp(ggrf.obj)
@@ -65,21 +65,21 @@ test_that("gg_vimp regression",{
   ## IF we want to build the forest every time...
   #   ## New York air quality measurements
   #   airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  #   airq_rf <- var.select(airq_rf)
+  #   rfsrc_airq <- var.select(rfsrc_airq)
   ## Load the cached forest
-  data(airq_rf, package="ggRandomForests")
+  data(rfsrc_airq, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(airq_rf, "rfsrc")
+  expect_is(rfsrc_airq, "rfsrc")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_vimp(airq_rf)
+  ggrf.obj<- gg_vimp(rfsrc_airq)
   
   # Test object type
   expect_is(ggrf.obj, "gg_vimp")
   
   # Test varselect is the same
-  expect_equal(ggrf.obj$vimp, as.vector(sort(airq_rf$importance, decreasing=TRUE)))
+  expect_equal(ggrf.obj$vimp, as.vector(sort(rfsrc_airq$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_vimp(ggrf.obj)

@@ -22,23 +22,23 @@ Print a \code{\link{gg_interaction}} object.
 ## classification example
 ## ------------------------------------------------------------
 ## You can build a randomForest
-# iris_rf <- rfsrc(Species ~ ., data = iris)
-# iris_interaction <- find.interaction(iris_rf)
+# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+# interaction_iris <- find.interaction(rfsrc_iris)
 #
 # ... or load a cached randomForestSRC object
-data(iris_interaction, package="ggRandomForests")
+data(interaction_iris, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-gg_dta<- gg_interaction(iris_interaction)
+gg_dta<- gg_interaction(interaction_iris)
 print(gg_dta)
 
 ## ------------------------------------------------------------
 ## regression example
 ## ------------------------------------------------------------
-data(airq_interaction, package="ggRandomForests")
+data(interaction_airq, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-gg_dta<- gg_interaction(airq_interaction)
+gg_dta<- gg_interaction(interaction_airq)
 print(gg_dta)
 }
 \seealso{

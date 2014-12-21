@@ -4,26 +4,26 @@ context("gg_error tests")
 test_that("gg_error classifications",{
   
   ## Load the cached forest
-  data(iris_rf, package="ggRandomForests")
+  data(rfsrc_iris, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(iris_rf, "rfsrc")
+  expect_is(rfsrc_iris, "rfsrc")
   
   # Test the forest family
-  expect_match(iris_rf$family, "class")
+  expect_match(rfsrc_iris$family, "class")
   
   ## Create the correct gg_error object
-  ggrf.obj <- gg_error(iris_rf)
+  ggrf.obj <- gg_error(rfsrc_iris)
   
   # Test object type
   expect_is(ggrf.obj, "gg_error")
   
   # Test classification dimensions
-  expect_equal(dim(ggrf.obj)[1], dim(iris_rf$err.rate)[1])
-  expect_equal(dim(ggrf.obj)[2], dim(iris_rf$err.rate)[2]+1)
+  expect_equal(dim(ggrf.obj)[1], dim(rfsrc_iris$err.rate)[1])
+  expect_equal(dim(ggrf.obj)[2], dim(rfsrc_iris$err.rate)[2]+1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(select(ggrf.obj, -ntree)), iris_rf$err.rate)
+  expect_equivalent(as.matrix(select(ggrf.obj, -ntree)), rfsrc_iris$err.rate)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_error(ggrf.obj)
@@ -41,27 +41,27 @@ test_that("gg_error survival",{
   #   v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
   
   ## Load the cached forest
-  data(veteran_rf, package="ggRandomForests")
+  data(rfsrc_veteran, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(veteran_rf, "rfsrc")
+  expect_is(rfsrc_veteran, "rfsrc")
   
   # Test the forest family
-  expect_match(veteran_rf$family, "surv")
+  expect_match(rfsrc_veteran$family, "surv")
   
   ## Create the correct gg_error object
-  ggrf.obj <- gg_error(veteran_rf)
+  ggrf.obj <- gg_error(rfsrc_veteran)
   
   # Test object type
   expect_is(ggrf.obj, "gg_error")
   
   # Test classification dimensions
-  expect_equal(dim(ggrf.obj)[1], length(veteran_rf$err.rate))
+  expect_equal(dim(ggrf.obj)[1], length(rfsrc_veteran$err.rate))
   expect_equal(dim(ggrf.obj)[2], 2)
   
   # Test data is correctly pulled from randomForest obect.
   tmp <- c(ggrf.obj[,1])
-  expect_equivalent(tmp, veteran_rf$err.rate)
+  expect_equivalent(tmp, rfsrc_veteran$err.rate)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_error(ggrf.obj)
@@ -79,26 +79,26 @@ test_that("gg_error regression",{
   #   ggrf.obj<- gg_error(airq.obj)
   
   ## Load the cached forest
-  data(airq_rf, package="ggRandomForests")
+  data(rfsrc_airq, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(airq_rf, "rfsrc")
+  expect_is(rfsrc_airq, "rfsrc")
   
   # Test the forest family
-  expect_match(airq_rf$family, "regr")
+  expect_match(rfsrc_airq$family, "regr")
   
   ## Create the correct gg_error object
-  ggrf.obj <- gg_error(airq_rf)
+  ggrf.obj <- gg_error(rfsrc_airq)
   
   # Test object type
   expect_is(ggrf.obj, "gg_error")
   
   # Test classification dimensions
-  expect_equal(dim(ggrf.obj)[1], length(airq_rf$err.rate))
+  expect_equal(dim(ggrf.obj)[1], length(rfsrc_airq$err.rate))
   expect_equal(dim(ggrf.obj)[2], 2)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(c(ggrf.obj[,1]), airq_rf$err.rate)
+  expect_equivalent(c(ggrf.obj[,1]), rfsrc_airq$err.rate)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_error(ggrf.obj)

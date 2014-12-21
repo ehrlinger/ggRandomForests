@@ -50,12 +50,12 @@
 #' 
 #' ## iris "Petal.Width" partial dependence plot
 #' ##
-#' # iris_rf <- rfsrc(Species ~., data = iris)
-#' # iris_prtl <- plot.variable(iris_rf, xvar.names = "Petal.Width",
+#' # rfsrc_iris <- rfsrc(Species ~., data = iris)
+#' # partial_iris <- plot.variable(rfsrc_iris, xvar.names = "Petal.Width",
 #' #                            partial=TRUE)
-#' data(iris_prtl, package="ggRandomForests")
+#' data(partial_iris, package="ggRandomForests")
 #' 
-#' gg_dta <- gg_partial(iris_prtl)
+#' gg_dta <- gg_partial(partial_iris)
 #' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
@@ -64,12 +64,12 @@
 #' 
 #' ## airquality "Wind" partial dependence plot
 #' ##
-#' # airq_rf <- rfsrc(Ozone ~ ., data = airquality)
-#' # airq_prtl <- plot.variable(airq_rf, xvar.names = "Wind",
+#' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
+#' # partial_airq <- plot.variable(rfsrc_airq, xvar.names = "Wind",
 #' #                            partial=TRUE, show.plot=FALSE)
-#' data(airq_prtl, package="ggRandomForests")
+#' data(partial_airq, package="ggRandomForests")
 #'
-#' gg_dta <- gg_partial(airq_prtl)
+#' gg_dta <- gg_partial(partial_airq)
 #' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
@@ -78,16 +78,16 @@
 #' ## survival "age" partial variable dependence plot
 #' ##
 #' # data(veteran, package = "randomForestSRC")
-#' # veteran_rf <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
+#' # rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
 #' #
 #' ## 30 day partial plot for age
-#' # veteran_prtl <- plot.variable(veteran_rf, surv.type = "surv", 
+#' # partial_veteran <- plot.variable(rfsrc_veteran, surv.type = "surv", 
 #' #                               partial = TRUE, time=30, 
 #' #                               xvar.names = "age", 
 #' #                               show.plots=FALSE)
-#' data(veteran_prtl, package="ggRandomForests")
+#' data(partial_veteran, package="ggRandomForests")
 #' 
-#' gg_dta <- gg_partial(veteran_prtl)
+#' gg_dta <- gg_partial(partial_veteran[[1]])
 #' plot(gg_dta)
 gg_partial.ggRandomForests <- function(object, 
                                        named,

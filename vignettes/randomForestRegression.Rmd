@@ -1,7 +1,7 @@
 ---
 title: 'ggRandomForests: Random Forest for Regression'
-author: "John Ehrlinger"
-date: "`r Sys.Date()`"
+author: "John Ehrlinger<br/>Assistant Staff<br/>Quantitative Health Sciences<br/>Lerner Research Institute<br/>Cleveland Clinic"
+date: "`r today <- Sys.Date();format(today, format='%B %d %Y')`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
@@ -12,10 +12,10 @@ bibliography: ggRandomForests.bib
 
 # About this document
 
-This a vignette for the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) package, Visually Exploring Random Forests: Data and Plotting for Random Forest Models.
+This a vignette for the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) package, Visually Exploring Random Forests.
 
-[ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) is designed to help uncover variable associations in the random forests models. The package is designed for use with the [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) package for survival, regression and classification forests and [ggplot2](http://CRAN.R-project.org/package=ggplot2) package for plotting results. ggRandomForests is structured to extract intermediate data objects from the random forest object. A set of S3 functions are provided for printing and plotting each of the the ggRandomForests data objects.
-
+[ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) will help uncover variable associations in the random forests models. The package is designed for use with the [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) package for survival, regression and classification forests and uses the [ggplot2](http://CRAN.R-project.org/package=ggplot2) package for plotting results. `ggRandomForests` is  structured to extract data objects from the random forest object and provides S3 functions for printing and plotting these objects.
+ 
 This vignette is written in [markdown](http://daringfireball.net/projects/markdown/), a wiki type language for creating documents. It is support in R using the [rmarkdown](http://rmarkdown.rstudio.com) package, which is especially easy to use within the [RStudio](http://rstudio.com) IDE. A markdown/rmarkdown cheat sheet is available online at (http://rmarkdown.rstudio.com/RMarkdownCheatSheet.pdf). 
 
 This vignette is available within the [ggRandomForests](http://cran.r-project.org/web/packages/ggRandomForests/index.html) on [CRAN](http://cran.r-project.org). The latest development version of ggRandomForests is available on the package [Github](https://github.com) repository at (https://github.com/ehrlinger/ggRandomForests).
@@ -52,6 +52,7 @@ library(randomForestSRC)
 library(RColorBrewer)
 
 library(xtable)
+library(plot3D)
 
 options(mc.cores = 1, rf.cores = 1)
 
@@ -150,9 +151,9 @@ Random Forests sort each training set observation into one unique terminal node 
 We grow the random forest using the rfsrc command. For this example we will use the default set of $B=1000$ trees (`ntree` argument), $m=5$ candidate variables (`mtry`) for each split with a stopping criteria of at most 5 observations within each terminal node. Because growing random forests are computationally expensive, and this vignette is targetted at the visualization of the forest, we will use a cached copy of the `randomForestSRC::rfsrc` objects, which we include as a data sets in the `ggRandomForests` package. The actual `rfsrc` calls are included in comments within code blocks. 
 
 ```{r randomforest}
-# Boston_rfsrc <- rfsrc(medv~., data=Boston)
-data(Boston_rfsrc)
-Boston_rfsrc
+# rfsrc_Boston <- rfsrc(medv~., data=Boston)
+data(rfsrc_Boston)
+rfsrc_Boston
 ```
 
 The randomForestSRC::print.rfsrc command details the forest parameters used for the call, and retun the generalization error estimate of the forest.
@@ -162,7 +163,7 @@ One advantage of Random Forests is a built in generalization error estimate. Eac
 The `gg_error` function operates on the randomForestSRC::rfsrc object to pull out the error estimates as the forest is grown. This demonstrates the design philosophy of the ggRandomForests package, to first create a data object and provide S3 functions to operate on the data. The following code block first creates a `gg_error` object, then uses the `plot.gg_error` function to createa ggplot object, which is shown directly into the document.
 
 ```{r error, fig.cap="Random forest generalization error. OOB error convergence along the number of trees in the forest."}
-gg_e <- gg_error(Boston_rfsrc)
+gg_e <- gg_error(rfsrc_Boston)
 plot(gg_e)
 ```
 
@@ -171,7 +172,7 @@ This figure shows that it does not take a large number of trees to stabilize the
 The `gg_rfsrc` function pulls out random forest the OOB prediction estimates. This call does the data extraction and plotting in one line, since we are not interested in holding the prediction estimates for later reuse. Also note that we can add in additional ggplot2 commands to modify the plot object. The S3 plot commands all return ggplot objects, which we can save for modification or resuse later in the analysis. 
 
 ```{r rfsrc, fig.cap="Random Forest OOB predicted median home values."}
-plot(gg_rfsrc(Boston_rfsrc), alpha=.5)+
+plot(gg_rfsrc(rfsrc_Boston), alpha=.5)+
   coord_cartesian(ylim=c(5,49))
 ```
 
@@ -190,7 +191,7 @@ Since VIMP is the absolute difference between OOB prediction error before and af
 The `gg_vimp` function is used to VIMP measures for each of the variables used to grow the forest. Variables are shown in VIMP rank order, largest (Lower Status) at the top, to smallest (Charles River) at the bottom. In this case, the top two variables (Lower Status and number of rooms) display the largest VIMP, with a sizable difference to the remaining variables all showing similar VIMP measure. This indicates we should focus attention on these two variables over the others.
 
 ```{r vimp, fig.cap="Random forest VIMP plot.", fig.width=7, fig.height=5}
-plot(gg_vimp(Boston_rfsrc), lbls=st.labs)
+plot(gg_vimp(rfsrc_Boston), lbls=st.labs)
 ```
 
 ## Minimal Depth.
@@ -206,16 +207,16 @@ The `gg_minimal_depth` function is similar to the `gg_vimp` function. Variables 
 The randomForestSRC::var.select call is again a computationally expensive function, as it has to traverse the forest finding the maximal subtree within each tree for each variable. We again use the cacheing strategy to save computational time for this document. The var.select call is again included in the comment of this code block.
 
 ```{r minimaldepth, fig.cap="Minimal Depth variables in rank order, most important at the top. Vertical dashed line indicates the maximal minimal depth for important variables.", fig.width=7, fig.height=5}
-# Boston_var <- var.select(Boston_rfsrc)
+# varsel_Boston <- var.select(rfsrc_Boston)
 
-data(Boston_var)
-plot(gg_minimal_depth(Boston_var), lbls=st.labs)
+data(varsel_Boston)
+plot(gg_minimal_depth(varsel_Boston), lbls=st.labs)
 ```
 
 The  minimal depth plot indicates ten variables which have a higher impact than the remaining three. In general, the selection of variables according to VIMP is to rather arbitrarily examine the values, looking for some point along the ranking where there is a large difference in VIMP. The minimal depth threshold method has more of a quantitative approach, using the median value of minimal depth measures to determine the selection threshold.
 
 ```{r minimalvimp, fig.cap="Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points below have higher VIMP, those above have higher minimal depth ranking. Variables are colored by the sign of the VIMP measure"}
-plot(gg_minimal_vimp(Boston_var))
+plot(gg_minimal_vimp(varsel_Boston))
 ```
 
 Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be slightly different. We use `gg_minimal_vimp` function to compare rankings between minimal depth and VIMP. The points along the red dashed line indicate the measures are in agreement. Points above the line are ranked higher by VIMP than minimal depth, indicating the variables are more sensitive to mispecification. Those below the line have a higher minimal depth ranking, indicating they are better at dividing the population. The further the points are from the line, the more the discrepency. The figure is skewed towards a minimal depth approach, by ranking variables along the y-axis, though points are colored by the sign of VIMP.
@@ -231,7 +232,7 @@ Variable dependence plots show the predicted response as a function of a covaria
 We panel the collection of all continuous variable dependence plots together. Here we separate the data generation of the `gg_variable` function call, storing the data object for later use. The `plot.gg_variable` function call demonstrates the use of the ellipse operator (`...`) for passing ggplot commands to the internal plotting routines. The `se` and `span` arguments are used to modify the internal call to `ggplot2::geom_smooth`. The `alpha` argument lightens the coloring points in the `ggplot2::geom_point` call, making it easier to see point over plotting. We also demonstrate modifying the plot labels using the `ggplot2::labs` function. Since ggRandomForests plot functions return the ggplot2 object, users can modify the figures as a standard ggplot object.
 
 ```{r variable, fig.cap="Variable dependence plot. Individual case predictions are marked with points. Loess smooth curve indicates the trend as the variables increase with shaded 95% confidence band.", fig.width=7, fig.height=5}
-gg_v <- gg_variable(Boston_rfsrc)
+gg_v <- gg_variable(rfsrc_Boston)
 
 # We want to plot continuous variables only, so we 
 # remove the charles river variable name.
@@ -261,10 +262,10 @@ $$ \tilde{f}(x) = \frac{1}{n} \sum_{i = 1}^n \hat{f}(x, x_{i, o}), $$
 where $\hat{f}$ is the predicted response from the random forest and $x_{i, o}$ is the value for all other covariates other than $X = x$ for the observation $i$ [@Friedman:2000]. Partial dependence plots in time to event settings are shown at specific time points, similar to variable dependence.
 
 ```{r partial, fig.cap="Partial dependence panels.", fig.width=7, fig.height=5}
-# Boston_partial <- plot.variable(Boston_rfsrc,partial=TRUE, show.plots = FALSE )
-data(Boston_partial)
+# partial_Boston <- plot.variable(rfsrc_Boston,partial=TRUE, show.plots = FALSE )
+data(partial_Boston)
 
-gg_p <- gg_partial(Boston_partial , xvar=xvar)
+gg_p <- gg_partial(partial_Boston , xvar=xvar)
 ggpart <- gg_p
 ggpart$chas <- NULL
 plot(ggpart, xvar=xvar,panel=TRUE, se=FALSE)+
@@ -284,10 +285,10 @@ Using the different variable dependence measures, we can calculate pairwise inte
 Measuring interactions with minimal depth results a $p \times p$ matrix of interaction measures, with smaller diagonal measures relative to the root node, and off diagonal measures of pairwise interaction. We expect the covariate with smallest minimal depth to have the highest interactive depth measures, so viewed alone may not be as informative as looking at other interactive depth plots.
 
 ```{r interactions, fig.cap="Minimal depth variable interactions. Reference variables are marked with red cross in each panel. Higher values indicate lower interactivity with reference variable.", fig.width=7, fig.height=5}
-# Boston_int <- find.interactions(Boston_rfsrcsrc)
-data(Boston_int)
+# interaction_Boston <- find.interactions(rfsrc_Bostonsrc)
+data(interaction_Boston)
 
-plot(gg_interaction(Boston_int), xvar=Boston_var$topvars[1:6], panel=TRUE)+
+plot(gg_interaction(interaction_Boston), xvar=varsel_Boston$topvars[1:6], panel=TRUE)+
   theme(legend.position="none")
 ```
 
@@ -298,8 +299,8 @@ By plotting the resulting interaction measures for each variable, we can detect 
 Interactions with continuous variables requires stratification at some level. To view the interaction of Rooms with Lower Status, we slice the room variable into 6 peices.
 
 ```{r coplots, fig.cap="Variable Coplots. Predicted median value as a function of Lower Status, stratified by average number of rooms.", fig.width=7, fig.height=5}
-rm_pts <- cut_distribution(Boston_rfsrc$xvar$rm, groups=6)
-rm_grp <- cut(Boston_rfsrc$xvar$rm, breaks=rm_pts)
+rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=6)
+rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
 gg_v$rm_grp <- paste("rm=",rm_grp, sep="")
 
 var_dep <- plot(gg_v, xvar = "lstat", smooth = TRUE, 
@@ -312,24 +313,92 @@ var_dep <- plot(gg_v, xvar = "lstat", smooth = TRUE,
 
 var_dep
 ```
+```{r coplots2, fig.cap="Variable Coplots. Predicted median value as a function of average number of rooms, stratified by Lower Status.", fig.width=7, fig.height=5}
+lstat_pts <- cut_distribution(rfsrc_Boston$xvar$lstat, groups=6)
+lstat_grp <- cut(rfsrc_Boston$xvar$lstat, breaks=lstat_pts)
 
+gg_v$lstat_grp <- paste("rm=",rm_grp, sep="")
+
+var_dep <- plot(gg_v, xvar = "rm", smooth = TRUE, 
+                method = "loess", span=1.5, alpha = .5, se = FALSE) + 
+  labs(y = "Median Value") + 
+  theme(legend.position = "none") + 
+  scale_color_brewer(palette = "Set3") + 
+  #scale_shape_manual(values = event.marks, labels = event.labels)+ 
+  facet_wrap(~lstat_grp)
+
+var_dep
+```
+
+## Partial dependence coplots 
+
+To generate a partial coplot for the `lstat`/`rm` variable interaction, analogous to the coplot above, we need to calculate risk adjusted estimates within each `rm` group. The `gg_partial_coplot` function is a wrapper for generating a list of `randomForestSRC::plot.variable` objects. The function generates a partial plot from the `randomForestSRC::rfsrc` object, in the `xvar` variable, using subsets of the training data set, defined by the `groups` argument. 
 ```{r prtl-copl, eval=FALSE}
-Boston_prtl_coplot <- gg_partial_coplot(Boston_rfsrc, xvar="lstat", 
+partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
                                         groups=rm_grp,
                                         show.plots=FALSE)
 ```
 
+The `gg_partial_coplot` function is computationally expensive as it needs to make a call to `randomForestSRC::plot.variable` for each group in the set. Therefore, we again use a cached copy of the data in the following code block, stored in the `Boston_prtl_coplot` data set within `ggRandomForests`.
 
 ```{r prtl-coplots, fig.cap="Partial Coplots. Risk adjusted predicted median value as a function of Lower Status, within groups of average number of rooms.", fig.width=7, fig.height=5}
-data(Boston_prtl_coplot)
-ggpl <- ggplot(Boston_prtl_coplot, aes(x=lstat, y=yhat, 
-                                       shape=groups, 
-                                       color=groups))+
-  geom_point()+geom_smooth(se=FALSE)+
+data(partial_coplots_Boston)
+ggpl <- plot(partial_coplots_Boston, se=FALSE)+
   labs(x=st.labs["lstat"], y="Median Value", 
-       color="rm", shape="rm")+
+       color="Room", shape="Room")+
   scale_color_brewer(palette="Set1")
 ggpl
+```
+
+```{r prtl-copl2, eval=FALSE}
+partial_coplots_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm", 
+                                            groups=lstat_grp,
+                                        show.plots=FALSE)
+```
+
+```{r prtl-coplots2, fig.cap="Partial Coplots. Risk adjusted predicted median value as a function of Rooms, within groups of Lower Status.", fig.width=7, fig.height=5}
+data(partial_coplots_Boston2)
+ggpl <- plot(partial_coplots_Boston2, se=FALSE)+
+  labs(x=st.labs["rm"], y="Median Value", 
+       color="Lower Status", shape="Lower Status")+
+  scale_color_brewer(palette="Set1")
+ggpl
+```
+
+## A surface?
+```{r prtl-surface, eval=FALSE}
+rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=50)
+rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+
+system.time(Boston_lstat_rm <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
+                                                 groups=rm_grp, npts=50,
+                                                 show.plots=FALSE))
+
+# user  system elapsed 
+# 848.266  79.705 934.584 
+```
+
+```{r surf3d, fig.cap="Partial coplot surface.", eval=FALSE}
+data(Boston_lstat_rm)
+
+# Get the estimates.
+yhat.tmp <- lapply(unique(Boston_lstat_rm$group), 
+                   function(grp){Boston_lstat_rm[which(Boston_lstat_rm$group==grp),"yhat"]})
+
+# The lstat points, repeated columns
+lstat.tmp <- lapply(unique(Boston_lstat_rm$group), 
+                    function(grp){Boston_lstat_rm[which(Boston_lstat_rm$group==grp),"lstat"]})
+
+# The rm points, repeated rows
+rm.tmp <- lapply(unique(Boston_lstat_rm$group), 
+                 function(grp){rm_pts[-1]})
+
+yhat.tmp <- do.call(cbind,yhat.tmp)
+lstat.tmp <- do.call(cbind,lstat.tmp)
+rm.tmp <- do.call(cbind,rm.tmp)
+
+#surf3D(x=lstat.tmp, y=rm.tmp, z=yhat.tmp)
+
 ```
 
 # Conclusion

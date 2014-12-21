@@ -44,10 +44,10 @@ or the output from the \code{randomForestSRC::plot.variable} function.
 ## ------------------------------------------------------------
 
 ## iris
-#iris.obj <- rfsrc(Species ~., data = iris)
-data(iris_rf, package="ggRandomForests")
+#rfsrc_iris <- rfsrc(Species ~., data = iris)
+data(rfsrc_iris, package="ggRandomForests")
 
-gg_dta <- gg_variable(iris_rf)
+gg_dta <- gg_variable(rfsrc_iris)
 plot(gg_dta, xvar="Sepal.Width")
 plot(gg_dta, xvar="Sepal.Length")
 
@@ -56,17 +56,17 @@ plot(gg_dta, xvar="Sepal.Length")
 ## ------------------------------------------------------------
 
 ## airquality
-#airq.obj <- rfsrc(Ozone ~ ., data = airquality)
-data(airq_rf, package="ggRandomForests")
-gg_dta <- gg_variable(airq_rf)
+#rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
+data(rfsrc_airq, package="ggRandomForests")
+gg_dta <- gg_variable(rfsrc_airq)
 plot(gg_dta, xvar="Wind")
 plot(gg_dta, xvar="Temp")
 plot(gg_dta, xvar="Solar.R")
 
 ## motor trend cars
-#mtcars.obj <- rfsrc(mpg ~ ., data = mtcars)
-data(mtcars_rf, package="ggRandomForests")
-gg_dta <- gg_variable(mtcars_rf)
+#rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+data(rfsrc_mtcars, package="ggRandomForests")
+gg_dta <- gg_variable(rfsrc_mtcars)
 
 # mtcars$cyl is an ordinal variable
 gg_dta$cyl <- factor(gg_dta$cyl)
@@ -86,11 +86,11 @@ plot(gg_dta, xvar=c("disp","hp"), panel=TRUE)
 
 ## survival
 # data(veteran, package = "randomForestSRC")
-# veteran_rf <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
-data(veteran_rf, package="ggRandomForests")
+# rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
+data(rfsrc_veteran, package="ggRandomForests")
 
 # get the 1 year survival time.
-gg_dta <- gg_variable(veteran_rf, time=90)
+gg_dta <- gg_variable(rfsrc_veteran, time=90)
 
 # Generate variable dependance plots for age and diagtime
 plot(gg_dta, xvar = "age")
@@ -101,7 +101,7 @@ plot(gg_dta, xvar = c("age", "diagtime"), panel=TRUE)
 
 # If we want to compare survival at different time points, say 30, 90 day
 # and 1 year
-gg_dta <- gg_variable(veteran_rf, time=c(30, 90, 365))
+gg_dta <- gg_variable(rfsrc_veteran, time=c(30, 90, 365))
 
 # Generate variable dependance plots for age and diagtime
 plot(gg_dta, xvar = "age")

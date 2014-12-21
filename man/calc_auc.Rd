@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_roc.R
 \name{calc_auc}
 \alias{calc_auc}
-\title{Internal calculator for the Area Under the ROC Curve}
+\title{Area Under the ROC Curve calculator}
 \usage{
 calc_auc(x)
 }
@@ -13,7 +13,7 @@ calc_auc(x)
 AUC. 50\% is random guessing, higher is better.
 }
 \description{
-Internal calculator for the Area Under the ROC Curve
+Area Under the ROC Curve calculator
 }
 \details{
 calc_auc uses the trapezoidal rule to calculate the area under
@@ -23,13 +23,13 @@ the ROC curve.
 for use by the end user.
 }
 \examples{
-\dontrun{
 ##
 ## Taken from the gg_roc example
-iris.obj <- rfsrc(Species ~ ., data = iris)
-roc <- ggRandomForests:::calc_roc.rfsrc(iris.obj, iris.obj$yvar, which.outcome=2, oob=TRUE)
-ggRandomForests:::calc_auc(roc)
-}
+# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+data(rfsrc_iris)
+gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
+
+ggRandomForests:::calc_auc(gg_dta)
 }
 \seealso{
 \code{\link{calc_roc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}

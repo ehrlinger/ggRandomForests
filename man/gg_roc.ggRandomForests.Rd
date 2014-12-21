@@ -24,24 +24,24 @@ The sensitivity and specificity of a randomForests classification object.
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
-#iris_rf <- rfsrc(Species ~ ., data = iris)
-data(iris_rf, package="ggRandomForests")
+#rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+data(rfsrc_iris, package="ggRandomForests")
 
 # ROC for setosa
-gg_dta <- gg_roc(iris_rf, which.outcome=1)
+gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
 plot.gg_roc(gg_dta)
 
 # ROC for versicolor
-gg_dta <- gg_roc(iris_rf, which.outcome=2)
+gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
 plot.gg_roc(gg_dta)
 
 # ROC for virginica
-gg_dta <- gg_roc(iris_rf, which.outcome=3)
+gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
 plot.gg_roc(gg_dta)
 
 # Alternatively, you can plot all three outcomes in one go
-# by calling the plot function on the full forest.
-plot.gg_roc(iris_rf)
+# by calling the plot function on the forest object.
+plot.gg_roc(rfsrc_iris)
 }
 \seealso{
 \code{\link{plot.gg_roc}} \code{randomForestSRC::rfsrc}
