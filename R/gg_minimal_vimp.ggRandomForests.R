@@ -15,7 +15,7 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Minimal depth vs VIMP camparison by variable ranks. 
+#' Minimal depth vs VIMP camparison by variable rankings. 
 #' 
 #' @param object A \code{randomForestSRC::rfsrc} object, \code{randomForestSRC::predict}
 #'  object or the list from the \code{randomForestSRC::var.select.rfsrc} function.
@@ -23,6 +23,8 @@
 #' shaping the points in when plotting.
 #' @param ... optional arguments passed to the \code{randomForestSRC::var.select} function 
 #'  if operating on an \code{randomForestSRC::rfsrc} object. 
+#'  
+#'  @return \code{gg_minimal_vimp} comparison object.
 #'  
 #'  @seealso \code{\link{plot.gg_minimal_vimp}} \code{randomForestSRC::var.select}
 #'  

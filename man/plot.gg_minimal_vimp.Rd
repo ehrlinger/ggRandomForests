@@ -16,6 +16,9 @@ object}
 
 \item{...}{optional arguments (not used)}
 }
+\value{
+\code{ggplot} object
+}
 \description{
 Plot a \code{\link{gg_minimal_vimp}} object for comparing the Minimal Depth and VIMP variable rankings.
 }

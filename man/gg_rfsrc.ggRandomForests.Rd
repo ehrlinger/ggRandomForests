@@ -19,7 +19,7 @@ forest prediction.}
 \item{...}{not used}
 }
 \value{
-\code{gg_rfsrc} object formatted for \code{\link{plot.gg_rfsrc}}
+\code{gg_rfsrc} object
 }
 \description{
 Extracts the predicted response values from the \code{randomForestSRC::rfsrc} object,

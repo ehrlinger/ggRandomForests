@@ -7,6 +7,8 @@
 #' @param weight for each observation (default=NULL)
 #' @param ... arguments passed to the \code{survfit} function 
 #'
+#' @return \code{\link{gg_survival}} object
+#' 
 #' @export nelson
 #' @importFrom survival Surv survfit strata 
 #' 

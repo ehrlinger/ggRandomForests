@@ -25,6 +25,8 @@
 #' @param lbls a vector of alternative variable names.
 #' @param ... optional arguments (not used)
 #' 
+#' @return \code{ggplot} object
+#' 
 #' @export plot.gg_minimal_vimp
 #' @importFrom ggplot2 ggplot aes_string geom_point labs geom_abline coord_flip scale_x_discrete
 #'

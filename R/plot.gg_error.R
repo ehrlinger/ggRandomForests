@@ -21,10 +21,10 @@
 #' A plot of the cumulative OOB error rates of the random forest as a 
 #' function of number of trees.
 #' 
-#' @param x gg_error object created from a randomForestSRC object
-#' @param ... extra arguments
+#' @param x gg_error object created from a \code{randomForestSRC::rfsrc} object
+#' @param ... extra arguments passed to \code{ggplot} functions
 #' 
-#' @return ggplot graph
+#' @return \code{ggplot} object
 #' 
 #' @export plot.gg_error
 #' 

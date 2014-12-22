@@ -8,18 +8,30 @@
 combine.gg_partial(x, y, lbls, ...)
 }
 \arguments{
-\item{x}{gg_partial object}
+\item{x}{\code{\link{gg_partial}}  object}
 
-\item{y}{gg_partial object}
+\item{y}{\code{\link{gg_partial}}  object}
 
-\item{lbls}{how to label the combined data.}
+\item{lbls}{vector of 2 strings to label the combined data.}
 
 \item{...}{not used}
 }
+\value{
+\code{\link{gg_partial}}  or \code{gg_partial_list} based on class of x and y.
+}
 \description{
-The combine.gg_partial function assumes the two gg_partial object
-were generated from the same randomForestSRC::rfsrc object. Further,
-we assume the combine is along the group variable.
+The \code{combine.gg_partial} function assumes the two \code{\link{gg_partial}} objects
+were generated from the same \code{randomForestSRC::rfsrc} object. So, the
+function joins along the \code{\link{gg_partial}} list item names (one per partial
+plot variable). Further, we combine the two \code{\link{gg_partial}} objects along
+the group variable.
+
+Hence, to join three \code{\link{gg_partial}} objects together (i.e. for three different
+time points from a survival random forest)
+would require two \code{combine.gg_partial} calls: One to join the first two
+\code{\link{gg_partial}} object,
+and one to append the third \code{\link{gg_partial}} object to the output from the first call.
+The second call will append a single \code{lbls} label to the \code{\link{gg_partial}} object.
 }
 \examples{
 # Load a set of plot.variable partial plot data
@@ -44,12 +56,12 @@ ggpart <- combine.gg_partial(ggPrtl.1, ggPrtl.2,
 # Plot each figure separately
 plot(ggpart)
 
-# Get the continuous data
+# Get the continuous data for a panel of continuous plots.
 ggcont <- ggpart
 ggcont$celltype <- ggcont$trt <- ggcont$prior <- NULL
 plot(ggcont, panel=TRUE)
 
-# And the categorical
+# And the categorical for a panel of categorical plots.
 ggpart$karno <- ggpart$diagtime <- ggpart$age <- NULL
 plot(ggpart, panel=TRUE)
 }

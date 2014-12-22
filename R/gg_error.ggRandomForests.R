@@ -18,18 +18,18 @@
 #'
 #' randomForestSRC error rate data object
 #' 
-#' Extract the cumulative (OOB) randomForestSRC error rate as a function of 
+#' Extract the cumulative (OOB) \code{randomForestSRC} error rate as a function of 
 #' number of trees.
 #' 
-#' @details The gg_error function simply returns the rfsrc$err.rate object as 
-#' a data.frame, and assigns the class for connecting to the \code{\link{plot.gg_error}}
-#' function. 
+#' @details The \code{gg_error} function simply returns the 
+#' \code{randomForestSRC::rfsrc$err.rate} object as a data.frame, and assigns the class 
+#' for connecting to the S3 \code{\link{plot.gg_error}} function. 
 #' 
-#' @param object randomForestSRC object.
+#' @param object \code{randomForestSRC::rfsrc} object.
 #' @param ... optional arguments (not used).
 #' 
-#' @return gg_error data.frame with one column indicating the tree number, 
-#' and the remaining columns from the rfsrc$err.rate return value. 
+#' @return \code{gg_error} \code{data.frame} with one column indicating the tree number, 
+#' and the remaining columns from the \code{randomForestSRC::rfsrc$err.rate} return value. 
 #' 
 #' @export gg_error.ggRandomForests gg_error
 #' 

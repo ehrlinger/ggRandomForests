@@ -17,19 +17,24 @@
 #' Minimal Depth Variable Interaction data object (\code{randomForestSRC::find.interaction}). 
 #' 
 #' Converts the matrix returned from
-#' \code{randomForestSRC::find.interaction} to a data.frame and add attributes for identification. 
-#' If passed  a \code{randomForestSRC::rfsrc} object, gg_interaction first runs 
+#' \code{randomForestSRC::find.interaction} to a \code{data.frame} and add attributes 
+#' for S3 identification. 
+#' If passed  a \code{randomForestSRC::rfsrc} object, \code{gg_interaction} first runs 
 #' the \code{randomForestSRC::find.interaction} 
 #' function with all optional arguments.
 #'
 #' @param object a \code{randomForestSRC::rfsrc} object or the output from the
 #' \code{randomForestSRC::find.interaction} function call.
-#' @param ... optional extra arguments passed to find.interaction.
+#' @param ... optional extra arguments passed to \code{randomForestSRC::find.interaction}.
 #' 
-#' @seealso \code{\link{plot.gg_interaction}} \code{randomForestSRC::rfsrc} 
+#' @return \code{gg_interaction} object
+#' 
+#' @seealso \code{randomForestSRC::rfsrc} 
 #' \code{randomForestSRC::find.interaction} 
-#' \code{randomForestSRC::max.subtree} \code{randomForestSRC::var.select} 
+#' \code{randomForestSRC::max.subtree} 
+#' \code{randomForestSRC::var.select} 
 #' \code{randomForestSRC::vimp}
+#' \code{\link{plot.gg_interaction}} 
 #' 
 #' @export gg_interaction gg_interaction.ggRandomForests 
 #' @aliases gg_interaction

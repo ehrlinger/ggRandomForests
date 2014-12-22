@@ -15,7 +15,7 @@ gg_roc.ggRandomForests(object, which.outcome, oob = TRUE)
 \item{oob}{use oob estimates (default TRUE)}
 }
 \value{
-gg_roc \code{data.frame} for plotting ROC curves.
+\code{gg_roc} \code{data.frame} for plotting ROC curves.
 }
 \description{
 The sensitivity and specificity of a randomForests classification object.

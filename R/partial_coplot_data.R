@@ -33,13 +33,17 @@
 #' #---------------------------------------------------------------------
 #' # MASS::Boston data - regression random forest 
 #' #---------------------------------------------------------------------
-#' # Load the data...
-#' data(Boston, package="MASS")
-#' Boston$chas <- as.logical(Boston$chas)
+#' data(Boston_rfsrc, package="ggRandomForests")
 #' 
-#' # rfsrc grow call
-#' partial_coplot_Boston <- rfsrc(medv~., data=Boston)
-#'
+#' # Cut the codependent variable
+#' rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=6)
+#' rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+#' 
+#' # plot.variable for lstat on subsets of rm (this will take some time.)
+#'  partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
+#'                                             groups=rm_grp, 
+#'                                             show.plots=FALSE)
+#'                                             
 #' }
 #' 
 #' @references 
@@ -62,11 +66,18 @@
 #'  Boston data set
 #' ---------------------
 #' 
+#'  Belsley, D.A., E. Kuh, and R.E. Welsch. 1980. Regression Diagnostics. Identifying 
+#'  Influential Data and Sources of Collinearity. New York: Wiley.
+#'  
+#' Harrison, D., and D.L. Rubinfeld. 1978. "Hedonic Prices and the Demand for Clean Air."
+#'  J. Environ. Economics and Management 5: 81-102.
 #' 
-#' @aliases partial_coplot_data partial_coplots_Boston partial_coplots_Boston2 Boston_lstat_rm
+#' 
+#' @aliases partial_coplot_data partial_coplots_Boston partial_coplots_Boston2 partial_coplots_Boston_surf
 #' @docType data
 #' @keywords datasets
 #' @format List of \code{randomForestSRC::plot.variable} objects
+#' @name partial_coplot_data
 #' @name partial_coplot_Boston
 #' @name partial_coplot_Boston2
 #' @name Boston_lstat_rm

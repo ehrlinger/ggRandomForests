@@ -11,12 +11,16 @@ gg_interaction.ggRandomForests(object, ...)
 \item{object}{a \code{randomForestSRC::rfsrc} object or the output from the
 \code{randomForestSRC::find.interaction} function call.}
 
-\item{...}{optional extra arguments passed to find.interaction.}
+\item{...}{optional extra arguments passed to \code{randomForestSRC::find.interaction}.}
+}
+\value{
+\code{gg_interaction} object
 }
 \description{
 Converts the matrix returned from
-\code{randomForestSRC::find.interaction} to a data.frame and add attributes for identification.
-If passed  a \code{randomForestSRC::rfsrc} object, gg_interaction first runs
+\code{randomForestSRC::find.interaction} to a \code{data.frame} and add attributes
+for S3 identification.
+If passed  a \code{randomForestSRC::rfsrc} object, \code{gg_interaction} first runs
 the \code{randomForestSRC::find.interaction}
 function with all optional arguments.
 }
@@ -73,9 +77,11 @@ Ishwaran H., Kogalur U.B., Chen X. and Minn A.J. (2011). Random survival
 forests for high-dimensional data. Statist. Anal. Data Mining, 4:115-132.
 }
 \seealso{
-\code{\link{plot.gg_interaction}} \code{randomForestSRC::rfsrc}
+\code{randomForestSRC::rfsrc}
 \code{randomForestSRC::find.interaction}
-\code{randomForestSRC::max.subtree} \code{randomForestSRC::var.select}
+\code{randomForestSRC::max.subtree}
+\code{randomForestSRC::var.select}
 \code{randomForestSRC::vimp}
+\code{\link{plot.gg_interaction}}
 }
 

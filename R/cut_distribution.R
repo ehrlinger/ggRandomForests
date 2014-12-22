@@ -1,14 +1,17 @@
-#' Find the cut points of a vector, evenly distributed along the distribution
+#' Find the cut points of a vector, evenly distributed along the vectors values.
 #' 
 #' @param object vector to be cut
 #' @param groups how many groups do we want
 #'
-#' This function breaks a vector into cut points to produce groups intervals. 
-#' Setting groups=2 will return three values,the two end points, and one mid point 
-#' at the median value of the vector. 
+#' @description
+#' This function finds the cut point values from a vector argument to produce
+#'  \code{groups} intervals. Setting \code{groups=2} will return three values, 
+#'  the two end points, and one mid point (at the median value of the vector). 
 #' 
 #' The output can be passed directly into the breaks argument of the
 #' \code{cut} function for creating groups for coplots.
+#' 
+#' @return vector of groups+1 cut point values.
 #' 
 #' @seealso \code{cut} \code{\link{gg_partial_coplot}}
 #' 

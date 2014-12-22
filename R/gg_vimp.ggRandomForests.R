@@ -24,7 +24,7 @@
 #' @param ... arguments passed to the \code{randomForestSRC::vimp.rfsrc} function if the 
 #' \code{randomForestSRC::rfsrc} object does not contain importance information.
 #' 
-#' @return a matrix of VIMP measures, in rank order.
+#' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order.
 #' 
 #' @seealso \code{\link{plot.gg_vimp}} \code{randomForestSRC::rfsrc} \code{randomForestSRC::vimp}
 #' 

@@ -8,22 +8,22 @@
 gg_error.ggRandomForests(object, ...)
 }
 \arguments{
-\item{object}{randomForestSRC object.}
+\item{object}{\code{randomForestSRC::rfsrc} object.}
 
 \item{...}{optional arguments (not used).}
 }
 \value{
-gg_error data.frame with one column indicating the tree number,
-and the remaining columns from the rfsrc$err.rate return value.
+\code{gg_error} \code{data.frame} with one column indicating the tree number,
+and the remaining columns from the \code{randomForestSRC::rfsrc$err.rate} return value.
 }
 \description{
-Extract the cumulative (OOB) randomForestSRC error rate as a function of
+Extract the cumulative (OOB) \code{randomForestSRC} error rate as a function of
 number of trees.
 }
 \details{
-The gg_error function simply returns the rfsrc$err.rate object as
-a data.frame, and assigns the class for connecting to the \code{\link{plot.gg_error}}
-function.
+The \code{gg_error} function simply returns the
+\code{randomForestSRC::rfsrc$err.rate} object as a data.frame, and assigns the class
+for connecting to the S3 \code{\link{plot.gg_error}} function.
 }
 \examples{
 ## Examples from RFSRC package...

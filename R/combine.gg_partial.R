@@ -1,13 +1,25 @@
 #' combine two gg_partial objects
 #' 
-#' The combine.gg_partial function assumes the two gg_partial object
-#' were generated from the same randomForestSRC::rfsrc object. Further,
-#' we assume the combine is along the group variable.
+#' @description
+#' The \code{combine.gg_partial} function assumes the two \code{\link{gg_partial}} objects
+#' were generated from the same \code{randomForestSRC::rfsrc} object. So, the 
+#' function joins along the \code{\link{gg_partial}} list item names (one per partial
+#' plot variable). Further, we combine the two \code{\link{gg_partial}} objects along 
+#' the group variable.
 #' 
-#'  @param x gg_partial object
-#'  @param y gg_partial object
-#'  @param lbls how to label the combined data.
+#' Hence, to join three \code{\link{gg_partial}} objects together (i.e. for three different 
+#' time points from a survival random forest)
+#' would require two \code{combine.gg_partial} calls: One to join the first two 
+#' \code{\link{gg_partial}} object, 
+#' and one to append the third \code{\link{gg_partial}} object to the output from the first call.
+#' The second call will append a single \code{lbls} label to the \code{\link{gg_partial}} object.
+#' 
+#'  @param x \code{\link{gg_partial}}  object
+#'  @param y \code{\link{gg_partial}}  object
+#'  @param lbls vector of 2 strings to label the combined data.
 #'  @param ... not used
+#'  
+#'  @return \code{\link{gg_partial}}  or \code{gg_partial_list} based on class of x and y.
 #'  
 #'  @export combine.gg_partial_list combine.gg_partial
 #'  @aliases combine.gg_partial combine.gg_partial_list
@@ -37,12 +49,12 @@
 #' # Plot each figure separately
 #' plot(ggpart)                                  
 #' 
-#' # Get the continuous data
+#' # Get the continuous data for a panel of continuous plots.
 #' ggcont <- ggpart
 #' ggcont$celltype <- ggcont$trt <- ggcont$prior <- NULL
 #' plot(ggcont, panel=TRUE) 
 #' 
-#' # And the categorical
+#' # And the categorical for a panel of categorical plots.
 #' ggpart$karno <- ggpart$diagtime <- ggpart$age <- NULL
 #' plot(ggpart, panel=TRUE) 
 #' 

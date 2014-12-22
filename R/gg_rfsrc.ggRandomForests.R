@@ -27,7 +27,7 @@
 #' forest prediction.
 #' @param ... not used
 #' 
-#' @return \code{gg_rfsrc} object formatted for \code{\link{plot.gg_rfsrc}}
+#' @return \code{gg_rfsrc} object
 #' 
 #' @export gg_rfsrc.ggRandomForests gg_rfsrc
 #' 

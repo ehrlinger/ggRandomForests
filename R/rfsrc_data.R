@@ -198,12 +198,16 @@
 #' Chambers, J. M., Cleveland, W. S., Kleiner, B. and Tukey, P. A. 
 #' (1983) Graphical Methods for Data Analysis. Belmont, CA: Wadsworth.
 #' 
-#' # Boston Housing data set
-#' Harrison, D. and Rubinfeld, D.L. (1978) Hedonic prices and the 
-#' demand for clean air. J. Environ. Economics and Management 5, 81-102.
+#' #---------------------
+#'  Boston data set
+#' ---------------------
 #' 
-#' Belsley D.A., Kuh, E. and Welsch, R.E. (1980) Regression Diagnostics. 
-#' Identifying Influential Data and Sources of Collinearity. New York: Wiley.
+#'  Belsley, D.A., E. Kuh, and R.E. Welsch. 1980. Regression Diagnostics. Identifying 
+#'  Influential Data and Sources of Collinearity. New York: Wiley.
+#'  
+#' Harrison, D., and D.L. Rubinfeld. 1978. "Hedonic Prices and the Demand for Clean Air."
+#'  J. Environ. Economics and Management 5: 81-102.
+#' 
 #' 
 #' #---------------------
 #'  Iris data set
@@ -213,7 +217,7 @@
 #' Wadsworth \& Brooks/Cole. (has iris3 as iris.)
 #' 
 #' Fisher, R. A. (1936) The use of multiple measurements in taxonomic problems. 
-#' Annals of Eugenics, 7, Part II, 179-188.?
+#' Annals of Eugenics, 7, Part II, 179-188.
 #' 
 #' Anderson, Edgar (1935). The irises of the Gaspe Peninsula, Bulletin 
 #' of the American Iris Society, 59, 2-5.
@@ -248,7 +252,7 @@
 #' @aliases rfsrc_data rfsrc_airq rfsrc_iris rfsrc_Boston rfsrc_mtcars rfsrc_pbc rfsrc_veteran
 #' @docType data
 #' @keywords datasets
-#' @format randomForestSRC::rfsrc object
+#' @format \code{randomForestSRC::rfsrc} object
 #' @name rfsrc_data
 #' @name rfsrc_iris
 #' @name rfsrc_airq

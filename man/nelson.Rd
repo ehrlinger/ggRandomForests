@@ -19,6 +19,9 @@ nelson(interval, censor, data, strat = NULL, weight = NULL, ...)
 
 \item{...}{arguments passed to the \code{survfit} function}
 }
+\value{
+\code{\link{gg_survival}} object
+}
 \description{
 nonparametric Nelson-Aalen estimates
 }

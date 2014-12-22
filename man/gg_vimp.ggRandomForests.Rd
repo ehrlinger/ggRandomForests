@@ -14,7 +14,7 @@ gg_vimp.ggRandomForests(object, ...)
 \code{randomForestSRC::rfsrc} object does not contain importance information.}
 }
 \value{
-a matrix of VIMP measures, in rank order.
+\code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order.
 }
 \description{
 \code{gg_vimp} Extracts the variable importance (VIMP) information from a

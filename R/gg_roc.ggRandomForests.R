@@ -24,7 +24,7 @@
 #' @param which.outcome select the classification outcome of interest.
 #' @param oob use oob estimates (default TRUE)
 #' 
-#' @return gg_roc \code{data.frame} for plotting ROC curves.
+#' @return \code{gg_roc} \code{data.frame} for plotting ROC curves.
 #' 
 #' @seealso \code{\link{plot.gg_roc}} \code{randomForestSRC::rfsrc}
 #' 

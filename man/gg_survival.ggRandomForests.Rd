@@ -22,14 +22,14 @@ gg_survival.ggRandomForests(interval, censor, strat = NULL, data,
 \item{...}{extra arguments passed to kaplan or nelson functions.}
 }
 \value{
-A gg_survival object created using the non-parametric kaplan-meier or
+A \code{gg_survival} object created using the non-parametric kaplan-meier or
 nelson-aalon estimators.
 }
 \description{
 Nonparametric survival estimates.
 }
 \details{
-gg_survival is a wrapper function for both generating nonparametric
+\code{gg_survival} is a wrapper function for generating nonparametric
 survival estimates using either nelson-aalen or kaplan-meier estimates.
 }
 \examples{

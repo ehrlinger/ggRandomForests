@@ -21,7 +21,7 @@ for differentiating the time points (for survival forests only)}
 \item{...}{extra arguments}
 }
 \value{
-A matrix for creating the marginal variable dependence plots.
+\code{gg_variable} object
 }
 \description{
 \code{randomForestSRC::plot.variable} generates a \code{data.frame}

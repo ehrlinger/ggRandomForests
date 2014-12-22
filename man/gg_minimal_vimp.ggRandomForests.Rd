@@ -3,7 +3,7 @@
 \name{gg_minimal_vimp.ggRandomForests}
 \alias{gg_minimal_vimp}
 \alias{gg_minimal_vimp.ggRandomForests}
-\title{Minimal depth vs VIMP camparison by variable ranks.}
+\title{Minimal depth vs VIMP camparison by variable rankings.}
 \usage{
 gg_minimal_vimp.ggRandomForests(object, event, ...)
 }
@@ -17,8 +17,11 @@ shaping the points in when plotting.}
 \item{...}{optional arguments passed to the \code{randomForestSRC::var.select} function
  if operating on an \code{randomForestSRC::rfsrc} object.}
 }
+\value{
+\code{gg_minimal_vimp} comparison object.
+}
 \description{
-Minimal depth vs VIMP camparison by variable ranks.
+Minimal depth vs VIMP camparison by variable rankings.
 }
 \examples{
 ## Examples from RFSRC package...

@@ -28,7 +28,7 @@
 #' @param smooth type of smooth curve
 #' @param ... arguments passed to the \code{\link{gg_variable}} function.
 #'   
-#' @return \code{ggplot} object
+#' @return A single \code{ggplot} object, or list of \code{ggplot} objects
 #'   
 #' @export plot.gg_variable
 #'   

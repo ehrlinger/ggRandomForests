@@ -25,7 +25,7 @@
 \item{...}{arguments passed to the \code{\link{gg_variable}} function.}
 }
 \value{
-\code{ggplot} object
+A single \code{ggplot} object, or list of \code{ggplot} objects
 }
 \description{
 Plot a \code{\link{gg_variable}} object,

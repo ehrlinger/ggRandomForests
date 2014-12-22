@@ -6,7 +6,7 @@
 #' @description \code{ggRandomForests} is a utility package for \code{randomForestSRC} 
 #' (Iswaran et.al. 2014, 2008, 2007) for survival, regression and  
 #' classification forests and uses the \code{ggplot2} (Wickham 2009) package for plotting results. 
-#' \code{ggRandomForests} is structured to extract data objects from the random forest object 
+#' \code{ggRandomForests} is structured to extract data objects from the random forest
 #' and provides S3 functions for printing and plotting these objects.
 #' 
 #' The \code{randomForestSRC} package provides a unified treatment of Breiman's (2001) random 
@@ -15,13 +15,13 @@
 #' (factor) while survival and competing risk forests (Ishwaran et al. 2008, 2012) 
 #' are grown for right-censored survival data.
 #' 
-#' Many of the end product figures created by the \code{ggRandomForests} package are also available 
+#' Many of the figures created by the \code{ggRandomForests} package are also available 
 #' directly from within the \code{randomForestSRC} package. However, \code{ggRandomForests} offers the 
 #' following advantages:
 #' \itemize{
 #' \item Separation of data and figures: \code{ggRandomForest} contains functions that 
 #' operate on either the \code{randomForestSRC::rfsrc} forest object directly, or on 
-#' the output from \code{randomForestSRC} posprocessing functions (i.e. 
+#' the output from \code{randomForestSRC} post processing functions (i.e. 
 #' \code{plot.variable}, 
 #' \code{var.select}, 
 #' \code{find.interaction}) to 
@@ -59,7 +59,7 @@
 #' \item \code{\link{gg_survival}}: Kaplan-Meier/Nelson-Aalon hazard analysis.  
 #' }
 #' 
-#' Each function has an associated S3 plotting function that returns \code{ggplot2} objects, either 
+#' Each of these data functions has an associated S3 plot function that returns \code{ggplot2} objects, either 
 #' individually or as a list, which can be further customised using standard \code{ggplot2} commands. 
 #'  
 #' @references

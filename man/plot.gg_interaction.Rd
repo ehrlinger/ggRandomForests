@@ -79,9 +79,10 @@ Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
 Regression and Classification (RF-SRC), R package version 1.4.
 }
 \seealso{
-\code{\link{plot.gg_interaction}} \code{randomForestSRC::rfsrc}
+\code{randomForestSRC::rfsrc}
 \code{randomForestSRC::find.interaction}
 \code{randomForestSRC::max.subtree} \code{randomForestSRC::var.select}
 \code{randomForestSRC::vimp}
+\code{\link{plot.gg_interaction}}
 }
 

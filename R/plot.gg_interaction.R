@@ -29,10 +29,11 @@
 #' 
 #' @export plot.gg_interaction
 #' 
-#' @seealso \code{\link{plot.gg_interaction}} \code{randomForestSRC::rfsrc} 
+#' @seealso \code{randomForestSRC::rfsrc} 
 #' \code{randomForestSRC::find.interaction} 
 #' \code{randomForestSRC::max.subtree} \code{randomForestSRC::var.select} 
 #' \code{randomForestSRC::vimp}
+#' \code{\link{plot.gg_interaction}} 
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

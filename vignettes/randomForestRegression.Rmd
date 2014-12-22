@@ -52,7 +52,7 @@ library(randomForestSRC)
 library(RColorBrewer)
 
 library(xtable)
-library(plot3D)
+#library(plot3D)
 
 options(mc.cores = 1, rf.cores = 1)
 
@@ -370,7 +370,7 @@ ggpl
 rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=50)
 rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
 
-system.time(Boston_lstat_rm <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
+system.time(partial_coplots_Boston_surf <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
                                                  groups=rm_grp, npts=50,
                                                  show.plots=FALSE))
 
@@ -378,26 +378,30 @@ system.time(Boston_lstat_rm <- gg_partial_coplot(rfsrc_Boston, xvar="lstat",
 # 848.266  79.705 934.584 
 ```
 
-```{r surf3d, fig.cap="Partial coplot surface.", eval=FALSE}
-data(Boston_lstat_rm)
+```{r surf3d, fig.cap="Partial coplot surface.", eval=FALSE, echo=FALSE}
+data(partial_coplots_Boston_surf)
 
 # Get the estimates.
-yhat.tmp <- lapply(unique(Boston_lstat_rm$group), 
-                   function(grp){Boston_lstat_rm[which(Boston_lstat_rm$group==grp),"yhat"]})
+yhat.tmp <- lapply(unique(partial_coplots_Boston_surf$group), 
+                   function(grp){partial_coplots_Boston_surf[which(partial_coplots_Boston_surf$group==grp),"yhat"]})
 
 # The lstat points, repeated columns
-lstat.tmp <- lapply(unique(Boston_lstat_rm$group), 
-                    function(grp){Boston_lstat_rm[which(Boston_lstat_rm$group==grp),"lstat"]})
+lstat.tmp <- lapply(unique(partial_coplots_Boston_surf$group), 
+                    function(grp){partial_coplots_Boston_surf[which(partial_coplots_Boston_surf$group==grp),"lstat"]})
 
 # The rm points, repeated rows
-rm.tmp <- lapply(unique(Boston_lstat_rm$group), 
+rm.tmp <- lapply(unique(partial_coplots_Boston_surf$group), 
                  function(grp){rm_pts[-1]})
 
 yhat.tmp <- do.call(cbind,yhat.tmp)
 lstat.tmp <- do.call(cbind,lstat.tmp)
 rm.tmp <- do.call(cbind,rm.tmp)
 
-#surf3D(x=lstat.tmp, y=rm.tmp, z=yhat.tmp)
+wireframe(yhat.tmp~lstat.tmp*rm.tmp, xlab="lstat", ylab="rm", zlab="medv",
+          drape = TRUE,
+  colorkey = FALSE)
+
+#   screen = list(z = 60, x = 60))
 
 ```
 

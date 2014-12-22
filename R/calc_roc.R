@@ -30,19 +30,20 @@
 #' @param which.outcome If defined, only show ROC for this response. 
 #' @param oob Use OOB estimates, the normal validation method (TRUE)
 #'  
+#' @return A \code{gg_roc} object
+#'   
 #' @aliases calc_roc.rfsrc calc_roc.randomForest calc_roc
 #' 
 #' @seealso \code{\link{calc_auc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
 #' 
 #' @importFrom parallel mclapply
 #' 
+#' @export calc_roc calc_roc.rfsrc
 #' @examples
-#' \dontrun{
-#' ##
 #' ## Taken from the gg_roc example
-#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' data(rfsrc_iris)
 #' gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=TRUE)
-#' }
 #' 
 calc_roc.rfsrc <- function(object, yvar, which.outcome="all", oob=TRUE){
   if(!is.factor(yvar)) yvar <- factor(yvar)
@@ -80,6 +81,7 @@ calc_roc.rfsrc <- function(object, yvar, which.outcome="all", oob=TRUE){
 }
 
 calc_roc<- calc_roc.rfsrc
+
 calc_roc.randomForest <- function(object, dta, which.outcome=1){
   prd <- predict(object, type="prob")
   dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]), 
@@ -108,9 +110,9 @@ calc_roc.randomForest <- function(object, dta, which.outcome=1){
 #' @details calc_auc uses the trapezoidal rule to calculate the area under
 #' the ROC curve.
 #' 
-#'  This is a helper function for the \code{\link{gg_roc}} functions, and not intended 
-#' for use by the end user.
-#' @param x output from \code{\link{calc_roc}} (or \code{\link{gg_roc}}) 
+#'  This is a helper function for the \code{\link{gg_roc}} functions.
+#'  
+#' @param x \code{\link{gg_roc}} object
 #' 
 #' @return AUC. 50\% is random guessing, higher is better.
 #' 
@@ -125,7 +127,10 @@ calc_roc.randomForest <- function(object, dta, which.outcome=1){
 #' data(rfsrc_iris)
 #' gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
 #' 
-#' ggRandomForests:::calc_auc(gg_dta)
+#' calc_auc(gg_dta)
+#' 
+#' @export calc_auc
+#' @aliases calc_auc calc_auc.gg_roc
 #' 
 calc_auc <- function(x){
   ## Use the trapeziod rule, basically calc
@@ -141,3 +146,4 @@ calc_auc <- function(x){
   auc <- (3*lead(x$sens) - x$sens)/2 * (x$spec - lead(x$spec))
   sum(auc, na.rm=TRUE)
 }
+calc_auc.gg_roc <- calc_auc

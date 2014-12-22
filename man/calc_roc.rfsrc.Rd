@@ -18,6 +18,9 @@ containing predicted response}
 
 \item{oob}{Use OOB estimates, the normal validation method (TRUE)}
 }
+\value{
+A \code{gg_roc} object
+}
 \description{
 Reciever Operator Characteristic calculator
 }
@@ -30,12 +33,10 @@ This is a helper function for the \code{\link{gg_roc}} functions, and not intend
 for use by the end user.
 }
 \examples{
-\dontrun{
-##
 ## Taken from the gg_roc example
-rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+data(rfsrc_iris)
 gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=TRUE)
-}
 }
 \seealso{
 \code{\link{calc_auc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}

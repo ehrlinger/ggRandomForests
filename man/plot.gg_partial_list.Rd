@@ -17,7 +17,7 @@ forest object}
 \item{...}{extra arguments}
 }
 \value{
-\code{ggplot} object
+list of \code{ggplot} objects, or a single faceted \code{ggplot} object
 }
 \description{
 Generate a risk adjusted (partial) variable dependence plot.

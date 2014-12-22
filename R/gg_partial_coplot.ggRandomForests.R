@@ -3,9 +3,13 @@
 #' @param object randomForestSRC::rfsrc object
 #' @param xvar list of partial plot variables
 #' @param groups vector of stratification variable.
-#' @param surv_type for survival random forests,  c("mort", "rel.freq", "surv", "years.lost", "cif", "chf")
+#' @param surv_type for survival random forests,  c("mort", "rel.freq", "surv", 
+#' "years.lost", "cif", "chf")
 #' @param time vector of time points for survival random forests partial plots.
 #' @param ... extra arguments passed to randomForestSRC::plot.variable function
+#' 
+#' @return \code{gg_partial_coplot} object. An subclass of a 
+#' \code{\link{gg_partial_list}} object
 #' 
 #' @aliases gg_partial_coplot
 #' @export gg_partial_coplot gg_partial_coplot.ggRandomForests

@@ -15,13 +15,13 @@ object or the list from the \code{randomForestSRC::var.select.rfsrc} function.}
  if operating on an \code{randomForestSRC::rfsrc} object.}
 }
 \value{
-Invisibly, the modified list of variables from the
-\code{randomForestSRC::var.select.rfsrc} function, ordered by minimal depth rank.
+\code{gg_minimal_depth} object, A modified list of variables from the
+\code{randomForestSRC::var.select} function, ordered by minimal depth rank.
 }
 \description{
 the \code{randomForestSRC::var.select} function implements
 random forest variable selection using tree minimal depth methodology. The
-gg_minimal_depth
+\code{gg_minimal_depth}
 function takes the output from \code{randomForestSRC::var.select} and creates a
 \code{data.frame} formatted for the \code{\link{plot.gg_minimal_depth}} function.
 }

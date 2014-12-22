@@ -21,26 +21,30 @@
 #' list of either marginal variable dependance or partial variable dependence
 #' data from a \code{randomForestSRC::rfsrc} object. 
 #' The \code{gg_partial} function formulates the \code{randomForestSRC::plot.variable} output
-#' for partial plots  (where partial=TRUE) into a data object for creation of 
+#' for partial plots  (where \code{partial=TRUE}) into a data object for creation of 
 #' partial dependence plots using the \code{\link{plot.gg_partial}} function. 
 #' 
-#' Partial variable dependence plots are the risk adjusted estimates of the specified response as a 
-#' function of a single covariate, possibly subsetted on other covariates.
+#' Partial variable dependence plots are the risk adjusted estimates of the specified 
+#' response as a function of a single covariate, possibly subsetted on other covariates.
 #' 
 #' @param object the partial variable dependence data object from 
 #'   \code{randomForestSRC::plot.variable} function
 #' @param named optional column for merging multiple plots together
 #' @param ... optional arguments
 #'  
-#' @return A \code{data.frame} or \code{list} of data.frames corresponding the variables 
+#' @return \code{gg_partial} object. A \code{data.frame} or \code{list} of 
+#' \code{data.frames} corresponding the variables 
 #' contained within the \code{randomForestSRC::plot.variable} output. 
 #' 
 #' @seealso \code{\link{plot.gg_partial}} \code{randomForestSRC::plot.variable}
 #' 
-#' @aliases gg_partial
 #' @export gg_partial.ggRandomForests gg_partial
 #' 
 #' @importFrom parallel mclapply
+#' 
+#' @references 
+#' Friedman, Jerome H. 2000. "Greedy Function Approximation: A Gradient Boosting 
+#' Machine." Annals of Statistics 29: 1189-1232.
 #' 
 #' @examples
 #' 
@@ -89,6 +93,11 @@
 #' 
 #' gg_dta <- gg_partial(partial_veteran[[1]])
 #' plot(gg_dta)
+#' 
+#' @aliases gg_partial gg_partial_list
+#' @name gg_partial
+#' @name gg_partial_list
+#' 
 gg_partial.ggRandomForests <- function(object, 
                                        named,
                                        ...){

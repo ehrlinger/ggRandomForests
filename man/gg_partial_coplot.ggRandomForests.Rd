@@ -15,11 +15,16 @@ gg_partial_coplot.ggRandomForests(object, xvar, groups, surv_type = c("mort",
 
 \item{groups}{vector of stratification variable.}
 
-\item{surv_type}{for survival random forests,  c("mort", "rel.freq", "surv", "years.lost", "cif", "chf")}
+\item{surv_type}{for survival random forests,  c("mort", "rel.freq", "surv",
+"years.lost", "cif", "chf")}
 
 \item{time}{vector of time points for survival random forests partial plots.}
 
 \item{...}{extra arguments passed to randomForestSRC::plot.variable function}
+}
+\value{
+\code{gg_partial_coplot} object. An subclass of a
+\code{\link{gg_partial_list}} object
 }
 \description{
 Data structures for stratified partial coplots

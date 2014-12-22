@@ -7,12 +7,12 @@
 \method{plot}{gg_error}(x, ...)
 }
 \arguments{
-\item{x}{gg_error object created from a randomForestSRC object}
+\item{x}{gg_error object created from a \code{randomForestSRC::rfsrc} object}
 
-\item{...}{extra arguments}
+\item{...}{extra arguments passed to \code{ggplot} functions}
 }
 \value{
-ggplot graph
+\code{ggplot} object
 }
 \description{
 A plot of the cumulative OOB error rates of the random forest as a

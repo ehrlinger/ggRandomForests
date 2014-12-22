@@ -30,7 +30,7 @@
 #' @param panel should the entire list be plotted together?
 #' @param ... extra arguments
 #' 
-#' @return \code{ggplot} object
+#' @return list of \code{ggplot} objects, or a single faceted \code{ggplot} object
 #' 
 #' @export plot.gg_partial_list
 #' 

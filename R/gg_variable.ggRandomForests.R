@@ -36,7 +36,7 @@
 #' @param oob indicate if predicted results should include oob or full data set.
 #' @param ... extra arguments 
 #'  
-#' @return A matrix for creating the marginal variable dependence plots.
+#' @return \code{gg_variable} object
 #' 
 #' @seealso  \code{\link{plot.gg_variable}} \code{randomForestSRC::plot.variable}
 #' 
