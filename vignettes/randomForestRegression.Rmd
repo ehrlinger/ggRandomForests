@@ -83,7 +83,7 @@ In this tutorial, we will focus on the [Boston Housing Data](#data) available in
 
 We investigate the forest [variable selection](#varsel) using the [Variable Importance](#vimp) measure (VIMP) [@Breiman:2001] as well as [Minimal Depth](#minimaldepth) [@Ishwaran:2010], a property derived from the construction of each tree within the forest, to assess the impact of variables on forest prediction. Once we have an idea of which variables the forest is using for prediction, we use [variable dependence](#dependence) plots [@Friedman:2000] to understand how a variable is related to the response. [Marginal dependence](#variabledependence) plots give us an idea of the overall trend of a variable/response relation, while [Partial dependence](#partialdependence) plots show us a risk adjusted relation. These figures often show strongly non-linear variable/response relations that are not easily obtained through a strictly parametric approach. 
 
-Another key difference between a parametric model and random forests is that random forests are not parsimonious, instead using all variables in constructing a predictor. As such, we are also interested in examining [variable interactions](#interactions) within the forest model. Using a minimal depth approach, we can quantify how closely variables are related within the forest, and generate [marginal dependence](#coplots) and [partial dependence](#partialcoplots) (risk adjusted) codependence plots (coplots)[@chambers:1992; @cleveland:1993] to examine the interactions graphically.
+Another key difference between a parametric model and random forests is that random forests are not parsimonious, instead using all variables in constructing a predictor. As such, we are also interested in examining [variable interactions](#interactions) within the forest model. Using a minimal depth approach, we can quantify how closely variables are related within the forest, and generate [marginal dependence](#coplots) and [partial dependence](#partialcoplots) (risk adjusted) conditioning plots (coplots)[@chambers:1992; @cleveland:1993] to examine the interactions graphically.
 
 # Data: Boston Housing Values<a name="data"></a>
 
@@ -137,7 +137,7 @@ dta.labs <- data.frame(cbind(Variable=names(cls), Description=lbls, type=cls))
 st.labs <- as.character(dta.labs$Description)
 names(st.labs) <- names(cls)
 
-print(xtable(dta.labs), type="html", only.contents=TRUE)
+print(xtable(dta.labs), type="html",include.rownames = FALSE)
 ```
 
 ## Exploratory Data Analysis<a name="eda"></a>
@@ -159,7 +159,7 @@ ggplot(dta, aes(x=medv, y=value, color=chas))+
   facet_wrap(~variable, scales="free_y", ncol=3)
 ```
 
-This figure is loosely related to a pairs scatter plot [@Becker:1988], but only examines the relation between one variable against the remainder. Plotting the data against the response variable also gives us a "sanity check" when viewing our model results. It's pretty obvious that we should find a strong relation between median home values and the lstat and rm variables.
+This figure is loosely related to a pairs scatter plot [@Becker:1988], but only examines the relation between one variable against the remainder. Plotting the data against the response variable also gives us a "sanity check" when viewing our model results. It's pretty obvious that we should find a strong relation between median home values and the `lstat` and `rm` variables.
 
 # Random Forest - Regression<a name="rfr"></a>
 
@@ -256,7 +256,7 @@ Since the VIMP and Minimal Depth measures use different criteria, we expect the 
 plot.gg_minimal_vimp(gg_md)
 ```
 
-Points above the red dashed line are ranked higher by VIMP than by minimal depth, indicating the variables are sensitive to mispecification. Those below the line have a higher minimal depth ranking, indicating they are better at dividing large portions of the population. The further the points are from the line, the more the discrepancy between measures. The construction of this figure is skewed towards a minimal depth approach, by ranking variables along the y-axis, though points are colored by the sign of VIMP. 
+Points above the red dashed line are ranked higher by VIMP than by minimal depth, indicating the variables are sensitive to misspecification. Those below the line have a higher minimal depth ranking, indicating they are better at dividing large portions of the population. The further the points are from the line, the more the discrepancy between measures. The construction of this figure is skewed towards a minimal depth approach, by ranking variables along the y-axis, though points are colored by the sign of VIMP. 
 
 In our example, both minimal depth and VIMP indicate the strong relation of `lstat` and `rm` variables to the forest prediction, which agrees with our expectation from the [EDA](#eda) done at the beginning of this document.
 
@@ -285,7 +285,7 @@ xvar <- gg_md$topvars
 # plot the variable list in a single panel plot
 plot(gg_v, xvar=xvar, panel=TRUE, 
      se=.95, span=1.2, alpha=.4)+
-  labs(y="Median Value", x="")
+  labs(y=st.labs["medv"], x="")
 ```
 
 This figure will look very similar to the [EDA](#eda) figure, although with transposed the axis as we plot the response variable on the y-axis. The closer the panels match, the better the RF prediction. We've included a smooth loess line [@cleveland:1981; @cleveland:1988] to indicates the trend of the prediction dependence over the covariate values.
@@ -295,13 +295,13 @@ The Boston housing data does contain a single categorical variable, the Charles 
 ```{r chas, fig.cap="Variable dependence for Charles River logical variable."}
 plot(gg_v, xvar="chas", points=FALSE,
      se=FALSE, notch=TRUE, alpha=.4)+
-  labs(y="Median Value")+
+  labs(y=st.labs["medv"])+
   coord_cartesian(ylim=c(5,49))
 ```
 
 The figure shows that most housing tracts do not border the Charles river (`chas=FALSE`), and comparing the distributions of the predicted median housing values indicates no significant difference in home values. This reinforces the findings in both VIMP and Minimal depth, the Charles river variable has very little impact on the forest prediction.  
 
-There is not a convenient method to panel scatter plots and boxplots together, so we recommend creating panels for each variable type separately. 
+There is not a convenient method to panel scatter plots and boxplots together, so we recommend creating panel plots for each variable type separately. 
 
 ## Partial Dependence.<a name="partialdependence"></a>
 
@@ -324,14 +324,14 @@ gg_p <- gg_partial(partial_Boston)
 
 # plot the variable list in a single panel plot
 plot(gg_p, xvar=xvar, panel=TRUE, se=FALSE) +
-  labs(y="Median Value", x="")
+  labs(y=st.labs["medv"], x="")
 ```
 
 We again order the panels by minimal depth ranking. We see again how the `lstat` and `rm` variables are strongly related to the median value response, making the partial dependence of the remaining variables look flat. We also see strong nonlinearity of these two variables. The `lstat` variable looks rather quadratic, while the `rm` shape is more complex.  
 
 # Variable Interactions<a name="interactions"></a>
 
-Using the different variable dependence measures, it is also possible to calculate measures of pairwise interactions among variables. Recall that minimal depth measure is defined by averageing the tree depth of variable $i$ relative to the root node. For interactions, the calculatation can be modified to be the minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$ [@Ishwaran:2010; @Ishwaran:2011].
+Using the different variable dependence measures, it is also possible to calculate measures of pairwise interactions among variables. Recall that minimal depth measure is defined by averaging the tree depth of variable $i$ relative to the root node. For interactions, the calculation can be modified to be the minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$ [@Ishwaran:2010; @Ishwaran:2011].
 
 The `randomForestSRC::find.interaction` traverses the forest, calculating all pairwise minimal depth interactions, and returns a $p \times p$ matrix of interaction measures. The diagonal terms are normalized to the root node, and off diagonal terms are normalized measures of pairwise variable interaction. 
 
@@ -347,22 +347,33 @@ plot(gg_interaction(interaction_Boston),
      xvar=gg_md$topvars, panel=TRUE)
 ```
 
-The `gg_interaction` figure plots the interactions for the target variable (shown in the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth ('lstat') to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing as expected. We also see the interactive variables increasing along the with increasing target depth. Of interest here, is the interaction of `lstat` with the `rm` variable shown in the `rm` panel. Aside from these being the strongest variables by both measures, this interactive measure indicates the strongest conection between variables. We explore this further in the following sections. 
+The `gg_interaction` figure plots the interactions for the target variable (shown in the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (`lstat`) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing as expected. We also see the interactive variables increasing along the with increasing target depth. Of interest here, is the interaction of `lstat` with the `rm` variable shown in the `rm` panel. Aside from these being the strongest variables by both measures, this interactive measure indicates the strongest connection between variables. We explore this further in the following sections. 
 
 # Coplots<a name="coplots"></a>
 
-Conditional plots (coplots) [@chambers:1992; @cleveland:1993] allow us to view data by grouping on some conditional membership. The simplest case is for categorical variables, where we could stratify a variable dependence plot by class membership. Coplots are similar to stratifying the prediction results, and arranging the stratified data in a set of panels.
+Conditioning plots (coplots) [@chambers:1992; @cleveland:1993]  are a powerful visualization tool to efficiently study how a response depends on two or more variables[@cleveland:1993]. The method allow us to view data by grouping observations on some conditional membership. The simplest example involves a categorical variable, where we plot our data conditional on class membership, for instance on the Charles river logical variable. We can view a coplot as a stratified variable dependence plot, indicating trends in the RF prediction results within panels of group membership.
 
-Interactions with a continuous variable requires stratification at some level. Often the stratifications may make logical sense, for instance when a variable has integer values. However in this case, we have no "logical" stratification indications. So for the interaction of Rooms with Lower Status, we will start by slicing the room variable into 6 pieces of roughly equal size.
+Interactions with a continuous variable requires stratification at some level. Often we can make these stratification along some feature of the variable, for instance a variable with integer values, or 5 or 10 year age group cohorts. However in the variable of interest in our Boston housing example, we have no "logical" stratification indications. We will arbitrarily stratify our variables into  6 groups of roughly equal population size using the `cut_distribution` function. We pass the break points to the `cut` function to create intervals, which we can add to the `gg_variable` object before plotting. The key to coplots is to use the `ggplot2::facet_wrap` command to generate a panel for each interval.
 
-```{r coplots, fig.cap="Variable Coplots. Predicted median value as a function of Lower Status, stratified by average number of rooms.", fig.width=7, fig.height=5}
+We start by examining the predicted median home value as a function of lower status percentage (`lstat`) conditional on membership within 6 groups of average number of rooms (`rm`) "intervals". 
+```{r coplots, fig.cap="Variable Coplots. Predicted median home values as a function of percentage of lower status population, stratified by average number of rooms groups.", fig.width=7, fig.height=5}
+# Find the rm variable points to create 6 intervals of roughly 
+# equal size population
 rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=6)
+
+# Pass these variable points to create the 6 (factor) intervals
 rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+
+# Append the group factor to the gg_variable object
 gg_v$rm_grp <- rm_grp
 
+# Modify the labels for descriptive panel titles 
+levels(gg_v$rm_grp) <- paste("Rooms=", levels(gg_v$rm_grp), sep="")
+
+# Create a variable dependence (co)plot, faceted on group membership.
 var_dep <- plot(gg_v, xvar = "lstat", smooth = TRUE, 
                 method = "loess", span=1.5, alpha = .5, se = FALSE) + 
-  labs(y = "Median Value") + 
+  labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
   #scale_shape_manual(values = event.marks, labels = event.labels)+ 
@@ -371,14 +382,28 @@ var_dep <- plot(gg_v, xvar = "lstat", smooth = TRUE,
 var_dep
 ```
 
+The figure shows the median value response as a function of lower status percentage, grouped conditional on intervals of the average number of rooms within the observation. We again use the smooth loess curve to get an idea of the trend within each group. Overall, median values decrease with increasing percentage of lower status population, and increases with increasing average number of rooms. In addition to trends, we can also examine the conditional distribution of variables. Note that smaller homes in higher status neighborhoods still have high median values, and that there are more large homes in the higher status neighborhoods. 
 
-```{r coplots2, fig.cap="Variable Coplots. Predicted median value as a function of average number of rooms, stratified by Lower Status.", fig.width=7, fig.height=5}
+A single coplot gives us a grouped view of a variable, along the second variable dimension. To get a better feel for how the response depends on both variables, it is instructive to look at the complementary coplot. We repeat the previous coplot, predicted median home value as a function of the average number of rooms (`rm`) variable, conditional on membership within 6 groups of lower status percentage (`lstat`) intervals. 
+
+```{r coplots2, fig.cap="Variable Coplots. Predicted median home value as a function of average number of rooms, stratified by percentage of lower status groups.", fig.width=7, fig.height=5}
+# Find the lstat variable points to create 6 intervals of roughly 
+# equal size population
 lstat_pts <- cut_distribution(rfsrc_Boston$xvar$lstat, groups=6)
+
+# Pass these variable points to create the 6 (factor) intervals
 lstat_grp <- cut(rfsrc_Boston$xvar$lstat, breaks=lstat_pts)
+
+# Append the group factor to the gg_variable object
 gg_v$lstat_grp <- lstat_grp
+
+# Modify the labels for descriptive panel titles 
+levels(gg_v$lstat_grp) <- paste("Low Stat=", levels(gg_v$lstat_grp),"%",sep="")
+
+# Create a variable dependence (co)plot, faceted on group membership.
 var_dep <- plot(gg_v, xvar = "rm", smooth = TRUE, 
                 method = "loess", span=1.5, alpha = .5, se = FALSE) + 
-  labs(y = "Median Value") + 
+  labs(y = st.labs["medv"], x=st.labs["rm"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
   #scale_shape_manual(values = event.marks, labels = event.labels)+ 
@@ -387,47 +412,91 @@ var_dep <- plot(gg_v, xvar = "rm", smooth = TRUE,
 var_dep
 ```
 
+We get similar information from this view, home values decrease with increasing percentage of lower status and decreasing number of rooms. However views together we get a better sense of how the lower status and rooms variables work together (interact) in the median value prediction.
+
+Note that typically, @cleveland:1993 conditional plots for continuous variables included overlapping intervals along the variable. We chose to use mutually exclusive continuous variable intervals for multiple reasons:
+ 
+ * Simplicity - We can create the coplot figures directly from the `gg_variable` object by adding a conditional group column directly to the object.
+
+ * Interpretability - We find it easier to interpret and compare the panels if each observation is only in a single panel.
+
+ * Clarity - We prefer using more space for the data portion of the figures than typically displayed in the `coplot` function available in base R.
+ 
+It is still possible to augment the `gg_variable` to include overlapping conditional membership with continuous variables by duplicating rows of the object, and setting the correct conditional group membership. The `plot.gg_variable` function recipe above could be used to generate the panel plot, with panels ordered according to the factor levels of the grouping variable.  We leave this as an exercise for the reader.
+
 ## Partial dependence coplots <a name="partialcoplots"></a>
 
-To generate a partial coplot for the `lstat`/`rm` variable interaction, analogous to the coplot above, we need to calculate risk adjusted estimates within each `rm` group. The `gg_partial_coplot` function is a wrapper for generating a list of `randomForestSRC::plot.variable` objects. The function generates a partial plot from the `randomForestSRC::rfsrc` object, in the `xvar` variable, using subsets of the training data set, defined by the `groups` argument. 
+By characterizing conditional plots as stratified variable dependence plots, the next logical step would be to generate an analogous partial dependence conditional plot. The process is similar to variable dependence coplots, first determine conditional group membership, then calculate the partial dependence estimates on each subgroup using the `randomForestSRC::plot.variable` function using the `subset` argument on each grouping. 
+
+The `ggRandomForests::gg_partial_coplot` function is a wrapper for generating conditional partial dependence data object. Given a `randomForestSRC::rfsrc` and a `groups` vector for conditioning the training data set observations, `gg_partial_coplot` calls the `randomForestSRC::plot.variable` function for each set of training set observations conditional on `groups`. The function returns a `gg_partial_coplot` object, a sub class of the `gg_partial` object, which can be plotted with the `plot.gg_partial` function.
+
+The following code block will generate the data object for creating partial dependence coplot of the predicted median home value as a function of lower status percentage (`lstat`) conditional on membership within the 6 groups of average number of rooms (`rm`) "intervals" we examined in the previous section.
+
 ```{r prtl-copl, eval=FALSE}
 partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
                                            groups=rm_grp,
                                            show.plots=FALSE)
 ```
 
-The `gg_partial_coplot` function is computationally expensive as it needs to make a call to `randomForestSRC::plot.variable` for each group in the set. Therefore, we again use a cached copy of the data in the following code block, stored in the `Boston_prtl_coplot` data set within `ggRandomForests`.
+Since the `gg_partial_coplot` makes a call to `randomForestSRC::plot.variable` for each group (6) in the conditioning set, we again resort to the data caching strategy, and load the stored result data from the `ggRandomForests` package. 
 
-```{r prtl-coplots, fig.cap="Partial Coplots. Risk adjusted predicted median value as a function of Lower Status, within groups of average number of rooms.", fig.width=7, fig.height=5}
-data(partial_coplots_Boston)
-ggpl <- plot(partial_coplots_Boston, se=FALSE)+
-  labs(x=st.labs["lstat"], y="Median Value", 
+```{r prtl-coplots, fig.cap="Partial Coplots. Risk adjusted predicted median value as a function of Lower Status, conditional on groups of average number of rooms.", fig.width=7, fig.height=5}
+# Load the stored partial coplot data.
+data(partial_coplot_Boston)
+
+# Partial coplot
+ggpl <- plot(partial_coplot_Boston, se=FALSE)+
+  labs(x=st.labs["lstat"], y=st.labs["medv"], 
        color="Room", shape="Room")+
   scale_color_brewer(palette="Set1")
 ggpl
 ```
 
+Unlike variable dependence coplots, we do not need to use the panel format for partial dependence coplots because we are looking risk adjusted estimates (points) instead of population estimates. The figure shows a loess curve through the point estimates conditional on the room interval grouping. The figure again indicates that larger homes (average room size from 6.87 and up, shown in yellow) have a higher median value then the others. In neighborhoods with higher percentage of low status population, the Median values decrease with number of rooms until it stabilizes from the intervals between 5.73 and 6.47, then decreases again for homes smaller than 5.73. In higher status neighborhoods, the effect of smaller homes is not noticeable.
+
+We can view the partial coplot curves as slices along a surface going into the page, either along increasing or decreasing average room size. This is made more difficult by our choice to select groups of similar population size, as the curves are not evenly spaced along the `rm` variable. We return to this problem in the next section. 
+
+Turning back to the alternative view, for partial dependence coplot of the predicted median home value as a function of average number of rooms (`rm`) conditional on membership within the 6 groups of lower status percentage (`lstat`)  "intervals", we will cache the following `gg_partial_coplot` data call.
+
 ```{r prtl-copl2, eval=FALSE}
-partial_coplots_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm", 
+partial_coplot_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm", 
                                             groups=lstat_grp,
-                                        show.plots=FALSE)
+                                            show.plots=FALSE)
 ```
 
-```{r prtl-coplots2, fig.cap="Partial Coplots. Risk adjusted predicted median value as a function of Rooms, within groups of Lower Status.", fig.width=7, fig.height=5}
-data(partial_coplots_Boston2)
-ggpl <- plot(partial_coplots_Boston2, se=FALSE)+
-  labs(x=st.labs["rm"], y="Median Value", 
+The `plot.gg_variable` call:
+```{r prtl-coplots2, fig.cap="Partial Coplots. Risk adjusted predicted median value as a function of average number of rooms, conditional on groups of percentage of lower status population.", fig.width=7, fig.height=5}
+# Load the stored partial coplot data.
+data(partial_coplot_Boston2)
+
+# Partial coplot
+ggpl <- plot(partial_coplot_Boston2, se=FALSE)+
+  labs(x=st.labs["rm"], y=st.labs["medv"], 
        color="Lower Status", shape="Lower Status")+
   scale_color_brewer(palette="Set1")
 ggpl
 ```
 
-## A surface?<a name="coplotsurface"></a>
-```{r prtl-surface, eval=FALSE}
-rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=50)
-rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+This figure indicates that the median home value does not change much until the average size increases above 6.5 rooms, then flattens again above 8 rooms, regardless of the status of the neighborhood. This agrees well with the `rm` partial plot shown earlier. Care must be taken in interpreting the even spacing of the curves along the percentage of lower status groupings, as again, we chose these groups to have similar sized populations, not to be evenly spaced along the `lstat` variable. 
 
-system.time(partial_coplots_Boston_surf <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
+## Partial coplot surfaces<a name="coplotsurface"></a>
+
+Visualizing two dimensional projections of three dimensional data is difficult, though there are tools available to make the data more understandable. To make the interplay of lower status and average room size a bit more understandable, we will generate a contour plot of the median home values. We could generate this figure with the data we already have, but the resolution would be a bit strange. To generate the `lstat` conditional on '`rm` groupings, we would end up with contours over a grid of $25 \times 6$, for the alternative `rm` conditional on `lstat` groups, we'd have the transpose grid of $6 \times 25$. 
+
+Since we are already using the data caching strategy, we will generate another `gg_partial_coplot` data set with increased resolution in both the `lstat` and `rm` dimensions. For this exercise, we will create 50 `rm` groups and generate the partial plot data at `npts=50` points in the `plot.variable` call. First generate the 50 `rm` groups, each containing around 9 observations.     
+
+```{r def-pts}
+# Find the quantile points to create 50 interval groups
+rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=50)
+
+# generate the grouping intervals.
+rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+```
+
+Then the data call to generate the `gg_partial_coplot` data object. This took about 15 minutes to run on a quad core Mac Air.
+```{r prtl-surface, eval=FALSE}
+# Generate the gg_partial_coplot data object
+system.time(partial_coplot_Boston_surf <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
                                                  groups=rm_grp, npts=50,
                                                  show.plots=FALSE))
 
@@ -435,34 +504,38 @@ system.time(partial_coplots_Boston_surf <- gg_partial_coplot(rfsrc_Boston, xvar=
 # 848.266  79.705 934.584 
 ```
 
-```{r surf3d, fig.cap="Partial coplot surface.", eval=FALSE, echo=FALSE}
-data(partial_coplots_Boston_surf)
+The `gg_partial_coplot` data object is included as a data set in the `ggRandomForests` package. We load the data, attach numeric values for the `rm` groups, and generate the figure.
 
-# Get the estimates.
-yhat.tmp <- lapply(unique(partial_coplots_Boston_surf$group), 
-                   function(grp){partial_coplots_Boston_surf[which(partial_coplots_Boston_surf$group==grp),"yhat"]})
+```{r contour3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5}
+# Load the stored partial coplot data.
+data(partial_coplot_Boston_surf)
 
-# The lstat points, repeated columns
-lstat.tmp <- lapply(unique(partial_coplots_Boston_surf$group), 
-                    function(grp){partial_coplots_Boston_surf[which(partial_coplots_Boston_surf$group==grp),"lstat"]})
+# Instead of groups, we want the raw rm point values,
+# To make the dimensions match, we need to repeat the values
+# for each of the 50 points in the lstat direction
+rm.tmp <- do.call(c,lapply(rm_pts[-1], 
+                 function(grp){rep(grp, 50)}))
 
-# The rm points, repeated rows
-rm.tmp <- lapply(unique(partial_coplots_Boston_surf$group), 
-                 function(grp){rm_pts[-1]})
+# attach the data to the gg_partial_coplot
+partial_coplot_Boston_surf$rm <- rm.tmp
 
-yhat.tmp <- do.call(cbind,yhat.tmp)
-lstat.tmp <- do.call(cbind,lstat.tmp)
-rm.tmp <- do.call(cbind,rm.tmp)
-
-wireframe(yhat.tmp~lstat.tmp*rm.tmp, xlab="lstat", ylab="rm", zlab="medv",
-          drape = TRUE,
-  colorkey = FALSE)
-
-#   screen = list(z = 60, x = 60))
-
+# ggplot2 contour plot of x, y and z data.
+ggplot(partial_coplot_Boston_surf, aes(x=lstat, y=rm, z=yhat))+
+  stat_contour(aes(colour = ..level..), binwidth = 1)+
+  labs(x=st.labs["lstat"], y=st.labs["rm"], 
+       color="Median Home Values")+
+  scale_colour_gradientn(colours=topo.colors(10))
 ```
 
+This figure reinforces the previous findings, where lower home values are associated with higher percentage of lower status population, and higher values are associated with larger homes. The difference in this figure is we see how the values change as we move around the map of `lstat` and `rm` combinations. 
+
 # Conclusion<a name="conclusion"></a>
+
+In this vignette, we have demonstrated using the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests)  to explore a regression random forest built with the [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) package. Have covered [creating a random forest model](#rfsrc) and determining which variables contribute to the forest prediction accuracy using both [VIMP](#vimp) and [Minimal Depth](#minimaldepth) measures. We outlined how to investigate variable associations with the response variable using [variable dependence](#variabledependence) and the risk adjusted [partial dependence](#partialdependence) plots. We've also explored variable interactions by exploring the forest construction with pairwise [minimal depth interactions](#interactions) and directly using [variable dependence coplots](#coplots) and [partial dependence coplots](#partialcoplots).
+
+Along the way, we've demonstrated the use of additional commands from the [ggplot2](http://CRAN.R-project.org/package=ggplot2) package for modifying and customizing results from [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests). 
+
+
 
 
 # References<a name="references"></a>

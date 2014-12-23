@@ -261,7 +261,7 @@ print(xtable(dta.labs %>% select(-names),
 
 <<gg_survival, fig.cap="Kaplan-Meier pbc data survival estimates comparing the treatment with placebo. Mean survival with shaded 95\\% condfidence band.", echo=TRUE>>=
 gg_dta <- gg_survival(interval="years",censor="status", 
-                      strat="treatment", data=pbc )
+                      strat="treatment", data=pbc[-which(is.na(pbc$treatment)),] )
 plot(gg_dta, se=.95) +
   labs(y="Survival Probability", x="Observation Time (years)", 
        color="Treatment", fill="Treatment")+
@@ -269,7 +269,7 @@ plot(gg_dta, se=.95) +
 @
 
 <<gg_survival-bili, fig.cap="Kaplan-Meier pbc data survival estimates comparing Bilirubin measures.", echo=TRUE, fig.width=5>>=
-pbc.alt <- pbc
+pbc.alt <- pbc[-which(is.na(pbc$treatment)),]
 pbc.alt$bili_grp <- cut(pbc.alt$bili, 
                         breaks=c(0,.8,1.3,3.4,max(pbc.alt$bili)))
 
@@ -447,7 +447,7 @@ plot(ggrf, xvar = xvar[1], se=.95, alpha=.3) +
 @
 
 <<variable-plotCombines, echo = TRUE, fig.cap = "Variable dependence plots at 1 and 3 years for continuous variables age, albumin, copper and prothrombin. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve indicates the survival trend with increasing variable value.", fig.width = 7, fig.height = 4>>= 
-plot(ggrf, xvar = xvar[-1], panel = TRUE, 
+plot(ggrf, xvar = xvar[-c(1,7)], panel = TRUE, 
      se=FALSE, alpha=.3, 
      method="glm", formula=y~poly(x,2)) + 
   labs(y = "Survival") + 
@@ -513,7 +513,7 @@ Non-proportional hazards are evident in Figure~\ref{fig:pbc-partial-bili}.
 <<pbc-partial-panel, echo = TRUE, fig.cap = "Partial dependence plot of (risk adjusted) predicted survival probability as a function continuous variables prothrombin time, albumin, age and urin copper at 1 year (red circle) and 3 years (blue triangle).", fig.width = 7, fig.height = 4, eveal=FALSE>>= 
 # Create a temporary holder and remove the bilirubin and edema data
 ggpart <- pbc_ggpart
-#ggpart$bili <- ggpart$edema <- NULL
+ggpart$edema <- NULL
 
 # Panel plot the remainder.
 plot(ggpart, se = FALSE, panel = TRUE) + 
@@ -601,7 +601,7 @@ var_dep
 @
 
 <<build-bili-albumin, eval=FALSE>>=
-partial_coplots_pbc <- gg_partial_coplot(rfsrc_pbc, xvar="bili", 
+partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar="bili", 
                                          groups=albumin_grp, 
                                          surv_type="surv", 
                                          time=1, 
@@ -609,8 +609,8 @@ partial_coplots_pbc <- gg_partial_coplot(rfsrc_pbc, xvar="bili",
 @
 
 <<bili-albumin, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by albumin groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width = 7, fig.height = 4, echo=TRUE>>=
-data(partial_coplots_pbc, package="ggRandomForests")
-ggpl <- ggplot(partial_coplots_pbc, aes(x=bili, y=yhat, 
+data(partial_coplot_pbc, package="ggRandomForests")
+ggpl <- ggplot(partial_coplot_pbc, aes(x=bili, y=yhat, 
                                           shape=group, 
                                           color=group))+
   geom_point()+geom_smooth(se=FALSE)+

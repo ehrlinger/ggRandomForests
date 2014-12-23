@@ -2,11 +2,11 @@
 % Please edit documentation in R/partial_coplot_data.R
 \docType{data}
 \name{partial_coplot_data}
+\alias{partial_coplot_Boston}
+\alias{partial_coplot_Boston2}
+\alias{partial_coplot_Boston_surf}
 \alias{partial_coplot_data}
-\alias{partial_coplots_Boston}
-\alias{partial_coplots_Boston2}
-\alias{partial_coplots_Boston_surf}
-\alias{partial_coplots_pbc}
+\alias{partial_coplot_pbc}
 \title{Cached \code{randomForestSRC::plot.variable} objects for examples, diagnostics and vignettes.}
 \format{List of \code{randomForestSRC::plot.variable} objects}
 \description{

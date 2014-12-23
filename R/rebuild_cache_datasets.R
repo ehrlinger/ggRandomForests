@@ -153,7 +153,7 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     cat("Boston: RF partial dependence\n(this will take a little while...)\n")
     partial_Boston <- plot.variable(rfsrc_Boston,
-                                    xvar=varsel_Boston$topvars,
+                                    xvar.names=varsel_Boston$topvars,
                                     sorted=FALSE,
                                     partial=TRUE, 
                                     show.plots=FALSE)
