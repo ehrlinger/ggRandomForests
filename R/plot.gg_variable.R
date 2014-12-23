@@ -162,6 +162,7 @@ plot.gg_variable<- function(x, xvar,
       gg_dta.mlt <- gg_dta %>% select(c(wchYvar, wchXvar)) %>%
       gather(variable, value,-time, -yhat, -cens)
       
+      gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
       gg_plt <- ggplot(gg_dta.mlt)+
       labs(y= "Survival") +
       geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
@@ -194,12 +195,12 @@ plot.gg_variable<- function(x, xvar,
       if(family=="class"){
         gg_dta.mlt <- gg_dta %>% select(c(wchYvar, wchXvar), yvar) %>%
         gather(variable, value, -yhat, -yvar)
+        
       }else{
         gg_dta.mlt <- gg_dta %>% select(c(wchYvar, wchXvar)) %>%
         gather(variable, value, -yhat)
       }
-      gg_dta.mlt$variable <- factor(gg_dta.mlt$variable,
-                                    levels=unique(gg_dta.mlt$variable))
+      gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
       
       gg_plt <- ggplot(gg_dta.mlt)
       

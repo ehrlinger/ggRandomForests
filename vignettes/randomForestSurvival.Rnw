@@ -133,8 +133,8 @@ event.marks = c(1, 4)
 event.labels = c(FALSE, TRUE)
 strCol <- brewer.pal(3, "Set1")
 strCol <- c(strCol[2], strCol[1])
-
 @
+
 \begin{document}
 % -----------------------------------------------------
 \section{About this document}
@@ -256,7 +256,6 @@ print(xtable(dta.labs %>% select(-names),
                    '\\midrule' , 
                    '\\bottomrule ')
       )
-
 @
 
 
@@ -285,7 +284,8 @@ plot(gg_dta, error="none") +
 
 <<xtab, results="asis">>=
 fleming.table <- data.frame(matrix(ncol=3, nrow=5))
-rownames(fleming.table) <- c("Age", "log(Albumin)", "log(Bilirubin", "Edema", "log(Prothrombin Time)")
+rownames(fleming.table) <- 
+  c("Age", "log(Albumin)", "log(Bilirubin", "Edema", "log(Prothrombin Time)")
 colnames(fleming.table) <- c("Coef.", "Std. Err.", "Z stat.")
 fleming.table[,1] <- c(0.0333, -3.0553,0.8792, 0.7847, 3.0157) 
 fleming.table[,2] <- c(0.00866, 0.72408,0.09873,0.29913,1.02380) 
@@ -310,8 +310,8 @@ print(xtable(fleming.table,
 
 <<rfsrc, echo = TRUE, eval = FALSE>>= 
 rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., data = pbc, 
-                nsplit = 10, 
-                na.action = "na.impute")
+                   nsplit = 10, 
+                   na.action = "na.impute")
 rfsrc_pbc
 @
 
@@ -353,7 +353,7 @@ gg_src
 @
 
 <<rfsrc-mean2, fig.cap = "Mean value random forest predicted survival with shaded 95\\% confidence band.">>= 
-gg_src <- plot.gg_rfsrc(rfsrc_pbc,  level=.95) + 
+gg_src <- plot.gg_rfsrc(rfsrc_pbc, by="treatment", level=.95) + 
   scale_color_manual(values = strCol) + 
   theme(legend.position = "none") + 
   labs(y = "Survival Probability", x = "time (years)")+
@@ -434,7 +434,7 @@ ggRFsrc +
 @
 
 <<variable-plotbili, echo = TRUE, fig.cap = "Bilirubin variable dependence at 1 and 3 years. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve with shaded 95\\% confidence band indicates the survival trend with increasing bilirubin.", fig.height = 4>>= 
-xvar <- varsel_pbc$topvars[1:6]
+xvar <- varsel_pbc$topvars[1:7]
 
 ggrf <- gg_variable(rfsrc_pbc, time = c(1, 3), 
                     time.labels = c("1 Year", "3 Years"))
@@ -447,7 +447,7 @@ plot(ggrf, xvar = xvar[1], se=.95, alpha=.3) +
 @
 
 <<variable-plotCombines, echo = TRUE, fig.cap = "Variable dependence plots at 1 and 3 years for continuous variables age, albumin, copper and prothrombin. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve indicates the survival trend with increasing variable value.", fig.width = 7, fig.height = 4>>= 
-plot(ggrf, xvar = xvar[c(2,3,4,6)], panel = TRUE, 
+plot(ggrf, xvar = xvar[-1], panel = TRUE, 
      se=FALSE, alpha=.3, 
      method="glm", formula=y~poly(x,2)) + 
   labs(y = "Survival") + 
@@ -480,10 +480,10 @@ Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month su
 # Calculate the 1, 3 and 5 year partial dependence
 partial_pbc <- lapply(c(1,3,5), function(tm){
   plot.variable(rfsrc_pbc, surv.type = "surv", 
-                          time = tm, 
-                          xvar.names = xvar, partial = TRUE, 
-                          show.plots = FALSE)
-})
+                time = tm, 
+                xvar.names = xvar, partial = TRUE, 
+                show.plots = FALSE)
+  })
 @
 
 <<pbc-partial-load>>= 
@@ -550,7 +550,7 @@ plot(gg_interaction(interaction_pbc), xvar = "bili") +
 
 Measuring interactions with minimal depth results a $p \times p$ matrix of interaction measures, with smaller diagonal measures relative to the root node, and off diagonal measures of pairwise interaction. We expect the covariate with smallest minimal depth to have the highest interactive depth measures, so viewed alone may not be as informative as looking at other interactive depth plots. Figure~\ref{fig:interactionPanel} combines the remaining top ranked minimal depth measures for comparison.
 <<interactionPanel, echo = TRUE, fig.cap = "Minimal depth variable interaction panel with prothrombin time, albumin, urine copper and edema. Higher values indicate lower interactivity with target variable.", fig.width = 7, fig.height = 4>>= 
-plot(gg_interaction(interaction_pbc), xvar = xvar[2:5]) + 
+plot(gg_interaction(interaction_pbc), xvar = xvar[-1]) + 
   labs(y = "Interactive Minimal Depth") + 
   theme(legend.position = "none")
 @
@@ -601,18 +601,18 @@ var_dep
 @
 
 <<build-bili-albumin, eval=FALSE>>=
-pbc_prtl_bili_albumin <- gg_partial_coplot(rfsrc_pbc, xvar="bili", 
-                                           groups=albumin_grp, 
-                                           surv_type="surv", 
-                                           time=1, 
-                                           show.plots=FALSE)
+partial_coplots_pbc <- gg_partial_coplot(rfsrc_pbc, xvar="bili", 
+                                         groups=albumin_grp, 
+                                         surv_type="surv", 
+                                         time=1, 
+                                         show.plots=FALSE)
 @
 
 <<bili-albumin, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by albumin groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width = 7, fig.height = 4, echo=TRUE>>=
-data(pbc_prtl_bili_albumin, package="ggRandomForests")
-ggpl <- ggplot(pbc_prtl_bili_albumin, aes(x=bili, y=yhat, 
-                                          shape=groups, 
-                                          color=groups))+
+data(partial_coplots_pbc, package="ggRandomForests")
+ggpl <- ggplot(partial_coplots_pbc, aes(x=bili, y=yhat, 
+                                          shape=group, 
+                                          color=group))+
   geom_point()+geom_smooth(se=FALSE)+
   labs(x=st.labs["bili"], y="Survival 1 year", 
        color="Albumin", shape="Albumin")+

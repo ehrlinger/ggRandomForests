@@ -1,29 +1,58 @@
 #' Recreate the cached data sets for the ggRandomForests package
 #' 
 #' @param set Defaults to all sets (NA), however for individual sets specify one 
-#' or more of c("airq", "iris", "mtcars", "pbc", "veteran", "Boston")
+#' or more of c("airq", "Boston", "iris", "mtcars", "pbc", "veteran")
 #' @param save Defaults to write files to the current data directory.
 #' @param pth the directory to store files.
 #' @param ... extra arguments passed to randomForestSRC functions.
 #' 
-#' ggRandomForests operates directly on randomForestSRC objects. In order to 
-#' improve performance on function examples and package tests and checks,
-#' a set of precompiled randomForestSRC objects are stored in the package
-#' data subfolder, however version changes in the dependant package and break
-#' some functionality. 
+#' @details
+#' Constructing random forests are computationally expensive, and the
+#' \code{ggRandomForests} operates directly on \code{randomForestSRC} objects.
+#' We cache computationally intensive \code{randomForestSRC} objects to improve 
+#' the \code{ggRandomForests} examples, diagnostics and vignettes run times. The
+#' set of precompiled \code{randomForestSRC} objects are stored in the package
+#' data subfolder, however version changes in the dependant packages may break
+#' some functionality. This function was created to help the package developer 
+#' deal with thoses changes. We make the function available to end users to
+#' create objects for further experimentation.
 #'
-#' @details This function was created to help the package developer deal with changes 
-#' in the randomForestSRC package during version iterations. 
+#' There are five cached data set types:
+#' '\itemize{
+#' \item \code{\link{rfsrc_data}} - \code{randomForestSRC::rfsrc} objects. 
+#' \item \code{\link{varsel_data}} - \code{randomForestSRC::var.select} minimal depth variable 
+#' selection objects.
+#' \item \code{\link{interaction_data}} - \code{randomForestSRC::find.interaction} minimal depth, 
+#' pairwise variable interaction matrices.
+#' \item \code{\link{partial_data}} - \code{randomForestSRC::plot.variable} objects 
+#' (\code{partial=TRUE}) for partial variable dependence. 
+#' \item \code{\link{partial_coplot_data}} - \code{randomForestSRC::plot.variable} objects 
+#' (\code{partial=TRUE}) for partial variable dependence. 
+#' }
+#' 
+#' For the following data sets:
+#' #'\itemize{
+#' \item \code{_iris} - The \code{iris} data set. 
+#' \item \code{_airq} - The \code{airquality} data set.
+#' \item \code{_mtcars} - The \code{mtcars} data set.
+#' \item \code{_Boston} - The \code{Boston} housing data set (\code{MASS} package).
+#' \item \code{_pbc} - The \code{pbc} data set (\code{randomForestSRC} package).  
+#' \item \code{_veteran} - The \code{veteran} data set (\code{randomForestSRC} package).  
+#' }
+#' 
+#' @seealso \code{iris} \code{airq} \code{mtcars} \code{MASS::Boston} 
+#' \code{randomForestSRC::pbc}
+#' \code{randomForestSRC::veteran} 
+#' \code{\link{rfsrc_data}} 
+#' \code{\link{varsel_data}}
+#' \code{\link{interaction_data}}
+#' \code{\link{partial_data}} 
+#' \code{\link{partial_coplot_data}}
 #' 
 #' @export rebuild_cache_datasets
 #' 
 #' @importFrom randomForestSRC rfsrc var.select plot.variable find.interaction
 #' @importFrom dplyr filter
-#' 
-#' @examples
-#' \dontrun{
-#' rebuild_cache_datasets()
-#' }
 #'
 #'
 rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
@@ -44,7 +73,7 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
   }
   
   if(is.na(set))
-    set <- c("airq", "iris", "mtcars", "pbc", "veteran", "Boston")
+    set <- c("airq", "Boston", "iris", "mtcars", "pbc", "veteran")
   
   if("airq" %in% set){
     cat("airq: randomForest\n")
@@ -123,7 +152,11 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(save) save(interaction_Boston, file=paste(pth, "interaction_Boston.rda", sep=""), compress="xz")
     
     cat("Boston: RF partial dependence\n(this will take a little while...)\n")
-    partial_Boston <- plot.variable(rfsrc_Boston,partial=TRUE, show.plots = FALSE )
+    partial_Boston <- plot.variable(rfsrc_Boston,
+                                    xvar=varsel_Boston$topvars,
+                                    sorted=FALSE,
+                                    partial=TRUE, 
+                                    show.plots=FALSE)
     if(save) save(partial_Boston, file=paste(pth, "partial_Boston.rda", sep=""), compress="xz")
     
     cat("\nBoston: RF partial coplots\n\tlstat by rm groups\n(this will take a little longer...)\n")
@@ -203,7 +236,7 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     # Calculate the partial dependence
     cat("pbc: RF partial plots\n(this will take a little while...)\n")
-    xvar <- varsel_pbc$topvars[1:6]
+    xvar <- varsel_pbc$topvars[1:7]
     
     partial_pbc <- lapply(c(1,3,5), function(tm){
       plot.variable(rfsrc_pbc, surv.type = "surv", 

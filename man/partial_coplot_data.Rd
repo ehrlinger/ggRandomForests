@@ -6,6 +6,7 @@
 \alias{partial_coplots_Boston}
 \alias{partial_coplots_Boston2}
 \alias{partial_coplots_Boston_surf}
+\alias{partial_coplots_pbc}
 \title{Cached \code{randomForestSRC::plot.variable} objects for examples, diagnostics and vignettes.}
 \format{List of \code{randomForestSRC::plot.variable} objects}
 \description{

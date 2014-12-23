@@ -73,7 +73,7 @@
 #'  J. Environ. Economics and Management 5: 81-102.
 #' 
 #' 
-#' @aliases partial_coplot_data partial_coplots_Boston partial_coplots_Boston2 partial_coplots_Boston_surf
+#' @aliases partial_coplot_data partial_coplots_Boston partial_coplots_Boston2 partial_coplots_Boston_surf partial_coplots_pbc
 #' @docType data
 #' @keywords datasets
 #' @format List of \code{randomForestSRC::plot.variable} objects
@@ -81,4 +81,6 @@
 #' @name partial_coplot_Boston
 #' @name partial_coplot_Boston2
 #' @name Boston_lstat_rm
+#' @name partial_coplots_pbc
+#' 
 NULL

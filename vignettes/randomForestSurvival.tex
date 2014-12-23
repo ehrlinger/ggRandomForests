@@ -140,7 +140,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sun Dec 21 15:29:15 2014
+% Mon Dec 22 09:52:29 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -220,7 +220,7 @@ R> plot(gg_dta, error="none") +
 \end{Schunk}
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sun Dec 21 15:29:16 2014
+% Mon Dec 22 09:52:30 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -245,8 +245,8 @@ Age & 0.0333 & 0.0087 & 3.8400 \\
 \begin{Schunk}
 \begin{Sinput}
 R> rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., data = pbc, 
-+                 nsplit = 10, 
-+                 na.action = "na.impute")
++                    nsplit = 10, 
++                    na.action = "na.impute")
 R> rfsrc_pbc
 \end{Sinput}
 \end{Schunk}
@@ -458,7 +458,7 @@ R> ggRFsrc +
 
 \begin{Schunk}
 \begin{Sinput}
-R> xvar <- varsel_pbc$topvars[1:6]
+R> xvar <- varsel_pbc$topvars[1:7]
 R> 
 R> ggrf <- gg_variable(rfsrc_pbc, time = c(1, 3), 
 +                     time.labels = c("1 Year", "3 Years"))
@@ -481,7 +481,7 @@ R> plot(ggrf, xvar = xvar[1], se=.95, alpha=.3) +
 
 \begin{Schunk}
 \begin{Sinput}
-R> plot(ggrf, xvar = xvar[c(2,3,4,6)], panel = TRUE, 
+R> plot(ggrf, xvar = xvar[-1], panel = TRUE, 
 +      se=FALSE, alpha=.3, 
 +      method="glm", formula=y~poly(x,2)) + 
 +   labs(y = "Survival") + 
@@ -534,10 +534,10 @@ Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of three month su
 R> # Calculate the 1, 3 and 5 year partial dependence
 R> partial_pbc <- lapply(c(1,3,5), function(tm){
 +   plot.variable(rfsrc_pbc, surv.type = "surv", 
-+                           time = tm, 
-+                           xvar.names = xvar, partial = TRUE, 
-+                           show.plots = FALSE)
-+ })
++                 time = tm, 
++                 xvar.names = xvar, partial = TRUE, 
++                 show.plots = FALSE)
++   })
 \end{Sinput}
 \end{Schunk}
 
@@ -631,7 +631,7 @@ R> plot(ggint, xvar = "bili") +
 Measuring interactions with minimal depth results a $p \times p$ matrix of interaction measures, with smaller diagonal measures relative to the root node, and off diagonal measures of pairwise interaction. We expect the covariate with smallest minimal depth to have the highest interactive depth measures, so viewed alone may not be as informative as looking at other interactive depth plots. Figure~\ref{fig:interactionPanel} combines the remaining top ranked minimal depth measures for comparison.
 \begin{Schunk}
 \begin{Sinput}
-R> plot(gg_interaction(interaction_pbc), xvar = xvar[2:5]) + 
+R> plot(gg_interaction(interaction_pbc), xvar = xvar[-1]) + 
 +   labs(y = "Interactive Minimal Depth") + 
 +   theme(legend.position = "none")
 \end{Sinput}
@@ -724,10 +724,10 @@ R> var_dep
 
 \begin{Schunk}
 \begin{Sinput}
-R> data(pbc_prtl_bili_albumin, package="ggRandomForests")
-R> ggpl <- ggplot(pbc_prtl_bili_albumin, aes(x=bili, y=yhat, 
-+                                           shape=groups, 
-+                                           color=groups))+
+R> data(partial_coplots_pbc, package="ggRandomForests")
+R> ggpl <- ggplot(partial_coplots_pbc, aes(x=bili, y=yhat, 
++                                           shape=group, 
++                                           color=group))+
 +   geom_point()+geom_smooth(se=FALSE)+
 +   labs(x=st.labs["bili"], y="Survival 1 year", 
 +        color="Albumin", shape="Albumin")+

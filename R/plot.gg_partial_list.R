@@ -114,6 +114,8 @@ plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
     # and rename the value column to "value"
     nms <- names(gg_dta)
     
+    cls <- sapply(nms, function(nm){class(gg_dta[[nm]][,nm])})
+    
     gg_dta <- mclapply(nms, function(nm){
       obj <- gg_dta[[nm]]
       colnames(obj)[which(colnames(obj)==nm)]  <- "value"
@@ -123,21 +125,28 @@ plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
     
     gg_dta <- do.call(rbind, gg_dta)
     gg_dta$variable <- factor(gg_dta$variable,
-                                  levels=unique(gg_dta$variable))
+                              levels=unique(gg_dta$variable))
     
     if(is.null(gg_dta$group)){
       gg_plt <- ggplot(gg_dta,
-                     aes_string(x="value", y="yhat"))
+                       aes_string(x="value", y="yhat"))
       
     }else{
       gg_plt <- ggplot(gg_dta,
-                     aes_string(x="value", y="yhat", color="group", shape="group"))
+                       aes_string(x="value", y="yhat", color="group", shape="group"))
     }
-    gg_plt <- gg_plt +
+    
+    if(sum(which(cls=="factor")==length(cls))){
+      gg_plt <- gg_plt +
+      geom_boxplot(...)
+    }else{
+      gg_plt <- gg_plt +
       geom_point(...)+
-      geom_smooth(...)+
-      facet_wrap(~ variable,
-                 scales="free_x")
+      geom_smooth(...)
+    }
+    gg_plt <- gg_plt+
+    facet_wrap(~ variable,
+               scales="free_x")
   }else{
     # OR a list of figures.
     gg_plt <- vector("list", length=lng)

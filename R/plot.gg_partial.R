@@ -128,9 +128,6 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess", ...){
     }
   }else{
     gg_plt<- gg_plt+geom_boxplot(...)
-    if(points)  
-      gg_plt<- gg_plt+geom_jitter( ...)
-    
   }
   
   return(gg_plt)
