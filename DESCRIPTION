@@ -27,4 +27,5 @@ Suggests:
     RColorBrewer,
     knitr,
     xtable,
-    MASS
+    MASS, 
+    plot3D

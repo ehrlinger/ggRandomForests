@@ -1,5 +1,5 @@
 ---
-title: 'ggRandomForests: Exploring a Random Forest for Regression'
+title: 'ggRandomForests: Visually Exploring a Random Forest for Regression'
 author: "John Ehrlinger<br/>Assistant Staff<br/>Quantitative Health Sciences<br/>Lerner Research Institute<br/>Cleveland Clinic"
 date: "`r today <- Sys.Date();format(today, format='%B %d %Y')`"
 output: 
@@ -53,7 +53,7 @@ library(randomForestSRC)
 library(RColorBrewer)
 
 library(xtable)
-#library(plot3D)
+library(plot3D)
 
 options(mc.cores = 1, rf.cores = 1)
 
@@ -506,7 +506,7 @@ system.time(partial_coplot_Boston_surf <- gg_partial_coplot(rfsrc_Boston, xvar="
 
 The `gg_partial_coplot` data object is included as a data set in the `ggRandomForests` package. We load the data, attach numeric values for the `rm` groups, and generate the figure.
 
-```{r contour3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5}
+```{r contour3d, fig.cap="Partial coplot contour plot.", fig.width=7, fig.height=5}
 # Load the stored partial coplot data.
 data(partial_coplot_Boston_surf)
 
@@ -529,13 +529,27 @@ ggplot(partial_coplot_Boston_surf, aes(x=lstat, y=rm, z=yhat))+
 
 This figure reinforces the previous findings, where lower home values are associated with higher percentage of lower status population, and higher values are associated with larger homes. The difference in this figure is we see how the values change as we move around the map of `lstat` and `rm` combinations. 
 
+```{r surface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5}
+yhat.tmp <- lapply(unique(partial_coplot_Boston_surf$group), 
+                   function(grp){partial_coplot_Boston_surf$yhat[which(partial_coplot_Boston_surf$group==grp)]})
+rm.tmp <- lapply(unique(partial_coplot_Boston_surf$group), 
+                 function(grp){partial_coplot_Boston_surf$rm[which(partial_coplot_Boston_surf$group==grp)]})
+lstat.tmp <- lapply(unique(partial_coplot_Boston_surf$group), 
+                    function(grp){partial_coplot_Boston_surf$lstat[which(partial_coplot_Boston_surf$group==grp)]})
+
+rm.tmp <- do.call(rbind, rm.tmp)
+lstat.tmp <- do.call(rbind, lstat.tmp)
+yhat.tmp <- do.call(rbind, yhat.tmp)
+
+surf3D(x=lstat.tmp, y=rm.tmp, z=yhat.tmp,
+       colkey=FALSE, border = "black",
+       bty="b2", xlab="Lower Status", ylab="Average Rooms", zlab="Median Value")
+```
+
 # Conclusion<a name="conclusion"></a>
 
 In this vignette, we have demonstrated using the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests)  to explore a regression random forest built with the [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) package. Have covered [creating a random forest model](#rfsrc) and determining which variables contribute to the forest prediction accuracy using both [VIMP](#vimp) and [Minimal Depth](#minimaldepth) measures. We outlined how to investigate variable associations with the response variable using [variable dependence](#variabledependence) and the risk adjusted [partial dependence](#partialdependence) plots. We've also explored variable interactions by exploring the forest construction with pairwise [minimal depth interactions](#interactions) and directly using [variable dependence coplots](#coplots) and [partial dependence coplots](#partialcoplots).
 
 Along the way, we've demonstrated the use of additional commands from the [ggplot2](http://CRAN.R-project.org/package=ggplot2) package for modifying and customizing results from [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests). 
-
-
-
 
 # References<a name="references"></a>
