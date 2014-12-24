@@ -66,7 +66,6 @@
 #' 
 #' @aliases gg_rfsrc
 #'
-#' @importFrom dplyr select
 gg_rfsrc.ggRandomForests <- function(object, 
                                      surv_type=c("surv", "chf", "mortality", "hazard"), 
                                      oob=TRUE,

@@ -23,7 +23,7 @@ test_that("gg_error classifications",{
   expect_equal(dim(ggrf.obj)[2], dim(rfsrc_iris$err.rate)[2]+1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(select(ggrf.obj, -ntree)), rfsrc_iris$err.rate)
+  expect_equivalent(as.matrix(ggrf.obj[, -which(colnames(ggrf.obj)=="ntree")]), rfsrc_iris$err.rate)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_error(ggrf.obj)

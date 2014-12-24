@@ -15,7 +15,7 @@
 %% declarations for jss.cls %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{ggRandomForests}
+%\VignetteIndexEntry{survivalRandomForest}
 %\VignetteIndexEntry{Random Forests for Survival ggRandomForests packages}                     
 %\VignetteKeywords{random forest, survival, VIMP, minimal depth}                                  
 %\VignetteDepends{ggRandomForests}                   
@@ -105,7 +105,7 @@ options(object.size = Inf, expressions = 100000, memory = Inf,
 library(ggplot2) # Graphics engine for generating all types of plots
 
 library(dplyr) # Better data manipulations
-library(tidyr)
+#library(reshape2)
 library(parallel)
 
 library(ggRandomForests)

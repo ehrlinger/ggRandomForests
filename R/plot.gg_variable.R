@@ -42,6 +42,7 @@
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs facet_wrap
 #' @importFrom parallel mclapply
+#' @importFrom reshape2 melt
 #' 
 #' @examples
 #' \dontrun{
@@ -159,8 +160,7 @@ plot.gg_variable<- function(x, xvar,
       
       wchYvar <- which(colnames(gg_dta) %in% c("cens", "yhat", "time"))
       
-      gg_dta.mlt <- gg_dta %>% select(c(wchYvar, wchXvar)) %>%
-      gather(variable, value,-time, -yhat, -cens)
+      gg_dta.mlt <- melt(gg_dta[,c(wchYvar, wchXvar)], id.vars=c("time","yhat","cens"))
       
       gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
       gg_plt <- ggplot(gg_dta.mlt)+
@@ -191,14 +191,13 @@ plot.gg_variable<- function(x, xvar,
       wchXvar <- which(colnames(gg_dta) %in% xvar)
       
       wchYvar <- which(colnames(gg_dta) %in% c("yhat"))
-      
       if(family=="class"){
-        gg_dta.mlt <- gg_dta %>% select(c(wchYvar, wchXvar), yvar) %>%
-        gather(variable, value, -yhat, -yvar)
+        wchYvar <- c(wchYvar, which(colnames(gg_dta)=="yvar"))
+        gg_dta.mlt <- melt(gg_dta[,c(wchYvar, wchXvar)], id.vars=c("yhat", "yvar"))
         
       }else{
-        gg_dta.mlt <- gg_dta %>% select(c(wchYvar, wchXvar)) %>%
-        gather(variable, value, -yhat)
+        gg_dta.mlt <- melt(gg_dta[,c(wchYvar, wchXvar)], id.vars="yhat")
+        
       }
       gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
       

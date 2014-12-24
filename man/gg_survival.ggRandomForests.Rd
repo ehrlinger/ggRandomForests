@@ -30,7 +30,8 @@ Nonparametric survival estimates.
 }
 \details{
 \code{gg_survival} is a wrapper function for generating nonparametric
-survival estimates using either nelson-aalen or kaplan-meier estimates.
+survival estimates using either \code{\link{nelson}}-aalen or
+\code{\link{kaplan}}-meier estimates.
 }
 \examples{
 data(pbc, package="randomForestSRC")

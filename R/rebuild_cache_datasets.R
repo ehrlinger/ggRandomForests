@@ -52,8 +52,6 @@
 #' @export rebuild_cache_datasets
 #' 
 #' @importFrom randomForestSRC rfsrc var.select plot.variable find.interaction
-#' @importFrom dplyr filter
-#'
 #'
 rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
   dta <- new.env()
@@ -160,25 +158,25 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(save) save(partial_Boston, file=paste(pth, "partial_Boston.rda", sep=""), compress="xz")
     
     cat("\nBoston: RF partial coplots\n\tlstat by rm groups\n(this will take a little longer...)\n")
-    rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=6)
+    rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=6)
     rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
-    partial_coplots_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
+    partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
                                                 groups=rm_grp,
                                                 show.plots=FALSE)
     
-    if(save) save(partial_coplots_Boston, 
-                  file=paste(pth, "partial_coplots_Boston.rda", sep=""), 
+    if(save) save(partial_coplot_Boston, 
+                  file=paste(pth, "partial_coplot_Boston.rda", sep=""), 
                   compress="xz")
     
     cat("\nBoston: RF partial coplots\n\trm by lstat groups\n(so will this...)\n")
-    lstat_pts <- cut_distribution(rfsrc_Boston$xvar$lstat, groups=6)
+    lstat_pts <- quantile_cuts(rfsrc_Boston$xvar$lstat, groups=6)
     lstat_grp <- cut(rfsrc_Boston$xvar$lstat, breaks=lstat_pts)
-    partial_coplots_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm", 
+    partial_coplot_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm", 
                                                  groups=lstat_grp,
                                                  show.plots=FALSE)
     
-    if(save) save(partial_coplots_Boston2, 
-                  file=paste(pth, "partial_coplots_Boston2.rda", sep=""), 
+    if(save) save(partial_coplot_Boston2, 
+                  file=paste(pth, "partial_coplot_Boston2.rda", sep=""), 
                   compress="xz")
     
   }

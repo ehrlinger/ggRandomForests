@@ -19,14 +19,17 @@
 #' data(rfsrc_Boston)
 #' 
 #' # To create 6 intervals, we want 7 points. 
-#' # cut_distribution will find balanced intervals 
-#' rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=6)
+#' # quantile_cuts will find balanced intervals 
+#' rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=6)
+#' 
+#' # Use cut to create the intervals
 #' rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+#' 
 #' summary(rm_grp)
 #' 
-#' @export cut_distribution
+#' @export quantile_cuts
 
-cut_distribution <- function(object, groups){
+quantile_cuts <- function(object, groups){
   # We need one more break than group,
   breaks <- groups + 1
   n.x <- length(unique(object))

@@ -73,8 +73,8 @@
 #' plot(gg_dta)
 #' 
 #' }
-#' @importFrom tidyr gather
 #' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot theme element_blank
+#' @importFrom reshape2 melt
 ### error rate plot
 plot.gg_rfsrc<- function(x,
                          level,
@@ -84,10 +84,6 @@ plot.gg_rfsrc<- function(x,
   
   # Unpack argument list
   arg_set <- list(...)
-  
-  # Initialize variables for gather statement... to silence R CMD CHECK
-  #!TODO must be a better way to do this.?select
-  variable <- value <- y <- ptid <- cens <- NA
   
   ## rfsrc places the class in position 1.
   if(inherits(gg_dta, "rfsrc")) gg_dta<- gg_rfsrc(gg_dta, ...)
@@ -104,7 +100,7 @@ plot.gg_rfsrc<- function(x,
                    outlier.colour = "transparent", fill="transparent", notch = TRUE, ...)+
       theme(axis.ticks = element_blank(), axis.text.x = element_blank())
     }else{
-      gg_dta.mlt <- gg_dta$yhat %>% gather(variable, value, -y)
+      gg_dta.mlt <- melt(gg_dta$yhat, id.vars="y")
       gg_plt <- ggplot(gg_dta.mlt, aes_string(x="variable",y="value"))+
       geom_jitter(aes_string(color="y",shape="y"), alpha=.5)
     }
@@ -154,7 +150,7 @@ plot.gg_rfsrc<- function(x,
       }
       
       # Summarized survival plot for the group...
-      gg_dta.t <-  select(dta, time, mean) %>% gather(variable, value,-time)
+      gg_dta.t <-  melt(dta[,c("time", "mean")], id.vars="time")
       
       if(is.null(arg_set$alpha)){
         alph=.3
@@ -168,7 +164,7 @@ plot.gg_rfsrc<- function(x,
       geom_step(aes_string(x="time", y="value", color="variable"), ...)
       
     }else{
-      gg_dta.mlt <- gg_dta$yhat %>% gather(variable, value, -ptid,-cens)
+      gg_dta.mlt <- melt(gg_dta$yhat, id.vars=c("ptid","cens"))
       gg_dta.mlt$variable <- as.numeric(as.character(gg_dta.mlt$variable))
       gg_dta.mlt$ptid <- factor(gg_dta.mlt$ptid)
       

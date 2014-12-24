@@ -16,16 +16,17 @@ Description: ggRandomForests will help uncover variable associations in the rand
 Depends:
     R (>= 3.1.0)
 Imports:
-    ggplot2,
     randomForestSRC (>= 1.5.5),
+    ggplot2,
     survival,
-    tidyr,
+    parallel,
     dplyr,
-    parallel
+    reshape2
 Suggests:
     testthat,
-    RColorBrewer,
     knitr,
+    RColorBrewer,
     xtable,
     MASS, 
     plot3D
+    

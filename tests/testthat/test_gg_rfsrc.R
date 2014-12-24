@@ -46,7 +46,7 @@ test_that("gg_rfsrc classifications",{
   expect_equal(ncol(gg_dta$yhat), ncol(rfsrc_iris$predicted)+1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(select(gg_dta$yhat, -y)), 
+  expect_equivalent(as.matrix(gg_dta$yhat[, -which(colnames(gg_dta$yhat)=="y")]), 
                     rfsrc_iris$predicted) 
 })
 
@@ -79,7 +79,7 @@ test_that("gg_rfsrc survival",{
   expect_equal(ncol(gg_dta$yhat), ncol(rfsrc_veteran$survival.oob) +2)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(select(gg_dta$yhat, -ptid, -cens)),
+  expect_equivalent(as.matrix(gg_dta$yhat[, -which(colnames(gg_dta$yhat) %in% c("ptid", "cens"))]),
                     rfsrc_veteran$survival.oob)
   
   ## Test plotting the gg_error object
@@ -102,7 +102,7 @@ test_that("gg_rfsrc survival",{
   expect_equal(ncol(gg_dta$yhat), ncol(rfsrc_veteran$survival)+2)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(select(gg_dta$yhat, -ptid, -cens)),
+  expect_equivalent(as.matrix(gg_dta$yhat[, -which(colnames(gg_dta$yhat) %in% c("ptid", "cens"))]),
                     rfsrc_veteran$survival)
 })
 

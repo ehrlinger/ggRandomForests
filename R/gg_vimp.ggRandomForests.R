@@ -32,8 +32,8 @@
 #' Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
 #' \emph{Electronic J. Statist.}, 1:519-537.
 #' 
-#' @importFrom tidyr gather_
-#' @importFrom dplyr arrange desc %>%
+#' @importFrom reshape2 melt
+#' @importFrom randomForestSRC vimp
 #' 
 #' @examples
 #' ## ------------------------------------------------------------
@@ -63,7 +63,6 @@
 #' @export gg_vimp.ggRandomForests
 #' @export gg_vimp
 #' @aliases gg_vimp
-#' @importFrom randomForestSRC vimp
 
 gg_vimp.ggRandomForests <- function(object, ...){
   
@@ -71,9 +70,6 @@ gg_vimp.ggRandomForests <- function(object, ...){
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
     stop("This function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'.")
   }
-  
-  # To quite R CMD CHECK... for gather statements 
-  cls  <- vars <- NA
   
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
@@ -89,8 +85,9 @@ gg_vimp.ggRandomForests <- function(object, ...){
     gg_dta$vars <- rownames(gg_dta)
     
     clnms <- colnames(gg_dta)[-which(colnames(gg_dta)=="vars")]
-    gg_dta <- gg_dta %>% gather(cls, vimp, -vars) %>% arrange(desc(vimp))
-    colnames(gg_dta)[2] <- "set"
+    gg_dta <- melt(gg_dta, id.vars="vars", 
+                   variable.name="set", value.name="vimp")
+    gg_dta <- gg_dta[order(gg_dta$vimp, decreasing=TRUE),]
     gg_dta$vars <- factor(gg_dta$vars)
   }else{
     gg_dta <- data.frame(sort(gg_dta, decreasing=TRUE))

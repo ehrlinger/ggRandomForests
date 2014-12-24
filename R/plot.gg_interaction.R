@@ -45,8 +45,7 @@
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs element_text
-#' @importFrom tidyr gather
-#' @importFrom dplyr filter
+#' @importFrom reshape2 melt
 #' 
 #' @examples
 #' \dontrun{
@@ -103,8 +102,6 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
       stop("gg_interaction expects a rfsrc object, or a find.interaction object.")
     }
   }
-  # Initialize variables for gather statement... to silence R CMD CHECK
-  vars <- dpth <- NA
   
   if(!inherits(object, "gg_interaction")) 
     object <- gg_interaction(x, ...)
@@ -114,20 +111,21 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
   }
   
   if(length(xvar) > 1){
-    gg_dta <- data.frame(cbind(names=rownames(object),
-                               t(object[which(rownames(object) %in% xvar),])))
-    #colnames(gg_dta) <- xvar
+    gg_dta <- data.frame(t(object[which(rownames(object) %in% xvar),]))
+    
+    gg_dta$names <- rownames(object)
     gg_dta$rank <- 1:dim(gg_dta)[1]
     
-    gg_dta <- gg_dta %>% gather(vars, dpth, -rank, -names)
+    gg_dta <- melt(gg_dta, 
+                   id.vars=c("rank", "names"))
     
-    gg_dta$dpth <- as.numeric(gg_dta$dpth)
+    gg_dta$value <- as.numeric(gg_dta$value)
     gg_dta$names <- factor(gg_dta$names,
                            levels=unique(gg_dta$names))
     gg_plt <- ggplot(gg_dta)+ 
-    geom_point(aes_string(x="names", y="dpth"))+
-    geom_point(aes_string(x="names", y="dpth"),
-               data=gg_dta %>% filter(as.character(names)==vars),
+    geom_point(aes_string(x="names", y="value"))+
+    geom_point(aes_string(x="names", y="value"),
+               data=gg_dta[which(as.character(gg_dta$names) == gg_dta$variable),],
                shape=3, size=5,
                color="red")+
     theme(text = element_text(size=10),
@@ -146,7 +144,7 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
     }
     
     
-    gg_plt + facet_wrap(~vars)
+    gg_plt + facet_wrap(~variable)
   }else{
     gg_dta <- data.frame(cbind(rank=1:dim(object)[1], 
                                t(object[which(rownames(object) %in% xvar),])))

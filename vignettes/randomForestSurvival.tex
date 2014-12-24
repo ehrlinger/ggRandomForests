@@ -1,4 +1,19 @@
-\documentclass[nojss]{jss}
+\documentclass[nojss]{jss}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\usepackage{Sweave}
+
+
 
 %\usepackage{setspace}
 % \usepackage[sc]{mathpazo}
@@ -15,7 +30,7 @@
 %% declarations for jss.cls %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{ggRandomForests}
+%\VignetteIndexEntry{survivalRandomForest}
 %\VignetteIndexEntry{Random Forests for Survival ggRandomForests packages}                     
 %\VignetteKeywords{random forest, survival, VIMP, minimal depth}                                  
 %\VignetteDepends{ggRandomForests}                   
@@ -80,6 +95,7 @@ URL: \url{http://www.lerner.ccf.org/qhs/people/ehrlinj/}
 
 
 
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 % -----------------------------------------------------
 \section{About this document}
@@ -124,7 +140,7 @@ Data from the Mayo Clinic trial in primary biliary cirrhosis (PBC) of the liver 
 
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Tue Dec 23 16:55:48 2014
+% Wed Dec 24 14:07:51 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -204,7 +220,7 @@ R> plot(gg_dta, error="none") +
 \end{Schunk}
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Tue Dec 23 16:55:49 2014
+% Wed Dec 24 14:07:51 2014
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -242,14 +258,14 @@ R> rfsrc_pbc
                     Was data imputed: yes
                      Number of trees: 1000
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 59.965
+       Average no. of terminal nodes: 59.902
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank *random*
        Number of random split points: 10
-                          Error rate: 16%
+                          Error rate: 16.01%
 \end{Soutput}
 \end{Schunk}
 
@@ -370,25 +386,25 @@ R> print(ggMindepth)
 -----------------------------------------------------------
 gg_minimal_depth
 model size         : 12 
-depth threshold    : 5.602 
+depth threshold    : 5.5811 
 
-PE :[1] 15.998
+PE :[1] 16.01
 -----------------------------------------------------------
 
 Top variables:
-            depth   vimp
-bili        1.640  0.068
-albumin     2.602  0.013
-copper      2.671  0.019
-prothrombin 2.954  0.012
-chol        3.214  0.005
-age         3.355  0.009
-edema       3.565  0.017
-platelet    3.638  0.002
-sgot        3.723  0.008
-alk         4.030  0.001
-stage       4.505  0.009
-trig        4.602 -0.001
+            depth  vimp
+bili        1.724 0.068
+albumin     2.535 0.014
+copper      2.645 0.020
+prothrombin 2.841 0.014
+chol        3.245 0.005
+age         3.466 0.009
+edema       3.554 0.017
+platelet    3.628 0.002
+sgot        3.773 0.008
+alk         3.947 0.000
+trig        4.233 0.001
+stage       4.546 0.009
 -----------------------------------------------------------
 \end{Soutput}
 \end{Schunk}
@@ -706,5 +722,33 @@ R> var_dep
 
 
 
+\begin{Schunk}
+\begin{Sinput}
+R> data(partial_coplot_pbc, package="ggRandomForests")
+R> ggpl <- ggplot(partial_coplot_pbc, aes(x=bili, y=yhat, 
++                                           shape=group, 
++                                           color=group))+
++   geom_point()+geom_smooth(se=FALSE)+
++   labs(x=st.labs["bili"], y="Survival 1 year", 
++        color="Albumin", shape="Albumin")+
++   scale_color_brewer(palette="Set1")
+R> ggpl
+\end{Sinput}
+\begin{figure}[!htpb]
 
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-bili-albumin-1} 
 
+}
+
+\caption[Partial (risk adjusted) variable dependence coplot]{Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by albumin groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.\label{fig:bili-albumin}}
+\end{figure}
+\end{Schunk}
+
+\section{Conclusion}
+
+\appendix
+
+%\singlespacing
+\bibliography{ggRandomForests}
+
+\end{document}

@@ -89,30 +89,27 @@
 #' 
 #'}
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
-#' @importFrom tidyr gather
+#' @importFrom reshape2 melt
 ### error rate plot
 
 plot.gg_error <- function(x, ...){
   gg_dta <- x
-  
-  # Initialize variables for gather statement... to silence R CMD CHECK
-  set <- error <- ntree <- NA
-  
+    
   if(inherits(gg_dta, "rfsrc")) gg_dta <- gg_error(gg_dta)
   
   if(!inherits(gg_dta, "gg_error")) stop("Incorrect object type: Expects a gg_error object")
   
   if(dim(gg_dta)[2] > 2){
-    gg_dta <- gg_dta %>% gather(set, error,-ntree)
-    gg_plt <- ggplot(gg_dta, aes_string(x="ntree",y="error", col="set"))
+    gg_dta <- melt(gg_dta, id.vars="ntree")
+    gg_plt <- ggplot(gg_dta, aes_string(x="ntree", y="value", col="variable"))
   }else{
     # We expect the object to have the following columns
-    gg_plt <- ggplot(gg_dta, aes_string(x="ntree",y="error"))
+    gg_plt <- ggplot(gg_dta, aes_string(x="ntree", y="error"))
   }
   gg_plt <- gg_plt +
     geom_line() +
     labs(x = "Number of Trees",
-         y = "OOB Error Rate")
+         y = "OOB Error Rate", color="Outcome")
   
   if(length(unique(gg_dta$variable)) == 1){
     gg_plt <- gg_plt + theme(legend.position="none")

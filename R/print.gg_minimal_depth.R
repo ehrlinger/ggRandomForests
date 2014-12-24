@@ -70,7 +70,7 @@ print.gg_minimal_depth <- function(x, ...){
   cat("-----------------------------------------------------------\n")
   cat("\n")
   cat("Top variables:\n")
-  vSel <- select(gg_dta$varselect, -names)
+  vSel <- gg_dta$varselect[, -which(colnames(gg_dta$varselect)=="names")]
   print(round(vSel[1:gg_dta$modelsize, , drop = FALSE], 3))
   cat("-----------------------------------------------------------\n")
   

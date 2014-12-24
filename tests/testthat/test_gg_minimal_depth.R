@@ -22,7 +22,8 @@ test_that("gg_minimal_depth classifications",{
   expect_is(ggrf.obj, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(select(ggrf.obj$varselect, -names), varsel_iris$varselect)
+  expect_equivalent(ggrf.obj$varselect[,-which(colnames(ggrf.obj$varselect)=="names")],
+                    varsel_iris$varselect)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_minimal_depth(ggrf.obj)
@@ -51,7 +52,8 @@ test_that("gg_minimal_depth survival",{
   expect_is(ggrf.obj, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(select(ggrf.obj$varselect, -names), varsel_veteran$varselect)
+  expect_equivalent(ggrf.obj$varselect[, -which(colnames(ggrf.obj$varselect)=="names")],
+                    varsel_veteran$varselect)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_minimal_depth(ggrf.obj)
@@ -79,7 +81,8 @@ test_that("gg_minimal_depth regression",{
   expect_is(ggrf.obj, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(select(ggrf.obj$varselect, -names), varsel_airq$varselect)
+  expect_equivalent(ggrf.obj$varselect[, -which(colnames(ggrf.obj$varselect)=="names")], 
+                    varsel_airq$varselect)
   
   ## Test plotting the gg_error object
   gg.obj <- plot.gg_minimal_depth(ggrf.obj)
