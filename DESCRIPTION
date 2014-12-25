@@ -1,16 +1,15 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 1.1.2.99
-Date: 2014-12-19
+Version: 1.1.2
+Date: 2014-12-24
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)
 VignetteBuilder: knitr
 URL: https://github.com/ehrlinger/ggRandomForests
-Description: ggRandomForests will help uncover variable associations in the random forests models. 
-  The package is designed for use with the randomForestSRC package for survival, regression and 
-  classification forests and uses the ggplot2 package for plotting results. ggRandomForests is 
+Description:  For Random Forests from the randomForestSRC package for survival, regression and 
+  classification forests and using the ggplot2 package for plotting results. ggRandomForests is 
   structured to extract data objects from the random forest object and provides S3 functions 
   for printing and plotting these objects.
 Depends:
