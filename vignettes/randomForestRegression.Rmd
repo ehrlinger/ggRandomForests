@@ -25,8 +25,8 @@ The latest version of this vignette is available within the [ggRandomForests](ht
 library(knitr)
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
 opts_chunk$set(fig.path = 'fig-rfr/rfr-', 
-              # fig.align = 'center', 
-              # size = 'footnotesize', 
+               # fig.align = 'center', 
+               # size = 'footnotesize', 
                prompt = TRUE, 
                comment = NA, 
                echo = TRUE, results = TRUE, 
@@ -103,7 +103,6 @@ Boston$chas <- as.logical(Boston$chas)
 ```
 
 ```{r cleanup, echo=FALSE, results="asis"}
-
 cls <- sapply(Boston, class) 
 # 
 lbls <- 
@@ -136,11 +135,14 @@ lbls <-
     # medv
     "Median value of homes ($1000s).")
 
+# Build a table for data description
 dta.labs <- data.frame(cbind(Variable=names(cls), Description=lbls, type=cls))
 
+# Build a named vector for labeling figures later/
 st.labs <- as.character(dta.labs$Description)
 names(st.labs) <- names(cls)
 
+# Print the descriptive table.
 print(xtable(dta.labs), type="html",include.rownames = FALSE)
 ```
 
@@ -372,7 +374,7 @@ levels(gg_v$rm_grp) <- paste("rm in ", levels(gg_v$rm_grp), sep="")
 
 # Create a variable dependence (co)plot, faceted on group membership.
 plot(gg_v, xvar = "lstat", smooth = TRUE, 
-                method = "loess", span=1.5, alpha = .5, se = FALSE) + 
+     method = "loess", span=1.5, alpha = .5, se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
@@ -398,15 +400,13 @@ gg_v$lstat_grp <- lstat_grp
 levels(gg_v$lstat_grp) <- paste("lstat in ", levels(gg_v$lstat_grp), " (%)",sep="")
 
 # Create a variable dependence (co)plot, faceted on group membership.
-var_dep <- plot(gg_v, xvar = "rm", smooth = TRUE, 
-                method = "loess", span=1.5, alpha = .5, se = FALSE) + 
+plot(gg_v, xvar = "rm", smooth = TRUE, 
+     method = "loess", span=1.5, alpha = .5, se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["rm"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
   #scale_shape_manual(values = event.marks, labels = event.labels)+ 
   facet_wrap(~lstat_grp)
-
-var_dep
 ```
 
 We get similar information from this view, predicted median home values decrease with increasing `lstat` percentage and decreasing `rm`. However viewed together we get a better sense of how the `lstat` and `rm` variables work together (interact) in the median value prediction.
@@ -507,7 +507,7 @@ data(partial_coplot_Boston_surf)
 # To make the dimensions match, we need to repeat the values
 # for each of the 50 points in the lstat direction
 rm.tmp <- do.call(c,lapply(rm_pts[-1], 
-                 function(grp){rep(grp, 50)}))
+                           function(grp){rep(grp, 50)}))
 
 # attach the data to the gg_partial_coplot
 partial_coplot_Boston_surf$rm <- rm.tmp
@@ -536,7 +536,7 @@ surf3D(x=srf$x, y=srf$y, z=srf$z, col=topo.colors(10),
        shade = 0.5, expand = 0.5, 
        lighting = TRUE, lphi = -50,
        xlab="Lower Status", ylab="Average Rooms", zlab="Median Value"
-       )
+)
 ```
 
 These figures reinforce the previous findings, where lower home values are associated with higher `lstat` percentage, and higher values are associated with larger `rm`. The difference in this figure is we can see how the predicted values change as we move around the map of `lstat` and `rm` combinations. 

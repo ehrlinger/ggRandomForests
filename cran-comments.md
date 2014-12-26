@@ -1,4 +1,4 @@
-This is the ggRandomForests package submission v1.1.2
+This is the ggRandomForests package submission v1.1.3
 --------------------------------------------------------------------------------
 * Add package vignette "ggRandomForests: Visually Exploring a Random Forest for Regression"
 * Add `gg_partial_coplot`, `quantile_cuts` and `surface_matrix` functions

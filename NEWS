@@ -1,5 +1,9 @@
 Package: ggRandomForests
-Version: 1.1.2
+Version: 1.1.3
+
+
+ggRandomForests v1.1.3
+===================
 
 ggRandomForests v1.1.2
 ===================
@@ -41,10 +45,6 @@ ggRandomForests v1.1.0
 ggRandomForests v1.0.0
 ===================
 * First CRAN release.
-
-ggRandomForests v0.2.0.99
-===================
-* correct case/underscore function names. 
 
 ggRandomForests v0.2
 ===================
