@@ -11,3 +11,5 @@ vignettes/*.tex
 /vignettes/figure/*.pdf
 /packrat/lib*/
 inst/doc
+jss.cls
+jss.bst

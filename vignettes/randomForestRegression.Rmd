@@ -1,7 +1,7 @@
 ---
 title: 'ggRandomForests: Visually Exploring a Random Forest for Regression'
 author: "John Ehrlinger<br/>Assistant Staff<br/>Quantitative Health Sciences<br/>Lerner Research Institute<br/>Cleveland Clinic"
-date: "`r today <- Sys.Date();format(today, format='%B %d %Y')`"
+date: "`r today <- Sys.Date();format(today, format='%B %d, %Y')`"
 output: 
   rmarkdown::html_vignette
 vignette: >
@@ -10,16 +10,6 @@ vignette: >
   \usepackage[utf8]{inputenc}
 bibliography: ggRandomForests.bib
 ---
-
-# About this document
-
-This document is a package vignette for the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) package for Visually Exploring Random Forests. [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests)  will help uncover variable associations in the random forests models. The package is designed for use with the [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) package for survival, regression and classification forests and uses the [ggplot2](http://CRAN.R-project.org/package=ggplot2) package for plotting diagnostic and variable association results. [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) is  structured to extract data objects from [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) objects and provides S3 functions for printing and plotting these objects.
-
-This document is a tutorial for using the [randomForestSRC](http://CRAN.R-project.org/package=ggRandomForests) package for building and post-processing a regression random forest, as well as for the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) package for investigating how the forest is constructed. In this tutorial, we will use the [Boston Housing Data](#data), available in the [MASS](http://CRAN.R-project.org/package=MASS) package, to grow a [random forest for regression](#rfr) and demonstrate how [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) can be used in this type of analysis.
-
-This vignette is written in [markdown](http://daringfireball.net/projects/markdown/), a wiki type language for creating documents. It is support in R using the [rmarkdown](http://rmarkdown.rstudio.com) package, which is especially easy to use within the [RStudio](http://rstudio.com) IDE. A markdown/rmarkdown cheat sheet is available online at (http://rmarkdown.rstudio.com/RMarkdownCheatSheet.pdf). 
-
-The latest version of this vignette is available within the [ggRandomForests](http://cran.r-project.org/web/packages/ggRandomForests/index.html) package on the Compreshensive R Archive Network ([CRAN](http://cran.r-project.org)). A [development version of the ggRandomForests](https://github.com/ehrlinger/ggRandomForests) package is available on [Github](https://github.com) at (https://github.com/ehrlinger/ggRandomForests).
 
 ```{r setup, include = FALSE, cache = FALSE, echo = FALSE} 
 library(knitr)
@@ -65,10 +55,21 @@ options(mc.cores = 1, rf.cores = 1)
 theme_set(theme_bw())
 ```
 
-Once the [ggRandomForests](http://cran.r-project.org/web/packages/ggRandomForests/index.html) package has been installed into R, the vignette can also be viewed with the following command:
+# About this document
+
+This document is a package vignette for the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) package for "Visually Exploring Random Forests". [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests)  will help uncover variable associations in random forest models. The package is designed for use with the [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) package for survival, regression and classification forests and uses the [ggplot2](http://CRAN.R-project.org/package=ggplot2) package for plotting diagnostic and variable association results. [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) is  structured to extract data objects from [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) objects and provides S3 functions for printing and plotting these objects.
+
+The vignette is a tutorial for using the [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) package with the [randomForestSRC](http://CRAN.R-project.org/package=ggRandomForests) package for building and post-processing a regression random forest. In this tutorial, we explore a random forest model for the Boston Housing Data, available in the [MASS](http://CRAN.R-project.org/package=MASS) package. We grow a [random forest for regression](#rfr) and demonstrate how [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) can be used when determining variable associations, interactions and how the response depends on predictive variables within the model. The tutorial demonstrates the design and usage of many of [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) functions and features how to modify and customize the resulting [ggplot2](http://CRAN.R-project.org/package=ggplot2) graphic objects along the way.
+
+The latest version of this vignette is available within the [ggRandomForests](http://cran.r-project.org/web/packages/ggRandomForests/index.html) package on the Compreshensive R Archive Network ([CRAN](http://cran.r-project.org)). The vignette is written in [markdown](http://daringfireball.net/projects/markdown/), a wiki type language for creating documents. It is support in R using the [rmarkdown](http://rmarkdown.rstudio.com) package, which is especially easy to use within the [RStudio](http://rstudio.com) IDE. A markdown/rmarkdown cheat sheet is available online at (http://rmarkdown.rstudio.com/RMarkdownCheatSheet.pdf). 
+
+Once the [ggRandomForests](http://cran.r-project.org/web/packages/ggRandomForests/index.html) package has been installed into R, the vignette can be viewed directly from within R using the following command:
 ```{r vignette, eval=FALSE}
 vignette("randomForestRegression", package="ggRandomForests")
 ```
+
+A [development version of the ggRandomForests](https://github.com/ehrlinger/ggRandomForests) package is available on [Github](https://github.com). We invite comments, feature requests and bug reports for this package at (https://github.com/ehrlinger/ggRandomForests).
+
 
 # Introduction
 
@@ -78,7 +79,7 @@ Predictive accuracy make RF an attractive alternative to parametric models, thou
 
 Many of the figures created by the `ggRandomForests` package are also available directly from within the `randomForestSRC` package. However `ggRandomForests` offers the following advantages:
 
-* Separation of data and figures: `ggRandomForests` contains functions that  operate on either the `randomForestSRC::rfsrc` forest object directly, or on the output from `randomForestSRC` post processing functions (i.e. `randomForestSRC::plot.variable`, `randomForestSRC::var.select`, `randomForestSRC::find.interaction`) to generate intermediate `ggRandomForests` data objects. S3 functions are provide to further process these objects and plot results using the [ggplot2](http://CRAN.R-project.org/package=ggplot2) graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.  
+* Separation of data and figures: `ggRandomForests` contains functions that  operate on either the `randomForestSRC::rfsrc` forest object directly, or on the output from `randomForestSRC` post processing functions (i.e. `randomForestSRC::plot.variable`, `randomForestSRC::var.select`, `randomForestSRC::find.interaction`) to generate intermediate `ggRandomForests` data objects. S3 functions are provide to further process these objects and plot results using the `ggplot2` graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.  
 
 * Each data object/figure is a single, self contained object. This allows simple modification and manipulation of the data or `ggplot2` objects to meet users specific needs and requirements. 
 
@@ -169,7 +170,7 @@ This figure is loosely related to a pairs scatter plot [@Becker:1988], but in th
 
 # Random Forest - Regression<a name="rfr"></a>
 
-A Random Forest is built up by _bagging_ [@Breiman:1996] a collection of _classification and regression trees_ (CART) [@cart:1984]. The method uses a set of $B$ bootstrap [@bootstrap:1994] samples, growing an independent tree model on each sub-sample of the population. Each tree is grown by recursively partitioning the population based on optimization of a _split rule_ over the $p$-dimensional covariate space. At each split, a subset of $m \le p$ candidate variables are tested for the split rule optimization, dividing each node into two daughter nodes. Each daughter node is then split again until the process reaches the _stopping criteria_ of either _node purity_ or _node member size_, which defines the set of _terminal (unsplit) nodes_ for the tree. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used [@Friedman:2000]. 
+A Random Forest is grown by _bagging_ [@Breiman:1996] a collection of _classification and regression trees_ (CART) [@cart:1984]. The method uses a set of $B$ bootstrap [@bootstrap:1994] samples, growing an independent tree model on each sub-sample of the population. Each tree is grown by recursively partitioning the population based on optimization of a _split rule_ over the $p$-dimensional covariate space. At each split, a subset of $m \le p$ candidate variables are tested for the split rule optimization, dividing each node into two daughter nodes. Each daughter node is then split again until the process reaches the _stopping criteria_ of either _node purity_ or _node member size_, which defines the set of _terminal (unsplit) nodes_ for the tree. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used [@Friedman:2000]. 
 
 Random Forests sort each training set observation into one unique terminal node per tree. Tree estimates for each observation are constructed at each terminal node, among the terminal node members. The Random Forest estimate for each observation is then calculated by aggregating, averaging (regression) or votes (classification), the terminal node results across the collection of $B$ trees.
 
