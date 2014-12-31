@@ -40,8 +40,7 @@
 #' 
 #' @seealso  \code{\link{plot.gg_variable}} \code{randomForestSRC::plot.variable}
 #' 
-#' @export gg_variable.ggRandomForests gg_variable.rfsrc
-#' @export gg_variable
+#' @export gg_variable gg_variable.rfsrc
 #' 
 #' @aliases gg_variable gg_variable.rfsrc
 #' 
@@ -117,7 +116,7 @@
 #' # Generate coplots
 #' plot(gg_dta, xvar =  c("age", "diagtime"), panel=TRUE)
 #' 
-gg_variable.ggRandomForests <- function(object,
+gg_variable.rfsrc <- function(object,
                                        time,
                                        time.labels,
                                        oob=TRUE,
@@ -200,6 +199,5 @@ gg_variable.ggRandomForests <- function(object,
 }
 
 
-gg_variable.rfsrc <- gg_variable.ggRandomForests
+gg_variable <- gg_variable.rfsrc
 
-gg_variable <- gg_variable.ggRandomForests

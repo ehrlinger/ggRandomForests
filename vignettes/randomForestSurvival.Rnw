@@ -137,7 +137,7 @@ strCol <- c(strCol[2], strCol[1])
 
 \begin{document}
 % -----------------------------------------------------
-\section{About this document}
+\section*{About this document}\addcontentsline{toc}{section}{About this document}
 % -----------------------------------------------------
 
 This document is a package vignette for the \pkg{ggRandomForests} (\url{http://CRAN.R-project.org/package=ggRandomForests}) package for ``Visually Exploring Random Forests''. \pkg{ggRandomForests} will help uncover variable associations in random forest models. The package is designed for use with the \pkg{randomForestSRC} (\url{http://CRAN.R-project.org/package=randomForestSRC}) package~\citep{Ishwaran:RFSRC:2014} for survival, regression and classification forests and uses the \pkg{ggplot2}(\url{http://CRAN.R-project.org/package=ggplot2}) package~\citep{Wickham:2009} for plotting diagnostic and variable association results. \pkg{ggRandomForests} is  structured to extract data objects from \pkg{randomForestSRC} objects and provides S3 functions for printing and plotting these objects.
@@ -146,7 +146,7 @@ The vignette is a tutorial for using the \pkg{ggRandomForests} package with the 
 
 The latest version of this vignette is available within the \pkg{ggRandomForests} package on the Compreshensive R Archive Network (CRAN) (\url{http://cran.r-project.org}). Once the package has been installed, the vignette can be viewed directly from within \proglang{R} with the following command:
 <<vignette, eval=FALSE, echo=TRUE>>=
-vignette("survivalRandomForest", package="ggRandomForests")
+vignette("randomForestSurvival", package="ggRandomForests")
 @
 
 A development version of the \pkg{ggRandomForests} package is also available on Github (\url{https://github.com}). We invite comments, feature requests and bug reports for this package at \url{https://github.com/ehrlinger/ggRandomForests}.
@@ -416,7 +416,7 @@ Random Forests for survival~\citep{Ishwaran:2007, Ishwaran:2008} (RF-S) are an e
 
 Random Forests for survival adaptively discover nonlinear effects and interactions and are fully nonparametric. Averaging over trees, with randomization while growing a tree, enables RF-S to approximate complex survival functions, including non-proportional hazards, while maintaining low prediction error. \cite{Ishwaran:2010a} showed that RF-S is uniformly consistent and that survival forests have a uniform approximating property in finite-sample settings, a property not possessed by individual survival trees.
 
-What this means when building random forest models is that we avoid doing variable transformations. The \pkg{randomForestSRC} \code{rfsrc} function call grows the forest, determining the type of forest by the response supplied in the \code{formula} argument. In the following code block, we grow a random forest for survival, by passing the \code{Surv} object to the forest. The forest uses all remaining variables in the \code{pbc.trial} data set to generate survival estimates. This example is taken from the \code{rfsrc} help file.
+The \pkg{randomForestSRC} \code{rfsrc} function call grows the forest, determining the type of forest by the response supplied in the \code{formula} argument. In the following code block, we grow a random forest for survival, by passing a survival (\code{Surv}) object to the forest. The forest uses all remaining variables in the \code{pbc.trial} data set to generate survival estimates. 
 
 <<rfsrc, echo = TRUE, eval = FALSE>>= 
 rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., 
@@ -441,13 +441,14 @@ rfsrc_pbc
 
 The \code{print.rfsrc} function returns information on how the random forest was grown. Here the \code{family="surv"} forest has \code{ntree=1000} trees (the default \code{ntree} argument). We used \code{nsplit=10} random split points to select random split rule, instead of an optimization on each variable at each split for performance reasons. 
 
+\subsection{Imputation}\label{S:imputation}
+The \pkg{randomForestSRC} package does missing value imputation internally in the \code{rfsrc} grow call using a modification of the missing data algorithm of~\cite{Ishwaran:2008}. 
 
-The \pkg{randomForestSRC} package does missing value imputation internally in the \code{rfsrc} grow call using a modification of the missing data algorithm of~\cite{Ishwaran:2008}. Prior to splitting a node, missing data for a variable is imputed by randomly drawing values from non-missing in-bag data. The purpose of the imputed data is to make it possible to assign cases to daughter nodes in the event the node is split on a variable with missing data. Imputed data is however not used to calculate the split-statistic which uses non-missing data only. Following a node split, imputed data are reset to missing and the process is repeated until terminal nodes are reached. Missing data is then imputed using OOB non-missing terminal node data. For integer valued variables and censoring indicators, imputation uses a maximal class rule, whereas continuous variables and survival time use a mean rule.
+Prior to splitting each node, missing data for the candidate variables are imputed by randomly drawing values from non-missing values also within the node. The purpose of the imputation step is to observations to be sorted into daughter nodes when the split occurs on a variable with missing data, and this imputed value. The split-statistic is calculated on the non-imputed values only. Following a node split, imputed data are reset to missing and the process is repeated until terminal nodes are reached. 
+
+Missing data is then imputed using OOB non-missing terminal node data. For integer valued variables and censoring indicators, imputation uses a maximal class rule, whereas continuous variables and survival time use a mean rule.
 
 The proximity matrix from the randomForest is used to update the imputation of the NAs. For continuous predictors, the imputed value is the weighted average of the non-missing obervations, where the weights are the proximities. For categorical predictors, the imputed value is the category with the largest average proximity. This process is iterated iter times.
-
-Regardless of what method is used, records in which all outcome and x-variable information are missing are removed from the forest analysis. Variables having all missing values are also removed.
-
 
 \subsection{Generalization error}
 

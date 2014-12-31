@@ -38,7 +38,7 @@
 #' 
 #' @seealso \code{\link{plot.gg_partial}} \code{randomForestSRC::plot.variable}
 #' 
-#' @export gg_partial.ggRandomForests gg_partial
+#' @export gg_partial.rfsrc gg_partial
 #' 
 #' @importFrom parallel mclapply
 #' 
@@ -98,7 +98,7 @@
 #' @name gg_partial
 #' @name gg_partial_list
 #' 
-gg_partial.ggRandomForests <- function(object, 
+gg_partial.rfsrc <- function(object, 
                                        named,
                                        ...){
   if(!inherits(object,"plot.variable")){
@@ -147,4 +147,4 @@ gg_partial.ggRandomForests <- function(object,
   
 }
 
-gg_partial <- gg_partial.ggRandomForests
+gg_partial <- gg_partial.rfsrc

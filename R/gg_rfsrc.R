@@ -29,7 +29,6 @@
 #' 
 #' @return \code{gg_rfsrc} object
 #' 
-#' @export gg_rfsrc.ggRandomForests gg_rfsrc
 #' 
 #' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}
 #' 
@@ -64,12 +63,18 @@
 #' plot(gg_dta)
 #' plot(gg_dta, level=.68)
 #' 
-#' @aliases gg_rfsrc
+#' @aliases gg_rfsrc gg_rfsrc.rfsrc
+#' @export gg_rfsrc.rfsrc gg_rfsrc
 #'
-gg_rfsrc.ggRandomForests <- function(object, 
-                                     surv_type=c("surv", "chf", "mortality", "hazard"), 
-                                     oob=TRUE,
-                                     ...) {
+#'
+gg_rfsrc <- function (object, ...) {
+  UseMethod("gg_rfsrc", object)
+}
+
+gg_rfsrc.rfsrc <- function(object, 
+                           surv_type=c("surv", "chf", "mortality", "hazard"), 
+                           oob=TRUE,
+                           ...) {
   ##!!TODO!! Stratified predictions...
   
   ## Check that the input obect is of the correct type.
@@ -162,5 +167,3 @@ gg_rfsrc.ggRandomForests <- function(object,
   class(gg_dta) <- c("gg_rfsrc", class(gg_dta))
   invisible(gg_dta)
 }
-
-gg_rfsrc <- gg_rfsrc.ggRandomForests

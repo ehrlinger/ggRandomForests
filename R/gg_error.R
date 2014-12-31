@@ -31,7 +31,7 @@
 #' @return \code{gg_error} \code{data.frame} with one column indicating the tree number, 
 #' and the remaining columns from the \code{randomForestSRC::rfsrc$err.rate} return value. 
 #' 
-#' @export gg_error.ggRandomForests gg_error
+#' @export gg_error.rfsrc gg_error
 #' 
 #' @seealso \code{\link{plot.gg_error}} \code{rfsrc} \code{plot.rfsrc}
 #' 
@@ -43,7 +43,7 @@
 #' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression 
 #' and Classification (RF-SRC), R package version 1.4.
 #' 
-#' @aliases gg_error gg_error.ggRandomForests
+#' @aliases gg_error gg_error.rfsrc gg_error.randomForest
 #' 
 #' @examples
 #' ## Examples from RFSRC package... 
@@ -90,7 +90,12 @@
 #' 
 #'
 ### error rate plot
-gg_error.ggRandomForests <- function(object, ...) {
+
+gg_error <- function (object, ...) {
+  UseMethod("gg_error", object)
+}
+
+gg_error.rfsrc <- function(object, ...) {
   ## Check that the input obect is of the correct type.
   if (inherits(object, "rfsrc") == FALSE){
     stop("This function only works for Forests grown with the randomForestSRC package.")
@@ -113,4 +118,6 @@ gg_error.ggRandomForests <- function(object, ...) {
   invisible(gg_dta)
 }
 
-gg_error <- gg_error.ggRandomForests
+gg_error.randomForest <- function(object, ...) {
+  stop("Unimplemented function.") 
+}

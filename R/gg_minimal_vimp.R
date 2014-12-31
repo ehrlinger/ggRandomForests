@@ -15,29 +15,22 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Minimal depth data object (\code{randomForestSRC::var.select})
-#'
+#' Minimal depth vs VIMP camparison by variable rankings. 
+#' 
 #' @param object A \code{randomForestSRC::rfsrc} object, \code{randomForestSRC::predict}
 #'  object or the list from the \code{randomForestSRC::var.select.rfsrc} function.
+#' @param event an optional vector of logical values (event indicator) for 
+#' shaping the points in when plotting.
 #' @param ... optional arguments passed to the \code{randomForestSRC::var.select} function 
 #'  if operating on an \code{randomForestSRC::rfsrc} object. 
-#' 
-#' @description the \code{randomForestSRC::var.select} function implements 
-#' random forest variable selection using tree minimal depth methodology. The 
-#' \code{gg_minimal_depth} 
-#' function takes the output from \code{randomForestSRC::var.select} and creates a 
-#' \code{data.frame} formatted for the \code{\link{plot.gg_minimal_depth}} function.
 #'  
-#' @return \code{gg_minimal_depth} object, A modified list of variables from the 
-#' \code{randomForestSRC::var.select} function, ordered by minimal depth rank. 
-#' 
-#' @export gg_minimal_depth.ggRandomForests gg_minimal_depth
-#' @aliases gg_minimal_depth
-#' 
-#' @seealso \code{randomForestSRC::var.select} \code{\link{plot.gg_minimal_depth}}
-#' 
-#' @importFrom randomForestSRC var.select
-#' 
+#'  @return \code{gg_minimal_vimp} comparison object.
+#'  
+#'  @seealso \code{\link{plot.gg_minimal_vimp}} \code{randomForestSRC::var.select}
+#'  
+#'  @export gg_minimal_vimp gg_minimal_vimp.rfsrc
+#'  @aliases gg_minimal_vimp
+#'  
 #' @examples
 #' ## Examples from RFSRC package... 
 #' ## ------------------------------------------------------------
@@ -50,9 +43,9 @@
 #' data(varsel_iris, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' gg_dta<- gg_minimal_depth(varsel_iris)
+#' gg_dta<- gg_minimal_vimp(varsel_iris)
 #' 
-#' # Plot the gg_mkinimal_depth object
+#' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
@@ -64,7 +57,7 @@
 #' data(varsel_airq, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_minimal_depth(varsel_airq)
+#' gg_dta<- gg_minimal_vimp(varsel_airq)
 #' 
 #' # Plot the gg_error object
 #' plot(gg_dta)
@@ -80,11 +73,10 @@
 #' # Load a cached randomForestSRC object
 #' data(varsel_veteran, package="ggRandomForests")
 #' 
-#' gg_dta <- gg_minimal_depth(varsel_veteran)
+#' gg_dta <- gg_minimal_vimp(varsel_veteran)
 #' plot(gg_dta)
-#' 
-
-gg_minimal_depth.ggRandomForests <- function (object, ...){
+#'   
+gg_minimal_vimp.rfsrc <- function(object, event, ...){
   
   if (inherits(object, "rfsrc") == TRUE){
     vSel <- var.select(object, ...)
@@ -93,18 +85,29 @@ gg_minimal_depth.ggRandomForests <- function (object, ...){
     vSel <- object
   }else if(is.null(object$threshold)) {
     # Test for max.subtree minimal depth object, convert to vSel object
+    
     stop("No support for max.subtree yet, use var.select instead")
   }else{
     stop("Function works only on rfsrc or var.select objects.")
   }
   
-  vSel$varselect$names <- rownames(vSel$varselect)
+  rnk.md <- rnk.vm <- data.frame(cbind(names=rownames(vSel$varselect)))
+  rnk.md$depth <- rnk.vm$vimp <- 1:dim(rnk.md)[1]
   
-  vSel$varselect$names <- factor(vSel$varselect$names, 
-                                 levels=unique(vSel$varselect$names))
+  # Rename the full vimp.all column to just "vimp"
+  if(is.null(vSel$varselect$vimp))
+    colnames(vSel$varselect)[which(colnames(vSel$varselect)=="vimp.all")] <- "vimp"
   
-  class(vSel) <- c("gg_minimal_depth", class(vSel))
-  invisible(vSel) 
+  rnk.vm <- rnk.vm[order(vSel$varselect$vimp, decreasing=TRUE),]
+  rnk.vm$vimp <- 1:dim(rnk.vm)[1]
+  
+  # Default color is by negative/positive vimp
+  rnk.vm$col <- c("-", "+")[as.numeric(vSel$varselect$vimp[order(vSel$varselect$vimp, 
+                                                                 decreasing=TRUE)]>0)+1]
+  
+  gg_dta <- merge(rnk.vm, rnk.md,by="names")
+  
+  class(gg_dta) <- c("gg_minimal_vimp", class(gg_dta))
+  invisible(gg_dta)
 }
-
-gg_minimal_depth<-gg_minimal_depth.ggRandomForests                         
+gg_minimal_vimp <- gg_minimal_vimp.rfsrc

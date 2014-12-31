@@ -36,7 +36,7 @@
 #' \code{randomForestSRC::vimp}
 #' \code{\link{plot.gg_interaction}} 
 #' 
-#' @export gg_interaction gg_interaction.ggRandomForests 
+#' @export gg_interaction gg_interaction.rfsrc 
 #' @aliases gg_interaction
 #' 
 #' @importFrom randomForestSRC find.interaction
@@ -93,7 +93,13 @@
 #' plot(gg_dta, xvar="bili")
 #' plot(gg_dta, xvar="copper")
 #' 
-gg_interaction.ggRandomForests <- function(object, ...){
+#' 
+
+# gg_interaction <- function (object, ...) {
+#   UseMethod("gg_interaction", object)
+# }
+
+gg_interaction.rfsrc <- function(object, ...){
   if(inherits(object, "matrix")){
     gg_dta <- data.frame(object)
     
@@ -118,5 +124,4 @@ gg_interaction.ggRandomForests <- function(object, ...){
   
   invisible(gg_dta)
 }
-
-gg_interaction <- gg_interaction.ggRandomForests
+gg_interaction <- gg_interaction.rfsrc

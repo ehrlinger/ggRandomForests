@@ -33,8 +33,7 @@
 #' nelson-aalon estimators.
 #' 
 #' @seealso \code{\link{kaplan}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
-#' @export gg_survival gg_survival.ggRandomForests
-#' @aliases gg_survival
+#' @export gg_survival
 #' 
 #' @examples 
 #' data(pbc, package="randomForestSRC")
@@ -61,7 +60,7 @@
 #' plot(gg_dta, error="lines")
 #' 
 #'
-gg_survival.ggRandomForests <- function(interval, censor, strat=NULL, 
+gg_survival <- function(interval, censor, strat=NULL, 
                                         data, 
                                         type=c("kaplan","nelson"), 
                                         ...){
@@ -74,6 +73,3 @@ gg_survival.ggRandomForests <- function(interval, censor, strat=NULL,
   
   return(gg_dta)
 }
-
-
-gg_survival <- gg_survival.ggRandomForests

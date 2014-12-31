@@ -53,9 +53,9 @@
 #' plot.gg_roc(rfsrc_iris)
 #' 
 #' 
-#' @export gg_roc.ggRandomForests gg_roc
+#' @export gg_roc.rfsrc gg_roc
 #' @aliases gg_roc
-gg_roc.ggRandomForests <- function(object, which.outcome, oob=TRUE){
+gg_roc.rfsrc <- function(object, which.outcome, oob=TRUE){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 & 
@@ -84,4 +84,4 @@ gg_roc.ggRandomForests <- function(object, which.outcome, oob=TRUE){
   
   invisible(gg_dta)
 }
-gg_roc <- gg_roc.ggRandomForests
+gg_roc <- gg_roc.rfsrc

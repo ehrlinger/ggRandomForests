@@ -60,11 +60,14 @@
 #' gg_dta <- gg_vimp(rfsrc_veteran)
 #' plot(gg_dta)
 #' 
-#' @export gg_vimp.ggRandomForests
-#' @export gg_vimp
-#' @aliases gg_vimp
+#' @export gg_vimp.rfsrc gg_vimp
+#' @aliases gg_vimp gg_vimp.rfsrc 
 
-gg_vimp.ggRandomForests <- function(object, ...){
+gg_vimp <- function (object, ...) {
+  UseMethod("gg_vimp", object)
+}
+
+gg_vimp.rfsrc <- function(object, ...){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
@@ -105,4 +108,3 @@ gg_vimp.ggRandomForests <- function(object, ...){
   invisible(gg_dta)
 }
 
-gg_vimp <-gg_vimp.ggRandomForests

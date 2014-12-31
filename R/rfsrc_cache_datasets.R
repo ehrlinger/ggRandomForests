@@ -49,11 +49,12 @@
 #' \code{\link{partial_data}} 
 #' \code{\link{partial_coplot_data}}
 #' 
-#' @export rebuild_cache_datasets
-#' 
+#' @export rfsrc_cache_datasets
+#' @export rf_cache_datasets
+#' @aliases rfsrc_cache_datasets
 #' @importFrom randomForestSRC rfsrc var.select plot.variable find.interaction
 #'
-rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
+rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
   dta <- new.env()
   
   if(missing(pth)){
@@ -305,4 +306,103 @@ rebuild_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(save) save(partial_veteran, 
                   file=paste(pth, "partial_veteran.rda", sep=""), compress="xz")
   }
+}
+
+# For randomForest implementation
+rf_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
+  dta <- new.env()
+  
+  if(missing(pth)){
+    pth <- if(file.exists("data")){
+      if(file.info("data")$isdir){
+        "data/"
+      }else{
+        "./"
+      }
+    }else{
+      "./"
+    } 
+  }else if(!file.info("data")$isdir){
+    stop("Provided path does not exist, or is not a directory.")
+  }
+  
+  if(is.na(set))
+    set <- c("airq", "Boston", "iris", "mtcars")
+  
+  if("airq" %in% set){
+    cat("airq: randomForest\n")
+    rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute", ...)
+    if(save) save(rfsrc_airq, file=paste(pth, "rfsrc_airq.rda", sep=""), compress="xz")
+    
+    cat("airq: RF partial dependence\n")
+    partial_airq <- plot.variable(rfsrc_airq,
+                                  partial=TRUE, show.plots=FALSE)
+    if(save) save(partial_airq, file=paste(pth, "partial_airq.rda", sep=""), compress="xz")
+  }
+  
+  if("iris" %in% set){
+    cat("iris: randomForest\n")
+    rfsrc_iris <- rfsrc(Species ~., data = iris, ...)
+    if(save) save(rfsrc_iris, file=paste(pth, "rfsrc_iris.rda", sep=""), compress="xz")
+    
+    cat("iris: RF partial dependence\n")
+    partial_iris <- plot.variable(rfsrc_iris,
+                                  partial=TRUE, show.plots=FALSE)
+    if(save) save(partial_iris, file=paste(pth, "partial_iris.rda", sep=""), compress="xz")
+  }
+  
+  
+  if("mtcars" %in% set){
+    cat("mtcars: randomForest\n")
+    rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ...)
+    if(save) save(rfsrc_mtcars, file=paste(pth, "rfsrc_mtcars.rda", sep=""), compress="xz")
+    
+    cat("mtcars: RF partial dependence\n")
+    partial_mtcars <- plot.variable(rfsrc_mtcars,
+                                    partial=TRUE, show.plots=FALSE)
+    if(save) save(partial_mtcars, file=paste(pth, "partial_mtcars.rda", sep=""), compress="xz")
+  }
+  if("Boston" %in% set){
+    data(Boston, package="MASS",
+         envir = dta)
+    Boston <- dta$Boston
+    
+    Boston$chas <- as.logical(Boston$chas)
+    
+    cat("Boston: randomForest\n")
+    rfsrc_Boston <- rfsrc(medv~., data=Boston, ...)
+    if(save) save(rfsrc_Boston, file=paste(pth, "rfsrc_Boston.rda", sep=""), compress="xz")
+    
+    cat("Boston: RF partial dependence\n(this will take a little while...)\n")
+    partial_Boston <- plot.variable(rfsrc_Boston,
+                                    xvar.names=varsel_Boston$topvars,
+                                    sorted=FALSE,
+                                    partial=TRUE, 
+                                    show.plots=FALSE)
+    if(save) save(partial_Boston, file=paste(pth, "partial_Boston.rda", sep=""), compress="xz")
+    
+    cat("\nBoston: RF partial coplots\n\tlstat by rm groups\n(this will take a little longer...)\n")
+    rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=6)
+    rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+    partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
+                                               groups=rm_grp,
+                                               show.plots=FALSE)
+    
+    if(save) save(partial_coplot_Boston, 
+                  file=paste(pth, "partial_coplot_Boston.rda", sep=""), 
+                  compress="xz")
+    
+    cat("\nBoston: RF partial coplots\n\trm by lstat groups\n(so will this...)\n")
+    lstat_pts <- quantile_cuts(rfsrc_Boston$xvar$lstat, groups=6)
+    lstat_grp <- cut(rfsrc_Boston$xvar$lstat, breaks=lstat_pts)
+    partial_coplot_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm", 
+                                                groups=lstat_grp,
+                                                show.plots=FALSE)
+    
+    if(save) save(partial_coplot_Boston2, 
+                  file=paste(pth, "partial_coplot_Boston2.rda", sep=""), 
+                  compress="xz")
+    
+  }
+
 }
