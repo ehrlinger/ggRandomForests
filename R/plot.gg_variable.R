@@ -105,7 +105,9 @@
 #' plot(gg_dta, xvar = "diagtime") 
 #'
 #' }
-### error rate plot
+#' 
+
+
 plot.gg_variable<- function(x, xvar, 
                             time, time_labels, 
                             panel=FALSE,
@@ -153,27 +155,44 @@ plot.gg_variable<- function(x, xvar,
   
   # For now, we only plot survival families as panels. 
   if(panel){
+    
+    ## Survival plots
     if(family == "surv"){
-      variable <- value <- time <- yhat <- cens <- NA
+      #variable <- value <- time <- yhat <- cens <- NA
       ## Create a panel plot
       wchXvar <- which(colnames(gg_dta) %in% xvar)
       
       wchYvar <- which(colnames(gg_dta) %in% c("cens", "yhat", "time"))
       
+      # Check for categorical X values...
+      ccls <- sapply(gg_dta[,wchXvar], class)
+      ccls[which(ccls=="logical")] <- "factor"
       gg_dta.mlt <- melt(gg_dta[,c(wchYvar, wchXvar)], id.vars=c("time","yhat","cens"))
       
       gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
-      gg_plt <- ggplot(gg_dta.mlt)+
-      labs(y= "Survival") +
-      geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
-                 ...)
+      gg_plt <- ggplot(gg_dta.mlt)
       
-      if(smooth){
+      if(sum(ccls == "factor") < length(ccls)){
         gg_plt <- gg_plt +
-        geom_smooth(aes_string(x="value", y="yhat"), ...)
-      }
-      if(length(levels(gg_dta$time)) > 1){
+        labs(y= "Survival") +
+        geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
+                   ...)
+        
+        if(smooth){
+          gg_plt <- gg_plt +
+          geom_smooth(aes_string(x="value", y="yhat"), ...)
+        }
+       
+      }else{
         gg_plt<- gg_plt+
+        geom_boxplot(aes_string(x="value", y="yhat"), color="grey", 
+                     ..., outlier.shape = NA)+
+        geom_jitter(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
+                    ...)
+      }
+      
+      if(length(levels(gg_dta$time)) > 1){
+        gg_plt <- gg_plt+
         facet_grid(reformulate("variable", "time"),
                    scales="free_x")+
         labs(x="")
@@ -183,10 +202,9 @@ plot.gg_variable<- function(x, xvar,
                    scales="free_x")+
         labs(x="",y= paste("Survival at", gg_dta$time[1], "year"))
       }
-      
     }else{
+      # Panels for 
       # This will work for regression and binary classification... maybe.
-      variable <- value <- yhat <- yvar <- NA
       ## Create a panel plot
       wchXvar <- which(colnames(gg_dta) %in% xvar)
       

@@ -7,6 +7,9 @@
 \alias{partial_coplot_Boston_surf}
 \alias{partial_coplot_data}
 \alias{partial_coplot_pbc}
+\alias{partial_coplot_pbc2}
+\alias{partial_coplot_pbc_surf}
+\alias{partial_coplot_pbc_surf2}
 \title{Cached \code{randomForestSRC::plot.variable} objects for examples, diagnostics and vignettes.}
 \format{List of \code{randomForestSRC::plot.variable} objects}
 \description{
@@ -21,11 +24,11 @@ data set (\code{MASS} package).
 Constructing random forests are computationally expensive.
 We cache \code{randomForestSRC::rfsrc} objects to improve the \code{ggRandomForests}
 examples, diagnostics and vignettes run times.
-(see \code{\link{rebuild_cache_datasets}} to rebuild a complete set of these data sets.)
+(see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
 
 For each data set listed, we build a \code{randomForestSRC::rfsrc}. Tuning parameters used
 in each case are documented in the examples. Each data set is built with the
-\code{\link{rebuild_cache_datasets}} with the \code{randomForestSRC} version listed
+\code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version listed
 in the \code{ggRandomForests} DESCRIPTION file.
 
 \itemize{
@@ -81,7 +84,7 @@ Harrison, D., and D.L. Rubinfeld. 1978. "Hedonic Prices and the Demand for Clean
 }
 \seealso{
 \code{MASS::Boston} \code{randomForestSRC::plot.variable}
- \code{\link{rebuild_cache_datasets}}
+ \code{\link{rfsrc_cache_datasets}}
 }
 \keyword{datasets}
 

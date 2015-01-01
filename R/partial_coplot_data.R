@@ -11,11 +11,11 @@
 #' Constructing random forests are computationally expensive.
 #' We cache \code{randomForestSRC::rfsrc} objects to improve the \code{ggRandomForests} 
 #' examples, diagnostics and vignettes run times. 
-#' (see \code{\link{rebuild_cache_datasets}} to rebuild a complete set of these data sets.)
+#' (see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
 #' 
 #' For each data set listed, we build a \code{randomForestSRC::rfsrc}. Tuning parameters used
 #' in each case are documented in the examples. Each data set is built with the 
-#' \code{\link{rebuild_cache_datasets}} with the \code{randomForestSRC} version listed
+#' \code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version listed
 #' in the \code{ggRandomForests} DESCRIPTION file.
 #' 
 #' \itemize{
@@ -26,7 +26,7 @@
 #' }
 #' 
 #' @seealso \code{MASS::Boston} \code{randomForestSRC::plot.variable}
-#'  \code{\link{rebuild_cache_datasets}}
+#'  \code{\link{rfsrc_cache_datasets}}
 #'  
 #' @examples
 #' \dontrun{
@@ -73,7 +73,7 @@
 #'  J. Environ. Economics and Management 5: 81-102.
 #' 
 #' 
-#' @aliases partial_coplot_data partial_coplot_Boston partial_coplot_Boston2 partial_coplot_Boston_surf partial_coplot_pbc
+#' @aliases partial_coplot_data partial_coplot_Boston partial_coplot_Boston2 partial_coplot_Boston_surf partial_coplot_pbc partial_coplot_pbc2 partial_coplot_pbc_surf partial_coplot_pbc_surf2
 #' @docType data
 #' @keywords datasets
 #' @format List of \code{randomForestSRC::plot.variable} objects
@@ -82,5 +82,9 @@
 #' @name partial_coplot_Boston2
 #' @name partial_coplot_Boston_surf
 #' @name partial_coplot_pbc
+#' @name partial_coplot_pbc2
+#' @name partial_coplot_pbc_surf
+#' @name partial_coplot_pbc_surf2
+#' 
 #' 
 NULL

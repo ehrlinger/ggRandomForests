@@ -32,15 +32,19 @@
 quantile_cuts <- function(object, groups){
   # We need one more break than group,
   breaks <- groups + 1
+ 
+  if(sum(is.na(object))>0)
+    object <- object[-which(is.na(object))]
+  
   n.x <- length(unique(object))
   if (n.x > breaks) {
     x.uniq <- sort(unique(object))[unique(as.integer(seq(1, n.x, length = min(breaks, n.x))))]
-  }
-  
-  if(x.uniq[1] > trunc(x.uniq[1], digits=1)){
-    x.uniq[1] <-  trunc(x.uniq[1], digits=1)
   }else{
-    x.uniq[1] <-  trunc(x.uniq[1])
+    x.uniq <- unique(object)
   }
+
+  x.uniq[1] <-  x.uniq[1]-.000001
+  x.uniq[length(x.uniq)] <- x.uniq[length(x.uniq)]+.000001
+  
   x.uniq
 }

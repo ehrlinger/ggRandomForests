@@ -166,6 +166,9 @@ gg_partial_coplot.ggRandomForests <- function(object,
   ## Collapse the grouped data into a single structure
   gg_merge <- do.call(rbind, gg_part)
   
+  ## Make the group variable a factor (order on unique levels)
+  gg_merge$group <- factor(gg_merge$group, levels=unique(gg_merge$group))
+  
   # Make is so we can easily plot it with an S3 function.
   class(gg_merge) <- c("gg_partial_coplot", class(gg_merge))
   gg_merge

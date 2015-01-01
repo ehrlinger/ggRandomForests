@@ -30,11 +30,11 @@ data set (\code{MASS} package).
 Constructing random forests are computationally expensive.
 We cache \code{randomForestSRC::rfsrc} objects to improve the \code{ggRandomForests}
 examples, diagnostics and vignettes run times.
-(see \code{\link{rebuild_cache_datasets}} to rebuild a complete set of these data sets.)
+(see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
 
 For each data set listed, we build a \code{randomForestSRC::rfsrc}. Tuning parameters used
 in each case are documented in the examples. Each data set is built with the
-\code{\link{rebuild_cache_datasets}} with the \code{randomForestSRC} version listed
+\code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version listed
 in the \code{ggRandomForests} DESCRIPTION file.
 
 \itemize{
@@ -255,7 +255,7 @@ Fourth edition. Springer.
 \code{iris} \code{airquality} \code{mtcars} \code{MASS::Boston}
 \code{randomForestSRC::pbc} \code{randomForestSRC::veteran}
  \code{randomForestSRC::rfsrc}
- \code{\link{rebuild_cache_datasets}}
+ \code{\link{rfsrc_cache_datasets}}
  \code{\link{gg_rfsrc}}
  \code{\link{plot.gg_rfsrc}}
  \code{\link{gg_error}}

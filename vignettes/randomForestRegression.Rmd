@@ -213,7 +213,7 @@ Random forests are not parsimonious, but use all variables available in the cons
 
 ## Variable Importance.<a name="vimp"></a>
 
-_Variable importance_ (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of [@cart:1984]). The most popular VIMP method uses a prediction error approach involving "noising-up" each variable in turn. VIMP for a variable `x_v` is the difference between prediction error when `x_v` is noised up by randomly permuting its values, compared to prediction error under the observed values [@Breiman:2001; @Liaw:2002; @Ishwaran:2007; @Ishwaran:2008].
+_Variable importance_ (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of [@cart:1984]). The most popular VIMP method uses a prediction error approach involving "noising-up" each variable in turn. VIMP for a variable $x_v$ is the difference between prediction error when $x_v$ is noised up by randomly permuting its values, compared to prediction error under the observed values [@Breiman:2001; @Liaw:2002; @Ishwaran:2007; @Ishwaran:2008].
 
 Since VIMP is the difference between OOB prediction error before and after permutation, a large VIMP value indicates that misspecification detracts from the variable predictive accuracy in the forest. VIMP close to zero indicates the variable contributes nothing to predictive accuracy, and negative values indicate the predictive accuracy _improves_ when the variable is mispecified. In the later case, we assume noise is more informative than the true variable. As such, we ignore variables with negative and near zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables. 
 
@@ -231,7 +231,7 @@ In this example, all VIMP measures are positive, though some are small. When the
 
 In VIMP, prognostic risk factors are determined by testing the forest prediction under alternative data settings, ranking the most important variables according to their impact on predictive ability of the forest. An alternative method uses inspection of the forest construction to rank variables. _Minimal depth_ assumes that variables with high impact on the prediction are those that most frequently split nodes nearest to the trunks of the trees (i.e. at the root node) where they partition large samples of the population. 
 
-With a tree, node levels are numbered based on their relative distance to the trunk of the tree (with the root at 0). Minimal depth measures the important risk factors by averaging the depth of the first split for each variable over all trees within the forest. Lower values of this measure indicate variables important in splitting large groups of patients. 
+Within a tree, node levels are numbered based on their relative distance to the trunk of the tree (with the root at 0). Minimal depth measures the important risk factors by averaging the depth of the first split for each variable over all trees within the forest. Lower values of this measure indicate variables important in splitting large groups of patients. 
 
 The _maximal subtree_ for a variable $x$ is the largest subtree whose root node splits on $x$. All parent nodes of $x$'s maximal subtree have nodes that split on variables other than $x$. The largest maximal subtree possible is at the root node. If a variable does not split the root node, it can have more than one maximal subtree, or a maximal subtree may also not exist if there are no splits on the variable. The minimal depth of a variables is a surrogate measure of predictiveness of the variable. The smaller the minimal depth, the more impact the variable has sorting observations, and therefore on the forest prediction. 
 
@@ -336,7 +336,7 @@ We could stop here, indicating that the RF analysis has found these ten variable
 
 Using the different variable dependence measures, it is also possible to calculate measures of pairwise interactions among variables. Recall that minimal depth measure is defined by averaging the tree depth of variable $i$ relative to the root node. To detect interactions, this calculation can be modified to measure the minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$ [@Ishwaran:2010; @Ishwaran:2011].
 
-The `randomForestSRC::find.interaction` traverses the forest, calculating all pairwise minimal depth interactions, and returns a $p \times p$ matrix of interaction measures. The diagonal terms are normalized to the root node, and off diagonal terms are normalized measures of pairwise variable interaction. 
+The `randomForestSRC::find.interaction` function traverses the forest, calculating all pairwise minimal depth interactions, and returns a $p \times p$ matrix of interaction measures. The diagonal terms are normalized to the root node, and off diagonal terms are normalized measures of pairwise variable interaction. 
 
 The `gg_interaction` function wraps the `find.interaction` matrix for use with the provided S3 plot and print functions. The `xvar` argument indicates which variables we're interested in looking at. We again use the cache strategy, and collect the figures together using the `panel=TRUE` option.
 
