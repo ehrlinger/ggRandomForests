@@ -118,7 +118,7 @@ library(RColorBrewer)
 
 library(xtable)
 
-options(mc.cores = 1, rf.cores = 0)
+options(mc.cores = 1, rf.cores = 1)
 
 #########################################################################
 # Default computation settings
@@ -976,7 +976,7 @@ partial_surf$copper <- copper.tmp
 
 # ggplot2 contour plot of x, y and z data.
 ggplot(partial_surf, aes(x = bili, y = copper, z = yhat))+
-  stat_contour(aes(colour = ..level..), binwidth = .5)+
+  stat_contour(aes(colour = ..level..), binwidth = .25)+
   labs(x = st.labs["bili"], y = st.labs["copper"], 
        color = "Survival at 1 year (%)")+
   scale_colour_gradientn(colours = topo.colors(10))

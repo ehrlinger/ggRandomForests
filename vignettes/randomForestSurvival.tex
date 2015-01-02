@@ -152,7 +152,7 @@ R> data(pbc, package = "randomForestSRC")
 We will do some modification of the data for formating our results. Since the data contains about 12 years of follow up, we prefer using \code{years} instead of \code{days} survival. We also convert the \code{age} variable to years, and the \code{treatment} variable to a factor containing levels of \code{c("DPCA", "placebo")}. The variable names, type and description are outlined in Table~\ref{T:dataLabs}.
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Fri Jan  2 16:29:08 2015
+% Fri Jan  2 16:55:27 2015
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -219,7 +219,7 @@ In categorical EDA plots (Figure~\ref{fig:categoricalEDA}) we are looking for pa
 In continuous EDA plots (Figure~\ref{fig:continuousEDA}) we look for missingness and extreme values as in the \code{trig} variable. For survival, we color and shape the points corresponds to the censoring indicator (\code{status} variable in Figure~\ref{fig:categoricalEDA}), red x indicates an event, and a blue circle indicates a censored observation.
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Fri Jan  2 16:29:11 2015
+% Fri Jan  2 16:55:29 2015
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -296,7 +296,7 @@ R> plot(gg_dta) +
 In Chapter 4,~\cite{fleming:1991} use partial likelihood methods to build a linear model with log transformations on some variables. The final, biologically reasonable model is detailed in Table~\ref{T:FHmodel} for later comparison with our random forest model results.
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Fri Jan  2 16:29:11 2015
+% Fri Jan  2 16:55:30 2015
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -487,7 +487,7 @@ R> test_dta
          Total no. of grow variables: 17
                             Analysis: RSF
                               Family: surv
-                 Test set error rate: 19.33%
+                 Test set error rate: 19.25%
 \end{Soutput}
 \end{Schunk}
 
