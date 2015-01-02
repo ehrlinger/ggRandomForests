@@ -480,42 +480,47 @@ Visualizing two dimensional projections of three dimensional data is difficult, 
 Since we are already using the data caching strategy, we will generate another `gg_partial_coplot` data set with increased resolution in both the `lstat` and `rm` dimensions. For this exercise, we will create 50 `rm` groups and generate the partial plot data at `npts=50` points along the `lstat` dimension for each group within the `plot.variable` call. This code block generates the 50 `rm` groups, each containing about 9 observations.     
 
 ```{r def-pts}
-# Find the quantile points to create 50 interval groups
-rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=50)
-
-# generate the grouping intervals.
-rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+# Find the quantile points to create 50 cut points
+rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=49)
 ```
 
-We use the following data call to generate the `gg_partial_coplot` data object. This took about 15 minutes to run on a quad core Mac Air.
+We use the following data call to generate the `gg_partial_coplot` data object. This took about 15 minutes to run on a quad core Mac Air. 
+
+!!TODO!! Explain what I'm doing here... scope is my friend.  !!TODO!! 
+
 ```{r prtl-surface, eval=FALSE}
 # Generate the gg_partial_coplot data object
-system.time(partial_coplot_Boston_surf <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
-                                                 groups=rm_grp, npts=50,
-                                                 show.plots=FALSE))
-
-# user  system elapsed 
-# 848.266  79.705 934.584 
+system.time(partial_Boston_surf <- lapply(rm_pts, function(ct){
+  rfsrc_Boston$xvar$rm <- ct
+  plot.variable(rfsrc_Boston, xvar = "lstat", time = 1,
+                npts = 50, show.plots = FALSE, 
+                partial = TRUE)
+  }))
+#     user   system  elapsed 
+# 1109.641   76.516 1199.732 
 ```
 
 The cached `gg_partial_coplot` data object is included as a data set in the `ggRandomForests` package. We load the data, attach numeric values for the `rm` groups, and generate the figure.
 
 ```{r contour3d, fig.cap="Partial coplot contour plot.", fig.width=7, fig.height=5}
 # Load the stored partial coplot data.
-data(partial_coplot_Boston_surf)
+data(partial_Boston_surf)
 
 # Instead of groups, we want the raw rm point values,
 # To make the dimensions match, we need to repeat the values
 # for each of the 50 points in the lstat direction
-rm.tmp <- do.call(c,lapply(rm_pts[-1], 
+rm.tmp <- do.call(c,lapply(rm_pts, 
                            function(grp){rep(grp, 50)}))
 
+# Convert the list of plot.variable output to 
+partial_surf <- do.call(rbind,lapply(partial_Boston_surf, gg_partial))
+
 # attach the data to the gg_partial_coplot
-partial_coplot_Boston_surf$rm <- rm.tmp
+partial_surf$rm <- rm.tmp
 
 # ggplot2 contour plot of x, y and z data.
-ggplot(partial_coplot_Boston_surf, aes(x=lstat, y=rm, z=yhat))+
-  stat_contour(aes(colour = ..level..), binwidth = 1)+
+ggplot(partial_surf, aes(x=lstat, y=rm, z=yhat))+
+  stat_contour(aes(colour = ..level..), binwidth = .5)+
   labs(x=st.labs["lstat"], y=st.labs["rm"], 
        color="Median Home Values")+
   scale_colour_gradientn(colours=topo.colors(10))
@@ -529,7 +534,7 @@ par(mai = c(0,0,0,0))
 
 # Transform the gg_partial_coplot object into a list of three named matrices
 # for surface plotting with plot3D::surf3D
-srf <- surface_matrix(partial_coplot_Boston_surf, c("lstat", "rm", "yhat"))
+srf <- surface_matrix(partial_surf, c("lstat", "rm", "yhat"))
 
 # Generate the figure.
 surf3D(x=srf$x, y=srf$y, z=srf$z, col=topo.colors(10),

@@ -231,7 +231,7 @@
 #' @aliases varsel_data varsel_airq varsel_iris varsel_Boston varsel_mtcars varsel_pbc varsel_veteran
 #' @docType data
 #' @keywords datasets
-#' @format \code{randomForestSRC::find.interaction} matrix
+#' @format \code{randomForestSRC::var.select} object
 #' @name varsel_data
 #' @name varsel_iris
 #' @name varsel_airq

@@ -247,7 +247,7 @@
 #' @aliases partial_data partial_airq partial_iris partial_Boston partial_mtcars partial_pbc partial_veteran
 #' @docType data
 #' @keywords datasets
-#' @format \code{randomForestSRC::find.interaction} matrix
+#' @format \code{randomForestSRC::plot.variable} 
 #' @name partial_data
 #' @name partial_iris
 #' @name partial_airq

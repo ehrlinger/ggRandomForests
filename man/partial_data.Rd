@@ -11,7 +11,7 @@
 \alias{partial_veteran}
 \title{Cached \code{randomForestSRC::plot.variable} objects for examples,
 diagnostics and vignettes.}
-\format{\code{randomForestSRC::find.interaction} matrix}
+\format{\code{randomForestSRC::plot.variable}}
 \description{
 Data sets storing \code{randomForestSRC::plot.variable} objects corresponding to
 training data according to the following naming convention:

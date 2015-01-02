@@ -11,7 +11,7 @@
 \alias{varsel_veteran}
 \title{Cached \code{randomForestSRC::var.select} objects for examples,
 diagnostics and vignettes.}
-\format{\code{randomForestSRC::find.interaction} matrix}
+\format{\code{randomForestSRC::var.select} object}
 \description{
 Data sets storing \code{randomForestSRC::var.select} objects corresponding to
 training data according to the following naming convention:

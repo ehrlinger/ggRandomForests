@@ -132,11 +132,12 @@ plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
                        aes_string(x="value", y="yhat"))
       
     }else{
+      gg_dta$group  <- factor(gg_dta$group,levels=unique(gg_dta$group))
       gg_plt <- ggplot(gg_dta,
                        aes_string(x="value", y="yhat", color="group", shape="group"))
     }
     
-    if(sum(which(cls=="factor")==length(cls))){
+    if(sum(cls=="factor")==length(cls)){
       gg_plt <- gg_plt +
       geom_boxplot(...)
     }else{
@@ -144,9 +145,10 @@ plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
       geom_point(...)+
       geom_smooth(...)
     }
-    gg_plt <- gg_plt+
-    facet_wrap(~ variable,
-               scales="free_x")
+    return(gg_plt +
+           facet_wrap(~variable,
+                      scales="free_x")
+    )
   }else{
     # OR a list of figures.
     gg_plt <- vector("list", length=lng)
@@ -154,6 +156,7 @@ plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
     for(ind in 1:lng){
       gg_plt[[ind]] <- plot.gg_partial(gg_dta[[ind]], points, ...)
     }
-  }  
-  return(gg_plt)
+    
+    return(gg_plt)
+  }
 }

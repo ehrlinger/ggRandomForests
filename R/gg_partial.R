@@ -99,8 +99,9 @@
 #' @name gg_partial_list
 #' 
 gg_partial.rfsrc <- function(object, 
-                                       named,
-                                       ...){
+                             named,
+                             ...){
+  
   if(!inherits(object,"plot.variable")){
     stop("gg_partial expects a plot.variable object, Run plot.variable with partial=TRUE")
   }

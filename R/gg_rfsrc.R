@@ -22,12 +22,15 @@
 #' and formats data for plotting the response using \code{\link{plot.gg_rfsrc}}.
 #' 
 #' @param object \code{randomForestSRC::rfsrc} object
-#' @param surv_type ("surv", "chf", "mortality", "hazard") for survival forests
-#' @param oob boolean, should we return the oob prediction , or the full
-#' forest prediction.
-#' @param ... not used
+#' @param ... extra arguments
 #' 
 #' @return \code{gg_rfsrc} object
+#' 
+#' @details 
+#'    surv_type ("surv", "chf", "mortality", "hazard") for survival forests
+#'    
+#'    oob boolean, should we return the oob prediction , or the full
+#' forest prediction.
 #' 
 #' 
 #' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}
@@ -72,9 +75,9 @@ gg_rfsrc <- function (object, ...) {
 }
 
 gg_rfsrc.rfsrc <- function(object, 
-                           surv_type=c("surv", "chf", "mortality", "hazard"), 
-                           oob=TRUE,
                            ...) {
+  
+  
   ##!!TODO!! Stratified predictions...
   
   ## Check that the input obect is of the correct type.
@@ -84,11 +87,14 @@ gg_rfsrc.rfsrc <- function(object,
   if (is.null(object$forest)) {
     stop("The function requires the \"forest = TRUE\" attribute when growing the randomForest")
   }
+  oob <- TRUE
+  # get optional arguments
+  arg_list <- list(...)
   
-  #---
-  # Unpack the elipse argument.
-  # arg_list <- list(...)
-  #---
+  if(!is.null(arg_list$oob)) oob <- arg_list$oob
+  if (inherits(object, "predict")){
+    oob <- FALSE
+  }
   
   if(object$family == "class"){
     ### Classification models...
@@ -124,7 +130,9 @@ gg_rfsrc.rfsrc <- function(object,
   }else if(object$family == "surv"){
     
     ### Survival models
-    surv_type = match.arg(surv_type)
+    surv_type <- "surv"
+    
+    if(!is.null(arg_list$surv_type)) surv_type = arg_list$surv_type
     
     if(oob){
       rng<-switch(surv_type,

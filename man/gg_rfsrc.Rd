@@ -10,12 +10,7 @@ gg_rfsrc(object, ...)
 \arguments{
 \item{object}{\code{randomForestSRC::rfsrc} object}
 
-\item{...}{not used}
-
-\item{surv_type}{("surv", "chf", "mortality", "hazard") for survival forests}
-
-\item{oob}{boolean, should we return the oob prediction , or the full
-forest prediction.}
+\item{...}{extra arguments}
 }
 \value{
 \code{gg_rfsrc} object
@@ -23,6 +18,12 @@ forest prediction.}
 \description{
 Extracts the predicted response values from the \code{randomForestSRC::rfsrc} object,
 and formats data for plotting the response using \code{\link{plot.gg_rfsrc}}.
+}
+\details{
+surv_type ("surv", "chf", "mortality", "hazard") for survival forests
+
+   oob boolean, should we return the oob prediction , or the full
+forest prediction.
 }
 \examples{
 ## ------------------------------------------------------------

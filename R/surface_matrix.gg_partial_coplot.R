@@ -42,7 +42,7 @@
 surface_matrix <- function(dta, xvar){
   # Test for class type
   if(!inherits(dta, "gg_partial_coplot")){
-    stop("data object is not a gg_partial_coplot object.")
+    warning("data object is not a gg_partial_coplot object.")
   }
   
   # Get the columns of interest.
@@ -59,14 +59,17 @@ surface_matrix <- function(dta, xvar){
   if(sum(xvar %in% colnames(dta)) != length(xvar)){
     stop("xvar argument does not reference columns in this data set.")
   }
+  if(is.null(dta$group)) dta$group <- factor(dta[,xvar[1]])
   
   x.tmp <- lapply(unique(dta$group), 
                   function(grp){dta[which(dta$group==grp), xvar[1]]})
   
   y.tmp <- lapply(unique(dta$group), 
                   function(grp){dta[which(dta$group==grp), xvar[2]]})
+  
   z.tmp <- lapply(unique(dta$group), 
                   function(grp){dta[which(dta$group==grp), xvar[3]]})
+  
   x.tmp <- do.call(rbind, x.tmp)
   y.tmp <- do.call(rbind, y.tmp)
   z.tmp <- do.call(rbind, z.tmp)
