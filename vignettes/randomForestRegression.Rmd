@@ -12,7 +12,7 @@ bibliography: ggRandomForests.bib
 ---
 
 ```{r setup, include = FALSE, cache = FALSE, echo = FALSE} 
-library(knitr)
+library("knitr")
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
 opts_chunk$set(fig.path = 'fig-rfr/rfr-', 
                # fig.align = 'center', 
@@ -30,22 +30,20 @@ options(object.size = Inf, expressions = 100000, memory = Inf,
 #################
 # Load_packages #
 #################
-library(ggplot2) # Graphics engine for generating all types of plots
+library("ggplot2") # Graphics engine for generating all types of plots
+library("RColorBrewer") # Nice color palettes
+library("plot3D") # for 3d surfaces. 
 
-library(dplyr) # Better data manipulations
-library(reshape2) # for transforming wide data into long data (melt)
-library(parallel) # mclapply
+library("dplyr") # Better data manipulations
+library("reshape2") # for transforming wide data into long data (melt)
 
-library(RColorBrewer) # Nice color palettes
+library("parallel") # mclapply
 
-library(xtable) # For html and latex tables
-library(plot3D) # for 3d surfaces. 
-
-# Our package.
-library(ggRandomForests)
+library("xtable") # For html and latex tables
 
 # Analysis packages.
-library(randomForestSRC) 
+library("randomForestSRC") 
+library("ggRandomForests")
 
 options(mc.cores = 1, rf.cores = 0)
 
@@ -473,7 +471,7 @@ plot(partial_coplot_Boston2, se=FALSE)+
 
 This figure indicates that the median home value does not change much until the `rm` increases above 6.5, then flattens again above 8, regardless of the `lstat` value. This agrees well with the `rm` [partial plot](#partialdependence) shown earlier. Again, care must be taken in interpreting the even spacing of these curves along the percentage of `lstat` groupings, as again, we chose these groups to have similar sized populations, not to be evenly spaced along the `lstat` variable. 
 
-## Partial coplot surfaces<a name="coplotsurface"></a>
+# Partial plot surfaces<a name="plotsurface"></a>
 
 Visualizing two dimensional projections of three dimensional data is difficult, though there are tools available to make the data more understandable. To make the interplay of lower status and average room size a bit more understandable, we will generate a contour plot of the median home values. We could generate this figure with the data we already have, but the resolution would be a bit strange. To generate the plot of `lstat` conditional on `rm` groupings, we would end up with contours over a grid of `lstat`=$25 \times$ `rm`=$6$, for the alternative `rm` conditional on `lstat` groups, we'd have the transpose grid of `lstat`=$6 \times$  `rm`=$25$. 
 

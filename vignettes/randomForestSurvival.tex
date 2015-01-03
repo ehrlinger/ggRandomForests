@@ -152,7 +152,7 @@ R> data(pbc, package = "randomForestSRC")
 We will do some modification of the data for formating our results. Since the data contains about 12 years of follow up, we prefer using \code{years} instead of \code{days} survival. We also convert the \code{age} variable to years, and the \code{treatment} variable to a factor containing levels of \code{c("DPCA", "placebo")}. The variable names, type and description are outlined in Table~\ref{T:dataLabs}.
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sat Jan  3 09:32:29 2015
+% Sat Jan  3 13:25:57 2015
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -219,7 +219,7 @@ In categorical EDA plots (Figure~\ref{fig:categoricalEDA}) we are looking for pa
 In continuous EDA plots (Figure~\ref{fig:continuousEDA}) we look for missingness and extreme values as in the \code{trig} variable. For survival, we color and shape the points corresponds to the censoring indicator (\code{status} variable in Figure~\ref{fig:categoricalEDA}), red x indicates an event, and a blue circle indicates a censored observation.
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sat Jan  3 09:32:31 2015
+% Sat Jan  3 13:25:59 2015
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -296,7 +296,7 @@ R> plot(gg_dta) +
 In Chapter 4,~\cite{fleming:1991} use partial likelihood methods to build a linear model with log transformations on some variables. The final, biologically reasonable model is detailed in Table~\ref{T:FHmodel} for later comparison with our random forest model results.
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Sat Jan  3 09:32:32 2015
+% Sat Jan  3 13:26:00 2015
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -1126,6 +1126,38 @@ The contours are generated over the raw \code{gg_partial} estimation points, not
 }
 
 \caption[Partial coplot surface]{Partial coplot surface.\label{fig:surface3d2}}
+\end{figure}
+\end{Schunk}
+\section{Time Dimension}
+
+
+
+
+
+
+The cached \code{gg_partial_coplot} data object is included as a data set in the \pkg{ggRandomForests} package. We load the data, attach numeric values for the \code{copper} groups, and generate the figure.
+
+\begin{Schunk}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-timeContour3D-1} 
+
+}
+
+\caption[Partial coplot contour plot]{Partial coplot contour plot.\label{fig:timeContour3D}}
+\end{figure}
+\end{Schunk}
+
+The contours are generated over the raw \code{gg_partial} estimation points, not smooth curves as shown in the partial plot and coplot figures. We can also generate a surface with this data using the \pkg{plot3D} \url{http://CRAN.R-project.org/package = plot3D} package and the \code{plot3D::surf3D} function. Viewed in 3D, a surface can help to better understand what the contour lines mean. 
+
+\begin{Schunk}
+\begin{figure}[!htpb]
+
+{\centering \includegraphics[width=\maxwidth]{figure/rfs-timeSurface3d-1} 
+
+}
+
+\caption[Partial coplot surface]{Partial coplot surface.\label{fig:timeSurface3d}}
 \end{figure}
 \end{Schunk}
 

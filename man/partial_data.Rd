@@ -8,6 +8,7 @@
 \alias{partial_iris}
 \alias{partial_mtcars}
 \alias{partial_pbc}
+\alias{partial_pbc_time}
 \alias{partial_veteran}
 \title{Cached \code{randomForestSRC::plot.variable} objects for examples,
 diagnostics and vignettes.}

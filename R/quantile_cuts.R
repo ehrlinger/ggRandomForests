@@ -43,8 +43,8 @@ quantile_cuts <- function(object, groups){
     x.uniq <- unique(object)
   }
 
-  x.uniq[1] <-  x.uniq[1]-.000001
-  x.uniq[length(x.uniq)] <- x.uniq[length(x.uniq)]+.000001
+  x.uniq[1] <- x.uniq[1] - 0.000001
+  x.uniq[length(x.uniq)] <- x.uniq[length(x.uniq)]
   
   x.uniq
 }

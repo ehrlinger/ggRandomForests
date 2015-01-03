@@ -244,7 +244,7 @@
 #' Venables, W. N. and Ripley, B. D. (2002) Modern Applied Statistics with S. 
 #' Fourth edition. Springer.
 #' 
-#' @aliases partial_data partial_airq partial_iris partial_Boston partial_mtcars partial_pbc partial_veteran
+#' @aliases partial_data partial_airq partial_iris partial_Boston partial_mtcars partial_pbc partial_veteran partial_pbc_time
 #' @docType data
 #' @keywords datasets
 #' @format \code{randomForestSRC::plot.variable} 
@@ -254,6 +254,7 @@
 #' @name partial_Boston
 #' @name partial_mtcars
 #' @name partial_pbc
+#' @name partial_pbc_time
 #' @name partial_veteran
 #' 
 NULL
