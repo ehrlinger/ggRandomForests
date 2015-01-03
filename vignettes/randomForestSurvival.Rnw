@@ -533,19 +533,25 @@ At each imputaton step, the random forest assumes that similar observations are 
 
 \subsection{Test Set Predictions}
 
-<<predict, echo = TRUE>>= 
+<<predict, echo = TRUE, eval=FALSE>>= 
 # Predict survival for 106 patients not in randomized trial
-test_dta <- predict(rfsrc_pbc, 
+rfsrc_pbc_test <- predict(rfsrc_pbc, 
                     newdata = pbc.test,
                     na.action = "na.impute")
 
 # Print prediction summary  
-test_dta
+rfsrc_pbc_test
+@
+<<predict-load, echo = FALSE>>= 
+# Predict survival for 106 patients not in randomized trial
+data(rfsrc_pbc_test, package="ggRandomForests")
+# Print prediction summary  
+rfsrc_pbc_test
 @
 
 <<predictPlot, fig.cap="Test set prediction: 106 observations.">>= 
 # Test set predicted survival
-plot(gg_rfsrc(test_dta), level = .95)+ 
+plot(gg_rfsrc(rfsrc_pbc_test), level = .95)+ 
   scale_color_manual(values = strCol) + 
   theme(legend.position = "none") + 
   labs(y = "Survival Probability", x = "time (years)")+

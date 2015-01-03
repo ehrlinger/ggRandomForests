@@ -152,7 +152,7 @@ R> data(pbc, package = "randomForestSRC")
 We will do some modification of the data for formating our results. Since the data contains about 12 years of follow up, we prefer using \code{years} instead of \code{days} survival. We also convert the \code{age} variable to years, and the \code{treatment} variable to a factor containing levels of \code{c("DPCA", "placebo")}. The variable names, type and description are outlined in Table~\ref{T:dataLabs}.
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Fri Jan  2 16:55:27 2015
+% Sat Jan  3 09:32:29 2015
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -219,7 +219,7 @@ In categorical EDA plots (Figure~\ref{fig:categoricalEDA}) we are looking for pa
 In continuous EDA plots (Figure~\ref{fig:continuousEDA}) we look for missingness and extreme values as in the \code{trig} variable. For survival, we color and shape the points corresponds to the censoring indicator (\code{status} variable in Figure~\ref{fig:categoricalEDA}), red x indicates an event, and a blue circle indicates a censored observation.
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Fri Jan  2 16:55:29 2015
+% Sat Jan  3 09:32:31 2015
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -296,7 +296,7 @@ R> plot(gg_dta) +
 In Chapter 4,~\cite{fleming:1991} use partial likelihood methods to build a linear model with log transformations on some variables. The final, biologically reasonable model is detailed in Table~\ref{T:FHmodel} for later comparison with our random forest model results.
 
 % latex table generated in R 3.1.2 by xtable 1.7-4 package
-% Fri Jan  2 16:55:30 2015
+% Sat Jan  3 09:32:32 2015
 \begin{table}[ht]
 \centering
 {\footnotesize
@@ -383,14 +383,14 @@ R> rfsrc_pbc
                     Was data imputed: yes
                      Number of trees: 1000
           Minimum terminal node size: 3
-       Average no. of terminal nodes: 59.902
+       Average no. of terminal nodes: 60.071
 No. of variables tried at each split: 5
               Total no. of variables: 17
                             Analysis: RSF
                               Family: surv
                       Splitting rule: logrank *random*
        Number of random split points: 10
-                          Error rate: 16.01%
+                          Error rate: 15.99%
 \end{Soutput}
 \end{Schunk}
 
@@ -471,13 +471,15 @@ At each imputaton step, the random forest assumes that similar observations are 
 \begin{Schunk}
 \begin{Sinput}
 R> # Predict survival for 106 patients not in randomized trial
-R> test_dta <- predict(rfsrc_pbc, 
+R> rfsrc_pbc_test <- predict(rfsrc_pbc, 
 +                     newdata = pbc.test,
 +                     na.action = "na.impute")
 R> 
 R> # Print prediction summary  
-R> test_dta
+R> rfsrc_pbc_test
 \end{Sinput}
+\end{Schunk}
+\begin{Schunk}
 \begin{Soutput}
   Sample size of test (predict) data: 106
        Number of deaths in test data: 36
@@ -487,7 +489,7 @@ R> test_dta
          Total no. of grow variables: 17
                             Analysis: RSF
                               Family: surv
-                 Test set error rate: 19.25%
+                 Test set error rate: 19.1%
 \end{Soutput}
 \end{Schunk}
 
@@ -556,25 +558,25 @@ R> print(ggMindepth)
 -----------------------------------------------------------
 gg_minimal_depth
 model size         : 12 
-depth threshold    : 5.5811 
+depth threshold    : 5.5905 
 
-PE :[1] 16.01
+PE :[1] 15.994
 -----------------------------------------------------------
 
 Top variables:
             depth  vimp
-bili        1.724 0.068
-albumin     2.535 0.014
-copper      2.645 0.020
-prothrombin 2.841 0.014
-chol        3.245 0.005
-age         3.466 0.009
-edema       3.554 0.017
-platelet    3.628 0.002
-sgot        3.773 0.008
-alk         3.947 0.000
-trig        4.233 0.001
-stage       4.546 0.009
+bili        1.686 0.069
+albumin     2.559 0.014
+copper      2.684 0.018
+prothrombin 2.986 0.011
+chol        3.274 0.005
+edema       3.365 0.017
+age         3.489 0.009
+platelet    3.681 0.002
+sgot        3.778 0.007
+alk         3.913 0.001
+trig        4.418 0.000
+stage       4.655 0.008
 -----------------------------------------------------------
 \end{Soutput}
 \end{Schunk}

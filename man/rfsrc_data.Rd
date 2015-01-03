@@ -8,6 +8,7 @@
 \alias{rfsrc_iris}
 \alias{rfsrc_mtcars}
 \alias{rfsrc_pbc}
+\alias{rfsrc_pbc_test}
 \alias{rfsrc_veteran}
 \title{Cached \code{randomForestSRC::rfsrc} objects for examples, diagnostics and vignettes.}
 \format{\code{randomForestSRC::rfsrc} object}

@@ -249,7 +249,7 @@
 #' Venables, W. N. and Ripley, B. D. (2002) Modern Applied Statistics with S. 
 #' Fourth edition. Springer.
 #' 
-#' @aliases rfsrc_data rfsrc_airq rfsrc_iris rfsrc_Boston rfsrc_mtcars rfsrc_pbc rfsrc_veteran
+#' @aliases rfsrc_data rfsrc_airq rfsrc_iris rfsrc_Boston rfsrc_mtcars rfsrc_pbc rfsrc_veteran rfsrc_pbc_test
 #' @docType data
 #' @keywords datasets
 #' @format \code{randomForestSRC::rfsrc} object
@@ -260,5 +260,5 @@
 #' @name rfsrc_mtcars
 #' @name rfsrc_pbc
 #' @name rfsrc_veteran
-#' 
+#' @name rfsrc_pbc_test
 NULL
