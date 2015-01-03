@@ -118,7 +118,7 @@ library(RColorBrewer)
 
 library(xtable)
 
-options(mc.cores = 1, rf.cores = 1)
+options(mc.cores = 1, rf.cores = 0)
 
 #########################################################################
 # Default computation settings
