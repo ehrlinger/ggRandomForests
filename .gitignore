@@ -8,8 +8,9 @@ vignettes/*.log
 vignettes/*.gz
 vignettes/*.bbl
 vignettes/*.tex
-/vignettes/figure/*.pdf
+vignettes/figure/*.pdf
+vignettes/fig-rfr/*.pdf
+vignettes/fig-rfr/*.png
 /packrat/lib*/
-inst/doc
 jss.cls
 jss.bst
