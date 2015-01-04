@@ -1008,73 +1008,74 @@ surf3D(x = srf$x, y = srf$y, z = srf$z, col = topo.colors(25),
        xlab = "Bilirubin", ylab = "Urine Copper", zlab = "Survival at 1 Year"
 )
 @
+%' % The following set of code blocks check the alternative direction of bili vs copper to
+%' % Verify that we get the same resuts.
+%' 
+%' <<def-pts2>>= 
+%' # Find the quantile points to create 30 interval groups
+%' bili_cts <- quantile_cuts(rfsrc_pbc$xvar$bili, groups = 49)
+%' @
+%' 
+%' We use the following data call to generate the \code{gg_partial_coplot} data object. This took about 15 minutes to run on a quad core Mac Air.
+%' 
+%' <<prtl-surface2, eval=FALSE>>= 
+%' # Generate the gg_partial_coplot data object
+%' system.time(partial_pbc_surf2 <- lapply(bili_cts, function(ct){
+%'   rfsrc_pbc$xvar$bili <- ct
+%'   plot.variable(rfsrc_pbc, xvar = "copper", time = 1,
+%'                 npts = 50, show.plots = FALSE, 
+%'                 partial = TRUE, surv.type="surv")
+%'   }))
+%' #     user   system  elapsed 
+%' # 2393.754   67.989 2465.498 
+%' @
+%' 
+%' The cached \code{gg_partial_coplot} data object is included as a data set in the \pkg{ggRandomForests} package. We load the data, attach numeric values for the \code{copper} groups, and generate the figure.
+%' 
+%' <<contour3d2, fig.cap="Partial coplot contour plot.", fig.width=7, fig.height=5>>= 
+%' # Load the stored partial coplot data.
+%' data(partial_pbc_surf2)
+%' 
+%' # Instead of groups, we want the raw rm point values,
+%' # To make the dimensions match, we need to repeat the values
+%' # for each of the 50 points in the lstat direction
+%' bili.tmp <- do.call(c,lapply(bili_cts, 
+%'                                function(grp){rep(grp, 50)}))
+%' 
+%' # Convert the list of plot.variable output to 
+%' partial_surf2 <- do.call(rbind,lapply(partial_pbc_surf2, gg_partial))
+%' 
+%' # attach the data to the gg_partial_coplot
+%' partial_surf2$bili <- bili.tmp
+%' 
+%' # ggplot2 contour plot of x, y and z data.
+%' ggplot(partial_surf2, aes(x = bili, y = copper, z = yhat))+
+%'   stat_contour(aes(colour = ..level..), binwidth = .25)+
+%'   labs(x = st.labs["bili"], y = st.labs["copper"], 
+%'        color = "Survival at 1 year (%)")+
+%'   scale_colour_gradientn(colours = topo.colors(25))
+%' @
+%' 
+%' The contours are generated over the raw \code{gg_partial} estimation points, not smooth curves as shown in the partial plot and coplot figures. We can also generate a surface with this data using the \pkg{plot3D} \url{http://CRAN.R-project.org/package = plot3D} package and the \code{plot3D::surf3D} function. Viewed in 3D, a surface can help to better understand what the contour lines mean. 
+%' 
+%' <<surface3d2, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5>>= 
+%' # Modify the figure margins to make the figure larger
+%' 
+%' par(mai = c(0,0,0,0))
+%' 
+%' # Transform the gg_partial_coplot object into a list of three named matrices
+%' # for surface plotting with plot3D::surf3D
+%' srf <- surface_matrix(partial_surf2, c("bili", "copper", "yhat"))
+%' 
+%' # Generate the figure.
+%' surf3D(x = srf$x, y = srf$y, z = srf$z, col = topo.colors(25),
+%'        colkey = FALSE, border = "black", bty = "b2", 
+%'        shade = 0.5, expand = 0.5, 
+%'        lighting = TRUE, lphi = -50,
+%'        xlab = "Bilirubin", ylab = "Urine Copper", zlab = "Survival at 1 Year"
+%' )
+%' @
 
-
-
-<<def-pts2>>= 
-# Find the quantile points to create 30 interval groups
-bili_cts <- quantile_cuts(rfsrc_pbc$xvar$bili, groups = 49)
-@
-
-We use the following data call to generate the \code{gg_partial_coplot} data object. This took about 15 minutes to run on a quad core Mac Air.
-
-<<prtl-surface2, eval=FALSE>>= 
-# Generate the gg_partial_coplot data object
-system.time(partial_pbc_surf2 <- lapply(bili_cts, function(ct){
-  rfsrc_pbc$xvar$bili <- ct
-  plot.variable(rfsrc_pbc, xvar = "copper", time = 1,
-                npts = 50, show.plots = FALSE, 
-                partial = TRUE, surv.type="surv")
-  }))
-#     user   system  elapsed 
-# 2393.754   67.989 2465.498 
-@
-
-The cached \code{gg_partial_coplot} data object is included as a data set in the \pkg{ggRandomForests} package. We load the data, attach numeric values for the \code{copper} groups, and generate the figure.
-
-<<contour3d2, fig.cap="Partial coplot contour plot.", fig.width=7, fig.height=5>>= 
-# Load the stored partial coplot data.
-data(partial_pbc_surf2)
-
-# Instead of groups, we want the raw rm point values,
-# To make the dimensions match, we need to repeat the values
-# for each of the 50 points in the lstat direction
-bili.tmp <- do.call(c,lapply(bili_cts, 
-                               function(grp){rep(grp, 50)}))
-
-# Convert the list of plot.variable output to 
-partial_surf2 <- do.call(rbind,lapply(partial_pbc_surf2, gg_partial))
-
-# attach the data to the gg_partial_coplot
-partial_surf2$bili <- bili.tmp
-
-# ggplot2 contour plot of x, y and z data.
-ggplot(partial_surf2, aes(x = bili, y = copper, z = yhat))+
-  stat_contour(aes(colour = ..level..), binwidth = .25)+
-  labs(x = st.labs["bili"], y = st.labs["copper"], 
-       color = "Survival at 1 year (%)")+
-  scale_colour_gradientn(colours = topo.colors(25))
-@
-
-The contours are generated over the raw \code{gg_partial} estimation points, not smooth curves as shown in the partial plot and coplot figures. We can also generate a surface with this data using the \pkg{plot3D} \url{http://CRAN.R-project.org/package = plot3D} package and the \code{plot3D::surf3D} function. Viewed in 3D, a surface can help to better understand what the contour lines mean. 
-
-<<surface3d2, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5>>= 
-# Modify the figure margins to make the figure larger
-
-par(mai = c(0,0,0,0))
-
-# Transform the gg_partial_coplot object into a list of three named matrices
-# for surface plotting with plot3D::surf3D
-srf <- surface_matrix(partial_surf2, c("bili", "copper", "yhat"))
-
-# Generate the figure.
-surf3D(x = srf$x, y = srf$y, z = srf$z, col = topo.colors(25),
-       colkey = FALSE, border = "black", bty = "b2", 
-       shade = 0.5, expand = 0.5, 
-       lighting = TRUE, lphi = -50,
-       xlab = "Bilirubin", ylab = "Urine Copper", zlab = "Survival at 1 Year"
-)
-@
 \section{Time Dimension}
 
 
