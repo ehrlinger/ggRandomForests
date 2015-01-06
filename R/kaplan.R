@@ -3,7 +3,7 @@
 #' @param data name of the training set \code{data.frame}
 #' @param interval name of the interval variable in the training dataset.
 #' @param censor name of the censoring variable in the training dataset.
-#' @param strat stratifying variable in the training dataset, defaults to NULL
+#' @param by stratifying variable in the training dataset, defaults to NULL
 #' @param ... arguments passed to the \code{survfit} function 
 #' 
 #' @return \code{\link{gg_survival}} object
@@ -27,7 +27,7 @@
 #' 
 #' # Stratified on treatment variable.
 #' gg_dta <- gg_survival(interval="time", censor="status", 
-#'                      data=pbc, strat="treatment")
+#'                      data=pbc, by="treatment")
 #'                      
 #' plot(gg_dta, error="none")
 #' plot(gg_dta)
@@ -36,14 +36,14 @@
 kaplan <- function(interval, 
                    censor,
                    data, 
-                   strat=NULL, ...){
+                   by=NULL, ...){
   
   # Kaplan-Meier analysis
   srv <- Surv(time=data[,interval], event=data[,censor])
-  if(is.null(strat)){
+  if(is.null(by)){
     srvTab <- survfit(srv~1,data, ...)
   }else{
-    srvTab <- survfit(srv~strata(data[,strat]),data, ...)
+    srvTab <- survfit(srv~strata(data[,by]),data, ...)
   }
   #
   # OR for stratification on 
@@ -65,10 +65,10 @@ kaplan <- function(interval,
                          cum_haz=cumHazard) )
   
   # Add group labels when stratifying data.
-  if(!is.null(strat)){
+  if(!is.null(by)){
     tm_splits <- which(c(FALSE,sapply(2:nrow(tbl), function(ind){tbl$time[ind] < tbl$time[ind-1]})))
     
-    lbls <- unique(data[,strat])
+    lbls <- unique(data[,by])
     tbl$groups <- lbls[1]
     
     for(ind in 2:(length(tm_splits)+1)){

@@ -4,7 +4,7 @@
 \alias{kaplan}
 \title{nonparametric kaplan-meier estimates}
 \usage{
-kaplan(interval, censor, data, strat = NULL, ...)
+kaplan(interval, censor, data, by = NULL, ...)
 }
 \arguments{
 \item{interval}{name of the interval variable in the training dataset.}
@@ -13,7 +13,7 @@ kaplan(interval, censor, data, strat = NULL, ...)
 
 \item{data}{name of the training set \code{data.frame}}
 
-\item{strat}{stratifying variable in the training dataset, defaults to NULL}
+\item{by}{stratifying variable in the training dataset, defaults to NULL}
 
 \item{...}{arguments passed to the \code{survfit} function}
 }
@@ -37,7 +37,7 @@ plot(gg_dta)
 
 # Stratified on treatment variable.
 gg_dta <- gg_survival(interval="time", censor="status",
-                     data=pbc, strat="treatment")
+                     data=pbc, by="treatment")
 
 plot(gg_dta, error="none")
 plot(gg_dta)

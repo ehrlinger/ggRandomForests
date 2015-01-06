@@ -354,13 +354,13 @@ The `gg_interaction` figure plots the interactions for the target variable (show
 
 Conditioning plots (coplots) [@chambers:1992; @cleveland:1993]  are a powerful visualization tool to efficiently study how a response depends on two or more variables [@cleveland:1993]. The method allows us to view data by grouping observations on some conditional membership. The simplest example involves a categorical variable, where we plot our data conditional on class membership, for instance on the Charles river logical variable. We can view a coplot as a stratified variable dependence plot, indicating trends in the RF prediction results within panels of group membership.
 
-Conditional membership with a continuous variable requires stratification at some level. Often we can make these stratification along some feature of the variable, for instance a variable with integer values, or 5 or 10 year age group cohorts. However in the variables of interest in our Boston housing example, we have no "logical" stratification indications. Therefore we will arbitrarily stratify our variables into 6 groups of roughly equal population size using the `quantile_cuts` function. We pass the break points located by `quantile_cuts` to the `cut` function to create grouping intervals, which we can then add to the `gg_variable` object before plotting with the `plot.gg_variable` function. The simple modification to convert variable dependence plots into condition variable dependence plots is to use the `ggplot2::facet_wrap` command to generate a panel for each grouping interval.
+Conditional membership with a continuous variable requires stratification at some level. Often we can make these stratification along some feature of the variable, for instance a variable with integer values, or 5 or 10 year age group cohorts. However in the variables of interest in our Boston housing example, we have no "logical" stratification indications. Therefore we will arbitrarily stratify our variables into 6 groups of roughly equal population size using the `quantile_pts` function. We pass the break points located by `quantile_pts` to the `cut` function to create grouping intervals, which we can then add to the `gg_variable` object before plotting with the `plot.gg_variable` function. The simple modification to convert variable dependence plots into condition variable dependence plots is to use the `ggplot2::facet_wrap` command to generate a panel for each grouping interval.
 
 We start by examining the predicted median home value as a function of `lstat` conditional on membership within 6 groups of `rm` "intervals". 
 ```{r coplots, fig.cap="Variable Coplots. Predicted median home values as a function of percentage of lower status population, stratified by average number of rooms groups.", fig.width=7, fig.height=5}
 # Find the rm variable points to create 6 intervals of roughly 
 # equal size population
-rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=6)
+rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, intervals=TRUE)
 
 # Pass these variable points to create the 6 (factor) intervals
 rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
@@ -387,7 +387,7 @@ A single coplot gives us a grouped view of a variable (`rm`), along the primary 
 ```{r coplots2, fig.cap="Variable Coplots. Predicted median home value as a function of average number of rooms, stratified by percentage of lower status groups.", fig.width=7, fig.height=5}
 # Find the lstat variable points to create 6 intervals of roughly 
 # equal size population
-lstat_pts <- quantile_cuts(rfsrc_Boston$xvar$lstat, groups=6)
+lstat_pts <- quantile_pts(rfsrc_Boston$xvar$lstat, groups=6, intervals=TRUE)
 
 # Pass these variable points to create the 6 (factor) intervals
 lstat_grp <- cut(rfsrc_Boston$xvar$lstat, breaks=lstat_pts)
@@ -479,7 +479,7 @@ Since we are already using the data caching strategy, we will generate another `
 
 ```{r def-pts}
 # Find the quantile points to create 50 cut points
-rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=49)
+rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50)
 ```
 
 We use the following data call to generate the `gg_partial_coplot` data object. This took about 15 minutes to run on a quad core Mac Air. 

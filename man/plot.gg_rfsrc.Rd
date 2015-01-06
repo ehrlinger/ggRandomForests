@@ -4,14 +4,10 @@
 \alias{plot.gg_rfsrc}
 \title{Predicted response plot from a \code{\link{gg_rfsrc}} object.}
 \usage{
-\method{plot}{gg_rfsrc}(x, level, strat, ...)
+\method{plot}{gg_rfsrc}(x, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_rfsrc}} object created from a \code{randomForestSRC::rfsrc} object}
-
-\item{level}{plot confidence bands}
-
-\item{strat}{variable name or vector for comparing response values.}
 
 \item{...}{arguments passed to \code{\link{gg_rfsrc}}.}
 }

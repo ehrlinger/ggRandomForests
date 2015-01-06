@@ -12,7 +12,7 @@ test_that("gg_rfsrc classifications",{
   expect_is(rfsrc_iris, "rfsrc")
   
   # Test the forest family
-  expect_match(rfsrc_iris$family, "class")
+  expect_is(rfsrc_iris, "class")
   
   ## Create the correct gg_error object
   gg_dta<- gg_rfsrc(rfsrc_iris)
@@ -21,11 +21,11 @@ test_that("gg_rfsrc classifications",{
   expect_is(gg_dta, "gg_rfsrc")
   
   # Test classification dimensions
-  expect_equal(nrow(gg_dta$yhat), nrow(rfsrc_iris$predicted.oob))
-  expect_equal(ncol(gg_dta$yhat), ncol(rfsrc_iris$predicted.oob)+1)
+  expect_equal(nrow(gg_dta), nrow(rfsrc_iris$predicted.oob))
+  expect_equal(ncol(gg_dta), ncol(rfsrc_iris$predicted.oob)+1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta$yhat[, -which(colnames(gg_dta$yhat)=="y")]),
+  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta)=="y")]),
                     rfsrc_iris$predicted.oob)
   
   ## Test plotting the gg_error object
@@ -42,11 +42,11 @@ test_that("gg_rfsrc classifications",{
   expect_is(gg_dta, "gg_rfsrc")
   
   # Test classification dimensions
-  expect_equal(nrow(gg_dta$yhat), nrow(rfsrc_iris$predicted))
-  expect_equal(ncol(gg_dta$yhat), ncol(rfsrc_iris$predicted)+1)
+  expect_equal(nrow(gg_dta), nrow(rfsrc_iris$predicted))
+  expect_equal(ncol(gg_dta), ncol(rfsrc_iris$predicted)+1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta$yhat[, -which(colnames(gg_dta$yhat)=="y")]), 
+  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta)=="y")]), 
                     rfsrc_iris$predicted) 
 })
 
@@ -71,17 +71,9 @@ test_that("gg_rfsrc survival",{
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "surv")
   
   # Test classification dimensions
-  # Same number of rows:
-  expect_equal(nrow(gg_dta$yhat), nrow(rfsrc_veteran$survival.oob))
-  # Survival has time and cens columns
-  expect_equal(ncol(gg_dta$yhat), ncol(rfsrc_veteran$survival.oob) +2)
-  
-  # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta$yhat[, -which(colnames(gg_dta$yhat) %in% c("ptid", "cens"))]),
-                    rfsrc_veteran$survival.oob)
-  
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_rfsrc(gg_dta)
   
@@ -94,16 +86,16 @@ test_that("gg_rfsrc survival",{
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "surv")
   
   # Test classification dimensions
-  # Same number of rows:
-  expect_equal(nrow(gg_dta$yhat), nrow(rfsrc_veteran$survival))
-  # Survival has time and cens columns
-  expect_equal(ncol(gg_dta$yhat), ncol(rfsrc_veteran$survival)+2)
   
-  # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta$yhat[, -which(colnames(gg_dta$yhat) %in% c("ptid", "cens"))]),
-                    rfsrc_veteran$survival)
+  gg_dta<- gg_rfsrc(rfsrc_veteran, by="trt")
+  
+  # Test object type
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "surv")
+  
 })
 
 test_that("gg_rfsrc regression",{
@@ -126,17 +118,8 @@ test_that("gg_rfsrc regression",{
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
-  
-  # Test Regression dimensions
-  expect_equal(nrow(gg_dta$yhat), length(rfsrc_airq$predicted.oob))
-  expect_equal(ncol(gg_dta$yhat), 2)
-  
-  # Test data is correctly pulled from randomForest obect.
-  # Predicted values
-  expect_equivalent(gg_dta$yhat$yhat,rfsrc_airq$predicted.oob)
-  # y value for comparision
-  expect_equivalent(gg_dta$yhat$Ozone,rfsrc_airq$yvar)
-  
+  expect_is(gg_dta, "regr")
+   
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_rfsrc(gg_dta)
   
@@ -150,13 +133,7 @@ test_that("gg_rfsrc regression",{
   expect_is(gg_dta, "gg_rfsrc")
   
   # Test classification dimensions
-  expect_equal(nrow(gg_dta$yhat), length(rfsrc_airq$predicted))
-  expect_equal(ncol(gg_dta$yhat), 2)
   
   # Test data is correctly pulled from randomForest obect.
   # Predicted values
-  expect_equivalent(gg_dta$yhat$yhat,rfsrc_airq$predicted)
-  # y value for comparision
-  expect_equivalent(gg_dta$yhat$Ozone,rfsrc_airq$yvar)
-  
 })

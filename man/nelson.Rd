@@ -4,7 +4,7 @@
 \alias{nelson}
 \title{nonparametric Nelson-Aalen estimates}
 \usage{
-nelson(interval, censor, data, strat = NULL, weight = NULL, ...)
+nelson(interval, censor, data, by = NULL, weight = NULL, ...)
 }
 \arguments{
 \item{interval}{name of the interval variable in the training dataset.}
@@ -13,7 +13,7 @@ nelson(interval, censor, data, strat = NULL, weight = NULL, ...)
 
 \item{data}{name of the survival training data.frame}
 
-\item{strat}{stratifying variable in the training dataset, defaults to NULL}
+\item{by}{stratifying variable in the training dataset, defaults to NULL}
 
 \item{weight}{for each observation (default=NULL)}
 
@@ -39,7 +39,7 @@ plot(gg_dta)
 
 # Stratified on treatment variable.
 gg_dta <- gg_survival(interval="time", censor="status",
-                     data=pbc, strat="treatment")
+                     data=pbc, by="treatment")
 
 plot(gg_dta, error="none")
 plot(gg_dta)

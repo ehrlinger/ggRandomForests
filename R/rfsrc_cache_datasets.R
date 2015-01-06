@@ -159,7 +159,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(save) save(partial_Boston, file=paste(pth, "partial_Boston.rda", sep=""), compress="xz")
     
     cat("\nBoston: RF partial coplots\n\tlstat by rm groups\n(this will take a little longer...)\n")
-    rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=6)
+    rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, intervals=TRUE)
     rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
     partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
                                                 groups=rm_grp,
@@ -170,7 +170,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
                   compress="xz")
     
     cat("\nBoston: RF partial coplots\n\trm by lstat groups\n(so will this...)\n")
-    lstat_pts <- quantile_cuts(rfsrc_Boston$xvar$lstat, groups=6)
+    lstat_pts <- quantile_pts(rfsrc_Boston$xvar$lstat, groups=6, intervals=TRUE)
     lstat_grp <- cut(rfsrc_Boston$xvar$lstat, breaks=lstat_pts)
     partial_coplot_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm", 
                                                  groups=lstat_grp,

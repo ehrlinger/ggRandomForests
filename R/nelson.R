@@ -3,7 +3,7 @@
 #' @param data name of the survival training data.frame
 #' @param interval name of the interval variable in the training dataset.
 #' @param censor name of the censoring variable in the training dataset.
-#' @param strat stratifying variable in the training dataset, defaults to NULL
+#' @param by stratifying variable in the training dataset, defaults to NULL
 #' @param weight for each observation (default=NULL)
 #' @param ... arguments passed to the \code{survfit} function 
 #'
@@ -28,13 +28,13 @@
 #' 
 #' # Stratified on treatment variable.
 #' gg_dta <- gg_survival(interval="time", censor="status", 
-#'                      data=pbc, strat="treatment")
+#'                      data=pbc, by="treatment")
 #'                      
 #' plot(gg_dta, error="none")
 #' plot(gg_dta)
 #' }                                            
 #' 
-nelson <- function(interval, censor, data, strat=NULL, weight=NULL,...){
+nelson <- function(interval, censor, data, by=NULL, weight=NULL,...){
   call <- match.call()
   
   # Make sure we've speced the confidence limit correctly
@@ -49,10 +49,10 @@ nelson <- function(interval, censor, data, strat=NULL, weight=NULL,...){
   
   # Kaplan-Meier analysis
   srv <- Surv(time=data[,interval], event=data[,censor])
-  if(is.null(strat)){
+  if(is.null(by)){
     srvTab <- survfit(srv~1,data, ...)
   }else{
-    srvTab <- survfit(srv~strata(data[,strat]),data, ...)
+    srvTab <- survfit(srv~strata(data[,by]),data, ...)
   }
   #
   # OR for stratification on 
@@ -79,10 +79,10 @@ nelson <- function(interval, censor, data, strat=NULL, weight=NULL,...){
                          cum_haz=cumHazard) )
   
   # Add group labels when stratifying data.
-  if(!is.null(strat)){
+  if(!is.null(by)){
     tm_splits <- which(c(FALSE,sapply(2:nrow(tbl), function(ind){tbl$time[ind] < tbl$time[ind-1]})))
     
-    lbls <- unique(data[,strat])
+    lbls <- unique(data[,by])
     tbl$groups <- lbls[1]
     
     for(ind in 2:(length(tm_splits)+1)){

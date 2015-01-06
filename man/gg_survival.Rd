@@ -4,15 +4,15 @@
 \alias{gg_survival}
 \title{Nonparametric survival estimates.}
 \usage{
-gg_survival(interval, censor, strat = NULL, data, type = c("kaplan",
-  "nelson"), ...)
+gg_survival(interval, censor, by = NULL, data, type = c("kaplan", "nelson"),
+  ...)
 }
 \arguments{
 \item{interval}{name of the interval variable in the training dataset.}
 
 \item{censor}{name of the censoring variable in the training dataset.}
 
-\item{strat}{stratifying variable in the training dataset, defaults to NULL}
+\item{by}{stratifying variable in the training dataset, defaults to NULL}
 
 \item{data}{name of the training data.frame}
 
@@ -45,14 +45,14 @@ plot(gg_dta)
 
 # Stratified on treatment variable.
 gg_dta <- gg_survival(interval="time", censor="status",
-                     data=pbc, strat="treatment")
+                     data=pbc, by="treatment")
 
 plot(gg_dta, error="none")
 plot(gg_dta)
 
 # ...with smaller confidence limits.
 gg_dta <- gg_survival(interval="time", censor="status",
-                     data=pbc, strat="treatment", conf.int=.68)
+                     data=pbc, by="treatment", conf.int=.68)
 
 plot(gg_dta, error="lines")
 }

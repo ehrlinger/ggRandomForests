@@ -15,13 +15,13 @@
 #' data(rfsrc_Boston)
 #' data(partial_coplot_Boston_surf)
 #' 
-#' # Find the quantile points to create 50 interval groups
-#' rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=50)
+#' # Find the quantile points 50
+#' rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50)
 #' 
 #' # Instead of groups, we want the raw rm point values,
 #' # To make the dimensions match, we need to repeat the values
 #' # for each of the 50 points in the lstat direction
-#' rm.tmp <- do.call(c,lapply(rm_pts[-1], 
+#' rm.tmp <- do.call(c,lapply(rm_pts, 
 #'                            function(grp){rep(grp, 50)}))
 #' 
 #' # attach the data to the gg_partial_coplot

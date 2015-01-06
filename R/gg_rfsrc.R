@@ -22,16 +22,20 @@
 #' and formats data for plotting the response using \code{\link{plot.gg_rfsrc}}.
 #' 
 #' @param object \code{randomForestSRC::rfsrc} object
+#' @param by stratifying variable in the training dataset, defaults to NULL
+#' @param oob boolean, should we return the oob prediction , or the full
+#' forest prediction.
 #' @param ... extra arguments
 #' 
 #' @return \code{gg_rfsrc} object
 #' 
 #' @details 
-#'    surv_type ("surv", "chf", "mortality", "hazard") for survival forests
+#'    \code{surv_type} ("surv", "chf", "mortality", "hazard") for survival forests
 #'    
-#'    oob boolean, should we return the oob prediction , or the full
+#'    \code{oob} boolean, should we return the oob prediction , or the full
 #' forest prediction.
 #' 
+#'    
 #' 
 #' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}
 #' 
@@ -69,16 +73,10 @@
 #' @aliases gg_rfsrc gg_rfsrc.rfsrc
 #' @export gg_rfsrc.rfsrc gg_rfsrc
 #'
-#'
-gg_rfsrc <- function (object, ...) {
-  UseMethod("gg_rfsrc", object)
-}
-
 gg_rfsrc.rfsrc <- function(object, 
+                           oob=TRUE, 
+                           by, 
                            ...) {
-  
-  
-  ##!!TODO!! Stratified predictions...
   
   ## Check that the input obect is of the correct type.
   if (inherits(object, "rfsrc") == FALSE){
@@ -87,14 +85,36 @@ gg_rfsrc.rfsrc <- function(object,
   if (is.null(object$forest)) {
     stop("The function requires the \"forest = TRUE\" attribute when growing the randomForest")
   }
-  oob <- TRUE
+  
   # get optional arguments
   arg_list <- list(...)
   
-  if(!is.null(arg_list$oob)) oob <- arg_list$oob
   if (inherits(object, "predict")){
     oob <- FALSE
   }
+  
+  if(!missing(by)){
+    grp <- by
+    # If the by argument is a vector, make sure it is the correct length
+    if(is.character(grp)){
+      if(is.null(object$xvar[,grp])){
+        stop(paste("No column named", grp, "in forest training set." ))
+      }else{
+        grp <- object$xvar[,grp]
+      }
+    }
+    
+    if(is.vector(grp) | is.factor(grp)){
+      if(length(grp) != nrow(object$xvar))
+        stop(paste("By argument does not have the correct dimension ", 
+                   nrow(object$xvar)))
+    }else{
+      stop(paste("By argument should be either a vector, or colname of training data", 
+                 nrow(object$xvar)))
+    }
+    grp <- factor(grp, levels=unique(grp))
+  }
+  
   
   if(object$family == "class"){
     ### Classification models...
@@ -114,6 +134,8 @@ gg_rfsrc.rfsrc <- function(object,
         data.frame(cbind(object$predicted))
       }
     }
+    
+    # Switch between logical or categorical outcome
     if(ncol(gg_dta) == 1){
       colnames(gg_dta)<- object$yvar.names
       # Force this to logical return value... 
@@ -126,6 +148,9 @@ gg_rfsrc.rfsrc <- function(object,
       gg_dta$y <- object$yvar
       
     }
+    
+    # Handle the "by" argument.
+    if(!missing(by)) gg_dta$group <- grp
     
   }else if(object$family == "surv"){
     
@@ -156,6 +181,59 @@ gg_rfsrc.rfsrc <- function(object,
     rng$ptid <- 1:nrow(rng)
     rng$cens <- as.logical(object$yvar[,2])
     gg_dta <- rng
+    
+    # If we don't specify either a conf band or group by variable... 
+    # Then we want to plot a curve for each observation.
+    if(is.null(arg_list$conf.int) & missing(by)){
+      gg_dta.mlt <- melt(gg_dta, id.vars=c("ptid","cens"))
+      gg_dta.mlt$variable <- as.numeric(as.character(gg_dta.mlt$variable))
+      gg_dta.mlt$ptid <- factor(gg_dta.mlt$ptid)
+      
+      gg_dta <- gg_dta.mlt
+      
+    }else{
+      
+      level <- if(is.null(arg_list$conf.int)) .95
+      else arg_list$conf.int
+      
+      # If we have one value, then it's two sided.
+      if(length(level) ==1 ){
+        if(level > 1)
+          level <- level/100
+        
+        level.set <- c((1- level)/2, 1-(1-level)/2)
+        level.set <- sort(level.set) 
+      }else{
+        level.set <- sort(level) 
+      }
+      
+      if(is.null(arg_list$bs.sample))
+        bs.samples <- nrow(gg_dta)
+      else{
+        bs.samples <-arg_list$bs.sample 
+      }
+      
+      
+      if(!missing(by)){
+        gg_dta$group <- grp
+        #####
+        grp_dta <- lapply(levels(grp), function(st){
+          if(is.null(arg_list$bs.sample))
+            bs.samples <- nrow(gg_dta[which(as.character(gg_dta$group)==st),])
+          
+          obj <- bootstrap_survival(gg_dta[which(as.character(gg_dta$group)==st),], 
+                                    bs.samples, level.set)
+          obj$group <- st
+          obj})
+        gg_grp <- do.call(rbind, grp_dta)
+        gg_grp$group <- factor(gg_grp$group,
+                               levels=unique(gg_grp$group))
+        gg_dta <- gg_grp
+      }else{
+        gg_dta <- bootstrap_survival(gg_dta, bs.samples, level.set)
+      }
+    }
+    
   }else if(object$family == "regr"){
     
     # Need to add multiclass methods
@@ -166,12 +244,45 @@ gg_rfsrc.rfsrc <- function(object,
     }
     
     colnames(gg_dta) <- c("yhat", object$yvar.names)
+    
+    # Handle the "by" argument.
+    if(!missing(by)) gg_dta$group <- grp
+    
   }else{
     stop(paste("Plotting for ", object$family, " randomForestSRC is not yet implemented.", sep=""))
   }
   
-  gg_dta <- list(yhat=gg_dta, xvar=object$xvar, family=object$family)
-  
-  class(gg_dta) <- c("gg_rfsrc", class(gg_dta))
+  class(gg_dta) <- c("gg_rfsrc", class(gg_dta), object$family)
   invisible(gg_dta)
 }
+
+
+
+bootstrap_survival <- function(gg_dta, bs.samples, level.set){
+  ## Calculate the leave one out estimate of the mean survival
+  gg.t <- gg_dta[, -which(colnames(gg_dta) %in% c("ptid","cens", "group"))]
+  mn.bs <- t(sapply(1:bs.samples, 
+                    function(pat){
+                      st <- sample(1:nrow(gg.t), size=nrow(gg.t), replace=T)
+                      colMeans(gg.t[st,])}))
+  
+  ## now get the confidence interval of the mean, and the median (.5)
+  rng <-sapply(1:ncol(mn.bs), 
+               function(tPt){quantile(mn.bs[,tPt], probs=c(level.set, .5) )})
+  mn <- sapply(1:ncol(rng), function(tPt){mean(rng[,tPt])})
+  
+  time.interest <- as.numeric(colnames(gg.t))
+  
+  dta <- data.frame(cbind(time.interest,
+                          t(rng)[-which(colnames(gg_dta) %in% c("ptid", "cens")),],
+                          mn[-which(colnames(gg_dta) %in% c("ptid", "cens"))]))
+  
+  if(ncol(dta) == 5){
+    colnames(dta)<- c("time", "lower",  "upper", "median", "mean")
+  }else{
+    colnames(dta)<- c("time", level.set, "mean")
+  }
+  dta
+}
+
+gg_rfsrc <- gg_rfsrc.rfsrc

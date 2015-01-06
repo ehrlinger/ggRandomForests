@@ -25,7 +25,7 @@
 #' @param data name of the training data.frame
 #' @param interval name of the interval variable in the training dataset.
 #' @param censor name of the censoring variable in the training dataset.
-#' @param strat stratifying variable in the training dataset, defaults to NULL
+#' @param by stratifying variable in the training dataset, defaults to NULL
 #' @param type one of ("kaplan","nelson"), defaults to kaplan-meier
 #' @param ... extra arguments passed to kaplan or nelson functions.
 #' 
@@ -48,27 +48,27 @@
 #' 
 #' # Stratified on treatment variable.
 #' gg_dta <- gg_survival(interval="time", censor="status", 
-#'                      data=pbc, strat="treatment")
+#'                      data=pbc, by="treatment")
 #'                      
 #' plot(gg_dta, error="none")
 #' plot(gg_dta)
 #' 
 #' # ...with smaller confidence limits.
 #' gg_dta <- gg_survival(interval="time", censor="status", 
-#'                      data=pbc, strat="treatment", conf.int=.68)
+#'                      data=pbc, by="treatment", conf.int=.68)
 #'                      
 #' plot(gg_dta, error="lines")
 #' 
 #'
-gg_survival <- function(interval, censor, strat=NULL, 
+gg_survival <- function(interval, censor, by=NULL, 
                                         data, 
                                         type=c("kaplan","nelson"), 
                                         ...){
   type <- match.arg(type)
   
   gg_dta <- switch(type,
-                   kaplan=kaplan(interval=interval, censor=censor, strat=strat, data=data, ...),
-                   nelson=nelson(interval=interval, censor=censor, strat=strat, data=data, ...)
+                   kaplan=kaplan(interval=interval, censor=censor, by=by, data=data, ...),
+                   nelson=nelson(interval=interval, censor=censor, by=by, data=data, ...)
   )
   
   return(gg_dta)

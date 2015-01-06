@@ -183,7 +183,7 @@ plot(gg_interaction(interaction_Boston),
 ## ----coplots, fig.cap="Variable Coplots. Predicted median home values as a function of percentage of lower status population, stratified by average number of rooms groups.", fig.width=7, fig.height=5----
 # Find the rm variable points to create 6 intervals of roughly 
 # equal size population
-rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=6)
+rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, intervals=TRUE)
 
 # Pass these variable points to create the 6 (factor) intervals
 rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
@@ -205,7 +205,7 @@ plot(gg_v, xvar = "lstat", smooth = TRUE,
 ## ----coplots2, fig.cap="Variable Coplots. Predicted median home value as a function of average number of rooms, stratified by percentage of lower status groups.", fig.width=7, fig.height=5----
 # Find the lstat variable points to create 6 intervals of roughly 
 # equal size population
-lstat_pts <- quantile_cuts(rfsrc_Boston$xvar$lstat, groups=6)
+lstat_pts <- quantile_pts(rfsrc_Boston$xvar$lstat, groups=6, intervals=TRUE)
 
 # Pass these variable points to create the 6 (factor) intervals
 lstat_grp <- cut(rfsrc_Boston$xvar$lstat, breaks=lstat_pts)
@@ -257,7 +257,7 @@ plot(partial_coplot_Boston2, se=FALSE)+
 
 ## ----def-pts----------------------------------------------------------------------------
 # Find the quantile points to create 50 cut points
-rm_pts <- quantile_cuts(rfsrc_Boston$xvar$rm, groups=49)
+rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50)
 
 ## ----prtl-surface, eval=FALSE-----------------------------------------------------------
 #  # Generate the gg_partial_coplot data object

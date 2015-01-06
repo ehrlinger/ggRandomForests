@@ -213,7 +213,7 @@ pbc.test <- pbc[which(is.na(pbc$treatment)),]
 # Create the gg_survival object
 gg_dta <- gg_survival(interval = "years",
                       censor = "status", 
-                      strat = "treatment", 
+                      by = "treatment", 
                       data = pbc.trial, 
                       conf.int = .95)
 
@@ -224,6 +224,13 @@ plot(gg_dta) +
        color = "Treatment", fill = "Treatment")+
   theme(legend.position = c(.2,.2))+
   coord_cartesian(y = c(0,1.01))
+
+## ----plot_gg_cum_hazard, fig.cap="Kaplan--Meier pbc data cumulative hazard estimates comparing the treatment with placebo.", echo=TRUE----
+plot(gg_dta, type="cum_haz") +
+  labs(y = "Cumulative Hazard", 
+       x = "Observation Time (years)", 
+       color = "Treatment", fill = "Treatment")+
+  theme(legend.position = c(.2,.8))
 
 ## ----xtab, results="asis"---------------------------------------------------------------
 ## Not displayed ##
@@ -262,7 +269,7 @@ pbc.bili$bili_grp <- cut(pbc.trial$bili,
 
 # plot the gg_survival object directly
 plot(gg_survival(interval = "years",censor = "status", 
-                 strat= "bili_grp", data = pbc.bili),
+                 by = "bili_grp", data = pbc.bili),
      error = "none") +
   labs(y = "Survival Probability", 
        x = "Observation Time (years)", 
@@ -315,17 +322,14 @@ ggRFsrc <- plot(gg_dta, alpha = .2) +
 show(ggRFsrc)
 
 ## ----rfsrc-mean, fig.cap="Mean value random forest predicted survival with shaded 95\\% confidence band."----
-plot.gg_rfsrc(rfsrc_pbc, level = .95) + 
-  scale_color_manual(values = strCol) + 
+plot(gg_rfsrc(rfsrc_pbc, conf.int = .95)) + 
   theme(legend.position = "none") + 
   labs(y = "Survival Probability", x = "time (years)")+
   coord_cartesian(y = c(-.01,1.01))
 
-## ----rfsrc-mean2, fig.cap="Mean value random forest predicted survival with shaded 95\\% confidence band. Treatment effects (TODO!!!)"----
-
-plot.gg_rfsrc(rfsrc_pbc, by = "treatment", level = .95) + 
-  scale_color_manual(values = strCol) + 
-  theme(legend.position = "none") + 
+## ----rfsrc-mean2, fig.cap="Mean value random forest predicted survival with shaded 95\\% confidence band. Treatment effects."----
+plot(gg_rfsrc(rfsrc_pbc, by="treatment")) + 
+  theme(legend.position = c(.2,.2)) + 
   labs(y = "Survival Probability", x = "time (years)")+
   coord_cartesian(y = c(-.01,1.01))
 
@@ -346,7 +350,7 @@ rfsrc_pbc_test
 
 ## ----predictPlot, fig.cap="Test set prediction: 106 observations."----------------------
 # Test set predicted survival
-plot(gg_rfsrc(rfsrc_pbc_test), level = .95)+ 
+plot(gg_rfsrc(rfsrc_pbc_test), alpha=.2)+ 
   scale_color_manual(values = strCol) + 
   theme(legend.position = "none") + 
   labs(y = "Survival Probability", x = "time (years)")+
@@ -480,6 +484,60 @@ plot.gg_partial_list(ggpart, panel=TRUE,
   theme(legend.position = c(.2, .2))+
   coord_cartesian(y = c(25,101))
 
+## ----def-time-pts-----------------------------------------------------------------------
+time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
+# Find the quantile points to create 30 interval groups
+time_cts <-quantile_pts(time_pts, groups = 50)
+
+## ----prtl-time-surface, eval=FALSE------------------------------------------------------
+#  # Generate the gg_partial_coplot data object
+#  system.time(partial_pbc_time <- lapply(time_cts, function(ct){
+#    plot.variable(rfsrc_pbc, xvar = "bili", time = ct,
+#                  npts = 50, show.plots = FALSE,
+#                  partial = TRUE, surv.type="surv")
+#    }))
+#  #     user   system  elapsed
+#  # 2561.313   81.446 2641.707
+
+## ----timeContour3D, fig.cap="Partial coplot contour plot.", fig.width=7, fig.height=5----
+# Load the stored partial coplot data.
+data(partial_pbc_time)
+
+# Instead of groups, we want the raw rm point values,
+# To make the dimensions match, we need to repeat the values
+# for each of the 50 points in the lstat direction
+time.tmp <- do.call(c,lapply(time_cts, 
+                               function(grp){rep(grp, 50)}))
+
+# Convert the list of plot.variable output to 
+partial_time <- do.call(rbind,lapply(partial_pbc_time, gg_partial))
+
+# attach the data to the gg_partial_coplot
+partial_time$time <- time.tmp
+
+# ggplot2 contour plot of x, y and z data.
+ggplot(partial_time, aes(y = bili, x = time, z = yhat))+
+  stat_contour(aes(colour = ..level..), binwidth = .25)+
+  labs(y = st.labs["bili"], x = "time (years)", 
+       color = "Survival (%)")+
+  scale_colour_gradientn(colours = heat.colors(25))
+
+## ----timeSurface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5--------
+# Modify the figure margins to make the figure larger
+par(mai = c(0,0,0,0))
+
+# Transform the gg_partial_coplot object into a list of three named matrices
+# for surface plotting with plot3D::surf3D
+srf <- surface_matrix(partial_time, c("time", "bili", "yhat"))
+
+# Generate the figure.
+surf3D(x = srf$x, y = srf$y, z = srf$z, col = heat.colors(25),
+       colkey = FALSE, border = "black", bty = "b2", 
+       shade = 0.5, expand = 0.5, 
+       lighting = TRUE, lphi = -50,
+       ylab = "Bilirubin", xlab = "Time", zlab = "Survival"
+)
+
 ## ----interaction-show, echo=TRUE, eval=FALSE--------------------------------------------
 #  interaction_pbc <- find.interaction(rfsrc_pbc)
 #  
@@ -515,11 +573,20 @@ var_dep +
   facet_grid(edema~stage)
 
 ## ----copper-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by conditonal membership in Urine Copper measurement intervalse.", fig.width=7, fig.height=4, echo=TRUE----
-copper_cts <- quantile_cuts(ggvar$copper, groups = 6)
+# Find intervals with similar number of observations.
+copper_cts <-quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
+
+# We need to move the minimal value so we include that observation
+copper_cts[1] <- copper_cts[1] - 1.e-7
+
+# Create the conditional groups and add to the gg_variable object
 copper_grp <- cut(ggvar$copper, breaks = copper_cts)
 ggvar$copper_grp <- copper_grp
+
+# Adjust naming for facets
 levels(ggvar$copper_grp) <- paste("copper = ",levels(copper_grp), sep = "")
 
+# plot.gg_variable
 plot(ggvar[-which(is.na(ggvar$copper)),], xvar = "bili", 
                 method = "glm", alpha = .5, se = FALSE) + 
   labs(y = "Survival", x = st.labs["bili"]) + 
@@ -530,11 +597,20 @@ plot(ggvar[-which(is.na(ggvar$copper)),], xvar = "bili",
   coord_cartesian(y = c(-.01,1.01))
 
 ## ----bili-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by conditonal membership in Urine Copper measurement intervalse.", fig.width=7, fig.height=4, echo=TRUE----
-bili_cts <- quantile_cuts(ggvar$bili, groups = 6)
+# Find intervals with similar number of observations.
+bili_cts <-quantile_pts(ggvar$bili, groups = 6, intervals = TRUE)
+
+# We need to move the minimal value so we include that observation
+bili_cts[1] <- bili_cts[1] - 1.e-7
+
+# Create the conditional groups and add to the gg_variable object
 bili_grp <- cut(ggvar$bili, breaks = bili_cts)
 ggvar$bili_grp <- bili_grp
+
+# Adjust naming for facets
 levels(ggvar$bili_grp) <- paste("bilirubin = ",levels(bili_grp), sep = "")
 
+# plot.gg_variable
 plot(ggvar[-which(is.na(ggvar$copper)),], xvar = "copper", 
                 method = "glm", alpha = .5, se = FALSE) + 
   labs(y = "Survival", x = st.labs["copper"]) + 
@@ -552,7 +628,9 @@ plot(ggvar[-which(is.na(ggvar$copper)),], xvar = "copper",
 #                                           show.plots = FALSE)
 
 ## ----bili-copper, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by copper groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width=7, fig.height=4, echo=TRUE----
+# Load cached partial plot data
 data(partial_coplot_pbc, package = "ggRandomForests")
+
 # Partial coplot
 plot(partial_coplot_pbc, se = FALSE)+
   labs(x = st.labs["bili"], y = "Survival at 1 year (%)", 
@@ -568,7 +646,9 @@ plot(partial_coplot_pbc, se = FALSE)+
 #                                           show.plots = FALSE)
 
 ## ----copper-bili, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by copper groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width=7, fig.height=4, echo=TRUE----
+# Load cached partial plot data
 data(partial_coplot_pbc2, package = "ggRandomForests")
+
 # Partial coplot
 plot(partial_coplot_pbc2, se = FALSE)+
   labs(x = st.labs["copper"], y = "Survival at 1 year (%)", 
@@ -578,7 +658,7 @@ plot(partial_coplot_pbc2, se = FALSE)+
 
 ## ----def-pts----------------------------------------------------------------------------
 # Find the quantile points to create 50 cut points for 49 groups
-copper_cts <- quantile_cuts(ggvar$copper, groups = 49)
+copper_cts <-quantile_pts(ggvar$copper, groups = 50)
 
 ## ----prtl-surface, eval=FALSE-----------------------------------------------------------
 #  system.time(partial_pbc_surf <- lapply(copper_cts, function(ct){
@@ -628,59 +708,5 @@ surf3D(x = srf$x, y = srf$y, z = srf$z, col = topo.colors(25),
        shade = 0.5, expand = 0.5, 
        lighting = TRUE, lphi = -50,
        xlab = "Bilirubin", ylab = "Urine Copper", zlab = "Survival at 1 Year"
-)
-
-## ----def-time-pts-----------------------------------------------------------------------
-# Find the quantile points to create 30 interval groups
-time_cts <- quantile_cuts(rfsrc_pbc$time.interest, groups = 49)
-time_cts[1] <- time_cts[1] + 0.000001
-
-## ----prtl-time-surface, eval=FALSE------------------------------------------------------
-#  # Generate the gg_partial_coplot data object
-#  system.time(partial_pbc_time <- lapply(time_cts, function(ct){
-#    plot.variable(rfsrc_pbc, xvar = "bili", time = ct,
-#                  npts = 50, show.plots = FALSE,
-#                  partial = TRUE, surv.type="surv")
-#    }))
-#  #     user   system  elapsed
-#  # 2561.313   81.446 2641.707
-
-## ----timeContour3D, fig.cap="Partial coplot contour plot.", fig.width=7, fig.height=5----
-# Load the stored partial coplot data.
-data(partial_pbc_time)
-
-# Instead of groups, we want the raw rm point values,
-# To make the dimensions match, we need to repeat the values
-# for each of the 50 points in the lstat direction
-time.tmp <- do.call(c,lapply(time_cts, 
-                               function(grp){rep(grp, 50)}))
-
-# Convert the list of plot.variable output to 
-partial_time <- do.call(rbind,lapply(partial_pbc_time, gg_partial))
-
-# attach the data to the gg_partial_coplot
-partial_time$time <- time.tmp
-
-# ggplot2 contour plot of x, y and z data.
-ggplot(partial_time, aes(y = bili, x = time, z = yhat))+
-  stat_contour(aes(colour = ..level..), binwidth = .25)+
-  labs(y = st.labs["bili"], x = "time (years)", 
-       color = "Survival (%)")+
-  scale_colour_gradientn(colours = heat.colors(25))
-
-## ----timeSurface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5--------
-# Modify the figure margins to make the figure larger
-par(mai = c(0,0,0,0))
-
-# Transform the gg_partial_coplot object into a list of three named matrices
-# for surface plotting with plot3D::surf3D
-srf <- surface_matrix(partial_time, c("time", "bili", "yhat"))
-
-# Generate the figure.
-surf3D(x = srf$x, y = srf$y, z = srf$z, col = heat.colors(25),
-       colkey = FALSE, border = "black", bty = "b2", 
-       shade = 0.5, expand = 0.5, 
-       lighting = TRUE, lphi = -50,
-       ylab = "Bilirubin", xlab = "Time", zlab = "Survival"
 )
 
