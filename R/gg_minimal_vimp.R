@@ -62,6 +62,22 @@
 #' # Plot the gg_error object
 #' plot(gg_dta)
 #' 
+#' data(varsel_Boston, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing error rates
+#' gg_dta<- gg_minimal_vimp(varsel_Boston)
+#' 
+#' # Plot the gg_error object
+#' plot(gg_dta)
+#' 
+#' data(varsel_mtcars, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing error rates
+#' gg_dta<- gg_minimal_vimp(varsel_mtcars)
+#' 
+#' # Plot the gg_error object
+#' plot(gg_dta)
+#' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
@@ -76,6 +92,11 @@
 #' gg_dta <- gg_minimal_vimp(varsel_veteran)
 #' plot(gg_dta)
 #'   
+#' data(varsel_pbc, package="ggRandomForests")
+#' 
+#' gg_dta <- gg_minimal_vimp(varsel_pbc)
+#' plot(gg_dta)
+
 gg_minimal_vimp.rfsrc <- function(object, event, ...){
   
   if (inherits(object, "rfsrc") == TRUE){

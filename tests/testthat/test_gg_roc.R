@@ -74,3 +74,57 @@ test_that("gg_roc regression",{
   ## Create the correct gg_roc object
   expect_that(gg_roc(rfsrc_airq), throws_error())
 })
+
+test_that("calc_roc",{
+  data(rfsrc_iris)
+  
+  # Test the cached forest type
+  expect_is(rfsrc_iris, "rfsrc")
+  
+  # Test the forest family
+  expect_match(rfsrc_iris$family, "class")
+  
+  gg_dta <- calc_roc.rfsrc(rfsrc_iris, 
+                           rfsrc_iris$yvar, 
+                           which.outcome=1, oob=TRUE)
+  
+  # Test the cached forest type
+  expect_is(gg_dta, "data.frame")
+  
+  expect_equal(ncol(gg_dta), 3)
+  expect_equal(nrow(gg_dta), 27)
+  
+  # test the auc calculator
+  auc <- calc_auc(gg_dta)
+  expect_equal(auc, 1)
+  
+  # The second outcome.
+  gg_dta <- calc_roc.rfsrc(rfsrc_iris, 
+                           rfsrc_iris$yvar, 
+                           which.outcome=2, oob=TRUE)
+  
+  # Test the cached forest type
+  expect_is(gg_dta, "data.frame")
+  
+  expect_equal(ncol(gg_dta), 3)
+  expect_equal(nrow(gg_dta), 82)
+  
+  # test the auc calculator
+  auc <- calc_auc(gg_dta)
+  expect_equal(auc, 0.9844)
+  
+  # and the third...
+  gg_dta <- calc_roc.rfsrc(rfsrc_iris, 
+                           rfsrc_iris$yvar, 
+                           which.outcome=3, oob=TRUE)
+  
+  # Test the cached forest type
+  expect_is(gg_dta, "data.frame")
+  
+  expect_equal(ncol(gg_dta), 3)
+  expect_equal(nrow(gg_dta), 68)
+  
+  # test the auc calculator
+  auc <- calc_auc(gg_dta)
+  expect_equal(auc, 0.9886)
+})

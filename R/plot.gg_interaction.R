@@ -106,6 +106,8 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
   if(!inherits(object, "gg_interaction")) 
     object <- gg_interaction(x, ...)
   
+  if(missing(xvar)) xvar <- rownames(object)
+  
   if(sum(xvar %in% rownames(object)) == 0){
     stop(paste("Invalid xvar (",xvar, ") specified, covariate not found.", sep=""))
   }

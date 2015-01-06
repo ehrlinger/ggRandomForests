@@ -58,6 +58,14 @@
 #' 
 #' plot.gg_rfsrc(gg_dta)
 #' 
+#' data(rfsrc_Boston, package="ggRandomForests")
+#' plot.gg_rfsrc(rfsrc_Boston) 
+#' 
+#' data(rfsrc_mtcars, package="ggRandomForests")
+#' gg_dta<- gg_rfsrc(rfsrc_mtcars)
+#' 
+#' plot.gg_rfsrc(gg_dta)
+#' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
@@ -68,7 +76,25 @@
 #' data(rfsrc_veteran, package = "ggRandomForests")
 #' gg_dta <- gg_rfsrc(rfsrc_veteran)
 #' plot(gg_dta)
-#' plot(gg_dta, level=.68)
+#' 
+#' gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int=.95)
+#' plot(gg_dta)
+#' 
+#' gg_dta <- gg_rfsrc(rfsrc_veteran, by="trt")
+#' plot(gg_dta)
+#' 
+#' 
+#' data(rfsrc_pbc, package = "ggRandomForests")
+#' gg_dta <- gg_rfsrc(rfsrc_pbc)
+#' plot(gg_dta)
+#' 
+#' gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int=.95)
+#' plot(gg_dta)
+#' 
+#' gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
+#' plot(gg_dta)
+#' 
+#' 
 #' 
 #' @aliases gg_rfsrc gg_rfsrc.rfsrc
 #' @export gg_rfsrc.rfsrc gg_rfsrc

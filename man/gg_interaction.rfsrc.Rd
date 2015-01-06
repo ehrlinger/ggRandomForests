@@ -38,6 +38,7 @@ gg_dta <- gg_interaction(interaction_iris)
 
 plot(gg_dta, xvar="Petal.Width")
 plot(gg_dta, xvar="Petal.Length")
+plot(gg_dta, panel=TRUE)
 
 ## ------------------------------------------------------------
 ## find interactions, regression setting
@@ -52,6 +53,17 @@ gg_dta <- gg_interaction(interaction_airq)
 
 plot(gg_dta, xvar="Temp")
 plot(gg_dta, xvar="Solar.R")
+plot(gg_dta, panel=TRUE)
+
+data(interaction_Boston, package="ggRandomForests")
+gg_dta <- gg_interaction(interaction_Boston)
+
+plot(gg_dta, panel=TRUE)
+
+data(interaction_mtcars, package="ggRandomForests")
+gg_dta <- gg_interaction(interaction_mtcars)
+
+plot(gg_dta, panel=TRUE)
 
 ## ------------------------------------------------------------
 ## find interactions, survival setting
@@ -64,6 +76,12 @@ gg_dta <- gg_interaction(interaction_pbc)
 
 plot(gg_dta, xvar="bili")
 plot(gg_dta, xvar="copper")
+plot(gg_dta, panel=TRUE)
+
+data(interaction_veteran, package="ggRandomForests")
+gg_dta <- gg_interaction(interaction_veteran)
+
+plot(gg_dta, panel=TRUE)
 }
 \references{
 Ishwaran H. (2007). Variable importance in binary regression trees and

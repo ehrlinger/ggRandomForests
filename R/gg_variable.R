@@ -57,6 +57,10 @@
 #' plot(gg_dta, xvar="Sepal.Width")
 #' plot(gg_dta, xvar="Sepal.Length")
 #' 
+#' ## !! TODO !! this needs to be corrected
+#' plot(gg_dta, xvar=rfsrc_iris$xvar.names, 
+#'      panel=TRUE, se=FALSE)
+#' 
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
@@ -65,9 +69,17 @@
 #' #rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
 #' data(rfsrc_airq, package="ggRandomForests")
 #' gg_dta <- gg_variable(rfsrc_airq)
+#' 
+#' # an ordinal variable 
+#' gg_dta[,"Month"] <- factor(gg_dta[,"Month"])
+#' 
 #' plot(gg_dta, xvar="Wind")
 #' plot(gg_dta, xvar="Temp")
 #' plot(gg_dta, xvar="Solar.R")
+#' 
+#' plot(gg_dta, xvar=c("Solar.R", "Wind", "Temp", "Day"), panel=TRUE)
+#' 
+#' plot(gg_dta, xvar="Month", notch=TRUE)
 #' 
 #' ## motor trend cars
 #' #rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
@@ -76,6 +88,11 @@
 #' 
 #' # mtcars$cyl is an ordinal variable 
 #' gg_dta$cyl <- factor(gg_dta$cyl)
+#' gg_dta$am <- factor(gg_dta$am)
+#' gg_dta$vs <- factor(gg_dta$vs)
+#' gg_dta$gear <- factor(gg_dta$gear)
+#' gg_dta$carb <- factor(gg_dta$carb)
+#' 
 #' plot(gg_dta, xvar="cyl")
 #' 
 #' # Others are continuous
@@ -84,7 +101,8 @@
 #' plot(gg_dta, xvar="wt")
 #' 
 #' # panel
-#' plot(gg_dta, xvar=c("disp","hp"), panel=TRUE)
+#' plot(gg_dta,xvar=c("disp","hp", "drat", "wt", "qsec"),  panel=TRUE)
+#' plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb") ,panel=TRUE)
 #' 
 #' ## ------------------------------------------------------------
 #' ## survival examples

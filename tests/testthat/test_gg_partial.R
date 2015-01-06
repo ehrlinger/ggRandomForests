@@ -27,21 +27,21 @@ test_that("gg_partial classifications",{
   expect_is(gg_dta, "gg_partial_list")
   
   # Test varselect is the same
- #expect_equivalent(select(gg_dta$varselect, -names), rfsrc_iris$importance)
+  #expect_equivalent(select(gg_dta$varselect, -names), rfsrc_iris$importance)
   
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_partial(gg_dta[[2]])
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
- 
- ## Test plotting the gg_error object
- gg_plt <- plot.gg_partial_list(gg_dta)
- 
- # Test return is s ggplot object
- expect_is(gg_plt[[1]], "ggplot")
- 
- expect_equivalent(length(gg_plt),length(partial_iris$pData) )
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_partial_list(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt[[1]], "ggplot")
+  
+  expect_equivalent(length(gg_plt),length(partial_iris$pData) )
 })
 
 
@@ -119,4 +119,61 @@ test_that("gg_partial regression",{
   expect_is(gg_plt, "list")
   
   expect_equivalent(length(gg_plt) , length(gg_dta))
+})
+
+test_that("gg_partial combine",{
+  
+  # Load a set of plot.variable partial plot data
+  data(partial_veteran)
+  
+  # A list of 2 plot.variable objects
+  expect_is(partial_veteran, "list")
+  expect_more_than(length(partial_veteran), 1) 
+  
+  for(ind in 1:length(partial_veteran)){
+    expect_is(partial_veteran[[ind]], "rfsrc")
+    expect_is(partial_veteran[[ind]], "plot.variable")
+    expect_is(partial_veteran[[ind]], "surv")
+  }
+  
+  # Create gg_partial objects
+  ggPrtl <- lapply(partial_veteran, gg_partial)
+  for(ind in 1:length(partial_veteran)){
+    expect_is(ggPrtl[[ind]], "gg_partial_list")
+  }
+  
+  # Combine the objects to get multiple time curves 
+  # along variables on a single figure.
+  ggpart <- combine.gg_partial(ggPrtl[[1]], ggPrtl[[2]], 
+                               lbls = c("30 day", "6 month"))
+  expect_is(ggpart, "gg_partial_list")
+  
+  # We should have at least 5 
+  expect_more_than(length(ggpart), 5)
+  
+  # Plot each figure separately
+  gg_plt <- plot(ggpart)                                  
+  expect_is(gg_plt, "list")
+  expect_more_than(length(gg_plt), 5)
+  expect_equal(length(gg_plt), length(ggpart))
+  
+  for(ind in 1:length(gg_plt)){
+    expect_is(gg_plt[[ind]], "ggplot")
+  }
+  
+  # Get the continuous data for a panel of continuous plots.
+  ggcont <- ggpart
+  
+  ggcont$celltype <- ggcont$trt <- ggcont$prior <- NULL
+  expect_more_than(length(ggcont), 5-3)
+  
+  gg_plt <- plot(ggcont, panel=TRUE) 
+  expect_is(gg_plt, "ggplot")
+  # And the categorical for a panel of categorical plots.
+  ggpart$karno <- ggpart$diagtime <- ggpart$age <- NULL
+  expect_more_than(length(ggpart), 5-3)
+  
+  gg_plt <- plot(ggpart, panel=TRUE) 
+  expect_is(gg_plt, "ggplot")
+  
 })

@@ -53,13 +53,25 @@
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
 #' 
+#' data(rfsrc_Boston, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_Boston)
+#' plot(gg_dta)
+#' 
+#' data(rfsrc_mtcars, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_mtcars)
+#' plot(gg_dta)
+#' 
 #' ## ------------------------------------------------------------
 #' ## survival example
 #' ## ------------------------------------------------------------
 #' data(rfsrc_veteran, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_veteran)
 #' plot(gg_dta)
-#' 
+#'
+#' data(rfsrc_pbc, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_pbc)
+#' plot(gg_dta)
+
 #' @export gg_vimp.rfsrc gg_vimp
 #' @aliases gg_vimp gg_vimp.rfsrc 
 

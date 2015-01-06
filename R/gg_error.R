@@ -74,6 +74,24 @@
 #' # Plot the gg_error object
 #' plot(gg_dta)
 #' 
+#' #-------------
+#' data(rfsrc_Boston, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing error rates
+#' gg_dta<- gg_error(rfsrc_Boston)
+#' 
+#' # Plot the gg_error object
+#' plot(gg_dta)
+#' 
+#' #-------------
+#' data(rfsrc_mtcars, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing error rates
+#' gg_dta<- gg_error(rfsrc_mtcars)
+#' 
+#' # Plot the gg_error object
+#' plot(gg_dta)
+#' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
@@ -88,9 +106,12 @@
 #' gg_dta <- gg_error(rfsrc_veteran)
 #' plot(gg_dta)
 #' 
-#'
-### error rate plot
-
+#' # Load a cached randomForestSRC object
+#' data(rfsrc_pbc, package="ggRandomForests")
+#' 
+#' gg_dta <- gg_error(rfsrc_pbc)
+#' plot(gg_dta)
+#' 
 gg_error <- function (object, ...) {
   UseMethod("gg_error", object)
 }

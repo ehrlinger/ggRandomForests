@@ -49,6 +49,14 @@ gg_dta<- gg_rfsrc(rfsrc_airq)
 
 plot.gg_rfsrc(gg_dta)
 
+data(rfsrc_Boston, package="ggRandomForests")
+plot.gg_rfsrc(rfsrc_Boston)
+
+data(rfsrc_mtcars, package="ggRandomForests")
+gg_dta<- gg_rfsrc(rfsrc_mtcars)
+
+plot.gg_rfsrc(gg_dta)
+
 ## ------------------------------------------------------------
 ## Survival example
 ## ------------------------------------------------------------
@@ -59,7 +67,23 @@ plot.gg_rfsrc(gg_dta)
 data(rfsrc_veteran, package = "ggRandomForests")
 gg_dta <- gg_rfsrc(rfsrc_veteran)
 plot(gg_dta)
-plot(gg_dta, level=.68)
+
+gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int=.95)
+plot(gg_dta)
+
+gg_dta <- gg_rfsrc(rfsrc_veteran, by="trt")
+plot(gg_dta)
+
+
+data(rfsrc_pbc, package = "ggRandomForests")
+gg_dta <- gg_rfsrc(rfsrc_pbc)
+plot(gg_dta)
+
+gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int=.95)
+plot(gg_dta)
+
+gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
+plot(gg_dta)
 }
 \seealso{
 \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}

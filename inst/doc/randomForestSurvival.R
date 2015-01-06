@@ -576,9 +576,6 @@ var_dep +
 # Find intervals with similar number of observations.
 copper_cts <-quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
 
-# We need to move the minimal value so we include that observation
-copper_cts[1] <- copper_cts[1] - 1.e-7
-
 # Create the conditional groups and add to the gg_variable object
 copper_grp <- cut(ggvar$copper, breaks = copper_cts)
 ggvar$copper_grp <- copper_grp

@@ -30,46 +30,29 @@ gg_partial_coplot.ggRandomForests(object, xvar, groups, surv_type = c("mort",
 Data structures for stratified partial coplots
 }
 \examples{
-\dontrun{
+# Load the forest
 data(rfsrc_pbc, package="ggRandomForests")
 
-# Create a 3d coplot, survival as a function of bilirubin and prothrombin
-prothrombin_grp <- cut(rfsrc_pbc$xvar$prothrombin, breaks=c(8.9,10,11,12,18))
+# Create the variable plot.
+ggvar <- gg_variable(rfsrc_pbc, time = 1)
 
-gg_dta <- gg_partial_coplot(rfsrc_pbc, xvar="bili", groups=prothrombin_grp,
-  surv_type="surv", time=1, show.plots=FALSE)
+# Find intervals with similar number of observations.
+copper_cts <-quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
 
-ggpl <- ggplot(gg_dta,
-               aes(x=bili, y=yhat, shape=groups, color=groups))+
-       geom_point()+geom_smooth(se=FALSE)+
-       labs(x="Surgical Date", y="Survival 1 year",
-            shape="Prothrombin", color="Prothrombin")+
-       scale_color_brewer(palette="Set1")
+# Create the conditional groups and add to the gg_variable object
+copper_grp <- cut(ggvar$copper, breaks = copper_cts)
 
-ggpl
+## We would run this, but it's expensive
+# partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
+#                                         groups = copper_grp,
+#                                         surv_type = "surv",
+#                                         time = 1,
+#                                         show.plots = FALSE)
 
-## Build a list of 25 split points
-prothrom <- rfsrc_pbc$xvar \%>\% filter(!is.na(prothrombin))
-n.x <- length(unique(prothrom$prothrombin))
-npts <- 25
-prothrombin_pts <- sort(unique(prothrom$prothrombin))[
-   unique(as.integer(seq(1, n.x, length = min(npts, n.x))))]
+## so load the cached set
+data(partial_coplot_pbc, package="ggRandomForests")
 
-# Create a 3d coplot, survival as a function of bilirubin and prothrombin
-prothrombin_grp <- cut(rfsrc_pbc$xvar$prothrombin, breaks=prothrombin_pts)
-
-gg_dta <- gg_partial_coplot(rfsrc_pbc, xvar="bili", groups=prothrombin_grp,
-  surv_type="surv", time=1, show.plots=FALSE)
-
-ggpl <- ggplot(gg_dta,
-               aes(x=bili, y=yhat, shape=groups, color=groups))+
-       geom_point()+geom_smooth(se=FALSE)+
-       labs(x="Surgical Date", y="Survival 1 year",
-            shape="Prothrombin", color="Prothrombin")+
-       scale_color_brewer(palette="Set1")
-
-ggpl
-
-}
+# Partial coplot
+plot(partial_coplot_pbc, se = FALSE)
 }
 

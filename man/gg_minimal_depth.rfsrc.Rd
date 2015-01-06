@@ -56,6 +56,17 @@ gg_dta<- gg_minimal_depth(varsel_airq)
 # Plot the gg_error object
 plot(gg_dta)
 
+data(varsel_Boston, package="ggRandomForests")
+
+# Get a data.frame containing error rates
+plot(gg_minimal_depth(varsel_Boston))
+
+
+data(varsel_mtcars, package="ggRandomForests")
+
+# Get a data.frame containing error rates
+plot.gg_minimal_depth(varsel_mtcars)
+
 ## ------------------------------------------------------------
 ## Survival example
 ## ------------------------------------------------------------
@@ -68,6 +79,11 @@ plot(gg_dta)
 data(varsel_veteran, package="ggRandomForests")
 
 gg_dta <- gg_minimal_depth(varsel_veteran)
+plot(gg_dta)
+
+data(varsel_pbc, package="ggRandomForests")
+
+gg_dta <- gg_minimal_depth(varsel_pbc)
 plot(gg_dta)
 }
 \seealso{

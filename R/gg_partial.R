@@ -76,6 +76,35 @@
 #' gg_dta <- gg_partial(partial_airq)
 #' plot(gg_dta)
 #' 
+#' gg_dta.m <- gg_dta[["Month"]]
+#' plot(gg_dta.m, notch=TRUE)
+#' 
+#' gg_dta[["Month"]] <- NULL
+#' plot(gg_dta, panel=TRUE)
+#' 
+#' # ------- 
+#' data(partial_Boston, package="ggRandomForests")
+#'
+#' gg_dta <- gg_partial(partial_Boston)
+#' plot(gg_dta)
+#' plot(gg_dta, panel=TRUE)
+#' 
+#' data(partial_mtcars, package="ggRandomForests")
+#'
+#' gg_dta <- gg_partial(partial_mtcars)
+#' 
+#' plot(gg_dta)
+#' 
+#' gg_dta.cat <- gg_dta
+#' gg_dta.cat[["disp"]] <- gg_dta.cat[["wt"]] <- gg_dta.cat[["hp"]] <- NULL
+#' gg_dta.cat[["drat"]] <- gg_dta.cat[["carb"]] <- gg_dta.cat[["qsec"]] <- NULL
+#'  
+#' plot(gg_dta.cat, panel=TRUE)
+#' 
+#' gg_dta[["cyl"]] <- gg_dta[["vs"]] <- gg_dta[["am"]] <- NULL
+#' gg_dta[["gear"]] <- NULL
+#' plot(gg_dta, panel=TRUE)
+#' 
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
@@ -94,6 +123,29 @@
 #' gg_dta <- gg_partial(partial_veteran[[1]])
 #' plot(gg_dta)
 #' 
+#' gg_dta.cat <- gg_dta
+#' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
+#' plot(gg_dta, panel=TRUE)
+#' 
+#' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL 
+#' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
+#' 
+#' 
+#' gg_dta <- lapply(partial_veteran, gg_partial)
+#' length(gg_dta)
+#' gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]] )
+#' 
+#' plot(gg_dta[["karno"]])
+#' plot(gg_dta[["celltype"]])
+#' 
+#' gg_dta.cat <- gg_dta
+#' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
+#' plot(gg_dta, panel=TRUE)
+#' 
+#' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL 
+#' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
+#' 
+
 #' @aliases gg_partial gg_partial_list
 #' @name gg_partial
 #' @name gg_partial_list
