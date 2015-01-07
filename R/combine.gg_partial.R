@@ -58,6 +58,10 @@
 #' ggpart$karno <- ggpart$diagtime <- ggpart$age <- NULL
 #' plot(ggpart, panel=TRUE) 
 #' 
+#' 
+#
+# Tested in the gg_partial testthat file.
+
 combine.gg_partial <- function(x, y, lbls, ...){
   return(combine.gg_partial_list(x, y, lbls, ...))
 }
@@ -91,6 +95,7 @@ combine.gg_partial_list <- function(x, y, lbls, ...){
     ind.l <- length(lbls)
     y <- mclapply(y, function(st){st$group <- lbls[ind.l]; st})
   }
+  
   # By names
   nm <- names(x)
   

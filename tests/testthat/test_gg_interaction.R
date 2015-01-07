@@ -100,3 +100,35 @@ test_that("gg_interaction regression",{
   expect_is(gg.obj, "ggplot")
   
 })
+
+test_that("gg_interaction conditions",{
+  
+  ## New York air quality measurements
+  #   airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+  #   ggrf.obj<- gg_interaction(airq.obj)
+  ## Load the cached forest
+  data(rfsrc_mtcars, package="ggRandomForests")
+  
+  # Test the cached interaction structure
+  expect_is(rfsrc_mtcars, "rfsrc")
+  
+  ## Create the correct gg_interaction object
+  expect_that(ggrf.obj <- gg_interaction(rfsrc_mtcars),
+              gives_warning())
+  # Test object type
+  expect_is(ggrf.obj, "gg_interaction")
+  
+  data(interaction_mtcars, package="ggRandomForests")
+  # Test the cached interaction structure
+  expect_is(interaction_mtcars, "matrix")
+  
+  # Test classification dimensions
+  expect_equal(dim(ggrf.obj), dim(interaction_mtcars))
+  
+  # Test data is correctly pulled from randomForest obect.
+  expect_equivalent(as.matrix(ggrf.obj), interaction_mtcars)
+  
+  interaction_mtcars <- interaction_mtcars[-2,]
+  expect_that(gg_interaction(interaction_mtcars), throws_error())
+})
+

@@ -176,4 +176,10 @@ test_that("gg_partial combine",{
   gg_plt <- plot(ggpart, panel=TRUE) 
   expect_is(gg_plt, "ggplot")
   
+  # Test coverage, auto labels
+  ggpart <- combine.gg_partial(ggPrtl[[1]], ggPrtl[[2]])
+  expect_is(ggpart, "gg_partial_list")
+  
+  expect_that(combine.gg_partial(ggPrtl), throws_error())
+  expect_that(combine.gg_partial(ggPrtl, ggPrtl), throws_error())
 })

@@ -118,27 +118,24 @@
 # }
 
 gg_interaction.rfsrc <- function(object, ...){
-  if(inherits(object, "matrix")){
-    gg_dta <- data.frame(object)
-    
-    # Check to make sure it's the right type of matrix...
-    if(sum(colnames(gg_dta) != rownames(gg_dta)) > 0){
-      stop("gg_interaction expects a find.interaction object.")
-    }
-    
-    class(gg_dta) <- c("gg_interaction",  class(gg_dta))
-    
-  }else if (inherits(object, "rfsrc")) {
-    
+  if (inherits(object, "rfsrc")) {
     # If we called this with a rfsrc object, we need to run find.interaction.
     warning("Forest object means we assume max.subtree method for finding interactions.\nThis may take some time.")
     
-    object_interact <- find.interaction(object,...)
-    gg_dta <- data.frame(object_interact)
-    class(gg_dta) <- c("gg_interaction", class(gg_dta))
-  }else{
+    object <- find.interaction(object,...)
+  }
+  if(!inherits(object, "matrix")){
     stop("gg_interaction expects a rfsrc or find.interaction object.")
   }
+  
+  # make the matrix a data.frame
+  gg_dta <- data.frame(object)
+  
+  # Check to make sure it's the right type of structre...
+  if(nrow(gg_dta)!= ncol(gg_dta)){
+    stop("gg_interaction expects a find.interaction object.")
+  }
+  class(gg_dta) <- c("gg_interaction",  class(gg_dta))
   
   invisible(gg_dta)
 }
