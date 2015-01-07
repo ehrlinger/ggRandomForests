@@ -87,6 +87,9 @@ test_that("gg_variable survival",{
   )
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
+  
+  
+  
 })
 
 test_that("gg_variable regression",{

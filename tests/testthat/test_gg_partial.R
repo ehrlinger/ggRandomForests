@@ -85,6 +85,28 @@ test_that("gg_partial survival",{
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
+
+  data(rfsrc_pbc, package="ggRandomForests")
+  data("varsel_pbc", package="ggRandomForests")
+  
+  # Data generation
+  ggrf <- gg_variable(rfsrc_pbc, time = c(1, 3), 
+                      time.labels = c("1 Year", "3 Years"))
+  
+  # Plot the bilirubin variable dependence plot
+  gg_plt <- plot(ggrf, xvar = "bili", se = .95, alpha = .3)
+  
+  xvar <- varsel_pbc$topvars
+  xvar.cat <- c("edema", "stage")
+  xvar <- xvar[-which(xvar %in% xvar.cat)]
+  
+  # plot the next 5 continuous variable dependence plots.
+  gg_plt <- plot(ggrf, xvar = xvar[2:6], panel = TRUE, 
+       se = FALSE, alpha = .3, 
+       method = "glm", formula = y~poly(x,2))
+  
+  expect_warning(gg_plt <- plot(ggrf, xvar = xvar.cat, panel=TRUE))
+  
 })
 
 test_that("gg_partial regression",{
@@ -119,6 +141,23 @@ test_that("gg_partial regression",{
   expect_is(gg_plt, "list")
   
   expect_equivalent(length(gg_plt) , length(gg_dta))
+  
+  # gg_partial exceptions
+  expect_error(gg_partial(gg_plt))
+  
+  # Remove all but one partial data.
+  partial_airq$xvar.names <- "Temp"
+  partial_airq$nvar <- 1
+  partial_airq$pData[[2]] <- partial_airq$pData[[3]] <- partial_airq$pData[[4]] <- 
+    partial_airq$pData[[5]] <- NULL
+  gg_dta<- gg_partial(partial_airq)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_partial")
+  
+  
+  
+  
 })
 
 test_that("gg_partial combine",{

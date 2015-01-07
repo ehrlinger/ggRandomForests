@@ -2,3 +2,4 @@ vignettes/JSSstyle/*
 vignettes/*.log
 vignettes/*.tex
 
+framed.sty
