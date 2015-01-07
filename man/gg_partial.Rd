@@ -68,6 +68,7 @@ plot(gg_dta.m, notch=TRUE)
 gg_dta[["Month"]] <- NULL
 plot(gg_dta, panel=TRUE)
 
+\dontrun{
 ## -------- Boston data
 data(partial_Boston, package="ggRandomForests")
 
@@ -87,7 +88,7 @@ plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 gg_dta[["cyl"]] <- gg_dta[["vs"]] <- gg_dta[["am"]] <- NULL
 gg_dta[["gear"]] <- NULL
 plot(gg_dta, panel=TRUE)
-
+}
 ## ------------------------------------------------------------
 ## survival examples
 ## ------------------------------------------------------------
@@ -120,13 +121,14 @@ gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]] )
 plot(gg_dta[["karno"]])
 plot(gg_dta[["celltype"]])
 
+\dontrun{
 gg_dta.cat <- gg_dta
 gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
 plot(gg_dta, panel=TRUE)
 
 gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL
 plot(gg_dta.cat, panel=TRUE, notch=TRUE)
-
+}
 ## -------- pbc data
 }
 \references{

@@ -148,13 +148,13 @@ plot.gg_variable<- function(x, xvar,
   gg_dta <- x 
   if(inherits(x, "rfsrc")) gg_dta <- gg_variable(x, ...)
   
+  family <- "class"
   if(inherits(gg_dta, "surv")){
     family <- "surv"
   }else if(inherits(gg_dta, "regr")){
     family <- "regr"
-  }else{
-    family <- "class"
   }
+  
   if(length(grep("yhat.", colnames(gg_dta))) > 0){
     # We have a classification forest with multiple outcomes.
     if(length(grep("yhat.", colnames(gg_dta))) == 2){

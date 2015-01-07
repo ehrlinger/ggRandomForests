@@ -1,4 +1,4 @@
-# testthat for gg_error function
+# testthat for quantile_pts function
 context("quantile_pts tests")
 
 test_that("cutting a vector at evenly space points",{

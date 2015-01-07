@@ -87,6 +87,12 @@ test_that("gg_rfsrc survival",{
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
   expect_is(gg_dta, "surv")
+  # Test classification dimensions
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_rfsrc(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
   
   # Test classification dimensions
   
@@ -96,6 +102,12 @@ test_that("gg_rfsrc survival",{
   expect_is(gg_dta, "gg_rfsrc")
   expect_is(gg_dta, "surv")
   
+  ## Create the correct gg_error object
+  gg_plt <- plot(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+
 })
 
 test_that("gg_rfsrc regression",{

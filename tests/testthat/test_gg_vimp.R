@@ -86,4 +86,51 @@ test_that("gg_vimp regression",{
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
+  
+  data(rfsrc_Boston, package="ggRandomForests")
+  data(Boston, package="MASS")
+  
+  cls <- sapply(Boston, class) 
+  # 
+  lbls <- 
+    #crim
+    c("Crime rate by town.",
+      # zn
+      "Proportion of residential land zoned for lots over 25,000 sq.ft.",
+      # indus
+      "Proportion of non-retail business acres per town.",
+      # chas
+      "Charles River (tract bounds river).",
+      # nox
+      "Nitrogen oxides concentration (10 ppm).",
+      # rm
+      "Number of rooms per dwelling.",
+      # age
+      "Proportion of units built prior to 1940.",
+      # dis
+      "Distances to Boston employment center.",
+      # rad
+      "Accessibility to highways.",
+      # tax
+      "Property-tax rate per $10,000.",
+      # ptratio
+      "Pupil-teacher ratio by town.",
+      # black
+      "Proportion of blacks by town.",
+      # lstat
+      "Lower status of the population (percent).",
+      # medv
+      "Median value of homes ($1000s).")
+  
+  # Build a table for data description
+  dta.labs <- data.frame(cbind(Variable=names(cls), Description=lbls, type=cls))
+  
+  # Build a named vector for labeling figures later/
+  st.labs <- as.character(dta.labs$Description)
+  names(st.labs) <- names(cls)
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_vimp(rfsrc_Boston, lbls=st.labs, relative=TRUE, 
+                         bars=rfsrc_Boston$xvar.names)
+  expect_is(gg_plt, "ggplot")
 })

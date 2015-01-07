@@ -89,6 +89,64 @@ test_that("gg_minimal_depth regression",{
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
+  
+  ## Load the cached forest
+  data(varsel_Boston, package="ggRandomForests")
+  
+  # Test the cached forest type
+  expect_is(varsel_Boston, "list")
+  
+  ## Create the correct gg_error object
+  ggrf.obj<- gg_minimal_depth(varsel_Boston, selection=TRUE)
+  # Test object type
+  expect_is(ggrf.obj, "gg_minimal_depth")
+  
+  data(Boston, package="MASS")
+  
+  cls <- sapply(Boston, class) 
+  # 
+  lbls <- 
+    #crim
+    c("Crime rate by town.",
+      # zn
+      "Proportion of residential land zoned for lots over 25,000 sq.ft.",
+      # indus
+      "Proportion of non-retail business acres per town.",
+      # chas
+      "Charles River (tract bounds river).",
+      # nox
+      "Nitrogen oxides concentration (10 ppm).",
+      # rm
+      "Number of rooms per dwelling.",
+      # age
+      "Proportion of units built prior to 1940.",
+      # dis
+      "Distances to Boston employment center.",
+      # rad
+      "Accessibility to highways.",
+      # tax
+      "Property-tax rate per $10,000.",
+      # ptratio
+      "Pupil-teacher ratio by town.",
+      # black
+      "Proportion of blacks by town.",
+      # lstat
+      "Lower status of the population (percent).",
+      # medv
+      "Median value of homes ($1000s).")
+  
+  # Build a table for data description
+  dta.labs <- data.frame(cbind(Variable=names(cls), Description=lbls, type=cls))
+  
+  # Build a named vector for labeling figures later/
+  st.labs <- as.character(dta.labs$Description)
+  names(st.labs) <- names(cls)
+  
+  ## Test plotting the gg_error object
+  gg.obj <- plot.gg_minimal_depth(ggrf.obj, lbls=st.labs)
+  
+  # Test return is s ggplot object
+  expect_is(gg.obj, "ggplot") 
 })
 
 test_that("gg_minimal_depth exceptions",{

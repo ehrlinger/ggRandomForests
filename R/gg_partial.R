@@ -82,12 +82,13 @@
 #' gg_dta[["Month"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
 #' 
+#' \dontrun{
 #' ## -------- Boston data
 #' data(partial_Boston, package="ggRandomForests")
 #'
 #' gg_dta <- gg_partial(partial_Boston)
 #' plot(gg_dta, panel=TRUE)
-#' 
+#'
 #' ## -------- mtcars data
 #' data(partial_mtcars, package="ggRandomForests")
 #' gg_dta <- gg_partial(partial_mtcars)
@@ -101,7 +102,7 @@
 #' gg_dta[["cyl"]] <- gg_dta[["vs"]] <- gg_dta[["am"]] <- NULL
 #' gg_dta[["gear"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
-#' 
+#' }
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
@@ -134,13 +135,14 @@
 #' plot(gg_dta[["karno"]])
 #' plot(gg_dta[["celltype"]])
 #' 
+#' \dontrun{
 #' gg_dta.cat <- gg_dta
 #' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
 #' 
 #' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL 
 #' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
-#' 
+#' }
 #' ## -------- pbc data
 #' 
 #' @aliases gg_partial gg_partial_list
