@@ -3,7 +3,8 @@
 .Rhistory
 .RData
 Sweave.sty
-
+inst/doc/randomForestRegression*
+inst/doc/randomForestSruvival*
 vignettes/*.log
 vignettes/*.gz
 vignettes/*.bbl

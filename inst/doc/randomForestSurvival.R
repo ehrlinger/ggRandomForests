@@ -499,7 +499,7 @@ time_cts <-quantile_pts(time_pts, groups = 50)
 #  #     user   system  elapsed
 #  # 2561.313   81.446 2641.707
 
-## ----timeContour3D, fig.cap="Partial coplot contour plot.", fig.width=7, fig.height=5----
+## ----timeSurface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5--------
 # Load the stored partial coplot data.
 data(partial_pbc_time)
 
@@ -515,14 +515,6 @@ partial_time <- do.call(rbind,lapply(partial_pbc_time, gg_partial))
 # attach the data to the gg_partial_coplot
 partial_time$time <- time.tmp
 
-# ggplot2 contour plot of x, y and z data.
-ggplot(partial_time, aes(y = bili, x = time, z = yhat))+
-  stat_contour(aes(colour = ..level..), binwidth = .25)+
-  labs(y = st.labs["bili"], x = "time (years)", 
-       color = "Survival (%)")+
-  scale_colour_gradientn(colours = heat.colors(25))
-
-## ----timeSurface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5--------
 # Modify the figure margins to make the figure larger
 par(mai = c(0,0,0,0))
 
@@ -668,7 +660,7 @@ copper_cts <-quantile_pts(ggvar$copper, groups = 50)
 #  # 2547.482   91.978 2671.870
 #  
 
-## ----contour3d, fig.cap="Partial coplot contour plot.", fig.width=7, fig.height=5-------
+## ----surface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5------------
 # Load the stored partial coplot data.
 data(partial_pbc_surf)
 
@@ -684,14 +676,6 @@ partial_surf <- do.call(rbind,lapply(partial_pbc_surf, gg_partial))
 # attach the data to the gg_partial_coplot
 partial_surf$copper <- copper.tmp
 
-# ggplot2 contour plot of x, y and z data.
-ggplot(partial_surf, aes(x = bili, y = copper, z = yhat))+
-  stat_contour(aes(colour = ..level..), binwidth = .25)+
-  labs(x = st.labs["bili"], y = st.labs["copper"], 
-       color = "Survival at 1 year (%)")+
-  scale_colour_gradientn(colours = topo.colors(25))
-
-## ----surface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5------------
 # Modify the figure margins to make the figure larger
 par(mai = c(0,0,0,0))
 
