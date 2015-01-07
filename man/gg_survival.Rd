@@ -33,6 +33,7 @@ survival estimates using either \code{\link{nelson}}-aalen or
 \code{\link{kaplan}}-meier estimates.
 }
 \examples{
+## -------- pbc data
 data(pbc, package="randomForestSRC")
 pbc$time <- pbc$days/364.25
 

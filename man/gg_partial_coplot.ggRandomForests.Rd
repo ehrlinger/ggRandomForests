@@ -42,13 +42,14 @@ copper_cts <-quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
 # Create the conditional groups and add to the gg_variable object
 copper_grp <- cut(ggvar$copper, breaks = copper_cts)
 
+\dontrun{
 ## We would run this, but it's expensive
-# partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
-#                                         groups = copper_grp,
-#                                         surv_type = "surv",
-#                                         time = 1,
-#                                         show.plots = FALSE)
-
+partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
+                                         groups = copper_grp,
+                                         surv_type = "surv",
+                                         time = 1,
+                                         show.plots = FALSE)
+}
 ## so load the cached set
 data(partial_coplot_pbc, package="ggRandomForests")
 

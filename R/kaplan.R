@@ -15,6 +15,7 @@
 #'
 #' @examples 
 #' \dontrun{
+#' # These get run through the gg_survival examples.
 #' data(pbc, package="randomForestSRC")
 #' pbc$time <- pbc$days/364.25
 #' 

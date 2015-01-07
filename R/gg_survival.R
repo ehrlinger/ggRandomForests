@@ -36,6 +36,7 @@
 #' @export gg_survival
 #' 
 #' @examples 
+#' ## -------- pbc data
 #' data(pbc, package="randomForestSRC")
 #' pbc$time <- pbc$days/364.25
 #' 

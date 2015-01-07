@@ -47,10 +47,10 @@
 #' Machine." Annals of Statistics 29: 1189-1232.
 #' 
 #' @examples
-#' 
 #' ## ------------------------------------------------------------
 #' ## classification
 #' ## ------------------------------------------------------------
+#' ## -------- iris data
 #' 
 #' ## iris "Petal.Width" partial dependence plot
 #' ##
@@ -65,7 +65,7 @@
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
-#' 
+#' ## -------- air quality data
 #' ## airquality "Wind" partial dependence plot
 #' ##
 #' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
@@ -82,24 +82,21 @@
 #' gg_dta[["Month"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
 #' 
-#' # ------- 
+#' ## -------- Boston data
 #' data(partial_Boston, package="ggRandomForests")
 #'
 #' gg_dta <- gg_partial(partial_Boston)
-#' plot(gg_dta)
 #' plot(gg_dta, panel=TRUE)
 #' 
+#' ## -------- mtcars data
 #' data(partial_mtcars, package="ggRandomForests")
-#'
 #' gg_dta <- gg_partial(partial_mtcars)
-#' 
-#' plot(gg_dta)
 #' 
 #' gg_dta.cat <- gg_dta
 #' gg_dta.cat[["disp"]] <- gg_dta.cat[["wt"]] <- gg_dta.cat[["hp"]] <- NULL
 #' gg_dta.cat[["drat"]] <- gg_dta.cat[["carb"]] <- gg_dta.cat[["qsec"]] <- NULL
 #'  
-#' plot(gg_dta.cat, panel=TRUE)
+#' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 #' 
 #' gg_dta[["cyl"]] <- gg_dta[["vs"]] <- gg_dta[["am"]] <- NULL
 #' gg_dta[["gear"]] <- NULL
@@ -108,6 +105,7 @@
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
+#' ## -------- veteran data
 #' ## survival "age" partial variable dependence plot
 #' ##
 #' # data(veteran, package = "randomForestSRC")
@@ -130,9 +128,7 @@
 #' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL 
 #' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 #' 
-#' 
 #' gg_dta <- lapply(partial_veteran, gg_partial)
-#' length(gg_dta)
 #' gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]] )
 #' 
 #' plot(gg_dta[["karno"]])
@@ -145,7 +141,8 @@
 #' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL 
 #' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 #' 
-
+#' ## -------- pbc data
+#' 
 #' @aliases gg_partial gg_partial_list
 #' @name gg_partial
 #' @name gg_partial_list
@@ -157,6 +154,9 @@ gg_partial.rfsrc <- function(object,
   if(!inherits(object,"plot.variable")){
     stop("gg_partial expects a plot.variable object, Run plot.variable with partial=TRUE")
   }
+  
+  # If we pass it a plot.variable output, without setting partial=TRUE,
+  # We'll want a gg_variable object.
   if(!object$partial) invisible(gg_variable(object, ...))
   
   # How many variables

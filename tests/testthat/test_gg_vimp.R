@@ -13,7 +13,7 @@ test_that("gg_vimp classifications",{
   expect_is(rfsrc_iris, "rfsrc")
   
   # Test the forest family
-  expect_that(rfsrc_iris$family, equals("class"))
+  expect_equal(rfsrc_iris$family, "class")
   
   ## Create the correct gg_error object
   ggrf.obj<- gg_vimp(rfsrc_iris)

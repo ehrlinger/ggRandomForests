@@ -33,22 +33,30 @@
 #' 
 #' @examples
 #' \dontrun{
-#' #' data(pbc, package="randomForestSRC")
+#' ## -------- pbc data
+#' data(pbc, package="randomForestSRC")
 #' pbc$time <- pbc$days/364.25
 #' 
 #' # This is the same as kaplan
-#' gg_dta <- eventtable(interval="time", censor="status", 
+#' gg_dta <- gg_survival(interval="time", censor="status", 
 #'                      data=pbc)
 #'                      
 #' plot(gg_dta, error="none")
 #' plot(gg_dta)
 #' 
 #' # Stratified on treatment variable.
-#' gg_dta <- eventtable(interval="time", censor="status", 
-#'                      data=pbc, strat="treatment")
+#' gg_dta <- gg_survival(interval="time", censor="status", 
+#'                      data=pbc, by="treatment")
 #'                      
 #' plot(gg_dta, error="none")
 #' plot(gg_dta)
+#' 
+#' # ...with smaller confidence limits.
+#' gg_dta <- gg_survival(interval="time", censor="status", 
+#'                      data=pbc, by="treatment", conf.int=.68)
+#'                      
+#' plot(gg_dta, error="lines")
+#' 
 #'}
 #'
 #' @importFrom ggplot2 ggplot geom_ribbon aes_string geom_errorbar geom_step labs

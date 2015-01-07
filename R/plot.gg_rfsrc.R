@@ -44,31 +44,61 @@
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
-#' # iris_rf <- rfsrc(Species ~ ., data = iris)
-#' data(iris_rf, package="ggRandomForests")
-#' gg_dta<- gg_rfsrc(iris_rf)
+#' ## -------- iris data
+#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' data(rfsrc_iris, package="ggRandomForests")
+#' gg_dta<- gg_rfsrc(rfsrc_iris)
 #' 
 #' plot.gg_rfsrc(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
-#' # airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' data(airq_rf, package="ggRandomForests")
-#' gg_dta<- gg_rfsrc(airq_rf)
+#' ## -------- air quality data
+#' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' data(rfsrc_airq, package="ggRandomForests")
+#' gg_dta<- gg_rfsrc(rfsrc_airq)
+#' 
+#' plot.gg_rfsrc(gg_dta)
+#' 
+#' ## -------- Boston data
+#' data(rfsrc_Boston, package="ggRandomForests")
+#' plot.gg_rfsrc(rfsrc_Boston) 
+#' 
+#' ## -------- mtcars data
+#' data(rfsrc_mtcars, package="ggRandomForests")
+#' gg_dta<- gg_rfsrc(rfsrc_mtcars)
 #' 
 #' plot.gg_rfsrc(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
-#' ## veteran data
+#' ## -------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' # data(veteran, package = "randomForestSRC")
-#' # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#' data(veteran_rf, package = "ggRandomForests")
-#' gg_dta <- gg_rfsrc(veteran_rf)
+#' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' data(rfsrc_veteran, package = "ggRandomForests")
+#' gg_dta <- gg_rfsrc(rfsrc_veteran)
 #' plot(gg_dta)
+#' 
+#' gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int=.95)
+#' plot(gg_dta)
+#' 
+#' gg_dta <- gg_rfsrc(rfsrc_veteran, by="trt")
+#' plot(gg_dta)
+#' 
+#' ## -------- pbc data
+#' data(rfsrc_pbc, package = "ggRandomForests")
+#' gg_dta <- gg_rfsrc(rfsrc_pbc)
+#' plot(gg_dta)
+#' 
+#' gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int=.95)
+#' plot(gg_dta)
+#' 
+#' gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
+#' plot(gg_dta)
+#' 
 #' 
 #' }
 #' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot theme element_blank

@@ -31,6 +31,7 @@ for connecting to the S3 \code{\link{plot.gg_error}} function.
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
+## ------------- iris data
 ## You can build a randomForest
 # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 # ... or load a cached randomForestSRC object
@@ -45,6 +46,7 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
+## ------------- airq data
 # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 # ... or load a cached randomForestSRC object
 data(rfsrc_airq, package="ggRandomForests")
@@ -55,7 +57,7 @@ gg_dta<- gg_error(rfsrc_airq)
 # Plot the gg_error object
 plot(gg_dta)
 
-#-------------
+## ------------- Boston data
 data(rfsrc_Boston, package="ggRandomForests")
 
 # Get a data.frame containing error rates
@@ -64,7 +66,7 @@ gg_dta<- gg_error(rfsrc_Boston)
 # Plot the gg_error object
 plot(gg_dta)
 
-#-------------
+## ------------- mtcars data
 data(rfsrc_mtcars, package="ggRandomForests")
 
 # Get a data.frame containing error rates
@@ -76,7 +78,7 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## Survival example
 ## ------------------------------------------------------------
-## veteran data
+## ------------- veteran data
 ## randomized trial of two treatment regimens for lung cancer
 # data(veteran, package = "randomForestSRC")
 # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
@@ -87,6 +89,7 @@ data(rfsrc_veteran, package="ggRandomForests")
 gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)
 
+## ------------- pbc data
 # Load a cached randomForestSRC object
 data(rfsrc_pbc, package="ggRandomForests")
 

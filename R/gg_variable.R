@@ -48,7 +48,7 @@
 #' ## ------------------------------------------------------------
 #' ## classification
 #' ## ------------------------------------------------------------
-#' 
+#' ## -------- iris data
 #' ## iris
 #' #rfsrc_iris <- rfsrc(Species ~., data = iris)
 #' data(rfsrc_iris, package="ggRandomForests")
@@ -57,15 +57,13 @@
 #' plot(gg_dta, xvar="Sepal.Width")
 #' plot(gg_dta, xvar="Sepal.Length")
 #' 
-#' ## !! TODO !! this needs to be corrected
 #' plot(gg_dta, xvar=rfsrc_iris$xvar.names, 
 #'      panel=TRUE, se=FALSE)
 #' 
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
-#' 
-#' ## airquality
+#' ## -------- air quality data
 #' #rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
 #' data(rfsrc_airq, package="ggRandomForests")
 #' gg_dta <- gg_variable(rfsrc_airq)
@@ -73,15 +71,17 @@
 #' # an ordinal variable 
 #' gg_dta[,"Month"] <- factor(gg_dta[,"Month"])
 #' 
+#' \dontrun{
 #' plot(gg_dta, xvar="Wind")
 #' plot(gg_dta, xvar="Temp")
 #' plot(gg_dta, xvar="Solar.R")
+#' }
 #' 
 #' plot(gg_dta, xvar=c("Solar.R", "Wind", "Temp", "Day"), panel=TRUE)
 #' 
 #' plot(gg_dta, xvar="Month", notch=TRUE)
 #' 
-#' ## motor trend cars
+#' ## -------- motor trend cars data
 #' #rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' data(rfsrc_mtcars, package="ggRandomForests")
 #' gg_dta <- gg_variable(rfsrc_mtcars)
@@ -97,17 +97,21 @@
 #' 
 #' # Others are continuous
 #' plot(gg_dta, xvar="disp")
+#' \dontrun{
 #' plot(gg_dta, xvar="hp")
 #' plot(gg_dta, xvar="wt")
+#' }
 #' 
-#' # panel
+#' # panels
 #' plot(gg_dta,xvar=c("disp","hp", "drat", "wt", "qsec"),  panel=TRUE)
-#' plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb") ,panel=TRUE)
+#' plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE, notch=TRUE)
+#' 
+#' ## -------- Boston data
 #' 
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
-#' 
+#' ## -------- veteran data
 #' ## survival
 #' # data(veteran, package = "randomForestSRC")
 #' # rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
@@ -118,10 +122,10 @@
 #' 
 #' # Generate variable dependance plots for age and diagtime
 #' plot(gg_dta, xvar = "age")
-#' plot(gg_dta, xvar = "diagtime")
+#' plot(gg_dta, xvar = "diagtime", )
 #' 
 #' # Generate coplots
-#' plot(gg_dta, xvar = c("age", "diagtime"), panel=TRUE)
+#' plot(gg_dta, xvar = c("age", "diagtime"), panel=TRUE, se=FALSE)
 #' 
 #' # If we want to compare survival at different time points, say 30, 90 day 
 #' # and 1 year
@@ -129,11 +133,9 @@
 #' 
 #' # Generate variable dependance plots for age and diagtime
 #' plot(gg_dta, xvar = "age")
-#' plot(gg_dta, xvar = "diagtime") 
 #' 
-#' # Generate coplots
-#' plot(gg_dta, xvar =  c("age", "diagtime"), panel=TRUE)
-#' 
+#' ## -------- pbc data
+
 gg_variable.rfsrc <- function(object,
                                        time,
                                        time.labels,

@@ -30,13 +30,14 @@
 #' # Create the conditional groups and add to the gg_variable object
 #' copper_grp <- cut(ggvar$copper, breaks = copper_cts)
 #' 
+#' \dontrun{
 #' ## We would run this, but it's expensive 
-#' # partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili", 
-#' #                                         groups = copper_grp, 
-#' #                                         surv_type = "surv", 
-#' #                                         time = 1, 
-#' #                                         show.plots = FALSE)
-#' 
+#' partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili", 
+#'                                          groups = copper_grp, 
+#'                                          surv_type = "surv", 
+#'                                          time = 1, 
+#'                                          show.plots = FALSE)
+#' }
 #' ## so load the cached set
 #' data(partial_coplot_pbc, package="ggRandomForests")
 #' 
@@ -58,6 +59,7 @@ gg_partial_coplot.ggRandomForests <- function(object,
   if (inherits(object, "rfsrc") == FALSE){
     stop("This function only works for Forests grown with the randomForestSRC package.")
   }
+  
   if (is.null(object$forest)) {
     stop("The function requires the \"forest = TRUE\" attribute when growing the randomForest")
   }

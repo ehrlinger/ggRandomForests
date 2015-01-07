@@ -28,9 +28,8 @@ test_that("gg_interaction classifications",{
   expect_is(gg.obj, "ggplot")
   
   # This one should fail with a variable not found message
-  expect_that(plot.gg_interaction(ggrf.obj, xvar="Petal"),
-              #throws_error('Error in plot.gg_interaction(ggrf.obj, xvar = "Petal") : \n Invalid xvar (Petal) specified, covariate not found.\n'))
-              throws_error())
+  expect_error(plot.gg_interaction(ggrf.obj, xvar="Petal"))
+  
   # "Incorrect object type: Expects a gg_interaction object"
 })
 
@@ -101,7 +100,7 @@ test_that("gg_interaction regression",{
   
 })
 
-test_that("gg_interaction conditions",{
+test_that("gg_interaction exceptions",{
   
   ## New York air quality measurements
   #   airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
@@ -112,23 +111,18 @@ test_that("gg_interaction conditions",{
   # Test the cached interaction structure
   expect_is(rfsrc_mtcars, "rfsrc")
   
-  ## Create the correct gg_interaction object
-  expect_that(ggrf.obj <- gg_interaction(rfsrc_mtcars),
-              gives_warning())
-  # Test object type
-  expect_is(ggrf.obj, "gg_interaction")
-  
+  # This one costs a lot of time in calculating the interaction matrix.
+  #   ## Create the correct gg_interaction object
+  #   expect_warning(ggrf.obj <- gg_interaction(rfsrc_mtcars))
+  #   
+  #   # Test object type
+  #   expect_is(ggrf.obj, "gg_interaction")
+  #   
   data(interaction_mtcars, package="ggRandomForests")
   # Test the cached interaction structure
   expect_is(interaction_mtcars, "matrix")
-  
-  # Test classification dimensions
-  expect_equal(dim(ggrf.obj), dim(interaction_mtcars))
-  
-  # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(ggrf.obj), interaction_mtcars)
-  
+   
   interaction_mtcars <- interaction_mtcars[-2,]
-  expect_that(gg_interaction(interaction_mtcars), throws_error())
+  expect_error(gg_interaction(interaction_mtcars))
 })
 

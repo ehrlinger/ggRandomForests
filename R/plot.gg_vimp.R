@@ -43,29 +43,47 @@
 #' 
 #' @examples
 #' \dontrun{
-#' #' ## ------------------------------------------------------------
+#' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
-#' # iris_rf <- rfsrc(Species ~ ., data = iris)
-#' data(iris_rf, package="ggRandomForests")
-#' gg_dta <- gg_vimp(iris_rf)
+#' ## -------- iris data
+#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' data(rfsrc_iris, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_iris)
 #' plot(gg_dta)
 #'  
 #' ## ------------------------------------------------------------
 #' ## regression example
 #' ## ------------------------------------------------------------
+#' ## -------- air quality data 
+#' # rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
+#' data(rfsrc_airq, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_airq)
+#' plot(gg_dta)
 #' 
-#' # airq.obj <- rfsrc(Ozone ~ ., airquality)
-#' data(airq_rf, package="ggRandomForests")
-#' gg_dta <- gg_vimp(airq_rf)
+#' ## -------- Boston data
+#' data(rfsrc_Boston, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_Boston)
+#' plot(gg_dta)
+#' 
+#' ## -------- mtcars data
+#' data(rfsrc_mtcars, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_mtcars)
 #' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## survival example
 #' ## ------------------------------------------------------------
-#' data(veteran_rf, package="ggRandomForests")
-#' gg_dta <- gg_vimp(veteran_rf)
+#' ## -------- veteran data
+#' data(rfsrc_veteran, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_veteran)
 #' plot(gg_dta)
+#'
+#' ## -------- pbc data
+#' data(rfsrc_pbc, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_pbc)
+#' plot(gg_dta)
+#' 
 #'}
 #'
 #' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid scale_x_discrete

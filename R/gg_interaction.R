@@ -57,6 +57,7 @@
 #' ## ------------------------------------------------------------
 #' ## find interactions, classification setting
 #' ## ------------------------------------------------------------
+#' ## -------- iris data
 #' ## iris.obj <- rfsrc(Species ~., data = iris)
 #' ## TODO: VIMP interactions not handled yet....
 #' ## find.interaction(iris.obj, method = "vimp", nrep = 3)
@@ -71,6 +72,7 @@
 #' ## ------------------------------------------------------------
 #' ## find interactions, regression setting
 #' ## ------------------------------------------------------------
+#' ## -------- air quality data
 #' ## airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 #' ##
 #' ## TODO: VIMP interactions not handled yet....
@@ -83,11 +85,13 @@
 #' plot(gg_dta, xvar="Solar.R")
 #' plot(gg_dta, panel=TRUE)
 #' 
+#' ## -------- Boston data
 #' data(interaction_Boston, package="ggRandomForests")
 #' gg_dta <- gg_interaction(interaction_Boston)
 #' 
 #' plot(gg_dta, panel=TRUE)
 #' 
+#' ## -------- mtcars data
 #' data(interaction_mtcars, package="ggRandomForests")
 #' gg_dta <- gg_interaction(interaction_mtcars)
 #' 
@@ -96,6 +100,7 @@
 #' ## ------------------------------------------------------------
 #' ## find interactions, survival setting
 #' ## ------------------------------------------------------------
+#' ## -------- pbc data
 #' ## data(pbc, package = "randomForestSRC") 
 #' ## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
 #' ## interaction_pbc <- find.interaction(pbc.obj, nvar = 8)
@@ -106,6 +111,7 @@
 #' plot(gg_dta, xvar="copper")
 #' plot(gg_dta, panel=TRUE)
 #' 
+#' ## -------- veteran data
 #' data(interaction_veteran, package="ggRandomForests")
 #' gg_dta <- gg_interaction(interaction_veteran)
 #' 

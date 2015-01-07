@@ -13,7 +13,7 @@ test_that("gg_minimal_vimp classifications",{
   expect_is(varsel_iris, "list")
   
   # Test the forest family
-  expect_that(is.null(varsel_iris$md.obj), is_false())
+  expect_false(is.null(varsel_iris$md.obj))
   
   ## Create the correct gg_error object
   ggrf.obj<- gg_minimal_vimp(varsel_iris)
@@ -91,4 +91,24 @@ test_that("gg_minimal_vimp regression",{
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
+})
+
+
+test_that("gg_minimal_vimp exceptions",{
+  data(varsel_airq, package="ggRandomForests")
+  
+  # Test the cached forest type
+  expect_is(varsel_airq, "list")
+  
+  vsel <- varsel_airq
+  vsel$varselect <- NULL
+  
+  expect_error(gg_minimal_depth(vsel))
+  
+  vsel$threshold <- NULL
+  expect_error(gg_minimal_depth(vsel))
+  
+  vsel <- varsel_airq
+  vsel$varselect$vimp <- NULL
+  gg_dta <- gg_minimal_depth(vsel)
 })

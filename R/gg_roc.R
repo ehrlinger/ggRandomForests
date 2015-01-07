@@ -33,6 +33,7 @@
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
+#' ## -------- iris data
 #' #rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' data(rfsrc_iris, package="ggRandomForests")
 #'

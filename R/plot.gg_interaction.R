@@ -49,47 +49,69 @@
 #' 
 #' @examples
 #' \dontrun{
-#' #' ## Examples from randomForestSRC package... 
+#' ## Examples from randomForestSRC package... 
 #' ## ------------------------------------------------------------
 #' ## find interactions, classification setting
 #' ## ------------------------------------------------------------
+#' ## -------- iris data
 #' ## iris.obj <- rfsrc(Species ~., data = iris)
 #' ## TODO: VIMP interactions not handled yet....
 #' ## find.interaction(iris.obj, method = "vimp", nrep = 3)
-#' ## iris_interaction <- find.interaction(iris.obj)
-#' data(iris_interaction, package="ggRandomForests")
-#' gg_dta <- gg_interaction(iris_interaction)
+#' ## interaction_iris <- find.interaction(iris.obj)
+#' data(interaction_iris, package="ggRandomForests")
+#' gg_dta <- gg_interaction(interaction_iris)
 #' 
 #' plot(gg_dta, xvar="Petal.Width")
 #' plot(gg_dta, xvar="Petal.Length")
+#' plot(gg_dta, panel=TRUE)
 #' 
 #' ## ------------------------------------------------------------
 #' ## find interactions, regression setting
 #' ## ------------------------------------------------------------
+#' ## -------- air quality data
 #' ## airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 #' ##
 #' ## TODO: VIMP interactions not handled yet....
 #' ## find.interaction(airq.obj, method = "vimp", nrep = 3)
-#' ## airq_interaction <- find.interaction(airq.obj)
-#' data(airq_interaction, package="ggRandomForests")
-#' gg_dta <- gg_interaction(airq_interaction)
+#' ## interaction_airq <- find.interaction(airq.obj)
+#' data(interaction_airq, package="ggRandomForests")
+#' gg_dta <- gg_interaction(interaction_airq)
 #' 
 #' plot(gg_dta, xvar="Temp")
 #' plot(gg_dta, xvar="Solar.R")
+#' plot(gg_dta, panel=TRUE)
+#' 
+#' ## -------- Boston data
+#' data(interaction_Boston, package="ggRandomForests")
+#' gg_dta <- gg_interaction(interaction_Boston)
+#' 
+#' plot(gg_dta, panel=TRUE)
+#' 
+#' ## -------- mtcars data
+#' data(interaction_mtcars, package="ggRandomForests")
+#' gg_dta <- gg_interaction(interaction_mtcars)
+#' 
+#' plot(gg_dta, panel=TRUE)
 #' 
 #' ## ------------------------------------------------------------
 #' ## find interactions, survival setting
 #' ## ------------------------------------------------------------
+#' ## -------- pbc data
 #' ## data(pbc, package = "randomForestSRC") 
 #' ## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
-#' ## pbc_interaction <- find.interaction(pbc.obj, nvar = 8)
-#' data(pbc_interaction, package="ggRandomForests")
-#' gg_dta <- gg_interaction(pbc_interaction)
+#' ## interaction_pbc <- find.interaction(pbc.obj, nvar = 8)
+#' data(interaction_pbc, package="ggRandomForests")
+#' gg_dta <- gg_interaction(interaction_pbc)
 #' 
 #' plot(gg_dta, xvar="bili")
 #' plot(gg_dta, xvar="copper")
+#' plot(gg_dta, panel=TRUE)
 #' 
-#' plot(gg_dta, xvar=c("bili", "copper", "age", "albumin"), panel=TRUE)
+#' ## -------- veteran data
+#' data(interaction_veteran, package="ggRandomForests")
+#' gg_dta <- gg_interaction(interaction_veteran)
+#' 
+#' plot(gg_dta, panel=TRUE)
 #' 
 #' }
 ### error rate plot

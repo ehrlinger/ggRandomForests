@@ -24,6 +24,7 @@ The sensitivity and specificity of a randomForests classification object.
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
+## -------- iris data
 #rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 data(rfsrc_iris, package="ggRandomForests")
 

@@ -52,6 +52,8 @@ test_that("gg_roc classifications",{
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
+  
+  expect_is(plot.gg_roc(rfsrc_iris), "ggplot")
 })
 
 

@@ -30,6 +30,7 @@ function takes the output from \code{randomForestSRC::var.select} and creates a
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
+## -------- iris data
 ## You can build a randomForest
 # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 # varsel_iris <- var.select(rfsrc_iris)
@@ -39,12 +40,13 @@ data(varsel_iris, package="ggRandomForests")
 # Get a data.frame containing minimaldepth measures
 gg_dta<- gg_minimal_depth(varsel_iris)
 
-# Plot the gg_mkinimal_depth object
+# Plot the gg_minimal_depth object
 plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
+## -------- air quality data
 # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 # varsel_airq <- var.select(rfsrc_airq)
 # ... or load a cached randomForestSRC object
@@ -53,15 +55,16 @@ data(varsel_airq, package="ggRandomForests")
 # Get a data.frame containing error rates
 gg_dta<- gg_minimal_depth(varsel_airq)
 
-# Plot the gg_error object
+# Plot the gg_minimal_depth object
 plot(gg_dta)
 
+## -------- Boston data
 data(varsel_Boston, package="ggRandomForests")
 
 # Get a data.frame containing error rates
 plot(gg_minimal_depth(varsel_Boston))
 
-
+## -------- mtcars data
 data(varsel_mtcars, package="ggRandomForests")
 
 # Get a data.frame containing error rates
@@ -70,6 +73,7 @@ plot.gg_minimal_depth(varsel_mtcars)
 ## ------------------------------------------------------------
 ## Survival example
 ## ------------------------------------------------------------
+## -------- veteran data
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
 # data(veteran, package = "randomForestSRC")
@@ -81,6 +85,7 @@ data(varsel_veteran, package="ggRandomForests")
 gg_dta <- gg_minimal_depth(varsel_veteran)
 plot(gg_dta)
 
+## -------- pbc data
 data(varsel_pbc, package="ggRandomForests")
 
 gg_dta <- gg_minimal_depth(varsel_pbc)

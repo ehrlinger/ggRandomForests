@@ -15,7 +15,7 @@ test_that("gg_survival classifications",{
   expect_match(rfsrc_iris$family, "class")
   
   ## Create the correct gg_error object
-  expect_that(gg_survival(rfsrc_iris), throws_error())
+  expect_error(gg_survival(rfsrc_iris))
 })
 
 
@@ -23,49 +23,57 @@ test_that("gg_survival survival",{
   
   ## IF we want to build the forest every time...
   #   data(veteran, package = "randomForestSRC")
-  #   veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+  #   rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
   
-#   ## Load the cached forest
-#   data(veteran_rf, package="ggRandomForests")
-#   
-#   # Test the cached forest type
-#   expect_is(veteran_rf, "rfsrc")
-#   
-#   # Test the forest family
-#   expect_match(veteran_rf$family, "surv")
-#   
-#   ## Create the correct gg_error object
-#   ggrf.obj<- gg_survival(veteran_rf)
-#   
-#   # Test object type
-#   expect_is(ggrf.obj, "gg_survival")
-#   
-#   # Test classification dimensions
-#   # Same number of rows:
-#   expect_equal(ggrf.obj$time, veteran_rf$time.interest)
-#   
-#   ## Test plotting the gg_error object
-#   gg.obj <- plot.gg_survival(ggrf.obj)
-#   
-#   # Test return is s ggplot object
-#   expect_is(gg.obj, "ggplot")
-#   
-#   
-#   ## Create the correct gg_error object
-#   ggrf.obj<- gg_survival(veteran_rf, oob=FALSE)
-#   
-#   # Test object type
-#   expect_is(ggrf.obj, "gg_survival")
-#   
-#   # Test classification dimensions
-#   # Same number of rows:
-#   expect_equal(ggrf.obj$time, veteran_rf$time.interest)
-#   
-#   ## Test plotting the gg_error object
-#   gg.obj <- plot.gg_survival(ggrf.obj)
-#   
-#   # Test return is s ggplot object
-#   expect_is(gg.obj, "ggplot")
+  #   ## Load the cached forest
+  data(pbc, package="randomForestSRC")
+  
+  # Test the cached forest type
+  expect_is(pbc, "data.frame")
+    
+  # Test object type
+  gg_dta <- gg_survival(interval = "days",
+                        censor = "status", 
+                        by = "treatment", 
+                        data = pbc, 
+                        conf.int = .95)
+ 
+  expect_is(gg_dta, "gg_survival")
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_survival(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
+  expect_is(plot(gg_dta, error="bars"), "ggplot")
+  expect_is(plot(gg_dta, error="none"), "ggplot")
+  expect_is(plot(gg_dta, error="lines"), "ggplot")
+  expect_is(plot(gg_dta, type="surv"), "ggplot")
+  expect_is(plot(gg_dta, type="cum_haz"), "ggplot")
+  expect_is(plot(gg_dta, type="density"), "ggplot")
+  expect_is(plot(gg_dta, type="mid_int"), "ggplot")
+  expect_is(plot(gg_dta, type="life"), "ggplot")
+  expect_is(plot(gg_dta, type="hazard"), "ggplot")
+  expect_is(plot(gg_dta, type="proplife"), "ggplot")
+  # Test object type
+  gg_dta <- gg_survival(interval = "days",
+                        censor = "status", 
+                        by = "treatment", 
+                        data = pbc, 
+                        conf.int = .95,
+                        type="nelson")
+  
+  expect_is(gg_dta, "gg_survival")
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_survival(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
+  
+  
   
 })
 
@@ -85,5 +93,5 @@ test_that("gg_survival regression",{
   expect_match(rfsrc_airq$family, "regr")
   
   ## Create the correct gg_error object
-  expect_that(gg_survival(rfsrc_airq), throws_error())
+  expect_error(gg_survival(rfsrc_airq))
 })

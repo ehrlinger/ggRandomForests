@@ -35,14 +35,13 @@
 #'    \code{oob} boolean, should we return the oob prediction , or the full
 #' forest prediction.
 #' 
-#'    
-#' 
 #' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}
 #' 
 #' @examples
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
+#' ## -------- iris data
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' data(rfsrc_iris, package="ggRandomForests")
 #' gg_dta<- gg_rfsrc(rfsrc_iris)
@@ -52,15 +51,18 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
+#' ## -------- air quality data
 #' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' data(rfsrc_airq, package="ggRandomForests")
 #' gg_dta<- gg_rfsrc(rfsrc_airq)
 #' 
 #' plot.gg_rfsrc(gg_dta)
 #' 
+#' ## -------- Boston data
 #' data(rfsrc_Boston, package="ggRandomForests")
 #' plot.gg_rfsrc(rfsrc_Boston) 
 #' 
+#' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
 #' gg_dta<- gg_rfsrc(rfsrc_mtcars)
 #' 
@@ -69,7 +71,7 @@
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
-#' ## veteran data
+#' ## -------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' # data(veteran, package = "randomForestSRC")
 #' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
@@ -83,7 +85,9 @@
 #' gg_dta <- gg_rfsrc(rfsrc_veteran, by="trt")
 #' plot(gg_dta)
 #' 
-#' 
+#' \dontrun{
+#' ## -------- pbc data
+#' ## We don't run this because of bootstrap confidence limits
 #' data(rfsrc_pbc, package = "ggRandomForests")
 #' gg_dta <- gg_rfsrc(rfsrc_pbc)
 #' plot(gg_dta)
@@ -93,11 +97,10 @@
 #' 
 #' gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
 #' plot(gg_dta)
-#' 
-#' 
+#'}
 #' 
 #' @aliases gg_rfsrc gg_rfsrc.rfsrc
-#' @export gg_rfsrc.rfsrc gg_rfsrc
+#' @export gg_rfsrc gg_rfsrc.rfsrc 
 #'
 gg_rfsrc.rfsrc <- function(object, 
                            oob=TRUE, 
@@ -148,11 +151,11 @@ gg_rfsrc.rfsrc <- function(object,
     # Need to add multiclass methods
     if(oob){
       gg_dta <- 
-      if(ncol(object$predicted.oob) <= 2){
-        data.frame(cbind(object$predicted.oob[,-1]))
-      }else{ 
-        data.frame(cbind(object$predicted.oob))
-      }
+        if(ncol(object$predicted.oob) <= 2){
+          data.frame(cbind(object$predicted.oob[,-1]))
+        }else{ 
+          data.frame(cbind(object$predicted.oob))
+        }
     }else{
       gg_dta <- if(ncol(object$predicted) <= 2){
         data.frame(cbind(object$predicted[,-1]))

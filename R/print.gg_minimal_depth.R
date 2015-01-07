@@ -66,12 +66,16 @@ print.gg_minimal_depth <- function(x, ...){
   cat("\n")
   cat("PE :")
   print(round(gg_dta$err.rate, 3))
-
+  
   cat("-----------------------------------------------------------\n")
   cat("\n")
   cat("Top variables:\n")
-  vSel <- gg_dta$varselect[, -which(colnames(gg_dta$varselect)=="names")]
-  print(round(vSel[1:gg_dta$modelsize, , drop = FALSE], 3))
+  vSel <- data.frame(gg_dta$varselect[1:gg_dta$modelsize, 
+                                      -which(colnames(gg_dta$varselect)=="names"), 
+                                      drop = FALSE])
+  
+  print(vSel, digits=3)
+  
   cat("-----------------------------------------------------------\n")
   
 }

@@ -36,6 +36,7 @@
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
+#' ## -------- iris data
 #' ## You can build a randomForest
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' # varsel_iris <- var.select(rfsrc_iris)
@@ -51,6 +52,7 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
+#' ## -------- air quality data
 #' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' # varsel_airq <- var.select(rfsrc_airq)
 #' # ... or load a cached randomForestSRC object
@@ -59,29 +61,31 @@
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_minimal_vimp(varsel_airq)
 #' 
-#' # Plot the gg_error object
+#' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
 #' 
+#' ## -------- Boston data
 #' data(varsel_Boston, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_minimal_vimp(varsel_Boston)
 #' 
-#' # Plot the gg_error object
+#' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
 #' 
+#' ## -------- mtcars data
 #' data(varsel_mtcars, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_minimal_vimp(varsel_mtcars)
 #' 
-#' # Plot the gg_error object
+#' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
-#' ## veteran data
+#' ## -------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' # data(veteran, package = "randomForestSRC")
 #' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
@@ -92,6 +96,7 @@
 #' gg_dta <- gg_minimal_vimp(varsel_veteran)
 #' plot(gg_dta)
 #'   
+#' ## -------- pbc data
 #' data(varsel_pbc, package="ggRandomForests")
 #' 
 #' gg_dta <- gg_minimal_vimp(varsel_pbc)
@@ -106,7 +111,6 @@ gg_minimal_vimp.rfsrc <- function(object, event, ...){
     vSel <- object
   }else if(is.null(object$threshold)) {
     # Test for max.subtree minimal depth object, convert to vSel object
-    
     stop("No support for max.subtree yet, use var.select instead")
   }else{
     stop("Function works only on rfsrc or var.select objects.")

@@ -32,9 +32,9 @@ test_that("gg_error classifications",{
   expect_is(gg.obj, "ggplot")
   
   # "Incorrect object type: Expects a gg_error object"
-  expect_that(gg_error(gg.obj), throws_error())
+  expect_error(gg_error(gg.obj))
   rfsrc_iris$err.rate <- NULL
-  expect_that(gg_error(rfsrc_iris), throws_error())
+  expect_error(gg_error(rfsrc_iris))
   
 })
 

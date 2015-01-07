@@ -42,51 +42,73 @@
 #' 
 #' @examples
 #' \dontrun{
-#' #' ## Examples from RFSRC package... 
+#' ## Examples from RFSRC package... 
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
+#' ## -------- iris data
 #' ## You can build a randomForest
-#' # iris_rf <- rfsrc(Species ~ ., data = iris)
-#' # iris_vs <- var.select(iris_rf)
+#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' # varsel_iris <- var.select(rfsrc_iris)
 #' # ... or load a cached randomForestSRC object
-#' data(iris_vs, package="ggRandomForests")
+#' data(varsel_iris, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' gg_dta<- gg_minimal_depth(iris_vs)
+#' gg_dta<- gg_minimal_depth(varsel_iris)
 #' 
-#' # Plot the gg_mkinimal_depth object
+#' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
-#' # airq_rf <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' # airq_vs <- var.select(airq_rf)
+#' ## -------- air quality data
+#' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+#' # varsel_airq <- var.select(rfsrc_airq)
 #' # ... or load a cached randomForestSRC object
-#' data(airq_vs, package="ggRandomForests")
+#' data(varsel_airq, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_minimal_depth(airq_vs)
+#' gg_dta<- gg_minimal_depth(varsel_airq)
 #' 
-#' # Plot the gg_error object
+#' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
+#' 
+#' ## -------- Boston data
+#' data(varsel_Boston, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing error rates
+#' plot(gg_minimal_depth(varsel_Boston))
+#' 
+#' ## -------- mtcars data
+#' data(varsel_mtcars, package="ggRandomForests")
+#' 
+#' # Get a data.frame containing error rates
+#' plot.gg_minimal_depth(varsel_mtcars)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
+#' ## -------- veteran data
 #' ## veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' # data(veteran, package = "randomForestSRC")
-#' # veteran_rf <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#' # veteran_vs <- var.select(veteran_rf)
+#' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' # varsel_veteran <- var.select(rfsrc_veteran)
 #' # Load a cached randomForestSRC object
-#' data(veteran_vs, package="ggRandomForests")
+#' data(varsel_veteran, package="ggRandomForests")
 #' 
-#' gg_dta <- gg_minimal_depth(veteran_vs)
+#' gg_dta <- gg_minimal_depth(varsel_veteran)
+#' plot(gg_dta)
+#' 
+#' ## -------- pbc data
+#' data(varsel_pbc, package="ggRandomForests")
+#' 
+#' gg_dta <- gg_minimal_depth(varsel_pbc)
 #' plot(gg_dta)
 #' 
 #' }
+#' 
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline scale_x_discrete
 ### error rate plot
 plot.gg_minimal_depth <- function(x, selection=FALSE, 

@@ -13,7 +13,7 @@ test_that("gg_partial classifications",{
   expect_is(rfsrc_iris, "rfsrc")
   
   # Test the forest family
-  expect_that(rfsrc_iris$family, equals("class"))
+  expect_equal(rfsrc_iris$family, "class")
   
   # Load saved partial plot data.
   data(partial_iris, package="ggRandomForests")
@@ -180,6 +180,6 @@ test_that("gg_partial combine",{
   ggpart <- combine.gg_partial(ggPrtl[[1]], ggPrtl[[2]])
   expect_is(ggpart, "gg_partial_list")
   
-  expect_that(combine.gg_partial(ggPrtl), throws_error())
-  expect_that(combine.gg_partial(ggPrtl, ggPrtl), throws_error())
+  expect_error(combine.gg_partial(ggPrtl))
+  expect_error(combine.gg_partial(ggPrtl, ggPrtl))
 })

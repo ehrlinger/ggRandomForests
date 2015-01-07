@@ -39,6 +39,7 @@
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
+#' ## -------- iris data
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' data(rfsrc_iris, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_iris)
@@ -47,16 +48,18 @@
 #' ## ------------------------------------------------------------
 #' ## regression example
 #' ## ------------------------------------------------------------
-#' 
+#' ## -------- air quality data 
 #' # rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
 #' data(rfsrc_airq, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
 #' 
+#' ## -------- Boston data
 #' data(rfsrc_Boston, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_Boston)
 #' plot(gg_dta)
 #' 
+#' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_mtcars)
 #' plot(gg_dta)
@@ -64,14 +67,16 @@
 #' ## ------------------------------------------------------------
 #' ## survival example
 #' ## ------------------------------------------------------------
+#' ## -------- veteran data
 #' data(rfsrc_veteran, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_veteran)
 #' plot(gg_dta)
 #'
+#' ## -------- pbc data
 #' data(rfsrc_pbc, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_pbc)
 #' plot(gg_dta)
-
+#' 
 #' @export gg_vimp.rfsrc gg_vimp
 #' @aliases gg_vimp gg_vimp.rfsrc 
 

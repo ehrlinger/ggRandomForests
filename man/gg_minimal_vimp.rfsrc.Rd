@@ -28,6 +28,7 @@ Minimal depth vs VIMP camparison by variable rankings.
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
+## -------- iris data
 ## You can build a randomForest
 # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 # varsel_iris <- var.select(rfsrc_iris)
@@ -43,6 +44,7 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
+## -------- air quality data
 # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 # varsel_airq <- var.select(rfsrc_airq)
 # ... or load a cached randomForestSRC object
@@ -51,29 +53,31 @@ data(varsel_airq, package="ggRandomForests")
 # Get a data.frame containing error rates
 gg_dta<- gg_minimal_vimp(varsel_airq)
 
-# Plot the gg_error object
+# Plot the gg_minimal_vimp object
 plot(gg_dta)
 
+## -------- Boston data
 data(varsel_Boston, package="ggRandomForests")
 
 # Get a data.frame containing error rates
 gg_dta<- gg_minimal_vimp(varsel_Boston)
 
-# Plot the gg_error object
+# Plot the gg_minimal_vimp object
 plot(gg_dta)
 
+## -------- mtcars data
 data(varsel_mtcars, package="ggRandomForests")
 
 # Get a data.frame containing error rates
 gg_dta<- gg_minimal_vimp(varsel_mtcars)
 
-# Plot the gg_error object
+# Plot the gg_minimal_vimp object
 plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## Survival example
 ## ------------------------------------------------------------
-## veteran data
+## -------- veteran data
 ## randomized trial of two treatment regimens for lung cancer
 # data(veteran, package = "randomForestSRC")
 # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
@@ -84,6 +88,7 @@ data(varsel_veteran, package="ggRandomForests")
 gg_dta <- gg_minimal_vimp(varsel_veteran)
 plot(gg_dta)
 
+## -------- pbc data
 data(varsel_pbc, package="ggRandomForests")
 
 gg_dta <- gg_minimal_vimp(varsel_pbc)

@@ -50,6 +50,7 @@
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
+#' ## ------------- iris data
 #' ## You can build a randomForest
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' # ... or load a cached randomForestSRC object
@@ -64,6 +65,7 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
+#' ## ------------- airq data
 #' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' # ... or load a cached randomForestSRC object
 #' data(rfsrc_airq, package="ggRandomForests")
@@ -74,7 +76,7 @@
 #' # Plot the gg_error object
 #' plot(gg_dta)
 #' 
-#' #-------------
+#' ## ------------- Boston data
 #' data(rfsrc_Boston, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing error rates
@@ -83,7 +85,7 @@
 #' # Plot the gg_error object
 #' plot(gg_dta)
 #' 
-#' #-------------
+#' ## ------------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing error rates
@@ -95,7 +97,7 @@
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
-#' ## veteran data
+#' ## ------------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' # data(veteran, package = "randomForestSRC")
 #' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
@@ -106,6 +108,7 @@
 #' gg_dta <- gg_error(rfsrc_veteran)
 #' plot(gg_dta)
 #' 
+#' ## ------------- pbc data
 #' # Load a cached randomForestSRC object
 #' data(rfsrc_pbc, package="ggRandomForests")
 #' 
