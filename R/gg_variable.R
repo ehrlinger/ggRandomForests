@@ -123,7 +123,7 @@
 #' # Generate variable dependance plots for age and diagtime
 #' plot(gg_dta, xvar = "age")
 #' plot(gg_dta, xvar = "diagtime", )
-#' 
+#' \dontrun{
 #' # Generate coplots
 #' plot(gg_dta, xvar = c("age", "diagtime"), panel=TRUE, se=FALSE)
 #' 
@@ -133,7 +133,7 @@
 #' 
 #' # Generate variable dependance plots for age and diagtime
 #' plot(gg_dta, xvar = "age")
-#' 
+#' }
 #' ## -------- pbc data
 
 gg_variable.rfsrc <- function(object,
