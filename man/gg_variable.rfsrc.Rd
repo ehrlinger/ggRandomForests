@@ -86,11 +86,11 @@ gg_dta$vs <- factor(gg_dta$vs)
 gg_dta$gear <- factor(gg_dta$gear)
 gg_dta$carb <- factor(gg_dta$carb)
 
+\dontrun{
 plot(gg_dta, xvar="cyl")
 
 # Others are continuous
 plot(gg_dta, xvar="disp")
-\dontrun{
 plot(gg_dta, xvar="hp")
 plot(gg_dta, xvar="wt")
 }

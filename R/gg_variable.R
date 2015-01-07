@@ -93,11 +93,11 @@
 #' gg_dta$gear <- factor(gg_dta$gear)
 #' gg_dta$carb <- factor(gg_dta$carb)
 #' 
+#' \dontrun{
 #' plot(gg_dta, xvar="cyl")
 #' 
 #' # Others are continuous
 #' plot(gg_dta, xvar="disp")
-#' \dontrun{
 #' plot(gg_dta, xvar="hp")
 #' plot(gg_dta, xvar="wt")
 #' }
@@ -137,10 +137,10 @@
 #' ## -------- pbc data
 
 gg_variable.rfsrc <- function(object,
-                                       time,
-                                       time.labels,
-                                       oob=TRUE,
-                                       ...)
+                              time,
+                              time.labels,
+                              oob=TRUE,
+                              ...)
 {
   
   # Want to also handle a plot.variable where partial!= TRUE

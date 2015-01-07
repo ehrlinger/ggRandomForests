@@ -97,7 +97,7 @@ test_that("gg_minimal_depth regression",{
   expect_is(varsel_Boston, "list")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_depth(varsel_Boston, selection=TRUE)
+  ggrf.obj<- gg_minimal_depth(varsel_Boston)
   # Test object type
   expect_is(ggrf.obj, "gg_minimal_depth")
   
@@ -143,7 +143,7 @@ test_that("gg_minimal_depth regression",{
   names(st.labs) <- names(cls)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_depth(ggrf.obj, lbls=st.labs)
+  gg.obj <- plot.gg_minimal_depth(ggrf.obj, lbls=st.labs, selection=TRUE)
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot") 
