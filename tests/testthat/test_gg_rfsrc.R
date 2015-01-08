@@ -80,7 +80,6 @@ test_that("gg_rfsrc survival",{
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
-  
   ## Create the correct gg_error object
   gg_dta<- gg_rfsrc(rfsrc_veteran, oob=FALSE)
   
@@ -89,7 +88,7 @@ test_that("gg_rfsrc survival",{
   expect_is(gg_dta, "surv")
   # Test classification dimensions
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_rfsrc(gg_dta)
+  gg_plt <- plot.gg_rfsrc(gg_dta, alpha=.4)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -107,6 +106,20 @@ test_that("gg_rfsrc survival",{
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
+  
+  
+  gg_dta<- gg_rfsrc(rfsrc_veteran,conf.int=.68)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "surv")
+  
+  ## Create the correct gg_error object
+  gg_plt <- plot(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
 
 })
 
@@ -145,7 +158,17 @@ test_that("gg_rfsrc regression",{
   expect_is(gg_dta, "gg_rfsrc")
   
   # Test classification dimensions
+  ## Create the correct gg_error object
+  gg_dta<- gg_rfsrc(rfsrc_airq, by="Month")
   
+  # Test object type
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "regr")
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_rfsrc(gg_dta)
   # Test data is correctly pulled from randomForest obect.
   # Predicted values
+  rfsrc_airq$family <- "test"
+  expect_error(gg_rfsrc(rfsrc_airq))
 })

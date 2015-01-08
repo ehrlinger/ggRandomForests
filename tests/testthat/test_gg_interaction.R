@@ -10,32 +10,32 @@ test_that("gg_interaction classifications",{
   expect_is(interaction_iris, "matrix")
   
   ## Create the correct gg_interaction object
-  ggrf.obj <- gg_interaction(interaction_iris)
+  gg_dta <- gg_interaction(interaction_iris)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_interaction")
+  expect_is(gg_dta, "gg_interaction")
   
   # Test classification dimensions
-  expect_equal(dim(ggrf.obj), dim(interaction_iris))
+  expect_equal(dim(gg_dta), dim(interaction_iris))
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(ggrf.obj), interaction_iris)
+  expect_equivalent(as.matrix(gg_dta), interaction_iris)
   
   ## Test plotting the gg_interaction object
-  gg.obj <- plot.gg_interaction(ggrf.obj, xvar="Petal.Width")
+  gg_plt <- plot.gg_interaction(gg_dta, xvar="Petal.Width")
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
   
   # This one should fail with a variable not found message
-  expect_error(plot.gg_interaction(ggrf.obj, xvar="Petal"))
+  expect_error(plot.gg_interaction(gg_dta, xvar="Petal"))
   
   # "Incorrect object type: Expects a gg_interaction object"
   ## Test plotting the gg_interaction object
-  gg.obj <- plot.gg_interaction(ggrf.obj)
+  gg_plt <- plot.gg_interaction(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
   
 })
 
@@ -54,22 +54,22 @@ test_that("gg_interaction survival",{
   expect_is(interaction_pbc, "matrix")
   
   ## Create the correct gg_interaction object
-  ggrf.obj <- gg_interaction(interaction_pbc)
+  gg_dta <- gg_interaction(interaction_pbc)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_interaction")
+  expect_is(gg_dta, "gg_interaction")
   
   # Test classification dimensions
-  expect_equal(dim(ggrf.obj), dim(interaction_pbc))
+  expect_equal(dim(gg_dta), dim(interaction_pbc))
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(ggrf.obj), interaction_pbc)
+  expect_equivalent(as.matrix(gg_dta), interaction_pbc)
   
   ## Test plotting the gg_interaction object
-  gg.obj <- plot.gg_interaction(ggrf.obj, xvar="bili")
+  gg_plt <- plot.gg_interaction(gg_dta, xvar="bili")
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
   
   # "Incorrect object type: Expects a gg_interaction object"
   
@@ -97,17 +97,17 @@ test_that("gg_interaction survival",{
   
   st.labs <- as.character(dta.labs$label)
   names(st.labs) <- rownames(dta.labs)
-  gg.obj <- plot.gg_interaction(ggrf.obj, lbls=st.labs)
+  gg_plt <- plot.gg_interaction(gg_dta, lbls=st.labs)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
 })
 
 test_that("gg_interaction regression",{
   
   ## New York air quality measurements
   #   airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  #   ggrf.obj<- gg_interaction(airq.obj)
+  #   gg_dta<- gg_interaction(airq.obj)
   ## Load the cached forest
   data(interaction_airq, package="ggRandomForests")
   
@@ -115,30 +115,36 @@ test_that("gg_interaction regression",{
   expect_is(interaction_airq, "matrix")
   
   ## Create the correct gg_interaction object
-  ggrf.obj <- gg_interaction(interaction_airq)
+  gg_dta <- gg_interaction(interaction_airq)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_interaction")
+  expect_is(gg_dta, "gg_interaction")
   
   # Test classification dimensions
-  expect_equal(dim(ggrf.obj), dim(interaction_airq))
+  expect_equal(dim(gg_dta), dim(interaction_airq))
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(ggrf.obj), interaction_airq)
+  expect_equivalent(as.matrix(gg_dta), interaction_airq)
   
   ## Test plotting the gg_interaction object
-  gg.obj <- plot.gg_interaction(ggrf.obj, xvar = "Temp")
+  gg_plt <- plot.gg_interaction(gg_dta, xvar = "Temp")
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
   
+  data(rfsrc_airq, package="ggRandomForests")
+  
+  expect_warning(gg_dta <- gg_interaction(rfsrc_airq,
+                                          xvar.names=rfsrc_airq$xvar.names[1:2]))
+  
+  expect_error(gg_interaction(gg_dta))
 })
 
 test_that("gg_interaction exceptions",{
   
   ## New York air quality measurements
   #   airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  #   ggrf.obj<- gg_interaction(airq.obj)
+  #   gg_dta<- gg_interaction(airq.obj)
   ## Load the cached forest
   data(rfsrc_mtcars, package="ggRandomForests")
   
@@ -147,10 +153,10 @@ test_that("gg_interaction exceptions",{
   
   # This one costs a lot of time in calculating the interaction matrix.
   #   ## Create the correct gg_interaction object
-  #   expect_warning(ggrf.obj <- gg_interaction(rfsrc_mtcars))
+  #   expect_warning(gg_dta <- gg_interaction(rfsrc_mtcars))
   #   
   #   # Test object type
-  #   expect_is(ggrf.obj, "gg_interaction")
+  #   expect_is(gg_dta, "gg_interaction")
   #   
   data(interaction_mtcars, package="ggRandomForests")
   # Test the cached interaction structure

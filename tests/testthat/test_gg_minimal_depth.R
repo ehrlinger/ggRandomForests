@@ -163,5 +163,18 @@ test_that("gg_minimal_depth exceptions",{
   vsel$threshold <- NULL
   expect_error(gg_minimal_depth(vsel))
   
-  expect_output(print(gg_minimal_depth(varsel_airq)), "gg_minimal_depth", ignore.case = TRUE)
-  })
+  expect_output(print(gg_minimal_depth(varsel_airq)), 
+                "gg_minimal_depth", ignore.case = TRUE)
+  
+  
+  vsel <- varsel_airq
+  vsel$varselect$vimp <- NULL
+  gg_dta <- gg_minimal_depth(vsel)
+  
+  expect_is(gg_dta, "gg_minimal_depth")
+  
+  data(rfsrc_airq, package="ggRandomForests")
+  expect_output(gg_dta <- gg_minimal_depth(rfsrc_airq, fast=TRUE),
+                "minimal depth variable selection")
+  expect_is(gg_dta, "gg_minimal_depth")
+})

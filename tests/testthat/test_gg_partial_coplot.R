@@ -32,9 +32,9 @@ test_that("gg_error classifications",{
   
   expect_error(gg_partial_coplot(partial_coplot_Boston, xvar="lstat", 
                                  groups=rm_grp,
-                                 show.plots=FALSE,
                                  npts=5))
-  
+  expect_error(gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
+                                 npts=5))
   rfsrc_Boston$forest <- NULL
   expect_error(gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
                                  groups=rm_grp,

@@ -14,41 +14,43 @@ test_that("gg_roc classifications",{
   
   ## Create the correct gg_roc object
   which.outcome=1
-  ggrf.obj <- gg_roc(rfsrc_iris, which.outcome)
+  gg_dta <- gg_roc(rfsrc_iris, which.outcome)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_roc")
+  expect_is(gg_dta, "gg_roc")
   
   # Test classification dimensions
-  expect_equal(nrow(ggrf.obj), length(unique(rfsrc_iris$predicted.oob[,which.outcome]))+1)
-  expect_equal(ncol(ggrf.obj), 3)
+  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[,which.outcome]))+1)
+  expect_equal(ncol(gg_dta), 3)
   
   # Test data is correctly pulled from randomForest obect.
   unts <- sort(unique(rfsrc_iris$predicted.oob[,which.outcome]))
-  expect_equivalent(ggrf.obj$pct, c(0,unts[-length(unts)],1))
+  expect_equivalent(gg_dta$pct, c(0,unts[-length(unts)],1))
   
   ## Test plotting the gg_roc object
-  gg.obj <- plot.gg_roc(ggrf.obj)
+  gg.obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
   
   # Try test set prediction.
-  ggrf.obj <- gg_roc(rfsrc_iris, which.outcome, oob=FALSE)
+  gg_dta <- gg_roc(rfsrc_iris, which.outcome, oob=FALSE)
+  # Try test set prediction.
+  gg_plt <- plot.gg_roc(rfsrc_iris)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_roc")
+  expect_is(gg_dta, "gg_roc")
   
   # Test classification dimensions
-  expect_equal(nrow(ggrf.obj), length(unique(rfsrc_iris$predicted[,which.outcome]))+1)
-  expect_equal(ncol(ggrf.obj), 3)
+  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted[,which.outcome]))+1)
+  expect_equal(ncol(gg_dta), 3)
   
   # Test data is correctly pulled from randomForest obect.
   unts <- sort(unique(rfsrc_iris$predicted[,which.outcome]))
-  expect_equivalent(ggrf.obj$pct, c(0,unts[-length(unts)],1))
+  expect_equivalent(gg_dta$pct, c(0,unts[-length(unts)],1))
   
   ## Test plotting the gg_roc object
-  gg.obj <- plot.gg_roc(ggrf.obj)
+  gg.obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
@@ -80,7 +82,7 @@ test_that("gg_roc regression",{
   
   ## New York air quality measurements
   #   rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  #   ggrf.obj<- gg_roc(rfsrc_airq)
+  #   gg_dta<- gg_roc(rfsrc_airq)
   
   ## Load the cached forest
   data(rfsrc_airq, package="ggRandomForests")
@@ -93,6 +95,8 @@ test_that("gg_roc regression",{
   
   ## Create the correct gg_roc object
   expect_error(gg_roc(rfsrc_airq))
+  expect_error(plot.gg_roc(rfsrc_airq))
+  
 })
 
 test_that("calc_roc",{
@@ -114,7 +118,9 @@ test_that("calc_roc",{
   expect_equal(ncol(gg_dta), 3)
   expect_equal(nrow(gg_dta), 27)
   
-  
+  expect_error(calc_roc.rfsrc(rfsrc_iris, 
+                              rfsrc_iris$yvar, 
+                              which.outcome="all"))
   # Test oob=FALSE
   gg_dta <- calc_roc.rfsrc(rfsrc_iris, 
                            rfsrc_iris$yvar, 

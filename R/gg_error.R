@@ -141,7 +141,7 @@ gg_error.rfsrc <- function(object, ...) {
   class(gg_dta) <- c("gg_error",class(gg_dta))
   invisible(gg_dta)
 }
-
-gg_error.randomForest <- function(object, ...) {
-  stop("Unimplemented function.") 
-}
+# 
+# gg_error.randomForest <- function(object, ...) {
+#   stop("Unimplemented function.") 
+# }
