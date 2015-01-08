@@ -164,4 +164,7 @@ test_that("gg_minimal_vimp exceptions",{
   expect_output(gg_dta <- gg_minimal_vimp(rfsrc_airq, fast=TRUE),
                 "minimal depth variable selection")
   expect_is(gg_dta, "gg_minimal_vimp")
-  })
+  gg_plt <- plot.gg_minimal_vimp(gg_dta)
+  expect_error(gg_minimal_depth(gg_plt))
+  
+})

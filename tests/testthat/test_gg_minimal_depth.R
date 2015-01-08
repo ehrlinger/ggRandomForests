@@ -16,17 +16,17 @@ test_that("gg_minimal_depth classifications",{
   expect_false(is.null(varsel_iris$md.obj))
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_depth(varsel_iris)
+  gg_dta<- gg_minimal_depth(varsel_iris)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_minimal_depth")
+  expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(ggrf.obj$varselect[,-which(colnames(ggrf.obj$varselect)=="names")],
+  expect_equivalent(gg_dta$varselect[,-which(colnames(gg_dta$varselect)=="names")],
                     varsel_iris$varselect)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_depth(ggrf.obj)
+  gg.obj <- plot.gg_minimal_depth(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
@@ -46,17 +46,17 @@ test_that("gg_minimal_depth survival",{
   expect_is(varsel_veteran, "list")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_depth(varsel_veteran)
+  gg_dta<- gg_minimal_depth(varsel_veteran)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_minimal_depth")
+  expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(ggrf.obj$varselect[, -which(colnames(ggrf.obj$varselect)=="names")],
+  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect)=="names")],
                     varsel_veteran$varselect)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_depth(ggrf.obj)
+  gg.obj <- plot.gg_minimal_depth(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
@@ -75,17 +75,17 @@ test_that("gg_minimal_depth regression",{
   expect_is(varsel_airq, "list")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_depth(varsel_airq)
+  gg_dta<- gg_minimal_depth(varsel_airq)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_minimal_depth")
+  expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(ggrf.obj$varselect[, -which(colnames(ggrf.obj$varselect)=="names")], 
+  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect)=="names")], 
                     varsel_airq$varselect)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_depth(ggrf.obj)
+  gg.obj <- plot.gg_minimal_depth(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
@@ -97,9 +97,9 @@ test_that("gg_minimal_depth regression",{
   expect_is(varsel_Boston, "list")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_depth(varsel_Boston)
+  gg_dta<- gg_minimal_depth(varsel_Boston)
   # Test object type
-  expect_is(ggrf.obj, "gg_minimal_depth")
+  expect_is(gg_dta, "gg_minimal_depth")
   
   data(Boston, package="MASS")
   
@@ -143,7 +143,7 @@ test_that("gg_minimal_depth regression",{
   names(st.labs) <- names(cls)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_depth(ggrf.obj, lbls=st.labs, selection=TRUE)
+  gg.obj <- plot.gg_minimal_depth(gg_dta, lbls=st.labs, selection=TRUE)
   
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot") 
@@ -180,7 +180,8 @@ test_that("gg_minimal_depth exceptions",{
                 "minimal depth variable selection")
   expect_is(gg_dta, "gg_minimal_depth")
   
-  expect_output(gg_dta <- plot.gg_minimal_depth(rfsrc_airq, fast=TRUE),
+  expect_output(gg_plt <- plot.gg_minimal_depth(rfsrc_airq, fast=TRUE),
                 "minimal depth variable selection")
+  expect_error(gg_minimal_depth(gg_plt))
   
 })

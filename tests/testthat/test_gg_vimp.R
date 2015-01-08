@@ -65,7 +65,7 @@ test_that("gg_vimp survival",{
   expect_is(rfsrc_pbc, "rfsrc")
   
   ## Create the correct gg_error object
-  expect_is(gg_dta<- gg_vimp(rfsrc_pbc),
+  expect_is(gg_dta<- gg_vimp(rfsrc_pbc, relative=TRUE),
             "gg_vimp")
   expect_is(plot(gg_dta), "ggplot")
   
@@ -94,6 +94,11 @@ test_that("gg_vimp regression",{
   
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_vimp(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_vimp(gg_dta, relative=TRUE)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -144,4 +149,6 @@ test_that("gg_vimp regression",{
   gg_plt <- plot.gg_vimp(rfsrc_Boston, lbls=st.labs, relative=TRUE, 
                          bars=rfsrc_Boston$xvar.names)
   expect_is(gg_plt, "ggplot")
+  
+  
 })
