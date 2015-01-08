@@ -122,7 +122,7 @@ calc_roc<- calc_roc.rfsrc
 #' 
 #' @return AUC. 50\% is random guessing, higher is better.
 #' 
-#' @importFrom dplyr lead
+# @importFrom dplyr lead
 #' 
 #' @seealso \code{\link{calc_roc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
 #' 
@@ -149,7 +149,70 @@ calc_auc <- function(x){
   # ensure we are in decreasing order of specificity (x var = 1-spec)
   x <- x[order(x$spec, decreasing=TRUE),]
   
-  auc <- (3*lead(x$sens) - x$sens)/2 * (x$spec - lead(x$spec))
+  auc <- (3*shift(x$sens) - x$sens)/2 * (x$spec - shift(x$spec))
   sum(auc, na.rm=TRUE)
 }
 calc_auc.gg_roc <- calc_auc
+
+#' lead function to shift by one (or more).
+#' 
+#' @param x a vector of values
+#' @param shift_by an integer of length 1, giving the number of positions 
+#' to lead (positive) or lag (negative) by
+#' 
+#' @details Lead and lag are useful for comparing values offset by a constant 
+#' (e.g. the previous or next value)
+#' 
+#' This function allows me to remove the dplyr::lead depends.
+#' 
+#' @examples
+#' d<-data.frame(x=1:15) 
+#' #generate lead variable
+#' d$df_lead2<-ggRandomForests:::shift(d$x,2)
+#' #generate lag variable
+#' d$df_lag2<-ggRandomForests:::shift(d$x,-2)
+# 
+# > d
+# x df_lead2 df_lag2
+# 1   1        3      NA
+# 2   2        4      NA
+# 3   3        5       1
+# 4   4        6       2
+# 5   5        7       3
+# 6   6        8       4
+# 7   7        9       5
+# 8   8       10       6
+# 9   9       NA       7
+# 10 10       NA       8
+# 
+# # shift_by is vectorized
+# d$df_lead2 shift(d$x,-2:2)
+# [,1] [,2] [,3] [,4] [,5]
+# [1,]   NA   NA    1    2    3
+# [2,]   NA    1    2    3    4
+# [3,]    1    2    3    4    5
+# [4,]    2    3    4    5    6
+# [5,]    3    4    5    6    7
+# [6,]    4    5    6    7    8
+# [7,]    5    6    7    8    9
+# [8,]    6    7    8    9   10
+# [9,]    7    8    9   10   NA
+# [10,]    8    9   10   NA   NA
+
+shift<-function(x,shift_by=1){
+  stopifnot(is.numeric(shift_by))
+  stopifnot(is.numeric(x))
+  
+  if (length(shift_by)>1)
+    return(sapply(shift_by,shift, x=x))
+  
+  out<-NULL
+  abs_shift_by=abs(shift_by)
+  if (shift_by > 0 )
+    out<-c(tail(x,-abs_shift_by),rep(NA,abs_shift_by))
+  else if (shift_by < 0 )
+    out<-c(rep(NA,abs_shift_by), head(x,-abs_shift_by))
+  else
+    out<-x
+  out
+}

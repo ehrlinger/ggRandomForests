@@ -16,19 +16,19 @@ test_that("gg_vimp classifications",{
   expect_equal(rfsrc_iris$family, "class")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_vimp(rfsrc_iris)
+  gg_dta<- gg_vimp(rfsrc_iris)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_vimp")
+  expect_is(gg_dta, "gg_vimp")
   
   # Test varselect is the same
- #expect_equivalent(select(ggrf.obj$varselect, -names), rfsrc_iris$importance)
+ #expect_equivalent(select(gg_dta$varselect, -names), rfsrc_iris$importance)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_vimp(ggrf.obj)
+  gg_plt <- plot.gg_vimp(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
 })
 
 
@@ -45,19 +45,30 @@ test_that("gg_vimp survival",{
   expect_is(rfsrc_veteran, "rfsrc")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_vimp(rfsrc_veteran)
+  gg_dta<- gg_vimp(rfsrc_veteran)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_vimp")
+  expect_is(gg_dta, "gg_vimp")
   
   # Test varselect is the same
-  expect_equal(ggrf.obj$vimp, as.vector(sort(rfsrc_veteran$importance, decreasing=TRUE)))
+  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_veteran$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_vimp(ggrf.obj)
+  gg_plt <- plot.gg_vimp(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
+  
+  data(rfsrc_pbc, package="ggRandomForests")
+  
+  # Test the cached forest type
+  expect_is(rfsrc_pbc, "rfsrc")
+  
+  ## Create the correct gg_error object
+  expect_is(gg_dta<- gg_vimp(rfsrc_pbc),
+            "gg_vimp")
+  expect_is(plot(gg_dta), "ggplot")
+  
 })
 
 test_that("gg_vimp regression",{
@@ -73,19 +84,19 @@ test_that("gg_vimp regression",{
   expect_is(rfsrc_airq, "rfsrc")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_vimp(rfsrc_airq)
+  gg_dta<- gg_vimp(rfsrc_airq)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_vimp")
+  expect_is(gg_dta, "gg_vimp")
   
   # Test varselect is the same
-  expect_equal(ggrf.obj$vimp, as.vector(sort(rfsrc_airq$importance, decreasing=TRUE)))
+  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_airq$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_vimp(ggrf.obj)
+  gg_plt <- plot.gg_vimp(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
   
   data(rfsrc_Boston, package="ggRandomForests")
   data(Boston, package="MASS")

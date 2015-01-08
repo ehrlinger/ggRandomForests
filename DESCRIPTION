@@ -17,7 +17,6 @@ Imports:
     ggplot2,
     survival,
     parallel,
-    dplyr,
     reshape2
 Suggests:
     testthat,
@@ -25,5 +24,6 @@ Suggests:
     RColorBrewer,
     xtable,
     MASS, 
+    dplyr,
     plot3D
     

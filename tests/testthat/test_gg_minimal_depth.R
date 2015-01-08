@@ -173,8 +173,14 @@ test_that("gg_minimal_depth exceptions",{
   
   expect_is(gg_dta, "gg_minimal_depth")
   
+  expect_is(plot(gg_dta, type="rank"), "ggplot")
+  
   data(rfsrc_airq, package="ggRandomForests")
   expect_output(gg_dta <- gg_minimal_depth(rfsrc_airq, fast=TRUE),
                 "minimal depth variable selection")
   expect_is(gg_dta, "gg_minimal_depth")
+  
+  expect_output(gg_dta <- plot.gg_minimal_depth(rfsrc_airq, fast=TRUE),
+                "minimal depth variable selection")
+  
 })
