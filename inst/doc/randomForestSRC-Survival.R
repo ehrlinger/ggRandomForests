@@ -25,32 +25,36 @@ options(mc.cores = 1, rf.cores = 0)
 #################
 # Load_packages #
 #################
-library("ggplot2")         # Graphics engine for generating all types of plots
+library("ggplot2")         # Graphics engine for generating all plots
 library("RColorBrewer")    # Nice color palettes
 library("plot3D")          # for 3d surfaces. 
 
 library("dplyr")           # Better data manipulations
-library("reshape2")        # for transforming wide data into long data (melt)
+library("reshape2")        # Transforming wide data into long data (melt)
 
 library("parallel")        # mclapply for multicore processing
 
 library("xtable")          # For nice html and latex tables
 
 # Analysis packages.
-library("randomForestSRC") # random forests for survival, regression and classification
-library("ggRandomForests") # ggplot2 random forest figures
+library("randomForestSRC") # random forests for survival, regression and 
+                           # classification
+
+library("ggRandomForests") # ggplot2 random forest figures (This!)
 
 #########################################################################
 # Default settings
 #########################################################################
 theme_set(theme_bw())     # A ggplot2 theme with white background
 
-## Set the event/censor marks. Want open circle for censored, and 
-## x for events 
+## Set the event/censor marks. 
+## Want open circle for censored, and x for events 
 event.marks <- c(1, 4)
 event.labels <- c(FALSE, TRUE)
+
+## We want red for death events, so reorder this set.
 strCol <- brewer.pal(3, "Set1")
-strCol <- c(strCol[2], strCol[1])
+strCol <- strCol[c(2,1,3)]
 
 ## ----vignette, eval=FALSE, echo=TRUE----------------------------------------------------
 #  vignette("randomForestSRC-Survival", package = "ggRandomForests")
@@ -127,7 +131,7 @@ names(st.labs) <- rownames(dta.labs)
 # create a data dictionary table
 
 rws <- seq(1, (nrow(dta.labs)), by = 2)
-col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
 
 print(xtable(dta.labs %>% select(-names), 
              caption = "PBC Data field descriptions", 
@@ -135,7 +139,7 @@ print(xtable(dta.labs %>% select(-names),
              digits = 3), 
       size = 'footnotesize', # fontsize
       booktabs = TRUE, 
-      add.to.row = list(pos = as.list(rws), command = col), 
+     # add.to.row = list(pos = as.list(rws), command = col), 
       command= c('\\toprule' , 
                    '\\midrule' , 
                    '\\bottomrule ')
@@ -187,15 +191,15 @@ st <- data.frame(cbind(full = st, trial = st.t))
 
 st <- st[which(st$full>0),]
 rws <- seq(1, (nrow(st)), by = 2)
-col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
 
 print(xtable(st, 
-             caption = "PBC missing values", 
+             caption = "Missing value counts in \\code{PBC} data set.", 
              label = "T:missing", 
              digits = 3), 
       size = 'footnotesize', # fontsize
       booktabs = TRUE, 
-      add.to.row = list(pos = as.list(rws), command = col), 
+#      add.to.row = list(pos = as.list(rws), command = col), 
       command= c('\\toprule' , 
                    '\\midrule' , 
                    '\\bottomrule ')
@@ -215,7 +219,7 @@ gg_dta <- gg_survival(interval = "years",
                       data = pbc.trial, 
                       conf.int = .95)
 
-## ----plot_gg_survival, fig.cap="Kaplan--Meier pbc data survival estimates comparing the treatment with placebo. Mean survival with shaded 95\\% condfidence band.", echo=TRUE----
+## ----plot_gg_survival, fig.cap="Kaplan--Meier \\code{pbc} data survival estimates comparing the \\code{DPCA} treatment (red) with \\code{placebo} (blue). Median survival with shaded 95\\% confidence band.", echo=TRUE----
 plot(gg_dta) +
   labs(y = "Survival Probability", 
        x = "Observation Time (years)", 
@@ -223,7 +227,7 @@ plot(gg_dta) +
   theme(legend.position = c(.2,.2))+
   coord_cartesian(y = c(0,1.01))
 
-## ----plot_gg_cum_hazard, fig.cap="Kaplan--Meier pbc data cumulative hazard estimates comparing the treatment with placebo.", echo=TRUE----
+## ----plot_gg_cum_hazard, fig.cap="Kaplan--Meier pbc data cumulative hazard estimates comparing the DPCA treatment (red) with placebo (blue).", echo=TRUE----
 plot(gg_dta, type="cum_haz") +
   labs(y = "Cumulative Hazard", 
        x = "Observation Time (years)", 
@@ -242,7 +246,7 @@ fleming.table[,2] <- c(0.00866, 0.72408,0.09873,0.29913,1.02380)
 fleming.table[,3] <- c(3.84,-4.22,8.9,2.62,2.95) 
 
 rws <- seq(1, (nrow(fleming.table)), by = 2)
-col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
 
 print(xtable(fleming.table, 
              caption = "Regression model with log transformations of continuous variables, 312 randomized cases with PBC.", 
@@ -250,7 +254,7 @@ print(xtable(fleming.table,
              digits = 4), 
       size = 'footnotesize', # fontsize
       booktabs = TRUE, 
-      add.to.row = list(pos = as.list(rws), command = col), 
+#      add.to.row = list(pos = as.list(rws), command = col), 
       command= c('\\toprule' , 
                    '\\midrule' , 
                    '\\bottomrule ')
@@ -297,7 +301,7 @@ plot(gg_survival(interval = "years",censor = "status",
 data(rfsrc_pbc, package = "ggRandomForests")
 rfsrc_pbc
 
-## ----errorPlot, fig.cap="Random forest prediction error estimates as a function of the number of trees in the forest."----
+## ----errorPlot, fig.cap="Random forest prediction error estimates as a function of the number of trees in the forest.", echo=TRUE----
 # Data extraction
 ggerr <- gg_error(rfsrc_pbc)
 
@@ -305,7 +309,7 @@ ggerr <- gg_error(rfsrc_pbc)
 plot(ggerr)+
   coord_cartesian(y = c(.09,.31))
 
-## ----rfsrc-plot, fig.cap="Random forest predicted survival. Blue lines correspond to censored observations, red lines correspond to patients who experienced the event (death)."----
+## ----rfsrc-plot, fig.cap="Random forest predicted survival. Blue lines correspond to censored observations, red lines correspond to patients who experienced the event (death).", echo=TRUE----
 # Data extraction 
 gg_dta <- gg_rfsrc(rfsrc_pbc)
 
@@ -319,13 +323,7 @@ ggRFsrc <- plot(gg_dta, alpha = .2) +
 # Display the figure
 show(ggRFsrc)
 
-## ----rfsrc-mean, fig.cap="Mean value random forest predicted survival with shaded 95\\% confidence band."----
-plot(gg_rfsrc(rfsrc_pbc, conf.int = .95)) + 
-  theme(legend.position = "none") + 
-  labs(y = "Survival Probability", x = "time (years)")+
-  coord_cartesian(y = c(-.01,1.01))
-
-## ----rfsrc-mean2, fig.cap="Mean value random forest predicted survival with shaded 95\\% confidence band. Treatment effects."----
+## ----rfsrc-mean2, fig.cap="Mean value random forest predicted survival with shaded 95\\% confidence band. \\code{DPCA} group in red, \\code{placebo} in blue.", echo=TRUE----
 plot(gg_rfsrc(rfsrc_pbc, by="treatment")) + 
   theme(legend.position = c(.2,.2)) + 
   labs(y = "Survival Probability", x = "time (years)")+
@@ -334,8 +332,8 @@ plot(gg_rfsrc(rfsrc_pbc, by="treatment")) +
 ## ----predict, echo=TRUE, eval=FALSE-----------------------------------------------------
 #  # Predict survival for 106 patients not in randomized trial
 #  rfsrc_pbc_test <- predict(rfsrc_pbc,
-#                      newdata = pbc.test,
-#                      na.action = "na.impute")
+#                            newdata = pbc.test,
+#                            na.action = "na.impute")
 #  
 #  # Print prediction summary
 #  rfsrc_pbc_test
@@ -346,7 +344,7 @@ data(rfsrc_pbc_test, package="ggRandomForests")
 # Print prediction summary  
 rfsrc_pbc_test
 
-## ----predictPlot, fig.cap="Test set prediction: 106 observations."----------------------
+## ----predictPlot, fig.cap="Test set prediction: 106 observations with missing value imputation. Censored observations shown in blue, events shown in red.", echo=TRUE----
 # Test set predicted survival
 plot(gg_rfsrc(rfsrc_pbc_test), alpha=.2)+ 
   scale_color_manual(values = strCol) + 
@@ -362,20 +360,19 @@ plot.gg_vimp(rfsrc_pbc, lbls = st.labs) +
 
 ## ----mindepth-view, eval=FALSE, echo=TRUE-----------------------------------------------
 #  varsel_pbc <- var.select(rfsrc_pbc)
-#  ggMindepth <- gg_minimal_depth(varsel_pbc, lbls = st.labs)
-#  print(ggMindepth)
+#  gg_md <- gg_minimal_depth(varsel_pbc, lbls = st.labs)
+#  print(gg_md)
 
 ## ----mindepth-load----------------------------------------------------------------------
 data(varsel_pbc, package = "ggRandomForests")
-ggMindepth <- gg_minimal_depth(varsel_pbc)
-ggMindepth
+gg_md <- gg_minimal_depth(varsel_pbc)
+gg_md
 
 ## ----mindepth-plot, echo=TRUE, fig.cap="Minimal Depth variable selection. Low minimal depth indicates important variables. The dashed line is the threshold of maximum value for variable selection.", fig.width=5----
-plot(ggMindepth, lbls = st.labs)
+plot(gg_md, lbls = st.labs)
 
-## ----depthVimp, fig.cap="Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points below have higher VIMP, those above have higher minimal depth ranking. Variables are colored by the sign of the VIMP measure.", fig.width=5----
-gg.mv <- gg_minimal_vimp(varsel_pbc)
-plot(gg.mv, lbls = st.labs)+
+## ----depthVimp, fig.cap="Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points below have higher VIMP, those above have higher minimal depth ranking.", fig.width=5----
+plot(gg_minimal_vimp(varsel_pbc), lbls = st.labs)+
   theme(legend.position=c(.8,.2))+
   scale_y_continuous(breaks = seq(0,20,2))
 
@@ -385,15 +382,12 @@ ggRFsrc +
   coord_cartesian(x = c(0, 4))
 
 ## ----variable-plotbili, echo=TRUE, fig.cap="Bilirubin variable dependence at 1 and 3 years. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve with shaded 95\\% confidence band indicates the survival trend with increasing bilirubin.", fig.height=4----
-# Get the minimal depth selected variables
-xvar <- varsel_pbc$topvars
-
 # Data generation
-ggrf <- gg_variable(rfsrc_pbc, time = c(1, 3), 
+gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3), 
                     time.labels = c("1 Year", "3 Years"))
 
 # Plot the bilirubin variable dependence plot
-plot(ggrf, xvar = "bili", se = .95, alpha = .3) + 
+plot(gg_v, xvar = "bili", se = .95, alpha = .3) + 
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -401,12 +395,15 @@ plot(ggrf, xvar = "bili", se = .95, alpha = .3) +
   coord_cartesian(y = c(-.01,1.01))
 
 ## ----variable-plot, echo=TRUE, fig.cap="Bilirubin variable dependence at 1 and 3 years. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve with shaded 95\\% confidence band indicates the survival trend with increasing bilirubin.", fig.height=4, fig.width=7----
+# Get the minimal depth selected variables
+xvar <- gg_md$topvars
+
 # Pull the categorical variables
 xvar.cat <- c("edema", "stage")
 xvar <- xvar[-which(xvar %in% xvar.cat)]
 
 # plot the next 5 continuous variable dependence plots.
-plot(ggrf, xvar = xvar[2:6], panel = TRUE, 
+plot(gg_v, xvar = xvar[2:6], panel = TRUE, 
      se = FALSE, alpha = .3, 
      method = "glm", formula = y~poly(x,2)) + 
   labs(y = "Survival") + 
@@ -416,7 +413,7 @@ plot(ggrf, xvar = xvar[2:6], panel = TRUE,
   coord_cartesian(y = c(-.01,1.01))
 
 ## ----variable-plotCat, echo=TRUE, fig.cap="Variable dependence plots at 1 and 3 years for continuous variables age, albumin, copper and prothrombin. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve indicates the survival trend with increasing variable value.", fig.height=4----
-plot(ggrf, xvar = xvar.cat, panel = TRUE, notch = TRUE, alpha = .3) + 
+plot(gg_v, xvar = xvar.cat, panel = TRUE, notch = TRUE, alpha = .3) + 
   labs(y = "Survival") + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -425,7 +422,7 @@ plot(ggrf, xvar = xvar.cat, panel = TRUE, notch = TRUE, alpha = .3) +
 
 ## ----pbc-partial, echo=TRUE, eval=FALSE-------------------------------------------------
 #  # Calculate the 1, 3 and 5 year partial dependence
-#  partial_pbc <- lapply(c(1,3,5), function(tm){
+#  partial_pbc <- mclapply(c(1,3,5), function(tm){
 #    plot.variable(rfsrc_pbc, surv.type = "surv",
 #                  time = tm,
 #                  xvar.names = xvar, partial = TRUE,
@@ -438,14 +435,14 @@ xvar <- varsel_pbc$topvars
 
 ## ----pbc-partial-bili, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function of serum bilirubin at 1 year (red circle) and 3 years (blue triangle). Loess smooth curves indicates the trend."----
 # Convert all partial plots to gg_partial objects
-gg_dta <- lapply(partial_pbc, gg_partial)
+gg_dta <- mclapply(partial_pbc, gg_partial)
 
 # Combine the objects to get multiple time curves 
 # along variables on a single figure.
 pbc_ggpart <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]], 
                                  lbls = c("1 Year", "3 Years"))
 
-
+# Plot the highest ranked variable, by name.
 plot(pbc_ggpart[["bili"]], se = FALSE) + 
   theme(legend.position = c(.2, .2)) + 
   labs(y = "Survival", 
@@ -454,7 +451,7 @@ plot(pbc_ggpart[["bili"]], se = FALSE) +
   scale_color_brewer(palette = "Set2")+
   coord_cartesian(y = c(25,101))
 
-## ----pbc-partial-panel, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function continuous variables prothrombin time, albumin, age and urin copper at 1 year (red circle) and 3 years (blue triangle).", fig.width=5, fig.height=5----
+## ----pbc-partial-panel, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function continuous variables \\code{prothrombin}, \\code{albumin}, \\code{age} and \\code{copper} at 1 year (red circle) and 3 years (blue triangle).", fig.width=5, fig.height=5----
 # Create a temporary holder and remove the stage and edema data
 ggpart <- pbc_ggpart
 ggpart$edema <- ggpart$stage <- NULL
@@ -468,7 +465,7 @@ plot(ggpart, se = FALSE, panel = TRUE) +
   theme(legend.position = c(.2, .15)) + 
   coord_cartesian(y = c(25,101))
 
-## ----pbc-partial-edema, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function of edema (categorical variable) at 1 year (red) and 3 years (blue triangle). Points indicate risk adjusted prediction for all patients within each edema group. Box plots indicate distributional properties within each group.", fig.width=5----
+## ----pbc-partial-edema, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function of \\code{edema} (categorical variable) at 1 year (red) and 3 years (blue triangle). Points indicate risk adjusted prediction for all patients within each edema group. Box plots indicate distributional properties within each group.", fig.width=5----
 ggpart <- vector("list", length=2)
 ggpart[[1]] <- pbc_ggpart[["edema"]]
 ggpart[[2]] <- pbc_ggpart[["stage"]]
@@ -482,12 +479,15 @@ plot.gg_partial_list(ggpart, panel=TRUE,
   theme(legend.position = c(.2, .2))+
   coord_cartesian(y = c(25,101))
 
-## ----def-time-pts-----------------------------------------------------------------------
+## ----def-time-pts, echo=TRUE------------------------------------------------------------
+# Restrict the time of interest to less than 5 years.
 time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
-# Find the quantile points to create 30 interval groups
+
+# Find the 50 points in time, evenly space along the distribution of 
+# event times for a series of partial dependence curves
 time_cts <-quantile_pts(time_pts, groups = 50)
 
-## ----prtl-time-surface, eval=FALSE------------------------------------------------------
+## ----prtl-time-surface, eval=FALSE, echo=TRUE-------------------------------------------
 #  # Generate the gg_partial_coplot data object
 #  system.time(partial_pbc_time <- lapply(time_cts, function(ct){
 #    plot.variable(rfsrc_pbc, xvar = "bili", time = ct,
@@ -497,23 +497,21 @@ time_cts <-quantile_pts(time_pts, groups = 50)
 #  #     user   system  elapsed
 #  # 2561.313   81.446 2641.707
 
-## ----timeSurface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5--------
+## ----timeSurface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5, echo=TRUE----
 # Load the stored partial coplot data.
 data(partial_pbc_time)
 
-# Instead of groups, we want the raw rm point values,
-# To make the dimensions match, we need to repeat the values
-# for each of the 50 points in the lstat direction
+# We need to attach the time points of interest to our data.
 time.tmp <- do.call(c,lapply(time_cts, 
                                function(grp){rep(grp, 50)}))
 
-# Convert the list of plot.variable output to 
+# Convert the list of plot.variable output to gg_partial
 partial_time <- do.call(rbind,lapply(partial_pbc_time, gg_partial))
 
-# attach the data to the gg_partial_coplot
+# attach the time data to the gg_partial_coplot
 partial_time$time <- time.tmp
 
-# Modify the figure margins to make the figure larger
+# Modify the figure margins to make it larger
 par(mai = c(0,0,0,0))
 
 # Transform the gg_partial_coplot object into a list of three named matrices
@@ -537,12 +535,12 @@ surf3D(x = srf$x, y = srf$y, z = srf$z, col = heat.colors(25),
 data(interaction_pbc, package = "ggRandomForests")
 ggint <- gg_interaction(interaction_pbc)
 
-## ----interactionPanel, echo=TRUE, fig.cap="Minimal depth variable interaction panel with prothrombin time, albumin, urine copper and edema. Higher values indicate lower interactivity with target variable.", fig.width=7, fig.height=5----
+## ----interactionPanel, echo=TRUE, fig.cap="Minimal depth variable interaction plot. Higher values indicate lower interactivity with target variable.", fig.width=7, fig.height=5----
 plot(ggint, xvar = xvar) + 
   labs(y = "Interactive Minimal Depth") + 
   theme(legend.position = "none")
 
-## ----var_dep, echo=TRUE, fig.cap="Variable dependence plot. Survival at 1 year against bilirubin. Individual cases are marked with blue circles (alive or censored) and red x (dead). Loess smooth curve indicates the trend as bilirubin  increases."----
+## ----var_dep, echo=TRUE, fig.cap="Variable dependence plot. Survival at 1 year against \\code{bili} variable. Individual cases are marked with blue circles (alive or censored) and red x (dead). Loess smooth curve indicates the trend."----
 ggvar <- gg_variable(rfsrc_pbc, time = 1)
 ggvar$stage <- paste("stage = ", ggvar$stage, sep = "")
 
@@ -558,11 +556,11 @@ var_dep <- plot(ggvar, xvar = "bili",
 
 show(var_dep)
 
-## ----coplot_bilirubin, echo=TRUE, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by treatment and histological stage.", fig.width=7, fig.height=4----
+## ----coplot_bilirubin, echo=TRUE, fig.cap="Variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by conditional group membership of \\code{edema} and \\code{stage}.", fig.width=7, fig.height=4----
 var_dep + 
   facet_grid(edema~stage)
 
-## ----copper-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by conditonal membership in Urine Copper measurement intervalse.", fig.width=7, fig.height=4, echo=TRUE----
+## ----copper-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by conditonal membership in \\code{copper} measurement intervals.", fig.width=7, fig.height=4, echo=TRUE----
 # Find intervals with similar number of observations.
 copper_cts <-quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
 
@@ -583,7 +581,7 @@ plot(ggvar[-which(is.na(ggvar$copper)),], xvar = "bili",
   facet_wrap(~copper_grp)+
   coord_cartesian(y = c(-.01,1.01))
 
-## ----bili-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by conditonal membership in Urine Copper measurement intervalse.", fig.width=7, fig.height=4, echo=TRUE----
+## ----bili-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by conditonal membership in \\code{copper} measurement intervals.", fig.width=7, fig.height=4, echo=TRUE----
 # Find intervals with similar number of observations.
 bili_cts <-quantile_pts(ggvar$bili, groups = 6, intervals = TRUE)
 
@@ -607,14 +605,14 @@ plot(ggvar[-which(is.na(ggvar$copper)),], xvar = "copper",
   facet_wrap(~bili_grp)+
   coord_cartesian(y = c(-.01,1.01))
 
-## ----build-bili-copper, eval=FALSE------------------------------------------------------
+## ----build-bili-copper, eval=FALSE,echo=TRUE--------------------------------------------
 #  partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
 #                                           groups = copper_grp,
 #                                           surv_type = "surv",
 #                                           time = 1,
 #                                           show.plots = FALSE)
 
-## ----bili-copper, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by copper groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width=7, fig.height=4, echo=TRUE----
+## ----bili-copper, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by \\code{copper} groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each group as a function of \\code{bili}.", fig.width=7, fig.height=4, echo=TRUE----
 # Load cached partial plot data
 data(partial_coplot_pbc, package = "ggRandomForests")
 
@@ -625,14 +623,14 @@ plot(partial_coplot_pbc, se = FALSE)+
   scale_color_brewer(palette = "Set2")+
   coord_cartesian(y = c(49,101))
 
-## ----build-copper-bili, eval=FALSE------------------------------------------------------
+## ----build-copper-bili, eval=FALSE,echo=TRUE--------------------------------------------
 #  partial_coplot_pbc2 <- gg_partial_coplot(rfsrc_pbc, xvar = "copper",
 #                                           groups = bili_grp,
 #                                           surv_type = "surv",
 #                                           time = 1,
 #                                           show.plots = FALSE)
 
-## ----copper-bili, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by copper groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width=7, fig.height=4, echo=TRUE----
+## ----copper-bili, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by \\code{copper} groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each group as a function of \\code{bili}.", fig.width=7, fig.height=4, echo=TRUE----
 # Load cached partial plot data
 data(partial_coplot_pbc2, package = "ggRandomForests")
 
@@ -643,11 +641,11 @@ plot(partial_coplot_pbc2, se = FALSE)+
   scale_color_brewer(palette = "Set2")+
   coord_cartesian(y = c(49,101))
 
-## ----def-pts----------------------------------------------------------------------------
+## ----def-pts, echo=TRUE-----------------------------------------------------------------
 # Find the quantile points to create 50 cut points for 49 groups
 copper_cts <-quantile_pts(ggvar$copper, groups = 50)
 
-## ----prtl-surface, eval=FALSE-----------------------------------------------------------
+## ----prtl-surface, eval=FALSE, echo=TRUE------------------------------------------------
 #  system.time(partial_pbc_surf <- lapply(copper_cts, function(ct){
 #    rfsrc_pbc$xvar$copper <- ct
 #    plot.variable(rfsrc_pbc, xvar = "bili", time = 1,
@@ -658,13 +656,13 @@ copper_cts <-quantile_pts(ggvar$copper, groups = 50)
 #  # 2547.482   91.978 2671.870
 #  
 
-## ----surface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5------------
+## ----surface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5, echo=TRUE----
 # Load the stored partial coplot data.
 data(partial_pbc_surf)
 
 # Instead of groups, we want the raw copper point values,
 # To make the dimensions match, we need to repeat the values
-# for each of the 50 points in the lstat direction
+# for each of the 50 points in the copper direction
 copper.tmp <- do.call(c,lapply(copper_cts, 
                                function(grp){rep(grp, 50)}))
 

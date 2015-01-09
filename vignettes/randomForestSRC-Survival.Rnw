@@ -107,7 +107,7 @@ This document is a package vignette for the \pkg{ggRandomForests} (\url{http://C
 
 The vignette is a tutorial for using the \pkg{ggRandomForests} package with the \pkg{randomForestSRC} package for building and post-processing a survival random forest. In this tutorial, we explore a random forest for survival model for the primary biliary cirrhosis (PBC) of the liver data set~\citep{fleming:1991}, available in the \pkg{randomForestSRC} package. We grow a survival random forest and demonstrate how \pkg{ggRandomForests} can be used when determining variable associations, interactions and how the survival response depends on predictive variables within the model. The tutorial demonstrates the design and usage of many of \pkg{ggRandomForests} functions and features how to modify and customize the resulting \code{ggplot} graphic objects along the way.
 
-The vignette is written using the \pkg{knitr} package, which lets us combine \proglang{R} code into documents, weaving results and figures into the dialog text. Throughout this document, \proglang{R} code will be displayed in \emph{code blocks} as shown below. This code block loads all \proglang{R} packages required to compile this vignette, and run the \proglang{R} code listed in the remaining code blocks.
+The vignette is written in \LaTeX using the \pkg{knitr} package, which lets us combine \proglang{R} code into documents, weaving results and figures into the dialog text. Throughout this document, \proglang{R} code will be displayed in \emph{code blocks} as shown below. This code block loads all \proglang{R} packages required to compile this vignette, and run the \proglang{R} code listed in the remaining code blocks.
 <<libraries, echo=TRUE>>=
 #################
 # Load_packages #
@@ -346,7 +346,7 @@ There does appear to be a large amount of missing data in some variables of the 
 
 \subsection[PBC Model Summary]{\cite{fleming:1991} Model Summary}
 
-Before turning to the random forest modeling, we'll conclude our data set investigation with a summary of~\cite{fleming:1991} model results from Chapter 4.4. We start by generating Kaplan--Meier (KM) survival estimates comparing the treatment groups of DPCA and placebo. We use the \pkg{ggRandomForests} \code{gg_survival} function to generate these estimates from the data set as follows. 
+We'll conclude our data set investigation with a summary of~\cite{fleming:1991} model results from Chapter 4.4. We start by generating Kaplan--Meier (KM) survival estimates comparing the treatment groups of DPCA and placebo. We use the \pkg{ggRandomForests} \code{gg_survival} function to generate these estimates from the data set as follows. 
 
 <<gg_survival, echo=TRUE>>= 
 # Include only the randomized patients.
@@ -367,7 +367,7 @@ The code block first reduces the \code{pbc.trial} data set to only include obser
 
 In the figure generation step, we use the \pkg{ggRandomForests} plot routine \code{plot.gg_survival} as shown in the following code block. The plot function uses the data object to plot the survival estimate curves for each group and corresponding confidence interval ribbons. We have used additional \pkg{ggplot2} commands to modify the axis and legend labels (\code{labs}), the legend location (\code{theme}) and control the plot range of the y-axis (\code{coord_cartesian}) for this figure. 
 
-<<plot_gg_survival, fig.cap="Kaplan--Meier pbc data survival estimates comparing the DPCA treatment (red) with placebo (blue). Median survival with shaded 95\\% confidence band.", echo=TRUE>>= 
+<<plot_gg_survival, fig.cap="Kaplan--Meier \\code{pbc} data survival estimates comparing the \\code{DPCA} treatment (red) with \\code{placebo} (blue). Median survival with shaded 95\\% confidence band.", echo=TRUE>>= 
 plot(gg_dta) +
   labs(y = "Survival Probability", 
        x = "Observation Time (years)", 
@@ -544,6 +544,7 @@ At each imputation step, the random forest assumes that similar observations are
 
 The importance of the forest imputation methodology becomes clear when doing prediction on new observtaions. If we want to predict survival for patients that did not participate in the trail, using the model we created in Section~\ref{S:rfsrcGrow}, we need to some account for the missing values detailed in Table~\ref{T:missing}. 
 
+The \code{predict.rfsrc} call takes the forest object (\code{rfsrc_pbc}), and the test data set (\code{pbc_test}) and returns a predicted survival using imputation for missing values with the test data set (\code{na.action="na.impute"}. 
 <<predict, echo=TRUE, eval=FALSE>>= 
 # Predict survival for 106 patients not in randomized trial
 rfsrc_pbc_test <- predict(rfsrc_pbc, 
@@ -560,6 +561,8 @@ data(rfsrc_pbc_test, package="ggRandomForests")
 rfsrc_pbc_test
 @
 
+The forest summary indicates there are 106 test set observations with 36 deaths and the predicted error rate is $19.1\%$. We plot the predicted survival just as we did the training set estimates.
+
 <<predictPlot, fig.cap="Test set prediction: 106 observations with missing value imputation. Censored observations shown in blue, events shown in red.", echo=TRUE>>= 
 # Test set predicted survival
 plot(gg_rfsrc(rfsrc_pbc_test), alpha=.2)+ 
@@ -568,6 +571,7 @@ plot(gg_rfsrc(rfsrc_pbc_test), alpha=.2)+
   labs(y = "Survival Probability", x = "time (years)")+
   coord_cartesian(y = c(-.01,1.01))
 @
+Figure~\ref{fig:predictPlot}, showing the test set predictions, looks similar to the training set predictions in Figure~\ref{fig:rfsrc-plot}, though with less than have the patients, the survival curves do not cover the same area of the figure. It is important to note that because Figure~\ref{fig:rfsrc-plot} is constructed with OOB estimates, the survival results are comparable as estimates from unseen observations.  
 
 \section{Variable Selection}\label{S:variableselection}
 
@@ -579,7 +583,7 @@ Random forests are not parsimonious, but use all variables available in the cons
 
 Since VIMP is the difference between OOB prediction error before and after permutation, a large VIMP value indicates that misspecification detracts from the variable predictive accuracy in the forest. VIMP close to zero indicates the variable contributes nothing to predictive accuracy, and negative values indicate the predictive accuracy \emph{improves} when the variable is misspecified. In the later case, we assume noise is more informative than the true variable. As such, we ignore variables with negative and near zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables. 
 
-The \code{gg_vimp} function extracts VIMP measures for each of the variables used to grow the forest. The \code{plot.gg_vimp} function shows the variables, in VIMP rank order. Figure~\ref{fig:rf-vimp} details VIMP ranking for the \code{pbc} trial, from the largest (serum bilirubin) at the top, to smallest (Treatment) at the bottom. VIMP measures are shown using bars to compare the scale of the error increase under permutation and colored by the sign of the measure (red for negative values). 
+The \code{gg_vimp} function extracts VIMP measures for each of the variables used to grow the forest. The \code{plot.gg_vimp} function shows the variables, in VIMP rank order, labeled with the named vector in the \code{lbls=st.labs} argument. 
 
 <<rf-vimp, echo=TRUE, fig.cap="Random forest variable Importance (VIMP). Blue bars indicate important variables (positive VIMP), red indicates noise variables (negative VIMP).", fig.width=5>>= 
 plot.gg_vimp(rfsrc_pbc, lbls = st.labs) + 
@@ -588,7 +592,7 @@ plot.gg_vimp(rfsrc_pbc, lbls = st.labs) +
   scale_fill_brewer(palette = "Set1")
 @
 
-Note that four of the five highest ranking variables by VIMP match those selected by the~\cite{fleming:1991} model listed in Table~\ref{T:FHmodel}, with urine copper (2) ranking higher than age (8).  
+Figure~\ref{fig:rf-vimp} details VIMP ranking for the \code{pbc} trial observations, from the largest (serum bilirubin) at the top, to smallest (Treatment) at the bottom. VIMP measures are shown using bars to compare the scale of the error increase under permutation and colored by the sign of the measure (red for negative values). Note that four of the five highest ranking variables by VIMP match those selected by the~\cite{fleming:1991} model listed in Table~\ref{T:FHmodel}, with urine copper (2) ranking higher than age (8).  
 
 \subsection{Minimal Depth}\label{S:minimalDepth}
 
@@ -602,36 +606,35 @@ The \pkg{randomForestSRC} \code{var.select} function uses the minimal depth meth
 
 <<mindepth-view, eval=FALSE, echo=TRUE>>= 
 varsel_pbc <- var.select(rfsrc_pbc)
-ggMindepth <- gg_minimal_depth(varsel_pbc, lbls = st.labs)
-print(ggMindepth)
+gg_md <- gg_minimal_depth(varsel_pbc, lbls = st.labs)
+print(gg_md)
 @
 
 <<mindepth-load>>= 
 data(varsel_pbc, package = "ggRandomForests")
-ggMindepth <- gg_minimal_depth(varsel_pbc)
-ggMindepth
+gg_md <- gg_minimal_depth(varsel_pbc)
+gg_md
 @
 
+The \code{gg_minimal_depth} summary mostly reproduces the output when running the \code{var.select} command from the \pkg{randomForestSRC} package. We report the minimal depth threshold ($5.58$) and the number of variables with depth below that threshold ($12$). We also list a table of the top selected variables, in minimal depth order with the associated VIMP measures. The minimal depth numbers indicate that \code{bili} tends to split closest to the root node, and the next three variables (\code{albumin}, \code{copper}, \code{prothrombin}) split close to the second level on average.
 
-In general, the selection of variables according to VIMP is to examine the values, looking for some point along the ranking where there is a large difference in VIMP measures. The minimal depth threshold method has a more quantitative approach to determine a selection threshold. Given minimal depth is a quantitative property of the forest construction, \cite{Ishwaran:2010} also derive an analytic threshold for evidence of variable impact. A simple optimistic threshold rule uses the mean of the minimal depth distribution, classifying variables with minimal depth lower than this threshold as important in forest prediction. The minimal depth plot for our model indicates there are twelve variables which have a higher impact (minimal depth below the mean value threshold) than the remaining five. 
+In general, the selection of variables according to VIMP is to examine the values, looking for some point along the ranking where there is a large difference in VIMP measures. The minimal depth threshold method has a more quantitative approach to determine a selection threshold. Given minimal depth is a quantitative property of the forest construction, \cite{Ishwaran:2010} also derive an analytic threshold for evidence of variable impact. A simple optimistic threshold rule uses the mean of the minimal depth distribution, classifying variables with minimal depth lower than this threshold as important in forest prediction. Minimal depth for our model indicates there are twelve variables which have a higher impact (minimal depth below the mean value threshold) than the remaining five. 
 
 <<mindepth-plot, echo=TRUE, fig.cap="Minimal Depth variable selection. Low minimal depth indicates important variables. The dashed line is the threshold of maximum value for variable selection.", fig.width=5>>= 
-plot(ggMindepth, lbls = st.labs)
+plot(gg_md, lbls = st.labs)
 @
-
 
 The minimal depth plot of Figure~\ref{fig:mindepth-plot} is similar to the VIMP plot in Figure~\ref{fig:rf-vimp}, ranking variables from most important at the top (minimal depth measure), to least at the bottom (maximal minimal depth). The vertical dashed line indicates the minimal depth threshold where smaller minimal depth values indicate higher importance and larger indicate lower importance.
 
 Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be somewhat different. We use \code{gg_minimal_vimp} function to compare rankings between minimal depth and VIMP.
 
-<<depthVimp, fig.cap="Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points below have higher VIMP, those above have higher minimal depth ranking. Variables are colored by the sign of the VIMP measure.", fig.width=5>>= 
-gg.mv <- gg_minimal_vimp(varsel_pbc)
-plot(gg.mv, lbls = st.labs)+
+<<depthVimp, fig.cap="Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points below have higher VIMP, those above have higher minimal depth ranking.", fig.width=5>>= 
+plot(gg_minimal_vimp(varsel_pbc), lbls = st.labs)+
   theme(legend.position=c(.8,.2))+
   scale_y_continuous(breaks = seq(0,20,2))
 @
 
-The points along the red dashed line indicates where the measures are in agreement. Points above the red dashed line are ranked higher by VIMP than by minimal depth, indicating the variables are sensitive to misspecification. Those below the line have a higher minimal depth ranking, indicating they are better at dividing large portions of the population. The further the points are from the line, the more the discrepancy between measures. The construction of this figure is skewed towards a minimal depth approach, by ranking variables along the y-axis, though points are colored by the sign of VIMP. 
+The points along the red dashed line indicates where the measures are in agreement. Points above the red dashed line are ranked higher by VIMP than by minimal depth, indicating the variables are sensitive to misspecification. Those below the line have a higher minimal depth ranking, indicating they are better at dividing large portions of the population. The further the points are from the line, the more the discrepancy between measures. The construction of this figure is skewed towards a minimal depth approach, by ranking variables along the y-axis. 
 
 In our example, both minimal depth and VIMP indicate the strong relation of serum bilirubin to the forest prediction, and agrees reasonably well with the~\cite{fleming:1991} model. We now turn to investigating how these, and other variables, are related to the predicted response.
 
@@ -645,46 +648,43 @@ Although often characterized as a \emph{black box} method, it is possible to exp
 
 \emph{Variable dependence} plots show the predicted response as a function of a covariate of interest, where each observation is represented by a point on the plot. Each predicted point represents an individual observation, dependent on the full combination of all other covariates, not only on the covariate of interest. Interpretation of variable dependence plots can only be in general terms, as point predictions are a function of all covariates in that particular observation. However, variable dependence is straight forward to calculate, involving only the getting the predicted response for each observation.
 
-In survival settings, we must also account for the additional dimension of time. In this case, we plot the response at a specific time point of interest, for example survival at 1 or 3 years, as shown by the vertical dashed line in Figure~\ref{fig:rfsrc-plot3Mnth}. The point prediction is then the predicted value of each curve at that intersecting time line, and plot that against the covariate value for that observations
+In survival settings, we must  account for the additional dimension of time. In this case, we plot the response at a specific time points of interest, for example survival at 1 or 3 years.
 <<rfsrc-plot3Mnth, echo=TRUE, fig.cap="Random forest OOB predicted patient survival. Red curves correspond to patients which have died, blue corresponds to alive (or censored) cases. Vertical dashed lines indicate the 1 and 3 year survival estimates.">>= 
 ggRFsrc + 
   geom_vline(aes(xintercept = c(1, 3)), linetype = "dashed") + 
   coord_cartesian(x = c(0, 4))
 @
+We create Figure~\ref{fig:rfsrc-plot3Mnth} by adding vertical dashed lines to Figure~\ref{fig:rfsrc-plot} (stored in the \code{ggRFsrc} variable) at the 1 and 3 year survival time. A variable dependence plot is generated from the the predicted value of each curve at that intersecting time line plotted against covariate value for that observation.
 
-, shown in Figure~\ref{fig:variable-plot}. Again censored cases are shown in blue circles, events are indicated by the red "x" symbols. Each predicted point is dependent on the full combination of all other covariates, not only on the covariate displayed in the dependence plot, so interpretation of these variable dependence plots can only be in general terms. The smooth loess line~\citep{cleveland:1981, cleveland:1988} indicates the trend of the prediction over surgical date progression.
-
-
+We use the \code{gg_variable} function call to extract the training set variables and the predicted OOB response from \code{randomForestSRC::rfsrc} and \code{randomForestSRC::predict} objects. In the following code block, we store the \code{gg_variable} data object for later use, as all remaining variable dependence plots can be constructed from this (\code{gg_v}) object. 
 <<variable-plotbili, echo=TRUE, fig.cap="Bilirubin variable dependence at 1 and 3 years. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve with shaded 95\\% confidence band indicates the survival trend with increasing bilirubin.", fig.height=4>>= 
-# Get the minimal depth selected variables
-xvar <- varsel_pbc$topvars
-
 # Data generation
-ggrf <- gg_variable(rfsrc_pbc, time = c(1, 3), 
+gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3), 
                     time.labels = c("1 Year", "3 Years"))
 
 # Plot the bilirubin variable dependence plot
-plot(ggrf, xvar = "bili", se = .95, alpha = .3) + 
+plot(gg_v, xvar = "bili", se = .95, alpha = .3) + 
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
   scale_shape_manual(values = event.marks, labels = event.labels)+
   coord_cartesian(y = c(-.01,1.01))
 @
+The resulting Figure~\ref{fig:variable-plotbili} shows the variable dependence for the \code{bili} variable. Again censored cases are shown as blue circles, events are indicated by the red "x" symbols. Each predicted point is dependent on the full combination of all other covariates, not only on the covariate displayed in the dependence plot. The smooth loess line~\citep{cleveland:1981, cleveland:1988} indicates the trend of the prediction over surgical date progression.
 
+The \code{plot.gg_variable} function call operates in the \code{gg_variable} object. We pass it the list of variables of interest (\code{xvar}). By default, the \code{plot.gg_variable} function returns a list of \code{ggplot} objects, one figure for each variable named in \code{xvar} argument. The next three arguments are passed to internal \pkg{ggplot2} plotting routines. The \code{se} and \code{span} arguments are used to modify the internal call to \code{geom_smooth} for fitting smooth lines to the data. The \code{alpha} argument lightens the coloring points in the \code{geom_point} call, making it easier to see point over plotting. We also demonstrate modification of the plot labels using the \code{labs} function.
 
-We use the \code{gg_variable} function call to extract the training set variables and the predicted OOB response from \code{randomForestSRC::rfsrc} and \code{randomForestSRC::predict} objects. In the following code block, we will store the \code{gg_variable} data object for later use, as all remaining variable dependence plots can be constructed from this (\code{gg_v}) object. We will also use the minimal depth selected variables (minimal depth lower than the threshold value) from the previously stored \code{gg_minimal_depth} object (\code{gg_md$topvars}) to filter the variables of interest.
-
-The \code{plot.gg_variable} function call operates in the \code{gg_variable} object. We pass it the list of variables of interest (\code{xvar}) and request a single panel (\code{panel = TRUE}) to display the figures. By default, the \code{plot.gg_variable} function returns a list of \code{ggplot} objects, one figure for each variable named in \code{xvar} argument. The next three arguments are passed to internal \pkg{ggplot2} plotting routines. The \code{se} and \code{span} arguments are used to modify the internal call to \code{geom_smooth} for fitting smooth lines to the data. The \code{alpha} argument lightens the coloring points in the \code{geom_point} call, making it easier to see point over plotting. We also demonstrate modification of the plot labels using the \code{labs} function.
-
-
+It is possible to generate a single panel (\code{panel = TRUE}) of multiple variable dependence plots. In this code block, we use the minimal depth selected variables (minimal depth lower than the threshold value) from the stored \code{gg_minimal_depth} object (\code{gg_md$topvars}) to filter the variables of interest. We separate the categorical variables (\code{edema} and \code{stage}) from the remaining continuous variables before generating a panel of continuous variable dependence plots.
 <<variable-plot, echo=TRUE, fig.cap="Bilirubin variable dependence at 1 and 3 years. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve with shaded 95\\% confidence band indicates the survival trend with increasing bilirubin.", fig.height=4, fig.width=7>>= 
+# Get the minimal depth selected variables
+xvar <- gg_md$topvars
+
 # Pull the categorical variables
 xvar.cat <- c("edema", "stage")
 xvar <- xvar[-which(xvar %in% xvar.cat)]
 
 # plot the next 5 continuous variable dependence plots.
-plot(ggrf, xvar = xvar[2:6], panel = TRUE, 
+plot(gg_v, xvar = xvar[2:6], panel = TRUE, 
      se = FALSE, alpha = .3, 
      method = "glm", formula = y~poly(x,2)) + 
   labs(y = "Survival") + 
@@ -693,19 +693,18 @@ plot(ggrf, xvar = xvar[2:6], panel = TRUE,
   scale_shape_manual(values = event.marks, labels = event.labels)+
   coord_cartesian(y = c(-.01,1.01))
 @
-
-The panels are sorted to match the order of variables in the \code{xvar} argument and include a smooth loess line~\citep{cleveland:1981,cleveland:1988} to indicate the trend of the prediction dependence over the covariate values.
+Figure~\ref{fig:variable-plot} displays a panel of the next 4 continuous variable dependence plots, since Figure~\ref{fig:variable-plotbili} already shows the variable dependence of \code{bili}, the highest ranked minimal depth variable. The panels are sorted in the order of variables in the \code{xvar} argument and include a smooth loess line~\citep{cleveland:1981,cleveland:1988} to indicate the trend of the prediction dependence over the covariate values.
 
 There is not a convenient method to panel scatter plots and boxplots together, so we recommend creating panel plots for each variable type separately. Variable dependence plots for categorical variables are constructed using boxplots to show the distribution of the predictions within each category. 
-
 <<variable-plotCat, echo=TRUE, fig.cap="Variable dependence plots at 1 and 3 years for continuous variables age, albumin, copper and prothrombin. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve indicates the survival trend with increasing variable value.", fig.height=4>>= 
-plot(ggrf, xvar = xvar.cat, panel = TRUE, notch = TRUE, alpha = .3) + 
+plot(gg_v, xvar = xvar.cat, panel = TRUE, notch = TRUE, alpha = .3) + 
   labs(y = "Survival") + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
   scale_shape_manual(values = event.marks, labels = event.labels)+
   coord_cartesian(y = c(-.01,1.02))
 @
+Figure~\ref{fig:variable-plotCat} shows variable dependence boxplots created for categorical variables.
 
 \subsection{Partial Dependence}\label{S:partialdependence}
 
@@ -720,7 +719,7 @@ Partial plots are computationally intensive to create, especially when there are
 
 <<pbc-partial, echo=TRUE, eval=FALSE>>= 
 # Calculate the 1, 3 and 5 year partial dependence
-partial_pbc <- lapply(c(1,3,5), function(tm){
+partial_pbc <- mclapply(c(1,3,5), function(tm){
   plot.variable(rfsrc_pbc, surv.type = "surv", 
                 time = tm, 
                 xvar.names = xvar, partial = TRUE, 
@@ -736,14 +735,14 @@ xvar <- varsel_pbc$topvars
 
 <<pbc-partial-bili, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function of serum bilirubin at 1 year (red circle) and 3 years (blue triangle). Loess smooth curves indicates the trend.">>= 
 # Convert all partial plots to gg_partial objects
-gg_dta <- lapply(partial_pbc, gg_partial)
+gg_dta <- mclapply(partial_pbc, gg_partial)
 
 # Combine the objects to get multiple time curves 
 # along variables on a single figure.
 pbc_ggpart <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]], 
                                  lbls = c("1 Year", "3 Years"))
 
-
+# Plot the highest ranked variable, by name.
 plot(pbc_ggpart[["bili"]], se = FALSE) + 
   theme(legend.position = c(.2, .2)) + 
   labs(y = "Survival", 
@@ -755,7 +754,8 @@ plot(pbc_ggpart[["bili"]], se = FALSE) +
 
 Figure~\ref{fig:pbc-partial-bili} shows the partial dependence of one (red) and three (blue) survival on bilirubin. Non-proportional hazards are evident in Figure~\ref{fig:pbc-partial-bili}.
 
-<<pbc-partial-panel, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function continuous variables prothrombin time, albumin, age and urin copper at 1 year (red circle) and 3 years (blue triangle).", fig.width=5, fig.height=5>>= 
+
+<<pbc-partial-panel, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function continuous variables \\code{prothrombin}, \\code{albumin}, \\code{age} and \\code{copper} at 1 year (red circle) and 3 years (blue triangle).", fig.width=5, fig.height=5>>= 
 # Create a temporary holder and remove the stage and edema data
 ggpart <- pbc_ggpart
 ggpart$edema <- ggpart$stage <- NULL
@@ -769,10 +769,10 @@ plot(ggpart, se = FALSE, panel = TRUE) +
   theme(legend.position = c(.2, .15)) + 
   coord_cartesian(y = c(25,101))
 @
+In Figure~\ref{fig:pbc-partial-panel}, we again order the panels by minimal depth ranking. We see again how the  variables are strongly related to survival, making the partial dependence of the remaining variables look flat. We also see strong nonlinearity of these variables.
 
-We again order the panels by minimal depth ranking. We see again how the  variables are strongly related to survival, making the partial dependence of the remaining variables look flat. We also see strong nonlinearity of these variables.
 
-<<pbc-partial-edema, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function of edema (categorical variable) at 1 year (red) and 3 years (blue triangle). Points indicate risk adjusted prediction for all patients within each edema group. Box plots indicate distributional properties within each group.", fig.width=5>>= 
+<<pbc-partial-edema, echo=TRUE, fig.cap="Partial dependence plot of (risk adjusted) predicted survival probability as a function of \\code{edema} (categorical variable) at 1 year (red) and 3 years (blue triangle). Points indicate risk adjusted prediction for all patients within each edema group. Box plots indicate distributional properties within each group.", fig.width=5>>= 
 ggpart <- vector("list", length=2)
 ggpart[[1]] <- pbc_ggpart[["edema"]]
 ggpart[[2]] <- pbc_ggpart[["stage"]]
@@ -792,14 +792,18 @@ We could stop here, indicating that the RF analysis has found these ten variable
 
 \section{Time Dimension}
 
+Previously, calculated the partial dependence for 2 time points at 1 and 3 years. To get a feel for the time variation, we calculate partial dependence for 
 
-<<def-time-pts>>= 
+<<def-time-pts, echo=TRUE>>= 
+# Restrict the time of interest to less than 5 years.
 time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
-# Find the quantile points to create 30 interval groups
+
+# Find the 50 points in time, evenly space along the distribution of 
+# event times for a series of partial dependence curves
 time_cts <-quantile_pts(time_pts, groups = 50)
 @
 
-<<prtl-time-surface, eval=FALSE>>= 
+<<prtl-time-surface, eval=FALSE, echo=TRUE>>= 
 # Generate the gg_partial_coplot data object
 system.time(partial_pbc_time <- lapply(time_cts, function(ct){
   plot.variable(rfsrc_pbc, xvar = "bili", time = ct,
@@ -810,25 +814,23 @@ system.time(partial_pbc_time <- lapply(time_cts, function(ct){
 # 2561.313   81.446 2641.707 
 @
 
-The cached \code{gg_partial_coplot} data object is included as a data set in the \pkg{ggRandomForests} package. We load the data, attach numeric values for the \code{copper} groups, and generate the figure.
+The cached \code{partial_pbc_time} data object is included as a data set in the \pkg{ggRandomForests} package. 
 
-<<timeSurface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5>>= 
+<<timeSurface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5, echo=TRUE>>= 
 # Load the stored partial coplot data.
 data(partial_pbc_time)
 
-# Instead of groups, we want the raw rm point values,
-# To make the dimensions match, we need to repeat the values
-# for each of the 50 points in the lstat direction
+# We need to attach the time points of interest to our data.
 time.tmp <- do.call(c,lapply(time_cts, 
                                function(grp){rep(grp, 50)}))
 
-# Convert the list of plot.variable output to 
+# Convert the list of plot.variable output to gg_partial
 partial_time <- do.call(rbind,lapply(partial_pbc_time, gg_partial))
 
-# attach the data to the gg_partial_coplot
+# attach the time data to the gg_partial_coplot
 partial_time$time <- time.tmp
 
-# Modify the figure margins to make the figure larger
+# Modify the figure margins to make it larger
 par(mai = c(0,0,0,0))
 
 # Transform the gg_partial_coplot object into a list of three named matrices
@@ -844,9 +846,7 @@ surf3D(x = srf$x, y = srf$y, z = srf$z, col = heat.colors(25),
 )
 @
 
-
-The contours are generated over the raw \code{gg_partial} estimation points, not smooth curves as shown in the partial plot and coplot figures. We can also generate a surface with this data using the \pkg{plot3D} \url{http://CRAN.R-project.org/package = plot3D} package and the \code{plot3D::surf3D} function. Viewed in 3D, a surface can help to better understand what the contour lines mean. 
-
+Figure~\ref{fig:timeSurface3d} is a partial dependence surface of predicted survival as a function of \code{bili} over a five year follow up. We used the \pkg{plot3D} \url{http://CRAN.R-project.org/package = plot3D} package and the \code{plot3D::surf3D} function. Viewed in 3D, a surface can help to better understand 
 
 \section{Variable Interactions}\label{S:interactions}
 
@@ -867,20 +867,20 @@ ggint <- gg_interaction(interaction_pbc)
 
 The \code{gg_interaction} function wraps the \code{find.interaction} matrix for use with the provided S3 plot and print functions. The \code{xvar} argument indicates which variables we're interested in looking at. We again use the cache strategy, and collect the figures together using the \code{panel = TRUE} option.
 
-<<interactionPanel, echo=TRUE, fig.cap="Minimal depth variable interaction panel with prothrombin time, albumin, urine copper and edema. Higher values indicate lower interactivity with target variable.", fig.width=7, fig.height=5>>= 
+<<interactionPanel, echo=TRUE, fig.cap="Minimal depth variable interaction plot. Higher values indicate lower interactivity with target variable.", fig.width=7, fig.height=5>>= 
 plot(ggint, xvar = xvar) + 
   labs(y = "Interactive Minimal Depth") + 
   theme(legend.position = "none")
 @
 
-The \code{gg_interaction} figure plots the interactions for the target variable (shown in the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (`bili`) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone it may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing, as expected. We also see the interactive variables increasing with increasing target depth. 
+The \code{gg_interaction} figure plots the interactions for the target variable (shown in the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (\code{bili}) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone it may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing, as expected. We also see the interactive variables increasing with increasing target depth. 
 
 \section{Conditional Dependence Plots}\label{S:coplots}
 
 Conditioning plots (coplots)~\citep{chambers:1992,cleveland:1993}  are a powerful visualization tool to efficiently study how a response depends on two or more variables~\citep{cleveland:1993}. The method allows us to view data by grouping observations on some conditional membership. The simplest example involves a categorical variable, where we plot our data conditional on class membership, for instance on the Charles river logical variable. We can view a coplot as a stratified variable dependence plot, indicating trends in the RF prediction results within panels of group membership.
 
 Interactions with categorical data are straight forward, and can be generated directly from variable dependence plots. Recall the 1 year variable dependence for bilirubin, shown in Figure~\ref{fig:var_dep}. 
-<<var_dep, echo=TRUE, fig.cap="Variable dependence plot. Survival at 1 year against bilirubin. Individual cases are marked with blue circles (alive or censored) and red x (dead). Loess smooth curve indicates the trend as bilirubin  increases.">>= 
+<<var_dep, echo=TRUE, fig.cap="Variable dependence plot. Survival at 1 year against \\code{bili} variable. Individual cases are marked with blue circles (alive or censored) and red x (dead). Loess smooth curve indicates the trend.">>= 
 ggvar <- gg_variable(rfsrc_pbc, time = 1)
 ggvar$stage <- paste("stage = ", ggvar$stage, sep = "")
 
@@ -898,14 +898,14 @@ show(var_dep)
 @
 
 We can view the conditional dependence of survival against bilirubin, versus other categorical covariates, say \code{edema} and \code{stage} (categorical variables), by adding a facet argument.
-<<coplot_bilirubin, echo=TRUE, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by treatment and histological stage.", fig.width=7, fig.height=4>>= 
+<<coplot_bilirubin, echo=TRUE, fig.cap="Variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by conditional group membership of \\code{edema} and \\code{stage}.", fig.width=7, fig.height=4>>= 
 var_dep + 
   facet_grid(edema~stage)
 @
 
 Conditional membership with a continuous variable requires stratification at some level. Often we can make these stratification along some feature of the variable, for instance a variable with integer values, or 5 or 10 year age group cohorts. However in the variables of interest in our example, we have no "logical" stratification indications. Therefore we will arbitrarily stratify our variables into 6 groups of roughly equal population size using the \code{quantile_cuts} function. We pass the break points located by \code{quantile_cuts} to the \code{cut} function to create grouping intervals, which we can then add to the \code{gg_variable} object before plotting with the \code{plot.gg_variable} function. The simple modification to convert variable dependence plots into condition variable dependence plots is to use the \code{ggplot2::facet_wrap} command to generate a panel for each grouping interval.
 
-<<copper-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by conditonal membership in Urine Copper measurement intervalse.", fig.width=7, fig.height=4, echo=TRUE>>= 
+<<copper-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by conditonal membership in \\code{copper} measurement intervals.", fig.width=7, fig.height=4, echo=TRUE>>= 
 # Find intervals with similar number of observations.
 copper_cts <-quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
 
@@ -930,7 +930,7 @@ plot(ggvar[-which(is.na(ggvar$copper)),], xvar = "bili",
 To get a better feel for how the response depends on both variables, it is instructive to look at the complement coplot. We repeat the previous coplot process, predicted survival as a function of the \code{copper} variable, conditional on membership within 6 groups \code{bili} intervals. 
 
 
-<<bili-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against bilirubin, stratified by conditonal membership in Urine Copper measurement intervalse.", fig.width=7, fig.height=4, echo=TRUE>>= 
+<<bili-coplot, fig.cap="Variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by conditonal membership in \\code{copper} measurement intervals.", fig.width=7, fig.height=4, echo=TRUE>>= 
 # Find intervals with similar number of observations.
 bili_cts <-quantile_pts(ggvar$bili, groups = 6, intervals = TRUE)
 
@@ -975,7 +975,7 @@ By characterizing conditional plots as stratified variable dependence plots, the
 
 The following code block will generate the data object for creating partial dependence coplot of the predicted median home value as a function of \code{bili} conditional on membership within the 6 groups of \code{copper} ``intervals'' that we examined in the previous section.
 
-<<build-bili-copper, eval=FALSE>>= 
+<<build-bili-copper, eval=FALSE,echo=TRUE>>= 
 partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili", 
                                          groups = copper_grp, 
                                          surv_type = "surv", 
@@ -986,7 +986,7 @@ partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
 
 Since the \code{gg_partial_coplot} makes a call to \code{randomForestSRC::plot.variable} for each group (6) in the conditioning set, we again resort to the data caching strategy, and load the stored result data from the \pkg{ggRandomForests} package. We modify the legend label to indicate we're working with groups of the , and use the \code{palette = "Set2"} Color Brewer(\url{http://colorbrewer2.org/}) color palette to choose a nice color theme for displaying the six curves.
 
-<<bili-copper, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by copper groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width=7, fig.height=4, echo=TRUE>>= 
+<<bili-copper, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by \\code{copper} groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each group as a function of \\code{bili}.", fig.width=7, fig.height=4, echo=TRUE>>= 
 # Load cached partial plot data
 data(partial_coplot_pbc, package = "ggRandomForests")
 
@@ -1000,12 +1000,11 @@ plot(partial_coplot_pbc, se = FALSE)+
 
 Unlike variable dependence coplots, we do not need to use a panel format for partial dependence coplots because we are looking risk adjusted estimates (points) instead of population estimates. 
 
-
-We can view the partial coplot curves as slices along a surface viewed into the page, either along increasing or decreasing values. This is made more difficult by our choice to select groups of similar population size, as the curves are not evenly spaced along the `rm` variable. We return to this problem in the next section. 
+We can view the partial coplot curves as slices along a surface viewed into the page, either along increasing or decreasing values. This is made more difficult by our choice to select groups of similar population size, as the curves are not evenly spaced along the \code{copper} variable. We return to this problem in the next section. 
 
 We also construct the complement view, for partial dependence coplot of the  "intervals", and cache the following \code{gg_partial_coplot} data call.
 
-<<build-copper-bili, eval=FALSE>>= 
+<<build-copper-bili, eval=FALSE,echo=TRUE>>= 
 partial_coplot_pbc2 <- gg_partial_coplot(rfsrc_pbc, xvar = "copper", 
                                          groups = bili_grp, 
                                          surv_type = "surv", 
@@ -1013,7 +1012,7 @@ partial_coplot_pbc2 <- gg_partial_coplot(rfsrc_pbc, xvar = "copper",
                                          show.plots = FALSE)
 @
 
-<<copper-bili, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against bilirubin, stratified by copper groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each age group as a function of bilirubin.", fig.width=7, fig.height=4, echo=TRUE>>= 
+<<copper-bili, fig.cap="Partial (risk adjusted) variable dependence coplot. Survival at 1 year against \\code{bili}, stratified by \\code{copper} groups. Points mark risk adjusted estimates, loess smooth indicates predicted trend within each group as a function of \\code{bili}.", fig.width=7, fig.height=4, echo=TRUE>>= 
 # Load cached partial plot data
 data(partial_coplot_pbc2, package = "ggRandomForests")
 
@@ -1031,14 +1030,14 @@ Visualizing two dimensional projections of three dimensional data is difficult, 
 
 Since we are already using the data caching strategy, we will generate another \code{gg_partial_coplot} data set with increased resolution in both the \code{bili} and \code{copper} dimensions. For this exercise, we will create 50 \code{copper} groups and generate the partial plot data at \code{npts = 50} points along the \code{bili} dimension for each group within the \code{plot.variable} call. This code block generates the 50 \code{copper} groups, each containing about 9 observations.     
 
-<<def-pts>>= 
+<<def-pts, echo=TRUE>>= 
 # Find the quantile points to create 50 cut points for 49 groups
 copper_cts <-quantile_pts(ggvar$copper, groups = 50)
 @
 
 We use the following data call to generate the \code{gg_partial_coplot} data object. This took about 15 minutes to run on a quad core Mac Air.
 
-<<prtl-surface, eval=FALSE>>= 
+<<prtl-surface, eval=FALSE, echo=TRUE>>= 
 system.time(partial_pbc_surf <- lapply(copper_cts, function(ct){
   rfsrc_pbc$xvar$copper <- ct
   plot.variable(rfsrc_pbc, xvar = "bili", time = 1,
@@ -1052,13 +1051,13 @@ system.time(partial_pbc_surf <- lapply(copper_cts, function(ct){
 
 The cached \code{gg_partial_coplot} data object is included as a data set in the \pkg{ggRandomForests} package. We load the data, attach numeric values for the \code{copper} groups, and generate the figure.
 
-<<surface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5>>= 
+<<surface3d, fig.cap="Partial coplot surface.", fig.width=7, fig.height=5, echo=TRUE>>= 
 # Load the stored partial coplot data.
 data(partial_pbc_surf)
 
 # Instead of groups, we want the raw copper point values,
 # To make the dimensions match, we need to repeat the values
-# for each of the 50 points in the lstat direction
+# for each of the 50 points in the copper direction
 copper.tmp <- do.call(c,lapply(copper_cts, 
                                function(grp){rep(grp, 50)}))
 
