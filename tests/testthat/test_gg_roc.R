@@ -116,7 +116,7 @@ test_that("calc_roc",{
   expect_is(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
-  expect_equal(nrow(gg_dta), 27)
+  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[,1]))+1)
   
   expect_error(calc_roc.rfsrc(rfsrc_iris, 
                               rfsrc_iris$yvar, 
@@ -133,8 +133,8 @@ test_that("calc_roc",{
   
   # test the auc calculator
   auc <- calc_auc(gg_dta)
-  expect_equal(auc, 1)
-  
+  expect_true(auc> .9)
+  expect_true(auc<= 1)
   # The second outcome.
   gg_dta <- calc_roc.rfsrc(rfsrc_iris, 
                            rfsrc_iris$yvar, 
@@ -144,12 +144,12 @@ test_that("calc_roc",{
   expect_is(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
-  expect_equal(nrow(gg_dta), 82)
+  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[,2]))+1)
   
   # test the auc calculator
   auc <- calc_auc(gg_dta)
-  expect_equal(auc, 0.9844)
-  
+  expect_true(auc> .9)
+  expect_true(auc<= 1)
   # and the third...
   gg_dta <- calc_roc.rfsrc(rfsrc_iris, 
                            rfsrc_iris$yvar, 
@@ -159,9 +159,10 @@ test_that("calc_roc",{
   expect_is(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
-  expect_equal(nrow(gg_dta), 68)
+  expect_equal(nrow(gg_dta),length(unique(rfsrc_iris$predicted.oob[,3]))+1)
   
   # test the auc calculator
   auc <- calc_auc(gg_dta)
-  expect_equal(auc, 0.9886)
+  expect_true(auc> .9)
+  expect_true(auc<= 1)
 })

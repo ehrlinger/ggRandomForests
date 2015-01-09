@@ -163,7 +163,10 @@ calc_auc.gg_roc <- calc_auc
 #' @details Lead and lag are useful for comparing values offset by a constant 
 #' (e.g. the previous or next value)
 #' 
-#' This function allows me to remove the dplyr::lead depends.
+#' Taken from:
+#' http://ctszkin.com/2012/03/11/generating-a-laglead-variables/
+#' 
+#' This function allows me to remove the dplyr::lead depends. Still suggest for vignettes though.
 #' 
 #' @examples
 #' d<-data.frame(x=1:15) 

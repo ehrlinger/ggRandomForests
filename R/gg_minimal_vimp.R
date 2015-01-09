@@ -109,9 +109,6 @@ gg_minimal_vimp.rfsrc <- function(object, event, ...){
   }else if (!is.null(object$varselect)) {
     # Test for variable selection minimal depth object
     vSel <- object
-  }else if(is.null(object$threshold)) {
-    # Test for max.subtree minimal depth object, convert to vSel object
-    stop("No support for max.subtree yet, use var.select instead")
   }else{
     stop("Function works only on rfsrc or var.select objects.")
   }

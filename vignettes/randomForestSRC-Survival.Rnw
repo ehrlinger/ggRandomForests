@@ -3,14 +3,11 @@
 %\usepackage{setspace}
 % \usepackage[sc]{mathpazo}
 \usepackage{amsmath}
-% %\usepackage{geometry} 
-% %\geometry{verbose, tmargin = 1.25cm, bmargin = 1.25cm, lmargin = 1.25cm, rmargin = 1.25cm}
 % \setcounter{secnumdepth}{2}
 % \setcounter{tocdepth}{2}
-\usepackage{longtable}
-\usepackage{colortbl, xcolor}
+%\usepackage{colortbl}
+ \usepackage{xcolor}
 \usepackage{booktabs}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% declarations for jss.cls %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,15 +19,14 @@
 %\VignettePackage{ggRandomForests} 
 
 %% almost as usual
-\author{John Ehrlinger 
-\and Eugene H. Blackstone\\Cleveland Clinic}
+\author{John Ehrlinger\\Cleveland Clinic \And Jeevanantham Rajeswaran\\Cleveland Clinic \AND Eugene H. Blackstone\\Cleveland Clinic \And Hemant Ishwaran\\University of Miami \And Udaya B. Kogalur\\Kogalur \& Company, Inc.}
 
 \title{\pkg{ggRandomForests}: Survival with Random Forests}
 
 %% for pretty printing and a nice hypersummary also set:
-\Plainauthor{Ehrlinger et.\ al.} %% comma-separated
-\Plaintitle{ggRandomForests: Random Forests for Survival} %% without formatting
-\Shorttitle{Random Forests for Survival}
+\Plainauthor{Ehrlinger, Rajeswaran, Blackstone, Ishwaran and Kogalur} %% comma-separated
+\Plaintitle{ggRandomForests: Survival with Random Forests} %% without formatting
+\Shorttitle{Survival with Random Forests}
 
 %% an abstract and keywords
 \Abstract{ 
@@ -109,43 +105,47 @@ options(mc.cores = 1, rf.cores = 0)
 
 This document is a package vignette for the \pkg{ggRandomForests} (\url{http://CRAN.R-project.org/package = ggRandomForests}) package for ``Visually Exploring Random Forests''. \pkg{ggRandomForests} will help uncover variable associations in random forest models. The package is designed for use with the \pkg{randomForestSRC} (\url{http://CRAN.R-project.org/package = randomForestSRC}) package~\citep{Ishwaran:RFSRC:2014} for survival, regression and classification forests and uses the \pkg{ggplot2}(\url{http://CRAN.R-project.org/package = ggplot2}) package~\citep{Wickham:2009} for plotting diagnostic and variable association results. \pkg{ggRandomForests} is  structured to extract data objects from \pkg{randomForestSRC} objects and provides S3 functions for printing and plotting these objects.
 
-The vignette is a tutorial for using the \pkg{ggRandomForests} package with the \pkg{randomForestSRC} package for building and post-processing a survival random forest. In this tutorial, we explore a random forest for survival model for the primary biliary cirrhosis (PBC) of the liver data set~\citep{fleming:1991}, available in the \pkg{randomForestSRC} package. We grow a survival random forest and demonstrate how \pkg{ggRandomForests} can be used when determining variable associations, interactions and how the survival response depends on predictive variables within the model. The tutorial demonstrates the design and usage of many of \pkg{ggRandomForests} functions and features how to modify and customize the resulting ggplot2 graphic objects along the way.
+The vignette is a tutorial for using the \pkg{ggRandomForests} package with the \pkg{randomForestSRC} package for building and post-processing a survival random forest. In this tutorial, we explore a random forest for survival model for the primary biliary cirrhosis (PBC) of the liver data set~\citep{fleming:1991}, available in the \pkg{randomForestSRC} package. We grow a survival random forest and demonstrate how \pkg{ggRandomForests} can be used when determining variable associations, interactions and how the survival response depends on predictive variables within the model. The tutorial demonstrates the design and usage of many of \pkg{ggRandomForests} functions and features how to modify and customize the resulting \code{ggplot} graphic objects along the way.
 
 The vignette is written using the \pkg{knitr} package, which lets us combine \proglang{R} code into documents, weaving results and figures into the dialog text. Throughout this document, \proglang{R} code will be displayed in \emph{code blocks} as shown below. This code block loads all \proglang{R} packages required to compile this vignette, and run the \proglang{R} code listed in the remaining code blocks.
 <<libraries, echo=TRUE>>=
 #################
 # Load_packages #
 #################
-library("ggplot2")         # Graphics engine for generating all types of plots
+library("ggplot2")         # Graphics engine for generating all plots
 library("RColorBrewer")    # Nice color palettes
 library("plot3D")          # for 3d surfaces. 
 
 library("dplyr")           # Better data manipulations
-library("reshape2")        # for transforming wide data into long data (melt)
+library("reshape2")        # Transforming wide data into long data (melt)
 
 library("parallel")        # mclapply for multicore processing
 
 library("xtable")          # For nice html and latex tables
 
 # Analysis packages.
-library("randomForestSRC") # random forests for survival, regression and classification
-library("ggRandomForests") # ggplot2 random forest figures
+library("randomForestSRC") # random forests for survival, regression and 
+                           # classification
+
+library("ggRandomForests") # ggplot2 random forest figures (This!)
 
 #########################################################################
 # Default settings
 #########################################################################
 theme_set(theme_bw())     # A ggplot2 theme with white background
 
-## Set the event/censor marks. Want open circle for censored, and 
-## x for events 
+## Set the event/censor marks. 
+## Want open circle for censored, and x for events 
 event.marks <- c(1, 4)
 event.labels <- c(FALSE, TRUE)
+
+## We want red for death events, so reorder this set.
 strCol <- brewer.pal(3, "Set1")
-strCol <- c(strCol[2], strCol[1])
+strCol <- strCol[c(2,1,3)]
 @
 
 
-The latest version of this vignette is available within the \pkg{ggRandomForests} package on the Compreshensive R Archive Network (CRAN) (\url{http://cran.r-project.org}). Once the package has been installed, the vignette can be viewed directly from within \proglang{R} with the following command:
+The latest version of this vignette is available within the \pkg{ggRandomForests} package on the Comprehensive R Archive Network (CRAN) (\url{http://cran.r-project.org}). Once the package has been installed, the vignette can be viewed directly from within \proglang{R} with the following command:
 <<vignette, eval=FALSE, echo=TRUE>>= 
 vignette("randomForestSRC-Survival", package = "ggRandomForests")
 @
@@ -248,14 +248,14 @@ st.labs <- as.character(dta.labs$label)
 names(st.labs) <- rownames(dta.labs)
 @
 
-We will do some modification of the data for formating our results. Since the data contains about 12 years of follow up, we prefer using \code{years} instead of \code{days} survival. We also convert the \code{age} variable to years, and the \code{treatment} variable to a factor containing levels of \code{c("DPCA", "placebo")}. The variable names, type and description are outlined in Table~\ref{T:dataLabs}.
+We do some modification of the data for formatting our results. Since the data contains about 12 years of follow up, we prefer using \code{years} instead of \code{days} survival. We also convert the \code{age} variable to years, and the \code{treatment} variable to a factor containing levels of \code{c("DPCA", "placebo")}. The variable names, type and description are outlined in Table~\ref{T:dataLabs}.
 
 <<dta-table, results="asis">>= 
 ## Not displayed ##
 # create a data dictionary table
 
 rws <- seq(1, (nrow(dta.labs)), by = 2)
-col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
 
 print(xtable(dta.labs %>% select(-names), 
              caption = "PBC Data field descriptions", 
@@ -263,7 +263,7 @@ print(xtable(dta.labs %>% select(-names),
              digits = 3), 
       size = 'footnotesize', # fontsize
       booktabs = TRUE, 
-      add.to.row = list(pos = as.list(rws), command = col), 
+     # add.to.row = list(pos = as.list(rws), command = col), 
       command= c('\\toprule' , 
                    '\\midrule' , 
                    '\\bottomrule ')
@@ -272,7 +272,7 @@ print(xtable(dta.labs %>% select(-names),
 
 \subsection{Exploratory Data Analysis}\label{S:eda}
 
-It is good practice to view your data before beginning an analysis, what~\cite{Tukey:1977} refers to as Exploratory Data Analysis (EDA). To facilitate this, we use \pkg{ggplot2} figures with the \code{facet_wrap} command to create two sets of panel plots, one for categorical variables using histograms (Figure~\ref{fig:categoricalEDA}), and another of scatter plots for continuous variables (Figure~\ref{fig:continuousEDA}). Each variable is plotted along a selected continuous variable on the X-axis, in this case the length of follow up (survival time in \code{years}). These figures help to find outliers, missing values and other data anomalies within each variable before getting deep into the analysis.
+It is good practice to view your data before beginning an analysis, what~\cite{Tukey:1977} refers to as Exploratory Data Analysis (EDA). To this end, we use \pkg{ggplot2} figures with the \code{facet_wrap} command and create two sets of panel plots, one for categorical variables using histograms (Figure~\ref{fig:categoricalEDA}), and another of scatter plots for continuous variables (Figure~\ref{fig:continuousEDA}). Each variable is plotted along a selected continuous variable on the X-axis, in this case the length of follow up (survival time in \code{years}). These figures help to find outliers, missing values and other data anomalies within each variable before getting deep into the analysis.
 
 <<categoricalEDA, fig.cap="Categorical variable EDA plots. Bars indicate counts within 1 year of followup for each categorical variable. Bars are colored according to the class membership within each variable. Missing values are colored dark grey.", fig.width=7>>= 
 ## Not displayed ##
@@ -327,26 +327,26 @@ st <- data.frame(cbind(full = st, trial = st.t))
 
 st <- st[which(st$full>0),]
 rws <- seq(1, (nrow(st)), by = 2)
-col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
 
 print(xtable(st, 
-             caption = "PBC missing values", 
+             caption = "Missing value counts in \\code{PBC} data set.", 
              label = "T:missing", 
              digits = 3), 
       size = 'footnotesize', # fontsize
       booktabs = TRUE, 
-      add.to.row = list(pos = as.list(rws), command = col), 
+#      add.to.row = list(pos = as.list(rws), command = col), 
       command= c('\\toprule' , 
                    '\\midrule' , 
                    '\\bottomrule ')
       )
 @
 
-There does appear to be a large amount of missing data in some variables of the \code{pbc} data set, indicated with dark grey bars in Figure~\ref{fig:categoricalEDA}, and rug marks in Figure~\ref{fig:continuousEDA}. Table~\ref{T:missing} details the number of missing values in each variable of the \code{pbc} data set. Of the \Sexpr{ncol(pbc)} variables in the data, \Sexpr{nrow(st)} have missing values. The \code{full} columns details variables with missing data in the full \code{pbc} data set, though there are \Sexpr{st["treatment", "full"]} patients that were not randomized into the trial. If we restrict the data to the trial only, most of the missing values are also removed, leaving onlt \Sexpr{sum(st$trial>0)} variables with missing values. We focus on the \Sexpr{nrow(pbc.trial)} observations from the clinical trial for the remainder of this document. We will return to handling missing values in Section~\ref{S:imputation}.
-
+There does appear to be a large amount of missing data in some variables of the \code{pbc} data set, indicated with dark grey bars in Figure~\ref{fig:categoricalEDA}, and rug marks in Figure~\ref{fig:continuousEDA}. Table~\ref{T:missing} details the number of missing values in each variable of the \code{pbc} data set. Of the \Sexpr{ncol(pbc)} variables in the data, \Sexpr{nrow(st)} have missing values. The \code{full} columns details variables with missing data in the full \code{pbc} data set, though there are \Sexpr{st["treatment", "full"]} patients that were not randomized into the trial. If we restrict the data to the trial only, most of the missing values are also removed, leaving only \Sexpr{sum(st$trial>0)} variables with missing values. We focus on the \Sexpr{nrow(pbc.trial)} observations from the clinical trial for the remainder of this document. We will return to handling missing values in Section~\ref{S:imputation}.
 
 \subsection[PBC Model Summary]{\cite{fleming:1991} Model Summary}
-Before turning to the random forest modeling, we conclude the data set investigation by a summary of~\cite{fleming:1991} results from Chapter 4.4. We start by generating Kaplan--Meier (KM) survival estimates comparing the treatment groups of DPCA and placebo. We use the \pkg{ggRandomForests} \code{gg_survival} function to generate these estimates from the data set. 
+
+Before turning to the random forest modeling, we'll conclude our data set investigation with a summary of~\cite{fleming:1991} model results from Chapter 4.4. We start by generating Kaplan--Meier (KM) survival estimates comparing the treatment groups of DPCA and placebo. We use the \pkg{ggRandomForests} \code{gg_survival} function to generate these estimates from the data set as follows. 
 
 <<gg_survival, echo=TRUE>>= 
 # Include only the randomized patients.
@@ -365,9 +365,9 @@ gg_dta <- gg_survival(interval = "years",
 
 The code block first reduces the \code{pbc.trial} data set to only include observations from the clinical trial. The \pkg{ggRandomForests} package is designed to use a two step process in figure generation. The first step is data generation, the \code{gg_dta} object is a \code{gg_survival} data object. The \code{gg_survival} function uses the \code{data} set, the follow up \code{interval}, \code{censor} indicator and an optional grouping argument (\code{strat}). By default \code{gg_survival} also calculates $95\%$ confidence band, which we can control with the \code{conf.int} argument.
 
-In the figure generation step, we use the \pkg{ggRandomForests} S3 plot routine \code{plot.gg_survival} as shown in the following code block. The plot function uses the data object to plot the survival estimate curves for each group and corresponding confidence interval ribbons. We have used additional \pkg{ggplot2} commands to modify the axis and legend labels (\code{labs}), the legend location (\code{theme}) and control the plot range of the y-axis (\code{coord_cartesian}) for this figure. Figure~\ref{fig:plot_gg_survival} is analogous to~\cite{fleming:1991} Figure 4.4.1 showing there is little difference between the treatment and control groups. 
+In the figure generation step, we use the \pkg{ggRandomForests} plot routine \code{plot.gg_survival} as shown in the following code block. The plot function uses the data object to plot the survival estimate curves for each group and corresponding confidence interval ribbons. We have used additional \pkg{ggplot2} commands to modify the axis and legend labels (\code{labs}), the legend location (\code{theme}) and control the plot range of the y-axis (\code{coord_cartesian}) for this figure. 
 
-<<plot_gg_survival, fig.cap="Kaplan--Meier pbc data survival estimates comparing the treatment with placebo. Mean survival with shaded 95\\% condfidence band.", echo=TRUE>>= 
+<<plot_gg_survival, fig.cap="Kaplan--Meier pbc data survival estimates comparing the DPCA treatment (red) with placebo (blue). Median survival with shaded 95\\% confidence band.", echo=TRUE>>= 
 plot(gg_dta) +
   labs(y = "Survival Probability", 
        x = "Observation Time (years)", 
@@ -375,15 +375,19 @@ plot(gg_dta) +
   theme(legend.position = c(.2,.2))+
   coord_cartesian(y = c(0,1.01))
 @
+Figure~\ref{fig:plot_gg_survival} is analogous to~\cite{fleming:1991} Figure 0.2.3 and Figure 4.4.1 showing there is little difference between the treatment and control groups. 
 
-<<plot_gg_cum_hazard, fig.cap="Kaplan--Meier pbc data cumulative hazard estimates comparing the treatment with placebo.", echo=TRUE>>= 
+The \code{gg_survival} function generates a collection of time-to-event estimates, including the cumulative hazard. The follow code block recreates the~\cite{fleming:1991} cumulative hazard plot of Figure 0.2.1 in Figure~\ref{fig:plot_gg_cum_hazard}. The red \code{DPCA} line is equivalent to Figure 0.2.1, and we add the cumulative hazard estimates for the \code{placebo} population in blue.
+
+<<plot_gg_cum_hazard, fig.cap="Kaplan--Meier pbc data cumulative hazard estimates comparing the DPCA treatment (red) with placebo (blue).", echo=TRUE>>= 
 plot(gg_dta, type="cum_haz") +
   labs(y = "Cumulative Hazard", 
        x = "Observation Time (years)", 
        color = "Treatment", fill = "Treatment")+
   theme(legend.position = c(.2,.8))
 @
-In Chapter 4,~\cite{fleming:1991} use partial likelihood methods to build a linear model with log transformations on some variables. The final, biologically reasonable model is detailed in Table~\ref{T:FHmodel} for later comparison with our random forest model results.
+
+In Chapter 4,~\cite{fleming:1991} use partial likelihood methods to build a linear model with log transformations on some variables. We summarize the final, biologically reasonable model in Table~\ref{T:FHmodel} for later comparison with our random forest model results.
 
 <<xtab, results="asis">>= 
 ## Not displayed ##
@@ -397,7 +401,7 @@ fleming.table[,2] <- c(0.00866, 0.72408,0.09873,0.29913,1.02380)
 fleming.table[,3] <- c(3.84,-4.22,8.9,2.62,2.95) 
 
 rws <- seq(1, (nrow(fleming.table)), by = 2)
-col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
 
 print(xtable(fleming.table, 
              caption = "Regression model with log transformations of continuous variables, 312 randomized cases with PBC.", 
@@ -405,14 +409,14 @@ print(xtable(fleming.table,
              digits = 4), 
       size = 'footnotesize', # fontsize
       booktabs = TRUE, 
-      add.to.row = list(pos = as.list(rws), command = col), 
+#      add.to.row = list(pos = as.list(rws), command = col), 
       command= c('\\toprule' , 
                    '\\midrule' , 
                    '\\bottomrule ')
       )
 @
 
-In Figure~\ref{fig:plot_gg_survival}, we demonstrated grouping on a categorical variable (\code{treatment}). However, with the exception of \code{edema}, all variables in the~\cite{fleming:1991} model are continuous. To demonstrate plotting grouped survival on a continuous variable, we examine KM estimates of survival by stratified bilirubin grouping from~\cite{fleming:1991} Figure 4.4.2. 
+In Figure~\ref{fig:plot_gg_survival}, we demonstrated grouping on the categorical variable (\code{treatment}). However, with the exception of \code{edema}, all variables included in the~\cite{fleming:1991} model are continuous. To demonstrate plotting grouped survival on a continuous variable, we examine KM estimates of survival within stratified groups of bilirubin measures. The groupings are obtained directly from~\cite{fleming:1991} Figure 4.4.2, where they presented univariate model results of predicting survival on a function of bilirubin. 
 
 The following code block duplicates the \code{pbc.trial} data for this exercise. We set up the \code{bili} groups using the \code{cut} function with intervals matching the reference figure. For this example we combine the data generation and plot steps into a single line of code. The \code{error} argument of the \code{plot.gg_survival} is used to control display of the confidence bands. We suppress the intervals for this figure with \code{error = "none"} and again modify the plot display with \pkg{ggplot2} commands as before to generate Figure~\ref{fig:gg_survival-bili}.
 
@@ -436,6 +440,7 @@ plot(gg_survival(interval = "years",censor = "status",
 
 
 \section{Random Survival Forest}\label{S:rfsrcGrow}
+
 A Random Forest~\citep{Breiman:2001} is grown by \emph{bagging}~\citep{Breiman:1996} a collection of \emph{classification and regression trees} (CART)~\citep{cart:1984}. The method uses a set of $B$ \emph{bootstrap}~\citep{bootstrap:1994} samples, growing an independent tree model on each sub-sample of the population. Each tree is grown by recursively partitioning the population based on optimization of a \emph{split rule} over the $p$-dimensional covariate space. At each split, a subset of $m \le p$ candidate variables are tested for the split rule optimization, dividing each node into two daughter nodes. Each daughter node is then split again until the process reaches the \emph{stopping criteria} of either \emph{node purity} or \emph{node member size}, which defines the set of \emph{terminal (unsplit) nodes} for the tree. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used~\citep{Friedman:2000} . 
 
 Random Forests sort each training set observation into one unique terminal node per tree. Tree estimates for each observation are constructed at each terminal node, among the terminal node members. The Random Forest estimate for each observation is then calculated by aggregating, averaging (regression) or votes (classification), the terminal node results across the collection of $B$ trees.
@@ -478,10 +483,9 @@ The \code{print.rfsrc} function returns information on how the random forest was
 
 One advantage of Random Forests is a built in generalization error estimate. Each bootstrap sample selects approximately $63.2\%$ of the population on average. The remaining $36.8\%$ of observations, the Out-of-Bag~\citep{BreimanOOB:1996e} (OOB) sample, can be used as a hold out test set for each tree. An OOB prediction error estimate can be calculated for each observation by predicting the response over the set of trees which were NOT trained with that particular observation. Out-of-Bag prediction error estimates have been shown to be nearly identical to $n$--fold cross validation estimates~\citep{StatisticalLearning:2009}. This feature of Random Forests allows us to obtain both model fit and validation in one pass of the algorithm.
 
+The \code{gg_error} function operates on the random forest object to extract the error estimates from the forest is grown. The following code block first creates a \code{gg_error} object, then uses the \code{plot.gg_error} function to create a \code{ggplot} object for display.
 
-The \code{gg_error} function operates on the random forest object to extract the error estimates from the forest is grown. The following code block first creates a \code{gg_error} object, then uses the \code{plot.gg_error} function to create a \pkg{ggplot2} object for display.
-
-<<errorPlot, fig.cap="Random forest prediction error estimates as a function of the number of trees in the forest.">>= 
+<<errorPlot, fig.cap="Random forest prediction error estimates as a function of the number of trees in the forest.", echo=TRUE>>= 
 # Data extraction
 ggerr <- gg_error(rfsrc_pbc)
 
@@ -490,13 +494,13 @@ plot(ggerr)+
   coord_cartesian(y = c(.09,.31))
 @
 
-This figure demonstrates that it does not take a large number of trees to stabilize the forest prediction error estimate. However, to ensure that each variable has enough of a chance to be included in the forest prediction process, we do want to create a rather large random forest of trees. 
+Figure~\ref{fig:errorPlot} demonstrates that it does not take a large number of trees to stabilize the forest prediction error estimate. However, to ensure that each variable has enough of a chance to be included in the forest prediction process, we do want to create a rather large random forest of trees. 
 
 \subsection{Training Set Prediction}\label{S:prediction}
 
-The \code{gg_rfsrc} function extracts the OOB prediction estimates from the random forest. This code block executes the the data extraction and plotting in one line, since we are not interested in holding the prediction estimates for later reuse. Also note that we again add in the additional \pkg{ggplot2} commands to modify the display of the plot object. Each of the `ggRandomForests` S3 plot commands return \pkg{ggplot2} objects, which we can also store for modification or reuse later in the analysis. 
+The \code{gg_rfsrc} function extracts the OOB prediction estimates from the random forest. This code block executes the the data extraction and plotting in one line, since we are not interested in holding the prediction estimates for later reuse. Also note that we again add in the additional \pkg{ggplot2} commands to modify the display of the plot object. Each of the \pkg{ggRandomForests} plot commands return \code{ggplot} objects, which we can also store for modification or reuse later in the analysis. 
 
-<<rfsrc-plot, fig.cap="Random forest predicted survival. Blue lines correspond to censored observations, red lines correspond to patients who experienced the event (death).">>= 
+<<rfsrc-plot, fig.cap="Random forest predicted survival. Blue lines correspond to censored observations, red lines correspond to patients who experienced the event (death).", echo=TRUE>>= 
 # Data extraction 
 gg_dta <- gg_rfsrc(rfsrc_pbc)
 
@@ -511,22 +515,20 @@ ggRFsrc <- plot(gg_dta, alpha = .2) +
 show(ggRFsrc)
 @
 
+Figure~\ref{fig:rfsrc-plot} shows the predicted survival from our RF-S model, where censored patients are colored in blue, and patients experiencing the event are colored in red. 
 
-Figure~\ref{fig:rfsrc-plot} shows the predicted survival from an RF-S model, where censored device prediction is colored in blue, and devices experiencing an event are colored in red. 
+Interpretation of Figure~\ref{fig:rfsrc-plot} is difficult because of the number of curves displayed, though it is important to note that there is one line per patient. We also extend all predicted survival curves to the longest follow up time (12 years), regardless of the actual length of a patient's follow up time. 
 
-<<rfsrc-mean, fig.cap="Mean value random forest predicted survival with shaded 95\\% confidence band.">>= 
-plot(gg_rfsrc(rfsrc_pbc, conf.int = .95)) + 
-  theme(legend.position = "none") + 
-  labs(y = "Survival Probability", x = "time (years)")+
-  coord_cartesian(y = c(-.01,1.01))
-@
+To get an interpretable result, it is preferable to plot a summary of the survival results. I The following code compares the predicted survival between treatment groups in as we did in Figure~\ref{fig:plot_gg_survival}. 
 
-<<rfsrc-mean2, fig.cap="Mean value random forest predicted survival with shaded 95\\% confidence band. Treatment effects.">>= 
+<<rfsrc-mean2, fig.cap="Mean value random forest predicted survival with shaded 95\\% confidence band. \\code{DPCA} group in red, \\code{placebo} in blue.", echo=TRUE>>= 
 plot(gg_rfsrc(rfsrc_pbc, by="treatment")) + 
   theme(legend.position = c(.2,.2)) + 
   labs(y = "Survival Probability", x = "time (years)")+
   coord_cartesian(y = c(-.01,1.01))
 @
+
+Figure~\ref{fig:rfsrc-mean2} shows the median survival with a $95\%$ shaded confidence band for the \code{DPCA} group in red, and the \code{placebo} group in blue. When calling \code{gg_rfsrc} with either a \code{by} argument or a \code{conf.int} argument, the function calculates a bootstrap confidence interval around the median survival line. By default, the function will calculate the \code{conf.int}$=95\%$ confidence interval, with the number of \code{bs.samples} equal to the number of observations.
 
 \subsection{Imputation}\label{S:imputation}
 
@@ -536,15 +538,17 @@ The \pkg{randomForestSRC} package has an internal missing value imputation algor
 
 A final imputation step can be used to fill in missing values from within the terminal nodes. This step uses a process to the previous imputation but uses the OOB non-missing terminal node data for the random draws. These values are aggregated (averaging for continuous variables, voting for categorical variables) over the $B$ trees in the forest to estimate an imputed data set. By default, the missing values are not filled into the training data, but are available within the forest object.
 
-At each imputaton step, the random forest assumes that similar observations are grouped together within each node. The random draws to fill in missing data do not bias the split rule, but only sort observations similar in non-missing data into like nodes. A feature if this approach is the ability of predicting on test set observations without having to impute missing values. 
+At each imputation step, the random forest assumes that similar observations are grouped together within each node. The random draws to fill in missing data do not bias the split rule, but only sort observations similar in non-missing data into like nodes. A feature if this approach is the ability of predicting on test set observations without having to impute missing values. 
 
 \subsection{Test Set Predictions}
+
+The importance of the forest imputation methodology becomes clear when doing prediction on new observtaions. If we want to predict survival for patients that did not participate in the trail, using the model we created in Section~\ref{S:rfsrcGrow}, we need to some account for the missing values detailed in Table~\ref{T:missing}. 
 
 <<predict, echo=TRUE, eval=FALSE>>= 
 # Predict survival for 106 patients not in randomized trial
 rfsrc_pbc_test <- predict(rfsrc_pbc, 
-                    newdata = pbc.test,
-                    na.action = "na.impute")
+                          newdata = pbc.test,
+                          na.action = "na.impute")
 
 # Print prediction summary  
 rfsrc_pbc_test
@@ -556,7 +560,7 @@ data(rfsrc_pbc_test, package="ggRandomForests")
 rfsrc_pbc_test
 @
 
-<<predictPlot, fig.cap="Test set prediction: 106 observations.">>= 
+<<predictPlot, fig.cap="Test set prediction: 106 observations with missing value imputation. Censored observations shown in blue, events shown in red.", echo=TRUE>>= 
 # Test set predicted survival
 plot(gg_rfsrc(rfsrc_pbc_test), alpha=.2)+ 
   scale_color_manual(values = strCol) + 
@@ -573,7 +577,7 @@ Random forests are not parsimonious, but use all variables available in the cons
 
 \emph{Variable importance} (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of~\cite{cart:1984}). The most popular VIMP method uses a prediction error approach involving "noising-up" each variable in turn. VIMP for a variable $x_v$ is the difference between prediction error when $x_v$ is noised up by randomly permuting its values, compared to prediction error under the observed values~\citep{Breiman:2001,Liaw:2002,Ishwaran:2007,Ishwaran:2008}.
 
-Since VIMP is the difference between OOB prediction error before and after permutation, a large VIMP value indicates that misspecification detracts from the variable predictive accuracy in the forest. VIMP close to zero indicates the variable contributes nothing to predictive accuracy, and negative values indicate the predictive accuracy \emph{improves} when the variable is mispecified. In the later case, we assume noise is more informative than the true variable. As such, we ignore variables with negative and near zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables. 
+Since VIMP is the difference between OOB prediction error before and after permutation, a large VIMP value indicates that misspecification detracts from the variable predictive accuracy in the forest. VIMP close to zero indicates the variable contributes nothing to predictive accuracy, and negative values indicate the predictive accuracy \emph{improves} when the variable is misspecified. In the later case, we assume noise is more informative than the true variable. As such, we ignore variables with negative and near zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables. 
 
 The \code{gg_vimp} function extracts VIMP measures for each of the variables used to grow the forest. The \code{plot.gg_vimp} function shows the variables, in VIMP rank order. Figure~\ref{fig:rf-vimp} details VIMP ranking for the \code{pbc} trial, from the largest (serum bilirubin) at the top, to smallest (Treatment) at the bottom. VIMP measures are shown using bars to compare the scale of the error increase under permutation and colored by the sign of the measure (red for negative values). 
 
@@ -671,7 +675,7 @@ plot(ggrf, xvar = "bili", se = .95, alpha = .3) +
 
 We use the \code{gg_variable} function call to extract the training set variables and the predicted OOB response from \code{randomForestSRC::rfsrc} and \code{randomForestSRC::predict} objects. In the following code block, we will store the \code{gg_variable} data object for later use, as all remaining variable dependence plots can be constructed from this (\code{gg_v}) object. We will also use the minimal depth selected variables (minimal depth lower than the threshold value) from the previously stored \code{gg_minimal_depth} object (\code{gg_md$topvars}) to filter the variables of interest.
 
-The \code{plot.gg_variable} function call operates in the \code{gg_variable} object. We pass it the list of variables of interest (\code{xvar}) and request a single panel (\code{panel = TRUE}) to display the figures. By default, the \code{plot.gg_variable} function returns a list of \pkg{ggplot2} objects, one figure for each variable named in \code{xvar} argument. The next three arguments are passed to internal \pkg{ggplot2} plotting routines. The \code{se} and \code{span} arguments are used to modify the internal call to \code{geom_smooth} for fitting smooth lines to the data. The \code{alpha} argument lightens the coloring points in the \code{geom_point} call, making it easier to see point over plotting. We also demonstrate modification of the plot labels using the \code{labs} function.
+The \code{plot.gg_variable} function call operates in the \code{gg_variable} object. We pass it the list of variables of interest (\code{xvar}) and request a single panel (\code{panel = TRUE}) to display the figures. By default, the \code{plot.gg_variable} function returns a list of \code{ggplot} objects, one figure for each variable named in \code{xvar} argument. The next three arguments are passed to internal \pkg{ggplot2} plotting routines. The \code{se} and \code{span} arguments are used to modify the internal call to \code{geom_smooth} for fitting smooth lines to the data. The \code{alpha} argument lightens the coloring points in the \code{geom_point} call, making it easier to see point over plotting. We also demonstrate modification of the plot labels using the \code{labs} function.
 
 
 <<variable-plot, echo=TRUE, fig.cap="Bilirubin variable dependence at 1 and 3 years. Individual cases are marked with blue circles (alive or censored) and red xs (dead). Loess smooth curve with shaded 95\\% confidence band indicates the survival trend with increasing bilirubin.", fig.height=4, fig.width=7>>= 
@@ -875,7 +879,7 @@ The \code{gg_interaction} figure plots the interactions for the target variable 
 
 Conditioning plots (coplots)~\citep{chambers:1992,cleveland:1993}  are a powerful visualization tool to efficiently study how a response depends on two or more variables~\citep{cleveland:1993}. The method allows us to view data by grouping observations on some conditional membership. The simplest example involves a categorical variable, where we plot our data conditional on class membership, for instance on the Charles river logical variable. We can view a coplot as a stratified variable dependence plot, indicating trends in the RF prediction results within panels of group membership.
 
-Interactions with categorical data are straight forward, and can be generated directly from variable dependence plots. Recall the 1 year variable dependence for Billirubin, shown in Figure~\ref{fig:var_dep}. 
+Interactions with categorical data are straight forward, and can be generated directly from variable dependence plots. Recall the 1 year variable dependence for bilirubin, shown in Figure~\ref{fig:var_dep}. 
 <<var_dep, echo=TRUE, fig.cap="Variable dependence plot. Survival at 1 year against bilirubin. Individual cases are marked with blue circles (alive or censored) and red x (dead). Loess smooth curve indicates the trend as bilirubin  increases.">>= 
 ggvar <- gg_variable(rfsrc_pbc, time = 1)
 ggvar$stage <- paste("stage = ", ggvar$stage, sep = "")
@@ -1102,5 +1106,5 @@ In order to simplify these manipulations, we developed the \pkg{ggRandomForests}
 \begin{itemize}
 \item Model/View separation: The package originally designed to generating \pkg{ggplot2}~\cite{Wickham:2009} figures for random forest objects. However, some users would prefer to use other graphing methods within \proglang{R} or outside of it. To help users, we separate the data generation and the figure generation into two separate operations. 
 
-\item Modular: We strive to create a modular design by following the \emph{do one thing well} philosphy. Each function operates on one \pkg{randomForestSRC} object to create only one data object or figure type.
+\item Modular: We strive to create a modular design by following the \emph{do one thing well} philosophy. Each function operates on one \pkg{randomForestSRC} object to create only one data object or figure type.
 \end{itemize}
