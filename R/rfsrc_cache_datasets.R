@@ -248,7 +248,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     cat("pbc: RF minimal depth\n")
     if(!test) varsel_pbc <- var.select(rfsrc_pbc)
     else{
-      data(varsel_pbc, package="ggRandomForests"
+      data(varsel_pbc, package="ggRandomForests",
            envir = dta)
       varsel_pbc <- dta$varsel_pbc
     }
