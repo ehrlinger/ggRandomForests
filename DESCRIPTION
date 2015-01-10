@@ -22,7 +22,6 @@ Suggests:
     testthat,
     knitr,
     RColorBrewer,
-    xtable,
     MASS, 
     dplyr,
     plot3D

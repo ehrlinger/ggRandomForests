@@ -29,8 +29,6 @@ library("reshape2")        # for transforming wide data into long data (melt)
 
 library("parallel")        # mclapply for multicore processing
 
-library("xtable")          # For nice html and latex tables
-
 # Analysis packages.
 library("randomForestSRC") # random forests for survival, regression and classification
 library("ggRandomForests") # ggplot2 random forest figures
@@ -91,7 +89,7 @@ st.labs <- as.character(dta.labs$Description)
 names(st.labs) <- names(cls)
 
 # Print the descriptive table.
-print(xtable(dta.labs), type="html",include.rownames = FALSE)
+kable(dta.labs, format="html",row.names = FALSE)
 
 ## ----data, fig.cap="_**EDA variable plots.**<a name=\"f:eda\"></a> Points indicate variable value against the median home value variable. Points are colored according to the chas variable._", fig.width=7, fig.height=5----
 # Use reshape2::melt to transform the data into long format.

@@ -34,8 +34,6 @@ library("reshape2")        # Transforming wide data into long data (melt)
 
 library("parallel")        # mclapply for multicore processing
 
-library("xtable")          # For nice html and latex tables
-
 # Analysis packages.
 library("randomForestSRC") # random forests for survival, regression and 
                            # classification
@@ -122,6 +120,8 @@ labels <- c("event indicator (F = censor, T = death)",
             "survival time (years)")
 
 dta.labs <- data.frame(cbind(names = colnames(pbc), label = labels, type = cls))
+# Put the "years" variable on top.
+dta.labs <- rbind(dta.labs[nrow(dta.labs),], dta.labs[-nrow(dta.labs),])
 
 st.labs <- as.character(dta.labs$label)
 names(st.labs) <- rownames(dta.labs)
@@ -129,21 +129,14 @@ names(st.labs) <- rownames(dta.labs)
 ## ----dta-table, results="asis"----------------------------------------------------------
 ## Not displayed ##
 # create a data dictionary table
-
-rws <- seq(1, (nrow(dta.labs)), by = 2)
-#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
-
-print(xtable(dta.labs %>% select(-names), 
-             caption = "PBC Data field descriptions", 
-             label = "T:dataLabs", 
-             digits = 3), 
-      size = 'footnotesize', # fontsize
-      booktabs = TRUE, 
-     # add.to.row = list(pos = as.list(rws), command = col), 
-      command= c('\\toprule' , 
-                   '\\midrule' , 
-                   '\\bottomrule ')
-      )
+tmp <- dta.labs
+colnames(tmp) <- c("Variable", "Description", "Type")
+kable(tmp, 
+      format="latex",
+      caption = "\\label{T:dataLabs}\\code{pbc} data descriptions.", 
+      digits = 3,
+      row.names = FALSE,
+      booktabs=TRUE)
 
 ## ----categoricalEDA, fig.cap="Categorical variable EDA plots. Bars indicate counts within 1 year of followup for each categorical variable. Bars are colored according to the class membership within each variable. Missing values are colored dark grey.", fig.width=7----
 ## Not displayed ##
@@ -182,28 +175,18 @@ ggplot(dta, aes(x = years, y = value, color = status, shape = status))+
 ## ----missing, results="asis"------------------------------------------------------------
 ## Not displayed ##
 # create a missing data table
-
 pbc.trial <- pbc[-which(is.na(pbc$treatment)),]
 st <- apply(pbc,2, function(rw){sum(is.na(rw))})
 st.t <- apply(pbc.trial,2, function(rw){sum(is.na(rw))})
-
 st <- data.frame(cbind(full = st, trial = st.t))
-
 st <- st[which(st$full>0),]
-rws <- seq(1, (nrow(st)), by = 2)
-#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+colnames(st) <- c("pbc", "pbc.trial")
 
-print(xtable(st, 
-             caption = "Missing value counts in \\code{PBC} data set.", 
-             label = "T:missing", 
-             digits = 3), 
-      size = 'footnotesize', # fontsize
-      booktabs = TRUE, 
-#      add.to.row = list(pos = as.list(rws), command = col), 
-      command= c('\\toprule' , 
-                   '\\midrule' , 
-                   '\\bottomrule ')
-      )
+kable(st, 
+      format="latex",
+      caption = "\\label{T:missing}Missing value counts in \\code{pbc} data set.", 
+      digits = 3,
+      booktabs=TRUE)
 
 ## ----gg_survival, echo=TRUE-------------------------------------------------------------
 # Include only the randomized patients.
@@ -245,20 +228,12 @@ fleming.table[,1] <- c(0.0333, -3.0553,0.8792, 0.7847, 3.0157)
 fleming.table[,2] <- c(0.00866, 0.72408,0.09873,0.29913,1.02380) 
 fleming.table[,3] <- c(3.84,-4.22,8.9,2.62,2.95) 
 
-rws <- seq(1, (nrow(fleming.table)), by = 2)
-#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+kable(fleming.table, 
+      format="latex",
+      caption = "\\label{T:FHmodel}Regression model summary~\\citep[Chapter 4]{fleming:1991}. 312 randomized cases in \\code{pbc.trial} data set.", 
+      digits = 3,
+      booktabs=TRUE)
 
-print(xtable(fleming.table, 
-             caption = "Regression model with log transformations of continuous variables, 312 randomized cases with PBC.", 
-             label = "T:FHmodel", 
-             digits = 4), 
-      size = 'footnotesize', # fontsize
-      booktabs = TRUE, 
-#      add.to.row = list(pos = as.list(rws), command = col), 
-      command= c('\\toprule' , 
-                   '\\midrule' , 
-                   '\\bottomrule ')
-      )
 
 ## ----gg_survival-bili, fig.cap="Kaplan--Meier pbc data survival estimates comparing Bilirubin measures. Groups defined in~\\cite{fleming:1991}.", echo=TRUE, fig.width=5.5----
 # Duplicate the trial data

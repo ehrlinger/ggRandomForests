@@ -6,8 +6,10 @@
 % \setcounter{secnumdepth}{2}
 % \setcounter{tocdepth}{2}
 %\usepackage{colortbl}
- \usepackage{xcolor}
+\usepackage{xcolor}
 \usepackage{booktabs}
+\usepackage{floatrow}
+\floatsetup[table]{capposition=bottom}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% declarations for jss.cls %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -120,8 +122,6 @@ library("dplyr")           # Better data manipulations
 library("reshape2")        # Transforming wide data into long data (melt)
 
 library("parallel")        # mclapply for multicore processing
-
-library("xtable")          # For nice html and latex tables
 
 # Analysis packages.
 library("randomForestSRC") # random forests for survival, regression and 
@@ -243,6 +243,8 @@ labels <- c("event indicator (F = censor, T = death)",
             "survival time (years)")
 
 dta.labs <- data.frame(cbind(names = colnames(pbc), label = labels, type = cls))
+# Put the "years" variable on top.
+dta.labs <- rbind(dta.labs[nrow(dta.labs),], dta.labs[-nrow(dta.labs),])
 
 st.labs <- as.character(dta.labs$label)
 names(st.labs) <- rownames(dta.labs)
@@ -250,24 +252,18 @@ names(st.labs) <- rownames(dta.labs)
 
 We do some modification of the data for formatting our results. Since the data contains about 12 years of follow up, we prefer using \code{years} instead of \code{days} survival. We also convert the \code{age} variable to years, and the \code{treatment} variable to a factor containing levels of \code{c("DPCA", "placebo")}. The variable names, type and description are outlined in Table~\ref{T:dataLabs}.
 
+
 <<dta-table, results="asis">>= 
 ## Not displayed ##
 # create a data dictionary table
-
-rws <- seq(1, (nrow(dta.labs)), by = 2)
-#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
-
-print(xtable(dta.labs %>% select(-names), 
-             caption = "PBC Data field descriptions", 
-             label = "T:dataLabs", 
-             digits = 3), 
-      size = 'footnotesize', # fontsize
-      booktabs = TRUE, 
-     # add.to.row = list(pos = as.list(rws), command = col), 
-      command= c('\\toprule' , 
-                   '\\midrule' , 
-                   '\\bottomrule ')
-      )
+tmp <- dta.labs
+colnames(tmp) <- c("Variable", "Description", "Type")
+kable(tmp, 
+      format="latex",
+      caption = "\\label{T:dataLabs}\\code{pbc} data descriptions.", 
+      digits = 3,
+      row.names = FALSE,
+      booktabs=TRUE)
 @
 
 \subsection{Exploratory Data Analysis}\label{S:eda}
@@ -318,28 +314,18 @@ In continuous EDA plots (Figure~\ref{fig:continuousEDA}) we look for missingness
 <<missing, results="asis">>= 
 ## Not displayed ##
 # create a missing data table
-
 pbc.trial <- pbc[-which(is.na(pbc$treatment)),]
 st <- apply(pbc,2, function(rw){sum(is.na(rw))})
 st.t <- apply(pbc.trial,2, function(rw){sum(is.na(rw))})
-
 st <- data.frame(cbind(full = st, trial = st.t))
-
 st <- st[which(st$full>0),]
-rws <- seq(1, (nrow(st)), by = 2)
-#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+colnames(st) <- c("pbc", "pbc.trial")
 
-print(xtable(st, 
-             caption = "Missing value counts in \\code{PBC} data set.", 
-             label = "T:missing", 
-             digits = 3), 
-      size = 'footnotesize', # fontsize
-      booktabs = TRUE, 
-#      add.to.row = list(pos = as.list(rws), command = col), 
-      command= c('\\toprule' , 
-                   '\\midrule' , 
-                   '\\bottomrule ')
-      )
+kable(st, 
+      format="latex",
+      caption = "\\label{T:missing}Missing value counts in \\code{pbc} data set.", 
+      digits = 3,
+      booktabs=TRUE)
 @
 
 There does appear to be a large amount of missing data in some variables of the \code{pbc} data set, indicated with dark grey bars in Figure~\ref{fig:categoricalEDA}, and rug marks in Figure~\ref{fig:continuousEDA}. Table~\ref{T:missing} details the number of missing values in each variable of the \code{pbc} data set. Of the \Sexpr{ncol(pbc)} variables in the data, \Sexpr{nrow(st)} have missing values. The \code{full} columns details variables with missing data in the full \code{pbc} data set, though there are \Sexpr{st["treatment", "full"]} patients that were not randomized into the trial. If we restrict the data to the trial only, most of the missing values are also removed, leaving only \Sexpr{sum(st$trial>0)} variables with missing values. We focus on the \Sexpr{nrow(pbc.trial)} observations from the clinical trial for the remainder of this document. We will return to handling missing values in Section~\ref{S:imputation}.
@@ -400,20 +386,12 @@ fleming.table[,1] <- c(0.0333, -3.0553,0.8792, 0.7847, 3.0157)
 fleming.table[,2] <- c(0.00866, 0.72408,0.09873,0.29913,1.02380) 
 fleming.table[,3] <- c(3.84,-4.22,8.9,2.62,2.95) 
 
-rws <- seq(1, (nrow(fleming.table)), by = 2)
-#col <- rep("\\rowcolor[gray]{0.95}", length(rws))
+kable(fleming.table, 
+      format="latex",
+      caption = "\\label{T:FHmodel}Regression model summary~\\citep[Chapter 4]{fleming:1991}. 312 randomized cases in \\code{pbc.trial} data set.", 
+      digits = 3,
+      booktabs=TRUE)
 
-print(xtable(fleming.table, 
-             caption = "Regression model with log transformations of continuous variables, 312 randomized cases with PBC.", 
-             label = "T:FHmodel", 
-             digits = 4), 
-      size = 'footnotesize', # fontsize
-      booktabs = TRUE, 
-#      add.to.row = list(pos = as.list(rws), command = col), 
-      command= c('\\toprule' , 
-                   '\\midrule' , 
-                   '\\bottomrule ')
-      )
 @
 
 In Figure~\ref{fig:plot_gg_survival}, we demonstrated grouping on the categorical variable (\code{treatment}). However, with the exception of \code{edema}, all variables included in the~\cite{fleming:1991} model are continuous. To demonstrate plotting grouped survival on a continuous variable, we examine KM estimates of survival within stratified groups of bilirubin measures. The groupings are obtained directly from~\cite{fleming:1991} Figure 4.4.2, where they presented univariate model results of predicting survival on a function of bilirubin. 
