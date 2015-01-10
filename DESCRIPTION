@@ -8,6 +8,7 @@ Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)
 VignetteBuilder: knitr
 URL: https://github.com/ehrlinger/ggRandomForests
+BugReports: https://github.com/ehrlinger/ggRandomForests/issues
 Description:  Graphics for Random Forests using the randomForestSRC package for survival, regression and 
   classification forests and ggplot2 package plotting.
 Depends:

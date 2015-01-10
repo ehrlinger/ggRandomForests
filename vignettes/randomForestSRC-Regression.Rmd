@@ -146,7 +146,7 @@ st.labs <- as.character(dta.labs$Description)
 names(st.labs) <- names(cls)
 
 # Print the descriptive table.
-kable(dta.labs, format="html",row.names = FALSE)
+kable(dta.labs, format="markdown",row.names = FALSE)
 ```
 
 The main objective of the Boston Housing data is to investigate variables associated with predicting the median value of homes (continuous `medv` response) within `r nrow(Boston)` suburban areas of Boston.
