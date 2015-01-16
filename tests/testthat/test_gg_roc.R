@@ -20,7 +20,8 @@ test_that("gg_roc classifications",{
   expect_is(gg_dta, "gg_roc")
   
   # Test classification dimensions
-  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[,which.outcome]))+1)
+  expect_equal(nrow(gg_dta), 
+               length(unique(rfsrc_iris$predicted.oob[,which.outcome]))+1)
   expect_equal(ncol(gg_dta), 3)
   
   # Test data is correctly pulled from randomForest obect.
