@@ -169,8 +169,16 @@ gg_partial.rfsrc <- function(object,
   gg_dta <- mclapply(1:n.var, function(ind){
     
     if(length(object$pData[[ind]]$x.uniq) == length(object$pData[[ind]]$yhat)){
-      data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
-                       x=object$pData[[ind]]$x.uniq))
+      if(object$family=="surv"){
+        # Survival family has weird standard errors because of non-normal transforms
+        data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
+                         x=object$pData[[ind]]$x.uniq))
+      }else{
+        # We assume RC forests are "normal"
+        data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
+                         x=object$pData[[ind]]$x.uniq,
+                         se=object$pData[[ind]]$yhat.se))
+      }
     }else{
       
       x <- rep(as.character(object$pData[[ind]]$x.uniq),
@@ -186,7 +194,7 @@ gg_partial.rfsrc <- function(object,
   
   # name the data, so labels come out correctly.
   for(ind in 1:n.var){
-    colnames(gg_dta[[ind]])[-1] <- object$xvar.names[ind]
+    colnames(gg_dta[[ind]])[which(colnames(gg_dta[[ind]])=="x")] <- object$xvar.names[ind]
     if(!missing(named)) gg_dta[[ind]]$id=named
     class(gg_dta[[ind]]) <- c("gg_partial", class(gg_dta[[ind]]))
   }
