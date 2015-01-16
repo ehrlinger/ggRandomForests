@@ -101,8 +101,33 @@ gg_vimp.rfsrc <- function(object, ...){
   
   # Handle multiclass importance
   if(!is.null(dim(gg_dta))){
+    # Classification...
+    arg_set <- list(...)
+    
     gg_dta <- data.frame(gg_dta)
-    gg_dta$vars <- rownames(gg_dta)
+    if(!is.null(arg_set$which.outcome)){
+      # test which.outcome specification
+      if(!is.numeric(arg_set$which.outcome)){
+        if(arg_set$which.outcome %in% colnames(gg_dta)){
+          gg_v <- data.frame(vimp=sort(gg_dta[,arg_set$which.outcome], decreasing=TRUE))
+          gg_v$vars <- rownames(gg_dta)[order(gg_dta[,arg_set$which.outcome], decreasing=TRUE)]
+        }else{
+          stop(paste("which.outcome naming is incorrect.", arg_set$which.outcome, 
+                     "\nis not in", colnames(gg_dta)))
+        }
+      }else{
+        if(arg_set$which.outcome < ncol(gg_dta)){
+          gg_v <- data.frame(vimp=sort(gg_dta[,arg_set$which.outcome+1], decreasing=TRUE))
+          gg_v$vars <- rownames(gg_dta)[order(gg_dta[,arg_set$which.outcome+1], decreasing=TRUE)]
+        }else{
+          stop(paste("which.outcome specified larger than the number of classes (+1).", arg_set$which.outcome, 
+                     " >= ", ncol(gg_dta)))
+        }
+      }
+      gg_dta <- gg_v
+    }else{
+      gg_dta$vars <- rownames(gg_dta)
+    }
     
     clnms <- colnames(gg_dta)[-which(colnames(gg_dta)=="vars")]
     gg_dta <- melt(gg_dta, id.vars="vars", 
