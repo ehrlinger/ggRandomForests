@@ -121,7 +121,7 @@ gg_error <- function (object, ...) {
 
 gg_error.rfsrc <- function(object, ...) {
   ## Check that the input obect is of the correct type.
-  if (inherits(object, "rfsrc") == FALSE){
+  if (!inherits(object, "rfsrc")){
     stop("This function only works for Forests grown with the randomForestSRC package.")
   }
   if (is.null(object$err.rate)) {
@@ -129,10 +129,8 @@ gg_error.rfsrc <- function(object, ...) {
   }
   
   gg_dta <- data.frame(object$err.rate)
-  if(is.null(dim(gg_dta))){
-    gg_dta<- data.frame(error=cbind(gg_dta))
-  }
   
+  # If there is only one column in the error rate... name it reasonably.
   if("object.err.rate" %in% colnames(gg_dta))
     colnames(gg_dta)[which(colnames(gg_dta)=="object.err.rate")] <- "error"
   

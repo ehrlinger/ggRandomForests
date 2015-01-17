@@ -22,10 +22,51 @@ test_that("gg_vimp classifications",{
   expect_is(gg_dta, "gg_vimp")
   
   # Test varselect is the same
- #expect_equivalent(select(gg_dta$varselect, -names), rfsrc_iris$importance)
+  #expect_equivalent(select(gg_dta$varselect, -names), rfsrc_iris$importance)
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_vimp(gg_dta)
+  gg_plt <- plot(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
+  # Grab only one class... by number.
+  gg_dta <- gg_vimp(rfsrc_iris, which.outcome=2)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_vimp")
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  # Grab only one class... by number - for the overall model.
+  gg_dta <- gg_vimp(rfsrc_iris, which.outcome=0)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_vimp")
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  # Grab only one class... by name - for the overall model.
+  gg_dta <- gg_vimp(rfsrc_iris, which.outcome="all")
+  
+  # Test object type
+  expect_is(gg_dta, "gg_vimp")
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  # Grab only one class... by name - for the overall model.
+  gg_dta <- gg_vimp(rfsrc_iris, which.outcome="setosa")
+  
+  # Test object type
+  expect_is(gg_dta, "gg_vimp")
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -54,7 +95,7 @@ test_that("gg_vimp survival",{
   expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_veteran$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_vimp(gg_dta)
+  gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -93,12 +134,12 @@ test_that("gg_vimp regression",{
   expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_airq$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_vimp(gg_dta)
+  gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_vimp(gg_dta, relative=TRUE)
+  gg_plt <- plot(gg_dta, relative=TRUE)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -145,9 +186,9 @@ test_that("gg_vimp regression",{
   st.labs <- as.character(dta.labs$Description)
   names(st.labs) <- names(cls)
   
-  ## Test plotting the gg_error object
+  ## Test plotting the rfsrc object
   gg_plt <- plot.gg_vimp(rfsrc_Boston, lbls=st.labs, relative=TRUE, 
-                         bars=rfsrc_Boston$xvar.names)
+                 bars=rfsrc_Boston$xvar.names)
   expect_is(gg_plt, "ggplot")
   
   

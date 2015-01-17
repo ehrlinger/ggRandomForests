@@ -26,7 +26,7 @@ test_that("gg_error classifications",{
   expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta)=="ntree")]), rfsrc_iris$err.rate)
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_error(gg_dta)
+  gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -68,7 +68,7 @@ test_that("gg_error survival",{
   expect_equivalent(tmp, rfsrc_veteran$err.rate)
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_error(gg_dta)
+  gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -106,9 +106,18 @@ test_that("gg_error regression",{
   expect_equivalent(c(gg_dta[,1]), rfsrc_airq$err.rate)
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_error(gg_dta)
+  gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_error(rfsrc_airq)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
+  # Test the exception for input
+  expect_error(gg_error(gg_plt))
   
 })

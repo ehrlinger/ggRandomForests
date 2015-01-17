@@ -4,6 +4,12 @@ Version: 1.1.4
 
 ggRandomForests v1.1.4
 ===================
+* Completion of package vignette "ggRandomForests: Survival with Random Forests" for submission. 
+* Minor updates to "ggRandomForests: Visually Exploring a Random Forest for Regression" vignette.
+* Argument for single outcome gg_vimp plot for classification forests.
+* combine.gg_partial bug when giving a single variable plot.variable object.
+* Improve function tests
+* Misc bug fixes.
 
 ggRandomForests v1.1.3
 ===================
