@@ -71,6 +71,13 @@ test_that("gg_vimp classifications",{
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
+  # Grab only one class... by name - that doesn't exist.
+  expect_error(gg_vimp(rfsrc_iris, which.outcome="nothing special"))
+  
+  # Grab only one class... by number - that doesn't exist.
+  expect_error(gg_vimp(rfsrc_iris, which.outcome=200))
+  
+  
   
   ## Single class/
   iris2 <- iris
@@ -82,6 +89,9 @@ test_that("gg_vimp classifications",{
   gg_dta <- gg_vimp(rf)
   
   expect_is(gg_dta, "gg_vimp")
+  
+  # Test passing in the wrong object
+  expect_error(gg_vimp(gg_dta))
 })
 
 
@@ -120,6 +130,13 @@ test_that("gg_vimp survival",{
   ## Create the correct gg_error object
   expect_is(gg_dta<- gg_vimp(rfsrc_pbc, relative=TRUE),
             "gg_vimp")
+  expect_is(plot(gg_dta), "ggplot")
+  
+  # Test importance calculations. 
+  # If the forest does not have importance
+  rfsrc_pbc$importance <- NULL
+  expect_warning(gg_dta<- gg_vimp(rfsrc_pbc))
+  expect_is(gg_dta, "gg_vimp")
   expect_is(plot(gg_dta), "ggplot")
   
 })
@@ -200,7 +217,7 @@ test_that("gg_vimp regression",{
   
   ## Test plotting the rfsrc object
   gg_plt <- plot.gg_vimp(rfsrc_Boston, lbls=st.labs, relative=TRUE, 
-                 bars=rfsrc_Boston$xvar.names)
+                         bars=rfsrc_Boston$xvar.names)
   expect_is(gg_plt, "ggplot")
   
   
