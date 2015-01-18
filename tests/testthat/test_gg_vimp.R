@@ -70,6 +70,18 @@ test_that("gg_vimp classifications",{
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
+  
+  
+  ## Single class/
+  iris2 <- iris
+  iris2$spec <- factor(as.character(iris2$Species) == "setosa")
+  iris2 <- iris2[,-which(colnames(iris2)=="Species")]
+  
+  rf <- rfsrc(spec~., iris2)
+  
+  gg_dta <- gg_vimp(rf)
+  
+  expect_is(gg_dta, "gg_vimp")
 })
 
 
