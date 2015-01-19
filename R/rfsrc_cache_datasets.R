@@ -251,8 +251,8 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     cat("pbc: randomForest predict\n")
     # Predict survival for 106 patients not in randomized trial
     if(!test)  rfsrc_pbc_test <- predict(rfsrc_pbc, 
-                              newdata = pbc.test,
-                              na.action = "na.impute")
+                                         newdata = pbc.test,
+                                         na.action = "na.impute")
     if(save) save(rfsrc_pbc_test, file=paste(pth, "rfsrc_pbc_test.rda", sep=""), compress="xz")
     
     # Print prediction summary  

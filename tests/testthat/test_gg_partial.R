@@ -160,11 +160,11 @@ test_that("gg_partial regression",{
   
   # Try to get the partial chas river?
   data(rfsrc_Boston, package="ggRandomForests")
-  
-  plt <- plot.variable(rfsrc_Boston, show.plots = FALSE, partial=TRUE,
-                       npts=10, xvar="chas")
-  # generate a list of gg_partial objects, one per xvar.
-  expect_is(gg_p <- gg_partial(plt), "gg_partial")
+#   
+#   plt <- plot.variable(rfsrc_Boston, show.plots = FALSE, partial=TRUE,
+#                        npts=10, xvar="chas")
+#   # generate a list of gg_partial objects, one per xvar.
+#   expect_is(gg_p <- gg_partial(plt), "gg_partial")
   
 })
 
