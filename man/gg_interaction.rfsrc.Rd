@@ -43,6 +43,7 @@ plot(gg_dta, panel=TRUE)
 ## ------------------------------------------------------------
 ## find interactions, regression setting
 ## ------------------------------------------------------------
+\dontrun{
 ## -------- air quality data
 ## airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 ##
@@ -52,11 +53,11 @@ plot(gg_dta, panel=TRUE)
 data(interaction_airq, package="ggRandomForests")
 gg_dta <- gg_interaction(interaction_airq)
 
-\dontrun{
 plot(gg_dta, xvar="Temp")
 plot(gg_dta, xvar="Solar.R")
-}
+
 plot(gg_dta, panel=TRUE)
+}
 
 ## -------- Boston data
 data(interaction_Boston, package="ggRandomForests")
@@ -85,11 +86,13 @@ gg_dta <- gg_interaction(interaction_pbc)
 plot(gg_dta, xvar="bili")
 plot(gg_dta, panel=TRUE)
 
+\dontrun{
 ## -------- veteran data
 data(interaction_veteran, package="ggRandomForests")
 gg_dta <- gg_interaction(interaction_veteran)
 
 plot(gg_dta, panel=TRUE)
+}
 }
 \references{
 Ishwaran H. (2007). Variable importance in binary regression trees and

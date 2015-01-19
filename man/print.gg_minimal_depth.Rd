@@ -31,6 +31,7 @@ print(gg_dta)
 ## ------------------------------------------------------------
 ## regression example
 ## ------------------------------------------------------------
+\dontrun{
 # ... or load a cached randomForestSRC object
 data(varsel_airq, package="ggRandomForests")
 
@@ -40,5 +41,16 @@ print(gg_dta)
 
 # To nicely print a rfsrc::var.select output...
 print.gg_minimal_depth(varsel_airq)
+}
+
+# ... or load a cached randomForestSRC object
+data(varsel_Boston, package="ggRandomForests")
+
+# Get a data.frame containing minimaldepth measures
+gg_dta<- gg_minimal_depth(varsel_Boston)
+print(gg_dta)
+
+# To nicely print a rfsrc::var.select output...
+print.gg_minimal_depth(varsel_Boston)
 }
 

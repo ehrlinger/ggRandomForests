@@ -63,6 +63,7 @@
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
+#' \dontrun{
 #' ## -------- air quality data
 #' #rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
 #' data(rfsrc_airq, package="ggRandomForests")
@@ -71,16 +72,16 @@
 #' # an ordinal variable 
 #' gg_dta[,"Month"] <- factor(gg_dta[,"Month"])
 #' 
-#' \dontrun{
 #' plot(gg_dta, xvar="Wind")
 #' plot(gg_dta, xvar="Temp")
 #' plot(gg_dta, xvar="Solar.R")
-#' }
+#' 
 #' 
 #' plot(gg_dta, xvar=c("Solar.R", "Wind", "Temp", "Day"), panel=TRUE)
 #' 
 #' plot(gg_dta, xvar="Month", notch=TRUE)
-#' 
+#' }
+#' \dontrun{
 #' ## -------- motor trend cars data
 #' #rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' data(rfsrc_mtcars, package="ggRandomForests")
@@ -93,24 +94,24 @@
 #' gg_dta$gear <- factor(gg_dta$gear)
 #' gg_dta$carb <- factor(gg_dta$carb)
 #' 
-#' \dontrun{
 #' plot(gg_dta, xvar="cyl")
 #' 
 #' # Others are continuous
 #' plot(gg_dta, xvar="disp")
 #' plot(gg_dta, xvar="hp")
 #' plot(gg_dta, xvar="wt")
-#' }
+#' 
 #' 
 #' # panels
 #' plot(gg_dta,xvar=c("disp","hp", "drat", "wt", "qsec"),  panel=TRUE)
 #' plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE, notch=TRUE)
-#' 
+#' }
 #' ## -------- Boston data
 #' 
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
+#' \dontrun{
 #' ## -------- veteran data
 #' ## survival
 #' # data(veteran, package = "randomForestSRC")
@@ -123,7 +124,7 @@
 #' # Generate variable dependance plots for age and diagtime
 #' plot(gg_dta, xvar = "age")
 #' plot(gg_dta, xvar = "diagtime", )
-#' \dontrun{
+#' 
 #' # Generate coplots
 #' plot(gg_dta, xvar = c("age", "diagtime"), panel=TRUE, se=FALSE)
 #' 
@@ -135,6 +136,9 @@
 #' plot(gg_dta, xvar = "age")
 #' }
 #' ## -------- pbc data
+#' 
+#' 
+#' 
 
 gg_variable.rfsrc <- function(object,
                               time,

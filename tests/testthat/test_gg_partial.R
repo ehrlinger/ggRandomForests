@@ -43,10 +43,10 @@ test_that("gg_partial classifications",{
 
 test_that("gg_partial survival",{
   ## Load the cached forest
-  data(rfsrc_veteran, package="ggRandomForests")
+  data(rfsrc_pbc, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_veteran, "rfsrc")
+  expect_is(rfsrc_pbc, "rfsrc")
   
   ## Get the partial data.
   data(partial_pbc, package="ggRandomForests")

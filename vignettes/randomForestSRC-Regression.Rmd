@@ -24,7 +24,7 @@ opts_chunk$set(fig.path = 'fig-rfr/rfr-',
                comment = NA, 
                echo = TRUE, results = TRUE, 
                message = FALSE, warning = FALSE, 
-               error = FALSE, prompt = TRUE)
+               error = FALSE, prompt = TRUE, dev="png")
 
 # Setup the R environment
 options(object.size = Inf, expressions = 100000, memory = Inf, 

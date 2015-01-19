@@ -28,34 +28,37 @@
 #' 
 #' @examples 
 #' # Load a set of plot.variable partial plot data
-#' data(partial_veteran)
+#' data(partial_pbc)
 #' 
 #' # A list of 2 plot.variable objects
-#' length(partial_veteran) 
-#' class(partial_veteran)
+#' length(partial_pbc) 
+#' class(partial_pbc)
 #' 
-#' class(partial_veteran[[1]])
-#' class(partial_veteran[[2]])
+#' class(partial_pbc[[1]])
+#' class(partial_pbc[[2]])
 #' 
 #' # Create gg_partial objects
-#' ggPrtl.1 <- gg_partial(partial_veteran[[1]])
-#' ggPrtl.2 <- gg_partial(partial_veteran[[2]])
+#' ggPrtl.1 <- gg_partial(partial_pbc[[1]])
+#' ggPrtl.2 <- gg_partial(partial_pbc[[2]])
 #' 
 #' # Combine the objects to get multiple time curves 
 #' # along variables on a single figure.
 #' ggpart <- combine.gg_partial(ggPrtl.1, ggPrtl.2, 
-#'                              lbls = c("30 day", "6 month"))
+#'                              lbls = c("1 year", "3 years"))
 #'                              
 #' # Plot each figure separately
 #' plot(ggpart)                                  
 #' 
 #' # Get the continuous data for a panel of continuous plots.
 #' ggcont <- ggpart
-#' ggcont$celltype <- ggcont$trt <- ggcont$prior <- NULL
+#' ggcont$edema <- ggcont$ascites <- ggcont$stage <- NULL
 #' plot(ggcont, panel=TRUE) 
 #' 
 #' # And the categorical for a panel of categorical plots.
-#' ggpart$karno <- ggpart$diagtime <- ggpart$age <- NULL
+#' nms <- colnames(sapply(ggcont, function(st){st}))
+#' for(ind in nms){
+#'    ggpart[[ind]] <- NULL
+#' }
 #' plot(ggpart, panel=TRUE) 
 #' 
 #' 

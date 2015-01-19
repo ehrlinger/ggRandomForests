@@ -65,6 +65,7 @@
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
+#' \dontrun{
 #' ## -------- air quality data
 #' ## airquality "Wind" partial dependence plot
 #' ##
@@ -81,14 +82,15 @@
 #' 
 #' gg_dta[["Month"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
+#' }
 #' 
-#' \dontrun{
 #' ## -------- Boston data
 #' data(partial_Boston, package="ggRandomForests")
 #'
 #' gg_dta <- gg_partial(partial_Boston)
 #' plot(gg_dta, panel=TRUE)
 #'
+#' \dontrun{
 #' ## -------- mtcars data
 #' data(partial_mtcars, package="ggRandomForests")
 #' gg_dta <- gg_partial(partial_mtcars)
@@ -103,9 +105,11 @@
 #' gg_dta[["gear"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
 #' }
+#'
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
+#' \dontrun{
 #' ## -------- veteran data
 #' ## survival "age" partial variable dependence plot
 #' ##
@@ -135,7 +139,6 @@
 #' plot(gg_dta[["karno"]])
 #' plot(gg_dta[["celltype"]])
 #' 
-#' \dontrun{
 #' gg_dta.cat <- gg_dta
 #' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
@@ -144,7 +147,39 @@
 #' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 #' }
 #' ## -------- pbc data
+#' data("partial_pbc", package = "ggRandomForests")
+#' data("varsel_pbc", package = "ggRandomForests")
+#' xvar <- varsel_pbc$topvars
 #' 
+#' # Convert all partial plots to gg_partial objects
+#' gg_dta <- lapply(partial_pbc, gg_partial)
+#'
+#' # Combine the objects to get multiple time curves 
+#' # along variables on a single figure.
+#' pbc_ggpart <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]], 
+#'                               lbls = c("1 Year", "3 Years"))
+#'
+#' # Plot the highest ranked variable, by name.
+#' plot(pbc_ggpart[["bili"]], se = FALSE)
+#'      
+#'      # Create a temporary holder and remove the stage and edema data
+#' ggpart <- pbc_ggpart
+#' ggpart$edema <- ggpart$stage <- NULL
+#' ggpart$bili <- ggpart$sgot <- ggpart$chol <- NULL
+#' ggpart$platelet <- ggpart$trig <- ggpart$alk <- NULL
+#' 
+#' # Panel plot the remainder.
+#' plot(ggpart, se = FALSE, panel = TRUE)
+#'   
+#' ggpart <- vector("list", length=2) 
+#' ggpart[[1]] <- pbc_ggpart[["edema"]]
+#' ggpart[[2]] <- pbc_ggpart[["stage"]]
+#' names(ggpart) <- c("edema", "stage")
+#' class(ggpart) <- c("gg_partial_list", class(ggpart))
+#' 
+#' plot.gg_partial_list(ggpart, panel=TRUE,
+#'                      notch = TRUE, alpha = .3, outlier.shape = NA) 
+#'   
 #' @aliases gg_partial gg_partial_list
 #' @name gg_partial
 #' @name gg_partial_list

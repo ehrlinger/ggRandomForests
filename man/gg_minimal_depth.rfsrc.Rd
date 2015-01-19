@@ -46,6 +46,7 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
+\dontrun{
 ## -------- air quality data
 # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 # varsel_airq <- var.select(rfsrc_airq)
@@ -57,6 +58,7 @@ gg_dta<- gg_minimal_depth(varsel_airq)
 
 # Plot the gg_minimal_depth object
 plot(gg_dta)
+}
 
 ## -------- Boston data
 data(varsel_Boston, package="ggRandomForests")
@@ -64,15 +66,18 @@ data(varsel_Boston, package="ggRandomForests")
 # Get a data.frame containing error rates
 plot(gg_minimal_depth(varsel_Boston))
 
+\dontrun{
 ## -------- mtcars data
 data(varsel_mtcars, package="ggRandomForests")
 
 # Get a data.frame containing error rates
 plot.gg_minimal_depth(varsel_mtcars)
+}
 
 ## ------------------------------------------------------------
 ## Survival example
 ## ------------------------------------------------------------
+\dontrun{
 ## -------- veteran data
 ## veteran data
 ## randomized trial of two treatment regimens for lung cancer
@@ -84,6 +89,7 @@ data(varsel_veteran, package="ggRandomForests")
 
 gg_dta <- gg_minimal_depth(varsel_veteran)
 plot(gg_dta)
+}
 
 ## -------- pbc data
 data(varsel_pbc, package="ggRandomForests")

@@ -65,16 +65,16 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
+#' \dontrun{
 #' ## ------------- airq data
-#' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' # ... or load a cached randomForestSRC object
-#' data(rfsrc_airq, package="ggRandomForests")
+#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_error(rfsrc_airq)
 #' 
 #' # Plot the gg_error object
 #' plot(gg_dta)
+#' }
 #' 
 #' ## ------------- Boston data
 #' data(rfsrc_Boston, package="ggRandomForests")
@@ -85,28 +85,28 @@
 #' # Plot the gg_error object
 #' plot(gg_dta)
 #' 
+#' \dontrun{
 #' ## ------------- mtcars data
-#' data(rfsrc_mtcars, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_error(rfsrc_mtcars)
 #' 
 #' # Plot the gg_error object
 #' plot(gg_dta)
+#' }
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
+#' \dontrun{
 #' ## ------------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' # data(veteran, package = "randomForestSRC")
-#' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#' 
-#' # Load a cached randomForestSRC object
-#' data(rfsrc_veteran, package="ggRandomForests")
+#' data(veteran, package = "randomForestSRC")
+#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = dta$veteran, ...)
 #' 
 #' gg_dta <- gg_error(rfsrc_veteran)
 #' plot(gg_dta)
+#' }
 #' 
 #' ## ------------- pbc data
 #' # Load a cached randomForestSRC object

@@ -71,6 +71,7 @@
 #' ## ------------------------------------------------------------
 #' ## find interactions, regression setting
 #' ## ------------------------------------------------------------
+#' \dontrun{
 #' ## -------- air quality data
 #' ## airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 #' ##
@@ -80,11 +81,11 @@
 #' data(interaction_airq, package="ggRandomForests")
 #' gg_dta <- gg_interaction(interaction_airq)
 #' 
-#' \dontrun{
 #' plot(gg_dta, xvar="Temp")
 #' plot(gg_dta, xvar="Solar.R")
-#' }
+#' 
 #' plot(gg_dta, panel=TRUE)
+#' }
 #' 
 #' ## -------- Boston data
 #' data(interaction_Boston, package="ggRandomForests")
@@ -113,12 +114,13 @@
 #' plot(gg_dta, xvar="bili")
 #' plot(gg_dta, panel=TRUE)
 #' 
+#' \dontrun{
 #' ## -------- veteran data
 #' data(interaction_veteran, package="ggRandomForests")
 #' gg_dta <- gg_interaction(interaction_veteran)
 #' 
 #' plot(gg_dta, panel=TRUE)
-#' 
+#' }
 #' 
 
 # gg_interaction <- function (object, ...) {

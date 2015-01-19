@@ -51,26 +51,30 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
+#' \dontrun{
 #' ## -------- air quality data
 #' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' data(rfsrc_airq, package="ggRandomForests")
 #' gg_dta<- gg_rfsrc(rfsrc_airq)
 #' 
 #' plot.gg_rfsrc(gg_dta)
+#' }
 #' 
 #' ## -------- Boston data
 #' data(rfsrc_Boston, package="ggRandomForests")
 #' plot.gg_rfsrc(rfsrc_Boston) 
 #' 
+#' \dontrun{
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
 #' gg_dta<- gg_rfsrc(rfsrc_mtcars)
 #' 
 #' plot.gg_rfsrc(gg_dta)
-#' 
+#' }
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
+#' \dontrun{
 #' ## -------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' # data(veteran, package = "randomForestSRC")
@@ -84,8 +88,8 @@
 #' 
 #' gg_dta <- gg_rfsrc(rfsrc_veteran, by="trt")
 #' plot(gg_dta)
+#' }
 #' 
-#' \dontrun{
 #' ## -------- pbc data
 #' ## We don't run this because of bootstrap confidence limits
 #' data(rfsrc_pbc, package = "ggRandomForests")
@@ -97,7 +101,7 @@
 #' 
 #' gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
 #' plot(gg_dta)
-#'}
+#'
 #' 
 #' @aliases gg_rfsrc gg_rfsrc.rfsrc
 #' @export gg_rfsrc gg_rfsrc.rfsrc 
