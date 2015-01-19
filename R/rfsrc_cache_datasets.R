@@ -241,10 +241,22 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     cat("pbc: randomForest\n")
     dta.train <- pbc[-which(is.na(pbc$treatment)),]
+    # Create a test set from the remaining patients
+    pbc.test <- pbc[which(is.na(pbc$treatment)),]
+    
     if(!test) rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., dta.train, nsplit = 10,
                                  na.action="na.impute", ...)
     if(save) save(rfsrc_pbc, file=paste(pth, "rfsrc_pbc.rda", sep=""), compress="xz")
     
+    cat("pbc: randomForest predict\n")
+    # Predict survival for 106 patients not in randomized trial
+    if(!test)  rfsrc_pbc_test <- predict(rfsrc_pbc, 
+                              newdata = pbc.test,
+                              na.action = "na.impute")
+    if(save) save(rfsrc_pbc_test, file=paste(pth, "rfsrc_pbc_test.rda", sep=""), compress="xz")
+    
+    # Print prediction summary  
+    rfsrc_pbc_test
     cat("pbc: RF minimal depth\n")
     if(!test) varsel_pbc <- var.select(rfsrc_pbc)
     else{

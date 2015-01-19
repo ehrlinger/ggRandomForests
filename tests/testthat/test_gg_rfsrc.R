@@ -129,46 +129,10 @@ test_that("gg_rfsrc survival",{
   
   # Test prediction
   ## Load the cached forest
-  data("rfsrc_pbc", package="ggRandomForests")
-  data(pbc, package="randomForestSRC")
-  # For whatever reason, the age variable is in days... makes no sense to me
-  for(ind in 1:dim(pbc)[2]){
-    if(!is.factor(pbc[,ind])){
-      if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
-        if(sum(range(pbc[,ind],na.rm=TRUE) == c(0,1))==2){
-          pbc[,ind] <- as.logical(pbc[,ind])
-        }
-      }
-    }else{
-      if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
-        if(sum(sort(unique(pbc[,ind])) == c(0,1))==2){
-          pbc[,ind] <- as.logical(pbc[,ind])
-        }
-        if(sum(sort(unique(pbc[,ind])) == c(FALSE, TRUE))==2){
-          pbc[,ind] <- as.logical(pbc[,ind])
-        }
-      }
-    }
-    if(!is.logical(pbc[, ind]) & 
-         length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=5) {
-      pbc[,ind] <- factor(pbc[,ind])
-    }
-  }
-  # Convert age to years
-  pbc$age <- pbc$age/364.24
-  
-  pbc$years <- pbc$days/364.24
-  pbc <- pbc[, -which(colnames(pbc)=="days")]
-  pbc$treatment <- as.numeric(pbc$treatment)
-  pbc$treatment[which(pbc$treatment==1)] <- "DPCA"
-  pbc$treatment[which(pbc$treatment==2)] <- "placebo"
-  pbc$treatment <- factor(pbc$treatment)
-  
-  prd_dta <- predict(rfsrc_pbc,
-                     newdata=pbc[which(is.na(pbc$treatment)),],
-                     na.action="na.impute")
-  
-  expect_is(gg_dta <- gg_rfsrc(prd_dta), "gg_rfsrc")
+  # Predict survival for 106 patients not in randomized trial
+  data(rfsrc_pbc_test, package="ggRandomForests")
+  # Print prediction summary  
+  expect_is(gg_dta <- gg_rfsrc(rfsrc_pbc_test), "gg_rfsrc")
   
   # Test for group "by" name exists
   expect_error(gg_rfsrc(rfsrc_pbc, by="trt"))
