@@ -2,9 +2,6 @@
 context("gg_rfsrc tests")
 
 test_that("gg_rfsrc classifications",{
-  ## IF we want to build the forest every time...
-  #   rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-  
   ## Load the cached forest
   data(rfsrc_iris, package="ggRandomForests")
   
@@ -52,22 +49,17 @@ test_that("gg_rfsrc classifications",{
 
 
 test_that("gg_rfsrc survival",{
-  
-  ## IF we want to build the forest every time...
-  #   data(veteran, package = "randomForestSRC")
-  #   rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-  
   ## Load the cached forest
-  data(rfsrc_veteran, package="ggRandomForests")
+  data(rfsrc_pbc, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_veteran, "rfsrc")
+  expect_is(rfsrc_pbc, "rfsrc")
   
   # Test the forest family
-  expect_match(rfsrc_veteran$family, "surv")
+  expect_match(rfsrc_pbc$family, "surv")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_veteran)
+  gg_dta<- gg_rfsrc(rfsrc_pbc)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -81,7 +73,7 @@ test_that("gg_rfsrc survival",{
   expect_is(gg_plt, "ggplot")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_veteran, oob=FALSE)
+  gg_dta<- gg_rfsrc(rfsrc_pbc, oob=FALSE)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -95,7 +87,7 @@ test_that("gg_rfsrc survival",{
   
   # Test classification dimensions
   
-  gg_dta<- gg_rfsrc(rfsrc_veteran, by="trt")
+  gg_dta<- gg_rfsrc(rfsrc_pbc, by="treatment")
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -108,14 +100,14 @@ test_that("gg_rfsrc survival",{
   expect_is(gg_plt, "ggplot")
   
   
-  gg_dta<- gg_rfsrc(rfsrc_veteran,conf.int=.68)
+  gg_dta<- gg_rfsrc(rfsrc_pbc,conf.int=.68)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
   expect_is(gg_dta, "surv")
   
   # Test multiple conf intervals
-  gg_dta<- gg_rfsrc(rfsrc_veteran,conf.int=c(.025, .975), bs.sample=100)
+  gg_dta<- gg_rfsrc(rfsrc_pbc,conf.int=c(.025, .975), bs.sample=100)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -144,22 +136,17 @@ test_that("gg_rfsrc survival",{
 })
 
 test_that("gg_rfsrc regression",{
-  
-  ## IF we want to build the forest every time...
-  #   ## New York air quality measurements
-  #   airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  
   ## Load the cached forest
-  data(rfsrc_airq, package="ggRandomForests")
+  data(rfsrc_Boston, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_airq, "rfsrc")
+  expect_is(rfsrc_Boston, "rfsrc")
   
   # Test the forest family
-  expect_match(rfsrc_airq$family, "regr")
+  expect_match(rfsrc_Boston$family, "regr")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_airq)
+  gg_dta<- gg_rfsrc(rfsrc_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -172,14 +159,14 @@ test_that("gg_rfsrc regression",{
   expect_is(gg_plt, "ggplot")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_airq, oob=FALSE)
+  gg_dta<- gg_rfsrc(rfsrc_Boston, oob=FALSE)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
   
   # Test classification dimensions
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_airq, by="Month")
+  gg_dta<- gg_rfsrc(rfsrc_Boston, by="chas")
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -190,15 +177,15 @@ test_that("gg_rfsrc regression",{
   
   # Test data is correctly pulled from randomForest obect.
   # Predicted values
-  rfsrc_airq$family <- "test"
-  expect_error(gg_rfsrc(rfsrc_airq))
+  rfsrc_Boston$family <- "test"
+  expect_error(gg_rfsrc(rfsrc_Boston))
   
   # Test exceptions
   # Is it an rfsrc object?
   expect_error(gg_rfsrc(gg_plt))
   
   # Does it contain the forest?
-  rfsrc_airq$forest <- NULL
-  expect_error(gg_rfsrc(rfsrc_airq))
+  rfsrc_Boston$forest <- NULL
+  expect_error(gg_rfsrc(rfsrc_Boston))
   
 })

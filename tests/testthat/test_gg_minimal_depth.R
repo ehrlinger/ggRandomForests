@@ -2,10 +2,6 @@
 context("gg_minimal_depth tests")
 
 test_that("gg_minimal_depth classifications",{
-  ## IF we want to build the forest every time...
-  #   rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-  # varsel_iris <- var.select(rfsrc_iris)
-  
   ## Load the cached forest
   data(varsel_iris, package="ggRandomForests")
   
@@ -37,26 +33,21 @@ test_that("gg_minimal_depth classifications",{
 
 
 test_that("gg_minimal_depth survival",{
-  
-  ## IF we want to build the forest every time...
-  #   data(veteran, package = "randomForestSRC")
-  #   rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-  #   varsel_veteran <- var.select(rfsrc_veteran)
   ## Load the cached forest
-  data(varsel_veteran, package="ggRandomForests")
+  data(varsel_pbc, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(varsel_veteran, "list")
+  expect_is(varsel_pbc, "list")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_minimal_depth(varsel_veteran)
+  gg_dta<- gg_minimal_depth(varsel_pbc)
   
   # Test object type
   expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
   expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect)=="names")],
-                    varsel_veteran$varselect)
+                    varsel_pbc$varselect)
   
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_minimal_depth(gg_dta)
@@ -66,33 +57,6 @@ test_that("gg_minimal_depth survival",{
 })
 
 test_that("gg_minimal_depth regression",{
-  
-  ## IF we want to build the forest every time...
-  #   ## New York air quality measurements
-  #   airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  #   varsel_airq <- var.select(rfsrc_airq)
-  ## Load the cached forest
-  data(varsel_airq, package="ggRandomForests")
-  
-  # Test the cached forest type
-  expect_is(varsel_airq, "list")
-  
-  ## Create the correct gg_error object
-  gg_dta<- gg_minimal_depth(varsel_airq)
-  
-  # Test object type
-  expect_is(gg_dta, "gg_minimal_depth")
-  
-  # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect)=="names")], 
-                    varsel_airq$varselect)
-  
-  ## Test plotting the gg_error object
-  gg_plt <- plot.gg_minimal_depth(gg_dta)
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
-  
   ## Load the cached forest
   data(varsel_Boston, package="ggRandomForests")
   
@@ -100,6 +64,22 @@ test_that("gg_minimal_depth regression",{
   expect_is(varsel_Boston, "list")
   
   ## Create the correct gg_error object
+  gg_dta<- gg_minimal_depth(varsel_Boston)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_minimal_depth")
+  
+  # Test varselect is the same
+  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect)=="names")], 
+                    varsel_Boston$varselect)
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_minimal_depth(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
+  ## Create the correct gg_minimal_depth object
   gg_dta<- gg_minimal_depth(varsel_Boston)
   # Test object type
   expect_is(gg_dta, "gg_minimal_depth")
@@ -153,12 +133,12 @@ test_that("gg_minimal_depth regression",{
 })
 
 test_that("gg_minimal_depth exceptions",{
-  data(varsel_airq, package="ggRandomForests")
+  data(varsel_Boston, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(varsel_airq, "list")
+  expect_is(varsel_Boston, "list")
   
-  vsel <- varsel_airq
+  vsel <- varsel_Boston
   vsel$varselect <- NULL
   
   expect_error(gg_minimal_depth(vsel))
@@ -166,11 +146,11 @@ test_that("gg_minimal_depth exceptions",{
   vsel$threshold <- NULL
   expect_error(gg_minimal_depth(vsel))
   
-  expect_output(print(gg_minimal_depth(varsel_airq)), 
+  expect_output(print(gg_minimal_depth(varsel_Boston)), 
                 "gg_minimal_depth", ignore.case = TRUE)
   
   
-  vsel <- varsel_airq
+  vsel <- varsel_Boston
   vsel$varselect$vimp <- NULL
   gg_dta <- gg_minimal_depth(vsel)
   

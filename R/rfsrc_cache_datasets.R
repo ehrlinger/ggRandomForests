@@ -84,7 +84,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
   }
   
   if(is.na(set))
-    set <- c("airq", "Boston", "iris", "mtcars", "pbc", "veteran")
+    set <- c("Boston", "iris", "pbc")
   
   if("airq" %in% set){
     cat("airq: randomForest\n")

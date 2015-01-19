@@ -2,10 +2,6 @@
 context("gg_minimal_vimp tests")
 
 test_that("gg_minimal_vimp classifications",{
-  ## IF we want to build the forest every time...
-  #   iris_rf <- rfsrc(Species ~ ., data = iris)
-  # varsel_iris <- var.select(iris_rf)
-  
   ## Load the cached forest
   data(varsel_iris, package="ggRandomForests")
   
@@ -34,26 +30,21 @@ test_that("gg_minimal_vimp classifications",{
 
 
 test_that("gg_minimal_vimp survival",{
-  
-  ## IF we want to build the forest every time...
-  #   data(veteran, package = "randomForestSRC")
-  #   rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-  #   varsel_veteran <- var.select(rfsrc_veteran)
   ## Load the cached forest
-  data(varsel_veteran, package="ggRandomForests")
+  data(varsel_pbc, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(varsel_veteran, "list")
+  expect_is(varsel_pbc, "list")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_vimp(varsel_veteran)
+  ggrf.obj<- gg_minimal_vimp(varsel_pbc)
   
   # Test object type
   expect_is(ggrf.obj, "gg_minimal_vimp")
   
   
   # Test varselect is the same
-  expect_equivalent(dim(ggrf.obj)[1], dim(varsel_veteran$varselect)[1])
+  expect_equivalent(dim(ggrf.obj)[1], dim(varsel_pbc$varselect)[1])
   expect_equivalent(dim(ggrf.obj)[2], 4)
   
   ## Test plotting the gg_error object
@@ -64,26 +55,21 @@ test_that("gg_minimal_vimp survival",{
 })
 
 test_that("gg_minimal_vimp regression",{
-  
-  ## IF we want to build the forest every time...
-  #   ## New York air quality measurements
-  #   rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  #   varsel_airq <- var.select(rfsrc_airq)
   ## Load the cached forest
-  data(varsel_airq, package="ggRandomForests")
+  data(varsel_Boston, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(varsel_airq, "list")
+  expect_is(varsel_Boston, "list")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_vimp(varsel_airq)
+  ggrf.obj<- gg_minimal_vimp(varsel_Boston)
   
   # Test object type
   expect_is(ggrf.obj, "gg_minimal_vimp")
   
   
   # Test varselect is the same
-  expect_equivalent(dim(ggrf.obj)[1], dim(varsel_airq$varselect)[1])
+  expect_equivalent(dim(ggrf.obj)[1], dim(varsel_Boston$varselect)[1])
   expect_equivalent(dim(ggrf.obj)[2], 4)
   
   ## Test plotting the gg_error object
@@ -92,7 +78,6 @@ test_that("gg_minimal_vimp regression",{
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
   
-  data(varsel_Boston, package="ggRandomForests")
   data(Boston, package="MASS")
   
   cls <- sapply(Boston, class) 
@@ -142,12 +127,12 @@ test_that("gg_minimal_vimp regression",{
 
 
 test_that("gg_minimal_vimp exceptions",{
-  data(varsel_airq, package="ggRandomForests")
+  data(varsel_Boston, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(varsel_airq, "list")
+  expect_is(varsel_Boston, "list")
   
-  vsel <- varsel_airq
+  vsel <- varsel_Boston
   vsel$varselect <- NULL
   
   expect_error(gg_minimal_vimp(vsel))
@@ -155,13 +140,13 @@ test_that("gg_minimal_vimp exceptions",{
   vsel$threshold <- NULL
   expect_error(gg_minimal_vimp(vsel))
   
-  vsel <- varsel_airq
+  vsel <- varsel_Boston
   vsel$varselect$vimp <- NULL
   expect_error(gg_minimal_vimp(vsel))
   expect_error(plot.gg_minimal_vimp(vsel))
   
-  data(rfsrc_airq, package="ggRandomForests")
-  expect_output(gg_dta <- gg_minimal_vimp(rfsrc_airq, fast=TRUE),
+  data(rfsrc_Boston, package="ggRandomForests")
+  expect_output(gg_dta <- gg_minimal_vimp(rfsrc_Boston, fast=TRUE),
                 "minimal depth variable selection")
   expect_is(gg_dta, "gg_minimal_vimp")
   gg_plt <- plot.gg_minimal_vimp(gg_dta)

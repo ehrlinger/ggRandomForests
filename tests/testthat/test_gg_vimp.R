@@ -1,11 +1,7 @@
 # testthat for gg_vimp function
 context("gg_vimp tests")
 
-test_that("gg_vimp classifications",{
-  ## IF we want to build the forest every time...
-  #   rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-  # rfsrc_iris <- var.select(rfsrc_iris)
-  
+test_that("gg_vimp classifications",{  
   ## Load the cached forest
   data(rfsrc_iris, package="ggRandomForests")
   
@@ -96,36 +92,26 @@ test_that("gg_vimp classifications",{
 
 
 test_that("gg_vimp survival",{
-  
-  ## IF we want to build the forest every time...
-  #   data(veteran, package = "randomForestSRC")
-  #   rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-  #   rfsrc_veteran <- var.select(rfsrc_veteran)
   ## Load the cached forest
-  data(rfsrc_veteran, package="ggRandomForests")
+  data(rfsrc_pbc, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_veteran, "rfsrc")
+  expect_is(rfsrc_pbc, "rfsrc")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_vimp(rfsrc_veteran)
+  gg_dta<- gg_vimp(rfsrc_pbc)
   
   # Test object type
   expect_is(gg_dta, "gg_vimp")
   
   # Test varselect is the same
-  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_veteran$importance, decreasing=TRUE)))
+  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_pbc$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
-  
-  data(rfsrc_pbc, package="ggRandomForests")
-  
-  # Test the cached forest type
-  expect_is(rfsrc_pbc, "rfsrc")
   
   ## Create the correct gg_error object
   expect_is(gg_dta<- gg_vimp(rfsrc_pbc, relative=TRUE),
@@ -142,25 +128,20 @@ test_that("gg_vimp survival",{
 })
 
 test_that("gg_vimp regression",{
-  
-  ## IF we want to build the forest every time...
-  #   ## New York air quality measurements
-  #   airq.obj <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  #   rfsrc_airq <- var.select(rfsrc_airq)
   ## Load the cached forest
-  data(rfsrc_airq, package="ggRandomForests")
+  data(rfsrc_Boston, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_airq, "rfsrc")
+  expect_is(rfsrc_Boston, "rfsrc")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_vimp(rfsrc_airq)
+  gg_dta<- gg_vimp(rfsrc_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_vimp")
   
   # Test varselect is the same
-  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_airq$importance, decreasing=TRUE)))
+  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_Boston$importance, decreasing=TRUE)))
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
@@ -173,7 +154,6 @@ test_that("gg_vimp regression",{
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
-  data(rfsrc_Boston, package="ggRandomForests")
   data(Boston, package="MASS")
   
   cls <- sapply(Boston, class) 

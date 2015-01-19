@@ -3,11 +3,11 @@ context("quantile_pts tests")
 
 test_that("cutting a vector at evenly space points",{
   data(rfsrc_Boston)
-
+  
   # To create 6 intervals, we want 7 points. 
   # quantile_pts will find balanced intervals 
   rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, intervals=TRUE)
-
+  
   expect_is(rm_pts, "numeric")
   expect_equal(length(rm_pts), 6+1)
   
@@ -19,7 +19,7 @@ test_that("cutting a vector at evenly space points",{
   expect_is(rm_grp, "factor")
   expect_equal(length(rm_grp), length(rfsrc_Boston$xvar$rm))
   expect_equal(length(levels(rm_grp)), length(rm_pts)-1)
- 
+  
   rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6)
   
   expect_is(rm_pts, "numeric")

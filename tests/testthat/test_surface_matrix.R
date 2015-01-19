@@ -29,7 +29,7 @@ test_that("cutting a vector at evenly space points",{
   
   expect_equal(nrow(srf[[1]]), 50)
   expect_equal(ncol(srf[[1]]), 50)
- 
+  
   expect_equal(nrow(srf[[1]]),nrow(srf[[2]]) )
   expect_equal(nrow(srf[[1]]),nrow(srf[[3]]) )
   expect_equal(ncol(srf[[1]]),ncol(srf[[2]]) )

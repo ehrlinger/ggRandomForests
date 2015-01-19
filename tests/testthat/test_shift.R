@@ -1,4 +1,4 @@
-# testthat for quantile_pts function
+# testthat for shift function
 context("shift tests")
 
 test_that("lead or lag a vector",{

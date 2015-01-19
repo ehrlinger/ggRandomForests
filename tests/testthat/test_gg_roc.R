@@ -61,42 +61,33 @@ test_that("gg_roc classifications",{
 
 
 test_that("gg_roc survival",{
-  
-  #   data(veteran, package = "randomForestSRC")
-  #   v.obj <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-  
   ## Load the cached forest
-  data(rfsrc_veteran, package="ggRandomForests")
+  data(rfsrc_pbc, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_veteran, "rfsrc")
+  expect_is(rfsrc_pbc, "rfsrc")
   
   # Test the forest family
-  expect_match(rfsrc_veteran$family, "surv")
+  expect_match(rfsrc_pbc$family, "surv")
   
   ## Create the correct gg_roc object
-  expect_error(gg_roc(rfsrc_veteran))
+  expect_error(gg_roc(rfsrc_pbc))
   
 })
 
 test_that("gg_roc regression",{
-  
-  ## New York air quality measurements
-  #   rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  #   gg_dta<- gg_roc(rfsrc_airq)
-  
   ## Load the cached forest
-  data(rfsrc_airq, package="ggRandomForests")
+  data(rfsrc_Boston, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_airq, "rfsrc")
+  expect_is(rfsrc_Boston, "rfsrc")
   
   # Test the forest family
-  expect_match(rfsrc_airq$family, "regr")
+  expect_match(rfsrc_Boston$family, "regr")
   
   ## Create the correct gg_roc object
-  expect_error(gg_roc(rfsrc_airq))
-  expect_error(plot.gg_roc(rfsrc_airq))
+  expect_error(gg_roc(rfsrc_Boston))
+  expect_error(plot.gg_roc(rfsrc_Boston))
   
 })
 

@@ -2,10 +2,6 @@
 context("gg_partial tests")
 
 test_that("gg_partial classifications",{
-  ## IF we want to build the forest every time...
-  #   rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-  # varsel_iris <- var.select(rfsrc_iris)
-  
   ## Load the cached forest
   data(rfsrc_iris, package="ggRandomForests")
   
@@ -46,11 +42,6 @@ test_that("gg_partial classifications",{
 
 
 test_that("gg_partial survival",{
-  
-  ## IF we want to build the forest every time...
-  #   data(veteran, package = "randomForestSRC")
-  #   rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-  #   rfsrc_veteran <- var.select(rfsrc_veteran)
   ## Load the cached forest
   data(rfsrc_veteran, package="ggRandomForests")
   
@@ -58,10 +49,10 @@ test_that("gg_partial survival",{
   expect_is(rfsrc_veteran, "rfsrc")
   
   ## Get the partial data.
-  data(partial_veteran, package="ggRandomForests")
+  data(partial_pbc, package="ggRandomForests")
   
   ## Create the correct gg_error object
-  gg_dta <- gg_partial(partial_veteran[[1]])
+  gg_dta <- gg_partial(partial_pbc[[1]])
   
   # Test object type
   expect_is(gg_dta, "gg_partial_list")
@@ -85,7 +76,7 @@ test_that("gg_partial survival",{
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
-
+  
   data(rfsrc_pbc, package="ggRandomForests")
   data("varsel_pbc", package="ggRandomForests")
   
@@ -102,30 +93,22 @@ test_that("gg_partial survival",{
   
   # plot the next 5 continuous variable dependence plots.
   gg_plt <- plot(ggrf, xvar = xvar[2:6], panel = TRUE, 
-       se = FALSE, alpha = .3, 
-       method = "glm", formula = y~poly(x,2))
+                 se = FALSE, alpha = .3, 
+                 method = "glm", formula = y~poly(x,2))
   
   expect_warning(gg_plt <- plot(ggrf, xvar = xvar.cat, panel=TRUE))
-  
-  
-  
 })
 
 test_that("gg_partial regression",{
-  
-  ## IF we want to build the forest every time...
-  #   ## New York air quality measurements
-  #   rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-  #   rfsrc_airq <- var.select(rfsrc_airq)
   ## Load the cached forest
-  data(rfsrc_airq, package="ggRandomForests")
+  data(rfsrc_Boston, package="ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_airq, "rfsrc")
+  expect_is(rfsrc_Boston, "rfsrc")
   
   ## Create the correct gg_error object
-  data(partial_airq, package="ggRandomForests")
-  gg_dta<- gg_partial(partial_airq)
+  data(partial_Boston, package="ggRandomForests")
+  gg_dta<- gg_partial(partial_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_partial_list")
@@ -148,44 +131,39 @@ test_that("gg_partial regression",{
   expect_error(gg_partial(gg_plt))
   
   # Remove all but one partial data.
-  partial_airq$xvar.names <- "Temp"
-  partial_airq$nvar <- 1
-  partial_airq$pData[[2]] <- partial_airq$pData[[3]] <- partial_airq$pData[[4]] <- 
-    partial_airq$pData[[5]] <- NULL
-  gg_dta<- gg_partial(partial_airq)
+  partial_Boston$xvar.names <- "lstat"
+  partial_Boston$nvar <- 1
+  for(ind in length(partial_Boston$pData):2){
+    partial_Boston$pData[[ind]] <- NULL
+  }
+  gg_dta<- gg_partial(partial_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_partial")
   
-  
-  # Try to get the partial chas river?
-  data(rfsrc_Boston, package="ggRandomForests")
-#   
-#   plt <- plot.variable(rfsrc_Boston, show.plots = FALSE, partial=TRUE,
-#                        npts=10, xvar="chas")
-#   # generate a list of gg_partial objects, one per xvar.
-#   expect_is(gg_p <- gg_partial(plt), "gg_partial")
+  # generate a list of gg_partial objects, one per xvar.
+  expect_error(gg_p <- gg_partial(gg_dta), "gg_partial")
   
 })
 
 test_that("gg_partial combine",{
   
   # Load a set of plot.variable partial plot data
-  data(partial_veteran)
+  data(partial_pbc)
   
   # A list of 2 plot.variable objects
-  expect_is(partial_veteran, "list")
-  expect_more_than(length(partial_veteran), 1) 
+  expect_is(partial_pbc, "list")
+  expect_more_than(length(partial_pbc), 1) 
   
-  for(ind in 1:length(partial_veteran)){
-    expect_is(partial_veteran[[ind]], "rfsrc")
-    expect_is(partial_veteran[[ind]], "plot.variable")
-    expect_is(partial_veteran[[ind]], "surv")
+  for(ind in 1:length(partial_pbc)){
+    expect_is(partial_pbc[[ind]], "rfsrc")
+    expect_is(partial_pbc[[ind]], "plot.variable")
+    expect_is(partial_pbc[[ind]], "surv")
   }
   
   # Create gg_partial objects
-  ggPrtl <- lapply(partial_veteran, gg_partial)
-  for(ind in 1:length(partial_veteran)){
+  ggPrtl <- lapply(partial_pbc, gg_partial)
+  for(ind in 1:length(partial_pbc)){
     expect_is(ggPrtl[[ind]], "gg_partial_list")
   }
   
