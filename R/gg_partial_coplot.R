@@ -123,15 +123,15 @@ gg_partial_coplot.ggRandomForests <- function(object,
   
   # If survival family, make sure we have a time and surv_type.
   # if not default to time=1, and surv_type="surv" with warning.
-  
-  # If we got a surv.type instead of surv_type, let's use that.
-  if(!is.null(arg_list$surv.type)){
-    
-  }
-  # If we got a surv.type instead of surv_type, let's use that.
-  if(is.null(arg_list$show.plots)){
-    arg_list$show.plots <- FALSE
-  }
+#   
+#   # If we got a surv.type instead of surv_type, let's use that.
+#   if(!is.null(arg_list$surv.type)){
+#     
+#   }
+#   # If we got a surv.type instead of surv_type, let's use that.
+#   if(is.null(arg_list$show.plots)){
+#     arg_list$show.plots <- FALSE
+#   }
   # what about multiple time points?
   
   # This will return a list of subseted partial plots, one for each group, 

@@ -114,13 +114,69 @@ test_that("gg_rfsrc survival",{
   expect_is(gg_dta, "gg_rfsrc")
   expect_is(gg_dta, "surv")
   
+  # Test multiple conf intervals
+  gg_dta<- gg_rfsrc(rfsrc_veteran,conf.int=c(.025, .975), bs.sample=100)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "surv")
+  
   ## Create the correct gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
-
+  # Test prediction
+  ## Load the cached forest
+  data("rfsrc_pbc", package="ggRandomForests")
+  data(pbc, package="randomForestSRC")
+  # For whatever reason, the age variable is in days... makes no sense to me
+  for(ind in 1:dim(pbc)[2]){
+    if(!is.factor(pbc[,ind])){
+      if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
+        if(sum(range(pbc[,ind],na.rm=TRUE) == c(0,1))==2){
+          pbc[,ind] <- as.logical(pbc[,ind])
+        }
+      }
+    }else{
+      if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
+        if(sum(sort(unique(pbc[,ind])) == c(0,1))==2){
+          pbc[,ind] <- as.logical(pbc[,ind])
+        }
+        if(sum(sort(unique(pbc[,ind])) == c(FALSE, TRUE))==2){
+          pbc[,ind] <- as.logical(pbc[,ind])
+        }
+      }
+    }
+    if(!is.logical(pbc[, ind]) & 
+         length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=5) {
+      pbc[,ind] <- factor(pbc[,ind])
+    }
+  }
+  # Convert age to years
+  pbc$age <- pbc$age/364.24
+  
+  pbc$years <- pbc$days/364.24
+  pbc <- pbc[, -which(colnames(pbc)=="days")]
+  pbc$treatment <- as.numeric(pbc$treatment)
+  pbc$treatment[which(pbc$treatment==1)] <- "DPCA"
+  pbc$treatment[which(pbc$treatment==2)] <- "placebo"
+  pbc$treatment <- factor(pbc$treatment)
+  
+  prd_dta <- predict(rfsrc_pbc,
+                     newdata=pbc[which(is.na(pbc$treatment)),],
+                     na.action="na.impute")
+  
+  expect_is(gg_dta <- gg_rfsrc(prd_dta), "gg_rfsrc")
+  
+  # Test for group "by" name exists
+  expect_error(gg_rfsrc(rfsrc_pbc, by="trt"))
+  # And it's a vector or factor (not a number)
+  expect_error(gg_rfsrc(rfsrc_pbc, by=3))
+  
+  # Test confidence intervals
+  
 })
 
 test_that("gg_rfsrc regression",{
@@ -144,7 +200,7 @@ test_that("gg_rfsrc regression",{
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
   expect_is(gg_dta, "regr")
-   
+  
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_rfsrc(gg_dta)
   
@@ -167,8 +223,18 @@ test_that("gg_rfsrc regression",{
   
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_rfsrc(gg_dta)
+  
   # Test data is correctly pulled from randomForest obect.
   # Predicted values
   rfsrc_airq$family <- "test"
   expect_error(gg_rfsrc(rfsrc_airq))
+  
+  # Test exceptions
+  # Is it an rfsrc object?
+  expect_error(gg_rfsrc(gg_plt))
+  
+  # Does it contain the forest?
+  rfsrc_airq$forest <- NULL
+  expect_error(gg_rfsrc(rfsrc_airq))
+  
 })

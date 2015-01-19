@@ -40,4 +40,6 @@ test_that("gg_error classifications",{
                                  groups=rm_grp,
                                  show.plots=FALSE,
                                  npts=5))
+  
+  
 })

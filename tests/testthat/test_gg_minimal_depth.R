@@ -26,10 +26,13 @@ test_that("gg_minimal_depth classifications",{
                     varsel_iris$varselect)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_depth(gg_dta)
+  gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
+  
+  expect_error(gg_minimal_depth(gg_plt))
+  
 })
 
 
@@ -56,10 +59,10 @@ test_that("gg_minimal_depth survival",{
                     varsel_veteran$varselect)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_depth(gg_dta)
+  gg_plt <- plot.gg_minimal_depth(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
 })
 
 test_that("gg_minimal_depth regression",{
@@ -85,10 +88,10 @@ test_that("gg_minimal_depth regression",{
                     varsel_airq$varselect)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_depth(gg_dta)
+  gg_plt <- plot.gg_minimal_depth(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_plt, "ggplot")
   
   ## Load the cached forest
   data(varsel_Boston, package="ggRandomForests")
@@ -143,10 +146,10 @@ test_that("gg_minimal_depth regression",{
   names(st.labs) <- names(cls)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_depth(gg_dta, lbls=st.labs, selection=TRUE)
+  gg_plt <- plot.gg_minimal_depth(gg_dta, lbls=st.labs, selection=TRUE)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot") 
+  expect_is(gg_plt, "ggplot") 
 })
 
 test_that("gg_minimal_depth exceptions",{

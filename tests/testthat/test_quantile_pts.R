@@ -26,4 +26,8 @@ test_that("cutting a vector at evenly space points",{
   expect_equal(length(rm_pts), 6)
   # When calculating intervals, we subtract 1.e-7 from the min value
   expect_equal(min(rfsrc_Boston$xvar$rm), min(rm_pts), tolerance = 1.e-7)
+  
+  # Test the number of points for lots of groups.
+  rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=nrow(rfsrc_Boston$xvar)+2)
+  expect_equal(length(rm_pts), length(unique(rfsrc_Boston$xvar$rm)))
 })

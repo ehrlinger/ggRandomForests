@@ -77,8 +77,6 @@ test_that("gg_vimp classifications",{
   # Grab only one class... by number - that doesn't exist.
   expect_error(gg_vimp(rfsrc_iris, which.outcome=200))
   
-  
-  
   ## Single class/
   iris2 <- iris
   iris2$spec <- factor(as.character(iris2$Species) == "setosa")
@@ -92,6 +90,8 @@ test_that("gg_vimp classifications",{
   
   # Test passing in the wrong object
   expect_error(gg_vimp(gg_dta))
+  expect_error(gg_vimp.rfsrc(gg_dta))
+  
 })
 
 

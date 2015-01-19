@@ -33,6 +33,7 @@ test_that("gg_error classifications",{
   
   # "Incorrect object type: Expects a gg_error object"
   expect_error(gg_error(gg_plt))
+  expect_error(gg_error.rfsrc(gg_plt))
   rfsrc_iris$err.rate <- NULL
   expect_error(gg_error(rfsrc_iris))
   

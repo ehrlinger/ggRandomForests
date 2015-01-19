@@ -66,8 +66,8 @@ test_that("gg_partial survival",{
   # Test object type
   expect_is(gg_dta, "gg_partial_list")
   
-  ## Test plotting the gg_error object
-  gg_plt <- plot.gg_partial(gg_dta[[1]])
+  ## Test plotting the gg_data object
+  gg_plt <- plot(gg_dta[[1]])
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -106,6 +106,8 @@ test_that("gg_partial survival",{
        method = "glm", formula = y~poly(x,2))
   
   expect_warning(gg_plt <- plot(ggrf, xvar = xvar.cat, panel=TRUE))
+  
+  
   
 })
 
@@ -156,7 +158,13 @@ test_that("gg_partial regression",{
   expect_is(gg_dta, "gg_partial")
   
   
+  # Try to get the partial chas river?
+  data(rfsrc_Boston, package="ggRandomForests")
   
+  plt <- plot.variable(rfsrc_Boston, show.plots = FALSE, partial=TRUE,
+                       npts=10, xvar="chas")
+  # generate a list of gg_partial objects, one per xvar.
+  expect_is(gg_p <- gg_partial(plt), "gg_partial")
   
 })
 
