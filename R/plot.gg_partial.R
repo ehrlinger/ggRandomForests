@@ -27,7 +27,8 @@
 #' @param x \code{\link{gg_partial}} object created from a \code{randomForestSRC::rfsrc} forest object
 #' @param points plot points (boolean)
 #' @param smooth use smooth curve (by type)
-#' @param ... extra arguments
+#' @param error "shade", "bars", "lines" or "none"
+#' @param ... extra arguments passed to \code{ggplot2} functions
 #' 
 #' @return \code{ggplot} object
 #' 
@@ -152,7 +153,9 @@
 #' ## -------- pbc data
 #'  }
 ### error rate plot
-plot.gg_partial <- function(x, points=TRUE, smooth="loess", ...){
+plot.gg_partial <- function(x, points=TRUE, smooth="loess",
+                            error=c("none", "shade","bars","lines"),
+                            ...){
   
   
   gg_dta <- x 
@@ -161,6 +164,13 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess", ...){
   }else if(!inherits(x, "gg_partial")){
     stop("gg_partial expects an object from the rfsrc::plot.variable function")
   }
+  
+  error <- match.arg(error)
+  arg_list <- list(...)
+  
+  if(!is.null(arg_list$se)) 
+    if(arg_list$se != FALSE)
+      error="none"
   
   # Get the colname of the independent variable
   hName <- colnames(gg_dta)[2]
@@ -172,14 +182,56 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess", ...){
   }else{
     gg_plt<- ggplot(gg_dta,aes_string(x="x", y="yhat", shape="group", color="group"))
   }
-  
+  if(!is.null(gg_dta$se)){
+    conf.int=.95
+    if(!is.null(arg_list$conf.int))conf.int=arg_list$conf.int
+    
+    if(length(conf.int)==1){
+      if(conf.int > 1)conf.int <- conf.int/100
+      if(conf.int > .5){
+        err <- qnorm(1-conf.int/2)
+      }else{
+        err <- qnorm(conf.int)
+      }
+    }else{
+      # Two sided, 
+      err <- qnorm(conf.int[1])
+    }
+    
+    gg_dta$upper=gg_dta$yhat + err* gg_dta$se
+    gg_dta$lower=gg_dta$yhat - err* gg_dta$se
+    
+    gg_plt <- switch(error,
+                     # Shading the standard errors
+                     shade = gg_plt + 
+                       geom_ribbon(aes_string(x="x", ymax="upper", ymin="lower"),
+                                   alpha=.3, data=gg_dta, ...),
+                     # Or showing error bars
+                     bars = {
+                       # Need to figure out how to remove some of these points when 
+                       # requesting error bars, or this will get really messy.
+                       #                     errFll <- fll
+                       #                     if(!missing(errbars) )errFll <- errFll[errbars,]
+                       gg_plt+ 
+                         geom_errorbar(aes_string(x="x", ymax="upper", ymin="lower"), data=gg_dta, ...)
+                     },
+                     lines= gg_plt + 
+                       geom_smooth(aes_string(x="x", y="upper"), linetype=2, data=gg_dta, se=FALSE, ...)+
+                       geom_smooth(aes_string(x="x", y="lower"), linetype=2, data=gg_dta, se=FALSE, ...), 
+                     none=gg_plt)
+  }
   gg_plt <- gg_plt+
     labs(x=hName, y="predicted")
   if(!is.factor(gg_dta$x)){
     if(points)  
       gg_plt<- gg_plt+geom_point( ...)
     if(!is.null(smooth)){
-      gg_plt<- gg_plt+geom_smooth(method=smooth, ...)
+      if(!is.null(arg_list$se))
+        if(arg_list$se != FALSE)
+          gg_plt<- gg_plt+geom_smooth(method=smooth, ...)
+      else
+        gg_plt<- gg_plt+geom_smooth(method=smooth,se=FALSE, ...)
+      
     }
   }else{
     gg_plt<- gg_plt+geom_boxplot(...)

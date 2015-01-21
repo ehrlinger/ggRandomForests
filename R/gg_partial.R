@@ -199,7 +199,6 @@ gg_partial.rfsrc <- function(object,
   # How many variables
   n.var=length(object$pData)
   
-  
   # Create a list of data
   gg_dta <- mclapply(1:n.var, function(ind){
     

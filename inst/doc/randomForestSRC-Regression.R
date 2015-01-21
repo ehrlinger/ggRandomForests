@@ -1,22 +1,16 @@
-## ----setup, include = FALSE, cache = FALSE, echo = FALSE--------------------------------
+## ----setup, include = FALSE, cache = FALSE, echo = FALSE-----------------
 library("knitr")
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
 opts_chunk$set(fig.path = 'fig-rfr/rfr-', 
-               # fig.align = 'center', 
-               # size = 'footnotesize', 
                prompt = TRUE, 
                comment = NA, 
                echo = TRUE, results = TRUE, 
                message = FALSE, warning = FALSE, 
                error = FALSE, prompt = TRUE)
 
-# Setup the R environment
-options(object.size = Inf, expressions = 100000, memory = Inf, 
-        replace.assign = TRUE, width = 90)
-
 options(mc.cores = 1, rf.cores = 0)
 
-## ----libraries--------------------------------------------------------------------------
+## ----libraries-----------------------------------------------------------
 #################
 # Load_packages #
 #################
@@ -38,17 +32,17 @@ library("ggRandomForests") # ggplot2 random forest figures
 #########################################################################
 theme_set(theme_bw())     # A ggplot2 theme with white background
 
-## ----vignette, eval=FALSE---------------------------------------------------------------
+## ----vignette, eval=FALSE------------------------------------------------
 #  vignette("randomForestSRC-Regression", package="ggRandomForests")
 
-## ----datastep---------------------------------------------------------------------------
+## ----datastep------------------------------------------------------------
 # Load the Boston Housing data
 data(Boston, package="MASS")
 
 # Set modes correctly. For binary variables: transform to logical
 Boston$chas <- as.logical(Boston$chas)
 
-## ----cleanup, echo=FALSE, results="asis"------------------------------------------------
+## ----cleanup, echo=FALSE, results="asis"---------------------------------
 cls <- sapply(Boston, class) 
 # 
 lbls <- 
@@ -103,7 +97,7 @@ ggplot(dta, aes(x=medv, y=value, color=chas))+
   scale_color_brewer(palette="Set2")+
   facet_wrap(~variable, scales="free_y", ncol=3)
 
-## ----randomforest-----------------------------------------------------------------------
+## ----randomforest--------------------------------------------------------
 # Load the data, from the call:
 # rfsrc_Boston <- rfsrc(medv~., data=Boston)
 data(rfsrc_Boston)
@@ -228,7 +222,7 @@ plot(gg_v, xvar = "rm", smooth = TRUE,
   #scale_shape_manual(values = event.marks, labels = event.labels)+ 
   facet_wrap(~lstat_grp)
 
-## ----prtl-copl, eval=FALSE--------------------------------------------------------------
+## ----prtl-copl, eval=FALSE-----------------------------------------------
 #  partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat",
 #                                             groups=rm_grp,
 #                                             show.plots=FALSE)
@@ -243,7 +237,7 @@ plot(partial_coplot_Boston, se=FALSE)+
        color="Room", shape="Room")+
   scale_color_brewer(palette="Set1")
 
-## ----prtl-copl2, eval=FALSE-------------------------------------------------------------
+## ----prtl-copl2, eval=FALSE----------------------------------------------
 #  partial_coplot_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm",
 #                                              groups=lstat_grp,
 #                                              show.plots=FALSE)
@@ -258,11 +252,11 @@ plot(partial_coplot_Boston2, se=FALSE)+
        color="Lower Status", shape="Lower Status")+
   scale_color_brewer(palette="Set1")
 
-## ----def-pts----------------------------------------------------------------------------
+## ----def-pts-------------------------------------------------------------
 # Find the quantile points to create 50 cut points
 rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50)
 
-## ----prtl-surface, eval=FALSE-----------------------------------------------------------
+## ----prtl-surface, eval=FALSE--------------------------------------------
 #  # Generate the gg_partial_coplot data object
 #  system.time(partial_Boston_surf <- lapply(rm_pts, function(ct){
 #    rfsrc_Boston$xvar$rm <- ct

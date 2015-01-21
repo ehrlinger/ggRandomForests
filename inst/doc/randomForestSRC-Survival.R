@@ -100,13 +100,13 @@ pbc$treatment <- factor(pbc$treatment)
 cls <- sapply(pbc, class) 
 
 labels <- c("event indicator (F = censor, T = death)", 
-            "Treament (DPCA, Placebo)", 
+            "treament (DPCA, Placebo)", 
             "age in years", 
             "Female", 
             "Asictes", 
             "Hepatomegaly", 
             "Spiders", 
-            "Edema", 
+            "edema", 
             "serum bilirubin (mg/dl)", 
             "serum cholesterol (mg/dl)", 
             "albumin (gm/dl)", 
@@ -175,7 +175,7 @@ ggplot(dta, aes(x = years, y = value, color = status, shape = status))+
 ## ----missing, results="asis"------------------------------------------------------------
 ## Not displayed ##
 # create a missing data table
-pbc.trial <- pbc[-which(is.na(pbc$treatment)),]
+pbc.trial <- pbc %>% filter(!is.na(treatment))
 st <- apply(pbc,2, function(rw){sum(is.na(rw))})
 st.t <- apply(pbc.trial,2, function(rw){sum(is.na(rw))})
 st <- data.frame(cbind(full = st, trial = st.t))
@@ -190,10 +190,10 @@ kable(st,
 
 ## ----gg_survival, echo=TRUE-------------------------------------------------------------
 # Include only the randomized patients.
-pbc.trial <- pbc[-which(is.na(pbc$treatment)),]
+pbc.trial <- pbc %>% filter(!is.na(treatment))
 
 # Create a test set from the remaining patients
-pbc.test <- pbc[which(is.na(pbc$treatment)),]
+pbc.test <- pbc %>% filter(is.na(treatment))
 
 # Create the gg_survival object
 gg_dta <- gg_survival(interval = "years",
@@ -350,6 +350,25 @@ plot(gg_md, lbls = st.labs)
 plot(gg_minimal_vimp(varsel_pbc), lbls = st.labs)+
   theme(legend.position=c(.8,.2))+
   scale_y_continuous(breaks = seq(0,20,2))
+
+## ----models-----------------------------------------------------------------------------
+nm <- fleming.table$nm <- c("age","albumin", "bili","edema", "prothrombin")
+fh.model <- data.frame(cbind(names=fleming.table$nm, model=rownames(fleming.table), Coeff=fleming.table$Coef.))
+gg_v <- gg_vimp(rfsrc_pbc)
+gg_v$rank <- 1:nrow(gg_v)
+md <- data.frame(cbind(var=gg_md$topvars))
+md$rank <- 1:nrow(md)
+rownames(md) <- gg_md$topvars
+
+fh.model$vimp <- gg_v[nm,]$rank
+fh.model$md <- md[nm,]$rank
+
+kable(fh.model[order(fh.model$md),-1], 
+      format="latex",
+      caption = "\\label{T:modelComp}Regression model comparison~\\citep[Chapter 4]{fleming:1991}. ", 
+      digits = 3,
+      row.names = FALSE,
+      booktabs=TRUE)
 
 ## ----rfsrc-plot3Mnth, echo=TRUE, fig.cap="Random forest OOB predicted patient survival. Red curves correspond to patients which have died, blue corresponds to alive (or censored) cases. Vertical dashed lines indicate the 1 and 3 year survival estimates."----
 ggRFsrc + 

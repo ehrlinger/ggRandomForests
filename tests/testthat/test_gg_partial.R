@@ -144,6 +144,15 @@ test_that("gg_partial regression",{
   # generate a list of gg_partial objects, one per xvar.
   expect_error(gg_p <- gg_partial(gg_dta), "gg_partial")
   
+  expect_is(plot(gg_dta, error="bars"), "ggplot")
+  expect_is(plot(gg_dta, error="none"), "ggplot")
+  expect_is(plot(gg_dta, error="lines"), "ggplot")
+  expect_is(plot(gg_dta, error="shade"), "ggplot")
+  # Test object type
+  
+  expect_is(plot(gg_dta, se=.95, error="shade"), "ggplot")
+  
+  
 })
 
 test_that("gg_partial combine",{

@@ -6,7 +6,6 @@ output:
   rmarkdown::html_vignette:
     fig_caption: true
     fig_align: center
-    size: footnotesize
 vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteIndexEntry{randomForestSRC-Regression}
@@ -18,17 +17,11 @@ bibliography: ggRandomForests.bib
 library("knitr")
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
 opts_chunk$set(fig.path = 'fig-rfr/rfr-', 
-               # fig.align = 'center', 
-               # size = 'footnotesize', 
                prompt = TRUE, 
                comment = NA, 
                echo = TRUE, results = TRUE, 
                message = FALSE, warning = FALSE, 
                error = FALSE, prompt = TRUE)
-
-# Setup the R environment
-options(object.size = Inf, expressions = 100000, memory = Inf, 
-        replace.assign = TRUE, width = 90)
 
 options(mc.cores = 1, rf.cores = 0)
 ```

@@ -103,7 +103,7 @@ plot.gg_survival<- function(x,
                        },
                        lines= gg_plt + 
                          geom_step(aes_string(x="time", y="upper"), linetype=2)+
-                         geom_step(aes(x="time", y="lower"), linetype=2), 
+                         geom_step(aes_string(x="time", y="lower"), linetype=2), 
                        none=gg_plt)
     }else{
       gg_plt <- switch(error,
