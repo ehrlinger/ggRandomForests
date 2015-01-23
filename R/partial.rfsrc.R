@@ -302,9 +302,10 @@ partial.rfsrc <- function (x,
   class(object$forest) <- c("rfsrc", "partial", class(object)[3])
   
   ## Estimating at how many points?
-  if (npts < 1) 
+  npts <- round(npts)
+  if (npts < 1){ 
     npts <- 1
-  else npts <- round(npts)
+  }
   
   # Calculate the estimates for each variable of interest
   prtl <- lapply(1:nvar, function(k) {

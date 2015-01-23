@@ -123,6 +123,13 @@ test_that("gg_vimp survival",{
   expect_equal(nrow(gg_dta), 10)
   expect_is(plot(gg_dta), "ggplot")
   
+  # Test the relative vimp output and plotting
+  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, relative=TRUE), "gg_vimp")
+  expect_is(plot(gg_dta), "ggplot")
+  
+  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, n_var=10, relative=TRUE), "gg_vimp")
+  expect_is(plot(gg_dta), "ggplot")
+  
   # Test importance calculations. 
   # If the forest does not have importance
   rfsrc_pbc$importance <- NULL
