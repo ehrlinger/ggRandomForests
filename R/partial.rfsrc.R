@@ -344,7 +344,7 @@ partial.rfsrc <- function (x,
       newdata.x[, object$xvar.names == xvar.names[k]] <- rep(x.uniq[l], n)
       
       # Pull out the nomogram data for this x_v
-      yhat[[l]] <- extract.pred(predict.rfsrc(object$forest, 
+      yhat[[l]] <- extract.pred(predict.rfsrc(object, 
                                               newdata.x, 
                                               importance = "none"), 
                                 pred.type, 

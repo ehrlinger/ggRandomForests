@@ -9,7 +9,8 @@ test_that("partial.rfsrc regression",{
   expect_is(rfsrc_Boston, "rfsrc")
   
   ## Create the correct gg_error object
-  # gg_dta<- partial.rfsrc(rfsrc_Boston, xvar.names = "lstat", npts=10)
+  gg_dta<- partial.rfsrc(rfsrc_Boston, xvar.names = c("lstat","chas"),
+                         npts=10)
   
   
 })
@@ -22,7 +23,9 @@ test_that("partial.rfsrc survival",{
   expect_is(rfsrc_pbc, "rfsrc")
   
   ## Create the correct gg_error object
-  # gg_dta<- partial.rfsrc(rfsrc_Boston, xvar.names = "lstat", npts=10)
+  gg_dta<- partial.rfsrc(rfsrc_pbc, 
+                         xvar.names = c("age", "copper"), 
+                         npts=10, time=1, surv.type="surv")
   
   
 })
@@ -35,7 +38,8 @@ test_that("partial.rfsrc classification",{
   expect_is(rfsrc_iris, "rfsrc")
   
   ## Create the correct gg_error object
-  # gg_dta<- partial.rfsrc(rfsrc_Boston, xvar.names = "lstat", npts=10)
+  gg_dta<- partial.rfsrc(rfsrc_iris, 
+                         npts=10)
   
   
 })
