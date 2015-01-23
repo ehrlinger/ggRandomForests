@@ -230,7 +230,7 @@ gg_partial.rfsrc <- function(object,
   for(ind in 1:n.var){
     colnames(gg_dta[[ind]])[which(colnames(gg_dta[[ind]])=="x")] <- object$xvar.names[ind]
     if(!missing(named)) gg_dta[[ind]]$id=named
-    class(gg_dta[[ind]]) <- c("gg_partial", class(gg_dta[[ind]]))
+    class(gg_dta[[ind]]) <- c("gg_partial", class(gg_dta[[ind]]), object$family)
   }
   
   if(n.var ==1 ){

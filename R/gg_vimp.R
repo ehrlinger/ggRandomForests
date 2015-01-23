@@ -21,6 +21,7 @@
 #' a \code{randomForestSRC::rfsrc} object.
 #' 
 #' @param object A \code{randomForestSRC::rfsrc} object or output from \code{randomForestSRC::vimp}
+#' @param n_var select a number pf the highest VIMP variables to plot
 #' @param ... arguments passed to the \code{randomForestSRC::vimp.rfsrc} function if the 
 #' \code{randomForestSRC::rfsrc} object does not contain importance information.
 #' 
@@ -82,14 +83,17 @@
 #' gg_dta <- gg_vimp(rfsrc_pbc)
 #' plot(gg_dta)
 #' 
+#' # Restrict to only the top 10.
+#' gg_dta <- gg_vimp(rfsrc_pbc, n_var=10)
+#' plot(gg_dta)
 #' @export gg_vimp.rfsrc gg_vimp
 #' @aliases gg_vimp gg_vimp.rfsrc 
 
-gg_vimp <- function (object, ...) {
-  UseMethod("gg_vimp", object)
-}
+# gg_vimp <- function (object, ...) {
+#   UseMethod("gg_vimp", object)
+# }
 
-gg_vimp.rfsrc <- function(object, ...){
+gg_vimp.rfsrc <- function(object, n_var, ...){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
@@ -99,17 +103,25 @@ gg_vimp.rfsrc <- function(object, ...){
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
     warning("rfsrc object does not contain VIMP information. Calculating...")
-    gg_dta <- data.frame(sort(vimp(object, ...)$importance, decreasing=TRUE))
+    gg_dta <- data.frame(sort(vimp(object)$importance, decreasing=TRUE))
   }else{
-    gg_dta <- object$importance
+    gg_dta <- data.frame(object$importance)
+   
   }
+  if(ncol(gg_dta)==1){
+    colnames(gg_dta) <- "VIMP"
+    gg_dta$vars <- rownames(gg_dta)
+    gg_dta <- gg_dta[order(gg_dta$VIMP, decreasing=TRUE),]
+  }
+  if(missing(n_var)) n_var <- nrow(gg_dta)
+  if(n_var > nrow(gg_dta)) n_var <- nrow(gg_dta)
+  
   
   # Handle multiclass importance
-  if(!is.null(dim(gg_dta))){
+  if(ncol(gg_dta) > 1){
     # Classification...
     arg_set <- list(...)
     
-    gg_dta <- data.frame(gg_dta)
     if(!is.null(arg_set$which.outcome)){
       # test which.outcome specification
       if(!is.numeric(arg_set$which.outcome)){
@@ -133,19 +145,20 @@ gg_vimp.rfsrc <- function(object, ...){
     }else{
       gg_dta$vars <- rownames(gg_dta)
     }
-    
     clnms <- colnames(gg_dta)[-which(colnames(gg_dta)=="vars")]
+    gg_dta <- gg_dta[1:n_var,]
     gg_dta <- melt(gg_dta, id.vars="vars", 
                    variable.name="set", value.name="vimp")
     gg_dta <- gg_dta[order(gg_dta$vimp, decreasing=TRUE),]
     gg_dta$vars <- factor(gg_dta$vars)
   }else{
-    gg_dta <- data.frame(sort(gg_dta, decreasing=TRUE))
-    
+    cnms <- colnames(gg_dta)
     gg_dta<- cbind(gg_dta, gg_dta/gg_dta[1,1])
-    colnames(gg_dta) <- c("vimp", "rel_vimp")
-    gg_dta$vars <- rownames(gg_dta)
+    colnames(gg_dta) <- c(cnms, "rel_vimp")
     gg_dta$vars[which(is.na(gg_dta$vars))] <- rownames(gg_dta)[which(is.na(gg_dta$vars))]
+    
+    gg_dta <- gg_dta[1:n_var,]
+    
   }
   gg_dta$vars <- factor(gg_dta$vars, levels=rev(unique(gg_dta$vars)))
   gg_dta$positive <- TRUE
@@ -155,3 +168,4 @@ gg_vimp.rfsrc <- function(object, ...){
   invisible(gg_dta)
 }
 
+gg_vimp <- gg_vimp.rfsrc

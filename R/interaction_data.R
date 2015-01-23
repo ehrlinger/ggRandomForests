@@ -5,13 +5,9 @@
 #' training data according to the following naming convention: 
 #'\itemize{
 #' \item \code{interaction_iris} - from a randomForestSR[C] for the \code{iris} data set. 
-#' \item \code{interaction_airq} - from a randomForestS[R]C for the \code{airquality} data set.
-#' \item \code{interaction_mtcars} - from a randomForestS[R]C for the \code{mtcars} data set.
 #' \item \code{interaction_Boston} - from a randomForestS[R]C for the \code{Boston} housing 
 #' data set (\code{MASS} package).
 #' \item \code{interaction_pbc} - from a randomForest[S]RC for the \code{pbc} data set
-#'  (\code{randomForestSRC} package)  
-#' \item \code{interaction_veteran} - from a randomForest[S]RC for the \code{veteran} data set
 #'  (\code{randomForestSRC} package)  
 #' }
 #'   
@@ -61,8 +57,8 @@
 #' with 6 covariates and 137 observations.
 #' }
 #' 
-#' @seealso \code{iris} \code{airquality} \code{mtcars} \code{MASS::Boston}
-#' \code{randomForestSRC::pbc} \code{randomForestSRC::veteran}
+#' @seealso \code{iris} \code{MASS::Boston}
+#' \code{randomForestSRC::pbc}
 #'  \code{randomForestSRC::find.interaction}
 #'  \code{\link{rfsrc_data}}
 #'  \code{\link{rfsrc_cache_datasets}} 
@@ -83,34 +79,6 @@
 #' # plot the forest interaction table
 #' gg_dta <- gg_interaction(interaction_iris)
 #' plot(gg_dta, panel=TRUE)
-#' 
-#' #---------------------------------------------------------------------
-#' # airq data - regression random forest
-#' #---------------------------------------------------------------------
-#' # load the rfsrc object from the cached data
-#' data(rfsrc_airq, package="ggRandomForests")
-#' 
-#' # The interaction table 
-#' interaction_airq <- find.interaction(rfsrc_airq)
-#' 
-#' # plot the forest interaction table
-#' gg_dta <- gg_interaction(interaction_airq)
-#' plot(gg_dta, panel=TRUE)
-#' 
-#'                     
-#' #---------------------------------------------------------------------
-#' # mtcars data - regression random forest
-#' #---------------------------------------------------------------------
-#' # load the rfsrc object from the cached data
-#' data(rfsrc_mtcars, package="ggRandomForests")
-#' 
-#' # The interaction table 
-#' interaction_mtcars <- find.interaction(rfsrc_mtcars)
-#' 
-#' # plot the forest interaction table
-#' gg_dta <- gg_interaction(interaction_mtcars)
-#' plot(gg_dta, panel=TRUE)
-#' 
 #' 
 #' #---------------------------------------------------------------------
 #' # MASS::Boston data - regression random forest 
@@ -138,19 +106,6 @@
 #' gg_dta <- gg_interaction(interaction_pbc)
 #' plot(gg_dta, panel=TRUE)
 #'                    
-#' #---------------------------------------------------------------------
-#' # randomForestSRC::veteran data - survival random forest
-#' #---------------------------------------------------------------------
-#' #' # load the rfsrc object from the cached data
-#' data(rfsrc_veteran, package="ggRandomForests")
-#' 
-#' # The interaction table 
-#' interaction_veteran <- find.interaction(rfsrc_veteran)
-#' 
-#' # plot the forest interaction table
-#' gg_dta <- gg_interaction(interaction_veteran)
-#' plot(gg_dta, panel=TRUE)
-#' 
 #' }
 #' 
 #' @references 
@@ -170,13 +125,6 @@
 #' 841-860.
 #' 
 #' #---------------------
-#'  airquality data set
-#' ---------------------
-#' 
-#' Chambers, J. M., Cleveland, W. S., Kleiner, B. and Tukey, P. A. 
-#' (1983) Graphical Methods for Data Analysis. Belmont, CA: Wadsworth.
-#' 
-#' #---------------------
 #'  Boston data set
 #' ---------------------
 #' 
@@ -185,7 +133,6 @@
 #'  
 #' Harrison, D., and D.L. Rubinfeld. 1978. "Hedonic Prices and the Demand for Clean Air."
 #'  J. Environ. Economics and Management 5: 81-102.
-#' 
 #' 
 #' #---------------------
 #'  Iris data set
@@ -201,13 +148,6 @@
 #' of the American Iris Society, 59, 2-5.
 #' 
 #' #---------------------
-#'  mtcars data set
-#' ---------------------
-#' 
-#' Henderson and Velleman (1981), Building multiple regression models interactively. 
-#' Biometrics, 37, 391-411.
-#' 
-#' #---------------------
 #'  pbc data set
 #' ---------------------
 #' 
@@ -217,26 +157,13 @@
 #' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox Model, 
 #' Springer-Verlag, New York. ISBN: 0-387-98784-3.
 #' 
-#' #---------------------
-#'  veteran data set
-#' ---------------------
-#' 
-#' Kalbfleisch J. and Prentice R, (1980) The Statistical Analysis of Failure 
-#' Time Data. New York: Wiley.
-#' 
-#' Venables, W. N. and Ripley, B. D. (2002) Modern Applied Statistics with S. 
-#' Fourth edition. Springer.
-#' 
-#' @aliases interaction_data interaction_airq interaction_iris interaction_Boston interaction_mtcars interaction_pbc interaction_veteran
+#' @aliases interaction_data interaction_iris interaction_Boston interaction_pbc
 #' @docType data
 #' @keywords datasets
 #' @format \code{randomForestSRC::find.interaction} matrix
 #' @name interaction_data
 #' @name interaction_iris
-#' @name interaction_airq
 #' @name interaction_Boston
-#' @name interaction_mtcars
 #' @name interaction_pbc
-#' @name interaction_veteran
 #' 
 NULL

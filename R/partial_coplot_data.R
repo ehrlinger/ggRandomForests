@@ -72,6 +72,16 @@
 #' Harrison, D., and D.L. Rubinfeld. 1978. "Hedonic Prices and the Demand for Clean Air."
 #'  J. Environ. Economics and Management 5: 81-102.
 #' 
+#' #---------------------
+#'  pbc data set
+#' ---------------------
+#' 
+#' Flemming T.R and Harrington D.P., (1991) Counting Processes and Survival Analysis. 
+#' New York: Wiley.
+#' 
+#' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox Model, 
+#' Springer-Verlag, New York. ISBN: 0-387-98784-3.
+#' 
 #' 
 #' @aliases partial_coplot_data partial_coplot_Boston partial_coplot_Boston2 partial_coplot_Boston_surf partial_coplot_pbc partial_coplot_pbc2 partial_coplot_pbc_surf partial_coplot_pbc_surf2
 #' @docType data

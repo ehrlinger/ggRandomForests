@@ -5,13 +5,9 @@
 #' training data according to the following naming convention: 
 #'\itemize{
 #' \item \code{varsel_iris} - from a randomForestSR[C] for the \code{iris} data set. 
-#' \item \code{varsel_airq} - from a randomForestS[R]C for the \code{airquality} data set.
-#' \item \code{varsel_mtcars} - from a randomForestS[R]C for the \code{mtcars} data set.
 #' \item \code{varsel_Boston} - from a randomForestS[R]C for the \code{Boston} housing 
 #' data set (\code{MASS} package).
 #' \item \code{varsel_pbc} - from a randomForest[S]RC for the \code{pbc} data set
-#'  (\code{randomForestSRC} package)  
-#' \item \code{varsel_veteran} - from a randomForest[S]RC for the \code{veteran} data set
 #'  (\code{randomForestSRC} package)  
 #' }
 #'   
@@ -34,16 +30,6 @@
 #' of iris. Build a classification random forest for predicting the species (setosa, 
 #' versicolor, and virginica) on 5 variables (columns) and 150 observations (rows).
 #' 
-#' \item \code{varsel_airq} - The \code{airquality} data set is from the New York State 
-#' Department of Conservation (ozone data) and the National Weather Service 
-#' (meteorological data) collected in New York, from May to September 1973. Build regression 
-#' random forest for predicting \code{Ozone} on 5 covariates and 153 observations.
-#' 
-#' \item \code{varsel_mtcars} - The \code{mtcars} data was extracted from the 1974 Motor 
-#' Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and 
-#' performance for 32 automobiles (1973-74 models). Build a regression random forest for
-#' predicting mpg on 10 covariates and 32 observations.
-#' 
 #' \item \code{varsel_Boston} - The \code{Boston} housing values in suburbs of Boston from the
 #' \code{MASS} package. Build a regression random forest for predicting medv (median home 
 #' values) on 13 covariates and 506 observations. 
@@ -56,13 +42,10 @@
 #' package. Build a survival random forest for time-to-event death data with 17 covariates and 
 #' 312 observations (remaining 106 observations are held out).
 #' 
-#' \item \code{varsel_veteran} - Veteran's Administration randomized trial of two treatment 
-#' regimens for lung cancer. Build a survival random forest for time-to-event death data 
-#' with 6 covariates and 137 observations.
 #' }
 #' 
-#' @seealso \code{iris} \code{airquality} \code{mtcars} \code{MASS::Boston}
-#' \code{randomForestSRC::pbc} \code{randomForestSRC::veteran}
+#' @seealso \code{iris} \code{MASS::Boston}
+#' \code{randomForestSRC::pbc}
 #' \code{randomForestSRC::var.select}
 #' \code{\link{rfsrc_data}}
 #'  \code{\link{rfsrc_cache_datasets}} 
@@ -85,34 +68,7 @@
 #' # plot the forestminimal depth ranking
 #' gg_dta <- gg_minimal_depth(varsel_iris)
 #' plot(gg_dta)
-#' 
-#' #---------------------------------------------------------------------
-#' # airq data - regression random forest
-#' #---------------------------------------------------------------------
-#' # load the rfsrc object from the cached data
-#' data(rfsrc_airq, package="ggRandomForests")
-#' 
-#' # The var.select call
-#' varsel_airq <- var.select(rfsrc_airq)
-#' 
-#' # plot the forestminimal depth ranking
-#' gg_dta <- gg_minimal_depth(varsel_airq)
-#' plot(gg_dta)
-#' 
-#'                     
-#' #---------------------------------------------------------------------
-#' # mtcars data - regression random forest
-#' #---------------------------------------------------------------------
-#' # load the rfsrc object from the cached data
-#' data(rfsrc_mtcars, package="ggRandomForests")
-#' 
-#' # The var.select call
-#' varsel_mtcars <- var.select(rfsrc_mtcars)
-#' 
-#' # plot the forestminimal depth ranking
-#' gg_dta <- gg_minimal_depth(varsel_mtcars)
-#' plot(gg_dta)
-#' 
+#'
 #' 
 #' #---------------------------------------------------------------------
 #' # MASS::Boston data - regression random forest 
@@ -140,19 +96,6 @@
 #' gg_dta <- gg_minimal_depth(varsel_pbc)
 #' plot(gg_dta)
 #'                    
-#' #---------------------------------------------------------------------
-#' # randomForestSRC::veteran data - survival random forest
-#' #---------------------------------------------------------------------
-#' #' # load the rfsrc object from the cached data
-#' data(rfsrc_veteran, package="ggRandomForests")
-#' 
-#' # The var.select call
-#' varsel_veteran <- var.select(rfsrc_veteran)
-#' 
-#' # plot the forestminimal depth ranking
-#' gg_dta <- gg_minimal_depth(varsel_veteran)
-#' plot(gg_dta)
-#' 
 #' }
 #' 
 #' @references 
@@ -170,13 +113,6 @@
 #' Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S.
 #' (2008). Random survival forests. Ann. Appl. Statist. 2(3),
 #' 841-860.
-#' 
-#' #---------------------
-#'  airquality data set
-#' ---------------------
-#' 
-#' Chambers, J. M., Cleveland, W. S., Kleiner, B. and Tukey, P. A. 
-#' (1983) Graphical Methods for Data Analysis. Belmont, CA: Wadsworth.
 #' 
 #' #---------------------
 #'  Boston data set
@@ -202,13 +138,6 @@
 #' of the American Iris Society, 59, 2-5.
 #' 
 #' #---------------------
-#'  mtcars data set
-#' ---------------------
-#' 
-#' Henderson and Velleman (1981), Building multiple regression models interactively. 
-#' Biometrics, 37, 391-411.
-#' 
-#' #---------------------
 #'  pbc data set
 #' ---------------------
 #' 
@@ -218,26 +147,13 @@
 #' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox Model, 
 #' Springer-Verlag, New York. ISBN: 0-387-98784-3.
 #' 
-#' #---------------------
-#'  veteran data set
-#' ---------------------
-#' 
-#' Kalbfleisch J. and Prentice R, (1980) The Statistical Analysis of Failure 
-#' Time Data. New York: Wiley.
-#' 
-#' Venables, W. N. and Ripley, B. D. (2002) Modern Applied Statistics with S. 
-#' Fourth edition. Springer.
-#' 
-#' @aliases varsel_data varsel_airq varsel_iris varsel_Boston varsel_mtcars varsel_pbc varsel_veteran
+#' @aliases varsel_data varsel_iris varsel_Boston varsel_pbc
 #' @docType data
 #' @keywords datasets
 #' @format \code{randomForestSRC::var.select} object
 #' @name varsel_data
 #' @name varsel_iris
-#' @name varsel_airq
 #' @name varsel_Boston
-#' @name varsel_mtcars
 #' @name varsel_pbc
-#' @name varsel_veteran
 #' 
 NULL

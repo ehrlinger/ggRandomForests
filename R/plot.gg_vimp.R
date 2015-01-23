@@ -20,10 +20,8 @@
 #' \code{randomForestSRC::rfsrc} object
 #' 
 #' @param x \code{\link{gg_vimp}} object created from a \code{randomForestSRC::rfsrc} object
-#' @param n_var restrict the plot to only nvar variable importance measures
 #' @param relative should we plot vimp or relative vimp. Defaults to vimp.
 #' @param lbls A vector of alternative variable names.
-#' @param bars A vector of alternative variable colors.
 #' @param ... optional arguments passed to gg_vimp if necessary
 #' 
 #' @return \code{ggplot} object
@@ -88,20 +86,11 @@
 #'
 #' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid scale_x_discrete
 ### error rate plot
-plot.gg_vimp<- function(x, n_var, relative, lbls, bars, ...){
+plot.gg_vimp<- function(x, relative, lbls, ...){
   gg_dta  <- x
   if(!inherits(gg_dta, "gg_vimp")) gg_dta<- gg_vimp(gg_dta, ...)
-  if(missing(n_var)) n_var <- dim(gg_dta)[1]
-  if(n_var > dim(gg_dta)[1]) n_var <- dim(gg_dta)[1]
   
-  if(!missing(bars)){
-    # We have an alternative coloring
-    if(length(bars)==n_var){
-      gg_dta$positive[1:n_var]  <- bars
-    }  
-  }
-  
-  gg_plt<-ggplot(gg_dta[1:n_var,])
+  gg_plt<-ggplot(gg_dta)
   
   if(missing(relative) | is.null(gg_dta$rel_vimp)){
     if(length(unique(gg_dta$positive))>1){

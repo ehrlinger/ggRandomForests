@@ -5,18 +5,14 @@
 \title{Plot a \code{\link{gg_vimp}} object, extracted variable importance of a
 \code{randomForestSRC::rfsrc} object}
 \usage{
-\method{plot}{gg_vimp}(x, n_var, relative, lbls, bars, ...)
+\method{plot}{gg_vimp}(x, relative, lbls, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_vimp}} object created from a \code{randomForestSRC::rfsrc} object}
 
-\item{n_var}{restrict the plot to only nvar variable importance measures}
-
 \item{relative}{should we plot vimp or relative vimp. Defaults to vimp.}
 
 \item{lbls}{A vector of alternative variable names.}
-
-\item{bars}{A vector of alternative variable colors.}
 
 \item{...}{optional arguments passed to gg_vimp if necessary}
 }

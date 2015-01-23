@@ -65,7 +65,6 @@ vignette("randomForestSRC-Regression", package="ggRandomForests")
 
 A [development version of the ggRandomForests](https://github.com/ehrlinger/ggRandomForests) package is available on [Github](https://github.com). We invite comments, feature requests and bug reports for this package at (https://github.com/ehrlinger/ggRandomForests).
 
-
 # Introduction
 
 Random Forests [@Breiman:2001] (RF) are a fully non-parametric statistical method which requires no distributional or functional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Survival Forests (RSF) [@Ishwaran:2007a; @Ishwaran:2008] are an extension of Breiman's RF techniques to survival settings, allowing efficient non-parametric analysis of time to event data. The [randomForestSRC](http://CRAN.R-project.org/package=ggRandomForests) package [@Ishwaran:RFSRC:2014] is a unified treatment of Breiman's random forests for survival (time to event response), regression (continuous response) and classification (categorical response) problems.

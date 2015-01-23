@@ -118,6 +118,11 @@ test_that("gg_vimp survival",{
             "gg_vimp")
   expect_is(plot(gg_dta), "ggplot")
   
+  # Test cutting the size down
+  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, n_var=10), "gg_vimp")
+  expect_equal(nrow(gg_dta), 10)
+  expect_is(plot(gg_dta), "ggplot")
+  
   # Test importance calculations. 
   # If the forest does not have importance
   rfsrc_pbc$importance <- NULL

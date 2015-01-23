@@ -81,6 +81,16 @@ Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S.
 
 Harrison, D., and D.L. Rubinfeld. 1978. "Hedonic Prices and the Demand for Clean Air."
  J. Environ. Economics and Management 5: 81-102.
+
+#---------------------
+ pbc data set
+---------------------
+
+Flemming T.R and Harrington D.P., (1991) Counting Processes and Survival Analysis.
+New York: Wiley.
+
+T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox Model,
+Springer-Verlag, New York. ISBN: 0-387-98784-3.
 }
 \seealso{
 \code{MASS::Boston} \code{randomForestSRC::plot.variable}
