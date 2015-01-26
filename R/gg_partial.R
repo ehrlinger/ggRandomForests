@@ -164,20 +164,12 @@
 #'      
 #'      # Create a temporary holder and remove the stage and edema data
 #' ggpart <- pbc_ggpart
-#' ggpart$edema <- ggpart$stage <- NULL
-#' ggpart$bili <- ggpart$sgot <- ggpart$chol <- NULL
-#' ggpart$platelet <- ggpart$trig <- ggpart$alk <- NULL
+#' ggpart$edema <- NULL
 #' 
 #' # Panel plot the remainder.
 #' plot(ggpart, se = FALSE, panel = TRUE)
-#'   
-#' ggpart <- vector("list", length=2) 
-#' ggpart[[1]] <- pbc_ggpart[["edema"]]
-#' ggpart[[2]] <- pbc_ggpart[["stage"]]
-#' names(ggpart) <- c("edema", "stage")
-#' class(ggpart) <- c("gg_partial_list", class(ggpart))
 #' 
-#' plot.gg_partial_list(ggpart, panel=TRUE,
+#' plot.gg_partial(pbc_ggpart[["edema"]], panel=TRUE,
 #'                      notch = TRUE, alpha = .3, outlier.shape = NA) 
 #'   
 #' @aliases gg_partial gg_partial_list

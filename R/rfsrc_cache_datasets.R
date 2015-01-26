@@ -272,7 +272,11 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     # Calculate the partial dependence
     cat("pbc: RF partial plots\n(this will take a little while...)\n")
-    xvar <- varsel_pbc$topvars
+    xvar <- varsel_pbc$topvars[c(1:4, 6)]
+    
+    # Remove the categorical variables
+    xvar.cat <- c("edema")
+    
     
     if(!test) partial_pbc <- mclapply(c(1,3,5), function(tm){
       plot.variable(rfsrc_pbc, surv.type = "surv", 
