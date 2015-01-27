@@ -286,6 +286,40 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     if(save) save(partial_pbc, file=paste(pth, "partial_pbc.rda", sep=""), compress="xz")
     
+    cat("pbc: RF partial coplots\n(this will take a little while...)\n")
+    cat("pbc: bili/albumin")
+    ggvar <- gg_variable(rfsrc_pbc, time=1)
+    albumin_cts <- quantile_pts(ggvar$albumin, groups = 6, intervals = TRUE)
+    albumin_grp <- cut(ggvar$albumin, breaks = albumin_cts)
+    
+    if(!test) 
+      partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili", 
+                                              groups = albumin_grp, 
+                                              surv_type = "surv", 
+                                              time = 1, 
+                                              show.plots = FALSE)
+    
+    
+    if(save) save(partial_coplot_pbc, file=paste(pth, "partial_coplot_pbc.rda", sep=""), compress="xz")
+    cat("pbc: albumin/bili")
+    # Find intervals with similar number of observations.
+    bili_cts <-quantile_pts(ggvar$bili, groups = 6, intervals = TRUE)
+    
+    # We need to move the minimal value so we include that observation
+    bili_cts[1] <- bili_cts[1] - 1.e-7
+    
+    # Create the conditional groups and add to the gg_variable object
+    bili_grp <- cut(ggvar$bili, breaks = bili_cts)
+    
+    if(!test) 
+      partial_coplot_pbc2 <- gg_partial_coplot(rfsrc_pbc, xvar = "albumin", 
+                                               groups = bili_grp, 
+                                               surv_type = "surv", 
+                                               time = 1, 
+                                               show.plots = FALSE)
+    
+    
+    if(save) save(partial_coplot_pbc2, file=paste(pth, "partial_coplot_pbc2.rda", sep=""), compress="xz")
   }
   
   if("veteran" %in% set){

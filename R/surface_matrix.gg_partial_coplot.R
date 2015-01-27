@@ -11,12 +11,11 @@
 #' @examples 
 #' ## From vignette(randomForestRegression, package="ggRandomForests")
 #' ##
-#' # Load the stored rfsrc and partial coplot data.
 #' data(rfsrc_Boston)
-#' data(partial_coplot_Boston_surf)
-#' 
-#' # Find the quantile points 50
 #' rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50)
+#' 
+#' # Load the stored partial coplot data.
+#' data(partial_Boston_surf)
 #' 
 #' # Instead of groups, we want the raw rm point values,
 #' # To make the dimensions match, we need to repeat the values
@@ -24,17 +23,27 @@
 #' rm.tmp <- do.call(c,lapply(rm_pts, 
 #'                            function(grp){rep(grp, 50)}))
 #' 
-#' # attach the data to the gg_partial_coplot
-#' partial_coplot_Boston_surf$rm <- rm.tmp
+#' # Convert the list of plot.variable output to 
+#' partial_surf <- do.call(rbind,lapply(partial_Boston_surf, gg_partial))
 #' 
-#' srf <- surface_matrix(partial_coplot_Boston_surf, c("lstat", "rm", "yhat"))
+#' # attach the data to the gg_partial_coplot
+#' partial_surf$rm <- rm.tmp
+#'
+#' # Transform the gg_partial_coplot object into a list of three named matrices
+#' # for surface plotting with plot3D::surf3D
+#' srf <- surface_matrix(partial_surf, c("lstat", "rm", "yhat"))
+#'
 #'
 #' \dontrun{
 #' # surf3D is in the plot3D package.
 #' library(plot3D)
-#' surf3D(x=srf$x, y=srf$y, z=srf$z,
+#' # Generate the figure.
+#' surf3D(x=srf$x, y=srf$y, z=srf$z, col=topo.colors(10),
 #'        colkey=FALSE, border = "black", bty="b2", 
-#'        xlab="Lower Status", ylab="Average Rooms", zlab="Median Value")
+#'        shade = 0.5, expand = 0.5, 
+#'        lighting = TRUE, lphi = -50,
+#'        xlab="Lower Status", ylab="Average Rooms", zlab="Median Value"
+#' )
 #' }
 #' @export surface_matrix surface_matrix.gg_partial_coplot
 #' @aliases surface_matrix  surface_matrix.gg_partial_coplot

@@ -8,6 +8,8 @@
 #' data set (\code{MASS} package).
 #' \item \code{partial_pbc_surf} - from a randomForest[S]RC for the \code{pbc} data set
 #'  (\code{randomForestSRC} package)  
+#' \item \code{partial_pbc_time} - from a randomForest[S]RC for the \code{pbc} data set
+#'  (\code{randomForestSRC} package)
 #' }
 #'   
 #' @details 
@@ -118,12 +120,12 @@
 #' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox Model, 
 #' Springer-Verlag, New York. ISBN: 0-387-98784-3.
 #' 
-#' @aliases partial_surface_data partial_Boston_surf partial_pbc_surf partial_pbc_surf partial_pbc_surf2
+#' @aliases partial_surface_data partial_Boston_surf partial_pbc_surf partial_pbc_time
 #' @docType data
 #' @keywords datasets
 #' @format list of \code{randomForestSRC::plot.variable} objects
+#' @name partial_surface_data
 #' @name partial_Boston_surf
 #' @name partial_pbc_surf
-#' @name partial_pbc_surf2
-#' 
+#' @name partial_pbc_time
 NULL

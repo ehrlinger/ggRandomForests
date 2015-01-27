@@ -83,18 +83,14 @@
 #' Springer-Verlag, New York. ISBN: 0-387-98784-3.
 #' 
 #' 
-#' @aliases partial_coplot_data partial_coplot_Boston partial_coplot_Boston2 partial_coplot_Boston_surf partial_coplot_pbc partial_coplot_pbc2 partial_coplot_pbc_surf partial_coplot_pbc_surf2
+#' @aliases partial_coplot_data partial_coplot_Boston partial_coplot_Boston2 partial_coplot_pbc partial_coplot_pbc2
 #' @docType data
 #' @keywords datasets
 #' @format List of \code{randomForestSRC::plot.variable} objects
 #' @name partial_coplot_data
 #' @name partial_coplot_Boston
 #' @name partial_coplot_Boston2
-#' @name partial_coplot_Boston_surf
 #' @name partial_coplot_pbc
 #' @name partial_coplot_pbc2
-#' @name partial_coplot_pbc_surf
-#' @name partial_coplot_pbc_surf2
-#' 
 #' 
 NULL

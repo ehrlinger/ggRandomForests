@@ -4,12 +4,9 @@
 \name{partial_coplot_data}
 \alias{partial_coplot_Boston}
 \alias{partial_coplot_Boston2}
-\alias{partial_coplot_Boston_surf}
 \alias{partial_coplot_data}
 \alias{partial_coplot_pbc}
 \alias{partial_coplot_pbc2}
-\alias{partial_coplot_pbc_surf}
-\alias{partial_coplot_pbc_surf2}
 \title{Cached \code{randomForestSRC::plot.variable} objects for examples, diagnostics and vignettes.}
 \format{List of \code{randomForestSRC::plot.variable} objects}
 \description{
