@@ -1,8 +1,8 @@
 ---
 title: 'ggRandomForests: Visually Exploring a Random Forest for Regression'
-author: "John Ehrlinger<br/>Assistant Staff<br/>Quantitative Health Sciences<br/>Lerner Research Institute<br/>Cleveland Clinic"
+author: "John Ehrlinger <br/>Assistant Staff <br/>Quantitative Health Sciences <br/>Lerner Research Institute <br/>Cleveland Clinic"
 date: "`r today <- Sys.Date();format(today, format='%B %d, %Y')`"
-output: 
+output:
   rmarkdown::html_vignette:
     fig_caption: true
     fig_align: center
@@ -12,13 +12,22 @@ vignette: >
   \usepackage[utf8]{inputenc}
 bibliography: ggRandomForests.bib
 ---
-
+<!---
+  # Markdown comment... 
+  # To get yaml to convert to pdf (for arXiv), insert these two commands 
+  # after the output: statement.
+   pdf_document: 
+    fig_caption: true
+    keep_tex: true
+--->
 ```{r setup, include = FALSE, cache = FALSE, echo = FALSE} 
 library("knitr")
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
 opts_chunk$set(fig.path = 'fig-rfr/rfr-', 
                prompt = TRUE, 
                comment = NA, 
+               fig.width=4,
+               fig.height=3,
                echo = TRUE, results = TRUE, 
                message = FALSE, warning = FALSE, 
                error = FALSE, prompt = TRUE)

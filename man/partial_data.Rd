@@ -6,7 +6,6 @@
 \alias{partial_data}
 \alias{partial_iris}
 \alias{partial_pbc}
-\alias{partial_pbc_time}
 \title{Cached \code{randomForestSRC::plot.variable} objects for examples,
 diagnostics and vignettes.}
 \format{\code{randomForestSRC::plot.variable}}

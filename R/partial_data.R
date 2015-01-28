@@ -152,7 +152,7 @@
 #' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox Model, 
 #' Springer-Verlag, New York. ISBN: 0-387-98784-3.
 #' 
-#' @aliases partial_data partial_iris partial_Boston partial_pbc partial_pbc_time
+#' @aliases partial_data partial_iris partial_Boston partial_pbc
 #' @docType data
 #' @keywords datasets
 #' @format \code{randomForestSRC::plot.variable} 
