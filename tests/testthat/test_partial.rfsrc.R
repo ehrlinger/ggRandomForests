@@ -2,9 +2,14 @@
 context("partial.rfsrc tests")
 
 test_that("partial.rfsrc regression",{  
-  ## Load the cached forest
-  data(rfsrc_Boston, package="ggRandomForests")
   
+  ## Load the cached forest
+  #data(rfsrc_Boston, package="ggRandomForests")
+  data(Boston, package="MASS")
+  
+  Boston$chas <- as.logical(Boston$chas)
+  
+  rfsrc_Boston <- rfsrc(medv~., data=Boston, ntree=100)
   # Test the cached forest type
   expect_is(rfsrc_Boston, "rfsrc")
   
@@ -42,7 +47,47 @@ test_that("partial.rfsrc regression",{
 
 test_that("partial.rfsrc survival",{  
   ## Load the cached forest
-  data(rfsrc_pbc, package="ggRandomForests")
+  #data(rfsrc_pbc, package="ggRandomForests")
+  data(pbc, package="randomForestSRC")
+  
+  # For whatever reason, the age variable is in days... makes no sense to me
+  for(ind in 1:dim(pbc)[2]){
+    if(!is.factor(pbc[,ind])){
+      if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
+        if(sum(range(pbc[,ind],na.rm=TRUE) == c(0,1))==2){
+          pbc[,ind] <- as.logical(pbc[,ind])
+        }
+      }
+    }else{
+      if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
+        if(sum(sort(unique(pbc[,ind])) == c(0,1))==2){
+          pbc[,ind] <- as.logical(pbc[,ind])
+        }
+        if(sum(sort(unique(pbc[,ind])) == c(FALSE, TRUE))==2){
+          pbc[,ind] <- as.logical(pbc[,ind])
+        }
+      }
+    }
+    if(!is.logical(pbc[, ind]) & 
+         length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=5) {
+      pbc[,ind] <- factor(pbc[,ind])
+    }
+  }
+  # Convert age to years
+  pbc$age <- pbc$age/364.24
+  
+  pbc$years <- pbc$days/364.24
+  pbc <- pbc[, -which(colnames(pbc)=="days")]
+  pbc$treatment <- as.numeric(pbc$treatment)
+  pbc$treatment[which(pbc$treatment==1)] <- "DPCA"
+  pbc$treatment[which(pbc$treatment==2)] <- "placebo"
+  pbc$treatment <- factor(pbc$treatment)
+  
+  dta.train <- pbc[-which(is.na(pbc$treatment)),]
+  # Create a test set from the remaining patients
+  pbc.test <- pbc[which(is.na(pbc$treatment)),]
+  rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., dta.train, nsplit = 10,
+                     na.action="na.impute", ntree=100)
   
   # Test the cached forest type
   expect_is(rfsrc_pbc, "rfsrc")
@@ -54,8 +99,8 @@ test_that("partial.rfsrc survival",{
   
   # Survival without a time.
   expect_warning(partial.rfsrc(rfsrc_pbc, 
-                             xvar.names = c("age", "copper"), 
-                             npts=10, surv.type="surv"))
+                               xvar.names = c("age", "copper"), 
+                               npts=10, surv.type="surv"))
   
   # pretend we have an unsupervised forest
   rfsrc_pbc$family <- "unsupv" 
@@ -65,7 +110,8 @@ test_that("partial.rfsrc survival",{
 
 test_that("partial.rfsrc classification",{  
   ## Load the cached forest
-  data(rfsrc_iris, package="ggRandomForests")
+  #data(rfsrc_iris, package="ggRandomForests")
+  rfsrc_iris <- rfsrc(Species ~., data = iris, ntree=100)
   ## Load the cached forest
   data(partial_iris, package="ggRandomForests")
   

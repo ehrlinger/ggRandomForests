@@ -160,6 +160,5 @@
 #' @name partial_iris
 #' @name partial_Boston
 #' @name partial_pbc
-#' @name partial_pbc_time
 #' 
 NULL
