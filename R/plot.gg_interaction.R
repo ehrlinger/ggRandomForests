@@ -147,15 +147,14 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
     gg_dta$names <- factor(gg_dta$names,
                            levels=unique(gg_dta$names))
     gg_plt <- ggplot(gg_dta)+ 
-    geom_point(aes_string(x="names", y="value"))+
-    geom_point(aes_string(x="names", y="value"),
-               data=gg_dta[which(as.character(gg_dta$names) == gg_dta$variable),],
-               shape=3, size=5,
-               color="red")+
-    theme(text = element_text(size=10),
-          axis.text.x = element_text(angle=90)) +
-    labs(x="", y="Minimal Depth")
-    
+      geom_point(aes_string(x="names", y="value"))+
+      geom_point(aes_string(x="names", y="value"),
+                 data=gg_dta[which(as.character(gg_dta$names) == gg_dta$variable),],
+                 shape=3, size=5,
+                 color="red")+
+      theme(text = element_text(size=10),
+            axis.text.x = element_text(angle=90)) +
+      labs(x="", y="Interactive Minimal Depth")
     if(!missing(lbls)){
       if(length(lbls) >= length(colnames(object))){
         st.lbls <- lbls[colnames(object)]
@@ -163,7 +162,7 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
         st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
         
         gg_plt <- gg_plt +
-        scale_x_discrete(labels=st.lbls)
+          scale_x_discrete(labels=st.lbls)
       }
     }
     
@@ -179,15 +178,14 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
     gg_dta$names <- factor(gg_dta$names,
                            levels=unique(gg_dta$names))
     gg_plt <- ggplot(gg_dta)+ 
-    geom_point(aes_string(x="names", y="dpth"))+
-    geom_point(aes_string(x="names", y="dpth"),
-               data=gg_dta[which(rownames(gg_dta)==xvar),],
-               shape=3, size=5,
-               color="red")+
-    theme(text = element_text(size=10),
-          axis.text.x = element_text(angle=90)) +
-    labs(x="", y="Minimal Depth")
-    
+      geom_point(aes_string(x="names", y="dpth"))+
+      geom_point(aes_string(x="names", y="dpth"),
+                 data=gg_dta[which(rownames(gg_dta)==xvar),],
+                 shape=3, size=5,
+                 color="red")+
+      theme(text = element_text(size=10),
+            axis.text.x = element_text(angle=90)) +
+      labs(x="", y="Interactive Minimal Depth")
     
     if(!missing(lbls)){
       if(length(lbls) >= length(gg_dta$names)){
@@ -196,7 +194,7 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
         st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
         
         gg_plt <- gg_plt +
-        scale_x_discrete(labels=st.lbls)
+          scale_x_discrete(labels=st.lbls)
       }
     }
     gg_plt
