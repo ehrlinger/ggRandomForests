@@ -761,7 +761,8 @@ plot.gg_partial(pbc_ggpart[["edema"]], panel=TRUE,
   coord_cartesian(y = c(25,101))
 @
 
-Partial dependence is an extrapolation operation. Viewed as averaging over the unsupervised construction of a series of nomograms, we can see how the algorithm can construct observations not available within the training data set. In contrast, variable dependence {\color{red} !!!TODO!!!}
+
+Partial dependence is an extrapolation operation. By averaging over a series of nomograms, the algorithm constructs observations for all values of the variable of interest, regardless of the relation with other variables. In contrast, variable dependence only uses observations from within the training set. A simple example would be for a model including BMI, weight and height. When examining partial dependence of BMI, the algorithm only manipulates BMI values, height or weight values. The averaging operation is then confounded in two directions. First, dependence on height and weight is shared with BMI, making it difficult to see the true response dependence. Second, partial dependence is calculated over nomograms that can not physically occur. For simple variable combinations, like BMI, it is not difficult to recognize this and modify the independent variable list to avoid these issues. However, care must be taken when interpreting more complex biological variables.
 
 \subsection{Partial Dependence in the Time}\label{S:timeSurface}
 
@@ -821,9 +822,9 @@ alt <- lapply(indx, function(ind){
   })
 @
 
-The \code{gg_partial} surface of Figure~\ref{fig:timeSurface3d} was constructed using the \code{plot3D::surf3D} function from the \pkg{plot3D} package~\citep[\url{http://CRAN.R-project.org/package=plot3D}]{Soetaert:2014}. Source code for generating this figure is shown in Appendix~\ref{A:TimeDomain}. The figure shows risk adjusted survival (Z-axis) as a function of \code{bili} over a five year follow up. Lines perpendicular to the Bilirubin axis are distributed along the \code{bili} variable. Lines parallel to the Bilirubin axis are taken at 50 training set event times, the first event after $t=0$ at the back to last event before $t=5$ years at the front. The distribution of the time lines is also evenly selected using the same process as selecting points along \code{bili}. The 2500 estimated partial dependence points are joined together along a simple straight line interpolation to create the surface, colored according to the survival estimates (yellow close to 1, red for lower values) to aid the visualization of 3 dimensions on a 2 dimensional page. 
+The \code{gg_partial} surface of Figure~\ref{fig:timeSurface3d} was constructed using the \code{plot3D::surf3D} function from the \pkg{plot3D} package~\citep[\url{http://CRAN.R-project.org/package=plot3D}]{Soetaert:2014}. Source code for generating this figure is shown in Appendix~\ref{A:TimeDomain}. The figure shows risk adjusted survival (Z-axis) as a function of \code{bili} over a five year follow up. Lines perpendicular to the Bilirubin axis are distributed along the \code{bili} variable. Lines parallel to the Bilirubin axis are taken at 50 training set event times, the first event after $t=0$ at the back to last event before $t=5$ years at the front. The distribution of the time lines is also evenly selected using the same process as selecting points along \code{bili}. The 2500 estimated partial dependence points are joined together along a simple straight line interpolation to create the surface, colored according to the survival estimates (yellow close to 1, red for lower values) to aid the visualization of 3 dimensions on a 2 dimensional page. The blue lines in Figure~\ref{fig:timeSurface3d} correspond to the 1 and 3 year partial dependence, as shown in the \code{bili} panel of Figure~\ref{fig:pbc-partial-panel}. 
 
-The blue lines in Figure~\ref{fig:timeSurface3d} correspond to the 1 and 3 year partial dependence, as shown in the \code{bili} panel of Figure~\ref{fig:pbc-partial-panel}. {\color{red} !!!TODO!!!}
+Viewed as a surface, we see how the partial dependence changes with time. For low values of \code{bili}, survival decreases at a constant rate. For higher values, the rate seems constant until somewhere near 2 years, where it increases rapidly before slowing again as we approach the 5 year point. 
 
 \section{Variable Interactions}\label{S:interactions}
 
@@ -1040,11 +1041,11 @@ st <- lapply(indx, function(ind){
           z=srf$z[ind],
           add=TRUE, col="blue", lwd=6)})
 @
-The partial dependence surface of Figure~\ref{fig:surface3d} shows risk adjusted survival on the Z-axis against values of Bilirubin and Albumin. We again use a linear interpolation between the 2500 estimates, and color the surface by the response. Here blue corresponds to lower and yellow to higher risk adjusted survival. The blue lines are placed at the cut points between groups of \code{albumin} and \code{bili} used in the partial coplots of Figures~\ref{fig:bili-albumin} and~\ref{fig:albumin-bili} respectively.
+The partial dependence surface of Figure~\ref{fig:surface3d} shows risk adjusted survival on the Z-axis against values of Bilirubin and Albumin. We again use linear interpolation between the 2500 estimates, and color the surface by the response. Here blue corresponds to lower and yellow to higher risk adjusted survival. The blue lines are placed at the cut points between groups of \code{albumin} and \code{bili} used in the partial coplots of Figures~\ref{fig:bili-albumin} and~\ref{fig:albumin-bili} respectively.
 
-To construct the partial coplot for groups of \code{albumin} in Figure~\ref{fig:bili-albumin}, we arbitrarily segmented the training set into 6 groups of equal membership size. The segments between blue lines parallel to the Bilirubin axis indicate where on the surface these observations are located. We can see lines from higher \code{albimun} levels are close together, and have similar survival response, which results in the over plotting in Figure~\ref{fig:bili-albumin}.
+To construct the partial coplot for groups of \code{albumin} in Figure~\ref{fig:bili-albumin}, we arbitrarily segmented the training set into 6 groups of equal membership size. The segments between blue lines parallel to the Bilirubin axis indicate where on the surface these observations are located. Similarly, the blues lines perpendicular to the Bilirubin axis segment observations into the 6 groups of \code{bili} intervals. Figure~\ref{fig:surface3d} indicates the arbitrary grouping for groups of \code{bili} in Figure~\ref{fig:albumin-bili}. 
 
-Similarly, the blues lines perpendicular to the Bilirubin axis segment observations into the 6 groups of \code{bili} intervals. Figure~\ref{fig:surface3d} indicates the arbitrary grouping for groups of \code{bili} in Figure~\ref{fig:albumin-bili}.  {\color{red}!!!TODO!!!}
+The figure indicates that partial dependence of higher \code{albimun} levels are similar, which results in the over plotting in Figure~\ref{fig:bili-albumin}. The distribution is sparser at lower  \code{albimun} levels, creating the larger area in lowest  \code{albimun} values, where the partial dependence changes the most.
 
 \section{Conclusion}
 
