@@ -11,7 +11,7 @@
 \BOOKMARK [1][-]{Section.3.Variable Selection.1}{Variable Selection}{}% 11
 \BOOKMARK [2][-]{Subsection.4.0.Variable Importance.2}{Variable Importance}{Section.3.Variable Selection.1}% 12
 \BOOKMARK [2][-]{Subsection.4.1.Minimal Depth.2}{Minimal Depth}{Section.3.Variable Selection.1}% 13
-\BOOKMARK [2][-]{Subsection.4.2.Model Selection Comparison.2}{Model Selection Comparison}{Section.3.Variable Selection.1}% 14
+\BOOKMARK [2][-]{Subsection.4.2.Variable Selection Comparison.2}{Variable Selection Comparison}{Section.3.Variable Selection.1}% 14
 \BOOKMARK [1][-]{Section.4.Variable Dependence.1}{Variable Dependence}{}% 15
 \BOOKMARK [2][-]{Subsection.5.0.Variable Dependence.2}{Variable Dependence}{Section.4.Variable Dependence.1}% 16
 \BOOKMARK [2][-]{Subsection.5.1.Partial Dependence.2}{Partial Dependence}{Section.4.Variable Dependence.1}% 17
