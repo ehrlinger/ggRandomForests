@@ -861,7 +861,7 @@ The minimal depth interaction method is still an active research area, and indee
 
 Conditioning plots (coplots)~\citep{chambers:1992,cleveland:1993}  are a powerful visualization tool to efficiently study how a response depends on two or more variables~\citep{cleveland:1993}. The method allows us to view data by grouping observations on some conditional membership. The simplest example involves a categorical variable, where we plot our data conditional on class membership, for instance on groups of the \code{edema} variable. We can view a coplot as a stratified variable dependence plot, indicating trends in the RF prediction results within panels of group membership.
 
-Interactions with categorical data can be generated directly from variable dependence plots. Recall the variable dependence for bilirubin shown in Figure~\ref{fig:variable-plotbili}. We recreated the \code{gg_variable} plot in  Figure~\ref{fig:var_dep}, modified by adding a linear smooth as we intend on segregating the data along conditional class membership.
+Interactions with categorical data can be generated directly from variable dependence plots. Recall the variable dependence for bilirubin shown in Figure~\ref{fig:variable-plotbili}. We recreated the \code{gg_variable} plot in Figure~\ref{fig:var_dep}. We've modified the figure by adding a linear smooth (\code{method = "glm"}) which will show the trends for smaller samples after segregating the data along conditional class membership.
 <<var_dep, echo=TRUE, fig.cap="Variable dependence of survival at 1 year against \\code{bili} variable. Reproduction of top panel of Figure~\\ref{fig:variable-plotbili} with a linear smooth to indicate trend.">>= 
 # Get variable dependence at 1 year
 ggvar <- gg_variable(rfsrc_pbc, time = 1)
@@ -870,9 +870,8 @@ ggvar <- gg_variable(rfsrc_pbc, time = 1)
 ggvar$edema <- paste("edema = ", ggvar$edema, sep = "")
 
 # Plot with linear smooth (method argument)
-var_dep <- plot(ggvar, xvar = "bili", 
-                method = "glm",
-                alpha = .5, se = FALSE) + 
+var_dep <- plot(ggvar, xvar = "bili", alpha = .5,  
+                method = "glm", se = FALSE) + 
   labs(y = "Survival", 
        x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
@@ -882,7 +881,6 @@ var_dep <- plot(ggvar, xvar = "bili",
 
 var_dep
 @
-
 We can view the conditional dependence of survival against bilirubin, conditional on \code{edema} group membership (categorical variable) in Figure~\ref{fig:coplot_bilirubin} by reusing the saved \code{ggplot} object (\code{var_dep}) and adding a call to the \code{facet_grid} function.
 <<coplot_bilirubin, echo=TRUE, fig.cap="Variable dependence coplot of survival at 1 year against \\code{bili}, conditional on \\code{edema} group membership. Linear smooth indicates trend of variable dependence.", fig.width=7>>= 
 var_dep + facet_grid(~edema)
@@ -890,7 +888,9 @@ var_dep + facet_grid(~edema)
 
 Comparing Figure~\ref{fig:var_dep} with conditional panels of Figure~\ref{fig:coplot_bilirubin}, we see the overall response is similar to the \code{edema=0} response. The survival for \code{edema=0.5} is slightly lower, though the slope of the smooth indicates a similar relation to \code{bili}. The \code{edema=1} panel shows that the survival for this (smaller) group of patients is worse, but still follows the trend of decreasing with increasing \code{bili}.
 
-Conditional membership within a continuous variable requires stratification at some level. We can sometimes make these stratification along some feature of the variable, for instance a variable with integer values, or 5 or 10 year age group cohorts. However with our variables of interest, there are no logical stratification indications. Therefore we arbitrarily stratify our variables into 6 groups of roughly equal population size using the \code{quantile_cuts} function. We pass the break points located by \code{quantile_cuts} to the \code{cut} function to create grouping intervals, which we can then add to the \code{gg_variable} object before plotting with the \code{plot.gg_variable} function. This time we use the \code{facet_wrap} function to generate the panels grouping interval, which automatically sorts the six panels into two rows of three panels each. 
+Conditional membership within a continuous variable requires stratification at some level. We can sometimes make these stratification along some feature of the variable, for instance a variable with integer values, or 5 or 10 year age group cohorts. However with our variables of interest, there are no logical stratification indications. 
+
+For our example, will will look at the interaction between the highest ranked variables of interest, \code{bili} and \code{albumin}. Since there are not logical stratification points, we arbitrarily stratify into 6 groups of roughly equal population size using the \code{quantile_cuts} function. We pass these break points to the \code{cut} function to create grouping intervals. We can add the intervals from the \code{cut} function directly to the \code{gg_variable} object and generate the coplots with the \code{plot.gg_variable} function. This time we use the \code{facet_wrap} function to generate the panels grouping interval, which automatically sorts the six panels into two rows of three panels each. 
 
 <<albumin-coplot, fig.cap="Variable dependence coplot of survival at 1 year against \\code{bili}, conditonal on \\code{albumin} interval group membership.", fig.width=7, fig.height=4, echo=TRUE>>= 
 # Find intervals with similar number of observations and create groups.
@@ -900,8 +900,8 @@ ggvar$albumin_grp <- cut(ggvar$albumin, breaks = albumin_cts)
 # Adjust naming for facets
 levels(ggvar$albumin_grp) <- paste("albumin =", levels(ggvar$albumin_grp))
 
-plot(ggvar, xvar = "bili", 
-     method = "glm", alpha = .5, se = FALSE) + 
+plot(ggvar, xvar = "bili", alpha = .5,
+     method = "glm", se = FALSE) + 
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -909,7 +909,7 @@ plot(ggvar, xvar = "bili",
   facet_wrap(~albumin_grp)+
   coord_cartesian(y = c(-.01,1.01))
 @
-The \code{gg_variable} coplot of Figure~\ref{fig:albumin-coplot} indicates that the effect of \code{bili} decreases conditional on membership within increasing \code{albumin} groups. To get a better feel for how the response depends on both these variables together, it is instructive to look at the compliment coplot of \code{albumin} conditional on membership in \code{bili} groups. We repeat the previous coplot process, predicted survival as a function of the \code{albumin} variable, conditional on membership within 6 groups \code{bili} intervals. As the code to create the coplot of Figure~\ref{fig:bili-coplot} is nearly identical to the code for creating Figure~\ref{fig:albumin-coplot}, we include the source code for this figure in Appendix~\ref{A:biliCoplot}. 
+The \code{gg_variable} coplot of Figure~\ref{fig:albumin-coplot} indicates that the effect of \code{bili} decreases within increasing \code{albumin} groups. To get a better feel for how the response depends on both these variables together, it is instructive to look at the compliment coplot of \code{albumin} conditional on membership in \code{bili} groups. We repeat the previous coplot process, predicted survival as a function of the \code{albumin} variable, conditional on membership within 6 groups \code{bili} intervals. As the code to create the coplot of Figure~\ref{fig:bili-coplot} is nearly identical to the code for creating Figure~\ref{fig:albumin-coplot}, we include the source code for this figure in Appendix~\ref{A:biliCoplot}. 
 
 <<bili-coplot, fig.cap="Variable dependence coplot of survival at 1 year against \\code{albumin}, conditonal on \\code{bili} interval group membership.", fig.width=7, fig.height=4, echo=FALSE, results=FALSE>>= 
 # Find intervals with similar number of observations.
@@ -935,7 +935,7 @@ plot(ggvar, xvar = "albumin",
   facet_wrap(~bili_grp)+
   coord_cartesian(y = c(-.01,1.01))
 @
-The \code{gg_variable} coplot of Figure~\ref{fig:bili-coplot} indicates the probability of survival increases with increasing \code{albumin} and increases within groups of increasing \code{bili}.
+The \code{gg_variable} coplot of Figure~\ref{fig:bili-coplot} indicates the probability of survival increases with increasing \code{albumin} and the slope increases within groups of increasing \code{bili}.
 
 Typically, conditional plots for continuous variables include overlapping intervals along the grouped variable~\citep{cleveland:1993}. We chose to use mutually exclusive continuous variable intervals for the following reasons:
  \begin{itemize}
@@ -972,7 +972,7 @@ plot(partial_coplot_pbc, se = FALSE)+
        color = "albumin", shape = "albumin")+
   coord_cartesian(y = c(49,101))
 @
-The \code{gg_partial_coplot} of Figure~\ref{fig:bili-albumin} shows point estimates of the risk adjusted survival as a function of \code{bili} conditional on group membership defined by \code{albumin} intervals. The figure is slightly different than the \code{gg_partial} plot of Figure~\ref{fig:pbc-partial-panel} as each set of partial dependence estimates is calculated over a subset of the training data. We again connect the point estimates with a Loess curve.
+The \code{gg_partial_coplot} of Figure~\ref{fig:bili-albumin} shows point estimates of the risk adjusted predicted survival at 1 year as a function of \code{bili} conditional on group membership defined by \code{albumin} intervals. The figure is slightly different than the \code{gg_partial} plot of Figure~\ref{fig:pbc-partial-panel} as each set of partial dependence estimates is calculated over a subset of the training data. We again connect the point estimates with a Loess curve.
 
 For completeness, we construct the compliment coplot view of one year survival as a function of \code{albumin} conditional on \code{bili} interval group membership in Figure~\ref{fig:albumin-bili}. We list the source code for this figure in Appendix~\ref{A:biliPartialCoplot}.
 
@@ -1048,7 +1048,7 @@ st <- lapply(indx, function(ind){
           z=srf$z[ind],
           add=TRUE, col="blue", lwd=6)})
 @
-The partial dependence surface of Figure~\ref{fig:surface3d} shows partial dependence of 1 year survival on the Z-axis against values of Bilirubin and Albumin. We again use linear interpolation between the 2500 estimates, and color the surface by the response. Here blue corresponds to lower and yellow to higher risk adjusted survival. The blue lines are placed at the cut points between groups of \code{albumin} and \code{bili} used in the partial coplots of Figures~\ref{fig:bili-albumin} and~\ref{fig:albumin-bili} respectively.
+The partial dependence surface of Figure~\ref{fig:surface3d} shows partial dependence of predicted survival at 1 year on the Z-axis against values of Bilirubin and Albumin. We again use linear interpolation between the 2500 estimates, and color the surface by the response. Here blue corresponds to lower and yellow to higher risk adjusted survival. The blue lines are placed at the cut points between groups of \code{albumin} and \code{bili} used in the partial coplots of Figures~\ref{fig:bili-albumin} and~\ref{fig:albumin-bili} respectively.
 
 To construct the partial coplot for groups of \code{albumin} in Figure~\ref{fig:bili-albumin}, we arbitrarily segmented the training set into 6 groups of equal membership size. The segments between blue lines parallel to the Bilirubin axis indicate where on the surface these observations are located. Similarly, the blues lines perpendicular to the Bilirubin axis segment observations into the 6 groups of \code{bili} intervals. Figure~\ref{fig:surface3d} indicates the arbitrary grouping for groups of \code{bili} in Figure~\ref{fig:albumin-bili}. 
 
