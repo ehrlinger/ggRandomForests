@@ -169,7 +169,7 @@ Once we have an idea of which variables we are most interested in, we use variab
 
 We examine forest variable interactions in Section~\ref{S:interactions} using a minimal depth approach. We then demonstrate the use of variable dependence and partial dependence (risk adjusted) conditioning plots (coplots)~\citep{chambers:1992,cleveland:1993} to examine interactions among variables of interest graphically (Section~\ref{S:coplots}). 
 
-\section{Data Summary: Primary Biliary Cirrhosis (PBC) Data}\label{S:data}
+\section{Data Summary: Primary Biliary Cirrhosis (PBC)}\label{S:data}
 
 The \emph{primary biliary cirrhosis} of the  liver (PBC) study consists of 424 PBC patients referred to Mayo Clinic between 1974 and 1984 who met eligibility criteria for a randomized placebo controlled trial of the drug D-penicillamine (DPCA). The data is described in~\cite[Chapter 0.2]{fleming:1991} and a partial likelihood model (Cox proportional hazards) is developed in Chapter 4.4. The \code{pbc} data set, included in the \pkg{randomForestSRC} package, contains 418 observations, of which 312 patients participated in the randomized trial~\cite[Appendix D]{fleming:1991}. 
 <<datastep, echo=TRUE>>= 
@@ -831,9 +831,11 @@ Viewed as a surface, we see how the partial dependence changes with time. For lo
 
 \section{Variable Interactions}\label{S:interactions}
 
-We could stop with the results that our RF analysis has found these six variables to be important in predicting survival. Where the survival response is decreasing with increasing \code{bili}, \code{copper}, \code{prothrombin}, \code{age} and \code{edema} and increasing with increasing \code{albumin}. These results agree with the sign of the~\cite{fleming:1991} model coefficients shown in Table~\ref{T:FHmodel}. The \code{gg_partial} plot in Figure~\ref{fig:pbc-partial-panel} supports the \code{log} transform of \code{bili}, \code{albumin} and \code{prothrombin} and suggest a similar transform for including the \code{copper} variable in a proportional hazards model. The \code{age} variable does seem to have a more linear response than the other continuous variables, and using dummy variables for \code{edema} would preclude the need for a transformation.
+In summary, the RF analysis has found six variables to be important in predicting survival. The survival response is decreasing with increasing \code{bili}, \code{copper}, \code{prothrombin}, \code{age} and \code{edema} and increasing with increasing \code{albumin}. These results agree with the sign of the~\cite{fleming:1991} model coefficients shown in Table~\ref{T:FHmodel}. The \code{gg_partial} plot in Figure~\ref{fig:pbc-partial-panel} supports the \code{log} transform of \code{bili}, \code{albumin} and \code{prothrombin} and suggest a similar transform for including the \code{copper} variable in a proportional hazards model. The \code{age} variable does seem to have a more linear response than the other continuous variables, and using dummy variables for \code{edema} would preclude the need for a transformation.
 
-Using minimal depth, it is also possible to calculate measures of pairwise interactions among variables. Recall that minimal depth measure is defined by averaging the tree depth of variable $i$ relative to the root node. To detect interactions, this calculation can be modified to measure the minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$~\citep{Ishwaran:2010,Ishwaran:2011}.
+We could stop here. However, we are often interested in how variable interactions effect a model. In linear models, variable interactions manually are formed and tested for significance in the model building step. Random forest interactions are automatically considered within the decision trees that comprise the forest. Because of the automation of the process, it is possible to retrospectively examine interactions and/or select interactions of interest.
+
+The minimal depth approach to detect and report interactions is similar to the variable selection method of Section~\ref{S:minimalDepth}. Recall that minimal depth measure is defined by averaging the tree depth of variable $i$ relative to the root node. To detect interactions, this calculation can be modified to measure the minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$~\citep{Ishwaran:2010,Ishwaran:2011}.
 
 The \code{randomForestSRC::find.interaction} function traverses the forest, calculating all pairwise minimal depth interactions, and returns a $p \times p$ matrix of interaction measures. The diagonal terms are normalized to the root node, and off diagonal terms are normalized measures of pairwise variable interaction. 
 
@@ -852,6 +854,8 @@ plot(ggint, xvar = xvar)
 @
 
 The \code{gg_interaction} plots in Figure~\ref{fig:interactionPanel} show interactions for the target variable (shown with the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (\code{bili}) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone it may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing, as expected. We also see the interactive variables increasing with increasing target depth. 
+
+The minimal depth interaction method is still an active research area, and indeed Figure~\ref{fig:interactionPanel} does not effectively demonstrate strong interactive terms. It does indicate strongly non-interactive variables, though these tend to be factor variables (\code{edema}, \code{ascites}, etc.). 
 
 \section{Conditional Dependence Plots}\label{S:coplots}
 
