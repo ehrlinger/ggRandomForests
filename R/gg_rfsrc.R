@@ -93,11 +93,14 @@
 #' ## -------- pbc data
 #' ## We don't run this because of bootstrap confidence limits
 #' data(rfsrc_pbc, package = "ggRandomForests")
+#' 
+#' \dontrun{
 #' gg_dta <- gg_rfsrc(rfsrc_pbc)
 #' plot(gg_dta)
 #' 
 #' gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int=.95)
 #' plot(gg_dta)
+#' }
 #' 
 #' gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
 #' plot(gg_dta)

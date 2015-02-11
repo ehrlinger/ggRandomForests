@@ -2,11 +2,11 @@
 % Please edit documentation in R/partial.rfsrc.R
 \name{partial.rfsrc}
 \alias{partial.rfsrc}
-\title{randomForestSRC partial depenedence (data object) (modified from randomForestSRC V1.6.0)}
+\title{randomForestSRC partial dependence (data object) (modified from randomForestSRC V1.6.0)}
 \usage{
-partial.rfsrc(x, xvar.names, which.outcome, time, surv.type = c("mort",
-  "rel.freq", "surv", "years.lost", "cif", "chf"), sorted = TRUE, nvar,
-  npts = 25, subset, granule = 5, ...)
+partial.rfsrc(x, xvar.names, which.outcome, surv.type = c("mort", "rel.freq",
+  "surv", "years.lost", "cif", "chf"), nvar, npts = 25, subset, granule = 5,
+  ...)
 }
 \arguments{
 \item{x}{An object of class (\code{rfsrc}, \code{grow}), (\code{rfsrc}, \code{synthetic}),
@@ -19,12 +19,7 @@ the class to focus on (defaults to the first class). For competing risk families
 value between 1 and J indicating the event of interest, where J is the number of event types.
 The default is to use the first event type.}
 
-\item{time}{For survival families, the time at which the predicted survival value is evaluated
-at (depends on surv.type).}
-
 \item{surv.type}{For survival families, specifies the predicted value. See details below.}
-
-\item{sorted}{Should variables be sorted by importance values.}
 
 \item{nvar}{Number of variables to be plotted. Default is all.}
 
@@ -54,8 +49,7 @@ horizontal axis.
  \itemize{
 \item  Mortality (mort).
 \item  Relative frequency of mortality (rel.freq).
-\item  Predicted survival (surv), where the predicted survival is for the time point specified using time
-(the default is the median follow up time).
+\item  Predicted survival (surv)
 }
 
 \item  For competing risks, the choices are:
@@ -64,8 +58,7 @@ horizontal axis.
 \item  The cumulative incidence function (cif).
 \item  The cumulative hazard function (chf).
 }
-In all three cases, the predicted value is for the event type specified by which.outcome. For
-cif and chf the quantity is evaluated at the time point specified by time.
+In all three cases, the predicted value is for the event type specified by which.outcome.
 }
 
 The y-value for a variable X, evaluated at \eqn{X=x}, is
@@ -89,7 +82,7 @@ data(veteran, package = "randomForestSRC")
 v.obj <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
 plot.variable(v.obj, plots.per.page = 3)
 plot.variable(v.obj, plots.per.page = 2, xvar.names = c("trt", "karno", "age"))
-plot.variable(v.obj, surv.type = "surv", nvar = 1, time = 200)
+plot.variable(v.obj, surv.type = "surv", nvar = 1)
 plot.variable(v.obj, surv.type = "surv", partial = TRUE, smooth.lines = TRUE)
 plot.variable(v.obj, surv.type = "rel.freq", partial = TRUE, nvar = 2)
 

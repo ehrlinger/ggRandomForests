@@ -13,10 +13,17 @@ test_that("partial.rfsrc regression",{
   # Test the cached forest type
   expect_is(rfsrc_Boston, "rfsrc")
   
+  xvar <- c("lstat","chas")
   ## Create the correct object
   gg_dta<- partial.rfsrc(rfsrc_Boston, 
-                         xvar.names = c("lstat","chas"),
+                         xvar.names = xvar,
                          npts=10)
+  expect_equal(gg_dta$xvar.names, xvar)
+  expect_equal(names(gg_dta$pData), xvar)
+  expect_equal(gg_dta$pData[[1]]$xvar.name, xvar[1])
+  expect_equal(gg_dta$pData[[2]]$xvar.name, xvar[2])
+  expect_equal(length(gg_dta$pData[[1]]$yhat),10)
+  expect_equal(length(gg_dta$pData[[2]]$yhat),length(unique(rfsrc_Boston$xvar$chas)))
   
   ## Correct npts spec.
   gg_dta<- partial.rfsrc(rfsrc_Boston, 
@@ -91,16 +98,18 @@ test_that("partial.rfsrc survival",{
   
   # Test the cached forest type
   expect_is(rfsrc_pbc, "rfsrc")
-  
+  xvar <- c("age", "copper")
   ## Create the correct object
   gg_dta<- partial.rfsrc(rfsrc_pbc, 
-                         xvar.names = c("age", "copper"), 
-                         npts=10, time=1, surv.type="surv")
+                         xvar.names = xvar, 
+                         npts=10, surv.type="surv")
   
-  # Survival without a time.
-  expect_warning(partial.rfsrc(rfsrc_pbc, 
-                               xvar.names = c("age", "copper"), 
-                               npts=10, surv.type="surv"))
+  expect_equal(gg_dta$xvar.names, xvar)
+  expect_equal(names(gg_dta$pData), xvar)
+  expect_equal(gg_dta$pData[[1]]$xvar.name, xvar[1])
+  expect_equal(gg_dta$pData[[2]]$xvar.name, xvar[2])
+  expect_equal(length(gg_dta$pData[[1]]$yhat),10)
+  
   
   # pretend we have an unsupervised forest
   rfsrc_pbc$family <- "unsupv" 

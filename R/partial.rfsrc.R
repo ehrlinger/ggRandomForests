@@ -1,4 +1,4 @@
-#' randomForestSRC partial depenedence (data object) (modified from randomForestSRC V1.6.0)
+#' randomForestSRC partial dependence (data object) (modified from randomForestSRC V1.6.0)
 #'
 #' @description calculate the partial dependence of an x-variable on the class probability 
 #' (classification), response (regression), mortality (survival), or the expected years lost 
@@ -11,10 +11,7 @@
 #' the class to focus on (defaults to the first class). For competing risk families, an integer 
 #' value between 1 and J indicating the event of interest, where J is the number of event types. 
 #' The default is to use the first event type.
-#' @param time For survival families, the time at which the predicted survival value is evaluated
-#'  at (depends on surv.type).
 #' @param surv.type For survival families, specifies the predicted value. See details below.
-#' @param sorted Should variables be sorted by importance values.
 #' @param nvar Number of variables to be plotted. Default is all. 
 #' @param npts Maximum number of points used when generating partial plots for continuous variables.
 #' @param subset Vector indicating which rows of the x-variable matrix x$xvar to use. All rows are 
@@ -24,7 +21,6 @@
 #' @param ... other used arguments. Included for compatibility with plot.variable calls.
 #'
 #' @details 
-#' 
 #' The vertical axis displays the ensemble predicted value, while x-variables are plotted on the 
 #' horizontal axis. 
 #' \enumerate{
@@ -35,8 +31,7 @@
 #'  \itemize{ 
 #' \item  Mortality (mort).
 #' \item  Relative frequency of mortality (rel.freq).
-#' \item  Predicted survival (surv), where the predicted survival is for the time point specified using time 
-#' (the default is the median follow up time).
+#' \item  Predicted survival (surv)
 #' }
 #'
 #' \item  For competing risks, the choices are:
@@ -45,8 +40,7 @@
 #' \item  The cumulative incidence function (cif).
 #' \item  The cumulative hazard function (chf).
 #' }
-#' In all three cases, the predicted value is for the event type specified by which.outcome. For 
-#' cif and chf the quantity is evaluated at the time point specified by time.
+#' In all three cases, the predicted value is for the event type specified by which.outcome.
 #' }
 #'
 #' The y-value for a variable X, evaluated at \eqn{X=x}, is
@@ -84,7 +78,7 @@
 #' v.obj <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
 #' plot.variable(v.obj, plots.per.page = 3)
 #' plot.variable(v.obj, plots.per.page = 2, xvar.names = c("trt", "karno", "age"))
-#' plot.variable(v.obj, surv.type = "surv", nvar = 1, time = 200)
+#' plot.variable(v.obj, surv.type = "surv", nvar = 1)
 #' plot.variable(v.obj, surv.type = "surv", partial = TRUE, smooth.lines = TRUE)
 #' plot.variable(v.obj, surv.type = "rel.freq", partial = TRUE, nvar = 2)
 #' 
@@ -141,10 +135,8 @@
 #'
 partial.rfsrc <- function (x, 
                            xvar.names, 
-                           which.outcome, 
-                           time, 
+                           which.outcome,
                            surv.type = c("mort","rel.freq", "surv", "years.lost", "cif", "chf"), 
-                           sorted = TRUE, 
                            nvar, 
                            npts = 25, 
                            subset, 
@@ -157,7 +149,7 @@ partial.rfsrc <- function (x,
   object <- x
   remove(x)
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1,2)) != 2 & 
-        sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2){
+      sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2){
     stop("this function only works for objects of class `(rfsrc, grow)' or '(rfsrc, predict)'")
   }
   if (object$family == "unsupv") {
@@ -203,12 +195,6 @@ partial.rfsrc <- function (x,
     cens <- event.info$cens
     event.type <- event.info$event.type
     
-    # Just grad a time at random.
-    if (missing(time)) {
-      warning("Survival partial dependence requires time of interest, (time=NULL) using the median event time.")
-      time <- median(event.info$time.interest, na.rm = TRUE)
-    }
-    
     ## For competing risks
     if (fmly == "surv-CR") {
       if (missing(which.outcome)) {
@@ -221,20 +207,12 @@ partial.rfsrc <- function (x,
       VIMP <- object$importance[, which.outcome]
       surv.type <- setdiff(surv.type, c("mort", "rel.freq", "surv"))
       pred.type <- match.arg(surv.type, c("years.lost", "cif", "chf"))
-      ylabel <- switch(pred.type, 
-                       years.lost = paste("Years lost for event ", which.outcome), 
-                       cif = paste("CIF for event ", which.outcome, " (time=", time, ")", sep = ""), 
-                       chf = paste("CHF for event ", which.outcome, " (time=", time, ")", sep = ""))
     }else {
       ## For standard survival
       which.outcome <- 1
       VIMP <- object$importance
       surv.type <- setdiff(surv.type, c("years.lost", "cif", "chf"))
       pred.type <- match.arg(surv.type, c("mort", "rel.freq", "surv"))
-      ylabel <- switch(pred.type, 
-                       mort = "mortality", 
-                       rel.freq = "standardized mortality", 
-                       surv = paste("predicted survival (time=", time, ")", sep = ""))
     }
   }else {
     # This is from the randomForestSRC:::get.outcome.target 
@@ -242,9 +220,9 @@ partial.rfsrc <- function (x,
     outcome.target <- 1
     
     # For classification types
-    event.info <- time <- NULL
+    event.info <- NULL
     if (fmly == "class" || fmly == "class+" || 
-          (fmly == "mix+" && is.factor(object$yvar[, outcome.target]))) {
+        (fmly == "mix+" && is.factor(object$yvar[, outcome.target]))) {
       object.yvar <- data.frame(object$yvar)[, outcome.target]
       if (missing(which.outcome)) {
         which.outcome <- 1
@@ -253,14 +231,13 @@ partial.rfsrc <- function (x,
                                levels(object.yvar))
       } else {
         if (which.outcome > length(levels(object.yvar)) | 
-              which.outcome < 1) {
+            which.outcome < 1) {
           stop("which.outcome is specified incorrectly:", 
                which.outcome)
         }
       }
       pred.type <- "prob"
       VIMP <- object$importance[, 1 + which.outcome]
-      ylabel <- paste("probability", levels(object.yvar)[which.outcome])
       remove(object.yvar)
     }else {
       
@@ -268,9 +245,10 @@ partial.rfsrc <- function (x,
       pred.type <- "y"
       which.outcome <- NULL
       VIMP <- object$importance
-      ylabel <- expression(hat(y))
     }
   }
+  
+  sorted <- TRUE
   
   ## Which variables are we working with
   if (missing(xvar.names)) {
@@ -279,6 +257,10 @@ partial.rfsrc <- function (x,
   } else {
     # The specified subset.
     xvar.names <- intersect(xvar.names, object$xvar.names)
+    
+    # If we supply names, we don't want the result sorted.
+    sorted <- FALSE
+    
     if (length(xvar.names) == 0) {
       stop("none of the x-variable supplied match available ones:\n", 
            object$xvar.names)
@@ -291,7 +273,7 @@ partial.rfsrc <- function (x,
   }
   
   # Specify the highest VIMP(if sorted), or the first....
-  # That kind of doesn't make sense.
+  # This kind of doesn't make sense to do.
   if (!missing(nvar)) {
     nvar <- max(round(nvar), 1)
     xvar.names <- xvar.names[1:min(length(xvar.names), nvar)]
@@ -348,7 +330,7 @@ partial.rfsrc <- function (x,
                                               newdata.x, 
                                               importance = "none"), 
                                 pred.type, 
-                                1:n, time, which.outcome)
+                                1:n, which.outcome)
     }
     list(xvar.name = xvar.names[k], yhat = yhat, 
          yhat.se = yhat.se, n.x = n.x, x.uniq = x.uniq, 
@@ -356,16 +338,16 @@ partial.rfsrc <- function (x,
   })
   
   
-  gg_dta <- list(family = fmly, 
+  gg_dta <- list(family = fmly, surv.type=pred.type,
                  event.info = event.info, which.outcome = which.outcome, 
-                 ylabel = ylabel, n = n, xvar.names = xvar.names, 
+                 n = n, xvar.names = xvar.names, 
                  nvar = nvar)
   
   gg_dta$pData <- prtl
-  for(ind in 1:length(gg_dta$pData))
-    names(gg_dta$pData[[ind]]) <- xvar.names[ind]
   
-  class(gg_dta) <- c("gg_part_depend", 
+  names(gg_dta$pData) <- xvar.names
+  
+  class(gg_dta) <- c("gg_partial_depend", 
                      fmly)
   invisible(gg_dta)
 }
@@ -400,7 +382,7 @@ get.event.info <- function(obj, subset = NULL) {
 }
 
 
-extract.pred <- function(obj, type, subset, time, which.outcome, oob = FALSE) {
+extract.pred <- function(obj, type, subset, which.outcome, oob = FALSE) {
   if (oob == FALSE) {
     pred <- obj$predicted
     surv <- obj$survival
@@ -417,11 +399,10 @@ extract.pred <- function(obj, type, subset, time, which.outcome, oob = FALSE) {
     n <- length(pred)
     if (missing(subset)) subset <- 1:n
     surv.type <- match.arg(type, c("mort", "rel.freq", "surv"))
-    time.idx <-  max(which(obj$time.interest <= time))
     return(switch(surv.type,
                   "mort" = pred[subset],
                   "rel.freq" = pred[subset]/max(n, na.omit(pred)),
-                  "surv" =  100 * surv[subset, time.idx]
+                  "surv" =  100 * surv[subset, ]
     ))
   }
   else if (obj$family == "surv-CR") {
@@ -429,11 +410,10 @@ extract.pred <- function(obj, type, subset, time, which.outcome, oob = FALSE) {
     if (missing(subset)) subset <- 1:n
     if (missing(which.outcome)) which.outcome <- 1
     cr.type <- match.arg(type, c("years.lost", "cif", "chf"))
-    time.idx <-  max(which(obj$time.interest <= time))
     return(switch(cr.type,
                   "years.lost" = pred[subset, which.outcome],
-                  "cif" = cif[subset, time.idx, which.outcome],
-                  "chf" = chf[subset, time.idx, which.outcome]
+                  "cif" = cif[subset, , which.outcome],
+                  "chf" = chf[subset, , which.outcome]
     ))
   }
   else if (obj$family == "class" || obj$family == "class+" || (obj$family ==  "mix+" && ncol(pred) > 1)) {
