@@ -3,7 +3,7 @@ ggRandomForests: Visually Exploring Random Forests
 [![DOI](https://zenodo.org/badge/5745/ehrlinger/ggRandomForests.png)](http://dx.doi.org/10.5281/zenodo.11526)
 
 [![Build Status](https://travis-ci.org/ehrlinger/ggRandomForests.svg?branch=master)](https://travis-ci.org/ehrlinger/ggRandomForests)
-[![Coverage Status](https://img.shields.io/coveralls/ehrlinger/ggRandomForests.svg)](https://coveralls.io/r/ehrlinger/ggRandomForests)
+[![Coverage Status](https://coveralls.io/repos/ehrlinger/ggRandomForests/badge.svg?branch=master)](https://coveralls.io/r/ehrlinger/ggRandomForests?branch=master)
 
 [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests)  will help uncover variable associations in the random forests models. The package is designed for use with the [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) package (Iswaran et.al. 2014, 2008, 2007) for survival, regression and classification random forests and uses the [ggplot2](http://CRAN.R-project.org/package=ggplot2) package (Wickham 2009) for plotting diagnostic and variable association results. [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) is  structured to extract data objects from [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) objects and provides S3 functions for printing and plotting these objects.
  
