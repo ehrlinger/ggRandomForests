@@ -1,6 +1,6 @@
 \documentclass[nojss]{jss}
 
-%\usepackage{setspace}
+\usepackage{setspace}
 % \usepackage[sc]{mathpazo}
 \usepackage{amsmath}
 % \setcounter{secnumdepth}{2}
@@ -104,6 +104,7 @@ options(mc.cores = 1, rf.cores = 0)
 @
 
 \begin{document}
+%\doublespacing
 % -----------------------------------------------------
 \section*{About this document}\addcontentsline{toc}{section}{About this document}
 % -----------------------------------------------------
@@ -1055,10 +1056,14 @@ The figure indicates that partial dependence of higher \code{albimun} levels are
 In this vignette, we have demonstrated the use of the \pkg{ggRandomForests}~(\url{http://CRAN.R-project.org/package=ggRandomForests}) package to explore a regression random forest built with the \pkg{randomForestSRC} package~\citep[\url{http://CRAN.R-project.org/package=randomForestSRC}]{Ishwaran:RFSRC:2014} package. We have shown how to create a random forest model and determine which variables contribute to the forest prediction accuracy using both VIMP and Minimal Depth measures. We outlined how to investigate variable associations with the response variable using variable dependence and the risk adjusted partial dependence plots. We've also explored variable interactions by using pairwise minimal depth interactions and directly viewed these interactions using variable dependence coplots and partial dependence coplots. Along the way, we've demonstrated the use of additional commands from the \pkg{ggplot2} package~\citep[\url{http://CRAN.R-project.org/package=ggplot2}]{Wickham:2009} package for modifying and customizing plots from \pkg{ggRandomForests} functions. 
 
 {\color{red}!!!TODO!!!}
- 
-%\singlespacing
+
+\section*{Acknowledgement}
+This work was supported in part by the National Institutes of Health grant R01-HL103552-01A1.
+
+\singlespacing
 \bibliography{ggRandomForests}
 
+\doublespacing
 %\newpage
 \appendix
 \section{Source Code}
