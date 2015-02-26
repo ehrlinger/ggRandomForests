@@ -4,17 +4,12 @@
 # see the wiki:
 #   https://github.com/craigcitro/r-travis/wiki
 
-language: c
+language: r
 
 # For code coverage
-before_install:
-  - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
-  - chmod 755 ./travis-tool.sh
-  - ./travis-tool.sh bootstrap
-install:
-  - ./travis-tool.sh github_package ehrlinger/randomForestSRC
-  - ./travis-tool.sh install_deps
-  - ./travis-tool.sh github_package jimhester/covr
+r_github_packages:
+  - ehrlinger/randomForestSRC
+  - jimhester/covr
 
 script: ./travis-tool.sh run_tests
 
