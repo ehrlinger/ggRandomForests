@@ -11,14 +11,9 @@ r_github_packages:
   - ehrlinger/randomForestSRC
   - jimhester/covr
 
-script: ./travis-tool.sh run_tests
-
 after_success:
   - Rscript -e 'covr::coveralls()'
   
-after_failure:
-  - ./travis-tool.sh dump_logs
-
 notifications:
   email:
     on_success: change
