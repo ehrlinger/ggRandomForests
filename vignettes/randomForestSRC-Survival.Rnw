@@ -18,7 +18,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{randomForestSRC-Survival}
-%\VignetteIndexEntry{ggRandomForests: Survival with Random Forests}                     
+%\VignetteIndexEntry{ggRandomForests: Survival with random forest}                     
 %\VignetteKeywords{random forest, survival, VIMP, minimal depth}                                  
 %\VignetteDepends{ggRandomForests}                   
 %\VignettePackage{ggRandomForests} 
@@ -26,20 +26,20 @@
 %% almost as usual
 \author{John Ehrlinger\\Cleveland Clinic \And Jeevanantham Rajeswaran\\Cleveland Clinic \AND Hemant Ishwaran\\University of Miami \And Udaya B. Kogalur\\Kogalur \& Company, Inc. \And Eugene H. Blackstone\\Cleveland Clinic }
 
-\title{\pkg{ggRandomForests}: Survival with Random Forests}
+\title{\pkg{ggRandomForests}: Exploring Random Forest Survival}
 
 %% for pretty printing and a nice hypersummary also set:
 \Plainauthor{Ehrlinger, Rajeswaran, Ishwaran, Kogalur and Blackstone} %% comma-separated
-\Plaintitle{ggRandomForests: Survival with Random Forests} %% without formatting
-\Shorttitle{Survival with Random Forests}
+\Plaintitle{ggRandomForests: Exploring Random Forest Survival} %% without formatting
+\Shorttitle{Exploring Random Forest Survival}
 
 %% an abstract and keywords
 \Abstract{ 
-Random Forests~\citep{Breiman:2001} (RF) are a non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF are a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Survival Forests (RSF)~\citep{Ishwaran:2007a, Ishwaran:2008} are an extension of Breiman's RF techniques allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package~\citep{Ishwaran:RFSRC:2014} is a unified treatment of Breiman's random forests for survival, regression and classification problems.
+Random forest~\citep{Breiman:2001} (RF) is a non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random survival forests (RSF)~\citep{Ishwaran:2007a, Ishwaran:2008} are an extension of Breiman's RF techniques allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package~\citep{Ishwaran:RFSRC:2014} is a unified treatment of Breiman's random forest for survival, regression and classification problems.
 
-Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package, tools for visually understand random forest models grown in \proglang{R}~\citep{rcore} with the \pkg{randomForestSRC} package. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generates figures using the \pkg{ggplot2}~\citep{Wickham:2009} graphics package.
+Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package, tools for visually understand random forest models grown in \proglang{R}~\citep{rcore} with the \pkg{randomForestSRC} package. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2}~\citep{Wickham:2009} graphics package.
 
-This document is structured as a tutorial for building random forests for survival with the \pkg{randomForestSRC} package and using the \pkg{ggRandomForests} package for investigating how the forest is constructed. We investigate the Primary Biliary Cirrhosis (PBC) of the liver data obtained  from the Mayo Clinic~\citep{fleming:1991}. We demonstrate random forest variable selection using Variable Importance (VIMP)~\citep{Breiman:2001} and Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest. We will also demonstrate the use of variable dependence plots~\citep{Friedman:2000} to aid interpretation RSF results. We then examine variable interactions between covariates using a minimal depth interactions, and conditional variable dependence plots. The goal of the exercise is to demonstrate the strength of using Random Forest methods for both prediction and information retrieval in time to event settings.
+This document is structured as a tutorial for building random forest for survival with the \pkg{randomForestSRC} package and using the \pkg{ggRandomForests} package for investigating how the forest is constructed. We analyse the Primary Biliary Cirrhosis (PBC) of the liver data from a clinical trial at the Mayo Clinic~\citep{fleming:1991}. We demonstrate random forest variable selection using Variable Importance (VIMP)~\citep{Breiman:2001} and Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest. We will also demonstrate the use of variable dependence plots~\citep{Friedman:2000} to aid interpretation RSF results. We then examine variable interactions between covariates using conditional variable dependence plots. The goal of this exercise is to demonstrate the strength of using Random Forest methods for both prediction and information retrieval in time to event settings.
 }
 \Keywords{random forest, survival, VIMP, minimal depth, \proglang{R}, \pkg{randomForestSRC}}
 \Plainkeywords{random forest, survival, VIMP, minimal depth, R, randomForestSRC}
@@ -123,7 +123,7 @@ library("dplyr")           # Better data manipulations
 library("parallel")        # mclapply for multicore processing
 
 # Analysis packages.
-library("randomForestSRC") # random forests for survival, regression and 
+library("randomForestSRC") # random forest for survival, regression and 
                            # classification
 library("ggRandomForests") # ggplot2 random forest figures (This!)
 
@@ -149,7 +149,7 @@ A development version of the \pkg{ggRandomForests} package is also available on 
 \section{Introduction} \label{S:introduction}
 % -----------------------------------------------------
 
-Random Forests~\citep{Breiman:2001} (RF) are a non-parametric statistical method which requires no distributional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Survival Forests (RSF)~\citep{Ishwaran:2007a,Ishwaran:2008} are an extension of Breiman's RF techniques to survival settings, allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package~\citep[\url{http://CRAN.R-project.org/package=randomForestSRC}]{Ishwaran:RFSRC:2014} is a unified treatment of Breiman's random forests for survival, regression and classification problems.
+Random forest~\citep{Breiman:2001} (RF) is a non-parametric statistical method which requires no distributional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Survival Forest (RSF)~\citep{Ishwaran:2007a,Ishwaran:2008} is an extension of Breiman's RF techniques to survival settings, allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package~\citep[\url{http://CRAN.R-project.org/package=randomForestSRC}]{Ishwaran:RFSRC:2014} is a unified treatment of Breiman's random forest for survival, regression and classification problems.
 
 Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package  (\url{http://CRAN.R-project.org/package=ggRandomForests}) for visually exploring random forest models. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2} graphics package~\citep[\url{http://CRAN.R-project.org/package=ggplot2}]{Wickham:2009}.
 
@@ -164,11 +164,11 @@ Many of the figures created by the \pkg{ggRandomForests} package are also availa
 
 This document is structured as a tutorial for using the \pkg{randomForestSRC} package for building and post-processing random survival forest models  and using the \pkg{ggRandomForests} package for understanding how the forest is constructed. In this tutorial, we will build a random survival forest for the primary biliary cirrhosis (PBC) of the liver data set~\citep{fleming:1991}, available in the \pkg{randomForestSRC} package. 
 
-In Section~\ref{S:data} we introduce the \code{pbc} data set and summarize the proportional hazards analysis of this data from Chapter 4 of~\cite{fleming:1991}. In Section~\ref{S:rfsrc}, we describe how to grow a random survival forest with the \pkg{randomForestSRC} package. Random forests are not parsimonious, but use all variables available in the data set to construct the response predictor. We demonstrate random forest variable selection techniques (Section~\ref{S:variableselection}) using Variable Importance (VIMP)~\citep{Breiman:2001} in Section~\ref{S:vimp} and Minimal Depth~\citep{Ishwaran:2010} in Section~\ref{S:minimalDepth}. We compare both methods with the~\cite{fleming:1991} model.
+In Section~\ref{S:data} we introduce the \code{pbc} data set and summarize the proportional hazards analysis of this data from Chapter 4 of~\cite{fleming:1991}. In Section~\ref{S:rfsrc}, we describe how to grow a random survival forest with the \pkg{randomForestSRC} package. Random forest is not parsimonious, but use all variables available in the data set to construct the response predictor. We demonstrate random forest variable selection techniques (Section~\ref{S:variableselection}) using Variable Importance (VIMP)~\citep{Breiman:2001} in Section~\ref{S:vimp} and Minimal Depth~\citep{Ishwaran:2010} in Section~\ref{S:minimalDepth}. We compare both methods with the~\cite{fleming:1991} model.
 
 Once we have an idea of which variables we are most interested in, we use variable dependence plots~\citep{Friedman:2000} (Section~\ref{S:dependence}) to understand how these variables are related to the response. Marginal variable dependence (Section~\ref{S:variabledependence}) plots give us an idea of the overall trend of a variable/response relation, while partial dependence plots (Section~\ref{S:partialdependence}) show us the risk adjusted relation by averaging out the effects of other variables. Variable dependence plots often show strongly non-linear variable/response relations that are not easily obtained through parametric modeling. 
 
-We examine forest variable interactions in Section~\ref{S:interactions} using a minimal depth approach. We then demonstrate the use of variable dependence and partial dependence (risk adjusted) conditioning plots (coplots)~\citep{chambers:1992,cleveland:1993} to examine interactions among variables of interest graphically (Section~\ref{S:coplots}). 
+We graphically examine forest variable interactions with the use of variable dependence and partial dependence (risk adjusted) conditioning plots (coplots)~\citep{chambers:1992,cleveland:1993} (Section~\ref{S:coplots}). 
 
 \section{Data Summary: Primary Biliary Cirrhosis (PBC)}\label{S:data}
 
@@ -406,9 +406,9 @@ kable(fleming.table,
 
 A Random Forest~\citep{Breiman:2001} is grown by \emph{bagging}~\citep{Breiman:1996} a collection of \emph{classification and regression trees} (CART)~\citep{cart:1984}. The method uses a set of $B$ \emph{bootstrap}~\citep{bootstrap:1994} samples, growing an independent tree model on each sub-sample of the population. Each tree is grown by recursively partitioning the population based on optimization of a \emph{split rule} over the $p$-dimensional covariate space. At each split, a subset of $m \le p$ candidate variables are tested for the split rule optimization, dividing each node into two daughter nodes. Each daughter node is then split again until the process reaches the \emph{stopping criteria} of either \emph{node purity} or \emph{node member size}, which defines the set of \emph{terminal (unsplit) nodes} for the tree. In regression trees, node impurity is measured by mean squared error, whereas in classification problems, the Gini index is used~\citep{Friedman:2000} . 
 
-Random Forests sort each training set observation into one unique terminal node per tree. Tree estimates for each observation are constructed at each terminal node, among the terminal node members. The Random Forest estimate for each observation is then calculated by aggregating, averaging (regression) or votes (classification), the terminal node results across the collection of $B$ trees.
+random forest sort each training set observation into one unique terminal node per tree. Tree estimates for each observation are constructed at each terminal node, among the terminal node members. The Random Forest estimate for each observation is then calculated by aggregating, averaging (regression) or votes (classification), the terminal node results across the collection of $B$ trees.
 
-Random Survival Forests~\citep{Ishwaran:2007, Ishwaran:2008} (RSF) are an extension of~\cite{Breiman:2001} Random Forests for right censored time to event data. A forest of survival trees is grown using a log-rank splitting rule to select the optimal candidate variables. Survival estimate for each observation are constructed with a Kaplan--Meier (KM) estimator within each terminal node, at each event time. 
+Random Survival Forests~\citep{Ishwaran:2007, Ishwaran:2008} (RSF) are an extension of~\cite{Breiman:2001} random forest for right censored time to event data. A forest of survival trees is grown using a log-rank splitting rule to select the optimal candidate variables. Survival estimate for each observation are constructed with a Kaplan--Meier (KM) estimator within each terminal node, at each event time. 
 
 Random Survival Forests adaptively discover nonlinear effects and interactions and are fully nonparametric. Averaging over many trees enables RSF to approximate complex survival functions, including non-proportional hazards, while maintaining low prediction error. \cite{Ishwaran:2010a} showed that RSF is uniformly consistent and that survival forests have a uniform approximating property in finite-sample settings, a property not possessed by individual survival trees.
 
@@ -442,7 +442,7 @@ The \code{print.rfsrc} function returns information on how the random forest was
 
 \subsection[Generalization Error]{Generalization error (\code{gg\_error})}
 
-One advantage of Random Forests is a built in generalization error estimate. Each bootstrap sample selects approximately $63.2\%$ of the population on average. The remaining $36.8\%$ of observations, the Out-of-Bag~\citep{BreimanOOB:1996e} (OOB) sample, can be used as a hold out test set for each tree. An OOB prediction error estimate can be calculated for each observation by predicting the response over the set of trees which were not trained with that particular observation. Out-of-Bag prediction error estimates have been shown to be nearly identical to $n$--fold cross validation estimates~\citep{StatisticalLearning:2009}. This feature of Random Forests allows us to obtain both model fit and validation in one pass of the algorithm.
+One advantage of random forest is a built in generalization error estimate. Each bootstrap sample selects approximately $63.2\%$ of the population on average. The remaining $36.8\%$ of observations, the Out-of-Bag~\citep{BreimanOOB:1996e} (OOB) sample, can be used as a hold out test set for each tree. An OOB prediction error estimate can be calculated for each observation by predicting the response over the set of trees which were not trained with that particular observation. Out-of-Bag prediction error estimates have been shown to be nearly identical to $n$--fold cross validation estimates~\citep{StatisticalLearning:2009}. This feature of random forest allows us to obtain both model fit and validation in one pass of the algorithm.
 
 The \code{gg_error} function operates on the random forest (\code{rfsrc_pbc}) object to extract the error estimates as a function of the number of trees in the forest. The following code block first creates a \code{gg_error} data object, then uses the \code{plot.gg_error} function to create a \code{ggplot} object for display.
 
@@ -527,7 +527,7 @@ The \code{gg_rfsrc} plot of Figure~\ref{fig:predictPlot} shows the test set pred
 
 \section{Variable Selection}\label{S:variableselection}
 
-Random forests are not parsimonious, but use all variables available in the data set to construct the response predictor. Also, unlike parametric models, Random Forests do not require the explicit specification of the functional form of covariates to the response. Therefore there is no explicit p-value/significance test for variable selection with a random forest model. Instead, RF ascertain which variables contribute to the prediction through the split rule optimization, optimally choosing variables which separate observations. 
+random forest is not parsimonious, but use all variables available in the data set to construct the response predictor. Also, unlike parametric models, random forest do not require the explicit specification of the functional form of covariates to the response. Therefore there is no explicit p-value/significance test for variable selection with a random forest model. Instead, RF ascertain which variables contribute to the prediction through the split rule optimization, optimally choosing variables which separate observations. 
 
 The typical goal of a random forest analysis is to build a \emph{prediction} model, in contrast to extracting \emph{information} regarding the underlying process~\citep{Breiman:twoCultures:2001}. There is not usually much care given in how variables are included into the training data set. Since the goal is prediction, investigators often include the ``kitchen sink'' if it can help. However, in survival analysis, we are typically also interested in how we can possibly improve the the outcome of interest. 
 
@@ -631,7 +631,7 @@ Restricting our remaining analysis to the five~\cite{fleming:1991} variables, pl
 
 \section{Variable Dependence}\label{S:dependence}
 
-As random forests are not parsimonious, we have used minimal depth and VIMP to reduce the number of variables to a manageable subset. Once we have an idea of which variables contribute most to the predictive accuracy of the forest, we would like to know how the response depends on these variables.
+As random forest is not parsimonious, we have used minimal depth and VIMP to reduce the number of variables to a manageable subset. Once we have an idea of which variables contribute most to the predictive accuracy of the forest, we would like to know how the response depends on these variables.
 
 Although often characterized as a \emph{black box} method, the forest predictor is a function of the predictor variables $\hat{f}_{RF} = f(x).$ We use graphical methods to examine the forest predicted response dependency on covariates. We again have two options, variable dependence plots (Section~\ref{S:variabledependence}) are quick and easy to generate, and partial dependence plots (Section~\ref{S:partialdependence}) are more computationally intensive but give us a risk adjusted look at variable dependence. 
 
@@ -829,30 +829,30 @@ The figure shows partial dependence of survival (Z-axis) as a function of \code{
 The 2500 estimated partial dependence points are joined together along a simple straight line interpolation to create the surface, colored according to the survival estimates (yellow close to 1, red for lower values) to aid the visualization of 3 dimensions on a 2 dimensional page. The blue lines in Figure~\ref{fig:timeSurface3d} correspond to the 1 and 3 year partial dependence, as shown in the \code{bili} panel of Figure~\ref{fig:pbc-partial-panel}. 
 
 Viewed as a surface, we see how the partial dependence changes with time. For low values of \code{bili}, survival decreases at a constant rate. For higher values, the rate seems constant until somewhere near 2 years, where it increases rapidly before slowing again as we approach the 5 year point. 
-
-\section{Variable Interactions}\label{S:interactions}
-
-We could stop with the results that our RF analysis has found these six variables to be important in predicting survival. Where the survival response is decreasing with increasing \code{bili}, \code{copper}, \code{prothrombin}, \code{age} and \code{edema} and increasing with increasing \code{albumin}. These results agree with the sign of the~\cite{fleming:1991} model coefficients shown in Table~\ref{T:FHmodel}. The \code{gg_partial} plot in Figure~\ref{fig:pbc-partial-panel} supports the \code{log} transform of \code{bili}, \code{albumin} and \code{prothrombin} and suggest a similar transform for including the \code{copper} variable in a proportional hazards model. The \code{age} variable does seem to have a more linear response than the other continuous variables, and using dummy variables for \code{edema} would preclude the need for a transformation.
-
-Using minimal depth, it is also possible to calculate measures of pairwise interactions among variables. Recall that minimal depth measure is defined by averaging the tree depth of variable $i$ relative to the root node. To detect interactions, this calculation can be modified to measure the minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$~\citep{Ishwaran:2010,Ishwaran:2011}.
-
-The \code{randomForestSRC::find.interaction} function traverses the forest, calculating all pairwise minimal depth interactions, and returns a $p \times p$ matrix of interaction measures. The diagonal terms are normalized to the root node, and off diagonal terms are normalized measures of pairwise variable interaction. 
-
-<<interaction-show, echo=TRUE, eval=FALSE>>= 
-ggint <- gg_interaction(rfsrc_pbc)
-@
-
-<<interaction>>= 
-data(interaction_pbc, package = "ggRandomForests")
-ggint <- gg_interaction(interaction_pbc)
-@
-
-The \code{gg_interaction} function wraps the \code{find.interaction} matrix for use with the \pkg{ggRandomForests} plot and print functions. The \code{xvar} argument is used to restrict the variables of interest and the \code{panel = TRUE} argument displays the results in a single figure.
-<<interactionPanel, echo=TRUE, fig.cap="Minimal depth variable interaction plot for six variables of interest. Higher values indicate lower interactivity with target variable marked in red.", fig.width=7, fig.height=5>>= 
-plot(ggint, xvar = xvar)
-@
-
-The \code{gg_interaction} plots in Figure~\ref{fig:interactionPanel} show interactions for the target variable (shown with the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (\code{bili}) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone it may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing, as expected. We also see the interactive variables increasing with increasing target depth. 
+%' 
+%' \section{Variable Interactions}\label{S:interactions}
+%' 
+%' We could stop with the results that our RF analysis has found these six variables to be important in predicting survival. Where the survival response is decreasing with increasing \code{bili}, \code{copper}, \code{prothrombin}, \code{age} and \code{edema} and increasing with increasing \code{albumin}. These results agree with the sign of the~\cite{fleming:1991} model coefficients shown in Table~\ref{T:FHmodel}. The \code{gg_partial} plot in Figure~\ref{fig:pbc-partial-panel} supports the \code{log} transform of \code{bili}, \code{albumin} and \code{prothrombin} and suggest a similar transform for including the \code{copper} variable in a proportional hazards model. The \code{age} variable does seem to have a more linear response than the other continuous variables, and using dummy variables for \code{edema} would preclude the need for a transformation.
+%' 
+%' Using minimal depth, it is also possible to calculate measures of pairwise interactions among variables. Recall that minimal depth measure is defined by averaging the tree depth of variable $i$ relative to the root node. To detect interactions, this calculation can be modified to measure the minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$~\citep{Ishwaran:2010,Ishwaran:2011}.
+%' 
+%' The \code{randomForestSRC::find.interaction} function traverses the forest, calculating all pairwise minimal depth interactions, and returns a $p \times p$ matrix of interaction measures. The diagonal terms are normalized to the root node, and off diagonal terms are normalized measures of pairwise variable interaction. 
+%' 
+%' <<interaction-show, echo=TRUE, eval=FALSE>>= 
+%' ggint <- gg_interaction(rfsrc_pbc)
+%' @
+%' 
+%' <<interaction>>= 
+%' data(interaction_pbc, package = "ggRandomForests")
+%' ggint <- gg_interaction(interaction_pbc)
+%' @
+%' 
+%' The \code{gg_interaction} function wraps the \code{find.interaction} matrix for use with the \pkg{ggRandomForests} plot and print functions. The \code{xvar} argument is used to restrict the variables of interest and the \code{panel = TRUE} argument displays the results in a single figure.
+%' <<interactionPanel, echo=TRUE, fig.cap="Minimal depth variable interaction plot for six variables of interest. Higher values indicate lower interactivity with target variable marked in red.", fig.width=7, fig.height=5>>= 
+%' plot(ggint, xvar = xvar)
+%' @
+%' 
+%' The \code{gg_interaction} plots in Figure~\ref{fig:interactionPanel} show interactions for the target variable (shown with the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (\code{bili}) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone it may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing, as expected. We also see the interactive variables increasing with increasing target depth. 
 
 \section{Conditional Dependence Plots}\label{S:coplots}
 
@@ -1063,8 +1063,8 @@ This work was supported in part by the National Institutes of Health grant R01-H
 \singlespacing
 \bibliography{ggRandomForests}
 
-\doublespacing
-%\newpage
+%\doublespacing
+\newpage
 \appendix
 \section{Source Code}
 Throughout this document, we have listed all \proglang{R} source code to create the figures included here with a few exceptions. For completeness, we include the missing code blocks in this appendix. The code blocks are included here in order of appearance in the document.
@@ -1081,16 +1081,8 @@ time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
 time_cts <-quantile_pts(time_pts, groups = 50)
 
 # Load stored data from the package.
+# See ?partial_pbc_time for how this data was generated.
 load(partial_pbc_time, package="ggRandomForests")
-
-# Generate the gg_partial_coplot data object
-# system.time(partial_pbc_time <- lapply(time_cts, function(ct){
-#   plot.variable(rfsrc_pbc, xvar = "bili", time = ct,
-#                 npts = 50, show.plots = FALSE, 
-#                 partial = TRUE, surv.type="surv")
-#   }))
-#     user   system  elapsed 
-# 2561.313   81.446 2641.707 
 
 # We need to attach the time points of interest to our data.
 time.tmp <- do.call(c,lapply(time_cts, 
@@ -1191,16 +1183,8 @@ In Section~\ref{S:partialSurface}, we generate a partial dependence surface of o
 alb_partial_pts <-quantile_pts(ggvar$albumin, groups = 50)
 
 # Load the stored partial coplot data.
+# See ?partial_pbc_surf for how this data was generated.
 data(partial_pbc_surf)
-
-# system.time(partial_pbc_surf <- lapply(albumin_cts, function(ct){
-#   rfsrc_pbc$xvar$albumin <- ct
-#   plot.variable(rfsrc_pbc, xvar = "bili", time = 1,
-#                 npts = 50, show.plots = FALSE, 
-#                 partial = TRUE, surv.type="surv")
-#   }))
-# user   system  elapsed 
-# 2547.482   91.978 2671.870 
 
 # Instead of groups, we want the raw albumin point values,
 # To make the dimensions match, we need to repeat the values

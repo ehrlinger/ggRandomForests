@@ -67,22 +67,36 @@
 #' #---------------------------------------------------------------------
 #' # load the rfsrc object from the cached data
 #' data(rfsrc_pbc, package="ggRandomForests")
+#'
+#' # Restrict the time of interest to less than 5 years.
+#' time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
 #' 
-#' # The plot.variable call - 
-#' # survival requires a time point specification.
-#' # for the pbc data, we want 1, 3 and 5 year survival.
-#' partial_pbc <- lapply(c(1,3,5), function(tm){
-#'                       plot.variable(rfsrc_pbc, surv.type = "surv", 
-#'                                     time = tm,
-#'                                     xvar.names = xvar, 
-#'                                     partial = TRUE,
-#'                                     show.plots = FALSE)
-#'                                     })
-#'                                     
-#' # plot the forest partial plots
-#' gg_dta <- gg_partial(partial_pbc)
-#' plot(gg_dta)
-#'}
+#' # Find the 50 points in time, evenly space along the distribution of 
+#' # event times for a series of partial dependence curves
+#' time_cts <-quantile_pts(time_pts, groups = 50)
+#' 
+#' # Generate the gg_partial_coplot data object
+#' system.time(partial_pbc_time <- lapply(time_cts, function(ct){
+#'    plot.variable(rfsrc_pbc, xvar = "bili", time = ct,
+#'                  npts = 50, show.plots = FALSE, 
+#'                  partial = TRUE, surv.type="surv")
+#'    }))
+#' #     user   system  elapsed 
+#' # 2561.313   81.446 2641.707 
+#' 
+#' # Find the quantile points to create 50 cut points
+#' alb_partial_pts <-quantile_pts(ggvar$albumin, groups = 50)
+#' 
+#' system.time(partial_pbc_surf <- lapply(albumin_cts, function(ct){
+#'   rfsrc_pbc$xvar$albumin <- ct
+#'   plot.variable(rfsrc_pbc, xvar = "bili", time = 1,
+#'                 npts = 50, show.plots = FALSE, 
+#'                 partial = TRUE, surv.type="surv")
+#'   }))
+#' # user   system  elapsed 
+#' # 2547.482   91.978 2671.870 
+#' 
+#' }
 #' 
 #' @references 
 #' #---------------------
