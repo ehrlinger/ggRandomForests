@@ -9,6 +9,7 @@
 
 \usepackage{xcolor}
 \usepackage{booktabs}
+
 % For kable tables, these help.
 \usepackage{floatrow}
 \floatsetup[table]{capposition=bottom}
