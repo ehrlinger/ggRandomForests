@@ -16,7 +16,9 @@ test_that("cutting a vector at evenly space points",{
   # To make the dimensions match, we need to repeat the values
   # for each of the 50 points in the lstat direction
   rm.tmp <- do.call(c,lapply(rm_pts, 
-                             function(grp){rep(grp, 50)}))
+                             function(grp){ 
+                               rep(grp, 50)
+                             }))
   
   # Convert the list of plot.variable output to 
   partial_surf <- do.call(rbind,lapply(partial_Boston_surf, gg_partial))

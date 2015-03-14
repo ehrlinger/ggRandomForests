@@ -108,7 +108,7 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
     gg_dta <- data.frame(object$importance)
    
   }
-  if(ncol(gg_dta)==1){
+  if(ncol(gg_dta) == 1){
     colnames(gg_dta) <- "VIMP"
     gg_dta$vars <- rownames(gg_dta)
     gg_dta <- gg_dta[order(gg_dta$VIMP, decreasing=TRUE),]
@@ -134,8 +134,8 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
         }
       }else{
         if(arg_set$which.outcome < ncol(gg_dta)){
-          gg_v <- data.frame(vimp=sort(gg_dta[,arg_set$which.outcome+1], decreasing=TRUE))
-          gg_v$vars <- rownames(gg_dta)[order(gg_dta[,arg_set$which.outcome+1], decreasing=TRUE)]
+          gg_v <- data.frame(vimp=sort(gg_dta[,arg_set$which.outcome + 1], decreasing=TRUE))
+          gg_v$vars <- rownames(gg_dta)[order(gg_dta[,arg_set$which.outcome + 1], decreasing=TRUE)]
         }else{
           stop(paste("which.outcome specified larger than the number of classes (+1).", arg_set$which.outcome, 
                      " >= ", ncol(gg_dta)))
@@ -145,7 +145,7 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
     }else{
       gg_dta$vars <- rownames(gg_dta)
     }
-    clnms <- colnames(gg_dta)[-which(colnames(gg_dta)=="vars")]
+    #clnms <- colnames(gg_dta)[-which(colnames(gg_dta)=="vars")]
     gg_dta <- gg_dta[1:n_var,]
     gg_dta <- melt(gg_dta, id.vars="vars", 
                    variable.name="set", value.name="vimp")
@@ -153,7 +153,7 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
     gg_dta$vars <- factor(gg_dta$vars)
   }else{
     cnms <- colnames(gg_dta)
-    gg_dta<- cbind(gg_dta, gg_dta/gg_dta[1,1])
+    gg_dta <- cbind(gg_dta, gg_dta / gg_dta[1,1])
     colnames(gg_dta) <- c(cnms, "rel_vimp")
     gg_dta$vars[which(is.na(gg_dta$vars))] <- rownames(gg_dta)[which(is.na(gg_dta$vars))]
     
@@ -162,7 +162,7 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
   }
   gg_dta$vars <- factor(gg_dta$vars, levels=rev(unique(gg_dta$vars)))
   gg_dta$positive <- TRUE
-  gg_dta$positive[which(gg_dta$vimp <=0)] <- FALSE
+  gg_dta$positive[which(gg_dta$vimp <= 0)] <- FALSE
   
   class(gg_dta) <- c("gg_vimp", class(gg_dta))
   invisible(gg_dta)

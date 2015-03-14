@@ -169,7 +169,9 @@ plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
     # and rename the value column to "value"
     nms <- names(gg_dta)
     
-    cls <- sapply(nms, function(nm){class(gg_dta[[nm]][,nm])})
+    cls <- sapply(nms, function(nm){
+      class(gg_dta[[nm]][,nm])
+      })
     
     gg_dta <- mclapply(nms, function(nm){
       obj <- gg_dta[[nm]]

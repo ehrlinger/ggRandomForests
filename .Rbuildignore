@@ -11,6 +11,7 @@ useR2014.pdf
 vignettes/figure/
 jss.cls
 jss.bst
-
+*.bbl
+*.aux
 framed.sty
 

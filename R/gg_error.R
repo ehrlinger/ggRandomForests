@@ -122,18 +122,19 @@ gg_error <- function (object, ...) {
 gg_error.rfsrc <- function(object, ...) {
   ## Check that the input obect is of the correct type.
   if (!inherits(object, "rfsrc")){
-    stop("This function only works for Forests grown with the randomForestSRC package.")
+    stop(paste("This function only works for Forests grown",
+               "with the randomForestSRC package."))
   }
   if (is.null(object$err.rate)) {
     stop("Performance values are not available for this forest.")
   }
-  
+
   gg_dta <- data.frame(object$err.rate)
-  
+
   # If there is only one column in the error rate... name it reasonably.
   if("object.err.rate" %in% colnames(gg_dta))
-    colnames(gg_dta)[which(colnames(gg_dta)=="object.err.rate")] <- "error"
-  
+    colnames(gg_dta)[which(colnames(gg_dta) == "object.err.rate")] <- "error"
+
   gg_dta$ntree <- 1:dim(gg_dta)[1]
   
   class(gg_dta) <- c("gg_error",class(gg_dta))

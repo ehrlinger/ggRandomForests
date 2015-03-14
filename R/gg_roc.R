@@ -68,7 +68,7 @@ gg_roc.rfsrc <- function(object, which.outcome, oob=TRUE){
   }
   
   # Want to remove the which.outcomes argument to plot ROC for all outcomes simultaneously.
-  if(missing(which.outcome)) which.outcome="all"
+  if(missing(which.outcome)) which.outcome <- "all"
   
 #   if(inherits(object, "randomForest")){
 #     if(object$type != "classification")
@@ -79,7 +79,7 @@ gg_roc.rfsrc <- function(object, which.outcome, oob=TRUE){
     if(object$family != "class")
       stop("gg_roc is intended for classification forests only.")
     
-    gg_dta<- calc_roc.rfsrc(object, object$yvar, which.outcome=which.outcome, oob=oob)
+    gg_dta <- calc_roc.rfsrc(object, object$yvar, which.outcome=which.outcome, oob=oob)
 #   }
   class(gg_dta) <- c("gg_roc", class(gg_dta))
   

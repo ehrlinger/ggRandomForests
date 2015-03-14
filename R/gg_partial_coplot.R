@@ -47,21 +47,28 @@
 #' 
 #' 
 gg_partial_coplot.ggRandomForests <- function(object, 
-                                           xvar, 
-                                           groups, 
-                                           surv_type=c("mort", "rel.freq", "surv", "years.lost", "cif", "chf"), 
-                                           time,
-                                           ...){
+                                              xvar, 
+                                              groups, 
+                                              surv_type=c("mort", 
+                                                          "rel.freq",
+                                                          "surv",
+                                                          "years.lost",
+                                                          "cif",
+                                                          "chf"), 
+                                              time,
+                                              ...){
   
   # Some sanity checks:
   
   ## Check that the input obect is of the correct type.
   if (inherits(object, "rfsrc") == FALSE){
-    stop("This function only works for Forests grown with the randomForestSRC package.")
+    stop(paste("This function only works for Forests grown with the",
+               "randomForestSRC package."))
   }
   
   if (is.null(object$forest)) {
-    stop("The function requires the \"forest = TRUE\" attribute when growing the randomForest")
+    stop(paste("The function requires the \"forest = TRUE\"", 
+               "attribute when growing the randomForest"))
   }
   
   #---
@@ -70,7 +77,7 @@ gg_partial_coplot.ggRandomForests <- function(object,
   
   surv_type <- match.arg(surv_type)
   
-  family <- object$family
+  #family <- object$family
   
   # Get the training data to work with...
   dta.train  <- object$xvar
@@ -80,7 +87,8 @@ gg_partial_coplot.ggRandomForests <- function(object,
   # If we don't have a groups variable, we may have a subsets in the ellipse list.
   if(missing(groups)){
     if(is.null(arg_list$subset))
-      stop("partial_coplot requires a groups argument to stratify the partial plots.")
+      stop(paste("partial_coplot requires a groups argument to",
+                 "stratify the partial plots."))
     else{
       # We may be able to coherce a groups argument from subset that is normally
       # passed to plot.variable.
@@ -104,7 +112,7 @@ gg_partial_coplot.ggRandomForests <- function(object,
   
   # Create the subsets for the plot.variable function
   sbst <- mclapply(1:lng, function(ind){
-    st <- which(dta.train$group==levels(groups)[ind])
+    st <- which(dta.train$group == levels(groups)[ind])
     if(length(st) == 0) NULL
     else st
   })
@@ -112,7 +120,7 @@ gg_partial_coplot.ggRandomForests <- function(object,
   # Collapse the subset list to interesting items (those with observations)
   # If you work backwards, you do extra tests, but it 
   # cuts the correct items. Cute.
-  for(ind in lng:1){
+  for (ind in lng:1){
     if(is.null(sbst[[ind]])){
       sbst[[ind]] <- NULL
       
@@ -123,27 +131,27 @@ gg_partial_coplot.ggRandomForests <- function(object,
   
   # If survival family, make sure we have a time and surv_type.
   # if not default to time=1, and surv_type="surv" with warning.
-#   
-#   # If we got a surv.type instead of surv_type, let's use that.
-#   if(!is.null(arg_list$surv.type)){
-#     
-#   }
-#   # If we got a surv.type instead of surv_type, let's use that.
-#   if(is.null(arg_list$show.plots)){
-#     arg_list$show.plots <- FALSE
-#   }
+  #   
+  #   # If we got a surv.type instead of surv_type, let's use that.
+  #   if(!is.null(arg_list$surv.type)){
+  #     
+  #   }
+  #   # If we got a surv.type instead of surv_type, let's use that.
+  #   if(is.null(arg_list$show.plots)){
+  #     arg_list$show.plots <- FALSE
+  #   }
   # what about multiple time points?
   
   # This will return a list of subseted partial plots, one for each group, 
   # all variables in xvar.
-  pDat.partlist <- lapply(1:length(sbst), function(ind){
+  pdat.partlist <- lapply(1:length(sbst), function(ind){
     plot.variable(object, surv.type=surv_type, time=time,
                   subset = sbst[[ind]],
                   xvar.names=xvar, partial=TRUE, ...)
   })
   
   ## Make them all gg_partials.
-  gg_part <- mclapply(pDat.partlist, gg_partial)
+  gg_part <- mclapply(pdat.partlist, gg_partial)
   
   ## With the subsets marked for plotting
   for(ind in 1:length(gg_part)){

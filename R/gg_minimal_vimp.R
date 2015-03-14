@@ -109,27 +109,29 @@
 gg_minimal_vimp.rfsrc <- function(object, event, ...){
   
   if (inherits(object, "rfsrc") == TRUE){
-    vSel <- var.select(object, ...)
+    vsel <- var.select(object, ...)
   }else if (!is.null(object$varselect)) {
     # Test for variable selection minimal depth object
-    vSel <- object
+    vsel <- object
   }else{
     stop("Function works only on rfsrc or var.select objects.")
   }
   
-  rnk.md <- rnk.vm <- data.frame(cbind(names=rownames(vSel$varselect)))
+  rnk.md <- rnk.vm <- data.frame(cbind(names=rownames(vsel$varselect)))
   rnk.md$depth <- rnk.vm$vimp <- 1:dim(rnk.md)[1]
   
   # Rename the full vimp.all column to just "vimp"
-  if(is.null(vSel$varselect$vimp))
-    colnames(vSel$varselect)[which(colnames(vSel$varselect)=="vimp.all")] <- "vimp"
+  if(is.null(vsel$varselect$vimp))
+    colnames(vsel$varselect)[which(colnames(vsel$varselect) == "vimp.all")] <-
+      "vimp"
   
-  rnk.vm <- rnk.vm[order(vSel$varselect$vimp, decreasing=TRUE),]
+  rnk.vm <- rnk.vm[order(vsel$varselect$vimp, decreasing=TRUE),]
   rnk.vm$vimp <- 1:dim(rnk.vm)[1]
   
   # Default color is by negative/positive vimp
-  rnk.vm$col <- c("-", "+")[as.numeric(vSel$varselect$vimp[order(vSel$varselect$vimp, 
-                                                                 decreasing=TRUE)]>0)+1]
+  rnk.vm$col <- c("-", "+")[as.numeric(vsel$varselect$vimp[
+      order(vsel$varselect$vimp, decreasing = TRUE)] > 0)
+    + 1]
   
   gg_dta <- merge(rnk.vm, rnk.md,by="names")
   

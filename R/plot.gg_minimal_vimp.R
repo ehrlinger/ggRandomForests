@@ -124,11 +124,11 @@ plot.gg_minimal_vimp <- function(x, modelsize, lbls, ...){
   
   # If we only have one class for coloring, just paint them black.
   if(length(unique(gg_dta$col)) > 1){
-    gg_plt <- ggplot(gg_dta, aes_string(x="names", y="vimp", col="col"))+
+    gg_plt <- ggplot(gg_dta, aes_string(x="names", y="vimp", col="col")) +
       labs(x="Minimal Depth (Rank Order)", y="VIMP Rank", color="VIMP")
     
   }else{
-    gg_plt <- ggplot(gg_dta, aes_string(x="names", y="vimp"))+
+    gg_plt <- ggplot(gg_dta, aes_string(x="names", y="vimp")) +
       labs(x="Minimal Depth (Rank Order)", y="VIMP Rank")
   }
   if(!missing(lbls)){
@@ -142,8 +142,8 @@ plot.gg_minimal_vimp <- function(x, modelsize, lbls, ...){
     }
   }
   
-  gg_plt + geom_point()+
-    geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)+
+  gg_plt + geom_point() +
+    geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2) +
     coord_flip()
   
 }

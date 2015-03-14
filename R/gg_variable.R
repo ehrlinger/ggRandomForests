@@ -144,8 +144,7 @@ gg_variable.rfsrc <- function(object,
                               time,
                               time.labels,
                               oob=TRUE,
-                              ...)
-{
+                              ...){
   
   # Want to also handle a plot.variable where partial!= TRUE
   if (!inherits(object, "rfsrc")) {
@@ -162,12 +161,12 @@ gg_variable.rfsrc <- function(object,
   gg_dta <- data.frame(object$xvar)
   
   if(object$family == "regr"){
-    if(oob)
+    if (oob)
       gg_dta$yhat <- object$predicted.oob
     else
       gg_dta$yhat <- object$predicted
     
-  }else  if(object$family == "class"){
+  }else if(object$family == "class"){
     if(oob){
       colnames(object$predicted.oob) <- paste("yhat.", colnames(object$predicted.oob),
                                               sep="")
@@ -185,37 +184,37 @@ gg_variable.rfsrc <- function(object,
     colnames(gg_dta) <- c(object$xvar.names, "cens")
     
     lng <- length(time)
-    for(ind in 1:lng){
-      if(ind > 1){
-        gg_dta.t.old <- gg_dta.t
+    for (ind in 1:lng){
+      if (ind > 1){
+        gg_dta_t_old <- gg_dta_t
       }
       ## For marginal plot.
       # Plot.variable returns the resubstituted survival, not OOB. So we calculate it.
       # Time is really straight forward since survival is a step function
       #
       # Get the event time occuring before or at 1 year. 
-      gg_dta.t <- gg_dta
-      inTime <-which(object$time.interest> time[ind])[1] -1
-      if(inTime == 0)
+      gg_dta_t <- gg_dta
+      in_time <-which(object$time.interest> time[ind])[1] -1
+      if(in_time == 0)
         stop("The time of interest is less than the first event time. Make sure you are using the correct time units.")
       
-      if(oob)
-        gg_dta.t$yhat=object$survival.oob[,inTime]
+      if (oob)
+        gg_dta_t$yhat <- object$survival.oob[,in_time]
       else
-        gg_dta.t$yhat=object$survival[,inTime]
+        gg_dta_t$yhat <- object$survival[,in_time]
       
       if(missing(time.labels)){
-        gg_dta.t$time <- time[ind]
+        gg_dta_t$time <- time[ind]
       }else{
-        gg_dta.t$time <- time.labels[ind]
+        gg_dta_t$time <- time.labels[ind]
       }
       
       if(ind > 1){
-        gg_dta.t<- rbind(gg_dta.t.old, gg_dta.t)
+        gg_dta_t <- rbind(gg_dta_t_old, gg_dta_t)
       }    
     }
     
-    gg_dta <- gg_dta.t
+    gg_dta <- gg_dta_t
     gg_dta$time <- factor(gg_dta$time, levels=unique(gg_dta$time))
   }
   class(gg_dta) <- c("gg_variable", object$family, class(gg_dta))

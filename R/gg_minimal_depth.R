@@ -114,24 +114,24 @@
 gg_minimal_depth.rfsrc <- function (object, ...){
   
   if (inherits(object, "rfsrc") == TRUE){
-    vSel <- var.select(object, ...)
+    vsel <- var.select(object, ...)
   }else if (!is.null(object$varselect)) {
     # Test for variable selection minimal depth object
-    vSel <- object
+    vsel <- object
   }else if(is.null(object$threshold)) {
-    # Test for max.subtree minimal depth object, convert to vSel object
+    # Test for max.subtree minimal depth object, convert to vsel object
     stop("No support for max.subtree yet, use var.select instead")
   }else{
     stop("Function works only on rfsrc or var.select objects.")
   }
   
-  vSel$varselect$names <- rownames(vSel$varselect)
+  vsel$varselect$names <- rownames(vsel$varselect)
   
-  vSel$varselect$names <- factor(vSel$varselect$names, 
-                                 levels=unique(vSel$varselect$names))
+  vsel$varselect$names <- factor(vsel$varselect$names, 
+                                 levels=unique(vsel$varselect$names))
   
-  class(vSel) <- c("gg_minimal_depth", class(vSel))
-  invisible(vSel) 
+  class(vsel) <- c("gg_minimal_depth", class(vsel))
+  invisible(vsel) 
 }
 
-gg_minimal_depth<-gg_minimal_depth.rfsrc                     
+gg_minimal_depth <- gg_minimal_depth.rfsrc                     

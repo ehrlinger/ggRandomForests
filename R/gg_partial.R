@@ -181,7 +181,8 @@ gg_partial.rfsrc <- function(object,
                              ...){
   
   if(!inherits(object,"plot.variable")){
-    stop("gg_partial expects a plot.variable object, Run plot.variable with partial=TRUE")
+    stop(paste("gg_partial expects a plot.variable object, ",
+               "Run plot.variable with partial=TRUE"))
   }
   
   # If we pass it a plot.variable output, without setting partial=TRUE,
@@ -189,13 +190,14 @@ gg_partial.rfsrc <- function(object,
   if(!object$partial) invisible(gg_variable(object, ...))
   
   # How many variables
-  n.var=length(object$pData)
+  n.var <- length(object$pData)
   
   # Create a list of data
   gg_dta <- mclapply(1:n.var, function(ind){
     
-    if(length(object$pData[[ind]]$x.uniq) == length(object$pData[[ind]]$yhat)){
-      if(object$family=="surv"){
+    if(length(object$pData[[ind]]$x.uniq) == 
+       length(object$pData[[ind]]$yhat)){
+      if(object$family == "surv"){
         # Survival family has weird standard errors because of non-normal transforms
         data.frame(cbind(yhat=object$pData[[ind]]$yhat, 
                          x=object$pData[[ind]]$x.uniq))
@@ -219,13 +221,15 @@ gg_partial.rfsrc <- function(object,
   names(gg_dta) <- object$xvar.names
   
   # name the data, so labels come out correctly.
-  for(ind in 1:n.var){
-    colnames(gg_dta[[ind]])[which(colnames(gg_dta[[ind]])=="x")] <- object$xvar.names[ind]
-    if(!missing(named)) gg_dta[[ind]]$id=named
-    class(gg_dta[[ind]]) <- c("gg_partial", class(gg_dta[[ind]]), object$family)
+  for (ind in 1:n.var){
+    colnames(gg_dta[[ind]])[which(colnames(gg_dta[[ind]]) == "x")] <- 
+      object$xvar.names[ind]
+    if(!missing(named)) gg_dta[[ind]]$id <- named
+    class(gg_dta[[ind]]) <- c("gg_partial", class(gg_dta[[ind]]), 
+                              object$family)
   }
   
-  if(n.var ==1 ){
+  if (n.var == 1 ){
     # If there is only one, no need for a list
     invisible(gg_dta[[1]])
   }else{

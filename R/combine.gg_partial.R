@@ -70,42 +70,48 @@ combine.gg_partial <- function(x, y, lbls, ...){
 }
 
 combine.gg_partial_list <- function(x, y, lbls, ...){
-  
+
   if(inherits(x,"plot.variable"))
     x <- gg_partial(x)
   if(inherits(y,"plot.variable"))
     y <- gg_partial(y)
-  
+
   if((!inherits(x,"gg_partial_list") & !inherits(x,"gg_partial"))  &
        (!inherits(y,"gg_partial_list") & !inherits(y,"gg_partial"))  ){
-    stop("combine.gg_partial expects either a ggRandomForests::gg_partial or randomForestSRC::plot.variable object")
+    stop(paste("combine.gg_partial expects either a",
+               "ggRandomForests::gg_partial or ",
+               "randomForestSRC::plot.variable object"))
   }
-  
+
   if(missing(lbls)){
-    lbls=c("x1", "x2")
+    lbls <- c("x1", "x2")
   }
   ### !!TODO!! check for lbls length
-  
+
   cls <- class(x)
-  
+
   ### We need to check for the case when x and y already have
-  ### a group column, 
-  
+  ### a group column,
   if(is.null(x[[1]]$group))
-    x <- mclapply(x, function(st){st$group <- lbls[1]; st})
-  
+    x <- mclapply(x, function(st){
+      st$group <- lbls[1]
+      st
+    })
+
   if(is.null(y[[1]]$group)){
     ind.l <- length(lbls)
-    y <- mclapply(y, function(st){st$group <- lbls[ind.l]; st})
+    y <- mclapply(y, function(st){
+      st$group <- lbls[ind.l]
+      st
+    })
   }
-  
   # By names
   nm <- names(x)
-  
+
   gg_dta <- mclapply(nm, function(ind){
     rbind(x[[ind]], y[[ind]])
   })
-  
+
   names(gg_dta) <- names(x)
   class(gg_dta) <- cls
   return(gg_dta)
