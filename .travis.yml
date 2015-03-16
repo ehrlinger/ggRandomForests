@@ -14,7 +14,7 @@ env:
      - BOOTSTRAP_LATEX=""
 
 apt_packages:
- - texlive-full
+ - texlive
  
 # For code coverage
 r_github_packages:
