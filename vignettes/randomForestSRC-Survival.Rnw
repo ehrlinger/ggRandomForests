@@ -8,7 +8,7 @@
 %\usepackage{colortbl}
 
 \usepackage{xcolor}
-\usepackage{booktabs}
+%\usepackage{booktabs}
 
 % For kable tables, these help.
 \usepackage{floatrow}
@@ -258,7 +258,7 @@ kable(tmp,
       format="latex",
       caption = "\\label{T:dataLabs}\\code{pbc} data set variable dictionary.",
       row.names = FALSE,
-      booktabs=TRUE)
+      booktabs=FALSE)
 @
 
 \subsection{Exploratory Data Analysis}\label{S:eda}
@@ -320,7 +320,7 @@ kable(st,
       format="latex",
       caption = "\\label{T:missing}Missing value counts in \\code{pbc} data set and pbc clinical trial observations (\\code{pbc.trial}).", 
       digits = 3,
-      booktabs=TRUE)
+      booktabs=FALSE)
 @
 
 Both EDA figures indicate the \code{pbc} data set contains quite a bit of missing data. Table~\ref{T:missing} details the number of missing values in each variable of the \code{pbc} data set. Of the \Sexpr{ncol(pbc)} variables in the data, \Sexpr{nrow(st)} have missing values. The \code{pbc} column details variables with missing data in the full \code{pbc} data set, though there are \Sexpr{st["treatment", "full"]} patients that were not randomized into the trial. If we restrict the data to the trial only, most of the missing values are also removed, leaving only \Sexpr{sum(st$pbc.trial>0)} variables with missing values. We focus on the \Sexpr{nrow(pbc.trial)} observations from the clinical trial for the remainder of this document. We will discuss how \pkg{randomForestSRC} handles missing values in Section~\ref{S:imputation}.
@@ -400,7 +400,7 @@ kable(fleming.table,
       format="latex",
       caption = "\\label{T:FHmodel}\\code{pbc} proportional hazards model summary of 312 randomized cases in \\code{pbc.trial} data set. ~\\citep[Table 4.4.3c]{fleming:1991} ", 
       digits = 3,
-      booktabs=TRUE)
+      booktabs=FALSE)
 @
 
 \section{Random Survival Forest}\label{S:rfsrc}
@@ -618,7 +618,7 @@ kable(md,
       align=c("l", "r","r","r"),
       digits = 3,
       row.names = FALSE,
-      booktabs=TRUE)
+      booktabs=FALSE)
 @
 
 

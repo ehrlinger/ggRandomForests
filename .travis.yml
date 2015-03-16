@@ -13,11 +13,8 @@ env:
      - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
      - BOOTSTRAP_LATEX=""
      
-before_install:
- - sudo add-apt-repository -y ppa:texlive-backports/ppa
-
-apt_packages:
- - texlive-full
+#apt_packages:
+# - texlive-full
  
 # For code coverage
 r_github_packages:

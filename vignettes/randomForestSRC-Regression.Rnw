@@ -8,7 +8,7 @@
 %\usepackage{colortbl}
 
 \usepackage{xcolor}
-\usepackage{booktabs}
+%\usepackage{booktabs}
 % For kable tables, these help.
 \usepackage{floatrow}
 \floatsetup[table]{capposition=bottom}
@@ -229,7 +229,7 @@ names(st.labs) <- names(cls)
 kable(dta.labs, 
       row.names = FALSE, 
       caption="\\code{Boston} housing data dictionary.",
-      booktabs = TRUE)
+      booktabs = FALSE)
 @
 
 The main objective of the Boston Housing data is to investigate variables associated with predicting the median value of homes (continuous \code{medv} response) within \Sexpr{nrow(Boston)} suburban areas of Boston.
