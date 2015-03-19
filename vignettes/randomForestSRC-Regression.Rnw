@@ -208,9 +208,9 @@ lbls <-
     # rad
     "Accessibility to highways.",
     # tax
-    "Property-tax rate per $10,000.",
+    "Property tax rate per $10,000.",
     # ptratio
-    "Pupil-teacher ratio by town.",
+    "Pupil teacher ratio by town.",
     # black
     "Proportion of blacks by town.",
     # lstat
