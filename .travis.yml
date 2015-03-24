@@ -6,15 +6,16 @@
 
 language: r
 
-#env:
-#   global:
-#     - CRAN: http://cran.rstudio.com
-#     - R_BUILD_ARGS="--no-build-vignettes --no-manual"
-#     - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
-#     - BOOTSTRAP_LATEX=""
+env:
+   global:
+     - CRAN: http://cran.rstudio.com
+     - R_BUILD_ARGS="--no-build-vignettes --no-manual"
+     - R_CHECK_ARGS="--no-build-vignettes --no-manual --as-cran"
+     - BOOTSTRAP_LATEX=""
      
-#apt_packages:
-# - texlive-full
+apt_packages:
+ - texlive-full
+ - texinfo
  
 # For code coverage
 r_github_packages:
