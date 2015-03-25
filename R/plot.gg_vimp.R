@@ -129,12 +129,13 @@ plot.gg_vimp<- function(x, relative, lbls, ...){
         scale_x_discrete(labels=st.lbls)
     }
   }
-  if(is.null(gg_dta$set))
+  if(is.null(gg_dta$set) | length(unique(gg_dta$set)) < 2){
     gg_plt<-gg_plt+ 
     coord_flip()
-  else  
+  }else{  
     gg_plt<-gg_plt+ 
     coord_flip()+facet_grid(~set)
+  }
   
   return(gg_plt)
 }

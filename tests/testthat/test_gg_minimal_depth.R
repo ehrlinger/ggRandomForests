@@ -20,7 +20,8 @@ test_that("gg_minimal_depth classifications",{
   # Test varselect is the same
   expect_equivalent(gg_dta$varselect[,-which(colnames(gg_dta$varselect)=="names")],
                     varsel_iris$varselect)
-  
+#   
+#   expect_is(gg_dta$threshold - mean(gg_dta$varselect$depth) < 1.e-6 )
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   

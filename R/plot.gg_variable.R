@@ -40,7 +40,7 @@
 #' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
 #' and Classification (RF-SRC), R package version 1.4.
 #' 
-#' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs facet_wrap
+#' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs facet_wrap geom_boxplot geom_jitter
 #' @importFrom parallel mclapply
 #' @importFrom reshape2 melt
 #' 
@@ -219,10 +219,11 @@ plot.gg_variable<- function(x, xvar,
         
       }else{
         gg_plt<- gg_plt+
-          geom_boxplot(aes_string(x="value", y="yhat"), color="grey", 
-                       ..., outlier.shape = NA)+
           geom_jitter(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
-                      ...)
+                      ...)+
+          geom_boxplot(aes_string(x="value", y="yhat"), color="grey", 
+                       ..., outlier.shape = NA)
+        
       }
       
       if(length(levels(gg_dta$time)) > 1){
@@ -317,10 +318,11 @@ plot.gg_variable<- function(x, xvar,
           }
         }else{
           gg_plt[[ind]] <- gg_plt[[ind]]+
-            geom_boxplot(aes_string(x="var", y="yhat"), color="black",
-                         ..., outlier.shape = NA)+
             geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
-                        ...)
+                        ...) +
+            geom_boxplot(aes_string(x="var", y="yhat"), color="black",
+                         ..., outlier.shape = NA)
+          
         }
         if(length(levels(gg_dta$time)) > 1){
           gg_plt[[ind]]<- gg_plt[[ind]] + facet_wrap(~time, ncol=1)
@@ -342,11 +344,11 @@ plot.gg_variable<- function(x, xvar,
                 geom_smooth(aes_string(x="var", y="yhat"), color="black", linetype=2, ...)
             }
           }else{
-            gg_plt[[ind]] <- gg_plt[[ind]]+
-              geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
-                           ..., outlier.shape = NA)+
+            gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
-                          ...)
+                          ...) +
+              geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
+                           ..., outlier.shape = NA)
             
           }
         }else{

@@ -1,0 +1,47 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: randomForestSRC-Survival.aux
+The style file: jss.bst
+Database file #1: ggRandomForests.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+You've used 28 entries,
+            3140 wiz_defined-function locations,
+            809 strings with 9023 characters,
+and the built_in function-call counts, 20257 in all, are:
+= -- 1654
+> -- 478
+< -- 23
++ -- 187
+- -- 153
+* -- 1534
+:= -- 2830
+add.period$ -- 109
+call.type$ -- 28
+change.case$ -- 170
+chr.to.int$ -- 26
+cite$ -- 28
+duplicate$ -- 1869
+empty$ -- 1932
+format.name$ -- 220
+if$ -- 4129
+int.to.chr$ -- 3
+int.to.str$ -- 1
+missing$ -- 301
+newline$ -- 158
+num.names$ -- 114
+pop$ -- 673
+preamble$ -- 1
+purify$ -- 162
+quote$ -- 0
+skip$ -- 489
+stack$ -- 0
+substring$ -- 1603
+swap$ -- 614
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 225
+warning$ -- 0
+while$ -- 162
+width$ -- 0
+write$ -- 381

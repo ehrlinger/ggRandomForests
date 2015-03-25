@@ -125,6 +125,11 @@ gg_minimal_depth.rfsrc <- function (object, ...){
     stop("Function works only on rfsrc or var.select objects.")
   }
   
+  
+  # There seems to be a bug in the randomForestSRC::var.select 
+  # function that does not calculage the threshold correctly.
+  
+  
   vsel$varselect$names <- rownames(vsel$varselect)
   
   vsel$varselect$names <- factor(vsel$varselect$names, 
