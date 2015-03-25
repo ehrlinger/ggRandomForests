@@ -9,8 +9,7 @@ language: r
 os:
   - linux
   - osx
-before_install:
-  - cd fakepackage
+
 notifications:
   email:
     on_success: change
