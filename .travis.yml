@@ -14,7 +14,7 @@ env:
      - BOOTSTRAP_LATEX=""
      
 apt_packages:
- - texlive
+ - texlive-full
  - texinfo
  
 # For code coverage
