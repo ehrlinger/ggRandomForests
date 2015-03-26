@@ -119,63 +119,61 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
   if(!inherits(x, "gg_minimal_depth")){
     gg_dta <- gg_minimal_depth(x, ...)
   }
-  type=match.arg(type)
+  type <- match.arg(type)
   
-  xl <-c(0,ceiling(max(gg_dta$varselect$depth))+1)
-  sel.th = gg_dta$md.obj$threshold
+  xl <- c(0,ceiling(max(gg_dta$varselect$depth)) + 1)
+  sel.th <- gg_dta$md.obj$threshold
   
   if(selection){
-    modelSize<-gg_dta$modelsize
+    modelsize <- gg_dta$modelsize
     
     # Labels for the top md vars.
     md.labs <- gg_dta$topvars
     
     ## Number the variables
     for(ind in 1:length(md.labs)){
-      md.labs[ind] <- paste(ind, md.labs[ind], sep=". ")
+      md.labs[ind] <- paste(ind, md.labs[ind], sep = ". ")
     }
-    vSel <- gg_dta$varselect[1:modelSize,]
-    vSel$rank <- 1:nrow(vSel)
+    vsel <- gg_dta$varselect[1:modelsize,]
+    vsel$rank <- 1:nrow(vsel)
     
     ## Reorder the minimal depth to place most "important" at top of figure
-    vSel$names <- factor(vSel$names, 
-                         levels=rev(levels(vSel$names )))
-    gg_plt <- ggplot(vSel)
+    vsel$names <- factor(vsel$names, 
+                         levels=rev(levels(vsel$names )))
+    gg_plt <- ggplot(vsel)
     gg_plt <- switch(type,
                    rank = gg_plt +
-                     geom_point(aes_string(y="rank", x="depth", label="rank"))+
+                     geom_point(aes_string(y="rank", x="depth", label="rank")) +
                      coord_cartesian(xlim=xl) + 
-                     geom_text(aes_string(y="rank", x="depth"-.7, label="rank"), 
+                     geom_text(aes_string(y="rank", x="depth" - .7, label="rank"), 
                                size=3, hjust=0),
                    named = gg_plt +
-                     geom_point(aes_string(y="depth", x="names"))+
+                     geom_point(aes_string(y="depth", x="names")) +
                      coord_cartesian(ylim=xl)
     )
     
     
-  }else{ 
-    vSel <- gg_dta$varselect
-    vSel$rank <- 1:dim(vSel)[1]
-    vSel$names <- factor(vSel$names, 
-                         levels=rev(levels(vSel$names )))
-    gg_plt <- ggplot(vSel)
+  } else { 
+    vsel <- gg_dta$varselect
+    vsel$rank <- 1:dim(vsel)[1]
+    vsel$names <- factor(vsel$names, 
+                         levels=rev(levels(vsel$names )))
+    gg_plt <- ggplot(vsel)
     gg_plt <- switch(type,
                    rank = gg_plt +
-                     geom_point(aes_string(y="rank", x="depth"))+
+                     geom_point(aes_string(y="rank", x="depth")) +
                      coord_cartesian(xlim=xl),
                    named  =gg_plt +
-                     geom_point(aes_string(y="depth", x="names"))+
+                     geom_point(aes_string(y="depth", x="names")) +
                      coord_cartesian(ylim=xl)
-    )
-    
-  }
+    )}
   
   
-  if(type=="named"){
+  if(type == "named"){
     if(!missing(lbls)){
-      if(length(lbls) >= length(vSel$names)){
-        st.lbls <- lbls[as.character(vSel$names)]
-        names(st.lbls) <- as.character(vSel$names)
+      if(length(lbls) >= length(vsel$names)){
+        st.lbls <- lbls[as.character(vsel$names)]
+        names(st.lbls) <- as.character(vsel$names)
         st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
         
         gg_plt <- gg_plt +
@@ -183,13 +181,13 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
       }
     }
     
-    gg_plt <- gg_plt+
-      geom_hline(yintercept=sel.th, lty=2)+
-      labs(y="Minimal Depth of a Variable", x="")+
+    gg_plt <- gg_plt +
+      geom_hline(yintercept=sel.th, lty=2) +
+      labs(y="Minimal Depth of a Variable", x="") +
       coord_flip() 
   }else{
     gg_plt <- gg_plt+
-      labs(y="Rank", x="Minimal Depth of a Variable")+
+      labs(y="Rank", x="Minimal Depth of a Variable") +
       geom_vline(xintercept=sel.th, lty=2)
   }
   return(gg_plt)

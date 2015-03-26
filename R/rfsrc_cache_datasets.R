@@ -209,34 +209,34 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     # For whatever reason, the age variable is in days... makes no sense to me
     for(ind in 1:dim(pbc)[2]){
       if(!is.factor(pbc[,ind])){
-        if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
-          if(sum(range(pbc[,ind],na.rm=TRUE) == c(0,1))==2){
+        if(length(unique(pbc[which(!is.na(pbc[,ind])),ind])) <= 2) {
+          if(sum(range(pbc[,ind],na.rm=TRUE) == c(0,1)) ==2 ){
             pbc[,ind] <- as.logical(pbc[,ind])
           }
         }
       }else{
-        if(length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=2) {
-          if(sum(sort(unique(pbc[,ind])) == c(0,1))==2){
+        if(length(unique(pbc[which(!is.na(pbc[,ind])),ind])) <= 2) {
+          if(sum(sort(unique(pbc[,ind])) == c(0,1)) == 2){
             pbc[,ind] <- as.logical(pbc[,ind])
           }
-          if(sum(sort(unique(pbc[,ind])) == c(FALSE, TRUE))==2){
+          if(sum(sort(unique(pbc[,ind])) == c(FALSE, TRUE)) == 2){
             pbc[,ind] <- as.logical(pbc[,ind])
           }
         }
       }
       if(!is.logical(pbc[, ind]) & 
-           length(unique(pbc[which(!is.na(pbc[,ind])),ind]))<=5) {
+           length(unique(pbc[which(!is.na(pbc[,ind])),ind])) <= 5) {
         pbc[,ind] <- factor(pbc[,ind])
       }
     }
     # Convert age to years
-    pbc$age <- pbc$age/364.24
+    pbc$age <- pbc$age / 364.24
     
-    pbc$years <- pbc$days/364.24
-    pbc <- pbc[, -which(colnames(pbc)=="days")]
+    pbc$years <- pbc$days / 364.24
+    pbc <- pbc[, -which(colnames(pbc) == "days")]
     pbc$treatment <- as.numeric(pbc$treatment)
-    pbc$treatment[which(pbc$treatment==1)] <- "DPCA"
-    pbc$treatment[which(pbc$treatment==2)] <- "placebo"
+    pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+    pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
     pbc$treatment <- factor(pbc$treatment)
     
     cat("pbc: randomForest\n")
@@ -277,7 +277,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     cat("pbc: xvar: ", xvar)
     
-    if(!test) partial_pbc <- mclapply(c(1,3,5), function(tm){
+    if(!test) partial_pbc <- mclapply(c(1, 3, 5), function(tm){
       plot.variable(rfsrc_pbc, surv.type = "surv", 
                     time = tm, sorted = FALSE, 
                     xvar.names = xvar, partial = TRUE, 
@@ -303,7 +303,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(save) save(partial_coplot_pbc, file=paste(pth, "partial_coplot_pbc.rda", sep=""), compress="xz")
     cat("pbc: albumin/bili")
     # Find intervals with similar number of observations.
-    bili_cts <-quantile_pts(ggvar$bili, groups = 6, intervals = TRUE)
+    bili_cts <- quantile_pts(ggvar$bili, groups = 6, intervals = TRUE)
     
     # We need to move the minimal value so we include that observation
     bili_cts[1] <- bili_cts[1] - 1.e-7
@@ -329,23 +329,23 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     # For whatever reason, the age variable is in days... makes no sense to me
     for(ind in 1:dim(vet)[2]){
       if(!is.factor(vet[,ind])){
-        if(length(unique(vet[which(!is.na(vet[,ind])),ind]))<=2) {
-          if(sum(range(vet[,ind],na.rm=TRUE) == c(0,1))==2){
+        if(length(unique(vet[which(!is.na(vet[,ind])),ind])) <= 2) {
+          if(sum(range(vet[,ind],na.rm=TRUE) == c(0,1)) == 2){
             vet[,ind] <- as.logical(vet[,ind])
           }
         }
       }else{
-        if(length(unique(vet[which(!is.na(vet[,ind])),ind]))<=2) {
-          if(sum(sort(unique(vet[,ind])) == c(0,1))==2){
+        if(length(unique(vet[which(!is.na(vet[,ind])),ind])) <= 2) {
+          if(sum(sort(unique(vet[,ind])) == c(0,1)) == 2){
             vet[,ind] <- as.logical(vet[,ind])
           }
-          if(sum(sort(unique(vet[,ind])) == c(FALSE, TRUE))==2){
+          if(sum(sort(unique(vet[,ind])) == c(FALSE, TRUE)) == 2){
             vet[,ind] <- as.logical(vet[,ind])
           }
         }
       }
       if(!is.logical(vet[, ind]) & 
-           length(unique(vet[which(!is.na(vet[,ind])),ind]))<=5) {
+           length(unique(vet[which(!is.na(vet[,ind])),ind])) <= 5) {
         vet[,ind] <- factor(vet[,ind])
       }
     }

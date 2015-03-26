@@ -146,12 +146,12 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
     gg_dta$value <- as.numeric(gg_dta$value)
     gg_dta$names <- factor(gg_dta$names,
                            levels=unique(gg_dta$names))
-    gg_plt <- ggplot(gg_dta)+ 
-      geom_point(aes_string(x="names", y="value"))+
-      geom_point(aes_string(x="names", y="value"),
+    gg_plt <- ggplot(gg_dta) + 
+      geom_point(aes_string(x = "names", y = "value"))+
+      geom_point(aes_string(x = "names", y = "value"),
                  data=gg_dta[which(as.character(gg_dta$names) == gg_dta$variable),],
                  shape=3, size=5,
-                 color="red")+
+                 color="red") +
       theme(text = element_text(size=10),
             axis.text.x = element_text(angle=90)) +
       labs(x="", y="Interactive Minimal Depth")
@@ -177,10 +177,10 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
     gg_dta$dpth <- as.numeric(gg_dta$dpth)
     gg_dta$names <- factor(gg_dta$names,
                            levels=unique(gg_dta$names))
-    gg_plt <- ggplot(gg_dta)+ 
-      geom_point(aes_string(x="names", y="dpth"))+
+    gg_plt <- ggplot(gg_dta) + 
+      geom_point(aes_string(x="names", y="dpth")) +
       geom_point(aes_string(x="names", y="dpth"),
-                 data=gg_dta[which(rownames(gg_dta)==xvar),],
+                 data=gg_dta[which(rownames(gg_dta) == xvar),],
                  shape=3, size=5,
                  color="red")+
       theme(text = element_text(size=10),

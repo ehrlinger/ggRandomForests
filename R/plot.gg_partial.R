@@ -170,26 +170,26 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess",
   
   if(!is.null(arg_list$se)) 
     if(arg_list$se != FALSE)
-      error="none"
+      error <- "none"
   
   # Get the colname of the independent variable
-  hName <- colnames(gg_dta)[2]
+  h_name <- colnames(gg_dta)[2]
   
   colnames(gg_dta)[2] <- "x"
   
   if(is.null(gg_dta$group)){
-    gg_plt<- ggplot(gg_dta,aes_string(x="x", y="yhat"))
+    gg_plt <- ggplot(gg_dta,aes_string(x="x", y="yhat"))
   }else{
-    gg_plt<- ggplot(gg_dta,aes_string(x="x", y="yhat", shape="group", color="group"))
+    gg_plt <- ggplot(gg_dta,aes_string(x="x", y="yhat", shape="group", color="group"))
   }
   if(!is.null(gg_dta$se)){
-    conf.int=.95
-    if(!is.null(arg_list$conf.int))conf.int=arg_list$conf.int
+    conf.int <- .95
+    if(!is.null(arg_list$conf.int)) conf.int <- arg_list$conf.int
     
-    if(length(conf.int)==1){
-      if(conf.int > 1)conf.int <- conf.int/100
+    if(length(conf.int) == 1){
+      if(conf.int > 1)conf.int <- conf.int / 100
       if(conf.int > .5){
-        err <- qnorm(1-conf.int/2)
+        err <- qnorm(1 - conf.int / 2)
       }else{
         err <- qnorm(conf.int)
       }
@@ -198,8 +198,8 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess",
       err <- qnorm(conf.int[1])
     }
     
-    gg_dta$upper=gg_dta$yhat + err* gg_dta$se
-    gg_dta$lower=gg_dta$yhat - err* gg_dta$se
+    gg_dta$upper <- gg_dta$yhat + err * gg_dta$se
+    gg_dta$lower <- gg_dta$yhat - err * gg_dta$se
     
     gg_plt <- switch(error,
                      # Shading the standard errors
@@ -212,31 +212,33 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess",
                        # requesting error bars, or this will get really messy.
                        #                     errFll <- fll
                        #                     if(!missing(errbars) )errFll <- errFll[errbars,]
-                       gg_plt+ 
-                         geom_errorbar(aes_string(x="x", ymax="upper", ymin="lower"), data=gg_dta, ...)
+                       gg_plt + 
+                         geom_errorbar(aes_string(x="x", ymax="upper", ymin="lower"), 
+                                       data=gg_dta, ...)
                      },
                      lines= gg_plt + 
-                       geom_smooth(aes_string(x="x", y="upper"), linetype=2, data=gg_dta, se=FALSE, ...)+
-                       geom_smooth(aes_string(x="x", y="lower"), linetype=2, data=gg_dta, se=FALSE, ...), 
+                       geom_smooth(aes_string(x="x", y="upper"), 
+                                   linetype=2, data=gg_dta, se=FALSE, ...) +
+                       geom_smooth(aes_string(x="x", y="lower"), 
+                                   linetype=2, data=gg_dta, se=FALSE, ...), 
                      none=gg_plt)
   }
-  gg_plt <- gg_plt+
-    labs(x=hName, y="predicted")
+  gg_plt <- gg_plt +
+    labs(x=h_name, y="predicted")
   if(!is.factor(gg_dta$x)){
     if(points)  
-      gg_plt<- gg_plt+geom_point( ...)
+      gg_plt <- gg_plt + geom_point( ...)
     if(!is.null(smooth)){
       if(!is.null(arg_list$se))
         if(arg_list$se != FALSE)
-          gg_plt<- gg_plt+geom_smooth(method=smooth, ...)
+          gg_plt <- gg_plt + geom_smooth(method=smooth, ...)
       else
-        gg_plt<- gg_plt+geom_smooth(method=smooth,se=FALSE, ...)
+        gg_plt <- gg_plt + geom_smooth(method=smooth,se=FALSE, ...)
       
     }
   }else{
-    gg_plt<- gg_plt+geom_boxplot(...)
+    gg_plt <- gg_plt + geom_boxplot(...)
   }
   
   return(gg_plt)
-  
 }

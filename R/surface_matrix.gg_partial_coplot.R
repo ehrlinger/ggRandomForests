@@ -56,7 +56,7 @@ surface_matrix <- function(dta, xvar){
   
   # Get the columns of interest.
   if(missing(xvar)){
-    xvar <- colnames(dta)[which(colnames(dta)!= "group")]
+    xvar <- colnames(dta)[which(colnames(dta) != "group")]
   }
   
   # Verify there are three
@@ -71,13 +71,19 @@ surface_matrix <- function(dta, xvar){
   if(is.null(dta$group)) dta$group <- factor(dta[,xvar[1]])
   
   x.tmp <- lapply(unique(dta$group), 
-                  function(grp){dta[which(dta$group==grp), xvar[1]]})
+                  function(grp){
+                    dta[which(dta$group==grp), xvar[1]] 
+                  })
   
   y.tmp <- lapply(unique(dta$group), 
-                  function(grp){dta[which(dta$group==grp), xvar[2]]})
+                  function(grp){
+                    dta[which(dta$group==grp), xvar[2]]
+                  })
   
   z.tmp <- lapply(unique(dta$group), 
-                  function(grp){dta[which(dta$group==grp), xvar[3]]})
+                  function(grp){
+                    dta[which(dta$group==grp), xvar[3]]
+                  })
   
   x.tmp <- do.call(rbind, x.tmp)
   y.tmp <- do.call(rbind, y.tmp)

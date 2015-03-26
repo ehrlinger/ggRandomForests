@@ -35,9 +35,9 @@
 quantile_pts <- function(object, groups, intervals=FALSE){
   # We need one more break than group,
   breaks <- groups
-  if(intervals)breaks <- breaks + 1
+  if(intervals) breaks <- breaks + 1
  
-  if(sum(is.na(object))>0)
+  if(sum(is.na(object)) > 0)
     object <- object[-which(is.na(object))]
   
   n.x <- length(unique(object))
@@ -50,6 +50,6 @@ quantile_pts <- function(object, groups, intervals=FALSE){
   # If we're looking for intervals, we need to include the first point
   # cut will make it NA if we don't move this a little bit lower, 
   # because of the (lv, uv] interval definition.
-  if(intervals) x.uniq[1] <- x.uniq[1]-1.e-7
+  if(intervals) x.uniq[1] <- x.uniq[1] - 1.e-7
   x.uniq
 }

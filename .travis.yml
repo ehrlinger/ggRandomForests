@@ -19,6 +19,8 @@ apt_packages:
   - moreutils
   - tmux
   - texinfo
+  - texlive-full
+  
 brew_packages:
   - tmux
  

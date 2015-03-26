@@ -83,16 +83,18 @@ nelson <- function(interval, censor, data, by=NULL, weight=NULL,...){
   cum_hazard <- c(cum_hazard, cum_hazard[length(cum_hazard)])
   cum_hazard <- -log(srv_tab$surv)
   ln_cum_haz <- log(cum_hazard)
-  lInterval <- log(data[,interval])
+  l_interval <- log(data[,interval])
   times <- order(data[,interval])
-  delta_time <- sapply(2:length(times), function(ind){times[ind] - times[ind-1] })
+  delta_time <- sapply(2:length(times), function(ind){
+    times[ind] - times[ind - 1] 
+    })
   
   # Still need to add hazard and density.
-  tbl <-data.frame(cbind(time=srv_tab$time,  n=srv_tab$n.risk,
-                         cens=srv_tab$n.censor, dead=srv_tab$n.event, 
-                         surv=srv_tab$surv, se=srv_tab$std.err, 
-                         lower=srv_tab$lower, upper=srv_tab$upper,
-                         cum_haz=cum_hazard) )
+  tbl <-data.frame(cbind(time = srv_tab$time,  n = srv_tab$n.risk,
+                         cens = srv_tab$n.censor, dead = srv_tab$n.event, 
+                         surv = srv_tab$surv, se = srv_tab$std.err, 
+                         lower = srv_tab$lower, upper = srv_tab$upper,
+                         cum_haz = cum_hazard) )
   
   # Add group labels when stratifying data.
   if(!is.null(by)){
@@ -103,8 +105,8 @@ nelson <- function(interval, censor, data, by=NULL, weight=NULL,...){
     lbls <- unique(data[,by])
     tbl$groups <- lbls[1]
     
-    for(ind in 2:(length(tm_splits)+1)){
-      tbl$groups[tm_splits[ind-1]:nrow(tbl)] <- lbls[ind]
+    for(ind in 2:(length(tm_splits) + 1)){
+      tbl$groups[tm_splits[ind - 1]:nrow(tbl)] <- lbls[ind]
     }
   }
   
@@ -112,28 +114,28 @@ nelson <- function(interval, censor, data, by=NULL, weight=NULL,...){
   #*******************************************************************************;
   # Summarize the various strata
   # only look at events
-  gg_dta <- tbl[which(tbl[,"dead"]!= 0),]
+  gg_dta <- tbl[which(tbl[,"dead"] != 0),]
   
   # Calculate the hazard estimates from transforms and slopes         
   # as well as integral of survivorship and proportionate life length
-  lag_surv <- c(1,gg_dta$surv)[-(dim(gg_dta)[1]+1)]
-  lag_time <- c(0,gg_dta$time)[-(dim(gg_dta)[1]+1)]
+  lag_surv <- c(1,gg_dta$surv)[-(dim(gg_dta)[1] + 1)]
+  lag_time <- c(0,gg_dta$time)[-(dim(gg_dta)[1] + 1)]
   
   delta_t <- gg_dta$time - lag_time
-  hzrd <- log(lag_surv/gg_dta$surv)/delta_t
+  hzrd <- log(lag_surv / gg_dta$surv) / delta_t
   ln_hzrd <- log(hzrd)
-  dnsty <- (lag_surv-gg_dta$surv)/delta_t
-  mid_int <- (gg_dta$time+lag_time)/2
+  dnsty <- (lag_surv - gg_dta$surv) / delta_t
+  mid_int <- (gg_dta$time + lag_time) / 2
   lagL <- 0
   
   life <- vector("numeric", length=dim(gg_dta)[1])
   for(ind in 1:dim(gg_dta)[1]){
-    life[ind] <- lagL +delta_t[ind] *(3*gg_dta[ind,"surv"] - lag_surv[ind])/2
+    life[ind] <- lagL + delta_t[ind] *(3*gg_dta[ind,"surv"] - lag_surv[ind]) / 2
     lagL <- life[ind]
   }
   prpLife <- life/gg_dta$time
-  gg_dta<- data.frame(cbind(gg_dta, hazard=hzrd, density=dnsty, 
-                            mid_int=mid_int, life=life, proplife=prpLife))
+  gg_dta<- data.frame(cbind(gg_dta, hazard = hzrd, density = dnsty, 
+                            mid_int = mid_int, life = life, proplife = prpLife))
   
   class(gg_dta) <- c("gg_survival", class(gg_dta)) 
   invisible(gg_dta)

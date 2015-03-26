@@ -12,17 +12,17 @@ test_that("gg_rfsrc classifications",{
   expect_is(rfsrc_iris, "class")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_iris)
+  gg_dta <- gg_rfsrc(rfsrc_iris)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
   
   # Test classification dimensions
   expect_equal(nrow(gg_dta), nrow(rfsrc_iris$predicted.oob))
-  expect_equal(ncol(gg_dta), ncol(rfsrc_iris$predicted.oob)+1)
+  expect_equal(ncol(gg_dta), ncol(rfsrc_iris$predicted.oob) + 1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta)=="y")]),
+  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "y")]),
                     rfsrc_iris$predicted.oob)
   
   ## Test plotting the gg_error object
@@ -33,17 +33,17 @@ test_that("gg_rfsrc classifications",{
   
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_iris, oob=FALSE)
+  gg_dta <- gg_rfsrc(rfsrc_iris, oob=FALSE)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
   
   # Test classification dimensions
   expect_equal(nrow(gg_dta), nrow(rfsrc_iris$predicted))
-  expect_equal(ncol(gg_dta), ncol(rfsrc_iris$predicted)+1)
+  expect_equal(ncol(gg_dta), ncol(rfsrc_iris$predicted) + 1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta)=="y")]), 
+  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "y")]), 
                     rfsrc_iris$predicted) 
 })
 
@@ -59,7 +59,7 @@ test_that("gg_rfsrc survival",{
   expect_match(rfsrc_pbc$family, "surv")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_pbc)
+  gg_dta <- gg_rfsrc(rfsrc_pbc)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -73,7 +73,7 @@ test_that("gg_rfsrc survival",{
   expect_is(gg_plt, "ggplot")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_pbc, oob=FALSE)
+  gg_dta <- gg_rfsrc(rfsrc_pbc, oob=FALSE)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -87,7 +87,7 @@ test_that("gg_rfsrc survival",{
   
   # Test classification dimensions
   
-  gg_dta<- gg_rfsrc(rfsrc_pbc, by="treatment")
+  gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -100,14 +100,14 @@ test_that("gg_rfsrc survival",{
   expect_is(gg_plt, "ggplot")
   
   
-  gg_dta<- gg_rfsrc(rfsrc_pbc,conf.int=.68)
+  gg_dta <- gg_rfsrc(rfsrc_pbc,conf.int=.68)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
   expect_is(gg_dta, "surv")
   
   # Test multiple conf intervals
-  gg_dta<- gg_rfsrc(rfsrc_pbc,conf.int=c(.025, .975), bs.sample=100)
+  gg_dta <- gg_rfsrc(rfsrc_pbc,conf.int=c(.025, .975), bs.sample=100)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -146,7 +146,7 @@ test_that("gg_rfsrc regression",{
   expect_match(rfsrc_Boston$family, "regr")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_Boston)
+  gg_dta <- gg_rfsrc(rfsrc_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -159,14 +159,14 @@ test_that("gg_rfsrc regression",{
   expect_is(gg_plt, "ggplot")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_Boston, oob=FALSE)
+  gg_dta <- gg_rfsrc(rfsrc_Boston, oob=FALSE)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
   
   # Test classification dimensions
   ## Create the correct gg_error object
-  gg_dta<- gg_rfsrc(rfsrc_Boston, by="chas")
+  gg_dta <- gg_rfsrc(rfsrc_Boston, by="chas")
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")

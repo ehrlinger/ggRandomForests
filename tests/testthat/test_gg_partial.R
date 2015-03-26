@@ -17,7 +17,7 @@ test_that("gg_partial classifications",{
   expect_equivalent(length(partial_iris$pData), length(rfsrc_iris$xvar.names))
   
   ## Create the correct gg_error object
-  gg_dta<- gg_partial(partial_iris)
+  gg_dta <- gg_partial(partial_iris)
   
   # Test object type
   expect_is(gg_dta, "gg_partial_list")
@@ -108,7 +108,7 @@ test_that("gg_partial regression",{
   
   ## Create the correct gg_error object
   data(partial_Boston, package="ggRandomForests")
-  gg_dta<- gg_partial(partial_Boston)
+  gg_dta <- gg_partial(partial_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_partial_list")
@@ -136,7 +136,7 @@ test_that("gg_partial regression",{
   for(ind in length(partial_Boston$pData):2){
     partial_Boston$pData[[ind]] <- NULL
   }
-  gg_dta<- gg_partial(partial_Boston)
+  gg_dta <- gg_partial(partial_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_partial")
@@ -171,14 +171,14 @@ test_that("gg_partial combine",{
   }
   
   # Create gg_partial objects
-  ggPrtl <- lapply(partial_pbc, gg_partial)
+  gg_prtl <- lapply(partial_pbc, gg_partial)
   for(ind in 1:length(partial_pbc)){
-    expect_is(ggPrtl[[ind]], "gg_partial_list")
+    expect_is(gg_prtl[[ind]], "gg_partial_list")
   }
   
   # Combine the objects to get multiple time curves 
   # along variables on a single figure.
-  ggpart <- combine.gg_partial(ggPrtl[[1]], ggPrtl[[2]], 
+  ggpart <- combine.gg_partial(gg_prtl[[1]], gg_prtl[[2]], 
                                lbls = c("30 day", "6 month"))
   expect_is(ggpart, "gg_partial_list")
   
@@ -199,21 +199,21 @@ test_that("gg_partial combine",{
   ggcont <- ggpart
   
   ggcont$celltype <- ggcont$trt <- ggcont$prior <- NULL
-  expect_more_than(length(ggcont), 5-3)
+  expect_more_than(length(ggcont), 5 - 3)
   
   gg_plt <- plot(ggcont, panel=TRUE) 
   expect_is(gg_plt, "ggplot")
   # And the categorical for a panel of categorical plots.
   ggpart$karno <- ggpart$diagtime <- ggpart$age <- NULL
-  expect_more_than(length(ggpart), 5-3)
+  expect_more_than(length(ggpart), 5 - 3)
   
   gg_plt <- plot(ggpart, panel=TRUE) 
   expect_is(gg_plt, "ggplot")
   
   # Test coverage, auto labels
-  ggpart <- combine.gg_partial(ggPrtl[[1]], ggPrtl[[2]])
+  ggpart <- combine.gg_partial(gg_prtl[[1]], gg_prtl[[2]])
   expect_is(ggpart, "gg_partial_list")
   
-  expect_error(combine.gg_partial(ggPrtl))
-  expect_error(combine.gg_partial(ggPrtl, ggPrtl))
+  expect_error(combine.gg_partial(gg_prtl))
+  expect_error(combine.gg_partial(gg_prtl, gg_prtl))
 })

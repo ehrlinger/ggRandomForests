@@ -12,7 +12,7 @@ test_that("gg_minimal_vimp classifications",{
   expect_false(is.null(varsel_iris$md.obj))
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_vimp(varsel_iris)
+  ggrf.obj <- gg_minimal_vimp(varsel_iris)
   
   # Test object type
   expect_is(ggrf.obj, "gg_minimal_vimp")
@@ -37,7 +37,7 @@ test_that("gg_minimal_vimp survival",{
   expect_is(varsel_pbc, "list")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_vimp(varsel_pbc)
+  ggrf.obj <- gg_minimal_vimp(varsel_pbc)
   
   # Test object type
   expect_is(ggrf.obj, "gg_minimal_vimp")
@@ -62,7 +62,7 @@ test_that("gg_minimal_vimp regression",{
   expect_is(varsel_Boston, "list")
   
   ## Create the correct gg_error object
-  ggrf.obj<- gg_minimal_vimp(varsel_Boston)
+  ggrf.obj <- gg_minimal_vimp(varsel_Boston)
   
   # Test object type
   expect_is(ggrf.obj, "gg_minimal_vimp")

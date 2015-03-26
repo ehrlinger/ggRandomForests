@@ -86,23 +86,23 @@
 #'
 #' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid scale_x_discrete
 ### error rate plot
-plot.gg_vimp<- function(x, relative, lbls, ...){
+plot.gg_vimp <- function(x, relative, lbls, ...){
   gg_dta  <- x
-  if(!inherits(gg_dta, "gg_vimp")) gg_dta<- gg_vimp(gg_dta, ...)
+  if(!inherits(gg_dta, "gg_vimp")) gg_dta <- gg_vimp(gg_dta, ...)
   
-  gg_plt<-ggplot(gg_dta)
+  gg_plt <- ggplot(gg_dta)
   
   #  if(missing(relative) | is.null(gg_dta$rel_vimp)){
-  if(length(unique(gg_dta$positive))>1){
-    gg_plt<-gg_plt+
+  if(length(unique(gg_dta$positive)) > 1){
+    gg_plt<-gg_plt +
       geom_bar(aes_string(y="vimp", x="vars", fill="positive"), 
                stat="identity", width=.5, color="black")
   }else{
-    gg_plt<-gg_plt+
+    gg_plt <- gg_plt +
       geom_bar(aes_string(y="vimp", x="vars"), 
                stat="identity", width=.5, color="black")
   }
-  gg_plt<-gg_plt+labs(x="", y="Variable Importance")
+  gg_plt <- gg_plt + labs(x="", y="Variable Importance")
   
   ## I export a rel_vimp from the gg_vimp any more,
   #   }else{
@@ -125,16 +125,16 @@ plot.gg_vimp<- function(x, relative, lbls, ...){
       names(st.lbls) <- as.character(gg_dta$vars)
       st.lbls[which(is.na(st.lbls))] <- names(st.lbls[which(is.na(st.lbls))])
       
-      gg_plt <- gg_plt+
+      gg_plt <- gg_plt +
         scale_x_discrete(labels=st.lbls)
     }
   }
   if(is.null(gg_dta$set) | length(unique(gg_dta$set)) < 2){
-    gg_plt<-gg_plt+ 
-    coord_flip()
+    gg_plt <- gg_plt + 
+      coord_flip()
   }else{  
-    gg_plt<-gg_plt+ 
-    coord_flip()+facet_grid(~set)
+    gg_plt <- gg_plt + 
+      coord_flip() + facet_grid(~set)
   }
   
   return(gg_plt)

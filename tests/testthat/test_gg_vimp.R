@@ -1,7 +1,7 @@
 # testthat for gg_vimp function
 context("gg_vimp tests")
 
-test_that("gg_vimp classifications",{  
+test_that("gg_vimp classifications", {  
   ## Load the cached forest
   data(rfsrc_iris, package="ggRandomForests")
   
@@ -12,7 +12,7 @@ test_that("gg_vimp classifications",{
   expect_equal(rfsrc_iris$family, "class")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_vimp(rfsrc_iris)
+  gg_dta <- gg_vimp(rfsrc_iris)
   
   # Test object type
   expect_is(gg_dta, "gg_vimp")
@@ -76,7 +76,7 @@ test_that("gg_vimp classifications",{
   ## Single class/
   iris2 <- iris
   iris2$spec <- factor(as.character(iris2$Species) == "setosa")
-  iris2 <- iris2[,-which(colnames(iris2)=="Species")]
+  iris2 <- iris2[,-which(colnames(iris2) == "Species")]
   
   rf <- rfsrc(spec~., iris2)
   
@@ -99,7 +99,7 @@ test_that("gg_vimp survival",{
   expect_is(rfsrc_pbc, "rfsrc")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_vimp(rfsrc_pbc)
+  gg_dta <- gg_vimp(rfsrc_pbc)
   
   # Test object type
   expect_is(gg_dta, "gg_vimp")
@@ -130,7 +130,7 @@ test_that("gg_vimp survival",{
   # Test importance calculations. 
   # If the forest does not have importance
   rfsrc_pbc$importance <- NULL
-  expect_warning(gg_dta<- gg_vimp(rfsrc_pbc))
+  expect_warning(gg_dta <- gg_vimp(rfsrc_pbc))
   expect_is(gg_dta, "gg_vimp")
   expect_is(plot(gg_dta), "ggplot")
   
@@ -144,7 +144,7 @@ test_that("gg_vimp regression",{
   expect_is(rfsrc_Boston, "rfsrc")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_vimp(rfsrc_Boston)
+  gg_dta <- gg_vimp(rfsrc_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_vimp")

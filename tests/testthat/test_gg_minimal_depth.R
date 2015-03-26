@@ -12,13 +12,13 @@ test_that("gg_minimal_depth classifications",{
   expect_false(is.null(varsel_iris$md.obj))
   
   ## Create the correct gg_error object
-  gg_dta<- gg_minimal_depth(varsel_iris)
+  gg_dta <- gg_minimal_depth(varsel_iris)
   
   # Test object type
   expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[,-which(colnames(gg_dta$varselect)=="names")],
+  expect_equivalent(gg_dta$varselect[,-which(colnames(gg_dta$varselect) == "names")],
                     varsel_iris$varselect)
 #   
 #   expect_is(gg_dta$threshold - mean(gg_dta$varselect$depth) < 1.e-6 )
@@ -41,13 +41,13 @@ test_that("gg_minimal_depth survival",{
   expect_is(varsel_pbc, "list")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_minimal_depth(varsel_pbc)
+  gg_dta <- gg_minimal_depth(varsel_pbc)
   
   # Test object type
   expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect)=="names")],
+  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == "names")],
                     varsel_pbc$varselect)
   
   ## Test plotting the gg_error object
@@ -65,13 +65,13 @@ test_that("gg_minimal_depth regression",{
   expect_is(varsel_Boston, "list")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_minimal_depth(varsel_Boston)
+  gg_dta <- gg_minimal_depth(varsel_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect)=="names")], 
+  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == "names")], 
                     varsel_Boston$varselect)
   
   ## Test plotting the gg_error object
@@ -81,7 +81,7 @@ test_that("gg_minimal_depth regression",{
   expect_is(gg_plt, "ggplot")
   
   ## Create the correct gg_minimal_depth object
-  gg_dta<- gg_minimal_depth(varsel_Boston)
+  gg_dta <- gg_minimal_depth(varsel_Boston)
   # Test object type
   expect_is(gg_dta, "gg_minimal_depth")
   

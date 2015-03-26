@@ -20,10 +20,10 @@ test_that("gg_error classifications",{
   
   # Test classification dimensions
   expect_equal(dim(gg_dta)[1], dim(rfsrc_iris$err.rate)[1])
-  expect_equal(dim(gg_dta)[2], dim(rfsrc_iris$err.rate)[2]+1)
+  expect_equal(dim(gg_dta)[2], dim(rfsrc_iris$err.rate)[2] + 1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta)=="ntree")]), rfsrc_iris$err.rate)
+  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "ntree")]), rfsrc_iris$err.rate)
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
@@ -40,7 +40,7 @@ test_that("gg_error classifications",{
 })
 
 
-test_that("gg_error survival",{  
+test_that("gg_error survival", {  
   ## Load the cached forest
   data(rfsrc_pbc, package="ggRandomForests")
   

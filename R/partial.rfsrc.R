@@ -141,8 +141,8 @@ partial.rfsrc <- function (x,
                            npts = 25, 
                            subset, 
                            granule=5,
-                           ...) 
-{
+                           ...) {
+  
   if (sum(inherits(x, c("rfsrc", "synthetic"), TRUE) == c(1, 2)) == 2) {
     x <- x$rfSyn
   }
@@ -285,7 +285,7 @@ partial.rfsrc <- function (x,
   
   ## Estimating at how many points?
   npts <- round(npts)
-  if (npts < 1){ 
+  if (npts < 1) { 
     npts <- 1
   }
   
@@ -401,7 +401,7 @@ extract.pred <- function(obj, type, subset, which.outcome, oob = FALSE) {
     surv.type <- match.arg(type, c("mort", "rel.freq", "surv"))
     return(switch(surv.type,
                   "mort" = pred[subset],
-                  "rel.freq" = pred[subset]/max(n, na.omit(pred)),
+                  "rel.freq" = pred[subset] / max(n, na.omit(pred)),
                   "surv" =  100 * surv[subset, ]
     ))
   }
@@ -440,7 +440,8 @@ bayes.rule <- function(prob) {
     else {
       NA
     }
-  })], levels = levels.class)
+  })], 
+  levels = levels.class)
 }
 
 resample <- function(x, size, ...) {

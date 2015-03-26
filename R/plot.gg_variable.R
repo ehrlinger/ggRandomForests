@@ -141,7 +141,7 @@
 #' 
 
 
-plot.gg_variable<- function(x, xvar, 
+plot.gg_variable <- function(x, xvar, 
                             time, time_labels, 
                             panel=FALSE,
                             oob=TRUE, smooth=TRUE,  ...){
@@ -163,11 +163,13 @@ plot.gg_variable<- function(x, xvar,
       colnames(gg_dta)[grep("yhat.", colnames(gg_dta))] <- "yhat"
     }else{
       # Else we want to split and duplicate the data... make it long format.
-      gg_dtaX <- gg_dta[, -grep("yhat.", colnames(gg_dta))]
-      gg_dtaY <- gg_dta[, grep("yhat.", colnames(gg_dta))]
-      lng <- ncol(gg_dtaY)
-      gg2 <- mclapply(1:ncol(gg_dtaY),
-                      function(ind){cbind(gg_dtaX, yhat=gg_dtaY[,ind], outcome=ind)})
+      gg_dta_x <- gg_dta[, -grep("yhat.", colnames(gg_dta))]
+      gg_dta_y <- gg_dta[, grep("yhat.", colnames(gg_dta))]
+      lng <- ncol(gg_dta_y)
+      gg2 <- mclapply(1:ncol(gg_dta_y),
+                      function(ind){
+                        cbind(gg_dta_x, yhat=gg_dta_y[,ind], outcome=ind)
+                        })
       gg3 <- do.call(rbind,gg2)
       gg3$outcome <- factor(gg3$outcome)
       gg_dta <- gg3 
@@ -218,9 +220,9 @@ plot.gg_variable<- function(x, xvar,
         }
         
       }else{
-        gg_plt<- gg_plt+
+        gg_plt<- gg_plt +
           geom_jitter(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
-                      ...)+
+                      ...) +
           geom_boxplot(aes_string(x="value", y="yhat"), color="grey", 
                        ..., outlier.shape = NA)
         
@@ -229,12 +231,12 @@ plot.gg_variable<- function(x, xvar,
       if(length(levels(gg_dta$time)) > 1){
         gg_plt <- gg_plt+
           facet_grid(reformulate("variable", "time"),
-                     scales="free_x")+
+                     scales="free_x") +
           labs(x="")
       }else{
         gg_plt<- gg_plt + 
           facet_wrap(~variable,
-                     scales="free_x")+
+                     scales="free_x") +
           labs(x="",y= paste("Survival at", gg_dta$time[1], "year"))
       }
     }else{
@@ -284,7 +286,7 @@ plot.gg_variable<- function(x, xvar,
       
       gg_plt <- gg_plt +
         facet_wrap(~variable,
-                   scales="free_x")+
+                   scales="free_x") +
         labs(x="")
     }
   }else{
@@ -292,7 +294,7 @@ plot.gg_variable<- function(x, xvar,
     gg_plt <- vector("list", length=lng)
     
     for(ind in 1:lng){
-      ch_indx <- which(colnames(gg_dta)==xvar[ind])
+      ch_indx <- which(colnames(gg_dta) == xvar[ind])
       h_name <- colnames(gg_dta)[ch_indx]
       colnames(gg_dta)[ch_indx] <- "var"
       ccls <- class(gg_dta[,"var"])
@@ -317,7 +319,7 @@ plot.gg_variable<- function(x, xvar,
               geom_smooth(aes_string(x="var", y="yhat"), color="black", linetype=2, ...)
           }
         }else{
-          gg_plt[[ind]] <- gg_plt[[ind]]+
+          gg_plt[[ind]] <- gg_plt[[ind]] +
             geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
                         ...) +
             geom_boxplot(aes_string(x="var", y="yhat"), color="black",
@@ -361,7 +363,7 @@ plot.gg_variable<- function(x, xvar,
           }else{
             gg_plt[[ind]] <- gg_plt[[ind]]+
               geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
-                           ..., outlier.shape = NA)+
+                           ..., outlier.shape = NA) +
               geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
                           ...)
             
@@ -384,7 +386,7 @@ plot.gg_variable<- function(x, xvar,
             
           }
         }else{
-          gg_plt[[ind]] <- gg_plt[[ind]]+
+          gg_plt[[ind]] <- gg_plt[[ind]] +
             geom_boxplot(aes_string(x="var", y="yhat"), color="grey", 
                          ..., outlier.shape = NA)+
             geom_jitter(aes_string(x="var", y="yhat"), 

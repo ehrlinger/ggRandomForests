@@ -154,4 +154,3 @@ test_that("gg_interaction exceptions",{
   interaction_Boston <- interaction_Boston[-2,]
   expect_error(gg_interaction(interaction_Boston))
 })
-

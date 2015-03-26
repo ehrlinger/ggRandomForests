@@ -12,7 +12,7 @@ test_that("gg_variable classifications",{
   expect_equal(rfsrc_iris$family, "class")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_variable(rfsrc_iris)
+  gg_dta <- gg_variable(rfsrc_iris)
   
   # Test object type
   expect_is(gg_dta, "gg_variable")
@@ -48,7 +48,7 @@ test_that("gg_variable survival",{
   expect_is(rfsrc_pbc, "rfsrc")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_variable(rfsrc_pbc, time=.25)
+  gg_dta <- gg_variable(rfsrc_pbc, time=.25)
   
   # Test object type
   expect_is(gg_dta, "gg_variable")
@@ -89,7 +89,7 @@ test_that("gg_variable regression",{
   expect_is(rfsrc_Boston, "rfsrc")
   
   ## Create the correct gg_error object
-  gg_dta<- gg_variable(rfsrc_Boston)
+  gg_dta <- gg_variable(rfsrc_Boston)
   
   # Test object type
   expect_is(gg_dta, "gg_variable")
