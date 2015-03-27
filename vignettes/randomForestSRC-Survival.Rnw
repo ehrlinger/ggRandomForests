@@ -25,12 +25,12 @@
 %\VignettePackage{ggRandomForests} 
 
 %% almost as usual
-\author{John Ehrlinger\\Cleveland Clinic \And Jeevanantham Rajeswaran\\Cleveland Clinic \AND Hemant Ishwaran\\University of Miami \And Udaya B. Kogalur\\Kogalur \& Company, Inc. \And Eugene H. Blackstone\\Cleveland Clinic }
+\author{John Ehrlinger \and Jeevanantham Rajeswaran \and Eugene H. Blackstone\\Cleveland Clinic }
 
 \title{\pkg{ggRandomForests}: Exploring Random Forest Survival}
 
 %% for pretty printing and a nice hypersummary also set:
-\Plainauthor{Ehrlinger, Rajeswaran, Ishwaran, Kogalur and Blackstone} %% comma-separated
+\Plainauthor{Ehrlinger, Rajeswaran and Blackstone} %% comma-separated
 \Plaintitle{ggRandomForests: Exploring Random Forest Survival} %% without formatting
 \Shorttitle{Exploring Random Forest Survival}
 
