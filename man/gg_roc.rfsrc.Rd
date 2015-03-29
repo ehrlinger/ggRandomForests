@@ -5,7 +5,7 @@
 \alias{gg_roc.rfsrc}
 \title{ROC (Receiver operator curve) data from a classification random forest.}
 \usage{
-gg_roc.rfsrc(object, which.outcome, oob = TRUE)
+gg_roc.rfsrc(object, which.outcome, oob = TRUE, ...)
 }
 \arguments{
 \item{object}{an \code{randomForestSRC::rfsrc} classification object}
@@ -13,6 +13,8 @@ gg_roc.rfsrc(object, which.outcome, oob = TRUE)
 \item{which.outcome}{select the classification outcome of interest.}
 
 \item{oob}{use oob estimates (default TRUE)}
+
+\item{...}{extra arguments (not used)}
 }
 \value{
 \code{gg_roc} \code{data.frame} for plotting ROC curves.
@@ -30,19 +32,19 @@ data(rfsrc_iris, package="ggRandomForests")
 
 # ROC for setosa
 gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
-plot.gg_roc(gg_dta)
+plot(gg_dta)
 
 # ROC for versicolor
 gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
-plot.gg_roc(gg_dta)
+plot(gg_dta)
 
 # ROC for virginica
 gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
-plot.gg_roc(gg_dta)
+plot(gg_dta)
 
 # Alternatively, you can plot all three outcomes in one go
 # by calling the plot function on the forest object.
-plot.gg_roc(rfsrc_iris)
+plot(rfsrc_iris)
 }
 \seealso{
 \code{\link{plot.gg_roc}} \code{randomForestSRC::rfsrc}

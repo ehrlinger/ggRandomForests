@@ -26,8 +26,6 @@
 #' 
 #' @return \code{ggplot} object
 #' 
-#' @export plot.gg_rfsrc
-#' 
 #' @seealso \code{\link{gg_rfsrc}} \code{randomForestSRC::rfsrc}
 #' 
 #' @references
@@ -103,7 +101,8 @@
 #' }
 #' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot theme element_blank
 #' @importFrom reshape2 melt
-### error rate plot
+#' 
+#' @export
 plot.gg_rfsrc <- function(x,
                           ...){
   gg_dta <- x

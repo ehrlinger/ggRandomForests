@@ -40,8 +40,6 @@
 #' 
 #' @seealso  \code{\link{plot.gg_variable}} \code{randomForestSRC::plot.variable}
 #' 
-#' @export gg_variable gg_variable.rfsrc
-#' 
 #' @aliases gg_variable gg_variable.rfsrc
 #' 
 #' @examples
@@ -136,10 +134,8 @@
 #' plot(gg_dta, xvar = "age")
 #' }
 #' ## -------- pbc data
-#' 
-#' 
-#' 
 
+#' @export
 gg_variable.rfsrc <- function(object,
                               time,
                               time.labels,
@@ -220,7 +216,8 @@ gg_variable.rfsrc <- function(object,
   class(gg_dta) <- c("gg_variable", object$family, class(gg_dta))
   invisible(gg_dta)
 }
-
-
+#'@export
+# gg_variable <- function (object, ...) {
+#   UseMethod("gg_variable", object)
+# }
 gg_variable <- gg_variable.rfsrc
-

@@ -8,7 +8,6 @@
 #' 
 #' @return \code{\link{gg_survival}} object
 #' 
-#' @export kaplan
 #' @importFrom survival Surv survfit strata 
 #' 
 #' @seealso \code{\link{gg_survival}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
@@ -33,7 +32,7 @@
 #' plot(gg_dta, error="none")
 #' plot(gg_dta)
 #' }                                            
-#' 
+#' @export
 kaplan <- function(interval, 
                    censor,
                    data, 

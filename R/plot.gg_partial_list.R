@@ -32,8 +32,6 @@
 #' 
 #' @return list of \code{ggplot} objects, or a single faceted \code{ggplot} object
 #' 
-#' @export plot.gg_partial_list
-#' 
 #' @seealso \code{randomForestSRC::plot.variable} \code{\link{gg_partial}} 
 #' \code{\link{plot.gg_partial}} \code{\link{gg_variable}} 
 #' \code{\link{plot.gg_variable}} 
@@ -154,7 +152,7 @@
 #' @importFrom ggplot2 ggplot aes labs geom_point geom_smooth facet_wrap
 #' @importFrom parallel mclapply
 #'
-### error rate plot
+#' @export
 plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
   gg_dta <- x 
   

@@ -11,7 +11,9 @@ This is ggRandomForests package submission v1.1.4
 * Vignette updates for JSS submission of "ggRandomForests: Exploring Random Forest Survival".
 * Vignette updates for arXiv submission of ggRandomForests: Random Forests for Regression
 
-* Setup continuous code testing with Travis-CI and Coveralls.
-* Improved unit tests to implemnt code test coverage using `covr` package.
 * Some optimizations to reduce package size.
+* Remove all tests from CRAN build to optimise R CMD CHECK times.
+* Remove pdf vignette figure from CRAN build.
+* Return S3method calls to NAMESPACE for "S3 methods exported but not registered" for R V3.2+.
+  
 * Misc Bug Fixes.

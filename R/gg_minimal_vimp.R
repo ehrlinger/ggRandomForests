@@ -19,16 +19,13 @@
 #' 
 #' @param object A \code{randomForestSRC::rfsrc} object, \code{randomForestSRC::predict}
 #'  object or the list from the \code{randomForestSRC::var.select.rfsrc} function.
-#' @param event an optional vector of logical values (event indicator) for 
-#' shaping the points in when plotting.
 #' @param ... optional arguments passed to the \code{randomForestSRC::var.select} function 
 #'  if operating on an \code{randomForestSRC::rfsrc} object. 
-#'  
+#' 
 #'  @return \code{gg_minimal_vimp} comparison object.
 #'  
 #'  @seealso \code{\link{plot.gg_minimal_vimp}} \code{randomForestSRC::var.select}
 #'  
-#'  @export gg_minimal_vimp gg_minimal_vimp.rfsrc
 #'  @aliases gg_minimal_vimp
 #'  
 #' @examples
@@ -105,8 +102,12 @@
 #' 
 #' gg_dta <- gg_minimal_vimp(varsel_pbc)
 #' plot(gg_dta)
-
-gg_minimal_vimp.rfsrc <- function(object, event, ...){
+#' @export
+gg_minimal_vimp <- function (object, ...) {
+  UseMethod("gg_minimal_vimp", object)
+}
+#' @export
+gg_minimal_vimp.rfsrc <- function(object, ...){
   
   if (inherits(object, "rfsrc") == TRUE){
     vsel <- var.select(object, ...)
@@ -138,4 +139,6 @@ gg_minimal_vimp.rfsrc <- function(object, event, ...){
   class(gg_dta) <- c("gg_minimal_vimp", class(gg_dta))
   invisible(gg_dta)
 }
-gg_minimal_vimp <- gg_minimal_vimp.rfsrc
+
+#' @export
+gg_minimal_vimp.default <- gg_minimal_vimp.rfsrc

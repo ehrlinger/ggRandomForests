@@ -36,7 +36,6 @@
 #' \code{randomForestSRC::vimp}
 #' \code{\link{plot.gg_interaction}} 
 #' 
-#' @export gg_interaction gg_interaction.rfsrc 
 #' @aliases gg_interaction
 #' 
 #' @importFrom randomForestSRC find.interaction
@@ -122,11 +121,11 @@
 #' plot(gg_dta, panel=TRUE)
 #' }
 #' 
-
-# gg_interaction <- function (object, ...) {
-#   UseMethod("gg_interaction", object)
-# }
-
+#' @export 
+gg_interaction <- function (object, ...) {
+  UseMethod("gg_interaction", object)
+}
+#' @export
 gg_interaction.rfsrc <- function(object, ...){
   if (inherits(object, "rfsrc")) {
     # If we called this with a rfsrc object, we need to run find.interaction.
@@ -151,4 +150,6 @@ gg_interaction.rfsrc <- function(object, ...){
   
   invisible(gg_dta)
 }
-gg_interaction <- gg_interaction.rfsrc
+# 
+#' @export
+gg_interaction.default <- gg_interaction.rfsrc

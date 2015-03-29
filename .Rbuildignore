@@ -8,9 +8,11 @@ cran-comments.md
 ^\.Rprofile$
 Sweave.sty
 useR2014.pdf
-vignettes/figure/
 jss.cls
 jss.bst
 jsslogo.jpg
 framed.sty
+^vignettes/fig-rf/*
+^vignettes/fig-rfs/*
+^tests/*
 

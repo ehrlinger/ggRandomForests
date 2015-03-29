@@ -26,8 +26,6 @@
 #' 
 #' @return \code{ggplot} object
 #' 
-#' @export plot.gg_vimp
-#' 
 #' @seealso \code{\link{gg_vimp}}
 #' 
 #' @references
@@ -85,7 +83,7 @@
 #'}
 #'
 #' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid scale_x_discrete
-### error rate plot
+#' @export
 plot.gg_vimp <- function(x, relative, lbls, ...){
   gg_dta  <- x
   if(!inherits(gg_dta, "gg_vimp")) gg_dta <- gg_vimp(gg_dta, ...)

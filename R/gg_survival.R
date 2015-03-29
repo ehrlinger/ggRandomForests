@@ -33,7 +33,6 @@
 #' nelson-aalon estimators.
 #' 
 #' @seealso \code{\link{kaplan}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
-#' @export gg_survival
 #' 
 #' @examples 
 #' ## -------- pbc data
@@ -60,7 +59,7 @@
 #'                      
 #' plot(gg_dta, error="lines")
 #' 
-#'
+#' @export
 gg_survival <- function(interval, censor, by=NULL, 
                                         data, 
                                         type=c("kaplan","nelson"), 

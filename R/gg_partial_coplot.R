@@ -12,7 +12,6 @@
 #' \code{\link{gg_partial_list}} object
 #' 
 #' @aliases gg_partial_coplot
-#' @export gg_partial_coplot gg_partial_coplot.ggRandomForests
 #' 
 #' @importFrom randomForestSRC plot.variable
 #' @importFrom parallel mclapply
@@ -45,18 +44,19 @@
 #' plot(partial_coplot_pbc, se = FALSE)
 #'  
 #' 
-#' 
-gg_partial_coplot.ggRandomForests <- function(object, 
-                                              xvar, 
-                                              groups, 
-                                              surv_type=c("mort", 
-                                                          "rel.freq",
-                                                          "surv",
-                                                          "years.lost",
-                                                          "cif",
-                                                          "chf"), 
-                                              time,
-                                              ...){
+
+#' @export
+gg_partial_coplot.rfsrc <- function(object, 
+                                    xvar, 
+                                    groups, 
+                                    surv_type=c("mort", 
+                                                "rel.freq",
+                                                "surv",
+                                                "years.lost",
+                                                "cif",
+                                                "chf"), 
+                                    time,
+                                    ...){
   
   # Some sanity checks:
   
@@ -168,5 +168,8 @@ gg_partial_coplot.ggRandomForests <- function(object,
   class(gg_merge) <- c("gg_partial_coplot", class(gg_merge))
   gg_merge
 }
-
-gg_partial_coplot <- gg_partial_coplot.ggRandomForests
+#' @export
+gg_partial_coplot <- gg_partial_coplot.rfsrc
+# gg_partial_coplot <- function (object, ...) {
+#   UseMethod("gg_partial_coplot", object)
+# }

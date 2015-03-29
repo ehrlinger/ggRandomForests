@@ -31,8 +31,6 @@
 #' @return \code{gg_error} \code{data.frame} with one column indicating the tree number, 
 #' and the remaining columns from the \code{randomForestSRC::rfsrc$err.rate} return value. 
 #' 
-#' @export gg_error.rfsrc gg_error
-#' 
 #' @seealso \code{\link{plot.gg_error}} \code{rfsrc} \code{plot.rfsrc}
 #' 
 #' @references
@@ -115,10 +113,11 @@
 #' gg_dta <- gg_error(rfsrc_pbc)
 #' plot(gg_dta)
 #' 
+#' @export 
 gg_error <- function (object, ...) {
   UseMethod("gg_error", object)
 }
-
+#' @export 
 gg_error.rfsrc <- function(object, ...) {
   ## Check that the input obect is of the correct type.
   if (!inherits(object, "rfsrc")){

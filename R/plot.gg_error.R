@@ -26,8 +26,6 @@
 #' 
 #' @return \code{ggplot} object
 #' 
-#' @export plot.gg_error
-#' 
 #' @details The gg_error plot is used to track the convergence of the 
 #' randomForest. This figure is a reproduction of the error plot
 #' from the \code{randomForestSRC::plot.rfsrc} function.
@@ -116,8 +114,7 @@
 #'}
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
 #' @importFrom reshape2 melt
-### error rate plot
-
+#' @export
 plot.gg_error <- function(x, ...){
   gg_dta <- x
     

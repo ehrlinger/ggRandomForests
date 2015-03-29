@@ -25,8 +25,6 @@
 #' 
 #' @return \code{ggplot} object of the ROC curve
 #' 
-#' @export plot.gg_roc
-#' 
 #' @seealso \code{\link{gg_roc}} rfsrc
 #' 
 #' @references
@@ -68,7 +66,7 @@
 #' @importFrom ggplot2 ggplot aes_string geom_line geom_abline labs coord_fixed annotate
 #' @importFrom parallel mclapply
 #' 
-### error rate plot
+#' @export
 plot.gg_roc <- function(x, which.outcome=NULL, ...){
   gg_dta <- x
   

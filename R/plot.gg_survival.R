@@ -28,9 +28,6 @@
 #'  
 #' @return \code{ggplot} object
 #' 
-#' @export plot.gg_survival
-#' 
-#' 
 #' @examples
 #' \dontrun{
 #' ## -------- pbc data
@@ -60,7 +57,7 @@
 #'}
 #'
 #' @importFrom ggplot2 ggplot geom_ribbon aes_string geom_errorbar geom_step labs
-#' 
+#' @export
 ### Survival plots
 plot.gg_survival <- function(x, 
                             type=c("surv", "cum_haz","hazard","density","mid_int", "life","proplife"),

@@ -32,8 +32,6 @@
 #' 
 #' @return \code{ggplot} object
 #' 
-#' @export plot.gg_partial
-#' 
 #' @seealso \code{randomForestSRC::plot.variable} \code{\link{gg_partial}} 
 #' \code{\link{plot.gg_partial_list}} \code{\link{gg_variable}} 
 #' \code{\link{plot.gg_variable}} 
@@ -152,11 +150,10 @@
 #' 
 #' ## -------- pbc data
 #'  }
-### error rate plot
+#'  @export
 plot.gg_partial <- function(x, points=TRUE, smooth="loess",
                             error=c("none", "shade","bars","lines"),
                             ...){
-  
   
   gg_dta <- x 
   if(inherits(x, "plot.variable")){

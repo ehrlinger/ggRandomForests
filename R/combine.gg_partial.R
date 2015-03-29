@@ -21,7 +21,6 @@
 #'  
 #'  @return \code{\link{gg_partial}}  or \code{gg_partial_list} based on class of x and y.
 #'  
-#'  @export combine.gg_partial_list combine.gg_partial
 #'  @aliases combine.gg_partial combine.gg_partial_list
 #' 
 #' @importFrom parallel mclapply
@@ -64,7 +63,7 @@
 #' 
 #
 # Tested in the gg_partial testthat file.
-
+#' @export
 combine.gg_partial <- function(x, y, lbls, ...){
   return(combine.gg_partial_list(x, y, lbls, ...))
 }

@@ -30,8 +30,7 @@
 #' 
 #' summary(rm_grp)
 #' 
-#' @export quantile_pts
-
+#' @export
 quantile_pts <- function(object, groups, intervals=FALSE){
   # We need one more break than group,
   breaks <- groups

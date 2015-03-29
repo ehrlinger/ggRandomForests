@@ -27,8 +27,6 @@
 #' 
 #' @return \code{ggplot} object
 #' 
-#' @export plot.gg_interaction
-#' 
 #' @seealso \code{randomForestSRC::rfsrc} 
 #' \code{randomForestSRC::find.interaction} 
 #' \code{randomForestSRC::max.subtree} \code{randomForestSRC::var.select} 
@@ -114,7 +112,8 @@
 #' plot(gg_dta, panel=TRUE)
 #' 
 #' }
-### error rate plot
+#' 
+#' @export
 plot.gg_interaction <- function(x, xvar, lbls, ...){
   
   object <- x 

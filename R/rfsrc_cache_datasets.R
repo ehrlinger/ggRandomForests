@@ -49,10 +49,10 @@
 #' \code{\link{partial_data}} 
 #' \code{\link{partial_coplot_data}}
 #' 
-#' @export rfsrc_cache_datasets
 #' @importFrom randomForestSRC rfsrc var.select plot.variable find.interaction
 #' @importFrom parallel mclapply
-
+#' @export
+#' 
 # # @export rf_cache_datasets
 # # @aliases rfsrc_cache_datasets rf_cache_datasets
 

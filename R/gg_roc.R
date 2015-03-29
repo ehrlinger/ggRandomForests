@@ -23,12 +23,12 @@
 #' @param object an \code{randomForestSRC::rfsrc} classification object
 #' @param which.outcome select the classification outcome of interest.
 #' @param oob use oob estimates (default TRUE)
+#' @param ... extra arguments (not used)
 #' 
 #' @return \code{gg_roc} \code{data.frame} for plotting ROC curves.
 #' 
 #' @seealso \code{\link{plot.gg_roc}} \code{randomForestSRC::rfsrc}
 #' 
-
 #' @examples
 #' ## ------------------------------------------------------------
 #' ## classification example
@@ -39,24 +39,25 @@
 #'
 #' # ROC for setosa
 #' gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
-#' plot.gg_roc(gg_dta)
+#' plot(gg_dta)
 #' 
 #' # ROC for versicolor
 #' gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
-#' plot.gg_roc(gg_dta)
+#' plot(gg_dta)
 #' 
 #' # ROC for virginica
 #' gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
-#' plot.gg_roc(gg_dta)
+#' plot(gg_dta)
 #' 
 #' # Alternatively, you can plot all three outcomes in one go
 #' # by calling the plot function on the forest object. 
-#' plot.gg_roc(rfsrc_iris)
+#' plot(rfsrc_iris)
 #' 
 #' 
-#' @export gg_roc.rfsrc gg_roc
 #' @aliases gg_roc
-gg_roc.rfsrc <- function(object, which.outcome, oob=TRUE){
+
+#' @export 
+gg_roc.rfsrc <- function(object, which.outcome, oob=TRUE, ...){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 & 
@@ -85,4 +86,8 @@ gg_roc.rfsrc <- function(object, which.outcome, oob=TRUE){
   
   invisible(gg_dta)
 }
+#' @export
+# gg_roc <- function (object, which.outcome, oob, ...) {
+#   UseMethod("gg_roc", object)
+# }
 gg_roc <- gg_roc.rfsrc

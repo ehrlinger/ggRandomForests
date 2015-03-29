@@ -2,17 +2,14 @@
 % Please edit documentation in R/gg_partial.R
 \name{gg_partial}
 \alias{gg_partial}
-\alias{gg_partial.rfsrc}
 \alias{gg_partial_list}
 \title{Partial variable dependence object}
 \usage{
-gg_partial.rfsrc(object, named, ...)
+gg_partial(object, ...)
 }
 \arguments{
 \item{object}{the partial variable dependence data object from
 \code{randomForestSRC::plot.variable} function}
-
-\item{named}{optional column for merging multiple plots together}
 
 \item{...}{optional arguments}
 }
@@ -31,6 +28,8 @@ partial dependence plots using the \code{\link{plot.gg_partial}} function.
 
 Partial variable dependence plots are the risk adjusted estimates of the specified
 response as a function of a single covariate, possibly subsetted on other covariates.
+
+An option \code{named} argument can name a column for merging multiple plots together
 }
 \examples{
 ## ------------------------------------------------------------
@@ -155,8 +154,8 @@ ggpart$edema <- NULL
 # Panel plot the remainder.
 plot(ggpart, se = FALSE, panel = TRUE)
 
-plot.gg_partial(pbc_ggpart[["edema"]], panel=TRUE,
-                     notch = TRUE, alpha = .3, outlier.shape = NA)
+plot(pbc_ggpart[["edema"]], panel=TRUE,
+     notch = TRUE, alpha = .3, outlier.shape = NA)
 }
 \references{
 Friedman, Jerome H. 2000. "Greedy Function Approximation: A Gradient Boosting

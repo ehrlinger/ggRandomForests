@@ -45,9 +45,8 @@
 #'        xlab="Lower Status", ylab="Average Rooms", zlab="Median Value"
 #' )
 #' }
-#' @export surface_matrix surface_matrix.gg_partial_coplot
 #' @aliases surface_matrix  surface_matrix.gg_partial_coplot
-#'
+#' @export
 surface_matrix <- function(dta, xvar){
   # Test for class type
   if(!inherits(dta, "gg_partial_coplot")){

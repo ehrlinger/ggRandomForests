@@ -38,14 +38,13 @@
 #' 
 #' @importFrom parallel mclapply
 #' 
-#' @export calc_roc calc_roc.rfsrc
 #' @examples
 #' ## Taken from the gg_roc example
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' data(rfsrc_iris)
 #' gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=TRUE)
 #' gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=FALSE)
-#' 
+#' @export
 
 calc_roc.rfsrc <- function(object, yvar, which.outcome="all", oob=TRUE){
   if(!is.factor(yvar)) yvar <- factor(yvar)
@@ -134,9 +133,8 @@ calc_roc <- calc_roc.rfsrc
 #' 
 #' calc_auc(gg_dta)
 #' 
-#' @export calc_auc
 #' @aliases calc_auc calc_auc.gg_roc
-#' 
+#' @export
 calc_auc <- function(x){
   ## Use the trapeziod rule, basically calc
   ##

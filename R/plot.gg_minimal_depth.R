@@ -29,7 +29,6 @@
 #' @return \code{ggplot} object
 #' 
 #' @seealso \code{randomForestSRC::var.select} \code{\link{gg_minimal_depth}}
-#' @export plot.gg_minimal_depth
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -110,7 +109,7 @@
 #' }
 #' 
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs coord_cartesian geom_text annotate geom_hline coord_flip geom_vline scale_x_discrete
-### error rate plot
+#' @export
 plot.gg_minimal_depth <- function(x, selection=FALSE, 
                                   type=c("named","rank"),
                                   lbls,

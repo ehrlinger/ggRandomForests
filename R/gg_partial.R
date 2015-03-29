@@ -27,9 +27,10 @@
 #' Partial variable dependence plots are the risk adjusted estimates of the specified 
 #' response as a function of a single covariate, possibly subsetted on other covariates.
 #' 
+#' An option \code{named} argument can name a column for merging multiple plots together
+#' 
 #' @param object the partial variable dependence data object from 
 #'   \code{randomForestSRC::plot.variable} function
-#' @param named optional column for merging multiple plots together
 #' @param ... optional arguments
 #'  
 #' @return \code{gg_partial} object. A \code{data.frame} or \code{list} of 
@@ -37,8 +38,6 @@
 #' contained within the \code{randomForestSRC::plot.variable} output. 
 #' 
 #' @seealso \code{\link{plot.gg_partial}} \code{randomForestSRC::plot.variable}
-#' 
-#' @export gg_partial.rfsrc gg_partial
 #' 
 #' @importFrom parallel mclapply
 #' 
@@ -169,15 +168,19 @@
 #' # Panel plot the remainder.
 #' plot(ggpart, se = FALSE, panel = TRUE)
 #' 
-#' plot.gg_partial(pbc_ggpart[["edema"]], panel=TRUE,
-#'                      notch = TRUE, alpha = .3, outlier.shape = NA) 
+#' plot(pbc_ggpart[["edema"]], panel=TRUE,
+#'      notch = TRUE, alpha = .3, outlier.shape = NA) 
 #'   
 #' @aliases gg_partial gg_partial_list
 #' @name gg_partial
 #' @name gg_partial_list
-#' 
+#' @export
+gg_partial <- function (object, ...) {
+  UseMethod("gg_partial", object)
+}
+
+#' @export
 gg_partial.rfsrc <- function(object, 
-                             named,
                              ...){
   
   if(!inherits(object,"plot.variable")){
@@ -188,6 +191,9 @@ gg_partial.rfsrc <- function(object,
   # If we pass it a plot.variable output, without setting partial=TRUE,
   # We'll want a gg_variable object.
   if(!object$partial) invisible(gg_variable(object, ...))
+  
+  Call <- match.call(expand.dots = TRUE)
+  named <- eval.parent(Call$named)
   
   # How many variables
   n.var <- length(object$pData)
@@ -239,5 +245,3 @@ gg_partial.rfsrc <- function(object,
   }
   
 }
-
-gg_partial <- gg_partial.rfsrc

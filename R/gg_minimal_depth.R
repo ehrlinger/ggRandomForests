@@ -31,7 +31,6 @@
 #' @return \code{gg_minimal_depth} object, A modified list of variables from the 
 #' \code{randomForestSRC::var.select} function, ordered by minimal depth rank. 
 #' 
-#' @export gg_minimal_depth gg_minimal_depth.rfsrc 
 #' @aliases gg_minimal_depth gg_minimal_depth.rfsrc
 #' 
 #' @seealso \code{randomForestSRC::var.select} \code{\link{plot.gg_minimal_depth}}
@@ -110,7 +109,12 @@
 #' gg_dta <- gg_minimal_depth(varsel_pbc)
 #' plot(gg_dta)
 #' 
+#' @export
+gg_minimal_depth <- function (object, ...) {
+  UseMethod("gg_minimal_depth", object)
+}
 
+#' @export
 gg_minimal_depth.rfsrc <- function (object, ...){
   
   if (inherits(object, "rfsrc") == TRUE){
@@ -139,4 +143,6 @@ gg_minimal_depth.rfsrc <- function (object, ...){
   invisible(vsel) 
 }
 
-gg_minimal_depth <- gg_minimal_depth.rfsrc                     
+#' @export
+gg_minimal_depth.default <- 
+  gg_minimal_depth.rfsrc

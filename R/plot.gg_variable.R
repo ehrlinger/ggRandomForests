@@ -30,8 +30,6 @@
 #'   
 #' @return A single \code{ggplot} object, or list of \code{ggplot} objects
 #'   
-#' @export plot.gg_variable
-#'   
 #' @references Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #' 
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews,
@@ -139,8 +137,7 @@
 #' ## -------- pbc data
 #' }
 #' 
-
-
+#' @export
 plot.gg_variable <- function(x, xvar, 
                             time, time_labels, 
                             panel=FALSE,

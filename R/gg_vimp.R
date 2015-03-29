@@ -86,13 +86,10 @@
 #' # Restrict to only the top 10.
 #' gg_dta <- gg_vimp(rfsrc_pbc, n_var=10)
 #' plot(gg_dta)
-#' @export gg_vimp.rfsrc gg_vimp
+
 #' @aliases gg_vimp gg_vimp.rfsrc 
 
-# gg_vimp <- function (object, ...) {
-#   UseMethod("gg_vimp", object)
-# }
-
+#' @export
 gg_vimp.rfsrc <- function(object, n_var, ...){
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
@@ -167,5 +164,8 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
   class(gg_dta) <- c("gg_vimp", class(gg_dta))
   invisible(gg_dta)
 }
-
-gg_vimp <- gg_vimp.rfsrc
+#' @export
+# gg_vimp <- function (object, ...) {
+#   UseMethod("gg_vimp", object)
+# }
+gg_vimp <- gg_vimp.rfsrc 

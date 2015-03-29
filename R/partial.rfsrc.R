@@ -125,14 +125,11 @@
 #' plot.variable(mtcars2.obj, partial = TRUE)
 #' }
 #'
-#'
-#'
-#' @export partial.rfsrc
 #' 
 #' @importFrom randomForestSRC predict.rfsrc 
 #'
 #'
-#'
+#' @export
 partial.rfsrc <- function (x, 
                            xvar.names, 
                            which.outcome,

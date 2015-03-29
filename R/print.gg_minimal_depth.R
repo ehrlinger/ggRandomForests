@@ -21,8 +21,6 @@
 #' @param x a \code{\link{gg_minimal_depth}} object.
 #' @param ... optional arguments
 #' 
-#' @export print.gg_minimal_depth
-#' 
 #' @examples
 #' ## ------------------------------------------------------------
 #' ## classification example
@@ -34,7 +32,7 @@
 #' data(varsel_iris, package="ggRandomForests")
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' gg_dta<- gg_minimal_depth(varsel_iris)
+#' gg_dta <- gg_minimal_depth(varsel_iris)
 #' print(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
@@ -49,7 +47,7 @@
 #' print(gg_dta)
 #' 
 #' # To nicely print a rfsrc::var.select output... 
-#' print.gg_minimal_depth(varsel_airq)
+#' print(varsel_airq)
 #' }
 #' 
 #' # ... or load a cached randomForestSRC object
@@ -60,8 +58,9 @@
 #' print(gg_dta)
 #' 
 #' # To nicely print a rfsrc::var.select output... 
-#' print.gg_minimal_depth(varsel_Boston)
+#' print(varsel_Boston)
 #' 
+#' @export
 print.gg_minimal_depth <- function(x, ...){
   gg_dta <- x
   

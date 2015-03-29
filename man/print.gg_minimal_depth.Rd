@@ -25,7 +25,7 @@ Print a \code{\link{gg_minimal_depth}} object.
 data(varsel_iris, package="ggRandomForests")
 
 # Get a data.frame containing minimaldepth measures
-gg_dta<- gg_minimal_depth(varsel_iris)
+gg_dta <- gg_minimal_depth(varsel_iris)
 print(gg_dta)
 
 ## ------------------------------------------------------------
@@ -40,7 +40,7 @@ gg_dta<- gg_minimal_depth(varsel_airq)
 print(gg_dta)
 
 # To nicely print a rfsrc::var.select output...
-print.gg_minimal_depth(varsel_airq)
+print(varsel_airq)
 }
 
 # ... or load a cached randomForestSRC object
@@ -51,6 +51,6 @@ gg_dta<- gg_minimal_depth(varsel_Boston)
 print(gg_dta)
 
 # To nicely print a rfsrc::var.select output...
-print.gg_minimal_depth(varsel_Boston)
+print(varsel_Boston)
 }
 

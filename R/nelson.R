@@ -9,7 +9,6 @@
 #'
 #' @return \code{\link{gg_survival}} object
 #' 
-#' @export nelson
 #' @importFrom survival Surv survfit strata 
 #' 
 #' @seealso \code{\link{gg_survival}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
@@ -43,7 +42,7 @@
 #' plot(gg_dta)
 #' 
 #' }                                            
-#' 
+#' @export
 nelson <- function(interval, censor, data, by=NULL, weight=NULL,...){
   #call <- match.call()
   
