@@ -1,25 +1,27 @@
 #' combine two gg_partial objects
 #' 
 #' @description
-#' The \code{combine.gg_partial} function assumes the two \code{\link{gg_partial}} objects
-#' were generated from the same \code{randomForestSRC::rfsrc} object. So, the 
-#' function joins along the \code{\link{gg_partial}} list item names (one per partial
-#' plot variable). Further, we combine the two \code{\link{gg_partial}} objects along 
-#' the group variable.
+#' The \code{combine.gg_partial} function assumes the two \code{\link{gg_partial}} 
+#' objects were generated from the same \code{\link[randomForestSRC]{rfsrc}} 
+#' object. So, the function joins along the \code{\link{gg_partial}} list item
+#' names (one per partial plot variable). Further, we combine the two 
+#' \code{\link{gg_partial}} objects along the group variable.
 #' 
-#' Hence, to join three \code{\link{gg_partial}} objects together (i.e. for three different 
-#' time points from a survival random forest)
-#' would require two \code{combine.gg_partial} calls: One to join the first two 
-#' \code{\link{gg_partial}} object, 
-#' and one to append the third \code{\link{gg_partial}} object to the output from the first call.
-#' The second call will append a single \code{lbls} label to the \code{\link{gg_partial}} object.
+#' Hence, to join three \code{\link{gg_partial}} objects together (i.e. for 
+#' three different time points from a survival random forest) would require 
+#' two \code{combine.gg_partial} calls: One to join the first two 
+#' \code{\link{gg_partial}} object, and one to append the third 
+#' \code{\link{gg_partial}} object to the output from the first call.
+#' The second call will append a single \code{lbls} label to the 
+#' \code{\link{gg_partial}} object.
 #' 
 #'  @param x \code{\link{gg_partial}}  object
 #'  @param y \code{\link{gg_partial}}  object
 #'  @param lbls vector of 2 strings to label the combined data.
 #'  @param ... not used
 #'  
-#'  @return \code{\link{gg_partial}}  or \code{gg_partial_list} based on class of x and y.
+#'  @return \code{\link{gg_partial}} or \code{gg_partial_list} based on 
+#'  class of x and y.
 #'  
 #'  @aliases combine.gg_partial combine.gg_partial_list
 #' 
@@ -69,48 +71,48 @@ combine.gg_partial <- function(x, y, lbls, ...){
 }
 
 combine.gg_partial_list <- function(x, y, lbls, ...){
-
+  
   if(inherits(x,"plot.variable"))
     x <- gg_partial(x)
   if(inherits(y,"plot.variable"))
     y <- gg_partial(y)
-
+  
   if((!inherits(x,"gg_partial_list") & !inherits(x,"gg_partial"))  &
-       (!inherits(y,"gg_partial_list") & !inherits(y,"gg_partial"))  ){
+     (!inherits(y,"gg_partial_list") & !inherits(y,"gg_partial"))  ){
     stop(paste("combine.gg_partial expects either a",
                "ggRandomForests::gg_partial or ",
                "randomForestSRC::plot.variable object"))
   }
-
+  
   if(missing(lbls)){
     lbls <- c("x1", "x2")
   }
   ### !!TODO!! check for lbls length
-
+  
   cls <- class(x)
-
+  
   ### We need to check for the case when x and y already have
   ### a group column,
   if(is.null(x[[1]]$group))
-    x <- mclapply(x, function(st){
+    x <- parallel::mclapply(x, function(st){
       st$group <- lbls[1]
       st
     })
-
+  
   if(is.null(y[[1]]$group)){
     ind.l <- length(lbls)
-    y <- mclapply(y, function(st){
+    y <- parallel::mclapply(y, function(st){
       st$group <- lbls[ind.l]
       st
     })
   }
   # By names
   nm <- names(x)
-
-  gg_dta <- mclapply(nm, function(ind){
+  
+  gg_dta <- parallel::mclapply(nm, function(ind){
     rbind(x[[ind]], y[[ind]])
   })
-
+  
   names(gg_dta) <- names(x)
   class(gg_dta) <- cls
   return(gg_dta)

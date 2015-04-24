@@ -19,7 +19,8 @@
 #' 
 #' Plot a \code{\link{gg_variable}} object,
 #' 
-#' @param x \code{\link{gg_variable}} object created from a \code{randomForestSRC::rfsrc} object
+#' @param x \code{\link{gg_variable}} object created from a 
+#' \code{\link[randomForestSRC]{rfsrc}} object
 #' @param xvar variable (or list of variables) of interest.
 #' @param time For survival, one or more times of interest
 #' @param time_labels string labels for times

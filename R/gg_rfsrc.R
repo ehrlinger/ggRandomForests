@@ -18,10 +18,10 @@
 #'
 #' Predicted response data object
 #' 
-#' Extracts the predicted response values from the \code{randomForestSRC::rfsrc} object, 
-#' and formats data for plotting the response using \code{\link{plot.gg_rfsrc}}.
+#' Extracts the predicted response values from the \code{\link[randomForestSRC]{rfsrc}}
+#'  object, and formats data for plotting the response using \code{\link{plot.gg_rfsrc}}.
 #' 
-#' @param object \code{randomForestSRC::rfsrc} object
+#' @param object \code{\link[randomForestSRC]{rfsrc}} object
 #' @param by stratifying variable in the training dataset, defaults to NULL
 #' @param oob boolean, should we return the oob prediction , or the full
 #' forest prediction.
@@ -35,7 +35,8 @@
 #'    \code{oob} boolean, should we return the oob prediction , or the full
 #' forest prediction.
 #' 
-#' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} \code{\link{gg_survival}}
+#' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} 
+#' \code{\link{gg_survival}}
 #' 
 #' @examples
 #' ## ------------------------------------------------------------

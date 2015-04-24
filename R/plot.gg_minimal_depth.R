@@ -19,7 +19,8 @@
 #'
 #' Plot a \code{\link{gg_minimal_depth}} object for random forest variable ranking.
 #' 
-#' @param x \code{\link{gg_minimal_depth}} object created from a \code{randomForestSRC::rfsrc} object
+#' @param x \code{\link{gg_minimal_depth}} object created from a 
+#' \code{\link[randomForestSRC]{rfsrc}} object
 #' @param selection should we restrict the plot to only include variables selected by the 
 #' minimal depth criteria (boolean).
 #' @param type select type of y axis labels c("named","rank")
@@ -28,7 +29,7 @@
 #' 
 #' @return \code{ggplot} object
 #' 
-#' @seealso \code{randomForestSRC::var.select} \code{\link{gg_minimal_depth}}
+#' @seealso \code{\link[randomForestSRC]{var.select}} \code{\link{gg_minimal_depth}}
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

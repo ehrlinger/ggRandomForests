@@ -21,16 +21,17 @@
 #' A plot of the cumulative OOB error rates of the random forest as a 
 #' function of number of trees.
 #' 
-#' @param x gg_error object created from a \code{randomForestSRC::rfsrc} object
+#' @param x gg_error object created from a \code{\link[randomForestSRC]{rfsrc}} object
 #' @param ... extra arguments passed to \code{ggplot} functions
 #' 
 #' @return \code{ggplot} object
 #' 
 #' @details The gg_error plot is used to track the convergence of the 
 #' randomForest. This figure is a reproduction of the error plot
-#' from the \code{randomForestSRC::plot.rfsrc} function.
+#' from the \code{\link[randomForestSRC]{plot.rfsrc}} function.
 #' 
-#' @seealso \code{\link{gg_error}} \code{randomForestSRC::rfsrc} \code{randomForestSRC::plot.rfsrc}
+#' @seealso \code{\link{gg_error}} \code{\link[randomForestSRC]{rfsrc}}
+#'  \code{\link[randomForestSRC]{plot.rfsrc}}
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

@@ -20,17 +20,17 @@
 #' plot.gg_interaction
 #' Plot a \code{\link{gg_interaction}} object, 
 #' 
-#' @param x gg_interaction object created from a \code{randomForestSRC::rfsrc} object
+#' @param x gg_interaction object created from a \code{\link[randomForestSRC]{rfsrc}} object
 #' @param xvar variable (or list of variables) of interest.
 #' @param lbls A vector of alternative variable names.
 #' @param ... arguments passed to the \code{\link{gg_interaction}} function.
 #' 
 #' @return \code{ggplot} object
 #' 
-#' @seealso \code{randomForestSRC::rfsrc} 
-#' \code{randomForestSRC::find.interaction} 
-#' \code{randomForestSRC::max.subtree} \code{randomForestSRC::var.select} 
-#' \code{randomForestSRC::vimp}
+#' @seealso \code{\link[randomForestSRC]{rfsrc}}
+#' \code{\link[randomForestSRC]{find.interaction}}
+#' \code{\link[randomForestSRC]{max.subtree}} \code{\link[randomForestSRC]{var.select}} 
+#' \code{\link[randomForestSRC]{vimp}}
 #' \code{\link{plot.gg_interaction}} 
 #' 
 #' @references

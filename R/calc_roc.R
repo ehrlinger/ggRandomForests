@@ -24,7 +24,8 @@
 #' This is a helper function for the \code{\link{gg_roc}} functions, and not intended 
 #' for use by the end user.
 #' 
-#' @param object \code{randomForestSRC::rfsrc} or \code{randomForestSRC::predict} object 
+#' @param object \code{\link[randomForestSRC]{rfsrc}} or 
+#' \code{\link[randomForestSRC]{predict.rfsrc}} object 
 #' containing predicted response
 #' @param yvar True response variable
 #' @param which.outcome If defined, only show ROC for this response. 
@@ -48,7 +49,7 @@
 
 calc_roc.rfsrc <- function(object, yvar, which.outcome="all", oob=TRUE){
   if(!is.factor(yvar)) yvar <- factor(yvar)
-
+  
   if(which.outcome != "all"){
     dta.roc <- data.frame(cbind(res=(yvar == levels(yvar)[which.outcome]),
                                 prd=object$predicted[, which.outcome],
@@ -60,23 +61,23 @@ calc_roc.rfsrc <- function(object, yvar, which.outcome="all", oob=TRUE){
   }else{
     stop("Must specify which.outcome for now.")
   }
-
+  
   pct <- pct[-length(pct)]
-
-  gg_dta <- mclapply(pct, function(crit){
+  
+  gg_dta <- parallel::mclapply(pct, function(crit){
     if(oob)
       tbl <- xtabs(~res + (oob > crit), dta.roc)
     else
       tbl <- xtabs(~res + (prd > crit), dta.roc)
-
+    
     spec <- tbl[2,2] / rowSums(tbl)[2]
     sens <- tbl[1,1] / rowSums(tbl)[1]
     cbind(sens = sens,spec = spec )
   })
-
+  
   gg_dta <- do.call(rbind, gg_dta)
   gg_dta <- rbind(c(0,1), gg_dta, c(1,0))
-
+  
   gg_dta <- data.frame(gg_dta, row.names=1:nrow(gg_dta))
   gg_dta$pct <- c(0,pct,1)
   invisible(gg_dta)
@@ -94,7 +95,7 @@ calc_roc <- calc_roc.rfsrc
 #   pct <- sort(unique(prd[,which.outcome]))
 #   pct<- pct[-length(pct)]
 #   
-#   gg_dta <-mclapply(pct, function(crit){
+#   gg_dta <- parallel::mclapply(pct, function(crit){
 #     tbl <- xtabs(~res+(prd>crit), dta.roc)
 #     
 #     spec<-tbl[2,2]/rowSums(tbl)[2]
@@ -129,7 +130,14 @@ calc_roc <- calc_roc.rfsrc
 #' ## Taken from the gg_roc example
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' data(rfsrc_iris)
+#' 
+#' \dontrun{
 #' gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
+#' 
+#' calc_auc(gg_dta)
+#' }
+#' 
+#' gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
 #' 
 #' calc_auc(gg_dta)
 #' 
@@ -141,11 +149,11 @@ calc_auc <- function(x){
   ## auc = dx/2(f(x_{i+1}) - f(x_i))
   ##
   ## f(x) is sensitivity, x is 1-specificity
-
+  
   # SInce we are leading vectors (x_{i+1} - x_{i}), we need to
   # ensure we are in decreasing order of specificity (x var = 1-spec)
   x <- x[order(x$spec, decreasing=TRUE),]
-
+  
   auc <- (3 * shift(x$sens) - x$sens) / 2 * (x$spec - shift(x$spec))
   sum(auc, na.rm=TRUE)
 }
@@ -202,10 +210,10 @@ calc_auc.gg_roc <- calc_auc
 shift <- function(x,shift_by=1){
   stopifnot(is.numeric(shift_by))
   stopifnot(is.numeric(x))
-
+  
   if (length(shift_by) > 1)
     return(sapply(shift_by,shift, x=x))
-
+  
   out <- NULL
   abs_shift_by <- abs(shift_by)
   if (shift_by > 0 )

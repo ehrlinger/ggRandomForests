@@ -22,14 +22,14 @@
 #' number of trees.
 #' 
 #' @details The \code{gg_error} function simply returns the 
-#' \code{randomForestSRC::rfsrc$err.rate} object as a data.frame, and assigns the class 
+#' \code{\link[randomForestSRC]{rfsrc}$err.rate} object as a data.frame, and assigns the class 
 #' for connecting to the S3 \code{\link{plot.gg_error}} function. 
 #' 
-#' @param object \code{randomForestSRC::rfsrc} object.
+#' @param object \code{\link[randomForestSRC]{rfsrc}} object.
 #' @param ... optional arguments (not used).
 #' 
 #' @return \code{gg_error} \code{data.frame} with one column indicating the tree number, 
-#' and the remaining columns from the \code{randomForestSRC::rfsrc$err.rate} return value. 
+#' and the remaining columns from the \code{\link[randomForestSRC]{rfsrc}$err.rate} return value. 
 #' 
 #' @seealso \code{\link{plot.gg_error}} \code{rfsrc} \code{plot.rfsrc}
 #' 
@@ -136,9 +136,22 @@ gg_error.rfsrc <- function(object, ...) {
 
   gg_dta$ntree <- 1:dim(gg_dta)[1]
   
+  arg_list <- as.list(substitute(list(...)))
+  training <- FALSE
+  if(!is.null(arg_list$training)) training <- arg_list$training
+  
+  if(training){
+    trn <- data.frame(cbind(object$xvar, object$yvar))
+    colnames(trn) <- c(object$xvar.names, object$yvar.names)
+    gg_prd <- predict(object, newdata=trn, importance="none", 
+                      membership=FALSE)
+    gg_dta$train <- gg_prd$err.rate
+  }
+  
   class(gg_dta) <- c("gg_error",class(gg_dta))
   invisible(gg_dta)
 }
+
 # 
 # gg_error.randomForest <- function(object, ...) {
 #   stop("Unimplemented function.") 

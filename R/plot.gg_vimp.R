@@ -17,9 +17,9 @@
 ####**********************************************************************
 ####**********************************************************************
 #' Plot a \code{\link{gg_vimp}} object, extracted variable importance of a 
-#' \code{randomForestSRC::rfsrc} object
+#' \code{\link[randomForestSRC]{rfsrc}} object
 #' 
-#' @param x \code{\link{gg_vimp}} object created from a \code{randomForestSRC::rfsrc} object
+#' @param x \code{\link{gg_vimp}} object created from a \code{\link[randomForestSRC]{rfsrc}} object
 #' @param relative should we plot vimp or relative vimp. Defaults to vimp.
 #' @param lbls A vector of alternative variable names.
 #' @param ... optional arguments passed to gg_vimp if necessary

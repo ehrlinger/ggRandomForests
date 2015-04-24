@@ -14,5 +14,5 @@ jsslogo.jpg
 framed.sty
 ^vignettes/fig-rf/*
 ^vignettes/fig-rfs/*
-^tests/*
+# ^tests/*
 

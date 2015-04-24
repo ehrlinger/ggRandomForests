@@ -17,17 +17,19 @@
 ####**********************************************************************
 #' Minimal depth vs VIMP camparison by variable rankings. 
 #' 
-#' @param object A \code{randomForestSRC::rfsrc} object, \code{randomForestSRC::predict}
-#'  object or the list from the \code{randomForestSRC::var.select.rfsrc} function.
-#' @param ... optional arguments passed to the \code{randomForestSRC::var.select} function 
-#'  if operating on an \code{randomForestSRC::rfsrc} object. 
+#' @param object A \code{\link[randomForestSRC]{rfsrc}} object, 
+#' \code{\link[randomForestSRC]{predict.rfsrc}}
+#'  object or the list from the \code{\link[randomForestSRC]{var.select.rfsrc}} function.
+#' @param ... optional arguments passed to the \code{\link[randomForestSRC]{var.select}} function 
+#'  if operating on an \code{\link[randomForestSRC]{rfsrc}} object. 
 #' 
 #'  @return \code{gg_minimal_vimp} comparison object.
 #'  
-#'  @seealso \code{\link{plot.gg_minimal_vimp}} \code{randomForestSRC::var.select}
+#'  @seealso \code{\link{plot.gg_minimal_vimp}} \code{\link[randomForestSRC]{var.select}}
 #'  
 #'  @aliases gg_minimal_vimp
 #'  
+#' @importFrom randomForestSRC var.select
 #' @examples
 #' ## Examples from RFSRC package... 
 #' ## ------------------------------------------------------------
@@ -36,7 +38,7 @@
 #' ## -------- iris data
 #' ## You can build a randomForest
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' # varsel_iris <- var.select(rfsrc_iris)
+#' # varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
 #' # ... or load a cached randomForestSRC object
 #' data(varsel_iris, package="ggRandomForests")
 #' 
@@ -52,7 +54,7 @@
 #' \dontrun{
 #' ## -------- air quality data
 #' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' # varsel_airq <- var.select(rfsrc_airq)
+#' # varsel_airq <- randomForestSRC::var.select(rfsrc_airq)
 #' # ... or load a cached randomForestSRC object
 #' data(varsel_airq, package="ggRandomForests")
 #' 
@@ -90,7 +92,7 @@
 #' ## randomized trial of two treatment regimens for lung cancer
 #' # data(veteran, package = "randomForestSRC")
 #' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#' # varsel_veteran <- var.select(rfsrc_veteran)
+#' # varsel_veteran <- randomForestSRC::var.select(rfsrc_veteran)
 #' # Load a cached randomForestSRC object
 #' data(varsel_veteran, package="ggRandomForests")
 #' 
@@ -110,7 +112,7 @@ gg_minimal_vimp <- function (object, ...) {
 gg_minimal_vimp.rfsrc <- function(object, ...){
   
   if (inherits(object, "rfsrc") == TRUE){
-    vsel <- var.select(object, ...)
+    vsel <- randomForestSRC::var.select(object, ...)
   }else if (!is.null(object$varselect)) {
     # Test for variable selection minimal depth object
     vsel <- object

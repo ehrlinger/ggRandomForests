@@ -20,14 +20,14 @@
 #' 
 #' The sensitivity and specificity of a randomForests classification object. 
 #' 
-#' @param object an \code{randomForestSRC::rfsrc} classification object
+#' @param object an \code{\link[randomForestSRC]{rfsrc}} classification object
 #' @param which.outcome select the classification outcome of interest.
 #' @param oob use oob estimates (default TRUE)
 #' @param ... extra arguments (not used)
 #' 
 #' @return \code{gg_roc} \code{data.frame} for plotting ROC curves.
 #' 
-#' @seealso \code{\link{plot.gg_roc}} \code{randomForestSRC::rfsrc}
+#' @seealso \code{\link{plot.gg_roc}} \code{\link[randomForestSRC]{rfsrc}}
 #' 
 #' @examples
 #' ## ------------------------------------------------------------

@@ -52,7 +52,7 @@ This document is structured as a tutorial for building random forest for surviva
 %% \Issue{9}
 %% \Month{September}
 %% \Year{2004}
-%% \Submitdate{2004-09-29}
+\Submitdate{2015-04-06}
 %% \Acceptdate{2004-09-29}
 
 %% The address of (at least) one author should be given

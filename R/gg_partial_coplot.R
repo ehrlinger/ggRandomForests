@@ -1,12 +1,12 @@
 #' Data structures for stratified partial coplots
 #'
-#' @param object randomForestSRC::rfsrc object
+#' @param object \code{\link[randomForestSRC]{rfsrc}} object
 #' @param xvar list of partial plot variables
 #' @param groups vector of stratification variable.
 #' @param surv_type for survival random forests,  c("mort", "rel.freq", "surv", 
 #' "years.lost", "cif", "chf")
 #' @param time vector of time points for survival random forests partial plots.
-#' @param ... extra arguments passed to randomForestSRC::plot.variable function
+#' @param ... extra arguments passed to \code{\link[randomForestSRC]{plot.variable}} function
 #' 
 #' @return \code{gg_partial_coplot} object. An subclass of a 
 #' \code{\link{gg_partial_list}} object
@@ -111,7 +111,7 @@ gg_partial_coplot.rfsrc <- function(object,
   lng <- length(lvl)
   
   # Create the subsets for the plot.variable function
-  sbst <- mclapply(1:lng, function(ind){
+  sbst <- parallel::mclapply(1:lng, function(ind){
     st <- which(dta.train$group == levels(groups)[ind])
     if(length(st) == 0) NULL
     else st
@@ -145,13 +145,13 @@ gg_partial_coplot.rfsrc <- function(object,
   # This will return a list of subseted partial plots, one for each group, 
   # all variables in xvar.
   pdat.partlist <- lapply(1:length(sbst), function(ind){
-    plot.variable(object, surv.type=surv_type, time=time,
+    randomForestSRC::plot.variable(object, surv.type=surv_type, time=time,
                   subset = sbst[[ind]],
                   xvar.names=xvar, partial=TRUE, ...)
   })
   
   ## Make them all gg_partials.
-  gg_part <- mclapply(pdat.partlist, gg_partial)
+  gg_part <- parallel::mclapply(pdat.partlist, gg_partial)
   
   ## With the subsets marked for plotting
   for(ind in 1:length(gg_part)){

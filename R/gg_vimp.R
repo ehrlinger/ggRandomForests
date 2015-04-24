@@ -18,16 +18,17 @@
 #' Variable Importance (VIMP) data object
 #'
 #' \code{gg_vimp} Extracts the variable importance (VIMP) information from a
-#' a \code{randomForestSRC::rfsrc} object.
+#' a \code{\link[randomForestSRC]{rfsrc}} object.
 #' 
-#' @param object A \code{randomForestSRC::rfsrc} object or output from \code{randomForestSRC::vimp}
+#' @param object A \code{\link[randomForestSRC]{rfsrc}} object or output from 
+#' \code{\link[randomForestSRC]{vimp}}
 #' @param n_var select a number pf the highest VIMP variables to plot
-#' @param ... arguments passed to the \code{randomForestSRC::vimp.rfsrc} function if the 
-#' \code{randomForestSRC::rfsrc} object does not contain importance information.
+#' @param ... arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}} function if the 
+#' \code{\link[randomForestSRC]{rfsrc}} object does not contain importance information.
 #' 
 #' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order.
 #' 
-#' @seealso \code{\link{plot.gg_vimp}} \code{randomForestSRC::rfsrc} \code{randomForestSRC::vimp}
+#' @seealso \code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}} \code{\link[randomForestSRC]{vimp}}
 #' 
 #' @references 
 #' Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
@@ -100,7 +101,8 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
     warning("rfsrc object does not contain VIMP information. Calculating...")
-    gg_dta <- data.frame(sort(vimp(object)$importance, decreasing=TRUE))
+    gg_dta <- data.frame(sort(randomForestSRC::vimp(object)$importance, 
+                              decreasing=TRUE))
   }else{
     gg_dta <- data.frame(object$importance)
    
@@ -123,18 +125,24 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
       # test which.outcome specification
       if(!is.numeric(arg_set$which.outcome)){
         if(arg_set$which.outcome %in% colnames(gg_dta)){
-          gg_v <- data.frame(vimp=sort(gg_dta[,arg_set$which.outcome], decreasing=TRUE))
-          gg_v$vars <- rownames(gg_dta)[order(gg_dta[,arg_set$which.outcome], decreasing=TRUE)]
+          gg_v <- data.frame(vimp=sort(gg_dta[,arg_set$which.outcome], 
+                                       decreasing=TRUE))
+          gg_v$vars <- rownames(gg_dta)[order(gg_dta[,arg_set$which.outcome], 
+                                              decreasing=TRUE)]
         }else{
-          stop(paste("which.outcome naming is incorrect.", arg_set$which.outcome, 
+          stop(paste("which.outcome naming is incorrect.", 
+                     arg_set$which.outcome, 
                      "\nis not in", colnames(gg_dta)))
         }
       }else{
         if(arg_set$which.outcome < ncol(gg_dta)){
-          gg_v <- data.frame(vimp=sort(gg_dta[,arg_set$which.outcome + 1], decreasing=TRUE))
-          gg_v$vars <- rownames(gg_dta)[order(gg_dta[,arg_set$which.outcome + 1], decreasing=TRUE)]
+          gg_v <- data.frame(vimp=sort(gg_dta[,arg_set$which.outcome + 1], 
+                                       decreasing=TRUE))
+          gg_v$vars <- rownames(gg_dta)[order(gg_dta[,arg_set$which.outcome + 1], 
+                                              decreasing=TRUE)]
         }else{
-          stop(paste("which.outcome specified larger than the number of classes (+1).", arg_set$which.outcome, 
+          stop(paste("which.outcome specified larger than the number of classes (+1).", 
+                     arg_set$which.outcome, 
                      " >= ", ncol(gg_dta)))
         }
       }
@@ -144,7 +152,7 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
     }
     #clnms <- colnames(gg_dta)[-which(colnames(gg_dta)=="vars")]
     gg_dta <- gg_dta[1:n_var,]
-    gg_dta <- melt(gg_dta, id.vars="vars", 
+    gg_dta <- reshape2::melt(gg_dta, id.vars="vars", 
                    variable.name="set", value.name="vimp")
     gg_dta <- gg_dta[order(gg_dta$vimp, decreasing=TRUE),]
     gg_dta$vars <- factor(gg_dta$vars)
@@ -152,7 +160,8 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
     cnms <- colnames(gg_dta)
     gg_dta <- cbind(gg_dta, gg_dta / gg_dta[1,1])
     colnames(gg_dta) <- c(cnms, "rel_vimp")
-    gg_dta$vars[which(is.na(gg_dta$vars))] <- rownames(gg_dta)[which(is.na(gg_dta$vars))]
+    gg_dta$vars[which(is.na(gg_dta$vars))] <- 
+      rownames(gg_dta)[which(is.na(gg_dta$vars))]
     
     gg_dta <- gg_dta[1:n_var,]
     

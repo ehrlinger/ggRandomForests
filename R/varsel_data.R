@@ -1,7 +1,7 @@
-#' Cached \code{randomForestSRC::var.select} objects for examples, 
+#' Cached \code{\link[randomForestSRC]{var.select}} objects for examples, 
 #' diagnostics and vignettes.
 #'  
-#' Data sets storing \code{randomForestSRC::var.select} objects corresponding to 
+#' Data sets storing \code{\link[randomForestSRC]{var.select}} objects corresponding to 
 #' training data according to the following naming convention: 
 #'\itemize{
 #' \item \code{varsel_iris} - from a randomForestSR[C] for the \code{iris} data set. 
@@ -13,13 +13,13 @@
 #'   
 #' @details 
 #' Constructing minimal depth variable selection with the randomForestsSRC::var.select function
-#' is computationally expensive. We cache \code{randomForestSRC::var.select} objects
+#' is computationally expensive. We cache \code{\link[randomForestSRC]{var.select}} objects
 #' to improve the \code{ggRandomForests} examples, diagnostics and vignettes run times. 
 #' (see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
 #' 
-#' For each data set listed, we build a \code{randomForestSRC::rfsrc} 
+#' For each data set listed, we build a \code{\link[randomForestSRC]{rfsrc}}
 #' (see \code{\link{rfsrc_data}}), then calculate the minimal depth variable selection with 
-#' \code{randomForestSRC::var.select} function, setting \code{method="md"}. Each data set is 
+#' \code{\link[randomForestSRC]{var.select}} function, setting \code{method="md"}. Each data set is 
 #' built with the \code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version 
 #' listed in the \code{ggRandomForests} DESCRIPTION file.
 #' 
@@ -44,9 +44,9 @@
 #' 
 #' }
 #' 
-#' @seealso \code{iris} \code{MASS::Boston}
-#' \code{randomForestSRC::pbc}
-#' \code{randomForestSRC::var.select}
+#' @seealso \code{iris} \code{\link[MASS]{Boston}}
+#' \code{\link[randomForestSRC]{pbc}}
+#' \code{\link[randomForestSRC]{var.select}}
 #' \code{\link{rfsrc_data}}
 #'  \code{\link{rfsrc_cache_datasets}} 
 #'  \code{\link{gg_minimal_depth}} 
@@ -150,7 +150,7 @@
 #' @aliases varsel_data varsel_iris varsel_Boston varsel_pbc
 #' @docType data
 #' @keywords datasets
-#' @format \code{randomForestSRC::var.select} object
+#' @format \code{\link[randomForestSRC]{var.select}} object
 #' @name varsel_data
 #' @name varsel_iris
 #' @name varsel_Boston

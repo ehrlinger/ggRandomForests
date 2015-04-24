@@ -20,7 +20,7 @@
 #' Plot a \code{\link{gg_survival}}  object. 
 #' 
 #' @param x \code{\link{gg_survival}} or a survival \code{\link{gg_rfsrc}} object created from a 
-#' \code{randomForestSRC::rfsrc} object
+#' \code{\link[randomForestSRC]{rfsrc}} object
 #' 
 #' @param error "shade", "bars", "lines" or "none"
 #' @param type "surv", "cum_haz","hazard","density","mid_int", "life","proplife"

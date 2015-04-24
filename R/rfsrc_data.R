@@ -1,6 +1,6 @@
-#' Cached \code{randomForestSRC::rfsrc} objects for examples, diagnostics and vignettes.
+#' Cached \code{\link[randomForestSRC]{rfsrc}} objects for examples, diagnostics and vignettes.
 #'  
-#' Data sets storing \code{randomForestSRC::rfsrc} objects corresponding to 
+#' Data sets storing \code{\link[randomForestSRC]{rfsrc}} objects corresponding to 
 #' training data according to the following naming convention: 
 #'\itemize{
 #' \item \code{rfsrc_iris} - randomForestSR[C] for the \code{iris} data set. 
@@ -12,11 +12,11 @@
 #'   
 #' @details 
 #' Constructing random forests are computationally expensive.
-#' We cache \code{randomForestSRC::rfsrc} objects to improve the \code{ggRandomForests} 
+#' We cache \code{\link[randomForestSRC]{rfsrc}} objects to improve the \code{ggRandomForests} 
 #' examples, diagnostics and vignettes run times. 
 #' (see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
 #' 
-#' For each data set listed, we build a \code{randomForestSRC::rfsrc}. Tuning parameters used
+#' For each data set listed, we build a \code{\link[randomForestSRC]{rfsrc}}. Tuning parameters used
 #' in each case are documented in the examples. Each data set is built with the 
 #' \code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version listed
 #' in the \code{ggRandomForests} DESCRIPTION file.
@@ -41,9 +41,9 @@
 #' 312 observations (remaining 106 observations are held out).
 #' }
 #' 
-#' @seealso \code{iris} \code{MASS::Boston}
-#' \code{randomForestSRC::pbc} 
-#'  \code{randomForestSRC::rfsrc}
+#' @seealso \code{iris} \code{\link[MASS]{Boston}}
+#' \code{\link[randomForestSRC]{pbc}} 
+#'  \code{\link[randomForestSRC]{rfsrc}}
 #'  \code{\link{rfsrc_cache_datasets}} 
 #'  \code{\link{gg_rfsrc}} 
 #'  \code{\link{plot.gg_rfsrc}} 
@@ -161,7 +161,7 @@
 #' @aliases rfsrc_data rfsrc_iris rfsrc_Boston rfsrc_pbc rfsrc_pbc_test
 #' @docType data
 #' @keywords datasets
-#' @format \code{randomForestSRC::rfsrc} object
+#' @format \code{\link[randomForestSRC]{rfsrc}} object
 #' @name rfsrc_data
 #' @name rfsrc_iris
 #' @name rfsrc_Boston

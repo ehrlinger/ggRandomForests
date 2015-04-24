@@ -1,6 +1,6 @@
-#' Cached \code{randomForestSRC::plot.variable} objects for examples, diagnostics and vignettes.
+#' Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, diagnostics and vignettes.
 #'  
-#' Data sets storing \code{randomForestSRC::rfsrc} objects corresponding to 
+#' Data sets storing \code{\link[randomForestSRC]{rfsrc}} objects corresponding to 
 #' training data according to the following naming convention: 
 #'\itemize{
 #' \item \code{partial_coplot_Boston} - randomForestS[R]C for the \code{Boston} housing 
@@ -9,11 +9,11 @@
 #'   
 #' @details 
 #' Constructing random forests are computationally expensive.
-#' We cache \code{randomForestSRC::rfsrc} objects to improve the \code{ggRandomForests} 
+#' We cache \code{\link[randomForestSRC]{rfsrc}} objects to improve the \code{ggRandomForests} 
 #' examples, diagnostics and vignettes run times. 
 #' (see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
 #' 
-#' For each data set listed, we build a \code{randomForestSRC::rfsrc}. Tuning parameters used
+#' For each data set listed, we build a \code{\link[randomForestSRC]{rfsrc}}. Tuning parameters used
 #' in each case are documented in the examples. Each data set is built with the 
 #' \code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version listed
 #' in the \code{ggRandomForests} DESCRIPTION file.
@@ -25,7 +25,7 @@
 #' 
 #' }
 #' 
-#' @seealso \code{MASS::Boston} \code{randomForestSRC::plot.variable}
+#' @seealso \code{\link[MASS]{Boston}} \code{\link[randomForestSRC]{plot.variable}}
 #'  \code{\link{rfsrc_cache_datasets}}
 #'  
 #' @examples
@@ -86,7 +86,7 @@
 #' @aliases partial_coplot_data partial_coplot_Boston partial_coplot_Boston2 partial_coplot_pbc partial_coplot_pbc2
 #' @docType data
 #' @keywords datasets
-#' @format List of \code{randomForestSRC::plot.variable} objects
+#' @format List of \code{\link[randomForestSRC]{plot.variable}} objects
 #' @name partial_coplot_data
 #' @name partial_coplot_Boston
 #' @name partial_coplot_Boston2

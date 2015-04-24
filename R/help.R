@@ -20,7 +20,7 @@
 #' following advantages:
 #' \itemize{
 #' \item Separation of data and figures: \code{ggRandomForest} contains functions that 
-#' operate on either the \code{randomForestSRC::rfsrc} forest object directly, or on 
+#' operate on either the \code{\link[randomForestSRC]{rfsrc}} forest object directly, or on 
 #' the output from \code{randomForestSRC} post processing functions (i.e. 
 #' \code{plot.variable}, 
 #' \code{var.select}, 

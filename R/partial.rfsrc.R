@@ -323,11 +323,11 @@ partial.rfsrc <- function (x,
       newdata.x[, object$xvar.names == xvar.names[k]] <- rep(x.uniq[l], n)
       
       # Pull out the nomogram data for this x_v
-      yhat[[l]] <- extract.pred(predict.rfsrc(object, 
-                                              newdata.x, 
-                                              importance = "none"), 
-                                pred.type, 
-                                1:n, which.outcome)
+      yhat[[l]] <- randomForestSRC:::extract.pred(randomForestSRC::predict.rfsrc(object, 
+                                                                                 newdata.x, 
+                                                                                 importance = "none"), 
+                                                  pred.type, 
+                                                  1:n, which.outcome)
     }
     list(xvar.name = xvar.names[k], yhat = yhat, 
          yhat.se = yhat.se, n.x = n.x, x.uniq = x.uniq, 

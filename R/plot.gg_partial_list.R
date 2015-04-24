@@ -20,7 +20,7 @@
 #' Partial variable dependence plot, operates on a \code{gg_partial_list} object.
 #' 
 #' @description Generate a risk adjusted (partial) variable dependence plot. 
-#' The function plots the \code{randomForestSRC::rfsrc} response variable (y-axis) against
+#' The function plots the \code{\link[randomForestSRC]{rfsrc}} response variable (y-axis) against
 #' the covariate of interest (specified when creating the
 #'  \code{gg_partial_list} object).
 #' 
@@ -32,7 +32,7 @@
 #' 
 #' @return list of \code{ggplot} objects, or a single faceted \code{ggplot} object
 #' 
-#' @seealso \code{randomForestSRC::plot.variable} \code{\link{gg_partial}} 
+#' @seealso \code{\link[randomForestSRC]{plot.variable}} \code{\link{gg_partial}} 
 #' \code{\link{plot.gg_partial}} \code{\link{gg_variable}} 
 #' \code{\link{plot.gg_variable}} 
 #' 

@@ -1,7 +1,7 @@
-#' Cached \code{randomForestSRC::find.interaction} matrix objects for examples, 
+#' Cached \code{\link[randomForestSRC]{find.interaction}} matrix objects for examples, 
 #' diagnostics and vignettes.
 #'  
-#' Data sets storing \code{randomForestSRC::find.interaction} matrix objects corresponding to 
+#' Data sets storing \code{\link[randomForestSRC]{find.interaction}} matrix objects corresponding to 
 #' training data according to the following naming convention: 
 #'\itemize{
 #' \item \code{interaction_iris} - from a randomForestSR[C] for the \code{iris} data set. 
@@ -13,13 +13,13 @@
 #'   
 #' @details 
 #' Constructing the minimal depth interaction matrices on randomForestsSRC objects are 
-#' computationally expensive. We cache \code{randomForestSRC::find.interaction} matrix objects
+#' computationally expensive. We cache \code{\link[randomForestSRC]{find.interaction}} matrix objects
 #' to improve the \code{ggRandomForests} examples, diagnostics and vignettes run times. 
 #' (see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
 #' 
-#' For each data set listed, we build a \code{randomForestSRC::rfsrc} 
+#' For each data set listed, we build a \code{\link[randomForestSRC]{rfsrc}} 
 #' (see \code{\link{rfsrc_data}}), then calculate the minimal depth variable interaction 
-#' table with \code{randomForestSRC::find.interaction}. Each data set is built with the 
+#' table with \code{\link[randomForestSRC]{find.interaction}}. Each data set is built with the 
 #' \code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version listed
 #' in the \code{ggRandomForests} DESCRIPTION file.
 #' 
@@ -57,9 +57,9 @@
 #' with 6 covariates and 137 observations.
 #' }
 #' 
-#' @seealso \code{iris} \code{MASS::Boston}
-#' \code{randomForestSRC::pbc}
-#'  \code{randomForestSRC::find.interaction}
+#' @seealso \code{iris} \code{\link[MASS]{Boston}}
+#' \code{\link[randomForestSRC]{pbc}}
+#'  \code{\link[randomForestSRC]{find.interaction}}
 #'  \code{\link{rfsrc_data}}
 #'  \code{\link{rfsrc_cache_datasets}} 
 #'  \code{\link{gg_interaction}} 
@@ -160,7 +160,7 @@
 #' @aliases interaction_data interaction_iris interaction_Boston interaction_pbc
 #' @docType data
 #' @keywords datasets
-#' @format \code{randomForestSRC::find.interaction} matrix
+#' @format \code{\link[randomForestSRC]{find.interaction}} matrix
 #' @name interaction_data
 #' @name interaction_iris
 #' @name interaction_Boston

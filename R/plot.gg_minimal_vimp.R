@@ -17,9 +17,11 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' Plot a \code{\link{gg_minimal_vimp}} object for comparing the Minimal Depth and VIMP variable rankings.
+#' Plot a \code{\link{gg_minimal_vimp}} object for comparing the Minimal 
+#' Depth and VIMP variable rankings.
 #' 
-#' @param x \code{\link{gg_minimal_depth}} object created from a \code{randomForestSRC::var.select} 
+#' @param x \code{\link{gg_minimal_depth}} object created from a 
+#' \code{\link[randomForestSRC]{var.select}}
 #' object
 #' @param modelsize should the figure be restricted to a subset of the points.
 #' @param lbls a vector of alternative variable names.
@@ -30,7 +32,7 @@
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point labs geom_abline coord_flip scale_x_discrete
 #'
-#' @seealso \code{\link{gg_minimal_vimp}} \code{randomForestSRC::var.select}
+#' @seealso \code{\link{gg_minimal_vimp}} \code{\link[randomForestSRC]{var.select}}
 #'  
 #' @examples
 #' \dontrun{

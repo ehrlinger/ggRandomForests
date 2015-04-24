@@ -19,17 +19,17 @@
 #' @details The marginal variable dependence is determined by comparing relation
 #' between the predicted response from the randomforest and a covariate of interest.
 #' 
-#' The \code{gg_variable} function operates on a \code{randomForestSRC::rfsrc} object, 
-#' or the output from the \code{randomForestSRC::plot.variable} function.
+#' The \code{gg_variable} function operates on a \code{\link[randomForestSRC]{rfsrc}} object, 
+#' or the output from the \code{\link[randomForestSRC]{plot.variable}} function.
 #' 
-#' @description \code{randomForestSRC::plot.variable} generates a \code{data.frame}
+#' @description \code{\link[randomForestSRC]{plot.variable}} generates a \code{data.frame}
 #'  containing the marginal variable dependance or the partial variable dependence. 
 #'  The \code{gg_variable} function creates a \code{data.frame} of containing the 
 #'  full set of covariate data (predictor variables) and the predicted response for 
 #'  each observation. Marginal dependence figures are created using the 
 #'  \code{\link{plot.gg_variable}} function.
 #' 
-#' @param object a \code{randomForestSRC::rfsrc} object 
+#' @param object a \code{\link[randomForestSRC]{rfsrc}} object 
 #' @param time point (or vector of points) of interest (for survival forests only)
 #' @param time.labels If more than one time is specified, a vector of time.labels 
 #' for differentiating the time points (for survival forests only)
@@ -38,7 +38,7 @@
 #'  
 #' @return \code{gg_variable} object
 #' 
-#' @seealso  \code{\link{plot.gg_variable}} \code{randomForestSRC::plot.variable}
+#' @seealso  \code{\link{plot.gg_variable}} \code{\link[randomForestSRC]{plot.variable}}
 #' 
 #' @aliases gg_variable gg_variable.rfsrc
 #' 

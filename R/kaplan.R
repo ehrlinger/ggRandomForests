@@ -37,13 +37,15 @@ kaplan <- function(interval,
                    censor,
                    data, 
                    by=NULL, ...){
+  srv <- survival::Surv(time=data[,interval], event=data[,censor])
   
   # Kaplan-Meier analysis
-  srv <- Surv(time=data[,interval], event=data[,censor])
   if(is.null(by)){
-    srv_tab <- survfit(srv ~ 1,data, ...)
+    srv_tab <- survival::survfit(srv ~ 1, ...)
+    
   }else{
-    srv_tab <- survfit(srv ~ strata(data[,by]),data, ...)
+    srv_tab <- survival::survfit(srv ~ survival::strata(data[,by]), ...)
+    
   }
   #
   # OR for stratification on 

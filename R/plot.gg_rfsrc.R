@@ -19,14 +19,14 @@
 #' Predicted response plot from a \code{\link{gg_rfsrc}} object.
 #' 
 #' Plot the predicted response from a \code{\link{gg_rfsrc}} object, the 
-#' \code{randomForestSRC::rfsrc} prediction, using the OOB prediction from the forest.
+#' \code{\link[randomForestSRC]{rfsrc}} prediction, using the OOB prediction from the forest.
 #'  
-#' @param x \code{\link{gg_rfsrc}} object created from a \code{randomForestSRC::rfsrc} object
+#' @param x \code{\link{gg_rfsrc}} object created from a \code{\link[randomForestSRC]{rfsrc}} object
 #' @param ... arguments passed to \code{\link{gg_rfsrc}}.
 #' 
 #' @return \code{ggplot} object
 #' 
-#' @seealso \code{\link{gg_rfsrc}} \code{randomForestSRC::rfsrc}
+#' @seealso \code{\link{gg_rfsrc}} \code{\link[randomForestSRC]{rfsrc}}
 #' 
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
