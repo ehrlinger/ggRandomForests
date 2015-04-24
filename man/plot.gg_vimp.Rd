@@ -8,11 +8,13 @@
 \method{plot}{gg_vimp}(x, relative, lbls, ...)
 }
 \arguments{
-\item{x}{\code{\link{gg_vimp}} object created from a \code{\link[randomForestSRC]{rfsrc}} object}
+\item{x}{\code{\link{gg_vimp}} object created from a
+\code{\link[randomForestSRC]{rfsrc}} object}
 
 \item{relative}{should we plot vimp or relative vimp. Defaults to vimp.}
 
-\item{lbls}{A vector of alternative variable names.}
+\item{lbls}{A vector of alternative variable labels. Item names should be
+the same as the variable names.}
 
 \item{...}{optional arguments passed to gg_vimp if necessary}
 }

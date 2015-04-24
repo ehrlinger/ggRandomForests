@@ -120,6 +120,12 @@ plot.gg_minimal_depth <- function(x, selection=FALSE,
     gg_dta <- gg_minimal_depth(x, ...)
   }
   type <- match.arg(type)
+  arg_set <- as.list(substitute(list(...)))[-1L]
+    
+  if(!is.null(arg_set$nvar)){
+    if(is.numeric(arg_set$nvar) & arg_set$nvar > 1)
+      gg_dta <- gg_dta[1:arg_set$nvar,]
+  }  
   
   xl <- c(0,ceiling(max(gg_dta$varselect$depth)) + 1)
   sel.th <- gg_dta$md.obj$threshold
