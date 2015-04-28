@@ -1185,6 +1185,14 @@ alb_partial_pts <-quantile_pts(ggvar$albumin, groups = 50)
 
 # Load the stored partial coplot data.
 # See ?partial_pbc_surf for how this data was generated.
+#
+# partial_pbc_surf <- lapply(alb_partial_pts, function(ct){
+#    rfsrc_pbc$xvar$albumin <- ct
+#     plot.variable(rfsrc_pbc, xvar = "bili", time = 1,
+#                   npts = 50, show.plots = FALSE,
+#                   partial = TRUE, surv.type="surv")
+# })
+#
 data(partial_pbc_surf)
 
 # Instead of groups, we want the raw albumin point values,
