@@ -2,6 +2,8 @@ ggRandomForests: Visually Exploring Random Forests
 ========================================================
 [![DOI](https://zenodo.org/badge/5745/ehrlinger/ggRandomForests.png)](http://dx.doi.org/10.5281/zenodo.11526)
 
+[![wercker status](https://app.wercker.com/status/f2e2a5c349f8e2643ecd8cd78689fe25/m "wercker status")](https://app.wercker.com/project/bykey/f2e2a5c349f8e2643ecd8cd78689fe25)
+
 [![Build Status](https://travis-ci.org/ehrlinger/ggRandomForests.svg?branch=master)](https://travis-ci.org/ehrlinger/ggRandomForests)
 [![Coverage Status](https://coveralls.io/repos/ehrlinger/ggRandomForests/badge.svg?branch=master)](https://coveralls.io/r/ehrlinger/ggRandomForests?branch=master)
 
