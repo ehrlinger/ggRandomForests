@@ -93,9 +93,13 @@ plot.gg_vimp <- function(x, relative, lbls, ...){
     # Classification...
   arg_set <- as.list(substitute(list(...)))[-1L]
   
+  nvar <- nrow(gg_dta)
   if(!is.null(arg_set$nvar)){
     if(is.numeric(arg_set$nvar) & arg_set$nvar > 1){
-    gg_dta <- gg_dta[1:arg_set$nvar,]
+      if(arg_set$nvar < nrow(gg_dta)){
+        nvar <- arg_set$nvar 
+        gg_dta <- gg_dta[1:nvar,]
+      }
   }}
   
   gg_plt <- ggplot(gg_dta)

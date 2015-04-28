@@ -113,6 +113,12 @@ test_that("gg_vimp survival",{
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta, nvar=5)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
   expect_is(plot(gg_dta, relative=TRUE), "ggplot")
   
   # Test cutting the size down
