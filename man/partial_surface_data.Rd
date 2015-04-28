@@ -86,7 +86,7 @@ system.time(partial_pbc_time <- lapply(time_cts, function(ct){
 # 2561.313   81.446 2641.707
 
 # Find the quantile points to create 50 cut points
-alb_partial_pts <-quantile_pts(ggvar$albumin, groups = 50)
+alb_partial_pts <-quantile_pts(rfsrc_pbc$xvar$albumin, groups = 50)
 
 system.time(partial_pbc_surf <- lapply(alb_partial_pts, function(ct){
   rfsrc_pbc$xvar$albumin <- ct

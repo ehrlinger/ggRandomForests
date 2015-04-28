@@ -112,4 +112,9 @@ test_that("gg_error regression",{
   # Test the exception for input
   expect_error(gg_error(gg_plt))
   
+  ## Create the correct gg_error object
+  gg_dta <- gg_error(rfsrc_Boston, training=TRUE)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_error")
 })

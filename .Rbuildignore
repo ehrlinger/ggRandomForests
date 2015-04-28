@@ -3,6 +3,7 @@
 ^\.Rproj\.user$
 cran-comments.md
 .travis.yml
+wercker.yml
 .coveralls.yml
 ^packrat/
 ^\.Rprofile$

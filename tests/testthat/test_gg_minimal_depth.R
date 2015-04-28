@@ -29,7 +29,7 @@ test_that("gg_minimal_depth classifications",{
   expect_is(gg_plt, "ggplot")
   
   expect_error(gg_minimal_depth(gg_plt))
-  
+  expect_error(gg_minimal_depth.rfsrc(gg_plt))
 })
 
 

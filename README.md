@@ -4,8 +4,8 @@ ggRandomForests: Visually Exploring Random Forests
 
 [![wercker status](https://app.wercker.com/status/f2e2a5c349f8e2643ecd8cd78689fe25/m "wercker status")](https://app.wercker.com/project/bykey/f2e2a5c349f8e2643ecd8cd78689fe25)
 
-[![Coverage Status](https://coveralls.io/repos/ehrlinger/ggRandomForests/badge.svg?branch=master)](https://coveralls.io/r/ehrlinger/ggRandomForests?branch=master)
- 
+[![codecov.io](https://codecov.io/github/ehrlinger/ggRandomForests/coverage.svg?branch=master)](https://codecov.io/github/ehrlinger/ggRandomForests?branch=master)
+
 [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests)  will help uncover variable associations in the random forests models. The package is designed for use with the [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) package (Iswaran et.al. 2014, 2008, 2007) for survival, regression and classification random forests and uses the [ggplot2](http://CRAN.R-project.org/package=ggplot2) package (Wickham 2009) for plotting diagnostic and variable association results. [ggRandomForests](http://CRAN.R-project.org/package=ggRandomForests) is  structured to extract data objects from [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) objects and provides S3 functions for printing and plotting these objects.
  
 The [randomForestSRC](http://CRAN.R-project.org/package=randomForestSRC) package provides a unified treatment of Breiman's (2001) random forests for a variety of data settings. Regression and classification forests are grown when the response is numeric or categorical (factor) while survival and competing risk forests (Ishwaran et al. 2008, 2012) are grown for right-censored survival data.
