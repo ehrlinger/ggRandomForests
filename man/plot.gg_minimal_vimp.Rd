@@ -5,14 +5,14 @@
 \title{Plot a \code{\link{gg_minimal_vimp}} object for comparing the Minimal
 Depth and VIMP variable rankings.}
 \usage{
-\method{plot}{gg_minimal_vimp}(x, modelsize, lbls, ...)
+\method{plot}{gg_minimal_vimp}(x, nvar, lbls, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_minimal_depth}} object created from a
 \code{\link[randomForestSRC]{var.select}}
 object}
 
-\item{modelsize}{should the figure be restricted to a subset of the points.}
+\item{nvar}{should the figure be restricted to a subset of the points.}
 
 \item{lbls}{a vector of alternative variable names.}
 
@@ -48,10 +48,8 @@ plot(gg_dta)
 ## Regression example
 ## ------------------------------------------------------------
 ## -------- air quality data
-# rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-# varsel_airq <- var.select(rfsrc_airq)
-# ... or load a cached randomForestSRC object
-data(varsel_airq, package="ggRandomForests")
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+varsel_airq <- var.select(rfsrc_airq)
 
 # Get a data.frame containing error rates
 gg_dta<- gg_minimal_vimp(varsel_airq)

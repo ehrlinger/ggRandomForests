@@ -1,5 +1,7 @@
 ggRandomForests: Visually Exploring Random Forests
 ========================================================
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggRandomForests)](http://cran.r-project.org/web/packages/ggRandomForests)
+
 [![DOI](https://zenodo.org/badge/5745/ehrlinger/ggRandomForests.png)](http://dx.doi.org/10.5281/zenodo.11526)
 
 [![wercker status](https://app.wercker.com/status/f2e2a5c349f8e2643ecd8cd78689fe25/m "wercker status")](https://app.wercker.com/project/bykey/f2e2a5c349f8e2643ecd8cd78689fe25)
