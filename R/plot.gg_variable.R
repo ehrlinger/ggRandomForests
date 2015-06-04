@@ -110,9 +110,8 @@
 #' ## ------------------------------------------------------------
 #' ## -------- veteran data
 #' ## survival
-#' # data(veteran, package = "randomForestSRC")
-#' # rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
-#' data(rfsrc_veteran, package="ggRandomForests")
+#' data(veteran, package = "randomForestSRC")
+#' rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
 #' 
 #' # get the 1 year survival time.
 #' gg_dta <- gg_variable(rfsrc_veteran, time=90)
@@ -140,12 +139,15 @@
 #' 
 #' @export
 plot.gg_variable <- function(x, xvar, 
-                            time, time_labels, 
-                            panel=FALSE,
-                            oob=TRUE, smooth=TRUE,  ...){
+                             time, time_labels, 
+                             panel=FALSE,
+                             oob=TRUE, smooth=TRUE,  ...){
   gg_dta <- x 
+  
+  # I don't think this will work with latest S3 models. 
   if(inherits(x, "rfsrc")) gg_dta <- gg_variable(x, ...)
   
+  # Set the family to decide how to plot the data.
   family <- "class"
   if(inherits(gg_dta, "surv")){
     family <- "surv"
@@ -153,6 +155,10 @@ plot.gg_variable <- function(x, xvar,
     family <- "regr"
   }
   
+  # These may be dangerous because they work on column names only.
+  if(sum(colnames(gg_dta) == "cens") != 0) family <- "surv"
+  
+  # Same here, but it's how I know there are multiple classes right now.
   if(length(grep("yhat.", colnames(gg_dta))) > 0){
     # We have a classification forest with multiple outcomes.
     if(length(grep("yhat.", colnames(gg_dta))) == 2){
@@ -167,7 +173,7 @@ plot.gg_variable <- function(x, xvar,
       gg2 <- mclapply(1:ncol(gg_dta_y),
                       function(ind){
                         cbind(gg_dta_x, yhat=gg_dta_y[,ind], outcome=ind)
-                        })
+                      })
       gg3 <- do.call(rbind,gg2)
       gg3$outcome <- factor(gg3$outcome)
       gg_dta <- gg3 
@@ -175,38 +181,67 @@ plot.gg_variable <- function(x, xvar,
     # print(gg_dta)
   }
   
-  if(sum(colnames(gg_dta) == "cens") != 0) family <- "surv"
-  
+  # If we don't know what to plot...
   if(missing(xvar)){
     # We need to remove response variables here
     cls <- c(grep("yhat", colnames(gg_dta)),
-             grep("cens", colnames(gg_dta)))
+             grep("cens", colnames(gg_dta)),
+             grep("time", colnames(gg_dta))
+    )
     xvar <- colnames(gg_dta)[-cls]
   }
   
   lng <- length(xvar)
   
-  # For now, we only plot survival families as panels. 
-  if(panel){
-    
+  # Predictor variables
+  wch_x_var <- which(colnames(gg_dta) %in% xvar)
+  
+  # Two types of variables, categorical and continuous.
+  # By default, if there are less than 10 unique values, 
+  # assume categorical.
+  for(ind in 1:ncol(gg_dta)){
+    if(!is.factor(gg_dta[, ind])){
+      if(length(unique(gg_dta[which(!is.na(gg_dta[, ind])), ind])) <= 2) {
+        if(sum(range(gg_dta[, ind], na.rm = TRUE) ==  c(0, 1)) ==  2){
+          gg_dta[, ind] <- as.logical(gg_dta[, ind])
+        }
+      }
+    }else{
+      if(length(unique(gg_dta[which(!is.na(gg_dta[, ind])), ind])) <= 2) {
+        if(sum(sort(unique(gg_dta[, ind])) ==  c(0, 1)) ==  2){
+          gg_dta[, ind] <- as.logical(gg_dta[, ind])
+        }
+        if(sum(sort(unique(gg_dta[, ind])) ==  c(FALSE, TRUE)) ==  2){
+          gg_dta[, ind] <- as.logical(gg_dta[, ind])
+        }
+      }
+    }
+    if(!is.logical(gg_dta[, ind]) & 
+       length(unique(gg_dta[which(!is.na(gg_dta[, ind])), ind])) <= 10) {
+      gg_dta[, ind] <- factor(gg_dta[, ind])
+    }
+  }
+  
+  # Check for categorical X values...
+  ccls <- sapply(gg_dta, class)
+  ccls[which(ccls == "integer")] <- "numeric"
+  
+  if(panel){  
+    # The different families are driven by the response variables.
     ## Survival plots
     if(family == "surv"){
-      #variable <- value <- time <- yhat <- cens <- NA
-      ## Create a panel plot
-      wch_x_var <- which(colnames(gg_dta) %in% xvar)
-      
+      ## response variables.
       wch_y_var <- which(colnames(gg_dta) %in% c("cens", "yhat", "time"))
       
-      # Check for categorical X values...
-      ccls <- sapply(gg_dta[,wch_x_var], class)
-      ccls[which(ccls=="logical")] <- "factor"
       
+      # Handle categorical and continuous differently...
       gg_dta.mlt <- melt(gg_dta[,c(wch_y_var, wch_x_var)], id.vars=c("time","yhat","cens"))
       
       gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
       gg_plt <- ggplot(gg_dta.mlt)
       
-      if(sum(ccls == "factor") < length(ccls)){
+      # If these are all continuous...
+      if(sum(ccls[wch_x_var] == "numeric") == length(wch_x_var)){
         gg_plt <- gg_plt +
           labs(y= "Survival") +
           geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
@@ -214,15 +249,23 @@ plot.gg_variable <- function(x, xvar,
         
         if(smooth){
           gg_plt <- gg_plt +
-            geom_smooth(aes_string(x="value", y="yhat"), color="black", linetype=2,...)
+            geom_smooth(aes_string(x="value", y="yhat"), color="black", linetype=2, se=FALSE,...)
+          
+          # If we want a CL, we have to calculate them here.
+          
+          
         }
         
       }else{
+        # Check if there are numberic variables here...
+        if(sum(ccls[wch_x_var] == "numeric") > 0)
+          warning("Mismatched variable types... assuming these are all factor variables.")
+        
         gg_plt<- gg_plt +
-          geom_jitter(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
-                      ...) +
           geom_boxplot(aes_string(x="value", y="yhat"), color="grey", 
-                       ..., outlier.shape = NA)
+                       ..., outlier.shape = NA) +
+          geom_jitter(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
+                      ...) 
         
       }
       
@@ -241,13 +284,7 @@ plot.gg_variable <- function(x, xvar,
       # Panels for 
       # This will work for regression and binary classification... maybe.
       ## Create a panel plot
-      wch_x_var <- which(colnames(gg_dta) %in% xvar)
-      
       wch_y_var <- which(colnames(gg_dta) %in% c("yhat"))
-      
-      # Check for categorical X values...
-      ccls <- sapply(gg_dta[,wch_x_var], class)
-      ccls[which(ccls=="logical")] <- "factor"
       
       if(family=="class"){
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta)=="yvar"))
@@ -257,10 +294,12 @@ plot.gg_variable <- function(x, xvar,
         gg_dta.mlt <- melt(gg_dta[,c(wch_y_var, wch_x_var)], id.vars="yhat")
         
       }
+      
       gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
       
       gg_plt <- ggplot(gg_dta.mlt)
-      if(sum(ccls == "factor") < length(ccls)){
+      # If these are all continuous...
+      if(sum(ccls[wch_x_var] == "numeric") == length(wch_x_var)){
         if(family=="class"){
           gg_plt <- gg_plt +
             geom_point(aes_string(x="value", y="yhat", color="yvar", shape="yvar"), ...)
@@ -269,6 +308,11 @@ plot.gg_variable <- function(x, xvar,
             geom_point(aes_string(x="value", y="yhat"), ...)
         }
       }else{
+        
+        # Check if there are numberic variables here...
+        if(sum(ccls[wch_x_var] == "numeric") > 0)
+          warning("Mismatched variable types... assuming these are all factor variables.")
+        
         if(family=="class"){
           gg_plt <- gg_plt +
             geom_boxplot(aes_string(x="value", y="yhat", color="yvar"), ...)
@@ -287,8 +331,9 @@ plot.gg_variable <- function(x, xvar,
                    scales="free_x") +
         labs(x="")
     }
+    
   }else{
-    # Plot or list of plots.
+    # Don't want a panel, but a single plot or list of plots.
     gg_plt <- vector("list", length=lng)
     
     for(ind in 1:lng){
@@ -296,17 +341,16 @@ plot.gg_variable <- function(x, xvar,
       h_name <- colnames(gg_dta)[ch_indx]
       colnames(gg_dta)[ch_indx] <- "var"
       ccls <- class(gg_dta[,"var"])
+      ccls[which(ccls == "integer")] <- "numeric"
       
-      # Check for logicals...
-      if(length(unique(gg_dta[,"var"])) < 3 & ccls =="numeric" ){
-        ccls <- "logical"
-        gg_dta[,"var"] <- as.logical(gg_dta[,"var"])
-      } 
+      cat(ind, "\t", h_name, "\t", ccls, "\n")
+      
       gg_plt[[ind]] <- ggplot(gg_dta)
       
       if(family == "surv"){
         gg_plt[[ind]] <- gg_plt[[ind]]+
           labs(x=h_name, y= "Survival")
+        
         if(ccls=="numeric"){
           gg_plt[[ind]] <- gg_plt[[ind]]+
             geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
@@ -314,14 +358,17 @@ plot.gg_variable <- function(x, xvar,
           
           if(smooth){
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_smooth(aes_string(x="var", y="yhat"), color="black", linetype=2, ...)
+              geom_smooth(aes_string(x="var", y="yhat"), color="black", linetype=2, se=FALSE, ...)
+            
+            # If we want a CL, we have to calculate them here.
+            
           }
         }else{
           gg_plt[[ind]] <- gg_plt[[ind]] +
-            geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
-                        ...) +
             geom_boxplot(aes_string(x="var", y="yhat"), color="black",
-                         ..., outlier.shape = NA)
+                         ..., outlier.shape = NA)+
+            geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+                        ...)
           
         }
         if(length(levels(gg_dta$time)) > 1){
@@ -390,9 +437,11 @@ plot.gg_variable <- function(x, xvar,
             geom_jitter(aes_string(x="var", y="yhat"), 
                         ...)
         }
-        # Replace the original colname
-        colnames(gg_dta)[ch_indx] <- h_name
       }
+      
+      # Replace the original colname
+      colnames(gg_dta)[ch_indx] <- h_name
+      
     }
     if(lng == 1) gg_plt <- gg_plt[[1]]
   }    

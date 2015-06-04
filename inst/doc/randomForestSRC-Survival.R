@@ -48,7 +48,7 @@ strCol <- brewer.pal(3, "Set1")[c(2,1,3)]
 #  vignette("randomForestSRC-Survival", package = "ggRandomForests")
 
 ## ----datastep, echo=TRUE----------------------------------------------------------------
-data(pbc, package = "randomForestSRC")
+data("pbc", package = "randomForestSRC")
 
 ## ----data-clean-------------------------------------------------------------------------
 library("reshape2")        # Transforming wide data into long data (melt)
@@ -254,7 +254,7 @@ kable(fleming.table,
 # rfsrc grow block above. We set the chunk argument 
 # "echo=FALSE" above so this code does not show up 
 # in the manuscript.
-data(rfsrc_pbc, package = "ggRandomForests")
+data("rfsrc_pbc", package = "ggRandomForests")
 rfsrc_pbc
 
 ## ----errorPlot, fig.cap="Random forest OOB prediction error estimates as a function of the number of trees in the forest.", echo=TRUE----
@@ -290,7 +290,7 @@ plot(gg_rfsrc(rfsrc_pbc, by="treatment")) +
 
 ## ----predict-load, echo=FALSE-----------------------------------------------------------
 # Predict survival for 106 patients not in randomized trial
-data(rfsrc_pbc_test, package="ggRandomForests")
+data("rfsrc_pbc_test", package="ggRandomForests")
 # Print prediction summary  
 rfsrc_pbc_test
 
@@ -316,7 +316,7 @@ ggda <- gg_vimp(rfsrc_pbc)
 #  print(gg_md)
 
 ## ----mindepth-load----------------------------------------------------------------------
-data(varsel_pbc, package = "ggRandomForests")
+data("varsel_pbc", package = "ggRandomForests")
 gg_md <- gg_minimal_depth(varsel_pbc)
 gg_md
 
@@ -441,11 +441,11 @@ time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
 time_cts <-quantile_pts(time_pts, groups = 50)
 
 # Load the stored partial coplot data.
-data(partial_pbc_time)
+data("partial_pbc_time")
 
 # We need to attach the time points of interest to our data.
 time.tmp <- do.call(c,lapply(time_cts, 
-                               function(grp){rep(grp, 50)}))
+                             function(grp){rep(grp, 50)}))
 
 # Convert the list of plot.variable output to gg_partial
 partial_time <- do.call(rbind,lapply(partial_pbc_time, gg_partial))
@@ -466,7 +466,7 @@ surf3D(x = srf$x, y = srf$y, z = srf$z, col = heat.colors(25),
        shade = 0.5, expand = 0.5, theta=110, phi=15,
        lighting = TRUE, lphi = -50, ticktype="detailed",
        ylab = "Bilirubin", xlab = "Time", zlab = "Survival"
-       )
+)
 
 # Extract the 1 and 3 year points.
 # Find the indices of the points closest in time
@@ -478,8 +478,8 @@ indx[[2]] <- which(abs(srf$x - 3) < t.pts[2]+1.e-5)
 # Generate curves along 1 and 3 year partial dependence 
 alt <- lapply(indx, function(ind){
   lines3D(x=srf$x[ind], y=srf$y[ind],z=srf$z[ind],
-           add=TRUE, col="blue", lwd=6)
-  })
+          add=TRUE, col="blue", lwd=6)
+})
 
 ## ----var_dep, echo=TRUE, fig.cap="Variable dependence of survival at 1 year against \\code{bili} variable. Reproduction of top panel of Figure~\\ref{fig:variable-plotbili} with a linear smooth to indicate trend."----
 # Get variable dependence at 1 year
@@ -554,7 +554,7 @@ plot(ggvar, xvar = "albumin",
 
 ## ----load-pbc-coplot, echo=FALSE--------------------------------------------------------
 # Load cached partial plot data
-data(partial_coplot_pbc, package = "ggRandomForests")
+data("partial_coplot_pbc", package = "ggRandomForests")
 
 ## ----bili-albumin, fig.cap="Partial dependence coplot of survival at 1 year against \\code{bili}, conditional on \\code{albumin} interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=TRUE----
 plot(partial_coplot_pbc, se = FALSE)+
@@ -564,7 +564,7 @@ plot(partial_coplot_pbc, se = FALSE)+
 
 ## ----albumin-bili, fig.cap="Partial dependence coplot of survival at 1 year against \\code{albumin}, conditional on \\code{bili} interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=FALSE----
 # Load cached partial plot data
-data(partial_coplot_pbc2, package = "ggRandomForests")
+data("partial_coplot_pbc2", package = "ggRandomForests")
 
 # Partial coplot
 plot(partial_coplot_pbc2, se = FALSE)+
@@ -577,7 +577,7 @@ plot(partial_coplot_pbc2, se = FALSE)+
 alb_partial_pts <-quantile_pts(ggvar$albumin, groups = 50)
 
 # Load the stored partial coplot data.
-data(partial_pbc_surf)
+data("partial_pbc_surf")
 
 # Instead of groups, we want the raw albumin point values,
 # To make the dimensions match, we need to repeat the values
@@ -638,6 +638,12 @@ st <- lapply(indx, function(ind){
 #  
 #  # Load stored data from the package.
 #  # See ?partial_pbc_time for how this data was generated.
+#  #
+#  # Time surfaces are created with the partial.rfsrc command
+#  # partial_pbc_time <- partial.rfsrc(rfsrc_pbc, xvar = "bili",sav
+#  #                                   npts = 50, show.plots = FALSE,
+#  #                                   surv.type="surv")
+#  #
 #  load(partial_pbc_time, package="ggRandomForests")
 #  
 #  # We need to attach the time points of interest to our data.
@@ -727,7 +733,15 @@ st <- lapply(indx, function(ind){
 #  
 #  # Load the stored partial coplot data.
 #  # See ?partial_pbc_surf for how this data was generated.
-#  data(partial_pbc_surf)
+#  #
+#  # partial_pbc_surf <- lapply(alb_partial_pts, function(ct){
+#  #    rfsrc_pbc$xvar$albumin <- ct
+#  #     plot.variable(rfsrc_pbc, xvar = "bili", time = 1,
+#  #                   npts = 50, show.plots = FALSE,
+#  #                   partial = TRUE, surv.type="surv")
+#  # })
+#  #
+#  data("partial_pbc_surf")
 #  
 #  # Instead of groups, we want the raw albumin point values,
 #  # To make the dimensions match, we need to repeat the values

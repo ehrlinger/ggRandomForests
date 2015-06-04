@@ -98,9 +98,8 @@ plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb") ,panel=TRUE)
 ## ------------------------------------------------------------
 ## -------- veteran data
 ## survival
-# data(veteran, package = "randomForestSRC")
-# rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
-data(rfsrc_veteran, package="ggRandomForests")
+data(veteran, package = "randomForestSRC")
+rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
 
 # get the 1 year survival time.
 gg_dta <- gg_variable(rfsrc_veteran, time=90)

@@ -40,7 +40,7 @@ Random forest~\citep{Breiman:2001} (RF) is a non-parametric statistical method r
 
 Predictive accuracy makes RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package, tools for visually understand random forest models grown in \proglang{R}~\citep{rcore} with the \pkg{randomForestSRC} package. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2}~\citep{Wickham:2009} graphics package.
 
-This document is structured as a tutorial for building random forest for survival with the \pkg{randomForestSRC} package and using the \pkg{ggRandomForests} package for investigating how the forest is constructed. We analyse the Primary Biliary Cirrhosis (PBC) of the liver data from a clinical trial at the Mayo Clinic~\citep{fleming:1991}. We demonstrate random forest variable selection using Variable Importance (VIMP)~\citep{Breiman:2001} and Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest. We will also demonstrate the use of variable dependence and partial dependence plots~\citep{Friedman:2000} to aid in the interpretation of RSF results. We then examine variable interactions between covariates using conditional variable dependence plots. Our aim is to demonstrate the strength of using Random Forest methods for both prediction and information retrieval, specifically in time to event data settings.
+This document is structured as a tutorial for building random forest for survival with the \pkg{randomForestSRC} package and using the \pkg{ggRandomForests} package for investigating how the forest is constructed. We analyse the Primary Biliary Cirrhosis of the liver data from a clinical trial at the Mayo Clinic~\citep{fleming:1991}. We demonstrate random forest variable selection using Variable Importance (VIMP)~\citep{Breiman:2001} and Minimal Depth~\citep{Ishwaran:2010}, a property derived from the construction of each tree within the forest. We will also demonstrate the use of variable dependence and partial dependence plots~\citep{Friedman:2000} to aid in the interpretation of RSF results. We then examine variable interactions between covariates using conditional variable dependence plots. Our aim is to demonstrate the strength of using Random Forest methods for both prediction and information retrieval, specifically in time to event data settings.
 }
 \Keywords{random forest, survival, VIMP, minimal depth, \proglang{R}, \pkg{randomForestSRC}}
 \Plainkeywords{random forest, survival, VIMP, minimal depth, R, randomForestSRC}
@@ -52,7 +52,7 @@ This document is structured as a tutorial for building random forest for surviva
 %% \Issue{9}
 %% \Month{September}
 %% \Year{2004}
-%% \Submitdate{2004-09-29}
+\Submitdate{2015-04-06}
 %% \Acceptdate{2004-09-29}
 
 %% The address of (at least) one author should be given
@@ -156,7 +156,7 @@ Predictive accuracy make RF an attractive alternative to parametric models, thou
 
 Many of the figures created by the \pkg{ggRandomForests} package are also available directly from within the \pkg{randomForestSRC} package. However \pkg{ggRandomForests} offers the following advantages:
 \begin{itemize}
-\item Separation of data and figures: \pkg{ggRandomForests} contains functions that  operate on either the \code{rfsrc} forest object directly, or on the output from \pkg{randomForestSRC} post processing functions (i.e. \code{plot.variable}, \code{var.select}) to generate intermediate \pkg{ggRandomForests} data objects. \pkg{ggRandomForests} functions are provide to further process these objects and plot results using the \pkg{ggplot2} graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.  
+\item Separation of data and figures: \pkg{ggRandomForests} contains functions that  operate on either the \code{rfsrc} forest object directly, or on the output from \pkg{randomForestSRC} post processing functions (i.e., \code{plot.variable}, \code{var.select}) to generate intermediate \pkg{ggRandomForests} data objects. \pkg{ggRandomForests} functions are provide to further process these objects and plot results using the \pkg{ggplot2} graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.  
 
 \item Each data object/figure is a single, self contained unit. This allows simple modification and manipulation of the data or \code{ggplot} objects to meet users specific needs and requirements. 
 
@@ -175,7 +175,7 @@ We then graphically examine forest variable interactions with the use of variabl
 
 The \emph{primary biliary cirrhosis} of the  liver (PBC) study consists of 424 PBC patients referred to Mayo Clinic between 1974 and 1984 who met eligibility criteria for a randomized placebo controlled trial of the drug D-penicillamine (DPCA). The data is described in~\cite[Chapter 0.2]{fleming:1991} and a partial likelihood model (Cox proportional hazards) is developed in Chapter 4.4. The \code{pbc} data set, included in the \pkg{randomForestSRC} package, contains 418 observations, of which 312 patients participated in the randomized trial~\cite[Appendix D]{fleming:1991}. 
 <<datastep, echo=TRUE>>= 
-data(pbc, package = "randomForestSRC")
+data("pbc", package = "randomForestSRC")
 @
 
 <<data-clean>>= 
@@ -436,7 +436,7 @@ rfsrc_pbc
 # rfsrc grow block above. We set the chunk argument 
 # "echo=FALSE" above so this code does not show up 
 # in the manuscript.
-data(rfsrc_pbc, package = "ggRandomForests")
+data("rfsrc_pbc", package = "ggRandomForests")
 rfsrc_pbc
 @
 
@@ -510,7 +510,7 @@ rfsrc_pbc_test
 @
 <<predict-load, echo=FALSE>>= 
 # Predict survival for 106 patients not in randomized trial
-data(rfsrc_pbc_test, package="ggRandomForests")
+data("rfsrc_pbc_test", package="ggRandomForests")
 # Print prediction summary  
 rfsrc_pbc_test
 @
@@ -572,7 +572,7 @@ print(gg_md)
 @
 
 <<mindepth-load>>= 
-data(varsel_pbc, package = "ggRandomForests")
+data("varsel_pbc", package = "ggRandomForests")
 gg_md <- gg_minimal_depth(varsel_pbc)
 gg_md
 @
@@ -769,7 +769,7 @@ Partial dependence is an extrapolation operation. By averaging over a series of 
 
 \subsection{Partial Dependence in the Time}\label{S:timeSurface}
 
-In the previous section, we calculated risk adjusted (partial) dependence at two time points (1 and 3 years). The selection of these points can be driven by biological times of interest (i.e.\ 1 year and 5 year survival in cancer studies) or by investigating time points of interest from a \code{gg_rfsrc} prediction plot. We typically restrict generating \code{gg_partial} plots to the variables of interest at two or three time points of interest due to computational constraints. 
+In the previous section, we calculated risk adjusted (partial) dependence at two time points (1 and 3 years). The selection of these points can be driven by biological times of interest (i.e., 1 year and 5 year survival in cancer studies) or by investigating time points of interest from a \code{gg_rfsrc} prediction plot. We typically restrict generating \code{gg_partial} plots to the variables of interest at two or three time points of interest due to computational constraints. 
 
 It is instructive to see a more detailed map of the risk adjusted response to get a feel for interpreting partial and variable dependence plots. In Figure~\ref{fig:pbc-partial-panel}, we can visualize the two curves as extending into the plane of the page along a time axis. Filling in more partial dependence curves, it is possible to create a partial dependence surface. 
 
@@ -784,11 +784,11 @@ time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
 time_cts <-quantile_pts(time_pts, groups = 50)
 
 # Load the stored partial coplot data.
-data(partial_pbc_time)
+data("partial_pbc_time")
 
 # We need to attach the time points of interest to our data.
 time.tmp <- do.call(c,lapply(time_cts, 
-                               function(grp){rep(grp, 50)}))
+                             function(grp){rep(grp, 50)}))
 
 # Convert the list of plot.variable output to gg_partial
 partial_time <- do.call(rbind,lapply(partial_pbc_time, gg_partial))
@@ -809,7 +809,7 @@ surf3D(x = srf$x, y = srf$y, z = srf$z, col = heat.colors(25),
        shade = 0.5, expand = 0.5, theta=110, phi=15,
        lighting = TRUE, lphi = -50, ticktype="detailed",
        ylab = "Bilirubin", xlab = "Time", zlab = "Survival"
-       )
+)
 
 # Extract the 1 and 3 year points.
 # Find the indices of the points closest in time
@@ -821,8 +821,8 @@ indx[[2]] <- which(abs(srf$x - 3) < t.pts[2]+1.e-5)
 # Generate curves along 1 and 3 year partial dependence 
 alt <- lapply(indx, function(ind){
   lines3D(x=srf$x[ind], y=srf$y[ind],z=srf$z[ind],
-           add=TRUE, col="blue", lwd=6)
-  })
+          add=TRUE, col="blue", lwd=6)
+})
 @
 
 The \code{gg_partial} surface of Figure~\ref{fig:timeSurface3d} was constructed using the \code{surf3D} function from the \pkg{plot3D} package~\citep[\url{http://CRAN.R-project.org/package=plot3D}]{Soetaert:2014}. Source code for generating this figure is shown in Appendix~\ref{A:TimeDomain}. 
@@ -963,7 +963,7 @@ partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
 
 <<load-pbc-coplot, echo=FALSE>>=
 # Load cached partial plot data
-data(partial_coplot_pbc, package = "ggRandomForests")
+data("partial_coplot_pbc", package = "ggRandomForests")
 @
 
 <<bili-albumin, fig.cap="Partial dependence coplot of survival at 1 year against \\code{bili}, conditional on \\code{albumin} interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=TRUE>>= 
@@ -978,7 +978,7 @@ For completeness, we construct the compliment coplot view of one year survival a
 
 <<albumin-bili, fig.cap="Partial dependence coplot of survival at 1 year against \\code{albumin}, conditional on \\code{bili} interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=FALSE>>= 
 # Load cached partial plot data
-data(partial_coplot_pbc2, package = "ggRandomForests")
+data("partial_coplot_pbc2", package = "ggRandomForests")
 
 # Partial coplot
 plot(partial_coplot_pbc2, se = FALSE)+
@@ -997,7 +997,7 @@ A difficulty with conditional dependence for this exercise is the reduction of t
 alb_partial_pts <-quantile_pts(ggvar$albumin, groups = 50)
 
 # Load the stored partial coplot data.
-data(partial_pbc_surf)
+data("partial_pbc_surf")
 
 # Instead of groups, we want the raw albumin point values,
 # To make the dimensions match, we need to repeat the values
@@ -1064,6 +1064,10 @@ This work was supported in part by the National Institutes of Health grant R01-H
 \singlespacing
 \bibliography{ggRandomForests}
 
+
+\end{document}
+
+
 %\doublespacing
 %\newpage
 \appendix
@@ -1083,6 +1087,12 @@ time_cts <-quantile_pts(time_pts, groups = 50)
 
 # Load stored data from the package.
 # See ?partial_pbc_time for how this data was generated.
+#
+# Time surfaces are created with the partial.rfsrc command
+# partial_pbc_time <- partial.rfsrc(rfsrc_pbc, xvar = "bili",sav
+#                                   npts = 50, show.plots = FALSE,
+#                                   surv.type="surv")
+#
 load(partial_pbc_time, package="ggRandomForests")
 
 # We need to attach the time points of interest to our data.
@@ -1185,7 +1195,15 @@ alb_partial_pts <-quantile_pts(ggvar$albumin, groups = 50)
 
 # Load the stored partial coplot data.
 # See ?partial_pbc_surf for how this data was generated.
-data(partial_pbc_surf)
+#
+# partial_pbc_surf <- lapply(alb_partial_pts, function(ct){
+#    rfsrc_pbc$xvar$albumin <- ct
+#     plot.variable(rfsrc_pbc, xvar = "bili", time = 1,
+#                   npts = 50, show.plots = FALSE,
+#                   partial = TRUE, surv.type="surv")
+# })
+#
+data("partial_pbc_surf")
 
 # Instead of groups, we want the raw albumin point values,
 # To make the dimensions match, we need to repeat the values
@@ -1237,5 +1255,3 @@ st <- lapply(indx, function(ind){
           add=TRUE, col="blue", lwd=6)})
 @
 
-
-\end{document}
