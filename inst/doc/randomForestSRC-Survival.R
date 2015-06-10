@@ -21,7 +21,7 @@ options(object.size = Inf, expressions = 100000, memory = Inf,
         replace.assign = TRUE, width = 90, prompt = "R> ")
 options(mc.cores = 1, rf.cores = 0)
 
-## ----libraries, echo=TRUE---------------------------------------------------------------
+## ----libraries--------------------------------------------------------------------------
 ################## Load packages ##################
 library("ggplot2")         # Graphics engine
 library("RColorBrewer")    # Nice color palettes
@@ -43,9 +43,6 @@ event.labels <- c(FALSE, TRUE)
 
 ## We want red for death events, so reorder this set.
 strCol <- brewer.pal(3, "Set1")[c(2,1,3)]
-
-## ----vignette, eval=FALSE, echo=TRUE----------------------------------------------------
-#  vignette("randomForestSRC-Survival", package = "ggRandomForests")
 
 ## ----datastep, echo=TRUE----------------------------------------------------------------
 data("pbc", package = "randomForestSRC")
@@ -122,7 +119,7 @@ names(st.labs) <- rownames(dta.labs)
 ## Not displayed ##
 # create a data dictionary table
 tmp <- dta.labs
-colnames(tmp) <- c("Variable Name", "Description", "Type")
+colnames(tmp) <- c("Variable name", "Description", "Type")
 kable(tmp, 
       #format="latex",
       caption = "\\label{T:dataLabs}\\code{pbc} data set variable dictionary.",
@@ -138,11 +135,11 @@ fct <- c(fct, which(colnames(pbc) == "years"))
 dta <- melt(pbc[,fct], id.vars = "years")
 
 # plot panels for each covariate colored by the logical chas variable.
-ggplot(dta, aes(x = years, fill = value))+
-  geom_histogram(color = "black", binwidth = 1)+
+ggplot(dta, aes(x = years, fill = value)) +
+  geom_histogram(color = "black", binwidth = 1) +
   labs(y = "", x = st.labs["years"]) +
-  scale_fill_brewer(palette="RdBu",na.value = "white" )+
-  facet_wrap(~variable, scales = "free_y", nrow = 2)+
+  scale_fill_brewer(palette="RdBu",na.value = "white" ) +
+  facet_wrap(~variable, scales = "free_y", nrow = 2) +
   theme(legend.position = "none")
 
 ## ----continuousEDA, fig.cap="EDA plots for continuous variables. Symbols indicate observations with variable value on Y-axis against follow up time in years. Symbols are colored and shaped according to the death event  (\\code{status} variable). Missing values are indicated by rug marks along the X-axis", fig.width=7, fig.height=4----
@@ -153,14 +150,14 @@ cnt <- c(cnt, which(colnames(pbc) == "status"))
 dta <- melt(pbc[,cnt], id.vars = c("years", "status"))
 
 # plot panels for each covariate colored by the logical chas variable.
-ggplot(dta, aes(x = years, y = value, color = status, shape = status))+
-  geom_point(alpha = .4)+
-  geom_rug(data = dta[which(is.na(dta$value)),], color = "grey50")+
+ggplot(dta, aes(x = years, y = value, color = status, shape = status)) +
+  geom_point(alpha = 0.4) +
+  geom_rug(data = dta[which(is.na(dta$value)),], color = "grey50") +
   labs(y = "", x = st.labs["years"], color = "Death", shape = "Death") +
   scale_color_manual(values = strCol) +
-  scale_shape_manual(values = event.marks)+
-  facet_wrap(~variable, scales = "free_y", ncol = 4)+
-  theme(legend.position = c(.8,.2))
+  scale_shape_manual(values = event.marks) +
+  facet_wrap(~variable, scales = "free_y", ncol = 4) +
+  theme(legend.position = c(0.8, 0.2))
 
 ## ----missing, results="asis"------------------------------------------------------------
 ## Not displayed ##
@@ -174,11 +171,11 @@ colnames(st) <- c("pbc", "pbc.trial")
 
 kable(st, 
       format="latex",
-      caption = "\\label{T:missing}Missing value counts in \\code{pbc} data set and pbc clinical trial observations (\\code{pbc.trial}).", 
+      caption = "\\label{T:missing}Missing value counts in \\code{pbc} data set and pbc clinical trial observations (\\code{pbc.trial}).",
       digits = 3,
       booktabs=TRUE)
 
-## ----gg_survival, echo=TRUE-------------------------------------------------------------
+## ----gg_survival------------------------------------------------------------------------
 # Create the trial and test data sets.
 pbc.trial <- pbc %>% filter(!is.na(treatment))
 pbc.test <- pbc %>% filter(is.na(treatment))
@@ -188,34 +185,29 @@ gg_dta <- gg_survival(interval = "years",
                       censor = "status", 
                       by = "treatment", 
                       data = pbc.trial, 
-                      conf.int = .95)
+                      conf.int = 0.95)
 
 ## ----plot_gg_survival, fig.cap="Kaplan--Meier survival estimates comparing the \\code{DPCA} treatment (red) with \\code{placebo} (blue) groups for the \\code{pbc.trail} data set. Median survival with shaded 95\\% confidence band.", echo=TRUE----
 plot(gg_dta) +
-  labs(y = "Survival Probability", 
-       x = "Observation Time (years)", 
-       color = "Treatment", fill = "Treatment")+
-  theme(legend.position = c(.2,.2))+
-  coord_cartesian(y = c(0,1.01))
+  labs(y = "Survival Probability", x = "Observation Time (years)", 
+       color = "Treatment", fill = "Treatment") +
+  theme(legend.position = c(0.2, 0.2)) +
+  coord_cartesian(y = c(0, 1.01))
 
 ## ----plot_gg_cum_hazard, fig.cap="Kaplan--Meier cumulative hazard estimates comparing the \\code{DPCA} treatment (red) with \\code{placebo} (blue) groups for the \\code{pbc} data set.", echo=TRUE----
-plot(gg_dta, type="cum_haz") +
-  labs(y = "Cumulative Hazard", 
-       x = "Observation Time (years)", 
-       color = "Treatment", fill = "Treatment")+
-  theme(legend.position = c(.2,.8)) +
-  coord_cartesian(ylim=c(-.02, 1.22))
+plot(gg_dta, type = "cum_haz") +
+  labs(y = "Cumulative Hazard", x = "Observation Time (years)", 
+       color = "Treatment", fill = "Treatment") +
+  theme(legend.position = c(0.2, 0.8)) +
+  coord_cartesian(ylim = c(-0.02, 1.22))
 
 ## ----gg_survival-bili, fig.cap="Kaplan--Meier survival estimates comparing different groups of Bilirubin measures (\\code{bili}) for the \\code{pbc} data set. Groups defined in Chapter 4 of~\\cite{fleming:1991}.", echo=TRUE, fig.width=5.5----
-# Duplicate the trial data and group by bilirubin values 
 pbc.bili <- pbc.trial
-pbc.bili$bili_grp <- cut(pbc.bili$bili, breaks = c(0, .8, 1.3, 3.4, 29))
+pbc.bili$bili_grp <- cut(pbc.bili$bili, breaks = c(0, 0.8, 1.3, 3.4, 29))
 
-plot(gg_survival(interval = "years",censor = "status", 
-                 by = "bili_grp", data = pbc.bili),
-     error = "none") +
-  labs(y = "Survival Probability", 
-       x = "Observation Time (years)", 
+plot(gg_survival(interval = "years", censor = "status", by = "bili_grp", 
+                 data = pbc.bili), error = "none") +
+  labs(y = "Survival Probability", x = "Observation Time (years)", 
        color = "Bilirubin")
 
 ## ----xtab, results="asis"---------------------------------------------------------------
@@ -236,14 +228,8 @@ kable(fleming.table,
       booktabs=TRUE)
 
 ## ----rfsrc, echo=TRUE, eval=FALSE-------------------------------------------------------
-#  # Grow and store the random survival forest
-#  rfsrc_pbc <- rfsrc(Surv(years, status) ~ .,
-#                     data = pbc.trial,
-#                     nsplit = 10,
-#                     na.action = "na.impute")
-#  
-#  # Print the forest summary
-#  rfsrc_pbc
+#  rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., data = pbc.trial,
+#                     nsplit = 10, na.action = "na.impute")
 
 ## ----read-forest, echo=FALSE, results=FALSE---------------------------------------------
 # in reality, we use data caching to make vignette 
@@ -258,35 +244,25 @@ data("rfsrc_pbc", package = "ggRandomForests")
 rfsrc_pbc
 
 ## ----errorPlot, fig.cap="Random forest OOB prediction error estimates as a function of the number of trees in the forest.", echo=TRUE----
-# Direct data extraction and figure creation
-plot(gg_error(rfsrc_pbc))+
-  coord_cartesian(y = c(.09,.31))
+plot(gg_error(rfsrc_pbc)) + coord_cartesian(ylim = c(0.09, 0.31))
 
 ## ----rfsrc-plot, fig.cap="Random forest OOB predicted survival. Blue curves correspond to censored observations, red curves correspond to observations experiencing death events.", echo=TRUE----
-# Save the ggplot object
-ggRFsrc <- plot(gg_rfsrc(rfsrc_pbc), alpha = .2) + 
+ggRFsrc <- plot(gg_rfsrc(rfsrc_pbc), alpha = 0.2) + 
   scale_color_manual(values = strCol) + 
   theme(legend.position = "none") + 
-  labs(y = "Survival Probability", x = "Time (years)")+
-  coord_cartesian(y = c(-.01,1.01))
-
-# Display the figure
+  labs(y = "Survival Probability", x = "Time (years)") +
+  coord_cartesian(ylim = c(-0.01, 1.01))
 show(ggRFsrc)
 
 ## ----rfsrc-mean2, fig.cap="Random forest predicted survival stratified by treatment groups. \\code{DPCA} group in red, \\code{placebo} in blue with shaded 95\\% confidence bands.", echo=TRUE----
-plot(gg_rfsrc(rfsrc_pbc, by="treatment")) + 
-  theme(legend.position = c(.2,.2)) + 
-  labs(y = "Survival Probability", x = "Time (years)")+
-  coord_cartesian(y = c(-.01,1.01))
+plot(gg_rfsrc(rfsrc_pbc, by = "treatment")) +  
+  theme(legend.position = c(0.2, 0.2)) + 
+  labs(y = "Survival Probability", x = "Time (years)") +
+  coord_cartesian(ylim = c(-0.01, 1.01))
 
 ## ----predict, echo=TRUE, eval=FALSE-----------------------------------------------------
-#  # Predict survival for 106 patients not in randomized trial
-#  rfsrc_pbc_test <- predict(rfsrc_pbc,
-#                            newdata = pbc.test,
+#  rfsrc_pbc_test <- predict(rfsrc_pbc, newdata = pbc.test,
 #                            na.action = "na.impute")
-#  
-#  # Print prediction summary
-#  rfsrc_pbc_test
 
 ## ----predict-load, echo=FALSE-----------------------------------------------------------
 # Predict survival for 106 patients not in randomized trial
@@ -295,16 +271,15 @@ data("rfsrc_pbc_test", package="ggRandomForests")
 rfsrc_pbc_test
 
 ## ----predictPlot, fig.cap="Random forest survival estimates for patients in the \\code{pbc.test} data set. Blue curves correspond to censored patients, red curves correspond to patients experiencing a death event.", echo=TRUE----
-plot(gg_rfsrc(rfsrc_pbc_test), alpha=.2)+ 
+plot(gg_rfsrc(rfsrc_pbc_test), alpha=.2) + 
   scale_color_manual(values = strCol) + 
   theme(legend.position = "none") + 
-  labs(y = "Survival Probability", x = "Time (years)")+
-  coord_cartesian(y = c(-.01,1.01))
+  labs(y = "Survival Probability", x = "Time (years)") +
+  coord_cartesian(ylim = c(-0.01, 1.01))
 
 ## ----rf-vimp, echo=TRUE, fig.cap="Random forest Variable Importance (VIMP). Blue bars indicates positive VIMP, red indicates negative VIMP. Importance is relative to positive length of bars.", fig.width=5----
 plot(gg_vimp(rfsrc_pbc), lbls = st.labs) + 
-  theme(legend.position = c(.8,.2))+
-  labs(fill = "VIMP > 0")
+  theme(legend.position = c(0.8, 0.2)) + labs(fill = "VIMP > 0")
 
 ## ----nms--------------------------------------------------------------------------------
 ## calculate for document
@@ -325,12 +300,13 @@ plot(gg_md, lbls = st.labs)
 
 ## ----depthVimp, fig.cap="Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points above have higher VIMP ranking, those below have higher minimal depth ranking.", fig.width=5, echo=TRUE----
 plot(gg_minimal_vimp(gg_md), lbls = st.labs) +
-  theme(legend.position=c(.8,.2))
+  theme(legend.position=c(0.8, 0.2))
 
 ## ----models-----------------------------------------------------------------------------
 fleming.table$nm <- c("age","albumin", "bili","edema", "prothrombin")
-fh.model <- data.frame(cbind(names=fleming.table$nm, 
-                             FH=order(abs(fleming.table$`Z stat.`), decreasing = TRUE),
+fh.model <- data.frame(cbind(names = fleming.table$nm, 
+                             FH = order(abs(fleming.table$`Z stat.`), 
+                                        decreasing = TRUE),
                              Variable=rownames(fleming.table), 
                              Coeff=fleming.table$Coef.
                              ))
@@ -342,9 +318,9 @@ md$rank <- 1:nrow(md)
 rownames(md) <- gg_md$topvars
 
 md$vimp <- gg_v[rownames(md),]$rank
-md <- left_join(md, fh.model, by="names")
+md <- left_join(md, fh.model, by = "names")
 md <- md[,c(1, 4, 2,3)]
-colnames(md) <- c("Variable", "FH","Min Depth", "VIMP" )
+colnames(md) <- c("Variable", "FH","Min depth", "VIMP" )
 kable(md, 
       format="latex",
       caption = "\\label{T:modelComp}Comparison of variable selection criteria. Minimal depth ranking, VIMP ranking and ~\\cite{fleming:1991} (FH) proportional hazards model ranked according to \\code{abs(Z stat)} from Table~\\ref{T:FHmodel}.", 
@@ -354,53 +330,43 @@ kable(md,
       booktabs=TRUE)
 
 ## ----rfsrc-plot3Mnth, echo=TRUE, fig.cap="Random forest predicted survival (Figure~\\ref{fig:rfsrc-plot}) with vertical dashed lines indicate the 1 and 3 year survival estimates."----
-ggRFsrc + 
-  geom_vline(aes(xintercept = c(1, 3)), linetype = "dashed") + 
-  coord_cartesian(x = c(0, 5))
+ggRFsrc + geom_vline(aes(xintercept = c(1, 3)), linetype = "dashed") + 
+  coord_cartesian(xlim = c(0, 5))
 
 ## ----variable-plotbili, echo=TRUE, fig.cap="Variable dependence of survival at 1 and 3 years on \\code{bili} variable. Individual cases are marked with blue circles (alive or censored) and red `x's (dead). Loess smooth curve with shaded 95\\% confidence band indicates decreasing survival with increasing bilirubin.", fig.height=4----
 gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3), 
                     time.labels = c("1 Year", "3 Years"))
 
-# Plot "bili" variable dependence at the time points in gg_v.
-plot(gg_v, xvar = "bili", se = .95, alpha = .4) + 
+plot(gg_v, xvar = "bili", se = 0.95, alpha = 0.4) + 
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
-  scale_shape_manual(values = event.marks, labels = event.labels)+
-  coord_cartesian(y = c(-.01,1.01))
+  scale_shape_manual(values = event.marks, labels = event.labels) +
+  coord_cartesian(ylim = c(-0.01, 1.01))
 
 ## ----variable-plot, echo=TRUE, fig.cap="Variable dependence of predicted survival at 1 and 3 years on continuous variables of interest. Individual cases are marked with blue circles for censored cases and red `x's for death events. Loess smooth curve indicates the survival trend with increasing values.", fig.height=4, fig.width=7----
-# Get the selected continuous variables
 xvar <- c("bili", "albumin", "copper", "prothrombin", "age")
-
-# The categorical variable
 xvar.cat <- c("edema")
 
-# panel the remaining continuous variable dependence plots.
-plot(gg_v, xvar = xvar[-1], panel = TRUE, 
-     se = FALSE, alpha = .4, span=1)+ 
+plot(gg_v, xvar = xvar[-1], panel = TRUE, se = FALSE, alpha = 0.4, span=1) + 
   labs(y = "Survival") + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
-  scale_shape_manual(values = event.marks, labels = event.labels)+
-  coord_cartesian(y = c(-.05,1.05))
+  scale_shape_manual(values = event.marks, labels = event.labels) +
+  coord_cartesian(ylim = c(-0.05, 1.05))
 
 ## ----variable-plotCat, echo=TRUE, fig.cap="Variable dependence of survival 1 and 3 years on \\code{edema} categorical variable. Symbols with blue circles indicate censored cases and red `x's indicate death events. Boxplots indicate distribution of predicted survival for all observations within each \\code{edema} group.", fig.height=4----
-plot(gg_v, xvar = xvar.cat, alpha = .4) + 
-  labs(y = "Survival") + 
+plot(gg_v, xvar = xvar.cat, alpha = 0.4) + labs(y = "Survival") + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
-  scale_shape_manual(values = event.marks, labels = event.labels)+
-  coord_cartesian(y = c(-.01,1.02))
+  scale_shape_manual(values = event.marks, labels = event.labels) +
+  coord_cartesian(ylim = c(-0.01, 1.02))
 
 ## ----pbc-partial, echo=TRUE, eval=FALSE-------------------------------------------------
 #  xvar <- c(xvar, xvar.cat)
 #  partial_pbc <- mclapply(c(1,3,5), function(tm){
-#    plot.variable(rfsrc_pbc, surv.type = "surv",
-#                  time = tm,
-#                  xvar.names = xvar, partial = TRUE,
-#                  show.plots = FALSE)
+#    plot.variable(rfsrc_pbc, surv.type = "surv", time = tm, xvar.names = xvar,
+#                  partial = TRUE, show.plots = FALSE)
 #    })
 
 ## ----pbc-partial-load-------------------------------------------------------------------
@@ -408,29 +374,25 @@ data("partial_pbc", package = "ggRandomForests")
 xvar <- c(xvar, xvar.cat)
 
 ## ----pbc-partial-bili, echo=TRUE--------------------------------------------------------
-# Convert all partial plots to gg_partial objects
 gg_dta <- mclapply(partial_pbc, gg_partial)
-
-# Combine the timed gg_partial objects together.
 pbc_ggpart <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]], 
                                  lbls = c("1 Year", "3 Years"))
 
 ## ----pbc-partial-panel, echo=TRUE, fig.cap="Partial dependence of predicted survival at 1 year (red circle) and 3 years (blue triangle) as a function continuous variables of interest. Symbols are partial dependence point estimates with loess smooth line to indicate trends.", fig.width=5, fig.height=5----
-# Create a temporary holder and remove categorical variables
 ggpart <- pbc_ggpart
 ggpart$edema <- NULL
 
 plot(ggpart, se = FALSE, panel = TRUE) + 
   labs(x = "", y = "Survival", color = "Time", shape = "Time") +
-  theme(legend.position = c(.8, .2)) + 
-  coord_cartesian(y = c(25,101))
+  theme(legend.position = c(0.8, 0.2)) + 
+  coord_cartesian(ylim = c(25, 101))
 
 ## ----pbc-partial-edema, echo=TRUE, fig.cap="Partial dependence plot of predicted survival at 1 year (red) and 3 years (blue) as a function of \\code{edema} groups (categorical variable). Boxplots indicate distribution within each group."----
-plot(pbc_ggpart[["edema"]], panel=TRUE,
-                notch = TRUE, alpha = .4, outlier.shape = NA) + 
-  labs(x = "Edema", y = "Survival (%)", color="Time", shape="Time")+
-  theme(legend.position = c(.2, .2))+
-  coord_cartesian(y = c(25,101))
+plot(pbc_ggpart[["edema"]], panel=TRUE, notch = TRUE, alpha = 0.4, 
+     outlier.shape = NA) + 
+  labs(x = "Edema", y = "Survival (%)", color="Time", shape="Time") +
+  theme(legend.position = c(0.2, 0.2)) +
+  coord_cartesian(ylim = c(25, 101))
 
 ## ----timeSurface3d, fig.cap="Partial dependence surface. Partial dependence of predicted survival (0 to 5 years) as a function of \\code{bili}. Blue lines indicate partial dependence at 1 and 3 years, as in \\code{bili} panel of Figure~\\ref{fig:pbc-partial-panel}.", fig.width=7, fig.height=5, echo=FALSE----
 # Restrict the time of interest to less than 5 years.
@@ -491,12 +453,12 @@ ggvar$edema <- paste("edema = ", ggvar$edema, sep = "")
 # Plot with linear smooth (method argument)
 var_dep <- plot(ggvar, xvar = "bili", 
                 method = "glm",
-                alpha = .5, se = FALSE) + 
+                alpha = 0.5, se = FALSE) + 
   labs(y = "Survival", 
        x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
-  scale_shape_manual(values = event.marks, labels = event.labels)+
+  scale_shape_manual(values = event.marks, labels = event.labels) +
   coord_cartesian(y = c(-.01,1.01))
 
 var_dep
@@ -513,12 +475,12 @@ ggvar$albumin_grp <- cut(ggvar$albumin, breaks = albumin_cts)
 levels(ggvar$albumin_grp) <- paste("albumin =", levels(ggvar$albumin_grp))
 
 plot(ggvar, xvar = "bili", 
-     method = "glm", alpha = .5, se = FALSE) + 
+     method = "glm", alpha = 0.5, se = FALSE) + 
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
-  scale_shape_manual(values = event.marks, labels = event.labels)+ 
-  facet_wrap(~albumin_grp)+
+  scale_shape_manual(values = event.marks, labels = event.labels) + 
+  facet_wrap(~albumin_grp) +
   coord_cartesian(y = c(-.01,1.01))
 
 ## ----bili-coplot, fig.cap="Variable dependence coplot of survival at 1 year against \\code{albumin}, conditonal on \\code{bili} interval group membership.", fig.width=7, fig.height=4, echo=FALSE, results=FALSE----
@@ -537,13 +499,13 @@ levels(ggvar$bili_grp) <- paste("bilirubin =", levels(bili_grp))
 
 # plot.gg_variable
 plot(ggvar, xvar = "albumin", 
-     method = "glm", alpha = .5, se = FALSE) + 
+     method = "glm", alpha = 0.5, se = FALSE) + 
   labs(y = "Survival", x = st.labs["albumin"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
-  scale_shape_manual(values = event.marks, labels = event.labels)+ 
-  facet_wrap(~bili_grp)+
-  coord_cartesian(y = c(-.01,1.01))
+  scale_shape_manual(values = event.marks, labels = event.labels) + 
+  facet_wrap(~bili_grp) +
+  coord_cartesian(ylim = c(-0.01,1.01))
 
 ## ----build-bili-albumin, eval=FALSE,echo=TRUE-------------------------------------------
 #  partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
@@ -557,9 +519,9 @@ plot(ggvar, xvar = "albumin",
 data("partial_coplot_pbc", package = "ggRandomForests")
 
 ## ----bili-albumin, fig.cap="Partial dependence coplot of survival at 1 year against \\code{bili}, conditional on \\code{albumin} interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=TRUE----
-plot(partial_coplot_pbc, se = FALSE)+
+plot(partial_coplot_pbc, se = FALSE) +
   labs(x = st.labs["bili"], y = "Survival at 1 year (%)", 
-       color = "albumin", shape = "albumin")+
+       color = "albumin", shape = "albumin") +
   coord_cartesian(y = c(49,101))
 
 ## ----albumin-bili, fig.cap="Partial dependence coplot of survival at 1 year against \\code{albumin}, conditional on \\code{bili} interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=FALSE----
@@ -567,9 +529,9 @@ plot(partial_coplot_pbc, se = FALSE)+
 data("partial_coplot_pbc2", package = "ggRandomForests")
 
 # Partial coplot
-plot(partial_coplot_pbc2, se = FALSE)+
+plot(partial_coplot_pbc2, se = FALSE) +
   labs(x = st.labs["albumin"], y = "Survival at 1 year (%)", 
-       color = "Bilirubin", shape = "Bilirubin")+
+       color = "Bilirubin", shape = "Bilirubin") +
   coord_cartesian(y = c(49,101))
 
 ## ----surface3d, fig.cap="Partial dependence surface of survival at 1 year as a funtion of \\code{bili} and \\code{albumin}. Blue lines indicate partial coplot cut points for \\code{albumin} (Figure~\\ref{fig:bili-albumin}) and \\code{bili} (Figure~\\ref{fig:albumin-bili}).", fig.width=7, fig.height=5, echo=FALSE----
@@ -627,6 +589,9 @@ st <- lapply(indx, function(ind){
           y=srf$y[ind],
           z=srf$z[ind],
           add=TRUE, col="blue", lwd=6)})
+
+## ----vignette, eval=FALSE, echo=TRUE----------------------------------------------------
+#  vignette("randomForestSRC-Survival", package = "ggRandomForests")
 
 ## ----src-listing-timeSurface, echo=TRUE, eval=FALSE-------------------------------------
 #  # Restrict the time of interest to less than 5 years.
@@ -702,13 +667,13 @@ st <- lapply(indx, function(ind){
 #  
 #  # plot.gg_variable
 #  plot(ggvar[-which(is.na(ggvar$albumin)),], xvar = "albumin",
-#                  method = "glm", alpha = .5, se = FALSE) +
+#                  method = "glm", alpha = 0.5, se = FALSE) +
 #    labs(y = "Survival", x = st.labs["albumin"]) +
 #    theme(legend.position = "none") +
 #    scale_color_manual(values = strCol, labels = event.labels) +
-#    scale_shape_manual(values = event.marks, labels = event.labels)+
-#    facet_wrap(~bili_grp)+
-#    coord_cartesian(y = c(-.01,1.01))
+#    scale_shape_manual(values = event.marks, labels = event.labels) +
+#    facet_wrap(~bili_grp) +
+#    coord_cartesian(ylim = c(-0.01, 1.01))
 
 ## ----albumin-bili-src, eval=FALSE,echo=TRUE---------------------------------------------
 #  partial_coplot_pbc2 <- gg_partial_coplot(rfsrc_pbc, xvar = "albumin",
@@ -721,10 +686,10 @@ st <- lapply(indx, function(ind){
 #  # Stored in
 #  # data(partial_coplot_pbc2, package = "ggRandomForests")
 #  
-#  plot(partial_coplot_pbc2, se = FALSE)+
+#  plot(partial_coplot_pbc2, se = FALSE) +
 #    labs(x = st.labs["albumin"], y = "Survival at 1 year (%)",
-#         color = "Bilirubin", shape = "Bilirubin")+
-#    scale_color_brewer(palette = "Set2")+
+#         color = "Bilirubin", shape = "Bilirubin") +
+#    scale_color_brewer(palette = "Set2") +
 #    coord_cartesian(y = c(49,101))
 
 ## ----src-listing-variableSurface, echo=TRUE, eval=FALSE---------------------------------

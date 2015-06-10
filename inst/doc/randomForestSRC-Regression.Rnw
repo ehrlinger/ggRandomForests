@@ -492,9 +492,11 @@ rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
 gg_v$rm_grp <- rm_grp
 
 # Modify the labels for descriptive panel titles 
-levels(gg_v$rm_grp) <- paste("rm in ", levels(gg_v$rm_grp), sep="")
+levels(gg_v$rm_grp) <- paste("rm in ", 
+                             levels(gg_v$rm_grp), sep="")
 
-# Create a variable dependence (co)plot, faceted on group membership.
+# Create a variable dependence (co)plot, 
+# faceted on group membership.
 plot(gg_v, xvar = "lstat", smooth = TRUE, 
      method = "loess", span=1.5, alpha = .5, se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 

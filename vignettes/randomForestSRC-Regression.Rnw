@@ -483,7 +483,8 @@ We start by examining the predicted median home value as a function of \code{lst
 <<coplots, fig.cap="Variable Coplots. Predicted median home values as a function of percentage of lower status population, stratified by average number of rooms groups.", fig.width=7, fig.height=5>>=
 # Find the rm variable points to create 6 intervals of roughly 
 # equal size population
-rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, intervals=TRUE)
+rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, 
+                       intervals=TRUE)
 
 # Pass these variable points to create the 6 (factor) intervals
 rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
@@ -492,9 +493,11 @@ rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
 gg_v$rm_grp <- rm_grp
 
 # Modify the labels for descriptive panel titles 
-levels(gg_v$rm_grp) <- paste("rm in ", levels(gg_v$rm_grp), sep="")
+levels(gg_v$rm_grp) <- paste("rm in ", 
+                             levels(gg_v$rm_grp), sep="")
 
-# Create a variable dependence (co)plot, faceted on group membership.
+# Create a variable dependence (co)plot, 
+# faceted on group membership.
 plot(gg_v, xvar = "lstat", smooth = TRUE, 
      method = "loess", span=1.5, alpha = .5, se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 

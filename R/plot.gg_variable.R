@@ -141,8 +141,11 @@
 plot.gg_variable <- function(x, xvar, 
                              time, time_labels, 
                              panel=FALSE,
-                             oob=TRUE, smooth=TRUE,  ...){
+                             oob=TRUE, smooth=TRUE, ...){
   gg_dta <- x 
+  
+  # Get the extra arguments for handling specifics
+  arg_list <- list(...)
   
   # I don't think this will work with latest S3 models. 
   if(inherits(x, "rfsrc")) gg_dta <- gg_variable(x, ...)
@@ -246,14 +249,23 @@ plot.gg_variable <- function(x, xvar,
           labs(y= "Survival") +
           geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
                      ...)
-        
         if(smooth){
-          gg_plt <- gg_plt +
-            geom_smooth(aes_string(x="value", y="yhat"), color="black", linetype=2, se=FALSE,...)
-          
-          # If we want a CL, we have to calculate them here.
-          
-          
+          if( is.null(arg_list$SE) |
+              !is.null(arg_list$level)){
+            
+            bnd <- logit_loess(gg_dta, xvar="var", level=arg_list$level)
+            gg_plt <- gg_plt +
+              geom_ribbon(aes_string(x="x", ymin="lower", ymax="upper"), 
+                          data=bnd, alpha=.3,...)
+            
+            gg_plt <- gg_plt[[ind]] +
+              geom_line(aes_string(x="x", y="y"), data=bnd, color="black", 
+                        linetype=2, ...)
+          }else{
+            gg_plt <- gg_plt +
+              geom_smooth(aes_string(x="x", y="y"), color="black", 
+                          linetype=2, ...)
+          }
         }
         
       }else{
@@ -343,7 +355,7 @@ plot.gg_variable <- function(x, xvar,
       ccls <- class(gg_dta[,"var"])
       ccls[which(ccls == "integer")] <- "numeric"
       
-      cat(ind, "\t", h_name, "\t", ccls, "\n")
+      #cat(ind, "\t", h_name, "\t", ccls, "\n")
       
       gg_plt[[ind]] <- ggplot(gg_dta)
       
@@ -355,14 +367,23 @@ plot.gg_variable <- function(x, xvar,
           gg_plt[[ind]] <- gg_plt[[ind]]+
             geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
                        ...)
-          
           if(smooth){
-            gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_smooth(aes_string(x="var", y="yhat"), color="black", linetype=2, se=FALSE, ...)
-            
-            # If we want a CL, we have to calculate them here.
-            
+            if( is.null(arg_list$SE) |
+                !is.null(arg_list$level)){
+              
+              bnd <- logit_loess(gg_dta, xvar="var", level=arg_list$level)
+              gg_plt[[ind]] <- gg_plt[[ind]] +
+                geom_ribbon(aes_string(x="x", ymin="lower", ymax="upper"), 
+                            data=bnd, alpha=.3,...)
+              
+              gg_plt[[ind]] <- gg_plt[[ind]] +
+                geom_line(aes_string(x="x", y="y"), data=bnd, color="black",  ...)
+            }else{
+              gg_plt[[ind]] <- gg_plt[[ind]] +
+                geom_smooth(aes_string(x="x", y="y"), data=bnd, color="black", ...)
+            }
           }
+          
         }else{
           gg_plt[[ind]] <- gg_plt[[ind]] +
             geom_boxplot(aes_string(x="var", y="yhat"), color="black",
