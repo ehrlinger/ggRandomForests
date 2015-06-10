@@ -16,7 +16,7 @@ logit_loess <- function(gg_dta, xvar, level){
   if(!scl){
     gg_dta$yhat <- gg_dta$yhat/100
   } 
-  
+  gg_dta$yhat[which(1-gg_dta$yhat <= .Machine$double.eps)] <- 1-2* .Machine$double.eps
   #transform the response to the logit domain...
   gg_dta$yhat <- log(gg_dta$yhat/(1-gg_dta$yhat))
   

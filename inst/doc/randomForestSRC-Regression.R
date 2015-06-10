@@ -198,7 +198,8 @@ plot(gg_interaction(interaction_Boston),
 ## ----coplots, fig.cap="Variable Coplots. Predicted median home values as a function of percentage of lower status population, stratified by average number of rooms groups.", fig.width=7, fig.height=5----
 # Find the rm variable points to create 6 intervals of roughly 
 # equal size population
-rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, intervals=TRUE)
+rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, 
+                       intervals=TRUE)
 
 # Pass these variable points to create the 6 (factor) intervals
 rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)

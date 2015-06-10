@@ -370,7 +370,6 @@ plot.gg_variable <- function(x, xvar,
           if(smooth){
             if( is.null(arg_list$SE) |
                 !is.null(arg_list$level)){
-              
               bnd <- logit_loess(gg_dta, xvar="var", level=arg_list$level)
               gg_plt[[ind]] <- gg_plt[[ind]] +
                 geom_ribbon(aes_string(x="x", ymin="lower", ymax="upper"), 
