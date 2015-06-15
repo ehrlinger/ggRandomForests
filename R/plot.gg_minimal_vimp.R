@@ -149,10 +149,13 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...){
   # Draw a line between + and - vimp values.
   if(length(unique(gg_dta$col)) > 1){
     gg_plt <- gg_plt +
-      geom_hline(yintercept=sum(gg_dta$vimp > .Machine$double.eps) - .5, col="red", size=.5, linetype=2)
+      geom_hline(yintercept=sum(gg_dta$col == "+") + .5, col="red", size=.5, linetype=2)
   }
   
-  
+  if(nrow(gg_dta) > attributes(gg_dta)$modelsize){
+    gg_plt <- gg_plt +
+      geom_vline(xintercept=attributes(gg_dta)$modelsize + .5, col="red", size=.5, linetype=2)
+  }
   
   gg_plt + coord_flip()
   

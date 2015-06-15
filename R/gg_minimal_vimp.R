@@ -139,6 +139,10 @@ gg_minimal_vimp.rfsrc <- function(object, ...){
   gg_dta <- merge(rnk.vm, rnk.md,by="names")
   
   class(gg_dta) <- c("gg_minimal_vimp", class(gg_dta))
+  
+  # So we can put a horizontal line at the MD selection point.
+  attr(gg_dta, "modelsize") <- vsel$modelsize
+  
   invisible(gg_dta)
 }
 
