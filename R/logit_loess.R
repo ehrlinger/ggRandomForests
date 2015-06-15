@@ -20,7 +20,7 @@ logit_loess <- function(gg_dta, xvar, level){
   #transform the response to the logit domain...
   gg_dta$yhat <- log(gg_dta$yhat/(1-gg_dta$yhat))
   
-  print(colnames(gg_dta))
+  # print(colnames(gg_dta))
   # Then fit a loess
   
   frm <- formula(paste("yhat~", xvar))

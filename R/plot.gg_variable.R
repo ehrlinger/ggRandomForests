@@ -250,22 +250,20 @@ plot.gg_variable <- function(x, xvar,
           geom_point(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
                      ...)
         if(smooth){
-          if( is.null(arg_list$SE) |
-              !is.null(arg_list$level)){
-            
-            bnd <- logit_loess(gg_dta, xvar="var", level=arg_list$level)
+#           if( is.null(arg_list$SE) |
+#               !is.null(arg_list$level)){
+#             
+#             bnd <- logit_loess(gg_dta, xvar="var", level=arg_list$level)
+#             gg_plt <- gg_plt +
+#               geom_ribbon(aes_string(x="x", ymin="lower", ymax="upper"), 
+#                           data=bnd, alpha=.3,...)
+#             
+#             gg_plt <- gg_plt[[ind]] +
+#               geom_line(aes_string(x="x", y="y"), data=bnd, ...)
+#           }else{
             gg_plt <- gg_plt +
-              geom_ribbon(aes_string(x="x", ymin="lower", ymax="upper"), 
-                          data=bnd, alpha=.3,...)
-            
-            gg_plt <- gg_plt[[ind]] +
-              geom_line(aes_string(x="x", y="y"), data=bnd, color="black", 
-                        linetype=2, ...)
-          }else{
-            gg_plt <- gg_plt +
-              geom_smooth(aes_string(x="x", y="y"), color="black", 
-                          linetype=2, ...)
-          }
+              geom_smooth(aes_string(x="value", y="yhat"), ...)
+          # }
         }
         
       }else{
@@ -368,19 +366,19 @@ plot.gg_variable <- function(x, xvar,
             geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
                        ...)
           if(smooth){
-            if( is.null(arg_list$SE) |
-                !is.null(arg_list$level)){
-              bnd <- logit_loess(gg_dta, xvar="var", level=arg_list$level)
+#             if( is.null(arg_list$SE) |
+#                 !is.null(arg_list$level)){
+#               bnd <- logit_loess(gg_dta, xvar="var", level=arg_list$level)
+#               gg_plt[[ind]] <- gg_plt[[ind]] +
+#                 geom_ribbon(aes_string(x="x", ymin="lower", ymax="upper"), 
+#                             data=bnd, alpha=.3,...)
+#               
+#               gg_plt[[ind]] <- gg_plt[[ind]] +
+#                 geom_line(aes_string(x="x", y="y"), data=bnd,  ...)
+#             }else{
               gg_plt[[ind]] <- gg_plt[[ind]] +
-                geom_ribbon(aes_string(x="x", ymin="lower", ymax="upper"), 
-                            data=bnd, alpha=.3,...)
-              
-              gg_plt[[ind]] <- gg_plt[[ind]] +
-                geom_line(aes_string(x="x", y="y"), data=bnd, color="black",  ...)
-            }else{
-              gg_plt[[ind]] <- gg_plt[[ind]] +
-                geom_smooth(aes_string(x="x", y="y"), data=bnd, color="black", ...)
-            }
+                geom_smooth(aes_string(x="var", y="yhat"),  ...)
+            # }
           }
           
         }else{

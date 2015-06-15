@@ -337,7 +337,7 @@ ggRFsrc + geom_vline(aes(xintercept = c(1, 3)), linetype = "dashed") +
 gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3), 
                     time.labels = c("1 Year", "3 Years"))
 
-plot(gg_v, xvar = "bili", se = 0.95, alpha = 0.4) + 
+plot(gg_v, xvar = "bili", se=FALSE, alpha = 0.4) + 
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
