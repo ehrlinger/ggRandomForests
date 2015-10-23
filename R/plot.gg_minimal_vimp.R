@@ -144,7 +144,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...){
   }
   
   gg_plt <- gg_plt + geom_point() +
-    geom_abline(xintercept=0, slope=1, col="red", size=.5, linetype=2)
+    geom_abline(intercept=0, slope=1, col="red", size=.5, linetype=2)
   
   # Draw a line between + and - vimp values.
   if(length(unique(gg_dta$col)) > 1){

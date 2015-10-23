@@ -96,7 +96,7 @@ plot.gg_roc <- function(x, which.outcome=NULL, ...){
     gg_plt <- ggplot(data=gg_dta) +
       geom_line(aes_string(x="fpr", y="sens")) +
       labs(x="1 - Specificity (FPR)", y="Sensitivity (TPR)") +
-      geom_abline(a=1, b=0, col="red", linetype=2, size=.5) +
+      geom_abline(slope=1, intercept=0, col="red", linetype=2, size=.5) +
       coord_fixed()
     
     gg_plt <- gg_plt +
@@ -129,7 +129,7 @@ plot.gg_roc <- function(x, which.outcome=NULL, ...){
     gg_plt <- ggplot(data=o_dta) +
       geom_line(aes_string(x="fpr", y="sens", linetype="outcome", col="outcome")) +
       labs(x="1 - Specificity (FPR)", y="Sensitivity (TPR)") +
-      geom_abline(a=1, b=0, col="red", linetype=2, size=.5) +
+      geom_abline(slope=1, intercept=0, col="red", linetype=2, size=.5) +
       coord_fixed()
     
     if(crv < 2){
