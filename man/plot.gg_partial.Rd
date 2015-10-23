@@ -12,8 +12,6 @@
 
 \item{points}{plot points (boolean)}
 
-\item{smooth}{use smooth curve (by type)}
-
 \item{error}{"shade", "bars", "lines" or "none"}
 
 \item{...}{extra arguments passed to \code{ggplot2} functions}

@@ -159,7 +159,7 @@
 #'                               lbls = c("1 Year", "3 Years"))
 #'
 #' # Plot the highest ranked variable, by name.
-#' plot(pbc_ggpart[["bili"]], se = FALSE)
+#' plot(pbc_ggpart[["bili"]]) #, se = FALSE
 #'      
 #'      # Create a temporary holder and remove the stage and edema data
 #' ggpart <- pbc_ggpart

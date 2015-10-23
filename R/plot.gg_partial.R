@@ -26,7 +26,7 @@
 #' 
 #' @param x \code{\link{gg_partial}} object created from a \code{\link[randomForestSRC]{rfsrc}} forest object
 #' @param points plot points (boolean)
-#' @param smooth use smooth curve (by type)
+# @param smooth use smooth curve (by type)
 #' @param error "shade", "bars", "lines" or "none"
 #' @param ... extra arguments passed to \code{ggplot2} functions
 #' 
@@ -225,14 +225,14 @@ plot.gg_partial <- function(x, points=TRUE, smooth="loess",
   if(!is.factor(gg_dta$x)){
     if(points)  
       gg_plt <- gg_plt + geom_point( ...)
-    if(!is.null(smooth)){
-      if(!is.null(arg_list$se))
-        if(arg_list$se != FALSE)
-          gg_plt <- gg_plt + geom_smooth(method=smooth, ...)
-      else
-        gg_plt <- gg_plt + geom_smooth(method=smooth,se=FALSE, ...)
-      
-    }
+    # if(!is.null(smooth)){
+    #   if(!is.null(arg_list$se))
+    #     if(arg_list$se != FALSE)
+    #       gg_plt <- gg_plt + geom_smooth(method=smooth, ...)
+    #   else
+    #     gg_plt <- gg_plt + geom_smooth(method=smooth,se=FALSE, ...)
+    #   
+    # }
   }else{
     gg_plt <- gg_plt + geom_boxplot(...)
   }

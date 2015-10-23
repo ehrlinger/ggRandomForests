@@ -85,16 +85,20 @@ test_that("gg_partial survival",{
                       time.labels = c("1 Year", "3 Years"))
   
   # Plot the bilirubin variable dependence plot
-  gg_plt <- plot(ggrf, xvar = "bili", se = .95, alpha = .3)
+  gg_plt <- plot(ggrf, xvar = "bili", alpha = .3)
+  
+  gg_plt <- gg_plt+ geom_smooth(se=.95)
+  
   
   xvar <- varsel_pbc$topvars
   xvar.cat <- c("edema", "stage")
   xvar <- xvar[-which(xvar %in% xvar.cat)]
   
   # plot the next 5 continuous variable dependence plots.
-  gg_plt <- plot(ggrf, xvar = xvar[2:6], panel = TRUE, 
-                 se = FALSE, alpha = .3, 
-                 method = "glm", formula = y~poly(x,2))
+  gg_plt <- plot(ggrf, xvar = xvar[2:6], panel = TRUE)
+  
+  gg_plt <- gg_plt + geom_smooth(se = FALSE, alpha = .3, 
+                                 method = "glm", formula = y~poly(x,2))
   
   expect_warning(gg_plt <- plot(ggrf, xvar = xvar.cat, panel=TRUE))
 })
@@ -150,8 +154,8 @@ test_that("gg_partial regression",{
   expect_is(plot(gg_dta, error="shade"), "ggplot")
   # Test object type
   
-  expect_is(plot(gg_dta, se=.95, error="shade"), "ggplot")
-  
+  expect_is(plot(gg_dta), "ggplot")
+  gg_plt <- plot(gg_dta, error="shade")+ geom_smooth(se=.95)
   
 })
 
