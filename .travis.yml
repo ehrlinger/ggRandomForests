@@ -15,19 +15,31 @@ notifications:
     on_success: change
     on_failure: change
 
-apt_packages:
-  - moreutils
-  - tmux
-  - texinfo
-  - texlive-full
+#apt_packages:
+#  - moreutils
+#  - tmux
+#  - texinfo
+#  - texlive-full
   
-brew_packages:
-  - tmux
- 
+#brew_packages:
+#  - tmux
+
+# Be strict when checking our package
+warnings_are_errors: true
+
+r_binary_packages:
+ - RUnit
+ - testthat
+ - dplyr
+
+# Install the bleeding edge version of a package from github (eg to pick
+# up a not-yet-released bugfix)
+
 # For code coverage
 r_github_packages:
   - ehrlinger/randomForestSRC
   - jimhester/covr
+  - hadley/ggplot2
 
 after_success:
   - Rscript -e 'covr::coveralls()'
