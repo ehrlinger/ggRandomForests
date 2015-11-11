@@ -717,8 +717,9 @@ plot(ggpart, panel = TRUE) + #, se = FALSE
 
 Categorical partial dependence is displayed as boxplots, similar to categorical variable dependence. Risk adjustment greatly reduces the spread of the response as expected, and may also move the mean response compared to the unadjusted results. The categorical \code{gg_partial} plot of Figure~\ref{fig:pbc-partial-edema} indicates that, adjusting for other variables, survival decreases with rising \code{edema} values. We also note that the risk adjusted distribution does spread out as we move further out in time.
 <<pbc-partial-edema, echo=TRUE, fig.cap="Partial dependence plot of predicted survival at 1 year (red) and 3 years (blue) as a function of \\code{edema} groups (categorical variable). Boxplots indicate distribution within each group.">>= 
-plot(pbc_ggpart[["edema"]],notch = TRUE, alpha = 0.4, 
-     outlier.shape = NA) + # panel=TRUE, 
+ggplot(pbc_ggpart[["edema"]], aes(y=yhat, x=edema, col=group))+
+  geom_boxplot(notch = TRUE, 
+               outlier.shape = NA) + # panel=TRUE, 
   labs(x = "Edema", y = "Survival (%)", color="Time", shape="Time") +
   theme(legend.position = c(0.2, 0.2)) +
   coord_cartesian(ylim = c(25, 101))
@@ -925,7 +926,7 @@ data("partial_coplot_pbc", package = "ggRandomForests")
 @
 
 <<bili-albumin, fig.cap="Partial dependence coplot of survival at 1 year against \\code{bili}, conditional on \\code{albumin} interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=TRUE>>= 
-plot(partial_coplot_pbc) + #
+ggplot(partial_coplot_pbc, aes(x=bili, y=yhat, col=group, shape=group)) + #
   geom_smooth(se = FALSE) +
   labs(x = st.labs["bili"], y = "Survival at 1 year (%)", 
        color = "albumin", shape = "albumin") +
@@ -940,7 +941,7 @@ For completeness, we construct the compliment coplot view of one year survival a
 data("partial_coplot_pbc2", package = "ggRandomForests")
 
 # Partial coplot
-plot(partial_coplot_pbc2)+
+ggplot(partial_coplot_pbc2, aes(x=albumin, y=yhat, col=group, shape=group))+
   geom_smooth(se = FALSE) +
   labs(x = st.labs["albumin"], y = "Survival at 1 year (%)", 
        color = "Bilirubin", shape = "Bilirubin") +

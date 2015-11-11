@@ -567,10 +567,12 @@ Since the \code{gg_partial_coplot} makes a call to \code{randomForestSRC::plot.v
 # Load the stored partial coplot data.
 data(partial_coplot_Boston)
 
-# Partial coplot
-plot(partial_coplot_Boston)+ 
+# # Partial coplot
+# plot(partial_coplot_Boston) + ## Looks like a dangling or missing '+' characer in the plot.gg_partial_coplot
+ggplot(partial_coplot_Boston, aes(x=lstat, y=yhat, col=group, shape=group))+
+  geom_point()+
   geom_smooth(se=FALSE, alpha=.25)+
-  labs(x=st.labs["lstat"], y=st.labs["medv"], 
+  labs(x=st.labs["lstat"], y=st.labs["medv"],
        color="Room", shape="Room")+
   scale_color_brewer(palette="Set1")
 @
@@ -592,8 +594,10 @@ partial_coplot_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm",
 data(partial_coplot_Boston2)
 
 # Partial coplot
-plot(partial_coplot_Boston2)+
-  geom_smooth(, se=FALSE)+
+#plot(partial_coplot_Boston2)+ ## again plot.gg_partial_coplot
+ggplot(partial_coplot_Boston, aes(x=lstat, y=yhat, col=group, shape=group))+
+  geom_point()+
+  geom_smooth(se=FALSE)+
   labs(x=st.labs["rm"], y=st.labs["medv"], 
        color="Lower Status", shape="Lower Status")+
   scale_color_brewer(palette="Set1")

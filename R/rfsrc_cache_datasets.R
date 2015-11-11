@@ -54,10 +54,6 @@
 #' 
 #' @importFrom randomForestSRC rfsrc var.select plot.variable find.interaction
 #' @export
-#' 
-# # @export rf_cache_datasets
-# # @aliases rfsrc_cache_datasets rf_cache_datasets
-
 rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
   dta <- new.env()
   

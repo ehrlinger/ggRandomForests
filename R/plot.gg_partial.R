@@ -26,7 +26,7 @@
 #' 
 #' @param x \code{\link{gg_partial}} object created from a \code{\link[randomForestSRC]{rfsrc}} forest object
 #' @param points plot points (boolean)
-# @param smooth use smooth curve (by type)
+#' @param smooth use smooth curve (by type)
 #' @param error "shade", "bars", "lines" or "none"
 #' @param ... extra arguments passed to \code{ggplot2} functions
 #' 

@@ -1,5 +1,8 @@
 #' logit_loess takes 
-#'
+#' 
+#' @param gg_dta dataset contains a yhat to smooth
+#' @param xvar name of x variable to smooth along
+#' @param level quantile level argument for \code{\link{qnorm}} function.
 #'
 #'
 #'

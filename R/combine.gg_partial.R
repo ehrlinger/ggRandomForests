@@ -15,15 +15,15 @@
 #' The second call will append a single \code{lbls} label to the 
 #' \code{\link{gg_partial}} object.
 #' 
-#'  @param x \code{\link{gg_partial}}  object
-#'  @param y \code{\link{gg_partial}}  object
-#'  @param lbls vector of 2 strings to label the combined data.
-#'  @param ... not used
+#' @param x \code{\link{gg_partial}}  object
+#' @param y \code{\link{gg_partial}}  object
+#' @param lbls vector of 2 strings to label the combined data.
+#' @param ... not used
 #'  
-#'  @return \code{\link{gg_partial}} or \code{gg_partial_list} based on 
+#' @return \code{\link{gg_partial}} or \code{gg_partial_list} based on 
 #'  class of x and y.
 #'  
-#'  @aliases combine.gg_partial combine.gg_partial_list
+#' @aliases combine.gg_partial combine.gg_partial_list
 #' 
 #' @importFrom parallel mclapply
 #' 
@@ -63,8 +63,6 @@
 #' plot(ggpart, panel=TRUE) 
 #' 
 #' 
-#
-# Tested in the gg_partial testthat file.
 #' @export
 combine.gg_partial <- function(x, y, lbls, ...){
   return(combine.gg_partial_list(x, y, lbls, ...))
