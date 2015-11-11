@@ -330,14 +330,15 @@ kable(md,
       booktabs=TRUE)
 
 ## ----rfsrc-plot3Mnth, echo=TRUE, fig.cap="Random forest predicted survival (Figure~\\ref{fig:rfsrc-plot}) with vertical dashed lines indicate the 1 and 3 year survival estimates."----
-ggRFsrc + geom_vline(aes(xintercept = c(1, 3)), linetype = "dashed") + 
+ggRFsrc + geom_vline(aes(xintercept = 1), linetype = "dashed") + 
+   geom_vline(aes(xintercept = 3), linetype = "dashed") + 
   coord_cartesian(xlim = c(0, 5))
 
 ## ----variable-plotbili, echo=TRUE, fig.cap="Variable dependence of survival at 1 and 3 years on \\code{bili} variable. Individual cases are marked with blue circles (alive or censored) and red `x's (dead). Loess smooth curve with shaded 95\\% confidence band indicates decreasing survival with increasing bilirubin.", fig.height=4----
 gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3), 
                     time.labels = c("1 Year", "3 Years"))
 
-plot(gg_v, xvar = "bili", se=FALSE, alpha = 0.4) + 
+plot(gg_v, xvar = "bili", alpha = 0.4) + #, se=FALSE
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -348,7 +349,7 @@ plot(gg_v, xvar = "bili", se=FALSE, alpha = 0.4) +
 xvar <- c("bili", "albumin", "copper", "prothrombin", "age")
 xvar.cat <- c("edema")
 
-plot(gg_v, xvar = xvar[-1], panel = TRUE, se = FALSE, alpha = 0.4, span=1) + 
+plot(gg_v, xvar = xvar[-1], panel = TRUE, alpha = 0.4) + #se = FALSE, , span=1
   labs(y = "Survival") + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -382,14 +383,15 @@ pbc_ggpart <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]],
 ggpart <- pbc_ggpart
 ggpart$edema <- NULL
 
-plot(ggpart, se = FALSE, panel = TRUE) + 
+plot(ggpart, panel = TRUE) + #, se = FALSE
   labs(x = "", y = "Survival", color = "Time", shape = "Time") +
   theme(legend.position = c(0.8, 0.2)) + 
   coord_cartesian(ylim = c(25, 101))
 
 ## ----pbc-partial-edema, echo=TRUE, fig.cap="Partial dependence plot of predicted survival at 1 year (red) and 3 years (blue) as a function of \\code{edema} groups (categorical variable). Boxplots indicate distribution within each group."----
-plot(pbc_ggpart[["edema"]], panel=TRUE, notch = TRUE, alpha = 0.4, 
-     outlier.shape = NA) + 
+ggplot(pbc_ggpart[["edema"]], aes(y=yhat, x=edema, col=group))+
+  geom_boxplot(notch = TRUE, 
+               outlier.shape = NA) + # panel=TRUE, 
   labs(x = "Edema", y = "Survival (%)", color="Time", shape="Time") +
   theme(legend.position = c(0.2, 0.2)) +
   coord_cartesian(ylim = c(25, 101))
@@ -452,8 +454,8 @@ ggvar$edema <- paste("edema = ", ggvar$edema, sep = "")
 
 # Plot with linear smooth (method argument)
 var_dep <- plot(ggvar, xvar = "bili", 
-                method = "glm",
-                alpha = 0.5, se = FALSE) + 
+                alpha = 0.5) + 
+#  geom_smooth(method = "glm",se = FALSE) +
   labs(y = "Survival", 
        x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
@@ -474,8 +476,7 @@ ggvar$albumin_grp <- cut(ggvar$albumin, breaks = albumin_cts)
 # Adjust naming for facets
 levels(ggvar$albumin_grp) <- paste("albumin =", levels(ggvar$albumin_grp))
 
-plot(ggvar, xvar = "bili", 
-     method = "glm", alpha = 0.5, se = FALSE) + 
+plot(ggvar, xvar = "bili", alpha = 0.5) +  #method = "glm", , se = FALSE
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -498,8 +499,8 @@ ggvar$bili_grp <- bili_grp
 levels(ggvar$bili_grp) <- paste("bilirubin =", levels(bili_grp))
 
 # plot.gg_variable
-plot(ggvar, xvar = "albumin", 
-     method = "glm", alpha = 0.5, se = FALSE) + 
+plot(ggvar, xvar = "albumin", alpha = 0.5) +
+#     method = "glm", se = FALSE) + 
   labs(y = "Survival", x = st.labs["albumin"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -519,7 +520,8 @@ plot(ggvar, xvar = "albumin",
 data("partial_coplot_pbc", package = "ggRandomForests")
 
 ## ----bili-albumin, fig.cap="Partial dependence coplot of survival at 1 year against \\code{bili}, conditional on \\code{albumin} interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=TRUE----
-plot(partial_coplot_pbc, se = FALSE) +
+ggplot(partial_coplot_pbc, aes(x=bili, y=yhat, col=group, shape=group)) + #
+  geom_smooth(se = FALSE) +
   labs(x = st.labs["bili"], y = "Survival at 1 year (%)", 
        color = "albumin", shape = "albumin") +
   coord_cartesian(y = c(49,101))
@@ -529,7 +531,8 @@ plot(partial_coplot_pbc, se = FALSE) +
 data("partial_coplot_pbc2", package = "ggRandomForests")
 
 # Partial coplot
-plot(partial_coplot_pbc2, se = FALSE) +
+ggplot(partial_coplot_pbc2, aes(x=albumin, y=yhat, col=group, shape=group))+
+  geom_smooth(se = FALSE) +
   labs(x = st.labs["albumin"], y = "Survival at 1 year (%)", 
        color = "Bilirubin", shape = "Bilirubin") +
   coord_cartesian(y = c(49,101))

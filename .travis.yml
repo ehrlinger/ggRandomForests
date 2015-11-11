@@ -15,14 +15,14 @@ notifications:
     on_success: change
     on_failure: change
 
-#apt_packages:
-#  - moreutils
-#  - tmux
-#  - texinfo
-#  - texlive-full
+apt_packages:
+  - moreutils
+  - tmux
+  - texinfo
+  - texlive-full
   
-#brew_packages:
-#  - tmux
+brew_packages:
+  - tmux
 
 # Be strict when checking our package
 warnings_are_errors: true

@@ -110,7 +110,6 @@ dta <- melt(Boston, id.vars=c("medv","chas"))
 # plot panels for each covariate colored by the logical chas variable.
 ggplot(dta, aes(x=medv, y=value, color=chas))+
   geom_point(alpha=.4)+
-  geom_rug(data=dta %>% filter(is.na(value)))+
   labs(y="", x=st.labs["medv"]) +
   scale_color_brewer(palette="Set2")+
   facet_wrap(~variable, scales="free_y", ncol=3)
@@ -162,14 +161,14 @@ gg_v <- gg_variable(rfsrc_Boston)
 xvar <- gg_md$topvars
 
 # plot the variable list in a single panel plot
-plot(gg_v, xvar=xvar, panel=TRUE, 
-     se=.95, span=1.2, alpha=.4)+
+plot(gg_v, xvar=xvar, panel=TRUE)+
   labs(y=st.labs["medv"], x="")
 
 ## ----chas, fig.cap="Variable dependence for Charles River logical variable."------------
-plot(gg_v, xvar="chas", points=FALSE,
-     se=FALSE, notch=TRUE, alpha=.4)+
+plot(gg_v, xvar="chas", alpha=.4)+
   labs(y=st.labs["medv"])
+
+# , points=FALSE, se=FALSE, notch=TRUE
 
 ## ----partial, fig.cap="Partial dependence panels. Risk adjusted variable dependence for variables in minimal depth rank order.", fig.width=7, fig.height=5----
 # Load the data, from the call:
@@ -183,7 +182,7 @@ data(partial_Boston)
 gg_p <- gg_partial(partial_Boston)
 
 # plot the variable list in a single panel plot
-plot(gg_p, xvar=xvar, panel=TRUE, se=FALSE) +
+plot(gg_p, panel=TRUE) +  #xvar=xvar, se=FALSE
   labs(y=st.labs["medv"], x="")
 
 ## ----interactions, fig.cap="Minimal depth variable interactions. Reference variables are marked with red cross in each panel. Higher values indicate lower interactivity with reference variable.", fig.width=7, fig.height=5----
@@ -213,8 +212,8 @@ levels(gg_v$rm_grp) <- paste("rm in ",
 
 # Create a variable dependence (co)plot, 
 # faceted on group membership.
-plot(gg_v, xvar = "lstat", smooth = TRUE, 
-     method = "loess", span=1.5, alpha = .5, se = FALSE) + 
+plot(gg_v, xvar = "lstat", smooth = TRUE, alpha = .5)+
+  #   method = "loess", span=1.5, se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
@@ -235,8 +234,8 @@ gg_v$lstat_grp <- lstat_grp
 levels(gg_v$lstat_grp) <- paste("lstat in ", levels(gg_v$lstat_grp), " (%)",sep="")
 
 # Create a variable dependence (co)plot, faceted on group membership.
-plot(gg_v, xvar = "rm", smooth = TRUE, 
-     method = "loess", span=1.5, alpha = .5, se = FALSE) + 
+plot(gg_v, xvar = "rm", smooth = TRUE, alpha = .5)+
+     #method = "loess", span=1.5, , se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["rm"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
@@ -252,9 +251,12 @@ plot(gg_v, xvar = "rm", smooth = TRUE,
 # Load the stored partial coplot data.
 data(partial_coplot_Boston)
 
-# Partial coplot
-plot(partial_coplot_Boston, se=FALSE)+
-  labs(x=st.labs["lstat"], y=st.labs["medv"], 
+# # Partial coplot
+# plot(partial_coplot_Boston) + ## Looks like a dangling or missing '+' characer in the plot.gg_partial_coplot
+ggplot(partial_coplot_Boston, aes(x=lstat, y=yhat, col=group, shape=group))+
+  geom_point()+
+  geom_smooth(se=FALSE, alpha=.25)+
+  labs(x=st.labs["lstat"], y=st.labs["medv"],
        color="Room", shape="Room")+
   scale_color_brewer(palette="Set1")
 
@@ -268,7 +270,10 @@ plot(partial_coplot_Boston, se=FALSE)+
 data(partial_coplot_Boston2)
 
 # Partial coplot
-plot(partial_coplot_Boston2, se=FALSE)+
+#plot(partial_coplot_Boston2)+ ## again plot.gg_partial_coplot
+ggplot(partial_coplot_Boston, aes(x=lstat, y=yhat, col=group, shape=group))+
+  geom_point()+
+  geom_smooth(se=FALSE)+
   labs(x=st.labs["rm"], y=st.labs["medv"], 
        color="Lower Status", shape="Lower Status")+
   scale_color_brewer(palette="Set1")

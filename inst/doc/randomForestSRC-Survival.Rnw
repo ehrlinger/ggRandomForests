@@ -617,7 +617,8 @@ Although often characterized as a \emph{black box} method, the forest predictor 
 
 Variable dependence is straight forward to calculate, involving only the getting the predicted response for each observation. In survival settings, we must  account for the additional dimension of time. We plot the response at specific time points of interest, for example survival at 1 or 3 years.
 <<rfsrc-plot3Mnth, echo=TRUE, fig.cap="Random forest predicted survival (Figure~\\ref{fig:rfsrc-plot}) with vertical dashed lines indicate the 1 and 3 year survival estimates.">>= 
-ggRFsrc + geom_vline(aes(xintercept = c(1, 3)), linetype = "dashed") + 
+ggRFsrc + geom_vline(aes(xintercept = 1), linetype = "dashed") + 
+   geom_vline(aes(xintercept = 3), linetype = "dashed") + 
   coord_cartesian(xlim = c(0, 5))
 @
 The \code{gg_rfsrc} of Figure~\ref{fig:rfsrc-plot3Mnth} identical to Figure~\ref{fig:rfsrc-plot} (stored in the \code{ggRFsrc} variable) with the addition of a vertical dashed line at the 1 and 3 year survival time. A variable dependence plot is generated from the predicted response value of each survival curve at the intersecting time line plotted against covariate value for that observation. This can be visualized as taking a slice of the predicted response at each time line, and spreading the resulting points out along the variable of interest.
@@ -627,7 +628,7 @@ The \code{gg_variable} function extracts the training set variables and the pred
 gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3), 
                     time.labels = c("1 Year", "3 Years"))
 
-plot(gg_v, xvar = "bili", se=FALSE, alpha = 0.4) + 
+plot(gg_v, xvar = "bili", alpha = 0.4) + #, se=FALSE
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -645,7 +646,7 @@ An additional \code{plot.gg_variable} argument (\code{panel = TRUE}) can be used
 xvar <- c("bili", "albumin", "copper", "prothrombin", "age")
 xvar.cat <- c("edema")
 
-plot(gg_v, xvar = xvar[-1], panel = TRUE, se = FALSE, alpha = 0.4, span=1) + 
+plot(gg_v, xvar = xvar[-1], panel = TRUE, alpha = 0.4) + #se = FALSE, , span=1
   labs(y = "Survival") + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -708,7 +709,7 @@ We then segregate the continuous and categorical variables, and generate a panel
 ggpart <- pbc_ggpart
 ggpart$edema <- NULL
 
-plot(ggpart, se = FALSE, panel = TRUE) + 
+plot(ggpart, panel = TRUE) + #, se = FALSE
   labs(x = "", y = "Survival", color = "Time", shape = "Time") +
   theme(legend.position = c(0.8, 0.2)) + 
   coord_cartesian(ylim = c(25, 101))
@@ -716,8 +717,9 @@ plot(ggpart, se = FALSE, panel = TRUE) +
 
 Categorical partial dependence is displayed as boxplots, similar to categorical variable dependence. Risk adjustment greatly reduces the spread of the response as expected, and may also move the mean response compared to the unadjusted results. The categorical \code{gg_partial} plot of Figure~\ref{fig:pbc-partial-edema} indicates that, adjusting for other variables, survival decreases with rising \code{edema} values. We also note that the risk adjusted distribution does spread out as we move further out in time.
 <<pbc-partial-edema, echo=TRUE, fig.cap="Partial dependence plot of predicted survival at 1 year (red) and 3 years (blue) as a function of \\code{edema} groups (categorical variable). Boxplots indicate distribution within each group.">>= 
-plot(pbc_ggpart[["edema"]], panel=TRUE, notch = TRUE, alpha = 0.4, 
-     outlier.shape = NA) + 
+ggplot(pbc_ggpart[["edema"]], aes(y=yhat, x=edema, col=group))+
+  geom_boxplot(notch = TRUE, 
+               outlier.shape = NA) + # panel=TRUE, 
   labs(x = "Edema", y = "Survival (%)", color="Time", shape="Time") +
   theme(legend.position = c(0.2, 0.2)) +
   coord_cartesian(ylim = c(25, 101))
@@ -829,8 +831,8 @@ ggvar$edema <- paste("edema = ", ggvar$edema, sep = "")
 
 # Plot with linear smooth (method argument)
 var_dep <- plot(ggvar, xvar = "bili", 
-                method = "glm",
-                alpha = 0.5, se = FALSE) + 
+                alpha = 0.5) + 
+#  geom_smooth(method = "glm",se = FALSE) +
   labs(y = "Survival", 
        x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
@@ -858,8 +860,7 @@ ggvar$albumin_grp <- cut(ggvar$albumin, breaks = albumin_cts)
 # Adjust naming for facets
 levels(ggvar$albumin_grp) <- paste("albumin =", levels(ggvar$albumin_grp))
 
-plot(ggvar, xvar = "bili", 
-     method = "glm", alpha = 0.5, se = FALSE) + 
+plot(ggvar, xvar = "bili", alpha = 0.5) +  #method = "glm", , se = FALSE
   labs(y = "Survival", x = st.labs["bili"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -884,8 +885,8 @@ ggvar$bili_grp <- bili_grp
 levels(ggvar$bili_grp) <- paste("bilirubin =", levels(bili_grp))
 
 # plot.gg_variable
-plot(ggvar, xvar = "albumin", 
-     method = "glm", alpha = 0.5, se = FALSE) + 
+plot(ggvar, xvar = "albumin", alpha = 0.5) +
+#     method = "glm", se = FALSE) + 
   labs(y = "Survival", x = st.labs["albumin"]) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
@@ -925,7 +926,8 @@ data("partial_coplot_pbc", package = "ggRandomForests")
 @
 
 <<bili-albumin, fig.cap="Partial dependence coplot of survival at 1 year against \\code{bili}, conditional on \\code{albumin} interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=TRUE>>= 
-plot(partial_coplot_pbc, se = FALSE) +
+ggplot(partial_coplot_pbc, aes(x=bili, y=yhat, col=group, shape=group)) + #
+  geom_smooth(se = FALSE) +
   labs(x = st.labs["bili"], y = "Survival at 1 year (%)", 
        color = "albumin", shape = "albumin") +
   coord_cartesian(y = c(49,101))
@@ -939,7 +941,8 @@ For completeness, we construct the compliment coplot view of one year survival a
 data("partial_coplot_pbc2", package = "ggRandomForests")
 
 # Partial coplot
-plot(partial_coplot_pbc2, se = FALSE) +
+ggplot(partial_coplot_pbc2, aes(x=albumin, y=yhat, col=group, shape=group))+
+  geom_smooth(se = FALSE) +
   labs(x = st.labs["albumin"], y = "Survival at 1 year (%)", 
        color = "Bilirubin", shape = "Bilirubin") +
   coord_cartesian(y = c(49,101))

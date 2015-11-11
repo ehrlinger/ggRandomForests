@@ -249,7 +249,6 @@ dta <- melt(Boston, id.vars=c("medv","chas"))
 # plot panels for each covariate colored by the logical chas variable.
 ggplot(dta, aes(x=medv, y=value, color=chas))+
   geom_point(alpha=.4)+
-  geom_rug(data=dta %>% filter(is.na(value)))+
   labs(y="", x=st.labs["medv"]) +
   scale_color_brewer(palette="Set2")+
   facet_wrap(~variable, scales="free_y", ncol=3)
@@ -403,8 +402,7 @@ gg_v <- gg_variable(rfsrc_Boston)
 xvar <- gg_md$topvars
 
 # plot the variable list in a single panel plot
-plot(gg_v, xvar=xvar, panel=TRUE, 
-     se=.95, span=1.2, alpha=.4)+
+plot(gg_v, xvar=xvar, panel=TRUE)+
   labs(y=st.labs["medv"], x="")
 @
 
@@ -413,9 +411,10 @@ This figure looks very similar to the EDA (Section~\ref{S:eda}) figure, although
 There is not a convenient method to panel scatter plots and boxplots together, so we recommend creating panel plots for each variable type separately. The Boston housing data does contain a single categorical variable, the Charles river logical variable. Variable dependence plots for categorical variables are constructed using boxplots to show the distribution of the predictions within each category. Although the Charles river variable has the lowest importance scores in both VIMP and minimal depth measures, we include the variable dependence plot as an example of categorical variable dependence.
 
 <<chas, fig.cap="Variable dependence for Charles River logical variable.">>=
-plot(gg_v, xvar="chas", points=FALSE,
-     se=FALSE, notch=TRUE, alpha=.4)+
+plot(gg_v, xvar="chas", alpha=.4)+
   labs(y=st.labs["medv"])
+
+# , points=FALSE, se=FALSE, notch=TRUE
 @
 
 The figure shows that most housing tracts do not border the Charles river (\code{chas=FALSE}), and comparing the distributions of the predicted median housing values indicates no significant difference in home values. This reinforces the findings in both VIMP and Minimal depth, the Charles river variable has very little impact on the forest prediction of median home values.  
@@ -442,7 +441,7 @@ data(partial_Boston)
 gg_p <- gg_partial(partial_Boston)
 
 # plot the variable list in a single panel plot
-plot(gg_p, xvar=xvar, panel=TRUE, se=FALSE) +
+plot(gg_p, panel=TRUE) +  #xvar=xvar, se=FALSE
   labs(y=st.labs["medv"], x="")
 @
 
@@ -498,8 +497,8 @@ levels(gg_v$rm_grp) <- paste("rm in ",
 
 # Create a variable dependence (co)plot, 
 # faceted on group membership.
-plot(gg_v, xvar = "lstat", smooth = TRUE, 
-     method = "loess", span=1.5, alpha = .5, se = FALSE) + 
+plot(gg_v, xvar = "lstat", smooth = TRUE, alpha = .5)+
+  #   method = "loess", span=1.5, se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
@@ -525,8 +524,8 @@ gg_v$lstat_grp <- lstat_grp
 levels(gg_v$lstat_grp) <- paste("lstat in ", levels(gg_v$lstat_grp), " (%)",sep="")
 
 # Create a variable dependence (co)plot, faceted on group membership.
-plot(gg_v, xvar = "rm", smooth = TRUE, 
-     method = "loess", span=1.5, alpha = .5, se = FALSE) + 
+plot(gg_v, xvar = "rm", smooth = TRUE, alpha = .5)+
+     #method = "loess", span=1.5, , se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["rm"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
@@ -568,9 +567,12 @@ Since the \code{gg_partial_coplot} makes a call to \code{randomForestSRC::plot.v
 # Load the stored partial coplot data.
 data(partial_coplot_Boston)
 
-# Partial coplot
-plot(partial_coplot_Boston, se=FALSE)+
-  labs(x=st.labs["lstat"], y=st.labs["medv"], 
+# # Partial coplot
+# plot(partial_coplot_Boston) + ## Looks like a dangling or missing '+' characer in the plot.gg_partial_coplot
+ggplot(partial_coplot_Boston, aes(x=lstat, y=yhat, col=group, shape=group))+
+  geom_point()+
+  geom_smooth(se=FALSE, alpha=.25)+
+  labs(x=st.labs["lstat"], y=st.labs["medv"],
        color="Room", shape="Room")+
   scale_color_brewer(palette="Set1")
 @
@@ -592,7 +594,10 @@ partial_coplot_Boston2 <- gg_partial_coplot(rfsrc_Boston, xvar="rm",
 data(partial_coplot_Boston2)
 
 # Partial coplot
-plot(partial_coplot_Boston2, se=FALSE)+
+#plot(partial_coplot_Boston2)+ ## again plot.gg_partial_coplot
+ggplot(partial_coplot_Boston, aes(x=lstat, y=yhat, col=group, shape=group))+
+  geom_point()+
+  geom_smooth(se=FALSE)+
   labs(x=st.labs["rm"], y=st.labs["medv"], 
        color="Lower Status", shape="Lower Status")+
   scale_color_brewer(palette="Set1")
