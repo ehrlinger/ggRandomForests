@@ -5,18 +5,18 @@
 #   https://github.com/craigcitro/r-travis/wiki
 
 language: r
-sudo: required
-os:
-  - linux
-  - osx
+sudo: false
+#os:
+#  - linux
+#  - osx
 
 notifications:
   email:
     on_success: change
     on_failure: change
 
-apt_packages:
-  - moreutils
+#apt_packages:
+#  - moreutils
 #  - tmux
 #  - texinfo
 #  - texlive-full
