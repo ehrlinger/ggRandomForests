@@ -25,13 +25,13 @@ notifications:
 #  - tmux
 
 # Be strict when checking our package
-warnings_are_errors: true
+#warnings_are_errors: true
 
-r_binary_packages:
- - RUnit
- - testthat
- - devtools
- - dplyr
+#r_binary_packages:
+# - RUnit
+# - testthat
+# - devtools
+# - dplyr
 
 # Install the bleeding edge version of a package from github (eg to pick
 # up a not-yet-released bugfix)
