@@ -17,12 +17,12 @@ notifications:
 
 apt_packages:
   - moreutils
-  - tmux
-  - texinfo
-  - texlive-full
+#  - tmux
+#  - texinfo
+#  - texlive-full
   
-brew_packages:
-  - tmux
+#brew_packages:
+#  - tmux
 
 # Be strict when checking our package
 warnings_are_errors: true
@@ -30,6 +30,7 @@ warnings_are_errors: true
 r_binary_packages:
  - RUnit
  - testthat
+ - devtools
  - dplyr
 
 # Install the bleeding edge version of a package from github (eg to pick
