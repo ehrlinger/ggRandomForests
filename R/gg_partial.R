@@ -156,20 +156,23 @@
 #' # Combine the objects to get multiple time curves 
 #' # along variables on a single figure.
 #' pbc_ggpart <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]], 
-#'                               lbls = c("1 Year", "3 Years"))
+#'                                  lbls = c("1 Year", "3 Years"))
 #'
+#' summary(pbc_ggpart)
+#' class(pbc_ggpart[["bili"]])
+#' 
 #' # Plot the highest ranked variable, by name.
-#' plot(pbc_ggpart[["bili"]]) #, se = FALSE
+#' #plot(pbc_ggpart[["bili"]])
 #'      
-#'      # Create a temporary holder and remove the stage and edema data
+#' # Create a temporary holder and remove the stage and edema data
 #' ggpart <- pbc_ggpart
 #' ggpart$edema <- NULL
 #' 
 #' # Panel plot the remainder.
-#' plot(ggpart, se = FALSE, panel = TRUE)
+#' plot(ggpart, panel = TRUE)
 #' 
-#' plot(pbc_ggpart[["edema"]], panel=TRUE,
-#'      notch = TRUE, alpha = .3, outlier.shape = NA) 
+#' #plot(pbc_ggpart[["edema"]], panel=TRUE) #,
+#'      # notch = TRUE, alpha = .3, outlier.shape = NA) 
 #'   
 #' @aliases gg_partial gg_partial_list
 #' @name gg_partial

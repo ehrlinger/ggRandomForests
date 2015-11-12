@@ -129,8 +129,8 @@ gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL
 plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 
 ## -------- pbc data
- }
- @export
+}
+ 
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

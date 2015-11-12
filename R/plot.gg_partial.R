@@ -149,8 +149,9 @@
 #' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 #' 
 #' ## -------- pbc data
-#'  }
-#'  @export
+#' }
+#'  
+#' @export
 plot.gg_partial <- function(x, points=TRUE, smooth="loess",
                             error=c("none", "shade","bars","lines"),
                             ...){

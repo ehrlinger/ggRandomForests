@@ -41,10 +41,9 @@
 #' data(partial_coplot_pbc, package="ggRandomForests")
 #' 
 #' # Partial coplot
-#' plot(partial_coplot_pbc, se = FALSE)
+#' plot(partial_coplot_pbc) #, se = FALSE)
 #'  
 #' 
-
 #' @export
 gg_partial_coplot.rfsrc <- function(object, 
                                     xvar, 

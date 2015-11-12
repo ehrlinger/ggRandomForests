@@ -54,7 +54,7 @@ partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
 data(partial_coplot_pbc, package="ggRandomForests")
 
 # Partial coplot
-plot(partial_coplot_pbc, se = FALSE)
+plot(partial_coplot_pbc) #, se = FALSE)
  
 
 }

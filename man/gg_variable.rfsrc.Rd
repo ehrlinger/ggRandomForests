@@ -51,7 +51,7 @@ plot(gg_dta, xvar="Sepal.Width")
 plot(gg_dta, xvar="Sepal.Length")
 
 plot(gg_dta, xvar=rfsrc_iris$xvar.names, 
-     panel=TRUE, se=FALSE)
+     panel=TRUE) # , se=FALSE)
 
 ## ------------------------------------------------------------
 ## regression
