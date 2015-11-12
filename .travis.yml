@@ -15,7 +15,8 @@ notifications:
     on_success: change
     on_failure: change
 
-#apt_packages:
+apt_packages:
+ - latex-xcolor
 #  - moreutils
 #  - tmux
 #  - texinfo
