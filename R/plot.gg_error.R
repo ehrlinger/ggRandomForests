@@ -114,7 +114,7 @@
 #' plot(gg_dta)
 #'}
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
-#' @importFrom tidyr gather
+#' @importFrom tidyr gather_
 #' @export
 plot.gg_error <- function(x, ...){
   gg_dta <- x
@@ -124,7 +124,8 @@ plot.gg_error <- function(x, ...){
   if(!inherits(gg_dta, "gg_error")) stop("Incorrect object type: Expects a gg_error object")
   
   if(dim(gg_dta)[2] > 2){
-    gg_dta <- gather(gg_dta, variable, value, -ntree)
+    gathercol <- colnames(gg_dta)[-which(colnames(gg_dta)=="ntree")]
+    gg_dta <- gather_(gg_dta, "variable", "value", gathercol)
     gg_plt <- ggplot(gg_dta, aes_string(x="ntree", y="value", col="variable"))
   }else{
     # We expect the object to have the following columns

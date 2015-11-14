@@ -164,7 +164,7 @@ data("pbc", package = "randomForestSRC")
 @
 
 <<data-clean>>= 
-library("reshape2")        # Transforming wide data into long data (melt)
+library("tidyr")        # Transforming wide data into long data (gather)
 
 ## Not displayed ##
 
@@ -252,11 +252,11 @@ It is good practice to view your data before beginning analysis. Exploratory Dat
 
 <<categoricalEDA, fig.cap="EDA plots for categorical variables (logicals and factors). Bars indicate number of patients within 1 year of followup interval for each categorical variable. Colors correspond to class membership within each variable. Missing values are included in white.", fig.width=7>>= 
 ## Not displayed ##
-# Use reshape2::melt to transform the data into long format.
+# Use tidyr::gather to transform the data into long format.
 cnt <- c(which(cls == "numeric" ), which(cls == "integer"))
 fct <- setdiff(1:ncol(pbc), cnt)
 fct <- c(fct, which(colnames(pbc) == "years"))
-dta <- melt(pbc[,fct], id.vars = "years")
+dta <- gather(pbc[,fct], variable, value, -years)
 
 # plot panels for each covariate colored by the logical chas variable.
 ggplot(dta, aes(x = years, fill = value)) +
@@ -272,9 +272,9 @@ In categorical EDA plots (Figure~\ref{fig:categoricalEDA}), we are looking for p
 <<continuousEDA, fig.cap="EDA plots for continuous variables. Symbols indicate observations with variable value on Y-axis against follow up time in years. Symbols are colored and shaped according to the death event  (\\code{status} variable). Missing values are indicated by rug marks along the X-axis", fig.width=7, fig.height=4>>= 
 ## Not displayed ##
 
-# Use reshape2::melt to transform the data into long format.
+# Use tidyr::gather to transform the data into long format.
 cnt <- c(cnt, which(colnames(pbc) == "status"))
-dta <- melt(pbc[,cnt], id.vars = c("years", "status"))
+dta <- gather(pbc[,cnt], variable, value, -years, -status)
 
 # plot panels for each covariate colored by the logical chas variable.
 ggplot(dta, aes(x = years, y = value, color = status, shape = status)) +
