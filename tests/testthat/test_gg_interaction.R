@@ -125,12 +125,14 @@ test_that("gg_interaction regression",{
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
-  data(rfsrc_Boston, package="ggRandomForests")
-  
-  expect_warning(gg_dta <- gg_interaction(rfsrc_Boston,
-                                          xvar.names=rfsrc_Boston$xvar.names[1:2]))
-  
-  expect_error(gg_interaction(gg_dta))
+  # We really only want to run this one when we're developing 
+  # data(rfsrc_Boston, package="ggRandomForests")
+  #  
+  #  expect_warning(gg_dta <- gg_interaction(rfsrc_Boston,
+  #                                          xvar.names=rfsrc_Boston$xvar.names[1:2]))
+  #  
+  #  expect_error(gg_interaction(gg_dta))
+  # 
 })
 
 test_that("gg_interaction exceptions",{

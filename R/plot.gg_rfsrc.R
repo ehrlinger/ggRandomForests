@@ -99,8 +99,8 @@
 #' 
 #' 
 #' }
-#' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_smooth geom_jitter geom_boxplot theme element_blank
-#' @importFrom reshape2 melt
+#' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_jitter geom_boxplot theme element_blank
+#' @importFrom tidyr gather_
 #' 
 #' @export
 plot.gg_rfsrc <- function(x,
@@ -126,7 +126,9 @@ plot.gg_rfsrc <- function(x,
                      outlier.colour = "transparent", fill="transparent", notch = TRUE, ...) +
         theme(axis.ticks = element_blank(), axis.text.x = element_blank())
     }else{
-      gg_dta.mlt <- melt(gg_dta, id.vars="y")
+      gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
+      gg_dta.mlt <- tidyr::gather_(gg_dta, "variable", "value", gathercols)
+      
       gg_plt <- ggplot(gg_dta.mlt, aes_string(x="variable",y="value")) +
         geom_jitter(aes_string(color="y",shape="y"), alpha=.5)
     }

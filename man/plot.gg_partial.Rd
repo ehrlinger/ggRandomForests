@@ -4,19 +4,17 @@
 \alias{plot.gg_partial}
 \title{Partial variable dependence plot, operates on a \code{\link{gg_partial}} object.}
 \usage{
-\method{plot}{gg_partial}(x, points = TRUE, smooth = "loess",
-  error = c("none", "shade", "bars", "lines"), ...)
+\method{plot}{gg_partial}(x, points = TRUE, error = c("none", "shade",
+  "bars", "lines"), ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_partial}} object created from a \code{\link[randomForestSRC]{rfsrc}} forest object}
 
-\item{points}{plot points (boolean)}
-
-\item{smooth}{use smooth curve (by type)}
+\item{points}{plot points (boolean) or a smooth line.}
 
 \item{error}{"shade", "bars", "lines" or "none"}
 
-\item{...}{extra arguments passed to \code{ggplot2} functions}
+\item{...}{extra arguments passed to \code{ggplot2} functions.}
 }
 \value{
 \code{ggplot} object

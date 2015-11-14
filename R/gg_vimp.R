@@ -34,7 +34,7 @@
 #' Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
 #' \emph{Electronic J. Statist.}, 1:519-537.
 #' 
-#' @importFrom reshape2 melt
+#' @importFrom tidyr gather 
 #' @importFrom randomForestSRC vimp
 #' 
 #' @examples
@@ -152,8 +152,7 @@ gg_vimp.rfsrc <- function(object, n_var, ...){
     }
     #clnms <- colnames(gg_dta)[-which(colnames(gg_dta)=="vars")]
     gg_dta <- gg_dta[1:n_var,]
-    gg_dta <- reshape2::melt(gg_dta, id.vars="vars", 
-                   variable.name="set", value.name="vimp")
+    gg_dta <- gather(gg_dta, set, vimp, -vars)
     gg_dta <- gg_dta[order(gg_dta$vimp, decreasing=TRUE),]
     gg_dta$vars <- factor(gg_dta$vars)
   }else{

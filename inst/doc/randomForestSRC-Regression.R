@@ -22,14 +22,13 @@ options(object.size = Inf, expressions = 100000, memory = Inf,
         replace.assign = TRUE, width = 90, prompt = "R> ")
 options(mc.cores = 1, rf.cores = 0)
 
-library(reshape2)
-
 ## ----libraries, echo=TRUE---------------------------------------------------------------
 ################## Load packages ##################
 library("ggplot2")         # Graphics engine
 library("RColorBrewer")    # Nice color palettes
 library("plot3D")          # for 3d surfaces. 
 library("dplyr")           # Better data manipulations
+library("tidyr")           # gather variables into long format
 library("parallel")        # mclapply for multicore processing
 
 # Analysis packages.
@@ -104,12 +103,13 @@ kable(dta.labs,
       booktabs = FALSE)
 
 ## ----eda, fig.cap="EDA variable plots. Points indicate variable value against the median home value variable. Points are colored according to the chas variable.", fig.width=7, fig.height=5----
-# Use reshape2::melt to transform the data into long format.
-dta <- melt(Boston, id.vars=c("medv","chas"))
+# Use tidyr::gather to transform the data into long format.
+dta <- gather(Boston, variable, value, -medv, -chas)
 
 # plot panels for each covariate colored by the logical chas variable.
-ggplot(dta, aes(x=medv, y=value, color=chas))+
-  geom_point(alpha=.4)+
+ggplot(dta)+
+  geom_point(alpha=0.4, aes(x=medv, y=value, color=chas))+
+  geom_smooth(aes(x=medv, y=value), se=FALSE)+ 
   labs(y="", x=st.labs["medv"]) +
   scale_color_brewer(palette="Set2")+
   facet_wrap(~variable, scales="free_y", ncol=3)
@@ -162,7 +162,7 @@ xvar <- gg_md$topvars
 
 # plot the variable list in a single panel plot
 plot(gg_v, xvar=xvar, panel=TRUE)+
-  labs(y=st.labs["medv"], x="")
+  labs(y=st.labs["medv"], x="") 
 
 ## ----chas, fig.cap="Variable dependence for Charles River logical variable."------------
 plot(gg_v, xvar="chas", alpha=.4)+
@@ -183,7 +183,8 @@ gg_p <- gg_partial(partial_Boston)
 
 # plot the variable list in a single panel plot
 plot(gg_p, panel=TRUE) +  #xvar=xvar, se=FALSE
-  labs(y=st.labs["medv"], x="")
+  labs(y=st.labs["medv"], x="") +
+  geom_smooth(se=FALSE)
 
 ## ----interactions, fig.cap="Minimal depth variable interactions. Reference variables are marked with red cross in each panel. Higher values indicate lower interactivity with reference variable.", fig.width=7, fig.height=5----
 # Load the data, from the call:
@@ -212,11 +213,12 @@ levels(gg_v$rm_grp) <- paste("rm in ",
 
 # Create a variable dependence (co)plot, 
 # faceted on group membership.
-plot(gg_v, xvar = "lstat", smooth = TRUE, alpha = .5)+
+plot(gg_v, xvar = "lstat", alpha = .5)+
   #   method = "loess", span=1.5, se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
+  geom_smooth(se=FALSE) +
   facet_wrap(~rm_grp)
 
 ## ----coplots2, fig.cap="Variable Coplots. Predicted median home value as a function of average number of rooms, stratified by percentage of lower status groups.", fig.width=7, fig.height=5----
@@ -234,11 +236,12 @@ gg_v$lstat_grp <- lstat_grp
 levels(gg_v$lstat_grp) <- paste("lstat in ", levels(gg_v$lstat_grp), " (%)",sep="")
 
 # Create a variable dependence (co)plot, faceted on group membership.
-plot(gg_v, xvar = "rm", smooth = TRUE, alpha = .5)+
+plot(gg_v, xvar = "rm", alpha = .5)+
      #method = "loess", span=1.5, , se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["rm"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
+  geom_smooth() +
   #scale_shape_manual(values = event.marks, labels = event.labels)+ 
   facet_wrap(~lstat_grp)
 
@@ -322,7 +325,9 @@ par(mai = c(0,0,0,0))
 
 # Transform the gg_partial_coplot object into a list of three named matrices
 # for surface plotting with plot3D::surf3D
-srf <- surface_matrix(partial_surf, c("lstat", "rm", "yhat"))
+suppressWarnings(
+  srf <- surface_matrix(partial_surf, c("lstat", "rm", "yhat"))
+)
 
 # Generate the figure.
 surf3D(x=srf$x, y=srf$y, z=srf$z, col=topo.colors(10),

@@ -5,7 +5,7 @@
 \title{Plot a \code{\link{gg_variable}} object,}
 \usage{
 \method{plot}{gg_variable}(x, xvar, time, time_labels, panel = FALSE,
-  oob = TRUE, smooth = TRUE, ...)
+  oob = TRUE, points = TRUE, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_variable}} object created from a 
@@ -21,9 +21,9 @@
 
 \item{oob}{oob estimates (boolean)}
 
-\item{smooth}{type of smooth curve}
+\item{points}{plot with points or a smooth curve}
 
-\item{...}{arguments passed to the \code{\link{gg_variable}} function.}
+\item{...}{arguments passed to the \code{ggplot2} functions.}
 }
 \value{
 A single \code{ggplot} object, or list of \code{ggplot} objects

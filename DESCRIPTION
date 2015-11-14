@@ -19,7 +19,7 @@ Imports:
     ggplot2,
     survival,
     parallel,
-    reshape2
+    tidyr
 Suggests:
     testthat,
     knitr,

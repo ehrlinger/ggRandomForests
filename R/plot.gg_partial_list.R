@@ -26,7 +26,7 @@
 #' 
 #' @param x \code{gg_partial_list} object created from a \code{\link{gg_partial}} 
 #' forest object
-#' @param points plot points (boolean)
+#' @param points plot points (boolean) or a smooth line.
 #' @param panel should the entire list be plotted together?
 #' @param ... extra arguments
 #' 
@@ -169,7 +169,7 @@ plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
     
     cls <- sapply(nms, function(nm){
       class(gg_dta[[nm]][,nm])
-      })
+    })
     
     gg_dta <- mclapply(nms, function(nm){
       obj <- gg_dta[[nm]]
@@ -194,15 +194,19 @@ plot.gg_partial_list <- function(x, points=TRUE, panel=FALSE, ...){
     
     if(sum(cls == "factor") == length(cls)){
       gg_plt <- gg_plt +
-      geom_boxplot(...)
+        geom_boxplot(...)
     }else{
-      gg_plt <- gg_plt +
-      geom_point(...) +
-      geom_smooth(...)
+      if(points){
+        gg_plt <- gg_plt +
+          geom_point(...) 
+      }else{
+        gg_plt <- gg_plt +
+          geom_smooth(...) 
+      }
     }
     return(gg_plt +
-           facet_wrap(~variable,
-                      scales="free_x")
+             facet_wrap(~variable,
+                        scales="free_x")
     )
   }else{
     # OR a list of figures.

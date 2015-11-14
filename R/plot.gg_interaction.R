@@ -43,7 +43,7 @@
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs element_text
-#' @importFrom reshape2 melt
+#' @importFrom tidyr gather_
 #' 
 #' @examples
 #' \dontrun{
@@ -139,8 +139,8 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
     gg_dta$names <- rownames(object)
     gg_dta$rank <- 1:dim(gg_dta)[1]
     
-    gg_dta <- melt(gg_dta, 
-                   id.vars=c("rank", "names"))
+    gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) %in% c("rank", "names"))]
+    gg_dta <- tidyr::gather_(gg_dta, "variable", "value", gathercols)
     
     gg_dta$value <- as.numeric(gg_dta$value)
     gg_dta$names <- factor(gg_dta$names,

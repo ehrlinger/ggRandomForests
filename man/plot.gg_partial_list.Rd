@@ -10,7 +10,7 @@
 \item{x}{\code{gg_partial_list} object created from a \code{\link{gg_partial}} 
 forest object}
 
-\item{points}{plot points (boolean)}
+\item{points}{plot points (boolean) or a smooth line.}
 
 \item{panel}{should the entire list be plotted together?}
 

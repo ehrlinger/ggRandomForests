@@ -18,7 +18,7 @@ test_that("gg_variable classifications",{
   expect_is(gg_dta, "gg_variable")
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_variable(gg_dta, xvar = "Petal.Width", )
+  gg_plt <- plot.gg_variable(gg_dta, xvar = "Petal.Width")
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -105,7 +105,7 @@ test_that("gg_variable regression",{
   
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_variable(gg_dta, panel=TRUE)
+  expect_warning(gg_plt <- plot.gg_variable(gg_dta, panel=TRUE))
   expect_is(gg_plt, "ggplot")
   
 })
