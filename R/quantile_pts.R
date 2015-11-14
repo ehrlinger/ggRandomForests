@@ -17,6 +17,7 @@
 #' @return vector of groups+1 cut point values.
 #' 
 #' @seealso \code{cut} \code{\link{gg_partial_coplot}}
+#' @importFrom stats quantile
 #' 
 #' @examples
 #' data(rfsrc_Boston)

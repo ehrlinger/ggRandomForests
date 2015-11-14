@@ -42,6 +42,7 @@
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs facet_wrap geom_boxplot geom_jitter
 #' @importFrom parallel mclapply
 #' @importFrom tidyr gather_
+#' @importFrom stats reformulate
 #' 
 #' @examples
 #' \dontrun{

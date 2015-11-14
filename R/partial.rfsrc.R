@@ -127,7 +127,7 @@
 #'
 #' 
 #' @importFrom randomForestSRC predict.rfsrc 
-#'
+#' @importFrom stats na.omit
 #'
 #' @export
 partial.rfsrc <- function (x, 

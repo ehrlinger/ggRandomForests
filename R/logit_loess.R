@@ -7,7 +7,7 @@
 #'
 #'
 #'
-#'
+#' @importFrom stats formula loess predict qnorm
 #'
 #'
 logit_loess <- function(gg_dta, xvar, level){

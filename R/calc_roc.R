@@ -38,6 +38,8 @@
 #' @seealso \code{\link{calc_auc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
 #' 
 #' @importFrom parallel mclapply
+#' @importFrom stats xtabs
+#' @importFrom utils head tail
 #' 
 #' @examples
 #' ## Taken from the gg_roc example

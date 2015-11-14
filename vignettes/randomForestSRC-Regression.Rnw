@@ -503,7 +503,7 @@ plot(gg_v, xvar = "lstat", alpha = .5)+
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
-  geom_smooth(se=FALSE) +
+ # geom_smooth(se=FALSE) +
   facet_wrap(~rm_grp)
 @
 

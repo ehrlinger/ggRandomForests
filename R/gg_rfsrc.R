@@ -39,7 +39,6 @@
 #' \code{\link{gg_survival}}
 #' 
 #' @importFrom tidyr gather_
-#' 
 #' @examples
 #' ## ------------------------------------------------------------
 #' ## classification example

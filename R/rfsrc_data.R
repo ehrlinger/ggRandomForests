@@ -49,7 +49,7 @@
 #'  \code{\link{plot.gg_rfsrc}} 
 #'  \code{\link{gg_error}} 
 #'  \code{\link{plot.gg_error}}
-#'  
+#'
 #' @examples
 #' \dontrun{
 #' #---------------------------------------------------------------------

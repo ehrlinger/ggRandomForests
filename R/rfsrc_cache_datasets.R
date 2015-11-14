@@ -53,6 +53,8 @@
 #' \code{\link{partial_coplot_data}}
 #' 
 #' @importFrom randomForestSRC rfsrc var.select plot.variable find.interaction
+#' @importFrom utils data
+#' 
 #' @export
 rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
   dta <- new.env()
@@ -86,6 +88,9 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
   
   if("airq" %in% set){
     cat("airq: randomForest\n")
+    data(airquality, package="datasets", envir=dta)
+    airquality <- dta$airquality
+    
     if(!test)
       rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality, 
                                            na.action = "na.impute", ...)
@@ -113,6 +118,9 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
   }
   
   if("iris" %in% set){
+    data(iris, package="datasets",
+         envir = dta)
+    iris <- dta$iris
     cat("iris: randomForest\n")
     if(!test) rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
                                                    data = iris, ...)
@@ -137,8 +145,10 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
                   compress="xz")
   }
   
-  
   if("mtcars" %in% set){
+    data(mtcars, package="datasets",
+         envir = dta)
+    mtcars <- dta$mtcars
     cat("mtcars: randomForest\n")
     if(!test) rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., 
                                                      data = mtcars, ...)
