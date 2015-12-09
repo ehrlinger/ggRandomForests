@@ -1,5 +1,9 @@
 Package: ggRandomForests
-Version: 1.2.0
+Version: 1.2.1
+
+ggRandomForests v1.2.1
+===================
+* Update cached datasets for randomForestSRC 2.0.0 release. 
 
 ggRandomForests v1.2.0
 ===================
