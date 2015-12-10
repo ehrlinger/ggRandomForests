@@ -785,7 +785,7 @@ alt <- lapply(indx, function(ind){
 })
 @
 
-The \code{gg_partial} surface of Figure~\ref{fig:timeSurface3d} was constructed using the \code{surf3D} function from the \pkg{plot3D} package~\citep[\url{http://CRAN.R-project.org/package=plot3D}]{Soetaert:2014}. Source code for generating this figure is shown in Appendix~\ref{A:TimeDomain}. 
+The \code{gg_partial} surface of Figure~\ref{fig:timeSurface3d} was constructed using the \code{surf3D} function from the \pkg{plot3D} package~\citep[\url{http://CRAN.R-project.org/package=plot3D}]{plot3D:2014}. Source code for generating this figure is shown in Appendix~\autoref{A:TimeDomain}. 
 
 The figure shows partial dependence of survival (Z-axis) as a function of \code{bili} over a five year follow up time period. Lines perpendicular to the Bilirubin axis are distributed along the \code{bili} variable. Lines parallel to the Bilirubin axis are taken at 50 training set event times, the first event after $t=0$ at the back to last event before $t=5$ years at the front. The distribution of the time lines is also evenly selected using the same procedure as selecting points for partial dependence curves. 
 
@@ -1044,16 +1044,18 @@ This work was supported in part by the National Institutes of Health grant R01-H
 \bibliography{ggRandomForests}
 
 
-\end{document}
+%%\end{document}
 
 
 %\doublespacing
 %\newpage
+
 \appendix
 \section{Source Code}
 Throughout this document, we have listed all \proglang{R} source code to create the figures included here with a few exceptions. For completeness, we include the missing code blocks in this appendix. The code blocks are included here in order of appearance in the document.
 
 \subsection{Partial Dependence in Time Dimension}\label{A:TimeDomain}
+
 The surface plot of~\ref{S:timeSurface} demonstrates how partial dependence curves relate to the survival curves. This code block is the \proglang{R} source code for creating Figure~\ref{fig:timeSurface3d}.
 
 <<src-listing-timeSurface, echo=TRUE, eval=FALSE>>= 
@@ -1234,3 +1236,4 @@ st <- lapply(indx, function(ind){
           add=TRUE, col="blue", lwd=6)})
 @
 
+\end{document}

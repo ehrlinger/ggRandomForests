@@ -258,7 +258,7 @@ This figure is loosely related to a pairs scatter plot~\citep{Becker:1988}, but 
 
 
 % -----------------------------------------------------
-\section{Random Forest - Regression} \label{S:rfr}
+\section{Random Forest - Regression}\label{S:rfr}
 % -----------------------------------------------------
 
 A Random Forest is grown by \emph{bagging}~\citep{Breiman:1996} a collection of \emph{classification and regression trees} (CART)~\citep{cart:1984}. The method uses a set of $B$ bootstrap~\citep{bootstrap:1994} samples, growing an independent tree model on each sub-sample of the population. Each tree is grown by recursively partitioning the population based on optimization of a \emph{split rule} over the $p$-dimensional covariate space. At each split, a subset of $m \le p$ candidate variables are tested for the split rule optimization, dividing each node into two daughter nodes. Each daughter node is then split again until the process reaches the \emph{stopping criteria} of either \emph{node purity} or \emph{node member size}, which defines the set of \emph{terminal (unsplit) nodes} for the tree. In regression trees, the split rule is based on minimizing the mean squared error, whereas in classification problems, the Gini index is used~\citep{Friedman:2000}.
@@ -503,7 +503,7 @@ plot(gg_v, xvar = "lstat", alpha = .5)+
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
-  geom_smooth(se=FALSE) +
+ # geom_smooth(se=FALSE) +
   facet_wrap(~rm_grp)
 @
 
@@ -531,7 +531,7 @@ plot(gg_v, xvar = "rm", alpha = .5)+
   labs(y = st.labs["medv"], x=st.labs["rm"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
-  geom_smooth() +
+ # geom_smooth() +
   #scale_shape_manual(values = event.marks, labels = event.labels)+ 
   facet_wrap(~lstat_grp)
 @
@@ -689,7 +689,7 @@ These figures reinforce the previous findings, where lower home values are assoc
 \section{Conclusion} \label{S:conclusion}
 % -----------------------------------------------------
 
-In this vignette, we have demonstrated the use of the \pkg{ggRandomForests} package to explore a regression random forest built with the \pkg{randomForestSRC} package. We have shown how to create a random forest model (Section~\ref{S:rfsrc}) and determine which variables contribute to the forest prediction accuracy using both  VIMP (Section~\ref{S:vimp}) and Minimal Depth (Section~\ref{S:minimaldepth}) measures. We outlined how to investigate variable associations with the response variable using variable dependence (Section~\ref{S:variabledependence}) and the risk adjusted partial dependence (Section~\ref{S:partialdependence}) plots. We've also explored variable interactions by using pairwise minimal depth interactions (Section~\ref{S:interactions}) and directly viewed these interactions using variable dependence coplots (Section~\ref{S:coplots}) and partial dependence coplots (Section~\ref{S:partialcoplots}). Along the way, we've demonstrated the use of additional commands from the \pkg{ggplot2} package for modifying and customizing results from \pkg{ggRandomForests}.
+In this vignette, we have demonstrated the use of the \pkg{ggRandomForests} package to explore a regression random forest built with the \pkg{randomForestSRC} package. We have shown how to create a random forest model (Section~\ref{S:rfr}) and determine which variables contribute to the forest prediction accuracy using both  VIMP (Section~\ref{S:vimp}) and Minimal Depth (Section~\ref{S:minimaldepth}) measures. We outlined how to investigate variable associations with the response variable using variable dependence (Section~\ref{S:variabledependence}) and the risk adjusted partial dependence (Section~\ref{S:partialdependence}) plots. We've also explored variable interactions by using pairwise minimal depth interactions (Section~\ref{S:interactions}) and directly viewed these interactions using variable dependence coplots (Section~\ref{S:coplots}) and partial dependence coplots (Section~\ref{S:partialcoplots}). Along the way, we've demonstrated the use of additional commands from the \pkg{ggplot2} package for modifying and customizing results from \pkg{ggRandomForests}.
 
 %\singlespacing
 \bibliography{ggRandomForests}

@@ -218,7 +218,7 @@ plot(gg_v, xvar = "lstat", alpha = .5)+
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
-  geom_smooth(se=FALSE) +
+ # geom_smooth(se=FALSE) +
   facet_wrap(~rm_grp)
 
 ## ----coplots2, fig.cap="Variable Coplots. Predicted median home value as a function of average number of rooms, stratified by percentage of lower status groups.", fig.width=7, fig.height=5----
@@ -241,7 +241,7 @@ plot(gg_v, xvar = "rm", alpha = .5)+
   labs(y = st.labs["medv"], x=st.labs["rm"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
-  geom_smooth() +
+ # geom_smooth() +
   #scale_shape_manual(values = event.marks, labels = event.labels)+ 
   facet_wrap(~lstat_grp)
 
@@ -281,11 +281,11 @@ ggplot(partial_coplot_Boston, aes(x=lstat, y=yhat, col=group, shape=group))+
        color="Lower Status", shape="Lower Status")+
   scale_color_brewer(palette="Set1")
 
-## ----def-pts-----------------------------------------------------------------
+## ----def-pts----------------------------------------------------------------------------
 # Find the quantile points to create 50 cut points
 rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50)
 
-## ----prtl-surface, eval=FALSE------------------------------------------------
+## ----prtl-surface, eval=FALSE-----------------------------------------------------------
 #  # Generate the gg_partial_coplot data object
 #  system.time(partial_Boston_surf <- lapply(rm_pts, function(ct){
 #    rfsrc_Boston$xvar$rm <- ct
@@ -319,7 +319,7 @@ ggplot(partial_surf, aes(x=lstat, y=rm, z=yhat))+
        color="Median Home Values")+
   scale_colour_gradientn(colours=topo.colors(10))
 
-## ----surface3d, fig.cap="Partial plot surface.", fig.width=7, fig.height=5----
+## ----surface3d, fig.cap="Partial plot surface.", fig.width=7, fig.height=5--------------
 # Modify the figure margins to make the figure larger
 par(mai = c(0,0,0,0))
 
