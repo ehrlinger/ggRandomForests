@@ -4,6 +4,7 @@ Version: 1.2.1
 ggRandomForests v1.2.1
 ===================
 * Update cached datasets for randomForestSRC 2.0.0 release. 
+* Correct some vignette formatting errors (thx Joe Smith)
 
 ggRandomForests v1.2.0
 ===================
