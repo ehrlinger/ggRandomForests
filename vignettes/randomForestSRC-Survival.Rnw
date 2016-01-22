@@ -95,8 +95,12 @@ opts_chunk$set(fig.path = 'fig-rfs/rfs-',
                prompt = TRUE, 
                highlight = FALSE, 
                comment = NA, 
-               echo = FALSE, results = FALSE, message = FALSE, warning = FALSE, 
-               error = FALSE, dev = 'pdf', prompt = TRUE)
+               echo = FALSE, # Change this to TRUE if you want to see all the code examples
+               results = FALSE, 
+               message = FALSE, 
+               warning = FALSE, 
+               error = FALSE, 
+               dev = 'pdf', prompt = TRUE)
 
 # Setup the R environment
 options(object.size = Inf, expressions = 100000, memory = Inf, 
@@ -167,7 +171,6 @@ data("pbc", package = "randomForestSRC")
 library("tidyr")        # Transforming wide data into long data (gather)
 
 ## Not displayed ##
-
 ## Set modes correctly. For binary variables: transform to logical
 ## Check for range of 0, 1
 ## There is probably a better way to do this.
@@ -271,7 +274,6 @@ In categorical EDA plots (Figure~\ref{fig:categoricalEDA}), we are looking for p
 
 <<continuousEDA, fig.cap="EDA plots for continuous variables. Symbols indicate observations with variable value on Y-axis against follow up time in years. Symbols are colored and shaped according to the death event  (\\code{status} variable). Missing values are indicated by rug marks along the X-axis", fig.width=7, fig.height=4>>= 
 ## Not displayed ##
-
 # Use tidyr::gather to transform the data into long format.
 cnt <- c(cnt, which(colnames(pbc) == "status"))
 dta <- gather(pbc[,cnt], variable, value, -years, -status)
@@ -314,7 +316,7 @@ Both EDA figures indicate the \code{pbc} data set contains quite a bit of missin
 
 We conclude the data set investigation with a summary of~\cite{fleming:1991} model results from Chapter 4.4. We start by generating Kaplan--Meier (KM) survival estimates comparing the treatment groups of DPCA and placebo. We use the \pkg{ggRandomForests} \code{gg_survival} function to generate these estimates from the data set as follows. 
 
-<<gg_survival>>= 
+<<gg_survival, echo=TRUE>>= 
 # Create the trial and test data sets.
 pbc.trial <- pbc %>% filter(!is.na(treatment))
 pbc.test <- pbc %>% filter(is.na(treatment))
@@ -327,14 +329,14 @@ gg_dta <- gg_survival(interval = "years",
                       conf.int = 0.95)
 @
 
-\begin{CodeInput}
-R> pbc.trial <- pbc %>% filter(!is.na(treatment))
-R> pbc.test <- pbc %>% filter(is.na(treatment))
-R>
-R> gg_dta <- gg_survival(interval = "years", censor = "status", 
-+                        by = "treatment", data = pbc.trial, 
-+                        conf.int = 0.95)
-\end{CodeInput}
+% \begin{CodeInput}
+% R> pbc.trial <- pbc %>% filter(!is.na(treatment))
+% R> pbc.test <- pbc %>% filter(is.na(treatment))
+% R>
+% R> gg_dta <- gg_survival(interval = "years", censor = "status", 
+% +                        by = "treatment", data = pbc.trial, 
+% +                        conf.int = 0.95)
+% \end{CodeInput}
 The code block reduces the \code{pbc} data set to the \code{pbc.trial} which only include observations from the clinical trial. The remaining observations are stored in the \code{pbc.test} data set for later use. The \pkg{ggRandomForests} package is designed to use a two step process in figure generation. The first step is data generation, where we store a \code{gg_survival} data object in the \code{gg_dta} object. The \code{gg_survival} function uses the \code{data} set, follow up \code{interval}, \code{censor} indicator and an optional grouping argument (\code{by}). By default \code{gg_survival} also calculates $95\%$ confidence band, which we can control with the \code{conf.int} argument.
 
 In the figure generation step, we use the \pkg{ggRandomForests} plot routine \code{plot.gg_survival} as shown in the following code block. The \code{plot.gg_survival} function uses the \code{gg_dta} data object to plot the survival estimate curves for each group and corresponding confidence interval ribbons. We have used additional \pkg{ggplot2} commands to modify the axis and legend labels (\code{labs}), the legend location (\code{theme}) and control the plot range of the y-axis (\code{coord_cartesian}) for this figure. 
@@ -646,7 +648,7 @@ An additional \code{plot.gg_variable} argument (\code{panel = TRUE}) can be used
 xvar <- c("bili", "albumin", "copper", "prothrombin", "age")
 xvar.cat <- c("edema")
 
-plot(gg_v, xvar = xvar[-1], panel = TRUE, alpha = 0.4) + #se = FALSE, , span=1
+plot(gg_v, xvar = xvar[-1], panel = TRUE, alpha = 0.4) + #se = FALSE, span=1
   labs(y = "Survival") + 
   theme(legend.position = "none") + 
   scale_color_manual(values = strCol, labels = event.labels) + 
