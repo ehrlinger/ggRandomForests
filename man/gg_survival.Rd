@@ -4,8 +4,8 @@
 \alias{gg_survival}
 \title{Nonparametric survival estimates.}
 \usage{
-gg_survival(interval, censor, by = NULL, data, type = c("kaplan", "nelson"),
-  ...)
+gg_survival(interval = NULL, censor = NULL, by = NULL, data,
+  type = c("kaplan", "nelson"), ...)
 }
 \arguments{
 \item{interval}{name of the interval variable in the training dataset.}

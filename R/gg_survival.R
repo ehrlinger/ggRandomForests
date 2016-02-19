@@ -60,7 +60,7 @@
 #' plot(gg_dta, error="lines")
 #' 
 #' @export
-gg_survival <- function(interval, censor, by=NULL, 
+gg_survival <- function(interval=NULL, censor=NULL, by=NULL, 
                                         data, 
                                         type=c("kaplan","nelson"), 
                                         ...){

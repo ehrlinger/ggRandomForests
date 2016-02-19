@@ -152,7 +152,40 @@ gg_error.rfsrc <- function(object, ...) {
   invisible(gg_dta)
 }
 
-# 
-# gg_error.randomForest <- function(object, ...) {
-#   stop("Unimplemented function.") 
-# }
+#' @export
+gg_error.randomForest <- function(object, ...) {
+  ## Check that the input obect is of the correct type.
+  if (!inherits(object, "randomForest")){
+    stop(paste("This function only works for Forests grown",
+               "with the randomForest package."))
+  }
+  if (is.null(object$mse)) {
+    stop("Performance values are not available for this forest.")
+  }
+  
+  gg_dta <- data.frame(object$mse)
+  
+  # If there is only one column in the error rate... name it reasonably.
+  if("object.mse" %in% colnames(gg_dta))
+    colnames(gg_dta)[which(colnames(gg_dta) == "object.mse")] <- "error"
+  
+  gg_dta$ntree <- 1:nrow(gg_dta)
+  
+  arg_list <- as.list(substitute(list(...)))
+  training <- FALSE
+  if(!is.null(arg_list$training)) training <- arg_list$training
+  
+  if(training){
+    trn <- data.frame(cbind(object$xvar, object$yvar))
+    colnames(trn) <- c(object$xvar.names, object$yvar.names)
+    gg_prd <- predict(object, newdata=trn, importance="none", 
+                      membership=FALSE)
+    gg_dta$train <- gg_prd$err.rate
+  }
+  
+  class(gg_dta) <- c("gg_error",class(gg_dta))
+  invisible(gg_dta)
+}
+
+#' @export
+gg_error.randomForest.formula <- gg_error.randomForest

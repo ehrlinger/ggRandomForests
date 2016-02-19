@@ -118,3 +118,4 @@ test_that("gg_error regression",{
   # Test object type
 #  expect_is(gg_dta, "gg_error")
 })
+
