@@ -88,8 +88,8 @@
 #' gg_dta <- gg_vimp(rfsrc_pbc, nvar=10)
 #' plot(gg_dta)
 
-#' @aliases gg_vimp gg_vimp.rfsrc gg_vimp.randomForest gg_vimp.random
-#' @export
+#' @aliases gg_vimp gg_vimp.rfsrc gg_vimp.randomForest gg_vimp.randomForest.formula
+#' @export gg_vimp gg_vimp.rfsrc gg_vimp.randomForest gg_vimp.randomForest.formula
 gg_vimp <- function (object, ...) {
   UseMethod("gg_vimp", object)
 }
@@ -270,3 +270,5 @@ gg_vimp.randomForest <- function (object, ...) {
   class(gg_dta) <- c("gg_vimp", class(gg_dta))
   invisible(gg_dta)
 }
+
+gg_vimp.randomForest.formula <- gg_vimp.randomForest

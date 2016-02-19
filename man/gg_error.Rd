@@ -3,6 +3,7 @@
 \name{gg_error}
 \alias{gg_error}
 \alias{gg_error.randomForest}
+\alias{gg_error.randomForest.formula}
 \alias{gg_error.rfsrc}
 \title{randomForestSRC error rate data object}
 \usage{
@@ -14,20 +15,20 @@ gg_error(object, ...)
 \item{...}{optional arguments (not used).}
 }
 \value{
-\code{gg_error} \code{data.frame} with one column indicating the tree number, 
+\code{gg_error} \code{data.frame} with one column indicating the tree number,
 and the remaining columns from the \code{\link[randomForestSRC]{rfsrc}$err.rate} return value.
 }
 \description{
-Extract the cumulative (OOB) \code{randomForestSRC} error rate as a function of 
+Extract the cumulative (OOB) \code{randomForestSRC} error rate as a function of
 number of trees.
 }
 \details{
-The \code{gg_error} function simply returns the 
-\code{\link[randomForestSRC]{rfsrc}$err.rate} object as a data.frame, and assigns the class 
+The \code{gg_error} function simply returns the
+\code{\link[randomForestSRC]{rfsrc}$err.rate} object as a data.frame, and assigns the class
 for connecting to the S3 \code{\link{plot.gg_error}} function.
 }
 \examples{
-## Examples from RFSRC package... 
+## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -102,7 +103,7 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression 
+Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
 and Classification (RF-SRC), R package version 1.4.
 }
 \seealso{

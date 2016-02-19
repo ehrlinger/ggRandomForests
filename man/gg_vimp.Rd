@@ -2,8 +2,8 @@
 % Please edit documentation in R/gg_vimp.R
 \name{gg_vimp}
 \alias{gg_vimp}
-\alias{gg_vimp.random}
 \alias{gg_vimp.randomForest}
+\alias{gg_vimp.randomForest.formula}
 \alias{gg_vimp.rfsrc}
 \title{Variable Importance (VIMP) data object}
 \usage{
