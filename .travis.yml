@@ -41,7 +41,7 @@ apt_packages:
 r_github_packages:
 #  - ehrlinger/randomForestSRC
   - jimhester/covr
-  - hadley/ggplot2
+#  - hadley/ggplot2
 
 after_success:
   - Rscript -e 'covr::coveralls()'
