@@ -39,9 +39,10 @@ apt_packages:
 
 # For code coverage
 r_github_packages:
-#  - ehrlinger/randomForestSRC
   - jimhester/covr
+  
 #  - hadley/ggplot2
+#  - ehrlinger/randomForestSRC
 
 after_success:
   - Rscript -e 'covr::coveralls()'
