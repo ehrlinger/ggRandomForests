@@ -2,19 +2,21 @@
 % Please edit documentation in R/gg_vimp.R
 \name{gg_vimp}
 \alias{gg_vimp}
+\alias{gg_vimp.random}
 \alias{gg_vimp.randomForest}
-\alias{gg_vimp.randomForest.formula}
 \alias{gg_vimp.rfsrc}
 \title{Variable Importance (VIMP) data object}
 \usage{
 gg_vimp(object, ...)
 }
 \arguments{
-\item{object}{A \code{\link[randomForestSRC]{rfsrc}} object or output from
+\item{object}{A \code{\link[randomForestSRC]{rfsrc}} object or output from 
 \code{\link[randomForestSRC]{vimp}}}
 
-\item{...}{arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}} function if the
+\item{...}{arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}} function if the 
 \code{\link[randomForestSRC]{rfsrc}} object does not contain importance information.}
+
+\item{nvar}{select a number pf the highest VIMP variables to plot}
 }
 \value{
 \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order.
@@ -32,12 +34,12 @@ a \code{\link[randomForestSRC]{rfsrc}} object.
 data(rfsrc_iris, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
-
+ 
 ## ------------------------------------------------------------
 ## regression example
 ## ------------------------------------------------------------
 \dontrun{
-## -------- air quality data
+## -------- air quality data 
 # rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
 data(rfsrc_airq, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_airq)
@@ -75,7 +77,7 @@ gg_dta <- gg_vimp(rfsrc_pbc, nvar=10)
 plot(gg_dta)
 }
 \references{
-Ishwaran H. (2007). Variable importance in binary regression trees and forests,
+Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
 \emph{Electronic J. Statist.}, 1:519-537.
 }
 \seealso{

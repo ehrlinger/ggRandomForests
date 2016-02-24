@@ -5,7 +5,7 @@
 \title{Plot a \code{\link{gg_variable}} object,}
 \usage{
 \method{plot}{gg_variable}(x, xvar, time, time_labels, panel = FALSE,
-  oob = TRUE, points = TRUE, ...)
+  oob = TRUE, points = TRUE, smooth = TRUE, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_variable}} object created from a 

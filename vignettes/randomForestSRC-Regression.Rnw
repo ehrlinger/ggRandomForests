@@ -403,8 +403,8 @@ gg_v <- gg_variable(rfsrc_Boston)
 xvar <- gg_md$topvars
 
 # plot the variable list in a single panel plot
-plot(gg_v, xvar=xvar, panel=TRUE)+
-  labs(y=st.labs["medv"], x="") 
+plot(gg_v, xvar=xvar, panel=TRUE, alpha=.5)+
+  labs(y=st.labs["medv"], x="")
 @
 
 This figure looks very similar to the EDA (Section~\ref{S:eda}) figure, although with transposed axis as we plot the response variable on the y-axis. The closer the panels match, the better the RF prediction. The panels are sorted to match the order of variables in the \code{xvar} argument and include a smooth loess line~\citep{cleveland:1981, cleveland:1988}, with 95\% shaded confidence band, to indicates the trend of the prediction dependence over the covariate values.
@@ -499,8 +499,8 @@ levels(gg_v$rm_grp) <- paste("rm in ",
 
 # Create a variable dependence (co)plot, 
 # faceted on group membership.
-plot(gg_v, xvar = "lstat", alpha = .5)+
-  #   method = "loess", span=1.5, se = FALSE) + 
+plot(gg_v, xvar = "lstat")+
+#   method = "loess", span=1.5, se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
