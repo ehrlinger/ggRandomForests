@@ -39,7 +39,7 @@ apt_packages:
 
 # For code coverage
 r_github_packages:
-  - ehrlinger/randomForestSRC
+#  - ehrlinger/randomForestSRC
   - jimhester/covr
   - hadley/ggplot2
 
