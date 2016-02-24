@@ -22,11 +22,11 @@
 #' 
 #' @param object A \code{\link[randomForestSRC]{rfsrc}} object or output from 
 #' \code{\link[randomForestSRC]{vimp}}
-#' @param nvar select a number pf the highest VIMP variables to plot
 #' @param ... arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}} function if the 
 #' \code{\link[randomForestSRC]{rfsrc}} object does not contain importance information.
 #' 
-#' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order.
+#' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order. Use the
+#' optional \code{nvar} argument to control the number of variables included in the output. 
 #' 
 #' @seealso \code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}} \code{\link[randomForestSRC]{vimp}}
 #' 
@@ -94,7 +94,12 @@ gg_vimp <- function (object, ...) {
   UseMethod("gg_vimp", object)
 }
 #' @export
-gg_vimp.rfsrc <- function(object, nvar, ...){
+gg_vimp.rfsrc <- function(object, ...){
+  
+  # Get the extra arguments for handling specifics
+  arg_list <- list(...)
+  #print(arg_list)
+  nvar <- arg_list$nvar
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
@@ -115,7 +120,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...){
     gg_dta$vars <- rownames(gg_dta)
     gg_dta <- gg_dta[order(gg_dta$VIMP, decreasing=TRUE),]
   }
-  if(missing(nvar)) nvar <- nrow(gg_dta)
+  if(is.null(nvar)) nvar <- nrow(gg_dta)
   if(nvar > nrow(gg_dta)) nvar <- nrow(gg_dta)
   
   
@@ -178,8 +183,12 @@ gg_vimp.rfsrc <- function(object, nvar, ...){
 }
 
 #' @export
-gg_vimp.randomForest <- function (object, nvar, ...) {
-  ## Check that the input obect is of the correct type.
+gg_vimp.randomForest <- function (object, ...) {
+  arg_list <- list(...)
+  #print(arg_list)
+  nvar <- arg_list$nvar
+  
+   ## Check that the input obect is of the correct type.
   if (!inherits(object, "randomForest")){
     stop(paste("This function only works for Forests grown",
                "with the randomForest package."))
@@ -187,7 +196,7 @@ gg_vimp.randomForest <- function (object, nvar, ...) {
   
   ### set importance to NA if it is NULL
   if (is.null(object$importance)){
-    war("randomForest object does not contain importance information.")
+    warning("randomForest object does not contain importance information.")
     # gg_dta <- data.frame(sort(randomForestSRC::vimp(object)$importance, 
     #                           decreasing=TRUE))
   }else{
@@ -203,7 +212,7 @@ gg_vimp.randomForest <- function (object, nvar, ...) {
       gg_dta <- gg_dta[order(gg_dta$IncNodePurity, decreasing=TRUE),]
     }
   }
-  if(missing(nvar)) nvar <- nrow(gg_dta)
+  if(is.null(nvar)) nvar <- nrow(gg_dta)
   if(nvar > nrow(gg_dta)) nvar <- nrow(gg_dta)
   
   

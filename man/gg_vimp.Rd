@@ -15,11 +15,10 @@ gg_vimp(object, ...)
 
 \item{...}{arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}} function if the 
 \code{\link[randomForestSRC]{rfsrc}} object does not contain importance information.}
-
-\item{nvar}{select a number pf the highest VIMP variables to plot}
 }
 \value{
-\code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order.
+\code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order. Use the
+optional \code{nvar} argument to control the number of variables included in the output.
 }
 \description{
 \code{gg_vimp} Extracts the variable importance (VIMP) information from a

@@ -26,7 +26,8 @@
 #' @param time_labels string labels for times
 #' @param panel Should plots be facetted along multiple xvar?
 #' @param oob oob estimates (boolean)
-#' @param points plot with points or a smooth curve
+#' @param points plot the raw data points (boolean)
+#' @param smooth include a smooth curve (boolean)
 #' @param ... arguments passed to the \code{ggplot2} functions.
 #'   
 #' @return A single \code{ggplot} object, or list of \code{ggplot} objects
@@ -263,9 +264,10 @@ plot.gg_variable <- function(x, xvar,
           gg_plt <- gg_plt +
             geom_smooth(...)
         }
-        if(smooth)
+        if(smooth){
           gg_plt <- gg_plt +
             geom_smooth(...)
+        }
       }else{
         # Check if there are numeric variables here...
         if(sum(ccls[wch_x_var] == "numeric") > 0)
@@ -381,9 +383,10 @@ plot.gg_variable <- function(x, xvar,
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_smooth(aes_string(x="var", y="yhat"),  ...)
           }
-          if(smooth)
-            gg_plt <- gg_plt +
+          if(smooth){
+            gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_smooth(...)
+          }
         }else{
           gg_plt[[ind]] <- gg_plt[[ind]] +
             geom_boxplot(aes_string(x="var", y="yhat"), color="black",
@@ -412,9 +415,10 @@ plot.gg_variable <- function(x, xvar,
               gg_plt[[ind]] <- gg_plt[[ind]] +
                 geom_smooth(aes_string(x="var", y="yhat"), color="black", linetype=2, ...)
             }
-            if(smooth)
-              gg_plt <- gg_plt +
+            if(smooth){
+              gg_plt[[ind]] <- gg_plt[[ind]] +
                 geom_smooth(...)
+              }
           }else{
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 

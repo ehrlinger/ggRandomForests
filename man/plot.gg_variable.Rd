@@ -21,7 +21,9 @@
 
 \item{oob}{oob estimates (boolean)}
 
-\item{points}{plot with points or a smooth curve}
+\item{points}{plot the raw data points (boolean)}
+
+\item{smooth}{include a smooth curve (boolean)}
 
 \item{...}{arguments passed to the \code{ggplot2} functions.}
 }
