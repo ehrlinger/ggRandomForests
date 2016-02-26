@@ -121,6 +121,8 @@
 #' plot(gg_dta, panel=TRUE)
 #' }
 #' 
+#' @aliases gg_interaction gg_interaction.randomForest gg_interaction.rfsrc
+#' 
 #' @export 
 gg_interaction <- function (object, ...) {
   UseMethod("gg_interaction", object)
@@ -151,5 +153,10 @@ gg_interaction.rfsrc <- function(object, ...){
   invisible(gg_dta)
 }
 # 
+#' @export
+gg_interaction.randomForest <- function(object, ...){
+  stop("gg_interaction is not yet support for randomForest objects")
+}
+
 #' @export
 gg_interaction.default <- gg_interaction.rfsrc

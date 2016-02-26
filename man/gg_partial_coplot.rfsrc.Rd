@@ -5,7 +5,7 @@
 \alias{gg_partial_coplot.rfsrc}
 \title{Data structures for stratified partial coplots}
 \usage{
-gg_partial_coplot.rfsrc(object, xvar, groups, surv_type = c("mort",
+\method{gg_partial_coplot}{rfsrc}(object, xvar, groups, surv_type = c("mort",
   "rel.freq", "surv", "years.lost", "cif", "chf"), time, ...)
 }
 \arguments{

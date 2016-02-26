@@ -22,11 +22,11 @@
 #' 
 #' @param object A \code{\link[randomForestSRC]{rfsrc}} object or output from 
 #' \code{\link[randomForestSRC]{vimp}}
+#' @param nvar argument to control the number of variables included in the output. 
 #' @param ... arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}} function if the 
 #' \code{\link[randomForestSRC]{rfsrc}} object does not contain importance information.
 #' 
-#' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order. Use the
-#' optional \code{nvar} argument to control the number of variables included in the output. 
+#' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order.
 #' 
 #' @seealso \code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}} \code{\link[randomForestSRC]{vimp}}
 #' 
@@ -90,16 +90,16 @@
 
 #' @aliases gg_vimp gg_vimp.rfsrc gg_vimp.randomForest gg_vimp.randomForest.formula
 #' @export 
-gg_vimp <- function (object, ...) {
+gg_vimp <- function (object, nvar, ...) {
   UseMethod("gg_vimp", object)
 }
 #' @export
-gg_vimp.rfsrc <- function(object, ...){
+gg_vimp.rfsrc <- function(object, nvar, ...){
   
   # Get the extra arguments for handling specifics
   arg_list <- list(...)
   #print(arg_list)
-  nvar <- arg_list$nvar
+ # nvar <- arg_list$nvar
   
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
         sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
@@ -120,7 +120,7 @@ gg_vimp.rfsrc <- function(object, ...){
     gg_dta$vars <- rownames(gg_dta)
     gg_dta <- gg_dta[order(gg_dta$VIMP, decreasing=TRUE),]
   }
-  if(is.null(nvar)) nvar <- nrow(gg_dta)
+  if(missing(nvar)) nvar <- nrow(gg_dta)
   if(nvar > nrow(gg_dta)) nvar <- nrow(gg_dta)
   
   
@@ -183,10 +183,10 @@ gg_vimp.rfsrc <- function(object, ...){
 }
 
 #' @export
-gg_vimp.randomForest <- function (object, ...) {
+gg_vimp.randomForest <- function (object, nvar, ...) {
   arg_list <- list(...)
   #print(arg_list)
-  nvar <- arg_list$nvar
+  # nvar <- arg_list$nvar
   
    ## Check that the input obect is of the correct type.
   if (!inherits(object, "randomForest")){
@@ -212,7 +212,7 @@ gg_vimp.randomForest <- function (object, ...) {
       gg_dta <- gg_dta[order(gg_dta$IncNodePurity, decreasing=TRUE),]
     }
   }
-  if(is.null(nvar)) nvar <- nrow(gg_dta)
+  if(missing(nvar)) nvar <- nrow(gg_dta)
   if(nvar > nrow(gg_dta)) nvar <- nrow(gg_dta)
   
   

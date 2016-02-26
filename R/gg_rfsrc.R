@@ -334,7 +334,118 @@ bootstrap_survival <- function(gg_dta, bs.samples, level.set){
 }
 
 #' @export
-# gg_rfsrc <- function (object, ...) {
-#   UseMethod("gg_rfsrc", object)
-# }
-gg_rfsrc <- gg_rfsrc.rfsrc
+gg_rfsrc <- function (object, 
+                      oob=TRUE, 
+                      by, ...) {
+  UseMethod("gg_rfsrc", object)
+}
+
+#' @export
+gg_rfsrc.randomForest <- function(object, 
+                                  oob=TRUE, 
+                                  by, 
+                                  ...) {
+  
+  ## Check that the input obect is of the correct type.
+  if (inherits(object, "randomForest") == FALSE){
+    stop(paste("This function only works for Forests grown with the", 
+               "randomForest package."))
+  }
+  
+  # get optional arguments
+  arg_list <- list(...)
+  
+  if (inherits(object, "predict")){
+    oob <- FALSE
+  }
+  
+  if(!missing(by)){
+    grp <- by
+    # If the by argument is a vector, make sure it is the correct length
+    if(is.character(grp)){
+      if(is.null(object$xvar[,grp])){
+        stop(paste("No column named", grp, "in forest training set." ))
+      }else{
+        grp <- object$xvar[,grp]
+      }
+    }
+    
+    if(is.vector(grp) | is.factor(grp)){
+      if(length(grp) != nrow(object$xvar))
+        stop(paste("By argument does not have the correct dimension ", 
+                   nrow(object$xvar)))
+    }else{
+      stop(paste("By argument should be either a vector, or colname",
+                 "of training data", 
+                 nrow(object$xvar)))
+    }
+    grp <- factor(grp, levels=unique(grp))
+  }
+  
+  # gg_variable is really just the training data and the outcome.
+  gg_dta <- get(as.character(object$call$data))
+  #data.frame(object$xvar)
+  
+  # Remove the response from the data.frame
+  rsp <- as.character(object$call$formula)[2]
+  gg_dta <- gg_dta[,-which(colnames(gg_dta)==rsp)]
+  
+  # Do the work...
+  if(object$type == "class"){
+    ### Classification models...
+    
+    # Need to add multiclass methods
+    if(oob){
+      gg_dta <- 
+        if(ncol(object$predicted.oob) <= 2){
+          data.frame(cbind(object$predicted.oob[,-1]))
+        }else{ 
+          data.frame(cbind(object$predicted.oob))
+        }
+    }else{
+      gg_dta <- if(ncol(object$predicted) <= 2){
+        data.frame(cbind(object$predicted[,-1]))
+      }else{ 
+        data.frame(cbind(object$predicted))
+      }
+    }
+    
+    # Switch between logical or categorical outcome
+    if(ncol(gg_dta) == 1){
+      colnames(gg_dta) <- object$yvar.names
+      # Force this to logical return value... 
+      #
+      # This may be a bug in rfsrc, as it converts all classification models
+      # into factors.
+      gg_dta$y <- as.logical(as.numeric(object$yvar) - 1)
+    }else{
+      colnames(gg_dta) <- levels(object$yvar)
+      gg_dta$y <- object$yvar
+      
+    }
+    
+    # Handle the "by" argument.
+    if(!missing(by)) gg_dta$group <- grp
+    
+  }else if(object$type == "regression"){
+    
+    # Need to add multiclass methods
+    if(oob){
+      gg_dta <- data.frame(cbind(object$predicted.oob, object$yvar))
+    }else{
+      gg_dta <- data.frame(cbind(object$predicted, object$yvar))
+    }
+    
+    colnames(gg_dta) <- c("yhat", object$yvar.names)
+    
+    # Handle the "by" argument.
+    if(!missing(by)) gg_dta$group <- grp
+    
+  }else{
+    stop(paste("Plotting for ", object$family, " randomForestSRC is not yet implemented.", sep=""))
+  }
+  
+  class(gg_dta) <- c("gg_rfsrc", class(gg_dta), object$type)
+  invisible(gg_dta)
+}
+

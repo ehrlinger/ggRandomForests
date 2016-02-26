@@ -109,9 +109,16 @@
 #' gg_dta <- gg_minimal_depth(varsel_pbc)
 #' plot(gg_dta)
 #' 
+#' @aliases gg_minimal_depth  gg_minimal_depth.randomForest gg_minimal_depth.rfsrc
+#' 
 #' @export
 gg_minimal_depth <- function (object, ...) {
   UseMethod("gg_minimal_depth", object)
+}
+
+#' @export
+gg_minimal_depth.randomForest <- function(object, ...){
+  stop("gg_minimal_depth is not yet support for randomForest objects")
 }
 
 #' @export
@@ -143,6 +150,6 @@ gg_minimal_depth.rfsrc <- function (object, ...){
   invisible(vsel) 
 }
 
+
 #' @export
-gg_minimal_depth.default <- 
-  gg_minimal_depth.rfsrc
+gg_minimal_depth.default <- gg_minimal_depth.rfsrc

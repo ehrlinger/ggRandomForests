@@ -104,10 +104,18 @@
 #' 
 #' gg_dta <- gg_minimal_vimp(varsel_pbc)
 #' plot(gg_dta)
+#' 
+#' @aliases gg_minimal_vimp gg_minimal_vimp.randomForest gg_minimal_vimp.rfsrc
 #' @export
 gg_minimal_vimp <- function (object, ...) {
   UseMethod("gg_minimal_vimp", object)
 }
+
+#' @export
+gg_minimal_vimp.randomForest <- function(object, ...){
+  stop("gg_minimal_vimp is not yet support for randomForest objects")
+}
+
 #' @export
 gg_minimal_vimp.rfsrc <- function(object, ...){
   

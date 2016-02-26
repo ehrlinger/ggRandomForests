@@ -1,5 +1,10 @@
 Package: ggRandomForests
-Version: 1.2.1
+Version: 2.0.0
+
+ggRandomForests v2.0.0
+===================
+Added support for the randomForest package
+
 
 ggRandomForests v1.2.1
 ===================

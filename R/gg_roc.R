@@ -54,7 +54,7 @@
 #' plot(rfsrc_iris)
 #' 
 #' 
-#' @aliases gg_roc
+#' @aliases gg_roc gg_roc.rfsrc gg_roc.randomForest
 
 #' @export 
 gg_roc.rfsrc <- function(object, which.outcome, oob=TRUE, ...){
@@ -87,7 +87,16 @@ gg_roc.rfsrc <- function(object, which.outcome, oob=TRUE, ...){
   invisible(gg_dta)
 }
 #' @export
-# gg_roc <- function (object, which.outcome, oob, ...) {
-#   UseMethod("gg_roc", object)
-# }
-gg_roc <- gg_roc.rfsrc
+gg_roc <- function (object, which.outcome, oob, ...) {
+  UseMethod("gg_roc", object)
+}
+
+#' @export
+gg_roc.randomForest <-  function(object, ...){
+  stop("gg_roc is not yet support for randomForest objects")
+}
+
+
+
+#' @export
+gg_roc.default <- gg_roc.rfsrc

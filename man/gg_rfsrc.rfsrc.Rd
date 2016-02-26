@@ -5,7 +5,7 @@
 \alias{gg_rfsrc.rfsrc}
 \title{Predicted response data object}
 \usage{
-gg_rfsrc.rfsrc(object, oob = TRUE, by, ...)
+\method{gg_rfsrc}{rfsrc}(object, oob = TRUE, by, ...)
 }
 \arguments{
 \item{object}{\code{\link[randomForestSRC]{rfsrc}} object}

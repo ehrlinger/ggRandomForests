@@ -2,6 +2,8 @@
 % Please edit documentation in R/gg_partial.R
 \name{gg_partial}
 \alias{gg_partial}
+\alias{gg_partial.randomForest}
+\alias{gg_partial.rfsrc}
 \alias{gg_partial_list}
 \title{Partial variable dependence object}
 \usage{

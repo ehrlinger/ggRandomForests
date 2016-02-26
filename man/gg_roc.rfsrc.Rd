@@ -2,10 +2,11 @@
 % Please edit documentation in R/gg_roc.R
 \name{gg_roc.rfsrc}
 \alias{gg_roc}
+\alias{gg_roc.randomForest}
 \alias{gg_roc.rfsrc}
 \title{ROC (Receiver operator curve) data from a classification random forest.}
 \usage{
-gg_roc.rfsrc(object, which.outcome, oob = TRUE, ...)
+\method{gg_roc}{rfsrc}(object, which.outcome, oob = TRUE, ...)
 }
 \arguments{
 \item{object}{an \code{\link[randomForestSRC]{rfsrc}} classification object}

@@ -7,18 +7,19 @@
 \alias{gg_vimp.rfsrc}
 \title{Variable Importance (VIMP) data object}
 \usage{
-gg_vimp(object, ...)
+gg_vimp(object, nvar, ...)
 }
 \arguments{
 \item{object}{A \code{\link[randomForestSRC]{rfsrc}} object or output from 
 \code{\link[randomForestSRC]{vimp}}}
 
+\item{nvar}{argument to control the number of variables included in the output.}
+
 \item{...}{arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}} function if the 
 \code{\link[randomForestSRC]{rfsrc}} object does not contain importance information.}
 }
 \value{
-\code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order. Use the
-optional \code{nvar} argument to control the number of variables included in the output.
+\code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order.
 }
 \description{
 \code{gg_vimp} Extracts the variable importance (VIMP) information from a

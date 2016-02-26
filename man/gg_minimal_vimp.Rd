@@ -2,6 +2,8 @@
 % Please edit documentation in R/gg_minimal_vimp.R
 \name{gg_minimal_vimp}
 \alias{gg_minimal_vimp}
+\alias{gg_minimal_vimp.randomForest}
+\alias{gg_minimal_vimp.rfsrc}
 \title{Minimal depth vs VIMP camparison by variable rankings.}
 \usage{
 gg_minimal_vimp(object, ...)
@@ -97,5 +99,6 @@ data(varsel_pbc, package="ggRandomForests")
 
 gg_dta <- gg_minimal_vimp(varsel_pbc)
 plot(gg_dta)
+
 }
 

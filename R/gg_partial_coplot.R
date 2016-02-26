@@ -168,7 +168,28 @@ gg_partial_coplot.rfsrc <- function(object,
   gg_merge
 }
 #' @export
-gg_partial_coplot <- gg_partial_coplot.rfsrc
-# gg_partial_coplot <- function (object, ...) {
-#   UseMethod("gg_partial_coplot", object)
-# }
+gg_partial_coplot.default <- gg_partial_coplot.rfsrc
+
+#' @export
+gg_partial_coplot <- function (object, xvar, 
+                               groups, 
+                               surv_type=c("mort", 
+                                           "rel.freq",
+                                           "surv",
+                                           "years.lost",
+                                           "cif",
+                                           "chf"), 
+                               time, ...) {
+  UseMethod("gg_partial_coplot", object)
+}
+
+
+#' @export
+gg_partial_coplot.randomForest <- function(object, 
+                                    xvar, 
+                                    groups, 
+                                    surv_type=NULL, 
+                                    time = NULL,
+                                    ...){
+  stop("gg_partial_coplot is not yet support for randomForest objects") 
+}
