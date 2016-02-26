@@ -28,13 +28,14 @@
 #'  full set of covariate data (predictor variables) and the predicted response for 
 #'  each observation. Marginal dependence figures are created using the 
 #'  \code{\link{plot.gg_variable}} function.
+#'  
+#'  Optional arguments \code{time} point (or vector of points) of interest (for survival forests only)
+#' \code{time.labels} If more than one time is specified, a vector of time labels 
+#' for differentiating the time points (for survival forests only)
+#' \code{oob} indicate if predicted results should include oob or full data set.
 #' 
 #' @param object a \code{\link[randomForestSRC]{rfsrc}} object 
-#' @param time point (or vector of points) of interest (for survival forests only)
-#' @param time.labels If more than one time is specified, a vector of time.labels 
-#' for differentiating the time points (for survival forests only)
-#' @param oob indicate if predicted results should include oob or full data set.
-#' @param ... extra arguments 
+#' @param ... optional arguments 
 #'  
 #' @return \code{gg_variable} object
 #' 
@@ -134,17 +135,25 @@
 #' plot(gg_dta, xvar = "age")
 #' }
 #' ## -------- pbc data
+#' @aliases gg_variable gg_variable.rfsrc gg_variable.randomForest gg_variable.random
 
+#' @export 
+gg_variable <- function (object, ...) {
+  UseMethod("gg_variable", object)
+}
 #' @export
 gg_variable.rfsrc <- function(object,
-                              time,
-                              time.labels,
-                              oob=TRUE,
                               ...){
+  # Get the extra arguments for handling specifics
+  arg_list <- list(...)
+  #print(arg_list)
+  time <- arg_list$time
+  time.labels <- arg_list$time.labels
+  oob <- if(!is.null(arg_list$oob)){arg_list$oob}else{TRUE}
   
   # Want to also handle a plot.variable where partial!= TRUE
   if (!inherits(object, "rfsrc")) {
-    stop("gg_variable expects a randomForest or plot.variable object.")
+    stop("gg_variable expects a rfsrc or plot.variable object.")
   }
   
   # IF we called this with a partial plot obect, instead of marginal.
@@ -179,7 +188,9 @@ gg_variable.rfsrc <- function(object,
     gg_dta$cens <- as.logical(object$yvar[,2])
     colnames(gg_dta) <- c(object$xvar.names, "cens")
     
+    if(is.null(time)) time <- median(object$time.interest)
     lng <- length(time)
+    
     for (ind in 1:lng){
       if (ind > 1){
         gg_dta_t_old <- gg_dta_t
@@ -194,12 +205,12 @@ gg_variable.rfsrc <- function(object,
       if(in_time == 0)
         stop("The time of interest is less than the first event time. Make sure you are using the correct time units.")
       
-      if (oob)
+      if(oob)
         gg_dta_t$yhat <- object$survival.oob[,in_time]
       else
         gg_dta_t$yhat <- object$survival[,in_time]
       
-      if(missing(time.labels)){
+      if(is.null(time.labels)){
         gg_dta_t$time <- time[ind]
       }else{
         gg_dta_t$time <- time.labels[ind]
@@ -216,8 +227,54 @@ gg_variable.rfsrc <- function(object,
   class(gg_dta) <- c("gg_variable", object$family, class(gg_dta))
   invisible(gg_dta)
 }
-#'@export
-# gg_variable <- function (object, ...) {
-#   UseMethod("gg_variable", object)
-# }
-gg_variable <- gg_variable.rfsrc
+
+#' @export
+gg_variable.randomForest <- function(object,  
+                                     ...){
+  arg_list <- list(...)
+  #print(arg_list)
+  oob <- if(!is.null(arg_list$oob)){arg_list$oob}else{TRUE} 
+  
+  # Want to also handle a plot.variable where partial!= TRUE
+  if (!inherits(object, "randomForest")) {
+    stop("gg_variable expects a randomForest object.")
+  }
+  
+  # gg_variable is really just the training data and the outcome.
+  gg_dta <- get(as.character(object$call$data))
+  #data.frame(object$xvar)
+  
+  # Remove the response from the data.frame
+  rsp <- as.character(object$call$formula)[2]
+  gg_dta <- gg_dta[,-which(colnames(gg_dta)==rsp)]
+  
+  if(object$type == "regression"){
+    gg_dta$yhat <- NA
+    # gg_dta$yvar <- NA
+    if(length(attributes(object$predicted)$na.action) > 1){
+      if(attributes(attributes(object$predicted)$na.action)$class == "omit"){
+        gg_dta$yhat[-attributes(object$predicted)$na.action] <- object$predicted
+        #  gg_dta$yvar[-attributes(object$y)$na.action] <- object$y
+      }else{
+        gg_dta$yhat[-attributes(object$predicted)$na.action] <- object$predicted
+        #   gg_dta$yvar[-attributes(object$y)$na.action] <- object$y
+      }
+    }
+    
+  }else{ # if(object$family == "class"){
+    if(oob){
+      colnames(object$predicted.oob) <- paste("yhat.", colnames(object$predicted.oob),
+                                              sep="")
+      gg_dta <- cbind(gg_dta, object$predicted.oob)
+      
+    }else{
+      colnames(object$predicted) <- paste("yhat.", colnames(object$predicted),
+                                          sep="")
+      gg_dta <- object$predicted
+    }
+    gg_dta$yvar <- object$yvar
+    
+  }
+  class(gg_dta) <- c("gg_variable", object$type, class(gg_dta))
+  invisible(gg_dta)
+}

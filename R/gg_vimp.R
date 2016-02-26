@@ -88,7 +88,7 @@
 #' gg_dta <- gg_vimp(rfsrc_pbc, nvar=10)
 #' plot(gg_dta)
 
-#' @aliases gg_vimp gg_vimp.rfsrc gg_vimp.randomForest gg_vimp.random
+#' @aliases gg_vimp gg_vimp.rfsrc gg_vimp.randomForest gg_vimp.randomForest.formula
 #' @export 
 gg_vimp <- function (object, ...) {
   UseMethod("gg_vimp", object)

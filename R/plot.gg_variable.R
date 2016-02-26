@@ -159,6 +159,8 @@ plot.gg_variable <- function(x, xvar,
     family <- "surv"
   }else if(inherits(gg_dta, "regr")){
     family <- "regr"
+  }else if(inherits(gg_dta, "regression")){
+    family <- "regr"
   }
   
   # These may be dangerous because they work on column names only.
@@ -314,6 +316,8 @@ plot.gg_variable <- function(x, xvar,
       
       # If these are all continuous...
       if(sum(ccls[wch_x_var] == "numeric") == length(wch_x_var)){
+        
+        # cat("1")
         if(family=="class"){
           gg_plt <- ggplot(gg_dta.mlt,aes_string(x="value", y="yhat", color="yvar", shape="yvar"))+
             geom_point( ...)
@@ -365,7 +369,7 @@ plot.gg_variable <- function(x, xvar,
       ccls <- class(gg_dta[,"var"])
       ccls[which(ccls == "integer")] <- "numeric"
       
-      #cat(ind, "\t", h_name, "\t", ccls, "\n")
+      ## cat(ind, "\t", h_name, "\t", ccls, "\n")
       
       gg_plt[[ind]] <- ggplot(gg_dta)
       
@@ -375,6 +379,7 @@ plot.gg_variable <- function(x, xvar,
         
         if(ccls=="numeric"){
           
+          # cat("2")
           if(points){
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
@@ -388,6 +393,8 @@ plot.gg_variable <- function(x, xvar,
               geom_smooth(...)
           }
         }else{
+          
+          # cat("3")
           gg_plt[[ind]] <- gg_plt[[ind]] +
             geom_boxplot(aes_string(x="var", y="yhat"), color="black",
                          ..., outlier.shape = NA)+
@@ -407,6 +414,8 @@ plot.gg_variable <- function(x, xvar,
         
         if(sum(colnames(gg_dta) == "outcome") ==0){ 
           if(ccls=="numeric"){
+            
+            # cat("5")
             if(points){
               gg_plt[[ind]] <- gg_plt[[ind]] +
                 geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
@@ -420,6 +429,8 @@ plot.gg_variable <- function(x, xvar,
                 geom_smooth(...)
               }
           }else{
+            
+            # cat("6")
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_jitter(aes_string(x="var", y="yhat", color="yvar", shape="yvar"), 
                           ...) +
@@ -429,6 +440,7 @@ plot.gg_variable <- function(x, xvar,
           }
         }else{
           
+          # cat("7")
           if(ccls=="numeric"){
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_point(aes_string(x="var", y="yhat", color="yvar", shape="yvar"),
