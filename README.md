@@ -18,7 +18,7 @@ Many of the figures created by the `ggRandomForests` package are also available 
 
  * Each data object/figure is a single, self contained object. This allows simple modification and manipulation of the data or `ggplot2` objects to meet users specific needs and requirements. 
 
- * The use of `ggplot2` for plotting. We chose to use the `ggplot2` package for our figures to allow users flexibility in modifying the figures to their liking. Each S3 plot function returns either a single `ggplot2` object, or a `list` of `ggplot2` objects, allowing users to use additional `ggplot2` functions or themes to modify and customise the figures to their liking. 
+ * The use of `ggplot2` for plotting. We chose to use the `ggplot2` package for our figures to allow users flexibility in modifying the figures to their liking. Each S3 plot function returns either a single `ggplot2` object, or a `list` of `ggplot2` objects, allowing users to use additional `ggplot2` functions or themes to modify and customize the figures to their liking. 
 
 The package has recently been extended for Breiman and Cutler's Random Forests for Classification and
 Regression package [randomForest](http://CRAN.R-project.org/package=randomForest) where possible. Though methods have been provided for all `gg_*` functions, the unsupported functions will return an error message indicating where support is still lacking.
