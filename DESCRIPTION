@@ -23,6 +23,7 @@ Imports:
 Suggests:
     testthat,
     knitr,
+    rmdformats,
     RColorBrewer,
     MASS,
     dplyr,

@@ -249,29 +249,13 @@ gg_variable.randomForest <- function(object,
   gg_dta <- gg_dta[,-which(colnames(gg_dta)==rsp)]
   
   if(object$type == "regression"){
-    gg_dta$yhat <- NA
-    # gg_dta$yvar <- NA
-    if(length(attributes(object$predicted)$na.action) > 1){
-      if(attributes(attributes(object$predicted)$na.action)$class == "omit"){
-        gg_dta$yhat[-attributes(object$predicted)$na.action] <- object$predicted
-        #  gg_dta$yvar[-attributes(object$y)$na.action] <- object$y
-      }else{
-        gg_dta$yhat[-attributes(object$predicted)$na.action] <- object$predicted
-        #   gg_dta$yvar[-attributes(object$y)$na.action] <- object$y
-      }
-    }
-    
+    gg_dta$yhat <- object$predicted
+
   }else{ # if(object$family == "class"){
-    if(oob){
-      colnames(object$predicted.oob) <- paste("yhat.", colnames(object$predicted.oob),
-                                              sep="")
-      gg_dta <- cbind(gg_dta, object$predicted.oob)
-      
-    }else{
       colnames(object$predicted) <- paste("yhat.", colnames(object$predicted),
                                           sep="")
       gg_dta <- object$predicted
-    }
+    
     gg_dta$yvar <- object$yvar
     
   }

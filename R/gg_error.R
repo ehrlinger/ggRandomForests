@@ -127,15 +127,15 @@ gg_error.rfsrc <- function(object, ...) {
   if (is.null(object$err.rate)) {
     stop("Performance values are not available for this forest.")
   }
-
+  
   gg_dta <- data.frame(object$err.rate)
-
+  
   # If there is only one column in the error rate... name it reasonably.
   if("object.err.rate" %in% colnames(gg_dta))
     colnames(gg_dta)[which(colnames(gg_dta) == "object.err.rate")] <- "error"
-
+  
   gg_dta$ntree <- 1:dim(gg_dta)[1]
-
+  
   arg_list <- as.list(substitute(list(...)))
   training <- FALSE
   if(!is.null(arg_list$training)) training <- arg_list$traini
@@ -146,7 +146,7 @@ gg_error.rfsrc <- function(object, ...) {
                       membership=FALSE)
     gg_dta$train <- gg_prd$err.rate
   }
-
+  
   class(gg_dta) <- c("gg_error",class(gg_dta))
   invisible(gg_dta)
 }
@@ -158,30 +158,49 @@ gg_error.randomForest <- function(object, ...) {
     stop(paste("This function only works for Forests grown",
                "with the randomForest package."))
   }
-  if (is.null(object$mse)) {
+  
+  if(!is.null(object$mse)) {
+    # For regression
+    gg_dta <- data.frame(object$mse)
+    
+    # If there is only one column in the error rate... name it reasonably.
+    if("object.mse" %in% colnames(gg_dta))
+      colnames(gg_dta)[which(colnames(gg_dta) == "object.mse")] <- "error"
+    
+    gg_dta$ntree <- 1:nrow(gg_dta)
+    
+    arg_list <- as.list(substitute(list(...)))
+    training <- FALSE
+    if(!is.null(arg_list$training)) training <- arg_list$training
+    
+    if(training){
+      trn <- data.frame(cbind(object$xvar, object$yvar))
+      colnames(trn) <- c(object$xvar.names, object$yvar.names)
+      gg_prd <- predict(object, newdata=trn, importance="none",
+                        membership=FALSE)
+      gg_dta$train <- gg_prd$err.rate
+    }
+    
+  }else if(!is.null(object$err.rate)){
+    # For classification
+    gg_dta <- data.frame(object$err.rate)
+    
+    gg_dta$ntree <- 1:nrow(gg_dta)
+    
+    arg_list <- as.list(substitute(list(...)))
+    training <- FALSE
+    if(!is.null(arg_list$training)) training <- arg_list$training
+    
+    # if(training){
+    #   trn <- data.frame(cbind(object$xvar, object$y))
+    #   colnames(trn) <- c(object$xvar.names, object$yvar.names)
+    #   gg_prd <- predict(object, newdata=trn, importance="none",
+    #                     membership=FALSE)
+    #   gg_dta$train <- gg_prd$err.rate
+    # }
+  }else{
     stop("Performance values are not available for this forest.")
   }
-
-  gg_dta <- data.frame(object$mse)
-
-  # If there is only one column in the error rate... name it reasonably.
-  if("object.mse" %in% colnames(gg_dta))
-    colnames(gg_dta)[which(colnames(gg_dta) == "object.mse")] <- "error"
-
-  gg_dta$ntree <- 1:nrow(gg_dta)
-
-  arg_list <- as.list(substitute(list(...)))
-  training <- FALSE
-  if(!is.null(arg_list$training)) training <- arg_list$training
-
-  if(training){
-    trn <- data.frame(cbind(object$xvar, object$yvar))
-    colnames(trn) <- c(object$xvar.names, object$yvar.names)
-    gg_prd <- predict(object, newdata=trn, importance="none",
-                      membership=FALSE)
-    gg_dta$train <- gg_prd$err.rate
-  }
-
   class(gg_dta) <- c("gg_error",class(gg_dta))
   invisible(gg_dta)
 }

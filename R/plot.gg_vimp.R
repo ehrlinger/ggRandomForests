@@ -104,17 +104,20 @@ plot.gg_vimp <- function(x, relative, lbls, ...){
   
   gg_plt <- ggplot(gg_dta)
   
+  msr <- "vimp"
+  if(!msr %in% colnames(gg_dta)) msr <- colnames(gg_dta)[1]
+  
   #  if(missing(relative) | is.null(gg_dta$rel_vimp)){
   if(length(unique(gg_dta$positive)) > 1){
     gg_plt<-gg_plt +
-      geom_bar(aes_string(y="vimp", x="vars", fill="positive"), 
+      geom_bar(aes_string(y=msr, x="vars", fill="positive"), 
                stat="identity", width=.5, color="black")
   }else{
     gg_plt <- gg_plt +
-      geom_bar(aes_string(y="vimp", x="vars"), 
+      geom_bar(aes_string(y=msr, x="vars"), 
                stat="identity", width=.5, color="black")
   }
-  gg_plt <- gg_plt + labs(x="", y="Variable Importance")
+  gg_plt <- gg_plt + labs(x="", y=msr)
   
   ## I export a rel_vimp from the gg_vimp any more,
   #   }else{

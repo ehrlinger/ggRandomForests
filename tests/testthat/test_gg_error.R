@@ -1,7 +1,7 @@
 # testthat for gg_error function
 context("gg_error tests")
 
-test_that("gg_error classifications",{
+test_that("gg_error.rfsrc classifications",{
   
   ## Load the cached forest
   data(rfsrc_iris, package="ggRandomForests")
@@ -39,6 +39,45 @@ test_that("gg_error classifications",{
   
 })
 
+
+test_that("gg_error.randomForest classifications",{
+  
+  ## Load the cached forest
+  rf_iris <- randomForest::randomForest(Species ~., 
+                                        data = iris)
+  
+  # Test the cached forest type
+  expect_is(rf_iris, "randomForest")
+  
+  # Test the forest family
+  expect_match(rf_iris$type, "classification")
+  
+  ## Create the correct gg_error object
+  gg_dta <- gg_error(rf_iris)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_error")
+  
+  # Test classification dimensions
+  expect_equal(dim(gg_dta)[1], dim(rf_iris$err.rate)[1])
+  expect_equal(dim(gg_dta)[2], dim(rf_iris$err.rate)[2] + 1)
+  
+  # Test data is correctly pulled from randomForest obect.
+  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "ntree")]), rf_iris$err.rate)
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
+  # "Incorrect object type: Expects a gg_error object"
+  expect_error(gg_error(gg_plt))
+  expect_error(gg_error.randomForest(gg_plt))
+  rf_iris$err.rate <- NULL
+  expect_error(gg_error(rf_iris))
+  
+})
 
 test_that("gg_error survival", {  
   ## Load the cached forest
@@ -119,3 +158,48 @@ test_that("gg_error regression",{
 #  expect_is(gg_dta, "gg_error")
 })
 
+
+test_that("gg_error regression",{
+  ## Load the cached forest
+  data(Boston, package="MASS")
+  
+  Boston$chas <- as.logical(Boston$chas)
+  
+  rf_Boston <- randomForest::randomForest(medv~., data=Boston)
+  # Test the cached forest type
+  expect_is(rf_Boston, "randomForest")
+  
+  # Test the forest family
+  expect_match(rf_Boston$type, "regression")
+  
+  ## Create the correct gg_error object
+  gg_dta <- gg_error(rf_Boston)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_error")
+  
+  # Test classification dimensions
+  expect_equal(nrow(gg_dta), length(rf_Boston$mse))
+  expect_equal(ncol(gg_dta), 2)
+  
+  # Test data is correctly pulled from randomForest obect.
+  expect_equivalent(c(gg_dta[,1]), rf_Boston$mse)
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
+  # Test the exception for input
+  expect_error(gg_error(gg_plt))
+  
+  ## Create the correct gg_error object
+  # gg_dta <- gg_error(rf_Boston, training=TRUE)
+  
+  # Test object type
+  #  expect_is(gg_dta, "gg_error")
+})

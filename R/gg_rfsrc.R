@@ -429,20 +429,15 @@ gg_rfsrc.randomForest <- function(object,
     
   }else if(object$type == "regression"){
     
-    # Need to add multiclass methods
-    if(oob){
-      gg_dta <- data.frame(cbind(object$predicted.oob, object$yvar))
-    }else{
-      gg_dta <- data.frame(cbind(object$predicted, object$yvar))
-    }
+    gg_dta <- data.frame(cbind(object$predicted, object$y))
     
-    colnames(gg_dta) <- c("yhat", object$yvar.names)
+    colnames(gg_dta) <- c("yhat", rsp)
     
     # Handle the "by" argument.
     if(!missing(by)) gg_dta$group <- grp
     
   }else{
-    stop(paste("Plotting for ", object$family, " randomForestSRC is not yet implemented.", sep=""))
+    stop(paste("Plotting for ", object$family, " randomForest is not yet implemented.", sep=""))
   }
   
   class(gg_dta) <- c("gg_rfsrc", class(gg_dta), object$type)
