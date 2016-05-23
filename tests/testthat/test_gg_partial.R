@@ -166,7 +166,7 @@ test_that("gg_partial combine",{
   
   # A list of 2 plot.variable objects
   expect_is(partial_pbc, "list")
-  expect_more_than(length(partial_pbc), 1) 
+  expect_gt(length(partial_pbc), 1) 
   
   for(ind in 1:length(partial_pbc)){
     expect_is(partial_pbc[[ind]], "rfsrc")
@@ -187,12 +187,12 @@ test_that("gg_partial combine",{
   expect_is(ggpart, "gg_partial_list")
   
   # We should have at least 5 
-  expect_more_than(length(ggpart), 5)
+  expect_gt(length(ggpart), 5)
   
   # Plot each figure separately
   gg_plt <- plot(ggpart)                                  
   expect_is(gg_plt, "list")
-  expect_more_than(length(gg_plt), 5)
+  expect_gt(length(gg_plt), 5)
   expect_equal(length(gg_plt), length(ggpart))
   
   for(ind in 1:length(gg_plt)){
@@ -203,13 +203,13 @@ test_that("gg_partial combine",{
   ggcont <- ggpart
   
   ggcont$celltype <- ggcont$trt <- ggcont$prior <- NULL
-  expect_more_than(length(ggcont), 5 - 3)
+  expect_gt(length(ggcont), 5 - 3)
   
   gg_plt <- plot(ggcont, panel=TRUE) 
   expect_is(gg_plt, "ggplot")
   # And the categorical for a panel of categorical plots.
   ggpart$karno <- ggpart$diagtime <- ggpart$age <- NULL
-  expect_more_than(length(ggpart), 5 - 3)
+  expect_gt(length(ggpart), 5 - 3)
   
   gg_plt <- plot(ggpart, panel=TRUE) 
   expect_is(gg_plt, "ggplot")

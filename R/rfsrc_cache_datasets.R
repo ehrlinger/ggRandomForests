@@ -83,8 +83,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     stop("Provided path does not exist, or is not a directory.")
   }
   
-  if(is.na(set))
-    set <- c("Boston", "iris", "pbc")
+  if(length(set) == 1) if(is.na(set))  set <- c("Boston", "iris", "pbc")
   
   if("airq" %in% set){
     cat("airq: randomForest\n")
@@ -123,7 +122,8 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     iris <- dta$iris
     cat("iris: randomForest\n")
     if(!test) rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
-                                                   data = iris, ...)
+                                                   data = iris, 
+                                                   importance=TRUE, ...)
     if(save) save(rfsrc_iris, file=paste(pth, "rfsrc_iris.rda", sep=""), 
                   compress="xz")
     
@@ -181,7 +181,8 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     Boston$chas <- as.logical(Boston$chas)
     
     cat("Boston: randomForest\n")
-    if(!test) rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston, ...)
+    if(!test) rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston, 
+                                                     importance=TRUE, ...)
     else{
       data(rfsrc_Boston, package="ggRandomForests",
            envir = dta)
@@ -281,7 +282,9 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     if(!test) rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
                                                   dta.train, nsplit = 10,
-                                                  na.action="na.impute", ...)
+                                                  na.action="na.impute",
+                                                  importance=TRUE,
+                                                  ...)
     if(save) save(rfsrc_pbc, 
                   file=paste(pth, "rfsrc_pbc.rda", sep=""), 
                   compress="xz")

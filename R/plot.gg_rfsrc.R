@@ -47,7 +47,7 @@
 #' data(rfsrc_iris, package="ggRandomForests")
 #' gg_dta<- gg_rfsrc(rfsrc_iris)
 #' 
-#' plot.gg_rfsrc(gg_dta)
+#' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Regression example
@@ -57,17 +57,17 @@
 #' data(rfsrc_airq, package="ggRandomForests")
 #' gg_dta<- gg_rfsrc(rfsrc_airq)
 #' 
-#' plot.gg_rfsrc(gg_dta)
+#' plot(gg_dta)
 #' 
 #' ## -------- Boston data
 #' data(rfsrc_Boston, package="ggRandomForests")
-#' plot.gg_rfsrc(rfsrc_Boston) 
+#' plot(rfsrc_Boston) 
 #' 
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
 #' gg_dta<- gg_rfsrc(rfsrc_mtcars)
 #' 
-#' plot.gg_rfsrc(gg_dta)
+#' plot(gg_dta)
 #' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
@@ -111,7 +111,7 @@ plot.gg_rfsrc <- function(x,
   arg_set <- list(...)
   
   ## rfsrc places the class in position 1.
-  if(inherits(gg_dta, "rfsrc")) gg_dta <- gg_rfsrc(gg_dta, ...)
+  if(inherits(gg_dta, "rfsrc")) gg_dta <- gg_rfsrc(gg_dta)
   
   ## Classification forest?
   if(inherits(gg_dta, "class") | inherits(gg_dta, "classification")){

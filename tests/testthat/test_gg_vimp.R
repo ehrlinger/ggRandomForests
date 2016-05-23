@@ -78,7 +78,7 @@ test_that("gg_vimp classifications", {
   iris2$spec <- factor(as.character(iris2$Species) == "setosa")
   iris2 <- iris2[,-which(colnames(iris2) == "Species")]
 
-  rf <- rfsrc(spec~., iris2)
+  rf <- rfsrc(spec~., iris2, importance=TRUE)
 
   gg_dta <- gg_vimp(rf)
 

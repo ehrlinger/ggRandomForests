@@ -43,9 +43,6 @@ plot(gg_dta)
 gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
 plot(gg_dta)
 
-# Alternatively, you can plot all three outcomes in one go
-# by calling the plot function on the forest object. 
-plot(rfsrc_iris)
 
 
 }
