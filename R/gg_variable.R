@@ -136,7 +136,8 @@
 #' }
 #' ## -------- pbc data
 #' @aliases gg_variable gg_variable.rfsrc gg_variable.randomForest gg_variable.random
-
+#' @importFrom stats median
+#' 
 #' @export 
 gg_variable <- function (object, ...) {
   UseMethod("gg_variable", object)

@@ -92,7 +92,8 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     if(!test)
       rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality, 
-                                           na.action = "na.impute", ...)
+                                           na.action = "na.impute",
+                                           importance=TRUE, ...)
     
     if(save) save(rfsrc_airq, file=paste(pth, "rfsrc_airq.rda", sep=""),
                   compress="xz")
@@ -151,7 +152,8 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     mtcars <- dta$mtcars
     cat("mtcars: randomForest\n")
     if(!test) rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., 
-                                                     data = mtcars, ...)
+                                                     data = mtcars,
+                                                     importance=TRUE, ...)
     if(save) save(rfsrc_mtcars, file=paste(pth, "rfsrc_mtcars.rda", sep=""), 
                   compress="xz")
     
@@ -408,7 +410,8 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     cat("veteran: randomForest\n")
     if(!test) rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., 
-                                                      data = dta$veteran, ...)
+                                                      data = dta$veteran,
+                                                      importance=TRUE, ...)
     
     if(save) save(rfsrc_veteran, 
                   file=paste(pth, "rfsrc_veteran.rda", sep=""), compress="xz")
@@ -462,7 +465,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
 #   if("airq" %in% set){
 #     cat("airq: randomForest\n")
 #     if(!test) rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., 
-#         data = airquality, na.action = "na.impute", ...)
+#         data = airquality, na.action = "na.impute", importance=TRUE, ...)
 #     if(save) save(rfsrc_airq, file=paste(pth, "rfsrc_airq.rda", sep=""), compress="xz")
 #     
 #     cat("airq: RF partial dependence\n")
@@ -471,7 +474,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
 #   
 #   if("iris" %in% set){
 #     cat("iris: randomForest\n")
-#     if(!test) rfsrc_iris <- randomForestSRC::rfsrc(Species ~., data = iris, ...)
+#     if(!test) rfsrc_iris <- randomForestSRC::rfsrc(Species ~., data = iris, importance=TRUE, ...)
 #     if(save) save(rfsrc_iris, file=paste(pth, "rfsrc_iris.rda", sep=""), compress="xz")
 #     
 #     cat("iris: RF partial dependence\n")
@@ -480,7 +483,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
 #   
 #   if("mtcars" %in% set){
 #     cat("mtcars: randomForest\n")
-#     if(!test) rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ...)
+#     if(!test) rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, importance=TRUE, ...)
 #     if(save) save(rfsrc_mtcars, file=paste(pth, "rfsrc_mtcars.rda", sep=""), compress="xz")
 #     
 #     cat("mtcars: RF partial dependence\n")
@@ -493,7 +496,7 @@ rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
 #     Boston$chas <- as.logical(Boston$chas)
 #     
 #     cat("Boston: randomForest\n")
-#     if(!test) rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston, ...)
+#     if(!test) rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston, importance=TRUE, ...)
 #     if(save) save(rfsrc_Boston, file=paste(pth, "rfsrc_Boston.rda", sep=""), compress="xz")
 #     
 #     cat("Boston: RF partial dependence\n(this will take a little while...)\n")
