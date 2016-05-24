@@ -239,7 +239,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
                   compress="xz")
     cat("\nBoston: RF partial surface plot\n(Go get a coffee...)\n")
     if(!test){
-      rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50, intervals=TRUE)
+      rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=49, intervals=TRUE)
       partial_Boston_surf <- lapply(rm_pts, function(ct){
         rfsrc_Boston$xvar$rm <- ct
         plot.variable(rfsrc_Boston, xvar = "lstat", time = 1,
@@ -390,6 +390,30 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(save) save(partial_coplot_pbc2, 
                   file=paste(pth, "partial_coplot_pbc2.rda", sep=""), 
                   compress="xz")
+    
+    if(!test){
+      # Restrict the time of interest to less than 5 years.
+      time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
+      
+      # Find the 50 points in time, evenly space along the distribution of 
+      # event times for a series of partial dependence curves
+      time_cts <-quantile_pts(time_pts, groups = 50, intervals = TRUE)
+      
+      # Load stored data from the package.
+      # See ?partial_pbc_time for how this data was generated.
+
+      #Time surfaces are created with the partial.rfsrc command
+      partial_pbc_time <- partial.rfsrc(rfsrc_pbc, xvar = "bili",
+                                        npts = 50, show.plots = FALSE,
+                                        surv.type="surv")
+
+    }
+    
+    if(save) save(partial_pbc_time, 
+                  file=paste(pth, "partial_pbc_time.rda", sep=""), 
+                  compress="xz")
+    
+    
   }
   
   if("veteran" %in% set){

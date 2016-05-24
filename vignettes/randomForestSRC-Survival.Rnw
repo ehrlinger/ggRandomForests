@@ -1068,7 +1068,7 @@ time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
 
 # Find the 50 points in time, evenly space along the distribution of 
 # event times for a series of partial dependence curves
-time_cts <-quantile_pts(time_pts, groups = 50)
+time_cts <-quantile_pts(time_pts, groups = 50, intervals = TRUE)
 
 # Load stored data from the package.
 # See ?partial_pbc_time for how this data was generated.
