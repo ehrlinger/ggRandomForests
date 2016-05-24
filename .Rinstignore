@@ -1,5 +1,8 @@
 vignettes/JSSstyle/*
 vignettes/*.log
 vignettes/*.tex
-
+vignettes/randomForest.Rmd
+vignettes/randomForestSRC-Regression.Rnw
+vignettes/ggRandomForestsRMD.bib
 framed.sty
+Sweave.sty

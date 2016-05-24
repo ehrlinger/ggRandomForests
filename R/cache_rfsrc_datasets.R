@@ -56,7 +56,7 @@
 #' @importFrom utils data
 #' 
 #' @export
-rfsrc_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
+cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
   dta <- new.env()
   
   # If we're testing this, we don't want to run the rfsrc codes.

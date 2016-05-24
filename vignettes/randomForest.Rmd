@@ -21,10 +21,6 @@ output:
     toc: true
     fig_caption: yes
 bibliography: ggRandomForestsRMD.bib
-vignette: >
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteIndexEntry{ggRandomForests with randomForest package}
-  %\usepackage[utf8]{inputenc}
 ---
 
 # Abtract
