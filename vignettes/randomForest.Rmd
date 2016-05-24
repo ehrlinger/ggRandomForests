@@ -9,18 +9,22 @@ author:
 title: "ggRandomForests: Random Forests for Regression"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  rmdformats::readthedown:
-    highlight: kate
-    fig_caption: yes
   html_document:
     fig_caption: yes
     toc: true
     toc_float: true
     code_folding: hide
+  rmdformats::readthedown:
+    highlight: kate
+    fig_caption: yes
   word_document:
     toc: true
     fig_caption: yes
 bibliography: ggRandomForestsRMD.bib
+vignette: >
+  %\VignetteIndexEntry{ggRandomForests: Regression randomForest}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 # Abtract

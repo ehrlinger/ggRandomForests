@@ -237,6 +237,20 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(save) save(partial_coplot_Boston2, 
                   file=paste(pth, "partial_coplot_Boston2.rda", sep=""), 
                   compress="xz")
+    cat("\nBoston: RF partial surface plot\n(Go get a coffee...)\n")
+    if(!test){
+      rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50, intervals=TRUE)
+      partial_Boston_surf <- lapply(rm_pts, function(ct){
+        rfsrc_Boston$xvar$rm <- ct
+        plot.variable(rfsrc_Boston, xvar = "lstat", time = 1,
+                      npts = 50, show.plots = FALSE, 
+                      partial = TRUE)
+      })
+    }
+    
+    if(save) save(partial_Boston_surf, 
+                  file=paste(pth, "partial_Boston_surf.rda", sep=""), 
+                  compress="xz")
     
   }
   
