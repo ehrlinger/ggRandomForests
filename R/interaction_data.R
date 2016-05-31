@@ -15,12 +15,12 @@
 #' Constructing the minimal depth interaction matrices on randomForestsSRC objects are 
 #' computationally expensive. We cache \code{\link[randomForestSRC]{find.interaction}} matrix objects
 #' to improve the \code{ggRandomForests} examples, diagnostics and vignettes run times. 
-#' (see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
+#' (see \code{\link{cache_rfsrc_datasets}} to rebuild a complete set of these data sets.)
 #' 
 #' For each data set listed, we build a \code{\link[randomForestSRC]{rfsrc}} 
 #' (see \code{\link{rfsrc_data}}), then calculate the minimal depth variable interaction 
 #' table with \code{\link[randomForestSRC]{find.interaction}}. Each data set is built with the 
-#' \code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version listed
+#' \code{\link{cache_rfsrc_datasets}} with the \code{randomForestSRC} version listed
 #' in the \code{ggRandomForests} DESCRIPTION file.
 #' 
 #' \itemize{
@@ -61,7 +61,7 @@
 #' \code{\link[randomForestSRC]{pbc}}
 #'  \code{\link[randomForestSRC]{find.interaction}}
 #'  \code{\link{rfsrc_data}}
-#'  \code{\link{rfsrc_cache_datasets}} 
+#'  \code{\link{cache_rfsrc_datasets}} 
 #'  \code{\link{gg_interaction}} 
 #'  \code{\link{plot.gg_interaction}}
 #'  

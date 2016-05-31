@@ -11,11 +11,11 @@
 #' Constructing random forests are computationally expensive.
 #' We cache \code{\link[randomForestSRC]{rfsrc}} objects to improve the \code{ggRandomForests} 
 #' examples, diagnostics and vignettes run times. 
-#' (see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
+#' (see \code{\link{cache_rfsrc_datasets}} to rebuild a complete set of these data sets.)
 #' 
 #' For each data set listed, we build a \code{\link[randomForestSRC]{rfsrc}}. Tuning parameters used
 #' in each case are documented in the examples. Each data set is built with the 
-#' \code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version listed
+#' \code{\link{cache_rfsrc_datasets}} with the \code{randomForestSRC} version listed
 #' in the \code{ggRandomForests} DESCRIPTION file.
 #' 
 #' \itemize{
@@ -26,7 +26,7 @@
 #' }
 #' 
 #' @seealso \code{\link[MASS]{Boston}} \code{\link[randomForestSRC]{plot.variable}}
-#'  \code{\link{rfsrc_cache_datasets}}
+#'  \code{\link{cache_rfsrc_datasets}}
 #'  
 #' @examples
 #' \dontrun{

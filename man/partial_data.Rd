@@ -37,12 +37,12 @@ data set (\code{MASS} package).
 Constructing partial plot data with the randomForestsSRC::plot.variable function are 
 computationally expensive. We cache \code{\link[randomForestSRC]{plot.variable}} objects
 to improve the \code{ggRandomForests} examples, diagnostics and vignettes run times. 
-(see \code{\link{rfsrc_cache_datasets}} to rebuild a complete set of these data sets.)
+(see \code{\link{cache_rfsrc_datasets}} to rebuild a complete set of these data sets.)
 
 For each data set listed, we build a \code{\link[randomForestSRC]{rfsrc}}
 (see \code{\link{rfsrc_data}}), then calculate the partial plot data with 
 \code{\link[randomForestSRC]{plot.variable}} function, setting \code{partial=TRUE}. Each data set is 
-built with the \code{\link{rfsrc_cache_datasets}} with the \code{randomForestSRC} version 
+built with the \code{\link{cache_rfsrc_datasets}} with the \code{randomForestSRC} version 
 listed in the \code{ggRandomForests} DESCRIPTION file.
 
 \itemize{
@@ -172,7 +172,7 @@ Springer-Verlag, New York. ISBN: 0-387-98784-3.
 \code{\link[randomForestSRC]{pbc}}
 \code{\link[randomForestSRC]{plot.variable}}
 \code{\link{rfsrc_data}}
- \code{\link{rfsrc_cache_datasets}} 
+ \code{\link{cache_rfsrc_datasets}} 
  \code{\link{gg_partial}} 
  \code{\link{plot.gg_partial}}
 }

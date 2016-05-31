@@ -25,7 +25,7 @@ column names.
 ## From vignette(randomForestRegression, package="ggRandomForests")
 ##
 data(rfsrc_Boston)
-rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50)
+rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=49, intervals=TRUE)
 
 # Load the stored partial coplot data.
 data(partial_Boston_surf)
@@ -34,7 +34,7 @@ data(partial_Boston_surf)
 # To make the dimensions match, we need to repeat the values
 # for each of the 50 points in the lstat direction
 rm.tmp <- do.call(c,lapply(rm_pts, 
-                           function(grp){rep(grp, 50)}))
+                           function(grp){rep(grp, length(partial_Boston_surf))}))
 
 # Convert the list of plot.variable output to 
 partial_surf <- do.call(rbind,lapply(partial_Boston_surf, gg_partial))

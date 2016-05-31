@@ -217,7 +217,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, intervals=TRUE)
     rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
     if(!test) partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, 
-                                                         xvar="lstat", 
+                                                         xvar = "lstat", 
                                                          groups=rm_grp,
                                                          show.plots=FALSE)
     
@@ -242,7 +242,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
       rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=49, intervals=TRUE)
       partial_Boston_surf <- lapply(rm_pts, function(ct){
         rfsrc_Boston$xvar$rm <- ct
-        plot.variable(rfsrc_Boston, xvar = "lstat", time = 1,
+        plot.variable(rfsrc_Boston, xvar.names = "lstat", time = 1,
                       npts = 50, show.plots = FALSE, 
                       partial = TRUE)
       })
@@ -397,23 +397,36 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
       
       # Find the 50 points in time, evenly space along the distribution of 
       # event times for a series of partial dependence curves
-      time_cts <-quantile_pts(time_pts, groups = 50, intervals = TRUE)
+      time_cts <- quantile_pts(time_pts, groups = 50)
       
-      # Load stored data from the package.
-      # See ?partial_pbc_time for how this data was generated.
-
-      #Time surfaces are created with the partial.rfsrc command
-      partial_pbc_time <- partial.rfsrc(rfsrc_pbc, xvar = "bili",
-                                        npts = 50, show.plots = FALSE,
-                                        surv.type="surv")
-
+      # Generate the gg_partial_coplot data object
+      partial_pbc_time <- lapply(time_cts, function(ct){
+        plot.variable(rfsrc_pbc, xvar.names = "bili", time = ct,
+                      npts = 50, show.plots = FALSE, 
+                      partial = TRUE, surv.type="surv")
+      })
+      
     }
     
     if(save) save(partial_pbc_time, 
                   file=paste(pth, "partial_pbc_time.rda", sep=""), 
                   compress="xz")
+
+    if(!test){
+      # Find the quantile points to create 50 cut points
+      alb_partial_pts <- quantile_pts(rfsrc_pbc$xvar$albumin, groups = 50)
+      
+      partial_pbc_surf <- lapply(alb_partial_pts, function(ct){
+        rfsrc_pbc$xvar$albumin <- ct
+        plot.variable(rfsrc_pbc, xvar.names = "bili", time = 1,
+                      npts = 50, show.plots = FALSE, 
+                      partial = TRUE, surv.type="surv")
+      })
+    }
     
-    
+    if(save) save(partial_pbc_surf, 
+                  file=paste(pth, "partial_pbc_surf.rda", sep=""), 
+                  compress="xz")
   }
   
   if("veteran" %in% set){

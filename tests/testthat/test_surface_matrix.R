@@ -17,7 +17,7 @@ test_that("cutting a vector at evenly space points",{
   # for each of the 50 points in the lstat direction
   rm.tmp <- do.call(c,lapply(rm_pts, 
                              function(grp){ 
-                               rep(grp, 50)
+                               rep(grp, length(partial_Boston_surf))
                              }))
   
   # Convert the list of plot.variable output to 
@@ -37,7 +37,7 @@ test_that("cutting a vector at evenly space points",{
   expect_equal(length(srf), 3)
   
   expect_equal(nrow(srf[[1]]), 50)
-  expect_equal(ncol(srf[[1]]), 50)
+  expect_equal(ncol(srf[[1]]), length(partial_Boston_surf))
   
   expect_equal(nrow(srf[[1]]), nrow(srf[[2]]))
   expect_equal(nrow(srf[[1]]), nrow(srf[[3]]))

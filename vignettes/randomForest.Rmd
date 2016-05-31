@@ -6,9 +6,11 @@ author:
       1 Memorial Drive
       Cambridge, MA 
     email: jehrling@microsoft.com
-title: "ggRandomForests: Random Forests for Regression"
+title: "ggRandomForests: Regression randomForest"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
+  html_vignette:
+    fig_caption: yes
   html_document:
     fig_caption: yes
     toc: true

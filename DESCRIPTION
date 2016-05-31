@@ -28,5 +28,6 @@ Suggests:
     MASS,
     dplyr,
     plot3D,
-    randomForest
+    randomForest,
+    rmarkdown
 RoxygenNote: 5.0.1
