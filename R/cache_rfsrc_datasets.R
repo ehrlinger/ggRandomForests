@@ -93,7 +93,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(!test)
       rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality, 
                                            na.action = "na.impute",
-                                           importance=TRUE, ...)
+                                           importance=TRUE, tree.err=TRUE, ...)
     
     if(save) save(rfsrc_airq, file=paste(pth, "rfsrc_airq.rda", sep=""),
                   compress="xz")
@@ -242,7 +242,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
       rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=49, intervals=TRUE)
       partial_Boston_surf <- lapply(rm_pts, function(ct){
         rfsrc_Boston$xvar$rm <- ct
-        plot.variable(rfsrc_Boston, xvar.names = "lstat", time = 1,
+        randomForestSRC::plot.variable(rfsrc_Boston, xvar.names = "lstat", time = 1,
                       npts = 50, show.plots = FALSE, 
                       partial = TRUE)
       })
@@ -401,7 +401,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
       
       # Generate the gg_partial_coplot data object
       partial_pbc_time <- lapply(time_cts, function(ct){
-        plot.variable(rfsrc_pbc, xvar.names = "bili", time = ct,
+        randomForestSRC::plot.variable(rfsrc_pbc, xvar.names = "bili", time = ct,
                       npts = 50, show.plots = FALSE, 
                       partial = TRUE, surv.type="surv")
       })
@@ -418,7 +418,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
       
       partial_pbc_surf <- lapply(alb_partial_pts, function(ct){
         rfsrc_pbc$xvar$albumin <- ct
-        plot.variable(rfsrc_pbc, xvar.names = "bili", time = 1,
+        randomForestSRC::plot.variable(rfsrc_pbc, xvar.names = "bili", time = 1,
                       npts = 50, show.plots = FALSE, 
                       partial = TRUE, surv.type="surv")
       })
