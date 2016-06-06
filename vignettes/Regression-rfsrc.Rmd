@@ -529,7 +529,7 @@ Visualizing two dimensional projections of three dimensional data is difficult, 
 Since we are already using the data caching strategy, we will generate another set of `gg_partial` objects with increased resolution in both the `lstat` and `rm` dimensions. For this exercise, we will find 50 points evenly spaced along the `rm` variable values, and generate a partial plot curve for each point. For these partial plots, we will evaluate the risk adjusted median home value over `npts=50` points along the `lstat` variable. This code block finds 50 `rm` values evenly spaced along the distribution of `rm`.
 ```{r def-pts, echo=TRUE}
 # Find the quantile points to create 50 cut points
-rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50, intervals = TRUE)
+rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=49, intervals = TRUE)
 ```
 
 We use the following data call to generate the partial plots with the `randomForestSRC::plot.variable` call. Within the lapply call, we use scope to modify the value of the `rm` variable within the `rfsrc_Boston` training set. Since all values in the training set are the same, the averaged value of `rm` places each partial plot curve at a specific value of `rm`. This code block took about 20 minutes to run on a quad core Mac Air using a single processor.  
