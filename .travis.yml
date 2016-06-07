@@ -20,7 +20,7 @@ apt_packages:
 #  - moreutils
 #  - tmux
 #  - texinfo
-#  - texlive-full
+  - texlive-full
   
 #brew_packages:
 #  - tmux
