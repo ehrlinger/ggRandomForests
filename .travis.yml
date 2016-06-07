@@ -40,7 +40,8 @@ r_binary_packages:
 
 # For code coverage
 r_github_packages:
-#  - jimhester/covr
+#
+# - jimhester/covr
   - hadley/dplyr
 #  - hadley/ggplot2
 #  - ehrlinger/randomForestSRC
