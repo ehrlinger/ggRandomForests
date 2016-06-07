@@ -1,10 +1,11 @@
 .gitignore
 ^.*\.Rproj$         # Automatically added by RStudio,
+ggRandomForests.Rproj         
 ^\.Rproj\.user$     # used for temporary files. 
 ^README\.Rmd$       # An Rmarkdown file used to generate README.md
-^cran-comments\.md$ # Comments for CRAN submission
+cran-comments.md # Comments for CRAN submission
 ^NEWS\.md$          # A news file written in Markdown
-^\.travis\.yml$     # Used for continuous integration testing with traviswercker.yml
+.travis.yml    # Used for continuous integration testing with traviswercker.yml
 ^\.coveralls\.yml$
 ^packrat$
 ^\.Rprofile$
@@ -15,11 +16,11 @@ jss.cls
 jss.bst
 jsslogo.jpg
 framed.sty
-^vignettes$/fig-rf$/*
-^vignettes$/fig-rfs$/*
-^vignettes/randomForest\.Rmd$
-^vignettes/Regression-rfsrc\.Rmd$
-^tests/*
-^inst/doc/randomForest\.*
-^inst/doc/Regression-rfsrc*
+#^vignettes$/fig-rf$/*
+#^vignettes$/fig-rfs$/*
+#^vignettes/randomForest\.Rmd$
+#^vignettes/Regression-rfsrc\.Rmd$
+#^tests/*
+#^inst/doc/randomForest\.*
+#^inst/doc/Regression-rfsrc*
 

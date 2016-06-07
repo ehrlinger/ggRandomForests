@@ -16,18 +16,18 @@ Depends:
     R (>= 3.1.0)
 Imports:
     randomForestSRC (>= 1.5.5),
+    randomForest,
     ggplot2,
     survival,
     parallel,
     tidyr
 Suggests:
     testthat,
-    knitr,
     rmdformats,
     RColorBrewer,
     MASS,
     dplyr,
-    plot3D,
-    randomForest,
-    rmarkdown
+    knitr,
+    rmarkdown,
+    plot3D
 RoxygenNote: 5.0.1
