@@ -33,7 +33,7 @@ r_binary_packages:
 # - testthat
 # - devtools
 # - dplyr
-#  - rcovr
+  - covr
   
 # Install the bleeding edge version of a package from github (eg to pick
 # up a not-yet-released bugfix)
