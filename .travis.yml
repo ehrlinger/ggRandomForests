@@ -15,7 +15,8 @@ notifications:
     on_success: change
     on_failure: change
 
-
+#before_install:
+#  - tlmgr install index
   
 #apt_packages:
 #  - latex-xcolor
@@ -30,7 +31,7 @@ notifications:
 # Be strict when checking our package
 #warnings_are_errors: true
 
-r_binary_packages:
+#r_binary_packages:
 # - RUnit
 # - testthat
 # - devtools
