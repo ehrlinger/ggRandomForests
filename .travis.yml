@@ -5,10 +5,7 @@
 #   https://github.com/craigcitro/r-travis/wiki
 
 language: r
-r:
-  - oldrel
-  - release
-  - devel
+
 cache: packages
 sudo: required
 #os:
