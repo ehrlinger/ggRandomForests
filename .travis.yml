@@ -5,6 +5,11 @@
 #   https://github.com/craigcitro/r-travis/wiki
 
 language: r
+r:
+  - oldrel
+  - release
+  - devel
+cache: packages
 sudo: required
 #os:
 #  - linux
@@ -15,12 +20,15 @@ notifications:
     on_success: change
     on_failure: change
 
-apt_packages:
+before_install:
+  - tlmgr install index
+  
+#apt_packages:
 #  - latex-xcolor
 #  - moreutils
 #  - tmux
 #  - texinfo
-  - texlive-full
+#  - texlive-full
   
 #brew_packages:
 #  - tmux
@@ -33,16 +41,16 @@ r_binary_packages:
 # - testthat
 # - devtools
 # - dplyr
-  - covr
+#  - covr
   
 # Install the bleeding edge version of a package from github (eg to pick
 # up a not-yet-released bugfix)
 
 # For code coverage
 r_github_packages:
-#
-# - jimhester/covr
+  - jimhester/covr
   - hadley/dplyr
+  - hadley/tidyr
 #  - hadley/ggplot2
 #  - ehrlinger/randomForestSRC
 

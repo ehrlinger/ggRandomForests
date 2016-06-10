@@ -1,17 +1,19 @@
 .gitignore
 ^.*\.Rproj$         # Automatically added by RStudio,
-ggRandomForests.Rproj         
 ^\.Rproj\.user$     # used for temporary files. 
 ^README\.Rmd$       # An Rmarkdown file used to generate README.md
-cran-comments.md # Comments for CRAN submission
+^cran-comments\.md$ # Comments for CRAN submission
 ^NEWS\.md$          # A news file written in Markdown
-.travis.yml    # Used for continuous integration testing with traviswercker.yml
+^\.travis\.yml$    # Used for continuous integration testing with traviswercker.yml
 ^\.coveralls\.yml$
 ^packrat$
 ^\.Rprofile$
 ^\.RData
+.travis.yml
+cran-comments.md
 Sweave.sty
 useR2014.pdf
+^ggRandomForests\.Rproj$
 jss.cls
 jss.bst
 jsslogo.jpg
