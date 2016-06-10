@@ -31,12 +31,13 @@ notifications:
 # Be strict when checking our package
 #warnings_are_errors: true
 
-#r_binary_packages:
+r_binary_packages:
 # - RUnit
 # - testthat
 # - devtools
-# - dplyr
+  - dplyr
 #  - covr
+  -tidyr
   
 # Install the bleeding edge version of a package from github (eg to pick
 # up a not-yet-released bugfix)
@@ -44,8 +45,8 @@ notifications:
 # For code coverage
 r_github_packages:
   - jimhester/covr
-  - hadley/dplyr
-  - hadley/tidyr
+#  - hadley/dplyr
+#  - hadley/tidyr
 #  - hadley/ggplot2
 #  - ehrlinger/randomForestSRC
 
