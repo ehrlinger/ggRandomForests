@@ -15,8 +15,7 @@ notifications:
     on_success: change
     on_failure: change
 
-before_install:
-  - tlmgr install index
+
   
 #apt_packages:
 #  - latex-xcolor
