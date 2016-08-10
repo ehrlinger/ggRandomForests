@@ -1,5 +1,11 @@
 Package: ggRandomForests
-Version: 2.0.0
+Version: 2.0.1
+
+ggRandomForests v2.0.1
+===================
+* Correct a bug in survival plots when predicting on future data without a known outcome.
+* Additional Vignettes are now at https://github.com/ehrlinger/ggRFVignette
+* Minor bug and documentation fixes.
 
 ggRandomForests v2.0.0
 ===================
