@@ -28,6 +28,7 @@
 #' @importFrom parallel mclapply
 #' 
 #' @examples 
+#' \dontrun{
 #' # Load a set of plot.variable partial plot data
 #' data(partial_pbc)
 #' 
@@ -61,7 +62,7 @@
 #'    ggpart[[ind]] <- NULL
 #' }
 #' plot(ggpart, panel=TRUE) 
-#' 
+#' }
 #' 
 #' @export
 combine.gg_partial <- function(x, y, lbls, ...){

@@ -2,20 +2,19 @@ Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
 Version: 2.0.1
-Date: 2016-08-10
+Date: 2016-09-07
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)
-VignetteBuilder: knitr
 URL: https://github.com/ehrlinger/ggRandomForests
 BugReports: https://github.com/ehrlinger/ggRandomForests/issues
 Description: Graphic elements for exploring Random Forests using the 'randomForest' or
     'randomForestSRC' package for survival, regression and classification forests and
     'ggplot2' package plotting.
 Depends:
-    R (>= 3.1.0)
+    R (>= 3.1.0),
+    randomForestSRC (>= 1.5.5)
 Imports:
-    randomForestSRC (>= 1.5.5),
     randomForest,
     ggplot2,
     survival,

@@ -38,7 +38,7 @@ An option \code{named} argument can name a column for merging multiple plots tog
 ## classification
 ## ------------------------------------------------------------
 ## -------- iris data
-
+\dontrun{
 ## iris "Petal.Width" partial dependence plot
 ##
 # rfsrc_iris <- rfsrc(Species ~., data = iris)
@@ -48,7 +48,7 @@ data(partial_iris, package="ggRandomForests")
 
 gg_dta <- gg_partial(partial_iris)
 plot(gg_dta)
-
+}
 ## ------------------------------------------------------------
 ## regression
 ## ------------------------------------------------------------
@@ -70,13 +70,13 @@ plot(gg_dta.m, notch=TRUE)
 gg_dta[["Month"]] <- NULL
 plot(gg_dta, panel=TRUE)
 }
-
+\dontrun{
 ## -------- Boston data
 data(partial_Boston, package="ggRandomForests")
 
 gg_dta <- gg_partial(partial_Boston)
 plot(gg_dta, panel=TRUE)
-
+}
 \dontrun{
 ## -------- mtcars data
 data(partial_mtcars, package="ggRandomForests")
@@ -133,6 +133,7 @@ plot(gg_dta, panel=TRUE)
 gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL 
 plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 }
+\dontrun{
 ## -------- pbc data
 data("partial_pbc", package = "ggRandomForests")
 data("varsel_pbc", package = "ggRandomForests")
@@ -161,7 +162,7 @@ plot(ggpart, panel = TRUE)
 
 #plot(pbc_ggpart[["edema"]], panel=TRUE) #,
      # notch = TRUE, alpha = .3, outlier.shape = NA) 
-  
+  }
 }
 \references{
 Friedman, Jerome H. 2000. "Greedy Function Approximation: A Gradient Boosting 

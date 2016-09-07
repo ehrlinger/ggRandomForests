@@ -25,8 +25,8 @@ the ROC curve.
 \examples{
 ##
 ## Taken from the gg_roc example
-# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-data(rfsrc_iris)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#data(rfsrc_iris)
 
 \dontrun{
 gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)

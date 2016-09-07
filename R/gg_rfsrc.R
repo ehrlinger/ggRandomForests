@@ -44,8 +44,8 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' #data(rfsrc_iris, package="ggRandomForests")
 #' gg_dta<- gg_rfsrc(rfsrc_iris)
 #' 
 #' plot(gg_dta)
@@ -61,11 +61,11 @@
 #' 
 #' plot(gg_dta)
 #' }
-#' 
+#' \dontrun{
 #' ## -------- Boston data
 #' data(rfsrc_Boston, package="ggRandomForests")
 #' plot(rfsrc_Boston) 
-#' 
+#' }
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
@@ -91,11 +91,11 @@
 #' gg_dta <- gg_rfsrc(rfsrc_veteran, by="trt")
 #' plot(gg_dta)
 #' }
-#' 
+#' \dontrun{
 #' ## -------- pbc data
 #' ## We don't run this because of bootstrap confidence limits
 #' data(rfsrc_pbc, package = "ggRandomForests")
-#' 
+#' }
 #' \dontrun{
 #' gg_dta <- gg_rfsrc(rfsrc_pbc)
 #' plot(gg_dta)
@@ -103,10 +103,10 @@
 #' gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int=.95)
 #' plot(gg_dta)
 #' }
-#' 
+#' \dontrun{
 #' gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
 #' plot(gg_dta)
-#'
+#'}
 #' 
 #' @aliases gg_rfsrc gg_rfsrc.rfsrc
 

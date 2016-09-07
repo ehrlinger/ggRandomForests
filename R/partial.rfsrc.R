@@ -113,7 +113,7 @@
 #' 
 #' ## iris
 #' #rfsrc_iris <- rfsrc(Species ~., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
+#' #data(rfsrc_iris, package="ggRandomForests")
 #' #gg_dta <- partial.rfsrc(rfsrc_iris, )
 #' 
 #' \dontrun{

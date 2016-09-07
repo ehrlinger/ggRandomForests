@@ -50,7 +50,7 @@
 #' ## classification
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' 
+#' \dontrun{
 #' ## iris "Petal.Width" partial dependence plot
 #' ##
 #' # rfsrc_iris <- rfsrc(Species ~., data = iris)
@@ -60,7 +60,7 @@
 #' 
 #' gg_dta <- gg_partial(partial_iris)
 #' plot(gg_dta)
-#' 
+#' }
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
@@ -82,13 +82,13 @@
 #' gg_dta[["Month"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
 #' }
-#' 
+#' \dontrun{
 #' ## -------- Boston data
 #' data(partial_Boston, package="ggRandomForests")
 #'
 #' gg_dta <- gg_partial(partial_Boston)
 #' plot(gg_dta, panel=TRUE)
-#'
+#' }
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(partial_mtcars, package="ggRandomForests")
@@ -145,6 +145,7 @@
 #' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL 
 #' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 #' }
+#' \dontrun{
 #' ## -------- pbc data
 #' data("partial_pbc", package = "ggRandomForests")
 #' data("varsel_pbc", package = "ggRandomForests")
@@ -173,7 +174,7 @@
 #' 
 #' #plot(pbc_ggpart[["edema"]], panel=TRUE) #,
 #'      # notch = TRUE, alpha = .3, outlier.shape = NA) 
-#'   
+#'   }
 #' @aliases gg_partial gg_partial_list gg_partial.rfsrc gg_partial.randomForest
 #' @name gg_partial
 #' @name gg_partial_list

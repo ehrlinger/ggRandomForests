@@ -33,6 +33,7 @@ survival estimates using either \code{\link{nelson}}-aalen or
 \code{\link{kaplan}}-meier estimates.
 }
 \examples{
+\dontrun{
 ## -------- pbc data
 data(pbc, package="randomForestSRC")
 pbc$time <- pbc$days/364.25
@@ -56,7 +57,7 @@ gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc, by="treatment", conf.int=.68)
                      
 plot(gg_dta, error="lines")
-
+}
 }
 \seealso{
 \code{\link{kaplan}} \code{\link{nelson}} \code{\link{plot.gg_survival}}

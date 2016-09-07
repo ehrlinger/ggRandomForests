@@ -18,6 +18,7 @@ Print a \code{\link{gg_minimal_depth}} object.
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
+\dontrun{
 ## You can build a randomForest
 # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 # varsel_iris <- var.select(rfsrc_iris)
@@ -27,7 +28,7 @@ data(varsel_iris, package="ggRandomForests")
 # Get a data.frame containing minimaldepth measures
 gg_dta <- gg_minimal_depth(varsel_iris)
 print(gg_dta)
-
+}
 ## ------------------------------------------------------------
 ## regression example
 ## ------------------------------------------------------------
@@ -42,7 +43,7 @@ print(gg_dta)
 # To nicely print a rfsrc::var.select output... 
 print(varsel_airq)
 }
-
+\dontrun{
 # ... or load a cached randomForestSRC object
 data(varsel_Boston, package="ggRandomForests")
 
@@ -52,6 +53,6 @@ print(gg_dta)
 
 # To nicely print a rfsrc::var.select output... 
 print(varsel_Boston)
-
+}
 }
 
