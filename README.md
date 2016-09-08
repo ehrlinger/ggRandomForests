@@ -1,10 +1,10 @@
 ggRandomForests: Visually Exploring Random Forests
 ========================================================
 [![DOI](https://zenodo.org/badge/5745/ehrlinger/ggRandomForests.png)](https://dx.doi.org/10.5281/zenodo.11526)
-[![CRAN version](https://www.r-pkg.org/badges/version/ggRandomForests)](https://cran.r-project.org/package=ggRandomForests)
-![cranlogs](https://cranlogs.r-pkg.org/badges/ggRandomForests)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggRandomForests)](https://cran.r-project.org/package=ggRandomForests)
+![cranlogs](http://cranlogs.r-pkg.org/badges/ggRandomForests)
 
-![active](https://www.repostatus.org/badges/latest/active.svg)
+![active](http://www.repostatus.org/badges/latest/active.svg)
 [![Build Status](https://travis-ci.org/ehrlinger/ggRandomForests.svg?branch=master)](https://travis-ci.org/ehrlinger/ggRandomForests)
 [![Coverage Status](https://coveralls.io/repos/ehrlinger/ggRandomForests/badge.svg?branch=master&service=github)](https://coveralls.io/github/ehrlinger/ggRandomForests?branch=master)
 
