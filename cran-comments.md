@@ -1,4 +1,4 @@
-This is ggRandomForests package submission v2.0.1
+This is ggRandomForests package submission v2.0.2
 --------------------------------------------------------------------------------
 * Correct a bug in survival plots when predicting on future data without a known outcome.
 * ALL Vignettes are now at https://github.com/ehrlinger/ggRFVignette
