@@ -30,8 +30,8 @@ a \code{\link[randomForestSRC]{rfsrc}} object.
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#data(rfsrc_iris, package="ggRandomForests")
+# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+data(rfsrc_iris, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
  
@@ -45,12 +45,12 @@ data(rfsrc_airq, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_airq)
 plot(gg_dta)
 }
-\dontrun{
+
 ## -------- Boston data
 data(rfsrc_Boston, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_Boston)
 plot(gg_dta)
-}
+
 \dontrun{
 ## -------- mtcars data
 data(rfsrc_mtcars, package="ggRandomForests")
@@ -66,7 +66,7 @@ data(rfsrc_veteran, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_veteran)
 plot(gg_dta)
 }
-\dontrun{
+
 ## -------- pbc data
 data(rfsrc_pbc, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_pbc)
@@ -75,7 +75,6 @@ plot(gg_dta)
 # Restrict to only the top 10.
 gg_dta <- gg_vimp(rfsrc_pbc, nvar=10)
 plot(gg_dta)
-}
 }
 \references{
 Ishwaran H. (2007). Variable importance in binary regression trees and forests, 

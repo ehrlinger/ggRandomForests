@@ -17,21 +17,21 @@
 #' deal with thoses changes. We make the function available to end users to
 #' create objects for further experimentation.
 #'
-# There are five cached data set types:
-# '\itemize{
-# \item \code{\link{rfsrc_data}} - \code{\link[randomForestSRC]{rfsrc}} objects. 
-# \item \code{\link{varsel_data}} - \code{\link[randomForestSRC]{var.select}} 
-# minimal depth variable selection objects.
-# \item \code{\link{interaction_data}} - 
-# \code{\link[randomForestSRC]{find.interaction}} minimal depth, 
-# pairwise variable interaction matrices.
-# \item \code{\link{partial_data}} - \code{\link[randomForestSRC]{plot.variable}} 
-# objects 
-# (\code{partial=TRUE}) for partial variable dependence. 
-# \item \code{\link{partial_coplot_data}} - 
-# \code{\link[randomForestSRC]{plot.variable}} objects 
-# (\code{partial=TRUE}) for partial variable dependence. 
-# }
+#' There are five cached data set types:
+#' '\itemize{
+#' \item \code{\link{rfsrc_data}} - \code{\link[randomForestSRC]{rfsrc}} objects. 
+#' \item \code{\link{varsel_data}} - \code{\link[randomForestSRC]{var.select}} 
+#' minimal depth variable selection objects.
+#' \item \code{\link{interaction_data}} - 
+#' \code{\link[randomForestSRC]{find.interaction}} minimal depth, 
+#' pairwise variable interaction matrices.
+#' \item \code{\link{partial_data}} - \code{\link[randomForestSRC]{plot.variable}} 
+#' objects 
+#' (\code{partial=TRUE}) for partial variable dependence. 
+#' \item \code{\link{partial_coplot_data}} - 
+#' \code{\link[randomForestSRC]{plot.variable}} objects 
+#' (\code{partial=TRUE}) for partial variable dependence. 
+#' }
 #' 
 #' For the following data sets:
 #' #'\itemize{
@@ -46,11 +46,11 @@
 #' @seealso \code{iris} \code{airq} \code{mtcars} \code{\link[MASS]{Boston}} 
 #' \code{\link[randomForestSRC]{pbc}}
 #' \code{\link[randomForestSRC]{veteran}} 
-# \code{\link{rfsrc_data}} 
-# \code{\link{varsel_data}}
-# \code{\link{interaction_data}}
-# \code{\link{partial_data}} 
-# \code{\link{partial_coplot_data}}
+#' \code{\link{rfsrc_data}} 
+#' \code{\link{varsel_data}}
+#' \code{\link{interaction_data}}
+#' \code{\link{partial_data}} 
+#' \code{\link{partial_coplot_data}}
 #' 
 #' @importFrom randomForestSRC rfsrc var.select plot.variable find.interaction
 #' @importFrom utils data

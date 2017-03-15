@@ -30,8 +30,7 @@ function takes the output from \code{[randomForestSRC]{var.select}} and creates 
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
-\dontrun{
- ## -------- iris data
+## -------- iris data
 ## You can build a randomForest
 # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 # varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
@@ -43,7 +42,7 @@ gg_dta<- gg_minimal_depth(varsel_iris)
 
 # Plot the gg_minimal_depth object
 plot(gg_dta)
-}
+
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
@@ -60,13 +59,13 @@ gg_dta<- gg_minimal_depth(varsel_airq)
 # Plot the gg_minimal_depth object
 plot(gg_dta)
 }
-\dontrun{
+
 ## -------- Boston data
 data(varsel_Boston, package="ggRandomForests")
 
 # Get a data.frame containing error rates
 plot(gg_minimal_depth(varsel_Boston))
-}
+
 \dontrun{
 ## -------- mtcars data
 data(varsel_mtcars, package="ggRandomForests")
@@ -91,13 +90,13 @@ data(varsel_veteran, package="ggRandomForests")
 gg_dta <- gg_minimal_depth(varsel_veteran)
 plot(gg_dta)
 }
-\dontrun{
+
 ## -------- pbc data
 data(varsel_pbc, package="ggRandomForests")
 
 gg_dta <- gg_minimal_depth(varsel_pbc)
 plot(gg_dta)
-}
+
 }
 \seealso{
 \code{[randomForestSRC]{var.select}} \code{\link{plot.gg_minimal_depth}}

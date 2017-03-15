@@ -22,7 +22,6 @@ and extract and construct the x, y and z matrices from the provided \code{xvar}
 column names.
 }
 \examples{
-\dontrun{
 ## From vignette(randomForestRegression, package="ggRandomForests")
 ##
 data(rfsrc_Boston)
@@ -46,7 +45,7 @@ partial_surf$rm <- rm.tmp
 # Transform the gg_partial_coplot object into a list of three named matrices
 # for surface plotting with plot3D::surf3D
 srf <- surface_matrix(partial_surf, c("lstat", "rm", "yhat"))
-}
+
 
 \dontrun{
 # surf3D is in the plot3D package.

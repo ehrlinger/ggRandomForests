@@ -35,8 +35,8 @@ for use by the end user.
 }
 \examples{
 ## Taken from the gg_roc example
- rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#data(rfsrc_iris)
+# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+data(rfsrc_iris)
 gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=TRUE)
 gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=FALSE)
 }

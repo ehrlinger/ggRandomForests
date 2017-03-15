@@ -49,8 +49,8 @@
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
 #' ## iris
-#'  rfsrc_iris <- rfsrc(Species ~., data = iris)
-#' #data(rfsrc_iris, package="ggRandomForests")
+#' #rfsrc_iris <- rfsrc(Species ~., data = iris)
+#' data(rfsrc_iris, package="ggRandomForests")
 #' 
 #' gg_dta <- gg_variable(rfsrc_iris)
 #' plot(gg_dta, xvar="Sepal.Width")
