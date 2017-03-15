@@ -2,9 +2,9 @@
 % Please edit documentation in R/rfsrc_data.R
 \docType{data}
 \name{rfsrc_data}
-\alias{rfsrc_Boston}
 \alias{rfsrc_data}
 \alias{rfsrc_iris}
+\alias{rfsrc_Boston}
 \alias{rfsrc_pbc}
 \alias{rfsrc_pbc_test}
 \title{Cached \code{\link[randomForestSRC]{rfsrc}} objects for examples, diagnostics and vignettes.}
@@ -171,4 +171,3 @@ Springer-Verlag, New York. ISBN: 0-387-98784-3.
  \code{\link{plot.gg_error}}
 }
 \keyword{datasets}
-

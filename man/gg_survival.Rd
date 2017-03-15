@@ -61,4 +61,3 @@ plot(gg_dta, error="lines")
 \seealso{
 \code{\link{kaplan}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
 }
-

@@ -41,4 +41,3 @@ summary(rm_grp)
 \seealso{
 \code{cut} \code{\link{gg_partial_coplot}}
 }
-

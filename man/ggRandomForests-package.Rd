@@ -85,4 +85,3 @@ Electronic J. Statist., 1, 519-537.
 
 Wickham, H. ggplot2: elegant graphics for data analysis. Springer New York, 2009.
 }
-

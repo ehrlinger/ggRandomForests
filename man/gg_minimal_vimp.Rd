@@ -101,4 +101,3 @@ gg_dta <- gg_minimal_vimp(varsel_pbc)
 plot(gg_dta)
 
 }
-

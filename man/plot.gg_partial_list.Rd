@@ -144,4 +144,3 @@ Regression and Classification (RF-SRC), R package version 1.4.
 \code{\link{plot.gg_partial}} \code{\link{gg_variable}} 
 \code{\link{plot.gg_variable}}
 }
-

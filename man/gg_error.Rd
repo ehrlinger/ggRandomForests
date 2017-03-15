@@ -2,9 +2,9 @@
 % Please edit documentation in R/gg_error.R
 \name{gg_error}
 \alias{gg_error}
+\alias{gg_error.rfsrc}
 \alias{gg_error.randomForest}
 \alias{gg_error.randomForest.formula}
-\alias{gg_error.rfsrc}
 \title{randomForestSRC error rate data object}
 \usage{
 gg_error(object, ...)
@@ -109,4 +109,3 @@ and Classification (RF-SRC), R package version 1.4.
 \seealso{
 \code{\link{plot.gg_error}} \code{rfsrc} \code{plot.rfsrc}
 }
-

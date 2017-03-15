@@ -2,9 +2,9 @@
 % Please edit documentation in R/varsel_data.R
 \docType{data}
 \name{varsel_data}
-\alias{varsel_Boston}
 \alias{varsel_data}
 \alias{varsel_iris}
+\alias{varsel_Boston}
 \alias{varsel_pbc}
 \title{Cached \code{\link[randomForestSRC]{var.select}} objects for examples, 
 diagnostics and vignettes.
@@ -172,4 +172,3 @@ Springer-Verlag, New York. ISBN: 0-387-98784-3.
  \code{\link{plot.gg_minimal_vimp}}
 }
 \keyword{datasets}
-

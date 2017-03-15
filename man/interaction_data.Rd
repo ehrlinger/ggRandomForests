@@ -2,9 +2,9 @@
 % Please edit documentation in R/interaction_data.R
 \docType{data}
 \name{interaction_data}
-\alias{interaction_Boston}
 \alias{interaction_data}
 \alias{interaction_iris}
+\alias{interaction_Boston}
 \alias{interaction_pbc}
 \title{Cached \code{\link[randomForestSRC]{find.interaction}} matrix objects for examples, 
 diagnostics and vignettes.
@@ -182,4 +182,3 @@ Springer-Verlag, New York. ISBN: 0-387-98784-3.
  \code{\link{plot.gg_interaction}}
 }
 \keyword{datasets}
-

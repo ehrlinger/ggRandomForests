@@ -16,4 +16,3 @@ logit_loess(gg_dta, xvar, level)
 \description{
 logit_loess takes
 }
-

@@ -101,4 +101,3 @@ plot(gg_dta)
 \seealso{
 \code{[randomForestSRC]{var.select}} \code{\link{plot.gg_minimal_depth}}
 }
-

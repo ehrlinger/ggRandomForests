@@ -2,9 +2,9 @@
 % Please edit documentation in R/gg_vimp.R
 \name{gg_vimp}
 \alias{gg_vimp}
+\alias{gg_vimp.rfsrc}
 \alias{gg_vimp.randomForest}
 \alias{gg_vimp.randomForest.formula}
-\alias{gg_vimp.rfsrc}
 \title{Variable Importance (VIMP) data object}
 \usage{
 gg_vimp(object, nvar, ...)
@@ -83,4 +83,3 @@ Ishwaran H. (2007). Variable importance in binary regression trees and forests,
 \seealso{
 \code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}} \code{\link[randomForestSRC]{vimp}}
 }
-
