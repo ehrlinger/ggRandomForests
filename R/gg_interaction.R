@@ -57,11 +57,11 @@
 #' ## find interactions, classification setting
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' ## iris.obj <- rfsrc(Species ~., data = iris)
+#' iris.obj <- rfsrc(Species ~., data = iris)
 #' ## TODO: VIMP interactions not handled yet....
-#' ## randomForestSRC::find.interaction(iris.obj, method = "vimp", nrep = 3)
-#' ## interaction_iris <- randomForestSRC::find.interaction(iris.obj)
-#' data(interaction_iris, package="ggRandomForests")
+#' randomForestSRC::find.interaction(iris.obj, method = "vimp", nrep = 3)
+#' interaction_iris <- randomForestSRC::find.interaction(iris.obj)
+#' 
 #' gg_dta <- gg_interaction(interaction_iris)
 #' 
 #' plot(gg_dta, xvar="Petal.Width")
@@ -85,13 +85,13 @@
 #' 
 #' plot(gg_dta, panel=TRUE)
 #' }
-#' 
+#'  \dontrun{
 #' ## -------- Boston data
 #' data(interaction_Boston, package="ggRandomForests")
 #' gg_dta <- gg_interaction(interaction_Boston)
 #' 
 #' plot(gg_dta, panel=TRUE)
-#' 
+#' }
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(interaction_mtcars, package="ggRandomForests")
@@ -99,7 +99,7 @@
 #' 
 #' plot(gg_dta, panel=TRUE)
 #' }
-#' 
+#'  \dontrun{
 #' ## ------------------------------------------------------------
 #' ## find interactions, survival setting
 #' ## ------------------------------------------------------------
@@ -112,7 +112,7 @@
 #' 
 #' plot(gg_dta, xvar="bili")
 #' plot(gg_dta, panel=TRUE)
-#' 
+#' }
 #' \dontrun{
 #' ## -------- veteran data
 #' data(interaction_veteran, package="ggRandomForests")

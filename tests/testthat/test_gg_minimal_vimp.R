@@ -2,8 +2,13 @@
 context("gg_minimal_vimp tests")
 
 test_that("gg_minimal_vimp classifications",{
-  ## Load the cached forest
-  data(varsel_iris, package="ggRandomForests")
+  ## Load the cached forest ## Load the cached forest
+  data(iris, package="datasets")
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
+                                       data = iris, 
+                                       importance=TRUE, tree.err=TRUE)
+  
+  varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
   
   # Test the cached forest type
   expect_is(varsel_iris, "list")
@@ -30,9 +35,17 @@ test_that("gg_minimal_vimp classifications",{
 
 
 test_that("gg_minimal_vimp survival",{
-  ## Load the cached forest
-  data(varsel_pbc, package="ggRandomForests")
   
+  pbc <- pbc_data()
+  dta.train <- pbc[-which(is.na(pbc$treatment)),]
+  # Create a test set from the remaining patients
+  pbc.test <- pbc[which(is.na(pbc$treatment)),]
+  
+  rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
+                                      dta.train, nsplit = 10,
+                                      na.action="na.impute",
+                                      importance=TRUE, tree.err=TRUE)
+  varsel_pbc <- randomForestSRC::var.select(rfsrc_pbc)
   # Test the cached forest type
   expect_is(varsel_pbc, "list")
   
@@ -56,7 +69,14 @@ test_that("gg_minimal_vimp survival",{
 
 test_that("gg_minimal_vimp regression",{
   ## Load the cached forest
-  data(varsel_Boston, package="ggRandomForests")
+  data(Boston, package="MASS")
+  
+  Boston$chas <- as.logical(Boston$chas)
+  
+  rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston)
+  ## Load the cached forest
+  varsel_Boston <- randomForestSRC::var.select(rfsrc_Boston)
+  
   
   # Test the cached forest type
   expect_is(varsel_Boston, "list")
@@ -122,13 +142,7 @@ test_that("gg_minimal_vimp regression",{
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_minimal_vimp(varsel_Boston, lbls=st.labs)
   expect_is(gg_plt, "ggplot")
-  
-})
 
-
-test_that("gg_minimal_vimp exceptions",{
-  data(varsel_Boston, package="ggRandomForests")
-  
   # Test the cached forest type
   expect_is(varsel_Boston, "list")
   

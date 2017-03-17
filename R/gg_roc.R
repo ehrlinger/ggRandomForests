@@ -34,8 +34,7 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' #rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #'
 #' # ROC for setosa
 #' gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
@@ -49,10 +48,7 @@
 #' gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
 #' plot(gg_dta)
 #' 
-#' 
-#' 
 #' @aliases gg_roc gg_roc.rfsrc gg_roc.randomForest
-
 #' @export 
 gg_roc.rfsrc <- function(object, which.outcome, oob=TRUE, ...){
   

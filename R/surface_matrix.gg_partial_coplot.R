@@ -11,6 +11,7 @@
 #' @examples 
 #' ## From vignette(randomForestRegression, package="ggRandomForests")
 #' ##
+#'  \dontrun{
 #' data(rfsrc_Boston)
 #' rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=49, intervals=TRUE)
 #' 
@@ -33,7 +34,7 @@
 #' # for surface plotting with plot3D::surf3D
 #' srf <- surface_matrix(partial_surf, c("lstat", "rm", "yhat"))
 #'
-#'
+#' }
 #' \dontrun{
 #' # surf3D is in the plot3D package.
 #' library(plot3D)

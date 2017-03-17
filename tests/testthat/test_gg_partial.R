@@ -2,8 +2,11 @@
 context("gg_partial tests")
 
 test_that("gg_partial classifications",{
-  ## Load the cached forest
-  data(rfsrc_iris, package="ggRandomForests")
+  ## Load the cached forest ## Load the cached forest
+  data(iris, package="datasets")
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
+                                       data = iris, 
+                                       importance=TRUE, tree.err=TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
@@ -12,7 +15,8 @@ test_that("gg_partial classifications",{
   expect_equal(rfsrc_iris$family, "class")
   
   # Load saved partial plot data.
-  data(partial_iris, package="ggRandomForests")
+  partial_iris <- randomForestSRC::plot.variable(rfsrc_iris,
+                                                 partial=TRUE, show.plots=FALSE)
   
   expect_equivalent(length(partial_iris$pData), length(rfsrc_iris$xvar.names))
   
@@ -42,15 +46,27 @@ test_that("gg_partial classifications",{
 
 
 test_that("gg_partial survival",{
-  ## Load the cached forest
-  data(rfsrc_pbc, package="ggRandomForests")
   
+  pbc <- pbc_data()
+  dta.train <- pbc[-which(is.na(pbc$treatment)),]
+  # Create a test set from the remaining patients
+  pbc.test <- pbc[which(is.na(pbc$treatment)),]
+  
+  rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
+                                      dta.train, nsplit = 10,
+                                      na.action="na.impute",
+                                      importance=TRUE, tree.err=TRUE)
   # Test the cached forest type
   expect_is(rfsrc_pbc, "rfsrc")
+  xvar <- c("bili", "albumin", "copper", "prothrombin", "age", "edema")
   
-  ## Get the partial data.
-  data(partial_pbc, package="ggRandomForests")
-  
+  partial_pbc <- lapply(c(1, 3, 5), function(tm){
+    randomForestSRC::plot.variable(rfsrc_pbc, surv.type = "surv", 
+                                   time = tm, sorted = FALSE, 
+                                   xvar.names = xvar, partial = TRUE, 
+                                   show.plots = FALSE)
+  })
+
   ## Create the correct gg_error object
   gg_dta <- gg_partial(partial_pbc[[1]])
   
@@ -76,9 +92,8 @@ test_that("gg_partial survival",{
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
-  
-  data(rfsrc_pbc, package="ggRandomForests")
-  data("varsel_pbc", package="ggRandomForests")
+
+  varsel_pbc <- randomForestSRC::var.select(rfsrc_pbc)
   
   # Data generation
   ggrf <- gg_variable(rfsrc_pbc, time = c(1, 3), 
@@ -101,68 +116,8 @@ test_that("gg_partial survival",{
                                  method = "glm", formula = y~poly(x,2))
   
   expect_warning(gg_plt <- plot(ggrf, xvar = xvar.cat, panel=TRUE))
-})
-
-test_that("gg_partial regression",{
-  ## Load the cached forest
-  data(rfsrc_Boston, package="ggRandomForests")
   
-  # Test the cached forest type
-  expect_is(rfsrc_Boston, "rfsrc")
   
-  ## Create the correct gg_error object
-  data(partial_Boston, package="ggRandomForests")
-  gg_dta <- gg_partial(partial_Boston)
-  
-  # Test object type
-  expect_is(gg_dta, "gg_partial_list")
-  
-  ## Test plotting the gg_error object
-  gg_plt <- plot.gg_partial(gg_dta[[1]])
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
-  
-  ## Test plotting the gg_error object
-  gg_plt <- plot.gg_partial_list(gg_dta)
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "list")
-  
-  expect_equivalent(length(gg_plt) , length(gg_dta))
-  
-  # gg_partial exceptions
-  expect_error(gg_partial(gg_plt))
-  
-  # Remove all but one partial data.
-  partial_Boston$xvar.names <- "lstat"
-  partial_Boston$nvar <- 1
-  for(ind in length(partial_Boston$pData):2){
-    partial_Boston$pData[[ind]] <- NULL
-  }
-  gg_dta <- gg_partial(partial_Boston)
-  
-  # Test object type
-  expect_is(gg_dta, "gg_partial")
-  
-  # generate a list of gg_partial objects, one per xvar.
-  expect_error(gg_p <- gg_partial(gg_dta), "gg_partial")
-  
-  expect_is(plot(gg_dta, error="bars"), "ggplot")
-  expect_is(plot(gg_dta, error="none"), "ggplot")
-  expect_is(plot(gg_dta, error="lines"), "ggplot")
-  expect_is(plot(gg_dta, error="shade"), "ggplot")
-  # Test object type
-  
-  expect_is(plot(gg_dta), "ggplot")
-  gg_plt <- plot(gg_dta, error="shade")+ geom_smooth(se=.95)
-  
-})
-
-test_that("gg_partial combine",{
-  
-  # Load a set of plot.variable partial plot data
-  data(partial_pbc)
   
   # A list of 2 plot.variable objects
   expect_is(partial_pbc, "list")
@@ -220,4 +175,71 @@ test_that("gg_partial combine",{
   
   expect_error(combine.gg_partial(gg_prtl))
   expect_error(combine.gg_partial(gg_prtl, gg_prtl))
+})
+
+test_that("gg_partial regression",{
+  ## Load the cached forest
+  data(Boston, package="MASS")
+  
+  Boston$chas <- as.logical(Boston$chas)
+  
+  rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston)
+  
+  # Test the cached forest type
+  expect_is(rfsrc_Boston, "rfsrc")
+  
+  varsel_Boston <- randomForestSRC::var.select(rfsrc_Boston)
+  
+  partial_Boston <- randomForestSRC::plot.variable(rfsrc_Boston,
+                                                   xvar.names=varsel_Boston$topvars,
+                                                   sorted=FALSE,
+                                                   partial=TRUE, 
+                                                   show.plots=FALSE)
+  ## Create the correct gg_error object
+  data(partial_Boston, package="ggRandomForests")
+  gg_dta <- gg_partial(partial_Boston)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_partial_list")
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_partial(gg_dta[[1]])
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot.gg_partial_list(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "list")
+  
+  expect_equivalent(length(gg_plt) , length(gg_dta))
+  
+  # gg_partial exceptions
+  expect_error(gg_partial(gg_plt))
+  
+  # Remove all but one partial data.
+  partial_Boston$xvar.names <- "lstat"
+  partial_Boston$nvar <- 1
+  for(ind in length(partial_Boston$pData):2){
+    partial_Boston$pData[[ind]] <- NULL
+  }
+  gg_dta <- gg_partial(partial_Boston)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_partial")
+  
+  # generate a list of gg_partial objects, one per xvar.
+  expect_error(gg_p <- gg_partial(gg_dta), "gg_partial")
+  
+  expect_is(plot(gg_dta, error="bars"), "ggplot")
+  expect_is(plot(gg_dta, error="none"), "ggplot")
+  expect_is(plot(gg_dta, error="lines"), "ggplot")
+  expect_is(plot(gg_dta, error="shade"), "ggplot")
+  # Test object type
+  
+  expect_is(plot(gg_dta), "ggplot")
+  gg_plt <- plot(gg_dta, error="shade")+ geom_smooth(se=.95)
+  
 })

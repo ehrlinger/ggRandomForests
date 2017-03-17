@@ -2,8 +2,11 @@
 context("gg_rfsrc tests")
 
 test_that("gg_rfsrc classifications",{
-  ## Load the cached forest
-  data(rfsrc_iris, package="ggRandomForests")
+  ## Load the cached forest ## Load the cached forest
+  data(iris, package="datasets")
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
+                                       data = iris, 
+                                       importance=TRUE, tree.err=TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
@@ -49,8 +52,16 @@ test_that("gg_rfsrc classifications",{
 
 
 test_that("gg_rfsrc survival",{
-  ## Load the cached forest
-  data(rfsrc_pbc, package="ggRandomForests")
+  
+  pbc <- pbc_data()
+  dta.train <- pbc[-which(is.na(pbc$treatment)),]
+  # Create a test set from the remaining patients
+  pbc.test <- pbc[which(is.na(pbc$treatment)),]
+  
+  rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
+                                      dta.train, nsplit = 10,
+                                      na.action="na.impute",
+                                      importance=TRUE, tree.err=TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_pbc, "rfsrc")
@@ -122,7 +133,9 @@ test_that("gg_rfsrc survival",{
   # Test prediction
   ## Load the cached forest
   # Predict survival for 106 patients not in randomized trial
-  data(rfsrc_pbc_test, package="ggRandomForests")
+  rfsrc_pbc_test <- predict(rfsrc_pbc, 
+                            newdata = pbc.test,
+                            na.action = "na.impute")
   # Print prediction summary  
   expect_is(gg_dta <- gg_rfsrc(rfsrc_pbc_test), "gg_rfsrc")
   
@@ -137,7 +150,11 @@ test_that("gg_rfsrc survival",{
 
 test_that("gg_rfsrc regression",{
   ## Load the cached forest
-  data(rfsrc_Boston, package="ggRandomForests")
+  data(Boston, package="MASS")
+  
+  Boston$chas <- as.logical(Boston$chas)
+  
+  rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston)
   
   # Test the cached forest type
   expect_is(rfsrc_Boston, "rfsrc")

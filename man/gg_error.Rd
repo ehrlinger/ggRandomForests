@@ -34,9 +34,7 @@ for connecting to the S3 \code{\link{plot.gg_error}} function.
 ## ------------------------------------------------------------
 ## ------------- iris data
 ## You can build a randomForest
-# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-# ... or load a cached randomForestSRC object
-data(rfsrc_iris, package="ggRandomForests")
+rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_iris)
@@ -47,7 +45,7 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
-\dontrun{
+
 ## ------------- airq data
 rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 
@@ -56,8 +54,8 @@ gg_dta<- gg_error(rfsrc_airq)
 
 # Plot the gg_error object
 plot(gg_dta)
-}
 
+\dontrun{
 ## ------------- Boston data
 data(rfsrc_Boston, package="ggRandomForests")
 
@@ -66,7 +64,7 @@ gg_dta<- gg_error(rfsrc_Boston)
 
 # Plot the gg_error object
 plot(gg_dta)
-
+}
 \dontrun{
 ## ------------- mtcars data
 
@@ -89,14 +87,14 @@ rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = dta$veteran, ...)
 gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)
 }
-
+\dontrun{
 ## ------------- pbc data
 # Load a cached randomForestSRC object
 data(rfsrc_pbc, package="ggRandomForests")
 
 gg_dta <- gg_error(rfsrc_pbc)
 plot(gg_dta)
-
+}
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

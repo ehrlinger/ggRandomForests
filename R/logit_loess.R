@@ -4,9 +4,6 @@
 #' @param xvar name of x variable to smooth along
 #' @param level quantile level argument for \code{\link{qnorm}} function.
 #'
-#'
-#'
-#'
 #' @importFrom stats formula loess predict qnorm
 #'
 #'

@@ -36,6 +36,7 @@
 #' 
 #' @examples 
 #' ## -------- pbc data
+#'  \dontrun{
 #' data(pbc, package="randomForestSRC")
 #' pbc$time <- pbc$days/364.25
 #' 
@@ -58,7 +59,7 @@
 #'                      data=pbc, by="treatment", conf.int=.68)
 #'                      
 #' plot(gg_dta, error="lines")
-#' 
+#' }
 #' @export
 gg_survival <- function(interval=NULL, censor=NULL, by=NULL, 
                                         data, 

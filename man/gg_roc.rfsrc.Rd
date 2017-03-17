@@ -28,8 +28,7 @@ The sensitivity and specificity of a randomForests classification object.
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-#rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-data(rfsrc_iris, package="ggRandomForests")
+rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 
 # ROC for setosa
 gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
@@ -42,8 +41,6 @@ plot(gg_dta)
 # ROC for virginica
 gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
 plot(gg_dta)
-
-
 
 }
 \seealso{

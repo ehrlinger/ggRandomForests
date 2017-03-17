@@ -50,10 +50,8 @@
 #' ## ------------------------------------------------------------
 #' ## ------------- iris data
 #' ## You can build a randomForest
-#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' # ... or load a cached randomForestSRC object
-#' data(rfsrc_iris, package="ggRandomForests")
-#'
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_error(rfsrc_iris)
 #'
@@ -63,7 +61,7 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## ------------- airq data
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #'
@@ -72,8 +70,8 @@
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
-#' }
-#'
+#' 
+#' \dontrun{
 #' ## ------------- Boston data
 #' data(rfsrc_Boston, package="ggRandomForests")
 #'
@@ -82,7 +80,7 @@
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
-#'
+#' }
 #' \dontrun{
 #' ## ------------- mtcars data
 #'
@@ -105,14 +103,14 @@
 #' gg_dta <- gg_error(rfsrc_veteran)
 #' plot(gg_dta)
 #' }
-#'
+#' \dontrun{
 #' ## ------------- pbc data
 #' # Load a cached randomForestSRC object
 #' data(rfsrc_pbc, package="ggRandomForests")
 #'
 #' gg_dta <- gg_error(rfsrc_pbc)
 #' plot(gg_dta)
-#'
+#'}
 #' @export gg_error gg_error.rfsrc gg_error.randomForest gg_error.randomForest.formula
 gg_error <- function (object, ...) {
   UseMethod("gg_error", object)

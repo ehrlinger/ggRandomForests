@@ -4,6 +4,7 @@
 #'  * changes time variable to years
 #'  * Modifies the treatment factor
 #' 
+#' @importFrom utils data 
 #' @export
 
 pbc_data <- function(){

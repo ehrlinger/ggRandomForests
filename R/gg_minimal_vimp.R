@@ -37,10 +37,8 @@
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
 #' ## You can build a randomForest
-#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' # varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
-#' # ... or load a cached randomForestSRC object
-#' data(varsel_iris, package="ggRandomForests")
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
 #' 
 #' # Get a data.frame containing minimaldepth measures
 #' gg_dta<- gg_minimal_vimp(varsel_iris)
@@ -64,7 +62,7 @@
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
 #' }
-#' 
+#'  \dontrun{
 #' ## -------- Boston data
 #' data(varsel_Boston, package="ggRandomForests")
 #' 
@@ -73,7 +71,7 @@
 #' 
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
-#' 
+#' }
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(varsel_mtcars, package="ggRandomForests")
@@ -99,12 +97,13 @@
 #' gg_dta <- gg_minimal_vimp(varsel_veteran)
 #' plot(gg_dta)
 #' }
+#'  \dontrun{
 #' ## -------- pbc data
 #' data(varsel_pbc, package="ggRandomForests")
 #' 
 #' gg_dta <- gg_minimal_vimp(varsel_pbc)
 #' plot(gg_dta)
-#' 
+#' }
 #' @aliases gg_minimal_vimp gg_minimal_vimp.randomForest gg_minimal_vimp.rfsrc
 #' @export
 gg_minimal_vimp <- function (object, ...) {

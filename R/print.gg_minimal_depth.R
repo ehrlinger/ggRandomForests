@@ -26,10 +26,8 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## You can build a randomForest
-#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' # varsel_iris <- var.select(rfsrc_iris)
-#' # ... or load a cached randomForestSRC object
-#' data(varsel_iris, package="ggRandomForests")
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' varsel_iris <- var.select(rfsrc_iris)
 #' 
 #' # Get a data.frame containing minimaldepth measures
 #' gg_dta <- gg_minimal_depth(varsel_iris)
@@ -49,7 +47,7 @@
 #' # To nicely print a rfsrc::var.select output... 
 #' print(varsel_airq)
 #' }
-#' 
+#'  \dontrun{
 #' # ... or load a cached randomForestSRC object
 #' data(varsel_Boston, package="ggRandomForests")
 #' 
@@ -59,7 +57,7 @@
 #' 
 #' # To nicely print a rfsrc::var.select output... 
 #' print(varsel_Boston)
-#' 
+#' }
 #' @export
 print.gg_minimal_depth <- function(x, ...){
   gg_dta <- x

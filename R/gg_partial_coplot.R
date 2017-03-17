@@ -18,6 +18,7 @@
 #' 
 #' @examples
 #' # Load the forest
+#'  \dontrun{
 #' data(rfsrc_pbc, package="ggRandomForests")
 #' 
 #' # Create the variable plot.
@@ -28,7 +29,7 @@
 #' 
 #' # Create the conditional groups and add to the gg_variable object
 #' copper_grp <- cut(ggvar$copper, breaks = copper_cts)
-#' 
+#' }
 #' \dontrun{
 #' ## We would run this, but it's expensive 
 #' partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili", 
@@ -37,12 +38,13 @@
 #'                                          time = 1, 
 #'                                          show.plots = FALSE)
 #' }
+#'  \dontrun{
 #' ## so load the cached set
 #' data(partial_coplot_pbc, package="ggRandomForests")
 #' 
 #' # Partial coplot
 #' plot(partial_coplot_pbc) #, se = FALSE)
-#'  
+#'  }
 #' 
 #' @export
 gg_partial_coplot.rfsrc <- function(object, 

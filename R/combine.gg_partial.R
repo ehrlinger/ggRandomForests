@@ -28,8 +28,27 @@
 #' @importFrom parallel mclapply
 #' 
 #' @examples 
+#' \dontrun{
 #' # Load a set of plot.variable partial plot data
-#' data(partial_pbc)
+#' # data(partial_pbc)
+#'   pbc <- pbc_data()
+#' dta.train <- pbc[-which(is.na(pbc$treatment)),]
+#' # Create a test set from the remaining patients
+#' pbc.test <- pbc[which(is.na(pbc$treatment)),]
+#' 
+#' rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
+#'                                     dta.train, nsplit = 10,
+#'                                     na.action="na.impute",
+#'                                     importance=TRUE, tree.err=TRUE)
+#' # Test the cached forest type
+#' xvar <- c("bili", "albumin", "copper", "prothrombin", "age", "edema")
+#' 
+#' partial_pbc <- lapply(c(1, 3, 5), function(tm){
+#'   randomForestSRC::plot.variable(rfsrc_pbc, surv.type = "surv", 
+#'                                  time = tm, sorted = FALSE, 
+#'                                  xvar.names = xvar, partial = TRUE, 
+#'                                  show.plots = FALSE)
+#' })
 #' 
 #' # A list of 2 plot.variable objects
 #' length(partial_pbc) 
@@ -61,7 +80,7 @@
 #'    ggpart[[ind]] <- NULL
 #' }
 #' plot(ggpart, panel=TRUE) 
-#' 
+#' }
 #' 
 #' @export
 combine.gg_partial <- function(x, y, lbls, ...){

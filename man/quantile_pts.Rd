@@ -26,6 +26,7 @@ The output can be passed directly into the breaks argument of the
 \code{cut} function for creating groups for coplots.
 }
 \examples{
+ \dontrun{
 data(rfsrc_Boston)
 
 # To create 6 intervals, we want 7 points. 
@@ -36,7 +37,7 @@ rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=6, intervals=TRUE)
 rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
 
 summary(rm_grp)
-
+}
 }
 \seealso{
 \code{cut} \code{\link{gg_partial_coplot}}

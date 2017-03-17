@@ -42,8 +42,7 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris, importance = TRUE)
 #' gg_dta <- gg_vimp(rfsrc_iris)
 #' plot(gg_dta)
 #'  
@@ -57,12 +56,12 @@
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
 #' }
-#' 
+#'  \dontrun{
 #' ## -------- Boston data
 #' data(rfsrc_Boston, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_Boston)
 #' plot(gg_dta)
-#' 
+#' }
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
@@ -78,7 +77,7 @@
 #' gg_dta <- gg_vimp(rfsrc_veteran)
 #' plot(gg_dta)
 #' }
-#' 
+#' \dontrun{
 #' ## -------- pbc data
 #' data(rfsrc_pbc, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_pbc)
@@ -87,7 +86,7 @@
 #' # Restrict to only the top 10.
 #' gg_dta <- gg_vimp(rfsrc_pbc, nvar=10)
 #' plot(gg_dta)
-
+#' }
 #' @aliases gg_vimp gg_vimp.rfsrc gg_vimp.randomForest gg_vimp.randomForest.formula
 #' @export 
 gg_vimp <- function (object, nvar, ...) {

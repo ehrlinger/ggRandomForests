@@ -49,8 +49,7 @@
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
 #' ## iris
-#' #rfsrc_iris <- rfsrc(Species ~., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
+#' rfsrc_iris <- rfsrc(Species ~., data = iris)
 #' 
 #' gg_dta <- gg_variable(rfsrc_iris)
 #' plot(gg_dta, xvar="Sepal.Width")
@@ -134,7 +133,6 @@
 #' # Generate variable dependance plots for age and diagtime
 #' plot(gg_dta, xvar = "age")
 #' }
-#' ## -------- pbc data
 #' @aliases gg_variable gg_variable.rfsrc gg_variable.randomForest gg_variable.random
 #' @importFrom stats median
 #' 

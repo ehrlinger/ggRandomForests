@@ -4,13 +4,23 @@ context("surface_matrix tests")
 test_that("cutting a vector at evenly space points",{
   
   # Load the stored rfsrc and partial coplot data.
-  data(rfsrc_Boston)
+  ## Load the cached forest
+  data(Boston, package="MASS")
+  
+  Boston$chas <- as.logical(Boston$chas)
+  
+  rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston)
   rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups=50)
   
   ## From vignette(randomForestRegression, package="ggRandomForests")
   ##
   # Load the stored partial coplot data.
-  data(partial_Boston_surf)
+  partial_Boston_surf <- lapply(rm_pts, function(ct){
+    rfsrc_Boston$xvar$rm <- ct
+    randomForestSRC::plot.variable(rfsrc_Boston, xvar.names = "lstat", time = 1,
+                                   npts = 50, show.plots = FALSE, 
+                                   partial = TRUE)
+  })
   
   # Instead of groups, we want the raw rm point values,
   # To make the dimensions match, we need to repeat the values
