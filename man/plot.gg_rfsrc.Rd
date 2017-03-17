@@ -93,4 +93,3 @@ and Classification (RF-SRC), R package version 1.4.
 \seealso{
 \code{\link{gg_rfsrc}} \code{\link[randomForestSRC]{rfsrc}}
 }
-

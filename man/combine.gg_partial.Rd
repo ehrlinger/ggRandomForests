@@ -36,7 +36,6 @@ The second call will append a single \code{lbls} label to the
 \code{\link{gg_partial}} object.
 }
 \examples{
-\dontrun{
 # Load a set of plot.variable partial plot data
 data(partial_pbc)
 
@@ -70,7 +69,6 @@ for(ind in nms){
    ggpart[[ind]] <- NULL
 }
 plot(ggpart, panel=TRUE) 
-}
+
 
 }
-

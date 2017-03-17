@@ -108,4 +108,3 @@ Regression and Classification (RF-SRC), R package version 1.5.
 \seealso{
 \code{\link[randomForestSRC]{var.select}} \code{\link{gg_minimal_depth}}
 }
-

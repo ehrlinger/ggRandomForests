@@ -58,4 +58,3 @@ plot(gg_dta)
 \seealso{
 \code{\link{gg_survival}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
 }
-

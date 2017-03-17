@@ -53,4 +53,3 @@ plot(gg_dta, error="lines")
 }
 
 }
-

@@ -108,4 +108,3 @@ and Classification (RF-SRC), R package version 1.4.
 \code{\link{gg_error}} \code{\link[randomForestSRC]{rfsrc}}
  \code{\link[randomForestSRC]{plot.rfsrc}}
 }
-

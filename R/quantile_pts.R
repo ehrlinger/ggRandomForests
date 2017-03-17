@@ -20,7 +20,6 @@
 #' @importFrom stats quantile
 #' 
 #' @examples
-#' \dontrun{
 #' data(rfsrc_Boston)
 #' 
 #' # To create 6 intervals, we want 7 points. 
@@ -31,7 +30,7 @@
 #' rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
 #' 
 #' summary(rm_grp)
-#' }
+#' 
 #' @export
 quantile_pts <- function(object, groups, intervals=FALSE){
   # We need one more break than group,

@@ -41,8 +41,8 @@ or the output from the \code{\link[randomForestSRC]{plot.variable}} function.
 ## ------------------------------------------------------------
 ## -------- iris data
 ## iris
- rfsrc_iris <- rfsrc(Species ~., data = iris)
-#data(rfsrc_iris, package="ggRandomForests")
+#rfsrc_iris <- rfsrc(Species ~., data = iris)
+data(rfsrc_iris, package="ggRandomForests")
 
 gg_dta <- gg_variable(rfsrc_iris)
 plot(gg_dta, xvar="Sepal.Width")
@@ -131,4 +131,3 @@ plot(gg_dta, xvar = "age")
 \seealso{
 \code{\link{plot.gg_variable}} \code{\link[randomForestSRC]{plot.variable}}
 }
-

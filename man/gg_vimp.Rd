@@ -2,9 +2,9 @@
 % Please edit documentation in R/gg_vimp.R
 \name{gg_vimp}
 \alias{gg_vimp}
+\alias{gg_vimp.rfsrc}
 \alias{gg_vimp.randomForest}
 \alias{gg_vimp.randomForest.formula}
-\alias{gg_vimp.rfsrc}
 \title{Variable Importance (VIMP) data object}
 \usage{
 gg_vimp(object, nvar, ...)
@@ -30,8 +30,8 @@ a \code{\link[randomForestSRC]{rfsrc}} object.
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#data(rfsrc_iris, package="ggRandomForests")
+# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+data(rfsrc_iris, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
  
@@ -45,12 +45,12 @@ data(rfsrc_airq, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_airq)
 plot(gg_dta)
 }
-\dontrun{
+
 ## -------- Boston data
 data(rfsrc_Boston, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_Boston)
 plot(gg_dta)
-}
+
 \dontrun{
 ## -------- mtcars data
 data(rfsrc_mtcars, package="ggRandomForests")
@@ -66,7 +66,7 @@ data(rfsrc_veteran, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_veteran)
 plot(gg_dta)
 }
-\dontrun{
+
 ## -------- pbc data
 data(rfsrc_pbc, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_pbc)
@@ -76,7 +76,6 @@ plot(gg_dta)
 gg_dta <- gg_vimp(rfsrc_pbc, nvar=10)
 plot(gg_dta)
 }
-}
 \references{
 Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
 \emph{Electronic J. Statist.}, 1:519-537.
@@ -84,4 +83,3 @@ Ishwaran H. (2007). Variable importance in binary regression trees and forests,
 \seealso{
 \code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}} \code{\link[randomForestSRC]{vimp}}
 }
-
