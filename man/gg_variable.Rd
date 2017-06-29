@@ -131,4 +131,3 @@ plot(gg_dta, xvar = "age")
 \seealso{
 \code{\link{plot.gg_variable}} \code{\link[randomForestSRC]{plot.variable}}
 }
-

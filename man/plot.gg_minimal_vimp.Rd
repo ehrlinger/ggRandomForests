@@ -100,4 +100,3 @@ plot(gg_dta)
 \seealso{
 \code{\link{gg_minimal_vimp}} \code{\link[randomForestSRC]{var.select}}
 }
-

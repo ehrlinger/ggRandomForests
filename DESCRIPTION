@@ -30,4 +30,4 @@ Suggests:
     knitr,
     rmarkdown,
     plot3D
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

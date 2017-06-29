@@ -108,4 +108,3 @@ Regression and Classification (RF-SRC), R package version 1.4.
 \code{\link[randomForestSRC]{vimp}}
 \code{\link{plot.gg_interaction}}
 }
-

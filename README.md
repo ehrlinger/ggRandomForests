@@ -1,6 +1,6 @@
 ggRandomForests: Visually Exploring Random Forests
 ========================================================
-[![DOI](https://zenodo.org/badge/5745/ehrlinger/ggRandomForests.png)](http://dx.doi.org/10.5281/zenodo.11526)
+[![DOI](https://zenodo.org/badge/7441814.svg)](https://zenodo.org/badge/latestdoi/7441814)
 [![CRAN version](http://www.r-pkg.org/badges/version/ggRandomForests)](http://cran.r-project.org/package=ggRandomForests)
 ![cranlogs](http://cranlogs.r-pkg.org./badges/ggRandomForests)
 

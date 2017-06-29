@@ -42,4 +42,3 @@ calc_auc(gg_dta)
 \seealso{
 \code{\link{calc_roc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
 }
-

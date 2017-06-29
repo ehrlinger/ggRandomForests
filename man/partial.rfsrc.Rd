@@ -130,9 +130,6 @@ plot.variable(mtcars2.obj, partial = TRUE)
 
 
 }
-\author{
-Hemant Ishwaran and Udaya B. Kogalur (Modified by John Ehrlinger)
-}
 \references{
 Friedman J.H. (2001). Greedy function approximation: a gradient boosting machine, Ann. of Statist., 5:1189-1232.
 
@@ -146,4 +143,6 @@ To appear in Biostatistics.
 \seealso{
 \code{rfsrc}, \code{rfsrcSyn}, \code{predict.rfsrc}
 }
-
+\author{
+Hemant Ishwaran and Udaya B. Kogalur (Modified by John Ehrlinger)
+}

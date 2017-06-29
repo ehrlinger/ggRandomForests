@@ -66,4 +66,3 @@ For the following data sets:
 \code{\link{partial_data}} 
 \code{\link{partial_coplot_data}}
 }
-

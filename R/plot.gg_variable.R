@@ -390,7 +390,7 @@ plot.gg_variable <- function(x, xvar,
           }
           if(smooth){
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_smooth(...)
+              geom_smooth(aes_string(x="var", y="yhat"),...)
           }
         }else{
           

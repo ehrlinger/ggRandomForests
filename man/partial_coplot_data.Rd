@@ -2,9 +2,9 @@
 % Please edit documentation in R/partial_coplot_data.R
 \docType{data}
 \name{partial_coplot_data}
+\alias{partial_coplot_data}
 \alias{partial_coplot_Boston}
 \alias{partial_coplot_Boston2}
-\alias{partial_coplot_data}
 \alias{partial_coplot_pbc}
 \alias{partial_coplot_pbc2}
 \title{Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, diagnostics and vignettes.
@@ -104,4 +104,3 @@ Springer-Verlag, New York. ISBN: 0-387-98784-3.
  \code{\link{cache_rfsrc_datasets}}
 }
 \keyword{datasets}
-

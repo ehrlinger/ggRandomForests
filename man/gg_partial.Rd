@@ -2,9 +2,9 @@
 % Please edit documentation in R/gg_partial.R
 \name{gg_partial}
 \alias{gg_partial}
-\alias{gg_partial.randomForest}
-\alias{gg_partial.rfsrc}
 \alias{gg_partial_list}
+\alias{gg_partial.rfsrc}
+\alias{gg_partial.randomForest}
 \title{Partial variable dependence object}
 \usage{
 gg_partial(object, ...)
@@ -170,4 +170,3 @@ Machine." Annals of Statistics 29: 1189-1232.
 \seealso{
 \code{\link{plot.gg_partial}} \code{\link[randomForestSRC]{plot.variable}}
 }
-
