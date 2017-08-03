@@ -164,7 +164,7 @@ plot.gg_variable <- function(x, xvar,
   }
   
   # These may be dangerous because they work on column names only.
-  if(sum(colnames(gg_dta) == "cens") != 0) family <- "surv"
+  if(sum(colnames(gg_dta) == "event") != 0) family <- "surv"
   
   # Same here, but it's how I know there are multiple classes right now.
   if(length(grep("yhat.", colnames(gg_dta))) > 0){
@@ -193,7 +193,7 @@ plot.gg_variable <- function(x, xvar,
   if(missing(xvar)){
     # We need to remove response variables here
     cls <- c(grep("yhat", colnames(gg_dta)),
-             grep("cens", colnames(gg_dta)),
+             grep("event", colnames(gg_dta)),
              grep("time", colnames(gg_dta))
     )
     xvar <- colnames(gg_dta)[-cls]
@@ -239,18 +239,18 @@ plot.gg_variable <- function(x, xvar,
     ## Survival plots
     if(family == "surv"){
       ## response variables.
-      wch_y_var <- which(colnames(gg_dta) %in% c("cens", "yhat", "time"))
+      wch_y_var <- which(colnames(gg_dta) %in% c("event", "yhat", "time"))
       
       
       # Handle categorical and continuous differently...
       tmp_dta <- gg_dta[,c(wch_y_var, wch_x_var)]
-      gathercols <- colnames(tmp_dta)[-which(colnames(tmp_dta) %in% c("time", "cens", "yhat"))]
+      gathercols <- colnames(tmp_dta)[-which(colnames(tmp_dta) %in% c("time", "event", "yhat"))]
       gg_dta.mlt <- tidyr::gather_(tmp_dta, "variable", "value", gathercols)
       
       gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
       if(points){
         gg_plt <- ggplot(gg_dta.mlt, 
-                         aes_string(x="value", y="yhat", color="cens", shape="cens"))
+                         aes_string(x="value", y="yhat", color="event", shape="event"))
       }else{
         gg_plt <- ggplot(gg_dta.mlt, 
                          aes_string(x="value", y="yhat")) 
@@ -278,7 +278,7 @@ plot.gg_variable <- function(x, xvar,
         gg_plt<- gg_plt +
           geom_boxplot(aes_string(x="value", y="yhat"), color="grey", 
                        ..., outlier.shape = NA) +
-          geom_jitter(aes_string(x="value", y="yhat", color="cens", shape="cens"), 
+          geom_jitter(aes_string(x="value", y="yhat", color="event", shape="event"), 
                       ...) 
         
       }
@@ -382,7 +382,7 @@ plot.gg_variable <- function(x, xvar,
           # cat("2")
           if(points){
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_point(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+              geom_point(aes_string(x="var", y="yhat", color="event", shape="event"), 
                          ...)
           }else{
             gg_plt[[ind]] <- gg_plt[[ind]] +
@@ -398,7 +398,7 @@ plot.gg_variable <- function(x, xvar,
           gg_plt[[ind]] <- gg_plt[[ind]] +
             geom_boxplot(aes_string(x="var", y="yhat"), color="black",
                          ..., outlier.shape = NA)+
-            geom_jitter(aes_string(x="var", y="yhat", color="cens", shape="cens"), 
+            geom_jitter(aes_string(x="var", y="yhat", color="event", shape="event"), 
                         ...)
           
         }
@@ -427,7 +427,7 @@ plot.gg_variable <- function(x, xvar,
             if(smooth){
               gg_plt[[ind]] <- gg_plt[[ind]] +
                 geom_smooth(...)
-              }
+            }
           }else{
             
             # cat("6")

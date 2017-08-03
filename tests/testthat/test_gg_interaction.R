@@ -2,9 +2,12 @@
 context("gg_interaction tests")
 
 test_that("gg_interaction classifications",{
-  
+  data(iris, package="datasets")
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
+                                       data = iris, 
+                                       importance=TRUE, tree.err=TRUE)
   ## Load the cached forest
-  data(interaction_iris, package="ggRandomForests")
+  interaction_iris <- randomForestSRC::find.interaction(rfsrc_iris)
   
   # Test the cached interaction structure
   expect_is(interaction_iris, "matrix")
@@ -42,10 +45,17 @@ test_that("gg_interaction classifications",{
 
 test_that("gg_interaction survival",{
   
-  data(pbc, package = "randomForestSRC")
+  pbc <- pbc_data()
+  dta.train <- pbc[-which(is.na(pbc$treatment)),]
+  # Create a test set from the remaining patients
+  pbc.test <- pbc[which(is.na(pbc$treatment)),]
   
+  rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
+                                      dta.train, nsplit = 10,
+                                      na.action="na.impute",
+                                      importance=TRUE, tree.err=TRUE)
   ## Load the cached forest
-  data(interaction_pbc, package="ggRandomForests")
+  interaction_pbc <- randomForestSRC::find.interaction(rfsrc_pbc)
   
   # Test the cached interaction structure
   expect_is(interaction_pbc, "matrix")
@@ -101,9 +111,12 @@ test_that("gg_interaction survival",{
 })
 
 test_that("gg_interaction regression",{
-  ## Load the cached forest
-  data(interaction_Boston, package="ggRandomForests")
+  data(Boston, package="MASS")
   
+  Boston$chas <- as.logical(Boston$chas)
+  
+  rf_Boston <- randomForestSRC::rfsrc(medv~., data=Boston)
+  interaction_Boston <- randomForestSRC::find.interaction(rf_Boston)
   # Test the cached interaction structure
   expect_is(interaction_Boston, "matrix")
   
@@ -133,14 +146,7 @@ test_that("gg_interaction regression",{
   #  
   #  expect_error(gg_interaction(gg_dta))
   # 
-})
 
-test_that("gg_interaction exceptions",{
-  ## Load the cached forest
-  data(rfsrc_Boston, package="ggRandomForests")
-  
-  # Test the cached interaction structure
-  expect_is(rfsrc_Boston, "rfsrc")
   
   # This one costs a lot of time in calculating the interaction matrix.
   #   ## Create the correct gg_interaction object
@@ -149,7 +155,7 @@ test_that("gg_interaction exceptions",{
   #   # Test object type
   #   expect_is(gg_dta, "gg_interaction")
   #   
-  data(interaction_Boston, package="ggRandomForests")
+ 
   # Test the cached interaction structure
   expect_is(interaction_Boston, "matrix")
   

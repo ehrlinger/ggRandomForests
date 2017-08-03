@@ -19,3 +19,4 @@ jsslogo.jpg
 *.bbl
 
 inst/doc
+*.Rd

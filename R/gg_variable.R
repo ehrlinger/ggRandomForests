@@ -186,8 +186,8 @@ gg_variable.rfsrc <- function(object,
     gg_dta$yvar <- object$yvar
     
   }else if(object$family == "surv"){
-    gg_dta$cens <- as.logical(object$yvar[,2])
-    colnames(gg_dta) <- c(object$xvar.names, "cens")
+    gg_dta$event <- as.logical(object$yvar[,2])
+    colnames(gg_dta) <- c(object$xvar.names, "event")
     
     if(is.null(time)) time <- median(object$time.interest)
     lng <- length(time)
@@ -251,11 +251,11 @@ gg_variable.randomForest <- function(object,
   
   if(object$type == "regression"){
     gg_dta$yhat <- object$predicted
-
+    
   }else{ # if(object$family == "class"){
-      colnames(object$predicted) <- paste("yhat.", colnames(object$predicted),
-                                          sep="")
-      gg_dta <- object$predicted
+    colnames(object$predicted) <- paste("yhat.", colnames(object$predicted),
+                                        sep="")
+    gg_dta <- object$predicted
     
     gg_dta$yvar <- object$yvar
     

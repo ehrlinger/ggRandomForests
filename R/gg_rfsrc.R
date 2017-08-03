@@ -219,17 +219,21 @@ gg_rfsrc.rfsrc <- function(object,
     # Do we want all lines, or bootstrap confidence bands.
     colnames(rng) <- object$time.interest
     
-    rng$ptid <- 1:nrow(rng)
-    rng$cens <- as.logical(object$yvar[,2])
+    rng$obs_id <- 1:nrow(rng)
+    if(is.null(object$yvar)){
+      rng$event = FALSE
+    }else{
+      rng$event <- as.logical(object$yvar[,2])
+    }
     gg_dta <- rng
     
     # If we don't specify either a conf band or group by variable... 
     # Then we want to plot a curve for each observation.
     if(is.null(arg_list$conf.int) & missing(by)){
-      gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) %in% c("ptid", "cens"))]
+      gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) %in% c("obs_id", "event"))]
       gg_dta.mlt <- tidyr::gather_(gg_dta, "variable", "value", gathercols)
       gg_dta.mlt$variable <- as.numeric(as.character(gg_dta.mlt$variable))
-      gg_dta.mlt$ptid <- factor(gg_dta.mlt$ptid)
+      gg_dta.mlt$obs_id <- factor(gg_dta.mlt$obs_id)
       
       gg_dta <- gg_dta.mlt
       
@@ -303,7 +307,7 @@ gg_rfsrc.rfsrc <- function(object,
 
 bootstrap_survival <- function(gg_dta, bs.samples, level.set){
   ## Calculate the leave one out estimate of the mean survival
-  gg.t <- gg_dta[, -which(colnames(gg_dta) %in% c("ptid","cens", "group"))]
+  gg.t <- gg_dta[, -which(colnames(gg_dta) %in% c("obs_id","event", "group"))]
   mn.bs <- t(sapply(1:bs.samples, 
                     function(pat){
                       st <- sample(1:nrow(gg.t), size = nrow(gg.t), replace=T)
@@ -322,13 +326,13 @@ bootstrap_survival <- function(gg_dta, bs.samples, level.set){
   time.interest <- as.numeric(colnames(gg.t))
   
   dta <- data.frame(cbind(time.interest,
-                          t(rng)[-which(colnames(gg_dta) %in% c("ptid", "cens")),],
-                          mn[-which(colnames(gg_dta) %in% c("ptid", "cens"))]))
+                          t(rng)[-which(colnames(gg_dta) %in% c("obs_id", "event")),],
+                          mn[-which(colnames(gg_dta) %in% c("obs_id", "event"))]))
   
   if(ncol(dta) == 5){
-    colnames(dta)<- c("time", "lower",  "upper", "median", "mean")
+    colnames(dta)<- c("value", "lower",  "upper", "median", "mean")
   }else{
-    colnames(dta)<- c("time", level.set, "mean")
+    colnames(dta)<- c("value", level.set, "mean")
   }
   dta
 }

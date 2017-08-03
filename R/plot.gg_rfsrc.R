@@ -148,20 +148,20 @@ plot.gg_rfsrc <- function(x,
       
       if("group" %in% colnames(gg_dta)){
         gg_plt <- ggplot(gg_dta) +
-          geom_ribbon(aes_string(x="time", ymin="lower", ymax="upper", fill="group"),
+          geom_ribbon(aes_string(x="value", ymin="lower", ymax="upper", fill="group"),
                       alpha=alph,...) +
-          geom_step(aes_string(x="time", y="median", color="group"), ...)
+          geom_step(aes_string(x="value", y="median", color="group"), ...)
       }else{
         gg_plt <- ggplot(gg_dta) +
-          geom_ribbon(aes_string(x="time", ymin="lower", ymax="upper"),alpha=alph) +
-          geom_step(aes_string(x="time", y="median"), ...)
+          geom_ribbon(aes_string(x="value", ymin="lower", ymax="upper"),alpha=alph) +
+          geom_step(aes_string(x="value", y="median"), ...)
       }
     }else{
       
       # Lines by observation
       gg_plt <- ggplot(gg_dta,
-                       aes_string(x="variable", y="value", col="cens", 
-                                  by="ptid")) +
+                       aes_string(x="variable", y="value", col="event", 
+                                  by="obs_id")) +
         geom_step(...)
     }
     
