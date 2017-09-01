@@ -4,8 +4,10 @@ context("gg_error tests")
 test_that("gg_error.rfsrc classifications",{
   
   ## Load the cached forest
-  data(rfsrc_iris, package="ggRandomForests")
-  
+  data(iris, package="datasets")
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
+                                       data = iris, 
+                                       importance=TRUE, tree.err=TRUE)
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
   
@@ -41,7 +43,8 @@ test_that("gg_error.rfsrc classifications",{
 
 
 test_that("gg_error.randomForest classifications",{
-  
+  ## Load the cached forest
+  data(iris, package="datasets")
   ## Load the cached forest
   rf_iris <- randomForest::randomForest(Species ~., 
                                         data = iris)
@@ -81,8 +84,17 @@ test_that("gg_error.randomForest classifications",{
 
 test_that("gg_error survival", {  
   ## Load the cached forest
-  data(rfsrc_pbc, package="ggRandomForests")
+  # data(rfsrc_pbc, package="ggRandomForests")
   
+  pbc <- pbc_data()
+  dta.train <- pbc[-which(is.na(pbc$treatment)),]
+  # Create a test set from the remaining patients
+  pbc.test <- pbc[which(is.na(pbc$treatment)),]
+  
+  rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
+                                      dta.train, nsplit = 10,
+                                      na.action="na.impute",
+                                      importance=TRUE, tree.err=TRUE)
   # Test the cached forest type
   expect_is(rfsrc_pbc, "rfsrc")
   
@@ -114,9 +126,13 @@ test_that("gg_error survival", {
 })
 
 test_that("gg_error regression",{
-  ## Load the cached forest
-  data(rfsrc_Boston, package="ggRandomForests")
   
+  ## Load the cached forest
+  data(Boston, package="MASS")
+  
+  Boston$chas <- as.logical(Boston$chas)
+  
+  rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston)
   # Test the cached forest type
   expect_is(rfsrc_Boston, "rfsrc")
   
@@ -142,9 +158,6 @@ test_that("gg_error regression",{
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
-  ## Test plotting the gg_error object
-  gg_plt <- plot.gg_error(rfsrc_Boston)
-  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
@@ -152,10 +165,11 @@ test_that("gg_error regression",{
   expect_error(gg_error(gg_plt))
   
   ## Create the correct gg_error object
- # gg_dta <- gg_error(rfsrc_Boston, training=TRUE)
+  # gg_dta <- gg_error(rf_Boston, training=TRUE)
   
   # Test object type
-#  expect_is(gg_dta, "gg_error")
+  #  expect_is(gg_dta, "gg_error")
+
 })
 
 
