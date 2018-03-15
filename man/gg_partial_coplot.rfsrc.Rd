@@ -37,7 +37,7 @@ data(rfsrc_pbc, package="ggRandomForests")
 ggvar <- gg_variable(rfsrc_pbc, time = 1)
 
 # Find intervals with similar number of observations.
-copper_cts <-quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
+copper_cts <- quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
 
 # Create the conditional groups and add to the gg_variable object
 copper_grp <- cut(ggvar$copper, breaks = copper_cts)

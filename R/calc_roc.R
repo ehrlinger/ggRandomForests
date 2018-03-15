@@ -56,6 +56,8 @@ calc_roc.rfsrc <- function(object, yvar, which.outcome="all", oob=TRUE){
     dta.roc <- data.frame(cbind(res=(yvar == levels(yvar)[which.outcome]),
                                 prd=object$predicted[, which.outcome],
                                 oob=object$predicted.oob[, which.outcome]))
+    
+    # Get the list of unique prob
     if(oob)
       pct <- sort(unique(object$predicted.oob[,which.outcome]))
     else
@@ -64,7 +66,13 @@ calc_roc.rfsrc <- function(object, yvar, which.outcome="all", oob=TRUE){
     stop("Must specify which.outcome for now.")
   }
   
-  pct <- pct[-length(pct)]
+  last <- length(pct)
+  pct <- pct[-last]
+  
+  # Make sure we don't have to many points... if the training set was large, 
+  # This may break plotting all ROC curves in multiclass settings.
+  # Arbitrarily reduce this to only include 200 points along the curve
+  if(last > 200) pct <- pct[seq(1, length(pct), length.out = 200)]
   
   gg_dta <- parallel::mclapply(pct, function(crit){
     if(oob)
