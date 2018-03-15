@@ -24,7 +24,7 @@
 #' ggvar <- gg_variable(rfsrc_pbc, time = 1)
 #' 
 #' # Find intervals with similar number of observations.
-#' copper_cts <-quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
+#' copper_cts <- quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
 #' 
 #' # Create the conditional groups and add to the gg_variable object
 #' copper_grp <- cut(ggvar$copper, breaks = copper_cts)
@@ -100,8 +100,9 @@ gg_partial_coplot.rfsrc <- function(object,
   
   # if not, make sure it has the correct dimension (nrow(rfsrc$xvar))
   
+  # Check the length of groups...
   
-  dta.train$group <- groups
+  dta.train$group <- groups[1:nrow(dta.train)]
   
   # make groups a factor
   
