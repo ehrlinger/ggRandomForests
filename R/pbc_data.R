@@ -1,4 +1,5 @@
-#' pbc_data "fixes" some features of the randomForestSRC pbc data set.
+#'  pbc_data "fixes" some features of the randomForestSRC pbc data set.
+#'  
 #'  * groks logical and factor variables (< 5 unique values are factors).
 #'  * Changes the age variable to be in years
 #'  * changes time variable to years
