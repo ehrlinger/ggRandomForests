@@ -5,7 +5,7 @@
 #'  * changes time variable to years
 #'  * Modifies the treatment factor
 #' 
-#' @export
+#' @export pbc_data
 
 pbc_data <- function(){
   dta <- new.env()
