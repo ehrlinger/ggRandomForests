@@ -352,7 +352,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
                   compress="xz")
     
     cat("pbc: RF partial coplots\n(this will take a little while...)\n")
-    cat("pbc: bili/albumin")
+    cat("pbc: bili/albumin\n")
     ggvar <- gg_variable(rfsrc_pbc, time=1)
     albumin_cts <- quantile_pts(ggvar$albumin, groups = 6, 
                                 intervals = TRUE)
@@ -369,7 +369,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(save) save(partial_coplot_pbc, 
                   file=paste(pth, "partial_coplot_pbc.rda", sep=""), 
                   compress="xz")
-    cat("pbc: albumin/bili")
+    cat("pbc: albumin/bili\n")
     # Find intervals with similar number of observations.
     bili_cts <- quantile_pts(ggvar$bili, groups = 6, intervals = TRUE)
     
