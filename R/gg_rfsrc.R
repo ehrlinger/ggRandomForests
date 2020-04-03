@@ -299,7 +299,7 @@ gg_rfsrc.rfsrc <- function(object,
     stop(paste("Plotting for ", object$family, " randomForestSRC is not yet implemented.", sep=""))
   }
   
-  class(gg_dta) <- c("gg_rfsrc", class(gg_dta), object$family)
+  class(gg_dta) <- c("gg_rfsrc", object$family, class(gg_dta))
   invisible(gg_dta)
 }
 
@@ -444,7 +444,7 @@ gg_rfsrc.randomForest <- function(object,
     stop(paste("Plotting for ", object$family, " randomForest is not yet implemented.", sep=""))
   }
   
-  class(gg_dta) <- c("gg_rfsrc", class(gg_dta), object$type)
+  class(gg_dta) <- c("gg_rfsrc", object$type, class(gg_dta))
   invisible(gg_dta)
 }
 
