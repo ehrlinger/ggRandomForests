@@ -176,7 +176,7 @@
 #'   
 #' @aliases gg_partial gg_partial_list gg_partial.rfsrc gg_partial.randomForest
 #' @name gg_partial
-#' @name gg_partial_list
+#' @aliases gg_partial_list
 #' @export
 gg_partial <- function (object, ...) {
   UseMethod("gg_partial", object)

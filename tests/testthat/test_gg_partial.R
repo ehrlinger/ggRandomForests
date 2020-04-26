@@ -91,7 +91,7 @@ test_that("gg_partial survival",{
   
   
   xvar <- varsel_pbc$topvars
-  xvar.cat <- c("edema", "stage")
+  xvar.cat <- c("edema", "stage", "ascites")
   xvar <- xvar[-which(xvar %in% xvar.cat)]
   
   # plot the next 5 continuous variable dependence plots.

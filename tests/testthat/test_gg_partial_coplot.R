@@ -9,7 +9,7 @@ test_that("gg_error classifications",{
   # we need to build rather than cache the rfsrc
   rfsrc_Boston <- rfsrc(medv~., data=Boston,
                         importance="none",
-                        nsplit=5)
+                        nsplit=5, forest=TRUE)
   # fast.restore can be added after randomForestSRC V1.6 release
   
   # Find the rm variable points to create 6 intervals of roughly 
@@ -26,7 +26,7 @@ test_that("gg_error classifications",{
                                              npts=5)
   expect_is(partial_coplot_Boston, "gg_partial_coplot")
   
-  expect_equal(ncol(partial_coplot_Boston), 3)
+  expect_equal(ncol(partial_coplot_Boston), 4)
   
   expect_equal(length(unique(partial_coplot_Boston$group)), 3)
   

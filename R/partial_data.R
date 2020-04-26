@@ -157,8 +157,6 @@
 #' @keywords datasets
 #' @format \code{\link[randomForestSRC]{plot.variable}}
 #' @name partial_data
-#' @name partial_iris
-#' @name partial_Boston
-#' @name partial_pbc
+#' @aliases partial_iris, partial_Boston, partial_pbc
 #' 
 NULL

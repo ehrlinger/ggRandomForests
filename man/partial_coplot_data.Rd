@@ -7,6 +7,9 @@
 \alias{partial_coplot_Boston2}
 \alias{partial_coplot_pbc}
 \alias{partial_coplot_pbc2}
+\alias{partial_coplot_Boston,}
+\alias{partial_coplot_Boston2,}
+\alias{partial_coplot_pbc,}
 \title{Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, diagnostics and vignettes.
  
 Data sets storing \code{\link[randomForestSRC]{rfsrc}} objects corresponding to 
@@ -15,7 +18,9 @@ training data according to the following naming convention:
 \item \code{partial_coplot_Boston} - randomForestS[R]C for the \code{Boston} housing 
 data set (\code{MASS} package).
 }}
-\format{List of \code{\link[randomForestSRC]{plot.variable}} objects}
+\format{
+List of \code{\link[randomForestSRC]{plot.variable}} objects
+}
 \description{
 Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, diagnostics and vignettes.
  

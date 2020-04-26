@@ -105,9 +105,8 @@ gg_partial_coplot.rfsrc <- function(object,
   dta.train$group <- groups[1:nrow(dta.train)]
   
   # make groups a factor
-  
-  # how many curves per coplot?
   lvl <- levels(groups)
+  # how many curves per coplot?
   lng <- length(lvl)
   
   # Create the subsets for the plot.variable function
@@ -147,7 +146,7 @@ gg_partial_coplot.rfsrc <- function(object,
   pdat.partlist <- lapply(1:length(sbst), function(ind){
     randomForestSRC::plot.variable(object, surv.type=surv_type, time=time,
                   subset = sbst[[ind]],
-                  xvar.names=xvar, partial=TRUE, ...)
+                  xvar.names=xvar, partial=TRUE)
   })
   
   ## Make them all gg_partials.

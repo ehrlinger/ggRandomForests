@@ -139,7 +139,5 @@
 #' @keywords datasets
 #' @format list of \code{\link[randomForestSRC]{plot.variable}} objects
 #' @name partial_surface_data
-#' @name partial_Boston_surf
-#' @name partial_pbc_surf
-#' @name partial_pbc_time
+#' @aliases  partial_Boston_surf, partial_pbc_surf, partial_pbc_time
 NULL

@@ -88,9 +88,6 @@
 #' @keywords datasets
 #' @format List of \code{\link[randomForestSRC]{plot.variable}} objects
 #' @name partial_coplot_data
-#' @name partial_coplot_Boston
-#' @name partial_coplot_Boston2
-#' @name partial_coplot_pbc
-#' @name partial_coplot_pbc2
+#' @aliases partial_coplot_Boston, partial_coplot_Boston2, partial_coplot_pbc, partial_coplot_pbc2
 #' 
 NULL

@@ -6,6 +6,8 @@
 \alias{interaction_iris}
 \alias{interaction_Boston}
 \alias{interaction_pbc}
+\alias{interaction_iris,}
+\alias{interaction_Boston,}
 \title{Cached \code{\link[randomForestSRC]{find.interaction}} matrix objects for examples, 
 diagnostics and vignettes.
  
@@ -18,7 +20,9 @@ data set (\code{MASS} package).
 \item \code{interaction_pbc} - from a randomForest[S]RC for the \code{pbc} data set
  (\code{randomForestSRC} package)  
 }}
-\format{\code{\link[randomForestSRC]{find.interaction}} matrix}
+\format{
+\code{\link[randomForestSRC]{find.interaction}} matrix
+}
 \description{
 Cached \code{\link[randomForestSRC]{find.interaction}} matrix objects for examples, 
 diagnostics and vignettes.

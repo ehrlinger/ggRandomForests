@@ -4,9 +4,12 @@
 \alias{plot.gg_survival}
 \title{Plot a \code{\link{gg_survival}}  object.}
 \usage{
-\method{plot}{gg_survival}(x, type = c("surv", "cum_haz", "hazard", "density",
-  "mid_int", "life", "proplife"), error = c("shade", "bars", "lines", "none"),
-  ...)
+\method{plot}{gg_survival}(
+  x,
+  type = c("surv", "cum_haz", "hazard", "density", "mid_int", "life", "proplife"),
+  error = c("shade", "bars", "lines", "none"),
+  ...
+)
 }
 \arguments{
 \item{x}{\code{\link{gg_survival}} or a survival \code{\link{gg_rfsrc}} object created from a 

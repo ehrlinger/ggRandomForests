@@ -7,8 +7,13 @@
 \alias{rfsrc_Boston}
 \alias{rfsrc_pbc}
 \alias{rfsrc_pbc_test}
+\alias{rfsrc_iris,}
+\alias{rfsrc_Boston,}
+\alias{rfsrc_pbc,}
 \title{Cached \code{\link[randomForestSRC]{rfsrc}} objects for examples, diagnostics and vignettes.}
-\format{\code{\link[randomForestSRC]{rfsrc}} object}
+\format{
+\code{\link[randomForestSRC]{rfsrc}} object
+}
 \description{
 Data sets storing \code{\link[randomForestSRC]{rfsrc}} objects corresponding to
 training data according to the following naming convention:

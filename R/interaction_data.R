@@ -162,8 +162,6 @@
 #' @keywords datasets
 #' @format \code{\link[randomForestSRC]{find.interaction}} matrix
 #' @name interaction_data
-#' @name interaction_iris
-#' @name interaction_Boston
-#' @name interaction_pbc
+#' @aliases interaction_iris, interaction_Boston, interaction_pbc
 #' 
 NULL

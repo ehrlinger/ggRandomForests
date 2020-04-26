@@ -152,8 +152,6 @@
 #' @keywords datasets
 #' @format \code{\link[randomForestSRC]{var.select}} object
 #' @name varsel_data
-#' @name varsel_iris
-#' @name varsel_Boston
-#' @name varsel_pbc
+#' @aliases varsel_iris, varsel_Boston, varsel_pbc
 #' 
 NULL

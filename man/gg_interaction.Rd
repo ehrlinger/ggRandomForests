@@ -2,6 +2,8 @@
 % Please edit documentation in R/gg_interaction.R
 \name{gg_interaction}
 \alias{gg_interaction}
+\alias{gg_interaction.randomForest}
+\alias{gg_interaction.rfsrc}
 \title{Minimal Depth Variable Interaction data object (\code{\link[randomForestSRC]{find.interaction}}).}
 \usage{
 gg_interaction(object, ...)

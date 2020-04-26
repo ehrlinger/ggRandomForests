@@ -3,6 +3,8 @@
 \name{gg_variable}
 \alias{gg_variable}
 \alias{gg_variable.rfsrc}
+\alias{gg_variable.randomForest}
+\alias{gg_variable.random}
 \title{Marginal variable depedance data object.}
 \usage{
 gg_variable(object, ...)

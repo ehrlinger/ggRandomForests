@@ -4,8 +4,7 @@
 \alias{plot.gg_partial}
 \title{Partial variable dependence plot, operates on a \code{\link{gg_partial}} object.}
 \usage{
-\method{plot}{gg_partial}(x, points = TRUE, error = c("none", "shade",
-  "bars", "lines"), ...)
+\method{plot}{gg_partial}(x, points = TRUE, error = c("none", "shade", "bars", "lines"), ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_partial}} object created from a \code{\link[randomForestSRC]{rfsrc}} forest object}

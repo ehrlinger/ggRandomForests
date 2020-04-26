@@ -55,7 +55,7 @@ plot(gg_dta)
 
 ## -------- Boston data
 data(rfsrc_Boston, package="ggRandomForests")
-plot(rfsrc_Boston) 
+plot(gg_rfsrc(rfsrc_Boston)) 
 
 \dontrun{
 ## -------- mtcars data

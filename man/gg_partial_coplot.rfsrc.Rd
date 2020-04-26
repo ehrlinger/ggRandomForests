@@ -5,8 +5,14 @@
 \alias{gg_partial_coplot}
 \title{Data structures for stratified partial coplots}
 \usage{
-\method{gg_partial_coplot}{rfsrc}(object, xvar, groups, surv_type = c("mort",
-  "rel.freq", "surv", "years.lost", "cif", "chf"), time, ...)
+\method{gg_partial_coplot}{rfsrc}(
+  object,
+  xvar,
+  groups,
+  surv_type = c("mort", "rel.freq", "surv", "years.lost", "cif", "chf"),
+  time,
+  ...
+)
 }
 \arguments{
 \item{object}{\code{\link[randomForestSRC]{rfsrc}} object}

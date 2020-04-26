@@ -3,6 +3,7 @@
 \name{gg_minimal_depth}
 \alias{gg_minimal_depth}
 \alias{gg_minimal_depth.rfsrc}
+\alias{gg_minimal_depth.randomForest}
 \title{Minimal depth data object (\code{[randomForestSRC]{var.select}})}
 \usage{
 gg_minimal_depth(object, ...)

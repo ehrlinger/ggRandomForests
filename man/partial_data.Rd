@@ -6,6 +6,8 @@
 \alias{partial_iris}
 \alias{partial_Boston}
 \alias{partial_pbc}
+\alias{partial_iris,}
+\alias{partial_Boston,}
 \title{Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, 
 diagnostics and vignettes.
  
@@ -18,7 +20,9 @@ data set (\code{MASS} package).
 \item \code{partial_pbc} - from a randomForest[S]RC for the \code{pbc} data set
  (\code{randomForestSRC} package)  
 }}
-\format{\code{\link[randomForestSRC]{plot.variable}}}
+\format{
+\code{\link[randomForestSRC]{plot.variable}}
+}
 \description{
 Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, 
 diagnostics and vignettes.

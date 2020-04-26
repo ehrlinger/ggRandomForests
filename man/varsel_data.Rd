@@ -6,6 +6,8 @@
 \alias{varsel_iris}
 \alias{varsel_Boston}
 \alias{varsel_pbc}
+\alias{varsel_iris,}
+\alias{varsel_Boston,}
 \title{Cached \code{\link[randomForestSRC]{var.select}} objects for examples, 
 diagnostics and vignettes.
  
@@ -18,7 +20,9 @@ data set (\code{MASS} package).
 \item \code{varsel_pbc} - from a randomForest[S]RC for the \code{pbc} data set
  (\code{randomForestSRC} package)  
 }}
-\format{\code{\link[randomForestSRC]{var.select}} object}
+\format{
+\code{\link[randomForestSRC]{var.select}} object
+}
 \description{
 Cached \code{\link[randomForestSRC]{var.select}} objects for examples, 
 diagnostics and vignettes.

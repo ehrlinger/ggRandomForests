@@ -6,6 +6,8 @@
 \alias{partial_Boston_surf}
 \alias{partial_pbc_surf}
 \alias{partial_pbc_time}
+\alias{partial_Boston_surf,}
+\alias{partial_pbc_surf,}
 \title{Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, 
 diagnostics and vignettes.
  
@@ -19,7 +21,9 @@ data set (\code{MASS} package).
 \item \code{partial_pbc_time} - from a randomForest[S]RC for the \code{pbc} data set
  (\code{randomForestSRC} package)
 }}
-\format{list of \code{\link[randomForestSRC]{plot.variable}} objects}
+\format{
+list of \code{\link[randomForestSRC]{plot.variable}} objects
+}
 \description{
 Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, 
 diagnostics and vignettes.
