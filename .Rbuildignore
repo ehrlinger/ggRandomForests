@@ -26,3 +26,4 @@ framed.sty
 #^inst/doc/randomForest\.*
 #^inst/doc/Regression-rfsrc*
 
+^CRAN-RELEASE$

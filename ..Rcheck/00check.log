@@ -1,0 +1,161 @@
+* using log directory ‘/Users/john/Documents/GitHub/ggRandomForests/..Rcheck’
+* using R version 3.6.3 (2020-02-29)
+* using platform: x86_64-apple-darwin15.6.0 (64-bit)
+* using session charset: UTF-8
+* using option ‘--as-cran’
+* checking for file ‘./DESCRIPTION’ ... OK
+* checking extension type ... Package
+* this is package ‘ggRandomForests’ version ‘2.0.3’
+* package encoding: UTF-8
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: ‘John Ehrlinger <john.ehrlinger@gmail.com>’
+
+Reading CITATION file fails with
+  anyNA() applied to non-(list or vector) of type 'closure'
+
+The Date field is not in ISO 8601 yyyy-mm-dd format.
+
+The build time stamp is missing.
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... WARNING
+Found the following executable files:
+  .git/objects/02/87da45463c7b2c6213151fd60fe00be05ba6e0
+  .git/objects/05/8793523ce6e5eb5aada66ebf8c144456235190
+  .git/objects/07/119d57fc53122ba6416de3e521353f261b1fd9
+  .git/objects/0c/9b47e108dd94106207e008da0ff62bba651c68
+  .git/objects/17/616879a0d93a3dce72aec905387901f6e024b0
+  .git/objects/19/6a93b07c710d2a538fe6475144c95497a8ebd3
+  .git/objects/19/9c1c2b4fb70878dc9821a39778eee43d2db80e
+  .git/objects/22/974a8bccc7aa0aea12434fc68f6254a548a90a
+  .git/objects/23/5e31700887129be248ce36bdbff1a2c249bd3c
+  .git/objects/27/e20b1161f11ef7395ede5e5f27f280faddf4b9
+  .git/objects/2d/6adf0e703b9c6c7f8045e5b2f06041d73ec575
+  .git/objects/2e/a229ca8b131b82d667f0c00cd5d5ce4a0e574c
+  .git/objects/30/50b6f0bd899f03655f4e05772eb450685bf488
+  .git/objects/31/a6cc388cb5dace6e6db53c93ec64611e3f2965
+  .git/objects/41/a7691cb18b82c297d7d79f41d0b2348a2241b1
+  .git/objects/42/c3e85653bc61b42b0f0fcc96b4e1eba5bf3dd0
+  .git/objects/43/086cbef7d97b3dcafda83cc9327b067deeacb7
+  .git/objects/4d/2fc37e00b047af773fc5bf7b585adc79ac2b80
+  .git/objects/55/8f724bbe24b718ce5f98a480501c75a8cd7797
+  .git/objects/55/cfefd1619279174564ae5f7c413d22614ce741
+  .git/objects/56/9104825716177e0d83bb17d404f6dc19a8cbeb
+  .git/objects/57/acb0995df3f0a45ab6892f19f5296970fffade
+  .git/objects/58/09ed0c28c72f4a3916114169f269ec0c15a55f
+  .git/objects/5b/1caacaa56f86cf13d77474bd41b7dec992ee6d
+  .git/objects/64/dd5911b65f2c20cddae7d28a78567da2153700
+  .git/objects/6c/1ee404561e713afb313cb5454e06b73ff7af3a
+  .git/objects/77/4df4ae9873f1206257aaabb3bb69af02dff21c
+  .git/objects/78/6cffe6e4068af8c151c4324aa2c9a5ba234c52
+  .git/objects/79/79ca4a832c0c5fcfb8dbd130968f600b0b87f9
+  .git/objects/7d/ed9e1dd75784d71199fcb5b5460a99ae58e56c
+  .git/objects/7f/c7c785914d5fa06a0d5acca5aed473a0c06521
+  .git/objects/81/587d2da64779a609bc84ab88ecf21bab86d9be
+  .git/objects/83/bf425cc5938f84e02520e31100b6cbda57e541
+  .git/objects/84/47d4dbdf8ac6f860e0a589327ae995a8eb4f80
+  .git/objects/90/45a5b5fa65b2bbb1141f1642f76c825444d7a1
+  .git/objects/96/870e155416c248157e932d0d29e9d963a825b1
+  .git/objects/9b/c960055e9245544f84c62f22fe303af3b83047
+  .git/objects/9f/1bc1a873320d8cdb8453fdc293ffaf78057fb2
+  .git/objects/9f/48e565edfef8758a1e2bd699c20acadc9bbefc
+  .git/objects/ab/c6e8335d5f962793c4e899c0b816764f602fd6
+  .git/objects/b3/0391ace1ad58f60c6ae81678fd7273a4bad41f
+  .git/objects/b4/3c6a8f49a4c1c2076f7b1c083f7f77d7d4f12b
+  .git/objects/b7/97d0e593a1869262c36220892e18e4ece6a026
+  .git/objects/c4/ab09cc68cccc18e9e8d391d3e3793363dcff28
+  .git/objects/c9/fe3a35ac18d62ac61f1afd5a0bee6e20da617b
+  .git/objects/ca/da5ab402429bd01843789566b107db309dcad4
+  .git/objects/d2/efb8e2d14f4025e4477d40aed801fbe71f2d7c
+  .git/objects/d7/db64545ceadf653d9a5bd1cfaca17f2f944314
+  .git/objects/d8/89e797850c4967d6df1caae83ddb5a76715e07
+  .git/objects/e0/3091416fc455a2cd0187b3ec3e630aa41b33a7
+  .git/objects/e9/8d8d1236026c7b239ff4dea7cbe2051d6807a4
+  .git/objects/ec/86bc8e636aea43b9385eb33a9f59521eee6f65
+  .git/objects/ed/1eb7695419425f71f54350269a52f77c4ab1e2
+  .git/objects/f1/6c4820c1a28b2a4f6fe0aacc8b9820ccb5ec21
+  .git/objects/f5/fa654fc11955b186121ce8ef606d55b570988c
+  .git/objects/fc/60797240439cf639007d0b2a9928178f135d91
+  .git/objects/fc/a9df77fa62c4e0af600858c615c322bdce514e
+Source packages should not contain undeclared executable files.
+See section ‘Package structure’ in the ‘Writing R Extensions’ manual.
+* checking for hidden files and directories ... NOTE
+Found the following hidden files and directories:
+  .Rhistory
+  .gitignore
+  .travis.yml
+  ..Rcheck
+  .Rproj.user
+  .git
+These were most likely included in error. See section ‘Package
+structure’ in the ‘Writing R Extensions’ manual.
+
+CRAN-pack does not know about
+  .travis.yml
+  ..Rcheck
+  .git
+* checking for portable file names ... WARNING
+Found the following file with a non-portable file name:
+  .git/index 2
+These are not fully portable file names.
+See section ‘Package structure’ in the ‘Writing R Extensions’ manual.
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘ggRandomForests’ can be installed ... OK
+* checking installed package size ... NOTE
+  installed size is 11.1Mb
+  sub-directories of 1Mb or more:
+    data  10.7Mb
+* checking package directory ... OK
+* checking for future file timestamps ... OK
+* checking DESCRIPTION meta-information ... NOTE
+Checking should be performed on sources prepared by ‘R CMD build’.
+* checking top-level files ... NOTE
+Files ‘README.md’ or ‘NEWS.md’ cannot be checked without ‘pandoc’ being installed.
+Non-standard files/directories found at top level:
+  ‘CRAN-RELEASE’ ‘cran-comments.md’ ‘ggRandomForests.Rproj’
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... WARNING
+Found the following directory with the name of a check directory:
+  ./..Rcheck
+Most likely, these were included erroneously.
+Found the following directory with the name of a version control directory:
+  ./.git
+These should not be in a package tarball.
+Invalid citation information in ‘inst/CITATION’:
+  Error in FUN(X[[i]], ...): anyNA() applied to non-(list or vector) of type 'closure'
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking use of S3 registration ... OK
+* checking dependencies in R code ... OK
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... OK
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd line widths ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... OK
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking contents of ‘data’ directory ... OK
+* checking data for non-ASCII characters ... OK
+* checking data for ASCII and uncompressed saves ... OK
+* checking examples ... OK
+* checking for unstated dependencies in ‘tests’ ... OK
+* checking tests ... OK
+  Running ‘test-all.R’ [126s/74s]
+* checking PDF version of manual ... OK
+* checking for detritus in the temp directory ... OK
+* DONE
+Status: 3 WARNINGs, 5 NOTEs
