@@ -1,87 +1,102 @@
 Hmm ... looks like a package
 
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex)
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
-LaTeX2e <2018-12-01>
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18>
 (./Rd2.tex
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/book.cls
-Document Class: book 2018/09/03 v1.4i Standard LaTeX document class
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/bk10.clo))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2020/04/10 v1.4m Standard LaTeX document class
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/bk10.clo))
 (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/Rd.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ifthen.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/longtable.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/bm.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/alltt.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/verbatim.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/url/url.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/textcomp.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1enc.def
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1enc.dfu)))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/fontenc.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/t1enc.def))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/times.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/zi4.sty
-`inconsolata-zi4' v1.112, 2017/01/04 Text macros for Inconsolata (msharpe)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/xkeyval/xkeyval.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/xkeyval.tex
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/xkvutils.tex
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/keyval.tex)))))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics/color.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-cfg/color.cfg)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-def/pdftex.def))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hyperref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty))
-(/usr/local/texlive/2019/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/auxhook.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/pd1enc.def)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/latexconfig/hyperref.cfg))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hpdftex.def
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/ifthen.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/longtable.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/bm.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/alltt.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/verbatim.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/url/url.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/textcomp.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/fontenc.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/zi4.sty
+`inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/keyval.tex)))))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/color.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-def/pdftex.def))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def
+) (/usr/local/texlive/2021/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+
+(/usr/local/texlive/2021/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+)))
 
 Package hyperref Warning: Option `hyperindex' has already been used,
-(hyperref)                setting the option has no effect on input line 377.
+(hyperref)                setting the option has no effect on input line 378.
 
 
 Package hyperref Warning: Option `pagebackref' has already been used,
-(hyperref)                setting the option has no effect on input line 377.
+(hyperref)                setting the option has no effect on input line 378.
 
-) (/usr/local/texlive/2019/texmf-dist/tex/latex/base/makeidx.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/inputenc.sty)
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/base/makeidx.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/inputenc.sty)
 Writing index file Rd2.idx
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/t1ptm.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
 No file Rd2.aux.
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1cmr.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/t1ptm.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+(/usr/local/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-) (/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/nameref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/t1phv.fd) [1{/usr/local/te
-xlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Overfull \hbox (1.6586pt too wide) in paragraph at lines 119--122
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/gettitlestring/gettitlestring.s
+ty)) (/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/t1phv.fd) [1{/usr/local/te
+xlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Overfull \hbox (1.6586pt too wide) in paragraph at lines 121--124
 []\T1/ptm/m/n/10 Ishwaran, H., U. B. Ko-galur, E. Z. Gorodeski, A. J. Minn, and
  M. S. Lauer (2010). High-dimensional
-[2]
-Overfull \hbox (16.8811pt too wide) in paragraph at lines 199--207
+[2] [3]
+Overfull \hbox (16.8811pt too wide) in paragraph at lines 201--209
 []\T1/zi4/m/n/10 iris airq mtcars [][]Boston[][][] [][]pbc[][][] [][]veteran[][
 ][] [][]rfsrc_data[][][] [][]varsel_data[][][] [][]interaction_data[][][] [][]p
 artial_data[][][]
-[3] [4] [5] [6] [7]
+[4] [5] [6] [7]
 Underfull \vbox (badness 10000) has occurred while \output is active [8]
-Underfull \hbox (badness 10000) in paragraph at lines 526--526
+Underfull \hbox (badness 10000) in paragraph at lines 528--528
 []\T1/ptm/m/it/10 Minimal Depth Vari-able In-ter-ac-tion data ob-ject
 [9]
 Underfull \vbox (badness 10000) has occurred while \output is active [10]
-Overfull \hbox (29.37968pt too wide) in paragraph at lines 661--666
+Overfull \hbox (29.37968pt too wide) in paragraph at lines 663--668
 \T1/zi4/m/n/10 [randomForestSRC]{var.select} \T1/ptm/m/n/10 and cre-ates a \T1/
 zi4/m/n/10 data.frame \T1/ptm/m/n/10 for-mat-ted for the [][]\T1/zi4/m/n/10 plo
 t.gg_minimal_depth[][][]
 
-Overfull \hbox (4.78842pt too wide) in paragraph at lines 685--687
+Overfull \hbox (4.78842pt too wide) in paragraph at lines 687--689
 []\T1/zi4/m/n/10 gg_minimal_depth \T1/ptm/m/n/10 ob-ject, A mod-i-fied list of 
 vari-ables from the \T1/zi4/m/n/10 [randomForestSRC]{var.select}
 [11]
@@ -91,48 +106,48 @@ Underfull \vbox (badness 10000) has occurred while \output is active [14]
 [15]
 Underfull \vbox (badness 10000) has occurred while \output is active [16]
 Underfull \vbox (badness 10000) has occurred while \output is active [17]
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (2.14752pt too wide) in paragraph at lines 1099--1101
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
+Overfull \hbox (2.14752pt too wide) in paragraph at lines 1101--1103
 []\T1/ptm/m/n/10 for sur-vival ran-dom forests, c("mort", "rel.freq", "surv", "
 years.lost", "cif", "chf") 
 [18] [19] [20] [21] [22]
-Overfull \hbox (8.2777pt too wide) in paragraph at lines 1420--1424
+Overfull \hbox (8.2777pt too wide) in paragraph at lines 1422--1426
 []\T1/ptm/m/n/10 Optional ar-gu-ments \T1/zi4/m/n/10 time \T1/ptm/m/n/10 point 
 (or vec-tor of points) of in-ter-est (for sur-vival forests only) \T1/zi4/m/n/1
 0 time.labels
 [23] [24]
 Underfull \vbox (badness 10000) has occurred while \output is active [25]
 [26]
-Underfull \hbox (badness 1152) in paragraph at lines 1653--1653
+Underfull \hbox (badness 1152) in paragraph at lines 1655--1655
 []\T1/zi4/m/n/10 interaction_Boston \T1/ptm/m/it/10 - from a ran-dom-ForestS[R]
 C for the
 [27]
-Overfull \hbox (10.29816pt too wide) in paragraph at lines 1689--1694
+Overfull \hbox (10.29816pt too wide) in paragraph at lines 1691--1696
 \T1/ptm/m/n/10 able in-ter-ac-tion ta-ble with [][]\T1/zi4/m/n/10 find.interact
 ion[][][]\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/zi4/m/n/10 ca
 che_rfsrc_datasets[][][]
 [28]
-Overfull \hbox (78.08105pt too wide) in paragraph at lines 1784--1791
+Overfull \hbox (78.08105pt too wide) in paragraph at lines 1786--1793
 []\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]find.interaction[][][]
  [][]rfsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_interaction[][][] [
 ][]plot.gg_interaction[][][] 
 [29] [30] [31] [32] [33] [34]
-Overfull \hbox (18.3688pt too wide) in paragraph at lines 2143--2148
+Overfull \hbox (18.3688pt too wide) in paragraph at lines 2145--2150
 [][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
 i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
 zi4/m/n/10 cache_rfsrc_datasets[][][]
 [35]
-Overfull \hbox (53.08105pt too wide) in paragraph at lines 2224--2231
+Overfull \hbox (53.08105pt too wide) in paragraph at lines 2226--2233
 []\T1/zi4/m/n/10 iris MASS::Boston [][]pbc[][][] [][]plot.variable[][][] [][]rf
 src_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_
 partial[][][] 
 [36]
-Overfull \hbox (18.3688pt too wide) in paragraph at lines 2327--2332
+Overfull \hbox (18.3688pt too wide) in paragraph at lines 2329--2334
 [][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
 i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
 zi4/m/n/10 cache_rfsrc_datasets[][][]
 [37]
-Overfull \hbox (1.18103pt too wide) in paragraph at lines 2389--2396
+Overfull \hbox (1.18103pt too wide) in paragraph at lines 2391--2398
 [][][]\T1/zi4/m/n/10 Boston[][][] [][]pbc[][][] [][]plot.variable[][][] [][]rfs
 rc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_p
 artial[][][] 
@@ -143,22 +158,24 @@ Underfull \vbox (badness 10000) has occurred while \output is active [49]
 [50] [51]
 Underfull \vbox (badness 10000) has occurred while \output is active [52]
 [53] [54] [55] [56] [57] [58] [59] [60] [61] [62] [63]
-Overfull \hbox (19.98108pt too wide) in paragraph at lines 3999--4007
+Overfull \hbox (19.98108pt too wide) in paragraph at lines 4001--4009
 []\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]rfsrc[][][] [][]cache_
 rfsrc_datasets[][][] [][]gg_rfsrc[][][] [][]plot.gg_rfsrc[][][] [][]gg_error[][
 ][] [][]plot.gg_error[][][] 
 [64] [65]
-Underfull \hbox (badness 2865) in paragraph at lines 4114--4114
+Underfull \hbox (badness 2865) in paragraph at lines 4116--4116
 []\T1/ptm/m/it/10 Construct a set of (x, y, z) ma-tri-ces for sur-face plot-tin
 g a
 [66] [67] [68]
-Overfull \hbox (68.08105pt too wide) in paragraph at lines 4304--4313
+Overfull \hbox (68.08105pt too wide) in paragraph at lines 4306--4315
 []\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]var.select[][][] [][]r
 fsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_minimal_depth[][][] [][]p
 lot.gg_minimal_depth[][][]
 [69]
 No file Rd2.ind.
-[70] (./Rd2.aux)
+[70]
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.aux)
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
@@ -208,106 +225,122 @@ ist, replaced by a fixed one
 pdfTeX warning (dest): name{Rfn.rfsrc} has been referenced but does not exist, 
 replaced by a fixed one
 
-{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/us
-r/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive
-/2019/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/local/texlive/20
-19/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/t
-exlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/
-2019/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2019/texmf
--dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/font
-s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/ur
+{/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/us
+r/local/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive
+/2021/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/local/texlive/20
+21/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/t
+exlive/2021/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/
+2021/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2021/texmf
+-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2021/texmf-dist/font
+s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/ur
 w/times/utmri8a.pfb>
-Output written on Rd2.pdf (70 pages, 207259 bytes).
+Output written on Rd2.pdf (70 pages, 203155 bytes).
 Transcript written on Rd2.log.
-This is makeindex, version 2.15 [TeX Live 2019] (kpathsea + Thai support).
-Scanning input file Rd2.idx....done (393 entries accepted, 0 rejected).
-Sorting entries......done (3643 comparisons).
-Generating output file Rd2.ind....done (307 lines written, 1 warning).
-Output written in Rd2.ind.
-Transcript written in Rd2.ilg.
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex)
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
-LaTeX2e <2018-12-01>
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18>
 (./Rd2.tex
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/book.cls
-Document Class: book 2018/09/03 v1.4i Standard LaTeX document class
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/bk10.clo))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2020/04/10 v1.4m Standard LaTeX document class
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/bk10.clo))
 (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/Rd.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ifthen.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/longtable.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/bm.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/alltt.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/verbatim.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/url/url.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/textcomp.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1enc.def
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1enc.dfu)))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/fontenc.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/t1enc.def))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/times.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/zi4.sty
-`inconsolata-zi4' v1.112, 2017/01/04 Text macros for Inconsolata (msharpe)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/xkeyval/xkeyval.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/xkeyval.tex
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/xkvutils.tex
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/keyval.tex)))))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics/color.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-cfg/color.cfg)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-def/pdftex.def))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hyperref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty))
-(/usr/local/texlive/2019/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/auxhook.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/pd1enc.def)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/latexconfig/hyperref.cfg))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hpdftex.def
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/ifthen.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/longtable.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/bm.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/alltt.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/verbatim.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/url/url.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/textcomp.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/fontenc.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/zi4.sty
+`inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/keyval.tex)))))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/color.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-def/pdftex.def))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def
+) (/usr/local/texlive/2021/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+
+(/usr/local/texlive/2021/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+)))
 
 Package hyperref Warning: Option `hyperindex' has already been used,
-(hyperref)                setting the option has no effect on input line 377.
+(hyperref)                setting the option has no effect on input line 378.
 
 
 Package hyperref Warning: Option `pagebackref' has already been used,
-(hyperref)                setting the option has no effect on input line 377.
+(hyperref)                setting the option has no effect on input line 378.
 
-) (/usr/local/texlive/2019/texmf-dist/tex/latex/base/makeidx.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/inputenc.sty)
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/base/makeidx.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/inputenc.sty)
 Writing index file Rd2.idx
-(./Rd2.aux) (/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1cmr.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/t1ptm.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/t1ptm.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.aux)
+(/usr/local/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-) (/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/nameref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(./Rd2.out) (./Rd2.out)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/t1phv.fd) (./Rd2.toc
-[1{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}])
-[2]
-Overfull \hbox (1.6586pt too wide) in paragraph at lines 119--122
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/gettitlestring/gettitlestring.s
+ty))
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.out)
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.out)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/t1phv.fd)
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.toc [1{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/p
+dftex.map}]) [2]
+Overfull \hbox (1.6586pt too wide) in paragraph at lines 121--124
 []\T1/ptm/m/n/10 Ishwaran, H., U. B. Ko-galur, E. Z. Gorodeski, A. J. Minn, and
  M. S. Lauer (2010). High-dimensional
 [3]
-Overfull \hbox (16.8811pt too wide) in paragraph at lines 199--207
+Overfull \hbox (16.8811pt too wide) in paragraph at lines 201--209
 []\T1/zi4/m/n/10 iris airq mtcars [][]Boston[][][] [][]pbc[][][] [][]veteran[][
 ][] [][]rfsrc_data[][][] [][]varsel_data[][][] [][]interaction_data[][][] [][]p
 artial_data[][][]
 [4] [5] [6] [7] [8]
 Underfull \vbox (badness 10000) has occurred while \output is active [9]
-Underfull \hbox (badness 10000) in paragraph at lines 526--526
+Underfull \hbox (badness 10000) in paragraph at lines 528--528
 []\T1/ptm/m/it/10 Minimal Depth Vari-able In-ter-ac-tion data ob-ject
 [10]
 Underfull \vbox (badness 10000) has occurred while \output is active [11]
-Overfull \hbox (29.37968pt too wide) in paragraph at lines 661--666
+Overfull \hbox (29.37968pt too wide) in paragraph at lines 663--668
 \T1/zi4/m/n/10 [randomForestSRC]{var.select} \T1/ptm/m/n/10 and cre-ates a \T1/
 zi4/m/n/10 data.frame \T1/ptm/m/n/10 for-mat-ted for the [][]\T1/zi4/m/n/10 plo
 t.gg_minimal_depth[][][]
 
-Overfull \hbox (4.78842pt too wide) in paragraph at lines 685--687
+Overfull \hbox (4.78842pt too wide) in paragraph at lines 687--689
 []\T1/zi4/m/n/10 gg_minimal_depth \T1/ptm/m/n/10 ob-ject, A mod-i-fied list of 
 vari-ables from the \T1/zi4/m/n/10 [randomForestSRC]{var.select}
 [12]
@@ -317,48 +350,48 @@ Underfull \vbox (badness 10000) has occurred while \output is active [15]
 [16]
 Underfull \vbox (badness 10000) has occurred while \output is active [17]
 Underfull \vbox (badness 10000) has occurred while \output is active [18]
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (2.14752pt too wide) in paragraph at lines 1099--1101
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
+Overfull \hbox (2.14752pt too wide) in paragraph at lines 1101--1103
 []\T1/ptm/m/n/10 for sur-vival ran-dom forests, c("mort", "rel.freq", "surv", "
 years.lost", "cif", "chf") 
 [19] [20] [21] [22] [23]
-Overfull \hbox (8.2777pt too wide) in paragraph at lines 1420--1424
+Overfull \hbox (8.2777pt too wide) in paragraph at lines 1422--1426
 []\T1/ptm/m/n/10 Optional ar-gu-ments \T1/zi4/m/n/10 time \T1/ptm/m/n/10 point 
 (or vec-tor of points) of in-ter-est (for sur-vival forests only) \T1/zi4/m/n/1
 0 time.labels
 [24] [25]
 Underfull \vbox (badness 10000) has occurred while \output is active [26]
 [27]
-Underfull \hbox (badness 1152) in paragraph at lines 1653--1653
+Underfull \hbox (badness 1152) in paragraph at lines 1655--1655
 []\T1/zi4/m/n/10 interaction_Boston \T1/ptm/m/it/10 - from a ran-dom-ForestS[R]
 C for the
 [28]
-Overfull \hbox (10.29816pt too wide) in paragraph at lines 1689--1694
+Overfull \hbox (10.29816pt too wide) in paragraph at lines 1691--1696
 \T1/ptm/m/n/10 able in-ter-ac-tion ta-ble with [][]\T1/zi4/m/n/10 find.interact
 ion[][][]\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/zi4/m/n/10 ca
 che_rfsrc_datasets[][][]
 [29]
-Overfull \hbox (78.08105pt too wide) in paragraph at lines 1784--1791
+Overfull \hbox (78.08105pt too wide) in paragraph at lines 1786--1793
 []\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]find.interaction[][][]
  [][]rfsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_interaction[][][] [
 ][]plot.gg_interaction[][][] 
 [30] [31] [32] [33] [34] [35]
-Overfull \hbox (18.3688pt too wide) in paragraph at lines 2143--2148
+Overfull \hbox (18.3688pt too wide) in paragraph at lines 2145--2150
 [][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
 i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
 zi4/m/n/10 cache_rfsrc_datasets[][][]
 [36]
-Overfull \hbox (53.08105pt too wide) in paragraph at lines 2224--2231
+Overfull \hbox (53.08105pt too wide) in paragraph at lines 2226--2233
 []\T1/zi4/m/n/10 iris MASS::Boston [][]pbc[][][] [][]plot.variable[][][] [][]rf
 src_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_
 partial[][][] 
 [37]
-Overfull \hbox (18.3688pt too wide) in paragraph at lines 2327--2332
+Overfull \hbox (18.3688pt too wide) in paragraph at lines 2329--2334
 [][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
 i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
 zi4/m/n/10 cache_rfsrc_datasets[][][]
 [38]
-Overfull \hbox (1.18103pt too wide) in paragraph at lines 2389--2396
+Overfull \hbox (1.18103pt too wide) in paragraph at lines 2391--2398
 [][][]\T1/zi4/m/n/10 Boston[][][] [][]pbc[][][] [][]plot.variable[][][] [][]rfs
 rc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_p
 artial[][][] 
@@ -369,33 +402,281 @@ Underfull \vbox (badness 10000) has occurred while \output is active [50]
 [51] [52]
 Underfull \vbox (badness 10000) has occurred while \output is active [53]
 [54] [55] [56] [57] [58] [59] [60] [61] [62] [63] [64]
-Overfull \hbox (19.98108pt too wide) in paragraph at lines 3999--4007
+Overfull \hbox (19.98108pt too wide) in paragraph at lines 4001--4009
 []\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]rfsrc[][][] [][]cache_
 rfsrc_datasets[][][] [][]gg_rfsrc[][][] [][]plot.gg_rfsrc[][][] [][]gg_error[][
 ][] [][]plot.gg_error[][][] 
 [65] [66]
-Underfull \hbox (badness 2865) in paragraph at lines 4114--4114
+Underfull \hbox (badness 2865) in paragraph at lines 4116--4116
 []\T1/ptm/m/it/10 Construct a set of (x, y, z) ma-tri-ces for sur-face plot-tin
 g a
 [67] [68] [69]
-Overfull \hbox (68.08105pt too wide) in paragraph at lines 4304--4313
+Overfull \hbox (68.08105pt too wide) in paragraph at lines 4306--4315
 []\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]var.select[][][] [][]r
 fsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_minimal_depth[][][] [][]p
 lot.gg_minimal_depth[][][]
-[70] (./Rd2.ind [71]
+[70]
+No file Rd2.ind.
+[71]
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.aux) )
+(see the transcript file for additional information)pdfTeX warning (dest): name
+{Rfn.plot.rfsrc} has been referenced but does not exist, replaced by a fixed on
+e
+
+pdfTeX warning (dest): name{Rfn.qnorm} has been referenced but does not exist, 
+replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.vimp.rfsrc} has been referenced but does not ex
+ist, replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.var.select.rfsrc} has been referenced but does 
+not exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.vimp} has been referenced but does not exist, r
+eplaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.max.subtree} has been referenced but does not e
+xist, replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.predict.rfsrc} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.veteran} has been referenced but does not exist
+, replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.pbc} has been referenced but does not exist, re
+placed by a fixed one
+
+pdfTeX warning (dest): name{Rfn.Boston} has been referenced but does not exist,
+ replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.plot.variable} has been referenced but does not
+ exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.find.interaction} has been referenced but does 
+not exist, replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.var.select} has been referenced but does not ex
+ist, replaced by a fixed one
+
+pdfTeX warning (dest): name{Rfn.rfsrc} has been referenced but does not exist, 
+replaced by a fixed one
+
+{/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/us
+r/local/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive
+/2021/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/local/texlive/20
+21/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/t
+exlive/2021/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/
+2021/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2021/texmf
+-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2021/texmf-dist/font
+s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/ur
+w/times/utmri8a.pfb>
+Output written on Rd2.pdf (71 pages, 208257 bytes).
+Transcript written on Rd2.log.
+This is makeindex, version 2.15 [TeX Live 2021] (kpathsea + Thai support).
+Scanning input file Rd2.idx....done (393 entries accepted, 0 rejected).
+Sorting entries......done (3674 comparisons).
+Generating output file Rd2.ind....done (307 lines written, 1 warning).
+Output written in Rd2.ind.
+Transcript written in Rd2.ilg.
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18>
+(./Rd2.tex
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2020/04/10 v1.4m Standard LaTeX document class
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/bk10.clo))
+(/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/Rd.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/ifthen.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/longtable.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/bm.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/alltt.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/verbatim.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/url/url.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/textcomp.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/fontenc.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/zi4.sty
+`inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/keyval.tex)))))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/color.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-def/pdftex.def))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def
+) (/usr/local/texlive/2021/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+
+(/usr/local/texlive/2021/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+)))
+
+Package hyperref Warning: Option `hyperindex' has already been used,
+(hyperref)                setting the option has no effect on input line 378.
+
+
+Package hyperref Warning: Option `pagebackref' has already been used,
+(hyperref)                setting the option has no effect on input line 378.
+
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/base/makeidx.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/inputenc.sty)
+Writing index file Rd2.idx
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/t1ptm.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.aux)
+(/usr/local/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/gettitlestring/gettitlestring.s
+ty))
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.out)
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.out)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/t1phv.fd)
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.toc [1{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/p
+dftex.map}]) [2]
+Overfull \hbox (1.6586pt too wide) in paragraph at lines 121--124
+[]\T1/ptm/m/n/10 Ishwaran, H., U. B. Ko-galur, E. Z. Gorodeski, A. J. Minn, and
+ M. S. Lauer (2010). High-dimensional
+[3]
+Overfull \hbox (16.8811pt too wide) in paragraph at lines 201--209
+[]\T1/zi4/m/n/10 iris airq mtcars [][]Boston[][][] [][]pbc[][][] [][]veteran[][
+][] [][]rfsrc_data[][][] [][]varsel_data[][][] [][]interaction_data[][][] [][]p
+artial_data[][][]
+[4] [5] [6] [7] [8]
+Underfull \vbox (badness 10000) has occurred while \output is active [9]
+Underfull \hbox (badness 10000) in paragraph at lines 528--528
+[]\T1/ptm/m/it/10 Minimal Depth Vari-able In-ter-ac-tion data ob-ject
+[10]
+Underfull \vbox (badness 10000) has occurred while \output is active [11]
+Overfull \hbox (29.37968pt too wide) in paragraph at lines 663--668
+\T1/zi4/m/n/10 [randomForestSRC]{var.select} \T1/ptm/m/n/10 and cre-ates a \T1/
+zi4/m/n/10 data.frame \T1/ptm/m/n/10 for-mat-ted for the [][]\T1/zi4/m/n/10 plo
+t.gg_minimal_depth[][][]
+
+Overfull \hbox (4.78842pt too wide) in paragraph at lines 687--689
+[]\T1/zi4/m/n/10 gg_minimal_depth \T1/ptm/m/n/10 ob-ject, A mod-i-fied list of 
+vari-ables from the \T1/zi4/m/n/10 [randomForestSRC]{var.select}
+[12]
+Underfull \vbox (badness 10000) has occurred while \output is active [13]
+[14]
+Underfull \vbox (badness 10000) has occurred while \output is active [15]
+[16]
+Underfull \vbox (badness 10000) has occurred while \output is active [17]
+Underfull \vbox (badness 10000) has occurred while \output is active [18]
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
+Overfull \hbox (2.14752pt too wide) in paragraph at lines 1101--1103
+[]\T1/ptm/m/n/10 for sur-vival ran-dom forests, c("mort", "rel.freq", "surv", "
+years.lost", "cif", "chf") 
+[19] [20] [21] [22] [23]
+Overfull \hbox (8.2777pt too wide) in paragraph at lines 1422--1426
+[]\T1/ptm/m/n/10 Optional ar-gu-ments \T1/zi4/m/n/10 time \T1/ptm/m/n/10 point 
+(or vec-tor of points) of in-ter-est (for sur-vival forests only) \T1/zi4/m/n/1
+0 time.labels
+[24] [25]
+Underfull \vbox (badness 10000) has occurred while \output is active [26]
+[27]
+Underfull \hbox (badness 1152) in paragraph at lines 1655--1655
+[]\T1/zi4/m/n/10 interaction_Boston \T1/ptm/m/it/10 - from a ran-dom-ForestS[R]
+C for the
+[28]
+Overfull \hbox (10.29816pt too wide) in paragraph at lines 1691--1696
+\T1/ptm/m/n/10 able in-ter-ac-tion ta-ble with [][]\T1/zi4/m/n/10 find.interact
+ion[][][]\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/zi4/m/n/10 ca
+che_rfsrc_datasets[][][]
+[29]
+Overfull \hbox (78.08105pt too wide) in paragraph at lines 1786--1793
+[]\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]find.interaction[][][]
+ [][]rfsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_interaction[][][] [
+][]plot.gg_interaction[][][] 
+[30] [31] [32] [33] [34] [35]
+Overfull \hbox (18.3688pt too wide) in paragraph at lines 2145--2150
+[][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
+i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
+zi4/m/n/10 cache_rfsrc_datasets[][][]
+[36]
+Overfull \hbox (53.08105pt too wide) in paragraph at lines 2226--2233
+[]\T1/zi4/m/n/10 iris MASS::Boston [][]pbc[][][] [][]plot.variable[][][] [][]rf
+src_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_
+partial[][][] 
+[37]
+Overfull \hbox (18.3688pt too wide) in paragraph at lines 2329--2334
+[][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
+i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
+zi4/m/n/10 cache_rfsrc_datasets[][][]
+[38]
+Overfull \hbox (1.18103pt too wide) in paragraph at lines 2391--2398
+[][][]\T1/zi4/m/n/10 Boston[][][] [][]pbc[][][] [][]plot.variable[][][] [][]rfs
+rc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_p
+artial[][][] 
+[39] [40] [41]
+Underfull \vbox (badness 10000) has occurred while \output is active [42]
+[43] [44] [45] [46] [47] [48] [49]
+Underfull \vbox (badness 10000) has occurred while \output is active [50]
+[51] [52]
+Underfull \vbox (badness 10000) has occurred while \output is active [53]
+[54] [55] [56] [57] [58] [59] [60] [61] [62] [63] [64]
+Overfull \hbox (19.98108pt too wide) in paragraph at lines 4001--4009
+[]\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]rfsrc[][][] [][]cache_
+rfsrc_datasets[][][] [][]gg_rfsrc[][][] [][]plot.gg_rfsrc[][][] [][]gg_error[][
+][] [][]plot.gg_error[][][] 
+[65] [66]
+Underfull \hbox (badness 2865) in paragraph at lines 4116--4116
+[]\T1/ptm/m/it/10 Construct a set of (x, y, z) ma-tri-ces for sur-face plot-tin
+g a
+[67] [68] [69]
+Overfull \hbox (68.08105pt too wide) in paragraph at lines 4306--4315
+[]\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]var.select[][][] [][]r
+fsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_minimal_depth[][][] [][]p
+lot.gg_minimal_depth[][][]
+[70]
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.ind [71]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
 (Font)              using `T1/zi4/m/n' instead on input line 30.
 
-[72] [73]) (./Rd2.aux)
+[72] [73])
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
 
 Package rerunfilecheck Warning: File `Rd2.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
-
-LaTeX Font Warning: Some font shapes were not available, defaults substituted.
-
  )
 (see the transcript file for additional information)pdfTeX warning (dest): name
 {Rfn.plot.rfsrc} has been referenced but does not exist, replaced by a fixed on
@@ -440,335 +721,129 @@ ist, replaced by a fixed one
 pdfTeX warning (dest): name{Rfn.rfsrc} has been referenced but does not exist, 
 replaced by a fixed one
 
-{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/us
-r/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive
-/2019/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/local/texlive/20
-19/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/t
-exlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
-xlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2
-019/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2019/texmf-
-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts
-/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/urw
+{/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/us
+r/local/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive
+/2021/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/local/texlive/20
+21/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/t
+exlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
+xlive/2021/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2
+021/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2021/texmf-
+dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts
+/type1/urw/times/utmr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw
 /times/utmri8a.pfb>
-Output written on Rd2.pdf (73 pages, 232437 bytes).
+Output written on Rd2.pdf (73 pages, 228325 bytes).
 Transcript written on Rd2.log.
-This is makeindex, version 2.15 [TeX Live 2019] (kpathsea + Thai support).
-Scanning input file Rd2.idx....done (393 entries accepted, 0 rejected).
-Sorting entries......done (3674 comparisons).
-Generating output file Rd2.ind....done (308 lines written, 1 warning).
-Output written in Rd2.ind.
-Transcript written in Rd2.ilg.
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex)
- restricted \write18 enabled.
-entering extended mode
-LaTeX2e <2018-12-01>
-(./Rd2.tex
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/book.cls
-Document Class: book 2018/09/03 v1.4i Standard LaTeX document class
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/bk10.clo))
-(/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/Rd.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ifthen.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/longtable.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/bm.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/alltt.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/verbatim.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/url/url.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/textcomp.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1enc.def
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1enc.dfu)))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/fontenc.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/t1enc.def))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/times.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/zi4.sty
-`inconsolata-zi4' v1.112, 2017/01/04 Text macros for Inconsolata (msharpe)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/xkeyval/xkeyval.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/xkeyval.tex
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/xkvutils.tex
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/keyval.tex)))))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics/color.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-cfg/color.cfg)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-def/pdftex.def))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hyperref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty))
-(/usr/local/texlive/2019/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/auxhook.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/pd1enc.def)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/latexconfig/hyperref.cfg))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hpdftex.def
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty))
-
-Package hyperref Warning: Option `hyperindex' has already been used,
-(hyperref)                setting the option has no effect on input line 377.
-
-
-Package hyperref Warning: Option `pagebackref' has already been used,
-(hyperref)                setting the option has no effect on input line 377.
-
-) (/usr/local/texlive/2019/texmf-dist/tex/latex/base/makeidx.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/inputenc.sty)
-Writing index file Rd2.idx
-(./Rd2.aux) (/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1cmr.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/t1ptm.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
-[Loading MPS to PDF converter (version 2006.09.02).]
-) (/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/nameref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(./Rd2.out) (./Rd2.out)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/t1phv.fd) (./Rd2.toc
-[1{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}])
-[2]
-Overfull \hbox (1.6586pt too wide) in paragraph at lines 119--122
-[]\T1/ptm/m/n/10 Ishwaran, H., U. B. Ko-galur, E. Z. Gorodeski, A. J. Minn, and
- M. S. Lauer (2010). High-dimensional
-[3]
-Overfull \hbox (16.8811pt too wide) in paragraph at lines 199--207
-[]\T1/zi4/m/n/10 iris airq mtcars [][]Boston[][][] [][]pbc[][][] [][]veteran[][
-][] [][]rfsrc_data[][][] [][]varsel_data[][][] [][]interaction_data[][][] [][]p
-artial_data[][][]
-[4] [5] [6] [7] [8]
-Underfull \vbox (badness 10000) has occurred while \output is active [9]
-Underfull \hbox (badness 10000) in paragraph at lines 526--526
-[]\T1/ptm/m/it/10 Minimal Depth Vari-able In-ter-ac-tion data ob-ject
-[10]
-Underfull \vbox (badness 10000) has occurred while \output is active [11]
-Overfull \hbox (29.37968pt too wide) in paragraph at lines 661--666
-\T1/zi4/m/n/10 [randomForestSRC]{var.select} \T1/ptm/m/n/10 and cre-ates a \T1/
-zi4/m/n/10 data.frame \T1/ptm/m/n/10 for-mat-ted for the [][]\T1/zi4/m/n/10 plo
-t.gg_minimal_depth[][][]
-
-Overfull \hbox (4.78842pt too wide) in paragraph at lines 685--687
-[]\T1/zi4/m/n/10 gg_minimal_depth \T1/ptm/m/n/10 ob-ject, A mod-i-fied list of 
-vari-ables from the \T1/zi4/m/n/10 [randomForestSRC]{var.select}
-[12]
-Underfull \vbox (badness 10000) has occurred while \output is active [13]
-[14]
-Underfull \vbox (badness 10000) has occurred while \output is active [15]
-[16]
-Underfull \vbox (badness 10000) has occurred while \output is active [17]
-Underfull \vbox (badness 10000) has occurred while \output is active [18]
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (2.14752pt too wide) in paragraph at lines 1099--1101
-[]\T1/ptm/m/n/10 for sur-vival ran-dom forests, c("mort", "rel.freq", "surv", "
-years.lost", "cif", "chf") 
-[19] [20] [21] [22] [23]
-Overfull \hbox (8.2777pt too wide) in paragraph at lines 1420--1424
-[]\T1/ptm/m/n/10 Optional ar-gu-ments \T1/zi4/m/n/10 time \T1/ptm/m/n/10 point 
-(or vec-tor of points) of in-ter-est (for sur-vival forests only) \T1/zi4/m/n/1
-0 time.labels
-[24] [25]
-Underfull \vbox (badness 10000) has occurred while \output is active [26]
-[27]
-Underfull \hbox (badness 1152) in paragraph at lines 1653--1653
-[]\T1/zi4/m/n/10 interaction_Boston \T1/ptm/m/it/10 - from a ran-dom-ForestS[R]
-C for the
-[28]
-Overfull \hbox (10.29816pt too wide) in paragraph at lines 1689--1694
-\T1/ptm/m/n/10 able in-ter-ac-tion ta-ble with [][]\T1/zi4/m/n/10 find.interact
-ion[][][]\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/zi4/m/n/10 ca
-che_rfsrc_datasets[][][]
-[29]
-Overfull \hbox (78.08105pt too wide) in paragraph at lines 1784--1791
-[]\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]find.interaction[][][]
- [][]rfsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_interaction[][][] [
-][]plot.gg_interaction[][][] 
-[30] [31] [32] [33] [34] [35]
-Overfull \hbox (18.3688pt too wide) in paragraph at lines 2143--2148
-[][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
-i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
-zi4/m/n/10 cache_rfsrc_datasets[][][]
-[36]
-Overfull \hbox (53.08105pt too wide) in paragraph at lines 2224--2231
-[]\T1/zi4/m/n/10 iris MASS::Boston [][]pbc[][][] [][]plot.variable[][][] [][]rf
-src_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_
-partial[][][] 
-[37]
-Overfull \hbox (18.3688pt too wide) in paragraph at lines 2327--2332
-[][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
-i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
-zi4/m/n/10 cache_rfsrc_datasets[][][]
-[38]
-Overfull \hbox (1.18103pt too wide) in paragraph at lines 2389--2396
-[][][]\T1/zi4/m/n/10 Boston[][][] [][]pbc[][][] [][]plot.variable[][][] [][]rfs
-rc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_p
-artial[][][] 
-[39] [40] [41]
-Underfull \vbox (badness 10000) has occurred while \output is active [42]
-[43] [44] [45] [46] [47] [48] [49]
-Underfull \vbox (badness 10000) has occurred while \output is active [50]
-[51] [52]
-Underfull \vbox (badness 10000) has occurred while \output is active [53]
-[54] [55] [56] [57] [58] [59] [60] [61] [62] [63] [64]
-Overfull \hbox (19.98108pt too wide) in paragraph at lines 3999--4007
-[]\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]rfsrc[][][] [][]cache_
-rfsrc_datasets[][][] [][]gg_rfsrc[][][] [][]plot.gg_rfsrc[][][] [][]gg_error[][
-][] [][]plot.gg_error[][][] 
-[65] [66]
-Underfull \hbox (badness 2865) in paragraph at lines 4114--4114
-[]\T1/ptm/m/it/10 Construct a set of (x, y, z) ma-tri-ces for sur-face plot-tin
-g a
-[67] [68] [69]
-Overfull \hbox (68.08105pt too wide) in paragraph at lines 4304--4313
-[]\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]var.select[][][] [][]r
-fsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_minimal_depth[][][] [][]p
-lot.gg_minimal_depth[][][]
-[70] (./Rd2.ind [71]
-
-LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 30.
-
-[72] [73]) (./Rd2.aux)
-
-LaTeX Font Warning: Some font shapes were not available, defaults substituted.
-
- )
-(see the transcript file for additional information)pdfTeX warning (dest): name
-{Rfn.plot.rfsrc} has been referenced but does not exist, replaced by a fixed on
-e
-
-pdfTeX warning (dest): name{Rfn.qnorm} has been referenced but does not exist, 
-replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.vimp.rfsrc} has been referenced but does not ex
-ist, replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.var.select.rfsrc} has been referenced but does 
-not exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.vimp} has been referenced but does not exist, r
-eplaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.max.subtree} has been referenced but does not e
-xist, replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.predict.rfsrc} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.veteran} has been referenced but does not exist
-, replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.pbc} has been referenced but does not exist, re
-placed by a fixed one
-
-pdfTeX warning (dest): name{Rfn.Boston} has been referenced but does not exist,
- replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.plot.variable} has been referenced but does not
- exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.find.interaction} has been referenced but does 
-not exist, replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.var.select} has been referenced but does not ex
-ist, replaced by a fixed one
-
-pdfTeX warning (dest): name{Rfn.rfsrc} has been referenced but does not exist, 
-replaced by a fixed one
-
-{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/us
-r/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive
-/2019/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/local/texlive/20
-19/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/t
-exlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
-xlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2
-019/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2019/texmf-
-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts
-/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/urw
-/times/utmri8a.pfb>
-Output written on Rd2.pdf (73 pages, 232521 bytes).
-Transcript written on Rd2.log.
-This is makeindex, version 2.15 [TeX Live 2019] (kpathsea + Thai support).
+This is makeindex, version 2.15 [TeX Live 2021] (kpathsea + Thai support).
 Scanning input file Rd2.idx....done (393 entries accepted, 0 rejected).
 Sorting entries......done (3674 comparisons).
 Generating output file Rd2.ind....done (307 lines written, 1 warning).
 Output written in Rd2.ind.
 Transcript written in Rd2.ilg.
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex)
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
-LaTeX2e <2018-12-01>
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18>
 (./Rd2.tex
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/book.cls
-Document Class: book 2018/09/03 v1.4i Standard LaTeX document class
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/bk10.clo))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2020/04/10 v1.4m Standard LaTeX document class
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/bk10.clo))
 (/Library/Frameworks/R.framework/Resources/share/texmf/tex/latex/Rd.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ifthen.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/longtable.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/bm.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/alltt.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/tools/verbatim.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/url/url.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/textcomp.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1enc.def
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1enc.dfu)))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/fontenc.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/t1enc.def))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/times.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/zi4.sty
-`inconsolata-zi4' v1.112, 2017/01/04 Text macros for Inconsolata (msharpe)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/xkeyval/xkeyval.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/xkeyval.tex
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/xkvutils.tex
-(/usr/local/texlive/2019/texmf-dist/tex/generic/xkeyval/keyval.tex)))))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics/color.sty
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-cfg/color.cfg)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/graphics-def/pdftex.def))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hyperref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty))
-(/usr/local/texlive/2019/texmf-dist/tex/generic/ifxetex/ifxetex.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/auxhook.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/kvoptions.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/pd1enc.def)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/latexconfig/hyperref.cfg))
-(/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/hpdftex.def
-(/usr/local/texlive/2019/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/ifthen.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/longtable.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/bm.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/alltt.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/tools/verbatim.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/url/url.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/textcomp.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/fontenc.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/zi4.sty
+`inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkeyval.tex
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+(/usr/local/texlive/2021/texmf-dist/tex/generic/xkeyval/keyval.tex)))))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/color.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-def/pdftex.def))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def
+) (/usr/local/texlive/2021/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/local/texlive/2021/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+
+(/usr/local/texlive/2021/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+)))
 
 Package hyperref Warning: Option `hyperindex' has already been used,
-(hyperref)                setting the option has no effect on input line 377.
+(hyperref)                setting the option has no effect on input line 378.
 
 
 Package hyperref Warning: Option `pagebackref' has already been used,
-(hyperref)                setting the option has no effect on input line 377.
+(hyperref)                setting the option has no effect on input line 378.
 
-) (/usr/local/texlive/2019/texmf-dist/tex/latex/base/makeidx.sty)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/base/inputenc.sty)
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/base/makeidx.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/base/inputenc.sty)
 Writing index file Rd2.idx
-(./Rd2.aux) (/usr/local/texlive/2019/texmf-dist/tex/latex/base/ts1cmr.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/t1ptm.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/t1ptm.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.aux)
+(/usr/local/texlive/2021/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-) (/usr/local/texlive/2019/texmf-dist/tex/latex/hyperref/nameref.sty
-(/usr/local/texlive/2019/texmf-dist/tex/generic/oberdiek/gettitlestring.sty))
-(./Rd2.out) (./Rd2.out)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
-(/usr/local/texlive/2019/texmf-dist/tex/latex/psnfss/t1phv.fd) (./Rd2.toc
-[1{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}])
-[2]
-Overfull \hbox (1.6586pt too wide) in paragraph at lines 119--122
+) (/usr/local/texlive/2021/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/local/texlive/2021/texmf-dist/tex/generic/gettitlestring/gettitlestring.s
+ty))
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.out)
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.out)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/t1zi4.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/psnfss/t1phv.fd)
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.toc [1{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/p
+dftex.map}]) [2]
+Overfull \hbox (1.6586pt too wide) in paragraph at lines 121--124
 []\T1/ptm/m/n/10 Ishwaran, H., U. B. Ko-galur, E. Z. Gorodeski, A. J. Minn, and
  M. S. Lauer (2010). High-dimensional
 [3]
-Overfull \hbox (16.8811pt too wide) in paragraph at lines 199--207
+Overfull \hbox (16.8811pt too wide) in paragraph at lines 201--209
 []\T1/zi4/m/n/10 iris airq mtcars [][]Boston[][][] [][]pbc[][][] [][]veteran[][
 ][] [][]rfsrc_data[][][] [][]varsel_data[][][] [][]interaction_data[][][] [][]p
 artial_data[][][]
 [4] [5] [6] [7] [8]
 Underfull \vbox (badness 10000) has occurred while \output is active [9]
-Underfull \hbox (badness 10000) in paragraph at lines 526--526
+Underfull \hbox (badness 10000) in paragraph at lines 528--528
 []\T1/ptm/m/it/10 Minimal Depth Vari-able In-ter-ac-tion data ob-ject
 [10]
 Underfull \vbox (badness 10000) has occurred while \output is active [11]
-Overfull \hbox (29.37968pt too wide) in paragraph at lines 661--666
+Overfull \hbox (29.37968pt too wide) in paragraph at lines 663--668
 \T1/zi4/m/n/10 [randomForestSRC]{var.select} \T1/ptm/m/n/10 and cre-ates a \T1/
 zi4/m/n/10 data.frame \T1/ptm/m/n/10 for-mat-ted for the [][]\T1/zi4/m/n/10 plo
 t.gg_minimal_depth[][][]
 
-Overfull \hbox (4.78842pt too wide) in paragraph at lines 685--687
+Overfull \hbox (4.78842pt too wide) in paragraph at lines 687--689
 []\T1/zi4/m/n/10 gg_minimal_depth \T1/ptm/m/n/10 ob-ject, A mod-i-fied list of 
 vari-ables from the \T1/zi4/m/n/10 [randomForestSRC]{var.select}
 [12]
@@ -778,48 +853,48 @@ Underfull \vbox (badness 10000) has occurred while \output is active [15]
 [16]
 Underfull \vbox (badness 10000) has occurred while \output is active [17]
 Underfull \vbox (badness 10000) has occurred while \output is active [18]
-(/usr/local/texlive/2019/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
-Overfull \hbox (2.14752pt too wide) in paragraph at lines 1099--1101
+(/usr/local/texlive/2021/texmf-dist/tex/latex/inconsolata/ts1zi4.fd)
+Overfull \hbox (2.14752pt too wide) in paragraph at lines 1101--1103
 []\T1/ptm/m/n/10 for sur-vival ran-dom forests, c("mort", "rel.freq", "surv", "
 years.lost", "cif", "chf") 
 [19] [20] [21] [22] [23]
-Overfull \hbox (8.2777pt too wide) in paragraph at lines 1420--1424
+Overfull \hbox (8.2777pt too wide) in paragraph at lines 1422--1426
 []\T1/ptm/m/n/10 Optional ar-gu-ments \T1/zi4/m/n/10 time \T1/ptm/m/n/10 point 
 (or vec-tor of points) of in-ter-est (for sur-vival forests only) \T1/zi4/m/n/1
 0 time.labels
 [24] [25]
 Underfull \vbox (badness 10000) has occurred while \output is active [26]
 [27]
-Underfull \hbox (badness 1152) in paragraph at lines 1653--1653
+Underfull \hbox (badness 1152) in paragraph at lines 1655--1655
 []\T1/zi4/m/n/10 interaction_Boston \T1/ptm/m/it/10 - from a ran-dom-ForestS[R]
 C for the
 [28]
-Overfull \hbox (10.29816pt too wide) in paragraph at lines 1689--1694
+Overfull \hbox (10.29816pt too wide) in paragraph at lines 1691--1696
 \T1/ptm/m/n/10 able in-ter-ac-tion ta-ble with [][]\T1/zi4/m/n/10 find.interact
 ion[][][]\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/zi4/m/n/10 ca
 che_rfsrc_datasets[][][]
 [29]
-Overfull \hbox (78.08105pt too wide) in paragraph at lines 1784--1791
+Overfull \hbox (78.08105pt too wide) in paragraph at lines 1786--1793
 []\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]find.interaction[][][]
  [][]rfsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_interaction[][][] [
 ][]plot.gg_interaction[][][] 
 [30] [31] [32] [33] [34] [35]
-Overfull \hbox (18.3688pt too wide) in paragraph at lines 2143--2148
+Overfull \hbox (18.3688pt too wide) in paragraph at lines 2145--2150
 [][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
 i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
 zi4/m/n/10 cache_rfsrc_datasets[][][]
 [36]
-Overfull \hbox (53.08105pt too wide) in paragraph at lines 2224--2231
+Overfull \hbox (53.08105pt too wide) in paragraph at lines 2226--2233
 []\T1/zi4/m/n/10 iris MASS::Boston [][]pbc[][][] [][]plot.variable[][][] [][]rf
 src_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_
 partial[][][] 
 [37]
-Overfull \hbox (18.3688pt too wide) in paragraph at lines 2327--2332
+Overfull \hbox (18.3688pt too wide) in paragraph at lines 2329--2334
 [][]\T1/zi4/m/n/10 plot.variable[][][] \T1/ptm/m/n/10 func-tion, set-ting \T1/z
 i4/m/n/10 partial=TRUE\T1/ptm/m/n/10 . Each data set is built with the [][]\T1/
 zi4/m/n/10 cache_rfsrc_datasets[][][]
 [38]
-Overfull \hbox (1.18103pt too wide) in paragraph at lines 2389--2396
+Overfull \hbox (1.18103pt too wide) in paragraph at lines 2391--2398
 [][][]\T1/zi4/m/n/10 Boston[][][] [][]pbc[][][] [][]plot.variable[][][] [][]rfs
 rc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_partial[][][] [][]plot.gg_p
 artial[][][] 
@@ -830,25 +905,29 @@ Underfull \vbox (badness 10000) has occurred while \output is active [50]
 [51] [52]
 Underfull \vbox (badness 10000) has occurred while \output is active [53]
 [54] [55] [56] [57] [58] [59] [60] [61] [62] [63] [64]
-Overfull \hbox (19.98108pt too wide) in paragraph at lines 3999--4007
+Overfull \hbox (19.98108pt too wide) in paragraph at lines 4001--4009
 []\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]rfsrc[][][] [][]cache_
 rfsrc_datasets[][][] [][]gg_rfsrc[][][] [][]plot.gg_rfsrc[][][] [][]gg_error[][
 ][] [][]plot.gg_error[][][] 
 [65] [66]
-Underfull \hbox (badness 2865) in paragraph at lines 4114--4114
+Underfull \hbox (badness 2865) in paragraph at lines 4116--4116
 []\T1/ptm/m/it/10 Construct a set of (x, y, z) ma-tri-ces for sur-face plot-tin
 g a
 [67] [68] [69]
-Overfull \hbox (68.08105pt too wide) in paragraph at lines 4304--4313
+Overfull \hbox (68.08105pt too wide) in paragraph at lines 4306--4315
 []\T1/zi4/m/n/10 iris [][]Boston[][][] [][]pbc[][][] [][]var.select[][][] [][]r
 fsrc_data[][][] [][]cache_rfsrc_datasets[][][] [][]gg_minimal_depth[][][] [][]p
 lot.gg_minimal_depth[][][]
-[70] (./Rd2.ind [71]
+[70]
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.ind [71]
 
 LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
 (Font)              using `T1/zi4/m/n' instead on input line 30.
 
-[72] [73]) (./Rd2.aux)
+[72] [73])
+(/private/var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T/RtmpmKQfSe/Rd2pdfb450
+5686df4a/Rd2.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -896,18 +975,18 @@ ist, replaced by a fixed one
 pdfTeX warning (dest): name{Rfn.rfsrc} has been referenced but does not exist, 
 replaced by a fixed one
 
-{/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/us
-r/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive
-/2019/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/local/texlive/20
-19/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/t
-exlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
-xlive/2019/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2
-019/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2019/texmf-
-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts
-/type1/urw/times/utmr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1/urw
+{/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}{/us
+r/local/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive
+/2021/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}</usr/local/texlive/20
+21/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/local/t
+exlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
+xlive/2021/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2
+021/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2021/texmf-
+dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts
+/type1/urw/times/utmr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw
 /times/utmri8a.pfb>
-Output written on Rd2.pdf (73 pages, 232524 bytes).
+Output written on Rd2.pdf (73 pages, 228606 bytes).
 Transcript written on Rd2.log.
 Saving output to ‘ggRandomForests-manual.pdf’ ...
 Done
-You may want to clean up by 'rm -Rf /var/folders/7y/p17phjk95l34vy38yqb_hwqc0000gn/T//RtmptnKtiw/Rd2pdf843f3595ae43'
+You may want to clean up by 'rm -Rf /var/folders/vn/njdz8rt91090k5v1ycf3zxbm0000gp/T//RtmpmKQfSe/Rd2pdfb4505686df4a'

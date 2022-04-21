@@ -4,7 +4,7 @@
 \alias{gg_minimal_vimp}
 \alias{gg_minimal_vimp.randomForest}
 \alias{gg_minimal_vimp.rfsrc}
-\title{Minimal depth vs VIMP camparison by variable rankings.}
+\title{Minimal depth vs VIMP comparison by variable rankings.}
 \usage{
 gg_minimal_vimp(object, ...)
 }
@@ -23,7 +23,7 @@ gg_minimal_vimp(object, ...)
  @aliases gg_minimal_vimp}
 }
 \description{
-Minimal depth vs VIMP camparison by variable rankings.
+Minimal depth vs VIMP comparison by variable rankings.
 }
 \examples{
 ## Examples from RFSRC package... 

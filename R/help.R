@@ -4,7 +4,7 @@
 #' @title ggRandomForests: Visually Exploring Random Forests
 #' 
 #' @description \code{ggRandomForests} is a utility package for \code{randomForestSRC} 
-#' (Iswaran et.al. 2014, 2008, 2007) for survival, regression and  
+#' (Ishwaran et.al. 2014, 2008, 2007) for survival, regression and  
 #' classification forests and uses the \code{ggplot2} (Wickham 2009) package for plotting results. 
 #' \code{ggRandomForests} is structured to extract data objects from the random forest
 #' and provides S3 functions for printing and plotting these objects.
@@ -38,7 +38,7 @@
 #' for our figures to allow users flexibility in modifying the figures to their liking. Each S3
 #' plot function returns either a single \code{ggplot2} object, or a \code{list} of 
 #'  \code{ggplot2} objects, allowing users to use additional \code{ggplot2} functions or themes
-#'  to modify and customise the figures to their liking. 
+#'  to modify and customize the figures to their liking. 
 #' }
 #'
 #' The \code{ggRandomForests} package contains the following data functions:
@@ -56,11 +56,11 @@
 #' \item \code{\link{gg_partial}}: Partial (risk adjusted) variable dependence.
 #' \item \code{\link{gg_partial_coplot}}: Partial variable conditional dependence 
 #' (computationally expensive).
-#' \item \code{\link{gg_survival}}: Kaplan-Meier/Nelson-Aalon hazard analysis.  
+#' \item \code{\link{gg_survival}}: Kaplan-Meier/Nelson-Aalen hazard analysis.  
 #' }
 #' 
 #' Each of these data functions has an associated S3 plot function that returns \code{ggplot2} objects, either 
-#' individually or as a list, which can be further customised using standard \code{ggplot2} commands. 
+#' individually or as a list, which can be further customized using standard \code{ggplot2} commands. 
 #'  
 #' @references
 #' Breiman, L. (2001). Random forests, Machine Learning, 45:5-32.

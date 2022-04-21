@@ -15,7 +15,7 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Minimal depth vs VIMP camparison by variable rankings. 
+#' Minimal depth vs VIMP comparison by variable rankings. 
 #' 
 #' @param object A \code{\link[randomForestSRC]{rfsrc}} object, 
 #' \code{\link[randomForestSRC]{predict.rfsrc}}

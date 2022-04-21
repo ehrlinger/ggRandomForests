@@ -1,7 +1,7 @@
 cache_rfsrc_datasets    Recreate the cached data sets for the
                         ggRandomForests package
 calc_auc                Area Under the ROC Curve calculator
-calc_roc.rfsrc          Reciever Operator Characteristic calculator
+calc_roc.rfsrc          Receiver Operator Characteristic calculator
 combine.gg_partial      combine two gg_partial objects
 ggRandomForests-package
                         ggRandomForests: Visually Exploring Random
@@ -11,7 +11,7 @@ gg_interaction          Minimal Depth Variable Interaction data object
                         ('find.interaction').
 gg_minimal_depth        Minimal depth data object
                         ('[randomForestSRC]{var.select}')
-gg_minimal_vimp         Minimal depth vs VIMP camparison by variable
+gg_minimal_vimp         Minimal depth vs VIMP comparison by variable
                         rankings.
 gg_partial              Partial variable dependence object
 gg_partial_coplot.rfsrc
@@ -34,7 +34,7 @@ interaction_data        Cached 'find.interaction' matrix objects for
                         package).  • 'interaction_pbc' - from a
                         randomForest[S]RC for the 'pbc' data set
                         ('randomForestSRC' package)
-kaplan                  nonparametric kaplan-meier estimates
+kaplan                  nonparametric Kaplan-Meier estimates
 logit_loess             logit_loess takes
 nelson                  nonparametric Nelson-Aalen estimates
 partial_coplot_data     Cached 'plot.variable' objects for examples,

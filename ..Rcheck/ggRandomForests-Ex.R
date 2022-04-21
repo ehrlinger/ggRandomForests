@@ -1,18 +1,6 @@
 pkgname <- "ggRandomForests"
 source(file.path(R.home("share"), "R", "examples-header.R"))
 options(warn = 1)
-base::assign(".ExTimings", "ggRandomForests-Ex.timings", pos = 'CheckExEnv')
-base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
-base::assign(".format_ptime",
-function(x) {
-  if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
-  if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
-  options(OutDec = '.')
-  format(x[1L:3L], digits = 7L)
-},
-pos = 'CheckExEnv')
-
-### * </HEADER>
 library('ggRandomForests')
 
 base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
@@ -23,7 +11,6 @@ nameEx("calc_auc")
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: calc_auc
 ### Title: Area Under the ROC Curve calculator
 ### Aliases: calc_auc calc_auc.gg_roc
@@ -48,17 +35,14 @@ calc_auc(gg_dta)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("calc_auc", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("calc_roc.rfsrc")
 ### * calc_roc.rfsrc
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: calc_roc.rfsrc
-### Title: Reciever Operator Characteristic calculator
+### Title: Receiver Operator Characteristic calculator
 ### Aliases: calc_roc.rfsrc calc_roc.randomForest calc_roc
 
 ### ** Examples
@@ -71,15 +55,12 @@ gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=FALSE
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("calc_roc.rfsrc", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("combine.gg_partial")
 ### * combine.gg_partial
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: combine.gg_partial
 ### Title: combine two gg_partial objects
 ### Aliases: combine.gg_partial combine.gg_partial_list
@@ -124,15 +105,12 @@ plot(ggpart, panel=TRUE)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("combine.gg_partial", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_error")
 ### * gg_error
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_error
 ### Title: randomForestSRC error rate data object
 ### Aliases: gg_error gg_error.rfsrc gg_error.randomForest
@@ -212,15 +190,12 @@ plot(gg_dta)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_error", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_interaction")
 ### * gg_interaction
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_interaction
 ### Title: Minimal Depth Variable Interaction data object
 ###   ('find.interaction').
@@ -301,15 +276,12 @@ plot(gg_dta, panel=TRUE)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_interaction", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_minimal_depth")
 ### * gg_minimal_depth
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_minimal_depth
 ### Title: Minimal depth data object ('[randomForestSRC]{var.select}')
 ### Aliases: gg_minimal_depth gg_minimal_depth.rfsrc
@@ -391,17 +363,14 @@ plot(gg_dta)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_minimal_depth", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_minimal_vimp")
 ### * gg_minimal_vimp
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_minimal_vimp
-### Title: Minimal depth vs VIMP camparison by variable rankings.
+### Title: Minimal depth vs VIMP comparison by variable rankings.
 ### Aliases: gg_minimal_vimp gg_minimal_vimp.randomForest
 ###   gg_minimal_vimp.rfsrc
 
@@ -484,15 +453,12 @@ plot(gg_dta)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_minimal_vimp", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_partial")
 ### * gg_partial
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_partial
 ### Title: Partial variable dependence object
 ### Aliases: gg_partial gg_partial_list gg_partial.rfsrc
@@ -631,15 +597,12 @@ plot(ggpart, panel = TRUE)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_partial", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_partial_coplot.rfsrc")
 ### * gg_partial_coplot.rfsrc
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_partial_coplot.rfsrc
 ### Title: Data structures for stratified partial coplots
 ### Aliases: gg_partial_coplot.rfsrc gg_partial_coplot
@@ -676,15 +639,12 @@ plot(partial_coplot_pbc) #, se = FALSE)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_partial_coplot.rfsrc", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_rfsrc.rfsrc")
 ### * gg_rfsrc.rfsrc
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_rfsrc.rfsrc
 ### Title: Predicted response data object
 ### Aliases: gg_rfsrc.rfsrc gg_rfsrc
@@ -762,15 +722,12 @@ plot(gg_dta)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_rfsrc.rfsrc", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_roc.rfsrc")
 ### * gg_roc.rfsrc
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_roc.rfsrc
 ### Title: ROC (Receiver operator curve) data from a classification random
 ###   forest.
@@ -802,15 +759,12 @@ plot(gg_dta)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_roc.rfsrc", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_survival")
 ### * gg_survival
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_survival
 ### Title: Nonparametric survival estimates.
 ### Aliases: gg_survival
@@ -844,15 +798,12 @@ plot(gg_dta, error="lines")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_survival", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_variable")
 ### * gg_variable
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_variable
 ### Title: Marginal variable depedance data object.
 ### Aliases: gg_variable gg_variable.rfsrc gg_variable.randomForest
@@ -936,7 +887,7 @@ plot(gg_dta, xvar=rfsrc_iris$xvar.names,
 ##D # get the 1 year survival time.
 ##D gg_dta <- gg_variable(rfsrc_veteran, time=90)
 ##D 
-##D # Generate variable dependance plots for age and diagtime
+##D # Generate variable dependence plots for age and diagtime
 ##D plot(gg_dta, xvar = "age")
 ##D plot(gg_dta, xvar = "diagtime", )
 ##D 
@@ -947,22 +898,19 @@ plot(gg_dta, xvar=rfsrc_iris$xvar.names,
 ##D # and 1 year
 ##D gg_dta <- gg_variable(rfsrc_veteran, time=c(30, 90, 365))
 ##D 
-##D # Generate variable dependance plots for age and diagtime
+##D # Generate variable dependence plots for age and diagtime
 ##D plot(gg_dta, xvar = "age")
 ## End(Not run)
 ## -------- pbc data
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_variable", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("gg_vimp")
 ### * gg_vimp
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: gg_vimp
 ### Title: Variable Importance (VIMP) data object
 ### Aliases: gg_vimp gg_vimp.rfsrc gg_vimp.randomForest
@@ -1022,15 +970,12 @@ plot(gg_dta)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("gg_vimp", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("interaction_data")
 ### * interaction_data
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: interaction_data
 ### Title: Cached 'find.interaction' matrix objects for examples,
 ###   diagnostics and vignettes. Data sets storing 'find.interaction'
@@ -1091,17 +1036,14 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("interaction_data", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("kaplan")
 ### * kaplan
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: kaplan
-### Title: nonparametric kaplan-meier estimates
+### Title: nonparametric Kaplan-Meier estimates
 ### Aliases: kaplan
 
 ### ** Examples
@@ -1128,15 +1070,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("kaplan", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("nelson")
 ### * nelson
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: nelson
 ### Title: nonparametric Nelson-Aalen estimates
 ### Aliases: nelson
@@ -1174,15 +1113,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("nelson", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("partial_coplot_data")
 ### * partial_coplot_data
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: partial_coplot_data
 ### Title: Cached 'plot.variable' objects for examples, diagnostics and
 ###   vignettes. Data sets storing 'rfsrc' objects corresponding to
@@ -1216,15 +1152,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("partial_coplot_data", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("partial_data")
 ### * partial_data
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: partial_data
 ### Title: Cached 'plot.variable' objects for examples, diagnostics and
 ###   vignettes. Data sets storing 'plot.variable' objects corresponding to
@@ -1293,15 +1226,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("partial_data", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("partial_surface_data")
 ### * partial_surface_data
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: partial_surface_data
 ### Title: Cached 'plot.variable' objects for examples, diagnostics and
 ###   vignettes. Data sets storing 'plot.variable' objects corresponding to
@@ -1371,15 +1301,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("partial_surface_data", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_error")
 ### * plot.gg_error
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_error
 ### Title: Plot a 'gg_error' object
 ### Aliases: plot.gg_error
@@ -1459,15 +1386,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_error", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_interaction")
 ### * plot.gg_interaction
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_interaction
 ### Title: plot.gg_interaction Plot a 'gg_interaction' object,
 ### Aliases: plot.gg_interaction
@@ -1544,15 +1468,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_interaction", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_minimal_depth")
 ### * plot.gg_minimal_depth
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_minimal_depth
 ### Title: Plot a 'gg_minimal_depth' object for random forest variable
 ###   ranking.
@@ -1631,15 +1552,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_minimal_depth", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_minimal_vimp")
 ### * plot.gg_minimal_vimp
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_minimal_vimp
 ### Title: Plot a 'gg_minimal_vimp' object for comparing the Minimal Depth
 ###   and VIMP variable rankings.
@@ -1720,15 +1638,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_minimal_vimp", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_partial")
 ### * plot.gg_partial
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_partial
 ### Title: Partial variable dependence plot, operates on a 'gg_partial'
 ###   object.
@@ -1842,15 +1757,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_partial", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_partial_list")
 ### * plot.gg_partial_list
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_partial_list
 ### Title: Partial variable dependence plot, operates on a
 ###   'gg_partial_list' object.
@@ -1964,15 +1876,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_partial_list", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_rfsrc")
 ### * plot.gg_rfsrc
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_rfsrc
 ### Title: Predicted response plot from a 'gg_rfsrc' object.
 ### Aliases: plot.gg_rfsrc
@@ -2043,15 +1952,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_rfsrc", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_roc")
 ### * plot.gg_roc
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_roc
 ### Title: ROC plot generic function for a 'gg_roc' object.
 ### Aliases: plot.gg_roc
@@ -2087,15 +1993,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_roc", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_survival")
 ### * plot.gg_survival
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_survival
 ### Title: Plot a 'gg_survival' object.
 ### Aliases: plot.gg_survival
@@ -2132,15 +2035,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_survival", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_variable")
 ### * plot.gg_variable
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_variable
 ### Title: Plot a 'gg_variable' object,
 ### Aliases: plot.gg_variable
@@ -2243,15 +2143,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_variable", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("plot.gg_vimp")
 ### * plot.gg_vimp
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: plot.gg_vimp
 ### Title: Plot a 'gg_vimp' object, extracted variable importance of a
 ###   'rfsrc' object
@@ -2306,15 +2203,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("plot.gg_vimp", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("print.gg_minimal_depth")
 ### * print.gg_minimal_depth
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: print.gg_minimal_depth
 ### Title: Print a 'gg_minimal_depth' object.
 ### Aliases: print.gg_minimal_depth
@@ -2362,15 +2256,12 @@ print(varsel_Boston)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("print.gg_minimal_depth", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("quantile_pts")
 ### * quantile_pts
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: quantile_pts
 ### Title: Find points evenly distributed along the vectors values.
 ### Aliases: quantile_pts
@@ -2391,15 +2282,12 @@ summary(rm_grp)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("quantile_pts", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("rfsrc_data")
 ### * rfsrc_data
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: rfsrc_data
 ### Title: Cached 'rfsrc' objects for examples, diagnostics and vignettes.
 ### Aliases: rfsrc_data rfsrc_iris rfsrc_Boston rfsrc_pbc rfsrc_pbc_test
@@ -2469,15 +2357,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("rfsrc_data", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("shift")
 ### * shift
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: shift
 ### Title: lead function to shift by one (or more).
 ### Aliases: shift
@@ -2492,15 +2377,12 @@ d$df_lag2<-ggRandomForests:::shift(d$x,-2)
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("shift", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("surface_matrix")
 ### * surface_matrix
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: surface_matrix
 ### Title: Construct a set of (x, y, z) matrices for surface plotting a
 ###   'gg_partial_coplot' object
@@ -2548,15 +2430,12 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("surface_matrix", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 cleanEx()
 nameEx("varsel_data")
 ### * varsel_data
 
 flush(stderr()); flush(stdout())
 
-base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ### Name: varsel_data
 ### Title: Cached 'var.select' objects for examples, diagnostics and
 ###   vignettes. Data sets storing 'var.select' objects corresponding to
@@ -2617,8 +2496,6 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 
 
 
-base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
-base::cat("varsel_data", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
 ### * <FOOTER>
 ###
 cleanEx()

@@ -38,7 +38,7 @@ data set (\code{MASS} package).
 }
 }
 \details{
-Constructing minimal depth variable selection with the randomForestsSRC::var.select function
+Constructing minimal depth variable selection with the randomForestSRC::var.select function
 is computationally expensive. We cache \code{\link[randomForestSRC]{var.select}} objects
 to improve the \code{ggRandomForests} examples, diagnostics and vignettes run times. 
 (see \code{\link{cache_rfsrc_datasets}} to rebuild a complete set of these data sets.)

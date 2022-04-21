@@ -114,7 +114,7 @@
 #' plot(gg_dta)
 #'}
 #' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
-#' @importFrom tidyr gather_
+#' @importFrom tidyr gather
 #' @export
 plot.gg_error <- function(x, ...){
   gg_dta <- x
@@ -125,7 +125,7 @@ plot.gg_error <- function(x, ...){
   
   if(dim(gg_dta)[2] > 2){
     gathercol <- colnames(gg_dta)[-which(colnames(gg_dta)=="ntree")]
-    gg_dta <- gather_(gg_dta, "variable", "value", gathercol)
+    gg_dta <- tidyr::gather(gg_dta, "variable", "value", gathercol)
     gg_plt <- ggplot(gg_dta, aes_string(x="ntree", y="value", col="variable"))
   }else{
     # We expect the object to have the following columns

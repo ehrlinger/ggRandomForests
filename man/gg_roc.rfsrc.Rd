@@ -21,7 +21,7 @@
 \code{gg_roc} \code{data.frame} for plotting ROC curves.
 }
 \description{
-The sensitivity and specificity of a randomForests classification object.
+The sensitivity and specificity of a randomForest classification object.
 }
 \examples{
 ## ------------------------------------------------------------

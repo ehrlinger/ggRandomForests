@@ -1,8 +1,8 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 2.0.3
-Date: 2020-14-26
+Version: 2.1.0
+Date: 2022-04-21
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)
@@ -16,5 +16,7 @@ Depends: R (>= 3.5.0), randomForestSRC (>= 1.5.5)
 Imports: randomForest, ggplot2, survival, parallel, tidyr, lintr
 Suggests: testthat, rmdformats, RColorBrewer, MASS, dplyr, knitr,
         rmarkdown, plot3D
-RoxygenNote: 7.1.0
-Built: R 3.6.3; ; 2020-04-26 14:27:16 UTC; unix
+RoxygenNote: 7.1.2
+LazyData: true
+LazyDataCompression: bzip2
+Built: R 4.1.3; ; 2022-04-21 20:17:25 UTC; unix

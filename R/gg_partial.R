@@ -18,7 +18,7 @@
 #' Partial variable dependence object 
 #' 
 #' @description The \code{\link[randomForestSRC]{plot.variable}} function returns a 
-#' list of either marginal variable dependance or partial variable dependence
+#' list of either marginal variable dependence or partial variable dependence
 #' data from a \code{\link[randomForestSRC]{rfsrc}} object. 
 #' The \code{gg_partial} function formulates the \code{\link[randomForestSRC]{plot.variable}} output
 #' for partial plots  (where \code{partial=TRUE}) into a data object for creation of 

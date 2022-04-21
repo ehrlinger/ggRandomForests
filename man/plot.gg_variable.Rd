@@ -26,7 +26,7 @@
 
 \item{time_labels}{string labels for times}
 
-\item{panel}{Should plots be facetted along multiple xvar?}
+\item{panel}{Should plots be faceted along multiple xvar?}
 
 \item{oob}{oob estimates (boolean)}
 

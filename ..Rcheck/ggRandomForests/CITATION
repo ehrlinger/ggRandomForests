@@ -6,6 +6,6 @@ title="ggRandomForests: Visually Exploring Random Forests",
 author=as.person("John Ehrlinger"),
 url="https://cran.r-project.org/package=ggRandomForests",
 note=note,
-date=date,
+date="2020-04-26",
 year=year
 )

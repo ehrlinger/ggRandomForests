@@ -13,7 +13,7 @@
 #' }
 #'   
 #' @details 
-#' Constructing partial plot data with the randomForestsSRC::plot.variable function are 
+#' Constructing partial plot data with the randomForestSRC::plot.variable function are 
 #' computationally expensive. We cache \code{\link[randomForestSRC]{plot.variable}} objects
 #' to improve the \code{ggRandomForests} examples, diagnostics and vignettes run times. 
 #' (see \code{\link{cache_rfsrc_datasets}} to rebuild a complete set of these data sets.)

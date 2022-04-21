@@ -2,6 +2,7 @@
 ** using staged installation
 ** R
 ** data
+*** moving datasets to lazyload DB
 ** inst
 ** byte-compile and prepare package for lazy loading
 ** help

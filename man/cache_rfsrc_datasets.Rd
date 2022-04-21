@@ -25,9 +25,9 @@ Constructing random forests are computationally expensive, and the
 We cache computationally intensive \code{randomForestSRC} objects to improve 
 the \code{ggRandomForests} examples, diagnostics and vignettes run times. The
 set of precompiled \code{randomForestSRC} objects are stored in the package
-data subfolder, however version changes in the dependant packages may break
+data subfolder, however version changes in the dependent packages may break
 some functionality. This function was created to help the package developer 
-deal with thoses changes. We make the function available to end users to
+deal with those changes. We make the function available to end users to
 create objects for further experimentation.
 
 There are five cached data set types:

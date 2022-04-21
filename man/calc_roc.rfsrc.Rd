@@ -4,7 +4,7 @@
 \alias{calc_roc.rfsrc}
 \alias{calc_roc.randomForest}
 \alias{calc_roc}
-\title{Reciever Operator Characteristic calculator}
+\title{Receiver Operator Characteristic calculator}
 \usage{
 calc_roc.rfsrc(object, yvar, which.outcome = "all", oob = TRUE)
 }
@@ -23,7 +23,7 @@ containing predicted response}
 A \code{gg_roc} object
 }
 \description{
-Reciever Operator Characteristic calculator
+Receiver Operator Characteristic calculator
 }
 \details{
 For a randomForestSRC prediction and the actual 

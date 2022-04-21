@@ -100,7 +100,7 @@
 #' 
 #' }
 #' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs geom_point geom_jitter geom_boxplot theme element_blank
-#' @importFrom tidyr gather_
+#' @importFrom tidyr gather
 #' 
 #' @export
 plot.gg_rfsrc <- function(x,
@@ -127,7 +127,7 @@ plot.gg_rfsrc <- function(x,
         theme(axis.ticks = element_blank(), axis.text.x = element_blank())
     }else{
       gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
-      gg_dta.mlt <- tidyr::gather_(gg_dta, "variable", "value", gathercols)
+      gg_dta.mlt <- tidyr::gather(gg_dta, "variable", "value", gathercols)
       
       gg_plt <- ggplot(gg_dta.mlt, aes_string(x="variable",y="value")) +
         geom_jitter(aes_string(color="y",shape="y"), alpha=.5)

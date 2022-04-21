@@ -2,7 +2,7 @@
 % Please edit documentation in R/kaplan.R
 \name{kaplan}
 \alias{kaplan}
-\title{nonparametric kaplan-meier estimates}
+\title{nonparametric Kaplan-Meier estimates}
 \usage{
 kaplan(interval, censor, data, by = NULL, ...)
 }
@@ -21,7 +21,7 @@ kaplan(interval, censor, data, by = NULL, ...)
 \code{\link{gg_survival}} object
 }
 \description{
-nonparametric kaplan-meier estimates
+nonparametric Kaplan-Meier estimates
 }
 \examples{
 \dontrun{

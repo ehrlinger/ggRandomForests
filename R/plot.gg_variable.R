@@ -24,7 +24,7 @@
 #' @param xvar variable (or list of variables) of interest.
 #' @param time For survival, one or more times of interest
 #' @param time_labels string labels for times
-#' @param panel Should plots be facetted along multiple xvar?
+#' @param panel Should plots be faceted along multiple xvar?
 #' @param oob oob estimates (boolean)
 #' @param points plot the raw data points (boolean)
 #' @param smooth include a smooth curve (boolean)
@@ -42,7 +42,7 @@
 #' 
 #' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs facet_wrap geom_boxplot geom_jitter
 #' @importFrom parallel mclapply
-#' @importFrom tidyr gather_
+#' @importFrom tidyr gather
 #' @importFrom stats reformulate
 #' 
 #' @examples
@@ -245,7 +245,7 @@ plot.gg_variable <- function(x, xvar,
       # Handle categorical and continuous differently...
       tmp_dta <- gg_dta[,c(wch_y_var, wch_x_var)]
       gathercols <- colnames(tmp_dta)[-which(colnames(tmp_dta) %in% c("time", "event", "yhat"))]
-      gg_dta.mlt <- tidyr::gather_(tmp_dta, "variable", "value", gathercols)
+      gg_dta.mlt <- tidyr::gather(tmp_dta, "variable", "value", gathercols)
       
       gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
       if(points){
@@ -304,13 +304,13 @@ plot.gg_variable <- function(x, xvar,
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta)=="yvar"))
         tmp_dta <- gg_dta[,c(wch_y_var, wch_x_var)]
         gathercols <- colnames(tmp_dta)[-which(colnames(tmp_dta) %in% c("yvar", "yhat"))]
-        gg_dta.mlt <- tidyr::gather_(tmp_dta, "variable", "value", gathercols)
+        gg_dta.mlt <- tidyr::gather(tmp_dta, "variable", "value", gathercols)
         
       }else{
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta)=="yvar"))
         tmp_dta <- gg_dta[,c(wch_y_var, wch_x_var)]
         gathercols <- colnames(tmp_dta)[-which(colnames(tmp_dta) == "yhat")]
-        gg_dta.mlt <- tidyr::gather_(tmp_dta, "variable", "value", gathercols)
+        gg_dta.mlt <- tidyr::gather(tmp_dta, "variable", "value", gathercols)
       }
       gg_dta.mlt$variable <- factor(gg_dta.mlt$variable, levels=xvar)
       

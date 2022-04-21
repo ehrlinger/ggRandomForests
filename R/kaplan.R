@@ -1,4 +1,4 @@
-#' nonparametric kaplan-meier estimates
+#' nonparametric Kaplan-Meier estimates
 #'
 #' @param data name of the training set \code{data.frame}
 #' @param interval name of the interval variable in the training dataset.

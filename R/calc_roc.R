@@ -15,7 +15,7 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Reciever Operator Characteristic calculator
+#' Receiver Operator Characteristic calculator
 #'  
 #' @details For a randomForestSRC prediction and the actual 
 #' response value, calculate the specificity (1-False Positive Rate) and sensitivity 
