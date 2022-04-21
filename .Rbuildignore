@@ -27,3 +27,4 @@ framed.sty
 #^inst/doc/Regression-rfsrc*
 
 ^CRAN-RELEASE$
+^CRAN-SUBMISSION$
