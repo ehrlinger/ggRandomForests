@@ -5,7 +5,7 @@
 \alias{gg_variable.rfsrc}
 \alias{gg_variable.randomForest}
 \alias{gg_variable.random}
-\title{Marginal variable depedance data object.}
+\title{Marginal variable dependance data object.}
 \usage{
 gg_variable(object, ...)
 }

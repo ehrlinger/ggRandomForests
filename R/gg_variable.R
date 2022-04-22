@@ -14,7 +14,7 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Marginal variable depedance data object.
+#' Marginal variable dependance data object.
 #' 
 #' @details The marginal variable dependence is determined by comparing relation
 #' between the predicted response from the randomForest and a covariate of interest.

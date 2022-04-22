@@ -38,7 +38,7 @@ data set (\code{MASS} package).
 }
 }
 \details{
-Constructing the minimal depth interaction matrices on randomForestsRC objects are 
+Constructing the minimal depth interaction matrices on randomForestSRC objects are 
 computationally expensive. We cache \code{\link[randomForestSRC]{find.interaction}} matrix objects
 to improve the \code{ggRandomForests} examples, diagnostics and vignettes run times. 
 (see \code{\link{cache_rfsrc_datasets}} to rebuild a complete set of these data sets.)

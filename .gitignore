@@ -2,6 +2,7 @@
 .Rproj.user
 .Rhistory
 .RData
+..Rcheck
 Sweave.sty
 inst/doc/randomForestRegression*
 inst/doc/randomForestSruvival*
@@ -20,3 +21,18 @@ jsslogo.jpg
 
 inst/doc
 *.Rd
+..Rcheck/ggRandomForests/INDEX
+..Rcheck/ggRandomForests/Meta/hsearch.rds
+..Rcheck/ggRandomForests/Meta/package.rds
+..Rcheck/ggRandomForests/Meta/Rd.rds
+..Rcheck/Rdlatex.log
+..Rcheck/tests/test-all.Rout
+..Rcheck/tests/testthat/Rplots.pdf
+..Rcheck/ggRandomForests/Meta/Rd.rds
+..Rcheck/Rdlatex.log
+..Rcheck/tests/test-all.Rout
+..Rcheck/tests/testthat/Rplots.pdf
+..Rcheck/ggRandomForests-manual.pdf
+..Rcheck/ggRandomForests/DESCRIPTION
+..Rcheck/ggRandomForests/help/ggRandomForests.rdb
+..Rcheck/ggRandomForests/help/ggRandomForests.rdx

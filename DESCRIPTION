@@ -7,6 +7,7 @@ Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)
 Encoding: UTF-8
+Language: en-US
 URL: https://github.com/ehrlinger/ggRandomForests
 BugReports: https://github.com/ehrlinger/ggRandomForests/issues
 Description: Graphic elements for exploring Random Forests using the 'randomForest' or
@@ -16,12 +17,10 @@ Depends:
     R (>= 3.5.0),
     randomForestSRC (>= 1.5.5)
 Imports:
-    randomForest,
     ggplot2,
     survival,
     parallel,
-    tidyr, 
-    lintr
+    tidyr
 Suggests:
     testthat,
     rmdformats,
@@ -30,7 +29,9 @@ Suggests:
     dplyr,
     knitr,
     rmarkdown,
-    plot3D
+    plot3D,
+    randomForest,
+    lintr
 RoxygenNote: 7.1.2
 LazyData: true
 LazyDataCompression: bzip2
