@@ -1,0 +1,108 @@
+
+R version 4.1.3 (2022-03-10) -- "One Push-Up"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin17.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(testthat)
+> 
+> test_check("ggRandomForests")
+Loading required package: ggRandomForests
+Loading required package: randomForestSRC
+
+ randomForestSRC 3.1.0 
+ 
+ Type rfsrc.news() to see new features, changes, and bug fixes. 
+ 
+
+
+                              Method: maxsubtree
+                    No. of variables: 4
+  Variables sorted by minimal depth?: TRUE
+
+             Petal.Width Petal.Length Sepal.Length Sepal.Width
+Petal.Width         0.20         0.52         0.63        0.71
+Petal.Length        0.51         0.21         0.64        0.72
+Sepal.Length        0.69         0.68         0.48        0.77
+Sepal.Width         0.89         0.87         0.90        0.69
+
+                              Method: maxsubtree
+                    No. of variables: 17
+  Variables sorted by minimal depth?: TRUE
+
+            bili albumin copper edema prothrombin ascites chol  age sgot stage
+bili        0.23    0.64   0.70  0.79        0.70    0.82 0.71 0.67 0.75  0.82
+albumin     0.68    0.43   0.81  0.88        0.82    0.91 0.81 0.81 0.82  0.89
+copper      0.70    0.80   0.47  0.89        0.80    0.93 0.85 0.83 0.85  0.90
+edema       0.71    0.79   0.81  0.48        0.83    0.93 0.84 0.84 0.85  0.90
+prothrombin 0.76    0.84   0.86  0.93        0.50    0.94 0.85 0.88 0.87  0.92
+ascites     0.71    0.81   0.78  0.93        0.84    0.53 0.85 0.83 0.85  0.90
+chol        0.83    0.87   0.90  0.95        0.90    0.96 0.61 0.89 0.90  0.93
+age         0.82    0.87   0.90  0.97        0.92    0.97 0.90 0.64 0.88  0.96
+sgot        0.84    0.90   0.89  0.97        0.92    0.97 0.90 0.88 0.65  0.95
+stage       0.86    0.93   0.91  0.97        0.92    0.97 0.90 0.92 0.91  0.70
+platelet    0.91    0.94   0.92  0.98        0.95    0.99 0.95 0.94 0.96  0.97
+hepatom     0.85    0.91   0.90  0.96        0.92    0.97 0.90 0.92 0.92  0.96
+alk         0.94    0.95   0.95  0.98        0.96    0.99 0.96 0.95 0.95  0.98
+trig        0.93    0.94   0.95  0.98        0.97    0.99 0.95 0.94 0.95  0.98
+spiders     0.96    0.97   0.97  0.99        0.97    0.99 0.99 0.97 0.97  0.99
+sex         0.97    0.98   0.99  1.00        0.98    0.99 0.98 0.99 0.98  1.00
+treatment   0.99    1.00   1.00  1.00        1.00    1.00 0.99 1.00 1.00  1.00
+            platelet hepatom  alk trig spiders  sex treatment
+bili            0.78    0.89 0.82 0.82    0.95 0.94      0.98
+albumin         0.87    0.93 0.88 0.88    0.96 0.97      0.99
+copper          0.86    0.91 0.89 0.87    0.96 0.98      0.99
+edema           0.89    0.90 0.90 0.90    0.96 0.97      0.99
+prothrombin     0.92    0.95 0.92 0.92    0.99 0.97      0.99
+ascites         0.89    0.91 0.90 0.90    0.96 0.97      0.99
+chol            0.91    0.96 0.93 0.93    0.98 0.99      0.99
+age             0.91    0.97 0.93 0.93    0.97 0.98      0.99
+sgot            0.93    0.95 0.93 0.94    0.97 0.98      1.00
+stage           0.94    0.96 0.93 0.95    0.99 0.99      1.00
+platelet        0.74    0.99 0.95 0.95    0.98 0.99      0.99
+hepatom         0.94    0.77 0.94 0.96    0.99 0.97      0.99
+alk             0.97    0.99 0.78 0.97    0.99 0.99      1.00
+trig            0.95    0.98 0.97 0.79    0.99 0.99      1.00
+spiders         0.98    0.99 0.98 0.98    0.91 0.99      0.99
+sex             0.98    0.99 0.99 0.98    0.99 0.93      1.00
+treatment       1.00    1.00 1.00 1.00    1.00 1.00      0.98
+
+                              Method: maxsubtree
+                    No. of variables: 13
+  Variables sorted by minimal depth?: TRUE
+
+        lstat   rm  nox crim  dis ptratio  tax  age indus black  rad chas   zn
+lstat    0.09 0.18 0.25 0.22 0.20    0.29 0.31 0.27  0.38  0.32 0.55 0.78 0.78
+rm       0.20 0.10 0.32 0.29 0.26    0.32 0.32 0.29  0.43  0.35 0.54 0.82 0.77
+nox      0.32 0.38 0.19 0.38 0.41    0.58 0.59 0.47  0.63  0.49 0.77 0.89 0.89
+crim     0.30 0.37 0.42 0.19 0.38    0.62 0.59 0.41  0.64  0.46 0.76 0.86 0.91
+dis      0.29 0.30 0.45 0.38 0.19    0.47 0.48 0.39  0.56  0.42 0.70 0.88 0.85
+ptratio  0.38 0.34 0.53 0.47 0.43    0.21 0.51 0.45  0.58  0.53 0.71 0.89 0.86
+tax      0.47 0.39 0.62 0.56 0.53    0.61 0.28 0.54  0.65  0.61 0.75 0.92 0.87
+age      0.43 0.40 0.57 0.47 0.48    0.62 0.62 0.28  0.61  0.55 0.77 0.88 0.90
+indus    0.52 0.46 0.64 0.59 0.56    0.64 0.66 0.55  0.30  0.62 0.78 0.88 0.89
+black    0.54 0.55 0.72 0.62 0.62    0.75 0.76 0.58  0.77  0.30 0.84 0.94 0.95
+rad      0.75 0.73 0.84 0.80 0.78    0.84 0.83 0.79  0.87  0.83 0.51 0.98 0.96
+chas     0.86 0.86 0.92 0.87 0.87    0.94 0.95 0.87  0.94  0.89 0.96 0.72 0.99
+zn       0.92 0.90 0.95 0.94 0.93    0.95 0.95 0.93  0.96  0.96 0.97 0.99 0.73
+[ FAIL 0 | WARN 0 | SKIP 1 | PASS 404 ]
+
+══ Skipped tests ═══════════════════════════════════════════════════════════════
+• empty test (1)
+
+[ FAIL 0 | WARN 0 | SKIP 1 | PASS 404 ]
+> 
+> proc.time()
+   user  system elapsed 
+107.189  18.240 171.414 
