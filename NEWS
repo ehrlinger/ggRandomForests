@@ -4,6 +4,7 @@ Version: 2.1.0
 ggRandomForests v2.1.0
 =====================
 To pull this out of archive on randomForestSRC 3.1 build release.
+Fixed a plot bug for gg_error to show the actual curve (issue #35)
 
 ggRandomForests v2.0.1
 ======================
