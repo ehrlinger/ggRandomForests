@@ -129,6 +129,7 @@ gg_dta <- gg_variable(rfsrc_veteran, time=c(30, 90, 365))
 plot(gg_dta, xvar = "age")
 }
 ## -------- pbc data
+
 }
 \seealso{
 \code{\link{plot.gg_variable}} \code{\link[randomForestSRC]{plot.variable}}

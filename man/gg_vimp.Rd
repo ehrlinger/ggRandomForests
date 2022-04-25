@@ -65,7 +65,7 @@ plot(gg_dta)
 data(rfsrc_veteran, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_veteran)
 plot(gg_dta)
-}
+
 
 ## -------- pbc data
 data(rfsrc_pbc, package="ggRandomForests")
@@ -75,6 +75,7 @@ plot(gg_dta)
 # Restrict to only the top 10.
 gg_dta <- gg_vimp(rfsrc_pbc, nvar=10)
 plot(gg_dta)
+}
 }
 \references{
 Ishwaran H. (2007). Variable importance in binary regression trees and forests, 

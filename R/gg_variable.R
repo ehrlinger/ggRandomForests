@@ -135,6 +135,7 @@
 #' plot(gg_dta, xvar = "age")
 #' }
 #' ## -------- pbc data
+#' 
 #' @aliases gg_variable gg_variable.rfsrc gg_variable.randomForest gg_variable.random
 #' @importFrom stats median
 #' 

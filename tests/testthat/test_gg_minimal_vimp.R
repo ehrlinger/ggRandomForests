@@ -30,6 +30,7 @@ test_that("gg_minimal_vimp classifications",{
 
 
 test_that("gg_minimal_vimp survival",{
+  skip("PBC gg_minimal_vimp")
   ## Load the cached forest
   data(varsel_pbc, package="ggRandomForests")
   

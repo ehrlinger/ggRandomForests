@@ -53,8 +53,8 @@
 #' \code{\link{partial_coplot_data}}
 #' 
 #' @importFrom randomForestSRC rfsrc var.select plot.variable find.interaction
+#' @importFrom randomForest randomForest
 #' @importFrom utils data
-#' 
 #' @export
 cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
   dta <- new.env()
@@ -83,17 +83,18 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     stop("Provided path does not exist, or is not a directory.")
   }
   
-  if(length(set) == 1) if(is.na(set))  set <- c("Boston", "iris", "pbc")
+  if(length(set) == 1) if(is.na(set))  set <- c("Boston", "iris")
   
+  ##---------------------------------------------------------------------------
   if("airq" %in% set){
-    cat("airq: randomForest\n")
+    cat("airq: rfsrc\n")
     data(airquality, package="datasets", envir=dta)
     airquality <- dta$airquality
     
     if(!test)
       rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality, 
                                            na.action = "na.impute",
-                                           importance=TRUE, tree.err=TRUE, 
+                                           importance=TRUE, save.memory = TRUE,  
                                            forest=TRUE, ...)
     
     if(save) save(rfsrc_airq, file=paste(pth, "rfsrc_airq.rda", sep=""),
@@ -118,14 +119,15 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
                   compress="xz")
   }
   
+  ##---------------------------------------------------------------------------
   if("iris" %in% set){
     data(iris, package="datasets",
          envir = dta)
     iris <- dta$iris
-    cat("iris: randomForest\n")
+    cat("iris: rfsrc\n")
     if(!test) rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
                                                    data = iris, forest=TRUE,
-                                                   importance=TRUE, tree.err=TRUE, ...)
+                                                   importance=TRUE, save.memory = TRUE, ...)
     if(save) save(rfsrc_iris, file=paste(pth, "rfsrc_iris.rda", sep=""), 
                   compress="xz")
     
@@ -147,14 +149,15 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
                   compress="xz")
   }
   
+  ##---------------------------------------------------------------------------
   if("mtcars" %in% set){
     data(mtcars, package="datasets",
          envir = dta)
     mtcars <- dta$mtcars
-    cat("mtcars: randomForest\n")
+    cat("mtcars: rfsrc\n")
     if(!test) rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., forest=TRUE,
                                                      data = mtcars,
-                                                     importance=TRUE, tree.err=TRUE, ...)
+                                                     importance=TRUE, save.memory = TRUE, ...)
     if(save) save(rfsrc_mtcars, file=paste(pth, "rfsrc_mtcars.rda", sep=""), 
                   compress="xz")
     
@@ -176,6 +179,8 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
                   file=paste(pth, "partial_mtcars.rda", sep=""), 
                   compress="xz")
   }
+  
+  ##---------------------------------------------------------------------------
   if("Boston" %in% set){
     data(Boston, package="MASS",
          envir = dta)
@@ -183,9 +188,10 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     Boston$chas <- as.logical(Boston$chas)
     
-    cat("Boston: randomForest\n")
+    cat("Boston: rfsrc\n")
     if(!test) rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston, forest=TRUE,
-                                                     importance=TRUE, tree.err = TRUE, ...)
+                                                     importance=TRUE, tree.err = TRUE, 
+                                                     save.memory = TRUE,...)
     else{
       data(rfsrc_Boston, package="ggRandomForests",
            envir = dta)
@@ -244,8 +250,8 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
       partial_Boston_surf <- lapply(rm_pts, function(ct){
         rfsrc_Boston$xvar$rm <- ct
         randomForestSRC::plot.variable(rfsrc_Boston, xvar.names = "lstat", time = 1,
-                      npts = 50, show.plots = FALSE, 
-                      partial = TRUE)
+                                       npts = 50, show.plots = FALSE, 
+                                       partial = TRUE)
       })
     }
     
@@ -255,6 +261,9 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     
   }
   
+  ##---------------------------------------------------------------------------
+  ## Survival Models
+  ##---------------------------------------------------------------------------
   if("pbc" %in% set){
     data(pbc, package="randomForestSRC",
          envir = dta)
@@ -292,7 +301,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
     pbc$treatment <- factor(pbc$treatment)
     
-    cat("pbc: randomForest\n")
+    cat("pbc: rfsrc\n")
     dta.train <- pbc[-which(is.na(pbc$treatment)),]
     # Create a test set from the remaining patients
     pbc.test <- pbc[which(is.na(pbc$treatment)),]
@@ -300,13 +309,13 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(!test) rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
                                                   dta.train, nsplit = 10,
                                                   na.action="na.impute",forest=TRUE,
-                                                  importance=TRUE, tree.err=TRUE,
+                                                  importance=TRUE, save.memory = TRUE, 
                                                   ...)
     if(save) save(rfsrc_pbc, 
                   file=paste(pth, "rfsrc_pbc.rda", sep=""), 
                   compress="xz")
     
-    cat("pbc: randomForest predict\n")
+    cat("pbc: rfsrc predict\n")
     # Predict survival for 106 patients not in randomized trial
     if(!test)  rfsrc_pbc_test <- predict(rfsrc_pbc, 
                                          newdata = pbc.test,
@@ -403,8 +412,8 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
       # Generate the gg_partial_coplot data object
       partial_pbc_time <- lapply(time_cts, function(ct){
         randomForestSRC::plot.variable(rfsrc_pbc, xvar.names = "bili", time = ct,
-                      npts = 50, show.plots = FALSE, 
-                      partial = TRUE, surv.type="surv")
+                                       npts = 50, show.plots = FALSE, 
+                                       partial = TRUE, surv.type="surv")
       })
       
     }
@@ -412,7 +421,7 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     if(save) save(partial_pbc_time, 
                   file=paste(pth, "partial_pbc_time.rda", sep=""), 
                   compress="xz")
-
+    
     if(!test){
       # Find the quantile points to create 50 cut points
       alb_partial_pts <- quantile_pts(rfsrc_pbc$xvar$albumin, groups = 50)
@@ -420,8 +429,8 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
       partial_pbc_surf <- lapply(alb_partial_pts, function(ct){
         rfsrc_pbc$xvar$albumin <- ct
         randomForestSRC::plot.variable(rfsrc_pbc, xvar.names = "bili", time = 1,
-                      npts = 50, show.plots = FALSE, 
-                      partial = TRUE, surv.type="surv")
+                                       npts = 50, show.plots = FALSE, 
+                                       partial = TRUE, surv.type="surv")
       })
     }
     
@@ -430,41 +439,43 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
                   compress="xz")
   }
   
+  ##---------------------------------------------------------------------------
   if("veteran" %in% set){
-    data(veteran, package="randomForestSRC",
-         envir = dta)
-    vet <- dta$veteran
+    cat("Veteran dataset")
+    data("veteran", package="randomForestSRC", envir = dta)
+    dset <- dta$veteran
+    
     # For whatever reason, the age variable is in days... makes no sense to me
-    for(ind in 1:dim(vet)[2]){
-      if(!is.factor(vet[,ind])){
-        if(length(unique(vet[which(!is.na(vet[,ind])),ind])) <= 2) {
-          if(sum(range(vet[,ind],na.rm=TRUE) == c(0,1)) == 2){
-            vet[,ind] <- as.logical(vet[,ind])
+    for(ind in 1:dim(dset)[2]){
+      if(!is.factor(dset[,ind])){
+        if(length(unique(dset[which(!is.na(dset[,ind])),ind])) <= 2) {
+          if(sum(range(dset[,ind],na.rm=TRUE) == c(0,1)) == 2){
+            dset[,ind] <- as.logical(dset[,ind])
           }
         }
       }else{
-        if(length(unique(vet[which(!is.na(vet[,ind])),ind])) <= 2) {
-          if(sum(sort(unique(vet[,ind])) == c(0,1)) == 2){
-            vet[,ind] <- as.logical(vet[,ind])
+        if(length(unique(dset[which(!is.na(dset[,ind])),ind])) <= 2) {
+          if(sum(sort(unique(dset[,ind])) == c(0,1)) == 2){
+            dset[,ind] <- as.logical(dset[,ind])
           }
-          if(sum(sort(unique(vet[,ind])) == c(FALSE, TRUE)) == 2){
-            vet[,ind] <- as.logical(vet[,ind])
+          if(sum(sort(unique(dset[,ind])) == c(FALSE, TRUE)) == 2){
+            dset[,ind] <- as.logical(dset[,ind])
           }
         }
       }
-      if(!is.logical(vet[, ind]) & 
-         length(unique(vet[which(!is.na(vet[,ind])),ind])) <= 5) {
-        vet[,ind] <- factor(vet[,ind])
+      if(!is.logical(dset[, ind]) & 
+         length(unique(dset[which(!is.na(dset[,ind])),ind])) <= 5) {
+        dset[,ind] <- factor(dset[,ind])
       }
     }
     
-    dta$veteran <- vet
+    dta$veteran <- dset
+    cat("veteran: rfsrc\n")
     
-    cat("veteran: randomForest\n")
     if(!test) rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., 
-                                                      data = dta$veteran,forest=TRUE,
-                                                      importance=TRUE, tree.err=TRUE, ...)
-    
+                                                      data = dta, forest=TRUE,
+                                                      importance=TRUE, 
+                                                      save.memory = TRUE, ...)
     if(save) save(rfsrc_veteran, 
                   file=paste(pth, "rfsrc_veteran.rda", sep=""), compress="xz")
     
@@ -490,72 +501,80 @@ cache_rfsrc_datasets <- function(set=NA, save=TRUE, pth, ...){
     
     if(save) save(partial_veteran, 
                   file=paste(pth, "partial_veteran.rda", sep=""), compress="xz")
+    
   }
 }
+
+##---------------------------------------------------------------------------
 # 
-# # For randomForest implementation
-# rf_cache_datasets <- function(set=NA, save=TRUE, pth, ...){
-#   dta <- new.env()
-#   
-#   if(missing(pth)){
-#     pth <- if(file.exists("data")){
-#       if(file.info("data")$isdir){
-#         "data/"
-#       }else{
-#         "./"
-#       }
-#     }else{
-#       "./"
-#     } 
-#   }else if(!file.info("data")$isdir){
-#     stop("Provided path does not exist, or is not a directory.")
-#   }
-#   
-#   if(is.na(set))
-#     set <- c("airq", "Boston", "iris", "mtcars")
-#   
-#   if("airq" %in% set){
-#     cat("airq: randomForest\n")
-#     if(!test) rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., forest=TRUE,
-#         data = airquality, na.action = "na.impute", importance=TRUE, tree.err=TRUE, ...)
-#     if(save) save(rfsrc_airq, file=paste(pth, "rfsrc_airq.rda", sep=""), compress="xz")
-#     
-#     cat("airq: RF partial dependence\n")
-#     
-#   }
-#   
-#   if("iris" %in% set){
-#     cat("iris: randomForest\n")
-#     if(!test) rfsrc_iris <- randomForestSRC::rfsrc(Species ~., data = iris, importance=TRUE, tree.err=TRUE, ...)
-#     if(save) save(rfsrc_iris, file=paste(pth, "rfsrc_iris.rda", sep=""), compress="xz")
-#     
-#     cat("iris: RF partial dependence\n")
-#   }
-#   
-#   
-#   if("mtcars" %in% set){
-#     cat("mtcars: randomForest\n")
-#     if(!test) rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, importance=TRUE, tree.err=TRUE, ...)
-#     if(save) save(rfsrc_mtcars, file=paste(pth, "rfsrc_mtcars.rda", sep=""), compress="xz")
-#     
-#     cat("mtcars: RF partial dependence\n")
-#   }
-#   if("Boston" %in% set){
-#     data(Boston, package="MASS",
-#          envir = dta)
-#     Boston <- dta$Boston
-#     
-#     Boston$chas <- as.logical(Boston$chas)
-#     
-#     cat("Boston: randomForest\n")
-#     if(!test) rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston, importance=TRUE, tree.err=TRUE, ...)
-#     if(save) save(rfsrc_Boston, file=paste(pth, "rfsrc_Boston.rda", sep=""), compress="xz")
-#     
-#     cat("Boston: RF partial dependence\n(this will take a little while...)\n")
-#     
-#     cat("\nBoston: RF partial coplots\n\tlstat by rm groups\n(this will take a little longer...)\n")
-#     
-#     cat("\nBoston: RF partial coplots\n\trm by lstat groups\n(so will this...)\n")
-#   }
-#   
-# }
+# For randomForest implementation
+rf_cache_datasets <- function(set=NA, save=TRUE, pth, test=FALSE){
+  dta <- new.env()
+  
+  if(missing(pth)){
+    pth <- if(file.exists("data")){
+      if(file.info("data")$isdir){
+        "data/"
+      }else{
+        "./"
+      }
+    }else{
+      "./"
+    }
+  }else if(!file.info("data")$isdir){
+    stop("Provided path does not exist, or is not a directory.")
+  }
+  
+  if(is.na(set))
+    set <- c("airq", "Boston", "iris", "mtcars")
+  
+  ##---------------------------------------------------------------------------
+  if("airq" %in% set){
+    data(airquality, package="datasets", envir=dta)
+    airquality <- dta$airquality
+    
+    cat("airq: randomForest\n")
+    if(!test) rf_airq <- randomForest::randomForest(Ozone ~ ., forest=TRUE,
+                                                    data = airquality)
+    if(save) save(rf_airq, file=paste(pth, "rf_airq.rda", sep=""), compress="xz")
+    
+  }
+  
+  ##---------------------------------------------------------------------------
+  if("iris" %in% set){
+    
+    cat("iris: randomForest\n")
+    data(iris, package="datasets",
+         envir = dta)
+    iris <- dta$iris
+    
+    if(!test) rf_iris <- randomForest::randomForest(Species ~., data = iris)
+    if(save) save(rf_iris, file=paste(pth, "rf_iris.rda", sep=""), compress="xz")
+  }
+  
+  
+  if("mtcars" %in% set){
+    
+    cat("mtcars: randomForest\n")
+    data(mtcars, package="datasets",
+         envir = dta)
+    mtcars <- dta$mtcars
+    
+    if(!test) rf_mtcars <- randomForest::randomForest(mpg ~ ., data = mtcars)
+    if(save) save(rf_mtcars, file=paste(pth, "rf_mtcars.rda", sep=""), compress="xz")
+    
+  }
+  ##---------------------------------------------------------------------------
+  
+  if("Boston" %in% set){
+    data(Boston, package="MASS", envir = dta)
+    Boston <- dta$Boston
+    
+    Boston$chas <- as.logical(Boston$chas)
+    
+    cat("Boston: randomForest\n")
+    if(!test) rf_Boston <- randomForest::randomForest(medv~., data=Boston)
+    if(save) save(rf_Boston, file=paste(pth, "rf_Boston.rda", sep=""), compress="xz")
+  }
+  
+}

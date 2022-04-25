@@ -44,7 +44,7 @@ test_that("gg_interaction classifications",{
 
 
 test_that("gg_interaction survival",{
-  
+  skip("PBC gg_interaction")
   pbc <- pbc_data()
   dta.train <- pbc[-which(is.na(pbc$treatment)),]
   # Create a test set from the remaining patients
@@ -110,7 +110,7 @@ test_that("gg_interaction survival",{
   expect_is(gg_plt, "ggplot")
 })
 
-test_that("gg_interaction regression",{
+test_that("gg_interaction regression rfsrc",{
   data(Boston, package="MASS")
   
   Boston$chas <- as.logical(Boston$chas)

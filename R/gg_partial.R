@@ -144,7 +144,7 @@
 #' 
 #' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- gg_dta.cat[["age"]] <- NULL 
 #' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
-#' }
+#' 
 #' ## -------- pbc data
 #' data("partial_pbc", package = "ggRandomForests")
 #' data("varsel_pbc", package = "ggRandomForests")
@@ -173,7 +173,7 @@
 #' 
 #' #plot(pbc_ggpart[["edema"]], panel=TRUE) #,
 #'      # notch = TRUE, alpha = .3, outlier.shape = NA) 
-#'   
+#' }  
 #' @aliases gg_partial gg_partial_list gg_partial.rfsrc gg_partial.randomForest
 #' @name gg_partial
 #' @aliases gg_partial_list

@@ -98,13 +98,13 @@
 #' 
 #' gg_dta <- gg_minimal_vimp(varsel_veteran)
 #' plot(gg_dta)
-#' }
+#' 
 #' ## -------- pbc data
 #' data(varsel_pbc, package="ggRandomForests")
 #' 
 #' gg_dta <- gg_minimal_vimp(varsel_pbc)
 #' plot(gg_dta)
-#' 
+#' }
 #' @aliases gg_minimal_vimp gg_minimal_vimp.randomForest gg_minimal_vimp.rfsrc
 #' @export
 gg_minimal_vimp <- function (object, ...) {

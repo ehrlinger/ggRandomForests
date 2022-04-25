@@ -99,7 +99,7 @@
 #' 
 #' plot(gg_dta, panel=TRUE)
 #' }
-#' 
+#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## find interactions, survival setting
 #' ## ------------------------------------------------------------
@@ -113,7 +113,6 @@
 #' plot(gg_dta, xvar="bili")
 #' plot(gg_dta, panel=TRUE)
 #' 
-#' \dontrun{
 #' ## -------- veteran data
 #' data(interaction_veteran, package="ggRandomForests")
 #' gg_dta <- gg_interaction(interaction_veteran)

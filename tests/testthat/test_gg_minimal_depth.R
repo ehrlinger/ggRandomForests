@@ -34,6 +34,7 @@ test_that("gg_minimal_depth classifications",{
 
 
 test_that("gg_minimal_depth survival",{
+  skip("PBC gg_minimal_depth")
   ## Load the cached forest
   data(varsel_pbc, package="ggRandomForests")
   

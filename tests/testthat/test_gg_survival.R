@@ -8,6 +8,7 @@ test_that("gg_survival classifications",{
 
 test_that("gg_survival survival",{
   #   ## Load the cached forest
+  skip("PBC gg_survival")
   data(pbc, package="randomForestSRC")
   
   # Test the cached forest type

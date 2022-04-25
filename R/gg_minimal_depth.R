@@ -101,14 +101,14 @@
 #' 
 #' gg_dta <- gg_minimal_depth(varsel_veteran)
 #' plot(gg_dta)
-#' }
+#' 
 #' 
 #' ## -------- pbc data
 #' data(varsel_pbc, package="ggRandomForests")
 #' 
 #' gg_dta <- gg_minimal_depth(varsel_pbc)
 #' plot(gg_dta)
-#' 
+#' }
 #' @aliases gg_minimal_depth  gg_minimal_depth.randomForest gg_minimal_depth.rfsrc
 #' 
 #' @export

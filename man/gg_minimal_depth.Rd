@@ -90,14 +90,14 @@ data(varsel_veteran, package="ggRandomForests")
 
 gg_dta <- gg_minimal_depth(varsel_veteran)
 plot(gg_dta)
-}
+
 
 ## -------- pbc data
 data(varsel_pbc, package="ggRandomForests")
 
 gg_dta <- gg_minimal_depth(varsel_pbc)
 plot(gg_dta)
-
+}
 }
 \seealso{
 \code{[randomForestSRC]{var.select}} \code{\link{plot.gg_minimal_depth}}

@@ -41,6 +41,7 @@ test_that("gg_variable classifications",{
 
 
 test_that("gg_variable survival",{
+  skip("PBC gg_variable")
   ## Load the cached forest
   data(rfsrc_pbc, package="ggRandomForests")
   

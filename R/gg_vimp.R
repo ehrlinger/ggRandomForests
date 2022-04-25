@@ -77,7 +77,7 @@
 #' data(rfsrc_veteran, package="ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_veteran)
 #' plot(gg_dta)
-#' }
+#' 
 #' 
 #' ## -------- pbc data
 #' data(rfsrc_pbc, package="ggRandomForests")
@@ -87,7 +87,7 @@
 #' # Restrict to only the top 10.
 #' gg_dta <- gg_vimp(rfsrc_pbc, nvar=10)
 #' plot(gg_dta)
-
+#' }
 #' @aliases gg_vimp gg_vimp.rfsrc gg_vimp.randomForest gg_vimp.randomForest.formula
 #' @export 
 gg_vimp <- function (object, nvar, ...) {

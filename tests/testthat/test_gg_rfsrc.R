@@ -49,6 +49,7 @@ test_that("gg_rfsrc classifications",{
 
 
 test_that("gg_rfsrc survival",{
+  skip("PBC gg_rfsrc")
   ## Load the cached forest
   data(rfsrc_pbc, package="ggRandomForests")
   

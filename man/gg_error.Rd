@@ -88,7 +88,6 @@ rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = dta$veteran, ...)
 
 gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)
-}
 
 ## ------------- pbc data
 # Load a cached randomForestSRC object
@@ -96,6 +95,7 @@ data(rfsrc_pbc, package="ggRandomForests")
 
 gg_dta <- gg_error(rfsrc_pbc)
 plot(gg_dta)
+}
 
 }
 \references{

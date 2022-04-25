@@ -42,6 +42,8 @@ test_that("gg_partial classifications",{
 
 
 test_that("gg_partial survival",{
+  skip("PBC gg_partial")
+  
   ## Load the cached forest
   data(rfsrc_pbc, package="ggRandomForests")
   
@@ -160,7 +162,7 @@ test_that("gg_partial regression",{
 })
 
 test_that("gg_partial combine",{
-  
+  skip("PBC gg_partial combine")
   # Load a set of plot.variable partial plot data
   data(partial_pbc)
   

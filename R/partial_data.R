@@ -80,7 +80,7 @@
 #' # plot the forest partial plots
 #' gg_dta <- gg_partial(partial_Boston)
 #' plot(gg_dta, panel=TRUE)
-#' 
+#'
 #' #---------------------------------------------------------------------
 #' # randomForestSRC::pbc data - survival random forest
 #' #---------------------------------------------------------------------

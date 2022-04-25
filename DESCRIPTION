@@ -20,7 +20,8 @@ Imports:
     ggplot2,
     survival,
     parallel,
-    tidyr
+    tidyr,
+    randomForest,
 Suggests:
     testthat,
     rmdformats,
@@ -30,8 +31,8 @@ Suggests:
     knitr,
     rmarkdown,
     plot3D,
-    randomForest,
-    lintr
+    lintr,
+    datasets
 RoxygenNote: 7.1.2
 LazyData: true
 LazyDataCompression: bzip2

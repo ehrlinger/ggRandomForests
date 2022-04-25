@@ -28,6 +28,10 @@
 #' @importFrom parallel mclapply
 #' 
 #' @examples 
+#' \dontrun{
+#' # We need to create this dataset
+#' cache_rfsrc_datasets(set="pbc")
+#' 
 #' # Load a set of plot.variable partial plot data
 #' data(partial_pbc)
 #' 
@@ -62,7 +66,7 @@
 #' }
 #' plot(ggpart, panel=TRUE) 
 #' 
-#' 
+#' }
 #' @export
 combine.gg_partial <- function(x, y, lbls, ...){
   return(combine.gg_partial_list(x, y, lbls, ...))

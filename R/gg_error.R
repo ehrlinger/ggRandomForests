@@ -104,15 +104,17 @@
 #'
 #' gg_dta <- gg_error(rfsrc_veteran)
 #' plot(gg_dta)
-#' }
-#'
+#' 
 #' ## ------------- pbc data
 #' # Load a cached randomForestSRC object
 #' data(rfsrc_pbc, package="ggRandomForests")
 #'
 #' gg_dta <- gg_error(rfsrc_pbc)
 #' plot(gg_dta)
-#'
+#' }
+#' 
+#' @importFrom stats na.omit
+#' 
 #' @export gg_error gg_error.rfsrc gg_error.randomForest gg_error.randomForest.formula
 gg_error <- function (object, ...) {
   UseMethod("gg_error", object)
@@ -146,7 +148,7 @@ gg_error.rfsrc <- function(object, ...) {
                       membership=FALSE)
     gg_dta$train <- gg_prd$err.rate
   }
-  
+  gg_dta <- na.omit(gg_dta)
   class(gg_dta) <- c("gg_error",class(gg_dta))
   invisible(gg_dta)
 }

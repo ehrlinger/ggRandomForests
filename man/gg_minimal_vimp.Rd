@@ -93,11 +93,11 @@ data(varsel_veteran, package="ggRandomForests")
 
 gg_dta <- gg_minimal_vimp(varsel_veteran)
 plot(gg_dta)
-}
+
 ## -------- pbc data
 data(varsel_pbc, package="ggRandomForests")
 
 gg_dta <- gg_minimal_vimp(varsel_pbc)
 plot(gg_dta)
-
+}
 }
