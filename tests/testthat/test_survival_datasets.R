@@ -48,6 +48,7 @@ test_that("survival_functions_tests: PBC",{
   dta.train <- pbc[-which(is.na(pbc$treatment)),]
   # Create a test set from the remaining patients
   pbc.test <- pbc[which(is.na(pbc$treatment)),]
+  
   #========
   # build the forest:
   rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
