@@ -1,4 +1,5 @@
-This is ggRandomForests package submission v2.1.0
+This is ggRandomForests package submission v2.1.1
 --------------------------------------------------------------------------------
-* Pull ggRandomForest out of the archive after issues with randomForestSRC V3.0.x release.
-* Remove package tests on survival models for CRAN acceptance limits
+* Correct issue #32:plot.gg_interaction.R Produce variable interaction plots with the order of the faceting to match the minimal depth rank order.
+* Re-add survival function tests using skip_on_cran
+* 

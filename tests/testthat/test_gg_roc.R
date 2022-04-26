@@ -60,23 +60,6 @@ test_that("gg_roc classifications",{
   expect_is(plot.gg_roc(rfsrc_iris), "ggplot")
 })
 
-
-test_that("gg_roc survival",{
-  skip("PBC gg_roc")
-  ## Load the cached forest
-  data(rfsrc_pbc, package="ggRandomForests")
-  
-  # Test the cached forest type
-  expect_is(rfsrc_pbc, "rfsrc")
-  
-  # Test the forest family
-  expect_match(rfsrc_pbc$family, "surv")
-  
-  ## Create the correct gg_roc object
-  expect_error(gg_roc(rfsrc_pbc))
-  
-})
-
 test_that("gg_roc regression",{
   ## Load the cached forest
   data(rfsrc_Boston, package="ggRandomForests")

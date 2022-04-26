@@ -142,6 +142,9 @@ plot.gg_interaction <- function(x, xvar, lbls, ...){
     gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) %in% c("rank", "names"))]
     gg_dta <- tidyr::gather(gg_dta, "variable", "value", gathercols)
     
+    # Correct ordering: Issue #32 code contributed by afb206
+    gg_dta$variable <- factor(gg_dta$variable, levels=unique(gg_dta$variable))
+    
     gg_dta$value <- as.numeric(gg_dta$value)
     gg_dta$names <- factor(gg_dta$names,
                            levels=unique(gg_dta$names))

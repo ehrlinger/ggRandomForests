@@ -39,49 +39,6 @@ test_that("gg_variable classifications",{
   expect_is(gg_plt, "ggplot")
 })
 
-
-test_that("gg_variable survival",{
-  skip("PBC gg_variable")
-  ## Load the cached forest
-  data(rfsrc_pbc, package="ggRandomForests")
-  
-  # Test the cached forest type
-  expect_is(rfsrc_pbc, "rfsrc")
-  
-  ## Create the correct gg_error object
-  gg_dta <- gg_variable(rfsrc_pbc, time=.25)
-  
-  # Test object type
-  expect_is(gg_dta, "gg_variable")
-  
-  ## Test plotting the gg_variable object
-  gg_plt <- plot.gg_variable(gg_dta, xvar="age")
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
-  
-  
-  ## Test plotting the gg_variable object
-  gg_plt <- plot.gg_variable(gg_dta, xvar=rfsrc_pbc$xvar.names)
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "list")
-  expect_equal(length(gg_plt), length(rfsrc_pbc$xvar.names))
-  
-  
-  for(ind in 1:length(rfsrc_pbc$xvar.names))
-    expect_is(gg_plt[[ind]], "ggplot")
-  
-  
-  ## Test plotting the gg_error object
-  expect_warning(gg_plt <- plot.gg_variable(gg_dta, xvar = rfsrc_pbc$xvar.names,
-                                            panel=TRUE)
-  )
-  # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
-  
-})
-
 test_that("gg_variable regression",{
   ## Load the cached forest
   data(rfsrc_Boston, package="ggRandomForests")
