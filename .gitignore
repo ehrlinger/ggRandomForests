@@ -3,6 +3,8 @@
 .Rhistory
 .RData
 ..Rcheck
+00check.log
+00install.out
 Sweave.sty
 inst/doc/randomForestRegression*
 inst/doc/randomForestSruvival*
