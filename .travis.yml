@@ -45,13 +45,15 @@ r_binary_packages:
 # up a not-yet-released bugfix)
 
 # For code coverage
-r_github_packages:
-  - jimhester/covr
+#r_github_packages:
+#  - jimhester/covr
 #  - hadley/dplyr
 #  - hadley/tidyr
 #  - hadley/ggplot2
 #  - ehrlinger/randomForestSRC
 
+r_packages:
+  - covr
+
 after_success:
-  - Rscript -e 'covr::coveralls()'
-  
+  - Rscript -e 'library(covr); codecov()'
