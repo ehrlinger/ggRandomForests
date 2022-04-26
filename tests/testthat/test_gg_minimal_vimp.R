@@ -28,33 +28,6 @@ test_that("gg_minimal_vimp classifications",{
   expect_is(gg.obj, "ggplot")
 })
 
-
-test_that("gg_minimal_vimp survival",{
-  skip("PBC gg_minimal_vimp")
-  ## Load the cached forest
-  data(varsel_pbc, package="ggRandomForests")
-  
-  # Test the cached forest type
-  expect_is(varsel_pbc, "list")
-  
-  ## Create the correct gg_error object
-  ggrf.obj <- gg_minimal_vimp(varsel_pbc)
-  
-  # Test object type
-  expect_is(ggrf.obj, "gg_minimal_vimp")
-  
-  
-  # Test varselect is the same
-  expect_equivalent(dim(ggrf.obj)[1], dim(varsel_pbc$varselect)[1])
-  expect_equivalent(dim(ggrf.obj)[2], 4)
-  
-  ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_vimp(ggrf.obj)
-  
-  # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
-})
-
 test_that("gg_minimal_vimp regression",{
   ## Load the cached forest
   data(varsel_Boston, package="ggRandomForests")

@@ -83,49 +83,7 @@ test_that("gg_error.randomForest classifications",{
   
 })
 
-test_that("gg_error survival", {  
-  ## Load the cached forest
-  # data(rfsrc_pbc, package="ggRandomForests")
-  
-  skip("PBC gg_error")
-  pbc <- pbc_data()
-  dta.train <- pbc[-which(is.na(pbc$treatment)),]
-  # Create a test set from the remaining patients
-  pbc.test <- pbc[which(is.na(pbc$treatment)),]
-  
-  rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
-                                      dta.train, nsplit = 10,
-                                      na.action="na.impute",
-                                      importance=TRUE, tree.err=TRUE)
-  # Test the cached forest type
-  expect_is(rfsrc_pbc, "rfsrc")
-  
-  # Test the forest family
-  expect_match(rfsrc_pbc$family, "surv")
-  
-  ## Create the correct gg_error object
-  gg_dta <- gg_error(rfsrc_pbc)
-  
-  # Test object type
-  expect_is(gg_dta, "gg_error")
-  
-  # Test classification dimensions
-  expect_equal(dim(gg_dta)[1], length(rfsrc_pbc$err.rate))
-  expect_equal(dim(gg_dta)[2], 2)
-  
-  # Test data is correctly pulled from randomForest obect.
-  tmp <- c(gg_dta[,1])
-  expect_equivalent(tmp, rfsrc_pbc$err.rate)
-  
-  ## Test plotting the gg_error object
-  gg_plt <- plot(gg_dta)
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
-  
-  expect_error(gg_error(gg_plt))
-  # "Incorrect object type: Expects a gg_error object"
-})
+
 
 test_that("gg_error regression rfsrc",{
   

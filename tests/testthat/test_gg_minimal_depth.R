@@ -32,38 +32,6 @@ test_that("gg_minimal_depth classifications",{
   expect_error(gg_minimal_depth.rfsrc(gg_plt))
 })
 
-
-test_that("gg_minimal_depth survival",{
-  skip("PBC gg_minimal_depth")
-  ## Load the cached forest
-  data(varsel_pbc, package="ggRandomForests")
-  
-  # Test the cached forest type
-  expect_is(varsel_pbc, "list")
-  
-  ## Create the correct gg_error object
-  gg_dta <- gg_minimal_depth(varsel_pbc)
-  
-  # Test object type
-  expect_is(gg_dta, "gg_minimal_depth")
-  
-  
-  # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == "names")],
-                    varsel_pbc$varselect)
-  
-  ## Test plotting the gg_error object
-  gg_plt <- plot.gg_minimal_depth(gg_dta)
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
-  
-  gg_plt <- plot(gg_dta, nvar=12)
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
-})
-
 test_that("gg_minimal_depth regression",{
   ## Load the cached forest
   data(varsel_Boston, package="ggRandomForests")
