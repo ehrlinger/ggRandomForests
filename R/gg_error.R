@@ -153,7 +153,7 @@ gg_error.rfsrc <- function(object, ...) {
   arg_list <- as.list(substitute(list(...)))
   training <- FALSE
   if (!is.null(arg_list$training))
-    training <- arg_list$traini
+    training <- arg_list$training
   if (training) {
     trn <- data.frame(cbind(object$xvar, object$yvar))
     colnames(trn) <- c(object$xvar.names, object$yvar.names)
