@@ -1,10 +1,3 @@
----
-author: John Ehrlinger
-output:
-  html_document:
-    toc: no
----
-
 ggRandomForests: Visually Exploring Random Forests
 ========================================================
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11526.svg)](https://doi.org/10.5281/zenodo.11526)
