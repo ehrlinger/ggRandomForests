@@ -9,8 +9,8 @@
 calc_roc.rfsrc(object, yvar, which.outcome = "all", oob = TRUE)
 }
 \arguments{
-\item{object}{\code{\link[randomForestSRC]{rfsrc}} or 
-\code{\link[randomForestSRC]{predict.rfsrc}} object 
+\item{object}{\code{\link[randomForestSRC]{rfsrc}} or
+\code{\link[randomForestSRC]{predict.rfsrc}} object
 containing predicted response}
 
 \item{yvar}{True response variable}
@@ -26,20 +26,24 @@ A \code{gg_roc} object
 Receiver Operator Characteristic calculator
 }
 \details{
-For a randomForestSRC prediction and the actual 
-response value, calculate the specificity (1-False Positive Rate) and sensitivity 
-(True Positive Rate) of a predictor.
+For a randomForestSRC prediction and the actual
+response value, calculate the specificity (1-False Positive Rate) and
+sensitivity (True Positive Rate) of a predictor.
 
-This is a helper function for the \code{\link{gg_roc}} functions, and not intended 
-for use by the end user.
+This is a helper function for the \code{\link{gg_roc}} functions, and
+not intended for use by the end user.
 }
 \examples{
 ## Taken from the gg_roc example
 # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 data(rfsrc_iris)
-gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=TRUE)
-gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar, which.outcome=1, oob=FALSE)
+gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar,
+     which.outcome=1, oob=TRUE)
+gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar,
+     which.outcome=1, oob=FALSE)
 }
 \seealso{
-\code{\link{calc_auc}} \code{\link{gg_roc}} \code{\link{plot.gg_roc}}
+\code{\link{calc_auc}} \code{\link{gg_roc}}
+
+\code{\link{plot.gg_roc}}
 }

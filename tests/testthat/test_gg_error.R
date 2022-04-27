@@ -1,13 +1,15 @@
 # testthat for gg_error function
 context("gg_error tests")
 
-test_that("gg_error.rfsrc classifications",{
-  
+test_that("gg_error.rfsrc classifications", {
   ## Load the cached forest
-  data(iris, package="datasets")
-  rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
-                                       data = iris, 
-                                       importance=TRUE, tree.err=TRUE)
+  data(iris, package = "datasets")
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    importance = TRUE,
+    tree.err = TRUE
+  )
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
   
@@ -25,7 +27,7 @@ test_that("gg_error.rfsrc classifications",{
   expect_equal(dim(gg_dta)[2], dim(rfsrc_iris$err.rate)[2] + 1)
   
   # Test data is correctly pulled from randomForest obect.
-  # expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "ntree")]), 
+  # expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "ntree")]),
   #                   rfsrc_iris$err.rate)
   
   ## Test plotting the gg_error object
@@ -43,11 +45,11 @@ test_that("gg_error.rfsrc classifications",{
 })
 
 
-test_that("gg_error.randomForest classifications",{
+test_that("gg_error.randomForest classifications", {
   ## Load the cached forest
-  data(iris, package="datasets")
+  data(iris, package = "datasets")
   ## Load the cached forest
-  rf_iris <- randomForest::randomForest(Species ~., 
+  rf_iris <- randomForest::randomForest(Species ~ .,
                                         data = iris)
   
   # Test the cached forest type
@@ -67,7 +69,8 @@ test_that("gg_error.randomForest classifications",{
   expect_equal(dim(gg_dta)[2], dim(rf_iris$err.rate)[2] + 1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "ntree")]), rf_iris$err.rate)
+  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "ntree")]),
+                    rf_iris$err.rate)
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
@@ -85,14 +88,13 @@ test_that("gg_error.randomForest classifications",{
 
 
 
-test_that("gg_error regression rfsrc",{
-  
+test_that("gg_error regression rfsrc", {
   ## Load the cached forest
-  data(Boston, package="MASS")
+  data(Boston, package = "MASS")
   
   Boston$chas <- as.logical(Boston$chas)
   
-  rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston)
+  rfsrc_Boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston)
   # Test the cached forest type
   expect_is(rfsrc_Boston, "rfsrc")
   
@@ -110,7 +112,7 @@ test_that("gg_error regression rfsrc",{
   expect_equal(ncol(gg_dta), 2)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(c(gg_dta[,1]), na.omit(rfsrc_Boston$err.rate))
+  expect_equivalent(c(gg_dta[, 1]), na.omit(rfsrc_Boston$err.rate))
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
@@ -123,23 +125,17 @@ test_that("gg_error regression rfsrc",{
   
   # Test the exception for input
   expect_error(gg_error(gg_plt))
-  
-  ## Create the correct gg_error object
-  # gg_dta <- gg_error(rf_Boston, training=TRUE)
-  
-  # Test object type
-  #  expect_is(gg_dta, "gg_error")
 
 })
 
 
-test_that("gg_error regression randomForest",{
+test_that("gg_error regression randomForest", {
   ## Load the cached forest
-  data(Boston, package="MASS")
+  data(Boston, package = "MASS")
   
   Boston$chas <- as.logical(Boston$chas)
   
-  rf_Boston <- randomForest::randomForest(medv~., data=Boston)
+  rf_Boston <- randomForest::randomForest(medv ~ ., data = Boston)
   # Test the cached forest type
   expect_is(rf_Boston, "randomForest")
   
@@ -157,7 +153,7 @@ test_that("gg_error regression randomForest",{
   expect_equal(ncol(gg_dta), 2)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(c(gg_dta[,1]), rf_Boston$mse)
+  expect_equivalent(c(gg_dta[, 1]), rf_Boston$mse)
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
@@ -172,8 +168,8 @@ test_that("gg_error regression randomForest",{
   expect_error(gg_error(gg_plt))
   
   ## Create the correct gg_error object
-  # gg_dta <- gg_error(rf_Boston, training=TRUE)
+  gg_dta <- gg_error(rf_Boston)
   
   # Test object type
-  #  expect_is(gg_dta, "gg_error")
+  expect_is(gg_dta, "gg_error")
 })

@@ -17,22 +17,23 @@ combine.gg_partial(x, y, lbls, ...)
 \item{...}{not used}
 }
 \value{
-\code{\link{gg_partial}} or \code{gg_partial_list} based on 
+\code{\link{gg_partial}} or \code{gg_partial_list} based on
  class of x and y.
 }
 \description{
-The \code{combine.gg_partial} function assumes the two \code{\link{gg_partial}} 
-objects were generated from the same \code{\link[randomForestSRC]{rfsrc}} 
-object. So, the function joins along the \code{\link{gg_partial}} list item
-names (one per partial plot variable). Further, we combine the two 
-\code{\link{gg_partial}} objects along the group variable.
+The \code{combine.gg_partial} function assumes the two 
+\code{\link{gg_partial}} objects were generated from the same 
+\code{\link[randomForestSRC]{rfsrc}} object. So, the function joins along the
+\code{\link{gg_partial}} list item names (one per partial plot variable). 
+Further, we combine the two \code{\link{gg_partial}} objects along the group 
+variable.
 
-Hence, to join three \code{\link{gg_partial}} objects together (i.e. for 
-three different time points from a survival random forest) would require 
-two \code{combine.gg_partial} calls: One to join the first two 
-\code{\link{gg_partial}} object, and one to append the third 
+Hence, to join three \code{\link{gg_partial}} objects together (i.e. for
+three different time points from a survival random forest) would require
+two \code{combine.gg_partial} calls: One to join the first two
+\code{\link{gg_partial}} object, and one to append the third
 \code{\link{gg_partial}} object to the output from the first call.
-The second call will append a single \code{lbls} label to the 
+The second call will append a single \code{lbls} label to the
 \code{\link{gg_partial}} object.
 }
 \examples{
@@ -44,7 +45,7 @@ cache_rfsrc_datasets(set="pbc")
 data(partial_pbc)
 
 # A list of 2 plot.variable objects
-length(partial_pbc) 
+length(partial_pbc)
 class(partial_pbc)
 
 class(partial_pbc[[1]])
@@ -54,25 +55,25 @@ class(partial_pbc[[2]])
 ggPrtl.1 <- gg_partial(partial_pbc[[1]])
 ggPrtl.2 <- gg_partial(partial_pbc[[2]])
 
-# Combine the objects to get multiple time curves 
+# Combine the objects to get multiple time curves
 # along variables on a single figure.
-ggpart <- combine.gg_partial(ggPrtl.1, ggPrtl.2, 
+ggpart <- combine.gg_partial(ggPrtl.1, ggPrtl.2,
                              lbls = c("1 year", "3 years"))
-                             
+
 # Plot each figure separately
-plot(ggpart)                                  
+plot(ggpart)
 
 # Get the continuous data for a panel of continuous plots.
 ggcont <- ggpart
 ggcont$edema <- ggcont$ascites <- ggcont$stage <- NULL
-plot(ggcont, panel=TRUE) 
+plot(ggcont, panel=TRUE)
 
 # And the categorical for a panel of categorical plots.
-nms <- colnames(sapply(ggcont, function(st){st}))
-for(ind in nms){
+nms <- colnames(sapply(ggcont, function(st) {st}))
+for(ind in nms) {
    ggpart[[ind]] <- NULL
 }
-plot(ggpart, panel=TRUE) 
+plot(ggpart, panel=TRUE)
 
 }
 }

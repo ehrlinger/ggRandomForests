@@ -1,9 +1,9 @@
 # testthat for gg_variable function
 context("gg_variable tests")
 
-test_that("gg_variable classifications",{
+test_that("gg_variable classifications", {
   ## Load the cached forest
-  data(rfsrc_iris, package="ggRandomForests")
+  data(rfsrc_iris, package = "ggRandomForests")
   
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
@@ -24,24 +24,24 @@ test_that("gg_variable classifications",{
   expect_is(gg_plt, "ggplot")
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_variable(gg_dta, xvar = rfsrc_iris$xvar.names )
+  gg_plt <- plot.gg_variable(gg_dta, xvar = rfsrc_iris$xvar.names)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "list")
   expect_equal(length(gg_plt), length(rfsrc_iris$xvar.names))
-  for(ind in 1:length(rfsrc_iris$xvar.names))
+  for (ind in seq_len(length(rfsrc_iris$xvar.names)))
     expect_is(gg_plt[[ind]], "ggplot")
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_variable(gg_dta, xvar = rfsrc_iris$xvar.names,
-                             panel=TRUE)
+                             panel = TRUE)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
 })
 
-test_that("gg_variable regression",{
+test_that("gg_variable regression", {
   ## Load the cached forest
-  data(rfsrc_Boston, package="ggRandomForests")
+  data(rfsrc_Boston, package = "ggRandomForests")
   
   # Test the cached forest type
   expect_is(rfsrc_Boston, "rfsrc")
@@ -58,12 +58,12 @@ test_that("gg_variable regression",{
   # Test return is s ggplot object
   expect_is(gg_plt, "list")
   expect_equal(length(gg_plt), length(rfsrc_Boston$xvar.names))
-  for(ind in 1:length(rfsrc_Boston$xvar.names))
+  for (ind in seq_len(length(rfsrc_Boston$xvar.names)))
     expect_is(gg_plt[[ind]], "ggplot")
   
   
   ## Test plotting the gg_error object
-  expect_warning(gg_plt <- plot.gg_variable(gg_dta, panel=TRUE))
+  expect_warning(gg_plt <- plot.gg_variable(gg_dta, panel = TRUE))
   expect_is(gg_plt, "ggplot")
   
 })

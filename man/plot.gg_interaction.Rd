@@ -8,7 +8,8 @@ Plot a \code{\link{gg_interaction}} object,}
 \method{plot}{gg_interaction}(x, xvar, lbls, ...)
 }
 \arguments{
-\item{x}{gg_interaction object created from a \code{\link[randomForestSRC]{rfsrc}} object}
+\item{x}{gg_interaction object created from a 
+\code{\link[randomForestSRC]{rfsrc}} object}
 
 \item{xvar}{variable (or list of variables) of interest.}
 
@@ -25,7 +26,7 @@ Plot a \code{\link{gg_interaction}} object,
 }
 \examples{
 \dontrun{
-## Examples from randomForestSRC package... 
+## Examples from randomForestSRC package...
 ## ------------------------------------------------------------
 ## find interactions, classification setting
 ## ------------------------------------------------------------
@@ -73,7 +74,7 @@ plot(gg_dta, panel=TRUE)
 ## find interactions, survival setting
 ## ------------------------------------------------------------
 ## -------- pbc data
-## data(pbc, package = "randomForestSRC") 
+## data(pbc, package = "randomForestSRC")
 ## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
 ## interaction_pbc <- find.interaction(pbc.obj, nvar = 8)
 data(interaction_pbc, package="ggRandomForests")
@@ -95,16 +96,17 @@ plot(gg_dta, panel=TRUE)
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 
-Ishwaran H. and Kogalur U.B. (2007). Random survival forests for 
+Ishwaran H. and Kogalur U.B. (2007). Random survival forests for
 R, Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
+Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
 Regression and Classification (RF-SRC), R package version 1.4.
 }
 \seealso{
 \code{\link[randomForestSRC]{rfsrc}}
 \code{\link[randomForestSRC]{find.interaction}}
-\code{\link[randomForestSRC]{max.subtree}} \code{\link[randomForestSRC]{var.select}} 
+\code{\link[randomForestSRC]{max.subtree}} 
+\code{\link[randomForestSRC]{var.select}}
 \code{\link[randomForestSRC]{vimp}}
 \code{\link{plot.gg_interaction}}
 }

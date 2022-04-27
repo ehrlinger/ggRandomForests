@@ -2,16 +2,17 @@
 % Please edit documentation in R/plot.gg_minimal_depth.R
 \name{plot.gg_minimal_depth}
 \alias{plot.gg_minimal_depth}
-\title{Plot a \code{\link{gg_minimal_depth}} object for random forest variable ranking.}
+\title{Plot a \code{\link{gg_minimal_depth}} object for random forest variable 
+ranking.}
 \usage{
 \method{plot}{gg_minimal_depth}(x, selection = FALSE, type = c("named", "rank"), lbls, ...)
 }
 \arguments{
-\item{x}{\code{\link{gg_minimal_depth}} object created from a 
+\item{x}{\code{\link{gg_minimal_depth}} object created from a
 \code{\link[randomForestSRC]{rfsrc}} object}
 
-\item{selection}{should we restrict the plot to only include variables selected by the 
-minimal depth criteria (boolean).}
+\item{selection}{should we restrict the plot to only include variables 
+selected by the minimal depth criteria (boolean).}
 
 \item{type}{select type of y axis labels c("named","rank")}
 
@@ -23,11 +24,12 @@ minimal depth criteria (boolean).}
 \code{ggplot} object
 }
 \description{
-Plot a \code{\link{gg_minimal_depth}} object for random forest variable ranking.
+Plot a \code{\link{gg_minimal_depth}} object for random forest variable 
+ranking.
 }
 \examples{
 \dontrun{
-## Examples from RFSRC package... 
+## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -98,12 +100,13 @@ plot(gg_dta)
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 
-Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, 
+Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival, 
+Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival,
 Regression and Classification (RF-SRC), R package version 1.5.
 }
 \seealso{
-\code{\link[randomForestSRC]{var.select}} \code{\link{gg_minimal_depth}}
+\code{\link[randomForestSRC]{var.select}} 
+\code{\link{gg_minimal_depth}}
 }

@@ -17,28 +17,32 @@
 ####**********************************************************************
 #' Minimal depth data object (\code{[randomForestSRC]{var.select}})
 #'
-#' @param object A \code{[randomForestSRC]{rfsrc}} object, \code{[randomForestSRC]{predict}}
-#'  object or the list from the \code{[randomForestSRC]{var.select.rfsrc}} function.
-#' @param ... optional arguments passed to the \code{[randomForestSRC]{var.select}} function 
-#'  if operating on an \code{[randomForestSRC]{rfsrc}} object. 
-#' 
-#' @description the \code{[randomForestSRC]{var.select}} function implements 
-#' random forest variable selection using tree minimal depth methodology. The 
-#' \code{gg_minimal_depth} 
-#' function takes the output from \code{[randomForestSRC]{var.select}} and creates a 
-#' \code{data.frame} formatted for the \code{\link{plot.gg_minimal_depth}} function.
-#'  
-#' @return \code{gg_minimal_depth} object, A modified list of variables from the 
-#' \code{[randomForestSRC]{var.select}} function, ordered by minimal depth rank. 
-#' 
+#' @param object A \code{[randomForestSRC]{rfsrc}} object,
+#' \code{[randomForestSRC]{predict}} object or the list from the
+#' \code{[randomForestSRC]{var.select.rfsrc}} function.
+#' @param ... optional arguments passed to the
+#' \code{[randomForestSRC]{var.select}} function if operating on an
+#' \code{[randomForestSRC]{rfsrc}} object.
+#'
+#' @description the \code{[randomForestSRC]{var.select}} function implements
+#' random forest variable selection using tree minimal depth methodology. The
+#' \code{gg_minimal_depth} function takes the output from
+#' \code{[randomForestSRC]{var.select}} and creates a \code{data.frame}
+#' formatted for the \code{\link{plot.gg_minimal_depth}} function.
+#'
+#' @return \code{gg_minimal_depth} object, A modified list of variables from
+#' the \code{[randomForestSRC]{var.select}} function, ordered by minimal
+#' depth rank.
+#'
 #' @aliases gg_minimal_depth gg_minimal_depth.rfsrc
-#' 
-#' @seealso \code{[randomForestSRC]{var.select}} \code{\link{plot.gg_minimal_depth}}
-#' 
+#'
+#' @seealso \code{[randomForestSRC]{var.select}}
+#' @seealso \code{\link{plot.gg_minimal_depth}}
+#'
 #' @importFrom randomForestSRC var.select
-#' 
+#'
 #' @examples
-#' ## Examples from RFSRC package... 
+#' ## Examples from RFSRC package...
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -48,13 +52,13 @@
 #' # varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
 #' # ... or load a cached randomForestSRC object
 #' data(varsel_iris, package="ggRandomForests")
-#' 
+#'
 #' # Get a data.frame containing minimaldepth measures
 #' gg_dta<- gg_minimal_depth(varsel_iris)
-#' 
+#'
 #' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
-#' 
+#'
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
@@ -64,28 +68,28 @@
 #' # varsel_airq <- randomForestSRC::var.select(rfsrc_airq)
 #' # ... or load a cached randomForestSRC object
 #' data(varsel_airq, package="ggRandomForests")
-#' 
+#'
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_minimal_depth(varsel_airq)
-#' 
+#'
 #' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
 #' }
-#' 
+#'
 #' ## -------- Boston data
 #' data(varsel_Boston, package="ggRandomForests")
-#' 
+#'
 #' # Get a data.frame containing error rates
 #' plot(gg_minimal_depth(varsel_Boston))
-#' 
+#'
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(varsel_mtcars, package="ggRandomForests")
-#' 
+#'
 #' # Get a data.frame containing error rates
 #' plot.gg_minimal_depth(varsel_mtcars)
 #' }
-#' 
+#'
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
@@ -98,56 +102,56 @@
 #' # varsel_veteran <- randomForestSRC::var.select(rfsrc_veteran)
 #' # Load a cached randomForestSRC object
 #' data(varsel_veteran, package="ggRandomForests")
-#' 
+#'
 #' gg_dta <- gg_minimal_depth(varsel_veteran)
 #' plot(gg_dta)
-#' 
-#' 
+#'
+#'
 #' ## -------- pbc data
 #' data(varsel_pbc, package="ggRandomForests")
-#' 
+#'
 #' gg_dta <- gg_minimal_depth(varsel_pbc)
 #' plot(gg_dta)
 #' }
-#' @aliases gg_minimal_depth  gg_minimal_depth.randomForest gg_minimal_depth.rfsrc
-#' 
+#' @aliases gg_minimal_depth  gg_minimal_depth.randomForest 
+#' @aliases gg_minimal_depth.rfsrc
+#'
 #' @export
-gg_minimal_depth <- function (object, ...) {
+gg_minimal_depth <- function(object, ...) {
   UseMethod("gg_minimal_depth", object)
 }
 
 #' @export
-gg_minimal_depth.randomForest <- function(object, ...){
+gg_minimal_depth.randomForest <- function(object, ...) {
   stop("gg_minimal_depth is not yet support for randomForest objects")
 }
 
 #' @export
-gg_minimal_depth.rfsrc <- function (object, ...){
-  
-  if (inherits(object, "rfsrc") == TRUE){
+gg_minimal_depth.rfsrc <- function(object, ...) {
+  if (inherits(object, "rfsrc") == TRUE) {
     vsel <- randomForestSRC::var.select(object, ...)
-  }else if (!is.null(object$varselect)) {
+  } else if (!is.null(object$varselect)) {
     # Test for variable selection minimal depth object
     vsel <- object
-  }else if(is.null(object$threshold)) {
+  } else if (is.null(object$threshold)) {
     # Test for max.subtree minimal depth object, convert to vsel object
     stop("No support for max.subtree yet, use var.select instead")
-  }else{
+  } else{
     stop("Function works only on rfsrc or var.select objects.")
   }
   
   
-  # There seems to be a bug in the randomForestSRC::var.select 
+  # There seems to be a bug in the randomForestSRC::var.select
   # function that does not calculage the threshold correctly.
   
   
   vsel$varselect$names <- rownames(vsel$varselect)
   
-  vsel$varselect$names <- factor(vsel$varselect$names, 
-                                 levels=unique(vsel$varselect$names))
+  vsel$varselect$names <- factor(vsel$varselect$names,
+                                 levels = unique(vsel$varselect$names))
   
   class(vsel) <- c("gg_minimal_depth", class(vsel))
-  invisible(vsel) 
+  invisible(vsel)
 }
 
 

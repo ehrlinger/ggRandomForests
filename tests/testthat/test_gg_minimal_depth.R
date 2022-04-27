@@ -1,9 +1,9 @@
 # testthat for gg_minimal_depth function
 context("gg_minimal_depth tests")
 
-test_that("gg_minimal_depth classifications",{
+test_that("gg_minimal_depth classifications", {
   ## Load the cached forest
-  data(varsel_iris, package="ggRandomForests")
+  data(varsel_iris, package = "ggRandomForests")
   
   # Test the cached forest type
   expect_is(varsel_iris, "list")
@@ -18,10 +18,9 @@ test_that("gg_minimal_depth classifications",{
   expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[,-which(colnames(gg_dta$varselect) == "names")],
+  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) ==
+                                               "names")],
                     varsel_iris$varselect)
-#   
-#   expect_is(gg_dta$threshold - mean(gg_dta$varselect$depth) < 1.e-6 )
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   
@@ -32,9 +31,9 @@ test_that("gg_minimal_depth classifications",{
   expect_error(gg_minimal_depth.rfsrc(gg_plt))
 })
 
-test_that("gg_minimal_depth regression",{
+test_that("gg_minimal_depth regression", {
   ## Load the cached forest
-  data(varsel_Boston, package="ggRandomForests")
+  data(varsel_Boston, package = "ggRandomForests")
   
   # Test the cached forest type
   expect_is(varsel_Boston, "list")
@@ -46,7 +45,8 @@ test_that("gg_minimal_depth regression",{
   expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == "names")], 
+  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == 
+                                               "names")],
                     varsel_Boston$varselect)
   
   ## Test plotting the gg_error object
@@ -60,13 +60,14 @@ test_that("gg_minimal_depth regression",{
   # Test object type
   expect_is(gg_dta, "gg_minimal_depth")
   
-  data(Boston, package="MASS")
+  data(Boston, package = "MASS")
   
-  cls <- sapply(Boston, class) 
-  # 
-  lbls <- 
+  cls <- sapply(Boston, class)
+  #
+  lbls <-
     #crim
-    c("Crime rate by town.",
+    c(
+      "Crime rate by town.",
       # zn
       "Proportion of residential land zoned for lots over 25,000 sq.ft.",
       # indus
@@ -92,24 +93,31 @@ test_that("gg_minimal_depth regression",{
       # lstat
       "Lower status of the population (percent).",
       # medv
-      "Median value of homes ($1000s).")
+      "Median value of homes ($1000s)."
+    )
   
   # Build a table for data description
-  dta.labs <- data.frame(cbind(Variable=names(cls), Description=lbls, type=cls))
+  dta.labs <-
+    data.frame(cbind(
+      Variable = names(cls),
+      Description = lbls,
+      type = cls
+    ))
   
   # Build a named vector for labeling figures later/
   st.labs <- as.character(dta.labs$Description)
   names(st.labs) <- names(cls)
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_minimal_depth(gg_dta, lbls=st.labs, selection=TRUE)
+  gg_plt <-
+    plot.gg_minimal_depth(gg_dta, lbls = st.labs, selection = TRUE)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot") 
+  expect_is(gg_plt, "ggplot")
 })
 
-test_that("gg_minimal_depth exceptions",{
-  data(varsel_Boston, package="ggRandomForests")
+test_that("gg_minimal_depth exceptions", {
+  data(varsel_Boston, package = "ggRandomForests")
   
   # Test the cached forest type
   expect_is(varsel_Boston, "list")
@@ -122,7 +130,7 @@ test_that("gg_minimal_depth exceptions",{
   vsel$threshold <- NULL
   expect_error(gg_minimal_depth(vsel))
   
-  expect_output(print(gg_minimal_depth(varsel_Boston)), 
+  expect_output(print(gg_minimal_depth(varsel_Boston)),
                 "gg_minimal_depth", ignore.case = TRUE)
   
   
@@ -132,15 +140,20 @@ test_that("gg_minimal_depth exceptions",{
   
   expect_is(gg_dta, "gg_minimal_depth")
   
-  expect_is(plot(gg_dta, type="rank"), "ggplot")
+  expect_is(plot(gg_dta, type = "rank"), "ggplot")
   
-  # data(rfsrc_Boston, package="ggRandomForests")
-  # expect_output(gg_dta <- gg_minimal_depth(rfsrc_Boston, fast=TRUE),
-  #               "minimal depth variable selection")
-  # expect_is(gg_dta, "gg_minimal_depth")
-  # 
-  # expect_output(gg_plt <- plot.gg_minimal_depth(rfsrc_Boston, fast=TRUE),
-  #               "minimal depth variable selection")
-  # expect_error(gg_minimal_depth(gg_plt))
+  data(rfsrc_Boston, package = "ggRandomForests")
+  
+  expect_output(
+    gg_dta <- gg_minimal_depth(rfsrc_Boston, fast = TRUE),
+    "minimal depth variable selection"
+  )
+  expect_is(gg_dta, "gg_minimal_depth")
+  
+  expect_output(
+    gg_plt <- plot.gg_minimal_depth(rfsrc_Boston, fast = TRUE),
+    "minimal depth variable selection"
+  )
+  expect_error(gg_minimal_depth(gg_plt))
   
 })

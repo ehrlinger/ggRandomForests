@@ -21,15 +21,16 @@
 
 \item{groups}{vector of stratification variable.}
 
-\item{surv_type}{for survival random forests,  c("mort", "rel.freq", "surv", 
+\item{surv_type}{for survival random forests,  c("mort", "rel.freq", "surv",
 "years.lost", "cif", "chf")}
 
 \item{time}{vector of time points for survival random forests partial plots.}
 
-\item{...}{extra arguments passed to \code{\link[randomForestSRC]{plot.variable}} function}
+\item{...}{extra arguments passed to
+\code{\link[randomForestSRC]{plot.variable}} function}
 }
 \value{
-\code{gg_partial_coplot} object. An subclass of a 
+\code{gg_partial_coplot} object. An subclass of a
 \code{\link{gg_partial_list}} object
 }
 \description{
@@ -49,11 +50,11 @@ copper_cts <- quantile_pts(ggvar$copper, groups = 6, intervals = TRUE)
 # Create the conditional groups and add to the gg_variable object
 copper_grp <- cut(ggvar$copper, breaks = copper_cts)
 
-## We would run this, but it's expensive 
-partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili", 
-                                         groups = copper_grp, 
-                                         surv_type = "surv", 
-                                         time = 1, 
+## We would run this, but it's expensive
+partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
+                                         groups = copper_grp,
+                                         surv_type = "surv",
+                                         time = 1,
                                          show.plots = FALSE)
 
 ## so load the cached set

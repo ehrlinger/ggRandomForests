@@ -10,16 +10,19 @@
 gg_vimp(object, nvar, ...)
 }
 \arguments{
-\item{object}{A \code{\link[randomForestSRC]{rfsrc}} object or output from 
+\item{object}{A \code{\link[randomForestSRC]{rfsrc}} object or output from
 \code{\link[randomForestSRC]{vimp}}}
 
-\item{nvar}{argument to control the number of variables included in the output.}
+\item{nvar}{argument to control the number of variables included in the
+output.}
 
-\item{...}{arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}} function if the 
-\code{\link[randomForestSRC]{rfsrc}} object does not contain importance information.}
+\item{...}{arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}}
+function if the \code{\link[randomForestSRC]{rfsrc}} object does not contain
+importance information.}
 }
 \value{
-\code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank order.
+\code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank
+order.
 }
 \description{
 \code{gg_vimp} Extracts the variable importance (VIMP) information from a
@@ -34,12 +37,12 @@ a \code{\link[randomForestSRC]{rfsrc}} object.
 data(rfsrc_iris, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
- 
+
 ## ------------------------------------------------------------
 ## regression example
 ## ------------------------------------------------------------
 \dontrun{
-## -------- air quality data 
+## -------- air quality data
 # rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
 data(rfsrc_airq, package="ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_airq)
@@ -78,9 +81,11 @@ plot(gg_dta)
 }
 }
 \references{
-Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
-\emph{Electronic J. Statist.}, 1:519-537.
+Ishwaran H. (2007). Variable importance in binary regression trees and
+forests, \emph{Electronic J. Statist.}, 1:519-537.
 }
 \seealso{
-\code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}} \code{\link[randomForestSRC]{vimp}}
+\code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}}
+
+\code{\link[randomForestSRC]{vimp}}
 }

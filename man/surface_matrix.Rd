@@ -3,23 +3,27 @@
 \name{surface_matrix}
 \alias{surface_matrix}
 \alias{surface_matrix.gg_partial_coplot}
-\title{Construct a set of (x, y, z) matrices for surface plotting a \code{gg_partial_coplot} object}
+\title{Construct a set of (x, y, z) matrices for surface plotting a
+\code{gg_partial_coplot} object}
 \usage{
 surface_matrix(dta, xvar)
 }
 \arguments{
-\item{dta}{a gg_partial_coplot object containing at least 3 numeric columns of data}
+\item{dta}{a gg_partial_coplot object containing at least 3 numeric columns
+of data}
 
-\item{xvar}{a vector of 3 column names from the data object, in (x, y, z) order}
+\item{xvar}{a vector of 3 column names from the data object, in (x, y, z)
+order}
 }
 \description{
-Construct a set of (x, y, z) matrices for surface plotting a \code{gg_partial_coplot} object
+Construct a set of (x, y, z) matrices for surface plotting a
+\code{gg_partial_coplot} object
 }
 \details{
 To create a surface plot, the \code{plot3D::surf3D} function expects
-3 matrices of n.x by n.y. Take the p+1 by n \code{gg_partial_coplot} object, 
-and extract and construct the x, y and z matrices from the provided \code{xvar}
-column names.
+3 matrices of n.x by n.y. Take the p+1 by n \code{gg_partial_coplot} object,
+and extract and construct the x, y and z matrices from the provided
+\code{xvar} column names.
 }
 \examples{
 \dontrun{
@@ -34,10 +38,11 @@ data(partial_Boston_surf)
 # Instead of groups, we want the raw rm point values,
 # To make the dimensions match, we need to repeat the values
 # for each of the 50 points in the lstat direction
-rm.tmp <- do.call(c,lapply(rm_pts, 
-                           function(grp){rep(grp, length(partial_Boston_surf))}))
+rm.tmp <- do.call(c,lapply(rm_pts,
+                           function(grp) {rep(grp, l
+                           ength(partial_Boston_surf))}))
 
-# Convert the list of plot.variable output to 
+# Convert the list of plot.variable output to
 partial_surf <- do.call(rbind,lapply(partial_Boston_surf, gg_partial))
 
 # attach the data to the gg_partial_coplot
@@ -53,8 +58,8 @@ srf <- surface_matrix(partial_surf, c("lstat", "rm", "yhat"))
 library(plot3D)
 # Generate the figure.
 surf3D(x=srf$x, y=srf$y, z=srf$z, col=topo.colors(10),
-       colkey=FALSE, border = "black", bty="b2", 
-       shade = 0.5, expand = 0.5, 
+       colkey=FALSE, border = "black", bty="b2",
+       shade = 0.5, expand = 0.5,
        lighting = TRUE, lphi = -50,
        xlab="Lower Status", ylab="Average Rooms", zlab="Median Value"
 )

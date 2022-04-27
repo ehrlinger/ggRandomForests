@@ -9,24 +9,22 @@
 gg_minimal_vimp(object, ...)
 }
 \arguments{
-\item{object}{A \code{\link[randomForestSRC]{rfsrc}} object, 
-\code{\link[randomForestSRC]{predict.rfsrc}}
- object or the list from the \code{\link[randomForestSRC]{var.select.rfsrc}} function.}
+\item{object}{A \code{\link[randomForestSRC]{rfsrc}} object,
+\code{\link[randomForestSRC]{predict.rfsrc}} object or the list from the 
+\code{\link[randomForestSRC]{var.select.rfsrc}} function.}
 
-\item{...}{optional arguments passed to the \code{\link[randomForestSRC]{var.select}} function 
- if operating on an \code{\link[randomForestSRC]{rfsrc}} object. 
-
- @return \code{gg_minimal_vimp} comparison object.
- 
- @seealso \code{\link{plot.gg_minimal_vimp}} \code{\link[randomForestSRC]{var.select}}
- 
- @aliases gg_minimal_vimp}
+\item{...}{optional arguments passed to the 
+\code{\link[randomForestSRC]{var.select}} function if operating on an 
+\code{\link[randomForestSRC]{rfsrc}} object.}
+}
+\value{
+\code{gg_minimal_vimp} comparison object.
 }
 \description{
 Minimal depth vs VIMP comparison by variable rankings.
 }
 \examples{
-## Examples from RFSRC package... 
+## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -48,7 +46,8 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 \dontrun{
 ## -------- air quality data
-# rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+# rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, 
+#                     na.action = "na.impute")
 # varsel_airq <- randomForestSRC::var.select(rfsrc_airq)
 # ... or load a cached randomForestSRC object
 data(varsel_airq, package="ggRandomForests")
@@ -86,7 +85,8 @@ plot(gg_dta)
 ## -------- veteran data
 ## randomized trial of two treatment regimens for lung cancer
 # data(veteran, package = "randomForestSRC")
-# rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+# rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, 
+#                        ntree = 100)
 # varsel_veteran <- randomForestSRC::var.select(rfsrc_veteran)
 # Load a cached randomForestSRC object
 data(varsel_veteran, package="ggRandomForests")
@@ -100,4 +100,8 @@ data(varsel_pbc, package="ggRandomForests")
 gg_dta <- gg_minimal_vimp(varsel_pbc)
 plot(gg_dta)
 }
+}
+\seealso{
+\code{\link{plot.gg_minimal_vimp}} 
+\code{\link[randomForestSRC]{var.select}}
 }

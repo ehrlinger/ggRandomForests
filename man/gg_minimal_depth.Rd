@@ -9,25 +9,28 @@
 gg_minimal_depth(object, ...)
 }
 \arguments{
-\item{object}{A \code{[randomForestSRC]{rfsrc}} object, \code{[randomForestSRC]{predict}}
-object or the list from the \code{[randomForestSRC]{var.select.rfsrc}} function.}
+\item{object}{A \code{[randomForestSRC]{rfsrc}} object,
+\code{[randomForestSRC]{predict}} object or the list from the
+\code{[randomForestSRC]{var.select.rfsrc}} function.}
 
-\item{...}{optional arguments passed to the \code{[randomForestSRC]{var.select}} function 
-if operating on an \code{[randomForestSRC]{rfsrc}} object.}
+\item{...}{optional arguments passed to the
+\code{[randomForestSRC]{var.select}} function if operating on an
+\code{[randomForestSRC]{rfsrc}} object.}
 }
 \value{
-\code{gg_minimal_depth} object, A modified list of variables from the 
-\code{[randomForestSRC]{var.select}} function, ordered by minimal depth rank.
+\code{gg_minimal_depth} object, A modified list of variables from
+the \code{[randomForestSRC]{var.select}} function, ordered by minimal
+depth rank.
 }
 \description{
-the \code{[randomForestSRC]{var.select}} function implements 
-random forest variable selection using tree minimal depth methodology. The 
-\code{gg_minimal_depth} 
-function takes the output from \code{[randomForestSRC]{var.select}} and creates a 
-\code{data.frame} formatted for the \code{\link{plot.gg_minimal_depth}} function.
+the \code{[randomForestSRC]{var.select}} function implements
+random forest variable selection using tree minimal depth methodology. The
+\code{gg_minimal_depth} function takes the output from
+\code{[randomForestSRC]{var.select}} and creates a \code{data.frame}
+formatted for the \code{\link{plot.gg_minimal_depth}} function.
 }
 \examples{
-## Examples from RFSRC package... 
+## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -100,5 +103,7 @@ plot(gg_dta)
 }
 }
 \seealso{
-\code{[randomForestSRC]{var.select}} \code{\link{plot.gg_minimal_depth}}
+\code{[randomForestSRC]{var.select}}
+
+\code{\link{plot.gg_minimal_depth}}
 }

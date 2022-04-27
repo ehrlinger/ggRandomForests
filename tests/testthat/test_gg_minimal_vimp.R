@@ -1,9 +1,9 @@
 # testthat for gg_minimal_vimp function
 context("gg_minimal_vimp tests")
 
-test_that("gg_minimal_vimp classifications",{
+test_that("gg_minimal_vimp classifications", {
   ## Load the cached forest
-  data(varsel_iris, package="ggRandomForests")
+  data(varsel_iris, package = "ggRandomForests")
   
   # Test the cached forest type
   expect_is(varsel_iris, "list")
@@ -28,9 +28,9 @@ test_that("gg_minimal_vimp classifications",{
   expect_is(gg.obj, "ggplot")
 })
 
-test_that("gg_minimal_vimp regression",{
+test_that("gg_minimal_vimp regression", {
   ## Load the cached forest
-  data(varsel_Boston, package="ggRandomForests")
+  data(varsel_Boston, package = "ggRandomForests")
   
   # Test the cached forest type
   expect_is(varsel_Boston, "list")
@@ -52,13 +52,14 @@ test_that("gg_minimal_vimp regression",{
   # Test return is s ggplot object
   expect_is(gg.obj, "ggplot")
   
-  data(Boston, package="MASS")
+  data(Boston, package = "MASS")
   
-  cls <- sapply(Boston, class) 
-  # 
-  lbls <- 
+  cls <- sapply(Boston, class)
+  #
+  lbls <-
     #crim
-    c("Crime rate by town.",
+    c(
+      "Crime rate by town.",
       # zn
       "Proportion of residential land zoned for lots over 25,000 sq.ft.",
       # indus
@@ -84,24 +85,30 @@ test_that("gg_minimal_vimp regression",{
       # lstat
       "Lower status of the population (percent).",
       # medv
-      "Median value of homes ($1000s).")
+      "Median value of homes ($1000s)."
+    )
   
   # Build a table for data description
-  dta.labs <- data.frame(cbind(Variable=names(cls), Description=lbls, type=cls))
+  dta.labs <-
+    data.frame(cbind(
+      Variable = names(cls),
+      Description = lbls,
+      type = cls
+    ))
   
   # Build a named vector for labeling figures later/
   st.labs <- as.character(dta.labs$Description)
   names(st.labs) <- names(cls)
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_minimal_vimp(varsel_Boston, lbls=st.labs)
+  gg_plt <- plot.gg_minimal_vimp(varsel_Boston, lbls = st.labs)
   expect_is(gg_plt, "ggplot")
   
 })
 
 
-test_that("gg_minimal_vimp exceptions",{
-  data(varsel_Boston, package="ggRandomForests")
+test_that("gg_minimal_vimp exceptions", {
+  data(varsel_Boston, package = "ggRandomForests")
   
   # Test the cached forest type
   expect_is(varsel_Boston, "list")
@@ -119,11 +126,13 @@ test_that("gg_minimal_vimp exceptions",{
   expect_error(gg_minimal_vimp(vsel))
   expect_error(plot.gg_minimal_vimp(vsel))
   
-  # data(rfsrc_Boston, package="ggRandomForests")
-  # expect_output(gg_dta <- gg_minimal_vimp(rfsrc_Boston, fast=TRUE),
-  #               "minimal depth variable selection")
-  # expect_is(gg_dta, "gg_minimal_vimp")
-  # gg_plt <- plot.gg_minimal_vimp(gg_dta)
-  # expect_error(gg_minimal_depth(gg_plt))
+  data(rfsrc_Boston, package = "ggRandomForests")
+  expect_output(
+    gg_dta <- gg_minimal_vimp(rfsrc_Boston, fast = TRUE),
+    "minimal depth variable selection"
+  )
+  expect_is(gg_dta, "gg_minimal_vimp")
+  gg_plt <- plot.gg_minimal_vimp(gg_dta)
+  expect_error(gg_minimal_depth(gg_plt))
   
 })

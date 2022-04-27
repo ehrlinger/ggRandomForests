@@ -7,7 +7,8 @@
 \method{plot}{gg_error}(x, ...)
 }
 \arguments{
-\item{x}{gg_error object created from a \code{\link[randomForestSRC]{rfsrc}} object}
+\item{x}{gg_error object created from a \code{\link[randomForestSRC]{rfsrc}}
+object}
 
 \item{...}{extra arguments passed to \code{ggplot} functions}
 }
@@ -15,17 +16,17 @@
 \code{ggplot} object
 }
 \description{
-A plot of the cumulative OOB error rates of the random forest as a 
+A plot of the cumulative OOB error rates of the random forest as a
 function of number of trees.
 }
 \details{
-The gg_error plot is used to track the convergence of the 
+The gg_error plot is used to track the convergence of the
 randomForest. This figure is a reproduction of the error plot
 from the \code{\link[randomForestSRC]{plot.rfsrc}} function.
 }
 \examples{
 \dontrun{
-## Examples from RFSRC package... 
+## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -98,10 +99,10 @@ plot(gg_dta)
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 
-Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews, 
+Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews,
 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression 
+Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
 and Classification (RF-SRC), R package version 1.4.
 }
 \seealso{

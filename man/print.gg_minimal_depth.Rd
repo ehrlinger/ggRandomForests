@@ -39,7 +39,7 @@ data(varsel_airq, package="ggRandomForests")
 gg_dta<- gg_minimal_depth(varsel_airq)
 print(gg_dta)
 
-# To nicely print a rfsrc::var.select output... 
+# To nicely print a rfsrc::var.select output...
 print(varsel_airq)
 }
 
@@ -50,7 +50,7 @@ data(varsel_Boston, package="ggRandomForests")
 gg_dta<- gg_minimal_depth(varsel_Boston)
 print(gg_dta)
 
-# To nicely print a rfsrc::var.select output... 
+# To nicely print a rfsrc::var.select output...
 print(varsel_Boston)
 
 }

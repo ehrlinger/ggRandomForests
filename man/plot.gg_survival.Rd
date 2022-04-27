@@ -12,8 +12,8 @@
 )
 }
 \arguments{
-\item{x}{\code{\link{gg_survival}} or a survival \code{\link{gg_rfsrc}} object created from a 
-\code{\link[randomForestSRC]{rfsrc}} object}
+\item{x}{\code{\link{gg_survival}} or a survival \code{\link{gg_rfsrc}}
+object created from a \code{\link[randomForestSRC]{rfsrc}} object}
 
 \item{type}{"surv", "cum_haz","hazard","density","mid_int", "life","proplife"}
 
@@ -34,23 +34,23 @@ data(pbc, package="randomForestSRC")
 pbc$time <- pbc$days/364.25
 
 # This is the same as kaplan
-gg_dta <- gg_survival(interval="time", censor="status", 
+gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc)
-                     
+
 plot(gg_dta, error="none")
 plot(gg_dta)
 
 # Stratified on treatment variable.
-gg_dta <- gg_survival(interval="time", censor="status", 
+gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc, by="treatment")
-                     
+
 plot(gg_dta, error="none")
 plot(gg_dta)
 
 # ...with smaller confidence limits.
-gg_dta <- gg_survival(interval="time", censor="status", 
+gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc, by="treatment", conf.int=.68)
-                     
+
 plot(gg_dta, error="lines")
 
 }

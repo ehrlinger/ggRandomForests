@@ -27,16 +27,16 @@ gg_survival(
 \item{...}{extra arguments passed to Kaplan or Nelson functions.}
 }
 \value{
-A \code{gg_survival} object created using the non-parametric Kaplan-Meier or 
-Nelson-Aalen estimators.
+A \code{gg_survival} object created using the non-parametric 
+Kaplan-Meier or Nelson-Aalen estimators.
 }
 \description{
 Nonparametric survival estimates.
 }
 \details{
-\code{gg_survival} is a wrapper function for generating nonparametric 
-survival estimates using either \code{\link{nelson}}-Aalen or 
-\code{\link{kaplan}}-Meier estimates.
+\code{gg_survival} is a wrapper function for generating 
+nonparametric survival estimates using either \code{\link{nelson}}-Aalen 
+or \code{\link{kaplan}}-Meier estimates.
 }
 \examples{
 \dontrun{
@@ -45,26 +45,28 @@ data(pbc, package="randomForestSRC")
 pbc$time <- pbc$days/364.25
 
 # This is the same as kaplan
-gg_dta <- gg_survival(interval="time", censor="status", 
+gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc)
-                     
+
 plot(gg_dta, error="none")
 plot(gg_dta)
 
 # Stratified on treatment variable.
-gg_dta <- gg_survival(interval="time", censor="status", 
+gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc, by="treatment")
-                     
+
 plot(gg_dta, error="none")
 plot(gg_dta)
 
 # ...with smaller confidence limits.
-gg_dta <- gg_survival(interval="time", censor="status", 
+gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc, by="treatment", conf.int=.68)
-                     
+
 plot(gg_dta, error="lines")
 }
 }
 \seealso{
-\code{\link{kaplan}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
+\code{\link{kaplan}} \code{\link{nelson}}
+
+\code{\link{plot.gg_survival}}
 }

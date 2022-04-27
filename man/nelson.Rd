@@ -32,29 +32,30 @@ data(pbc, package="randomForestSRC")
 pbc$time <- pbc$days/364.25
 
 # This is the same as gg_survival
-gg_dta <- nelson(interval="time", censor="status", 
+gg_dta <- nelson(interval="time", censor="status",
                      data=pbc)
-                     
+
 plot(gg_dta, error="none")
 plot(gg_dta)
 
 # Stratified on treatment variable.
-gg_dta <- gg_survival(interval="time", censor="status", 
+gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc, by="treatment")
-                     
+
 plot(gg_dta, error="none")
 plot(gg_dta, error="lines")
 plot(gg_dta)
 
-gg_dta <- gg_survival(interval="time", censor="status", 
+gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc, by="treatment",
                      type="nelson")
-                     
+
 plot(gg_dta, error="bars")
 plot(gg_dta)
 
-}                                            
+}
 }
 \seealso{
-\code{\link{gg_survival}} \code{\link{nelson}} \code{\link{plot.gg_survival}}
+\code{\link{gg_survival}} \code{\link{nelson}} 
+\code{\link{plot.gg_survival}}
 }

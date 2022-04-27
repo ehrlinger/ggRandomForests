@@ -18,24 +18,28 @@ gg_variable(object, ...)
 \code{gg_variable} object
 }
 \description{
-\code{\link[randomForestSRC]{plot.variable}} generates a \code{data.frame}
- containing the marginal variable dependence or the partial variable dependence. 
- The \code{gg_variable} function creates a \code{data.frame} of containing the 
- full set of covariate data (predictor variables) and the predicted response for 
- each observation. Marginal dependence figures are created using the 
- \code{\link{plot.gg_variable}} function.
- 
- Optional arguments \code{time} point (or vector of points) of interest (for survival forests only)
-\code{time.labels} If more than one time is specified, a vector of time labels 
-for differentiating the time points (for survival forests only)
-\code{oob} indicate if predicted results should include oob or full data set.
+\code{\link[randomForestSRC]{plot.variable}} generates a
+\code{data.frame} containing the marginal variable dependence or the 
+partial variable dependence. The \code{gg_variable} function creates a 
+\code{data.frame} of containing the full set of covariate data (predictor 
+variables) and the predicted response for each observation. Marginal 
+dependence figures are created using the \code{\link{plot.gg_variable}} 
+function.
+
+Optional arguments \code{time} point (or vector of points) of interest 
+(for survival forests only) \code{time.labels} If more than one time is 
+specified, a vector of time labels for differentiating the time points 
+(for survival forests only) \code{oob} indicate if predicted results 
+should include oob or full data set.
 }
 \details{
-The marginal variable dependence is determined by comparing relation
-between the predicted response from the randomForest and a covariate of interest.
+The marginal variable dependence is determined by comparing 
+relation between the predicted response from the randomForest and a 
+covariate of interest.
 
-The \code{gg_variable} function operates on a \code{\link[randomForestSRC]{rfsrc}} object, 
-or the output from the \code{\link[randomForestSRC]{plot.variable}} function.
+The \code{gg_variable} function operates on a 
+\code{\link[randomForestSRC]{rfsrc}} object, or the output from the
+\code{\link[randomForestSRC]{plot.variable}} function.
 }
 \examples{
 ## ------------------------------------------------------------
@@ -50,7 +54,7 @@ gg_dta <- gg_variable(rfsrc_iris)
 plot(gg_dta, xvar="Sepal.Width")
 plot(gg_dta, xvar="Sepal.Length")
 
-plot(gg_dta, xvar=rfsrc_iris$xvar.names, 
+plot(gg_dta, xvar=rfsrc_iris$xvar.names,
      panel=TRUE) # , se=FALSE)
 
 ## ------------------------------------------------------------
@@ -62,7 +66,7 @@ plot(gg_dta, xvar=rfsrc_iris$xvar.names,
 data(rfsrc_airq, package="ggRandomForests")
 gg_dta <- gg_variable(rfsrc_airq)
 
-# an ordinal variable 
+# an ordinal variable
 gg_dta[,"Month"] <- factor(gg_dta[,"Month"])
 
 plot(gg_dta, xvar="Wind")
@@ -80,7 +84,7 @@ plot(gg_dta, xvar="Month", notch=TRUE)
 data(rfsrc_mtcars, package="ggRandomForests")
 gg_dta <- gg_variable(rfsrc_mtcars)
 
-# mtcars$cyl is an ordinal variable 
+# mtcars$cyl is an ordinal variable
 gg_dta$cyl <- factor(gg_dta$cyl)
 gg_dta$am <- factor(gg_dta$am)
 gg_dta$vs <- factor(gg_dta$vs)
@@ -97,7 +101,8 @@ plot(gg_dta, xvar="wt")
 
 # panels
 plot(gg_dta,xvar=c("disp","hp", "drat", "wt", "qsec"),  panel=TRUE)
-plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE, notch=TRUE)
+plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE, 
+     notch=TRUE)
 }
 ## -------- Boston data
 
@@ -108,7 +113,8 @@ plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE, notch=TRUE)
 ## -------- veteran data
 ## survival
 # data(veteran, package = "randomForestSRC")
-# rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
+# rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, 
+#                        ntree = 100)
 data(rfsrc_veteran, package="ggRandomForests")
 
 # get the 1 year survival time.
@@ -121,7 +127,7 @@ plot(gg_dta, xvar = "diagtime", )
 # Generate coplots
 plot(gg_dta, xvar = c("age", "diagtime"), panel=TRUE, se=FALSE)
 
-# If we want to compare survival at different time points, say 30, 90 day 
+# If we want to compare survival at different time points, say 30, 90 day
 # and 1 year
 gg_dta <- gg_variable(rfsrc_veteran, time=c(30, 90, 365))
 
@@ -132,5 +138,7 @@ plot(gg_dta, xvar = "age")
 
 }
 \seealso{
-\code{\link{plot.gg_variable}} \code{\link[randomForestSRC]{plot.variable}}
+\code{\link{plot.gg_variable}}
+
+\code{\link[randomForestSRC]{plot.variable}}
 }

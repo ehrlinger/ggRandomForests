@@ -17,7 +17,7 @@
 )
 }
 \arguments{
-\item{x}{\code{\link{gg_variable}} object created from a 
+\item{x}{\code{\link{gg_variable}} object created from a
 \code{\link[randomForestSRC]{rfsrc}} object}
 
 \item{xvar}{variable (or list of variables) of interest.}
@@ -57,7 +57,7 @@ plot(gg_dta, xvar="Sepal.Width")
 plot(gg_dta, xvar="Sepal.Length")
 
 ## !! TODO !! this needs to be corrected
-plot(gg_dta, xvar=rfsrc_iris$xvar.names, 
+plot(gg_dta, xvar=rfsrc_iris$xvar.names,
      panel=TRUE, se=FALSE)
 
 ## ------------------------------------------------------------
@@ -68,7 +68,7 @@ plot(gg_dta, xvar=rfsrc_iris$xvar.names,
 data(rfsrc_airq, package="ggRandomForests")
 gg_dta <- gg_variable(rfsrc_airq)
 
-# an ordinal variable 
+# an ordinal variable
 gg_dta[,"Month"] <- factor(gg_dta[,"Month"])
 
 plot(gg_dta, xvar="Wind")
@@ -84,7 +84,7 @@ plot(gg_dta, xvar="Month", notch=TRUE)
 data(rfsrc_mtcars, package="ggRandomForests")
 gg_dta <- gg_variable(rfsrc_mtcars)
 
-# mtcars$cyl is an ordinal variable 
+# mtcars$cyl is an ordinal variable
 gg_dta$cyl <- factor(gg_dta$cyl)
 gg_dta$am <- factor(gg_dta$am)
 gg_dta$vs <- factor(gg_dta$vs)
@@ -110,7 +110,8 @@ plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb") ,panel=TRUE)
 ## -------- veteran data
 ## survival
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, ntree = 100)
+rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10,
+                       ntree = 100)
 
 # get the 1 year survival time.
 gg_dta <- gg_variable(rfsrc_veteran, time=90)
@@ -122,13 +123,13 @@ plot(gg_dta, xvar = "diagtime")
 # Generate coplots
 plot(gg_dta, xvar = c("age", "diagtime"), panel=TRUE)
 
-# If we want to compare survival at different time points, say 30, 90 day 
+# If we want to compare survival at different time points, say 30, 90 day
 # and 1 year
 gg_dta <- gg_variable(rfsrc_veteran, time=c(30, 90, 365))
 
 # Generate variable dependance plots for age and diagtime
 plot(gg_dta, xvar = "age")
-plot(gg_dta, xvar = "diagtime") 
+plot(gg_dta, xvar = "diagtime")
 
 # Generate coplots
 plot(gg_dta, xvar =  c("age", "diagtime"), panel=TRUE)

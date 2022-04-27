@@ -7,7 +7,8 @@
 \method{plot}{gg_rfsrc}(x, ...)
 }
 \arguments{
-\item{x}{\code{\link{gg_rfsrc}} object created from a \code{\link[randomForestSRC]{rfsrc}} object}
+\item{x}{\code{\link{gg_rfsrc}} object created from a
+\code{\link[randomForestSRC]{rfsrc}} object}
 
 \item{...}{arguments passed to \code{\link{gg_rfsrc}}.}
 }
@@ -15,8 +16,9 @@
 \code{ggplot} object
 }
 \description{
-Plot the predicted response from a \code{\link{gg_rfsrc}} object, the 
-\code{\link[randomForestSRC]{rfsrc}} prediction, using the OOB prediction from the forest.
+Plot the predicted response from a \code{\link{gg_rfsrc}} object, the
+\code{\link[randomForestSRC]{rfsrc}} prediction, using the OOB prediction
+from the forest.
 }
 \examples{
 \dontrun{
@@ -42,7 +44,7 @@ plot(gg_dta)
 
 ## -------- Boston data
 data(rfsrc_Boston, package="ggRandomForests")
-plot(rfsrc_Boston) 
+plot(rfsrc_Boston)
 
 ## -------- mtcars data
 data(rfsrc_mtcars, package="ggRandomForests")
@@ -84,10 +86,10 @@ plot(gg_dta)
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 
-Ishwaran H. and Kogalur U.B. (2007). Random survival forests for 
+Ishwaran H. and Kogalur U.B. (2007). Random survival forests for
 R, Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression 
+Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
 and Classification (RF-SRC), R package version 1.4.
 }
 \seealso{

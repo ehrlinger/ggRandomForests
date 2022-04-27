@@ -1,11 +1,14 @@
 # testthat for gg_interaction function
 context("gg_interaction tests")
 
-test_that("gg_interaction classifications",{
-  data(iris, package="datasets")
-  rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
-                                       data = iris, 
-                                       importance=TRUE, tree.err=TRUE)
+test_that("gg_interaction classifications", {
+  data(iris, package = "datasets")
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    importance = TRUE,
+    tree.err = TRUE
+  )
   ## Load the cached forest
   interaction_iris <- randomForestSRC::find.interaction(rfsrc_iris)
   
@@ -25,13 +28,13 @@ test_that("gg_interaction classifications",{
   expect_equivalent(as.matrix(gg_dta), interaction_iris)
   
   ## Test plotting the gg_interaction object
-  gg_plt <- plot.gg_interaction(gg_dta, xvar="Petal.Width")
+  gg_plt <- plot.gg_interaction(gg_dta, xvar = "Petal.Width")
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
   # This one should fail with a variable not found message
-  expect_error(plot.gg_interaction(gg_dta, xvar="Petal"))
+  expect_error(plot.gg_interaction(gg_dta, xvar = "Petal"))
   
   # "Incorrect object type: Expects a gg_interaction object"
   ## Test plotting the gg_interaction object
@@ -42,12 +45,12 @@ test_that("gg_interaction classifications",{
   
 })
 
-test_that("gg_interaction regression rfsrc",{
-  data(Boston, package="MASS")
+test_that("gg_interaction regression rfsrc", {
+  data(Boston, package = "MASS")
   
   Boston$chas <- as.logical(Boston$chas)
   
-  rf_Boston <- randomForestSRC::rfsrc(medv~., data=Boston)
+  rf_Boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston)
   interaction_Boston <- randomForestSRC::find.interaction(rf_Boston)
   # Test the cached interaction structure
   expect_is(interaction_Boston, "matrix")
@@ -70,27 +73,17 @@ test_that("gg_interaction regression rfsrc",{
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   
-  # We really only want to run this one when we're developing 
-  # data(rfsrc_Boston, package="ggRandomForests")
-  #  
-  #  expect_warning(gg_dta <- gg_interaction(rfsrc_Boston,
-  #                                          xvar.names=rfsrc_Boston$xvar.names[1:2]))
-  #  
-  #  expect_error(gg_interaction(gg_dta))
-  # 
-
+  ## This one costs a lot of time in calculating the interaction matrix.
+  ## Create the correct gg_interaction object
+  expect_warning(gg_dta <- gg_interaction(rfsrc_Boston))
   
-  # This one costs a lot of time in calculating the interaction matrix.
-  #   ## Create the correct gg_interaction object
-  #   expect_warning(gg_dta <- gg_interaction(rfsrc_Boston))
-  #   
-  #   # Test object type
-  #   expect_is(gg_dta, "gg_interaction")
-  #   
- 
+  # Test object type
+  expect_is(gg_dta, "gg_interaction")
+  
+  
   # Test the cached interaction structure
   expect_is(interaction_Boston, "matrix")
   
-  interaction_Boston <- interaction_Boston[-2,]
+  interaction_Boston <- interaction_Boston[-2, ]
   expect_error(gg_interaction(interaction_Boston))
 })

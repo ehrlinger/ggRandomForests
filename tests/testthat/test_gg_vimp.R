@@ -2,124 +2,123 @@
 context("gg_vimp tests")
 
 test_that("gg_vimp classifications", {
-  
   ## Load the cached forest
-  data(iris, package="datasets")
-  rfsrc_iris <- randomForestSRC::rfsrc(Species ~., 
-                                       data = iris, 
-                                       importance=TRUE, tree.err=TRUE)
+  data(iris, package = "datasets")
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    importance = TRUE,
+    tree.err = TRUE
+  )
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
-
+  
   # Test the forest family
   expect_equal(rfsrc_iris$family, "class")
-
+  
   ## Create the correct gg_error object
   gg_dta <- gg_vimp(rfsrc_iris)
-
+  
   # Test object type
   expect_is(gg_dta, "gg_vimp")
-
-  # Test varselect is the same
-  #expect_equivalent(select(gg_dta$varselect, -names), rfsrc_iris$importance)
-
+  
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-
+  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
-
+  
   # Grab only one class... by number.
-  gg_dta <- gg_vimp(rfsrc_iris, which.outcome=2)
-
+  gg_dta <- gg_vimp(rfsrc_iris, which.outcome = 2)
+  
   # Test object type
   expect_is(gg_dta, "gg_vimp")
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-
+  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   # Grab only one class... by number - for the overall model.
-  gg_dta <- gg_vimp(rfsrc_iris, which.outcome=0)
-
+  gg_dta <- gg_vimp(rfsrc_iris, which.outcome = 0)
+  
   # Test object type
   expect_is(gg_dta, "gg_vimp")
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-
+  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   # Grab only one class... by name - for the overall model.
-  gg_dta <- gg_vimp(rfsrc_iris, which.outcome="all")
-
+  gg_dta <- gg_vimp(rfsrc_iris, which.outcome = "all")
+  
   # Test object type
   expect_is(gg_dta, "gg_vimp")
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-
+  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   # Grab only one class... by name - for the overall model.
-  gg_dta <- gg_vimp(rfsrc_iris, which.outcome="setosa")
-
+  gg_dta <- gg_vimp(rfsrc_iris, which.outcome = "setosa")
+  
   # Test object type
   expect_is(gg_dta, "gg_vimp")
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-
+  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
-
+  
   # Grab only one class... by name - that doesn't exist.
-  expect_error(gg_vimp(rfsrc_iris, which.outcome="nothing special"))
-
+  expect_error(gg_vimp(rfsrc_iris, which.outcome = "nothing special"))
+  
   # Grab only one class... by number - that doesn't exist.
-  expect_error(gg_vimp(rfsrc_iris, which.outcome=200))
-
+  expect_error(gg_vimp(rfsrc_iris, which.outcome = 200))
+  
   ## Single class/
   iris2 <- iris
   iris2$spec <- factor(as.character(iris2$Species) == "setosa")
-  iris2 <- iris2[,-which(colnames(iris2) == "Species")]
-
-  rf <- rfsrc(spec~., iris2, importance=TRUE)
-
+  iris2 <- iris2[, -which(colnames(iris2) == "Species")]
+  
+  rf <- rfsrc(spec ~ ., iris2, importance = TRUE)
+  
   gg_dta <- gg_vimp(rf)
-
+  
   expect_is(gg_dta, "gg_vimp")
-
+  
   # Test passing in the wrong object
   expect_error(gg_vimp(gg_dta))
   expect_error(gg_vimp.rfsrc(gg_dta))
-
+  
 })
 
 
-test_that("gg_vimp survival",{
-  dta = new.env()
-  data(pbc, package="randomForestSRC",
+test_that("gg_vimp survival", {
+  dta <- new.env()
+  data(pbc, package = "randomForestSRC",
        envir = dta)
   pbc <- dta$pbc
   # For whatever reason, the age variable is in days... makes no sense to me
-  for(ind in 1:dim(pbc)[2]){
-    if(!is.factor(pbc[,ind])){
-      if(length(unique(pbc[which(!is.na(pbc[,ind])),ind])) <= 2) {
-        if(sum(range(pbc[,ind],na.rm=TRUE) == c(0,1)) ==2 ){
-          pbc[,ind] <- as.logical(pbc[,ind])
+  for (ind in 1:dim(pbc)[2]) {
+    if (!is.factor(pbc[, ind])) {
+      if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+        if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+          pbc[, ind] <- as.logical(pbc[, ind])
         }
       }
-    }else{
-      if(length(unique(pbc[which(!is.na(pbc[,ind])),ind])) <= 2) {
-        if(sum(sort(unique(pbc[,ind])) == c(0,1)) == 2){
-          pbc[,ind] <- as.logical(pbc[,ind])
+    } else{
+      if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+        if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+          pbc[, ind] <- as.logical(pbc[, ind])
         }
-        if(sum(sort(unique(pbc[,ind])) == c(FALSE, TRUE)) == 2){
-          pbc[,ind] <- as.logical(pbc[,ind])
+        if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+          pbc[, ind] <- as.logical(pbc[, ind])
         }
       }
     }
-    if(!is.logical(pbc[, ind]) & 
-       length(unique(pbc[which(!is.na(pbc[,ind])),ind])) <= 5) {
-      pbc[,ind] <- factor(pbc[,ind])
+    if (!is.logical(pbc[, ind]) &
+        length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+      pbc[, ind] <- factor(pbc[, ind])
     }
   }
   # Convert age to years
@@ -133,99 +132,107 @@ test_that("gg_vimp survival",{
   pbc$treatment <- factor(pbc$treatment)
   
   cat("pbc: rfsrc\n")
-  dta.train <- pbc[-which(is.na(pbc$treatment)),]
+  dta.train <- pbc[-which(is.na(pbc$treatment)), ]
   # Create a test set from the remaining patients
-  pbc.test <- pbc[which(is.na(pbc$treatment)),]
+  pbc.test <- pbc[which(is.na(pbc$treatment)), ]
   
-  rfsrc_pbc <- randomForestSRC::rfsrc(Surv(years, status) ~ ., 
-                                      dta.train, nsplit = 10,
-                                      na.action="na.impute",
-                                      importance=TRUE, tree.err=TRUE)
+  rfsrc_pbc <- randomForestSRC::rfsrc(
+    Surv(years, status) ~ .,
+    dta.train,
+    nsplit = 10,
+    na.action = "na.impute",
+    importance = TRUE,
+    tree.err = TRUE
+  )
   # Test the cached forest type
   expect_is(rfsrc_pbc, "rfsrc")
-
+  
   ## Create the correct gg_error object
   gg_dta <- gg_vimp(rfsrc_pbc)
-
+  
   # Test object type
   expect_is(gg_dta, "gg_vimp")
-
+  
   # Test varselect is the same
-  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_pbc$importance, decreasing=TRUE)))
-
+  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_pbc$importance, decreasing =
+                                             TRUE)))
+  
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-
+  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
-
+  
   ## Test plotting the gg_error object
-  gg_plt <- plot(gg_dta, nvar=5)
-
+  gg_plt <- plot(gg_dta, nvar = 5)
+  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
-
-  expect_is(plot(gg_dta, relative=TRUE), "ggplot")
-
+  
+  expect_is(plot(gg_dta, relative = TRUE), "ggplot")
+  
   # Test cutting the size down
-  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, nvar=10), "gg_vimp")
+  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, nvar = 10), "gg_vimp")
   expect_equal(nrow(gg_dta), 10)
   expect_is(plot(gg_dta), "ggplot")
-
+  
   # Test the relative vimp output and plotting
-  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, relative=TRUE), "gg_vimp")
+  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, relative = TRUE), "gg_vimp")
   expect_is(plot(gg_dta), "ggplot")
-
-  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, nvar=10, relative=TRUE), "gg_vimp")
+  
+  expect_is(gg_dta <-
+              gg_vimp(rfsrc_pbc, nvar = 10, relative = TRUE),
+            "gg_vimp")
   expect_is(plot(gg_dta), "ggplot")
-
+  
   # Test importance calculations.
   # If the forest does not have importance
   rfsrc_pbc$importance <- NULL
   expect_warning(gg_dta <- gg_vimp(rfsrc_pbc))
   expect_is(gg_dta, "gg_vimp")
   expect_is(plot(gg_dta), "ggplot")
-
+  
 })
 
-test_that("gg_vimp regression",{
-  
+test_that("gg_vimp regression", {
   ## Load the cached forest
-  data(Boston, package="MASS")
+  data(Boston, package = "MASS")
   
   Boston$chas <- as.logical(Boston$chas)
   
-  rfsrc_Boston <- randomForestSRC::rfsrc(medv~., data=Boston,
+  rfsrc_Boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston,
                                          importance = TRUE)
   # Test the cached forest type
   expect_is(rfsrc_Boston, "rfsrc")
-
+  
   ## Create the correct gg_error object
   gg_dta <- gg_vimp(rfsrc_Boston)
-
+  
   # Test object type
   expect_is(gg_dta, "gg_vimp")
-
+  
   # Test varselect is the same
-  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_Boston$importance, decreasing=TRUE)))
-
+  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_Boston$importance, decreasing =
+                                             TRUE)))
+  
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-
+  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   ## Test plotting the gg_error object
-  gg_plt <- plot(gg_dta, relative=TRUE)
-
+  gg_plt <- plot(gg_dta, relative = TRUE)
+  
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
-
-
+  
+  
   cls <- sapply(Boston, class)
   #
   lbls <-
     #crim
-    c("Crime rate by town.",
+    c(
+      "Crime rate by town.",
       # zn
       "Proportion of residential land zoned for lots over 25,000 sq.ft.",
       # indus
@@ -251,19 +258,29 @@ test_that("gg_vimp regression",{
       # lstat
       "Lower status of the population (percent).",
       # medv
-      "Median value of homes ($1000s).")
-
+      "Median value of homes ($1000s)."
+    )
+  
   # Build a table for data description
-  dta.labs <- data.frame(cbind(Variable=names(cls), Description=lbls, type=cls))
-
+  dta.labs <-
+    data.frame(cbind(
+      Variable = names(cls),
+      Description = lbls,
+      type = cls
+    ))
+  
   # Build a named vector for labeling figures later/
   st.labs <- as.character(dta.labs$Description)
   names(st.labs) <- names(cls)
-
+  
   ## Test plotting the rfsrc object
-  gg_plt <- plot.gg_vimp(rfsrc_Boston, lbls=st.labs, relative=TRUE,
-                         bars=rfsrc_Boston$xvar.names)
+  gg_plt <- plot.gg_vimp(
+    rfsrc_Boston,
+    lbls = st.labs,
+    relative = TRUE,
+    bars = rfsrc_Boston$xvar.names
+  )
   expect_is(gg_plt, "ggplot")
-
-
+  
+  
 })

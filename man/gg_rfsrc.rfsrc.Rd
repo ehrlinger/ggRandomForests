@@ -21,12 +21,14 @@ forest prediction.}
 \code{gg_rfsrc} object
 }
 \description{
-Extracts the predicted response values from the \code{\link[randomForestSRC]{rfsrc}}
- object, and formats data for plotting the response using \code{\link{plot.gg_rfsrc}}.
+Extracts the predicted response values from the 
+\code{\link[randomForestSRC]{rfsrc}} object, and formats data for plotting 
+the response using \code{\link{plot.gg_rfsrc}}.
 }
 \details{
-\code{surv_type} ("surv", "chf", "mortality", "hazard") for survival forests
-   
+\code{surv_type} ("surv", "chf", "mortality", "hazard") for survival 
+   forests
+
    \code{oob} boolean, should we return the oob prediction , or the full
 forest prediction.
 }
@@ -55,7 +57,7 @@ plot(gg_dta)
 
 ## -------- Boston data
 data(rfsrc_Boston, package="ggRandomForests")
-plot(gg_rfsrc(rfsrc_Boston)) 
+plot(gg_rfsrc(rfsrc_Boston))
 
 \dontrun{
 ## -------- mtcars data
@@ -100,6 +102,6 @@ plot(gg_dta)
 
 }
 \seealso{
-\code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc} 
+\code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
 \code{\link{gg_survival}}
 }
