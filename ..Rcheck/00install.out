@@ -1,9 +1,0 @@
-* installing *source* package ‘ggRandomForests’ ...
-** using staged installation
-** R
-** data
-*** moving datasets to lazyload DB
-** inst
-** byte-compile and prepare package for lazy loading
-
-* removing ‘/Users/jehrling/Documents/GitHub/ggRandomForests/..Rcheck/ggRandomForests’

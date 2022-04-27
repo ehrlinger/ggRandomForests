@@ -38,3 +38,5 @@ inst/doc
 ..Rcheck/ggRandomForests/DESCRIPTION
 ..Rcheck/ggRandomForests/help/ggRandomForests.rdb
 ..Rcheck/ggRandomForests/help/ggRandomForests.rdx
+..Rcheck/00check.log
+..Rcheck/00install.out
