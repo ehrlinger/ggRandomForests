@@ -56,20 +56,27 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
-<dd><p>A <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object, 
-<code><a href="https://www.randomforestsrc.org//reference/predict.rfsrc.html" class="external-link">predict.rfsrc</a></code>
- object or the list from the <code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select.rfsrc</a></code> function.</p></dd>
+<dd><p>A <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object,
+<code><a href="https://www.randomforestsrc.org//reference/predict.rfsrc.html" class="external-link">predict.rfsrc</a></code> object or the list from the 
+<code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select.rfsrc</a></code> function.</p></dd>
 <dt>...</dt>
-<dd><p>optional arguments passed to the <code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code> function 
- if operating on an <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object.</p>
-<p>@return <code>gg_minimal_vimp</code> comparison object.</p> 
-<p>@seealso <code><a href="plot.gg_minimal_vimp.html">plot.gg_minimal_vimp</a></code> <code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code></p> 
-<p>@aliases gg_minimal_vimp</p></dd>
+<dd><p>optional arguments passed to the 
+<code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code> function if operating on an 
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object.</p></dd>
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    <p><code>gg_minimal_vimp</code> comparison object.</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="plot.gg_minimal_vimp.html">plot.gg_minimal_vimp</a></code> 
+<code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code></p></div>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Examples from RFSRC package... </span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Examples from RFSRC package...</span></span>
 <span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
 <span class="r-in"><span class="co">## classification example</span></span>
 <span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
@@ -92,7 +99,8 @@
 <span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="co">## -------- air quality data</span></span>
-<span class="r-in"><span class="co"># rfsrc_airq &lt;- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")</span></span>
+<span class="r-in"><span class="co"># rfsrc_airq &lt;- rfsrc(Ozone ~ ., data = airquality, </span></span>
+<span class="r-in"><span class="co">#                     na.action = "na.impute")</span></span>
 <span class="r-in"><span class="co"># varsel_airq &lt;- randomForestSRC::var.select(rfsrc_airq)</span></span>
 <span class="r-in"><span class="co"># ... or load a cached randomForestSRC object</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">varsel_airq</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
@@ -131,7 +139,8 @@
 <span class="r-in"><span class="co">## -------- veteran data</span></span>
 <span class="r-in"><span class="co">## randomized trial of two treatment regimens for lung cancer</span></span>
 <span class="r-in"><span class="co"># data(veteran, package = "randomForestSRC")</span></span>
-<span class="r-in"><span class="co"># rfsrc_veteran &lt;- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)</span></span>
+<span class="r-in"><span class="co"># rfsrc_veteran &lt;- rfsrc(Surv(time, status) ~ ., data = veteran, </span></span>
+<span class="r-in"><span class="co">#                        ntree = 100)</span></span>
 <span class="r-in"><span class="co"># varsel_veteran &lt;- randomForestSRC::var.select(rfsrc_veteran)</span></span>
 <span class="r-in"><span class="co"># Load a cached randomForestSRC object</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">varsel_veteran</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>

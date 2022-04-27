@@ -58,21 +58,22 @@
     <dl><dt>x</dt>
 <dd><p>a vector of values</p></dd>
 <dt>shift_by</dt>
-<dd><p>an integer of length 1, giving the number of positions 
+<dd><p>an integer of length 1, giving the number of positions
 to lead (positive) or lag (negative) by</p></dd>
 </dl></div>
     <div id="details">
     <h2>Details</h2>
-    <p>Lead and lag are useful for comparing values offset by a constant 
+    <p>Lead and lag are useful for comparing values offset by a constant
 (e.g. the previous or next value)</p>
 <p>Taken from:
 http://ctszkin.com/2012/03/11/generating-a-laglead-variables/</p>
-<p>This function allows me to remove the dplyr::lead depends. Still suggest for vignettes though.</p>
+<p>This function allows me to remove the dplyr::lead depends. Still suggest for
+vignettes though.</p>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">d</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span> </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">d</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span>
 <span class="r-in"><span class="co">#generate lead variable</span></span>
 <span class="r-in"><span class="va">d</span><span class="op">$</span><span class="va">df_lead2</span><span class="op">&lt;-</span><span class="fu">ggRandomForests</span><span class="fu">:::</span><span class="fu">shift</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span>,<span class="fl">2</span><span class="op">)</span></span>
 <span class="r-in"><span class="co">#generate lag variable</span></span>

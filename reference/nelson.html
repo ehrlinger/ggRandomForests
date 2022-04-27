@@ -74,7 +74,8 @@
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="gg_survival.html">gg_survival</a></code> <code>nelson</code> <code><a href="plot.gg_survival.html">plot.gg_survival</a></code></p></div>
+    <div class="dont-index"><p><code><a href="gg_survival.html">gg_survival</a></code> <code>nelson</code> 
+<code><a href="plot.gg_survival.html">plot.gg_survival</a></code></p></div>
     </div>
 
     <div id="ref-examples">
@@ -85,28 +86,28 @@
 <span class="r-in"><span class="va">pbc</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="va">pbc</span><span class="op">$</span><span class="va">days</span><span class="op">/</span><span class="fl">364.25</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># This is the same as gg_survival</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">nelson</span><span class="op">(</span>interval<span class="op">=</span><span class="st">"time"</span>, censor<span class="op">=</span><span class="st">"status"</span>, </span>
+<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">nelson</span><span class="op">(</span>interval<span class="op">=</span><span class="st">"time"</span>, censor<span class="op">=</span><span class="st">"status"</span>,</span>
 <span class="r-in">                     data<span class="op">=</span><span class="va">pbc</span><span class="op">)</span></span>
-<span class="r-in">                     </span>
+<span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, error<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Stratified on treatment variable.</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_survival.html">gg_survival</a></span><span class="op">(</span>interval<span class="op">=</span><span class="st">"time"</span>, censor<span class="op">=</span><span class="st">"status"</span>, </span>
+<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_survival.html">gg_survival</a></span><span class="op">(</span>interval<span class="op">=</span><span class="st">"time"</span>, censor<span class="op">=</span><span class="st">"status"</span>,</span>
 <span class="r-in">                     data<span class="op">=</span><span class="va">pbc</span>, by<span class="op">=</span><span class="st">"treatment"</span><span class="op">)</span></span>
-<span class="r-in">                     </span>
+<span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, error<span class="op">=</span><span class="st">"none"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, error<span class="op">=</span><span class="st">"lines"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_survival.html">gg_survival</a></span><span class="op">(</span>interval<span class="op">=</span><span class="st">"time"</span>, censor<span class="op">=</span><span class="st">"status"</span>, </span>
+<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_survival.html">gg_survival</a></span><span class="op">(</span>interval<span class="op">=</span><span class="st">"time"</span>, censor<span class="op">=</span><span class="st">"status"</span>,</span>
 <span class="r-in">                     data<span class="op">=</span><span class="va">pbc</span>, by<span class="op">=</span><span class="st">"treatment"</span>,</span>
 <span class="r-in">                     type<span class="op">=</span><span class="st">"nelson"</span><span class="op">)</span></span>
-<span class="r-in">                     </span>
+<span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, error<span class="op">=</span><span class="st">"bars"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="op">}</span>                                            </span>
+<span class="r-in"><span class="op">}</span></span>
 </code></pre></div>
     </div>
   </div>

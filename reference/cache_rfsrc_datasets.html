@@ -56,8 +56,9 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>set</dt>
-<dd><p>Defaults to all sets (NA), however for individual sets specify one 
-or more of c("airq", "Boston", "iris", "mtcars", "pbc", "veteran")</p></dd>
+<dd><p>Defaults to all sets (NA), however for individual sets
+specify one or more of c("airq", "Boston", "iris", "mtcars", "pbc",
+"veteran")</p></dd>
 <dt>save</dt>
 <dd><p>Defaults to write files to the current data directory.</p></dd>
 <dt>pth</dt>
@@ -69,43 +70,47 @@ or more of c("airq", "Boston", "iris", "mtcars", "pbc", "veteran")</p></dd>
     <h2>Details</h2>
     <p>Constructing random forests are computationally expensive, and the
 <code>ggRandomForests</code> operates directly on <code>randomForestSRC</code> objects.
-We cache computationally intensive <code>randomForestSRC</code> objects to improve 
+We cache computationally intensive <code>randomForestSRC</code> objects to improve
 the <code>ggRandomForests</code> examples, diagnostics and vignettes run times. The
 set of precompiled <code>randomForestSRC</code> objects are stored in the package
 data subfolder, however version changes in the dependent packages may break
-some functionality. This function was created to help the package developer 
+some functionality. This function was created to help the package developer
 deal with those changes. We make the function available to end users to
 create objects for further experimentation.</p>
 <p>There are five cached data set types:
-'</p><ul><li><p><code><a href="rfsrc_data.html">rfsrc_data</a></code> - <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> objects.</p></li>
-<li><p><code><a href="varsel_data.html">varsel_data</a></code> - <code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code> 
+'</p><ul><li><p><code><a href="rfsrc_data.html">rfsrc_data</a></code> - <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code>
+objects.</p></li>
+<li><p><code><a href="varsel_data.html">varsel_data</a></code> - <code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code>
 minimal depth variable selection objects.</p></li>
-<li><p><code><a href="interaction_data.html">interaction_data</a></code> - 
-<code><a href="https://www.randomforestsrc.org//reference/find.interaction.rfsrc.html" class="external-link">find.interaction</a></code> minimal depth, 
-pairwise variable interaction matrices.</p></li>
-<li><p><code><a href="partial_data.html">partial_data</a></code> - <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> 
-objects 
+<li><p><code><a href="interaction_data.html">interaction_data</a></code> -
+<code><a href="https://www.randomforestsrc.org//reference/find.interaction.rfsrc.html" class="external-link">find.interaction</a></code> minimal depth, pairwise
+variable interaction matrices.</p></li>
+<li><p><code><a href="partial_data.html">partial_data</a></code> -
+<code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> objects
 (<code>partial=TRUE</code>) for partial variable dependence.</p></li>
-<li><p><code><a href="partial_coplot_data.html">partial_coplot_data</a></code> - 
-<code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> objects 
+<li><p><code><a href="partial_coplot_data.html">partial_coplot_data</a></code> -
+<code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> objects
 (<code>partial=TRUE</code>) for partial variable dependence.</p></li>
 </ul><p>For the following data sets:
 #'</p><ul><li><p><code>_iris</code> - The <code>iris</code> data set.</p></li>
 <li><p><code>_airq</code> - The <code>airquality</code> data set.</p></li>
 <li><p><code>_mtcars</code> - The <code>mtcars</code> data set.</p></li>
-<li><p><code>_Boston</code> - The <code>Boston</code> housing data set (<code>MASS</code> package).</p></li>
-<li><p><code>_pbc</code> - The <code>pbc</code> data set (<code>randomForestSRC</code> package).</p></li>
-<li><p><code>_veteran</code> - The <code>veteran</code> data set (<code>randomForestSRC</code> package).</p></li>
+<li><p><code>_Boston</code> - The <code>Boston</code> housing data set
+(<code>MASS</code> package).</p></li>
+<li><p><code>_pbc</code> - The <code>pbc</code> data set
+(<code>randomForestSRC</code> package).</p></li>
+<li><p><code>_veteran</code> - The <code>veteran</code> data set
+(<code>randomForestSRC</code> package).</p></li>
 </ul></div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code>iris</code> <code>airq</code> <code>mtcars</code> <code><a href="https://rdrr.io/pkg/MASS/man/Boston.html" class="external-link">Boston</a></code> 
+    <div class="dont-index"><p><code>iris</code> <code>airq</code> <code>mtcars</code> <code><a href="https://rdrr.io/pkg/MASS/man/Boston.html" class="external-link">Boston</a></code>
 <code><a href="https://www.randomforestsrc.org//reference/pbc.html" class="external-link">pbc</a></code>
-<code><a href="https://www.randomforestsrc.org//reference/veteran.html" class="external-link">veteran</a></code> 
-<code><a href="rfsrc_data.html">rfsrc_data</a></code> 
+<code><a href="https://www.randomforestsrc.org//reference/veteran.html" class="external-link">veteran</a></code>
+<code><a href="rfsrc_data.html">rfsrc_data</a></code>
 <code><a href="varsel_data.html">varsel_data</a></code>
 <code><a href="interaction_data.html">interaction_data</a></code>
-<code><a href="partial_data.html">partial_data</a></code> 
+<code><a href="partial_data.html">partial_data</a></code>
 <code><a href="partial_coplot_data.html">partial_coplot_data</a></code></p></div>
     </div>
 

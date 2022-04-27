@@ -70,16 +70,17 @@
 <dt>groups</dt>
 <dd><p>vector of stratification variable.</p></dd>
 <dt>surv_type</dt>
-<dd><p>for survival random forests,  c("mort", "rel.freq", "surv", 
+<dd><p>for survival random forests,  c("mort", "rel.freq", "surv",
 "years.lost", "cif", "chf")</p></dd>
 <dt>time</dt>
 <dd><p>vector of time points for survival random forests partial plots.</p></dd>
 <dt>...</dt>
-<dd><p>extra arguments passed to <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> function</p></dd>
+<dd><p>extra arguments passed to
+<code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> function</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>gg_partial_coplot</code> object. An subclass of a 
+    <p><code>gg_partial_coplot</code> object. An subclass of a
 <code><a href="gg_partial.html">gg_partial_list</a></code> object</p>
     </div>
 
@@ -98,11 +99,11 @@
 <span class="r-in"><span class="co"># Create the conditional groups and add to the gg_variable object</span></span>
 <span class="r-in"><span class="va">copper_grp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">ggvar</span><span class="op">$</span><span class="va">copper</span>, breaks <span class="op">=</span> <span class="va">copper_cts</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co">## We would run this, but it's expensive </span></span>
-<span class="r-in"><span class="va">partial_coplot_pbc</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_coplot</span><span class="op">(</span><span class="va">rfsrc_pbc</span>, xvar <span class="op">=</span> <span class="st">"bili"</span>, </span>
-<span class="r-in">                                         groups <span class="op">=</span> <span class="va">copper_grp</span>, </span>
-<span class="r-in">                                         surv_type <span class="op">=</span> <span class="st">"surv"</span>, </span>
-<span class="r-in">                                         time <span class="op">=</span> <span class="fl">1</span>, </span>
+<span class="r-in"><span class="co">## We would run this, but it's expensive</span></span>
+<span class="r-in"><span class="va">partial_coplot_pbc</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_coplot</span><span class="op">(</span><span class="va">rfsrc_pbc</span>, xvar <span class="op">=</span> <span class="st">"bili"</span>,</span>
+<span class="r-in">                                         groups <span class="op">=</span> <span class="va">copper_grp</span>,</span>
+<span class="r-in">                                         surv_type <span class="op">=</span> <span class="st">"surv"</span>,</span>
+<span class="r-in">                                         time <span class="op">=</span> <span class="fl">1</span>,</span>
 <span class="r-in">                                         show.plots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">## so load the cached set</span></span>

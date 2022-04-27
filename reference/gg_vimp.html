@@ -58,26 +58,30 @@ a <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="e
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
-<dd><p>A <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object or output from 
+<dd><p>A <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object or output from
 <code><a href="https://www.randomforestsrc.org//reference/vimp.rfsrc.html" class="external-link">vimp</a></code></p></dd>
 <dt>nvar</dt>
-<dd><p>argument to control the number of variables included in the output.</p></dd>
+<dd><p>argument to control the number of variables included in the
+output.</p></dd>
 <dt>...</dt>
-<dd><p>arguments passed to the <code><a href="https://www.randomforestsrc.org//reference/vimp.rfsrc.html" class="external-link">vimp.rfsrc</a></code> function if the 
-<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object does not contain importance information.</p></dd>
+<dd><p>arguments passed to the <code><a href="https://www.randomforestsrc.org//reference/vimp.rfsrc.html" class="external-link">vimp.rfsrc</a></code>
+function if the <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object does not contain
+importance information.</p></dd>
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>gg_vimp</code> object. A <code>data.frame</code> of VIMP measures, in rank order.</p>
+    <p><code>gg_vimp</code> object. A <code>data.frame</code> of VIMP measures, in rank
+order.</p>
     </div>
     <div id="references">
     <h2>References</h2>
-    <p>Ishwaran H. (2007). Variable importance in binary regression trees and forests, 
-<em>Electronic J. Statist.</em>, 1:519-537.</p>
+    <p>Ishwaran H. (2007). Variable importance in binary regression trees and
+forests, <em>Electronic J. Statist.</em>, 1:519-537.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="plot.gg_vimp.html">plot.gg_vimp</a></code> <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> <code><a href="https://www.randomforestsrc.org//reference/vimp.rfsrc.html" class="external-link">vimp</a></code></p></div>
+    <div class="dont-index"><p><code><a href="plot.gg_vimp.html">plot.gg_vimp</a></code> <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code></p>
+<p><code><a href="https://www.randomforestsrc.org//reference/vimp.rfsrc.html" class="external-link">vimp</a></code></p></div>
     </div>
 
     <div id="ref-examples">
@@ -91,12 +95,12 @@ a <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="e
 <span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_vimp</span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span>
 <span class="r-plt img"><img src="gg_vimp-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"> </span>
+<span class="r-in"></span>
 <span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
 <span class="r-in"><span class="co">## regression example</span></span>
 <span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## -------- air quality data </span></span>
+<span class="r-in"><span class="co">## -------- air quality data</span></span>
 <span class="r-in"><span class="co"># rfsrc_airq &lt;- rfsrc(Ozone ~ ., airquality)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_airq</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_vimp</span><span class="op">(</span><span class="va">rfsrc_airq</span><span class="op">)</span></span>

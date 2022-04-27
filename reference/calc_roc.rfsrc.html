@@ -56,8 +56,8 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
-<dd><p><code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> or 
-<code><a href="https://www.randomforestsrc.org//reference/predict.rfsrc.html" class="external-link">predict.rfsrc</a></code> object 
+<dd><p><code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> or
+<code><a href="https://www.randomforestsrc.org//reference/predict.rfsrc.html" class="external-link">predict.rfsrc</a></code> object
 containing predicted response</p></dd>
 <dt>yvar</dt>
 <dd><p>True response variable</p></dd>
@@ -72,15 +72,16 @@ containing predicted response</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p>For a randomForestSRC prediction and the actual 
-response value, calculate the specificity (1-False Positive Rate) and sensitivity 
-(True Positive Rate) of a predictor.</p>
-<p>This is a helper function for the <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> functions, and not intended 
-for use by the end user.</p>
+    <p>For a randomForestSRC prediction and the actual
+response value, calculate the specificity (1-False Positive Rate) and
+sensitivity (True Positive Rate) of a predictor.</p>
+<p>This is a helper function for the <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> functions, and
+not intended for use by the end user.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="calc_auc.html">calc_auc</a></code> <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> <code><a href="plot.gg_roc.html">plot.gg_roc</a></code></p></div>
+    <div class="dont-index"><p><code><a href="calc_auc.html">calc_auc</a></code> <code><a href="gg_roc.rfsrc.html">gg_roc</a></code></p>
+<p><code><a href="plot.gg_roc.html">plot.gg_roc</a></code></p></div>
     </div>
 
     <div id="ref-examples">
@@ -88,8 +89,10 @@ for use by the end user.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Taken from the gg_roc example</span></span>
 <span class="r-in"><span class="co"># rfsrc_iris &lt;- rfsrc(Species ~ ., data = iris)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc.rfsrc</span><span class="op">(</span><span class="va">rfsrc_iris</span>, <span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">yvar</span>, which.outcome<span class="op">=</span><span class="fl">1</span>, oob<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc.rfsrc</span><span class="op">(</span><span class="va">rfsrc_iris</span>, <span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">yvar</span>, which.outcome<span class="op">=</span><span class="fl">1</span>, oob<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc.rfsrc</span><span class="op">(</span><span class="va">rfsrc_iris</span>, <span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">yvar</span>,</span>
+<span class="r-in">     which.outcome<span class="op">=</span><span class="fl">1</span>, oob<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc.rfsrc</span><span class="op">(</span><span class="va">rfsrc_iris</span>, <span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">yvar</span>,</span>
+<span class="r-in">     which.outcome<span class="op">=</span><span class="fl">1</span>, oob<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 </code></pre></div>
     </div>
   </div>

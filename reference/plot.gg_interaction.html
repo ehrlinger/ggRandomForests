@@ -62,7 +62,8 @@ Plot a <code><a href="gg_interaction.html">gg_interaction</a></code> object,</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>gg_interaction object created from a <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object</p></dd>
+<dd><p>gg_interaction object created from a 
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object</p></dd>
 <dt>xvar</dt>
 <dd><p>variable (or list of variables) of interest.</p></dd>
 <dt>lbls</dt>
@@ -77,16 +78,17 @@ Plot a <code><a href="gg_interaction.html">gg_interaction</a></code> object,</p>
     <div id="references">
     <h2>References</h2>
     <p>Breiman L. (2001). Random forests, Machine Learning, 45:5-32.</p>
-<p>Ishwaran H. and Kogalur U.B. (2007). Random survival forests for 
+<p>Ishwaran H. and Kogalur U.B. (2007). Random survival forests for
 R, Rnews, 7(2):25-31.</p>
-<p>Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, 
+<p>Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
 Regression and Classification (RF-SRC), R package version 1.4.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code>
 <code><a href="https://www.randomforestsrc.org//reference/find.interaction.rfsrc.html" class="external-link">find.interaction</a></code>
-<code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></code> <code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code> 
+<code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></code> 
+<code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code>
 <code><a href="https://www.randomforestsrc.org//reference/vimp.rfsrc.html" class="external-link">vimp</a></code>
 <code>plot.gg_interaction</code></p></div>
     </div>
@@ -94,7 +96,7 @@ Regression and Classification (RF-SRC), R package version 1.4.</p>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## Examples from randomForestSRC package... </span></span>
+<span class="r-in"><span class="co">## Examples from randomForestSRC package...</span></span>
 <span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
 <span class="r-in"><span class="co">## find interactions, classification setting</span></span>
 <span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
@@ -142,7 +144,7 @@ Regression and Classification (RF-SRC), R package version 1.4.</p>
 <span class="r-in"><span class="co">## find interactions, survival setting</span></span>
 <span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
 <span class="r-in"><span class="co">## -------- pbc data</span></span>
-<span class="r-in"><span class="co">## data(pbc, package = "randomForestSRC") </span></span>
+<span class="r-in"><span class="co">## data(pbc, package = "randomForestSRC")</span></span>
 <span class="r-in"><span class="co">## pbc.obj &lt;- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)</span></span>
 <span class="r-in"><span class="co">## interaction_pbc &lt;- find.interaction(pbc.obj, nvar = 8)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_pbc</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
