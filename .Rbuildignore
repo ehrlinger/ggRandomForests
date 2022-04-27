@@ -28,3 +28,4 @@ framed.sty
 
 ^CRAN-RELEASE$
 ^CRAN-SUBMISSION$
+^\.github$
