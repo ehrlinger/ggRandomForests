@@ -36,3 +36,4 @@ Suggests:
 RoxygenNote: 7.1.2
 LazyData: true
 LazyDataCompression: bzip2
+VignetteBuilder: knitr
