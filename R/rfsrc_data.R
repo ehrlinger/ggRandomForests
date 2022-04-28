@@ -157,7 +157,7 @@
 #'  pbc data set
 #' ---------------------
 #'
-#' Flemming T.R and Harrington D.P., (1991) Counting Processes and Survival 
+#' Fleming T.R and Harrington D.P., (1991) Counting Processes and Survival 
 #' Analysis. New York: Wiley.
 #'
 #' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox 

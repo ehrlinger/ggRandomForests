@@ -80,7 +80,7 @@ In \autoref{data-summary-primary-biliary-cirrhosis-pbc-data-set} we introduce th
 
 Once we have an idea of which variables we are most interested in, we use dependence plots [@Friedman:2000] (\autoref{variableresponse-dependence}) to understand how these variables are related to the response. Variable dependence (\autoref{variable-dependence}) plots give us an idea of the overall trend of a variable/response relation, while partial dependence plots (\autoref{partial-dependence}) show us the risk adjusted relation by averaging out the effects of other variables. Dependence plots often show strongly non-linear variable/response relations that are not easily obtained through parametric modeling.
 
-We then graphically examine forest variable interactions with the use of variable and partial dependence conditioning plots (coplots) [@chambers:1992; @cleveland:1993] (\autoref{conditional-dependence-plots}) and the analogouse partial dependence surfaces (\autoref{partial-plot-surfaces}) before adding concluding remarks in \autoref{conclusion}.
+We then graphically examine forest variable interactions with the use of variable and partial dependence conditioning plots (coplots) [@chambers:1992; @cleveland:1993] (\autoref{conditional-dependence-plots}) and the analogous partial dependence surfaces (\autoref{partial-plot-surfaces}) before adding concluding remarks in \autoref{conclusion}.
 
 ``` {r libraries}
 ################## Load packages ##################
@@ -391,7 +391,7 @@ The `gg_rfsrc` plot of \autoref{fig:rfsrc-mean2} shows the median survival with 
 
 ## Random forest imputation
 
-There are two modeling issues when dealing with missing data values: ``How does the algorithm build a model when values are missing from the training data?``, and ``How does the algorithm predict a response when values are missing from the test data?``. The standard procedure for linear models is to either remove or impute the missing data values before modelling. Removing the missingness is done by either removing the variable with missing values (column wise) or removing the observations (row wise). Removal is a simple solution, but may bias results when either observations or variables are scarce.
+There are two modeling issues when dealing with missing data values: ``How does the algorithm build a model when values are missing from the training data?``, and ``How does the algorithm predict a response when values are missing from the test data?``. The standard procedure for linear models is to either remove or impute the missing data values before modeling. Removing the missingness is done by either removing the variable with missing values (column wise) or removing the observations (row wise). Removal is a simple solution, but may bias results when either observations or variables are scarce.
 
 The \pkg{randomForestSRC} package imputes missing values using \emph{adaptive tree imputation} [@Ishwaran:2008]. Rather than impute missing values before growing the forest, the algorithm takes a ``just-in-time`` approach. At each node split, the set of `mtry` candidate variables is checked for missing values. Missing values are then imputed by randomly drawing values from non-missing data within the node. The split-statistic is then calculated on observations that were not missing values. The imputed values are used to sort observations into the subsequent daughter nodes and then discarded before the next split occurs. The process is repeated until the stopping criteria is reached and all observations are sorted into terminal nodes.
 
