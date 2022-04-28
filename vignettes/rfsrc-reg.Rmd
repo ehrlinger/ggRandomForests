@@ -3,7 +3,7 @@ author:
   - name: John Ehrlinger
     email: john.ehrlinger@gmail.com
     url: https://github.com/ehrlinger/ggRandomForests
-title: "ggRandomForests: Regression randomForestSRC"
+title: "ggRandomForests: Exploring randomForestSRC Regression"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
   html_vignette:
@@ -21,7 +21,7 @@ output:
     fig_caption: yes
 bibliography: ggRandomForestsRMD.bib
 vignette: >
-  %\VignetteIndexEntry{ggRandomForests: Regression randomForest}
+  %\VignetteIndexEntry{ggRandomForests: Exploring randomForestSRC Regression}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -38,8 +38,20 @@ This document is structured as a tutorial for building random forests for regres
 library("knitr")
 
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
-opts_chunk$set(echo = TRUE, # Change this to TRUE if you want to see all the code examples
-               results = FALSE, message = FALSE, warning = FALSE, 
+opts_chunk$set(fig.path = 'rmd-rfsrc/rfr-',
+               fig.align = 'center',
+               fig.pos = "!htb",
+               fig.show = 'hold',
+               # fig.height = 3,
+               # fig.width = 4,
+               size = 'footnotesize',
+               prompt = TRUE,
+               highlight = FALSE,
+               comment = NA,
+               echo = FALSE, # Change this to TRUE if you want to see all the code examples
+               results = FALSE,
+               message = FALSE,
+               warning = FALSE,
                error = FALSE)
 
 # Setup the R environment
@@ -68,7 +80,7 @@ library("parallel")        # mclapply for multicore processing
 
 # Analysis packages.
 library("randomForestSRC") # random forests for survival, regression and 
-                           # classification
+# classification
 library("ggRandomForests") # ggplot2 random forest figures (This!)
 
 ################ Default Settings ##################
@@ -98,11 +110,11 @@ Predictive accuracy make RF an attractive alternative to parametric models, thou
 
 Many of the figures created by the \pkg{ggRandomForests} package are also available directly from within the \pkg{randomForestSRC} package. However \pkg{ggRandomForests} offers the following advantages:
 
- * Separation of data and figures: \pkg{ggRandomForests} contains functions that  operate on either the `randomForestSRC::rfsrc` forest object directly, or on the output from \pkg{randomForestSRC} post processing functions (i.e. `plot.variable`, `var.select`, `find.interaction`) to generate intermediate \pkg{ggRandomForests} data objects. Functions are provide to further process these objects and plot results using the \pkg{ggplot2} graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.  
+* Separation of data and figures: \pkg{ggRandomForests} contains functions that  operate on either the `randomForestSRC::rfsrc` forest object directly, or on the output from \pkg{randomForestSRC} post processing functions (i.e. `plot.variable`, `var.select`, `find.interaction`) to generate intermediate \pkg{ggRandomForests} data objects. Functions are provide to further process these objects and plot results using the \pkg{ggplot2} graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.  
 
- * Each data object/figure is a single, self contained object. This allows simple modification and manipulation of the data or \pkg{ggplot2} objects to meet users specific needs and requirements. 
+* Each data object/figure is a single, self contained object. This allows simple modification and manipulation of the data or \pkg{ggplot2} objects to meet users specific needs and requirements. 
 
- * The use of \pkg{ggplot2} for plotting. We chose to use the \pkg{ggplot2} package for our figures to allow users flexibility in modifying the figures to their liking. Each plot function returns either a single `ggplot` object, or a `list` of `ggplot` objects, allowing users to use additional \pkg{ggplot2} functions or themes to modify and customize the figures to their liking.  
+* The use of \pkg{ggplot2} for plotting. We chose to use the \pkg{ggplot2} package for our figures to allow users flexibility in modifying the figures to their liking. Each plot function returns either a single `ggplot` object, or a `list` of `ggplot` objects, allowing users to use additional \pkg{ggplot2} functions or themes to modify and customize the figures to their liking.  
 
 This document is formatted as a tutorial for using the \pkg{randomForestSRC} package for building and post-processing random forest models with the \pkg{ggRandomForests} package for investigating how the forest is constructed. In this tutorial, we use the Boston Housing Data (\autoref{data-boston-housing-values}), available in the `MASS` package [@mass:2002], to build a random forest for regression (\autoref{random-forest---regression}) and demonstrate the tools in the \pkg{ggRandomForests} package for examining the forest construction. 
 
@@ -113,7 +125,7 @@ Once we have an idea of which variables we are want to investigate further, we w
 # Data: Boston Housing Values
 
 The Boston Housing data is a standard benchmark data set for regression models. It contains data for 506 census tracts of Boston from the 1970 census [@Harrison:1978, @Belsley:1980]. The data is available in multiple `R` packages, but to keep the installation dependencies for the \pkg{ggRandomForests} package down, we will use the data contained in the `MASS` package (http://CRAN.R-project.org/package=MASS) [@mass:2002], available with the base install of `R`. The following code block loads the data into the environment. We include a table of the Boston data set variable names, types and descriptions for reference when we interpret the model results.
- 
+
 ```{r datastep, echo=TRUE}
 # Load the Boston Housing data
 data(Boston, package="MASS")
@@ -414,11 +426,11 @@ levels(gg_v$rm_grp) <- paste("rm in ",
 # Create a variable dependence (co)plot, 
 # faceted on group membership.
 plot(gg_v, xvar = "lstat")+
-#   method = "loess", span=1.5, se = FALSE) + 
+  #   method = "loess", span=1.5, se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["lstat"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
- # geom_smooth(se=FALSE) +
+  # geom_smooth(se=FALSE) +
   facet_wrap(~rm_grp)
 ```
 
@@ -442,11 +454,11 @@ levels(gg_v$lstat_grp) <- paste("lstat in ", levels(gg_v$lstat_grp), " (%)",sep=
 
 # Create a variable dependence (co)plot, faceted on group membership.
 plot(gg_v, xvar = "rm", alpha = .5)+
-     #method = "loess", span=1.5, , se = FALSE) + 
+  #method = "loess", span=1.5, , se = FALSE) + 
   labs(y = st.labs["medv"], x=st.labs["rm"]) + 
   theme(legend.position = "none") + 
   scale_color_brewer(palette = "Set3") + 
- # geom_smooth() +
+  # geom_smooth() +
   #scale_shape_manual(values = event.marks, labels = event.labels)+ 
   facet_wrap(~lstat_grp)
 ```
@@ -454,12 +466,12 @@ plot(gg_v, xvar = "rm", alpha = .5)+
 We get similar information from this view, predicted median home values decrease with increasing `lstat` percentage and decreasing `rm`. However viewed together we get a better sense of how the `lstat` and `rm` variables work together (interact) in the median value prediction.
 
 Note that typically [@cleveland:1993] conditional plots for continuous variables included overlapping intervals along the grouped variable. We chose to use mutually exclusive continuous variable intervals for multiple reasons:
- 
- * Simplicity - We can create the coplot figures directly from the `gg_variable` object by adding a conditional group column directly to the object.
 
- * Interpretability - We find it easier to interpret and compare the panels if each observation is only in a single panel.
+* Simplicity - We can create the coplot figures directly from the `gg_variable` object by adding a conditional group column directly to the object.
 
- * Clarity - We prefer using more space for the data portion of the figures than typically displayed in the `coplot` function available in base R, which require the bar plot to present the overlapping segments.
+* Interpretability - We find it easier to interpret and compare the panels if each observation is only in a single panel.
+
+* Clarity - We prefer using more space for the data portion of the figures than typically displayed in the `coplot` function available in base R, which require the bar plot to present the overlapping segments.
 
 It is still possible to augment the `gg_variable` to include overlapping conditional membership with continuous variables by duplicating rows of the object, and setting the correct conditional group membership. The `plot.gg_variable` function recipe above could then be used to generate the panel plot, with panels ordered according to the factor levels of the grouping variable. We leave this as an exercise for the reader.
 

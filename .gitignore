@@ -40,3 +40,10 @@ inst/doc
 ..Rcheck/ggRandomForests/help/ggRandomForests.rdx
 ..Rcheck/00check.log
 ..Rcheck/00install.out
+vignettes/ggRandomForests-regression_cache/*
+vignettes/ggRandomForests-survival_cache/*
+vignettes/rmd-rf/*
+vignettes/rmd-rfsrc/*
+
+/doc/
+/Meta/

@@ -1,53 +1,44 @@
 ---
 author:
   - name: John Ehrlinger
-    affiliation: Microsoft, Machine Learning COGS
-    address: >
-      One Memorial Drive
-      Cambridge, MA 02142
     email: john.ehrlinger@gmail.com
     url: https://github.com/ehrlinger/ggRandomForests
+title: "ggRandomForests: Exploring randomForestSRC Survival"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-title:
-  formatted: "\\pkg{ggRandomForests}: Exploring Random Forest Survival"
-  # If you use tex in the formatted title, also supply version without
-  plain:     "ggRandomForests: Exploring Random Forest Survival"
-  # For running headers, if needed
-  short:     "\\pkg{ggRandomForests}"
-preamble: >
-  \usepackage{booktabs}
-  \usepackage{longtable}
-  \usepackage{amsmath}
-  \usepackage{amssymb,amsthm}
-abstract: |
-  Random forest [@Breiman:2001] (RF) is a non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random survival forests (RSF) [@Ishwaran:2007a; @Ishwaran:2008] are an extension of Breimans RF techniques allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package [@Ishwaran:RFSRC:2014] is a unified treatment of Breimans random forest for survival, regression and classification problems.
- 
-  Predictive accuracy makes RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package, tools for visually understand random forest models grown in \proglang{R} [@rcore] with the \pkg{randomForestSRC} package. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2} [@Wickham:2009] graphics package.
-  
-  This document is structured as a tutorial for building random forest for survival with the \pkg{randomForestSRC} package and using the \pkg{ggRandomForests} package for investigating how the forest is constructed. We analyse the Primary Biliary Cirrhosis of the liver data from a clinical trial at the Mayo Clinic [@fleming:1991]. We demonstrate random forest variable selection using Variable Importance (VIMP) [@Breiman:2001] and Minimal Depth [@Ishwaran:2010], a property derived from the construction of each tree within the forest. We will also demonstrate the use of variable dependence and partial dependence plots [@Friedman:2000] to aid in the interpretation of RSF results. We then examine variable interactions between covariates using conditional variable dependence plots. Our aim is to demonstrate the strength of using Random Forest methods for both prediction and information retrieval, specifically in time to event data settings.
-keywords:
-  # at least one keyword must be supplied
-  formatted: [random forest, survival, vimp, minimal depth, "\\proglang{R}", "\\pkg{randomForestSRC}", "\\pkg{ggRandomForests}", "\\pkg{randomForest}"]
-  plain:     [random forest, survival, vimp, minimal depth, r, randomForestSRC,ggRandomForests,randomForest]
-bibliography: ggRandomForests.bib
-output: 
-  rticles::jss_article:
-    citation_package: natbib
+output:
+  html_vignette:
     fig_caption: yes
-    keep_tex: true
-    number_sections: true
+  html_document:
+    fig_caption: yes
+    toc: true
+    toc_float: true
+    code_folding: hide
+  rmdformats::readthedown:
+    highlight: kate
+    fig_caption: yes
+  word_document:
+    toc: true
+    fig_caption: yes
+bibliography: ggRandomForestsRMD.bib
 vignette: >
-  %\VignetteIndexEntry{ggRandomForests: Exploring Random Forest Survival}
+  %\VignetteIndexEntry{ggRandomForests: Exploring randomForestSRC Survival}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
+# Abtract
+Random forest [@Breiman:2001] (RF) is a non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random survival forests (RSF) [@Ishwaran:2007a; @Ishwaran:2008] are an extension of Breimans RF techniques allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package [@Ishwaran:RFSRC:2014] is a unified treatment of Breimans random forest for survival, regression and classification problems.
+
+Predictive accuracy makes RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package, tools for visually understand random forest models grown in \proglang{R} [@rcore] with the \pkg{randomForestSRC} package. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2} [@Wickham:2009] graphics package.
+
+This document is structured as a tutorial for building random forest for survival with the \pkg{randomForestSRC} package and using the \pkg{ggRandomForests} package for investigating how the forest is constructed. We analyse the Primary Biliary Cirrhosis of the liver data from a clinical trial at the Mayo Clinic [@fleming:1991]. We demonstrate random forest variable selection using Variable Importance (VIMP) [@Breiman:2001] and Minimal Depth [@Ishwaran:2010], a property derived from the construction of each tree within the forest. We will also demonstrate the use of variable dependence and partial dependence plots [@Friedman:2000] to aid in the interpretation of RSF results. We then examine variable interactions between covariates using conditional variable dependence plots. Our aim is to demonstrate the strength of using Random Forest methods for both prediction and information retrieval, specifically in time to event data settings.
+
+
 ``` {r setup, include = FALSE, cache = FALSE, echo=FALSE}
 ## Not displayed ##
 library("knitr")
-knitr::render_sweave()
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
-opts_chunk$set(fig.path = 'rfs-',
+opts_chunk$set(fig.path = 'rmd-rfsrc/rfs-',
                fig.align = 'center',
                fig.pos = "!htb",
                fig.show = 'hold',
@@ -77,11 +68,11 @@ Predictive accuracy make RF an attractive alternative to parametric models, thou
 
 Many of the figures created by the \pkg{ggRandomForests} package are also available directly from within the \pkg{randomForestSRC} package. However \pkg{ggRandomForests} offers the following advantages:
 
-  * Separation of data and figures: \pkg{ggRandomForests} contains functions that  operate on either the `rfsrc` forest object directly, or on the output from \pkg{randomForestSRC} post processing functions (i.e., `plot.variable`, `var.select`) to generate intermediate \pkg{ggRandomForests} data objects. \pkg{ggRandomForests} functions are provide to further process these objects and plot results using the \pkg{ggplot2} graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.
+* Separation of data and figures: \pkg{ggRandomForests} contains functions that  operate on either the `rfsrc` forest object directly, or on the output from \pkg{randomForestSRC} post processing functions (i.e., `plot.variable`, `var.select`) to generate intermediate \pkg{ggRandomForests} data objects. \pkg{ggRandomForests} functions are provide to further process these objects and plot results using the \pkg{ggplot2} graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.
 
-  * Each data object/figure is a single, self contained unit. This allows simple modification and manipulation of the data or `ggplot` objects to meet users specific needs and requirements.
+* Each data object/figure is a single, self contained unit. This allows simple modification and manipulation of the data or `ggplot` objects to meet users specific needs and requirements.
 
- * We chose to use the \pkg{ggplot2} package for our figures for flexibility in modifying the output. Each \pkg{ggRandomForests} plot function returns either a single `ggplot` object, or a `list` of `ggplot` objects, allowing the use of additional \pkg{ggplot2} functions to modify and customize the final figures.
+* We chose to use the \pkg{ggplot2} package for our figures for flexibility in modifying the output. Each \pkg{ggRandomForests} plot function returns either a single `ggplot` object, or a `list` of `ggplot` objects, allowing the use of additional \pkg{ggplot2} functions to modify and customize the final figures.
 
 This document is structured as a tutorial for using the \pkg{randomForestSRC} package for building and post-processing random survival forest models  and using the \pkg{ggRandomForests} package for understanding how the forest is constructed. In this tutorial, we will build a random survival forest for the primary biliary cirrhosis (PBC) of the liver data set [@fleming:1991], available in the \pkg{randomForestSRC} package.
 
@@ -101,7 +92,7 @@ library("parallel")        # mclapply for multicore processing
 
 # Analysis packages.
 library("randomForestSRC") # random forest for survival, regression and
-                           # classification
+# classification
 library("ggRandomForests") # ggplot2 random forest figures (This!)
 
 ################ Default Settings ##################
@@ -135,22 +126,22 @@ for(ind in 1:dim(pbc)[2]){
     if(length(unique(pbc[which(!is.na(pbc[, ind])), ind]))<= 2) {
       if(sum(range(pbc[, ind], na.rm = TRUE) ==  c(0, 1)) ==  2){
         pbc[, ind] <- as.logical(pbc[, ind])
-        }
+      }
+    }
+  }else{
+    if(length(unique(pbc[which(!is.na(pbc[, ind])), ind]))<= 2) {
+      if(sum(sort(unique(pbc[, ind])) ==  c(0, 1)) ==  2){
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+      if(sum(sort(unique(pbc[, ind])) ==  c(FALSE, TRUE)) ==  2){
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+    }
   }
- }else{
-  if(length(unique(pbc[which(!is.na(pbc[, ind])), ind]))<= 2) {
-   if(sum(sort(unique(pbc[, ind])) ==  c(0, 1)) ==  2){
-    pbc[, ind] <- as.logical(pbc[, ind])
-   }
-   if(sum(sort(unique(pbc[, ind])) ==  c(FALSE, TRUE)) ==  2){
-    pbc[, ind] <- as.logical(pbc[, ind])
-   }
+  if(!is.logical(pbc[, ind]) &
+     length(unique(pbc[which(!is.na(pbc[, ind])), ind]))<= 5) {
+    pbc[, ind] <- factor(pbc[, ind])
   }
- }
- if(!is.logical(pbc[, ind]) &
-    length(unique(pbc[which(!is.na(pbc[, ind])), ind]))<= 5) {
-  pbc[, ind] <- factor(pbc[, ind])
- }
 }
 # Convert age to years
 pbc$age <- pbc$age/364.24
@@ -505,7 +496,7 @@ fh.model <- data.frame(cbind(names = fleming.table$nm,
                                         decreasing = TRUE),
                              Variable=rownames(fleming.table),
                              Coeff=fleming.table$Coef.
-                             ))
+))
 gg_v <- gg_vimp(rfsrc_pbc)
 gg_v$rank <- 1:nrow(gg_v)
 rownames(gg_v) <- gg_v$vars
@@ -548,7 +539,7 @@ Variable dependence is straight forward to calculate, involving only the getting
 
 ```{r rfsrc-plot3Mnth, echo=TRUE, fig.cap="Random forest predicted survival (Figure \\ref{fig:rfsrc-plot}) with vertical dashed lines indicate the 1 and 3 year survival estimates."}
 ggRFsrc + geom_vline(aes(xintercept = 1), linetype = "dashed") +
-   geom_vline(aes(xintercept = 3), linetype = "dashed") +
+  geom_vline(aes(xintercept = 3), linetype = "dashed") +
   coord_cartesian(xlim = c(0, 5))
 ```
 
@@ -694,7 +685,7 @@ partial_pbc_time <- lapply(time_cts, function(ct){
   randomForestSRC::plot.variable(rfsrc_pbc, xvar.names = "bili", time = ct,
                                  npts = 50, show.plots = FALSE,
                                  partial = TRUE, surv.type="surv")
-      })
+})
 
 # We need to attach the time points of interest to our data.
 time.tmp <- do.call(c,lapply(time_cts,
@@ -761,7 +752,7 @@ The `gg_interaction ` function wraps the `find.interaction ` matrix for use with
 plot(ggint, xvar = xvar)
 ```
 
- The `gg_interaction ` plots in \autoref{fig:interactionPanel} show interactions for the target variable (shown with the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (`bili`) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone it may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing, as expected. We also see the interactive variables increasing with increasing target depth.
+The `gg_interaction ` plots in \autoref{fig:interactionPanel} show interactions for the target variable (shown with the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (`bili`) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone it may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing, as expected. We also see the interactive variables increasing with increasing target depth.
 
 # Conditional dependence plots
 
@@ -779,7 +770,7 @@ ggvar$edema <- paste("edema = ", ggvar$edema, sep = "")
 # Plot with linear smooth (method argument)
 var_dep <- plot(ggvar, xvar = "bili",
                 alpha = 0.5) +
-#  geom_smooth(method = "glm",se = FALSE) +
+  #  geom_smooth(method = "glm",se = FALSE) +
   labs(y = "Survival",
        x = st.labs["bili"]) +
   theme(legend.position = "none") +
@@ -836,7 +827,7 @@ levels(ggvar$bili_grp) <- paste("bilirubin =", levels(bili_grp))
 
 # plot.gg_variable
 plot(ggvar, xvar = "albumin", alpha = 0.5) +
-#     method = "glm", se = FALSE) +
+  #     method = "glm", se = FALSE) +
   labs(y = "Survival", x = st.labs["albumin"]) +
   theme(legend.position = "none") +
   scale_color_manual(values = strCol, labels = event.labels) +
@@ -849,12 +840,12 @@ The `gg_variable` coplot of \autoref{fig:bili-coplot} indicates the probability 
 
 Typically, conditional plots for continuous variables include overlapping intervals along the grouped variable \citep{cleveland:1993}. We chose to use mutually exclusive continuous variable intervals for the following reasons:
 
-  * Simplicity - We can create the coplot figures directly from the `gg_variable` object by adding a conditional group column directly to the object.
+* Simplicity - We can create the coplot figures directly from the `gg_variable` object by adding a conditional group column directly to the object.
 
-  * Interpretability - We find it easier to interpret and compare the panels if each observation is only in a single panel.
+* Interpretability - We find it easier to interpret and compare the panels if each observation is only in a single panel.
 
-  * Clarity - We prefer using more space for the data portion of the figures than typically displayed in the `coplot` function which requires the bar plot to present the overlapping segments.
- 
+* Clarity - We prefer using more space for the data portion of the figures than typically displayed in the `coplot` function which requires the bar plot to present the overlapping segments.
+
 It is still possible to augment the `gg_variable` to include overlapping conditional membership with continuous variables by duplicating rows of the training set data within the `rfsrc$xvar`  object, and then setting the conditional group membership as described. The `plot.gg_variable` function recipe above could be used to generate the panel plot, with panels ordered according to the factor levels of the grouping variable. We leave this as an exercise for the reader.
 
 ## Partial dependence coplots
@@ -891,7 +882,7 @@ ggplot(partial_coplot_pbc2, aes(x=albumin, y=yhat, col=group, shape=group))+
   geom_smooth(se = FALSE) +
   labs(x = st.labs["albumin"], y = "Survival at 1 year (%)",
        color = "Bilirubin", shape = "Bilirubin")
-  #coord_cartesian(y = c(49,101))
+#coord_cartesian(y = c(49,101))
 ```
 
 # Partial plot surfaces
@@ -939,7 +930,7 @@ surf3D(x = srf$x, y = srf$y, z = srf$z, col = topo.colors(25),
        shade = 0.5, expand = 0.5, theta=55, phi=15,
        lighting = TRUE, lphi = -50,
        xlab = "Bilirubin", ylab = "Albumin", zlab = "Survival at 1 Year"
-       )
+)
 
 # Extract the albumin and bilirubin points
 # Remove end points

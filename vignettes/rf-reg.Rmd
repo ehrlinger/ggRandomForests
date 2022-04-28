@@ -3,7 +3,7 @@ author:
   - name: John Ehrlinger
     email: john.ehrlinger@gmail.com
     url: https://github.com/ehrlinger/ggRandomForests
-title: "ggRandomForests: Regression randomForest"
+title: "ggRandomForests: Exploring randomForest Regression"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
   html_vignette:
@@ -21,7 +21,7 @@ output:
     fig_caption: yes
 bibliography: ggRandomForestsRMD.bib
 vignette: >
-  %\VignetteIndexEntry{ggRandomForests: Regression randomForest}
+  %\VignetteIndexEntry{ggRandomForests: Exploring randomForest Regression}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
