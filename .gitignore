@@ -47,3 +47,5 @@ vignettes/rmd-rfsrc/*
 
 /doc/
 /Meta/
+vignettes/Survival_cache/*
+vignettes/Regression_cache/*

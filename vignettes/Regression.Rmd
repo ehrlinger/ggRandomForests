@@ -6,7 +6,7 @@ author:
 title: "ggRandomForests: Exploring randomForestSRC Regression"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  html_vignette:
+  bookdown::html_vignette2:
     fig_caption: yes
   html_document:
     fig_caption: yes
@@ -62,11 +62,11 @@ options(mc.cores = 1, rf.cores = -1)
 
 # About this document
 
-This document is a package vignette for the \pkg{ggRandomForests} package for "Visually Exploring Random Forests" (http://CRAN.R-project.org/package=ggRandomForests). The \pkg{ggRandomForests} package is designed for use with the \pkg{randomForestSRC} package (http://CRAN.R-project.org/package=randomForestSRC) [@Ishwaran:RFSRC:2014] for growing random forests for survival (time to event response), regression (continuous response) and classification (categorical response) settings and uses the \pkg{ggplot2} package (http://CRAN.R-project.org/package=ggplot2) [@Wickham:2009] for plotting diagnostic and variable association results. \pkg{ggRandomForests} is  structured to extract data objects from \pkg{randomForestSRC} objects and provides functions for printing and plotting these objects.
+This document is a package vignette for the \pkg{ggRandomForests} package for "Visually Exploring Random Forests" (https://cran.r-project.org/package=ggRandomForests). The \pkg{ggRandomForests} package is designed for use with the \pkg{randomForestSRC} package (https://cran.r-project.org/package=randomForestSRC) [@Ishwaran:RFSRC:2014] for growing random forests for survival (time to event response), regression (continuous response) and classification (categorical response) settings and uses the \pkg{ggplot2} package (https://cran.r-project.org/package=ggplot2) [@Wickham:2009] for plotting diagnostic and variable association results. \pkg{ggRandomForests} is  structured to extract data objects from \pkg{randomForestSRC} objects and provides functions for printing and plotting these objects.
 
 The vignette is a tutorial for using the \pkg{ggRandomForests} package with the \pkg{randomForestSRC} package for building and post-processing random forests for regression settings. In this tutorial, we explore a random forest for regression model constructed for the Boston housing data set [@Harrison:1978, @Belsley:1980], available in the `MASS` package [@mass:2002]. We grow a random forest and demonstrate how \pkg{ggRandomForests} can be used when determining how the response depends on predictive variables within the model. The tutorial demonstrates the design and usage of many of \pkg{ggRandomForests} functions and features and also how to modify and customize the resulting `ggplot` graphic objects along the way.
 
-The vignette is written in \LaTeX using the `knitr` package (http://CRAN.R-project.org/package=knitr][@Xie:2015, @Xie:2014,@Xie:2013], which facilitates weaving `R` [@rcore] code, results and figures into document text. Throughout this document, `R` code will be displayed in *code blocks* as shown below. This code block loads the `R` packages required to run the source code listed in code blocks throughout the remainder of this document.
+The vignette is written in \LaTeX using the `knitr` package (https://cran.r-project.org/package=knitr][@Xie:2015, @Xie:2014,@Xie:2013], which facilitates weaving `R` [@rcore] code, results and figures into document text. Throughout this document, `R` code will be displayed in *code blocks* as shown below. This code block loads the `R` packages required to run the source code listed in code blocks throughout the remainder of this document.
 
 ```{r libraries, echo=TRUE}
 
@@ -95,7 +95,7 @@ strCol <- brewer.pal(3, "Set1")[c(2,1,3)]
 
 ```
 
-This vignette is available within the \pkg{ggRandomForests} package on the Comprehensive R Archive Network (CRAN) ({)http://cran.r-project.org) [@rcore]. Once the package has been installed, the vignette can be viewed directly from within `R` with the following command:
+This vignette is available within the \pkg{ggRandomForests} package on the Comprehensive R Archive Network (CRAN) (https://www.r-project.org) [@rcore]. Once the package has been installed, the vignette can be viewed directly from within `R` with the following command:
 ```{r vignette, eval=FALSE, echo=TRUE}
 vignette("randomForestSRC-Regression", package = "ggRFVignette")
 ```
@@ -124,7 +124,7 @@ Once we have an idea of which variables we are want to investigate further, we w
 
 # Data: Boston Housing Values
 
-The Boston Housing data is a standard benchmark data set for regression models. It contains data for 506 census tracts of Boston from the 1970 census [@Harrison:1978, @Belsley:1980]. The data is available in multiple `R` packages, but to keep the installation dependencies for the \pkg{ggRandomForests} package down, we will use the data contained in the `MASS` package (http://CRAN.R-project.org/package=MASS) [@mass:2002], available with the base install of `R`. The following code block loads the data into the environment. We include a table of the Boston data set variable names, types and descriptions for reference when we interpret the model results.
+The Boston Housing data is a standard benchmark data set for regression models. It contains data for 506 census tracts of Boston from the 1970 census [@Harrison:1978, @Belsley:1980]. The data is available in multiple `R` packages, but to keep the installation dependencies for the \pkg{ggRandomForests} package down, we will use the data contained in the `MASS` package (https://cran.r-project.org/package=MASS) [@mass:2002], available with the base install of `R`. The following code block loads the data into the environment. We include a table of the Boston data set variable names, types and descriptions for reference when we interpret the model results.
 
 ```{r datastep, echo=TRUE}
 # Load the Boston Housing data
@@ -185,7 +185,7 @@ The main objective of the Boston Housing data is to investigate variables associ
 
 ## Exploratory Data Analysis
 
-It is good practice to view your data before beginning an analysis, what[@Tukey:1977] refers to as Exploratory Data Analysis (EDA). To facilitate this, we use \pkg{ggplot2} figures with the `ggplot2::facet_wrap` command to create two sets of panel plots, one for categorical variables with boxplots at each level, and one of scatter plots for continuous variables. Each variable is plotted along a selected continuous variable on the X-axis. These figures help to find outliers, missing values and other data anomalies in each variable before getting deep into the analysis. We have also created a separate `shiny` app (http://shiny.rstudio.com) [@shiny:2015], available at (https://ehrlinger.shinyapps.io/xportEDA), for creating similar figures with an arbitrary data set, to make the EDA process easier for users. 
+It is good practice to view your data before beginning an analysis, what[@Tukey:1977] refers to as Exploratory Data Analysis (EDA). To facilitate this, we use \pkg{ggplot2} figures with the `ggplot2::facet_wrap` command to create two sets of panel plots, one for categorical variables with boxplots at each level, and one of scatter plots for continuous variables. Each variable is plotted along a selected continuous variable on the X-axis. These figures help to find outliers, missing values and other data anomalies in each variable before getting deep into the analysis. We have also created a separate `shiny` app (https://shiny.rstudio.com) [@shiny:2015], available at (https://ehrlinger.shinyapps.io/xportEDA), for creating similar figures with an arbitrary data set, to make the EDA process easier for users. 
 
 The Boston housing data consists almost entirely of continuous variables, with the exception of the "Charles river" logical variable. A simple EDA visualization to use for this data is a single panel plot of the continuous variables, with observation points colored by the logical variable. Missing values in our continuous variable plots are indicated by the rug marks along the x-axis, of which there are none in this data. We used the Boston housing response variable, the median value of homes (`medv`), for X variable.
 

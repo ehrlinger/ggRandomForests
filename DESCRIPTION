@@ -25,6 +25,7 @@ Imports:
 Suggests:
     testthat,
     rmdformats,
+    bookdown,
     RColorBrewer,
     MASS,
     dplyr,

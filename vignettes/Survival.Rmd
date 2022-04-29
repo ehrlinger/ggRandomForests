@@ -6,7 +6,7 @@ author:
 title: "ggRandomForests: Exploring randomForestSRC Survival"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  html_vignette:
+  bookdown::html_vignette2:
     fig_caption: yes
   html_document:
     fig_caption: yes
@@ -27,11 +27,11 @@ vignette: >
 ---
 
 # Abtract
-Random forest [@Breiman:2001] (RF) is a non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random survival forests (RSF) [@Ishwaran:2007a; @Ishwaran:2008] are an extension of Breimans RF techniques allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package [@Ishwaran:RFSRC:2014] is a unified treatment of Breimans random forest for survival, regression and classification problems.
+Random forest [@Breiman:2001] (RF) is a non-parametric statistical method requiring no distributional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random survival forests (RSF) [@Ishwaran:2007a; @Ishwaran:2008] are an extension of Breimans RF techniques allowing efficient non-parametric analysis of time to event data. The `randomForestSRC` package [@Ishwaran:RFSRC:2014] is a unified treatment of Breimans random forest for survival, regression and classification problems.
 
-Predictive accuracy makes RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package, tools for visually understand random forest models grown in \proglang{R} [@rcore] with the \pkg{randomForestSRC} package. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2} [@Wickham:2009] graphics package.
+Predictive accuracy makes RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the `ggRandomForests` package, tools for visually understand random forest models grown in `R` [@rcore] with the `randomForestSRC` package. The `ggRandomForests` package is structured to extract intermediate data objects from `randomForestSRC` objects and generate figures using the `ggplot2` [@Wickham:2009] graphics package.
 
-This document is structured as a tutorial for building random forest for survival with the \pkg{randomForestSRC} package and using the \pkg{ggRandomForests} package for investigating how the forest is constructed. We analyse the Primary Biliary Cirrhosis of the liver data from a clinical trial at the Mayo Clinic [@fleming:1991]. We demonstrate random forest variable selection using Variable Importance (VIMP) [@Breiman:2001] and Minimal Depth [@Ishwaran:2010], a property derived from the construction of each tree within the forest. We will also demonstrate the use of variable dependence and partial dependence plots [@Friedman:2000] to aid in the interpretation of RSF results. We then examine variable interactions between covariates using conditional variable dependence plots. Our aim is to demonstrate the strength of using Random Forest methods for both prediction and information retrieval, specifically in time to event data settings.
+This document is structured as a tutorial for building random forest for survival with the `randomForestSRC` package and using the `ggRandomForests` package for investigating how the forest is constructed. We analyse the Primary Biliary Cirrhosis of the liver data from a clinical trial at the Mayo Clinic [@fleming:1991]. We demonstrate random forest variable selection using Variable Importance (VIMP) [@Breiman:2001] and Minimal Depth [@Ishwaran:2010], a property derived from the construction of each tree within the forest. We will also demonstrate the use of variable dependence and partial dependence plots [@Friedman:2000] to aid in the interpretation of RSF results. We then examine variable interactions between covariates using conditional variable dependence plots. Our aim is to demonstrate the strength of using Random Forest methods for both prediction and information retrieval, specifically in time to event data settings.
 
 
 ``` {r setup, include = FALSE, cache = FALSE, echo=FALSE}
@@ -62,25 +62,25 @@ options(mc.cores = 1, rf.cores = 0, stringsAsFactors = FALSE)
 
 # Introduction
 
-Random forest [@Breiman:2001] (RF) is a non-parametric statistical method which requires no distributional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Survival Forest (RSF) [@Ishwaran:2007a;@Ishwaran:2008] is an extension of Breiman's RF techniques to survival settings, allowing efficient non-parametric analysis of time to event data. The \pkg{randomForestSRC} package (http://CRAN.R-project.org/package=randomForestSRC) [@Ishwaran:RFSRC:2014] is a unified treatment of Breiman's random forest for survival, regression and classification problems.
+Random forest [@Breiman:2001] (RF) is a non-parametric statistical method which requires no distributional assumptions on covariate relation to the response. RF is a robust, nonlinear technique that optimizes predictive accuracy by fitting an ensemble of trees to stabilize model estimates. Random Survival Forest (RSF) [@Ishwaran:2007a;@Ishwaran:2008] is an extension of Breiman's RF techniques to survival settings, allowing efficient non-parametric analysis of time to event data. The `randomForestSRC` package (https://cran.r-project.org/package=randomForestSRC) [@Ishwaran:RFSRC:2014] is a unified treatment of Breiman's random forest for survival, regression and classification problems.
 
-Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the \pkg{ggRandomForests} package  (http://CRAN.R-project.org/package=ggRandomForests) for visually exploring random forest models. The \pkg{ggRandomForests} package is structured to extract intermediate data objects from \pkg{randomForestSRC} objects and generate figures using the \pkg{ggplot2} graphics package (http://CRAN.R-project.org/package=ggplot2)  [@Wickham:2009].
+Predictive accuracy make RF an attractive alternative to parametric models, though complexity and interpretability of the forest hinder wider application of the method. We introduce the `ggRandomForests` package  (https://cran.r-project.org/package=ggRandomForests) for visually exploring random forest models. The `ggRandomForests` package is structured to extract intermediate data objects from `randomForestSRC` objects and generate figures using the `ggplot2` graphics package (https://cran.r-project.org/package=ggplot2)  [@Wickham:2009].
 
-Many of the figures created by the \pkg{ggRandomForests} package are also available directly from within the \pkg{randomForestSRC} package. However \pkg{ggRandomForests} offers the following advantages:
+Many of the figures created by the `ggRandomForests` package are also available directly from within the `randomForestSRC` package. However `ggRandomForests` offers the following advantages:
 
-* Separation of data and figures: \pkg{ggRandomForests} contains functions that  operate on either the `rfsrc` forest object directly, or on the output from \pkg{randomForestSRC} post processing functions (i.e., `plot.variable`, `var.select`) to generate intermediate \pkg{ggRandomForests} data objects. \pkg{ggRandomForests} functions are provide to further process these objects and plot results using the \pkg{ggplot2} graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.
+* Separation of data and figures: `ggRandomForests` contains functions that  operate on either the `rfsrc` forest object directly, or on the output from `randomForestSRC` post processing functions (i.e., `plot.variable`, `var.select`) to generate intermediate `ggRandomForests` data objects. `ggRandomForests` functions are provide to further process these objects and plot results using the `ggplot2` graphics package. Alternatively, users can use these data objects for their own custom plotting or analysis operations.
 
 * Each data object/figure is a single, self contained unit. This allows simple modification and manipulation of the data or `ggplot` objects to meet users specific needs and requirements.
 
-* We chose to use the \pkg{ggplot2} package for our figures for flexibility in modifying the output. Each \pkg{ggRandomForests} plot function returns either a single `ggplot` object, or a `list` of `ggplot` objects, allowing the use of additional \pkg{ggplot2} functions to modify and customize the final figures.
+* We chose to use the `ggplot2` package for our figures for flexibility in modifying the output. Each `ggRandomForests` plot function returns either a single `ggplot` object, or a `list` of `ggplot` objects, allowing the use of additional `ggplot2` functions to modify and customize the final figures.
 
-This document is structured as a tutorial for using the \pkg{randomForestSRC} package for building and post-processing random survival forest models  and using the \pkg{ggRandomForests} package for understanding how the forest is constructed. In this tutorial, we will build a random survival forest for the primary biliary cirrhosis (PBC) of the liver data set [@fleming:1991], available in the \pkg{randomForestSRC} package.
+This document is structured as a tutorial for using the `randomForestSRC` package for building and post-processing random survival forest models  and using the `ggRandomForests` package for understanding how the forest is constructed. In this tutorial, we will build a random survival forest for the primary biliary cirrhosis (PBC) of the liver data set [@fleming:1991], available in the `randomForestSRC` package.
 
-In \autoref{data-summary-primary-biliary-cirrhosis-pbc-data-set} we introduce the `pbc` data set and summarize the proportional hazards analysis of this data from Chapter 4 of [@fleming:1991]. In \autoref{random-survival-forest}, we describe how to grow a random survival forest with the \pkg{randomForestSRC} package. Random forest is not a parsimonious method, but uses all variables available in the data set to construct the response predictor. We demonstrate random forest variable selection techniques (\autoref{variable-selection}) using Variable Importance (VIMP) [@Breiman:2001] in \autoref{variable-importance} and Minimal Depth [@Ishwaran:2010] in \autoref{minimal-depth}. We then compare both methods with variables used in the [@fleming:1991] model.
+In \@ref(data-summary-primary-biliary-cirrhosis-pbc-data-set) we introduce the `pbc` data set and summarize the proportional hazards analysis of this data from Chapter 4 of [@fleming:1991]. In \@ref(random-survival-forest), we describe how to grow a random survival forest with the `randomForestSRC` package. Random forest is not a parsimonious method, but uses all variables available in the data set to construct the response predictor. We demonstrate random forest variable selection techniques (\@ref(variable-selection)) using Variable Importance (VIMP) [@Breiman:2001] in \@ref(variable-importance) and Minimal Depth [@Ishwaran:2010] in \@ref(minimal-depth). We then compare both methods with variables used in the [@fleming:1991] model.
 
-Once we have an idea of which variables we are most interested in, we use dependence plots [@Friedman:2000] (\autoref{variableresponse-dependence}) to understand how these variables are related to the response. Variable dependence (\autoref{variable-dependence}) plots give us an idea of the overall trend of a variable/response relation, while partial dependence plots (\autoref{partial-dependence}) show us the risk adjusted relation by averaging out the effects of other variables. Dependence plots often show strongly non-linear variable/response relations that are not easily obtained through parametric modeling.
+Once we have an idea of which variables we are most interested in, we use dependence plots [@Friedman:2000] (\@ref(variableresponse-dependence)) to understand how these variables are related to the response. Variable dependence (\@ref(variable-dependence)) plots give us an idea of the overall trend of a variable/response relation, while partial dependence plots (\@ref(partial-dependence)) show us the risk adjusted relation by averaging out the effects of other variables. Dependence plots often show strongly non-linear variable/response relations that are not easily obtained through parametric modeling.
 
-We then graphically examine forest variable interactions with the use of variable and partial dependence conditioning plots (coplots) [@chambers:1992; @cleveland:1993] (\autoref{conditional-dependence-plots}) and the analogous partial dependence surfaces (\autoref{partial-plot-surfaces}) before adding concluding remarks in \autoref{conclusion}.
+We then graphically examine forest variable interactions with the use of variable and partial dependence conditioning plots (coplots) [@chambers:1992; @cleveland:1993] (\@ref(conditional-dependence-plots)) and the analogous partial dependence surfaces (\@ref(partial-plot-surfaces)) before adding concluding remarks in \@ref(conclusion).
 
 ``` {r libraries}
 ################## Load packages ##################
@@ -108,7 +108,7 @@ strCol <- brewer.pal(3, "Set1")[c(2,1,3)]
 
 # Data summary: primary biliary cirrhosis (PBC) data set
 
-The \emph{primary biliary cirrhosis} of the  liver (PBC) study consists of 424 PBC patients referred to Mayo Clinic between 1974 and 1984 who met eligibility criteria for a randomized placebo controlled trial of the drug D-penicillamine (DPCA). The data is described in \cite[Chapter 0.2]{fleming:1991} and a partial likelihood model (Cox proportional hazards) is developed in Chapter 4.4. The `pbc` data set, included in the \pkg{randomForestSRC} package, contains 418 observations, of which 312 patients participated in the randomized trial \cite[Appendix D]{fleming:1991}.
+The \emph{primary biliary cirrhosis} of the  liver (PBC) study consists of 424 PBC patients referred to Mayo Clinic between 1974 and 1984 who met eligibility criteria for a randomized placebo controlled trial of the drug D-penicillamine (DPCA). The data is described in \cite[Chapter 0.2]{fleming:1991} and a partial likelihood model (Cox proportional hazards) is developed in Chapter 4.4. The `pbc` data set, included in the `randomForestSRC` package, contains 418 observations, of which 312 patients participated in the randomized trial \cite[Appendix D]{fleming:1991}.
 
 ``` {r datastep, echo=TRUE}
 data("pbc", package = "randomForestSRC")
@@ -182,7 +182,7 @@ st.labs <- as.character(dta.labs$label)
 names(st.labs) <- rownames(dta.labs)
 ```
 
-For this analysis, we modify some of the data for better formatting of our results. Since the data contains about 12 years of follow up, we prefer using `years` instead of `days` to describe survival. We also convert the `age` variable to years, and the `treatment` variable to a factor containing levels of `c("DPCA", "placebo")`. The variable names, type and description are given in \autoref{T:dataLabs}.
+For this analysis, we modify some of the data for better formatting of our results. Since the data contains about 12 years of follow up, we prefer using `years` instead of `days` to describe survival. We also convert the `age` variable to years, and the `treatment` variable to a factor containing levels of `c("DPCA", "placebo")`. The variable names, type and description are given in \@ref(T:dataLabs).
 
 ``` {r dta-table}
 ## Not displayed ##
@@ -197,7 +197,7 @@ kable(tmp,
 
 ## Exploratory data analysis
 
-It is good practice to view your data before beginning analysis. Exploratory Data Analysis (EDA) [@Tukey:1977] will help you to understand the data, and find outliers, missing values and other data anomalies within each variable before getting deep into the analysis. To this end, we use \pkg{ggplot2} figures with the `facet_wrap` function to create two sets of panel plots, one of histograms for categorical variables  (\autoref{fig:categoricalEDA}), and another of scatter plots for continuous variables (\autoref{fig:continuousEDA}). Variables are plotted along a continuous variable on the X-axis to separate the individual observations.
+It is good practice to view your data before beginning analysis. Exploratory Data Analysis (EDA) [@Tukey:1977] will help you to understand the data, and find outliers, missing values and other data anomalies within each variable before getting deep into the analysis. To this end, we use `ggplot2` figures with the `facet_wrap` function to create two sets of panel plots, one of histograms for categorical variables  (\@ref(fig:categoricalEDA)), and another of scatter plots for continuous variables (\@ref(fig:continuousEDA)). Variables are plotted along a continuous variable on the X-axis to separate the individual observations.
 
 ``` {r categoricalEDA, fig.width=7, fig.cap="EDA plots for categorical variables (logicals and factors). Bars indicate number of patients within 1 year of followup interval for each categorical variable. Colors correspond to class membership within each variable. Missing values are included in white."}
 ## Not displayed ##
@@ -216,7 +216,7 @@ ggplot(dta, aes(x = years, fill = value)) +
   theme(legend.position = "none")
 ```
 
-In categorical EDA plots (\autoref{fig:categoricalEDA}), we are looking for patterns of missing data (white portion of bars). We often use surgical date for our X-axis variable to look for possible periods of low enrollment. There is not a comparable variable available in the `pbc` data set, so instead we used follow up time (`years`). Another reasonable choice may have been to use the patient `age` variable for the X-axis. The important quality of the selected variable is to spread the observations out to aid in finding data anomalies.
+In categorical EDA plots (\@ref(fig:categoricalEDA), we are looking for patterns of missing data (white portion of bars). We often use surgical date for our X-axis variable to look for possible periods of low enrollment. There is not a comparable variable available in the `pbc` data set, so instead we used follow up time (`years`). Another reasonable choice may have been to use the patient `age` variable for the X-axis. The important quality of the selected variable is to spread the observations out to aid in finding data anomalies.
 
 ``` {r continuousEDA, fig.cap="EDA plots for continuous variables. Symbols indicate observations with variable value on Y-axis against follow up time in years. Symbols are colored and shaped according to the death event  (`status` variable). Missing values are indicated by rug marks along the X-axis", fig.width=7, fig.height=4}
 ## Not displayed ##
@@ -236,9 +236,9 @@ ggplot(dta %>% filter(!is.na(value)),
   theme(legend.position = c(0.8, 0.2))
 ```
 
-In continuous data EDA plots (\autoref{fig:continuousEDA}), we are looking for missingness (rug marks) and extreme or non-physical values. For survival settings, we color and shape the points as red `x's to indicate events, and blue circles to indicate censored observation.
+In continuous data EDA plots (\@ref(fig:continuousEDA), we are looking for missingness (rug marks) and extreme or non-physical values. For survival settings, we color and shape the points as red `x's to indicate events, and blue circles to indicate censored observation.
 
-Extreme value examples are evident in a few of the variables in \autoref{fig:continuousEDA}. We are typically looking for values that are outside of the biological range. This is often caused by measurements recorded in differing units, which can sometimes be corrected algorithmically. Since we can not ask the original investigator to clarify these values in this particular study, we will continue without modifying the data.
+Extreme value examples are evident in a few of the variables in \@ref(fig:continuousEDA). We are typically looking for values that are outside of the biological range. This is often caused by measurements recorded in differing units, which can sometimes be corrected algorithmically. Since we can not ask the original investigator to clarify these values in this particular study, we will continue without modifying the data.
 
 ``` {r missing, results="asis"}
 ## Not displayed ##
@@ -256,11 +256,11 @@ kable(st,
       digits = 3, booktabs=TRUE)
 ```
 
-Both EDA figures indicate the `pbc` data set contains quite a bit of missing data. \autoref{T:missing} shows the number of missing values in each variable of the `pbc` data set. Of the `r ncol(pbc)` variables in the data, `r nrow(st)` have missing values. The `pbc` column details variables with missing data in the full `pbc` data set, though there are `r st["treatment", "full"]` patients that were not randomized into the trial. If we restrict the data to the trial only, most of the missing values are also removed, leaving only `r sum(st$pbc.trial>0)` variables with missing values. Therefore, we will focus on the `r nrow(pbc.trial)` observations from the clinical trial for the remainder of this document. We will discuss how \pkg{randomForestSRC} handles missing values in \autoref{random-forest-imputation}.
+Both EDA figures indicate the `pbc` data set contains quite a bit of missing data. \@ref(T:missing) shows the number of missing values in each variable of the `pbc` data set. Of the `r ncol(pbc)` variables in the data, `r nrow(st)` have missing values. The `pbc` column details variables with missing data in the full `pbc` data set, though there are `r st["treatment", "full"]` patients that were not randomized into the trial. If we restrict the data to the trial only, most of the missing values are also removed, leaving only `r sum(st$pbc.trial>0)` variables with missing values. Therefore, we will focus on the `r nrow(pbc.trial)` observations from the clinical trial for the remainder of this document. We will discuss how `randomForestSRC` handles missing values in \@ref(random-forest-imputation).
 
 ## PBC Model Summary
 
-We conclude the data set investigation with a summary of[@fleming:1991] model results from Chapter 4.4. We start by generating Kaplan--Meier (KM) survival estimates comparing the treatment groups of DPCA and placebo. We use the \pkg{ggRandomForests} `gg_survival` function to generate these estimates from the data set as follows.
+We conclude the data set investigation with a summary of[@fleming:1991] model results from Chapter 4.4. We start by generating Kaplan--Meier (KM) survival estimates comparing the treatment groups of DPCA and placebo. We use the `ggRandomForests` `gg_survival` function to generate these estimates from the data set as follows.
 
 ``` {r gg_survival, echo=TRUE}
 # Create the trial and test data sets.
@@ -275,9 +275,9 @@ gg_dta <- gg_survival(interval = "years",
                       conf.int = 0.95)
 ```
 
-The code block reduces the `pbc` data set to the `pbc.trial` which only include observations from the clinical trial. The remaining observations are stored in the `pbc.test` data set for later use. The \pkg{ggRandomForests} package is designed to use a two step process in figure generation. The first step is data generation, where we store a `gg_survival` data object in the `gg_dta` object. The `gg_survival` function uses the `data` set, follow up `interval`, `censor` indicator and an optional grouping argument (`by`). By default `gg_survival` also calculates $95\%$ confidence band, which we can control with the `conf.int` argument.
+The code block reduces the `pbc` data set to the `pbc.trial` which only include observations from the clinical trial. The remaining observations are stored in the `pbc.test` data set for later use. The `ggRandomForests` package is designed to use a two step process in figure generation. The first step is data generation, where we store a `gg_survival` data object in the `gg_dta` object. The `gg_survival` function uses the `data` set, follow up `interval`, `censor` indicator and an optional grouping argument (`by`). By default `gg_survival` also calculates $95\%$ confidence band, which we can control with the `conf.int` argument.
 
-In the figure generation step, we use the \pkg{ggRandomForests} plot routine `plot.gg_survival` as shown in the following code block. The `plot.gg_survival` function uses the `gg_dta` data object to plot the survival estimate curves for each group and corresponding confidence interval ribbons. We have used additional \pkg{ggplot2} commands to modify the axis and legend labels (`labs`), the legend location (`theme`) and control the plot range of the y-axis (`coord_cartesian`) for this figure.
+In the figure generation step, we use the `ggRandomForests` plot routine `plot.gg_survival` as shown in the following code block. The `plot.gg_survival` function uses the `gg_dta` data object to plot the survival estimate curves for each group and corresponding confidence interval ribbons. We have used additional `ggplot2` commands to modify the axis and legend labels (`labs`), the legend location (`theme`) and control the plot range of the y-axis (`coord_cartesian`) for this figure.
 
 ``` {r plot_gg_survival, fig.cap="Kaplan--Meier survival estimates comparing the DPCA treatment (red) with placebo (blue) groups for the pbc.trail data set. Median survival with shaded 95\\% confidence band.", echo=TRUE}
 plot(gg_dta) +
@@ -287,9 +287,9 @@ plot(gg_dta) +
   coord_cartesian(y = c(0, 1.01))
 ```
 
-The `gg_survival` plot of \autoref{fig:plot_gg_survival} is analogous to[@fleming:1991] Figure 0.2.3 and Figure 4.4.1, showing there is little difference between the treatment and control groups.
+The `gg_survival` plot of \@ref(fig:plot_gg_survival) is analogous to[@fleming:1991] Figure 0.2.3 and Figure 4.4.1, showing there is little difference between the treatment and control groups.
 
-The `gg_survival` function generates a variety of time-to-event estimates, including the cumulative hazard. The follow code block creates a cumulative hazard plot \cite[Figure 0.2.1]{fleming:1991} in \autoref{fig:plot_gg_cum_hazard} using the same data object generated by the original `gg_survival` function call. The red `DPCA` line is directly comparable to Figure 0.2.1, we've add the cumulative hazard estimates for the `placebo` population in blue.
+The `gg_survival` function generates a variety of time-to-event estimates, including the cumulative hazard. The follow code block creates a cumulative hazard plot \cite[Figure 0.2.1]{fleming:1991} in \@ref(fig:plot_gg_cum_hazard) using the same data object generated by the original `gg_survival` function call. The red `DPCA` line is directly comparable to Figure 0.2.1, we've add the cumulative hazard estimates for the `placebo` population in blue.
 
 ``` {r plot_gg_cum_hazard, fig.cap="Kaplan--Meier cumulative hazard estimates comparing the DPCA treatment (red) with placebo (blue) groups for the pbc data set.", echo=TRUE}
 plot(gg_dta, type = "cum_haz") +
@@ -299,9 +299,9 @@ plot(gg_dta, type = "cum_haz") +
   coord_cartesian(ylim = c(-0.02, 1.22))
 ```
 
-In \autoref{fig:plot_gg_survival}, we demonstrated grouping on the categorical variable (`treatment`). To demonstrate plotting grouped survival on a continuous variable, we examine KM estimates of survival within stratified groups of bilirubin measures. The groupings are obtained directly from[@fleming:1991] Figure 4.4.2, where they presented univariate model results of predicting survival on a function of bilirubin.
+In \@ref(fig:plot_gg_survival), we demonstrated grouping on the categorical variable (`treatment`). To demonstrate plotting grouped survival on a continuous variable, we examine KM estimates of survival within stratified groups of bilirubin measures. The groupings are obtained directly from[@fleming:1991] Figure 4.4.2, where they presented univariate model results of predicting survival on a function of bilirubin.
 
-We set up the `bili` groups on a temporary data set (`pbc.bili`) using the `cut` function with intervals matching the reference figure. For this example we combine the data generation and plot steps into a single line of code. The `error` argument of the `plot.gg_survival` function is used to control display of the confidence bands. We suppress the intervals for this figure with `error = "none"` and again modify the plot display with \pkg{ggplot2} commands to generate \autoref{fig:gg_survival-bili}.
+We set up the `bili` groups on a temporary data set (`pbc.bili`) using the `cut` function with intervals matching the reference figure. For this example we combine the data generation and plot steps into a single line of code. The `error` argument of the `plot.gg_survival` function is used to control display of the confidence bands. We suppress the intervals for this figure with `error = "none"` and again modify the plot display with `ggplot2` commands to generate \@ref(fig:gg_survival-bili).
 
 ``` {r gg_survival-bili, fig.cap="Kaplan--Meier survival estimates comparing different groups of Bilirubin measures (bili) for the pbc data set. Groups defined in Chapter 4 of [@fleming:1991].", echo=TRUE, fig.width=5.5}
 pbc.bili <- pbc.trial
@@ -313,7 +313,7 @@ plot(gg_survival(interval = "years", censor = "status", by = "bili_grp",
        color = "Bilirubin")
 ```
 
-In Chapter 4,[@fleming:1991] use partial likelihood methods to build a linear model with log transformations on some variables. We summarize the final, biologically reasonable model in \autoref{T:FHmodel} for later comparison with our random forest results.
+In Chapter 4,[@fleming:1991] use partial likelihood methods to build a linear model with log transformations on some variables. We summarize the final, biologically reasonable model in \@ref(T:FHmodel) for later comparison with our random forest results.
 
 ``` {r xtab, results="asis"}
 ## Not displayed ##
@@ -342,7 +342,7 @@ Random Survival Forest [@Ishwaran:2007; @Ishwaran:2008] (RSF) are an extension o
 
 Random Survival Forests adaptively discover nonlinear effects and interactions and are fully nonparametric. Averaging over many trees enables RSF to approximate complex survival functions, including non-proportional hazards, while maintaining low prediction error. [@Ishwaran:2010a] showed that RSF is uniformly consistent and that survival forests have a uniform approximating property in finite-sample settings, a property not possessed by individual survival trees.
 
-The \pkg{randomForestSRC} `rfsrc` function call grows the forest, determining the type of forest by the response supplied in the `formula` argument. In the following code block, we grow a random forest for survival, by passing a survival (`Surv`) object to the forest. The forest uses all remaining variables in the `pbc.trial` data set to generate the RSF survival model.
+The `randomForestSRC` `rfsrc` function call grows the forest, determining the type of forest by the response supplied in the `formula` argument. In the following code block, we grow a random forest for survival, by passing a survival (`Surv`) object to the forest. The forest uses all remaining variables in the `pbc.trial` data set to generate the RSF survival model.
 
 ```{r rfsrc, echo=TRUE}
 rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., data = pbc.trial,
@@ -362,11 +362,11 @@ The `gg_error` function operates on the random forest (`rfsrc_pbc`) object to ex
 plot(gg_error(rfsrc_pbc))
 ```
 
-The `gg_error` plot of \autoref{fig:errorPlot} demonstrates that it does not take a large number of trees to stabilize the forest prediction error estimate. However, to ensure that each variable has enough of a chance to be included in the forest prediction process, we do want to create a rather large random forest of trees.
+The `gg_error` plot of \@ref(fig:errorPlot) demonstrates that it does not take a large number of trees to stabilize the forest prediction error estimate. However, to ensure that each variable has enough of a chance to be included in the forest prediction process, we do want to create a rather large random forest of trees.
 
 ## Training Set Prediction
 
-The `gg_rfsrc` function extracts the OOB prediction estimates from the random forest. This code block executes the data extraction and plotting in one line, since we are not interested in holding the prediction estimates for later reuse. Each of the \pkg{ggRandomForests} plot commands return `ggplot` objects, which we can also store for modification or reuse later in the analysis (`ggRFsrc` object). Note that we again use additional \pkg{ggplot2} commands to modify the display of the plot object.
+The `gg_rfsrc` function extracts the OOB prediction estimates from the random forest. This code block executes the data extraction and plotting in one line, since we are not interested in holding the prediction estimates for later reuse. Each of the `ggRandomForests` plot commands return `ggplot` objects, which we can also store for modification or reuse later in the analysis (`ggRFsrc` object). Note that we again use additional `ggplot2` commands to modify the display of the plot object.
 
 ```{r rfsrc-plot, fig.cap="Random forest OOB predicted survival. Blue curves correspond to censored observations, red curves correspond to observations experiencing death events.", echo=TRUE}
 ggRFsrc <- plot(gg_rfsrc(rfsrc_pbc), alpha = 0.2) +
@@ -377,9 +377,9 @@ ggRFsrc <- plot(gg_rfsrc(rfsrc_pbc), alpha = 0.2) +
 show(ggRFsrc)
 ```
 
-The `gg_rfsrc` plot of \autoref{fig:rfsrc-plot} shows the predicted survival from our RSF model. Each line represents a single patient in the training data set, where censored patients are colored blue, and patients who have experienced the event (death) are colored in red. We extend all predicted survival curves to the longest follow up time (12 years), regardless of the actual length of a patient's follow up time.
+The `gg_rfsrc` plot of \@ref(fig:rfsrc-plot) shows the predicted survival from our RSF model. Each line represents a single patient in the training data set, where censored patients are colored blue, and patients who have experienced the event (death) are colored in red. We extend all predicted survival curves to the longest follow up time (12 years), regardless of the actual length of a patient's follow up time.
 
-Interpretation of general survival properties from \autoref{fig:rfsrc-plot} is difficult because of the number of curves displayed. To get more interpretable results, it is preferable to plot a summary of the survival results. The following code block compares the predicted survival between treatment groups, as we did in \autoref{fig:plot_gg_survival}.
+Interpretation of general survival properties from \@ref(fig:rfsrc-plot) is difficult because of the number of curves displayed. To get more interpretable results, it is preferable to plot a summary of the survival results. The following code block compares the predicted survival between treatment groups, as we did in \@ref(fig:plot_gg_survival).
 ```{r rfsrc-mean2, fig.cap="Random forest predicted survival stratified by treatment groups. DPCA group in red, placebo in blue with shaded 95\\% confidence bands.", echo=TRUE}
 plot(gg_rfsrc(rfsrc_pbc, by = "treatment")) +
   theme(legend.position = c(0.2, 0.2)) +
@@ -387,13 +387,13 @@ plot(gg_rfsrc(rfsrc_pbc, by = "treatment")) +
   coord_cartesian(ylim = c(-0.01, 1.01))
 ```
 
-The `gg_rfsrc` plot of \autoref{fig:rfsrc-mean2} shows the median survival with a $95\%$ shaded confidence band for the `DPCA` group in red, and the `placebo` group in blue. When calling `gg_rfsrc` with either a `by` argument or a `conf.int` argument, the function calculates a bootstrap confidence interval around the median survival line. By default, the function will calculate the `conf.int=0.95` confidence interval, with the number of `bs.samples` equal to the number of observations.
+The `gg_rfsrc` plot of \@ref(fig:rfsrc-mean2) shows the median survival with a $95\%$ shaded confidence band for the `DPCA` group in red, and the `placebo` group in blue. When calling `gg_rfsrc` with either a `by` argument or a `conf.int` argument, the function calculates a bootstrap confidence interval around the median survival line. By default, the function will calculate the `conf.int=0.95` confidence interval, with the number of `bs.samples` equal to the number of observations.
 
 ## Random forest imputation
 
 There are two modeling issues when dealing with missing data values: ``How does the algorithm build a model when values are missing from the training data?``, and ``How does the algorithm predict a response when values are missing from the test data?``. The standard procedure for linear models is to either remove or impute the missing data values before modeling. Removing the missingness is done by either removing the variable with missing values (column wise) or removing the observations (row wise). Removal is a simple solution, but may bias results when either observations or variables are scarce.
 
-The \pkg{randomForestSRC} package imputes missing values using \emph{adaptive tree imputation} [@Ishwaran:2008]. Rather than impute missing values before growing the forest, the algorithm takes a ``just-in-time`` approach. At each node split, the set of `mtry` candidate variables is checked for missing values. Missing values are then imputed by randomly drawing values from non-missing data within the node. The split-statistic is then calculated on observations that were not missing values. The imputed values are used to sort observations into the subsequent daughter nodes and then discarded before the next split occurs. The process is repeated until the stopping criteria is reached and all observations are sorted into terminal nodes.
+The `randomForestSRC` package imputes missing values using \emph{adaptive tree imputation} [@Ishwaran:2008]. Rather than impute missing values before growing the forest, the algorithm takes a ``just-in-time`` approach. At each node split, the set of `mtry` candidate variables is checked for missing values. Missing values are then imputed by randomly drawing values from non-missing data within the node. The split-statistic is then calculated on observations that were not missing values. The imputed values are used to sort observations into the subsequent daughter nodes and then discarded before the next split occurs. The process is repeated until the stopping criteria is reached and all observations are sorted into terminal nodes.
 
 A final imputation step can be used to fill in missing values from within the terminal nodes. This step uses a process similar to the previous imputation but uses the OOB non-missing terminal node data for the random draws. These values are aggregated (averaging for continuous variables, voting for categorical variables) over the `ntree` trees in the forest to estimate an imputed data set. By default, the missing values are not filled into the training data, but are available within the forest object for later use if desired.
 
@@ -401,7 +401,7 @@ Adaptive tree imputation still requires the missing at random assumptions [@Rubi
 
 ## Test set predictions
 
-The strength of adaptive tree imputation becomes clear when doing prediction on test set observations. If we want to predict survival for patients that did not participate in the trial using the model we created in Section \ref{random-survival-forest}, we need to somehow account for the missing values detailed in \autoref{T:missing}.
+The strength of adaptive tree imputation becomes clear when doing prediction on test set observations. If we want to predict survival for patients that did not participate in the trial using the model we created in Section \ref{random-survival-forest}, we need to somehow account for the missing values detailed in \@ref(T:missing).
 
 The `predict.rfsrc` call takes the forest object (`rfsrc_pbc`), and the test data set (`pbc_test`) and returns a predicted survival using the same forest imputation method for missing values within the test data set (`na.action="na.impute"`).
 ```{r predict, echo=TRUE}
@@ -421,7 +421,7 @@ plot(gg_rfsrc(rfsrc_pbc_test), alpha=.2) +
   coord_cartesian(ylim = c(-0.01, 1.01))
 ```
 
-The `gg_rfsrc` plot of \autoref{fig:predictPlot} shows the test set predictions, similar to the training set predictions in \autoref{fig:rfsrc-plot}, though with fewer patients the survival curves do not cover the same area of the figure. It is important to note that because \autoref{fig:rfsrc-plot} is constructed with OOB estimates, the survival results are comparable as estimates from unseen observations in \autoref{fig:predictPlot}.
+The `gg_rfsrc` plot of \@ref(fig:predictPlot) shows the test set predictions, similar to the training set predictions in \@ref(fig:rfsrc-plot), though with fewer patients the survival curves do not cover the same area of the figure. It is important to note that because \@ref(fig:rfsrc-plot) is constructed with OOB estimates, the survival results are comparable as estimates from unseen observations in \@ref(fig:predictPlot).
 
 # Variable selection
 
@@ -431,11 +431,11 @@ The typical goal of a random forest analysis is to build a \emph{prediction} mod
 
 In contrast, in survival settings we are typically also interested in how we can possibly improve the the outcome of interest. To achieve this, for understandable inference, it is important to avoid both duplication and transformations of variables whenever possible when building our data sets. Duplication of variables, including multiple measures of a similar covariate, can reduce or mask the importance of the covariate. Transformations can also mask importance as well as make interpretation of the inference results difficult to impossible.
 
-In this Section, We explore two separate approaches to investigate the RF variable selection process. Variable Importance (\autoref{variable-importance}), a property related to variable misspecification, and Minimal Depth (\autoref{minimal-depth}), a property derived from the construction of the trees within the forest.
+In this Section, We explore two separate approaches to investigate the RF variable selection process. Variable Importance (\@ref(variable-importance), a property related to variable misspecification, and Minimal Depth (\@ref(minimal-depth), a property derived from the construction of the trees within the forest.
 
 ## Variable Importance
 
-\emph{Variable importance} (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of [@cart:1984]). The most popular VIMP method uses a prediction error approach involving ``noising-up'' each variable in turn. VIMP for a variable $x_v$ is the difference between prediction error when $x_v$ is randomly permuted, compared to prediction error under the observed values [@Breiman:2001; @Liaw:2002; @Ishwaran:2007; @Ishwaran:2008].
+*Variable importance* (VIMP) was originally defined in CART using a measure involving surrogate variables (see Chapter 5 of [@cart:1984]). The most popular VIMP method uses a prediction error approach involving ``noising-up'' each variable in turn. VIMP for a variable $x_v$ is the difference between prediction error when $x_v$ is randomly permuted, compared to prediction error under the observed values [@Breiman:2001; @Liaw:2002; @Ishwaran:2007; @Ishwaran:2008].
 
 Since VIMP is the difference in OOB prediction error before and after permutation, a large VIMP value indicates that misspecification detracts from the predictive accuracy in the forest. VIMP close to zero indicates the variable contributes nothing to predictive accuracy, and negative values indicate the predictive accuracy \emph{improves} when the variable is misspecified. In the later case, we assume noise is more informative than the true variable. As such, we ignore variables with negative and near zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables.
 
@@ -452,7 +452,7 @@ plot(gg_vimp(rfsrc_pbc), lbls = st.labs) +
 ggda <- gg_vimp(rfsrc_pbc)
 ```
 
-The `gg_vimp` plot of \autoref{fig:rf-vimp} details VIMP ranking for the `pbc.trial` baseline variables, from the largest (`r gsub(" \\(mg/dl\\)", "",st.labs[as.character(ggda$vars)[1]])`) at the top, to smallest (`r gsub(" \\(mg/dl\\)", "",st.labs[as.character(ggda$vars)[nrow(ggda)]], )`) at the bottom. VIMP measures are shown using bars to compare the scale of the error increase under permutation and colored by the sign of the measure (red for negative values). Note that four of the five highest ranking variables by VIMP match those selected by the[@fleming:1991] model listed in \autoref{T:FHmodel}, with urine copper (2) ranking higher than age (8). We will return to this in \autoref{variable-selection-comparison}.
+The `gg_vimp` plot of \@ref(fig:rf-vimp) details VIMP ranking for the `pbc.trial` baseline variables, from the largest (`r gsub(" \\(mg/dl\\)", "",st.labs[as.character(ggda$vars)[1]])`) at the top, to smallest (`r gsub(" \\(mg/dl\\)", "",st.labs[as.character(ggda$vars)[nrow(ggda)]], )`) at the bottom. VIMP measures are shown using bars to compare the scale of the error increase under permutation and colored by the sign of the measure (red for negative values). Note that four of the five highest ranking variables by VIMP match those selected by the[@fleming:1991] model listed in \@ref(T:FHmodel), with urine copper (2) ranking higher than age (8). We will return to this in \@ref(variable-selection-comparison).
 
 ## Minimal Depth 
 
@@ -462,7 +462,7 @@ Within each tree, node levels are numbered based on their relative distance to t
 
 In general, to select variables according to VIMP, we examine the VIMP values, looking for some point along the ranking where there is a large difference in VIMP measures. Given minimal depth is a quantitative property of the forest construction, \cite{Ishwaran:2010} also derive an analytic threshold for evidence of variable impact. A simple optimistic threshold rule uses the mean of the minimal depth distribution, classifying variables with minimal depth lower than this threshold as important in forest prediction.
 
-The \pkg{randomForestSRC} `var.select` function uses the minimal depth methodology for variable selection, returning an object with both minimal depth and vimp measures. The \pkg{ggRandomForests} `gg_minimal_depth` function is analogous to the `gg_vimp` function. Variables are ranked from most important at the top (minimal depth measure), to least at the bottom (maximal minimal depth).
+The `randomForestSRC` `var.select` function uses the minimal depth methodology for variable selection, returning an object with both minimal depth and vimp measures. The `ggRandomForests` `gg_minimal_depth` function is analogous to the `gg_vimp` function. Variables are ranked from most important at the top (minimal depth measure), to least at the bottom (maximal minimal depth).
 
 ```{r mindepth-view, echo=TRUE}
 varsel_pbc <- var.select(rfsrc_pbc)
@@ -470,17 +470,17 @@ gg_md <- gg_minimal_depth(varsel_pbc, lbls = st.labs)
 # print(gg_md)
 ```
 
-The `gg_minimal_depth` summary mostly reproduces the output from the `var.select` function from the \pkg{randomForestSRC} package. We report the minimal depth threshold (`threshold` `r round(gg_md$md.obj$threshold, digits=3)`) and the number of variables with depth below that threshold (`model size` `r gg_md$modelsize`). We also list a table of the top (`r gg_md$modelsize`) selected variables, in minimal depth rank order with the associated VIMP measures. The minimal depth numbers indicate that `bili` tends to split between the first and second node level, and the next three variables (`albumin`, `copper`, `prothrombin`) split between the second and third levels on average.
+The `gg_minimal_depth` summary mostly reproduces the output from the `var.select` function from the `randomForestSRC` package. We report the minimal depth threshold (`threshold` `r round(gg_md$md.obj$threshold, digits=3)`) and the number of variables with depth below that threshold (`model size` `r gg_md$modelsize`). We also list a table of the top (`r gg_md$modelsize`) selected variables, in minimal depth rank order with the associated VIMP measures. The minimal depth numbers indicate that `bili` tends to split between the first and second node level, and the next three variables (`albumin`, `copper`, `prothrombin`) split between the second and third levels on average.
 
 ```{r mindepth-plot, echo=TRUE, fig.cap="Minimal Depth variable selection. Low minimal depth indicates important variables. The dashed line is the threshold of maximum value for variable selection.", fig.width=5}
 plot(gg_md, lbls = st.labs)
 ```
 
-The `gg_minimal_depth` plot of \autoref{fig:mindepth-plot} is similar to the `gg_vimp` plot in \autoref{fig:rf-vimp}, ranking variables from most important at the top (minimal depth measure), to least at the bottom (maximal minimal depth). The vertical dashed line indicates the minimal depth threshold where smaller minimal depth values indicate higher importance and larger values indicate lower importance.
+The `gg_minimal_depth` plot of \@ref(fig:mindepth-plot) is similar to the `gg_vimp` plot in \@ref(fig:rf-vimp), ranking variables from most important at the top (minimal depth measure), to least at the bottom (maximal minimal depth). The vertical dashed line indicates the minimal depth threshold where smaller minimal depth values indicate higher importance and larger values indicate lower importance.
 
 ## Variable selection comparison
 
-Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be somewhat different. We use `gg_minimal_vimp` function to compare rankings between minimal depth and VIMP in \autoref{fig:depthVimp}.
+Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be somewhat different. We use `gg_minimal_vimp` function to compare rankings between minimal depth and VIMP in \@ref(fig:depthVimp).
 
 ```{r depthVimp, fig.cap="Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points above have higher VIMP ranking, those below have higher minimal depth ranking.", fig.width=5, echo=TRUE}
 plot(gg_minimal_vimp(gg_md), lbls = st.labs) +
@@ -517,11 +517,11 @@ kable(md,
 ```
 
 
-We examine the ranking of the different variable selection methods further in \autoref{T:modelComp}. We can use the Z statistic from \autoref{T:FHmodel} to rank variables selected in the[@fleming:1991] model to compare with variables selected by minimal depth and VIMP. The table is constructed by taking the `r nrow(gg_md)` top ranked minimal depth variables (below the selection threshold) and matching the VIMP ranking and[@fleming:1991] model transforms. We see all three methods indicate a strong relation of serum bilirubin to survival, and overall, the minimal depth and VIMP rankings agree reasonably well with the[@fleming:1991] model.
+We examine the ranking of the different variable selection methods further in \@ref(T:modelComp). We can use the Z statistic from \@ref(T:FHmodel) to rank variables selected in the[@fleming:1991] model to compare with variables selected by minimal depth and VIMP. The table is constructed by taking the `r nrow(gg_md)` top ranked minimal depth variables (below the selection threshold) and matching the VIMP ranking and[@fleming:1991] model transforms. We see all three methods indicate a strong relation of serum bilirubin to survival, and overall, the minimal depth and VIMP rankings agree reasonably well with the[@fleming:1991] model.
 
 The minimal depth selection process reduced the number of variables of interest from~`r ncol(pbc)-2` to `r length(varsel_pbc$topvars)`, which is still a rather large subset of interest. An obvious selection set is to examine the five variables selected by[@fleming:1991]. Combining the Minimal Depth and[@fleming:1991] model, there may be evidence to keep the top 7 variables.  Though minimal depth does not indicate the `edema` variable is very interesting, VIMP ranking does agree with the proportional hazards model, indicating we might not want to remove the `edema` variable. Both minimal depth and VIMP suggest including `copper`, a measure associated with liver disease.
 
-Regarding the `chol` variable, recall missing data summary of \autoref{T:missing}. In in the trial data set, there were 28 observations missing `chol` values. The forest imputation randomly sorts observations with missing values into daughter nodes when using the `chol` variable, which is also how \pkg{randomForestSRC} calculates VIMP. We therefore expect low values for VIMP when a variable has a reasonable number of missing values.
+Regarding the `chol` variable, recall missing data summary of \@ref(T:missing). In in the trial data set, there were 28 observations missing `chol` values. The forest imputation randomly sorts observations with missing values into daughter nodes when using the `chol` variable, which is also how `randomForestSRC` calculates VIMP. We therefore expect low values for VIMP when a variable has a reasonable number of missing values.
 
 Restricting our remaining analysis to the five[@fleming:1991] variables, plus the `copper` retains the biological sense of these analysis. We will now examine how these six variables are related to survival using variable dependence methods to determine the direction of the effect and verify that the log transforms used by[@fleming:1991] are appropriate.
 
@@ -529,11 +529,11 @@ Restricting our remaining analysis to the five[@fleming:1991] variables, plus th
 
 As random forest is not parsimonious, we have used minimal depth and VIMP to reduce the number of variables to a manageable subset. Once we have an idea of which variables contribute most to the predictive accuracy of the forest, we would like to know how the response depends on these variables.
 
-Although often characterized as a \emph{black box} method, the forest predictor is a function of the predictor variables $\hat{f}_{RF} = f(x).$ We use graphical methods to examine the forest predicted response dependency on covariates. We again have two options, variable dependence plots (\autoref{variable-dependence}) are quick and easy to generate, and partial dependence plots (\autoref{partial-dependence}) are more computationally intensive but give us a risk adjusted look at variable dependence.
+Although often characterized as a *black box* method, the forest predictor is a function of the predictor variables $\hat{f}_{RF} = f(x).$ We use graphical methods to examine the forest predicted response dependency on covariates. We again have two options, variable dependence plots (\@ref(variable-dependence)) are quick and easy to generate, and partial dependence plots (\@ref(partial-dependence)) are more computationally intensive but give us a risk adjusted look at variable dependence.
 
 ## Variable dependence 
 
-\emph{Variable dependence} plots show the predicted response relative to a covariate of interest, with each training set observation represented by a point on the plot. Interpretation of variable dependence plots can only be in general terms, as point predictions are a function of all covariates in that particular observation.
+*Variable dependence* plots show the predicted response relative to a covariate of interest, with each training set observation represented by a point on the plot. Interpretation of variable dependence plots can only be in general terms, as point predictions are a function of all covariates in that particular observation.
 
 Variable dependence is straight forward to calculate, involving only the getting the predicted response for each observation. In survival settings, we must  account for the additional dimension of time. We plot the response at specific time points of interest, for example survival at 1 or 3 years.
 
@@ -543,7 +543,7 @@ ggRFsrc + geom_vline(aes(xintercept = 1), linetype = "dashed") +
   coord_cartesian(xlim = c(0, 5))
 ```
 
-The `gg_rfsrc` of \autoref{fig:rfsrc-plot3Mnth} identical to \autoref{fig:rfsrc-plot} (stored in the `ggRFsrc` variable) with the addition of a vertical dashed line at the 1 and 3 year survival time. A variable dependence plot is generated from the predicted response value of each survival curve at the intersecting time line plotted against covariate value for that observation. This can be visualized as taking a slice of the predicted response at each time line, and spreading the resulting points out along the variable of interest.
+The `gg_rfsrc` of \@ref(fig:rfsrc-plot3Mnth) identical to \@ref(fig:rfsrc-plot) (stored in the `ggRFsrc` variable) with the addition of a vertical dashed line at the 1 and 3 year survival time. A variable dependence plot is generated from the predicted response value of each survival curve at the intersecting time line plotted against covariate value for that observation. This can be visualized as taking a slice of the predicted response at each time line, and spreading the resulting points out along the variable of interest.
 
 The `gg_variable` function extracts the training set variables and the predicted OOB response from `rfsrc` and `predict` objects. In the following code block, we store the `gg_variable` data object for later use (`gg_v`), as all remaining variable dependence plots can be constructed from this object.
 
@@ -559,13 +559,13 @@ plot(gg_v, xvar = "bili", alpha = 0.4) + #, se=FALSE
   coord_cartesian(ylim = c(-0.01, 1.01))
 ```
 
-The `gg_variable` plot of \autoref{fig:variable-plotbili} shows variable dependence for the Serum Bilirubin (`bili`) variable. Again censored cases are shown as blue circles, events are indicated by the red `x` symbols. Each predicted point is dependent on the full combination of all other covariates, not only on the covariate displayed in the dependence plot. The smooth loess line [@cleveland:1981; @cleveland:1988] indicates the trend of the prediction over the change in the variable.
+The `gg_variable` plot of \@ref(fig:variable-plotbili) shows variable dependence for the Serum Bilirubin (`bili`) variable. Again censored cases are shown as blue circles, events are indicated by the red `x` symbols. Each predicted point is dependent on the full combination of all other covariates, not only on the covariate displayed in the dependence plot. The smooth loess line [@cleveland:1981; @cleveland:1988] indicates the trend of the prediction over the change in the variable.
 
-Examination of \autoref{fig:variable-plotbili} indicates most of the cases are grouped in the lower end of `bili` values. We also see that most of the higher values experienced an event. The ``normal'' range of Bilirubin is from 0.3 to 1.9 mg/dL, indicating the distribution from our population is well outside the normal range. These values make biological sense considering Bilirubin is a pigment created in the liver, the organ effected by the PBC disease. The figure also shows that the risk of death increases as time progresses. The risk at 3 years is much greater than that at 1 year for patients with high Bilirubin values compared to those with values closer to the normal range.
+Examination of \@ref(fig:variable-plotbili) indicates most of the cases are grouped in the lower end of `bili` values. We also see that most of the higher values experienced an event. The ``normal'' range of Bilirubin is from 0.3 to 1.9 mg/dL, indicating the distribution from our population is well outside the normal range. These values make biological sense considering Bilirubin is a pigment created in the liver, the organ effected by the PBC disease. The figure also shows that the risk of death increases as time progresses. The risk at 3 years is much greater than that at 1 year for patients with high Bilirubin values compared to those with values closer to the normal range.
 
-The `plot.gg_variable` function call operates on the `gg_variable` object controlled by the list of variables of interest in the `xvar` argument. By default, the `plot.gg_variable` function returns a list of `ggplot` objects, one figure for each variable named in `xvar`. The remaining arguments are passed to internal \pkg{ggplot2} functions controlling the display of the figure. The `se` argument is passed to the internal call to `geom_smooth` for fitting smooth lines to the data. The `alpha` argument lightens the coloring points in the `geom_point` call, making it easier to see point over plotting. We also demonstrate modification of the plot labels using the `labs` function and point attributes with the `scale_` functions.
+The `plot.gg_variable` function call operates on the `gg_variable` object controlled by the list of variables of interest in the `xvar` argument. By default, the `plot.gg_variable` function returns a list of `ggplot` objects, one figure for each variable named in `xvar`. The remaining arguments are passed to internal `ggplot2` functions controlling the display of the figure. The `se` argument is passed to the internal call to `geom_smooth` for fitting smooth lines to the data. The `alpha` argument lightens the coloring points in the `geom_point` call, making it easier to see point over plotting. We also demonstrate modification of the plot labels using the `labs` function and point attributes with the `scale_` functions.
 
-An additional `plot.gg_variable` argument (`panel = TRUE`) can be used to combine multiple variable dependence plots into a single figure. In the following code block, we plot the remaining continuous variables of interest found in \autoref{T:modelComp}.
+An additional `plot.gg_variable` argument (`panel = TRUE`) can be used to combine multiple variable dependence plots into a single figure. In the following code block, we plot the remaining continuous variables of interest found in \@ref(T:modelComp).
 
 ```{r variable-plot, echo=TRUE, fig.cap="Variable dependence of predicted survival at 1 and 3 years on continuous variables of interest. Individual cases are marked with blue circles for censored cases and red x for death events. Loess smooth curve indicates the survival trend with increasing values.", fig.height=4, fig.width=7}
 xvar <- c("bili", "albumin", "copper", "prothrombin", "age")
@@ -579,13 +579,13 @@ plot(gg_v, xvar = xvar[-1], panel = TRUE, alpha = 0.4) +
   coord_cartesian(ylim = c(-0.05, 1.05))
 ```
 
-The `gg_variable` plot in \autoref{fig:variable-plot} displays a panel of the remaining continuous variable dependence plots. The panels are sorted in the order of variables in the `xvar` argument and include a smooth loess line [@cleveland:1981; @cleveland:1988] to indicate the trend of the prediction dependence over the covariate values. The `se=FALSE` argument turns off the loess confidence band, and the `span=1` argument controls the degree of smoothing.
+The `gg_variable` plot in \@ref(fig:variable-plot) displays a panel of the remaining continuous variable dependence plots. The panels are sorted in the order of variables in the `xvar` argument and include a smooth loess line [@cleveland:1981; @cleveland:1988] to indicate the trend of the prediction dependence over the covariate values. The `se=FALSE` argument turns off the loess confidence band, and the `span=1` argument controls the degree of smoothing.
 
 The figures indicate that survival increases with `albumin` level, and decreases with `bili`, `copper`, `prothrombin` and `age`. Note the extreme value of `prothrombin` (> 16) influences the loess curve more than other points, which would make it a candidate for further investigation.
 
 We expect survival at 3 years to be lower than at 1 year. However, comparing the two time plots for each variable does indicate a difference in response relation for `bili`, `copper` and `prothrombine`. The added risk for high levels of these variables at 3 years indicates a non-proportional hazards response. The similarity between the time curves for `albumin` and `age` indicates the effect of these variables is constant over the disease progression.
 
-There is not a convenient method to panel scatter plots and boxplots together, so we recommend creating panel plots for each variable type separately. We plot the categorical variable (`edema`) in \autoref{fig:variable-plotCat} separately from the continuous variables in \autoref{fig:variable-plot}.
+There is not a convenient method to panel scatter plots and boxplots together, so we recommend creating panel plots for each variable type separately. We plot the categorical variable (`edema`) in \@ref(fig:variable-plotCat) separately from the continuous variables in \@ref(fig:variable-plot).
 
 ```{r variable-plotCat, echo=TRUE, fig.cap="Variable dependence of survival 1 and 3 years on edema categorical variable. Symbols with blue circles indicate censored cases and red x indicate death events. Boxplots indicate distribution of predicted survival for all observations within each edema group.", fig.height=4}
 plot(gg_v, xvar = xvar.cat, alpha = 0.4) + labs(y = "Survival") +
@@ -595,13 +595,13 @@ plot(gg_v, xvar = xvar.cat, alpha = 0.4) + labs(y = "Survival") +
   coord_cartesian(ylim = c(-0.01, 1.02))
 ```
 
-The `gg_variable` plot of \autoref{fig:variable-plotCat} for categorical variable dependence displays boxplots to examine the distribution of predicted values within each level of the variable. The points are plotted with a jitter to see the censored and event markers more clearly. The boxes are shown with horizontal bars indicating the median, 75th (top) and 25th (bottom) percentiles. Whiskers extend to 1.5 times the interquartile range. Points plotted beyond the whiskers are considered outliers.
+The `gg_variable` plot of \@ref(fig:variable-plotCat) for categorical variable dependence displays boxplots to examine the distribution of predicted values within each level of the variable. The points are plotted with a jitter to see the censored and event markers more clearly. The boxes are shown with horizontal bars indicating the median, 75th (top) and 25th (bottom) percentiles. Whiskers extend to 1.5 times the interquartile range. Points plotted beyond the whiskers are considered outliers.
 
-When using categorical variables with linear models, we use boolean dummy variables to indicate class membership. In the case of `edema`, we would probably create two logical variables for `edema = 0.5` (complex Edema presence indicator) and `edema = 1.0` (Edema with diuretics) contrasted with the `edema = 0` variable (no Edema). Random Forest can use factor variables directly, separating the populations into homogeneous groups of `edema` at nodes that split on that variable. \autoref{fig:variable-plotCat} indicates similar survival response distribution between 1 and 3 year when `edema = 1.0`. The distribution of predicted survival does seem to spread out more than for the other values, again indicating a possible non-proportional hazards response.
+When using categorical variables with linear models, we use boolean dummy variables to indicate class membership. In the case of `edema`, we would probably create two logical variables for `edema = 0.5` (complex Edema presence indicator) and `edema = 1.0` (Edema with diuretics) contrasted with the `edema = 0` variable (no Edema). Random Forest can use factor variables directly, separating the populations into homogeneous groups of `edema` at nodes that split on that variable. \@ref(fig:variable-plotCat) indicates similar survival response distribution between 1 and 3 year when `edema = 1.0`. The distribution of predicted survival does seem to spread out more than for the other values, again indicating a possible non-proportional hazards response.
 
 ## Partial dependence
 
-\emph{Partial dependence} plots are a risk adjusted alternative to variable dependence. Partial plots are generated by integrating out the effects of variables beside the covariate of interest. The figures are constructed by selecting points evenly spaced along the distribution of the variable of interest. For each of these points ($X = x$), we calculate the average RF prediction over all remaining covariates in the training set by
+*Partial dependence* plots are a risk adjusted alternative to variable dependence. Partial plots are generated by integrating out the effects of variables beside the covariate of interest. The figures are constructed by selecting points evenly spaced along the distribution of the variable of interest. For each of these points ($X = x$), we calculate the average RF prediction over all remaining covariates in the training set by
 
 $$
 \tilde{f}(x) = \frac{1}{n} \sum_{i = 1}^n \hat{f}(x, x_{i, o}),
@@ -612,7 +612,7 @@ where $\hat{f}$ is the predicted response from the random forest and $x_{i, o}$ 
 
 Generating partial dependence data is effectively averaging the response for a series of nomograms constructed for each observation by varying the variable of interest. The operation is computationally intensive, especially when there are a large number of observations. The default parameters for the `plot.variable` function generate partial dependence estimates at `pts = 25` points along the variable of interest. For each point of interest, the `plot.variable` function averages the `n` response predictions. This process is repeated for each of the variables of interest.
 
-For time to event data, we also have to deal with the additional time dimension, as with variable dependence. The following code block uses the `mclapply` function from the \pkg{parallel} package to run the `plot.variable` function for three time points (`time`=1, 3 and 5 years) in parallel. For RSF models, we calculate a risk adjusted survival estimates (`surv.type="surv"`), suppressing the internal base graphs (`show.plots = FALSE`) and store the point estimates in the `partial_pbc` `list`.
+For time to event data, we also have to deal with the additional time dimension, as with variable dependence. The following code block uses the `mclapply` function from the `parallel` package to run the `plot.variable` function for three time points (`time`=1, 3 and 5 years) in parallel. For RSF models, we calculate a risk adjusted survival estimates (`surv.type="surv"`), suppressing the internal base graphs (`show.plots = FALSE`) and store the point estimates in the `partial_pbc` `list`.
 
 ```{r pbc-partial, cache=TRUE, echo=TRUE}
 xvar <- c(xvar, xvar.cat)
@@ -638,7 +638,7 @@ pbc_ggpart <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]],
                                  lbls = c("1 Year", "3 Years"))
 ```
 
-We then segregate the continuous and categorical variables, and generate a panel plot of all continuous variables in the `gg_partial` plot of \autoref{fig:pbc-partial-panel}. The panels are ordered by minimal depth ranking. Since all variables are plotted on the same Y-axis scale, those that are strongly related to survival make other variables look flatter. The figures also confirm the strong non-linear contribution of these variables. Non-proportional hazard response is also evident in at least the `bili` and `copper` variables by noting the divergence of curves as time progresses.
+We then segregate the continuous and categorical variables, and generate a panel plot of all continuous variables in the `gg_partial` plot of \@ref(fig:pbc-partial-panel). The panels are ordered by minimal depth ranking. Since all variables are plotted on the same Y-axis scale, those that are strongly related to survival make other variables look flatter. The figures also confirm the strong non-linear contribution of these variables. Non-proportional hazard response is also evident in at least the `bili` and `copper` variables by noting the divergence of curves as time progresses.
 
 ```{r pbc-partial-panel, fig.cap="Partial dependence of predicted survival at 1 year (red circle) and 3 years (blue triangle) as a function continuous variables of interest. Symbols are partial dependence point estimates with loess smooth line to indicate trends.", fig.width=5, fig.height=5}
 
@@ -651,7 +651,7 @@ plot(ggpart, panel = TRUE) +
   theme(legend.position = c(0.8, 0.2)) 
 ```
 
-Categorical partial dependence is displayed as boxplots, similar to categorical variable dependence. Risk adjustment greatly reduces the spread of the response as expected, and may also move the mean response compared to the unadjusted results. The categorical `gg_partial` plot of \autoref{fig:pbc-partial-edema} indicates that, adjusting for other variables, survival decreases with rising `edema` values. We also note that the risk adjusted distribution does spread out as we move further out in time.
+Categorical partial dependence is displayed as boxplots, similar to categorical variable dependence. Risk adjustment greatly reduces the spread of the response as expected, and may also move the mean response compared to the unadjusted results. The categorical `gg_partial` plot of \@ref(fig:pbc-partial-edema) indicates that, adjusting for other variables, survival decreases with rising `edema` values. We also note that the risk adjusted distribution does spread out as we move further out in time.
 
 ```{r pbc-partial-edema, echo=TRUE, fig.cap="Partial dependence plot of predicted survival at 1 year (red) and 3 years (blue) as a function of edema groups (categorical variable). Boxplots indicate distribution within each group."}
 ggplot(pbc_ggpart[["edema"]], aes(y=yhat, x=edema, col=group))+
@@ -667,11 +667,11 @@ Partial dependence is an extrapolation operation. By averaging over a series of 
 
 In the previous section, we calculated risk adjusted (partial) dependence at two time points (1 and 3 years). The selection of these points can be driven by biological times of interest (i.e., 1 year and 5 year survival in cancer studies) or by investigating time points of interest from a `gg_rfsrc` prediction plot. We typically restrict generating `gg_partial` plots to the variables of interest at two or three time points of interest due to computational constraints.
 
-It is instructive to see a more detailed map of the risk adjusted response to get a feel for interpreting partial and variable dependence plots. In \autoref{fig:pbc-partial-panel}, we can visualize the two curves as extending into the plane of the page along a time axis. Filling in more partial dependence curves, it is possible to create a partial dependence surface.
+It is instructive to see a more detailed map of the risk adjusted response to get a feel for interpreting partial and variable dependence plots. In \@ref(fig:pbc-partial-panel), we can visualize the two curves as extending into the plane of the page along a time axis. Filling in more partial dependence curves, it is possible to create a partial dependence surface.
 
 For this exercise, we will generate a series of 50 `gg_partial` plot curves for the `bili` variable. To fill the surface in, we also increased the number of points along the distribution of `bili` to `npts=50` to create a grid of $50 \times 50$ risk adjusted estimates of survival along time in one dimension and the `bili` variable in the second.
 
-```{r timeSurface3d, fig.cap="Partial dependence surface. Partial dependence of predicted survival (0 to 5 years) as a function of bili. Blue lines indicate partial dependence at 1 and 3 years, as in bili panel of \\autoref{fig:pbc-partial-panel}.", cache=TRUE, fig.width=7, fig.height=5}
+```{r timeSurface3d, fig.cap="Partial dependence surface. Partial dependence of predicted survival (0 to 5 years) as a function of bili. Blue lines indicate partial dependence at 1 and 3 years, as in bili panel of \\@ref(fig:pbc-partial-panel).", cache=TRUE, fig.width=7, fig.height=5}
 # Restrict the time of interest to less than 5 years.
 time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
 
@@ -726,17 +726,17 @@ alt <- lapply(indx, function(ind){
 })
 ```
 
-The `gg_partial` surface of \autoref{fig:timeSurface3d} was constructed using the `surf3D` function from the \pkg{plot3D} package \citep[\url{http://CRAN.R-project.org/package=plot3D}]{plot3D:2014}.
+The `gg_partial` surface of \@ref(fig:timeSurface3d) was constructed using the `surf3D` function from the `plot3D` package \citep[\url{https://cran.r-project.org/package=plot3D}]{plot3D:2014}.
 
 The figure shows partial dependence of survival (Z-axis) as a function of `bili` over a five year follow up time period. Lines perpendicular to the Bilirubin axis are distributed along the `bili` variable. Lines parallel to the Bilirubin axis are taken at 50 training set event times, the first event after $t=0$ at the back to last event before $t=5$ years at the front. The distribution of the time lines is also evenly selected using the same procedure as selecting points for partial dependence curves.
 
-The 2500 estimated partial dependence points are joined together with a simple straight line interpolation to create the surface, colored according to the survival estimates (yellow close to 1, red for lower values) to aid the visualization of 3 dimensions on a 2 dimensional page. The blue lines in \autoref{fig:timeSurface3d} correspond to the 1 and 3 year partial dependence, as shown in the `bili` panel of \autoref{fig:pbc-partial-panel}.
+The 2500 estimated partial dependence points are joined together with a simple straight line interpolation to create the surface, colored according to the survival estimates (yellow close to 1, red for lower values) to aid the visualization of 3 dimensions on a 2 dimensional page. The blue lines in \@ref(fig:timeSurface3d) correspond to the 1 and 3 year partial dependence, as shown in the `bili` panel of \@ref(fig:pbc-partial-panel).
 
 Viewed as a surface, we see how the partial dependence changes with time. For low values of `bili`, survival decreases at a constant rate. For higher values, the rate seems constant until somewhere near 2 years, where it increases rapidly before slowing again as we approach the 5 year point.
 
 # Variable interactions
 
-We could stop with the results that our RF analysis has found these six variables to be important in predicting survival. Where the survival response is decreasing with increasing `bili`, `copper`, `prothrombin`, `age` and `edema` and increasing with increasing `albumin`. These results agree with the sign of the \cite{fleming:1991} model coefficients shown in \autoref{T:FHmodel}. The `gg_partial` plot in \autoref{fig:pbc-partial-panel} supports the `log` transform of `bili`, `albumin` and `prothrombin` and suggest a similar transform for including the `copper` variable in a proportional hazards model. The `age` variable does seem to have a more linear response than the other continuous variables, and using dummy variables for `edema` would preclude the need for a transformation.
+We could stop with the results that our RF analysis has found these six variables to be important in predicting survival. Where the survival response is decreasing with increasing `bili`, `copper`, `prothrombin`, `age` and `edema` and increasing with increasing `albumin`. These results agree with the sign of the \cite{fleming:1991} model coefficients shown in \@ref(T:FHmodel). The `gg_partial` plot in \@ref(fig:pbc-partial-panel) supports the `log` transform of `bili`, `albumin` and `prothrombin` and suggest a similar transform for including the `copper` variable in a proportional hazards model. The `age` variable does seem to have a more linear response than the other continuous variables, and using dummy variables for `edema` would preclude the need for a transformation.
 
 Using minimal depth, it is also possible to calculate measures of pairwise interactions among variables. Recall that minimal depth measure is defined by averaging the tree depth of variable $i$ relative to the root node. To detect interactions, this calculation can be modified to measure the minimal depth of a variable $j$ with respect to the maximal subtree for variable $i$ \citep{Ishwaran:2010,Ishwaran:2011}.
 
@@ -746,21 +746,21 @@ The `randomForestSRC::find.interaction` function traverses the forest, calculati
 ggint <- gg_interaction(rfsrc_pbc)
 ```
 
-The `gg_interaction ` function wraps the `find.interaction ` matrix for use with the \pkg{ggRandomForests} plot and print functions. The `xvar` argument is used to restrict the variables of interest and the `panel = TRUE` argument displays the results in a single figure.
+The `gg_interaction ` function wraps the `find.interaction ` matrix for use with the `ggRandomForests` plot and print functions. The `xvar` argument is used to restrict the variables of interest and the `panel = TRUE` argument displays the results in a single figure.
 
 ```{r interactionPanel, echo=TRUE, fig.cap="Minimal depth variable interaction plot for six variables of interest. Higher values indicate lower interactivity with target variable marked in red.", fig.width=7, fig.height=5}
 plot(ggint, xvar = xvar)
 ```
 
-The `gg_interaction ` plots in \autoref{fig:interactionPanel} show interactions for the target variable (shown with the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (`bili`) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone it may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing, as expected. We also see the interactive variables increasing with increasing target depth.
+The `gg_interaction ` plots in \@ref(fig:interactionPanel) show interactions for the target variable (shown with the red cross) with interaction scores for all remaining variables. We expect the covariate with lowest minimal depth (`bili`) to be associated with almost all other variables, as it typically splits close to the root node, so viewed alone it may not be as informative as looking at a collection of interactive depth plots. Scanning across the panels, we see each successive target depth increasing, as expected. We also see the interactive variables increasing with increasing target depth.
 
 # Conditional dependence plots
 
 Conditioning plots (coplots) \citep{chambers:1992,cleveland:1993}  are a powerful visualization tool to efficiently study how a response depends on two or more variables \citep{cleveland:1993}. The method allows us to view data by grouping observations on some conditional membership. The simplest example involves a categorical variable, where we plot our data conditional on class membership, for instance on groups of the `edema` variable. We can view a coplot as a stratified variable dependence plot, indicating trends in the RF prediction results within panels of group membership.
 
-Interactions with categorical data can be generated directly from variable dependence plots. Recall the variable dependence for bilirubin shown in \autoref{fig:variable-plotbili}. We recreated the `gg_variable` plot in  \autoref{fig:var_dep}, modified by adding a linear smooth as we intend on segregating the data along conditional class membership.
+Interactions with categorical data can be generated directly from variable dependence plots. Recall the variable dependence for bilirubin shown in \@ref(fig:variable-plotbili). We recreated the `gg_variable` plot in  \@ref(fig:var_dep), modified by adding a linear smooth as we intend on segregating the data along conditional class membership.
 
-```{r var_dep, echo=TRUE, fig.cap="Variable dependence of survival at 1 year against bili variable. Reproduction of top panel of \\autoref{fig:variable-plotbili} with a linear smooth to indicate trend."}
+```{r var_dep, echo=TRUE, fig.cap="Variable dependence of survival at 1 year against bili variable. Reproduction of top panel of \\@ref(fig:variable-plotbili) with a linear smooth to indicate trend."}
 # Get variable dependence at 1 year
 ggvar <- gg_variable(rfsrc_pbc, time = 1)
 
@@ -781,13 +781,13 @@ var_dep <- plot(ggvar, xvar = "bili",
 var_dep
 ```
 
-We can view the conditional dependence of survival against bilirubin, conditional on `edema` group membership (categorical variable) in \autoref{fig:coplot_bilirubin} by reusing the saved `ggplot` object (`var_dep`) and adding a call to the `facet_grid` function.
+We can view the conditional dependence of survival against bilirubin, conditional on `edema` group membership (categorical variable) in \@ref(fig:coplot_bilirubin) by reusing the saved `ggplot` object (`var_dep`) and adding a call to the `facet_grid` function.
 
 ```{r coplot_bilirubin, echo=TRUE, fig.cap="Variable dependence coplot of survival at 1 year against bili, conditional on edema group membership. Linear smooth indicates trend of variable dependence.", fig.width=7}
 var_dep + facet_grid(~edema)
 ```
 
-Comparing \autoref{fig:var_dep} with conditional panels of \autoref{fig:coplot_bilirubin}, we see the overall response is similar to the `edema=0` response. The survival for `edema=0.5` is slightly lower, though the slope of the smooth indicates a similar relation to `bili`. The `edema=1` panel shows that the survival for this (smaller) group of patients is worse, but still follows the trend of decreasing with increasing `bili`.
+Comparing \@ref(fig:var_dep) with conditional panels of \@ref(fig:coplot_bilirubin), we see the overall response is similar to the `edema=0` response. The survival for `edema=0.5` is slightly lower, though the slope of the smooth indicates a similar relation to `bili`. The `edema=1` panel shows that the survival for this (smaller) group of patients is worse, but still follows the trend of decreasing with increasing `bili`.
 
 Conditional membership within a continuous variable requires stratification at some level. We can sometimes make these stratification along some feature of the variable, for instance a variable with integer values, or 5 or 10 year age group cohorts. However with our variables of interest, there are no logical stratification indications. Therefore we arbitrarily stratify our variables into 6 groups of roughly equal population size using the `quantile_cuts` function. We pass the break points located by `quantile_cuts` to the `cut` function to create grouping intervals, which we can then add to the `gg_variable` object before plotting with the `plot.gg_variable` function. This time we use the `facet_wrap` function to generate the panels grouping interval, which automatically sorts the six panels into two rows of three panels each.
 
@@ -809,7 +809,7 @@ plot(ggvar, xvar = "bili", alpha = 0.5) +  #method = "glm", , se = FALSE
   coord_cartesian(y = c(-.01,1.01))
 ```
 
-The `gg_variable` coplot of \autoref{fig:albumin-coplot} indicates that the effect of `bili` decreases conditional on membership within increasing `albumin` groups. To get a better feel for how the response depends on both these variables together, it is instructive to look at the compliment coplot of `albumin` conditional on membership in `bili` groups. We repeat the previous coplot process, predicted survival as a function of the `albumin` variable, conditional on membership within 6 groups `bili` intervals. As the code to create the coplot of \autoref{fig:bili-coplot} is nearly identical to the code for creating \autoref{fig:albumin-coplot}.
+The `gg_variable` coplot of \@ref(fig:albumin-coplot) indicates that the effect of `bili` decreases conditional on membership within increasing `albumin` groups. To get a better feel for how the response depends on both these variables together, it is instructive to look at the compliment coplot of `albumin` conditional on membership in `bili` groups. We repeat the previous coplot process, predicted survival as a function of the `albumin` variable, conditional on membership within 6 groups `bili` intervals. As the code to create the coplot of \@ref(fig:bili-coplot) is nearly identical to the code for creating \@ref(fig:albumin-coplot).
 
 ```{r bili-coplot, fig.cap="Variable dependence coplot of survival at 1 year against albumin, conditonal on bili interval group membership.", fig.width=7, fig.height=4, results=FALSE, echo=TRUE}
 # Find intervals with similar number of observations.
@@ -836,7 +836,7 @@ plot(ggvar, xvar = "albumin", alpha = 0.5) +
   coord_cartesian(ylim = c(-0.01,1.01))
 ```
 
-The `gg_variable` coplot of \autoref{fig:bili-coplot} indicates the probability of survival increases with increasing `albumin` and increases within groups of increasing `bili`.
+The `gg_variable` coplot of \@ref(fig:bili-coplot) indicates the probability of survival increases with increasing `albumin` and increases within groups of increasing `bili`.
 
 Typically, conditional plots for continuous variables include overlapping intervals along the grouped variable \citep{cleveland:1993}. We chose to use mutually exclusive continuous variable intervals for the following reasons:
 
@@ -850,9 +850,9 @@ It is still possible to augment the `gg_variable` to include overlapping conditi
 
 ## Partial dependence coplots
 
-By characterizing conditional plots as stratified variable dependence plots, the next logical step would be to generate an analogous conditional partial dependence plot. The process is similar to variable dependence coplots, first determine conditional group membership, then calculate the partial dependence estimates on each subgroup using the \code{plot.variable} function with a \code{subset} argument for each grouped interval. The \pkg{ggRandomForests} \code{gg_partial_coplot} function is a wrapper for generating conditional partial dependence data objects. Given a random forest (\code{rfsrc}) object and a \code{groups} vector for conditioning the training data set observations, \code{gg_partial_coplot} calls the \code{plot.variable} function the training set observations conditional on \code{groups} membership. The function returns a \code{gg_partial_coplot} object, a subclass of the `gg_partial` object, which can be plotted with the \code{plot.gg_partial} function.
+By characterizing conditional plots as stratified variable dependence plots, the next logical step would be to generate an analogous conditional partial dependence plot. The process is similar to variable dependence coplots, first determine conditional group membership, then calculate the partial dependence estimates on each subgroup using the `plot.variable` function with a `subset` argument for each grouped interval. The `ggRandomForests` `gg_partial_coplot` function is a wrapper for generating conditional partial dependence data objects. Given a random forest (`rfsrc`) object and a `groups` vector for conditioning the training data set observations, `gg_partial_coplot` calls the `plot.variable` function the training set observations conditional on `groups` membership. The function returns a `gg_partial_coplot` object, a subclass of the `gg_partial` object, which can be plotted with the `plot.gg_partial` function.
 
-The following code block will generate the data object for creating partial dependence coplot of 1 year survival as a function of `bili` conditional on membership within the 6 groups of `albumin` intervals that we examined in the \autoref{fig:albumin-coplot}.
+The following code block will generate the data object for creating partial dependence coplot of 1 year survival as a function of `bili` conditional on membership within the 6 groups of `albumin` intervals that we examined in the \@ref(fig:albumin-coplot).
 
 ```{r bili-albumin, fig.cap="Partial dependence coplot of survival at 1 year against bili, conditional on albumin interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=TRUE}
 partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
@@ -867,9 +867,9 @@ ggplot(partial_coplot_pbc, aes(x=bili, y=yhat, col=group, shape=group)) +
        color = "albumin", shape = "albumin")
 ```
 
-The \code{gg_partial_coplot} of \autoref{fig:bili-albumin} shows point estimates of the risk adjusted survival as a function of `bili` conditional on group membership defined by `albumin` intervals. The figure is slightly different than the `gg_partial` plot of \autoref{fig:pbc-partial-panel} as each set of partial dependence estimates is calculated over a subset of the training data. We again connect the point estimates with a Loess curve.
+The `gg_partial_coplot` of \@ref(fig:bili-albumin) shows point estimates of the risk adjusted survival as a function of `bili` conditional on group membership defined by `albumin` intervals. The figure is slightly different than the `gg_partial` plot of \@ref(fig:pbc-partial-panel) as each set of partial dependence estimates is calculated over a subset of the training data. We again connect the point estimates with a Loess curve.
 
-For completeness, we construct the compliment coplot view of one year survival as a function of `albumin` conditional on `bili` interval group membership in \autoref{fig:albumin-bili}. 
+For completeness, we construct the compliment coplot view of one year survival as a function of `albumin` conditional on `bili` interval group membership in \@ref(fig:albumin-bili). 
 
 ```{r albumin-bili, fig.cap="Partial dependence coplot of survival at 1 year against albumin, conditional on bili interval group membership. Points estimates with loess smooth to indicate trend within each group.", fig.width=7, fig.height=4, echo=FALSE}
 partial_coplot_pbc2 <- gg_partial_coplot(rfsrc_pbc, xvar = "albumin",
@@ -887,11 +887,11 @@ ggplot(partial_coplot_pbc2, aes(x=albumin, y=yhat, col=group, shape=group))+
 
 # Partial plot surfaces
 
-Just as in partial dependence, we can view the partial coplot curves as slices along a surface that could extend along an axis into the page. This visualization is made a bit difficult by our choice to select groups of similar population size, as the curves are not evenly spaced along the grouping variables. So, similar to the partial dependence surface we created along time in \autoref{timeSurface}, we can examine the relation of these two variables using a partial dependence surface.
+Just as in partial dependence, we can view the partial coplot curves as slices along a surface that could extend along an axis into the page. This visualization is made a bit difficult by our choice to select groups of similar population size, as the curves are not evenly spaced along the grouping variables. So, similar to the partial dependence surface we created along time in \@ref(timeSurface), we can examine the relation of these two variables using a partial dependence surface.
 
 A difficulty with conditional dependence for this exercise is the reduction of the sample sizes for calculating a coplot surface. So instead, we calculate the full partial dependence surface by generating 50 `albumin` values spaced evenly along the data distribution. For each value of `albumin`, we calculate the partial dependence on `bili` at `npts = 50` points with the `plot.variable` function. We generate the surface again using the `surf3D` function.
 
-```{r surface3d, fig.cap="Partial dependence surface of survival at 1 year as a funtion of bili and albumin. Blue lines indicate partial coplot cut points for albumin (\\autoref{fig:bili-albumin}) and bili (\\autoref{fig:albumin-bili}).", fig.width=7, fig.height=5, cache = TRUE}
+```{r surface3d, fig.cap="Partial dependence surface of survival at 1 year as a funtion of bili and albumin. Blue lines indicate partial coplot cut points for albumin (\\@ref(fig:bili-albumin)) and bili (\\@ref(fig:albumin-bili).", fig.width=7, fig.height=5, cache = TRUE}
 # Find the quantile points to create 50 cut points
 alb_partial_pts <-quantile_pts(ggvar$albumin, groups = 50)
 
@@ -955,30 +955,30 @@ st <- lapply(indx, function(ind){
           add=TRUE, col="blue", lwd=6)})
 ```
 
-The partial dependence surface of \autoref{fig:surface3d} shows partial dependence of 1 year survival on the Z-axis against values of Bilirubin and Albumin. We again use linear interpolation between the 2500 estimates, and color the surface by the response. Here blue corresponds to lower and yellow to higher risk adjusted survival. The blue lines are placed at the cut points between groups of `albumin` and `bili` used in the partial coplots of Figures \ref{fig:bili-albumin} and \ref{fig:albumin-bili} respectively.
+The partial dependence surface of \@ref(fig:surface3d) shows partial dependence of 1 year survival on the Z-axis against values of Bilirubin and Albumin. We again use linear interpolation between the 2500 estimates, and color the surface by the response. Here blue corresponds to lower and yellow to higher risk adjusted survival. The blue lines are placed at the cut points between groups of `albumin` and `bili` used in the partial coplots of Figures \ref{fig:bili-albumin} and \ref{fig:albumin-bili} respectively.
 
-To construct the partial coplot for groups of `albumin` in \autoref{fig:bili-albumin}, we arbitrarily segmented the training set into 6 groups of equal membership size. The segments between blue lines parallel to the Bilirubin axis indicate where on the surface these observations are located. Similarly, the blues lines perpendicular to the Bilirubin axis segment observations into the 6 groups of `bili` intervals. \autoref{fig:surface3d} indicates the arbitrary grouping for groups of `bili` in \autoref{fig:albumin-bili}.
+To construct the partial coplot for groups of `albumin` in \@ref(fig:bili-albumin), we arbitrarily segmented the training set into 6 groups of equal membership size. The segments between blue lines parallel to the Bilirubin axis indicate where on the surface these observations are located. Similarly, the blues lines perpendicular to the Bilirubin axis segment observations into the 6 groups of `bili` intervals. \@ref(fig:surface3d) indicates the arbitrary grouping for groups of `bili` in \@ref(fig:albumin-bili).
 
-The figure indicates that partial dependence of higher `albumin` levels are similar, which results in the over plotting seen in \autoref{fig:bili-albumin}. The distribution is sparser at lower `albumin` levels, creating the larger area in lowest `albumin` values, where the partial dependence changes the most.
+The figure indicates that partial dependence of higher `albumin` levels are similar, which results in the over plotting seen in \@ref(fig:bili-albumin). The distribution is sparser at lower `albumin` levels, creating the larger area in lowest `albumin` values, where the partial dependence changes the most.
 
 # Conclusion
 
-In this vignette, we have demonstrated the use of Random Survival Forest methods with the \pkg{ggRandomForests}~(\url{http://CRAN.R-project.org/package=ggRandomForests}) package. We have shown how to grow a random forest model and determine which variables contribute to the forest prediction accuracy using both VIMP and Minimal Depth measures. We outlined how to investigate variable associations with the response variable using variable dependence and the risk adjusted partial dependence plots. We've also explored variable interactions by using pairwise minimal depth interactions and directly viewed these interactions using variable dependence coplots and partial dependence coplots. Along the way, we've demonstrated the use of additional commands from the \pkg{ggplot2} package \citep[\url{http://CRAN.R-project.org/package=ggplot2}]{Wickham:2009} package for modifying and customizing plots from \pkg{ggRandomForests} functions.
+In this vignette, we have demonstrated the use of Random Survival Forest methods with the `ggRandomForests`~(\url{https://cran.r-project.org/package=ggRandomForests}) package. We have shown how to grow a random forest model and determine which variables contribute to the forest prediction accuracy using both VIMP and Minimal Depth measures. We outlined how to investigate variable associations with the response variable using variable dependence and the risk adjusted partial dependence plots. We've also explored variable interactions by using pairwise minimal depth interactions and directly viewed these interactions using variable dependence coplots and partial dependence coplots. Along the way, we've demonstrated the use of additional commands from the `ggplot2` package \citep[\url{https://cran.r-project.org/package=ggplot2}]{Wickham:2009} package for modifying and customizing plots from `ggRandomForests` functions.
 
 ## Computational details
 
-This document is a package vignette for the \pkg{ggRandomForests} package for ``Visually Exploring Random Forests'' (\url{http://CRAN.R-project.org/package=ggRandomForests}). The \pkg{ggRandomForests} package is designed for use with the \pkg{randomForestSRC} package \citep[\url{http://CRAN.R-project.org/package=randomForestSRC}]{Ishwaran:RFSRC:2014} for growing survival, regression and classification random forest models and uses the \pkg{ggplot2} package \citep[\url{http://CRAN.R-project.org/package=ggplot2}]{Wickham:2009} for plotting diagnostic and variable association results. \pkg{ggRandomForests} is  structured to extract data objects from \pkg{randomForestSRC} objects and provides functions for printing and plotting these objects.
+This document is a package vignette for the `ggRandomForests` package for ``Visually Exploring Random Forests'' (\url{https://cran.r-project.org/package=ggRandomForests}). The `ggRandomForests` package is designed for use with the `randomForestSRC` package \citep[\url{https://cran.r-project.org/package=randomForestSRC}]{Ishwaran:RFSRC:2014} for growing survival, regression and classification random forest models and uses the `ggplot2` package \citep[\url{https://cran.r-project.org/package=ggplot2}]{Wickham:2009} for plotting diagnostic and variable association results. `ggRandomForests` is  structured to extract data objects from `randomForestSRC` objects and provides functions for printing and plotting these objects.
 
-The vignette is a tutorial for using the \pkg{ggRandomForests} package with the \pkg{randomForestSRC} package for building and post-processing random survival forests. In this tutorial, we explore a random forest for survival model constructed for the primary biliary cirrhosis (PBC) of the liver data set \citep{fleming:1991}, available in the \pkg{randomForestSRC} package. We grow a random survival forest and demonstrate how \pkg{ggRandomForests} can be used when determining how the survival response depends on predictive variables within the model. The tutorial demonstrates the design and usage of many of \pkg{ggRandomForests} functions and features and also how to modify and customize the resulting `ggplot` graphic objects along the way.
+The vignette is a tutorial for using the `ggRandomForests` package with the `randomForestSRC` package for building and post-processing random survival forests. In this tutorial, we explore a random forest for survival model constructed for the primary biliary cirrhosis (PBC) of the liver data set \citep{fleming:1991}, available in the `randomForestSRC` package. We grow a random survival forest and demonstrate how `ggRandomForests` can be used when determining how the survival response depends on predictive variables within the model. The tutorial demonstrates the design and usage of many of `ggRandomForests` functions and features and also how to modify and customize the resulting `ggplot` graphic objects along the way.
 
-The vignette is written in \LaTeX using the \pkg{knitr} package \citep[\url{http://CRAN.R-project.org/package=knitr}]{Xie:2015, Xie:2014,Xie:2013}, which facilitates weaving \proglang{R} \citep{rcore} code, results and figures into document text.
+The vignette is written in `rmarkdown` using the `knitr` package \citep[\url{https://cran.r-project.org/package=knitr}]{Xie:2015, Xie:2014,Xie:2013}, which facilitates weaving `R` \citep{rcore} code, results and figures into document text.
 
-This vignette is available within the \pkg{ggRandomForests} package on the Comprehensive R Archive Network (CRAN) \citep[\url{http://cran.r-project.org}]{rcore}. Once the package has been installed, the vignette can be viewed directly from within \proglang{R} with the following command:
+This vignette is available within the `ggRandomForests` package on the Comprehensive R Archive Network (CRAN) \citep[\url{https://cran.r-project.org}]{rcore}. Once the package has been installed, the vignette can be viewed directly from within `R` with the following command:
 ```{r vignette, eval=FALSE, echo=TRUE}
 vignette("randomForestSRC-Survival", package = "ggRandomForests")
 ```
 
-A development version of the \pkg{ggRandomForests} package is also available on GitHub (\url{https://github.com}). We invite comments, feature requests and bug reports for this package at \url{https://github.com/ehrlinger/ggRandomForests}.
+A development version of the `ggRandomForests` package is also available on GitHub (\url{https://github.com}). We invite comments, feature requests and bug reports for this package at \url{https://github.com/ehrlinger/ggRandomForests}.
 
 
 ## Acknowledgement
