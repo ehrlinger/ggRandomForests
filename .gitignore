@@ -49,3 +49,4 @@ vignettes/rmd-rfsrc/*
 /Meta/
 vignettes/Survival_cache/*
 vignettes/Regression_cache/*
+vignettes/.build.timestamp
