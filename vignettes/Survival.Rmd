@@ -38,7 +38,7 @@ This document is structured as a tutorial for building random forest for surviva
 ## Not displayed ##
 library("knitr")
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
-opts_chunk$set(fig.path = 'survival/',
+opts_chunk$set(#fig.path = 'survival/',
                fig.align = 'center',
                fig.pos = "!htb",
                fig.show = 'hold',
