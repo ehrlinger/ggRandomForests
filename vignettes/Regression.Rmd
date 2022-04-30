@@ -38,7 +38,7 @@ This document is structured as a tutorial for building random forests for regres
 library("knitr")
 
 # set global chunk options for knitr. These can be changed in the header for each individual R code chunk
-opts_chunk$set(fig.path = 'regression/rfr-',
+opts_chunk$set(fig.path = 'regression/',
                fig.align = 'center',
                fig.pos = "!htb",
                fig.show = 'hold',
