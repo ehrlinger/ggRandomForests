@@ -80,8 +80,9 @@ print.gg_minimal_depth <- function(x, ...) {
   cat("-----------------------------------------------------------\n")
   cat("\n")
   cat("Top variables:\n")
-  v_sel <- data.frame(gg_dta$varselect[1:gg_dta$modelsize,
-                                       -which(colnames(gg_dta$varselect) == "names"),
+  v_sel <- data.frame(gg_dta$varselect[1:gg_dta$modelsize, 
+                                       -which(colnames(gg_dta$varselect) == 
+                                                "names"),
                                        drop = FALSE])
   
   print(v_sel, digits = 3)

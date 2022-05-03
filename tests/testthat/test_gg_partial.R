@@ -40,14 +40,14 @@ test_that("gg_partial classifications", {
 
 test_that("gg_partial regression", {
   ## Load the cached forest
-  data(rfsrc_Boston, package = "ggRandomForests")
+  data(rfsrc_boston, package = "ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_Boston, "rfsrc")
+  expect_is(rfsrc_boston, "rfsrc")
   
   ## Create the correct gg_error object
-  data(partial_Boston, package = "ggRandomForests")
-  gg_dta <- gg_partial(partial_Boston)
+  data(partial_boston, package = "ggRandomForests")
+  gg_dta <- gg_partial(partial_boston)
   
   # Test object type
   expect_is(gg_dta, "gg_partial_list")
@@ -70,12 +70,12 @@ test_that("gg_partial regression", {
   expect_error(gg_partial(gg_plt))
   
   # Remove all but one partial data.
-  partial_Boston$xvar.names <- "lstat"
-  partial_Boston$nvar <- 1
-  for (ind in length(partial_Boston$pData):2) {
-    partial_Boston$pData[[ind]] <- NULL
+  partial_boston$xvar.names <- "lstat"
+  partial_boston$nvar <- 1
+  for (ind in length(partial_boston$pData):2) {
+    partial_boston$pData[[ind]] <- NULL
   }
-  gg_dta <- gg_partial(partial_Boston)
+  gg_dta <- gg_partial(partial_boston)
   
   # Test object type
   expect_is(gg_dta, "gg_partial")

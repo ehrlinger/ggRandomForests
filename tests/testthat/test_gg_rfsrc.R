@@ -49,16 +49,16 @@ test_that("gg_rfsrc classifications", {
 
 test_that("gg_rfsrc regression", {
   ## Load the cached forest
-  data(rfsrc_Boston, package = "ggRandomForests")
+  data(rfsrc_boston, package = "ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_Boston, "rfsrc")
+  expect_is(rfsrc_boston, "rfsrc")
   
   # Test the forest family
-  expect_match(rfsrc_Boston$family, "regr")
+  expect_match(rfsrc_boston$family, "regr")
   
   ## Create the correct gg_error object
-  gg_dta <- gg_rfsrc(rfsrc_Boston)
+  gg_dta <- gg_rfsrc(rfsrc_boston)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -71,14 +71,14 @@ test_that("gg_rfsrc regression", {
   expect_is(gg_plt, "ggplot")
   
   ## Create the correct gg_error object
-  gg_dta <- gg_rfsrc(rfsrc_Boston, oob = FALSE)
+  gg_dta <- gg_rfsrc(rfsrc_boston, oob = FALSE)
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
   
   # Test classification dimensions
   ## Create the correct gg_error object
-  gg_dta <- gg_rfsrc(rfsrc_Boston, by = "chas")
+  gg_dta <- gg_rfsrc(rfsrc_boston, by = "chas")
   
   # Test object type
   expect_is(gg_dta, "gg_rfsrc")
@@ -89,15 +89,15 @@ test_that("gg_rfsrc regression", {
   
   # Test data is correctly pulled from randomForest obect.
   # Predicted values
-  rfsrc_Boston$family <- "test"
-  expect_error(gg_rfsrc(rfsrc_Boston))
+  rfsrc_boston$family <- "test"
+  expect_error(gg_rfsrc(rfsrc_boston))
   
   # Test exceptions
   # Is it an rfsrc object?
   expect_error(gg_rfsrc(gg_plt))
   
   # Does it contain the forest?
-  rfsrc_Boston$forest <- NULL
-  expect_error(gg_rfsrc(rfsrc_Boston))
+  rfsrc_boston$forest <- NULL
+  expect_error(gg_rfsrc(rfsrc_boston))
   
 })

@@ -137,17 +137,17 @@ plot.gg_minimal_depth <- function(x,
   }
   
   xl <- c(0, ceiling(max(gg_dta$varselect$depth)) + 1)
-  sel.th <- gg_dta$md.obj$threshold
+  sel_th <- gg_dta$md.obj$threshold
   
   if (selection) {
     modelsize <- gg_dta$modelsize
     
     # Labels for the top md vars.
-    md.labs <- gg_dta$topvars
+    md_labs <- gg_dta$topvars
     
     ## Number the variables
-    for (ind in seq_len(length(md.labs))) {
-      md.labs[ind] <- paste(ind, md.labs[ind], sep = ". ")
+    for (ind in seq_len(length(md_labs))) {
+      md_labs[ind] <- paste(ind, md_labs[ind], sep = ". ")
     }
     vsel <- gg_dta$varselect[seq_len(modelsize), ]
     vsel$rank <- seq_len(nrow(vsel))
@@ -199,13 +199,13 @@ plot.gg_minimal_depth <- function(x,
   if (type == "named") {
     if (!missing(lbls)) {
       if (length(lbls) >= length(vsel$names)) {
-        st.lbls <- lbls[as.character(vsel$names)]
-        names(st.lbls) <- as.character(vsel$names)
-        st.lbls[which(is.na(st.lbls))] <-
-          names(st.lbls[which(is.na(st.lbls))])
+        st_lbls <- lbls[as.character(vsel$names)]
+        names(st_lbls) <- as.character(vsel$names)
+        st_lbls[which(is.na(st_lbls))] <-
+          names(st_lbls[which(is.na(st_lbls))])
         
         gg_plt <- gg_plt +
-          scale_x_discrete(labels = st.lbls)
+          scale_x_discrete(labels = st_lbls)
       }
     }
     
@@ -214,7 +214,7 @@ plot.gg_minimal_depth <- function(x,
     
     if (nvar > gg_dta$modelsize) {
       gg_plt <- gg_plt +
-        geom_hline(yintercept = sel.th, lty = 2)
+        geom_hline(yintercept = sel_th, lty = 2)
       
     }
     gg_plt <- gg_plt +
@@ -226,7 +226,7 @@ plot.gg_minimal_depth <- function(x,
     
     if (nvar > gg_dta$modelsize) {
       gg_plt <- gg_plt +
-        geom_vline(xintercept = sel.th, lty = 2)
+        geom_vline(xintercept = sel_th, lty = 2)
     }
   }
   return(gg_plt)

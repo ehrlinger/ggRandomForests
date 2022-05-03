@@ -33,7 +33,7 @@
 #' function.
 #'
 #' Optional arguments \code{time} point (or vector of points) of interest 
-#' (for survival forests only) \code{time.labels} If more than one time is 
+#' (for survival forests only) \code{time_labels} If more than one time is 
 #' specified, a vector of time labels for differentiating the time points 
 #' (for survival forests only) \code{oob} indicate if predicted results 
 #' should include oob or full data set.
@@ -158,7 +158,7 @@ gg_variable.rfsrc <- function(object,
   arg_list <- list(...)
   
   time <- arg_list$time
-  time.labels <- arg_list$time.labels
+  time_labels <- arg_list$time_labels
   oob <- if (!is.null(arg_list$oob)) {
     arg_list$oob
   } else{
@@ -232,10 +232,10 @@ gg_variable.rfsrc <- function(object,
       else
         gg_dta_t$yhat <- object$survival[, in_time]
       
-      if (is.null(time.labels)) {
+      if (is.null(time_labels)) {
         gg_dta_t$time <- time[ind]
       } else{
-        gg_dta_t$time <- time.labels[ind]
+        gg_dta_t$time <- time_labels[ind]
       }
       
       if (ind > 1) {

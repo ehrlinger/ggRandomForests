@@ -194,21 +194,21 @@ plot.gg_partial <- function(x,
              ))
   }
   if (!is.null(gg_dta$se)) {
-    conf.int <- .95
-    if (!is.null(arg_list$conf.int))
-      conf.int <- arg_list$conf.int
+    conf_int <- .95
+    if (!is.null(arg_list$conf_int))
+      conf_int <- arg_list$conf_int
     
-    if (length(conf.int) == 1) {
-      if (conf.int > 1)
-        conf.int <- conf.int / 100
-      if (conf.int > .5) {
-        err <- qnorm(1 - conf.int / 2)
+    if (length(conf_int) == 1) {
+      if (conf_int > 1)
+        conf_int <- conf_int / 100
+      if (conf_int > .5) {
+        err <- qnorm(1 - conf_int / 2)
       } else{
-        err <- qnorm(conf.int)
+        err <- qnorm(conf_int)
       }
     } else{
       # Two sided,
-      err <- qnorm(conf.int[1])
+      err <- qnorm(conf_int[1])
     }
     
     gg_dta$upper <- gg_dta$yhat + err * gg_dta$se
@@ -225,10 +225,8 @@ plot.gg_partial <- function(x,
         ),
       # Or showing error bars
       bars = {
-        # Need to figure out how to remove some of these points when
+        #!TODO! Need to figure out how to remove some of these points when
         # requesting error bars, or this will get really messy.
-        #                     errFll <- fll
-        #                     if(!missing(errbars) )errFll <- errFll[errbars,]
         gg_plt +
           geom_errorbar(aes_string(
             x = "x",

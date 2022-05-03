@@ -28,10 +28,10 @@ test_that("gg_roc classifications", {
   expect_equivalent(gg_dta$pct, c(0, unts[-length(unts)], 1))
   
   ## Test plotting the gg_roc object
-  gg.obj <- plot.gg_roc(gg_dta)
+  gg_obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_obj, "ggplot")
   
   # Try test set prediction.
   gg_dta <- gg_roc(rfsrc_iris, which.outcome, oob = FALSE)
@@ -51,27 +51,27 @@ test_that("gg_roc classifications", {
   expect_equivalent(gg_dta$pct, c(0, unts[-length(unts)], 1))
   
   ## Test plotting the gg_roc object
-  gg.obj <- plot.gg_roc(gg_dta)
+  gg_obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_obj, "ggplot")
   
   expect_is(plot.gg_roc(rfsrc_iris), "ggplot")
 })
 
 test_that("gg_roc regression", {
   ## Load the cached forest
-  data(rfsrc_Boston, package = "ggRandomForests")
+  data(rfsrc_boston, package = "ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_Boston, "rfsrc")
+  expect_is(rfsrc_boston, "rfsrc")
   
   # Test the forest family
-  expect_match(rfsrc_Boston$family, "regr")
+  expect_match(rfsrc_boston$family, "regr")
   
   ## Create the correct gg_roc object
-  expect_error(gg_roc(rfsrc_Boston))
-  expect_error(plot.gg_roc(rfsrc_Boston))
+  expect_error(gg_roc(rfsrc_boston))
+  expect_error(plot.gg_roc(rfsrc_boston))
   
 })
 

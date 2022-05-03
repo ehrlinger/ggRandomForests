@@ -2,7 +2,7 @@
 #'
 #' @param set Defaults to all sets (NA), however for individual sets
 
-#' specify one or more of c("airq", "Boston", "iris", "mtcars", "pbc",
+#' specify one or more of c("airq", "boston", "iris", "mtcars", "pbc",
 #' "veteran")
 #' @param save Defaults to write files to the current data directory.
 #' @param pth the directory to store files.
@@ -41,7 +41,7 @@
 #' \item \code{_iris} - The \code{iris} data set.
 #' \item \code{_airq} - The \code{airquality} data set.
 #' \item \code{_mtcars} - The \code{mtcars} data set.
-#' \item \code{_Boston} - The \code{Boston} housing data set
+#' \item \code{_boston} - The \code{boston} housing data set
 #' (\code{MASS} package).
 #' \item \code{_pbc} - The \code{pbc} data set
 #' (\code{randomForestSRC} package).
@@ -91,7 +91,7 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
   
   if (length(set) == 1)
     if (is.na(set))
-      set <- c("Boston", "iris")
+      set <- c("boston", "iris")
   
   ##---------------------------------------------------------------------------
   if ("airq" %in% set) {
@@ -268,18 +268,18 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
   }
   
   ##---------------------------------------------------------------------------
-  if ("Boston" %in% set) {
+  if ("boston" %in% set) {
     data(Boston, package = "MASS", envir = dta)
-    Boston <- dta$Boston
+    boston <- dta$Boston
     
-    Boston$chas <- as.logical(Boston$chas)
+    boston$chas <- as.logical(boston$chas)
     
-    cat("Boston: rfsrc\n")
+    cat("boston: rfsrc\n")
     if (!test)
-      rfsrc_Boston <-
+      rfsrc_boston <-
       randomForestSRC::rfsrc(
         medv ~ .,
-        data = Boston,
+        data = boston,
         forest = TRUE,
         importance = TRUE,
         tree.err = TRUE,
@@ -287,44 +287,44 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
         ...
       )
     else{
-      data(rfsrc_Boston, package = "ggRandomForests",
+      data(rfsrc_boston, package = "ggRandomForests",
            envir = dta)
-      rfsrc_Boston <- dta$rfsrc_Boston
+      rfsrc_boston <- dta$rfsrc_boston
     }
     if (save)
       save(
-        rfsrc_Boston,
-        file = paste(pth, "rfsrc_Boston.rda", sep = ""),
+        rfsrc_boston,
+        file = paste(pth, "rfsrc_boston.rda", sep = ""),
         compress = "xz"
       )
     
-    cat("\nBoston: RF minimal depth\n")
+    cat("\nboston: RF minimal depth\n")
     if (!test)
-      varsel_Boston <- randomForestSRC::var.select(rfsrc_Boston)
+      varsel_boston <- randomForestSRC::var.select(rfsrc_boston)
     if (save)
       save(
-        varsel_Boston,
-        file = paste(pth, "varsel_Boston.rda", sep = ""),
+        varsel_boston,
+        file = paste(pth, "varsel_boston.rda", sep = ""),
         compress = "xz"
       )
     
-    cat("Boston: RF interactions\n")
+    cat("boston: RF interactions\n")
     if (!test)
-      interaction_Boston <-
-      randomForestSRC::find.interaction(rfsrc_Boston)
+      interaction_boston <-
+      randomForestSRC::find.interaction(rfsrc_boston)
     if (save)
       save(
-        interaction_Boston,
-        file = paste(pth, "interaction_Boston.rda", sep = ""),
+        interaction_boston,
+        file = paste(pth, "interaction_boston.rda", sep = ""),
         compress = "xz"
       )
     
-    cat("Boston: RF partial dependence\n(this will take a little while...)\n")
+    cat("boston: RF partial dependence\n(this will take a little while...)\n")
     if (!test)
-      partial_Boston <- randomForestSRC::plot.variable(
-        rfsrc_Boston,
+      partial_boston <- randomForestSRC::plot.variable(
+        rfsrc_boston,
         xvar.names =
-          varsel_Boston$topvars,
+          varsel_boston$topvars,
         sorted =
           FALSE,
         partial =
@@ -334,23 +334,23 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
       )
     if (save)
       save(
-        partial_Boston,
-        file = paste(pth, "partial_Boston.rda", sep = ""),
+        partial_boston,
+        file = paste(pth, "partial_boston.rda", sep = ""),
         compress = "xz"
       )
     
     cat(
-      "\nBoston: RF partial coplots\n\tlstat by rm groups
+      "\nboston: RF partial coplots\n\tlstat by rm groups
       \n(this will take a little longer...)\n"
     )
     rm_pts <-
-      quantile_pts(rfsrc_Boston$xvar$rm,
+      quantile_pts(rfsrc_boston$xvar$rm,
                    groups = 6,
                    intervals = TRUE)
-    rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks = rm_pts)
+    rm_grp <- cut(rfsrc_boston$xvar$rm, breaks = rm_pts)
     if (!test)
-      partial_coplot_Boston <- gg_partial_coplot(
-        rfsrc_Boston,
+      partial_coplot_boston <- gg_partial_coplot(
+        rfsrc_boston,
         xvar = "lstat",
         groups = rm_grp,
         show.plots = FALSE
@@ -358,20 +358,20 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
     
     if (save)
       save(
-        partial_coplot_Boston,
-        file = paste(pth, "partial_coplot_Boston.rda", sep = ""),
+        partial_coplot_boston,
+        file = paste(pth, "partial_coplot_boston.rda", sep = ""),
         compress = "xz"
       )
     
-    cat("\nBoston: RF partial coplots\n\trm by lstat groups
+    cat("\nboston: RF partial coplots\n\trm by lstat groups
         \n(so will this...)\n")
-    lstat_pts <- quantile_pts(rfsrc_Boston$xvar$lstat,
+    lstat_pts <- quantile_pts(rfsrc_boston$xvar$lstat,
                               groups = 6,
                               intervals = TRUE)
-    lstat_grp <- cut(rfsrc_Boston$xvar$lstat, breaks = lstat_pts)
+    lstat_grp <- cut(rfsrc_boston$xvar$lstat, breaks = lstat_pts)
     if (!test)
-      partial_coplot_Boston2 <- gg_partial_coplot(
-        rfsrc_Boston,
+      partial_coplot_boston2 <- gg_partial_coplot(
+        rfsrc_boston,
         xvar = "rm",
         groups = lstat_grp,
         show.plots = FALSE
@@ -379,21 +379,21 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
     
     if (save)
       save(
-        partial_coplot_Boston2,
-        file = paste(pth, "partial_coplot_Boston2.rda", sep =
+        partial_coplot_boston2,
+        file = paste(pth, "partial_coplot_boston2.rda", sep =
                        ""),
         compress = "xz"
       )
-    cat("\nBoston: RF partial surface plot\n(Go get a coffee...)\n")
+    cat("\nboston: RF partial surface plot\n(Go get a coffee...)\n")
     if (!test) {
       rm_pts <-
-        quantile_pts(rfsrc_Boston$xvar$rm,
+        quantile_pts(rfsrc_boston$xvar$rm,
                      groups = 49,
                      intervals = TRUE)
-      partial_Boston_surf <- lapply(rm_pts, function(ct) {
-        rfsrc_Boston$xvar$rm <- ct
+      partial_boston_surf <- lapply(rm_pts, function(ct) {
+        rfsrc_boston$xvar$rm <- ct
         randomForestSRC::plot.variable(
-          rfsrc_Boston,
+          rfsrc_boston,
           xvar.names = "lstat",
           time = 1,
           npts = 50,
@@ -405,8 +405,8 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
     
     if (save)
       save(
-        partial_Boston_surf,
-        file = paste(pth, "partial_Boston_surf.rda", sep = ""),
+        partial_boston_surf,
+        file = paste(pth, "partial_boston_surf.rda", sep = ""),
         compress = "xz"
       )
     
@@ -453,14 +453,14 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
     pbc$treatment <- factor(pbc$treatment)
     
     cat("pbc: rfsrc\n")
-    dta.train <- pbc[- which(is.na(pbc$treatment)), ]
+    dta_train <- pbc[- which(is.na(pbc$treatment)), ]
     # Create a test set from the remaining patients
-    pbc.test <- pbc[which(is.na(pbc$treatment)), ]
+    pbc_test <- pbc[which(is.na(pbc$treatment)), ]
     
     if (!test)
       rfsrc_pbc <- randomForestSRC::rfsrc(
         Surv(years, status) ~ .,
-        dta.train,
+        dta_train,
         nsplit = 10,
         na.action = "na.impute",
         forest = TRUE,
@@ -477,7 +477,7 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
     # Predict survival for 106 patients not in randomized trial
     if (!test)
       rfsrc_pbc_test <- predict(rfsrc_pbc,
-                                newdata = pbc.test,
+                                newdata = pbc_test,
                                 na.action = "na.impute")
     if (save)
       save(
@@ -771,7 +771,7 @@ rf_cache_datasets <- function(set = NA,
   }
   
   if (is.na(set))
-    set <- c("airq", "Boston", "iris", "mtcars")
+    set <- c("airq", "boston", "iris", "mtcars")
   
   ##---------------------------------------------------------------------------
   if ("airq" %in% set) {
@@ -824,19 +824,19 @@ rf_cache_datasets <- function(set = NA,
   }
   ##---------------------------------------------------------------------------
   
-  if ("Boston" %in% set) {
+  if ("boston" %in% set) {
     data(Boston, package = "MASS", envir = dta)
-    Boston <- dta$Boston
+    boston <- dta$Boston
     
-    Boston$chas <- as.logical(Boston$chas)
+    boston$chas <- as.logical(boston$chas)
     
-    cat("Boston: randomForest\n")
+    cat("boston: randomForest\n")
     if (!test)
-      rf_Boston <-
-      randomForest::randomForest(medv ~ ., data = Boston)
+      rf_boston <-
+      randomForest::randomForest(medv ~ ., data = boston)
     if (save)
-      save(rf_Boston,
-           file = paste(pth, "rf_Boston.rda", sep = ""),
+      save(rf_boston,
+           file = paste(pth, "rf_boston.rda", sep = ""),
            compress = "xz")
   }
   

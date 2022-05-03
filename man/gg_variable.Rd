@@ -27,7 +27,7 @@ dependence figures are created using the \code{\link{plot.gg_variable}}
 function.
 
 Optional arguments \code{time} point (or vector of points) of interest 
-(for survival forests only) \code{time.labels} If more than one time is 
+(for survival forests only) \code{time_labels} If more than one time is 
 specified, a vector of time labels for differentiating the time points 
 (for survival forests only) \code{oob} indicate if predicted results 
 should include oob or full data set.

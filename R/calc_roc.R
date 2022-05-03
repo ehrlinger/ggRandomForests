@@ -60,7 +60,7 @@ calc_roc.rfsrc <-
       yvar <- factor(yvar)
     
     if (which.outcome != "all") {
-      dta.roc <-
+      dta_roc <-
         data.frame(cbind(
           res = (yvar == levels(yvar)[which.outcome]),
           prd = object$predicted[, which.outcome],
@@ -87,9 +87,9 @@ calc_roc.rfsrc <-
     
     gg_dta <- parallel::mclapply(pct, function(crit) {
       if (oob)
-        tbl <- xtabs(~ res + (oob > crit), dta.roc)
+        tbl <- xtabs( ~ res + (oob > crit), dta_roc)
       else
-        tbl <- xtabs(~ res + (prd > crit), dta.roc)
+        tbl <- xtabs( ~ res + (prd > crit), dta_roc)
       
       spec <- tbl[2, 2] / rowSums(tbl)[2]
       sens <- tbl[1, 1] / rowSums(tbl)[1]
@@ -108,27 +108,28 @@ calc_roc <- calc_roc.rfsrc
 
 ## This is in development still.
 ## We'll return to this when we start the next version.
-# calc_roc.randomForest <- function(object, dta, which.outcome=1) {
-#   prd <- predict(object, type="prob")
-#   dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]),
-#                               prd=prd[,which.outcome]))
-#
-#   pct <- sort(unique(prd[,which.outcome]))
-#   pct<- pct[-length(pct)]
-#
-#   gg_dta <- parallel::mclapply(pct, function(crit) {
-#     tbl <- xtabs(~res+(prd>crit), dta.roc)
-#
-#     spec<-tbl[2,2]/rowSums(tbl)[2]
-#     sens<-tbl[1,1]/rowSums(tbl)[1]
-#     cbind(sens=sens, spec=spec)
-#   })
-#   gg_dta <- data.frame(do.call(rbind, gg_dta))
-#
-#   gg_dta$pct <- c(0,pct,1)
-#
-#   invisible(gg_dta)
-# }
+calc_roc.randomForest <- function(object, dta, which.outcome = 1) {
+  prd <- predict(object, type = "prob")
+  dta_roc <-
+    data.frame(cbind(res = (dta == levels(dta)[which.outcome]),
+                     prd = prd[, which.outcome]))
+  
+  pct <- sort(unique(prd[, which.outcome]))
+  pct <- pct[-length(pct)]
+  
+  gg_dta <- parallel::mclapply(pct, function(crit) {
+    tbl <- xtabs(~ res + (prd > crit), dta_roc)
+    
+    spec <- tbl[2, 2] / rowSums(tbl)[2]
+    sens <- tbl[1, 1] / rowSums(tbl)[1]
+    cbind(sens = sens, spec = spec)
+  })
+  gg_dta <- data.frame(do.call(rbind, gg_dta))
+  
+  gg_dta$pct <- c(0, pct, 1)
+  
+  invisible(gg_dta)
+}
 
 #'
 #' Area Under the ROC Curve calculator
@@ -144,7 +145,7 @@ calc_roc <- calc_roc.rfsrc
 #'
 # @importFrom dplyr lead
 #'
-#' @seealso \code{\link{calc_roc}} \code{\link{gg_roc}} 
+#' @seealso \code{\link{calc_roc}} \code{\link{gg_roc}}
 #' @seealso \code{\link{plot.gg_roc}}
 #'
 #' @examples
@@ -174,7 +175,7 @@ calc_auc <- function(x) {
   
   # SInce we are leading vectors (x_{i+1} - x_{i}), we need to
   # ensure we are in decreasing order of specificity (x var = 1-spec)
-  x <- x[order(x$spec, decreasing = TRUE), ]
+  x <- x[order(x$spec, decreasing = TRUE),]
   
   auc <- (3 * shift(x$sens) - x$sens) / 2 * (x$spec - shift(x$spec))
   sum(auc, na.rm = TRUE)
@@ -240,9 +241,9 @@ shift <- function(x, shift_by = 1) {
   out <- NULL
   abs_shift_by <- abs(shift_by)
   if (shift_by > 0)
-    out <- c(tail(x, -abs_shift_by), rep(NA, abs_shift_by))
+    out <- c(tail(x,-abs_shift_by), rep(NA, abs_shift_by))
   else if (shift_by < 0)
-    out <- c(rep(NA, abs_shift_by), head(x, -abs_shift_by))
+    out <- c(rep(NA, abs_shift_by), head(x,-abs_shift_by))
   else
     out <- x
   out

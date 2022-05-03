@@ -85,7 +85,7 @@ gg_partial_coplot.rfsrc <- function(object,
   surv_type <- match.arg(surv_type)
   
   # Get the training data to work with...
-  dta.train  <- object$xvar
+  dta_train  <- object$xvar
   
   # Make sure all xvars are in the training set.
   
@@ -113,7 +113,7 @@ gg_partial_coplot.rfsrc <- function(object,
   
   # Check the length of groups...
   
-  dta.train$group <- groups[seq_len(nrow(dta.train))]
+  dta_train$group <- groups[seq_len(nrow(dta_train))]
   
   # make groups a factor
   lvl <- levels(groups)
@@ -122,7 +122,7 @@ gg_partial_coplot.rfsrc <- function(object,
   
   # Create the subsets for the plot.variable function
   sbst <- parallel::mclapply(1:lng, function(ind) {
-    st <- which(dta.train$group == levels(groups)[ind])
+    st <- which(dta_train$group == levels(groups)[ind])
     if (length(st) == 0)
       NULL
     else
@@ -156,7 +156,7 @@ gg_partial_coplot.rfsrc <- function(object,
   
   # This will return a list of subseted partial plots, one for each group,
   # all variables in xvar.
-  pdat.partlist <- lapply(seq_len(length(sbst)), function(ind) {
+  pdat_partlist <- lapply(seq_len(length(sbst)), function(ind) {
     randomForestSRC::plot.variable(
       object,
       surv.type = surv_type,
@@ -168,7 +168,7 @@ gg_partial_coplot.rfsrc <- function(object,
   })
   
   ## Make them all gg_partials.
-  gg_part <- parallel::mclapply(pdat.partlist, gg_partial)
+  gg_part <- parallel::mclapply(pdat_partlist, gg_partial)
   
   ## With the subsets marked for plotting
   for (ind in seq_len(length(gg_part))) {

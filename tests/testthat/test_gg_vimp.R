@@ -132,13 +132,13 @@ test_that("gg_vimp survival", {
   pbc$treatment <- factor(pbc$treatment)
   
   cat("pbc: rfsrc\n")
-  dta.train <- pbc[-which(is.na(pbc$treatment)), ]
+  dta_train <- pbc[-which(is.na(pbc$treatment)), ]
   # Create a test set from the remaining patients
-  pbc.test <- pbc[which(is.na(pbc$treatment)), ]
+  pbc_test <- pbc[which(is.na(pbc$treatment)), ]
   
   rfsrc_pbc <- randomForestSRC::rfsrc(
     Surv(years, status) ~ .,
-    dta.train,
+    dta_train,
     nsplit = 10,
     na.action = "na.impute",
     importance = TRUE,
@@ -200,19 +200,19 @@ test_that("gg_vimp regression", {
   
   Boston$chas <- as.logical(Boston$chas)
   
-  rfsrc_Boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston,
+  rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston,
                                          importance = TRUE)
   # Test the cached forest type
-  expect_is(rfsrc_Boston, "rfsrc")
+  expect_is(rfsrc_boston, "rfsrc")
   
   ## Create the correct gg_error object
-  gg_dta <- gg_vimp(rfsrc_Boston)
+  gg_dta <- gg_vimp(rfsrc_boston)
   
   # Test object type
   expect_is(gg_dta, "gg_vimp")
   
   # Test varselect is the same
-  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_Boston$importance, decreasing =
+  expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_boston$importance, decreasing =
                                              TRUE)))
   
   ## Test plotting the gg_error object
@@ -262,7 +262,7 @@ test_that("gg_vimp regression", {
     )
   
   # Build a table for data description
-  dta.labs <-
+  dta_labs <-
     data.frame(cbind(
       Variable = names(cls),
       Description = lbls,
@@ -270,15 +270,15 @@ test_that("gg_vimp regression", {
     ))
   
   # Build a named vector for labeling figures later/
-  st.labs <- as.character(dta.labs$Description)
-  names(st.labs) <- names(cls)
+  st_labs <- as.character(dta_labs$Description)
+  names(st_labs) <- names(cls)
   
   ## Test plotting the rfsrc object
   gg_plt <- plot.gg_vimp(
-    rfsrc_Boston,
-    lbls = st.labs,
+    rfsrc_boston,
+    lbls = st_labs,
     relative = TRUE,
-    bars = rfsrc_Boston$xvar.names
+    bars = rfsrc_boston$xvar.names
   )
   expect_is(gg_plt, "ggplot")
   

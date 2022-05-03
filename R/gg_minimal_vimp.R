@@ -113,7 +113,7 @@
 #' @aliases gg_minimal_vimp gg_minimal_vimp.randomForest 
 #' gg_minimal_vimp.rfsrc
 #' @export
-gg_minimal_vimp <- function (object, ...) {
+gg_minimal_vimp <- function(object, ...) {
   UseMethod("gg_minimal_vimp", object)
 }
 
@@ -133,9 +133,9 @@ gg_minimal_vimp.rfsrc <- function(object, ...) {
     stop("Function works only on rfsrc or var.select objects.")
   }
   
-  rnk.md <-
-    rnk.vm <- data.frame(cbind(names = rownames(vsel$varselect)))
-  rnk.md$depth <- rnk.vm$vimp <- 1:dim(rnk.md)[1]
+  rnk_md <-
+    rnk_vm <- data.frame(cbind(names = rownames(vsel$varselect)))
+  rnk_md$depth <- rnk_vm$vimp <- 1:dim(rnk_md)[1]
   
   # Rename the full vimp.all column to just "vimp"
   if (is.null(vsel$varselect$vimp))
@@ -143,16 +143,16 @@ gg_minimal_vimp.rfsrc <- function(object, ...) {
                                      "vimp.all")] <-
     "vimp"
   
-  rnk.vm <- rnk.vm[order(vsel$varselect$vimp, decreasing = TRUE), ]
-  rnk.vm$vimp <- 1:dim(rnk.vm)[1]
+  rnk_vm <- rnk_vm[order(vsel$varselect$vimp, decreasing = TRUE), ]
+  rnk_vm$vimp <- 1:dim(rnk_vm)[1]
   
   # Default color is by negative/positive vimp
-  rnk.vm$col <-
+  rnk_vm$col <-
     c("-", "+")[as.numeric(vsel$varselect$vimp[order(vsel$varselect$vimp,
                                                      decreasing = TRUE)] > 0)
                 + 1]
   
-  gg_dta <- merge(rnk.vm, rnk.md, by = "names")
+  gg_dta <- merge(rnk_vm, rnk_md, by = "names")
   
   class(gg_dta) <- c("gg_minimal_vimp", class(gg_dta))
   

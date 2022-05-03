@@ -23,7 +23,8 @@ context("partial.rfsrc tests")
 #   expect_equal(gg_dta$pData[[1]]$xvar.name, xvar[1])
 #   expect_equal(gg_dta$pData[[2]]$xvar.name, xvar[2])
 #   expect_equal(length(gg_dta$pData[[1]]$yhat),10)
-#   expect_equal(length(gg_dta$pData[[2]]$yhat),length(unique(rfsrc_Boston$xvar$chas)))
+#   expect_equal(length(gg_dta$pData[[2]]$yhat),
+#         length(unique(rfsrc_Boston$xvar$chas)))
 #
 #   ## Correct npts spec.
 #   gg_dta <- partial.rfsrc(rfsrc_Boston,
