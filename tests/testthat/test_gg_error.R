@@ -42,8 +42,6 @@ test_that("gg_error.rfsrc classifications", {
   rfsrc_iris$err.rate <- NULL
   expect_error(gg_error(rfsrc_iris))
   
-  gg_dta <- gg_error(rfsrc_iris, training = TRUE)
-  expect_is(gg_dta, "gg_error")
 })
 
 
@@ -86,10 +84,6 @@ test_that("gg_error.randomForest classifications", {
   rf_iris$err.rate <- NULL
   expect_error(gg_error(rf_iris))
   
-  
-  gg_dta <- gg_error(rf_iris, training = TRUE)
-  expect_is(gg_dta, "gg_error")
-  
 })
 
 
@@ -131,6 +125,11 @@ test_that("gg_error regression rfsrc", {
   
   # Test the exception for input
   expect_error(gg_error(gg_plt))
+  
+  
+  gg_dta <- gg_error(rfsrc_boston, training = TRUE)
+  expect_is(gg_dta, "gg_error")
+  
 
 })
 
@@ -178,4 +177,5 @@ test_that("gg_error regression randomForest", {
   
   # Test object type
   expect_is(gg_dta, "gg_error")
+  
 })
