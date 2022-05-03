@@ -42,6 +42,8 @@ test_that("gg_error.rfsrc classifications", {
   rfsrc_iris$err.rate <- NULL
   expect_error(gg_error(rfsrc_iris))
   
+  gg_dta <- gg_error(rfsrc_iris, training = TRUE)
+  expect_is(gg_dta, "gg_error")
 })
 
 
@@ -83,6 +85,10 @@ test_that("gg_error.randomForest classifications", {
   expect_error(gg_error.randomForest(gg_plt))
   rf_iris$err.rate <- NULL
   expect_error(gg_error(rf_iris))
+  
+  
+  gg_dta <- gg_error(rf_iris, training = TRUE)
+  expect_is(gg_dta, "gg_error")
   
 })
 
