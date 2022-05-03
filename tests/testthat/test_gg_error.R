@@ -42,6 +42,23 @@ test_that("gg_error.rfsrc classifications", {
   rfsrc_iris$err.rate <- NULL
   expect_error(gg_error(rfsrc_iris))
   
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    importance = TRUE,
+    tree.err = TRUE
+  )
+  ## Create the correct gg_error object
+  gg_dta <- gg_error(rfsrc_iris, training = TRUE)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_error")
+  
+  ## Test plotting the gg_error object
+  gg_plt <- expect_warning( plot(gg_dta))
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
 })
 
 
@@ -83,6 +100,7 @@ test_that("gg_error.randomForest classifications", {
   expect_error(gg_error.randomForest(gg_plt))
   rf_iris$err.rate <- NULL
   expect_error(gg_error(rf_iris))
+  
   
 })
 
@@ -130,7 +148,7 @@ test_that("gg_error regression rfsrc", {
   gg_dta <- gg_error(rfsrc_boston, training = TRUE)
   expect_is(gg_dta, "gg_error")
   
-
+  
 })
 
 
