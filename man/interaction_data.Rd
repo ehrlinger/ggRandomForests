@@ -4,10 +4,10 @@
 \name{interaction_data}
 \alias{interaction_data}
 \alias{interaction_iris}
-\alias{interaction_Boston}
+\alias{interaction_boston}
 \alias{interaction_pbc}
 \alias{interaction_iris,}
-\alias{interaction_Boston,}
+\alias{interaction_boston,}
 \title{Cached \code{\link[randomForestSRC]{find.interaction}} matrix objects for 
 examples, diagnostics and vignettes.
  
@@ -17,7 +17,7 @@ convention:
 \itemize{
 \item \code{interaction_iris} - from a randomForestSR[C] for the \code{iris} 
 data set. 
-\item \code{interaction_Boston} - from a randomForestS[R]C for the 
+\item \code{interaction_boston} - from a randomForestS[R]C for the 
 \code{Boston} housing data set (\code{MASS} package).
 \item \code{interaction_pbc} - from a randomForest[S]RC for the \code{pbc} 
 data set (\code{randomForestSRC} package)  
@@ -35,7 +35,7 @@ convention:
 \itemize{
 \item \code{interaction_iris} - from a randomForestSR[C] for the \code{iris} 
 data set. 
-\item \code{interaction_Boston} - from a randomForestS[R]C for the 
+\item \code{interaction_boston} - from a randomForestS[R]C for the 
 \code{Boston} housing data set (\code{MASS} package).
 \item \code{interaction_pbc} - from a randomForest[S]RC for the \code{pbc} 
 data set (\code{randomForestSRC} package)  
@@ -76,7 +76,7 @@ aspects of automobile design and performance for 32 automobiles (1973-74
 models). Build a regression random forest for predicting mpg on 10 covariates
 and 32 observations.
 
-\item \code{interaction_Boston} - The \code{Boston} housing values in 
+\item \code{interaction_boston} - The \code{Boston} housing values in 
 suburbs of Boston from the \code{MASS} package. Build a regression random 
 forest for predicting medv (median home values) on 13 covariates and 506 
 observations. 
@@ -115,13 +115,13 @@ plot(gg_dta, panel=TRUE)
 # MASS::Boston data - regression random forest 
 #---------------------------------------------------------------------
 # load the rfsrc object from the cached data
-data(rfsrc_Boston, package="ggRandomForests")
+data(rfsrc_boston, package="ggRandomForests")
 
 # The interaction table 
-interaction_Boston <- find.interaction(rfsrc_Boston)
+interaction_boston <- find.interaction(rfsrc_boston)
 
 # plot the forest interaction table
-gg_dta <- gg_interaction(interaction_Boston)
+gg_dta <- gg_interaction(interaction_boston)
 plot(gg_dta, panel=TRUE)
 
 #---------------------------------------------------------------------

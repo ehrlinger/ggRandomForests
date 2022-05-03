@@ -7,7 +7,7 @@
 #'\itemize{
 #' \item \code{interaction_iris} - from a randomForestSR[C] for the \code{iris} 
 #' data set. 
-#' \item \code{interaction_Boston} - from a randomForestS[R]C for the 
+#' \item \code{interaction_boston} - from a randomForestS[R]C for the 
 #' \code{Boston} housing data set (\code{MASS} package).
 #' \item \code{interaction_pbc} - from a randomForest[S]RC for the \code{pbc} 
 #' data set (\code{randomForestSRC} package)  
@@ -48,7 +48,7 @@
 #' models). Build a regression random forest for predicting mpg on 10 covariates
 #' and 32 observations.
 #' 
-#' \item \code{interaction_Boston} - The \code{Boston} housing values in 
+#' \item \code{interaction_boston} - The \code{Boston} housing values in 
 #' suburbs of Boston from the \code{MASS} package. Build a regression random 
 #' forest for predicting medv (median home values) on 13 covariates and 506 
 #' observations. 
@@ -95,13 +95,13 @@
 #' # MASS::Boston data - regression random forest 
 #' #---------------------------------------------------------------------
 #' # load the rfsrc object from the cached data
-#' data(rfsrc_Boston, package="ggRandomForests")
+#' data(rfsrc_boston, package="ggRandomForests")
 #' 
 #' # The interaction table 
-#' interaction_Boston <- find.interaction(rfsrc_Boston)
+#' interaction_boston <- find.interaction(rfsrc_boston)
 #' 
 #' # plot the forest interaction table
-#' gg_dta <- gg_interaction(interaction_Boston)
+#' gg_dta <- gg_interaction(interaction_boston)
 #' plot(gg_dta, panel=TRUE)
 #' 
 #' #---------------------------------------------------------------------
@@ -168,12 +168,12 @@
 #' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox 
 #' Model, Springer-Verlag, New York. ISBN: 0-387-98784-3.
 #' 
-#' @aliases interaction_data interaction_iris interaction_Boston 
+#' @aliases interaction_data interaction_iris interaction_boston 
 #' interaction_pbc
 #' @docType data
 #' @keywords datasets
 #' @format \code{\link[randomForestSRC]{find.interaction}} matrix
 #' @name interaction_data
-#' @aliases interaction_iris, interaction_Boston, interaction_pbc
+#' @aliases interaction_iris, interaction_boston, interaction_pbc
 #' 
 NULL

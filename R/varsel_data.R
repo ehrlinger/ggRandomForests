@@ -6,7 +6,7 @@
 #'\itemize{
 #' \item \code{varsel_iris} - from a randomForestSR[C] for the \code{iris} data 
 #' set. 
-#' \item \code{varsel_Boston} - from a randomForestS[R]C for the \code{Boston} 
+#' \item \code{varsel_boston} - from a randomForestS[R]C for the \code{Boston} 
 #' housing data set (\code{MASS} package).
 #' \item \code{varsel_pbc} - from a randomForest[S]RC for the \code{pbc} data 
 #' set (\code{randomForestSRC} package)  
@@ -35,7 +35,7 @@
 #' species (setosa, versicolor, and virginica) on 5 variables (columns) and 150 
 #' observations (rows).
 #' 
-#' \item \code{varsel_Boston} - The \code{Boston} housing values in suburbs of 
+#' \item \code{varsel_boston} - The \code{Boston} housing values in suburbs of 
 #' Boston from the \code{MASS} package. Build a regression random forest for 
 #' predicting medv (median home values) on 13 covariates and 506 observations. 
 #' 
@@ -80,13 +80,13 @@
 #' # MASS::Boston data - regression random forest 
 #' #---------------------------------------------------------------------
 #' # load the rfsrc object from the cached data
-#' data(rfsrc_Boston, package="ggRandomForests")
+#' data(rfsrc_boston, package="ggRandomForests")
 #' 
 #' # The var.select call
-#' varsel_Boston <- var.select(rfsrc_Boston)
+#' varsel_boston <- var.select(rfsrc_boston)
 #' 
 #' # plot the forestminimal depth ranking
-#' gg_dta <- gg_minimal_depth(varsel_Boston)
+#' gg_dta <- gg_minimal_depth(varsel_boston)
 #' plot(gg_dta)
 #' 
 #' #---------------------------------------------------------------------
@@ -153,11 +153,11 @@
 #' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox 
 #' Model, Springer-Verlag, New York. ISBN: 0-387-98784-3.
 #' 
-#' @aliases varsel_data varsel_iris varsel_Boston varsel_pbc
+#' @aliases varsel_data varsel_iris varsel_boston varsel_pbc
 #' @docType data
 #' @keywords datasets
 #' @format \code{\link[randomForestSRC]{var.select}} object
 #' @name varsel_data
-#' @aliases varsel_iris, varsel_Boston, varsel_pbc
+#' @aliases varsel_iris, varsel_boston, varsel_pbc
 #' 
 NULL

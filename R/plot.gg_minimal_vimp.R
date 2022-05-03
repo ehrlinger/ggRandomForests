@@ -69,10 +69,10 @@
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' data(varsel_Boston, package="ggRandomForests")
+#' data(varsel_boston, package="ggRandomForests")
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_minimal_vimp(varsel_Boston)
+#' gg_dta<- gg_minimal_vimp(varsel_boston)
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)

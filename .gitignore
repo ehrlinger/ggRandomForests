@@ -45,9 +45,12 @@ vignettes/ggRandomForests-survival_cache/*
 vignettes/rmd-rf/*
 vignettes/rmd-rfsrc/*
 
+man/*
+
 /doc/
 /Meta/
 vignettes/Survival_cache/*
 vignettes/Regression_cache/*
 vignettes/.build.timestamp
 vignettes/ggrfSurvival_cache/*
+*.Rd

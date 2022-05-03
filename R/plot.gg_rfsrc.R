@@ -62,8 +62,8 @@
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' data(rfsrc_Boston, package="ggRandomForests")
-#' plot(rfsrc_Boston)
+#' data(rfsrc_boston, package="ggRandomForests")
+#' plot(rfsrc_boston)
 #'
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")

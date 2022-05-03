@@ -83,8 +83,8 @@
 #' plot(gg_dta, panel=TRUE)
 #'
 #' ## -------- Boston data
-#' data(interaction_Boston, package="ggRandomForests")
-#' gg_dta <- gg_interaction(interaction_Boston)
+#' data(interaction_boston, package="ggRandomForests")
+#' gg_dta <- gg_interaction(interaction_boston)
 #'
 #' plot(gg_dta, panel=TRUE)
 #'

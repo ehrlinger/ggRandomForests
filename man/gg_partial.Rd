@@ -75,9 +75,9 @@ plot(gg_dta, panel=TRUE)
 }
 
 ## -------- Boston data
-data(partial_Boston, package="ggRandomForests")
+data(partial_boston, package="ggRandomForests")
 
-gg_dta <- gg_partial(partial_Boston)
+gg_dta <- gg_partial(partial_boston)
 plot(gg_dta, panel=TRUE)
 
 \dontrun{

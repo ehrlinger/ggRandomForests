@@ -3,10 +3,10 @@
 \docType{data}
 \name{partial_surface_data}
 \alias{partial_surface_data}
-\alias{partial_Boston_surf}
+\alias{partial_boston_surf}
 \alias{partial_pbc_surf}
 \alias{partial_pbc_time}
-\alias{partial_Boston_surf,}
+\alias{partial_boston_surf,}
 \alias{partial_pbc_surf,}
 \title{Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, 
 diagnostics and vignettes.
@@ -14,7 +14,7 @@ diagnostics and vignettes.
 Data sets storing \code{\link[randomForestSRC]{plot.variable}} objects 
 corresponding to training data according to the following naming convention: 
 \itemize{
-\item \code{partial_Boston_surf} - from a randomForestS[R]C for the 
+\item \code{partial_boston_surf} - from a randomForestS[R]C for the 
 \code{Boston} housing data set (\code{MASS} package).
 \item \code{partial_pbc_surf} - from a randomForest[S]RC for the \code{pbc} 
 data set (\code{randomForestSRC} package)  
@@ -31,7 +31,7 @@ diagnostics and vignettes.
 Data sets storing \code{\link[randomForestSRC]{plot.variable}} objects 
 corresponding to training data according to the following naming convention: 
 \itemize{
-\item \code{partial_Boston_surf} - from a randomForestS[R]C for the 
+\item \code{partial_boston_surf} - from a randomForestS[R]C for the 
 \code{Boston} housing data set (\code{MASS} package).
 \item \code{partial_pbc_surf} - from a randomForest[S]RC for the \code{pbc} 
 data set (\code{randomForestSRC} package)  
@@ -55,7 +55,7 @@ For each data set listed, we build a \code{\link[randomForestSRC]{rfsrc}}
 listed in the \code{ggRandomForests} DESCRIPTION file.
 
 \itemize{
-\item \code{partial_Boston} - The \code{Boston} housing values in suburbs of 
+\item \code{partial_boston} - The \code{Boston} housing values in suburbs of 
 Boston from the \code{MASS} package. Build a regression random forest for 
 predicting medv (median home values) on 13 covariates and 506 observations. 
 
@@ -75,14 +75,14 @@ covariates and 312 observations (remaining 106 observations are held out).
 # MASS::Boston data - regression random forest 
 #---------------------------------------------------------------------
 # load the rfsrc object from the cached data
-data(rfsrc_Boston, package="ggRandomForests")
+data(rfsrc_boston, package="ggRandomForests")
 
 # The plot.variable call
-partial_Boston <- plot.variable(rfsrc_Boston,
+partial_boston <- plot.variable(rfsrc_boston,
                                 partial=TRUE, show.plots = FALSE )
 
 # plot the forest partial plots
-gg_dta <- gg_partial(partial_Boston)
+gg_dta <- gg_partial(partial_boston)
 plot(gg_dta, panel=TRUE)
 
 #---------------------------------------------------------------------

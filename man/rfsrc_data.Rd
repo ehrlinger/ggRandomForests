@@ -4,11 +4,11 @@
 \name{rfsrc_data}
 \alias{rfsrc_data}
 \alias{rfsrc_iris}
-\alias{rfsrc_Boston}
+\alias{rfsrc_boston}
 \alias{rfsrc_pbc}
 \alias{rfsrc_pbc_test}
 \alias{rfsrc_iris,}
-\alias{rfsrc_Boston,}
+\alias{rfsrc_boston,}
 \alias{rfsrc_pbc,}
 \title{Cached \code{\link[randomForestSRC]{rfsrc}} objects for examples, diagnostics
 and vignettes.}
@@ -20,7 +20,7 @@ Data sets storing \code{\link[randomForestSRC]{rfsrc}} objects corresponding
 to training data according to the following naming convention:
 \itemize{
 \item \code{rfsrc_iris} - randomForestSR[C] for the \code{iris} data set.
-\item \code{rfsrc_Boston} - randomForestS[R]C for the \code{Boston} housing
+\item \code{rfsrc_boston} - randomForestS[R]C for the \code{Boston} housing
 data set (\code{MASS} package).
 \item \code{rfsrc_pbc} - randomForest[S]RC for the \code{pbc} data set
  (\code{randomForestSRC} package)
@@ -47,7 +47,7 @@ of 3 species of iris. Build a classification random forest for predicting the
 species (setosa, versicolor, and virginica) on 5 variables (columns) and 150 
 observations (rows).
 
-\item \code{rfsrc_Boston} - The \code{Boston} housing values in suburbs of 
+\item \code{rfsrc_boston} - The \code{Boston} housing values in suburbs of 
 Boston from the \code{MASS} package. Build a regression random forest for 
 predicting medv (median home values) on 13 covariates and 506 observations.
 
@@ -85,14 +85,14 @@ data(Boston, package="MASS")
 Boston$chas <- as.logical(Boston$chas)
 
 # rfsrc grow call
-rfsrc_Boston <- rfsrc(medv~., data=Boston)
+rfsrc_boston <- rfsrc(medv~., data=Boston)
 
 # plot the forest generalization error convergence
-gg_dta <- gg_error(rfsrc_Boston)
+gg_dta <- gg_error(rfsrc_boston)
 plot(gg_dta)
 
 # Plot the forest predictions
-gg_dta <- gg_rfsrc(rfsrc_Boston)
+gg_dta <- gg_rfsrc(rfsrc_boston)
 plot(gg_dta)
 
 #---------------------------------------------------------------------

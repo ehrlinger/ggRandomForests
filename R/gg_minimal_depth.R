@@ -77,10 +77,10 @@
 #' }
 #'
 #' ## -------- Boston data
-#' data(varsel_Boston, package="ggRandomForests")
+#' data(varsel_boston, package="ggRandomForests")
 #'
 #' # Get a data.frame containing error rates
-#' plot(gg_minimal_depth(varsel_Boston))
+#' plot(gg_minimal_depth(varsel_boston))
 #'
 #' \dontrun{
 #' ## -------- mtcars data
