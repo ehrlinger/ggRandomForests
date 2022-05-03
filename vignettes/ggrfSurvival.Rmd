@@ -18,9 +18,9 @@ output:
     fig_caption: yes
 bibliography: ggRandomForests.bib
 vignette: >
-  %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{ggRandomForests: Exploring randomForestSRC Survival}
-  %\VignetteEngine{knitr::bookdown}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 # Abtract
@@ -643,7 +643,7 @@ ggpart <- pbc_ggpart
 ggpart$edema <- NULL
 
 plot(ggpart, panel = TRUE) +
-  geom_smooth(se=FALSE)+
+  geom_smooth(method = 'loess', formula='y ~ x', se=FALSE)+
   labs(x = "", y = "Survival", color = "Time", shape = "Time") +
   theme(legend.position = c(0.8, 0.2)) 
 ```
@@ -668,7 +668,7 @@ It is instructive to see a more detailed map of the risk adjusted response to ge
 
 For this exercise, we will generate a series of 50 `gg_partial` plot curves for the `bili` variable. To fill the surface in, we also increased the number of points along the distribution of `bili` to `npts=50` to create a grid of $50 \times 50$ risk adjusted estimates of survival along time in one dimension and the `bili` variable in the second.
 
-```{r timeSurface3d, fig.cap="Partial dependence surface. Partial dependence of predicted survival (0 to 5 years) as a function of bili. Blue lines indicate partial dependence at 1 and 3 years, as in bili panel of \\@ref(fig:pbc-partial-panel).", cache=TRUE, fig.width=7, fig.height=5}
+```{r timeSurf, fig.cap="Partial dependence surface. Partial dependence of predicted survival (0 to 5 years) as a function of bili. Blue lines indicate partial dependence at 1 and 3 years, as in bili panel of \\@ref(fig:pbc-partial-panel).", cache=TRUE, fig.width=7, fig.height=5}
 # Restrict the time of interest to less than 5 years.
 time_pts <- rfsrc_pbc$time.interest[which(rfsrc_pbc$time.interest<=5)]
 
@@ -723,11 +723,11 @@ alt <- lapply(indx, function(ind){
 })
 ```
 
-The `gg_partial` surface of \@ref(fig:timeSurface3d) was constructed using the `surf3D` function from the `plot3D` package \citep[\url{https://cran.r-project.org/package=plot3D}]{plot3D:2014}.
+The `gg_partial` surface of \@ref(fig:timeSurf) was constructed using the `surf3D` function from the `plot3D` package \citep[\url{https://cran.r-project.org/package=plot3D}]{plot3D:2014}.
 
 The figure shows partial dependence of survival (Z-axis) as a function of `bili` over a five year follow up time period. Lines perpendicular to the Bilirubin axis are distributed along the `bili` variable. Lines parallel to the Bilirubin axis are taken at 50 training set event times, the first event after $t=0$ at the back to last event before $t=5$ years at the front. The distribution of the time lines is also evenly selected using the same procedure as selecting points for partial dependence curves.
 
-The 2500 estimated partial dependence points are joined together with a simple straight line interpolation to create the surface, colored according to the survival estimates (yellow close to 1, red for lower values) to aid the visualization of 3 dimensions on a 2 dimensional page. The blue lines in \@ref(fig:timeSurface3d) correspond to the 1 and 3 year partial dependence, as shown in the `bili` panel of \@ref(fig:pbc-partial-panel).
+The 2500 estimated partial dependence points are joined together with a simple straight line interpolation to create the surface, colored according to the survival estimates (yellow close to 1, red for lower values) to aid the visualization of 3 dimensions on a 2 dimensional page. The blue lines in \@ref(fig:timeSurf) correspond to the 1 and 3 year partial dependence, as shown in the `bili` panel of \@ref(fig:pbc-partial-panel).
 
 Viewed as a surface, we see how the partial dependence changes with time. For low values of `bili`, survival decreases at a constant rate. For higher values, the rate seems constant until somewhere near 2 years, where it increases rapidly before slowing again as we approach the 5 year point.
 
@@ -859,7 +859,7 @@ partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
                                         show.plots = FALSE)
 
 ggplot(partial_coplot_pbc, aes(x=bili, y=yhat, col=group, shape=group)) +
-  geom_smooth(se = FALSE) +
+  geom_smooth(method = 'loess', formula='y ~ x', se = FALSE) +
   labs(x = st.labs["bili"], y = "Survival at 1 year (%)",
        color = "albumin", shape = "albumin")
 ```
@@ -876,7 +876,7 @@ partial_coplot_pbc2 <- gg_partial_coplot(rfsrc_pbc, xvar = "albumin",
                                          show.plots = FALSE)
 # Partial coplot
 ggplot(partial_coplot_pbc2, aes(x=albumin, y=yhat, col=group, shape=group))+
-  geom_smooth(se = FALSE) +
+  geom_smooth(method = 'loess', formula='y ~ x', se = FALSE) +
   labs(x = st.labs["albumin"], y = "Survival at 1 year (%)",
        color = "Bilirubin", shape = "Bilirubin")
 #coord_cartesian(y = c(49,101))
