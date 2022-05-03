@@ -50,4 +50,4 @@ vignettes/rmd-rfsrc/*
 vignettes/Survival_cache/*
 vignettes/Regression_cache/*
 vignettes/.build.timestamp
-vignettes/VignetteTest.html
+vignettes/ggrfSurvival_cache/*
