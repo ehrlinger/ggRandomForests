@@ -344,7 +344,7 @@ The `randomForestSRC` `rfsrc` function call grows the forest, determining the ty
 ```{r rfsrc, echo=TRUE}
 rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., data = pbc_trial,
                    nsplit = 10, na.action = "na.impute", 
-                   tree.err = TRUE,importance = TRUE)
+                   tree.err = TRUE, importance = TRUE, do.trace=FALSE)
 ```
 
 The `print.rfsrc` function returns information on how the random forest was grown. Here the `family = "surv"` forest has `ntree = 1000` trees (the default `ntree` argument). The forest selected from `ceil`$(\sqrt{p=17}) = 5$ randomly selected candidate variables for splitting at each node, stopping when a terminal node contained three or fewer observations. For continuous variables, we used a random logrank split rule, which randomly selects from `nsplit = 10` split point values, instead of optimizing over all possible values.
