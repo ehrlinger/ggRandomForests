@@ -4,7 +4,7 @@ and vignettes. — rfsrc_data • ggRandomForests</title><!-- jquery --><script 
 and vignettes. — rfsrc_data"><meta property="og:description" content="Data sets storing rfsrc objects corresponding 
 to training data according to the following naming convention:
 rfsrc_iris - randomForestSR[C] for the iris data set.
-rfsrc_Boston - randomForestS[R]C for the Boston housing
+rfsrc_boston - randomForestS[R]C for the Boston housing
 data set (MASS package).
 rfsrc_pbc - randomForest[S]RC for the pbc data set
  (randomForestSRC package)
@@ -27,7 +27,7 @@ rfsrc_pbc - randomForest[S]RC for the pbc data set
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@ and vignettes.</h1>
     <div class="ref-description">
     <p>Data sets storing <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> objects corresponding 
 to training data according to the following naming convention:</p><ul><li><p><code>rfsrc_iris</code> - randomForestSR[C] for the <code>iris</code> data set.</p></li>
-<li><p><code>rfsrc_Boston</code> - randomForestS[R]C for the <code>Boston</code> housing
+<li><p><code>rfsrc_boston</code> - randomForestS[R]C for the <code>Boston</code> housing
 data set (<code>MASS</code> package).</p></li>
 <li><p><code>rfsrc_pbc</code> - randomForest[S]RC for the <code>pbc</code> data set
  (<code>randomForestSRC</code> package)</p></li>
@@ -88,7 +88,7 @@ and width and petal length and width, respectively, for 50 flowers from each
 of 3 species of iris. Build a classification random forest for predicting the
 species (setosa, versicolor, and virginica) on 5 variables (columns) and 150 
 observations (rows).</p></li>
-<li><p><code>rfsrc_Boston</code> - The <code>Boston</code> housing values in suburbs of 
+<li><p><code>rfsrc_boston</code> - The <code>Boston</code> housing values in suburbs of 
 Boston from the <code>MASS</code> package. Build a regression random forest for 
 predicting medv (median home values) on 13 covariates and 506 observations.</p></li>
 <li><p><code>rfsrc_pbc</code> - The <code>pbc</code> data from the Mayo Clinic trial in 
@@ -132,7 +132,7 @@ of the American Iris Society, 59, 2-5.</p>
 <p>#---------------------
  pbc data set
 ---------------------</p>
-<p>Flemming T.R and Harrington D.P., (1991) Counting Processes and Survival 
+<p>Fleming T.R and Harrington D.P., (1991) Counting Processes and Survival 
 Analysis. New York: Wiley.</p>
 <p>T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox 
 Model, Springer-Verlag, New York. ISBN: 0-387-98784-3.</p>
@@ -174,14 +174,14 @@ Model, Springer-Verlag, New York. ISBN: 0-387-98784-3.</p>
 <span class="r-in"><span class="va">Boston</span><span class="op">$</span><span class="va">chas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">$</span><span class="va">chas</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># rfsrc grow call</span></span>
-<span class="r-in"><span class="va">rfsrc_Boston</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">medv</span><span class="op">~</span><span class="va">.</span>, data<span class="op">=</span><span class="va">Boston</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">rfsrc_boston</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">medv</span><span class="op">~</span><span class="va">.</span>, data<span class="op">=</span><span class="va">Boston</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># plot the forest generalization error convergence</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_error.html">gg_error</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_error.html">gg_error</a></span><span class="op">(</span><span class="va">rfsrc_boston</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Plot the forest predictions</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_rfsrc.rfsrc.html">gg_rfsrc</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_rfsrc.rfsrc.html">gg_rfsrc</a></span><span class="op">(</span><span class="va">rfsrc_boston</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co">#---------------------------------------------------------------------</span></span>
