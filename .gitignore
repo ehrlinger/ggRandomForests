@@ -53,4 +53,7 @@ vignettes/Survival_cache/*
 vignettes/Regression_cache/*
 vignettes/.build.timestamp
 vignettes/ggrfSurvival_cache/*
-*.Rd
+man/*
+tests/testthat/*.pdf
+
+tests/testthat/Rplots.pdf
