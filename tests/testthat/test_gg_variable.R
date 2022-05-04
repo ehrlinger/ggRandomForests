@@ -66,4 +66,15 @@ test_that("gg_variable regression", {
   expect_warning(gg_plt <- plot.gg_variable(gg_dta, panel = TRUE))
   expect_is(gg_plt, "ggplot")
   
+  
+  data(Boston, package = "MASS")
+  rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
+  gg_dta <- gg_variable(rf_boston)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_variable")
+  
+  expect_warning(gg_plt <- plot(gg_dta, panel = TRUE))
+  expect_is(gg_plt, "ggplot")
+  
 })
