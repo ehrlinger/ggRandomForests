@@ -88,9 +88,9 @@ calc_roc.rfsrc <-
     
     gg_dta <- parallel::mclapply(pct, function(crit) {
       if (oob)
-        tbl <- xtabs( ~ res + (oob > crit), dta_roc)
+        tbl <- xtabs(~ res + (oob > crit), dta_roc)
       else
-        tbl <- xtabs( ~ res + (prd > crit), dta_roc)
+        tbl <- xtabs(~ res + (prd > crit), dta_roc)
       
       spec <- tbl[2, 2] / rowSums(tbl)[2]
       sens <- tbl[1, 1] / rowSums(tbl)[1]
@@ -131,10 +131,10 @@ calc_roc.randomForest <- function(object, dta, which.outcome = 1) {
   gg_dta <- parallel::mclapply(pct, function(crit) {
     tmp <- dta_roc[, c(1, 1 + which.outcome)]
     colnames(tmp) <- c("res", "prd")
-    tbl <- xtabs( ~ res + (prd > crit), tmp)
+    tbl <- xtabs(~ res + (prd > crit), tmp)
     
     if (dim(tbl)[2] < 2) {
-      tbl = cbind(tbl,c(0,0))
+      tbl = cbind(tbl, c(0, 0))
       colnames(tbl) <- c("FALSE", "TRUE")
     }
     spec <- tbl[2, 2] / rowSums(tbl)[2]
@@ -201,7 +201,7 @@ calc_auc <- function(x) {
   
   # Since we are leading vectors (x_{i+1} - x_{i}), we need to
   # ensure we are in decreasing order of specificity (x var = 1-spec)
-  x <- x[order(x$spec, decreasing = TRUE),]
+  x <- x[order(x$spec, decreasing = TRUE), ]
   
   auc <- (3 * shift(x$sens) - x$sens) / 2 * (x$spec - shift(x$spec))
   sum(auc, na.rm = TRUE)
@@ -267,9 +267,9 @@ shift <- function(x, shift_by = 1) {
   out <- NULL
   abs_shift_by <- abs(shift_by)
   if (shift_by > 0)
-    out <- c(tail(x,-abs_shift_by), rep(NA, abs_shift_by))
+    out <- c(tail(x, -abs_shift_by), rep(NA, abs_shift_by))
   else if (shift_by < 0)
-    out <- c(rep(NA, abs_shift_by), head(x,-abs_shift_by))
+    out <- c(rep(NA, abs_shift_by), head(x, -abs_shift_by))
   else
     out <- x
   out

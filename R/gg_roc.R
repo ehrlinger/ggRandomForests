@@ -49,6 +49,21 @@
 #' gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
 #' plot(gg_dta)
 #'
+#' 
+## -------- iris data
+#' rf_iris <- randomForest(Species ~ ., data = iris)
+#'
+#' # ROC for setosa
+#' gg_dta <- gg_roc(rf_iris, which.outcome=1)
+#' plot(gg_dta)
+#'
+#' # ROC for versicolor
+#' gg_dta <- gg_roc(rf_iris, which.outcome=2)
+#' plot(gg_dta)
+#'
+#' # ROC for virginica
+#' gg_dta <- gg_roc(rf_iris, which.outcome=3)
+#' plot(gg_dta)
 #'
 #'
 #' @aliases gg_roc gg_roc.rfsrc gg_roc.randomForest
