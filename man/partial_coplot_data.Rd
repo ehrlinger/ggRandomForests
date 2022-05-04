@@ -3,12 +3,12 @@
 \docType{data}
 \name{partial_coplot_data}
 \alias{partial_coplot_data}
-\alias{partial_coplot_Boston}
-\alias{partial_coplot_Boston2}
+\alias{partial_coplot_boston}
+\alias{partial_coplot_boston2}
 \alias{partial_coplot_pbc}
 \alias{partial_coplot_pbc2}
-\alias{partial_coplot_Boston,}
-\alias{partial_coplot_Boston2,}
+\alias{partial_coplot_boston,}
+\alias{partial_coplot_boston2,}
 \alias{partial_coplot_pbc,}
 \title{Cached \code{\link[randomForestSRC]{plot.variable}} objects for examples, 
 diagnostics and vignettes.
@@ -16,7 +16,7 @@ diagnostics and vignettes.
 Data sets storing \code{\link[randomForestSRC]{rfsrc}} objects corresponding 
 to training data according to the following naming convention: 
 \itemize{
-\item \code{partial_coplot_Boston} - randomForestS[R]C for the \code{Boston} 
+\item \code{partial_coplot_boston} - randomForestS[R]C for the \code{Boston} 
 housing data set (\code{MASS} package).
 }}
 \format{
@@ -29,7 +29,7 @@ diagnostics and vignettes.
 Data sets storing \code{\link[randomForestSRC]{rfsrc}} objects corresponding 
 to training data according to the following naming convention: 
 \itemize{
-\item \code{partial_coplot_Boston} - randomForestS[R]C for the \code{Boston} 
+\item \code{partial_coplot_boston} - randomForestS[R]C for the \code{Boston} 
 housing data set (\code{MASS} package).
 }
 }
@@ -47,7 +47,7 @@ data set is built with the \code{\link{cache_rfsrc_datasets}} with the
 DESCRIPTION file.
 
 \itemize{
-\item \code{partial_coplot_Boston} - The \code{Boston} housing values in 
+\item \code{partial_coplot_boston} - The \code{Boston} housing values in 
 suburbs of Boston from the \code{MASS} package. Build a regression random 
 forest for predicting medv (median home values) on 13 covariates and 506 
 observations. 
@@ -62,11 +62,11 @@ observations.
 data(Boston_rfsrc, package="ggRandomForests")
 
 # Cut the codependent variable
-rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=6)
-rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+rm_pts <- cut_distribution(rfsrc_boston$xvar$rm, groups=6)
+rm_grp <- cut(rfsrc_boston$xvar$rm, breaks=rm_pts)
 
 # plot.variable for lstat on subsets of rm (this will take some time.)
- partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
+ partial_coplot_boston <- gg_partial_coplot(rfsrc_boston, xvar="lstat", 
                                             groups=rm_grp, 
                                             show.plots=FALSE)
                                             
@@ -103,7 +103,7 @@ Clean Air." J. Environ. Economics and Management 5: 81-102.
  pbc data set
 ---------------------
 
-Flemming T.R and Harrington D.P., (1991) Counting Processes and Survival 
+Fleming T.R and Harrington D.P., (1991) Counting Processes and Survival 
 Analysis. New York: Wiley.
 
 T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox 

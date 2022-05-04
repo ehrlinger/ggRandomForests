@@ -4,10 +4,10 @@
 \name{varsel_data}
 \alias{varsel_data}
 \alias{varsel_iris}
-\alias{varsel_Boston}
+\alias{varsel_boston}
 \alias{varsel_pbc}
 \alias{varsel_iris,}
-\alias{varsel_Boston,}
+\alias{varsel_boston,}
 \title{Cached \code{\link[randomForestSRC]{var.select}} objects for examples, 
 diagnostics and vignettes.
  
@@ -16,7 +16,7 @@ corresponding to training data according to the following naming convention:
 \itemize{
 \item \code{varsel_iris} - from a randomForestSR[C] for the \code{iris} data 
 set. 
-\item \code{varsel_Boston} - from a randomForestS[R]C for the \code{Boston} 
+\item \code{varsel_boston} - from a randomForestS[R]C for the \code{Boston} 
 housing data set (\code{MASS} package).
 \item \code{varsel_pbc} - from a randomForest[S]RC for the \code{pbc} data 
 set (\code{randomForestSRC} package)  
@@ -33,7 +33,7 @@ corresponding to training data according to the following naming convention:
 \itemize{
 \item \code{varsel_iris} - from a randomForestSR[C] for the \code{iris} data 
 set. 
-\item \code{varsel_Boston} - from a randomForestS[R]C for the \code{Boston} 
+\item \code{varsel_boston} - from a randomForestS[R]C for the \code{Boston} 
 housing data set (\code{MASS} package).
 \item \code{varsel_pbc} - from a randomForest[S]RC for the \code{pbc} data 
 set (\code{randomForestSRC} package)  
@@ -62,7 +62,7 @@ of 3 species of iris. Build a classification random forest for predicting the
 species (setosa, versicolor, and virginica) on 5 variables (columns) and 150 
 observations (rows).
 
-\item \code{varsel_Boston} - The \code{Boston} housing values in suburbs of 
+\item \code{varsel_boston} - The \code{Boston} housing values in suburbs of 
 Boston from the \code{MASS} package. Build a regression random forest for 
 predicting medv (median home values) on 13 covariates and 506 observations. 
 
@@ -97,13 +97,13 @@ plot(gg_dta)
 # MASS::Boston data - regression random forest 
 #---------------------------------------------------------------------
 # load the rfsrc object from the cached data
-data(rfsrc_Boston, package="ggRandomForests")
+data(rfsrc_boston, package="ggRandomForests")
 
 # The var.select call
-varsel_Boston <- var.select(rfsrc_Boston)
+varsel_boston <- var.select(rfsrc_boston)
 
 # plot the forestminimal depth ranking
-gg_dta <- gg_minimal_depth(varsel_Boston)
+gg_dta <- gg_minimal_depth(varsel_boston)
 plot(gg_dta)
 
 #---------------------------------------------------------------------
@@ -165,7 +165,7 @@ of the American Iris Society, 59, 2-5.
  pbc data set
 ---------------------
 
-Flemming T.R and Harrington D.P., (1991) Counting Processes and Survival 
+Fleming T.R and Harrington D.P., (1991) Counting Processes and Survival 
 Analysis. New York: Wiley.
 
 T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox 

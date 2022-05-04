@@ -4,7 +4,7 @@
 #' Data sets storing \code{\link[randomForestSRC]{rfsrc}} objects corresponding 
 #' to training data according to the following naming convention: 
 #'\itemize{
-#' \item \code{partial_coplot_Boston} - randomForestS[R]C for the \code{Boston} 
+#' \item \code{partial_coplot_boston} - randomForestS[R]C for the \code{Boston} 
 #' housing data set (\code{MASS} package).
 #' }
 #'   
@@ -22,7 +22,7 @@
 #' DESCRIPTION file.
 #' 
 #' \itemize{
-#' \item \code{partial_coplot_Boston} - The \code{Boston} housing values in 
+#' \item \code{partial_coplot_boston} - The \code{Boston} housing values in 
 #' suburbs of Boston from the \code{MASS} package. Build a regression random 
 #' forest for predicting medv (median home values) on 13 covariates and 506 
 #' observations. 
@@ -41,11 +41,11 @@
 #' data(Boston_rfsrc, package="ggRandomForests")
 #' 
 #' # Cut the codependent variable
-#' rm_pts <- cut_distribution(rfsrc_Boston$xvar$rm, groups=6)
-#' rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks=rm_pts)
+#' rm_pts <- cut_distribution(rfsrc_boston$xvar$rm, groups=6)
+#' rm_grp <- cut(rfsrc_boston$xvar$rm, breaks=rm_pts)
 #' 
 #' # plot.variable for lstat on subsets of rm (this will take some time.)
-#'  partial_coplot_Boston <- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
+#'  partial_coplot_boston <- gg_partial_coplot(rfsrc_boston, xvar="lstat", 
 #'                                             groups=rm_grp, 
 #'                                             show.plots=FALSE)
 #'                                             
@@ -81,20 +81,20 @@
 #'  pbc data set
 #' ---------------------
 #' 
-#' Flemming T.R and Harrington D.P., (1991) Counting Processes and Survival 
+#' Fleming T.R and Harrington D.P., (1991) Counting Processes and Survival 
 #' Analysis. New York: Wiley.
 #' 
 #' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox 
 #' Model, Springer-Verlag, New York. ISBN: 0-387-98784-3.
 #' 
 #' 
-#' @aliases partial_coplot_data partial_coplot_Boston partial_coplot_Boston2 
+#' @aliases partial_coplot_data partial_coplot_boston partial_coplot_boston2 
 #' partial_coplot_pbc partial_coplot_pbc2
 #' @docType data
 #' @keywords datasets
 #' @format List of \code{\link[randomForestSRC]{plot.variable}} objects
 #' @name partial_coplot_data
-#' @aliases partial_coplot_Boston, partial_coplot_Boston2, partial_coplot_pbc, 
+#' @aliases partial_coplot_boston, partial_coplot_boston2, partial_coplot_pbc, 
 #' partial_coplot_pbc2
 #' 
 NULL

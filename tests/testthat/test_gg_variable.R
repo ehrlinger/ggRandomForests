@@ -41,13 +41,13 @@ test_that("gg_variable classifications", {
 
 test_that("gg_variable regression", {
   ## Load the cached forest
-  data(rfsrc_Boston, package = "ggRandomForests")
+  data(rfsrc_boston, package = "ggRandomForests")
   
   # Test the cached forest type
-  expect_is(rfsrc_Boston, "rfsrc")
+  expect_is(rfsrc_boston, "rfsrc")
   
   ## Create the correct gg_error object
-  gg_dta <- gg_variable(rfsrc_Boston)
+  gg_dta <- gg_variable(rfsrc_boston)
   
   # Test object type
   expect_is(gg_dta, "gg_variable")
@@ -57,13 +57,24 @@ test_that("gg_variable regression", {
   
   # Test return is s ggplot object
   expect_is(gg_plt, "list")
-  expect_equal(length(gg_plt), length(rfsrc_Boston$xvar.names))
-  for (ind in seq_len(length(rfsrc_Boston$xvar.names)))
+  expect_equal(length(gg_plt), length(rfsrc_boston$xvar.names))
+  for (ind in seq_len(length(rfsrc_boston$xvar.names)))
     expect_is(gg_plt[[ind]], "ggplot")
   
   
   ## Test plotting the gg_error object
   expect_warning(gg_plt <- plot.gg_variable(gg_dta, panel = TRUE))
+  expect_is(gg_plt, "ggplot")
+  
+  
+  data(Boston, package = "MASS")
+  rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
+  gg_dta <- gg_variable(rf_boston)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_variable")
+  
+  expect_warning(gg_plt <- plot(gg_dta, panel = TRUE))
   expect_is(gg_plt, "ggplot")
   
 })

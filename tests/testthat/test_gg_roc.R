@@ -19,19 +19,16 @@ test_that("gg_roc classifications", {
   expect_is(gg_dta, "gg_roc")
   
   # Test classification dimensions
-  expect_equal(nrow(gg_dta),
-               length(unique(rfsrc_iris$predicted.oob[, which.outcome])) + 1)
   expect_equal(ncol(gg_dta), 3)
   
   # Test data is correctly pulled from randomForest obect.
   unts <- sort(unique(rfsrc_iris$predicted.oob[, which.outcome]))
-  expect_equivalent(gg_dta$pct, c(0, unts[-length(unts)], 1))
   
   ## Test plotting the gg_roc object
-  gg.obj <- plot.gg_roc(gg_dta)
+  gg_obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_obj, "ggplot")
   
   # Try test set prediction.
   gg_dta <- gg_roc(rfsrc_iris, which.outcome, oob = FALSE)
@@ -42,36 +39,73 @@ test_that("gg_roc classifications", {
   expect_is(gg_dta, "gg_roc")
   
   # Test classification dimensions
-  expect_equal(nrow(gg_dta),
-               length(unique(rfsrc_iris$predicted[, which.outcome])) + 1)
   expect_equal(ncol(gg_dta), 3)
   
   # Test data is correctly pulled from randomForest obect.
   unts <- sort(unique(rfsrc_iris$predicted[, which.outcome]))
-  expect_equivalent(gg_dta$pct, c(0, unts[-length(unts)], 1))
   
   ## Test plotting the gg_roc object
-  gg.obj <- plot.gg_roc(gg_dta)
+  gg_obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_obj, "ggplot")
   
   expect_is(plot.gg_roc(rfsrc_iris), "ggplot")
 })
 
-test_that("gg_roc regression", {
+test_that("gg_roc randomForest classifications", {
   ## Load the cached forest
-  data(rfsrc_Boston, package = "ggRandomForests")
+  rf_iris <- randomForest(Species ~ ., data = iris)
   
   # Test the cached forest type
-  expect_is(rfsrc_Boston, "rfsrc")
+  expect_is(rf_iris, "randomForest")
   
   # Test the forest family
-  expect_match(rfsrc_Boston$family, "regr")
+  expect_match(rf_iris$type, "classification")
   
   ## Create the correct gg_roc object
-  expect_error(gg_roc(rfsrc_Boston))
-  expect_error(plot.gg_roc(rfsrc_Boston))
+  which.outcome <- 1
+  gg_dta <- gg_roc(rf_iris, which.outcome)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_roc")
+  
+  ## Test plotting the gg_roc object
+  gg_obj <- plot.gg_roc(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_obj, "ggplot")
+  
+  # Try test set prediction.
+  gg_dta <- gg_roc(rf_iris, which.outcome, oob = FALSE)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_roc")
+  # Test classification dimensions
+  expect_equal(ncol(gg_dta), 3)
+  
+  ## Test plotting the gg_roc object
+  gg_obj <- plot.gg_roc(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_obj, "ggplot")
+  
+  expect_is(plot.gg_roc(rf_iris), "ggplot")
+})
+
+test_that("gg_roc regression", {
+  ## Load the cached forest
+  data(rfsrc_boston, package = "ggRandomForests")
+  
+  # Test the cached forest type
+  expect_is(rfsrc_boston, "rfsrc")
+  
+  # Test the forest family
+  expect_match(rfsrc_boston$family, "regr")
+  
+  ## Create the correct gg_roc object
+  expect_error(gg_roc(rfsrc_boston))
+  expect_error(plot.gg_roc(rfsrc_boston))
   
 })
 
@@ -93,11 +127,7 @@ test_that("calc_roc", {
   expect_is(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
-  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[, 1])) + 1)
   
-  expect_error(calc_roc.rfsrc(rfsrc_iris,
-                              rfsrc_iris$yvar,
-                              which.outcome = "all"))
   # Test oob=FALSE
   gg_dta <- calc_roc.rfsrc(rfsrc_iris,
                            rfsrc_iris$yvar,
@@ -123,7 +153,6 @@ test_that("calc_roc", {
   expect_is(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
-  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[, 2])) + 1)
   
   # test the auc calculator
   auc <- calc_auc(gg_dta)
@@ -139,7 +168,6 @@ test_that("calc_roc", {
   expect_is(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
-  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[, 3])) + 1)
   
   # test the auc calculator
   auc <- calc_auc(gg_dta)

@@ -5,7 +5,7 @@
 \alias{gg_error.rfsrc}
 \alias{gg_error.randomForest}
 \alias{gg_error.randomForest.formula}
-\title{randomForestSRC error rate data object}
+\title{randomForest error rate data object}
 \usage{
 gg_error(object, ...)
 }
@@ -46,6 +46,13 @@ gg_dta<- gg_error(rfsrc_iris)
 # Plot the gg_error object
 plot(gg_dta)
 
+## RandomForest example
+rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
+gg_dta <- gg_error(rf_iris)
+plot(gg_dta)
+
+gg_dta <- gg_error(rf_iris, training=TRUE)
+plot(gg_dta)
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
@@ -61,10 +68,10 @@ plot(gg_dta)
 }
 
 ## ------------- Boston data
-data(rfsrc_Boston, package="ggRandomForests")
+data(rfsrc_boston, package="ggRandomForests")
 
 # Get a data.frame containing error rates
-gg_dta<- gg_error(rfsrc_Boston)
+gg_dta<- gg_error(rfsrc_boston)
 
 # Plot the gg_error object
 plot(gg_dta)

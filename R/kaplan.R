@@ -10,7 +10,7 @@
 #'
 #' @importFrom survival Surv survfit strata
 #'
-#' @seealso \code{\link{gg_survival}} \code{\link{nelson}} 
+#' @seealso \code{\link{gg_survival}} \code{\link{nelson}}
 #' \code{\link{plot.gg_survival}}
 #'
 #' @examples
@@ -38,13 +38,14 @@ kaplan <- function(interval,
                    censor,
                    data,
                    by = NULL, ...) {
-  srv <- survival::Surv(time=data[,interval], event=data[,censor]) 
+  srv <- survival::Surv(time = data[, interval], event = data[, censor])
   # Kaplan-Meier analysis
   if (is.null(by)) {
     srv_tab <- survival::survfit(srv ~ 1, ...)
     
   } else{
-    srv_tab <- survival::survfit(srv ~ survival::strata(data[, by]), ...)
+    srv_tab <-
+      survival::survfit(srv ~ survival::strata(data[, by]), ...)
     
   }
   
@@ -52,7 +53,7 @@ kaplan <- function(interval,
   #* Cumulative hazard and hazard estimates from transforms and slopes;
   #* as well as integral of survivorship and proportionate life length;
   cum_hazard <- -log(srv_tab$surv)
- 
+  
   times <- order(data[, interval])
   delta_time <- sapply(2:length(times), function(ind) {
     times[ind] - times[ind - 1]
@@ -92,16 +93,16 @@ kaplan <- function(interval,
   #*******************************************************************;
   # Summarize the various strata
   # only look at events
-  gg_dta <- tbl[which(tbl[, "dead"] != 0), ]
+  gg_dta <- tbl[which(tbl[, "dead"] != 0),]
   
   # Calculate the hazard estimates from transforms and slopes
   # as well as integral of survivorship and proportionate life length
-  lag_s <- c(1, gg_dta$surv)[- (dim(gg_dta)[1] + 1)]
-  lag_t <- c(0, gg_dta$time)[- (dim(gg_dta)[1] + 1)]
+  lag_s <- c(1, gg_dta$surv)[-(dim(gg_dta)[1] + 1)]
+  lag_t <- c(0, gg_dta$time)[-(dim(gg_dta)[1] + 1)]
   
   delta_t <- gg_dta$time - lag_t
   hzrd <- log(lag_s / gg_dta$surv) / delta_t
- 
+  
   dnsty <- (lag_s - gg_dta$surv) / delta_t
   mid_int <- (gg_dta$time + lag_t) / 2
   lag_l <- 0

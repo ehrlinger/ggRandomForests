@@ -248,13 +248,13 @@ plot.gg_variable <- function(x,
       gathercols <-
         colnames(tmp_dta)[-which(colnames(tmp_dta) %in% 
                                    c("time", "event", "yhat"))]
-      gg_dta.mlt <-
+      gg_dta_mlt <-
         tidyr::gather(tmp_dta, "variable", "value", gathercols)
       
-      gg_dta.mlt$variable <-
-        factor(gg_dta.mlt$variable, levels = xvar)
+      gg_dta_mlt$variable <-
+        factor(gg_dta_mlt$variable, levels = xvar)
       if (points) {
-        gg_plt <- ggplot(gg_dta.mlt,
+        gg_plt <- ggplot(gg_dta_mlt,
                          aes_string(
                            x = "value",
                            y = "yhat",
@@ -262,7 +262,7 @@ plot.gg_variable <- function(x,
                            shape = "event"
                          ))
       } else{
-        gg_plt <- ggplot(gg_dta.mlt,
+        gg_plt <- ggplot(gg_dta_mlt,
                          aes_string(x = "value", y = "yhat"))
       }
       # If these are all continuous...
@@ -328,7 +328,7 @@ plot.gg_variable <- function(x,
         tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
         gathercols <-
           colnames(tmp_dta)[-which(colnames(tmp_dta) %in% c("yvar", "yhat"))]
-        gg_dta.mlt <-
+        gg_dta_mlt <-
           tidyr::gather(tmp_dta, "variable", "value", gathercols)
         
       } else{
@@ -336,17 +336,17 @@ plot.gg_variable <- function(x,
         tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
         gathercols <-
           colnames(tmp_dta)[-which(colnames(tmp_dta) == "yhat")]
-        gg_dta.mlt <-
+        gg_dta_mlt <-
           tidyr::gather(tmp_dta, "variable", "value", gathercols)
       }
-      gg_dta.mlt$variable <-
-        factor(gg_dta.mlt$variable, levels = xvar)
+      gg_dta_mlt$variable <-
+        factor(gg_dta_mlt$variable, levels = xvar)
       
       # If these are all continuous...
       if (sum(ccls[wch_x_var] == "numeric") == length(wch_x_var)) {
         if (family == "class") {
           gg_plt <-
-            ggplot(gg_dta.mlt,
+            ggplot(gg_dta_mlt,
                    aes_string(
                      x = "value",
                      y = "yhat",
@@ -355,7 +355,7 @@ plot.gg_variable <- function(x,
                    )) +
             geom_point(...)
         } else{
-          gg_plt <- ggplot(gg_dta.mlt, aes_string(x = "value", y = "yhat")) +
+          gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
             geom_point(...)
         }
       } else{
@@ -366,7 +366,7 @@ plot.gg_variable <- function(x,
         
         if (family == "class") {
           gg_plt <-
-            ggplot(gg_dta.mlt,
+            ggplot(gg_dta_mlt,
                    aes_string(
                      x = "value",
                      y = "yhat",
@@ -374,16 +374,16 @@ plot.gg_variable <- function(x,
                    )) +
             geom_boxplot(...)
         } else{
-          gg_plt <- ggplot(gg_dta.mlt, aes_string(x = "value", y = "yhat")) +
+          gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
             geom_boxplot(...)
         }
       }
       if (family != "class") {
         if (points) {
-          gg_plt <- ggplot(gg_dta.mlt, aes_string(x = "value", y = "yhat")) +
+          gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
             geom_point(...)
         } else{
-          gg_plt <- ggplot(gg_dta.mlt, aes_string(x = "value", y = "yhat")) +
+          gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
             geom_smooth(...)
         }
         if (smooth)

@@ -62,8 +62,8 @@
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' data(rfsrc_Boston, package="ggRandomForests")
-#' plot(rfsrc_Boston)
+#' data(rfsrc_boston, package="ggRandomForests")
+#' plot(rfsrc_boston)
 #'
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
@@ -138,11 +138,11 @@ plot.gg_rfsrc <- function(x, ...) {
         theme(axis.ticks = element_blank(), axis.text.x = element_blank())
     } else{
       gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
-      gg_dta.mlt <-
+      gg_dta_mlt <-
         tidyr::gather(gg_dta, "variable", "value", gathercols)
       
       gg_plt <-
-        ggplot(gg_dta.mlt, aes_string(x = "variable", y = "value")) +
+        ggplot(gg_dta_mlt, aes_string(x = "variable", y = "value")) +
         geom_jitter(aes_string(color = "y", shape = "y"), alpha = .5)
     }
     gg_plt <- gg_plt + labs(y = "Predicted (%)", x = "")

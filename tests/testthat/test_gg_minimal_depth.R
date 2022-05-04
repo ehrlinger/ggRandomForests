@@ -33,13 +33,13 @@ test_that("gg_minimal_depth classifications", {
 
 test_that("gg_minimal_depth regression", {
   ## Load the cached forest
-  data(varsel_Boston, package = "ggRandomForests")
+  data(varsel_boston, package = "ggRandomForests")
   
   # Test the cached forest type
-  expect_is(varsel_Boston, "list")
+  expect_is(varsel_boston, "list")
   
   ## Create the correct gg_error object
-  gg_dta <- gg_minimal_depth(varsel_Boston)
+  gg_dta <- gg_minimal_depth(varsel_boston)
   
   # Test object type
   expect_is(gg_dta, "gg_minimal_depth")
@@ -47,7 +47,7 @@ test_that("gg_minimal_depth regression", {
   # Test varselect is the same
   expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == 
                                                "names")],
-                    varsel_Boston$varselect)
+                    varsel_boston$varselect)
   
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_minimal_depth(gg_dta)
@@ -56,7 +56,7 @@ test_that("gg_minimal_depth regression", {
   expect_is(gg_plt, "ggplot")
   
   ## Create the correct gg_minimal_depth object
-  gg_dta <- gg_minimal_depth(varsel_Boston)
+  gg_dta <- gg_minimal_depth(varsel_boston)
   # Test object type
   expect_is(gg_dta, "gg_minimal_depth")
   
@@ -97,7 +97,7 @@ test_that("gg_minimal_depth regression", {
     )
   
   # Build a table for data description
-  dta.labs <-
+  dta_labs <-
     data.frame(cbind(
       Variable = names(cls),
       Description = lbls,
@@ -105,24 +105,24 @@ test_that("gg_minimal_depth regression", {
     ))
   
   # Build a named vector for labeling figures later/
-  st.labs <- as.character(dta.labs$Description)
-  names(st.labs) <- names(cls)
+  st_labs <- as.character(dta_labs$Description)
+  names(st_labs) <- names(cls)
   
   ## Test plotting the gg_error object
   gg_plt <-
-    plot.gg_minimal_depth(gg_dta, lbls = st.labs, selection = TRUE)
+    plot.gg_minimal_depth(gg_dta, lbls = st_labs, selection = TRUE)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
 })
 
 test_that("gg_minimal_depth exceptions", {
-  data(varsel_Boston, package = "ggRandomForests")
+  data(varsel_boston, package = "ggRandomForests")
   
   # Test the cached forest type
-  expect_is(varsel_Boston, "list")
+  expect_is(varsel_boston, "list")
   
-  vsel <- varsel_Boston
+  vsel <- varsel_boston
   vsel$varselect <- NULL
   
   expect_error(gg_minimal_depth(vsel))
@@ -130,11 +130,11 @@ test_that("gg_minimal_depth exceptions", {
   vsel$threshold <- NULL
   expect_error(gg_minimal_depth(vsel))
   
-  expect_output(print(gg_minimal_depth(varsel_Boston)),
+  expect_output(print(gg_minimal_depth(varsel_boston)),
                 "gg_minimal_depth", ignore.case = TRUE)
   
   
-  vsel <- varsel_Boston
+  vsel <- varsel_boston
   vsel$varselect$vimp <- NULL
   gg_dta <- gg_minimal_depth(vsel)
   
@@ -142,16 +142,16 @@ test_that("gg_minimal_depth exceptions", {
   
   expect_is(plot(gg_dta, type = "rank"), "ggplot")
   
-  data(rfsrc_Boston, package = "ggRandomForests")
+  data(rfsrc_boston, package = "ggRandomForests")
   
   expect_output(
-    gg_dta <- gg_minimal_depth(rfsrc_Boston, fast = TRUE),
+    gg_dta <- gg_minimal_depth(rfsrc_boston, fast = TRUE),
     "minimal depth variable selection"
   )
   expect_is(gg_dta, "gg_minimal_depth")
   
   expect_output(
-    gg_plt <- plot.gg_minimal_depth(rfsrc_Boston, fast = TRUE),
+    gg_plt <- plot.gg_minimal_depth(rfsrc_boston, fast = TRUE),
     "minimal depth variable selection"
   )
   expect_error(gg_minimal_depth(gg_plt))

@@ -4,7 +4,7 @@
 #' Data sets storing \code{\link[randomForestSRC]{plot.variable}} objects 
 #' corresponding to training data according to the following naming convention: 
 #'\itemize{
-#' \item \code{partial_Boston_surf} - from a randomForestS[R]C for the 
+#' \item \code{partial_boston_surf} - from a randomForestS[R]C for the 
 #' \code{Boston} housing data set (\code{MASS} package).
 #' \item \code{partial_pbc_surf} - from a randomForest[S]RC for the \code{pbc} 
 #' data set (\code{randomForestSRC} package)  
@@ -28,7 +28,7 @@
 #' listed in the \code{ggRandomForests} DESCRIPTION file.
 #' 
 #' \itemize{
-#' \item \code{partial_Boston} - The \code{Boston} housing values in suburbs of 
+#' \item \code{partial_boston} - The \code{Boston} housing values in suburbs of 
 #' Boston from the \code{MASS} package. Build a regression random forest for 
 #' predicting medv (median home values) on 13 covariates and 506 observations. 
 #' 
@@ -56,14 +56,14 @@
 #' # MASS::Boston data - regression random forest 
 #' #---------------------------------------------------------------------
 #' # load the rfsrc object from the cached data
-#' data(rfsrc_Boston, package="ggRandomForests")
+#' data(rfsrc_boston, package="ggRandomForests")
 #' 
 #' # The plot.variable call
-#' partial_Boston <- plot.variable(rfsrc_Boston,
+#' partial_boston <- plot.variable(rfsrc_boston,
 #'                                 partial=TRUE, show.plots = FALSE )
 #' 
 #' # plot the forest partial plots
-#' gg_dta <- gg_partial(partial_Boston)
+#' gg_dta <- gg_partial(partial_boston)
 #' plot(gg_dta, panel=TRUE)
 #' 
 #' #---------------------------------------------------------------------
@@ -132,17 +132,17 @@
 #'  pbc data set
 #' ---------------------
 #' 
-#' Flemming T.R and Harrington D.P., (1991) Counting Processes and Survival 
+#' Fleming T.R and Harrington D.P., (1991) Counting Processes and Survival 
 #' Analysis. New York: Wiley.
 #' 
 #' T Therneau and P Grambsch (2000), Modeling Survival Data: Extending the Cox 
 #' Model, Springer-Verlag, New York. ISBN: 0-387-98784-3.
 #' 
-#' @aliases partial_surface_data partial_Boston_surf partial_pbc_surf 
+#' @aliases partial_surface_data partial_boston_surf partial_pbc_surf 
 #' partial_pbc_time
 #' @docType data
 #' @keywords datasets
 #' @format list of \code{\link[randomForestSRC]{plot.variable}} objects
 #' @name partial_surface_data
-#' @aliases  partial_Boston_surf, partial_pbc_surf, partial_pbc_time
+#' @aliases  partial_boston_surf, partial_pbc_surf, partial_pbc_time
 NULL

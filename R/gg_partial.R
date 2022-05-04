@@ -88,9 +88,9 @@
 #' }
 #'
 #' ## -------- Boston data
-#' data(partial_Boston, package="ggRandomForests")
+#' data(partial_boston, package="ggRandomForests")
 #'
-#' gg_dta <- gg_partial(partial_Boston)
+#' gg_dta <- gg_partial(partial_boston)
 #' plot(gg_dta, panel=TRUE)
 #'
 #' \dontrun{
@@ -206,14 +206,14 @@ gg_partial.rfsrc <- function(object,
   if (!object$partial)
     invisible(gg_variable(object, ...))
   
-  Call <- match.call(expand.dots = TRUE)
-  named <- eval.parent(Call$named)
+  call_v <- match.call(expand.dots = TRUE)
+  named <- eval.parent(call_v$named)
   
   # How many variables
-  n.var <- length(object$pData)
+  n_var <- length(object$pData)
   
   # Create a list of data
-  gg_dta <- parallel::mclapply(seq_len(n.var), function(ind) {
+  gg_dta <- parallel::mclapply(seq_len(n_var), function(ind) {
     if (length(object$pData[[ind]]$x.uniq) ==
         length(object$pData[[ind]]$yhat)) {
       if (object$family == "surv") {
@@ -246,7 +246,7 @@ gg_partial.rfsrc <- function(object,
   names(gg_dta) <- object$xvar.names
   
   # name the data, so labels come out correctly.
-  for (ind in seq_len(n.var)) {
+  for (ind in seq_len(n_var)) {
     colnames(gg_dta[[ind]])[which(colnames(gg_dta[[ind]]) == "x")] <-
       object$xvar.names[ind]
     if (!missing(named))
@@ -255,7 +255,7 @@ gg_partial.rfsrc <- function(object,
                               object$family)
   }
   
-  if (n.var == 1) {
+  if (n_var == 1) {
     # If there is only one, no need for a list
     invisible(gg_dta[[1]])
   } else{

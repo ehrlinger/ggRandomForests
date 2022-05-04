@@ -4,10 +4,6 @@
 ####  ----------------------------------------------------------------
 ####  Written by:
 ####    John Ehrlinger, Ph.D.
-####    Assistant Staff
-####    Dept of Quantitative Health Sciences
-####    Learner Research Institute
-####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
 ####    URL:    https://github.com/ehrlinger/ggRandomForests
@@ -27,9 +23,10 @@
 #' @param object \code{\link[randomForestSRC]{rfsrc}} or
 #' \code{\link[randomForestSRC]{predict.rfsrc}} object
 #' containing predicted response
-#' @param yvar True response variable
+#' @param dta True response variable
 #' @param which.outcome If defined, only show ROC for this response.
 #' @param oob Use OOB estimates, the normal validation method (TRUE)
+#' @param ... extra arguments passed to helper functions
 #'
 #' @return A \code{gg_roc} object
 #'
@@ -41,39 +38,57 @@
 #' @importFrom parallel mclapply
 #' @importFrom stats xtabs
 #' @importFrom utils head tail
+#' @importFrom randomForest randomForest
 #'
 #' @examples
 #' ## Taken from the gg_roc example
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' data(rfsrc_iris)
-#' gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar,
+#'
+#' gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
 #'      which.outcome=1, oob=TRUE)
-#' gg_dta <- calc_roc.rfsrc(rfsrc_iris, rfsrc_iris$yvar,
+#' gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
 #'      which.outcome=1, oob=FALSE)
+#'
+#' rf_iris <- randomForest(Species ~ ., data = iris)
+#' gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
+#'      which.outcome=1)
+#' gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
+#'      which.outcome=2)
+#'
 #' @export
 calc_roc.rfsrc <-
   function(object,
-           yvar,
+           dta,
            which.outcome = "all",
-           oob = TRUE) {
-    if (!is.factor(yvar))
-      yvar <- factor(yvar)
+           oob = TRUE,
+           ...) {
+    if (!is.factor(dta))
+      dta <- factor(dta)
+    
+    arg_list <- as.list(substitute(list(...)))
+    
+    oob <- FALSE
+    if (!is.null(arg_list$oob) & is.logical(arg_list$oob))
+      oob <- as.logical(arg_list$oob)
     
     if (which.outcome != "all") {
-      dta.roc <-
+      dta_roc <-
         data.frame(cbind(
-          res = (yvar == levels(yvar)[which.outcome]),
+          res = (dta == levels(dta)[which.outcome]),
           prd = object$predicted[, which.outcome],
-          oob = object$predicted.oob[, which.outcome]
+          oob_prd = object$predicted.oob[, which.outcome]
         ))
       
       # Get the list of unique prob
       if (oob)
-        pct <- sort(unique(object$predicted.oob[, which.outcome]))
+        pct <-
+          sort(unique(object$predicted.oob_prd[, which.outcome]))
       else
         pct <- sort(unique(object$predicted[, which.outcome]))
     } else{
-      stop("Must specify which.outcome for now.")
+      warning("Must specify which.outcome for now.")
+      which.outcome = 1
     }
     
     last <- length(pct)
@@ -87,9 +102,9 @@ calc_roc.rfsrc <-
     
     gg_dta <- parallel::mclapply(pct, function(crit) {
       if (oob)
-        tbl <- xtabs(~ res + (oob > crit), dta.roc)
+        tbl <- xtabs(~ res + (oob > crit), dta_roc)
       else
-        tbl <- xtabs(~ res + (prd > crit), dta.roc)
+        tbl <- xtabs(~ res + (prd > crit), dta_roc)
       
       spec <- tbl[2, 2] / rowSums(tbl)[2]
       sens <- tbl[1, 1] / rowSums(tbl)[1]
@@ -104,31 +119,63 @@ calc_roc.rfsrc <-
     invisible(gg_dta)
   }
 
-calc_roc <- calc_roc.rfsrc
+#' @export
+calc_roc <- function(object,
+                     dta,
+                     which.outcome = "all",
+                     oob = TRUE,
+                     ...) {
+  UseMethod("calc_roc", object)
+}
 
 ## This is in development still.
-## We'll return to this when we start the next version.
-# calc_roc.randomForest <- function(object, dta, which.outcome=1) {
-#   prd <- predict(object, type="prob")
-#   dta.roc <- data.frame(cbind(res=(dta == levels(dta)[which.outcome]),
-#                               prd=prd[,which.outcome]))
-#
-#   pct <- sort(unique(prd[,which.outcome]))
-#   pct<- pct[-length(pct)]
-#
-#   gg_dta <- parallel::mclapply(pct, function(crit) {
-#     tbl <- xtabs(~res+(prd>crit), dta.roc)
-#
-#     spec<-tbl[2,2]/rowSums(tbl)[2]
-#     sens<-tbl[1,1]/rowSums(tbl)[1]
-#     cbind(sens=sens, spec=spec)
-#   })
-#   gg_dta <- data.frame(do.call(rbind, gg_dta))
-#
-#   gg_dta$pct <- c(0,pct,1)
-#
-#   invisible(gg_dta)
-# }
+#' @export
+calc_roc.randomForest <-
+  function(object,
+           dta,
+           which.outcome = 1,
+           oob = FALSE,
+           ...) {
+    prd <- predict(object, type = "prob")
+    
+    if (which.outcome == "all") {
+      warning("Must specify which.outcome for now.")
+      which.outcome = 1
+    }
+    dta_roc <-
+      data.frame(cbind(res = (dta == levels(dta)[which.outcome]),
+                       prd = prd))
+    
+    pct <- sort(unique(prd[, which.outcome]))
+    
+    # Make sure we don't have to many points... if the training set was large,
+    # This may break plotting all ROC curves in multiclass settings.
+    # Arbitrarily reduce this to only include 200 points along the curve
+    if (length(pct) > 200)
+      pct <- pct[seq(1, length(pct), length.out = 200)]
+    
+    gg_dta <- parallel::mclapply(pct, function(crit) {
+      tmp <- dta_roc[, c(1, 1 + which.outcome)]
+      colnames(tmp) <- c("res", "prd")
+      tbl <- xtabs(~ res + (prd > crit), tmp)
+      
+      if (dim(tbl)[2] < 2) {
+        tbl = cbind(tbl, c(0, 0))
+        colnames(tbl) <- c("FALSE", "TRUE")
+      }
+      spec <- tbl[2, 2] / rowSums(tbl)[2]
+      sens <- tbl[1, 1] / rowSums(tbl)[1]
+      
+      cbind(sens = sens, spec = spec)
+    })
+    
+    gg_dta <- do.call(rbind, gg_dta)
+    gg_dta <- rbind(c(0, 1), gg_dta, c(1, 0))
+    
+    gg_dta <- data.frame(gg_dta, row.names = seq_len(nrow(gg_dta)))
+    gg_dta$pct <- c(0, pct, 1)
+    invisible(gg_dta)
+  }
 
 #'
 #' Area Under the ROC Curve calculator
@@ -144,7 +191,7 @@ calc_roc <- calc_roc.rfsrc
 #'
 # @importFrom dplyr lead
 #'
-#' @seealso \code{\link{calc_roc}} \code{\link{gg_roc}} 
+#' @seealso \code{\link{calc_roc}} \code{\link{gg_roc}}
 #' @seealso \code{\link{plot.gg_roc}}
 #'
 #' @examples
@@ -163,6 +210,12 @@ calc_roc <- calc_roc.rfsrc
 #'
 #' calc_auc(gg_dta)
 #'
+#' ## randomForest tests
+#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
+#' gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
+#'
+#' calc_auc(gg_dta)
+#'
 #' @aliases calc_auc calc_auc.gg_roc
 #' @export
 calc_auc <- function(x) {
@@ -172,7 +225,7 @@ calc_auc <- function(x) {
   ##
   ## f(x) is sensitivity, x is 1-specificity
   
-  # SInce we are leading vectors (x_{i+1} - x_{i}), we need to
+  # Since we are leading vectors (x_{i+1} - x_{i}), we need to
   # ensure we are in decreasing order of specificity (x var = 1-spec)
   x <- x[order(x$spec, decreasing = TRUE), ]
   

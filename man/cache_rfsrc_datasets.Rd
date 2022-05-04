@@ -8,8 +8,7 @@ cache_rfsrc_datasets(set = NA, save = TRUE, pth, ...)
 }
 \arguments{
 \item{set}{Defaults to all sets (NA), however for individual sets
-specify one or more of c("airq", "Boston", "iris", "mtcars", "pbc",
-"veteran")}
+specify one or more of c("boston", "iris")}
 
 \item{save}{Defaults to write files to the current data directory.}
 
@@ -51,14 +50,8 @@ variable interaction matrices.
 For the following data sets:
 #'\itemize{
 \item \code{_iris} - The \code{iris} data set.
-\item \code{_airq} - The \code{airquality} data set.
-\item \code{_mtcars} - The \code{mtcars} data set.
-\item \code{_Boston} - The \code{Boston} housing data set
+\item \code{_boston} - The \code{boston} housing data set
 (\code{MASS} package).
-\item \code{_pbc} - The \code{pbc} data set
-(\code{randomForestSRC} package).
-\item \code{_veteran} - The \code{veteran} data set
-(\code{randomForestSRC} package).
 }
 }
 \seealso{

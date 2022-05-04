@@ -5,7 +5,7 @@
 \alias{gg_variable.rfsrc}
 \alias{gg_variable.randomForest}
 \alias{gg_variable.random}
-\title{Marginal variable dependance data object.}
+\title{Marginal variable dependence data object.}
 \usage{
 gg_variable(object, ...)
 }
@@ -27,7 +27,7 @@ dependence figures are created using the \code{\link{plot.gg_variable}}
 function.
 
 Optional arguments \code{time} point (or vector of points) of interest 
-(for survival forests only) \code{time.labels} If more than one time is 
+(for survival forests only) \code{time_labels} If more than one time is 
 specified, a vector of time labels for differentiating the time points 
 (for survival forests only) \code{oob} indicate if predicted results 
 should include oob or full data set.
@@ -62,8 +62,7 @@ plot(gg_dta, xvar=rfsrc_iris$xvar.names,
 ## ------------------------------------------------------------
 \dontrun{
 ## -------- air quality data
-#rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
-data(rfsrc_airq, package="ggRandomForests")
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
 gg_dta <- gg_variable(rfsrc_airq)
 
 # an ordinal variable
@@ -80,8 +79,8 @@ plot(gg_dta, xvar="Month", notch=TRUE)
 }
 \dontrun{
 ## -------- motor trend cars data
-#rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
-data(rfsrc_mtcars, package="ggRandomForests")
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+
 gg_dta <- gg_variable(rfsrc_mtcars)
 
 # mtcars$cyl is an ordinal variable
@@ -98,13 +97,17 @@ plot(gg_dta, xvar="disp")
 plot(gg_dta, xvar="hp")
 plot(gg_dta, xvar="wt")
 
-
 # panels
 plot(gg_dta,xvar=c("disp","hp", "drat", "wt", "qsec"),  panel=TRUE)
 plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE, 
      notch=TRUE)
 }
 ## -------- Boston data
+data(Boston, package="MASS")
+
+rf_boston <- randomForest::randomForest(medv~., data=Boston)
+gg_dta <- gg_variable(rf_boston)
+plot(gg_dta)
 
 ## ------------------------------------------------------------
 ## survival examples

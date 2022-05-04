@@ -69,10 +69,10 @@
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' data(varsel_Boston, package="ggRandomForests")
+#' data(varsel_boston, package="ggRandomForests")
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_minimal_vimp(varsel_Boston)
+#' gg_dta<- gg_minimal_vimp(varsel_boston)
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
@@ -139,13 +139,13 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
   }
   if (!missing(lbls)) {
     if (length(lbls) >= length(gg_dta$names)) {
-      st.lbls <- lbls[as.character(gg_dta$names)]
-      names(st.lbls) <- as.character(gg_dta$names)
-      st.lbls[which(is.na(st.lbls))] <-
-        names(st.lbls[which(is.na(st.lbls))])
+      st_lbls <- lbls[as.character(gg_dta$names)]
+      names(st_lbls) <- as.character(gg_dta$names)
+      st_lbls[which(is.na(st_lbls))] <-
+        names(st_lbls[which(is.na(st_lbls))])
       
       gg_plt <- gg_plt +
-        scale_x_discrete(labels = st.lbls)
+        scale_x_discrete(labels = st_lbls)
     }
   }
   

@@ -3,25 +3,25 @@ context("surface_matrix tests")
 
 test_that("cutting a vector at evenly space points", {
   # Load the stored rfsrc and partial coplot data.
-  data(rfsrc_Boston)
-  rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 50)
+  data(rfsrc_boston)
+  rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups = 50)
   
   ## From vignette(randomForestRegression, package="ggRandomForests")
   ##
   # Load the stored partial coplot data.
-  data(partial_Boston_surf)
+  data(partial_boston_surf)
   
   # Instead of groups, we want the raw rm point values,
   # To make the dimensions match, we need to repeat the values
   # for each of the 50 points in the lstat direction
   rm.tmp <- do.call(c, lapply(rm_pts,
                               function(grp) {
-                                rep(grp, length(partial_Boston_surf))
+                                rep(grp, length(partial_boston_surf))
                               }))
   
   # Convert the list of plot.variable output to
   partial_surf <-
-    do.call(rbind, lapply(partial_Boston_surf, gg_partial))
+    do.call(rbind, lapply(partial_boston_surf, gg_partial))
   
   # attach the data to the gg_partial_coplot
   partial_surf$rm <- rm.tmp
@@ -38,7 +38,7 @@ test_that("cutting a vector at evenly space points", {
   expect_equal(length(srf), 3)
   
   expect_equal(nrow(srf[[1]]), 50)
-  expect_equal(ncol(srf[[1]]), length(partial_Boston_surf))
+  expect_equal(ncol(srf[[1]]), length(partial_boston_surf))
   
   expect_equal(nrow(srf[[1]]), nrow(srf[[2]]))
   expect_equal(nrow(srf[[1]]), nrow(srf[[3]]))

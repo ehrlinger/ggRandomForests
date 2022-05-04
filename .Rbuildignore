@@ -29,3 +29,5 @@ framed.sty
 ^CRAN-RELEASE$
 ^CRAN-SUBMISSION$
 ^\.github$
+^doc$
+^Meta$

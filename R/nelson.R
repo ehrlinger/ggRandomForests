@@ -11,7 +11,7 @@
 #'
 #' @importFrom survival Surv survfit strata
 #'
-#' @seealso \code{\link{gg_survival}} \code{\link{nelson}} 
+#' @seealso \code{\link{gg_survival}} \code{\link{nelson}}
 #' \code{\link{plot.gg_survival}}
 #'
 #' @examples
@@ -51,23 +51,23 @@ nelson <-
            by = NULL,
            weight = NULL,
            ...) {
-    
     # Set weighting for non-events to a value of 0
     # Set up weights (severity of event)
     if (!is.null(weight))
       weight <- data[, censor] * weight
     
-    # Kaplan-Meier analysis 
-    # srv is required! 
-    srv <- survival::Surv(time=data[,interval], event=data[,censor])
+    # Kaplan-Meier analysis
+    # srv is required!
+    srv <- survival::Surv(time = data[, interval], event = data[, censor])
     if (is.null(by)) {
       srv_tab <- survival::survfit(srv ~ 1, ...)
     } else{
-      srv_tab <- survival::survfit(srv ~ survival::strata(data[, by]), ...)
+      srv_tab <-
+        survival::survfit(srv ~ survival::strata(data[, by]), ...)
     }
     #
     #**********************************************************;
-    #* Cumulative hazard and hazard estimates from transforms and slopes  
+    #* Cumulative hazard and hazard estimates from transforms and slopes
     #* as well as integral of survivorship and proportionate life length
     hazard <- srv_tab$n.event / srv_tab$n.risk
     cum_hazard <- vector()
@@ -113,27 +113,27 @@ nelson <-
     #, "hazard", "density")
     #**************************************************************;
     # Summarize the various strata only look at events
-    gg_dta <- tbl[which(tbl[, "dead"] != 0), ]
+    gg_dta <- tbl[which(tbl[, "dead"] != 0),]
     
     # Calculate the hazard estimates from transforms and slopes
     # as well as integral of survivorship and proportionate life length
-    lag_surv <- c(1, gg_dta$surv)[- (dim(gg_dta)[1] + 1)]
-    lag_time <- c(0, gg_dta$time)[- (dim(gg_dta)[1] + 1)]
+    lag_surv <- c(1, gg_dta$surv)[-(dim(gg_dta)[1] + 1)]
+    lag_time <- c(0, gg_dta$time)[-(dim(gg_dta)[1] + 1)]
     
     delta_t <- gg_dta$time - lag_time
     hzrd <- log(lag_surv / gg_dta$surv) / delta_t
     
     dnsty <- (lag_surv - gg_dta$surv) / delta_t
     mid_int <- (gg_dta$time + lag_time) / 2
-    lagL <- 0
+    lag_l <- 0
     
     life <- vector("numeric", length = dim(gg_dta)[1])
     for (ind in 1:dim(gg_dta)[1]) {
       life[ind] <-
-        lagL + delta_t[ind] * (3 * gg_dta[ind, "surv"] - lag_surv[ind]) / 2
-      lagL <- life[ind]
+        lag_l + delta_t[ind] * (3 * gg_dta[ind, "surv"] - lag_surv[ind]) / 2
+      lag_l <- life[ind]
     }
-    prpLife <- life / gg_dta$time
+    prp_life <- life / gg_dta$time
     gg_dta <- data.frame(
       cbind(
         gg_dta,
@@ -141,7 +141,7 @@ nelson <-
         density = dnsty,
         mid_int = mid_int,
         life = life,
-        proplife = prpLife
+        proplife = prp_life
       )
     )
     

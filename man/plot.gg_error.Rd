@@ -57,10 +57,10 @@ gg_dta<- gg_error(rfsrc_airq)
 plot(gg_dta)
 
 ## ------------- Boston data
-data(rfsrc_Boston, package="ggRandomForests")
+data(rfsrc_boston, package="ggRandomForests")
 
 # Get a data.frame containing error rates
-gg_dta<- gg_error(rfsrc_Boston)
+gg_dta<- gg_error(rfsrc_boston)
 
 # Plot the gg_error object
 plot(gg_dta)

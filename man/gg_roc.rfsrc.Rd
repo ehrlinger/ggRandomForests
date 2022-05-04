@@ -6,7 +6,7 @@
 \alias{gg_roc.randomForest}
 \title{ROC (Receiver operator curve) data from a classification random forest.}
 \usage{
-\method{gg_roc}{rfsrc}(object, which.outcome, oob = TRUE, ...)
+\method{gg_roc}{rfsrc}(object, which.outcome, oob, ...)
 }
 \arguments{
 \item{object}{an \code{\link[randomForestSRC]{rfsrc}} classification object}
@@ -44,8 +44,23 @@ gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
 plot(gg_dta)
 
 
+rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
+
+# ROC for setosa
+gg_dta <- gg_roc(rf_iris, which.outcome=1)
+plot(gg_dta)
+
+# ROC for versicolor
+gg_dta <- gg_roc(rf_iris, which.outcome=2)
+plot(gg_dta)
+
+# ROC for virginica
+gg_dta <- gg_roc(rf_iris, which.outcome=3)
+plot(gg_dta)
+
 
 }
 \seealso{
 \code{\link{plot.gg_roc}} \code{\link[randomForestSRC]{rfsrc}}
+\code{\link[randomForest]{randomForest}}
 }

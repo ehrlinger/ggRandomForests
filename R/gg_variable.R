@@ -14,7 +14,7 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Marginal variable dependance data object.
+#' Marginal variable dependence data object.
 #'
 #' @details The marginal variable dependence is determined by comparing 
 #' relation between the predicted response from the randomForest and a 
@@ -33,7 +33,7 @@
 #' function.
 #'
 #' Optional arguments \code{time} point (or vector of points) of interest 
-#' (for survival forests only) \code{time.labels} If more than one time is 
+#' (for survival forests only) \code{time_labels} If more than one time is 
 #' specified, a vector of time labels for differentiating the time points 
 #' (for survival forests only) \code{oob} indicate if predicted results 
 #' should include oob or full data set.
@@ -69,8 +69,7 @@
 #' ## ------------------------------------------------------------
 #' \dontrun{
 #' ## -------- air quality data
-#' #rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
-#' data(rfsrc_airq, package="ggRandomForests")
+#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
 #' gg_dta <- gg_variable(rfsrc_airq)
 #'
 #' # an ordinal variable
@@ -87,8 +86,8 @@
 #' }
 #' \dontrun{
 #' ## -------- motor trend cars data
-#' #rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
-#' data(rfsrc_mtcars, package="ggRandomForests")
+#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+#' 
 #' gg_dta <- gg_variable(rfsrc_mtcars)
 #'
 #' # mtcars$cyl is an ordinal variable
@@ -105,14 +104,18 @@
 #' plot(gg_dta, xvar="hp")
 #' plot(gg_dta, xvar="wt")
 #'
-#'
 #' # panels
 #' plot(gg_dta,xvar=c("disp","hp", "drat", "wt", "qsec"),  panel=TRUE)
 #' plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE, 
 #'      notch=TRUE)
 #' }
 #' ## -------- Boston data
-#'
+#' data(Boston, package="MASS")
+#' 
+#' rf_boston <- randomForest::randomForest(medv~., data=Boston)
+#' gg_dta <- gg_variable(rf_boston)
+#' plot(gg_dta)
+#' 
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
@@ -158,7 +161,7 @@ gg_variable.rfsrc <- function(object,
   arg_list <- list(...)
   
   time <- arg_list$time
-  time.labels <- arg_list$time.labels
+  time_labels <- arg_list$time_labels
   oob <- if (!is.null(arg_list$oob)) {
     arg_list$oob
   } else{
@@ -232,10 +235,10 @@ gg_variable.rfsrc <- function(object,
       else
         gg_dta_t$yhat <- object$survival[, in_time]
       
-      if (is.null(time.labels)) {
+      if (is.null(time_labels)) {
         gg_dta_t$time <- time[ind]
       } else{
-        gg_dta_t$time <- time.labels[ind]
+        gg_dta_t$time <- time_labels[ind]
       }
       
       if (ind > 1) {

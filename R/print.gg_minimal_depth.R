@@ -51,14 +51,14 @@
 #' }
 #'
 #' # ... or load a cached randomForestSRC object
-#' data(varsel_Boston, package="ggRandomForests")
+#' data(varsel_boston, package="ggRandomForests")
 #'
 #' # Get a data.frame containing minimaldepth measures
-#' gg_dta<- gg_minimal_depth(varsel_Boston)
+#' gg_dta<- gg_minimal_depth(varsel_boston)
 #' print(gg_dta)
 #'
 #' # To nicely print a rfsrc::var.select output...
-#' print(varsel_Boston)
+#' print(varsel_boston)
 #'
 #' @export
 print.gg_minimal_depth <- function(x, ...) {
@@ -80,8 +80,9 @@ print.gg_minimal_depth <- function(x, ...) {
   cat("-----------------------------------------------------------\n")
   cat("\n")
   cat("Top variables:\n")
-  v_sel <- data.frame(gg_dta$varselect[1:gg_dta$modelsize,
-                                       -which(colnames(gg_dta$varselect) == "names"),
+  v_sel <- data.frame(gg_dta$varselect[1:gg_dta$modelsize, 
+                                       -which(colnames(gg_dta$varselect) == 
+                                                "names"),
                                        drop = FALSE])
   
   print(v_sel, digits = 3)

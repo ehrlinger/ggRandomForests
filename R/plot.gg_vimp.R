@@ -60,8 +60,8 @@
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' data(rfsrc_Boston, package="ggRandomForests")
-#' gg_dta <- gg_vimp(rfsrc_Boston)
+#' data(rfsrc_boston, package="ggRandomForests")
+#' gg_dta <- gg_vimp(rfsrc_boston)
 #' plot(gg_dta)
 #'
 #' ## -------- mtcars data
@@ -135,13 +135,13 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
     # Print a warning if the lbls is not a named vector.
     
     if (length(lbls) >= length(gg_dta$vars)) {
-      st.lbls <- lbls[as.character(gg_dta$vars)]
-      names(st.lbls) <- as.character(gg_dta$vars)
-      st.lbls[which(is.na(st.lbls))] <-
-        names(st.lbls[which(is.na(st.lbls))])
+      st_lbls <- lbls[as.character(gg_dta$vars)]
+      names(st_lbls) <- as.character(gg_dta$vars)
+      st_lbls[which(is.na(st_lbls))] <-
+        names(st_lbls[which(is.na(st_lbls))])
       
       gg_plt <- gg_plt +
-        scale_x_discrete(labels = st.lbls)
+        scale_x_discrete(labels = st_lbls)
     }
   }
   if (is.null(gg_dta$set) | length(unique(gg_dta$set)) < 2) {

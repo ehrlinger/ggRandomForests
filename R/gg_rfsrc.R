@@ -65,9 +65,14 @@
 #' }
 #'
 #' ## -------- Boston data
-#' data(rfsrc_Boston, package="ggRandomForests")
-#' plot(gg_rfsrc(rfsrc_Boston))
+#' data(rfsrc_boston, package="ggRandomForests")
+#' plot(gg_rfsrc(rfsrc_boston))
 #'
+#' ### randomForest example
+#' data(Boston, package="MASS")
+#' rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
+#' plot(gg_rfsrc(rf_boston))
+#' 
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
@@ -254,13 +259,13 @@ gg_rfsrc.rfsrc <- function(object,
     if (is.null(arg_list$conf.int) & missing(by)) {
       gathercols <-
         colnames(gg_dta)[-which(colnames(gg_dta) %in% c("obs_id", "event"))]
-      gg_dta.mlt <-
+      gg_dta_mlt <-
         tidyr::gather(gg_dta, "variable", "value", gathercols)
-      gg_dta.mlt$variable <-
-        as.numeric(as.character(gg_dta.mlt$variable))
-      gg_dta.mlt$obs_id <- factor(gg_dta.mlt$obs_id)
+      gg_dta_mlt$variable <-
+        as.numeric(as.character(gg_dta_mlt$variable))
+      gg_dta_mlt$obs_id <- factor(gg_dta_mlt$obs_id)
       
-      gg_dta <- gg_dta.mlt
+      gg_dta <- gg_dta_mlt
       
     } else{
       level <- if (is.null(arg_list$conf.int))
@@ -273,16 +278,16 @@ gg_rfsrc.rfsrc <- function(object,
         if (level > 1)
           level <- level / 100
         
-        level.set <- c((1 - level) / 2, 1 - (1 - level) / 2)
-        level.set <- sort(level.set)
+        level_set <- c((1 - level) / 2, 1 - (1 - level) / 2)
+        level_set <- sort(level_set)
       } else{
-        level.set <- sort(level)
+        level_set <- sort(level)
       }
       
       if (is.null(arg_list$bs.sample))
-        bs.samples <- nrow(gg_dta)
+        bs_samples <- nrow(gg_dta)
       else{
-        bs.samples <- arg_list$bs.sample
+        bs_samples <- arg_list$bs.sample
       }
       
       
@@ -291,13 +296,13 @@ gg_rfsrc.rfsrc <- function(object,
         #####
         grp_dta <- lapply(levels(grp), function(st) {
           if (is.null(arg_list$bs.sample))
-            bs.samples <-
+            bs_samples <-
               nrow(gg_dta[which(as.character(gg_dta$group) == st), ])
           
           obj <-
             bootstrap_survival(gg_dta[
               which(as.character(gg_dta$group) == st), ],
-              bs.samples, level.set)
+              bs_samples, level_set)
           obj$group <- st
           obj
         })
@@ -306,7 +311,7 @@ gg_rfsrc.rfsrc <- function(object,
                                levels = unique(gg_grp$group))
         gg_dta <- gg_grp
       } else{
-        gg_dta <- bootstrap_survival(gg_dta, bs.samples, level.set)
+        gg_dta <- bootstrap_survival(gg_dta, bs_samples, level_set)
       }
     }
     
@@ -341,27 +346,27 @@ gg_rfsrc.rfsrc <- function(object,
 
 
 
-bootstrap_survival <- function(gg_dta, bs.samples, level.set) {
+bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
   ## Calculate the leave one out estimate of the mean survival
-  gg.t <-
+  gg_t <-
     gg_dta[,-which(colnames(gg_dta) %in% c("obs_id", "event", "group"))]
-  mn.bs <- t(sapply(seq_len(bs.samples),
+  mn.bs <- t(sapply(seq_len(bs_samples),
                     function(pat) {
-                      st <- sample(seq_len(nrow(gg.t)), size = nrow(gg.t), 
+                      st <- sample(seq_len(nrow(gg_t)), size = nrow(gg_t), 
                                    replace = T)
-                      colMeans(gg.t[st, ])
+                      colMeans(gg_t[st, ])
                     }))
   
   ## now get the confidence interval of the mean, and the median (.5)
   rng <- sapply(seq_len(ncol(mn.bs)),
                 function(t_pt) {
-                  quantile(mn.bs[, t_pt], probs = c(level.set, .5))
+                  quantile(mn.bs[, t_pt], probs = c(level_set, .5))
                 })
   mn <- sapply(seq_len(ncol(rng)), function(t_pt) {
     mean(rng[, t_pt])
   })
   
-  time.interest <- as.numeric(colnames(gg.t))
+  time.interest <- as.numeric(colnames(gg_t))
   
   dta <- data.frame(cbind(time.interest,
                           t(rng)[-which(colnames(gg_dta) %in% 
@@ -372,7 +377,7 @@ bootstrap_survival <- function(gg_dta, bs.samples, level.set) {
   if (ncol(dta) == 5) {
     colnames(dta) <- c("value", "lower",  "upper", "median", "mean")
   } else{
-    colnames(dta) <- c("value", level.set, "mean")
+    colnames(dta) <- c("value", level_set, "mean")
   }
   dta
 }
@@ -491,7 +496,8 @@ gg_rfsrc.randomForest <- function(object,
       paste(
         "Plotting for ",
         object$family,
-        " randomForest is not yet implemented.",
+        " randomForest is not yet implemented for ",
+        object$type,
         sep = ""
       )
     )

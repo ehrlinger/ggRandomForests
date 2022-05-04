@@ -44,15 +44,15 @@ test_that("survival_functions_tests: PBC", {
   pbc$treatment <- factor(pbc$treatment)
   
   cat("pbc: rfsrc\n")
-  dta.train <- pbc[-which(is.na(pbc$treatment)), ]
+  dta_train <- pbc[-which(is.na(pbc$treatment)), ]
   # Create a test set from the remaining patients
-  pbc.test <- pbc[which(is.na(pbc$treatment)), ]
+  pbc_test <- pbc[which(is.na(pbc$treatment)), ]
   
   #========
   # build the forest:
   rfsrc_pbc <- randomForestSRC::rfsrc(
     Surv(years, status) ~ .,
-    dta.train,
+    dta_train,
     nsplit = 10,
     na.action = "na.impute",
     forest = TRUE,
@@ -135,7 +135,7 @@ test_that("survival_functions_tests: PBC", {
   # Test prediction
   # Predict survival for 106 patients not in randomized trial
   rfsrc_pbc_test <- predict(rfsrc_pbc,
-                            newdata = pbc.test,
+                            newdata = pbc_test,
                             na.action = "na.impute")
   
   # Print prediction summary
@@ -245,21 +245,21 @@ test_that("survival_functions_tests: PBC", {
   expect_is(varsel_pbc, "list")
   
   ## Create the correct gg_error object
-  ggrf.obj <- gg_minimal_vimp(varsel_pbc)
+  ggrf_obj <- gg_minimal_vimp(varsel_pbc)
   
   # Test object type
-  expect_is(ggrf.obj, "gg_minimal_vimp")
+  expect_is(ggrf_obj, "gg_minimal_vimp")
   
   
   # Test varselect is the same
-  expect_equivalent(dim(ggrf.obj)[1], dim(varsel_pbc$varselect)[1])
-  expect_equivalent(dim(ggrf.obj)[2], 4)
+  expect_equivalent(dim(ggrf_obj)[1], dim(varsel_pbc$varselect)[1])
+  expect_equivalent(dim(ggrf_obj)[2], 4)
   
   ## Test plotting the gg_error object
-  gg.obj <- plot.gg_minimal_vimp(ggrf.obj)
+  gg_obj <- plot.gg_minimal_vimp(ggrf_obj)
   
   # Test return is s ggplot object
-  expect_is(gg.obj, "ggplot")
+  expect_is(gg_obj, "ggplot")
   
   
   ##================
@@ -311,12 +311,12 @@ test_that("survival_functions_tests: PBC", {
     "survival time (years)"
   )
   
-  dta.labs <-
+  dta_labs <-
     data.frame(cbind(names = colnames(pbc), label = labels))
   
-  st.labs <- as.character(dta.labs$label)
-  names(st.labs) <- rownames(dta.labs)
-  gg_plt <- plot.gg_interaction(gg_dta, lbls = st.labs)
+  st_labs <- as.character(dta_labs$label)
+  names(st_labs) <- rownames(dta_labs)
+  gg_plt <- plot.gg_interaction(gg_dta, lbls = st_labs)
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -417,8 +417,8 @@ test_that("survival_functions_tests: PBC", {
   
   
   xvar <- varsel_pbc$topvars
-  xvar.cat <- c("edema", "stage", "ascites")
-  xvar <- xvar[-which(xvar %in% xvar.cat)]
+  xvar_vcat <- c("edema", "stage", "ascites")
+  xvar <- xvar[-which(xvar %in% xvar_vcat)]
   
   # plot the next 5 continuous variable dependence plots.
   gg_plt <- plot(ggrf, xvar = xvar[2:6], panel = TRUE)
@@ -430,7 +430,7 @@ test_that("survival_functions_tests: PBC", {
     formula = y ~ poly(x, 2)
   )
   
-  expect_warning(gg_plt <- plot(ggrf, xvar = xvar.cat, panel = TRUE))
+  expect_warning(gg_plt <- plot(ggrf, xvar = xvar_vcat, panel = TRUE))
   
   
   # A list of 2 plot.variable objects

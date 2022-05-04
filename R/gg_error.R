@@ -1,15 +1,9 @@
-
-
 ####**********************************************************************
 ####**********************************************************************
 ####
 ####  ----------------------------------------------------------------
 ####  Written by:
 ####    John Ehrlinger, Ph.D.
-####    Assistant Staff
-####    Dept of Quantitative Health Sciences
-####    Learner Research Institute
-####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
 ####    URL:    https://github.com/ehrlinger/ggRandomForests
@@ -18,7 +12,7 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' randomForestSRC error rate data object
+#' randomForest error rate data object
 #'
 #' Extract the cumulative (OOB) \code{randomForestSRC} error rate as a 
 #' function of number of trees.
@@ -66,6 +60,13 @@
 #' # Plot the gg_error object
 #' plot(gg_dta)
 #'
+#' ## RandomForest example
+#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
+#' gg_dta <- gg_error(rf_iris)
+#' plot(gg_dta)
+#' 
+#' gg_dta <- gg_error(rf_iris, training=TRUE)
+#' plot(gg_dta)
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
@@ -81,10 +82,10 @@
 #' }
 #'
 #' ## ------------- Boston data
-#' data(rfsrc_Boston, package="ggRandomForests")
+#' data(rfsrc_boston, package="ggRandomForests")
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_error(rfsrc_Boston)
+#' gg_dta<- gg_error(rfsrc_boston)
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
@@ -119,7 +120,7 @@
 #' plot(gg_dta)
 #' }
 #'
-#' @importFrom stats na.omit
+#' @importFrom stats na.omit predict qnorm
 #'
 #' @export gg_error gg_error.rfsrc gg_error.randomForest 
 #' @export gg_error.randomForest.formula

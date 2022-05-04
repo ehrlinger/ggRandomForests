@@ -1,5 +1,16 @@
-
-
+####**********************************************************************
+####**********************************************************************
+####
+####  ----------------------------------------------------------------
+####  Written by:
+####    John Ehrlinger, Ph.D.
+####
+####    email:  john.ehrlinger@gmail.com
+####    URL:    https://github.com/ehrlinger/ggRandomForests
+####  ----------------------------------------------------------------
+####
+####**********************************************************************
+####**********************************************************************
 #' combine two gg_partial objects
 #'
 #' @description
@@ -110,9 +121,9 @@ combine.gg_partial_list <- function(x, y, lbls, ...) {
     })
   
   if (is.null(y[[1]]$group)) {
-    ind.l <- length(lbls)
+    ind_l <- length(lbls)
     y <- parallel::mclapply(y, function(st) {
-      st$group <- lbls[ind.l]
+      st$group <- lbls[ind_l]
       st
     })
   }

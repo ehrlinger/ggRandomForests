@@ -50,22 +50,22 @@ test_that("gg_interaction regression rfsrc", {
   
   Boston$chas <- as.logical(Boston$chas)
   
-  rf_Boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston)
-  interaction_Boston <- randomForestSRC::find.interaction(rf_Boston)
+  rf_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston)
+  interaction_boston <- randomForestSRC::find.interaction(rf_boston)
   # Test the cached interaction structure
-  expect_is(interaction_Boston, "matrix")
+  expect_is(interaction_boston, "matrix")
   
   ## Create the correct gg_interaction object
-  gg_dta <- gg_interaction(interaction_Boston)
+  gg_dta <- gg_interaction(interaction_boston)
   
   # Test object type
   expect_is(gg_dta, "gg_interaction")
   
   # Test classification dimensions
-  expect_equal(dim(gg_dta), dim(interaction_Boston))
+  expect_equal(dim(gg_dta), dim(interaction_boston))
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta), interaction_Boston)
+  expect_equivalent(as.matrix(gg_dta), interaction_boston)
   
   ## Test plotting the gg_interaction object
   gg_plt <- plot.gg_interaction(gg_dta, xvar = "rm")
@@ -75,15 +75,15 @@ test_that("gg_interaction regression rfsrc", {
   
   ## This one costs a lot of time in calculating the interaction matrix.
   ## Create the correct gg_interaction object
-  expect_warning(gg_dta <- gg_interaction(rfsrc_Boston))
+  expect_warning(gg_dta <- gg_interaction(rfsrc_boston))
   
   # Test object type
   expect_is(gg_dta, "gg_interaction")
   
   
   # Test the cached interaction structure
-  expect_is(interaction_Boston, "matrix")
+  expect_is(interaction_boston, "matrix")
   
-  interaction_Boston <- interaction_Boston[-2, ]
-  expect_error(gg_interaction(interaction_Boston))
+  interaction_boston <- interaction_boston[-2, ]
+  expect_error(gg_interaction(interaction_boston))
 })
