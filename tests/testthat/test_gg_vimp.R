@@ -282,5 +282,13 @@ test_that("gg_vimp regression", {
   )
   expect_is(gg_plt, "ggplot")
   
+  rf_boston <- randomForest::randomForest(medv~., Boston)
+  gg_dta <- gg_vimp(rf_boston)
+  # Test varselect is the same
+  expect_equal(gg_dta$vimp, as.vector(sort(rf_boston$importance, decreasing =
+                                             TRUE)))
+  
+  gg_plt <- plot(gg_dta)
+  expect_is(gg_plt, "ggplot")
   
 })
