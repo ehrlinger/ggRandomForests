@@ -22,7 +22,7 @@ test_that("gg_rfsrc classifications", {
   expect_equal(ncol(gg_dta), ncol(rfsrc_iris$predicted.oob) + 1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "y")]),
+  expect_equivalent(as.matrix(gg_dta[,-which(colnames(gg_dta) == "y")]),
                     rfsrc_iris$predicted.oob)
   
   ## Test plotting the gg_error object
@@ -43,8 +43,11 @@ test_that("gg_rfsrc classifications", {
   expect_equal(ncol(gg_dta), ncol(rfsrc_iris$predicted) + 1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "y")]),
+  expect_equivalent(as.matrix(gg_dta[,-which(colnames(gg_dta) == "y")]),
                     rfsrc_iris$predicted)
+  
+  rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
+  expect_error(gg_rfsrc(rf_iris))
 })
 
 test_that("gg_rfsrc regression", {
@@ -99,5 +102,9 @@ test_that("gg_rfsrc regression", {
   # Does it contain the forest?
   rfsrc_boston$forest <- NULL
   expect_error(gg_rfsrc(rfsrc_boston))
+  
+  data(Boston, package = "MASS")
+  rf_boston <- randomForest(medv ~ ., data = Boston)
+  plot(gg_rfsrc(rf_boston))
   
 })

@@ -59,6 +59,10 @@ plot(gg_dta)
 data(rfsrc_boston, package="ggRandomForests")
 plot(gg_rfsrc(rfsrc_boston))
 
+### randomForest example
+rf_boston <- randomForest(medv ~ ., data = boston)
+plot(gg_rfsrc(rf_boston))
+
 \dontrun{
 ## -------- mtcars data
 data(rfsrc_mtcars, package="ggRandomForests")

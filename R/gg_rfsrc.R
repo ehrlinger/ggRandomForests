@@ -68,6 +68,10 @@
 #' data(rfsrc_boston, package="ggRandomForests")
 #' plot(gg_rfsrc(rfsrc_boston))
 #'
+#' ### randomForest example
+#' rf_boston <- randomForest(medv ~ ., data = boston)
+#' plot(gg_rfsrc(rf_boston))
+#' 
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
@@ -491,7 +495,8 @@ gg_rfsrc.randomForest <- function(object,
       paste(
         "Plotting for ",
         object$family,
-        " randomForest is not yet implemented.",
+        " randomForest is not yet implemented for ",
+        object$type,
         sep = ""
       )
     )
