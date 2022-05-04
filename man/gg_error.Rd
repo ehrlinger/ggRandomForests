@@ -47,7 +47,7 @@ gg_dta<- gg_error(rfsrc_iris)
 plot(gg_dta)
 
 ## RandomForest example
-rf_iris <- randomForest(Species ~ ., data = iris)
+rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
 gg_dta <- gg_error(rf_iris)
 plot(gg_dta)
 

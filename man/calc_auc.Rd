@@ -39,7 +39,7 @@ gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
 calc_auc(gg_dta)
 
 ## randomForest tests
-rf_iris <- randomForest(Species ~ ., data = iris)
+rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
 gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
 
 calc_auc(gg_dta)

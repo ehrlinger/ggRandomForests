@@ -60,7 +60,7 @@ data(rfsrc_boston, package="ggRandomForests")
 plot(gg_rfsrc(rfsrc_boston))
 
 ### randomForest example
-rf_boston <- randomForest(medv ~ ., data = boston)
+rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
 plot(gg_rfsrc(rf_boston))
 
 \dontrun{

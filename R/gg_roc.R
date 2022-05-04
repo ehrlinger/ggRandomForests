@@ -27,7 +27,8 @@
 #'
 #' @return \code{gg_roc} \code{data.frame} for plotting ROC curves.
 #'
-#' @seealso \code{\link{plot.gg_roc}} \code{\link[randomForestSRC]{rfsrc}}
+#' @seealso \code{\link{plot.gg_roc}} \code{\link[randomForestSRC]{rfsrc}} 
+#' \code{\link[randomForest]{randomForest}}
 #'
 #' @examples
 #' ## ------------------------------------------------------------
@@ -51,7 +52,7 @@
 #'
 #'
 ## -------- iris data
-#' rf_iris <- randomForest(Species ~ ., data = iris)
+#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
 #'
 #' # ROC for setosa
 #' gg_dta <- gg_roc(rf_iris, which.outcome=1)

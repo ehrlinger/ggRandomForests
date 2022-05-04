@@ -44,7 +44,7 @@ gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
 plot(gg_dta)
 
 
-rf_iris <- randomForest(Species ~ ., data = iris)
+rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
 
 # ROC for setosa
 gg_dta <- gg_roc(rf_iris, which.outcome=1)
@@ -61,5 +61,6 @@ plot(gg_dta)
 
 }
 \seealso{
-\code{\link{plot.gg_roc}} \code{\link[randomForestSRC]{rfsrc}}
+\code{\link{plot.gg_roc}} \code{\link[randomForestSRC]{rfsrc}} 
+\code{\link[randomForest]{randomForest}}
 }
