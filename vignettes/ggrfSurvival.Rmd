@@ -175,8 +175,8 @@ dta.labs <- data.frame(cbind(names = colnames(pbc), label = labels, type = cls))
 # Put the "years" variable on top.
 dta.labs <- rbind(dta.labs[nrow(dta.labs),], dta.labs[-nrow(dta.labs),])
 
-st.labs <- as.character(dta.labs$label)
-names(st.labs) <- rownames(dta.labs)
+st_labs <- as.character(dta.labs$label)
+names(st_labs) <- rownames(dta.labs)
 ```
 
 For this analysis, we modify some of the data for better formatting of our results. Since the data contains about 12 years of follow up, we prefer using `years` instead of `days` to describe survival. We also convert the `age` variable to years, and the `treatment` variable to a factor containing levels of `c("DPCA", "placebo")`. The variable names, type and description are given in \@ref(T:dataLabs).
@@ -207,7 +207,7 @@ dta <- suppressWarnings(gather(pbc[,fct], variable, value, -years))
 # plot panels for each covariate colored by the logical chas variable.
 ggplot(dta, aes(x = years, fill = value)) +
   geom_histogram(color = "black", binwidth = 1) +
-  labs(y = "", x = st.labs["years"]) +
+  labs(y = "", x = st_labs["years"]) +
   scale_fill_brewer(palette="RdBu",na.value = "white" ) +
   facet_wrap(~variable, scales = "free_y", nrow = 2) +
   theme(legend.position = "none")
@@ -226,7 +226,7 @@ ggplot(dta %>% filter(!is.na(value)),
        aes(x = years, y = value, color = status, shape = status)) +
   geom_point(alpha = 0.4) +
   geom_rug(data = dta[which(is.na(dta$value)),], color = "grey50") +
-  labs(y = "", x = st.labs["years"], color = "Death", shape = "Death") +
+  labs(y = "", x = st_labs["years"], color = "Death", shape = "Death") +
   scale_color_manual(values = strCol) +
   scale_shape_manual(values = event.marks) +
   facet_wrap(~variable, scales = "free_y", ncol = 4) +
@@ -240,20 +240,20 @@ Extreme value examples are evident in a few of the variables in \@ref(fig:contin
 ``` {r missing, results="asis"}
 ## Not displayed ##
 # create a missing data table
-pbc.trial <- pbc %>% filter(!is.na(treatment))
+pbc_trial <- pbc %>% filter(!is.na(treatment))
 st <- apply(pbc,2, function(rw){sum(is.na(rw))})
-st.t <- apply(pbc.trial,2, function(rw){sum(is.na(rw))})
+st.t <- apply(pbc_trial,2, function(rw){sum(is.na(rw))})
 st <- data.frame(cbind(full = st, trial = st.t))
 st <- st[which(st$full>0),]
-colnames(st) <- c("pbc", "pbc.trial")
+colnames(st) <- c("pbc", "pbc_trial")
 
 kable(st,
       format="latex",
-      caption = "Missing value counts in `pbc` data set and pbc clinical trial observations (`pbc.trial`).\\label{T:missing}",
+      caption = "Missing value counts in `pbc` data set and pbc clinical trial observations (`pbc_trial`).\\label{T:missing}",
       digits = 3, booktabs=TRUE)
 ```
 
-Both EDA figures indicate the `pbc` data set contains quite a bit of missing data. \@ref(T:missing) shows the number of missing values in each variable of the `pbc` data set. Of the `r ncol(pbc)` variables in the data, `r nrow(st)` have missing values. The `pbc` column details variables with missing data in the full `pbc` data set, though there are `r st["treatment", "full"]` patients that were not randomized into the trial. If we restrict the data to the trial only, most of the missing values are also removed, leaving only `r sum(st$pbc.trial>0)` variables with missing values. Therefore, we will focus on the `r nrow(pbc.trial)` observations from the clinical trial for the remainder of this document. We will discuss how `randomForestSRC` handles missing values in \@ref(random-forest-imputation).
+Both EDA figures indicate the `pbc` data set contains quite a bit of missing data. \@ref(T:missing) shows the number of missing values in each variable of the `pbc` data set. Of the `r ncol(pbc)` variables in the data, `r nrow(st)` have missing values. The `pbc` column details variables with missing data in the full `pbc` data set, though there are `r st["treatment", "full"]` patients that were not randomized into the trial. If we restrict the data to the trial only, most of the missing values are also removed, leaving only `r sum(st$pbc_trial>0)` variables with missing values. Therefore, we will focus on the `r nrow(pbc_trial)` observations from the clinical trial for the remainder of this document. We will discuss how `randomForestSRC` handles missing values in \@ref(random-forest-imputation).
 
 ## PBC Model Summary
 
@@ -261,18 +261,18 @@ We conclude the data set investigation with a summary of[@fleming:1991] model re
 
 ``` {r gg_survival, echo=TRUE}
 # Create the trial and test data sets.
-pbc.trial <- pbc %>% filter(!is.na(treatment))
-pbc.test <- pbc %>% filter(is.na(treatment))
+pbc_trial <- pbc %>% filter(!is.na(treatment))
+pbc_test <- pbc %>% filter(is.na(treatment))
 
 # Create the gg_survival object
 gg_dta <- gg_survival(interval = "years",
                       censor = "status",
                       by = "treatment",
-                      data = pbc.trial,
+                      data = pbc_trial,
                       conf.int = 0.95)
 ```
 
-The code block reduces the `pbc` data set to the `pbc.trial` which only include observations from the clinical trial. The remaining observations are stored in the `pbc.test` data set for later use. The `ggRandomForests` package is designed to use a two step process in figure generation. The first step is data generation, where we store a `gg_survival` data object in the `gg_dta` object. The `gg_survival` function uses the `data` set, follow up `interval`, `censor` indicator and an optional grouping argument (`by`). By default `gg_survival` also calculates $95\%$ confidence band, which we can control with the `conf.int` argument.
+The code block reduces the `pbc` data set to the `pbc_trial` which only include observations from the clinical trial. The remaining observations are stored in the `pbc_test` data set for later use. The `ggRandomForests` package is designed to use a two step process in figure generation. The first step is data generation, where we store a `gg_survival` data object in the `gg_dta` object. The `gg_survival` function uses the `data` set, follow up `interval`, `censor` indicator and an optional grouping argument (`by`). By default `gg_survival` also calculates $95\%$ confidence band, which we can control with the `conf.int` argument.
 
 In the figure generation step, we use the `ggRandomForests` plot routine `plot.gg_survival` as shown in the following code block. The `plot.gg_survival` function uses the `gg_dta` data object to plot the survival estimate curves for each group and corresponding confidence interval ribbons. We have used additional `ggplot2` commands to modify the axis and legend labels (`labs`), the legend location (`theme`) and control the plot range of the y-axis (`coord_cartesian`) for this figure.
 
@@ -301,7 +301,7 @@ In \@ref(fig:plot_gg_survival), we demonstrated grouping on the categorical vari
 We set up the `bili` groups on a temporary data set (`pbc.bili`) using the `cut` function with intervals matching the reference figure. For this example we combine the data generation and plot steps into a single line of code. The `error` argument of the `plot.gg_survival` function is used to control display of the confidence bands. We suppress the intervals for this figure with `error = "none"` and again modify the plot display with `ggplot2` commands to generate \@ref(fig:gg_survival-bili).
 
 ``` {r gg_survival-bili, fig.cap="Kaplan--Meier survival estimates comparing different groups of Bilirubin measures (bili) for the pbc data set. Groups defined in Chapter 4 of [@fleming:1991].", echo=TRUE, fig.width=5.5}
-pbc.bili <- pbc.trial
+pbc.bili <- pbc_trial
 pbc.bili$bili_grp <- cut(pbc.bili$bili, breaks = c(0, 0.8, 1.3, 3.4, 29))
 
 plot(gg_survival(interval = "years", censor = "status", by = "bili_grp",
@@ -325,7 +325,7 @@ fleming.table[,3] <- c(3.84,-4.22,8.9,2.62,2.95)
 
 kable(fleming.table,
       format="latex",
-      caption = "`pbc` proportional hazards model summary of 312 randomized cases in `pbc.trial` data set.  (Table 4.4.3c [@fleming:1991])\\label{T:FHmodel}",
+      caption = "`pbc` proportional hazards model summary of 312 randomized cases in `pbc_trial` data set.  (Table 4.4.3c [@fleming:1991])\\label{T:FHmodel}",
       digits = 3)
 ```
 
@@ -339,10 +339,10 @@ Random Survival Forest [@Ishwaran:2007; @Ishwaran:2008] (RSF) are an extension o
 
 Random Survival Forests adaptively discover nonlinear effects and interactions and are fully nonparametric. Averaging over many trees enables RSF to approximate complex survival functions, including non-proportional hazards, while maintaining low prediction error. [@Ishwaran:2010a] showed that RSF is uniformly consistent and that survival forests have a uniform approximating property in finite-sample settings, a property not possessed by individual survival trees.
 
-The `randomForestSRC` `rfsrc` function call grows the forest, determining the type of forest by the response supplied in the `formula` argument. In the following code block, we grow a random forest for survival, by passing a survival (`Surv`) object to the forest. The forest uses all remaining variables in the `pbc.trial` data set to generate the RSF survival model.
+The `randomForestSRC` `rfsrc` function call grows the forest, determining the type of forest by the response supplied in the `formula` argument. In the following code block, we grow a random forest for survival, by passing a survival (`Surv`) object to the forest. The forest uses all remaining variables in the `pbc_trial` data set to generate the RSF survival model.
 
 ```{r rfsrc, echo=TRUE}
-rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., data = pbc.trial,
+rfsrc_pbc <- rfsrc(Surv(years, status) ~ ., data = pbc_trial,
                    nsplit = 10, na.action = "na.impute", 
                    tree.err = TRUE,importance = TRUE)
 ```
@@ -402,7 +402,7 @@ The strength of adaptive tree imputation becomes clear when doing prediction on 
 
 The `predict.rfsrc` call takes the forest object (`rfsrc_pbc`), and the test data set (`pbc_test`) and returns a predicted survival using the same forest imputation method for missing values within the test data set (`na.action="na.impute"`).
 ```{r predict, echo=TRUE}
-rfsrc_pbc_test <- predict(rfsrc_pbc, newdata = pbc.test,
+rfsrc_pbc_test <- predict(rfsrc_pbc, newdata = pbc_test,
                           na.action = "na.impute",
                           importance = TRUE)
 ```
@@ -410,7 +410,7 @@ rfsrc_pbc_test <- predict(rfsrc_pbc, newdata = pbc.test,
 
 The forest summary indicates there are 106 test set observations with 36 deaths and the predicted error rate is $19.1\%$. We plot the predicted survival just as we did the training set estimates.
 
-```{r predictPlot, fig.cap="Random forest survival estimates for patients in the pbc.test data set. Blue curves correspond to censored patients, red curves correspond to patients experiencing a death event.", echo=TRUE}
+```{r predictPlot, fig.cap="Random forest survival estimates for patients in the pbc_test data set. Blue curves correspond to censored patients, red curves correspond to patients experiencing a death event.", echo=TRUE}
 plot(gg_rfsrc(rfsrc_pbc_test), alpha=.2) +
   scale_color_manual(values = strCol) +
   theme(legend.position = "none") +
@@ -439,7 +439,7 @@ Since VIMP is the difference in OOB prediction error before and after permutatio
 The `gg_vimp` function extracts VIMP measures for each of the variables used to grow the forest. The `plot.gg_vimp` function shows the variables, in VIMP rank order, labeled with the named vector in the `lbls` argument.
 
 ```{r rf-vimp, echo=TRUE, fig.cap="Random forest Variable Importance (VIMP). Blue bars indicates positive VIMP, red indicates negative VIMP. Importance is relative to positive length of bars.", fig.width=5}
-plot(gg_vimp(rfsrc_pbc), lbls = st.labs) +
+plot(gg_vimp(rfsrc_pbc), lbls = st_labs) +
   theme(legend.position = c(0.8, 0.2)) +
   labs(fill = "VIMP > 0")
 ```
@@ -449,7 +449,7 @@ plot(gg_vimp(rfsrc_pbc), lbls = st.labs) +
 ggda <- gg_vimp(rfsrc_pbc)
 ```
 
-The `gg_vimp` plot of \@ref(fig:rf-vimp) details VIMP ranking for the `pbc.trial` baseline variables, from the largest (`r gsub(" \\(mg/dl\\)", "",st.labs[as.character(ggda$vars)[1]])`) at the top, to smallest (`r gsub(" \\(mg/dl\\)", "",st.labs[as.character(ggda$vars)[nrow(ggda)]], )`) at the bottom. VIMP measures are shown using bars to compare the scale of the error increase under permutation and colored by the sign of the measure (red for negative values). Note that four of the five highest ranking variables by VIMP match those selected by the[@fleming:1991] model listed in \@ref(T:FHmodel), with urine copper (2) ranking higher than age (8). We will return to this in \@ref(variable-selection-comparison).
+The `gg_vimp` plot of \@ref(fig:rf-vimp) details VIMP ranking for the `pbc_trial` baseline variables, from the largest (`r gsub(" \\(mg/dl\\)", "",st_labs[as.character(ggda$vars)[1]])`) at the top, to smallest (`r gsub(" \\(mg/dl\\)", "",st_labs[as.character(ggda$vars)[nrow(ggda)]], )`) at the bottom. VIMP measures are shown using bars to compare the scale of the error increase under permutation and colored by the sign of the measure (red for negative values). Note that four of the five highest ranking variables by VIMP match those selected by the[@fleming:1991] model listed in \@ref(T:FHmodel), with urine copper (2) ranking higher than age (8). We will return to this in \@ref(variable-selection-comparison).
 
 ## Minimal Depth 
 
@@ -463,14 +463,14 @@ The `randomForestSRC` `var.select` function uses the minimal depth methodology f
 
 ```{r mindepth-view, echo=TRUE}
 varsel_pbc <- var.select(rfsrc_pbc)
-gg_md <- gg_minimal_depth(varsel_pbc, lbls = st.labs)
+gg_md <- gg_minimal_depth(varsel_pbc, lbls = st_labs)
 # print(gg_md)
 ```
 
 The `gg_minimal_depth` summary mostly reproduces the output from the `var.select` function from the `randomForestSRC` package. We report the minimal depth threshold (`threshold` `r round(gg_md$md.obj$threshold, digits=3)`) and the number of variables with depth below that threshold (`model size` `r gg_md$modelsize`). We also list a table of the top (`r gg_md$modelsize`) selected variables, in minimal depth rank order with the associated VIMP measures. The minimal depth numbers indicate that `bili` tends to split between the first and second node level, and the next three variables (`albumin`, `copper`, `prothrombin`) split between the second and third levels on average.
 
 ```{r mindepth-plot, echo=TRUE, fig.cap="Minimal Depth variable selection. Low minimal depth indicates important variables. The dashed line is the threshold of maximum value for variable selection.", fig.width=5}
-plot(gg_md, lbls = st.labs)
+plot(gg_md, lbls = st_labs)
 ```
 
 The `gg_minimal_depth` plot of \@ref(fig:mindepth-plot) is similar to the `gg_vimp` plot in \@ref(fig:rf-vimp), ranking variables from most important at the top (minimal depth measure), to least at the bottom (maximal minimal depth). The vertical dashed line indicates the minimal depth threshold where smaller minimal depth values indicate higher importance and larger values indicate lower importance.
@@ -480,7 +480,7 @@ The `gg_minimal_depth` plot of \@ref(fig:mindepth-plot) is similar to the `gg_vi
 Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be somewhat different. We use `gg_minimal_vimp` function to compare rankings between minimal depth and VIMP in \@ref(fig:depthVimp).
 
 ```{r depthVimp, fig.cap="Comparing Minimal Depth and Vimp rankings. Points on the red dashed line are ranked equivalently, points above have higher VIMP ranking, those below have higher minimal depth ranking.", fig.width=5, echo=TRUE}
-plot(gg_minimal_vimp(gg_md), lbls = st.labs) +
+plot(gg_minimal_vimp(gg_md), lbls = st_labs) +
   theme(legend.position=c(0.8, 0.2))
 ```
 
@@ -549,7 +549,7 @@ gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3),
                     time.labels = c("1 Year", "3 Years"))
 
 plot(gg_v, xvar = "bili", alpha = 0.4) + #, se=FALSE
-  labs(y = "Survival", x = st.labs["bili"]) +
+  labs(y = "Survival", x = st_labs["bili"]) +
   theme(legend.position = "none") +
   scale_color_manual(values = strCol, labels = event.labels) +
   scale_shape_manual(values = event.marks, labels = event.labels) +
@@ -769,7 +769,7 @@ var_dep <- plot(ggvar, xvar = "bili",
                 alpha = 0.5) +
   #  geom_smooth(method = "glm",se = FALSE) +
   labs(y = "Survival",
-       x = st.labs["bili"]) +
+       x = st_labs["bili"]) +
   theme(legend.position = "none") +
   scale_color_manual(values = strCol, labels = event.labels) +
   scale_shape_manual(values = event.marks, labels = event.labels) +
@@ -798,7 +798,7 @@ ggvar$albumin_grp <- cut(ggvar$albumin, breaks = albumin_cts)
 levels(ggvar$albumin_grp) <- paste("albumin =", levels(ggvar$albumin_grp))
 
 plot(ggvar, xvar = "bili", alpha = 0.5) +  #method = "glm", , se = FALSE
-  labs(y = "Survival", x = st.labs["bili"]) +
+  labs(y = "Survival", x = st_labs["bili"]) +
   theme(legend.position = "none") +
   scale_color_manual(values = strCol, labels = event.labels) +
   scale_shape_manual(values = event.marks, labels = event.labels) +
@@ -825,7 +825,7 @@ levels(ggvar$bili_grp) <- paste("bilirubin =", levels(bili_grp))
 # plot.gg_variable
 plot(ggvar, xvar = "albumin", alpha = 0.5) +
   #     method = "glm", se = FALSE) +
-  labs(y = "Survival", x = st.labs["albumin"]) +
+  labs(y = "Survival", x = st_labs["albumin"]) +
   theme(legend.position = "none") +
   scale_color_manual(values = strCol, labels = event.labels) +
   scale_shape_manual(values = event.marks, labels = event.labels) +
@@ -860,7 +860,7 @@ partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
 
 ggplot(partial_coplot_pbc, aes(x=bili, y=yhat, col=group, shape=group)) +
   geom_smooth(method = 'loess', formula='y ~ x', se = FALSE) +
-  labs(x = st.labs["bili"], y = "Survival at 1 year (%)",
+  labs(x = st_labs["bili"], y = "Survival at 1 year (%)",
        color = "albumin", shape = "albumin")
 ```
 
@@ -877,7 +877,7 @@ partial_coplot_pbc2 <- gg_partial_coplot(rfsrc_pbc, xvar = "albumin",
 # Partial coplot
 ggplot(partial_coplot_pbc2, aes(x=albumin, y=yhat, col=group, shape=group))+
   geom_smooth(method = 'loess', formula='y ~ x', se = FALSE) +
-  labs(x = st.labs["albumin"], y = "Survival at 1 year (%)",
+  labs(x = st_labs["albumin"], y = "Survival at 1 year (%)",
        color = "Bilirubin", shape = "Bilirubin")
 #coord_cartesian(y = c(49,101))
 ```
