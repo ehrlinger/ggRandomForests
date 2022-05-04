@@ -49,7 +49,7 @@
 #' gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
 #' plot(gg_dta)
 #'
-#' 
+#'
 ## -------- iris data
 #' rf_iris <- randomForest(Species ~ ., data = iris)
 #'
@@ -106,7 +106,7 @@ gg_roc <- function(object, which.outcome, oob, ...) {
 }
 
 #' @export
-gg_roc.randomForest <- function(object, which.outcome,...) {
+gg_roc.randomForest <- function(object, which.outcome, ...) {
   if (sum(inherits(object, "randomForest", TRUE) == c(1, 2)) != 1)
     stop(
       "This function only works for objects of class `(rfsrc, grow)',
@@ -125,8 +125,8 @@ gg_roc.randomForest <- function(object, which.outcome,...) {
   
   gg_dta <-
     calc_roc.randomForest(object,
-                   object$y,
-                   which.outcome = which.outcome)
+                          object$y,
+                          which.outcome = which.outcome)
   #   }
   class(gg_dta) <- c("gg_roc", class(gg_dta))
   

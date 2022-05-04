@@ -59,6 +59,46 @@ test_that("gg_roc classifications", {
   expect_is(plot.gg_roc(rfsrc_iris), "ggplot")
 })
 
+test_that("gg_roc randomForest classifications", {
+  ## Load the cached forest
+  rf_iris <- randomForest(Species ~ ., data = iris)
+  
+  # Test the cached forest type
+  expect_is(rf_iris, "randomForest")
+  
+  # Test the forest family
+  expect_match(rf_iris$type, "classification")
+  
+  ## Create the correct gg_roc object
+  which.outcome <- 1
+  gg_dta <- gg_roc(rf_iris, which.outcome)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_roc")
+  
+  ## Test plotting the gg_roc object
+  gg_obj <- plot.gg_roc(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_obj, "ggplot")
+  
+  # Try test set prediction.
+  gg_dta <- gg_roc(rf_iris, which.outcome, oob = FALSE)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_roc")
+  # Test classification dimensions
+  expect_equal(ncol(gg_dta), 3)
+  
+  ## Test plotting the gg_roc object
+  gg_obj <- plot.gg_roc(gg_dta)
+  
+  # Test return is s ggplot object
+  expect_is(gg_obj, "ggplot")
+  
+  expect_is(plot.gg_roc(rf_iris), "ggplot")
+})
+
 test_that("gg_roc regression", {
   ## Load the cached forest
   data(rfsrc_boston, package = "ggRandomForests")
@@ -95,9 +135,6 @@ test_that("calc_roc", {
   expect_equal(ncol(gg_dta), 3)
   expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[, 1])) + 1)
   
-  expect_error(calc_roc.rfsrc(rfsrc_iris,
-                              rfsrc_iris$yvar,
-                              which.outcome = "all"))
   # Test oob=FALSE
   gg_dta <- calc_roc.rfsrc(rfsrc_iris,
                            rfsrc_iris$yvar,

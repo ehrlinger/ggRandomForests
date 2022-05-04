@@ -63,7 +63,7 @@
 #'
 #' }
 #'
-#' @importFrom ggplot2 ggplot aes_string geom_line geom_abline labs coord_fixed 
+#' @importFrom ggplot2 ggplot aes_string geom_line geom_abline labs coord_fixed
 #' annotate
 #' @importFrom parallel mclapply
 #'
@@ -71,8 +71,8 @@
 plot.gg_roc <- function(x, which.outcome = NULL, ...) {
   gg_dta <- x
   
-  
-  if (inherits(gg_dta, "rfsrc"))
+  #If we call this with a forest object instead of a gg_roc object
+  if (inherits(gg_dta, "rfsrc")) {
     if (inherits(gg_dta, "class")) {
       # How many classes are there?
       crv <- dim(gg_dta$predicted)[2]
@@ -90,6 +90,24 @@ plot.gg_roc <- function(x, which.outcome = NULL, ...) {
     } else{
       stop("gg_roc expects a classification randomForest.")
     }
+  } else if (inherits(gg_dta, "randomForest")) {
+    if (gg_dta$type == 'classification') {
+      # How many classes are there?
+      crv <- length(levels(gg_dta$predicted))
+      if (crv > 2 & is.null(which.outcome)) {
+        gg_dta <- mclapply(1:crv, function(ind) {
+          gg_roc(gg_dta, which.outcome = ind, ...)
+        })
+        
+      } else{
+        if (is.null(which.outcome))
+          which.outcome <- 2
+        gg_dta <- gg_roc(gg_dta, which.outcome, ...)
+      }
+    }
+  }
+  
+  #
   if (inherits(gg_dta, "gg_roc")) {
     gg_dta <- gg_dta[order(gg_dta$spec), ]
     gg_dta$fpr <- 1 - gg_dta$spec
