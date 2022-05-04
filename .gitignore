@@ -23,29 +23,11 @@ jsslogo.jpg
 
 inst/doc
 *.Rd
-..Rcheck/ggRandomForests/INDEX
-..Rcheck/ggRandomForests/Meta/hsearch.rds
-..Rcheck/ggRandomForests/Meta/package.rds
-..Rcheck/ggRandomForests/Meta/Rd.rds
-..Rcheck/Rdlatex.log
-..Rcheck/tests/test-all.Rout
-..Rcheck/tests/testthat/Rplots.pdf
-..Rcheck/ggRandomForests/Meta/Rd.rds
-..Rcheck/Rdlatex.log
-..Rcheck/tests/test-all.Rout
-..Rcheck/tests/testthat/Rplots.pdf
-..Rcheck/ggRandomForests-manual.pdf
-..Rcheck/ggRandomForests/DESCRIPTION
-..Rcheck/ggRandomForests/help/ggRandomForests.rdb
-..Rcheck/ggRandomForests/help/ggRandomForests.rdx
-..Rcheck/00check.log
-..Rcheck/00install.out
+..Rcheck/*
 vignettes/ggRandomForests-regression_cache/*
 vignettes/ggRandomForests-survival_cache/*
 vignettes/rmd-rf/*
 vignettes/rmd-rfsrc/*
-
-man/*
 
 /doc/
 /Meta/
