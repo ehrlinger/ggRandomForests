@@ -15,13 +15,13 @@ Description: Graphic elements for exploring Random Forests using the 'randomFore
     'ggplot2' package plotting.
 Depends:
     R (>= 3.5.0),
-    randomForestSRC (>= 1.5.5)
+    randomForestSRC (>= 1.5.5),
+    randomForest
 Imports:
-    ggplot2,
     survival,
     parallel,
     tidyr,
-    randomForest,
+    ggplot2
 Suggests:
     testthat,
     rmdformats,

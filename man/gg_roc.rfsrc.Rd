@@ -6,7 +6,7 @@
 \alias{gg_roc.randomForest}
 \title{ROC (Receiver operator curve) data from a classification random forest.}
 \usage{
-\method{gg_roc}{rfsrc}(object, which.outcome, oob = TRUE, ...)
+\method{gg_roc}{rfsrc}(object, which.outcome, oob, ...)
 }
 \arguments{
 \item{object}{an \code{\link[randomForestSRC]{rfsrc}} classification object}
@@ -61,6 +61,6 @@ plot(gg_dta)
 
 }
 \seealso{
-\code{\link{plot.gg_roc}} \code{\link[randomForestSRC]{rfsrc}} 
+\code{\link{plot.gg_roc}} \code{\link[randomForestSRC]{rfsrc}}
 \code{\link[randomForest]{randomForest}}
 }

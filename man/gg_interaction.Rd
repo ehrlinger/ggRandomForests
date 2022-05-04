@@ -4,17 +4,17 @@
 \alias{gg_interaction}
 \alias{gg_interaction.randomForest}
 \alias{gg_interaction.rfsrc}
-\title{Minimal Depth Variable Interaction data object 
+\title{Minimal Depth Variable Interaction data object
 (\code{\link[randomForestSRC]{find.interaction}}).}
 \usage{
 gg_interaction(object, ...)
 }
 \arguments{
-\item{object}{a \code{\link[randomForestSRC]{rfsrc}} object or the 
-output from the \code{\link[randomForestSRC]{find.interaction}} 
+\item{object}{a \code{\link[randomForestSRC]{rfsrc}} object or the
+output from the \code{\link[randomForestSRC]{find.interaction}}
 function call.}
 
-\item{...}{optional extra arguments passed to 
+\item{...}{optional extra arguments passed to
 \code{\link[randomForestSRC]{find.interaction}}.}
 }
 \value{
@@ -22,9 +22,9 @@ function call.}
 }
 \description{
 Converts the matrix returned from
-\code{\link[randomForestSRC]{find.interaction}} to a \code{data.frame} 
-and add attributes for S3 identification. If passed  a 
-\code{\link[randomForestSRC]{rfsrc}} object, \code{gg_interaction} 
+\code{\link[randomForestSRC]{find.interaction}} to a \code{data.frame}
+and add attributes for S3 identification. If passed  a
+\code{\link[randomForestSRC]{rfsrc}} object, \code{gg_interaction}
 first runs the \code{\link[randomForestSRC]{find.interaction}}
 function with all optional arguments.
 }

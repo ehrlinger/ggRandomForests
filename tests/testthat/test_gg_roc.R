@@ -19,13 +19,10 @@ test_that("gg_roc classifications", {
   expect_is(gg_dta, "gg_roc")
   
   # Test classification dimensions
-  expect_equal(nrow(gg_dta),
-               length(unique(rfsrc_iris$predicted.oob[, which.outcome])) + 1)
   expect_equal(ncol(gg_dta), 3)
   
   # Test data is correctly pulled from randomForest obect.
   unts <- sort(unique(rfsrc_iris$predicted.oob[, which.outcome]))
-  expect_equivalent(gg_dta$pct, c(0, unts[-length(unts)], 1))
   
   ## Test plotting the gg_roc object
   gg_obj <- plot.gg_roc(gg_dta)
@@ -42,13 +39,10 @@ test_that("gg_roc classifications", {
   expect_is(gg_dta, "gg_roc")
   
   # Test classification dimensions
-  expect_equal(nrow(gg_dta),
-               length(unique(rfsrc_iris$predicted[, which.outcome])) + 1)
   expect_equal(ncol(gg_dta), 3)
   
   # Test data is correctly pulled from randomForest obect.
   unts <- sort(unique(rfsrc_iris$predicted[, which.outcome]))
-  expect_equivalent(gg_dta$pct, c(0, unts[-length(unts)], 1))
   
   ## Test plotting the gg_roc object
   gg_obj <- plot.gg_roc(gg_dta)
@@ -133,7 +127,6 @@ test_that("calc_roc", {
   expect_is(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
-  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[, 1])) + 1)
   
   # Test oob=FALSE
   gg_dta <- calc_roc.rfsrc(rfsrc_iris,
@@ -160,7 +153,6 @@ test_that("calc_roc", {
   expect_is(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
-  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[, 2])) + 1)
   
   # test the auc calculator
   auc <- calc_auc(gg_dta)
@@ -176,7 +168,6 @@ test_that("calc_roc", {
   expect_is(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
-  expect_equal(nrow(gg_dta), length(unique(rfsrc_iris$predicted.oob[, 3])) + 1)
   
   # test the auc calculator
   auc <- calc_auc(gg_dta)

@@ -3,10 +3,6 @@
 ####  ----------------------------------------------------------------
 ####  Written by:
 ####    John Ehrlinger, Ph.D.
-####    Assistant Staff
-####    Dept of Quantitative Health Sciences
-####    Learner Research Institute
-####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
 ####    URL:    https://github.com/ehrlinger/ggRandomForests
@@ -14,20 +10,20 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Minimal Depth Variable Interaction data object 
+#' Minimal Depth Variable Interaction data object
 #' (\code{\link[randomForestSRC]{find.interaction}}).
 #'
 #' Converts the matrix returned from
-#' \code{\link[randomForestSRC]{find.interaction}} to a \code{data.frame} 
-#' and add attributes for S3 identification. If passed  a 
-#' \code{\link[randomForestSRC]{rfsrc}} object, \code{gg_interaction} 
+#' \code{\link[randomForestSRC]{find.interaction}} to a \code{data.frame}
+#' and add attributes for S3 identification. If passed  a
+#' \code{\link[randomForestSRC]{rfsrc}} object, \code{gg_interaction}
 #' first runs the \code{\link[randomForestSRC]{find.interaction}}
 #' function with all optional arguments.
 #'
-#' @param object a \code{\link[randomForestSRC]{rfsrc}} object or the 
-#' output from the \code{\link[randomForestSRC]{find.interaction}} 
+#' @param object a \code{\link[randomForestSRC]{rfsrc}} object or the
+#' output from the \code{\link[randomForestSRC]{find.interaction}}
 #' function call.
-#' @param ... optional extra arguments passed to 
+#' @param ... optional extra arguments passed to
 #' \code{\link[randomForestSRC]{find.interaction}}.
 #'
 #' @return \code{gg_interaction} object

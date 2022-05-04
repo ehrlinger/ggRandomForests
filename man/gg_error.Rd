@@ -5,7 +5,7 @@
 \alias{gg_error.rfsrc}
 \alias{gg_error.randomForest}
 \alias{gg_error.randomForest.formula}
-\title{randomForestSRC error rate data object}
+\title{randomForest error rate data object}
 \usage{
 gg_error(object, ...)
 }

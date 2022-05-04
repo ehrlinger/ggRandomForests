@@ -1,15 +1,9 @@
-
-
 ####**********************************************************************
 ####**********************************************************************
 ####
 ####  ----------------------------------------------------------------
 ####  Written by:
 ####    John Ehrlinger, Ph.D.
-####    Assistant Staff
-####    Dept of Quantitative Health Sciences
-####    Learner Research Institute
-####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
 ####    URL:    https://github.com/ehrlinger/ggRandomForests
@@ -18,7 +12,7 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' randomForestSRC error rate data object
+#' randomForest error rate data object
 #'
 #' Extract the cumulative (OOB) \code{randomForestSRC} error rate as a 
 #' function of number of trees.
@@ -126,7 +120,7 @@
 #' plot(gg_dta)
 #' }
 #'
-#' @importFrom stats na.omit
+#' @importFrom stats na.omit predict qnorm
 #'
 #' @export gg_error gg_error.rfsrc gg_error.randomForest 
 #' @export gg_error.randomForest.formula

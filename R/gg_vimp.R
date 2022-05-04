@@ -67,6 +67,12 @@
 #' gg_dta <- gg_vimp(rfsrc_boston)
 #' plot(gg_dta)
 #'
+#' ## -------- Boston data
+#' data(Boston, package="MASS")
+#' rf_boston <- randomForest::randomForest(medv~., Boston)
+#' gg_dta <- gg_vimp(rf_boston)
+#' plot(gg_dta)
+#'
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
