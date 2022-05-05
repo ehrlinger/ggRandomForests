@@ -90,6 +90,27 @@ test_that("gg_vimp classifications", {
   expect_error(gg_vimp(gg_dta))
   expect_error(gg_vimp.rfsrc(gg_dta))
   
+  ## RandomForest case
+  rf_iris <- randomForest::randomForest(Species ~ .,
+                                        data = iris)
+  
+  gg_dta <- gg_vimp(rf_iris)
+  
+  expect_is(gg_dta, "gg_vimp")
+  
+  # Test passing in the wrong object
+  expect_error(gg_vimp(gg_dta))
+  expect_error(gg_vimp.rfsrc(gg_dta))
+  
+  
+  gg_dta <- gg_vimp(rf_iris)
+  
+  expect_is(gg_dta, "gg_vimp")
+  
+  # Test passing in the wrong object
+  expect_error(gg_vimp(gg_dta))
+  expect_error(gg_vimp.rfsrc(gg_dta))
+
 })
 
 
