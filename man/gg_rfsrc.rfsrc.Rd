@@ -21,12 +21,12 @@ forest prediction.}
 \code{gg_rfsrc} object
 }
 \description{
-Extracts the predicted response values from the 
-\code{\link[randomForestSRC]{rfsrc}} object, and formats data for plotting 
+Extracts the predicted response values from the
+\code{\link[randomForestSRC]{rfsrc}} object, and formats data for plotting
 the response using \code{\link{plot.gg_rfsrc}}.
 }
 \details{
-\code{surv_type} ("surv", "chf", "mortality", "hazard") for survival 
+\code{surv_type} ("surv", "chf", "mortality", "hazard") for survival
    forests
 
    \code{oob} boolean, should we return the oob prediction , or the full
