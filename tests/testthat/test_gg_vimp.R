@@ -110,7 +110,7 @@ test_that("gg_vimp classifications", {
   # Test passing in the wrong object
   expect_error(gg_vimp(gg_dta))
   expect_error(gg_vimp.rfsrc(gg_dta))
-
+  gg_dta <- gg_vimp(rf_iris, which.outcome = NULL)
 })
 
 

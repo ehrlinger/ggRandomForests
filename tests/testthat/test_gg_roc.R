@@ -51,6 +51,8 @@ test_that("gg_roc classifications", {
   expect_is(gg_obj, "ggplot")
   
   expect_is(plot.gg_roc(rfsrc_iris), "ggplot")
+  expect_error(gg_roc.randomForest(rfsrc_iris))
+  expect_error(gg_roc.rfrsrc(rf_iris))
 })
 
 test_that("gg_roc randomForest classifications", {
@@ -91,6 +93,8 @@ test_that("gg_roc randomForest classifications", {
   expect_is(gg_obj, "ggplot")
   
   expect_is(plot.gg_roc(rf_iris), "ggplot")
+  
+  expect_error(gg_roc.rfrsrc(rf_iris))
 })
 
 test_that("gg_roc regression", {
