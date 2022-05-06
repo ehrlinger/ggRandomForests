@@ -19,25 +19,25 @@ gg_variable(object, ...)
 }
 \description{
 \code{\link[randomForestSRC]{plot.variable}} generates a
-\code{data.frame} containing the marginal variable dependence or the 
-partial variable dependence. The \code{gg_variable} function creates a 
-\code{data.frame} of containing the full set of covariate data (predictor 
-variables) and the predicted response for each observation. Marginal 
-dependence figures are created using the \code{\link{plot.gg_variable}} 
+\code{data.frame} containing the marginal variable dependence or the
+partial variable dependence. The \code{gg_variable} function creates a
+\code{data.frame} of containing the full set of covariate data (predictor
+variables) and the predicted response for each observation. Marginal
+dependence figures are created using the \code{\link{plot.gg_variable}}
 function.
 
-Optional arguments \code{time} point (or vector of points) of interest 
-(for survival forests only) \code{time_labels} If more than one time is 
-specified, a vector of time labels for differentiating the time points 
-(for survival forests only) \code{oob} indicate if predicted results 
+Optional arguments \code{time} point (or vector of points) of interest
+(for survival forests only) \code{time_labels} If more than one time is
+specified, a vector of time labels for differentiating the time points
+(for survival forests only) \code{oob} indicate if predicted results
 should include oob or full data set.
 }
 \details{
-The marginal variable dependence is determined by comparing 
-relation between the predicted response from the randomForest and a 
+The marginal variable dependence is determined by comparing
+relation between the predicted response from the randomForest and a
 covariate of interest.
 
-The \code{gg_variable} function operates on a 
+The \code{gg_variable} function operates on a
 \code{\link[randomForestSRC]{rfsrc}} object, or the output from the
 \code{\link[randomForestSRC]{plot.variable}} function.
 }
@@ -99,7 +99,7 @@ plot(gg_dta, xvar="wt")
 
 # panels
 plot(gg_dta,xvar=c("disp","hp", "drat", "wt", "qsec"),  panel=TRUE)
-plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE, 
+plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE,
      notch=TRUE)
 }
 ## -------- Boston data
@@ -116,7 +116,7 @@ plot(gg_dta)
 ## -------- veteran data
 ## survival
 # data(veteran, package = "randomForestSRC")
-# rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, 
+# rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10,
 #                        ntree = 100)
 data(rfsrc_veteran, package="ggRandomForests")
 

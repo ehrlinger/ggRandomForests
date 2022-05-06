@@ -18,7 +18,7 @@ test_that("gg_variable classifications", {
   expect_is(gg_dta, "gg_variable")
   
   ## Test plotting the gg_error object
-  gg_plt <- plot.gg_variable(gg_dta, xvar = "Petal.Width")
+  gg_plt <- plot(gg_dta, xvar = "Petal.Width")
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -37,7 +37,25 @@ test_that("gg_variable classifications", {
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
+  
+  rf_iris <- randomForest::randomForest(Species ~ .,
+                                        data = iris)
+  
+  ## Create the correct gg_error object
+  gg_dta <- gg_variable(rf_iris)
+  
+  # Test object type
+  expect_is(gg_dta, "gg_variable")
+  
+  ## Test plotting the gg_error object
+  gg_plt <- plot(gg_dta, xvar = "Petal.Width")
+  
+  # Test return is s ggplot object
+  expect_is(gg_plt, "ggplot")
+  gg_plt <- plot(gg_dta)
+  
 })
+
 
 test_that("gg_variable regression", {
   ## Load the cached forest

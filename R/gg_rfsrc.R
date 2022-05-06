@@ -4,10 +4,6 @@
 ####  ----------------------------------------------------------------
 ####  Written by:
 ####    John Ehrlinger, Ph.D.
-####    Assistant Staff
-####    Dept of Quantitative Health Sciences
-####    Learner Research Institute
-####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
 ####    URL:    https://github.com/ehrlinger/ggRandomForests
@@ -18,8 +14,8 @@
 #'
 #' Predicted response data object
 #'
-#' Extracts the predicted response values from the 
-#' \code{\link[randomForestSRC]{rfsrc}} object, and formats data for plotting 
+#' Extracts the predicted response values from the
+#' \code{\link[randomForestSRC]{rfsrc}} object, and formats data for plotting
 #' the response using \code{\link{plot.gg_rfsrc}}.
 #'
 #' @param object \code{\link[randomForestSRC]{rfsrc}} object
@@ -31,7 +27,7 @@
 #' @return \code{gg_rfsrc} object
 #'
 #' @details
-#'    \code{surv_type} ("surv", "chf", "mortality", "hazard") for survival 
+#'    \code{surv_type} ("surv", "chf", "mortality", "hazard") for survival
 #'    forests
 #'
 #'    \code{oob} boolean, should we return the oob prediction , or the full
@@ -72,7 +68,7 @@
 #' data(Boston, package="MASS")
 #' rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
 #' plot(gg_rfsrc(rf_boston))
-#' 
+#'
 #' \dontrun{
 #' ## -------- mtcars data
 #' data(rfsrc_mtcars, package="ggRandomForests")
@@ -300,9 +296,8 @@ gg_rfsrc.rfsrc <- function(object,
               nrow(gg_dta[which(as.character(gg_dta$group) == st), ])
           
           obj <-
-            bootstrap_survival(gg_dta[
-              which(as.character(gg_dta$group) == st), ],
-              bs_samples, level_set)
+            bootstrap_survival(gg_dta[which(as.character(gg_dta$group) == st), ],
+                               bs_samples, level_set)
           obj$group <- st
           obj
         })
@@ -352,7 +347,8 @@ bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
     gg_dta[,-which(colnames(gg_dta) %in% c("obs_id", "event", "group"))]
   mn.bs <- t(sapply(seq_len(bs_samples),
                     function(pat) {
-                      st <- sample(seq_len(nrow(gg_t)), size = nrow(gg_t), 
+                      st <- sample(seq_len(nrow(gg_t)),
+                                   size = nrow(gg_t),
                                    replace = T)
                       colMeans(gg_t[st, ])
                     }))
@@ -369,9 +365,9 @@ bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
   time.interest <- as.numeric(colnames(gg_t))
   
   dta <- data.frame(cbind(time.interest,
-                          t(rng)[-which(colnames(gg_dta) %in% 
+                          t(rng)[-which(colnames(gg_dta) %in%
                                           c("obs_id", "event")), ],
-                          mn[-which(colnames(gg_dta) %in% 
+                          mn[-which(colnames(gg_dta) %in%
                                       c("obs_id", "event"))]))
   
   if (ncol(dta) == 5) {
@@ -384,8 +380,8 @@ bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
 
 #' @export
 gg_rfsrc <- function(object,
-                      oob = TRUE,
-                      by, ...) {
+                     oob = TRUE,
+                     by, ...) {
   UseMethod("gg_rfsrc", object)
 }
 
@@ -445,36 +441,27 @@ gg_rfsrc.randomForest <- function(object,
   gg_dta <- gg_dta[, -which(colnames(gg_dta) == rsp)]
   
   # Do the work...
-  if (object$type == "class") {
+  if (object$type == "classification") {
     ### Classification models...
     
     # Need to add multiclass methods
-    if (oob) {
-      gg_dta <-
-        if (ncol(object$predicted.oob) <= 2) {
-          data.frame(cbind(object$predicted.oob[, -1]))
-        } else{
-          data.frame(cbind(object$predicted.oob))
-        }
+    prd <- predict(object, type = "prob")
+    gg_dta <- if (ncol(prd) <= 2) {
+      data.frame(cbind(prd[, -1]))
     } else{
-      gg_dta <- if (ncol(object$predicted) <= 2) {
-        data.frame(cbind(object$predicted[, -1]))
-      } else{
-        data.frame(cbind(object$predicted))
-      }
+      data.frame(cbind(prd))
     }
+    colnames(gg_dta) <- object$classes
     
     # Switch between logical or categorical outcome
     if (ncol(gg_dta) == 1) {
-      colnames(gg_dta) <- object$yvar.names
       # Force this to logical return value...
       #
       # This may be a bug in rfsrc, as it converts all classification models
       # into factors.
       gg_dta$y <- as.logical(as.numeric(object$yvar) - 1)
     } else{
-      colnames(gg_dta) <- levels(object$yvar)
-      gg_dta$y <- object$yvar
+      gg_dta$y <- object$y
       
     }
     

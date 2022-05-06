@@ -4,10 +4,6 @@
 ####  ----------------------------------------------------------------
 ####  Written by:
 ####    John Ehrlinger, Ph.D.
-####    Assistant Staff
-####    Dept of Quantitative Health Sciences
-####    Learner Research Institute
-####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
 ####    URL:    https://github.com/ehrlinger/ggRandomForests
@@ -127,7 +123,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
   if (ncol(gg_dta) == 1) {
     colnames(gg_dta) <- "VIMP"
     gg_dta$vars <- rownames(gg_dta)
-    gg_dta <- gg_dta[order(gg_dta$VIMP, decreasing = TRUE), ]
+    gg_dta <- gg_dta[order(gg_dta$VIMP, decreasing = TRUE),]
   }
   if (missing(nvar))
     nvar <- nrow(gg_dta)
@@ -182,11 +178,11 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
       gg_dta$vars <- rownames(gg_dta)
     }
     
-    gg_dta <- gg_dta[seq_len(nvar), ]
+    gg_dta <- gg_dta[seq_len(nvar),]
     gathercols <-
       colnames(gg_dta)[-which(colnames(gg_dta) == "vars")]
     gg_dta <- tidyr::gather(gg_dta, "set", "vimp", gathercols)
-    gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
+    gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE),]
     gg_dta$vars <- factor(gg_dta$vars)
   } else{
     cnms <- colnames(gg_dta)
@@ -195,7 +191,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     gg_dta$vars[which(is.na(gg_dta$vars))] <-
       rownames(gg_dta)[which(is.na(gg_dta$vars))]
     
-    gg_dta <- gg_dta[1:nvar, ]
+    gg_dta <- gg_dta[1:nvar,]
     
   }
   gg_dta$vars <-
@@ -232,9 +228,11 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     colnames(gg_dta)[which(colnames(gg_dta) == "X.IncMSE")] <-
       "vimp"
     if ("vimp" %in% colnames(gg_dta)) {
-      gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
+      gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE),]
     } else{
-      gg_dta <- gg_dta[order(gg_dta$IncNodePurity, decreasing = TRUE), ]
+      cn <- colnames(gg_dta)[1]
+      gg_dta <-
+        gg_dta[order(gg_dta[,cn], decreasing = TRUE),]
     }
   }
   if (missing(nvar))
@@ -292,14 +290,14 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     gathercols <-
       colnames(gg_dta)[-which(colnames(gg_dta) == "vars")]
     gg_dta <- tidyr::gather(gg_dta, "set", "vimp", gathercols)
-    gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
+    gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE),]
     gg_dta$vars <- factor(gg_dta$vars)
   } else{
     gg_dta$vars[which(is.na(gg_dta$vars))] <-
       rownames(gg_dta)[which(is.na(gg_dta$vars))]
     
   }
-  gg_dta <- gg_dta[1:nvar, ]
+  gg_dta <- gg_dta[1:nvar,]
   
   gg_dta$vars <-
     factor(gg_dta$vars, levels = rev(unique(gg_dta$vars)))

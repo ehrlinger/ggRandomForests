@@ -3,10 +3,6 @@
 ####  ----------------------------------------------------------------
 ####  Written by:
 ####    John Ehrlinger, Ph.D.
-####    Assistant Staff
-####    Dept of Quantitative Health Sciences
-####    Learner Research Institute
-####    Cleveland Clinic Foundation
 ####
 ####    email:  john.ehrlinger@gmail.com
 ####    URL:    https://github.com/ehrlinger/ggRandomForests
@@ -16,26 +12,26 @@
 ####**********************************************************************
 #' Marginal variable dependence data object.
 #'
-#' @details The marginal variable dependence is determined by comparing 
-#' relation between the predicted response from the randomForest and a 
+#' @details The marginal variable dependence is determined by comparing
+#' relation between the predicted response from the randomForest and a
 #' covariate of interest.
 #'
-#' The \code{gg_variable} function operates on a 
+#' The \code{gg_variable} function operates on a
 #' \code{\link[randomForestSRC]{rfsrc}} object, or the output from the
 #' \code{\link[randomForestSRC]{plot.variable}} function.
 #'
 #' @description \code{\link[randomForestSRC]{plot.variable}} generates a
-#' \code{data.frame} containing the marginal variable dependence or the 
-#' partial variable dependence. The \code{gg_variable} function creates a 
-#' \code{data.frame} of containing the full set of covariate data (predictor 
-#' variables) and the predicted response for each observation. Marginal 
-#' dependence figures are created using the \code{\link{plot.gg_variable}} 
+#' \code{data.frame} containing the marginal variable dependence or the
+#' partial variable dependence. The \code{gg_variable} function creates a
+#' \code{data.frame} of containing the full set of covariate data (predictor
+#' variables) and the predicted response for each observation. Marginal
+#' dependence figures are created using the \code{\link{plot.gg_variable}}
 #' function.
 #'
-#' Optional arguments \code{time} point (or vector of points) of interest 
-#' (for survival forests only) \code{time_labels} If more than one time is 
-#' specified, a vector of time labels for differentiating the time points 
-#' (for survival forests only) \code{oob} indicate if predicted results 
+#' Optional arguments \code{time} point (or vector of points) of interest
+#' (for survival forests only) \code{time_labels} If more than one time is
+#' specified, a vector of time labels for differentiating the time points
+#' (for survival forests only) \code{oob} indicate if predicted results
 #' should include oob or full data set.
 #'
 #' @param object a \code{\link[randomForestSRC]{rfsrc}} object
@@ -43,7 +39,7 @@
 #'
 #' @return \code{gg_variable} object
 #'
-#' @seealso \code{\link{plot.gg_variable}} 
+#' @seealso \code{\link{plot.gg_variable}}
 #' @seealso \code{\link[randomForestSRC]{plot.variable}}
 #'
 #' @aliases gg_variable gg_variable.rfsrc
@@ -87,7 +83,7 @@
 #' \dontrun{
 #' ## -------- motor trend cars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
-#' 
+#'
 #' gg_dta <- gg_variable(rfsrc_mtcars)
 #'
 #' # mtcars$cyl is an ordinal variable
@@ -106,16 +102,16 @@
 #'
 #' # panels
 #' plot(gg_dta,xvar=c("disp","hp", "drat", "wt", "qsec"),  panel=TRUE)
-#' plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE, 
+#' plot(gg_dta, xvar=c("cyl", "vs", "am", "gear", "carb"), panel=TRUE,
 #'      notch=TRUE)
 #' }
 #' ## -------- Boston data
 #' data(Boston, package="MASS")
-#' 
+#'
 #' rf_boston <- randomForest::randomForest(medv~., data=Boston)
 #' gg_dta <- gg_variable(rf_boston)
 #' plot(gg_dta)
-#' 
+#'
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
@@ -123,7 +119,7 @@
 #' ## -------- veteran data
 #' ## survival
 #' # data(veteran, package = "randomForestSRC")
-#' # rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, 
+#' # rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10,
 #' #                        ntree = 100)
 #' data(rfsrc_veteran, package="ggRandomForests")
 #'
@@ -146,7 +142,7 @@
 #' }
 #' ## -------- pbc data
 #'
-#' @aliases gg_variable gg_variable.rfsrc gg_variable.randomForest 
+#' @aliases gg_variable gg_variable.rfsrc gg_variable.randomForest
 #' @aliases gg_variable.random
 #' @importFrom stats median
 #'
@@ -155,7 +151,7 @@ gg_variable <- function(object, ...) {
   UseMethod("gg_variable", object)
 }
 #' @export
-gg_variable.rfsrc <- function(object, 
+gg_variable.rfsrc <- function(object,
                               ...) {
   # Get the extra arguments for handling specifics
   arg_list <- list(...)
@@ -217,8 +213,8 @@ gg_variable.rfsrc <- function(object,
         gg_dta_t_old <- gg_dta_t
       }
       ## For marginal plot.
-      # Plot.variable returns the resubstituted survival, not OOB. So we 
-      # calculate it. Time is really straight forward since survival is a 
+      # Plot.variable returns the resubstituted survival, not OOB. So we
+      # calculate it. Time is really straight forward since survival is a
       # step function
       #
       # Get the event time occuring before or at 1 year.
@@ -226,7 +222,7 @@ gg_variable.rfsrc <- function(object,
       in_time <- which(object$time.interest > time[ind])[1] - 1
       if (in_time == 0)
         stop(
-          "The time of interest is less than the first event time. 
+          "The time of interest is less than the first event time.
           Make sure you are using the correct time units."
         )
       
@@ -257,7 +253,7 @@ gg_variable.rfsrc <- function(object,
 gg_variable.randomForest <- function(object,
                                      ...) {
   arg_list <- list(...)
- 
+  
   oob <- if (!is.null(arg_list$oob)) {
     arg_list$oob
   } else{
@@ -275,21 +271,10 @@ gg_variable.randomForest <- function(object,
   
   # Remove the response from the data.frame
   rsp <- as.character(object$call$formula)[2]
-  gg_dta <- gg_dta[, -which(colnames(gg_dta) == rsp)]
+  gg_dta <- gg_dta[,-which(colnames(gg_dta) == rsp)]
   
-  if (object$type == "regression") {
-    gg_dta$yhat <- object$predicted
-    
-  } else{
-    
-    colnames(object$predicted) <-
-      paste("yhat.", colnames(object$predicted),
-            sep = "")
-    gg_dta <- object$predicted
-    
-    gg_dta$yvar <- object$yvar
-    
-  }
+  gg_dta$yhat <- as.vector(object$predicted)
+  
   class(gg_dta) <- c("gg_variable", object$type, class(gg_dta))
   invisible(gg_dta)
 }

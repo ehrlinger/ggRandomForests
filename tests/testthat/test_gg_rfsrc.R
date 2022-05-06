@@ -47,7 +47,8 @@ test_that("gg_rfsrc classifications", {
                     rfsrc_iris$predicted)
   
   rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
-  expect_error(gg_rfsrc(rf_iris))
+  gg_dta <-gg_rfsrc(rf_iris)
+  
 })
 
 test_that("gg_rfsrc regression", {
