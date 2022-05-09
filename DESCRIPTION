@@ -2,7 +2,7 @@ Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
 Version: 2.2.0
-Date: 2022-05-03
+Date: 2022-05-09
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)

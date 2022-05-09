@@ -1,5 +1,12 @@
 Package: ggRandomForests
-Version: 2.1.0
+Version: 2.2.0
+
+
+ggRandomForests v2.2.0
+=====================
+* Bring back the regression vignette
+* Improve package tests and code coverage
+* Clean up code with lintr
 
 ggRandomForests v2.1.0
 =====================
