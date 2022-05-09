@@ -55,7 +55,7 @@ test_that("gg_error.rfsrc classifications", {
   expect_is(gg_dta, "gg_error")
   
   ## Test plotting the gg_error object
-  gg_plt <- expect_warning( plot(gg_dta))
+  gg_plt <- expect_warning(plot(gg_dta))
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
@@ -86,7 +86,7 @@ test_that("gg_error.randomForest classifications", {
   expect_equal(dim(gg_dta)[2], dim(rf_iris$err.rate)[2] + 1)
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta[, -which(colnames(gg_dta) == "ntree")]),
+  expect_equivalent(as.matrix(gg_dta[,-which(colnames(gg_dta) == "ntree")]),
                     rf_iris$err.rate)
   
   ## Test plotting the gg_error object

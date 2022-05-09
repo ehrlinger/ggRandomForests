@@ -88,7 +88,7 @@ calc_roc.rfsrc <-
         pct <- sort(unique(object$predicted[, which.outcome]))
     } else{
       warning("Must specify which.outcome for now.")
-      which.outcome = 1
+      which.outcome <- 1
     }
     
     last <- length(pct)
@@ -140,7 +140,7 @@ calc_roc.randomForest <-
     
     if (which.outcome == "all") {
       warning("Must specify which.outcome for now.")
-      which.outcome = 1
+      which.outcome <- 1
     }
     dta_roc <-
       data.frame(cbind(res = (dta == levels(dta)[which.outcome]),
@@ -160,7 +160,7 @@ calc_roc.randomForest <-
       tbl <- xtabs(~ res + (prd > crit), tmp)
       
       if (dim(tbl)[2] < 2) {
-        tbl = cbind(tbl, c(0, 0))
+        tbl <- cbind(tbl, c(0, 0))
         colnames(tbl) <- c("FALSE", "TRUE")
       }
       spec <- tbl[2, 2] / rowSums(tbl)[2]
