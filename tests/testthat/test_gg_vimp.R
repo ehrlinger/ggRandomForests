@@ -78,7 +78,7 @@ test_that("gg_vimp classifications", {
   ## Single class/
   iris2 <- iris
   iris2$spec <- factor(as.character(iris2$Species) == "setosa")
-  iris2 <- iris2[, -which(colnames(iris2) == "Species")]
+  iris2 <- iris2[,-which(colnames(iris2) == "Species")]
   
   rf <- rfsrc(spec ~ ., iris2, importance = TRUE)
   
@@ -103,7 +103,7 @@ test_that("gg_vimp classifications", {
   expect_error(gg_vimp.rfsrc(gg_dta))
   
   
-  gg_dta <- gg_vimp(rf_iris, which.outcome=1)
+  gg_dta <- gg_vimp(rf_iris, which.outcome = 1)
   
   expect_is(gg_dta, "gg_vimp")
   
@@ -148,16 +148,16 @@ test_that("gg_vimp survival", {
   pbc$age <- pbc$age / 364.24
   
   pbc$years <- pbc$days / 364.24
-  pbc <- pbc[, -which(colnames(pbc) == "days")]
+  pbc <- pbc[,-which(colnames(pbc) == "days")]
   pbc$treatment <- as.numeric(pbc$treatment)
   pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
   pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
   pbc$treatment <- factor(pbc$treatment)
   
   cat("pbc: rfsrc\n")
-  dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+  dta_train <- pbc[-which(is.na(pbc$treatment)),]
   # Create a test set from the remaining patients
-  pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+  pbc_test <- pbc[which(is.na(pbc$treatment)),]
   
   rfsrc_pbc <- randomForestSRC::rfsrc(
     Surv(years, status) ~ .,
@@ -200,7 +200,8 @@ test_that("gg_vimp survival", {
   expect_is(plot(gg_dta), "ggplot")
   
   # Test the relative vimp output and plotting
-  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, relative = TRUE), "gg_vimp")
+  expect_is(gg_dta <-
+              gg_vimp(rfsrc_pbc, relative = TRUE), "gg_vimp")
   expect_is(plot(gg_dta), "ggplot")
   
   expect_is(gg_dta <-
@@ -305,7 +306,7 @@ test_that("gg_vimp regression", {
   )
   expect_is(gg_plt, "ggplot")
   
-  rf_boston <- randomForest::randomForest(medv~., Boston)
+  rf_boston <- randomForest::randomForest(medv ~ ., Boston)
   gg_dta <- gg_vimp(rf_boston)
   # Test varselect is the same
   expect_equal(gg_dta$vimp, as.vector(sort(rf_boston$importance, decreasing =

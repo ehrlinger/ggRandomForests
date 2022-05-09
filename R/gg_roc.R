@@ -66,7 +66,7 @@
 #' @aliases gg_roc gg_roc.rfsrc gg_roc.randomForest
 
 #' @export
-gg_roc.rfsrc <- function(object, which.outcome, oob , ...) {
+gg_roc.rfsrc <- function(object, which.outcome, oob, ...) {
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
       sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 &
       !inherits(object, "randomForest")) {

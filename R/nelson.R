@@ -71,7 +71,8 @@ nelson <-
     
     # Kaplan-Meier analysis
     # srv is required!
-    srv <- survival::Surv(time = data[, interval], event = data[, censor])
+    srv <-
+      survival::Surv(time = data[, interval], event = data[, censor])
     if (is.null(by)) {
       srv_tab <- survival::survfit(srv ~ 1, ...)
     } else{
@@ -126,7 +127,7 @@ nelson <-
     #, "hazard", "density")
     #**************************************************************;
     # Summarize the various strata only look at events
-    gg_dta <- tbl[which(tbl[, "dead"] != 0),]
+    gg_dta <- tbl[which(tbl[, "dead"] != 0), ]
     
     # Calculate the hazard estimates from transforms and slopes
     # as well as integral of survivorship and proportionate life length
