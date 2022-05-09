@@ -1,6 +1,9 @@
 Package: ggRandomForests
-Version: 2.2.0
+Version: 2.2.1
 
+ggRandomForests v2.2.1
+=====================
+* Bring back the survival vignette
 
 ggRandomForests v2.2.0
 =====================
