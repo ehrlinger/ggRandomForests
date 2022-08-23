@@ -222,7 +222,7 @@ gg_error.randomForest <- function(object, ...) {
     if (!is.null(arg_list$training))
       training <- arg_list$training
     
-  } else{
+  } else {
     stop("Performance values are not available for this forest.")
   }
   class(gg_dta) <- c("gg_error", class(gg_dta))

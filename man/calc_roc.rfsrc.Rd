@@ -6,7 +6,7 @@
 \alias{calc_roc}
 \title{Receiver Operator Characteristic calculator}
 \usage{
-\method{calc_roc}{rfsrc}(object, dta, which.outcome = "all", oob = TRUE, ...)
+\method{calc_roc}{rfsrc}(object, dta, which_outcome = "all", oob = TRUE, ...)
 }
 \arguments{
 \item{object}{\code{\link[randomForestSRC]{rfsrc}} or
@@ -15,7 +15,7 @@ containing predicted response}
 
 \item{dta}{True response variable}
 
-\item{which.outcome}{If defined, only show ROC for this response.}
+\item{which_outcome}{If defined, only show ROC for this response.}
 
 \item{oob}{Use OOB estimates, the normal validation method (TRUE)}
 
@@ -41,15 +41,15 @@ not intended for use by the end user.
 data(rfsrc_iris)
 
 gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
-     which.outcome=1, oob=TRUE)
+     which_outcome=1, oob=TRUE)
 gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
-     which.outcome=1, oob=FALSE)
+     which_outcome=1, oob=FALSE)
 
 rf_iris <- randomForest(Species ~ ., data = iris)
 gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
-     which.outcome=1)
+     which_outcome=1)
 gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
-     which.outcome=2)
+     which_outcome=2)
 
 }
 \seealso{

@@ -56,7 +56,7 @@ kaplan <- function(interval,
   if (is.null(by)) {
     srv_tab <- survival::survfit(srv ~ 1, ...)
     
-  } else{
+  } else {
     srv_tab <-
       survival::survfit(srv ~ survival::strata(data[, by]), ...)
     
@@ -106,7 +106,7 @@ kaplan <- function(interval,
   #*******************************************************************;
   # Summarize the various strata
   # only look at events
-  gg_dta <- tbl[which(tbl[, "dead"] != 0),]
+  gg_dta <- tbl[which(tbl[, "dead"] != 0), ]
   
   # Calculate the hazard estimates from transforms and slopes
   # as well as integral of survivorship and proportionate life length
@@ -121,7 +121,7 @@ kaplan <- function(interval,
   lag_l <- 0
   
   life <- vector("numeric", length = dim(gg_dta)[1])
-  for (ind in 1:dim(gg_dta)[1]) {
+  for (ind in seq_len(dim(gg_dta)[1])) {
     life[ind] <-
       lag_l + delta_t[ind] * (3 * gg_dta[ind, "surv"] - lag_s[ind]) / 2
     lag_l <- life[ind]

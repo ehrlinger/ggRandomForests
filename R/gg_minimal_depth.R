@@ -132,7 +132,7 @@ gg_minimal_depth.rfsrc <- function(object, ...) {
   } else if (is.null(object$threshold)) {
     # Test for max.subtree minimal depth object, convert to vsel object
     stop("No support for max.subtree yet, use var.select instead")
-  } else{
+  } else {
     stop("Function works only on rfsrc or var.select objects.")
   }
   

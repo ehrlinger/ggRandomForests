@@ -29,18 +29,18 @@ the ROC curve.
 data(rfsrc_iris)
 
 \dontrun{
-gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome=1)
 
 calc_auc(gg_dta)
 }
 
-gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome=2)
 
 calc_auc(gg_dta)
 
 ## randomForest tests
 rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
-gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome=2)
 
 calc_auc(gg_dta)
 

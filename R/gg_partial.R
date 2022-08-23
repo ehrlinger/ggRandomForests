@@ -219,7 +219,7 @@ gg_partial.rfsrc <- function(object,
           yhat = object$pData[[ind]]$yhat,
           x = object$pData[[ind]]$x.uniq
         ))
-      } else{
+      } else {
         # We assume RC forests are "normal"
         data.frame(
           cbind(
@@ -229,7 +229,7 @@ gg_partial.rfsrc <- function(object,
           )
         )
       }
-    } else{
+    } else {
       x <- rep(as.character(object$pData[[ind]]$x.uniq),
                rep(object$n, object$pData[[ind]]$n.x))
       tmp <- data.frame(cbind(yhat = x, x = x))
@@ -254,7 +254,7 @@ gg_partial.rfsrc <- function(object,
   if (n_var == 1) {
     # If there is only one, no need for a list
     invisible(gg_dta[[1]])
-  } else{
+  } else {
     # otherwise, add a class label so we can handle it correctly.
     class(gg_dta) <- c("gg_partial_list", class(gg_dta))
     invisible(gg_dta)

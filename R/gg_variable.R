@@ -160,7 +160,7 @@ gg_variable.rfsrc <- function(object,
   time_labels <- arg_list$time_labels
   oob <- if (!is.null(arg_list$oob)) {
     arg_list$oob
-  } else{
+  } else {
     TRUE
   }
   
@@ -192,7 +192,7 @@ gg_variable.rfsrc <- function(object,
               sep = "")
       gg_dta <- cbind(gg_dta, object$predicted.oob)
       
-    } else{
+    } else {
       colnames(object$predicted) <-
         paste("yhat.", colnames(object$predicted),
               sep = "")
@@ -233,7 +233,7 @@ gg_variable.rfsrc <- function(object,
       
       if (is.null(time_labels)) {
         gg_dta_t$time <- time[ind]
-      } else{
+      } else {
         gg_dta_t$time <- time_labels[ind]
       }
       
@@ -254,10 +254,8 @@ gg_variable.randomForest <- function(object,
                                      ...) {
   arg_list <- list(...)
   
-  oob <- if (!is.null(arg_list$oob)) {
-    arg_list$oob
-  } else{
-    TRUE
+  if (!is.null(arg_list$oob)) {
+    arg_list$oob <- FALSE
   }
   
   # Want to also handle a plot.variable where partial!= TRUE
@@ -271,7 +269,7 @@ gg_variable.randomForest <- function(object,
   
   # Remove the response from the data.frame
   rsp <- as.character(object$call$formula)[2]
-  gg_dta <- gg_dta[,-which(colnames(gg_dta) == rsp)]
+  gg_dta <- gg_dta[, -which(colnames(gg_dta) == rsp)]
   
   gg_dta$yhat <- as.vector(object$predicted)
   

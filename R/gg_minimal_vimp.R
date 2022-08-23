@@ -125,13 +125,13 @@ gg_minimal_vimp.rfsrc <- function(object, ...) {
   } else if (!is.null(object$varselect)) {
     # Test for variable selection minimal depth object
     vsel <- object
-  } else{
+  } else {
     stop("Function works only on rfsrc or var.select objects.")
   }
   
   rnk_md <-
     rnk_vm <- data.frame(cbind(names = rownames(vsel$varselect)))
-  rnk_md$depth <- rnk_vm$vimp <- 1:dim(rnk_md)[1]
+  rnk_md$depth <- rnk_vm$vimp <- seq_len(dim(rnk_md)[1])
   
   # Rename the full vimp.all column to just "vimp"
   if (is.null(vsel$varselect$vimp))
@@ -140,7 +140,7 @@ gg_minimal_vimp.rfsrc <- function(object, ...) {
     "vimp"
   
   rnk_vm <- rnk_vm[order(vsel$varselect$vimp, decreasing = TRUE), ]
-  rnk_vm$vimp <- 1:dim(rnk_vm)[1]
+  rnk_vm$vimp <- seq_len(dim(rnk_vm)[1])
   
   # Default color is by negative/positive vimp
   rnk_vm$col <-

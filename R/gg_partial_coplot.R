@@ -105,14 +105,14 @@ gg_partial_coplot.rfsrc <- function(object,
   # If we don't have a groups variable, we may have a subsets in the
   # ellipse list.
   if (missing(groups)) {
-    if (is.null(arg_list$subset))
+    if (is.null(arg_list$subset)) { 
       stop(
         paste(
           "partial_coplot requires a groups argument to",
           "stratify the partial plots."
         )
       )
-    else{
+    } else {
       # We may be able to coherce a groups argument from subset that is
       # normally passed to plot.variable.
       
@@ -153,19 +153,6 @@ gg_partial_coplot.rfsrc <- function(object,
       lvl <- lvl[-ind]
     }
   }
-  
-  # If survival family, make sure we have a time and surv_type.
-  # if not default to time=1, and surv_type="surv" with warning.
-  #
-  #   # If we got a surv.type instead of surv_type, let's use that.
-  #   if(!is.null(arg_list$surv.type)) {
-  #
-  #   }
-  #   # If we got a surv.type instead of surv_type, let's use that.
-  #   if(is.null(arg_list$show.plots)) {
-  #     arg_list$show.plots <- FALSE
-  #   }
-  # what about multiple time points?
   
   # This will return a list of subseted partial plots, one for each group,
   # all variables in xvar.

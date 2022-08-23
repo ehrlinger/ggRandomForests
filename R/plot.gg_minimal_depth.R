@@ -125,7 +125,7 @@ plot.gg_minimal_depth <- function(x,
   
   nvar <- nrow(gg_dta$varselect)
   if (!is.null(arg_set$nvar)) {
-    if (is.numeric(arg_set$nvar) & arg_set$nvar > 1) {
+    if (is.numeric(arg_set$nvar) && arg_set$nvar > 1) {
       nvar <- arg_set$nvar
       if (nvar < nrow(gg_dta$varselect))
         gg_dta$varselect <- gg_dta$varselect[1:nvar, ]
@@ -176,7 +176,7 @@ plot.gg_minimal_depth <- function(x,
     
   } else {
     vsel <- gg_dta$varselect
-    vsel$rank <- 1:dim(vsel)[1]
+    vsel$rank <- seq_len(dim(vsel)[1])
     vsel$names <- factor(vsel$names,
                          levels = rev(levels(vsel$names)))
     gg_plt <- ggplot(vsel)
@@ -216,7 +216,7 @@ plot.gg_minimal_depth <- function(x,
     gg_plt <- gg_plt +
       labs(y = "Minimal Depth of a Variable", x = "") +
       coord_flip()
-  } else{
+  } else {
     gg_plt <- gg_plt +
       labs(y = "Rank", x = "Minimal Depth of a Variable")
     

@@ -113,7 +113,7 @@ plot.gg_rfsrc <- function(x, ...) {
     gg_dta <- gg_rfsrc(gg_dta)
   
   ## Classification forest?
-  if (inherits(gg_dta, "class") |
+  if (inherits(gg_dta, "class") ||
       inherits(gg_dta, "classification")) {
     if (ncol(gg_dta) < 3) {
       gg_plt <- ggplot(gg_dta) +
@@ -132,7 +132,7 @@ plot.gg_rfsrc <- function(x, ...) {
           ...
         ) +
         theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-    } else{
+    } else {
       gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
       gg_dta_mlt <-
         tidyr::gather(gg_dta, "variable", "value", gathercols)
@@ -149,7 +149,7 @@ plot.gg_rfsrc <- function(x, ...) {
     if ("lower" %in% colnames(gg_dta)) {
       if (is.null(arg_set$alpha)) {
         alph <- .3
-      } else{
+      } else {
         alph <- arg_set$alpha * .5
         arg_set$alpha <- NULL
       }
@@ -171,7 +171,7 @@ plot.gg_rfsrc <- function(x, ...) {
             y = "median",
             color = "group"
           ), ...)
-      } else{
+      } else {
         gg_plt <- ggplot(gg_dta) +
           geom_ribbon(aes_string(
             x = "value",
@@ -181,7 +181,7 @@ plot.gg_rfsrc <- function(x, ...) {
           alpha = alph) +
           geom_step(aes_string(x = "value", y = "median"), ...)
       }
-    } else{
+    } else {
       # Lines by observation
       gg_plt <- ggplot(gg_dta,
                        aes_string(
@@ -197,11 +197,11 @@ plot.gg_rfsrc <- function(x, ...) {
       labs(x = "time (years)", y = "Survival (%)")
     
     
-  } else if (inherits(gg_dta, "regr") |
+  } else if (inherits(gg_dta, "regr") ||
              inherits(gg_dta, "regression")) {
     if ("group" %in% colnames(gg_dta)) {
       gg_plt <- ggplot(gg_dta, aes_string(x = "group", y = "yhat"))
-    } else{
+    } else {
       gg_plt <- ggplot(gg_dta, aes_string(x = 1, y = "yhat"))
     }
     
@@ -213,7 +213,7 @@ plot.gg_rfsrc <- function(x, ...) {
                    ...) +
       labs(y = "Predicted Value", x = colnames(gg_dta)[2]) +
       theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-  } else{
+  } else {
     stop(paste(
       "Plotting for ",
       class(gg_dta)[2],

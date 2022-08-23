@@ -61,7 +61,7 @@ quantile_pts <- function(object, groups, intervals = FALSE) {
                                                  n_x, 
                                                  length = min(breaks, 
                                                               n_x))))]
-  } else{
+  } else {
     x_uniq <- unique(object)
   }
   

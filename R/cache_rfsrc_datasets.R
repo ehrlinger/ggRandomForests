@@ -86,10 +86,10 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
     pth <- if (file.exists("data")) {
       if (file.info("data")$isdir) {
         "data/"
-      } else{
+      } else {
         "./"
       }
-    } else{
+    } else {
       "./"
     }
   } else if (!file.info(pth)$isdir) {
@@ -165,7 +165,7 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
     boston$chas <- as.logical(boston$chas)
     
     cat("boston: rfsrc\n")
-    if (!test)
+    if (!test) {
       rfsrc_boston <-
       randomForestSRC::rfsrc(
         medv ~ .,
@@ -176,7 +176,7 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
         save.memory = TRUE,
         ...
       )
-    else{
+    } else {
       data(rfsrc_boston, package = "ggRandomForests",
            envir = dta)
       rfsrc_boston <- dta$rfsrc_boston
@@ -303,3 +303,4 @@ cache_rfsrc_datasets <- function(set = NA, save = TRUE, pth, ...) {
   }
   
 }
+

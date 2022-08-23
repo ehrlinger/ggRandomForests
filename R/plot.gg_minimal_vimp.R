@@ -129,7 +129,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
     gg_plt <-
       ggplot(gg_dta, aes_string(x = "names", y = "vimp", col = "col")) +
       labs(x = "Minimal Depth (Rank Order)", y = "VIMP Rank", color = "VIMP")
-  } else{
+  } else {
     gg_plt <- ggplot(gg_dta, aes_string(x = "names", y = "vimp")) +
       labs(x = "Minimal Depth (Rank Order)", y = "VIMP Rank")
   }

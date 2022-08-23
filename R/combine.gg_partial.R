@@ -92,9 +92,9 @@ combine.gg_partial_list <- function(x, y, lbls, ...) {
   if (inherits(y, "plot.variable"))
     y <- gg_partial(y)
   
-  if ((!inherits(x, "gg_partial_list") &
-       !inherits(x, "gg_partial"))  &
-      (!inherits(y, "gg_partial_list") &
+  if ((!inherits(x, "gg_partial_list") &&
+       !inherits(x, "gg_partial"))  &&
+      (!inherits(y, "gg_partial_list") &&
        !inherits(y, "gg_partial"))) {
     stop(
       paste(

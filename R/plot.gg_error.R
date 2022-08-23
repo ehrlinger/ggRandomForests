@@ -128,7 +128,7 @@ plot.gg_error <- function(x, ...) {
     gg_plt <-
       ggplot(na.omit(gg_dta),
              aes_string(x = "ntree", y = "value", col = "variable"))
-  } else{
+  } else {
     # We expect the object to have the following columns
     gg_plt <-
       ggplot(na.omit(gg_dta), aes_string(x = "ntree", y = "error"))

@@ -142,7 +142,7 @@ plot.gg_interaction <- function(x, xvar, lbls, ...) {
     gg_dta <- data.frame(t(object[which(rownames(object) %in% xvar), ]))
     
     gg_dta$names <- rownames(object)
-    gg_dta$rank <- 1:dim(gg_dta)[1]
+    gg_dta$rank <- seq_len(dim(gg_dta)[1])
     
     gathercols <-
       colnames(gg_dta)[-which(colnames(gg_dta) %in% c("rank", "names"))]
@@ -181,8 +181,8 @@ plot.gg_interaction <- function(x, xvar, lbls, ...) {
     
     
     gg_plt + facet_wrap(~ variable)
-  }else{
-    gg_dta <- data.frame(cbind(rank = 1:dim(object)[1],
+  } else {
+    gg_dta <- data.frame(cbind(rank = seq_len(dim(object)[1]),
                                t(object[which(rownames(object) %in% xvar), ])))
     colnames(gg_dta)[2] <- "dpth"
     gg_dta$names <- rownames(gg_dta)

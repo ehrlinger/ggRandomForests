@@ -3,7 +3,7 @@ Version: 2.2.1
 
 ggRandomForests v2.2.1
 =====================
-* Bring back the survival vignette
+* Fix docs for HTML5/Roxygen update
 
 ggRandomForests v2.2.0
 =====================
@@ -14,7 +14,7 @@ ggRandomForests v2.2.0
 ggRandomForests v2.1.0
 =====================
 To pull this out of archive on randomForestSRC 3.1 build release.
-Fixed a plot bug for gg_error to show the actual curve (issue #35)
+Fixed a plot bug for gg_error to show the actual curve (issue 35)
 
 ggRandomForests v2.0.1
 ======================

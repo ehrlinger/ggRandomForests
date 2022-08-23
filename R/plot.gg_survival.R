@@ -80,7 +80,7 @@ plot.gg_survival <- function(x,
   if (is.null(gg_dta$groups)) {
     gg_plt <- ggplot(gg_dta) +
       geom_step(aes_string(x = "time", y = type), ...)
-  } else{
+  } else {
     gg_dta$groups <- factor(gg_dta$groups)
     gg_plt <- ggplot(gg_dta) +
       geom_step(aes_string(x = "time", y = type, color = "groups"), ...)
@@ -118,7 +118,7 @@ plot.gg_survival <- function(x,
                       2),
         none = gg_plt
       )
-    } else{
+    } else {
       gg_plt <- switch(
         error,
         # Shading the standard errors

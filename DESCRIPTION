@@ -1,8 +1,8 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 2.2.0
-Date: 2022-05-09
+Version: 2.2.1
+Date: 2022-08-23
 Author: John Ehrlinger <john.ehrlinger@gmail.com>
 Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)
@@ -34,7 +34,7 @@ Suggests:
     plot3D,
     lintr,
     datasets
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 LazyData: true
 LazyDataCompression: bzip2
 VignetteBuilder: knitr

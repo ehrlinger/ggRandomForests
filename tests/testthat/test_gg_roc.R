@@ -12,8 +12,8 @@ test_that("gg_roc classifications", {
   expect_match(rfsrc_iris$family, "class")
   
   ## Create the correct gg_roc object
-  which.outcome <- 1
-  gg_dta <- gg_roc(rfsrc_iris, which.outcome)
+  which_outcome <- 1
+  gg_dta <- gg_roc(rfsrc_iris, which_outcome)
   
   # Test object type
   expect_is(gg_dta, "gg_roc")
@@ -22,7 +22,7 @@ test_that("gg_roc classifications", {
   expect_equal(ncol(gg_dta), 3)
   
   # Test data is correctly pulled from randomForest obect.
-  unts <- sort(unique(rfsrc_iris$predicted.oob[, which.outcome]))
+  unts <- sort(unique(rfsrc_iris$predicted.oob[, which_outcome]))
   
   ## Test plotting the gg_roc object
   gg_obj <- plot.gg_roc(gg_dta)
@@ -31,7 +31,7 @@ test_that("gg_roc classifications", {
   expect_is(gg_obj, "ggplot")
   
   # Try test set prediction.
-  gg_dta <- gg_roc(rfsrc_iris, which.outcome, oob = FALSE)
+  gg_dta <- gg_roc(rfsrc_iris, which_outcome, oob = FALSE)
   # Try test set prediction.
   gg_plt <- plot.gg_roc(rfsrc_iris)
   
@@ -42,7 +42,7 @@ test_that("gg_roc classifications", {
   expect_equal(ncol(gg_dta), 3)
   
   # Test data is correctly pulled from randomForest obect.
-  unts <- sort(unique(rfsrc_iris$predicted[, which.outcome]))
+  unts <- sort(unique(rfsrc_iris$predicted[, which_outcome]))
   
   ## Test plotting the gg_roc object
   gg_obj <- plot.gg_roc(gg_dta)
@@ -66,8 +66,8 @@ test_that("gg_roc randomForest classifications", {
   expect_match(rf_iris$type, "classification")
   
   ## Create the correct gg_roc object
-  which.outcome <- 1
-  gg_dta <- gg_roc(rf_iris, which.outcome)
+  which_outcome <- 1
+  gg_dta <- gg_roc(rf_iris, which_outcome)
   
   # Test object type
   expect_is(gg_dta, "gg_roc")
@@ -79,7 +79,7 @@ test_that("gg_roc randomForest classifications", {
   expect_is(gg_obj, "ggplot")
   
   # Try test set prediction.
-  gg_dta <- gg_roc(rf_iris, which.outcome, oob = FALSE)
+  gg_dta <- gg_roc(rf_iris, which_outcome, oob = FALSE)
   
   # Test object type
   expect_is(gg_dta, "gg_roc")
@@ -124,7 +124,7 @@ test_that("calc_roc", {
   
   gg_dta <- calc_roc.rfsrc(rfsrc_iris,
                            rfsrc_iris$yvar,
-                           which.outcome = 1,
+                           which_outcome = 1,
                            oob = TRUE)
   
   # Test the cached forest type
@@ -135,7 +135,7 @@ test_that("calc_roc", {
   # Test oob=FALSE
   gg_dta <- calc_roc.rfsrc(rfsrc_iris,
                            rfsrc_iris$yvar,
-                           which.outcome = 1,
+                           which_outcome = 1,
                            oob = FALSE)
   
   # Test the cached forest type
@@ -150,7 +150,7 @@ test_that("calc_roc", {
   # The second outcome.
   gg_dta <- calc_roc.rfsrc(rfsrc_iris,
                            rfsrc_iris$yvar,
-                           which.outcome = 2,
+                           which_outcome = 2,
                            oob = TRUE)
   
   # Test the cached forest type
@@ -165,7 +165,7 @@ test_that("calc_roc", {
   # and the third...
   gg_dta <- calc_roc.rfsrc(rfsrc_iris,
                            rfsrc_iris$yvar,
-                           which.outcome = 3,
+                           which_outcome = 3,
                            oob = TRUE)
   
   # Test the cached forest type

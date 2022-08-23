@@ -14,7 +14,7 @@ test_that("cutting a vector at evenly space points", {
   # Instead of groups, we want the raw rm point values,
   # To make the dimensions match, we need to repeat the values
   # for each of the 50 points in the lstat direction
-  rm.tmp <- do.call(c, lapply(rm_pts,
+  rm_tmp <- do.call(c, lapply(rm_pts,
                               function(grp) {
                                 rep(grp, length(partial_boston_surf))
                               }))
@@ -24,7 +24,7 @@ test_that("cutting a vector at evenly space points", {
     do.call(rbind, lapply(partial_boston_surf, gg_partial))
   
   # attach the data to the gg_partial_coplot
-  partial_surf$rm <- rm.tmp
+  partial_surf$rm <- rm_tmp
   
   # Transform the gg_partial_coplot object into a list of three named matrices
   # for surface plotting with plot3D::surf3D
