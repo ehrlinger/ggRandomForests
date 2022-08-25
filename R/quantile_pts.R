@@ -72,4 +72,3 @@ quantile_pts <- function(object, groups, intervals = FALSE) {
     x_uniq[1] <- x_uniq[1] - 1.e-7
   x_uniq
 }
-

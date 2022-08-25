@@ -238,7 +238,6 @@ plot.gg_variable <- function(x,
       wch_y_var <-
         which(colnames(gg_dta) %in% c("event", "yhat", "time"))
       
-      
       # Handle categorical and continuous differently...
       tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
       gathercols <-

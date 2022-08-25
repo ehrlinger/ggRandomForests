@@ -93,9 +93,3 @@ test_that("gg_partial regression", {
   gg_plt <- plot(gg_dta, error = "shade") + geom_smooth(se = .95)
   
 })
-
-
-
-
-
-

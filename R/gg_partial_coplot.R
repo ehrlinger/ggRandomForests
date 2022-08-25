@@ -19,8 +19,10 @@
 #' @param surv_type for survival random forests,  c("mort", "rel.freq", "surv",
 #' "years.lost", "cif", "chf")
 #' @param time vector of time points for survival random forests partial plots.
+#' @param show_plots boolean passed to 
+#'  \code{\link[randomForestSRC]{plot.variable}} show.plots argument.
 #' @param ... extra arguments passed to
-#' \code{\link[randomForestSRC]{plot.variable}} function
+#'  \code{\link[randomForestSRC]{plot.variable}} function
 #'
 #' @return \code{gg_partial_coplot} object. An subclass of a
 #' \code{\link{gg_partial_list}} object
@@ -69,6 +71,7 @@ gg_partial_coplot.rfsrc <- function(object,
                                                   "cif",
                                                   "chf"),
                                     time,
+                                    show_plots = FALSE,
                                     ...) {
   # Some sanity checks:
   
@@ -163,7 +166,8 @@ gg_partial_coplot.rfsrc <- function(object,
       time = time,
       subset = sbst[[ind]],
       xvar.names = xvar,
-      partial = TRUE
+      partial = TRUE, 
+      show.plots = show_plots
     )
   })
   

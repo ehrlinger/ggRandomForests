@@ -8,6 +8,7 @@
   x,
   type = c("surv", "cum_haz", "hazard", "density", "mid_int", "life", "proplife"),
   error = c("shade", "bars", "lines", "none"),
+  label = NULL,
   ...
 )
 }
@@ -15,9 +16,11 @@
 \item{x}{\code{\link{gg_survival}} or a survival \code{\link{gg_rfsrc}}
 object created from a \code{\link[randomForestSRC]{rfsrc}} object}
 
-\item{type}{"surv", "cum_haz","hazard","density","mid_int", "life","proplife"}
+\item{type}{"surv", "cum_haz", "hazard", "density", "mid_int", "life", "proplife"}
 
 \item{error}{"shade", "bars", "lines" or "none"}
+
+\item{label}{Modify the legend label when gg_survival has stratified samples}
 
 \item{...}{not used}
 }
@@ -46,12 +49,22 @@ gg_dta <- gg_survival(interval="time", censor="status",
 
 plot(gg_dta, error="none")
 plot(gg_dta)
+plot(gg_dta, label="treatment")
 
 # ...with smaller confidence limits.
 gg_dta <- gg_survival(interval="time", censor="status",
                      data=pbc, by="treatment", conf.int=.68)
 
 plot(gg_dta, error="lines")
+plot(gg_dta, label="treatment", error="lines")
+
+# ...with smaller confidence limits.
+gg_dta <- gg_survival(interval="time", censor="status",
+                     data=pbc, by="sex", conf.int=.68)
+
+plot(gg_dta, error="lines")
+plot(gg_dta, label="sex", error="lines")
+
 
 }
 

@@ -118,7 +118,7 @@ test_that("survival_functions_tests: PBC", {
   
   # Test multiple conf intervals
   gg_dta <- gg_rfsrc(rfsrc_pbc,
-                     conf.int= c(.025, .975),
+                     conf.int = c(.025, .975),
                      bs.sample = 100)
   
   # Test object type

@@ -240,7 +240,7 @@ gg_rfsrc.rfsrc <- function(object,
     }
     
     # Do we want all lines, or bootstrap confidence bands.
-    colnames(rng) <- object$time_interest
+    colnames(rng) <- object$time.interest
     
     rng$obs_id <- seq_len(nrow(rng))
     if (is.null(object$yvar)) {

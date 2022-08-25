@@ -11,6 +11,7 @@
   groups,
   surv_type = c("mort", "rel.freq", "surv", "years.lost", "cif", "chf"),
   time,
+  show_plots = FALSE,
   ...
 )
 }
@@ -25,6 +26,9 @@
 "years.lost", "cif", "chf")}
 
 \item{time}{vector of time points for survival random forests partial plots.}
+
+\item{show_plots}{boolean passed to 
+\code{\link[randomForestSRC]{plot.variable}} show.plots argument.}
 
 \item{...}{extra arguments passed to
 \code{\link[randomForestSRC]{plot.variable}} function}
