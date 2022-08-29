@@ -36,9 +36,7 @@ and assigns the class for connecting to the S3
 ## ------------------------------------------------------------
 ## ------------- iris data
 ## You can build a randomForest
-# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-# ... or load a cached randomForestSRC object
-data(rfsrc_iris, package="ggRandomForests")
+rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_iris)
@@ -58,7 +56,8 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 \dontrun{
 ## ------------- airq data
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, 
+    na.action = "na.impute")
 
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_airq)
@@ -68,7 +67,14 @@ plot(gg_dta)
 }
 
 ## ------------- Boston data
-data(rfsrc_boston, package="ggRandomForests")
+data(Boston, package = "MASS")
+Boston$chas <- as.logical(Boston$chas)
+rfsrc_boston <- rfsrc(medv ~ .,
+   data = Boston,
+   forest = TRUE,
+   importance = TRUE,
+   tree.err = TRUE,
+   save.memory = TRUE)
 
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_boston)
@@ -78,7 +84,7 @@ plot(gg_dta)
 
 \dontrun{
 ## ------------- mtcars data
-
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_mtcars)
 
@@ -100,7 +106,56 @@ plot(gg_dta)
 
 ## ------------- pbc data
 # Load a cached randomForestSRC object
-data(rfsrc_pbc, package="ggRandomForests")
+# We need to create this dataset
+data(pbc, package = "randomForestSRC",) 
+# For whatever reason, the age variable is in days... makes no sense to me
+for (ind in seq_len(dim(pbc)[2])) {
+ if (!is.factor(pbc[, ind])) {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ } else {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+     if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ }
+ if (!is.logical(pbc[, ind]) &
+     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+   pbc[, ind] <- factor(pbc[, ind])
+ }
+}
+#Convert age to years
+pbc$age <- pbc$age / 364.24
+
+pbc$years <- pbc$days / 364.24
+pbc <- pbc[, -which(colnames(pbc) == "days")]
+pbc$treatment <- as.numeric(pbc$treatment)
+pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+pbc$treatment <- factor(pbc$treatment)
+dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+# Create a test set from the remaining patients
+pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+
+#========
+# build the forest:
+rfsrc_pbc <- randomForestSRC::rfsrc(
+  Surv(years, status) ~ .,
+ dta_train,
+ nsplit = 10,
+ na.action = "na.impute",
+ forest = TRUE,
+ importance = TRUE,
+ save.memory = TRUE
+)
+
 
 gg_dta <- gg_error(rfsrc_pbc)
 plot(gg_dta)

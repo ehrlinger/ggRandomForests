@@ -2,8 +2,15 @@
 context("gg_minimal_depth tests")
 
 test_that("gg_minimal_depth classifications", {
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    forest = TRUE,
+    importance = TRUE,
+    save.memory = TRUE
+  )
   ## Load the cached forest
-  data(varsel_iris, package = "ggRandomForests")
+  varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
   
   # Test the cached forest type
   expect_is(varsel_iris, "list")
@@ -18,8 +25,9 @@ test_that("gg_minimal_depth classifications", {
   expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) ==
-                                               "names")],
+  expect_equivalent(gg_dta$varselect[, 
+                                     -which(colnames(gg_dta$varselect) ==
+                                              "names")],
                     varsel_iris$varselect)
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
@@ -32,9 +40,23 @@ test_that("gg_minimal_depth classifications", {
 })
 
 test_that("gg_minimal_depth regression", {
-  ## Load the cached forest
-  data(varsel_boston, package = "ggRandomForests")
+  data(Boston, package = "MASS")
+  boston <- Boston
   
+  boston$chas <- as.logical(boston$chas)
+  
+  ## Load the cached forest
+  rfsrc_boston <-
+    randomForestSRC::rfsrc(
+      medv ~ .,
+      data = boston,
+      forest = TRUE,
+      importance = TRUE,
+      tree.err = TRUE,
+      save.memory = TRUE
+    )
+  
+  varsel_boston <- randomForestSRC::var.select(rfsrc_boston)
   # Test the cached forest type
   expect_is(varsel_boston, "list")
   
@@ -45,8 +67,9 @@ test_that("gg_minimal_depth regression", {
   expect_is(gg_dta, "gg_minimal_depth")
   
   # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == 
-                                               "names")],
+  expect_equivalent(gg_dta$varselect[, 
+                                     -which(colnames(gg_dta$varselect) == 
+                                              "names")],
                     varsel_boston$varselect)
   
   ## Test plotting the gg_error object
@@ -117,8 +140,21 @@ test_that("gg_minimal_depth regression", {
 })
 
 test_that("gg_minimal_depth exceptions", {
-  data(varsel_boston, package = "ggRandomForests")
+  data(Boston, package = "MASS")
+  boston <- Boston
   
+  boston$chas <- as.logical(boston$chas)
+  
+  ## Load the cached forest
+  rfsrc_boston <-
+    randomForestSRC::rfsrc(
+      medv ~ .,
+      data = boston,
+      forest = TRUE,
+      importance = TRUE,
+      tree.err = TRUE,
+      save.memory = TRUE)
+  varsel_boston <- randomForestSRC::var.select(rfsrc_boston)
   # Test the cached forest type
   expect_is(varsel_boston, "list")
   
@@ -141,8 +177,20 @@ test_that("gg_minimal_depth exceptions", {
   expect_is(gg_dta, "gg_minimal_depth")
   
   expect_is(plot(gg_dta, type = "rank"), "ggplot")
+  data(Boston, package = "MASS")
+  boston <- Boston
   
-  data(rfsrc_boston, package = "ggRandomForests")
+  boston$chas <- as.logical(boston$chas)
+  
+  ## Load the cached forest
+  rfsrc_boston <-
+    randomForestSRC::rfsrc(
+      medv ~ .,
+      data = boston,
+      forest = TRUE,
+      importance = TRUE,
+      tree.err = TRUE,
+      save.memory = TRUE)
   
   expect_output(
     gg_dta <- gg_minimal_depth(rfsrc_boston, fast = TRUE),

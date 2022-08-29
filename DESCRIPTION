@@ -35,6 +35,4 @@ Suggests:
     lintr,
     datasets
 RoxygenNote: 7.2.1
-LazyData: true
-LazyDataCompression: bzip2
 VignetteBuilder: knitr

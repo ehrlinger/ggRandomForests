@@ -36,11 +36,9 @@
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
 #' ## You can build a randomForest
-#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' # varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
-#' # ... or load a cached randomForestSRC object
-#' data(varsel_iris, package="ggRandomForests")
-#'
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
+#' 
 #' # Get a data.frame containing minimaldepth measures
 #' gg_dta<- gg_minimal_vimp(varsel_iris)
 #'
@@ -66,8 +64,17 @@
 #' }
 #'
 #' ## -------- Boston data
-#' data(varsel_boston, package="ggRandomForests")
-#'
+#' data(Boston, package = "MASS")
+#' Boston$chas <- as.logical(Boston$chas)
+#' rfsrc_boston <- rfsrc(medv ~ .,
+#'    data = Boston,
+#'    forest = TRUE,
+#'    importance = TRUE,
+#'    tree.err = TRUE,
+#'    save.memory = TRUE)
+#'    
+#' varsel_boston <- var.select(rfsrc_boston)
+#' 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_minimal_vimp(varsel_boston)
 #'
@@ -76,10 +83,12 @@
 #'
 #' \dontrun{
 #' ## -------- mtcars data
-#' data(varsel_mtcars, package="ggRandomForests")
 #'
+#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+#' varsel_mtcars <- var.select(rfsrc_mtcars)
+#' 
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_minimal_vimp(varsel_mtcars)
+#' gg_dta <- gg_minimal_vimp(varsel_mtcars)
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
@@ -90,13 +99,11 @@
 #' \dontrun{
 #' ## -------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' # data(veteran, package = "randomForestSRC")
-#' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, 
-#' #                        ntree = 100)
-#' # varsel_veteran <- randomForestSRC::var.select(rfsrc_veteran)
-#' # Load a cached randomForestSRC object
-#' data(varsel_veteran, package="ggRandomForests")
-#'
+#' data(veteran, package = "randomForestSRC")
+#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, 
+#'                         ntree = 100)
+#' varsel_veteran <- randomForestSRC::var.select(rfsrc_veteran)
+#' 
 #' gg_dta <- gg_minimal_vimp(varsel_veteran)
 #' plot(gg_dta)
 #'
@@ -106,6 +113,7 @@
 #' gg_dta <- gg_minimal_vimp(varsel_pbc)
 #' plot(gg_dta)
 #' }
+#' 
 #' @aliases gg_minimal_vimp gg_minimal_vimp.randomForest 
 #' gg_minimal_vimp.rfsrc
 #' @export

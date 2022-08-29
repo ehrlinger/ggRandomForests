@@ -42,9 +42,57 @@ Data structures for stratified partial coplots
 }
 \examples{
 \dontrun{
-# Load the forest
-data(rfsrc_pbc, package="ggRandomForests")
 
+## ------------------------------------------------------------
+## -------- pbc data# We need to create this dataset
+data(pbc, package = "randomForestSRC",) 
+# For whatever reason, the age variable is in days... makes no sense to me
+for (ind in seq_len(dim(pbc)[2])) {
+ if (!is.factor(pbc[, ind])) {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ } else {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+     if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ }
+ if (!is.logical(pbc[, ind]) &
+     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+   pbc[, ind] <- factor(pbc[, ind])
+ }
+}
+#Convert age to years
+pbc$age <- pbc$age / 364.24
+
+pbc$years <- pbc$days / 364.24
+pbc <- pbc[, -which(colnames(pbc) == "days")]
+pbc$treatment <- as.numeric(pbc$treatment)
+pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+pbc$treatment <- factor(pbc$treatment)
+dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+# Create a test set from the remaining patients
+ pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+
+#========
+# build the forest:
+rfsrc_pbc <- randomForestSRC::rfsrc(
+  Surv(years, status) ~ .,
+ dta_train,
+ nsplit = 10,
+ na.action = "na.impute",
+ forest = TRUE,
+ importance = TRUE,
+ save.memory = TRUE
+)
 # Create the variable plot.
 ggvar <- gg_variable(rfsrc_pbc, time = 1)
 
@@ -60,9 +108,6 @@ partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc, xvar = "bili",
                                          surv_type = "surv",
                                          time = 1,
                                          show.plots = FALSE)
-
-## so load the cached set
-data(partial_coplot_pbc, package="ggRandomForests")
 
 # Partial coplot
 plot(partial_coplot_pbc) #, se = FALSE)

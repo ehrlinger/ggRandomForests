@@ -33,7 +33,8 @@
 #' @importFrom stats quantile
 #'
 #' @examples
-#' data(rfsrc_boston)
+#' data(Boston, package="MASS")
+#' rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
 #'
 #' # To create 6 intervals, we want 7 points.
 #' # quantile_pts will find balanced intervals

@@ -3,16 +3,21 @@ context("gg_partial tests")
 
 test_that("gg_partial classifications", {
   ## Load the cached forest
-  data(rfsrc_iris, package = "ggRandomForests")
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    forest = TRUE,
+    importance = TRUE,
+    save.memory = TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
   
   # Test the forest family
   expect_equal(rfsrc_iris$family, "class")
-  
-  # Load saved partial plot data.
-  data(partial_iris, package = "ggRandomForests")
+  partial_iris <- randomForestSRC::plot.variable(rfsrc_iris,
+                                                 partial = TRUE,
+                                                 show.plots = FALSE)
   
   expect_equivalent(length(partial_iris$pData), length(rfsrc_iris$xvar.names))
   
@@ -39,14 +44,34 @@ test_that("gg_partial classifications", {
 
 
 test_that("gg_partial regression", {
+  data(Boston, package = "MASS")
+  boston <- Boston
+  
+  boston$chas <- as.logical(boston$chas)
+  
   ## Load the cached forest
-  data(rfsrc_boston, package = "ggRandomForests")
+  rfsrc_boston <-
+    randomForestSRC::rfsrc(
+      medv ~ .,
+      data = boston,
+      forest = TRUE,
+      importance = TRUE,
+      tree.err = TRUE,
+      save.memory = TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_boston, "rfsrc")
   
+  varsel_boston <- randomForestSRC::var.select(rfsrc_boston)
+  partial_boston <- randomForestSRC::plot.variable(
+    rfsrc_boston,
+    xvar.names = varsel_boston$topvars,
+    sorted = FALSE,
+    partial = TRUE,
+    show.plots = FALSE
+  )
+  
   ## Create the correct gg_error object
-  data(partial_boston, package = "ggRandomForests")
   gg_dta <- gg_partial(partial_boston)
   
   # Test object type

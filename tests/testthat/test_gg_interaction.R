@@ -75,11 +75,10 @@ test_that("gg_interaction regression rfsrc", {
   
   ## This one costs a lot of time in calculating the interaction matrix.
   ## Create the correct gg_interaction object
-  expect_warning(gg_dta <- gg_interaction(rfsrc_boston))
+  expect_warning(gg_dta <- gg_interaction(rf_boston))
   
   # Test object type
   expect_is(gg_dta, "gg_interaction")
-  
   
   # Test the cached interaction structure
   expect_is(interaction_boston, "matrix")

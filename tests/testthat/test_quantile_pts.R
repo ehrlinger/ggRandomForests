@@ -2,8 +2,18 @@
 context("quantile_pts tests")
 
 test_that("cutting a vector at evenly space points", {
-  data(rfsrc_boston)
+  data(Boston, package = "MASS")
+  boston <- Boston
+  boston$chas <- as.logical(boston$chas)
   
+  rfsrc_boston <-
+    randomForestSRC::rfsrc(
+      medv ~ .,
+      data = boston,
+      forest = TRUE,
+      importance = TRUE,
+      tree.err = TRUE,
+      save.memory = TRUE)
   # To create 6 intervals, we want 7 points.
   # quantile_pts will find balanced intervals
   rm_pts <-

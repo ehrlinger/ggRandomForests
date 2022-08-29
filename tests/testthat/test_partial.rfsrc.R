@@ -76,7 +76,7 @@ test_that("partial.rfsrc survival", {
       }
     }
     if (!is.logical(pbc[, ind]) &
-       length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+        length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
       pbc[, ind] <- factor(pbc[, ind])
     }
   }
@@ -124,8 +124,9 @@ test_that("partial.rfsrc classification", {
   ## Load the cached forest
   rfsrc_iris <- rfsrc(Species  ~ ., data = iris, ntree = 100)
   
-  ## Load the cached forest
-  data(partial_iris, package = "ggRandomForests")
+  partial_iris <- randomForestSRC::plot.variable(rfsrc_iris,
+                                                 partial = TRUE,
+                                                 show.plots = FALSE)
   
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")

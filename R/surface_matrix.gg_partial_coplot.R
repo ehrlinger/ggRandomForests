@@ -27,12 +27,24 @@
 #' @examples
 #' \dontrun{
 #' ## From vignette(randomForestRegression, package="ggRandomForests")
-#' ##
-#' data(rfsrc_boston)
-#' rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups=49, intervals=TRUE)
+#' data(Boston, package="MASS")
+#' rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
+#' 
+#' varsel_boston <- var.select(rfsrc_boston)
+#' 
+#' rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups=9, intervals=TRUE)
 #'
-#' # Load the stored partial coplot data.
-#' data(partial_boston_surf)
+#' 
+#' partial_boston_surf <- lapply(rm_pts, function(ct) {
+#'   rfsrc_boston$xvar$rm <- ct
+#'   randomForestSRC::plot.variable(
+#'     rfsrc_boston,
+#'     xvar.names = "lstat",
+#'     time = 1,
+#'     npts = 10,
+#'     show.plots = FALSE,
+#'     partial = TRUE
+#'   )
 #'
 #' # Instead of groups, we want the raw rm point values,
 #' # To make the dimensions match, we need to repeat the values

@@ -34,11 +34,11 @@ function with all optional arguments.
 ## find interactions, classification setting
 ## ------------------------------------------------------------
 ## -------- iris data
-## iris.obj <- rfsrc(Species ~., data = iris)
+iris.obj <- rfsrc(Species ~., data = iris)
 ## TODO: VIMP interactions not handled yet....
 ## randomForestSRC::find.interaction(iris.obj, method = "vimp", nrep = 3)
-## interaction_iris <- randomForestSRC::find.interaction(iris.obj)
-data(interaction_iris, package="ggRandomForests")
+
+interaction_iris <- randomForestSRC::find.interaction(iris.obj)
 gg_dta <- gg_interaction(interaction_iris)
 
 plot(gg_dta, xvar="Petal.Width")
@@ -53,8 +53,8 @@ plot(gg_dta, panel=TRUE)
 ##
 ## TODO: VIMP interactions not handled yet....
 ## randomForestSRC::find.interaction(airq.obj, method = "vimp", nrep = 3)
-## interaction_airq <- randomForestSRC::find.interaction(airq.obj)
-data(interaction_airq, package="ggRandomForests")
+interaction_airq <- randomForestSRC::find.interaction(airq.obj)
+
 gg_dta <- gg_interaction(interaction_airq)
 
 plot(gg_dta, xvar="Temp")
@@ -64,14 +64,25 @@ plot(gg_dta, panel=TRUE)
 }
 
 ## -------- Boston data
-data(interaction_boston, package="ggRandomForests")
+data(Boston, package = "MASS")
+Boston$chas <- as.logical(Boston$chas)
+rfsrc_boston <- rfsrc(medv ~ .,
+   data = Boston,
+   forest = TRUE,
+   importance = TRUE,
+   tree.err = TRUE,
+   save.memory = TRUE)
+   
+interaction_boston <- find.interaction(rfsrc_boston)
+
 gg_dta <- gg_interaction(interaction_boston)
 
 plot(gg_dta, panel=TRUE)
 
 \dontrun{
 ## -------- mtcars data
-data(interaction_mtcars, package="ggRandomForests")
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+
 gg_dta <- gg_interaction(interaction_mtcars)
 
 plot(gg_dta, panel=TRUE)
@@ -79,22 +90,71 @@ plot(gg_dta, panel=TRUE)
 \dontrun{
 ## ------------------------------------------------------------
 ## find interactions, survival setting
+## ------------- veteran data
+## randomized trial of two treatment regimens for lung cancer
+data(veteran, package = "randomForestSRC")
+rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = dta$veteran, ...)
+
+gg_dta <- gg_error(rfsrc_veteran)
+plot(gg_dta)
+
 ## ------------------------------------------------------------
-## -------- pbc data
-## data(pbc, package = "randomForestSRC")
-## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
-## interaction_pbc <- randomForestSRC::find.interaction(pbc.obj, nvar = 8)
-data(interaction_pbc, package="ggRandomForests")
+## -------- pbc data# We need to create this dataset
+data(pbc, package = "randomForestSRC",) 
+# For whatever reason, the age variable is in days... makes no sense to me
+for (ind in seq_len(dim(pbc)[2])) {
+ if (!is.factor(pbc[, ind])) {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ } else {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+     if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ }
+ if (!is.logical(pbc[, ind]) &
+     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+   pbc[, ind] <- factor(pbc[, ind])
+ }
+}
+#Convert age to years
+pbc$age <- pbc$age / 364.24
+
+pbc$years <- pbc$days / 364.24
+pbc <- pbc[, -which(colnames(pbc) == "days")]
+pbc$treatment <- as.numeric(pbc$treatment)
+pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+pbc$treatment <- factor(pbc$treatment)
+dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+# Create a test set from the remaining patients
+pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+
+#========
+# build the forest:
+rfsrc_pbc <- randomForestSRC::rfsrc(
+  Surv(years, status) ~ .,
+ dta_train,
+ nsplit = 10,
+ na.action = "na.impute",
+ forest = TRUE,
+ importance = TRUE,
+ save.memory = TRUE
+)
+
+interaction_pbc <- find.interaction(rfsrc_pbc, nvar = 8)
 gg_dta <- gg_interaction(interaction_pbc)
 
 plot(gg_dta, xvar="bili")
 plot(gg_dta, panel=TRUE)
 
-## -------- veteran data
-data(interaction_veteran, package="ggRandomForests")
-gg_dta <- gg_interaction(interaction_veteran)
-
-plot(gg_dta, panel=TRUE)
 }
 
 }

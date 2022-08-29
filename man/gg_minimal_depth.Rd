@@ -36,10 +36,8 @@ formatted for the \code{\link{plot.gg_minimal_depth}} function.
 ## ------------------------------------------------------------
 ## -------- iris data
 ## You can build a randomForest
-# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-# varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
-# ... or load a cached randomForestSRC object
-data(varsel_iris, package="ggRandomForests")
+rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
 
 # Get a data.frame containing minimaldepth measures
 gg_dta<- gg_minimal_depth(varsel_iris)
@@ -52,10 +50,8 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 \dontrun{
 ## -------- air quality data
-# rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-# varsel_airq <- randomForestSRC::var.select(rfsrc_airq)
-# ... or load a cached randomForestSRC object
-data(varsel_airq, package="ggRandomForests")
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+varsel_airq <- rvar.select(rfsrc_airq)
 
 # Get a data.frame containing error rates
 gg_dta<- gg_minimal_depth(varsel_airq)
@@ -65,14 +61,24 @@ plot(gg_dta)
 }
 
 ## -------- Boston data
-data(varsel_boston, package="ggRandomForests")
+data(Boston, package = "MASS")
+Boston$chas <- as.logical(Boston$chas)
+rfsrc_boston <- rfsrc(medv ~ .,
+   data = Boston,
+   forest = TRUE,
+   importance = TRUE,
+   tree.err = TRUE,
+   save.memory = TRUE)
+   
+varsel_boston <- var.select(rfsrc_boston)
 
 # Get a data.frame containing error rates
 plot(gg_minimal_depth(varsel_boston))
 
 \dontrun{
 ## -------- mtcars data
-data(varsel_mtcars, package="ggRandomForests")
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+varsel_mtcars <- var.select(rfsrc_mtcars)
 
 # Get a data.frame containing error rates
 plot.gg_minimal_depth(varsel_mtcars)
@@ -83,20 +89,67 @@ plot.gg_minimal_depth(varsel_mtcars)
 ## ------------------------------------------------------------
 \dontrun{
 ## -------- veteran data
-## veteran data
 ## randomized trial of two treatment regimens for lung cancer
-# data(veteran, package = "randomForestSRC")
-# rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-# varsel_veteran <- randomForestSRC::var.select(rfsrc_veteran)
-# Load a cached randomForestSRC object
-data(varsel_veteran, package="ggRandomForests")
+data(veteran, package = "randomForestSRC")
+rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+varsel_veteran <- randomForestSRC::var.select(rfsrc_veteran)
 
 gg_dta <- gg_minimal_depth(varsel_veteran)
 plot(gg_dta)
 
-
+## ------------------------------------------------------------
 ## -------- pbc data
-data(varsel_pbc, package="ggRandomForests")
+# We need to create this dataset
+data(pbc, package = "randomForestSRC",) 
+# For whatever reason, the age variable is in days... makes no sense to me
+for (ind in seq_len(dim(pbc)[2])) {
+ if (!is.factor(pbc[, ind])) {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ } else {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+     if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ }
+ if (!is.logical(pbc[, ind]) &
+     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+   pbc[, ind] <- factor(pbc[, ind])
+ }
+}
+#Convert age to years
+pbc$age <- pbc$age / 364.24
+
+pbc$years <- pbc$days / 364.24
+pbc <- pbc[, -which(colnames(pbc) == "days")]
+pbc$treatment <- as.numeric(pbc$treatment)
+pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+pbc$treatment <- factor(pbc$treatment)
+dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+# Create a test set from the remaining patients
+pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+
+#========
+# build the forest:
+rfsrc_pbc <- randomForestSRC::rfsrc(
+  Surv(years, status) ~ .,
+ dta_train,
+ nsplit = 10,
+ na.action = "na.impute",
+ forest = TRUE,
+ importance = TRUE,
+ save.memory = TRUE
+)
+
+varsel_pbc <- var.select(rfsrc_pbc)
 
 gg_dta <- gg_minimal_depth(varsel_pbc)
 plot(gg_dta)

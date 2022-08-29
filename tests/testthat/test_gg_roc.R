@@ -3,7 +3,12 @@ context("gg_roc tests")
 
 test_that("gg_roc classifications", {
   ## Load the cached forest
-  data(rfsrc_iris, package = "ggRandomForests")
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    forest = TRUE,
+    importance = TRUE,
+    save.memory = TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
@@ -98,8 +103,20 @@ test_that("gg_roc randomForest classifications", {
 })
 
 test_that("gg_roc regression", {
+  data(Boston, package = "MASS")
+  boston <- Boston
+  
+  boston$chas <- as.logical(boston$chas)
+  
   ## Load the cached forest
-  data(rfsrc_boston, package = "ggRandomForests")
+  rfsrc_boston <-
+    randomForestSRC::rfsrc(
+      medv ~ .,
+      data = boston,
+      forest = TRUE,
+      importance = TRUE,
+      tree.err = TRUE,
+      save.memory = TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_boston, "rfsrc")
@@ -114,7 +131,12 @@ test_that("gg_roc regression", {
 })
 
 test_that("calc_roc", {
-  data(rfsrc_iris)
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    forest = TRUE,
+    importance = TRUE,
+    save.memory = TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
