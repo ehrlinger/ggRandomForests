@@ -36,8 +36,9 @@
 #' \dontrun{
 #' 
 #' ## ------------------------------------------------------------
-#' ## -------- pbc data# We need to create this dataset
-#' data(pbc, package = "randomForestSRC",) 
+#' ## -------- pbc data
+#' # We need to create this dataset
+#' data(pbc, package = "randomForestSRC") 
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
 #'  if (!is.factor(pbc[, ind])) {

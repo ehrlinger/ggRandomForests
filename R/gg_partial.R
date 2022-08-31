@@ -54,8 +54,9 @@
 #' ## iris "Petal.Width" partial dependence plot
 #' ##
 #' rfsrc_iris <- rfsrc(Species ~., data = iris)
-#' partial_iris <- plot.variable(rfsrc_iris, xvar.names = "Petal.Width",
-#'                             partial=TRUE)
+#' partial_iris <- plot.variable(rfsrc_iris, 
+#'                               xvar.names = "Petal.Width",
+#'                               partial=TRUE)
 #' 
 #' gg_dta <- gg_partial(partial_iris)
 #' plot(gg_dta)
@@ -68,21 +69,16 @@
 #' ## airquality "Wind" partial dependence plot
 #' ##
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
-#' partial_airq <- plot.variable(rfsrc_airq, xvar.names = "Wind",
-#'                             partial=TRUE, show.plot=FALSE)
+#' partial_airq <- plot.variable(rfsrc_airq, 
+#'                               xvar.names = "Wind",
+#'                              partial=TRUE, show.plot=FALSE)
 #' 
 #' gg_dta <- gg_partial(partial_airq)
 #' plot(gg_dta)
 #'
-#' gg_dta.m <- gg_dta[["Month"]]
-#' plot(gg_dta.m, notch=TRUE)
-#'
-#' gg_dta[["Month"]] <- NULL
-#' plot(gg_dta, panel=TRUE)
 #' }
 #'
 #' ## -------- Boston data
-#' 
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
 #' rfsrc_boston <- rfsrc(medv ~ .,
@@ -106,6 +102,13 @@
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' varsel_mtcars <- var.select(rfsrc_mtcars)
+#' 
+#' partial_mtcars <- plot.variable(rfsrc_mtcars, 
+#'   xvar.names = varsel_mtcars$topvars,
+#'   sorted = FALSE,
+#'   partial = TRUE, 
+#'   show.plots = FALSE)
+#' 
 #' gg_dta <- gg_partial(partial_mtcars)
 #'
 #' gg_dta.cat <- gg_dta
@@ -130,14 +133,15 @@
 #'  rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10,
 #'      ntree = 100)
 #' 
+#' varsel_rfsrc <- var.select(rfsrc_veteran)
+#' 
 #' ## 30 day partial plot for age
 #' partial_veteran <- plot.variable(rfsrc_veteran, surv.type = "surv",
 #'                                partial = TRUE, time=30,
-#'                                xvar.names = "age",
 #'                                show.plots=FALSE)
 #'
-#' gg_dta <- gg_partial(partial_veteran[[1]])
-#' plot(gg_dta)
+#' gg_dta <- gg_partial(partial_veteran)
+#' plot(gg_dta, panel=TRUE)
 #'
 #' gg_dta.cat <- gg_dta
 #' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
@@ -213,7 +217,7 @@
 #'  save.memory = TRUE
 #' )
 #' 
-#' varsel_pbc(var.select(rfsrc_pbc))
+#' varsel_pbc <- var.select(rfsrc_pbc)
 #' 
 #' xvar <- varsel_pbc$topvars
 #'
@@ -238,8 +242,7 @@
 #' # Panel plot the remainder.
 #' plot(ggpart, panel = TRUE)
 #'
-#' #plot(pbc_ggpart[["edema"]], panel=TRUE) #,
-#'      # notch = TRUE, alpha = .3, outlier.shape = NA)
+#' plot(pbc_ggpart[["edema"]])
 #' }
 #' @aliases gg_partial gg_partial_list gg_partial.rfsrc gg_partial.randomForest
 #' @name gg_partial

@@ -107,7 +107,7 @@ data(Boston, package="MASS")
 rf_boston <- randomForest::randomForest(medv~., data=Boston)
 gg_dta <- gg_variable(rf_boston)
 plot(gg_dta)
-
+plot(gg_dta, panel = TRUE)
 ## ------------------------------------------------------------
 ## survival examples
 ## ------------------------------------------------------------
@@ -135,7 +135,67 @@ gg_dta <- gg_variable(rfsrc_veteran, time=c(30, 90, 365))
 # Generate variable dependence plots for age and diagtime
 plot(gg_dta, xvar = "age")
 }
+\dontrun{
 ## -------- pbc data
+## We don't run this because of bootstrap confidence limits
+# We need to create this dataset
+data(pbc, package = "randomForestSRC",) 
+# For whatever reason, the age variable is in days... makes no sense to me
+for (ind in seq_len(dim(pbc)[2])) {
+ if (!is.factor(pbc[, ind])) {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ } else {
+   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+     if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+     if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+       pbc[, ind] <- as.logical(pbc[, ind])
+     }
+   }
+ }
+ if (!is.logical(pbc[, ind]) &
+     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+   pbc[, ind] <- factor(pbc[, ind])
+ }
+}
+#Convert age to years
+pbc$age <- pbc$age / 364.24
+
+pbc$years <- pbc$days / 364.24
+pbc <- pbc[, -which(colnames(pbc) == "days")]
+pbc$treatment <- as.numeric(pbc$treatment)
+pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+pbc$treatment <- factor(pbc$treatment)
+dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+# Create a test set from the remaining patients
+ pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+
+#========
+# build the forest:
+rfsrc_pbc <- randomForestSRC::rfsrc(
+  Surv(years, status) ~ .,
+ dta_train,
+ nsplit = 10,
+ na.action = "na.impute",
+ forest = TRUE,
+ importance = TRUE,
+ save.memory = TRUE
+)
+
+gg_dta <- gg_variable(rfsrc_pbc, time=c(.5, 1, 3))
+plot(gg_dta, xvar = "age")
+plot(gg_dta, xvar = "trig")
+
+# Generate coplots
+plot(gg_dta, xvar = c("age", "trig"), panel=TRUE, se=FALSE)
+
+}
 
 }
 \seealso{

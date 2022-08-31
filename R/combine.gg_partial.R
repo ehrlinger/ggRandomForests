@@ -93,8 +93,22 @@
 #'  importance = TRUE,
 #'  save.memory = TRUE
 #' )
-#'
-#'
+#' xvar <- c("bili", "albumin", "copper", "prothrombin", "age")
+#' xvar_cat <- c("edema")
+#' xvar <- c(xvar, xvar_cat)
+#' 
+#' time_index <- c(which(rfsrc_pbc$time.interest > 1)[1] - 1,  
+#'                 which(rfsrc_pbc$time.interest > 3)[1] - 1,  
+#'                 which(rfsrc_pbc$time.interest > 5)[1] - 1)
+#'                 
+#' partial_pbc <- mclapply(rfsrc_pbc$time.interest[time_index],
+#'                   function(tm) {
+#'                     plot.variable(rfsrc_pbc, surv.type = "surv", 
+#'                                        time = tm, xvar.names = xvar,
+#'                                        partial = TRUE, 
+#'                                        show.plots = FALSE)
+#'                        })
+#'                        
 #' # A list of 2 plot.variable objects
 #' length(partial_pbc)
 #' class(partial_pbc)

@@ -33,7 +33,8 @@ a \code{\link[randomForestSRC]{rfsrc}} object.
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris,
+                    importance = TRUE)
 gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
 
@@ -42,14 +43,16 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 \dontrun{
 ## -------- air quality data
-rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
+rfsrc_airq <- rfsrc(Ozone ~ ., airquality,
+                    importance = TRUE)
 gg_dta <- gg_vimp(rfsrc_airq)
 plot(gg_dta)
 }
 
 ## -------- Boston data
 data(Boston, package="MASS")
-rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
+rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston,
+                                       importance = TRUE)
 gg_dta <- gg_vimp(rfsrc_boston)
 plot(gg_dta)
 
@@ -60,7 +63,8 @@ plot(gg_dta)
 
 \dontrun{
 ## -------- mtcars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars,
+                      importance = TRUE)
 gg_dta <- gg_vimp(rfsrc_mtcars)
 plot(gg_dta)
 }
@@ -70,15 +74,19 @@ plot(gg_dta)
 \dontrun{
 ## -------- veteran data
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., 
+   data = veteran, 
+   ntree = 100,
+   importance = TRUE)
 
 gg_dta <- gg_vimp(rfsrc_veteran)
 plot(gg_dta)
 
 ## -------- pbc data
-#' # We need to create this dataset
+# We need to create this dataset
 data(pbc, package = "randomForestSRC",) 
-# For whatever reason, the age variable is in days... makes no sense to me
+# For whatever reason, the age variable is in days... 
+# makes no sense to me
 for (ind in seq_len(dim(pbc)[2])) {
  if (!is.factor(pbc[, ind])) {
    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {

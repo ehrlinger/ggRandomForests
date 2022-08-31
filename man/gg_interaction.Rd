@@ -49,7 +49,7 @@ plot(gg_dta, panel=TRUE)
 ## ------------------------------------------------------------
 \dontrun{
 ## -------- air quality data
-## airq.obj <- rfsrc(Ozone ~ ., data = airquality)
+airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 ##
 ## TODO: VIMP interactions not handled yet....
 ## randomForestSRC::find.interaction(airq.obj, method = "vimp", nrep = 3)
@@ -83,6 +83,8 @@ plot(gg_dta, panel=TRUE)
 ## -------- mtcars data
 rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 
+interaction_mtcars <- find.interaction(rfsrc_mtcars)
+
 gg_dta <- gg_interaction(interaction_mtcars)
 
 plot(gg_dta, panel=TRUE)
@@ -93,10 +95,13 @@ plot(gg_dta, panel=TRUE)
 ## ------------- veteran data
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = dta$veteran, ...)
+rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran)
 
-gg_dta <- gg_error(rfsrc_veteran)
-plot(gg_dta)
+interaction_vet <- find.interaction(rfsrc_veteran)
+
+gg_dta <- gg_interaction(interaction_vet)
+
+plot(gg_dta, panel = True)
 
 ## ------------------------------------------------------------
 ## -------- pbc data# We need to create this dataset
@@ -149,7 +154,7 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
  save.memory = TRUE
 )
 
-interaction_pbc <- find.interaction(rfsrc_pbc, nvar = 8)
+interaction_pbc <- find.interaction(rfsrc_pbc, nvar = 9)
 gg_dta <- gg_interaction(interaction_pbc)
 
 plot(gg_dta, xvar="bili")

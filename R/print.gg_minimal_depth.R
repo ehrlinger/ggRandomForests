@@ -18,6 +18,7 @@
 #' @param ... optional arguments
 #'
 #' @examples
+#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -32,7 +33,6 @@
 #' ## ------------------------------------------------------------
 #' ## regression example
 #' ## ------------------------------------------------------------
-#' \dontrun{
 #' # ... or load a cached randomForestSRC object
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' varsel_airq <- var.select(rfsrc_airq)

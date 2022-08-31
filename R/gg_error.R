@@ -50,16 +50,17 @@
 #' ## ------------------------------------------------------------
 #' ## ------------- iris data
 #' ## You can build a randomForest
-#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris, tree.err = TRUE)
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_error(rfsrc_iris)
+#' gg_dta <- gg_error(rfsrc_iris)
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
 #'
 #' ## RandomForest example
-#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
+#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris, 
+#'                                       tree.err = TRUE, )
 #' gg_dta <- gg_error(rf_iris)
 #' plot(gg_dta)
 #' 
@@ -71,10 +72,10 @@
 #' \dontrun{
 #' ## ------------- airq data
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, 
-#'     na.action = "na.impute")
+#'     na.action = "na.impute", tree.err = TRUE, )
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_error(rfsrc_airq)
+#' gg_dta <- gg_error(rfsrc_airq)
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
@@ -98,7 +99,7 @@
 #'
 #' \dontrun{
 #' ## ------------- mtcars data
-#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_error(rfsrc_mtcars)
@@ -114,7 +115,8 @@
 #' ## ------------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRC")
-#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = dta$veteran, ...)
+#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran,
+#'                        tree.err = TRUE)
 #'
 #' gg_dta <- gg_error(rfsrc_veteran)
 #' plot(gg_dta)
@@ -147,17 +149,16 @@
 #'  }
 #' }
 #' #Convert age to years
-#'pbc$age <- pbc$age / 364.24
+#' pbc$age <- pbc$age / 364.24
 #'
-#'pbc$years <- pbc$days / 364.24
-#'pbc <- pbc[, -which(colnames(pbc) == "days")]
-#'pbc$treatment <- as.numeric(pbc$treatment)
-#'pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
-#'pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
-#'pbc$treatment <- factor(pbc$treatment)
-
-#'dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-#'# Create a test set from the remaining patients
+#' pbc$years <- pbc$days / 364.24
+#' pbc <- pbc[, -which(colnames(pbc) == "days")]
+#' pbc$treatment <- as.numeric(pbc$treatment)
+#' pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+#' pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+#' pbc$treatment <- factor(pbc$treatment)
+#' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+#' # Create a test set from the remaining patients
 #' pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 #'
 #' #========
@@ -167,6 +168,7 @@
 #'  dta_train,
 #'  nsplit = 10,
 #'  na.action = "na.impute",
+#'  tree.err = TRUE, 
 #'  forest = TRUE,
 #'  importance = TRUE,
 #'  save.memory = TRUE

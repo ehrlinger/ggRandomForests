@@ -42,7 +42,7 @@ plot(gg_dta)
 gg_dta <- gg_roc(rfsrc_iris, which_outcome=3)
 plot(gg_dta)
 
-
+## -------- iris data
 rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
 
 # ROC for setosa

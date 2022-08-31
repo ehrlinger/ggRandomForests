@@ -48,7 +48,7 @@
 #' varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
 #' 
 #' # Get a data.frame containing minimaldepth measures
-#' gg_dta<- gg_minimal_depth(varsel_iris)
+#' gg_dta <- gg_minimal_depth(varsel_iris)
 #'
 #' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
@@ -58,8 +58,9 @@
 #' ## ------------------------------------------------------------
 #' \dontrun{
 #' ## -------- air quality data
-#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' varsel_airq <- rvar.select(rfsrc_airq)
+#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, 
+#'                     na.action = "na.impute")
+#' varsel_airq <- var.select(rfsrc_airq)
 #' 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_minimal_depth(varsel_airq)
@@ -81,8 +82,10 @@
 #' varsel_boston <- var.select(rfsrc_boston)
 #'
 #' # Get a data.frame containing error rates
-#' plot(gg_minimal_depth(varsel_boston))
-#'
+#' gg_dta <- gg_minimal_depth(varsel_boston)
+#' print(gg_dta)
+#' plot(gg_dta)
+#' 
 #' \dontrun{
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
@@ -91,7 +94,7 @@
 #' # Get a data.frame containing error rates
 #' plot.gg_minimal_depth(varsel_mtcars)
 #' }
-#'
+#' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------

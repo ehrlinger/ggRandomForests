@@ -152,7 +152,6 @@
 #'  importance = TRUE,
 #'  save.memory = TRUE
 #' )
-#
 #' gg_dta <- gg_rfsrc(rfsrc_pbc)
 #' plot(gg_dta)
 #'

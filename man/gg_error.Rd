@@ -36,16 +36,17 @@ and assigns the class for connecting to the S3
 ## ------------------------------------------------------------
 ## ------------- iris data
 ## You can build a randomForest
-rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris, tree.err = TRUE)
 
 # Get a data.frame containing error rates
-gg_dta<- gg_error(rfsrc_iris)
+gg_dta <- gg_error(rfsrc_iris)
 
 # Plot the gg_error object
 plot(gg_dta)
 
 ## RandomForest example
-rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
+rf_iris <- randomForest::randomForest(Species ~ ., data = iris, 
+                                      tree.err = TRUE, )
 gg_dta <- gg_error(rf_iris)
 plot(gg_dta)
 
@@ -57,10 +58,10 @@ plot(gg_dta)
 \dontrun{
 ## ------------- airq data
 rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, 
-    na.action = "na.impute")
+    na.action = "na.impute", tree.err = TRUE, )
 
 # Get a data.frame containing error rates
-gg_dta<- gg_error(rfsrc_airq)
+gg_dta <- gg_error(rfsrc_airq)
 
 # Plot the gg_error object
 plot(gg_dta)
@@ -84,7 +85,7 @@ plot(gg_dta)
 
 \dontrun{
 ## ------------- mtcars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_mtcars)
 
@@ -99,7 +100,8 @@ plot(gg_dta)
 ## ------------- veteran data
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = dta$veteran, ...)
+rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran,
+                       tree.err = TRUE)
 
 gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)
@@ -151,6 +153,7 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
  dta_train,
  nsplit = 10,
  na.action = "na.impute",
+ tree.err = TRUE, 
  forest = TRUE,
  importance = TRUE,
  save.memory = TRUE
