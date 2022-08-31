@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.1</span>
       </span>
     </div>
 
@@ -35,6 +35,9 @@
       <a href="../articles/ggrfRegression.html">ggRandomForests: Exploring randomForestSRC Regression</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/ehrlinger/ggRandomForests/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -60,18 +63,18 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for gg_variable</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">xvar</span>,
-  <span class="va">time</span>,
-  <span class="va">time_labels</span>,
-  panel <span class="op">=</span> <span class="cn">FALSE</span>,
-  oob <span class="op">=</span> <span class="cn">TRUE</span>,
-  points <span class="op">=</span> <span class="cn">TRUE</span>,
-  smooth <span class="op">=</span> <span class="cn">TRUE</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for gg_variable</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">xvar</span>,</span>
+<span>  <span class="va">time</span>,</span>
+<span>  <span class="va">time_labels</span>,</span>
+<span>  panel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  oob <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  points <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  smooth <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,26 +82,45 @@
     <dl><dt>x</dt>
 <dd><p><code><a href="gg_variable.html">gg_variable</a></code> object created from a
 <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object</p></dd>
+
+
 <dt>xvar</dt>
 <dd><p>variable (or list of variables) of interest.</p></dd>
+
+
 <dt>time</dt>
 <dd><p>For survival, one or more times of interest</p></dd>
+
+
 <dt>time_labels</dt>
 <dd><p>string labels for times</p></dd>
+
+
 <dt>panel</dt>
 <dd><p>Should plots be faceted along multiple xvar?</p></dd>
+
+
 <dt>oob</dt>
 <dd><p>oob estimates (boolean)</p></dd>
+
+
 <dt>points</dt>
 <dd><p>plot the raw data points (boolean)</p></dd>
+
+
 <dt>smooth</dt>
 <dd><p>include a smooth curve (boolean)</p></dd>
+
+
 <dt>...</dt>
 <dd><p>arguments passed to the <code>ggplot2</code> functions.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A single <code>ggplot</code> object, or list of <code>ggplot</code> objects</p>
+    
+
+<p>A single <code>ggplot</code> object, or list of <code>ggplot</code> objects</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -111,100 +133,100 @@ and Classification (RF-SRC), R package version 1.4.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## classification</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## -------- iris data</span></span>
-<span class="r-in"><span class="co">## iris</span></span>
-<span class="r-in"><span class="co">#rfsrc_iris &lt;- rfsrc(Species ~., data = iris)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_iris</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Sepal.Width"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Sepal.Length"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## !! TODO !! this needs to be corrected</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">xvar.names</span>,</span>
-<span class="r-in">     panel<span class="op">=</span><span class="cn">TRUE</span>, se<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## regression</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## -------- air quality data</span></span>
-<span class="r-in"><span class="co">#rfsrc_airq &lt;- rfsrc(Ozone ~ ., data = airquality)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_airq</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_airq</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># an ordinal variable</span></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">[</span>,<span class="st">"Month"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[</span>,<span class="st">"Month"</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Wind"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Temp"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Solar.R"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Wind"</span>, <span class="st">"Temp"</span>, <span class="st">"Day"</span><span class="op">)</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Month"</span>, notch<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## -------- motor trend cars data</span></span>
-<span class="r-in"><span class="co">#rfsrc_mtcars &lt;- rfsrc(mpg ~ ., data = mtcars)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_mtcars</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_mtcars</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># mtcars$cyl is an ordinal variable</span></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">$</span><span class="va">cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">cyl</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">$</span><span class="va">am</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">am</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">$</span><span class="va">vs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">vs</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">$</span><span class="va">gear</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">gear</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">$</span><span class="va">carb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">carb</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"cyl"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Others are continuous</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"disp"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"hp"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"wt"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># panel</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>,xvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"disp"</span>,<span class="st">"hp"</span>, <span class="st">"drat"</span>, <span class="st">"wt"</span>, <span class="st">"qsec"</span><span class="op">)</span>,  panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cyl"</span>, <span class="st">"vs"</span>, <span class="st">"am"</span>, <span class="st">"gear"</span>, <span class="st">"carb"</span><span class="op">)</span> ,panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## -------- Boston data</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## survival examples</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## -------- veteran data</span></span>
-<span class="r-in"><span class="co">## survival</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">veteran</span>, package <span class="op">=</span> <span class="st">"randomForestSRC"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">rfsrc_veteran</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>,<span class="va">status</span><span class="op">)</span><span class="op">~</span><span class="va">.</span>, <span class="va">veteran</span>, nsplit <span class="op">=</span> <span class="fl">10</span>,</span>
-<span class="r-in">                       ntree <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># get the 1 year survival time.</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_veteran</span>, time<span class="op">=</span><span class="fl">90</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate variable dependance plots for age and diagtime</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="st">"diagtime"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate coplots</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"diagtime"</span><span class="op">)</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># If we want to compare survival at different time points, say 30, 90 day</span></span>
-<span class="r-in"><span class="co"># and 1 year</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_veteran</span>, time<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">90</span>, <span class="fl">365</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate variable dependance plots for age and diagtime</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="st">"diagtime"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Generate coplots</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"diagtime"</span><span class="op">)</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## -------- pbc data</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## classification</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## -------- iris data</span></span></span>
+<span class="r-in"><span><span class="co">## iris</span></span></span>
+<span class="r-in"><span><span class="co">#rfsrc_iris &lt;- rfsrc(Species ~., data = iris)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_iris</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Sepal.Width"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Sepal.Length"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## !! TODO !! this needs to be corrected</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">xvar.names</span>,</span></span>
+<span class="r-in"><span>     panel<span class="op">=</span><span class="cn">TRUE</span>, se<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## regression</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## -------- air quality data</span></span></span>
+<span class="r-in"><span><span class="co">#rfsrc_airq &lt;- rfsrc(Ozone ~ ., data = airquality)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_airq</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_airq</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># an ordinal variable</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">[</span>,<span class="st">"Month"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[</span>,<span class="st">"Month"</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Wind"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Temp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Solar.R"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Solar.R"</span>, <span class="st">"Wind"</span>, <span class="st">"Temp"</span>, <span class="st">"Day"</span><span class="op">)</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Month"</span>, notch<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## -------- motor trend cars data</span></span></span>
+<span class="r-in"><span><span class="co">#rfsrc_mtcars &lt;- rfsrc(mpg ~ ., data = mtcars)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_mtcars</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_mtcars</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># mtcars$cyl is an ordinal variable</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">$</span><span class="va">cyl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">cyl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">$</span><span class="va">am</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">am</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">$</span><span class="va">vs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">vs</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">$</span><span class="va">gear</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">gear</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">$</span><span class="va">carb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">$</span><span class="va">carb</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"cyl"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Others are continuous</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"disp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"hp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"wt"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># panel</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>,xvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"disp"</span>,<span class="st">"hp"</span>, <span class="st">"drat"</span>, <span class="st">"wt"</span>, <span class="st">"qsec"</span><span class="op">)</span>,  panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cyl"</span>, <span class="st">"vs"</span>, <span class="st">"am"</span>, <span class="st">"gear"</span>, <span class="st">"carb"</span><span class="op">)</span> ,panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## -------- Boston data</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## survival examples</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## -------- veteran data</span></span></span>
+<span class="r-in"><span><span class="co">## survival</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">veteran</span>, package <span class="op">=</span> <span class="st">"randomForestSRC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_veteran</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>,<span class="va">status</span><span class="op">)</span><span class="op">~</span><span class="va">.</span>, <span class="va">veteran</span>, nsplit <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                       ntree <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># get the 1 year survival time.</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_veteran</span>, time<span class="op">=</span><span class="fl">90</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate variable dependance plots for age and diagtime</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="st">"diagtime"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate coplots</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"diagtime"</span><span class="op">)</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># If we want to compare survival at different time points, say 30, 90 day</span></span></span>
+<span class="r-in"><span><span class="co"># and 1 year</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_veteran</span>, time<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">30</span>, <span class="fl">90</span>, <span class="fl">365</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate variable dependance plots for age and diagtime</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="st">"age"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span> <span class="st">"diagtime"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Generate coplots</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"diagtime"</span><span class="op">)</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## -------- pbc data</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -219,7 +241,7 @@ and Classification (RF-SRC), R package version 1.4.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

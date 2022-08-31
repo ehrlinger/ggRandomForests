@@ -28,7 +28,7 @@ plots together"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/l
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.1</span>
       </span>
     </div>
 
@@ -46,6 +46,9 @@ plots together"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/l
       <a href="../articles/ggrfRegression.html">ggRandomForests: Exploring randomForestSRC Regression</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/ehrlinger/ggRandomForests/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -82,7 +85,7 @@ plots together</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">gg_partial</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_partial</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -90,12 +93,17 @@ plots together</p>
     <dl><dt>object</dt>
 <dd><p>the partial variable dependence data object from
 <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> function</p></dd>
+
+
 <dt>...</dt>
 <dd><p>optional arguments</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>gg_partial</code> object. A <code>data.frame</code> or <code>list</code> of
+    
+
+<p><code>gg_partial</code> object. A <code>data.frame</code> or <code>list</code> of
 <code>data.frames</code> corresponding the variables
 contained within the <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> output.</p>
     </div>
@@ -112,150 +120,205 @@ Boosting Machine." Annals of Statistics 29: 1189-1232."</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## classification</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## -------- iris data</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## iris "Petal.Width" partial dependence plot</span></span>
-<span class="r-in"><span class="co">##</span></span>
-<span class="r-in"><span class="co"># rfsrc_iris &lt;- rfsrc(Species ~., data = iris)</span></span>
-<span class="r-in"><span class="co"># partial_iris &lt;- plot.variable(rfsrc_iris, xvar.names = "Petal.Width",</span></span>
-<span class="r-in"><span class="co">#                            partial=TRUE)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">partial_iris</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_iris</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## classification</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## -------- iris data</span></span></span>
+<span class="r-in"><span><span class="co">## iris "Petal.Width" partial dependence plot</span></span></span>
+<span class="r-in"><span><span class="co">##</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_iris</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span><span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">partial_iris</span> <span class="op">&lt;-</span> <span class="fu">plot.variable</span><span class="op">(</span><span class="va">rfsrc_iris</span>, </span></span>
+<span class="r-in"><span>                              xvar.names <span class="op">=</span> <span class="st">"Petal.Width"</span>,</span></span>
+<span class="r-in"><span>                              partial<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gg_partial-1.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gg_partial-2.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
-<span class="r-plt img"><img src="gg_partial-3.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
-<span class="r-plt img"><img src="gg_partial-4.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## regression</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## -------- air quality data</span></span>
-<span class="r-in"><span class="co">## airquality "Wind" partial dependence plot</span></span>
-<span class="r-in"><span class="co">##</span></span>
-<span class="r-in"><span class="co"># rfsrc_airq &lt;- rfsrc(Ozone ~ ., data = airquality)</span></span>
-<span class="r-in"><span class="co"># partial_airq &lt;- plot.variable(rfsrc_airq, xvar.names = "Wind",</span></span>
-<span class="r-in"><span class="co">#                            partial=TRUE, show.plot=FALSE)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">partial_airq</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_airq</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta.m</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"Month"</span><span class="op">]</span><span class="op">]</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta.m</span>, notch<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"Month"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## -------- Boston data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">partial_boston</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_boston</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-plt img"><img src="gg_partial-5.png" alt="" width="700" height="433"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## -------- mtcars data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">partial_mtcars</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_mtcars</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta.cat</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span></span>
-<span class="r-in"><span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"disp"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"wt"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"hp"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"drat"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"carb"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"qsec"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta.cat</span>, panel<span class="op">=</span><span class="cn">TRUE</span>, notch<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"cyl"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"vs"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"am"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"gear"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## survival examples</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## -------- veteran data</span></span>
-<span class="r-in"><span class="co">## survival "age" partial variable dependence plot</span></span>
-<span class="r-in"><span class="co">##</span></span>
-<span class="r-in"><span class="co"># data(veteran, package = "randomForestSRC")</span></span>
-<span class="r-in"><span class="co"># rfsrc_veteran &lt;- rfsrc(Surv(time,status)~., veteran, nsplit = 10,</span></span>
-<span class="r-in"><span class="co">#     ntree = 100)</span></span>
-<span class="r-in"><span class="co">#</span></span>
-<span class="r-in"><span class="co">## 30 day partial plot for age</span></span>
-<span class="r-in"><span class="co"># partial_veteran &lt;- plot.variable(rfsrc_veteran, surv.type = "surv",</span></span>
-<span class="r-in"><span class="co">#                               partial = TRUE, time=30,</span></span>
-<span class="r-in"><span class="co">#                               xvar.names = "age",</span></span>
-<span class="r-in"><span class="co">#                               show.plots=FALSE)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">partial_veteran</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_veteran</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta.cat</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"celltype"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"trt"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"prior"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"karno"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"diagtime"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span></span>
-<span class="r-in">    <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"age"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta.cat</span>, panel<span class="op">=</span><span class="cn">TRUE</span>, notch<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">partial_veteran</span>, <span class="va">gg_partial</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="combine.gg_partial.html">combine.gg_partial</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">gg_dta</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> <span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"karno"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"celltype"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta.cat</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span></span>
-<span class="r-in"><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"celltype"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"trt"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"prior"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"karno"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"diagtime"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span></span>
-<span class="r-in">    <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"age"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta.cat</span>, panel<span class="op">=</span><span class="cn">TRUE</span>, notch<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## -------- pbc data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"partial_pbc"</span>, package <span class="op">=</span> <span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"varsel_pbc"</span>, package <span class="op">=</span> <span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">xvar</span> <span class="op">&lt;-</span> <span class="va">varsel_pbc</span><span class="op">$</span><span class="va">topvars</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Convert all partial plots to gg_partial objects</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">partial_pbc</span>, <span class="va">gg_partial</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Combine the objects to get multiple time curves</span></span>
-<span class="r-in"><span class="co"># along variables on a single figure.</span></span>
-<span class="r-in"><span class="va">pbc_ggpart</span> <span class="op">&lt;-</span> <span class="fu"><a href="combine.gg_partial.html">combine.gg_partial</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">gg_dta</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>,</span>
-<span class="r-in">                                 lbls <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1 Year"</span>, <span class="st">"3 Years"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pbc_ggpart</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">pbc_ggpart</span><span class="op">[[</span><span class="st">"bili"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Plot the highest ranked variable, by name.</span></span>
-<span class="r-in"><span class="co">#plot(pbc_ggpart[["bili"]])</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Create a temporary holder and remove the stage and edema data</span></span>
-<span class="r-in"><span class="va">ggpart</span> <span class="op">&lt;-</span> <span class="va">pbc_ggpart</span></span>
-<span class="r-in"><span class="va">ggpart</span><span class="op">$</span><span class="va">edema</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Panel plot the remainder.</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ggpart</span>, panel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">#plot(pbc_ggpart[["edema"]], panel=TRUE) #,</span></span>
-<span class="r-in">     <span class="co"># notch = TRUE, alpha = .3, outlier.shape = NA)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## regression</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## -------- air quality data</span></span></span>
+<span class="r-in"><span><span class="co">## airquality "Wind" partial dependence plot</span></span></span>
+<span class="r-in"><span><span class="co">##</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_airq</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">Ozone</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">airquality</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">partial_airq</span> <span class="op">&lt;-</span> <span class="fu">plot.variable</span><span class="op">(</span><span class="va">rfsrc_airq</span>, </span></span>
+<span class="r-in"><span>                              xvar.names <span class="op">=</span> <span class="st">"Wind"</span>,</span></span>
+<span class="r-in"><span>                             partial<span class="op">=</span><span class="cn">TRUE</span>, show.plot<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_airq</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## -------- Boston data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Boston</span>, package <span class="op">=</span> <span class="st">"MASS"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Boston</span><span class="op">$</span><span class="va">chas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">$</span><span class="va">chas</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_boston</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
+<span class="r-in"><span>   data <span class="op">=</span> <span class="va">Boston</span>,</span></span>
+<span class="r-in"><span>   forest <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>   importance <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>   tree.err <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>   save.memory <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span><span class="va">varsel_boston</span> <span class="op">&lt;-</span> <span class="fu">var.select</span><span class="op">(</span><span class="va">rfsrc_boston</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">partial_boston</span> <span class="op">&lt;-</span> <span class="fu">plot.variable</span><span class="op">(</span><span class="va">rfsrc_boston</span>, </span></span>
+<span class="r-in"><span>  xvar.names <span class="op">=</span> <span class="va">varsel_boston</span><span class="op">$</span><span class="va">topvars</span>,</span></span>
+<span class="r-in"><span>  sorted <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  partial <span class="op">=</span> <span class="cn">TRUE</span>, </span></span>
+<span class="r-in"><span>  show.plots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_boston</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## -------- mtcars data</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_mtcars</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">varsel_mtcars</span> <span class="op">&lt;-</span> <span class="fu">var.select</span><span class="op">(</span><span class="va">rfsrc_mtcars</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">partial_mtcars</span> <span class="op">&lt;-</span> <span class="fu">plot.variable</span><span class="op">(</span><span class="va">rfsrc_mtcars</span>, </span></span>
+<span class="r-in"><span>  xvar.names <span class="op">=</span> <span class="va">varsel_mtcars</span><span class="op">$</span><span class="va">topvars</span>,</span></span>
+<span class="r-in"><span>  sorted <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>  partial <span class="op">=</span> <span class="cn">TRUE</span>, </span></span>
+<span class="r-in"><span>  show.plots <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_mtcars</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta.cat</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"disp"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"wt"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"hp"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"drat"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"carb"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"qsec"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta.cat</span>, panel<span class="op">=</span><span class="cn">TRUE</span>, notch<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"cyl"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"vs"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"am"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"gear"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## survival examples</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## -------- veteran data</span></span></span>
+<span class="r-in"><span><span class="co">## survival "age" partial variable dependence plot</span></span></span>
+<span class="r-in"><span><span class="co">##</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">veteran</span>, package <span class="op">=</span> <span class="st">"randomForestSRC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="va">rfsrc_veteran</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="fu">Surv</span><span class="op">(</span><span class="va">time</span>,<span class="va">status</span><span class="op">)</span><span class="op">~</span><span class="va">.</span>, <span class="va">veteran</span>, nsplit <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>     ntree <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">varsel_rfsrc</span> <span class="op">&lt;-</span> <span class="fu">var.select</span><span class="op">(</span><span class="va">rfsrc_veteran</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## 30 day partial plot for age</span></span></span>
+<span class="r-in"><span><span class="va">partial_veteran</span> <span class="op">&lt;-</span> <span class="fu">plot.variable</span><span class="op">(</span><span class="va">rfsrc_veteran</span>, surv.type <span class="op">=</span> <span class="st">"surv"</span>,</span></span>
+<span class="r-in"><span>                               partial <span class="op">=</span> <span class="cn">TRUE</span>, time<span class="op">=</span><span class="fl">30</span>,</span></span>
+<span class="r-in"><span>                               show.plots<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_partial</span><span class="op">(</span><span class="va">partial_veteran</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta.cat</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"celltype"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"trt"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"prior"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"karno"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"diagtime"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>    <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"age"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta.cat</span>, panel<span class="op">=</span><span class="cn">TRUE</span>, notch<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">partial_veteran</span>, <span class="va">gg_partial</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="combine.gg_partial.html">combine.gg_partial</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">gg_dta</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span> <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"karno"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"celltype"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta.cat</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span><span class="op">[[</span><span class="st">"celltype"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"trt"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta</span><span class="op">[[</span><span class="st">"prior"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"karno"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"diagtime"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>    <span class="va">gg_dta.cat</span><span class="op">[[</span><span class="st">"age"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta.cat</span>, panel<span class="op">=</span><span class="cn">TRUE</span>, notch<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## -------- pbc data</span></span></span>
+<span class="r-in"><span><span class="co"># We need to create this dataset</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pbc</span>, package <span class="op">=</span> <span class="st">"randomForestSRC"</span>,<span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="co"># For whatever reason, the age variable is in days... makes no sense to me</span></span></span>
+<span class="r-in"><span><span class="kw">for</span> <span class="op">(</span><span class="va">ind</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">is.factor</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>   <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>     <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>       <span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>     <span class="op">}</span></span></span>
+<span class="r-in"><span>   <span class="op">}</span></span></span>
+<span class="r-in"><span> <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>   <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>     <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>       <span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>     <span class="op">}</span></span></span>
+<span class="r-in"><span>     <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>       <span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>     <span class="op">}</span></span></span>
+<span class="r-in"><span>   <span class="op">}</span></span></span>
+<span class="r-in"><span> <span class="op">}</span></span></span>
+<span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">is.logical</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span> <span class="op">&amp;</span></span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;=</span> <span class="fl">5</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>   <span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">[</span>, <span class="va">ind</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co">#Convert age to years</span></span></span>
+<span class="r-in"><span><span class="va">pbc</span><span class="op">$</span><span class="va">age</span> <span class="op">&lt;-</span> <span class="va">pbc</span><span class="op">$</span><span class="va">age</span> <span class="op">/</span> <span class="fl">364.24</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">pbc</span><span class="op">$</span><span class="va">years</span> <span class="op">&lt;-</span> <span class="va">pbc</span><span class="op">$</span><span class="va">days</span> <span class="op">/</span> <span class="fl">364.24</span></span></span>
+<span class="r-in"><span><span class="va">pbc</span> <span class="op">&lt;-</span> <span class="va">pbc</span><span class="op">[</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">)</span> <span class="op">==</span> <span class="st">"days"</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="fl">1</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"DPCA"</span></span></span>
+<span class="r-in"><span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span> <span class="op">==</span> <span class="fl">2</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"placebo"</span></span></span>
+<span class="r-in"><span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dta_train</span> <span class="op">&lt;-</span> <span class="va">pbc</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="co"># Create a test set from the remaining patients</span></span></span>
+<span class="r-in"><span> <span class="va">pbc_test</span> <span class="op">&lt;-</span> <span class="va">pbc</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">pbc</span><span class="op">$</span><span class="va">treatment</span><span class="op">)</span><span class="op">)</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#========</span></span></span>
+<span class="r-in"><span><span class="co"># build the forest:</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_pbc</span> <span class="op">&lt;-</span> <span class="fu">randomForestSRC</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu">Surv</span><span class="op">(</span><span class="va">years</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
+<span class="r-in"><span> <span class="va">dta_train</span>,</span></span>
+<span class="r-in"><span> nsplit <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span> na.action <span class="op">=</span> <span class="st">"na.impute"</span>,</span></span>
+<span class="r-in"><span> forest <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span> importance <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span> save.memory <span class="op">=</span> <span class="cn">TRUE</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">varsel_pbc</span> <span class="op">&lt;-</span> <span class="fu">var.select</span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">xvar</span> <span class="op">&lt;-</span> <span class="va">varsel_pbc</span><span class="op">$</span><span class="va">topvars</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Convert all partial plots to gg_partial objects</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">partial_pbc</span>, <span class="va">gg_partial</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Combine the objects to get multiple time curves</span></span></span>
+<span class="r-in"><span><span class="co"># along variables on a single figure.</span></span></span>
+<span class="r-in"><span><span class="va">pbc_ggpart</span> <span class="op">&lt;-</span> <span class="fu"><a href="combine.gg_partial.html">combine.gg_partial</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">gg_dta</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>                                 lbls <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1 Year"</span>, <span class="st">"3 Years"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">pbc_ggpart</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">pbc_ggpart</span><span class="op">[[</span><span class="st">"bili"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Plot the highest ranked variable, by name.</span></span></span>
+<span class="r-in"><span><span class="co">#plot(pbc_ggpart[["bili"]])</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a temporary holder and remove the stage and edema data</span></span></span>
+<span class="r-in"><span><span class="va">ggpart</span> <span class="op">&lt;-</span> <span class="va">pbc_ggpart</span></span></span>
+<span class="r-in"><span><span class="va">ggpart</span><span class="op">$</span><span class="va">edema</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Panel plot the remainder.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ggpart</span>, panel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pbc_ggpart</span><span class="op">[[</span><span class="st">"edema"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -270,7 +333,7 @@ Boosting Machine." Annals of Statistics 29: 1189-1232."</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

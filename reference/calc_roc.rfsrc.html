@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.1</span>
       </span>
     </div>
 
@@ -35,6 +35,9 @@
       <a href="../articles/ggrfRegression.html">ggRandomForests: Exploring randomForestSRC Regression</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/ehrlinger/ggRandomForests/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -60,8 +63,8 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for rfsrc</span>
-<span class="fu">calc_roc</span><span class="op">(</span><span class="va">object</span>, <span class="va">dta</span>, which.outcome <span class="op">=</span> <span class="st">"all"</span>, oob <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for rfsrc</span></span>
+<span><span class="fu">calc_roc</span><span class="op">(</span><span class="va">object</span>, <span class="va">dta</span>, which_outcome <span class="op">=</span> <span class="st">"all"</span>, oob <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -70,18 +73,29 @@
 <dd><p><code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> or
 <code><a href="https://www.randomforestsrc.org//reference/predict.rfsrc.html" class="external-link">predict.rfsrc</a></code> object
 containing predicted response</p></dd>
+
+
 <dt>dta</dt>
 <dd><p>True response variable</p></dd>
-<dt>which.outcome</dt>
+
+
+<dt>which_outcome</dt>
 <dd><p>If defined, only show ROC for this response.</p></dd>
+
+
 <dt>oob</dt>
 <dd><p>Use OOB estimates, the normal validation method (TRUE)</p></dd>
+
+
 <dt>...</dt>
 <dd><p>extra arguments passed to helper functions</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>gg_roc</code> object</p>
+    
+
+<p>A <code>gg_roc</code> object</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -99,21 +113,20 @@ not intended for use by the end user.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">## Taken from the gg_roc example</span></span>
-<span class="r-in"><span class="co"># rfsrc_iris &lt;- rfsrc(Species ~ ., data = iris)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rfsrc_iris</span>, <span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">yvar</span>,</span>
-<span class="r-in">     which.outcome<span class="op">=</span><span class="fl">1</span>, oob<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rfsrc_iris</span>, <span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">yvar</span>,</span>
-<span class="r-in">     which.outcome<span class="op">=</span><span class="fl">1</span>, oob<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">rf_iris</span> <span class="op">&lt;-</span> <span class="fu">randomForest</span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rf_iris</span>, <span class="va">rf_iris</span><span class="op">$</span><span class="va">yvar</span>,</span>
-<span class="r-in">     which.outcome<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rf_iris</span>, <span class="va">rf_iris</span><span class="op">$</span><span class="va">yvar</span>,</span>
-<span class="r-in">     which.outcome<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Taken from the gg_roc example</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_iris</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rfsrc_iris</span>, <span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">yvar</span>,</span></span>
+<span class="r-in"><span>     which_outcome<span class="op">=</span><span class="fl">1</span>, oob<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rfsrc_iris</span>, <span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">yvar</span>,</span></span>
+<span class="r-in"><span>     which_outcome<span class="op">=</span><span class="fl">1</span>, oob<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">rf_iris</span> <span class="op">&lt;-</span> <span class="fu">randomForest</span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rf_iris</span>, <span class="va">rf_iris</span><span class="op">$</span><span class="va">yvar</span>,</span></span>
+<span class="r-in"><span>     which_outcome<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rf_iris</span>, <span class="va">rf_iris</span><span class="op">$</span><span class="va">yvar</span>,</span></span>
+<span class="r-in"><span>     which_outcome<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -128,7 +141,7 @@ not intended for use by the end user.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

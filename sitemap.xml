@@ -16,7 +16,7 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/reference/cache_rfsrc_datasets.html</loc>
+    <loc>/news/index.html</loc>
   </url>
   <url>
     <loc>/reference/calc_auc.html</loc>
@@ -67,22 +67,10 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/interaction_data.html</loc>
-  </url>
-  <url>
     <loc>/reference/kaplan.html</loc>
   </url>
   <url>
     <loc>/reference/nelson.html</loc>
-  </url>
-  <url>
-    <loc>/reference/partial_coplot_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/partial_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/partial_surface_data.html</loc>
   </url>
   <url>
     <loc>/reference/plot.gg_error.html</loc>
@@ -124,15 +112,9 @@
     <loc>/reference/quantile_pts.html</loc>
   </url>
   <url>
-    <loc>/reference/rfsrc_data.html</loc>
-  </url>
-  <url>
     <loc>/reference/shift.html</loc>
   </url>
   <url>
     <loc>/reference/surface_matrix.html</loc>
-  </url>
-  <url>
-    <loc>/reference/varsel_data.html</loc>
   </url>
 </urlset>

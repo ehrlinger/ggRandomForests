@@ -20,7 +20,7 @@ Plot a gg_interaction object,"><!-- mathjax --><script src="https://cdnjs.cloudf
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.1</span>
       </span>
     </div>
 
@@ -38,6 +38,9 @@ Plot a gg_interaction object,"><!-- mathjax --><script src="https://cdnjs.cloudf
       <a href="../articles/ggrfRegression.html">ggRandomForests: Exploring randomForestSRC Regression</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/ehrlinger/ggRandomForests/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -65,8 +68,8 @@ Plot a <code><a href="gg_interaction.html">gg_interaction</a></code> object,</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="co"># S3 method for gg_interaction</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">xvar</span>, <span class="va">lbls</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for gg_interaction</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">xvar</span>, <span class="va">lbls</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -74,16 +77,25 @@ Plot a <code><a href="gg_interaction.html">gg_interaction</a></code> object,</p>
     <dl><dt>x</dt>
 <dd><p>gg_interaction object created from a 
 <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object</p></dd>
+
+
 <dt>xvar</dt>
 <dd><p>variable (or list of variables) of interest.</p></dd>
+
+
 <dt>lbls</dt>
 <dd><p>A vector of alternative variable names.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>arguments passed to the <code><a href="gg_interaction.html">gg_interaction</a></code> function.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>ggplot</code> object</p>
+    
+
+<p><code>ggplot</code> object</p>
     </div>
     <div id="references">
     <h2>References</h2>
@@ -105,73 +117,73 @@ Regression and Classification (RF-SRC), R package version 1.4.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="co">## Examples from randomForestSRC package...</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## find interactions, classification setting</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## -------- iris data</span></span>
-<span class="r-in"><span class="co">## iris.obj &lt;- rfsrc(Species ~., data = iris)</span></span>
-<span class="r-in"><span class="co">## TODO: VIMP interactions not handled yet....</span></span>
-<span class="r-in"><span class="co">## find.interaction(iris.obj, method = "vimp", nrep = 3)</span></span>
-<span class="r-in"><span class="co">## interaction_iris &lt;- find.interaction(iris.obj)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_iris</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_iris</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Petal.Width"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Petal.Length"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## find interactions, regression setting</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## -------- air quality data</span></span>
-<span class="r-in"><span class="co">## airq.obj &lt;- rfsrc(Ozone ~ ., data = airquality)</span></span>
-<span class="r-in"><span class="co">##</span></span>
-<span class="r-in"><span class="co">## TODO: VIMP interactions not handled yet....</span></span>
-<span class="r-in"><span class="co">## find.interaction(airq.obj, method = "vimp", nrep = 3)</span></span>
-<span class="r-in"><span class="co">## interaction_airq &lt;- find.interaction(airq.obj)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_airq</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_airq</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Temp"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Solar.R"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## -------- Boston data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_boston</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_boston</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## -------- mtcars data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_mtcars</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_mtcars</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## find interactions, survival setting</span></span>
-<span class="r-in"><span class="co">## ------------------------------------------------------------</span></span>
-<span class="r-in"><span class="co">## -------- pbc data</span></span>
-<span class="r-in"><span class="co">## data(pbc, package = "randomForestSRC")</span></span>
-<span class="r-in"><span class="co">## pbc.obj &lt;- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)</span></span>
-<span class="r-in"><span class="co">## interaction_pbc &lt;- find.interaction(pbc.obj, nvar = 8)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_pbc</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_pbc</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"bili"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"copper"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co">## -------- veteran data</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_veteran</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_veteran</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">## Examples from randomForestSRC package...</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## find interactions, classification setting</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## -------- iris data</span></span></span>
+<span class="r-in"><span><span class="co">## iris.obj &lt;- rfsrc(Species ~., data = iris)</span></span></span>
+<span class="r-in"><span><span class="co">## TODO: VIMP interactions not handled yet....</span></span></span>
+<span class="r-in"><span><span class="co">## find.interaction(iris.obj, method = "vimp", nrep = 3)</span></span></span>
+<span class="r-in"><span><span class="co">## interaction_iris &lt;- find.interaction(iris.obj)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_iris</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Petal.Width"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Petal.Length"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## find interactions, regression setting</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## -------- air quality data</span></span></span>
+<span class="r-in"><span><span class="co">## airq.obj &lt;- rfsrc(Ozone ~ ., data = airquality)</span></span></span>
+<span class="r-in"><span><span class="co">##</span></span></span>
+<span class="r-in"><span><span class="co">## TODO: VIMP interactions not handled yet....</span></span></span>
+<span class="r-in"><span><span class="co">## find.interaction(airq.obj, method = "vimp", nrep = 3)</span></span></span>
+<span class="r-in"><span><span class="co">## interaction_airq &lt;- find.interaction(airq.obj)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_airq</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_airq</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Temp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Solar.R"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## -------- Boston data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_boston</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_boston</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## -------- mtcars data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_mtcars</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_mtcars</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## find interactions, survival setting</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## -------- pbc data</span></span></span>
+<span class="r-in"><span><span class="co">## data(pbc, package = "randomForestSRC")</span></span></span>
+<span class="r-in"><span><span class="co">## pbc.obj &lt;- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)</span></span></span>
+<span class="r-in"><span><span class="co">## interaction_pbc &lt;- find.interaction(pbc.obj, nvar = 8)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_pbc</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_pbc</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"bili"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"copper"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## -------- veteran data</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">interaction_veteran</span>, package<span class="op">=</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_interaction.html">gg_interaction</a></span><span class="op">(</span><span class="va">interaction_veteran</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -186,7 +198,7 @@ Regression and Classification (RF-SRC), R package version 1.4.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

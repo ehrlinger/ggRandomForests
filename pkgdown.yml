@@ -1,7 +1,7 @@
 pandoc: 2.14.2
-pkgdown: 2.0.3
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   ggrfRegression: ggrfRegression.html
-last_built: 2022-05-09T15:51Z
+last_built: 2022-08-31T19:55Z
 

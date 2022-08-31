@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.1</span>
       </span>
     </div>
 
@@ -35,6 +35,9 @@
       <a href="../articles/ggrfRegression.html">ggRandomForests: Exploring randomForestSRC Regression</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/ehrlinger/ggRandomForests/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -58,10 +61,6 @@
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="cache_rfsrc_datasets.html">cache_rfsrc_datasets()</a></code> </p>
-        </td>
-        <td><p>Recreate the cached data sets for the ggRandomForests package</p></td>
-      </tr><tr><td>
           <p><code><a href="calc_auc.html">calc_auc()</a></code> </p>
         </td>
         <td><p>Area Under the ROC Curve calculator</p></td>
@@ -123,22 +122,6 @@
         </td>
         <td><p>Variable Importance (VIMP) data object</p></td>
       </tr><tr><td>
-          <p><code><a href="interaction_data.html">interaction_data</a></code> </p>
-        </td>
-        <td><p>Cached <code><a href="https://www.randomforestsrc.org//reference/find.interaction.rfsrc.html" class="external-link">find.interaction</a></code> matrix objects for 
-examples, diagnostics and vignettes.
- 
-Data sets storing <code><a href="https://www.randomforestsrc.org//reference/find.interaction.rfsrc.html" class="external-link">find.interaction</a></code> matrix 
-objects corresponding to training data according to the following naming 
-convention: 
-</p><ul><li><p><code>interaction_iris</code> - from a randomForestSR[C] for the <code>iris</code> 
-data set.</p></li>
-<li><p><code>interaction_boston</code> - from a randomForestS[R]C for the 
-<code>Boston</code> housing data set (<code>MASS</code> package).</p></li>
-<li><p><code>interaction_pbc</code> - from a randomForest[S]RC for the <code>pbc</code> 
-data set (<code>randomForestSRC</code> package)</p></li>
-</ul></td>
-      </tr><tr><td>
           <p><code><a href="kaplan.html">kaplan()</a></code> </p>
         </td>
         <td><p>nonparametric Kaplan-Meier estimates</p></td>
@@ -146,47 +129,6 @@ data set (<code>randomForestSRC</code> package)</p></li>
           <p><code><a href="nelson.html">nelson()</a></code> </p>
         </td>
         <td><p>nonparametric Nelson-Aalen estimates</p></td>
-      </tr><tr><td>
-          <p><code><a href="partial_coplot_data.html">partial_coplot_data</a></code> </p>
-        </td>
-        <td><p>Cached <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> objects for examples, 
-diagnostics and vignettes.
- 
-Data sets storing <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> objects corresponding 
-to training data according to the following naming convention: 
-</p><ul><li><p><code>partial_coplot_boston</code> - randomForestS[R]C for the <code>Boston</code> 
-housing data set (<code>MASS</code> package).</p></li>
-</ul></td>
-      </tr><tr><td>
-          <p><code><a href="partial_data.html">partial_data</a></code> </p>
-        </td>
-        <td><p>Cached <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> objects for examples, 
-diagnostics and vignettes.
- 
-Data sets storing <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> objects 
-corresponding to training data according to the following naming convention: 
-</p><ul><li><p><code>partial_iris</code> - from a randomForestSR[C] for the <code>iris</code> data
-set.</p></li>
-<li><p><code>partial_boston</code> - from a randomForestS[R]C for the <code>Boston</code>
-housing data set (<code>MASS</code> package).</p></li>
-<li><p><code>partial_pbc</code> - from a randomForest[S]RC for the <code>pbc</code> data 
-set (<code>randomForestSRC</code> package)</p></li>
-</ul></td>
-      </tr><tr><td>
-          <p><code><a href="partial_surface_data.html">partial_surface_data</a></code> </p>
-        </td>
-        <td><p>Cached <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> objects for examples, 
-diagnostics and vignettes.
- 
-Data sets storing <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> objects 
-corresponding to training data according to the following naming convention: 
-</p><ul><li><p><code>partial_boston_surf</code> - from a randomForestS[R]C for the 
-<code>Boston</code> housing data set (<code>MASS</code> package).</p></li>
-<li><p><code>partial_pbc_surf</code> - from a randomForest[S]RC for the <code>pbc</code> 
-data set (<code>randomForestSRC</code> package)</p></li>
-<li><p><code>partial_pbc_time</code> - from a randomForest[S]RC for the <code>pbc</code> 
-data set (<code>randomForestSRC</code> package)</p></li>
-</ul></td>
       </tr><tr><td>
           <p><code><a href="plot.gg_error.html">plot(<i>&lt;gg_error&gt;</i>)</a></code> </p>
         </td>
@@ -246,11 +188,6 @@ object.</p></td>
         </td>
         <td><p>Find points evenly distributed along the vectors values.</p></td>
       </tr><tr><td>
-          <p><code><a href="rfsrc_data.html">rfsrc_data</a></code> </p>
-        </td>
-        <td><p>Cached <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> objects for examples, diagnostics
-and vignettes.</p></td>
-      </tr><tr><td>
           <p><code><a href="shift.html">shift()</a></code> </p>
         </td>
         <td><p>lead function to shift by one (or more).</p></td>
@@ -259,21 +196,6 @@ and vignettes.</p></td>
         </td>
         <td><p>Construct a set of (x, y, z) matrices for surface plotting a
 <code>gg_partial_coplot</code> object</p></td>
-      </tr><tr><td>
-          <p><code><a href="varsel_data.html">varsel_data</a></code> </p>
-        </td>
-        <td><p>Cached <code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code> objects for examples, 
-diagnostics and vignettes.
- 
-Data sets storing <code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">var.select</a></code> objects 
-corresponding to training data according to the following naming convention: 
-</p><ul><li><p><code>varsel_iris</code> - from a randomForestSR[C] for the <code>iris</code> data 
-set.</p></li>
-<li><p><code>varsel_boston</code> - from a randomForestS[R]C for the <code>Boston</code> 
-housing data set (<code>MASS</code> package).</p></li>
-<li><p><code>varsel_pbc</code> - from a randomForest[S]RC for the <code>pbc</code> data 
-set (<code>randomForestSRC</code> package)</p></li>
-</ul></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -287,7 +209,7 @@ set (<code>randomForestSRC</code> package)</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

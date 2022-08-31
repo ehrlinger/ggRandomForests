@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.1</span>
       </span>
     </div>
 
@@ -53,6 +53,9 @@
       <a href="../articles/ggrfRegression.html">ggRandomForests: Exploring randomForestSRC Regression</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -80,7 +83,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:john.ehrlinger@gmail.com" class="email">john.ehrlinger@gmail.com</a>
       
                   
-            <h4 data-toc-skip class="date">May 09, 2022</h4>
+            <h4 data-toc-skip class="date">August 31, 2022</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/HEAD/vignettes/ggrfRegression.Rmd" class="external-link"><code>vignettes/ggrfRegression.Rmd</code></a></small>
       <div class="hidden name"><code>ggrfRegression.Rmd</code></div>
@@ -119,11 +122,11 @@
 &gt; theme_set(theme_bw())     # A ggplot2 theme with white background
 &gt; 
 &gt; ## Set open circle for censored, and x for events 
-&gt; event.marks &lt;- c(1, 4)
-&gt; event.labels &lt;- c(FALSE, TRUE)
+&gt; event_marks &lt;- c(1, 4)
+&gt; event_labels &lt;- c(FALSE, TRUE)
 &gt; 
 &gt; ## We want red for death events, so reorder this set.
-&gt; strCol &lt;- brewer.pal(3, "Set1")[c(2,1,3)]</code></pre>
+&gt; str_col &lt;- brewer.pal(3, "Set1")[c(2, 1, 3)]</code></pre>
 <p>This vignette is available within the  package on the Comprehensive R Archive Network (CRAN) (<a href="https://www.r-project.org" class="external-link uri">https://www.r-project.org</a>) <span class="citation">( Core Team 2014)</span>. Once the package has been installed, the vignette can be viewed directly from within <code>R</code> with the following command:</p>
 <pre class="text"><code>&gt; vignette("randomForestSRC-Regression", package = "ggRFVignette")</code></pre>
 <p>A development version of the  package is also available on GitHub (<a href="https://github.com" class="external-link uri">https://github.com</a>). We invite comments, feature requests and bug reports for this package at (<a href="https://github.com/ehrlinger/ggRandomForests" class="external-link uri">https://github.com/ehrlinger/ggRandomForests</a>).</p>
@@ -148,7 +151,7 @@
 </h2>
 <p>The Boston Housing data is a standard benchmark data set for regression models. It contains data for 506 census tracts of Boston from the 1970 census <span class="citation">Belsley, Kuh, and Welsch (1980)</span>. The data is available in multiple <code>R</code> packages, but to keep the installation dependencies for the  package down, we will use the data contained in the <code>MASS</code> package (<a href="https://cran.r-project.org/package=MASS" class="external-link uri">https://cran.r-project.org/package=MASS</a>) <span class="citation">(Venables and Ripley 2002)</span>, available with the base install of <code>R</code>. The following code block loads the data into the environment. We include a table of the Boston data set variable names, types and descriptions for reference when we interpret the model results.</p>
 <pre class="text"><code>&gt; # Load the Boston Housing data
-&gt; data(Boston, package="MASS")
+&gt; data(Boston, package = "MASS")
 &gt; 
 &gt; # Set modes correctly. For binary variables: transform to logical
 &gt; Boston$chas &lt;- as.logical(Boston$chas)</code></pre>
@@ -260,11 +263,11 @@ EDA variable plots. Points indicate variable value against the median home value
 <p>For this tutorial, we grow the random forest for regression using the <code>rfsrc</code> command to predict the median home value (<code>medv</code> variable) using the remaining 13 independent predictor variables. For this example we will use the default set of <span class="math inline">\(B=1000\)</span> trees (<code>ntree</code> argument), <span class="math inline">\(m=5\)</span> candidate variables (<code>mtry</code>) for each split with a stopping criteria of at most <code>nodesize=5</code> observations within each terminal node.</p>
 <p>Because growing random forests are computationally expensive, and the  package is targeted at the visualization of random forest objects, we will use cached copies of the  objects throughout this document. We include the cached objects as data sets in the  package. The actual <code>rfsrc</code> calls are included in comments within code blocks.</p>
 <pre class="text"><code>&gt; # Load the data, from the call:
-&gt; rfsrc_Boston &lt;- rfsrc(medv~., data=Boston, 
+&gt; rfsrc_boston &lt;- rfsrc(medv ~ ., data = Boston, 
 +                       importance = TRUE, err.block = 5)
 &gt; 
 &gt; # print the forest summary
-&gt; rfsrc_Boston</code></pre>
+&gt; rfsrc_boston</code></pre>
 <p>The <code><a href="https://www.randomforestsrc.org//reference/print.rfsrc.html" class="external-link">randomForestSRC::print.rfsrc</a></code> summary details the parameters used for the <code>rfsrc</code> call described above, and returns variance and generalization error estimate from the forest training set. The forest is built from 506 observations and 13 independent variables. It was constructed for the continuous <code>medv</code> variable using <code>ntree=1000</code> regression (<code>regr</code>) trees, randomly selecting 5 candidate variables at each node split, and terminating nodes with no fewer than 5 observations.</p>
 <div class="section level3">
 <h3 id="generalization-error-estimates">Generalization error estimates<a class="anchor" aria-label="anchor" href="#generalization-error-estimates"></a>
@@ -272,9 +275,9 @@ EDA variable plots. Points indicate variable value against the median home value
 <p>One advantage of Random Forests is a built in generalization error estimate. Each bootstrap sample selects approximately 63.2% of the population on average. The remaining 36.8% of observations, the Out-of-Bag (OOB) <span class="citation">(L. Breiman 1996b)</span> sample, can be used as a hold out test set for each of the trees in the forest. An OOB prediction error estimate can be calculated for each observation by predicting the response over the set of trees which were NOT trained with that particular observation. The Out-of-Bag prediction error estimates have been shown to be nearly identical to n–fold cross validation estimates <span class="citation">(Hastie, Tibshirani, and Friedman 2009)</span>. This feature of Random Forests allows us to obtain both model fit and validation in one pass of the algorithm.</p>
 <p>The <code>gg_error</code> function operates on the <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">randomForestSRC::rfsrc</a></code> object to extract the error estimates as the forest is grown. The code block demonstrates part the  design philosophy, to create separate data objects and provide functions to operate on the data objects. The following code block first creates a <code>gg_error</code> object, then uses the <code>plot.gg_error</code> function to create a <code>ggplot</code> object for display.</p>
 <pre class="text"><code>&gt; # Plot the OOB errors against the growth of the forest.
-&gt; gg_e &lt;- gg_error(rfsrc_Boston)
+&gt; gg_e &lt;- gg_error(rfsrc_boston)
 &gt; gg_e &lt;- gg_e %&gt;% filter(!is.na(error))
-&gt; class(gg_e) &lt;- c("gg_error",class(gg_e))
+&gt; class(gg_e) &lt;- c("gg_error", class(gg_e))
 &gt; plot(gg_e)</code></pre>
 <div class="figure" style="text-align: center">
 <img src="ggrfRegression_files/figure-html/error-1.png" alt="Random forest generalization error. OOB error convergence along the number of trees in the forest." width="700"><p class="caption">
@@ -288,8 +291,8 @@ Random forest generalization error. OOB error convergence along the number of tr
 </h3>
 <p>The <code>gg_rfsrc</code> function extracts the OOB prediction estimates from the random forest. This code block executes the the data extraction and plotting in one line, since we are not interested in holding the prediction estimates for later reuse. Also note that we add in the additional  command (<code>coord_cartesian</code>) to modify the plot object. Each of the  plot commands return <code>ggplot</code> objects, which we can also store for modification or reuse later in the analysis.</p>
 <pre class="text"><code>&gt; # Plot predicted median home values.
-&gt; plot(gg_rfsrc(rfsrc_Boston), alpha=.5)+
-+   coord_cartesian(ylim=c(5,49))</code></pre>
+&gt; plot(gg_rfsrc(rfsrc_boston), alpha = .5) +
++   coord_cartesian(ylim = c(5, 49))</code></pre>
 <div class="figure" style="text-align: center">
 <img src="ggrfRegression_files/figure-html/rfsrc-1.png" alt="OOB predicted median home values. Points are jittered to help visualize predictions for each observation. Boxplot indicates the distribution of the predicted values." width="700"><p class="caption">
 OOB predicted median home values. Points are jittered to help visualize predictions for each observation. Boxplot indicates the distribution of the predicted values.
@@ -309,7 +312,7 @@ OOB predicted median home values. Points are jittered to help visualize predicti
 <p>Since VIMP is the difference between OOB prediction error before and after permutation, a large VIMP value indicates that misspecification detracts from the variable predictive accuracy in the forest. VIMP close to zero indicates the variable contributes nothing to predictive accuracy, and negative values indicate the predictive accuracy <em>improves</em> when the variable is misspecified. In the later case, we assume noise is more informative than the true variable. As such, we ignore variables with negative and near zero values of VIMP, relying on large positive values to indicate that the predictive power of the forest is dependent on those variables.</p>
 <p>The <code>gg_vimp</code> function extracts VIMP measures for each of the variables used to grow the forest. The <code>plot.gg_vimp</code> function shows the variables, in VIMP rank order, from the largest (Lower Status) at the top, to smallest (Charles River) at the bottom. VIMP measures are shown using bars to compare the scale of the error increase under permutation.</p>
 <pre class="text"><code>&gt; # Plot the VIMP rankings of independent variables.
-&gt; plot(gg_vimp(rfsrc_Boston), lbls=st.labs)</code></pre>
+&gt; plot(gg_vimp(rfsrc_boston), lbls = st_labs)</code></pre>
 <div class="figure" style="text-align: center">
 <img src="ggrfRegression_files/figure-html/vimp-1.png" alt="Random forest VIMP plot. Bars are colored by sign of VIMP, longer blue bars indicate more important variables." width="672"><p class="caption">
 Random forest VIMP plot. Bars are colored by sign of VIMP, longer blue bars indicate more important variables.
@@ -327,20 +330,20 @@ Random forest VIMP plot. Bars are colored by sign of VIMP, longer blue bars indi
 <p>The <code>gg_minimal_depth</code> function is analogous to the <code>gg_vimp</code> function for minimal depth. Variables are ranked from most important at the top (minimal depth measure), to least at the bottom (maximal minimal depth). The vertical dashed line indicates the minimal depth threshold where smaller minimal depth values indicate higher importance and larger indicate lower importance.</p>
 <p>The <code><a href="https://www.randomforestsrc.org//reference/var.select.rfsrc.html" class="external-link">randomForestSRC::var.select</a></code> call is again a computationally intensive function, as it traverses the forest finding the maximal subtree within each tree for each variable before averaging the results we use in the <code>gg_minimal_depth</code> call. We again use the cached object strategy here to save computational time. The <code>var.select</code> call is included in the comment of this code block.</p>
 <pre class="text"><code>&gt; # Load the data, from the call:
-&gt; varsel_Boston &lt;- var.select(rfsrc_Boston)
+&gt; varsel_boston &lt;- var.select(rfsrc_boston)
 &gt; 
 &gt; # Save the gg_minimal_depth object for later use.
-&gt; gg_md &lt;- gg_minimal_depth(varsel_Boston)
+&gt; gg_md &lt;- gg_minimal_depth(varsel_boston)
 &gt; 
 &gt; # plot the object
-&gt; plot(gg_md, lbls=st.labs)</code></pre>
+&gt; plot(gg_md, lbls = st_labs)</code></pre>
 <div class="figure" style="text-align: center">
 <img src="ggrfRegression_files/figure-html/minimaldepth-1.png" alt="Minimal Depth variables in rank order, most important at the top. Vertical dashed line indicates the maximal minimal depth for important variables." width="672"><p class="caption">
 Minimal Depth variables in rank order, most important at the top. Vertical dashed line indicates the maximal minimal depth for important variables.
 </p>
 </div>
 <p>In general, the selection of variables according to VIMP is to rather arbitrarily examine the values, looking for some point along the ranking where there is a large difference in VIMP measures. The minimal depth threshold method has a more quantitative approach to determine a selection threshold. Given minimal depth is a quantitative property of the forest construction, <span class="citation">(Ishwaran et al. 2010)</span> also construct an analytic threshold for evidence of variable impact. A simple optimistic threshold rule uses the mean of the minimal depth distribution, classifying variables with minimal depth lower than this threshold as important in forest prediction. The minimal depth plot for our model indicates there are ten variables which have a higher impact (minimal depth below the mean value threshold) than the remaining three.</p>
-<p>Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be somewhat different. We use <code>gg_minimal_vimp</code> function to compare rankings between minimal depth and VIMP. In this call, we plot the stored <code>gg_minimal_depth</code> object (<code>gg_md</code>), which would be equivalent to calling <code>plot.gg_minimal_vimp(varsel_Boston)</code> or <code>plot(gg_minimal_vimp(varsel_Boston))</code>.</p>
+<p>Since the VIMP and Minimal Depth measures use different criteria, we expect the variable ranking to be somewhat different. We use <code>gg_minimal_vimp</code> function to compare rankings between minimal depth and VIMP. In this call, we plot the stored <code>gg_minimal_depth</code> object (<code>gg_md</code>), which would be equivalent to calling <code>plot.gg_minimal_vimp(varsel_boston)</code> or <code>plot(gg_minimal_vimp(varsel_boston))</code>.</p>
 <pre class="text"><code>&gt; # gg_minimal_depth objects contain information about
 &gt; # both minimal depth and VIMP.
 &gt; plot(gg_minimal_vimp(gg_md))</code></pre>
@@ -371,8 +374,8 @@ Variable dependence plot. Individual case predictions are marked with points. Lo
 </div>
 <p>This figure looks very similar to the Data: Boston Housing Values (\autoref{data-boston-housing-values) figure, although with transposed axis as we plot the response variable on the y-axis. The closer the panels match, the better the RF prediction. The panels are sorted to match the order of variables in the <code>xvar</code> argument and include a smooth loess line <span class="citation">Cleveland and Devlin (1988)</span>, with 95% shaded confidence band, to indicates the trend of the prediction dependence over the covariate values.</p>
 <p>There is not a convenient method to panel scatter plots and boxplots together, so we recommend creating panel plots for each variable type separately. The Boston housing data does contain a single categorical variable, the Charles river logical variable. Variable dependence plots for categorical variables are constructed using boxplots to show the distribution of the predictions within each category. Although the Charles river variable has the lowest importance scores in both VIMP and minimal depth measures, we include the variable dependence plot as an example of categorical variable dependence.</p>
-<pre class="text"><code>&gt; plot(gg_v, xvar="chas", alpha=.4)+
-+   labs(y=st.labs["medv"])
+<pre class="text"><code>&gt; plot(gg_v, xvar = "chas", alpha = 0.4) +
++   labs(y = st_labs["medv"])
 &gt; 
 &gt; # , points=FALSE, se=FALSE, notch=TRUE</code></pre>
 <div class="figure" style="text-align: center">
@@ -440,20 +443,20 @@ Variable Coplots. Predicted median home value as a function of average number of
 </h3>
 <p>By characterizing conditional plots as stratified variable dependence plots, the next logical step would be to generate an analogous conditional partial dependence plot. The process is similar to variable dependence coplots, first determine conditional group membership, then calculate the partial dependence estimates on each subgroup using the <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">randomForestSRC::plot.variable</a></code> function with a the <code>subset</code> argument for each grouped interval. The <code><a href="../reference/gg_partial_coplot.rfsrc.html">ggRandomForests::gg_partial_coplot</a></code> function is a wrapper for generating a conditional partial dependence data object. Given a random forest (<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">randomForestSRC::rfsrc</a></code> object) and a <code>groups</code> vector for conditioning the training data set observations, <code>gg_partial_coplot</code> calls the <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">randomForestSRC::plot.variable</a></code> function for a set of training set observations conditional on <code>groups</code> membership. The function returns a <code>gg_partial_coplot</code> object, a sub class of the <code>gg_partial</code> object, which can be plotted with the <code>plot.gg_partial</code> function.</p>
 <p>The following code block will generate the data object for creating partial dependence coplot of the predicted median home value as a function of <code>lstat</code> conditional on membership within the 6 groups of <code>rm</code> “intervals” that we examined in the previous section.</p>
-<pre class="text"><code>&gt; partial_coplot_Boston &lt;- gg_partial_coplot(rfsrc_Boston, xvar="lstat", 
-+                                            groups=rm_grp,
-+                                            show.plots=FALSE)</code></pre>
-<p><img src="ggrfRegression_files/figure-html/prtl-copl-1.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl-2.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl-3.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl-4.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl-5.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl-6.png" width="700" style="display: block; margin: auto;"></p>
+<pre class="text"><code>&gt; partial_coplot_boston &lt;- gg_partial_coplot(rfsrc_boston, 
++                                            xvar = "lstat", 
++                                            groups = rm_grp)</code></pre>
 <p>Since the <code>gg_partial_coplot</code> makes a call to <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">randomForestSRC::plot.variable</a></code> for each group (6) in the conditioning set, we again resort to the data caching strategy, and load the stored result data from the  package. We modify the legend label to indicate we’re working with groups of the “Room” variable, and use the <code>palette="Set1"</code> from the <code>RColorBrewer</code> package <span class="citation">(Neuwirth 2014)</span> to choose a nice color theme for displaying the six curves.</p>
 <pre class="text"><code>&gt; # Load the stored partial coplot data.
 &gt; 
 &gt; # # Partial coplot
-&gt; ggplot(partial_coplot_Boston, aes(x=lstat, y=yhat, col=group))+
-+   geom_point()+
-+   geom_smooth(method = 'loess', formula='y ~ x', se=FALSE, alpha=.25)+
-+   labs(x=st.labs["lstat"], y=st.labs["medv"],
-+        color="Room", shape="Room")+
-+   scale_color_brewer(palette="Set1")</code></pre>
+&gt; ggplot(partial_coplot_boston, aes(x = lstat, y = yhat, col = group)) +
++   geom_point() +
++   geom_smooth(method = "loess", formula = "y ~ x",
++               se = FALSE, alpha = 0.25) +
++   labs(x = st_labs["lstat"], y = st_labs["medv"],
++        color = "Room", shape = "Room") +
++   scale_color_brewer(palette = "Set1")</code></pre>
 <div class="figure" style="text-align: center">
 <img src="ggrfRegression_files/figure-html/prtl-coplots-1.png" alt="Partial Coplots. Risk adjusted predicted median value as a function of Lower Status, conditional on groups of average number of rooms." width="672"><p class="caption">
 Partial Coplots. Risk adjusted predicted median value as a function of Lower Status, conditional on groups of average number of rooms.
@@ -462,18 +465,17 @@ Partial Coplots. Risk adjusted predicted median value as a function of Lower Sta
 <p>Unlike variable dependence coplots, we do not need to use a panel format for partial dependence coplots because we are looking risk adjusted estimates (points) instead of population estimates. The figure has a loess curve through the point estimates conditional on the <code>rm</code> interval groupings. The figure again indicates that larger homes (<code>rm</code> from 6.87 and up, shown in yellow) have a higher median value then the others. In neighborhoods with higher <code>lstat</code> percentage, the Median values decrease with <code>rm</code> until it stabilizes from the intervals between 5.73 and 6.47, then decreases again for values smaller than 5.73. In lower <code>lstat</code> neighborhoods, the effect of smaller <code>rm</code> is not as noticeable.</p>
 <p>We can view the partial coplot curves as slices along a surface viewed into the page, either along increasing or decreasing <code>rm</code> values. This is made more difficult by our choice to select groups of similar population size, as the curves are not evenly spaced along the <code>rm</code> variable. We return to this problem in the next section.</p>
 <p>We also construct the complement view, for partial dependence coplot of the predicted median home value as a function of <code>rm</code> conditional on membership within the 6 groups of <code>lstat</code> “intervals”, and cache the following <code>gg_partial_coplot</code> data call, and plot the results with the <code>plot.gg_variable</code> call:</p>
-<pre class="text"><code>&gt; partial_coplot_Boston2 &lt;- gg_partial_coplot(rfsrc_Boston, xvar="rm", 
-+                                             groups=lstat_grp,
-+                                             show.plots=FALSE)</code></pre>
-<p><img src="ggrfRegression_files/figure-html/prtl-copl2-1.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl2-2.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl2-3.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl2-4.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl2-5.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-copl2-6.png" width="700" style="display: block; margin: auto;"></p>
+<pre class="text"><code>&gt; partial_coplot_boston2 &lt;- gg_partial_coplot(rfsrc_boston, 
++                                             xvar = "rm", 
++                                             groups = lstat_grp)</code></pre>
 <pre class="text"><code>&gt; # Partial coplot
-&gt; #plot(partial_coplot_Boston2)+ ## again plot.gg_partial_coplot
-&gt; ggplot(partial_coplot_Boston2, aes(x=rm, y=yhat, col=group))+
-+   geom_point()+
-+   geom_smooth(method = 'loess', formula='y ~ x', se=FALSE)+
-+   labs(x=st.labs["rm"], y=st.labs["medv"], 
-+        color="Lower Status", shape="Lower Status")+
-+   scale_color_brewer(palette="Set1")</code></pre>
+&gt; #plot(partial_coplot_boston2)+ ## again plot.gg_partial_coplot
+&gt; ggplot(partial_coplot_boston2, aes(x = rm, y = yhat, col = group)) +
++   geom_point() +
++   geom_smooth(method = "loess", formula = "y ~ x", se = FALSE) +
++   labs(x = st_labs["rm"], y = st_labs["medv"], 
++        color = "Lower Status", shape = "Lower Status") +
++   scale_color_brewer(palette = "Set1")</code></pre>
 <div class="figure" style="text-align: center">
 <img src="ggrfRegression_files/figure-html/prtl-coplots2-1.png" alt="Partial Coplots. Risk adjusted predicted median value as a function of average number of rooms, conditional on groups of percentage of lower status population." width="672"><p class="caption">
 Partial Coplots. Risk adjusted predicted median value as a function of average number of rooms, conditional on groups of percentage of lower status population.
@@ -488,18 +490,20 @@ Partial Coplots. Risk adjusted predicted median value as a function of average n
 <p>Visualizing two dimensional projections of three dimensional data is difficult, though there are tools available to make the data more understandable. To make the interplay of lower status and average room size a bit more understandable, we will generate a contour partial plot of the median home values. We could generate this figure with the coplot data we already have, but the resolution would be a bit strange. To generate the plot of <code>lstat</code> conditional on <code>rm</code> groupings, we would end up with contours over a grid of <code>lstat</code>= <span class="math inline">\(25 \times\)</span> <code>rm</code>= <span class="math inline">\(6\)</span>, for the alternative <code>rm</code> conditional on <code>lstat</code> groups, we’d have the transpose grid of <code>lstat</code>= <span class="math inline">\(6 \times\)</span> <code>rm</code>= <span class="math inline">\(25\)</span>.</p>
 <p>Since we are already using the data caching strategy, we will generate another set of <code>gg_partial</code> objects with increased resolution in both the <code>lstat</code> and <code>rm</code> dimensions. For this exercise, we will find 50 points evenly spaced along the <code>rm</code> variable values, and generate a partial plot curve for each point. For these partial plots, we will evaluate the risk adjusted median home value over <code>npts=50</code> points along the <code>lstat</code> variable. This code block finds 50 <code>rm</code> values evenly spaced along the distribution of <code>rm</code>.</p>
 <pre class="text"><code>&gt; # Find the quantile points to create 50 cut points
-&gt; rm_pts &lt;- quantile_pts(rfsrc_Boston$xvar$rm, groups=49, intervals = TRUE)</code></pre>
-<p>We use the following data call to generate the partial plots with the <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">randomForestSRC::plot.variable</a></code> call. Within the lapply call, we use scope to modify the value of the <code>rm</code> variable within the <code>rfsrc_Boston</code> training set. Since all values in the training set are the same, the averaged value of <code>rm</code> places each partial plot curve at a specific value of <code>rm</code>. This code block took about 20 minutes to run on a quad core Mac Air using a single processor.</p>
-<p>The cached data is stored in the <code>partial_Boston_surf</code> data set in the  package. The data set is a <code>list</code> of 50 <code>plot.variable</code> objects. This code block loads the data, converts the <code>plot.variable</code> objects to <code>gg_partial</code> objects, attaches numeric values for the <code>rm</code> variable, and generates the contour plot.</p>
+&gt; rm_pts &lt;- quantile_pts(rfsrc_boston$xvar$rm, 
++                        groups = 49, intervals = TRUE)</code></pre>
+<p>We use the following data call to generate the partial plots with the <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">randomForestSRC::plot.variable</a></code> call. Within the lapply call, we use scope to modify the value of the <code>rm</code> variable within the <code>rfsrc_boston</code> training set. Since all values in the training set are the same, the averaged value of <code>rm</code> places each partial plot curve at a specific value of <code>rm</code>. This code block took about 20 minutes to run on a quad core Mac Air using a single processor.</p>
+<p>The cached data is stored in the <code>partial_boston_surf</code> data set in the  package. The data set is a <code>list</code> of 50 <code>plot.variable</code> objects. This code block loads the data, converts the <code>plot.variable</code> objects to <code>gg_partial</code> objects, attaches numeric values for the <code>rm</code> variable, and generates the contour plot.</p>
 <pre class="text"><code>&gt; # Generate the gg_partial_coplot data object
-&gt; system.time(partial_Boston_surf &lt;- lapply(rm_pts, function(ct){
-+   rfsrc_Boston$xvar$rm &lt;- ct
-+   plot.variable(rfsrc_Boston, xvar = "lstat", time = 1,
-+                 npts = 50, show.plots = FALSE, 
+&gt; system.time(partial_boston_surf &lt;- lapply(rm_pts, function(ct) {
++   rfsrc_boston$xvar$rm &lt;- ct
++   plot.variable(rfsrc_boston, xvar = "lstat", time = 1,
++                 npts = 50, show.plots = TRUE, 
 +                 partial = TRUE)
 + }))
 &gt; #     user   system  elapsed 
-&gt; # 1109.641   76.516 1199.732 </code></pre>
+&gt; #    49.702   0.776  51.006 </code></pre>
+<p><img src="ggrfRegression_files/figure-html/prtl-surface-1.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-2.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-3.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-4.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-5.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-6.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-7.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-8.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-9.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-10.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-11.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-12.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-13.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-14.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-15.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-16.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-17.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-18.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-19.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-20.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-21.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-22.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-23.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-24.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-25.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-26.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-27.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-28.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-29.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-30.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-31.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-32.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-33.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-34.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-35.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-36.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-37.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-38.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-39.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-40.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-41.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-42.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-43.png" width="700" style="display: block; margin: auto;"><img src="ggrfRegression_files/figure-html/prtl-surface-44.png" width="700" style="display: block; margin: auto;"></p>
 <div class="figure" style="text-align: center">
 <img src="ggrfRegression_files/figure-html/contour3d-1.png" alt="Partial coplot contour plot. Contours of median home value along the lstat/rm plane." width="672"><p class="caption">
 Partial coplot contour plot. Contours of median home value along the lstat/rm plane.
@@ -637,7 +641,7 @@ Xie, Yihui. 2013. <em>Dynamic Documents with  and </em>. Boca Raton, Florida: Ch
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

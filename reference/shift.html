@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.1</span>
       </span>
     </div>
 
@@ -35,6 +35,9 @@
       <a href="../articles/ggrfRegression.html">ggRandomForests: Exploring randomForestSRC Regression</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/ehrlinger/ggRandomForests/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -60,16 +63,19 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">shift</span><span class="op">(</span><span class="va">x</span>, shift_by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">shift</span><span class="op">(</span><span class="va">x</span>, shift_by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>a vector of values</p></dd>
+
+
 <dt>shift_by</dt>
 <dd><p>an integer of length 1, giving the number of positions
 to lead (positive) or lag (negative) by</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -83,11 +89,11 @@ vignettes though.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">d</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">#generate lead variable</span></span>
-<span class="r-in"><span class="va">d</span><span class="op">$</span><span class="va">df_lead2</span><span class="op">&lt;-</span><span class="fu">ggRandomForests</span><span class="fu">:::</span><span class="fu">shift</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span>,<span class="fl">2</span><span class="op">)</span></span>
-<span class="r-in"><span class="co">#generate lag variable</span></span>
-<span class="r-in"><span class="va">d</span><span class="op">$</span><span class="va">df_lag2</span><span class="op">&lt;-</span><span class="fu">ggRandomForests</span><span class="fu">:::</span><span class="fu">shift</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span>,<span class="op">-</span><span class="fl">2</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#generate lead variable</span></span></span>
+<span class="r-in"><span><span class="va">d</span><span class="op">$</span><span class="va">df_lead2</span><span class="op">&lt;-</span><span class="fu">ggRandomForests</span><span class="fu">:::</span><span class="fu">shift</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span>,<span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">#generate lag variable</span></span></span>
+<span class="r-in"><span><span class="va">d</span><span class="op">$</span><span class="va">df_lag2</span><span class="op">&lt;-</span><span class="fu">ggRandomForests</span><span class="fu">:::</span><span class="fu">shift</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">x</span>,<span class="op">-</span><span class="fl">2</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -102,7 +108,7 @@ vignettes though.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

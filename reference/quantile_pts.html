@@ -21,7 +21,7 @@ cut function for creating groups for coplots."><!-- mathjax --><script src="http
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggRandomForests</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.1</span>
       </span>
     </div>
 
@@ -39,6 +39,9 @@ cut function for creating groups for coplots."><!-- mathjax --><script src="http
       <a href="../articles/ggrfRegression.html">ggRandomForests: Exploring randomForestSRC Regression</a>
     </li>
   </ul></li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/ehrlinger/ggRandomForests/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
@@ -68,22 +71,29 @@ cut function for creating groups for coplots."><!-- mathjax --><script src="http
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">quantile_pts</span><span class="op">(</span><span class="va">object</span>, <span class="va">groups</span>, intervals <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">quantile_pts</span><span class="op">(</span><span class="va">object</span>, <span class="va">groups</span>, intervals <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>object</dt>
 <dd><p>vector object of values.</p></dd>
+
+
 <dt>groups</dt>
 <dd><p>how many points do we want</p></dd>
+
+
 <dt>intervals</dt>
 <dd><p>should we return the raw points or intervals to
 be passed to the <code>cut</code> function</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>vector of groups+1 cut point values.</p>
+    
+
+<p>vector of groups+1 cut point values.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -92,19 +102,20 @@ be passed to the <code>cut</code> function</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_boston</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># To create 6 intervals, we want 7 points.</span></span>
-<span class="r-in"><span class="co"># quantile_pts will find balanced intervals</span></span>
-<span class="r-in"><span class="va">rm_pts</span> <span class="op">&lt;-</span> <span class="fu">quantile_pts</span><span class="op">(</span><span class="va">rfsrc_boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, groups<span class="op">=</span><span class="fl">6</span>, intervals<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Use cut to create the intervals</span></span>
-<span class="r-in"><span class="va">rm_grp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">rfsrc_boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, breaks<span class="op">=</span><span class="va">rm_pts</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rm_grp</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Boston</span>, package<span class="op">=</span><span class="st">"MASS"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_boston</span> <span class="op">&lt;-</span> <span class="fu">randomForestSRC</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">medv</span><span class="op">~</span><span class="va">.</span>, <span class="va">Boston</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># To create 6 intervals, we want 7 points.</span></span></span>
+<span class="r-in"><span><span class="co"># quantile_pts will find balanced intervals</span></span></span>
+<span class="r-in"><span><span class="va">rm_pts</span> <span class="op">&lt;-</span> <span class="fu">quantile_pts</span><span class="op">(</span><span class="va">rfsrc_boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, groups<span class="op">=</span><span class="fl">6</span>, intervals<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Use cut to create the intervals</span></span></span>
+<span class="r-in"><span><span class="va">rm_grp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">rfsrc_boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, breaks<span class="op">=</span><span class="va">rm_pts</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rm_grp</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (3.56,5.73] (5.73,5.98] (5.98,6.21] (6.21,6.47] (6.47,6.87] (6.87,8.78] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          81          85          92          87          81          80 </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -119,7 +130,7 @@ be passed to the <code>cut</code> function</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
