@@ -19,7 +19,8 @@
 #' object created from a \code{\link[randomForestSRC]{rfsrc}} object
 #'
 #' @param error "shade", "bars", "lines" or "none"
-#' @param type "surv", "cum_haz","hazard","density","mid_int", "life","proplife"
+#' @param type "surv", "cum_haz", "hazard", "density", "mid_int", "life", "proplife"
+#' @param label Modify the legend label when gg_survival has stratified samples
 #' @param ... not used
 #'
 #' @return \code{ggplot} object
@@ -43,12 +44,22 @@
 #'
 #' plot(gg_dta, error="none")
 #' plot(gg_dta)
+#' plot(gg_dta, label="treatment")
 #'
 #' # ...with smaller confidence limits.
 #' gg_dta <- gg_survival(interval="time", censor="status",
 #'                      data=pbc, by="treatment", conf.int=.68)
 #'
 #' plot(gg_dta, error="lines")
+#' plot(gg_dta, label="treatment", error="lines")
+#'
+#' # ...with smaller confidence limits.
+#' gg_dta <- gg_survival(interval="time", censor="status",
+#'                      data=pbc, by="sex", conf.int=.68)
+#'
+#' plot(gg_dta, error="lines")
+#' plot(gg_dta, label="sex", error="lines")
+#'
 #'
 #'}
 #'
@@ -65,6 +76,7 @@ plot.gg_survival <- function(x,
                                       "life",
                                       "proplife"),
                              error = c("shade", "bars", "lines", "none"),
+                             label = NULL,
                              ...) {
   gg_dta <- x
   if (inherits(gg_dta, "rfsrc"))
@@ -75,15 +87,18 @@ plot.gg_survival <- function(x,
   
   # Now order matters, so we want to place the forest predictions on the bottom
   # Create the figure skeleton,
-  
-  
   if (is.null(gg_dta$groups)) {
     gg_plt <- ggplot(gg_dta) +
       geom_step(aes_string(x = "time", y = type), ...)
-  } else{
+  } else {
     gg_dta$groups <- factor(gg_dta$groups)
     gg_plt <- ggplot(gg_dta) +
-      geom_step(aes_string(x = "time", y = type, color = "groups"), ...)
+      geom_step(aes_string(x = "time", y = type, color = "groups"),
+                ...)
+    if (!is.null(label) ) {
+      gg_plt <- gg_plt + 
+        labs(color = label, fill = label)
+    }
   }
   # Do we want to show confidence limits?
   if (type == "surv") {
@@ -118,7 +133,7 @@ plot.gg_survival <- function(x,
                       2),
         none = gg_plt
       )
-    } else{
+    } else {
       gg_plt <- switch(
         error,
         # Shading the standard errors
@@ -158,6 +173,5 @@ plot.gg_survival <- function(x,
       )
     }
   }
-  
   return(gg_plt)
 }

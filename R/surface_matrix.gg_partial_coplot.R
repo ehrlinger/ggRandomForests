@@ -27,19 +27,33 @@
 #' @examples
 #' \dontrun{
 #' ## From vignette(randomForestRegression, package="ggRandomForests")
-#' ##
-#' data(rfsrc_boston)
-#' rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups=49, intervals=TRUE)
+#' data(Boston, package="MASS")
+#' rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
+#' 
+#' varsel_boston <- var.select(rfsrc_boston)
 #'
-#' # Load the stored partial coplot data.
-#' data(partial_boston_surf)
+#'  rm_pts <- quantile_pts(rfsrc_boston$xvar$rm,
+#'     groups = 9, 
+#'     intervals = TRUE)
 #'
+#'  partial_boston_surf <- lapply(rm_pts, function(ct) {
+#'   rfsrc_boston$xvar$rm <- ct
+#'   randomForestSRC::plot.variable(
+#'     rfsrc_boston,
+#'     xvar.names = "lstat", 
+#'     time = 1,
+#'     npts = 10,
+#'     show.plots = FALSE,
+#'     partial = TRUE
+#'    )
+#'  })
+#'    
 #' # Instead of groups, we want the raw rm point values,
 #' # To make the dimensions match, we need to repeat the values
 #' # for each of the 50 points in the lstat direction
 #' rm.tmp <- do.call(c,lapply(rm_pts,
-#'                            function(grp) {rep(grp, l
-#'                            ength(partial_boston_surf))}))
+#'                            function(grp) {rep(grp,
+#'                            length(partial_boston_surf))}))
 #'
 #' # Convert the list of plot.variable output to
 #' partial_surf <- do.call(rbind,lapply(partial_boston_surf, gg_partial))
@@ -50,7 +64,7 @@
 #' # Transform the gg_partial_coplot object into a list of three named matrices
 #' # for surface plotting with plot3D::surf3D
 #' srf <- surface_matrix(partial_surf, c("lstat", "rm", "yhat"))
-#'}
+#' }
 #'
 #' \dontrun{
 #' # surf3D is in the plot3D package.
@@ -63,6 +77,7 @@
 #'        xlab="Lower Status", ylab="Average Rooms", zlab="Median Value"
 #' )
 #' }
+#' 
 #' @aliases surface_matrix  surface_matrix.gg_partial_coplot
 #' @export
 surface_matrix <- function(dta, xvar) {

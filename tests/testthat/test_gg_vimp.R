@@ -78,7 +78,7 @@ test_that("gg_vimp classifications", {
   ## Single class/
   iris2 <- iris
   iris2$spec <- factor(as.character(iris2$Species) == "setosa")
-  iris2 <- iris2[,-which(colnames(iris2) == "Species")]
+  iris2 <- iris2[, -which(colnames(iris2) == "Species")]
   
   rf <- rfsrc(spec ~ ., iris2, importance = TRUE)
   
@@ -122,14 +122,14 @@ test_that("gg_vimp survival", {
        envir = dta)
   pbc <- dta$pbc
   # For whatever reason, the age variable is in days... makes no sense to me
-  for (ind in 1:dim(pbc)[2]) {
+  for (ind in seq_len(dim(pbc)[2])) {
     if (!is.factor(pbc[, ind])) {
       if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
         if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
           pbc[, ind] <- as.logical(pbc[, ind])
         }
       }
-    } else{
+    } else {
       if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
         if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
           pbc[, ind] <- as.logical(pbc[, ind])
@@ -148,16 +148,16 @@ test_that("gg_vimp survival", {
   pbc$age <- pbc$age / 364.24
   
   pbc$years <- pbc$days / 364.24
-  pbc <- pbc[,-which(colnames(pbc) == "days")]
+  pbc <- pbc[, -which(colnames(pbc) == "days")]
   pbc$treatment <- as.numeric(pbc$treatment)
   pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
   pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
   pbc$treatment <- factor(pbc$treatment)
   
   cat("pbc: rfsrc\n")
-  dta_train <- pbc[-which(is.na(pbc$treatment)),]
+  dta_train <- pbc[-which(is.na(pbc$treatment)), ]
   # Create a test set from the remaining patients
-  pbc_test <- pbc[which(is.na(pbc$treatment)),]
+  pbc_test <- pbc[which(is.na(pbc$treatment)), ]
   
   rfsrc_pbc <- randomForestSRC::rfsrc(
     Surv(years, status) ~ .,

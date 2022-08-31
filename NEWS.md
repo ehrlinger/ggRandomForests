@@ -1,6 +1,9 @@
 Package: ggRandomForests
-Version: 2.2.0
+Version: 2.2.1
 
+ggRandomForests v2.2.1
+=====================
+* Fix docs for HTML5/Roxygen update
 
 ggRandomForests v2.2.0
 =====================
@@ -11,12 +14,12 @@ ggRandomForests v2.2.0
 ggRandomForests v2.1.0
 =====================
 To pull this out of archive on randomForestSRC 3.1 build release.
-Fixed a plot bug for gg_error to show the actual curve (issue #35)
+Fixed a plot bug for gg_error to show the actual curve (issue 35)
 
 ggRandomForests v2.0.1
 ======================
 * Correct a bug in survival plots when predicting on future data without a known outcome.
-* ALL Vignettes are now at https://github.com/ehrlinger/ggRFVignette
+* All Vignettes are now at https://github.com/ehrlinger/ggRFVignette
 * All tests are being moved to https://github.com/ehrlinger/ggRFVignette
 * Begin work on rewriting all checks to not use cached data. 
   This will require more runtime, and hence we will run fewer of them on CRAN release. 
@@ -26,20 +29,20 @@ ggRandomForests v2.0.0
 ======================
 * Added initial support for the randomForest package
 * Updated cache files for randomForestSRC 2.2.0 release.
-* Remove regression vignettes to meet CRAN size limts. These remain available at the package source https://github.com/ehrlinger/ggRandomForests
+* Remove regression vignettes to meet CRAN size limits. These remain available at the package source https://github.com/ehrlinger/ggRandomForests
 * Minor bug and documentation fixes.
 
 ggRandomForests v1.2.1
 ======================
 * Update cached datasets for randomForestSRC 2.0.0 release. 
-* Correct some vignette formatting errors (thx Joe Smith)
+* Correct some vignette formatting errors (thanks Joe Smith)
 
 ggRandomForests v1.2.0
 ======================
 * Convert to semantic versioning http://semver.org/
 * Updates for release of ggplot2 2.0.0
 * Change from reshape2::melt dependence to tidyr::gather
-* Optimize tests for CRAN to optimise R CMD CHECK times.
+* Optimize tests for CRAN to optimize R CMD CHECK times.
 
 
 ggRandomForests v1.1.4

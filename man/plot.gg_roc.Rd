@@ -4,12 +4,12 @@
 \alias{plot.gg_roc}
 \title{ROC plot generic function for a \code{\link{gg_roc}} object.}
 \usage{
-\method{plot}{gg_roc}(x, which.outcome = NULL, ...)
+\method{plot}{gg_roc}(x, which_outcome = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_roc}} object created from a classification forest}
 
-\item{which.outcome}{for multiclass problems, choose the class for plotting}
+\item{which_outcome}{for multiclass problems, choose the class for plotting}
 
 \item{...}{arguments passed to the \code{\link{gg_roc}} function}
 }
@@ -29,15 +29,15 @@ ROC plot generic function for a \code{\link{gg_roc}} object.
 data(rfsrc_iris, package="ggRandomForests")
 
 # ROC for setosa
-gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome=1)
 plot.gg_roc(gg_dta)
 
 # ROC for versicolor
-gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome=2)
 plot.gg_roc(gg_dta)
 
 # ROC for virginica
-gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome=3)
 plot.gg_roc(gg_dta)
 
 # Alternatively, you can plot all three outcomes in one go

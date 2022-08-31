@@ -2,8 +2,14 @@
 context("gg_minimal_vimp tests")
 
 test_that("gg_minimal_vimp classifications", {
-  ## Load the cached forest
-  data(varsel_iris, package = "ggRandomForests")
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    forest = TRUE,
+    importance = TRUE,
+    save.memory = TRUE)
+  
+  varsel_iris <- randomForestSRC::var.select(rfsrc_iris)
   
   # Test the cached forest type
   expect_is(varsel_iris, "list")
@@ -30,8 +36,22 @@ test_that("gg_minimal_vimp classifications", {
 
 test_that("gg_minimal_vimp regression", {
   ## Load the cached forest
-  data(varsel_boston, package = "ggRandomForests")
+  data(Boston, package = "MASS")
+  boston <- Boston
   
+  boston$chas <- as.logical(boston$chas)
+  
+  ## Load the cached forest
+  rfsrc_boston <-
+    randomForestSRC::rfsrc(
+      medv ~ .,
+      data = boston,
+      forest = TRUE,
+      importance = TRUE,
+      tree.err = TRUE,
+      save.memory = TRUE)
+  
+  varsel_boston <- randomForestSRC::var.select(rfsrc_boston)
   # Test the cached forest type
   expect_is(varsel_boston, "list")
   
@@ -108,7 +128,22 @@ test_that("gg_minimal_vimp regression", {
 
 
 test_that("gg_minimal_vimp exceptions", {
-  data(varsel_boston, package = "ggRandomForests")
+  data(Boston, package = "MASS")
+  boston <- Boston
+  
+  boston$chas <- as.logical(boston$chas)
+  
+  ## Load the cached forest
+  rfsrc_boston <-
+    randomForestSRC::rfsrc(
+      medv ~ .,
+      data = boston,
+      forest = TRUE,
+      importance = TRUE,
+      tree.err = TRUE,
+      save.memory = TRUE)
+  
+  varsel_boston <- randomForestSRC::var.select(rfsrc_boston)
   
   # Test the cached forest type
   expect_is(varsel_boston, "list")
@@ -126,7 +161,6 @@ test_that("gg_minimal_vimp exceptions", {
   expect_error(gg_minimal_vimp(vsel))
   expect_error(plot.gg_minimal_vimp(vsel))
   
-  data(rfsrc_boston, package = "ggRandomForests")
   expect_output(
     gg_dta <- gg_minimal_vimp(rfsrc_boston, fast = TRUE),
     "minimal depth variable selection"

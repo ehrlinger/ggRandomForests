@@ -93,7 +93,7 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
   
   nvar <- nrow(gg_dta)
   if (!is.null(arg_set$nvar)) {
-    if (is.numeric(arg_set$nvar) & arg_set$nvar > 1) {
+    if (is.numeric(arg_set$nvar) && arg_set$nvar > 1) {
       if (arg_set$nvar < nrow(gg_dta)) {
         nvar <- arg_set$nvar
         gg_dta <- gg_dta[1:nvar, ]
@@ -116,7 +116,7 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
         width = .5,
         color = "black"
       )
-  } else{
+  } else {
     gg_plt <- gg_plt +
       geom_bar(
         aes_string(y = msr, x = "vars"),
@@ -140,10 +140,10 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
         scale_x_discrete(labels = st_lbls)
     }
   }
-  if (is.null(gg_dta$set) | length(unique(gg_dta$set)) < 2) {
+  if (is.null(gg_dta$set) || length(unique(gg_dta$set)) < 2) {
     gg_plt <- gg_plt +
       coord_flip()
-  } else{
+  } else {
     gg_plt <- gg_plt +
       coord_flip() + facet_grid(~ set)
   }

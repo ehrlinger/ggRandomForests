@@ -174,7 +174,7 @@ plot.gg_variable <- function(x,
       # For the case of two, we are only interested in the TRUE, not FALSE.
       gg_dta  <- gg_dta[, -grep("yhat.", colnames(gg_dta))[1]]
       colnames(gg_dta)[grep("yhat.", colnames(gg_dta))] <- "yhat"
-    } else{
+    } else {
       # Else we want to split and duplicate the data... make it long format.
       gg_dta_x <- gg_dta[, -grep("yhat.", colnames(gg_dta))]
       gg_dta_y <- gg_dta[, grep("yhat.", colnames(gg_dta))]
@@ -214,7 +214,7 @@ plot.gg_variable <- function(x,
           gg_dta[, ind] <- as.logical(gg_dta[, ind])
         }
       }
-    } else{
+    } else {
       if (length(unique(gg_dta[which(!is.na(gg_dta[, ind])), ind])) <= 2) {
         if (sum(sort(unique(gg_dta[, ind])) ==  c(0, 1)) ==  2) {
           gg_dta[, ind] <- as.logical(gg_dta[, ind])
@@ -238,7 +238,6 @@ plot.gg_variable <- function(x,
       wch_y_var <-
         which(colnames(gg_dta) %in% c("event", "yhat", "time"))
       
-      
       # Handle categorical and continuous differently...
       tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
       gathercols <-
@@ -257,7 +256,7 @@ plot.gg_variable <- function(x,
                            color = "event",
                            shape = "event"
                          ))
-      } else{
+      } else {
         gg_plt <- ggplot(gg_dta_mlt,
                          aes_string(x = "value", y = "yhat"))
       }
@@ -268,7 +267,7 @@ plot.gg_variable <- function(x,
         if (points) {
           gg_plt <- gg_plt +
             geom_point(...)
-        } else{
+        } else {
           gg_plt <- gg_plt +
             geom_smooth(...)
         }
@@ -276,7 +275,7 @@ plot.gg_variable <- function(x,
           gg_plt <- gg_plt +
             geom_smooth(...)
         }
-      } else{
+      } else {
         # Check if there are numeric variables here...
         if (sum(ccls[wch_x_var] == "numeric") > 0)
           warning(
@@ -306,14 +305,14 @@ plot.gg_variable <- function(x,
           facet_grid(reformulate("variable", "time"),
                      scales = "free_x") +
           labs(x = "")
-      } else{
+      } else {
         gg_plt <- gg_plt +
           facet_wrap(~ variable,
                      scales = "free_x") +
           labs(x = "",
                y = paste("Survival at", gg_dta$time[1], "year"))
       }
-    } else{
+    } else {
       # Panels for
       # This will work for regression and binary classification... maybe.
       ## Create a panel plot
@@ -327,7 +326,7 @@ plot.gg_variable <- function(x,
         gg_dta_mlt <-
           tidyr::gather(tmp_dta, "variable", "value", gathercols)
         
-      } else{
+      } else {
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta) == "yvar"))
         tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
         gathercols <-
@@ -350,11 +349,11 @@ plot.gg_variable <- function(x,
                      shape = "yvar"
                    )) +
             geom_point(...)
-        } else{
+        } else {
           gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
             geom_point(...)
         }
-      } else{
+      } else {
         # Check if there are numberic variables here...
         if (sum(ccls[wch_x_var] == "numeric") > 0)
           warning("Mismatched variable types... 
@@ -369,7 +368,7 @@ plot.gg_variable <- function(x,
                      color = "yvar"
                    )) +
             geom_boxplot(...)
-        } else{
+        } else {
           gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
             geom_boxplot(...)
         }
@@ -378,7 +377,7 @@ plot.gg_variable <- function(x,
         if (points) {
           gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
             geom_point(...)
-        } else{
+        } else {
           gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
             geom_smooth(...)
         }
@@ -393,7 +392,7 @@ plot.gg_variable <- function(x,
         labs(x = "")
     }
     
-  } else{
+  } else {
     # Don't want a panel, but a single plot or list of plots.
     gg_plt <- vector("list", length = lng)
     
@@ -420,7 +419,7 @@ plot.gg_variable <- function(x,
                 shape = "event"
               ),
               ...)
-          } else{
+          } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_smooth(aes_string(x = "var", y = "yhat"),  ...)
           }
@@ -428,7 +427,7 @@ plot.gg_variable <- function(x,
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_smooth(aes_string(x = "var", y = "yhat"), ...)
           }
-        } else{
+        } else {
           gg_plt[[ind]] <- gg_plt[[ind]] +
             geom_boxplot(
               aes_string(x = "var", y = "yhat"),
@@ -447,7 +446,7 @@ plot.gg_variable <- function(x,
         }
         if (length(levels(gg_dta$time)) > 1) {
           gg_plt[[ind]] <- gg_plt[[ind]] + facet_wrap(~ time, ncol = 1)
-        } else{
+        } else {
           gg_plt[[ind]] <- gg_plt[[ind]] +
             labs(x = h_name,
                  y = paste("Survival at", gg_dta$time[1], "year"))
@@ -467,7 +466,7 @@ plot.gg_variable <- function(x,
                   shape = "yvar"
                 ),
                 ...)
-            } else{
+            } else {
               gg_plt[[ind]] <- gg_plt[[ind]] +
                 geom_smooth(
                   aes_string(x = "var", y = "yhat"),
@@ -480,7 +479,7 @@ plot.gg_variable <- function(x,
               gg_plt[[ind]] <- gg_plt[[ind]] +
                 geom_smooth(...)
             }
-          } else{
+          } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_jitter(aes_string(
                 x = "var",
@@ -497,7 +496,7 @@ plot.gg_variable <- function(x,
               )
             
           }
-        } else{
+        } else {
           if (ccls == "numeric") {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_point(aes_string(
@@ -508,7 +507,7 @@ plot.gg_variable <- function(x,
               ),
               ...)
             
-          } else{
+          } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_boxplot(
                 aes_string(x = "var", y = "yhat"),
@@ -528,7 +527,7 @@ plot.gg_variable <- function(x,
           
           gg_plt[[ind]] <- gg_plt[[ind]] + facet_grid(~ outcome)
         }
-      } else{
+      } else {
         # assume regression
         gg_plt[[ind]] <- gg_plt[[ind]] +
           labs(x = h_name, y = "Predicted")
@@ -536,14 +535,14 @@ plot.gg_variable <- function(x,
           if (points) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_point(aes_string(x = "var", y = "yhat"), ...)
-          } else{
+          } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               geom_smooth(aes_string(x = "var", y = "yhat"), ...)
           }
           if (smooth)
             gg_plt[[ind]]  <- gg_plt[[ind]]  +
               geom_smooth(aes_string(x = "var", y = "yhat"), ...)
-        } else{
+        } else {
           gg_plt[[ind]] <- gg_plt[[ind]] +
             geom_boxplot(
               aes_string(x = "var", y = "yhat"),

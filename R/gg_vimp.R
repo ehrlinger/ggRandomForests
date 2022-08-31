@@ -42,8 +42,8 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris,
+#'                     importance = TRUE)
 #' gg_dta <- gg_vimp(rfsrc_iris)
 #' plot(gg_dta)
 #'
@@ -52,26 +52,28 @@
 #' ## ------------------------------------------------------------
 #' \dontrun{
 #' ## -------- air quality data
-#' # rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
-#' data(rfsrc_airq, package="ggRandomForests")
+#' rfsrc_airq <- rfsrc(Ozone ~ ., airquality,
+#'                     importance = TRUE)
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
 #' }
 #'
 #' ## -------- Boston data
-#' data(rfsrc_boston, package="ggRandomForests")
+#' data(Boston, package="MASS")
+#' rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston,
+#'                                        importance = TRUE)
 #' gg_dta <- gg_vimp(rfsrc_boston)
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' data(Boston, package="MASS")
 #' rf_boston <- randomForest::randomForest(medv~., Boston)
 #' gg_dta <- gg_vimp(rf_boston)
 #' plot(gg_dta)
 #'
 #' \dontrun{
 #' ## -------- mtcars data
-#' data(rfsrc_mtcars, package="ggRandomForests")
+#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars,
+#'                       importance = TRUE)
 #' gg_dta <- gg_vimp(rfsrc_mtcars)
 #' plot(gg_dta)
 #' }
@@ -80,13 +82,67 @@
 #' ## ------------------------------------------------------------
 #' \dontrun{
 #' ## -------- veteran data
-#' data(rfsrc_veteran, package="ggRandomForests")
+#' data(veteran, package = "randomForestSRC")
+#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., 
+#'    data = veteran, 
+#'    ntree = 100,
+#'    importance = TRUE)
+#' 
 #' gg_dta <- gg_vimp(rfsrc_veteran)
 #' plot(gg_dta)
 #'
-#'
 #' ## -------- pbc data
-#' data(rfsrc_pbc, package="ggRandomForests")
+#' # We need to create this dataset
+#' data(pbc, package = "randomForestSRC",) 
+#' # For whatever reason, the age variable is in days... 
+#' # makes no sense to me
+#' for (ind in seq_len(dim(pbc)[2])) {
+#'  if (!is.factor(pbc[, ind])) {
+#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'    }
+#'  } else {
+#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'    }
+#'  }
+#'  if (!is.logical(pbc[, ind]) &
+#'      length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+#'    pbc[, ind] <- factor(pbc[, ind])
+#'  }
+#' }
+#' #Convert age to years
+#' pbc$age <- pbc$age / 364.24
+#'
+#' pbc$years <- pbc$days / 364.24
+#' pbc <- pbc[, -which(colnames(pbc) == "days")]
+#' pbc$treatment <- as.numeric(pbc$treatment)
+#' pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+#' pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+#' pbc$treatment <- factor(pbc$treatment)
+#' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+#' # Create a test set from the remaining patients
+#' pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+#'
+#' #========
+#' # build the forest:
+#' rfsrc_pbc <- randomForestSRC::rfsrc(
+#'   Surv(years, status) ~ .,
+#'  dta_train,
+#'  nsplit = 10,
+#'  na.action = "na.impute",
+#'  forest = TRUE,
+#'  importance = TRUE,
+#'  save.memory = TRUE
+#' )
+#' 
 #' gg_dta <- gg_vimp(rfsrc_pbc)
 #' plot(gg_dta)
 #'
@@ -104,7 +160,7 @@ gg_vimp <- function(object, nvar, ...) {
 gg_vimp.rfsrc <- function(object, nvar, ...) {
   # Get the extra arguments for handling specifics
   
-  if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &
+  if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &&
       sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
     stop("This function only works for objects of class `(rfsrc, grow)' or
          '(rfsrc, predict)'.")
@@ -116,14 +172,14 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     gg_dta <-
       data.frame(sort(randomForestSRC::vimp(object)$importance,
                       decreasing = TRUE))
-  } else{
+  } else {
     gg_dta <- data.frame(object$importance)
     
   }
   if (ncol(gg_dta) == 1) {
     colnames(gg_dta) <- "VIMP"
     gg_dta$vars <- rownames(gg_dta)
-    gg_dta <- gg_dta[order(gg_dta$VIMP, decreasing = TRUE),]
+    gg_dta <- gg_dta[order(gg_dta$VIMP, decreasing = TRUE), ]
   }
   if (missing(nvar))
     nvar <- nrow(gg_dta)
@@ -145,7 +201,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
           gg_v$vars <-
             rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome],
                                    decreasing = TRUE)]
-        } else{
+        } else {
           stop(
             paste(
               "which.outcome naming is incorrect.",
@@ -155,14 +211,14 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
             )
           )
         }
-      } else{
+      } else {
         if (arg_set$which.outcome < ncol(gg_dta)) {
           gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome + 1],
                                          decreasing = TRUE))
           gg_v$vars <-
             rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome + 1],
                                    decreasing = TRUE)]
-        } else{
+        } else {
           stop(
             paste(
               "which.outcome specified larger than the number of classes (+1).",
@@ -174,24 +230,24 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
         }
       }
       gg_dta <- gg_v
-    } else{
+    } else {
       gg_dta$vars <- rownames(gg_dta)
     }
     
-    gg_dta <- gg_dta[seq_len(nvar),]
+    gg_dta <- gg_dta[seq_len(nvar), ]
     gathercols <-
       colnames(gg_dta)[-which(colnames(gg_dta) == "vars")]
     gg_dta <- tidyr::gather(gg_dta, "set", "vimp", gathercols)
-    gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE),]
+    gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
     gg_dta$vars <- factor(gg_dta$vars)
-  } else{
+  } else {
     cnms <- colnames(gg_dta)
     gg_dta <- cbind(gg_dta, gg_dta / gg_dta[1, 1])
     colnames(gg_dta) <- c(cnms, "rel_vimp")
     gg_dta$vars[which(is.na(gg_dta$vars))] <-
       rownames(gg_dta)[which(is.na(gg_dta$vars))]
     
-    gg_dta <- gg_dta[1:nvar,]
+    gg_dta <- gg_dta[1:nvar, ]
     
   }
   gg_dta$vars <-
@@ -220,7 +276,7 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     warning("randomForest object does not contain importance information.")
     # gg_dta <- data.frame(sort(randomForestSRC::vimp(object)$importance,
     #                           decreasing=TRUE))
-  } else{
+  } else {
     gg_dta <- data.frame(object$importance)
   }
   if (ncol(gg_dta) < 3) {
@@ -228,11 +284,11 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     colnames(gg_dta)[which(colnames(gg_dta) == "X.IncMSE")] <-
       "vimp"
     if ("vimp" %in% colnames(gg_dta)) {
-      gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE),]
-    } else{
+      gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
+    } else {
       cn <- colnames(gg_dta)[1]
       gg_dta <-
-        gg_dta[order(gg_dta[,cn], decreasing = TRUE),]
+        gg_dta[order(gg_dta[, cn], decreasing = TRUE), ]
     }
   }
   if (missing(nvar))
@@ -254,7 +310,7 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
           gg_v$vars <-
             rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome],
                                    decreasing = TRUE)]
-        } else{
+        } else {
           stop(
             paste(
               "which.outcome naming is incorrect.",
@@ -264,14 +320,14 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
             )
           )
         }
-      } else{
+      } else {
         if (arg_set$which.outcome < ncol(gg_dta)) {
           gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome + 1],
                                          decreasing = TRUE))
           gg_v$vars <-
             rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome + 1],
                                    decreasing = TRUE)]
-        } else{
+        } else {
           stop(
             paste(
               "which.outcome specified larger than the number of classes (+1).",
@@ -283,21 +339,21 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
         }
       }
       gg_dta <- gg_v
-    } else{
+    } else {
       gg_dta$vars <- rownames(gg_dta)
     }
     
     gathercols <-
       colnames(gg_dta)[-which(colnames(gg_dta) == "vars")]
     gg_dta <- tidyr::gather(gg_dta, "set", "vimp", gathercols)
-    gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE),]
+    gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
     gg_dta$vars <- factor(gg_dta$vars)
-  } else{
+  } else {
     gg_dta$vars[which(is.na(gg_dta$vars))] <-
       rownames(gg_dta)[which(is.na(gg_dta$vars))]
     
   }
-  gg_dta <- gg_dta[1:nvar,]
+  gg_dta <- gg_dta[1:nvar, ]
   
   gg_dta$vars <-
     factor(gg_dta$vars, levels = rev(unique(gg_dta$vars)))

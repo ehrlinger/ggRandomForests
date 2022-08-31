@@ -179,7 +179,7 @@ plot.gg_partial <- function(x,
   
   if (is.null(gg_dta$group)) {
     gg_plt <- ggplot(gg_dta, aes_string(x = "x", y = "yhat"))
-  } else{
+  } else {
     gg_plt <-
       ggplot(gg_dta,
              aes_string(
@@ -199,10 +199,10 @@ plot.gg_partial <- function(x,
         conf_int <- conf_int / 100
       if (conf_int > .5) {
         err <- qnorm(1 - conf_int / 2)
-      } else{
+      } else {
         err <- qnorm(conf_int)
       }
-    } else{
+    } else {
       # Two sided,
       err <- qnorm(conf_int[1])
     }
@@ -252,11 +252,11 @@ plot.gg_partial <- function(x,
   if (!is.factor(gg_dta$x)) {
     if (points) {
       gg_plt <- gg_plt + geom_point(...)
-    } else{
+    } else {
       gg_plt <- gg_plt + geom_smooth(...)
     }
     
-  } else{
+  } else {
     gg_plt <- gg_plt + geom_boxplot(...)
   }
   

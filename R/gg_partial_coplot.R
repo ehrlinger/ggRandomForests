@@ -19,8 +19,10 @@
 #' @param surv_type for survival random forests,  c("mort", "rel.freq", "surv",
 #' "years.lost", "cif", "chf")
 #' @param time vector of time points for survival random forests partial plots.
+#' @param show_plots boolean passed to 
+#'  \code{\link[randomForestSRC]{plot.variable}} show.plots argument.
 #' @param ... extra arguments passed to
-#' \code{\link[randomForestSRC]{plot.variable}} function
+#'  \code{\link[randomForestSRC]{plot.variable}} function
 #'
 #' @return \code{gg_partial_coplot} object. An subclass of a
 #' \code{\link{gg_partial_list}} object
@@ -32,9 +34,58 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Load the forest
-#' data(rfsrc_pbc, package="ggRandomForests")
+#' 
+#' ## ------------------------------------------------------------
+#' ## -------- pbc data
+#' # We need to create this dataset
+#' data(pbc, package = "randomForestSRC") 
+#' # For whatever reason, the age variable is in days... makes no sense to me
+#' for (ind in seq_len(dim(pbc)[2])) {
+#'  if (!is.factor(pbc[, ind])) {
+#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'    }
+#'  } else {
+#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'    }
+#'  }
+#'  if (!is.logical(pbc[, ind]) &
+#'      length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+#'    pbc[, ind] <- factor(pbc[, ind])
+#'  }
+#' }
+#' #Convert age to years
+#' pbc$age <- pbc$age / 364.24
 #'
+#' pbc$years <- pbc$days / 364.24
+#' pbc <- pbc[, -which(colnames(pbc) == "days")]
+#' pbc$treatment <- as.numeric(pbc$treatment)
+#' pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+#' pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+#' pbc$treatment <- factor(pbc$treatment)
+#' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+#' # Create a test set from the remaining patients
+#'  pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+#'
+#' #========
+#' # build the forest:
+#' rfsrc_pbc <- randomForestSRC::rfsrc(
+#'   Surv(years, status) ~ .,
+#'  dta_train,
+#'  nsplit = 10,
+#'  na.action = "na.impute",
+#'  forest = TRUE,
+#'  importance = TRUE,
+#'  save.memory = TRUE
+#' )
 #' # Create the variable plot.
 #' ggvar <- gg_variable(rfsrc_pbc, time = 1)
 #'
@@ -51,9 +102,6 @@
 #'                                          time = 1,
 #'                                          show.plots = FALSE)
 #'
-#' ## so load the cached set
-#' data(partial_coplot_pbc, package="ggRandomForests")
-#'
 #' # Partial coplot
 #' plot(partial_coplot_pbc) #, se = FALSE)
 #'}
@@ -69,6 +117,7 @@ gg_partial_coplot.rfsrc <- function(object,
                                                   "cif",
                                                   "chf"),
                                     time,
+                                    show_plots = FALSE,
                                     ...) {
   # Some sanity checks:
   
@@ -105,14 +154,14 @@ gg_partial_coplot.rfsrc <- function(object,
   # If we don't have a groups variable, we may have a subsets in the
   # ellipse list.
   if (missing(groups)) {
-    if (is.null(arg_list$subset))
+    if (is.null(arg_list$subset)) { 
       stop(
         paste(
           "partial_coplot requires a groups argument to",
           "stratify the partial plots."
         )
       )
-    else{
+    } else {
       # We may be able to coherce a groups argument from subset that is
       # normally passed to plot.variable.
       
@@ -154,19 +203,6 @@ gg_partial_coplot.rfsrc <- function(object,
     }
   }
   
-  # If survival family, make sure we have a time and surv_type.
-  # if not default to time=1, and surv_type="surv" with warning.
-  #
-  #   # If we got a surv.type instead of surv_type, let's use that.
-  #   if(!is.null(arg_list$surv.type)) {
-  #
-  #   }
-  #   # If we got a surv.type instead of surv_type, let's use that.
-  #   if(is.null(arg_list$show.plots)) {
-  #     arg_list$show.plots <- FALSE
-  #   }
-  # what about multiple time points?
-  
   # This will return a list of subseted partial plots, one for each group,
   # all variables in xvar.
   pdat_partlist <- lapply(seq_len(length(sbst)), function(ind) {
@@ -176,7 +212,8 @@ gg_partial_coplot.rfsrc <- function(object,
       time = time,
       subset = sbst[[ind]],
       xvar.names = xvar,
-      partial = TRUE
+      partial = TRUE, 
+      show.plots = show_plots
     )
   })
   

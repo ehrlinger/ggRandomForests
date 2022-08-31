@@ -16,7 +16,7 @@
 #' ROC plot generic function for a \code{\link{gg_roc}} object.
 #'
 #' @param x \code{\link{gg_roc}} object created from a classification forest
-#' @param which.outcome for multiclass problems, choose the class for plotting
+#' @param which_outcome for multiclass problems, choose the class for plotting
 #' @param ... arguments passed to the \code{\link{gg_roc}} function
 #'
 #' @return \code{ggplot} object of the ROC curve
@@ -42,15 +42,15 @@
 #' data(rfsrc_iris, package="ggRandomForests")
 #'
 #' # ROC for setosa
-#' gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
+#' gg_dta <- gg_roc(rfsrc_iris, which_outcome=1)
 #' plot.gg_roc(gg_dta)
 #'
 #' # ROC for versicolor
-#' gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
+#' gg_dta <- gg_roc(rfsrc_iris, which_outcome=2)
 #' plot.gg_roc(gg_dta)
 #'
 #' # ROC for virginica
-#' gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
+#' gg_dta <- gg_roc(rfsrc_iris, which_outcome=3)
 #' plot.gg_roc(gg_dta)
 #'
 #' # Alternatively, you can plot all three outcomes in one go
@@ -64,7 +64,7 @@
 #' @importFrom parallel mclapply
 #'
 #' @export
-plot.gg_roc <- function(x, which.outcome = NULL, ...) {
+plot.gg_roc <- function(x, which_outcome = NULL, ...) {
   gg_dta <- x
   
   #If we call this with a forest object instead of a gg_roc object
@@ -73,32 +73,32 @@ plot.gg_roc <- function(x, which.outcome = NULL, ...) {
       # How many classes are there?
       crv <- dim(gg_dta$predicted)[2]
       
-      if (crv > 2 & is.null(which.outcome)) {
+      if (crv > 2 && is.null(which_outcome)) {
         gg_dta <- mclapply(1:crv, function(ind) {
-          gg_roc(gg_dta, which.outcome = ind, ...)
+          gg_roc(gg_dta, which_outcome = ind, ...)
         })
         
-      } else{
-        if (is.null(which.outcome))
-          which.outcome <- 2
-        gg_dta <- gg_roc(gg_dta, which.outcome, ...)
+      } else {
+        if (is.null(which_outcome))
+          which_outcome <- 2
+        gg_dta <- gg_roc(gg_dta, which_outcome, ...)
       }
-    } else{
+    } else {
       stop("gg_roc expects a classification randomForest.")
     }
   } else if (inherits(gg_dta, "randomForest")) {
-    if (gg_dta$type == 'classification') {
+    if (gg_dta$type == "classification") {
       # How many classes are there?
       crv <- length(levels(gg_dta$predicted))
-      if (crv > 2 & is.null(which.outcome)) {
+      if (crv > 2 && is.null(which_outcome)) {
         gg_dta <- mclapply(1:crv, function(ind) {
-          gg_roc(gg_dta, which.outcome = ind, ...)
+          gg_roc(gg_dta, which_outcome = ind, ...)
         })
         
-      } else{
-        if (is.null(which.outcome))
-          which.outcome <- 2
-        gg_dta <- gg_roc(gg_dta, which.outcome, ...)
+      } else {
+        if (is.null(which_outcome))
+          which_outcome <- 2
+        gg_dta <- gg_roc(gg_dta, which_outcome, ...)
       }
     }
   }
@@ -130,7 +130,7 @@ plot.gg_roc <- function(x, which.outcome = NULL, ...) {
         hjust = 0
       )
     
-  } else{
+  } else {
     gg_dta <- mclapply(gg_dta, function(st) {
       st[order(st$spec), ]
       st

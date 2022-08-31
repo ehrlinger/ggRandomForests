@@ -42,8 +42,7 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' gg_dta<- gg_rfsrc(rfsrc_iris)
 #'
 #' plot(gg_dta)
@@ -53,15 +52,22 @@
 #' ## ------------------------------------------------------------
 #' \dontrun{
 #' ## -------- air quality data
-#' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' data(rfsrc_airq, package="ggRandomForests")
+#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' gg_dta<- gg_rfsrc(rfsrc_airq)
 #'
 #' plot(gg_dta)
 #' }
 #'
 #' ## -------- Boston data
-#' data(rfsrc_boston, package="ggRandomForests")
+#' data(Boston, package = "MASS")
+#' Boston$chas <- as.logical(Boston$chas)
+#' rfsrc_boston <- rfsrc(medv ~ .,
+#'    data = Boston,
+#'    forest = TRUE,
+#'    importance = TRUE,
+#'    tree.err = TRUE,
+#'    save.memory = TRUE)
+#' 
 #' plot(gg_rfsrc(rfsrc_boston))
 #'
 #' ### randomForest example
@@ -71,7 +77,7 @@
 #'
 #' \dontrun{
 #' ## -------- mtcars data
-#' data(rfsrc_mtcars, package="ggRandomForests")
+#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' gg_dta<- gg_rfsrc(rfsrc_mtcars)
 #'
 #' plot(gg_dta)
@@ -82,9 +88,9 @@
 #' \dontrun{
 #' ## -------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' # data(veteran, package = "randomForestSRC")
-#' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#' data(rfsrc_veteran, package = "ggRandomForests")
+#' data(veteran, package = "randomForestSRC")
+#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+#' 
 #' gg_dta <- gg_rfsrc(rfsrc_veteran)
 #' plot(gg_dta)
 #'
@@ -97,9 +103,55 @@
 #'
 #' ## -------- pbc data
 #' ## We don't run this because of bootstrap confidence limits
-#' data(rfsrc_pbc, package = "ggRandomForests")
+#' # We need to create this dataset
+#' data(pbc, package = "randomForestSRC",) 
+#' # For whatever reason, the age variable is in days... makes no sense to me
+#' for (ind in seq_len(dim(pbc)[2])) {
+#'  if (!is.factor(pbc[, ind])) {
+#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'    }
+#'  } else {
+#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'    }
+#'  }
+#'  if (!is.logical(pbc[, ind]) &
+#'      length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+#'    pbc[, ind] <- factor(pbc[, ind])
+#'  }
+#' }
+#' #Convert age to years
+#' pbc$age <- pbc$age / 364.24
 #'
-#
+#' pbc$years <- pbc$days / 364.24
+#' pbc <- pbc[, -which(colnames(pbc) == "days")]
+#' pbc$treatment <- as.numeric(pbc$treatment)
+#' pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+#' pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+#' pbc$treatment <- factor(pbc$treatment)
+#' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+#' # Create a test set from the remaining patients
+#'  pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+#'
+#' #========
+#' # build the forest:
+#' rfsrc_pbc <- randomForestSRC::rfsrc(
+#'   Surv(years, status) ~ .,
+#'  dta_train,
+#'  nsplit = 10,
+#'  na.action = "na.impute",
+#'  forest = TRUE,
+#'  importance = TRUE,
+#'  save.memory = TRUE
+#' )
 #' gg_dta <- gg_rfsrc(rfsrc_pbc)
 #' plot(gg_dta)
 #'
@@ -149,18 +201,18 @@ gg_rfsrc.rfsrc <- function(object,
     if (is.character(grp)) {
       if (is.null(object$xvar[, grp])) {
         stop(paste("No column named", grp, "in forest training set."))
-      } else{
+      } else {
         grp <- object$xvar[, grp]
       }
     }
     
-    if (is.vector(grp) | is.factor(grp)) {
+    if (is.vector(grp) || is.factor(grp)) {
       if (length(grp) != nrow(object$xvar))
         stop(paste(
           "By argument does not have the correct dimension ",
           nrow(object$xvar)
         ))
-    } else{
+    } else {
       stop(
         paste(
           "By argument should be either a vector, or colname",
@@ -181,13 +233,13 @@ gg_rfsrc.rfsrc <- function(object,
       gg_dta <-
         if (ncol(object$predicted.oob) <= 2) {
           data.frame(cbind(object$predicted.oob[, -1]))
-        } else{
+        } else {
           data.frame(cbind(object$predicted.oob))
         }
-    } else{
+    } else {
       gg_dta <- if (ncol(object$predicted) <= 2) {
         data.frame(cbind(object$predicted[, -1]))
-      } else{
+      } else {
         data.frame(cbind(object$predicted))
       }
     }
@@ -200,7 +252,7 @@ gg_rfsrc.rfsrc <- function(object,
       # This may be a bug in rfsrc, as it converts all classification models
       # into factors.
       gg_dta$y <- as.logical(as.numeric(object$yvar) - 1)
-    } else{
+    } else {
       colnames(gg_dta) <- levels(object$yvar)
       gg_dta$y <- object$yvar
       
@@ -227,7 +279,7 @@ gg_rfsrc.rfsrc <- function(object,
           surv_type, " not implemented at this time"
         ))
       )
-    } else{
+    } else {
       rng <- switch(
         surv_type,
         surv = data.frame(object$survival),
@@ -245,14 +297,14 @@ gg_rfsrc.rfsrc <- function(object,
     rng$obs_id <- seq_len(nrow(rng))
     if (is.null(object$yvar)) {
       rng$event <- FALSE
-    } else{
+    } else {
       rng$event <- as.logical(object$yvar[, 2])
     }
     gg_dta <- rng
     
     # If we don't specify either a conf band or group by variable...
     # Then we want to plot a curve for each observation.
-    if (is.null(arg_list$conf.int) & missing(by)) {
+    if (is.null(arg_list$conf.int) && missing(by)) {
       gathercols <-
         colnames(gg_dta)[-which(colnames(gg_dta) %in% c("obs_id", "event"))]
       gg_dta_mlt <-
@@ -263,7 +315,7 @@ gg_rfsrc.rfsrc <- function(object,
       
       gg_dta <- gg_dta_mlt
       
-    } else{
+    } else {
       level <- if (is.null(arg_list$conf.int))
         .95
       else
@@ -276,13 +328,13 @@ gg_rfsrc.rfsrc <- function(object,
         
         level_set <- c((1 - level) / 2, 1 - (1 - level) / 2)
         level_set <- sort(level_set)
-      } else{
+      } else {
         level_set <- sort(level)
       }
       
-      if (is.null(arg_list$bs.sample))
+      if (is.null(arg_list$bs.sample)) {
         bs_samples <- nrow(gg_dta)
-      else{
+      } else {
         bs_samples <- arg_list$bs.sample
       }
       
@@ -305,7 +357,7 @@ gg_rfsrc.rfsrc <- function(object,
         gg_grp$group <- factor(gg_grp$group,
                                levels = unique(gg_grp$group))
         gg_dta <- gg_grp
-      } else{
+      } else {
         gg_dta <- bootstrap_survival(gg_dta, bs_samples, level_set)
       }
     }
@@ -314,7 +366,7 @@ gg_rfsrc.rfsrc <- function(object,
     # Need to add multiclass methods
     if (oob) {
       gg_dta <- data.frame(cbind(object$predicted.oob, object$yvar))
-    } else{
+    } else {
       gg_dta <- data.frame(cbind(object$predicted, object$yvar))
     }
     
@@ -324,7 +376,7 @@ gg_rfsrc.rfsrc <- function(object,
     if (!missing(by))
       gg_dta$group <- grp
     
-  } else{
+  } else {
     stop(
       paste(
         "Plotting for ",
@@ -344,27 +396,27 @@ gg_rfsrc.rfsrc <- function(object,
 bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
   ## Calculate the leave one out estimate of the mean survival
   gg_t <-
-    gg_dta[,-which(colnames(gg_dta) %in% c("obs_id", "event", "group"))]
-  mn.bs <- t(sapply(seq_len(bs_samples),
+    gg_dta[, -which(colnames(gg_dta) %in% c("obs_id", "event", "group"))]
+  mn_bs <- t(sapply(seq_len(bs_samples),
                     function(pat) {
                       st <- sample(seq_len(nrow(gg_t)),
                                    size = nrow(gg_t),
-                                   replace = T)
+                                   replace = TRUE)
                       colMeans(gg_t[st, ])
                     }))
   
   ## now get the confidence interval of the mean, and the median (.5)
-  rng <- sapply(seq_len(ncol(mn.bs)),
+  rng <- sapply(seq_len(ncol(mn_bs)),
                 function(t_pt) {
-                  quantile(mn.bs[, t_pt], probs = c(level_set, .5))
+                  quantile(mn_bs[, t_pt], probs = c(level_set, .5))
                 })
   mn <- sapply(seq_len(ncol(rng)), function(t_pt) {
     mean(rng[, t_pt])
   })
   
-  time.interest <- as.numeric(colnames(gg_t))
+  time_interest <- as.numeric(colnames(gg_t))
   
-  dta <- data.frame(cbind(time.interest,
+  dta <- data.frame(cbind(time_interest,
                           t(rng)[-which(colnames(gg_dta) %in%
                                           c("obs_id", "event")), ],
                           mn[-which(colnames(gg_dta) %in%
@@ -372,7 +424,7 @@ bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
   
   if (ncol(dta) == 5) {
     colnames(dta) <- c("value", "lower",  "upper", "median", "mean")
-  } else{
+  } else {
     colnames(dta) <- c("value", level_set, "mean")
   }
   dta
@@ -410,18 +462,18 @@ gg_rfsrc.randomForest <- function(object,
     if (is.character(grp)) {
       if (is.null(object$xvar[, grp])) {
         stop(paste("No column named", grp, "in forest training set."))
-      } else{
+      } else {
         grp <- object$xvar[, grp]
       }
     }
     
-    if (is.vector(grp) | is.factor(grp)) {
+    if (is.vector(grp) || is.factor(grp)) {
       if (length(grp) != nrow(object$xvar))
         stop(paste(
           "By argument does not have the correct dimension ",
           nrow(object$xvar)
         ))
-    } else{
+    } else {
       stop(
         paste(
           "By argument should be either a vector, or colname",
@@ -448,7 +500,7 @@ gg_rfsrc.randomForest <- function(object,
     prd <- predict(object, type = "prob")
     gg_dta <- if (ncol(prd) <= 2) {
       data.frame(cbind(prd[, -1]))
-    } else{
+    } else {
       data.frame(cbind(prd))
     }
     colnames(gg_dta) <- object$classes
@@ -460,7 +512,7 @@ gg_rfsrc.randomForest <- function(object,
       # This may be a bug in rfsrc, as it converts all classification models
       # into factors.
       gg_dta$y <- as.logical(as.numeric(object$yvar) - 1)
-    } else{
+    } else {
       gg_dta$y <- object$y
       
     }
@@ -478,7 +530,7 @@ gg_rfsrc.randomForest <- function(object,
     if (!missing(by))
       gg_dta$group <- grp
     
-  } else{
+  } else {
     stop(
       paste(
         "Plotting for ",

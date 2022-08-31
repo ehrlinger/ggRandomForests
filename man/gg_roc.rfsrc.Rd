@@ -6,12 +6,12 @@
 \alias{gg_roc.randomForest}
 \title{ROC (Receiver operator curve) data from a classification random forest.}
 \usage{
-\method{gg_roc}{rfsrc}(object, which.outcome, oob, ...)
+\method{gg_roc}{rfsrc}(object, which_outcome, oob, ...)
 }
 \arguments{
 \item{object}{an \code{\link[randomForestSRC]{rfsrc}} classification object}
 
-\item{which.outcome}{select the classification outcome of interest.}
+\item{which_outcome}{select the classification outcome of interest.}
 
 \item{oob}{use oob estimates (default TRUE)}
 
@@ -28,34 +28,33 @@ The sensitivity and specificity of a randomForest classification object.
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-#rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-data(rfsrc_iris, package="ggRandomForests")
+rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 
 # ROC for setosa
-gg_dta <- gg_roc(rfsrc_iris, which.outcome=1)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome=1)
 plot(gg_dta)
 
 # ROC for versicolor
-gg_dta <- gg_roc(rfsrc_iris, which.outcome=2)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome=2)
 plot(gg_dta)
 
 # ROC for virginica
-gg_dta <- gg_roc(rfsrc_iris, which.outcome=3)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome=3)
 plot(gg_dta)
 
-
+## -------- iris data
 rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
 
 # ROC for setosa
-gg_dta <- gg_roc(rf_iris, which.outcome=1)
+gg_dta <- gg_roc(rf_iris, which_outcome=1)
 plot(gg_dta)
 
 # ROC for versicolor
-gg_dta <- gg_roc(rf_iris, which.outcome=2)
+gg_dta <- gg_roc(rf_iris, which_outcome=2)
 plot(gg_dta)
 
 # ROC for virginica
-gg_dta <- gg_roc(rf_iris, which.outcome=3)
+gg_dta <- gg_roc(rf_iris, which_outcome=3)
 plot(gg_dta)
 
 

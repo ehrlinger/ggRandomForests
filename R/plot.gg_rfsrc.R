@@ -51,18 +51,19 @@
 #' ## Regression example
 #' ## ------------------------------------------------------------
 #' ## -------- air quality data
-#' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' data(rfsrc_airq, package="ggRandomForests")
+#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' gg_dta<- gg_rfsrc(rfsrc_airq)
 #'
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' data(rfsrc_boston, package="ggRandomForests")
+#' data(Boston, package = "MASS")
+#' rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
+#' 
 #' plot(rfsrc_boston)
 #'
 #' ## -------- mtcars data
-#' data(rfsrc_mtcars, package="ggRandomForests")
+#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' gg_dta<- gg_rfsrc(rfsrc_mtcars)
 #'
 #' plot(gg_dta)
@@ -72,9 +73,8 @@
 #' ## ------------------------------------------------------------
 #' ## -------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
-#' # data(veteran, package = "randomForestSRC")
-#' # rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#' data(rfsrc_veteran, package = "ggRandomForests")
+#' data(veteran, package = "randomForestSRC")
+#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #' gg_dta <- gg_rfsrc(rfsrc_veteran)
 #' plot(gg_dta)
 #'
@@ -85,7 +85,56 @@
 #' plot(gg_dta)
 #'
 #' ## -------- pbc data
-#' data(rfsrc_pbc, package = "ggRandomForests")
+#' #' # We need to create this dataset
+#' data(pbc, package = "randomForestSRC",) 
+#' # For whatever reason, the age variable is in days... makes no sense to me
+#' for (ind in seq_len(dim(pbc)[2])) {
+#'  if (!is.factor(pbc[, ind])) {
+#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'    }
+#'  } else {
+#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+#'        pbc[, ind] <- as.logical(pbc[, ind])
+#'      }
+#'    }
+#'  }
+#'  if (!is.logical(pbc[, ind]) &
+#'      length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+#'    pbc[, ind] <- factor(pbc[, ind])
+#'  }
+#' }
+#' #Convert age to years
+#' pbc$age <- pbc$age / 364.24
+#'
+#' pbc$years <- pbc$days / 364.24
+#' pbc <- pbc[, -which(colnames(pbc) == "days")]
+#' pbc$treatment <- as.numeric(pbc$treatment)
+#' pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+#' pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+#' pbc$treatment <- factor(pbc$treatment)
+#' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+#' # Create a test set from the remaining patients
+#' pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+#'
+#' #========
+#' # build the forest:
+#' rfsrc_pbc <- randomForestSRC::rfsrc(
+#'   Surv(years, status) ~ .,
+#'  dta_train,
+#'  nsplit = 10,
+#'  na.action = "na.impute",
+#'  forest = TRUE,
+#'  importance = TRUE,
+#'  save.memory = TRUE
+#' )
+#' 
 #' gg_dta <- gg_rfsrc(rfsrc_pbc)
 #' plot(gg_dta)
 #'
@@ -113,7 +162,7 @@ plot.gg_rfsrc <- function(x, ...) {
     gg_dta <- gg_rfsrc(gg_dta)
   
   ## Classification forest?
-  if (inherits(gg_dta, "class") |
+  if (inherits(gg_dta, "class") ||
       inherits(gg_dta, "classification")) {
     if (ncol(gg_dta) < 3) {
       gg_plt <- ggplot(gg_dta) +
@@ -132,7 +181,7 @@ plot.gg_rfsrc <- function(x, ...) {
           ...
         ) +
         theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-    } else{
+    } else {
       gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
       gg_dta_mlt <-
         tidyr::gather(gg_dta, "variable", "value", gathercols)
@@ -149,7 +198,7 @@ plot.gg_rfsrc <- function(x, ...) {
     if ("lower" %in% colnames(gg_dta)) {
       if (is.null(arg_set$alpha)) {
         alph <- .3
-      } else{
+      } else {
         alph <- arg_set$alpha * .5
         arg_set$alpha <- NULL
       }
@@ -171,7 +220,7 @@ plot.gg_rfsrc <- function(x, ...) {
             y = "median",
             color = "group"
           ), ...)
-      } else{
+      } else {
         gg_plt <- ggplot(gg_dta) +
           geom_ribbon(aes_string(
             x = "value",
@@ -181,7 +230,7 @@ plot.gg_rfsrc <- function(x, ...) {
           alpha = alph) +
           geom_step(aes_string(x = "value", y = "median"), ...)
       }
-    } else{
+    } else {
       # Lines by observation
       gg_plt <- ggplot(gg_dta,
                        aes_string(
@@ -197,11 +246,11 @@ plot.gg_rfsrc <- function(x, ...) {
       labs(x = "time (years)", y = "Survival (%)")
     
     
-  } else if (inherits(gg_dta, "regr") |
+  } else if (inherits(gg_dta, "regr") ||
              inherits(gg_dta, "regression")) {
     if ("group" %in% colnames(gg_dta)) {
       gg_plt <- ggplot(gg_dta, aes_string(x = "group", y = "yhat"))
-    } else{
+    } else {
       gg_plt <- ggplot(gg_dta, aes_string(x = 1, y = "yhat"))
     }
     
@@ -213,7 +262,7 @@ plot.gg_rfsrc <- function(x, ...) {
                    ...) +
       labs(y = "Predicted Value", x = colnames(gg_dta)[2]) +
       theme(axis.ticks = element_blank(), axis.text.x = element_blank())
-  } else{
+  } else {
     stop(paste(
       "Plotting for ",
       class(gg_dta)[2],

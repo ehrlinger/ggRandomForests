@@ -3,7 +3,12 @@ context("gg_variable tests")
 
 test_that("gg_variable classifications", {
   ## Load the cached forest
-  data(rfsrc_iris, package = "ggRandomForests")
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    forest = TRUE,
+    importance = TRUE,
+    save.memory = TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_iris, "rfsrc")
@@ -58,8 +63,20 @@ test_that("gg_variable classifications", {
 
 
 test_that("gg_variable regression", {
+  data(Boston, package = "MASS")
+  boston <- Boston
+  
+  boston$chas <- as.logical(boston$chas)
+  
   ## Load the cached forest
-  data(rfsrc_boston, package = "ggRandomForests")
+  rfsrc_boston <-
+    randomForestSRC::rfsrc(
+      medv ~ .,
+      data = boston,
+      forest = TRUE,
+      importance = TRUE,
+      tree.err = TRUE,
+      save.memory = TRUE)
   
   # Test the cached forest type
   expect_is(rfsrc_boston, "rfsrc")
