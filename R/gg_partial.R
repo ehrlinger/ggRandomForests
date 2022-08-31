@@ -50,7 +50,6 @@
 #' ## classification
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#'
 #' ## iris "Petal.Width" partial dependence plot
 #' ##
 #' rfsrc_iris <- rfsrc(Species ~., data = iris)
@@ -60,7 +59,7 @@
 #' 
 #' gg_dta <- gg_partial(partial_iris)
 #' plot(gg_dta)
-#'
+#' 
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
@@ -77,7 +76,7 @@
 #' plot(gg_dta)
 #'
 #' }
-#'
+#' \dontrun{
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
@@ -97,7 +96,7 @@
 #'   show.plots = FALSE)
 #' gg_dta <- gg_partial(partial_boston)
 #' plot(gg_dta, panel=TRUE)
-#'
+#' }
 #' \dontrun{
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)

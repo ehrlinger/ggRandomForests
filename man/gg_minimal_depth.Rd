@@ -60,6 +60,7 @@ gg_dta<- gg_minimal_depth(varsel_airq)
 # Plot the gg_minimal_depth object
 plot(gg_dta)
 }
+\dontrun{
 
 ## -------- Boston data
 data(Boston, package = "MASS")
@@ -77,7 +78,7 @@ varsel_boston <- var.select(rfsrc_boston)
 gg_dta <- gg_minimal_depth(varsel_boston)
 print(gg_dta)
 plot(gg_dta)
-
+}
 \dontrun{
 ## -------- mtcars data
 rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)

@@ -44,7 +44,7 @@
 #'
 #' # To nicely print a rfsrc::var.select output...
 #' print(varsel_airq)
-#' }
+#' 
 #'
 #' # ... or load a cached randomForestSRC object
 #' data(Boston, package="MASS")
@@ -58,7 +58,7 @@
 #'
 #' # To nicely print a rfsrc::var.select output...
 #' print(varsel_boston)
-#'
+#' }
 #' @export
 print.gg_minimal_depth <- function(x, ...) {
   gg_dta <- x

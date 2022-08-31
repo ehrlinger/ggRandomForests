@@ -41,7 +41,7 @@ print(gg_dta)
 
 # To nicely print a rfsrc::var.select output...
 print(varsel_airq)
-}
+
 
 # ... or load a cached randomForestSRC object
 data(Boston, package="MASS")
@@ -55,5 +55,5 @@ print(gg_dta)
 
 # To nicely print a rfsrc::var.select output...
 print(varsel_boston)
-
+}
 }

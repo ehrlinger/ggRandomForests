@@ -62,7 +62,7 @@ plot(gg_dta, xvar="Solar.R")
 
 plot(gg_dta, panel=TRUE)
 }
-
+\dontrun{
 ## -------- Boston data
 data(Boston, package = "MASS")
 Boston$chas <- as.logical(Boston$chas)
@@ -78,7 +78,7 @@ interaction_boston <- find.interaction(rfsrc_boston)
 gg_dta <- gg_interaction(interaction_boston)
 
 plot(gg_dta, panel=TRUE)
-
+}
 \dontrun{
 ## -------- mtcars data
 rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
@@ -104,7 +104,8 @@ gg_dta <- gg_interaction(interaction_vet)
 plot(gg_dta, panel = True)
 
 ## ------------------------------------------------------------
-## -------- pbc data# We need to create this dataset
+## -------- pbc data
+# We need to create this dataset
 data(pbc, package = "randomForestSRC",) 
 # For whatever reason, the age variable is in days... makes no sense to me
 for (ind in seq_len(dim(pbc)[2])) {
@@ -129,7 +130,7 @@ for (ind in seq_len(dim(pbc)[2])) {
    pbc[, ind] <- factor(pbc[, ind])
  }
 }
-#Convert age to years
+# Convert age to years
 pbc$age <- pbc$age / 364.24
 
 pbc$years <- pbc$days / 364.24

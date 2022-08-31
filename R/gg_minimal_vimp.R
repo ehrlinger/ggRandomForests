@@ -60,7 +60,7 @@
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
 #' }
-#'
+#' \dontrun{
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
@@ -78,7 +78,7 @@
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
-#'
+#' }
 #' \dontrun{
 #' ## -------- mtcars data
 #'

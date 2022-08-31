@@ -54,7 +54,7 @@ gg_dta<- gg_minimal_vimp(varsel_airq)
 # Plot the gg_minimal_vimp object
 plot(gg_dta)
 }
-
+\dontrun{
 ## -------- Boston data
 data(Boston, package = "MASS")
 Boston$chas <- as.logical(Boston$chas)
@@ -72,7 +72,7 @@ gg_dta<- gg_minimal_vimp(varsel_boston)
 
 # Plot the gg_minimal_vimp object
 plot(gg_dta)
-
+}
 \dontrun{
 ## -------- mtcars data
 

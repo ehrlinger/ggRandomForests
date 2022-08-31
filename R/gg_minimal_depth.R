@@ -52,7 +52,7 @@
 #'
 #' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
-#'
+#' 
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
@@ -68,7 +68,8 @@
 #' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
 #' }
-#'
+#' \dontrun{
+#' 
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
@@ -85,7 +86,7 @@
 #' gg_dta <- gg_minimal_depth(varsel_boston)
 #' print(gg_dta)
 #' plot(gg_dta)
-#' 
+#' }
 #' \dontrun{
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)

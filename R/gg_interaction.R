@@ -84,7 +84,7 @@
 #'
 #' plot(gg_dta, panel=TRUE)
 #' }
-#'
+#' \dontrun{
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
@@ -100,7 +100,7 @@
 #' gg_dta <- gg_interaction(interaction_boston)
 #'
 #' plot(gg_dta, panel=TRUE)
-#'
+#' }
 #' \dontrun{
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
@@ -126,7 +126,8 @@
 #' plot(gg_dta, panel = True)
 #'
 #' ## ------------------------------------------------------------
-#' ## -------- pbc data# We need to create this dataset
+#' ## -------- pbc data
+#' # We need to create this dataset
 #' data(pbc, package = "randomForestSRC",) 
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
@@ -151,18 +152,17 @@
 #'    pbc[, ind] <- factor(pbc[, ind])
 #'  }
 #' }
-#' #Convert age to years
-#'pbc$age <- pbc$age / 364.24
+#' # Convert age to years
+#' pbc$age <- pbc$age / 364.24
 #'
-#'pbc$years <- pbc$days / 364.24
-#'pbc <- pbc[, -which(colnames(pbc) == "days")]
-#'pbc$treatment <- as.numeric(pbc$treatment)
-#'pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
-#'pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
-#'pbc$treatment <- factor(pbc$treatment)
-
-#'dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-#'# Create a test set from the remaining patients
+#' pbc$years <- pbc$days / 364.24
+#' pbc <- pbc[, -which(colnames(pbc) == "days")]
+#' pbc$treatment <- as.numeric(pbc$treatment)
+#' pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+#' pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+#' pbc$treatment <- factor(pbc$treatment)
+#' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+#' # Create a test set from the remaining patients
 #' pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 #'
 #' #========
