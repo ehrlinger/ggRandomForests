@@ -38,6 +38,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+          crayon.enabled: 'FALSE'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -45,3 +46,4 @@ jobs:
 
       - uses: r-lib/actions/setup-tinytex@v2
       - uses: r-lib/actions/check-r-package@v2
+ 
