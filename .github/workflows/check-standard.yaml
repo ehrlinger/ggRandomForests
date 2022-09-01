@@ -34,6 +34,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v2
         with:
           pandoc-version: '2.17.1' # The pandoc version to download (if necessary) and use.
+      - run brew install --cask xquartz
       - run: echo "# Test" | pandoc -t html
       
       - uses: r-lib/actions/setup-r@v2
