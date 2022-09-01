@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, master]
 
+name: Install XQuartz on macOS
+if: runner.os == 'macOS'
+run: brew cask install xquartz
+        
 name: R-CMD-check-standard
 
 jobs:
@@ -28,9 +32,6 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
 
-    if: runner.os == 'macOS'
-        run: brew install xquartz --cask
-    
     steps:
     
       - uses: actions/checkout@v2
