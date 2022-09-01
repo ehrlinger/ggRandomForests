@@ -5,11 +5,7 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-
-name: Install XQuartz on macOS
-if: runner.os == 'macOS'
-run: brew cask install xquartz
-        
+   
 name: R-CMD-check-standard
 
 jobs:
@@ -37,6 +33,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: r-lib/actions/setup-pandoc@v2
+      
+      - name: Install XQuartz on macOS
+        if: runner.os == 'macOS'
+        run: brew cask install xquartz
       
       - uses: r-lib/actions/setup-r@v2
         with:
