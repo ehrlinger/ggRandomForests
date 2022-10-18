@@ -553,7 +553,7 @@ The cached data is stored in the `partial_boston_surf` data set in the \pkg{ggRa
 system.time(partial_boston_surf <- lapply(rm_pts, function(ct) {
   rfsrc_boston$xvar$rm <- ct
   plot.variable(rfsrc_boston, xvar = "lstat", time = 1,
-                npts = 50, show.plots = TRUE, 
+                npts = 50, show.plots = FALSE, 
                 partial = TRUE)
 }))
 #     user   system  elapsed 
