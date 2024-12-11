@@ -1,10 +1,12 @@
+
+
 ggRandomForests: Visually Exploring Random Forests
 ========================================================
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11526.svg)](https://doi.org/10.5281/zenodo.11526)
-![cranlogs](http://cranlogs.r-pkg.org/badges/ggRandomForests)
+[![cranlogs](http://cranlogs.r-pkg.org/badges/ggRandomForests)](http://cranlogs.r-pkg.org/badges/ggRandomForests)
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ggRandomForests)](https://cran.r-project.org/package=ggRandomForests)
-![active](http://www.repostatus.org/badges/latest/active.svg)
+[![active](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/badges/latest/active.svg)
 [![codecov](https://codecov.io/gh/ehrlinger/ggRandomForests/branch/master/graph/badge.svg?token=gKiwueMLkg)](https://app.codecov.io/gh/ehrlinger/ggRandomForests)
 
 [ggRandomForests](https://cran.r-project.org/package=ggRandomForests)  will help uncover variable associations in the random forests models. The package is designed for use with the [randomForest](https://cran.r-project.org/package=randomForest) package (A. Liaw and M. Wiener 2002)  or the [randomForestSRC](https://cran.r-project.org/package=randomForestSRC) package (Ishwaran et.al. 2014, 2008, 2007) for survival, regression and classification random forests and uses the [ggplot2](https://cran.r-project.org/package=ggplot2) package (Wickham 2009) for plotting diagnostic and variable association results. [ggRandomForests](https://cran.r-project.org/package=ggRandomForests) is  structured to extract data objects from [randomForestSRC](https://cran.r-project.org/package=randomForestSRC) or [randomForest](https://cran.r-project.org/package=randomForest) objects and provides S3 functions for printing and plotting these objects.

@@ -105,7 +105,6 @@
 #' Wickham, H. ggplot2: elegant graphics for data analysis. Springer New York, 
 #' 2009.
 #' 
-#' @docType package
 #' @name ggRandomForests-package
 #' 
 ################

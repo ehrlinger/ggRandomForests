@@ -74,7 +74,7 @@ The vignette is written in \LaTeX using the `knitr` package (https://cran.r-proj
 ################## Load packages ##################
 library("ggplot2")         # Graphics engine
 library("RColorBrewer")    # Nice color palettes
-library("plot3D")          # for 3d surfaces. 
+library("plotly")          # for 3d surfaces. 
 library("dplyr")           # Better data manipulations
 library("tidyr")           # gather variables into long format
 library("parallel")        # mclapply for multicore processing
@@ -585,7 +585,7 @@ ggplot(partial_surf,
 
 The contours are generated over the raw `gg_partial` estimation points, not smooth curves as shown in the Partial Dependence (\autoref{partial-dependence) plots and Partial Coplots (\autoref{partial-dependence-coplots) figures previously. Contour lines, like topographic maps, are concentrated where the slope of the surface is large. We use color to indicate the direction of the contour lines, so that lower median home values are concentrated in the lower right hand corner, and the values increase along the diagonal toward the upper right. The close contour lines indicate some thing like a step in values at 7 and 7.5 rooms, and at 5, 10 and 15% lstat.
 
-Contour plots are still a little difficult to interpret. However, we can also generate a surface with this data using the \pkg{plot3D} package [@plot3D:2014] and the `plot3D::surf3D` function. Viewed in 3D, a surface can help to better understand what the contour lines are showing us. 
+Contour plots are still a little difficult to interpret. However, we can also generate a surface with this data using the \pkg{plotly} package [@plot3D:2014] and the `plotly::plot_ly` function. Viewed in 3D, a surface can help to better understand what the contour lines are showing us. 
 
 ```{r surface3d, echo=FALSE, fig.cap="Partial plot surface.", fig.width=7, fig.height=5}
 # Modify the figure margins to make the figure larger
@@ -598,14 +598,16 @@ suppressWarnings(
 )
 
 # Generate the figure.
-surf3D(x = srf$x, y = srf$y, z = srf$z, col = topo.colors(10),
-       colkey = FALSE, border = "black", bty = "b2", 
-       shade = 0.5, expand = 0.5, 
-       lighting = TRUE, lphi = -50,
-       xlab = "Lower Status", 
-       ylab = "Average Rooms", 
-       zlab = "Median Value"
-)
+# surf3D(x = srf$x, y = srf$y, z = srf$z, col = topo.colors(10),
+#        colkey = FALSE, border = "black", bty = "b2", 
+#        shade = 0.5, expand = 0.5, 
+#        lighting = TRUE, lphi = -50,
+#        xlab = "Lower Status", 
+#        ylab = "Average Rooms", 
+#        zlab = "Median Value"
+# )
+fig<-plot_ly(x = srf$x, y = srf$y, z = srf$z) %>% add_surface()
+fig
 ```
 
 These figures reinforce the previous findings, where lower home values are associated with higher `lstat` percentage, and higher values are associated with larger `rm`. The difference in this figure is we can see how the predicted values change as we move around the map of `lstat` and `rm` combinations. We do still need to be careful though, as partial plots average over values on the surface that are note supported by actual observations.
