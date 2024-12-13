@@ -22,7 +22,6 @@ jsslogo.jpg
 *.bbl
 
 inst/doc
-*.Rd
 ..Rcheck/*
 vignettes/ggRandomForests-regression_cache/*
 vignettes/ggRandomForests-survival_cache/*
