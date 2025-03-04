@@ -43,7 +43,7 @@
 #' @examples
 #' ## Taken from the gg_roc example
 #' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' 
+#'
 #' gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
 #'      which_outcome=1, oob=TRUE)
 #' gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
@@ -71,24 +71,22 @@ calc_roc.rfsrc <-
     if (!is.null(arg_list$oob) && is.logical(arg_list$oob))
       oob <- as.logical(arg_list$oob)
     
-    if (which_outcome != "all") {
-      dta_roc <-
-        data.frame(cbind(
-          res = (dta == levels(dta)[which_outcome]),
-          prd = object$predicted[, which_outcome],
-          oob_prd = object$predicted.oob[, which_outcome]
-        ))
-      
-      # Get the list of unique prob
-      if (oob)
-        pct <-
-          sort(unique(object$predicted.oob_prd[, which_outcome]))
-      else
-        pct <- sort(unique(object$predicted[, which_outcome]))
-    } else {
+    if (which_outcome == "all") {
       warning("Must specify which_outcome for now.")
       which_outcome <- 1
     }
+    dta_roc <-
+      data.frame(cbind(
+        res = (dta == levels(dta)[which_outcome]),
+        prd = object$predicted[,which_outcome],
+        oob_prd = object$predicted.oob[, which_outcome]
+      ))
+    
+    # Get the list of unique prob
+    if (oob)
+      pct <- sort(unique(object$predicted.oob[, which_outcome]))
+    else
+      pct <- sort(unique(object$predicted[, which_outcome]))
     
     last <- length(pct)
     pct <- pct[-last]
@@ -101,9 +99,9 @@ calc_roc.rfsrc <-
     
     gg_dta <- parallel::mclapply(pct, function(crit) {
       if (oob)
-        tbl <- xtabs(~ res + (oob > crit), dta_roc)
+        tbl <- xtabs( ~ res + (oob_prd > crit), dta_roc)
       else
-        tbl <- xtabs(~ res + (prd > crit), dta_roc)
+        tbl <- xtabs( ~ res + (prd > crit), dta_roc)
       
       spec <- tbl[2, 2] / rowSums(tbl)[2]
       sens <- tbl[1, 1] / rowSums(tbl)[1]
@@ -142,10 +140,9 @@ calc_roc.randomForest <-
       which_outcome <- 1
     }
     dta_roc <-
-      data.frame(cbind(res = (dta == levels(dta)[which_outcome]),
-                       prd = prd))
+      data.frame(cbind(res = (dta == levels(dta)[which_outcome]), prd = prd))
     
-    pct <- sort(unique(prd[, which_outcome]))
+    pct <- sort(unique(prd[[which_outcome]]))
     
     # Make sure we don't have to many points... if the training set was large,
     # This may break plotting all ROC curves in multiclass settings.
@@ -156,7 +153,7 @@ calc_roc.randomForest <-
     gg_dta <- parallel::mclapply(pct, function(crit) {
       tmp <- dta_roc[, c(1, 1 + which_outcome)]
       colnames(tmp) <- c("res", "prd")
-      tbl <- xtabs(~ res + (prd > crit), tmp)
+      tbl <- xtabs( ~ res + (prd > crit), tmp)
       
       if (dim(tbl)[2] < 2) {
         tbl <- cbind(tbl, c(0, 0))
