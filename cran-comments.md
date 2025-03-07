@@ -1,5 +1,5 @@
-This is ggRandomForests package submission v2.2.1
+This is ggRandomForests package submission v2.3.0
 -------------------------------------------------------------------------
-* Update to use HTML5 for documentation pages
-* Remove long running example code to fit within execution limits (<5 sec)
-* Remove cached data to reduce release size
+* Knocking the dust off this.
+* Fix the ROC curves
+* Fix the colors on VIMP plot

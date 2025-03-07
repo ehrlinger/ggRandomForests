@@ -1,5 +1,12 @@
 Package: ggRandomForests
-Version: 2.2.1
+Version: 2.3.0
+
+
+ggRandomForests v2.3.0
+=====================
+* Knocking the dust off this.
+* Fix the ROC curves
+* Fix the colors on VIMP plot
 
 ggRandomForests v2.2.1
 =====================
