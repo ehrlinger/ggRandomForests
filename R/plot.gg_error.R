@@ -185,9 +185,8 @@ plot.gg_error <- function(x, ...) {
   if (!inherits(gg_dta, "gg_error"))
     stop("Incorrect object type: Expects a gg_error object")
   
-  if (dim(gg_dta)[2] > 2) {
-    gathercol <- colnames(gg_dta)[-which(colnames(gg_dta) == "ntree")]
-    gg_dta <- tidyr::gather(gg_dta, "variable", "value", tidyr::all_of(gathercol))
+  if (ncol(gg_dta) > 2) {
+    gg_dta <- tidyr::gather(gg_dta, "variable", "value", -"ntree")
     gg_plt <-
       ggplot(na.omit(gg_dta),
              aes(x = "ntree", y = "value", col = "variable"))

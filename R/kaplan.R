@@ -94,7 +94,7 @@ kaplan <- function(interval,
         tbl$time[ind] < tbl$time[ind - 1]
       })))
     
-    lbls <- unique(data[[by]])
+    lbls <- levels(data[[by]])
     tbl$groups <- lbls[1]
     
     for (ind in 2:(length(tm_splits) + 1)) {
