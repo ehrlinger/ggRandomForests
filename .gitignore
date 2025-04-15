@@ -39,3 +39,4 @@ tests/testthat/*.pdf
 tests/testthat/Rplots.pdf
 vignettes/ggrfRegression.html
 vignettes/ggrfRegression.R
+docs

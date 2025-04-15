@@ -8,7 +8,7 @@ Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
 License: GPL (>=3)
 Encoding: UTF-8
 Language: en-US
-URL: https://github.com/ehrlinger/ggRandomForests
+URL: https://github.com/ehrlinger/ggRandomForests, http://ehrlinger.github.io/ggRandomForests/
 BugReports: https://github.com/ehrlinger/ggRandomForests/issues
 Description: Graphic elements for exploring Random Forests using the 'randomForest' or
     'randomForestSRC' package for survival, regression and classification forests and
