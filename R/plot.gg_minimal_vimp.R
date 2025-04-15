@@ -200,7 +200,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
       intercept = 0,
       slope = 1,
       col = "red",
-      size = .5,
+      linewidth = .5,
       linetype = 2
     )
   
@@ -210,7 +210,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
       geom_hline(
         yintercept = sum(gg_dta$col == "+") + .5,
         col = "red",
-        size = .5,
+        linewidth = .5,
         linetype = 2
       )
   }
@@ -220,7 +220,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
       geom_vline(
         xintercept = attributes(gg_dta)$modelsize + .5,
         col = "red",
-        size = .5,
+        linewidth = .5,
         linetype = 2
       )
   }

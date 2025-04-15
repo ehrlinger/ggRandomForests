@@ -67,17 +67,17 @@ nelson <-
     # Set weighting for non-events to a value of 0
     # Set up weights (severity of event)
     if (!is.null(weight))
-      weight <- data[, censor] * weight
+      weight <- data[[censor]] * weight
     
     # Kaplan-Meier analysis
     # srv is required!
     srv <-
-      survival::Surv(time = data[, interval], event = data[, censor])
+      survival::Surv(time = data[[interval]], event = data[[censor]])
     if (is.null(by)) {
       srv_tab <- survival::survfit(srv ~ 1, ...)
     } else {
       srv_tab <-
-        survival::survfit(srv ~ survival::strata(data[, by]), ...)
+        survival::survfit(srv ~ survival::strata(data[[by]]), ...)
     }
     #
     #**********************************************************;
@@ -90,7 +90,7 @@ nelson <-
     cum_hazard <- c(cum_hazard, cum_hazard[length(cum_hazard)])
     cum_hazard <- -log(srv_tab$surv)
     
-    times <- order(data[, interval])
+    times <- order(data[[interval]])
     delta_time <- sapply(2:length(times), function(ind) {
       times[ind] - times[ind - 1]
     })
@@ -116,7 +116,7 @@ nelson <-
         tbl$time[ind] < tbl$time[ind - 1]
       })))
       
-      lbls <- unique(data[, by])
+      lbls <- unique(data[[by]])
       tbl$groups <- lbls[1]
       
       for (ind in 2:(length(tm_splits) + 1)) {
@@ -127,7 +127,7 @@ nelson <-
     #, "hazard", "density")
     #**************************************************************;
     # Summarize the various strata only look at events
-    gg_dta <- tbl[which(tbl[, "dead"] != 0), ]
+    gg_dta <- tbl[which(tbl[["dead"]] != 0), ]
     
     # Calculate the hazard estimates from transforms and slopes
     # as well as integral of survivorship and proportionate life length

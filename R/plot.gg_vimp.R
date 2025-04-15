@@ -80,7 +80,7 @@
 #'
 #'}
 #'
-#' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid 
+#' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid
 #' @importFrom ggplot2 scale_x_discrete
 #' @export
 plot.gg_vimp <- function(x, relative, lbls, ...) {
@@ -111,19 +111,20 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
   if (length(unique(gg_dta$positive)) > 1) {
     gg_plt <- gg_plt +
       geom_bar(
-        aes_string(y = msr, x = "vars", fill = "positive"),
+        aes_string(y = msr, 
+                   x = "vars", 
+                   fill = "positive",
+                   color = "positive"),
         stat = "identity",
         width = .5,
-        color = "black"
       )
   } else {
     gg_plt <- gg_plt +
-      geom_bar(
-        aes_string(y = msr, x = "vars"),
-        stat = "identity",
-        width = .5,
-        color = "black"
-      )
+      geom_bar(aes_string(y = msr, 
+                          x = "vars",
+                          color = "positive"),
+               stat = "identity",
+               width = .5,)
   }
   gg_plt <- gg_plt + labs(x = "", y = msr)
   
@@ -145,7 +146,7 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
       coord_flip()
   } else {
     gg_plt <- gg_plt +
-      coord_flip() + facet_grid(~ set)
+      coord_flip() + facet_grid( ~ set)
   }
   
   return(gg_plt)

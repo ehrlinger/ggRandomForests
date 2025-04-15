@@ -51,14 +51,14 @@ kaplan <- function(interval,
                    censor,
                    data,
                    by = NULL, ...) {
-  srv <- survival::Surv(time = data[, interval], event = data[, censor])
+  srv <- survival::Surv(time = data[[interval]], event = data[[censor]])
   # Kaplan-Meier analysis
   if (is.null(by)) {
     srv_tab <- survival::survfit(srv ~ 1, ...)
     
   } else {
     srv_tab <-
-      survival::survfit(srv ~ survival::strata(data[, by]), ...)
+      survival::survfit(srv ~ survival::strata(data[[by]]), ...)
     
   }
   
@@ -67,7 +67,7 @@ kaplan <- function(interval,
   #* as well as integral of survivorship and proportionate life length;
   cum_hazard <- -log(srv_tab$surv)
   
-  times <- order(data[, interval])
+  times <- order(data[[interval]])
   delta_time <- sapply(2:length(times), function(ind) {
     times[ind] - times[ind - 1]
   })
@@ -94,7 +94,7 @@ kaplan <- function(interval,
         tbl$time[ind] < tbl$time[ind - 1]
       })))
     
-    lbls <- unique(data[, by])
+    lbls <- levels(data[[by]])
     tbl$groups <- lbls[1]
     
     for (ind in 2:(length(tm_splits) + 1)) {
@@ -106,7 +106,7 @@ kaplan <- function(interval,
   #*******************************************************************;
   # Summarize the various strata
   # only look at events
-  gg_dta <- tbl[which(tbl[, "dead"] != 0), ]
+  gg_dta <- tbl[which(tbl[["dead"]] != 0), ]
   
   # Calculate the hazard estimates from transforms and slopes
   # as well as integral of survivorship and proportionate life length
