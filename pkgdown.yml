@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   ggrfRegression: ggrfRegression.html
-last_built: 2025-04-15T22:00Z
+last_built: 2025-04-17T13:54Z
 urls:
   reference: http://ehrlinger.github.io/ggRandomForests/reference
   article: http://ehrlinger.github.io/ggRandomForests/articles

@@ -29,7 +29,7 @@ should include oob or full data set."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,12 +121,21 @@ covariate of interest.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_variable</span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Sepal.Width"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 450 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-plt img"><img src="gg_variable-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="st">"Sepal.Length"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 450 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-plt img"><img src="gg_variable-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, xvar<span class="op">=</span><span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">xvar.names</span>,</span></span>
 <span class="r-in"><span>     panel<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span> <span class="co"># , se=FALSE)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 1800 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-plt img"><img src="gg_variable-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
@@ -181,87 +190,144 @@ covariate of interest.</p>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_variable</span><span class="op">(</span><span class="va">rf_boston</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-4.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>pseudoinverse used at -0.5</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>neighborhood radius 13</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>reciprocal condition number  0</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are other near singularities as well. 156.25</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>pseudoinverse used at -0.5</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>neighborhood radius 13</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>reciprocal condition number  0</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are other near singularities as well. 156.25</span>
 <span class="r-plt img"><img src="gg_variable-5.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[3]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-6.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[4]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-plt img"><img src="gg_variable-7.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[5]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-8.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[6]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-9.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[7]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-10.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[8]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-11.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[9]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-12.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[10]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-13.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[11]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-14.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[12]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-15.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[13]]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 506 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
 <span class="r-plt img"><img src="gg_variable-16.png" alt="" width="700" height="433"></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, panel <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Mismatched variable types... </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Mismatched variable types...</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>                   assuming these are all factor variables.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 6578 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 6578 rows.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>pseudoinverse used at -0.5</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>neighborhood radius 13</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>reciprocal condition number  0</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are other near singularities as well. 156.25</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>pseudoinverse used at -0.5</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>neighborhood radius 13</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>reciprocal condition number  0</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are other near singularities as well. 156.25</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>at  -0.005</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>radius  2.5e-05</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>all data on boundary of neighborhood. make span bigger</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>pseudoinverse used at -0.005</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>neighborhood radius 0.005</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>reciprocal condition number  1</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There are other near singularities as well. 1.01</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>zero-width neighborhood. make span bigger</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Failed to fit group -1.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> Caused by error in `predLoess()`:</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> NA/NaN/Inf in foreign function call (arg 5)</span>
 <span class="r-plt img"><img src="gg_variable-17.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## survival examples</span></span></span>
