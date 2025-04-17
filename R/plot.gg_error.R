@@ -56,18 +56,18 @@
 #' plot(gg_dta)
 #'
 #' ## RandomForest example
-#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris, 
+#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris,
 #'                                       tree.err = TRUE, )
 #' gg_dta <- gg_error(rf_iris)
 #' plot(gg_dta)
-#' 
+#'
 #' gg_dta <- gg_error(rf_iris, training=TRUE)
 #' plot(gg_dta)
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
 #' ## ------------- airq data
-#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, 
+#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
 #'     na.action = "na.impute", tree.err = TRUE, )
 #'
 #' # Get a data.frame containing error rates
@@ -75,7 +75,7 @@
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
-#' 
+#'
 #'
 #' ## ------------- Boston data
 #' data(Boston, package = "MASS")
@@ -101,7 +101,7 @@
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
-#' 
+#'
 #'
 #' ## ------------------------------------------------------------
 #' ## Survival example
@@ -118,7 +118,7 @@
 #' ## ------------- pbc data
 #' # Load a cached randomForestSRC object
 #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC",) 
+#' data(pbc, package = "randomForestSRC",)
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
 #'  if (!is.factor(pbc[, ind])) {
@@ -162,7 +162,7 @@
 #'  dta_train,
 #'  nsplit = 10,
 #'  na.action = "na.impute",
-#'  tree.err = TRUE, 
+#'  tree.err = TRUE,
 #'  forest = TRUE,
 #'  importance = TRUE,
 #'  save.memory = TRUE
@@ -171,7 +171,7 @@
 #'
 #' gg_dta <- gg_error(rfsrc_pbc)
 #' plot(gg_dta)
-#' 
+#'
 #' }
 #' @importFrom ggplot2 ggplot geom_line theme labs
 #' @importFrom tidyr gather
@@ -188,20 +188,19 @@ plot.gg_error <- function(x, ...) {
   if (ncol(gg_dta) > 2) {
     gg_dta <- tidyr::gather(gg_dta, "variable", "value", -"ntree")
     gg_plt <-
-      ggplot(na.omit(gg_dta),
-             aes(x = "ntree", y = "value", col = "variable"))
+      ggplot2::ggplot(na.omit(gg_dta),
+                      ggplot2::aes(x = "ntree", y = "value", col = "variable"))
   } else {
     # We expect the object to have the following columns
     gg_plt <-
-      ggplot(na.omit(gg_dta), aes(x = "ntree", y = "error"))
+      ggplot2::ggplot(na.omit(gg_dta), ggplot2::aes(x = "ntree", y = "error"))
   }
   gg_plt <- gg_plt +
-    geom_line() +
-    labs(x = "Number of Trees",
-         y = "OOB Error Rate", color = "Outcome")
+    ggplot2::geom_line() +
+    ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")
   
   if (length(unique(gg_dta$variable)) == 1) {
-    gg_plt <- gg_plt + theme(legend.position = "none")
+    gg_plt <- gg_plt + ggplot2::theme(legend.position = "none")
   }
   return(gg_plt)
 }

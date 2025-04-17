@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.gg_minimal_depth.R
 \name{plot.gg_minimal_depth}
 \alias{plot.gg_minimal_depth}
-\title{Plot a \code{\link{gg_minimal_depth}} object for random forest variable 
+\title{Plot a \code{\link{gg_minimal_depth}} object for random forest variable
 ranking.}
 \usage{
 \method{plot}{gg_minimal_depth}(x, selection = FALSE, type = c("named", "rank"), lbls, ...)
@@ -11,7 +11,7 @@ ranking.}
 \item{x}{\code{\link{gg_minimal_depth}} object created from a
 \code{\link[randomForestSRC]{rfsrc}} object}
 
-\item{selection}{should we restrict the plot to only include variables 
+\item{selection}{should we restrict the plot to only include variables
 selected by the minimal depth criteria (boolean).}
 
 \item{type}{select type of y axis labels c("named","rank")}
@@ -24,7 +24,7 @@ selected by the minimal depth criteria (boolean).}
 \code{ggplot} object
 }
 \description{
-Plot a \code{\link{gg_minimal_depth}} object for random forest variable 
+Plot a \code{\link{gg_minimal_depth}} object for random forest variable
 ranking.
 }
 \examples{
@@ -85,7 +85,7 @@ plot(gg_dta)
 
 ## -------- pbc data
 #' # We need to create this dataset
-data(pbc, package = "randomForestSRC",) 
+data(pbc, package = "randomForestSRC",)
 # For whatever reason, the age variable is in days... makes no sense to me
 for (ind in seq_len(dim(pbc)[2])) {
  if (!is.factor(pbc[, ind])) {
@@ -140,7 +140,6 @@ gg_dta <- gg_minimal_depth(varsel_pbc)
 plot(gg_dta)
 
 }
-
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -152,6 +151,6 @@ Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival,
 Regression and Classification (RF-SRC), R package version 1.5.
 }
 \seealso{
-\code{\link[randomForestSRC]{var.select}} 
+\code{\link[randomForestSRC]{var.select}}
 \code{\link{gg_minimal_depth}}
 }

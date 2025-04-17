@@ -1,5 +1,6 @@
-This is ggRandomForests package submission v2.3.0
+This is ggRandomForests package submission v2.4.0
 -------------------------------------------------------------------------
-* Knocking the dust off this.
-* Fix the ROC curves
-* Fix the colors on VIMP plot
+* Updating to latest ggplot2 functions
+* Utilize some namespace referencing
+* Added pkgdown documentation
+* Minor testing improvements

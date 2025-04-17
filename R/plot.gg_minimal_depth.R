@@ -13,12 +13,12 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' Plot a \code{\link{gg_minimal_depth}} object for random forest variable 
+#' Plot a \code{\link{gg_minimal_depth}} object for random forest variable
 #' ranking.
 #'
 #' @param x \code{\link{gg_minimal_depth}} object created from a
 #' \code{\link[randomForestSRC]{rfsrc}} object
-#' @param selection should we restrict the plot to only include variables 
+#' @param selection should we restrict the plot to only include variables
 #' selected by the minimal depth criteria (boolean).
 #' @param type select type of y axis labels c("named","rank")
 #' @param lbls a vector of alternative variable names.
@@ -26,7 +26,7 @@
 #'
 #' @return \code{ggplot} object
 #'
-#' @seealso \code{\link[randomForestSRC]{var.select}} 
+#' @seealso \code{\link[randomForestSRC]{var.select}}
 #' \code{\link{gg_minimal_depth}}
 #'
 #' @references
@@ -61,7 +61,7 @@
 #' ## -------- air quality data
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' varsel_airq <- var.select(rfsrc_airq)
-#' 
+#'
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_minimal_depth(varsel_airq)
 #'
@@ -77,7 +77,7 @@
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' varsel_mtcars <- var.select(rfsrc_mtcars)
-#' 
+#'
 #'
 #' # Get a data.frame containing error rates
 #' plot.gg_minimal_depth(varsel_mtcars)
@@ -90,13 +90,13 @@
 #' data(veteran, package = "randomForestSRC")
 #' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #' varsel_veteran <- var.select(rfsrc_veteran)
-#' 
+#'
 #' gg_dta <- gg_minimal_depth(varsel_veteran)
 #' plot(gg_dta)
 #'
 #' ## -------- pbc data
 #' #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC",) 
+#' data(pbc, package = "randomForestSRC",)
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
 #'  if (!is.factor(pbc[, ind])) {
@@ -144,17 +144,13 @@
 #'  importance = TRUE,
 #'  save.memory = TRUE
 #' )
-#' 
+#'
 #' varsel_pbc <- var.select(rfsrc_pbc)
 #'
 #' gg_dta <- gg_minimal_depth(varsel_pbc)
 #' plot(gg_dta)
 #'
 #' }
-#'
-#' @importFrom ggplot2 ggplot geom_line theme aes_string labs 
-#' coord_cartesian geom_text annotate geom_hline coord_flip geom_vline 
-#' scale_x_discrete
 #' @export
 plot.gg_minimal_depth <- function(x,
                                   selection = FALSE,
@@ -194,45 +190,43 @@ plot.gg_minimal_depth <- function(x,
     vsel$rank <- seq_len(nrow(vsel))
     
     ## Reorder the minimal depth to place most "important" at top of figure
-    vsel$names <- factor(vsel$names,
-                         levels = rev(levels(vsel$names)))
-    gg_plt <- ggplot(vsel)
+    vsel$names <- factor(vsel$names, levels = rev(levels(vsel$names)))
+    gg_plt <- ggplot2::ggplot(vsel)
     gg_plt <- switch(
       type,
       rank = gg_plt +
-        geom_point(aes_string(
+        ggplot2::geom_point(ggplot2::aes(
           y = "rank", x = "depth", label = "rank"
         )) +
-        coord_cartesian(xlim = xl) +
-        geom_text(
-          aes_string(
+        ggplot2::coord_cartesian(xlim = xl) +
+        ggplot2::geom_text(
+          ggplot2::aes(
             y = "rank",
-            x = "depth" - 0.7,
+            x = "depth"-0.7,
             label = "rank"
           ),
           size = 3,
           hjust = 0
         ),
       named = gg_plt +
-        geom_point(aes_string(y = "depth", x = "names")) +
-        coord_cartesian(ylim = xl)
+        ggplot2::geom_point(ggplot2::aes(y = "depth", x = "names")) +
+        ggplot2::coord_cartesian(ylim = xl)
     )
     
     
   } else {
     vsel <- gg_dta$varselect
     vsel$rank <- seq_len(dim(vsel)[1])
-    vsel$names <- factor(vsel$names,
-                         levels = rev(levels(vsel$names)))
-    gg_plt <- ggplot(vsel)
+    vsel$names <- factor(vsel$names, levels = rev(levels(vsel$names)))
+    gg_plt <- ggplot2::ggplot(vsel)
     gg_plt <- switch(
       type,
       rank = gg_plt +
-        geom_point(aes_string(y = "rank", x = "depth")) +
-        coord_cartesian(xlim = xl),
+        ggplot2::geom_point(ggplot2::aes(y = "rank", x = "depth")) +
+        ggplot2::coord_cartesian(xlim = xl),
       named = gg_plt +
-        geom_point(aes_string(y = "depth", x = "names")) +
-        coord_cartesian(ylim = xl)
+        ggplot2::geom_point(ggplot2::aes(y = "depth", x = "names")) +
+        ggplot2::coord_cartesian(ylim = xl)
     )
   }
   
@@ -246,28 +240,28 @@ plot.gg_minimal_depth <- function(x,
           names(st_lbls[which(is.na(st_lbls))])
         
         gg_plt <- gg_plt +
-          scale_x_discrete(labels = st_lbls)
+          ggplot2::scale_x_discrete(labels = st_lbls)
       }
     }
     
     gg_plt <- gg_plt +
-      labs(y = "Minimal Depth of a Variable", x = "")
+      ggplot2::labs(y = "Minimal Depth of a Variable", x = "")
     
     if (nvar > gg_dta$modelsize) {
       gg_plt <- gg_plt +
-        geom_hline(yintercept = sel_th, lty = 2)
+        ggplot2::geom_hline(yintercept = sel_th, lty = 2)
       
     }
     gg_plt <- gg_plt +
-      labs(y = "Minimal Depth of a Variable", x = "") +
-      coord_flip()
+      ggplot2::labs(y = "Minimal Depth of a Variable", x = "") +
+      ggplot2::coord_flip()
   } else {
     gg_plt <- gg_plt +
-      labs(y = "Rank", x = "Minimal Depth of a Variable")
+      ggplot2::labs(y = "Rank", x = "Minimal Depth of a Variable")
     
     if (nvar > gg_dta$modelsize) {
       gg_plt <- gg_plt +
-        geom_vline(xintercept = sel_th, lty = 2)
+        ggplot2::geom_vline(xintercept = sel_th, lty = 2)
     }
   }
   return(gg_plt)

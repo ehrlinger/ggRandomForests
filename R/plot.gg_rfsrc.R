@@ -146,9 +146,7 @@
 #'
 #'
 #' }
-#' @importFrom ggplot2 ggplot aes_string geom_step geom_ribbon labs
-#' geom_point geom_jitter geom_boxplot theme element_blank
-#' @importFrom tidyr gather
+#' 
 #'
 #' @export
 plot.gg_rfsrc <- function(x, ...) {
@@ -165,32 +163,35 @@ plot.gg_rfsrc <- function(x, ...) {
   if (inherits(gg_dta, "class") ||
       inherits(gg_dta, "classification")) {
     if (ncol(gg_dta) < 3) {
-      gg_plt <- ggplot(gg_dta) +
-        geom_jitter(aes_string(
+      gg_plt <- ggplot2::ggplot(gg_dta) +
+        ggplot2::geom_jitter(ggplot2::aes(
           x = 1,
           y = colnames(gg_dta)[1],
           color = colnames(gg_dta)[2],
           shape = colnames(gg_dta)[2]
         ),
         ...) +
-        geom_boxplot(
-          aes_string(x = 1, y = colnames(gg_dta)[1]),
+        ggplot2::geom_boxplot(
+          ggplot2::aes(x = 1, y = colnames(gg_dta)[1]),
           outlier.colour = "transparent",
           fill = "transparent",
           notch = TRUE,
           ...
         ) +
-        theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+        ggplot2::theme(axis.ticks = ggplot2::element_blank(), 
+                       axis.text.x = ggplot2::element_blank())
     } else {
       gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
       gg_dta_mlt <-
-        tidyr::gather(gg_dta, "variable", "value", gathercols)
+        tidyr::gather(gg_dta, "variable", "value", tidyr::all_of(gathercols))
       
       gg_plt <-
-        ggplot(gg_dta_mlt, aes_string(x = "variable", y = "value")) +
-        geom_jitter(aes_string(color = "y", shape = "y"), alpha = .5)
+        ggplot2::ggplot(gg_dta_mlt, 
+                        ggplot2::aes(x = "variable", y = "value")) +
+        ggplot2::geom_jitter(ggplot2::aes(color = "y", shape = "y"), 
+                             alpha = .5)
     }
-    gg_plt <- gg_plt + labs(y = "Predicted (%)", x = "")
+    gg_plt <- gg_plt + ggplot2::labs(y = "Predicted (%)", x = "")
     
     
   } else if (inherits(gg_dta, "surv")) {
@@ -204,9 +205,9 @@ plot.gg_rfsrc <- function(x, ...) {
       }
       
       if ("group" %in% colnames(gg_dta)) {
-        gg_plt <- ggplot(gg_dta) +
-          geom_ribbon(
-            aes_string(
+        gg_plt <- ggplot2::ggplot(gg_dta) +
+          ggplot2::geom_ribbon(
+            ggplot2::aes(
               x = "value",
               ymin = "lower",
               ymax = "upper",
@@ -215,53 +216,54 @@ plot.gg_rfsrc <- function(x, ...) {
             alpha = alph,
             ...
           ) +
-          geom_step(aes_string(
+          ggplot2::geom_step(ggplot2::aes(
             x = "value",
             y = "median",
             color = "group"
           ), ...)
       } else {
-        gg_plt <- ggplot(gg_dta) +
-          geom_ribbon(aes_string(
+        gg_plt <- ggplot2::ggplot(gg_dta) +
+          ggplot2::geom_ribbon(ggplot2::aes(
             x = "value",
             ymin = "lower",
             ymax = "upper"
           ),
           alpha = alph) +
-          geom_step(aes_string(x = "value", y = "median"), ...)
+          ggplot2::geom_step(ggplot2::aes(x = "value", y = "median"), ...)
       }
     } else {
       # Lines by observation
-      gg_plt <- ggplot(gg_dta,
-                       aes_string(
+      gg_plt <- ggplot2::ggplot(gg_dta,
+                                ggplot2::aes(
                          x = "variable",
                          y = "value",
                          col = "event",
                          by = "obs_id"
                        )) +
-        geom_step(...)
+        ggplot2::geom_step(...)
     }
     
     gg_plt <- gg_plt  +
-      labs(x = "time (years)", y = "Survival (%)")
+      ggplot2::labs(x = "time (years)", y = "Survival (%)")
     
     
   } else if (inherits(gg_dta, "regr") ||
              inherits(gg_dta, "regression")) {
     if ("group" %in% colnames(gg_dta)) {
-      gg_plt <- ggplot(gg_dta, aes_string(x = "group", y = "yhat"))
+      gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = "group", y = "yhat"))
     } else {
-      gg_plt <- ggplot(gg_dta, aes_string(x = 1, y = "yhat"))
+      gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = 1, y = "yhat"))
     }
     
     gg_plt <- gg_plt +
-      geom_jitter(, ...) +
-      geom_boxplot(outlier.colour = "transparent",
+      ggplot2::geom_jitter(, ...) +
+      ggplot2::geom_boxplot(outlier.colour = "transparent",
                    fill = "transparent",
                    notch = TRUE,
                    ...) +
-      labs(y = "Predicted Value", x = colnames(gg_dta)[2]) +
-      theme(axis.ticks = element_blank(), axis.text.x = element_blank())
+      ggplot2::labs(y = "Predicted Value", x = colnames(gg_dta)[2]) +
+      ggplot2::theme(axis.ticks = ggplot2::element_blank(), 
+                     axis.text.x = ggplot2::element_blank())
   } else {
     stop(paste(
       "Plotting for ",

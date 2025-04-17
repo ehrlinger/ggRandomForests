@@ -115,6 +115,7 @@ test_that("gg_partial regression", {
   # Test object type
   
   expect_is(plot(gg_dta), "ggplot")
-  gg_plt <- plot(gg_dta, error = "shade") + geom_smooth(se = .95)
+  gg_plt <- plot(gg_dta, error = "shade") + 
+    ggplot2::geom_smooth(se = .95)
   
 })

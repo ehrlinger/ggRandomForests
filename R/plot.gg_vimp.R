@@ -80,8 +80,6 @@
 #'
 #'}
 #'
-#' @importFrom ggplot2 ggplot geom_bar aes_string labs coord_flip facet_grid
-#' @importFrom ggplot2 scale_x_discrete
 #' @export
 plot.gg_vimp <- function(x, relative, lbls, ...) {
   gg_dta  <- x
@@ -101,7 +99,7 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
     }
   }
   
-  gg_plt <- ggplot(gg_dta)
+  gg_plt <- ggplot2::ggplot(gg_dta)
   
   msr <- "vimp"
   if (!msr %in% colnames(gg_dta))
@@ -110,21 +108,23 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
   #  if(missing(relative) | is.null(gg_dta$rel_vimp)) {
   if (length(unique(gg_dta$positive)) > 1) {
     gg_plt <- gg_plt +
-      geom_bar(
-        aes_string(y = msr, 
-                   x = "vars", 
-                   fill = "positive",
-                   color = "positive"),
+      ggplot2::geom_bar(
+        ggplot2::aes(
+          y = msr,
+          x = "vars",
+          fill = "positive",
+          color = "positive"
+        ),
         stat = "identity",
         width = .5,
       )
   } else {
     gg_plt <- gg_plt +
-      geom_bar(aes_string(y = msr, 
-                          x = "vars",
-                          color = "positive"),
-               stat = "identity",
-               width = .5,)
+      ggplot2::geom_bar(
+        ggplot2::aes(y = msr, x = "vars", color = "positive"),
+        stat = "identity",
+        width = .5,
+      )
   }
   gg_plt <- gg_plt + labs(x = "", y = msr)
   
@@ -138,15 +138,16 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
         names(st_lbls[which(is.na(st_lbls))])
       
       gg_plt <- gg_plt +
-        scale_x_discrete(labels = st_lbls)
+        ggplot2::scale_x_discrete(labels = st_lbls)
     }
   }
   if (is.null(gg_dta$set) || length(unique(gg_dta$set)) < 2) {
     gg_plt <- gg_plt +
-      coord_flip()
+      ggplot2::coord_flip()
   } else {
     gg_plt <- gg_plt +
-      coord_flip() + facet_grid( ~ set)
+      ggplot2::coord_flip() +
+      ggplot2::facet_grid(~ set)
   }
   
   return(gg_plt)

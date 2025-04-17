@@ -63,8 +63,6 @@
 #'
 #'}
 #'
-#' @importFrom ggplot2 ggplot geom_ribbon aes_string geom_errorbar geom_step 
-#' @importFrom ggplot2 labs
 #' @export
 ### Survival plots
 plot.gg_survival <- function(x,
@@ -88,16 +86,15 @@ plot.gg_survival <- function(x,
   # Now order matters, so we want to place the forest predictions on the bottom
   # Create the figure skeleton,
   if (is.null(gg_dta$groups)) {
-    gg_plt <- ggplot(gg_dta) +
-      geom_step(aes_string(x = "time", y = type), ...)
+    gg_plt <- ggplot2::ggplot(gg_dta) +
+      ggplot2::geom_step(ggplot2::aes(x = "time", y = type), ...)
   } else {
     gg_dta$groups <- factor(gg_dta$groups)
-    gg_plt <- ggplot(gg_dta) +
-      geom_step(aes_string(x = "time", y = type, color = "groups"),
-                ...)
-    if (!is.null(label) ) {
-      gg_plt <- gg_plt + 
-        labs(color = label, fill = label)
+    gg_plt <- ggplot2::ggplot(gg_dta) +
+      ggplot2::geom_step(ggplot2::aes(x = "time", y = type, color = "groups"), ...)
+    if (!is.null(label)) {
+      gg_plt <- gg_plt +
+        ggplot2::labs(color = label, fill = label)
     }
   }
   # Do we want to show confidence limits?
@@ -107,8 +104,8 @@ plot.gg_survival <- function(x,
         error,
         # Shading the standard errors
         shade = gg_plt +
-          geom_ribbon(
-            aes_string(
+          ggplot2::geom_ribbon(
+            ggplot2::aes(
               x = "time",
               ymax = "upper",
               ymin = "lower"
@@ -120,17 +117,15 @@ plot.gg_survival <- function(x,
           # Need to figure out how to remove some of these points when
           # requesting error bars, or this will get really messy.
           gg_plt +
-            geom_errorbar(aes_string(
+            ggplot2::geom_errorbar(ggplot2::aes(
               x = "time",
               ymax = "upper",
               ymin = "lower"
             ))
         },
         lines = gg_plt +
-          geom_step(aes_string(x = "time", y = "upper"), linetype =
-                      2) +
-          geom_step(aes_string(x = "time", y = "lower"), linetype =
-                      2),
+          ggplot2::geom_step(ggplot2::aes(x = "time", y = "upper"), linetype = 2) +
+          ggplot2::geom_step(ggplot2::aes(x = "time", y = "lower"), linetype = 2),
         none = gg_plt
       )
     } else {
@@ -138,8 +133,8 @@ plot.gg_survival <- function(x,
         error,
         # Shading the standard errors
         shade = gg_plt +
-          geom_ribbon(
-            aes_string(
+          ggplot2::geom_ribbon(
+            ggplot2::aes(
               x = "time",
               ymax = "upper",
               ymin = "lower",
@@ -153,7 +148,7 @@ plot.gg_survival <- function(x,
           # Need to figure out how to remove some of these points when
           # requesting error bars, or this will get really messy.
           gg_plt +
-            geom_errorbar(aes_string(
+            ggplot2::geom_errorbar(ggplot2::aes(
               x = "time",
               ymax = "upper",
               ymin = "lower",
@@ -161,12 +156,12 @@ plot.gg_survival <- function(x,
             ))
         },
         lines = gg_plt +
-          geom_step(
-            aes_string(x = "time", y = "upper", color = "groups"),
+          ggplot2::geom_step(
+            ggplot2::aes(x = "time", y = "upper", color = "groups"),
             linetype = 2
           ) +
-          geom_step(
-            aes_string(x = "time", y = "lower", color = "groups"),
+          ggplot2::geom_step(
+            ggplot2::aes(x = "time", y = "lower", color = "groups"),
             linetype = 2
           ),
         none = gg_plt

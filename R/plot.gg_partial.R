@@ -43,7 +43,6 @@
 #' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #'
-#' @importFrom ggplot2 ggplot aes labs geom_point geom_smooth
 #'
 #' @examples
 #' \dontrun{
@@ -178,16 +177,16 @@ plot.gg_partial <- function(x,
   colnames(gg_dta)[2] <- "x"
   
   if (is.null(gg_dta$group)) {
-    gg_plt <- ggplot(gg_dta, aes_string(x = "x", y = "yhat"))
+    gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = "x", y = "yhat"))
   } else {
     gg_plt <-
-      ggplot(gg_dta,
-             aes_string(
-               x = "x",
-               y = "yhat",
-               shape = "group",
-               color = "group"
-             ))
+      ggplot2::ggplot(gg_dta,
+                      ggplot2::aes(
+                        x = "x",
+                        y = "yhat",
+                        shape = "group",
+                        color = "group"
+                      ))
   }
   if (!is.null(gg_dta$se)) {
     conf_int <- .95
@@ -214,8 +213,8 @@ plot.gg_partial <- function(x,
       error,
       # Shading the standard errors
       shade = gg_plt +
-        geom_ribbon(
-          aes_string(x = "x", ymax = "upper", ymin = "lower"),
+        ggplot2::geom_ribbon(
+          ggplot2::aes(x = "x", ymax = "upper", ymin = "lower"),
           alpha = .3,
           data = gg_dta
         ),
@@ -224,22 +223,22 @@ plot.gg_partial <- function(x,
         #!TODO! Need to figure out how to remove some of these points when
         # requesting error bars, or this will get really messy.
         gg_plt +
-          geom_errorbar(aes_string(
+          ggplot2::geom_errorbar(
+            ggplot2::aes(
             x = "x",
             ymax = "upper",
             ymin = "lower"
-          ),
-          data = gg_dta)
+          ), data = gg_dta)
       },
       lines = gg_plt +
-        geom_smooth(
-          aes_string(x = "x", y = "upper"),
+        ggplot2::geom_smooth(
+          ggplot2::aes(x = "x", y = "upper"),
           linetype = 2,
           data = gg_dta,
           se = FALSE
         ) +
-        geom_smooth(
-          aes_string(x = "x", y = "lower"),
+        ggplot2::geom_smooth(
+          ggplot2::aes(x = "x", y = "lower"),
           linetype = 2,
           data = gg_dta,
           se = FALSE
@@ -248,16 +247,16 @@ plot.gg_partial <- function(x,
     )
   }
   gg_plt <- gg_plt +
-    labs(x = h_name, y = "predicted")
+    ggplot2::labs(x = h_name, y = "predicted")
   if (!is.factor(gg_dta$x)) {
     if (points) {
-      gg_plt <- gg_plt + geom_point(...)
+      gg_plt <- gg_plt + ggplot2::geom_point(...)
     } else {
-      gg_plt <- gg_plt + geom_smooth(...)
+      gg_plt <- gg_plt + ggplot2::geom_smooth(...)
     }
     
   } else {
-    gg_plt <- gg_plt + geom_boxplot(...)
+    gg_plt <- gg_plt + ggplot2::geom_boxplot(...)
   }
   
   return(gg_plt)

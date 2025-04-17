@@ -1,6 +1,12 @@
 Package: ggRandomForests
-Version: 2.3.0
+Version: 2.4.0
 
+ggRandomForests v2.4.0
+=====================
+* Updating to latest ggplot2 functions
+* Utilize some namespace referencing
+* Added pkgdown documentation
+* Minor testing improvements
 
 ggRandomForests v2.3.0
 =====================

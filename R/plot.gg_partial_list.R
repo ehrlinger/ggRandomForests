@@ -13,24 +13,24 @@
 ####**********************************************************************
 ####**********************************************************************
 #'
-#' Partial variable dependence plot, operates on a \code{gg_partial_list} 
+#' Partial variable dependence plot, operates on a \code{gg_partial_list}
 #' object.
 #'
 #' @description Generate a risk adjusted (partial) variable dependence plot.
-#' The function plots the \code{\link[randomForestSRC]{rfsrc}} response 
+#' The function plots the \code{\link[randomForestSRC]{rfsrc}} response
 #' variable (y-axis) against the covariate of interest (specified when creating
 #' the \code{gg_partial_list} object).
 #'
-#' @param x \code{gg_partial_list} object created from a 
+#' @param x \code{gg_partial_list} object created from a
 #' \code{\link{gg_partial}} forest object
 #' @param points plot points (boolean) or a smooth line.
 #' @param panel should the entire list be plotted together?
 #' @param ... extra arguments
 #'
-#' @return list of \code{ggplot} objects, or a single faceted \code{ggplot} 
+#' @return list of \code{ggplot} objects, or a single faceted \code{ggplot}
 #' object
 #'
-#' @seealso \code{\link[randomForestSRC]{plot.variable}} 
+#' @seealso \code{\link[randomForestSRC]{plot.variable}}
 #' \code{\link{gg_partial}}
 #' \code{\link{plot.gg_partial}} \code{\link{gg_variable}}
 #' \code{\link{plot.gg_variable}}
@@ -112,7 +112,7 @@
 #' ## survival "age" partial variable dependence plot
 #' ##
 #' # data(veteran, package = "randomForestSRC")
-#' # rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10, 
+#' # rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10,
 #' #                        ntree = 100)
 #' #
 #' ## 30 day partial plot for age
@@ -129,7 +129,7 @@
 #' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
 #'
-#' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- 
+#' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
 #'     gg_dta.cat[["age"]] <- NULL
 #' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 #'
@@ -144,15 +144,13 @@
 #' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
 #' plot(gg_dta, panel=TRUE)
 #'
-#' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <- 
+#' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
 #'      gg_dta.cat[["age"]] <- NULL
 #' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
 #'
 #' ## -------- pbc data
 #' }
 #'
-#' @importFrom ggplot2 ggplot aes labs geom_point geom_smooth facet_wrap
-#' @importFrom parallel mclapply
 #'
 #' @export
 plot.gg_partial_list <- function(x,
@@ -176,7 +174,7 @@ plot.gg_partial_list <- function(x,
       class(gg_dta[[nm]][, nm])
     })
     
-    gg_dta <- mclapply(nms, function(nm) {
+    gg_dta <- parallel::mclapply(nms, function(nm) {
       obj <- gg_dta[[nm]]
       colnames(obj)[which(colnames(obj) == nm)]  <- "value"
       obj$variable <- nm
@@ -184,39 +182,36 @@ plot.gg_partial_list <- function(x,
     })
     
     gg_dta <- do.call(rbind, gg_dta)
-    gg_dta$variable <- factor(gg_dta$variable,
-                              levels = unique(gg_dta$variable))
+    gg_dta$variable <- factor(gg_dta$variable, levels = unique(gg_dta$variable))
     
     if (is.null(gg_dta$group)) {
-      gg_plt <- ggplot(gg_dta,
-                       aes_string(x = "value", y = "yhat"))
+      gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = "value", y = "yhat"))
       
     } else {
       gg_dta$group  <- factor(gg_dta$group, levels = unique(gg_dta$group))
-      gg_plt <- ggplot(gg_dta,
-                       aes_string(
-                         x = "value",
-                         y = "yhat",
-                         color = "group",
-                         shape = "group"
-                       ))
+      gg_plt <- ggplot2::ggplot(gg_dta,
+                                ggplot2::aes(
+                                  x = "value",
+                                  y = "yhat",
+                                  color = "group",
+                                  shape = "group"
+                                ))
     }
     
     if (sum(cls == "factor") == length(cls)) {
       gg_plt <- gg_plt +
-        geom_boxplot(...)
+        ggplot2::geom_boxplot(...)
     } else {
       if (points) {
         gg_plt <- gg_plt +
-          geom_point(...)
+          ggplot2::geom_point(...)
       } else {
         gg_plt <- gg_plt +
-          geom_smooth(...)
+          ggplot2::geom_smooth(...)
       }
     }
     return(gg_plt +
-             facet_wrap(~ variable,
-                         scales = "free_x"))
+             ggplot2::facet_wrap( ~ variable, scales = "free_x"))
   } else {
     # OR a list of figures.
     gg_plt <- vector("list", length = lng)

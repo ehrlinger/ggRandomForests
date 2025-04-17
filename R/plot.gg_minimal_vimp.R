@@ -25,10 +25,6 @@
 #'
 #' @return \code{ggplot} object
 #'
-#'
-#' @importFrom ggplot2 ggplot aes_string geom_point labs geom_abline coord_flip
-#'  scale_x_discrete
-#'
 #' @seealso \code{\link{gg_minimal_vimp}}
 #' \code{\link[randomForestSRC]{var.select}}
 #'
@@ -65,9 +61,9 @@
 #' ## -------- Boston data
 #' data(Boston, package="MASS")
 #' rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
-#' 
+#'
 #' varsel_boston <- var.select(rfsrc_boston)
-#' 
+#'
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_minimal_vimp(varsel_boston)
 #'
@@ -92,13 +88,13 @@
 #' data(veteran, package = "randomForestSRC")
 #' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
 #' varsel_veteran <- var.select(rfsrc_veteran)
-#' 
+#'
 #' gg_dta <- gg_minimal_vimp(varsel_veteran)
 #' plot(gg_dta)
 #'
 #' ## -------- pbc data
 #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC",) 
+#' data(pbc, package = "randomForestSRC",)
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
 #'  if (!is.factor(pbc[, ind])) {
@@ -146,7 +142,7 @@
 #'  importance = TRUE,
 #'  save.memory = TRUE
 #' )
-#' 
+#'
 #' varsel_pbc <- var.select(rfsrc_pbc)
 #'
 #' gg_dta <- gg_minimal_vimp(varsel_pbc)
@@ -169,19 +165,18 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
   if (length(unique(gg_dta$col)) > 1) {
     gg_dta$col <- factor(gg_dta$col)
   }
-  gg_dta$names <- factor(gg_dta$names, 
-                         levels = gg_dta$names[order(as.numeric(gg_dta$depth))])
+  gg_dta$names <- factor(gg_dta$names, levels = gg_dta$names[order(as.numeric(gg_dta$depth))])
   
   gg_dta <- gg_dta[1:nvar, ]
   
   # If we only have one class for coloring, just paint them black.
   if (length(unique(gg_dta$col)) > 1) {
     gg_plt <-
-      ggplot(gg_dta, aes_string(x = "names", y = "vimp", col = "col")) +
-      labs(x = "Minimal Depth (Rank Order)", y = "VIMP Rank", color = "VIMP")
+      ggplot2::ggplot(gg_dta, ggplot2::aes(x = "names", y = "vimp", col = "col")) +
+      ggplot2::labs(x = "Minimal Depth (Rank Order)", y = "VIMP Rank", color = "VIMP")
   } else {
-    gg_plt <- ggplot(gg_dta, aes_string(x = "names", y = "vimp")) +
-      labs(x = "Minimal Depth (Rank Order)", y = "VIMP Rank")
+    gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = "names", y = "vimp")) +
+      ggplot2::labs(x = "Minimal Depth (Rank Order)", y = "VIMP Rank")
   }
   if (!missing(lbls)) {
     if (length(lbls) >= length(gg_dta$names)) {
@@ -191,12 +186,12 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
         names(st_lbls[which(is.na(st_lbls))])
       
       gg_plt <- gg_plt +
-        scale_x_discrete(labels = st_lbls)
+        ggplot2::scale_x_discrete(labels = st_lbls)
     }
   }
   
-  gg_plt <- gg_plt + geom_point() +
-    geom_abline(
+  gg_plt <- gg_plt + ggplot2::geom_point() +
+    ggplot2::geom_abline(
       intercept = 0,
       slope = 1,
       col = "red",
@@ -207,7 +202,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
   # Draw a line between + and - vimp values.
   if (length(unique(gg_dta$col)) > 1) {
     gg_plt <- gg_plt +
-      geom_hline(
+      ggplot2::geom_hline(
         yintercept = sum(gg_dta$col == "+") + .5,
         col = "red",
         linewidth = .5,
@@ -217,7 +212,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
   
   if (nrow(gg_dta) > attributes(gg_dta)$modelsize) {
     gg_plt <- gg_plt +
-      geom_vline(
+      ggplot2::geom_vline(
         xintercept = attributes(gg_dta)$modelsize + .5,
         col = "red",
         linewidth = .5,
@@ -225,6 +220,6 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
       )
   }
   
-  gg_plt + coord_flip()
+  return(gg_plt + ggplot2::coord_flip())
   
 }

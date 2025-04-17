@@ -11,12 +11,12 @@ test_that("partial.rfsrc regression", {
   # Test the cached forest type
   expect_is(rfsrc_boston, "rfsrc")
   
-  xvar <- c("lstat", "chas")
+  xvar <- "lstat"
   ## Create the correct object
   
   skip("Skip: Test currently fails (partial.rfsrc problem)")
   gg_dta <- partial.rfsrc(rfsrc_boston,
-                          xvar.names = xvar,
+                          partial.xvar = "lstat",
                           npts = 10)
   expect_equal(gg_dta$xvar.names, xvar)
   expect_equal(names(gg_dta$pData), xvar)

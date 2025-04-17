@@ -36,11 +36,6 @@
 #' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
 #' and Classification (RF-SRC), R package version 1.4.
 #'
-#' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs 
-#' @importFrom ggplot2 facet_wrap geom_boxplot geom_jitter
-#' @importFrom parallel mclapply
-#' @importFrom tidyr gather
-#' @importFrom stats reformulate
 #'
 #' @examples
 #' \dontrun{
@@ -179,15 +174,14 @@ plot.gg_variable <- function(x,
       gg_dta_x <- gg_dta[, -grep("yhat.", colnames(gg_dta))]
       gg_dta_y <- gg_dta[, grep("yhat.", colnames(gg_dta))]
       lng <- ncol(gg_dta_y)
-      gg2 <- mclapply(seq_len(ncol(gg_dta_y)),
-                      function(ind) {
-                        cbind(gg_dta_x, yhat = gg_dta_y[, ind], outcome = ind)
-                      })
+      gg2 <- parallel::mclapply(seq_len(ncol(gg_dta_y)), function(ind) {
+        cbind(gg_dta_x, yhat = gg_dta_y[, ind], outcome = ind)
+      })
       gg3 <- do.call(rbind, gg2)
       gg3$outcome <- factor(gg3$outcome)
       gg_dta <- gg3
     }
-
+    
   }
   
   # If we don't know what to plot...
@@ -241,7 +235,7 @@ plot.gg_variable <- function(x,
       # Handle categorical and continuous differently...
       tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
       gathercols <-
-        colnames(tmp_dta)[-which(colnames(tmp_dta) %in% 
+        colnames(tmp_dta)[-which(colnames(tmp_dta) %in%
                                    c("time", "event", "yhat"))]
       gg_dta_mlt <-
         tidyr::gather(tmp_dta, "variable", "value", gathercols)
@@ -249,48 +243,50 @@ plot.gg_variable <- function(x,
       gg_dta_mlt$variable <-
         factor(gg_dta_mlt$variable, levels = xvar)
       if (points) {
-        gg_plt <- ggplot(gg_dta_mlt,
-                         aes_string(
-                           x = "value",
-                           y = "yhat",
-                           color = "event",
-                           shape = "event"
-                         ))
+        gg_plt <- ggplot2::ggplot(
+          gg_dta_mlt,
+          ggplot2::aes(
+            x = "value",
+            y = "yhat",
+            color = "event",
+            shape = "event"
+          )
+        )
       } else {
-        gg_plt <- ggplot(gg_dta_mlt,
-                         aes_string(x = "value", y = "yhat"))
+        gg_plt <- ggplot2::ggplot(gg_dta_mlt, 
+                                  ggplot2::aes(x = "value", y = "yhat"))
       }
       # If these are all continuous...
       if (sum(ccls[wch_x_var] == "numeric") == length(wch_x_var)) {
         gg_plt <- gg_plt +
-          labs(y = "Survival")
+          ggplot2::labs(y = "Survival")
         if (points) {
           gg_plt <- gg_plt +
-            geom_point(...)
+            ggplot2::geom_point(...)
         } else {
           gg_plt <- gg_plt +
-            geom_smooth(...)
+            ggplot2::geom_smooth(...)
         }
         if (smooth) {
           gg_plt <- gg_plt +
-            geom_smooth(...)
+            ggplot2::geom_smooth(...)
         }
       } else {
         # Check if there are numeric variables here...
         if (sum(ccls[wch_x_var] == "numeric") > 0)
           warning(
-            "Mismatched variable types for panel plots... 
+            "Mismatched variable types for panel plots...
             assuming these are all factor variables."
           )
         
         gg_plt <- gg_plt +
-          geom_boxplot(
-            aes_string(x = "value", y = "yhat"),
+          ggplot2::geom_boxplot(
+            ggplot2::aes(x = "value", y = "yhat"),
             color = "grey",
             ...,
             outlier.shape = NA
           ) +
-          geom_jitter(aes_string(
+          ggplot2::geom_jitter(ggplot2::aes(
             x = "value",
             y = "yhat",
             color = "event",
@@ -302,13 +298,12 @@ plot.gg_variable <- function(x,
       
       if (length(levels(gg_dta$time)) > 1) {
         gg_plt <- gg_plt +
-          facet_grid(reformulate("variable", "time"),
-                     scales = "free_x") +
+          ggplot2::facet_grid(stats::reformulate("variable", "time"), 
+                              scales = "free_x") +
           labs(x = "")
       } else {
         gg_plt <- gg_plt +
-          facet_wrap(~ variable,
-                     scales = "free_x") +
+          ggplot2::facet_wrap( ~ variable, scales = "free_x") +
           labs(x = "",
                y = paste("Survival at", gg_dta$time[1], "year"))
       }
@@ -324,7 +319,8 @@ plot.gg_variable <- function(x,
         gathercols <-
           colnames(tmp_dta)[-which(colnames(tmp_dta) %in% c("yvar", "yhat"))]
         gg_dta_mlt <-
-          tidyr::gather(tmp_dta, "variable", "value", gathercols)
+          tidyr::gather(tmp_dta, "variable", "value", 
+                        tidyr::all_of(gathercols))
         
       } else {
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta) == "yvar"))
@@ -332,7 +328,8 @@ plot.gg_variable <- function(x,
         gathercols <-
           colnames(tmp_dta)[-which(colnames(tmp_dta) == "yhat")]
         gg_dta_mlt <-
-          tidyr::gather(tmp_dta, "variable", "value", gathercols)
+          tidyr::gather(tmp_dta, "variable", "value", 
+                        tidyr::all_of(gathercols))
       }
       gg_dta_mlt$variable <-
         factor(gg_dta_mlt$variable, levels = xvar)
@@ -341,55 +338,60 @@ plot.gg_variable <- function(x,
       if (sum(ccls[wch_x_var] == "numeric") == length(wch_x_var)) {
         if (family == "class") {
           gg_plt <-
-            ggplot(gg_dta_mlt,
-                   aes_string(
-                     x = "value",
-                     y = "yhat",
-                     color = "yvar",
-                     shape = "yvar"
-                   )) +
-            geom_point(...)
+            ggplot2::ggplot(
+              gg_dta_mlt,
+              ggplot2::aes(
+                x = "value",
+                y = "yhat",
+                color = "yvar",
+                shape = "yvar"
+              )
+            ) +
+            ggplot2::geom_point(...)
         } else {
-          gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
-            geom_point(...)
+          gg_plt <- ggplot2::ggplot(gg_dta_mlt, 
+                                    ggplot2::aes(x = "value", y = "yhat")) +
+            ggplot2::geom_point(...)
         }
       } else {
         # Check if there are numberic variables here...
         if (sum(ccls[wch_x_var] == "numeric") > 0)
-          warning("Mismatched variable types... 
+          warning("Mismatched variable types...
                   assuming these are all factor variables.")
         
         if (family == "class") {
           gg_plt <-
-            ggplot(gg_dta_mlt,
-                   aes_string(
-                     x = "value",
-                     y = "yhat",
-                     color = "yvar"
-                   )) +
-            geom_boxplot(...)
+            ggplot2::ggplot(gg_dta_mlt,
+                            ggplot2::aes(
+                              x = "value",
+                              y = "yhat",
+                              color = "yvar"
+                            )) +
+            ggplot2::geom_boxplot(...)
         } else {
-          gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
-            geom_boxplot(...)
+          gg_plt <- ggplot2::ggplot(gg_dta_mlt, 
+                                    ggplot2::aes(x = "value", y = "yhat")) +
+            ggplot2::geom_boxplot(...)
         }
       }
       if (family != "class") {
         if (points) {
-          gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
-            geom_point(...)
+          gg_plt <- ggplot2::ggplot(gg_dta_mlt, 
+                                    ggplot2::aes(x = "value", y = "yhat")) +
+            ggplot2::geom_point(...)
         } else {
-          gg_plt <- ggplot(gg_dta_mlt, aes_string(x = "value", y = "yhat")) +
-            geom_smooth(...)
+          gg_plt <- ggplot2::ggplot(gg_dta_mlt, 
+                                    ggplot2::aes(x = "value", y = "yhat")) +
+            ggplot2::geom_smooth(...)
         }
         if (smooth)
           gg_plt <- gg_plt +
-            geom_smooth(...)
+            ggplot2::geom_smooth(...)
       }
       
       gg_plt <- gg_plt +
-        facet_wrap(~ variable,
-                   scales = "free_x") +
-        labs(x = "")
+        ggplot2::facet_wrap( ~ variable, scales = "free_x") +
+        ggplot2::labs(x = "")
     }
     
   } else {
@@ -403,16 +405,16 @@ plot.gg_variable <- function(x,
       ccls <- class(gg_dta[, "var"])
       ccls[which(ccls == "integer")] <- "numeric"
       
-      gg_plt[[ind]] <- ggplot(gg_dta)
+      gg_plt[[ind]] <- ggplot2::ggplot(gg_dta)
       
       if (family == "surv") {
         gg_plt[[ind]] <- gg_plt[[ind]] +
-          labs(x = h_name, y = "Survival")
+          ggplot2::labs(x = h_name, y = "Survival")
         
         if (ccls == "numeric") {
           if (points) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_point(aes_string(
+              ggplot2::geom_point(ggplot2::aes(
                 x = "var",
                 y = "yhat",
                 color = "event",
@@ -421,21 +423,21 @@ plot.gg_variable <- function(x,
               ...)
           } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_smooth(aes_string(x = "var", y = "yhat"),  ...)
+              ggplot2::geom_smooth(ggplot2::aes(x = "var", y = "yhat"), ...)
           }
           if (smooth) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_smooth(aes_string(x = "var", y = "yhat"), ...)
+              ggplot2::geom_smooth(ggplot2::aes(x = "var", y = "yhat"), ...)
           }
         } else {
           gg_plt[[ind]] <- gg_plt[[ind]] +
-            geom_boxplot(
-              aes_string(x = "var", y = "yhat"),
+            ggplot2::geom_boxplot(
+              ggplot2::aes(x = "var", y = "yhat"),
               color = "black",
               ...,
               outlier.shape = NA
             ) +
-            geom_jitter(aes_string(
+            ggplot2::geom_jitter(ggplot2::aes(
               x = "var",
               y = "yhat",
               color = "event",
@@ -445,21 +447,22 @@ plot.gg_variable <- function(x,
           
         }
         if (length(levels(gg_dta$time)) > 1) {
-          gg_plt[[ind]] <- gg_plt[[ind]] + facet_wrap(~ time, ncol = 1)
+          gg_plt[[ind]] <- gg_plt[[ind]] +
+            ggplot2::facet_wrap( ~ time, ncol = 1)
         } else {
           gg_plt[[ind]] <- gg_plt[[ind]] +
-            labs(x = h_name,
-                 y = paste("Survival at", gg_dta$time[1], "year"))
+            ggplot2::labs(x = h_name,
+                          y = paste("Survival at", gg_dta$time[1], "year"))
         }
       } else if (family == "class") {
         gg_plt[[ind]] <- gg_plt[[ind]] +
-          labs(x = h_name, y = "Predicted")
+          ggplot2::labs(x = h_name, y = "Predicted")
         
         if (sum(colnames(gg_dta) == "outcome") == 0) {
           if (ccls == "numeric") {
             if (points) {
               gg_plt[[ind]] <- gg_plt[[ind]] +
-                geom_point(aes_string(
+                ggplot2::geom_point(ggplot2::aes(
                   x = "var",
                   y = "yhat",
                   color = "yvar",
@@ -468,8 +471,8 @@ plot.gg_variable <- function(x,
                 ...)
             } else {
               gg_plt[[ind]] <- gg_plt[[ind]] +
-                geom_smooth(
-                  aes_string(x = "var", y = "yhat"),
+                ggplot2::geom_smooth(
+                  ggplot2::aes(x = "var", y = "yhat"),
                   color = "black",
                   linetype = 2,
                   ...
@@ -477,19 +480,19 @@ plot.gg_variable <- function(x,
             }
             if (smooth) {
               gg_plt[[ind]] <- gg_plt[[ind]] +
-                geom_smooth(...)
+                ggplot2::geom_smooth(...)
             }
           } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_jitter(aes_string(
+              ggplot2::geom_jitter(ggplot2::aes(
                 x = "var",
                 y = "yhat",
                 color = "yvar",
                 shape = "yvar"
               ),
               ...) +
-              geom_boxplot(
-                aes_string(x = "var", y = "yhat"),
+              ggplot2::geom_boxplot(
+                ggplot2::aes(x = "var", y = "yhat"),
                 color = "grey",
                 ...,
                 outlier.shape = NA
@@ -499,7 +502,7 @@ plot.gg_variable <- function(x,
         } else {
           if (ccls == "numeric") {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_point(aes_string(
+              ggplot2::geom_point(ggplot2::aes(
                 x = "var",
                 y = "yhat",
                 color = "yvar",
@@ -509,13 +512,13 @@ plot.gg_variable <- function(x,
             
           } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_boxplot(
-                aes_string(x = "var", y = "yhat"),
+              ggplot2::geom_boxplot(
+                ggplot2::aes(x = "var", y = "yhat"),
                 color = "grey",
                 ...,
                 outlier.shape = NA
               ) +
-              geom_jitter(aes_string(
+              ggplot2::geom_jitter(ggplot2::aes(
                 x = "var",
                 y = "yhat",
                 color = "yvar",
@@ -525,33 +528,33 @@ plot.gg_variable <- function(x,
             
           }
           
-          gg_plt[[ind]] <- gg_plt[[ind]] + facet_grid(~ outcome)
+          gg_plt[[ind]] <- gg_plt[[ind]] +
+            ggplot2::facet_grid( ~ outcome)
         }
       } else {
         # assume regression
         gg_plt[[ind]] <- gg_plt[[ind]] +
-          labs(x = h_name, y = "Predicted")
+          ggplot2::labs(x = h_name, y = "Predicted")
         if (ccls == "numeric") {
           if (points) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_point(aes_string(x = "var", y = "yhat"), ...)
+              ggplot2::geom_point(ggplot2::aes(x = "var", y = "yhat"), ...)
           } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              geom_smooth(aes_string(x = "var", y = "yhat"), ...)
+              ggplot2::geom_smooth(ggplot2::aes(x = "var", y = "yhat"), ...)
           }
           if (smooth)
             gg_plt[[ind]]  <- gg_plt[[ind]]  +
-              geom_smooth(aes_string(x = "var", y = "yhat"), ...)
+              ggplot2::geom_smooth(ggplot2::aes(x = "var", y = "yhat"), ...)
         } else {
           gg_plt[[ind]] <- gg_plt[[ind]] +
-            geom_boxplot(
-              aes_string(x = "var", y = "yhat"),
+            ggplot2::geom_boxplot(
+              ggplot2::aes(x = "var", y = "yhat"),
               color = "grey",
               ...,
               outlier.shape = NA
             ) +
-            geom_jitter(aes_string(x = "var", y = "yhat"),
-                        ...)
+            ggplot2::geom_jitter(ggplot2::aes(x = "var", y = "yhat"), ...)
         }
       }
       

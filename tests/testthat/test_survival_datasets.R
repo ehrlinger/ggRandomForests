@@ -62,59 +62,58 @@ test_that("survival_functions_tests: PBC", {
   
   #========
   # Test cached forest type
-  expect_is(rfsrc_pbc, "rfsrc")
+  testthat::expect_is(rfsrc_pbc, "rfsrc")
   
   # Test the forest family
-  expect_match(rfsrc_pbc$family, "surv")
+  testthat::expect_match(rfsrc_pbc$family, "surv")
   
-  skip("Skip: Test currently fails (partial.rfsrc problem)")
   ## Create the correct gg_error object
   gg_dta <- gg_rfsrc(rfsrc_pbc)
   
   # Test object type
-  expect_is(gg_dta, "gg_rfsrc")
-  expect_is(gg_dta, "surv")
+  testthat::expect_is(gg_dta, "gg_rfsrc")
+  testthat::expect_is(gg_dta, "surv")
   
   # Test classification dimensions
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_rfsrc(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   ## Create the correct gg_error object
   gg_dta <- gg_rfsrc(rfsrc_pbc, oob = FALSE)
   
   # Test object type
-  expect_is(gg_dta, "gg_rfsrc")
-  expect_is(gg_dta, "surv")
+  testthat::expect_is(gg_dta, "gg_rfsrc")
+  testthat::expect_is(gg_dta, "surv")
   
   # Test classification dimensions
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_rfsrc(gg_dta, alpha = .4)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   # Test classification dimensions
   
   gg_dta <- gg_rfsrc(rfsrc_pbc, by = "treatment")
   
   # Test object type
-  expect_is(gg_dta, "gg_rfsrc")
-  expect_is(gg_dta, "surv")
+  testthat::expect_is(gg_dta, "gg_rfsrc")
+  testthat::expect_is(gg_dta, "surv")
   
   ## Create the correct gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int = .68)
   
   # Test object type
-  expect_is(gg_dta, "gg_rfsrc")
-  expect_is(gg_dta, "surv")
+  testthat::expect_is(gg_dta, "gg_rfsrc")
+  testthat::expect_is(gg_dta, "surv")
   
   # Test multiple conf intervals
   gg_dta <- gg_rfsrc(rfsrc_pbc,
@@ -122,14 +121,14 @@ test_that("survival_functions_tests: PBC", {
                      bs.sample = 100)
   
   # Test object type
-  expect_is(gg_dta, "gg_rfsrc")
-  expect_is(gg_dta, "surv")
+  testthat::expect_is(gg_dta, "gg_rfsrc")
+  testthat::expect_is(gg_dta, "surv")
   
   ## Create the correct gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   #========
   # Test prediction
@@ -139,39 +138,39 @@ test_that("survival_functions_tests: PBC", {
                             na.action = "na.impute")
   
   # Print prediction summary
-  expect_is(gg_dta <- gg_rfsrc(rfsrc_pbc_test), "gg_rfsrc")
+  testthat::expect_is(gg_dta <- gg_rfsrc(rfsrc_pbc_test), "gg_rfsrc")
   
   # Test for group "by" name exists
-  expect_error(gg_rfsrc(rfsrc_pbc, by = "trt"))
+  testthat::expect_error(gg_rfsrc(rfsrc_pbc, by = "trt"))
   # And it's a vector or factor (not a number)
-  expect_error(gg_rfsrc(rfsrc_pbc, by = 3))
+  testthat::expect_error(gg_rfsrc(rfsrc_pbc, by = 3))
   
   #=========
   ## Create the correct gg_error object
   gg_dta <- gg_error(rfsrc_pbc)
   
   # Test object type
-  expect_is(gg_dta, "gg_error")
+  testthat::expect_is(gg_dta, "gg_error")
   
   # Test classification dimensions
-  expect_equal(dim(gg_dta)[1], length(na.omit(rfsrc_pbc$err.rate)))
-  expect_equal(dim(gg_dta)[2], 2)
+  testthat::expect_equal(dim(gg_dta)[1], length(na.omit(rfsrc_pbc$err.rate)))
+  testthat::expect_equal(dim(gg_dta)[2], 2)
   
   # Test data is correctly pulled from randomForest obect.
   tmp <- c(gg_dta[, 1])
-  expect_equivalent(tmp, na.omit(rfsrc_pbc$err.rate))
+  testthat::expect_equivalent(tmp, na.omit(rfsrc_pbc$err.rate))
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
-  expect_error(gg_error(gg_plt))
+  testthat::expect_error(gg_error(gg_plt))
   
   ##================
   ## ROC plots should error for survival family
-  expect_error(gg_roc(rfsrc_pbc))
+  testthat::expect_error(gg_roc(rfsrc_pbc))
   
   ##================
   ## variable plots
@@ -180,49 +179,49 @@ test_that("survival_functions_tests: PBC", {
   gg_dta <- gg_variable(rfsrc_pbc, time = .25)
   
   # Test object type
-  expect_is(gg_dta, "gg_variable")
+  testthat::expect_is(gg_dta, "gg_variable")
   
   ## Test plotting the gg_variable object
   gg_plt <- plot.gg_variable(gg_dta, xvar = "age")
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   
   ## Test plotting the gg_variable object
   gg_plt <- plot.gg_variable(gg_dta, xvar = rfsrc_pbc$xvar.names)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "list")
-  expect_equal(length(gg_plt), length(rfsrc_pbc$xvar.names))
+  testthat::expect_is(gg_plt, "list")
+  testthat::expect_equal(length(gg_plt), length(rfsrc_pbc$xvar.names))
   
   
   for (ind in seq_len(length(rfsrc_pbc$xvar.names)))
-    expect_is(gg_plt[[ind]], "ggplot")
+    testthat::expect_is(gg_plt[[ind]], "ggplot")
   
   
   ## Test plotting the gg_error object
-  expect_warning(gg_plt <- plot.gg_variable(gg_dta,
+  testthat::expect_warning(gg_plt <- plot.gg_variable(gg_dta,
                                             xvar = rfsrc_pbc$xvar.names,
                                             panel = TRUE))
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   ##================
   ## Minimal depths
   varsel_pbc <- randomForestSRC::var.select(rfsrc_pbc)
   # Test the cached forest type
-  expect_is(varsel_pbc, "list")
+  testthat::expect_is(varsel_pbc, "list")
   
   ## Create the correct gg_error object
   gg_dta <- gg_minimal_depth(varsel_pbc)
   
   # Test object type
-  expect_is(gg_dta, "gg_minimal_depth")
+  testthat::expect_is(gg_dta, "gg_minimal_depth")
   
   
   # Test varselect is the same
-  expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == 
+  testthat::expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == 
                                                "names")],
                     varsel_pbc$varselect)
   
@@ -230,36 +229,36 @@ test_that("survival_functions_tests: PBC", {
   gg_plt <- plot.gg_minimal_depth(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   gg_plt <- plot(gg_dta, nvar = 12)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   
   ##================
   ## minimal vimp
   
   # Test the cached forest type
-  expect_is(varsel_pbc, "list")
+  testthat::expect_is(varsel_pbc, "list")
   
   ## Create the correct gg_error object
   ggrf_obj <- gg_minimal_vimp(varsel_pbc)
   
   # Test object type
-  expect_is(ggrf_obj, "gg_minimal_vimp")
+  testthat::expect_is(ggrf_obj, "gg_minimal_vimp")
   
   
   # Test varselect is the same
-  expect_equivalent(dim(ggrf_obj)[1], dim(varsel_pbc$varselect)[1])
-  expect_equivalent(dim(ggrf_obj)[2], 4)
+  testthat::expect_equivalent(dim(ggrf_obj)[1], dim(varsel_pbc$varselect)[1])
+  testthat::expect_equivalent(dim(ggrf_obj)[2], 4)
   
   ## Test plotting the gg_error object
   gg_obj <- plot.gg_minimal_vimp(ggrf_obj)
   
   # Test return is s ggplot object
-  expect_is(gg_obj, "ggplot")
+  testthat::expect_is(gg_obj, "ggplot")
   
   
   ##================
@@ -267,25 +266,25 @@ test_that("survival_functions_tests: PBC", {
   interaction_pbc <- randomForestSRC::find.interaction(rfsrc_pbc)
   
   # Test the cached interaction structure
-  expect_is(interaction_pbc, "matrix")
+  testthat::expect_is(interaction_pbc, "matrix")
   
   ## Create the correct gg_interaction object
   gg_dta <- gg_interaction(interaction_pbc)
   
   # Test object type
-  expect_is(gg_dta, "gg_interaction")
+  testthat::expect_is(gg_dta, "gg_interaction")
   
   # Test classification dimensions
-  expect_equal(dim(gg_dta), dim(interaction_pbc))
+  testthat::expect_equal(dim(gg_dta), dim(interaction_pbc))
   
   # Test data is correctly pulled from randomForest obect.
-  expect_equivalent(as.matrix(gg_dta), interaction_pbc)
+  testthat::expect_equivalent(as.matrix(gg_dta), interaction_pbc)
   
   ## Test plotting the gg_interaction object
   gg_plt <- plot.gg_interaction(gg_dta, xvar = "bili")
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   # "Incorrect object type: Expects a gg_interaction object"
   
@@ -319,7 +318,7 @@ test_that("survival_functions_tests: PBC", {
   gg_plt <- plot.gg_interaction(gg_dta, lbls = st_labs)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   ##================
   # Calculate the partial dependence
@@ -383,27 +382,27 @@ test_that("survival_functions_tests: PBC", {
   gg_dta <- gg_partial(partial_pbc[[1]])
   
   # Test object type
-  expect_is(gg_dta, "gg_partial_list")
+  testthat::expect_is(gg_dta, "gg_partial_list")
   
   ## Test plotting the gg_data object
   gg_plt <- plot(gg_dta[[1]])
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt[[1]], "ggplot")
+  testthat::expect_is(gg_plt[[1]], "ggplot")
   
-  expect_equivalent(length(gg_plt), length(gg_dta))
+  testthat::expect_equivalent(length(gg_plt), length(gg_dta))
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta, panel = TRUE)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   # Data generation
   ggrf <- gg_variable(rfsrc_pbc,
@@ -413,7 +412,7 @@ test_that("survival_functions_tests: PBC", {
   # Plot the bilirubin variable dependence plot
   gg_plt <- plot(ggrf, xvar = "bili", alpha = 0.3)
   
-  gg_plt <- gg_plt + geom_smooth(se = 0.95)
+  gg_plt <- gg_plt + ggplot2::geom_smooth(se = 0.95)
   
   
   xvar <- varsel_pbc$topvars
@@ -423,71 +422,71 @@ test_that("survival_functions_tests: PBC", {
   # plot the next 5 continuous variable dependence plots.
   gg_plt <- plot(ggrf, xvar = xvar[2:6], panel = TRUE)
   
-  gg_plt <- gg_plt + geom_smooth(
+  gg_plt <- gg_plt + ggplot2::geom_smooth(
     se = FALSE,
     alpha = .3,
     method = "glm",
     formula = y ~ poly(x, 2)
   )
   
-  expect_warning(gg_plt <- plot(ggrf, xvar = xvar_vcat, panel = TRUE))
+  testthat::expect_warning(gg_plt <- plot(ggrf, xvar = xvar_vcat, panel = TRUE))
   
   
   # A list of 2 plot.variable objects
-  expect_is(partial_pbc, "list")
-  expect_gt(length(partial_pbc), 1)
+  testthat::expect_is(partial_pbc, "list")
+  testthat::expect_gt(length(partial_pbc), 1)
   
   for (ind in seq_len(length(partial_pbc))) {
-    expect_is(partial_pbc[[ind]], "rfsrc")
-    expect_is(partial_pbc[[ind]], "plot.variable")
-    expect_is(partial_pbc[[ind]], "surv")
+    testthat::expect_is(partial_pbc[[ind]], "rfsrc")
+    testthat::expect_is(partial_pbc[[ind]], "plot.variable")
+    testthat::expect_is(partial_pbc[[ind]], "surv")
   }
   
   # Create gg_partial objects
   gg_prtl <- lapply(partial_pbc, gg_partial)
   for (ind in seq_len(length(partial_pbc))) {
-    expect_is(gg_prtl[[ind]], "gg_partial_list")
+    testthat::expect_is(gg_prtl[[ind]], "gg_partial_list")
   }
   
   # Combine the objects to get multiple time curves
   # along variables on a single figure.
   ggpart <- combine.gg_partial(gg_prtl[[1]], gg_prtl[[2]],
                                lbls = c("30 day", "6 month"))
-  expect_is(ggpart, "gg_partial_list")
+  testthat::expect_is(ggpart, "gg_partial_list")
   
   # We should have at least 5
-  expect_gt(length(ggpart), 5)
+  testthat::expect_gt(length(ggpart), 5)
   
   # Plot each figure separately
   gg_plt <- plot(ggpart)
-  expect_is(gg_plt, "list")
-  expect_gt(length(gg_plt), 5)
-  expect_equal(length(gg_plt), length(ggpart))
+  testthat::expect_is(gg_plt, "list")
+  testthat::expect_gt(length(gg_plt), 5)
+  testthat::expect_equal(length(gg_plt), length(ggpart))
   
   for (ind in seq_len(length(gg_plt))) {
-    expect_is(gg_plt[[ind]], "ggplot")
+    testthat::expect_is(gg_plt[[ind]], "ggplot")
   }
   
   # Get the continuous data for a panel of continuous plots.
   ggcont <- ggpart
   
   ggcont$celltype <- ggcont$trt <- ggcont$prior <- NULL
-  expect_gt(length(ggcont), 5 - 3)
+  testthat::expect_gt(length(ggcont), 5 - 3)
   
   gg_plt <- plot(ggcont, panel = TRUE)
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   # And the categorical for a panel of categorical plots.
   ggpart$karno <- ggpart$diagtime <- ggpart$age <- NULL
-  expect_gt(length(ggpart), 5 - 3)
+  testthat::expect_gt(length(ggpart), 5 - 3)
   
   gg_plt <- plot(ggpart, panel = TRUE)
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   # Test coverage, auto labels
   ggpart <- combine.gg_partial(gg_prtl[[1]], gg_prtl[[2]])
-  expect_is(ggpart, "gg_partial_list")
+  testthat::expect_is(ggpart, "gg_partial_list")
   
-  expect_error(combine.gg_partial(gg_prtl))
-  expect_error(combine.gg_partial(gg_prtl, gg_prtl))
+  testthat::expect_error(combine.gg_partial(gg_prtl))
+  testthat::expect_error(combine.gg_partial(gg_prtl, gg_prtl))
   
 })

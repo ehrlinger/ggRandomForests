@@ -32,7 +32,11 @@ the response using \code{\link{plot.gg_rfsrc}}.
    \code{oob} boolean, should we return the oob prediction , or the full
 forest prediction.
 }
-\examples{
+\seealso{
+\code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
+\code{\link{gg_survival}}
+
+#' @examples
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -45,13 +49,13 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
-\dontrun{
+
 ## -------- air quality data
 rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 gg_dta<- gg_rfsrc(rfsrc_airq)
 
 plot(gg_dta)
-}
+
 
 ## -------- Boston data
 data(Boston, package = "MASS")
@@ -70,17 +74,16 @@ data(Boston, package="MASS")
 rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
 plot(gg_rfsrc(rf_boston))
 
-\dontrun{
+
 ## -------- mtcars data
 rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 gg_dta<- gg_rfsrc(rfsrc_mtcars)
 
 plot(gg_dta)
-}
+
 ## ------------------------------------------------------------
 ## Survival example
 ## ------------------------------------------------------------
-\dontrun{
 ## -------- veteran data
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
@@ -101,28 +104,6 @@ plot(gg_dta)
 # We need to create this dataset
 data(pbc, package = "randomForestSRC",) 
 # For whatever reason, the age variable is in days... makes no sense to me
-for (ind in seq_len(dim(pbc)[2])) {
- if (!is.factor(pbc[, ind])) {
-   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-     if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-       pbc[, ind] <- as.logical(pbc[, ind])
-     }
-   }
- } else {
-   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-     if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-       pbc[, ind] <- as.logical(pbc[, ind])
-     }
-     if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-       pbc[, ind] <- as.logical(pbc[, ind])
-     }
-   }
- }
- if (!is.logical(pbc[, ind]) &
-     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-   pbc[, ind] <- factor(pbc[, ind])
- }
-}
 #Convert age to years
 pbc$age <- pbc$age / 364.24
 
@@ -156,10 +137,4 @@ plot(gg_dta)
 
 gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
 plot(gg_dta)
-}
-
-}
-\seealso{
-\code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
-\code{\link{gg_survival}}
 }

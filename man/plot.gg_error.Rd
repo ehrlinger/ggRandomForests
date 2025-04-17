@@ -41,7 +41,7 @@ gg_dta <- gg_error(rfsrc_iris)
 plot(gg_dta)
 
 ## RandomForest example
-rf_iris <- randomForest::randomForest(Species ~ ., data = iris, 
+rf_iris <- randomForest::randomForest(Species ~ ., data = iris,
                                       tree.err = TRUE, )
 gg_dta <- gg_error(rf_iris)
 plot(gg_dta)
@@ -52,7 +52,7 @@ plot(gg_dta)
 ## Regression example
 ## ------------------------------------------------------------
 ## ------------- airq data
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, 
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
     na.action = "na.impute", tree.err = TRUE, )
 
 # Get a data.frame containing error rates
@@ -102,7 +102,7 @@ plot(gg_dta)
 ## ------------- pbc data
 # Load a cached randomForestSRC object
 # We need to create this dataset
-data(pbc, package = "randomForestSRC",) 
+data(pbc, package = "randomForestSRC",)
 # For whatever reason, the age variable is in days... makes no sense to me
 for (ind in seq_len(dim(pbc)[2])) {
  if (!is.factor(pbc[, ind])) {
@@ -146,7 +146,7 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
  dta_train,
  nsplit = 10,
  na.action = "na.impute",
- tree.err = TRUE, 
+ tree.err = TRUE,
  forest = TRUE,
  importance = TRUE,
  save.memory = TRUE

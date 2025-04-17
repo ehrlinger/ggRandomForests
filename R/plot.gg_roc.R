@@ -59,9 +59,6 @@
 #'
 #' }
 #'
-#' @importFrom ggplot2 ggplot aes_string geom_line geom_abline labs coord_fixed
-#' annotate
-#' @importFrom parallel mclapply
 #'
 #' @export
 plot.gg_roc <- function(x, which_outcome = NULL, ...) {
@@ -91,7 +88,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
       # How many classes are there?
       crv <- length(levels(gg_dta$predicted))
       if (crv > 2 && is.null(which_outcome)) {
-        gg_dta <- mclapply(1:crv, function(ind) {
+        gg_dta <- parallel::mclapply(1:crv, function(ind) {
           gg_roc(gg_dta, which_outcome = ind, ...)
         })
         
@@ -109,20 +106,20 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
     gg_dta$fpr <- 1 - gg_dta$spec
     auc <- calc_auc(gg_dta)
     
-    gg_plt <- ggplot(data = gg_dta) +
-      geom_line(aes_string(x = "fpr", y = "sens")) +
-      labs(x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)") +
-      geom_abline(
+    gg_plt <- ggplot2::ggplot(data = gg_dta) +
+      ggplot2::geom_line(ggplot2::aes(x = "fpr", y = "sens")) +
+      ggplot2::labs(x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)") +
+      ggplot2::geom_abline(
         slope = 1,
         intercept = 0,
         col = "red",
         linetype = 2,
-        size = .5
+        linewidth = .5
       ) +
-      coord_fixed()
+      ggplot2::coord_fixed()
     
     gg_plt <- gg_plt +
-      annotate(
+      ggplot2::annotate(
         x = .5,
         y = .2,
         geom = "text",
@@ -131,48 +128,46 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
       )
     
   } else {
-    gg_dta <- mclapply(gg_dta, function(st) {
+    gg_dta <- parallel::mclapply(gg_dta, function(st) {
       st[order(st$spec), ]
       st
     })
-    gg_dta <- mclapply(gg_dta, function(st) {
+    gg_dta <- parallel::mclapply(gg_dta, function(st) {
       st$fpr <- 1 - st$spec
       st
     })
-    gg_dta <- mclapply(seq_len(length(gg_dta)),
-                       function(ind) {
-                         gg_dta[[ind]]$outcome <- ind
-                         gg_dta[[ind]]
-                       })
+    gg_dta <- parallel::mclapply(seq_len(length(gg_dta)), function(ind) {
+      gg_dta[[ind]]$outcome <- ind
+      gg_dta[[ind]]
+    })
     
-    auc <- mclapply(gg_dta,
-                    function(st) {
-                      calc_auc(st)
-                    })
+    auc <- parallel::mclapply(gg_dta, function(st) {
+      calc_auc(st)
+    })
     
     o_dta <- do.call(rbind, gg_dta)
     o_dta$outcome <- factor(o_dta$outcome)
     
-    gg_plt <- ggplot(data = o_dta) +
-      geom_line(aes_string(
+    gg_plt <- ggplot2::ggplot(data = o_dta) +
+      ggplot2::geom_line(ggplot2::aes(
         x = "fpr",
         y = "sens",
         linetype = "outcome",
         col = "outcome"
       )) +
-      labs(x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)") +
-      geom_abline(
+      ggplot2::labs(x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)") +
+      ggplot2::geom_abline(
         slope = 1,
         intercept = 0,
         col = "red",
         linetype = 2,
-        size = .5
+        linewidth = .5
       ) +
-      coord_fixed()
+      ggplot2::coord_fixed()
     
     if (crv < 2) {
       gg_plt <- gg_plt +
-        annotate(
+        ggplot2::annotate(
           x = .5,
           y = .2,
           geom = "text",

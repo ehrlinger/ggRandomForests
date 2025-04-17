@@ -1,10 +1,11 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 2.3.0
-Date: 2025-03-07
-Author: John Ehrlinger <john.ehrlinger@gmail.com>
-Maintainer: John Ehrlinger <john.ehrlinger@gmail.com>
+Version: 2.4.0
+Date: 2025-04-16
+Authors@R: person("John", "Ehrlinger",  
+  role = c("aut", "cre"), 
+  email = "john.ehrlinger@gmail.com")
 License: GPL (>=3)
 Encoding: UTF-8
 Language: en-US

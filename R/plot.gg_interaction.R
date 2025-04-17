@@ -40,10 +40,6 @@
 #' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #'
-#' @importFrom ggplot2 ggplot aes_string geom_point geom_smooth labs 
-#' element_text
-#' @importFrom tidyr gather
-#'
 #' @examples
 #' \dontrun{
 #' ## Examples from randomForestSRC package...
@@ -146,7 +142,8 @@ plot.gg_interaction <- function(x, xvar, lbls, ...) {
     
     gathercols <-
       colnames(gg_dta)[-which(colnames(gg_dta) %in% c("rank", "names"))]
-    gg_dta <- tidyr::gather(gg_dta, "variable", "value", gathercols)
+    gg_dta <- tidyr::gather(gg_dta, "variable", "value", 
+                            tidyr::all_of(gathercols))
     
     # Correct ordering: Issue #32 code contributed by afb206
     gg_dta$variable <-
@@ -155,18 +152,18 @@ plot.gg_interaction <- function(x, xvar, lbls, ...) {
     gg_dta$value <- as.numeric(gg_dta$value)
     gg_dta$names <- factor(gg_dta$names,
                            levels = unique(gg_dta$names))
-    gg_plt <- ggplot(gg_dta) +
-      geom_point(aes_string(x = "names", y = "value")) +
-      geom_point(
-        aes_string(x = "names", y = "value"),
+    gg_plt <- ggplot2::ggplot(gg_dta) +
+      ggplot2::geom_point(ggplot2::aes(x = "names", y = "value")) +
+      ggplot2::geom_point(
+        ggplot2::aes(x = "names", y = "value"),
         data = gg_dta[which(as.character(gg_dta$names) == gg_dta$variable), ],
         shape = 3,
         size = 5,
         color = "red"
       ) +
-      theme(text = element_text(size = 10),
-            axis.text.x = element_text(angle = 90)) +
-      labs(x = "", y = "Interactive Minimal Depth")
+      ggplot2::theme(text = ggplot2::element_text(size = 10),
+            axis.text.x = ggplot2::element_text(angle = 90)) +
+      ggplot2::labs(x = "", y = "Interactive Minimal Depth")
     if (!missing(lbls)) {
       if (length(lbls) >= length(colnames(object))) {
         st_lbls <- lbls[colnames(object)]
@@ -175,12 +172,12 @@ plot.gg_interaction <- function(x, xvar, lbls, ...) {
           names(st_lbls[which(is.na(st_lbls))])
         
         gg_plt <- gg_plt +
-          scale_x_discrete(labels = st_lbls)
+          ggplot2::scale_x_discrete(labels = st_lbls)
       }
     }
     
     
-    gg_plt + facet_wrap(~ variable)
+    gg_plt + ggplot2::facet_wrap(~ variable)
   } else {
     gg_dta <- data.frame(cbind(rank = seq_len(dim(object)[1]),
                                t(object[which(rownames(object) %in% xvar), ])))
@@ -190,18 +187,18 @@ plot.gg_interaction <- function(x, xvar, lbls, ...) {
     gg_dta$dpth <- as.numeric(gg_dta$dpth)
     gg_dta$names <- factor(gg_dta$names,
                            levels = unique(gg_dta$names))
-    gg_plt <- ggplot(gg_dta) +
-      geom_point(aes_string(x = "names", y = "dpth")) +
-      geom_point(
-        aes_string(x = "names", y = "dpth"),
+    gg_plt <- ggplot2::ggplot(gg_dta) +
+      ggplot2::geom_point(ggplot2::aes(x = "names", y = "dpth")) +
+      ggplot2::geom_point(
+        ggplot2::aes(x = "names", y = "dpth"),
         data = gg_dta[which(rownames(gg_dta) == xvar), ],
         shape = 3,
         size = 5,
         color = "red"
       ) +
-      theme(text = element_text(size = 10),
-            axis.text.x = element_text(angle = 90)) +
-      labs(x = "", y = "Interactive Minimal Depth")
+      ggplot2::theme(text = ggplot2::element_text(size = 10),
+            axis.text.x = ggplot2::element_text(angle = 90)) +
+      ggplot2::labs(x = "", y = "Interactive Minimal Depth")
     
     if (!missing(lbls)) {
       if (length(lbls) >= length(gg_dta$names)) {
@@ -211,7 +208,7 @@ plot.gg_interaction <- function(x, xvar, lbls, ...) {
           names(st_lbls[which(is.na(st_lbls))])
         
         gg_plt <- gg_plt +
-          scale_x_discrete(labels = st_lbls)
+          ggplot2::scale_x_discrete(labels = st_lbls)
       }
     }
     gg_plt
