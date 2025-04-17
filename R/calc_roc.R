@@ -45,15 +45,19 @@
 #' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #'
 #' gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
-#'      which_outcome=1, oob=TRUE)
+#'   which_outcome = 1, oob = TRUE
+#' )
 #' gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
-#'      which_outcome=1, oob=FALSE)
+#'   which_outcome = 1, oob = FALSE
+#' )
 #'
 #' rf_iris <- randomForest(Species ~ ., data = iris)
 #' gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
-#'      which_outcome=1)
+#'   which_outcome = 1
+#' )
 #' gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
-#'      which_outcome=2)
+#'   which_outcome = 2
+#' )
 #'
 #' @export
 calc_roc.rfsrc <-
@@ -62,15 +66,17 @@ calc_roc.rfsrc <-
            which_outcome = "all",
            oob = TRUE,
            ...) {
-    if (!is.factor(dta))
+    if (!is.factor(dta)) {
       dta <- factor(dta)
-    
+    }
+
     arg_list <- as.list(substitute(list(...)))
-    
+
     oob <- FALSE
-    if (!is.null(arg_list$oob) && is.logical(arg_list$oob))
+    if (!is.null(arg_list$oob) && is.logical(arg_list$oob)) {
       oob <- as.logical(arg_list$oob)
-    
+    }
+
     if (which_outcome == "all") {
       warning("Must specify which_outcome for now.")
       which_outcome <- 1
@@ -78,39 +84,42 @@ calc_roc.rfsrc <-
     dta_roc <-
       data.frame(cbind(
         res = (dta == levels(dta)[which_outcome]),
-        prd = object$predicted[,which_outcome],
+        prd = object$predicted[, which_outcome],
         oob_prd = object$predicted.oob[, which_outcome]
       ))
-    
+
     # Get the list of unique prob
-    if (oob)
+    if (oob) {
       pct <- sort(unique(object$predicted.oob[, which_outcome]))
-    else
+    } else {
       pct <- sort(unique(object$predicted[, which_outcome]))
-    
+    }
+
     last <- length(pct)
     pct <- pct[-last]
-    
+
     # Make sure we don't have to many points... if the training set was large,
     # This may break plotting all ROC curves in multiclass settings.
     # Arbitrarily reduce this to only include 200 points along the curve
-    if (last > 200)
+    if (last > 200) {
       pct <- pct[seq(1, length(pct), length.out = 200)]
-    
+    }
+
     gg_dta <- parallel::mclapply(pct, function(crit) {
-      if (oob)
-        tbl <- xtabs( ~ res + (oob_prd > crit), dta_roc)
-      else
-        tbl <- xtabs( ~ res + (prd > crit), dta_roc)
-      
+      if (oob) {
+        tbl <- xtabs(~ res + (oob_prd > crit), dta_roc)
+      } else {
+        tbl <- xtabs(~ res + (prd > crit), dta_roc)
+      }
+
       spec <- tbl[2, 2] / rowSums(tbl)[2]
       sens <- tbl[1, 1] / rowSums(tbl)[1]
       cbind(sens = sens, spec = spec)
     })
-    
+
     gg_dta <- do.call(rbind, gg_dta)
     gg_dta <- rbind(c(0, 1), gg_dta, c(1, 0))
-    
+
     gg_dta <- data.frame(gg_dta, row.names = seq_len(nrow(gg_dta)))
     gg_dta$pct <- c(0, pct, 1)
     invisible(gg_dta)
@@ -134,40 +143,41 @@ calc_roc.randomForest <-
            oob = FALSE,
            ...) {
     prd <- predict(object, type = "prob")
-    
+
     if (which_outcome == "all") {
       warning("Must specify which_outcomefor now.")
       which_outcome <- 1
     }
     dta_roc <-
       data.frame(cbind(res = (dta == levels(dta)[which_outcome]), prd = prd))
-    
+
     pct <- sort(unique(prd[[which_outcome]]))
-    
+
     # Make sure we don't have to many points... if the training set was large,
     # This may break plotting all ROC curves in multiclass settings.
     # Arbitrarily reduce this to only include 200 points along the curve
-    if (length(pct) > 200)
+    if (length(pct) > 200) {
       pct <- pct[seq(1, length(pct), length.out = 200)]
-    
+    }
+
     gg_dta <- parallel::mclapply(pct, function(crit) {
       tmp <- dta_roc[, c(1, 1 + which_outcome)]
       colnames(tmp) <- c("res", "prd")
-      tbl <- xtabs( ~ res + (prd > crit), tmp)
-      
+      tbl <- xtabs(~ res + (prd > crit), tmp)
+
       if (dim(tbl)[2] < 2) {
         tbl <- cbind(tbl, c(0, 0))
         colnames(tbl) <- c("FALSE", "TRUE")
       }
       spec <- tbl[2, 2] / rowSums(tbl)[2]
       sens <- tbl[1, 1] / rowSums(tbl)[1]
-      
+
       cbind(sens = sens, spec = spec)
     })
-    
+
     gg_dta <- do.call(rbind, gg_dta)
     gg_dta <- rbind(c(0, 1), gg_dta, c(1, 0))
-    
+
     gg_dta <- data.frame(gg_dta, row.names = seq_len(nrow(gg_dta)))
     gg_dta$pct <- c(0, pct, 1)
     invisible(gg_dta)
@@ -196,18 +206,18 @@ calc_roc.randomForest <-
 #' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #'
 #' \dontrun{
-#' gg_dta <- gg_roc(rfsrc_iris, which_outcome=1)
+#' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)
 #'
 #' calc_auc(gg_dta)
 #' }
 #'
-#' gg_dta <- gg_roc(rfsrc_iris, which_outcome=2)
+#' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 2)
 #'
 #' calc_auc(gg_dta)
 #'
 #' ## randomForest tests
 #' rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
-#' gg_dta <- gg_roc(rfsrc_iris, which_outcome=2)
+#' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 2)
 #'
 #' calc_auc(gg_dta)
 #'
@@ -219,11 +229,11 @@ calc_auc <- function(x) {
   ## auc = dx/2(f(x_{i+1}) - f(x_i))
   ##
   ## f(x) is sensitivity, x is 1-specificity
-  
+
   # Since we are leading vectors (x_{i+1} - x_{i}), we need to
   # ensure we are in decreasing order of specificity (x var = 1-spec)
   x <- x[order(x$spec, decreasing = TRUE), ]
-  
+
   auc <- (3 * shift(x$sens) - x$sens) / 2 * (x$spec - shift(x$spec))
   sum(auc, na.rm = TRUE)
 }
@@ -246,12 +256,12 @@ calc_auc.gg_roc <- calc_auc
 #' vignettes though.
 #'
 #' @examples
-#' d<-data.frame(x=1:15)
-#' #generate lead variable
-#' d$df_lead2<-ggRandomForests:::shift(d$x,2)
-#' #generate lag variable
-#' d$df_lag2<-ggRandomForests:::shift(d$x,-2)
-#
+#' d <- data.frame(x = 1:15)
+#' # generate lead variable
+#' d$df_lead2 <- ggRandomForests:::shift(d$x, 2)
+#' # generate lag variable
+#' d$df_lag2 <- ggRandomForests:::shift(d$x, -2)
+#' #
 # > d
 # x df_lead2 df_lag2
 # 1   1        3      NA
@@ -264,7 +274,7 @@ calc_auc.gg_roc <- calc_auc
 # 8   8       10       6
 # 9   9       NA       7
 # 10 10       NA       8
-#
+#' #
 # # shift_by is vectorized
 # d$df_lead2 shift(d$x,-2:2)
 # [,1] [,2] [,3] [,4] [,5]
@@ -278,21 +288,22 @@ calc_auc.gg_roc <- calc_auc
 # [8,]    6    7    8    9   10
 # [9,]    7    8    9   10   NA
 # [10,]    8    9   10   NA   NA
-
 shift <- function(x, shift_by = 1) {
   stopifnot(is.numeric(shift_by))
   stopifnot(is.numeric(x))
-  
-  if (length(shift_by) > 1)
+
+  if (length(shift_by) > 1) {
     return(sapply(shift_by, shift, x = x))
-  
+  }
+
   out <- NULL
   abs_shift_by <- abs(shift_by)
-  if (shift_by > 0)
+  if (shift_by > 0) {
     out <- c(tail(x, -abs_shift_by), rep(NA, abs_shift_by))
-  else if (shift_by < 0)
+  } else if (shift_by < 0) {
     out <- c(rep(NA, abs_shift_by), head(x, -abs_shift_by))
-  else
+  } else {
     out <- x
+  }
   out
 }

@@ -28,61 +28,70 @@
 #' @examples
 #' \dontrun{
 #' ## -------- pbc data
-#' data(pbc, package="randomForestSRC")
-#' pbc$time <- pbc$days/364.25
+#' data(pbc, package = "randomForestSRC")
+#' pbc$time <- pbc$days / 364.25
 #'
 #' # This is the same as kaplan
-#' gg_dta <- gg_survival(interval="time", censor="status",
-#'                      data=pbc)
+#' gg_dta <- gg_survival(
+#'   interval = "time", censor = "status",
+#'   data = pbc
+#' )
 #'
-#' plot(gg_dta, error="none")
+#' plot(gg_dta, error = "none")
 #' plot(gg_dta)
 #'
 #' # Stratified on treatment variable.
-#' gg_dta <- gg_survival(interval="time", censor="status",
-#'                      data=pbc, by="treatment")
+#' gg_dta <- gg_survival(
+#'   interval = "time", censor = "status",
+#'   data = pbc, by = "treatment"
+#' )
 #'
-#' plot(gg_dta, error="none")
+#' plot(gg_dta, error = "none")
 #' plot(gg_dta)
-#' plot(gg_dta, label="treatment")
+#' plot(gg_dta, label = "treatment")
 #'
 #' # ...with smaller confidence limits.
-#' gg_dta <- gg_survival(interval="time", censor="status",
-#'                      data=pbc, by="treatment", conf.int=.68)
+#' gg_dta <- gg_survival(
+#'   interval = "time", censor = "status",
+#'   data = pbc, by = "treatment", conf.int = .68
+#' )
 #'
-#' plot(gg_dta, error="lines")
-#' plot(gg_dta, label="treatment", error="lines")
+#' plot(gg_dta, error = "lines")
+#' plot(gg_dta, label = "treatment", error = "lines")
 #'
 #' # ...with smaller confidence limits.
-#' gg_dta <- gg_survival(interval="time", censor="status",
-#'                      data=pbc, by="sex", conf.int=.68)
+#' gg_dta <- gg_survival(
+#'   interval = "time", censor = "status",
+#'   data = pbc, by = "sex", conf.int = .68
+#' )
 #'
-#' plot(gg_dta, error="lines")
-#' plot(gg_dta, label="sex", error="lines")
-#'
-#'
-#'}
+#' plot(gg_dta, error = "lines")
+#' plot(gg_dta, label = "sex", error = "lines")
+#' }
 #'
 #' @export
 ### Survival plots
 plot.gg_survival <- function(x,
-                             type = c("surv",
-                                      "cum_haz",
-                                      "hazard",
-                                      "density",
-                                      "mid_int",
-                                      "life",
-                                      "proplife"),
+                             type = c(
+                               "surv",
+                               "cum_haz",
+                               "hazard",
+                               "density",
+                               "mid_int",
+                               "life",
+                               "proplife"
+                             ),
                              error = c("shade", "bars", "lines", "none"),
                              label = NULL,
                              ...) {
   gg_dta <- x
-  if (inherits(gg_dta, "rfsrc"))
+  if (inherits(gg_dta, "rfsrc")) {
     gg_dta <- gg_survival(gg_dta)
-  
+  }
+
   error <- match.arg(error)
   type <- match.arg(type)
-  
+
   # Now order matters, so we want to place the forest predictions on the bottom
   # Create the figure skeleton,
   if (is.null(gg_dta$groups)) {
@@ -100,8 +109,7 @@ plot.gg_survival <- function(x,
   # Do we want to show confidence limits?
   if (type == "surv") {
     if (is.null(gg_dta$groups)) {
-      gg_plt <- switch(
-        error,
+      gg_plt <- switch(error,
         # Shading the standard errors
         shade = gg_plt +
           ggplot2::geom_ribbon(
@@ -129,8 +137,7 @@ plot.gg_survival <- function(x,
         none = gg_plt
       )
     } else {
-      gg_plt <- switch(
-        error,
+      gg_plt <- switch(error,
         # Shading the standard errors
         shade = gg_plt +
           ggplot2::geom_ribbon(

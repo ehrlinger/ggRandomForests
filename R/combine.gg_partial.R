@@ -14,11 +14,11 @@
 #' combine two gg_partial objects
 #'
 #' @description
-#' The \code{combine.gg_partial} function assumes the two 
-#' \code{\link{gg_partial}} objects were generated from the same 
+#' The \code{combine.gg_partial} function assumes the two
+#' \code{\link{gg_partial}} objects were generated from the same
 #' \code{\link[randomForestSRC]{rfsrc}} object. So, the function joins along the
-#' \code{\link{gg_partial}} list item names (one per partial plot variable). 
-#' Further, we combine the two \code{\link{gg_partial}} objects along the group 
+#' \code{\link{gg_partial}} list item names (one per partial plot variable).
+#' Further, we combine the two \code{\link{gg_partial}} objects along the group
 #' variable.
 #'
 #' Hence, to join three \code{\link{gg_partial}} objects together (i.e. for
@@ -44,42 +44,43 @@
 #' @examples
 #' \dontrun{
 #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC",) 
+#' data(pbc, package = "randomForestSRC", )
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
-#'  if (!is.factor(pbc[, ind])) {
-#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'    }
-#'  } else {
-#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'    }
-#'  }
-#'  if (!is.logical(pbc[, ind]) &
-#'      length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-#'    pbc[, ind] <- factor(pbc[, ind])
-#'  }
+#'   if (!is.factor(pbc[, ind])) {
+#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'       if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'     }
+#'   } else {
+#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'       if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'       if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'     }
+#'   }
+#'   if (!is.logical(pbc[, ind]) &
+#'     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+#'     pbc[, ind] <- factor(pbc[, ind])
+#'   }
 #' }
-#' #Convert age to years
-#'pbc$age <- pbc$age / 364.24
+#' # Convert age to years
+#' pbc$age <- pbc$age / 364.24
 #'
-#'pbc$years <- pbc$days / 364.24
-#'pbc <- pbc[, -which(colnames(pbc) == "days")]
-#'pbc$treatment <- as.numeric(pbc$treatment)
-#'pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
-#'pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
-#'pbc$treatment <- factor(pbc$treatment)
+#' pbc$years <- pbc$days / 364.24
+#' pbc <- pbc[, -which(colnames(pbc) == "days")]
+#' pbc$treatment <- as.numeric(pbc$treatment)
+#' pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+#' pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+#' pbc$treatment <- factor(pbc$treatment)
+#' }
 
-#'dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-#'# Create a test set from the remaining patients
+#' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+#' # Create a test set from the remaining patients
 #' pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 #'
 #' #========
@@ -96,19 +97,19 @@
 #' xvar <- c("bili", "albumin", "copper", "prothrombin", "age")
 #' xvar_cat <- c("edema")
 #' xvar <- c(xvar, xvar_cat)
-#' 
-#' time_index <- c(which(rfsrc_pbc$time.interest > 1)[1] - 1,  
-#'                 which(rfsrc_pbc$time.interest > 3)[1] - 1,  
+#'
+#' time_index <- c(which(rfsrc_pbc$time.interest > 1)[1] - 1,
+#'                 which(rfsrc_pbc$time.interest > 3)[1] - 1,
 #'                 which(rfsrc_pbc$time.interest > 5)[1] - 1)
-#'                 
+#'
 #' partial_pbc <- mclapply(rfsrc_pbc$time.interest[time_index],
 #'                   function(tm) {
-#'                     plot.variable(rfsrc_pbc, surv.type = "surv", 
+#'                     plot.variable(rfsrc_pbc, surv.type = "surv",
 #'                                        time = tm, xvar.names = xvar,
-#'                                        partial = TRUE, 
+#'                                        partial = TRUE,
 #'                                        show.plots = FALSE)
 #'                        })
-#'                        
+#'
 #' # A list of 2 plot.variable objects
 #' length(partial_pbc)
 #' class(partial_pbc)
@@ -147,15 +148,17 @@ combine.gg_partial <- function(x, y, lbls, ...) {
 }
 
 combine.gg_partial_list <- function(x, y, lbls, ...) {
-  if (inherits(x, "plot.variable"))
+  if (inherits(x, "plot.variable")) {
     x <- gg_partial(x)
-  if (inherits(y, "plot.variable"))
+  }
+  if (inherits(y, "plot.variable")) {
     y <- gg_partial(y)
-  
+  }
+
   if ((!inherits(x, "gg_partial_list") &&
-       !inherits(x, "gg_partial"))  &&
-      (!inherits(y, "gg_partial_list") &&
-       !inherits(y, "gg_partial"))) {
+    !inherits(x, "gg_partial")) &&
+    (!inherits(y, "gg_partial_list") &&
+      !inherits(y, "gg_partial"))) {
     stop(
       paste(
         "combine.gg_partial expects either a",
@@ -164,22 +167,23 @@ combine.gg_partial_list <- function(x, y, lbls, ...) {
       )
     )
   }
-  
+
   if (missing(lbls)) {
     lbls <- c("x1", "x2")
   }
   ### !!TODO!! check for lbls length
-  
+
   cls <- class(x)
-  
+
   ### We need to check for the case when x and y already have
   ### a group column,
-  if (is.null(x[[1]]$group))
+  if (is.null(x[[1]]$group)) {
     x <- parallel::mclapply(x, function(st) {
       st$group <- lbls[1]
       st
     })
-  
+  }
+
   if (is.null(y[[1]]$group)) {
     ind_l <- length(lbls)
     y <- parallel::mclapply(y, function(st) {
@@ -189,11 +193,11 @@ combine.gg_partial_list <- function(x, y, lbls, ...) {
   }
   # By names
   nm <- names(x)
-  
+
   gg_dta <- parallel::mclapply(nm, function(ind) {
     rbind(x[[ind]], y[[ind]])
   })
-  
+
   names(gg_dta) <- names(x)
   class(gg_dta) <- cls
   return(gg_dta)

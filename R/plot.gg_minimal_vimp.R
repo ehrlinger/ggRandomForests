@@ -40,7 +40,7 @@
 #' varsel_iris <- var.select(rfsrc_iris)
 #'
 #' # Get a data.frame containing minimaldepth measures
-#' gg_dta<- gg_minimal_vimp(varsel_iris)
+#' gg_dta <- gg_minimal_vimp(varsel_iris)
 #'
 #' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
@@ -53,19 +53,19 @@
 #' varsel_airq <- var.select(rfsrc_airq)
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_minimal_vimp(varsel_airq)
+#' gg_dta <- gg_minimal_vimp(varsel_airq)
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' data(Boston, package="MASS")
-#' rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
+#' data(Boston, package = "MASS")
+#' rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
 #'
 #' varsel_boston <- var.select(rfsrc_boston)
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_minimal_vimp(varsel_boston)
+#' gg_dta <- gg_minimal_vimp(varsel_boston)
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
@@ -75,7 +75,7 @@
 #' varsel_mtcars <- var.select(rfsrc_mtcars)
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_minimal_vimp(varsel_mtcars)
+#' gg_dta <- gg_minimal_vimp(varsel_mtcars)
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
@@ -94,31 +94,31 @@
 #'
 #' ## -------- pbc data
 #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC",)
+#' data(pbc, package = "randomForestSRC", )
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
-#'  if (!is.factor(pbc[, ind])) {
-#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'    }
-#'  } else {
-#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'    }
-#'  }
-#'  if (!is.logical(pbc[, ind]) &
-#'      length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-#'    pbc[, ind] <- factor(pbc[, ind])
-#'  }
+#'   if (!is.factor(pbc[, ind])) {
+#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'       if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'     }
+#'   } else {
+#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'       if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'       if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'     }
+#'   }
+#'   if (!is.logical(pbc[, ind]) &
+#'     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+#'     pbc[, ind] <- factor(pbc[, ind])
+#'   }
 #' }
-#' #Convert age to years
+#' # Convert age to years
 #' pbc$age <- pbc$age / 364.24
 #'
 #' pbc$years <- pbc$days / 364.24
@@ -131,16 +131,16 @@
 #' # Create a test set from the remaining patients
 #' pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 #'
-#' #========
+#' # ========
 #' # build the forest:
 #' rfsrc_pbc <- randomForestSRC::rfsrc(
 #'   Surv(years, status) ~ .,
-#'  dta_train,
-#'  nsplit = 10,
-#'  na.action = "na.impute",
-#'  forest = TRUE,
-#'  importance = TRUE,
-#'  save.memory = TRUE
+#'   dta_train,
+#'   nsplit = 10,
+#'   na.action = "na.impute",
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   save.memory = TRUE
 #' )
 #'
 #' varsel_pbc <- var.select(rfsrc_pbc)
@@ -152,23 +152,25 @@
 #' @export
 plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
   gg_dta <- x
-  
+
   # Test that object is the correct class object
   if (!inherits(gg_dta, "gg_minimal_vimp")) {
     gg_dta <- gg_minimal_vimp(x, ...)
   }
-  
-  if (missing(nvar))
+
+  if (missing(nvar)) {
     nvar <- nrow(gg_dta)
-  if (nvar > nrow(gg_dta))
+  }
+  if (nvar > nrow(gg_dta)) {
     nvar <- nrow(gg_dta)
+  }
   if (length(unique(gg_dta$col)) > 1) {
     gg_dta$col <- factor(gg_dta$col)
   }
   gg_dta$names <- factor(gg_dta$names, levels = gg_dta$names[order(as.numeric(gg_dta$depth))])
-  
+
   gg_dta <- gg_dta[1:nvar, ]
-  
+
   # If we only have one class for coloring, just paint them black.
   if (length(unique(gg_dta$col)) > 1) {
     gg_plt <-
@@ -184,12 +186,12 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
       names(st_lbls) <- as.character(gg_dta$names)
       st_lbls[which(is.na(st_lbls))] <-
         names(st_lbls[which(is.na(st_lbls))])
-      
+
       gg_plt <- gg_plt +
         ggplot2::scale_x_discrete(labels = st_lbls)
     }
   }
-  
+
   gg_plt <- gg_plt + ggplot2::geom_point() +
     ggplot2::geom_abline(
       intercept = 0,
@@ -198,7 +200,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
       linewidth = .5,
       linetype = 2
     )
-  
+
   # Draw a line between + and - vimp values.
   if (length(unique(gg_dta$col)) > 1) {
     gg_plt <- gg_plt +
@@ -209,7 +211,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
         linetype = 2
       )
   }
-  
+
   if (nrow(gg_dta) > attributes(gg_dta)$modelsize) {
     gg_plt <- gg_plt +
       ggplot2::geom_vline(
@@ -219,7 +221,6 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
         linetype = 2
       )
   }
-  
+
   return(gg_plt + ggplot2::coord_flip())
-  
 }

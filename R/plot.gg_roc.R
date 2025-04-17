@@ -38,46 +38,44 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' #rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
+#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' data(rfsrc_iris, package = "ggRandomForests")
 #'
 #' # ROC for setosa
-#' gg_dta <- gg_roc(rfsrc_iris, which_outcome=1)
+#' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)
 #' plot.gg_roc(gg_dta)
 #'
 #' # ROC for versicolor
-#' gg_dta <- gg_roc(rfsrc_iris, which_outcome=2)
+#' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 2)
 #' plot.gg_roc(gg_dta)
 #'
 #' # ROC for virginica
-#' gg_dta <- gg_roc(rfsrc_iris, which_outcome=3)
+#' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 3)
 #' plot.gg_roc(gg_dta)
 #'
 #' # Alternatively, you can plot all three outcomes in one go
 #' # by calling the plot function on the forest object.
 #' plot.gg_roc(rfsrc_iris)
-#'
 #' }
-#'
 #'
 #' @export
 plot.gg_roc <- function(x, which_outcome = NULL, ...) {
   gg_dta <- x
-  
-  #If we call this with a forest object instead of a gg_roc object
+
+  # If we call this with a forest object instead of a gg_roc object
   if (inherits(gg_dta, "rfsrc")) {
     if (inherits(gg_dta, "class")) {
       # How many classes are there?
       crv <- dim(gg_dta$predicted)[2]
-      
+
       if (crv > 2 && is.null(which_outcome)) {
         gg_dta <- mclapply(1:crv, function(ind) {
           gg_roc(gg_dta, which_outcome = ind, ...)
         })
-        
       } else {
-        if (is.null(which_outcome))
+        if (is.null(which_outcome)) {
           which_outcome <- 2
+        }
         gg_dta <- gg_roc(gg_dta, which_outcome, ...)
       }
     } else {
@@ -91,21 +89,21 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
         gg_dta <- parallel::mclapply(1:crv, function(ind) {
           gg_roc(gg_dta, which_outcome = ind, ...)
         })
-        
       } else {
-        if (is.null(which_outcome))
+        if (is.null(which_outcome)) {
           which_outcome <- 2
+        }
         gg_dta <- gg_roc(gg_dta, which_outcome, ...)
       }
     }
   }
-  
+
   #
   if (inherits(gg_dta, "gg_roc")) {
     gg_dta <- gg_dta[order(gg_dta$spec), ]
     gg_dta$fpr <- 1 - gg_dta$spec
     auc <- calc_auc(gg_dta)
-    
+
     gg_plt <- ggplot2::ggplot(data = gg_dta) +
       ggplot2::geom_line(ggplot2::aes(x = "fpr", y = "sens")) +
       ggplot2::labs(x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)") +
@@ -117,7 +115,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
         linewidth = .5
       ) +
       ggplot2::coord_fixed()
-    
+
     gg_plt <- gg_plt +
       ggplot2::annotate(
         x = .5,
@@ -126,7 +124,6 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
         label = paste("AUC = ", round(auc, digits = 3), sep = ""),
         hjust = 0
       )
-    
   } else {
     gg_dta <- parallel::mclapply(gg_dta, function(st) {
       st[order(st$spec), ]
@@ -140,14 +137,14 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
       gg_dta[[ind]]$outcome <- ind
       gg_dta[[ind]]
     })
-    
+
     auc <- parallel::mclapply(gg_dta, function(st) {
       calc_auc(st)
     })
-    
+
     o_dta <- do.call(rbind, gg_dta)
     o_dta$outcome <- factor(o_dta$outcome)
-    
+
     gg_plt <- ggplot2::ggplot(data = o_dta) +
       ggplot2::geom_line(ggplot2::aes(
         x = "fpr",
@@ -164,7 +161,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
         linewidth = .5
       ) +
       ggplot2::coord_fixed()
-    
+
     if (crv < 2) {
       gg_plt <- gg_plt +
         ggplot2::annotate(

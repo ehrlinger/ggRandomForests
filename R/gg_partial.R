@@ -52,14 +52,15 @@
 #' ## -------- iris data
 #' ## iris "Petal.Width" partial dependence plot
 #' ##
-#' rfsrc_iris <- rfsrc(Species ~., data = iris)
-#' partial_iris <- plot.variable(rfsrc_iris, 
-#'                               xvar.names = "Petal.Width",
-#'                               partial=TRUE)
-#' 
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' partial_iris <- plot.variable(rfsrc_iris,
+#'   xvar.names = "Petal.Width",
+#'   partial = TRUE
+#' )
+#'
 #' gg_dta <- gg_partial(partial_iris)
 #' plot(gg_dta)
-#' 
+#'
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
@@ -68,57 +69,60 @@
 #' ## airquality "Wind" partial dependence plot
 #' ##
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
-#' partial_airq <- plot.variable(rfsrc_airq, 
-#'                               xvar.names = "Wind",
-#'                              partial=TRUE, show.plot=FALSE)
-#' 
+#' partial_airq <- plot.variable(rfsrc_airq,
+#'   xvar.names = "Wind",
+#'   partial = TRUE, show.plot = FALSE
+#' )
+#'
 #' gg_dta <- gg_partial(partial_airq)
 #' plot(gg_dta)
-#'
 #' }
 #' \dontrun{
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
 #' rfsrc_boston <- rfsrc(medv ~ .,
-#'    data = Boston,
-#'    forest = TRUE,
-#'    importance = TRUE,
-#'    tree.err = TRUE,
-#'    save.memory = TRUE)
-#'    
+#'   data = Boston,
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   tree.err = TRUE,
+#'   save.memory = TRUE
+#' )
+#'
 #' varsel_boston <- var.select(rfsrc_boston)
-#' 
-#' partial_boston <- plot.variable(rfsrc_boston, 
+#'
+#' partial_boston <- plot.variable(rfsrc_boston,
 #'   xvar.names = varsel_boston$topvars,
 #'   sorted = FALSE,
-#'   partial = TRUE, 
-#'   show.plots = FALSE)
+#'   partial = TRUE,
+#'   show.plots = FALSE
+#' )
 #' gg_dta <- gg_partial(partial_boston)
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #' }
 #' \dontrun{
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' varsel_mtcars <- var.select(rfsrc_mtcars)
-#' 
-#' partial_mtcars <- plot.variable(rfsrc_mtcars, 
+#'
+#' partial_mtcars <- plot.variable(rfsrc_mtcars,
 #'   xvar.names = varsel_mtcars$topvars,
 #'   sorted = FALSE,
-#'   partial = TRUE, 
-#'   show.plots = FALSE)
-#' 
+#'   partial = TRUE,
+#'   show.plots = FALSE
+#' )
+#'
 #' gg_dta <- gg_partial(partial_mtcars)
 #'
 #' gg_dta.cat <- gg_dta
 #' gg_dta.cat[["disp"]] <- gg_dta.cat[["wt"]] <- gg_dta.cat[["hp"]] <- NULL
 #' gg_dta.cat[["drat"]] <- gg_dta.cat[["carb"]] <- gg_dta.cat[["qsec"]] <- NULL
 #'
-#' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
+#' plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 #'
 #' gg_dta[["cyl"]] <- gg_dta[["vs"]] <- gg_dta[["am"]] <- NULL
 #' gg_dta[["gear"]] <- NULL
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #' }
 #'
 #' ## ------------------------------------------------------------
@@ -128,70 +132,74 @@
 #' ## -------- veteran data
 #' ## survival "age" partial variable dependence plot
 #' ##
-#'  data(veteran, package = "randomForestSRC")
-#'  rfsrc_veteran <- rfsrc(Surv(time,status)~., veteran, nsplit = 10,
-#'      ntree = 100)
-#' 
+#' data(veteran, package = "randomForestSRC")
+#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., veteran,
+#'   nsplit = 10,
+#'   ntree = 100
+#' )
+#'
 #' varsel_rfsrc <- var.select(rfsrc_veteran)
-#' 
+#'
 #' ## 30 day partial plot for age
-#' partial_veteran <- plot.variable(rfsrc_veteran, surv.type = "surv",
-#'                                partial = TRUE, time=30,
-#'                                show.plots=FALSE)
+#' partial_veteran <- plot.variable(rfsrc_veteran,
+#'   surv.type = "surv",
+#'   partial = TRUE, time = 30,
+#'   show.plots = FALSE
+#' )
 #'
 #' gg_dta <- gg_partial(partial_veteran)
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #'
 #' gg_dta.cat <- gg_dta
 #' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #'
 #' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
-#'     gg_dta.cat[["age"]] <- NULL
-#' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
+#'   gg_dta.cat[["age"]] <- NULL
+#' plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 #'
 #' gg_dta <- lapply(partial_veteran, gg_partial)
-#' gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]] )
+#' gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]])
 #'
 #' plot(gg_dta[["karno"]])
 #' plot(gg_dta[["celltype"]])
 #'
 #' gg_dta.cat <- gg_dta
 #' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #'
 #' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
-#'     gg_dta.cat[["age"]] <- NULL
-#' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
+#'   gg_dta.cat[["age"]] <- NULL
+#' plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 #'
 #' ## ------------------------------------------------------------
 #' ## -------- pbc data
 #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC",) 
+#' data(pbc, package = "randomForestSRC", )
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
-#'  if (!is.factor(pbc[, ind])) {
-#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'    }
-#'  } else {
-#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'    }
-#'  }
-#'  if (!is.logical(pbc[, ind]) &
-#'      length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-#'    pbc[, ind] <- factor(pbc[, ind])
-#'  }
+#'   if (!is.factor(pbc[, ind])) {
+#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'       if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'     }
+#'   } else {
+#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'       if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'       if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'     }
+#'   }
+#'   if (!is.logical(pbc[, ind]) &
+#'     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+#'     pbc[, ind] <- factor(pbc[, ind])
+#'   }
 #' }
-#' #Convert age to years
+#' # Convert age to years
 #' pbc$age <- pbc$age / 364.24
 #'
 #' pbc$years <- pbc$days / 364.24
@@ -202,22 +210,22 @@
 #' pbc$treatment <- factor(pbc$treatment)
 #' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
 #' # Create a test set from the remaining patients
-#'  pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+#' pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 #'
-#' #========
+#' # ========
 #' # build the forest:
 #' rfsrc_pbc <- randomForestSRC::rfsrc(
 #'   Surv(years, status) ~ .,
-#'  dta_train,
-#'  nsplit = 10,
-#'  na.action = "na.impute",
-#'  forest = TRUE,
-#'  importance = TRUE,
-#'  save.memory = TRUE
+#'   dta_train,
+#'   nsplit = 10,
+#'   na.action = "na.impute",
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   save.memory = TRUE
 #' )
-#' 
+#'
 #' varsel_pbc <- var.select(rfsrc_pbc)
-#' 
+#'
 #' xvar <- varsel_pbc$topvars
 #'
 #' # Convert all partial plots to gg_partial objects
@@ -226,13 +234,14 @@
 #' # Combine the objects to get multiple time curves
 #' # along variables on a single figure.
 #' pbc_ggpart <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]],
-#'                                  lbls = c("1 Year", "3 Years"))
+#'   lbls = c("1 Year", "3 Years")
+#' )
 #'
 #' summary(pbc_ggpart)
 #' class(pbc_ggpart[["bili"]])
 #'
 #' # Plot the highest ranked variable, by name.
-#' #plot(pbc_ggpart[["bili"]])
+#' # plot(pbc_ggpart[["bili"]])
 #'
 #' # Create a temporary holder and remove the stage and edema data
 #' ggpart <- pbc_ggpart
@@ -262,22 +271,23 @@ gg_partial.rfsrc <- function(object,
       )
     )
   }
-  
+
   # If we pass it a plot.variable output, without setting partial=TRUE,
   # We'll want a gg_variable object.
-  if (!object$partial)
+  if (!object$partial) {
     invisible(gg_variable(object, ...))
-  
+  }
+
   call_v <- match.call(expand.dots = TRUE)
   named <- eval.parent(call_v$named)
-  
+
   # How many variables
   n_var <- length(object$pData)
-  
+
   # Create a list of data
   gg_dta <- parallel::mclapply(seq_len(n_var), function(ind) {
     if (length(object$pData[[ind]]$x.uniq) ==
-        length(object$pData[[ind]]$yhat)) {
+      length(object$pData[[ind]]$yhat)) {
       if (object$family == "surv") {
         # Survival family has weird standard errors because of non-normal
         # transforms
@@ -296,27 +306,32 @@ gg_partial.rfsrc <- function(object,
         )
       }
     } else {
-      x <- rep(as.character(object$pData[[ind]]$x.uniq),
-               rep(object$n, object$pData[[ind]]$n.x))
+      x <- rep(
+        as.character(object$pData[[ind]]$x.uniq),
+        rep(object$n, object$pData[[ind]]$n.x)
+      )
       tmp <- data.frame(cbind(yhat = x, x = x))
       tmp$x <- factor(tmp$x)
       tmp$yhat <- object$pData[[ind]]$yhat
       tmp
     }
   })
-  
+
   names(gg_dta) <- object$xvar.names
-  
+
   # name the data, so labels come out correctly.
   for (ind in seq_len(n_var)) {
     colnames(gg_dta[[ind]])[which(colnames(gg_dta[[ind]]) == "x")] <-
       object$xvar.names[ind]
-    if (!missing(named))
+    if (!missing(named)) {
       gg_dta[[ind]]$id <- named
-    class(gg_dta[[ind]]) <- c("gg_partial", class(gg_dta[[ind]]),
-                              object$family)
+    }
+    class(gg_dta[[ind]]) <- c(
+      "gg_partial", class(gg_dta[[ind]]),
+      object$family
+    )
   }
-  
+
   if (n_var == 1) {
     # If there is only one, no need for a list
     invisible(gg_dta[[1]])
@@ -325,7 +340,6 @@ gg_partial.rfsrc <- function(object,
     class(gg_dta) <- c("gg_partial_list", class(gg_dta))
     invisible(gg_dta)
   }
-  
 }
 
 #' @export

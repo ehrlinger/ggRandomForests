@@ -42,8 +42,8 @@
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
-#' gg_dta<- gg_rfsrc(rfsrc_iris)
+#' data(rfsrc_iris, package = "ggRandomForests")
+#' gg_dta <- gg_rfsrc(rfsrc_iris)
 #'
 #' plot(gg_dta)
 #'
@@ -52,19 +52,19 @@
 #' ## ------------------------------------------------------------
 #' ## -------- air quality data
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-#' gg_dta<- gg_rfsrc(rfsrc_airq)
+#' gg_dta <- gg_rfsrc(rfsrc_airq)
 #'
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
-#' rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
-#' 
+#' rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
+#'
 #' plot(rfsrc_boston)
 #'
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
-#' gg_dta<- gg_rfsrc(rfsrc_mtcars)
+#' gg_dta <- gg_rfsrc(rfsrc_mtcars)
 #'
 #' plot(gg_dta)
 #'
@@ -78,39 +78,39 @@
 #' gg_dta <- gg_rfsrc(rfsrc_veteran)
 #' plot(gg_dta)
 #'
-#' gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int=.95)
+#' gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int = .95)
 #' plot(gg_dta)
 #'
-#' gg_dta <- gg_rfsrc(rfsrc_veteran, by="trt")
+#' gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt")
 #' plot(gg_dta)
 #'
 #' ## -------- pbc data
 #' #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC",) 
+#' data(pbc, package = "randomForestSRC", )
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
-#'  if (!is.factor(pbc[, ind])) {
-#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'    }
-#'  } else {
-#'    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-#'        pbc[, ind] <- as.logical(pbc[, ind])
-#'      }
-#'    }
-#'  }
-#'  if (!is.logical(pbc[, ind]) &
-#'      length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-#'    pbc[, ind] <- factor(pbc[, ind])
-#'  }
+#'   if (!is.factor(pbc[, ind])) {
+#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'       if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'     }
+#'   } else {
+#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+#'       if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'       if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+#'         pbc[, ind] <- as.logical(pbc[, ind])
+#'       }
+#'     }
+#'   }
+#'   if (!is.logical(pbc[, ind]) &
+#'     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+#'     pbc[, ind] <- factor(pbc[, ind])
+#'   }
 #' }
-#' #Convert age to years
+#' # Convert age to years
 #' pbc$age <- pbc$age / 364.24
 #'
 #' pbc$years <- pbc$days / 364.24
@@ -123,54 +123,54 @@
 #' # Create a test set from the remaining patients
 #' pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 #'
-#' #========
+#' # ========
 #' # build the forest:
 #' rfsrc_pbc <- randomForestSRC::rfsrc(
 #'   Surv(years, status) ~ .,
-#'  dta_train,
-#'  nsplit = 10,
-#'  na.action = "na.impute",
-#'  forest = TRUE,
-#'  importance = TRUE,
-#'  save.memory = TRUE
+#'   dta_train,
+#'   nsplit = 10,
+#'   na.action = "na.impute",
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   save.memory = TRUE
 #' )
-#' 
+#'
 #' gg_dta <- gg_rfsrc(rfsrc_pbc)
 #' plot(gg_dta)
 #'
-#' gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int=.95)
+#' gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int = .95)
 #' plot(gg_dta)
 #'
-#' gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
+#' gg_dta <- gg_rfsrc(rfsrc_pbc, by = "treatment")
 #' plot(gg_dta)
-#'
-#'
 #' }
-#' 
 #'
 #' @export
 plot.gg_rfsrc <- function(x, ...) {
   gg_dta <- x
-  
+
   # Unpack argument list
   arg_set <- list(...)
-  
+
   ## rfsrc places the class in position 1.
-  if (inherits(gg_dta, "rfsrc"))
+  if (inherits(gg_dta, "rfsrc")) {
     gg_dta <- gg_rfsrc(gg_dta)
-  
+  }
+
   ## Classification forest?
   if (inherits(gg_dta, "class") ||
-      inherits(gg_dta, "classification")) {
+    inherits(gg_dta, "classification")) {
     if (ncol(gg_dta) < 3) {
       gg_plt <- ggplot2::ggplot(gg_dta) +
-        ggplot2::geom_jitter(ggplot2::aes(
-          x = 1,
-          y = colnames(gg_dta)[1],
-          color = colnames(gg_dta)[2],
-          shape = colnames(gg_dta)[2]
-        ),
-        ...) +
+        ggplot2::geom_jitter(
+          ggplot2::aes(
+            x = 1,
+            y = colnames(gg_dta)[1],
+            color = colnames(gg_dta)[2],
+            shape = colnames(gg_dta)[2]
+          ),
+          ...
+        ) +
         ggplot2::geom_boxplot(
           ggplot2::aes(x = 1, y = colnames(gg_dta)[1]),
           outlier.colour = "transparent",
@@ -178,22 +178,25 @@ plot.gg_rfsrc <- function(x, ...) {
           notch = TRUE,
           ...
         ) +
-        ggplot2::theme(axis.ticks = ggplot2::element_blank(), 
-                       axis.text.x = ggplot2::element_blank())
+        ggplot2::theme(
+          axis.ticks = ggplot2::element_blank(),
+          axis.text.x = ggplot2::element_blank()
+        )
     } else {
       gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
       gg_dta_mlt <-
         tidyr::gather(gg_dta, "variable", "value", tidyr::all_of(gathercols))
-      
+
       gg_plt <-
-        ggplot2::ggplot(gg_dta_mlt, 
-                        ggplot2::aes(x = "variable", y = "value")) +
-        ggplot2::geom_jitter(ggplot2::aes(color = "y", shape = "y"), 
-                             alpha = .5)
+        ggplot2::ggplot(
+          gg_dta_mlt,
+          ggplot2::aes(x = "variable", y = "value")
+        ) +
+        ggplot2::geom_jitter(ggplot2::aes(color = "y", shape = "y"),
+          alpha = .5
+        )
     }
     gg_plt <- gg_plt + ggplot2::labs(y = "Predicted (%)", x = "")
-    
-    
   } else if (inherits(gg_dta, "surv")) {
     # Check for conf.int calculations
     if ("lower" %in% colnames(gg_dta)) {
@@ -203,7 +206,7 @@ plot.gg_rfsrc <- function(x, ...) {
         alph <- arg_set$alpha * .5
         arg_set$alpha <- NULL
       }
-      
+
       if ("group" %in% colnames(gg_dta)) {
         gg_plt <- ggplot2::ggplot(gg_dta) +
           ggplot2::geom_ribbon(
@@ -223,47 +226,53 @@ plot.gg_rfsrc <- function(x, ...) {
           ), ...)
       } else {
         gg_plt <- ggplot2::ggplot(gg_dta) +
-          ggplot2::geom_ribbon(ggplot2::aes(
-            x = "value",
-            ymin = "lower",
-            ymax = "upper"
-          ),
-          alpha = alph) +
+          ggplot2::geom_ribbon(
+            ggplot2::aes(
+              x = "value",
+              ymin = "lower",
+              ymax = "upper"
+            ),
+            alpha = alph
+          ) +
           ggplot2::geom_step(ggplot2::aes(x = "value", y = "median"), ...)
       }
     } else {
       # Lines by observation
-      gg_plt <- ggplot2::ggplot(gg_dta,
-                                ggplot2::aes(
-                         x = "variable",
-                         y = "value",
-                         col = "event",
-                         by = "obs_id"
-                       )) +
+      gg_plt <- ggplot2::ggplot(
+        gg_dta,
+        ggplot2::aes(
+          x = "variable",
+          y = "value",
+          col = "event",
+          by = "obs_id"
+        )
+      ) +
         ggplot2::geom_step(...)
     }
-    
-    gg_plt <- gg_plt  +
+
+    gg_plt <- gg_plt +
       ggplot2::labs(x = "time (years)", y = "Survival (%)")
-    
-    
   } else if (inherits(gg_dta, "regr") ||
-             inherits(gg_dta, "regression")) {
+    inherits(gg_dta, "regression")) {
     if ("group" %in% colnames(gg_dta)) {
       gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = "group", y = "yhat"))
     } else {
       gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = 1, y = "yhat"))
     }
-    
+
     gg_plt <- gg_plt +
       ggplot2::geom_jitter(, ...) +
-      ggplot2::geom_boxplot(outlier.colour = "transparent",
-                   fill = "transparent",
-                   notch = TRUE,
-                   ...) +
+      ggplot2::geom_boxplot(
+        outlier.colour = "transparent",
+        fill = "transparent",
+        notch = TRUE,
+        ...
+      ) +
       ggplot2::labs(y = "Predicted Value", x = colnames(gg_dta)[2]) +
-      ggplot2::theme(axis.ticks = ggplot2::element_blank(), 
-                     axis.text.x = ggplot2::element_blank())
+      ggplot2::theme(
+        axis.ticks = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_blank()
+      )
   } else {
     stop(paste(
       "Plotting for ",

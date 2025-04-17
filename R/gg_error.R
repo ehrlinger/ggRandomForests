@@ -14,19 +14,19 @@
 #'
 #' randomForest error rate data object
 #'
-#' Extract the cumulative (OOB) \code{randomForestSRC} error rate as a 
+#' Extract the cumulative (OOB) \code{randomForestSRC} error rate as a
 #' function of number of trees.
 #'
 #' @details The \code{gg_error} function simply returns the
-#' \code{\link[randomForestSRC]{rfsrc}$err.rate} object as a data.frame, 
-#' and assigns the class for connecting to the S3 
+#' \code{\link[randomForestSRC]{rfsrc}$err.rate} object as a data.frame,
+#' and assigns the class for connecting to the S3
 #' \code{\link{plot.gg_error}} function.
 #'
 #' @param object \code{\link[randomForestSRC]{rfsrc}} object.
 #' @param ... optional arguments (not used).
 #'
-#' @return \code{gg_error} \code{data.frame} with one column indicating 
-#' the tree number, and the remaining columns from the 
+#' @return \code{gg_error} \code{data.frame} with one column indicating
+#' the tree number, and the remaining columns from the
 #' \code{\link[randomForestSRC]{rfsrc}$err.rate} return value.
 #'
 #' @seealso \code{\link{plot.gg_error}} \code{rfsrc} \code{plot.rfsrc}
@@ -34,13 +34,13 @@
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #'
-#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, 
+#' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 #' Rnews, 7(2):25-31.
 #'
 #' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
 #' and Classification (RF-SRC), R package version 1.4.
 #'
-#' @aliases gg_error gg_error.rfsrc gg_error.randomForest 
+#' @aliases gg_error gg_error.rfsrc gg_error.randomForest
 #' @aliases gg_error.randomForest.formula
 #'
 #' @examples
@@ -59,20 +59,24 @@
 #' plot(gg_dta)
 #'
 #' ## RandomForest example
-#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris, 
-#'                                       tree.err = TRUE, )
+#' rf_iris <- randomForest::randomForest(Species ~ .,
+#'   data = iris,
+#'   tree.err = TRUE,
+#' )
 #' gg_dta <- gg_error(rf_iris)
 #' plot(gg_dta)
-#' 
-#' gg_dta <- gg_error(rf_iris, training=TRUE)
+#'
+#' gg_dta <- gg_error(rf_iris, training = TRUE)
 #' plot(gg_dta)
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
 #' \dontrun{
 #' ## ------------- airq data
-#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, 
-#'     na.action = "na.impute", tree.err = TRUE, )
+#' rfsrc_airq <- rfsrc(Ozone ~ .,
+#'   data = airquality,
+#'   na.action = "na.impute", tree.err = TRUE,
+#' )
 #'
 #' # Get a data.frame containing error rates
 #' gg_dta <- gg_error(rfsrc_airq)
@@ -85,14 +89,15 @@
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
 #' rfsrc_boston <- rfsrc(medv ~ .,
-#'    data = Boston,
-#'    forest = TRUE,
-#'    importance = TRUE,
-#'    tree.err = TRUE,
-#'    save.memory = TRUE)
+#'   data = Boston,
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   tree.err = TRUE,
+#'   save.memory = TRUE
+#' )
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_error(rfsrc_boston)
+#' gg_dta <- gg_error(rfsrc_boston)
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
@@ -100,6 +105,7 @@
 #' \dontrun{
 #' ## ------------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
+#' }
 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_error(rfsrc_mtcars)
@@ -124,7 +130,7 @@
 #' ## ------------- pbc data
 #' # Load a cached randomForestSRC object
 #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC",) 
+#' data(pbc, package = "randomForestSRC",)
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
 #'  if (!is.factor(pbc[, ind])) {
@@ -168,7 +174,7 @@
 #'  dta_train,
 #'  nsplit = 10,
 #'  na.action = "na.impute",
-#'  tree.err = TRUE, 
+#'  tree.err = TRUE,
 #'  forest = TRUE,
 #'  importance = TRUE,
 #'  save.memory = TRUE
@@ -181,7 +187,7 @@
 #'
 #' @importFrom stats na.omit predict qnorm
 #'
-#' @export gg_error gg_error.rfsrc gg_error.randomForest 
+#' @export gg_error gg_error.rfsrc gg_error.randomForest
 #' @export gg_error.randomForest.formula
 gg_error <- function(object, ...) {
   UseMethod("gg_error", object)
@@ -200,20 +206,22 @@ gg_error.rfsrc <- function(object, ...) {
   if (is.null(object$err.rate)) {
     stop("Performance values are not available for this forest.")
   }
-  
+
   gg_dta <- data.frame(object$err.rate)
-  
+
   # If there is only one column in the error rate... name it reasonably.
-  if ("object.err.rate" %in% colnames(gg_dta))
+  if ("object.err.rate" %in% colnames(gg_dta)) {
     colnames(gg_dta)[which(colnames(gg_dta) == "object.err.rate")] <-
-    "error"
-  
+      "error"
+  }
+
   gg_dta$ntree <- seq_len(dim(gg_dta)[1])
-  
+
   arg_list <- as.list(substitute(list(...)))
   training <- FALSE
-  if (!is.null(arg_list$training))
+  if (!is.null(arg_list$training)) {
     training <- arg_list$training
+  }
   if (training) {
     trn <- data.frame(cbind(object$xvar, object$yvar))
     colnames(trn) <- c(object$xvar.names, object$yvar.names)
@@ -241,23 +249,25 @@ gg_error.randomForest <- function(object, ...) {
       )
     )
   }
-  
+
   if (!is.null(object$mse)) {
     # For regression
     gg_dta <- data.frame(object$mse)
-    
+
     # If there is only one column in the error rate... name it reasonably.
-    if ("object.mse" %in% colnames(gg_dta))
+    if ("object.mse" %in% colnames(gg_dta)) {
       colnames(gg_dta)[which(colnames(gg_dta) == "object.mse")] <-
         "error"
-    
+    }
+
     gg_dta$ntree <- seq_len(nrow(gg_dta))
-    
+
     arg_list <- as.list(substitute(list(...)))
     training <- FALSE
-    if (!is.null(arg_list$training))
+    if (!is.null(arg_list$training)) {
       training <- arg_list$training
-    
+    }
+
     if (training) {
       trn <- data.frame(cbind(object$xvar, object$yvar))
       colnames(trn) <- c(object$xvar.names, object$yvar.names)
@@ -269,18 +279,17 @@ gg_error.randomForest <- function(object, ...) {
       )
       gg_dta$train <- gg_prd$err.rate
     }
-    
   } else if (!is.null(object$err.rate)) {
     # For classification
     gg_dta <- data.frame(object$err.rate)
-    
+
     gg_dta$ntree <- seq_len(nrow(gg_dta))
-    
+
     arg_list <- as.list(substitute(list(...)))
     training <- FALSE
-    if (!is.null(arg_list$training))
+    if (!is.null(arg_list$training)) {
       training <- arg_list$training
-    
+    }
   } else {
     stop("Performance values are not available for this forest.")
   }

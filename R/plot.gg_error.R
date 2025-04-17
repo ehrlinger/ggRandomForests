@@ -41,7 +41,7 @@
 #'
 #' @examples
 #' \dontrun{
-#'  ## Examples from RFSRC package...
+#' ## Examples from RFSRC package...
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -56,19 +56,23 @@
 #' plot(gg_dta)
 #'
 #' ## RandomForest example
-#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris,
-#'                                       tree.err = TRUE, )
+#' rf_iris <- randomForest::randomForest(Species ~ .,
+#'   data = iris,
+#'   tree.err = TRUE,
+#' )
 #' gg_dta <- gg_error(rf_iris)
 #' plot(gg_dta)
 #'
-#' gg_dta <- gg_error(rf_iris, training=TRUE)
+#' gg_dta <- gg_error(rf_iris, training = TRUE)
 #' plot(gg_dta)
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
 #' ## ------------- airq data
-#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
-#'     na.action = "na.impute", tree.err = TRUE, )
+#' rfsrc_airq <- rfsrc(Ozone ~ .,
+#'   data = airquality,
+#'   na.action = "na.impute", tree.err = TRUE,
+#' )
 #'
 #' # Get a data.frame containing error rates
 #' gg_dta <- gg_error(rfsrc_airq)
@@ -81,20 +85,22 @@
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
 #' rfsrc_boston <- rfsrc(medv ~ .,
-#'    data = Boston,
-#'    forest = TRUE,
-#'    importance = TRUE,
-#'    tree.err = TRUE,
-#'    save.memory = TRUE)
+#'   data = Boston,
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   tree.err = TRUE,
+#'   save.memory = TRUE
+#' )
 #'
 #' # Get a data.frame containing error rates
-#' gg_dta<- gg_error(rfsrc_boston)
+#' gg_dta <- gg_error(rfsrc_boston)
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
 #'
 #' ## ------------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
+#' }
 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_error(rfsrc_mtcars)
@@ -178,18 +184,22 @@
 #' @export
 plot.gg_error <- function(x, ...) {
   gg_dta <- x
-  
-  if (inherits(gg_dta, "rfsrc"))
+
+  if (inherits(gg_dta, "rfsrc")) {
     gg_dta <- gg_error(gg_dta)
-  
-  if (!inherits(gg_dta, "gg_error"))
+  }
+
+  if (!inherits(gg_dta, "gg_error")) {
     stop("Incorrect object type: Expects a gg_error object")
-  
+  }
+
   if (ncol(gg_dta) > 2) {
     gg_dta <- tidyr::gather(gg_dta, "variable", "value", -"ntree")
     gg_plt <-
-      ggplot2::ggplot(na.omit(gg_dta),
-                      ggplot2::aes(x = "ntree", y = "value", col = "variable"))
+      ggplot2::ggplot(
+        na.omit(gg_dta),
+        ggplot2::aes(x = "ntree", y = "value", col = "variable")
+      )
   } else {
     # We expect the object to have the following columns
     gg_plt <-
@@ -198,7 +208,7 @@ plot.gg_error <- function(x, ...) {
   gg_plt <- gg_plt +
     ggplot2::geom_line() +
     ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")
-  
+
   if (length(unique(gg_dta$variable)) == 1) {
     gg_plt <- gg_plt + ggplot2::theme(legend.position = "none")
   }

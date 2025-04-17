@@ -33,15 +33,15 @@
 #' @importFrom stats quantile
 #'
 #' @examples
-#' data(Boston, package="MASS")
-#' rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
+#' data(Boston, package = "MASS")
+#' rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
 #'
 #' # To create 6 intervals, we want 7 points.
 #' # quantile_pts will find balanced intervals
-#' rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups=6, intervals=TRUE)
+#' rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups = 6, intervals = TRUE)
 #'
 #' # Use cut to create the intervals
-#' rm_grp <- cut(rfsrc_boston$xvar$rm, breaks=rm_pts)
+#' rm_grp <- cut(rfsrc_boston$xvar$rm, breaks = rm_pts)
 #'
 #' summary(rm_grp)
 #'
@@ -49,27 +49,33 @@
 quantile_pts <- function(object, groups, intervals = FALSE) {
   # We need one more break than group,
   breaks <- groups
-  if (intervals)
+  if (intervals) {
     breaks <- breaks + 1
-  
-  if (sum(is.na(object)) > 0)
+  }
+
+  if (sum(is.na(object)) > 0) {
     object <- object[-which(is.na(object))]
-  
+  }
+
   n_x <- length(unique(object))
   if (n_x > breaks) {
     x_uniq <-
-      sort(unique(object))[unique(as.integer(seq(1, 
-                                                 n_x, 
-                                                 length = min(breaks, 
-                                                              n_x))))]
+      sort(unique(object))[unique(as.integer(seq(1,
+        n_x,
+        length = min(
+          breaks,
+          n_x
+        )
+      )))]
   } else {
     x_uniq <- unique(object)
   }
-  
+
   # If we're looking for intervals, we need to include the first point
   # cut will make it NA if we don't move this a little bit lower,
   # because of the (lv, uv] interval definition.
-  if (intervals)
+  if (intervals) {
     x_uniq[1] <- x_uniq[1] - 1.e-7
+  }
   x_uniq
 }

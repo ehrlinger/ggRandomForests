@@ -42,7 +42,7 @@
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
 #' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' data(rfsrc_iris, package="ggRandomForests")
+#' data(rfsrc_iris, package = "ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_iris)
 #' plot(gg_dta)
 #'
@@ -51,17 +51,17 @@
 #' ## ------------------------------------------------------------
 #' ## -------- air quality data
 #' # rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
-#' data(rfsrc_airq, package="ggRandomForests")
+#' data(rfsrc_airq, package = "ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' data(rfsrc_boston, package="ggRandomForests")
+#' data(rfsrc_boston, package = "ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_boston)
 #' plot(gg_dta)
 #'
 #' ## -------- mtcars data
-#' data(rfsrc_mtcars, package="ggRandomForests")
+#' data(rfsrc_mtcars, package = "ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_mtcars)
 #' plot(gg_dta)
 #'
@@ -69,26 +69,26 @@
 #' ## survival example
 #' ## ------------------------------------------------------------
 #' ## -------- veteran data
-#' data(rfsrc_veteran, package="ggRandomForests")
+#' data(rfsrc_veteran, package = "ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_veteran)
 #' plot(gg_dta)
 #'
 #' ## -------- pbc data
-#' data(rfsrc_pbc, package="ggRandomForests")
+#' data(rfsrc_pbc, package = "ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_pbc)
 #' plot(gg_dta)
-#'
-#'}
+#' }
 #'
 #' @export
 plot.gg_vimp <- function(x, relative, lbls, ...) {
-  gg_dta  <- x
-  if (!inherits(gg_dta, "gg_vimp"))
+  gg_dta <- x
+  if (!inherits(gg_dta, "gg_vimp")) {
     gg_dta <- gg_vimp(gg_dta, ...)
-  
+  }
+
   # Classification...
   arg_set <- as.list(substitute(list(...)))[-1L]
-  
+
   nvar <- nrow(gg_dta)
   if (!is.null(arg_set$nvar)) {
     if (is.numeric(arg_set$nvar) && arg_set$nvar > 1) {
@@ -98,13 +98,14 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
       }
     }
   }
-  
+
   gg_plt <- ggplot2::ggplot(gg_dta)
-  
+
   msr <- "vimp"
-  if (!msr %in% colnames(gg_dta))
+  if (!msr %in% colnames(gg_dta)) {
     msr <- colnames(gg_dta)[1]
-  
+  }
+
   #  if(missing(relative) | is.null(gg_dta$rel_vimp)) {
   if (length(unique(gg_dta$positive)) > 1) {
     gg_plt <- gg_plt +
@@ -127,16 +128,16 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
       )
   }
   gg_plt <- gg_plt + labs(x = "", y = msr)
-  
+
   if (!missing(lbls)) {
     # Print a warning if the lbls is not a named vector.
-    
+
     if (length(lbls) >= length(gg_dta$vars)) {
       st_lbls <- lbls[as.character(gg_dta$vars)]
       names(st_lbls) <- as.character(gg_dta$vars)
       st_lbls[which(is.na(st_lbls))] <-
         names(st_lbls[which(is.na(st_lbls))])
-      
+
       gg_plt <- gg_plt +
         ggplot2::scale_x_discrete(labels = st_lbls)
     }
@@ -147,8 +148,8 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
   } else {
     gg_plt <- gg_plt +
       ggplot2::coord_flip() +
-      ggplot2::facet_grid(~ set)
+      ggplot2::facet_grid(~set)
   }
-  
+
   return(gg_plt)
 }

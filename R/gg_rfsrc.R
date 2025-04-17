@@ -49,13 +49,13 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
-#' 
+#'
 #' ## -------- air quality data
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
 #' gg_dta<- gg_rfsrc(rfsrc_airq)
 #'
 #' plot(gg_dta)
-#' 
+#'
 #'
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
@@ -66,7 +66,7 @@
 #'    importance = TRUE,
 #'    tree.err = TRUE,
 #'    save.memory = TRUE)
-#' 
+#'
 #' plot(gg_rfsrc(rfsrc_boston))
 #'
 #' ### randomForest example
@@ -80,7 +80,7 @@
 #' gg_dta<- gg_rfsrc(rfsrc_mtcars)
 #'
 #' plot(gg_dta)
-#' 
+#'
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
@@ -88,7 +88,7 @@
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRC")
 #' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
-#' 
+#'
 #' gg_dta <- gg_rfsrc(rfsrc_veteran)
 #' plot(gg_dta)
 #'
@@ -102,7 +102,7 @@
 #' ## -------- pbc data
 #' ## We don't run this because of bootstrap confidence limits
 #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC",) 
+#' data(pbc, package = "randomForestSRC",)
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' #Convert age to years
 #' pbc$age <- pbc$age / 364.24
@@ -137,7 +137,7 @@
 #'
 #' gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
 #' plot(gg_dta)
-#' 
+#'
 #'
 #' @aliases gg_rfsrc gg_rfsrc.rfsrc
 
@@ -163,14 +163,14 @@ gg_rfsrc.rfsrc <- function(object,
       )
     )
   }
-  
+
   # get optional arguments
   arg_list <- list(...)
-  
+
   if (inherits(object, "predict")) {
     oob <- FALSE
   }
-  
+
   if (!missing(by)) {
     grp <- by
     # If the by argument is a vector, make sure it is the correct length
@@ -181,13 +181,14 @@ gg_rfsrc.rfsrc <- function(object,
         grp <- object$xvar[, grp]
       }
     }
-    
+
     if (is.vector(grp) || is.factor(grp)) {
-      if (length(grp) != nrow(object$xvar))
+      if (length(grp) != nrow(object$xvar)) {
         stop(paste(
           "By argument does not have the correct dimension ",
           nrow(object$xvar)
         ))
+      }
     } else {
       stop(
         paste(
@@ -199,11 +200,11 @@ gg_rfsrc.rfsrc <- function(object,
     }
     grp <- factor(grp, levels = unique(grp))
   }
-  
-  
+
+
   if (object$family == "class") {
     ### Classification models...
-    
+
     # Need to add multiclass methods
     if (oob) {
       gg_dta <-
@@ -219,7 +220,7 @@ gg_rfsrc.rfsrc <- function(object,
         data.frame(cbind(object$predicted))
       }
     }
-    
+
     # Switch between logical or categorical outcome
     if (ncol(gg_dta) == 1) {
       colnames(gg_dta) <- object$yvar.names
@@ -231,23 +232,22 @@ gg_rfsrc.rfsrc <- function(object,
     } else {
       colnames(gg_dta) <- levels(object$yvar)
       gg_dta$y <- object$yvar
-      
     }
-    
+
     # Handle the "by" argument.
-    if (!missing(by))
+    if (!missing(by)) {
       gg_dta$group <- grp
-    
+    }
   } else if (object$family == "surv") {
     ### Survival models
     surv_type <- "surv"
-    
-    if (!is.null(arg_list$surv_type))
+
+    if (!is.null(arg_list$surv_type)) {
       surv_type <- arg_list$surv_type
-    
+    }
+
     if (oob) {
-      rng <- switch(
-        surv_type,
+      rng <- switch(surv_type,
         surv = data.frame(object$survival.oob),
         chf = data.frame(object$chf.oob),
         mortality = data.frame(1 - object$survival.oob),
@@ -256,8 +256,7 @@ gg_rfsrc.rfsrc <- function(object,
         ))
       )
     } else {
-      rng <- switch(
-        surv_type,
+      rng <- switch(surv_type,
         surv = data.frame(object$survival),
         chf = data.frame(object$chf),
         mortality = data.frame(1 - object$survival),
@@ -266,10 +265,10 @@ gg_rfsrc.rfsrc <- function(object,
         ))
       )
     }
-    
+
     # Do we want all lines, or bootstrap confidence bands.
     colnames(rng) <- object$time.interest
-    
+
     rng$obs_id <- seq_len(nrow(rng))
     if (is.null(object$yvar)) {
       rng$event <- FALSE
@@ -277,7 +276,7 @@ gg_rfsrc.rfsrc <- function(object,
       rng$event <- as.logical(object$yvar[, 2])
     }
     gg_dta <- rng
-    
+
     # If we don't specify either a conf band or group by variable...
     # Then we want to plot a curve for each observation.
     if (is.null(arg_list$conf.int) && missing(by)) {
@@ -288,56 +287,60 @@ gg_rfsrc.rfsrc <- function(object,
       gg_dta_mlt$variable <-
         as.numeric(as.character(gg_dta_mlt$variable))
       gg_dta_mlt$obs_id <- factor(gg_dta_mlt$obs_id)
-      
+
       gg_dta <- gg_dta_mlt
-      
     } else {
-      level <- if (is.null(arg_list$conf.int))
+      level <- if (is.null(arg_list$conf.int)) {
         .95
-      else
+      } else {
         arg_list$conf.int
-      
+      }
+
       # If we have one value, then it's two sided.
       if (length(level) == 1) {
-        if (level > 1)
+        if (level > 1) {
           level <- level / 100
-        
+        }
+
         level_set <- c((1 - level) / 2, 1 - (1 - level) / 2)
         level_set <- sort(level_set)
       } else {
         level_set <- sort(level)
       }
-      
+
       if (is.null(arg_list$bs.sample)) {
         bs_samples <- nrow(gg_dta)
       } else {
         bs_samples <- arg_list$bs.sample
       }
-      
-      
+
+
       if (!missing(by)) {
         gg_dta$group <- grp
         #####
         grp_dta <- lapply(levels(grp), function(st) {
-          if (is.null(arg_list$bs.sample))
+          if (is.null(arg_list$bs.sample)) {
             bs_samples <-
               nrow(gg_dta[which(as.character(gg_dta$group) == st), ])
-          
+          }
+
           obj <-
-            bootstrap_survival(gg_dta[which(as.character(gg_dta$group) == st), ],
-                               bs_samples, level_set)
+            bootstrap_survival(
+              gg_dta[which(as.character(gg_dta$group) == st), ],
+              bs_samples, level_set
+            )
           obj$group <- st
           obj
         })
         gg_grp <- do.call(rbind, grp_dta)
         gg_grp$group <- factor(gg_grp$group,
-                               levels = unique(gg_grp$group))
+          levels = unique(gg_grp$group)
+        )
         gg_dta <- gg_grp
       } else {
         gg_dta <- bootstrap_survival(gg_dta, bs_samples, level_set)
       }
     }
-    
   } else if (object$family == "regr") {
     # Need to add multiclass methods
     if (oob) {
@@ -345,13 +348,13 @@ gg_rfsrc.rfsrc <- function(object,
     } else {
       gg_dta <- data.frame(cbind(object$predicted, object$yvar))
     }
-    
+
     colnames(gg_dta) <- c("yhat", object$yvar.names)
-    
+
     # Handle the "by" argument.
-    if (!missing(by))
+    if (!missing(by)) {
       gg_dta$group <- grp
-    
+    }
   } else {
     stop(
       paste(
@@ -362,7 +365,7 @@ gg_rfsrc.rfsrc <- function(object,
       )
     )
   }
-  
+
   class(gg_dta) <- c("gg_rfsrc", object$family, class(gg_dta))
   invisible(gg_dta)
 }
@@ -373,33 +376,40 @@ bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
   ## Calculate the leave one out estimate of the mean survival
   gg_t <-
     gg_dta[, -which(colnames(gg_dta) %in% c("obs_id", "event", "group"))]
-  mn_bs <- t(sapply(seq_len(bs_samples),
-                    function(pat) {
-                      st <- sample(seq_len(nrow(gg_t)),
-                                   size = nrow(gg_t),
-                                   replace = TRUE)
-                      colMeans(gg_t[st, ])
-                    }))
-  
+  mn_bs <- t(sapply(
+    seq_len(bs_samples),
+    function(pat) {
+      st <- sample(seq_len(nrow(gg_t)),
+        size = nrow(gg_t),
+        replace = TRUE
+      )
+      colMeans(gg_t[st, ])
+    }
+  ))
+
   ## now get the confidence interval of the mean, and the median (.5)
-  rng <- sapply(seq_len(ncol(mn_bs)),
-                function(t_pt) {
-                  quantile(mn_bs[, t_pt], probs = c(level_set, .5))
-                })
+  rng <- sapply(
+    seq_len(ncol(mn_bs)),
+    function(t_pt) {
+      quantile(mn_bs[, t_pt], probs = c(level_set, .5))
+    }
+  )
   mn <- sapply(seq_len(ncol(rng)), function(t_pt) {
     mean(rng[, t_pt])
   })
-  
+
   time_interest <- as.numeric(colnames(gg_t))
-  
-  dta <- data.frame(cbind(time_interest,
-                          t(rng)[-which(colnames(gg_dta) %in%
-                                          c("obs_id", "event")), ],
-                          mn[-which(colnames(gg_dta) %in%
-                                      c("obs_id", "event"))]))
-  
+
+  dta <- data.frame(cbind(
+    time_interest,
+    t(rng)[-which(colnames(gg_dta) %in%
+      c("obs_id", "event")), ],
+    mn[-which(colnames(gg_dta) %in%
+      c("obs_id", "event"))]
+  ))
+
   if (ncol(dta) == 5) {
-    colnames(dta) <- c("value", "lower",  "upper", "median", "mean")
+    colnames(dta) <- c("value", "lower", "upper", "median", "mean")
   } else {
     colnames(dta) <- c("value", level_set, "mean")
   }
@@ -427,11 +437,11 @@ gg_rfsrc.randomForest <- function(object,
       )
     )
   }
-  
+
   if (inherits(object, "predict")) {
     oob <- FALSE
   }
-  
+
   if (!missing(by)) {
     grp <- by
     # If the by argument is a vector, make sure it is the correct length
@@ -442,13 +452,14 @@ gg_rfsrc.randomForest <- function(object,
         grp <- object$xvar[, grp]
       }
     }
-    
+
     if (is.vector(grp) || is.factor(grp)) {
-      if (length(grp) != nrow(object$xvar))
+      if (length(grp) != nrow(object$xvar)) {
         stop(paste(
           "By argument does not have the correct dimension ",
           nrow(object$xvar)
         ))
+      }
     } else {
       stop(
         paste(
@@ -460,18 +471,18 @@ gg_rfsrc.randomForest <- function(object,
     }
     grp <- factor(grp, levels = unique(grp))
   }
-  
+
   # gg_variable is really just the training data and the outcome.
   gg_dta <- get(as.character(object$call$data))
-  
+
   # Remove the response from the data.frame
   rsp <- as.character(object$call$formula)[2]
   gg_dta <- gg_dta[, -which(colnames(gg_dta) == rsp)]
-  
+
   # Do the work...
   if (object$type == "classification") {
     ### Classification models...
-    
+
     # Need to add multiclass methods
     prd <- predict(object, type = "prob")
     gg_dta <- if (ncol(prd) <= 2) {
@@ -480,7 +491,7 @@ gg_rfsrc.randomForest <- function(object,
       data.frame(cbind(prd))
     }
     colnames(gg_dta) <- object$classes
-    
+
     # Switch between logical or categorical outcome
     if (ncol(gg_dta) == 1) {
       # Force this to logical return value...
@@ -490,22 +501,21 @@ gg_rfsrc.randomForest <- function(object,
       gg_dta$y <- as.logical(as.numeric(object$yvar) - 1)
     } else {
       gg_dta$y <- object$y
-      
     }
-    
+
     # Handle the "by" argument.
-    if (!missing(by))
+    if (!missing(by)) {
       gg_dta$group <- grp
-    
+    }
   } else if (object$type == "regression") {
     gg_dta <- data.frame(cbind(object$predicted, object$y))
-    
+
     colnames(gg_dta) <- c("yhat", rsp)
-    
+
     # Handle the "by" argument.
-    if (!missing(by))
+    if (!missing(by)) {
       gg_dta$group <- grp
-    
+    }
   } else {
     stop(
       paste(
@@ -517,7 +527,7 @@ gg_rfsrc.randomForest <- function(object,
       )
     )
   }
-  
+
   class(gg_dta) <- c("gg_rfsrc", object$type, class(gg_dta))
   invisible(gg_dta)
 }

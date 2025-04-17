@@ -56,7 +56,7 @@
 #' # rfsrc_iris <- rfsrc(Species ~., data = iris)
 #' # partial_iris <- plot.variable(rfsrc_iris, xvar.names = "Petal.Width",
 #' #                            partial=TRUE)
-#' data(partial_iris, package="ggRandomForests")
+#' data(partial_iris, package = "ggRandomForests")
 #'
 #' gg_dta <- gg_partial(partial_iris)
 #' plot(gg_dta)
@@ -70,26 +70,26 @@
 #' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
 #' # partial_airq <- plot.variable(rfsrc_airq, xvar.names = "Wind",
 #' #                            partial=TRUE, show.plot=FALSE)
-#' data(partial_airq, package="ggRandomForests")
+#' data(partial_airq, package = "ggRandomForests")
 #'
 #' gg_dta <- gg_partial(partial_airq)
 #' plot(gg_dta)
 #'
 #' gg_dta.m <- gg_dta[["Month"]]
-#' plot(gg_dta.m, notch=TRUE)
+#' plot(gg_dta.m, notch = TRUE)
 #'
 #' gg_dta[["Month"]] <- NULL
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #'
 #' ## -------- Boston data
-#' data(partial_boston, package="ggRandomForests")
+#' data(partial_boston, package = "ggRandomForests")
 #'
 #' gg_dta <- gg_partial(partial_boston)
 #' plot(gg_dta)
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #'
 #' ## -------- mtcars data
-#' data(partial_mtcars, package="ggRandomForests")
+#' data(partial_mtcars, package = "ggRandomForests")
 #'
 #' gg_dta <- gg_partial(partial_mtcars)
 #'
@@ -99,11 +99,11 @@
 #' gg_dta.cat[["disp"]] <- gg_dta.cat[["wt"]] <- gg_dta.cat[["hp"]] <- NULL
 #' gg_dta.cat[["drat"]] <- gg_dta.cat[["carb"]] <- gg_dta.cat[["qsec"]] <- NULL
 #'
-#' plot(gg_dta.cat, panel=TRUE)
+#' plot(gg_dta.cat, panel = TRUE)
 #'
 #' gg_dta[["cyl"]] <- gg_dta[["vs"]] <- gg_dta[["am"]] <- NULL
 #' gg_dta[["gear"]] <- NULL
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #'
 #' ## ------------------------------------------------------------
 #' ## survival examples
@@ -120,37 +120,36 @@
 #' #                               partial = TRUE, time=30,
 #' #                               xvar.names = "age",
 #' #                               show.plots=FALSE)
-#' data(partial_veteran, package="ggRandomForests")
+#' data(partial_veteran, package = "ggRandomForests")
 #'
 #' gg_dta <- gg_partial(partial_veteran[[1]])
 #' plot(gg_dta)
 #'
 #' gg_dta.cat <- gg_dta
 #' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #'
 #' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
-#'     gg_dta.cat[["age"]] <- NULL
-#' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
+#'   gg_dta.cat[["age"]] <- NULL
+#' plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 #'
 #' gg_dta <- lapply(partial_veteran, gg_partial)
 #' length(gg_dta)
-#' gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]] )
+#' gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]])
 #'
 #' plot(gg_dta[["karno"]])
 #' plot(gg_dta[["celltype"]])
 #'
 #' gg_dta.cat <- gg_dta
 #' gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
-#' plot(gg_dta, panel=TRUE)
+#' plot(gg_dta, panel = TRUE)
 #'
 #' gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
-#'      gg_dta.cat[["age"]] <- NULL
-#' plot(gg_dta.cat, panel=TRUE, notch=TRUE)
+#'   gg_dta.cat[["age"]] <- NULL
+#' plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 #'
 #' ## -------- pbc data
 #' }
-#'
 #'
 #' @export
 plot.gg_partial_list <- function(x,
@@ -158,46 +157,48 @@ plot.gg_partial_list <- function(x,
                                  panel = FALSE,
                                  ...) {
   gg_dta <- x
-  
-  if (!inherits(gg_dta, "list"))
+
+  if (!inherits(gg_dta, "list")) {
     stop("Functions expects a list object")
-  
+  }
+
   lng <- length(gg_dta)
-  
+
   # One figure, with facets?
   if (panel) {
     # Go through each element of the list, and add the variable name column,
     # and rename the value column to "value"
     nms <- names(gg_dta)
-    
+
     cls <- sapply(nms, function(nm) {
       class(gg_dta[[nm]][, nm])
     })
-    
+
     gg_dta <- parallel::mclapply(nms, function(nm) {
       obj <- gg_dta[[nm]]
-      colnames(obj)[which(colnames(obj) == nm)]  <- "value"
+      colnames(obj)[which(colnames(obj) == nm)] <- "value"
       obj$variable <- nm
       obj
     })
-    
+
     gg_dta <- do.call(rbind, gg_dta)
     gg_dta$variable <- factor(gg_dta$variable, levels = unique(gg_dta$variable))
-    
+
     if (is.null(gg_dta$group)) {
       gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = "value", y = "yhat"))
-      
     } else {
-      gg_dta$group  <- factor(gg_dta$group, levels = unique(gg_dta$group))
-      gg_plt <- ggplot2::ggplot(gg_dta,
-                                ggplot2::aes(
-                                  x = "value",
-                                  y = "yhat",
-                                  color = "group",
-                                  shape = "group"
-                                ))
+      gg_dta$group <- factor(gg_dta$group, levels = unique(gg_dta$group))
+      gg_plt <- ggplot2::ggplot(
+        gg_dta,
+        ggplot2::aes(
+          x = "value",
+          y = "yhat",
+          color = "group",
+          shape = "group"
+        )
+      )
     }
-    
+
     if (sum(cls == "factor") == length(cls)) {
       gg_plt <- gg_plt +
         ggplot2::geom_boxplot(...)
@@ -211,15 +212,15 @@ plot.gg_partial_list <- function(x,
       }
     }
     return(gg_plt +
-             ggplot2::facet_wrap( ~ variable, scales = "free_x"))
+      ggplot2::facet_wrap(~variable, scales = "free_x"))
   } else {
     # OR a list of figures.
     gg_plt <- vector("list", length = lng)
-    
+
     for (ind in 1:lng) {
       gg_plt[[ind]] <- plot.gg_partial(gg_dta[[ind]], points, ...)
     }
-    
+
     return(gg_plt)
   }
 }

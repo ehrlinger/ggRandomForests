@@ -30,31 +30,36 @@
 #' @examples
 #' \dontrun{
 #' # These get run through the gg_survival examples.
-#' data(pbc, package="randomForestSRC")
-#' pbc$time <- pbc$days/364.25
+#' data(pbc, package = "randomForestSRC")
+#' pbc$time <- pbc$days / 364.25
 #'
 #' # This is the same as gg_survival
-#' gg_dta <- nelson(interval="time", censor="status",
-#'                      data=pbc)
+#' gg_dta <- nelson(
+#'   interval = "time", censor = "status",
+#'   data = pbc
+#' )
 #'
-#' plot(gg_dta, error="none")
+#' plot(gg_dta, error = "none")
 #' plot(gg_dta)
 #'
 #' # Stratified on treatment variable.
-#' gg_dta <- gg_survival(interval="time", censor="status",
-#'                      data=pbc, by="treatment")
+#' gg_dta <- gg_survival(
+#'   interval = "time", censor = "status",
+#'   data = pbc, by = "treatment"
+#' )
 #'
-#' plot(gg_dta, error="none")
-#' plot(gg_dta, error="lines")
+#' plot(gg_dta, error = "none")
+#' plot(gg_dta, error = "lines")
 #' plot(gg_dta)
 #'
-#' gg_dta <- gg_survival(interval="time", censor="status",
-#'                      data=pbc, by="treatment",
-#'                      type="nelson")
+#' gg_dta <- gg_survival(
+#'   interval = "time", censor = "status",
+#'   data = pbc, by = "treatment",
+#'   type = "nelson"
+#' )
 #'
-#' plot(gg_dta, error="bars")
+#' plot(gg_dta, error = "bars")
 #' plot(gg_dta)
-#'
 #' }
 #' @export
 nelson <-
@@ -66,9 +71,10 @@ nelson <-
            ...) {
     # Set weighting for non-events to a value of 0
     # Set up weights (severity of event)
-    if (!is.null(weight))
+    if (!is.null(weight)) {
       weight <- data[[censor]] * weight
-    
+    }
+
     # Kaplan-Meier analysis
     # srv is required!
     srv <-
@@ -80,21 +86,22 @@ nelson <-
         survival::survfit(srv ~ survival::strata(data[[by]]), ...)
     }
     #
-    #**********************************************************;
+    #********************************************************** ;
     #* Cumulative hazard and hazard estimates from transforms and slopes
     #* as well as integral of survivorship and proportionate life length
     hazard <- srv_tab$n.event / srv_tab$n.risk
     cum_hazard <- vector()
-    for (i in seq_len(length(hazard)))
+    for (i in seq_len(length(hazard))) {
       cum_hazard[i] <- sum(hazard[1:i])
+    }
     cum_hazard <- c(cum_hazard, cum_hazard[length(cum_hazard)])
     cum_hazard <- -log(srv_tab$surv)
-    
+
     times <- order(data[[interval]])
     delta_time <- sapply(2:length(times), function(ind) {
       times[ind] - times[ind - 1]
     })
-    
+
     # Still need to add hazard and density.
     tbl <- data.frame(
       cbind(
@@ -109,38 +116,38 @@ nelson <-
         cum_haz = cum_hazard
       )
     )
-    
+
     # Add group labels when stratifying data.
     if (!is.null(by)) {
       tm_splits <- which(c(FALSE, sapply(2:nrow(tbl), function(ind) {
         tbl$time[ind] < tbl$time[ind - 1]
       })))
-      
+
       lbls <- unique(data[[by]])
       tbl$groups <- lbls[1]
-      
+
       for (ind in 2:(length(tm_splits) + 1)) {
         tbl$groups[tm_splits[ind - 1]:nrow(tbl)] <- lbls[ind]
       }
     }
-    
-    #, "hazard", "density")
-    #**************************************************************;
+
+    # , "hazard", "density")
+    #************************************************************** ;
     # Summarize the various strata only look at events
     gg_dta <- tbl[which(tbl[["dead"]] != 0), ]
-    
+
     # Calculate the hazard estimates from transforms and slopes
     # as well as integral of survivorship and proportionate life length
     lag_surv <- c(1, gg_dta$surv)[-(dim(gg_dta)[1] + 1)]
     lag_time <- c(0, gg_dta$time)[-(dim(gg_dta)[1] + 1)]
-    
+
     delta_t <- gg_dta$time - lag_time
     hzrd <- log(lag_surv / gg_dta$surv) / delta_t
-    
+
     dnsty <- (lag_surv - gg_dta$surv) / delta_t
     mid_int <- (gg_dta$time + lag_time) / 2
     lag_l <- 0
-    
+
     life <- vector("numeric", length = dim(gg_dta)[1])
     for (ind in seq_len(dim(gg_dta)[1])) {
       life[ind] <-
@@ -158,7 +165,7 @@ nelson <-
         proplife = prp_life
       )
     )
-    
+
     class(gg_dta) <- c("gg_survival", class(gg_dta))
     invisible(gg_dta)
   }
