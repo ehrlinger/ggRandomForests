@@ -71,7 +71,7 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## ------------- airq data
 #' rfsrc_airq <- rfsrc(Ozone ~ .,
 #'   data = airquality,
@@ -83,7 +83,7 @@
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
-#' }
+#' 
 #'
 #' ## ------------- Boston data
 #' data(Boston, package = "MASS")
@@ -102,17 +102,17 @@
 #' # Plot the gg_error object
 #' plot(gg_dta)
 #'
-#' \dontrun{
+#' 
 #' ## ------------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
-#' }
+#' 
 
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_error(rfsrc_mtcars)
 #'
 #' # Plot the gg_error object
 #' plot(gg_dta)
-#' }
+#' 
 #'
 #' ## ------------------------------------------------------------
 #' ## Survival example

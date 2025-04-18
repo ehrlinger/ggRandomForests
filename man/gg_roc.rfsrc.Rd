@@ -31,32 +31,31 @@ The sensitivity and specificity of a randomForest classification object.
 rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 
 # ROC for setosa
-gg_dta <- gg_roc(rfsrc_iris, which_outcome=1)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)
 plot(gg_dta)
 
 # ROC for versicolor
-gg_dta <- gg_roc(rfsrc_iris, which_outcome=2)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome = 2)
 plot(gg_dta)
 
 # ROC for virginica
-gg_dta <- gg_roc(rfsrc_iris, which_outcome=3)
+gg_dta <- gg_roc(rfsrc_iris, which_outcome = 3)
 plot(gg_dta)
 
 ## -------- iris data
 rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
 
 # ROC for setosa
-gg_dta <- gg_roc(rf_iris, which_outcome=1)
+gg_dta <- gg_roc(rf_iris, which_outcome = 1)
 plot(gg_dta)
 
 # ROC for versicolor
-gg_dta <- gg_roc(rf_iris, which_outcome=2)
+gg_dta <- gg_roc(rf_iris, which_outcome = 2)
 plot(gg_dta)
 
 # ROC for virginica
-gg_dta <- gg_roc(rf_iris, which_outcome=3)
+gg_dta <- gg_roc(rf_iris, which_outcome = 3)
 plot(gg_dta)
-
 
 }
 \seealso{

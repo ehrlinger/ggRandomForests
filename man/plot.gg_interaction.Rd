@@ -8,7 +8,7 @@ Plot a \code{\link{gg_interaction}} object,}
 \method{plot}{gg_interaction}(x, xvar, lbls, ...)
 }
 \arguments{
-\item{x}{gg_interaction object created from a 
+\item{x}{gg_interaction object created from a
 \code{\link[randomForestSRC]{rfsrc}} object}
 
 \item{xvar}{variable (or list of variables) of interest.}
@@ -35,12 +35,12 @@ Plot a \code{\link{gg_interaction}} object,
 ## TODO: VIMP interactions not handled yet....
 ## find.interaction(iris.obj, method = "vimp", nrep = 3)
 ## interaction_iris <- find.interaction(iris.obj)
-data(interaction_iris, package="ggRandomForests")
+data(interaction_iris, package = "ggRandomForests")
 gg_dta <- gg_interaction(interaction_iris)
 
-plot(gg_dta, xvar="Petal.Width")
-plot(gg_dta, xvar="Petal.Length")
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, xvar = "Petal.Width")
+plot(gg_dta, xvar = "Petal.Length")
+plot(gg_dta, panel = TRUE)
 
 ## ------------------------------------------------------------
 ## find interactions, regression setting
@@ -51,24 +51,24 @@ plot(gg_dta, panel=TRUE)
 ## TODO: VIMP interactions not handled yet....
 ## find.interaction(airq.obj, method = "vimp", nrep = 3)
 ## interaction_airq <- find.interaction(airq.obj)
-data(interaction_airq, package="ggRandomForests")
+data(interaction_airq, package = "ggRandomForests")
 gg_dta <- gg_interaction(interaction_airq)
 
-plot(gg_dta, xvar="Temp")
-plot(gg_dta, xvar="Solar.R")
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, xvar = "Temp")
+plot(gg_dta, xvar = "Solar.R")
+plot(gg_dta, panel = TRUE)
 
 ## -------- Boston data
-data(interaction_boston, package="ggRandomForests")
+data(interaction_boston, package = "ggRandomForests")
 gg_dta <- gg_interaction(interaction_boston)
 
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, panel = TRUE)
 
 ## -------- mtcars data
-data(interaction_mtcars, package="ggRandomForests")
+data(interaction_mtcars, package = "ggRandomForests")
 gg_dta <- gg_interaction(interaction_mtcars)
 
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, panel = TRUE)
 
 ## ------------------------------------------------------------
 ## find interactions, survival setting
@@ -77,19 +77,18 @@ plot(gg_dta, panel=TRUE)
 ## data(pbc, package = "randomForestSRC")
 ## pbc.obj <- rfsrc(Surv(days,status) ~ ., pbc, nsplit = 10)
 ## interaction_pbc <- find.interaction(pbc.obj, nvar = 8)
-data(interaction_pbc, package="ggRandomForests")
+data(interaction_pbc, package = "ggRandomForests")
 gg_dta <- gg_interaction(interaction_pbc)
 
-plot(gg_dta, xvar="bili")
-plot(gg_dta, xvar="copper")
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, xvar = "bili")
+plot(gg_dta, xvar = "copper")
+plot(gg_dta, panel = TRUE)
 
 ## -------- veteran data
-data(interaction_veteran, package="ggRandomForests")
+data(interaction_veteran, package = "ggRandomForests")
 gg_dta <- gg_interaction(interaction_veteran)
 
-plot(gg_dta, panel=TRUE)
-
+plot(gg_dta, panel = TRUE)
 }
 
 }
@@ -105,7 +104,7 @@ Regression and Classification (RF-SRC), R package version 1.4.
 \seealso{
 \code{\link[randomForestSRC]{rfsrc}}
 \code{\link[randomForestSRC]{find.interaction}}
-\code{\link[randomForestSRC]{max.subtree}} 
+\code{\link[randomForestSRC]{max.subtree}}
 \code{\link[randomForestSRC]{var.select}}
 \code{\link[randomForestSRC]{vimp}}
 \code{\link{plot.gg_interaction}}

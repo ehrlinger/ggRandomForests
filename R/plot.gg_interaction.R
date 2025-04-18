@@ -157,9 +157,10 @@ plot.gg_interaction <- function(x, xvar, lbls, ...) {
       levels = unique(gg_dta$names)
     )
     gg_plt <- ggplot2::ggplot(gg_dta) +
-      ggplot2::geom_point(ggplot2::aes(x = "names", y = "value")) +
+      ggplot2::geom_point(ggplot2::aes(x = .data[["names"]], 
+                                       y = .data[["value"]])) +
       ggplot2::geom_point(
-        ggplot2::aes(x = "names", y = "value"),
+        ggplot2::aes(x = .data[["names"]], y = .data[["value"]]),
         data = gg_dta[which(as.character(gg_dta$names) == gg_dta$variable), ],
         shape = 3,
         size = 5,
@@ -197,9 +198,10 @@ plot.gg_interaction <- function(x, xvar, lbls, ...) {
       levels = unique(gg_dta$names)
     )
     gg_plt <- ggplot2::ggplot(gg_dta) +
-      ggplot2::geom_point(ggplot2::aes(x = "names", y = "dpth")) +
+      ggplot2::geom_point(ggplot2::aes(x = .data[["names"]], 
+                                       y = .data[["dpth"]])) +
       ggplot2::geom_point(
-        ggplot2::aes(x = "names", y = "dpth"),
+        ggplot2::aes(x = .data[["names"]], y = .data[["dpth"]]),
         data = gg_dta[which(rownames(gg_dta) == xvar), ],
         shape = 3,
         size = 5,

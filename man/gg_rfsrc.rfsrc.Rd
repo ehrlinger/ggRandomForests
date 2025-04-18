@@ -102,7 +102,7 @@ plot(gg_dta)
 ## -------- pbc data
 ## We don't run this because of bootstrap confidence limits
 # We need to create this dataset
-data(pbc, package = "randomForestSRC",) 
+data(pbc, package = "randomForestSRC",)
 # For whatever reason, the age variable is in days... makes no sense to me
 #Convert age to years
 pbc$age <- pbc$age / 364.24

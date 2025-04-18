@@ -42,9 +42,9 @@
 #' @importFrom parallel mclapply
 #'
 #' @examples
-#' \dontrun{
+#' 
 #' # We need to create this dataset
-#' data(pbc, package = "randomForestSRC", )
+#' data(pbc, package="survival")
 #' # For whatever reason, the age variable is in days... makes no sense to me
 #' for (ind in seq_len(dim(pbc)[2])) {
 #'   if (!is.factor(pbc[, ind])) {
@@ -67,21 +67,17 @@
 #'     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
 #'     pbc[, ind] <- factor(pbc[, ind])
 #'   }
-#' }
-#' # Convert age to years
-#' pbc$age <- pbc$age / 364.24
-#'
-#' pbc$years <- pbc$days / 364.24
+#' 
 #' pbc <- pbc[, -which(colnames(pbc) == "days")]
-#' pbc$treatment <- as.numeric(pbc$treatment)
-#' pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
-#' pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
-#' pbc$treatment <- factor(pbc$treatment)
+#' pbc$trt <- as.numeric(pbc$trt)
+#' pbc$trt[which(pbc$trt == 1)] <- "DPCA"
+#' pbc$trt[which(pbc$trt == 2)] <- "placebo"
+#' pbc$trt <- factor(pbc$trt)
 #' }
 
-#' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+#' dta_train <- pbc[-which(is.na(pbc$trt)), ]
 #' # Create a test set from the remaining patients
-#' pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+#' pbc_test <- pbc[which(is.na(pbc$trt)), ]
 #'
 #' #========
 #' # build the forest:
@@ -141,7 +137,6 @@
 #' }
 #' plot(ggpart, panel=TRUE)
 #'
-#' }
 #' @export
 combine.gg_partial <- function(x, y, lbls, ...) {
   return(combine.gg_partial_list(x, y, lbls, ...))

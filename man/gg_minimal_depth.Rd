@@ -50,12 +50,14 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 \dontrun{
 ## -------- air quality data
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, 
-                    na.action = "na.impute")
+rfsrc_airq <- rfsrc(Ozone ~ .,
+  data = airquality,
+  na.action = "na.impute"
+)
 varsel_airq <- var.select(rfsrc_airq)
 
 # Get a data.frame containing error rates
-gg_dta<- gg_minimal_depth(varsel_airq)
+gg_dta <- gg_minimal_depth(varsel_airq)
 
 # Plot the gg_minimal_depth object
 plot(gg_dta)
@@ -66,12 +68,13 @@ plot(gg_dta)
 data(Boston, package = "MASS")
 Boston$chas <- as.logical(Boston$chas)
 rfsrc_boston <- rfsrc(medv ~ .,
-   data = Boston,
-   forest = TRUE,
-   importance = TRUE,
-   tree.err = TRUE,
-   save.memory = TRUE)
-   
+  data = Boston,
+  forest = TRUE,
+  importance = TRUE,
+  tree.err = TRUE,
+  save.memory = TRUE
+)
+
 varsel_boston <- var.select(rfsrc_boston)
 
 # Get a data.frame containing error rates
@@ -104,31 +107,31 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## -------- pbc data
 # We need to create this dataset
-data(pbc, package = "randomForestSRC",) 
+data(pbc, package = "randomForestSRC", )
 # For whatever reason, the age variable is in days... makes no sense to me
 for (ind in seq_len(dim(pbc)[2])) {
- if (!is.factor(pbc[, ind])) {
-   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-     if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-       pbc[, ind] <- as.logical(pbc[, ind])
-     }
-   }
- } else {
-   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-     if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-       pbc[, ind] <- as.logical(pbc[, ind])
-     }
-     if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-       pbc[, ind] <- as.logical(pbc[, ind])
-     }
-   }
- }
- if (!is.logical(pbc[, ind]) &
-     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-   pbc[, ind] <- factor(pbc[, ind])
- }
+  if (!is.factor(pbc[, ind])) {
+    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+    }
+  } else {
+    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+    }
+  }
+  if (!is.logical(pbc[, ind]) &
+    length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+    pbc[, ind] <- factor(pbc[, ind])
+  }
 }
-#Convert age to years
+# Convert age to years
 pbc$age <- pbc$age / 364.24
 
 pbc$years <- pbc$days / 364.24
@@ -141,16 +144,16 @@ dta_train <- pbc[-which(is.na(pbc$treatment)), ]
 # Create a test set from the remaining patients
 pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 
-#========
+# ========
 # build the forest:
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(years, status) ~ .,
- dta_train,
- nsplit = 10,
- na.action = "na.impute",
- forest = TRUE,
- importance = TRUE,
- save.memory = TRUE
+  dta_train,
+  nsplit = 10,
+  na.action = "na.impute",
+  forest = TRUE,
+  importance = TRUE,
+  save.memory = TRUE
 )
 
 varsel_pbc <- var.select(rfsrc_pbc)

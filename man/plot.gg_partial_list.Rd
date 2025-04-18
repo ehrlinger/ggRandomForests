@@ -39,7 +39,7 @@ the \code{gg_partial_list} object).
 # rfsrc_iris <- rfsrc(Species ~., data = iris)
 # partial_iris <- plot.variable(rfsrc_iris, xvar.names = "Petal.Width",
 #                            partial=TRUE)
-data(partial_iris, package="ggRandomForests")
+data(partial_iris, package = "ggRandomForests")
 
 gg_dta <- gg_partial(partial_iris)
 plot(gg_dta)
@@ -53,26 +53,26 @@ plot(gg_dta)
 # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
 # partial_airq <- plot.variable(rfsrc_airq, xvar.names = "Wind",
 #                            partial=TRUE, show.plot=FALSE)
-data(partial_airq, package="ggRandomForests")
+data(partial_airq, package = "ggRandomForests")
 
 gg_dta <- gg_partial(partial_airq)
 plot(gg_dta)
 
 gg_dta.m <- gg_dta[["Month"]]
-plot(gg_dta.m, notch=TRUE)
+plot(gg_dta.m, notch = TRUE)
 
 gg_dta[["Month"]] <- NULL
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, panel = TRUE)
 
 ## -------- Boston data
-data(partial_boston, package="ggRandomForests")
+data(partial_boston, package = "ggRandomForests")
 
 gg_dta <- gg_partial(partial_boston)
 plot(gg_dta)
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, panel = TRUE)
 
 ## -------- mtcars data
-data(partial_mtcars, package="ggRandomForests")
+data(partial_mtcars, package = "ggRandomForests")
 
 gg_dta <- gg_partial(partial_mtcars)
 
@@ -82,11 +82,11 @@ gg_dta.cat <- gg_dta
 gg_dta.cat[["disp"]] <- gg_dta.cat[["wt"]] <- gg_dta.cat[["hp"]] <- NULL
 gg_dta.cat[["drat"]] <- gg_dta.cat[["carb"]] <- gg_dta.cat[["qsec"]] <- NULL
 
-plot(gg_dta.cat, panel=TRUE)
+plot(gg_dta.cat, panel = TRUE)
 
 gg_dta[["cyl"]] <- gg_dta[["vs"]] <- gg_dta[["am"]] <- NULL
 gg_dta[["gear"]] <- NULL
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, panel = TRUE)
 
 ## ------------------------------------------------------------
 ## survival examples
@@ -103,37 +103,36 @@ plot(gg_dta, panel=TRUE)
 #                               partial = TRUE, time=30,
 #                               xvar.names = "age",
 #                               show.plots=FALSE)
-data(partial_veteran, package="ggRandomForests")
+data(partial_veteran, package = "ggRandomForests")
 
 gg_dta <- gg_partial(partial_veteran[[1]])
 plot(gg_dta)
 
 gg_dta.cat <- gg_dta
 gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, panel = TRUE)
 
 gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
-    gg_dta.cat[["age"]] <- NULL
-plot(gg_dta.cat, panel=TRUE, notch=TRUE)
+  gg_dta.cat[["age"]] <- NULL
+plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 
 gg_dta <- lapply(partial_veteran, gg_partial)
 length(gg_dta)
-gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]] )
+gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]])
 
 plot(gg_dta[["karno"]])
 plot(gg_dta[["celltype"]])
 
 gg_dta.cat <- gg_dta
 gg_dta[["celltype"]] <- gg_dta[["trt"]] <- gg_dta[["prior"]] <- NULL
-plot(gg_dta, panel=TRUE)
+plot(gg_dta, panel = TRUE)
 
 gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
-     gg_dta.cat[["age"]] <- NULL
-plot(gg_dta.cat, panel=TRUE, notch=TRUE)
+  gg_dta.cat[["age"]] <- NULL
+plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 
 ## -------- pbc data
 }
-
 
 }
 \references{

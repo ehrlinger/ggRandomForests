@@ -40,15 +40,19 @@ not intended for use by the end user.
 rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 
 gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
-     which_outcome=1, oob=TRUE)
+  which_outcome = 1, oob = TRUE
+)
 gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
-     which_outcome=1, oob=FALSE)
+  which_outcome = 1, oob = FALSE
+)
 
 rf_iris <- randomForest(Species ~ ., data = iris)
 gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
-     which_outcome=1)
+  which_outcome = 1
+)
 gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
-     which_outcome=2)
+  which_outcome = 2
+)
 
 }
 \seealso{

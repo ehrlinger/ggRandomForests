@@ -32,7 +32,7 @@ Plot a \code{\link{gg_vimp}} object, extracted variable importance of a
 ## ------------------------------------------------------------
 ## -------- iris data
 # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-data(rfsrc_iris, package="ggRandomForests")
+data(rfsrc_iris, package = "ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
 
@@ -41,17 +41,17 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## -------- air quality data
 # rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
-data(rfsrc_airq, package="ggRandomForests")
+data(rfsrc_airq, package = "ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_airq)
 plot(gg_dta)
 
 ## -------- Boston data
-data(rfsrc_boston, package="ggRandomForests")
+data(rfsrc_boston, package = "ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_boston)
 plot(gg_dta)
 
 ## -------- mtcars data
-data(rfsrc_mtcars, package="ggRandomForests")
+data(rfsrc_mtcars, package = "ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_mtcars)
 plot(gg_dta)
 
@@ -59,15 +59,14 @@ plot(gg_dta)
 ## survival example
 ## ------------------------------------------------------------
 ## -------- veteran data
-data(rfsrc_veteran, package="ggRandomForests")
+data(rfsrc_veteran, package = "ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_veteran)
 plot(gg_dta)
 
 ## -------- pbc data
-data(rfsrc_pbc, package="ggRandomForests")
+data(rfsrc_pbc, package = "ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_pbc)
 plot(gg_dta)
-
 }
 
 }

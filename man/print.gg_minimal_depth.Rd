@@ -36,7 +36,7 @@ varsel_airq <- var.select(rfsrc_airq)
 
 
 # Get a data.frame containing minimaldepth measures
-gg_dta<- gg_minimal_depth(varsel_airq)
+gg_dta <- gg_minimal_depth(varsel_airq)
 print(gg_dta)
 
 # To nicely print a rfsrc::var.select output...
@@ -44,13 +44,13 @@ print(varsel_airq)
 
 
 # ... or load a cached randomForestSRC object
-data(Boston, package="MASS")
-rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
+data(Boston, package = "MASS")
+rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
 
 varsel_boston <- var.select(rfsrc_boston)
 
 # Get a data.frame containing minimaldepth measures
-gg_dta<- gg_minimal_depth(varsel_boston)
+gg_dta <- gg_minimal_depth(varsel_boston)
 print(gg_dta)
 
 # To nicely print a rfsrc::var.select output...

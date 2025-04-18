@@ -26,15 +26,15 @@ The output can be passed directly into the breaks argument of the
 \code{cut} function for creating groups for coplots.
 }
 \examples{
-data(Boston, package="MASS")
-rfsrc_boston <- randomForestSRC::rfsrc(medv~., Boston)
+data(Boston, package = "MASS")
+rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
 
 # To create 6 intervals, we want 7 points.
 # quantile_pts will find balanced intervals
-rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups=6, intervals=TRUE)
+rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups = 6, intervals = TRUE)
 
 # Use cut to create the intervals
-rm_grp <- cut(rfsrc_boston$xvar$rm, breaks=rm_pts)
+rm_grp <- cut(rfsrc_boston$xvar$rm, breaks = rm_pts)
 
 summary(rm_grp)
 
