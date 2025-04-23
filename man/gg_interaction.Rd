@@ -47,7 +47,6 @@ plot(gg_dta, panel = TRUE)
 ## ------------------------------------------------------------
 ## find interactions, regression setting
 ## ------------------------------------------------------------
-\dontrun{
 ## -------- air quality data
 airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 ##
@@ -61,8 +60,7 @@ plot(gg_dta, xvar = "Temp")
 plot(gg_dta, xvar = "Solar.R")
 
 plot(gg_dta, panel = TRUE)
-}
-\dontrun{
+
 ## -------- Boston data
 data(Boston, package = "MASS")
 Boston$chas <- as.logical(Boston$chas)
@@ -79,8 +77,7 @@ interaction_boston <- find.interaction(rfsrc_boston)
 gg_dta <- gg_interaction(interaction_boston)
 
 plot(gg_dta, panel = TRUE)
-}
-\dontrun{
+
 ## -------- mtcars data
 rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 
@@ -89,8 +86,7 @@ interaction_mtcars <- find.interaction(rfsrc_mtcars)
 gg_dta <- gg_interaction(interaction_mtcars)
 
 plot(gg_dta, panel = TRUE)
-}
-\dontrun{
+
 ## ------------------------------------------------------------
 ## find interactions, survival setting
 ## ------------- veteran data
@@ -161,7 +157,6 @@ gg_dta <- gg_interaction(interaction_pbc)
 
 plot(gg_dta, xvar = "bili")
 plot(gg_dta, panel = TRUE)
-}
 
 }
 \references{

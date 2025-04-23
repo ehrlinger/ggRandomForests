@@ -26,7 +26,6 @@
 #' @return \code{ggplot} object
 #'
 #' @examples
-#' \dontrun{
 #' ## -------- pbc data
 #' data(pbc, package = "randomForestSRC")
 #' pbc$time <- pbc$days / 364.25
@@ -67,7 +66,6 @@
 #'
 #' plot(gg_dta, error = "lines")
 #' plot(gg_dta, label = "sex", error = "lines")
-#' }
 #'
 #' @export
 ### Survival plots
@@ -96,11 +94,11 @@ plot.gg_survival <- function(x,
   # Create the figure skeleton,
   if (is.null(gg_dta$groups)) {
     gg_plt <- ggplot2::ggplot(gg_dta) +
-      ggplot2::geom_step(ggplot2::aes(x = "time", y = type), ...)
+      ggplot2::geom_step(ggplot2::aes(x = .data$time, y = .data$type), ...)
   } else {
     gg_dta$groups <- factor(gg_dta$groups)
     gg_plt <- ggplot2::ggplot(gg_dta) +
-      ggplot2::geom_step(ggplot2::aes(x = "time", y = type, color = "groups"), ...)
+      ggplot2::geom_step(ggplot2::aes(x = .data$time, y = .data$type, color = .data$groups), ...)
     if (!is.null(label)) {
       gg_plt <- gg_plt +
         ggplot2::labs(color = label, fill = label)
@@ -114,9 +112,9 @@ plot.gg_survival <- function(x,
         shade = gg_plt +
           ggplot2::geom_ribbon(
             ggplot2::aes(
-              x = "time",
-              ymax = "upper",
-              ymin = "lower"
+              x = .data$time,
+              ymax = .data$upper,
+              ymin = .data$lower
             ),
             alpha = .3
           ),
@@ -126,14 +124,14 @@ plot.gg_survival <- function(x,
           # requesting error bars, or this will get really messy.
           gg_plt +
             ggplot2::geom_errorbar(ggplot2::aes(
-              x = "time",
-              ymax = "upper",
-              ymin = "lower"
+              x = .data$time,
+              ymax = .data$upper,
+              ymin = .data$lower
             ))
         },
         lines = gg_plt +
-          ggplot2::geom_step(ggplot2::aes(x = "time", y = "upper"), linetype = 2) +
-          ggplot2::geom_step(ggplot2::aes(x = "time", y = "lower"), linetype = 2),
+          ggplot2::geom_step(ggplot2::aes(x = .data$time, y = .data$upper), linetype = 2) +
+          ggplot2::geom_step(ggplot2::aes(x = .data$time, y = .data$lower), linetype = 2),
         none = gg_plt
       )
     } else {
@@ -142,11 +140,11 @@ plot.gg_survival <- function(x,
         shade = gg_plt +
           ggplot2::geom_ribbon(
             ggplot2::aes(
-              x = "time",
-              ymax = "upper",
-              ymin = "lower",
-              fill = "groups",
-              color = "groups"
+              x = .data$time,
+              ymax = .data$upper,
+              ymin = .data$lower,
+              fill = .data$groups,
+              color = .data$groups
             ),
             alpha = .3
           ),
@@ -156,19 +154,19 @@ plot.gg_survival <- function(x,
           # requesting error bars, or this will get really messy.
           gg_plt +
             ggplot2::geom_errorbar(ggplot2::aes(
-              x = "time",
-              ymax = "upper",
-              ymin = "lower",
-              color = "groups"
+              x = .data$time,
+              ymax = .data$upper,
+              ymin = .data$lower,
+              color = .data$groups
             ))
         },
         lines = gg_plt +
           ggplot2::geom_step(
-            ggplot2::aes(x = "time", y = "upper", color = "groups"),
+            ggplot2::aes(x = .data$time, y = .data$upper, color = .data$groups),
             linetype = 2
           ) +
           ggplot2::geom_step(
-            ggplot2::aes(x = "time", y = "lower", color = "groups"),
+            ggplot2::aes(x = .data$time, y = .data$lower, color = .data$groups),
             linetype = 2
           ),
         none = gg_plt

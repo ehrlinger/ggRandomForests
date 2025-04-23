@@ -46,7 +46,11 @@
 #' ## ------------------------------------------------------------
 #' ## ------------- iris data
 #' ## You can build a randomForest
-#' rfsrc_iris <- rfsrc(Species ~ ., data = iris, tree.err = TRUE)
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris,
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   tree.err = TRUE,
+#'   save.memory = TRUE)
 #'
 #' # Get a data.frame containing error rates
 #' gg_dta <- gg_error(rfsrc_iris)
@@ -57,7 +61,10 @@
 #' ## RandomForest example
 #' rf_iris <- randomForest::randomForest(Species ~ .,
 #'   data = iris,
+#'   forest = TRUE,
+#'   importance = TRUE,
 #'   tree.err = TRUE,
+#'   save.memory = TRUE
 #' )
 #' gg_dta <- gg_error(rf_iris)
 #' plot(gg_dta)
@@ -70,7 +77,11 @@
 #' ## ------------- airq data
 #' rfsrc_airq <- rfsrc(Ozone ~ .,
 #'   data = airquality,
-#'   na.action = "na.impute", tree.err = TRUE,
+#'   na.action = "na.impute", 
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   tree.err = TRUE,
+#'   save.memory = TRUE
 #' )
 #'
 #' # Get a data.frame containing error rates
@@ -98,7 +109,11 @@
 #' plot(gg_dta)
 #'
 #' ## ------------- mtcars data
-#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
+#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars,
+#'   importance = TRUE,
+#'   save.memory = TRUE,
+#'   forest = TRUE,
+#'   tree.err = TRUE)
 #'
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_error(rfsrc_mtcars)

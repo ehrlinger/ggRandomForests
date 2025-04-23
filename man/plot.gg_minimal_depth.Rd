@@ -28,7 +28,6 @@ Plot a \code{\link{gg_minimal_depth}} object for random forest variable
 ranking.
 }
 \examples{
-\dontrun{
 ## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
@@ -66,7 +65,6 @@ plot(gg_minimal_depth(varsel_boston))
 ## -------- mtcars data
 rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 varsel_mtcars <- var.select(rfsrc_mtcars)
-
 
 # Get a data.frame containing error rates
 plot.gg_minimal_depth(varsel_mtcars)
@@ -138,7 +136,7 @@ varsel_pbc <- var.select(rfsrc_pbc)
 
 gg_dta <- gg_minimal_depth(varsel_pbc)
 plot(gg_dta)
-}
+
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

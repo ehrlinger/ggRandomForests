@@ -27,7 +27,6 @@ The function plots the \code{\link[randomForestSRC]{rfsrc}} response variable
  \code{\link{gg_partial}} object).
 }
 \examples{
-\dontrun{
 ## ------------------------------------------------------------
 ## classification
 ## ------------------------------------------------------------
@@ -132,7 +131,7 @@ gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
 plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 
 ## -------- pbc data
-}
+
 
 }
 \references{

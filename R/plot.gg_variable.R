@@ -37,6 +37,7 @@
 #' and Classification (RF-SRC), R package version 1.4.
 #'
 #'
+#' @importFrom ggplot2 .data
 #' @examples
 #' \dontrun{
 #' ## ------------------------------------------------------------
@@ -253,16 +254,16 @@ plot.gg_variable <- function(x,
         gg_plt <- ggplot2::ggplot(
           gg_dta_mlt,
           ggplot2::aes(
-            x = "value",
-            y = "yhat",
-            color = "event",
-            shape = "event"
+            x = .data$value,
+            y = .data$yhat,
+            color = .data$event,
+            shape = .data$event
           )
         )
       } else {
         gg_plt <- ggplot2::ggplot(
           gg_dta_mlt,
-          ggplot2::aes(x = "value", y = "yhat")
+          ggplot2::aes(x = .data$value, y = .data$yhat)
         )
       }
       # If these are all continuous...
@@ -291,17 +292,17 @@ plot.gg_variable <- function(x,
 
         gg_plt <- gg_plt +
           ggplot2::geom_boxplot(
-            ggplot2::aes(x = "value", y = "yhat"),
+            ggplot2::aes(x = .data$value, y = .data$yhat),
             color = "grey",
             ...,
             outlier.shape = NA
           ) +
           ggplot2::geom_jitter(
             ggplot2::aes(
-              x = "value",
-              y = "yhat",
-              color = "event",
-              shape = "event"
+              x = .data$value,
+              y = .data$yhat,
+              color = .data$event,
+              shape = .data$event
             ),
             ...
           )
@@ -358,17 +359,17 @@ plot.gg_variable <- function(x,
             ggplot2::ggplot(
               gg_dta_mlt,
               ggplot2::aes(
-                x = "value",
-                y = "yhat",
-                color = "yvar",
-                shape = "yvar"
+                x = .data$value,
+                y = .data$yhat,
+                color = .data$yvar,
+                shape = .data$yvar
               )
             ) +
             ggplot2::geom_point(...)
         } else {
           gg_plt <- ggplot2::ggplot(
             gg_dta_mlt,
-            ggplot2::aes(x = "value", y = "yhat")
+            ggplot2::aes(x = .data$value, y = .data$yhat)
           ) +
             ggplot2::geom_point(...)
         }
@@ -384,16 +385,16 @@ plot.gg_variable <- function(x,
             ggplot2::ggplot(
               gg_dta_mlt,
               ggplot2::aes(
-                x = "value",
-                y = "yhat",
-                color = "yvar"
+                x = .data$value,
+                y = .data$yhat,
+                color = .data$yvar
               )
             ) +
             ggplot2::geom_boxplot(...)
         } else {
           gg_plt <- ggplot2::ggplot(
             gg_dta_mlt,
-            ggplot2::aes(x = "value", y = "yhat")
+            ggplot2::aes(x = .data$value, y = .data$yhat)
           ) +
             ggplot2::geom_boxplot(...)
         }
@@ -402,13 +403,13 @@ plot.gg_variable <- function(x,
         if (points) {
           gg_plt <- ggplot2::ggplot(
             gg_dta_mlt,
-            ggplot2::aes(x = "value", y = "yhat")
+            ggplot2::aes(x = .data$value, y = .data$yhat)
           ) +
             ggplot2::geom_point(...)
         } else {
           gg_plt <- ggplot2::ggplot(
             gg_dta_mlt,
-            ggplot2::aes(x = "value", y = "yhat")
+            ggplot2::aes(x = .data$value, y = .data$yhat)
           ) +
             ggplot2::geom_smooth(...)
         }
@@ -444,35 +445,35 @@ plot.gg_variable <- function(x,
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_point(
                 ggplot2::aes(
-                  x = "var",
-                  y = "yhat",
-                  color = "event",
-                  shape = "event"
+                  x = .data$var,
+                  y = .data$yhat,
+                  color = .data$event,
+                  shape = .data$event
                 ),
                 ...
               )
           } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              ggplot2::geom_smooth(ggplot2::aes(x = "var", y = "yhat"), ...)
+              ggplot2::geom_smooth(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
           }
           if (smooth) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              ggplot2::geom_smooth(ggplot2::aes(x = "var", y = "yhat"), ...)
+              ggplot2::geom_smooth(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
           }
         } else {
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::geom_boxplot(
-              ggplot2::aes(x = "var", y = "yhat"),
+              ggplot2::aes(x = .data$var, y = .data$yhat),
               color = "black",
               ...,
               outlier.shape = NA
             ) +
             ggplot2::geom_jitter(
               ggplot2::aes(
-                x = "var",
-                y = "yhat",
-                color = "event",
-                shape = "event"
+                x = .data$var,
+                y = .data$yhat,
+                color = .data$event,
+                shape = .data$event
               ),
               ...
             )
@@ -497,17 +498,17 @@ plot.gg_variable <- function(x,
               gg_plt[[ind]] <- gg_plt[[ind]] +
                 ggplot2::geom_point(
                   ggplot2::aes(
-                    x = "var",
-                    y = "yhat",
-                    color = "yvar",
-                    shape = "yvar"
+                    x = .data$var,
+                    y = .data$yhat,
+                    color = .data$yvar,
+                    shape = .data$yvar
                   ),
                   ...
                 )
             } else {
               gg_plt[[ind]] <- gg_plt[[ind]] +
                 ggplot2::geom_smooth(
-                  ggplot2::aes(x = "var", y = "yhat"),
+                  ggplot2::aes(x = .data$var, y = .data$yhat),
                   color = "black",
                   linetype = 2,
                   ...
@@ -521,15 +522,15 @@ plot.gg_variable <- function(x,
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_jitter(
                 ggplot2::aes(
-                  x = "var",
-                  y = "yhat",
-                  color = "yvar",
-                  shape = "yvar"
+                  x = .data$var,
+                  y = .data$yhat,
+                  color = .data$yvar,
+                  shape = .data$yvar
                 ),
                 ...
               ) +
               ggplot2::geom_boxplot(
-                ggplot2::aes(x = "var", y = "yhat"),
+                ggplot2::aes(x = .data$var, y = .data$yhat),
                 color = "grey",
                 ...,
                 outlier.shape = NA
@@ -540,27 +541,27 @@ plot.gg_variable <- function(x,
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_point(
                 ggplot2::aes(
-                  x = "var",
-                  y = "yhat",
-                  color = "yvar",
-                  shape = "yvar"
+                  x = .data$var,
+                  y = .data$yhat,
+                  color = .data$yvar,
+                  shape = .data$yvar
                 ),
                 ...
               )
           } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_boxplot(
-                ggplot2::aes(x = "var", y = "yhat"),
+                ggplot2::aes(x = .data$var, y = .data$yhat),
                 color = "grey",
                 ...,
                 outlier.shape = NA
               ) +
               ggplot2::geom_jitter(
                 ggplot2::aes(
-                  x = "var",
-                  y = "yhat",
-                  color = "yvar",
-                  shape = "yvar"
+                  x = .data$var,
+                  y = .data$yhat,
+                  color = .data$yvar,
+                  shape = .data$yvar
                 ),
                 ...
               )
@@ -576,24 +577,24 @@ plot.gg_variable <- function(x,
         if (ccls == "numeric") {
           if (points) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              ggplot2::geom_point(ggplot2::aes(x = "var", y = "yhat"), ...)
+              ggplot2::geom_point(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
           } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              ggplot2::geom_smooth(ggplot2::aes(x = "var", y = "yhat"), ...)
+              ggplot2::geom_smooth(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
           }
           if (smooth) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
-              ggplot2::geom_smooth(ggplot2::aes(x = "var", y = "yhat"), ...)
+              ggplot2::geom_smooth(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
           }
         } else {
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::geom_boxplot(
-              ggplot2::aes(x = "var", y = "yhat"),
+              ggplot2::aes(x = .data$var, y = .data$yhat),
               color = "grey",
               ...,
               outlier.shape = NA
             ) +
-            ggplot2::geom_jitter(ggplot2::aes(x = "var", y = "yhat"), ...)
+            ggplot2::geom_jitter(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
         }
       }
 

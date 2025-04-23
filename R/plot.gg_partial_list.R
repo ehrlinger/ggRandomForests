@@ -157,48 +157,50 @@ plot.gg_partial_list <- function(x,
                                  panel = FALSE,
                                  ...) {
   gg_dta <- x
-
+  
   if (!inherits(gg_dta, "list")) {
     stop("Functions expects a list object")
   }
-
+  
   lng <- length(gg_dta)
-
+  
   # One figure, with facets?
   if (panel) {
     # Go through each element of the list, and add the variable name column,
     # and rename the value column to "value"
     nms <- names(gg_dta)
-
+    
     cls <- sapply(nms, function(nm) {
       class(gg_dta[[nm]][, nm])
     })
-
+    
     gg_dta <- parallel::mclapply(nms, function(nm) {
       obj <- gg_dta[[nm]]
       colnames(obj)[which(colnames(obj) == nm)] <- "value"
       obj$variable <- nm
       obj
     })
-
+    
     gg_dta <- do.call(rbind, gg_dta)
-    gg_dta$variable <- factor(gg_dta$variable, levels = unique(gg_dta$variable))
-
+    gg_dta$variable <- factor(gg_dta$variable, 
+                              levels = unique(gg_dta$variable))
+    
     if (is.null(gg_dta$group)) {
-      gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = "value", y = "yhat"))
+      gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = .data$value, 
+                                                     y = .data$yhat))
     } else {
       gg_dta$group <- factor(gg_dta$group, levels = unique(gg_dta$group))
       gg_plt <- ggplot2::ggplot(
         gg_dta,
         ggplot2::aes(
-          x = "value",
-          y = "yhat",
+          x = .data$value,
+          y = .data$yhat,
           color = "group",
           shape = "group"
         )
       )
     }
-
+    
     if (sum(cls == "factor") == length(cls)) {
       gg_plt <- gg_plt +
         ggplot2::geom_boxplot(...)
@@ -212,15 +214,15 @@ plot.gg_partial_list <- function(x,
       }
     }
     return(gg_plt +
-      ggplot2::facet_wrap(~variable, scales = "free_x"))
+             ggplot2::facet_wrap( ~ variable, scales = "free_x"))
   } else {
     # OR a list of figures.
     gg_plt <- vector("list", length = lng)
-
+    
     for (ind in 1:lng) {
       gg_plt[[ind]] <- plot.gg_partial(gg_dta[[ind]], points, ...)
     }
-
+    
     return(gg_plt)
   }
 }

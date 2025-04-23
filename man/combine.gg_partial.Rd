@@ -39,44 +39,15 @@ The second call will append a single \code{lbls} label to the
 \examples{
 
 # We need to create this dataset
-data(pbc, package="survival")
-# For whatever reason, the age variable is in days... makes no sense to me
-for (ind in seq_len(dim(pbc)[2])) {
-  if (!is.factor(pbc[, ind])) {
-    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-        pbc[, ind] <- as.logical(pbc[, ind])
-      }
-    }
-  } else {
-    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-        pbc[, ind] <- as.logical(pbc[, ind])
-      }
-      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-        pbc[, ind] <- as.logical(pbc[, ind])
-      }
-    }
-  }
-  if (!is.logical(pbc[, ind]) &
-    length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-    pbc[, ind] <- factor(pbc[, ind])
-  }
-
-pbc <- pbc[, -which(colnames(pbc) == "days")]
-pbc$trt <- as.numeric(pbc$trt)
-pbc$trt[which(pbc$trt == 1)] <- "DPCA"
-pbc$trt[which(pbc$trt == 2)] <- "placebo"
-pbc$trt <- factor(pbc$trt)
-}
-dta_train <- pbc[-which(is.na(pbc$trt)), ]
+data(pbc, package="randomForestSRC")
+dta_train <- pbc[-which(is.na(pbc$treatment)), ]
 # Create a test set from the remaining patients
-pbc_test <- pbc[which(is.na(pbc$trt)), ]
+pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 
 #========
 # build the forest:
 rfsrc_pbc <- randomForestSRC::rfsrc(
-  Surv(years, status) ~ .,
+  Surv(days , status) ~ .,
  dta_train,
  nsplit = 10,
  na.action = "na.impute",
@@ -88,11 +59,11 @@ xvar <- c("bili", "albumin", "copper", "prothrombin", "age")
 xvar_cat <- c("edema")
 xvar <- c(xvar, xvar_cat)
 
-time_index <- c(which(rfsrc_pbc$time.interest > 1)[1] - 1,
-                which(rfsrc_pbc$time.interest > 3)[1] - 1,
-                which(rfsrc_pbc$time.interest > 5)[1] - 1)
+time_index <- c(which(rfsrc_pbc$time.interest > 365)[1] - 1,
+                which(rfsrc_pbc$time.interest > 3 * 365)[1] - 1,
+                which(rfsrc_pbc$time.interest > 5 * 365)[1] - 1)
 
-partial_pbc <- mclapply(rfsrc_pbc$time.interest[time_index],
+partial_pbc <- parallel::mclapply(rfsrc_pbc$time.interest[time_index],
                   function(tm) {
                     plot.variable(rfsrc_pbc, surv.type = "surv",
                                        time = tm, xvar.names = xvar,

@@ -31,7 +31,6 @@ object created from a \code{\link[randomForestSRC]{rfsrc}} object}
 Plot a \code{\link{gg_survival}}  object.
 }
 \examples{
-\dontrun{
 ## -------- pbc data
 data(pbc, package = "randomForestSRC")
 pbc$time <- pbc$days / 364.25
@@ -72,6 +71,5 @@ gg_dta <- gg_survival(
 
 plot(gg_dta, error = "lines")
 plot(gg_dta, label = "sex", error = "lines")
-}
 
 }

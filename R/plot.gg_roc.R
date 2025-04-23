@@ -105,7 +105,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
     auc <- calc_auc(gg_dta)
 
     gg_plt <- ggplot2::ggplot(data = gg_dta) +
-      ggplot2::geom_line(ggplot2::aes(x = "fpr", y = "sens")) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$fpr, y = .data$sens)) +
       ggplot2::labs(x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)") +
       ggplot2::geom_abline(
         slope = 1,
@@ -147,8 +147,8 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
 
     gg_plt <- ggplot2::ggplot(data = o_dta) +
       ggplot2::geom_line(ggplot2::aes(
-        x = "fpr",
-        y = "sens",
+        x = .data$fpr,
+        y = .data$sens,
         linetype = "outcome",
         col = "outcome"
       )) +

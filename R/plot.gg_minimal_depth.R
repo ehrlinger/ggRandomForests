@@ -38,8 +38,8 @@
 #' Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival,
 #' Regression and Classification (RF-SRC), R package version 1.5.
 #'
+#' @importFrom ggplot2 .data
 #' @examples
-#' \dontrun{
 #' ## Examples from RFSRC package...
 #' ## ------------------------------------------------------------
 #' ## classification example
@@ -77,7 +77,6 @@
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' varsel_mtcars <- var.select(rfsrc_mtcars)
-#'
 #'
 #' # Get a data.frame containing error rates
 #' plot.gg_minimal_depth(varsel_mtcars)
@@ -149,7 +148,7 @@
 #'
 #' gg_dta <- gg_minimal_depth(varsel_pbc)
 #' plot(gg_dta)
-#' }
+#'
 #' @export
 plot.gg_minimal_depth <- function(x,
                                   selection = FALSE,
@@ -195,20 +194,20 @@ plot.gg_minimal_depth <- function(x,
     gg_plt <- switch(type,
       rank = gg_plt +
         ggplot2::geom_point(ggplot2::aes(
-          y = "rank", x = "depth", label = "rank"
+          y = .data$rank, x = .data$depth, label = .data$rank
         )) +
         ggplot2::coord_cartesian(xlim = xl) +
         ggplot2::geom_text(
           ggplot2::aes(
-            y = "rank",
-            x = "depth" - 0.7,
-            label = "rank"
+            y = .data$rank,
+            x = .data$depth - 0.7,
+            label = .data$rank
           ),
           size = 3,
           hjust = 0
         ),
       named = gg_plt +
-        ggplot2::geom_point(ggplot2::aes(y = "depth", x = "names")) +
+        ggplot2::geom_point(ggplot2::aes(y = .data$depth, x = .data$names)) +
         ggplot2::coord_cartesian(ylim = xl)
     )
   } else {
@@ -218,10 +217,10 @@ plot.gg_minimal_depth <- function(x,
     gg_plt <- ggplot2::ggplot(vsel)
     gg_plt <- switch(type,
       rank = gg_plt +
-        ggplot2::geom_point(ggplot2::aes(y = "rank", x = "depth")) +
+        ggplot2::geom_point(ggplot2::aes(y = .data$rank, x = .data$depth)) +
         ggplot2::coord_cartesian(xlim = xl),
       named = gg_plt +
-        ggplot2::geom_point(ggplot2::aes(y = "depth", x = "names")) +
+        ggplot2::geom_point(ggplot2::aes(y = .data$depth, x = .data$names)) +
         ggplot2::coord_cartesian(ylim = xl)
     )
   }

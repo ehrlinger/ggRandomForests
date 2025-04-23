@@ -44,8 +44,8 @@
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #'
 #'
+#' @export
 #' @examples
-#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification
 #' ## ------------------------------------------------------------
@@ -150,10 +150,9 @@
 #' plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 #'
 #' ## -------- pbc data
-#' }
+#' 
 #'
 #' @importFrom ggplot2 ggplot geom_line theme labs .data
-#' @export
 plot.gg_partial <- function(x,
                             points = TRUE,
                             error = c("none", "shade", "bars", "lines"),
@@ -180,17 +179,17 @@ plot.gg_partial <- function(x,
   colnames(gg_dta)[2] <- "x"
 
   if (is.null(gg_dta$group)) {
-    gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = .data[["x"]],
-                                                   y = .data[["yhat"]]))
+    gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = .data$x,
+                                                   y = .data$yhat))
   } else {
     gg_plt <-
       ggplot2::ggplot(
         gg_dta,
         ggplot2::aes(
-          x = .data[["x"]],
-          y = .data[["yhat"]],
-          shape = .data[["group"]],
-          color = .data[["group"]]
+          x = .data$x,
+          y = .data$yhat,
+          shape = .data$group,
+          color = .data$group
         )
       )
   }
@@ -221,9 +220,9 @@ plot.gg_partial <- function(x,
       # Shading the standard errors
       shade = gg_plt +
         ggplot2::geom_ribbon(
-          ggplot2::aes(x = .data[["x"]], 
-                       ymax = .data[["upper"]], 
-                       ymin = .data[["lower"]]),
+          ggplot2::aes(x = .data$x, 
+                       ymax = .data$upper, 
+                       ymin = .data$lower),
           alpha = .3,
           data = gg_dta
         ),
@@ -234,22 +233,22 @@ plot.gg_partial <- function(x,
         gg_plt +
           ggplot2::geom_errorbar(
             ggplot2::aes(
-              x = "x",
-              ymax = .data[["upper"]],
-              ymin = .data[["lower"]]
+              x = .data$x,
+              ymax = .data$upper,
+              ymin = .data$lower
             ),
             data = gg_dta
           )
       },
       lines = gg_plt +
         ggplot2::geom_smooth(
-          ggplot2::aes(x = .data[["x"]], y = .data[["upper"]]),
+          ggplot2::aes(x = .data$x, y = .data$upper),
           linetype = 2,
           data = gg_dta,
           se = FALSE
         ) +
         ggplot2::geom_smooth(
-          ggplot2::aes(x = .data[["x"]], y = .data[["lower"]]),
+          ggplot2::aes(x = .data$x, y = .data$lower),
           linetype = 2,
           data = gg_dta,
           se = FALSE
@@ -258,7 +257,7 @@ plot.gg_partial <- function(x,
     )
   }
   gg_plt <- gg_plt +
-    ggplot2::labs(x = h_name, y = .data[["predicted"]])
+    ggplot2::labs(x = h_name, y = "predicted")
   if (!is.factor(gg_dta$x)) {
     if (points) {
       gg_plt <- gg_plt + ggplot2::geom_point(...)

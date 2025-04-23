@@ -152,12 +152,12 @@
 #' @export
 plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
   gg_dta <- x
-
+  
   # Test that object is the correct class object
   if (!inherits(gg_dta, "gg_minimal_vimp")) {
     gg_dta <- gg_minimal_vimp(x, ...)
   }
-
+  
   if (missing(nvar)) {
     nvar <- nrow(gg_dta)
   }
@@ -167,17 +167,26 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
   if (length(unique(gg_dta$col)) > 1) {
     gg_dta$col <- factor(gg_dta$col)
   }
-  gg_dta$names <- factor(gg_dta$names, levels = gg_dta$names[order(as.numeric(gg_dta$depth))])
-
+  gg_dta$names <- factor(gg_dta$names, 
+                         levels = gg_dta$names[order(as.numeric(gg_dta$depth))])
+  
   gg_dta <- gg_dta[1:nvar, ]
-
+  
   # If we only have one class for coloring, just paint them black.
   if (length(unique(gg_dta$col)) > 1) {
     gg_plt <-
-      ggplot2::ggplot(gg_dta, ggplot2::aes(x = "names", y = "vimp", col = "col")) +
-      ggplot2::labs(x = "Minimal Depth (Rank Order)", y = "VIMP Rank", color = "VIMP")
+      ggplot2::ggplot(gg_dta,
+                      ggplot2::aes(
+                        x = .data$names,
+                        y = .data$vimp,
+                        col = .data$col
+                      )) +
+      ggplot2::labs(x = "Minimal Depth (Rank Order)", 
+                    y = "VIMP Rank", color = "VIMP")
   } else {
-    gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = "names", y = "vimp")) +
+    gg_plt <- ggplot2::ggplot(gg_dta, 
+                              ggplot2::aes(x = .data$names, 
+                                           y = .data$vimp)) +
       ggplot2::labs(x = "Minimal Depth (Rank Order)", y = "VIMP Rank")
   }
   if (!missing(lbls)) {
@@ -186,12 +195,12 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
       names(st_lbls) <- as.character(gg_dta$names)
       st_lbls[which(is.na(st_lbls))] <-
         names(st_lbls[which(is.na(st_lbls))])
-
+      
       gg_plt <- gg_plt +
         ggplot2::scale_x_discrete(labels = st_lbls)
     }
   }
-
+  
   gg_plt <- gg_plt + ggplot2::geom_point() +
     ggplot2::geom_abline(
       intercept = 0,
@@ -200,7 +209,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
       linewidth = .5,
       linetype = 2
     )
-
+  
   # Draw a line between + and - vimp values.
   if (length(unique(gg_dta$col)) > 1) {
     gg_plt <- gg_plt +
@@ -211,7 +220,7 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
         linetype = 2
       )
   }
-
+  
   if (nrow(gg_dta) > attributes(gg_dta)$modelsize) {
     gg_plt <- gg_plt +
       ggplot2::geom_vline(
@@ -221,6 +230,6 @@ plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {
         linetype = 2
       )
   }
-
+  
   return(gg_plt + ggplot2::coord_flip())
 }

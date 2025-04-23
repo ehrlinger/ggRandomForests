@@ -56,7 +56,7 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- air quality data
 #' rfsrc_airq <- rfsrc(Ozone ~ .,
 #'   data = airquality,
@@ -69,8 +69,7 @@
 #'
 #' # Plot the gg_minimal_depth object
 #' plot(gg_dta)
-#' }
-#' \dontrun{
+#' 
 #'
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
@@ -89,20 +88,19 @@
 #' gg_dta <- gg_minimal_depth(varsel_boston)
 #' print(gg_dta)
 #' plot(gg_dta)
-#' }
-#' \dontrun{
+#' 
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' varsel_mtcars <- var.select(rfsrc_mtcars)
 #'
 #' # Get a data.frame containing error rates
 #' plot.gg_minimal_depth(varsel_mtcars)
-#' }
+#' 
 #'
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRC")
@@ -168,7 +166,7 @@
 #'
 #' gg_dta <- gg_minimal_depth(varsel_pbc)
 #' plot(gg_dta)
-#' }
+#' 
 #' @aliases gg_minimal_depth  gg_minimal_depth.randomForest
 #' @aliases gg_minimal_depth.rfsrc
 #'
@@ -196,11 +194,8 @@ gg_minimal_depth.rfsrc <- function(object, ...) {
     stop("Function works only on rfsrc or var.select objects.")
   }
 
-
   # There seems to be a bug in the randomForestSRC::var.select
-  # function that does not calculage the threshold correctly.
-
-
+  # function that does not calculate the threshold correctly.
   vsel$varselect$names <- rownames(vsel$varselect)
 
   vsel$varselect$names <- factor(vsel$varselect$names,

@@ -9,21 +9,22 @@ test_that("partial.rfsrc regression", {
   
   rfsrc_boston <- rfsrc(medv ~ ., data = Boston, ntree = 100)
   # Test the cached forest type
-  expect_is(rfsrc_boston, "rfsrc")
+  testthat::expect_is(rfsrc_boston, "rfsrc")
   
   xvar <- "lstat"
   ## Create the correct object
   
   skip("Skip: Test currently fails (partial.rfsrc problem)")
-  gg_dta <- partial.rfsrc(rfsrc_boston,
-                          partial.xvar = "lstat",
+  gg_dta <- partial.rfsrc(rfsrc_boston, oob = TRUE,
+                          partial.xvar = xvar,
+                          partial.values = Boston[[xvar]],
                           npts = 10)
-  expect_equal(gg_dta$xvar.names, xvar)
-  expect_equal(names(gg_dta$pData), xvar)
-  expect_equal(gg_dta$pData[[1]]$xvar.name, xvar[1])
-  expect_equal(gg_dta$pData[[2]]$xvar.name, xvar[2])
-  expect_equal(length(gg_dta$pData[[1]]$yhat), 10)
-  expect_equal(length(gg_dta$pData[[2]]$yhat),
+  testthat::expect_equal(gg_dta$xvar.names, xvar)
+  testthat::expect_equal(names(gg_dta$pData), xvar)
+  testthat::expect_equal(gg_dta$pData[[1]]$xvar.name, xvar[1])
+  testthat::expect_equal(gg_dta$pData[[2]]$xvar.name, xvar[2])
+  testthat::expect_equal(length(gg_dta$pData[[1]]$yhat), 10)
+  testthat::expect_equal(length(gg_dta$pData[[2]]$yhat),
                length(unique(rfsrc_boston$xvar$chas)))
   
   ## Correct npts spec.

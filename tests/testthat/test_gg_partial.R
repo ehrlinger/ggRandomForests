@@ -11,27 +11,27 @@ test_that("gg_partial classifications", {
     save.memory = TRUE)
   
   # Test the cached forest type
-  expect_is(rfsrc_iris, "rfsrc")
+  testthat::expect_is(rfsrc_iris, "rfsrc")
   
   # Test the forest family
-  expect_equal(rfsrc_iris$family, "class")
+  testthat::expect_equal(rfsrc_iris$family, "class")
   partial_iris <- randomForestSRC::plot.variable(rfsrc_iris,
                                                  partial = TRUE,
                                                  show.plots = FALSE)
   
-  expect_equivalent(length(partial_iris$pData), length(rfsrc_iris$xvar.names))
+  testthat::expect_equivalent(length(partial_iris$pData), length(rfsrc_iris$xvar.names))
   
   ## Create the correct gg_error object
   gg_dta <- gg_partial(partial_iris)
   
   # Test object type
-  expect_is(gg_dta, "gg_partial_list")
+  testthat::expect_is(gg_dta, "gg_partial_list")
   
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_partial(gg_dta[[2]])
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  testthat::expect_is(gg_plt, "ggplot")
   
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_partial_list(gg_dta)

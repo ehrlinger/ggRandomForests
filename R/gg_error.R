@@ -117,7 +117,6 @@
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
-#' \dontrun{
 #' ## ------------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRC")
@@ -183,7 +182,6 @@
 #'
 #' gg_dta <- gg_error(rfsrc_pbc)
 #' plot(gg_dta)
-#' }
 #'
 #' @importFrom stats na.omit predict qnorm
 #'
