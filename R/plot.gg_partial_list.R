@@ -45,7 +45,6 @@
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #'
 #' @examples
-#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification
 #' ## ------------------------------------------------------------
@@ -149,7 +148,7 @@
 #' plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 #'
 #' ## -------- pbc data
-#' }
+#' 
 #'
 #' @export
 plot.gg_partial_list <- function(x,

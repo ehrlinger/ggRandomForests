@@ -94,7 +94,7 @@
 #' varsel_mtcars <- var.select(rfsrc_mtcars)
 #'
 #' # Get a data.frame containing error rates
-#' plot.gg_minimal_depth(varsel_mtcars)
+#' plot(gg_minimal_depth(varsel_mtcars))
 #' 
 #'
 #' ## ------------------------------------------------------------

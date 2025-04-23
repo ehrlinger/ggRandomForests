@@ -41,7 +41,6 @@
 Data structures for stratified partial coplots
 }
 \examples{
-\dontrun{
 
 ## ------------------------------------------------------------
 ## -------- pbc data
@@ -114,6 +113,6 @@ partial_coplot_pbc <- gg_partial_coplot(rfsrc_pbc,
 
 # Partial coplot
 plot(partial_coplot_pbc) # , se = FALSE)
-}
+
 
 }

@@ -29,7 +29,6 @@
 #' \code{\link[randomForestSRC]{var.select}}
 #'
 #' @examples
-#' \dontrun{
 #' ## Examples from RFSRC package...
 #' ## ------------------------------------------------------------
 #' ## classification example
@@ -147,7 +146,7 @@
 #'
 #' gg_dta <- gg_minimal_vimp(varsel_pbc)
 #' plot(gg_dta)
-#' }
+#' 
 #'
 #' @export
 plot.gg_minimal_vimp <- function(x, nvar, lbls, ...) {

@@ -24,7 +24,7 @@ kaplan(interval, censor, data, by = NULL, ...)
 nonparametric Kaplan-Meier estimates
 }
 \examples{
-\dontrun{
+
 # These get run through the gg_survival examples.
 data(pbc, package="randomForestSRC")
 pbc$time <- pbc$days/364.25
@@ -42,7 +42,7 @@ gg_dta <- gg_survival(interval="time", censor="status",
 
 plot(gg_dta, error="none")
 plot(gg_dta)
-}
+
 }
 \seealso{
 \code{\link{gg_survival}} \code{\link{nelson}}

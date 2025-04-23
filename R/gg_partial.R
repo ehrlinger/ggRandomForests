@@ -64,7 +64,7 @@
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- air quality data
 #' ## airquality "Wind" partial dependence plot
 #' ##
@@ -76,8 +76,7 @@
 #'
 #' gg_dta <- gg_partial(partial_airq)
 #' plot(gg_dta)
-#' }
-#' \dontrun{
+#' 
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
@@ -99,8 +98,7 @@
 #' )
 #' gg_dta <- gg_partial(partial_boston)
 #' plot(gg_dta, panel = TRUE)
-#' }
-#' \dontrun{
+#' 
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #' varsel_mtcars <- var.select(rfsrc_mtcars)
@@ -123,12 +121,12 @@
 #' gg_dta[["cyl"]] <- gg_dta[["vs"]] <- gg_dta[["am"]] <- NULL
 #' gg_dta[["gear"]] <- NULL
 #' plot(gg_dta, panel = TRUE)
-#' }
+#' 
 #'
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- veteran data
 #' ## survival "age" partial variable dependence plot
 #' ##
@@ -251,7 +249,7 @@
 #' plot(ggpart, panel = TRUE)
 #'
 #' plot(pbc_ggpart[["edema"]])
-#' }
+#' 
 #' @aliases gg_partial gg_partial_list gg_partial.rfsrc gg_partial.randomForest
 #' @name gg_partial
 #' @aliases gg_partial_list

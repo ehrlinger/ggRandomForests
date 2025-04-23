@@ -26,7 +26,6 @@ Plot a \code{\link{gg_minimal_vimp}} object for comparing the Minimal
 Depth and VIMP variable rankings.
 }
 \examples{
-\dontrun{
 ## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
@@ -144,7 +143,7 @@ varsel_pbc <- var.select(rfsrc_pbc)
 
 gg_dta <- gg_minimal_vimp(varsel_pbc)
 plot(gg_dta)
-}
+
 
 }
 \seealso{

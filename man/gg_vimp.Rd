@@ -43,14 +43,14 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## regression example
 ## ------------------------------------------------------------
-\dontrun{
+
 ## -------- air quality data
 rfsrc_airq <- rfsrc(Ozone ~ ., airquality,
   importance = TRUE
 )
 gg_dta <- gg_vimp(rfsrc_airq)
 plot(gg_dta)
-}
+
 
 ## -------- Boston data
 data(Boston, package = "MASS")
@@ -65,7 +65,7 @@ rf_boston <- randomForest::randomForest(medv ~ ., Boston)
 gg_dta <- gg_vimp(rf_boston)
 plot(gg_dta)
 
-\dontrun{
+
 ## -------- mtcars data
 rfsrc_mtcars <- rfsrc(mpg ~ .,
   data = mtcars,
@@ -73,11 +73,11 @@ rfsrc_mtcars <- rfsrc(mpg ~ .,
 )
 gg_dta <- gg_vimp(rfsrc_mtcars)
 plot(gg_dta)
-}
+
 ## ------------------------------------------------------------
 ## survival example
 ## ------------------------------------------------------------
-\dontrun{
+
 ## -------- veteran data
 data(veteran, package = "randomForestSRC")
 rfsrc_veteran <- rfsrc(Surv(time, status) ~ .,
@@ -147,7 +147,7 @@ plot(gg_dta)
 # Restrict to only the top 10.
 gg_dta <- gg_vimp(rfsrc_pbc, nvar = 10)
 plot(gg_dta)
-}
+
 }
 \references{
 Ishwaran H. (2007). Variable importance in binary regression trees and

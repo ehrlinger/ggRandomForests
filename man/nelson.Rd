@@ -26,7 +26,6 @@ nelson(interval, censor, data, by = NULL, weight = NULL, ...)
 nonparametric Nelson-Aalen estimates
 }
 \examples{
-\dontrun{
 # These get run through the gg_survival examples.
 data(pbc, package = "randomForestSRC")
 pbc$time <- pbc$days / 364.25
@@ -58,7 +57,7 @@ gg_dta <- gg_survival(
 
 plot(gg_dta, error = "bars")
 plot(gg_dta)
-}
+
 }
 \seealso{
 \code{\link{gg_survival}} \code{\link{nelson}}

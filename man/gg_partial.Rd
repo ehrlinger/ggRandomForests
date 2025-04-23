@@ -55,7 +55,7 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 ## regression
 ## ------------------------------------------------------------
-\dontrun{
+
 ## -------- air quality data
 ## airquality "Wind" partial dependence plot
 ##
@@ -67,8 +67,7 @@ partial_airq <- plot.variable(rfsrc_airq,
 
 gg_dta <- gg_partial(partial_airq)
 plot(gg_dta)
-}
-\dontrun{
+
 ## -------- Boston data
 data(Boston, package = "MASS")
 Boston$chas <- as.logical(Boston$chas)
@@ -90,8 +89,7 @@ partial_boston <- plot.variable(rfsrc_boston,
 )
 gg_dta <- gg_partial(partial_boston)
 plot(gg_dta, panel = TRUE)
-}
-\dontrun{
+
 ## -------- mtcars data
 rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 varsel_mtcars <- var.select(rfsrc_mtcars)
@@ -114,12 +112,12 @@ plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 gg_dta[["cyl"]] <- gg_dta[["vs"]] <- gg_dta[["am"]] <- NULL
 gg_dta[["gear"]] <- NULL
 plot(gg_dta, panel = TRUE)
-}
+
 
 ## ------------------------------------------------------------
 ## survival examples
 ## ------------------------------------------------------------
-\dontrun{
+
 ## -------- veteran data
 ## survival "age" partial variable dependence plot
 ##
@@ -242,7 +240,7 @@ ggpart$edema <- NULL
 plot(ggpart, panel = TRUE)
 
 plot(pbc_ggpart[["edema"]])
-}
+
 }
 \references{
 Friedman, Jerome H. 2000. "Greedy Function Approximation: A Gradient

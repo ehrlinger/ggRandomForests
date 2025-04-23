@@ -33,7 +33,6 @@
 #' @importFrom parallel mclapply
 #'
 #' @examples
-#' \dontrun{
 #'
 #' ## ------------------------------------------------------------
 #' ## -------- pbc data
@@ -106,7 +105,7 @@
 #'
 #' # Partial coplot
 #' plot(partial_coplot_pbc) # , se = FALSE)
-#' }
+#' 
 #'
 #' @export
 gg_partial_coplot.rfsrc <- function(object,

@@ -48,7 +48,7 @@
 #' ## ------------------------------------------------------------
 #' ## Regression example
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- air quality data
 #' rfsrc_airq <- rfsrc(Ozone ~ .,
 #'   data = airquality,
@@ -61,8 +61,7 @@
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
-#' }
-#' \dontrun{
+#' 
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
@@ -81,8 +80,7 @@
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
-#' }
-#' \dontrun{
+#' 
 #' ## -------- mtcars data
 #'
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
@@ -93,11 +91,11 @@
 #'
 #' # Plot the gg_minimal_vimp object
 #' plot(gg_dta)
-#' }
+#' 
 #' ## ------------------------------------------------------------
 #' ## Survival example
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRC")
@@ -168,7 +166,7 @@
 #'
 #' gg_dta <- gg_minimal_vimp(varsel_pbc)
 #' plot(gg_dta)
-#' }
+#' 
 #'
 #' @aliases gg_minimal_vimp gg_minimal_vimp.randomForest
 #' gg_minimal_vimp.rfsrc

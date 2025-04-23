@@ -28,7 +28,6 @@ variable (y-axis) against the covariate of interest (specified when creating
 the \code{gg_partial_list} object).
 }
 \examples{
-\dontrun{
 ## ------------------------------------------------------------
 ## classification
 ## ------------------------------------------------------------
@@ -132,7 +131,7 @@ gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
 plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 
 ## -------- pbc data
-}
+
 
 }
 \references{

@@ -64,7 +64,7 @@
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- air quality data
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
 #' gg_dta <- gg_variable(rfsrc_airq)
@@ -80,8 +80,7 @@
 #' plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
 #'
 #' plot(gg_dta, xvar = "Month", notch = TRUE)
-#' }
-#' \dontrun{
+#' 
 #' ## -------- motor trend cars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #'
@@ -107,7 +106,7 @@
 #'   xvar = c("cyl", "vs", "am", "gear", "carb"), panel = TRUE,
 #'   notch = TRUE
 #' )
-#' }
+#' 
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
 #'
@@ -118,7 +117,7 @@
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- veteran data
 #' ## survival
 #' data(veteran, package = "randomForestSRC")
@@ -143,8 +142,7 @@
 #'
 #' # Generate variable dependence plots for age and diagtime
 #' plot(gg_dta, xvar = "age")
-#' }
-#' \dontrun{
+#' 
 #' ## -------- pbc data
 #' ## We don't run this because of bootstrap confidence limits
 #' # We need to create this dataset
@@ -203,7 +201,7 @@
 #'
 #' # Generate coplots
 #' plot(gg_dta, xvar = c("age", "trig"), panel = TRUE, se = FALSE)
-#' }
+#' 
 #'
 #' @aliases gg_variable gg_variable.rfsrc gg_variable.randomForest
 #' @aliases gg_variable.random
