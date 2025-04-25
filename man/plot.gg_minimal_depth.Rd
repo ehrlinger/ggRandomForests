@@ -67,7 +67,7 @@ rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 varsel_mtcars <- var.select(rfsrc_mtcars)
 
 # Get a data.frame containing error rates
-plot.gg_minimal_depth(gg_minimal_depth(varsel_mtcars))
+plot(gg_minimal_depth(varsel_mtcars))
 
 ## ------------------------------------------------------------
 ## Survival example

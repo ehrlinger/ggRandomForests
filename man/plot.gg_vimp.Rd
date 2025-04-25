@@ -26,7 +26,6 @@ Plot a \code{\link{gg_vimp}} object, extracted variable importance of a
 \code{\link[randomForestSRC]{rfsrc}} object
 }
 \examples{
-\dontrun{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -67,7 +66,6 @@ plot(gg_dta)
 data(rfsrc_pbc, package = "ggRandomForests")
 gg_dta <- gg_vimp(rfsrc_pbc)
 plot(gg_dta)
-}
 
 }
 \references{

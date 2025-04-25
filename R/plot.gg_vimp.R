@@ -36,7 +36,6 @@
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #'
 #' @examples
-#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
@@ -77,7 +76,6 @@
 #' data(rfsrc_pbc, package = "ggRandomForests")
 #' gg_dta <- gg_vimp(rfsrc_pbc)
 #' plot(gg_dta)
-#' }
 #'
 #' @export
 plot.gg_vimp <- function(x, relative, lbls, ...) {
