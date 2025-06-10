@@ -104,7 +104,7 @@ plot(gg_dta, panel = TRUE)
 #                               show.plots=FALSE)
 data(partial_veteran, package = "ggRandomForests")
 
-gg_dta <- gg_partial(partial_veteran[[1]])
+gg_dta <- gg_partial(partial_veteran$)
 plot(gg_dta)
 
 gg_dta.cat <- gg_dta

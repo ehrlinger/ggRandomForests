@@ -26,21 +26,25 @@ nonparametric Kaplan-Meier estimates
 \examples{
 
 # These get run through the gg_survival examples.
-data(pbc, package="randomForestSRC")
-pbc$time <- pbc$days/364.25
+data(pbc, package = "randomForestSRC")
+pbc$time <- pbc$days / 364.25
 
 # This is the same as gg_survival
-gg_dta <- kaplan(interval="time", censor="status",
-                     data=pbc)
+gg_dta <- kaplan(
+  interval = "time", censor = "status",
+  data = pbc
+)
 
-plot(gg_dta, error="none")
+plot(gg_dta, error = "none")
 plot(gg_dta)
 
 # Stratified on treatment variable.
-gg_dta <- gg_survival(interval="time", censor="status",
-                     data=pbc, by="treatment")
+gg_dta <- gg_survival(
+  interval = "time", censor = "status",
+  data = pbc, by = "treatment"
+)
 
-plot(gg_dta, error="none")
+plot(gg_dta, error = "none")
 plot(gg_dta)
 
 }

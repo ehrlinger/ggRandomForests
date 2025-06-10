@@ -208,60 +208,6 @@ test_that("survival_functions_tests: PBC", {
   testthat::expect_is(gg_plt, "ggplot")
   
   ##================
-  ## Minimal depths
-  varsel_pbc <- randomForestSRC::var.select(rfsrc_pbc)
-  # Test the cached forest type
-  testthat::expect_is(varsel_pbc, "list")
-  
-  ## Create the correct gg_error object
-  gg_dta <- gg_minimal_depth(varsel_pbc)
-  
-  # Test object type
-  testthat::expect_is(gg_dta, "gg_minimal_depth")
-  
-  
-  # Test varselect is the same
-  testthat::expect_equivalent(gg_dta$varselect[, -which(colnames(gg_dta$varselect) == 
-                                               "names")],
-                    varsel_pbc$varselect)
-  
-  ## Test plotting the gg_error object
-  gg_plt <- plot.gg_minimal_depth(gg_dta)
-  
-  # Test return is s ggplot object
-  testthat::expect_is(gg_plt, "ggplot")
-  
-  gg_plt <- plot(gg_dta, nvar = 12)
-  
-  # Test return is s ggplot object
-  testthat::expect_is(gg_plt, "ggplot")
-  
-  
-  ##================
-  ## minimal vimp
-  
-  # Test the cached forest type
-  testthat::expect_is(varsel_pbc, "list")
-  
-  ## Create the correct gg_error object
-  ggrf_obj <- gg_minimal_vimp(varsel_pbc)
-  
-  # Test object type
-  testthat::expect_is(ggrf_obj, "gg_minimal_vimp")
-  
-  
-  # Test varselect is the same
-  testthat::expect_equivalent(dim(ggrf_obj)[1], dim(varsel_pbc$varselect)[1])
-  testthat::expect_equivalent(dim(ggrf_obj)[2], 4)
-  
-  ## Test plotting the gg_error object
-  gg_obj <- plot.gg_minimal_vimp(ggrf_obj)
-  
-  # Test return is s ggplot object
-  testthat::expect_is(gg_obj, "ggplot")
-  
-  
-  ##================
   ## Interaction plots
   interaction_pbc <- randomForestSRC::find.interaction(rfsrc_pbc)
   
@@ -415,7 +361,7 @@ test_that("survival_functions_tests: PBC", {
   gg_plt <- gg_plt + ggplot2::geom_smooth(se = 0.95)
   
   
-  xvar <- varsel_pbc$topvars
+  xvar <- rfsrc_pbc$xvar.names
   xvar_vcat <- c("edema", "stage", "ascites")
   xvar <- xvar[-which(xvar %in% xvar_vcat)]
   

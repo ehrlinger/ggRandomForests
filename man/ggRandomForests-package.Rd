@@ -24,7 +24,7 @@ available directly from within the \code{randomForestSRC} package. However,
 \item Separation of data and figures: \code{ggRandomForest} contains
 functions that operate on either the \code{\link[randomForestSRC]{rfsrc}}
 forest object directly, or on the output from \code{randomForestSRC} post
-processing functions (i.e. \code{plot.variable}, \code{var.select},
+processing functions (i.e. \code{plot.variable},
 \code{find.interaction}) to generate intermediate \code{ggRandomForests}
 data objects. S3 functions are provide to further process these objects and
 plot results using the \code{ggplot2} graphics package. Alternatively,
@@ -52,11 +52,7 @@ the OOB error rate.
 models.
 \item \code{\link{gg_vimp}}: Variable Importance ranking for variable
 selection.
-\item \code{\link{gg_minimal_depth}}: Minimal Depth ranking for variable
-selection
 (Ishwaran et.al. 2010).
-\item \code{\link{gg_minimal_vimp}}: Comparing Minimal Depth and VIMP
-rankings for variable selection.
 \item \code{\link{gg_interaction}}: Minimal Depth interaction detection
 (Ishwaran et.al. 2010)
 \item \code{\link{gg_variable}}: Marginal variable dependence.

@@ -62,10 +62,10 @@ test_that("gg_partial regression", {
   # Test the cached forest type
   expect_is(rfsrc_boston, "rfsrc")
   
-  varsel_boston <- randomForestSRC::var.select(rfsrc_boston)
+  nms <- rfsrc_boston$xvar.names
+  nms <- nms[nms != "chas"]
   partial_boston <- randomForestSRC::plot.variable(
     rfsrc_boston,
-    xvar.names = varsel_boston$topvars,
     sorted = FALSE,
     partial = TRUE,
     show.plots = FALSE

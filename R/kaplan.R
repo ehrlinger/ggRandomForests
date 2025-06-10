@@ -27,25 +27,29 @@
 #' \code{\link{plot.gg_survival}}
 #'
 #' @examples
-#' 
+#'
 #' # These get run through the gg_survival examples.
-#' data(pbc, package="randomForestSRC")
-#' pbc$time <- pbc$days/364.25
+#' data(pbc, package = "randomForestSRC")
+#' pbc$time <- pbc$days / 364.25
 #'
 #' # This is the same as gg_survival
-#' gg_dta <- kaplan(interval="time", censor="status",
-#'                      data=pbc)
+#' gg_dta <- kaplan(
+#'   interval = "time", censor = "status",
+#'   data = pbc
+#' )
 #'
-#' plot(gg_dta, error="none")
+#' plot(gg_dta, error = "none")
 #' plot(gg_dta)
 #'
 #' # Stratified on treatment variable.
-#' gg_dta <- gg_survival(interval="time", censor="status",
-#'                      data=pbc, by="treatment")
+#' gg_dta <- gg_survival(
+#'   interval = "time", censor = "status",
+#'   data = pbc, by = "treatment"
+#' )
 #'
-#' plot(gg_dta, error="none")
+#' plot(gg_dta, error = "none")
 #' plot(gg_dta)
-#' 
+#'
 #' @export
 kaplan <- function(interval,
                    censor,
@@ -55,23 +59,21 @@ kaplan <- function(interval,
   # Kaplan-Meier analysis
   if (is.null(by)) {
     srv_tab <- survival::survfit(srv ~ 1, ...)
-    
   } else {
     srv_tab <-
       survival::survfit(srv ~ survival::strata(data[[by]]), ...)
-    
   }
-  
-  #*********************************************************************;
+
+  #********************************************************************* ;
   #* Cumulative hazard and hazard estimates from transforms and slopes;
   #* as well as integral of survivorship and proportionate life length;
   cum_hazard <- -log(srv_tab$surv)
-  
+
   times <- order(data[[interval]])
   delta_time <- sapply(2:length(times), function(ind) {
     times[ind] - times[ind - 1]
   })
-  
+
   # Still need to add hazard and density.
   tbl <- data.frame(
     cbind(
@@ -86,40 +88,40 @@ kaplan <- function(interval,
       cum_haz = cum_hazard
     )
   )
-  
+
   # Add group labels when stratifying data.
   if (!is.null(by)) {
     tm_splits <-
       which(c(FALSE, sapply(2:nrow(tbl), function(ind) {
         tbl$time[ind] < tbl$time[ind - 1]
       })))
-    
+
     lbls <- levels(data[[by]])
     tbl$groups <- lbls[1]
-    
+
     for (ind in 2:(length(tm_splits) + 1)) {
       tbl$groups[tm_splits[ind - 1]:nrow(tbl)] <- lbls[ind]
     }
   }
-  
-  #, "hazard", "density")
-  #*******************************************************************;
+
+  # , "hazard", "density")
+  #******************************************************************* ;
   # Summarize the various strata
   # only look at events
   gg_dta <- tbl[which(tbl[["dead"]] != 0), ]
-  
+
   # Calculate the hazard estimates from transforms and slopes
   # as well as integral of survivorship and proportionate life length
   lag_s <- c(1, gg_dta$surv)[-(dim(gg_dta)[1] + 1)]
   lag_t <- c(0, gg_dta$time)[-(dim(gg_dta)[1] + 1)]
-  
+
   delta_t <- gg_dta$time - lag_t
   hzrd <- log(lag_s / gg_dta$surv) / delta_t
-  
+
   dnsty <- (lag_s - gg_dta$surv) / delta_t
   mid_int <- (gg_dta$time + lag_t) / 2
   lag_l <- 0
-  
+
   life <- vector("numeric", length = dim(gg_dta)[1])
   for (ind in seq_len(dim(gg_dta)[1])) {
     life[ind] <-
@@ -137,7 +139,7 @@ kaplan <- function(interval,
       proplife = prp_life
     )
   )
-  
+
   class(gg_dta) <- c("gg_survival", class(gg_dta))
   invisible(gg_dta)
 }

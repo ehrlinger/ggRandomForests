@@ -4,7 +4,6 @@
 \alias{gg_partial}
 \alias{gg_partial_list}
 \alias{gg_partial.rfsrc}
-\alias{gg_partial.randomForest}
 \title{Partial variable dependence object}
 \usage{
 gg_partial(object, ...)
@@ -79,10 +78,11 @@ rfsrc_boston <- rfsrc(medv ~ .,
   save.memory = TRUE
 )
 
-varsel_boston <- var.select(rfsrc_boston)
+nms <- rfsrc_boston$xvar.names
+nms <- nms[nms != "chas"] 
 
 partial_boston <- plot.variable(rfsrc_boston,
-  xvar.names = varsel_boston$topvars,
+  xvar = nms, 
   sorted = FALSE,
   partial = TRUE,
   show.plots = FALSE
@@ -92,10 +92,8 @@ plot(gg_dta, panel = TRUE)
 
 ## -------- mtcars data
 rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
-varsel_mtcars <- var.select(rfsrc_mtcars)
 
 partial_mtcars <- plot.variable(rfsrc_mtcars,
-  xvar.names = varsel_mtcars$topvars,
   sorted = FALSE,
   partial = TRUE,
   show.plots = FALSE
@@ -127,8 +125,6 @@ rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., veteran,
   ntree = 100
 )
 
-varsel_rfsrc <- var.select(rfsrc_veteran)
-
 ## 30 day partial plot for age
 partial_veteran <- plot.variable(rfsrc_veteran,
   surv.type = "surv",
@@ -147,7 +143,7 @@ gg_dta.cat[["karno"]] <- gg_dta.cat[["diagtime"]] <-
   gg_dta.cat[["age"]] <- NULL
 plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 
-gg_dta <- lapply(partial_veteran, gg_partial)
+gg_dta <- lapply(partial_veteran, ggRandomForests::gg_partial)
 gg_dta <- combine.gg_partial(gg_dta[[1]], gg_dta[[2]])
 
 plot(gg_dta[["karno"]])
@@ -166,28 +162,8 @@ plot(gg_dta.cat, panel = TRUE, notch = TRUE)
 # We need to create this dataset
 data(pbc, package = "randomForestSRC", )
 # For whatever reason, the age variable is in days... makes no sense to me
-for (ind in seq_len(dim(pbc)[2])) {
-  if (!is.factor(pbc[, ind])) {
-    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-        pbc[, ind] <- as.logical(pbc[, ind])
-      }
-    }
-  } else {
-    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-        pbc[, ind] <- as.logical(pbc[, ind])
-      }
-      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-        pbc[, ind] <- as.logical(pbc[, ind])
-      }
-    }
-  }
-  if (!is.logical(pbc[, ind]) &
-    length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-    pbc[, ind] <- factor(pbc[, ind])
-  }
-}
+pbc <- r_data_types(pbc)
+
 # Convert age to years
 pbc$age <- pbc$age / 364.24
 
@@ -213,9 +189,8 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
   save.memory = TRUE
 )
 
-varsel_pbc <- var.select(rfsrc_pbc)
 
-xvar <- varsel_pbc$topvars
+xvar <- rfsrc_pbc$xvar.names
 
 # Convert all partial plots to gg_partial objects
 gg_dta <- lapply(partial_pbc, gg_partial)

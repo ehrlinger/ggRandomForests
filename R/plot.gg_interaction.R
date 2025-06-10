@@ -27,7 +27,6 @@
 #' @seealso \code{\link[randomForestSRC]{rfsrc}}
 #' \code{\link[randomForestSRC]{find.interaction}}
 #' \code{\link[randomForestSRC]{max.subtree}}
-#' \code{\link[randomForestSRC]{var.select}}
 #' \code{\link[randomForestSRC]{vimp}}
 #' \code{\link{plot.gg_interaction}}
 #'
