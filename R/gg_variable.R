@@ -231,11 +231,11 @@ gg_variable.rfsrc <- function(object,
   }
 
   # IF we called this with a partial plot obect, instead of marginal.
-  if (inherits(object, "plot.variable")) {
-    if (object$partial) {
-      invisible(gg_partial(object, ...))
-    }
-  }
+  # if (inherits(object, "plot.variable")) {
+  #   if (object$partial) {
+  #     invisible(gg_partial(object, ...))
+  #   }
+  # }
 
   # !! Have to verify this works with a plot.variable object...
 

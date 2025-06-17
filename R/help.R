@@ -65,13 +65,8 @@
 #' \item \code{\link{gg_vimp}}: Variable Importance ranking for variable
 #' selection.
 #' (Ishwaran et.al. 2010).
-#' \item \code{\link{gg_interaction}}: Minimal Depth interaction detection
-#' (Ishwaran et.al. 2010)
 #' \item \code{\link{gg_variable}}: Marginal variable dependence.
-#' \item \code{\link{gg_partial}}: Partial (risk adjusted) variable
-#' dependence.
-#' \item \code{\link{gg_partial_coplot}}: Partial variable conditional
-#' dependence (computationally expensive).
+#'
 #' \item \code{\link{gg_survival}}: Kaplan-Meier/Nelson-Aalen hazard analysis.
 #' }
 #'
