@@ -96,11 +96,6 @@ nelson <-
     cum_hazard <- c(cum_hazard, cum_hazard[length(cum_hazard)])
     cum_hazard <- -log(srv_tab$surv)
 
-    times <- order(data[[interval]])
-    delta_time <- sapply(2:length(times), function(ind) {
-      times[ind] - times[ind - 1]
-    })
-
     # Still need to add hazard and density.
     tbl <- data.frame(
       cbind(
