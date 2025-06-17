@@ -5,11 +5,11 @@ Version: 2.4.0 (20250617)
 FOR prerelease versions please see:
   https://github.com/ehrlinger/ggRandomForests
 --------------------------------------------------------------------------------
-
+RELEASE 2.4.0
 --------------------------------------------------------------------------------
+* Removing partial plot and interaction plot functionality due to changes 
+    in randomForestSRC 3.4.x
 * Updating to latest ggplot2 functions
 * Utilize some namespace referencing
 * Added pkgdown documentation
 * Minor testing improvements
-* Removing partial plot and interaction plot functionality due to changes 
-    in randomForestSRC 3.4.x
