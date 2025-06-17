@@ -1,5 +1,4 @@
 url: http://ehrlinger.github.io/ggRandomForests/
-url: https://ehrlinger.github.io/boostmtree/
 template:
   bootstrap: 5
   bslib:
