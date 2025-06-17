@@ -2,18 +2,16 @@ Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
 Version: 2.4.0
-Date: 2025-04-16
+Date: 2025-06-17
 Authors@R: person("John", "Ehrlinger",  
   role = c("aut", "cre"), 
   email = "john.ehrlinger@gmail.com")
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
-URL: https://github.com/ehrlinger/ggRandomForests, http://ehrlinger.github.io/ggRandomForests/
+URL: https://github.com/ehrlinger/ggRandomForests, https://ehrlinger.github.io/ggRandomForests/
 BugReports: https://github.com/ehrlinger/ggRandomForests/issues
-Description: Graphic elements for exploring Random Forests using the 'randomForest' or
-    'randomForestSRC' package for survival, regression and classification forests and
-    'ggplot2' package plotting.
+Description: Graphic elements for exploring Random Forests using the 'randomForest' or 'randomForestSRC' package for survival, regression and classification forests and 'ggplot2' package plotting.
 Depends:
     R (>= 4.4.0),
     randomForestSRC (>= 3.4.0),
@@ -29,10 +27,6 @@ Suggests:
     bookdown,
     RColorBrewer,
     MASS,
-    knitr,
-    rmarkdown,
-    plotly,
     lintr,
     datasets
 RoxygenNote: 7.3.2
-VignetteBuilder: knitr
