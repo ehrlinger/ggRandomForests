@@ -27,7 +27,7 @@
 #' \code{\link{plot.gg_survival}}
 #'
 #' @examples
-#' \dontrun{
+#'
 #' # These get run through the gg_survival examples.
 #' data(pbc, package = "randomForestSRC")
 #' pbc$time <- pbc$days / 364.25
@@ -49,7 +49,7 @@
 #'
 #' plot(gg_dta, error = "none")
 #' plot(gg_dta)
-#' }
+#'
 #' @export
 kaplan <- function(interval,
                    censor,
@@ -68,6 +68,12 @@ kaplan <- function(interval,
   #* Cumulative hazard and hazard estimates from transforms and slopes;
   #* as well as integral of survivorship and proportionate life length;
   cum_hazard <- -log(srv_tab$surv)
+
+
+  times <- order(data[[interval]])
+  delta_time <- sapply(2:length(times), function(ind) {
+    times[ind] - times[ind - 1]
+  })
 
   # Still need to add hazard and density.
   tbl <- data.frame(

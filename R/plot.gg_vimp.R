@@ -36,13 +36,11 @@
 #' Regression and Classification (RF-SRC), R package version 1.4.
 #'
 #' @examples
-#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' # rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-#' data(rfsrc_iris, package = "ggRandomForests")
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 #' gg_dta <- gg_vimp(rfsrc_iris)
 #' plot(gg_dta)
 #'
@@ -50,34 +48,10 @@
 #' ## regression example
 #' ## ------------------------------------------------------------
 #' ## -------- air quality data
-#' # rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
-#' data(rfsrc_airq, package = "ggRandomForests")
+#' rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
 #'
-#' ## -------- Boston data
-#' data(rfsrc_boston, package = "ggRandomForests")
-#' gg_dta <- gg_vimp(rfsrc_boston)
-#' plot(gg_dta)
-#'
-#' ## -------- mtcars data
-#' data(rfsrc_mtcars, package = "ggRandomForests")
-#' gg_dta <- gg_vimp(rfsrc_mtcars)
-#' plot(gg_dta)
-#'
-#' ## ------------------------------------------------------------
-#' ## survival example
-#' ## ------------------------------------------------------------
-#' ## -------- veteran data
-#' data(rfsrc_veteran, package = "ggRandomForests")
-#' gg_dta <- gg_vimp(rfsrc_veteran)
-#' plot(gg_dta)
-#'
-#' ## -------- pbc data
-#' data(rfsrc_pbc, package = "ggRandomForests")
-#' gg_dta <- gg_vimp(rfsrc_pbc)
-#' plot(gg_dta)
-#' }
 #'
 #' @export
 plot.gg_vimp <- function(x, relative, lbls, ...) {

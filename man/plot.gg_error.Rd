@@ -25,14 +25,17 @@ randomForest. This figure is a reproduction of the error plot
 from the \code{\link[randomForestSRC]{plot.rfsrc}} function.
 }
 \examples{
-\dontrun{
- ## Examples from RFSRC package...
+## Examples from RFSRC package...
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
 ## ------------- iris data
 ## You can build a randomForest
-rfsrc_iris <- rfsrc(Species ~ ., data = iris, tree.err = TRUE)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris,
+  forest = TRUE,
+  importance = TRUE,
+  tree.err = TRUE,
+  save.memory = TRUE)
 
 # Get a data.frame containing error rates
 gg_dta <- gg_error(rfsrc_iris)
@@ -41,19 +44,30 @@ gg_dta <- gg_error(rfsrc_iris)
 plot(gg_dta)
 
 ## RandomForest example
-rf_iris <- randomForest::randomForest(Species ~ ., data = iris,
-                                      tree.err = TRUE, )
+rf_iris <- randomForest::randomForest(Species ~ .,
+  data = iris,
+  forest = TRUE,
+  importance = TRUE,
+  tree.err = TRUE,
+  save.memory = TRUE
+)
 gg_dta <- gg_error(rf_iris)
 plot(gg_dta)
 
-gg_dta <- gg_error(rf_iris, training=TRUE)
+gg_dta <- gg_error(rf_iris, training = TRUE)
 plot(gg_dta)
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
 ## ------------- airq data
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
-    na.action = "na.impute", tree.err = TRUE, )
+rfsrc_airq <- rfsrc(Ozone ~ .,
+  data = airquality,
+  na.action = "na.impute", 
+  forest = TRUE,
+  importance = TRUE,
+  tree.err = TRUE,
+  save.memory = TRUE
+)
 
 # Get a data.frame containing error rates
 gg_dta <- gg_error(rfsrc_airq)
@@ -66,20 +80,26 @@ plot(gg_dta)
 data(Boston, package = "MASS")
 Boston$chas <- as.logical(Boston$chas)
 rfsrc_boston <- rfsrc(medv ~ .,
-   data = Boston,
-   forest = TRUE,
-   importance = TRUE,
-   tree.err = TRUE,
-   save.memory = TRUE)
+  data = Boston,
+  forest = TRUE,
+  importance = TRUE,
+  tree.err = TRUE,
+  save.memory = TRUE
+)
 
 # Get a data.frame containing error rates
-gg_dta<- gg_error(rfsrc_boston)
+gg_dta <- gg_error(rfsrc_boston)
 
 # Plot the gg_error object
 plot(gg_dta)
 
 ## ------------- mtcars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars,
+  importance = TRUE,
+  save.memory = TRUE,
+  forest = TRUE,
+  tree.err = TRUE)
+
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_mtcars)
 
@@ -156,7 +176,6 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
 gg_dta <- gg_error(rfsrc_pbc)
 plot(gg_dta)
 
-}
 }
 \references{
 Breiman L. (2001). Random forests, Machine Learning, 45:5-32.

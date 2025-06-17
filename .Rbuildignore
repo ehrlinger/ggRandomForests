@@ -33,3 +33,4 @@ framed.sty
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^LICENSE\.md$

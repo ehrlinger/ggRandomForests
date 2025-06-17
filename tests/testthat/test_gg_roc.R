@@ -170,7 +170,7 @@ test_that("calc_roc", {
   expect_true(auc > .9)
   expect_true(auc <= 1)
   # The second outcome.
-  gg_dta <- calc_roc.rfsrc(rfsrc_iris,
+  gg_dta <- ggRandomForests::calc_roc(rfsrc_iris,
                            rfsrc_iris$yvar,
                            which_outcome = 2,
                            oob = TRUE)
@@ -185,7 +185,7 @@ test_that("calc_roc", {
   expect_true(auc > .9)
   expect_true(auc <= 1)
   # and the third...
-  gg_dta <- calc_roc.rfsrc(rfsrc_iris,
+  gg_dta <- calc_roc(rfsrc_iris,
                            rfsrc_iris$yvar,
                            which_outcome = 3,
                            oob = TRUE)

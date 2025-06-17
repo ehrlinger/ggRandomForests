@@ -32,7 +32,6 @@
 #' @seealso \code{\link{plot.gg_survival}}
 #'
 #' @examples
-#' \dontrun{
 #' ## -------- pbc data
 #' data(pbc, package = "randomForestSRC")
 #' pbc$time <- pbc$days / 364.25
@@ -62,7 +61,7 @@
 #' )
 #'
 #' plot(gg_dta, error = "lines")
-#' }
+#' 
 #' @export
 gg_survival <- function(interval = NULL,
                         censor = NULL,

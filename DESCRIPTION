@@ -6,7 +6,7 @@ Date: 2025-04-16
 Authors@R: person("John", "Ehrlinger",  
   role = c("aut", "cre"), 
   email = "john.ehrlinger@gmail.com")
-License: GPL (>=3)
+License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
 URL: https://github.com/ehrlinger/ggRandomForests, http://ehrlinger.github.io/ggRandomForests/
@@ -15,21 +15,20 @@ Description: Graphic elements for exploring Random Forests using the 'randomFore
     'randomForestSRC' package for survival, regression and classification forests and
     'ggplot2' package plotting.
 Depends:
-    R (>= 3.5.0),
-    randomForestSRC (>= 1.5.5),
+    R (>= 4.4.0),
+    randomForestSRC (>= 3.4.0),
     randomForest
 Imports:
     survival,
     parallel,
     tidyr,
+    dplyr,
     ggplot2
 Suggests:
     testthat,
-    rmdformats,
     bookdown,
     RColorBrewer,
     MASS,
-    dplyr,
     knitr,
     rmarkdown,
     plotly,

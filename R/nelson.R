@@ -28,7 +28,6 @@
 #' \code{\link{plot.gg_survival}}
 #'
 #' @examples
-#' \dontrun{
 #' # These get run through the gg_survival examples.
 #' data(pbc, package = "randomForestSRC")
 #' pbc$time <- pbc$days / 364.25
@@ -60,7 +59,7 @@
 #'
 #' plot(gg_dta, error = "bars")
 #' plot(gg_dta)
-#' }
+#' 
 #' @export
 nelson <-
   function(interval,

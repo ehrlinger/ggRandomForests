@@ -31,41 +31,45 @@ object created from a \code{\link[randomForestSRC]{rfsrc}} object}
 Plot a \code{\link{gg_survival}}  object.
 }
 \examples{
-\dontrun{
 ## -------- pbc data
-data(pbc, package="randomForestSRC")
-pbc$time <- pbc$days/364.25
+data(pbc, package = "randomForestSRC")
+pbc$time <- pbc$days / 364.25
 
 # This is the same as kaplan
-gg_dta <- gg_survival(interval="time", censor="status",
-                     data=pbc)
+gg_dta <- gg_survival(
+  interval = "time", censor = "status",
+  data = pbc
+)
 
-plot(gg_dta, error="none")
+plot(gg_dta, error = "none")
 plot(gg_dta)
 
 # Stratified on treatment variable.
-gg_dta <- gg_survival(interval="time", censor="status",
-                     data=pbc, by="treatment")
+gg_dta <- gg_survival(
+  interval = "time", censor = "status",
+  data = pbc, by = "treatment"
+)
 
-plot(gg_dta, error="none")
+plot(gg_dta, error = "none")
 plot(gg_dta)
-plot(gg_dta, label="treatment")
+plot(gg_dta, label = "treatment")
 
 # ...with smaller confidence limits.
-gg_dta <- gg_survival(interval="time", censor="status",
-                     data=pbc, by="treatment", conf.int=.68)
+gg_dta <- gg_survival(
+  interval = "time", censor = "status",
+  data = pbc, by = "treatment", conf.int = .68
+)
 
-plot(gg_dta, error="lines")
-plot(gg_dta, label="treatment", error="lines")
+plot(gg_dta, error = "lines")
+plot(gg_dta, label = "treatment", error = "lines")
 
 # ...with smaller confidence limits.
-gg_dta <- gg_survival(interval="time", censor="status",
-                     data=pbc, by="sex", conf.int=.68)
+gg_dta <- gg_survival(
+  interval = "time", censor = "status",
+  data = pbc, by = "sex", conf.int = .68
+)
 
-plot(gg_dta, error="lines")
-plot(gg_dta, label="sex", error="lines")
-
-
-}
+plot(gg_dta, error = "lines")
+plot(gg_dta, label = "sex", error = "lines")
 
 }

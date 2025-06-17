@@ -51,14 +51,14 @@
 #' ## ------------------------------------------------------------
 #' ## regression example
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- air quality data
 #' rfsrc_airq <- rfsrc(Ozone ~ ., airquality,
 #'   importance = TRUE
 #' )
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
-#' }
+#' 
 #'
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
@@ -73,7 +73,7 @@
 #' gg_dta <- gg_vimp(rf_boston)
 #' plot(gg_dta)
 #'
-#' \dontrun{
+#' 
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ .,
 #'   data = mtcars,
@@ -81,11 +81,11 @@
 #' )
 #' gg_dta <- gg_vimp(rfsrc_mtcars)
 #' plot(gg_dta)
-#' }
+#' 
 #' ## ------------------------------------------------------------
 #' ## survival example
 #' ## ------------------------------------------------------------
-#' \dontrun{
+#' 
 #' ## -------- veteran data
 #' data(veteran, package = "randomForestSRC")
 #' rfsrc_veteran <- rfsrc(Surv(time, status) ~ .,
@@ -155,7 +155,7 @@
 #' # Restrict to only the top 10.
 #' gg_dta <- gg_vimp(rfsrc_pbc, nvar = 10)
 #' plot(gg_dta)
-#' }
+#' 
 #' @aliases gg_vimp gg_vimp.rfsrc gg_vimp.randomForest
 #' @aliases gg_vimp.randomForest.formula
 #' @export

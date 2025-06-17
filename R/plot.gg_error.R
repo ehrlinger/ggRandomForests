@@ -40,14 +40,17 @@
 #' and Classification (RF-SRC), R package version 1.4.
 #'
 #' @examples
-#' \dontrun{
 #' ## Examples from RFSRC package...
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## ------------- iris data
 #' ## You can build a randomForest
-#' rfsrc_iris <- rfsrc(Species ~ ., data = iris, tree.err = TRUE)
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris,
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   tree.err = TRUE,
+#'   save.memory = TRUE)
 #'
 #' # Get a data.frame containing error rates
 #' gg_dta <- gg_error(rfsrc_iris)
@@ -58,7 +61,10 @@
 #' ## RandomForest example
 #' rf_iris <- randomForest::randomForest(Species ~ .,
 #'   data = iris,
+#'   forest = TRUE,
+#'   importance = TRUE,
 #'   tree.err = TRUE,
+#'   save.memory = TRUE
 #' )
 #' gg_dta <- gg_error(rf_iris)
 #' plot(gg_dta)
@@ -71,7 +77,11 @@
 #' ## ------------- airq data
 #' rfsrc_airq <- rfsrc(Ozone ~ .,
 #'   data = airquality,
-#'   na.action = "na.impute", tree.err = TRUE,
+#'   na.action = "na.impute", 
+#'   forest = TRUE,
+#'   importance = TRUE,
+#'   tree.err = TRUE,
+#'   save.memory = TRUE
 #' )
 #'
 #' # Get a data.frame containing error rates
@@ -99,9 +109,12 @@
 #' plot(gg_dta)
 #'
 #' ## ------------- mtcars data
-#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
-#' }
-
+#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars,
+#'   importance = TRUE,
+#'   save.memory = TRUE,
+#'   forest = TRUE,
+#'   tree.err = TRUE)
+#'
 #' # Get a data.frame containing error rates
 #' gg_dta<- gg_error(rfsrc_mtcars)
 #'
@@ -178,37 +191,44 @@
 #' gg_dta <- gg_error(rfsrc_pbc)
 #' plot(gg_dta)
 #'
-#' }
 #' @importFrom ggplot2 ggplot geom_line theme labs
 #' @importFrom tidyr gather
 #' @export
 plot.gg_error <- function(x, ...) {
   gg_dta <- x
-
+  
   if (inherits(gg_dta, "rfsrc")) {
     gg_dta <- gg_error(gg_dta)
   }
-
+  
   if (!inherits(gg_dta, "gg_error")) {
     stop("Incorrect object type: Expects a gg_error object")
   }
-
+  point = FALSE
+  if (nrow(na.omit(gg_dta)) < 2) { 
+    point=TRUE
+  }
   if (ncol(gg_dta) > 2) {
     gg_dta <- tidyr::gather(gg_dta, "variable", "value", -"ntree")
     gg_plt <-
-      ggplot2::ggplot(
-        na.omit(gg_dta),
-        ggplot2::aes(x = "ntree", y = "value", col = "variable")
-      )
+      ggplot2::ggplot(na.omit(gg_dta),
+                      ggplot2::aes(x = .data[["ntree"]], y = .data[["value"]], 
+                                   col = .data[["variable"]]))
   } else {
     # We expect the object to have the following columns
     gg_plt <-
-      ggplot2::ggplot(na.omit(gg_dta), ggplot2::aes(x = "ntree", y = "error"))
+      ggplot2::ggplot(na.omit(gg_dta), ggplot2::aes(x = .data[["ntree"]], 
+                                                    y = .data[["error"]]))
   }
-  gg_plt <- gg_plt +
-    ggplot2::geom_line() +
-    ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")
-
+  if (point) {
+    gg_plt <- gg_plt +
+      ggplot2::geom_point() +
+      ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")
+  } else{
+    gg_plt <- gg_plt +
+      ggplot2::geom_line() +
+      ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")
+  }
   if (length(unique(gg_dta$variable)) == 1) {
     gg_plt <- gg_plt + ggplot2::theme(legend.position = "none")
   }

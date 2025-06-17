@@ -1,4 +1,37 @@
 url: http://ehrlinger.github.io/ggRandomForests/
 template:
   bootstrap: 5
+  bslib:
+    bootswatch: zephyr
+    base_font: {google: "Outfit"}
+    code_font: {google: "Fira Code"}
+  light-switch: true
+  theme: atom-one-light
+  theme-dark: atom-one-dark
+  
+home:
+  sidebar:
+    structure: [badges, links, authors]
+    components:
+      badges:
+        title: Package badges
+        text: |
+          ![](https://img.shields.io/github/r-package/v/ehrlinger/ggrandomforests)<br>
+          ![](https://img.shields.io/github/actions/workflow/status/ehrlinger/ggrandomforests/pkgdown.yaml)<br>
+          
+navbar:
+  structure:
+    right: [search, github, my_linkedin, lightswitch]
+  components:
+    my_linkedin:
+      icon: fa-linkedin
+      href: https://www.linkedin.com/in/ehrlinger/
+      aria-label: LinkedIn
 
+footer:
+  structure:
+    left: developed_by
+    right: built_with_pkgdown
+  components:
+    developed_by: "John Ehrlinger"
+    built_with_pkgdown: "This site was built using [pkgdown](https://pkgdown.r-lib.org/)!&nbsp;&nbsp;<img src='https://pkgdown.r-lib.org/logo.png' alt='pkgdown logo' width='25'>"
