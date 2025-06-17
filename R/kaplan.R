@@ -69,6 +69,7 @@ kaplan <- function(interval,
   #* as well as integral of survivorship and proportionate life length;
   cum_hazard <- -log(srv_tab$surv)
 
+
   times <- order(data[[interval]])
   delta_time <- sapply(2:length(times), function(ind) {
     times[ind] - times[ind - 1]
