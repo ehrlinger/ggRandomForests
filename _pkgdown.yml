@@ -13,12 +13,12 @@ template:
 home:
   sidebar:
     structure: [badges, links, authors]
-      components:
-        badges:
-          title: Package badges
-          text: |
-            ![](https://img.shields.io/github/r-package/v/ehrlinger/ggrandomforests)<br>
-            ![](https://img.shields.io/github/actions/workflow/status/ehrlinger/ggrandomforests/pkgdown.yaml)<br>
+    components:
+      badges:
+        title: Package badges
+        text: |
+          ![](https://img.shields.io/github/r-package/v/ehrlinger/ggrandomforests)<br>
+          ![](https://img.shields.io/github/actions/workflow/status/ehrlinger/ggrandomforests/pkgdown.yaml)<br>
           
 navbar:
   structure:
