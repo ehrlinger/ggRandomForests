@@ -1,7 +1,7 @@
 ##=============================================================================
 ##=============================================================================
 #' Split partial lots into continuous or categorical datasets
-#' @param part_dta partial plot data from \code{rfsrc::plot.variable}
+#' @param part_dta partial plot data from \code{varpro::partialpro}
 #' @param nvars how many of the partial plot variables to calculate
 #' @param cat_limit Categorical features are build when there are fewer than 
 #'  cat_limit unique features.
@@ -10,7 +10,7 @@
 #'    
 #' @export
 #' 
-df_partialpro = function(part_dta, nvars = NULL, cat_limit=12, name=NULL) {
+gg_partialpro_df = function(part_dta, nvars = NULL, cat_limit=10, name=NULL) {
   ## Prepare the partial pro  dependencies data for panel plots
   if (is.null(nvars)) {
     nvars = length(part_dta)

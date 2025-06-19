@@ -8,7 +8,7 @@
 #'  multiple partial plot objects in figures.
 #'    
 #' @export
-df_partial = function(part_dta, nvars = NULL, cat_limit = 10, name=NULL) {
+gg_partial_df = function(part_dta, nvars = NULL, cat_limit = 10, name=NULL) {
   ## Prepare the partial dependencies data for panel plots
   if (is.null(nvars)) {
     nvars = length(part_dta$plotthis)
