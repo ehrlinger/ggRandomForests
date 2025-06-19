@@ -21,7 +21,8 @@ Imports:
     parallel,
     tidyr,
     dplyr,
-    ggplot2
+    ggplot2,
+    stringr
 Suggests:
     testthat,
     bookdown,
