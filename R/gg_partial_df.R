@@ -1,5 +1,13 @@
 ##=============================================================================
-## Split partial lots into continuous or categorical datasets
+#' Split partial lots into continuous or categorical datasets
+#' @param part_dta partial plot data from \code{rfsrc::plot.variable}
+#' @param nvars how many of the partial plot variables to calculate
+#' @param cat_limit Categorical features are build when there are fewer than 
+#'  cat_limit unique features.
+#' @param name a label name applied to all features. Useful when combining 
+#'  multiple partial plot objects in figures.
+#'    
+#' @export
 df_partial = function(part_dta, nvars = NULL, cat_limit = 10, name=NULL) {
   ## Prepare the partial dependencies data for panel plots
   if (is.null(nvars)) {
@@ -36,8 +44,8 @@ df_partial = function(part_dta, nvars = NULL, cat_limit = 10, name=NULL) {
       cat_list[[feature]] <- plt.df
     }
   }
-  continuous = bind_rows(cont_list)
-  categorical = bind_rows(cat_list)
+  continuous = dplyr::bind_rows(cont_list)
+  categorical = dplyr::bind_rows(cat_list)
   
   if(!is.na(name)){
     continuous$model <- categorical$model <- name
