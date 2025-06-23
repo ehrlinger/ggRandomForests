@@ -3,14 +3,17 @@
 #' Split partial lots into continuous or categorical datasets
 #' @param part_dta partial plot data from \code{varpro::partialpro}
 #' @param nvars how many of the partial plot variables to calculate
-#' @param cat_limit Categorical features are build when there are fewer than 
+#' @param cat_limit Categorical features are build when there are fewer than
 #'  cat_limit unique features.
-#' @param name a label name applied to all features. Useful when combining 
+#' @param model a label name applied to all features. Useful when combining
 #'  multiple partial plot objects in figures.
-#'    
+#'
 #' @export
-#' 
-gg_partialpro_df = function(part_dta, nvars = NULL, cat_limit=10, name=NULL) {
+#'
+gg_partialpro = function(part_dta,
+                         nvars = NULL,
+                         cat_limit = 10,
+                         model = NULL) {
   ## Prepare the partial pro  dependencies data for panel plots
   if (is.null(nvars)) {
     nvars = length(part_dta)
@@ -68,12 +71,9 @@ gg_partialpro_df = function(part_dta, nvars = NULL, cat_limit=10, name=NULL) {
   continuous = dplyr::bind_rows(cont_list)
   categorical = dplyr::bind_rows(cat_list)
   
-  if(!is.na(name)){
-    continuous$model <- categorical$model <- name
+  if (!is.null(model)) {
+    continuous$model <- categorical$model <- model
   }
   
-  return(list(
-    continuous = continuous,
-    categorical = categorical
-  ))
+  return(list(continuous = continuous, categorical = categorical))
 }
