@@ -10,7 +10,7 @@
 #' 
 #' @importFrom stringr str_sub
 #' @export
-varpro_feature_name <- function(varpro_names, dataset) {
+varpro_feature_names <- function(varpro_names, dataset) {
   inc_set <- varpro_names[which(varpro_names %in% colnames(dataset))]
   one_set <- varpro_names[which(!varpro_names %in% colnames(dataset))]
   while (length(one_set) > 0) {
