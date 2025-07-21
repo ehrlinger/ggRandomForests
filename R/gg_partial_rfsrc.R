@@ -1,0 +1,44 @@
+##=============================================================================
+#' Split partial lots into continuous or categorical datasets
+#' 
+#' gg_partial_rfsrc uses the \code{rfsrc::partial.rfsrc} to generate the partial
+#' plot data internally. So you provide the \code{rfsrc::rfsrc} model, and the 
+#' xvar.names to generate the data. 
+#' 
+#' @param rf_model \code{rfsrc::rfsrc} model
+#' @param xvar.names Which variables to calculate partial plots
+#' @param cat_limit Categorical features are build when there are fewer than
+#'  cat_limit unique features.
+#' #'
+#' @export
+gg_partial_rfsrc <- function(rf_model, xvar.names, cat_limit = 10) {
+  # Check the rfsrc type
+  # rf_model$family
+  pdta <- lapply(xvar.names, function(xname) {
+    xval <- unlist(rf_model$xvar |> 
+                     dplyr::select(dplyr::all_of(xname)))
+    gr <- length(unique(xval)) < cat_limit
+    partial.obj <- randomForestSRC::partial.rfsrc(
+      rf_model,
+      partial.xvar = xname,
+      partial.values =xval
+      
+    )
+    pout <- randomForestSRC::get.partial.plot.data(partial.obj,
+                                                   granule = gr)
+    out_dta <- data.frame(x=pout$x, yhat=pout$yhat)
+    out_dta$name <- xname
+    out_dta$type <- c("continuous","categorical")[gr+1] 
+    if(! is.null(pout$partial.time)){
+      out_dta$time <- pout$partial.time
+    }
+    return(out_dta)
+  })
+  pdta <-do.call("rbind", pdta)
+  continuous <- pdta |> dplyr::filter(type== "continuous") |> 
+    mutate(x = as.numeric(x)) |> dplyr::select(-type)
+  categorical<- pdta |> dplyr::filter(type== "categorical")  |> 
+    dplyr::select(-type)
+  return(list(continuous =continuous,
+              categorical=categorical))
+}
