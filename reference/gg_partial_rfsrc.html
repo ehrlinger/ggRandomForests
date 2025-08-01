@@ -52,7 +52,7 @@ xvar.names to generate the data.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_partial_rfsrc</span><span class="op">(</span><span class="va">rf_model</span>, <span class="va">xvar.names</span>, cat_limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_partial_rfsrc</span><span class="op">(</span><span class="va">rf_model</span>, xvar.names <span class="op">=</span> <span class="cn">NULL</span>, newx <span class="op">=</span> <span class="cn">NULL</span>, cat_limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,6 +65,10 @@ xvar.names to generate the data.</p>
 
 <dt id="arg-xvar-names">xvar.names<a class="anchor" aria-label="anchor" href="#arg-xvar-names"></a></dt>
 <dd><p>Which variables to calculate partial plots</p></dd>
+
+
+<dt id="arg-newx">newx<a class="anchor" aria-label="anchor" href="#arg-newx"></a></dt>
+<dd><p>a <code>data.frame</code> containing data to use for the partial plots</p></dd>
 
 
 <dt id="arg-cat-limit">cat_limit<a class="anchor" aria-label="anchor" href="#arg-cat-limit"></a></dt>
