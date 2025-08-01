@@ -10,7 +10,20 @@
 #' @param newx a \code{data.frame} containing data to use for the partial plots
 #' @param cat_limit Categorical features are build when there are fewer than
 #'  cat_limit unique features.
-#' #'
+#'
+#' @examples
+#' ## ------------------------------------------------------------
+#' ##
+#' ## regression
+#' ##
+#' ## ------------------------------------------------------------
+#' 
+#' airq.obj <- rfsrc(Ozone ~ ., data = airquality)
+#' 
+#' ## partial effect for wind
+#' prt_dta <- gg_partial_rfsrc(airq.obj,
+#'                        xvar.names = c("Wind"))
+#' 
 #' @export
 gg_partial_rfsrc <- function(rf_model,
                              xvar.names=NULL,
@@ -24,13 +37,13 @@ gg_partial_rfsrc <- function(rf_model,
     newx = rf_model$xvar
   }
   
-  if(length(intersection(colnames(newx), 
+  if(length(intersect(colnames(newx), 
                          rf_model$xvar.names)) == ncol(newx)){
     return("newx must be a dataframe with the same columns used to train the rfsrc object")
   }
   
   if(!is.null(xvar.names)){
-    if(length(intersection(xvar.names, colnames(newx))) == ncol(newx)){
+    if(length(intersect(xvar.names, colnames(newx))) == ncol(newx)){
       return("xvar.names contains column names not found in the rfsrc object")
     }
   }
