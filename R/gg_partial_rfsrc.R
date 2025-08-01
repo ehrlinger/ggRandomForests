@@ -24,13 +24,14 @@ gg_partial_rfsrc <- function(rf_model,
     newx = rf_model$xvar
   }
   
-  if(! colnames(newx) %in% rf_model$xvar.names){
+  if(length(intersection(colnames(newx), 
+                         rf_model$xvar.names)) == ncol(newx)){
     return("newx must be a dataframe with the same columns used to train the rfsrc object")
   }
   
   if(!is.null(xvar.names)){
-    if(!xvar.names %in% newx){
-    return("xvar.names contains column names not found in the rfsrc object")
+    if(length(intersection(xvar.names, colnames(newx))) == ncol(newx)){
+      return("xvar.names contains column names not found in the rfsrc object")
     }
   }
   
