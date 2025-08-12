@@ -36,7 +36,7 @@
 #' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
 #' \code{\link{gg_survival}}
 #'
-#' #' @examples
+#' @examples
 #' ## ------------------------------------------------------------
 #' ## classification example
 #' ## ------------------------------------------------------------

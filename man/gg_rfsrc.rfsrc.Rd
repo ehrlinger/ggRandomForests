@@ -32,11 +32,7 @@ the response using \code{\link{plot.gg_rfsrc}}.
    \code{oob} boolean, should we return the oob prediction , or the full
 forest prediction.
 }
-\seealso{
-\code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
-\code{\link{gg_survival}}
-
-#' @examples
+\examples{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
@@ -137,4 +133,10 @@ plot(gg_dta)
 
 gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
 plot(gg_dta)
+
+
+}
+\seealso{
+\code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
+\code{\link{gg_survival}}
 }
