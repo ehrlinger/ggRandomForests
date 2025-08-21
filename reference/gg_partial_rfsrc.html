@@ -52,7 +52,13 @@ xvar.names to generate the data.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_partial_rfsrc</span><span class="op">(</span><span class="va">rf_model</span>, xvar.names <span class="op">=</span> <span class="cn">NULL</span>, newx <span class="op">=</span> <span class="cn">NULL</span>, cat_limit <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_partial_rfsrc</span><span class="op">(</span></span>
+<span>  <span class="va">rf_model</span>,</span>
+<span>  xvar.names <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  xvar2.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  newx <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cat_limit <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -64,7 +70,11 @@ xvar.names to generate the data.</p>
 
 
 <dt id="arg-xvar-names">xvar.names<a class="anchor" aria-label="anchor" href="#arg-xvar-names"></a></dt>
-<dd><p>Which variables to calculate partial plots</p></dd>
+<dd><p>list(&lt;str&gt;) Which variables to calculate partial plots</p></dd>
+
+
+<dt id="arg-xvar-name">xvar2.name<a class="anchor" aria-label="anchor" href="#arg-xvar-name"></a></dt>
+<dd><p>&lt;str&gt; a single grouping feature that is in the newx dataset</p></dd>
 
 
 <dt id="arg-newx">newx<a class="anchor" aria-label="anchor" href="#arg-newx"></a></dt>
