@@ -4,12 +4,20 @@
 \alias{gg_partial_rfsrc}
 \title{Split partial lots into continuous or categorical datasets}
 \usage{
-gg_partial_rfsrc(rf_model, xvar.names = NULL, newx = NULL, cat_limit = 10)
+gg_partial_rfsrc(
+  rf_model,
+  xvar.names = NULL,
+  xvar2.name = NULL,
+  newx = NULL,
+  cat_limit = 10
+)
 }
 \arguments{
 \item{rf_model}{\code{rfsrc::rfsrc} model}
 
-\item{xvar.names}{Which variables to calculate partial plots}
+\item{xvar.names}{list(<str>) Which variables to calculate partial plots}
+
+\item{xvar2.name}{<str> a single grouping feature that is in the newx dataset}
 
 \item{newx}{a \code{data.frame} containing data to use for the partial plots}
 
