@@ -39,7 +39,7 @@ gg_partial_rfsrc <- function(rf_model,
     newx = rf_model$xvar
   }
   
-  if (length(intersect(colnames(newx), rf_model$xvar.names)) != ncol(newx)) {
+  if (sum(colnames(newx) %in% rf_model$xvar.names) != ncol(newx)) {
     return("newx must be a dataframe with the same columns used to train the rfsrc object")
   }
   
