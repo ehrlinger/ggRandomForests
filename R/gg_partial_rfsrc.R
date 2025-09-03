@@ -44,7 +44,7 @@ gg_partial_rfsrc <- function(rf_model,
   }
   
   if (!is.null(xvar.names)) {
-    if (length(intersect(xvar.names, colnames(newx))) != ncol(newx)) {
+    if (sum(xvar.names %in% colnames(newx)) != length(xvar.names)) {
       return("xvar.names contains column names not found in the rfsrc object")
     }
   }
@@ -96,9 +96,9 @@ gg_partial_rfsrc <- function(rf_model,
       p1dta$grp <- x2val
       return(p1dta)
     })
-    pdta <- do.call("rbind", pdta)
+    
   }
-  
+  pdta <- do.call("rbind", pdta)
   continuous <- pdta |> dplyr::filter(type == "continuous") |>
     mutate(x = as.numeric(x)) |> dplyr::select(-type)
   categorical <- pdta |> dplyr::filter(type == "categorical")  |>
