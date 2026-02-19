@@ -1,11 +1,17 @@
 ---
 title: "Exploring Random Forests with ggRandomForests"
 author: "John Ehrlinger"
-format: html
-date: "`r Sys.Date()`"
+date: today
+format: 
+  html:
+    toc: true
+    html-math-method: mathjax
+editor: 
+  markdown: 
+    wrap: 80
 vignette: >
-  %\VignetteIndexEntry{Exploring Random Forests with ggRandomForests}
-  %\VignetteEngine{quarto::quarto_render}
+  %\VignetteIndexEntry{Vignette's Title}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---
 
