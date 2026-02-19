@@ -21,6 +21,10 @@ test_that("gg_variable classifications", {
   
   # Test object type
   expect_is(gg_dta, "gg_variable")
+
+  ## Ensure non-OOB predictions keep predictor columns
+  gg_full <- gg_variable(rfsrc_iris, oob = FALSE)
+  expect_true(all(rfsrc_iris$xvar.names %in% names(gg_full)))
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta, xvar = "Petal.Width")
@@ -58,6 +62,15 @@ test_that("gg_variable classifications", {
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
   gg_plt <- plot(gg_dta)
+
+  ## Ensure we can rebuild training data for subset() calls
+  iris_two <- droplevels(subset(iris, Species != "setosa"))
+  rf_subset <- randomForest::randomForest(Species ~ .,
+                                          data = iris_two,
+                                          ntree = 60)
+  gg_subset <- gg_variable(rf_subset)
+  expect_is(gg_subset, "gg_variable")
+  expect_true(all(c("Sepal.Length", "Sepal.Width") %in% names(gg_subset)))
   
 })
 
@@ -112,4 +125,16 @@ test_that("gg_variable regression", {
   expect_warning(gg_plt <- plot(gg_dta, panel = TRUE))
   expect_is(gg_plt, "ggplot")
   
+})
+
+test_that("gg_variable survival handles late time requests", {
+  data(veteran, package = "randomForestSRC")
+  Surv <- survival::Surv
+  rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ .,
+                                          data = veteran,
+                                          ntree = 50,
+                                          nsplit = 5)
+  late_time <- max(rfsrc_veteran$time.interest) + 50
+  expect_silent(gg_dta <- gg_variable(rfsrc_veteran, time = late_time))
+  expect_is(gg_dta, "gg_variable")
 })

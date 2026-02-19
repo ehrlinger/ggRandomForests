@@ -29,5 +29,6 @@ Suggests:
     RColorBrewer,
     MASS,
     lintr,
-    datasets
-RoxygenNote: 7.3.2
+    datasets,
+    rmarkdown
+RoxygenNote: 7.3.3

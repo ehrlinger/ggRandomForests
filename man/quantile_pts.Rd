@@ -2,25 +2,29 @@
 % Please edit documentation in R/quantile_pts.R
 \name{quantile_pts}
 \alias{quantile_pts}
-\title{Find points evenly distributed along the vectors values.}
+\title{Quantile-based cut points for coplots}
 \usage{
 quantile_pts(object, groups, intervals = FALSE)
 }
 \arguments{
-\item{object}{vector object of values.}
+\item{object}{Numeric vector of predictor values.}
 
-\item{groups}{how many points do we want}
+\item{groups}{Number of quantile points (or intervals) to compute.}
 
-\item{intervals}{should we return the raw points or intervals to
-be passed to the \code{cut} function}
+\item{intervals}{Logical indicating whether to return interval boundaries
+suitable for \code{cut()} (length \code{groups + 1}) or the interior
+quantile points (length \code{groups}).}
 }
 \value{
-vector of groups+1 cut point values.
+Numeric vector of quantile points. When \code{intervals = TRUE}
+  the result is strictly increasing and can be supplied to \code{cut()} to
+  produce \code{groups} balanced strata.
 }
 \description{
-This function finds point values from a vector argument to produce
- \code{groups} intervals. Setting \code{groups=2} will return three values,
- the two end points, and one mid point (at the median value of the vector).
+This helper wraps \code{\link[stats]{quantile}} to create well-spaced
+cut points for conditioning plots. When \code{intervals = TRUE} the lower
+boundary is nudged down so that \code{cut()} treats the minimum value as a
+valid observation.
 
 The output can be passed directly into the breaks argument of the
 \code{cut} function for creating groups for coplots.

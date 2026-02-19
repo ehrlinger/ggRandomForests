@@ -14,10 +14,12 @@
 #' Variable Importance (VIMP) data object
 #'
 #' \code{gg_vimp} Extracts the variable importance (VIMP) information from a
-#' a \code{\link[randomForestSRC]{rfsrc}} object.
+#' \code{\link[randomForestSRC]{rfsrc}} or \code{\link[randomForest]{randomForest}}
+#' object and reshapes it into a tidy data set.
 #'
-#' @param object A \code{\link[randomForestSRC]{rfsrc}} object or output from
-#' \code{\link[randomForestSRC]{vimp}}
+#' @param object A \code{\link[randomForestSRC]{rfsrc}} object, the output from
+#' \code{\link[randomForestSRC]{vimp}}, or a fitted
+#' \code{\link[randomForest]{randomForest}}.
 #' @param nvar argument to control the number of variables included in the
 #' output.
 #' @param ... arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}}
@@ -25,7 +27,10 @@
 #' importance information.
 #'
 #' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank
-#' order.
+#'   order, optionally containing class-specific scores and a relative importance
+#'   column. When \code{randomForest} objects lack stored importance values a
+#'   warning is issued and \code{NA} placeholders are returned so plots remain
+#'   reproducible.
 #'
 #' @seealso \code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}}
 #' @seealso \code{\link[randomForestSRC]{vimp}}
@@ -287,9 +292,38 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
 
   ### set importance to NA if it is NULL
   if (is.null(object$importance)) {
-    warning("randomForest object does not contain importance information.")
-    # gg_dta <- data.frame(sort(randomForestSRC::vimp(object)$importance,
-    #                           decreasing=TRUE))
+    importance_est <- tryCatch(
+      randomForest::importance(object, scale = FALSE),
+      error = function(e) NULL
+    )
+    if (is.null(importance_est)) {
+      vars <- object$forest$xvar.names
+      if (is.null(vars)) {
+        training_info <- .rf_recover_model_frame(object)
+        if (!is.null(training_info)) {
+          vars <- setdiff(colnames(training_info$model_frame), training_info$response_name)
+        }
+      }
+      if (is.null(vars)) {
+        stop(
+          "Variable importance is unavailable for this randomForest object and ",
+          "training predictors cannot be recovered."
+        )
+      }
+      warning(
+        "randomForest object does not contain importance information. Returning NA values."
+      )
+      placeholder <- data.frame(
+        vimp = rep(NA_real_, length(vars)),
+        vars = vars,
+        rel_vimp = NA_real_
+      )
+      placeholder$vars <- factor(placeholder$vars, levels = rev(unique(placeholder$vars)))
+      placeholder$positive <- FALSE
+      class(placeholder) <- c("gg_vimp", class(placeholder))
+      return(placeholder)
+    }
+    gg_dta <- data.frame(importance_est)
   } else {
     gg_dta <- data.frame(object$importance)
   }

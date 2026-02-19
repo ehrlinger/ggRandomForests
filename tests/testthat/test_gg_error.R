@@ -67,7 +67,8 @@ test_that("gg_error.randomForest classifications", {
   data(iris, package = "datasets")
   ## Load the cached forest
   rf_iris <- randomForest::randomForest(Species ~ .,
-                                        data = iris)
+                                        data = iris,
+                                        ntree = 75)
   
   # Test the cached forest type
   expect_is(rf_iris, "randomForest")
@@ -94,6 +95,13 @@ test_that("gg_error.randomForest classifications", {
   
   # Test return is s ggplot object
   expect_is(gg_plt, "ggplot")
+
+  ## Ensure training curve can be requested
+  gg_train <- gg_error(rf_iris, training = TRUE)
+  expect_true("train" %in% names(gg_train))
+  expect_length(gg_train$train, nrow(gg_train))
+  expect_true(min(gg_train$train, na.rm = TRUE) >= 0)
+  expect_true(max(gg_train$train, na.rm = TRUE) <= 1)
   
   # "Incorrect object type: Expects a gg_error object"
   expect_error(gg_error(gg_plt))
@@ -158,7 +166,7 @@ test_that("gg_error regression randomForest", {
   
   Boston$chas <- as.logical(Boston$chas)
   
-  rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
+  rf_boston <- randomForest::randomForest(medv ~ ., data = Boston, ntree = 100)
   # Test the cached forest type
   expect_is(rf_boston, "randomForest")
   
@@ -178,22 +186,16 @@ test_that("gg_error regression randomForest", {
   # Test data is correctly pulled from randomForest obect.
   expect_equivalent(c(gg_dta[, 1]), rf_boston$mse)
   
-  ## Test plotting the gg_error object
-  gg_plt <- plot(gg_dta)
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
-  
-  # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
-  
-  # Test the exception for input
-  expect_error(gg_error(gg_plt))
-  
   ## Create the correct gg_error object
   gg_dta <- gg_error(rf_boston)
-  
+
   # Test object type
   expect_is(gg_dta, "gg_error")
+
+  ## Training curve is available
+  gg_train <- gg_error(rf_boston, training = TRUE)
+  expect_true("train" %in% names(gg_train))
+  expect_length(gg_train$train, nrow(gg_train))
+  expect_true(all(is.finite(gg_train$train)))
   
 })

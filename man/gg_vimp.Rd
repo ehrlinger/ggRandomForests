@@ -10,8 +10,9 @@
 gg_vimp(object, nvar, ...)
 }
 \arguments{
-\item{object}{A \code{\link[randomForestSRC]{rfsrc}} object or output from
-\code{\link[randomForestSRC]{vimp}}}
+\item{object}{A \code{\link[randomForestSRC]{rfsrc}} object, the output from
+\code{\link[randomForestSRC]{vimp}}, or a fitted
+\code{\link[randomForest]{randomForest}}.}
 
 \item{nvar}{argument to control the number of variables included in the
 output.}
@@ -22,11 +23,15 @@ importance information.}
 }
 \value{
 \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank
-order.
+  order, optionally containing class-specific scores and a relative importance
+  column. When \code{randomForest} objects lack stored importance values a
+  warning is issued and \code{NA} placeholders are returned so plots remain
+  reproducible.
 }
 \description{
 \code{gg_vimp} Extracts the variable importance (VIMP) information from a
-a \code{\link[randomForestSRC]{rfsrc}} object.
+\code{\link[randomForestSRC]{rfsrc}} or \code{\link[randomForest]{randomForest}}
+object and reshapes it into a tidy data set.
 }
 \examples{
 ## ------------------------------------------------------------

@@ -11,23 +11,27 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-#' Find points evenly distributed along the vectors values.
+#' Quantile-based cut points for coplots
 #'
-#' @param object vector object of values.
-#' @param groups how many points do we want
-#' @param intervals should we return the raw points or intervals to
-#' be passed to the \code{cut} function
+#' @param object Numeric vector of predictor values.
+#' @param groups Number of quantile points (or intervals) to compute.
+#' @param intervals Logical indicating whether to return interval boundaries
+#'   suitable for \code{cut()} (length \code{groups + 1}) or the interior
+#'   quantile points (length \code{groups}).
 #'
 #'
 #' @description
-#' This function finds point values from a vector argument to produce
-#'  \code{groups} intervals. Setting \code{groups=2} will return three values,
-#'  the two end points, and one mid point (at the median value of the vector).
+#' This helper wraps \code{\link[stats]{quantile}} to create well-spaced
+#' cut points for conditioning plots. When \code{intervals = TRUE} the lower
+#' boundary is nudged down so that \code{cut()} treats the minimum value as a
+#' valid observation.
 #'
 #' The output can be passed directly into the breaks argument of the
 #' \code{cut} function for creating groups for coplots.
 #'
-#' @return vector of groups+1 cut point values.
+#' @return Numeric vector of quantile points. When \code{intervals = TRUE}
+#'   the result is strictly increasing and can be supplied to \code{cut()} to
+#'   produce \code{groups} balanced strata.
 #'
 #' @seealso \code{cut}
 #' @importFrom stats quantile
@@ -47,35 +51,36 @@
 #'
 #' @export
 quantile_pts <- function(object, groups, intervals = FALSE) {
-  # We need one more break than group,
-  breaks <- groups
-  if (intervals) {
-    breaks <- breaks + 1
+  if (!is.numeric(groups) || groups < 1) {
+    stop("`groups` must be a positive integer")
+  }
+  groups <- as.integer(groups)
+
+  object <- stats::na.omit(object)
+  if (!length(object)) {
+    return(numeric())
   }
 
-  if (sum(is.na(object)) > 0) {
-    object <- object[-which(is.na(object))]
-  }
-
-  n_x <- length(unique(object))
-  if (n_x > breaks) {
-    x_uniq <-
-      sort(unique(object))[unique(as.integer(seq(1,
-        n_x,
-        length = min(
-          breaks,
-          n_x
-        )
-      )))]
+  probs <- if (intervals) {
+    seq(0, 1, length.out = groups + 1)
   } else {
-    x_uniq <- unique(object)
+    seq(0, 1, length.out = groups)
   }
 
-  # If we're looking for intervals, we need to include the first point
-  # cut will make it NA if we don't move this a little bit lower,
-  # because of the (lv, uv] interval definition.
+  pts <- as.numeric(stats::quantile(object,
+    probs = probs,
+    na.rm = TRUE,
+    type = 2
+  ))
+
+  # Ensure breaks are strictly increasing for cut()
   if (intervals) {
-    x_uniq[1] <- x_uniq[1] - 1.e-7
+    pts <- unique(pts)
+    if (length(pts) < 2) {
+      pts <- c(pts, pts + .Machine$double.eps)
+    }
+    pts[1] <- pts[1] - 1e-7
   }
-  x_uniq
+
+  pts
 }

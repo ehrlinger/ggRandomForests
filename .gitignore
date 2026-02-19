@@ -40,3 +40,10 @@ tests/testthat/Rplots.pdf
 vignettes/ggrfRegression.html
 vignettes/ggrfRegression.R
 docs
+NAMESPACE
+man/
+*.Rd
+
+vignettes/ggRandomForests_files
+vignettes/ggRandomForests.html
+
