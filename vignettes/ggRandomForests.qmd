@@ -15,13 +15,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
 The **ggRandomForests** package extracts tidy data objects from either
 `randomForestSRC` or `randomForest` fits and feeds them into familiar
 `ggplot2` workflows. This vignette highlights the most common objects—
