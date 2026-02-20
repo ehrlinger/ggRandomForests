@@ -5,29 +5,39 @@
 \alias{gg_error.rfsrc}
 \alias{gg_error.randomForest}
 \alias{gg_error.randomForest.formula}
-\title{randomForest error rate data object}
+\title{Random forest error trajectory data object}
 \usage{
 gg_error(object, ...)
 }
 \arguments{
-\item{object}{\code{\link[randomForestSRC]{rfsrc}} object.}
+\item{object}{A fitted \code{\link[randomForestSRC]{rfsrc}} or
+\code{\link[randomForest]{randomForest}} object.}
 
-\item{...}{optional arguments (not used).}
+\item{...}{Optional arguments passed to the methods. Set
+\code{training = TRUE} to append the in-bag error trajectory when
+supported.}
 }
 \value{
-\code{gg_error} \code{data.frame} with one column indicating
-the tree number, and the remaining columns from the
-\code{\link[randomForestSRC]{rfsrc}$err.rate} return value.
+A \code{gg_error} \code{data.frame} containing at least the
+  cumulative OOB error columns and an \code{ntree} counter. When
+  \code{training = TRUE} is honored an additional \code{train} column is
+  included.
 }
 \description{
-Extract the cumulative (OOB) \code{randomForestSRC} error rate as a
-function of number of trees.
+Extract the cumulative out-of-bag (OOB) or in-bag training error rate from
+\code{randomForestSRC} and \code{randomForest} fits as a function of the
+number of grown trees.
 }
 \details{
-The \code{gg_error} function simply returns the
-\code{\link[randomForestSRC]{rfsrc}$err.rate} object as a data.frame,
-and assigns the class for connecting to the S3
-\code{\link{plot.gg_error}} function.
+For \code{randomForestSRC} objects the function reshapes the
+\code{\link[randomForestSRC]{rfsrc}$err.rate} matrix and annotates it with
+the tree index required by \code{\link{plot.gg_error}}. When supplied a
+\code{\link[randomForest]{randomForest}} object, the method inspects either
+the \code{$mse} or \code{$err.rate} component and, when
+\code{training = TRUE} is requested, reconstructs the original training set
+via the model call to compute an in-bag error curve using per-tree
+predictions. Training curves are only available when the forest was stored
+(\code{keep.forest = TRUE}) and the original data can be recovered.
 }
 \examples{
 ## Examples from RFSRC package...
@@ -179,5 +189,6 @@ Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
 and Classification (RF-SRC), R package version 1.4.
 }
 \seealso{
-\code{\link{plot.gg_error}} \code{rfsrc} \code{plot.rfsrc}
+\code{\link{plot.gg_error}}, \code{\link[randomForestSRC]{rfsrc}},
+  \code{\link[randomForest]{randomForest}}
 }

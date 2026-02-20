@@ -97,6 +97,13 @@ test_that("gg_vimp classifications", {
   gg_dta <- gg_vimp(rf_iris)
   
   expect_is(gg_dta, "gg_vimp")
+
+  rf_iris_noimp <- randomForest::randomForest(Species ~ .,
+                                              data = iris,
+                                              importance = FALSE)
+  rf_iris_noimp$importance <- NULL
+  expect_warning(gg_dta <- gg_vimp(rf_iris_noimp))
+  expect_is(gg_dta, "gg_vimp")
   
   # Test passing in the wrong object
   expect_error(gg_vimp(gg_dta))
@@ -314,5 +321,10 @@ test_that("gg_vimp regression", {
   
   gg_plt <- plot(gg_dta)
   expect_is(gg_plt, "ggplot")
+
+  rf_boston_noimp <- randomForest::randomForest(medv ~ ., Boston, importance = FALSE)
+  rf_boston_noimp$importance <- NULL
+  expect_warning(gg_dta <- gg_vimp(rf_boston_noimp))
+  expect_is(gg_dta, "gg_vimp")
   
 })

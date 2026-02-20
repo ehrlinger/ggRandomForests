@@ -26,8 +26,17 @@ Many of the figures created by the `ggRandomForests` package are also available 
 
  * The use of `ggplot2` for plotting. We chose to use the `ggplot2` package for our figures to allow users flexibility in modifying the figures to their liking. Each S3 plot function returns either a single `ggplot2` object, or a `list` of `ggplot2` objects, allowing users to use additional `ggplot2` functions or themes to modify and customize the figures to their liking. 
 
+Check out the ["Exploring Random Forests with ggRandomForests" vignette](vignettes/ggRandomForests.qmd) for a walk-through of these objects.
+
 The package has recently been extended for Breiman and Cutler's Random Forests for Classification and
 Regression package [randomForest](https://cran.r-project.org/package=randomForest) where possible. Though methods have been provided for all `gg_*` functions, the unsupported functions will return an error message indicating where support is still lacking.
+
+## Recent improvements
+
+- `gg_error()` now computes optional in-bag training error trajectories for `randomForest` fits when `training = TRUE`, making it easy to compare OOB and training curves in a single data object.
+- `gg_variable()` rebuilds the original training data from the `randomForest` call, so marginal dependence plots work even when models are trained inside helper functions or use `subset()` calls.
+- `quantile_pts()` is fully quantile based, providing balanced conditioning intervals that can be dropped directly into `cut()` for coplots.
+- `gg_vimp()` handles forests that were trained without importance metrics by issuing a warning and returning `NA` placeholders, ensuring downstream plotting code continues to run.
 
 ## References
 

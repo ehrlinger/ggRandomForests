@@ -10,9 +10,12 @@
 gg_variable(object, ...)
 }
 \arguments{
-\item{object}{a \code{\link[randomForestSRC]{rfsrc}} object}
+\item{object}{A \code{\link[randomForestSRC]{rfsrc}} or
+\code{\link[randomForest]{randomForest}} object, or a
+\code{\link[randomForestSRC]{plot.variable}} result.}
 
-\item{...}{optional arguments}
+\item{...}{Optional arguments such as \code{time}, \code{time_labels}, and
+\code{oob} that tailor the marginal dependence extraction.}
 }
 \value{
 \code{gg_variable} object
@@ -25,12 +28,14 @@ partial variable dependence. The \code{gg_variable} function creates a
 variables) and the predicted response for each observation. Marginal
 dependence figures are created using the \code{\link{plot.gg_variable}}
 function.
+For \code{randomForest} fits the original model frame is rebuilt
+from the stored call so that the same predictors can be paired with the
+in-sample predictions.
 
-Optional arguments \code{time} point (or vector of points) of interest
-(for survival forests only) \code{time_labels} If more than one time is
-specified, a vector of time labels for differentiating the time points
-(for survival forests only) \code{oob} indicate if predicted results
-should include oob or full data set.
+Optional arguments include \code{time} (scalar or vector of survival times
+of interest), \code{time_labels} (labels for multiple survival horizons) and
+\code{oob} which toggles between out-of-bag and in-bag predictions when the
+forest stores both.
 }
 \details{
 The marginal variable dependence is determined by comparing
@@ -38,8 +43,9 @@ relation between the predicted response from the randomForest and a
 covariate of interest.
 
 The \code{gg_variable} function operates on a
-\code{\link[randomForestSRC]{rfsrc}} object, or the output from the
-\code{\link[randomForestSRC]{plot.variable}} function.
+\code{\link[randomForestSRC]{rfsrc}} object, the output from the
+\code{\link[randomForestSRC]{plot.variable}} function, or on a fitted
+\code{\link[randomForest]{randomForest}} object via the formula interface.
 }
 \examples{
 ## ------------------------------------------------------------

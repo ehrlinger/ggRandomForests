@@ -17,8 +17,9 @@
 #' covariate of interest.
 #'
 #' The \code{gg_variable} function operates on a
-#' \code{\link[randomForestSRC]{rfsrc}} object, or the output from the
-#' \code{\link[randomForestSRC]{plot.variable}} function.
+#' \code{\link[randomForestSRC]{rfsrc}} object, the output from the
+#' \code{\link[randomForestSRC]{plot.variable}} function, or on a fitted
+#' \code{\link[randomForest]{randomForest}} object via the formula interface.
 #'
 #' @description \code{\link[randomForestSRC]{plot.variable}} generates a
 #' \code{data.frame} containing the marginal variable dependence or the
@@ -27,15 +28,20 @@
 #' variables) and the predicted response for each observation. Marginal
 #' dependence figures are created using the \code{\link{plot.gg_variable}}
 #' function.
+#' For \code{randomForest} fits the original model frame is rebuilt
+#' from the stored call so that the same predictors can be paired with the
+#' in-sample predictions.
 #'
-#' Optional arguments \code{time} point (or vector of points) of interest
-#' (for survival forests only) \code{time_labels} If more than one time is
-#' specified, a vector of time labels for differentiating the time points
-#' (for survival forests only) \code{oob} indicate if predicted results
-#' should include oob or full data set.
+#' Optional arguments include \code{time} (scalar or vector of survival times
+#' of interest), \code{time_labels} (labels for multiple survival horizons) and
+#' \code{oob} which toggles between out-of-bag and in-bag predictions when the
+#' forest stores both.
 #'
-#' @param object a \code{\link[randomForestSRC]{rfsrc}} object
-#' @param ... optional arguments
+#' @param object A \code{\link[randomForestSRC]{rfsrc}} or
+#'   \code{\link[randomForest]{randomForest}} object, or a
+#'   \code{\link[randomForestSRC]{plot.variable}} result.
+#' @param ... Optional arguments such as \code{time}, \code{time_labels}, and
+#'   \code{oob} that tailor the marginal dependence extraction.
 #'
 #' @return \code{gg_variable} object
 #'
@@ -249,19 +255,16 @@ gg_variable.rfsrc <- function(object,
       gg_dta$yhat <- object$predicted
     }
   } else if (object$family == "class") {
-    if (oob) {
-      colnames(object$predicted.oob) <-
-        paste("yhat.", colnames(object$predicted.oob),
-          sep = ""
-        )
-      gg_dta <- cbind(gg_dta, object$predicted.oob)
+    preds <- if (oob) {
+      object$predicted.oob
     } else {
-      colnames(object$predicted) <-
-        paste("yhat.", colnames(object$predicted),
-          sep = ""
-        )
-      gg_dta <- object$predicted
+      object$predicted
     }
+    colnames(preds) <-
+      paste("yhat.", colnames(preds),
+        sep = ""
+      )
+    gg_dta <- cbind(gg_dta, preds)
     gg_dta$yvar <- object$yvar
   } else if (object$family == "surv") {
     gg_dta$event <- as.logical(object$yvar[, 2])
@@ -283,13 +286,14 @@ gg_variable.rfsrc <- function(object,
       #
       # Get the event time occuring before or at 1 year.
       gg_dta_t <- gg_dta
-      in_time <- which(object$time.interest > time[ind])[1] - 1
-      if (in_time == 0) {
+      eligible <- which(object$time.interest <= time[ind])
+      if (!length(eligible)) {
         stop(
-          "The time of interest is less than the first event time.
-          Make sure you are using the correct time units."
+          "The time of interest is less than the first event time.\n",
+          "  Make sure you are using the correct time units."
         )
       }
+      in_time <- max(eligible)
 
       if (oob) {
         gg_dta_t$yhat <- object$survival.oob[, in_time]
@@ -324,20 +328,36 @@ gg_variable.randomForest <- function(object,
     arg_list$oob <- FALSE
   }
 
-  # Want to also handle a plot.variable where partial!= TRUE
   if (!inherits(object, "randomForest")) {
     stop("gg_variable expects a randomForest object.")
   }
 
-  # gg_variable is really just the training data and the outcome.
-  gg_dta <- get(as.character(object$call$data))
+  training_info <- .rf_recover_model_frame(object)
+  if (is.null(training_info)) {
+    stop(
+      "Unable to reconstruct the training data for this randomForest object.",
+      " Make sure the model was fit with a formula interface and keep.forest = TRUE."
+    )
+  }
 
+  model_frame <- training_info$model_frame
+  response <- stats::model.response(model_frame)
+  resp_name <- training_info$response_name
 
-  # Remove the response from the data.frame
-  rsp <- as.character(object$call$formula)[2]
-  gg_dta <- gg_dta[, -which(colnames(gg_dta) == rsp)]
+  predictors <- model_frame
+  if (!is.null(resp_name) && resp_name %in% names(predictors)) {
+    predictors[[resp_name]] <- NULL
+  }
+  special_cols <- grep("^\\(", colnames(predictors), value = TRUE)
+  if (length(special_cols) > 0) {
+    predictors[special_cols] <- NULL
+  }
 
+  gg_dta <- predictors
   gg_dta$yhat <- as.vector(object$predicted)
+  if (object$type == "classification") {
+    gg_dta$yvar <- response
+  }
 
   class(gg_dta) <- c("gg_variable", object$type, class(gg_dta))
   invisible(gg_dta)

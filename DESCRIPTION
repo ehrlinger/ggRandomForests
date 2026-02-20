@@ -1,8 +1,8 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 2.4.1
-Date: 2025-06-17
+Version: 2.5.0
+Date: 2026-02-19
 Authors@R: person("John", "Ehrlinger",  
   role = c("aut", "cre"), 
   email = "john.ehrlinger@gmail.com")
@@ -29,5 +29,8 @@ Suggests:
     RColorBrewer,
     MASS,
     lintr,
-    datasets
-RoxygenNote: 7.3.2
+    datasets,
+    rmarkdown, 
+    quarto
+VignetteBuilder: quarto
+RoxygenNote: 7.3.3

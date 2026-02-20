@@ -1,0 +1,99 @@
+---
+title: "Exploring Random Forests with ggRandomForests"
+author: "John Ehrlinger"
+date: today
+format: 
+  html:
+    toc: true
+    html-math-method: mathjax
+editor: 
+  markdown: 
+    wrap: 80
+vignette: >
+  %\VignetteIndexEntry{Vignette's Title}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+The **ggRandomForests** package extracts tidy data objects from either
+`randomForestSRC` or `randomForest` fits and feeds them into familiar
+`ggplot2` workflows. This vignette highlights the most common objects—
+`gg_error`, `gg_variable`, and `gg_vimp`—along with a small helper for
+building balanced conditioning intervals.
+
+## Error trajectories with `gg_error()`
+
+```{r error-demo}
+library(ggRandomForests)
+library(randomForest)
+set.seed(42)
+rf_iris <- randomForest(Species ~ ., data = iris, ntree = 200, keep.forest = TRUE)
+err_df <- gg_error(rf_iris, training = TRUE)
+head(err_df)
+```
+
+The `gg_error()` object stores the cumulative OOB error rate for each
+outcome column plus the `ntree` counter. When `training = TRUE`, the
+function reconstructs the original model frame and appends the in-bag
+error trajectory (`train`). Plotting overlays both curves by default:
+
+```{r error-plot, fig.height=4}
+plot(err_df)
+```
+
+## Marginal dependence via `gg_variable()`
+
+```{r variable-demo}
+set.seed(99)
+boston <- MASS::Boston
+rf_boston <- randomForest(medv ~ ., data = boston, ntree = 150)
+var_df <- gg_variable(rf_boston)
+str(var_df[, c("lstat", "yhat")])
+```
+
+Because the original training data are recovered from the model call,
+`gg_variable()` works even when the forest was trained within helper
+functions or against a `subset()` expression. The output keeps the raw
+predictors plus either a continuous `yhat` column (regression) or per-class
+probabilities (`yhat.<class>` for classification). Plotting a single
+variable is straightforward:
+
+```{r variable-plot, fig.height=4}
+plot(var_df, xvar = "lstat")
+```
+
+Survival forests can request multiple horizons using the `time` argument;
+non-OOB predictions are available by setting `oob = FALSE`.
+
+## Variable importance with `gg_vimp()`
+
+```{r vimp-demo}
+vimp_df <- gg_vimp(rf_boston)
+head(vimp_df)
+plot(vimp_df)
+```
+
+If a `randomForest` object lacks stored importance scores, `gg_vimp()`
+tries to compute them on the fly. When the forest truly cannot provide the
+information (for example when `importance = FALSE` and the predictors are
+no longer accessible), the function emits a warning and returns `NA`
+placeholders so plots still render.
+
+## Balanced conditioning cuts with `quantile_pts()`
+
+```{r quantile-demo}
+rm_breaks <- quantile_pts(boston$rm, groups = 6, intervals = TRUE)
+rm_groups <- cut(boston$rm, breaks = rm_breaks)
+table(rm_groups)
+```
+
+The helper wraps `stats::quantile()` to produce evenly populated strata
+that drop directly into `cut()` when building coplots or facet labels.
+
+## Next steps
+
+* Inspect the full API reference at <https://ehrlinger.github.io/ggRandomForests/>.
+* Use `?gg_error`, `?gg_variable`, `?gg_vimp`, and `?quantile_pts` for
+  additional arguments and examples.
+* Pair these data objects with your own `ggplot2` themes to align with your
+  preferred publication style.

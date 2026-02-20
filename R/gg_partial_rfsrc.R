@@ -99,9 +99,9 @@ gg_partial_rfsrc <- function(rf_model,
     
   }
   pdta <- do.call("rbind", pdta)
-  continuous <- pdta |> dplyr::filter(type == "continuous") |>
-    mutate(x = as.numeric(x)) |> dplyr::select(-type)
-  categorical <- pdta |> dplyr::filter(type == "categorical")  |>
-    dplyr::select(-type)
+  continuous <- pdta |> dplyr::filter(.data$type == "continuous") |>
+    mutate(x = as.numeric(.data$x)) |> dplyr::select(-.data$type)
+  categorical <- pdta |> dplyr::filter(.data$type == "categorical")  |>
+    dplyr::select(-.data$type)
   return(list(continuous = continuous, categorical = categorical))
 }
