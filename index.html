@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="articles/ggRandomForests.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
@@ -73,7 +74,22 @@
 <li><p>Each data object/figure is a single, self contained object. This allows simple modification and manipulation of the data or <code>ggplot2</code> objects to meet users specific needs and requirements.</p></li>
 <li><p>The use of <code>ggplot2</code> for plotting. We chose to use the <code>ggplot2</code> package for our figures to allow users flexibility in modifying the figures to their liking. Each S3 plot function returns either a single <code>ggplot2</code> object, or a <code>list</code> of <code>ggplot2</code> objects, allowing users to use additional <code>ggplot2</code> functions or themes to modify and customize the figures to their liking.</p></li>
 </ul>
+<p>Check out the <a href="vignettes/ggRandomForests.qmd">“Exploring Random Forests with ggRandomForests” vignette</a> for a walk-through of these objects.</p>
 <p>The package has recently been extended for Breiman and Cutler’s Random Forests for Classification and Regression package <a href="https://cran.r-project.org/package=randomForest" class="external-link">randomForest</a> where possible. Though methods have been provided for all <code>gg_*</code> functions, the unsupported functions will return an error message indicating where support is still lacking.</p>
+<div class="section level2">
+<h2 id="recent-improvements">Recent improvements<a class="anchor" aria-label="anchor" href="#recent-improvements"></a>
+</h2>
+<ul>
+<li>
+<code><a href="reference/gg_error.html">gg_error()</a></code> now computes optional in-bag training error trajectories for <code>randomForest</code> fits when <code>training = TRUE</code>, making it easy to compare OOB and training curves in a single data object.</li>
+<li>
+<code><a href="reference/gg_variable.html">gg_variable()</a></code> rebuilds the original training data from the <code>randomForest</code> call, so marginal dependence plots work even when models are trained inside helper functions or use <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code> calls.</li>
+<li>
+<code><a href="reference/quantile_pts.html">quantile_pts()</a></code> is fully quantile based, providing balanced conditioning intervals that can be dropped directly into <code><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut()</a></code> for coplots.</li>
+<li>
+<code><a href="reference/gg_vimp.html">gg_vimp()</a></code> handles forests that were trained without importance metrics by issuing a warning and returning <code>NA</code> placeholders, ensuring downstream plotting code continues to run.</li>
+</ul>
+</div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>

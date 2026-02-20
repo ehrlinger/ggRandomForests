@@ -6,22 +6,26 @@ data.frame of containing the full set of covariate data (predictor
 variables) and the predicted response for each observation. Marginal
 dependence figures are created using the plot.gg_variable
 function.
-Optional arguments time point (or vector of points) of interest
-(for survival forests only) time_labels If more than one time is
-specified, a vector of time labels for differentiating the time points
-(for survival forests only) oob indicate if predicted results
-should include oob or full data set."><meta property="og:description" content="plot.variable generates a
+For randomForest fits the original model frame is rebuilt
+from the stored call so that the same predictors can be paired with the
+in-sample predictions.
+Optional arguments include time (scalar or vector of survival times
+of interest), time_labels (labels for multiple survival horizons) and
+oob which toggles between out-of-bag and in-bag predictions when the
+forest stores both."><meta property="og:description" content="plot.variable generates a
 data.frame containing the marginal variable dependence or the
 partial variable dependence. The gg_variable function creates a
 data.frame of containing the full set of covariate data (predictor
 variables) and the predicted response for each observation. Marginal
 dependence figures are created using the plot.gg_variable
 function.
-Optional arguments time point (or vector of points) of interest
-(for survival forests only) time_labels If more than one time is
-specified, a vector of time labels for differentiating the time points
-(for survival forests only) oob indicate if predicted results
-should include oob or full data set."></head><body>
+For randomForest fits the original model frame is rebuilt
+from the stored call so that the same predictors can be paired with the
+in-sample predictions.
+Optional arguments include time (scalar or vector of survival times
+of interest), time_labels (labels for multiple survival horizons) and
+oob which toggles between out-of-bag and in-bag predictions when the
+forest stores both."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -29,7 +33,7 @@ should include oob or full data set."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +41,8 @@ should include oob or full data set."></head><body>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ggRandomForests.html">Get started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -69,12 +74,14 @@ partial variable dependence. The <code>gg_variable</code> function creates a
 <code>data.frame</code> of containing the full set of covariate data (predictor
 variables) and the predicted response for each observation. Marginal
 dependence figures are created using the <code><a href="plot.gg_variable.html">plot.gg_variable</a></code>
-function.</p>
-<p>Optional arguments <code>time</code> point (or vector of points) of interest
-(for survival forests only) <code>time_labels</code> If more than one time is
-specified, a vector of time labels for differentiating the time points
-(for survival forests only) <code>oob</code> indicate if predicted results
-should include oob or full data set.</p>
+function.
+For <code>randomForest</code> fits the original model frame is rebuilt
+from the stored call so that the same predictors can be paired with the
+in-sample predictions.</p>
+<p>Optional arguments include <code>time</code> (scalar or vector of survival times
+of interest), <code>time_labels</code> (labels for multiple survival horizons) and
+<code>oob</code> which toggles between out-of-bag and in-bag predictions when the
+forest stores both.</p>
     </div>
 
     <div class="section level2">
@@ -87,11 +94,14 @@ should include oob or full data set.</p>
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>a <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object</p></dd>
+<dd><p>A <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> or
+<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code> object, or a
+<code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> result.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>optional arguments</p></dd>
+<dd><p>Optional arguments such as <code>time</code>, <code>time_labels</code>, and
+<code>oob</code> that tailor the marginal dependence extraction.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -104,8 +114,9 @@ should include oob or full data set.</p>
 relation between the predicted response from the randomForest and a
 covariate of interest.</p>
 <p>The <code>gg_variable</code> function operates on a
-<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object, or the output from the
-<code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> function.</p>
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object, the output from the
+<code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable</a></code> function, or on a fitted
+<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code> object via the formula interface.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
