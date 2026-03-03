@@ -21,6 +21,16 @@ The **ggRandomForests** package extracts tidy data objects from either
 `gg_error`, `gg_variable`, and `gg_vimp`—along with a small helper for
 building balanced conditioning intervals.
 
+```{r pkg-setup, include=FALSE}
+if (requireNamespace("ggRandomForests", quietly = TRUE)) {
+  library(ggRandomForests)
+} else if (requireNamespace("pkgload", quietly = TRUE)) {
+  pkgload::load_all(export_all = FALSE, helpers = FALSE, attach_testthat = FALSE)
+} else {
+  stop("Install ggRandomForests (or pkgload for dev builds) to render this vignette.")
+}
+```
+
 ## Error trajectories with `gg_error()`
 
 ```{r error-demo}
