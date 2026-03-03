@@ -25,6 +25,7 @@
 #' prt_dta <- gg_partial_rfsrc(airq.obj,
 #'                        xvar.names = c("Wind"))
 #'
+#' @importFrom dplyr mutate filter select all_of
 #' @export
 gg_partial_rfsrc <- function(rf_model,
                              xvar.names = NULL,

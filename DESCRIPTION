@@ -31,6 +31,8 @@ Suggests:
     lintr,
     datasets,
     rmarkdown, 
-    quarto
+    quarto, 
+    pkgdown,
+    pkgload
 VignetteBuilder: quarto
 RoxygenNote: 7.3.3
