@@ -9,32 +9,10 @@ building balanced conditioning intervals.
 ## Error trajectories with `gg_error()`
 
 ``` r
-library(ggRandomForests)
-```
-
-    Loading required package: randomForestSRC
-
-     randomForestSRC 3.5.1
-
-     Type rfsrc.news() to see new features, changes, and bug fixes.
-     
-
-    Loading required package: randomForest
-
-    randomForest 4.7-1.2
-
-    Type rfNews() to see new features/changes/bug fixes.
-
-     ggRandomForests 2.5.0
-
-     Type ggrandomforests.news() to see new features, changes, and bug fixes.
-     
-
-``` r
 library(randomForest)
 set.seed(42)
 rf_iris <- randomForest(Species ~ ., data = iris, ntree = 200, keep.forest = TRUE)
-err_df <- gg_error(rf_iris, training = TRUE)
+err_df <- ggRandomForests::gg_error(rf_iris, training = TRUE)
 head(err_df)
 ```
 
@@ -65,7 +43,7 @@ plot(err_df)
 set.seed(99)
 boston <- MASS::Boston
 rf_boston <- randomForest(medv ~ ., data = boston, ntree = 150)
-var_df <- gg_variable(rf_boston)
+var_df <- ggRandomForests::gg_variable(rf_boston)
 str(var_df[, c("lstat", "yhat")])
 ```
 
@@ -95,7 +73,7 @@ argument; non-OOB predictions are available by setting `oob = FALSE`.
 ## Variable importance with `gg_vimp()`
 
 ``` r
-vimp_df <- gg_vimp(rf_boston)
+vimp_df <- ggRandomForests::gg_vimp(rf_boston)
 head(vimp_df)
 ```
 
@@ -127,7 +105,7 @@ returns `NA` placeholders so plots still render.
 ## Balanced conditioning cuts with `quantile_pts()`
 
 ``` r
-rm_breaks <- quantile_pts(boston$rm, groups = 6, intervals = TRUE)
+rm_breaks <- ggRandomForests::quantile_pts(boston$rm, groups = 6, intervals = TRUE)
 rm_groups <- cut(boston$rm, breaks = rm_breaks)
 table(rm_groups)
 ```

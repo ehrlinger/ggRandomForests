@@ -80,10 +80,6 @@
 - [`quantile_pts()`](http://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md)
   : Quantile-based cut points for coplots
 
-- [`r_data_types()`](http://ehrlinger.github.io/ggRandomForests/reference/r_data_types.md)
-  : r_data_types infers correct data classes for each column in a
-  data.frame
-
 - [`shift()`](http://ehrlinger.github.io/ggRandomForests/reference/shift.md)
   : lead function to shift by one (or more).
 
