@@ -19,6 +19,7 @@ Depends:
 Imports:
     survival,
     parallel,
+    hvtiRutilities,
     tidyr,
     dplyr,
     ggplot2,
