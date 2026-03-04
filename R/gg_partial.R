@@ -77,9 +77,15 @@ gg_partial <- function(part_dta,
       ## one-hot encoded internally in the varPro call.
       ## Normalize factors so ordered/regular factors bind cleanly later.
       x_factor <- if (is.factor(x_vals)) {
-        factor(as.character(x_vals), levels = levels(x_vals))
+        factor(
+          as.character(x_vals),
+          levels = levels(x_vals),
+          ordered = FALSE
+        )
       } else {
-        factor(x_vals)
+        factor(x_vals,
+               levels = unique(x_vals),
+               ordered = FALSE)
       }
 
       plt.df <- dplyr::bind_cols(
