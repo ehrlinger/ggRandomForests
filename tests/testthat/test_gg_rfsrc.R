@@ -1,6 +1,9 @@
 # testthat for gg_rfsrc function
 context("gg_rfsrc tests")
 
+# Survival formula helper (rfsrc requires Surv to be in local scope)
+Surv <- survival::Surv
+
 test_that("gg_rfsrc classifications", {
   ## Load the cached forest
   rfsrc_iris <- randomForestSRC::rfsrc(
@@ -124,5 +127,324 @@ test_that("gg_rfsrc regression", {
   data(Boston, package = "MASS")
   rf_boston <- randomForest(medv ~ ., data = Boston)
   plot(gg_rfsrc(rf_boston))
-  
+
+})
+
+test_that("gg_rfsrc survival: per-observation curves (no conf.int, no by)", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  expect_is(rfsrc_veteran, "rfsrc")
+  expect_match(rfsrc_veteran$family, "surv")
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran)
+
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "surv")
+  # Per-observation long format: should have variable, value, obs_id, event
+  expect_true("variable" %in% colnames(gg_dta))
+  expect_true("value" %in% colnames(gg_dta))
+  expect_true("obs_id" %in% colnames(gg_dta))
+  expect_true("event" %in% colnames(gg_dta))
+})
+
+test_that("gg_rfsrc survival: plot of per-observation curves", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran)
+  gg_plt <- plot.gg_rfsrc(gg_dta)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("gg_rfsrc survival: confidence interval calculation", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int = 0.95)
+
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "surv")
+  # conf.int output has lower, upper, median columns
+  expect_true("lower" %in% colnames(gg_dta))
+  expect_true("upper" %in% colnames(gg_dta))
+  expect_true("median" %in% colnames(gg_dta))
+
+  # Plot the conf.int result
+  gg_plt <- plot.gg_rfsrc(gg_dta)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("gg_rfsrc survival: confidence interval with percentage > 1", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  # conf.int > 1 should be divided by 100
+  gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int = 95)
+
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_true("lower" %in% colnames(gg_dta))
+})
+
+test_that("gg_rfsrc survival: by argument groups observations", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt")
+
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "surv")
+  expect_true("group" %in% colnames(gg_dta))
+
+  # Plot the grouped result
+  gg_plt <- plot.gg_rfsrc(gg_dta)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("gg_rfsrc survival: by + conf.int produces grouped confidence bands", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt", conf.int = 0.95)
+
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_true("group" %in% colnames(gg_dta))
+  expect_true("lower" %in% colnames(gg_dta))
+
+  # Plot
+  gg_plt <- plot.gg_rfsrc(gg_dta)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("gg_rfsrc survival: surv_type = 'chf' (cumulative hazard)", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran, surv_type = "chf")
+  expect_is(gg_dta, "gg_rfsrc")
+})
+
+test_that("gg_rfsrc survival: surv_type = 'mortality'", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran, surv_type = "mortality")
+  expect_is(gg_dta, "gg_rfsrc")
+})
+
+test_that("gg_rfsrc survival: unknown surv_type throws error", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  expect_error(gg_rfsrc(rfsrc_veteran, surv_type = "unknown_type"))
+})
+
+test_that("gg_rfsrc survival: by vector (not column name) works", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  by_vec <- veteran$trt
+  gg_dta <- gg_rfsrc(rfsrc_veteran, by = by_vec)
+
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_true("group" %in% colnames(gg_dta))
+})
+
+test_that("gg_rfsrc survival: by vector wrong length throws error", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  expect_error(gg_rfsrc(rfsrc_veteran, by = c(1, 2, 3)))
+})
+
+test_that("gg_rfsrc survival: oob = FALSE uses in-bag predictions", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran, oob = FALSE)
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_is(gg_dta, "surv")
+})
+
+test_that("gg_rfsrc survival: conf.int with custom bs.sample", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int = 0.95, bs.sample = 20)
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_true("lower" %in% colnames(gg_dta))
+})
+
+test_that("gg_rfsrc survival: by + conf.int with custom bs.sample", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt", conf.int = 0.95, bs.sample = 20)
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_true("group" %in% colnames(gg_dta))
+  expect_true("lower" %in% colnames(gg_dta))
+})
+
+test_that("gg_rfsrc survival: conf.int with two-element level_set", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  # Two-element conf.int (lower and upper directly)
+  gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int = c(0.025, 0.975))
+  expect_is(gg_dta, "gg_rfsrc")
+})
+
+test_that("gg_rfsrc classification: by argument adds group column", {
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  # Use Petal.Width as a logical grouping vector (not character to avoid column-name lookup)
+  by_vec <- iris$Petal.Width > median(iris$Petal.Width)
+  gg_dta <- gg_rfsrc(rfsrc_iris, by = by_vec)
+
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_true("group" %in% colnames(gg_dta))
+})
+
+test_that("gg_rfsrc regression: by = vector works", {
+  data(Boston, package = "MASS")
+  boston <- Boston
+  boston$chas <- as.logical(boston$chas)
+
+  rfsrc_boston <- randomForestSRC::rfsrc(
+    medv ~ .,
+    data = boston,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  by_vec <- boston$chas
+  gg_dta <- gg_rfsrc(rfsrc_boston, by = by_vec)
+
+  expect_is(gg_dta, "gg_rfsrc")
+  expect_true("group" %in% colnames(gg_dta))
 })

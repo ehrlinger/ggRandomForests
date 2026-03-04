@@ -169,15 +169,15 @@ gg_vimp <- function(object, nvar, ...) {
 }
 #' @export
 gg_vimp.rfsrc <- function(object, nvar, ...) {
-  # Get the extra arguments for handling specifics
-
+  # Validate that the object is an rfsrc grow or predict result.
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &&
     sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2) {
     stop("This function only works for objects of class `(rfsrc, grow)' or
          '(rfsrc, predict)'.")
   }
 
-  ### set importance to NA if it is NULL
+  # If the forest was grown without importance = TRUE, compute VIMP now via
+  # a separate vimp() call (slower, but always safe).
   if (is.null(object$importance)) {
     warning("rfsrc object does not contain VIMP information. Calculating...")
     gg_dta <-
@@ -187,11 +187,16 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
   } else {
     gg_dta <- data.frame(object$importance)
   }
+
+  # Single-outcome forests: $importance is a named vector → one-column df.
+  # Rename the column and add a "vars" column with the variable names.
   if (ncol(gg_dta) == 1) {
     colnames(gg_dta) <- "VIMP"
     gg_dta$vars <- rownames(gg_dta)
     gg_dta <- gg_dta[order(gg_dta$VIMP, decreasing = TRUE), ]
   }
+
+  # Clamp nvar to the number of available variables.
   if (missing(nvar)) {
     nvar <- nrow(gg_dta)
   }
@@ -199,15 +204,15 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     nvar <- nrow(gg_dta)
   }
 
-
-  # Handle multiclass importance
+  # Multi-class forests: $importance is a matrix (vars × classes).
+  # Pivot to long form so each row is one (variable, class) combination.
   if (ncol(gg_dta) > 1) {
-    # Classification...
     arg_set <- list(...)
 
     if (!is.null(arg_set$which.outcome)) {
-      # test which.outcome specification
+      # Caller requested importance for one specific class only.
       if (!is.numeric(arg_set$which.outcome)) {
+        # Look up by class name (column name).
         if (arg_set$which.outcome %in% colnames(gg_dta)) {
           gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome],
             decreasing = TRUE
@@ -227,6 +232,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
           )
         }
       } else {
+        # Look up by integer index (1-based into class columns).
         if (arg_set$which.outcome < ncol(gg_dta)) {
           gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome + 1],
             decreasing = TRUE
@@ -248,12 +254,14 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
       }
       gg_dta <- gg_v
     } else {
+      # No specific class requested: attach variable names and pivot.
       gg_dta$vars <- rownames(gg_dta)
     }
 
     gg_dta <- gg_dta[seq_len(nvar), ]
     gathercols <-
       colnames(gg_dta)[-which(colnames(gg_dta) == "vars")]
+    # Pivot from wide (one column per class) to long (one row per class-var pair).
     gg_dta <- tidyr::gather(
       gg_dta, "set", "vimp",
       tidyr::all_of(gathercols)
@@ -261,16 +269,25 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
     gg_dta$vars <- factor(gg_dta$vars)
   } else {
+    # Single-outcome: compute relative VIMP (each value as a fraction of the
+    # top-ranked variable's importance).
     cnms <- colnames(gg_dta)
     gg_dta <- cbind(gg_dta, gg_dta / gg_dta[1, 1])
     colnames(gg_dta) <- c(cnms, "rel_vimp")
+    # Patch any NA entries in the vars column that slipped through.
     gg_dta$vars[which(is.na(gg_dta$vars))] <-
       rownames(gg_dta)[which(is.na(gg_dta$vars))]
 
     gg_dta <- gg_dta[1:nvar, ]
   }
+
+  # Convert vars to an ordered factor (reversed so the most important variable
+  # plots at the top of a horizontal bar chart after coord_flip).
   gg_dta$vars <-
     factor(gg_dta$vars, levels = rev(unique(gg_dta$vars)))
+
+  # Flag variables with non-positive VIMP so the plot can colour them
+  # differently to indicate they do not improve (or actively hurt) predictions.
   gg_dta$positive <- TRUE
   gg_dta$positive[which(gg_dta$vimp <= 0)] <- FALSE
 

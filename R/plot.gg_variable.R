@@ -39,20 +39,18 @@
 #'
 #' @importFrom ggplot2 .data
 #' @examples
-#' \dontrun{
 #' ## ------------------------------------------------------------
 #' ## classification
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' ## iris
-#' # rfsrc_iris <- rfsrc(Species ~., data = iris)
-#' data(rfsrc_iris, package = "ggRandomForests")
+#' set.seed(42)
+#' rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
 #'
 #' gg_dta <- gg_variable(rfsrc_iris)
 #' plot(gg_dta, xvar = "Sepal.Width")
 #' plot(gg_dta, xvar = "Sepal.Length")
 #'
-#' ## !! TODO !! this needs to be corrected
+#' ## Panel plot across all predictors
 #' plot(gg_dta,
 #'   xvar = rfsrc_iris$xvar.names,
 #'   panel = TRUE, se = FALSE
@@ -62,82 +60,57 @@
 #' ## regression
 #' ## ------------------------------------------------------------
 #' ## -------- air quality data
-#' # rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
-#' data(rfsrc_airq, package = "ggRandomForests")
+#' # na.action = "na.impute" handles missing Ozone / Solar.R values
+#' set.seed(42)
+#' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
+#'                     na.action = "na.impute", ntree = 50)
 #' gg_dta <- gg_variable(rfsrc_airq)
 #'
-#' # an ordinal variable
+#' # Treat Month as an ordinal factor for better visualisation
 #' gg_dta[, "Month"] <- factor(gg_dta[, "Month"])
 #'
 #' plot(gg_dta, xvar = "Wind")
 #' plot(gg_dta, xvar = "Temp")
 #' plot(gg_dta, xvar = "Solar.R")
 #'
+#' # Panel plot across continuous predictors
 #' plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
 #'
+#' # Factor variable uses notched boxplots
 #' plot(gg_dta, xvar = "Month", notch = TRUE)
-#'
-#' ## -------- motor trend cars data
-#' # rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
-#' data(rfsrc_mtcars, package = "ggRandomForests")
-#' gg_dta <- gg_variable(rfsrc_mtcars)
-#'
-#' # mtcars$cyl is an ordinal variable
-#' gg_dta$cyl <- factor(gg_dta$cyl)
-#' gg_dta$am <- factor(gg_dta$am)
-#' gg_dta$vs <- factor(gg_dta$vs)
-#' gg_dta$gear <- factor(gg_dta$gear)
-#' gg_dta$carb <- factor(gg_dta$carb)
-#'
-#' plot(gg_dta, xvar = "cyl")
-#'
-#' # Others are continuous
-#' plot(gg_dta, xvar = "disp")
-#' plot(gg_dta, xvar = "hp")
-#' plot(gg_dta, xvar = "wt")
-#'
-#' # panel
-#' plot(gg_dta, xvar = c("disp", "hp", "drat", "wt", "qsec"), panel = TRUE)
-#' plot(gg_dta, xvar = c("cyl", "vs", "am", "gear", "carb"), panel = TRUE)
-#'
-#' ## -------- Boston data
 #'
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
 #' ## -------- veteran data
-#' ## survival
 #' data(veteran, package = "randomForestSRC")
+#' set.seed(42)
 #' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., veteran,
 #'   nsplit = 10,
-#'   ntree = 100
+#'   ntree = 50
 #' )
 #'
-#' # get the 1 year survival time.
+#' # Marginal survival at 90 days
 #' gg_dta <- gg_variable(rfsrc_veteran, time = 90)
 #'
-#' # Generate variable dependance plots for age and diagtime
+#' # Single-variable dependence plots
 #' plot(gg_dta, xvar = "age")
 #' plot(gg_dta, xvar = "diagtime")
 #'
-#' # Generate coplots
+#' # Panel coplot for two predictors at a single time
 #' plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
 #'
-#' # If we want to compare survival at different time points, say 30, 90 day
-#' # and 1 year
+#' # Compare survival at 30, 90, and 365 days simultaneously
 #' gg_dta <- gg_variable(rfsrc_veteran, time = c(30, 90, 365))
 #'
-#' # Generate variable dependance plots for age and diagtime
+#' # Single-variable plot (one facet per time point)
 #' plot(gg_dta, xvar = "age")
-#' plot(gg_dta, xvar = "diagtime")
 #'
-#' # Generate coplots
+#' # Panel coplot across two predictors and three time points
 #' plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
 #'
-#' ## -------- pbc data
-#' }
-#'
 #' @export
+#' @export plot.gg_variable
 plot.gg_variable <- function(x,
                              xvar,
                              time,
@@ -154,7 +127,8 @@ plot.gg_variable <- function(x,
     gg_dta <- gg_variable(x, ...)
   }
 
-  # Set the family to decide how to plot the data.
+  ## ---- Detect forest family from gg_variable class attributes ----------
+  # Default to classification; override if survival or regression flags found
   family <- "class"
   if (inherits(gg_dta, "surv")) {
     family <- "surv"
@@ -164,20 +138,20 @@ plot.gg_variable <- function(x,
     family <- "regr"
   }
 
-  # These may be dangerous because they work on column names only.
+  # Fallback detection: presence of an "event" column signals survival
   if (sum(colnames(gg_dta) == "event") != 0) {
     family <- "surv"
   }
 
-  # Same here, but it's how I know there are multiple classes right now.
+  ## ---- Reshape multi-class classification data -------------------------
+  # Multiple yhat.* columns indicate a multi-class forest
   if (length(grep("yhat.", colnames(gg_dta))) > 0) {
-    # We have a classification forest with multiple outcomes.
     if (length(grep("yhat.", colnames(gg_dta))) == 2) {
-      # For the case of two, we are only interested in the TRUE, not FALSE.
+      # Binary: drop the first class column and rename the second to "yhat"
       gg_dta <- gg_dta[, -grep("yhat.", colnames(gg_dta))[1]]
       colnames(gg_dta)[grep("yhat.", colnames(gg_dta))] <- "yhat"
     } else {
-      # Else we want to split and duplicate the data... make it long format.
+      # Multi-class: pivot to long format so each class becomes a row group
       gg_dta_x <- gg_dta[, -grep("yhat.", colnames(gg_dta))]
       gg_dta_y <- gg_dta[, grep("yhat.", colnames(gg_dta))]
       lng <- ncol(gg_dta_y)
@@ -190,9 +164,9 @@ plot.gg_variable <- function(x,
     }
   }
 
-  # If we don't know what to plot...
+  ## ---- Default xvar: all predictor columns -----------------------------
   if (missing(xvar)) {
-    # We need to remove response variables here
+    # Remove response-side columns (yhat, event, time) to isolate predictors
     cls <- c(
       grep("yhat", colnames(gg_dta)),
       grep("event", colnames(gg_dta)),
@@ -203,12 +177,11 @@ plot.gg_variable <- function(x,
 
   lng <- length(xvar)
 
-  # Predictor variables
+  # Column indices corresponding to the requested predictor(s)
   wch_x_var <- which(colnames(gg_dta) %in% xvar)
 
-  # Two types of variables, categorical and continuous.
-  # By default, if there are less than 10 unique values,
-  # assume categorical.
+  ## ---- Coerce 0/1 indicator columns to logical -------------------------
+  # Columns with exactly two values in {0, 1} are treated as boolean flags
   for (ind in seq_len(ncol(gg_dta))) {
     if (!is.factor(gg_dta[, ind])) {
       if (length(unique(gg_dta[which(!is.na(gg_dta[, ind])), ind])) <= 2) {
@@ -228,19 +201,22 @@ plot.gg_variable <- function(x,
     }
   }
 
-  # Check for categorical X values...
+  ## ---- Record each column's storage class for plot dispatch -----------
+  # "integer" is treated as numeric for plot branching purposes
   ccls <- sapply(gg_dta, class)
   ccls[which(ccls == "integer")] <- "numeric"
 
+  ## =========================================================
+  ## PANEL PLOT branch — facet multiple predictors in one figure
+  ## =========================================================
   if (panel) {
-    # The different families are driven by the response variables.
-    ## Survival plots
+    ## ---- Survival panel plot ----------------------------------------
     if (family == "surv") {
-      ## response variables.
+      ## Indices of response columns (time, event, and yhat)
       wch_y_var <-
         which(colnames(gg_dta) %in% c("event", "yhat", "time"))
 
-      # Handle categorical and continuous differently...
+      # Subset to response + requested predictors, then pivot to long form
       tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
       gathercols <-
         colnames(tmp_dta)[-which(colnames(tmp_dta) %in%
@@ -248,6 +224,7 @@ plot.gg_variable <- function(x,
       gg_dta_mlt <-
         tidyr::gather(tmp_dta, "variable", "value", gathercols)
 
+      # Preserve user-supplied xvar ordering in the facet strips
       gg_dta_mlt$variable <-
         factor(gg_dta_mlt$variable, levels = xvar)
       if (points) {
@@ -282,7 +259,7 @@ plot.gg_variable <- function(x,
             ggplot2::geom_smooth(...)
         }
       } else {
-        # Check if there are numeric variables here...
+        # Mixed or all-factor predictors: fall back to boxplot+jitter
         if (sum(ccls[wch_x_var] == "numeric") > 0) {
           warning(
             "Mismatched variable types for panel plots...
@@ -308,6 +285,7 @@ plot.gg_variable <- function(x,
           )
       }
 
+      # Multiple time points: grid of (time × variable); single time: wrap
       if (length(levels(gg_dta$time)) > 1) {
         gg_plt <- gg_plt +
           ggplot2::facet_grid(stats::reformulate("variable", "time"),
@@ -322,13 +300,13 @@ plot.gg_variable <- function(x,
             y = paste("Survival at", gg_dta$time[1], "year")
           )
       }
+
     } else {
-      # Panels for
-      # This will work for regression and binary classification... maybe.
-      ## Create a panel plot
+      ## ---- Regression / classification panel plot ---------------------
       wch_y_var <- which(colnames(gg_dta) %in% c("yhat"))
 
       if (family == "class") {
+        # Include the observed class label column for colouring
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta) == "yvar"))
         tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
         gathercols <-
@@ -339,6 +317,7 @@ plot.gg_variable <- function(x,
             tidyr::all_of(gathercols)
           )
       } else {
+        # Regression: keep yhat and the optional yvar reference column
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta) == "yvar"))
         tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
         gathercols <-
@@ -349,10 +328,11 @@ plot.gg_variable <- function(x,
             tidyr::all_of(gathercols)
           )
       }
+      # Preserve user-supplied xvar ordering in the facet strips
       gg_dta_mlt$variable <-
         factor(gg_dta_mlt$variable, levels = xvar)
 
-      # If these are all continuous...
+      # All continuous predictors → scatter; any factor → boxplot
       if (sum(ccls[wch_x_var] == "numeric") == length(wch_x_var)) {
         if (family == "class") {
           gg_plt <-
@@ -374,7 +354,7 @@ plot.gg_variable <- function(x,
             ggplot2::geom_point(...)
         }
       } else {
-        # Check if there are numberic variables here...
+        # Warn if numeric and factor predictors are mixed in the same panel
         if (sum(ccls[wch_x_var] == "numeric") > 0) {
           warning("Mismatched variable types...
                   assuming these are all factor variables.")
@@ -399,6 +379,7 @@ plot.gg_variable <- function(x,
             ggplot2::geom_boxplot(...)
         }
       }
+      # Add point/smooth layers for non-classification forests
       if (family != "class") {
         if (points) {
           gg_plt <- ggplot2::ggplot(
@@ -423,11 +404,16 @@ plot.gg_variable <- function(x,
         ggplot2::facet_wrap(~variable, scales = "free_x") +
         ggplot2::labs(x = "")
     }
+
+  ## =========================================================
+  ## INDIVIDUAL PLOT branch — one ggplot per predictor variable
+  ## =========================================================
   } else {
-    # Don't want a panel, but a single plot or list of plots.
+    # Pre-allocate a list; collapsed to a single object when lng == 1
     gg_plt <- vector("list", length = lng)
 
     for (ind in 1:lng) {
+      # Temporarily rename the target predictor column to "var" for aes()
       ch_indx <- which(colnames(gg_dta) == xvar[ind])
       h_name <- colnames(gg_dta)[ch_indx]
       colnames(gg_dta)[ch_indx] <- "var"
@@ -436,11 +422,13 @@ plot.gg_variable <- function(x,
 
       gg_plt[[ind]] <- ggplot2::ggplot(gg_dta)
 
+      ## ---- Survival individual plot -----------------------------------
       if (family == "surv") {
         gg_plt[[ind]] <- gg_plt[[ind]] +
           ggplot2::labs(x = h_name, y = "Survival")
 
         if (ccls == "numeric") {
+          # Continuous predictor: scatter (and optional smooth)
           if (points) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_point(
@@ -461,6 +449,7 @@ plot.gg_variable <- function(x,
               ggplot2::geom_smooth(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
           }
         } else {
+          # Factor predictor: boxplot + jittered points coloured by event
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::geom_boxplot(
               ggplot2::aes(x = .data$var, y = .data$yhat),
@@ -478,6 +467,7 @@ plot.gg_variable <- function(x,
               ...
             )
         }
+        # Multiple time points: facet vertically by time
         if (length(levels(gg_dta$time)) > 1) {
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::facet_wrap(~time, ncol = 1)
@@ -488,11 +478,14 @@ plot.gg_variable <- function(x,
               y = paste("Survival at", gg_dta$time[1], "year")
             )
         }
+
+      ## ---- Classification individual plot ----------------------------
       } else if (family == "class") {
         gg_plt[[ind]] <- gg_plt[[ind]] +
           ggplot2::labs(x = h_name, y = "Predicted")
 
         if (sum(colnames(gg_dta) == "outcome") == 0) {
+          # Single-outcome (binary) classification
           if (ccls == "numeric") {
             if (points) {
               gg_plt[[ind]] <- gg_plt[[ind]] +
@@ -519,6 +512,7 @@ plot.gg_variable <- function(x,
                 ggplot2::geom_smooth(...)
             }
           } else {
+            # Factor predictor: jitter + boxplot coloured by observed class
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_jitter(
                 ggplot2::aes(
@@ -537,6 +531,7 @@ plot.gg_variable <- function(x,
               )
           }
         } else {
+          # Multi-class: facet by outcome class
           if (ccls == "numeric") {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_point(
@@ -570,6 +565,8 @@ plot.gg_variable <- function(x,
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::facet_grid(~outcome)
         }
+
+      ## ---- Regression individual plot --------------------------------
       } else {
         # assume regression
         gg_plt[[ind]] <- gg_plt[[ind]] +
@@ -587,6 +584,7 @@ plot.gg_variable <- function(x,
               ggplot2::geom_smooth(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
           }
         } else {
+          # Factor predictor: boxplot + jitter
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::geom_boxplot(
               ggplot2::aes(x = .data$var, y = .data$yhat),
@@ -598,9 +596,10 @@ plot.gg_variable <- function(x,
         }
       }
 
-      # Replace the original colname
+      # Restore the original column name before the next iteration
       colnames(gg_dta)[ch_indx] <- h_name
     }
+    # Return a single ggplot when only one variable was requested
     if (lng == 1) {
       gg_plt <- gg_plt[[1]]
     }

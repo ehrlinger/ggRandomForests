@@ -1,6 +1,9 @@
 # testthat for gg_variable function
 context("gg_variable tests")
 
+# Survival formula helper (rfsrc requires Surv to be in local scope)
+Surv <- survival::Surv
+
 test_that("gg_variable classifications", {
   ## Load the cached forest
   rfsrc_iris <- randomForestSRC::rfsrc(
@@ -137,4 +140,227 @@ test_that("gg_variable survival handles late time requests", {
   late_time <- max(rfsrc_veteran$time.interest) + 50
   expect_silent(gg_dta <- gg_variable(rfsrc_veteran, time = late_time))
   expect_is(gg_dta, "gg_variable")
+})
+
+test_that("gg_variable survival: single time, single continuous variable plot", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_veteran, time = 90)
+  expect_is(gg_dta, "gg_variable")
+
+  gg_plt <- plot(gg_dta, xvar = "age")
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("gg_variable survival: single time, panel plot", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_veteran, time = 90)
+  gg_plt <- plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("gg_variable survival: multiple times, single variable facets", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_veteran, time = c(30, 90, 365))
+  expect_is(gg_dta, "gg_variable")
+
+  # Single xvar → plot.gg_variable returns a single ggplot (not a list)
+  gg_plt <- plot(gg_dta, xvar = "age")
+  expect_is(gg_plt, "ggplot")
+
+  # Multiple xvars → returns a list
+  gg_plt2 <- plot(gg_dta, xvar = c("age", "diagtime"))
+  expect_is(gg_plt2, "list")
+  expect_is(gg_plt2[[1]], "ggplot")
+})
+
+test_that("gg_variable survival: multiple times, panel plot", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_veteran, time = c(30, 90))
+  gg_plt <- plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("gg_variable survival: points=FALSE smooth=TRUE options", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_veteran, time = 90)
+
+  gg_plt <- plot(gg_dta, xvar = "age", points = FALSE, smooth = TRUE)
+  expect_is(gg_plt, "ggplot")
+
+  gg_plt2 <- plot(gg_dta, xvar = "age", points = TRUE, smooth = FALSE)
+  expect_is(gg_plt2, "ggplot")
+})
+
+test_that("gg_variable survival: oob=FALSE uses in-bag predictions", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_veteran, time = 90, oob = FALSE)
+  expect_is(gg_dta, "gg_variable")
+})
+
+test_that("plot.gg_variable regression: points=FALSE smooth=TRUE", {
+  data(Boston, package = "MASS")
+  boston <- Boston
+  boston$chas <- as.logical(boston$chas)
+
+  rfsrc_boston <- randomForestSRC::rfsrc(
+    medv ~ .,
+    data = boston,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_variable(rfsrc_boston)
+
+  gg_plt <- plot(gg_dta, xvar = "lstat", points = FALSE, smooth = TRUE)
+  expect_is(gg_plt, "ggplot")
+
+  gg_plt2 <- plot(gg_dta, xvar = "lstat", points = FALSE, smooth = FALSE)
+  expect_is(gg_plt2, "ggplot")
+})
+
+test_that("plot.gg_variable regression: factor x variable triggers boxplot", {
+  data(Boston, package = "MASS")
+  boston <- Boston
+  boston$chas <- as.logical(boston$chas)
+
+  rfsrc_boston <- randomForestSRC::rfsrc(
+    medv ~ .,
+    data = boston,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_variable(rfsrc_boston)
+  gg_dta$chas <- factor(gg_dta$chas)
+
+  gg_plt <- plot(gg_dta, xvar = "chas")
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("plot.gg_variable regression: panel with two continuous variables", {
+  data(Boston, package = "MASS")
+  boston <- Boston
+  boston$chas <- as.logical(boston$chas)
+
+  rfsrc_boston <- randomForestSRC::rfsrc(
+    medv ~ .,
+    data = boston,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_variable(rfsrc_boston)
+  gg_plt <- plot(gg_dta, xvar = c("lstat", "rm"), panel = TRUE)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("plot.gg_variable regression: panel points=FALSE smooth=TRUE", {
+  data(Boston, package = "MASS")
+  boston <- Boston
+  boston$chas <- as.logical(boston$chas)
+
+  rfsrc_boston <- randomForestSRC::rfsrc(
+    medv ~ .,
+    data = boston,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_variable(rfsrc_boston)
+  gg_plt <- plot(gg_dta, xvar = c("lstat", "rm"),
+                 panel = TRUE, points = FALSE, smooth = TRUE)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("plot.gg_variable classification: panel with multiple continuous vars", {
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_variable(rfsrc_iris)
+  gg_plt <- plot(gg_dta, xvar = c("Petal.Width", "Sepal.Width"), panel = TRUE)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("plot.gg_variable classification: smooth and no-points path", {
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ .,
+    data = iris,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_variable(rfsrc_iris)
+  gg_plt <- plot(gg_dta, xvar = "Petal.Width", points = FALSE, smooth = TRUE)
+  expect_is(gg_plt, "ggplot")
+})
+
+test_that("plot.gg_variable: missing xvar returns list for all predictors", {
+  data(Boston, package = "MASS")
+  boston <- Boston
+  boston$chas <- as.logical(boston$chas)
+
+  rfsrc_boston <- randomForestSRC::rfsrc(
+    medv ~ .,
+    data = boston,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_variable(rfsrc_boston)
+  gg_plt <- plot(gg_dta)
+  expect_is(gg_plt, "list")
+  expect_gt(length(gg_plt), 0)
+  expect_is(gg_plt[[1]], "ggplot")
 })

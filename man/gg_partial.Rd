@@ -2,7 +2,7 @@
 % Please edit documentation in R/gg_partial.R
 \name{gg_partial}
 \alias{gg_partial}
-\title{Split partial lots into continuous or categorical datasets}
+\title{Split partial dependence data into continuous or categorical datasets}
 \usage{
 gg_partial(part_dta, nvars = NULL, cat_limit = 10, model = NULL)
 }
@@ -11,12 +11,48 @@ gg_partial(part_dta, nvars = NULL, cat_limit = 10, model = NULL)
 
 \item{nvars}{how many of the partial plot variables to calculate}
 
-\item{cat_limit}{Categorical features are build when there are fewer than
-cat_limit unique features.}
+\item{cat_limit}{Categorical features are built when there are fewer than
+\code{cat_limit} unique feature values.}
 
 \item{model}{a label name applied to all features. Useful when combining
 multiple partial plot objects in figures.}
 }
+\value{
+A named list with two elements:
+  \describe{
+    \item{continuous}{data.frame with columns \code{x}, \code{yhat},
+      \code{name} (and optionally \code{model}) for continuous variables}
+    \item{categorical}{data.frame with the same columns but with \code{x}
+      as a factor, for low-cardinality / categorical variables}
+  }
+}
 \description{
-Split partial lots into continuous or categorical datasets
+Takes the list returned by \code{rfsrc::plot.variable(partial = TRUE)} and
+separates the variables into two data frames: one for continuous predictors
+and one for categorical (factor-like) predictors.  The split is controlled
+by \code{cat_limit}: variables with more unique x-values than this threshold
+are treated as continuous; all others are categorical.
+}
+\examples{
+## Build a small regression forest on the airquality dataset
+set.seed(42)
+airq <- na.omit(airquality)
+rf <- rfsrc(Ozone ~ ., data = airq, ntree = 50)
+
+## Compute partial dependence via plot.variable (show.plots = FALSE to
+## suppress the base-graphics output — we only want the data)
+pv <- randomForestSRC::plot.variable(rf, partial = TRUE,
+                                      show.plots = FALSE)
+
+## Split into continuous and categorical data frames
+result <- gg_partial(pv)
+head(result$continuous)
+
+## Label this model for later comparison with a second forest
+result_labelled <- gg_partial(pv, model = "airq_model")
+unique(result_labelled$continuous$model)
+
+}
+\seealso{
+\code{\link{gg_partial_rfsrc}} \code{\link{gg_partialpro}}
 }

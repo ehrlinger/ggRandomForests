@@ -20,30 +20,28 @@
 ROC plot generic function for a \code{\link{gg_roc}} object.
 }
 \examples{
-\dontrun{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-data(rfsrc_iris, package = "ggRandomForests")
+# Build a small classification forest (ntree=50 keeps example fast)
+set.seed(42)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
 
-# ROC for setosa
+# ROC for setosa (outcome index 1)
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)
 plot.gg_roc(gg_dta)
 
-# ROC for versicolor
+# ROC for versicolor (outcome index 2)
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 2)
 plot.gg_roc(gg_dta)
 
-# ROC for virginica
+# ROC for virginica (outcome index 3)
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 3)
 plot.gg_roc(gg_dta)
 
-# Alternatively, you can plot all three outcomes in one go
-# by calling the plot function on the forest object.
+# Alternatively, pass the forest directly to plot all three ROC curves
 plot.gg_roc(rfsrc_iris)
-}
 
 }
 \references{

@@ -54,15 +54,20 @@
 #'
 #'
 #' @export
+#' @export plot.gg_vimp
 plot.gg_vimp <- function(x, relative, lbls, ...) {
   gg_dta <- x
+
+  # Accept raw rfsrc / randomForest objects and compute VIMP on the fly
   if (!inherits(gg_dta, "gg_vimp")) {
     gg_dta <- gg_vimp(gg_dta, ...)
   }
 
-  # Classification...
+  # Capture extra args by name so we can inspect nvar without consuming it
   arg_set <- as.list(substitute(list(...)))[-1L]
 
+  # Optionally restrict to the top-nvar most important variables (gg_vimp
+  # already sorts by descending VIMP, so we just trim the tail).
   nvar <- nrow(gg_dta)
   if (!is.null(arg_set$nvar)) {
     if (is.numeric(arg_set$nvar) && arg_set$nvar > 1) {
@@ -75,12 +80,16 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
 
   gg_plt <- ggplot2::ggplot(gg_dta)
 
+  # Use "vimp" as the bar-height column when it exists; fall back to the
+  # first column name for objects that store a renamed importance measure.
   msr <- "vimp"
   if (!msr %in% colnames(gg_dta)) {
     msr <- colnames(gg_dta)[1]
   }
 
-  #  if(missing(relative) | is.null(gg_dta$rel_vimp)) {
+  # When there are both positive and negative VIMP values, colour the bars
+  # differently so the user can immediately see which variables are below zero
+  # (i.e. hurt predictive accuracy on average).
   if (length(unique(gg_dta$positive)) > 1) {
     gg_plt <- gg_plt +
       ggplot2::geom_bar(
@@ -94,6 +103,8 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
         width = .5,
       )
   } else {
+    # All values have the same sign — colour only the bar border to avoid a
+    # redundant fill legend.
     gg_plt <- gg_plt +
       ggplot2::geom_bar(
         ggplot2::aes(y = msr, x = "vars", color = "positive"),
@@ -104,11 +115,12 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
   gg_plt <- gg_plt + labs(x = "", y = msr)
 
   if (!missing(lbls)) {
-    # Print a warning if the lbls is not a named vector.
-
+    # Map internal variable names to human-readable labels.  lbls should be a
+    # named character vector; any unmatched variables keep their original name.
     if (length(lbls) >= length(gg_dta$vars)) {
       st_lbls <- lbls[as.character(gg_dta$vars)]
       names(st_lbls) <- as.character(gg_dta$vars)
+      # Fall back to the raw variable name when no label was supplied
       st_lbls[which(is.na(st_lbls))] <-
         names(st_lbls[which(is.na(st_lbls))])
 
@@ -116,6 +128,10 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
         ggplot2::scale_x_discrete(labels = st_lbls)
     }
   }
+
+  # Flip coordinates so variable names appear on the y-axis (horizontal bars
+  # are easier to read when there are many variables).  If gg_vimp contains
+  # a "set" column (comparison VIMP across two forests), facet by set.
   if (is.null(gg_dta$set) || length(unique(gg_dta$set)) < 2) {
     gg_plt <- gg_plt +
       ggplot2::coord_flip()

@@ -55,8 +55,10 @@ kaplan <- function(interval,
                    censor,
                    data,
                    by = NULL, ...) {
+  # Build a Surv object from the named columns in the data frame.
   srv <- survival::Surv(time = data[[interval]], event = data[[censor]])
-  # Kaplan-Meier analysis
+
+  # Fit the Kaplan-Meier estimator; stratify on `by` when provided.
   if (is.null(by)) {
     srv_tab <- survival::survfit(srv ~ 1, ...)
   } else {
@@ -64,33 +66,27 @@ kaplan <- function(interval,
       survival::survfit(srv ~ survival::strata(data[[by]]), ...)
   }
 
-  #********************************************************************* ;
-  #* Cumulative hazard and hazard estimates from transforms and slopes;
-  #* as well as integral of survivorship and proportionate life length;
+  # Cumulative hazard H(t) = -log(S(t)) via the Nelson-Aalen transform.
   cum_hazard <- -log(srv_tab$surv)
 
-
-  times <- order(data[[interval]])
-  delta_time <- sapply(2:length(times), function(ind) {
-    times[ind] - times[ind - 1]
-  })
-
-  # Still need to add hazard and density.
+  # Collect per-time-point summary statistics into a flat data frame.
   tbl <- data.frame(
     cbind(
       time = srv_tab$time,
-      n = srv_tab$n.risk,
-      cens = srv_tab$n.censor,
-      dead = srv_tab$n.event,
-      surv = srv_tab$surv,
-      se = srv_tab$std.err,
-      lower = srv_tab$lower,
-      upper = srv_tab$upper,
+      n = srv_tab$n.risk,        # number at risk just before time t
+      cens = srv_tab$n.censor,   # number censored at time t
+      dead = srv_tab$n.event,    # number of events at time t
+      surv = srv_tab$surv,       # KM survival estimate S(t)
+      se = srv_tab$std.err,      # standard error of S(t)
+      lower = srv_tab$lower,     # lower confidence bound
+      upper = srv_tab$upper,     # upper confidence bound
       cum_haz = cum_hazard
     )
   )
 
-  # Add group labels when stratifying data.
+  # When stratifying, stitch a "groups" label column onto the table.
+  # Stratum boundaries are detected by finding where the time column resets
+  # (survfit concatenates strata end-to-end in ascending time order).
   if (!is.null(by)) {
     tm_splits <-
       which(c(FALSE, sapply(2:nrow(tbl), function(ind) {
@@ -105,24 +101,24 @@ kaplan <- function(interval,
     }
   }
 
-  # , "hazard", "density")
-  #******************************************************************* ;
-  # Summarize the various strata
-  # only look at events
+  # Keep only rows where at least one event occurred — censoring-only rows
+  # do not contribute new KM estimates.
   gg_dta <- tbl[which(tbl[["dead"]] != 0), ]
 
-  # Calculate the hazard estimates from transforms and slopes
-  # as well as integral of survivorship and proportionate life length
+  # Derived quantities computed from interval-based lagged differences.
   lag_s <- c(1, gg_dta$surv)[-(dim(gg_dta)[1] + 1)]
   lag_t <- c(0, gg_dta$time)[-(dim(gg_dta)[1] + 1)]
 
   delta_t <- gg_dta$time - lag_t
+  # Conditional hazard rate approximation: h(t) ≈ -log(S(t)/S(t-)) / Δt
   hzrd <- log(lag_s / gg_dta$surv) / delta_t
 
+  # Probability density: f(t) ≈ (S(t-) - S(t)) / Δt
   dnsty <- (lag_s - gg_dta$surv) / delta_t
   mid_int <- (gg_dta$time + lag_t) / 2
   lag_l <- 0
 
+  # Cumulative expected life in each interval (trapezoidal-rule approximation).
   life <- vector("numeric", length = dim(gg_dta)[1])
   for (ind in seq_len(dim(gg_dta)[1])) {
     life[ind] <-
