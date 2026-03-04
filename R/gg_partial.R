@@ -92,13 +92,13 @@ gg_partial <- function(part_dta,
   # Combine per-variable lists into single data frames (NULL entries dropped)
   continuous  <- dplyr::bind_rows(cont_list)
   if(length(cat_list) == 0) {
-    categorical <- NA
+    categorical <- data.frame(x = character(0), yhat = numeric(0), name = character(0))
   } else {
     categorical <- dplyr::bind_rows(cat_list)
-    categorical <- dplyr::group_by(categorical, name)
+    categorical <- dplyr::group_by(categorical, .data$name)
     categorical <- dplyr::mutate(
       categorical,
-      x = factor(x, levels = unique(x))
+      x = factor(.data$x, levels = unique(.data$x))
     )
     categorical <- dplyr::ungroup(categorical)
   }

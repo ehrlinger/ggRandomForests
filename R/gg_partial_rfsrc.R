@@ -71,7 +71,7 @@ gg_partial_rfsrc <- function(rf_model,
     })
   } else{
     xv2 <- unique(unlist(newx |>
-                           dplyr::select(xvar2.name)))
+                           dplyr::select(dplyr::all_of(xvar2.name))))
     pdta <- lapply(xv2, function(x2val) {
       p1dta <- lapply(xvar.names, function(xname) {
         xval <- unlist(newx |>
@@ -101,8 +101,8 @@ gg_partial_rfsrc <- function(rf_model,
   }
   pdta <- do.call("rbind", pdta)
   continuous <- pdta |> dplyr::filter(.data$type == "continuous") |>
-    mutate(x = as.numeric(.data$x)) |> dplyr::select(-.data$type)
-  categorical <- pdta |> dplyr::filter(.data$type == "categorical")  |>
-    dplyr::select(-.data$type)
+    mutate(x = as.numeric(.data$x)) |> dplyr::select(-"type")
+  categorical <- pdta |> dplyr::filter(.data$type == "categorical") |>
+    dplyr::select(-"type")
   return(list(continuous = continuous, categorical = categorical))
 }
