@@ -146,7 +146,7 @@ gg_rfsrc.rfsrc <- function(object,
                            oob = TRUE,
                            by,
                            ...) {
-  ## Check that the input obect is of the correct type.
+  ## Check that the input object is of the correct type.
   if (inherits(object, "rfsrc") == FALSE) {
     stop(
       paste(
@@ -155,6 +155,7 @@ gg_rfsrc.rfsrc <- function(object,
       )
     )
   }
+  # The forest object itself must be stored; rfsrc uses forest = TRUE for this.
   if (is.null(object$forest)) {
     stop(
       paste(
@@ -164,16 +165,18 @@ gg_rfsrc.rfsrc <- function(object,
     )
   }
 
-  # get optional arguments
+  # Collect optional arguments (conf.int, surv_type, bs.sample, etc.)
   arg_list <- list(...)
 
+  # Prediction objects do not have OOB predictions; force full-forest preds.
   if (inherits(object, "predict")) {
     oob <- FALSE
   }
 
+  ## ---- Resolve the stratifying variable ("by") ----------------------------
   if (!missing(by)) {
     grp <- by
-    # If the by argument is a vector, make sure it is the correct length
+    # Accept either a column name (character) or a pre-built vector/factor.
     if (is.character(grp)) {
       if (is.null(object$xvar[, grp])) {
         stop(paste("No column named", grp, "in forest training set."))
@@ -198,14 +201,16 @@ gg_rfsrc.rfsrc <- function(object,
         )
       )
     }
+    # Convert to factor with levels in order of first appearance to preserve
+    # the natural ordering of groups in downstream plots.
     grp <- factor(grp, levels = unique(grp))
   }
 
-
+  ## ---- Classification branch -----------------------------------------------
   if (object$family == "class") {
-    ### Classification models...
-
-    # Need to add multiclass methods
+    # For binary classification rfsrc stores two-column probability matrices;
+    # we drop the first column (the "negative" class probability) for binary
+    # problems since it is redundant.  Multi-class forests keep all columns.
     if (oob) {
       gg_dta <-
         if (ncol(object$predicted.oob) <= 2) {
@@ -221,31 +226,32 @@ gg_rfsrc.rfsrc <- function(object,
       }
     }
 
-    # Switch between logical or categorical outcome
+    # Assign column names and append the observed class label column "y".
     if (ncol(gg_dta) == 1) {
       colnames(gg_dta) <- object$yvar.names
-      # Force this to logical return value...
-      #
-      # This may be a bug in rfsrc, as it converts all classification models
-      # into factors.
+      # rfsrc internally stores binary outcomes as a two-level factor even
+      # when the original response is logical; convert back to logical here.
       gg_dta$y <- as.logical(as.numeric(object$yvar) - 1)
     } else {
       colnames(gg_dta) <- levels(object$yvar)
       gg_dta$y <- object$yvar
     }
 
-    # Handle the "by" argument.
     if (!missing(by)) {
       gg_dta$group <- grp
     }
+
+  ## ---- Survival branch -----------------------------------------------------
   } else if (object$family == "surv") {
-    ### Survival models
+    # Default to overall survival; callers can request CHF or mortality.
     surv_type <- "surv"
 
     if (!is.null(arg_list$surv_type)) {
       surv_type <- arg_list$surv_type
     }
 
+    # Extract the appropriate prediction matrix (rows = observations,
+    # columns = unique time points stored in $time.interest).
     if (oob) {
       rng <- switch(surv_type,
         surv = data.frame(object$survival.oob),
@@ -266,20 +272,21 @@ gg_rfsrc.rfsrc <- function(object,
       )
     }
 
-    # Do we want all lines, or bootstrap confidence bands.
+    # Name each column with the corresponding observed event time.
     colnames(rng) <- object$time.interest
 
     rng$obs_id <- seq_len(nrow(rng))
     if (is.null(object$yvar)) {
       rng$event <- FALSE
     } else {
+      # Second column of yvar is the event indicator (0 = censored, 1 = event).
       rng$event <- as.logical(object$yvar[, 2])
     }
     gg_dta <- rng
 
-    # If we don't specify either a conf band or group by variable...
-    # Then we want to plot a curve for each observation.
     if (is.null(arg_list$conf.int) && missing(by)) {
+      # No grouping or CI requested: pivot to long form so plot.gg_rfsrc can
+      # draw one survival step function per observation.
       gathercols <-
         colnames(gg_dta)[-which(colnames(gg_dta) %in% c("obs_id", "event"))]
       gg_dta_mlt <-
@@ -290,13 +297,16 @@ gg_rfsrc.rfsrc <- function(object,
 
       gg_dta <- gg_dta_mlt
     } else {
+      # Bootstrap confidence bands: compute pointwise quantiles of the
+      # bootstrapped mean survival curve at each time point.
       level <- if (is.null(arg_list$conf.int)) {
         .95
       } else {
         arg_list$conf.int
       }
 
-      # If we have one value, then it's two sided.
+      # Accept a single coverage probability (e.g. 0.95 → two-sided tails
+      # at 0.025 and 0.975) or a length-2 vector of explicit quantile probs.
       if (length(level) == 1) {
         if (level > 1) {
           level <- level / 100
@@ -308,16 +318,16 @@ gg_rfsrc.rfsrc <- function(object,
         level_set <- sort(level)
       }
 
+      # Number of bootstrap resamples — default to the number of observations.
       if (is.null(arg_list$bs.sample)) {
         bs_samples <- nrow(gg_dta)
       } else {
         bs_samples <- arg_list$bs.sample
       }
 
-
       if (!missing(by)) {
+        # Stratified: compute separate bootstrap CI bands per group level.
         gg_dta$group <- grp
-        #####
         grp_dta <- lapply(levels(grp), function(st) {
           if (is.null(arg_list$bs.sample)) {
             bs_samples <-
@@ -338,11 +348,14 @@ gg_rfsrc.rfsrc <- function(object,
         )
         gg_dta <- gg_grp
       } else {
+        # Single-group CI band.
         gg_dta <- bootstrap_survival(gg_dta, bs_samples, level_set)
       }
     }
+
+  ## ---- Regression branch ---------------------------------------------------
   } else if (object$family == "regr") {
-    # Need to add multiclass methods
+    # Bind predicted values alongside the observed response for scatter plots.
     if (oob) {
       gg_dta <- data.frame(cbind(object$predicted.oob, object$yvar))
     } else {
@@ -351,7 +364,6 @@ gg_rfsrc.rfsrc <- function(object,
 
     colnames(gg_dta) <- c("yhat", object$yvar.names)
 
-    # Handle the "by" argument.
     if (!missing(by)) {
       gg_dta$group <- grp
     }
@@ -366,6 +378,8 @@ gg_rfsrc.rfsrc <- function(object,
     )
   }
 
+  # Tag the data frame with the forest family so plot.gg_rfsrc can dispatch
+  # to the correct branch without re-inspecting the original forest object.
   class(gg_dta) <- c("gg_rfsrc", object$family, class(gg_dta))
   invisible(gg_dta)
 }

@@ -196,30 +196,40 @@
 #' @export
 plot.gg_error <- function(x, ...) {
   gg_dta <- x
-  
+
+  # Accept a raw rfsrc object and extract error rates on the fly
   if (inherits(gg_dta, "rfsrc")) {
     gg_dta <- gg_error(gg_dta)
   }
-  
+
   if (!inherits(gg_dta, "gg_error")) {
     stop("Incorrect object type: Expects a gg_error object")
   }
+
+  # Use points instead of lines when there is only one non-NA row (e.g. a
+  # forest built with a single tree, or one where only ntree=1 has an error
+  # rate recorded).  A line plot with one point renders nothing visible.
   point = FALSE
-  if (nrow(na.omit(gg_dta)) < 2) { 
+  if (nrow(na.omit(gg_dta)) < 2) {
     point=TRUE
   }
+
   if (ncol(gg_dta) > 2) {
+    # Multi-outcome (classification): gg_error has one column per class plus
+    # the "ntree" column.  Pivot to long form so we can colour by outcome.
     gg_dta <- tidyr::gather(gg_dta, "variable", "value", -"ntree")
     gg_plt <-
       ggplot2::ggplot(na.omit(gg_dta),
-                      ggplot2::aes(x = .data[["ntree"]], y = .data[["value"]], 
+                      ggplot2::aes(x = .data[["ntree"]], y = .data[["value"]],
                                    col = .data[["variable"]]))
   } else {
-    # We expect the object to have the following columns
+    # Single-outcome (regression / survival): gg_error has columns "ntree"
+    # and "error".  Map directly without reshaping.
     gg_plt <-
-      ggplot2::ggplot(na.omit(gg_dta), ggplot2::aes(x = .data[["ntree"]], 
+      ggplot2::ggplot(na.omit(gg_dta), ggplot2::aes(x = .data[["ntree"]],
                                                     y = .data[["error"]]))
   }
+
   if (point) {
     gg_plt <- gg_plt +
       ggplot2::geom_point() +
@@ -229,6 +239,9 @@ plot.gg_error <- function(x, ...) {
       ggplot2::geom_line() +
       ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")
   }
+
+  # Hide the legend when there is only a single outcome variable — the colour
+  # key adds no information and clutters the plot.
   if (length(unique(gg_dta$variable)) == 1) {
     gg_plt <- gg_plt + ggplot2::theme(legend.position = "none")
   }

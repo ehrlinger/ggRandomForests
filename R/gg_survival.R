@@ -69,8 +69,11 @@ gg_survival <- function(interval = NULL,
                         data,
                         type = c("kaplan", "nelson"),
                         ...) {
+  # Validate and normalise the estimator choice.  Kaplan-Meier is the default.
   type <- match.arg(type)
 
+  # Delegate entirely to the selected estimator helper.  Both kaplan() and
+  # nelson() return a gg_survival object that plot.gg_survival can render.
   gg_dta <- switch(type,
     kaplan = kaplan(
       interval = interval,

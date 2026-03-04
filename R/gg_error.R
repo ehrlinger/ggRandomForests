@@ -203,7 +203,7 @@ gg_error <- function(object, ...) {
 }
 #' @export
 gg_error.rfsrc <- function(object, ...) {
-  ## Check that the input obect is of the correct type.
+  ## Check that the input object is of the correct type.
   if (!inherits(object, "rfsrc")) {
     stop(
       paste(
@@ -212,20 +212,27 @@ gg_error.rfsrc <- function(object, ...) {
       )
     )
   }
+  # The forest must have been grown with tree.err = TRUE so that per-tree
+  # OOB error rates are recorded in $err.rate.
   if (is.null(object$err.rate)) {
     stop("Performance values are not available for this forest.")
   }
 
+  # Convert the err.rate matrix (ntree × n_outcomes) to a data frame.
   gg_dta <- data.frame(object$err.rate)
 
-  # If there is only one column in the error rate... name it reasonably.
+  # rfsrc wraps single-column matrices with a column name derived from the
+  # object name; rename it to the neutral label "error" for downstream use.
   if ("object.err.rate" %in% colnames(gg_dta)) {
     colnames(gg_dta)[which(colnames(gg_dta) == "object.err.rate")] <-
       "error"
   }
 
+  # Add a sequential tree counter required by the x-axis of plot.gg_error.
   gg_dta$ntree <- seq_len(dim(gg_dta)[1])
 
+  # Optional in-bag training error: re-predict on the full training set using
+  # the stored forest and record the resulting per-tree error trajectory.
   arg_list <- as.list(substitute(list(...)))
   training <- FALSE
   if (!is.null(arg_list$training)) {
@@ -249,7 +256,7 @@ gg_error.rfsrc <- function(object, ...) {
 
 #' @export
 gg_error.randomForest <- function(object, ...) {
-  ## Check that the input obect is of the correct type.
+  ## Check that the input object is of the correct type.
   if (!inherits(object, "randomForest")) {
     stop(
       paste(
@@ -260,10 +267,10 @@ gg_error.randomForest <- function(object, ...) {
   }
 
   if (!is.null(object$mse)) {
-    # For regression
+    # Regression forests store the cumulative OOB mean squared error in $mse.
     gg_dta <- data.frame(object$mse)
 
-    # If there is only one column in the error rate... name it reasonably.
+    # Normalise the auto-generated column name to "error".
     if ("object.mse" %in% colnames(gg_dta)) {
       colnames(gg_dta)[which(colnames(gg_dta) == "object.mse")] <-
         "error"
@@ -277,6 +284,7 @@ gg_error.randomForest <- function(object, ...) {
       training <- arg_list$training
     }
 
+    # Optionally compute and append the per-tree in-bag training error curve.
     if (training) {
       train_curve <- .rf_training_curve(object)
       if (!is.null(train_curve)) {
@@ -284,7 +292,8 @@ gg_error.randomForest <- function(object, ...) {
       }
     }
   } else if (!is.null(object$err.rate)) {
-    # For classification
+    # Classification forests store the cumulative OOB error matrix in
+    # $err.rate (rows = trees, columns = overall + per-class error rates).
     gg_dta <- data.frame(object$err.rate)
 
     gg_dta$ntree <- seq_len(nrow(gg_dta))

@@ -56,17 +56,23 @@ quantile_pts <- function(object, groups, intervals = FALSE) {
   }
   groups <- as.integer(groups)
 
+  # Drop missing values before computing quantiles
   object <- stats::na.omit(object)
   if (!length(object)) {
     return(numeric())
   }
 
+  # When intervals = TRUE we need groups + 1 boundary points (including both
+  # endpoints) so that cut() produces exactly `groups` non-overlapping bins.
+  # When intervals = FALSE we return `groups` interior quantile points.
   probs <- if (intervals) {
     seq(0, 1, length.out = groups + 1)
   } else {
     seq(0, 1, length.out = groups)
   }
 
+  # type = 2 uses the "nearest even" convention, matching the behaviour of
+  # SAS PROC UNIVARIATE and ensuring consistent results on small samples.
   pts <- as.numeric(stats::quantile(object,
     probs = probs,
     na.rm = TRUE,
@@ -75,10 +81,17 @@ quantile_pts <- function(object, groups, intervals = FALSE) {
 
   # Ensure breaks are strictly increasing for cut()
   if (intervals) {
+    # Collapse any duplicated quantile values (can happen with low-cardinality
+    # variables where many observations share the same value).
     pts <- unique(pts)
     if (length(pts) < 2) {
+      # Degenerate case: all observations equal. Add a tiny offset so cut()
+      # still produces a valid (if trivial) set of intervals.
       pts <- c(pts, pts + .Machine$double.eps)
     }
+    # Nudge the lower boundary down so that the minimum value falls *inside*
+    # the first interval (cut() uses open-on-the-left, closed-on-the-right
+    # intervals by default, so the exact minimum would otherwise be excluded).
     pts[1] <- pts[1] - 1e-7
   }
 

@@ -66,10 +66,12 @@ calc_roc.rfsrc <-
            which_outcome = "all",
            oob = TRUE,
            ...) {
+    # Ensure response is a factor so levels() is well-defined
     if (!is.factor(dta)) {
       dta <- factor(dta)
     }
 
+    # Re-read oob from ... so callers can override the default
     arg_list <- as.list(substitute(list(...)))
 
     oob <- FALSE
@@ -77,10 +79,12 @@ calc_roc.rfsrc <-
       oob <- as.logical(arg_list$oob)
     }
 
+    # "all" outcomes not yet supported; fall back to the first class
     if (which_outcome == "all") {
       warning("Must specify which_outcome for now.")
       which_outcome <- 1
     }
+    # Build (binary indicator, full-forest prediction, OOB prediction) triplet
     dta_roc <-
       data.frame(cbind(
         res = (dta == levels(dta)[which_outcome]),
@@ -88,7 +92,7 @@ calc_roc.rfsrc <-
         oob_prd = object$predicted.oob[, which_outcome]
       ))
 
-    # Get the list of unique prob
+    # Collect the unique predicted probability thresholds for the ROC sweep
     if (oob) {
       pct <- sort(unique(object$predicted.oob[, which_outcome]))
     } else {
@@ -96,15 +100,16 @@ calc_roc.rfsrc <-
     }
 
     last <- length(pct)
+    # Remove the maximum threshold (the cutpoint where nothing is classified
+    # as positive), which produces the (sens=0, spec=1) anchor point
     pct <- pct[-last]
 
-    # Make sure we don't have to many points... if the training set was large,
-    # This may break plotting all ROC curves in multiclass settings.
-    # Arbitrarily reduce this to only include 200 points along the curve
+    # Cap at 200 threshold points to keep multi-class ROC plots manageable
     if (last > 200) {
       pct <- pct[seq(1, length(pct), length.out = 200)]
     }
 
+    # For each threshold, build the 2×2 confusion table and extract TPR/TNR
     gg_dta <- parallel::mclapply(pct, function(crit) {
       if (oob) {
         tbl <- xtabs(~ res + (oob_prd > crit), dta_roc)
@@ -118,6 +123,7 @@ calc_roc.rfsrc <-
     })
 
     gg_dta <- do.call(rbind, gg_dta)
+    # Anchor curve at perfect specificity (0, 1) and perfect sensitivity (1, 0)
     gg_dta <- rbind(c(0, 1), gg_dta, c(1, 0))
 
     gg_dta <- data.frame(gg_dta, row.names = seq_len(nrow(gg_dta)))
@@ -222,16 +228,15 @@ calc_roc.randomForest <-
 #' @aliases calc_auc calc_auc.gg_roc
 #' @export
 calc_auc <- function(x) {
-  ## Use the trapeziod rule, basically calc
-  ##
-  ## auc = dx/2(f(x_{i+1}) - f(x_i))
-  ##
-  ## f(x) is sensitivity, x is 1-specificity
+  ## Trapezoidal rule:  AUC = Σ dx/2 * (f(x_{i+1}) + f(x_i))
+  ## Here f(x) is sensitivity (TPR) and x is 1 − specificity (FPR).
+  ## The shift() helper provides the lead value x_{i+1}.
 
-  # Since we are leading vectors (x_{i+1} - x_{i}), we need to
-  # ensure we are in decreasing order of specificity (x var = 1-spec)
+  # Sort in decreasing specificity so FPR increases left-to-right along the curve
   x <- x[order(x$spec, decreasing = TRUE), ]
 
+  # Trapezoidal approximation: average of consecutive sensitivity values
+  # multiplied by the FPR increment (change in 1 - spec)
   auc <- (3 * shift(x$sens) - x$sens) / 2 * (x$spec - shift(x$spec))
   sum(auc, na.rm = TRUE)
 }

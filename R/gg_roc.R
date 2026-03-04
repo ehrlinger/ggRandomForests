@@ -64,6 +64,8 @@
 
 #' @export
 gg_roc.rfsrc <- function(object, which_outcome, oob, ...) {
+  # Validate that the object was grown with randomForestSRC (grow or predict)
+  # or is a randomForest object — the two supported class signatures.
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &&
     sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 &&
     !inherits(object, "randomForest")) {
@@ -72,27 +74,32 @@ gg_roc.rfsrc <- function(object, which_outcome, oob, ...) {
       '(rfsrc, predict)' or 'randomForest."
     )
   }
+  # ROC curves only make sense for classification; reject other families early.
   if (!inherits(object, "class")) {
     stop("gg_roc only works with classification forests")
   }
 
-  # Want to remove the which_outcomes argument to plot ROC for all
-  # outcomes simultaneously.
+  # Default to "all" so the caller can later loop over every class level;
+  # the caller may pass a specific integer index to get a single-class curve.
   if (missing(which_outcome)) {
     which_outcome <- "all"
   }
 
+  # Redundant guard: rfsrc sets family = "class" for classification forests.
+  # Kept here to surface a clearer error message if the object is somehow
+  # mis-labelled.
   if (object$family != "class") {
     stop("gg_roc is intended for classification forests only.")
   }
 
+  # Delegate the threshold-sweep computation to calc_roc, passing the
+  # observed response vector and the chosen outcome column index.
   gg_dta <-
     calc_roc(object,
       object$yvar,
       which_outcome = which_outcome,
       oob = oob
     )
-  #   }
   class(gg_dta) <- c("gg_roc", class(gg_dta))
 
   invisible(gg_dta)
@@ -104,6 +111,7 @@ gg_roc <- function(object, which_outcome, oob, ...) {
 
 #' @export
 gg_roc.randomForest <- function(object, which_outcome, oob, ...) {
+  # Validate that the object is a genuine randomForest instance.
   if (sum(inherits(object, "randomForest", TRUE) == c(1, 2)) != 1) {
     stop(
       "This function only works for objects of class `(rfsrc, grow)',
@@ -111,23 +119,21 @@ gg_roc.randomForest <- function(object, which_outcome, oob, ...) {
     )
   }
 
-  # Want to remove the which_outcomes argument to plot ROC for all
-  # outcomes simultaneously.
+  # Default to computing the ROC curve for all outcome classes.
   if (missing(which_outcome)) {
     which_outcome <- "all"
   }
-
 
   if (!(object$type == "classification")) {
     stop("gg_roc only works with classification forests")
   }
 
+  # For randomForest objects the response is stored in $y (not $yvar).
   gg_dta <-
     calc_roc(object,
       object$y,
       which_outcome = which_outcome
     )
-  #   }
   class(gg_dta) <- c("gg_roc", class(gg_dta))
 
   invisible(gg_dta)

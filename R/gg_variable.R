@@ -220,41 +220,40 @@ gg_variable <- function(object, ...) {
 #' @export
 gg_variable.rfsrc <- function(object,
                               ...) {
-  # Get the extra arguments for handling specifics
+  # Collect optional arguments: time, time_labels, oob
   arg_list <- list(...)
 
   time <- arg_list$time
   time_labels <- arg_list$time_labels
+  # Default to OOB predictions; callers can override with oob = FALSE to use
+  # full-forest (in-bag) predictions instead.
   oob <- if (!is.null(arg_list$oob)) {
     arg_list$oob
   } else {
     TRUE
   }
 
-  # Want to also handle a plot.variable where partial!= TRUE
   if (!inherits(object, "rfsrc")) {
     stop("gg_variable expects a rfsrc or plot.variable object.")
   }
 
-  # IF we called this with a partial plot obect, instead of marginal.
-  # if (inherits(object, "plot.variable")) {
-  #   if (object$partial) {
-  #     invisible(gg_partial(object, ...))
-  #   }
-  # }
-
-  # !! Have to verify this works with a plot.variable object...
-
-  # gg_variable is really just cutting the data into time slices.
+  # Start with the predictor (xvar) data frame; we will append the predicted
+  # response column(s) below depending on the forest family.
   gg_dta <- data.frame(object$xvar)
 
+  ## ---- Regression branch ---------------------------------------------------
   if (object$family == "regr") {
+    # Append a single "yhat" column containing the OOB (or full) predictions.
     if (oob) {
       gg_dta$yhat <- object$predicted.oob
     } else {
       gg_dta$yhat <- object$predicted
     }
+
+  ## ---- Classification branch -----------------------------------------------
   } else if (object$family == "class") {
+    # Append one "yhat.<class>" probability column per outcome class so the
+    # caller can choose which class to display on the variable plot.
     preds <- if (oob) {
       object$predicted.oob
     } else {
@@ -266,10 +265,15 @@ gg_variable.rfsrc <- function(object,
       )
     gg_dta <- cbind(gg_dta, preds)
     gg_dta$yvar <- object$yvar
+
+  ## ---- Survival branch -----------------------------------------------------
   } else if (object$family == "surv") {
+    # Survival forests predict a matrix (observations × time points); we need
+    # to slice it at one or more user-specified time horizons.
     gg_dta$event <- as.logical(object$yvar[, 2])
     colnames(gg_dta) <- c(object$xvar.names, "event")
 
+    # Default to the median observed event time when no time is specified.
     if (is.null(time)) {
       time <- median(object$time.interest)
     }
@@ -279,12 +283,9 @@ gg_variable.rfsrc <- function(object,
       if (ind > 1) {
         gg_dta_t_old <- gg_dta_t
       }
-      ## For marginal plot.
-      # Plot.variable returns the resubstituted survival, not OOB. So we
-      # calculate it. Time is really straight forward since survival is a
-      # step function
-      #
-      # Get the event time occuring before or at 1 year.
+      # Find the largest recorded time point that is <= the requested horizon.
+      # Survival is a step function, so we read the value at the last eligible
+      # recorded time point.
       gg_dta_t <- gg_dta
       eligible <- which(object$time.interest <= time[ind])
       if (!length(eligible)) {
@@ -301,18 +302,21 @@ gg_variable.rfsrc <- function(object,
         gg_dta_t$yhat <- object$survival[, in_time]
       }
 
+      # Attach either the numeric time value or a user-supplied label.
       if (is.null(time_labels)) {
         gg_dta_t$time <- time[ind]
       } else {
         gg_dta_t$time <- time_labels[ind]
       }
 
+      # Stack time-slice data frames for multi-horizon plots.
       if (ind > 1) {
         gg_dta_t <- rbind(gg_dta_t_old, gg_dta_t)
       }
     }
 
     gg_dta <- gg_dta_t
+    # Preserve the ordering of time levels in the factor for downstream plots.
     gg_dta$time <- factor(gg_dta$time, levels = unique(gg_dta$time))
   }
   class(gg_dta) <- c("gg_variable", object$family, class(gg_dta))
@@ -324,6 +328,8 @@ gg_variable.randomForest <- function(object,
                                      ...) {
   arg_list <- list(...)
 
+  # randomForest objects do not store OOB predictions in a way that maps back
+  # to the predictor space, so we always use in-bag (full-forest) predictions.
   if (!is.null(arg_list$oob)) {
     arg_list$oob <- FALSE
   }
@@ -332,6 +338,8 @@ gg_variable.randomForest <- function(object,
     stop("gg_variable expects a randomForest object.")
   }
 
+  # Reconstruct the training data from the stored call so we can pair
+  # predictions with the original predictors.
   training_info <- .rf_recover_model_frame(object)
   if (is.null(training_info)) {
     stop(
@@ -344,6 +352,8 @@ gg_variable.randomForest <- function(object,
   response <- stats::model.response(model_frame)
   resp_name <- training_info$response_name
 
+  # Drop the response column and any special model-frame columns (e.g. offset)
+  # to leave only the predictor columns.
   predictors <- model_frame
   if (!is.null(resp_name) && resp_name %in% names(predictors)) {
     predictors[[resp_name]] <- NULL
@@ -354,6 +364,7 @@ gg_variable.randomForest <- function(object,
   }
 
   gg_dta <- predictors
+  # Append the forest's in-bag predicted values.
   gg_dta$yhat <- as.vector(object$predicted)
   if (object$type == "classification") {
     gg_dta$yvar <- response

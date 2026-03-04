@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Rscript -e \"devtools::test\\(\\)\")",
+      "Bash(Rscript -e \"devtools::test\\(reporter = testthat::SummaryReporter$new\\(\\)\\)\")",
+      "Bash(Rscript -e \"testthat::set_max_fails\\(Inf\\); devtools::test\\(reporter = testthat::SummaryReporter$new\\(\\)\\)\")",
+      "Bash(Rscript -e \"options\\(testthat.max_fails = Inf\\); devtools::test\\(reporter = testthat::SummaryReporter$new\\(\\)\\)\")",
+      "Bash(Rscript -e \":*)",
+      "Bash(Rscript --vanilla -e \":*)",
+      "Bash(Rscript -e \"library\\(covr\\); cov <- package_coverage\\(''/Users/ehrlinj/Documents/GitHub/ggRandomForests/.claude/worktrees/lucid-herschel''\\); print\\(cov\\)\")",
+      "Bash(Rscript -e \"rcmdcheck::rcmdcheck\\(args=''--no-manual'', error_on=''warning''\\)\")",
+      "Bash(git add .Rbuildignore tests/testthat/test_gg_rfsrc.R tests/testthat/test_gg_variable.R tests/testthat/test_gg_partial.R tests/testthat/test_gg_partialpro.R tests/testthat/test_ggrandomforests_news.R tests/testthat/test_surv_partial.R tests/testthat/test_varpro_feature_names.R)"
+    ]
+  }
+}
