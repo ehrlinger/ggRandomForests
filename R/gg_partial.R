@@ -75,8 +75,12 @@ gg_partial <- function(part_dta,
       ## ---- Categorical variable: few unique x values -------------------
       ## VarPro works with logical or continuous only; factors are
       ## one-hot encoded internally in the varPro call.
+      ## Normalize to character so bind_rows sees a consistent type; we'll
+      ## re-factor within each feature after stacking.
+      x_chr <- as.character(x_vals)
+
       plt.df <- dplyr::bind_cols(
-        x    = factor(x_vals),
+        x    = x_chr,
         yhat = part_dta$plotthis[[feature]]$yhat
       )
       plt.df$name <- names(part_dta$plotthis)[[feature]]
@@ -87,8 +91,17 @@ gg_partial <- function(part_dta,
 
   # Combine per-variable lists into single data frames (NULL entries dropped)
   continuous  <- dplyr::bind_rows(cont_list)
-  categorical <- dplyr::bind_rows(cat_list)
-
+  if(length(cat_list) == 0) {
+    categorical <- NA
+  } else {
+    categorical <- dplyr::bind_rows(cat_list)
+    categorical <- dplyr::group_by(categorical, name)
+    categorical <- dplyr::mutate(
+      categorical,
+      x = factor(x, levels = unique(x))
+    )
+    categorical <- dplyr::ungroup(categorical)
+  }
   ## Optionally attach a model label (useful when overlaying multiple forests)
   if (!is.null(model)) {
     continuous$model <- categorical$model <- model

@@ -41,7 +41,7 @@ test_that("gg_variable classifications", {
   # Test return is s ggplot object
   expect_is(gg_plt, "list")
   expect_equal(length(gg_plt), length(rfsrc_iris$xvar.names))
-  for (ind in seq_len(length(rfsrc_iris$xvar.names)))
+  for (ind in seq_along(rfsrc_iris$xvar.names))
     expect_is(gg_plt[[ind]], "ggplot")
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_variable(gg_dta, xvar = rfsrc_iris$xvar.names,
@@ -109,7 +109,7 @@ test_that("gg_variable regression", {
   # Test return is s ggplot object
   expect_is(gg_plt, "list")
   expect_equal(length(gg_plt), length(rfsrc_boston$xvar.names))
-  for (ind in seq_len(length(rfsrc_boston$xvar.names)))
+  for (ind in seq_along(rfsrc_boston$xvar.names))
     expect_is(gg_plt[[ind]], "ggplot")
   
   
