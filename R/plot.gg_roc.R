@@ -146,7 +146,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
       st
     })
     # Tag each subset with its outcome index for colour/linetype mapping
-    gg_dta <- parallel::mclapply(seq_len(length(gg_dta)), function(ind) {
+    gg_dta <- parallel::mclapply(seq_along(gg_dta), function(ind) {
       gg_dta[[ind]]$outcome <- ind
       gg_dta[[ind]]
     })
