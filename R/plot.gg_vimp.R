@@ -54,6 +54,7 @@
 #'
 #'
 #' @export
+#' @export plot.gg_vimp
 plot.gg_vimp <- function(x, relative, lbls, ...) {
   gg_dta <- x
 

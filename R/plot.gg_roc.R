@@ -57,6 +57,7 @@
 #' plot.gg_roc(rfsrc_iris)
 #'
 #' @export
+#' @export plot.gg_roc
 plot.gg_roc <- function(x, which_outcome = NULL, ...) {
   gg_dta <- x
 

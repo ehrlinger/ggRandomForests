@@ -37,3 +37,4 @@ framed.sty
 ^docs$
 ^pkgdown$
 ^LICENSE\.md$
+^memory$

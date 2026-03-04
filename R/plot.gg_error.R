@@ -194,6 +194,7 @@
 #' @importFrom ggplot2 ggplot geom_line theme labs
 #' @importFrom tidyr gather
 #' @export
+#' @export plot.gg_error
 plot.gg_error <- function(x, ...) {
   gg_dta <- x
 

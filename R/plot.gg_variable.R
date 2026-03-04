@@ -110,6 +110,7 @@
 #' plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
 #'
 #' @export
+#' @export plot.gg_variable
 plot.gg_variable <- function(x,
                              xvar,
                              time,

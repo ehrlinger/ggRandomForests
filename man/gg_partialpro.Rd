@@ -2,21 +2,84 @@
 % Please edit documentation in R/gg_partialpro.R
 \name{gg_partialpro}
 \alias{gg_partialpro}
-\title{Split partial lots into continuous or categorical datasets}
+\title{Split varpro partial dependence data into continuous or categorical datasets}
 \usage{
 gg_partialpro(part_dta, nvars = NULL, cat_limit = 10, model = NULL)
 }
 \arguments{
-\item{part_dta}{partial plot data from \code{varpro::partialpro}}
+\item{part_dta}{partial plot data from \code{varpro::partialpro}.  Each
+element of the list must contain fields \code{xvirtual}, \code{xorg},
+\code{yhat.par}, \code{yhat.nonpar}, and \code{yhat.causal}.}
 
-\item{nvars}{how many of the partial plot variables to calculate}
+\item{nvars}{how many variables (list elements) to process.  Defaults to
+all variables in \code{part_dta}.}
 
-\item{cat_limit}{Categorical features are build when there are fewer than
-cat_limit unique features.}
+\item{cat_limit}{Variables with \code{length(xvirtual)} \eqn{\le}
+\code{cat_limit} are treated as categorical.  Default \code{10}.}
 
-\item{model}{a label name applied to all features. Useful when combining
-multiple partial plot objects in figures.}
+\item{model}{a label applied to all rows.  Useful when combining results
+from multiple models in a single figure.}
+}
+\value{
+A named list with two elements:
+  \describe{
+    \item{continuous}{data.frame with columns \code{variable},
+      \code{parametric}, \code{nonparametric}, \code{causal}, \code{name}
+      (and optionally \code{model})}
+    \item{categorical}{data.frame with the same columns but one row per
+      observation per category level}
+  }
 }
 \description{
-Split partial lots into continuous or categorical datasets
+Takes the list returned by \code{varpro::partialpro} and separates variables
+into two data frames: one for continuous predictors (parametric, non-
+parametric, and causal effect curves) and one for categorical predictors
+(one row per observation per category level).
+}
+\details{
+The split is governed by \code{cat_limit}: a variable is treated as
+continuous when \code{length(xvirtual) > cat_limit}; otherwise it is
+treated as categorical and the per-category rows are stacked.
+}
+\examples{
+## Construct mock varpro partialpro output:
+##   - "age": a continuous predictor (xvirtual has > 10 points)
+##   - "sex": a categorical predictor (xvirtual has 2 points)
+set.seed(42)
+n_obs <- 30   # number of observations (rows in yhat matrices)
+n_pts <- 15   # number of evaluation points for continuous variables
+
+mock_data <- list(
+  age = list(
+    # xvirtual: evaluation grid for the marginal effect curve
+    xvirtual   = seq(30, 80, length.out = n_pts),
+    # xorg: original observed values (used only for categorical detection)
+    xorg       = sample(seq(30, 80, by = 5), n_obs, replace = TRUE),
+    # yhat matrices: n_obs rows x n_pts columns (predictions at each grid pt)
+    yhat.par   = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+    yhat.nonpar = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+    yhat.causal = matrix(rnorm(n_obs * n_pts), nrow = n_obs)
+  ),
+  sex = list(
+    # Two categories: the xvirtual grid has only 2 points
+    xvirtual   = c(0, 1),
+    xorg       = sample(c(0, 1), n_obs, replace = TRUE),
+    # Two-column yhat matrices (one column per category)
+    yhat.par   = matrix(rnorm(n_obs * 2), nrow = n_obs),
+    yhat.nonpar = matrix(rnorm(n_obs * 2), nrow = n_obs),
+    yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
+  )
+)
+
+result <- gg_partialpro(mock_data)
+
+## Continuous result: one row per evaluation grid point
+head(result$continuous)
+
+## Categorical result: n_obs rows per category level
+head(result$categorical)
+
+}
+\seealso{
+\code{\link{gg_partial}} \code{\link{varpro_feature_names}}
 }

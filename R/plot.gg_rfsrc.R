@@ -144,6 +144,7 @@
 #' }
 #'
 #' @export
+#' @export plot.gg_rfsrc
 plot.gg_rfsrc <- function(x, ...) {
   gg_dta <- x
 

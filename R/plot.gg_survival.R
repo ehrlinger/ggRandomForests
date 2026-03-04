@@ -68,6 +68,7 @@
 #' plot(gg_dta, label = "sex", error = "lines")
 #'
 #' @export
+#' @export plot.gg_survival
 ### Survival plots
 plot.gg_survival <- function(x,
                              type = c("surv",

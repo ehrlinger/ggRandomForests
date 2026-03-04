@@ -21,13 +21,13 @@ Plot the predicted response from a \code{\link{gg_rfsrc}} object, the
 from the forest.
 }
 \examples{
-\dontrun{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-data(rfsrc_iris, package = "ggRandomForests")
+# Build a small classification forest (ntree=50 keeps example fast)
+set.seed(42)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_iris)
 
 plot(gg_dta)
@@ -36,19 +36,17 @@ plot(gg_dta)
 ## Regression example
 ## ------------------------------------------------------------
 ## -------- air quality data
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+# na.action = "na.impute" handles missing Ozone / Solar.R values
+set.seed(42)
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
+                    na.action = "na.impute", ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_airq)
 
 plot(gg_dta)
 
-## -------- Boston data
-data(Boston, package = "MASS")
-rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
-
-plot(rfsrc_boston)
-
 ## -------- mtcars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+set.seed(42)
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_mtcars)
 
 plot(gg_dta)
@@ -59,20 +57,23 @@ plot(gg_dta)
 ## -------- veteran data
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+set.seed(42)
+rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_veteran)
 plot(gg_dta)
 
+# With 95\% pointwise bootstrap confidence bands
 gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int = .95)
 plot(gg_dta)
 
+# Stratified by treatment arm
 gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt")
 plot(gg_dta)
 
-## -------- pbc data
-#' # We need to create this dataset
-data(pbc, package = "randomForestSRC", )
-# For whatever reason, the age variable is in days... makes no sense to me
+## -------- pbc data (larger dataset -- skipped on CRAN)
+\donttest{
+data(pbc, package = "randomForestSRC")
+# For whatever reason, the age variable is in days; convert to years
 for (ind in seq_len(dim(pbc)[2])) {
   if (!is.factor(pbc[, ind])) {
     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
@@ -95,21 +96,18 @@ for (ind in seq_len(dim(pbc)[2])) {
     pbc[, ind] <- factor(pbc[, ind])
   }
 }
-# Convert age to years
+# Convert age from days to years
 pbc$age <- pbc$age / 364.24
-
 pbc$years <- pbc$days / 364.24
 pbc <- pbc[, -which(colnames(pbc) == "days")]
 pbc$treatment <- as.numeric(pbc$treatment)
 pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
 pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
 pbc$treatment <- factor(pbc$treatment)
+# Remove test-set patients (those with no assigned treatment)
 dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-# Create a test set from the remaining patients
-pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 
-# ========
-# build the forest:
+set.seed(42)
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(years, status) ~ .,
   dta_train,
