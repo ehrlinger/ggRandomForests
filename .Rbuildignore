@@ -28,6 +28,9 @@ framed.sty
 ^CRAN-RELEASE$
 ^CRAN-SUBMISSION$
 ^\.github$
+^\.claude$
+^\.git$
+^\.vscode$
 ^doc$
 ^Meta$
 ^_pkgdown\.yml$
