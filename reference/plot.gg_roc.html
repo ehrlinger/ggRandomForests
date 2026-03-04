@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,30 +86,32 @@ Regression and Classification (RF-SRC), R package version 1.4.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## classification example</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## -------- iris data</span></span></span>
-<span class="r-in"><span><span class="co"># rfsrc_iris &lt;- rfsrc(Species ~ ., data = iris)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">rfsrc_iris</span>, package <span class="op">=</span> <span class="st">"ggRandomForests"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Build a small classification forest (ntree=50 keeps example fast)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_iris</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># ROC for setosa</span></span></span>
+<span class="r-in"><span><span class="co"># ROC for setosa (outcome index 1)</span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_roc.rfsrc.html">gg_roc</a></span><span class="op">(</span><span class="va">rfsrc_iris</span>, which_outcome <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plot.gg_roc</span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.gg_roc-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># ROC for versicolor</span></span></span>
+<span class="r-in"><span><span class="co"># ROC for versicolor (outcome index 2)</span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_roc.rfsrc.html">gg_roc</a></span><span class="op">(</span><span class="va">rfsrc_iris</span>, which_outcome <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plot.gg_roc</span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.gg_roc-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># ROC for virginica</span></span></span>
+<span class="r-in"><span><span class="co"># ROC for virginica (outcome index 3)</span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_roc.rfsrc.html">gg_roc</a></span><span class="op">(</span><span class="va">rfsrc_iris</span>, which_outcome <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plot.gg_roc</span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.gg_roc-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Alternatively, you can plot all three outcomes in one go</span></span></span>
-<span class="r-in"><span><span class="co"># by calling the plot function on the forest object.</span></span></span>
+<span class="r-in"><span><span class="co"># Alternatively, pass the forest directly to plot all three ROC curves</span></span></span>
 <span class="r-in"><span><span class="fu">plot.gg_roc</span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-plt img"><img src="plot.gg_roc-4.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

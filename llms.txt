@@ -126,13 +126,15 @@ York, 2009.
   : Random forest error trajectory data object
 
 - [`gg_partial()`](http://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
-  : Split partial lots into continuous or categorical datasets
+  : Split partial dependence data into continuous or categorical
+  datasets
 
 - [`gg_partial_rfsrc()`](http://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
   : Split partial lots into continuous or categorical datasets
 
 - [`gg_partialpro()`](http://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md)
-  : Split partial lots into continuous or categorical datasets
+  : Split varpro partial dependence data into continuous or categorical
+  datasets
 
 - [`gg_rfsrc(`*`<rfsrc>`*`)`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
   : Predicted response data object
@@ -198,10 +200,8 @@ York, 2009.
   : Calculate survival curve partial plot.
 
 - [`varpro_feature_names()`](http://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.md)
-  : varpro one hot encodes features, so we need to get the "raw"
-  original variable names. This loops through the variable names not in
-  the original dataset, and cuts one character off the end until we find
-  the variable name in the original data.
+  : Recover original variable names from varpro one-hot encoded feature
+  names
 
 # Articles
 

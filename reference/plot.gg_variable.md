@@ -79,101 +79,105 @@ Regression and Classification (RF-SRC), R package version 1.4.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 ## ------------------------------------------------------------
 ## classification
 ## ------------------------------------------------------------
 ## -------- iris data
-## iris
-# rfsrc_iris <- rfsrc(Species ~., data = iris)
-data(rfsrc_iris, package = "ggRandomForests")
+set.seed(42)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
 
 gg_dta <- gg_variable(rfsrc_iris)
 plot(gg_dta, xvar = "Sepal.Width")
+
 plot(gg_dta, xvar = "Sepal.Length")
 
-## !! TODO !! this needs to be corrected
+
+## Panel plot across all predictors
 plot(gg_dta,
   xvar = rfsrc_iris$xvar.names,
   panel = TRUE, se = FALSE
 )
+#> Warning: Ignoring unknown parameters: `se`
+
 
 ## ------------------------------------------------------------
 ## regression
 ## ------------------------------------------------------------
 ## -------- air quality data
-# rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
-data(rfsrc_airq, package = "ggRandomForests")
+# na.action = "na.impute" handles missing Ozone / Solar.R values
+set.seed(42)
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
+                    na.action = "na.impute", ntree = 50)
 gg_dta <- gg_variable(rfsrc_airq)
 
-# an ordinal variable
+# Treat Month as an ordinal factor for better visualisation
 gg_dta[, "Month"] <- factor(gg_dta[, "Month"])
 
 plot(gg_dta, xvar = "Wind")
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
 plot(gg_dta, xvar = "Temp")
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
 plot(gg_dta, xvar = "Solar.R")
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+#> Warning: Removed 7 rows containing non-finite outside the scale range (`stat_smooth()`).
+#> Warning: Removed 7 rows containing missing values or values outside the scale range
+#> (`geom_point()`).
 
+
+# Panel plot across continuous predictors
 plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+#> Warning: Removed 7 rows containing non-finite outside the scale range (`stat_smooth()`).
+#> Warning: Removed 7 rows containing missing values or values outside the scale range
+#> (`geom_point()`).
 
+
+# Factor variable uses notched boxplots
 plot(gg_dta, xvar = "Month", notch = TRUE)
+#> Warning: Ignoring unknown parameters: `notch`
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
 
-## -------- motor trend cars data
-# rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
-data(rfsrc_mtcars, package = "ggRandomForests")
-gg_dta <- gg_variable(rfsrc_mtcars)
-
-# mtcars$cyl is an ordinal variable
-gg_dta$cyl <- factor(gg_dta$cyl)
-gg_dta$am <- factor(gg_dta$am)
-gg_dta$vs <- factor(gg_dta$vs)
-gg_dta$gear <- factor(gg_dta$gear)
-gg_dta$carb <- factor(gg_dta$carb)
-
-plot(gg_dta, xvar = "cyl")
-
-# Others are continuous
-plot(gg_dta, xvar = "disp")
-plot(gg_dta, xvar = "hp")
-plot(gg_dta, xvar = "wt")
-
-# panel
-plot(gg_dta, xvar = c("disp", "hp", "drat", "wt", "qsec"), panel = TRUE)
-plot(gg_dta, xvar = c("cyl", "vs", "am", "gear", "carb"), panel = TRUE)
-
-## -------- Boston data
 
 ## ------------------------------------------------------------
 ## survival examples
 ## ------------------------------------------------------------
 ## -------- veteran data
-## survival
 data(veteran, package = "randomForestSRC")
+set.seed(42)
 rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., veteran,
   nsplit = 10,
-  ntree = 100
+  ntree = 50
 )
 
-# get the 1 year survival time.
+# Marginal survival at 90 days
 gg_dta <- gg_variable(rfsrc_veteran, time = 90)
 
-# Generate variable dependance plots for age and diagtime
+# Single-variable dependence plots
 plot(gg_dta, xvar = "age")
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
 plot(gg_dta, xvar = "diagtime")
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
-# Generate coplots
+
+# Panel coplot for two predictors at a single time
 plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
-# If we want to compare survival at different time points, say 30, 90 day
-# and 1 year
+
+# Compare survival at 30, 90, and 365 days simultaneously
 gg_dta <- gg_variable(rfsrc_veteran, time = c(30, 90, 365))
 
-# Generate variable dependance plots for age and diagtime
+# Single-variable plot (one facet per time point)
 plot(gg_dta, xvar = "age")
-plot(gg_dta, xvar = "diagtime")
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
-# Generate coplots
+
+# Panel coplot across two predictors and three time points
 plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
-## -------- pbc data
-} # }
 ```

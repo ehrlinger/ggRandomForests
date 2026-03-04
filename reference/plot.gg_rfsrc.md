@@ -49,37 +49,53 @@ Regression and Classification (RF-SRC), R package version 1.4.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 ## ------------------------------------------------------------
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-# rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-data(rfsrc_iris, package = "ggRandomForests")
+# Build a small classification forest (ntree=50 keeps example fast)
+set.seed(42)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_iris)
 
 plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 450 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
 
 ## ------------------------------------------------------------
 ## Regression example
 ## ------------------------------------------------------------
 ## -------- air quality data
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
+# na.action = "na.impute" handles missing Ozone / Solar.R values
+set.seed(42)
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
+                    na.action = "na.impute", ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_airq)
 
 plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 153 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 153 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
 
-## -------- Boston data
-data(Boston, package = "MASS")
-rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
-
-plot(rfsrc_boston)
 
 ## -------- mtcars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+set.seed(42)
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_mtcars)
 
 plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 32 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 32 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
 
 ## ------------------------------------------------------------
 ## Survival example
@@ -87,20 +103,41 @@ plot(gg_dta)
 ## -------- veteran data
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+set.seed(42)
+rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_veteran)
 plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 13289 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
 
+
+# With 95% pointwise bootstrap confidence bands
 gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int = .95)
 plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 97 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 97 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
 
+
+# Stratified by treatment arm
 gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt")
 plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 194 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 194 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
 
-## -------- pbc data
-#' # We need to create this dataset
-data(pbc, package = "randomForestSRC", )
-# For whatever reason, the age variable is in days... makes no sense to me
+
+## -------- pbc data (larger dataset -- skipped on CRAN)
+# \donttest{
+data(pbc, package = "randomForestSRC")
+# For whatever reason, the age variable is in days; convert to years
 for (ind in seq_len(dim(pbc)[2])) {
   if (!is.factor(pbc[, ind])) {
     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
@@ -123,21 +160,18 @@ for (ind in seq_len(dim(pbc)[2])) {
     pbc[, ind] <- factor(pbc[, ind])
   }
 }
-# Convert age to years
+# Convert age from days to years
 pbc$age <- pbc$age / 364.24
-
 pbc$years <- pbc$days / 364.24
 pbc <- pbc[, -which(colnames(pbc) == "days")]
 pbc$treatment <- as.numeric(pbc$treatment)
 pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
 pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
 pbc$treatment <- factor(pbc$treatment)
+# Remove test-set patients (those with no assigned treatment)
 dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-# Create a test set from the remaining patients
-pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 
-# ========
-# build the forest:
+set.seed(42)
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(years, status) ~ .,
   dta_train,
@@ -150,11 +184,29 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
 
 gg_dta <- gg_rfsrc(rfsrc_pbc)
 plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 38064 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
 
 gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int = .95)
 plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 122 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 122 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
 
 gg_dta <- gg_rfsrc(rfsrc_pbc, by = "treatment")
 plot(gg_dta)
-} # }
+#> Warning: All aesthetics have length 1, but the data has 244 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 244 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+# }
 ```
