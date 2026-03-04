@@ -222,7 +222,7 @@ plot.gg_variable <- function(x,
         colnames(tmp_dta)[-which(colnames(tmp_dta) %in%
           c("time", "event", "yhat"))]
       gg_dta_mlt <-
-        tidyr::gather(tmp_dta, "variable", "value", gathercols)
+        tidyr::gather(tmp_dta, "variable", "value", tidyr::all_of(gathercols))
 
       # Preserve user-supplied xvar ordering in the facet strips
       gg_dta_mlt$variable <-
