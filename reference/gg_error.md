@@ -35,7 +35,7 @@ additional `train` column is included.
 For `randomForestSRC` objects the function reshapes the
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)`$err.rate`
 matrix and annotates it with the tree index required by
-[`plot.gg_error`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.md).
+[`plot.gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.md).
 When supplied a
 [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
 object, the method inspects either the `$mse` or `$err.rate` component
@@ -57,7 +57,7 @@ Regression and Classification (RF-SRC), R package version 1.4.
 
 ## See also
 
-[`plot.gg_error`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.md),
+[`plot.gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.md),
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html),
 [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
 

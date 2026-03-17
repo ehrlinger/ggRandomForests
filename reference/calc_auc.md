@@ -12,7 +12,7 @@ calc_auc(x)
 
 - x:
 
-  [`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   object
 
 ## Value
@@ -25,15 +25,15 @@ calc_auc uses the trapezoidal rule to calculate the area under the ROC
 curve.
 
 This is a helper function for the
-[`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+[`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
 functions.
 
 ## See also
 
-[`calc_roc`](http://ehrlinger.github.io/ggRandomForests/reference/calc_roc.rfsrc.md)
-[`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+[`calc_roc`](https://ehrlinger.github.io/ggRandomForests/reference/calc_roc.rfsrc.md)
+[`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
 
-[`plot.gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
+[`plot.gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
 
 ## Examples
 

@@ -6,7 +6,7 @@ the partial variable dependence. The `gg_variable` function creates a
 `data.frame` of containing the full set of covariate data (predictor
 variables) and the predicted response for each observation. Marginal
 dependence figures are created using the
-[`plot.gg_variable`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
+[`plot.gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
 function. For `randomForest` fits the original model frame is rebuilt
 from the stored call so that the same predictors can be paired with the
 in-sample predictions.
@@ -57,7 +57,7 @@ object via the formula interface.
 
 ## See also
 
-[`plot.gg_variable`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
+[`plot.gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
 
 [`plot.variable`](https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html)
 

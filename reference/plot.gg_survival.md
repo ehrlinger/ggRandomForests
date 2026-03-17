@@ -1,7 +1,7 @@
-# Plot a [`gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md) object.
+# Plot a [`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md) object.
 
 Plot a
-[`gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
+[`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
 object.
 
 ## Usage
@@ -21,9 +21,9 @@ plot(
 
 - x:
 
-  [`gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
+  [`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
   or a survival
-  [`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+  [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
   object created from a
   [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
   object

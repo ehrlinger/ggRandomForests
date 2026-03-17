@@ -1,7 +1,7 @@
-# Plot a [`gg_variable`](http://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md) object,
+# Plot a [`gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md) object,
 
 Plot a
-[`gg_variable`](http://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
+[`gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
 object,
 
 ## Usage
@@ -25,7 +25,7 @@ plot(
 
 - x:
 
-  [`gg_variable`](http://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
+  [`gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
   object created from a
   [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
   object

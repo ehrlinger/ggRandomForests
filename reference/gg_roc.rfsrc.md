@@ -34,7 +34,7 @@ gg_roc(object, which_outcome, oob, ...)
 
 ## See also
 
-[`plot.gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
+[`plot.gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
 [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
 

@@ -1,7 +1,7 @@
-# Plot a [`gg_vimp`](http://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md) object, extracted variable importance of a [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) object
+# Plot a [`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md) object, extracted variable importance of a [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) object
 
 Plot a
-[`gg_vimp`](http://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+[`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
 object, extracted variable importance of a
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) object
 
@@ -16,7 +16,7 @@ plot(x, relative, lbls, ...)
 
 - x:
 
-  [`gg_vimp`](http://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+  [`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
   object created from a
   [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
   object
@@ -50,7 +50,7 @@ Regression and Classification (RF-SRC), R package version 1.4.
 
 ## See also
 
-[`gg_vimp`](http://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+[`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
 
 ## Examples
 

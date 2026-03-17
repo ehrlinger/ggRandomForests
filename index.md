@@ -60,7 +60,7 @@ package. However, `ggRandomForests` offers the following advantages:
   the figures to their liking.
 
 Check out the [“Exploring Random Forests with ggRandomForests”
-vignette](http://ehrlinger.github.io/ggRandomForests/vignettes/ggRandomForests.qmd)
+vignette](https://ehrlinger.github.io/ggRandomForests/vignettes/ggRandomForests.qmd)
 for a walk-through of these objects.
 
 The package has recently been extended for Breiman and Cutler’s Random
@@ -72,20 +72,20 @@ support is still lacking.
 
 ## Recent improvements
 
-- [`gg_error()`](http://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
+- [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
   now computes optional in-bag training error trajectories for
   `randomForest` fits when `training = TRUE`, making it easy to compare
   OOB and training curves in a single data object.
-- [`gg_variable()`](http://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
+- [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
   rebuilds the original training data from the `randomForest` call, so
   marginal dependence plots work even when models are trained inside
   helper functions or use
   [`subset()`](https://rdrr.io/r/base/subset.html) calls.
-- [`quantile_pts()`](http://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md)
+- [`quantile_pts()`](https://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md)
   is fully quantile based, providing balanced conditioning intervals
   that can be dropped directly into
   [`cut()`](https://rdrr.io/r/base/cut.html) for coplots.
-- [`gg_vimp()`](http://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+- [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
   handles forests that were trained without importance metrics by
   issuing a warning and returning `NA` placeholders, ensuring downstream
   plotting code continues to run.

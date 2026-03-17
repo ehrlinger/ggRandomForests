@@ -1,7 +1,7 @@
-# Predicted response plot from a [`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md) object.
+# Predicted response plot from a [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md) object.
 
 Plot the predicted response from a
-[`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+[`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
 object, the
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
 prediction, using the OOB prediction from the forest.
@@ -17,7 +17,7 @@ plot(x, ...)
 
 - x:
 
-  [`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+  [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
   object created from a
   [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
   object
@@ -25,7 +25,7 @@ plot(x, ...)
 - ...:
 
   arguments passed to
-  [`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
+  [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
 
 ## Value
 
@@ -43,7 +43,7 @@ Regression and Classification (RF-SRC), R package version 1.4.
 
 ## See also
 
-[`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+[`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
 
 ## Examples

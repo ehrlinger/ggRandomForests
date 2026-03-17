@@ -50,17 +50,17 @@ Nelson-Aalen estimators.
 
 `gg_survival` is a wrapper function for generating nonparametric
 survival estimates using either
-[`nelson`](http://ehrlinger.github.io/ggRandomForests/reference/nelson.md)-Aalen
+[`nelson`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md)-Aalen
 or
-[`kaplan`](http://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)-Meier
+[`kaplan`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)-Meier
 estimates.
 
 ## See also
 
-[`kaplan`](http://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)
-[`nelson`](http://ehrlinger.github.io/ggRandomForests/reference/nelson.md)
+[`kaplan`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)
+[`nelson`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md)
 
-[`plot.gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_survival.md)
+[`plot.gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_survival.md)
 
 ## Examples
 

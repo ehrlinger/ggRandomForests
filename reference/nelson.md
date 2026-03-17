@@ -36,14 +36,14 @@ nelson(interval, censor, data, by = NULL, weight = NULL, ...)
 
 ## Value
 
-[`gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
+[`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
 object
 
 ## See also
 
-[`gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
+[`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
 `nelson`
-[`plot.gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_survival.md)
+[`plot.gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_survival.md)
 
 ## Examples
 

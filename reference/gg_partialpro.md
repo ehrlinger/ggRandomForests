@@ -56,8 +56,8 @@ as categorical and the per-category rows are stacked.
 
 ## See also
 
-[`gg_partial`](http://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
-[`varpro_feature_names`](http://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.md)
+[`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
+[`varpro_feature_names`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.md)
 
 ## Examples
 

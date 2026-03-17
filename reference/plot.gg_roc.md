@@ -1,7 +1,7 @@
-# ROC plot generic function for a [`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md) object.
+# ROC plot generic function for a [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md) object.
 
 ROC plot generic function for a
-[`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+[`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
 object.
 
 ## Usage
@@ -15,7 +15,7 @@ plot(x, which_outcome = NULL, ...)
 
 - x:
 
-  [`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   object created from a classification forest
 
 - which_outcome:
@@ -25,7 +25,7 @@ plot(x, which_outcome = NULL, ...)
 - ...:
 
   arguments passed to the
-  [`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   function
 
 ## Value
@@ -44,7 +44,7 @@ Regression and Classification (RF-SRC), R package version 1.4.
 
 ## See also
 
-[`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+[`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
 rfsrc
 
 ## Examples

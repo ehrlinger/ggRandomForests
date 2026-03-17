@@ -3,7 +3,7 @@
 Extracts the predicted response values from the
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) object,
 and formats data for plotting the response using
-[`plot.gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md).
+[`plot.gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md).
 
 ## Usage
 
@@ -45,9 +45,9 @@ prediction.
 
 ## See also
 
-[`plot.gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md)
+[`plot.gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md)
 `rfsrc` `plot.rfsrc`
-[`gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
+[`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
 
 ## Examples
 

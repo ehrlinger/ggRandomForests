@@ -48,7 +48,7 @@ forests, *Electronic J. Statist.*, 1:519-537.
 
 ## See also
 
-[`plot.gg_vimp`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md)
+[`plot.gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md)
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
 
 [`vimp`](https://www.randomforestsrc.org//reference/vimp.rfsrc.html)

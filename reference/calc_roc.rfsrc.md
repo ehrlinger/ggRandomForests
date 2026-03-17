@@ -44,15 +44,15 @@ calculate the specificity (1-False Positive Rate) and sensitivity (True
 Positive Rate) of a predictor.
 
 This is a helper function for the
-[`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+[`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
 functions, and not intended for use by the end user.
 
 ## See also
 
-[`calc_auc`](http://ehrlinger.github.io/ggRandomForests/reference/calc_auc.md)
-[`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+[`calc_auc`](https://ehrlinger.github.io/ggRandomForests/reference/calc_auc.md)
+[`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
 
-[`plot.gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
+[`plot.gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
 
 ## Examples
 

@@ -25,7 +25,7 @@ head(err_df)
     6 0.05970149      0 0.08888889 0.09756098     6 0.01333333
 
 The
-[`gg_error()`](http://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
+[`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
 object stores the cumulative OOB error rate for each outcome column plus
 the `ntree` counter. When `training = TRUE`, the function reconstructs
 the original model frame and appends the in-bag error trajectory
@@ -52,7 +52,7 @@ str(var_df[, c("lstat", "yhat")])
      $ yhat : num  29.2 22.5 35.1 36.4 33.4 ...
 
 Because the original training data are recovered from the model call,
-[`gg_variable()`](http://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
+[`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
 works even when the forest was trained within helper functions or
 against a [`subset()`](https://rdrr.io/r/base/subset.html) expression.
 The output keeps the raw predictors plus either a continuous `yhat`
@@ -96,7 +96,7 @@ plot(vimp_df)
 ![](ggRandomForests_files/figure-html/vimp-demo-1.png)
 
 If a `randomForest` object lacks stored importance scores,
-[`gg_vimp()`](http://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+[`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
 tries to compute them on the fly. When the forest truly cannot provide
 the information (for example when `importance = FALSE` and the
 predictors are no longer accessible), the function emits a warning and
@@ -125,11 +125,11 @@ facet labels.
 - Inspect the full API reference at
   <https://ehrlinger.github.io/ggRandomForests/>.
 - Use
-  [`?gg_error`](http://ehrlinger.github.io/ggRandomForests/reference/gg_error.md),
-  [`?gg_variable`](http://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md),
-  [`?gg_vimp`](http://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
+  [`?gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md),
+  [`?gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md),
+  [`?gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
   and
-  [`?quantile_pts`](http://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md)
+  [`?quantile_pts`](https://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md)
   for additional arguments and examples.
 - Pair these data objects with your own `ggplot2` themes to align with
   your preferred publication style.

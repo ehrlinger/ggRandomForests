@@ -48,8 +48,8 @@ A named list with two elements:
 
 ## See also
 
-[`gg_partial_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-[`gg_partialpro`](http://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md)
+[`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+[`gg_partialpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md)
 
 ## Examples
 

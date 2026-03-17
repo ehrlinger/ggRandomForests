@@ -17,7 +17,13 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ggRandomForests.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md">Version 2.6</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
+  </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/ehrlinger/ggRandomForests/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
@@ -40,9 +46,9 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="forest-objects">Forest Objects<a class="anchor" aria-label="anchor" href="#forest-objects"></a></h2>
 
-
+      <div class="section-desc"><p>Extract and display data from random forest objects.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -51,26 +57,28 @@
 
       <dl><dt>
 
-          <code><a href="calc_auc.html">calc_auc()</a></code>
+          <code><a href="gg_rfsrc.rfsrc.html">gg_rfsrc(<i>&lt;rfsrc&gt;</i>)</a></code>
 
         </dt>
-        <dd>Area Under the ROC Curve calculator</dd>
+        <dd>Predicted response data object</dd>
 
         <dt>
 
-          <code><a href="calc_roc.rfsrc.html">calc_roc(<i>&lt;rfsrc&gt;</i>)</a></code>
+          <code><a href="plot.gg_rfsrc.html">plot(<i>&lt;gg_rfsrc&gt;</i>)</a></code>
 
         </dt>
-        <dd>Receiver Operator Characteristic calculator</dd>
+        <dd>Predicted response plot from a <code>gg_rfsrc</code> object.</dd>
+      </dl></div><div class="section level2">
+      <h2 id="training-error">Training Error<a class="anchor" aria-label="anchor" href="#training-error"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Visualize forest convergence and training error.</p></div>
 
-          <code><a href="ggRandomForests-package.html">ggRandomForests-package</a></code>
+      <dl></dl></div><div class="section level2">
 
-        </dt>
-        <dd>ggRandomForests: Visually Exploring Random Forests</dd>
 
-        <dt>
+
+
+      <dl><dt>
 
           <code><a href="gg_error.html">gg_error()</a></code>
 
@@ -78,6 +86,68 @@
         <dd>Random forest error trajectory data object</dd>
 
         <dt>
+
+          <code><a href="plot.gg_error.html">plot(<i>&lt;gg_error&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a <code>gg_error</code> object</dd>
+      </dl></div><div class="section level2">
+      <h2 id="variable-importance">Variable Importance<a class="anchor" aria-label="anchor" href="#variable-importance"></a></h2>
+
+      <div class="section-desc"><p>Assess and plot variable importance (VIMP).</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gg_vimp.html">gg_vimp()</a></code>
+
+        </dt>
+        <dd>Variable Importance (VIMP) data object</dd>
+
+        <dt>
+
+          <code><a href="plot.gg_vimp.html">plot(<i>&lt;gg_vimp&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a <code>gg_vimp</code> object, extracted variable importance of a <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object</dd>
+      </dl></div><div class="section level2">
+      <h2 id="variable-dependence">Variable Dependence<a class="anchor" aria-label="anchor" href="#variable-dependence"></a></h2>
+
+      <div class="section-desc"><p>Marginal variable dependence plots.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gg_variable.html">gg_variable()</a></code>
+
+        </dt>
+        <dd>Marginal variable dependence data object.</dd>
+
+        <dt>
+
+          <code><a href="plot.gg_variable.html">plot(<i>&lt;gg_variable&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a <code>gg_variable</code> object,</dd>
+      </dl></div><div class="section level2">
+      <h2 id="partial-dependence">Partial Dependence<a class="anchor" aria-label="anchor" href="#partial-dependence"></a></h2>
+
+      <div class="section-desc"><p>Partial dependence plots for individual variables.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="gg_partial.html">gg_partial()</a></code>
 
@@ -97,13 +167,29 @@
 
         </dt>
         <dd>Split varpro partial dependence data into continuous or categorical datasets</dd>
+      </dl></div><div class="section level2">
+      <h2 id="survival-analysis">Survival Analysis<a class="anchor" aria-label="anchor" href="#survival-analysis"></a></h2>
+
+      <div class="section-desc"><p>Survival curves, ROC, and related diagnostics.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gg_survival.html">gg_survival()</a></code>
+
+        </dt>
+        <dd>Nonparametric survival estimates.</dd>
 
         <dt>
 
-          <code><a href="gg_rfsrc.rfsrc.html">gg_rfsrc(<i>&lt;rfsrc&gt;</i>)</a></code>
+          <code><a href="plot.gg_survival.html">plot(<i>&lt;gg_survival&gt;</i>)</a></code>
 
         </dt>
-        <dd>Predicted response data object</dd>
+        <dd>Plot a <code>gg_survival</code> object.</dd>
 
         <dt>
 
@@ -114,24 +200,31 @@
 
         <dt>
 
-          <code><a href="gg_survival.html">gg_survival()</a></code>
+          <code><a href="plot.gg_roc.html">plot(<i>&lt;gg_roc&gt;</i>)</a></code>
 
         </dt>
-        <dd>Nonparametric survival estimates.</dd>
+        <dd>ROC plot generic function for a <code>gg_roc</code> object.</dd>
 
         <dt>
 
-          <code><a href="gg_variable.html">gg_variable()</a></code>
+          <code><a href="calc_roc.rfsrc.html">calc_roc(<i>&lt;rfsrc&gt;</i>)</a></code>
 
         </dt>
-        <dd>Marginal variable dependence data object.</dd>
+        <dd>Receiver Operator Characteristic calculator</dd>
 
         <dt>
 
-          <code><a href="gg_vimp.html">gg_vimp()</a></code>
+          <code><a href="calc_auc.html">calc_auc()</a></code>
 
         </dt>
-        <dd>Variable Importance (VIMP) data object</dd>
+        <dd>Area Under the ROC Curve calculator</dd>
+
+        <dt>
+
+          <code><a href="surv_partial.rfsrc.html">surv_partial.rfsrc()</a></code>
+
+        </dt>
+        <dd>Calculate survival curve partial plot.</dd>
 
         <dt>
 
@@ -146,50 +239,17 @@
 
         </dt>
         <dd>nonparametric Nelson-Aalen estimates</dd>
+      </dl></div><div class="section level2">
+      <h2 id="utilities">Utilities<a class="anchor" aria-label="anchor" href="#utilities"></a></h2>
 
-        <dt>
+      <div class="section-desc"><p>Helper functions used internally and by users.</p></div>
 
-          <code><a href="plot.gg_error.html">plot(<i>&lt;gg_error&gt;</i>)</a></code>
+      <dl></dl></div><div class="section level2">
 
-        </dt>
-        <dd>Plot a <code>gg_error</code> object</dd>
 
-        <dt>
 
-          <code><a href="plot.gg_rfsrc.html">plot(<i>&lt;gg_rfsrc&gt;</i>)</a></code>
 
-        </dt>
-        <dd>Predicted response plot from a <code>gg_rfsrc</code> object.</dd>
-
-        <dt>
-
-          <code><a href="plot.gg_roc.html">plot(<i>&lt;gg_roc&gt;</i>)</a></code>
-
-        </dt>
-        <dd>ROC plot generic function for a <code>gg_roc</code> object.</dd>
-
-        <dt>
-
-          <code><a href="plot.gg_survival.html">plot(<i>&lt;gg_survival&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Plot a <code>gg_survival</code> object.</dd>
-
-        <dt>
-
-          <code><a href="plot.gg_variable.html">plot(<i>&lt;gg_variable&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Plot a <code>gg_variable</code> object,</dd>
-
-        <dt>
-
-          <code><a href="plot.gg_vimp.html">plot(<i>&lt;gg_vimp&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Plot a <code>gg_vimp</code> object, extracted variable importance of a <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object</dd>
-
-        <dt>
+      <dl><dt>
 
           <code><a href="quantile_pts.html">quantile_pts()</a></code>
 
@@ -205,19 +265,29 @@
 
         <dt>
 
-          <code><a href="surv_partial.rfsrc.html">surv_partial.rfsrc()</a></code>
-
-        </dt>
-        <dd>Calculate survival curve partial plot.</dd>
-
-        <dt>
-
           <code><a href="varpro_feature_names.html">varpro_feature_names()</a></code>
 
         </dt>
         <dd>Recover original variable names from varpro one-hot encoded feature names</dd>
+      </dl></div><div class="section level2">
+      <h2 id="package">Package<a class="anchor" aria-label="anchor" href="#package"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="ggRandomForests-package.html">ggRandomForests-package</a></code>
+
+        </dt>
+        <dd>ggRandomForests: Visually Exploring Random Forests</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
@@ -225,7 +295,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>This site was built using <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>!  <img src="https://pkgdown.r-lib.org/logo.png" alt="pkgdown logo" width="25"></p>
+  <p>Built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a></p>
 </div>
 
     </footer></div>

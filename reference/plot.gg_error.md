@@ -1,4 +1,4 @@
-# Plot a [`gg_error`](http://ehrlinger.github.io/ggRandomForests/reference/gg_error.md) object
+# Plot a [`gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md) object
 
 A plot of the cumulative OOB error rates of the random forest as a
 function of number of trees.
@@ -45,7 +45,7 @@ Regression and Classification (RF-SRC), R package version 1.4.
 
 ## See also
 
-[`gg_error`](http://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
+[`gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
 [`plot.rfsrc`](https://www.randomforestsrc.org//reference/plot.rfsrc.html)
 

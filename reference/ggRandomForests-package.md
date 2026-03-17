@@ -40,23 +40,23 @@ available directly from within the `randomForestSRC` package. However,
 
 The `ggRandomForests` package contains the following data functions:
 
-- [`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md):
+- [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md):
   randomForest\[SRC\] predictions.
 
-- [`gg_error`](http://ehrlinger.github.io/ggRandomForests/reference/gg_error.md):
+- [`gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md):
   randomForest\[SRC\] convergence rate based on the OOB error rate.
 
-- [`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md):
+- [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md):
   ROC curves for randomForest classification models.
 
-- [`gg_vimp`](http://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md):
+- [`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md):
   Variable Importance ranking for variable selection. (Ishwaran et.al.
   2010).
 
-- [`gg_variable`](http://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md):
+- [`gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md):
   Marginal variable dependence.
 
-- [`gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md):
+- [`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md):
   Kaplan-Meier/Nelson-Aalen hazard analysis.
 
 Each of these data functions has an associated S3 plot function that
