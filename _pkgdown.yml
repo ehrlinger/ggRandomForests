@@ -83,7 +83,6 @@ reference:
     desc: "Helper functions used internally and by users."
     contents:
       - quantile_pts
-      - shift
       - varpro_feature_names
 
   - title: "Package"
