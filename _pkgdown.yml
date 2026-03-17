@@ -1,4 +1,5 @@
-url: http://ehrlinger.github.io/ggRandomForests/
+url: https://ehrlinger.github.io/ggRandomForests
+
 template:
   bootstrap: 5
   bslib:
@@ -8,19 +9,24 @@ template:
   light-switch: true
   theme: atom-one-light
   theme-dark: atom-one-dark
-  
+
 home:
   sidebar:
-    structure: [badges, links, authors]
+    structure: [badges, links, authors, dev]
     components:
       badges:
-        title: Package badges
+        title: Package status
         text: |
-          ![](https://img.shields.io/github/r-package/v/ehrlinger/ggrandomforests)<br>
-          ![](https://img.shields.io/github/actions/workflow/status/ehrlinger/ggrandomforests/pkgdown.yaml)<br>
-          
+          [![CRAN](https://www.r-pkg.org/badges/version/ggRandomForests)](https://cran.r-project.org/package=ggRandomForests)
+          [![Dev version](https://img.shields.io/github/r-package/v/ehrlinger/ggRandomForests)](https://github.com/ehrlinger/ggRandomForests)
+          [![R-CMD-check](https://github.com/ehrlinger/ggRandomForests/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ehrlinger/ggRandomForests/actions/workflows/R-CMD-check.yaml)
+          [![Codecov](https://codecov.io/gh/ehrlinger/ggRandomForests/graph/badge.svg)](https://app.codecov.io/gh/ehrlinger/ggRandomForests)
+          [![CRAN downloads](https://cranlogs.r-pkg.org/badges/ggRandomForests)](https://cranlogs.r-pkg.org/badges/ggRandomForests)
+          [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11526.svg)](https://doi.org/10.5281/zenodo.11526)
+
 navbar:
   structure:
+    left:  [intro, reference, articles, news]
     right: [search, github, my_linkedin, lightswitch]
   components:
     my_linkedin:
@@ -28,10 +34,77 @@ navbar:
       href: https://www.linkedin.com/in/ehrlinger/
       aria-label: LinkedIn
 
+reference:
+  - title: "Forest Objects"
+    desc: "Extract and display data from random forest objects."
+    contents:
+      - gg_rfsrc.rfsrc
+      - plot.gg_rfsrc
+
+  - title: "Training Error"
+    desc: "Visualize forest convergence and training error."
+    contents:
+      - gg_error
+      - plot.gg_error
+
+  - title: "Variable Importance"
+    desc: "Assess and plot variable importance (VIMP)."
+    contents:
+      - gg_vimp
+      - plot.gg_vimp
+
+  - title: "Variable Dependence"
+    desc: "Marginal variable dependence plots."
+    contents:
+      - gg_variable
+      - plot.gg_variable
+
+  - title: "Partial Dependence"
+    desc: "Partial dependence plots for individual variables."
+    contents:
+      - gg_partial
+      - gg_partial_rfsrc
+      - gg_partialpro
+
+  - title: "Survival Analysis"
+    desc: "Survival curves, ROC, and related diagnostics."
+    contents:
+      - gg_survival
+      - plot.gg_survival
+      - gg_roc.rfsrc
+      - plot.gg_roc
+      - calc_roc.rfsrc
+      - calc_auc
+      - surv_partial.rfsrc
+      - kaplan
+      - nelson
+
+  - title: "Utilities"
+    desc: "Helper functions used internally and by users."
+    contents:
+      - quantile_pts
+      - shift
+      - varpro_feature_names
+
+  - title: "Package"
+    contents:
+      - ggRandomForests-package
+
+articles:
+  - title: "Get started"
+    navbar: ~
+    contents:
+      - ggRandomForests
+
+news:
+  releases:
+  - text: "Version 2.6"
+    href: https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md
+
 footer:
   structure:
     left: developed_by
     right: built_with_pkgdown
   components:
     developed_by: "John Ehrlinger"
-    built_with_pkgdown: "This site was built using [pkgdown](https://pkgdown.r-lib.org/)!&nbsp;&nbsp;<img src='https://pkgdown.r-lib.org/logo.png' alt='pkgdown logo' width='25'>"
+    built_with_pkgdown: "Built with [pkgdown](https://pkgdown.r-lib.org/)"
