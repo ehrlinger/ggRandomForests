@@ -1,0 +1,212 @@
+# Predicted response plot from a [`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md) object.
+
+Plot the predicted response from a
+[`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+object, the
+[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+prediction, using the OOB prediction from the forest.
+
+## Usage
+
+``` r
+# S3 method for class 'gg_rfsrc'
+plot(x, ...)
+```
+
+## Arguments
+
+- x:
+
+  [`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+  object created from a
+  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  object
+
+- ...:
+
+  arguments passed to
+  [`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
+
+## Value
+
+`ggplot` object
+
+## References
+
+Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
+
+Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
+Rnews, 7(2):25-31.
+
+Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
+Regression and Classification (RF-SRC), R package version 1.4.
+
+## See also
+
+[`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+
+## Examples
+
+``` r
+## ------------------------------------------------------------
+## classification example
+## ------------------------------------------------------------
+## -------- iris data
+# Build a small classification forest (ntree=50 keeps example fast)
+set.seed(42)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
+gg_dta <- gg_rfsrc(rfsrc_iris)
+
+plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 450 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+
+## ------------------------------------------------------------
+## Regression example
+## ------------------------------------------------------------
+## -------- air quality data
+# na.action = "na.impute" handles missing Ozone / Solar.R values
+set.seed(42)
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
+                    na.action = "na.impute", ntree = 50)
+gg_dta <- gg_rfsrc(rfsrc_airq)
+
+plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 153 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 153 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+
+## -------- mtcars data
+set.seed(42)
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+gg_dta <- gg_rfsrc(rfsrc_mtcars)
+
+plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 32 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 32 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+
+## ------------------------------------------------------------
+## Survival example
+## ------------------------------------------------------------
+## -------- veteran data
+## randomized trial of two treatment regimens for lung cancer
+data(veteran, package = "randomForestSRC")
+set.seed(42)
+rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 50)
+gg_dta <- gg_rfsrc(rfsrc_veteran)
+plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 13289 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+
+# With 95% pointwise bootstrap confidence bands
+gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int = .95)
+plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 97 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 97 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+
+# Stratified by treatment arm
+gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt")
+plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 194 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 194 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+
+## -------- pbc data (larger dataset -- skipped on CRAN)
+# \donttest{
+data(pbc, package = "randomForestSRC")
+# For whatever reason, the age variable is in days; convert to years
+for (ind in seq_len(dim(pbc)[2])) {
+  if (!is.factor(pbc[, ind])) {
+    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+    }
+  } else {
+    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+    }
+  }
+  if (!is.logical(pbc[, ind]) &
+    length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+    pbc[, ind] <- factor(pbc[, ind])
+  }
+}
+# Convert age from days to years
+pbc$age <- pbc$age / 364.24
+pbc$years <- pbc$days / 364.24
+pbc <- pbc[, -which(colnames(pbc) == "days")]
+pbc$treatment <- as.numeric(pbc$treatment)
+pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
+pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
+pbc$treatment <- factor(pbc$treatment)
+# Remove test-set patients (those with no assigned treatment)
+dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+
+set.seed(42)
+rfsrc_pbc <- randomForestSRC::rfsrc(
+  Surv(years, status) ~ .,
+  dta_train,
+  nsplit = 10,
+  na.action = "na.impute",
+  forest = TRUE,
+  importance = TRUE,
+  save.memory = TRUE
+)
+
+gg_dta <- gg_rfsrc(rfsrc_pbc)
+plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 38064 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+
+gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int = .95)
+plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 122 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 122 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+
+gg_dta <- gg_rfsrc(rfsrc_pbc, by = "treatment")
+plot(gg_dta)
+#> Warning: All aesthetics have length 1, but the data has 244 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+#> Warning: All aesthetics have length 1, but the data has 244 rows.
+#> ℹ Please consider using `annotate()` or provide this layer with data containing
+#>   a single row.
+
+# }
+```

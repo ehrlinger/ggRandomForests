@@ -1,0 +1,87 @@
+# ggRandomForests: Visually Exploring Random Forests
+
+`ggRandomForests` is a utility package for `randomForestSRC` (Ishwaran
+et.al. 2014, 2008, 2007) for survival, regression and classification
+forests and uses the `ggplot2` (Wickham 2009) package for plotting
+results. `ggRandomForests` is structured to extract data objects from
+the random forest and provides S3 functions for printing and plotting
+these objects.
+
+The `randomForestSRC` package provides a unified treatment of Breiman's
+(2001) random forests for a variety of data settings. Regression and
+classification forests are grown when the response is numeric or
+categorical (factor) while survival and competing risk forests (Ishwaran
+et al. 2008, 2012) are grown for right-censored survival data.
+
+Many of the figures created by the `ggRandomForests` package are also
+available directly from within the `randomForestSRC` package. However,
+`ggRandomForests` offers the following advantages:
+
+- Separation of data and figures: `ggRandomForest` contains functions
+  that operate on either the
+  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  forest object directly, or on the output from `randomForestSRC` post
+  processing functions (i.e. `plot.variable`, `find.interaction`) to
+  generate intermediate `ggRandomForests` data objects. S3 functions are
+  provide to further process these objects and plot results using the
+  `ggplot2` graphics package. Alternatively, users can use these data
+  objects for additional custom plotting or analysis operations.
+
+- Each data object/figure is a single, self contained object. This
+  allows simple modification and manipulation of the data or `ggplot2`
+  objects to meet users specific needs and requirements.
+
+- The use of `ggplot2` for plotting. We chose to use the `ggplot2`
+  package for our figures to allow users flexibility in modifying the
+  figures to their liking. Each S3 plot function returns either a single
+  `ggplot2` object, or a `list` of `ggplot2` objects, allowing users to
+  use additional `ggplot2` functions or themes to modify and customize
+  the figures to their liking.
+
+The `ggRandomForests` package contains the following data functions:
+
+- [`gg_rfsrc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md):
+  randomForest\[SRC\] predictions.
+
+- [`gg_error`](http://ehrlinger.github.io/ggRandomForests/reference/gg_error.md):
+  randomForest\[SRC\] convergence rate based on the OOB error rate.
+
+- [`gg_roc`](http://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md):
+  ROC curves for randomForest classification models.
+
+- [`gg_vimp`](http://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md):
+  Variable Importance ranking for variable selection. (Ishwaran et.al.
+  2010).
+
+- [`gg_variable`](http://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md):
+  Marginal variable dependence.
+
+- [`gg_survival`](http://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md):
+  Kaplan-Meier/Nelson-Aalen hazard analysis.
+
+Each of these data functions has an associated S3 plot function that
+returns `ggplot2` objects, either individually or as a list, which can
+be further customized using standard `ggplot2` commands.
+
+## References
+
+Breiman, L. (2001). Random forests, Machine Learning, 45:5-32.
+
+Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival,
+Regression and Classification (RF-SRC), R package version 1.5.5.12.
+
+Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R. R
+News 7(2), 25–31.
+
+Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S. (2008). Random
+survival forests. Ann. Appl. Statist. 2(3), 841–860.
+
+Ishwaran, H., U. B. Kogalur, E. Z. Gorodeski, A. J. Minn, and M. S.
+Lauer (2010). High-dimensional variable selection for survival data. J.
+Amer. Statist. Assoc. 105, 205-217.
+
+Ishwaran, H. (2007). Variable importance in binary regression trees and
+forests. Electronic J. Statist., 1, 519-537.
+
+Wickham, H. ggplot2: elegant graphics for data analysis. Springer New
+York, 2009.
