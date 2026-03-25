@@ -101,6 +101,23 @@ test_that("gg_roc randomForest classifications", {
   expect_error(gg_roc.rfsrc(rf_iris))
 })
 
+test_that("gg_roc default oob=TRUE works without explicit argument", {
+  # Regression test: gg_roc() was crashing with
+  # "argument 'oob' is missing, with no default" when oob was not supplied.
+  set.seed(42)
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
+
+  # All three outcomes must work without passing oob
+  expect_s3_class(gg_roc(rfsrc_iris, which_outcome = 1), "gg_roc")
+  expect_s3_class(gg_roc(rfsrc_iris, which_outcome = 2), "gg_roc")
+  expect_s3_class(gg_roc(rfsrc_iris, which_outcome = 3), "gg_roc")
+
+  # OOB default should equal oob = TRUE explicitly
+  gg_default <- gg_roc(rfsrc_iris, which_outcome = 1)
+  gg_explicit <- gg_roc(rfsrc_iris, which_outcome = 1, oob = TRUE)
+  expect_equal(gg_default, gg_explicit)
+})
+
 test_that("gg_roc regression", {
   data(Boston, package = "MASS")
   boston <- Boston

@@ -449,3 +449,25 @@ test_that("gg_rfsrc regression: by = vector works", {
   expect_s3_class(gg_dta, "gg_rfsrc")
   expect_true("group" %in% colnames(gg_dta))
 })
+
+test_that("plot.gg_rfsrc notch=FALSE suppresses notch in boxplot", {
+  # The notch argument used to be hardcoded to TRUE; callers had no way to
+  # suppress it.  Passing notch = FALSE must not error and must return a ggplot.
+  set.seed(42)
+  rfsrc_iris <- randomForestSRC::rfsrc(
+    Species ~ ., data = iris, ntree = 50, save.memory = TRUE
+  )
+  gg_dta <- gg_rfsrc(rfsrc_iris)
+  gg_plt <- plot.gg_rfsrc(gg_dta, notch = FALSE)
+  expect_s3_class(gg_plt, "ggplot")
+
+  data(Boston, package = "MASS")
+  Boston$chas <- as.logical(Boston$chas)
+  set.seed(42)
+  rfsrc_boston <- randomForestSRC::rfsrc(
+    medv ~ ., data = Boston, ntree = 50, save.memory = TRUE
+  )
+  gg_dta_regr <- gg_rfsrc(rfsrc_boston)
+  gg_plt_regr <- plot.gg_rfsrc(gg_dta_regr, notch = FALSE)
+  expect_s3_class(gg_plt_regr, "ggplot")
+})

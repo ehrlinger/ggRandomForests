@@ -48,6 +48,33 @@ test_that("kaplan with stratification adds groups column", {
   expect_true(length(unique(gg_dta$groups)) >= 2L)
 })
 
+test_that("kaplan life column is non-decreasing and proplife is in [0, 1]", {
+  # Regression test: the trapezoidal formula L(t_i) = L(t_{i-1}) + (S(t_{i-1}) + S(t_i))/2 * Δt
+  # must produce a monotonically non-decreasing cumulative integral.
+  # The old Adams-Bashforth formula could produce this too, but values were
+  # numerically wrong (over-estimated).
+  gg_dta <- kaplan(interval = "time", censor = "status", data = pbc_dta)
+  expect_true(all(diff(gg_dta$life) >= 0),
+              info = "life must be non-decreasing (cumulative area under S(t))")
+  expect_true(all(gg_dta$proplife >= 0),
+              info = "proplife must be >= 0")
+  expect_true(all(gg_dta$proplife <= 1 + .Machine$double.eps^0.5),
+              info = "proplife must be <= 1 (area under S(t) <= t * 1)")
+})
+
+test_that("kaplan with character (non-factor) by uses unique() labels", {
+  # .label_strata() has two code paths: levels() for factors, unique() for
+  # character/numeric.  This test exercises the unique() path.
+  pbc_strat <- pbc_dta
+  pbc_strat$trt_chr <- as.character(pbc_strat$treatment)
+  pbc_strat <- pbc_strat[!is.na(pbc_strat$trt_chr), ]
+
+  gg_dta <- kaplan(interval = "time", censor = "status",
+                   data = pbc_strat, by = "trt_chr")
+  expect_true("groups" %in% colnames(gg_dta))
+  expect_true(length(unique(gg_dta$groups)) >= 2L)
+})
+
 test_that("kaplan plot returns a ggplot", {
   gg_dta <- kaplan(interval = "time", censor = "status", data = pbc_dta)
   expect_s3_class(plot(gg_dta), "ggplot")
@@ -103,6 +130,25 @@ test_that("nelson and kaplan agree on survival estimates", {
   nel_surv <- nel$surv[nel$time %in% common_times]
   # KM and NA estimates are equivalent for the same data
   expect_equal(kap_surv, nel_surv, tolerance = 1e-6)
+})
+
+test_that("nelson life column is non-decreasing and proplife is in [0, 1]", {
+  gg_dta <- nelson(interval = "time", censor = "status", data = pbc_dta)
+  expect_true(all(diff(gg_dta$life) >= 0),
+              info = "life must be non-decreasing")
+  expect_true(all(gg_dta$proplife >= 0))
+  expect_true(all(gg_dta$proplife <= 1 + .Machine$double.eps^0.5))
+})
+
+test_that("nelson with character (non-factor) by uses unique() labels", {
+  pbc_strat <- pbc_dta
+  pbc_strat$trt_chr <- as.character(pbc_strat$treatment)
+  pbc_strat <- pbc_strat[!is.na(pbc_strat$trt_chr), ]
+
+  gg_dta <- nelson(interval = "time", censor = "status",
+                   data = pbc_strat, by = "trt_chr")
+  expect_true("groups" %in% colnames(gg_dta))
+  expect_true(length(unique(gg_dta$groups)) >= 2L)
 })
 
 test_that("nelson plot returns a ggplot", {

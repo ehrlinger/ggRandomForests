@@ -330,3 +330,22 @@ test_that("gg_vimp regression", {
   expect_s3_class(gg_dta, "gg_vimp")
   
 })
+
+test_that("gg_vimp.randomForest regression: vimp column present even when importance is IncNodePurity", {
+  # Guard test: when randomForest stores importance as IncNodePurity (not X.IncMSE),
+  # gg_vimp must still produce a 'vimp' column so plot.gg_vimp and the positive
+  # flag work correctly.
+  data(Boston, package = "MASS")
+  # importance = FALSE (default) → $importance has only IncNodePurity
+  rf_boston <- randomForest::randomForest(medv ~ ., data = Boston,
+                                          importance = FALSE)
+  gg_dta <- gg_vimp(rf_boston)
+
+  expect_s3_class(gg_dta, "gg_vimp")
+  expect_true("vimp" %in% colnames(gg_dta),
+              info = "vimp column must exist regardless of original column name")
+  expect_false(any(is.na(gg_dta$vimp)),
+               info = "vimp values must not be NA")
+  expect_true("positive" %in% colnames(gg_dta))
+  expect_s3_class(plot(gg_dta), "ggplot")
+})
