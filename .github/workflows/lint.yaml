@@ -24,7 +24,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::lintr, any::pak
+          extra-packages: any::lintr, any::cyclocomp, any::pak
           needs: lint
 
       - name: Lint

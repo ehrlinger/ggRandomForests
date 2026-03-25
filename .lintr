@@ -2,8 +2,7 @@ linters: linters_with_defaults(
     line_length_linter(120),
     object_name_linter(styles = c("snake_case", "dotted.case", "camelCase", "symbols")),
     cyclocomp_linter(complexity_limit = 20),
-    T_and_F_symbol_linter = NULL,
-    which_linter = NULL
+    T_and_F_symbol_linter = NULL
   )
 exclusions: list(
     "R/ggrandomforests.news.R",

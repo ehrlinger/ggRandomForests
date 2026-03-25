@@ -181,6 +181,10 @@
 plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
   gg_dta <- x
 
+  # Capture extra passthrough args (e.g. alpha for survival ribbons).
+  # notch is a named formal above so it is never present in arg_set.
+  arg_set <- list(...)
+
   ## If the user passed a raw rfsrc object, extract predictions first
   if (inherits(gg_dta, "rfsrc")) {
     gg_dta <- gg_rfsrc(gg_dta)
