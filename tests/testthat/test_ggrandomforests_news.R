@@ -1,5 +1,4 @@
 # Tests for ggrandomforests.news
-context("ggrandomforests.news tests")
 
 test_that("ggrandomforests.news NEWS file exists in package", {
   newsfile <- file.path(system.file(package = "ggRandomForests"), "NEWS")

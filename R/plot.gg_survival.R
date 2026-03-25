@@ -23,7 +23,13 @@
 #' @param label Modify the legend label when gg_survival has stratified samples
 #' @param ... not used
 #'
-#' @return \code{ggplot} object
+#' @return A \code{ggplot} object. The y-axis shows the chosen \code{type}
+#'   (e.g. survival probability for \code{"surv"}) and the x-axis shows time.
+#'   Confidence shading, bars, or lines are added when the input object carries
+#'   confidence-interval columns.
+#'
+#' @seealso \code{\link{gg_survival}}, \code{\link{kaplan}},
+#'   \code{\link{nelson}}, \code{\link{gg_rfsrc}}
 #'
 #' @examples
 #' ## -------- pbc data
@@ -68,7 +74,6 @@
 #' plot(gg_dta, label = "sex", error = "lines")
 #'
 #' @export
-#' @export plot.gg_survival
 ### Survival plots
 plot.gg_survival <- function(x,
                              type = c("surv",

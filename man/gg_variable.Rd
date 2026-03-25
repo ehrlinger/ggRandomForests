@@ -18,7 +18,12 @@ gg_variable(object, ...)
 \code{oob} that tailor the marginal dependence extraction.}
 }
 \value{
-\code{gg_variable} object
+A \code{gg_variable} object: a \code{data.frame} of all predictor
+  columns from the training data paired with the OOB (or in-bag) predicted
+  response. For survival forests each requested time horizon produces an
+  additional column named by \code{time_labels}. The object carries a
+  \code{"family"} class attribute (\code{"regr"}, \code{"class"}, or
+  \code{"surv"}) used by \code{\link{plot.gg_variable}} for dispatch.
 }
 \description{
 \code{\link[randomForestSRC]{plot.variable}} generates a
@@ -208,7 +213,6 @@ plot(gg_dta, xvar = c("age", "trig"), panel = TRUE, se = FALSE)
 
 }
 \seealso{
-\code{\link{plot.gg_variable}}
-
-\code{\link[randomForestSRC]{plot.variable}}
+\code{\link{plot.gg_variable}},
+  \code{\link[randomForestSRC]{plot.variable}}
 }

@@ -1,5 +1,57 @@
 Package: ggRandomForests
-Version: 2.4.0
+Version: 2.7.0
+
+ggRandomForests v2.7.0
+=====================
+* Fix critical visual bug in `plot.gg_rfsrc`: all `aes()` calls used bare
+  string literals instead of `.data[[col]]`, causing every aesthetic to map
+  to a constant string rather than the underlying data column. All plot
+  types (regression, classification, survival) were affected.
+* Fix `aes()` bare-string literals in `plot.gg_roc` multi-class branch;
+  remove unreachable `if (crv < 2)` dead-code branch.
+* Fix `bootstrap_survival` CI-band indexing in `gg_rfsrc`: negative index
+  computed via `colnames()` was a no-op on large datasets and a latent crash
+  for data with ≤ 2 unique event times.
+* Fix `gg_rfsrc.rfsrc`: `is.null(df[, col])` does not detect missing columns;
+  replaced with `!col %in% colnames()` guard.
+* Fix `gg_rfsrc.randomForest`: method used non-existent `object$xvar`; now
+  recovers the training frame via `.rf_recover_model_frame()`.
+* Fix legend suppression in `plot.gg_error` for single-outcome forests where
+  the data frame has no `variable` column.
+* Fix `gg_vimp` and `plot.gg_vimp`: `1:nvar` replaced with `seq_len(nvar)`
+  in both S3 methods; `1:0` silently returned `c(1, 0)` instead of
+  `integer(0)` when `nvar == 0`.
+* Migrate full test suite to testthat 3.x API: `expect_is` →
+  `expect_s3_class` / `expect_type` / `expect_true(is.*())`;
+  `expect_equivalent` → `expect_equal(ignore_attr = TRUE)`; all `context()`
+  calls removed; testthat 1.x `expect_that` / `is_identical_to` removed.
+* Add `.lintr` package-level linter configuration; fix lintr spacing in
+  `gg_partial`.
+* Improve GitHub Actions: `lint.yaml` now fails CI on any lint issue;
+  `R-CMD-check.yaml` treats warnings as errors and uses Rtools 44;
+  `test-coverage.yaml` duplicate codecov upload removed.
+* Add `covr` and `vdiffr` to `Suggests`.
+
+ggRandomForests v2.6.1
+=====================
+* Fix model-label assignment in `gg_partial` for categorical variable data
+* Refactor `gg_partial` and `gg_partial_rfsrc` to improve factor-level
+  normalisation and categorical data handling
+
+ggRandomForests v2.6.0
+=====================
+* Add and export new plotting functions; update existing plot documentation
+* Improve unit and integration tests; overall coverage raised to 83%
+* Remove `hvtiRutilities` internal dependency; clean up associated imports
+* Refactor `gg_partial_rfsrc` to use `.data` pronoun for all `dplyr` calls
+
+ggRandomForests v2.5.0
+=====================
+* Initial `gg_partial_rfsrc` function: computes partial dependence data
+  directly from an `rfsrc` model via `randomForestSRC::partial.rfsrc`, without
+  requiring a separate `plot.variable` call
+* Add support for a grouping variable (`xvar2.name`) in `gg_partial_rfsrc`
+* Improved vignette formatting and namespace usage
 
 ggRandomForests v2.4.0
 =====================

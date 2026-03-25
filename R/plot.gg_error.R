@@ -17,11 +17,18 @@
 #' A plot of the cumulative OOB error rates of the random forest as a
 #' function of number of trees.
 #'
-#' @param x gg_error object created from a \code{\link[randomForestSRC]{rfsrc}}
-#' object
-#' @param ... extra arguments passed to \code{ggplot} functions
+#' @param x A \code{\link{gg_error}} object created from either a
+#'   \code{\link[randomForestSRC]{rfsrc}} or a
+#'   \code{\link[randomForest]{randomForest}} object.  A raw forest object
+#'   may also be supplied and will be passed through \code{\link{gg_error}}
+#'   automatically before plotting.
+#' @param ... Extra arguments forwarded to the underlying \code{ggplot2}
+#'   geometry calls (e.g. \code{size}, \code{linetype}).
 #'
-#' @return \code{ggplot} object
+#' @return A \code{ggplot} object with \code{ntree} on the x-axis and
+#'   OOB error rate on the y-axis.  Single-outcome forests (regression,
+#'   survival) produce a single line; multi-outcome forests (classification)
+#'   produce one coloured line per class.
 #'
 #' @details The gg_error plot is used to track the convergence of the
 #' randomForest. This figure is a reproduction of the error plot
@@ -36,8 +43,9 @@
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews,
 #' 7(2):25-31.
 #'
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
-#' and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+#' Regression and Classification. R package version >= 3.4.0.
+#' \url{https://cran.r-project.org/package=randomForestSRC}
 #'
 #' @examples
 #' ## Examples from RFSRC package...
@@ -192,9 +200,8 @@
 #' plot(gg_dta)
 #'
 #' @importFrom ggplot2 ggplot geom_line theme labs
-#' @importFrom tidyr gather
+#' @importFrom tidyr pivot_longer
 #' @export
-#' @export plot.gg_error
 plot.gg_error <- function(x, ...) {
   gg_dta <- x
 
@@ -210,15 +217,15 @@ plot.gg_error <- function(x, ...) {
   # Use points instead of lines when there is only one non-NA row (e.g. a
   # forest built with a single tree, or one where only ntree=1 has an error
   # rate recorded).  A line plot with one point renders nothing visible.
-  point = FALSE
+  point <- FALSE
   if (nrow(na.omit(gg_dta)) < 2) {
-    point=TRUE
+    point <- TRUE
   }
 
   if (ncol(gg_dta) > 2) {
     # Multi-outcome (classification): gg_error has one column per class plus
     # the "ntree" column.  Pivot to long form so we can colour by outcome.
-    gg_dta <- tidyr::gather(gg_dta, "variable", "value", -"ntree")
+    gg_dta <- tidyr::pivot_longer(gg_dta, -"ntree", names_to = "variable", values_to = "value")
     gg_plt <-
       ggplot2::ggplot(na.omit(gg_dta),
                       ggplot2::aes(x = .data[["ntree"]], y = .data[["value"]],
@@ -242,8 +249,11 @@ plot.gg_error <- function(x, ...) {
   }
 
   # Hide the legend when there is only a single outcome variable — the colour
-  # key adds no information and clutters the plot.
-  if (length(unique(gg_dta$variable)) == 1) {
+  # key adds no information and clutters the plot.  For single-outcome forests
+  # (regression / survival) the data is never gathered, so there is no
+  # "variable" column; suppress the legend unconditionally in that case.
+  if (!"variable" %in% names(gg_dta) ||
+      length(unique(gg_dta$variable)) <= 1) {
     gg_plt <- gg_plt + ggplot2::theme(legend.position = "none")
   }
   return(gg_plt)

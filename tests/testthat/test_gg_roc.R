@@ -1,5 +1,4 @@
 # testthat for gg_roc function
-context("gg_roc tests")
 
 test_that("gg_roc classifications", {
   ## Load the cached forest
@@ -11,7 +10,7 @@ test_that("gg_roc classifications", {
     save.memory = TRUE)
   
   # Test the cached forest type
-  expect_is(rfsrc_iris, "rfsrc")
+  expect_s3_class(rfsrc_iris, "rfsrc")
   
   # Test the forest family
   expect_match(rfsrc_iris$family, "class")
@@ -21,7 +20,7 @@ test_that("gg_roc classifications", {
   gg_dta <- gg_roc(rfsrc_iris, which_outcome)
   
   # Test object type
-  expect_is(gg_dta, "gg_roc")
+  expect_s3_class(gg_dta, "gg_roc")
   
   # Test classification dimensions
   expect_equal(ncol(gg_dta), 3)
@@ -33,7 +32,7 @@ test_that("gg_roc classifications", {
   gg_obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_obj, "ggplot")
+  expect_s3_class(gg_obj, "ggplot")
   
   # Try test set prediction.
   gg_dta <- gg_roc(rfsrc_iris, which_outcome, oob = FALSE)
@@ -41,7 +40,7 @@ test_that("gg_roc classifications", {
   gg_plt <- plot.gg_roc(rfsrc_iris)
   
   # Test object type
-  expect_is(gg_dta, "gg_roc")
+  expect_s3_class(gg_dta, "gg_roc")
   
   # Test classification dimensions
   expect_equal(ncol(gg_dta), 3)
@@ -53,11 +52,11 @@ test_that("gg_roc classifications", {
   gg_obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_obj, "ggplot")
+  expect_s3_class(gg_obj, "ggplot")
   
-  expect_is(plot.gg_roc(rfsrc_iris), "ggplot")
+  expect_s3_class(plot.gg_roc(rfsrc_iris), "ggplot")
   expect_error(gg_roc.randomForest(rfsrc_iris))
-  expect_error(gg_roc.rfrsrc(rf_iris))
+  expect_error(gg_roc.rfsrc(rf_iris))
 })
 
 test_that("gg_roc randomForest classifications", {
@@ -65,7 +64,7 @@ test_that("gg_roc randomForest classifications", {
   rf_iris <- randomForest(Species ~ ., data = iris)
   
   # Test the cached forest type
-  expect_is(rf_iris, "randomForest")
+  expect_s3_class(rf_iris, "randomForest")
   
   # Test the forest family
   expect_match(rf_iris$type, "classification")
@@ -75,19 +74,19 @@ test_that("gg_roc randomForest classifications", {
   gg_dta <- gg_roc(rf_iris, which_outcome)
   
   # Test object type
-  expect_is(gg_dta, "gg_roc")
+  expect_s3_class(gg_dta, "gg_roc")
   
   ## Test plotting the gg_roc object
   gg_obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_obj, "ggplot")
+  expect_s3_class(gg_obj, "ggplot")
   
   # Try test set prediction.
   gg_dta <- gg_roc(rf_iris, which_outcome, oob = FALSE)
   
   # Test object type
-  expect_is(gg_dta, "gg_roc")
+  expect_s3_class(gg_dta, "gg_roc")
   # Test classification dimensions
   expect_equal(ncol(gg_dta), 3)
   
@@ -95,11 +94,11 @@ test_that("gg_roc randomForest classifications", {
   gg_obj <- plot.gg_roc(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_obj, "ggplot")
+  expect_s3_class(gg_obj, "ggplot")
   
-  expect_is(plot.gg_roc(rf_iris), "ggplot")
+  expect_s3_class(plot.gg_roc(rf_iris), "ggplot")
   
-  expect_error(gg_roc.rfrsrc(rf_iris))
+  expect_error(gg_roc.rfsrc(rf_iris))
 })
 
 test_that("gg_roc regression", {
@@ -119,7 +118,7 @@ test_that("gg_roc regression", {
       save.memory = TRUE)
   
   # Test the cached forest type
-  expect_is(rfsrc_boston, "rfsrc")
+  expect_s3_class(rfsrc_boston, "rfsrc")
   
   # Test the forest family
   expect_match(rfsrc_boston$family, "regr")
@@ -139,7 +138,7 @@ test_that("calc_roc", {
     save.memory = TRUE)
   
   # Test the cached forest type
-  expect_is(rfsrc_iris, "rfsrc")
+  expect_s3_class(rfsrc_iris, "rfsrc")
   
   # Test the forest family
   expect_match(rfsrc_iris$family, "class")
@@ -150,7 +149,7 @@ test_that("calc_roc", {
                            oob = TRUE)
   
   # Test the cached forest type
-  expect_is(gg_dta, "data.frame")
+  expect_s3_class(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
   
@@ -161,7 +160,7 @@ test_that("calc_roc", {
                            oob = FALSE)
   
   # Test the cached forest type
-  expect_is(gg_dta, "data.frame")
+  expect_s3_class(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
   
@@ -176,7 +175,7 @@ test_that("calc_roc", {
                            oob = TRUE)
   
   # Test the cached forest type
-  expect_is(gg_dta, "data.frame")
+  expect_s3_class(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
   
@@ -191,7 +190,7 @@ test_that("calc_roc", {
                            oob = TRUE)
   
   # Test the cached forest type
-  expect_is(gg_dta, "data.frame")
+  expect_s3_class(gg_dta, "data.frame")
   
   expect_equal(ncol(gg_dta), 3)
   

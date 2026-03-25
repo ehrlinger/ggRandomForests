@@ -1,0 +1,23 @@
+linters: linters_with_defaults(
+    # Relax line length — R plotting / formula code often exceeds 80 chars
+    line_length_linter(120),
+
+    # Allow the naming conventions used throughout this package:
+    #   snake_case (preferred), dotted.case (legacy S3 names), camelCase (gg* wrappers)
+    object_name_linter(styles = c("snake_case", "dotted.case", "camelCase", "symbols")),
+
+    # Cyclomatic complexity: raise limit for complex S3 dispatch functions
+    cyclocomp_linter(complexity_limit = 20),
+
+    # Disable: this package intentionally uses T/F in some older helpers
+    T_and_F_symbol_linter = NULL,
+
+    # Disable: 'which' vs 'subset' preference is a style choice, not a bug
+    which_linter = NULL
+  )
+exclusions: list(
+    # Auto-generated or legacy boilerplate files
+    "R/ggrandomforests.news.R",
+    "R/zzz.R"
+  )
+encoding: "UTF-8"

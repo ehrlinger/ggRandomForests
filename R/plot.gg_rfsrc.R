@@ -16,15 +16,44 @@
 #'
 #' Plot the predicted response from a \code{\link{gg_rfsrc}} object, the
 #' \code{\link[randomForestSRC]{rfsrc}} prediction, using the OOB prediction
-#' from the forest.
+#' from the forest.  The plot type adapts automatically to the forest family:
+#' jitter + boxplot for regression and classification, step curves for
+#' survival.
 #'
-#' @param x \code{\link{gg_rfsrc}} object created from a
-#' \code{\link[randomForestSRC]{rfsrc}} object
-#' @param ... arguments passed to \code{\link{gg_rfsrc}}.
+#' @param x A \code{\link{gg_rfsrc}} object, or a raw
+#'   \code{\link[randomForestSRC]{rfsrc}} object (which will be passed through
+#'   \code{\link{gg_rfsrc}} automatically before plotting).
+#' @param ... Additional arguments forwarded to the underlying
+#'   \code{ggplot2} geometry calls.  Commonly useful arguments include:
+#'   \describe{
+#'     \item{\code{alpha}}{Numeric in \eqn{[0,1]}; point/ribbon transparency.
+#'       For survival plots with confidence bands the ribbon alpha is
+#'       automatically halved relative to the value supplied here.}
+#'     \item{\code{size}}{Point or line size passed to \code{geom_jitter},
+#'       \code{geom_step}, etc.}
+#'   }
+#'   Arguments that control \code{\link{gg_rfsrc}} (e.g. \code{conf.int},
+#'   \code{surv_type}, \code{by}) should be applied when constructing the
+#'   \code{gg_rfsrc} object before calling \code{plot()}.
 #'
-#' @return \code{ggplot} object
+#' @return A \code{ggplot} object.  The plot appearance depends on the forest
+#'   family stored in \code{x}:
+#'   \describe{
+#'     \item{Regression (\code{"regr"})}{Jitter + notched boxplot of OOB
+#'       predicted values.  If a \code{group} column is present the x-axis
+#'       shows each group label; otherwise observations are collapsed to a
+#'       single x-position.}
+#'     \item{Classification (\code{"class"})}{Binary: jitter + notched
+#'       boxplot of the predicted class probability.  Multi-class: jitter
+#'       plot with one panel per class (class probabilities in long form).}
+#'     \item{Survival (\code{"surv"})}{Step curves of the ensemble survival
+#'       function.  When \code{gg_rfsrc} was called with \code{conf.int},
+#'       a shaded ribbon is added.  When called with \code{by}, curves are
+#'       coloured by group.}
+#'   }
 #'
 #' @seealso \code{\link{gg_rfsrc}} \code{\link[randomForestSRC]{rfsrc}}
+#'   \code{\link[randomForest]{randomForest}}
 #'
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -32,8 +61,9 @@
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for
 #' R, Rnews, 7(2):25-31.
 #'
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
-#' and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+#' Regression and Classification. R package version >= 3.4.0.
+#' \url{https://cran.r-project.org/package=randomForestSRC}
 #'
 #' @examples
 #' ## ------------------------------------------------------------
@@ -144,12 +174,13 @@
 #' }
 #'
 #' @export
-#' @export plot.gg_rfsrc
 plot.gg_rfsrc <- function(x, ...) {
   gg_dta <- x
 
   # Capture any extra named arguments (e.g. alpha, size) for geom calls
   arg_set <- list(...)
+  # notch can be suppressed by the caller; default to TRUE for readability
+  notch <- if (!is.null(arg_set$notch)) isTRUE(arg_set$notch) else TRUE
 
   ## If the user passed a raw rfsrc object, extract predictions first
   if (inherits(gg_dta, "rfsrc")) {
@@ -159,24 +190,25 @@ plot.gg_rfsrc <- function(x, ...) {
   ## ---- Classification forest branch ------------------------------------
   if (inherits(gg_dta, "class") ||
     inherits(gg_dta, "classification")) {
+    prob_col <- colnames(gg_dta)[1]
+    obs_col  <- colnames(gg_dta)[2]
     if (ncol(gg_dta) < 3) {
       # Binary classification: single probability column + observed class
       gg_plt <- ggplot2::ggplot(gg_dta) +
         ggplot2::geom_jitter(
           ggplot2::aes(
             x = 1,
-            y = colnames(gg_dta)[1],
-            color = colnames(gg_dta)[2],
-            shape = colnames(gg_dta)[2]
+            y = .data[[prob_col]],
+            color = .data[[obs_col]],
+            shape = .data[[obs_col]]
           ),
           ...
         ) +
         ggplot2::geom_boxplot(
-          ggplot2::aes(x = 1, y = colnames(gg_dta)[1]),
+          ggplot2::aes(x = 1, y = .data[[prob_col]]),
           outlier.colour = "transparent",
           fill = "transparent",
-          notch = TRUE,
-          ...
+          notch = notch
         ) +
         ggplot2::theme(
           axis.ticks = ggplot2::element_blank(),
@@ -184,16 +216,17 @@ plot.gg_rfsrc <- function(x, ...) {
         )
     } else {
       # Multi-class: gather all class probability columns into long form
-      gathercols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
+      pivot_cols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
       gg_dta_mlt <-
-        tidyr::gather(gg_dta, "variable", "value", tidyr::all_of(gathercols))
+        tidyr::pivot_longer(gg_dta, tidyr::all_of(pivot_cols), names_to = "variable", values_to = "value")
 
       gg_plt <-
         ggplot2::ggplot(
           gg_dta_mlt,
-          ggplot2::aes(x = "variable", y = "value")
+          ggplot2::aes(x = .data$variable, y = .data$value)
         ) +
-        ggplot2::geom_jitter(ggplot2::aes(color = "y", shape = "y"),
+        ggplot2::geom_jitter(
+          ggplot2::aes(color = .data$y, shape = .data$y),
           alpha = .5
         )
     }
@@ -216,41 +249,41 @@ plot.gg_rfsrc <- function(x, ...) {
         gg_plt <- ggplot2::ggplot(gg_dta) +
           ggplot2::geom_ribbon(
             ggplot2::aes(
-              x = "value",
-              ymin = "lower",
-              ymax = "upper",
-              fill = "group"
+              x = .data$value,
+              ymin = .data$lower,
+              ymax = .data$upper,
+              fill = .data$group
             ),
             alpha = alph,
             ...
           ) +
           ggplot2::geom_step(ggplot2::aes(
-            x = "value",
-            y = "median",
-            color = "group"
+            x = .data$value,
+            y = .data$median,
+            color = .data$group
           ), ...)
       } else {
         # Single-group survival curve with CI ribbon
         gg_plt <- ggplot2::ggplot(gg_dta) +
           ggplot2::geom_ribbon(
             ggplot2::aes(
-              x = "value",
-              ymin = "lower",
-              ymax = "upper"
+              x = .data$value,
+              ymin = .data$lower,
+              ymax = .data$upper
             ),
             alpha = alph
           ) +
-          ggplot2::geom_step(ggplot2::aes(x = "value", y = "median"), ...)
+          ggplot2::geom_step(ggplot2::aes(x = .data$value, y = .data$median), ...)
       }
     } else {
       # No confidence bands: draw one step line per observation
       gg_plt <- ggplot2::ggplot(
         gg_dta,
         ggplot2::aes(
-          x = "variable",
-          y = "value",
-          col = "event",
-          by = "obs_id"
+          x = .data$variable,
+          y = .data$value,
+          col = .data$event,
+          group = .data$obs_id
         )
       ) +
         ggplot2::geom_step(...)
@@ -264,19 +297,18 @@ plot.gg_rfsrc <- function(x, ...) {
     inherits(gg_dta, "regression")) {
     if ("group" %in% colnames(gg_dta)) {
       # Grouped regression: x-axis shows each group label
-      gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = "group", y = "yhat"))
+      gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = .data$group, y = .data$yhat))
     } else {
       # Single-group regression: collapse to a single x position
-      gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = 1, y = "yhat"))
+      gg_plt <- ggplot2::ggplot(gg_dta, ggplot2::aes(x = 1, y = .data$yhat))
     }
 
     gg_plt <- gg_plt +
-      ggplot2::geom_jitter(, ...) +
+      ggplot2::geom_jitter(...) +
       ggplot2::geom_boxplot(
         outlier.colour = "transparent",
         fill = "transparent",
-        notch = TRUE,
-        ...
+        notch = TRUE
       ) +
       ggplot2::labs(y = "Predicted Value", x = colnames(gg_dta)[2]) +
       ggplot2::theme(

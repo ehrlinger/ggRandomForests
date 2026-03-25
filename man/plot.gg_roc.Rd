@@ -7,14 +7,26 @@
 \method{plot}{gg_roc}(x, which_outcome = NULL, ...)
 }
 \arguments{
-\item{x}{\code{\link{gg_roc}} object created from a classification forest}
+\item{x}{A \code{\link{gg_roc}} object, or a raw
+\code{\link[randomForestSRC]{rfsrc}} classification forest or
+\code{\link[randomForest]{randomForest}} classification object.  When a
+forest is supplied, \code{\link{gg_roc}} is called automatically.}
 
-\item{which_outcome}{for multiclass problems, choose the class for plotting}
+\item{which_outcome}{Integer; for multi-class problems, the index of the
+class whose ROC curve should be plotted.  When \code{NULL} (default) and
+the forest has more than two classes, ROC curves for all classes are
+overlaid in a single plot.  For binary forests \code{NULL} defaults to
+class index 2.}
 
-\item{...}{arguments passed to the \code{\link{gg_roc}} function}
+\item{...}{Additional arguments forwarded to \code{\link{gg_roc}} when
+\code{x} is a raw forest object (e.g. \code{oob = FALSE}).}
 }
 \value{
-\code{ggplot} object of the ROC curve
+A \code{ggplot} object.  The x-axis shows 1 − Specificity (FPR)
+  and the y-axis shows Sensitivity (TPR).  A dashed red diagonal reference
+  line marks the random-classifier baseline.  The AUC value is annotated
+  on the plot for single-class curves.  Multi-class plots colour and style
+  each class curve distinctly.
 }
 \description{
 ROC plot generic function for a \code{\link{gg_roc}} object.
@@ -30,18 +42,19 @@ rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
 
 # ROC for setosa (outcome index 1)
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)
-plot.gg_roc(gg_dta)
+plot(gg_dta)
 
 # ROC for versicolor (outcome index 2)
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 2)
-plot.gg_roc(gg_dta)
+plot(gg_dta)
 
 # ROC for virginica (outcome index 3)
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 3)
-plot.gg_roc(gg_dta)
+plot(gg_dta)
 
-# Alternatively, pass the forest directly to plot all three ROC curves
-plot.gg_roc(rfsrc_iris)
+# Plot all three ROC curves in one call by iterating over outcome indices
+n_cls <- ncol(rfsrc_iris$predicted)
+for (i in seq_len(n_cls)) print(plot(gg_roc(rfsrc_iris, which_outcome = i)))
 
 }
 \references{
@@ -50,9 +63,12 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
-Regression and Classification (RF-SRC), R package version 1.4.
+Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+Regression and Classification. R package version >= 3.4.0.
+\url{https://cran.r-project.org/package=randomForestSRC}
 }
 \seealso{
-\code{\link{gg_roc}} rfsrc
+\code{\link{gg_roc}} \code{\link{calc_roc}} \code{\link{calc_auc}}
+  \code{\link[randomForestSRC]{rfsrc}}
+  \code{\link[randomForest]{randomForest}}
 }

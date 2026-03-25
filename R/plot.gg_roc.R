@@ -15,13 +15,27 @@
 #'
 #' ROC plot generic function for a \code{\link{gg_roc}} object.
 #'
-#' @param x \code{\link{gg_roc}} object created from a classification forest
-#' @param which_outcome for multiclass problems, choose the class for plotting
-#' @param ... arguments passed to the \code{\link{gg_roc}} function
+#' @param x A \code{\link{gg_roc}} object, or a raw
+#'   \code{\link[randomForestSRC]{rfsrc}} classification forest or
+#'   \code{\link[randomForest]{randomForest}} classification object.  When a
+#'   forest is supplied, \code{\link{gg_roc}} is called automatically.
+#' @param which_outcome Integer; for multi-class problems, the index of the
+#'   class whose ROC curve should be plotted.  When \code{NULL} (default) and
+#'   the forest has more than two classes, ROC curves for all classes are
+#'   overlaid in a single plot.  For binary forests \code{NULL} defaults to
+#'   class index 2.
+#' @param ... Additional arguments forwarded to \code{\link{gg_roc}} when
+#'   \code{x} is a raw forest object (e.g. \code{oob = FALSE}).
 #'
-#' @return \code{ggplot} object of the ROC curve
+#' @return A \code{ggplot} object.  The x-axis shows 1 − Specificity (FPR)
+#'   and the y-axis shows Sensitivity (TPR).  A dashed red diagonal reference
+#'   line marks the random-classifier baseline.  The AUC value is annotated
+#'   on the plot for single-class curves.  Multi-class plots colour and style
+#'   each class curve distinctly.
 #'
-#' @seealso \code{\link{gg_roc}} rfsrc
+#' @seealso \code{\link{gg_roc}} \code{\link{calc_roc}} \code{\link{calc_auc}}
+#'   \code{\link[randomForestSRC]{rfsrc}}
+#'   \code{\link[randomForest]{randomForest}}
 #'
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -29,8 +43,9 @@
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 #' Rnews, 7(2):25-31.
 #'
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
-#' Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+#' Regression and Classification. R package version >= 3.4.0.
+#' \url{https://cran.r-project.org/package=randomForestSRC}
 #'
 #' @examples
 #' ## ------------------------------------------------------------
@@ -43,21 +58,21 @@
 #'
 #' # ROC for setosa (outcome index 1)
 #' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)
-#' plot.gg_roc(gg_dta)
+#' plot(gg_dta)
 #'
 #' # ROC for versicolor (outcome index 2)
 #' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 2)
-#' plot.gg_roc(gg_dta)
+#' plot(gg_dta)
 #'
 #' # ROC for virginica (outcome index 3)
 #' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 3)
-#' plot.gg_roc(gg_dta)
+#' plot(gg_dta)
 #'
-#' # Alternatively, pass the forest directly to plot all three ROC curves
-#' plot.gg_roc(rfsrc_iris)
+#' # Plot all three ROC curves in one call by iterating over outcome indices
+#' n_cls <- ncol(rfsrc_iris$predicted)
+#' for (i in seq_len(n_cls)) print(plot(gg_roc(rfsrc_iris, which_outcome = i)))
 #'
 #' @export
-#' @export plot.gg_roc
 plot.gg_roc <- function(x, which_outcome = NULL, ...) {
   gg_dta <- x
 
@@ -71,7 +86,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
 
       if (crv > 2 && is.null(which_outcome)) {
         # Multi-class: compute ROC for every class in parallel
-        gg_dta <- mclapply(1:crv, function(ind) {
+        gg_dta <- mclapply(seq_len(crv), function(ind) {
           gg_roc(gg_dta, which_outcome = ind, ...)
         })
       } else {
@@ -90,7 +105,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
       crv <- length(levels(gg_dta$predicted))
       if (crv > 2 && is.null(which_outcome)) {
         # Multi-class: compute ROC for every class in parallel
-        gg_dta <- parallel::mclapply(1:crv, function(ind) {
+        gg_dta <- parallel::mclapply(seq_len(crv), function(ind) {
           gg_roc(gg_dta, which_outcome = ind, ...)
         })
       } else {
@@ -137,7 +152,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
     ## ---- Multi-class ROC plot (list of gg_roc objects) ----------------
     # Sort each class's data by specificity
     gg_dta <- parallel::mclapply(gg_dta, function(st) {
-      st[order(st$spec), ]
+      st <- st[order(st$spec), ]
       st
     })
     # Compute FPR for each class
@@ -164,8 +179,8 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
       ggplot2::geom_line(ggplot2::aes(
         x = .data$fpr,
         y = .data$sens,
-        linetype = "outcome",
-        col = "outcome"
+        linetype = .data$outcome,
+        col = .data$outcome
       )) +
       ggplot2::labs(x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)") +
       # Reference diagonal for a random classifier
@@ -178,17 +193,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
       ) +
       ggplot2::coord_fixed()
 
-    # Annotate AUC only when there is a single outcome (binary case fallback)
-    if (crv < 2) {
-      gg_plt <- gg_plt +
-        ggplot2::annotate(
-          x = .5,
-          y = .2,
-          geom = "text",
-          label = paste("AUC = ", round(auc, digits = 3), sep = ""),
-          hjust = 0
-        )
-    }
+    # Multi-class: do not annotate a single AUC value — each class has its own.
   }
   return(gg_plt)
 }

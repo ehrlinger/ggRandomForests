@@ -2,7 +2,7 @@
 % Please edit documentation in R/gg_partial_rfsrc.R
 \name{gg_partial_rfsrc}
 \alias{gg_partial_rfsrc}
-\title{Split partial lots into continuous or categorical datasets}
+\title{Partial dependence data from an rfsrc model}
 \usage{
 gg_partial_rfsrc(
   rf_model,
@@ -13,21 +13,40 @@ gg_partial_rfsrc(
 )
 }
 \arguments{
-\item{rf_model}{\code{rfsrc::rfsrc} model}
+\item{rf_model}{A fitted \code{\link[randomForestSRC]{rfsrc}} object.}
 
-\item{xvar.names}{list(<str>) Which variables to calculate partial plots}
+\item{xvar.names}{Character vector of predictor names for which partial
+dependence should be computed. Must be a subset of \code{rf_model$xvar.names}.}
 
-\item{xvar2.name}{<str> a single grouping feature that is in the newx dataset}
+\item{xvar2.name}{Optional single character name of a grouping variable in
+\code{newx}. When supplied, partial dependence is computed separately for
+each unique level of this variable and a \code{grp} column is appended.}
 
-\item{newx}{a \code{data.frame} containing data to use for the partial plots}
+\item{newx}{Optional \code{data.frame} of predictor values to evaluate
+partial effects at. Defaults to the training data stored in
+\code{rf_model$xvar}. All column names must match \code{rf_model$xvar.names}.}
 
-\item{cat_limit}{Categorical features are build when there are fewer than
-cat_limit unique features.}
+\item{cat_limit}{Variables with fewer than \code{cat_limit} unique values in
+\code{newx} are treated as categorical; all others are continuous.
+Defaults to 10.}
+}
+\value{
+A named list with two elements:
+  \describe{
+    \item{continuous}{A \code{data.frame} with columns \code{x} (numeric),
+      \code{yhat}, \code{name} (variable name), and optionally \code{grp}
+      (the level of \code{xvar2.name}) and \code{time} (survival forests
+      only) for all continuous predictors.}
+    \item{categorical}{A \code{data.frame} with the same columns but
+      \code{x} kept as character, for low-cardinality predictors.}
+  }
 }
 \description{
-gg_partial_rfsrc uses the \code{rfsrc::partial.rfsrc} to generate the partial
-plot data internally. So you provide the \code{rfsrc::rfsrc} model, and the
-xvar.names to generate the data.
+Computes partial dependence for one or more predictors by calling
+\code{\link[randomForestSRC]{partial.rfsrc}} internally, then splits the
+results into separate data frames for continuous and categorical variables.
+Unlike \code{\link{gg_partial}}, no separate \code{plot.variable} call is
+required — supply the fitted \code{rfsrc} object directly.
 }
 \examples{
 ## ------------------------------------------------------------
@@ -42,4 +61,8 @@ airq.obj <- rfsrc(Ozone ~ ., data = airquality)
 prt_dta <- gg_partial_rfsrc(airq.obj,
                        xvar.names = c("Wind"))
 
+}
+\seealso{
+\code{\link{gg_partial}}, \code{\link[randomForestSRC]{partial.rfsrc}},
+  \code{\link[randomForestSRC]{get.partial.plot.data}}
 }

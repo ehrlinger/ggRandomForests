@@ -1,5 +1,4 @@
 # Tests for gg_partial and gg_partial_rfsrc
-context("gg_partial tests")
 
 # Helper: create mock partial plot data (matching rfsrc::plot.variable structure)
 make_mock_partial_data <- function() {
@@ -150,8 +149,10 @@ test_that("gg_partial_rfsrc error on invalid xvar.names", {
   airq <- na.omit(airquality)
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50, nsplit = 5)
 
-  result <- gg_partial_rfsrc(rf, xvar.names = c("NotAColumn"))
-  expect_match(result, "xvar.names contains column names not found")
+  expect_error(
+    gg_partial_rfsrc(rf, xvar.names = c("NotAColumn")),
+    "xvar.names contains column names not found"
+  )
 })
 
 test_that("gg_partial_rfsrc error on invalid newx columns", {
@@ -162,8 +163,10 @@ test_that("gg_partial_rfsrc error on invalid newx columns", {
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50, nsplit = 5)
 
   bad_newx <- data.frame(foo = 1:10, bar = 1:10)
-  result <- gg_partial_rfsrc(rf, xvar.names = c("Wind"), newx = bad_newx)
-  expect_match(result, "newx must be a dataframe")
+  expect_error(
+    gg_partial_rfsrc(rf, xvar.names = c("Wind"), newx = bad_newx),
+    "newx must be a dataframe"
+  )
 })
 
 test_that("gg_partial_rfsrc uses supplied newx data", {

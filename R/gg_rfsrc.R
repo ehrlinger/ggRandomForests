@@ -18,23 +18,58 @@
 #' \code{\link[randomForestSRC]{rfsrc}} object, and formats data for plotting
 #' the response using \code{\link{plot.gg_rfsrc}}.
 #'
-#' @param object \code{\link[randomForestSRC]{rfsrc}} object
-#' @param by stratifying variable in the training dataset, defaults to NULL
-#' @param oob boolean, should we return the oob prediction , or the full
-#' forest prediction.
-#' @param ... extra arguments
+#' @param object A fitted \code{\link[randomForestSRC]{rfsrc}} or
+#'   \code{\link[randomForest]{randomForest}} object.
+#' @param by Optional stratifying variable. Either a character column name
+#'   present in the training data, or a vector/factor of the same length as
+#'   the training set. When supplied, a \code{group} column is added to the
+#'   returned data and bootstrap CI bands (survival) are computed per group.
+#'   Omit or leave missing to return an unstratified result.
+#' @param oob Logical; if \code{TRUE} (default) return out-of-bag predictions.
+#'   Set to \code{FALSE} to use full in-bag (training) predictions. Forced to
+#'   \code{FALSE} automatically for \code{predict.rfsrc} objects, which carry
+#'   no OOB estimates.
+#' @param ... Additional arguments controlling output for specific forest
+#'   families:
+#'   \describe{
+#'     \item{surv_type}{Character; one of \code{"surv"} (default),
+#'       \code{"chf"}, or \code{"mortality"} for survival forests.}
+#'     \item{conf.int}{Numeric coverage probability (e.g. \code{0.95}) to
+#'       request bootstrap pointwise confidence bands for survival forests.
+#'       Triggers wide-format output with \code{lower}, \code{upper},
+#'       \code{median}, and \code{mean} columns.}
+#'     \item{bs.sample}{Integer; number of bootstrap resamples when
+#'       \code{conf.int} is set. Defaults to the number of observations.}
+#'   }
 #'
-#' @return \code{gg_rfsrc} object
+#' @return A \code{gg_rfsrc} object (a classed \code{data.frame}) whose
+#'   structure depends on the forest family:
+#'   \describe{
+#'     \item{regression}{Columns \code{yhat} and the response name; optionally
+#'       a \code{group} column when \code{by} is supplied.}
+#'     \item{classification}{One column per class with predicted probabilities;
+#'       a \code{y} column with observed class labels; optionally \code{group}.}
+#'     \item{survival (no CI / grouping)}{Long-format with columns
+#'       \code{variable} (event time), \code{value} (survival probability),
+#'       \code{obs_id}, and \code{event}.}
+#'     \item{survival (with \code{conf.int} or \code{by})}{Wide-format with
+#'       pointwise bootstrap CI columns (\code{lower}, \code{upper},
+#'       \code{median}, \code{mean}) per time point; a \code{group} column
+#'       when \code{by} is supplied.}
+#'   }
+#'   The object carries class attributes for the forest family so that
+#'   \code{\link{plot.gg_rfsrc}} dispatches correctly.
 #'
 #' @details
-#'    \code{surv_type} ("surv", "chf", "mortality", "hazard") for survival
-#'    forests
+#'   For survival forests, use the \code{surv_type} argument
+#'   (\code{"surv"}, \code{"chf"}, or \code{"mortality"}) to select the
+#'   predicted quantity. Bootstrap confidence bands are requested by passing
+#'   \code{conf.int} (e.g. \code{conf.int = 0.95}); the number of resamples
+#'   is controlled by \code{bs.sample}.
 #'
-#'    \code{oob} boolean, should we return the oob prediction , or the full
-#' forest prediction.
-#'
-#' @seealso \code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
-#' \code{\link{gg_survival}}
+#' @seealso \code{\link{plot.gg_rfsrc}},
+#'   \code{\link[randomForestSRC]{rfsrc}},
+#'   \code{\link{gg_survival}}
 #'
 #' @examples
 #' ## ------------------------------------------------------------
@@ -147,7 +182,7 @@ gg_rfsrc.rfsrc <- function(object,
                            by,
                            ...) {
   ## Check that the input object is of the correct type.
-  if (inherits(object, "rfsrc") == FALSE) {
+  if (!inherits(object, "rfsrc")) {
     stop(
       paste(
         "This function only works for Forests grown with the",
@@ -178,11 +213,10 @@ gg_rfsrc.rfsrc <- function(object,
     grp <- by
     # Accept either a column name (character) or a pre-built vector/factor.
     if (is.character(grp)) {
-      if (is.null(object$xvar[, grp])) {
+      if (!grp %in% colnames(object$xvar)) {
         stop(paste("No column named", grp, "in forest training set."))
-      } else {
-        grp <- object$xvar[, grp]
       }
+      grp <- object$xvar[, grp]
     }
 
     if (is.vector(grp) || is.factor(grp)) {
@@ -196,8 +230,7 @@ gg_rfsrc.rfsrc <- function(object,
       stop(
         paste(
           "By argument should be either a vector, or colname",
-          "of training data",
-          nrow(object$xvar)
+          "of training data"
         )
       )
     }
@@ -208,18 +241,19 @@ gg_rfsrc.rfsrc <- function(object,
 
   ## ---- Classification branch -----------------------------------------------
   if (object$family == "class") {
-    # For binary classification rfsrc stores two-column probability matrices;
-    # we drop the first column (the "negative" class probability) for binary
-    # problems since it is redundant.  Multi-class forests keep all columns.
+    # For binary classification rfsrc stores exactly two probability columns
+    # (one per class); we drop the first (the "negative" class probability)
+    # since it is redundant — prob(class 2) = 1 - prob(class 1).
+    # Multi-class forests (3+ classes) keep all columns.
     if (oob) {
       gg_dta <-
-        if (ncol(object$predicted.oob) <= 2) {
+        if (ncol(object$predicted.oob) == 2) {
           data.frame(cbind(object$predicted.oob[, -1]))
         } else {
           data.frame(cbind(object$predicted.oob))
         }
     } else {
-      gg_dta <- if (ncol(object$predicted) <= 2) {
+      gg_dta <- if (ncol(object$predicted) == 2) {
         data.frame(cbind(object$predicted[, -1]))
       } else {
         data.frame(cbind(object$predicted))
@@ -287,10 +321,10 @@ gg_rfsrc.rfsrc <- function(object,
     if (is.null(arg_list$conf.int) && missing(by)) {
       # No grouping or CI requested: pivot to long form so plot.gg_rfsrc can
       # draw one survival step function per observation.
-      gathercols <-
+      pivot_cols <-
         colnames(gg_dta)[-which(colnames(gg_dta) %in% c("obs_id", "event"))]
       gg_dta_mlt <-
-        tidyr::gather(gg_dta, "variable", "value", tidyr::all_of(gathercols))
+        tidyr::pivot_longer(gg_dta, tidyr::all_of(pivot_cols), names_to = "variable", values_to = "value")
       gg_dta_mlt$variable <-
         as.numeric(as.character(gg_dta_mlt$variable))
       gg_dta_mlt$obs_id <- factor(gg_dta_mlt$obs_id)
@@ -386,6 +420,28 @@ gg_rfsrc.rfsrc <- function(object,
 
 
 
+#' Bootstrap pointwise confidence bands for a mean survival curve
+#'
+#' Draws \code{bs_samples} bootstrap resamples (with replacement) of the
+#' per-observation survival curves stored in \code{gg_dta}, computes the column
+#' means to obtain a bootstrapped mean curve per resample, then returns the
+#' pointwise quantiles at \code{level_set} and the overall mean across
+#' resamples.
+#'
+#' @param gg_dta A wide \code{data.frame} of survival probabilities as returned
+#'   by the survival branch of \code{\link{gg_rfsrc.rfsrc}}, before the
+#'   optional pivot to long form. Columns \code{obs_id}, \code{event}, and
+#'   \code{group} (if present) are excluded from the resampling.
+#' @param bs_samples Integer; number of bootstrap resamples.
+#' @param level_set Numeric vector of length 2 giving the lower and upper
+#'   quantile probabilities for the confidence band (e.g. \code{c(0.025, 0.975)}
+#'   for a 95\% CI).
+#'
+#' @return A \code{data.frame} with one row per unique event time and columns
+#'   \code{value} (time), \code{lower}, \code{upper}, \code{median}, and
+#'   \code{mean}.
+#'
+#' @keywords internal
 bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
   ## Calculate the leave one out estimate of the mean survival
   gg_t <-
@@ -412,21 +468,19 @@ bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
     mean(rng[, t_pt])
   })
 
+  # gg_t already has obs_id/event/group stripped; rng and mn are indexed over
+  # time points only, so no further exclusion is needed.
   time_interest <- as.numeric(colnames(gg_t))
 
   dta <- data.frame(cbind(
     time_interest,
-    t(rng)[-which(colnames(gg_dta) %in%
-      c("obs_id", "event")), ],
-    mn[-which(colnames(gg_dta) %in%
-      c("obs_id", "event"))]
+    t(rng),
+    mn
   ))
 
-  if (ncol(dta) == 5) {
-    colnames(dta) <- c("value", "lower", "upper", "median", "mean")
-  } else {
-    colnames(dta) <- c("value", level_set, "mean")
-  }
+  # rng always has 3 rows: lower quantile, upper quantile, median (.5).
+  # Name columns canonically so plot.gg_rfsrc can always find "lower"/"upper".
+  colnames(dta) <- c("value", "lower", "upper", "median", "mean")
   dta
 }
 
@@ -442,8 +496,8 @@ gg_rfsrc.randomForest <- function(object,
                                   oob = TRUE,
                                   by,
                                   ...) {
-  ## Check that the input obect is of the correct type.
-  if (inherits(object, "randomForest") == FALSE) {
+  ## Check that the input object is of the correct type.
+  if (!inherits(object, "randomForest")) {
     stop(
       paste(
         "This function only works for Forests grown with the",
@@ -456,42 +510,48 @@ gg_rfsrc.randomForest <- function(object,
     oob <- FALSE
   }
 
+  # Recover the training predictor frame once (needed for by-column lookup and
+  # dimension checks).  randomForest stores predictors in $forest$xlevels keys
+  # but not the actual data; use .rf_recover_model_frame() for that.
+  rf_info <- .rf_recover_model_frame(object)
+  rf_xvar <- if (!is.null(rf_info)) rf_info$model_frame[
+    , setdiff(colnames(rf_info$model_frame), rf_info$response_name),
+    drop = FALSE
+  ] else NULL
+  n_train <- length(object$predicted)
+
   if (!missing(by)) {
     grp <- by
-    # If the by argument is a vector, make sure it is the correct length
+    # Accept either a column name (character) or a pre-built vector/factor.
     if (is.character(grp)) {
-      if (is.null(object$xvar[, grp])) {
+      if (is.null(rf_xvar) || !grp %in% colnames(rf_xvar)) {
         stop(paste("No column named", grp, "in forest training set."))
-      } else {
-        grp <- object$xvar[, grp]
       }
+      grp <- rf_xvar[, grp]
     }
 
     if (is.vector(grp) || is.factor(grp)) {
-      if (length(grp) != nrow(object$xvar)) {
+      if (length(grp) != n_train) {
         stop(paste(
           "By argument does not have the correct dimension ",
-          nrow(object$xvar)
+          n_train
         ))
       }
     } else {
       stop(
         paste(
           "By argument should be either a vector, or colname",
-          "of training data",
-          nrow(object$xvar)
+          "of training data"
         )
       )
     }
     grp <- factor(grp, levels = unique(grp))
   }
 
-  # gg_variable is really just the training data and the outcome.
-  gg_dta <- get(as.character(object$call$data))
-
-  # Remove the response from the data.frame
+  # Extract the response variable name from the formula for column naming below.
+  # (Both branches below build gg_dta from the forest's stored predictions, so
+  # there is no need to recover the original training data frame here.)
   rsp <- as.character(object$call$formula)[2]
-  gg_dta <- gg_dta[, -which(colnames(gg_dta) == rsp)]
 
   # Do the work...
   if (object$type == "classification") {

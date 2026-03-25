@@ -1,13 +1,35 @@
-#' Calculate survival curve partial plot.
+#' Survival partial dependence data for one or more predictors
 #'
-#' @param rforest the randomForestSrc object
-#' @param var_list a list of variables of interest. These variables should be a
-#' subset of rforest$xvar.names
-#' @param npts the number of points to segment the xvar of interest
-#' @param partial.type the return prediction type.
-#'  For survival forests: type c("surv", "mort", "chf")
-#'  For competing risk forests: type c("years.lost", "cif", "chf")
-#'  see \code{randomForestSRC::partial.rfsrc} or more information
+#' Computes partial dependence curves for a survival or competing-risk
+#' \code{\link[randomForestSRC]{rfsrc}} forest by calling
+#' \code{\link[randomForestSRC]{partial.rfsrc}} at \code{npts} evenly-spaced
+#' unique values of each predictor across all stored event times.
+#'
+#' @param rforest A fitted \code{\link[randomForestSRC]{rfsrc}} survival or
+#'   competing-risk forest object.
+#' @param var_list Character vector of predictor names for which partial
+#'   dependence should be computed. Each must appear in
+#'   \code{rforest$xvar.names}.
+#' @param npts Integer; the number of predictor grid points to evaluate
+#'   (default 25). Evenly-spaced unique values are sampled from each predictor.
+#' @param partial.type The prediction type to return. For survival forests one
+#'   of \code{"surv"} (default), \code{"mort"}, or \code{"chf"}. For competing
+#'   risk forests one of \code{"years.lost"}, \code{"cif"}, or \code{"chf"}.
+#'   See \code{\link[randomForestSRC]{partial.rfsrc}} for full details.
+#'
+#' @return A named list with one element per variable in \code{var_list}. Each
+#'   element is itself a list with:
+#'   \describe{
+#'     \item{name}{The predictor variable name (character).}
+#'     \item{dta}{The raw output of
+#'       \code{\link[randomForestSRC]{get.partial.plot.data}}, a list containing
+#'       at minimum \code{x} (predictor values) and \code{yhat} (partial
+#'       predictions), and for survival/competing risk, \code{partial.time}.}
+#'   }
+#'
+#' @seealso \code{\link{gg_partial_rfsrc}},
+#'   \code{\link[randomForestSRC]{partial.rfsrc}},
+#'   \code{\link[randomForestSRC]{get.partial.plot.data}}
 #'
 #' @importFrom randomForestSRC partial.rfsrc
 #' @examples

@@ -37,7 +37,9 @@
 \item{...}{arguments passed to the \code{ggplot2} functions.}
 }
 \value{
-A single \code{ggplot} object, or list of \code{ggplot} objects
+A single \code{ggplot} object when \code{length(xvar) == 1} or
+  \code{panel = TRUE}. Otherwise a named list of \code{ggplot} objects, one
+  per variable in \code{xvar}.
 }
 \description{
 Plot a \code{\link{gg_variable}} object,
@@ -120,6 +122,11 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews,
 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
-and Classification (RF-SRC), R package version 1.4.
+Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+Regression and Classification. R package version >= 3.4.0.
+\url{https://cran.r-project.org/package=randomForestSRC}
+}
+\seealso{
+\code{\link{gg_variable}}, \code{\link{gg_partial}},
+  \code{\link[randomForestSRC]{plot.variable}}
 }

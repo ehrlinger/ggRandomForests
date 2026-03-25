@@ -25,7 +25,10 @@ object created from a \code{\link[randomForestSRC]{rfsrc}} object}
 \item{...}{not used}
 }
 \value{
-\code{ggplot} object
+A \code{ggplot} object. The y-axis shows the chosen \code{type}
+  (e.g. survival probability for \code{"surv"}) and the x-axis shows time.
+  Confidence shading, bars, or lines are added when the input object carries
+  confidence-interval columns.
 }
 \description{
 Plot a \code{\link{gg_survival}}  object.
@@ -72,4 +75,8 @@ gg_dta <- gg_survival(
 plot(gg_dta, error = "lines")
 plot(gg_dta, label = "sex", error = "lines")
 
+}
+\seealso{
+\code{\link{gg_survival}}, \code{\link{kaplan}},
+  \code{\link{nelson}}, \code{\link{gg_rfsrc}}
 }

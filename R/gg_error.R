@@ -39,8 +39,11 @@
 #'   \code{training = TRUE} is honored an additional \code{train} column is
 #'   included.
 #'
-#' @seealso \code{\link{plot.gg_error}}, \code{\link[randomForestSRC]{rfsrc}},
-#'   \code{\link[randomForest]{randomForest}}
+#' @seealso \code{\link{plot.gg_error}}, \code{\link{gg_vimp}},
+#'   \code{\link{gg_variable}},
+#'   \code{\link[randomForestSRC]{rfsrc}},
+#'   \code{\link[randomForest]{randomForest}},
+#'   \code{\link[randomForestSRC]{plot.rfsrc}}
 #'
 #' @references
 #' Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
@@ -48,8 +51,9 @@
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 #' Rnews, 7(2):25-31.
 #'
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
-#' and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+#' Regression and Classification. R package version >= 3.4.0.
+#' \url{https://cran.r-project.org/package=randomForestSRC}
 #'
 #' @aliases gg_error gg_error.rfsrc gg_error.randomForest
 #' @aliases gg_error.randomForest.formula
@@ -196,8 +200,7 @@
 #'
 #' @importFrom stats as.formula model.frame model.response na.omit predict qnorm
 #'
-#' @export gg_error gg_error.rfsrc gg_error.randomForest
-#' @export gg_error.randomForest.formula
+#' @export
 gg_error <- function(object, ...) {
   UseMethod("gg_error", object)
 }
@@ -233,11 +236,8 @@ gg_error.rfsrc <- function(object, ...) {
 
   # Optional in-bag training error: re-predict on the full training set using
   # the stored forest and record the resulting per-tree error trajectory.
-  arg_list <- as.list(substitute(list(...)))
-  training <- FALSE
-  if (!is.null(arg_list$training)) {
-    training <- arg_list$training
-  }
+  arg_list <- list(...)
+  training <- isTRUE(arg_list$training)
   if (training) {
     trn <- data.frame(cbind(object$xvar, object$yvar))
     colnames(trn) <- c(object$xvar.names, object$yvar.names)
@@ -278,11 +278,8 @@ gg_error.randomForest <- function(object, ...) {
 
     gg_dta$ntree <- seq_len(nrow(gg_dta))
 
-    arg_list <- as.list(substitute(list(...)))
-    training <- FALSE
-    if (!is.null(arg_list$training)) {
-      training <- arg_list$training
-    }
+    arg_list <- list(...)
+    training <- isTRUE(arg_list$training)
 
     # Optionally compute and append the per-tree in-bag training error curve.
     if (training) {
@@ -298,11 +295,8 @@ gg_error.randomForest <- function(object, ...) {
 
     gg_dta$ntree <- seq_len(nrow(gg_dta))
 
-    arg_list <- as.list(substitute(list(...)))
-    training <- FALSE
-    if (!is.null(arg_list$training)) {
-      training <- arg_list$training
-    }
+    arg_list <- list(...)
+    training <- isTRUE(arg_list$training)
     if (training) {
       train_curve <- .rf_training_curve(object)
       if (!is.null(train_curve)) {

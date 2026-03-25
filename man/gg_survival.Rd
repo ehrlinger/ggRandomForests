@@ -14,21 +14,27 @@ gg_survival(
 )
 }
 \arguments{
-\item{interval}{name of the interval variable in the training dataset.}
+\item{interval}{Character; name of the time-to-event column in \code{data}.}
 
-\item{censor}{name of the censoring variable in the training dataset.}
+\item{censor}{Character; name of the event-indicator column in \code{data}
+(1 = event occurred, 0 = censored).}
 
-\item{by}{stratifying variable in the training dataset, defaults to NULL}
+\item{by}{Optional character; name of a grouping column in \code{data} for
+stratified estimates. Defaults to \code{NULL} (unstratified).}
 
-\item{data}{name of the training data.frame}
+\item{data}{A \code{data.frame} containing the survival data.}
 
-\item{type}{one of ("kaplan","nelson"), defaults to Kaplan-Meier}
+\item{type}{One of \code{"kaplan"} (Kaplan-Meier, default) or
+\code{"nelson"} (Nelson-Aalen cumulative hazard).}
 
-\item{...}{extra arguments passed to Kaplan or Nelson functions.}
+\item{...}{Additional arguments passed to \code{\link{kaplan}} or
+\code{\link{nelson}} (e.g. \code{conf.int} to change the CI width).}
 }
 \value{
-A \code{gg_survival} object created using the non-parametric
-Kaplan-Meier or Nelson-Aalen estimators.
+A \code{gg_survival} \code{data.frame} with columns \code{time},
+  \code{surv} (or \code{cum_haz} for Nelson-Aalen), \code{lower},
+  \code{upper} (confidence limits), and \code{n.risk}. A \code{strata}
+  column is added when \code{by} is supplied.
 }
 \description{
 Nonparametric survival estimates.

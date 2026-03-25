@@ -43,10 +43,15 @@
 #' @param ... Optional arguments such as \code{time}, \code{time_labels}, and
 #'   \code{oob} that tailor the marginal dependence extraction.
 #'
-#' @return \code{gg_variable} object
+#' @return A \code{gg_variable} object: a \code{data.frame} of all predictor
+#'   columns from the training data paired with the OOB (or in-bag) predicted
+#'   response. For survival forests each requested time horizon produces an
+#'   additional column named by \code{time_labels}. The object carries a
+#'   \code{"family"} class attribute (\code{"regr"}, \code{"class"}, or
+#'   \code{"surv"}) used by \code{\link{plot.gg_variable}} for dispatch.
 #'
-#' @seealso \code{\link{plot.gg_variable}}
-#' @seealso \code{\link[randomForestSRC]{plot.variable}}
+#' @seealso \code{\link{plot.gg_variable}},
+#'   \code{\link[randomForestSRC]{plot.variable}}
 #'
 #' @aliases gg_variable gg_variable.rfsrc
 #'
@@ -279,7 +284,7 @@ gg_variable.rfsrc <- function(object,
     }
     lng <- length(time)
 
-    for (ind in 1:lng) {
+    for (ind in seq_len(lng)) {
       if (ind > 1) {
         gg_dta_t_old <- gg_dta_t
       }

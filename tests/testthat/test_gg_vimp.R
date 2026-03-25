@@ -1,5 +1,4 @@
 # testthat for gg_vimp function
-context("gg_vimp tests")
 
 test_that("gg_vimp classifications", {
   ## Load the cached forest
@@ -11,7 +10,7 @@ test_that("gg_vimp classifications", {
     tree.err = TRUE
   )
   # Test the cached forest type
-  expect_is(rfsrc_iris, "rfsrc")
+  expect_s3_class(rfsrc_iris, "rfsrc")
   
   # Test the forest family
   expect_equal(rfsrc_iris$family, "class")
@@ -20,54 +19,54 @@ test_that("gg_vimp classifications", {
   gg_dta <- gg_vimp(rfsrc_iris)
   
   # Test object type
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   
   # Grab only one class... by number.
   gg_dta <- gg_vimp(rfsrc_iris, which.outcome = 2)
   
   # Test object type
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   # Grab only one class... by number - for the overall model.
   gg_dta <- gg_vimp(rfsrc_iris, which.outcome = 0)
   
   # Test object type
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   # Grab only one class... by name - for the overall model.
   gg_dta <- gg_vimp(rfsrc_iris, which.outcome = "all")
   
   # Test object type
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   # Grab only one class... by name - for the overall model.
   gg_dta <- gg_vimp(rfsrc_iris, which.outcome = "setosa")
   
   # Test object type
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   
   # Grab only one class... by name - that doesn't exist.
   expect_error(gg_vimp(rfsrc_iris, which.outcome = "nothing special"))
@@ -84,7 +83,7 @@ test_that("gg_vimp classifications", {
   
   gg_dta <- gg_vimp(rf)
   
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   
   # Test passing in the wrong object
   expect_error(gg_vimp(gg_dta))
@@ -96,14 +95,14 @@ test_that("gg_vimp classifications", {
   
   gg_dta <- gg_vimp(rf_iris)
   
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
 
   rf_iris_noimp <- randomForest::randomForest(Species ~ .,
                                               data = iris,
                                               importance = FALSE)
   rf_iris_noimp$importance <- NULL
   expect_warning(gg_dta <- gg_vimp(rf_iris_noimp))
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   
   # Test passing in the wrong object
   expect_error(gg_vimp(gg_dta))
@@ -112,10 +111,10 @@ test_that("gg_vimp classifications", {
   
   gg_dta <- gg_vimp(rf_iris, which.outcome = 1)
   
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   
   
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   # Test passing in the wrong object
   expect_error(gg_vimp(gg_dta))
   expect_error(gg_vimp.rfsrc(gg_dta))
@@ -175,13 +174,13 @@ test_that("gg_vimp survival", {
     tree.err = TRUE
   )
   # Test the cached forest type
-  expect_is(rfsrc_pbc, "rfsrc")
+  expect_s3_class(rfsrc_pbc, "rfsrc")
   
   ## Create the correct gg_error object
   gg_dta <- gg_vimp(rfsrc_pbc)
   
   # Test object type
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   
   # Test varselect is the same
   expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_pbc$importance, decreasing =
@@ -191,37 +190,40 @@ test_that("gg_vimp survival", {
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta, nvar = 5)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   
-  expect_is(plot(gg_dta, relative = TRUE), "ggplot")
+  expect_s3_class(plot(gg_dta, relative = TRUE), "ggplot")
   
   # Test cutting the size down
-  expect_is(gg_dta <- gg_vimp(rfsrc_pbc, nvar = 10), "gg_vimp")
+  expect_s3_class(gg_dta <- gg_vimp(rfsrc_pbc, nvar = 10), "gg_vimp")
   expect_equal(nrow(gg_dta), 10)
-  expect_is(plot(gg_dta), "ggplot")
+  expect_s3_class(plot(gg_dta), "ggplot")
   
   # Test the relative vimp output and plotting
-  expect_is(gg_dta <-
-              gg_vimp(rfsrc_pbc, relative = TRUE), "gg_vimp")
-  expect_is(plot(gg_dta), "ggplot")
-  
-  expect_is(gg_dta <-
-              gg_vimp(rfsrc_pbc, nvar = 10, relative = TRUE),
-            "gg_vimp")
-  expect_is(plot(gg_dta), "ggplot")
+  expect_s3_class(
+    gg_dta <- gg_vimp(rfsrc_pbc, relative = TRUE),
+    "gg_vimp"
+  )
+  expect_s3_class(plot(gg_dta), "ggplot")
+
+  expect_s3_class(
+    gg_dta <- gg_vimp(rfsrc_pbc, nvar = 10, relative = TRUE),
+    "gg_vimp"
+  )
+  expect_s3_class(plot(gg_dta), "ggplot")
   
   # Test importance calculations.
   # If the forest does not have importance
   rfsrc_pbc$importance <- NULL
   expect_warning(gg_dta <- gg_vimp(rfsrc_pbc))
-  expect_is(gg_dta, "gg_vimp")
-  expect_is(plot(gg_dta), "ggplot")
+  expect_s3_class(gg_dta, "gg_vimp")
+  expect_s3_class(plot(gg_dta), "ggplot")
   
 })
 
@@ -234,13 +236,13 @@ test_that("gg_vimp regression", {
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston,
                                          importance = TRUE)
   # Test the cached forest type
-  expect_is(rfsrc_boston, "rfsrc")
+  expect_s3_class(rfsrc_boston, "rfsrc")
   
   ## Create the correct gg_error object
   gg_dta <- gg_vimp(rfsrc_boston)
   
   # Test object type
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   
   # Test varselect is the same
   expect_equal(gg_dta$vimp, as.vector(sort(rfsrc_boston$importance, decreasing =
@@ -250,12 +252,12 @@ test_that("gg_vimp regression", {
   gg_plt <- plot(gg_dta)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta, relative = TRUE)
   
   # Test return is s ggplot object
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   
   
   cls <- sapply(Boston, class)
@@ -311,7 +313,7 @@ test_that("gg_vimp regression", {
     relative = TRUE,
     bars = rfsrc_boston$xvar.names
   )
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
   
   rf_boston <- randomForest::randomForest(medv ~ ., Boston)
   gg_dta <- gg_vimp(rf_boston)
@@ -320,11 +322,11 @@ test_that("gg_vimp regression", {
                                              TRUE)))
   
   gg_plt <- plot(gg_dta)
-  expect_is(gg_plt, "ggplot")
+  expect_s3_class(gg_plt, "ggplot")
 
   rf_boston_noimp <- randomForest::randomForest(medv ~ ., Boston, importance = FALSE)
   rf_boston_noimp$importance <- NULL
   expect_warning(gg_dta <- gg_vimp(rf_boston_noimp))
-  expect_is(gg_dta, "gg_vimp")
+  expect_s3_class(gg_dta, "gg_vimp")
   
 })

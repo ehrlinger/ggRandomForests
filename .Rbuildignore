@@ -38,3 +38,7 @@ framed.sty
 ^pkgdown$
 ^LICENSE\.md$
 ^memory$
+^\.lintr$
+^CONTRIBUTING\.md$
+^code-review\.md$
+^release-checklist.*\.md$

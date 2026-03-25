@@ -232,7 +232,12 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
           )
         }
       } else {
-        # Look up by integer index (1-based into class columns).
+        # Look up by integer index.
+        # which.outcome = 0  → overall (across-class) importance, column 1
+        # which.outcome = k  → importance for class k, column k+1
+        if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
+          stop("which.outcome must be a non-negative integer or a class name.")
+        }
         if (arg_set$which.outcome < ncol(gg_dta)) {
           gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome + 1],
             decreasing = TRUE
@@ -243,11 +248,10 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
             )]
         } else {
           stop(
-            paste(
-              "which.outcome specified larger than the number of classes (+1).",
-              arg_set$which.outcome,
-              " >= ",
-              ncol(gg_dta)
+            paste0(
+              "which.outcome (", arg_set$which.outcome, ") is out of range. ",
+              "Valid values are 0 (overall) to ", ncol(gg_dta) - 1,
+              " (number of classes)."
             )
           )
         }
@@ -259,12 +263,14 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     }
 
     gg_dta <- gg_dta[seq_len(nvar), ]
-    gathercols <-
+    pivot_cols <-
       colnames(gg_dta)[-which(colnames(gg_dta) == "vars")]
     # Pivot from wide (one column per class) to long (one row per class-var pair).
-    gg_dta <- tidyr::gather(
-      gg_dta, "set", "vimp",
-      tidyr::all_of(gathercols)
+    gg_dta <- tidyr::pivot_longer(
+      gg_dta,
+      tidyr::all_of(pivot_cols),
+      names_to = "set",
+      values_to = "vimp"
     )
     gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
     gg_dta$vars <- factor(gg_dta$vars)
@@ -278,7 +284,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     gg_dta$vars[which(is.na(gg_dta$vars))] <-
       rownames(gg_dta)[which(is.na(gg_dta$vars))]
 
-    gg_dta <- gg_dta[1:nvar, ]
+    gg_dta <- gg_dta[seq_len(nvar), ]
   }
 
   # Convert vars to an ordered factor (reversed so the most important variable
@@ -297,7 +303,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
 
 #' @export
 gg_vimp.randomForest <- function(object, nvar, ...) {
-  ## Check that the input obect is of the correct type.
+  ## Check that the input object is of the correct type.
   if (!inherits(object, "randomForest")) {
     stop(
       paste(
@@ -354,6 +360,9 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
       cn <- colnames(gg_dta)[1]
       gg_dta <-
         gg_dta[order(gg_dta[, cn], decreasing = TRUE), ]
+      # Ensure a canonical "vimp" column exists so the positive-flag logic and
+      # plot.gg_vimp both work regardless of what randomForest named the column.
+      colnames(gg_dta)[1] <- "vimp"
     }
   }
   if (missing(nvar)) {
@@ -390,6 +399,11 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
           )
         }
       } else {
+        # which.outcome = 0 → overall importance (column 1)
+        # which.outcome = k → class k importance (column k+1)
+        if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
+          stop("which.outcome must be a non-negative integer or a class name.")
+        }
         if (arg_set$which.outcome < ncol(gg_dta)) {
           gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome + 1],
             decreasing = TRUE
@@ -400,11 +414,10 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
             )]
         } else {
           stop(
-            paste(
-              "which.outcome specified larger than the number of classes (+1).",
-              arg_set$which.outcome,
-              " >= ",
-              ncol(gg_dta)
+            paste0(
+              "which.outcome (", arg_set$which.outcome, ") is out of range. ",
+              "Valid values are 0 (overall) to ", ncol(gg_dta) - 1,
+              " (number of classes)."
             )
           )
         }
@@ -414,11 +427,13 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
       gg_dta$vars <- rownames(gg_dta)
     }
 
-    gathercols <-
+    pivot_cols <-
       colnames(gg_dta)[-which(colnames(gg_dta) == "vars")]
-    gg_dta <- tidyr::gather(
-      gg_dta, "set", "vimp",
-      tidyr::all_of(gathercols)
+    gg_dta <- tidyr::pivot_longer(
+      gg_dta,
+      tidyr::all_of(pivot_cols),
+      names_to = "set",
+      values_to = "vimp"
     )
     gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
     gg_dta$vars <- factor(gg_dta$vars)
@@ -426,7 +441,7 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     gg_dta$vars[which(is.na(gg_dta$vars))] <-
       rownames(gg_dta)[which(is.na(gg_dta$vars))]
   }
-  gg_dta <- gg_dta[1:nvar, ]
+  gg_dta <- gg_dta[seq_len(nvar), ]
 
   gg_dta$vars <-
     factor(gg_dta$vars, levels = rev(unique(gg_dta$vars)))
