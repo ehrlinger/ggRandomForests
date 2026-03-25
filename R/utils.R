@@ -29,6 +29,7 @@
 #'
 #' This function allows removal of the dplyr::lead dependency.
 #'
+#' @keywords internal
 #' @examples
 #' d <- data.frame(x = 1:15)
 #' # generate lead variable

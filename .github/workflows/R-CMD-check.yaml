@@ -28,6 +28,10 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      # Skip vdiffr visual-regression tests in CI until reference SVGs are
+      # committed. To regenerate: run testthat::snapshot_accept() locally,
+      # commit tests/testthat/_snaps/, then remove this line.
+      VDIFFR_RUN_TESTS: "false"
 
     steps:
       - uses: actions/checkout@v4

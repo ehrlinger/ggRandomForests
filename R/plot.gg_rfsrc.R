@@ -23,6 +23,10 @@
 #' @param x A \code{\link{gg_rfsrc}} object, or a raw
 #'   \code{\link[randomForestSRC]{rfsrc}} object (which will be passed through
 #'   \code{\link{gg_rfsrc}} automatically before plotting).
+#' @param notch Logical; whether to draw notched boxplots for regression and
+#'   classification forests (default \code{TRUE}).  Set \code{notch = FALSE}
+#'   to suppress notches when sample sizes are too small for reliable
+#'   confidence intervals on the median.
 #' @param ... Additional arguments forwarded to the underlying
 #'   \code{ggplot2} geometry calls.  Commonly useful arguments include:
 #'   \describe{
@@ -174,13 +178,8 @@
 #' }
 #'
 #' @export
-plot.gg_rfsrc <- function(x, ...) {
+plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
   gg_dta <- x
-
-  # Capture any extra named arguments (e.g. alpha, size) for geom calls
-  arg_set <- list(...)
-  # notch can be suppressed by the caller; default to TRUE for readability
-  notch <- if (!is.null(arg_set$notch)) isTRUE(arg_set$notch) else TRUE
 
   ## If the user passed a raw rfsrc object, extract predictions first
   if (inherits(gg_dta, "rfsrc")) {
