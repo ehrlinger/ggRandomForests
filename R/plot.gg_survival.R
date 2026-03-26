@@ -90,10 +90,10 @@ plot.gg_survival <- function(x,
   if (inherits(gg_dta, "rfsrc")) {
     gg_dta <- gg_survival(gg_dta)
   }
-  
+
   error <- match.arg(error)
   type <- match.arg(type)
-  
+
   # Now order matters, so we want to place the forest predictions on the bottom
   # Create the figure skeleton,
   if (is.null(gg_dta$groups)) {

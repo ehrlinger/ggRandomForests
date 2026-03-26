@@ -242,7 +242,7 @@ plot.gg_error <- function(x, ...) {
     gg_plt <- gg_plt +
       ggplot2::geom_point() +
       ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")
-  } else{
+  } else {
     gg_plt <- gg_plt +
       ggplot2::geom_line() +
       ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")

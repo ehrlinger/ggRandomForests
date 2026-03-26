@@ -116,7 +116,7 @@
 #' plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
 #'
 #' @export
-plot.gg_variable <- function(x,
+plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                              xvar,
                              time,
                              time_labels,

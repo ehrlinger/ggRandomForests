@@ -11,36 +11,36 @@ test_that("gg_error.rfsrc classifications", {
   )
   # Test the cached forest type
   expect_s3_class(rfsrc_iris, "rfsrc")
-  
+
   # Test the forest family
   expect_match(rfsrc_iris$family, "class")
-  
+
   ## Create the correct gg_error object
   gg_dta <- gg_error(rfsrc_iris)
-  
+
   # Test object type
   expect_s3_class(gg_dta, "gg_error")
-  
+
   # Test classification dimensions
   expect_equal(dim(gg_dta)[1], dim(na.omit(rfsrc_iris$err.rate))[1])
   expect_equal(dim(gg_dta)[2], dim(rfsrc_iris$err.rate)[2] + 1)
-  
+
   # Test data is correctly pulled from randomForest obect.
   # expect_equal(as.matrix(gg_dta[, -which(colnames(gg_dta) == "ntree")], ignore_attr = TRUE),
   #                   rfsrc_iris$err.rate)
-  
+
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-  
+
   # Test return is s ggplot object
   expect_s3_class(gg_plt, "ggplot")
-  
+
   # "Incorrect object type: Expects a gg_error object"
   expect_error(gg_error(gg_plt))
   expect_error(gg_error.rfsrc(gg_plt))
   rfsrc_iris$err.rate <- NULL
   expect_error(gg_error(rfsrc_iris))
-  
+
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
     data = iris,
@@ -49,10 +49,10 @@ test_that("gg_error.rfsrc classifications", {
   )
   ## Create the correct gg_error object
   gg_dta <- gg_error(rfsrc_iris, training = TRUE)
-  
+
   # Test object type
   expect_s3_class(gg_dta, "gg_error")
-  
+
   ## Test plotting the gg_error object (no warnings expected since pivot_longer migration)
   gg_plt <- plot(gg_dta)
 
@@ -68,30 +68,30 @@ test_that("gg_error.randomForest classifications", {
   rf_iris <- randomForest::randomForest(Species ~ .,
                                         data = iris,
                                         ntree = 75)
-  
+
   # Test the cached forest type
   expect_s3_class(rf_iris, "randomForest")
-  
+
   # Test the forest family
   expect_match(rf_iris$type, "classification")
-  
+
   ## Create the correct gg_error object
   gg_dta <- gg_error(rf_iris)
-  
+
   # Test object type
   expect_s3_class(gg_dta, "gg_error")
-  
+
   # Test classification dimensions
   expect_equal(dim(gg_dta)[1], dim(rf_iris$err.rate)[1])
   expect_equal(dim(gg_dta)[2], dim(rf_iris$err.rate)[2] + 1)
-  
+
   # Test data is correctly pulled from randomForest obect.
   expect_equal(as.matrix(gg_dta[, -which(colnames(gg_dta) == "ntree")], ignore_attr = TRUE),
                     rf_iris$err.rate)
-  
+
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-  
+
   # Test return is s ggplot object
   expect_s3_class(gg_plt, "ggplot")
 
@@ -101,14 +101,14 @@ test_that("gg_error.randomForest classifications", {
   expect_length(gg_train$train, nrow(gg_train))
   expect_true(min(gg_train$train, na.rm = TRUE) >= 0)
   expect_true(max(gg_train$train, na.rm = TRUE) <= 1)
-  
+
   # "Incorrect object type: Expects a gg_error object"
   expect_error(gg_error(gg_plt))
   expect_error(gg_error.randomForest(gg_plt))
   rf_iris$err.rate <- NULL
   expect_error(gg_error(rf_iris))
-  
-  
+
+
 })
 
 
@@ -116,75 +116,75 @@ test_that("gg_error.randomForest classifications", {
 test_that("gg_error regression rfsrc", {
   ## Load the cached forest
   data(Boston, package = "MASS")
-  
-  Boston$chas <- as.logical(Boston$chas)
-  
+
+  Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
+
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston)
   # Test the cached forest type
   expect_s3_class(rfsrc_boston, "rfsrc")
-  
+
   # Test the forest family
   expect_match(rfsrc_boston$family, "regr")
-  
+
   ## Create the correct gg_error object
   gg_dta <- gg_error(rfsrc_boston)
-  
+
   # Test object type
   expect_s3_class(gg_dta, "gg_error")
-  
+
   # Test classification dimensions
   expect_equal(nrow(gg_dta), length(na.omit(rfsrc_boston$err.rate)))
   expect_equal(ncol(gg_dta), 2)
-  
+
   # Test data is correctly pulled from randomForest object.
   expect_equal(as.numeric(gg_dta[[1]]), as.numeric(na.omit(rfsrc_boston$err.rate)))
-  
+
   ## Test plotting the gg_error object
   gg_plt <- plot(gg_dta)
-  
+
   # Test return is s ggplot object
   expect_s3_class(gg_plt, "ggplot")
-  
+
   # Test return is s ggplot object
   expect_s3_class(gg_plt, "ggplot")
-  
+
   # Test the exception for input
   expect_error(gg_error(gg_plt))
-  
-  
+
+
   gg_dta <- gg_error(rfsrc_boston, training = TRUE)
   expect_s3_class(gg_dta, "gg_error")
-  
-  
+
+
 })
 
 
 test_that("gg_error regression randomForest", {
   ## Load the cached forest
   data(Boston, package = "MASS")
-  
-  Boston$chas <- as.logical(Boston$chas)
-  
+
+  Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
+
   rf_boston <- randomForest::randomForest(medv ~ ., data = Boston, ntree = 100)
   # Test the cached forest type
   expect_s3_class(rf_boston, "randomForest")
-  
+
   # Test the forest family
   expect_match(rf_boston$type, "regression")
-  
+
   ## Create the correct gg_error object
   gg_dta <- gg_error(rf_boston)
-  
+
   # Test object type
   expect_s3_class(gg_dta, "gg_error")
-  
+
   # Test classification dimensions
   expect_equal(nrow(gg_dta), length(na.omit(rf_boston$mse)))
   expect_equal(ncol(gg_dta), 2)
-  
+
   # Test data is correctly pulled from randomForest obect.
   expect_equal(c(gg_dta[, 1]), rf_boston$mse, ignore_attr = TRUE)
-  
+
   ## Create the correct gg_error object
   gg_dta <- gg_error(rf_boston)
 
@@ -206,7 +206,7 @@ test_that("gg_error regression randomForest", {
 
 test_that("plot.gg_error direct: regression rfsrc (single-outcome path, no legend)", {
   data(Boston, package = "MASS")
-  Boston$chas <- as.logical(Boston$chas)
+  Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston, ntree = 50L)
   gg_dta <- gg_error(rfsrc_boston)
 
@@ -224,7 +224,7 @@ test_that("plot.gg_error direct: survival rfsrc (single-outcome path)", {
   data(pbc, package = "randomForestSRC")
   pbc$time <- pbc$days / 364.25
   pbc_sub <- pbc[, c("time", "status", "age", "bili")]
-  Surv <- survival::Surv  # bring Surv into local scope for formula parsing
+  Surv <- survival::Surv  # nolint: object_name_linter
   rfsrc_pbc <- randomForestSRC::rfsrc(
     Surv(time, status) ~ .,
     data = pbc_sub,
@@ -254,7 +254,7 @@ test_that("plot.gg_error direct: classification rfsrc (multi-outcome path, legen
 
 test_that("plot.gg_error direct: accepts raw rfsrc object (auto-extract path)", {
   data(Boston, package = "MASS")
-  Boston$chas <- as.logical(Boston$chas)
+  Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston, ntree = 50L)
 
   # Pass the rfsrc object directly — plot.gg_error should call gg_error() internally
@@ -269,7 +269,7 @@ test_that("plot.gg_error direct: errors on non-gg_error non-rfsrc input", {
 
 test_that("plot.gg_error direct: point geometry used when only one valid row", {
   data(Boston, package = "MASS")
-  Boston$chas <- as.logical(Boston$chas)
+  Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston, ntree = 50L)
   gg_dta <- gg_error(rfsrc_boston)
 
