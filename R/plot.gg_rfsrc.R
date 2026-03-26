@@ -311,7 +311,7 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
       ggplot2::geom_boxplot(
         outlier.colour = "transparent",
         fill = "transparent",
-        notch = TRUE
+        notch = notch
       ) +
       ggplot2::labs(y = "Predicted Value", x = colnames(gg_dta)[2]) +
       ggplot2::theme(
