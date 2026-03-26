@@ -42,3 +42,5 @@ framed.sty
 ^CONTRIBUTING\.md$
 ^code-review\.md$
 ^release-checklist.*\.md$
+# FUSE filesystem temporaries (safe to ignore; R CMD build already skips dotfiles)
+^R/\.fuse_hidden

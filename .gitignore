@@ -40,6 +40,8 @@ tests/testthat/Rplots.pdf
 vignettes/ggrfRegression.html
 vignettes/ggrfRegression.R
 docs
+# FUSE filesystem temporaries (macOS / Linux FUSE driver artefacts)
+.fuse_hidden*
 
 vignettes/ggRandomForests_files
 vignettes/ggRandomForests.html
