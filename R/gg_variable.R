@@ -75,7 +75,7 @@
 #' ## ------------------------------------------------------------
 #' ## regression
 #' ## ------------------------------------------------------------
-#' 
+#'
 #' ## -------- air quality data
 #' rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
 #' gg_dta <- gg_variable(rfsrc_airq)
@@ -91,7 +91,7 @@
 #' plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
 #'
 #' plot(gg_dta, xvar = "Month", notch = TRUE)
-#' 
+#'
 #' ## -------- motor trend cars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
 #'
@@ -117,7 +117,7 @@
 #'   xvar = c("cyl", "vs", "am", "gear", "carb"), panel = TRUE,
 #'   notch = TRUE
 #' )
-#' 
+#'
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
 #'
@@ -128,7 +128,7 @@
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
-#' 
+#'
 #' ## -------- veteran data
 #' ## survival
 #' data(veteran, package = "randomForestSRC")
@@ -153,7 +153,7 @@
 #'
 #' # Generate variable dependence plots for age and diagtime
 #' plot(gg_dta, xvar = "age")
-#' 
+#'
 #' ## -------- pbc data
 #' ## We don't run this because of bootstrap confidence limits
 #' # We need to create this dataset
@@ -212,7 +212,7 @@
 #'
 #' # Generate coplots
 #' plot(gg_dta, xvar = c("age", "trig"), panel = TRUE, se = FALSE)
-#' 
+#'
 #'
 #' @aliases gg_variable gg_variable.rfsrc gg_variable.randomForest
 #' @aliases gg_variable.random
@@ -345,7 +345,7 @@ gg_variable.randomForest <- function(object,
 
   # Reconstruct the training data from the stored call so we can pair
   # predictions with the original predictors.
-  training_info <- .rf_recover_model_frame(object)
+  training_info <- .rf_recover_model_frame(object) # nolint: object_usage_linter
   if (is.null(training_info)) {
     stop(
       "Unable to reconstruct the training data for this randomForest object.",

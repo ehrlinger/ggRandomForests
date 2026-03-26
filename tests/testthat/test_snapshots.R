@@ -11,6 +11,14 @@ if (!requireNamespace("vdiffr", quietly = TRUE)) {
   skip("vdiffr not installed")
 }
 
+# Skip all snapshot tests on CI until reference SVGs are committed.
+# vdiffr's VDIFFR_RUN_TESTS=false only skips *comparison* of existing SVGs;
+# first-run creation still fails.  Skipping here is the reliable guard.
+# To generate baselines locally: remove this line, run the tests, then call
+#   testthat::snapshot_accept()
+# and commit tests/testthat/_snaps/ before re-enabling in CI.
+testthat::skip_on_ci()
+
 ## ---- Shared fixtures -------------------------------------------------------
 
 # Classification — iris

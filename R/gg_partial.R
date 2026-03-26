@@ -95,12 +95,13 @@ gg_partial <- function(part_dta,
     categorical <- data.frame(x = character(0), yhat = numeric(0), name = character(0))
   } else {
     categorical <- dplyr::bind_rows(cat_list)
-    categorical <- dplyr::group_by(categorical, .data$name)
-    categorical <- dplyr::mutate(
-      categorical,
-      x = factor(.data$x, levels = unique(.data$x))
-    )
-    categorical <- dplyr::ungroup(categorical)
+    # Set within-group factor levels to order-of-appearance (base-R, no .data pronoun)
+    split_grps <- split(seq_len(nrow(categorical)), categorical$name)
+    for (grp_idx in split_grps) {
+      vals <- categorical$x[grp_idx]
+      categorical$x[grp_idx] <- as.character(factor(vals, levels = unique(vals)))
+    }
+    categorical$x <- factor(categorical$x)
   }
   ## Optionally attach a model label (useful when overlaying multiple forests)
   if (!is.null(model)) {

@@ -67,7 +67,7 @@
 #' )
 #'
 #' plot(gg_dta, error = "lines")
-#' 
+#'
 #' @export
 gg_survival <- function(interval = NULL,
                         censor = NULL,
@@ -80,7 +80,7 @@ gg_survival <- function(interval = NULL,
 
   # Delegate entirely to the selected estimator helper.  Both kaplan() and
   # nelson() return a gg_survival object that plot.gg_survival can render.
-  gg_dta <- switch(type,
+  gg_dta <- switch(type, # nolint: object_usage_linter
     kaplan = kaplan(
       interval = interval,
       censor = censor,

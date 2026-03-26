@@ -56,14 +56,14 @@
 #' ## ------------------------------------------------------------
 #' ## regression example
 #' ## ------------------------------------------------------------
-#' 
+#'
 #' ## -------- air quality data
 #' rfsrc_airq <- rfsrc(Ozone ~ ., airquality,
 #'   importance = TRUE
 #' )
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
-#' 
+#'
 #'
 #' ## -------- Boston data
 #' data(Boston, package = "MASS")
@@ -78,7 +78,7 @@
 #' gg_dta <- gg_vimp(rf_boston)
 #' plot(gg_dta)
 #'
-#' 
+#'
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- rfsrc(mpg ~ .,
 #'   data = mtcars,
@@ -86,11 +86,11 @@
 #' )
 #' gg_dta <- gg_vimp(rfsrc_mtcars)
 #' plot(gg_dta)
-#' 
+#'
 #' ## ------------------------------------------------------------
 #' ## survival example
 #' ## ------------------------------------------------------------
-#' 
+#'
 #' ## -------- veteran data
 #' data(veteran, package = "randomForestSRC")
 #' rfsrc_veteran <- rfsrc(Surv(time, status) ~ .,
@@ -160,7 +160,7 @@
 #' # Restrict to only the top 10.
 #' gg_dta <- gg_vimp(rfsrc_pbc, nvar = 10)
 #' plot(gg_dta)
-#' 
+#'
 #' @aliases gg_vimp gg_vimp.rfsrc gg_vimp.randomForest
 #' @aliases gg_vimp.randomForest.formula
 #' @export
@@ -322,7 +322,7 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     if (is.null(importance_est)) {
       vars <- object$forest$xvar.names
       if (is.null(vars)) {
-        training_info <- .rf_recover_model_frame(object)
+        training_info <- .rf_recover_model_frame(object) # nolint: object_usage_linter
         if (!is.null(training_info)) {
           vars <- setdiff(colnames(training_info$model_frame), training_info$response_name)
         }

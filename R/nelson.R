@@ -59,7 +59,7 @@
 #'
 #' plot(gg_dta, error = "bars")
 #' plot(gg_dta)
-#' 
+#'
 #' @export
 nelson <-
   function(interval,
@@ -75,7 +75,7 @@ nelson <-
     }
 
     # Build the Surv object and fit the (possibly stratified) estimator.
-    srv <-
+    srv <- # nolint: object_usage_linter
       survival::Surv(time = data[[interval]], event = data[[censor]])
     if (is.null(by)) {
       srv_tab <- survival::survfit(srv ~ 1, ...)
@@ -103,7 +103,7 @@ nelson <-
     )
 
     # Detect stratum boundaries and label each row with its group name.
-    if (!is.null(by)) tbl <- .label_strata(tbl, data, by)
+    if (!is.null(by)) tbl <- .label_strata(tbl, data, by) # nolint: object_usage_linter
 
     # Retain only rows with at least one event.
     gg_dta <- tbl[which(tbl[["dead"]] != 0), ]

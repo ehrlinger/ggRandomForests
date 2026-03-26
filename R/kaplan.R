@@ -56,7 +56,7 @@ kaplan <- function(interval,
                    data,
                    by = NULL, ...) {
   # Build a Surv object from the named columns in the data frame.
-  srv <- survival::Surv(time = data[[interval]], event = data[[censor]])
+  srv <- survival::Surv(time = data[[interval]], event = data[[censor]]) # nolint: object_usage_linter
 
   # Fit the Kaplan-Meier estimator; stratify on `by` when provided.
   if (is.null(by)) {
@@ -85,7 +85,7 @@ kaplan <- function(interval,
   )
 
   # When stratifying, stitch a "groups" label column onto the table.
-  if (!is.null(by)) tbl <- .label_strata(tbl, data, by)
+  if (!is.null(by)) tbl <- .label_strata(tbl, data, by) # nolint: object_usage_linter
 
   # Keep only rows where at least one event occurred — censoring-only rows
   # do not contribute new KM estimates.

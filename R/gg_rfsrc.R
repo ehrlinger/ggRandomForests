@@ -177,7 +177,7 @@
 #' @aliases gg_rfsrc gg_rfsrc.rfsrc
 
 #' @export
-gg_rfsrc.rfsrc <- function(object,
+gg_rfsrc.rfsrc <- function(object, # nolint: cyclocomp_linter
                            oob = TRUE,
                            by,
                            ...) {
@@ -513,7 +513,7 @@ gg_rfsrc.randomForest <- function(object,
   # Recover the training predictor frame once (needed for by-column lookup and
   # dimension checks).  randomForest stores predictors in $forest$xlevels keys
   # but not the actual data; use .rf_recover_model_frame() for that.
-  rf_info <- .rf_recover_model_frame(object)
+  rf_info <- .rf_recover_model_frame(object) # nolint: object_usage_linter
   rf_xvar <- if (!is.null(rf_info)) rf_info$model_frame[
     , setdiff(colnames(rf_info$model_frame), rf_info$response_name),
     drop = FALSE

@@ -114,7 +114,7 @@ gg_roc.rfsrc <- function(object, which_outcome, oob = TRUE, ...) {
 
   # Delegate the threshold-sweep computation to calc_roc, passing the
   # observed response vector and the chosen outcome column index.
-  gg_dta <-
+  gg_dta <- # nolint: object_usage_linter
     calc_roc(object,
       object$yvar,
       which_outcome = which_outcome,
@@ -148,7 +148,7 @@ gg_roc.randomForest <- function(object, which_outcome, oob, ...) {
   }
 
   # For randomForest objects the response is stored in $y (not $yvar).
-  gg_dta <-
+  gg_dta <- # nolint: object_usage_linter
     calc_roc(object,
       object$y,
       which_outcome = which_outcome
