@@ -11,13 +11,17 @@ if (!requireNamespace("vdiffr", quietly = TRUE)) {
   skip("vdiffr not installed")
 }
 
-# Skip all snapshot tests on CI until reference SVGs are committed.
-# vdiffr's VDIFFR_RUN_TESTS=false only skips *comparison* of existing SVGs;
-# first-run creation still fails.  Skipping here is the reliable guard.
-# To generate baselines locally: remove this line, run the tests, then call
-#   testthat::snapshot_accept()
-# and commit tests/testthat/_snaps/ before re-enabling in CI.
-testthat::skip_on_ci()
+# Guard: only register snapshot tests when NOT running on CI.
+# testthat::skip_on_ci() at file scope only creates a phantom skip; it does
+# not prevent test_that() blocks inside local() from being registered and run.
+# Wrapping in a plain `if` is the reliable way to suppress the entire file.
+#
+# To generate baselines locally:
+#   1. Ensure CI is unset (or run outside GitHub Actions)
+#   2. Run devtools::test(filter = "snapshots")
+#   3. Call testthat::snapshot_accept()
+#   4. Commit tests/testthat/_snaps/ to the repo
+if (!nzchar(Sys.getenv("CI"))) {
 
 ## ---- Shared fixtures -------------------------------------------------------
 
@@ -151,3 +155,5 @@ local({
     vdiffr::expect_doppelganger("gg_roc classification rf", plot(gg_dta))
   })
 })
+
+} # end CI guard
