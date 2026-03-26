@@ -8,17 +8,51 @@
 \method{gg_rfsrc}{rfsrc}(object, oob = TRUE, by, ...)
 }
 \arguments{
-\item{object}{\code{\link[randomForestSRC]{rfsrc}} object}
+\item{object}{A fitted \code{\link[randomForestSRC]{rfsrc}} or
+\code{\link[randomForest]{randomForest}} object.}
 
-\item{oob}{boolean, should we return the oob prediction , or the full
-forest prediction.}
+\item{oob}{Logical; if \code{TRUE} (default) return out-of-bag predictions.
+Set to \code{FALSE} to use full in-bag (training) predictions. Forced to
+\code{FALSE} automatically for \code{predict.rfsrc} objects, which carry
+no OOB estimates.}
 
-\item{by}{stratifying variable in the training dataset, defaults to NULL}
+\item{by}{Optional stratifying variable. Either a character column name
+present in the training data, or a vector/factor of the same length as
+the training set. When supplied, a \code{group} column is added to the
+returned data and bootstrap CI bands (survival) are computed per group.
+Omit or leave missing to return an unstratified result.}
 
-\item{...}{extra arguments}
+\item{...}{Additional arguments controlling output for specific forest
+families:
+\describe{
+  \item{surv_type}{Character; one of \code{"surv"} (default),
+    \code{"chf"}, or \code{"mortality"} for survival forests.}
+  \item{conf.int}{Numeric coverage probability (e.g. \code{0.95}) to
+    request bootstrap pointwise confidence bands for survival forests.
+    Triggers wide-format output with \code{lower}, \code{upper},
+    \code{median}, and \code{mean} columns.}
+  \item{bs.sample}{Integer; number of bootstrap resamples when
+    \code{conf.int} is set. Defaults to the number of observations.}
+}}
 }
 \value{
-\code{gg_rfsrc} object
+A \code{gg_rfsrc} object (a classed \code{data.frame}) whose
+  structure depends on the forest family:
+  \describe{
+    \item{regression}{Columns \code{yhat} and the response name; optionally
+      a \code{group} column when \code{by} is supplied.}
+    \item{classification}{One column per class with predicted probabilities;
+      a \code{y} column with observed class labels; optionally \code{group}.}
+    \item{survival (no CI / grouping)}{Long-format with columns
+      \code{variable} (event time), \code{value} (survival probability),
+      \code{obs_id}, and \code{event}.}
+    \item{survival (with \code{conf.int} or \code{by})}{Wide-format with
+      pointwise bootstrap CI columns (\code{lower}, \code{upper},
+      \code{median}, \code{mean}) per time point; a \code{group} column
+      when \code{by} is supplied.}
+  }
+  The object carries class attributes for the forest family so that
+  \code{\link{plot.gg_rfsrc}} dispatches correctly.
 }
 \description{
 Extracts the predicted response values from the
@@ -26,11 +60,11 @@ Extracts the predicted response values from the
 the response using \code{\link{plot.gg_rfsrc}}.
 }
 \details{
-\code{surv_type} ("surv", "chf", "mortality", "hazard") for survival
-   forests
-
-   \code{oob} boolean, should we return the oob prediction , or the full
-forest prediction.
+For survival forests, use the \code{surv_type} argument
+  (\code{"surv"}, \code{"chf"}, or \code{"mortality"}) to select the
+  predicted quantity. Bootstrap confidence bands are requested by passing
+  \code{conf.int} (e.g. \code{conf.int = 0.95}); the number of resamples
+  is controlled by \code{bs.sample}.
 }
 \examples{
 ## ------------------------------------------------------------
@@ -137,6 +171,7 @@ plot(gg_dta)
 
 }
 \seealso{
-\code{\link{plot.gg_rfsrc}} \code{rfsrc} \code{plot.rfsrc}
-\code{\link{gg_survival}}
+\code{\link{plot.gg_rfsrc}},
+  \code{\link[randomForestSRC]{rfsrc}},
+  \code{\link{gg_survival}}
 }

@@ -1,4 +1,3 @@
-context("randomForest helper coverage")
 
 skip_if_not_installed("randomForest")
 
@@ -18,7 +17,7 @@ test_that(".rf_recover_model_frame rebuilds subsetted data", {
     keep.forest = TRUE
   )
   info <- ggRandomForests:::`.rf_recover_model_frame`(rf_subset)
-  expect_is(info, "list")
+  expect_type(info, "list")
   expect_true(all(c("Sepal.Length", "Sepal.Width") %in% names(info$model_frame)))
   expect_equal(info$response_name, "Species")
 })

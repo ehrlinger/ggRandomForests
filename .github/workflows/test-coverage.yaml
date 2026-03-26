@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      VDIFFR_RUN_TESTS: "false"
 
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +27,7 @@ jobs:
         with:
           extra-packages: any::covr, any::xml2
           needs: coverage
+          cache-version: 2
 
       - name: Test coverage
         run: |
@@ -37,15 +39,6 @@ jobs:
           print(cov)
           covr::to_cobertura(cov)
         shell: Rscript {0}
-
-      - uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          # Fail if error if not on PR, or if on PR and token is given
-          fail_ci_if_error: ${{ github.event_name != 'pull_request' || secrets.CODECOV_TOKEN }}
-          file: ./cobertura.xml
-          plugin: noop
-          disable_search: true
 
       - name: Show testthat output
         if: always()
@@ -60,8 +53,13 @@ jobs:
         with:
           name: coverage-test-failures
           path: ${{ runner.temp }}/package
-          
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          # Fail if error if not on PR, or if on PR and token is given
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' || secrets.CODECOV_TOKEN != '' }}
+          files: ./cobertura.xml
+          plugins: noop
+          disable_search: true

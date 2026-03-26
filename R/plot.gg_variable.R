@@ -26,15 +26,21 @@
 #' @param smooth include a smooth curve (boolean)
 #' @param ... arguments passed to the \code{ggplot2} functions.
 #'
-#' @return A single \code{ggplot} object, or list of \code{ggplot} objects
+#' @return A single \code{ggplot} object when \code{length(xvar) == 1} or
+#'   \code{panel = TRUE}. Otherwise a named list of \code{ggplot} objects, one
+#'   per variable in \code{xvar}.
+#'
+#' @seealso \code{\link{gg_variable}}, \code{\link{gg_partial}},
+#'   \code{\link[randomForestSRC]{plot.variable}}
 #'
 #' @references Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 #'
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews,
 #' 7(2):25-31.
 #'
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
-#' and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+#' Regression and Classification. R package version >= 3.4.0.
+#' \url{https://cran.r-project.org/package=randomForestSRC}
 #'
 #'
 #' @importFrom ggplot2 .data
@@ -110,8 +116,7 @@
 #' plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
 #'
 #' @export
-#' @export plot.gg_variable
-plot.gg_variable <- function(x,
+plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                              xvar,
                              time,
                              time_labels,
@@ -218,11 +223,11 @@ plot.gg_variable <- function(x,
 
       # Subset to response + requested predictors, then pivot to long form
       tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
-      gathercols <-
+      pivot_cols <-
         colnames(tmp_dta)[-which(colnames(tmp_dta) %in%
           c("time", "event", "yhat"))]
       gg_dta_mlt <-
-        tidyr::gather(tmp_dta, "variable", "value", tidyr::all_of(gathercols))
+        tidyr::pivot_longer(tmp_dta, tidyr::all_of(pivot_cols), names_to = "variable", values_to = "value")
 
       # Preserve user-supplied xvar ordering in the facet strips
       gg_dta_mlt$variable <-
@@ -309,23 +314,27 @@ plot.gg_variable <- function(x,
         # Include the observed class label column for colouring
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta) == "yvar"))
         tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
-        gathercols <-
+        pivot_cols <-
           colnames(tmp_dta)[-which(colnames(tmp_dta) %in% c("yvar", "yhat"))]
         gg_dta_mlt <-
-          tidyr::gather(
-            tmp_dta, "variable", "value",
-            tidyr::all_of(gathercols)
+          tidyr::pivot_longer(
+            tmp_dta,
+            tidyr::all_of(pivot_cols),
+            names_to = "variable",
+            values_to = "value"
           )
       } else {
         # Regression: keep yhat and the optional yvar reference column
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta) == "yvar"))
         tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
-        gathercols <-
+        pivot_cols <-
           colnames(tmp_dta)[-which(colnames(tmp_dta) == "yhat")]
         gg_dta_mlt <-
-          tidyr::gather(
-            tmp_dta, "variable", "value",
-            tidyr::all_of(gathercols)
+          tidyr::pivot_longer(
+            tmp_dta,
+            tidyr::all_of(pivot_cols),
+            names_to = "variable",
+            values_to = "value"
           )
       }
       # Preserve user-supplied xvar ordering in the facet strips
@@ -382,17 +391,8 @@ plot.gg_variable <- function(x,
       # Add point/smooth layers for non-classification forests
       if (family != "class") {
         if (points) {
-          gg_plt <- ggplot2::ggplot(
-            gg_dta_mlt,
-            ggplot2::aes(x = .data$value, y = .data$yhat)
-          ) +
+          gg_plt <- gg_plt +
             ggplot2::geom_point(...)
-        } else {
-          gg_plt <- ggplot2::ggplot(
-            gg_dta_mlt,
-            ggplot2::aes(x = .data$value, y = .data$yhat)
-          ) +
-            ggplot2::geom_smooth(...)
         }
         if (smooth) {
           gg_plt <- gg_plt +
@@ -412,13 +412,15 @@ plot.gg_variable <- function(x,
     # Pre-allocate a list; collapsed to a single object when lng == 1
     gg_plt <- vector("list", length = lng)
 
-    for (ind in 1:lng) {
+    for (ind in seq_len(lng)) {
       # Temporarily rename the target predictor column to "var" for aes()
       ch_indx <- which(colnames(gg_dta) == xvar[ind])
       h_name <- colnames(gg_dta)[ch_indx]
       colnames(gg_dta)[ch_indx] <- "var"
-      ccls <- class(gg_dta[, "var"])
-      ccls[which(ccls == "integer")] <- "numeric"
+      # Use only the primary class (class() can return multiple strings, e.g.
+      # c("POSIXct", "POSIXt")); a multi-element vector in if() triggers a warning.
+      ccls_var <- class(gg_dta[, "var"])[1L]
+      if (ccls_var == "integer") ccls_var <- "numeric"
 
       gg_plt[[ind]] <- ggplot2::ggplot(gg_dta)
 
@@ -427,7 +429,7 @@ plot.gg_variable <- function(x,
         gg_plt[[ind]] <- gg_plt[[ind]] +
           ggplot2::labs(x = h_name, y = "Survival")
 
-        if (ccls == "numeric") {
+        if (ccls_var == "numeric") {
           # Continuous predictor: scatter (and optional smooth)
           if (points) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
@@ -486,7 +488,7 @@ plot.gg_variable <- function(x,
 
         if (sum(colnames(gg_dta) == "outcome") == 0) {
           # Single-outcome (binary) classification
-          if (ccls == "numeric") {
+          if (ccls_var == "numeric") {
             if (points) {
               gg_plt[[ind]] <- gg_plt[[ind]] +
                 ggplot2::geom_point(
@@ -532,7 +534,7 @@ plot.gg_variable <- function(x,
           }
         } else {
           # Multi-class: facet by outcome class
-          if (ccls == "numeric") {
+          if (ccls_var == "numeric") {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_point(
                 ggplot2::aes(
@@ -571,7 +573,7 @@ plot.gg_variable <- function(x,
         # assume regression
         gg_plt[[ind]] <- gg_plt[[ind]] +
           ggplot2::labs(x = h_name, y = "Predicted")
-        if (ccls == "numeric") {
+        if (ccls_var == "numeric") {
           if (points) {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_point(ggplot2::aes(x = .data$var, y = .data$yhat), ...)

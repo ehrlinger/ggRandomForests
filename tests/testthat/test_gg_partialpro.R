@@ -1,5 +1,4 @@
 # Tests for gg_partialpro
-context("gg_partialpro tests")
 
 # Helper: create mock VarPro partialpro data
 # - Continuous: length(xvirtual) > cat_limit (10)

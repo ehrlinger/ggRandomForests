@@ -185,10 +185,14 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival, Regression
-and Classification (RF-SRC), R package version 1.4.
+Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+Regression and Classification. R package version >= 3.4.0.
+\url{https://cran.r-project.org/package=randomForestSRC}
 }
 \seealso{
-\code{\link{plot.gg_error}}, \code{\link[randomForestSRC]{rfsrc}},
-  \code{\link[randomForest]{randomForest}}
+\code{\link{plot.gg_error}}, \code{\link{gg_vimp}},
+  \code{\link{gg_variable}},
+  \code{\link[randomForestSRC]{rfsrc}},
+  \code{\link[randomForest]{randomForest}},
+  \code{\link[randomForestSRC]{plot.rfsrc}}
 }

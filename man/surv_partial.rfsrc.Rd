@@ -2,25 +2,42 @@
 % Please edit documentation in R/surv_partial.rfsrc.R
 \name{surv_partial.rfsrc}
 \alias{surv_partial.rfsrc}
-\title{Calculate survival curve partial plot.}
+\title{Survival partial dependence data for one or more predictors}
 \usage{
 surv_partial.rfsrc(rforest, var_list, npts = 25, partial.type = "surv")
 }
 \arguments{
-\item{rforest}{the randomForestSrc object}
+\item{rforest}{A fitted \code{\link[randomForestSRC]{rfsrc}} survival or
+competing-risk forest object.}
 
-\item{var_list}{a list of variables of interest. These variables should be a
-subset of rforest$xvar.names}
+\item{var_list}{Character vector of predictor names for which partial
+dependence should be computed. Each must appear in
+\code{rforest$xvar.names}.}
 
-\item{npts}{the number of points to segment the xvar of interest}
+\item{npts}{Integer; the number of predictor grid points to evaluate
+(default 25). Evenly-spaced unique values are sampled from each predictor.}
 
-\item{partial.type}{the return prediction type.
-For survival forests: type c("surv", "mort", "chf")
-For competing risk forests: type c("years.lost", "cif", "chf")
-see \code{randomForestSRC::partial.rfsrc} or more information}
+\item{partial.type}{The prediction type to return. For survival forests one
+of \code{"surv"} (default), \code{"mort"}, or \code{"chf"}. For competing
+risk forests one of \code{"years.lost"}, \code{"cif"}, or \code{"chf"}.
+See \code{\link[randomForestSRC]{partial.rfsrc}} for full details.}
+}
+\value{
+A named list with one element per variable in \code{var_list}. Each
+  element is itself a list with:
+  \describe{
+    \item{name}{The predictor variable name (character).}
+    \item{dta}{The raw output of
+      \code{\link[randomForestSRC]{get.partial.plot.data}}, a list containing
+      at minimum \code{x} (predictor values) and \code{yhat} (partial
+      predictions), and for survival/competing risk, \code{partial.time}.}
+  }
 }
 \description{
-Calculate survival curve partial plot.
+Computes partial dependence curves for a survival or competing-risk
+\code{\link[randomForestSRC]{rfsrc}} forest by calling
+\code{\link[randomForestSRC]{partial.rfsrc}} at \code{npts} evenly-spaced
+unique values of each predictor across all stored event times.
 }
 \examples{
 ## ------------------------------------------------------------
@@ -105,4 +122,9 @@ matplot(pdta1$partial.time, t(pdta1$yhat), type = "l", lty = 1,
 matplot(pdta2$partial.time, t(pdta2$yhat), type = "l", lty = 1,
         xlab = "time", ylab = "age adjusted cif for death")
 
+}
+\seealso{
+\code{\link{gg_partial_rfsrc}},
+  \code{\link[randomForestSRC]{partial.rfsrc}},
+  \code{\link[randomForestSRC]{get.partial.plot.data}}
 }

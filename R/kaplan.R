@@ -56,7 +56,7 @@ kaplan <- function(interval,
                    data,
                    by = NULL, ...) {
   # Build a Surv object from the named columns in the data frame.
-  srv <- survival::Surv(time = data[[interval]], event = data[[censor]])
+  srv <- survival::Surv(time = data[[interval]], event = data[[censor]]) # nolint: object_usage_linter
 
   # Fit the Kaplan-Meier estimator; stratify on `by` when provided.
   if (is.null(by)) {
@@ -85,21 +85,7 @@ kaplan <- function(interval,
   )
 
   # When stratifying, stitch a "groups" label column onto the table.
-  # Stratum boundaries are detected by finding where the time column resets
-  # (survfit concatenates strata end-to-end in ascending time order).
-  if (!is.null(by)) {
-    tm_splits <-
-      which(c(FALSE, sapply(2:nrow(tbl), function(ind) {
-        tbl$time[ind] < tbl$time[ind - 1]
-      })))
-
-    lbls <- levels(data[[by]])
-    tbl$groups <- lbls[1]
-
-    for (ind in 2:(length(tm_splits) + 1)) {
-      tbl$groups[tm_splits[ind - 1]:nrow(tbl)] <- lbls[ind]
-    }
-  }
+  if (!is.null(by)) tbl <- .label_strata(tbl, data, by) # nolint: object_usage_linter
 
   # Keep only rows where at least one event occurred — censoring-only rows
   # do not contribute new KM estimates.
@@ -118,11 +104,12 @@ kaplan <- function(interval,
   mid_int <- (gg_dta$time + lag_t) / 2
   lag_l <- 0
 
-  # Cumulative expected life in each interval (trapezoidal-rule approximation).
+  # Cumulative expected life in each interval (trapezoidal rule):
+  # L(t_i) = L(t_{i-1}) + (S(t_{i-1}) + S(t_i)) / 2 * Δt_i
   life <- vector("numeric", length = dim(gg_dta)[1])
   for (ind in seq_len(dim(gg_dta)[1])) {
     life[ind] <-
-      lag_l + delta_t[ind] * (3 * gg_dta[ind, "surv"] - lag_s[ind]) / 2
+      lag_l + (lag_s[ind] + gg_dta[ind, "surv"]) / 2 * delta_t[ind]
     lag_l <- life[ind]
   }
   prp_life <- life / gg_dta$time

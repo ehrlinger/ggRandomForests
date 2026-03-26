@@ -32,8 +32,9 @@
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for
 #' R, Rnews, 7(2):25-31.
 #'
-#' Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
-#' Regression and Classification (RF-SRC), R package version 1.4.
+#' Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+#' Regression and Classification. R package version >= 3.4.0.
+#' \url{https://cran.r-project.org/package=randomForestSRC}
 #'
 #' @examples
 #' ## ------------------------------------------------------------
@@ -54,7 +55,6 @@
 #'
 #'
 #' @export
-#' @export plot.gg_vimp
 plot.gg_vimp <- function(x, relative, lbls, ...) {
   gg_dta <- x
 
@@ -63,8 +63,8 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
     gg_dta <- gg_vimp(gg_dta, ...)
   }
 
-  # Capture extra args by name so we can inspect nvar without consuming it
-  arg_set <- as.list(substitute(list(...)))[-1L]
+  # Capture extra args so we can inspect nvar.
+  arg_set <- list(...)
 
   # Optionally restrict to the top-nvar most important variables (gg_vimp
   # already sorts by descending VIMP, so we just trim the tail).
@@ -73,7 +73,7 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
     if (is.numeric(arg_set$nvar) && arg_set$nvar > 1) {
       if (arg_set$nvar < nrow(gg_dta)) {
         nvar <- arg_set$nvar
-        gg_dta <- gg_dta[1:nvar, ]
+        gg_dta <- gg_dta[seq_len(nvar), ]
       }
     }
   }
@@ -94,10 +94,10 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
     gg_plt <- gg_plt +
       ggplot2::geom_bar(
         ggplot2::aes(
-          y = msr,
-          x = "vars",
-          fill = "positive",
-          color = "positive"
+          y = .data[[msr]],
+          x = .data$vars,
+          fill = .data$positive,
+          color = .data$positive
         ),
         stat = "identity",
         width = .5,
@@ -107,7 +107,7 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
     # redundant fill legend.
     gg_plt <- gg_plt +
       ggplot2::geom_bar(
-        ggplot2::aes(y = msr, x = "vars", color = "positive"),
+        ggplot2::aes(y = .data[[msr]], x = .data$vars, color = .data$positive),
         stat = "identity",
         width = .5,
       )

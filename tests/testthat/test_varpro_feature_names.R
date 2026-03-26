@@ -1,5 +1,4 @@
 # Tests for varpro_feature_names
-context("varpro_feature_names tests")
 
 test_that("varpro_feature_names returns exact matches unchanged", {
   dataset <- data.frame(age = 1:5, sex = 1:5, weight = 1:5)

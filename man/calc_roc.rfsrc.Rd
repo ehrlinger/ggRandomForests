@@ -9,20 +9,30 @@
 \method{calc_roc}{rfsrc}(object, dta, which_outcome = "all", oob = TRUE, ...)
 }
 \arguments{
-\item{object}{\code{\link[randomForestSRC]{rfsrc}} or
-\code{\link[randomForestSRC]{predict.rfsrc}} object
-containing predicted response}
+\item{object}{A fitted \code{\link[randomForestSRC]{rfsrc}},
+\code{\link[randomForestSRC]{predict.rfsrc}}, or
+\code{\link[randomForest]{randomForest}} classification object containing
+predicted class probabilities.}
 
-\item{dta}{True response variable}
+\item{dta}{A factor (or coercible to factor) of the true observed class
+labels, one per observation. Typically \code{object$yvar} for rfsrc or
+\code{object$y} for randomForest.}
 
-\item{which_outcome}{If defined, only show ROC for this response.}
+\item{which_outcome}{Integer index of the class for which the ROC curve is
+computed (e.g. \code{1} for the first class, \code{2} for the second).
+Use \code{"all"} to request all classes (currently falls back to class 1
+with a warning).}
 
-\item{oob}{Use OOB estimates, the normal validation method (TRUE)}
+\item{oob}{Logical; if \code{TRUE} (default for rfsrc) use OOB predicted
+probabilities. Forced to \code{FALSE} for \code{randomForest} objects.}
 
-\item{...}{extra arguments passed to helper functions}
+\item{...}{Extra arguments passed to helper functions (currently unused).}
 }
 \value{
-A \code{gg_roc} object
+A \code{gg_roc} \code{data.frame} with columns \code{sens}
+  (sensitivity), \code{spec} (specificity), and \code{pct} (the probability
+  threshold), with one row per unique prediction value. Suitable for passing
+  to \code{\link{calc_auc}} or \code{\link{plot.gg_roc}}.
 }
 \description{
 Receiver Operator Characteristic calculator

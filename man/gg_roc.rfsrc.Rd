@@ -4,24 +4,42 @@
 \alias{gg_roc.rfsrc}
 \alias{gg_roc}
 \alias{gg_roc.randomForest}
-\title{ROC (Receiver operator curve) data from a classification random forest.}
+\title{ROC (Receiver Operating Characteristic) curve data from a classification forest.}
 \usage{
-\method{gg_roc}{rfsrc}(object, which_outcome, oob, ...)
+\method{gg_roc}{rfsrc}(object, which_outcome, oob = TRUE, ...)
 }
 \arguments{
-\item{object}{an \code{\link[randomForestSRC]{rfsrc}} classification object}
+\item{object}{A classification \code{\link[randomForestSRC]{rfsrc}} or
+\code{\link[randomForest]{randomForest}} object. Only forests with
+\code{family == "class"} (rfsrc) or \code{type == "classification"}
+(randomForest) are supported.}
 
-\item{which_outcome}{select the classification outcome of interest.}
+\item{which_outcome}{Integer index or character name of the class for which
+the ROC curve is computed. For binary forests this is typically \code{1}
+or \code{2}; for multi-class forests any valid class index. Use
+\code{which_outcome = 0} to obtain the overall (averaged) ROC.}
 
-\item{oob}{use oob estimates (default TRUE)}
+\item{oob}{Logical; if \code{TRUE} (default) use out-of-bag predicted
+probabilities for the curve. Set to \code{FALSE} to use full in-bag
+predictions.}
 
-\item{...}{extra arguments (not used)}
+\item{...}{Extra arguments (currently unused).}
 }
 \value{
-\code{gg_roc} \code{data.frame} for plotting ROC curves.
+A \code{gg_roc} \code{data.frame} with one row per unique prediction
+  threshold and columns:
+  \describe{
+    \item{sens}{Sensitivity (true positive rate) at each threshold.}
+    \item{spec}{Specificity (true negative rate) at each threshold.}
+    \item{yvar}{The observed class label for each observation.}
+  }
+  Pass to \code{\link{calc_auc}} for the area under the curve.
 }
 \description{
-The sensitivity and specificity of a randomForest classification object.
+Computes sensitivity (true positive rate) and specificity (1 - false positive
+rate) across all prediction thresholds for one class of a classification
+\code{\link[randomForestSRC]{rfsrc}} or
+\code{\link[randomForest]{randomForest}} object.
 }
 \examples{
 ## ------------------------------------------------------------
@@ -59,6 +77,8 @@ plot(gg_dta)
 
 }
 \seealso{
-\code{\link{plot.gg_roc}} \code{\link[randomForestSRC]{rfsrc}}
-\code{\link[randomForest]{randomForest}}
+\code{\link{plot.gg_roc}}, \code{\link{calc_roc}},
+  \code{\link{calc_auc}},
+  \code{\link[randomForestSRC]{rfsrc}},
+  \code{\link[randomForest]{randomForest}}
 }

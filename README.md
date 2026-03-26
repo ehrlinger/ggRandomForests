@@ -1,7 +1,6 @@
 
+# ggRandomForests: Visually Exploring Random Forests
 
-ggRandomForests: Visually Exploring Random Forests
-========================================================
 <!-- badges: start -->
 [![cranlogs](https://cranlogs.r-pkg.org:443/badges/ggRandomForests)](https://cranlogs.r-pkg.org:443/badges/ggRandomForests)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/ggRandomForests)](https://cran.r-project.org/package=ggRandomForests)
@@ -15,45 +14,100 @@ ggRandomForests: Visually Exploring Random Forests
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11526.svg)](https://doi.org/10.5281/zenodo.11526)
 <!-- badges: end -->
 
-[ggRandomForests](https://cran.r-project.org/package=ggRandomForests)  will help uncover variable associations in the random forests models. The package is designed for use with the [randomForest](https://cran.r-project.org/package=randomForest) package (A. Liaw and M. Wiener 2002)  or the [randomForestSRC](https://cran.r-project.org/package=randomForestSRC) package (Ishwaran et.al. 2014, 2008, 2007) for survival, regression and classification random forests and uses the [ggplot2](https://cran.r-project.org/package=ggplot2) package (Wickham 2009) for plotting diagnostic and variable association results. [ggRandomForests](https://cran.r-project.org/package=ggRandomForests) is  structured to extract data objects from [randomForestSRC](https://cran.r-project.org/package=randomForestSRC) or [randomForest](https://cran.r-project.org/package=randomForest) objects and provides S3 functions for printing and plotting these objects.
- 
-The [randomForestSRC](https://cran.r-project.org/package=randomForestSRC) package provides a unified treatment of Breiman's (2001) random forests for a variety of data settings. Regression and classification forests are grown when the response is numeric or categorical (factor) while survival and competing risk forests (Ishwaran et al. 2008, 2012) are grown for right-censored survival data. Recently, support for the [randomForest](https://cran.r-project.org/package=randomForest) package (A. Liaw and M. Wiener 2002) for regression and classification forests has also been added.
+`ggRandomForests` provides `ggplot2`-based diagnostic and exploration plots for random forests fit with
+[randomForestSRC](https://cran.r-project.org/package=randomForestSRC) (>= 3.4.0) or
+[randomForest](https://cran.r-project.org/package=randomForest).
+It separates data extraction from plotting so the intermediate tidy objects can be inspected, saved, or used
+for custom analyses.
 
-Many of the figures created by the `ggRandomForests` package are also available directly from within the `randomForestSRC` or `randomForest` package. However, `ggRandomForests` offers the following advantages:
+## Installation
 
- * Separation of data and figures: `ggRandomForests` contains functions that operate on either the forest object directly, or on the output from `randomForestSRC` and `randomForest` post processing functions (i.e. `plot.variable`, `var.select`,  `find.interaction`) to generate intermediate `ggRandomForests` data objects. S3 functions are provide to further process these objects and plot results using the `ggplot2` graphics package. Alternatively, users can use these data objects for additional custom plotting or analysis operations.
+```r
+# CRAN (stable)
+install.packages("ggRandomForests")
 
- * Each data object/figure is a single, self contained object. This allows simple modification and manipulation of the data or `ggplot2` objects to meet users specific needs and requirements. 
+# Development version from GitHub
+# install.packages("remotes")
+remotes::install_github("ehrlinger/ggRandomForests")
+```
 
- * The use of `ggplot2` for plotting. We chose to use the `ggplot2` package for our figures to allow users flexibility in modifying the figures to their liking. Each S3 plot function returns either a single `ggplot2` object, or a `list` of `ggplot2` objects, allowing users to use additional `ggplot2` functions or themes to modify and customize the figures to their liking. 
+## Quick start
 
-Check out the ["Exploring Random Forests with ggRandomForests" vignette](vignettes/ggRandomForests.qmd) for a walk-through of these objects.
+```r
+library(randomForestSRC)
+library(ggRandomForests)
 
-The package has recently been extended for Breiman and Cutler's Random Forests for Classification and
-Regression package [randomForest](https://cran.r-project.org/package=randomForest) where possible. Though methods have been provided for all `gg_*` functions, the unsupported functions will return an error message indicating where support is still lacking.
+# 1. Fit a forest (regression)
+rf <- rfsrc(medv ~ ., data = MASS::Boston, importance = TRUE)
 
-## Recent improvements
+# 2. Check convergence: did the forest grow enough trees?
+plot(gg_error(rf))
 
-- `gg_error()` now computes optional in-bag training error trajectories for `randomForest` fits when `training = TRUE`, making it easy to compare OOB and training curves in a single data object.
-- `gg_variable()` rebuilds the original training data from the `randomForest` call, so marginal dependence plots work even when models are trained inside helper functions or use `subset()` calls.
-- `quantile_pts()` is fully quantile based, providing balanced conditioning intervals that can be dropped directly into `cut()` for coplots.
-- `gg_vimp()` handles forests that were trained without importance metrics by issuing a warning and returning `NA` placeholders, ensuring downstream plotting code continues to run.
+# 3. Rank predictors by importance
+plot(gg_vimp(rf))
+
+# 4. Marginal dependence for top variables
+gg_v <- gg_variable(rf)
+plot(gg_v, xvar = "lstat")
+plot(gg_v, xvar = rf$xvar.names, panel = TRUE, se = FALSE)
+
+# 5. Partial dependence for a single predictor
+pv <- plot.variable(rf, xvar.names = "lstat", partial = TRUE, show.plots = FALSE)
+pd <- gg_partial(pv)
+plot(pd)
+```
+
+For survival forests, see the package vignette:
+```r
+vignette("ggRandomForests")
+```
+
+## Function reference
+
+| Function | Input | What you get |
+|---|---|---|
+| `gg_error()` | `rfsrc` / `randomForest` | OOB error vs. number of trees |
+| `gg_vimp()` | `rfsrc` / `randomForest` | Variable importance ranking |
+| `gg_rfsrc()` | `rfsrc` / `randomForest` | Predicted vs. observed values |
+| `gg_variable()` | `rfsrc` / `randomForest` | Marginal dependence data frame |
+| `gg_partial()` | `plot.variable` output | Partial dependence (continuous + categorical) |
+| `gg_partial_rfsrc()` | `rfsrc` model | Partial dependence via `partial.rfsrc` |
+| `gg_survival()` | `rfsrc` survival forest | Kaplan–Meier / Nelson–Aalen estimates |
+| `gg_roc()` | `rfsrc` / `randomForest` (class) | ROC curve data |
+
+Each `gg_*` function has a corresponding `plot()` S3 method that returns a `ggplot2` object, making it easy
+to apply additional `ggplot2` layers or themes.
+
+## Why ggRandomForests?
+
+- **Separation of data and figures.** `gg_*` functions extract tidy data objects from the forest.
+  `plot()` methods turn those into `ggplot2` figures. You can inspect, save, or transform the data
+  before plotting.
+- **Self-contained objects.** Each data object holds everything needed for its plot, so figures are
+  reproducible without the original forest in memory.
+- **Full `ggplot2` composability.** Every `plot()` method returns a `ggplot` object that accepts
+  additional layers, scales, and themes.
+
+## Recent changes
+
+See [NEWS.md](NEWS.md) for the full changelog. Highlights since v2.4.0:
+
+- **v2.6.1** Fix factor-level assignment in `gg_partial` for categorical variables.
+- **v2.6.0** New plotting functions exported; test coverage raised to 83%; removed internal dependency on `hvtiRutilities`.
+- **v2.5.0** New `gg_partial_rfsrc()` computes partial dependence directly from an `rfsrc` model without a separate `plot.variable` call; supports a grouping variable via `xvar2.name`.
 
 ## References
 
-Breiman, L. (2001). Random forests, Machine Learning, 45:5-32.
+Breiman, L. (2001). Random forests, *Machine Learning*, 45:5–32.
 
-Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival,
-Regression and Classification (RF-SRC), R package version 1.5.5.
+Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival, Regression and
+Classification. R package version >= 3.4.0. <https://cran.r-project.org/package=randomForestSRC>
 
-Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R. R News
-7(2), 25--31.
+Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R. *R News* 7(2), 25–31.
 
-Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S. (2008). Random
-survival forests. Ann. Appl. Statist. 2(3), 841--860.
+Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S. (2008). Random survival forests.
+*Ann. Appl. Statist.* 2(3), 841–860.
 
-A. Liaw and M. Wiener (2002). Classification and Regression by randomForest. R News 2(3), 18--22.
+Liaw A. and Wiener M. (2002). Classification and Regression by randomForest. *R News* 2(3), 18–22.
 
-Wickham, H. ggplot2: elegant graphics for data analysis. Springer New York, 2009.
-
-
+Wickham H. (2009). *ggplot2: Elegant Graphics for Data Analysis*. Springer New York.

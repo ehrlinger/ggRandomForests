@@ -18,15 +18,21 @@
 #' nonparametric survival estimates using either \code{\link{nelson}}-Aalen
 #' or \code{\link{kaplan}}-Meier estimates.
 #'
-#' @param data name of the training data.frame
-#' @param interval name of the interval variable in the training dataset.
-#' @param censor name of the censoring variable in the training dataset.
-#' @param by stratifying variable in the training dataset, defaults to NULL
-#' @param type one of ("kaplan","nelson"), defaults to Kaplan-Meier
-#' @param ... extra arguments passed to Kaplan or Nelson functions.
+#' @param data A \code{data.frame} containing the survival data.
+#' @param interval Character; name of the time-to-event column in \code{data}.
+#' @param censor Character; name of the event-indicator column in \code{data}
+#'   (1 = event occurred, 0 = censored).
+#' @param by Optional character; name of a grouping column in \code{data} for
+#'   stratified estimates. Defaults to \code{NULL} (unstratified).
+#' @param type One of \code{"kaplan"} (Kaplan-Meier, default) or
+#'   \code{"nelson"} (Nelson-Aalen cumulative hazard).
+#' @param ... Additional arguments passed to \code{\link{kaplan}} or
+#'   \code{\link{nelson}} (e.g. \code{conf.int} to change the CI width).
 #'
-#' @return A \code{gg_survival} object created using the non-parametric
-#' Kaplan-Meier or Nelson-Aalen estimators.
+#' @return A \code{gg_survival} \code{data.frame} with columns \code{time},
+#'   \code{surv} (or \code{cum_haz} for Nelson-Aalen), \code{lower},
+#'   \code{upper} (confidence limits), and \code{n.risk}. A \code{strata}
+#'   column is added when \code{by} is supplied.
 #'
 #' @seealso \code{\link{kaplan}} \code{\link{nelson}}
 #' @seealso \code{\link{plot.gg_survival}}
@@ -61,7 +67,7 @@
 #' )
 #'
 #' plot(gg_dta, error = "lines")
-#' 
+#'
 #' @export
 gg_survival <- function(interval = NULL,
                         censor = NULL,
@@ -74,7 +80,7 @@ gg_survival <- function(interval = NULL,
 
   # Delegate entirely to the selected estimator helper.  Both kaplan() and
   # nelson() return a gg_survival object that plot.gg_survival can render.
-  gg_dta <- switch(type,
+  gg_dta <- switch(type, # nolint: object_usage_linter
     kaplan = kaplan(
       interval = interval,
       censor = censor,

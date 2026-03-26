@@ -1,0 +1,16 @@
+linters: linters_with_defaults(
+    line_length_linter(120),
+    object_name_linter(styles = c("snake_case", "dotted.case", "camelCase", "symbols")),
+    cyclocomp_linter(complexity_limit = 20),
+    T_and_F_symbol_linter = NULL,
+    return_linter = NULL,
+    indentation_linter = NULL,
+    object_length_linter = NULL,
+    object_usage_linter = NULL,
+    commented_code_linter = NULL
+  )
+exclusions: list(
+    "R/ggrandomforests.news.R",
+    "R/zzz.R"
+  )
+encoding: "UTF-8"

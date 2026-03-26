@@ -11,6 +11,16 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
+# Internal helper: normalise the which_outcome argument.
+# "all" is not yet fully supported; fall back to class 1 with a warning.
+.validate_which_outcome <- function(which_outcome) {
+  if (identical(which_outcome, "all")) {
+    warning("Must specify which_outcome for now.")
+    return(1L)
+  }
+  which_outcome
+}
+
 #' Receiver Operator Characteristic calculator
 #'
 #' @details For a randomForestSRC prediction and the actual
@@ -20,15 +30,25 @@
 #' This is a helper function for the \code{\link{gg_roc}} functions, and
 #' not intended for use by the end user.
 #'
-#' @param object \code{\link[randomForestSRC]{rfsrc}} or
-#' \code{\link[randomForestSRC]{predict.rfsrc}} object
-#' containing predicted response
-#' @param dta True response variable
-#' @param which_outcome If defined, only show ROC for this response.
-#' @param oob Use OOB estimates, the normal validation method (TRUE)
-#' @param ... extra arguments passed to helper functions
+#' @param object A fitted \code{\link[randomForestSRC]{rfsrc}},
+#'   \code{\link[randomForestSRC]{predict.rfsrc}}, or
+#'   \code{\link[randomForest]{randomForest}} classification object containing
+#'   predicted class probabilities.
+#' @param dta A factor (or coercible to factor) of the true observed class
+#'   labels, one per observation. Typically \code{object$yvar} for rfsrc or
+#'   \code{object$y} for randomForest.
+#' @param which_outcome Integer index of the class for which the ROC curve is
+#'   computed (e.g. \code{1} for the first class, \code{2} for the second).
+#'   Use \code{"all"} to request all classes (currently falls back to class 1
+#'   with a warning).
+#' @param oob Logical; if \code{TRUE} (default for rfsrc) use OOB predicted
+#'   probabilities. Forced to \code{FALSE} for \code{randomForest} objects.
+#' @param ... Extra arguments passed to helper functions (currently unused).
 #'
-#' @return A \code{gg_roc} object
+#' @return A \code{gg_roc} \code{data.frame} with columns \code{sens}
+#'   (sensitivity), \code{spec} (specificity), and \code{pct} (the probability
+#'   threshold), with one row per unique prediction value. Suitable for passing
+#'   to \code{\link{calc_auc}} or \code{\link{plot.gg_roc}}.
 #'
 #' @aliases calc_roc.rfsrc calc_roc.randomForest calc_roc
 #'
@@ -71,19 +91,8 @@ calc_roc.rfsrc <-
       dta <- factor(dta)
     }
 
-    # Re-read oob from ... so callers can override the default
-    arg_list <- as.list(substitute(list(...)))
-
-    oob <- FALSE
-    if (!is.null(arg_list$oob) && is.logical(arg_list$oob)) {
-      oob <- as.logical(arg_list$oob)
-    }
-
     # "all" outcomes not yet supported; fall back to the first class
-    if (which_outcome == "all") {
-      warning("Must specify which_outcome for now.")
-      which_outcome <- 1
-    }
+    which_outcome <- .validate_which_outcome(which_outcome)
     # Build (binary indicator, full-forest prediction, OOB prediction) triplet
     dta_roc <-
       data.frame(cbind(
@@ -150,10 +159,7 @@ calc_roc.randomForest <-
            ...) {
     prd <- predict(object, type = "prob")
 
-    if (which_outcome == "all") {
-      warning("Must specify which_outcomefor now.")
-      which_outcome <- 1
-    }
+    which_outcome <- .validate_which_outcome(which_outcome)
     dta_roc <-
       data.frame(cbind(res = (dta == levels(dta)[which_outcome]), prd = prd))
 
@@ -228,85 +234,18 @@ calc_roc.randomForest <-
 #' @aliases calc_auc calc_auc.gg_roc
 #' @export
 calc_auc <- function(x) {
-  ## Trapezoidal rule:  AUC = Σ dx/2 * (f(x_{i+1}) + f(x_i))
+  ## Trapezoidal rule:  AUC = Σ (f(x_i) + f(x_{i+1})) / 2 * |Δx|
   ## Here f(x) is sensitivity (TPR) and x is 1 − specificity (FPR).
-  ## The shift() helper provides the lead value x_{i+1}.
+  ## Sort so that specificity decreases (FPR increases) left-to-right,
+  ## then each step moves one FPR increment to the right.
 
-  # Sort in decreasing specificity so FPR increases left-to-right along the curve
+  # Sort in decreasing specificity so FPR = 1-spec increases monotonically
   x <- x[order(x$spec, decreasing = TRUE), ]
 
-  # Trapezoidal approximation: average of consecutive sensitivity values
-  # multiplied by the FPR increment (change in 1 - spec)
-  auc <- (3 * shift(x$sens) - x$sens) / 2 * (x$spec - shift(x$spec))
+  # Δ(FPR) = -(Δspec)  — spec decreases, so (spec[i] - spec[i+1]) > 0
+  # Average height of trapezoid = (sens[i] + sens[i+1]) / 2
+  auc <- (x$sens + shift(x$sens)) / 2 * (x$spec - shift(x$spec)) # nolint: object_usage_linter
   sum(auc, na.rm = TRUE)
 }
 
-calc_auc.gg_roc <- calc_auc
-
-#' lead function to shift by one (or more).
-#'
-#' @param x a vector of values
-#' @param shift_by an integer of length 1, giving the number of positions
-#' to lead (positive) or lag (negative) by
-#'
-#' @details Lead and lag are useful for comparing values offset by a constant
-#' (e.g. the previous or next value)
-#'
-#' Taken from:
-#' http://ctszkin.com/2012/03/11/generating-a-laglead-variables/
-#'
-#' This function allows me to remove the dplyr::lead depends. Still suggest for
-#' vignettes though.
-#'
-#' @examples
-#' d <- data.frame(x = 1:15)
-#' # generate lead variable
-#' d$df_lead2 <- ggRandomForests:::shift(d$x, 2)
-#' # generate lag variable
-#' d$df_lag2 <- ggRandomForests:::shift(d$x, -2)
-#' #
-# > d
-# x df_lead2 df_lag2
-# 1   1        3      NA
-# 2   2        4      NA
-# 3   3        5       1
-# 4   4        6       2
-# 5   5        7       3
-# 6   6        8       4
-# 7   7        9       5
-# 8   8       10       6
-# 9   9       NA       7
-# 10 10       NA       8
-#' #
-# # shift_by is vectorized
-# d$df_lead2 shift(d$x,-2:2)
-# [,1] [,2] [,3] [,4] [,5]
-# [1,]   NA   NA    1    2    3
-# [2,]   NA    1    2    3    4
-# [3,]    1    2    3    4    5
-# [4,]    2    3    4    5    6
-# [5,]    3    4    5    6    7
-# [6,]    4    5    6    7    8
-# [7,]    5    6    7    8    9
-# [8,]    6    7    8    9   10
-# [9,]    7    8    9   10   NA
-# [10,]    8    9   10   NA   NA
-shift <- function(x, shift_by = 1) {
-  stopifnot(is.numeric(shift_by))
-  stopifnot(is.numeric(x))
-
-  if (length(shift_by) > 1) {
-    return(sapply(shift_by, shift, x = x))
-  }
-
-  out <- NULL
-  abs_shift_by <- abs(shift_by)
-  if (shift_by > 0) {
-    out <- c(tail(x, -abs_shift_by), rep(NA, abs_shift_by))
-  } else if (shift_by < 0) {
-    out <- c(rep(NA, abs_shift_by), head(x, -abs_shift_by))
-  } else {
-    out <- x
-  }
-  out
-}
+calc_auc.gg_roc <- calc_auc # nolint: object_name_linter
