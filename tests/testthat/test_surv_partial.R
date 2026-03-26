@@ -1,7 +1,7 @@
 # Tests for surv_partial.rfsrc
 
 # Survival formula helper (rfsrc requires Surv to be in local scope)
-Surv <- survival::Surv
+Surv <- survival::Surv # nolint: object_name_linter
 
 test_that("surv_partial.rfsrc returns list with one element per variable", {
   skip_if_not_installed("randomForestSRC")

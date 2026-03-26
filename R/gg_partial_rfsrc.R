@@ -55,12 +55,12 @@ gg_partial_rfsrc <- function(rf_model,
                              cat_limit = 10) {
   # Check the rfsrc type
   # rf_model$family
-  
+
   # we supply new data, make sure we use that and that it is a dataframe...
   if (is.null(newx)) {
     newx = rf_model$xvar
   }
-  
+
   if (sum(colnames(newx) %in% rf_model$xvar.names) != ncol(newx)) {
     stop("newx must be a dataframe with the same columns used to train the rfsrc object")
   }
@@ -70,7 +70,7 @@ gg_partial_rfsrc <- function(rf_model,
       stop("xvar.names contains column names not found in the rfsrc object")
     }
   }
-  
+
   if (is.null(xvar2.name)) {
     pdta <- lapply(xvar.names, function(xname) {
       xval <- unlist(newx |>
@@ -90,7 +90,7 @@ gg_partial_rfsrc <- function(rf_model,
       }
       return(out_dta)
     })
-  } else{
+  } else {
     xv2 <- unique(unlist(newx |>
                            dplyr::select(dplyr::all_of(xvar2.name))))
     pdta <- lapply(xv2, function(x2val) {
@@ -118,12 +118,14 @@ gg_partial_rfsrc <- function(rf_model,
       p1dta$grp <- x2val
       return(p1dta)
     })
-    
   }
   pdta <- do.call("rbind", pdta)
-  continuous <- pdta |> dplyr::filter(.data$type == "continuous") |>
-    mutate(x = as.numeric(.data$x)) |> dplyr::select(-"type")
-  categorical <- pdta |> dplyr::filter(.data$type == "categorical") |>
-    dplyr::select(-"type")
-  return(list(continuous = continuous, categorical = categorical))
+  # Split into continuous / categorical and tidy up the type column
+  cont_idx <- pdta$type == "continuous"
+  continuous <- pdta[cont_idx, , drop = FALSE]
+  continuous$x <- as.numeric(continuous$x)
+  continuous$type <- NULL
+  categorical <- pdta[!cont_idx, , drop = FALSE]
+  categorical$type <- NULL
+  list(continuous = continuous, categorical = categorical)
 }

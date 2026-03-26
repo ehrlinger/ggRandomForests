@@ -31,3 +31,4 @@ d$df_lead2 <- ggRandomForests:::shift(d$x, 2)
 # generate lag variable
 d$df_lag2 <- ggRandomForests:::shift(d$x, -2)
 }
+\keyword{internal}

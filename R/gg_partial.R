@@ -105,7 +105,7 @@ gg_partial <- function(part_dta,
   ## Optionally attach a model label (useful when overlaying multiple forests)
   if (!is.null(model)) {
     continuous$model <- model
-    if(!is.null(categorical) && nrow(categorical) > 0) {
+    if (!is.null(categorical) && nrow(categorical) > 0) {
       categorical$model <- model
     }
   }

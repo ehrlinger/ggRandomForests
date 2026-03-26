@@ -4,12 +4,17 @@
 \alias{plot.gg_rfsrc}
 \title{Predicted response plot from a \code{\link{gg_rfsrc}} object.}
 \usage{
-\method{plot}{gg_rfsrc}(x, ...)
+\method{plot}{gg_rfsrc}(x, notch = TRUE, ...)
 }
 \arguments{
 \item{x}{A \code{\link{gg_rfsrc}} object, or a raw
 \code{\link[randomForestSRC]{rfsrc}} object (which will be passed through
 \code{\link{gg_rfsrc}} automatically before plotting).}
+
+\item{notch}{Logical; whether to draw notched boxplots for regression and
+classification forests (default \code{TRUE}).  Set \code{notch = FALSE}
+to suppress notches when sample sizes are too small for reliable
+confidence intervals on the median.}
 
 \item{...}{Additional arguments forwarded to the underlying
 \code{ggplot2} geometry calls.  Commonly useful arguments include:

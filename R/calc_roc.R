@@ -244,9 +244,8 @@ calc_auc <- function(x) {
 
   # Δ(FPR) = -(Δspec)  — spec decreases, so (spec[i] - spec[i+1]) > 0
   # Average height of trapezoid = (sens[i] + sens[i+1]) / 2
-  auc <- (x$sens + shift(x$sens)) / 2 * (x$spec - shift(x$spec))
+  auc <- (x$sens + shift(x$sens)) / 2 * (x$spec - shift(x$spec)) # nolint: object_usage_linter
   sum(auc, na.rm = TRUE)
 }
 
-calc_auc.gg_roc <- calc_auc
-
+calc_auc.gg_roc <- calc_auc # nolint: object_name_linter
