@@ -193,9 +193,12 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
   ## ---- Classification forest branch ------------------------------------
   if (inherits(gg_dta, "class") ||
     inherits(gg_dta, "classification")) {
-    prob_col <- colnames(gg_dta)[1]
-    obs_col  <- colnames(gg_dta)[2]
-    if (ncol(gg_dta) < 3) {
+    # Identify probability columns (everything except "y" and "group")
+    non_prob <- c("y", "group")
+    prob_cols <- setdiff(colnames(gg_dta), non_prob)
+    prob_col <- prob_cols[1]
+    obs_col  <- "y"
+    if (length(prob_cols) < 2) {
       # Binary classification: single probability column + observed class
       gg_plt <- ggplot2::ggplot(gg_dta) +
         ggplot2::geom_jitter(
@@ -219,7 +222,7 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
         )
     } else {
       # Multi-class: gather all class probability columns into long form
-      pivot_cols <- colnames(gg_dta)[-which(colnames(gg_dta) == "y")]
+      pivot_cols <- setdiff(colnames(gg_dta), c("y", "group"))
       gg_dta_mlt <-
         tidyr::pivot_longer(gg_dta, tidyr::all_of(pivot_cols), names_to = "variable", values_to = "value")
 
@@ -313,10 +316,17 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
         fill = "transparent",
         notch = notch
       ) +
-      ggplot2::labs(y = "Predicted Value", x = colnames(gg_dta)[2]) +
+      ggplot2::labs(
+        y = "Predicted Value",
+        x = if ("group" %in% colnames(gg_dta)) "Group" else ""
+      ) +
       ggplot2::theme(
         axis.ticks = ggplot2::element_blank(),
-        axis.text.x = ggplot2::element_blank()
+        axis.text.x = if ("group" %in% colnames(gg_dta)) {
+          ggplot2::element_text()
+        } else {
+          ggplot2::element_blank()
+        }
       )
   } else {
     # Unknown forest type — not yet implemented

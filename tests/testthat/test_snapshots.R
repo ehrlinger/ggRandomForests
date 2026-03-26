@@ -11,17 +11,16 @@ if (!requireNamespace("vdiffr", quietly = TRUE)) {
   skip("vdiffr not installed")
 }
 
-# Guard: only register snapshot tests when NOT running on CI.
-# testthat::skip_on_ci() at file scope only creates a phantom skip; it does
-# not prevent test_that() blocks inside local() from being registered and run.
-# Wrapping in a plain `if` is the reliable way to suppress the entire file.
+# Guard: only register snapshot tests when explicitly opted in.
+# Set VDIFFR_RUN_TESTS=true to generate or compare visual baselines.
+# This avoids failures on fresh checkouts (no _snaps/ directory) and in CI.
 #
 # To generate baselines locally:
-#   1. Ensure CI is unset (or run outside GitHub Actions)
+#   1. Run Sys.setenv(VDIFFR_RUN_TESTS = "true")
 #   2. Run devtools::test(filter = "snapshots")
 #   3. Call testthat::snapshot_accept()
 #   4. Commit tests/testthat/_snaps/ to the repo
-if (!nzchar(Sys.getenv("CI"))) {
+if (identical(Sys.getenv("VDIFFR_RUN_TESTS"), "true")) {
 
 ## ---- Shared fixtures -------------------------------------------------------
 

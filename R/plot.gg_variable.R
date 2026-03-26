@@ -393,9 +393,6 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
         if (points) {
           gg_plt <- gg_plt +
             ggplot2::geom_point(...)
-        } else {
-          gg_plt <- gg_plt +
-            ggplot2::geom_smooth(...)
         }
         if (smooth) {
           gg_plt <- gg_plt +
