@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   ggRandomForests: ggRandomForests.html
-last_built: 2026-03-26T16:47Z
+last_built: 2026-03-26T16:52Z
 urls:
   reference: https://ehrlinger.github.io/ggRandomForests/reference
   article: https://ehrlinger.github.io/ggRandomForests/articles
