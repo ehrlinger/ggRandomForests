@@ -4,32 +4,79 @@ Plot the predicted response from a
 [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
 object, the
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
-prediction, using the OOB prediction from the forest.
+prediction, using the OOB prediction from the forest. The plot type
+adapts automatically to the forest family: jitter + boxplot for
+regression and classification, step curves for survival.
 
 ## Usage
 
 ``` r
 # S3 method for class 'gg_rfsrc'
-plot(x, ...)
+plot(x, notch = TRUE, ...)
 ```
 
 ## Arguments
 
 - x:
 
+  A
   [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
-  object created from a
+  object, or a raw
   [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
-  object
+  object (which will be passed through
+  [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+  automatically before plotting).
+
+- notch:
+
+  Logical; whether to draw notched boxplots for regression and
+  classification forests (default `TRUE`). Set `notch = FALSE` to
+  suppress notches when sample sizes are too small for reliable
+  confidence intervals on the median.
 
 - ...:
 
-  arguments passed to
-  [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
+  Additional arguments forwarded to the underlying `ggplot2` geometry
+  calls. Commonly useful arguments include:
+
+  `alpha`
+
+  :   Numeric in \\\[0,1\]\\; point/ribbon transparency. For survival
+      plots with confidence bands the ribbon alpha is automatically
+      halved relative to the value supplied here.
+
+  `size`
+
+  :   Point or line size passed to `geom_jitter`, `geom_step`, etc.
+
+  Arguments that control
+  [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+  (e.g. `conf.int`, `surv_type`, `by`) should be applied when
+  constructing the `gg_rfsrc` object before calling
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html).
 
 ## Value
 
-`ggplot` object
+A `ggplot` object. The plot appearance depends on the forest family
+stored in `x`:
+
+- Regression (`"regr"`):
+
+  Jitter + notched boxplot of OOB predicted values. If a `group` column
+  is present the x-axis shows each group label; otherwise observations
+  are collapsed to a single x-position.
+
+- Classification (`"class"`):
+
+  Binary: jitter + notched boxplot of the predicted class probability.
+  Multi-class: jitter plot with one panel per class (class probabilities
+  in long form).
+
+- Survival (`"surv"`):
+
+  Step curves of the ensemble survival function. When `gg_rfsrc` was
+  called with `conf.int`, a shaded ribbon is added. When called with
+  `by`, curves are coloured by group.
 
 ## References
 
@@ -38,13 +85,15 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
-Regression and Classification (RF-SRC), R package version 1.4.
+Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for
+Survival, Regression and Classification. R package version \>= 3.4.0.
+<https://cran.r-project.org/package=randomForestSRC>
 
 ## See also
 
 [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+[`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
 
 ## Examples
 
@@ -59,9 +108,6 @@ rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_iris)
 
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 450 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ## ------------------------------------------------------------
@@ -75,12 +121,6 @@ rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
 gg_dta <- gg_rfsrc(rfsrc_airq)
 
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 153 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
-#> Warning: All aesthetics have length 1, but the data has 153 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ## -------- mtcars data
@@ -89,12 +129,6 @@ rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_mtcars)
 
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 32 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
-#> Warning: All aesthetics have length 1, but the data has 32 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ## ------------------------------------------------------------
@@ -107,31 +141,16 @@ set.seed(42)
 rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_veteran)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 13289 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 # With 95% pointwise bootstrap confidence bands
 gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int = .95)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 97 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
-#> Warning: All aesthetics have length 1, but the data has 97 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 # Stratified by treatment arm
 gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt")
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 194 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
-#> Warning: All aesthetics have length 1, but the data has 194 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ## -------- pbc data (larger dataset -- skipped on CRAN)
@@ -184,29 +203,14 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
 
 gg_dta <- gg_rfsrc(rfsrc_pbc)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 38064 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int = .95)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 122 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
-#> Warning: All aesthetics have length 1, but the data has 122 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 gg_dta <- gg_rfsrc(rfsrc_pbc, by = "treatment")
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 244 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
-#> Warning: All aesthetics have length 1, but the data has 244 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 # }
 ```

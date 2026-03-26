@@ -77,21 +77,19 @@ vimp_df <- ggRandomForests::gg_vimp(rf_boston)
 head(vimp_df)
 ```
 
-         vars           set      vimp positive
-    1   lstat IncNodePurity 13004.646     TRUE
-    2      rm IncNodePurity 11661.671     TRUE
-    3     dis IncNodePurity  2848.850     TRUE
-    4   indus IncNodePurity  2751.109     TRUE
-    5 ptratio IncNodePurity  2697.541     TRUE
-    6    crim IncNodePurity  2645.701     TRUE
+    # A tibble: 6 × 4
+      vars    set     vimp positive
+      <fct>   <chr>  <dbl> <lgl>
+    1 lstat   vimp  13005. TRUE
+    2 rm      vimp  11662. TRUE
+    3 dis     vimp   2849. TRUE
+    4 indus   vimp   2751. TRUE
+    5 ptratio vimp   2698. TRUE
+    6 crim    vimp   2646. TRUE    
 
 ``` r
 plot(vimp_df)
 ```
-
-    Warning in ggplot2::geom_bar(ggplot2::aes(y = msr, x = "vars", color = "positive"), : All aesthetics have length 1, but the data has 13 rows.
-    ℹ Please consider using `annotate()` or provide this layer with data containing
-      a single row.
 
 ![](ggRandomForests_files/figure-html/vimp-demo-1.png)
 

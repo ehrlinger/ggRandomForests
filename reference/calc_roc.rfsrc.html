@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,30 +62,40 @@
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p><code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> or
-<code><a href="https://www.randomforestsrc.org//reference/predict.rfsrc.html" class="external-link">predict.rfsrc</a></code> object
-containing predicted response</p></dd>
+<dd><p>A fitted <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code>,
+<code><a href="https://www.randomforestsrc.org//reference/predict.rfsrc.html" class="external-link">predict.rfsrc</a></code>, or
+<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code> classification object containing
+predicted class probabilities.</p></dd>
 
 
 <dt id="arg-dta">dta<a class="anchor" aria-label="anchor" href="#arg-dta"></a></dt>
-<dd><p>True response variable</p></dd>
+<dd><p>A factor (or coercible to factor) of the true observed class
+labels, one per observation. Typically <code>object$yvar</code> for rfsrc or
+<code>object$y</code> for randomForest.</p></dd>
 
 
 <dt id="arg-which-outcome">which_outcome<a class="anchor" aria-label="anchor" href="#arg-which-outcome"></a></dt>
-<dd><p>If defined, only show ROC for this response.</p></dd>
+<dd><p>Integer index of the class for which the ROC curve is
+computed (e.g. <code>1</code> for the first class, <code>2</code> for the second).
+Use <code>"all"</code> to request all classes (currently falls back to class 1
+with a warning).</p></dd>
 
 
 <dt id="arg-oob">oob<a class="anchor" aria-label="anchor" href="#arg-oob"></a></dt>
-<dd><p>Use OOB estimates, the normal validation method (TRUE)</p></dd>
+<dd><p>Logical; if <code>TRUE</code> (default for rfsrc) use OOB predicted
+probabilities. Forced to <code>FALSE</code> for <code>randomForest</code> objects.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>extra arguments passed to helper functions</p></dd>
+<dd><p>Extra arguments passed to helper functions (currently unused).</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>gg_roc</code> object</p>
+    <p>A <code>gg_roc</code> <code>data.frame</code> with columns <code>sens</code>
+  (sensitivity), <code>spec</code> (specificity), and <code>pct</code> (the probability
+  threshold), with one row per unique prediction value. Suitable for passing
+  to <code><a href="calc_auc.html">calc_auc</a></code> or <code><a href="plot.gg_roc.html">plot.gg_roc</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -104,7 +114,7 @@ not intended for use by the end user.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Taken from the gg_roc example</span></span></span>
-<span class="r-in"><span><span class="va">rfsrc_iris</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rfsrc_iris</span>, <span class="va">rfsrc_iris</span><span class="op">$</span><span class="va">yvar</span>,</span></span>
 <span class="r-in"><span>  which_outcome <span class="op">=</span> <span class="fl">1</span>, oob <span class="op">=</span> <span class="cn">TRUE</span></span></span>
@@ -113,7 +123,7 @@ not intended for use by the end user.</p>
 <span class="r-in"><span>  which_outcome <span class="op">=</span> <span class="fl">1</span>, oob <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">rf_iris</span> <span class="op">&lt;-</span> <span class="fu">randomForest</span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rf_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">calc_roc</span><span class="op">(</span><span class="va">rf_iris</span>, <span class="va">rf_iris</span><span class="op">$</span><span class="va">yvar</span>,</span></span>
 <span class="r-in"><span>  which_outcome <span class="op">=</span> <span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>

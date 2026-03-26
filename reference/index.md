@@ -58,7 +58,7 @@ Partial dependence plots for individual variables.
   : Split partial dependence data into continuous or categorical
   datasets
 - [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-  : Split partial lots into continuous or categorical datasets
+  : Partial dependence data from an rfsrc model
 - [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md)
   : Split varpro partial dependence data into continuous or categorical
   datasets
@@ -76,8 +76,8 @@ Survival curves, ROC, and related diagnostics.
   Plot a `gg_survival` object.
 
 - [`gg_roc(`*`<rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
-  : ROC (Receiver operator curve) data from a classification random
-  forest.
+  : ROC (Receiver Operating Characteristic) curve data from a
+  classification forest.
 
 - [`plot(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
   :
@@ -91,7 +91,7 @@ Survival curves, ROC, and related diagnostics.
   : Area Under the ROC Curve calculator
 
 - [`surv_partial.rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.md)
-  : Calculate survival curve partial plot.
+  : Survival partial dependence data for one or more predictors
 
 - [`kaplan()`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)
   : nonparametric Kaplan-Meier estimates
@@ -105,8 +105,6 @@ Helper functions used internally and by users.
 
 - [`quantile_pts()`](https://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md)
   : Quantile-based cut points for coplots
-- [`shift()`](https://ehrlinger.github.io/ggRandomForests/reference/shift.md)
-  : lead function to shift by one (or more).
 - [`varpro_feature_names()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.md)
   : Recover original variable names from varpro one-hot encoded feature
   names

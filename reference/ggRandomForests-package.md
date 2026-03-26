@@ -1,11 +1,11 @@
 # ggRandomForests: Visually Exploring Random Forests
 
 `ggRandomForests` is a utility package for `randomForestSRC` (Ishwaran
-et.al. 2014, 2008, 2007) for survival, regression and classification
-forests and uses the `ggplot2` (Wickham 2009) package for plotting
-results. `ggRandomForests` is structured to extract data objects from
-the random forest and provides S3 functions for printing and plotting
-these objects.
+and Kogalur) for survival, regression and classification forests and
+uses the `ggplot2` (Wickham 2009) package for plotting results.
+`ggRandomForests` is structured to extract data objects from the random
+forest and provides S3 functions for printing and plotting these
+objects. Requires `randomForestSRC` \>= 3.4.0.
 
 The `randomForestSRC` package provides a unified treatment of Breiman's
 (2001) random forests for a variety of data settings. Regression and
@@ -21,11 +21,11 @@ available directly from within the `randomForestSRC` package. However,
   that operate on either the
   [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
   forest object directly, or on the output from `randomForestSRC` post
-  processing functions (i.e. `plot.variable`, `find.interaction`) to
-  generate intermediate `ggRandomForests` data objects. S3 functions are
-  provide to further process these objects and plot results using the
-  `ggplot2` graphics package. Alternatively, users can use these data
-  objects for additional custom plotting or analysis operations.
+  processing functions (i.e. `plot.variable`) to generate intermediate
+  `ggRandomForests` data objects. S3 functions are provide to further
+  process these objects and plot results using the `ggplot2` graphics
+  package. Alternatively, users can use these data objects for
+  additional custom plotting or analysis operations.
 
 - Each data object/figure is a single, self contained object. This
   allows simple modification and manipulation of the data or `ggplot2`
@@ -67,8 +67,9 @@ be further customized using standard `ggplot2` commands.
 
 Breiman, L. (2001). Random forests, Machine Learning, 45:5-32.
 
-Ishwaran H. and Kogalur U.B. (2014). Random Forests for Survival,
-Regression and Classification (RF-SRC), R package version 1.5.5.12.
+Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for
+Survival, Regression and Classification. R package version \>= 3.4.0.
+<https://cran.r-project.org/package=randomForestSRC>
 
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R. R
 News 7(2), 25–31.

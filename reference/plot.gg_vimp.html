@@ -9,7 +9,7 @@ rfsrc object"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,8 +91,9 @@ the same as the variable names.</p></dd>
     <p>Breiman L. (2001). Random forests, Machine Learning, 45:5-32.</p>
 <p>Ishwaran H. and Kogalur U.B. (2007). Random survival forests for
 R, Rnews, 7(2):25-31.</p>
-<p>Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
-Regression and Classification (RF-SRC), R package version 1.4.</p>
+<p>Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
+Regression and Classification. R package version &gt;= 3.4.0.
+<a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -105,26 +106,20 @@ Regression and Classification (RF-SRC), R package version 1.4.</p>
 <span class="r-in"><span><span class="co">## classification example</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## -------- iris data</span></span></span>
-<span class="r-in"><span><span class="va">rfsrc_iris</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>rfsrc object does not contain VIMP information. Calculating...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 16 rows.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-plt img"><img src="plot.gg_vimp-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## regression example</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## -------- air quality data</span></span></span>
-<span class="r-in"><span><span class="va">rfsrc_airq</span> <span class="op">&lt;-</span> <span class="fu">rfsrc</span><span class="op">(</span><span class="va">Ozone</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">airquality</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_airq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">Ozone</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">airquality</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_airq</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>rfsrc object does not contain VIMP information. Calculating...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>All aesthetics have length 1, but the data has 5 rows.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please consider using `annotate()` or provide this layer with data containing</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   a single row.</span>
 <span class="r-plt img"><img src="plot.gg_vimp-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>

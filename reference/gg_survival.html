@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,33 +68,39 @@
 
 
 <dl><dt id="arg-interval">interval<a class="anchor" aria-label="anchor" href="#arg-interval"></a></dt>
-<dd><p>name of the interval variable in the training dataset.</p></dd>
+<dd><p>Character; name of the time-to-event column in <code>data</code>.</p></dd>
 
 
 <dt id="arg-censor">censor<a class="anchor" aria-label="anchor" href="#arg-censor"></a></dt>
-<dd><p>name of the censoring variable in the training dataset.</p></dd>
+<dd><p>Character; name of the event-indicator column in <code>data</code>
+(1 = event occurred, 0 = censored).</p></dd>
 
 
 <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
-<dd><p>stratifying variable in the training dataset, defaults to NULL</p></dd>
+<dd><p>Optional character; name of a grouping column in <code>data</code> for
+stratified estimates. Defaults to <code>NULL</code> (unstratified).</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>name of the training data.frame</p></dd>
+<dd><p>A <code>data.frame</code> containing the survival data.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
-<dd><p>one of ("kaplan","nelson"), defaults to Kaplan-Meier</p></dd>
+<dd><p>One of <code>"kaplan"</code> (Kaplan-Meier, default) or
+<code>"nelson"</code> (Nelson-Aalen cumulative hazard).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>extra arguments passed to Kaplan or Nelson functions.</p></dd>
+<dd><p>Additional arguments passed to <code><a href="kaplan.html">kaplan</a></code> or
+<code><a href="nelson.html">nelson</a></code> (e.g. <code>conf.int</code> to change the CI width).</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>gg_survival</code> object created using the non-parametric
-Kaplan-Meier or Nelson-Aalen estimators.</p>
+    <p>A <code>gg_survival</code> <code>data.frame</code> with columns <code>time</code>,
+  <code>surv</code> (or <code>cum_haz</code> for Nelson-Aalen), <code>lower</code>,
+  <code>upper</code> (confidence limits), and <code>n.risk</code>. A <code>strata</code>
+  column is added when <code>by</code> is supplied.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

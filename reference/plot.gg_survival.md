@@ -46,7 +46,17 @@ plot(
 
 ## Value
 
-`ggplot` object
+A `ggplot` object. The y-axis shows the chosen `type` (e.g. survival
+probability for `"surv"`) and the x-axis shows time. Confidence shading,
+bars, or lines are added when the input object carries
+confidence-interval columns.
+
+## See also
+
+[`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md),
+[`kaplan`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md),
+[`nelson`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md),
+[`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
 
 ## Examples
 
@@ -88,6 +98,8 @@ gg_dta <- gg_survival(
 plot(gg_dta, error = "lines")
 
 plot(gg_dta, label = "treatment", error = "lines")
+#> Ignoring unknown labels:
+#> • fill : "treatment"
 
 
 # ...with smaller confidence limits.
@@ -99,5 +111,7 @@ gg_dta <- gg_survival(
 plot(gg_dta, error = "lines")
 
 plot(gg_dta, label = "sex", error = "lines")
+#> Ignoring unknown labels:
+#> • fill : "sex"
 
 ```

@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@
       <h1>Exploring Random Forests with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-03-17</p>
+      <p class="date">2026-03-26</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests.qmd" class="external-link"><code>vignettes/ggRandomForests.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -153,21 +153,18 @@
 <code class="sourceCode R"><span><span class="va">vimp_df</span> <span class="op">&lt;-</span> <span class="fu">ggRandomForests</span><span class="fu">::</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rf_boston</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">vimp_df</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>     vars           set      vimp positive
-1   lstat IncNodePurity 13004.646     TRUE
-2      rm IncNodePurity 11661.671     TRUE
-3     dis IncNodePurity  2848.850     TRUE
-4   indus IncNodePurity  2751.109     TRUE
-5 ptratio IncNodePurity  2697.541     TRUE
-6    crim IncNodePurity  2645.701     TRUE</code></pre>
+<pre><code># A tibble: 6 × 4
+  vars    set     vimp positive
+  &lt;fct&gt;   &lt;chr&gt;  &lt;dbl&gt; &lt;lgl&gt;
+1 lstat   vimp  13005. TRUE
+2 rm      vimp  11662. TRUE
+3 dis     vimp   2849. TRUE
+4 indus   vimp   2751. TRUE
+5 ptratio vimp   2698. TRUE
+6 crim    vimp   2646. TRUE    </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vimp_df</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in ggplot2::geom_bar(ggplot2::aes(y = msr, x = "vars", color = "positive"), : All aesthetics have length 1, but the data has 13 rows.
-ℹ Please consider using `annotate()` or provide this layer with data containing
-  a single row.</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="ggRandomForests_files/figure-html/vimp-demo-1.png" width="672"></p>
@@ -180,7 +177,7 @@
 <a class="anchor" aria-label="anchor" href="#balanced-conditioning-cuts-with-quantile_pts"></a>
 </h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rm_breaks</span> <span class="op">&lt;-</span> <span class="fu">ggRandomForests</span><span class="fu">::</span><span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">boston</span><span class="op">$</span><span class="va">rm</span>, groups <span class="op">=</span> <span class="fl">6</span>, intervals <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">rm_groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">boston</span><span class="op">$</span><span class="va">rm</span>, breaks <span class="op">=</span> <span class="va">rm_breaks</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">rm_groups</span><span class="op">)</span></span></code></pre></div>

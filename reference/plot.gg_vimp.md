@@ -45,8 +45,9 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. (2013). Random Forests for Survival,
-Regression and Classification (RF-SRC), R package version 1.4.
+Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for
+Survival, Regression and Classification. R package version \>= 3.4.0.
+<https://cran.r-project.org/package=randomForestSRC>
 
 ## See also
 
@@ -63,9 +64,6 @@ rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 gg_dta <- gg_vimp(rfsrc_iris)
 #> Warning: rfsrc object does not contain VIMP information. Calculating...
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 16 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ## ------------------------------------------------------------
@@ -76,9 +74,6 @@ rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
 gg_dta <- gg_vimp(rfsrc_airq)
 #> Warning: rfsrc object does not contain VIMP information. Calculating...
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 5 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ```

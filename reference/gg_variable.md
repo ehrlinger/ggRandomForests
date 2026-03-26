@@ -39,7 +39,13 @@ gg_variable(object, ...)
 
 ## Value
 
-`gg_variable` object
+A `gg_variable` object: a `data.frame` of all predictor columns from the
+training data paired with the OOB (or in-bag) predicted response. For
+survival forests each requested time horizon produces an additional
+column named by `time_labels`. The object carries a `"family"` class
+attribute (`"regr"`, `"class"`, or `"surv"`) used by
+[`plot.gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
+for dispatch.
 
 ## Details
 
@@ -57,8 +63,7 @@ object via the formula interface.
 
 ## See also
 
-[`plot.gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
-
+[`plot.gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md),
 [`plot.variable`](https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html)
 
 ## Examples
@@ -151,10 +156,29 @@ plot(gg_dta,
   xvar = c("cyl", "vs", "am", "gear", "carb"), panel = TRUE,
   notch = TRUE
 )
-#> Warning: attributes are not identical across measure variables; they will be dropped
 #> Warning: Ignoring unknown parameters: `notch`
 #> Warning: Ignoring unknown parameters: `notch`
 #> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
 
 
 ## -------- Boston data
@@ -225,6 +249,10 @@ plot(gg_dta)
 plot(gg_dta, panel = TRUE)
 #> Warning: Mismatched variable types...
 #>                   assuming these are all factor variables.
+#> Warning: Orientation is not uniquely specified when both the x and y aesthetics are
+#> continuous. Picking default orientation 'x'.
+#> Warning: Continuous x aesthetic
+#> ℹ did you forget `aes(group = ...)`?
 #> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 #> Warning: pseudoinverse used at -0.5
 #> Warning: neighborhood radius 13

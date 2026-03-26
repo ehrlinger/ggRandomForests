@@ -66,9 +66,6 @@ rfsrc_iris <- rfsrc(Species ~ .,
 )
 gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 16 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ## ------------------------------------------------------------
@@ -81,9 +78,6 @@ rfsrc_airq <- rfsrc(Ozone ~ ., airquality,
 )
 gg_dta <- gg_vimp(rfsrc_airq)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 5 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 
@@ -94,18 +88,12 @@ rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston,
 )
 gg_dta <- gg_vimp(rfsrc_boston)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 13 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ## -------- Boston data
 rf_boston <- randomForest::randomForest(medv ~ ., Boston)
 gg_dta <- gg_vimp(rf_boston)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 13 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 
@@ -116,9 +104,6 @@ rfsrc_mtcars <- rfsrc(mpg ~ .,
 )
 gg_dta <- gg_vimp(rfsrc_mtcars)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 10 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ## ------------------------------------------------------------
@@ -135,9 +120,6 @@ rfsrc_veteran <- rfsrc(Surv(time, status) ~ .,
 
 gg_dta <- gg_vimp(rfsrc_veteran)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 6 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 ## -------- pbc data
@@ -195,16 +177,10 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
 
 gg_dta <- gg_vimp(rfsrc_pbc)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 17 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 
 # Restrict to only the top 10.
 gg_dta <- gg_vimp(rfsrc_pbc, nvar = 10)
 plot(gg_dta)
-#> Warning: All aesthetics have length 1, but the data has 10 rows.
-#> ℹ Please consider using `annotate()` or provide this layer with data containing
-#>   a single row.
 
 ```

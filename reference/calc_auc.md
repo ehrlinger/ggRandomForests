@@ -50,12 +50,12 @@ calc_auc(gg_dta)
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 2)
 
 calc_auc(gg_dta)
-#> [1] 1
+#> [1] 0.988
 
 ## randomForest tests
 rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 2)
 
 calc_auc(gg_dta)
-#> [1] 1
+#> [1] 0.988
 ```

@@ -13,29 +13,42 @@ calc_roc(object, dta, which_outcome = "all", oob = TRUE, ...)
 
 - object:
 
-  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) or
-  [`predict.rfsrc`](https://www.randomforestsrc.org//reference/predict.rfsrc.html)
-  object containing predicted response
+  A fitted
+  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html),
+  [`predict.rfsrc`](https://www.randomforestsrc.org//reference/predict.rfsrc.html),
+  or
+  [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
+  classification object containing predicted class probabilities.
 
 - dta:
 
-  True response variable
+  A factor (or coercible to factor) of the true observed class labels,
+  one per observation. Typically `object$yvar` for rfsrc or `object$y`
+  for randomForest.
 
 - which_outcome:
 
-  If defined, only show ROC for this response.
+  Integer index of the class for which the ROC curve is computed (e.g.
+  `1` for the first class, `2` for the second). Use `"all"` to request
+  all classes (currently falls back to class 1 with a warning).
 
 - oob:
 
-  Use OOB estimates, the normal validation method (TRUE)
+  Logical; if `TRUE` (default for rfsrc) use OOB predicted
+  probabilities. Forced to `FALSE` for `randomForest` objects.
 
 - ...:
 
-  extra arguments passed to helper functions
+  Extra arguments passed to helper functions (currently unused).
 
 ## Value
 
-A `gg_roc` object
+A `gg_roc` `data.frame` with columns `sens` (sensitivity), `spec`
+(specificity), and `pct` (the probability threshold), with one row per
+unique prediction value. Suitable for passing to
+[`calc_auc`](https://ehrlinger.github.io/ggRandomForests/reference/calc_auc.md)
+or
+[`plot.gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md).
 
 ## Details
 

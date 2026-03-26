@@ -19,32 +19,40 @@ gg_survival(
 
 - interval:
 
-  name of the interval variable in the training dataset.
+  Character; name of the time-to-event column in `data`.
 
 - censor:
 
-  name of the censoring variable in the training dataset.
+  Character; name of the event-indicator column in `data` (1 = event
+  occurred, 0 = censored).
 
 - by:
 
-  stratifying variable in the training dataset, defaults to NULL
+  Optional character; name of a grouping column in `data` for stratified
+  estimates. Defaults to `NULL` (unstratified).
 
 - data:
 
-  name of the training data.frame
+  A `data.frame` containing the survival data.
 
 - type:
 
-  one of ("kaplan","nelson"), defaults to Kaplan-Meier
+  One of `"kaplan"` (Kaplan-Meier, default) or `"nelson"` (Nelson-Aalen
+  cumulative hazard).
 
 - ...:
 
-  extra arguments passed to Kaplan or Nelson functions.
+  Additional arguments passed to
+  [`kaplan`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)
+  or
+  [`nelson`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md)
+  (e.g. `conf.int` to change the CI width).
 
 ## Value
 
-A `gg_survival` object created using the non-parametric Kaplan-Meier or
-Nelson-Aalen estimators.
+A `gg_survival` `data.frame` with columns `time`, `surv` (or `cum_haz`
+for Nelson-Aalen), `lower`, `upper` (confidence limits), and `n.risk`. A
+`strata` column is added when `by` is supplied.
 
 ## Details
 

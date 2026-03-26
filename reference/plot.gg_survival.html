@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.6.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -90,7 +90,15 @@ object created from a <code><a href="https://www.randomforestsrc.org//reference/
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>ggplot</code> object</p>
+    <p>A <code>ggplot</code> object. The y-axis shows the chosen <code>type</code>
+  (e.g. survival probability for <code>"surv"</code>) and the x-axis shows time.
+  Confidence shading, bars, or lines are added when the input object carries
+  confidence-interval columns.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="gg_survival.html">gg_survival</a></code>, <code><a href="kaplan.html">kaplan</a></code>,
+  <code><a href="nelson.html">nelson</a></code>, <code><a href="gg_rfsrc.rfsrc.html">gg_rfsrc</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -132,6 +140,8 @@ object created from a <code><a href="https://www.randomforestsrc.org//reference/
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, error <span class="op">=</span> <span class="st">"lines"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.gg_survival-6.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, label <span class="op">=</span> <span class="st">"treatment"</span>, error <span class="op">=</span> <span class="st">"lines"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ignoring unknown labels:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">fill</span> : <span style="color: #0000BB;">"treatment"</span></span>
 <span class="r-plt img"><img src="plot.gg_survival-7.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ...with smaller confidence limits.</span></span></span>
@@ -143,6 +153,8 @@ object created from a <code><a href="https://www.randomforestsrc.org//reference/
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, error <span class="op">=</span> <span class="st">"lines"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.gg_survival-8.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, label <span class="op">=</span> <span class="st">"sex"</span>, error <span class="op">=</span> <span class="st">"lines"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Ignoring unknown labels:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> <span style="color: #00BB00;">fill</span> : <span style="color: #0000BB;">"sex"</span></span>
 <span class="r-plt img"><img src="plot.gg_survival-9.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

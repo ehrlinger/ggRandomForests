@@ -1,6 +1,11 @@
-# Calculate survival curve partial plot.
+# Survival partial dependence data for one or more predictors
 
-Calculate survival curve partial plot.
+Computes partial dependence curves for a survival or competing-risk
+[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) forest
+by calling
+[`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+at `npts` evenly-spaced unique values of each predictor across all
+stored event times.
 
 ## Usage
 
@@ -12,24 +17,50 @@ surv_partial.rfsrc(rforest, var_list, npts = 25, partial.type = "surv")
 
 - rforest:
 
-  the randomForestSrc object
+  A fitted
+  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  survival or competing-risk forest object.
 
 - var_list:
 
-  a list of variables of interest. These variables should be a subset of
-  rforest\$xvar.names
+  Character vector of predictor names for which partial dependence
+  should be computed. Each must appear in `rforest$xvar.names`.
 
 - npts:
 
-  the number of points to segment the xvar of interest
+  Integer; the number of predictor grid points to evaluate (default 25).
+  Evenly-spaced unique values are sampled from each predictor.
 
 - partial.type:
 
-  the return prediction type. For survival forests: type c("surv",
-  "mort", "chf") For competing risk forests: type c("years.lost", "cif",
-  "chf") see
-  [`randomForestSRC::partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-  or more information
+  The prediction type to return. For survival forests one of `"surv"`
+  (default), `"mort"`, or `"chf"`. For competing risk forests one of
+  `"years.lost"`, `"cif"`, or `"chf"`. See
+  [`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+  for full details.
+
+## Value
+
+A named list with one element per variable in `var_list`. Each element
+is itself a list with:
+
+- name:
+
+  The predictor variable name (character).
+
+- dta:
+
+  The raw output of
+  [`get.partial.plot.data`](https://www.randomforestsrc.org//reference/partial.rfsrc.html),
+  a list containing at minimum `x` (predictor values) and `yhat`
+  (partial predictions), and for survival/competing risk,
+  `partial.time`.
+
+## See also
+
+[`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md),
+[`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html),
+[`get.partial.plot.data`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
 
 ## Examples
 
