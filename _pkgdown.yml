@@ -94,6 +94,10 @@ articles:
     navbar: ~
     contents:
       - ggRandomForests
+  - title: "Tutorials"
+    contents:
+      - ggRandomForests-survival
+      - ggRandomForests-regression
 
 news:
   releases:

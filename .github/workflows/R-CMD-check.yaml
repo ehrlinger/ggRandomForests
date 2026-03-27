@@ -24,6 +24,9 @@ jobs:
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
+    # R-devel may fail due to upstream packages not yet compatible with
+    # the development version of R (e.g. lazyeval PREXPR removal).
+    continue-on-error: ${{ matrix.config.r == 'devel' }}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}

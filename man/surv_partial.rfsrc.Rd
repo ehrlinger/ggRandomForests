@@ -45,7 +45,7 @@ unique values of each predictor across all stored event times.
 ## ------------------------------------------------------------
 
 data(veteran, package = "randomForestSRC")
-v.obj <- randomForestSRC::rfsrc(Surv(time,status)~., 
+v.obj <- randomForestSRC::rfsrc(Surv(time,status)~.,
   veteran, nsplit = 10, ntree = 100)
 
 spart <- surv_partial.rfsrc(v.obj, var_list="age", partial.type = "mort")
