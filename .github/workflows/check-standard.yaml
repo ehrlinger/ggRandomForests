@@ -44,7 +44,11 @@ jobs:
           use-public-rspm: true
           rtools-version: '42'
 
+      # R-devel may fail here when abandoned packages (e.g. lazyeval) that use
+      # removed C symbols (PREXPR) appear in the transitive dependency graph.
+      # Allow the step to fail so subsequent steps (check, upload) still run.
       - uses: r-lib/actions/setup-r-dependencies@v2
+        continue-on-error: ${{ matrix.config.r == 'devel' }}
         with:
           extra-packages: rcmdcheck
           cache-version: 2
