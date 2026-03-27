@@ -65,8 +65,15 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(randomForestSRC)
-library(ggRandomForests)
 library(survival)
+
+if (requireNamespace("ggRandomForests", quietly = TRUE)) {
+  library(ggRandomForests)
+} else if (requireNamespace("pkgload", quietly = TRUE)) {
+  pkgload::load_all(export_all = FALSE, helpers = FALSE, attach_testthat = FALSE)
+} else {
+  stop("Install ggRandomForests (or pkgload for dev builds) to render this vignette.")
+}
 
 theme_set(theme_bw())
 

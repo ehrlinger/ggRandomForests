@@ -64,7 +64,14 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(randomForestSRC)
-library(ggRandomForests)
+
+if (requireNamespace("ggRandomForests", quietly = TRUE)) {
+  library(ggRandomForests)
+} else if (requireNamespace("pkgload", quietly = TRUE)) {
+  pkgload::load_all(export_all = FALSE, helpers = FALSE, attach_testthat = FALSE)
+} else {
+  stop("Install ggRandomForests (or pkgload for dev builds) to render this vignette.")
+}
 
 theme_set(theme_bw())
 ```
@@ -80,7 +87,7 @@ environmental quality, and housing characteristics. We use the copy from the
 
 ```{r data-load}
 data(Boston, package = "MASS")
-Boston$chas <- as.logical(Boston$chas)
+Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
 ```
 
 ```{r variable-labels}
@@ -131,7 +138,7 @@ We grow a regression forest using all 13 predictors. The `rfsrc()` function
 detects the regression family from the continuous response.
 
 ```{r rfsrc-fit}
-rfsrc_Boston <- rfsrc(medv ~ ., data = Boston,
+rfsrc_Boston <- rfsrc(medv ~ ., data = Boston, # nolint: object_name_linter
                       importance = TRUE, err.block = 5)
 rfsrc_Boston
 ```
@@ -185,7 +192,7 @@ they first split, on average. Variables that partition large portions of the
 population early are considered most important.
 
 ```{r varsel}
-md_Boston <- max.subtree(rfsrc_Boston)
+md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
 The threshold is `r round(md_Boston$threshold, 2)`, selecting
