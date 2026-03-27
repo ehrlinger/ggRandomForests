@@ -35,6 +35,8 @@ Suggests:
     rmarkdown,
     quarto,
     pkgdown,
-    pkgload
+    pkgload,
+    knitr,
+    plotly
 VignetteBuilder: quarto
 RoxygenNote: 7.3.3

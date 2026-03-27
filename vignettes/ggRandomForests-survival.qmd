@@ -415,12 +415,19 @@ survival.
 
 ## Partial dependence
 
+::: {.callout-warning}
+**Known issue (draft):** `randomForestSRC::partial.rfsrc()` currently fails for
+survival forests in randomForestSRC ≥ 3.3.  The partial dependence and
+interactive surface sections below will show an error until this upstream bug
+is resolved.  All other sections of this vignette are fully functional.
+:::
+
 Partial dependence integrates out the effects of other covariates, giving a
 risk-adjusted view of how each predictor influences the response
 [@Friedman:2000]. We use `gg_partial_rfsrc()` which calls
 `randomForestSRC::partial.rfsrc()` directly.
 
-```{r partial-dep, fig.height=5, fig.cap="Partial dependence of survival at approximately 1 and 3 years on continuous predictors."}
+```{r partial-dep, error=TRUE, fig.height=5, fig.cap="Partial dependence of survival at approximately 1 and 3 years on continuous predictors."}
 # partial.rfsrc() requires times that match the model's time.interest grid;
 # gg_partial_rfsrc() snaps the requested values to the nearest observed times.
 ti   <- rfsrc_pbc$time.interest
@@ -494,7 +501,7 @@ For a richer view of the interaction between bilirubin and albumin, we construct
 a partial dependence surface. We compute partial dependence on a grid of 25
 albumin values, each evaluated at 25 bilirubin points.
 
-```{r surface-data, cache=TRUE}
+```{r surface-data, error=TRUE, cache=FALSE}
 # Create grid of albumin values
 alb_grid <- quantile_pts(pbc_trial$albumin, groups = 25)
 
@@ -512,8 +519,10 @@ surface_list <- lapply(alb_grid, function(alb_val) {
 surface_df <- bind_rows(surface_list)
 ```
 
-```{r plotly-surface, fig.cap="Interactive partial dependence surface: survival as a function of bilirubin and albumin."}
-if (requireNamespace("plotly", quietly = TRUE)) {
+```{r plotly-surface, error=TRUE, fig.cap="Interactive partial dependence surface: survival as a function of bilirubin and albumin."}
+if (!exists("surface_df")) {
+  message("surface_df not available — skipping plotly surface (see surface-data chunk error above).")
+} else if (requireNamespace("plotly", quietly = TRUE)) {
   # Reshape for surface
   library(plotly)
 
