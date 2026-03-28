@@ -243,11 +243,21 @@ $$
 $$
 
 We use `gg_partial_rfsrc()`, which calls `randomForestSRC::partial.rfsrc()`
-directly.
+directly and returns a `gg_partial_rfsrc` object.  The quickest path to a plot
+is `plot(pd)`, which handles continuous and categorical variables automatically.
+For a custom layout we can also access `pd$continuous` directly.
 
 ```{r partial-dep, fig.cap="Partial dependence for top predictors."}
 pd <- gg_partial_rfsrc(rfsrc_Boston, xvar.names = xvar)
 
+# Quick S3 plot — works out of the box for the standard regression case
+plot(pd)
+```
+
+For a publication-ready layout with custom axis labels, access the underlying
+data frame directly:
+
+```{r partial-dep-custom, fig.cap="Partial dependence (custom styling)."}
 ggplot(pd$continuous, aes(x = x, y = yhat)) +
   geom_line(color = "steelblue", linewidth = 1) +
   facet_wrap(~name, scales = "free_x") +

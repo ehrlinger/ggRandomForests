@@ -24,11 +24,11 @@ make_mock_partial_data <- function() {
 
 # ---- gg_partial unit tests -----------------------------------------------
 
-test_that("gg_partial returns list with continuous and categorical", {
+test_that("gg_partial returns a gg_partial object with continuous and categorical", {
   mock_dta <- make_mock_partial_data()
   result <- gg_partial(mock_dta)
 
-  expect_type(result, "list")
+  expect_s3_class(result, "gg_partial")
   expect_named(result, c("continuous", "categorical"))
   expect_s3_class(result$continuous, "data.frame")
   expect_s3_class(result$categorical, "data.frame")
@@ -113,7 +113,7 @@ test_that("gg_partial with low cat_limit classifies Month as continuous", {
 
 # ---- gg_partial_rfsrc integration tests -----------------------------------
 
-test_that("gg_partial_rfsrc regression returns correct structure", {
+test_that("gg_partial_rfsrc regression returns a gg_partial_rfsrc object", {
   skip_if_not_installed("randomForestSRC")
 
   set.seed(42)
@@ -122,10 +122,41 @@ test_that("gg_partial_rfsrc regression returns correct structure", {
 
   result <- gg_partial_rfsrc(rf, xvar.names = c("Wind"))
 
-  expect_type(result, "list")
+  expect_s3_class(result, "gg_partial_rfsrc")
   expect_named(result, c("continuous", "categorical"))
   expect_s3_class(result$continuous, "data.frame")
   expect_s3_class(result$categorical, "data.frame")
+})
+
+test_that("plot.gg_partial returns a ggplot for continuous-only data", {
+  mock_dta <- make_mock_partial_data()
+  result <- gg_partial(mock_dta, nvars = 1)   # only Wind (continuous)
+
+  gg_plt <- plot(result)
+  expect_s3_class(gg_plt, "ggplot")
+})
+
+test_that("plot.gg_partial returns a list of ggplots when both types present", {
+  mock_dta <- make_mock_partial_data()
+  result <- gg_partial(mock_dta)
+
+  out <- plot(result)
+  expect_type(out, "list")
+  expect_named(out, c("continuous", "categorical"))
+  expect_s3_class(out$continuous, "ggplot")
+  expect_s3_class(out$categorical, "ggplot")
+})
+
+test_that("plot.gg_partial_rfsrc returns a ggplot", {
+  skip_if_not_installed("randomForestSRC")
+
+  set.seed(42)
+  airq <- na.omit(airquality)
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50, nsplit = 5)
+  result <- gg_partial_rfsrc(rf, xvar.names = "Wind")
+
+  gg_plt <- plot(result)
+  expect_s3_class(gg_plt, "ggplot")
 })
 
 test_that("gg_partial_rfsrc Wind is continuous in airquality model", {

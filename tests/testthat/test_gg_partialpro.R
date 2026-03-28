@@ -28,11 +28,11 @@ make_mock_partialpro_data <- function(n_obs = 50, n_pts = 20) {
 
 # ---- basic structure -------------------------------------------------------
 
-test_that("gg_partialpro returns list with continuous and categorical", {
+test_that("gg_partialpro returns a gg_partialpro object with continuous and categorical", {
   mock_dta <- make_mock_partialpro_data()
   result <- gg_partialpro(mock_dta)
 
-  expect_type(result, "list")
+  expect_s3_class(result, "gg_partialpro")
   expect_named(result, c("continuous", "categorical"))
   expect_s3_class(result$continuous, "data.frame")
   expect_s3_class(result$categorical, "data.frame")
@@ -148,4 +148,33 @@ test_that("gg_partialpro handles variable with 3 categories", {
   expect_equal(nrow(grp_rows), n_obs * 3)
   # All 3 category labels should appear
   expect_equal(length(unique(grp_rows$variable)), 3)
+})
+
+# ---- plot.gg_partialpro ----------------------------------------------------
+
+test_that("plot.gg_partialpro returns a ggplot for continuous data", {
+  mock_dta <- make_mock_partialpro_data()
+  result <- gg_partialpro(mock_dta, nvars = 1)   # only age (continuous)
+
+  gg_plt <- plot(result)
+  expect_s3_class(gg_plt, "ggplot")
+})
+
+test_that("plot.gg_partialpro returns named list when both types present", {
+  mock_dta <- make_mock_partialpro_data()
+  result <- gg_partialpro(mock_dta)
+
+  out <- plot(result)
+  expect_type(out, "list")
+  expect_named(out, c("continuous", "categorical"))
+  expect_s3_class(out$continuous, "ggplot")
+  expect_s3_class(out$categorical, "ggplot")
+})
+
+test_that("plot.gg_partialpro type argument subsets effect columns", {
+  mock_dta <- make_mock_partialpro_data()
+  result <- gg_partialpro(mock_dta, nvars = 1)
+
+  gg_plt <- plot(result, type = "parametric")
+  expect_s3_class(gg_plt, "ggplot")
 })

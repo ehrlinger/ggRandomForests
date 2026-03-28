@@ -31,7 +31,7 @@ partial effects at. Defaults to the training data stored in
 \item{partial.time}{Numeric vector of desired time points for survival
 forests (ignored for regression/classification).  Values are automatically
 snapped to the nearest entry in \code{rf_model$time.interest} — see the
-\strong{Survival forests} section above.  When \code{NULL} (default),
+\strong{Survival forests} section below.  When \code{NULL} (default),
 three quartile points of \code{time.interest} are used.}
 
 \item{cat_limit}{Variables with fewer than \code{cat_limit} unique values in

@@ -94,3 +94,54 @@ test_that("gg_survival regression", {
   ## Create the correct gg_error object
   expect_error(gg_survival(data = Boston))
 })
+
+test_that("gg_survival.rfsrc extracts KM from a survival forest", {
+  skip_if_not_installed("randomForestSRC")
+
+  veteran  <- survival::veteran
+  Surv     <- survival::Surv  # nolint: object_name_linter
+  set.seed(42)
+  rf <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ trt + karno + diagtime + age + prior,
+    data   = veteran,
+    ntree  = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_survival(rf)
+
+  expect_s3_class(gg_dta, "gg_survival")
+  expect_true(all(c("time", "surv", "lower", "upper") %in% colnames(gg_dta)))
+  expect_s3_class(plot(gg_dta, error = "none"), "ggplot")
+})
+
+test_that("gg_survival.rfsrc supports stratification via by", {
+  skip_if_not_installed("randomForestSRC")
+
+  veteran  <- survival::veteran
+  Surv     <- survival::Surv  # nolint: object_name_linter
+  set.seed(42)
+  rf <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ trt + karno + diagtime + age + prior,
+    data   = veteran,
+    ntree  = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_survival(rf, by = "trt")
+
+  expect_s3_class(gg_dta, "gg_survival")
+  expect_true("groups" %in% colnames(gg_dta))
+  expect_s3_class(plot(gg_dta), "ggplot")
+})
+
+test_that("gg_survival.rfsrc errors on non-survival forest", {
+  skip_if_not_installed("randomForestSRC")
+
+  set.seed(42)
+  airq <- na.omit(airquality)
+  rf_reg <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 30)
+
+  # Regression forests have no $yvar with two survival columns
+  expect_error(gg_survival(rf_reg), regexp = "survival forest")
+})

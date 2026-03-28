@@ -432,7 +432,10 @@ is resolved.  All other sections of this vignette are fully functional.
 Partial dependence integrates out the effects of other covariates, giving a
 risk-adjusted view of how each predictor influences the response
 [@Friedman:2000]. We use `gg_partial_rfsrc()` which calls
-`randomForestSRC::partial.rfsrc()` directly.
+`randomForestSRC::partial.rfsrc()` directly and returns a `gg_partial_rfsrc`
+object.  For survival forests, the result includes a `time` column so
+`plot(pd)` produces one curve per predictor value over time, faceted by
+variable name.
 
 ```{r partial-dep, error=TRUE, fig.height=5, fig.cap="Partial dependence of survival at approximately 1 and 3 years on continuous predictors."}
 # partial.rfsrc() requires times that match the model's time.interest grid;
@@ -444,6 +447,14 @@ t3yr <- ti[which.min(abs(ti - 3))]
 pd <- gg_partial_rfsrc(rfsrc_pbc, xvar.names = xvar,
                        partial.time = c(t1yr, t3yr))
 
+# Quick S3 plot — survival forests produce time-series curves per predictor value
+plot(pd)
+```
+
+For a publication-ready layout with custom colour scale, access `pd$continuous`
+directly:
+
+```{r partial-dep-custom, error=TRUE, fig.height=5, fig.cap="Partial dependence (custom styling)."}
 ggplot(pd$continuous, aes(x = x, y = yhat,
                           color = factor(round(time, 2)),
                           group = factor(time))) +
