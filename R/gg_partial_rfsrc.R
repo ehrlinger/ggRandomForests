@@ -91,9 +91,8 @@ gg_partial_rfsrc <- function(rf_model,
                              partial.time = NULL,
                              cat_limit = 10,
                              n_eval = 25) {
-  # we supply new data, make sure we use that and that it is a dataframe...
   if (is.null(newx)) {
-    newx = rf_model$xvar
+    newx <- rf_model$xvar
   }
 
   if (sum(colnames(newx) %in% rf_model$xvar.names) != ncol(newx)) {
@@ -106,138 +105,161 @@ gg_partial_rfsrc <- function(rf_model,
     }
   }
 
-  ## Validate scalar integer-like arguments.
-  if (!is.numeric(n_eval) || length(n_eval) != 1L || is.na(n_eval) || n_eval < 2L) {
-    stop("'n_eval' must be a single integer >= 2.", call. = FALSE)
-  }
-  n_eval <- as.integer(n_eval)
+  v         <- validate_partial_args(n_eval, cat_limit)
+  n_eval    <- v$n_eval
+  cat_limit <- v$cat_limit
 
-  if (!is.numeric(cat_limit) || length(cat_limit) != 1L || is.na(cat_limit) || cat_limit < 2L) {
-    stop("'cat_limit' must be a single integer >= 2.", call. = FALSE)
-  }
-  cat_limit <- as.integer(cat_limit)
-
-  ## For survival forests, partial.rfsrc() requires time points that exactly
-  ## match values in the model's time.interest vector (unique observed event
-  ## times).  Arbitrary values like c(1, 3) cause a C-level prediction error.
-  ## We therefore always snap partial.time to the nearest time.interest values,
-  ## and when the caller supplies NULL we default to three quartile points.
   is_surv <- !is.null(rf_model$family) && grepl("surv", rf_model$family)
   if (is_surv) {
-    ti <- rf_model$time.interest
-    if (is.null(partial.time)) {
-      partial.time <- quantile(ti, probs = c(0.25, 0.5, 0.75), names = FALSE)
-    }
-    ## Snap every requested time to its nearest entry in time.interest
-    partial.time <- sapply(partial.time,
-                           function(t) ti[which.min(abs(ti - t))],
-                           USE.NAMES = FALSE)
-    partial.time <- unique(partial.time)
-  }
-
-  ## Helper: build evaluation grid for one variable.
-  ## Categorical variables get all unique levels; continuous variables get a
-  ## quantile grid of n_eval points (much faster and gives a smooth curve).
-  make_eval_grid <- function(xname) {
-    # Use `[[` to preserve the column's class (factor, character, numeric, …).
-    # unlist(dplyr::select(...)) would coerce factors to integer codes, breaking
-    # both the cat_limit check and the partial.values passed to partial.rfsrc().
-    xval <- newx[[xname]]
-    xval <- xval[!is.na(xval)]
-    if (length(xval) == 0L) {
-      warning(sprintf(
-        "Variable '%s' contains only NA values in 'newx'; skipping partial dependence.",
-        xname
-      ), call. = FALSE)
-      return(NULL)
-    }
-    gr <- is.factor(xval) || is.character(xval) ||
-            length(unique(xval)) < cat_limit
-    if (!gr && length(unique(xval)) > n_eval) {
-      xval <- quantile_pts(xval, groups = n_eval)
-    } else if (is.factor(xval)) {
-      xval <- levels(droplevels(xval))   # preserve factor ordering, drop unused levels
-    } else {
-      xval <- sort(unique(xval))
-    }
-    list(xval = xval, categorical = gr)
-  }
-
-  ## Helper: call partial.rfsrc with the appropriate time argument.
-  call_partial <- function(xname, xval, xvar2.name = NULL, x2val = NULL) {
-    args <- list(
-      object         = rf_model,
-      partial.xvar   = xname,
-      partial.values = xval
-    )
-    if (!is.null(xvar2.name)) {
-      args$partial.xvar2   <- xvar2.name
-      args$partial.values2 <- x2val
-    }
-    if (is_surv) {
-      args$partial.time <- partial.time
-    }
-    do.call(randomForestSRC::partial.rfsrc, args)
+    partial.time <- snap_partial_time(rf_model, partial.time)
   }
 
   if (is.null(xvar2.name)) {
-    pdta <- lapply(xvar.names, function(xname) {
-      eg <- make_eval_grid(xname)
-      if (is.null(eg)) return(NULL)   # all-NA column — skip
-      xval <- eg$xval
-      gr   <- eg$categorical
-      partial.obj <- call_partial(xname, xval)
-      pout <- randomForestSRC::get.partial.plot.data(partial.obj, granule = gr)
-      out_dta <- data.frame(x = pout$x, yhat = pout$yhat)
-      out_dta$name <- xname
-      out_dta$type <- c("continuous", "categorical")[gr + 1]
-      if (!is.null(pout$partial.time)) {
-        out_dta$time <- pout$partial.time
-      }
-      return(out_dta)
-    })
-    pdta <- Filter(Negate(is.null), pdta)
+    pdta <- partial_no_group(xvar.names, newx, rf_model,
+                             cat_limit, n_eval, is_surv, partial.time)
   } else {
-    xv2 <- unique(unlist(newx |>
-                           dplyr::select(dplyr::all_of(xvar2.name))))
-    xv2 <- xv2[!is.na(xv2)]
-    if (length(xv2) == 0L) {
-      stop(sprintf(
-        "Grouping variable '%s' contains only NA values in 'newx'; cannot compute surface partial dependence.",
-        xvar2.name
-      ), call. = FALSE)
-    }
-    pdta <- lapply(xv2, function(x2val) {
-      p1dta <- lapply(xvar.names, function(xname) {
-        eg <- make_eval_grid(xname)
-        if (is.null(eg)) return(NULL)   # all-NA column — skip
-        xval <- eg$xval
-        gr   <- eg$categorical
-        partial.obj <- call_partial(xname, xval, xvar2.name, x2val)
-        pout <- randomForestSRC::get.partial.plot.data(partial.obj, granule = gr)
-        out_dta <- data.frame(x = pout$x, yhat = pout$yhat)
-        out_dta$name <- xname
-        out_dta$type <- c("continuous", "categorical")[gr + 1]
-        if (!is.null(pout$partial.time)) {
-          out_dta$time <- pout$partial.time
-        }
-        return(out_dta)
-      })
-      p1dta <- Filter(Negate(is.null), p1dta)
-      if (length(p1dta) == 0L) return(NULL)
-      p1dta <- do.call("rbind", p1dta)
-      p1dta$grp <- x2val
-      return(p1dta)
-    })
-    pdta <- Filter(Negate(is.null), pdta)
+    pdta <- partial_with_group(xvar.names, xvar2.name, newx, rf_model,
+                               cat_limit, n_eval, is_surv, partial.time)
   }
-  pdta <- do.call("rbind", pdta)
-  # Split into continuous / categorical and tidy up the type column
-  cont_idx <- pdta$type == "continuous"
-  continuous <- pdta[cont_idx, , drop = FALSE]
-  continuous$x <- as.numeric(continuous$x)
+
+  split_partial_result(do.call("rbind", pdta))
+}
+
+## ---- unexported helpers -------------------------------------------------------
+
+## Validate and coerce n_eval / cat_limit.
+validate_partial_args <- function(n_eval, cat_limit) {
+  if (!is.numeric(n_eval) || length(n_eval) != 1L ||
+        is.na(n_eval) || n_eval < 2L) {
+    stop("'n_eval' must be a single integer >= 2.", call. = FALSE)
+  }
+  if (!is.numeric(cat_limit) || length(cat_limit) != 1L ||
+        is.na(cat_limit) || cat_limit < 2L) {
+    stop("'cat_limit' must be a single integer >= 2.", call. = FALSE)
+  }
+  list(n_eval = as.integer(n_eval), cat_limit = as.integer(cat_limit))
+}
+
+## Snap requested time points to the nearest values in time.interest.
+snap_partial_time <- function(rf_model, partial.time) {
+  ti <- rf_model$time.interest
+  if (is.null(partial.time)) {
+    partial.time <- quantile(ti, probs = c(0.25, 0.5, 0.75), names = FALSE)
+  }
+  snapped <- sapply(partial.time,
+                    function(t) ti[which.min(abs(ti - t))],
+                    USE.NAMES = FALSE)
+  unique(snapped)
+}
+
+## Build the evaluation grid (xval vector + categorical flag) for one variable.
+make_eval_grid <- function(xname, newx, cat_limit, n_eval) {
+  # Use `[[` to preserve the column's class (factor, character, numeric, …).
+  # unlist(dplyr::select(...)) would coerce factors to integer codes, breaking
+  # both the cat_limit check and the partial.values passed to partial.rfsrc().
+  xval <- newx[[xname]]
+  xval <- xval[!is.na(xval)]
+  if (length(xval) == 0L) {
+    warning(sprintf(
+      "Variable '%s' contains only NA values in 'newx'; skipping partial dependence.",
+      xname
+    ), call. = FALSE)
+    return(NULL)
+  }
+  gr <- is.factor(xval) || is.character(xval) || length(unique(xval)) < cat_limit
+  if (!gr && length(unique(xval)) > n_eval) {
+    xval <- quantile_pts(xval, groups = n_eval)
+  } else if (is.factor(xval)) {
+    xval <- levels(droplevels(xval))   # preserve factor ordering; drop unused levels
+  } else {
+    xval <- sort(unique(xval))
+  }
+  list(xval = xval, categorical = gr)
+}
+
+## Thin wrapper around partial.rfsrc that builds the argument list.
+call_partial_rfsrc <- function(rf_model, xname, xval,
+                                is_surv, partial.time,
+                                xvar2.name = NULL, x2val = NULL) {
+  args <- list(
+    object         = rf_model,
+    partial.xvar   = xname,
+    partial.values = xval
+  )
+  if (!is.null(xvar2.name)) {
+    args$partial.xvar2   <- xvar2.name
+    args$partial.values2 <- x2val
+  }
+  if (is_surv) {
+    args$partial.time <- partial.time
+  }
+  do.call(randomForestSRC::partial.rfsrc, args)
+}
+
+## Process a single predictor variable and return a tidy data.frame (or NULL).
+partial_one_var <- function(xname, newx, rf_model,
+                            cat_limit, n_eval, is_surv, partial.time,
+                            xvar2.name = NULL, x2val = NULL) {
+  eg <- make_eval_grid(xname, newx, cat_limit, n_eval)
+  if (is.null(eg)) return(NULL)
+  xval <- eg$xval
+  gr   <- eg$categorical
+  partial.obj <- call_partial_rfsrc(rf_model, xname, xval,
+                                     is_surv, partial.time,
+                                     xvar2.name, x2val)
+  pout    <- randomForestSRC::get.partial.plot.data(partial.obj, granule = gr)
+  out_dta <- data.frame(x = pout$x, yhat = pout$yhat)
+  out_dta$name <- xname
+  out_dta$type <- c("continuous", "categorical")[gr + 1L]
+  if (!is.null(pout$partial.time)) {
+    out_dta$time <- pout$partial.time
+  }
+  out_dta
+}
+
+## Compute partial dependence across xvar.names (no grouping variable).
+partial_no_group <- function(xvar.names, newx, rf_model,
+                             cat_limit, n_eval, is_surv, partial.time) {
+  pdta <- lapply(xvar.names, partial_one_var,
+                 newx = newx, rf_model = rf_model,
+                 cat_limit = cat_limit, n_eval = n_eval,
+                 is_surv = is_surv, partial.time = partial.time)
+  Filter(Negate(is.null), pdta)
+}
+
+## Compute partial dependence across xvar.names for each level of xvar2.name.
+partial_with_group <- function(xvar.names, xvar2.name, newx, rf_model,
+                               cat_limit, n_eval, is_surv, partial.time) {
+  xv2 <- unique(newx[[xvar2.name]])
+  xv2 <- xv2[!is.na(xv2)]
+  if (length(xv2) == 0L) {
+    stop(sprintf(
+      "Grouping variable '%s' contains only NA values in 'newx'; cannot compute surface partial dependence.",
+      xvar2.name
+    ), call. = FALSE)
+  }
+  pdta <- lapply(xv2, function(x2val) {
+    p1dta <- lapply(xvar.names, partial_one_var,
+                    newx = newx, rf_model = rf_model,
+                    cat_limit = cat_limit, n_eval = n_eval,
+                    is_surv = is_surv, partial.time = partial.time,
+                    xvar2.name = xvar2.name, x2val = x2val)
+    p1dta <- Filter(Negate(is.null), p1dta)
+    if (length(p1dta) == 0L) return(NULL)
+    p1dta        <- do.call("rbind", p1dta)
+    p1dta$grp    <- x2val
+    p1dta
+  })
+  Filter(Negate(is.null), pdta)
+}
+
+## Split the combined data.frame into continuous / categorical and stamp class.
+split_partial_result <- function(pdta) {
+  cont_idx        <- pdta$type == "continuous"
+  continuous      <- pdta[cont_idx, , drop = FALSE]
+  continuous$x    <- as.numeric(continuous$x)
   continuous$type <- NULL
-  categorical <- pdta[!cont_idx, , drop = FALSE]
+  categorical      <- pdta[!cont_idx, , drop = FALSE]
   categorical$type <- NULL
   result <- list(continuous = continuous, categorical = categorical)
   class(result) <- "gg_partial_rfsrc"

@@ -63,8 +63,11 @@ reference:
     desc: "Partial dependence plots for individual variables."
     contents:
       - gg_partial
+      - plot.gg_partial
       - gg_partial_rfsrc
+      - plot.gg_partial_rfsrc
       - gg_partialpro
+      - plot.gg_partialpro
 
   - title: "Survival Analysis"
     desc: "Survival curves, ROC, and related diagnostics."
