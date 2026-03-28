@@ -15,7 +15,7 @@ required — supply the fitted rfsrc object directly."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,11 @@ required — supply the fitted rfsrc object directly."></head><body>
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ggRandomForests.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
+  </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
@@ -51,7 +56,7 @@ required — supply the fitted rfsrc object directly."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Partial dependence data from an rfsrc model</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v2.7.0/R/gg_partial_rfsrc.R" class="external-link"><code>R/gg_partial_rfsrc.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_partial_rfsrc.R" class="external-link"><code>R/gg_partial_rfsrc.R</code></a></small>
       <div class="d-none name"><code>gg_partial_rfsrc.Rd</code></div>
     </div>
 
@@ -70,7 +75,9 @@ required — supply the fitted <code>rfsrc</code> object directly.</p>
 <span>  xvar.names <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  xvar2.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  newx <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  cat_limit <span class="op">=</span> <span class="fl">10</span></span>
+<span>  partial.time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  n_eval <span class="op">=</span> <span class="fl">25</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -99,10 +106,26 @@ partial effects at. Defaults to the training data stored in
 <code>rf_model$xvar</code>. All column names must match <code>rf_model$xvar.names</code>.</p></dd>
 
 
+<dt id="arg-partial-time">partial.time<a class="anchor" aria-label="anchor" href="#arg-partial-time"></a></dt>
+<dd><p>Numeric vector of desired time points for survival
+forests (ignored for regression/classification).  Values are automatically
+snapped to the nearest entry in <code>rf_model$time.interest</code> — see the
+<strong>Survival forests</strong> section below.  When <code>NULL</code> (default),
+three quartile points of <code>time.interest</code> are used.</p></dd>
+
+
 <dt id="arg-cat-limit">cat_limit<a class="anchor" aria-label="anchor" href="#arg-cat-limit"></a></dt>
 <dd><p>Variables with fewer than <code>cat_limit</code> unique values in
 <code>newx</code> are treated as categorical; all others are continuous.
 Defaults to 10.</p></dd>
+
+
+<dt id="arg-n-eval">n_eval<a class="anchor" aria-label="anchor" href="#arg-n-eval"></a></dt>
+<dd><p>Number of evaluation points for continuous variables. Instead
+of passing all observed values (which can be slow, especially for survival
+forests), continuous predictors are evaluated on a quantile grid of this
+many points. Categorical variables always use all unique levels.
+Defaults to 25.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -119,6 +142,36 @@ Defaults to 10.</p></dd>
 
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="survival-forests-and-partial-time">Survival forests and <code>partial.time</code><a class="anchor" aria-label="anchor" href="#survival-forests-and-partial-time"></a></h2>
+
+
+<p><code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc</a></code> requires that every value in
+<code>partial.time</code> be an exact member of the model's <code>time.interest</code>
+vector (the unique observed event times stored in the fitted object).
+Passing arbitrary time values — even plausible ones such as <code>c(1, 3)</code>
+for a study measured in years — causes a C-level prediction error inside
+<code>partial.rfsrc</code>.</p>
+<p><code>gg_partial_rfsrc</code> handles this automatically: every element of
+<code>partial.time</code> is silently snapped to its nearest <code>time.interest</code>
+value before the call is made.  To target a specific follow-up horizon,
+find the closest grid point yourself and pass it explicitly:</p>
+<div class="sourceCode"><pre><code><span></span>
+<span><span class="va">ti</span>  <span class="op">&lt;-</span> <span class="va">rf_model</span><span class="op">$</span><span class="va">time.interest</span></span>
+<span><span class="va">t1</span>  <span class="op">&lt;-</span> <span class="va">ti</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">ti</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>   <span class="co"># nearest to 1 year</span></span>
+<span><span class="va">pd</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc</a></span><span class="op">(</span><span class="va">rf_model</span>, xvar.names <span class="op">=</span> <span class="st">"x"</span>, partial.time <span class="op">=</span> <span class="va">t1</span><span class="op">)</span></span></code></pre></div>
+
+    </div>
+    <div class="section level2">
+    <h2 id="logical-predictor-columns">Logical predictor columns<a class="anchor" aria-label="anchor" href="#logical-predictor-columns"></a></h2>
+
+
+<p><code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc</a></code> does not handle
+<code>logical</code> predictor columns correctly in survival forests
+(randomForestSRC &lt;= 3.5.1).  If your training data contains binary 0/1
+columns, convert them to <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></code> rather than <code>logical</code>
+before fitting the model.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="gg_partial.html">gg_partial</a></code>, <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc</a></code>,

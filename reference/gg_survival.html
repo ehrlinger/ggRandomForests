@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,6 +17,11 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ggRandomForests.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
+  </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
@@ -43,7 +48,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Nonparametric survival estimates.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v2.7.0/R/gg_survival.R" class="external-link"><code>R/gg_survival.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_survival.R" class="external-link"><code>R/gg_survival.R</code></a></small>
       <div class="d-none name"><code>gg_survival.Rd</code></div>
     </div>
 
@@ -54,10 +59,33 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_survival</span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  interval <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  censor <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">data</span>,</span>
+<span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kaplan"</span>, <span class="st">"nelson"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'rfsrc'</span></span>
+<span><span class="fu">gg_survival</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  interval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  censor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kaplan"</span>, <span class="st">"nelson"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Default S3 method</span></span>
+<span><span class="fu">gg_survival</span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  interval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  censor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kaplan"</span>, <span class="st">"nelson"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -67,47 +95,66 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-interval">interval<a class="anchor" aria-label="anchor" href="#arg-interval"></a></dt>
-<dd><p>Character; name of the time-to-event column in <code>data</code>.</p></dd>
+<dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
+<dd><p>For the <code>rfsrc</code> method: a fitted
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> survival forest.  For the default
+method: pass <code>NULL</code> (or omit) and supply <code>interval</code>,
+<code>censor</code>, and <code>data</code> instead.</p></dd>
+
+
+<dt id="arg-interval">interval<a class="anchor" aria-label="anchor" href="#arg-interval"></a></dt>
+<dd><p>Character; name of the time-to-event column in <code>data</code>
+(default method only).</p></dd>
 
 
 <dt id="arg-censor">censor<a class="anchor" aria-label="anchor" href="#arg-censor"></a></dt>
 <dd><p>Character; name of the event-indicator column in <code>data</code>
-(1 = event occurred, 0 = censored).</p></dd>
+(1 = event, 0 = censored; default method only).</p></dd>
 
 
 <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
-<dd><p>Optional character; name of a grouping column in <code>data</code> for
-stratified estimates. Defaults to <code>NULL</code> (unstratified).</p></dd>
+<dd><p>Optional character; name of a grouping column for stratified
+estimates.  For the <code>rfsrc</code> method, <code>by</code> must be a column in
+<code>object$xvar</code>.</p></dd>
 
 
 <dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>A <code>data.frame</code> containing the survival data.</p></dd>
+<dd><p>A <code>data.frame</code> containing survival data (default method
+only).</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>One of <code>"kaplan"</code> (Kaplan-Meier, default) or
-<code>"nelson"</code> (Nelson-Aalen cumulative hazard).</p></dd>
+<code>"nelson"</code> (Nelson-Aalen cumulative hazard).  Default method only.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments passed to <code><a href="kaplan.html">kaplan</a></code> or
-<code><a href="nelson.html">nelson</a></code> (e.g. <code>conf.int</code> to change the CI width).</p></dd>
+<code><a href="nelson.html">nelson</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>gg_survival</code> <code>data.frame</code> with columns <code>time</code>,
-  <code>surv</code> (or <code>cum_haz</code> for Nelson-Aalen), <code>lower</code>,
-  <code>upper</code> (confidence limits), and <code>n.risk</code>. A <code>strata</code>
-  column is added when <code>by</code> is supplied.</p>
+  <code>surv</code>, <code>cum_haz</code>, <code>lower</code>, <code>upper</code>, <code>n.risk</code>,
+  and optionally <code>groups</code> when <code>by</code> is supplied.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>gg_survival</code> is a wrapper function for generating
-nonparametric survival estimates using either <code><a href="nelson.html">nelson</a></code>-Aalen
-or <code><a href="kaplan.html">kaplan</a></code>-Meier estimates.</p>
-    </div>
+    <p><code>gg_survival</code> is an S3 generic for generating nonparametric
+survival estimates.  It dispatches on the class of its first argument:</p>
+<dl><dt><code>rfsrc</code></dt>
+<dd><p>Extracts the response data from the fitted forest and
+    delegates to <code><a href="kaplan.html">kaplan</a></code>.  Use the <code>by</code> argument to
+    stratify on a predictor stored in the model's <code>xvar</code> slot.</p></dd>
+
+  <dt>default</dt>
+<dd><p>Accepts raw survival data columns via the <code>interval</code>,
+    <code>censor</code>, <code>by</code>, and <code>data</code> arguments, delegating to
+    either <code><a href="kaplan.html">kaplan</a></code> (default) or <code><a href="nelson.html">nelson</a></code>.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="kaplan.html">kaplan</a></code> <code><a href="nelson.html">nelson</a></code></p>
@@ -116,40 +163,21 @@ or <code><a href="kaplan.html">kaplan</a></code>-Meier estimates.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## -------- pbc data</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## -------- pbc data (default method — raw data columns)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pbc</span>, package <span class="op">=</span> <span class="st">"randomForestSRC"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pbc</span><span class="op">$</span><span class="va">time</span> <span class="op">&lt;-</span> <span class="va">pbc</span><span class="op">$</span><span class="va">days</span> <span class="op">/</span> <span class="fl">364.25</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># This is the same as kaplan</span></span></span>
-<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_survival</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  interval <span class="op">=</span> <span class="st">"time"</span>, censor <span class="op">=</span> <span class="st">"status"</span>,</span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="va">pbc</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_survival</span><span class="op">(</span>interval <span class="op">=</span> <span class="st">"time"</span>, censor <span class="op">=</span> <span class="st">"status"</span>, data <span class="op">=</span> <span class="va">pbc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, error <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gg_survival-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gg_survival-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Stratified on treatment variable.</span></span></span>
+<span class="r-in"><span><span class="co"># Stratified</span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_survival</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  interval <span class="op">=</span> <span class="st">"time"</span>, censor <span class="op">=</span> <span class="st">"status"</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">pbc</span>, by <span class="op">=</span> <span class="st">"treatment"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, error <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gg_survival-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gg_survival-4.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># ...with smaller confidence limits.</span></span></span>
-<span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_survival</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  interval <span class="op">=</span> <span class="st">"time"</span>, censor <span class="op">=</span> <span class="st">"status"</span>,</span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="va">pbc</span>, by <span class="op">=</span> <span class="st">"treatment"</span>, conf.int <span class="op">=</span> <span class="fl">.68</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span>, error <span class="op">=</span> <span class="st">"lines"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="gg_survival-5.png" alt="" width="700" height="433"></span>
+<span class="r-plt img"><img src="gg_survival-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

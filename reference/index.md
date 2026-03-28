@@ -57,11 +57,28 @@ Partial dependence plots for individual variables.
 - [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
   : Split partial dependence data into continuous or categorical
   datasets
+
+- [`plot(`*`<gg_partial>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md)
+  :
+
+  Plot a `gg_partial` object
+
 - [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
   : Partial dependence data from an rfsrc model
+
+- [`plot(`*`<gg_partial_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
+  :
+
+  Plot a `gg_partial_rfsrc` object
+
 - [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md)
   : Split varpro partial dependence data into continuous or categorical
   datasets
+
+- [`plot(`*`<gg_partialpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.md)
+  :
+
+  Plot a `gg_partialpro` object
 
 ## Survival Analysis
 

@@ -9,7 +9,7 @@ function of number of trees."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,6 +19,11 @@ function of number of trees."></head><body>
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/ggRandomForests.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
+  </ul></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news"><li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
@@ -45,7 +50,7 @@ function of number of trees."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Plot a <code><a href="gg_error.html">gg_error</a></code> object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v2.7.0/R/plot.gg_error.R" class="external-link"><code>R/plot.gg_error.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/plot.gg_error.R" class="external-link"><code>R/plot.gg_error.R</code></a></small>
       <div class="d-none name"><code>plot.gg_error.Rd</code></div>
     </div>
 
@@ -147,7 +152,7 @@ Regression and Classification. R package version &gt;= 3.4.0.
 <span class="r-in"><span><span class="co">## ------------- airq data</span></span></span>
 <span class="r-in"><span><span class="va">rfsrc_airq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">Ozone</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">airquality</span>,</span></span>
-<span class="r-in"><span>  na.action <span class="op">=</span> <span class="st">"na.impute"</span>, </span></span>
+<span class="r-in"><span>  na.action <span class="op">=</span> <span class="st">"na.impute"</span>,</span></span>
 <span class="r-in"><span>  forest <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  importance <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>  tree.err <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>

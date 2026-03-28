@@ -103,7 +103,7 @@ plot(gg_dta)
 ## ------------- airq data
 rfsrc_airq <- rfsrc(Ozone ~ .,
   data = airquality,
-  na.action = "na.impute", 
+  na.action = "na.impute",
   forest = TRUE,
   importance = TRUE,
   tree.err = TRUE,

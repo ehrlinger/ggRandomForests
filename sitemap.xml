@@ -3,6 +3,8 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/CONTRIBUTING.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/LICENSE-text.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/LICENSE.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-regression.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-survival.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/articles/index.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/authors.html</loc></url>
@@ -27,6 +29,9 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/kaplan.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/nelson.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_survival.html</loc></url>

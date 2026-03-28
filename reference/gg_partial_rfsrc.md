@@ -16,7 +16,9 @@ gg_partial_rfsrc(
   xvar.names = NULL,
   xvar2.name = NULL,
   newx = NULL,
-  cat_limit = 10
+  partial.time = NULL,
+  cat_limit = 10,
+  n_eval = 25
 )
 ```
 
@@ -45,10 +47,26 @@ gg_partial_rfsrc(
   at. Defaults to the training data stored in `rf_model$xvar`. All
   column names must match `rf_model$xvar.names`.
 
+- partial.time:
+
+  Numeric vector of desired time points for survival forests (ignored
+  for regression/classification). Values are automatically snapped to
+  the nearest entry in `rf_model$time.interest` — see the **Survival
+  forests** section below. When `NULL` (default), three quartile points
+  of `time.interest` are used.
+
 - cat_limit:
 
   Variables with fewer than `cat_limit` unique values in `newx` are
   treated as categorical; all others are continuous. Defaults to 10.
+
+- n_eval:
+
+  Number of evaluation points for continuous variables. Instead of
+  passing all observed values (which can be slow, especially for
+  survival forests), continuous predictors are evaluated on a quantile
+  grid of this many points. Categorical variables always use all unique
+  levels. Defaults to 25.
 
 ## Value
 
@@ -64,6 +82,33 @@ A named list with two elements:
 
   A `data.frame` with the same columns but `x` kept as character, for
   low-cardinality predictors.
+
+## Survival forests and `partial.time`
+
+[`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+requires that every value in `partial.time` be an exact member of the
+model's `time.interest` vector (the unique observed event times stored
+in the fitted object). Passing arbitrary time values — even plausible
+ones such as `c(1, 3)` for a study measured in years — causes a C-level
+prediction error inside `partial.rfsrc`.
+
+`gg_partial_rfsrc` handles this automatically: every element of
+`partial.time` is silently snapped to its nearest `time.interest` value
+before the call is made. To target a specific follow-up horizon, find
+the closest grid point yourself and pass it explicitly:
+
+    ti  <- rf_model$time.interest
+    t1  <- ti[which.min(abs(ti - 1))]   # nearest to 1 year
+    pd  <- gg_partial_rfsrc(rf_model, xvar.names = "x", partial.time = t1)
+
+## Logical predictor columns
+
+[`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+does not handle `logical` predictor columns correctly in survival
+forests (randomForestSRC \<= 3.5.1). If your training data contains
+binary 0/1 columns, convert them to
+[`factor`](https://rdrr.io/r/base/factor.html) rather than `logical`
+before fitting the model.
 
 ## See also
 

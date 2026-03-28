@@ -1,11 +1,10 @@
 # Survival partial dependence data for one or more predictors
 
-Computes partial dependence curves for a survival or competing-risk
-[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) forest
-by calling
-[`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-at `npts` evenly-spaced unique values of each predictor across all
-stored event times.
+**Deprecated.** Use
+[`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+instead, which returns a classed `gg_partial_rfsrc` object with a
+dedicated [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
+method.
 
 ## Usage
 
@@ -56,6 +55,15 @@ is itself a list with:
   (partial predictions), and for survival/competing risk,
   `partial.time`.
 
+## Details
+
+Computes partial dependence curves for a survival or competing-risk
+[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) forest
+by calling
+[`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+at `npts` evenly-spaced unique values of each predictor across all
+stored event times.
+
 ## See also
 
 [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md),
@@ -70,10 +78,13 @@ is itself a list with:
 ## ------------------------------------------------------------
 
 data(veteran, package = "randomForestSRC")
-v.obj <- randomForestSRC::rfsrc(Surv(time,status)~., 
+v.obj <- randomForestSRC::rfsrc(Surv(time,status)~.,
   veteran, nsplit = 10, ntree = 100)
 
 spart <- surv_partial.rfsrc(v.obj, var_list="age", partial.type = "mort")
+#> Warning: 'surv_partial.rfsrc' is deprecated and will be removed in a future release.
+#> Use 'gg_partial_rfsrc()' instead, which returns a classed object with a
+#> dedicated plot() method.
 #> partial plot for: age 
 
 ## partial effect of age on mortality

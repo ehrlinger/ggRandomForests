@@ -1,14 +1,95 @@
 # Changelog
 
+## ggRandomForests v2.8.0
+
+- S3 design overhaul:
+  [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md),
+  [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md),
+  and
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  now stamp their return values with S3 classes (`gg_partial`,
+  `gg_partialpro`, `gg_partial_rfsrc` respectively), enabling
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) dispatch
+  without any boilerplate.
+- Add
+  [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md),
+  [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md),
+  and
+  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.md)
+  S3 methods; continuous predictors render as line plots, categorical as
+  bar charts, faceted by variable name. Survival forests produce curves
+  over time; two-variable surface plots group by `xvar2.name`.
+- Convert
+  [`gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
+  to an S3 generic dispatching on the class of its first argument. New
+  [`gg_survival.rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
+  method extracts the survival response directly from the fitted forest
+  (no separate data argument needed);
+  [`gg_survival.default()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
+  preserves the existing interface.
+- Fix
+  [`plot.gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_survival.md)
+  auto-coercion: previously called `gg_survival(rfsrc_obj)` treating the
+  forest as the `interval` string argument, causing a latent crash;
+  replaced with [`inherits()`](https://rdrr.io/r/base/class.html) guard.
+- Deprecate
+  [`surv_partial.rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.md)
+  via [`.Deprecated()`](https://rdrr.io/r/base/Deprecated.html) with a
+  pointer to
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md);
+  all package tests updated to suppress the warning.
+- Fix
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  — `make_eval_grid()` used `unlist(dplyr::select())` which coerced
+  factor columns to integer codes; now uses `newx[[xname]]` to preserve
+  column class. Categorical detection extended to cover
+  [`is.factor()`](https://rdrr.io/r/base/factor.html) and
+  [`is.character()`](https://rdrr.io/r/base/character.html) in addition
+  to the cardinality check.
+- Add guards to
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md):
+  all-NA `xval` after NA removal now emits a warning and skips the
+  variable; all-NA grouping variable (`xvar2`) calls
+  [`stop()`](https://rdrr.io/r/base/stop.html); `n_eval` and `cat_limit`
+  are validated as single integers \>= 2 near function entry.
+- Fix cyclomatic complexity across `gg_partial_rfsrc.R`: refactored into
+  eight top-level unexported helpers (`validate_scalar_int`,
+  `validate_partial_args`, `snap_partial_time`, `make_eval_grid`,
+  `call_partial_rfsrc`, `partial_one_var`, `partial_no_group`,
+  `partial_with_group`, `split_partial_result`); all functions now score
+  below the `cyclocomp_linter` limit of 20.
+- Fix `@param partial.time` documentation: “see the section above”
+  corrected to “see the section below”.
+- Replace deprecated
+  [`tidyr::gather()`](https://tidyr.tidyverse.org/reference/gather.html)
+  with
+  [`tidyr::pivot_longer()`](https://tidyr.tidyverse.org/reference/pivot_longer.html)
+  in
+  [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md)
+  and
+  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.md).
+- Add `gg_survival.rfsrc`, `gg_survival.default`, `plot.gg_partial`,
+  `plot.gg_partial_rfsrc`, and `plot.gg_partialpro` to `NAMESPACE`; add
+  corresponding `@rdname` / `@export` roxygen tags.
+- Update tests: add `expect_s3_class()` checks for all new classes; add
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) smoke tests
+  for `gg_partial`, `gg_partial_rfsrc`, `gg_partialpro`; add
+  `gg_survival.rfsrc` tests for KM extraction, `by` stratification, and
+  error on non-survival forest.
+- Add `plot.gg_partial`, `plot.gg_partial_rfsrc`, and
+  `plot.gg_partialpro` to `_pkgdown.yml` reference index.
+
 ## ggRandomForests v2.7.0
 
-- Fix critical visual bug in `plot.gg_rfsrc`: all `aes()` calls used
+- Fix critical visual bug in `plot.gg_rfsrc`: all
+  [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html) calls used
   bare string literals instead of `.data[[col]]`, causing every
   aesthetic to map to a constant string rather than the underlying data
   column. All plot types (regression, classification, survival) were
   affected.
-- Fix `aes()` bare-string literals in `plot.gg_roc` multi-class branch;
-  remove unreachable `if (crv < 2)` dead-code branch.
+- Fix [`aes()`](https://ggplot2.tidyverse.org/reference/aes.html)
+  bare-string literals in `plot.gg_roc` multi-class branch; remove
+  unreachable `if (crv < 2)` dead-code branch.
 - Fix `bootstrap_survival` CI-band indexing in `gg_rfsrc`: negative
   index computed via
   [`colnames()`](https://rdrr.io/r/base/colnames.html) was a no-op on
