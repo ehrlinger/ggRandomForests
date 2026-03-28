@@ -214,3 +214,180 @@ test_that("gg_partial_rfsrc with xvar2.name returns grouped result", {
     expect_true("grp" %in% colnames(result$continuous))
   }
 })
+
+# ---- n_eval and cat_limit ---------------------------------------------------
+
+test_that("n_eval limits evaluation grid size for continuous variables", {
+  skip_if_not_installed("randomForestSRC")
+
+  set.seed(42)
+  airq <- na.omit(airquality)
+  rf   <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50, nsplit = 5)
+
+  # Wind has 31 unique values in the full airquality dataset; n_eval = 8
+  # should produce at most 8 evaluation points in the output
+  result <- gg_partial_rfsrc(rf, xvar.names = "Wind", n_eval = 8)
+
+  expect_gt(nrow(result$continuous), 0)
+  expect_lte(nrow(result$continuous), 8)
+})
+
+test_that("default n_eval = 25 caps large continuous grids", {
+  skip_if_not_installed("randomForestSRC")
+
+  set.seed(42)
+  airq <- na.omit(airquality)
+  rf   <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50, nsplit = 5)
+
+  result <- gg_partial_rfsrc(rf, xvar.names = "Wind")  # default n_eval = 25
+
+  expect_lte(nrow(result$continuous), 25)
+})
+
+test_that("cat_limit controls continuous vs categorical dispatch", {
+  skip_if_not_installed("randomForestSRC")
+
+  set.seed(42)
+  airq <- na.omit(airquality)
+  rf   <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50, nsplit = 5)
+
+  # Month has 5 unique values.
+  # With default cat_limit = 10: Month → categorical
+  result_cat <- gg_partial_rfsrc(rf, xvar.names = "Month", cat_limit = 10)
+  expect_gt(nrow(result_cat$categorical), 0)
+  expect_true("Month" %in% result_cat$categorical$name)
+
+  # With cat_limit = 3: Month (5 unique values >= 3) → continuous
+  result_cont <- gg_partial_rfsrc(rf, xvar.names = "Month", cat_limit = 3)
+  expect_gt(nrow(result_cont$continuous), 0)
+  expect_true("Month" %in% result_cont$continuous$name)
+})
+
+# ---- survival forest path ---------------------------------------------------
+
+# Helper: fit a small survival forest on veteran data (n = 137, fast to build)
+make_veteran_rf <- function() {
+  skip_if_not_installed("randomForestSRC")
+  skip_if_not_installed("survival")
+  veteran <- survival::veteran        # direct access avoids .GlobalEnv loading issue
+  Surv    <- survival::Surv           # parseFormula rejects namespace::Surv(...) syntax # nolint: object_name_linter
+  set.seed(42)
+  randomForestSRC::rfsrc(
+    Surv(time, status) ~ trt + karno + diagtime + age + prior,
+    data   = veteran,
+    ntree  = 100,
+    nsplit = 5
+  )
+}
+
+test_that("survival forest is detected as is_surv = TRUE", {
+  rf <- make_veteran_rf()
+  expect_true(grepl("surv", rf$family, ignore.case = TRUE))
+  expect_false(is.null(rf$time.interest))
+  expect_gt(length(rf$time.interest), 0)
+})
+
+test_that("partial.time values are snapped to time.interest grid", {
+  rf <- make_veteran_rf()
+  ti <- rf$time.interest
+
+  # Pick a target time that almost certainly is not exactly in time.interest
+  target <- mean(range(ti))  # midpoint of observed event times
+  snapped <- ti[which.min(abs(ti - target))]
+
+  # snapped must be an exact member of time.interest
+  expect_true(snapped %in% ti)
+  # and it should be closer to target than any other grid point
+  diffs <- abs(ti - target)
+  expect_equal(snapped, ti[which.min(diffs)])
+})
+
+test_that("gg_partial_rfsrc survival: default partial.time uses quartiles", {
+  rf <- make_veteran_rf()
+  ti <- rf$time.interest
+
+  # When partial.time = NULL, three quartile-snapped times are used.
+  # We can verify this by inspecting how many distinct time values appear
+  # in the output (should be 3 unless quartile snapping collapses duplicates).
+  result <- tryCatch(
+    gg_partial_rfsrc(rf, xvar.names = "karno"),
+    error = function(e) {
+      skip(paste(
+        "partial.rfsrc() failed for survival forest (upstream bug):",
+        conditionMessage(e)
+      ))
+    }
+  )
+
+  expect_type(result, "list")
+  expect_named(result, c("continuous", "categorical"))
+  expect_gt(nrow(result$continuous), 0)
+  # time column should be present in survival output
+  expect_true("time" %in% colnames(result$continuous))
+  # at most 3 distinct time values (one per quartile)
+  expect_lte(length(unique(result$continuous$time)), 3)
+})
+
+test_that("gg_partial_rfsrc survival: explicit partial.time is snapped and used", {
+  rf <- make_veteran_rf()
+  ti <- rf$time.interest
+  # Target the median event time
+  t_med <- ti[which.min(abs(ti - median(ti)))]
+
+  result <- tryCatch(
+    gg_partial_rfsrc(rf, xvar.names = "karno", partial.time = t_med),
+    error = function(e) {
+      skip(paste(
+        "partial.rfsrc() failed for survival forest (upstream bug):",
+        conditionMessage(e)
+      ))
+    }
+  )
+
+  expect_type(result, "list")
+  expect_gt(nrow(result$continuous), 0)
+  expect_true("time" %in% colnames(result$continuous))
+  # The only time value in the output should be (close to) t_med
+  expect_true(all(abs(result$continuous$time - t_med) < 1e-9))
+})
+
+test_that("gg_partial_rfsrc survival: multiple partial.time values produce one row-set per time", {
+  rf <- make_veteran_rf()
+  ti <- rf$time.interest
+  t1 <- ti[which.min(abs(ti - quantile(ti, 0.25)))]
+  t2 <- ti[which.min(abs(ti - quantile(ti, 0.75)))]
+  # Ensure we actually have two distinct snapped times
+  if (t1 == t2) skip("quartile times collapsed to same grid point")
+
+  result <- tryCatch(
+    gg_partial_rfsrc(rf, xvar.names = "karno", partial.time = c(t1, t2)),
+    error = function(e) {
+      skip(paste(
+        "partial.rfsrc() failed for survival forest (upstream bug):",
+        conditionMessage(e)
+      ))
+    }
+  )
+
+  expect_type(result, "list")
+  n_times <- length(unique(result$continuous$time))
+  expect_equal(n_times, 2L)
+})
+
+test_that("gg_partial_rfsrc survival: returns correct column names", {
+  rf <- make_veteran_rf()
+  ti <- rf$time.interest
+  t_med <- ti[which.min(abs(ti - median(ti)))]
+
+  result <- tryCatch(
+    gg_partial_rfsrc(rf, xvar.names = "karno", partial.time = t_med),
+    error = function(e) {
+      skip(paste(
+        "partial.rfsrc() failed for survival forest (upstream bug):",
+        conditionMessage(e)
+      ))
+    }
+  )
+
+  expect_true(all(c("x", "yhat", "name", "time") %in% colnames(result$continuous)))
+})

@@ -1,6 +1,4 @@
 
-skip_if_not_installed("randomForest")
-
 data(Boston, package = "MASS")
 data(iris, package = "datasets")
 
@@ -10,6 +8,7 @@ iris_subset <- droplevels(subset(iris, Species != "setosa"))
 
 
 test_that(".rf_recover_model_frame rebuilds subsetted data", {
+  skip_if_not_installed("randomForest")
   rf_subset <- randomForest::randomForest(
     Species ~ .,
     data = iris_subset,
@@ -24,6 +23,7 @@ test_that(".rf_recover_model_frame rebuilds subsetted data", {
 
 
 test_that(".rf_training_curve returns trajectories for both families", {
+  skip_if_not_installed("randomForest")
   rf_cls <- randomForest::randomForest(
     Species ~ .,
     data = iris,
@@ -48,6 +48,7 @@ test_that(".rf_training_curve returns trajectories for both families", {
 
 
 test_that("training curves are skipped when forests are discarded", {
+  skip_if_not_installed("randomForest")
   rf_plain <- randomForest::randomForest(
     Species ~ .,
     data = iris,
@@ -63,6 +64,7 @@ test_that("training curves are skipped when forests are discarded", {
 
 
 test_that("gg_vimp falls back to placeholder when importance is unavailable", {
+  skip_if_not_installed("randomForest")
   rf_noimp <- randomForest::randomForest(
     medv ~ .,
     data = Boston,

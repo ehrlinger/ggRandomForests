@@ -34,6 +34,7 @@ framed.sty
 ^doc$
 ^Meta$
 ^_pkgdown\.yml$
+^codecov\.yml$
 ^docs$
 ^pkgdown$
 ^LICENSE\.md$

@@ -50,9 +50,16 @@ jobs:
           use-public-rspm: true
           rtools-version: '44'
 
-      # R-devel may fail here when abandoned packages (e.g. lazyeval) that use
-      # removed C symbols (PREXPR) appear in the transitive dependency graph.
-      # Allow the step to fail so subsequent steps (check, upload) still run.
+      # On R-devel, bootstrap rcmdcheck before the main lockfile install so that
+      # the check step can run even when abandoned packages (e.g. lazyeval) that
+      # use removed C symbols (PREXPR) cause pak::lockfile_install() to abort.
+      - name: Bootstrap rcmdcheck (R-devel only)
+        if: matrix.config.r == 'devel'
+        run: install.packages("rcmdcheck")
+        shell: Rscript {0}
+
+      # R-devel may fail here due to lazyeval PREXPR; rcmdcheck is pre-installed
+      # above so the check step still runs regardless.
       - uses: r-lib/actions/setup-r-dependencies@v2
         continue-on-error: ${{ matrix.config.r == 'devel' }}
         with:
@@ -61,6 +68,7 @@ jobs:
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
+        continue-on-error: ${{ matrix.config.r == 'devel' }}
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
