@@ -127,17 +127,22 @@ gg_partial_rfsrc <- function(rf_model,
 
 ## ---- unexported helpers -------------------------------------------------------
 
+## Check that x is a single non-NA numeric >= min_val; return as integer.
+validate_scalar_int <- function(x, name, min_val = 2L) {
+  ok <- is.numeric(x) && length(x) == 1L && !is.na(x) && x >= min_val
+  if (!ok) {
+    stop(sprintf("'%s' must be a single integer >= %d.", name, min_val),
+         call. = FALSE)
+  }
+  as.integer(x)
+}
+
 ## Validate and coerce n_eval / cat_limit.
 validate_partial_args <- function(n_eval, cat_limit) {
-  if (!is.numeric(n_eval) || length(n_eval) != 1L ||
-        is.na(n_eval) || n_eval < 2L) {
-    stop("'n_eval' must be a single integer >= 2.", call. = FALSE)
-  }
-  if (!is.numeric(cat_limit) || length(cat_limit) != 1L ||
-        is.na(cat_limit) || cat_limit < 2L) {
-    stop("'cat_limit' must be a single integer >= 2.", call. = FALSE)
-  }
-  list(n_eval = as.integer(n_eval), cat_limit = as.integer(cat_limit))
+  list(
+    n_eval    = validate_scalar_int(n_eval,    "n_eval",    2L),
+    cat_limit = validate_scalar_int(cat_limit, "cat_limit", 2L)
+  )
 }
 
 ## Snap requested time points to the nearest values in time.interest.
