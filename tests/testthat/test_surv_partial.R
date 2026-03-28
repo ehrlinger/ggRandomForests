@@ -1,7 +1,32 @@
 # Tests for surv_partial.rfsrc
+#
+# surv_partial.rfsrc() is deprecated in favour of gg_partial_rfsrc().
+# All calls are wrapped in suppressWarnings() so the deprecation message does
+# not produce noise in the test output.  The deprecation warning itself is
+# verified in the first test_that block below.
 
 # Survival formula helper (rfsrc requires Surv to be in local scope)
 Surv <- survival::Surv # nolint: object_name_linter
+
+test_that("surv_partial.rfsrc emits a deprecation warning", {
+  skip_if_not_installed("randomForestSRC")
+
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  v.obj <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data   = veteran,
+    ntree  = 50,
+    nsplit = 5
+  )
+
+  expect_warning(
+    suppressMessages(
+      surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
+    ),
+    regexp = "deprecated"
+  )
+})
 
 test_that("surv_partial.rfsrc returns list with one element per variable", {
   skip_if_not_installed("randomForestSRC")
@@ -10,12 +35,14 @@ test_that("surv_partial.rfsrc returns list with one element per variable", {
   set.seed(42)
   v.obj <- randomForestSRC::rfsrc(
     Surv(time, status) ~ .,
-    data = veteran,
-    ntree = 50,
+    data   = veteran,
+    ntree  = 50,
     nsplit = 5
   )
 
-  result <- surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
+  result <- suppressWarnings(
+    surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
+  )
 
   expect_type(result, "list")
   expect_length(result, 1)
@@ -29,12 +56,14 @@ test_that("surv_partial.rfsrc result element has name and dta fields", {
   set.seed(42)
   v.obj <- randomForestSRC::rfsrc(
     Surv(time, status) ~ .,
-    data = veteran,
-    ntree = 50,
+    data   = veteran,
+    ntree  = 50,
     nsplit = 5
   )
 
-  result <- surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
+  result <- suppressWarnings(
+    surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
+  )
 
   expect_named(result[[1]], c("name", "dta"))
   expect_true(!is.null(result[[1]]$dta))
@@ -47,14 +76,13 @@ test_that("surv_partial.rfsrc processes multiple variables", {
   set.seed(42)
   v.obj <- randomForestSRC::rfsrc(
     Surv(time, status) ~ .,
-    data = veteran,
-    ntree = 50,
+    data   = veteran,
+    ntree  = 50,
     nsplit = 5
   )
 
-  result <- surv_partial.rfsrc(v.obj,
-    var_list = c("age", "karno"),
-    partial.type = "mort"
+  result <- suppressWarnings(
+    surv_partial.rfsrc(v.obj, var_list = c("age", "karno"), partial.type = "mort")
   )
 
   expect_length(result, 2)
@@ -70,12 +98,14 @@ test_that("surv_partial.rfsrc works with surv partial.type", {
   set.seed(42)
   v.obj <- randomForestSRC::rfsrc(
     Surv(time, status) ~ .,
-    data = veteran,
-    ntree = 50,
+    data   = veteran,
+    ntree  = 50,
     nsplit = 5
   )
 
-  result <- surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "surv")
+  result <- suppressWarnings(
+    surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "surv")
+  )
 
   expect_type(result, "list")
   expect_length(result, 1)
@@ -89,15 +119,13 @@ test_that("surv_partial.rfsrc npts argument limits unique x values", {
   set.seed(42)
   v.obj <- randomForestSRC::rfsrc(
     Surv(time, status) ~ .,
-    data = veteran,
-    ntree = 50,
+    data   = veteran,
+    ntree  = 50,
     nsplit = 5
   )
 
-  result <- surv_partial.rfsrc(v.obj,
-    var_list = "age",
-    partial.type = "mort",
-    npts = 5
+  result <- suppressWarnings(
+    surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort", npts = 5)
   )
 
   expect_type(result, "list")
@@ -112,13 +140,15 @@ local({
   set.seed(42)
   v.obj <- randomForestSRC::rfsrc(
     Surv(time, status) ~ .,
-    data = veteran,
-    ntree = 50,
+    data   = veteran,
+    ntree  = 50,
     nsplit = 5
   )
 
   test_that("surv_partial.rfsrc dta element has x and yhat columns", {
-    result <- surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
+    result <- suppressWarnings(
+      surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
+    )
     dta <- result[[1]]$dta
     expect_true(!is.null(dta))
     # get.partial.plot.data returns a list with $x (predictor values) and
@@ -129,10 +159,8 @@ local({
 
   test_that("surv_partial.rfsrc npts limits evaluation points", {
     npts_requested <- 5L
-    result <- surv_partial.rfsrc(v.obj,
-      var_list = "age",
-      partial.type = "mort",
-      npts = npts_requested
+    result <- suppressWarnings(
+      surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort", npts = npts_requested)
     )
     dta <- result[[1]]$dta
     # The number of evaluation points should be <= npts_requested
@@ -140,8 +168,12 @@ local({
   })
 
   test_that("surv_partial.rfsrc mort and surv partial.types return different yhat scales", {
-    res_mort <- surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
-    res_surv <- surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "surv")
+    res_mort <- suppressWarnings(
+      surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
+    )
+    res_surv <- suppressWarnings(
+      surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "surv")
+    )
 
     yhat_mort <- res_mort[[1]]$dta$yhat
     yhat_surv <- res_surv[[1]]$dta$yhat
@@ -157,20 +189,26 @@ local({
 
   test_that("surv_partial.rfsrc verbose: prints variable name during computation", {
     expect_output(
-      surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort"),
+      suppressWarnings(
+        surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
+      ),
       regexp = "age"
     )
   })
 
   test_that("surv_partial.rfsrc errors on invalid variable name", {
     expect_error(
-      surv_partial.rfsrc(v.obj, var_list = "nonexistent_var", partial.type = "mort")
+      suppressWarnings(
+        surv_partial.rfsrc(v.obj, var_list = "nonexistent_var", partial.type = "mort")
+      )
     )
   })
 
   test_that("surv_partial.rfsrc result names match requested var_list order", {
     vars <- c("karno", "age", "diagtime")
-    result <- surv_partial.rfsrc(v.obj, var_list = vars, partial.type = "mort")
+    result <- suppressWarnings(
+      surv_partial.rfsrc(v.obj, var_list = vars, partial.type = "mort")
+    )
     names_out <- vapply(result, function(x) x$name, character(1L))
     expect_equal(names_out, vars)
   })

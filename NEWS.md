@@ -1,5 +1,53 @@
 Package: ggRandomForests
-Version: 2.7.0
+Version: 2.8.0
+
+ggRandomForests v2.8.0
+=====================
+* S3 design overhaul: `gg_partial()`, `gg_partialpro()`, and
+  `gg_partial_rfsrc()` now stamp their return values with S3 classes
+  (`gg_partial`, `gg_partialpro`, `gg_partial_rfsrc` respectively), enabling
+  `plot()` dispatch without any boilerplate.
+* Add `plot.gg_partial()`, `plot.gg_partial_rfsrc()`, and
+  `plot.gg_partialpro()` S3 methods; continuous predictors render as line
+  plots, categorical as bar charts, faceted by variable name.  Survival
+  forests produce curves over time; two-variable surface plots group by
+  `xvar2.name`.
+* Convert `gg_survival()` to an S3 generic dispatching on the class of its
+  first argument.  New `gg_survival.rfsrc()` method extracts the survival
+  response directly from the fitted forest (no separate data argument
+  needed); `gg_survival.default()` preserves the existing interface.
+* Fix `plot.gg_survival()` auto-coercion: previously called
+  `gg_survival(rfsrc_obj)` treating the forest as the `interval` string
+  argument, causing a latent crash; replaced with `inherits()` guard.
+* Deprecate `surv_partial.rfsrc()` via `.Deprecated()` with a pointer to
+  `gg_partial_rfsrc()`; all package tests updated to suppress the warning.
+* Fix `gg_partial_rfsrc()` — `make_eval_grid()` used `unlist(dplyr::select())`
+  which coerced factor columns to integer codes; now uses `newx[[xname]]` to
+  preserve column class.  Categorical detection extended to cover
+  `is.factor()` and `is.character()` in addition to the cardinality check.
+* Add guards to `gg_partial_rfsrc()`: all-NA `xval` after NA removal now
+  emits a warning and skips the variable; all-NA grouping variable (`xvar2`)
+  calls `stop()`; `n_eval` and `cat_limit` are validated as single integers
+  >= 2 near function entry.
+* Fix cyclomatic complexity across `gg_partial_rfsrc.R`: refactored into
+  eight top-level unexported helpers (`validate_scalar_int`,
+  `validate_partial_args`, `snap_partial_time`, `make_eval_grid`,
+  `call_partial_rfsrc`, `partial_one_var`, `partial_no_group`,
+  `partial_with_group`, `split_partial_result`); all functions now score
+  below the `cyclocomp_linter` limit of 20.
+* Fix `@param partial.time` documentation: "see the section above" corrected
+  to "see the section below".
+* Replace deprecated `tidyr::gather()` with `tidyr::pivot_longer()` in
+  `plot.gg_vimp()` and `plot.gg_partialpro()`.
+* Add `gg_survival.rfsrc`, `gg_survival.default`, `plot.gg_partial`,
+  `plot.gg_partial_rfsrc`, and `plot.gg_partialpro` to `NAMESPACE`; add
+  corresponding `@rdname` / `@export` roxygen tags.
+* Update tests: add `expect_s3_class()` checks for all new classes; add
+  `plot()` smoke tests for `gg_partial`, `gg_partial_rfsrc`, `gg_partialpro`;
+  add `gg_survival.rfsrc` tests for KM extraction, `by` stratification, and
+  error on non-survival forest.
+* Add `plot.gg_partial`, `plot.gg_partial_rfsrc`, and `plot.gg_partialpro`
+  to `_pkgdown.yml` reference index.
 
 ggRandomForests v2.7.0
 =====================

@@ -143,5 +143,7 @@ gg_partialpro <- function(part_dta,
     continuous$model <- categorical$model <- model
   }
 
-  return(list(continuous = continuous, categorical = categorical))
+  result <- list(continuous = continuous, categorical = categorical)
+  class(result) <- "gg_partialpro"
+  return(result)
 }

@@ -1,5 +1,9 @@
 #' Survival partial dependence data for one or more predictors
 #'
+#' \strong{Deprecated.} Use \code{\link{gg_partial_rfsrc}} instead, which
+#' returns a classed \code{gg_partial_rfsrc} object with a dedicated
+#' \code{plot()} method.
+#'
 #' Computes partial dependence curves for a survival or competing-risk
 #' \code{\link[randomForestSRC]{rfsrc}} forest by calling
 #' \code{\link[randomForestSRC]{partial.rfsrc}} at \code{npts} evenly-spaced
@@ -117,6 +121,15 @@
 #'
 #' @export surv_partial.rfsrc
 surv_partial.rfsrc <- function(rforest, var_list, npts = 25, partial.type = "surv") { # nolint: object_name_linter
+  .Deprecated(
+    new     = "gg_partial_rfsrc",
+    package = "ggRandomForests",
+    msg     = paste0(
+      "'surv_partial.rfsrc' is deprecated and will be removed in a future release.\n",
+      "Use 'gg_partial_rfsrc()' instead, which returns a classed object with a\n",
+      "dedicated plot() method."
+    )
+  )
   ###----------Partial dependency estimation, for each variable, at each time point ----
   surv.lst <- lapply(var_list, function(xvar) {
     ## extract the key variable

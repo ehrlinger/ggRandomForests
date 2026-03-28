@@ -111,5 +111,7 @@ gg_partial <- function(part_dta,
     }
   }
 
-  return(list(continuous = continuous, categorical = categorical))
+  result <- list(continuous = continuous, categorical = categorical)
+  class(result) <- "gg_partial"
+  return(result)
 }

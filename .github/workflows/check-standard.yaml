@@ -23,6 +23,9 @@ jobs:
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
+    # R-devel may fail due to upstream packages not yet compatible with
+    # the development version of R (e.g. lazyeval PREXPR removal).
+    continue-on-error: ${{ matrix.config.r == 'devel' }}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -41,10 +44,23 @@ jobs:
           use-public-rspm: true
           rtools-version: '42'
 
+      # On R-devel, bootstrap rcmdcheck before the main lockfile install so that
+      # the check step can run even when abandoned packages (e.g. lazyeval) that
+      # use removed C symbols (PREXPR) cause pak::lockfile_install() to abort.
+      - name: Bootstrap rcmdcheck (R-devel only)
+        if: matrix.config.r == 'devel'
+        run: install.packages("rcmdcheck")
+        shell: Rscript {0}
+
+      # R-devel may fail here due to lazyeval PREXPR; rcmdcheck is pre-installed
+      # above so the check step still runs regardless.
       - uses: r-lib/actions/setup-r-dependencies@v2
+        continue-on-error: ${{ matrix.config.r == 'devel' }}
         with:
           extra-packages: rcmdcheck
           cache-version: 2
 
       - uses: r-lib/actions/setup-tinytex@v2
+
       - uses: r-lib/actions/check-r-package@v2
+        continue-on-error: ${{ matrix.config.r == 'devel' }}

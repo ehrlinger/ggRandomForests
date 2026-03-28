@@ -1,0 +1,31 @@
+# codecov.yml — coverage thresholds for ggRandomForests
+#
+# Releases are held to a hard floor; development branches report only.
+# Adjust the target upward as the partial.rfsrc() upstream bug is resolved
+# and survival-path tests can be enabled without skipping.
+
+coverage:
+  status:
+    project:
+      default:
+        # Minimum acceptable coverage across the whole package
+        target: 65%
+        threshold: 2%        # allow a 2 pp slip before marking CI red
+        # Only enforce on the main (release) branch
+        if_not_found: success
+        if_ci_failed: error
+        branches:
+          - main
+    patch:
+      default:
+        # New code in each PR should be at least 60% covered
+        target: 60%
+        threshold: 5%
+        if_not_found: success
+        if_ci_failed: error
+
+# Never block CI purely because codecov itself is down or the token is missing
+comment:
+  layout: "reach,diff,flags,files"
+  behavior: default
+  require_changes: false

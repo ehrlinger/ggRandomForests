@@ -1,8 +1,8 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 2.7.0
-Date: 2026-03-25
+Version: 2.7.0.9001
+Date: 2026-03-27
 Authors@R: person("John", "Ehrlinger",  
   role = c("aut", "cre"), 
   email = "john.ehrlinger@gmail.com")
@@ -35,6 +35,8 @@ Suggests:
     rmarkdown,
     quarto,
     pkgdown,
-    pkgload
+    pkgload,
+    knitr,
+    plotly
 VignetteBuilder: quarto
 RoxygenNote: 7.3.3

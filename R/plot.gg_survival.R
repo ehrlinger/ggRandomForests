@@ -86,10 +86,9 @@ plot.gg_survival <- function(x,
                              error = c("shade", "bars", "lines", "none"),
                              label = NULL,
                              ...) {
-  gg_dta <- x
-  if (inherits(gg_dta, "rfsrc")) {
-    gg_dta <- gg_survival(gg_dta)
-  }
+  # Auto-coerce raw rfsrc objects so plot(rfsrc_obj) works directly.
+  # gg_survival.rfsrc extracts yvar and computes Kaplan-Meier estimates.
+  gg_dta <- if (inherits(x, "rfsrc")) gg_survival(x) else x
 
   error <- match.arg(error)
   type <- match.arg(type)
