@@ -33,6 +33,17 @@ navbar:
       icon: fa-linkedin
       href: https://www.linkedin.com/in/ehrlinger/
       aria-label: LinkedIn
+    articles:
+      text: Articles
+      menu:
+        - text: "Get Started"
+          href: articles/ggRandomForests.html
+        - text: "---"
+        - text: "Tutorials"
+        - text: "Random Forest Survival Analysis"
+          href: articles/ggRandomForests-survival.html
+        - text: "Random Forest Regression"
+          href: articles/ggRandomForests-regression.html
 
 reference:
   - title: "Forest Objects"
