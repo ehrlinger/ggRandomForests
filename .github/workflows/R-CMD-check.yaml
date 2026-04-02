@@ -74,4 +74,4 @@ jobs:
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
           # Treat NOTEs as errors on CRAN-submission platforms (devel + release);
           # warnings are always errors everywhere.
-          error_on: '"warning"'
+          error_on: 'warning'

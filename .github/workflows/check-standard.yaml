@@ -42,7 +42,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-          rtools-version: '42'
+          rtools-version: '44'
 
       # On R-devel, bootstrap rcmdcheck before the main lockfile install so that
       # the check step can run even when abandoned packages (e.g. lazyeval) that
