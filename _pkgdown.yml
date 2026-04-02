@@ -36,14 +36,14 @@ navbar:
     articles:
       text: Articles
       menu:
-      - text: "Get Started"
-        href: articles/ggRandomForests.html
-      - text: "---"
-      - text: "Tutorials"
-      - text: "Random Forest Survival Analysis"
-        href: articles/ggRandomForests-survival.html
-      - text: "Random Forest Regression"
-        href: articles/ggRandomForests-regression.html
+        - text: "Get Started"
+          href: articles/ggRandomForests.html
+        - text: "---"
+        - text: "Tutorials"
+        - text: "Random Forest Survival Analysis"
+          href: articles/ggRandomForests-survival.html
+        - text: "Random Forest Regression"
+          href: articles/ggRandomForests-regression.html
 
 reference:
   - title: "Forest Objects"
