@@ -287,6 +287,31 @@ test_that("plot.gg_vimp renders one bar per variable", {
   expect_equal(nrow(ld), length(rf$xvar.names))
 })
 
+test_that("plot.gg_vimp produces a single merged 'VIMP > 0' legend", {
+  # Regression: previously the bar geom mapped both `fill` and `color` to
+  # `positive` but only the fill legend got a custom title via labs(). ggplot
+  # rendered two legends -- one labelled "VIMP > 0" (fill) and one labelled
+  # "positive" (color, the column name). Setting matching titles on both
+  # aesthetics merges them into one.
+  data(pbc, package = "randomForestSRC")
+  pbc_min <- pbc[!is.na(pbc$treatment), ]
+  set.seed(42)
+  rf <- randomForestSRC::rfsrc(
+    Surv(days, status) ~ ., data = pbc_min,
+    ntree = 100, importance = TRUE, na.action = "na.impute"
+  )
+  gg <- gg_vimp(rf)
+  # Sanity: ensure both signs of VIMP are present so the fill aesthetic is
+  # actually in play.
+  expect_true(length(unique(gg$positive)) > 1)
+
+  p <- plot(gg)
+  expect_equal(p$labels$fill,   "VIMP > 0")
+  expect_equal(p$labels$colour, "VIMP > 0")
+  # The two aesthetic legend titles must match for ggplot to merge them.
+  expect_identical(p$labels$fill, p$labels$colour)
+})
+
 # ----------------------------------------------------------------------------
 # gg_variable
 # ----------------------------------------------------------------------------

@@ -11,10 +11,15 @@ ggrandomforests.news(...)
 }
 \value{
 Called for its side-effect of opening the NEWS file in the system
-  pager (\code{file.show}).  Returns \code{invisible(NULL)}.
+  pager (\code{file.show}). Returns \code{invisible(NULL)}.
 }
 \description{
-Opens the package NEWS file in the system pager so users can read the
-version history and change log without leaving their R session.
+Opens the package change log in the system pager so users can read the
+version history without leaving their R session. The function reads
+\code{NEWS.md} from the installed package root (the canonical change log
+that R also surfaces via \code{utils::news()}). \code{inst/NEWS} was
+removed in v2.7.1 to eliminate the duplicate-source-of-truth maintenance
+hole that left the legacy file frozen at v2.4.0; if any installation
+still ships an \code{inst/NEWS}, this function falls back to it.
 }
 \keyword{internal}

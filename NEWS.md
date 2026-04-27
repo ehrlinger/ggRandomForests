@@ -26,6 +26,16 @@ ggRandomForests v2.7.1
   non-empty layers for every supported forest family. Catches the
   empty-figure class of bug (transform/plot column-name mismatch) without
   requiring visual inspection.
+* `ggrandomforests.news()` now reads `NEWS.md` (the canonical change log
+  R also surfaces via `utils::news()`). The legacy hand-maintained
+  `inst/NEWS` has been removed — it had silently drifted to v2.4.0
+  (June 2025) across three releases, so users running the helper saw
+  stale version info. One source of truth, no more drift window.
+* Fix `plot.gg_vimp()` legend duplication: the bar geom mapped both
+  `fill` and `color` to the `positive` column, but only the fill legend
+  was titled "VIMP > 0", leaving a redundant second legend titled
+  "positive". Both aesthetics now share the "VIMP > 0" title so ggplot
+  merges them into a single legend by default.
 
 ggRandomForests v2.7.0
 =====================

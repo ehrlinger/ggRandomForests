@@ -89,7 +89,11 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
 
   # When there are both positive and negative VIMP values, colour the bars
   # differently so the user can immediately see which variables are below zero
-  # (i.e. hurt predictive accuracy on average).
+  # (i.e. hurt predictive accuracy on average). Both `fill` and `color` are
+  # mapped to the same column; we give them the same legend title ("VIMP > 0")
+  # so ggplot collapses them into a single legend rather than rendering one
+  # legend titled "VIMP > 0" (fill) and a second titled "positive" (color).
+  legend_title <- "VIMP > 0"
   if (length(unique(gg_dta$positive)) > 1) {
     gg_plt <- gg_plt +
       ggplot2::geom_bar(
@@ -112,7 +116,11 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
         width = .5,
       )
   }
-  gg_plt <- gg_plt + labs(x = "", y = msr)
+  # Set both legends' titles to the same string so ggplot merges them.
+  # Users can override with their own labs() call after the fact.
+  gg_plt <- gg_plt +
+    ggplot2::labs(x = "", y = msr,
+                  fill = legend_title, color = legend_title)
 
   if (!missing(lbls)) {
     # Map internal variable names to human-readable labels.  lbls should be a
