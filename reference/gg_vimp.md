@@ -66,6 +66,8 @@ rfsrc_iris <- rfsrc(Species ~ .,
 )
 gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
+#> Ignoring unknown labels:
+#> • fill : "VIMP > 0"
 
 
 ## ------------------------------------------------------------
