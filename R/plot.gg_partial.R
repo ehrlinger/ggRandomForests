@@ -115,6 +115,43 @@ plot.gg_partial <- function(x, ...) {
 #'
 #' @seealso \code{\link{gg_partial_rfsrc}}, \code{\link{plot.gg_partial}}
 #'
+#' @examples
+#' ## ------------------------------------------------------------
+#' ## Regression forest -- one continuous curve per variable
+#' ## ------------------------------------------------------------
+#' set.seed(42)
+#' airq <- na.omit(airquality)
+#' rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50)
+#'
+#' pd <- gg_partial_rfsrc(rfsrc_airq, xvar.names = c("Wind", "Temp"),
+#'                        n_eval = 10)
+#' plot(pd)
+#'
+#' \donttest{
+#' ## ------------------------------------------------------------
+#' ## Survival forest -- one curve per requested time horizon,
+#' ## faceted by variable. Y-axis label tracks `partial.type`.
+#' ## ------------------------------------------------------------
+#' data(veteran, package = "randomForestSRC")
+#' set.seed(42)
+#' rfsrc_v <- randomForestSRC::rfsrc(survival::Surv(time, status) ~ .,
+#'                                   data = veteran, ntree = 50)
+#' ti  <- rfsrc_v$time.interest
+#' t30 <- ti[which.min(abs(ti - 30))]
+#' t90 <- ti[which.min(abs(ti - 90))]
+#'
+#' # Default partial.type = "surv" -> y-axis "Predicted Survival"
+#' pd_s <- gg_partial_rfsrc(rfsrc_v, xvar.names = "age",
+#'                          partial.time = c(t30, t90), n_eval = 8)
+#' plot(pd_s)
+#'
+#' # partial.type = "chf" -> y-axis "Predicted CHF"
+#' pd_c <- gg_partial_rfsrc(rfsrc_v, xvar.names = "age",
+#'                          partial.time = c(t30, t90),
+#'                          partial.type = "chf", n_eval = 8)
+#' plot(pd_c)
+#' }
+#'
 #' @importFrom ggplot2 .data
 #' @export
 plot.gg_partial_rfsrc <- function(x, ...) {
@@ -210,6 +247,41 @@ plot.gg_partial_rfsrc <- function(x, ...) {
 #'   \code{categorical} elements when both types of predictors are present.
 #'
 #' @seealso \code{\link{gg_partialpro}}
+#'
+#' @examples
+#' ## ggRandomForests does not depend on the varpro package; we construct a
+#' ## minimal mock of the partialpro() output so the example runs everywhere.
+#' set.seed(42)
+#' n_obs <- 30
+#' n_pts <- 15
+#' mock_data <- list(
+#'   age = list(
+#'     xvirtual    = seq(30, 80, length.out = n_pts),
+#'     xorg        = sample(seq(30, 80, by = 5), n_obs, replace = TRUE),
+#'     yhat.par    = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+#'     yhat.nonpar = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+#'     yhat.causal = matrix(rnorm(n_obs * n_pts), nrow = n_obs)
+#'   ),
+#'   sex = list(
+#'     xvirtual    = c(0, 1),
+#'     xorg        = sample(c(0, 1), n_obs, replace = TRUE),
+#'     yhat.par    = matrix(rnorm(n_obs * 2), nrow = n_obs),
+#'     yhat.nonpar = matrix(rnorm(n_obs * 2), nrow = n_obs),
+#'     yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
+#'   )
+#' )
+#'
+#' pp <- gg_partialpro(mock_data)
+#' result <- plot(pp)
+#'
+#' # Continuous predictors get one panel per variable; categorical get
+#' # box-plots over the parametric / nonparametric / causal effect types.
+#' result$continuous
+#' result$categorical
+#'
+#' # Restrict to one or two effect types
+#' plot(pp, type = "nonparametric")
+#' plot(pp, type = c("parametric", "causal"))
 #'
 #' @importFrom ggplot2 .data
 #' @export

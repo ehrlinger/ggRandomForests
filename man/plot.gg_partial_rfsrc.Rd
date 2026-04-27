@@ -32,6 +32,44 @@ the object (\dQuote{Predicted Survival}, \dQuote{Predicted CHF}, or
 For two-variable surface plots (when a \code{grp} column is present):
 each group level is a separate line, faceted by primary predictor name.
 }
+\examples{
+## ------------------------------------------------------------
+## Regression forest -- one continuous curve per variable
+## ------------------------------------------------------------
+set.seed(42)
+airq <- na.omit(airquality)
+rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50)
+
+pd <- gg_partial_rfsrc(rfsrc_airq, xvar.names = c("Wind", "Temp"),
+                       n_eval = 10)
+plot(pd)
+
+\donttest{
+## ------------------------------------------------------------
+## Survival forest -- one curve per requested time horizon,
+## faceted by variable. Y-axis label tracks `partial.type`.
+## ------------------------------------------------------------
+data(veteran, package = "randomForestSRC")
+set.seed(42)
+rfsrc_v <- randomForestSRC::rfsrc(survival::Surv(time, status) ~ .,
+                                  data = veteran, ntree = 50)
+ti  <- rfsrc_v$time.interest
+t30 <- ti[which.min(abs(ti - 30))]
+t90 <- ti[which.min(abs(ti - 90))]
+
+# Default partial.type = "surv" -> y-axis "Predicted Survival"
+pd_s <- gg_partial_rfsrc(rfsrc_v, xvar.names = "age",
+                         partial.time = c(t30, t90), n_eval = 8)
+plot(pd_s)
+
+# partial.type = "chf" -> y-axis "Predicted CHF"
+pd_c <- gg_partial_rfsrc(rfsrc_v, xvar.names = "age",
+                         partial.time = c(t30, t90),
+                         partial.type = "chf", n_eval = 8)
+plot(pd_c)
+}
+
+}
 \seealso{
 \code{\link{gg_partial_rfsrc}}, \code{\link{plot.gg_partial}}
 }

@@ -308,7 +308,7 @@ test_that("plot.gg_vimp produces a single merged 'VIMP > 0' legend", {
     class = c("gg_vimp", "data.frame")
   )
 
-  # Sanity: both signs present, so the dual-aesthetic branch is active.
+  # Sanity: both signs present.
   expect_true(length(unique(gg$positive)) > 1)
 
   p <- plot(gg)
@@ -316,6 +316,40 @@ test_that("plot.gg_vimp produces a single merged 'VIMP > 0' legend", {
   expect_equal(p$labels$colour, "VIMP > 0")
   # The two aesthetic legend titles must match for ggplot to merge them.
   expect_identical(p$labels$fill, p$labels$colour)
+})
+
+test_that("plot.gg_vimp produces filled bars even when all VIMP are positive", {
+  # Regression: previously the all-positive branch mapped only `color`,
+  # leaving the bars hollow / outline-only and emitting "Ignoring unknown
+  # labels: fill : 'VIMP > 0'" because the function-level labs(fill = ...)
+  # had nothing to bind to. The fix maps fill + color unconditionally so the
+  # bars are always filled and the legend title applies cleanly.
+  gg <- structure(
+    data.frame(
+      vars     = c("a", "b", "c"),
+      vimp     = c(0.30, 0.10, 0.05),
+      rel_vimp = c(1.00, 0.33, 0.17),
+      positive = c(TRUE, TRUE, TRUE)
+    ),
+    class = c("gg_vimp", "data.frame")
+  )
+  expect_equal(length(unique(gg$positive)), 1L)
+
+  warns <- character()
+  p <- withCallingHandlers(
+    plot(gg),
+    warning = function(w) {
+      warns <<- c(warns, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_false(any(grepl("Ignoring unknown labels", warns)),
+               info = sprintf("got warnings: %s", paste(warns, collapse = " | ")))
+
+  ld <- ggplot2::layer_data(p, 1L)
+  # Bars must be filled, not hollow.
+  expect_true("fill" %in% colnames(ld))
+  expect_true(all(!is.na(ld$fill)))
 })
 
 # ----------------------------------------------------------------------------

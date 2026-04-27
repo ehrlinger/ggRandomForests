@@ -36,6 +36,15 @@ ggRandomForests v2.7.1
   was titled "VIMP > 0", leaving a redundant second legend titled
   "positive". Both aesthetics now share the "VIMP > 0" title so ggplot
   merges them into a single legend by default.
+* Fix `plot.gg_vimp()` for forests with all-positive VIMP: the bar geom
+  previously mapped only `color` (no `fill`), producing hollow / outline-
+  only bars and an "Ignoring unknown labels: fill" warning whenever
+  `labs(fill = ...)` was applied. Both `fill` and `color` are now mapped
+  unconditionally, so bars render filled in every case.
+* Add `@examples` blocks to `plot.gg_partial_rfsrc()` and
+  `plot.gg_partialpro()`. The latter uses a self-contained mock of the
+  `varpro::partialpro()` output structure so the example runs without
+  pulling in `varpro` as a dependency.
 
 ggRandomForests v2.7.0
 =====================

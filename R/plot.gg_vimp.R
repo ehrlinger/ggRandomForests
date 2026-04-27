@@ -87,35 +87,29 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
     msr <- colnames(gg_dta)[1]
   }
 
-  # When there are both positive and negative VIMP values, colour the bars
-  # differently so the user can immediately see which variables are below zero
-  # (i.e. hurt predictive accuracy on average). Both `fill` and `color` are
-  # mapped to the same column; we give them the same legend title ("VIMP > 0")
-  # so ggplot collapses them into a single legend rather than rendering one
-  # legend titled "VIMP > 0" (fill) and a second titled "positive" (color).
+  # Always map both `fill` and `color` to `positive` -- this gives filled bars
+  # (rather than hollow outlines) and ensures the function-level
+  # `labs(fill = ..., color = ...)` below applies cleanly. When `positive` has
+  # only one level (all VIMPs positive, the common case for well-behaved
+  # forests), the bars simply render in a single colour and ggplot collapses
+  # the fill+color legend into a one-row legend; when both signs are present,
+  # the two-row legend distinguishes positive from negative VIMP.
+  #
+  # Both aesthetics share the same legend title ("VIMP > 0") so ggplot
+  # collapses what would otherwise be two legends -- one for fill and one
+  # titled with the column name "positive" -- into a single merged legend.
   legend_title <- "VIMP > 0"
-  if (length(unique(gg_dta$positive)) > 1) {
-    gg_plt <- gg_plt +
-      ggplot2::geom_bar(
-        ggplot2::aes(
-          y = .data[[msr]],
-          x = .data$vars,
-          fill = .data$positive,
-          color = .data$positive
-        ),
-        stat = "identity",
-        width = .5,
-      )
-  } else {
-    # All values have the same sign — colour only the bar border to avoid a
-    # redundant fill legend.
-    gg_plt <- gg_plt +
-      ggplot2::geom_bar(
-        ggplot2::aes(y = .data[[msr]], x = .data$vars, color = .data$positive),
-        stat = "identity",
-        width = .5,
-      )
-  }
+  gg_plt <- gg_plt +
+    ggplot2::geom_bar(
+      ggplot2::aes(
+        y    = .data[[msr]],
+        x    = .data$vars,
+        fill = .data$positive,
+        color = .data$positive
+      ),
+      stat = "identity",
+      width = .5,
+    )
   # Set both legends' titles to the same string so ggplot merges them.
   # Users can override with their own labs() call after the fact.
   gg_plt <- gg_plt +
