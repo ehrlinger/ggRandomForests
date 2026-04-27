@@ -104,116 +104,58 @@ number of resamples is controlled by `bs.sample`.
 
 ``` r
 ## ------------------------------------------------------------
-## classification example
+## classification example (small, runs on CRAN)
 ## ------------------------------------------------------------
 ## -------- iris data
-rfsrc_iris <- rfsrc(Species ~ ., data = iris)
-gg_dta<- gg_rfsrc(rfsrc_iris)
-
+set.seed(42)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
+gg_dta <- gg_rfsrc(rfsrc_iris)
 plot(gg_dta)
 
 
+# \donttest{
 ## ------------------------------------------------------------
-## Regression example
+## Additional regression / survival examples are guarded with
+## \donttest because the cumulative example time exceeds the
+## 10-second CRAN budget. Run locally with `R CMD check --run-donttest`
+## (or `devtools::check(run_dont_test = TRUE)`) to exercise them.
 ## ------------------------------------------------------------
 
-## -------- air quality data
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, na.action = "na.impute")
-gg_dta<- gg_rfsrc(rfsrc_airq)
-
-plot(gg_dta)
-
+## -------- air quality data (regression)
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
+                    na.action = "na.impute", ntree = 50)
+plot(gg_rfsrc(rfsrc_airq))
 
 
-## -------- Boston data
-data(Boston, package = "MASS")
-Boston$chas <- as.logical(Boston$chas)
-rfsrc_boston <- rfsrc(medv ~ .,
-   data = Boston,
-   forest = TRUE,
-   importance = TRUE,
-   tree.err = TRUE,
-   save.memory = TRUE)
+## -------- Boston data (rfsrc + randomForest)
+if (requireNamespace("MASS", quietly = TRUE)) {
+  data(Boston, package = "MASS")
+  Boston$chas <- as.logical(Boston$chas)
+  rfsrc_boston <- rfsrc(medv ~ ., data = Boston, ntree = 50,
+                        forest = TRUE, importance = TRUE,
+                        tree.err = TRUE, save.memory = TRUE)
+  plot(gg_rfsrc(rfsrc_boston))
 
-plot(gg_rfsrc(rfsrc_boston))
-
-
-### randomForest example
-data(Boston, package="MASS")
-rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
-plot(gg_rfsrc(rf_boston))
-
+  rf_boston <- randomForest::randomForest(medv ~ ., data = Boston,
+                                          ntree = 50)
+  plot(gg_rfsrc(rf_boston))
+}
 
 
 ## -------- mtcars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
-gg_dta<- gg_rfsrc(rfsrc_mtcars)
-
-plot(gg_dta)
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+plot(gg_rfsrc(rfsrc_mtcars))
 
 
-## ------------------------------------------------------------
-## Survival example
-## ------------------------------------------------------------
-## -------- veteran data
-## randomized trial of two treatment regimens for lung cancer
+## -------- veteran data (survival; with CI and group-by)
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 100)
+rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran,
+                       ntree = 50)
+plot(gg_rfsrc(rfsrc_veteran))
 
-gg_dta <- gg_rfsrc(rfsrc_veteran)
-plot(gg_dta)
+plot(gg_rfsrc(rfsrc_veteran, conf.int = .95))
 
+plot(gg_rfsrc(rfsrc_veteran, by = "trt"))
 
-gg_dta <- gg_rfsrc(rfsrc_veteran, conf.int=.95)
-plot(gg_dta)
-
-
-gg_dta <- gg_rfsrc(rfsrc_veteran, by="trt")
-plot(gg_dta)
-
-
-
-## -------- pbc data
-## We don't run this because of bootstrap confidence limits
-# We need to create this dataset
-data(pbc, package = "randomForestSRC",)
-#> Warning: data set ‘’ not found
-# For whatever reason, the age variable is in days... makes no sense to me
-#Convert age to years
-pbc$age <- pbc$age / 364.24
-
-pbc$years <- pbc$days / 364.24
-pbc <- pbc[, -which(colnames(pbc) == "days")]
-pbc$treatment <- as.numeric(pbc$treatment)
-pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
-pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
-pbc$treatment <- factor(pbc$treatment)
-dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-# Create a test set from the remaining patients
- pbc_test <- pbc[which(is.na(pbc$treatment)), ]
-
-#========
-# build the forest:
-rfsrc_pbc <- randomForestSRC::rfsrc(
-  Surv(years, status) ~ .,
- dta_train,
- nsplit = 10,
- na.action = "na.impute",
- forest = TRUE,
- importance = TRUE,
- save.memory = TRUE
-)
-gg_dta <- gg_rfsrc(rfsrc_pbc)
-plot(gg_dta)
-
-
-gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int=.95)
-plot(gg_dta)
-
-
-
-gg_dta <- gg_rfsrc(rfsrc_pbc, by="treatment")
-plot(gg_dta)
-
-
+# }
 ```
