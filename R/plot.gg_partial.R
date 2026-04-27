@@ -109,19 +109,23 @@ plot.gg_partial_rfsrc <- function(x, ...) {
     cont <- gg_dta$continuous
 
     if (!is.null(cont$time)) {
-      ## Survival forest: predictor value is the grouping variable; x-axis is time
+      ## Survival forest: predictor value on x-axis, one curve per time point
+      ## (rounded for a tidy legend). Time is typically a small set (1-3 horizons)
+      ## while x is the dense evaluation grid.
+      cont$.time_lbl <- factor(round(cont$time, 2),
+                               levels = sort(unique(round(cont$time, 2))))
       gg_cont <- ggplot2::ggplot(
         cont,
         ggplot2::aes(
-          x     = .data$time,
+          x     = .data$x,
           y     = .data$yhat,
-          color = factor(.data$x),
-          group = factor(.data$x)
+          color = .data$.time_lbl,
+          group = .data$.time_lbl
         )
       ) +
         ggplot2::geom_line() +
-        ggplot2::facet_wrap(~name, scales = "free") +
-        ggplot2::labs(x = "Time", y = "Partial Effect", color = "Predictor value")
+        ggplot2::facet_wrap(~name, scales = "free_x") +
+        ggplot2::labs(x = NULL, y = "Predicted Survival", color = "Time")
 
     } else if (!is.null(cont$grp)) {
       ## Two-variable surface: group is xvar2; x-axis is the primary predictor
