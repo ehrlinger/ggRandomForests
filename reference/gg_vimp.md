@@ -185,8 +185,6 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
 
 gg_dta <- gg_vimp(rfsrc_pbc)
 plot(gg_dta)
-#> Ignoring unknown labels:
-#> • fill : "VIMP > 0"
 
 
 # Restrict to only the top 10.

@@ -40,7 +40,7 @@ plot(x, which_outcome = NULL, ...)
 
 ## Value
 
-A `ggplot` object. The x-axis shows 1 − Specificity (FPR) and the y-axis
+A `ggplot` object. The x-axis shows 1 - Specificity (FPR) and the y-axis
 shows Sensitivity (TPR). A dashed red diagonal reference line marks the
 random-classifier baseline. The AUC value is annotated on the plot for
 single-class curves. Multi-class plots colour and style each class curve
