@@ -17,6 +17,7 @@ gg_partial_rfsrc(
   xvar2.name = NULL,
   newx = NULL,
   partial.time = NULL,
+  partial.type = c("surv", "chf", "mort"),
   cat_limit = 10,
   n_eval = 25
 )
@@ -54,6 +55,18 @@ gg_partial_rfsrc(
   the nearest entry in `rf_model$time.interest` — see the **Survival
   forests** section below. When `NULL` (default), three quartile points
   of `time.interest` are used.
+
+- partial.type:
+
+  Character; type of predicted value for survival forests, passed
+  through to
+  [`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html).
+  One of `"surv"` (default), `"chf"`, or `"mort"`. Ignored for
+  non-survival forests.
+  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+  requires a non-`NULL` value for survival families; supplying it here
+  avoids a cryptic “argument is of length zero” error from the
+  underlying C code.
 
 - cat_limit:
 

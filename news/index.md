@@ -1,6 +1,41 @@
 # Changelog
 
-## ggRandomForests v2.8.0
+## ggRandomForests v2.7.1
+
+- Fix
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  for survival forests:
+  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+  was being called without `partial.type`, causing a zero-length
+  comparison (`if (partial.type == "rel.freq") ...`) inside the C-level
+  prediction routine and aborting the call. Survival forests now pass
+  `partial.type = "surv"` (default; configurable via the new
+  `partial.type` argument accepting `"surv"`, `"chf"`, or `"mort"`).
+  This unblocks the `partial-dep` chunk in the survival vignette.
+- Fix
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  for survival forests with multiple `partial.time` values:
+  [`get.partial.plot.data()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+  returns yhat as an `[length(partial.values) x length(partial.time)]`
+  matrix, but the previous code assumed a vector and crashed on
+  column-mismatch when assigning `time`. The result is now reshaped to
+  long form so each `(x, time)` pair is a single row.
+- Improve
+  [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
+  survival layout: predictor value is now on the x-axis with one curve
+  per (rounded) time point coloured by `Time`, faceted by variable name.
+  The previous default put time on the x-axis and one curve per
+  predictor value, producing a saturated legend with dozens of
+  nearly-identical lines.
+- Add `tests/testthat/test_plot_layer_data.R`: regression suite that
+  uses
+  [`ggplot2::layer_data()`](https://ggplot2.tidyverse.org/reference/ggplot_build.html)
+  to verify each `plot.gg_*()` method renders non-empty layers for every
+  supported forest family. Catches the empty-figure class of bug
+  (transform/plot column-name mismatch) without requiring visual
+  inspection.
+
+## ggRandomForests v2.7.0
 
 - S3 design overhaul:
   [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md),

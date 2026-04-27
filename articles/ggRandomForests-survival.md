@@ -396,7 +396,7 @@ md_pbc <- max.subtree(rfsrc_pbc)
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
 function computes minimal depth for each variable. The threshold is
-5.78, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+5.87, selecting 7 variables: ascites, edema, bili, chol, albumin,
 copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
@@ -501,20 +501,15 @@ t3yr <- ti[which.min(abs(ti - 3))]
 
 pd <- gg_partial_rfsrc(rfsrc_pbc, xvar.names = xvar,
                        partial.time = c(t1yr, t3yr))
-```
 
-    #> <simpleError in if (partial.type == "rel.freq") {    partial.type <- "mort"}: argument is of length zero>
-
-    #> Error:
-    #> ! An error has occurred in prediction.  Please turn trace on for further analysis.
-
-``` r
 # Quick S3 plot — survival forests produce time-series curves per predictor value
 plot(pd)
 ```
 
-    #> Error:
-    #> ! object 'pd' not found
+![](ggRandomForests-survival_files/figure-html/partial-dep-1.png)
+
+Partial dependence of survival at approximately 1 and 3 years on
+continuous predictors.
 
 For a publication-ready layout with custom colour scale, access
 `pd$continuous` directly:
@@ -531,8 +526,9 @@ ggplot(pd$continuous, aes(x = x, y = yhat,
   theme_bw()
 ```
 
-    #> Error:
-    #> ! object 'pd' not found
+![](ggRandomForests-survival_files/figure-html/partial-dep-custom-1.png)
+
+Partial dependence (custom styling).
 
 The partial dependence curves at approximately 1 and 3 years confirm the
 variable dependence findings and support the log-transforms used in the
@@ -612,19 +608,9 @@ surface_list <- lapply(alb_grid, function(alb_val) {
   df$albumin <- alb_val
   df
 })
-```
 
-    #> <simpleError in if (partial.type == "rel.freq") {    partial.type <- "mort"}: argument is of length zero>
-
-    #> Error:
-    #> ! An error has occurred in prediction.  Please turn trace on for further analysis.
-
-``` r
 surface_df <- bind_rows(surface_list)
 ```
-
-    #> Error:
-    #> ! object 'surface_list' not found
 
 ``` r
 if (!exists("surface_df")) {
@@ -664,6 +650,9 @@ if (!exists("surface_df")) {
     theme_bw()
 }
 ```
+
+Interactive partial dependence surface: survival as a function of
+bilirubin and albumin.
 
 The surface shows that survival is highest when bilirubin is low and
 albumin is high (upper-left corner), and drops steeply as bilirubin

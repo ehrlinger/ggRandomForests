@@ -9,7 +9,7 @@ gg_partial_rfsrc."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,8 +89,11 @@ gg_partial_rfsrc."></head><body>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For standard (non-survival) forests: continuous predictors are line plots,
 categorical predictors are bar charts, both faceted by variable name.</p>
-<p>For survival forests (when a <code>time</code> column is present): each predictor
-value is a separate curve over time, faceted by variable name.</p>
+<p>For survival forests (when a <code>time</code> column is present): each evaluation
+time point is a separate curve over the predictor's value, faceted by
+variable name. The y-axis label adapts to the <code>partial.type</code> stored on
+the object (“Predicted Survival”, “Predicted CHF”, or
+“Predicted Mortality”).</p>
 <p>For two-variable surface plots (when a <code>grp</code> column is present):
 each group level is a separate line, faceted by primary predictor name.</p>
     </div>

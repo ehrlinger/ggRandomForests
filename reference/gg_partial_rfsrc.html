@@ -15,7 +15,7 @@ required — supply the fitted rfsrc object directly."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,6 +79,7 @@ required — supply the fitted <code>rfsrc</code> object directly.</p>
 <span>  xvar2.name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  newx <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  partial.time <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  partial.type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"surv"</span>, <span class="st">"chf"</span>, <span class="st">"mort"</span><span class="op">)</span>,</span>
 <span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  n_eval <span class="op">=</span> <span class="fl">25</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -115,6 +116,15 @@ forests (ignored for regression/classification).  Values are automatically
 snapped to the nearest entry in <code>rf_model$time.interest</code> — see the
 <strong>Survival forests</strong> section below.  When <code>NULL</code> (default),
 three quartile points of <code>time.interest</code> are used.</p></dd>
+
+
+<dt id="arg-partial-type">partial.type<a class="anchor" aria-label="anchor" href="#arg-partial-type"></a></dt>
+<dd><p>Character; type of predicted value for survival
+forests, passed through to <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc</a></code>.
+One of <code>"surv"</code> (default), <code>"chf"</code>, or <code>"mort"</code>. Ignored
+for non-survival forests. <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> requires a non-<code>NULL</code>
+value for survival families; supplying it here avoids a cryptic
+“argument is of length zero” error from the underlying C code.</p></dd>
 
 
 <dt id="arg-cat-limit">cat_limit<a class="anchor" aria-label="anchor" href="#arg-cat-limit"></a></dt>

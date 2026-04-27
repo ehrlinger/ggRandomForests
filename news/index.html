@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,7 +55,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.8.0" id="ggrandomforests-v280">ggRandomForests v2.8.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v280"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.7.1" id="ggrandomforests-v271">ggRandomForests v2.7.1<a class="anchor" aria-label="anchor" href="#ggrandomforests-v271"></a></h2>
+<ul><li>Fix <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> for survival forests: <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> was being called without <code>partial.type</code>, causing a zero-length comparison (<code>if (partial.type == "rel.freq") ...</code>) inside the C-level prediction routine and aborting the call. Survival forests now pass <code>partial.type = "surv"</code> (default; configurable via the new <code>partial.type</code> argument accepting <code>"surv"</code>, <code>"chf"</code>, or <code>"mort"</code>). This unblocks the <code>partial-dep</code> chunk in the survival vignette.</li>
+<li>Fix <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> for survival forests with multiple <code>partial.time</code> values: <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">get.partial.plot.data()</a></code> returns yhat as an <code>[length(partial.values) x length(partial.time)]</code> matrix, but the previous code assumed a vector and crashed on column-mismatch when assigning <code>time</code>. The result is now reshaped to long form so each <code>(x, time)</code> pair is a single row.</li>
+<li>Improve <code><a href="../reference/plot.gg_partial_rfsrc.html">plot.gg_partial_rfsrc()</a></code> survival layout: predictor value is now on the x-axis with one curve per (rounded) time point coloured by <code>Time</code>, faceted by variable name. The previous default put time on the x-axis and one curve per predictor value, producing a saturated legend with dozens of nearly-identical lines.</li>
+<li>Add <code>tests/testthat/test_plot_layer_data.R</code>: regression suite that uses <code><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">ggplot2::layer_data()</a></code> to verify each <code>plot.gg_*()</code> method renders non-empty layers for every supported forest family. Catches the empty-figure class of bug (transform/plot column-name mismatch) without requiring visual inspection.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.7.0" id="ggrandomforests-v270">ggRandomForests v2.7.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v270"></a></h2>
 <ul><li>S3 design overhaul: <code><a href="../reference/gg_partial.html">gg_partial()</a></code>, <code><a href="../reference/gg_partialpro.html">gg_partialpro()</a></code>, and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> now stamp their return values with S3 classes (<code>gg_partial</code>, <code>gg_partialpro</code>, <code>gg_partial_rfsrc</code> respectively), enabling <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> dispatch without any boilerplate.</li>
 <li>Add <code><a href="../reference/plot.gg_partial.html">plot.gg_partial()</a></code>, <code><a href="../reference/plot.gg_partial_rfsrc.html">plot.gg_partial_rfsrc()</a></code>, and <code><a href="../reference/plot.gg_partialpro.html">plot.gg_partialpro()</a></code> S3 methods; continuous predictors render as line plots, categorical as bar charts, faceted by variable name. Survival forests produce curves over time; two-variable surface plots group by <code>xvar2.name</code>.</li>
 <li>Convert <code><a href="../reference/gg_survival.html">gg_survival()</a></code> to an S3 generic dispatching on the class of its first argument. New <code><a href="../reference/gg_survival.html">gg_survival.rfsrc()</a></code> method extracts the survival response directly from the fitted forest (no separate data argument needed); <code><a href="../reference/gg_survival.html">gg_survival.default()</a></code> preserves the existing interface.</li>
@@ -71,7 +78,7 @@
 <li>Add <code>plot.gg_partial</code>, <code>plot.gg_partial_rfsrc</code>, and <code>plot.gg_partialpro</code> to <code>_pkgdown.yml</code> reference index.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.7.0" id="ggrandomforests-v270">ggRandomForests v2.7.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v270"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.7.0" id="ggrandomforests-v270-1">ggRandomForests v2.7.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v270-1"></a></h2>
 <ul><li>Fix critical visual bug in <code>plot.gg_rfsrc</code>: all <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> calls used bare string literals instead of <code>.data[[col]]</code>, causing every aesthetic to map to a constant string rather than the underlying data column. All plot types (regression, classification, survival) were affected.</li>
 <li>Fix <code><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes()</a></code> bare-string literals in <code>plot.gg_roc</code> multi-class branch; remove unreachable <code>if (crv &lt; 2)</code> dead-code branch.</li>
 <li>Fix <code>bootstrap_survival</code> CI-band indexing in <code>gg_rfsrc</code>: negative index computed via <code><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames()</a></code> was a no-op on large datasets and a latent crash for data with ≤ 2 unique event times.</li>
