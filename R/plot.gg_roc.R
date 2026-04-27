@@ -27,7 +27,7 @@
 #' @param ... Additional arguments forwarded to \code{\link{gg_roc}} when
 #'   \code{x} is a raw forest object (e.g. \code{oob = FALSE}).
 #'
-#' @return A \code{ggplot} object.  The x-axis shows 1 − Specificity (FPR)
+#' @return A \code{ggplot} object.  The x-axis shows 1 - Specificity (FPR)
 #'   and the y-axis shows Sensitivity (TPR).  A dashed red diagonal reference
 #'   line marks the random-classifier baseline.  The AUC value is annotated
 #'   on the plot for single-class curves.  Multi-class plots colour and style

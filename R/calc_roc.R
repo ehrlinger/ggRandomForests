@@ -235,7 +235,7 @@ calc_roc.randomForest <-
 #' @export
 calc_auc <- function(x) {
   ## Trapezoidal rule:  AUC = Σ (f(x_i) + f(x_{i+1})) / 2 * |Δx|
-  ## Here f(x) is sensitivity (TPR) and x is 1 − specificity (FPR).
+  ## Here f(x) is sensitivity (TPR) and x is 1 - specificity (FPR).
   ## Sort so that specificity decreases (FPR increases) left-to-right,
   ## then each step moves one FPR increment to the right.
 

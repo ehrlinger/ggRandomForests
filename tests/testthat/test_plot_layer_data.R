@@ -291,18 +291,24 @@ test_that("plot.gg_vimp produces a single merged 'VIMP > 0' legend", {
   # Regression: previously the bar geom mapped both `fill` and `color` to
   # `positive` but only the fill legend got a custom title via labs(). ggplot
   # rendered two legends -- one labelled "VIMP > 0" (fill) and one labelled
-  # "positive" (color, the column name). Setting matching titles on both
-  # aesthetics merges them into one.
-  data(pbc, package = "randomForestSRC")
-  pbc_min <- pbc[!is.na(pbc$treatment), ]
-  set.seed(42)
-  rf <- randomForestSRC::rfsrc(
-    Surv(days, status) ~ ., data = pbc_min,
-    ntree = 100, importance = TRUE, na.action = "na.impute"
+  # "positive" (column name). Setting matching titles on both aesthetics
+  # merges them into a single legend.
+  #
+  # We build a synthetic gg_vimp object rather than fit a real forest so the
+  # test is deterministic across platforms (CI runners regularly produced
+  # all-positive VIMP for the PBC dataset, which would skip the fill branch
+  # we want to exercise here).
+  gg <- structure(
+    data.frame(
+      vars     = c("a", "b", "c", "d"),
+      vimp     = c(0.20, 0.05, -0.01, -0.04),
+      rel_vimp = c(1.00, 0.25, 0.05,  0.20),
+      positive = c(TRUE, TRUE, FALSE, FALSE)
+    ),
+    class = c("gg_vimp", "data.frame")
   )
-  gg <- gg_vimp(rf)
-  # Sanity: ensure both signs of VIMP are present so the fill aesthetic is
-  # actually in play.
+
+  # Sanity: both signs present, so the dual-aesthetic branch is active.
   expect_true(length(unique(gg$positive)) > 1)
 
   p <- plot(gg)
