@@ -54,27 +54,32 @@ The \code{gg_variable} function operates on a
 }
 \examples{
 ## ------------------------------------------------------------
-## classification
+## classification (small, runs on CRAN)
 ## ------------------------------------------------------------
 ## -------- iris data
-## iris
-rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+set.seed(42)
+rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
 
 gg_dta <- gg_variable(rfsrc_iris)
 plot(gg_dta, xvar = "Sepal.Width")
-plot(gg_dta, xvar = "Sepal.Length")
 
-plot(gg_dta,
-  xvar = rfsrc_iris$xvar.names,
-  panel = TRUE
-) # , se=FALSE)
+\donttest{
+## ------------------------------------------------------------
+## Additional classification / regression / survival examples are
+## guarded with \donttest because the cumulative example time exceeds
+## the 10-second CRAN budget. Run locally with `R CMD check
+## --run-donttest` (or `devtools::check(run_dont_test = TRUE)`) to
+## exercise them.
+## ------------------------------------------------------------
+plot(gg_dta, xvar = "Sepal.Length")
+plot(gg_dta, xvar = rfsrc_iris$xvar.names, panel = TRUE)
 
 ## ------------------------------------------------------------
 ## regression
 ## ------------------------------------------------------------
 
 ## -------- air quality data
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality)
+rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, ntree = 50)
 gg_dta <- gg_variable(rfsrc_airq)
 
 # an ordinal variable
@@ -83,14 +88,11 @@ gg_dta[, "Month"] <- factor(gg_dta[, "Month"])
 plot(gg_dta, xvar = "Wind")
 plot(gg_dta, xvar = "Temp")
 plot(gg_dta, xvar = "Solar.R")
-
-
 plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
-
 plot(gg_dta, xvar = "Month", notch = TRUE)
 
 ## -------- motor trend cars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars)
+rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ntree = 50)
 
 gg_dta <- gg_variable(rfsrc_mtcars)
 
@@ -102,13 +104,9 @@ gg_dta$gear <- factor(gg_dta$gear)
 gg_dta$carb <- factor(gg_dta$carb)
 
 plot(gg_dta, xvar = "cyl")
-
-# Others are continuous
 plot(gg_dta, xvar = "disp")
 plot(gg_dta, xvar = "hp")
 plot(gg_dta, xvar = "wt")
-
-# panels
 plot(gg_dta, xvar = c("disp", "hp", "drat", "wt", "qsec"), panel = TRUE)
 plot(gg_dta,
   xvar = c("cyl", "vs", "am", "gear", "carb"), panel = TRUE,
@@ -116,100 +114,39 @@ plot(gg_dta,
 )
 
 ## -------- Boston data
-data(Boston, package = "MASS")
+if (requireNamespace("MASS", quietly = TRUE)) {
+  data(Boston, package = "MASS")
+  rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
+  gg_dta <- gg_variable(rf_boston)
+  plot(gg_dta)
+  plot(gg_dta, panel = TRUE)
+}
 
-rf_boston <- randomForest::randomForest(medv ~ ., data = Boston)
-gg_dta <- gg_variable(rf_boston)
-plot(gg_dta)
-plot(gg_dta, panel = TRUE)
 ## ------------------------------------------------------------
 ## survival examples
 ## ------------------------------------------------------------
 
 ## -------- veteran data
-## survival
 data(veteran, package = "randomForestSRC")
 rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., veteran,
   nsplit = 10,
-  ntree = 100
+  ntree = 50
 )
 
-# get the 1 year survival time.
+# get the 90-day survival time.
 gg_dta <- gg_variable(rfsrc_veteran, time = 90)
 
 # Generate variable dependence plots for age and diagtime
 plot(gg_dta, xvar = "age")
-plot(gg_dta, xvar = "diagtime", )
+plot(gg_dta, xvar = "diagtime")
 
 # Generate coplots
 plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE, se = FALSE)
 
-# If we want to compare survival at different time points, say 30, 90 day
-# and 1 year
+# Compare survival at 30, 90, and 365 days simultaneously
 gg_dta <- gg_variable(rfsrc_veteran, time = c(30, 90, 365))
-
-# Generate variable dependence plots for age and diagtime
 plot(gg_dta, xvar = "age")
-
-## -------- pbc data
-## We don't run this because of bootstrap confidence limits
-# We need to create this dataset
-data(pbc, package = "randomForestSRC", )
-# For whatever reason, the age variable is in days... makes no sense to me
-for (ind in seq_len(dim(pbc)[2])) {
-  if (!is.factor(pbc[, ind])) {
-    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-        pbc[, ind] <- as.logical(pbc[, ind])
-      }
-    }
-  } else {
-    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-        pbc[, ind] <- as.logical(pbc[, ind])
-      }
-      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-        pbc[, ind] <- as.logical(pbc[, ind])
-      }
-    }
-  }
-  if (!is.logical(pbc[, ind]) &
-    length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-    pbc[, ind] <- factor(pbc[, ind])
-  }
 }
-# Convert age to years
-pbc$age <- pbc$age / 364.24
-
-pbc$years <- pbc$days / 364.24
-pbc <- pbc[, -which(colnames(pbc) == "days")]
-pbc$treatment <- as.numeric(pbc$treatment)
-pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
-pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
-pbc$treatment <- factor(pbc$treatment)
-dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-# Create a test set from the remaining patients
-pbc_test <- pbc[which(is.na(pbc$treatment)), ]
-
-# ========
-# build the forest:
-rfsrc_pbc <- randomForestSRC::rfsrc(
-  Surv(years, status) ~ .,
-  dta_train,
-  nsplit = 10,
-  na.action = "na.impute",
-  forest = TRUE,
-  importance = TRUE,
-  save.memory = TRUE
-)
-
-gg_dta <- gg_variable(rfsrc_pbc, time = c(.5, 1, 3))
-plot(gg_dta, xvar = "age")
-plot(gg_dta, xvar = "trig")
-
-# Generate coplots
-plot(gg_dta, xvar = c("age", "trig"), panel = TRUE, se = FALSE)
-
 
 }
 \seealso{

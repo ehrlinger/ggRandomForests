@@ -49,9 +49,12 @@ plot(pd)
 ## Survival forest -- one curve per requested time horizon,
 ## faceted by variable. Y-axis label tracks `partial.type`.
 ## ------------------------------------------------------------
+# randomForestSRC's formula parser requires the unqualified Surv() symbol;
+# it Depends on `survival`, so Surv is on the search path once
+# randomForestSRC is loaded.
 data(veteran, package = "randomForestSRC")
 set.seed(42)
-rfsrc_v <- randomForestSRC::rfsrc(survival::Surv(time, status) ~ .,
+rfsrc_v <- randomForestSRC::rfsrc(Surv(time, status) ~ .,
                                   data = veteran, ntree = 50)
 ti  <- rfsrc_v$time.interest
 t30 <- ti[which.min(abs(ti - 30))]
