@@ -47,6 +47,12 @@
 #'   snapped to the nearest entry in \code{rf_model$time.interest} — see the
 #'   \strong{Survival forests} section below.  When \code{NULL} (default),
 #'   three quartile points of \code{time.interest} are used.
+#' @param partial.type Character; type of predicted value for survival
+#'   forests, passed through to \code{\link[randomForestSRC]{partial.rfsrc}}.
+#'   One of \code{"surv"} (default), \code{"chf"}, or \code{"mort"}. Ignored
+#'   for non-survival forests. \code{partial.rfsrc()} requires a non-\code{NULL}
+#'   value for survival families; supplying it here avoids a cryptic
+#'   \dQuote{argument is of length zero} error from the underlying C code.
 #' @param cat_limit Variables with fewer than \code{cat_limit} unique values in
 #'   \code{newx} are treated as categorical; all others are continuous.
 #'   Defaults to 10.
@@ -89,6 +95,7 @@ gg_partial_rfsrc <- function(rf_model,
                              xvar2.name = NULL,
                              newx = NULL,
                              partial.time = NULL,
+                             partial.type = c("surv", "chf", "mort"),
                              cat_limit = 10,
                              n_eval = 25) {
   if (is.null(newx)) {
@@ -112,17 +119,28 @@ gg_partial_rfsrc <- function(rf_model,
   is_surv <- !is.null(rf_model$family) && grepl("surv", rf_model$family)
   if (is_surv) {
     partial.time <- snap_partial_time(rf_model, partial.time)
+    # partial.rfsrc() requires a non-NULL partial.type for survival forests;
+    # NULL triggers a zero-length comparison inside the C code.
+    partial.type <- match.arg(partial.type)
+  } else {
+    partial.type <- NULL
   }
 
   if (is.null(xvar2.name)) {
     pdta <- partial_no_group(xvar.names, newx, rf_model,
-                             cat_limit, n_eval, is_surv, partial.time)
+                             cat_limit, n_eval, is_surv, partial.time,
+                             partial.type)
   } else {
     pdta <- partial_with_group(xvar.names, xvar2.name, newx, rf_model,
-                               cat_limit, n_eval, is_surv, partial.time)
+                               cat_limit, n_eval, is_surv, partial.time,
+                               partial.type)
   }
 
-  split_partial_result(do.call("rbind", pdta))
+  result <- split_partial_result(do.call("rbind", pdta))
+  # Carry partial.type so plot.gg_partial_rfsrc() can pick the correct
+  # y-axis label (Survival / CHF / Mortality).
+  attr(result, "partial.type") <- partial.type
+  result
 }
 
 ## ---- unexported helpers -------------------------------------------------------
@@ -184,7 +202,7 @@ make_eval_grid <- function(xname, newx, cat_limit, n_eval) {
 
 ## Thin wrapper around partial.rfsrc that builds the argument list.
 call_partial_rfsrc <- function(rf_model, xname, xval,
-                                is_surv, partial.time,
+                                is_surv, partial.time, partial.type,
                                 xvar2.name = NULL, x2val = NULL) {
   args <- list(
     object         = rf_model,
@@ -197,6 +215,7 @@ call_partial_rfsrc <- function(rf_model, xname, xval,
   }
   if (is_surv) {
     args$partial.time <- partial.time
+    args$partial.type <- partial.type
   }
   do.call(randomForestSRC::partial.rfsrc, args)
 }
@@ -204,37 +223,54 @@ call_partial_rfsrc <- function(rf_model, xname, xval,
 ## Process a single predictor variable and return a tidy data.frame (or NULL).
 partial_one_var <- function(xname, newx, rf_model,
                             cat_limit, n_eval, is_surv, partial.time,
+                            partial.type,
                             xvar2.name = NULL, x2val = NULL) {
   eg <- make_eval_grid(xname, newx, cat_limit, n_eval)
   if (is.null(eg)) return(NULL)
   xval <- eg$xval
   gr   <- eg$categorical
   partial.obj <- call_partial_rfsrc(rf_model, xname, xval,
-                                     is_surv, partial.time,
+                                     is_surv, partial.time, partial.type,
                                      xvar2.name, x2val)
   pout    <- randomForestSRC::get.partial.plot.data(partial.obj, granule = gr)
-  out_dta <- data.frame(x = pout$x, yhat = pout$yhat)
+  # Survival forests with >1 partial.time return yhat as an
+  # [length(partial.values) x length(partial.time)] matrix; expand to long form
+  # so each (x, time) pair is its own row. For non-survival or single-time
+  # cases yhat is already a vector of length(partial.values).
+  if (is.matrix(pout$yhat)) {
+    pt <- if (!is.null(pout$partial.time)) pout$partial.time else seq_len(ncol(pout$yhat))
+    out_dta <- data.frame(
+      x    = rep(pout$x, times = length(pt)),
+      yhat = as.numeric(pout$yhat),
+      time = rep(pt, each = length(pout$x))
+    )
+  } else {
+    out_dta <- data.frame(x = pout$x, yhat = pout$yhat)
+    if (!is.null(pout$partial.time)) {
+      out_dta$time <- pout$partial.time
+    }
+  }
   out_dta$name <- xname
   out_dta$type <- c("continuous", "categorical")[gr + 1L]
-  if (!is.null(pout$partial.time)) {
-    out_dta$time <- pout$partial.time
-  }
   out_dta
 }
 
 ## Compute partial dependence across xvar.names (no grouping variable).
 partial_no_group <- function(xvar.names, newx, rf_model,
-                             cat_limit, n_eval, is_surv, partial.time) {
+                             cat_limit, n_eval, is_surv, partial.time,
+                             partial.type) {
   pdta <- lapply(xvar.names, partial_one_var,
                  newx = newx, rf_model = rf_model,
                  cat_limit = cat_limit, n_eval = n_eval,
-                 is_surv = is_surv, partial.time = partial.time)
+                 is_surv = is_surv, partial.time = partial.time,
+                 partial.type = partial.type)
   Filter(Negate(is.null), pdta)
 }
 
 ## Compute partial dependence across xvar.names for each level of xvar2.name.
 partial_with_group <- function(xvar.names, xvar2.name, newx, rf_model,
-                               cat_limit, n_eval, is_surv, partial.time) {
+                               cat_limit, n_eval, is_surv, partial.time,
+                               partial.type) {
   xv2 <- unique(newx[[xvar2.name]])
   xv2 <- xv2[!is.na(xv2)]
   if (length(xv2) == 0L) {
@@ -248,6 +284,7 @@ partial_with_group <- function(xvar.names, xvar2.name, newx, rf_model,
                     newx = newx, rf_model = rf_model,
                     cat_limit = cat_limit, n_eval = n_eval,
                     is_surv = is_surv, partial.time = partial.time,
+                    partial.type = partial.type,
                     xvar2.name = xvar2.name, x2val = x2val)
     p1dta <- Filter(Negate(is.null), p1dta)
     if (length(p1dta) == 0L) return(NULL)

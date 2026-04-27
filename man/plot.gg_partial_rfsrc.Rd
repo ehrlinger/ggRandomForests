@@ -23,8 +23,11 @@ Produces ggplot2 partial dependence curves from the named list returned by
 For standard (non-survival) forests: continuous predictors are line plots,
 categorical predictors are bar charts, both faceted by variable name.
 
-For survival forests (when a \code{time} column is present): each predictor
-value is a separate curve over time, faceted by variable name.
+For survival forests (when a \code{time} column is present): each evaluation
+time point is a separate curve over the predictor's value, faceted by
+variable name. The y-axis label adapts to the \code{partial.type} stored on
+the object (\dQuote{Predicted Survival}, \dQuote{Predicted CHF}, or
+\dQuote{Predicted Mortality}).
 
 For two-variable surface plots (when a \code{grp} column is present):
 each group level is a separate line, faceted by primary predictor name.

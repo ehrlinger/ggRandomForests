@@ -10,6 +10,7 @@ gg_partial_rfsrc(
   xvar2.name = NULL,
   newx = NULL,
   partial.time = NULL,
+  partial.type = c("surv", "chf", "mort"),
   cat_limit = 10,
   n_eval = 25
 )
@@ -33,6 +34,13 @@ forests (ignored for regression/classification).  Values are automatically
 snapped to the nearest entry in \code{rf_model$time.interest} — see the
 \strong{Survival forests} section below.  When \code{NULL} (default),
 three quartile points of \code{time.interest} are used.}
+
+\item{partial.type}{Character; type of predicted value for survival
+forests, passed through to \code{\link[randomForestSRC]{partial.rfsrc}}.
+One of \code{"surv"} (default), \code{"chf"}, or \code{"mort"}. Ignored
+for non-survival forests. \code{partial.rfsrc()} requires a non-\code{NULL}
+value for survival families; supplying it here avoids a cryptic
+\dQuote{argument is of length zero} error from the underlying C code.}
 
 \item{cat_limit}{Variables with fewer than \code{cat_limit} unique values in
 \code{newx} are treated as categorical; all others are continuous.
