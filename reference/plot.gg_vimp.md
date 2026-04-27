@@ -64,6 +64,8 @@ rfsrc_iris <- rfsrc(Species ~ ., data = iris)
 gg_dta <- gg_vimp(rfsrc_iris)
 #> Warning: rfsrc object does not contain VIMP information. Calculating...
 plot(gg_dta)
+#> Ignoring unknown labels:
+#> • fill : "VIMP > 0"
 
 
 ## ------------------------------------------------------------
@@ -74,6 +76,8 @@ rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
 gg_dta <- gg_vimp(rfsrc_airq)
 #> Warning: rfsrc object does not contain VIMP information. Calculating...
 plot(gg_dta)
+#> Ignoring unknown labels:
+#> • fill : "VIMP > 0"
 
 
 ```

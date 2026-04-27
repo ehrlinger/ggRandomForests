@@ -78,6 +78,8 @@ rfsrc_airq <- rfsrc(Ozone ~ ., airquality,
 )
 gg_dta <- gg_vimp(rfsrc_airq)
 plot(gg_dta)
+#> Ignoring unknown labels:
+#> • fill : "VIMP > 0"
 
 
 
@@ -88,12 +90,16 @@ rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston,
 )
 gg_dta <- gg_vimp(rfsrc_boston)
 plot(gg_dta)
+#> Ignoring unknown labels:
+#> • fill : "VIMP > 0"
 
 
 ## -------- Boston data
 rf_boston <- randomForest::randomForest(medv ~ ., Boston)
 gg_dta <- gg_vimp(rf_boston)
 plot(gg_dta)
+#> Ignoring unknown labels:
+#> • fill : "VIMP > 0"
 
 
 
@@ -104,6 +110,8 @@ rfsrc_mtcars <- rfsrc(mpg ~ .,
 )
 gg_dta <- gg_vimp(rfsrc_mtcars)
 plot(gg_dta)
+#> Ignoring unknown labels:
+#> • fill : "VIMP > 0"
 
 
 ## ------------------------------------------------------------
@@ -177,10 +185,14 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
 
 gg_dta <- gg_vimp(rfsrc_pbc)
 plot(gg_dta)
+#> Ignoring unknown labels:
+#> • fill : "VIMP > 0"
 
 
 # Restrict to only the top 10.
 gg_dta <- gg_vimp(rfsrc_pbc, nvar = 10)
 plot(gg_dta)
+#> Ignoring unknown labels:
+#> • fill : "VIMP > 0"
 
 ```
