@@ -102,6 +102,55 @@ each group level is a separate line, faceted by primary predictor name.</p>
     <div class="dont-index"><p><code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code>, <code><a href="plot.gg_partial.html">plot.gg_partial</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Regression forest -- one continuous curve per variable</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">airq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit</a></span><span class="op">(</span><span class="va">airquality</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_airq</span> <span class="op">&lt;-</span> <span class="fu">randomForestSRC</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">Ozone</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">airq</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></span><span class="op">(</span><span class="va">rfsrc_airq</span>, xvar.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Wind"</span>, <span class="st">"Temp"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                       n_eval <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pd</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.gg_partial_rfsrc-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Survival forest -- one curve per requested time horizon,</span></span></span>
+<span class="r-in"><span><span class="co">## faceted by variable. Y-axis label tracks `partial.type`.</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">veteran</span>, package <span class="op">=</span> <span class="st">"randomForestSRC"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">rfsrc_v</span> <span class="op">&lt;-</span> <span class="fu">randomForestSRC</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>,</span></span>
+<span class="r-in"><span>                                  data <span class="op">=</span> <span class="va">veteran</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in parseFormula(formula, data, ytry):</span> formula is incorrectly specified.</span>
+<span class="r-in"><span><span class="va">ti</span>  <span class="op">&lt;-</span> <span class="va">rfsrc_v</span><span class="op">$</span><span class="va">time.interest</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'rfsrc_v' not found</span>
+<span class="r-in"><span><span class="va">t30</span> <span class="op">&lt;-</span> <span class="va">ti</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">ti</span> <span class="op">-</span> <span class="fl">30</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'ti' not found</span>
+<span class="r-in"><span><span class="va">t90</span> <span class="op">&lt;-</span> <span class="va">ti</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">ti</span> <span class="op">-</span> <span class="fl">90</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'ti' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Default partial.type = "surv" -&gt; y-axis "Predicted Survival"</span></span></span>
+<span class="r-in"><span><span class="va">pd_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></span><span class="op">(</span><span class="va">rfsrc_v</span>, xvar.names <span class="op">=</span> <span class="st">"age"</span>,</span></span>
+<span class="r-in"><span>                         partial.time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">t30</span>, <span class="va">t90</span><span class="op">)</span>, n_eval <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'rfsrc_v' not found</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pd_s</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'pd_s' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># partial.type = "chf" -&gt; y-axis "Predicted CHF"</span></span></span>
+<span class="r-in"><span><span class="va">pd_c</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></span><span class="op">(</span><span class="va">rfsrc_v</span>, xvar.names <span class="op">=</span> <span class="st">"age"</span>,</span></span>
+<span class="r-in"><span>                         partial.time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">t30</span>, <span class="va">t90</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                         partial.type <span class="op">=</span> <span class="st">"chf"</span>, n_eval <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'rfsrc_v' not found</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pd_c</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'pd_c' not found</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

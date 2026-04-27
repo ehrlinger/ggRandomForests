@@ -175,10 +175,6 @@
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vimp_df</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Ignoring unknown labels:
-• fill : "VIMP &gt; 0"</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="ggRandomForests_files/figure-html/vimp-demo-1.png" width="672"></p>
@@ -191,7 +187,7 @@
 <a class="anchor" aria-label="anchor" href="#balanced-conditioning-cuts-with-quantile_pts"></a>
 </h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rm_breaks</span> <span class="op">&lt;-</span> <span class="fu">ggRandomForests</span><span class="fu">::</span><span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">boston</span><span class="op">$</span><span class="va">rm</span>, groups <span class="op">=</span> <span class="fl">6</span>, intervals <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">rm_groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">boston</span><span class="op">$</span><span class="va">rm</span>, breaks <span class="op">=</span> <span class="va">rm_breaks</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">rm_groups</span><span class="op">)</span></span></code></pre></div>

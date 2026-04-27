@@ -91,9 +91,6 @@ head(vimp_df)
 plot(vimp_df)
 ```
 
-    Ignoring unknown labels:
-    • fill : "VIMP > 0"
-
 ![](ggRandomForests_files/figure-html/vimp-demo-1.png)
 
 If a `randomForest` object lacks stored importance scores,
