@@ -12,6 +12,19 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
+
+# Map partial.type ("surv" / "chf" / "mort") to a human y-axis label.
+# Falls back to "Predicted Survival" when the attribute is absent (e.g. an
+# object built before this attribute was introduced).
+partial_surv_y_label <- function(partial.type) {
+  if (is.null(partial.type)) return("Predicted Survival")
+  switch(partial.type,
+         surv = "Predicted Survival",
+         chf  = "Predicted CHF",
+         mort = "Predicted Mortality",
+         "Predicted Survival")
+}
+
 #' Plot a \code{\link{gg_partial}} object
 #'
 #' Produces ggplot2 partial dependence curves from the named list returned by
@@ -85,8 +98,11 @@ plot.gg_partial <- function(x, ...) {
 #' For standard (non-survival) forests: continuous predictors are line plots,
 #' categorical predictors are bar charts, both faceted by variable name.
 #'
-#' For survival forests (when a \code{time} column is present): each predictor
-#' value is a separate curve over time, faceted by variable name.
+#' For survival forests (when a \code{time} column is present): each evaluation
+#' time point is a separate curve over the predictor's value, faceted by
+#' variable name. The y-axis label adapts to the \code{partial.type} stored on
+#' the object (\dQuote{Predicted Survival}, \dQuote{Predicted CHF}, or
+#' \dQuote{Predicted Mortality}).
 #'
 #' For two-variable surface plots (when a \code{grp} column is present):
 #' each group level is a separate line, faceted by primary predictor name.
@@ -109,23 +125,27 @@ plot.gg_partial_rfsrc <- function(x, ...) {
     cont <- gg_dta$continuous
 
     if (!is.null(cont$time)) {
-      ## Survival forest: predictor value on x-axis, one curve per time point
-      ## (rounded for a tidy legend). Time is typically a small set (1-3 horizons)
-      ## while x is the dense evaluation grid.
-      cont$.time_lbl <- factor(round(cont$time, 2),
-                               levels = sort(unique(round(cont$time, 2))))
+      ## Survival forest: predictor value on x-axis, one curve per time point.
+      ## Group/colour by the *full-precision* time so distinct horizons that
+      ## happen to round to the same value are not silently merged. The legend
+      ## is relabelled with rounded values for readability.
+      time_levels <- sort(unique(cont$time))
+      cont$.time_factor <- factor(cont$time, levels = time_levels)
+      legend_labels <- format(round(time_levels, 2), trim = TRUE)
+      y_lab <- partial_surv_y_label(attr(gg_dta, "partial.type"))
       gg_cont <- ggplot2::ggplot(
         cont,
         ggplot2::aes(
           x     = .data$x,
           y     = .data$yhat,
-          color = .data$.time_lbl,
-          group = .data$.time_lbl
+          color = .data$.time_factor,
+          group = .data$.time_factor
         )
       ) +
         ggplot2::geom_line() +
         ggplot2::facet_wrap(~name, scales = "free_x") +
-        ggplot2::labs(x = NULL, y = "Predicted Survival", color = "Time")
+        ggplot2::scale_color_discrete(labels = legend_labels) +
+        ggplot2::labs(x = NULL, y = y_lab, color = "Time")
 
     } else if (!is.null(cont$grp)) {
       ## Two-variable surface: group is xvar2; x-axis is the primary predictor

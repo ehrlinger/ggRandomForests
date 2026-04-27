@@ -136,7 +136,11 @@ gg_partial_rfsrc <- function(rf_model,
                                partial.type)
   }
 
-  split_partial_result(do.call("rbind", pdta))
+  result <- split_partial_result(do.call("rbind", pdta))
+  # Carry partial.type so plot.gg_partial_rfsrc() can pick the correct
+  # y-axis label (Survival / CHF / Mortality).
+  attr(result, "partial.type") <- partial.type
+  result
 }
 
 ## ---- unexported helpers -------------------------------------------------------

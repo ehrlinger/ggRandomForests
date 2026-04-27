@@ -179,6 +179,64 @@ test_that("gg_partial_rfsrc partial.type rejects bad values", {
   )
 })
 
+test_that("plot.gg_partial_rfsrc y-axis adapts to partial.type", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                               ntree = 50)
+  ti  <- rf$time.interest
+  t90 <- ti[which.min(abs(ti - 90))]
+
+  # Default ("surv") => "Predicted Survival"
+  pd_s <- gg_partial_rfsrc(rf, xvar.names = "age",
+                           partial.time = t90, n_eval = 6)
+  expect_equal(attr(pd_s, "partial.type"), "surv")
+  p_s <- plot(pd_s)
+  expect_equal(p_s$labels$y, "Predicted Survival")
+
+  # "chf" => "Predicted CHF"
+  pd_c <- gg_partial_rfsrc(rf, xvar.names = "age",
+                           partial.time = t90, partial.type = "chf",
+                           n_eval = 6)
+  expect_equal(attr(pd_c, "partial.type"), "chf")
+  p_c <- plot(pd_c)
+  expect_equal(p_c$labels$y, "Predicted CHF")
+
+  # "mort" => "Predicted Mortality"; mort returns one value per x (no time dim),
+  # so the survival "time" branch will not engage — we only assert the
+  # attribute round-trips.
+  pd_m <- gg_partial_rfsrc(rf, xvar.names = "age",
+                           partial.type = "mort",
+                           n_eval = 6)
+  expect_equal(attr(pd_m, "partial.type"), "mort")
+})
+
+test_that("plot.gg_partial_rfsrc preserves full-precision time grouping", {
+  # Distinct times that round to the same 2-dp value must not collapse into a
+  # single line. Build a synthetic gg_partial_rfsrc object with two such times.
+  cont <- data.frame(
+    x    = rep(c(1, 2, 3), times = 2),
+    yhat = c(0.9, 0.8, 0.7, 0.5, 0.4, 0.3),
+    name = "x",
+    time = rep(c(1.001, 1.002), each = 3)
+  )
+  obj <- structure(
+    list(
+      continuous  = cont,
+      categorical = data.frame(x = character(0), yhat = numeric(0),
+                               name = character(0), time = integer(0))
+    ),
+    class = "gg_partial_rfsrc",
+    partial.type = "surv"
+  )
+  p  <- plot(obj)
+  ld <- ggplot2::layer_data(p, 1L)
+  # Two distinct full-precision time horizons => two distinct groups, even
+  # though both round to "1" at 2-dp precision.
+  expect_equal(length(unique(ld$group)), 2L)
+  expect_equal(length(unique(ld$colour)), 2L)
+})
+
 # ----------------------------------------------------------------------------
 # gg_partial_rfsrc — regression
 # ----------------------------------------------------------------------------
