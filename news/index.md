@@ -1,5 +1,26 @@
 # Changelog
 
+## ggRandomForests v2.7.2
+
+- Address CRAN reviewer (Benjamin Altmann) feedback on the v2.7.1
+  resubmission:
+  - Add methods references to `DESCRIPTION` (Breiman 2001 and Ishwaran
+    et al. 2008, with `<doi:...>` auto-links) per CRAN cookbook.
+  - Drop the `man/shift.Rd` Rd file: `shift()` is an internal utility
+    and the example used `ggRandomForests:::shift(...)`. Marked the
+    function `@noRd` so it no longer generates a help page.
+  - Replace [`cat()`](https://rdrr.io/r/base/cat.html) in
+    [`surv_partial.rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.md)
+    with [`message()`](https://rdrr.io/r/base/message.html) so progress
+    output is suppressible
+    ([`suppressMessages()`](https://rdrr.io/r/base/message.html)) and
+    plays nicely inside notebooks / Shiny / quarto.
+  - Restore the user’s [`par()`](https://rdrr.io/r/graphics/par.html)
+    settings in the
+    [`surv_partial.rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.md)
+    example via
+    `oldpar <- par(no.readonly = TRUE); on.exit(par(oldpar))`.
+
 ## ggRandomForests v2.7.1
 
 - Fix

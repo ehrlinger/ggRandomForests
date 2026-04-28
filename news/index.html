@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,6 +54,15 @@
       <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.7.2" id="ggrandomforests-v272">ggRandomForests v2.7.2<a class="anchor" aria-label="anchor" href="#ggrandomforests-v272"></a></h2>
+<ul><li>Address CRAN reviewer (Benjamin Altmann) feedback on the v2.7.1 resubmission:
+<ul><li>Add methods references to <code>DESCRIPTION</code> (Breiman 2001 and Ishwaran et al. 2008, with <code>&lt;doi:...&gt;</code> auto-links) per CRAN cookbook.</li>
+<li>Drop the <code>man/shift.Rd</code> Rd file: <code>shift()</code> is an internal utility and the example used <code>ggRandomForests:::shift(...)</code>. Marked the function <code>@noRd</code> so it no longer generates a help page.</li>
+<li>Replace <code><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat()</a></code> in <code><a href="../reference/surv_partial.rfsrc.html">surv_partial.rfsrc()</a></code> with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code> so progress output is suppressible (<code><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages()</a></code>) and plays nicely inside notebooks / Shiny / quarto.</li>
+<li>Restore the user’s <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code> settings in the <code><a href="../reference/surv_partial.rfsrc.html">surv_partial.rfsrc()</a></code> example via <code>oldpar &lt;- par(no.readonly = TRUE); on.exit(par(oldpar))</code>.</li>
+</ul></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.7.1" id="ggrandomforests-v271">ggRandomForests v2.7.1<a class="anchor" aria-label="anchor" href="#ggrandomforests-v271"></a></h2>
 <ul><li>Fix <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> for survival forests: <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> was being called without <code>partial.type</code>, causing a zero-length comparison (<code>if (partial.type == "rel.freq") ...</code>) inside the C-level prediction routine and aborting the call. Survival forests now pass <code>partial.type = "surv"</code> (default; configurable via the new <code>partial.type</code> argument accepting <code>"surv"</code>, <code>"chf"</code>, or <code>"mort"</code>). This unblocks the <code>partial-dep</code> chunk in the survival vignette.</li>
