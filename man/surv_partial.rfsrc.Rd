@@ -107,7 +107,10 @@ partial.obj <- partial(follic.obj,
 pdta1 <- get.partial.plot.data(partial.obj, target = 1)
 pdta2 <- get.partial.plot.data(partial.obj, target = 2)
 
-par(mfrow=c(2,2))
+# Save and restore the user's graphical parameters per CRAN policy.
+oldpar <- par(no.readonly = TRUE)
+on.exit(par(oldpar))
+par(mfrow = c(2, 2))
 plot(lowess(pdta1$x, pdta1$yhat),
      type = "l", xlab = "age", ylab = "adjusted years lost relapse")
 plot(lowess(pdta2$x, pdta2$yhat),

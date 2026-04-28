@@ -99,7 +99,10 @@
 #' pdta1 <- get.partial.plot.data(partial.obj, target = 1)
 #' pdta2 <- get.partial.plot.data(partial.obj, target = 2)
 #'
-#' par(mfrow=c(2,2))
+#' # Save and restore the user's graphical parameters per CRAN policy.
+#' oldpar <- par(no.readonly = TRUE)
+#' on.exit(par(oldpar))
+#' par(mfrow = c(2, 2))
 #' plot(lowess(pdta1$x, pdta1$yhat),
 #'      type = "l", xlab = "age", ylab = "adjusted years lost relapse")
 #' plot(lowess(pdta2$x, pdta2$yhat),
@@ -132,8 +135,9 @@ surv_partial.rfsrc <- function(rforest, var_list, npts = 25, partial.type = "sur
   )
   ###----------Partial dependency estimation, for each variable, at each time point ----
   surv.lst <- lapply(var_list, function(xvar) {
-    ## extract the key variable
-    cat("partial plot for:", xvar, "\n")
+    ## extract the key variable. Use message() (suppressible) instead of
+    ## cat() so the function plays nicely inside notebooks/Shiny/quarto.
+    message("partial plot for: ", xvar)
 
     ## determine the partial plot data
     xv <- sort(unique(rforest$xvar[, xvar]))

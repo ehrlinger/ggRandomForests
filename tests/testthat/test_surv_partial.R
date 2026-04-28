@@ -187,8 +187,9 @@ local({
     expect_false(identical(yhat_mort, yhat_surv))
   })
 
-  test_that("surv_partial.rfsrc verbose: prints variable name during computation", {
-    expect_output(
+  test_that("surv_partial.rfsrc verbose: emits a message with the variable name", {
+    # v2.7.2: cat() -> message() so output is suppressible per CRAN cookbook.
+    expect_message(
       suppressWarnings(
         surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
       ),

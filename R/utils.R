@@ -15,27 +15,17 @@
 ## None of these are exported to end-users.
 
 # --------------------------------------------------------------------------- #
-#' Lead / lag shift for numeric vectors
-#'
-#' @param x a numeric vector of values
-#' @param shift_by an integer of length 1, giving the number of positions
-#'   to lead (positive) or lag (negative) by
-#'
-#' @details Lead and lag are useful for comparing values offset by a constant
-#' (e.g. the previous or next value).
-#'
-#' Taken from:
-#' http://ctszkin.com/2012/03/11/generating-a-laglead-variables/
-#'
-#' This function allows removal of the dplyr::lead dependency.
-#'
-#' @keywords internal
-#' @examples
-#' d <- data.frame(x = 1:15)
-#' # generate lead variable
-#' d$df_lead2 <- ggRandomForests:::shift(d$x, 2)
-#' # generate lag variable
-#' d$df_lag2 <- ggRandomForests:::shift(d$x, -2)
+# Internal: lead / lag shift for numeric vectors.
+#
+# `x`        numeric vector of values.
+# `shift_by` integer length 1 giving the number of positions to lead
+#            (positive) or lag (negative) by; can also be a vector to
+#            return a matrix of shifts.
+#
+# Removes the dplyr::lead dependency.  Adapted from
+# http://ctszkin.com/2012/03/11/generating-a-laglead-variables/
+#
+# @noRd
 shift <- function(x, shift_by = 1) {
   stopifnot(is.numeric(shift_by))
   stopifnot(is.numeric(x))

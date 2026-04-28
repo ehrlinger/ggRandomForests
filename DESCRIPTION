@@ -1,17 +1,22 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 2.7.1
+Version: 2.7.2
 Date: 2026-04-27
-Authors@R: person("John", "Ehrlinger",  
-  role = c("aut", "cre"), 
+Authors@R: person("John", "Ehrlinger",
+  role = c("aut", "cre"),
   email = "john.ehrlinger@gmail.com")
 License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
 URL: https://github.com/ehrlinger/ggRandomForests, https://ehrlinger.github.io/ggRandomForests/
 BugReports: https://github.com/ehrlinger/ggRandomForests/issues
-Description: Graphic elements for exploring Random Forests using the 'randomForest' or 'randomForestSRC' package for survival, regression and classification forests and 'ggplot2' package plotting.
+Description: Graphic elements for exploring Random Forests using the
+    'randomForest' or 'randomForestSRC' package for survival, regression
+    and classification forests and 'ggplot2' package plotting. Implements
+    visualisations of the methods described in Breiman (2001)
+    <doi:10.1023/A:1010933404324> and Ishwaran, Kogalur, Blackstone, and
+    Lauer (2008) <doi:10.1214/08-AOAS169>.
 Depends:
     R (>= 4.4.0),
     randomForestSRC (>= 3.4.0),
