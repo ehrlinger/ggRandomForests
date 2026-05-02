@@ -40,6 +40,7 @@ on the Boston Housing data set ([Harrison and Rubinfeld
     partial dependence surfaces with **plotly**
 
 ``` r
+
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -68,11 +69,13 @@ housing characteristics. We use the copy from the **MASS** package
 ([Venables and Ripley 2002](#ref-mass:2002)).
 
 ``` r
+
 data(Boston, package = "MASS")
 Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
 ```
 
 ``` r
+
 st_labs <- c(
   crim    = "Crime rate by town",
   zn      = "Residential land zoned > 25k sq ft (%)",
@@ -98,6 +101,7 @@ sole categorical variable (`chas`, whether the tract borders the Charles
 River). A loess smooth highlights the marginal trend.
 
 ``` r
+
 dta <- Boston |>
   pivot_longer(c(-medv, -chas), names_to = "variable", values_to = "value")
 
@@ -127,6 +131,7 @@ We grow a regression forest using all 13 predictors. The
 function detects the regression family from the continuous response.
 
 ``` r
+
 rfsrc_Boston <- rfsrc(medv ~ ., data = Boston, # nolint: object_name_linter
                       importance = TRUE, err.block = 5)
 rfsrc_Boston
@@ -135,7 +140,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 500
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 67.006
+    #>        Average no. of terminal nodes: 66.856
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -144,8 +149,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86919169
-    #>    (OOB) Requested performance error: 11.06464628
+    #>                      (OOB) R squared: 0.86105846
+    #>    (OOB) Requested performance error: 11.75260967
 
 The forest grew 500 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -154,6 +159,7 @@ variables at each node, and stopping at a minimum terminal node size of
 ### OOB error convergence
 
 ``` r
+
 gg_e <- gg_error(rfsrc_Boston)
 gg_e <- gg_e |> filter(!is.na(error))
 class(gg_e) <- c("gg_error", class(gg_e))
@@ -170,6 +176,7 @@ large enough for reliable predictions.
 ### OOB predictions
 
 ``` r
+
 plot(gg_rfsrc(rfsrc_Boston), alpha = 0.5) +
   coord_cartesian(ylim = c(5, 49))
 ```
@@ -193,6 +200,7 @@ values mean the variable is essential; negative values suggest noise is
 more informative.
 
 ``` r
+
 plot(gg_vimp(rfsrc_Boston), lbls = st_labs)
 ```
 
@@ -212,6 +220,7 @@ Variables that partition large portions of the population early are
 considered most important.
 
 ``` r
+
 md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
@@ -223,6 +232,7 @@ We use the minimal depth top variables for the remainder of the
 analysis.
 
 ``` r
+
 xvar <- md_Boston$topvars
 ```
 
@@ -234,6 +244,7 @@ Variable dependence shows each tract’s OOB predicted `medv` plotted
 against a predictor, with a loess smooth indicating the trend.
 
 ``` r
+
 gg_v <- gg_variable(rfsrc_Boston)
 
 plot(gg_v, xvar = xvar, panel = TRUE, alpha = 0.5) +
@@ -249,6 +260,7 @@ The panels confirm what EDA suggested: `medv` decreases sharply with
 remaining variables show weaker but still discernible trends.
 
 ``` r
+
 plot(gg_v, xvar = "chas", alpha = 0.4) +
   labs(y = st_labs["medv"])
 ```
@@ -267,7 +279,9 @@ Partial dependence integrates out the effects of all other covariates,
 giving a risk-adjusted view of each predictor’s marginal effect
 ([Friedman 2001](#ref-Friedman:2000)):
 
-$$\widetilde{f}(x) = \frac{1}{n}\sum\limits_{i = 1}^{n}\widehat{f}(x,x_{i,o})$$
+``` math
+\tilde{f}(x) = \frac{1}{n} \sum_{i=1}^n \hat{f}(x, x_{i,o})
+```
 
 We use
 [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md),
@@ -279,6 +293,7 @@ automatically. For a custom layout we can also access `pd$continuous`
 directly.
 
 ``` r
+
 pd <- gg_partial_rfsrc(rfsrc_Boston, xvar.names = xvar)
 
 # Quick S3 plot — works out of the box for the standard regression case
@@ -293,6 +308,7 @@ For a publication-ready layout with custom axis labels, access the
 underlying data frame directly:
 
 ``` r
+
 ggplot(pd$continuous, aes(x = x, y = yhat)) +
   geom_line(color = "steelblue", linewidth = 1) +
   facet_wrap(~name, scales = "free_x") +
@@ -317,6 +333,7 @@ The simplest coplot conditions on a categorical variable. Here we
 examine `medv` vs. `lstat`, split by Charles River status:
 
 ``` r
+
 gg_v$chas_label <- ifelse(gg_v$chas, "Borders Charles River",
                           "Does not border")
 
@@ -341,6 +358,7 @@ quantile groups using
 and facet:
 
 ``` r
+
 rm_pts <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 6, intervals = TRUE)
 gg_v$rm_grp <- cut(rfsrc_Boston$xvar$rm, breaks = rm_pts)
 levels(gg_v$rm_grp) <- paste("rm in", levels(gg_v$rm_grp))
@@ -364,6 +382,7 @@ The complement view — `medv` vs. `rm`, conditional on `lstat` groups —
 completes the picture:
 
 ``` r
+
 lstat_pts <- quantile_pts(rfsrc_Boston$xvar$lstat, groups = 6,
                           intervals = TRUE)
 gg_v$lstat_grp <- cut(rfsrc_Boston$xvar$lstat, breaks = lstat_pts)
@@ -391,6 +410,7 @@ we compute partial dependence on a grid: 25 values of `rm`, each
 evaluated at 25 points along `lstat`.
 
 ``` r
+
 rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 25)
 
 surface_list <- lapply(rm_grid, function(rm_val) {
@@ -406,6 +426,7 @@ surface_df <- bind_rows(surface_list)
 ```
 
 ``` r
+
 if (requireNamespace("plotly", quietly = TRUE)) {
   library(plotly)
 

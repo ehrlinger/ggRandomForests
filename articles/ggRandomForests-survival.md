@@ -42,6 +42,7 @@ the primary biliary cirrhosis (PBC) data set ([Fleming and Harrington
     partial dependence surfaces with **plotly**
 
 ``` r
+
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -74,6 +75,7 @@ proportional hazards model developed in Chapter 4.4. We use the copy
 bundled with **randomForestSRC**.
 
 ``` r
+
 data("pbc", package = "randomForestSRC")
 ```
 
@@ -87,6 +89,7 @@ binary 0/1 indicators) to factors. We avoid converting binary columns to
 does not handle logical predictors correctly in survival forests.
 
 ``` r
+
 pbc <- pbc |>
   mutate(
     years     = days / 365.25,
@@ -113,6 +116,7 @@ for (nm in setdiff(names(pbc), resp_cols)) {
 ```
 
 ``` r
+
 # Human-readable labels for plot axes
 st_labs <- c(
   status       = "Death Event",
@@ -144,6 +148,7 @@ histograms over follow-up time, and continuous variables as scatter
 plots colored by event status.
 
 ``` r
+
 cls <- sapply(pbc, class)
 cnt_idx <- which(cls %in% c("numeric", "integer"))
 fct_idx <- setdiff(seq_along(pbc), cnt_idx)
@@ -169,6 +174,7 @@ EDA for categorical variables. Bar color indicates factor level; white =
 missing.
 
 ``` r
+
 cnt_idx <- union(cnt_idx, which(names(pbc) == "status"))
 dta_cont <- pbc[, cnt_idx] |>
   pivot_longer(c(-years, -status),
@@ -199,6 +205,7 @@ We restrict to the 312 trial patients and construct KM curves with
 `gg_survival`.
 
 ``` r
+
 pbc_trial <- pbc |> filter(!is.na(treatment))
 pbc_test  <- pbc |> filter(is.na(treatment))
 
@@ -222,6 +229,7 @@ DPCA offered no clear survival benefit over placebo ([Fleming and
 Harrington 1991](#ref-fleming:1991)).
 
 ``` r
+
 plot(gg_km, type = "cum_haz") +
   labs(y = "Cumulative Hazard", x = "Time (years)",
        color = "Treatment", fill = "Treatment") +
@@ -238,6 +246,7 @@ bilirubin groupings from Fleming and Harrington
 ([1991](#ref-fleming:1991)) Figure 4.4.2:
 
 ``` r
+
 pbc_bili <- pbc_trial |>
   mutate(bili_grp = cut(bili, breaks = c(0, 0.8, 1.3, 3.4, 29)))
 
@@ -268,6 +277,7 @@ required for
 to work correctly.
 
 ``` r
+
 # Step 1: impute missing values via random forest proximity
 pbc_imputed <- impute.rfsrc(Surv(years, status) ~ .,
                              data    = pbc_trial,
@@ -289,6 +299,7 @@ variables at each node, and stopping at a minimum terminal node size of
 ### OOB error convergence
 
 ``` r
+
 plot(gg_error(rfsrc_pbc))
 ```
 
@@ -302,6 +313,7 @@ large enough for reliable predictions.
 ### OOB predicted survival
 
 ``` r
+
 gg_rsf <- plot(gg_rfsrc(rfsrc_pbc), alpha = 0.2) +
   scale_color_manual(values = event_colors) +
   theme(legend.position = "none") +
@@ -319,6 +331,7 @@ follow-up time. Red (death event) curves generally fall faster,
 confirming the forest discriminates between risk groups.
 
 ``` r
+
 plot(gg_rfsrc(rfsrc_pbc, by = "treatment")) +
   theme(legend.position = c(0.2, 0.2)) +
   labs(y = "Survival Probability", x = "Time (years)") +
@@ -338,6 +351,7 @@ handles these transparently at prediction time via
 imputation and does not affect the fitted forest object.
 
 ``` r
+
 rfsrc_pbc_test <- predict(rfsrc_pbc, newdata = pbc_test,
                           na.action = "na.impute",
                           importance = TRUE)
@@ -369,6 +383,7 @@ for accuracy; negative values suggest noise is more informative than the
 variable.
 
 ``` r
+
 plot(gg_vimp(rfsrc_pbc), lbls = st_labs) +
   theme(legend.position = c(0.8, 0.2)) +
   labs(fill = "VIMP > 0")
@@ -390,13 +405,14 @@ Variables that partition large portions of the population early are
 considered most important.
 
 ``` r
+
 md_pbc <- max.subtree(rfsrc_pbc)
 ```
 
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
 function computes minimal depth for each variable. The threshold is
-5.88, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+5.92, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
 copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
@@ -405,6 +421,7 @@ Fleming and Harrington ([1991](#ref-fleming:1991)) model) for the
 remainder of the analysis.
 
 ``` r
+
 xvar     <- c("bili", "albumin", "copper", "prothrombin", "age")
 xvar_cat <- "edema"
 xvar_all <- c(xvar, xvar_cat)
@@ -419,6 +436,7 @@ time horizon plotted against a predictor of interest. Points are colored
 by event status; a loess smooth indicates the trend.
 
 ``` r
+
 gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3),
                     time.labels = c("1 Year", "3 Years"))
 
@@ -439,6 +457,7 @@ drops further than the 1-year curve, suggesting a non-proportional
 hazards effect.
 
 ``` r
+
 plot(gg_v, xvar = xvar[-1], panel = TRUE, alpha = 0.4) +
   labs(y = "Survival") +
   theme(legend.position = "none") +
@@ -456,6 +475,7 @@ copper, prothrombin time, and age. The divergence between time curves
 for `copper` further supports a non-proportional hazards mechanism.
 
 ``` r
+
 plot(gg_v, xvar = xvar_cat, alpha = 0.4) +
   labs(y = "Survival") +
   theme(legend.position = "none") +
@@ -493,6 +513,7 @@ the result includes a `time` column so `plot(pd)` produces one curve per
 predictor value over time, faceted by variable name.
 
 ``` r
+
 # partial.rfsrc() requires times that match the model's time.interest grid;
 # gg_partial_rfsrc() snaps the requested values to the nearest observed times.
 ti   <- rfsrc_pbc$time.interest
@@ -515,6 +536,7 @@ For a publication-ready layout with custom colour scale, access
 `pd$continuous` directly:
 
 ``` r
+
 ggplot(pd$continuous, aes(x = x, y = yhat,
                           color = factor(round(time, 2)),
                           group = factor(time))) +
@@ -543,6 +565,7 @@ group membership in another variable. Here we examine the dependence of
 survival on bilirubin, stratified by edema group.
 
 ``` r
+
 gg_v1 <- gg_variable(rfsrc_pbc, time = 1)
 gg_v1$edema <- paste("edema =", gg_v1$edema)
 
@@ -567,6 +590,7 @@ We can also condition on a continuous variable by binning into quantile
 groups:
 
 ``` r
+
 albumin_cts <- quantile_pts(gg_v1$albumin, groups = 6, intervals = TRUE)
 gg_v1$albumin_grp <- cut(gg_v1$albumin, breaks = albumin_cts)
 levels(gg_v1$albumin_grp) <- paste("albumin =",
@@ -595,6 +619,7 @@ construct a partial dependence surface. We compute partial dependence on
 a grid of 25 albumin values, each evaluated at 25 bilirubin points.
 
 ``` r
+
 # Create grid of albumin values
 alb_grid <- quantile_pts(pbc_trial$albumin, groups = 25)
 
@@ -613,6 +638,7 @@ surface_df <- bind_rows(surface_list)
 ```
 
 ``` r
+
 if (!exists("surface_df")) {
   message("surface_df not available — skipping plotly surface (see surface-data chunk error above).")
 } else if (requireNamespace("plotly", quietly = TRUE)) {

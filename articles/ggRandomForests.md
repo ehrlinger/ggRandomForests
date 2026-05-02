@@ -9,6 +9,7 @@ building balanced conditioning intervals.
 ## Error trajectories with `gg_error()`
 
 ``` r
+
 library(randomForest)
 set.seed(42)
 rf_iris <- randomForest(Species ~ ., data = iris, ntree = 200, keep.forest = TRUE)
@@ -32,6 +33,7 @@ the original model frame and appends the in-bag error trajectory
 (`train`). Plotting overlays both curves by default:
 
 ``` r
+
 plot(err_df)
 ```
 
@@ -40,6 +42,7 @@ plot(err_df)
 ## Marginal dependence via `gg_variable()`
 
 ``` r
+
 set.seed(99)
 boston <- MASS::Boston
 rf_boston <- randomForest(medv ~ ., data = boston, ntree = 150)
@@ -60,6 +63,7 @@ column (regression) or per-class probabilities (`yhat.<class>` for
 classification). Plotting a single variable is straightforward:
 
 ``` r
+
 plot(var_df, xvar = "lstat")
 ```
 
@@ -73,6 +77,7 @@ argument; non-OOB predictions are available by setting `oob = FALSE`.
 ## Variable importance with `gg_vimp()`
 
 ``` r
+
 vimp_df <- ggRandomForests::gg_vimp(rf_boston)
 head(vimp_df)
 ```
@@ -88,6 +93,7 @@ head(vimp_df)
     6 crim    vimp   2646. TRUE    
 
 ``` r
+
 plot(vimp_df)
 ```
 
@@ -103,6 +109,7 @@ returns `NA` placeholders so plots still render.
 ## Balanced conditioning cuts with `quantile_pts()`
 
 ``` r
+
 rm_breaks <- ggRandomForests::quantile_pts(boston$rm, groups = 6, intervals = TRUE)
 rm_groups <- cut(boston$rm, breaks = rm_breaks)
 table(rm_groups)

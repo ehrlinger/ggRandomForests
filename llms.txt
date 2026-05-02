@@ -19,6 +19,7 @@ can be inspected, saved, or used for custom analyses.
 ## Installation
 
 ``` r
+
 # CRAN (stable)
 install.packages("ggRandomForests")
 
@@ -30,6 +31,7 @@ remotes::install_github("ehrlinger/ggRandomForests")
 ## Quick start
 
 ``` r
+
 library(randomForestSRC)
 library(ggRandomForests)
 
@@ -56,21 +58,22 @@ plot(pd)
 For survival forests, see the package vignette:
 
 ``` r
+
 vignette("ggRandomForests")
 ```
 
 ## Function reference
 
-| Function                                                                                          | Input                            | What you get                                  |
-|---------------------------------------------------------------------------------------------------|----------------------------------|-----------------------------------------------|
-| [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)                 | `rfsrc` / `randomForest`         | OOB error vs. number of trees                 |
-| [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)                   | `rfsrc` / `randomForest`         | Variable importance ranking                   |
-| [`gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)           | `rfsrc` / `randomForest`         | Predicted vs. observed values                 |
-| [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)           | `rfsrc` / `randomForest`         | Marginal dependence data frame                |
-| [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)             | `plot.variable` output           | Partial dependence (continuous + categorical) |
-| [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md) | `rfsrc` model                    | Partial dependence via `partial.rfsrc`        |
-| [`gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)           | `rfsrc` survival forest          | Kaplan–Meier / Nelson–Aalen estimates         |
-| [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)               | `rfsrc` / `randomForest` (class) | ROC curve data                                |
+| Function | Input | What you get |
+|----|----|----|
+| [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md) | `rfsrc` / `randomForest` | OOB error vs. number of trees |
+| [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md) | `rfsrc` / `randomForest` | Variable importance ranking |
+| [`gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md) | `rfsrc` / `randomForest` | Predicted vs. observed values |
+| [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md) | `rfsrc` / `randomForest` | Marginal dependence data frame |
+| [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md) | `plot.variable` output | Partial dependence (continuous + categorical) |
+| [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md) | `rfsrc` model | Partial dependence via `partial.rfsrc` |
+| [`gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md) | `rfsrc` survival forest | Kaplan–Meier / Nelson–Aalen estimates |
+| [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md) | `rfsrc` / `randomForest` (class) | ROC curve data |
 
 Each `gg_*` function has a corresponding
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) S3 method that

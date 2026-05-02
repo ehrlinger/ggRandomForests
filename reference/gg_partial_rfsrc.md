@@ -110,6 +110,7 @@ prediction error inside `partial.rfsrc`.
 before the call is made. To target a specific follow-up horizon, find
 the closest grid point yourself and pass it explicitly:
 
+
     ti  <- rf_model$time.interest
     t1  <- ti[which.min(abs(ti - 1))]   # nearest to 1 year
     pd  <- gg_partial_rfsrc(rf_model, xvar.names = "x", partial.time = t1)

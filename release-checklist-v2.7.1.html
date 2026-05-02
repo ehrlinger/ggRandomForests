@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,23 +60,23 @@
 <hr><div class="section level2">
 <h2 id="what-changed-since-270">What Changed Since 2.7.0<a class="anchor" aria-label="anchor" href="#what-changed-since-270"></a></h2>
 <p>Bug-fix release. See <code>NEWS.md</code> for the user-facing change log.</p>
-<table class="table"><colgroup><col width="54%"><col width="45%"></colgroup><thead><tr class="header"><th>Area</th>
+<table class="table"><colgroup><col width="54%"><col width="45%"></colgroup><thead><tr><th>Area</th>
 <th>Fix</th>
-</tr></thead><tbody><tr class="odd"><td><code>gg_partial_rfsrc.R</code></td>
+</tr></thead><tbody><tr><td><code>gg_partial_rfsrc.R</code></td>
 <td>Pass <code>partial.type = "surv"</code> (default) to <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> for survival forests; without it the C-level prediction routine aborted on a zero-length comparison and the survival vignette’s partial-dependence chunks rendered empty. New <code>partial.type</code> argument accepts <code>"surv"</code> / <code>"chf"</code> / <code>"mort"</code>.</td>
-</tr><tr class="even"><td><code>gg_partial_rfsrc.R</code></td>
+</tr><tr><td><code>gg_partial_rfsrc.R</code></td>
 <td>Reshape multi-<code>partial.time</code> results to long form so each <code>(x, time)</code> pair is one row (was crashing on the <code>time</code> column assignment when yhat came back as a matrix).</td>
-</tr><tr class="odd"><td><code>plot.gg_partial.R</code></td>
+</tr><tr><td><code>plot.gg_partial.R</code></td>
 <td>Survival layout: predictor on x-axis, one curve per time point coloured by <code>Time</code>. Group/colour by full-precision time so distinct horizons that round to the same display value never collapse. Y-axis label adapts to <code>partial.type</code>.</td>
-</tr><tr class="even"><td><code>plot.gg_vimp.R</code></td>
+</tr><tr><td><code>plot.gg_vimp.R</code></td>
 <td>Merge the duplicate “VIMP &gt; 0” / “positive” legends by sharing a title across both <code>fill</code> and <code>color</code> aesthetics.</td>
-</tr><tr class="odd"><td><code>R/ggrandomforests.news.R</code></td>
+</tr><tr><td><code>R/ggrandomforests.news.R</code></td>
 <td>Read <code>NEWS.md</code> (the canonical change log) instead of the legacy hand-maintained <code>inst/NEWS</code>, which had silently drifted to v2.4.0 across three releases. <code>inst/NEWS</code> removed.</td>
-</tr><tr class="even"><td>
+</tr><tr><td>
 <code>R/calc_roc.R</code>, <code>R/plot.gg_roc.R</code>
 </td>
 <td>Replace U+2212 Unicode minus with ASCII <code>-</code> so the PDF manual builds under standard LaTeX (CRAN’s incoming pipeline).</td>
-</tr><tr class="odd"><td><code>tests/testthat/test_plot_layer_data.R</code></td>
+</tr><tr><td><code>tests/testthat/test_plot_layer_data.R</code></td>
 <td>New regression suite using <code><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">ggplot2::layer_data()</a></code> to verify each <code>plot.gg_*()</code> method renders non-empty layers across all forest families; locks in the <code>partial.type</code> y-label dispatch and the merged-legend behaviour.</td>
 </tr></tbody></table><hr></div>
 <div class="section level2">

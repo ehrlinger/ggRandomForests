@@ -1,11 +1,11 @@
-pandoc: 3.1.11
+pandoc: 3.8.3
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   ggRandomForests-regression: ggRandomForests-regression.html
   ggRandomForests-survival: ggRandomForests-survival.html
   ggRandomForests: ggRandomForests.html
-last_built: 2026-04-28T21:01Z
+last_built: 2026-05-02T23:29Z
 urls:
   reference: https://ehrlinger.github.io/ggRandomForests/reference
   article: https://ehrlinger.github.io/ggRandomForests/articles

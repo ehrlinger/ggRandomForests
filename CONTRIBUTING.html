@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,19 +73,19 @@
 </ol><hr></div>
 <div class="section level2">
 <h2 id="id_1-what-you-will-need">1. What you will need<a class="anchor" aria-label="anchor" href="#id_1-what-you-will-need"></a></h2>
-<table class="table"><colgroup><col width="30%"><col width="25%"><col width="45%"></colgroup><thead><tr class="header"><th>Tool</th>
+<table class="table"><colgroup><col width="30%"><col width="25%"><col width="45%"></colgroup><thead><tr><th>Tool</th>
 <th>Why</th>
 <th>Install</th>
-</tr></thead><tbody><tr class="odd"><td>R &gt;= 4.4.0</td>
+</tr></thead><tbody><tr><td>R &gt;= 4.4.0</td>
 <td>Runtime</td>
 <td><a href="https://cloud.r-project.org" class="external-link uri">https://cloud.r-project.org</a></td>
-</tr><tr class="even"><td>RStudio or Positron</td>
+</tr><tr><td>RStudio or Positron</td>
 <td>IDE with R-aware tools</td>
 <td><a href="https://posit.co/downloads" class="external-link uri">https://posit.co/downloads</a></td>
-</tr><tr class="odd"><td>Git</td>
+</tr><tr><td>Git</td>
 <td>Version control</td>
 <td><a href="https://git-scm.com" class="external-link uri">https://git-scm.com</a></td>
-</tr><tr class="even"><td>Quarto</td>
+</tr><tr><td>Quarto</td>
 <td>Builds the vignette</td>
 <td><a href="https://quarto.org/docs/get-started" class="external-link uri">https://quarto.org/docs/get-started</a></td>
 </tr></tbody></table><p>Install the development helper packages in R:</p>
@@ -326,36 +326,36 @@ plot(gg_object)       ← R/plot.gg_*.R — builds and returns a ggplot2 object<
 <div class="section level2">
 <h2 id="id_8-code-style">8. Code style<a class="anchor" aria-label="anchor" href="#id_8-code-style"></a></h2>
 <p>The package follows the <a href="https://style.tidyverse.org" class="external-link">tidyverse style guide</a>. Key points:</p>
-<table class="table"><colgroup><col width="35%"><col width="35%"><col width="29%"></colgroup><thead><tr class="header"><th>Rule</th>
+<table class="table"><colgroup><col width="35%"><col width="35%"><col width="29%"></colgroup><thead><tr><th>Rule</th>
 <th>Good</th>
 <th>Bad</th>
-</tr></thead><tbody><tr class="odd"><td>Spacing around operators</td>
+</tr></thead><tbody><tr><td>Spacing around operators</td>
 <td><code>x &lt;- x + 1</code></td>
 <td><code>x&lt;-x+1</code></td>
-</tr><tr class="even"><td>Spaces after commas</td>
+</tr><tr><td>Spaces after commas</td>
 <td><code>f(x, y)</code></td>
 <td><code>f(x,y)</code></td>
-</tr><tr class="odd"><td>Indentation</td>
+</tr><tr><td>Indentation</td>
 <td>2 spaces</td>
 <td>tabs</td>
-</tr><tr class="even"><td>Object names</td>
+</tr><tr><td>Object names</td>
 <td><code>snake_case</code></td>
 <td>
 <code>camelCase</code>, <code>dotted.name</code>
 </td>
-</tr><tr class="odd"><td>Boolean checks</td>
+</tr><tr><td>Boolean checks</td>
 <td><code>!inherits(x, "foo")</code></td>
 <td><code>inherits(x, "foo") == FALSE</code></td>
-</tr><tr class="even"><td>Safe sequences</td>
+</tr><tr><td>Safe sequences</td>
 <td><code>seq_len(n)</code></td>
 <td><code>1:n</code></td>
-</tr><tr class="odd"><td>Column references in aes()</td>
+</tr><tr><td>Column references in aes()</td>
 <td>
 <code>.data$col</code> or <code>.data[[var]]</code>
 </td>
 <td>bare <code>col</code> or string <code>"col"</code>
 </td>
-</tr><tr class="even"><td>
+</tr><tr><td>
 <code>dplyr</code> column selection</td>
 <td><code>dplyr::select(tidyr::all_of(vars))</code></td>
 <td><code>dplyr::select(vars)</code></td>

@@ -15,23 +15,23 @@ systematic gaps that mean genuine bugs can and do pass undetected.
 
 **Coverage summary**
 
-| File                          | Status               | Notable gaps                                                  |
-|-------------------------------|----------------------|---------------------------------------------------------------|
-| `test_gg_error.R`             | Solid                | No message-text checks on `expect_error`                      |
-| `test_gg_rfsrc.R`             | Excellent (17 cases) | Plots tested structurally only, not visually                  |
-| `test_gg_vimp.R`              | Good                 | `gg_dta[1:nvar, ]` path untested for nvar=0                   |
-| `test_gg_roc.R`               | Decent               | Typo in function name silently voids two tests (see bugs)     |
-| `test_gg_survival.R`          | Thin (3 cases)       | No column-structure checks, no error-message validation       |
-| `test_gg_variable.R`          | Good                 | —                                                             |
-| `test_gg_partial.R`           | Good (mock-based)    | —                                                             |
-| `test_gg_partialpro.R`        | Good (mock-based)    | —                                                             |
-| `test_surv_partial.R`         | Reasonable           | `npts` test doesn’t verify actual point count                 |
-| `test_randomForest_helpers.R` | Good                 | —                                                             |
-| `test_varpro_feature_names.R` | Thorough             | —                                                             |
-| `test_quantile_pts.R`         | Basic                | No edge cases (n=1, all-identical values)                     |
-| `test_shift.R`                | **Broken API**       | Uses `expect_that`/`is_identical_to` (testthat 1.x — removed) |
-| `test_lint.R`                 | **Dead**             | Test body is commented out                                    |
-| `test_ggrandomforests_news.R` | Trivial              | —                                                             |
+| File | Status | Notable gaps |
+|----|----|----|
+| `test_gg_error.R` | Solid | No message-text checks on `expect_error` |
+| `test_gg_rfsrc.R` | Excellent (17 cases) | Plots tested structurally only, not visually |
+| `test_gg_vimp.R` | Good | `gg_dta[1:nvar, ]` path untested for nvar=0 |
+| `test_gg_roc.R` | Decent | Typo in function name silently voids two tests (see bugs) |
+| `test_gg_survival.R` | Thin (3 cases) | No column-structure checks, no error-message validation |
+| `test_gg_variable.R` | Good | — |
+| `test_gg_partial.R` | Good (mock-based) | — |
+| `test_gg_partialpro.R` | Good (mock-based) | — |
+| `test_surv_partial.R` | Reasonable | `npts` test doesn’t verify actual point count |
+| `test_randomForest_helpers.R` | Good | — |
+| `test_varpro_feature_names.R` | Thorough | — |
+| `test_quantile_pts.R` | Basic | No edge cases (n=1, all-identical values) |
+| `test_shift.R` | **Broken API** | Uses `expect_that`/`is_identical_to` (testthat 1.x — removed) |
+| `test_lint.R` | **Dead** | Test body is commented out |
+| `test_ggrandomforests_news.R` | Trivial | — |
 
 ### Gap 1 — Deprecated testthat API throughout
 
@@ -61,6 +61,7 @@ scatter, classification jitter, survival step curve with and without CI
 ribbon.
 
 ``` r
+
 # Example
 test_that("plot.gg_rfsrc survival CI ribbon snapshot", {
   vdiffr::expect_doppelganger(
@@ -92,6 +93,7 @@ etc.).
 **Action:**
 
 ``` r
+
 expect_true(all(c("time", "surv", "lower", "upper", "n.risk") %in%
                   colnames(gg_dta)))
 ```
@@ -101,6 +103,7 @@ expect_true(all(c("time", "surv", "lower", "upper", "n.risk") %in%
 In `test_gg_roc.R` lines 59–60 and 102–103:
 
 ``` r
+
 expect_error(gg_roc.rfrsrc(rf_iris))   # typo: "rfrsrc" not "rfsrc"
 ```
 
@@ -120,6 +123,7 @@ pass.
 **Action:** For each validated error path, pin the message:
 
 ``` r
+
 expect_error(gg_vimp(bad_obj), "This function only works for")
 expect_error(gg_rfsrc(rfsrc_boston, by = c(1,2,3)), "correct dimension")
 ```
@@ -164,6 +168,7 @@ same position.
 **Affected lines** (current file, after recent edits):
 
 ``` r
+
 # Classification binary — line ~169
 ggplot2::aes(
   x = 1,
@@ -181,6 +186,7 @@ ggplot2::aes(
 ```
 
 ``` r
+
 # Classification multi-class — line ~195
 ggplot2::aes(x = "variable", y = "value")
 ggplot2::aes(color = "y", shape = "y")
@@ -190,6 +196,7 @@ ggplot2::aes(color = .data$y, shape = .data$y)
 ```
 
 ``` r
+
 # Survival with CI, grouped — lines ~220–232
 ggplot2::aes(x = "value", ymin = "lower", ymax = "upper", fill = "group")
 ggplot2::aes(x = "value", y = "median", color = "group")
@@ -200,6 +207,7 @@ ggplot2::aes(x = .data$value, y = .data$median, color = .data$group)
 ```
 
 ``` r
+
 # Survival with CI, ungrouped — lines ~237–244
 ggplot2::aes(x = "value", ymin = "lower", ymax = "upper")
 ggplot2::aes(x = "value", y = "median")
@@ -207,6 +215,7 @@ ggplot2::aes(x = "value", y = "median")
 ```
 
 ``` r
+
 # Survival no CI — lines ~250–255
 ggplot2::aes(x = "variable", y = "value", col = "event", by = "obs_id")
 # Fix:
@@ -216,6 +225,7 @@ ggplot2::aes(x = .data$variable, y = .data$value,
 ```
 
 ``` r
+
 # Regression grouped — line ~268
 ggplot2::aes(x = "group", y = "yhat")
 # Regression ungrouped — line ~271
@@ -234,6 +244,7 @@ Additionally,
 ### 🔴 BUG — `plot.gg_roc.R`: multi-class aes() uses bare strings
 
 ``` r
+
 # line ~168–170
 ggplot2::aes(
   x = .data$fpr,
@@ -255,6 +266,7 @@ ggplot2::aes(
 ### 🟠 LOGIC ERROR — `bootstrap_survival`: nonsensical negative indexing
 
 ``` r
+
 # Current (lines ~475–479):
 dta <- data.frame(cbind(
   time_interest,
@@ -273,6 +285,7 @@ three time points it would silently drop real rows.
 **Fix:**
 
 ``` r
+
 dta <- data.frame(cbind(time_interest, t(rng), mn))
 ```
 
@@ -284,6 +297,7 @@ stripped.
 ### 🟠 LOGIC ERROR — `gg_rfsrc.rfsrc` and `.randomForest`: `is.null(df[, col])` does not detect missing columns
 
 ``` r
+
 # Line 216 / 520:
 if (is.null(object$xvar[, grp])) { ... }
 ```
@@ -292,6 +306,7 @@ if (is.null(object$xvar[, grp])) { ... }
 does not return NULL. The intended check should be:
 
 ``` r
+
 if (!grp %in% colnames(object$xvar)) {
   stop(paste("No column named", grp, "in forest training set."))
 }
@@ -308,6 +323,7 @@ rather than an informative message.
 ### 🟠 LOGIC ERROR — `plot.gg_error.R`: legend-suppression check uses wrong column name
 
 ``` r
+
 # Line ~247:
 if (length(unique(gg_dta$variable)) == 1) {
   gg_plt <- gg_plt + ggplot2::theme(legend.position = "none")
@@ -323,6 +339,7 @@ redundant legend.
 **Fix:**
 
 ``` r
+
 # After both branches:
 if (ncol(x) <= 2) {   # single outcome: no legend needed
   gg_plt <- gg_plt + ggplot2::theme(legend.position = "none")
@@ -337,6 +354,7 @@ Or check directly:
 ### 🟠 LOGIC ERROR — `gg_vimp.rfsrc` and `.randomForest`: `1:nvar` instead of `seq_len(nvar)`
 
 ``` r
+
 # gg_vimp.rfsrc line ~281:
 gg_dta <- gg_dta[1:nvar, ]
 
@@ -355,6 +373,7 @@ but missed here.
 ### 🟠 LOGIC ERROR — `plot.gg_rfsrc.R` survival no-CI branch: `by = "obs_id"` is not a ggplot2 aesthetic
 
 ``` r
+
 ggplot2::aes(x = "variable", y = "value", col = "event", by = "obs_id")
 ```
 
@@ -364,6 +383,7 @@ in some versions but not `geom_step`). The correct grouping aesthetic
 for step functions is `group`:
 
 ``` r
+
 ggplot2::aes(x = .data$variable, y = .data$value,
              col = .data$event, group = .data$obs_id)
 ```
@@ -380,6 +400,7 @@ copy-pasted verbatim between `gg_rfsrc.rfsrc` and
 **Action:** Extract to internal helpers:
 
 ``` r
+
 .resolve_by <- function(by, xvar) { ... }
 .resolve_which_outcome <- function(which.outcome, gg_dta) { ... }
 ```
@@ -446,6 +467,7 @@ asymmetry is confusing and should be documented clearly.
 ### ⚪ STYLE — `point = FALSE` should be `point <- FALSE`
 
 ``` r
+
 # plot.gg_error.R line ~214:
 point = FALSE
 ```
@@ -468,22 +490,22 @@ Missing space after `if`. Minor but lintr will flag it.
 
 ## Summary: Prioritised fix list
 
-| \#  | Severity | File                                 | Issue                                                                                        |
-|-----|----------|--------------------------------------|----------------------------------------------------------------------------------------------|
-| 1   | 🔴       | `plot.gg_rfsrc.R`                    | All `aes()` aesthetics use bare string literals — plots are visually broken                  |
-| 2   | 🔴       | `plot.gg_roc.R`                      | Multi-class `aes()` uses bare string literals                                                |
-| 3   | 🟠       | `bootstrap_survival` in `gg_rfsrc.R` | Nonsensical negative indexing — silent no-op now, latent crash for small datasets            |
-| 4   | 🟠       | `gg_rfsrc.rfsrc` + `.randomForest`   | `is.null(df[, col])` does not detect missing columns; `randomForest` has no `$xvar`          |
-| 5   | 🟠       | `plot.gg_error.R`                    | Legend suppression uses wrong column name — legend always shown for single-outcome           |
-| 6   | 🟠       | `gg_vimp.rfsrc` + `.randomForest`    | `1:nvar` instead of `seq_len(nvar)` — returns 2 rows when `nvar=0`                           |
-| 7   | 🟠       | `plot.gg_rfsrc.R`                    | `by = "obs_id"` is not a ggplot2 aesthetic — should be `group`                               |
-| 8   | 🟡       | `gg_rfsrc.R`                         | Duplicate `by`-resolution block — extract to helper                                          |
-| 9   | 🟡       | `gg_vimp.R`                          | Duplicate `which.outcome` block — extract to helper                                          |
-| 10  | 🟡       | 4 files                              | [`tidyr::gather()`](https://tidyr.tidyverse.org/reference/gather.html) → `pivot_longer()`    |
-| 11  | 🟡       | `plot.gg_rfsrc.R`                    | Stray comma in `geom_jitter(, ...)`                                                          |
-| 12  | 🟡       | `plot.gg_roc.R`                      | Dead `if (crv < 2)` AUC annotation branch                                                    |
-| 13  | ⚪       | Test suite                           | All deprecated API calls (`expect_is`, `expect_equivalent`, `context`, `expect_that`)        |
-| 14  | ⚪       | Test suite                           | Missing [`set.seed()`](https://rdrr.io/r/base/Random.html) + unbounded `ntree` in many tests |
-| 15  | ⚪       | Test suite                           | Zero visual/snapshot tests for a visualization package                                       |
-| 16  | ⚪       | `test_gg_roc.R`                      | Typo `gg_roc.rfrsrc` voids two tests silently                                                |
-| 17  | ⚪       | `test_lint.R`                        | Lintr check is commented out entirely                                                        |
+| \# | Severity | File | Issue |
+|----|----|----|----|
+| 1 | 🔴 | `plot.gg_rfsrc.R` | All `aes()` aesthetics use bare string literals — plots are visually broken |
+| 2 | 🔴 | `plot.gg_roc.R` | Multi-class `aes()` uses bare string literals |
+| 3 | 🟠 | `bootstrap_survival` in `gg_rfsrc.R` | Nonsensical negative indexing — silent no-op now, latent crash for small datasets |
+| 4 | 🟠 | `gg_rfsrc.rfsrc` + `.randomForest` | `is.null(df[, col])` does not detect missing columns; `randomForest` has no `$xvar` |
+| 5 | 🟠 | `plot.gg_error.R` | Legend suppression uses wrong column name — legend always shown for single-outcome |
+| 6 | 🟠 | `gg_vimp.rfsrc` + `.randomForest` | `1:nvar` instead of `seq_len(nvar)` — returns 2 rows when `nvar=0` |
+| 7 | 🟠 | `plot.gg_rfsrc.R` | `by = "obs_id"` is not a ggplot2 aesthetic — should be `group` |
+| 8 | 🟡 | `gg_rfsrc.R` | Duplicate `by`-resolution block — extract to helper |
+| 9 | 🟡 | `gg_vimp.R` | Duplicate `which.outcome` block — extract to helper |
+| 10 | 🟡 | 4 files | [`tidyr::gather()`](https://tidyr.tidyverse.org/reference/gather.html) → `pivot_longer()` |
+| 11 | 🟡 | `plot.gg_rfsrc.R` | Stray comma in `geom_jitter(, ...)` |
+| 12 | 🟡 | `plot.gg_roc.R` | Dead `if (crv < 2)` AUC annotation branch |
+| 13 | ⚪ | Test suite | All deprecated API calls (`expect_is`, `expect_equivalent`, `context`, `expect_that`) |
+| 14 | ⚪ | Test suite | Missing [`set.seed()`](https://rdrr.io/r/base/Random.html) + unbounded `ntree` in many tests |
+| 15 | ⚪ | Test suite | Zero visual/snapshot tests for a visualization package |
+| 16 | ⚪ | `test_gg_roc.R` | Typo `gg_roc.rfrsrc` voids two tests silently |
+| 17 | ⚪ | `test_lint.R` | Lintr check is commented out entirely |

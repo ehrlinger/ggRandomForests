@@ -24,16 +24,17 @@ from setting up your environment to opening a pull request.
 
 ## 1. What you will need
 
-| Tool                | Why                    | Install                               |
-|---------------------|------------------------|---------------------------------------|
-| R \>= 4.4.0         | Runtime                | <https://cloud.r-project.org>         |
-| RStudio or Positron | IDE with R-aware tools | <https://posit.co/downloads>          |
-| Git                 | Version control        | <https://git-scm.com>                 |
-| Quarto              | Builds the vignette    | <https://quarto.org/docs/get-started> |
+| Tool | Why | Install |
+|----|----|----|
+| R \>= 4.4.0 | Runtime | <https://cloud.r-project.org> |
+| RStudio or Positron | IDE with R-aware tools | <https://posit.co/downloads> |
+| Git | Version control | <https://git-scm.com> |
+| Quarto | Builds the vignette | <https://quarto.org/docs/get-started> |
 
 Install the development helper packages in R:
 
 ``` r
+
 install.packages(c(
   "devtools",    # load, test, check, document in one place
   "testthat",    # testing framework
@@ -48,6 +49,7 @@ Install the package dependencies (randomForestSRC \>= 3.4.0 is
 required):
 
 ``` r
+
 install.packages(c("randomForestSRC", "randomForest", "ggplot2",
                    "dplyr", "tidyr", "survival"))
 ```
@@ -70,12 +72,14 @@ in development mode — this makes all functions available without
 installing:
 
 ``` r
+
 devtools::load_all()   # shortcut: Ctrl+Shift+L
 ```
 
 Confirm it works:
 
 ``` r
+
 library(randomForestSRC)
 rf <- rfsrc(Species ~ ., data = iris)
 plot(gg_error(rf))
@@ -133,6 +137,7 @@ returned object.
 A `gg_*` object is just a `data.frame` with extra class attributes:
 
 ``` r
+
 # Example: what gg_vimp returns
 class(gg_vimp(rf))
 # [1] "gg_vimp"     "data.frame"
@@ -147,6 +152,7 @@ Most `gg_*` functions support both `randomForestSRC` and `randomForest`
 objects. The pattern is:
 
 ``` r
+
 # 1. Generic — dispatches based on class of `object`
 gg_vimp <- function(object, ...) {
   UseMethod("gg_vimp", object)
@@ -168,6 +174,7 @@ Suppose you want to add `gg_depth()` to plot average tree depth. Here is
 the skeleton:
 
 ``` r
+
 # R/gg_depth.R
 
 #' Tree depth data object
@@ -217,6 +224,7 @@ git checkout -b my-feature-name
 The development cycle is:
 
 ``` r
+
 devtools::load_all()       # reload after editing source
 devtools::test()           # run tests
 devtools::document()       # rebuild man/ from Roxygen comments
@@ -234,6 +242,7 @@ match the file they cover. The framework is
 ### Basic structure
 
 ``` r
+
 # tests/testthat/test_gg_depth.R
 test_that("gg_depth returns correct class for rfsrc", {
   rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
@@ -273,12 +282,14 @@ test_that("gg_depth throws on wrong input", {
 Run tests for a single file during development:
 
 ``` r
+
 testthat::test_file("tests/testthat/test_gg_depth.R")
 ```
 
 Check coverage (aim for \> 80%):
 
 ``` r
+
 covr::package_coverage()
 ```
 
@@ -292,6 +303,7 @@ comments (lines starting with `#'`) immediately above each function.
 ### Required sections for every exported function
 
 ``` r
+
 #' Short one-line title
 #'
 #' One or two paragraphs describing what the function does and why.
@@ -329,12 +341,14 @@ comments (lines starting with `#'`) immediately above each function.
 Rebuild the docs after any change:
 
 ``` r
+
 devtools::document()
 ```
 
 Then spot-check the result:
 
 ``` r
+
 ?gg_depth
 ```
 
@@ -356,20 +370,21 @@ ggRandomForests v2.7.0
 The package follows the [tidyverse style
 guide](https://style.tidyverse.org). Key points:
 
-| Rule                       | Good                                 | Bad                           |
-|----------------------------|--------------------------------------|-------------------------------|
-| Spacing around operators   | `x <- x + 1`                         | `x<-x+1`                      |
-| Spaces after commas        | `f(x, y)`                            | `f(x,y)`                      |
-| Indentation                | 2 spaces                             | tabs                          |
-| Object names               | `snake_case`                         | `camelCase`, `dotted.name`    |
-| Boolean checks             | `!inherits(x, "foo")`                | `inherits(x, "foo") == FALSE` |
-| Safe sequences             | `seq_len(n)`                         | `1:n`                         |
-| Column references in aes() | `.data$col` or `.data[[var]]`        | bare `col` or string `"col"`  |
-| `dplyr` column selection   | `dplyr::select(tidyr::all_of(vars))` | `dplyr::select(vars)`         |
+| Rule | Good | Bad |
+|----|----|----|
+| Spacing around operators | `x <- x + 1` | `x<-x+1` |
+| Spaces after commas | `f(x, y)` | `f(x,y)` |
+| Indentation | 2 spaces | tabs |
+| Object names | `snake_case` | `camelCase`, `dotted.name` |
+| Boolean checks | `!inherits(x, "foo")` | `inherits(x, "foo") == FALSE` |
+| Safe sequences | `seq_len(n)` | `1:n` |
+| Column references in aes() | `.data$col` or `.data[[var]]` | bare `col` or string `"col"` |
+| `dplyr` column selection | `dplyr::select(tidyr::all_of(vars))` | `dplyr::select(vars)` |
 
 Check your code with lintr before opening a PR:
 
 ``` r
+
 lintr::lint_package()
 ```
 
@@ -388,6 +403,7 @@ Common issues lintr flags:
 Before opening a PR, run the same checks CI runs:
 
 ``` r
+
 # Quick: just tests
 devtools::test()
 
@@ -406,6 +422,7 @@ To reproduce the exact CI matrix locally you can use
 [rhub](https://r-hub.github.io/rhub/):
 
 ``` r
+
 rhub::rhub_check()
 ```
 
@@ -466,6 +483,7 @@ Avoid “WIP”, “fix”, or “update” with no context.
 When filing a bug, always include:
 
 ``` r
+
 # Minimum reproducible example
 library(ggRandomForests)
 library(randomForestSRC)
