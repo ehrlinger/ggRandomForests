@@ -14,6 +14,8 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11526.svg)](https://doi.org/10.5281/zenodo.11526)
 <!-- badges: end -->
 
+<img src="man/figures/README-overview.png" alt="ggRandomForests overview: predicted survival, variable importance, OOB error, and partial dependence" width="100%" />
+
 `ggRandomForests` provides `ggplot2`-based diagnostic and exploration plots for random forests fit with
 [randomForestSRC](https://cran.r-project.org/package=randomForestSRC) (>= 3.4.0) or
 [randomForest](https://cran.r-project.org/package=randomForest).
