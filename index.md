@@ -8,6 +8,9 @@ coverage](https://codecov.io/gh/ehrlinger/ggRandomForests/graph/badge.svg)](http
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11526.svg)](https://doi.org/10.5281/zenodo.11526)
 
+![ggRandomForests overview: predicted survival, variable importance, OOB
+error, and partial dependence](reference/figures/README-overview.png)
+
 `ggRandomForests` provides `ggplot2`-based diagnostic and exploration
 plots for random forests fit with
 [randomForestSRC](https://cran.r-project.org/package=randomForestSRC)
