@@ -116,6 +116,14 @@ Survival curves, ROC, and related diagnostics.
 - [`nelson()`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md)
   : nonparametric Nelson-Aalen estimates
 
+- [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
+  : Brier score and CRPS for survival forests
+
+- [`plot(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_brier.md)
+  :
+
+  Plot a `gg_brier` object
+
 ## Utilities
 
 Helper functions used internally and by users.

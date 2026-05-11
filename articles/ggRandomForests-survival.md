@@ -412,7 +412,7 @@ md_pbc <- max.subtree(rfsrc_pbc)
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
 function computes minimal depth for each variable. The threshold is
-5.84, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+5.88, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
 copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
@@ -686,6 +686,70 @@ increases or albumin decreases. The non-planar shape of the surface —
 particularly the steep gradient at low albumin and high bilirubin —
 confirms the interaction detected in the conditional plots.
 
+### Brier Score and CRPS
+
+The Brier score measures prediction accuracy at each point on the
+event-time grid by comparing predicted survival probabilities to
+observed outcomes, with inverse-probability-of-censoring weighting
+(IPCW) to account for right-censoring ([Graf et al.
+1999](#ref-graf:1999)).
+[`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
+wraps
+[`randomForestSRC::get.brier.survival()`](https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html)
+and returns a tidy data frame ready for plotting.
+
+``` r
+
+gg_bs <- gg_brier(rfsrc_pbc)
+plot(gg_bs)
+```
+
+![](ggRandomForests-survival_files/figure-html/brier-overall-1.png)
+
+Time-resolved Brier score for the PBC survival forest.
+
+The score starts near zero (all subjects alive, predictions trivially
+correct), peaks around the median event time where uncertainty is
+greatest, then decreases as the remaining at-risk pool shrinks.
+
+The 15–85% per-subject envelope shows how spread the individual Brier
+contributions are at each time. A narrow ribbon indicates the forest
+assigns similar predicted risks across subjects; a wide ribbon points to
+heterogeneous risk predictions.
+
+``` r
+
+plot(gg_bs, envelope = TRUE)
+```
+
+![](ggRandomForests-survival_files/figure-html/brier-envelope-1.png)
+
+Brier score with 15–85% per-subject envelope.
+
+The running CRPS (continuous ranked probability score) integrates the
+Brier score over time, normalised by elapsed time. It provides a single
+time-averaged accuracy measure that penalises poorly calibrated
+predictions throughout the follow-up period.
+
+``` r
+
+plot(gg_bs, type = "crps")
+```
+
+![](ggRandomForests-survival_files/figure-html/brier-crps-1.png)
+
+Running CRPS for the PBC survival forest.
+
+The integrated CRPS — a scalar summary of overall calibration — is
+stored as an attribute and can be retrieved with:
+
+``` r
+
+attr(gg_bs, "crps_integrated")
+```
+
+    #> [1] 1.403083
+
 ## Conclusion
 
 This vignette demonstrated a complete random survival forest analysis
@@ -713,6 +777,10 @@ using **randomForestSRC** and **ggRandomForests**:
   used in parametric models.
 - **Conditional plots** and **interactive surfaces** exposed the
   bilirubin–albumin interaction.
+- **Brier score and CRPS** via
+  [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
+  quantified time-resolved prediction accuracy and overall calibration
+  of the survival forest.
 
 The **ggRandomForests** design separates data extraction from plotting:
 every `gg_*()` function returns a tidy data frame that can be plotted
@@ -732,6 +800,11 @@ Wiley & Sons.
 Friedman, Jerome H. 2001. “Greedy Function Approximation: A Gradient
 Boosting Machine.” *The Annals of Statistics* 29 (5): 1189–232.
 <https://doi.org/10.1214/aos/1013203451>.
+
+Graf, Erika, Claudia Schmoor, Willi Sauerbrei, and Martin Schumacher.
+1999. “Assessment and Comparison of Prognostic Classification Schemes
+for Survival Data.” *Statistics in Medicine* 18 (17–18): 2529–45.
+<https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18%3C2529::AID-SIM274%3E3.0.CO;2-5>.
 
 Ishwaran, Hemant, and Udaya B. Kogalur. 2007. “Random Survival Forests
 for R.” *R News* 7 (2): 25–31.

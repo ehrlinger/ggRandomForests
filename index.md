@@ -77,6 +77,7 @@ vignette("ggRandomForests")
 | [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md) | `rfsrc` model | Partial dependence via `partial.rfsrc` |
 | [`gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md) | `rfsrc` survival forest | Kaplan–Meier / Nelson–Aalen estimates |
 | [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md) | `rfsrc` / `randomForest` (class) | ROC curve data |
+| [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md) | `rfsrc` (survival) | Time-resolved Brier score and CRPS |
 
 Each `gg_*` function has a corresponding
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) S3 method that
