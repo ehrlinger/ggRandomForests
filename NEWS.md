@@ -3,6 +3,14 @@ Version: 2.7.2.9000
 
 ggRandomForests v2.8.0 (in development)
 =======================================
+* New `gg_brier()` extractor and `plot.gg_brier()` method for time-resolved
+  Brier scores and CRPS on survival forests (issue #9). Wraps
+  `randomForestSRC::get.brier.survival()` and adds the mortality-quartile
+  decomposition, a 15-85 percent per-subject envelope, and running CRPS
+  via trapezoidal integration. Supports `cens.model = c("km", "rfsrc")`,
+  `type = c("brier", "crps")`, and `envelope` (overall line + 15-85%
+  ribbon). Multi-model comparison is left to `dplyr::bind_rows()` on
+  multiple `gg_brier` outputs — see `?gg_brier` for an example.
 * First-class `varPro` integration to restore the variable-selection
   workflow that disappeared with `randomForestSRC::var.select.rfsrc()`.
   Planned: `varPro` in `Suggests:` (or `Imports:`), `gg_partialpro.varpro`

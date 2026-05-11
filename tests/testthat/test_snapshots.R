@@ -129,6 +129,23 @@ local({
     gg_dta <- gg_rfsrc(rfsrc_pbc, conf.int = 0.95, bs_samples = 50L)
     vdiffr::expect_doppelganger("gg_rfsrc survival bootstrap ci", plot(gg_dta))
   })
+
+  test_that("snapshot: gg_brier overall line", {
+    gg_dta <- gg_brier(rfsrc_pbc)
+    vdiffr::expect_doppelganger("gg_brier survival overall", plot(gg_dta))
+  })
+
+  test_that("snapshot: gg_brier with envelope ribbon", {
+    gg_dta <- gg_brier(rfsrc_pbc)
+    vdiffr::expect_doppelganger("gg_brier survival envelope",
+                                plot(gg_dta, envelope = TRUE))
+  })
+
+  test_that("snapshot: gg_brier CRPS", {
+    gg_dta <- gg_brier(rfsrc_pbc)
+    vdiffr::expect_doppelganger("gg_brier survival crps",
+                                plot(gg_dta, type = "crps"))
+  })
 })
 
 # randomForest classification — iris
