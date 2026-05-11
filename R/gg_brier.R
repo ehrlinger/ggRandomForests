@@ -48,10 +48,16 @@
 #'     \item{brier}{overall Brier score at each time.}
 #'     \item{bs.q25, bs.q50, bs.q75, bs.q100}{Brier score within each
 #'       mortality-risk quartile (lowest to highest risk).}
+#'     \item{bs.lower, bs.upper}{15th and 85th percentile of per-subject
+#'       Brier contributions at each time. Used by
+#'       \code{plot.gg_brier(by_quartile = TRUE)} to draw an envelope
+#'       around the overall curve.}
 #'     \item{crps}{running CRPS (overall) at each time, normalised by
 #'       elapsed time.}
 #'     \item{crps.q25, crps.q50, crps.q75, crps.q100}{running CRPS within
 #'       each mortality-risk quartile.}
+#'     \item{crps.lower, crps.upper}{running CRPS of the 15th / 85th
+#'       per-subject Brier percentile, normalised by elapsed time.}
 #'   }
 #'   The integrated CRPS (a single scalar matching
 #'   \code{get.brier.survival()$crps}) is attached as
@@ -79,7 +85,19 @@
 #' gg_dta <- gg_brier(rfsrc_pbc)
 #' plot(gg_dta)
 #' plot(gg_dta, type = "crps")
-#' plot(gg_dta, by_quartile = TRUE)
+#' plot(gg_dta, by_quartile = TRUE)   # overall line + 15-85% envelope
+#'
+#' # Multi-model comparison: stack gg_brier outputs and plot with ggplot2.
+#' rf2 <- randomForestSRC::rfsrc(
+#'   Surv(days, status) ~ ., data = pbc, nsplit = 10, mtry = 4
+#' )
+#' compare_dta <- dplyr::bind_rows(
+#'   dplyr::mutate(gg_brier(rfsrc_pbc), model = "default"),
+#'   dplyr::mutate(gg_brier(rf2),       model = "mtry=4")
+#' )
+#' ggplot2::ggplot(compare_dta,
+#'   ggplot2::aes(x = time, y = brier, colour = model)) +
+#'   ggplot2::geom_line()
 #' }
 #'
 #' @importFrom stats quantile
@@ -127,6 +145,12 @@ gg_brier.rfsrc <- function(object,
     colMeans(brier_matx[in_bin, , drop = FALSE], na.rm = TRUE)
   }, numeric(nrow(bs_df)))
 
+  # Per-time 15th and 85th percentile of per-subject Brier contributions.
+  # Provides a non-parametric envelope around the overall curve for the
+  # default by_quartile = TRUE ribbon display.
+  bs_envelope <- apply(brier_matx, 2, stats::quantile,
+                       probs = c(0.15, 0.85), na.rm = TRUE)
+
   time_grid <- bs_df$time
   bs_all    <- bs_df$brier.score
 
@@ -149,23 +173,29 @@ gg_brier.rfsrc <- function(object,
     out
   }
 
-  crps_all <- crps_running(time_grid, bs_all)
-  crps_q   <- vapply(seq_len(4), function(k) {
+  crps_all   <- crps_running(time_grid, bs_all)
+  crps_q     <- vapply(seq_len(4), function(k) {
     crps_running(time_grid, bs_quartile[, k])
   }, numeric(length(time_grid)))
+  crps_lower <- crps_running(time_grid, bs_envelope[1, ])
+  crps_upper <- crps_running(time_grid, bs_envelope[2, ])
 
   gg_dta <- data.frame(
-    time      = time_grid,
-    brier     = bs_all,
-    bs.q25    = bs_quartile[, 1],
-    bs.q50    = bs_quartile[, 2],
-    bs.q75    = bs_quartile[, 3],
-    bs.q100   = bs_quartile[, 4],
-    crps      = crps_all,
-    crps.q25  = crps_q[, 1],
-    crps.q50  = crps_q[, 2],
-    crps.q75  = crps_q[, 3],
-    crps.q100 = crps_q[, 4]
+    time        = time_grid,
+    brier       = bs_all,
+    bs.q25      = bs_quartile[, 1],
+    bs.q50      = bs_quartile[, 2],
+    bs.q75      = bs_quartile[, 3],
+    bs.q100     = bs_quartile[, 4],
+    bs.lower    = bs_envelope[1, ],
+    bs.upper    = bs_envelope[2, ],
+    crps        = crps_all,
+    crps.q25    = crps_q[, 1],
+    crps.q50    = crps_q[, 2],
+    crps.q75    = crps_q[, 3],
+    crps.q100   = crps_q[, 4],
+    crps.lower  = crps_lower,
+    crps.upper  = crps_upper
   )
 
   attr(gg_dta, "crps_integrated") <- brier_obj$crps

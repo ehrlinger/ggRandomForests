@@ -28,10 +28,16 @@ A \code{gg_brier} \code{data.frame} with columns
     \item{brier}{overall Brier score at each time.}
     \item{bs.q25, bs.q50, bs.q75, bs.q100}{Brier score within each
       mortality-risk quartile (lowest to highest risk).}
+    \item{bs.lower, bs.upper}{15th and 85th percentile of per-subject
+      Brier contributions at each time. Used by
+      \code{plot.gg_brier(by_quartile = TRUE)} to draw an envelope
+      around the overall curve.}
     \item{crps}{running CRPS (overall) at each time, normalised by
       elapsed time.}
     \item{crps.q25, crps.q50, crps.q75, crps.q100}{running CRPS within
       each mortality-risk quartile.}
+    \item{crps.lower, crps.upper}{running CRPS of the 15th / 85th
+      per-subject Brier percentile, normalised by elapsed time.}
   }
   The integrated CRPS (a single scalar matching
   \code{get.brier.survival()$crps}) is attached as
@@ -63,7 +69,19 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
 gg_dta <- gg_brier(rfsrc_pbc)
 plot(gg_dta)
 plot(gg_dta, type = "crps")
-plot(gg_dta, by_quartile = TRUE)
+plot(gg_dta, by_quartile = TRUE)   # overall line + 15-85\% envelope
+
+# Multi-model comparison: stack gg_brier outputs and plot with ggplot2.
+rf2 <- randomForestSRC::rfsrc(
+  Surv(days, status) ~ ., data = pbc, nsplit = 10, mtry = 4
+)
+compare_dta <- dplyr::bind_rows(
+  dplyr::mutate(gg_brier(rfsrc_pbc), model = "default"),
+  dplyr::mutate(gg_brier(rf2),       model = "mtry=4")
+)
+ggplot2::ggplot(compare_dta,
+  ggplot2::aes(x = time, y = brier, colour = model)) +
+  ggplot2::geom_line()
 }
 
 }

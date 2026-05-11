@@ -12,9 +12,10 @@
 \item{type}{Which series to plot: \code{"brier"} (default) or
 \code{"crps"}.}
 
-\item{by_quartile}{Logical. When \code{TRUE}, draws one line per
-mortality-risk quartile (q25, q50, q75, q100). When \code{FALSE}
-(default), draws the overall series only.}
+\item{by_quartile}{Logical. When \code{TRUE}, overlays a ribbon
+spanning the 15th-85th percentile of per-subject Brier (or running
+CRPS) contributions at each time, around the overall line. When
+\code{FALSE} (default), draws the overall series only.}
 
 \item{...}{Extra arguments forwarded to \code{ggplot2} layers.}
 }
@@ -23,7 +24,8 @@ A \code{ggplot} object.
 }
 \description{
 Plot the time-resolved Brier score (default) or running CRPS for a
-survival forest, optionally stratified by mortality-risk quartile.
+survival forest, optionally overlaid with a 15-85 percent per-subject
+envelope.
 }
 \examples{
 \dontrun{
@@ -33,7 +35,7 @@ rf <- randomForestSRC::rfsrc(Surv(days, status) ~ ., data = pbc,
 gg_dta <- gg_brier(rf)
 plot(gg_dta)
 plot(gg_dta, type = "crps")
-plot(gg_dta, by_quartile = TRUE)
+plot(gg_dta, by_quartile = TRUE)   # adds 15-85\% envelope
 }
 
 }

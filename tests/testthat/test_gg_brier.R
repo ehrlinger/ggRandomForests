@@ -14,8 +14,13 @@ test_that("gg_brier.rfsrc produces a tidy survival frame", {
 
   expect_s3_class(gg_dta, "gg_brier")
   expect_true(all(c("time", "brier", "bs.q25", "bs.q50", "bs.q75",
-                    "bs.q100", "crps", "crps.q25", "crps.q50",
-                    "crps.q75", "crps.q100") %in% names(gg_dta)))
+                    "bs.q100", "bs.lower", "bs.upper",
+                    "crps", "crps.q25", "crps.q50", "crps.q75",
+                    "crps.q100", "crps.lower", "crps.upper") %in%
+                    names(gg_dta)))
+  # Envelope sanity: lower <= upper at every time.
+  expect_true(all(gg_dta$bs.lower <= gg_dta$bs.upper))
+  expect_true(all(gg_dta$crps.lower <= gg_dta$crps.upper, na.rm = TRUE))
   expect_equal(nrow(gg_dta), length(rf$time.interest))
   expect_true(all(is.finite(gg_dta$brier)))
   expect_true(all(gg_dta$brier >= 0 & gg_dta$brier <= 1))
