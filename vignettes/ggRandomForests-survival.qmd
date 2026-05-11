@@ -582,6 +582,49 @@ decreases. The non-planar shape of the surface --- particularly the steep
 gradient at low albumin and high bilirubin --- confirms the interaction detected
 in the conditional plots.
 
+## Brier Score and CRPS
+
+The Brier score measures prediction accuracy at each point on the event-time
+grid by comparing predicted survival probabilities to observed outcomes, with
+inverse-probability-of-censoring weighting (IPCW) to account for
+right-censoring [@graf:1999]. `gg_brier()` wraps
+`randomForestSRC::get.brier.survival()` and returns a tidy data frame ready
+for plotting.
+
+```{r brier-overall, fig.width=7, fig.height=3.5, fig.cap="Time-resolved Brier score for the PBC survival forest."}
+gg_bs <- gg_brier(rfsrc_pbc)
+plot(gg_bs)
+```
+
+The score starts near zero (all subjects alive, predictions trivially correct),
+peaks around the median event time where uncertainty is greatest, then
+decreases as the remaining at-risk pool shrinks.
+
+The 15--85% per-subject envelope shows how spread the individual Brier
+contributions are at each time. A narrow ribbon indicates the forest assigns
+similar predicted risks across subjects; a wide ribbon points to
+heterogeneous risk predictions.
+
+```{r brier-envelope, fig.width=7, fig.height=3.5, fig.cap="Brier score with 15--85% per-subject envelope."}
+plot(gg_bs, envelope = TRUE)
+```
+
+The running CRPS (continuous ranked probability score) integrates the Brier
+score over time, normalised by elapsed time. It provides a single
+time-averaged accuracy measure that penalises poorly calibrated predictions
+throughout the follow-up period.
+
+```{r brier-crps, fig.width=7, fig.height=3.5, fig.cap="Running CRPS for the PBC survival forest."}
+plot(gg_bs, type = "crps")
+```
+
+The integrated CRPS --- a scalar summary of overall calibration --- is stored
+as an attribute and can be retrieved with:
+
+```{r brier-crps-scalar}
+attr(gg_bs, "crps_integrated")
+```
+
 # Conclusion
 
 This vignette demonstrated a complete random survival forest analysis using
@@ -599,6 +642,8 @@ This vignette demonstrated a complete random survival forest analysis using
   confirmation and supported the log-transforms used in parametric models.
 - **Conditional plots** and **interactive surfaces** exposed the bilirubin--albumin
   interaction.
+- **Brier score and CRPS** via `gg_brier()` quantified time-resolved prediction
+  accuracy and overall calibration of the survival forest.
 
 The **ggRandomForests** design separates data extraction from plotting: every
 `gg_*()` function returns a tidy data frame that can be plotted with the
