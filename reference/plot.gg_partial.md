@@ -29,9 +29,12 @@ plot(x, ...)
 
 ## Value
 
-When only continuous or only categorical variables are present, a single
-`ggplot` object. When both are present, a named list with elements
-`continuous` and `categorical`, each a `ggplot`.
+A `ggplot` (or `patchwork`) object. When only one variable type is
+present a single `ggplot` is returned. When both continuous and
+categorical variables are present the two panels are combined vertically
+via
+[`patchwork::wrap_plots()`](https://patchwork.data-imaginist.com/reference/wrap_plots.html),
+which also satisfies `inherits(p, "ggplot")`.
 
 ## See also
 
@@ -47,10 +50,5 @@ rf <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50)
 pv <- randomForestSRC::plot.variable(rf, partial = TRUE, show.plots = FALSE)
 pd <- gg_partial(pv)
 plot(pd)
-#> $continuous
 
-#> 
-#> $categorical
-
-#> 
 ```

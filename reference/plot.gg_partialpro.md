@@ -31,8 +31,9 @@ plot(x, type = c("parametric", "nonparametric", "causal"), ...)
 
 ## Value
 
-A single `ggplot` or a named list with `continuous` and `categorical`
-elements when both types of predictors are present.
+A `ggplot` (or `patchwork`) object. When both continuous and categorical
+variables are present the two panels are combined vertically via
+[`patchwork::wrap_plots()`](https://patchwork.data-imaginist.com/reference/wrap_plots.html).
 
 ## Details
 
@@ -69,28 +70,15 @@ mock_data <- list(
 )
 
 pp <- gg_partialpro(mock_data)
-result <- plot(pp)
 
-# Continuous predictors get one panel per variable; categorical get
-# box-plots over the parametric / nonparametric / causal effect types.
-result$continuous
-
-result$categorical
+# Returns a single ggplot/patchwork figure combining continuous and
+# categorical panels when both variable types are present.
+plot(pp)
 
 
 # Restrict to one or two effect types
 plot(pp, type = "nonparametric")
-#> $continuous
 
-#> 
-#> $categorical
-
-#> 
 plot(pp, type = c("parametric", "causal"))
-#> $continuous
 
-#> 
-#> $categorical
-
-#> 
 ```

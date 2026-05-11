@@ -25,8 +25,9 @@ plot(x, ...)
 
 ## Value
 
-A single `ggplot` object, or a named list with elements `continuous` and
-`categorical` when both types are present.
+A `ggplot` (or `patchwork`) object. When both continuous and categorical
+variables are present the two panels are combined vertically via
+[`patchwork::wrap_plots()`](https://patchwork.data-imaginist.com/reference/wrap_plots.html).
 
 ## Details
 

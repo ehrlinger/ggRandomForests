@@ -82,8 +82,9 @@ gg_partial_rfsrc."></head><body>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A single <code>ggplot</code> object, or a named list with elements
-  <code>continuous</code> and <code>categorical</code> when both types are present.</p>
+    <p>A <code>ggplot</code> (or <code>patchwork</code>) object.  When both continuous
+  and categorical variables are present the two panels are combined
+  vertically via <code><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">patchwork::wrap_plots()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

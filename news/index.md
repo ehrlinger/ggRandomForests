@@ -2,6 +2,19 @@
 
 ## ggRandomForests v2.7.3
 
+- [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md),
+  [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md),
+  and
+  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.md)
+  now always return a single `ggplot`/`patchwork` object. Previously,
+  when both continuous and categorical predictors were present, they
+  returned a named list `list(continuous=, categorical=)`, which
+  surprised users and made
+  [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  dispatch ambiguous. The two panels are now combined vertically via
+  [`patchwork::wrap_plots()`](https://patchwork.data-imaginist.com/reference/wrap_plots.html)
+  (patchwork moved from `Suggests` to `Imports`). Closes
+  [\#77](https://github.com/ehrlinger/ggRandomForests/issues/77).
 - [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
   S3 methods for all 10 `gg_*` classes, delegating to the corresponding
   `plot.gg_*()` method so objects work in `|>` pipelines, `patchwork`,
