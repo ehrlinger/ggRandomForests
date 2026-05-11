@@ -21,7 +21,9 @@
 #' @param error "shade", "bars", "lines" or "none"
 #' @param type "surv", "cum_haz", "hazard", "density", "mid_int", "life", "proplife"
 #' @param label Modify the legend label when gg_survival has stratified samples
-#' @param ... not used
+#' @param ... Additional arguments forwarded to \code{geom_step()}. When
+#'   \code{alpha} is supplied it is passed to the step geom and a halved
+#'   value is used for the ribbon overlay.
 #'
 #' @return A \code{ggplot} object. The y-axis shows the chosen \code{type}
 #'   (e.g. survival probability for \code{"surv"}) and the x-axis shows time.
@@ -91,7 +93,11 @@ plot.gg_survival <- function(x,
   gg_dta <- if (inherits(x, "rfsrc")) gg_survival(x) else x
 
   error <- match.arg(error)
-  type <- match.arg(type)
+  type  <- match.arg(type)
+
+  # Split ... so alpha applies to step geoms while ribbons use a softer value.
+  spl          <- .gg_split_alpha(list(...))
+  ribbon_alpha <- spl$ribbon_alpha
 
   # Now order matters, so we want to place the forest predictions on the bottom
   # Create the figure skeleton,
@@ -125,7 +131,7 @@ plot.gg_survival <- function(x,
               ymax = .data$upper,
               ymin = .data$lower
             ),
-            alpha = .gg_ribbon_alpha,
+            alpha = ribbon_alpha,
             fill  = .gg_ribbon_fill
           ),
         # Or showing error bars
@@ -161,7 +167,7 @@ plot.gg_survival <- function(x,
               fill = .data$groups,
               color = .data$groups
             ),
-            alpha = .gg_ribbon_alpha
+            alpha = ribbon_alpha
           ),
         # Or showing error bars
         bars = {
