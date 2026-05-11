@@ -1,8 +1,8 @@
 Package: ggRandomForests
-Version: 2.7.2.9000
+Version: 2.7.3
 
-ggRandomForests v2.8.0 (in development)
-=======================================
+ggRandomForests v2.7.3
+======================
 * `autoplot()` S3 methods for all 10 `gg_*` classes, delegating to the
   corresponding `plot.gg_*()` method so objects work in `|>` pipelines,
   `patchwork`, and `cowplot` compositions via `ggplot2::autoplot()`.
