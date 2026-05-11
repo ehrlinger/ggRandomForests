@@ -242,9 +242,10 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
   } else if (inherits(gg_dta, "surv")) {
     # Detect whether bootstrap confidence bands have been computed
     if ("lower" %in% colnames(gg_dta)) {
-      # Determine ribbon transparency; halve user-supplied alpha if given
+      # Determine ribbon transparency; halve user-supplied alpha if given.
+      # Default matches the package-wide ribbon convention.
       if (is.null(arg_set$alpha)) {
-        alph <- .3
+        alph <- .gg_ribbon_alpha
       } else {
         alph <- arg_set$alpha * .5
         arg_set$alpha <- NULL
@@ -277,7 +278,8 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
               ymin = .data$lower,
               ymax = .data$upper
             ),
-            alpha = alph
+            alpha = alph,
+            fill  = .gg_ribbon_fill
           ) +
           ggplot2::geom_step(ggplot2::aes(x = .data$value, y = .data$median), ...)
       }

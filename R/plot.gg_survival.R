@@ -125,7 +125,8 @@ plot.gg_survival <- function(x,
               ymax = .data$upper,
               ymin = .data$lower
             ),
-            alpha = .3
+            alpha = .gg_ribbon_alpha,
+            fill  = .gg_ribbon_fill
           ),
         # Or showing error bars
         bars = {
@@ -160,7 +161,7 @@ plot.gg_survival <- function(x,
               fill = .data$groups,
               color = .data$groups
             ),
-            alpha = .3
+            alpha = .gg_ribbon_alpha
           ),
         # Or showing error bars
         bars = {
