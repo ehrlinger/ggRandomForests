@@ -136,15 +136,13 @@ test_that("plot.gg_partial returns a ggplot for continuous-only data", {
   expect_s3_class(gg_plt, "ggplot")
 })
 
-test_that("plot.gg_partial returns a list of ggplots when both types present", {
+test_that("plot.gg_partial returns a single ggplot when both types present", {
   mock_dta <- make_mock_partial_data()
   result <- gg_partial(mock_dta)
 
   out <- plot(result)
-  expect_type(out, "list")
-  expect_named(out, c("continuous", "categorical"))
-  expect_s3_class(out$continuous, "ggplot")
-  expect_s3_class(out$categorical, "ggplot")
+  # patchwork combines the two panels into a single ggplot-inheriting object.
+  expect_s3_class(out, "ggplot")
 })
 
 test_that("plot.gg_partial_rfsrc returns a ggplot", {

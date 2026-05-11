@@ -35,9 +35,11 @@ partial_surv_y_label <- function(partial.type) {
 #' @param x A \code{\link{gg_partial}} object (output of \code{\link{gg_partial}}).
 #' @param ... Not currently used; reserved for future arguments.
 #'
-#' @return When only continuous or only categorical variables are present, a
-#'   single \code{ggplot} object.  When both are present, a named list with
-#'   elements \code{continuous} and \code{categorical}, each a \code{ggplot}.
+#' @return A \code{ggplot} (or \code{patchwork}) object.  When only one
+#'   variable type is present a single \code{ggplot} is returned.  When both
+#'   continuous and categorical variables are present the two panels are
+#'   combined vertically via \code{patchwork::wrap_plots()}, which also
+#'   satisfies \code{inherits(p, "ggplot")}.
 #'
 #' @seealso \code{\link{gg_partial}}, \code{\link{plot.gg_variable}}
 #'
@@ -50,6 +52,7 @@ partial_surv_y_label <- function(partial.type) {
 #' plot(pd)
 #'
 #' @importFrom ggplot2 .data
+#' @importFrom patchwork wrap_plots
 #' @export
 plot.gg_partial <- function(x, ...) {
   gg_dta <- x
@@ -82,7 +85,7 @@ plot.gg_partial <- function(x, ...) {
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
-    list(continuous = gg_cont, categorical = gg_cat)
+    patchwork::wrap_plots(gg_cont, gg_cat, ncol = 1)
   } else if (!is.null(gg_cont)) {
     gg_cont
   } else {
@@ -110,8 +113,9 @@ plot.gg_partial <- function(x, ...) {
 #' @param x A \code{\link{gg_partial_rfsrc}} object.
 #' @param ... Not currently used.
 #'
-#' @return A single \code{ggplot} object, or a named list with elements
-#'   \code{continuous} and \code{categorical} when both types are present.
+#' @return A \code{ggplot} (or \code{patchwork}) object.  When both continuous
+#'   and categorical variables are present the two panels are combined
+#'   vertically via \code{patchwork::wrap_plots()}.
 #'
 #' @seealso \code{\link{gg_partial_rfsrc}}, \code{\link{plot.gg_partial}}
 #'
@@ -156,6 +160,7 @@ plot.gg_partial <- function(x, ...) {
 #' }
 #'
 #' @importFrom ggplot2 .data
+#' @importFrom patchwork wrap_plots
 #' @export
 plot.gg_partial_rfsrc <- function(x, ...) {
   gg_dta <- x
@@ -225,7 +230,7 @@ plot.gg_partial_rfsrc <- function(x, ...) {
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
-    list(continuous = gg_cont, categorical = gg_cat)
+    patchwork::wrap_plots(gg_cont, gg_cat, ncol = 1)
   } else if (!is.null(gg_cont)) {
     gg_cont
   } else {
@@ -246,8 +251,9 @@ plot.gg_partial_rfsrc <- function(x, ...) {
 #'   \code{"nonparametric"}, \code{"causal"}.  Defaults to all three.
 #' @param ... Not currently used.
 #'
-#' @return A single \code{ggplot} or a named list with \code{continuous} and
-#'   \code{categorical} elements when both types of predictors are present.
+#' @return A \code{ggplot} (or \code{patchwork}) object.  When both continuous
+#'   and categorical variables are present the two panels are combined
+#'   vertically via \code{patchwork::wrap_plots()}.
 #'
 #' @seealso \code{\link{gg_partialpro}}
 #'
@@ -287,6 +293,7 @@ plot.gg_partial_rfsrc <- function(x, ...) {
 #' plot(pp, type = c("parametric", "causal"))
 #'
 #' @importFrom ggplot2 .data
+#' @importFrom patchwork wrap_plots
 #' @export
 plot.gg_partialpro <- function(x,
                                type = c("parametric", "nonparametric", "causal"),
@@ -342,7 +349,7 @@ plot.gg_partialpro <- function(x,
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
-    list(continuous = gg_cont, categorical = gg_cat)
+    patchwork::wrap_plots(gg_cont, gg_cat, ncol = 1)
   } else if (!is.null(gg_cont)) {
     gg_cont
   } else {

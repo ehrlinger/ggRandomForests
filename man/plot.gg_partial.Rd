@@ -12,9 +12,11 @@
 \item{...}{Not currently used; reserved for future arguments.}
 }
 \value{
-When only continuous or only categorical variables are present, a
-  single \code{ggplot} object.  When both are present, a named list with
-  elements \code{continuous} and \code{categorical}, each a \code{ggplot}.
+A \code{ggplot} (or \code{patchwork}) object.  When only one
+  variable type is present a single \code{ggplot} is returned.  When both
+  continuous and categorical variables are present the two panels are
+  combined vertically via \code{patchwork::wrap_plots()}, which also
+  satisfies \code{inherits(p, "ggplot")}.
 }
 \description{
 Produces ggplot2 partial dependence curves from the named list returned by

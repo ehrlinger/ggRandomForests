@@ -18,16 +18,6 @@ setup_forests <- function() {
   )
 }
 
-# Helper: accept a ggplot or a named list of ggplots (plot.gg_partial* can
-# return either depending on whether both variable types are present).
-expect_ggplot_result <- function(p) {
-  if (is.list(p) && !inherits(p, "ggplot")) {
-    expect_true(all(vapply(p, inherits, logical(1), "ggplot")))
-  } else {
-    expect_s3_class(p, "ggplot")
-  }
-}
-
 test_that("autoplot returns a ggplot for gg_error", {
   f <- setup_forests()
   expect_s3_class(ggplot2::autoplot(gg_error(f$reg)), "ggplot")
@@ -51,17 +41,18 @@ test_that("autoplot returns a ggplot for gg_variable", {
   )
 })
 
-test_that("autoplot returns a ggplot (or list) for gg_partial", {
+test_that("autoplot returns a ggplot for gg_partial", {
   f <- setup_forests()
   pv <- randomForestSRC::plot.variable(f$reg, partial = TRUE,
                                         show.plots = FALSE)
-  expect_ggplot_result(ggplot2::autoplot(gg_partial(pv)))
+  expect_s3_class(ggplot2::autoplot(gg_partial(pv)), "ggplot")
 })
 
-test_that("autoplot returns a ggplot (or list) for gg_partial_rfsrc", {
+test_that("autoplot returns a ggplot for gg_partial_rfsrc", {
   f <- setup_forests()
-  expect_ggplot_result(
-    ggplot2::autoplot(gg_partial_rfsrc(f$reg, xvar.names = "Temp"))
+  expect_s3_class(
+    ggplot2::autoplot(gg_partial_rfsrc(f$reg, xvar.names = "Temp")),
+    "ggplot"
   )
 })
 
