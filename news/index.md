@@ -19,6 +19,12 @@
   on multiple `gg_brier` outputs — see
   [`?gg_brier`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
   for an example.
+- Visual unification of ribbon overlays across plot methods. All ribbons
+  now use a shared alpha (`.gg_ribbon_alpha = 0.2`) and a shared fill
+  (`.gg_ribbon_fill = "steelblue"`) for single-series cases (KM/NA CIs,
+  bootstrap CIs, `gg_brier` envelope); group-stratified ribbons keep
+  their group-coloured fill. Statistical bounds unchanged — only
+  styling.
 - First-class `varPro` integration to restore the variable-selection
   workflow that disappeared with `randomForestSRC::var.select.rfsrc()`.
   Planned: `varPro` in `Suggests:` (or `Imports:`),
