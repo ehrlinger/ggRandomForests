@@ -10,16 +10,7 @@ gg_brier(object, ...)
 \item{object}{A fitted \code{\link[randomForestSRC]{rfsrc}} survival
 forest (\code{object$family == "surv"}).}
 
-\item{...}{Optional arguments passed through to the methods. Supported
-for the \code{rfsrc} method:
-\describe{
-  \item{\code{subset}}{Integer vector of training-set indices to
-    restrict the evaluation to.}
-  \item{\code{cens.model}}{Censoring-distribution estimator used in
-    the IPCW weights: \code{"km"} (Kaplan-Meier, default) or
-    \code{"rfsrc"} (random survival forest on the censoring
-    indicator).}
-}}
+\item{...}{Currently unused; accepted for S3 dispatch compatibility.}
 }
 \value{
 A \code{gg_brier} \code{data.frame} with columns
@@ -69,7 +60,7 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
 gg_dta <- gg_brier(rfsrc_pbc)
 plot(gg_dta)
 plot(gg_dta, type = "crps")
-plot(gg_dta, by_quartile = TRUE)   # overall line + 15-85\% envelope
+plot(gg_dta, envelope = TRUE)   # overall line + 15-85\% envelope
 
 # Multi-model comparison: stack gg_brier outputs and plot with ggplot2.
 rf2 <- randomForestSRC::rfsrc(

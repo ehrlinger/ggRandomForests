@@ -31,16 +31,7 @@
 #'
 #' @param object A fitted \code{\link[randomForestSRC]{rfsrc}} survival
 #'   forest (\code{object$family == "surv"}).
-#' @param ... Optional arguments passed through to the methods. Supported
-#'   for the \code{rfsrc} method:
-#'   \describe{
-#'     \item{\code{subset}}{Integer vector of training-set indices to
-#'       restrict the evaluation to.}
-#'     \item{\code{cens.model}}{Censoring-distribution estimator used in
-#'       the IPCW weights: \code{"km"} (Kaplan-Meier, default) or
-#'       \code{"rfsrc"} (random survival forest on the censoring
-#'       indicator).}
-#'   }
+#' @param ... Currently unused; accepted for S3 dispatch compatibility.
 #'
 #' @return A \code{gg_brier} \code{data.frame} with columns
 #'   \describe{
@@ -85,7 +76,7 @@
 #' gg_dta <- gg_brier(rfsrc_pbc)
 #' plot(gg_dta)
 #' plot(gg_dta, type = "crps")
-#' plot(gg_dta, by_quartile = TRUE)   # overall line + 15-85% envelope
+#' plot(gg_dta, envelope = TRUE)   # overall line + 15-85% envelope
 #'
 #' # Multi-model comparison: stack gg_brier outputs and plot with ggplot2.
 #' rf2 <- randomForestSRC::rfsrc(
@@ -142,6 +133,10 @@ gg_brier.rfsrc <- function(object,
 
   bs_quartile <- vapply(seq_len(4), function(k) {
     in_bin <- mort > mort_breaks[k] & mort <= mort_breaks[k + 1]
+    if (!any(in_bin, na.rm = TRUE)) {
+      # Empty bin — can occur when mort has ties at a quantile boundary.
+      return(rep(NA_real_, nrow(bs_df)))
+    }
     colMeans(brier_matx[in_bin, , drop = FALSE], na.rm = TRUE)
   }, numeric(nrow(bs_df)))
 
@@ -154,21 +149,19 @@ gg_brier.rfsrc <- function(object,
   time_grid <- bs_df$time
   bs_all    <- bs_df$brier.score
 
-  # Running, time-normalised CRPS via trapezoid rule over [time[1], time[j]].
+  # Running, time-normalised CRPS via single-pass cumulative trapezoid rule.
+  # O(n) per series: accumulate area incrementally rather than recomputing
+  # from scratch at every time point.
   crps_running <- function(times, scores) {
-    n <- length(times)
-    out <- numeric(n)
-    for (j in seq_len(n)) {
-      if (j == 1) {
-        out[j] <- scores[1]
-      } else {
-        span <- times[j] - times[1]
-        if (span <= 0) {
-          out[j] <- NA_real_
-        } else {
-          out[j] <- .trapz(times[seq_len(j)], scores[seq_len(j)]) / span
-        }
-      }
+    n        <- length(times)
+    out      <- numeric(n)
+    out[1]   <- scores[1]
+    cum_area <- 0
+    for (j in seq_len(n)[-1]) {
+      cum_area <- cum_area +
+        (times[j] - times[j - 1]) * (scores[j] + scores[j - 1]) / 2
+      span     <- times[j] - times[1]
+      out[j]   <- if (span <= 0) NA_real_ else cum_area / span
     }
     out
   }

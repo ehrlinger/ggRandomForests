@@ -8,7 +8,7 @@ ggRandomForests v2.8.0 (in development)
   `randomForestSRC::get.brier.survival()` and adds the mortality-quartile
   decomposition, a 15-85 percent per-subject envelope, and running CRPS
   via trapezoidal integration. Supports `cens.model = c("km", "rfsrc")`,
-  `type = c("brier", "crps")`, and `by_quartile` (overall line + envelope
+  `type = c("brier", "crps")`, and `envelope` (overall line + 15-85%
   ribbon). Multi-model comparison is left to `dplyr::bind_rows()` on
   multiple `gg_brier` outputs — see `?gg_brier` for an example.
 * First-class `varPro` integration to restore the variable-selection

@@ -4,7 +4,7 @@
 \alias{plot.gg_brier}
 \title{Plot a \code{\link{gg_brier}} object}
 \usage{
-\method{plot}{gg_brier}(x, type = c("brier", "crps"), by_quartile = FALSE, ...)
+\method{plot}{gg_brier}(x, type = c("brier", "crps"), envelope = FALSE, ...)
 }
 \arguments{
 \item{x}{A \code{\link{gg_brier}} object.}
@@ -12,12 +12,12 @@
 \item{type}{Which series to plot: \code{"brier"} (default) or
 \code{"crps"}.}
 
-\item{by_quartile}{Logical. When \code{TRUE}, overlays a ribbon
-spanning the 15th-85th percentile of per-subject Brier (or running
-CRPS) contributions at each time, around the overall line. When
-\code{FALSE} (default), draws the overall series only.}
+\item{envelope}{Logical. When \code{TRUE}, overlays a ribbon spanning
+the 15th-85th percentile of per-subject Brier (or running CRPS)
+contributions at each time, around the overall line. When \code{FALSE}
+(default), draws the overall series only.}
 
-\item{...}{Extra arguments forwarded to \code{ggplot2} layers.}
+\item{...}{Extra arguments forwarded to \code{geom_line()}.}
 }
 \value{
 A \code{ggplot} object.
@@ -35,7 +35,7 @@ rf <- randomForestSRC::rfsrc(Surv(days, status) ~ ., data = pbc,
 gg_dta <- gg_brier(rf)
 plot(gg_dta)
 plot(gg_dta, type = "crps")
-plot(gg_dta, by_quartile = TRUE)   # adds 15-85\% envelope
+plot(gg_dta, envelope = TRUE)   # adds 15-85\% envelope
 }
 
 }

@@ -31,8 +31,8 @@ test_that("gg_brier.rfsrc produces a tidy survival frame", {
   # plot method returns a ggplot for each supported display.
   expect_s3_class(plot(gg_dta), "ggplot")
   expect_s3_class(plot(gg_dta, type = "crps"), "ggplot")
-  expect_s3_class(plot(gg_dta, by_quartile = TRUE), "ggplot")
-  expect_s3_class(plot(gg_dta, type = "crps", by_quartile = TRUE), "ggplot")
+  expect_s3_class(plot(gg_dta, envelope = TRUE), "ggplot")
+  expect_s3_class(plot(gg_dta, type = "crps", envelope = TRUE), "ggplot")
 })
 
 test_that("gg_brier rejects non-survival forests", {
@@ -42,5 +42,6 @@ test_that("gg_brier rejects non-survival forests", {
 })
 
 test_that("plot.gg_brier rejects non-gg_brier input", {
+  data(iris, package = "datasets")
   expect_error(plot.gg_brier(iris), "gg_brier object")
 })
