@@ -92,6 +92,8 @@ reference:
       - surv_partial.rfsrc
       - kaplan
       - nelson
+      - gg_brier
+      - plot.gg_brier
 
   - title: "Utilities"
     desc: "Helper functions used internally and by users."
