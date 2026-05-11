@@ -76,6 +76,7 @@ vignette("ggRandomForests")
 | `gg_partial_rfsrc()` | `rfsrc` model | Partial dependence via `partial.rfsrc` |
 | `gg_survival()` | `rfsrc` survival forest | Kaplan–Meier / Nelson–Aalen estimates |
 | `gg_roc()` | `rfsrc` / `randomForest` (class) | ROC curve data |
+| `gg_brier()` | `rfsrc` (survival) | Time-resolved Brier score and CRPS |
 
 Each `gg_*` function has a corresponding `plot()` S3 method that returns a `ggplot2` object, making it easy
 to apply additional `ggplot2` layers or themes.
