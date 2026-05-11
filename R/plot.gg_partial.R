@@ -85,7 +85,7 @@ plot.gg_partial <- function(x, ...) {
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
-    patchwork::wrap_plots(gg_cont, gg_cat, ncol = 1)
+    wrap_plots(gg_cont, gg_cat, ncol = 1)
   } else if (!is.null(gg_cont)) {
     gg_cont
   } else {
@@ -230,7 +230,7 @@ plot.gg_partial_rfsrc <- function(x, ...) {
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
-    patchwork::wrap_plots(gg_cont, gg_cat, ncol = 1)
+    wrap_plots(gg_cont, gg_cat, ncol = 1)
   } else if (!is.null(gg_cont)) {
     gg_cont
   } else {
@@ -281,12 +281,10 @@ plot.gg_partial_rfsrc <- function(x, ...) {
 #' )
 #'
 #' pp <- gg_partialpro(mock_data)
-#' result <- plot(pp)
 #'
-#' # Continuous predictors get one panel per variable; categorical get
-#' # box-plots over the parametric / nonparametric / causal effect types.
-#' result$continuous
-#' result$categorical
+#' # Returns a single ggplot/patchwork figure combining continuous and
+#' # categorical panels when both variable types are present.
+#' plot(pp)
 #'
 #' # Restrict to one or two effect types
 #' plot(pp, type = "nonparametric")
@@ -349,7 +347,7 @@ plot.gg_partialpro <- function(x,
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
-    patchwork::wrap_plots(gg_cont, gg_cat, ncol = 1)
+    wrap_plots(gg_cont, gg_cat, ncol = 1)
   } else if (!is.null(gg_cont)) {
     gg_cont
   } else {

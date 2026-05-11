@@ -51,12 +51,10 @@ mock_data <- list(
 )
 
 pp <- gg_partialpro(mock_data)
-result <- plot(pp)
 
-# Continuous predictors get one panel per variable; categorical get
-# box-plots over the parametric / nonparametric / causal effect types.
-result$continuous
-result$categorical
+# Returns a single ggplot/patchwork figure combining continuous and
+# categorical panels when both variable types are present.
+plot(pp)
 
 # Restrict to one or two effect types
 plot(pp, type = "nonparametric")
