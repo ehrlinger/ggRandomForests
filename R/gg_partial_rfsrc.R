@@ -140,6 +140,7 @@ gg_partial_rfsrc <- function(rf_model,
   # Carry partial.type so plot.gg_partial_rfsrc() can pick the correct
   # y-axis label (Survival / CHF / Mortality).
   attr(result, "partial.type") <- partial.type
+  result <- .set_provenance(result, rf_model)
   result
 }
 

@@ -79,7 +79,8 @@ vignette("ggRandomForests")
 | `gg_brier()` | `rfsrc` (survival) | Time-resolved Brier score and CRPS |
 
 Each `gg_*` function has a corresponding `plot()` S3 method that returns a `ggplot2` object, making it easy
-to apply additional `ggplot2` layers or themes.
+to apply additional `ggplot2` layers or themes. Every `gg_*` object also implements `print()` (header-only
+summary at the REPL — use `head()` for rows) and `summary()` (printable diagnostics object).
 
 ## Why ggRandomForests?
 

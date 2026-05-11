@@ -3,6 +3,13 @@ Version: 2.7.2.9000
 
 ggRandomForests v2.8.0 (in development)
 =======================================
+* `print()` and `summary()` S3 methods for every `gg_*` data object
+  (gg_error, gg_vimp, gg_rfsrc, gg_variable, gg_partial,
+  gg_partial_rfsrc, gg_partialpro, gg_roc, gg_survival, gg_brier).
+  `print()` is header-only — use `head()` for rows. `summary()`
+  returns a printable `summary.gg` object with per-class diagnostics.
+  Each `gg_*` constructor now attaches a `"provenance"` attribute
+  (source, family, ntree, n, xvar.names) consumed by the new methods.
 * New `gg_brier()` extractor and `plot.gg_brier()` method for time-resolved
   Brier scores and CRPS on survival forests (issue #9). Wraps
   `randomForestSRC::get.brier.survival()` and adds the mortality-quartile

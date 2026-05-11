@@ -251,6 +251,7 @@ gg_error.rfsrc <- function(object, ...) {
   }
   gg_dta <- na.omit(gg_dta)
   class(gg_dta) <- c("gg_error", class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }
 
@@ -307,6 +308,7 @@ gg_error.randomForest <- function(object, ...) {
     stop("Performance values are not available for this forest.")
   }
   class(gg_dta) <- c("gg_error", class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }
 

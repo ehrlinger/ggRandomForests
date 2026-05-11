@@ -125,5 +125,6 @@ kaplan <- function(interval,
   )
 
   class(gg_dta) <- c("gg_survival", class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, NULL)
   invisible(gg_dta)
 }
