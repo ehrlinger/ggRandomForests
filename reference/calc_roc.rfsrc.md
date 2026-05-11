@@ -84,6 +84,7 @@ rf_iris <- randomForest(Species ~ ., data = iris)
 gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
   which_outcome = 1
 )
+#> Warning: number of rows of result is not a multiple of vector length (arg 2)
 gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
   which_outcome = 2
 )

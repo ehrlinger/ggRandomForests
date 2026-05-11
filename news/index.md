@@ -1,7 +1,22 @@
 # Changelog
 
-## ggRandomForests v2.8.0 (in development)
+## ggRandomForests v2.7.3
 
+- [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
+  S3 methods for all 10 `gg_*` classes, delegating to the corresponding
+  `plot.gg_*()` method so objects work in `|>` pipelines, `patchwork`,
+  and `cowplot` compositions via
+  [`ggplot2::autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html).
+- [`print()`](https://rdrr.io/r/base/print.html) and
+  [`summary()`](https://rdrr.io/r/base/summary.html) S3 methods for
+  every `gg_*` data object (gg_error, gg_vimp, gg_rfsrc, gg_variable,
+  gg_partial, gg_partial_rfsrc, gg_partialpro, gg_roc, gg_survival,
+  gg_brier). [`print()`](https://rdrr.io/r/base/print.html) is
+  header-only — use [`head()`](https://rdrr.io/r/utils/head.html) for
+  rows. [`summary()`](https://rdrr.io/r/base/summary.html) returns a
+  printable `summary.gg` object with per-class diagnostics. Each `gg_*`
+  constructor now attaches a `"provenance"` attribute (source, family,
+  ntree, n, xvar.names) consumed by the new methods.
 - New
   [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
   extractor and

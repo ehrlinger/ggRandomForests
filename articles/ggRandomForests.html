@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.2.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,13 +104,7 @@
 <span><span class="va">err_df</span> <span class="op">&lt;-</span> <span class="fu">ggRandomForests</span><span class="fu">::</span><span class="fu"><a href="../reference/gg_error.html">gg_error</a></span><span class="op">(</span><span class="va">rf_iris</span>, training <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">err_df</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         OOB setosa versicolor  virginica ntree      train
-1 0.06349206      0 0.08695652 0.13333333     1 0.02666667
-2 0.04255319      0 0.03225806 0.10714286     2 0.02000000
-3 0.04761905      0 0.05714286 0.09375000     3 0.02666667
-4 0.04098361      0 0.07500000 0.05263158     4 0.02000000
-5 0.05426357      0 0.06976744 0.10256410     5 0.01333333
-6 0.05970149      0 0.08888889 0.09756098     6 0.01333333</code></pre>
+<pre><code>&lt;gg_error&gt;  from randomForest  |  family: classification  |  ntree: 200  |  n: 150</code></pre>
 </div>
 </div>
 <p>The <code><a href="../reference/gg_error.html">gg_error()</a></code> object stores the cumulative OOB error rate for each outcome column plus the <code>ntree</code> counter. When <code>training = TRUE</code>, the function reconstructs the original model frame and appends the in-bag error trajectory (<code>train</code>). Plotting overlays both curves by default:</p>
@@ -163,15 +157,7 @@
 <code class="sourceCode R"><span><span class="va">vimp_df</span> <span class="op">&lt;-</span> <span class="fu">ggRandomForests</span><span class="fu">::</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rf_boston</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">vimp_df</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 4
-  vars    set     vimp positive
-  &lt;fct&gt;   &lt;chr&gt;  &lt;dbl&gt; &lt;lgl&gt;
-1 lstat   vimp  13005. TRUE
-2 rm      vimp  11662. TRUE
-3 dis     vimp   2849. TRUE
-4 indus   vimp   2751. TRUE
-5 ptratio vimp   2698. TRUE
-6 crim    vimp   2646. TRUE    </code></pre>
+<pre><code>&lt;gg_vimp&gt;  from randomForest  |  family: regression  |  ntree: 150  |  n: 506  |  variables: 6</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vimp_df</span><span class="op">)</span></span></code></pre></div>

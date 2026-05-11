@@ -32,7 +32,8 @@ plot(x, type = c("brier", "crps"), envelope = FALSE, ...)
 
 - ...:
 
-  Extra arguments forwarded to `geom_line()`.
+  Extra arguments forwarded to
+  [`geom_line()`](https://ggplot2.tidyverse.org/reference/geom_path.html).
 
 ## Value
 

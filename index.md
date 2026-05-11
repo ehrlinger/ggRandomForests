@@ -82,7 +82,11 @@ vignette("ggRandomForests")
 Each `gg_*` function has a corresponding
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) S3 method that
 returns a `ggplot2` object, making it easy to apply additional `ggplot2`
-layers or themes.
+layers or themes. Every `gg_*` object also implements
+[`print()`](https://rdrr.io/r/base/print.html) (header-only summary at
+the REPL — use [`head()`](https://rdrr.io/r/utils/head.html) for rows)
+and [`summary()`](https://rdrr.io/r/base/summary.html) (printable
+diagnostics object).
 
 ## Why ggRandomForests?
 

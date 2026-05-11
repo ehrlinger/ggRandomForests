@@ -17,13 +17,7 @@ err_df <- ggRandomForests::gg_error(rf_iris, training = TRUE)
 head(err_df)
 ```
 
-             OOB setosa versicolor  virginica ntree      train
-    1 0.06349206      0 0.08695652 0.13333333     1 0.02666667
-    2 0.04255319      0 0.03225806 0.10714286     2 0.02000000
-    3 0.04761905      0 0.05714286 0.09375000     3 0.02666667
-    4 0.04098361      0 0.07500000 0.05263158     4 0.02000000
-    5 0.05426357      0 0.06976744 0.10256410     5 0.01333333
-    6 0.05970149      0 0.08888889 0.09756098     6 0.01333333
+    <gg_error>  from randomForest  |  family: classification  |  ntree: 200  |  n: 150
 
 The
 [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
@@ -82,15 +76,7 @@ vimp_df <- ggRandomForests::gg_vimp(rf_boston)
 head(vimp_df)
 ```
 
-    # A tibble: 6 × 4
-      vars    set     vimp positive
-      <fct>   <chr>  <dbl> <lgl>
-    1 lstat   vimp  13005. TRUE
-    2 rm      vimp  11662. TRUE
-    3 dis     vimp   2849. TRUE
-    4 indus   vimp   2751. TRUE
-    5 ptratio vimp   2698. TRUE
-    6 crim    vimp   2646. TRUE    
+    <gg_vimp>  from randomForest  |  family: regression  |  ntree: 150  |  n: 506  |  variables: 6
 
 ``` r
 
