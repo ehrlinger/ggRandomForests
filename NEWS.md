@@ -6,12 +6,6 @@ ggRandomForests v2.8.0 (in development)
 * `autoplot()` S3 methods for all 10 `gg_*` classes, delegating to the
   corresponding `plot.gg_*()` method so objects work in `|>` pipelines,
   `patchwork`, and `cowplot` compositions via `ggplot2::autoplot()`.
-* `as.data.frame()` methods for the list-based partial-dependence trio
-  (`gg_partial`, `gg_partial_rfsrc`, `gg_partialpro`).  Collapses
-  `$continuous` and `$categorical` sub-frames into a single tidy data frame
-  with a `type` column (`"continuous"` / `"categorical"`) and forwards the
-  `provenance` attribute, making multi-model comparisons via
-  `dplyr::bind_rows()` straightforward.
 * `print()` and `summary()` S3 methods for every `gg_*` data object
   (gg_error, gg_vimp, gg_rfsrc, gg_variable, gg_partial,
   gg_partial_rfsrc, gg_partialpro, gg_roc, gg_survival, gg_brier).
