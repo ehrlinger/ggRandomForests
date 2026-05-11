@@ -121,6 +121,7 @@ gg_roc.rfsrc <- function(object, which_outcome, oob = TRUE, ...) {
       oob = oob
     )
   class(gg_dta) <- c("gg_roc", class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
 
   invisible(gg_dta)
 }
@@ -154,6 +155,7 @@ gg_roc.randomForest <- function(object, which_outcome, oob, ...) {
       which_outcome = which_outcome
     )
   class(gg_dta) <- c("gg_roc", class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
 
   invisible(gg_dta)
 }

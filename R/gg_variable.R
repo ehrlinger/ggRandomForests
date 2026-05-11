@@ -262,6 +262,7 @@ gg_variable.rfsrc <- function(object,
     gg_dta$time <- factor(gg_dta$time, levels = unique(gg_dta$time))
   }
   class(gg_dta) <- c("gg_variable", object$family, class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }
 
@@ -313,5 +314,6 @@ gg_variable.randomForest <- function(object,
   }
 
   class(gg_dta) <- c("gg_variable", object$type, class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }

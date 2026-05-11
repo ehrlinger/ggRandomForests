@@ -362,6 +362,7 @@ gg_rfsrc.rfsrc <- function(object, # nolint: cyclocomp_linter
   # Tag the data frame with the forest family so plot.gg_rfsrc can dispatch
   # to the correct branch without re-inspecting the original forest object.
   class(gg_dta) <- c("gg_rfsrc", object$family, class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }
 
@@ -550,5 +551,6 @@ gg_rfsrc.randomForest <- function(object,
   }
 
   class(gg_dta) <- c("gg_rfsrc", object$type, class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }

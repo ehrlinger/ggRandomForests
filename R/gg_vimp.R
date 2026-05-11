@@ -298,6 +298,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
   gg_dta$positive[which(gg_dta$vimp <= 0)] <- FALSE
 
   class(gg_dta) <- c("gg_vimp", class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }
 
@@ -449,5 +450,6 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
   gg_dta$positive[which(gg_dta$vimp <= 0)] <- FALSE
 
   class(gg_dta) <- c("gg_vimp", class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }

@@ -194,6 +194,7 @@ gg_brier.rfsrc <- function(object,
   attr(gg_dta, "crps_integrated") <- brier_obj$crps
   attr(gg_dta, "cens.model")      <- cens.model
   class(gg_dta) <- c("gg_brier", class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }
 
