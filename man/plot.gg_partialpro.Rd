@@ -15,8 +15,9 @@
 \item{...}{Not currently used.}
 }
 \value{
-A single \code{ggplot} or a named list with \code{continuous} and
-  \code{categorical} elements when both types of predictors are present.
+A \code{ggplot} (or \code{patchwork}) object.  When both continuous
+  and categorical variables are present the two panels are combined
+  vertically via \code{patchwork::wrap_plots()}.
 }
 \description{
 Produces ggplot2 partial dependence curves from the named list returned by
@@ -50,12 +51,10 @@ mock_data <- list(
 )
 
 pp <- gg_partialpro(mock_data)
-result <- plot(pp)
 
-# Continuous predictors get one panel per variable; categorical get
-# box-plots over the parametric / nonparametric / causal effect types.
-result$continuous
-result$categorical
+# Returns a single ggplot/patchwork figure combining continuous and
+# categorical panels when both variable types are present.
+plot(pp)
 
 # Restrict to one or two effect types
 plot(pp, type = "nonparametric")

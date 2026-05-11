@@ -160,15 +160,13 @@ test_that("plot.gg_partialpro returns a ggplot for continuous data", {
   expect_s3_class(gg_plt, "ggplot")
 })
 
-test_that("plot.gg_partialpro returns named list when both types present", {
+test_that("plot.gg_partialpro returns a single ggplot when both types present", {
   mock_dta <- make_mock_partialpro_data()
   result <- gg_partialpro(mock_dta)
 
   out <- plot(result)
-  expect_type(out, "list")
-  expect_named(out, c("continuous", "categorical"))
-  expect_s3_class(out$continuous, "ggplot")
-  expect_s3_class(out$categorical, "ggplot")
+  # patchwork combines the two panels into a single ggplot-inheriting object.
+  expect_s3_class(out, "ggplot")
 })
 
 test_that("plot.gg_partialpro type argument subsets effect columns", {

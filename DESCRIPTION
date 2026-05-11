@@ -27,6 +27,7 @@ Imports:
     tidyr,
     dplyr,
     ggplot2,
+    patchwork,
     stringr
 Suggests:
     testthat,

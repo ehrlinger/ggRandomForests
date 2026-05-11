@@ -12,8 +12,9 @@
 \item{...}{Not currently used.}
 }
 \value{
-A single \code{ggplot} object, or a named list with elements
-  \code{continuous} and \code{categorical} when both types are present.
+A \code{ggplot} (or \code{patchwork}) object.  When both continuous
+  and categorical variables are present the two panels are combined
+  vertically via \code{patchwork::wrap_plots()}.
 }
 \description{
 Produces ggplot2 partial dependence curves from the named list returned by
