@@ -242,44 +242,56 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
   } else if (inherits(gg_dta, "surv")) {
     # Detect whether bootstrap confidence bands have been computed
     if ("lower" %in% colnames(gg_dta)) {
-      # Determine ribbon transparency; halve user-supplied alpha if given
-      if (is.null(arg_set$alpha)) {
-        alph <- .3
-      } else {
-        alph <- arg_set$alpha * .5
-        arg_set$alpha <- NULL
-      }
+      # Split ... into ribbon alpha (halved) and step dots (full alpha).
+      # Prevents duplicate-formal error when user passes alpha via ...
+      spl  <- .gg_split_alpha(arg_set)
+      alph <- spl$ribbon_alpha
 
       if ("group" %in% colnames(gg_dta)) {
         # Stratified survival curves with CI ribbon, coloured by group
         gg_plt <- ggplot2::ggplot(gg_dta) +
-          ggplot2::geom_ribbon(
-            ggplot2::aes(
-              x = .data$value,
-              ymin = .data$lower,
-              ymax = .data$upper,
-              fill = .data$group
-            ),
-            alpha = alph,
-            ...
+          do.call(
+            ggplot2::geom_ribbon,
+            c(list(
+              ggplot2::aes(
+                x    = .data$value,
+                ymin = .data$lower,
+                ymax = .data$upper,
+                fill = .data$group
+              ),
+              alpha = alph
+            ), spl$ribbon_dots)
           ) +
-          ggplot2::geom_step(ggplot2::aes(
-            x = .data$value,
-            y = .data$median,
-            color = .data$group
-          ), ...)
+          do.call(
+            ggplot2::geom_step,
+            c(list(ggplot2::aes(
+              x     = .data$value,
+              y     = .data$median,
+              color = .data$group
+            )), spl$step_dots)
+          )
       } else {
         # Single-group survival curve with CI ribbon
         gg_plt <- ggplot2::ggplot(gg_dta) +
-          ggplot2::geom_ribbon(
-            ggplot2::aes(
-              x = .data$value,
-              ymin = .data$lower,
-              ymax = .data$upper
-            ),
-            alpha = alph
+          do.call(
+            ggplot2::geom_ribbon,
+            c(list(
+              ggplot2::aes(
+                x    = .data$value,
+                ymin = .data$lower,
+                ymax = .data$upper
+              ),
+              alpha = alph,
+              fill  = .gg_ribbon_fill
+            ), spl$ribbon_dots)
           ) +
-          ggplot2::geom_step(ggplot2::aes(x = .data$value, y = .data$median), ...)
+          do.call(
+            ggplot2::geom_step,
+            c(list(ggplot2::aes(
+              x = .data$value,
+              y = .data$median
+            )), spl$step_dots)
+          )
       }
     } else {
       # No confidence bands: draw one step line per observation

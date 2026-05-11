@@ -11,6 +11,12 @@ ggRandomForests v2.8.0 (in development)
   `type = c("brier", "crps")`, and `envelope` (overall line + 15-85%
   ribbon). Multi-model comparison is left to `dplyr::bind_rows()` on
   multiple `gg_brier` outputs — see `?gg_brier` for an example.
+* Visual unification of ribbon overlays across plot methods. All
+  ribbons now use a shared alpha (`.gg_ribbon_alpha = 0.2`) and a
+  shared fill (`.gg_ribbon_fill = "steelblue"`) for single-series
+  cases (KM/NA CIs, bootstrap CIs, `gg_brier` envelope); group-stratified
+  ribbons keep their group-coloured fill. Statistical bounds unchanged —
+  only styling.
 * First-class `varPro` integration to restore the variable-selection
   workflow that disappeared with `randomForestSRC::var.select.rfsrc()`.
   Planned: `varPro` in `Suggests:` (or `Imports:`), `gg_partialpro.varpro`
