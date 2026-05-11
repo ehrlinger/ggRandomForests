@@ -114,7 +114,9 @@ gg_survival.rfsrc <- function(object,
     surv_data[[by]] <- object$xvar[[by]]
   }
 
-  kaplan(interval = interval_col, censor = censor_col, by = by, data = surv_data, ...)
+  gg_dta <- kaplan(interval = interval_col, censor = censor_col, by = by,
+                   data = surv_data, ...)
+  .set_provenance(gg_dta, object)
 }
 
 #' @rdname gg_survival

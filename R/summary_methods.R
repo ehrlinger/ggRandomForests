@@ -79,18 +79,42 @@ summary.gg_variable <- function(object, ...) {
 # Internal: shared partial-summary body builder.
 .partial_body <- function(x) {
   nvar_cont <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
-    length(unique(x$continuous$variable))
+    length(unique(x$continuous$name))
   } else 0L
   nvar_cat  <- if (is.data.frame(x$categorical) && nrow(x$categorical) > 0) {
-    length(unique(x$categorical$variable))
+    length(unique(x$categorical$name))
   } else 0L
-  yhat_rng  <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
+  yhat_rng  <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0 &&
+                   "yhat" %in% names(x$continuous)) {
     sprintf("yhat range: [%.4g, %.4g]",
             min(x$continuous$yhat, na.rm = TRUE),
             max(x$continuous$yhat, na.rm = TRUE))
   } else NULL
   c(sprintf("continuous: %d, categorical: %d", nvar_cont, nvar_cat),
     yhat_rng)
+}
+
+.partialpro_body <- function(x) {
+  nvar_cont <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
+    length(unique(x$continuous$name))
+  } else 0L
+  nvar_cat  <- if (is.data.frame(x$categorical) && nrow(x$categorical) > 0) {
+    length(unique(x$categorical$name))
+  } else 0L
+  # gg_partialpro has parametric / nonparametric / causal columns, not yhat.
+  rng_lines <- NULL
+  if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
+    for (col in c("parametric", "nonparametric", "causal")) {
+      if (col %in% names(x$continuous)) {
+        vals <- x$continuous[[col]]
+        rng_lines <- c(rng_lines,
+          sprintf("%s range: [%.4g, %.4g]",
+                  col, min(vals, na.rm = TRUE), max(vals, na.rm = TRUE)))
+      }
+    }
+  }
+  c(sprintf("continuous: %d, categorical: %d", nvar_cont, nvar_cat),
+    rng_lines)
 }
 
 #' @export
@@ -105,7 +129,7 @@ summary.gg_partial_rfsrc <- function(object, ...) {
 
 #' @export
 summary.gg_partialpro <- function(object, ...) {
-  .summary_skel(object, "gg_partialpro", .partial_body(object))
+  .summary_skel(object, "gg_partialpro", .partialpro_body(object))
 }
 
 #' @export

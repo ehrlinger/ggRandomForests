@@ -28,6 +28,14 @@ test_that("provenance attribute is attached by every constructor", {
   expect_equal(attr(gg_roc(f$cls, which_outcome = 1),
                     "provenance")$source, "randomForestSRC")
   expect_equal(attr(gg_brier(f$srv),    "provenance")$source, "randomForestSRC")
+  # gg_survival from a forest object should carry provenance.
+  expect_equal(attr(gg_survival(f$srv), "provenance")$source, "randomForestSRC")
+  # gg_partial objects come from plot.variable output, not a forest directly;
+  # they do not carry provenance — confirm the attribute is absent (not NA).
+  part_dta <- randomForestSRC::plot.variable(f$reg, partial = TRUE,
+                                              xvar.names = "Wind")
+  gp <- gg_partial(part_dta)
+  expect_null(attr(gp, "provenance"))
 })
 
 test_that("print methods return their input invisibly and emit a header", {
@@ -49,10 +57,29 @@ test_that("print methods return their input invisibly and emit a header", {
   expect_print_header(gg_survival(interval = "days", censor = "status",
                                   data = pbc))
   expect_print_header(gg_brier(f$srv))
+
+  # Partial classes — header includes variable counts.
+  part_dta <- randomForestSRC::plot.variable(f$reg, partial = TRUE,
+                                              xvar.names = "Wind")
+  expect_print_header(gg_partial(part_dta))
+  expect_print_header(gg_partial_rfsrc(f$reg, xvar.names = "Wind"))
+})
+
+test_that("print.gg_partial uses 'name' column (not 'variable')", {
+  f <- setup_forests()
+  part_dta <- randomForestSRC::plot.variable(f$reg, partial = TRUE,
+                                              xvar.names = c("Wind", "Temp"))
+  gp <- gg_partial(part_dta)
+  out <- capture.output(print(gp))
+  # Should report 2 continuous predictors (Wind and Temp both numeric in airquality).
+  expect_match(out[1], "continuous: [12]")
 })
 
 test_that("summary methods return summary.gg objects that print cleanly", {
   f <- setup_forests()
+
+  part_dta <- randomForestSRC::plot.variable(f$reg, partial = TRUE,
+                                              xvar.names = "Wind")
 
   for (obj in list(
     gg_error(f$cls),
@@ -64,7 +91,9 @@ test_that("summary methods return summary.gg objects that print cleanly", {
       data(pbc, package = "randomForestSRC", envir = environment())
       gg_survival(interval = "days", censor = "status", data = pbc)
     },
-    gg_brier(f$srv)
+    gg_brier(f$srv),
+    gg_partial(part_dta),
+    gg_partial_rfsrc(f$reg, xvar.names = "Wind")
   )) {
     s <- summary(obj)
     expect_s3_class(s, "summary.gg")

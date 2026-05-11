@@ -36,10 +36,10 @@ print.gg_variable <- function(x, ...) {
 #' @export
 print.gg_partial <- function(x, ...) {
   nvar_cont <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
-    length(unique(x$continuous$variable))
+    length(unique(x$continuous$name))
   } else 0L
   nvar_cat  <- if (is.data.frame(x$categorical) && nrow(x$categorical) > 0) {
-    length(unique(x$categorical$variable))
+    length(unique(x$categorical$name))
   } else 0L
   cat(.gg_header(x, "gg_partial"),
       sprintf("  |  continuous: %d, categorical: %d", nvar_cont, nvar_cat),
@@ -50,10 +50,10 @@ print.gg_partial <- function(x, ...) {
 #' @export
 print.gg_partial_rfsrc <- function(x, ...) {
   nvar_cont <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
-    length(unique(x$continuous$variable))
+    length(unique(x$continuous$name))
   } else 0L
   nvar_cat  <- if (is.data.frame(x$categorical) && nrow(x$categorical) > 0) {
-    length(unique(x$categorical$variable))
+    length(unique(x$categorical$name))
   } else 0L
   cat(.gg_header(x, "gg_partial_rfsrc"),
       sprintf("  |  continuous: %d, categorical: %d", nvar_cont, nvar_cat),
@@ -64,10 +64,10 @@ print.gg_partial_rfsrc <- function(x, ...) {
 #' @export
 print.gg_partialpro <- function(x, ...) {
   nvar_cont <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
-    length(unique(x$continuous$variable))
+    length(unique(x$continuous$name))
   } else 0L
   nvar_cat  <- if (is.data.frame(x$categorical) && nrow(x$categorical) > 0) {
-    length(unique(x$categorical$variable))
+    length(unique(x$categorical$name))
   } else 0L
   cat(.gg_header(x, "gg_partialpro"),
       sprintf("  |  continuous: %d, categorical: %d", nvar_cont, nvar_cat),

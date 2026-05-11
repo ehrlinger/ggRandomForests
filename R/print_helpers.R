@@ -35,19 +35,15 @@
       }
     ))
   }
-  # Fallback (e.g. gg_survival.default fed a data.frame).
-  list(
-    source     = NA_character_,
-    family     = NA_character_,
-    ntree      = NA_integer_,
-    n          = NA_integer_,
-    xvar.names = character(0)
-  )
+  # Unknown / non-forest object — return NULL so callers can skip cleanly.
+  NULL
 }
 
 # Attach provenance to a gg_* object and return it unchanged.
+# Skips silently when .gg_provenance() returns NULL (non-forest input).
 .set_provenance <- function(x, object) {
-  attr(x, "provenance") <- .gg_provenance(object)
+  prov <- .gg_provenance(object)
+  if (!is.null(prov)) attr(x, "provenance") <- prov
   x
 }
 
@@ -69,6 +65,9 @@
     if (!is.na(ntree))  sprintf("ntree: %s", ntree),
     if (!is.na(n))      sprintf("n: %s", n)
   )
+  if (length(bits) == 0L) {
+    return(sprintf("<%s>", class_label))
+  }
   sprintf("<%s>  %s", class_label, paste(bits, collapse = "  |  "))
 }
 

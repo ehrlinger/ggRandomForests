@@ -113,6 +113,5 @@ gg_partial <- function(part_dta,
 
   result <- list(continuous = continuous, categorical = categorical)
   class(result) <- "gg_partial"
-  result <- .set_provenance(result, part_dta)
   return(result)
 }
