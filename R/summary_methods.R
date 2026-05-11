@@ -80,16 +80,22 @@ summary.gg_variable <- function(object, ...) {
 .partial_body <- function(x) {
   nvar_cont <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
     length(unique(x$continuous$name))
-  } else 0L
+  } else {
+    0L
+  }
   nvar_cat  <- if (is.data.frame(x$categorical) && nrow(x$categorical) > 0) {
     length(unique(x$categorical$name))
-  } else 0L
+  } else {
+    0L
+  }
   yhat_rng  <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0 &&
                    "yhat" %in% names(x$continuous)) {
     sprintf("yhat range: [%.4g, %.4g]",
             min(x$continuous$yhat, na.rm = TRUE),
             max(x$continuous$yhat, na.rm = TRUE))
-  } else NULL
+  } else {
+    NULL
+  }
   c(sprintf("continuous: %d, categorical: %d", nvar_cont, nvar_cat),
     yhat_rng)
 }
@@ -97,10 +103,14 @@ summary.gg_variable <- function(object, ...) {
 .partialpro_body <- function(x) {
   nvar_cont <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
     length(unique(x$continuous$name))
-  } else 0L
+  } else {
+    0L
+  }
   nvar_cat  <- if (is.data.frame(x$categorical) && nrow(x$categorical) > 0) {
     length(unique(x$categorical$name))
-  } else 0L
+  } else {
+    0L
+  }
   # gg_partialpro has parametric / nonparametric / causal columns, not yhat.
   rng_lines <- NULL
   if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
@@ -146,7 +156,8 @@ summary.gg_roc <- function(object, ...) {
 .gg_auc_trap <- function(x) {
   if (!all(c("fpr", "tpr") %in% names(x))) return(NA_real_)
   ord <- order(x$fpr)
-  fpr <- x$fpr[ord]; tpr <- x$tpr[ord]
+  fpr <- x$fpr[ord]
+  tpr <- x$tpr[ord]
   sum((fpr[-1] - fpr[-length(fpr)]) * (tpr[-1] + tpr[-length(tpr)])) / 2
 }
 
