@@ -16,6 +16,34 @@
   out
 }
 
+#' Summary methods for gg_* data objects
+#'
+#' Each \code{summary.gg_*()} method returns a \code{summary.gg} object
+#' containing a header line and per-class diagnostic statistics (OOB error
+#' curve, top VIMP variables, time range, integrated CRPS, etc.).
+#' \code{print.summary.gg()} renders the object to the console.
+#'
+#' @param object A \code{gg_*} data object.
+#' @param x A \code{summary.gg} object (for \code{print.summary.gg}).
+#' @param ... Not currently used.
+#'
+#' @return A \code{summary.gg} object (a list with \code{header} and
+#'   \code{body} character vectors), returned invisibly from
+#'   \code{print.summary.gg}.
+#'
+#' @seealso \code{\link{print.gg}}, \code{\link{autoplot.gg}}
+#'
+#' @examples
+#' set.seed(42)
+#' airq <- na.omit(airquality)
+#' rf <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50)
+#' summary(gg_error(rf))
+#' summary(gg_vimp(rf))
+#'
+#' @name summary.gg
+NULL
+
+#' @rdname summary.gg
 #' @export
 print.summary.gg <- function(x, ...) {
   cat(x$header, "\n", sep = "")
@@ -25,6 +53,7 @@ print.summary.gg <- function(x, ...) {
   invisible(x)
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_error <- function(object, ...) {
   err_cols <- setdiff(names(object), c("ntree", "train"))
@@ -44,6 +73,7 @@ summary.gg_error <- function(object, ...) {
   .summary_skel(object, "gg_error", body)
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_vimp <- function(object, ...) {
   top_n <- min(5L, nrow(object))
@@ -59,12 +89,14 @@ summary.gg_vimp <- function(object, ...) {
   .summary_skel(object, "gg_vimp", body)
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_rfsrc <- function(object, ...) {
   body <- c(sprintf("rows: %d, cols: %d", nrow(object), ncol(object)))
   .summary_skel(object, "gg_rfsrc", body)
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_variable <- function(object, ...) {
   resp <- intersect(c("yhat", "yvar"), names(object))
@@ -127,21 +159,25 @@ summary.gg_variable <- function(object, ...) {
     rng_lines)
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_partial <- function(object, ...) {
   .summary_skel(object, "gg_partial", .partial_body(object))
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_partial_rfsrc <- function(object, ...) {
   .summary_skel(object, "gg_partial_rfsrc", .partial_body(object))
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_partialpro <- function(object, ...) {
   .summary_skel(object, "gg_partialpro", .partialpro_body(object))
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_roc <- function(object, ...) {
   body <- c(
@@ -161,6 +197,7 @@ summary.gg_roc <- function(object, ...) {
   sum((fpr[-1] - fpr[-length(fpr)]) * (tpr[-1] + tpr[-length(tpr)])) / 2
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_survival <- function(object, ...) {
   body <- c(
@@ -172,6 +209,7 @@ summary.gg_survival <- function(object, ...) {
   .summary_skel(object, "gg_survival", body)
 }
 
+#' @rdname summary.gg
 #' @export
 summary.gg_brier <- function(object, ...) {
   crps <- attr(object, "crps_integrated")

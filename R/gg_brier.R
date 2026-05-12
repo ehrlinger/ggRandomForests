@@ -24,7 +24,7 @@
 #' @details Wraps \code{\link[randomForestSRC]{get.brier.survival}} and
 #' rebuilds the quartile decomposition + running CRPS from the returned
 #' \code{brier.matx} and \code{mort} components, mirroring the computation
-#' in \code{randomForestSRC:::plot.survival}. The Brier score uses
+#' in the internal \code{plot.survival} function of \pkg{randomForestSRC}. The Brier score uses
 #' inverse-probability-of-censoring weighting; the censoring distribution
 #' is estimated either by Kaplan-Meier (\code{cens.model = "km"}, the
 #' default) or by a separate censoring forest (\code{cens.model = "rfsrc"}).

@@ -22,7 +22,9 @@ object created from a \code{\link[randomForestSRC]{rfsrc}} object}
 
 \item{label}{Modify the legend label when gg_survival has stratified samples}
 
-\item{...}{not used}
+\item{...}{Additional arguments forwarded to \code{geom_step()}. When
+\code{alpha} is supplied it is passed to the step geom and a halved
+value is used for the ribbon overlay.}
 }
 \value{
 A \code{ggplot} object. The y-axis shows the chosen \code{type}
