@@ -411,9 +411,9 @@ md_pbc <- max.subtree(rfsrc_pbc)
 
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-function computes minimal depth for each variable. The threshold is 5.9,
-selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper,
-prothrombin.
+function computes minimal depth for each variable. The threshold is
+5.97, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
 `copper`, `prothrombin`, and `age`. We add `edema` (selected by the
@@ -748,7 +748,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.414078
+    #> [1] 1.404552
 
 ## Conclusion
 

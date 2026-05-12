@@ -52,18 +52,7 @@
   (`.gg_ribbon_fill = "steelblue"`) for single-series cases (KM/NA CIs,
   bootstrap CIs, `gg_brier` envelope); group-stratified ribbons keep
   their group-coloured fill. Statistical bounds unchanged — only
-  styling.
-- First-class `varPro` integration to restore the variable-selection
-  workflow that disappeared with `randomForestSRC::var.select.rfsrc()`.
-  Planned: `varPro` in `Suggests:` (or `Imports:`),
-  `gg_partialpro.varpro` S3 method, and a dedicated “Variable selection
-  with varPro” vignette. See
-  `Claude/Tasks/ggRandomForests v2.8.0 plan.md` (vault) for details.
-
-## ggRandomForests v2.7.2
-
-CRAN release: 2026-05-02
-
+  styling. ggRandomForests v2.7.2 =====================
 - Address CRAN reviewer (Benjamin Altmann) feedback on the v2.7.1
   resubmission:
   - Add methods references to `DESCRIPTION` (Breiman 2001 and Ishwaran
