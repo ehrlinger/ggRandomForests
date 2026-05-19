@@ -2,7 +2,7 @@ Package: ggRandomForests
 Version: 2.7.3.9000
 
 ggRandomForests v2.8.0 (development)
-===================================
+====================================
 * **Dependency modernization (breaking for scripts that relied on
   attachment).** `randomForestSRC` and `randomForest` moved from
   `Depends:` to `Imports:`; `varPro` added to `Imports:`; `igraph`
