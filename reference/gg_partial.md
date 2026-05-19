@@ -57,7 +57,7 @@ A named list with two elements:
 ## Build a small regression forest on the airquality dataset
 set.seed(42)
 airq <- na.omit(airquality)
-rf <- rfsrc(Ozone ~ ., data = airq, ntree = 50)
+rf <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50)
 
 ## Compute partial dependence via plot.variable (show.plots = FALSE to
 ## suppress the base-graphics output — we only want the data)

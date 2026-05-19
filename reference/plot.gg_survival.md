@@ -42,7 +42,10 @@ plot(
 
 - ...:
 
-  not used
+  Additional arguments forwarded to
+  [`geom_step()`](https://ggplot2.tidyverse.org/reference/geom_path.html).
+  When `alpha` is supplied it is passed to the step geom and a halved
+  value is used for the ribbon overlay.
 
 ## Value
 

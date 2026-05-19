@@ -76,7 +76,7 @@ for the area under the curve.
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
 
 # ROC for setosa
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)

@@ -92,7 +92,7 @@ Survival, Regression and Classification. R package version \>= 3.4.0.
 ## ------------------------------------------------------------
 ## -------- iris data
 set.seed(42)
-rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
 
 gg_dta <- gg_variable(rfsrc_iris)
 plot(gg_dta, xvar = "Sepal.Width")
@@ -114,7 +114,7 @@ plot(gg_dta,
 ## -------- air quality data
 # na.action = "na.impute" handles missing Ozone / Solar.R values
 set.seed(42)
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
+rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality,
                     na.action = "na.impute", ntree = 50)
 gg_dta <- gg_variable(rfsrc_airq)
 
@@ -157,7 +157,7 @@ plot(gg_dta, xvar = "Month", notch = TRUE)
 ## -------- veteran data
 data(veteran, package = "randomForestSRC")
 set.seed(42)
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., veteran,
+rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., veteran,
   nsplit = 10,
   ntree = 50
 )

@@ -104,7 +104,7 @@ Survival, Regression and Classification. R package version \>= 3.4.0.
 ## -------- iris data
 # Build a small classification forest (ntree=50 keeps example fast)
 set.seed(42)
-rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_iris)
 
 plot(gg_dta)
@@ -116,7 +116,7 @@ plot(gg_dta)
 ## -------- air quality data
 # na.action = "na.impute" handles missing Ozone / Solar.R values
 set.seed(42)
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
+rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality,
                     na.action = "na.impute", ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_airq)
 
@@ -125,7 +125,7 @@ plot(gg_dta)
 
 ## -------- mtcars data
 set.seed(42)
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_mtcars)
 
 plot(gg_dta)
@@ -138,7 +138,7 @@ plot(gg_dta)
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
 set.seed(42)
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 50)
+rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_veteran)
 plot(gg_dta)
 

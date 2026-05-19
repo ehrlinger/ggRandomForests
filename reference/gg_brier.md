@@ -70,11 +70,11 @@ The integrated CRPS (a single scalar matching
 Wraps
 [`get.brier.survival`](https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html)
 and rebuilds the quartile decomposition + running CRPS from the returned
-`brier.matx` and `mort` components, mirroring the computation in
-`randomForestSRC:::plot.survival`. The Brier score uses
-inverse-probability-of-censoring weighting; the censoring distribution
-is estimated either by Kaplan-Meier (`cens.model = "km"`, the default)
-or by a separate censoring forest (`cens.model = "rfsrc"`).
+`brier.matx` and `mort` components, mirroring the computation in the
+internal `plot.survival` function of randomForestSRC. The Brier score
+uses inverse-probability-of-censoring weighting; the censoring
+distribution is estimated either by Kaplan-Meier (`cens.model = "km"`,
+the default) or by a separate censoring forest (`cens.model = "rfsrc"`).
 
 ## References
 

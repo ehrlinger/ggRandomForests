@@ -1,6 +1,27 @@
 # Changelog
 
+## ggRandomForests v2.8.0 (development)
+
+- **Dependency modernization (breaking for scripts that relied on
+  attachment).** `randomForestSRC` and `randomForest` moved from
+  `Depends:` to `Imports:`; `igraph`, `callr`, and `varPro` added to
+  `Suggests:` (`varPro` graduates to `Imports:` later in the v2.8.0
+  development series, with the first varPro-integration component).
+  [`library(ggRandomForests)`](https://github.com/ehrlinger/ggRandomForests)
+  no longer attaches `randomForestSRC`/`randomForest` to the search
+  path. User scripts that called
+  [`rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)/[`randomForest()`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
+  unqualified after only
+  [`library(ggRandomForests)`](https://github.com/ehrlinger/ggRandomForests)
+  must now also
+  [`library(randomForestSRC)`](https://www.randomforestsrc.org/) /
+  [`library(randomForest)`](https://www.stat.berkeley.edu/~breiman/RandomForests/)
+  (or qualify the calls). All ggRandomForests functions are unaffected —
+  they fully qualify their dependencies.
+
 ## ggRandomForests v2.7.3
+
+CRAN release: 2026-05-12
 
 - [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md),
   [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md),

@@ -108,7 +108,7 @@ number of resamples is controlled by `bs.sample`.
 ## ------------------------------------------------------------
 ## -------- iris data
 set.seed(42)
-rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
 gg_dta <- gg_rfsrc(rfsrc_iris)
 plot(gg_dta)
 
@@ -122,7 +122,7 @@ plot(gg_dta)
 ## ------------------------------------------------------------
 
 ## -------- air quality data (regression)
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality,
+rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality,
                     na.action = "na.impute", ntree = 50)
 plot(gg_rfsrc(rfsrc_airq))
 
@@ -131,7 +131,7 @@ plot(gg_rfsrc(rfsrc_airq))
 if (requireNamespace("MASS", quietly = TRUE)) {
   data(Boston, package = "MASS")
   Boston$chas <- as.logical(Boston$chas)
-  rfsrc_boston <- rfsrc(medv ~ ., data = Boston, ntree = 50,
+  rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston, ntree = 50,
                         forest = TRUE, importance = TRUE,
                         tree.err = TRUE, save.memory = TRUE)
   plot(gg_rfsrc(rfsrc_boston))
@@ -143,13 +143,13 @@ if (requireNamespace("MASS", quietly = TRUE)) {
 
 
 ## -------- mtcars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
 plot(gg_rfsrc(rfsrc_mtcars))
 
 
 ## -------- veteran data (survival; with CI and group-by)
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran,
+rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
                        ntree = 50)
 plot(gg_rfsrc(rfsrc_veteran))
 

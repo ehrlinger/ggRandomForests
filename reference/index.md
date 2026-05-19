@@ -142,6 +142,31 @@ Standard R generics implemented for all gg\_\* data objects.
 
   `autoplot` methods for ggRandomForests data objects
 
+- [`print(`*`<gg_error>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_vimp>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_variable>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_partial>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_partial_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_partialpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  : Print methods for gg\_\* data objects
+
+- [`print(`*`<summary.gg>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_error>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_vimp>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_variable>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_partial>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_partial_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_partialpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  : Summary methods for gg\_\* data objects
+
 ## Utilities
 
 Helper functions used internally and by users.

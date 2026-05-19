@@ -11,6 +11,14 @@ building balanced conditioning intervals.
 ``` r
 
 library(randomForest)
+```
+
+    randomForest 4.7-1.2
+
+    Type rfNews() to see new features/changes/bug fixes.
+
+``` r
+
 set.seed(42)
 rf_iris <- randomForest(Species ~ ., data = iris, ntree = 200, keep.forest = TRUE)
 err_df <- ggRandomForests::gg_error(rf_iris, training = TRUE)

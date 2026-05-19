@@ -103,11 +103,6 @@ The following `gg_*` classes are supported:
 ``` r
 # \donttest{
 library(ggplot2)
-#> 
-#> Attaching package: ‘ggplot2’
-#> The following object is masked from ‘package:randomForest’:
-#> 
-#>     margin
 set.seed(42)
 rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
                               ntree = 50, importance = TRUE,
