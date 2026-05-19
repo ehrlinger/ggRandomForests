@@ -2,16 +2,18 @@
 # Asserts the Depends->Imports migration took effect and stays effective.
 
 test_that("DESCRIPTION Depends declares only the R version constraint", {
-  deps <- read.dcf("../../DESCRIPTION", fields = "Depends")[1, 1]
+  deps <- read.dcf(testthat::test_path("..", "..", "DESCRIPTION"),
+                    fields = "Depends")[1, 1]
   deps_pkgs <- trimws(strsplit(deps, ",")[[1]])
   # Every entry must be the R(>= x) constraint, not a package.
-  expect_true(all(grepl("^R\\b", deps_pkgs)),
+  expect_true(all(grepl("^R([[:space:]]|$)", deps_pkgs)),
               info = paste("Depends still attaches packages:", deps))
 })
 
 test_that("core extractors run without randomForestSRC/randomForest attached", {
   skip_if_not_installed("callr")
   skip_if_not_installed("randomForestSRC")
+  skip_if_not_installed("randomForest")
   skip_if_not_installed("ggRandomForests")
 
   out <- callr::r(function() {
