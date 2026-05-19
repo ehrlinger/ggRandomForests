@@ -22,7 +22,6 @@ Depends:
 Imports:
     randomForestSRC (>= 3.4.0),
     randomForest,
-    varPro,
     survival,
     parallel,
     tidyr,
@@ -46,6 +45,7 @@ Suggests:
     knitr,
     plotly,
     igraph,
-    callr
+    callr,
+    varPro
 VignetteBuilder: quarto
 RoxygenNote: 7.3.3
