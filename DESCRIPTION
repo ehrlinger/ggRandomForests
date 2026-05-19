@@ -1,8 +1,8 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 2.7.3
-Date: 2026-05-12
+Version: 2.7.3.9000
+Date: 2026-05-19
 Authors@R: person("John", "Ehrlinger",
   role = c("aut", "cre"),
   email = "john.ehrlinger@gmail.com")
@@ -18,10 +18,10 @@ Description: Graphic elements for exploring Random Forests using the
     <doi:10.1023/A:1010933404324> and Ishwaran, Kogalur, Blackstone, and
     Lauer (2008) <doi:10.1214/08-AOAS169>.
 Depends:
-    R (>= 4.4.0),
-    randomForestSRC (>= 3.4.0),
-    randomForest
+    R (>= 4.4.0)
 Imports:
+    randomForestSRC (>= 3.4.0),
+    randomForest,
     survival,
     parallel,
     tidyr,
@@ -43,6 +43,9 @@ Suggests:
     pkgdown,
     pkgload,
     knitr,
-    plotly
+    plotly,
+    igraph,
+    callr,
+    varPro
 VignetteBuilder: quarto
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.0.0

@@ -65,7 +65,7 @@
 #' ## ------------------------------------------------------------
 #' ## ------------- iris data
 #' ## You can build a randomForest
-#' rfsrc_iris <- rfsrc(Species ~ ., data = iris, tree.err = TRUE)
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, tree.err = TRUE)
 #'
 #' # Get a data.frame containing error rates
 #' gg_dta <- gg_error(rfsrc_iris)
@@ -88,7 +88,7 @@
 #' ## ------------------------------------------------------------
 #'
 #' ## ------------- airq data
-#' rfsrc_airq <- rfsrc(Ozone ~ .,
+#' rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ .,
 #'   data = airquality,
 #'   na.action = "na.impute", tree.err = TRUE,
 #' )
@@ -103,7 +103,7 @@
 #' ## ------------- Boston data
 #' data(Boston, package = "MASS")
 #' Boston$chas <- as.logical(Boston$chas)
-#' rfsrc_boston <- rfsrc(medv ~ .,
+#' rfsrc_boston <- randomForestSRC::rfsrc(medv ~ .,
 #'   data = Boston,
 #'   forest = TRUE,
 #'   importance = TRUE,
@@ -119,7 +119,7 @@
 #'
 #'
 #' ## ------------- mtcars data
-#' rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
+#' rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
 #'
 
 #' # Get a data.frame containing error rates
@@ -135,7 +135,7 @@
 #' ## ------------- veteran data
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRC")
-#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran,
+#' rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
 #'                        tree.err = TRUE)
 #'
 #' gg_dta <- gg_error(rfsrc_veteran)

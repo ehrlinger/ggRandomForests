@@ -54,7 +54,7 @@
 #' ## -------- iris data
 #' # Build a small classification forest (ntree=50 keeps example fast)
 #' set.seed(42)
-#' rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
 #'
 #' # ROC for setosa (outcome index 1)
 #' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)

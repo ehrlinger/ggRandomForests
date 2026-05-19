@@ -9,6 +9,8 @@
 [![active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/badges/latest/active.svg)
 
 [![R-CMD-check](https://github.com/ehrlinger/ggRandomForests/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ehrlinger/ggRandomForests/actions/workflows/R-CMD-check.yaml)
+[![lint](https://github.com/ehrlinger/ggRandomForests/actions/workflows/lint.yaml/badge.svg)](https://github.com/ehrlinger/ggRandomForests/actions/workflows/lint.yaml)
+[![pkgdown](https://github.com/ehrlinger/ggRandomForests/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/ehrlinger/ggRandomForests/actions/workflows/pkgdown.yaml)
 [![Codecov test coverage](https://codecov.io/gh/ehrlinger/ggRandomForests/graph/badge.svg)](https://app.codecov.io/gh/ehrlinger/ggRandomForests)
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11526.svg)](https://doi.org/10.5281/zenodo.11526)

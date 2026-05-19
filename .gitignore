@@ -37,6 +37,7 @@ vignettes/ggrfSurvival_cache/*
 tests/testthat/*.pdf
 
 tests/testthat/Rplots.pdf
+/Rplots.pdf
 vignettes/ggrfRegression.html
 vignettes/ggrfRegression.R
 docs

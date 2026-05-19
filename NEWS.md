@@ -1,5 +1,19 @@
 Package: ggRandomForests
-Version: 2.7.3
+Version: 2.7.3.9000
+
+ggRandomForests v2.8.0 (development)
+====================================
+* **Dependency modernization (breaking for scripts that relied on
+  attachment).** `randomForestSRC` and `randomForest` moved from
+  `Depends:` to `Imports:`; `igraph`, `callr`, and `varPro` added to
+  `Suggests:` (`varPro` graduates to `Imports:` later in the v2.8.0
+  development series, with the first varPro-integration component).
+  `library(ggRandomForests)` no longer attaches
+  `randomForestSRC`/`randomForest` to the search path. User scripts
+  that called `rfsrc()`/`randomForest()` unqualified after only
+  `library(ggRandomForests)` must now also `library(randomForestSRC)`
+  / `library(randomForest)` (or qualify the calls). All ggRandomForests
+  functions are unaffected — they fully qualify their dependencies.
 
 ggRandomForests v2.7.3
 ======================

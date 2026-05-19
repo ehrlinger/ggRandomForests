@@ -46,7 +46,7 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' rfsrc_iris <- rfsrc(Species ~ .,
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ .,
 #'   data = iris,
 #'   importance = TRUE
 #' )
@@ -58,7 +58,7 @@
 #' ## ------------------------------------------------------------
 #'
 #' ## -------- air quality data
-#' rfsrc_airq <- rfsrc(Ozone ~ ., airquality,
+#' rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality,
 #'   importance = TRUE
 #' )
 #' gg_dta <- gg_vimp(rfsrc_airq)
@@ -80,7 +80,7 @@
 #'
 #'
 #' ## -------- mtcars data
-#' rfsrc_mtcars <- rfsrc(mpg ~ .,
+#' rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ .,
 #'   data = mtcars,
 #'   importance = TRUE
 #' )
@@ -93,7 +93,7 @@
 #'
 #' ## -------- veteran data
 #' data(veteran, package = "randomForestSRC")
-#' rfsrc_veteran <- rfsrc(Surv(time, status) ~ .,
+#' rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ .,
 #'   data = veteran,
 #'   ntree = 100,
 #'   importance = TRUE

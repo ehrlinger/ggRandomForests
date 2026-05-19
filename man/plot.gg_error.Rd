@@ -38,7 +38,7 @@ from the \code{\link[randomForestSRC]{plot.rfsrc}} function.
 ## ------------------------------------------------------------
 ## ------------- iris data
 ## You can build a randomForest
-rfsrc_iris <- rfsrc(Species ~ ., data = iris,
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris,
   forest = TRUE,
   importance = TRUE,
   tree.err = TRUE,
@@ -67,7 +67,7 @@ plot(gg_dta)
 ## Regression example
 ## ------------------------------------------------------------
 ## ------------- airq data
-rfsrc_airq <- rfsrc(Ozone ~ .,
+rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ .,
   data = airquality,
   na.action = "na.impute",
   forest = TRUE,
@@ -86,7 +86,7 @@ plot(gg_dta)
 ## ------------- Boston data
 data(Boston, package = "MASS")
 Boston$chas <- as.logical(Boston$chas)
-rfsrc_boston <- rfsrc(medv ~ .,
+rfsrc_boston <- randomForestSRC::rfsrc(medv ~ .,
   data = Boston,
   forest = TRUE,
   importance = TRUE,
@@ -101,7 +101,7 @@ gg_dta <- gg_error(rfsrc_boston)
 plot(gg_dta)
 
 ## ------------- mtcars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars,
+rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars,
   importance = TRUE,
   save.memory = TRUE,
   forest = TRUE,
@@ -120,7 +120,7 @@ plot(gg_dta)
 ## ------------- veteran data
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., data = veteran,
+rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
                        tree.err = TRUE)
 
 gg_dta <- gg_error(rfsrc_veteran)
