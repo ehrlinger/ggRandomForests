@@ -14,7 +14,10 @@ test_that("core extractors run without randomForestSRC/randomForest attached", {
   skip_if_not_installed("callr")
   skip_if_not_installed("randomForestSRC")
   skip_if_not_installed("randomForest")
-  skip_if_not_installed("ggRandomForests")
+  skip_if_not(
+    "ggRandomForests" %in% rownames(installed.packages()),
+    "ggRandomForests not installed in a library; clean-session test runs under R CMD check"
+  )
 
   out <- callr::r(function() {
     # Load ggRandomForests WITHOUT attaching its former Depends.
