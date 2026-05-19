@@ -82,7 +82,7 @@
 #' ##
 #' ## ------------------------------------------------------------
 #'
-#' airq.obj <- rfsrc(Ozone ~ ., data = airquality)
+#' airq.obj <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality)
 #'
 #' ## partial effect for wind
 #' prt_dta <- gg_partial_rfsrc(airq.obj,

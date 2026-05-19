@@ -62,7 +62,7 @@
 #'
 #' @examples
 #' ## Taken from the gg_roc example
-#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
 #'
 #' gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
 #'   which_outcome = 1, oob = TRUE
@@ -71,7 +71,7 @@
 #'   which_outcome = 1, oob = FALSE
 #' )
 #'
-#' rf_iris <- randomForest(Species ~ ., data = iris)
+#' rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
 #' gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
 #'   which_outcome = 1
 #' )
@@ -215,7 +215,7 @@ calc_roc.randomForest <-
 #' @examples
 #' ##
 #' ## Taken from the gg_roc example
-#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
 #'
 #' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)
 #'

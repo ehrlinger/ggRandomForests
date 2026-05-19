@@ -58,7 +58,7 @@ The \code{gg_variable} function operates on a
 ## ------------------------------------------------------------
 ## -------- iris data
 set.seed(42)
-rfsrc_iris <- rfsrc(Species ~ ., data = iris, ntree = 50)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
 
 gg_dta <- gg_variable(rfsrc_iris)
 plot(gg_dta, xvar = "Sepal.Width")
@@ -79,7 +79,7 @@ plot(gg_dta, xvar = rfsrc_iris$xvar.names, panel = TRUE)
 ## ------------------------------------------------------------
 
 ## -------- air quality data
-rfsrc_airq <- rfsrc(Ozone ~ ., data = airquality, ntree = 50)
+rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality, ntree = 50)
 gg_dta <- gg_variable(rfsrc_airq)
 
 # an ordinal variable
@@ -92,7 +92,7 @@ plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
 plot(gg_dta, xvar = "Month", notch = TRUE)
 
 ## -------- motor trend cars data
-rfsrc_mtcars <- rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
 
 gg_dta <- gg_variable(rfsrc_mtcars)
 
@@ -128,7 +128,7 @@ if (requireNamespace("MASS", quietly = TRUE)) {
 
 ## -------- veteran data
 data(veteran, package = "randomForestSRC")
-rfsrc_veteran <- rfsrc(Surv(time, status) ~ ., veteran,
+rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., veteran,
   nsplit = 10,
   ntree = 50
 )

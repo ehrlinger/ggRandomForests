@@ -41,7 +41,7 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' rfsrc_iris <- rfsrc(Species ~ ., data = iris)
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
 #' gg_dta <- gg_vimp(rfsrc_iris)
 #' plot(gg_dta)
 #'
@@ -49,7 +49,7 @@
 #' ## regression example
 #' ## ------------------------------------------------------------
 #' ## -------- air quality data
-#' rfsrc_airq <- rfsrc(Ozone ~ ., airquality)
+#' rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality)
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
 #'
