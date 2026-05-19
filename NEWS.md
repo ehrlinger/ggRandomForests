@@ -5,7 +5,7 @@ ggRandomForests v2.8.0 (development)
 ====================================
 * **Dependency modernization (breaking for scripts that relied on
   attachment).** `randomForestSRC` and `randomForest` moved from
-  `Depends:` to `Imports:`; `igraph` and `varPro` added to
+  `Depends:` to `Imports:`; `igraph`, `callr`, and `varPro` added to
   `Suggests:` (`varPro` graduates to `Imports:` later in the v2.8.0
   development series, with the first varPro-integration component).
   `library(ggRandomForests)` no longer attaches
