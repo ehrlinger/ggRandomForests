@@ -375,3 +375,79 @@ test_that("plot.gg_variable regression renders a scatter with smooth", {
   p <- plot(gg, xvar = "Wind", smooth = FALSE)
   expect_layer_nonempty(p)
 })
+
+# ---------------------------------------------------------------------------
+# randomForest engine matrix (#82 / #80 / #81)
+# ---------------------------------------------------------------------------
+
+test_that("plot.gg_rfsrc randomForest classification renders", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  p <- plot(gg_rfsrc(rf))
+  expect_s3_class(p, "ggplot")
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_rfsrc randomForest regression renders", {
+  set.seed(42)
+  rf <- randomForest::randomForest(mpg ~ ., data = mtcars)
+  p <- plot(gg_rfsrc(rf))
+  expect_s3_class(p, "ggplot")
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_error randomForest classification renders", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  p <- plot(gg_error(rf))
+  expect_s3_class(p, "ggplot")
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_error randomForest regression renders without unknown-label warning", {
+  set.seed(42)
+  rf <- randomForest::randomForest(mpg ~ ., data = mtcars)
+  # #82 wart: plot.gg_error.R:244,248 apply color="Outcome" unconditionally
+  expect_no_warning(p <- plot(gg_error(rf)))
+  expect_s3_class(p, "ggplot")
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_vimp randomForest classification renders (formula + non-formula)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, importance = TRUE)
+  expect_layer_nonempty(plot(gg_vimp(rf)))
+  rf2 <- randomForest::randomForest(iris[, 1:4], iris$Species, importance = TRUE)
+  expect_layer_nonempty(plot(gg_vimp(rf2)))
+})
+
+test_that("plot.gg_vimp randomForest regression renders", {
+  set.seed(42)
+  rf <- randomForest::randomForest(mpg ~ ., data = mtcars, importance = TRUE)
+  expect_layer_nonempty(plot(gg_vimp(rf)))
+})
+
+test_that("plot.gg_variable randomForest default multi-xvar is a single object (#80)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  p <- plot(gg_variable(rf))                 # default xvar = all predictors
+  # #80: post-fix this is a single ggplot/patchwork, not a bare list
+  expect_true(inherits(p, "ggplot") || inherits(p, "patchwork"))
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_variable randomForest regression default multi-xvar is a single object (#80)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(mpg ~ ., data = mtcars)
+  p <- plot(gg_variable(rf))
+  expect_true(inherits(p, "ggplot") || inherits(p, "patchwork"))
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_roc randomForest classification renders (#81)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  p <- plot(gg_roc(rf, which_outcome = 1))
+  expect_s3_class(p, "ggplot")
+  expect_layer_nonempty(p)
+})
