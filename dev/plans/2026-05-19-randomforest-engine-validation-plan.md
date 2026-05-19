@@ -47,9 +47,11 @@ Expected: prints a `2.7.3.900x` value (baseline `2.7.3.9000`; could be higher if
 
 If `<CUR>` is `2.7.3.9000`, the new version is `2.7.3.9001`. Otherwise increment the 4th component by 1. Edit `DESCRIPTION` line 4 (`Version: <CUR>`) to `Version: <NEW>`. Edit `DESCRIPTION` `Date:` to today (`2026-05-19`).
 
-- [ ] **Step 3: Add the NEWS scaffold bullet**
+- [ ] **Step 3: Add the NEWS scaffold bullet AND sync the NEWS Version header**
 
-In `NEWS.md`, under the existing `ggRandomForests v2.8.0 (development)` heading, add (the detailed sub-bullets are filled in by Tasks 4–6/8):
+In `NEWS.md`:
+  (a) update line 2 `Version:` to match the new `DESCRIPTION` `Version:` (Phase 0 convention — `ggrandomforests.news()` reads this file, so the header must mirror DESCRIPTION; precedent: Phase 0 commit `92cf19c`). E.g. `Version: 2.7.3.9000` → `Version: <NEW>`.
+  (b) under the existing `ggRandomForests v2.8.0 (development)` heading, add (the detailed sub-bullets are filled in by Tasks 4–6/8):
 ```
 * **randomForest engine validation & repair (#82).** Fixes #80, #81
   and a `plot.gg_error` label wart; adds full randomForest regression
@@ -60,11 +62,11 @@ In `NEWS.md`, under the existing `ggRandomForests v2.8.0 (development)` heading,
 
 Run:
 ```bash
-R -q -e 'd<-read.dcf("DESCRIPTION"); stopifnot(grepl("^2\\.7\\.3\\.900[1-9]$", d[,"Version"])); cat("OK", d[,"Version"], "\n")'
+R -q -e 'd<-read.dcf("DESCRIPTION"); stopifnot(grepl("^2\\.7\\.3\\.900[1-9]$", d[,"Version"])); n<-readLines("NEWS.md"); stopifnot(n[2] == paste0("Version: ", d[,"Version"])); cat("OK", d[,"Version"], "\n")'
 git add DESCRIPTION NEWS.md
 git commit -m "chore: open 2.7.3.900x dev increment for randomForest validation (#82)"
 ```
-Expected: `OK 2.7.3.900x`. (Append `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>` to this and every commit in this plan.)
+Expected: `OK 2.7.3.900x`. (The added `n[2] == paste0("Version: ", ...)` assertion guards against forgetting Step 3(a) — the convention violation surfaced in the first execution of this task.) Append `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>` to this and every commit in this plan.
 
 ---
 
