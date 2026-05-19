@@ -2,8 +2,9 @@
 # Asserts the Depends->Imports migration took effect and stays effective.
 
 test_that("DESCRIPTION Depends declares only the R version constraint", {
-  deps <- read.dcf(testthat::test_path("..", "..", "DESCRIPTION"),
-                    fields = "Depends")[1, 1]
+  desc_path <- system.file("DESCRIPTION", package = "ggRandomForests")
+  if (!nzchar(desc_path)) desc_path <- testthat::test_path("..", "..", "DESCRIPTION")
+  deps <- read.dcf(desc_path, fields = "Depends")[1, 1]
   deps_pkgs <- trimws(strsplit(deps, ",")[[1]])
   # Every entry must be the R(>= x) constraint, not a package.
   expect_true(all(grepl("^R([[:space:]]|$)", deps_pkgs)),
