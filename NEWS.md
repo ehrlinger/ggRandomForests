@@ -3,6 +3,9 @@ Version: 2.7.3.9000
 
 ggRandomForests v2.8.0 (development)
 ====================================
+* **randomForest engine validation & repair (#82).** Fixes #80, #81
+  and a `plot.gg_error` label wart; adds full randomForest regression
+  coverage. See sub-items below.
 * **Dependency modernization (breaking for scripts that relied on
   attachment).** `randomForestSRC` and `randomForest` moved from
   `Depends:` to `Imports:`; `igraph`, `callr`, and `varPro` added to
