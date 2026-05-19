@@ -2,6 +2,10 @@
 # Asserts the Depends->Imports migration took effect and stays effective.
 
 test_that("DESCRIPTION Depends declares only the R version constraint", {
+  # system.file locates DESCRIPTION in installed contexts (R CMD check,
+  # installed-from-source) and via pkgload's shim under devtools::test.
+  # Fall back to the relative path for bare testthat::test_file on the
+  # source tree, where the package is not installed (system.file -> "").
   desc_path <- system.file("DESCRIPTION", package = "ggRandomForests")
   if (!nzchar(desc_path)) desc_path <- testthat::test_path("..", "..", "DESCRIPTION")
   deps <- read.dcf(desc_path, fields = "Depends")[1, 1]
