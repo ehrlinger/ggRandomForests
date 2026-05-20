@@ -58,6 +58,7 @@
 #' @importFrom ggplot2 .data ggplot aes geom_line geom_boxplot facet_wrap labs
 #' @importFrom tidyr pivot_longer all_of
 #' @importFrom patchwork wrap_plots
+#' @name plot.gg_partial_varpro
 #' @export
 plot.gg_partial_varpro <- function(x,
                                     type = c("parametric", "nonparametric",

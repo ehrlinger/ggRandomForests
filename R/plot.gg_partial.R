@@ -239,6 +239,7 @@ plot.gg_partial_rfsrc <- function(x, ...) {
 }
 
 #' @rdname plot.gg_partial_varpro
+#' @name plot.gg_partial_varpro
 #' @export
 plot.gg_partialpro <- function(x, type = c("parametric", "nonparametric",
                                             "causal"), ...) {

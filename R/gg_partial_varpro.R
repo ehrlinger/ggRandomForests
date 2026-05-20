@@ -16,9 +16,13 @@
 #' @param scale Character; controls y-axis labeling and (for survival)
 #'   the output type.  One of \code{"auto"} (default), \code{"mortality"},
 #'   \code{"rmst"}, \code{"surv"}, or \code{"chf"}.
-#' @param time Numeric; required when \code{scale = "rmst"} (the RMST
-#'   horizon \eqn{\tau}), and when \code{scale \%in\% c("surv","chf")} to
-#'   label the evaluation time point.
+#' @param time Numeric; the evaluation time point.  Required when
+#'   \code{scale = "rmst"} (the RMST horizon \eqn{\tau}).  Optional when
+#'   \code{scale \%in\% c("surv","chf")}: if supplied it is snapped to the
+#'   nearest value in \code{object\$rf\$time.interest} and used for both
+#'   computation and axis labeling; if \code{NULL}, three quartile time
+#'   points from \code{time.interest} are used (see
+#'   \code{\link{gg_partial_rfsrc}}).
 #' @param nvars Integer; number of variables (list elements) to process.
 #'   Defaults to all variables in \code{part_dta}.
 #' @param cat_limit Integer; variables with
