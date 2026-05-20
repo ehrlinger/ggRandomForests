@@ -153,3 +153,37 @@ test_that("gg_partial_varpro: categorical sex has n_obs * 2 rows", {
   sex_rows <- result$categorical[result$categorical$name == "sex", ]
   expect_equal(nrow(sex_rows), 30L * 2L)
 })
+
+## ── plot.gg_partial_varpro (A-path) ──────────────────────────────────────────
+test_that("plot.gg_partial_varpro: continuous-only returns ggplot", {
+  result <- gg_partial_varpro(make_mock_vpro_data(), nvars = 1)
+  gg <- plot(result)
+  expect_s3_class(gg, "ggplot")
+})
+
+test_that("plot.gg_partial_varpro: both cont + cat returns ggplot", {
+  result <- gg_partial_varpro(make_mock_vpro_data())
+  gg <- plot(result)
+  expect_s3_class(gg, "ggplot")
+})
+
+test_that("plot.gg_partial_varpro: type arg selects effect columns", {
+  result <- gg_partial_varpro(make_mock_vpro_data(), nvars = 1)
+  gg <- plot(result, type = "parametric")
+  expect_s3_class(gg, "ggplot")
+})
+
+test_that("plot.gg_partial_varpro: scale='mortality' → honest y-label", {
+  result <- gg_partial_varpro(make_mock_vpro_data(), nvars = 1,
+                               scale = "mortality")
+  gg <- plot(result)
+  expect_true(grepl("mortality|Ensemble|expected", gg$labels$y,
+                    ignore.case = TRUE))
+})
+
+test_that("plot.gg_partial_varpro: scale='rmst' with time → RMST y-label", {
+  result <- gg_partial_varpro(make_mock_vpro_data(), nvars = 1,
+                               scale = "rmst", time = 365)
+  gg <- plot(result)
+  expect_true(grepl("RMST|365", gg$labels$y))
+})
