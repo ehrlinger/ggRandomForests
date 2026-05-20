@@ -4,14 +4,16 @@
 \alias{plot.gg_varpro}
 \title{Plot a \code{gg_varpro} variable importance object}
 \usage{
-\method{plot}{gg_varpro}(x, type = c("z", "raw"), ...)
+\method{plot}{gg_varpro}(x, type, ...)
 }
 \arguments{
 \item{x}{A \code{gg_varpro} object from \code{\link{gg_varpro}}.}
 
-\item{type}{Character; \code{"z"} (default) displays the z-normalised
-importance scale.  \code{"raw"} displays raw per-tree importance and
-requires \code{local.std = FALSE} at extract time.}
+\item{type}{Character; controls the display scale.  When omitted,
+auto-detected from \code{provenance$local.std}: \code{"z"} if
+\code{local.std = TRUE} (the default), \code{"raw"} if
+\code{local.std = FALSE}.  Explicitly supplying a value that conflicts
+with the extract-time setting raises an error.}
 
 \item{...}{Not currently used.}
 }
@@ -29,9 +31,11 @@ the per-tree z-distribution; whiskers extend to the 5th and 95th
 percentiles.  This is \strong{not} a Tukey boxplot.  A mandatory plot
 caption states this explicitly.
 
-**\code{faithful = TRUE}:** Per-tree z-scores are overlaid as jittered
-semi-transparent points; the box is drawn at reduced opacity; a
-white-outlined filled dot marks the mean.
+**\code{faithful = TRUE}:** Per-tree values are overlaid as jittered
+semi-transparent points on the same scale as the boxplot (z-scale when
+\code{local.std = TRUE}, raw-scale when \code{local.std = FALSE}); the
+box is drawn at reduced opacity; a white-outlined filled dot marks the
+mean.
 
 **\code{conditional = TRUE}:** The conditional class-importance scores
 (\code{$conditional}) are shown as a faceted bar chart
