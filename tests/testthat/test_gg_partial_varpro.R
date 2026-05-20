@@ -187,3 +187,22 @@ test_that("plot.gg_partial_varpro: scale='rmst' with time → RMST y-label", {
   gg <- plot(result)
   expect_true(grepl("RMST|365", gg$labels$y))
 })
+
+## ── autoplot / print / summary ───────────────────────────────────────────────
+test_that("autoplot.gg_partial_varpro: returns ggplot", {
+  result <- gg_partial_varpro(make_mock_vpro_data())
+  expect_s3_class(ggplot2::autoplot(result), "ggplot")
+})
+
+test_that("print.gg_partial_varpro: returns x invisibly", {
+  result <- gg_partial_varpro(make_mock_vpro_data())
+  out <- capture.output(ret <- print(result))
+  expect_identical(ret, result)
+  expect_true(any(grepl("gg_partial_varpro", out)))
+})
+
+test_that("summary.gg_partial_varpro: returns summary.gg", {
+  result  <- gg_partial_varpro(make_mock_vpro_data())
+  s       <- summary(result)
+  expect_s3_class(s, "summary.gg")
+})

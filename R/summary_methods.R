@@ -174,7 +174,16 @@ summary.gg_partial_rfsrc <- function(object, ...) {
 #' @rdname summary.gg
 #' @export
 summary.gg_partialpro <- function(object, ...) {
-  .summary_skel(object, "gg_partialpro", .partialpro_body(object))
+  ## Deprecated-class shim.
+  class(object) <- c("gg_partial_varpro",
+                      setdiff(class(object), "gg_partialpro"))
+  summary.gg_partial_varpro(object, ...)
+}
+
+#' @rdname summary.gg
+#' @export
+summary.gg_partial_varpro <- function(object, ...) {
+  .summary_skel(object, "gg_partial_varpro", .partialpro_body(object))
 }
 
 #' @rdname summary.gg

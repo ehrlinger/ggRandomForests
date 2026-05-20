@@ -105,6 +105,14 @@ print.gg_partial_rfsrc <- function(x, ...) {
 #' @rdname print.gg
 #' @export
 print.gg_partialpro <- function(x, ...) {
+  ## Deprecated-class shim: re-dispatch to print.gg_partial_varpro.
+  class(x) <- c("gg_partial_varpro", setdiff(class(x), "gg_partialpro"))
+  print.gg_partial_varpro(x, ...)
+}
+
+#' @rdname print.gg
+#' @export
+print.gg_partial_varpro <- function(x, ...) {
   nvar_cont <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
     length(unique(x$continuous$name))
   } else {
@@ -115,8 +123,11 @@ print.gg_partialpro <- function(x, ...) {
   } else {
     0L
   }
-  cat(.gg_header(x, "gg_partialpro"),
+  prov  <- attr(x, "provenance")
+  scale <- if (!is.null(prov)) prov$scale %||% NA_character_ else NA_character_
+  cat(.gg_header(x, "gg_partial_varpro"),
       sprintf("  |  continuous: %d, categorical: %d", nvar_cont, nvar_cat),
+      if (!is.na(scale)) sprintf("  |  scale: %s", scale) else "",
       "\n", sep = "")
   invisible(x)
 }
