@@ -139,6 +139,8 @@ plot.gg_varpro <- function(x, type = c("z", "raw"), ...) {
 .plot_varpro_conditional <- function(x, prov) {
   ## Class-conditional z-scores as faceted bar chart.
   cond_df   <- x$conditional
+  ## Replace NA/NaN z with 0 to suppress geom_col remove_missing warnings
+  cond_df$z[!is.finite(cond_df$z)] <- 0
   cond_df$variable <- factor(cond_df$variable, levels = levels(x$imp$variable))
   cutoff    <- prov$cutoff %||% 0.79
 
