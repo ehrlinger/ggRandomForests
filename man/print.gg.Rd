@@ -13,6 +13,7 @@
 \alias{print.gg_roc}
 \alias{print.gg_survival}
 \alias{print.gg_brier}
+\alias{print.gg_varpro}
 \title{Print methods for gg_* data objects}
 \usage{
 \method{print}{gg_error}(x, ...)
@@ -36,6 +37,8 @@
 \method{print}{gg_survival}(x, ...)
 
 \method{print}{gg_brier}(x, ...)
+
+\method{print}{gg_varpro}(x, ...)
 }
 \arguments{
 \item{x}{A \code{gg_*} data object.}

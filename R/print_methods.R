@@ -158,3 +158,23 @@ print.gg_brier <- function(x, ...) {
   cat(.gg_header(x, "gg_brier"), suffix, "\n", sep = "")
   invisible(x)
 }
+
+#' @rdname print.gg
+#' @export
+print.gg_varpro <- function(x, ...) {
+  prov     <- attr(x, "provenance")
+  cutoff   <- if (!is.null(prov)) prov$cutoff   %||% 0.79 else 0.79
+  faithful <- if (!is.null(prov)) prov$faithful  %||% FALSE else FALSE
+  family   <- if (!is.null(prov)) prov$family    %||% NA_character_ else NA_character_
+  n_total  <- nrow(x$imp)
+  n_sel    <- sum(x$imp$selected, na.rm = TRUE)
+  cat(.gg_header(x, "gg_varpro"),
+      sprintf("  |  family: %s", family),
+      sprintf("  |  cutoff: %.2g", cutoff),
+      sprintf("  |  faithful: %s", faithful),
+      "\n",
+      sprintf("  %d of %d variables selected (z > %.2g)\n",
+              n_sel, n_total, cutoff),
+      sep = "")
+  invisible(x)
+}

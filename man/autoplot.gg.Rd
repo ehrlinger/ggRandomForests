@@ -13,6 +13,7 @@
 \alias{autoplot.gg_roc}
 \alias{autoplot.gg_survival}
 \alias{autoplot.gg_brier}
+\alias{autoplot.gg_varpro}
 \title{\code{autoplot} methods for \pkg{ggRandomForests} data objects}
 \usage{
 \method{autoplot}{gg_error}(object, ...)
@@ -36,6 +37,8 @@
 \method{autoplot}{gg_survival}(object, ...)
 
 \method{autoplot}{gg_brier}(object, ...)
+
+\method{autoplot}{gg_varpro}(object, ...)
 }
 \arguments{
 \item{object}{A \code{gg_*} data object (see Details).}
@@ -63,6 +66,7 @@ The following \code{gg_*} classes are supported:
   \item{\code{gg_partial_rfsrc}}{Partial dependence (via \code{partial.rfsrc})}
   \item{\code{gg_partial_varpro}}{Partial dependence (via \code{varPro})}
   \item{\code{gg_partialpro}}{Partial dependence via \code{varPro} (deprecated alias)}
+  \item{\code{gg_varpro}}{Variable importance from \code{varPro}}
   \item{\code{gg_roc}}{ROC curve}
   \item{\code{gg_survival}}{Survival / cumulative hazard curves}
   \item{\code{gg_brier}}{Time-resolved Brier score and CRPS}
