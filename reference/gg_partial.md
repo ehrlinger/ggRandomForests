@@ -46,6 +46,12 @@ A named list with two elements:
   data.frame with the same columns but with `x` as a factor, for
   low-cardinality / categorical variables
 
+## Note
+
+Partial-dependence extraction is \`randomForestSRC\`-only; there is no
+\`randomForest\` method (the \`randomForest\` package provides no
+comparable partial-dependence interface).
+
 ## See also
 
 [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)

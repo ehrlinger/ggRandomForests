@@ -105,6 +105,11 @@ estimates. It dispatches on the class of its first argument:
   (default) or
   [`nelson`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md).
 
+## Note
+
+Survival estimation is \`randomForestSRC\`-only; \`randomForest\` has no
+survival forest, so no \`randomForest\` method exists.
+
 ## See also
 
 [`kaplan`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)

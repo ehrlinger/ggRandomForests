@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,13 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.8.0" id="ggrandomforests-v280-development">ggRandomForests v2.8.0 (development)<a class="anchor" aria-label="anchor" href="#ggrandomforests-v280-development"></a></h2>
 <ul><li>
+<strong>randomForest engine validation &amp; repair (<a href="https://github.com/ehrlinger/ggRandomForests/issues/82" class="external-link">#82</a>).</strong> Fixes <a href="https://github.com/ehrlinger/ggRandomForests/issues/80" class="external-link">#80</a>, <a href="https://github.com/ehrlinger/ggRandomForests/issues/81" class="external-link">#81</a> and a <code>plot.gg_error</code> label wart; adds full randomForest regression coverage. See sub-items below.
+<ul><li>
+<code><a href="../reference/plot.gg_variable.html">plot.gg_variable()</a></code> now always returns a single <code>ggplot</code> (one variable) or a <code>patchwork</code> composite (multiple variables / default), never a bare list — consistent with the v2.7.3 <code>plot.gg_partial*</code> change. Previously a list was returned for multiple <code>xvar</code>, which broke <code>patchwork</code> / <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">autoplot()</a></code> / <code><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">layer_data()</a></code> composition (<a href="https://github.com/ehrlinger/ggRandomForests/issues/80" class="external-link">#80</a>).</li>
+<li>
+<code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code> / <code><a href="../reference/calc_roc.rfsrc.html">calc_roc()</a></code> for <code>randomForest</code> now compute a correct ROC from class probabilities (OOB votes by default, honoring <code>oob</code>) instead of a degenerate ~3-point curve; <code>which_outcome = "all"</code> (the default for <code>gg_roc(rf)</code>) returns a macro-averaged one-vs-rest ROC with no warning. The shared <code>.validate_which_outcome</code> helper and <code>calc_roc.rfsrc</code> are byte-unchanged — rfsrc behavior is preserved (<a href="https://github.com/ehrlinger/ggRandomForests/issues/81" class="external-link">#81</a>).</li>
+</ul></li>
+<li>
 <strong>Dependency modernization (breaking for scripts that relied on attachment).</strong> <code>randomForestSRC</code> and <code>randomForest</code> moved from <code>Depends:</code> to <code>Imports:</code>; <code>igraph</code>, <code>callr</code>, and <code>varPro</code> added to <code>Suggests:</code> (<code>varPro</code> graduates to <code>Imports:</code> later in the v2.8.0 development series, with the first varPro-integration component). <code><a href="https://github.com/ehrlinger/ggRandomForests" class="external-link">library(ggRandomForests)</a></code> no longer attaches <code>randomForestSRC</code>/<code>randomForest</code> to the search path. User scripts that called <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc()</a></code>/<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest()</a></code> unqualified after only <code><a href="https://github.com/ehrlinger/ggRandomForests" class="external-link">library(ggRandomForests)</a></code> must now also <code><a href="https://www.randomforestsrc.org/" class="external-link">library(randomForestSRC)</a></code> / <code><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/" class="external-link">library(randomForest)</a></code> (or qualify the calls). All ggRandomForests functions are unaffected — they fully qualify their dependencies.</li>
 </ul></div>
     <div class="section level2">

@@ -108,8 +108,6 @@ rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
                               ntree = 50, importance = TRUE,
                               tree.err = TRUE)
 autoplot(gg_error(rf))
-#> Ignoring unknown labels:
-#> • colour : "Outcome"
 
 autoplot(gg_vimp(rf))
 

@@ -17,7 +17,7 @@ is computed within each quartile and overall."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -136,6 +136,11 @@ in the internal <code>plot.survival</code> function of <span class="pkg">randomF
 inverse-probability-of-censoring weighting; the censoring distribution
 is estimated either by Kaplan-Meier (<code>cens.model = "km"</code>, the
 default) or by a separate censoring forest (<code>cens.model = "rfsrc"</code>).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>Brier score / CRPS is `randomForestSRC` survival-only; there
+  is no `randomForest` method.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

@@ -28,13 +28,26 @@ gg_roc(object, which_outcome, oob = TRUE, ...)
 
   Integer index or character name of the class for which the ROC curve
   is computed. For binary forests this is typically `1` or `2`; for
-  multi-class forests any valid class index. Use `which_outcome = 0` to
-  obtain the overall (averaged) ROC.
+  multi-class forests any valid class index or level name. The behaviour
+  of `which_outcome = "all"` or `0` is engine-specific:
+
+  `randomForest` method
+
+  :   Returns a macro-averaged one-vs-rest ROC computed over the
+      per-class probabilities.
+
+  `rfsrc` method
+
+  :   Currently warns and falls back to class 1 (the macro-average /
+      per-class faceting work for the `rfsrc` path is tracked separately
+      under issue \#72).
 
 - oob:
 
   Logical; if `TRUE` (default) use out-of-bag predicted probabilities
-  for the curve. Set to `FALSE` to use full in-bag predictions.
+  for the curve. Set to `FALSE` to use full in-bag predictions. For
+  `randomForest`, `oob = TRUE` uses out-of-bag vote probabilities
+  (`object$votes`); `FALSE` uses in-bag `predict(type = "prob")`.
 
 - ...:
 

@@ -76,6 +76,11 @@ uses inverse-probability-of-censoring weighting; the censoring
 distribution is estimated either by Kaplan-Meier (`cens.model = "km"`,
 the default) or by a separate censoring forest (`cens.model = "rfsrc"`).
 
+## Note
+
+Brier score / CRPS is \`randomForestSRC\` survival-only; there is no
+\`randomForest\` method.
+
 ## References
 
 Graf E., Schmoor C., Sauerbrei W., Schumacher M. (1999). Assessment and

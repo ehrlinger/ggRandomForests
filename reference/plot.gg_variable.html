@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,8 +119,13 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A single <code>ggplot</code> object when <code>length(xvar) == 1</code> or
-  <code>panel = TRUE</code>. Otherwise a named list of <code>ggplot</code> objects, one
-  per variable in <code>xvar</code>.</p>
+  <code>panel = TRUE</code>; otherwise a <code>patchwork</code> composite stacking
+  one panel per variable in <code>xvar</code>. Always a single plottable
+  object (never a bare list) so it composes naturally with
+  <code>patchwork</code> and dispatches through <code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">ggplot2::autoplot()</a></code>.
+  For the patchwork case, callers wanting to inspect a specific
+  panel with <code><a href="https://ggplot2.tidyverse.org/reference/ggplot_build.html" class="external-link">ggplot2::layer_data()</a></code> should extract that panel
+  first (e.g. <code>ggplot2::layer_data(p[[1]])</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

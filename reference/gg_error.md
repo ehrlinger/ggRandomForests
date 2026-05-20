@@ -110,8 +110,6 @@ gg_dta <- gg_error(rfsrc_airq)
 
 # Plot the gg_error object
 plot(gg_dta)
-#> Ignoring unknown labels:
-#> • colour : "Outcome"
 
 
 
@@ -131,8 +129,6 @@ gg_dta <- gg_error(rfsrc_boston)
 
 # Plot the gg_error object
 plot(gg_dta)
-#> Ignoring unknown labels:
-#> • colour : "Outcome"
 
 
 
@@ -144,8 +140,6 @@ gg_dta<- gg_error(rfsrc_mtcars)
 
 # Plot the gg_error object
 plot(gg_dta)
-#> Ignoring unknown labels:
-#> • colour : "Outcome"
 
 
 
@@ -160,8 +154,6 @@ rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
 
 gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)
-#> Ignoring unknown labels:
-#> • colour : "Outcome"
 
 
 ## ------------- pbc data
@@ -221,7 +213,5 @@ rfsrc_pbc <- randomForestSRC::rfsrc(
 
 gg_dta <- gg_error(rfsrc_pbc)
 plot(gg_dta)
-#> Ignoring unknown labels:
-#> • colour : "Outcome"
 
 ```

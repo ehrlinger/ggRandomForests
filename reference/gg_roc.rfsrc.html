@@ -13,7 +13,7 @@ randomForest object."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,16 +86,29 @@ rate) across all prediction thresholds for one class of a classification
 
 
 <dt id="arg-which-outcome">which_outcome<a class="anchor" aria-label="anchor" href="#arg-which-outcome"></a></dt>
-<dd><p>Integer index or character name of the class for which
-the ROC curve is computed. For binary forests this is typically <code>1</code>
-or <code>2</code>; for multi-class forests any valid class index. Use
-<code>which_outcome = 0</code> to obtain the overall (averaged) ROC.</p></dd>
+<dd><p>Integer index or character name of the class for
+which the ROC curve is computed. For binary forests this is typically
+<code>1</code> or <code>2</code>; for multi-class forests any valid class index or
+level name. The behaviour of <code>which_outcome = "all"</code> or <code>0</code>
+is engine-specific:</p><dl><dt><code>randomForest</code> method</dt>
+<dd><p>Returns a macro-averaged
+    one-vs-rest ROC computed over the per-class probabilities.</p></dd>
+
+  <dt><code>rfsrc</code> method</dt>
+<dd><p>Currently warns and falls back to
+    class 1 (the macro-average / per-class faceting work for the
+    <code>rfsrc</code> path is tracked separately under issue #72).</p></dd>
+
+
+</dl></dd>
 
 
 <dt id="arg-oob">oob<a class="anchor" aria-label="anchor" href="#arg-oob"></a></dt>
 <dd><p>Logical; if <code>TRUE</code> (default) use out-of-bag predicted
 probabilities for the curve. Set to <code>FALSE</code> to use full in-bag
-predictions.</p></dd>
+predictions. For <code>randomForest</code>, <code>oob = TRUE</code> uses out-of-bag
+vote probabilities (<code>object$votes</code>); <code>FALSE</code> uses in-bag
+<code>predict(type = "prob")</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
