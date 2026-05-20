@@ -216,3 +216,36 @@ test_that("calc_roc", {
   expect_true(auc > .9)
   expect_true(auc <= 1)
 })
+
+# ---------------------------------------------------------------------------
+# randomForest ROC correctness (#81) + rfsrc no-change characterization
+# ---------------------------------------------------------------------------
+
+test_that("gg_roc randomForest: separable class AUC ~ 1 and many thresholds (#81)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  setosa <- which(levels(iris$Species) == "setosa")
+  g <- gg_roc(rf, which_outcome = setosa)
+  expect_s3_class(g, "gg_roc")
+  expect_gt(nrow(g), nlevels(iris$Species))      # not the degenerate ~3-row curve
+  expect_gt(calc_auc(g), 0.98)                    # setosa is separable
+})
+
+test_that("gg_roc randomForest default is macro-average, many points, no warning (#81)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  expect_no_warning(g <- gg_roc(rf))              # was: 'Must specify which_outcome'
+  expect_s3_class(g, "gg_roc")
+  expect_gt(nrow(g), nlevels(iris$Species))
+  expect_gt(calc_auc(g), 0.5)
+})
+
+test_that("calc_roc.rfsrc output is unchanged for an explicit which_outcome (guard)", {
+  set.seed(42)
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
+  g <- gg_roc(rfsrc_iris, which_outcome = 1)
+  expect_s3_class(g, "gg_roc")
+  expect_equal(ncol(g), 3L)                       # sens, spec, pct (existing contract)
+  expect_true(all(c("sens", "spec", "pct") %in% colnames(g)))
+  expect_gte(calc_auc(g), 0.9)                    # rfsrc iris setosa-vs-rest stays strong
+})

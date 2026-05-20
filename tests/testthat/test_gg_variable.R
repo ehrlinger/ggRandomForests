@@ -37,11 +37,8 @@ test_that("gg_variable classifications", {
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_variable(gg_dta, xvar = rfsrc_iris$xvar.names)
 
-  # Test return is s ggplot object
-  expect_type(gg_plt, "list")
-  expect_equal(length(gg_plt), length(rfsrc_iris$xvar.names))
-  for (ind in seq_along(rfsrc_iris$xvar.names))
-    expect_s3_class(gg_plt[[ind]], "ggplot")
+  # Test return is a single plottable object (patchwork composite or ggplot)
+  expect_true(inherits(gg_plt, "patchwork") || inherits(gg_plt, "ggplot"))
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_variable(gg_dta, xvar = rfsrc_iris$xvar.names,
                              panel = TRUE)
@@ -105,11 +102,8 @@ test_that("gg_variable regression", {
   ## Test plotting the gg_error object
   gg_plt <- plot.gg_variable(gg_dta)
 
-  # Test return is s ggplot object
-  expect_type(gg_plt, "list")
-  expect_equal(length(gg_plt), length(rfsrc_boston$xvar.names))
-  for (ind in seq_along(rfsrc_boston$xvar.names))
-    expect_s3_class(gg_plt[[ind]], "ggplot")
+  # Test return is a single plottable object (patchwork composite or ggplot)
+  expect_true(inherits(gg_plt, "patchwork") || inherits(gg_plt, "ggplot"))
 
 
   ## Test plotting the gg_error object
@@ -190,10 +184,9 @@ test_that("gg_variable survival: multiple times, single variable facets", {
   gg_plt <- plot(gg_dta, xvar = "age")
   expect_s3_class(gg_plt, "ggplot")
 
-  # Multiple xvars → returns a list
+  # Multiple xvars → returns a single plottable object (patchwork composite)
   gg_plt2 <- plot(gg_dta, xvar = c("age", "diagtime"))
-  expect_type(gg_plt2, "list")
-  expect_s3_class(gg_plt2[[1]], "ggplot")
+  expect_true(inherits(gg_plt2, "patchwork") || inherits(gg_plt2, "ggplot"))
 })
 
 test_that("gg_variable survival: multiple times, panel plot", {
@@ -359,7 +352,6 @@ test_that("plot.gg_variable: missing xvar returns list for all predictors", {
 
   gg_dta <- gg_variable(rfsrc_boston)
   gg_plt <- plot(gg_dta)
-  expect_type(gg_plt, "list")
-  expect_gt(length(gg_plt), 0)
-  expect_s3_class(gg_plt[[1]], "ggplot")
+  # Returns a single plottable object (patchwork composite for multiple predictors)
+  expect_true(inherits(gg_plt, "patchwork") || inherits(gg_plt, "ggplot"))
 })

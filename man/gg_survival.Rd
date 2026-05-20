@@ -82,6 +82,10 @@ survival estimates.  It dispatches on the class of its first argument:
     either \code{\link{kaplan}} (default) or \code{\link{nelson}}.}
 }
 }
+\note{
+Survival estimation is `randomForestSRC`-only; `randomForest`
+  has no survival forest, so no `randomForest` method exists.
+}
 \examples{
 ## -------- pbc data (default method — raw data columns)
 data(pbc, package = "randomForestSRC")

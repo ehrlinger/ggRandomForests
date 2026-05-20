@@ -72,10 +72,12 @@
 #' )
 #'
 #' rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
-#' gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
+#' # randomForest stores the response in $y (rfsrc uses $yvar); pass the
+#' # original training factor so calc_roc has the class labels.
+#' gg_dta <- calc_roc(rf_iris, iris$Species,
 #'   which_outcome = 1
 #' )
-#' gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
+#' gg_dta <- calc_roc(rf_iris, iris$Species,
 #'   which_outcome = 2
 #' )
 #'
@@ -149,49 +151,126 @@ calc_roc <- function(object,
   UseMethod("calc_roc", object)
 }
 
-## This is in development still.
+## randomForest ROC: OOB vote probabilities by default; macro-average for
+## the overall ("all"/0) case. Does NOT use the shared
+## .validate_which_outcome (rfsrc path unchanged). See #81.
+##
+## The body is intentionally thin: heavy logic lives in unexported
+## helpers (.rf_prob_matrix, .normalize_which_outcome, .rf_one_class_roc,
+## .rf_macro_average_roc) to keep cyclomatic complexity under the
+## lintr cyclocomp_linter threshold and to make each step testable in
+## isolation.
+
+# Build the per-class probability matrix used by the ROC sweep:
+#   oob = TRUE  -> object$votes (OOB class proportions; honest)
+#   else        -> predict(object, type = "prob") (in-bag)
+# randomForest votes can be raw counts; row-normalise to probabilities.
+.rf_prob_matrix <- function(object, oob, lvls) {
+  prob <- if (isTRUE(oob) && !is.null(object$votes)) {
+    as.matrix(object$votes)
+  } else {
+    stats::predict(object, type = "prob")
+  }
+  rs <- rowSums(prob)
+  if (any(rs > 1 + 1e-8, na.rm = TRUE)) {
+    prob <- prob / rs
+  }
+  colnames(prob) <- lvls
+  prob
+}
+
+# Coerce/validate which_outcome. Returns either the string "all" (for
+# the overall macro-average case) or a single integer class index.
+# Accepts: "all", numeric == 0 (handles 0 and 0L), character class
+# names (matched against lvls), integer/double indices in 1:nlvls.
+# Errors on unknown class names or out-of-range indices.
+.normalize_which_outcome <- function(which_outcome, lvls) {
+  if (is.character(which_outcome) && !identical(which_outcome, "all")) {
+    idx <- match(which_outcome, lvls)
+    if (anyNA(idx)) {
+      stop("Unknown class name(s) in which_outcome: ",
+           paste(which_outcome[is.na(idx)], collapse = ", "),
+           ". Must be one of: ", paste(lvls, collapse = ", "))
+    }
+    return(idx)
+  }
+  if (is.numeric(which_outcome) && length(which_outcome) == 1L &&
+      which_outcome == 0) {
+    return("all")
+  }
+  if (is.numeric(which_outcome) &&
+      (any(which_outcome < 1) || any(which_outcome > length(lvls)))) {
+    stop("which_outcome out of range; must be in 1:", length(lvls),
+         ' or "all" / 0.')
+  }
+  which_outcome
+}
+
+# Build the sensitivity/specificity table for a single class index k.
+# Plain lapply (not mclapply) — per-threshold work is a single table()
+# + a few arithmetic ops (microseconds); fork overhead would dominate,
+# and the closure-scope fragility caused the earlier xtabs/Windows
+# failure. Returns a data.frame with columns sens, spec, pct.
+.rf_one_class_roc <- function(dta, prob, k, lvls) {
+  res <- dta == lvls[k]
+  score <- prob[, k]
+  pct <- sort(unique(score))
+  if (length(pct) > 1) pct <- pct[-length(pct)]
+  if (length(pct) > 200) {
+    pct <- pct[seq(1, length(pct), length.out = 200)]
+  }
+  rc <- lapply(pct, function(crit) {
+    tbl <- table(res, score > crit)
+    if (ncol(tbl) < 2) {
+      tbl <- cbind(tbl, c(0, 0))
+      colnames(tbl) <- c("FALSE", "TRUE")
+    }
+    spec <- tbl[2, 2] / rowSums(tbl)[2]
+    sens <- tbl[1, 1] / rowSums(tbl)[1]
+    cbind(sens = sens, spec = spec)
+  })
+  rc <- do.call(rbind, rc)
+  rc <- rbind(c(0, 1), rc, c(1, 0))
+  data.frame(rc, pct = c(0, pct, 1), row.names = seq_len(nrow(rc)))
+}
+
+# Macro-average one-vs-rest ROC on a shared FPR grid.
+.rf_macro_average_roc <- function(dta, prob, lvls) {
+  curves <- lapply(seq_along(lvls),
+                   function(k) .rf_one_class_roc(dta, prob, k, lvls))
+  grid <- seq(0, 1, length.out = 200)
+  interp <- vapply(curves, function(cv) {
+    cv <- cv[order(cv$spec, decreasing = TRUE), ]
+    stats::approx(1 - cv$spec, cv$sens, xout = grid,
+                  ties = "ordered", rule = 2)$y
+  }, numeric(length(grid)))
+  data.frame(
+    sens = rowMeans(interp, na.rm = TRUE),
+    spec = 1 - grid,
+    pct  = grid,
+    row.names = seq_along(grid)
+  )
+}
+
 #' @export
 calc_roc.randomForest <-
   function(object,
            dta,
-           which_outcome = 1,
-           oob = FALSE,
+           which_outcome = "all",
+           oob = TRUE,
            ...) {
-    prd <- predict(object, type = "prob")
-
-    which_outcome <- .validate_which_outcome(which_outcome)
-    dta_roc <-
-      data.frame(cbind(res = (dta == levels(dta)[which_outcome]), prd = prd))
-
-    pct <- sort(unique(prd[[which_outcome]]))
-
-    # Make sure we don't have to many points... if the training set was large,
-    # This may break plotting all ROC curves in multiclass settings.
-    # Arbitrarily reduce this to only include 200 points along the curve
-    if (length(pct) > 200) {
-      pct <- pct[seq(1, length(pct), length.out = 200)]
+    if (!is.factor(dta)) {
+      dta <- factor(dta)
     }
+    lvls <- levels(dta)
+    prob <- .rf_prob_matrix(object, oob, lvls)
+    which_outcome <- .normalize_which_outcome(which_outcome, lvls)
 
-    gg_dta <- parallel::mclapply(pct, function(crit) {
-      tmp <- dta_roc[, c(1, 1 + which_outcome)]
-      colnames(tmp) <- c("res", "prd")
-      tbl <- xtabs(~ res + (prd > crit), tmp)
-
-      if (dim(tbl)[2] < 2) {
-        tbl <- cbind(tbl, c(0, 0))
-        colnames(tbl) <- c("FALSE", "TRUE")
-      }
-      spec <- tbl[2, 2] / rowSums(tbl)[2]
-      sens <- tbl[1, 1] / rowSums(tbl)[1]
-
-      cbind(sens = sens, spec = spec)
-    })
-
-    gg_dta <- do.call(rbind, gg_dta)
-    gg_dta <- rbind(c(0, 1), gg_dta, c(1, 0))
-
-    gg_dta <- data.frame(gg_dta, row.names = seq_len(nrow(gg_dta)))
-    gg_dta$pct <- c(0, pct, 1)
+    gg_dta <- if (identical(which_outcome, "all")) {
+      .rf_macro_average_roc(dta, prob, lvls)
+    } else {
+      .rf_one_class_roc(dta, prob, which_outcome, lvls)
+    }
     invisible(gg_dta)
   }
 

@@ -91,6 +91,8 @@
 #'   ggplot2::geom_line()
 #' }
 #'
+#' @note Brier score / CRPS is `randomForestSRC` survival-only; there
+#'   is no `randomForest` method.
 #' @importFrom stats quantile
 #' @export
 gg_brier <- function(object, ...) {

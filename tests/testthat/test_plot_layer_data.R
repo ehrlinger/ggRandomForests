@@ -14,8 +14,17 @@
 Surv <- survival::Surv  # nolint: object_name_linter
 
 # Helper: number of rows ggplot2 would actually render for a given layer.
+# Accepts either a `ggplot` or a `patchwork` composite — for a patchwork,
+# introspect the first sub-plot (patchwork supports `[[` to extract panels).
+# Needed since #80: `plot.gg_variable()` returns a patchwork for multi-xvar.
 expect_layer_nonempty <- function(p, layer = 1L, label = NULL) {
-  testthat::expect_s3_class(p, "ggplot")
+  testthat::expect_s3_class(p, c("ggplot", "patchwork"))
+  if (inherits(p, "patchwork")) {
+    # Patchworks also inherit from "ggplot" but layer_data() fails on the
+    # composite — extract the first sub-plot for introspection.
+    sub <- tryCatch(p[[1]], error = function(e) NULL)
+    if (inherits(sub, "ggplot") && !inherits(sub, "patchwork")) p <- sub
+  }
   ld <- ggplot2::layer_data(p, layer)
   testthat::expect_true(
     nrow(ld) > 0,
@@ -373,5 +382,101 @@ test_that("plot.gg_variable regression renders a scatter with smooth", {
                                na.action = "na.impute", ntree = 50)
   gg <- gg_variable(rf)
   p <- plot(gg, xvar = "Wind", smooth = FALSE)
+  expect_layer_nonempty(p)
+})
+
+# ---------------------------------------------------------------------------
+# randomForest engine matrix (#82 / #80 / #81)
+# ---------------------------------------------------------------------------
+
+test_that("plot.gg_rfsrc randomForest classification renders", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  p <- plot(gg_rfsrc(rf))
+  expect_s3_class(p, "ggplot")
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_rfsrc randomForest regression renders", {
+  set.seed(42)
+  rf <- randomForest::randomForest(mpg ~ ., data = mtcars)
+  p <- plot(gg_rfsrc(rf))
+  expect_s3_class(p, "ggplot")
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_error randomForest classification renders", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  p <- plot(gg_error(rf))
+  expect_s3_class(p, "ggplot")
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_error randomForest regression has no stray colour label (#82 wart)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(mpg ~ ., data = mtcars)
+  p <- plot(gg_error(rf))
+  expect_s3_class(p, "ggplot")
+  expect_layer_nonempty(p)
+  # #82 wart: plot.gg_error.R:244,248 apply labs(color="Outcome") even on
+  # the regression / single-outcome path where no colour aesthetic is
+  # mapped — which produces "Ignoring unknown labels: colour Outcome" at
+  # build time. ggplot2 emits that warning once-per-session (cli .freq =
+  # "once"), so warning-based detection is unreliable inside a long
+  # test_file. Assert STRUCTURALLY: if a colour label is set, a colour
+  # aesthetic must be mapped somewhere in the plot.
+  has_colour_aes <- "colour" %in% names(p$mapping) ||
+    any(vapply(p$layers, function(l) "colour" %in% names(l$mapping),
+               logical(1)))
+  if (!is.null(p$labels$colour)) {
+    expect_true(has_colour_aes,
+                info = "plot.gg_error set labs(colour=) without a mapped colour aesthetic")
+  }
+})
+
+test_that("plot.gg_vimp randomForest classification renders (formula + non-formula)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, importance = TRUE)
+  expect_layer_nonempty(plot(gg_vimp(rf)))
+  rf2 <- randomForest::randomForest(iris[, 1:4], iris$Species, importance = TRUE)
+  expect_layer_nonempty(plot(gg_vimp(rf2)))
+})
+
+test_that("plot.gg_vimp randomForest regression renders", {
+  set.seed(42)
+  rf <- randomForest::randomForest(mpg ~ ., data = mtcars, importance = TRUE)
+  expect_layer_nonempty(plot(gg_vimp(rf)))
+})
+
+test_that("plot.gg_variable randomForest default multi-xvar is a single object (#80)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  p <- plot(gg_variable(rf))                 # default xvar = all predictors
+  # #80: post-fix this is a single ggplot/patchwork, not a bare list
+  expect_true(inherits(p, "ggplot") || inherits(p, "patchwork"))
+  # Structural check only — layer_data on the iris-classification sub-plots
+  # fails because per-variable `geom_smooth` over multi-class `yhat.*` can't
+  # compute `stat_smooth` (separate pre-existing classification quirk,
+  # logged as a follow-up under #82). The #80 invariant is the contract:
+  # a single composable object, with >1 sub-plot for default multi-xvar.
+  if (inherits(p, "patchwork")) {
+    expect_gt(length(p), 1L)
+  }
+})
+
+test_that("plot.gg_variable randomForest regression default multi-xvar is a single object (#80)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(mpg ~ ., data = mtcars)
+  p <- plot(gg_variable(rf))
+  expect_true(inherits(p, "ggplot") || inherits(p, "patchwork"))
+  expect_layer_nonempty(p)
+})
+
+test_that("plot.gg_roc randomForest classification renders (#81)", {
+  set.seed(42)
+  rf <- randomForest::randomForest(Species ~ ., data = iris)
+  p <- plot(gg_roc(rf, which_outcome = 1))
+  expect_s3_class(p, "ggplot")
   expect_layer_nonempty(p)
 })

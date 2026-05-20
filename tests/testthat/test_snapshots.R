@@ -148,25 +148,47 @@ local({
   })
 })
 
-# randomForest classification — iris
-local({
-  set.seed(42L)
-  rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
-
-  test_that("snapshot: gg_vimp randomForest classification", {
-    gg_dta <- gg_vimp(rf_iris)
-    vdiffr::expect_doppelganger("gg_vimp classification rf", plot(gg_dta))
+  local({
+    set.seed(42)
+    rf_iris <- randomForest::randomForest(Species ~ ., data = iris,
+                                          importance = TRUE)
+    test_that("snapshot: gg_rfsrc classification rf", {
+      vdiffr::expect_doppelganger("gg_rfsrc classification rf",
+                                  plot(gg_rfsrc(rf_iris)))
+    })
+    test_that("snapshot: gg_error classification rf", {
+      vdiffr::expect_doppelganger("gg_error classification rf",
+                                  plot(gg_error(rf_iris)))
+    })
+    test_that("snapshot: gg_vimp classification rf", {
+      vdiffr::expect_doppelganger("gg_vimp classification rf",
+                                  plot(gg_vimp(rf_iris)))
+    })
+    test_that("snapshot: gg_roc classification rf", {
+      vdiffr::expect_doppelganger("gg_roc classification rf",
+                                  plot(gg_roc(rf_iris, which_outcome = 1)))
+    })
   })
-
-  test_that("snapshot: gg_error randomForest classification", {
-    gg_dta <- gg_error(rf_iris)
-    vdiffr::expect_doppelganger("gg_error classification rf", plot(gg_dta))
+  local({
+    set.seed(42)
+    rf_mt <- randomForest::randomForest(mpg ~ ., data = mtcars,
+                                        importance = TRUE)
+    test_that("snapshot: gg_rfsrc regression rf", {
+      vdiffr::expect_doppelganger("gg_rfsrc regression rf",
+                                  plot(gg_rfsrc(rf_mt)))
+    })
+    test_that("snapshot: gg_error regression rf", {
+      vdiffr::expect_doppelganger("gg_error regression rf",
+                                  plot(gg_error(rf_mt)))
+    })
+    test_that("snapshot: gg_vimp regression rf", {
+      vdiffr::expect_doppelganger("gg_vimp regression rf",
+                                  plot(gg_vimp(rf_mt)))
+    })
+    test_that("snapshot: gg_variable regression rf", {
+      vdiffr::expect_doppelganger("gg_variable regression rf",
+                                  plot(gg_variable(rf_mt)))
+    })
   })
-
-  test_that("snapshot: gg_roc randomForest classification", {
-    gg_dta <- gg_roc(rf_iris, which_outcome = 1L)
-    vdiffr::expect_doppelganger("gg_roc classification rf", plot(gg_dta))
-  })
-})
 
 } # end CI guard
