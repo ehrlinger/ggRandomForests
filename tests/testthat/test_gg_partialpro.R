@@ -28,11 +28,12 @@ make_mock_partialpro_data <- function(n_obs = 50, n_pts = 20) {
 
 # ---- basic structure -------------------------------------------------------
 
-test_that("gg_partialpro returns a gg_partialpro object with continuous and categorical", {
+test_that("gg_partialpro returns a gg_partial_varpro object with continuous and categorical", {
   mock_dta <- make_mock_partialpro_data()
-  result <- gg_partialpro(mock_dta)
+  result <- suppressWarnings(gg_partialpro(mock_dta))
 
-  expect_s3_class(result, "gg_partialpro")
+  # Shim now returns gg_partial_varpro (the new implementation)
+  expect_s3_class(result, "gg_partial_varpro")
   expect_named(result, c("continuous", "categorical"))
   expect_s3_class(result$continuous, "data.frame")
   expect_s3_class(result$categorical, "data.frame")
@@ -40,7 +41,7 @@ test_that("gg_partialpro returns a gg_partialpro object with continuous and cate
 
 test_that("gg_partialpro separates continuous (age) and categorical (sex)", {
   mock_dta <- make_mock_partialpro_data()
-  result <- gg_partialpro(mock_dta)
+  result <- suppressWarnings(gg_partialpro(mock_dta))
 
   # age has 20 unique points > cat_limit=10
   expect_true("age" %in% result$continuous$name)
@@ -53,7 +54,7 @@ test_that("gg_partialpro separates continuous (age) and categorical (sex)", {
 
 test_that("gg_partialpro continuous output has correct columns", {
   mock_dta <- make_mock_partialpro_data()
-  result <- gg_partialpro(mock_dta)
+  result <- suppressWarnings(gg_partialpro(mock_dta))
 
   expect_true(all(c("variable", "parametric", "nonparametric", "causal", "name")
                   %in% colnames(result$continuous)))
@@ -61,7 +62,7 @@ test_that("gg_partialpro continuous output has correct columns", {
 
 test_that("gg_partialpro categorical output has correct columns", {
   mock_dta <- make_mock_partialpro_data()
-  result <- gg_partialpro(mock_dta)
+  result <- suppressWarnings(gg_partialpro(mock_dta))
 
   expect_true(all(c("parametric", "nonparametric", "causal", "variable", "name")
                   %in% colnames(result$categorical)))
@@ -69,7 +70,7 @@ test_that("gg_partialpro categorical output has correct columns", {
 
 test_that("gg_partialpro continuous has one row per xvirtual point", {
   mock_dta <- make_mock_partialpro_data()
-  result <- gg_partialpro(mock_dta)
+  result <- suppressWarnings(gg_partialpro(mock_dta))
 
   # age has 20 xvirtual points
   age_rows <- result$continuous[result$continuous$name == "age", ]
@@ -80,7 +81,7 @@ test_that("gg_partialpro continuous has one row per xvirtual point", {
 
 test_that("gg_partialpro respects nvars = 1 (only age processed)", {
   mock_dta <- make_mock_partialpro_data()
-  result <- gg_partialpro(mock_dta, nvars = 1)
+  result <- suppressWarnings(gg_partialpro(mock_dta, nvars = 1))
 
   # Only age (continuous) should appear
   expect_true("age" %in% result$continuous$name)
@@ -91,7 +92,7 @@ test_that("gg_partialpro respects nvars = 1 (only age processed)", {
 
 test_that("gg_partialpro adds model column when model is provided", {
   mock_dta <- make_mock_partialpro_data()
-  result <- gg_partialpro(mock_dta, model = "my_forest")
+  result <- suppressWarnings(gg_partialpro(mock_dta, model = "my_forest"))
 
   expect_true("model" %in% colnames(result$continuous))
   expect_true("model" %in% colnames(result$categorical))
@@ -101,7 +102,7 @@ test_that("gg_partialpro adds model column when model is provided", {
 
 test_that("gg_partialpro without model has no model column", {
   mock_dta <- make_mock_partialpro_data()
-  result <- gg_partialpro(mock_dta)
+  result <- suppressWarnings(gg_partialpro(mock_dta))
 
   expect_false("model" %in% colnames(result$continuous))
   expect_false("model" %in% colnames(result$categorical))
@@ -115,7 +116,7 @@ test_that("gg_partialpro without model has no model column", {
 
 test_that("gg_partialpro with low cat_limit makes sex continuous", {
   mock_dta <- make_mock_partialpro_data()
-  result <- gg_partialpro(mock_dta, cat_limit = 1)
+  result <- suppressWarnings(gg_partialpro(mock_dta, cat_limit = 1))
 
   expect_true("age" %in% result$continuous$name)
   expect_true("sex" %in% result$continuous$name)
@@ -139,7 +140,7 @@ test_that("gg_partialpro handles variable with 3 categories", {
     )
   )
 
-  result <- gg_partialpro(three_cat)
+  result <- suppressWarnings(gg_partialpro(three_cat))
 
   expect_equal(nrow(result$continuous), 0)
   expect_true("grp" %in% result$categorical$name)
@@ -150,9 +151,10 @@ test_that("gg_partialpro handles variable with 3 categories", {
   expect_equal(length(unique(grp_rows$variable)), 3)
 })
 
-# ---- plot.gg_partialpro ----------------------------------------------------
+# ---- plot.gg_partialpro (deprecated - superseded by plot.gg_partial_varpro) --
 
 test_that("plot.gg_partialpro returns a ggplot for continuous data", {
+  skip("plot.gg_partialpro tests superseded by gg_partial_varpro shim; see test_gg_partial_varpro.R")
   mock_dta <- make_mock_partialpro_data()
   result <- gg_partialpro(mock_dta, nvars = 1)   # only age (continuous)
 
@@ -161,6 +163,7 @@ test_that("plot.gg_partialpro returns a ggplot for continuous data", {
 })
 
 test_that("plot.gg_partialpro returns a single ggplot when both types present", {
+  skip("plot.gg_partialpro tests superseded by gg_partial_varpro shim; see test_gg_partial_varpro.R")
   mock_dta <- make_mock_partialpro_data()
   result <- gg_partialpro(mock_dta)
 
@@ -170,9 +173,35 @@ test_that("plot.gg_partialpro returns a single ggplot when both types present", 
 })
 
 test_that("plot.gg_partialpro type argument subsets effect columns", {
+  skip("plot.gg_partialpro tests superseded by gg_partial_varpro shim; see test_gg_partial_varpro.R")
   mock_dta <- make_mock_partialpro_data()
   result <- gg_partialpro(mock_dta, nvars = 1)
 
   gg_plt <- plot(result, type = "parametric")
   expect_s3_class(gg_plt, "ggplot")
+})
+
+# ---- deprecation shim regression guards ------------------------------------
+
+test_that("gg_partialpro shim emits a deprecation warning", {
+  mock_dta <- make_mock_partialpro_data()
+  expect_warning(
+    gg_partialpro(mock_dta),
+    regexp = "deprecated.*gg_partial_varpro",
+    ignore.case = TRUE
+  )
+})
+
+test_that("gg_partialpro shim output is a gg_partial_varpro object", {
+  mock_dta <- make_mock_partialpro_data()
+  result   <- suppressWarnings(gg_partialpro(mock_dta))
+  expect_s3_class(result, "gg_partial_varpro")
+})
+
+test_that("gg_partialpro shim: continuous/categorical structure preserved", {
+  mock_dta <- make_mock_partialpro_data()
+  result   <- suppressWarnings(gg_partialpro(mock_dta))
+  expect_named(result, c("continuous", "categorical"))
+  expect_true("age" %in% result$continuous$name)
+  expect_true("sex" %in% result$categorical$name)
 })
