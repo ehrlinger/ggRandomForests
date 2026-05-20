@@ -54,6 +54,10 @@ plot.gg_varpro <- function(x, type = c("z", "raw"), ...) {
 
   ## ---- Conditional view ---------------------------------------------------
   if (!is.null(x$conditional)) {
+    if (!missing(type) && !identical(type, "z")) {
+      message("Conditional plot ignores type = '", type,
+              "'; showing class-conditional z scores.")
+    }
     return(.plot_varpro_conditional(x, prov))
   }
 
@@ -63,6 +67,7 @@ plot.gg_varpro <- function(x, type = c("z", "raw"), ...) {
 
 ## ---- Internal renderers ----------------------------------------------------
 
+#' @keywords internal
 .plot_varpro_main <- function(x, type, prov) {
   stats_df <- x$stats
   # Merge selected flag
@@ -99,9 +104,8 @@ plot.gg_varpro <- function(x, type = c("z", "raw"), ...) {
 
   ## ---- faithful overlay ---------------------------------------------------
   if (faithful && !is.null(x$imp.tree)) {
-    ntree <- nrow(x$imp.tree)
     long_df <- as.data.frame(x$imp.tree)
-    long_df$tree <- seq_len(ntree)
+    long_df$tree <- seq_len(nrow(x$imp.tree))
     long_df <- tidyr::pivot_longer(long_df, !"tree",
                                    names_to = "variable", values_to = "imp_raw")
     # z_ij = imp_ij / sd_j  (same formula as .varpro_imp_stats)
@@ -118,7 +122,8 @@ plot.gg_varpro <- function(x, type = c("z", "raw"), ...) {
       ggplot2::geom_jitter(data = long_df,
                            ggplot2::aes(x = .data[["variable"]], y = .data[["z"]]),
                            inherit.aes = FALSE,
-                           height = 0.15, alpha = 0.4, size = 1.2,
+                           width = 0.15, height = 0,  # width jitters in categorical band
+                           alpha = 0.4, size = 1.2,
                            color = "#4e8fcd") +
       ggplot2::geom_point(data = mean_df,
                           ggplot2::aes(x = .data[["variable"]], y = .data[["mean_z"]]),
@@ -130,6 +135,7 @@ plot.gg_varpro <- function(x, type = c("z", "raw"), ...) {
   p
 }
 
+#' @keywords internal
 .plot_varpro_conditional <- function(x, prov) {
   ## Class-conditional z-scores as faceted bar chart.
   cond_df   <- x$conditional
@@ -157,6 +163,7 @@ plot.gg_varpro <- function(x, type = c("z", "raw"), ...) {
     ggplot2::theme_minimal()
 }
 
+#' @keywords internal
 .varpro_imp_ylabel <- function(type, prov) {
   if (identical(type, "raw")) {
     "Variable importance"
