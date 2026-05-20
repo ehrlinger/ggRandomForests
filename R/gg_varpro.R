@@ -166,6 +166,7 @@ gg_varpro <- function(object,
   if (local.std) {
     sd_j <- apply(mat, 2L, stats::sd, na.rm = TRUE)
     sd_j[sd_j < .Machine$double.eps] <- 1   # guard zero-variance columns
+    # z_ij = imp_ij / sd_j so that mean(z_ij) == aggregate z_j from importance()
     display_mat <- sweep(mat, 2L, sd_j, FUN = "/")
   } else {
     display_mat <- mat

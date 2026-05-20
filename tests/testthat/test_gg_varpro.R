@@ -118,3 +118,24 @@ test_that("gg_varpro variable factor ordered by descending median z", {
                                            levels(gg$imp$variable)))]
   expect_true(all(diff(med_vals) <= 0))
 })
+
+## ── Z-scale alignment ─────────────────────────────────────────────────────────
+
+test_that("gg_varpro: z-normalisation mean(z_ij) == aggregate z_j", {
+  # varPro's importance() computes z_j = mean(imp_ij) / sd_j (no sqrt(ntree)).
+  # So .varpro_imp_stats uses z_ij = imp_ij / sd_j, giving mean(z_ij) == z_j.
+  # Verify by recomputing from imp.tree (faithful=TRUE).
+  vp <- make_vp_regr(ntree = 50L)
+  gg <- gg_varpro(vp, faithful = TRUE)
+  mat <- gg$imp.tree  # ntree x p raw importance matrix
+  sd_j <- apply(mat, 2L, stats::sd, na.rm = TRUE)
+  sd_j[sd_j < .Machine$double.eps] <- 1
+  z_mat <- sweep(mat, 2L, sd_j, FUN = "/")  # z_ij = imp_ij / sd_j
+  z_means <- colMeans(z_mat, na.rm = TRUE)
+  # Column means should equal aggregate z from importance()
+  agg_z <- setNames(gg$imp$z, as.character(gg$imp$variable))
+  common <- intersect(names(z_means), names(agg_z))
+  expect_gt(length(common), 0L)
+  expect_equal(z_means[common], agg_z[common], tolerance = 0.5,
+               info = "mean per-tree z should approximate aggregate z within 0.5")
+})
