@@ -55,7 +55,8 @@
 #' plot(pp)
 #' plot(pp, type = "parametric")
 #'
-#' @importFrom ggplot2 .data
+#' @importFrom ggplot2 .data ggplot aes geom_line geom_boxplot facet_wrap labs
+#' @importFrom tidyr pivot_longer all_of
 #' @importFrom patchwork wrap_plots
 #' @export
 plot.gg_partial_varpro <- function(x,
