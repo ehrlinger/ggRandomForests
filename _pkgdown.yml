@@ -63,6 +63,8 @@ reference:
     contents:
       - gg_vimp
       - plot.gg_vimp
+      - gg_varpro
+      - plot.gg_varpro
 
   - title: "Variable Dependence"
     desc: "Marginal variable dependence plots."
