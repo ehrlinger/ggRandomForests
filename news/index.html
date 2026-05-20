@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9003</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,6 +54,20 @@
       <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.8.0" id="ggrandomforests-v280-development--continued">ggRandomForests v2.8.0 (development) — continued<a class="anchor" aria-label="anchor" href="#ggrandomforests-v280-development--continued"></a></h2>
+<ul><li>
+<strong>varPro variable importance: <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> (<a href="https://github.com/ehrlinger/ggRandomForests/issues/85" class="external-link">#85</a>).</strong>
+<ul><li>
+<code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> extracts per-tree importance scores from a fitted <code>varpro</code> object and renders an honest boxplot — hinges at the 15th/85th percentile, whiskers at the 5th/95th — of the per-tree z-score distribution per variable. Variables whose aggregate z &gt; <code>cutoff</code> (default 0.79) are colour-highlighted.</li>
+<li>
+<code>faithful = TRUE</code> overlays individual per-tree z-scores as jittered semi-transparent points with a white-outlined mean dot, reproducing the distributional view from varPro’s internal <code>bxp</code> output.</li>
+<li>
+<code>conditional = TRUE</code> (classification forests only) extracts <code>$conditional.z</code> and renders class-conditional importance as a <code>facet_wrap(~class, nrow=1)</code> bar chart.</li>
+<li>
+<code>local.std = FALSE</code> enables <code>plot(..., type = "raw")</code> to display raw per-tree importance instead of z-normalised values.</li>
+</ul></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.8.0" id="ggrandomforests-v280-development">ggRandomForests v2.8.0 (development)<a class="anchor" aria-label="anchor" href="#ggrandomforests-v280-development"></a></h2>
 <ul><li>

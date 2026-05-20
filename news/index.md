@@ -1,5 +1,25 @@
 # Changelog
 
+## ggRandomForests v2.8.0 (development) — continued
+
+- **varPro variable importance:
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  ([\#85](https://github.com/ehrlinger/ggRandomForests/issues/85)).**
+  - [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+    extracts per-tree importance scores from a fitted `varpro` object
+    and renders an honest boxplot — hinges at the 15th/85th percentile,
+    whiskers at the 5th/95th — of the per-tree z-score distribution per
+    variable. Variables whose aggregate z \> `cutoff` (default 0.79) are
+    colour-highlighted.
+  - `faithful = TRUE` overlays individual per-tree z-scores as jittered
+    semi-transparent points with a white-outlined mean dot, reproducing
+    the distributional view from varPro’s internal `bxp` output.
+  - `conditional = TRUE` (classification forests only) extracts
+    `$conditional.z` and renders class-conditional importance as a
+    `facet_wrap(~class, nrow=1)` bar chart.
+  - `local.std = FALSE` enables `plot(..., type = "raw")` to display raw
+    per-tree importance instead of z-normalised values.
+
 ## ggRandomForests v2.8.0 (development)
 
 - **varPro partial dependence:

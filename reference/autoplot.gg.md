@@ -41,6 +41,9 @@ autoplot(object, ...)
 
 # S3 method for class 'gg_brier'
 autoplot(object, ...)
+
+# S3 method for class 'gg_varpro'
+autoplot(object, ...)
 ```
 
 ## Arguments
@@ -92,6 +95,10 @@ The following `gg_*` classes are supported:
 - `gg_partialpro`:
 
   Partial dependence via `varPro` (deprecated alias)
+
+- `gg_varpro`:
+
+  Variable importance from `varPro`
 
 - `gg_roc`:
 

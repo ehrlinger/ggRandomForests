@@ -41,6 +41,9 @@ print(x, ...)
 
 # S3 method for class 'gg_brier'
 print(x, ...)
+
+# S3 method for class 'gg_varpro'
+print(x, ...)
 ```
 
 ## Arguments
