@@ -138,3 +138,18 @@ test_that("gg_partial_varpro: no model arg → no model column", {
   result <- gg_partial_varpro(make_mock_vpro_data())
   expect_false("model" %in% colnames(result$continuous))
 })
+
+## ── Numeric/structural tests ──────────────────────────────────────────────────
+test_that("gg_partial_varpro: continuous parametric equals colMeans(yhat.par)", {
+  d      <- make_mock_vpro_data()
+  result <- gg_partial_varpro(d)
+  expected <- colMeans(d$age$yhat.par, na.rm = TRUE)
+  expect_equal(result$continuous$parametric[result$continuous$name == "age"],
+               expected)
+})
+
+test_that("gg_partial_varpro: categorical sex has n_obs * 2 rows", {
+  result  <- gg_partial_varpro(make_mock_vpro_data())
+  sex_rows <- result$categorical[result$categorical$name == "sex", ]
+  expect_equal(nrow(sex_rows), 30L * 2L)
+})

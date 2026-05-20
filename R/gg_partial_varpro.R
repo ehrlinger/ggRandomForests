@@ -152,21 +152,8 @@ gg_partial_varpro <- function(part_dta  = NULL,
       cont_list[[feature]] <- plt.df
 
     } else {
-      ## -- Categorical: stack per-observation rows per category level ------
-      n_cats   <- length(unique(part_dta[[feature]]$xorg))
-      cat_feat <- list()
-      for (ind in seq(n_cats)) {
-        cat_feat[[ind]] <- dplyr::bind_cols(
-          parametric    = part_dta[[feature]]$yhat.par[, ind],
-          nonparametric = part_dta[[feature]]$yhat.nonpar[, ind],
-          causal        = part_dta[[feature]]$yhat.causal[, ind]
-        )
-        cat_feat[[ind]]$variable <- unique(part_dta[[feature]]$xorg)[ind]
-        plt.df <- if (ind == 1L) cat_feat[[ind]] else
-          dplyr::bind_rows(plt.df, cat_feat[[ind]])
-      }
-      plt.df$name <- names(part_dta)[[feature]]
-      cat_list[[feature]] <- plt.df
+      cat_list[[feature]] <- .process_cat_var(part_dta[[feature]],
+                                              names(part_dta)[[feature]])
     }
   }
 
@@ -203,6 +190,24 @@ gg_partial_varpro <- function(part_dta  = NULL,
   if (is.na(family) || is.null(family)) return("generic")
   if (family == "surv")  return("mortality")
   "generic"   # regr, class, or unknown
+}
+
+#' @keywords internal
+.process_cat_var <- function(feat, feat_name) {
+  n_cats   <- length(unique(feat$xorg))
+  cat_feat <- list()
+  for (ind in seq(n_cats)) {
+    cat_feat[[ind]] <- dplyr::bind_cols(
+      parametric    = feat$yhat.par[, ind],
+      nonparametric = feat$yhat.nonpar[, ind],
+      causal        = feat$yhat.causal[, ind]
+    )
+    cat_feat[[ind]]$variable <- unique(feat$xorg)[ind]
+    plt.df <- if (ind == 1L) cat_feat[[ind]] else
+      dplyr::bind_rows(plt.df, cat_feat[[ind]])
+  }
+  plt.df$name <- feat_name
+  plt.df
 }
 
 #' @keywords internal
