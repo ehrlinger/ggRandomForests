@@ -1,8 +1,9 @@
 Package: ggRandomForests
-Version: 2.7.3.9001
+Version: 2.7.3.9002
 
 ggRandomForests v2.8.0 (development)
 ====================================
+* **varPro partial dependence: `gg_partial_varpro` (#84).** *(details added in Task 8)*
 * **randomForest engine validation & repair (#82).** Fixes #80, #81
   and a `plot.gg_error` label wart; adds full randomForest regression
   coverage. See sub-items below.
