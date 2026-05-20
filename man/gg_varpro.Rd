@@ -35,16 +35,17 @@ overlay per-tree jitter points in \code{plot.gg_varpro}.}
 matrix and stores it as \code{$conditional}.}
 
 \item{nvar}{Integer; retain only the top \code{nvar} variables (by
-aggregate z) after applying the cutoff filter.  \code{NULL} keeps all.}
+median per-tree z) after applying the cutoff filter.  \code{NULL} keeps all.}
 
 \item{...}{Additional arguments passed to \code{varPro::importance()}.}
 }
 \value{
 A named list of class \code{"gg_varpro"} with elements:
 \describe{
-  \item{\code{$imp}}{Long tidy data frame: \code{variable} (factor,
-    ordered by aggregate z descending), \code{z} (aggregate z-score),
-    \code{selected} (logical, \code{z > cutoff}).}
+  \item{\code{$imp}}{Summary data frame: \code{variable} (factor with
+    levels ordered by descending median per-tree z), \code{z} (aggregate
+    z-score from \code{importance()}), \code{selected} (logical,
+    \code{z > cutoff}).}
   \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
     otherwise an ntree x p matrix of per-tree importance values.}
   \item{\code{$stats}}{Per-variable summary: \code{variable},
@@ -76,5 +77,5 @@ plot(gg)
 
 }
 \seealso{
-\code{plot.gg_varpro} (Phase 2 Task 2), \code{\link{gg_vimp}}
+\code{\link{plot.gg_varpro}}, \code{\link{gg_vimp}}
 }

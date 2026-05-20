@@ -208,3 +208,33 @@ test_that("plot.gg_varpro conditional=TRUE returns ggplot with FacetWrap", {
   expect_s3_class(p, "ggplot")
   expect_true(inherits(p$facet, "FacetWrap"))
 })
+
+## ── S3 companions ────────────────────────────────────────────────────────────
+
+test_that("autoplot.gg_varpro returns a ggplot", {
+  vp <- make_vp_regr()
+  gg <- gg_varpro(vp)
+  expect_s3_class(ggplot2::autoplot(gg), "ggplot")
+})
+
+test_that("print.gg_varpro returns object invisibly", {
+  vp  <- make_vp_regr()
+  gg  <- gg_varpro(vp)
+  out <- capture.output(ret <- print(gg))
+  expect_identical(ret, gg)
+  expect_true(any(grepl("gg_varpro", out)))
+})
+
+test_that("print.gg_varpro output contains selected/total counts", {
+  vp  <- make_vp_regr()
+  gg  <- gg_varpro(vp, cutoff = 0.79)
+  out <- capture.output(print(gg))
+  expect_true(any(grepl("selected", out, ignore.case = TRUE)))
+})
+
+test_that("summary.gg_varpro returns summary.gg_varpro class", {
+  vp <- make_vp_regr()
+  gg <- gg_varpro(vp)
+  s  <- summary(gg)
+  expect_s3_class(s, "summary.gg_varpro")
+})

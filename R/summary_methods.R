@@ -218,6 +218,32 @@ summary.gg_survival <- function(object, ...) {
   .summary_skel(object, "gg_survival", body)
 }
 
+.varpro_body <- function(x) {
+  prov   <- attr(x, "provenance")
+  cutoff <- if (!is.null(prov)) prov$cutoff %||% 0.79 else 0.79
+  n_sel  <- sum(x$imp$selected, na.rm = TRUE)
+  top_n  <- min(5L, nrow(x$stats))
+  top_df <- x$stats[order(-x$stats$median), ][seq_len(top_n), ]
+  c(
+    sprintf("variables: %d total, %d selected (z > %.2g)",
+            nrow(x$imp), n_sel, cutoff),
+    sprintf("top %d by median z: %s", top_n,
+            paste(sprintf("%s (%.3g)",
+                          as.character(top_df$variable),
+                          top_df$median),
+                  collapse = ", ")),
+    sprintf("z range: [%.3g, %.3g]",
+            min(x$imp$z, na.rm = TRUE),
+            max(x$imp$z, na.rm = TRUE))
+  )
+}
+
+#' @rdname summary.gg
+#' @export
+summary.gg_varpro <- function(object, ...) {
+  .summary_skel(object, "gg_varpro", .varpro_body(object))
+}
+
 #' @rdname summary.gg
 #' @export
 summary.gg_brier <- function(object, ...) {
