@@ -6,6 +6,11 @@ ggRandomForests v2.8.0 (development)
 * **randomForest engine validation & repair (#82).** Fixes #80, #81
   and a `plot.gg_error` label wart; adds full randomForest regression
   coverage. See sub-items below.
+  - `plot.gg_variable()` now always returns a single `ggplot` (one
+    variable) or a `patchwork` composite (multiple variables / default),
+    never a bare list — consistent with the v2.7.3 `plot.gg_partial*`
+    change. Previously a list was returned for multiple `xvar`, which
+    broke `patchwork` / `autoplot()` / `layer_data()` composition (#80).
 * **Dependency modernization (breaking for scripts that relied on
   attachment).** `randomForestSRC` and `randomForest` moved from
   `Depends:` to `Imports:`; `igraph`, `callr`, and `varPro` added to

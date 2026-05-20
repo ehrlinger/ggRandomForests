@@ -27,8 +27,10 @@
 #' @param ... arguments passed to the \code{ggplot2} functions.
 #'
 #' @return A single \code{ggplot} object when \code{length(xvar) == 1} or
-#'   \code{panel = TRUE}. Otherwise a named list of \code{ggplot} objects, one
-#'   per variable in \code{xvar}.
+#'   \code{panel = TRUE}; otherwise a \code{patchwork} composite stacking
+#'   one panel per variable in \code{xvar}. Always a single plottable
+#'   object (never a bare list) so it composes with \code{patchwork} and
+#'   works with \code{ggplot2::layer_data()} / \code{autoplot()}.
 #'
 #' @seealso \code{\link{gg_variable}}, \code{\link{gg_partial}},
 #'   \code{\link[randomForestSRC]{plot.variable}}
@@ -601,9 +603,13 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       # Restore the original column name before the next iteration
       colnames(gg_dta)[ch_indx] <- h_name
     }
-    # Return a single ggplot when only one variable was requested
+    # Return a single object: one ggplot for a single variable, otherwise a
+    # patchwork composite (one panel per variable). Never a bare list — see
+    # #80 / NEWS; mirrors the v2.7.3 #77/#78 plot.gg_partial* unification.
     if (lng == 1) {
       gg_plt <- gg_plt[[1]]
+    } else {
+      gg_plt <- patchwork::wrap_plots(gg_plt, ncol = 1)
     }
   }
   return(gg_plt)
