@@ -222,7 +222,8 @@ plot.gg_error <- function(x, ...) {
     point <- TRUE
   }
 
-  if (ncol(gg_dta) > 2) {
+  multi_outcome <- ncol(gg_dta) > 2
+  if (multi_outcome) {
     # Multi-outcome (classification): gg_error has one column per class plus
     # the "ntree" column.  Pivot to long form so we can colour by outcome.
     gg_dta <- tidyr::pivot_longer(gg_dta, -"ntree", names_to = "variable", values_to = "value")
@@ -241,11 +242,11 @@ plot.gg_error <- function(x, ...) {
   if (point) {
     gg_plt <- gg_plt +
       ggplot2::geom_point() +
-      ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")
+      if (multi_outcome) ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome") else ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate")
   } else {
     gg_plt <- gg_plt +
       ggplot2::geom_line() +
-      ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome")
+      if (multi_outcome) ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome") else ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate")
   }
 
   # Hide the legend when there is only a single outcome variable — the colour
