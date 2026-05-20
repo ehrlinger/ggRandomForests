@@ -128,13 +128,26 @@ test_that("plot.gg_error randomForest classification renders", {
   expect_layer_nonempty(p)
 })
 
-test_that("plot.gg_error randomForest regression renders without unknown-label warning", {
+test_that("plot.gg_error randomForest regression has no stray colour label (#82 wart)", {
   set.seed(42)
   rf <- randomForest::randomForest(mpg ~ ., data = mtcars)
-  # #82 wart: plot.gg_error.R:244,248 apply color="Outcome" unconditionally
-  expect_no_warning(p <- plot(gg_error(rf)))
+  p <- plot(gg_error(rf))
   expect_s3_class(p, "ggplot")
   expect_layer_nonempty(p)
+  # #82 wart: plot.gg_error.R:244,248 apply labs(color="Outcome") even on
+  # the regression / single-outcome path where no colour aesthetic is
+  # mapped — which produces "Ignoring unknown labels: colour Outcome" at
+  # build time. ggplot2 emits that warning once-per-session (cli .freq =
+  # "once"), so warning-based detection is unreliable inside a long
+  # test_file. Assert STRUCTURALLY: if a colour label is set, a colour
+  # aesthetic must be mapped somewhere in the plot.
+  has_colour_aes <- "colour" %in% names(p$mapping) ||
+    any(vapply(p$layers, function(l) "colour" %in% names(l$mapping),
+               logical(1)))
+  if (!is.null(p$labels$colour)) {
+    expect_true(has_colour_aes,
+                info = "plot.gg_error set labs(colour=) without a mapped colour aesthetic")
+  }
 })
 
 test_that("plot.gg_vimp randomForest classification renders (formula + non-formula)", {
@@ -183,7 +196,7 @@ Run:
 ```bash
 R -q -e 'testthat::test_file("tests/testthat/test_plot_layer_data.R")' 2>&1 | tail -25
 ```
-Expected: the `gg_rfsrc`/`gg_vimp` RF tests PASS; **`gg_error` regression test FAILS** (unknown-label warning — the wart); **both `gg_variable` `#80` tests FAIL** (currently a bare `list` → `inherits` false / `layer_data` errors on a list); **`gg_roc` `#81` test** FAILS or renders degenerate. Capture which fail and confirm the failure reasons match #80/#81/wart (not fixture errors). If any *already-OK* family (gg_rfsrc/gg_vimp) fails, that is a **sibling defect** — STOP, report it for logging under #82 before continuing.
+Expected: the `gg_rfsrc`/`gg_vimp`/`gg_error classification`/`gg_roc` RF tests **PASS**; **`gg_error` regression test FAILS** (unknown-label warning at `ggplot_build` — the wart); **both `gg_variable` `#80` tests FAIL** (currently a bare `list` of length nvars → `inherits(p,"ggplot|patchwork")` false / `layer_data` errors on a list). NOTE: the `gg_roc` structural test is *correctly green pre-fix* — a 3-row degenerate ROC plot IS a structurally non-empty ggplot; the real #81 RED lives in **RF4** (ROC numeric correctness in `test_gg_roc.R`), not the structural matrix. So the expected RED-here set is exactly **three**: `gg_error randomForest regression renders without unknown-label warning`, `plot.gg_variable randomForest default multi-xvar is a single object (#80)` (classification + regression). If any *already-OK* family fails, that is a **sibling defect** — STOP, report it for logging under #82 before continuing.
 
 - [ ] **Step 3: Commit the failing matrix**
 

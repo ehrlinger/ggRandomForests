@@ -404,13 +404,26 @@ test_that("plot.gg_error randomForest classification renders", {
   expect_layer_nonempty(p)
 })
 
-test_that("plot.gg_error randomForest regression renders without unknown-label warning", {
+test_that("plot.gg_error randomForest regression has no stray colour label (#82 wart)", {
   set.seed(42)
   rf <- randomForest::randomForest(mpg ~ ., data = mtcars)
-  # #82 wart: plot.gg_error.R:244,248 apply color="Outcome" unconditionally
-  expect_no_warning(p <- plot(gg_error(rf)))
+  p <- plot(gg_error(rf))
   expect_s3_class(p, "ggplot")
   expect_layer_nonempty(p)
+  # #82 wart: plot.gg_error.R:244,248 apply labs(color="Outcome") even on
+  # the regression / single-outcome path where no colour aesthetic is
+  # mapped — which produces "Ignoring unknown labels: colour Outcome" at
+  # build time. ggplot2 emits that warning once-per-session (cli .freq =
+  # "once"), so warning-based detection is unreliable inside a long
+  # test_file. Assert STRUCTURALLY: if a colour label is set, a colour
+  # aesthetic must be mapped somewhere in the plot.
+  has_colour_aes <- "colour" %in% names(p$mapping) ||
+    any(vapply(p$layers, function(l) "colour" %in% names(l$mapping),
+               logical(1)))
+  if (!is.null(p$labels$colour)) {
+    expect_true(has_colour_aes,
+                info = "plot.gg_error set labs(colour=) without a mapped colour aesthetic")
+  }
 })
 
 test_that("plot.gg_vimp randomForest classification renders (formula + non-formula)", {
