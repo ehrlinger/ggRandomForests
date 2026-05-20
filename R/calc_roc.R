@@ -187,7 +187,13 @@ calc_roc.randomForest <-
         pct <- pct[seq(1, length(pct), length.out = 200)]
       }
       rc <- parallel::mclapply(pct, function(crit) {
-        tbl <- xtabs(~ res + (score > crit))
+        # Use base table() rather than xtabs(~ res + (score > crit)) — the
+        # formula form NSE-resolves `res`/`score` via model.frame's parent
+        # frame, which works under Linux/mac mclapply forks (parent env
+        # inherited) but FAILS on Windows where mclapply is serial and
+        # model.frame can't find the symbols. table() takes raw vectors
+        # via lexical scope, no formula parsing, cross-platform robust.
+        tbl <- table(res, score > crit)
         if (ncol(tbl) < 2) {
           tbl <- cbind(tbl, c(0, 0))
           colnames(tbl) <- c("FALSE", "TRUE")
