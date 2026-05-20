@@ -136,12 +136,32 @@ test_that("gg_varpro nvar larger than p returns all variables", {
   expect_equal(nrow(gg$imp), n_all)
 })
 
-test_that("gg_varpro local.std=FALSE produces raw-scale stats", {
-  vp <- make_vp_regr()
-  gg_z   <- gg_varpro(vp, local.std = TRUE)
-  gg_raw <- gg_varpro(vp, local.std = FALSE)
-  # raw-scale medians should differ from z-scale medians
-  expect_false(isTRUE(all.equal(gg_z$stats$median, gg_raw$stats$median)))
+test_that("gg_varpro local.std=FALSE stats equal raw-column medians", {
+  ## Mechanistic check: verify each path against the actual column computation.
+  ## faithful=TRUE forces local.std=FALSE (coercion tested above); imp.tree
+  ## gives the ground-truth raw importance matrix for both assertions.
+  vp <- make_vp_regr(ntree = 50L)
+  suppressMessages(gg_raw <- gg_varpro(vp, local.std = FALSE, faithful = TRUE))
+  mat   <- gg_raw$imp.tree          # ntree x p raw importance matrix
+  vname <- colnames(mat)[[1L]]      # pick any variable by name, not position
+
+  ## local.std = FALSE: stats$median == median of raw column
+  expect_equal(
+    gg_raw$stats$median[as.character(gg_raw$stats$variable) == vname],
+    stats::median(mat[, vname], na.rm = TRUE),
+    tolerance = 1e-10
+  )
+
+  ## local.std = TRUE: stats$median == median of z-normalised column
+  gg_z <- gg_varpro(vp, local.std = TRUE)
+  sd_j <- apply(mat, 2L, stats::sd, na.rm = TRUE)
+  sd_j[sd_j < .Machine$double.eps] <- 1
+  z_med <- stats::median(mat[, vname] / sd_j[[vname]], na.rm = TRUE)
+  expect_equal(
+    gg_z$stats$median[as.character(gg_z$stats$variable) == vname],
+    z_med,
+    tolerance = 1e-10
+  )
 })
 
 ## ── Z-scale alignment ─────────────────────────────────────────────────────────

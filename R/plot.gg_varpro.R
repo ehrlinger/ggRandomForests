@@ -39,7 +39,9 @@
 #' }
 #'
 #' @name plot.gg_varpro
-#' @importFrom ggplot2 ggplot aes geom_boxplot geom_jitter geom_point geom_col geom_vline geom_hline coord_flip facet_wrap scale_fill_manual labs theme_minimal
+#' @importFrom ggplot2 ggplot aes geom_boxplot geom_jitter geom_point geom_col
+#' @importFrom ggplot2 geom_vline geom_hline coord_flip facet_wrap
+#' @importFrom ggplot2 scale_fill_manual labs theme_minimal
 #' @importFrom tidyr pivot_longer
 #' @export
 plot.gg_varpro <- function(x, type = c("z", "raw"), ...) {
