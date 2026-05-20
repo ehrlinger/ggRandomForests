@@ -154,6 +154,104 @@ calc_roc <- function(object,
 ## randomForest ROC: OOB vote probabilities by default; macro-average for
 ## the overall ("all"/0) case. Does NOT use the shared
 ## .validate_which_outcome (rfsrc path unchanged). See #81.
+##
+## The body is intentionally thin: heavy logic lives in unexported
+## helpers (.rf_prob_matrix, .normalize_which_outcome, .rf_one_class_roc,
+## .rf_macro_average_roc) to keep cyclomatic complexity under the
+## lintr cyclocomp_linter threshold and to make each step testable in
+## isolation.
+
+# Build the per-class probability matrix used by the ROC sweep:
+#   oob = TRUE  -> object$votes (OOB class proportions; honest)
+#   else        -> predict(object, type = "prob") (in-bag)
+# randomForest votes can be raw counts; row-normalise to probabilities.
+.rf_prob_matrix <- function(object, oob, lvls) {
+  prob <- if (isTRUE(oob) && !is.null(object$votes)) {
+    as.matrix(object$votes)
+  } else {
+    stats::predict(object, type = "prob")
+  }
+  rs <- rowSums(prob)
+  if (any(rs > 1 + 1e-8, na.rm = TRUE)) {
+    prob <- prob / rs
+  }
+  colnames(prob) <- lvls
+  prob
+}
+
+# Coerce/validate which_outcome. Returns either the string "all" (for
+# the overall macro-average case) or a single integer class index.
+# Accepts: "all", numeric == 0 (handles 0 and 0L), character class
+# names (matched against lvls), integer/double indices in 1:nlvls.
+# Errors on unknown class names or out-of-range indices.
+.normalize_which_outcome <- function(which_outcome, lvls) {
+  if (is.character(which_outcome) && !identical(which_outcome, "all")) {
+    idx <- match(which_outcome, lvls)
+    if (anyNA(idx)) {
+      stop("Unknown class name(s) in which_outcome: ",
+           paste(which_outcome[is.na(idx)], collapse = ", "),
+           ". Must be one of: ", paste(lvls, collapse = ", "))
+    }
+    return(idx)
+  }
+  if (is.numeric(which_outcome) && length(which_outcome) == 1L &&
+      which_outcome == 0) {
+    return("all")
+  }
+  if (is.numeric(which_outcome) &&
+      (any(which_outcome < 1) || any(which_outcome > length(lvls)))) {
+    stop("which_outcome out of range; must be in 1:", length(lvls),
+         ' or "all" / 0.')
+  }
+  which_outcome
+}
+
+# Build the sensitivity/specificity table for a single class index k.
+# Plain lapply (not mclapply) — per-threshold work is a single table()
+# + a few arithmetic ops (microseconds); fork overhead would dominate,
+# and the closure-scope fragility caused the earlier xtabs/Windows
+# failure. Returns a data.frame with columns sens, spec, pct.
+.rf_one_class_roc <- function(dta, prob, k, lvls) {
+  res <- dta == lvls[k]
+  score <- prob[, k]
+  pct <- sort(unique(score))
+  if (length(pct) > 1) pct <- pct[-length(pct)]
+  if (length(pct) > 200) {
+    pct <- pct[seq(1, length(pct), length.out = 200)]
+  }
+  rc <- lapply(pct, function(crit) {
+    tbl <- table(res, score > crit)
+    if (ncol(tbl) < 2) {
+      tbl <- cbind(tbl, c(0, 0))
+      colnames(tbl) <- c("FALSE", "TRUE")
+    }
+    spec <- tbl[2, 2] / rowSums(tbl)[2]
+    sens <- tbl[1, 1] / rowSums(tbl)[1]
+    cbind(sens = sens, spec = spec)
+  })
+  rc <- do.call(rbind, rc)
+  rc <- rbind(c(0, 1), rc, c(1, 0))
+  data.frame(rc, pct = c(0, pct, 1), row.names = seq_len(nrow(rc)))
+}
+
+# Macro-average one-vs-rest ROC on a shared FPR grid.
+.rf_macro_average_roc <- function(dta, prob, lvls) {
+  curves <- lapply(seq_along(lvls),
+                   function(k) .rf_one_class_roc(dta, prob, k, lvls))
+  grid <- seq(0, 1, length.out = 200)
+  interp <- vapply(curves, function(cv) {
+    cv <- cv[order(cv$spec, decreasing = TRUE), ]
+    stats::approx(1 - cv$spec, cv$sens, xout = grid,
+                  ties = "ordered", rule = 2)$y
+  }, numeric(length(grid)))
+  data.frame(
+    sens = rowMeans(interp, na.rm = TRUE),
+    spec = 1 - grid,
+    pct  = grid,
+    row.names = seq_along(grid)
+  )
+}
+
 #' @export
 calc_roc.randomForest <-
   function(object,
@@ -165,93 +263,13 @@ calc_roc.randomForest <-
       dta <- factor(dta)
     }
     lvls <- levels(dta)
+    prob <- .rf_prob_matrix(object, oob, lvls)
+    which_outcome <- .normalize_which_outcome(which_outcome, lvls)
 
-    # Probability matrix: OOB votes by default (honest), else in-bag predict.
-    prob <- if (isTRUE(oob) && !is.null(object$votes)) {
-      as.matrix(object$votes)
+    gg_dta <- if (identical(which_outcome, "all")) {
+      .rf_macro_average_roc(dta, prob, lvls)
     } else {
-      stats::predict(object, type = "prob")
-    }
-    # randomForest votes can be counts; normalise rows to probabilities.
-    rs <- rowSums(prob)
-    if (any(rs > 1 + 1e-8, na.rm = TRUE)) {
-      prob <- prob / rs
-    }
-    colnames(prob) <- lvls
-
-    # Coerce / validate which_outcome up front. Accept:
-    #   * "all" or numeric == 0 (handles 0 and 0L) -> overall (macro-average)
-    #   * character class name (e.g. "setosa")     -> integer index via match()
-    #   * integer/double class index in 1:nlvls    -> as-is
-    # Error on anything else, including unknown class names or out-of-range
-    # indices. (Avoids letting bogus inputs reach one_class_roc(), where
-    # `lvls[k]` would return NA for character k and `prob[, k]` would error
-    # for k = 0.)
-    if (is.character(which_outcome) && !identical(which_outcome, "all")) {
-      idx <- match(which_outcome, lvls)
-      if (anyNA(idx)) {
-        stop("Unknown class name(s) in which_outcome: ",
-             paste(which_outcome[is.na(idx)], collapse = ", "),
-             ". Must be one of: ", paste(lvls, collapse = ", "))
-      }
-      which_outcome <- idx
-    }
-    if (is.numeric(which_outcome) && length(which_outcome) == 1L &&
-        which_outcome == 0) {
-      which_outcome <- "all"
-    }
-    if (is.numeric(which_outcome) &&
-        (any(which_outcome < 1) || any(which_outcome > length(lvls)))) {
-      stop("which_outcome out of range; must be in 1:", length(lvls),
-           ' or "all" / 0.')
-    }
-
-    one_class_roc <- function(k) {
-      res <- dta == lvls[k]
-      score <- prob[, k]
-      pct <- sort(unique(score))
-      last <- length(pct)
-      if (last > 1) pct <- pct[-last]
-      if (length(pct) > 200) {
-        pct <- pct[seq(1, length(pct), length.out = 200)]
-      }
-      # Plain lapply — the per-threshold work is a single table() + a few
-      # arithmetic ops (microseconds); parallel::mclapply's default fork
-      # overhead dominates and on Windows mclapply degrades to serial
-      # anyway, while introducing closure-scope fragility (the source of
-      # the earlier xtabs/Windows failure).
-      rc <- lapply(pct, function(crit) {
-        tbl <- table(res, score > crit)
-        if (ncol(tbl) < 2) {
-          tbl <- cbind(tbl, c(0, 0))
-          colnames(tbl) <- c("FALSE", "TRUE")
-        }
-        spec <- tbl[2, 2] / rowSums(tbl)[2]
-        sens <- tbl[1, 1] / rowSums(tbl)[1]
-        cbind(sens = sens, spec = spec)
-      })
-      rc <- do.call(rbind, rc)
-      rc <- rbind(c(0, 1), rc, c(1, 0))
-      data.frame(rc, pct = c(0, pct, 1), row.names = seq_len(nrow(rc)))
-    }
-
-    if (identical(which_outcome, "all")) {
-      # Macro-average one-vs-rest: mean sens/spec on a shared FPR grid.
-      curves <- lapply(seq_along(lvls), one_class_roc)
-      grid <- seq(0, 1, length.out = 200)
-      interp <- vapply(curves, function(cv) {
-        cv <- cv[order(cv$spec, decreasing = TRUE), ]
-        stats::approx(1 - cv$spec, cv$sens, xout = grid,
-                      ties = "ordered", rule = 2)$y
-      }, numeric(length(grid)))
-      gg_dta <- data.frame(
-        sens = rowMeans(interp, na.rm = TRUE),
-        spec = 1 - grid,
-        pct  = grid,
-        row.names = seq_along(grid)
-      )
-    } else {
-      gg_dta <- one_class_roc(which_outcome)
+      .rf_one_class_roc(dta, prob, which_outcome, lvls)
     }
     invisible(gg_dta)
   }
