@@ -2,9 +2,7 @@
 #' Split varpro partial dependence data into continuous or categorical datasets
 #' (deprecated)
 #'
-#' \lifecycle{deprecated}
-#'
-#' \code{gg_partialpro()} has been renamed to
+#' \emph{Deprecated.} \code{gg_partialpro()} has been renamed to
 #' \code{\link{gg_partial_varpro}()}.  This function is a thin alias that
 #' will be removed in the release after \pkg{ggRandomForests} v2.8.0.
 #'

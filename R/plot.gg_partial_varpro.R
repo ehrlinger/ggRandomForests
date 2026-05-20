@@ -137,7 +137,7 @@ plot.gg_partial_varpro <- function(x,
     rmst      = {
       tau <- prov$rmst_tau
       if (!is.null(tau) && !is.na(tau)) {
-        sprintf("RMST (τ = %g)", tau)
+        sprintf("RMST (\u03c4 = %g)", tau)
       } else {
         "RMST"
       }

@@ -101,6 +101,43 @@ gg_partial_varpro <- function(part_dta  = NULL,
   scale <- match.arg(scale)
 
   ## ---- Input validation --------------------------------------------------
+  .validate_varpro_inputs(part_dta, object, scale, time)
+
+  ## ---- C-path: route through gg_partial_rfsrc ----------------------------
+  if (!is.null(object) && scale %in% c("surv", "chf")) {
+    return(.gg_partial_varpro_cpath(object, scale, time, model))
+  }
+
+  ## ---- A-path: partialpro-based partial dependence -----------------------
+  if (is.null(part_dta)) {
+    part_dta <- varPro::partialpro(object)
+  }
+  if (is.null(nvars)) {
+    nvars <- length(part_dta)
+  }
+
+  prov <- .varpro_provenance(object, scale, time, path = "A")
+
+  dfs <- .build_varpro_dfs(part_dta, nvars, cat_limit)
+  continuous  <- dfs$continuous
+  categorical <- dfs$categorical
+
+  if (!is.null(model)) {
+    continuous$model  <- model
+    categorical$model <- model
+  }
+
+  result <- list(continuous = continuous, categorical = categorical)
+  class(result) <- c("gg_partial_varpro", "list")
+  attr(result, "provenance") <- prov
+  result
+}
+
+## ---------------------------------------------------------------------------
+## Internal helpers
+
+#' @keywords internal
+.validate_varpro_inputs <- function(part_dta, object, scale, time) {
   if (is.null(part_dta) && is.null(object)) {
     stop("at least one of 'part_dta' or 'object' must be supplied",
          call. = FALSE)
@@ -113,62 +150,17 @@ gg_partial_varpro <- function(part_dta  = NULL,
     stop("scale = 'rmst' requires 'time' (the RMST horizon tau)",
          call. = FALSE)
   }
+  invisible(NULL)
+}
 
-  ## ---- C-path: route through gg_partial_rfsrc ----------------------------
-  if (!is.null(object) && scale %in% c("surv", "chf")) {
-    return(.gg_partial_varpro_cpath(object, scale, time, model))
-  }
-
-  ## ---- A-path: partialpro-based partial dependence -----------------------
-  if (is.null(part_dta)) {
-    part_dta <- varPro::partialpro(object)
-  }
-
-  ## Provenance fields from object (NA when no object supplied).
-  prov_family <- if (!is.null(object)) object$family   else NA_character_
+#' @keywords internal
+.varpro_provenance <- function(object, scale, time, path = "A") {
+  prov_family <- if (!is.null(object)) object$family     else NA_character_
   prov_xvars  <- if (!is.null(object)) object$xvar.names else NA_character_
-  prov_n      <- if (!is.null(object)) nrow(object$x)  else NA_integer_
-  prov_ntree  <- if (!is.null(object)) object$max.tree  else NA_integer_
-
+  prov_n      <- if (!is.null(object)) nrow(object$x)    else NA_integer_
+  prov_ntree  <- if (!is.null(object)) object$max.tree   else NA_integer_
   scale_used  <- .resolve_varpro_scale(scale, prov_family)
-
-  if (is.null(nvars)) {
-    nvars <- length(part_dta)
-  }
-
-  cont_list <- list()
-  cat_list  <- list()
-
-  for (feature in seq(nvars)) {
-    if (length(part_dta[[feature]]$xvirtual) > cat_limit) {
-      ## -- Continuous: one row per xvirtual grid point ---------------------
-      plt.df <- dplyr::bind_cols(
-        variable      = part_dta[[feature]]$xvirtual,
-        parametric    = colMeans(part_dta[[feature]]$yhat.par,    na.rm = TRUE),
-        nonparametric = colMeans(part_dta[[feature]]$yhat.nonpar, na.rm = TRUE),
-        causal        = colMeans(part_dta[[feature]]$yhat.causal,  na.rm = TRUE)
-      )
-      plt.df$name <- names(part_dta)[[feature]]
-      cont_list[[feature]] <- plt.df
-
-    } else {
-      cat_list[[feature]] <- .process_cat_var(part_dta[[feature]],
-                                              names(part_dta)[[feature]])
-    }
-  }
-
-  continuous  <- dplyr::bind_rows(cont_list)
-  categorical <- dplyr::bind_rows(cat_list)
-
-  if (!is.null(model)) {
-    continuous$model <- model
-    categorical$model <- model
-  }
-
-  result <- list(continuous = continuous, categorical = categorical)
-  class(result) <- c("gg_partial_varpro", "list")
-
-  attr(result, "provenance") <- list(
+  list(
     source     = "varPro",
     family     = prov_family,
     ntree      = prov_ntree,
@@ -176,13 +168,35 @@ gg_partial_varpro <- function(part_dta  = NULL,
     scale      = scale_used,
     rmst_tau   = time,
     xvar.names = prov_xvars,
-    path       = "A"
+    path       = path
   )
-  result
 }
 
-## ---------------------------------------------------------------------------
-## Internal helpers
+#' @keywords internal
+.build_varpro_dfs <- function(part_dta, nvars, cat_limit) {
+  cont_list <- list()
+  cat_list  <- list()
+  for (feature in seq(nvars)) {
+    feat      <- part_dta[[feature]]
+    feat_name <- names(part_dta)[[feature]]
+    if (length(feat$xvirtual) > cat_limit) {
+      plt.df <- dplyr::bind_cols(
+        variable      = feat$xvirtual,
+        parametric    = colMeans(feat$yhat.par,    na.rm = TRUE),
+        nonparametric = colMeans(feat$yhat.nonpar, na.rm = TRUE),
+        causal        = colMeans(feat$yhat.causal, na.rm = TRUE)
+      )
+      plt.df$name <- feat_name
+      cont_list[[feature]] <- plt.df
+    } else {
+      cat_list[[feature]] <- .process_cat_var(feat, feat_name)
+    }
+  }
+  list(
+    continuous  = dplyr::bind_rows(cont_list),
+    categorical = dplyr::bind_rows(cat_list)
+  )
+}
 
 #' @keywords internal
 .resolve_varpro_scale <- function(scale, family) {

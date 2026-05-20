@@ -3,7 +3,24 @@ Version: 2.7.3.9002
 
 ggRandomForests v2.8.0 (development)
 ====================================
-* **varPro partial dependence: `gg_partial_varpro` (#84).** *(details added in Task 8)*
+* **varPro partial dependence: `gg_partial_varpro()` (#84).**
+  - `gg_partial_varpro()` replaces `gg_partialpro()` as the primary entry
+    point for varPro partial dependence plots.  The new extractor accepts
+    an optional `object` argument (the originating `varpro` fit) for
+    provenance-aware axis labeling and a `scale` argument
+    (`"auto"`, `"mortality"`, `"rmst"`, `"surv"`, `"chf"`).
+  - **Ensemble mortality labeling** (Ishwaran et al. 2008): when
+    `scale = "mortality"` (or `scale = "auto"` with a survival forest),
+    the y-axis is labeled "Ensemble mortality (expected events)" — an
+    unbounded relative-risk score, not a survival probability.  The
+    documentation explicitly warns against misinterpretation.
+  - **Survival path C:** `scale = "surv"` or `scale = "chf"` extracts
+    `object$rf` (the embedded rfsrc forest) and returns true S(t)/CHF
+    partial curves via `gg_partial_rfsrc` infrastructure.
+  - `varPro` is now a hard dependency (`Imports:`).
+  - `gg_partialpro()` is soft-deprecated: it emits a deprecation warning
+    and delegates to `gg_partial_varpro()`.  Removal is planned for the
+    release after v2.8.0.
 * **randomForest engine validation & repair (#82).** Fixes #80, #81
   and a `plot.gg_error` label wart; adds full randomForest regression
   coverage. See sub-items below.

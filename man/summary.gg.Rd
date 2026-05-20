@@ -10,6 +10,7 @@
 \alias{summary.gg_partial}
 \alias{summary.gg_partial_rfsrc}
 \alias{summary.gg_partialpro}
+\alias{summary.gg_partial_varpro}
 \alias{summary.gg_roc}
 \alias{summary.gg_survival}
 \alias{summary.gg_brier}
@@ -30,6 +31,8 @@
 \method{summary}{gg_partial_rfsrc}(object, ...)
 
 \method{summary}{gg_partialpro}(object, ...)
+
+\method{summary}{gg_partial_varpro}(object, ...)
 
 \method{summary}{gg_roc}(object, ...)
 

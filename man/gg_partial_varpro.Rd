@@ -15,23 +15,24 @@ gg_partial_varpro(
   model = NULL
 )
 
-gg_partialpro(part_dta, nvars = NULL, cat_limit = 10, model = NULL)
+gg_partialpro(
+  part_dta,
+  object = NULL,
+  scale = c("auto", "rmst", "mortality", "surv", "chf"),
+  time = NULL,
+  nvars = NULL,
+  cat_limit = 10,
+  model = NULL
+)
 }
 \arguments{
 \item{part_dta}{Passed to \code{\link{gg_partial_varpro}}.}
 
-\item{object}{A fitted \code{varpro} object (the originating forest).
-When supplied, used for provenance metadata and — when \code{part_dta}
-is \code{NULL} — \code{varpro::partialpro(object)} is called
-internally.  Required when \code{scale \%in\% c("surv","chf")}.}
+\item{object}{Passed to \code{\link{gg_partial_varpro}}.}
 
-\item{scale}{Character; controls y-axis labeling and (for survival)
-the output type.  One of \code{"auto"} (default), \code{"mortality"},
-\code{"rmst"}, \code{"surv"}, or \code{"chf"}.}
+\item{scale}{Passed to \code{\link{gg_partial_varpro}}.}
 
-\item{time}{Numeric; required when \code{scale = "rmst"} (the RMST
-horizon \eqn{\tau}), and when \code{scale \%in\% c("surv","chf")} to
-label the evaluation time point.}
+\item{time}{Passed to \code{\link{gg_partial_varpro}}.}
 
 \item{nvars}{Passed to \code{\link{gg_partial_varpro}}.}
 
@@ -60,7 +61,9 @@ Splits the list returned by \code{varpro::partialpro} into separate
 data frames for continuous and categorical predictors, with provenance-
 aware y-axis labeling for downstream plot methods.
 
-\lifecycle{deprecated}
+\emph{Deprecated.} \code{gg_partialpro()} has been renamed to
+\code{\link{gg_partial_varpro}()}.  This function is a thin alias that
+will be removed in the release after \pkg{ggRandomForests} v2.8.0.
 }
 \details{
 **Scale detection:** \code{scale = "auto"} with a supplied \code{object}
@@ -78,10 +81,6 @@ an \strong{unbounded relative-risk score}---\emph{not} a survival
 probability or \eqn{1 - S(t)}---and must not be interpreted as one.
 For probability-scale output refit with
 \code{varpro(..., rmst = tau)} and use \code{scale = "rmst"}.
-
-\code{gg_partialpro()} has been renamed to
-\code{\link{gg_partial_varpro}()}.  This function is a thin alias that
-will be removed in the release after \pkg{ggRandomForests} v2.8.0.
 }
 \examples{
 set.seed(42)

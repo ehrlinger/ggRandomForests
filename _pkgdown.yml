@@ -77,6 +77,8 @@ reference:
       - plot.gg_partial
       - gg_partial_rfsrc
       - plot.gg_partial_rfsrc
+      - gg_partial_varpro
+      - plot.gg_partial_varpro
       - gg_partialpro
       - plot.gg_partialpro
 
