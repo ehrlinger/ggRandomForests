@@ -191,4 +191,47 @@ local({
     })
   })
 
+  ## ---- gg_partial_varpro snapshots -------------------------------------------
+  make_mock_vpro_snap <- function(n_obs = 30, n_pts = 15) {
+    set.seed(42)
+    list(
+      age = list(
+        xvirtual    = seq(30, 80, length.out = n_pts),
+        xorg        = sample(seq(30, 80, by = 5), n_obs, replace = TRUE),
+        yhat.par    = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+        yhat.nonpar = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+        yhat.causal = matrix(rnorm(n_obs * n_pts), nrow = n_obs)
+      ),
+      sex = list(
+        xvirtual    = c(0, 1),
+        xorg        = sample(c(0, 1), n_obs, replace = TRUE),
+        yhat.par    = matrix(rnorm(n_obs * 2), nrow = n_obs),
+        yhat.nonpar = matrix(rnorm(n_obs * 2), nrow = n_obs),
+        yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
+      )
+    )
+  }
+
+  test_that("snapshot: gg-partial-varpro-continuous", {
+    result <- gg_partial_varpro(make_mock_vpro_snap(), nvars = 1)
+    vdiffr::expect_doppelganger("gg-partial-varpro-continuous", plot(result))
+  })
+
+  test_that("snapshot: gg-partial-varpro-categorical", {
+    mock <- make_mock_vpro_snap()
+    result <- gg_partial_varpro(mock["sex"])
+    vdiffr::expect_doppelganger("gg-partial-varpro-categorical", plot(result))
+  })
+
+  test_that("snapshot: gg-partial-varpro-both", {
+    result <- gg_partial_varpro(make_mock_vpro_snap())
+    vdiffr::expect_doppelganger("gg-partial-varpro-both", plot(result))
+  })
+
+  test_that("snapshot: gg-partial-varpro-mortality", {
+    result <- gg_partial_varpro(make_mock_vpro_snap(), nvars = 1,
+                                 scale = "mortality")
+    vdiffr::expect_doppelganger("gg-partial-varpro-mortality", plot(result))
+  })
+
 } # end CI guard
