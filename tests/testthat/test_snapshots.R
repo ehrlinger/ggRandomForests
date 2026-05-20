@@ -234,4 +234,26 @@ local({
     vdiffr::expect_doppelganger("gg-partial-varpro-mortality", plot(result))
   })
 
+  ## ---- gg_varpro snapshots ------------------------------------------------
+  local({
+    set.seed(42L)
+    vp_regr  <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50L)
+    vp_class <- varPro::varpro(Species ~ ., data = iris, ntree = 50L)
+
+    test_that("snapshot: gg-varpro-default", {
+      gg <- gg_varpro(vp_regr)
+      vdiffr::expect_doppelganger("gg-varpro-default", plot(gg))
+    })
+
+    test_that("snapshot: gg-varpro-faithful", {
+      gg <- gg_varpro(vp_regr, faithful = TRUE)
+      vdiffr::expect_doppelganger("gg-varpro-faithful", plot(gg))
+    })
+
+    test_that("snapshot: gg-varpro-conditional", {
+      gg <- gg_varpro(vp_class, conditional = TRUE)
+      vdiffr::expect_doppelganger("gg-varpro-conditional", plot(gg))
+    })
+  })
+
 } # end CI guard
