@@ -94,7 +94,9 @@ autoplot.gg_partial_rfsrc <- function(object, ...) {
 #' @rdname autoplot.gg
 #' @export
 autoplot.gg_partialpro <- function(object, ...) {
-  plot(object, ...)
+  ## Deprecated-class shim: re-dispatch to autoplot.gg_partial_varpro.
+  class(object) <- c("gg_partial_varpro", setdiff(class(object), "gg_partialpro"))
+  autoplot.gg_partial_varpro(object, ...)
 }
 
 #' @rdname autoplot.gg
