@@ -17,11 +17,15 @@
 \item{which_outcome}{Integer index or character name of the class for which
 the ROC curve is computed. For binary forests this is typically \code{1}
 or \code{2}; for multi-class forests any valid class index. Use
-\code{which_outcome = 0} to obtain the overall (averaged) ROC.}
+\code{which_outcome = 0} to obtain the overall (averaged) ROC. Use
+\code{which_outcome = "all"} or \code{0} for the overall macro-averaged
+(one-vs-rest) ROC over correctly-computed per-class probabilities.}
 
 \item{oob}{Logical; if \code{TRUE} (default) use out-of-bag predicted
 probabilities for the curve. Set to \code{FALSE} to use full in-bag
-predictions.}
+predictions. For \code{randomForest}, \code{oob = TRUE} uses out-of-bag
+vote probabilities (\code{object$votes}); \code{FALSE} uses in-bag
+\code{predict(type = "prob")}.}
 
 \item{...}{Extra arguments (currently unused).}
 }

@@ -149,49 +149,76 @@ calc_roc <- function(object,
   UseMethod("calc_roc", object)
 }
 
-## This is in development still.
+## randomForest ROC: OOB vote probabilities by default; macro-average for
+## the overall ("all"/0) case. Does NOT use the shared
+## .validate_which_outcome (rfsrc path unchanged). See #81.
 #' @export
 calc_roc.randomForest <-
   function(object,
            dta,
-           which_outcome = 1,
-           oob = FALSE,
+           which_outcome = "all",
+           oob = TRUE,
            ...) {
-    prd <- predict(object, type = "prob")
+    if (!is.factor(dta)) {
+      dta <- factor(dta)
+    }
+    lvls <- levels(dta)
 
-    which_outcome <- .validate_which_outcome(which_outcome)
-    dta_roc <-
-      data.frame(cbind(res = (dta == levels(dta)[which_outcome]), prd = prd))
+    # Probability matrix: OOB votes by default (honest), else in-bag predict.
+    prob <- if (isTRUE(oob) && !is.null(object$votes)) {
+      as.matrix(object$votes)
+    } else {
+      stats::predict(object, type = "prob")
+    }
+    # randomForest votes can be counts; normalise rows to probabilities.
+    rs <- rowSums(prob)
+    if (any(rs > 1 + 1e-8, na.rm = TRUE)) {
+      prob <- prob / rs
+    }
+    colnames(prob) <- lvls
 
-    pct <- sort(unique(prd[[which_outcome]]))
-
-    # Make sure we don't have to many points... if the training set was large,
-    # This may break plotting all ROC curves in multiclass settings.
-    # Arbitrarily reduce this to only include 200 points along the curve
-    if (length(pct) > 200) {
-      pct <- pct[seq(1, length(pct), length.out = 200)]
+    one_class_roc <- function(k) {
+      res <- dta == lvls[k]
+      score <- prob[, k]
+      pct <- sort(unique(score))
+      last <- length(pct)
+      if (last > 1) pct <- pct[-last]
+      if (length(pct) > 200) {
+        pct <- pct[seq(1, length(pct), length.out = 200)]
+      }
+      rc <- parallel::mclapply(pct, function(crit) {
+        tbl <- xtabs(~ res + (score > crit))
+        if (ncol(tbl) < 2) {
+          tbl <- cbind(tbl, c(0, 0))
+          colnames(tbl) <- c("FALSE", "TRUE")
+        }
+        spec <- tbl[2, 2] / rowSums(tbl)[2]
+        sens <- tbl[1, 1] / rowSums(tbl)[1]
+        cbind(sens = sens, spec = spec)
+      })
+      rc <- do.call(rbind, rc)
+      rc <- rbind(c(0, 1), rc, c(1, 0))
+      data.frame(rc, pct = c(0, pct, 1), row.names = seq_len(nrow(rc)))
     }
 
-    gg_dta <- parallel::mclapply(pct, function(crit) {
-      tmp <- dta_roc[, c(1, 1 + which_outcome)]
-      colnames(tmp) <- c("res", "prd")
-      tbl <- xtabs(~ res + (prd > crit), tmp)
-
-      if (dim(tbl)[2] < 2) {
-        tbl <- cbind(tbl, c(0, 0))
-        colnames(tbl) <- c("FALSE", "TRUE")
-      }
-      spec <- tbl[2, 2] / rowSums(tbl)[2]
-      sens <- tbl[1, 1] / rowSums(tbl)[1]
-
-      cbind(sens = sens, spec = spec)
-    })
-
-    gg_dta <- do.call(rbind, gg_dta)
-    gg_dta <- rbind(c(0, 1), gg_dta, c(1, 0))
-
-    gg_dta <- data.frame(gg_dta, row.names = seq_len(nrow(gg_dta)))
-    gg_dta$pct <- c(0, pct, 1)
+    if (identical(which_outcome, "all") || identical(which_outcome, 0)) {
+      # Macro-average one-vs-rest: mean sens/spec on a shared FPR grid.
+      curves <- lapply(seq_along(lvls), one_class_roc)
+      grid <- seq(0, 1, length.out = 200)
+      interp <- vapply(curves, function(cv) {
+        cv <- cv[order(cv$spec, decreasing = TRUE), ]
+        stats::approx(1 - cv$spec, cv$sens, xout = grid,
+                      ties = "ordered", rule = 2)$y
+      }, numeric(length(grid)))
+      gg_dta <- data.frame(
+        sens = rowMeans(interp, na.rm = TRUE),
+        spec = 1 - grid,
+        pct  = grid,
+        row.names = seq_along(grid)
+      )
+    } else {
+      gg_dta <- one_class_roc(which_outcome)
+    }
     invisible(gg_dta)
   }
 

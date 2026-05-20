@@ -11,6 +11,13 @@ ggRandomForests v2.8.0 (development)
     never a bare list — consistent with the v2.7.3 `plot.gg_partial*`
     change. Previously a list was returned for multiple `xvar`, which
     broke `patchwork` / `autoplot()` / `layer_data()` composition (#80).
+  - `gg_roc()` / `calc_roc()` for `randomForest` now compute a correct
+    ROC from class probabilities (OOB votes by default, honoring `oob`)
+    instead of a degenerate ~3-point curve; `which_outcome = "all"` (the
+    default for `gg_roc(rf)`) returns a macro-averaged one-vs-rest ROC
+    with no warning. The shared `.validate_which_outcome` helper and
+    `calc_roc.rfsrc` are byte-unchanged — rfsrc behavior is preserved
+    (#81).
 * **Dependency modernization (breaking for scripts that relied on
   attachment).** `randomForestSRC` and `randomForest` moved from
   `Depends:` to `Imports:`; `igraph`, `callr`, and `varPro` added to

@@ -26,10 +26,14 @@
 #' @param which_outcome Integer index or character name of the class for which
 #'   the ROC curve is computed. For binary forests this is typically \code{1}
 #'   or \code{2}; for multi-class forests any valid class index. Use
-#'   \code{which_outcome = 0} to obtain the overall (averaged) ROC.
+#'   \code{which_outcome = 0} to obtain the overall (averaged) ROC. Use
+#'   \code{which_outcome = "all"} or \code{0} for the overall macro-averaged
+#'   (one-vs-rest) ROC over correctly-computed per-class probabilities.
 #' @param oob Logical; if \code{TRUE} (default) use out-of-bag predicted
 #'   probabilities for the curve. Set to \code{FALSE} to use full in-bag
-#'   predictions.
+#'   predictions. For \code{randomForest}, \code{oob = TRUE} uses out-of-bag
+#'   vote probabilities (\code{object$votes}); \code{FALSE} uses in-bag
+#'   \code{predict(type = "prob")}.
 #' @param ... Extra arguments (currently unused).
 #'
 #' @return A \code{gg_roc} \code{data.frame} with one row per unique prediction
@@ -131,7 +135,7 @@ gg_roc <- function(object, which_outcome, oob = TRUE, ...) {
 }
 
 #' @export
-gg_roc.randomForest <- function(object, which_outcome, oob, ...) {
+gg_roc.randomForest <- function(object, which_outcome, oob = TRUE, ...) {
   # Validate that the object is a genuine randomForest instance.
   if (!inherits(object, "randomForest")) {
     stop(
@@ -152,7 +156,8 @@ gg_roc.randomForest <- function(object, which_outcome, oob, ...) {
   gg_dta <- # nolint: object_usage_linter
     calc_roc(object,
       object$y,
-      which_outcome = which_outcome
+      which_outcome = which_outcome,
+      oob = oob
     )
   class(gg_dta) <- c("gg_roc", class(gg_dta))
   gg_dta <- .set_provenance(gg_dta, object)
