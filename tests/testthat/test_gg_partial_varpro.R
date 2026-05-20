@@ -206,3 +206,78 @@ test_that("summary.gg_partial_varpro: returns summary.gg", {
   s       <- summary(result)
   expect_s3_class(s, "summary.gg")
 })
+
+## ── C-path (scale = surv / chf) ──────────────────────────────────────────────
+test_that("gg_partial_varpro: C-path returns gg_partial_varpro class", {
+  skip_if_not_installed("randomForestSRC")
+  set.seed(7)
+  veteran_data <- survival::veteran
+  rf <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data   = veteran_data,
+    ntree  = 30,
+    importance = FALSE
+  )
+  vp_mock <- list(
+    rf         = rf,
+    family     = "surv",
+    xvar.names = rf$xvar.names,
+    x          = rf$xvar,
+    max.tree   = 30L
+  )
+  class(vp_mock) <- "varpro"
+
+  result <- gg_partial_varpro(object = vp_mock, scale = "surv",
+                               time = median(rf$time.interest))
+  expect_s3_class(result, "gg_partial_varpro")
+})
+
+test_that("gg_partial_varpro: C-path provenance path='C'", {
+  skip_if_not_installed("randomForestSRC")
+  set.seed(7)
+  veteran_data <- survival::veteran
+  rf <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data   = veteran_data,
+    ntree  = 30,
+    importance = FALSE
+  )
+  vp_mock <- list(
+    rf         = rf,
+    family     = "surv",
+    xvar.names = rf$xvar.names,
+    x          = rf$xvar,
+    max.tree   = 30L
+  )
+  class(vp_mock) <- "varpro"
+
+  result <- gg_partial_varpro(object = vp_mock, scale = "surv",
+                               time = median(rf$time.interest))
+  expect_equal(attr(result, "provenance")$path, "C")
+  expect_equal(attr(result, "provenance")$scale, "surv")
+})
+
+test_that("gg_partial_varpro: plot C-path returns ggplot", {
+  skip_if_not_installed("randomForestSRC")
+  set.seed(7)
+  veteran_data <- survival::veteran
+  rf <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data      = veteran_data,
+    ntree     = 30,
+    importance = FALSE
+  )
+  vp_mock <- list(
+    rf         = rf,
+    family     = "surv",
+    xvar.names = rf$xvar.names[1L],
+    x          = rf$xvar[, rf$xvar.names[1L], drop = FALSE],
+    max.tree   = 30L
+  )
+  class(vp_mock) <- "varpro"
+
+  result <- gg_partial_varpro(object = vp_mock, scale = "surv",
+                               time = median(rf$time.interest))
+  gg <- plot(result)
+  expect_s3_class(gg, "ggplot")
+})
