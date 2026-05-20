@@ -29,8 +29,11 @@
 #' @return A single \code{ggplot} object when \code{length(xvar) == 1} or
 #'   \code{panel = TRUE}; otherwise a \code{patchwork} composite stacking
 #'   one panel per variable in \code{xvar}. Always a single plottable
-#'   object (never a bare list) so it composes with \code{patchwork} and
-#'   works with \code{ggplot2::layer_data()} / \code{autoplot()}.
+#'   object (never a bare list) so it composes naturally with
+#'   \code{patchwork} and dispatches through \code{ggplot2::autoplot()}.
+#'   For the patchwork case, callers wanting to inspect a specific
+#'   panel with \code{ggplot2::layer_data()} should extract that panel
+#'   first (e.g. \code{ggplot2::layer_data(p[[1]])}).
 #'
 #' @seealso \code{\link{gg_variable}}, \code{\link{gg_partial}},
 #'   \code{\link[randomForestSRC]{plot.variable}}

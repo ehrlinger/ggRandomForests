@@ -57,10 +57,12 @@ gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
 )
 
 rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
-gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
+# randomForest stores the response in $y (rfsrc uses $yvar); pass the
+# original training factor so calc_roc has the class labels.
+gg_dta <- calc_roc(rf_iris, iris$Species,
   which_outcome = 1
 )
-gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
+gg_dta <- calc_roc(rf_iris, iris$Species,
   which_outcome = 2
 )
 

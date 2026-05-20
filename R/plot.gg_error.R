@@ -239,14 +239,20 @@ plot.gg_error <- function(x, ...) {
                                                     y = .data[["error"]]))
   }
 
-  if (point) {
-    gg_plt <- gg_plt +
-      ggplot2::geom_point() +
-      if (multi_outcome) ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome") else ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate")
+  # Build the labs() once with the colour label only mapped on the
+  # multi-outcome / classification path (avoids the "Ignoring unknown
+  # labels: colour Outcome" warning on the single-outcome path where no
+  # colour aesthetic is mapped). #82.
+  err_labs <- if (multi_outcome) {
+    ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate",
+                  color = "Outcome")
   } else {
-    gg_plt <- gg_plt +
-      ggplot2::geom_line() +
-      if (multi_outcome) ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate", color = "Outcome") else ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate")
+    ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate")
+  }
+  if (point) {
+    gg_plt <- gg_plt + ggplot2::geom_point() + err_labs
+  } else {
+    gg_plt <- gg_plt + ggplot2::geom_line() + err_labs
   }
 
   # Hide the legend when there is only a single outcome variable — the colour

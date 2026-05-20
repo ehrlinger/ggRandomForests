@@ -72,10 +72,12 @@
 #' )
 #'
 #' rf_iris <- randomForest::randomForest(Species ~ ., data = iris)
-#' gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
+#' # randomForest stores the response in $y (rfsrc uses $yvar); pass the
+#' # original training factor so calc_roc has the class labels.
+#' gg_dta <- calc_roc(rf_iris, iris$Species,
 #'   which_outcome = 1
 #' )
-#' gg_dta <- calc_roc(rf_iris, rf_iris$yvar,
+#' gg_dta <- calc_roc(rf_iris, iris$Species,
 #'   which_outcome = 2
 #' )
 #'
@@ -177,6 +179,33 @@ calc_roc.randomForest <-
     }
     colnames(prob) <- lvls
 
+    # Coerce / validate which_outcome up front. Accept:
+    #   * "all" or numeric == 0 (handles 0 and 0L) -> overall (macro-average)
+    #   * character class name (e.g. "setosa")     -> integer index via match()
+    #   * integer/double class index in 1:nlvls    -> as-is
+    # Error on anything else, including unknown class names or out-of-range
+    # indices. (Avoids letting bogus inputs reach one_class_roc(), where
+    # `lvls[k]` would return NA for character k and `prob[, k]` would error
+    # for k = 0.)
+    if (is.character(which_outcome) && !identical(which_outcome, "all")) {
+      idx <- match(which_outcome, lvls)
+      if (anyNA(idx)) {
+        stop("Unknown class name(s) in which_outcome: ",
+             paste(which_outcome[is.na(idx)], collapse = ", "),
+             ". Must be one of: ", paste(lvls, collapse = ", "))
+      }
+      which_outcome <- idx
+    }
+    if (is.numeric(which_outcome) && length(which_outcome) == 1L &&
+        which_outcome == 0) {
+      which_outcome <- "all"
+    }
+    if (is.numeric(which_outcome) &&
+        (any(which_outcome < 1) || any(which_outcome > length(lvls)))) {
+      stop("which_outcome out of range; must be in 1:", length(lvls),
+           ' or "all" / 0.')
+    }
+
     one_class_roc <- function(k) {
       res <- dta == lvls[k]
       score <- prob[, k]
@@ -186,13 +215,12 @@ calc_roc.randomForest <-
       if (length(pct) > 200) {
         pct <- pct[seq(1, length(pct), length.out = 200)]
       }
-      rc <- parallel::mclapply(pct, function(crit) {
-        # Use base table() rather than xtabs(~ res + (score > crit)) — the
-        # formula form NSE-resolves `res`/`score` via model.frame's parent
-        # frame, which works under Linux/mac mclapply forks (parent env
-        # inherited) but FAILS on Windows where mclapply is serial and
-        # model.frame can't find the symbols. table() takes raw vectors
-        # via lexical scope, no formula parsing, cross-platform robust.
+      # Plain lapply — the per-threshold work is a single table() + a few
+      # arithmetic ops (microseconds); parallel::mclapply's default fork
+      # overhead dominates and on Windows mclapply degrades to serial
+      # anyway, while introducing closure-scope fragility (the source of
+      # the earlier xtabs/Windows failure).
+      rc <- lapply(pct, function(crit) {
         tbl <- table(res, score > crit)
         if (ncol(tbl) < 2) {
           tbl <- cbind(tbl, c(0, 0))
@@ -207,7 +235,7 @@ calc_roc.randomForest <-
       data.frame(rc, pct = c(0, pct, 1), row.names = seq_len(nrow(rc)))
     }
 
-    if (identical(which_outcome, "all") || identical(which_outcome, 0)) {
+    if (identical(which_outcome, "all")) {
       # Macro-average one-vs-rest: mean sens/spec on a shared FPR grid.
       curves <- lapply(seq_along(lvls), one_class_roc)
       grid <- seq(0, 1, length.out = 200)

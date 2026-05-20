@@ -23,12 +23,18 @@
 #'   \code{\link[randomForest]{randomForest}} object. Only forests with
 #'   \code{family == "class"} (rfsrc) or \code{type == "classification"}
 #'   (randomForest) are supported.
-#' @param which_outcome Integer index or character name of the class for which
-#'   the ROC curve is computed. For binary forests this is typically \code{1}
-#'   or \code{2}; for multi-class forests any valid class index. Use
-#'   \code{which_outcome = 0} to obtain the overall (averaged) ROC. Use
-#'   \code{which_outcome = "all"} or \code{0} for the overall macro-averaged
-#'   (one-vs-rest) ROC over correctly-computed per-class probabilities.
+#' @param which_outcome Integer index or character name of the class for
+#'   which the ROC curve is computed. For binary forests this is typically
+#'   \code{1} or \code{2}; for multi-class forests any valid class index or
+#'   level name. The behaviour of \code{which_outcome = "all"} or \code{0}
+#'   is engine-specific:
+#'   \describe{
+#'     \item{\code{randomForest} method}{Returns a macro-averaged
+#'       one-vs-rest ROC computed over the per-class probabilities.}
+#'     \item{\code{rfsrc} method}{Currently warns and falls back to
+#'       class 1 (the macro-average / per-class faceting work for the
+#'       \code{rfsrc} path is tracked separately under issue #72).}
+#'   }
 #' @param oob Logical; if \code{TRUE} (default) use out-of-bag predicted
 #'   probabilities for the curve. Set to \code{FALSE} to use full in-bag
 #'   predictions. For \code{randomForest}, \code{oob = TRUE} uses out-of-bag
