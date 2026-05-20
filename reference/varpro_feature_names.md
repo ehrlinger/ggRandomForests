@@ -29,7 +29,7 @@ character vector of unique original variable names (no suffixes)
 
 ## See also
 
-[`gg_partialpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md)
+[`gg_partialpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
 
 ## Examples
 

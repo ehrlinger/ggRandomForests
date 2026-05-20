@@ -2,6 +2,29 @@
 
 ## ggRandomForests v2.8.0 (development)
 
+- **varPro partial dependence:
+  [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  ([\#84](https://github.com/ehrlinger/ggRandomForests/issues/84)).**
+  - [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+    replaces
+    [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+    as the primary entry point for varPro partial dependence plots. The
+    new extractor accepts an optional `object` argument (the originating
+    `varpro` fit) for provenance-aware axis labeling and a `scale`
+    argument (`"auto"`, `"mortality"`, `"rmst"`, `"surv"`, `"chf"`).
+  - **Ensemble mortality labeling** (Ishwaran et al. 2008): when
+    `scale = "mortality"` (or `scale = "auto"` with a survival forest),
+    the y-axis is labeled “Ensemble mortality (expected events)” — an
+    unbounded relative-risk score, not a survival probability. The
+    documentation explicitly warns against misinterpretation.
+  - **Survival path C:** `scale = "surv"` or `scale = "chf"` extracts
+    `object$rf` (the embedded rfsrc forest) and returns true S(t)/CHF
+    partial curves via `gg_partial_rfsrc` infrastructure.
+  - `varPro` is now a hard dependency (`Imports:`).
+  - [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+    is soft-deprecated: it emits a deprecation warning and delegates to
+    [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md).
+    Removal is planned for the release after v2.8.0.
 - **randomForest engine validation & repair
   ([\#82](https://github.com/ehrlinger/ggRandomForests/issues/82)).**
   Fixes [\#80](https://github.com/ehrlinger/ggRandomForests/issues/80),
@@ -52,7 +75,7 @@ CRAN release: 2026-05-12
 - [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md),
   [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md),
   and
-  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.md)
+  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
   now always return a single `ggplot`/`patchwork` object. Previously,
   when both continuous and categorical predictors were present, they
   returned a named list `list(continuous=, categorical=)`, which
@@ -177,7 +200,7 @@ CRAN release: 2026-05-12
 - Add `@examples` blocks to
   [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
   and
-  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.md).
+  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md).
   The latter uses a self-contained mock of the `varpro::partialpro()`
   output structure so the example runs without pulling in `varpro` as a
   dependency.
@@ -186,7 +209,7 @@ CRAN release: 2026-05-12
 
 - S3 design overhaul:
   [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md),
-  [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md),
+  [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md),
   and
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
   now stamp their return values with S3 classes (`gg_partial`,
@@ -197,7 +220,7 @@ CRAN release: 2026-05-12
   [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md),
   [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md),
   and
-  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.md)
+  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
   S3 methods; continuous predictors render as line plots, categorical as
   bar charts, faceted by variable name. Survival forests produce curves
   over time; two-variable surface plots group by `xvar2.name`.
@@ -249,7 +272,7 @@ CRAN release: 2026-05-12
   in
   [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md)
   and
-  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.md).
+  [`plot.gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md).
 - Add `gg_survival.rfsrc`, `gg_survival.default`, `plot.gg_partial`,
   `plot.gg_partial_rfsrc`, and `plot.gg_partialpro` to `NAMESPACE`; add
   corresponding `@rdname` / `@export` roxygen tags.

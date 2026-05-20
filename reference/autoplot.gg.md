@@ -30,6 +30,9 @@ autoplot(object, ...)
 # S3 method for class 'gg_partialpro'
 autoplot(object, ...)
 
+# S3 method for class 'gg_partial_varpro'
+autoplot(object, ...)
+
 # S3 method for class 'gg_roc'
 autoplot(object, ...)
 
@@ -82,9 +85,13 @@ The following `gg_*` classes are supported:
 
   Partial dependence (via `partial.rfsrc`)
 
-- `gg_partialpro`:
+- `gg_partial_varpro`:
 
   Partial dependence (via `varPro`)
+
+- `gg_partialpro`:
+
+  Partial dependence via `varPro` (deprecated alias)
 
 - `gg_roc`:
 

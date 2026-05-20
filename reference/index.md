@@ -71,14 +71,15 @@ Partial dependence plots for individual variables.
 
   Plot a `gg_partial_rfsrc` object
 
-- [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md)
-  : Split varpro partial dependence data into continuous or categorical
-  datasets
+- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  : Partial dependence data from a varPro model
 
-- [`plot(`*`<gg_partialpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partialpro.md)
+- [`plot(`*`<gg_partialpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
+  [`plot(`*`<gg_partial_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
   :
 
-  Plot a `gg_partialpro` object
+  Plot a `gg_partial_varpro` object
 
 ## Survival Analysis
 
@@ -135,6 +136,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`autoplot(`*`<gg_partial>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_partial_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_partialpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_partial_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
@@ -149,6 +151,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`print(`*`<gg_partial>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_partial_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_partialpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_partial_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
@@ -162,6 +165,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`summary(`*`<gg_partial>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_partial_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_partialpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_partial_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)

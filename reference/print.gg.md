@@ -30,6 +30,9 @@ print(x, ...)
 # S3 method for class 'gg_partialpro'
 print(x, ...)
 
+# S3 method for class 'gg_partial_varpro'
+print(x, ...)
+
 # S3 method for class 'gg_roc'
 print(x, ...)
 

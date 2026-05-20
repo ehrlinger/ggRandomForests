@@ -32,6 +32,9 @@ summary(object, ...)
 # S3 method for class 'gg_partialpro'
 summary(object, ...)
 
+# S3 method for class 'gg_partial_varpro'
+summary(object, ...)
+
 # S3 method for class 'gg_roc'
 summary(object, ...)
 

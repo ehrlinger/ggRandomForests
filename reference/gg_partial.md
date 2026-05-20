@@ -55,7 +55,7 @@ comparable partial-dependence interface).
 ## See also
 
 [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-[`gg_partialpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partialpro.md)
+[`gg_partialpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
 
 ## Examples
 
