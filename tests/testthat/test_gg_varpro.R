@@ -30,6 +30,16 @@ test_that("gg_varpro: conditional=TRUE on regression -> stop", {
                regexp = "classification")
 })
 
+test_that("gg_varpro: faithful=TRUE + local.std=TRUE coerces local.std with message", {
+  vp <- make_vp_regr()
+  expect_message(
+    gg <- gg_varpro(vp, faithful = TRUE, local.std = TRUE),
+    regexp = "local.std"
+  )
+  # provenance must record resolved FALSE
+  expect_false(attr(gg, "provenance")$local.std)
+})
+
 ## ── Class & structure ────────────────────────────────────────────────────────
 
 test_that("gg_varpro returns gg_varpro class", {

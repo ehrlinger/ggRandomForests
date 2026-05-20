@@ -64,8 +64,8 @@ gg_varpro <- function(object,
                       nvar        = NULL,
                       ...) {
 
-  ## ---- Validation -----------------------------------------------------------
-  .validate_varpro_imp_inputs(object, local.std, conditional)
+  ## ---- Validation + coercion ------------------------------------------------
+  local.std <- .validate_varpro_imp_inputs(object, local.std, faithful, conditional)
 
   ## ---- Call importance (local.std=FALSE gives mean & std columns) -----------
   imp_out <- varPro::importance(object, local.std = FALSE, ...)
@@ -90,7 +90,7 @@ gg_varpro <- function(object,
 
   attr(result, "provenance") <- list(
     family      = object$family,
-    local.std   = local.std,
+    local.std   = local.std,  # resolved value (may differ from arg when faithful=TRUE)
     cutoff      = cutoff,
     faithful    = faithful,
     conditional = conditional,
@@ -104,7 +104,7 @@ gg_varpro <- function(object,
 ## ---- Internal helpers -------------------------------------------------------
 
 #' @keywords internal
-.validate_varpro_imp_inputs <- function(object, local.std, conditional) {
+.validate_varpro_imp_inputs <- function(object, local.std, faithful, conditional) {
   if (missing(object) || is.null(object)) {
     stop("'object' must be a fitted varpro object.", call. = FALSE)
   }
@@ -115,6 +115,12 @@ gg_varpro <- function(object,
     stop("conditional=TRUE requires a classification forest ",
          "(object$family == \"class\").", call. = FALSE)
   }
+  ## faithful=TRUE requires raw scale so the mean-dot glyph plots correctly
+  if (faithful && local.std) {
+    message("faithful=TRUE: coercing local.std to FALSE (raw scale required for per-tree overlay)")
+    local.std <- FALSE
+  }
+  invisible(local.std)
 }
 
 #' Build per-tree importance matrix from varpro object results
@@ -216,18 +222,20 @@ gg_varpro <- function(object,
     stringsAsFactors = FALSE
   )
 
-  ## Apply nvar truncation (top-N by aggregate z, already sorted by importance)
-  if (!is.null(nvar)) {
-    imp_df <- imp_df[order(-imp_df$z), , drop = FALSE]
-    imp_df <- imp_df[seq_len(min(nvar, nrow(imp_df))), , drop = FALSE]
-  }
-
   ## Keep only columns present in both imp_df and imp_tree_mat
   keep_vars  <- imp_df$variable[imp_df$variable %in% colnames(imp_tree_mat)]
   imp_tree_k <- imp_tree_mat[, keep_vars, drop = FALSE]
 
-  ## $stats: box quantiles per variable
+  ## $stats: box quantiles per variable (full set before nvar truncation)
   stats_df <- .varpro_imp_stats(imp_tree_k, local.std = local.std)
+
+  ## Apply nvar truncation by median z (spec: "top-nvar by median z")
+  if (!is.null(nvar)) {
+    top_vars <- stats_df$variable[order(-stats_df$median)][
+      seq_len(min(nvar, nrow(stats_df)))]
+    imp_df   <- imp_df[imp_df$variable %in% top_vars, , drop = FALSE]
+    stats_df <- stats_df[stats_df$variable %in% top_vars, , drop = FALSE]
+  }
 
   ## Order $imp factor by descending median z (matches plot sort)
   var_order         <- stats_df$variable[order(-stats_df$median)]
