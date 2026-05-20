@@ -164,3 +164,47 @@ test_that("gg_varpro: z-normalisation mean(z_ij) == aggregate z_j", {
   expect_equal(z_means[common], agg_z[common], tolerance = 0.1,
                info = "mean per-tree z should approximate aggregate z within 0.1")
 })
+
+## ── Plot smoke tests ─────────────────────────────────────────────────────────
+
+test_that("plot.gg_varpro default returns a ggplot", {
+  vp <- make_vp_regr()
+  gg <- gg_varpro(vp)
+  p  <- plot(gg)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_varpro type='z' returns a ggplot", {
+  vp <- make_vp_regr()
+  gg <- gg_varpro(vp)  # local.std=TRUE default
+  p  <- plot(gg, type = "z")
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_varpro type='raw' with local.std=FALSE returns a ggplot", {
+  vp <- make_vp_regr()
+  gg <- gg_varpro(vp, local.std = FALSE)
+  p  <- plot(gg, type = "raw")
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_varpro type='raw' with local.std=TRUE -> stop", {
+  vp <- make_vp_regr()
+  gg <- gg_varpro(vp, local.std = TRUE)
+  expect_error(plot(gg, type = "raw"), regexp = "local\\.std")
+})
+
+test_that("plot.gg_varpro faithful=TRUE returns a ggplot", {
+  vp <- make_vp_regr()
+  gg <- gg_varpro(vp, faithful = TRUE)
+  p  <- plot(gg)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_varpro conditional=TRUE returns ggplot with FacetWrap", {
+  vp <- make_vp_class()
+  gg <- gg_varpro(vp, conditional = TRUE)
+  p  <- plot(gg)
+  expect_s3_class(p, "ggplot")
+  expect_true(inherits(p$facet, "FacetWrap"))
+})
