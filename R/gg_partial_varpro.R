@@ -32,7 +32,7 @@
 #' resolves to \code{"mortality"} for survival forests and \code{"generic"}
 #' for regression/classification forests.  The RMST horizon \eqn{\tau} is
 #' \emph{not} stored in the \code{varpro} object (varPro 3.1.0); pass
-#' \code{scale = "rmst", time = \tau} explicitly for RMST-labeled output.
+#' \code{scale = "rmst", time = tau} explicitly for RMST-labeled output.
 #'
 #' **Ensemble mortality (scale = "mortality"):** The y-axis represents
 #' \emph{ensemble mortality}: the expected number of events if the subject
@@ -42,7 +42,7 @@
 #' an \strong{unbounded relative-risk score}---\emph{not} a survival
 #' probability or \eqn{1 - S(t)}---and must not be interpreted as one.
 #' For probability-scale output refit with
-#' \code{varpro(\ldots, rmst = \tau)} and use \code{scale = "rmst"}.
+#' \code{varpro(..., rmst = tau)} and use \code{scale = "rmst"}.
 #'
 #' @return A named list of class \code{"gg_partial_varpro"} with elements:
 #' \describe{
