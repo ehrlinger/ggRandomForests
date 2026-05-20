@@ -9,6 +9,7 @@
 \alias{print.gg_partial}
 \alias{print.gg_partial_rfsrc}
 \alias{print.gg_partialpro}
+\alias{print.gg_partial_varpro}
 \alias{print.gg_roc}
 \alias{print.gg_survival}
 \alias{print.gg_brier}
@@ -27,6 +28,8 @@
 \method{print}{gg_partial_rfsrc}(x, ...)
 
 \method{print}{gg_partialpro}(x, ...)
+
+\method{print}{gg_partial_varpro}(x, ...)
 
 \method{print}{gg_roc}(x, ...)
 
