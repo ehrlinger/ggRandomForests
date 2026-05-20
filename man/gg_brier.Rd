@@ -51,6 +51,10 @@ inverse-probability-of-censoring weighting; the censoring distribution
 is estimated either by Kaplan-Meier (\code{cens.model = "km"}, the
 default) or by a separate censoring forest (\code{cens.model = "rfsrc"}).
 }
+\note{
+Brier score / CRPS is `randomForestSRC` survival-only; there
+  is no `randomForest` method.
+}
 \examples{
 \dontrun{
 data(pbc, package = "randomForestSRC")

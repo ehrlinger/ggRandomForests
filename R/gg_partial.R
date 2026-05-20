@@ -43,6 +43,9 @@
 #' result_labelled <- gg_partial(pv, model = "airq_model")
 #' unique(result_labelled$continuous$model)
 #'
+#' @note Partial-dependence extraction is `randomForestSRC`-only;
+#'   there is no `randomForest` method (the `randomForest` package
+#'   provides no comparable partial-dependence interface).
 #' @export
 gg_partial <- function(part_dta,
                        nvars = NULL,

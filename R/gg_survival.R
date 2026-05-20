@@ -66,6 +66,8 @@
 #' )
 #' plot(gg_dta)
 #'
+#' @note Survival estimation is `randomForestSRC`-only; `randomForest`
+#'   has no survival forest, so no `randomForest` method exists.
 #' @export
 gg_survival <- function(object = NULL,
                         interval = NULL,

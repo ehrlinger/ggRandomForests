@@ -33,6 +33,11 @@ and one for categorical (factor-like) predictors.  The split is controlled
 by \code{cat_limit}: variables with more unique x-values than this threshold
 are treated as continuous; all others are categorical.
 }
+\note{
+Partial-dependence extraction is `randomForestSRC`-only;
+  there is no `randomForest` method (the `randomForest` package
+  provides no comparable partial-dependence interface).
+}
 \examples{
 ## Build a small regression forest on the airquality dataset
 set.seed(42)
