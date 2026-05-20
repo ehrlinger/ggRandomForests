@@ -21,14 +21,15 @@
 #'   (classification forests only) extracts the \code{$conditional.z}
 #'   matrix and stores it as \code{$conditional}.
 #' @param nvar Integer; retain only the top \code{nvar} variables (by
-#'   aggregate z) after applying the cutoff filter.  \code{NULL} keeps all.
+#'   median per-tree z) after applying the cutoff filter.  \code{NULL} keeps all.
 #' @param ... Additional arguments passed to \code{varPro::importance()}.
 #'
 #' @return A named list of class \code{"gg_varpro"} with elements:
 #' \describe{
-#'   \item{\code{$imp}}{Long tidy data frame: \code{variable} (factor,
-#'     ordered by aggregate z descending), \code{z} (aggregate z-score),
-#'     \code{selected} (logical, \code{z > cutoff}).}
+#'   \item{\code{$imp}}{Summary data frame: \code{variable} (factor with
+#'     levels ordered by descending median per-tree z), \code{z} (aggregate
+#'     z-score from \code{importance()}), \code{selected} (logical,
+#'     \code{z > cutoff}).}
 #'   \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
 #'     otherwise an ntree x p matrix of per-tree importance values.}
 #'   \item{\code{$stats}}{Per-variable summary: \code{variable},
@@ -43,7 +44,7 @@
 #' \code{cutoff}, \code{faithful}, \code{conditional}, \code{xvar.names},
 #' and \code{n}.
 #'
-#' @seealso \code{plot.gg_varpro} (Phase 2 Task 2), \code{\link{gg_vimp}}
+#' @seealso \code{\link{plot.gg_varpro}}, \code{\link{gg_vimp}}
 #'
 #' @examples
 #' \donttest{
@@ -155,6 +156,9 @@ gg_varpro <- function(object,
 
   imp_tree <- matrix(0, nrow = ntree.used, ncol = p,
     dimnames = list(as.character(trees), xvarused.names))
+  ## g.rows are the grp keys (1..ntree.used*p); decode back to (tree, var) indices.
+  ## reorder=FALSE preserves insertion order but rownames() always give the
+  ## original grp key values, so the modular decode is stable regardless of order.
   g.rows   <- as.integer(rownames(numer.sum))
   imp_tree[cbind(((g.rows - 1L) %% ntree.used) + 1L,
                  ((g.rows - 1L) %/% ntree.used) + 1L)] <- ratio
@@ -237,10 +241,15 @@ gg_varpro <- function(object,
     stats_df <- stats_df[stats_df$variable %in% top_vars, , drop = FALSE]
   }
 
-  ## Order $imp factor by descending median z (matches plot sort)
+  ## Order $imp and $stats rows + factor levels by descending median z
   var_order         <- stats_df$variable[order(-stats_df$median)]
-  imp_df$variable   <- factor(imp_df$variable, levels = var_order)
+  imp_df$variable   <- factor(imp_df$variable,   levels = var_order)
   stats_df$variable <- factor(stats_df$variable, levels = var_order)
+  ## Reorder rows to match factor levels (avoids row-order / level mismatch)
+  imp_df   <- imp_df[order(imp_df$variable), , drop = FALSE]
+  stats_df <- stats_df[order(stats_df$variable), , drop = FALSE]
+  rownames(imp_df)   <- NULL
+  rownames(stats_df) <- NULL
 
   ## $conditional: tidy class-conditional z-scores
   cond_df <- NULL

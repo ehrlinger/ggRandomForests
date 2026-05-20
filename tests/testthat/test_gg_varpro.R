@@ -129,6 +129,21 @@ test_that("gg_varpro variable factor ordered by descending median z", {
   expect_true(all(diff(med_vals) <= 0))
 })
 
+test_that("gg_varpro nvar larger than p returns all variables", {
+  vp <- make_vp_regr()
+  n_all <- nrow(gg_varpro(vp)$imp)
+  gg <- gg_varpro(vp, nvar = 999L)
+  expect_equal(nrow(gg$imp), n_all)
+})
+
+test_that("gg_varpro local.std=FALSE produces raw-scale stats", {
+  vp <- make_vp_regr()
+  gg_z   <- gg_varpro(vp, local.std = TRUE)
+  gg_raw <- gg_varpro(vp, local.std = FALSE)
+  # raw-scale medians should differ from z-scale medians
+  expect_false(isTRUE(all.equal(gg_z$stats$median, gg_raw$stats$median)))
+})
+
 ## ── Z-scale alignment ─────────────────────────────────────────────────────────
 
 test_that("gg_varpro: z-normalisation mean(z_ij) == aggregate z_j", {
@@ -146,6 +161,6 @@ test_that("gg_varpro: z-normalisation mean(z_ij) == aggregate z_j", {
   agg_z <- setNames(gg$imp$z, as.character(gg$imp$variable))
   common <- intersect(names(z_means), names(agg_z))
   expect_gt(length(common), 0L)
-  expect_equal(z_means[common], agg_z[common], tolerance = 0.5,
-               info = "mean per-tree z should approximate aggregate z within 0.5")
+  expect_equal(z_means[common], agg_z[common], tolerance = 0.1,
+               info = "mean per-tree z should approximate aggregate z within 0.1")
 })
