@@ -30,14 +30,11 @@ test_that("gg_varpro: conditional=TRUE on regression -> stop", {
                regexp = "classification")
 })
 
-test_that("gg_varpro: faithful=TRUE + local.std=TRUE coerces local.std with message", {
+test_that("gg_varpro: faithful=TRUE + local.std=TRUE is valid, records local.std=TRUE", {
   vp <- make_vp_regr()
-  expect_message(
-    gg <- gg_varpro(vp, faithful = TRUE, local.std = TRUE),
-    regexp = "local.std"
-  )
-  # provenance must record resolved FALSE
-  expect_false(attr(gg, "provenance")$local.std)
+  gg <- gg_varpro(vp, faithful = TRUE, local.std = TRUE)
+  expect_true(is.matrix(gg$imp.tree))
+  expect_true(attr(gg, "provenance")$local.std)
 })
 
 ## ── Class & structure ────────────────────────────────────────────────────────
@@ -212,6 +209,12 @@ test_that("plot.gg_varpro type='raw' with local.std=TRUE -> stop", {
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, local.std = TRUE)
   expect_error(plot(gg, type = "raw"), regexp = "local\\.std")
+})
+
+test_that("plot.gg_varpro type='z' with local.std=FALSE -> stop", {
+  vp <- make_vp_regr()
+  gg <- gg_varpro(vp, local.std = FALSE)
+  expect_error(plot(gg, type = "z"), regexp = "local\\.std")
 })
 
 test_that("plot.gg_varpro faithful=TRUE returns a ggplot", {

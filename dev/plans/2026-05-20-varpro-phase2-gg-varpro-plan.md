@@ -4,7 +4,7 @@
 
 **Goal:** Add `gg_varpro()` + `plot.gg_varpro()` — honest 15th/85th boxplot of varPro variable importance with optional per-tree overlay (`faithful=TRUE`) and class-faceted conditional importance (`conditional=TRUE`).
 
-**Architecture:** `gg_varpro()` always calls `varPro::importance(object, local.std=FALSE)` internally to obtain `$imp.tree` (ntree×p matrix). Per-tree z-scores are derived from `imp.tree` by normalising each column to z-scale (`z_ij = imp_ij * sqrt(ntree) / sd_j`); the box stats (q05/q15/median/q85/q95) are computed from this z-normalised matrix and stored in `$stats`. The plot method is pure rendering — no computation. This mirrors the Phase 1 `gg_partial_varpro` extractor/plot separation.
+**Architecture:** `gg_varpro()` always calls `varPro::importance(object, local.std=FALSE)` internally to obtain `$imp.tree` (ntree×p matrix). Per-tree z-scores are derived from `imp.tree` by normalising each column to z-scale (`z_ij = imp_ij / sd_j`); the box stats (q05/q15/median/q85/q95) are computed from this z-normalised matrix and stored in `$stats`. The plot method is pure rendering — no computation. This mirrors the Phase 1 `gg_partial_varpro` extractor/plot separation.
 
 **Tech Stack:** R, varPro (Imports), ggplot2, tidyr, dplyr, patchwork; testthat + vdiffr for testing; roxygen2 8.x; lintr cyclocomp ≤ 20.
 
@@ -272,7 +272,7 @@ gg_varpro <- function(object,
 .varpro_imp_stats <- function(mat, local.std = TRUE) {
   ## mat: ntree x p matrix of raw per-tree importances.
   ## When local.std=TRUE, normalise each column to per-tree z-scores:
-  ##   z_ij = imp_ij * sqrt(ntree) / sd_j
+  ##   z_ij = imp_ij / sd_j
   ## so that mean(z_ij) == aggregate z-score for variable j.
   ntree <- nrow(mat)
   if (local.std) {

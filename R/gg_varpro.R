@@ -116,11 +116,6 @@ gg_varpro <- function(object,
     stop("conditional=TRUE requires a classification forest ",
          "(object$family == \"class\").", call. = FALSE)
   }
-  ## faithful=TRUE requires raw scale so the mean-dot glyph plots correctly
-  if (faithful && local.std) {
-    message("faithful=TRUE: coercing local.std to FALSE (raw scale required for per-tree overlay)")
-    local.std <- FALSE
-  }
   invisible(local.std)
 }
 
