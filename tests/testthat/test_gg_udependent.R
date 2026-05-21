@@ -123,3 +123,27 @@ test_that("autoplot.gg_udependent returns a ggplot", {
   gg <- gg_udependent(uv)
   expect_s3_class(ggplot2::autoplot(gg), "ggplot")
 })
+
+## ── Plot smoke tests ─────────────────────────────────────────────────────────
+
+test_that("plot.gg_udependent default returns a ggplot", {
+  skip_if_not_installed("ggraph")
+  uv <- make_uvp()
+  gg <- gg_udependent(uv)
+  p  <- plot(gg)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_udependent layout='kk' returns a ggplot", {
+  skip_if_not_installed("ggraph")
+  uv <- make_uvp()
+  gg <- gg_udependent(uv)
+  p  <- plot(gg, layout = "kk")
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_udependent empty graph -> stop with informative message", {
+  uv <- make_uvp()
+  gg <- suppressWarnings(gg_udependent(uv, threshold = 999))
+  expect_error(plot(gg), regexp = "no edges")
+})
