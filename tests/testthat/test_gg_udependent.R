@@ -147,3 +147,21 @@ test_that("plot.gg_udependent empty graph -> stop with informative message", {
   gg <- suppressWarnings(gg_udependent(uv, threshold = 999))
   expect_error(plot(gg), regexp = "no edges")
 })
+
+## ── vdiffr snapshots ─────────────────────────────────────────────────────────
+
+test_that("plot.gg_udependent snapshot: default fr layout", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("ggraph")
+  uv <- make_uvp(ntree = 50L)
+  gg <- gg_udependent(uv)
+  vdiffr::expect_doppelganger("gg-udependent-default", plot(gg))
+})
+
+test_that("plot.gg_udependent snapshot: undirected", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("ggraph")
+  uv <- make_uvp(ntree = 50L)
+  gg <- gg_udependent(uv, directed = FALSE)
+  vdiffr::expect_doppelganger("gg-udependent-undirected", plot(gg))
+})
