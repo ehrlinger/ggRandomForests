@@ -420,3 +420,30 @@ test_that("gg_variable.randomForest classification: norm.votes=FALSE still gives
   expect_true(all(gg[, vote_cols] <= 1))
   expect_true(all(abs(rowSums(gg[, vote_cols]) - 1) < 1e-6))
 })
+
+test_that("plot.gg_variable RF classification: smooth=TRUE layer_data smokeable (binary smooth aes bug)", {
+  skip_if_not_installed("randomForest")
+  # Two-class subset to exercise the *binary* classification path
+  set.seed(42L)
+  bin_data        <- iris[iris$Species != "virginica", ]
+  bin_data$Species <- droplevels(bin_data$Species)
+  rf  <- randomForest::randomForest(Species ~ ., data = bin_data, ntree = 50L)
+  gg  <- gg_variable(rf)
+  p   <- plot(gg, xvar = "Sepal.Length", smooth = TRUE)
+  # Before the fix, geom_smooth(...)  has no aes and layer_data errors with
+  # "stat_smooth() requires the following missing aesthetics: x and y"
+  expect_no_error(ggplot2::layer_data(p, 2L))
+})
+
+test_that("plot.gg_variable RF classification: smooth=TRUE works for multi-class (missing block)", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+  gg <- gg_variable(rf)
+  # Before the fix the multi-class numeric path silently skips smooth=TRUE
+  # but does not error; after the fix a smooth layer is present (layer 2).
+  p  <- plot(gg, xvar = "Sepal.Length", smooth = TRUE)
+  expect_s3_class(p, "ggplot")
+  ld <- ggplot2::layer_data(p, 2L)   # layer 2 = geom_smooth
+  expect_gt(nrow(ld), 0L)
+})
