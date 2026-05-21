@@ -396,7 +396,10 @@ test_that("gg_variable.randomForest classification: plot returns patchwork for a
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
   gg <- gg_variable(rf)
   p  <- plot(gg)
-  expect_true(inherits(p, "patchwork") || inherits(p, "ggplot"))
+  # iris has 4 predictors so the no-xvar default assembles a multi-panel
+  # patchwork; assert patchwork specifically to catch regressions to a bare
+  # list (#80).
+  expect_s3_class(p, "patchwork")
 })
 
 test_that("gg_variable.randomForest classification: layer_data works on single-xvar plot", {
