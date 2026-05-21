@@ -447,3 +447,18 @@ test_that("plot.gg_variable RF classification: smooth=TRUE works for multi-class
   ld <- ggplot2::layer_data(p, 2L)   # layer 2 = geom_smooth
   expect_gt(nrow(ld), 0L)
 })
+
+test_that("plot.gg_variable RF classification multi-class: outcome column is class names not integers", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+  gg <- gg_variable(rf)
+  p  <- plot(gg, xvar = "Sepal.Length")
+  expect_s3_class(p, "ggplot")
+  # The 'outcome' column in the plot data drives facet labels.
+  # It must contain class names, not integer indices.
+  # ggplot2 >= 3.5 uses S7 slots; fall back to $ accessor for older versions.
+  pd <- tryCatch(p@data, error = function(e) p$data)
+  expect_false(is.numeric(pd$outcome))
+  expect_true(all(c("setosa", "versicolor", "virginica") %in% as.character(pd$outcome)))
+})
