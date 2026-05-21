@@ -313,7 +313,12 @@ gg_variable.randomForest <- function(object,
     gg_dta$yvar <- response
   }
 
-  class(gg_dta) <- c("gg_variable", object$type, class(gg_dta))
+  # randomForest uses object$type ("classification" / "regression"); the
+  # plot.gg_variable dispatcher and the rfsrc path both use "class" for
+  # classification forests.  Map here so the class attribute is consistent
+  # and callers never need to special-case "classification".
+  family_lbl <- if (object$type == "classification") "class" else object$type
+  class(gg_dta) <- c("gg_variable", family_lbl, class(gg_dta))
   gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }
