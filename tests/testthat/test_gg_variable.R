@@ -407,3 +407,16 @@ test_that("gg_variable.randomForest classification: layer_data works on single-x
   p  <- plot(gg, xvar = "Sepal.Length")
   expect_no_error(ggplot2::layer_data(p, 1L))
 })
+
+test_that("gg_variable.randomForest classification: norm.votes=FALSE still gives [0,1] fractions", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L,
+                                   norm.votes = FALSE)
+  gg <- gg_variable(rf)
+  vote_cols <- c("yhat.setosa", "yhat.versicolor", "yhat.virginica")
+  expect_true(all(c("yhat.setosa", "yhat.versicolor", "yhat.virginica") %in% names(gg)))
+  expect_true(all(gg[, vote_cols] >= 0))
+  expect_true(all(gg[, vote_cols] <= 1))
+  expect_true(all(abs(rowSums(gg[, vote_cols]) - 1) < 1e-6))
+})

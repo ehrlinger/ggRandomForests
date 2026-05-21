@@ -271,10 +271,12 @@ gg_variable.randomForest <- function(object,
                                      ...) {
   arg_list <- list(...)
 
-  # randomForest objects do not store OOB predictions in a way that maps back
-  # to the predictor space, so we always use in-bag (full-forest) predictions.
+  # For randomForest the OOB vote matrix (object$votes) is used unconditionally —
+  # it is the only honest per-class probability estimate. The oob argument is
+  # silently overridden to TRUE; randomForest does not expose in-bag class
+  # probabilities through a consistent API.
   if (!is.null(arg_list$oob)) {
-    arg_list$oob <- FALSE
+    arg_list$oob <- TRUE
   }
 
   if (!inherits(object, "randomForest")) {
@@ -311,7 +313,11 @@ gg_variable.randomForest <- function(object,
   # stored as yhat.<classname> columns — the same shape gg_variable.rfsrc
   # produces.  For regression a single numeric yhat column suffices.
   if (object$type == "classification") {
-    preds           <- object$votes   # n × n_classes matrix of OOB vote fractions
+    preds    <- object$votes   # n × n_classes matrix; may be raw counts or fractions
+    rs       <- rowSums(preds)
+    if (any(rs > 1 + 1e-8, na.rm = TRUE)) {
+      preds  <- preds / rs   # normalise raw vote counts to [0, 1]
+    }
     colnames(preds) <- paste0("yhat.", colnames(preds))
     gg_dta          <- cbind(gg_dta, preds)
     gg_dta$yvar     <- response
