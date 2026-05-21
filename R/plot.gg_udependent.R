@@ -33,6 +33,7 @@
 #'
 #' @name plot.gg_udependent
 #' @importFrom ggplot2 aes labs scale_color_manual theme_void
+#' @importFrom igraph vertex_attr V edge_attr as_data_frame E
 #' @export
 plot.gg_udependent <- function(x, layout = "fr", ...) {
   prov <- attr(x, "provenance")
@@ -61,13 +62,15 @@ plot.gg_udependent <- function(x, layout = "fr", ...) {
     igraph::V(x$graph)$degree <- deg
   }
 
-  ## Ensure edge weight attribute is set on the igraph object ----------------
+  ## Edge-weight backfill: graph_from_adjacency_matrix on a binary matrix
+  ## does not carry edge weights; set them here from $edges.
+  ## Vertex attribute guards (selected, degree) fire only for legacy objects
+  ## saved before Phase 3; fresh objects always have them set by gg_udependent().
   if (is.null(igraph::edge_attr(x$graph, "weight"))) {
     edge_list <- igraph::as_data_frame(x$graph, what = "edges")
-    w <- mapply(function(i, j) x$edges$weight[
-      x$edges$variable_from == i & x$edges$variable_to == j],
-      edge_list$from, edge_list$to)
-    igraph::E(x$graph)$weight <- as.numeric(w)
+    idx <- match(paste(edge_list$from, edge_list$to),
+                 paste(x$edges$variable_from, x$edges$variable_to))
+    igraph::E(x$graph)$weight <- x$edges$weight[idx]
   }
 
   ggraph::ggraph(x$graph, layout = layout) +
