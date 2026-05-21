@@ -256,4 +256,22 @@ local({
     })
   })
 
+  ## ---- gg_udependent snapshots ---------------------------------------------
+  if (requireNamespace("ggraph", quietly = TRUE)) {
+    local({
+      set.seed(42L)
+      uv <- varPro::uvarpro(iris[, -5L], ntree = 50L)
+
+      test_that("snapshot: gg-udependent-default", {
+        gg <- gg_udependent(uv)
+        vdiffr::expect_doppelganger("gg-udependent-default", plot(gg))
+      })
+
+      test_that("snapshot: gg-udependent-undirected", {
+        gg <- gg_udependent(uv, directed = FALSE)
+        vdiffr::expect_doppelganger("gg-udependent-undirected", plot(gg))
+      })
+    })
+  }
+
 } # end CI guard

@@ -1,7 +1,7 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 2.7.3.9003
+Version: 2.7.3.9004
 Date: 2026-05-20
 Authors@R: person("John", "Ehrlinger",
   role = c("aut", "cre"),
@@ -23,6 +23,7 @@ Imports:
     randomForestSRC (>= 3.4.0),
     randomForest,
     varPro,
+    igraph,
     survival,
     parallel,
     tidyr,
@@ -45,7 +46,7 @@ Suggests:
     pkgload,
     knitr,
     plotly,
-    igraph,
+    ggraph,
     callr
 VignetteBuilder: quarto
 Config/roxygen2/version: 8.0.0

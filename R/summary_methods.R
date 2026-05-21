@@ -246,6 +246,22 @@ summary.gg_varpro <- function(object, ...) {
 
 #' @rdname summary.gg
 #' @export
+summary.gg_udependent <- function(object, ...) {
+  prov <- attr(object, "provenance")
+  n    <- if (!is.null(prov)) prov$n else NA
+  p    <- if (!is.null(prov)) length(prov$xvar.names) else NA
+  thr  <- if (!is.null(prov)) prov$threshold else NA
+  body <- c(
+    sprintf("Edges: %d  Nodes: %d  Selected: %d/%d",
+            nrow(object$edges), nrow(object$nodes),
+            sum(object$nodes$selected, na.rm = TRUE), nrow(object$nodes)),
+    sprintf("n = %s  p = %s  threshold = %s", n, p, thr)
+  )
+  .summary_skel(object, "gg_udependent", body)
+}
+
+#' @rdname summary.gg
+#' @export
 summary.gg_brier <- function(object, ...) {
   crps <- attr(object, "crps_integrated")
   envelope_mean <- mean(object$bs.upper - object$bs.lower, na.rm = TRUE)

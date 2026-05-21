@@ -161,6 +161,30 @@ print.gg_brier <- function(x, ...) {
 
 #' @rdname print.gg
 #' @export
+print.gg_udependent <- function(x, ...) {
+  prov <- attr(x, "provenance")
+  n    <- if (!is.null(prov)) prov$n else "?"
+  p    <- if (!is.null(prov)) length(prov$xvar.names) else "?"
+  thr  <- if (!is.null(prov)) prov$threshold else "?"
+  cat(sprintf("<gg_udependent>  n=%s  p=%s  threshold=%s\n", n, p, thr))
+  cat(sprintf(
+    "  Edges: %d  Nodes in graph: %d  Selected: %d/%d\n",
+    nrow(x$edges), nrow(x$nodes),
+    sum(x$nodes$selected, na.rm = TRUE), nrow(x$nodes)
+  ))
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
+print.summary.gg_udependent <- function(x, ...) {
+  ## summary.gg_udependent returns a summary.gg skeleton; delegate to
+  ## print.summary.gg which renders header + body lines.
+  NextMethod()
+}
+
+#' @rdname print.gg
+#' @export
 print.gg_varpro <- function(x, ...) {
   prov     <- attr(x, "provenance")
   cutoff   <- if (!is.null(prov)) prov$cutoff   %||% 0.79 else 0.79
