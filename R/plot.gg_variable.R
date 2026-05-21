@@ -516,7 +516,10 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
             }
             if (smooth) {
               gg_plt[[ind]] <- gg_plt[[ind]] +
-                ggplot2::geom_smooth(...)
+                ggplot2::geom_smooth(
+                  ggplot2::aes(x = .data$var, y = .data$yhat),
+                  ...
+                )
             }
           } else {
             # Factor predictor: jitter + boxplot coloured by observed class
@@ -550,6 +553,13 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                 ),
                 ...
               )
+            if (smooth) {
+              gg_plt[[ind]] <- gg_plt[[ind]] +
+                ggplot2::geom_smooth(
+                  ggplot2::aes(x = .data$var, y = .data$yhat),
+                  ...
+                )
+            }
           } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_boxplot(
