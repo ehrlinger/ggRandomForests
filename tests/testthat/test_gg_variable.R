@@ -368,3 +368,42 @@ test_that("gg_variable.randomForest classification: class attr uses 'class' not 
   expect_false("classification" %in% class(gg_dta))
   expect_s3_class(gg_dta, "gg_variable")
 })
+
+## ── randomForest classification (PR #87) ─────────────────────────────────────
+
+test_that("gg_variable.randomForest classification: produces yhat.* columns not yhat", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+  gg <- gg_variable(rf)
+  # Must have one column per class
+  expect_true(all(c("yhat.setosa", "yhat.versicolor", "yhat.virginica")
+                  %in% names(gg)))
+  # Must NOT have a bare yhat column for multi-class
+  expect_false("yhat" %in% names(gg))
+  # Observed-class column must be present
+  expect_true("yvar" %in% names(gg))
+  # Vote fractions must be in [0, 1] and row-sum to ~1
+  vote_cols <- c("yhat.setosa", "yhat.versicolor", "yhat.virginica")
+  expect_true(all(gg[, vote_cols] >= 0))
+  expect_true(all(gg[, vote_cols] <= 1))
+  expect_true(all(abs(rowSums(gg[, vote_cols]) - 1) < 1e-6))
+})
+
+test_that("gg_variable.randomForest classification: plot returns patchwork for all xvar", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+  gg <- gg_variable(rf)
+  p  <- plot(gg)
+  expect_true(inherits(p, "patchwork") || inherits(p, "ggplot"))
+})
+
+test_that("gg_variable.randomForest classification: layer_data works on single-xvar plot", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+  gg <- gg_variable(rf)
+  p  <- plot(gg, xvar = "Sepal.Length")
+  expect_no_error(ggplot2::layer_data(p, 1L))
+})
