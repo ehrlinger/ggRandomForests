@@ -179,14 +179,18 @@ macro-average meaning (backward compatible). No CI computation in this PR.
 **New signature:**
 
 ```r
-gg_roc(object, which_outcome = "all", per_class = FALSE, ...)
+gg_roc(object, which_outcome = "all", per_class = FALSE, oob = TRUE, ...)
 ```
+
+(`oob = TRUE` already exists in both dispatch methods; listed here for completeness.)
 
 **`per_class = TRUE` behaviour:**
 
 - For forests with > 2 classes: compute one-vs-rest ROC for every class *k*
   (scores = `votes[, k]`, positive = `(y == k)`), stack into a long data frame
-  with columns `class` (factor), `fpr`, `tpr`.
+  with columns `class` (factor), `sens`, `spec`, `pct` — the same three-column
+  contract used by the rest of the package (`calc_roc` returns `sens`/`spec`/`pct`;
+  `fpr = 1 − spec` and `tpr = sens` if desired by callers).
 - `attr(gg, "auc")` becomes a named numeric vector: one entry per class,
   ordered by descending AUC. Class factor levels follow the same order.
 - For binary forests: `per_class = TRUE` is a no-op — returns the single-curve
@@ -196,9 +200,15 @@ gg_roc(object, which_outcome = "all", per_class = FALSE, ...)
   integer): `per_class` wins, a `message()` informs the caller that
   `which_outcome` is ignored when `per_class = TRUE`.
 
-**Internal helper `calc_roc_one_vs_rest(scores, y, k)`** — single class OvR
-ROC, returns a data frame `(fpr, tpr)` plus scalar AUC. Extracted so it can be
-reused for both per-class computation and macro-average.
+**Internal helpers** — the implementation reuses existing private functions in
+`R/calc_roc.R` rather than introducing new ones:
+
+- `.rf_prob_matrix(object, oob)` — extracts and normalises the vote matrix
+- `.rf_one_class_roc(probs, y, k)` — single-class OvR ROC, returns
+  `data.frame(sens, spec, pct)` plus scalar AUC
+- `.rf_macro_average_roc(probs, y)` — macro-average across all classes
+
+No new top-level helpers are needed.
 
 ### Plot method (`R/plot.gg_roc.R`)
 

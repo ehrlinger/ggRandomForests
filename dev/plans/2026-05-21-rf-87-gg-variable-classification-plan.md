@@ -107,7 +107,10 @@ test_that("gg_variable.randomForest classification: plot returns patchwork for a
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
   gg <- gg_variable(rf)
   p  <- plot(gg)
-  expect_true(inherits(p, "patchwork") || inherits(p, "ggplot"))
+  # iris has 4 predictors, so the default (no xvar) path assembles a multi-panel
+  # patchwork.  Assert patchwork specifically so a regression to a bare list (#80)
+  # would be caught.
+  expect_s3_class(p, "patchwork")
 })
 
 test_that("gg_variable.randomForest classification: layer_data works on single-xvar plot", {
@@ -158,7 +161,14 @@ Find this exact code (near the end of `gg_variable.randomForest`):
   # stored as yhat.<classname> columns — the same shape gg_variable.rfsrc
   # produces.  For regression a single numeric yhat column suffices.
   if (object$type == "classification") {
-    preds           <- object$votes   # n × n_classes matrix of OOB vote fractions
+    preds  <- object$votes   # n × n_classes matrix; OOB vote fractions by default,
+                             # but raw integer counts when forest is fit with
+                             # norm.votes = FALSE.  Row-normalise unconditionally so
+                             # values are always in [0, 1] with rowSums ≈ 1.
+    rs     <- rowSums(preds)
+    if (any(rs > 1 + 1e-8, na.rm = TRUE)) {
+      preds <- preds / rs
+    }
     colnames(preds) <- paste0("yhat.", colnames(preds))
     gg_dta          <- cbind(gg_dta, preds)
     gg_dta$yvar     <- response

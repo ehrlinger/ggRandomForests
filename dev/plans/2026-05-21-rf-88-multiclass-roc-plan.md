@@ -81,7 +81,7 @@ test_that("gg_roc per_class=TRUE: long format with class column", {
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
   gg <- gg_roc(rf, per_class = TRUE)
   expect_true("class" %in% names(gg))
-  expect_true(all(c("sens", "spec") %in% names(gg)))
+  expect_true(all(c("sens", "spec", "pct") %in% names(gg)))  # pct = threshold; same 3-col contract as calc_roc
   expect_s3_class(gg$class, "factor")
   expect_equal(nlevels(gg$class), 3L)
 })
@@ -153,7 +153,11 @@ Replace with:
 gg_roc.rfsrc <- function(object, which_outcome, oob = TRUE, per_class = FALSE, ...) {
 ```
 
-Note: the rfsrc per_class path is out of scope for this PR (tracked under issue #72). The argument is added only so `gg_roc(rfsrc_obj, per_class = TRUE)` does not error with "unused argument". Leave the body unchanged.
+Note: the rfsrc per_class path is out of scope for this PR (tracked under issue #72).
+`gg_roc.rfsrc` already accepts `...`, so `per_class = TRUE` would currently be
+silently swallowed rather than erroring. The argument is added explicitly for API
+discoverability and to keep the signature consistent with `gg_roc.randomForest`.
+Leave the body unchanged — no per_class logic is wired up in the rfsrc method.
 
 - [ ] **Step 3: Replace the entire `gg_roc.randomForest` body**
 
@@ -302,7 +306,7 @@ test_that("gg_roc which_outcome='all' still returns macro-average (no class colu
   gg <- gg_roc(rf, which_outcome = "all")
   expect_false("class" %in% names(gg))
   # Macro-average returns a single data frame, not a class-faceted one
-  expect_true(all(c("sens", "spec") %in% names(gg)))
+  expect_true(all(c("sens", "spec", "pct") %in% names(gg)))  # pct = threshold; same 3-col contract as calc_roc
 })
 ```
 
