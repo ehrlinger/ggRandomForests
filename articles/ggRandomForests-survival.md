@@ -748,7 +748,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.4007
+    #> [1] 1.393568
 
 ## Conclusion
 
