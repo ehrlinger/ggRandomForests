@@ -26,9 +26,11 @@
 #'
 #' @examples
 #' \donttest{
-#' set.seed(42)
-#' uv <- varPro::uvarpro(iris[, -5], ntree = 50)
-#' plot(gg_udependent(uv))
+#' if (requireNamespace("ggraph", quietly = TRUE)) {
+#'   set.seed(42)
+#'   uv <- varPro::uvarpro(iris[, -5], ntree = 50)
+#'   plot(gg_udependent(uv))
+#' }
 #' }
 #'
 #' @name plot.gg_udependent

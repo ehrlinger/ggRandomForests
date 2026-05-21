@@ -53,10 +53,6 @@ object using \code{\link[varPro]{get.beta.entropy}} and
 \code{\link[varPro]{sdependent}}, and returns a tidy list suitable for
 \code{plot.gg_udependent}.
 }
-\note{
-igraph functions are called via \code{igraph::} throughout; no
-  \code{importFrom(igraph)} needed since \pkg{igraph} is in \code{Suggests}.
-}
 \examples{
 \donttest{
 set.seed(42)

@@ -44,8 +44,7 @@
 #' }
 #'
 #' @importFrom varPro get.beta.entropy sdependent
-#' @note igraph functions are called via \code{igraph::} throughout; no
-#'   \code{importFrom(igraph)} needed since \pkg{igraph} is in \code{Suggests}.
+#' @importFrom igraph graph_from_adjacency_matrix degree delete_vertices as_data_frame V
 #' @export
 gg_udependent <- function(object,
                            threshold  = 0.25,

@@ -23,6 +23,7 @@ Imports:
     randomForestSRC (>= 3.4.0),
     randomForest,
     varPro,
+    igraph,
     survival,
     parallel,
     tidyr,
@@ -45,7 +46,6 @@ Suggests:
     pkgload,
     knitr,
     plotly,
-    igraph,
     ggraph,
     callr
 VignetteBuilder: quarto
