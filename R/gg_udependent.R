@@ -23,8 +23,10 @@
 #'   \item{\code{$edges}}{Data frame: \code{variable_from}, \code{variable_to},
 #'     \code{weight} (raw cross-importance value).}
 #'   \item{\code{$nodes}}{Data frame: \code{variable} (factor, levels by
-#'     descending degree), \code{degree} (integer), \code{selected} (logical,
-#'     \code{TRUE} if in \code{sdependent}'s signal set).}
+#'     descending degree), \code{degree} (integer; out-degree when
+#'     \code{directed = TRUE}, total degree when \code{directed = FALSE}),
+#'     \code{selected} (logical, \code{TRUE} if in \code{sdependent}'s
+#'     signal set).}
 #'   \item{\code{$graph}}{igraph object. \code{NULL} if no dependencies
 #'     detected.}
 #' }
@@ -42,6 +44,8 @@
 #' }
 #'
 #' @importFrom varPro get.beta.entropy sdependent
+#' @note igraph functions are called via \code{igraph::} throughout; no
+#'   \code{importFrom(igraph)} needed since \pkg{igraph} is in \code{Suggests}.
 #' @export
 gg_udependent <- function(object,
                            threshold  = 0.25,
@@ -123,6 +127,8 @@ gg_udependent <- function(object,
 
   ## ---- Build tidy node data frame ------------------------------------------
   vnames  <- igraph::V(g)$name
+  ## degree: out-degree for directed (matches sdependent's signal.vars logic),
+  ## total degree for undirected
   deg_vec <- if (isTRUE(directed)) {
     igraph::degree(g, mode = "out")[vnames]
   } else {
@@ -201,50 +207,3 @@ gg_udependent <- function(object,
   )
 }
 
-## ---- S3 companions ----------------------------------------------------------
-
-#' @export
-print.gg_udependent <- function(x, ...) {
-  prov <- attr(x, "provenance")
-  cat(sprintf(
-    "<gg_udependent>  n=%d  p=%d  threshold=%.2f\n",
-    prov$n, length(prov$xvar.names), prov$threshold
-  ))
-  cat(sprintf(
-    "  Edges: %d  Nodes in graph: %d  Selected: %d/%d\n",
-    nrow(x$edges), nrow(x$nodes),
-    sum(x$nodes$selected, na.rm = TRUE), nrow(x$nodes)
-  ))
-  invisible(x)
-}
-
-#' @export
-summary.gg_udependent <- function(object, ...) {
-  prov <- attr(object, "provenance")
-  s <- list(
-    nodes      = object$nodes,
-    edges      = object$edges,
-    provenance = prov
-  )
-  class(s) <- "summary.gg_udependent"
-  invisible(s)
-}
-
-#' @export
-print.summary.gg_udependent <- function(x, ...) {
-  prov <- x$provenance
-  cat(sprintf(
-    "Summary: gg_udependent  threshold=%.2f  q.signal=%.2f  directed=%s\n",
-    prov$threshold, prov$q.signal, prov$directed
-  ))
-  cat("\nNodes:\n")
-  print(x$nodes)
-  cat("\nEdges:\n")
-  print(x$edges)
-  invisible(x)
-}
-
-#' @export
-autoplot.gg_udependent <- function(object, ...) {
-  plot.gg_udependent(object, ...)
-}

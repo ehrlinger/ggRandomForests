@@ -16,7 +16,7 @@ gg_udependent(
 \arguments{
 \item{object}{A fitted \code{uvarpro} object (required).}
 
-\item{threshold}{Numeric in (0, 1); dependency threshold passed to
+\item{threshold}{Numeric; positive dependency threshold passed to
 \code{sdependent()}. An edge \eqn{i \to j} is drawn when
 \code{I[i, j] >= threshold}. Default \code{0.25}.}
 
@@ -37,8 +37,10 @@ A named list of class \code{"gg_udependent"} with elements:
   \item{\code{$edges}}{Data frame: \code{variable_from}, \code{variable_to},
     \code{weight} (raw cross-importance value).}
   \item{\code{$nodes}}{Data frame: \code{variable} (factor, levels by
-    descending degree), \code{degree} (integer), \code{selected} (logical,
-    \code{TRUE} if in \code{sdependent}'s signal set).}
+    descending degree), \code{degree} (integer; out-degree when
+    \code{directed = TRUE}, total degree when \code{directed = FALSE}),
+    \code{selected} (logical, \code{TRUE} if in \code{sdependent}'s
+    signal set).}
   \item{\code{$graph}}{igraph object. \code{NULL} if no dependencies
     detected.}
 }
@@ -50,6 +52,10 @@ Extracts cross-variable dependency scores from a fitted \code{uvarpro}
 object using \code{\link[varPro]{get.beta.entropy}} and
 \code{\link[varPro]{sdependent}}, and returns a tidy list suitable for
 \code{plot.gg_udependent}.
+}
+\note{
+igraph functions are called via \code{igraph::} throughout; no
+  \code{importFrom(igraph)} needed since \pkg{igraph} is in \code{Suggests}.
 }
 \examples{
 \donttest{

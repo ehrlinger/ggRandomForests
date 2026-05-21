@@ -13,6 +13,8 @@
 \alias{print.gg_roc}
 \alias{print.gg_survival}
 \alias{print.gg_brier}
+\alias{print.gg_udependent}
+\alias{print.summary.gg_udependent}
 \alias{print.gg_varpro}
 \title{Print methods for gg_* data objects}
 \usage{
@@ -37,6 +39,10 @@
 \method{print}{gg_survival}(x, ...)
 
 \method{print}{gg_brier}(x, ...)
+
+\method{print}{gg_udependent}(x, ...)
+
+\method{print}{summary.gg_udependent}(x, ...)
 
 \method{print}{gg_varpro}(x, ...)
 }

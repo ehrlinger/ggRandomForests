@@ -14,6 +14,7 @@
 \alias{summary.gg_roc}
 \alias{summary.gg_survival}
 \alias{summary.gg_varpro}
+\alias{summary.gg_udependent}
 \alias{summary.gg_brier}
 \title{Summary methods for gg_* data objects}
 \usage{
@@ -40,6 +41,8 @@
 \method{summary}{gg_survival}(object, ...)
 
 \method{summary}{gg_varpro}(object, ...)
+
+\method{summary}{gg_udependent}(object, ...)
 
 \method{summary}{gg_brier}(object, ...)
 }

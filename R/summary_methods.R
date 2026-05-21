@@ -246,6 +246,19 @@ summary.gg_varpro <- function(object, ...) {
 
 #' @rdname summary.gg
 #' @export
+summary.gg_udependent <- function(object, ...) {
+  prov <- attr(object, "provenance")
+  s <- list(
+    nodes      = object$nodes,
+    edges      = object$edges,
+    provenance = prov
+  )
+  class(s) <- "summary.gg_udependent"
+  invisible(s)
+}
+
+#' @rdname summary.gg
+#' @export
 summary.gg_brier <- function(object, ...) {
   crps <- attr(object, "crps_integrated")
   envelope_mean <- mean(object$bs.upper - object$bs.lower, na.rm = TRUE)
