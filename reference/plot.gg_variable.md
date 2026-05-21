@@ -102,8 +102,10 @@ rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
 
 gg_dta <- gg_variable(rfsrc_iris)
 plot(gg_dta, xvar = "Sepal.Width")
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
 plot(gg_dta, xvar = "Sepal.Length")
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
 
 ## Panel plot across all predictors

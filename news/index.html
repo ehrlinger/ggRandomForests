@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,6 +80,16 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.8.0" id="ggrandomforests-v280-development">ggRandomForests v2.8.0 (development)<a class="anchor" aria-label="anchor" href="#ggrandomforests-v280-development"></a></h2>
 <ul><li>
+<strong><code>gg_variable.randomForest</code> classification fix (<a href="https://github.com/ehrlinger/ggRandomForests/issues/87" class="external-link">#87</a>).</strong>
+<ul><li>
+<code><a href="../reference/gg_variable.html">gg_variable.randomForest()</a></code> for classification forests now stores per-class OOB vote fractions as <code>yhat.&lt;classname&gt;</code> columns (from <code>object$votes</code>), matching the <code>rfsrc</code> path. Previously a single <code>yhat</code> factor column (class labels from <code>object$predicted</code>) was stored, which prevented the multi-class pivot in <code>plot.gg_variable</code> from firing. Vote fractions are row-normalised to <code>[0, 1]</code> even when the forest was fit with <code>norm.votes = FALSE</code>.</li>
+<li>
+<code>plot.gg_variable</code> binary classification: <code>smooth = TRUE</code> now correctly maps x/y aesthetics onto the smooth layer.</li>
+<li>
+<code>plot.gg_variable</code> multi-class numeric path: <code>smooth = TRUE</code> now adds a smooth layer (was silently skipped).</li>
+<li>Closes stale issues <a href="https://github.com/ehrlinger/ggRandomForests/issues/81" class="external-link">#81</a> (fixed in PR <a href="https://github.com/ehrlinger/ggRandomForests/issues/83" class="external-link">#83</a>) and <a href="https://github.com/ehrlinger/ggRandomForests/issues/82" class="external-link">#82</a>.</li>
+</ul></li>
+<li>
 <strong>varPro partial dependence: <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> (<a href="https://github.com/ehrlinger/ggRandomForests/issues/84" class="external-link">#84</a>).</strong>
 <ul><li>
 <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> replaces <code><a href="../reference/gg_partial_varpro.html">gg_partialpro()</a></code> as the primary entry point for varPro partial dependence plots. The new extractor accepts an optional <code>object</code> argument (the originating <code>varpro</code> fit) for provenance-aware axis labeling and a <code>scale</code> argument (<code>"auto"</code>, <code>"mortality"</code>, <code>"rmst"</code>, <code>"surv"</code>, <code>"chf"</code>).</li>
