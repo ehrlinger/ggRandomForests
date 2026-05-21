@@ -170,7 +170,10 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
               outcome = sub("^yhat\\.", "", colnames(gg_dta_y)[ind]))
       })
       gg3 <- do.call(rbind, gg2)
-      gg3$outcome <- factor(gg3$outcome)
+      # Use column order from gg_dta_y (not alphabetical) so facet panels
+      # appear in the same order as the model's class levels.
+      outcome_levels <- sub("^yhat\\.", "", colnames(gg_dta_y))
+      gg3$outcome <- factor(gg3$outcome, levels = outcome_levels)
       gg_dta <- gg3
     }
   }

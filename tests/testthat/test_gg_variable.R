@@ -465,3 +465,30 @@ test_that("plot.gg_variable RF classification multi-class: outcome column is cla
   expect_false(is.numeric(pd$outcome))
   expect_true(all(c("setosa", "versicolor", "virginica") %in% as.character(pd$outcome)))
 })
+
+test_that("plot.gg_variable RF classification multi-class: outcome factor levels match column order", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+  gg <- gg_variable(rf)
+  p  <- plot(gg, xvar = "Sepal.Length")
+  pd <- tryCatch(p@data, error = function(e) p$data)
+  # Levels must follow the yhat.* column order in gg_variable output,
+  # not alphabetical order (which factor() would impose by default).
+  expected_levels <- sub("^yhat\\.", "", grep("^yhat\\.", names(gg), value = TRUE))
+  expect_equal(levels(pd$outcome), expected_levels)
+})
+
+test_that("gg_variable.randomForest: oob=FALSE triggers a warning", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+  # oob=FALSE is not supported for randomForest; a warning must be emitted
+  # and OOB vote fractions are still returned.
+  expect_warning(
+    gg <- gg_variable(rf, oob = FALSE),
+    regexp = "oob = FALSE is not supported"
+  )
+  expect_s3_class(gg, "gg_variable")
+  expect_true("yhat.setosa" %in% names(gg))
+})

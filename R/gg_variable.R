@@ -271,12 +271,16 @@ gg_variable.randomForest <- function(object,
                                      ...) {
   arg_list <- list(...)
 
-  # For randomForest the OOB vote matrix (object$votes) is used unconditionally —
-  # it is the only honest per-class probability estimate. The oob argument is
-  # silently overridden to TRUE; randomForest does not expose in-bag class
-  # probabilities through a consistent API.
-  if (!is.null(arg_list$oob)) {
-    arg_list$oob <- TRUE
+  # randomForest uses object$votes (OOB vote matrix) unconditionally — it is the
+  # only honest per-class probability estimate.  In-bag class probabilities are
+  # not exposed through a consistent randomForest API, so oob=FALSE is not
+  # supported.  Warn the caller rather than silently ignoring the argument.
+  if (!is.null(arg_list$oob) && identical(arg_list$oob, FALSE)) {
+    warning(
+      "oob = FALSE is not supported for randomForest objects: ",
+      "in-bag class probabilities are unavailable. ",
+      "OOB vote fractions (object$votes) will be used instead."
+    )
   }
 
   if (!inherits(object, "randomForest")) {
