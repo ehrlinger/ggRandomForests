@@ -248,13 +248,16 @@ summary.gg_varpro <- function(object, ...) {
 #' @export
 summary.gg_udependent <- function(object, ...) {
   prov <- attr(object, "provenance")
-  s <- list(
-    nodes      = object$nodes,
-    edges      = object$edges,
-    provenance = prov
+  n    <- if (!is.null(prov)) prov$n else NA
+  p    <- if (!is.null(prov)) length(prov$xvar.names) else NA
+  thr  <- if (!is.null(prov)) prov$threshold else NA
+  body <- c(
+    sprintf("Edges: %d  Nodes: %d  Selected: %d/%d",
+            nrow(object$edges), nrow(object$nodes),
+            sum(object$nodes$selected, na.rm = TRUE), nrow(object$nodes)),
+    sprintf("n = %s  p = %s  threshold = %s", n, p, thr)
   )
-  class(s) <- "summary.gg_udependent"
-  invisible(s)
+  .summary_skel(object, "gg_udependent", body)
 }
 
 #' @rdname summary.gg

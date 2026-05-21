@@ -64,14 +64,21 @@ plot.gg_udependent <- function(x, layout = "fr", ...) {
     igraph::V(x$graph)$degree <- deg
   }
 
-  ## Edge-weight backfill: graph_from_adjacency_matrix on a binary matrix
-  ## does not carry edge weights; set them here from $edges.
-  ## Vertex attribute guards (selected, degree) fire only for legacy objects
-  ## saved before Phase 3; fresh objects always have them set by gg_udependent().
+  ## Edge-weight backfill: guard for legacy objects saved before edge weights
+  ## were stored on the igraph.  Order-insensitive for undirected graphs.
   if (is.null(igraph::edge_attr(x$graph, "weight"))) {
+    prov_d    <- isTRUE(attr(x, "provenance")$directed)
     edge_list <- igraph::as_data_frame(x$graph, what = "edges")
-    idx <- match(paste(edge_list$from, edge_list$to),
-                 paste(x$edges$variable_from, x$edges$variable_to))
+    if (prov_d) {
+      idx <- match(paste(edge_list$from, edge_list$to),
+                   paste(x$edges$variable_from, x$edges$variable_to))
+    } else {
+      key_g <- paste(pmin(edge_list$from, edge_list$to),
+                     pmax(edge_list$from, edge_list$to))
+      key_e <- paste(pmin(x$edges$variable_from, x$edges$variable_to),
+                     pmax(x$edges$variable_from, x$edges$variable_to))
+      idx <- match(key_g, key_e)
+    }
     igraph::E(x$graph)$weight <- x$edges$weight[idx]
   }
 

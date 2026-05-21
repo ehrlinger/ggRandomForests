@@ -99,9 +99,14 @@ gg_udependent <- function(object,
   }
 
   ## ---- Build igraph from adjacency -----------------------------------------
+  ## For undirected, symmetrise first so edge existence = max(I[i,j], I[j,i])
+  ## and mode = "undirected" is valid (igraph >= 1.6.0 requires symmetry).
+  if (!isTRUE(directed)) {
+    adj_mat <- pmax(adj_mat, t(adj_mat))
+  }
   g <- igraph::graph_from_adjacency_matrix(
     adj_mat,
-    mode  = if (isTRUE(directed)) "directed" else "max",
+    mode  = if (isTRUE(directed)) "directed" else "undirected",
     diag  = FALSE
   )
   isolated <- igraph::degree(g, mode = "all") == 0
@@ -110,10 +115,15 @@ gg_udependent <- function(object,
   ## ---- Build tidy edge data frame with raw weights -------------------------
   edge_df <- igraph::as_data_frame(g, what = "edges")
   if (nrow(edge_df) > 0L) {
-    edge_df$weight <- mapply(
-      function(i, j) imp_mat[i, j],
-      edge_df[[1L]], edge_df[[2L]]
-    )
+    if (isTRUE(directed)) {
+      edge_df$weight <- mapply(function(i, j) imp_mat[i, j],
+                                edge_df[[1L]], edge_df[[2L]])
+    } else {
+      ## Undirected: weight = max of both directions
+      edge_df$weight <- mapply(
+        function(i, j) max(imp_mat[i, j], imp_mat[j, i]),
+        edge_df[[1L]], edge_df[[2L]])
+    }
   } else {
     edge_df$weight <- numeric(0)
   }
@@ -158,6 +168,21 @@ gg_udependent <- function(object,
       match(igraph::V(g)$name, as.character(node_df$variable))]
     igraph::V(g)$selected <- node_df$selected[
       match(igraph::V(g)$name, as.character(node_df$variable))]
+  }
+
+  ## ---- Set igraph edge weights (order-insensitive for undirected) -----------
+  if (length(igraph::E(g)) > 0L && nrow(edge_df) > 0L) {
+    el <- igraph::as_data_frame(g, what = "edges")
+    if (isTRUE(directed)) {
+      idx <- match(paste(el$from, el$to),
+                   paste(edge_df$variable_from, edge_df$variable_to))
+    } else {
+      key_g <- paste(pmin(el$from, el$to),     pmax(el$from, el$to))
+      key_e <- paste(pmin(edge_df$variable_from, edge_df$variable_to),
+                     pmax(edge_df$variable_from, edge_df$variable_to))
+      idx <- match(key_g, key_e)
+    }
+    igraph::E(g)$weight <- edge_df$weight[idx]
   }
 
   ## ---- Assemble result ------------------------------------------------------
