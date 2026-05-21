@@ -80,9 +80,9 @@ gg_udependent <- function(object,
   }
 
   ## ---- Build adjacency from threshold; short-circuit if empty --------------
-  A <- (imp_mat >= threshold) * 1
-  diag(A) <- 0
-  if (sum(A) == 0L) {
+  adj_mat <- (imp_mat >= threshold) * 1
+  diag(adj_mat) <- 0
+  if (sum(adj_mat) == 0L) {
     return(.empty_result(
       paste0("no edges found at threshold=", threshold)
     ))
@@ -100,8 +100,8 @@ gg_udependent <- function(object,
 
   ## ---- Build igraph from adjacency -----------------------------------------
   g <- igraph::graph_from_adjacency_matrix(
-    A,
-    mode  = if (isTRUE(directed)) "directed" else "undirected",
+    adj_mat,
+    mode  = if (isTRUE(directed)) "directed" else "max",
     diag  = FALSE
   )
   isolated <- igraph::degree(g, mode = "all") == 0
@@ -200,4 +200,3 @@ gg_udependent <- function(object,
     n          = nrow(object$x)
   )
 }
-
