@@ -1,8 +1,19 @@
 Package: ggRandomForests
-Version: 2.7.3.9003
+Version: 2.7.3.9004
 
 ggRandomForests v2.8.0 (development) — continued
 =================================================
+* **varPro variable dependency: `gg_udependent()` (Phase 3).**
+  - `gg_udependent()` extracts cross-variable dependency scores from a
+    `uvarpro` fit using `varPro::get.beta.entropy()` +
+    `varPro::sdependent()`, and returns a tidy list with `$edges`
+    (variable_from, variable_to, weight), `$nodes` (variable, degree,
+    selected), and `$graph` (igraph object).
+  - `plot.gg_udependent()` renders the dependency network using ggraph
+    with edge width/opacity scaled by dependency strength and node colour
+    by signal-variable status.  Layout is configurable (`"fr"`, `"kk"`,
+    `"stress"`, etc.).
+  - `ggraph` added to `Suggests:`.
 * **varPro variable importance: `gg_varpro()` (#85).**
   - `gg_varpro()` extracts per-tree importance scores from a fitted
     `varpro` object and renders an honest boxplot — hinges at the
