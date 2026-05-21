@@ -7,7 +7,7 @@
 #' \code{plot.gg_udependent}.
 #'
 #' @param object A fitted \code{uvarpro} object (required).
-#' @param threshold Numeric in (0, 1); dependency threshold passed to
+#' @param threshold Numeric; positive dependency threshold passed to
 #'   \code{sdependent()}. An edge \eqn{i \to j} is drawn when
 #'   \code{I[i, j] >= threshold}. Default \code{0.25}.
 #' @param q.signal Quantile threshold (0--1) for signal variable selection;
@@ -181,14 +181,7 @@ gg_udependent <- function(object,
     stop("'object' must be a uvarpro fit (class \"uvarpro\").", call. = FALSE)
   }
   if (!is.numeric(threshold) || length(threshold) != 1L || threshold <= 0) {
-    stop("'threshold' must be a single positive numeric value in (0, 1).",
-         call. = FALSE)
-  }
-  if (threshold >= 1 && threshold < 100) {
-    stop(
-      paste0("'threshold' must be in (0, 1); got ", threshold, "."),
-      call. = FALSE
-    )
+    stop("'threshold' must be a single positive numeric value.", call. = FALSE)
   }
   if (!is.logical(directed) || length(directed) != 1L) {
     stop("'directed' must be a single logical value.", call. = FALSE)

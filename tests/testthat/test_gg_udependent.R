@@ -17,10 +17,10 @@ test_that("gg_udependent: non-uvarpro object -> stop", {
   expect_error(gg_udependent(list(x = 1)), regexp = "uvarpro")
 })
 
-test_that("gg_udependent: threshold not in (0,1) -> stop", {
+test_that("gg_udependent: non-positive threshold -> stop", {
   uv <- make_uvp()
-  expect_error(gg_udependent(uv, threshold = 1.5), regexp = "threshold")
-  expect_error(gg_udependent(uv, threshold = 0),   regexp = "threshold")
+  expect_error(gg_udependent(uv, threshold = -0.1), regexp = "threshold")
+  expect_error(gg_udependent(uv, threshold = 0),    regexp = "threshold")
 })
 
 ## ── Class & structure ────────────────────────────────────────────────────────
