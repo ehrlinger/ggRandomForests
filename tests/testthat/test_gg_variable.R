@@ -355,3 +355,16 @@ test_that("plot.gg_variable: missing xvar returns list for all predictors", {
   # Returns a single plottable object (patchwork composite for multiple predictors)
   expect_true(inherits(gg_plt, "patchwork") || inherits(gg_plt, "ggplot"))
 })
+
+test_that("gg_variable.randomForest classification: class attr uses 'class' not 'classification'", {
+  # randomForest stores the family in $type as "classification", but
+  # plot.gg_variable and the rfsrc path both dispatch on "class".
+  # Verify the mapping is applied so callers see a consistent class attribute.
+  set.seed(42)
+  rf_iris <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+  gg_dta  <- gg_variable(rf_iris)
+
+  expect_true("class"          %in% class(gg_dta))
+  expect_false("classification" %in% class(gg_dta))
+  expect_s3_class(gg_dta, "gg_variable")
+})
