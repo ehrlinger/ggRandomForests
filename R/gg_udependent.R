@@ -227,7 +227,6 @@ summary.gg_udependent <- function(object, ...) {
     provenance = prov
   )
   class(s) <- "summary.gg_udependent"
-  print(s)
   invisible(s)
 }
 
