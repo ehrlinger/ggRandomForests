@@ -166,10 +166,14 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       gg_dta_y <- gg_dta[, grep("yhat.", colnames(gg_dta))]
       lng <- ncol(gg_dta_y)
       gg2 <- parallel::mclapply(seq_len(ncol(gg_dta_y)), function(ind) {
-        cbind(gg_dta_x, yhat = gg_dta_y[, ind], outcome = ind)
+        cbind(gg_dta_x, yhat = gg_dta_y[, ind],
+              outcome = sub("^yhat\\.", "", colnames(gg_dta_y)[ind]))
       })
       gg3 <- do.call(rbind, gg2)
-      gg3$outcome <- factor(gg3$outcome)
+      # Use column order from gg_dta_y (not alphabetical) so facet panels
+      # appear in the same order as the model's class levels.
+      outcome_levels <- sub("^yhat\\.", "", colnames(gg_dta_y))
+      gg3$outcome <- factor(gg3$outcome, levels = outcome_levels)
       gg_dta <- gg3
     }
   }
@@ -516,7 +520,10 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
             }
             if (smooth) {
               gg_plt[[ind]] <- gg_plt[[ind]] +
-                ggplot2::geom_smooth(...)
+                ggplot2::geom_smooth(
+                  ggplot2::aes(x = .data$var, y = .data$yhat),
+                  ...
+                )
             }
           } else {
             # Factor predictor: jitter + boxplot coloured by observed class
@@ -550,6 +557,13 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                 ),
                 ...
               )
+            if (smooth) {
+              gg_plt[[ind]] <- gg_plt[[ind]] +
+                ggplot2::geom_smooth(
+                  ggplot2::aes(x = .data$var, y = .data$yhat),
+                  ...
+                )
+            }
           } else {
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_boxplot(

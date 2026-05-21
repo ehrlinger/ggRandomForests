@@ -1,5 +1,5 @@
 Package: ggRandomForests
-Version: 2.7.3.9004
+Version: 2.7.3.9005
 
 ggRandomForests v2.8.0 (development) — continued
 =================================================
@@ -31,6 +31,19 @@ ggRandomForests v2.8.0 (development) — continued
 
 ggRandomForests v2.8.0 (development)
 ====================================
+* **`gg_variable.randomForest` classification fix (#87).**
+  - `gg_variable.randomForest()` for classification forests now stores
+    per-class OOB vote fractions as `yhat.<classname>` columns (from
+    `object$votes`), matching the `rfsrc` path.  Previously a single
+    `yhat` factor column (class labels from `object$predicted`) was
+    stored, which prevented the multi-class pivot in `plot.gg_variable`
+    from firing.  Vote fractions are row-normalised to `[0, 1]` even
+    when the forest was fit with `norm.votes = FALSE`.
+  - `plot.gg_variable` binary classification: `smooth = TRUE` now
+    correctly maps x/y aesthetics onto the smooth layer.
+  - `plot.gg_variable` multi-class numeric path: `smooth = TRUE` now
+    adds a smooth layer (was silently skipped).
+  - Closes stale issues #81 (fixed in PR #83) and #82.
 * **varPro partial dependence: `gg_partial_varpro()` (#84).**
   - `gg_partial_varpro()` replaces `gg_partialpro()` as the primary entry
     point for varPro partial dependence plots.  The new extractor accepts

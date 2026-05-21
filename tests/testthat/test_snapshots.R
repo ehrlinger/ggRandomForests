@@ -274,4 +274,27 @@ local({
     })
   }
 
+## ── randomForest classification snapshots (PR #87) ───────────────────────────
+if (requireNamespace("randomForest", quietly = TRUE)) {
+  local({
+    set.seed(42L)
+    rf_iris <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+    gg_iris <- gg_variable(rf_iris)
+
+    test_that("snapshot: gg-variable-rf-classification-default", {
+      vdiffr::expect_doppelganger(
+        "gg-variable-rf-classification-default",
+        plot(gg_iris)
+      )
+    })
+
+    test_that("snapshot: gg-variable-rf-classification-smooth", {
+      vdiffr::expect_doppelganger(
+        "gg-variable-rf-classification-smooth",
+        plot(gg_iris, xvar = "Sepal.Length", smooth = TRUE)
+      )
+    })
+  })
+}
+
 } # end CI guard
