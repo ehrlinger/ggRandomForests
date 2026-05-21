@@ -307,10 +307,16 @@ gg_variable.randomForest <- function(object,
   }
 
   gg_dta <- predictors
-  # Append the forest's in-bag predicted values.
-  gg_dta$yhat <- as.vector(object$predicted)
+  # For classification forests use per-class OOB vote fractions (object$votes),
+  # stored as yhat.<classname> columns — the same shape gg_variable.rfsrc
+  # produces.  For regression a single numeric yhat column suffices.
   if (object$type == "classification") {
-    gg_dta$yvar <- response
+    preds           <- object$votes   # n × n_classes matrix of OOB vote fractions
+    colnames(preds) <- paste0("yhat.", colnames(preds))
+    gg_dta          <- cbind(gg_dta, preds)
+    gg_dta$yvar     <- response
+  } else {
+    gg_dta$yhat <- as.vector(object$predicted)
   }
 
   # randomForest uses object$type ("classification" / "regression"); the
