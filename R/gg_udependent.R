@@ -54,11 +54,6 @@ gg_udependent <- function(object,
                            ...) {
   .validate_udep_inputs(object, threshold, directed)
 
-  if (!requireNamespace("igraph", quietly = TRUE)) {
-    stop("Package 'igraph' is required. Install it with: install.packages('igraph')",
-         call. = FALSE)
-  }
-
   ## ---- Compute cross-variable dependency matrix ----------------------------
   imp_mat <- varPro::get.beta.entropy(object)
 
