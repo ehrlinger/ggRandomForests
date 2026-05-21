@@ -492,3 +492,58 @@ test_that("gg_variable.randomForest: oob=FALSE triggers a warning", {
   expect_s3_class(gg, "gg_variable")
   expect_true("yhat.setosa" %in% names(gg))
 })
+
+## ── smooth=TRUE is a no-op for factor predictors (all families) ──────────────
+
+test_that("plot.gg_variable binary classification + factor predictor: smooth=TRUE is no-op (no error, 2 layers)", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  bin_data         <- iris[iris$Species != "virginica", ]
+  bin_data$Species <- droplevels(bin_data$Species)
+  bin_data$size    <- cut(bin_data$Petal.Length, 2L, labels = c("small", "large"))
+  rf  <- randomForest::randomForest(Species ~ size + Sepal.Width, data = bin_data,
+                                    ntree = 50L)
+  gg  <- gg_variable(rf)
+  # smooth=TRUE with a factor predictor must not error
+  expect_no_error({
+    p <- plot(gg, xvar = "size", smooth = TRUE)
+  })
+  p <- plot(gg, xvar = "size", smooth = TRUE)
+  expect_s3_class(p, "ggplot")
+  # Boxplot + jitter — no smooth layer added
+  expect_equal(length(p$layers), 2L)
+})
+
+test_that("plot.gg_variable multi-class classification + factor predictor: smooth=TRUE is no-op (no error)", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  iris2      <- iris
+  iris2$size <- cut(iris2$Petal.Length, 3L, labels = c("small", "medium", "large"))
+  rf <- randomForest::randomForest(Species ~ size + Sepal.Width, data = iris2,
+                                   ntree = 50L)
+  gg <- gg_variable(rf)
+  # smooth=TRUE with a factor predictor must not error
+  expect_no_error({
+    p <- plot(gg, xvar = "size", smooth = TRUE)
+  })
+  p <- plot(gg, xvar = "size", smooth = TRUE)
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_variable regression + factor predictor: smooth=TRUE is no-op (no error, 2 layers)", {
+  skip_if_not_installed("randomForest")
+  set.seed(42L)
+  iris2      <- iris
+  iris2$size <- cut(iris2$Petal.Length, 3L, labels = c("small", "medium", "large"))
+  rf <- randomForest::randomForest(Sepal.Length ~ size + Sepal.Width, data = iris2,
+                                   ntree = 50L)
+  gg <- gg_variable(rf)
+  # smooth=TRUE with a factor predictor must not error
+  expect_no_error({
+    p <- plot(gg, xvar = "size", smooth = TRUE)
+  })
+  p <- plot(gg, xvar = "size", smooth = TRUE)
+  expect_s3_class(p, "ggplot")
+  # Boxplot + jitter — no smooth layer added
+  expect_equal(length(p$layers), 2L)
+})

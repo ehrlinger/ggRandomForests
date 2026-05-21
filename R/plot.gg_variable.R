@@ -526,7 +526,11 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                 )
             }
           } else {
-            # Factor predictor: jitter + boxplot coloured by observed class
+            # Factor predictor: jitter + boxplot coloured by observed class.
+            # smooth=TRUE is intentionally a no-op here: geom_smooth requires
+            # a continuous x-axis and has no meaningful interpretation for
+            # discrete factor levels.  The boxplot IQR serves as the spread
+            # summary.
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_jitter(
                 ggplot2::aes(
@@ -565,6 +569,10 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                 )
             }
           } else {
+            # Factor predictor (multi-class): boxplot + jitter per facet.
+            # smooth=TRUE is intentionally a no-op here for the same reason
+            # as the binary factor path above — geom_smooth requires a
+            # continuous x-axis.
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_boxplot(
                 ggplot2::aes(x = .data$var, y = .data$yhat),
@@ -605,7 +613,10 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
               ggplot2::geom_smooth(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
           }
         } else {
-          # Factor predictor: boxplot + jitter
+          # Factor predictor (regression): boxplot + jitter.
+          # smooth=TRUE is intentionally a no-op here: geom_smooth requires a
+          # continuous x-axis and has no meaningful interpretation for discrete
+          # factor levels.  The boxplot IQR serves as the spread summary.
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::geom_boxplot(
               ggplot2::aes(x = .data$var, y = .data$yhat),
