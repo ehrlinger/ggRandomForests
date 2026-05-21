@@ -46,6 +46,14 @@ Assess and plot variable importance (VIMP).
 
   Plot a `gg_varpro` variable importance object
 
+- [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
+  : Variable dependency graph from a uvarpro model
+
+- [`plot(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.md)
+  :
+
+  Plot a `gg_udependent` variable dependency graph
+
 ## Variable Dependence
 
 Marginal variable dependence plots.
@@ -149,6 +157,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`autoplot(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   :
 
   `autoplot` methods for ggRandomForests data objects
@@ -164,6 +173,8 @@ Standard R generics implemented for all gg\_\* data objects.
   [`print(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<summary.gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   : Print methods for gg\_\* data objects
 
@@ -179,6 +190,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`summary(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   : Summary methods for gg\_\* data objects
 

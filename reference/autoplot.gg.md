@@ -44,6 +44,9 @@ autoplot(object, ...)
 
 # S3 method for class 'gg_varpro'
 autoplot(object, ...)
+
+# S3 method for class 'gg_udependent'
+autoplot(object, ...)
 ```
 
 ## Arguments

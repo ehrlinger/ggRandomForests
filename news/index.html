@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9003</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,15 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.8.0" id="ggrandomforests-v280-development--continued">ggRandomForests v2.8.0 (development) — continued<a class="anchor" aria-label="anchor" href="#ggrandomforests-v280-development--continued"></a></h2>
 <ul><li>
+<strong>varPro variable dependency: <code><a href="../reference/gg_udependent.html">gg_udependent()</a></code> (Phase 3).</strong>
+<ul><li>
+<code><a href="../reference/gg_udependent.html">gg_udependent()</a></code> extracts cross-variable dependency scores from a <code>uvarpro</code> fit using <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code> + <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent()</a></code>, and returns a tidy list with <code>$edges</code> (variable_from, variable_to, weight), <code>$nodes</code> (variable, degree, selected), and <code>$graph</code> (igraph object).</li>
+<li>
+<code><a href="../reference/plot.gg_udependent.html">plot.gg_udependent()</a></code> renders the dependency network using ggraph with edge width/opacity scaled by dependency strength and node colour by signal-variable status. Layout is configurable (<code>"fr"</code>, <code>"kk"</code>, <code>"stress"</code>, etc.).</li>
+<li>
+<code>ggraph</code> added to <code>Suggests:</code>.</li>
+</ul></li>
+<li>
 <strong>varPro variable importance: <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> (<a href="https://github.com/ehrlinger/ggRandomForests/issues/85" class="external-link">#85</a>).</strong>
 <ul><li>
 <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> extracts per-tree importance scores from a fitted <code>varpro</code> object and renders an honest boxplot — hinges at the 15th/85th percentile, whiskers at the 5th/95th — of the per-tree z-score distribution per variable. Variables whose aggregate z &gt; <code>cutoff</code> (default 0.79) are colour-highlighted.</li>

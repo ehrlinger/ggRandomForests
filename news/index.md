@@ -2,6 +2,21 @@
 
 ## ggRandomForests v2.8.0 (development) — continued
 
+- **varPro variable dependency:
+  [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
+  (Phase 3).**
+  - [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
+    extracts cross-variable dependency scores from a `uvarpro` fit using
+    [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html) +
+    [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html),
+    and returns a tidy list with `$edges` (variable_from, variable_to,
+    weight), `$nodes` (variable, degree, selected), and `$graph` (igraph
+    object).
+  - [`plot.gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.md)
+    renders the dependency network using ggraph with edge width/opacity
+    scaled by dependency strength and node colour by signal-variable
+    status. Layout is configurable (`"fr"`, `"kk"`, `"stress"`, etc.).
+  - `ggraph` added to `Suggests:`.
 - **varPro variable importance:
   [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
   ([\#85](https://github.com/ehrlinger/ggRandomForests/issues/85)).**
