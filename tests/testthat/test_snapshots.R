@@ -297,4 +297,27 @@ if (requireNamespace("randomForest", quietly = TRUE)) {
   })
 }
 
+## ── per_class ROC snapshots (PR #88) ─────────────────────────────────────
+if (requireNamespace("randomForest", quietly = TRUE)) {
+  local({
+    set.seed(1L)
+    rf_iris    <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+    gg_pc_iris <- gg_roc(rf_iris, per_class = TRUE)
+
+    test_that("snapshot: gg-roc-multiclass-overlay", {
+      vdiffr::expect_doppelganger(
+        "gg-roc-multiclass-overlay",
+        plot(gg_pc_iris, panel = "overlay")
+      )
+    })
+
+    test_that("snapshot: gg-roc-multiclass-facet", {
+      vdiffr::expect_doppelganger(
+        "gg-roc-multiclass-facet",
+        plot(gg_pc_iris, panel = "facet")
+      )
+    })
+  })
+}
+
 } # end CI guard
