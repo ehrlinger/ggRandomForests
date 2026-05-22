@@ -13,7 +13,7 @@ ggRandomForests v2.8.0 (development) — continued
     `"facet"` gives each class its own panel.
   - `summary.gg_roc()` prints the named per-class AUC values when a `class`
     column is present.
-  - On a binary forest, `per_class = TRUE` does nothing — the usual
+  - On a binary forest, `per_class = TRUE` does nothing, the usual
     single-curve result comes back unchanged.
   - ROC confidence intervals are still to come, in v2.9.0 (issue #7 / #72-CIs).
 * New `gg_udependent()`: varPro cross-variable dependency (Phase 3).
@@ -35,7 +35,7 @@ ggRandomForests v2.8.0 (development) — continued
     z above `cutoff` (default 0.79) are colour-highlighted.
   - With `faithful = TRUE`, the individual per-tree z-scores are jittered
     over the box as semi-transparent points, with a white-outlined dot at
-    the mean — the same view as varPro's internal `bxp` output.
+    the mean, the same view as varPro's internal `bxp` output.
   - With `conditional = TRUE` (classification forests only), `gg_varpro()`
     reads `$conditional.z` and draws class-conditional importance as a
     `facet_wrap(~class, nrow=1)` bar chart.
@@ -47,7 +47,7 @@ ggRandomForests v2.8.0 (development)
 * `gg_variable.randomForest`: classification fix (#87).
   - For a classification forest, `gg_variable.randomForest()` now stores
     per-class OOB vote fractions as `yhat.<classname>` columns, read from
-    `object$votes` — the same layout the `rfsrc` path produces. It used to
+    `object$votes`, the same layout the `rfsrc` path produces. It used to
     store a single `yhat` factor column of class labels (from
     `object$predicted`), and that column shape stopped the multi-class
     pivot in `plot.gg_variable` from ever running. The vote fractions are
@@ -61,7 +61,7 @@ ggRandomForests v2.8.0 (development)
 * New `gg_partial_varpro()`: varPro partial dependence (#84).
   - `gg_partial_varpro()` takes over from `gg_partialpro()` as the entry
     point for varPro partial dependence plots. It accepts an optional
-    `object` argument — the originating `varpro` fit — which it uses for
+    `object` argument (the originating `varpro` fit) which it uses for
     provenance-aware axis labels, and a `scale` argument
     (`"auto"`, `"mortality"`, `"rmst"`, `"surv"`, `"chf"`).
   - Ensemble mortality labelling (Ishwaran et al. 2008): with
@@ -86,7 +86,7 @@ ggRandomForests v2.8.0 (development)
     `xvar`, which broke `patchwork` / `autoplot()` / `layer_data()`
     composition (#80).
   - `gg_roc()` and `calc_roc()` for `randomForest` now build the ROC from
-    class probabilities — OOB votes by default, honouring `oob` — rather
+    class probabilities (OOB votes by default, honouring `oob`) rather
     than the degenerate three-point curve they produced before. With
     `which_outcome = "all"` (the default for `gg_roc(rf)`) the result is a
     macro-averaged one-vs-rest ROC, and no warning. The shared
@@ -100,7 +100,7 @@ ggRandomForests v2.8.0 (development)
   `randomForest` on the search path. A script that called `rfsrc()` or
   `randomForest()` unqualified after only `library(ggRandomForests)` now
   needs its own `library(randomForestSRC)` / `library(randomForest)`, or
-  must qualify the calls. ggRandomForests itself is unaffected — it
+  must qualify the calls. ggRandomForests itself is unaffected. It
   qualifies every call into its dependencies.
 
 ggRandomForests v2.7.3

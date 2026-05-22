@@ -613,7 +613,7 @@ plot(gg_bs, envelope = TRUE)
 ```
 
 The running CRPS (continuous ranked probability score) is the Brier score
-integrated over time and divided by elapsed time --- in other words, the
+integrated over time and divided by elapsed time, in other words the
 time-average of the curve above. It collapses the whole trajectory into one
 running number, which is handy when you want a single accuracy figure rather
 than a curve to read.
@@ -638,7 +638,7 @@ We have walked a full random survival forest analysis with
   the PBC trial, the same conclusion reached in @fleming:1991.
 - `gg_error()` showed the OOB error settling quickly as trees were added.
 - VIMP (`gg_vimp()`) and minimal depth (`max.subtree()`) landed on the same
-  five predictors --- bilirubin, albumin, copper, prothrombin, and age ---
+  five predictors (bilirubin, albumin, copper, prothrombin, and age),
   which is also where the proportional hazards model landed.
 - `gg_variable()` exposed non-proportional hazards for bilirubin and copper,
   where the gap between time horizons widens.

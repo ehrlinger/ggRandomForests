@@ -245,7 +245,7 @@ $$
 
 We use `gg_partial_rfsrc()`, which calls `randomForestSRC::partial.rfsrc()`
 directly and returns a `gg_partial_rfsrc` object. The quickest path to a
-figure is `plot(pd)` --- it sorts out continuous and categorical variables
+figure is `plot(pd)`, which sorts out continuous and categorical variables
 for you. When you want to control the layout yourself, the underlying data
 is in `pd$continuous`.
 
@@ -269,8 +269,8 @@ ggplot(pd$continuous, aes(x = x, y = yhat)) +
 
 `lstat` shows a strongly concave relationship, while `rm` stays flat below
 about 6 rooms and then climbs sharply. Shapes like these are awkward to
-capture with a simple parametric transform --- you would have to guess the
-form in advance --- but the random forest picks them up on its own.
+capture with a simple parametric transform, since you would have to guess
+the form in advance, but the random forest picks them up on its own.
 
 # Variable Interactions and Conditioning Plots
 
@@ -400,7 +400,7 @@ We have walked a full random forest regression analysis with
 
 - `gg_error()` showed the OOB error settling well before 500 trees.
 - VIMP (`gg_vimp()`) and minimal depth (`max.subtree()`) agreed on the same
-  story --- `lstat` and `rm` dominate, with a clear gap to everything else.
+  story: `lstat` and `rm` dominate, with a clear gap to everything else.
 - `gg_variable()` traced strongly non-linear predictor--response curves, the
   same shapes the raw-data EDA hinted at.
 - Partial dependence from `gg_partial_rfsrc()` gave the risk-adjusted version
