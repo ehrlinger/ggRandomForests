@@ -14,18 +14,24 @@
 #'
 #' Brier score and CRPS for survival forests
 #'
-#' Extract the time-resolved Brier score and continuous ranked probability
-#' score (CRPS) for a survival forest grown with \code{randomForestSRC}. The
-#' Brier score is computed at each time on \code{object$time.interest}, both
-#' overall and stratified by mortality-risk quartile. CRPS is the running
-#' trapezoidal integral of the Brier score, normalised by elapsed time, and
-#' is computed within each quartile and overall.
+#' The Brier score asks a familiar question of any probabilistic forecast:
+#' how far did the predicted probability sit from what actually happened?
+#' For a survival forest the forecast is the predicted survival probability,
+#' and the score is computed at each event time, so the result is a curve
+#' rather than a single number -- lower is better, at every time.
 #'
-#' @details Wraps \code{\link[randomForestSRC]{get.brier.survival}} and
-#' rebuilds the quartile decomposition + running CRPS from the returned
-#' \code{brier.matx} and \code{mort} components, mirroring the computation
-#' in the internal \code{plot.survival} function of \pkg{randomForestSRC}. The Brier score uses
-#' inverse-probability-of-censoring weighting; the censoring distribution
+#' This function extracts that time-resolved Brier score for a survival
+#' forest grown with \code{randomForestSRC}, both overall and split by
+#' mortality-risk quartile. It also returns the continuous ranked
+#' probability score (CRPS), which is the Brier score integrated over time
+#' and divided by elapsed time -- a running average of the curve so far.
+#'
+#' @details This wraps \code{\link[randomForestSRC]{get.brier.survival}} and
+#' rebuilds the quartile decomposition and running CRPS from the returned
+#' \code{brier.matx} and \code{mort} components, following the computation
+#' in the internal \code{plot.survival} function of \pkg{randomForestSRC}.
+#' Right-censored data make a plain Brier score biased, so the score uses
+#' inverse-probability-of-censoring weighting. The censoring distribution
 #' is estimated either by Kaplan-Meier (\code{cens.model = "km"}, the
 #' default) or by a separate censoring forest (\code{cens.model = "rfsrc"}).
 #'
