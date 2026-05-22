@@ -18,18 +18,20 @@
 
 #' Summary methods for gg_* data objects
 #'
-#' Each \code{summary.gg_*()} method returns a \code{summary.gg} object
-#' containing a header line and per-class diagnostic statistics (OOB error
-#' curve, top VIMP variables, time range, integrated CRPS, etc.).
-#' \code{print.summary.gg()} renders the object to the console.
+#' Where \code{print} gives you a one-line header, \code{summary} digs a level
+#' deeper. Each \code{summary.gg_*()} method returns a \code{summary.gg}
+#' object: a header line plus a few diagnostic statistics for that object
+#' type (the OOB error curve, the top VIMP variables, a time range, the
+#' integrated CRPS, and so on). \code{print.summary.gg()} renders it to the
+#' console.
 #'
 #' @param object A \code{gg_*} data object.
 #' @param x A \code{summary.gg} object (for \code{print.summary.gg}).
 #' @param ... Not currently used.
 #'
-#' @return A \code{summary.gg} object (a list with \code{header} and
-#'   \code{body} character vectors), returned invisibly from
-#'   \code{print.summary.gg}.
+#' @return A \code{summary.gg} object: a list with \code{header} and
+#'   \code{body} character vectors. \code{print.summary.gg} returns it
+#'   invisibly.
 #'
 #' @seealso \code{\link{print.gg}}, \code{\link{autoplot.gg}}
 #'

@@ -14,13 +14,13 @@ NULL
 
 #' \code{autoplot} methods for \pkg{ggRandomForests} data objects
 #'
-#' These methods let you use \code{ggplot2::autoplot()} on any \code{gg_*}
-#' object returned by \pkg{ggRandomForests}.  They are thin wrappers around
-#' the corresponding \code{plot.gg_*()} S3 methods, so all arguments
-#' accepted by those methods are forwarded via \code{...}.
+#' These let you call \code{ggplot2::autoplot()} on any \code{gg_*} object
+#' \pkg{ggRandomForests} returns. Each is a thin wrapper around the matching
+#' \code{plot.gg_*()} S3 method, and \code{...} passes straight through, so
+#' every argument those plot methods take is still available here.
 #'
 #' @param object A \code{gg_*} data object (see Details).
-#' @param ... Additional arguments forwarded to the underlying
+#' @param ... Additional arguments passed to the underlying
 #'   \code{plot.gg_*()} method.
 #'
 #' @return A \code{ggplot} object.
