@@ -63,10 +63,23 @@ Observed voice characteristics (from the samples):
   package docs: **use sparingly** — keep where the em-dash earns the pause,
   otherwise prefer a comma, parentheses, or a full stop. Do not strip them
   entirely (un-John); do not sprinkle them.
+- **Ellipses** — an informal-register habit (text, email). Keep them out of
+  package docs; do not flag them as an AI tell either.
+- **Don't overstate** — no overselling. Cut "enhanced", "powerful",
+  "seamlessly", "robust" (as a brag), "comprehensive". State what the thing
+  does, at its actual size.
+- **Repetition that teaches is voice, not defect** — deliberately restating a
+  concept, or a callback structure (e.g. the VarPro sample states five
+  problems up front and answers each in the Epilog), is kept. Repeat a
+  concept when the repetition makes it clearer; cut repetition that only
+  fills space.
 
-AI tells to hunt (these are NOT John): relentless parallelism, flavorlessness,
-absence of analogy, absence of "we"/"you", sterile hedge-free balance, forced
-tricolons, "it is worth noting". Punctuation density is not itself a tell.
+AI tells to hunt (these are NOT John): *mechanical* parallelism (same-shaped
+sentences with no teaching purpose, lists padded to equal length),
+flavorlessness, absence of analogy, absence of "we"/"you", sterile hedge-free
+balance, forced tricolons, "it is worth noting", overstatement. Punctuation
+density is not itself a tell, and pedagogical repetition is not parallelism —
+preserve it.
 
 ### Step 2 — Two registers
 
