@@ -1,27 +1,30 @@
 ##=============================================================================
 #' Variable importance data from a varPro model
 #'
-#' Extracts per-tree importance scores from a fitted \code{varpro} object,
-#' summarises them into an honest boxplot-ready data structure (hinges at
-#' 15th/85th percentile, whiskers at 5th/95th), and optionally retains
-#' class-conditional importance for classification forests.
+#' Pulls the per-tree importance scores out of a fitted \code{varpro} object
+#' and summarises them into a data structure the plot method can draw as a
+#' boxplot.  The box is an honest one: hinges at the 15th and 85th
+#' percentiles, whiskers at the 5th and 95th, no Tukey rule hiding in the
+#' middle.  For a classification forest you can also keep the
+#' class-conditional importances.
 #'
 #' @param object A fitted \code{varpro} object (required).
 #' @param local.std Logical; default \code{TRUE}.  When \code{TRUE} the
-#'   per-tree importances are normalised to z-scale before computing box
-#'   statistics.  Set to \code{FALSE} to retain the raw importance scale
-#'   (required for \code{type = "raw"} in \code{plot.gg_varpro}).
-#' @param cutoff Numeric z-score threshold for variable selection; default
-#'   \code{0.79}.  Variables with aggregate z > cutoff are flagged
-#'   \code{selected = TRUE} in \code{$imp}.
+#'   per-tree importances are put on the z-scale before the box statistics
+#'   are computed.  Set it \code{FALSE} to keep the raw importance scale,
+#'   which is what \code{type = "raw"} in \code{plot.gg_varpro} needs.
+#' @param cutoff Numeric; the z-score above which a variable is treated as
+#'   selected.  Default \code{0.79}.  A variable with aggregate z above the
+#'   cutoff is flagged \code{selected = TRUE} in \code{$imp}.
 #' @param faithful Logical; default \code{FALSE}.  When \code{TRUE},
-#'   \code{$imp.tree} is retained so \code{plot.gg_varpro} can
-#'   overlay per-tree jitter points in \code{plot.gg_varpro}.
-#' @param conditional Logical; default \code{FALSE}.  When \code{TRUE}
-#'   (classification forests only) extracts the \code{$conditional.z}
-#'   matrix and stores it as \code{$conditional}.
-#' @param nvar Integer; retain only the top \code{nvar} variables (by
-#'   median per-tree z) after applying the cutoff filter.  \code{NULL} keeps all.
+#'   \code{$imp.tree} is kept so \code{plot.gg_varpro} can scatter the
+#'   per-tree points over the box.
+#' @param conditional Logical; default \code{FALSE}.  When \code{TRUE}, and
+#'   only for a classification forest, the \code{$conditional.z} matrix is
+#'   extracted and stored as \code{$conditional}.
+#' @param nvar Integer; keep only the top \code{nvar} variables, ranked by
+#'   median per-tree z, after the cutoff filter has been applied.
+#'   \code{NULL} keeps all of them.
 #' @param ... Additional arguments passed to \code{varPro::importance()}.
 #'
 #' @return A named list of class \code{"gg_varpro"} with elements:

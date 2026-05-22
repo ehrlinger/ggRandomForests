@@ -1,24 +1,27 @@
 ##=============================================================================
 #' Plot a \code{gg_udependent} variable dependency graph
 #'
-#' Renders the variable dependency graph from a \code{gg_udependent} object
-#' as a ggraph network plot. Nodes are coloured by selection status; edge
-#' width and opacity reflect dependency strength.
+#' Draws the dependency graph held in a \code{gg_udependent} object as a
+#' ggraph network.  Node colour marks whether a variable made the signal
+#' set, and the width and opacity of an edge tell you how strong the
+#' dependency between its two variables is.
 #'
 #' @param x A \code{gg_udependent} object from \code{\link{gg_udependent}}.
-#' @param layout Character; igraph/ggraph layout algorithm.  Common choices:
-#'   \code{"fr"} (Fruchterman-Reingold, default), \code{"kk"}
-#'   (Kamada-Kawai), \code{"stress"}, \code{"circle"}, \code{"grid"}.
+#' @param layout Character; the igraph/ggraph layout algorithm.  Common
+#'   choices are \code{"fr"} (Fruchterman-Reingold, the default),
+#'   \code{"kk"} (Kamada-Kawai), \code{"stress"}, \code{"circle"}, and
+#'   \code{"grid"}.
 #' @param ... Not currently used.
 #'
 #' @details
-#' Requires the \pkg{ggraph} package (\code{Suggests}).  Install it with
+#' This plot needs the \pkg{ggraph} package, which is in \code{Suggests}
+#' rather than installed for you.  If it is missing, run
 #' \code{install.packages("ggraph")}.
 #'
-#' Node colour: blue (\code{#4e8fcd}) for signal variables
-#' (\code{selected = TRUE}), grey (\code{#888888}) otherwise.
-#' Node size scales with degree.  Edge width and opacity scale with raw
-#' dependency weight (\code{I[i,j]}).
+#' A signal variable (\code{selected = TRUE}) gets a blue node
+#' (\code{#4e8fcd}); the rest are grey (\code{#888888}).  Node size grows
+#' with degree.  Edge width and opacity both grow with the raw dependency
+#' weight \code{I[i,j]}.
 #'
 #' @return A \code{ggplot} object (built via ggraph).
 #'
