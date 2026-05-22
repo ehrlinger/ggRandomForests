@@ -357,3 +357,16 @@ test_that("plot.gg_roc existing single-class path unchanged", {
   expect_s3_class(p, "ggplot")
   expect_no_error(ggplot2::layer_data(p, 1L))
 })
+
+test_that("summary.gg_roc per_class=TRUE: prints named AUC, no error", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  s  <- summary(gg)
+  expect_s3_class(s, "summary.gg")
+  # Body should mention all three class names
+  expect_true(any(grepl("setosa", s$body)))
+  expect_true(any(grepl("versicolor", s$body)))
+  expect_true(any(grepl("virginica", s$body)))
+})

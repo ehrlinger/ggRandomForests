@@ -189,11 +189,19 @@ summary.gg_partial_varpro <- function(object, ...) {
 #' @rdname summary.gg
 #' @export
 summary.gg_roc <- function(object, ...) {
-  body <- c(
-    sprintf("thresholds: %d", nrow(object)),
-    sprintf("AUC: %.4g",
-            attr(object, "auc") %||% .gg_auc_trap(object))
-  )
+  auc <- attr(object, "auc") %||% .gg_auc_trap(object)
+  if ("class" %in% names(object)) {
+    # per_class = TRUE path: named AUC vector, one entry per class
+    n_cls   <- nlevels(object$class)
+    auc_str <- paste(sprintf("%s=%.4g", names(auc), auc), collapse = ", ")
+    body <- c(sprintf("classes: %d", n_cls),
+              sprintf("AUC: %s", auc_str))
+  } else {
+    body <- c(
+      sprintf("thresholds: %d", nrow(object)),
+      sprintf("AUC: %.4g", auc)
+    )
+  }
   .summary_skel(object, "gg_roc", body)
 }
 
