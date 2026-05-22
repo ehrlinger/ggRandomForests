@@ -43,8 +43,10 @@ decision is auditable. Rewrite happens in a later task — this table changes no
 | R/calc_roc.R helper (kaplan.R, nelson.R) (roxygen) | both | original | no |
 | R/quantile_pts.R (roxygen) | both | original | no |
 | R/help.R, R/ggrandomforests.news.R, R/zzz.R (roxygen) | both | original | no |
-| R/gg_partial_rfsrc.R, R/gg_partialpro.R (roxygen) | both | original | no |
-| R/surv_partial.rfsrc.R, R/varpro_feature_names.R (roxygen) | both | original | no |
+| R/gg_partial_rfsrc.R (roxygen) | both | mixed | yes |
+| R/gg_partialpro.R (roxygen) | both | AI | yes |
+| R/surv_partial.rfsrc.R (roxygen) | both | mixed | yes |
+| R/varpro_feature_names.R (roxygen) | both | AI | yes |
 | vignettes/ggRandomForests.qmd | narrative | original | no |
 | vignettes/ggRandomForests-regression.qmd | narrative | original | no |
 | vignettes/ggRandomForests-survival.qmd | both | mixed | yes |
