@@ -362,6 +362,57 @@ git commit -m "docs: rewrite S3 method roxygen in John's voice"
 
 ---
 
+## Task 6b: Rewrite roxygen — gg_partial family + varpro helper
+
+**Files:**
+- Modify: `R/gg_partial_rfsrc.R`, `R/gg_partialpro.R`, `R/surv_partial.rfsrc.R`,
+  `R/varpro_feature_names.R` (roxygen blocks only)
+
+This task was added after the Task 2 classification audit found these four
+files carry AI-written roxygen (2026-03 onward) — they were missing from the
+original Task 3-6 file lists. `gg_partial_rfsrc.R` and `surv_partial.rfsrc.R`
+are *mixed* (substantive 2025 `@examples` prose plus 2026 AI edits);
+`gg_partialpro.R` and `varpro_feature_names.R` are *AI*.
+
+- [ ] **Step 1: Audit each file's roxygen against the fingerprint**
+
+For each file read the `#'` lines and flag AI tells per `dev/voice-fingerprint.md`.
+For the two mixed files, use `git blame` to separate 2025 original prose (leave
+it) from 2026 AI prose (rewrite it):
+
+```bash
+git blame -- R/gg_partial_rfsrc.R | grep "#'" | head -100
+```
+
+- [ ] **Step 2: Rewrite flagged `@description`/`@details` (narrative register)**
+
+Rewrite flagged narrative blocks against the fingerprint. `gg_partialpro()` is
+the soft-deprecated shim — its roxygen should plainly say it is superseded by
+`gg_partial_varpro()` and stop; do not oversell either function.
+
+- [ ] **Step 3: Rewrite flagged `@param`/`@return` (terse register)**
+
+Same terse-register procedure as Task 3 Step 3.
+
+- [ ] **Step 4: Regenerate Rd and check**
+
+```bash
+Rscript -e "devtools::document(quiet = TRUE)"
+Rscript -e "devtools::check(args = '--as-cran', quiet = TRUE)" 2>&1 | tail -5
+```
+
+Expected: `0 errors | 0 warnings | 0 notes`.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add R/gg_partial_rfsrc.R R/gg_partialpro.R R/surv_partial.rfsrc.R \
+  R/varpro_feature_names.R man/
+git commit -m "docs: rewrite gg_partial family roxygen in John's voice"
+```
+
+---
+
 ## Task 7: Rewrite vignette AI-touched sections
 
 **Files:**
