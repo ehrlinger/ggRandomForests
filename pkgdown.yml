@@ -5,7 +5,7 @@ articles:
   ggRandomForests-regression: ggRandomForests-regression.html
   ggRandomForests-survival: ggRandomForests-survival.html
   ggRandomForests: ggRandomForests.html
-last_built: 2026-05-22T00:03Z
+last_built: 2026-05-22T14:05Z
 urls:
   reference: https://ehrlinger.github.io/ggRandomForests/reference
   article: https://ehrlinger.github.io/ggRandomForests/articles

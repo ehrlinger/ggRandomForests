@@ -13,7 +13,7 @@ randomForest object."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@ rate) across all prediction thresholds for one class of a classification
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'rfsrc'</span></span>
-<span><span class="fu">gg_roc</span><span class="op">(</span><span class="va">object</span>, <span class="va">which_outcome</span>, oob <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">gg_roc</span><span class="op">(</span><span class="va">object</span>, <span class="va">which_outcome</span>, oob <span class="op">=</span> <span class="cn">TRUE</span>, per_class <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -109,6 +109,15 @@ probabilities for the curve. Set to <code>FALSE</code> to use full in-bag
 predictions. For <code>randomForest</code>, <code>oob = TRUE</code> uses out-of-bag
 vote probabilities (<code>object$votes</code>); <code>FALSE</code> uses in-bag
 <code>predict(type = "prob")</code>.</p></dd>
+
+
+<dt id="arg-per-class">per_class<a class="anchor" aria-label="anchor" href="#arg-per-class"></a></dt>
+<dd><p>Logical; if <code>TRUE</code> and the forest has more than two
+classes, return per-class one-vs-rest ROC curves in a long-format
+<code>data.frame</code> with a <code>class</code> factor column and a named AUC
+vector attribute (ordered by descending AUC). Binary forests treat
+<code>per_class = TRUE</code> as a no-op. Currently honoured by the
+<code>randomForest</code> method only.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -11,7 +11,7 @@ object.
 
 ``` r
 # S3 method for class 'rfsrc'
-gg_roc(object, which_outcome, oob = TRUE, ...)
+gg_roc(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
 ```
 
 ## Arguments
@@ -48,6 +48,14 @@ gg_roc(object, which_outcome, oob = TRUE, ...)
   for the curve. Set to `FALSE` to use full in-bag predictions. For
   `randomForest`, `oob = TRUE` uses out-of-bag vote probabilities
   (`object$votes`); `FALSE` uses in-bag `predict(type = "prob")`.
+
+- per_class:
+
+  Logical; if `TRUE` and the forest has more than two classes, return
+  per-class one-vs-rest ROC curves in a long-format `data.frame` with a
+  `class` factor column and a named AUC vector attribute (ordered by
+  descending AUC). Binary forests treat `per_class = TRUE` as a no-op.
+  Currently honoured by the `randomForest` method only.
 
 - ...:
 

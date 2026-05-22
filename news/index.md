@@ -2,6 +2,27 @@
 
 ## ggRandomForests v2.8.0 (development) — continued
 
+- **`gg_roc`: per-class one-vs-rest ROC curves
+  ([\#88](https://github.com/ehrlinger/ggRandomForests/issues/88),
+  closes
+  [\#72](https://github.com/ehrlinger/ggRandomForests/issues/72)).**
+  - [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+    gains a `per_class = FALSE` argument. When `per_class = TRUE` and
+    the forest has more than two classes, returns a long-format `gg_roc`
+    data frame with a `class` factor column and a named AUC vector
+    attribute (one entry per class, ordered by descending AUC).
+  - [`plot.gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
+    gains a `panel = c("overlay", "facet")` argument. When the `gg_roc`
+    object contains a `class` column, the overlay path colours curves by
+    class; the facet path wraps each class into its own panel.
+  - [`summary.gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+    now prints named per-class AUC values when the `class` column is
+    present.
+  - Binary forests: `per_class = TRUE` is a silent no-op (single-curve
+    result returned unchanged).
+  - ROC confidence intervals are deferred to v2.9.0 (issue
+    [\#7](https://github.com/ehrlinger/ggRandomForests/issues/7) /
+    [\#72](https://github.com/ehrlinger/ggRandomForests/issues/72)-CIs).
 - **varPro variable dependency:
   [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
   (Phase 3).**

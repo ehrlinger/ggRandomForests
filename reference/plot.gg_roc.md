@@ -8,7 +8,7 @@ object.
 
 ``` r
 # S3 method for class 'gg_roc'
-plot(x, which_outcome = NULL, ...)
+plot(x, which_outcome = NULL, ..., panel = c("overlay", "facet"))
 ```
 
 ## Arguments
@@ -37,6 +37,13 @@ plot(x, which_outcome = NULL, ...)
   Additional arguments forwarded to
   [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   when `x` is a raw forest object (e.g. `oob = FALSE`).
+
+- panel:
+
+  Character; layout for per-class ROC objects (those produced by
+  `gg_roc(..., per_class = TRUE)`). `"overlay"` (default) draws all
+  class curves in one panel coloured by class; `"facet"` wraps each
+  class into its own panel. Ignored for single-class `gg_roc` objects.
 
 ## Value
 
