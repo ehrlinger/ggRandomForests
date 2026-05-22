@@ -6,8 +6,7 @@
 #' overlaid line curves, one per effect type; categorical predictors get
 #' side-by-side boxplots.  Survival path-C objects (the ones you get when
 #' \code{scale \%in\% c("surv","chf")} was passed to the extractor) are
-#' handed off to \code{\link{plot.gg_partial_rfsrc}}, which already knows
-#' how to draw them.
+#' handed off to \code{\link{plot.gg_partial_rfsrc}} for drawing.
 #'
 #' @param x A \code{\link{gg_partial_varpro}} object.
 #' @param type Character vector; one or more of \code{"parametric"},

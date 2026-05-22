@@ -1,10 +1,10 @@
 ##=============================================================================
 #' Partial dependence data from a varPro model
 #'
-#' \code{varpro::partialpro} hands back one list, with continuous and
+#' \code{varpro::partialpro} returns one list, with continuous and
 #' categorical predictors mixed together. This function splits that list into
-#' two tidy data frames, one for each kind, and works out an honest y-axis
-#' label for the plot method to use later.
+#' two tidy data frames, one for each kind, and resolves the y-axis label the
+#' plot method will use.
 #'
 #' @param part_dta Partial plot data from \code{varpro::partialpro}.  Each
 #'   element must contain \code{xvirtual}, \code{xorg}, \code{yhat.par},

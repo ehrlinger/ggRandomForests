@@ -1,9 +1,9 @@
 ##=============================================================================
 #' Variable dependency graph from a uvarpro model
 #'
-#' A \code{uvarpro} fit knows which variables lean on which others.  This
-#' function reads those cross-variable dependency scores off the fit with
-#' \code{\link[varPro]{get.beta.entropy}} and
+#' A \code{uvarpro} fit records how strongly each variable depends on the
+#' others.  This function pulls those cross-variable dependency scores from
+#' the fit with \code{\link[varPro]{get.beta.entropy}} and
 #' \code{\link[varPro]{sdependent}}, and returns them as a tidy list that
 #' \code{plot.gg_udependent} can draw as a network.
 #'

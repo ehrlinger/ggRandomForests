@@ -4,8 +4,8 @@
 #' Draws a horizontal boxplot of the per-tree importance z-scores, or of the
 #' raw importances if you asked for those.  Set \code{faithful = TRUE} at
 #' extract time and the per-tree points are scattered over the box; for a
-#' classification forest, \code{conditional = TRUE} splits the picture into
-#' one facet per class.
+#' classification forest, \code{conditional = TRUE} splits the plot into one
+#' facet per class.
 #'
 #' @param x A \code{gg_varpro} object from \code{\link{gg_varpro}}.
 #' @param type Character; the display scale.  Leave it off and it is read
@@ -16,10 +16,10 @@
 #' @param ... Not currently used.
 #'
 #' @details
-#' **Honest boxplot geometry:** the hinges are the 15th and 85th percentiles
-#' of the per-tree z-distribution, and the whiskers run to the 5th and 95th.
-#' This is \strong{not} a Tukey boxplot, and the plot carries a caption that
-#' says so.
+#' **Boxplot geometry:** the hinges are the 15th and 85th percentiles of the
+#' per-tree z-distribution, and the whiskers run to the 5th and 95th.  This
+#' is \strong{not} a Tukey boxplot, and the plot carries a caption that says
+#' so.
 #'
 #' **\code{faithful = TRUE}:** the per-tree values are jittered over the box
 #' as semi-transparent points, on the same scale as the box itself (z when

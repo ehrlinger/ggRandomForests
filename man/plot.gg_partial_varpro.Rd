@@ -28,8 +28,7 @@ Draws the partial dependence curves from the list that
 overlaid line curves, one per effect type; categorical predictors get
 side-by-side boxplots.  Survival path-C objects (the ones you get when
 \code{scale \%in\% c("surv","chf")} was passed to the extractor) are
-handed off to \code{\link{plot.gg_partial_rfsrc}}, which already knows
-how to draw them.
+handed off to \code{\link{plot.gg_partial_rfsrc}} for drawing.
 }
 \details{
 **Ensemble mortality (scale = "mortality"):** when the provenance scale

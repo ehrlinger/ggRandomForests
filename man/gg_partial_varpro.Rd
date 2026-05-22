@@ -57,10 +57,10 @@ A \code{gg_partial_varpro} object (see
   \code{\link{gg_partial_varpro}}).
 }
 \description{
-\code{varpro::partialpro} hands back one list, with continuous and
+\code{varpro::partialpro} returns one list, with continuous and
 categorical predictors mixed together. This function splits that list into
-two tidy data frames, one for each kind, and works out an honest y-axis
-label for the plot method to use later.
+two tidy data frames, one for each kind, and resolves the y-axis label the
+plot method will use.
 
 \emph{Deprecated.} \code{gg_partialpro()} has been renamed to
 \code{\link{gg_partial_varpro}()}.  This function is a thin alias that
