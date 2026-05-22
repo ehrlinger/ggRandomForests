@@ -77,8 +77,11 @@
 #' for (i in seq_len(n_cls)) print(plot(gg_roc(rfsrc_iris, which_outcome = i)))
 #'
 #' @export
-plot.gg_roc <- function(x, which_outcome = NULL,
-                        panel = c("overlay", "facet"), ...) {
+plot.gg_roc <- function(x, which_outcome = NULL, ...,
+                        panel = c("overlay", "facet")) {
+  # `panel` is placed after `...` so it is name-only: this preserves
+  # positional back-compatibility for existing callers (e.g.
+  # plot(x, 1, FALSE) still routes the 3rd positional arg into `...`).
   panel <- match.arg(panel)
   gg_dta <- x
 
