@@ -6,7 +6,7 @@
 \alias{gg_roc.randomForest}
 \title{ROC (Receiver Operating Characteristic) curve data from a classification forest.}
 \usage{
-\method{gg_roc}{rfsrc}(object, which_outcome, oob = TRUE, ...)
+\method{gg_roc}{rfsrc}(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
 }
 \arguments{
 \item{object}{A classification \code{\link[randomForestSRC]{rfsrc}} or
@@ -32,6 +32,13 @@ probabilities for the curve. Set to \code{FALSE} to use full in-bag
 predictions. For \code{randomForest}, \code{oob = TRUE} uses out-of-bag
 vote probabilities (\code{object$votes}); \code{FALSE} uses in-bag
 \code{predict(type = "prob")}.}
+
+\item{per_class}{Logical; if \code{TRUE} and the forest has more than two
+classes, return per-class one-vs-rest ROC curves in a long-format
+\code{data.frame} with a \code{class} factor column and a named AUC
+vector attribute (ordered by descending AUC). Binary forests treat
+\code{per_class = TRUE} as a no-op. Currently honoured by the
+\code{randomForest} method only.}
 
 \item{...}{Extra arguments (currently unused).}
 }

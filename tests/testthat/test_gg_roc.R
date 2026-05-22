@@ -249,3 +249,124 @@ test_that("calc_roc.rfsrc output is unchanged for an explicit which_outcome (gua
   expect_true(all(c("sens", "spec", "pct") %in% colnames(g)))
   expect_gte(calc_auc(g), 0.9)                    # rfsrc iris setosa-vs-rest stays strong
 })
+
+## ── per_class = TRUE (PR #88) ──────────────────────────────────────────────
+
+test_that("gg_roc per_class=TRUE: long format with class column", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  expect_true("class" %in% names(gg))
+  expect_true(all(c("sens", "spec", "pct") %in% names(gg)))  # pct = threshold; same 3-col contract as calc_roc
+  expect_s3_class(gg$class, "factor")
+  expect_equal(nlevels(gg$class), 3L)
+})
+
+test_that("gg_roc per_class=TRUE: auc attr is named numeric vector length 3", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf  <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg  <- gg_roc(rf, per_class = TRUE)
+  auc <- attr(gg, "auc")
+  expect_length(auc, 3L)
+  expect_named(auc)
+  # setosa is linearly separable in iris — AUC should be near-perfect
+  expect_gt(auc[["setosa"]], 0.99)
+  # AUC values must be sorted descending
+  expect_true(all(diff(auc) <= 0))
+})
+
+test_that("gg_roc per_class=TRUE: class factor levels ordered by descending AUC", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf  <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg  <- gg_roc(rf, per_class = TRUE)
+  auc <- attr(gg, "auc")
+  expect_equal(levels(gg$class), names(auc))
+})
+
+test_that("gg_roc per_class=TRUE on binary forest: no class column (no-op)", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  bin_data         <- iris[iris$Species != "virginica", ]
+  bin_data$Species <- droplevels(bin_data$Species)
+  rf  <- randomForest::randomForest(Species ~ ., data = bin_data, ntree = 100L)
+  gg  <- gg_roc(rf, per_class = TRUE)
+  # Binary forest: per_class is a no-op — no class column, scalar AUC
+  expect_false("class" %in% names(gg))
+  expect_length(attr(gg, "auc"), 1L)
+})
+
+test_that("gg_roc per_class=TRUE + which_outcome integer: message then per_class wins", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  expect_message(
+    gg <- gg_roc(rf, per_class = TRUE, which_outcome = 1L),
+    "which_outcome.*ignored.*per_class"
+  )
+  expect_true("class" %in% names(gg))
+})
+
+test_that("gg_roc which_outcome='all' still returns macro-average (no class column)", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, which_outcome = "all")
+  expect_false("class" %in% names(gg))
+  # Macro-average returns a single data frame, not a class-faceted one
+  expect_true(all(c("sens", "spec", "pct") %in% names(gg)))  # pct = threshold; same 3-col contract as calc_roc
+})
+
+## ── plot.gg_roc per_class paths (PR #88) ─────────────────────────────────
+
+test_that("plot.gg_roc per_class=TRUE: overlay returns ggplot", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  p  <- plot(gg, panel = "overlay")
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_roc per_class=TRUE: facet returns ggplot", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  p  <- plot(gg, panel = "facet")
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_roc per_class=TRUE: layer_data smokeable for overlay", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  p  <- plot(gg, panel = "overlay")
+  expect_no_error(ggplot2::layer_data(p, 1L))
+})
+
+test_that("plot.gg_roc existing single-class path unchanged", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, which_outcome = 1L)
+  p  <- plot(gg)
+  expect_s3_class(p, "ggplot")
+  expect_no_error(ggplot2::layer_data(p, 1L))
+})
+
+test_that("summary.gg_roc per_class=TRUE: prints named AUC, no error", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  s  <- summary(gg)
+  expect_s3_class(s, "summary.gg")
+  # Body should mention all three class names
+  expect_true(any(grepl("setosa", s$body)))
+  expect_true(any(grepl("versicolor", s$body)))
+  expect_true(any(grepl("virginica", s$body)))
+})

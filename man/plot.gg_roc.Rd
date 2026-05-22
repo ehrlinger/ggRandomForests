@@ -4,7 +4,7 @@
 \alias{plot.gg_roc}
 \title{ROC plot generic function for a \code{\link{gg_roc}} object.}
 \usage{
-\method{plot}{gg_roc}(x, which_outcome = NULL, ...)
+\method{plot}{gg_roc}(x, which_outcome = NULL, ..., panel = c("overlay", "facet"))
 }
 \arguments{
 \item{x}{A \code{\link{gg_roc}} object, or a raw
@@ -20,6 +20,11 @@ class index 2.}
 
 \item{...}{Additional arguments forwarded to \code{\link{gg_roc}} when
 \code{x} is a raw forest object (e.g. \code{oob = FALSE}).}
+
+\item{panel}{Character; layout for per-class ROC objects (those produced by
+\code{gg_roc(..., per_class = TRUE)}). \code{"overlay"} (default) draws all
+class curves in one panel coloured by class; \code{"facet"} wraps each
+class into its own panel. Ignored for single-class \code{gg_roc} objects.}
 }
 \value{
 A \code{ggplot} object.  The x-axis shows 1 - Specificity (FPR)
