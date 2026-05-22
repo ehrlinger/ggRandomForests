@@ -318,3 +318,42 @@ test_that("gg_roc which_outcome='all' still returns macro-average (no class colu
   # Macro-average returns a single data frame, not a class-faceted one
   expect_true(all(c("sens", "spec", "pct") %in% names(gg)))  # pct = threshold; same 3-col contract as calc_roc
 })
+
+## ── plot.gg_roc per_class paths (PR #88) ─────────────────────────────────
+
+test_that("plot.gg_roc per_class=TRUE: overlay returns ggplot", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  p  <- plot(gg, panel = "overlay")
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_roc per_class=TRUE: facet returns ggplot", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  p  <- plot(gg, panel = "facet")
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_roc per_class=TRUE: layer_data smokeable for overlay", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  p  <- plot(gg, panel = "overlay")
+  expect_no_error(ggplot2::layer_data(p, 1L))
+})
+
+test_that("plot.gg_roc existing single-class path unchanged", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, which_outcome = 1L)
+  p  <- plot(gg)
+  expect_s3_class(p, "ggplot")
+  expect_no_error(ggplot2::layer_data(p, 1L))
+})

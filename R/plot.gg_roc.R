@@ -73,7 +73,9 @@
 #' for (i in seq_len(n_cls)) print(plot(gg_roc(rfsrc_iris, which_outcome = i)))
 #'
 #' @export
-plot.gg_roc <- function(x, which_outcome = NULL, ...) {
+plot.gg_roc <- function(x, which_outcome = NULL,
+                        panel = c("overlay", "facet"), ...) {
+  panel <- match.arg(panel)
   gg_dta <- x
 
   ## ---- Accept a raw rfsrc or randomForest object -----------------------
@@ -118,8 +120,59 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...) {
     }
   }
 
-  ## ---- Single-class ROC plot ------------------------------------------
+  ## ---- Single-class ROC plot (or per_class long-format) ----------------
   if (inherits(gg_dta, "gg_roc")) {
+
+    # Per-class detection: gg_roc produced by gg_roc(..., per_class = TRUE)
+    # carries a 'class' column (factor) + a named AUC vector attribute.
+    if ("class" %in% names(gg_dta)) {
+      gg_dta$fpr <- 1 - gg_dta$spec
+      auc        <- attr(x, "auc")
+
+      if (panel == "overlay") {
+        gg_plt <- ggplot2::ggplot(gg_dta) +
+          ggplot2::geom_line(ggplot2::aes(
+            x = .data$fpr, y = .data$sens, color = .data$class
+          )) +
+          ggplot2::labs(
+            x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)",
+            color = "Class"
+          ) +
+          ggplot2::geom_abline(
+            slope = 1, intercept = 0,
+            col = "red", linetype = 2, linewidth = .5
+          ) +
+          ggplot2::coord_fixed()
+      } else {
+        gg_plt <- ggplot2::ggplot(gg_dta) +
+          ggplot2::geom_line(ggplot2::aes(
+            x = .data$fpr, y = .data$sens
+          )) +
+          ggplot2::labs(
+            x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)"
+          ) +
+          ggplot2::geom_abline(
+            slope = 1, intercept = 0,
+            col = "red", linetype = 2, linewidth = .5
+          ) +
+          ggplot2::facet_wrap(~class) +
+          ggplot2::coord_fixed()
+      }
+
+      # AUC caption — top 5 classes by descending AUC (already sorted)
+      if (!is.null(auc) && length(auc) > 0L) {
+        top_n   <- min(5L, length(auc))
+        auc_str <- paste(
+          sprintf("%s=%.3g", names(auc)[seq_len(top_n)], auc[seq_len(top_n)]),
+          collapse = ", "
+        )
+        if (length(auc) > 5L) auc_str <- paste0(auc_str, ", ...")
+        gg_plt <- gg_plt +
+          ggplot2::labs(caption = paste("OvR ROC — per_class=TRUE. AUC:", auc_str))
+      }
+      return(gg_plt)
+    }
+
     # Sort by specificity so the ROC curve is drawn left-to-right
     gg_dta <- gg_dta[order(gg_dta$spec), ]
     # False positive rate = 1 - specificity
