@@ -285,3 +285,36 @@ test_that("gg_roc per_class=TRUE: class factor levels ordered by descending AUC"
   auc <- attr(gg, "auc")
   expect_equal(levels(gg$class), names(auc))
 })
+
+test_that("gg_roc per_class=TRUE on binary forest: no class column (no-op)", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  bin_data         <- iris[iris$Species != "virginica", ]
+  bin_data$Species <- droplevels(bin_data$Species)
+  rf  <- randomForest::randomForest(Species ~ ., data = bin_data, ntree = 100L)
+  gg  <- gg_roc(rf, per_class = TRUE)
+  # Binary forest: per_class is a no-op — no class column, scalar AUC
+  expect_false("class" %in% names(gg))
+  expect_length(attr(gg, "auc"), 1L)
+})
+
+test_that("gg_roc per_class=TRUE + which_outcome integer: message then per_class wins", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  expect_message(
+    gg <- gg_roc(rf, per_class = TRUE, which_outcome = 1L),
+    "which_outcome.*ignored.*per_class"
+  )
+  expect_true("class" %in% names(gg))
+})
+
+test_that("gg_roc which_outcome='all' still returns macro-average (no class column)", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, which_outcome = "all")
+  expect_false("class" %in% names(gg))
+  # Macro-average returns a single data frame, not a class-faceted one
+  expect_true(all(c("sens", "spec", "pct") %in% names(gg)))  # pct = threshold; same 3-col contract as calc_roc
+})
