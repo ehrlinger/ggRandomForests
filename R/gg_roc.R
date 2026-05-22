@@ -40,6 +40,12 @@
 #'   predictions. For \code{randomForest}, \code{oob = TRUE} uses out-of-bag
 #'   vote probabilities (\code{object$votes}); \code{FALSE} uses in-bag
 #'   \code{predict(type = "prob")}.
+#' @param per_class Logical; if \code{TRUE} and the forest has more than two
+#'   classes, return per-class one-vs-rest ROC curves in a long-format
+#'   \code{data.frame} with a \code{class} factor column and a named AUC
+#'   vector attribute (ordered by descending AUC). Binary forests treat
+#'   \code{per_class = TRUE} as a no-op. Currently honoured by the
+#'   \code{randomForest} method only.
 #' @param ... Extra arguments (currently unused).
 #'
 #' @return A \code{gg_roc} \code{data.frame} with one row per unique prediction

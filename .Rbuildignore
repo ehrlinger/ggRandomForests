@@ -48,4 +48,5 @@ framed.sty
 # FUSE filesystem temporaries (safe to ignore; R CMD build already skips dotfiles)
 ^R/\.fuse_hidden
 ^\.positai$
+^\.superpowers$
 ^vignettes/.*_cache$

@@ -24,6 +24,10 @@
 #'   the forest has more than two classes, ROC curves for all classes are
 #'   overlaid in a single plot.  For binary forests \code{NULL} defaults to
 #'   class index 2.
+#' @param panel Character; layout for per-class ROC objects (those produced by
+#'   \code{gg_roc(..., per_class = TRUE)}). \code{"overlay"} (default) draws all
+#'   class curves in one panel coloured by class; \code{"facet"} wraps each
+#'   class into its own panel. Ignored for single-class \code{gg_roc} objects.
 #' @param ... Additional arguments forwarded to \code{\link{gg_roc}} when
 #'   \code{x} is a raw forest object (e.g. \code{oob = FALSE}).
 #'
@@ -159,7 +163,7 @@ plot.gg_roc <- function(x, which_outcome = NULL,
           ggplot2::coord_fixed()
       }
 
-      # AUC caption — top 5 classes by descending AUC (already sorted)
+      # AUC caption - top 5 classes by descending AUC (already sorted)
       if (!is.null(auc) && length(auc) > 0L) {
         top_n   <- min(5L, length(auc))
         auc_str <- paste(
@@ -168,7 +172,7 @@ plot.gg_roc <- function(x, which_outcome = NULL,
         )
         if (length(auc) > 5L) auc_str <- paste0(auc_str, ", ...")
         gg_plt <- gg_plt +
-          ggplot2::labs(caption = paste("OvR ROC — per_class=TRUE. AUC:", auc_str))
+          ggplot2::labs(caption = paste("OvR ROC, per_class=TRUE. AUC:", auc_str))
       }
       return(gg_plt)
     }
@@ -246,7 +250,7 @@ plot.gg_roc <- function(x, which_outcome = NULL,
       ) +
       ggplot2::coord_fixed()
 
-    # Multi-class: do not annotate a single AUC value — each class has its own.
+    # Multi-class: do not annotate a single AUC value - each class has its own.
   }
   return(gg_plt)
 }
