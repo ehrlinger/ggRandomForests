@@ -249,3 +249,39 @@ test_that("calc_roc.rfsrc output is unchanged for an explicit which_outcome (gua
   expect_true(all(c("sens", "spec", "pct") %in% colnames(g)))
   expect_gte(calc_auc(g), 0.9)                    # rfsrc iris setosa-vs-rest stays strong
 })
+
+## ── per_class = TRUE (PR #88) ──────────────────────────────────────────────
+
+test_that("gg_roc per_class=TRUE: long format with class column", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg <- gg_roc(rf, per_class = TRUE)
+  expect_true("class" %in% names(gg))
+  expect_true(all(c("sens", "spec", "pct") %in% names(gg)))  # pct = threshold; same 3-col contract as calc_roc
+  expect_s3_class(gg$class, "factor")
+  expect_equal(nlevels(gg$class), 3L)
+})
+
+test_that("gg_roc per_class=TRUE: auc attr is named numeric vector length 3", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf  <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg  <- gg_roc(rf, per_class = TRUE)
+  auc <- attr(gg, "auc")
+  expect_length(auc, 3L)
+  expect_named(auc)
+  # setosa is linearly separable in iris — AUC should be near-perfect
+  expect_gt(auc[["setosa"]], 0.99)
+  # AUC values must be sorted descending
+  expect_true(all(diff(auc) <= 0))
+})
+
+test_that("gg_roc per_class=TRUE: class factor levels ordered by descending AUC", {
+  skip_if_not_installed("randomForest")
+  set.seed(1L)
+  rf  <- randomForest::randomForest(Species ~ ., data = iris, ntree = 100L)
+  gg  <- gg_roc(rf, per_class = TRUE)
+  auc <- attr(gg, "auc")
+  expect_equal(levels(gg$class), names(auc))
+})

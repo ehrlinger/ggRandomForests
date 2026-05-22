@@ -93,7 +93,8 @@
 #' @aliases gg_roc gg_roc.rfsrc gg_roc.randomForest
 
 #' @export
-gg_roc.rfsrc <- function(object, which_outcome, oob = TRUE, ...) {
+gg_roc.rfsrc <- function(object, which_outcome, oob = TRUE,
+                         per_class = FALSE, ...) {
   # Validate that the object was grown with randomForestSRC (grow or predict)
   # or is a randomForest object — the two supported class signatures.
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &&
@@ -136,38 +137,57 @@ gg_roc.rfsrc <- function(object, which_outcome, oob = TRUE, ...) {
   invisible(gg_dta)
 }
 #' @export
-gg_roc <- function(object, which_outcome, oob = TRUE, ...) {
+gg_roc <- function(object, which_outcome, oob = TRUE, per_class = FALSE, ...) {
   UseMethod("gg_roc", object)
 }
 
 #' @export
-gg_roc.randomForest <- function(object, which_outcome, oob = TRUE, ...) {
-  # Validate that the object is a genuine randomForest instance.
+gg_roc.randomForest <- function(object, which_outcome, oob = TRUE,
+                                per_class = FALSE, ...) {
   if (!inherits(object, "randomForest")) {
-    stop(
-      "gg_roc.randomForest only works for objects of class 'randomForest'."
-    )
+    stop("gg_roc.randomForest only works for objects of class 'randomForest'.")
   }
-
-  # Default to computing the ROC curve for all outcome classes.
   if (missing(which_outcome)) {
     which_outcome <- "all"
   }
-
   if (!(object$type == "classification")) {
     stop("gg_roc only works with classification forests")
   }
 
+  lvls    <- levels(object$y)
+  n_class <- length(lvls)
+
+  # ── per_class = TRUE path (multi-class only) ─────────────────────────────
+  if (isTRUE(per_class) && n_class > 2L) {
+    if (!missing(which_outcome) && !identical(which_outcome, "all")) {
+      message("which_outcome is ignored when per_class = TRUE.")
+    }
+    prob   <- .rf_prob_matrix(object, oob, lvls)
+    dta    <- object$y
+    curves <- lapply(seq_along(lvls), function(k) {
+      cv       <- .rf_one_class_roc(dta, prob, k, lvls)
+      cv$class <- lvls[k]
+      cv
+    })
+    auc_vals        <- vapply(curves, calc_auc, numeric(1L))
+    names(auc_vals) <- lvls
+    auc_ord         <- order(auc_vals, decreasing = TRUE)
+    auc_vals        <- auc_vals[auc_ord]
+    gg_dta          <- do.call(rbind, curves)
+    gg_dta$class    <- factor(gg_dta$class, levels = lvls[auc_ord])
+    class(gg_dta)   <- c("gg_roc", class(gg_dta))
+    attr(gg_dta, "auc") <- auc_vals
+    gg_dta <- .set_provenance(gg_dta, object)
+    return(invisible(gg_dta))
+  }
+
+  # ── Standard path (binary, or per_class not requested) ──────────────────
   # For randomForest objects the response is stored in $y (not $yvar).
   gg_dta <- # nolint: object_usage_linter
-    calc_roc(object,
-      object$y,
-      which_outcome = which_outcome,
-      oob = oob
-    )
-  class(gg_dta) <- c("gg_roc", class(gg_dta))
-  gg_dta <- .set_provenance(gg_dta, object)
-
+    calc_roc(object, object$y, which_outcome = which_outcome, oob = oob)
+  class(gg_dta)       <- c("gg_roc", class(gg_dta))
+  attr(gg_dta, "auc") <- calc_auc(gg_dta)
+  gg_dta              <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }
 
