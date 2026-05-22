@@ -28,27 +28,27 @@
 #' variables) and the predicted response for each observation. Marginal
 #' dependence figures are created using the \code{\link{plot.gg_variable}}
 #' function.
-#' For \code{randomForest} fits the original model frame is rebuilt
-#' from the stored call so that the same predictors can be paired with the
-#' in-sample predictions.
+#' A \code{randomForest} fit does not keep the model frame, so for those
+#' objects \code{gg_variable} rebuilds it from the stored call. That lets the
+#' same predictors be paired with the in-sample predictions.
 #'
-#' Optional arguments include \code{time} (scalar or vector of survival times
-#' of interest), \code{time_labels} (labels for multiple survival horizons) and
-#' \code{oob} which toggles between out-of-bag and in-bag predictions when the
-#' forest stores both.
+#' A few optional arguments tune the extraction: \code{time} (one survival
+#' time, or a vector of them), \code{time_labels} (labels for multiple
+#' survival horizons), and \code{oob}, which switches between out-of-bag and
+#' in-bag predictions when the forest carries both.
 #'
 #' @param object A \code{\link[randomForestSRC]{rfsrc}} or
 #'   \code{\link[randomForest]{randomForest}} object, or a
 #'   \code{\link[randomForestSRC]{plot.variable}} result.
-#' @param ... Optional arguments such as \code{time}, \code{time_labels}, and
-#'   \code{oob} that tailor the marginal dependence extraction.
+#' @param ... Optional arguments \code{time}, \code{time_labels}, and
+#'   \code{oob} that tune the marginal dependence extraction.
 #'
-#' @return A \code{gg_variable} object: a \code{data.frame} of all predictor
-#'   columns from the training data paired with the OOB (or in-bag) predicted
-#'   response. For survival forests each requested time horizon produces an
-#'   additional column named by \code{time_labels}. The object carries a
-#'   \code{"family"} class attribute (\code{"regr"}, \code{"class"}, or
-#'   \code{"surv"}) used by \code{\link{plot.gg_variable}} for dispatch.
+#' @return A \code{gg_variable} object: a \code{data.frame} pairing every
+#'   training predictor column with the OOB (or in-bag) predicted response.
+#'   For survival forests, each requested time horizon adds a column named by
+#'   \code{time_labels}. The object carries a \code{"family"} class attribute
+#'   (\code{"regr"}, \code{"class"}, or \code{"surv"}) that
+#'   \code{\link{plot.gg_variable}} uses for dispatch.
 #'
 #' @seealso \code{\link{plot.gg_variable}},
 #'   \code{\link[randomForestSRC]{plot.variable}}
