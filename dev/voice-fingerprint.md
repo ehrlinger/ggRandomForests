@@ -22,6 +22,11 @@ personality or a slightly imperfect sentence.
   time it appears ("rules", "elbow", "eyeballing").
 - Start sentences with But / Yet / Thus / Now when it helps the flow.
 - Vary sentence length. A short flat statement after a long one lands well.
+- **Conversational, not chatty.** A colleague explaining the method at a
+  whiteboard, not a blog post. Keep an analogy when it teaches; cut winking
+  asides and cute phrasing. "no Tukey rule hiding in the middle" is too cute;
+  "not the usual Tukey 1.5 IQR whiskers" is right. Plain and direct beats
+  folksy. The reader is a peer, so don't perform for them.
 
 **Terse** (roxygen @param/@return, NEWS bullets)
 - Compressed, but still plain and concrete, not sterile.
