@@ -129,52 +129,10 @@ plot.gg_roc <- function(x, which_outcome = NULL,
 
     # Per-class detection: gg_roc produced by gg_roc(..., per_class = TRUE)
     # carries a 'class' column (factor) + a named AUC vector attribute.
+    # Rendering is delegated to a helper to keep this method's cyclomatic
+    # complexity within the project lint budget.
     if ("class" %in% names(gg_dta)) {
-      gg_dta$fpr <- 1 - gg_dta$spec
-      auc        <- attr(x, "auc")
-
-      if (panel == "overlay") {
-        gg_plt <- ggplot2::ggplot(gg_dta) +
-          ggplot2::geom_line(ggplot2::aes(
-            x = .data$fpr, y = .data$sens, color = .data$class
-          )) +
-          ggplot2::labs(
-            x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)",
-            color = "Class"
-          ) +
-          ggplot2::geom_abline(
-            slope = 1, intercept = 0,
-            col = "red", linetype = 2, linewidth = .5
-          ) +
-          ggplot2::coord_fixed()
-      } else {
-        gg_plt <- ggplot2::ggplot(gg_dta) +
-          ggplot2::geom_line(ggplot2::aes(
-            x = .data$fpr, y = .data$sens
-          )) +
-          ggplot2::labs(
-            x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)"
-          ) +
-          ggplot2::geom_abline(
-            slope = 1, intercept = 0,
-            col = "red", linetype = 2, linewidth = .5
-          ) +
-          ggplot2::facet_wrap(~class) +
-          ggplot2::coord_fixed()
-      }
-
-      # AUC caption - top 5 classes by descending AUC (already sorted)
-      if (!is.null(auc) && length(auc) > 0L) {
-        top_n   <- min(5L, length(auc))
-        auc_str <- paste(
-          sprintf("%s=%.3g", names(auc)[seq_len(top_n)], auc[seq_len(top_n)]),
-          collapse = ", "
-        )
-        if (length(auc) > 5L) auc_str <- paste0(auc_str, ", ...")
-        gg_plt <- gg_plt +
-          ggplot2::labs(caption = paste("OvR ROC, per_class=TRUE. AUC:", auc_str))
-      }
-      return(gg_plt)
+      return(.plot_gg_roc_per_class(gg_dta, attr(x, "auc"), panel))
     }
 
     # Sort by specificity so the ROC curve is drawn left-to-right
@@ -253,4 +211,51 @@ plot.gg_roc <- function(x, which_outcome = NULL,
     # Multi-class: do not annotate a single AUC value - each class has its own.
   }
   return(gg_plt)
+}
+
+# Render a per-class (one-vs-rest) ROC object produced by
+# gg_roc(..., per_class = TRUE).  Split out of plot.gg_roc() so that method
+# stays within the project's cyclomatic-complexity lint budget.
+#
+# gg_dta : long-format gg_roc data frame with a 'class' factor column
+# auc    : named numeric AUC vector (one entry per class) or NULL
+# panel  : "overlay" (curves coloured by class) or "facet" (one panel each)
+.plot_gg_roc_per_class <- function(gg_dta, auc, panel) {
+  gg_dta$fpr <- 1 - gg_dta$spec
+
+  if (panel == "overlay") {
+    gg_plt <- ggplot2::ggplot(gg_dta) +
+      ggplot2::geom_line(ggplot2::aes(
+        x = .data$fpr, y = .data$sens, color = .data$class
+      )) +
+      ggplot2::labs(
+        x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)",
+        color = "Class"
+      )
+  } else {
+    gg_plt <- ggplot2::ggplot(gg_dta) +
+      ggplot2::geom_line(ggplot2::aes(x = .data$fpr, y = .data$sens)) +
+      ggplot2::labs(x = "1 - Specificity (FPR)", y = "Sensitivity (TPR)") +
+      ggplot2::facet_wrap(~class)
+  }
+
+  gg_plt <- gg_plt +
+    ggplot2::geom_abline(
+      slope = 1, intercept = 0,
+      col = "red", linetype = 2, linewidth = .5
+    ) +
+    ggplot2::coord_fixed()
+
+  # AUC caption - top 5 classes by descending AUC (already sorted)
+  if (!is.null(auc) && length(auc) > 0L) {
+    top_n   <- min(5L, length(auc))
+    auc_str <- paste(
+      sprintf("%s=%.3g", names(auc)[seq_len(top_n)], auc[seq_len(top_n)]),
+      collapse = ", "
+    )
+    if (length(auc) > 5L) auc_str <- paste0(auc_str, ", ...")
+    gg_plt <- gg_plt +
+      ggplot2::labs(caption = paste("OvR ROC, per_class=TRUE. AUC:", auc_str))
+  }
+  gg_plt
 }
