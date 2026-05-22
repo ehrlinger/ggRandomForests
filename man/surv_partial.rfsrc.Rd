@@ -40,9 +40,9 @@ returns a classed \code{gg_partial_rfsrc} object with a dedicated
 }
 \details{
 Computes partial dependence curves for a survival or competing-risk
-\code{\link[randomForestSRC]{rfsrc}} forest by calling
+\code{\link[randomForestSRC]{rfsrc}} forest.  For each predictor it calls
 \code{\link[randomForestSRC]{partial.rfsrc}} at \code{npts} evenly-spaced
-unique values of each predictor across all stored event times.
+unique values, across every stored event time.
 }
 \examples{
 ## ------------------------------------------------------------

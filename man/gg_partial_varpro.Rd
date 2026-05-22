@@ -62,9 +62,10 @@ categorical predictors mixed together. This function splits that list into
 two tidy data frames, one for each kind, and resolves the y-axis label the
 plot method will use.
 
-\emph{Deprecated.} \code{gg_partialpro()} has been renamed to
-\code{\link{gg_partial_varpro}()}.  This function is a thin alias that
-will be removed in the release after \pkg{ggRandomForests} v2.8.0.
+\emph{Deprecated.} \code{gg_partialpro()} has been superseded by
+\code{\link{gg_partial_varpro}()} and is now a thin alias for it.  It will
+be removed in the release after \pkg{ggRandomForests} v2.8.0; use
+\code{\link{gg_partial_varpro}()} directly.
 }
 \details{
 **Scale detection:** with \code{scale = "auto"} and an \code{object} in
