@@ -26,10 +26,10 @@ decision is auditable. Rewrite happens in a later task — this table changes no
 | R/gg_udependent.R (roxygen) | both | AI | yes |
 | R/plot.gg_udependent.R (roxygen) | both | AI | yes |
 | R/print_methods.R (roxygen) | both | AI | yes |
-| R/print_helpers.R (roxygen) | both | AI | yes |
+| R/print_helpers.R | n/a | no doc surface (0 roxygen lines) | no |
 | R/summary_methods.R (roxygen) | both | AI | yes |
-| R/ribbon_style.R (roxygen) | both | AI | yes |
-| R/utils.R (roxygen) | both | AI | yes |
+| R/ribbon_style.R | n/a | no doc surface (0 roxygen lines) | no |
+| R/utils.R | n/a | no doc surface (0 roxygen lines) | no |
 | R/gg_roc.R (roxygen) | both | mixed | yes |
 | R/plot.gg_roc.R (roxygen) | both | mixed | yes |
 | R/calc_roc.R (roxygen) | both | mixed | yes |
