@@ -9,6 +9,38 @@
 #' annotates a threshold either in score-space (`threshold`) or in
 #' quantile-space (`top_n_pct`).
 #'
+#' @section Reading the elbow:
+#' The elbow plot is the canonical anomaly-detection picture. The x-axis
+#' is observation rank — observations sorted from most ordinary to most
+#' anomalous — and the y-axis is the `howbad` score. For a clean
+#' population the curve sits flat near zero across the bulk of the data
+#' and then bends sharply upward in the right tail; that bend is where
+#' the anomalous observations live. The point of the plot is not to read
+#' off a single score, it is to *see where the curve breaks*. Pick a
+#' cutoff there. Pass it back in as `threshold` (for a score) or
+#' `top_n_pct` (for "the top 5\%") and the plot draws a dashed reference
+#' line so you can record the choice you made.
+#'
+#' @section Reading the density:
+#' The density panel is the same scores viewed as a distribution. A
+#' single tight mode near zero with a long thin right tail is the
+#' picture you hope for — bulk of the data ordinary, a few clear
+#' anomalies. A bimodal density says you may have two populations rather
+#' than one clean cluster plus outliers, and the cutoff question becomes
+#' harder. Either way, this panel is a sanity check on what the elbow
+#' suggests.
+#'
+#' @section Comparing methods:
+#' When the input object carries a `method` column (because you bound
+#' several `gg_isopro()` calls together), both panels colour by method
+#' automatically. The point of comparing `"rnd"`, `"unsupv"`, and
+#' `"auto"` is not to pick a winner from the figure alone — it is to see
+#' whether the methods agree on which observations are anomalous. Curves
+#' that overlap in the right tail and elbow at roughly the same rank are
+#' telling you the same story three ways. Curves that diverge are
+#' telling you the score is method-sensitive, which is itself useful
+#' information.
+#'
 #' @param x A `gg_isopro` object from [gg_isopro()].
 #' @param panel One of `"both"` (default — a `patchwork` of elbow + density),
 #'   `"elbow"`, or `"density"` (each returns a single `ggplot`).
