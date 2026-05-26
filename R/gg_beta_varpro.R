@@ -39,10 +39,28 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL, beta_fit = NULL) {
     ), call. = FALSE)
   }
 
-  b <- if (is.null(beta_fit)) {
-    varPro::beta.varpro(object, ...)
+  if (is.null(beta_fit)) {
+    b <- varPro::beta.varpro(object, ...)
   } else {
-    beta_fit
+    required_cols <- c("tree", "branch", "variable", "n.oob", "imp")
+    if (!inherits(beta_fit, "varpro") ||
+        !is.data.frame(beta_fit$results)) {
+      stop("gg_beta_varpro: beta_fit does not look like a varPro::beta.varpro() result. ",
+           "Expected a varpro-class object with a data.frame in $results.",
+           call. = FALSE)
+    }
+    missing_cols <- setdiff(required_cols, names(beta_fit$results))
+    if (length(missing_cols) > 0L) {
+      stop("gg_beta_varpro: beta_fit does not look like a varPro::beta.varpro() result. ",
+           "Missing column(s): ", paste(missing_cols, collapse = ", "), ".",
+           call. = FALSE)
+    }
+    dots <- list(...)
+    if (length(dots) > 0L) {
+      warning("gg_beta_varpro: arguments in '...' ignored because beta_fit is supplied.",
+              call. = FALSE)
+    }
+    b <- beta_fit
   }
 
   if (is.null(b)) {

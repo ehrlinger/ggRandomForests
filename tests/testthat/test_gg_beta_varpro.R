@@ -64,3 +64,29 @@ test_that("gg_beta_varpro default cutoff is mean(beta_mean), provenance flagged"
   expect_false(attr(explicit, "provenance")$cutoff_default)
   expect_equal(attr(explicit, "provenance")$cutoff, 0.123)
 })
+
+test_that("gg_beta_varpro rejects malformed beta_fit", {
+  v <- .varpro_mtcars()
+  expect_error(
+    gg_beta_varpro(v, beta_fit = list()),
+    "beta_fit does not look like a varPro::beta.varpro\\(\\) result"
+  )
+
+  b <- .beta_fit_mtcars()
+  b_bad <- b
+  b_bad$results <- b_bad$results[, setdiff(names(b_bad$results), "imp"), drop = FALSE]
+  expect_error(
+    gg_beta_varpro(v, beta_fit = b_bad),
+    "imp"
+  )
+})
+
+test_that("gg_beta_varpro warns when ... is supplied alongside beta_fit", {
+  v <- .varpro_mtcars()
+  b <- .beta_fit_mtcars()
+  expect_warning(
+    out <- gg_beta_varpro(v, use.cv = TRUE, beta_fit = b),
+    "ignored because beta_fit is supplied"
+  )
+  expect_s3_class(out, "gg_beta_varpro")
+})
