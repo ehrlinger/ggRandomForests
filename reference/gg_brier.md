@@ -84,8 +84,8 @@ or by a separate censoring forest (`cens.model = "rfsrc"`).
 
 ## Note
 
-Brier score / CRPS is \`randomForestSRC\` survival-only; there is no
-\`randomForest\` method.
+Brier score / CRPS is `randomForestSRC` survival-only; there is no
+`randomForest` method.
 
 ## References
 

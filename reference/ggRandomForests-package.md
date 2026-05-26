@@ -41,10 +41,10 @@ available directly from within the `randomForestSRC` package. However,
 The `ggRandomForests` package contains the following data functions:
 
 - [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md):
-  randomForest\[SRC\] predictions.
+  randomForestSRC predictions.
 
 - [`gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md):
-  randomForest\[SRC\] convergence rate based on the OOB error rate.
+  randomForestSRC convergence rate based on the OOB error rate.
 
 - [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md):
   ROC curves for randomForest classification models.

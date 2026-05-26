@@ -11,7 +11,7 @@ the response using plot.gg_rfsrc."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,17 +99,17 @@ Omit or leave missing to return an unstratified result.</p></dd>
 <dd><p>Additional arguments controlling output for specific forest
 families:</p><dl><dt>surv_type</dt>
 <dd><p>Character; one of <code>"surv"</code> (default),
-    <code>"chf"</code>, or <code>"mortality"</code> for survival forests.</p></dd>
+<code>"chf"</code>, or <code>"mortality"</code> for survival forests.</p></dd>
 
-  <dt>conf.int</dt>
+<dt>conf.int</dt>
 <dd><p>Numeric coverage probability (e.g. <code>0.95</code>) to
-    request bootstrap pointwise confidence bands for survival forests.
-    Triggers wide-format output with <code>lower</code>, <code>upper</code>,
-    <code>median</code>, and <code>mean</code> columns.</p></dd>
+request bootstrap pointwise confidence bands for survival forests.
+Triggers wide-format output with <code>lower</code>, <code>upper</code>,
+<code>median</code>, and <code>mean</code> columns.</p></dd>
 
-  <dt>bs.sample</dt>
+<dt>bs.sample</dt>
 <dd><p>Integer; number of bootstrap resamples when
-    <code>conf.int</code> is set. Defaults to the number of observations.</p></dd>
+<code>conf.int</code> is set. Defaults to the number of observations.</p></dd>
 
 
 </dl></dd>
@@ -118,42 +118,42 @@ families:</p><dl><dt>surv_type</dt>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>gg_rfsrc</code> object (a classed <code>data.frame</code>) whose
-  structure depends on the forest family:</p><dl><dt>regression</dt>
+structure depends on the forest family:</p><dl><dt>regression</dt>
 <dd><p>Columns <code>yhat</code> and the response name; optionally
-      a <code>group</code> column when <code>by</code> is supplied.</p></dd>
+a <code>group</code> column when <code>by</code> is supplied.</p></dd>
 
-    <dt>classification</dt>
+<dt>classification</dt>
 <dd><p>One column per class with predicted probabilities;
-      a <code>y</code> column with observed class labels; optionally <code>group</code>.</p></dd>
+a <code>y</code> column with observed class labels; optionally <code>group</code>.</p></dd>
 
-    <dt>survival (no CI / grouping)</dt>
+<dt>survival (no CI / grouping)</dt>
 <dd><p>Long-format with columns
-      <code>variable</code> (event time), <code>value</code> (survival probability),
-      <code>obs_id</code>, and <code>event</code>.</p></dd>
+<code>variable</code> (event time), <code>value</code> (survival probability),
+<code>obs_id</code>, and <code>event</code>.</p></dd>
 
-    <dt>survival (with <code>conf.int</code> or <code>by</code>)</dt>
+<dt>survival (with <code>conf.int</code> or <code>by</code>)</dt>
 <dd><p>Wide-format with
-      pointwise bootstrap CI columns (<code>lower</code>, <code>upper</code>,
-      <code>median</code>, <code>mean</code>) per time point; a <code>group</code> column
-      when <code>by</code> is supplied.</p></dd>
+pointwise bootstrap CI columns (<code>lower</code>, <code>upper</code>,
+<code>median</code>, <code>mean</code>) per time point; a <code>group</code> column
+when <code>by</code> is supplied.</p></dd>
 
 
 </dl><p>The object carries class attributes for the forest family so that
-  <code><a href="plot.gg_rfsrc.html">plot.gg_rfsrc</a></code> dispatches correctly.</p>
+<code><a href="plot.gg_rfsrc.html">plot.gg_rfsrc</a></code> dispatches correctly.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For survival forests, use the <code>surv_type</code> argument
-  (<code>"surv"</code>, <code>"chf"</code>, or <code>"mortality"</code>) to select the
-  predicted quantity. Bootstrap confidence bands are requested by passing
-  <code>conf.int</code> (e.g. <code>conf.int = 0.95</code>); the number of resamples
-  is controlled by <code>bs.sample</code>.</p>
+(<code>"surv"</code>, <code>"chf"</code>, or <code>"mortality"</code>) to select the
+predicted quantity. Bootstrap confidence bands are requested by passing
+<code>conf.int</code> (e.g. <code>conf.int = 0.95</code>); the number of resamples
+is controlled by <code>bs.sample</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="plot.gg_rfsrc.html">plot.gg_rfsrc</a></code>,
-  <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code>,
-  <code><a href="gg_survival.html">gg_survival</a></code></p></div>
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code>,
+<code><a href="gg_survival.html">gg_survival</a></code></p></div>
     </div>
 
     <div class="section level2">

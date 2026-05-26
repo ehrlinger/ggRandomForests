@@ -59,9 +59,8 @@ the curve sits flat near zero across the bulk of the data and then bends
 sharply upward in the right tail; that bend is where the anomalous
 observations live. The point of the plot is not to read off a single
 score, it is to *see where the curve breaks*. Pick a cutoff there. Pass
-it back in as `threshold` (for a score) or `top_n_pct` (for "the top
-5%") and the plot draws a dashed reference line so you can record the
-choice you made.
+it back in as `threshold` (for a score) or `top_n_pct` (for "the top 5\\
+reference line so you can record the choice you made.
 
 ## Reading the density
 

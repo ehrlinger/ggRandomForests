@@ -15,7 +15,7 @@ plot.gg_udependent can draw as a network."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,22 +120,89 @@ degree \(\ge\) <code>min.degree</code> are kept in <code>$nodes</code>,
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of class <code>"gg_udependent"</code> with elements:</p><dl><dt><code>$edges</code></dt>
 <dd><p>Data frame: <code>variable_from</code>, <code>variable_to</code>,
-    <code>weight</code> (raw cross-importance value).</p></dd>
+<code>weight</code> (raw cross-importance value).</p></dd>
 
-  <dt><code>$nodes</code></dt>
+<dt><code>$nodes</code></dt>
 <dd><p>Data frame: <code>variable</code> (factor, levels by
-    descending degree), <code>degree</code> (integer; out-degree when
-    <code>directed = TRUE</code>, total degree when <code>directed = FALSE</code>),
-    <code>selected</code> (logical, <code>TRUE</code> if in <code>sdependent</code>'s
-    signal set).</p></dd>
+descending degree), <code>degree</code> (integer; out-degree when
+<code>directed = TRUE</code>, total degree when <code>directed = FALSE</code>),
+<code>selected</code> (logical, <code>TRUE</code> if in <code>sdependent</code>'s
+signal set).</p></dd>
 
-  <dt><code>$graph</code></dt>
+<dt><code>$graph</code></dt>
 <dd><p>igraph object. <code>NULL</code> if no dependencies
-    detected.</p></dd>
+detected.</p></dd>
 
 
 </dl><p>A <code>"provenance"</code> attribute carries <code>threshold</code>, <code>q.signal</code>,
 <code>directed</code>, <code>min.degree</code>, <code>xvar.names</code>, and <code>n</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="what-cross-variable-dependency-is-doing">What cross-variable dependency is doing<a class="anchor" aria-label="anchor" href="#what-cross-variable-dependency-is-doing"></a></h2>
+
+
+<p>UVarPro (Zhou, Lu and Ishwaran, 2026) extends the varpro framework to
+the unsupervised setting: grow a forest without a response, then use
+the same region-release contrasts varpro uses for supervised
+importance to ask, "which variables explain the structure in the
+data?" The lasso-driven variant frames each region-release contrast
+as a classification task — does an observation belong to the region
+or to its release? — and fits a lasso logistic regression with the
+other variables as predictors. The coefficient on variable \(j\)
+in the model for variable \(i\)'s region-release contrast is the
+entry \(I[i, j]\) of the matrix <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code>
+returns.</p>
+<p>Read that entry as "how much does knowing \(j\) help separate
+\(i\)'s region from its release". A large \(I[i, j]\) says
+\(j\) carries information about the structure varpro picked up in
+\(i\). <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent</a></code> thresholds that matrix at a
+user-chosen cut and returns the set of "signal" variables — the
+nodes with high enough out-degree to be worth keeping. We pass the
+threshold through to <code>sdependent</code> and use the same matrix to
+weight the edges of the resulting graph.</p>
+<p>The graph is directed by default because \(I[i, j]\) and
+\(I[j, i]\) are separate lasso coefficients and need not agree;
+setting <code>directed = FALSE</code> collapses each pair by taking the
+larger of the two, which is appropriate when you only want to see
+that two variables are dependent, not which way the dependency
+reads.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="what-s-in-the-output">What's in the output<a class="anchor" aria-label="anchor" href="#what-s-in-the-output"></a></h2>
+
+
+<p><code>$edges</code> has one row per surviving edge with the raw weight
+<code>I[i, j]</code> (or, for undirected graphs, the max of the two
+directions). <code>$nodes</code> has one row per surviving variable with
+its degree (out-degree for directed, total degree for undirected)
+and a <code>selected</code> flag for membership in the <code>sdependent</code>
+signal set. <code>$graph</code> is the same information packaged as an
+<code>igraph</code> object, with <code>weight</code>, <code>degree</code>, and
+<code>selected</code> attached so <code>plot.gg_udependent</code> can render it
+without recomputing anything.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="what-you-use-this-for">What you use this for<a class="anchor" aria-label="anchor" href="#what-you-use-this-for"></a></h2>
+
+
+<ul><li><p>screen a wide unsupervised dataset for the small set of
+variables UVarPro thinks are carrying the signal — the nodes
+with high degree, or those flagged <code>selected = TRUE</code>;</p></li>
+<li><p>spot clusters of mutually dependent variables (hubs and the
+spokes around them) that may be measuring the same underlying
+construct;</p></li>
+<li><p>compare two datasets, or two preprocessing pipelines, by
+looking at how their dependency graphs change.</p></li>
+</ul><p>An edge in this graph is a statistical dependency in the unsupervised
+decomposition of the data — it is not a causal arrow. A high
+\(I[i, j]\) says \(j\) predicts \(i\)'s region membership,
+not that \(j\) causes \(i\).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Zhou, L., Lu, M. and Ishwaran, H. (2026). Variable priority for
+unsupervised variable selection. <em>Pattern Recognition</em>,
+172:112727.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

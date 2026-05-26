@@ -15,7 +15,7 @@ rather than a single number – lower is better, at every time."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,35 +94,35 @@ forest (<code>object$family == "surv"</code>).</p></dd>
     <p>A <code>gg_brier</code> <code>data.frame</code> with columns</p><dl><dt>time</dt>
 <dd><p>event time grid (<code>object$time.interest</code>).</p></dd>
 
-    <dt>brier</dt>
+<dt>brier</dt>
 <dd><p>overall Brier score at each time.</p></dd>
 
-    <dt>bs.q25, bs.q50, bs.q75, bs.q100</dt>
+<dt>bs.q25, bs.q50, bs.q75, bs.q100</dt>
 <dd><p>Brier score within each
-      mortality-risk quartile (lowest to highest risk).</p></dd>
+mortality-risk quartile (lowest to highest risk).</p></dd>
 
-    <dt>bs.lower, bs.upper</dt>
+<dt>bs.lower, bs.upper</dt>
 <dd><p>15th and 85th percentile of per-subject
-      Brier contributions at each time. Used by
-      <code>plot.gg_brier(by_quartile = TRUE)</code> to draw an envelope
-      around the overall curve.</p></dd>
+Brier contributions at each time. Used by
+<code>plot.gg_brier(by_quartile = TRUE)</code> to draw an envelope
+around the overall curve.</p></dd>
 
-    <dt>crps</dt>
+<dt>crps</dt>
 <dd><p>running CRPS (overall) at each time, normalised by
-      elapsed time.</p></dd>
+elapsed time.</p></dd>
 
-    <dt>crps.q25, crps.q50, crps.q75, crps.q100</dt>
+<dt>crps.q25, crps.q50, crps.q75, crps.q100</dt>
 <dd><p>running CRPS within
-      each mortality-risk quartile.</p></dd>
+each mortality-risk quartile.</p></dd>
 
-    <dt>crps.lower, crps.upper</dt>
+<dt>crps.lower, crps.upper</dt>
 <dd><p>running CRPS of the 15th / 85th
-      per-subject Brier percentile, normalised by elapsed time.</p></dd>
+per-subject Brier percentile, normalised by elapsed time.</p></dd>
 
 
 </dl><p>The integrated CRPS (a single scalar matching
-  <code>get.brier.survival()$crps</code>) is attached as
-  <code>attr(., "crps_integrated")</code>.</p>
+<code>get.brier.survival()$crps</code>) is attached as
+<code>attr(., "crps_integrated")</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -142,8 +142,8 @@ default) or by a separate censoring forest (<code>cens.model = "rfsrc"</code>).<
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>Brier score / CRPS is `randomForestSRC` survival-only; there
-  is no `randomForest` method.</p>
+    <p>Brier score / CRPS is <code>randomForestSRC</code> survival-only; there
+is no <code>randomForest</code> method.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -157,8 +157,8 @@ Biometrical Journal, 48(6):1029-1040.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="plot.gg_brier.html">plot.gg_brier</a></code>,
-  <code><a href="https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html" class="external-link">get.brier.survival</a></code>,
-  <code><a href="gg_error.html">gg_error</a></code></p></div>
+<code><a href="https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html" class="external-link">get.brier.survival</a></code>,
+<code><a href="gg_error.html">gg_error</a></code></p></div>
     </div>
 
     <div class="section level2">

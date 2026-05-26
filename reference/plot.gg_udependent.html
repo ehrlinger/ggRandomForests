@@ -13,7 +13,7 @@ dependency between its two variables is."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +106,39 @@ rather than installed for you.  If it is missing, run
 (<code>#4e8fcd</code>); the rest are grey (<code>#888888</code>).  Node size grows
 with degree.  Edge width and opacity both grow with the raw dependency
 weight <code>I[i,j]</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="reading-the-network">Reading the network<a class="anchor" aria-label="anchor" href="#reading-the-network"></a></h2>
+
+
+<p>Each node is a variable; each edge is a cross-variable dependency
+that cleared the threshold passed to <code>gg_udependent</code>. The
+Fruchterman-Reingold layout (the default) places mutually connected
+variables near each other, so the picture tends to show hubs and
+the clusters around them rather than a tidy ring. The eye usually
+goes first to the largest blue node — a variable that is both in
+the signal set and connects to many others is a hub of the
+dependency structure. Edges with wider, more opaque strokes are
+stronger dependencies; thin, faint edges sit near the threshold and
+are the ones that would disappear first if you raised it.</p>
+<p>Grey, low-degree nodes are the ones UVarPro thinks are not
+contributing much to the structure. (Truly isolated nodes are
+dropped by <code><a href="gg_udependent.html">gg_udependent()</a></code> before the graph is drawn — what you
+see is the connected component.) A cluster of mutually
+connected variables is worth checking for redundancy — they may be
+several views of the same underlying quantity.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="what-this-tells-you">What this tells you<a class="anchor" aria-label="anchor" href="#what-this-tells-you"></a></h2>
+
+
+<p>Use the figure to pick a working set of variables: the hubs and
+their immediate neighbours are the candidates UVarPro flags as
+carrying structure. If a cluster of high-degree variables looks
+like it might be measuring the same thing, that is a cue to look at
+their pairwise correlations or fit them as a block rather than
+individually. The threshold and layout are recorded in the caption
+so a different choice is easy to spot in a later figure.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

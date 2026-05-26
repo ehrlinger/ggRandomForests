@@ -2,6 +2,22 @@
 
 ## ggRandomForests v2.8.0 (development) — continued
 
+- Documentation: pedagogical pass over the varPro wrappers
+  (`gg_partial_varpro`, `gg_varpro`, `gg_udependent` and their `plot.*`
+  methods). Each help page now has explicit “What X is doing”, “What’s
+  in the output”, and “What you use this for” sections so a reader new
+  to varPro can learn the underlying method (release rules, beta-entropy
+  dependency, parametric / nonparametric / causal partial estimators)
+  from the help page alone, not just the wrapper mechanics. No API or
+  behavioural change.
+- Documentation: enable roxygen2 markdown package-wide via
+  `Roxygen: list(markdown = TRUE)` in `DESCRIPTION`. New roxygen blocks
+  can use backticks and `[fn()]` link syntax; existing `\code{}` /
+  `\link{}` markup keeps working. Two source-roxygen edits to keep R CMD
+  check clean: `randomForest[SRC]` in `R/help.R` (markdown read it as an
+  unfinished link) becomes plain `randomForestSRC`; the `95\%` escape in
+  `R/gg_rfsrc.R::bootstrap_survival` becomes a literal `95%`. No API or
+  rendered-doc behavioural change beyond the conventions switch.
 - New
   [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
   and

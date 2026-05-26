@@ -48,9 +48,9 @@ A named list with two elements:
 
 ## Note
 
-Partial-dependence extraction is \`randomForestSRC\`-only; there is no
-\`randomForest\` method (the \`randomForest\` package provides no
-comparable partial-dependence interface).
+Partial-dependence extraction is `randomForestSRC`-only; there is no
+`randomForest` method (the `randomForest` package provides no comparable
+partial-dependence interface).
 
 ## See also
 

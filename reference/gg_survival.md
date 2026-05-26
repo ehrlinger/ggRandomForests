@@ -107,8 +107,8 @@ estimates. It dispatches on the class of its first argument:
 
 ## Note
 
-Survival estimation is \`randomForestSRC\`-only; \`randomForest\` has no
-survival forest, so no \`randomForest\` method exists.
+Survival estimation is `randomForestSRC`-only; `randomForest` has no
+survival forest, so no `randomForest` method exists.
 
 ## See also
 

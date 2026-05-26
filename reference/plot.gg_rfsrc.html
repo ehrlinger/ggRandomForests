@@ -15,7 +15,7 @@ survival."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,12 +98,12 @@ confidence intervals on the median.</p></dd>
 <dd><p>Additional arguments forwarded to the underlying
 <code>ggplot2</code> geometry calls.  Commonly useful arguments include:</p><dl><dt><code>alpha</code></dt>
 <dd><p>Numeric in \([0,1]\); point/ribbon transparency.
-    For survival plots with confidence bands the ribbon alpha is
-    automatically halved relative to the value supplied here.</p></dd>
+For survival plots with confidence bands the ribbon alpha is
+automatically halved relative to the value supplied here.</p></dd>
 
-  <dt><code>size</code></dt>
+<dt><code>size</code></dt>
 <dd><p>Point or line size passed to <code>geom_jitter</code>,
-    <code>geom_step</code>, etc.</p></dd>
+<code>geom_step</code>, etc.</p></dd>
 
 
 </dl><p>Arguments that control <code><a href="gg_rfsrc.rfsrc.html">gg_rfsrc</a></code> (e.g. <code>conf.int</code>,
@@ -114,22 +114,22 @@ confidence intervals on the median.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>ggplot</code> object.  The plot appearance depends on the forest
-  family stored in <code>x</code>:</p><dl><dt>Regression (<code>"regr"</code>)</dt>
+family stored in <code>x</code>:</p><dl><dt>Regression (<code>"regr"</code>)</dt>
 <dd><p>Jitter + notched boxplot of OOB
-      predicted values.  If a <code>group</code> column is present the x-axis
-      shows each group label; otherwise observations are collapsed to a
-      single x-position.</p></dd>
+predicted values.  If a <code>group</code> column is present the x-axis
+shows each group label; otherwise observations are collapsed to a
+single x-position.</p></dd>
 
-    <dt>Classification (<code>"class"</code>)</dt>
+<dt>Classification (<code>"class"</code>)</dt>
 <dd><p>Binary: jitter + notched
-      boxplot of the predicted class probability.  Multi-class: jitter
-      plot with one panel per class (class probabilities in long form).</p></dd>
+boxplot of the predicted class probability.  Multi-class: jitter
+plot with one panel per class (class probabilities in long form).</p></dd>
 
-    <dt>Survival (<code>"surv"</code>)</dt>
+<dt>Survival (<code>"surv"</code>)</dt>
 <dd><p>Step curves of the ensemble survival
-      function.  When <code>gg_rfsrc</code> was called with <code>conf.int</code>,
-      a shaded ribbon is added.  When called with <code>by</code>, curves are
-      coloured by group.</p></dd>
+function.  When <code>gg_rfsrc</code> was called with <code>conf.int</code>,
+a shaded ribbon is added.  When called with <code>by</code>, curves are
+coloured by group.</p></dd>
 
 
 </dl></div>
@@ -145,7 +145,7 @@ Regression and Classification. R package version &gt;= 3.4.0.
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="gg_rfsrc.rfsrc.html">gg_rfsrc</a></code> <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code>
-  <code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code></p></div>
+<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code></p></div>
     </div>
 
     <div class="section level2">

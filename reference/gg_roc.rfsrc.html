@@ -21,7 +21,7 @@ specificity (1 minus the false positive rate)."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,12 +103,12 @@ For binary forests this is usually <code>1</code> or <code>2</code>; for multi-c
 forests, any valid class index or level name. <code>which_outcome = "all"</code>
 or <code>0</code> behaves differently by engine:</p><dl><dt><code>randomForest</code> method</dt>
 <dd><p>Returns a macro-averaged
-    one-vs-rest ROC computed over the per-class probabilities.</p></dd>
+one-vs-rest ROC computed over the per-class probabilities.</p></dd>
 
-  <dt><code>rfsrc</code> method</dt>
+<dt><code>rfsrc</code> method</dt>
 <dd><p>Warns and falls back to class 1. The
-    macro-average and per-class faceting for the <code>rfsrc</code> path
-    are tracked separately under issue #72.</p></dd>
+macro-average and per-class faceting for the <code>rfsrc</code> path
+are tracked separately under issue #72.</p></dd>
 
 
 </dl></dd>
@@ -138,13 +138,13 @@ Honoured by the <code>randomForest</code> method only.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>gg_roc</code> <code>data.frame</code>, one row per unique prediction
-  threshold, with columns:</p><dl><dt>sens</dt>
+threshold, with columns:</p><dl><dt>sens</dt>
 <dd><p>Sensitivity (true positive rate) at the threshold.</p></dd>
 
-    <dt>spec</dt>
+<dt>spec</dt>
 <dd><p>Specificity (true negative rate) at the threshold.</p></dd>
 
-    <dt>yvar</dt>
+<dt>yvar</dt>
 <dd><p>The observed class label for each observation.</p></dd>
 
 
@@ -153,9 +153,9 @@ Honoured by the <code>randomForest</code> method only.</p></dd>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="plot.gg_roc.html">plot.gg_roc</a></code>, <code><a href="calc_roc.rfsrc.html">calc_roc</a></code>,
-  <code><a href="calc_auc.html">calc_auc</a></code>,
-  <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code>,
-  <code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code></p></div>
+<code><a href="calc_auc.html">calc_auc</a></code>,
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code>,
+<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code></p></div>
     </div>
 
     <div class="section level2">

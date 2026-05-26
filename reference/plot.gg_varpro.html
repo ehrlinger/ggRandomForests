@@ -15,7 +15,7 @@ facet per class."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,19 +103,61 @@ error.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>**Boxplot geometry:** the hinges are the 15th and 85th percentiles of the
+    <p><strong>Boxplot geometry:</strong> the hinges are the 15th and 85th percentiles of the
 per-tree z-distribution, and the whiskers run to the 5th and 95th.  This
 is <strong>not</strong> a Tukey boxplot, and the plot carries a caption that says
 so.</p>
-<p>**<code>faithful = TRUE</code>:** the per-tree values are jittered over the box
+<p><strong><code>faithful = TRUE</code>:</strong> the per-tree values are jittered over the box
 as semi-transparent points, on the same scale as the box itself (z when
 <code>local.std = TRUE</code>, raw when <code>local.std = FALSE</code>).  The box is
 drawn faint to let the points show through, and a white-outlined dot
 marks the mean.</p>
-<p>**<code>conditional = TRUE</code>:** the class-conditional importances
+<p><strong><code>conditional = TRUE</code>:</strong> the class-conditional importances
 (<code>$conditional</code>) are shown as a faceted bar chart
 (<code>facet_wrap(~class, nrow = 1)</code>).  Variables keep the sort order set
 by the unconditional median z in <code>$stats</code>, so the facets line up.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="reading-the-boxplot">Reading the boxplot<a class="anchor" aria-label="anchor" href="#reading-the-boxplot"></a></h2>
+
+
+<p>Variables are sorted top to bottom by descending median per-tree
+importance, so the eye lands on the most important variable first.
+For each variable the box spans the 15th to 85th percentile of the
+per-tree scores, the centre line is the median, and the whiskers run
+out to the 5th and 95th percentile — not the usual Tukey 1.5 IQR
+whiskers. The dashed vertical line is the selection <code>cutoff</code>
+(default <code>0.79</code>). On the default z-score axis
+(<code>local.std = TRUE</code>) that line is a z; on the raw-importance
+axis (<code>local.std = FALSE</code>, <code>type = "raw"</code>) it is the same
+numeric value but in raw-importance units. Boxes whose aggregate
+value sits above the line are coloured blue and flagged
+<code>selected = TRUE</code>, the rest are grey. A
+selected variable with a tight, high box is a variable the forest
+agrees on across trees. A selected variable with a wide box that
+straddles the cutoff is one to look at twice before relying on it.</p>
+<p>With <code>faithful = TRUE</code> the box is drawn faint and the per-tree
+values are jittered over it as semi-transparent points, on the same
+scale as the box (z when <code>local.std = TRUE</code>, raw otherwise). A
+white-outlined dot marks the mean. Use this view when you want to
+see how individual trees voted rather than just the summary.</p>
+<p>For a classification forest with <code>conditional = TRUE</code> the plot
+splits into one facet per class. Variables keep the unconditional
+sort order, so the rows line up across facets and you can read
+across to see which class a variable is informative for.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="what-this-tells-you">What this tells you<a class="anchor" aria-label="anchor" href="#what-this-tells-you"></a></h2>
+
+
+<p>Take the variables above the cutoff as your candidate set. Use the
+width of the box and the per-tree overlay to gauge confidence — a
+narrow box well above the cutoff is a confident pick, a wide box
+that crosses it is a coin flip you should not lean on. For
+classification, conditional importance tells you which variables
+drive which class; a variable that is unconditionally important but
+only important for one class out of several is still useful, just
+useful for a narrower question.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

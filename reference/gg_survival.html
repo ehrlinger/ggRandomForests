@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -139,8 +139,8 @@ only).</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>gg_survival</code> <code>data.frame</code> with columns <code>time</code>,
-  <code>surv</code>, <code>cum_haz</code>, <code>lower</code>, <code>upper</code>, <code>n.risk</code>,
-  and optionally <code>groups</code> when <code>by</code> is supplied.</p>
+<code>surv</code>, <code>cum_haz</code>, <code>lower</code>, <code>upper</code>, <code>n.risk</code>,
+and optionally <code>groups</code> when <code>by</code> is supplied.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -148,20 +148,20 @@ only).</p></dd>
 survival estimates.  It dispatches on the class of its first argument:</p>
 <dl><dt><code>rfsrc</code></dt>
 <dd><p>Extracts the response data from the fitted forest and
-    delegates to <code><a href="kaplan.html">kaplan</a></code>.  Use the <code>by</code> argument to
-    stratify on a predictor stored in the model's <code>xvar</code> slot.</p></dd>
+delegates to <code><a href="kaplan.html">kaplan</a></code>.  Use the <code>by</code> argument to
+stratify on a predictor stored in the model's <code>xvar</code> slot.</p></dd>
 
-  <dt>default</dt>
+<dt>default</dt>
 <dd><p>Accepts raw survival data columns via the <code>interval</code>,
-    <code>censor</code>, <code>by</code>, and <code>data</code> arguments, delegating to
-    either <code><a href="kaplan.html">kaplan</a></code> (default) or <code><a href="nelson.html">nelson</a></code>.</p></dd>
+<code>censor</code>, <code>by</code>, and <code>data</code> arguments, delegating to
+either <code><a href="kaplan.html">kaplan</a></code> (default) or <code><a href="nelson.html">nelson</a></code>.</p></dd>
 
 
 </dl></div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>Survival estimation is `randomForestSRC`-only; `randomForest`
-  has no survival forest, so no `randomForest` method exists.</p>
+    <p>Survival estimation is <code>randomForestSRC</code>-only; <code>randomForest</code>
+has no survival forest, so no <code>randomForest</code> method exists.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

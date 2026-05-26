@@ -43,12 +43,39 @@ A `ggplot` (or `patchwork`) object.
 
 ## Details
 
-\*\*Ensemble mortality (scale = "mortality"):\*\* when the provenance
-scale is `"mortality"`, the y-axis is labelled *"Ensemble mortality
-(expected events)"*. The wording is deliberate: this is an **unbounded
+**Ensemble mortality (scale = "mortality"):** when the provenance scale
+is `"mortality"`, the y-axis is labelled *"Ensemble mortality (expected
+events)"*. The wording is deliberate: this is an **unbounded
 relative-risk score**, not a survival probability and not \\1 - S(t)\\
-(Ishwaran, Kogalur, Blackstone & Lauer, 2008
-\<doi:10.1214/08-AOAS169\>).
+(Ishwaran, Kogalur, Blackstone & Lauer, 2008 <doi:10.1214/08-AOAS169>).
+
+## Reading the partial dependence
+
+For a continuous variable the x-axis is the variable's grid of values
+and the y-axis is the partial prediction; each of the three effect types
+(`parametric`, `nonparametric`, `causal`) is drawn as its own line. The
+shape of the line is the story: a clear slope says the model uses the
+variable, a flat line says it essentially does not, and a U-shape or a
+threshold says the effect is nonlinear in a way a single coefficient
+would miss. For a categorical variable the picture is a boxplot per
+level; here the eye is looking at level-to-level shifts in the centre of
+each box.
+
+Where the three effect types track each other, the parametric story is a
+fair summary of what the forest is doing. Where they fan apart —
+typically the parametric curve smoother than the nonparametric, or the
+causal curve flatter than either — the variable is one to inspect more
+carefully before reading a single effect off the plot.
+
+## What this tells you
+
+Use these curves to describe how the model uses each variable, not to
+claim how the world works. They are a window into the fitted
+relationship; they do not by themselves establish that intervening on
+the variable would move the outcome. For survival path-C
+(`scale = "surv"` or `"chf"`), the y-axis is on the probability or
+cumulative-hazard scale, which is usually the scale you want to report
+to a clinical audience.
 
 ## References
 
