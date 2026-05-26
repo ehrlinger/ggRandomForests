@@ -38,3 +38,29 @@ test_that("gg_beta_varpro errors on non-regression family", {
     "family = 'class'"
   )
 })
+
+test_that("gg_beta_varpro cutoff = 0 selects everything, Inf selects nothing", {
+  b <- .beta_fit_mtcars()
+  v <- .varpro_mtcars()
+
+  zero_cut <- gg_beta_varpro(v, beta_fit = b, cutoff = 0)
+  expect_true(all(zero_cut$selected))
+
+  inf_cut <- gg_beta_varpro(v, beta_fit = b, cutoff = Inf)
+  expect_true(!any(inf_cut$selected))
+})
+
+test_that("gg_beta_varpro default cutoff is mean(beta_mean), provenance flagged", {
+  b <- .beta_fit_mtcars()
+  v <- .varpro_mtcars()
+
+  out <- gg_beta_varpro(v, beta_fit = b)
+  prov <- attr(out, "provenance")
+
+  expect_equal(prov$cutoff, mean(out$beta_mean), tolerance = 1e-10)
+  expect_true(prov$cutoff_default)
+
+  explicit <- gg_beta_varpro(v, beta_fit = b, cutoff = 0.123)
+  expect_false(attr(explicit, "provenance")$cutoff_default)
+  expect_equal(attr(explicit, "provenance")$cutoff, 0.123)
+})
