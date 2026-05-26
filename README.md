@@ -80,8 +80,8 @@ vignette("ggRandomForests")
 | `gg_roc()` | `rfsrc` / `randomForest` (class) | ROC curve data |
 | `gg_brier()` | `rfsrc` (survival) | Time-resolved Brier score and CRPS |
 
-Each `gg_*` function has a matching `plot()` S3 method that hands back a `ggplot2` object, so you can keep
-adding layers, scales, or a theme. Every `gg_*` object also has `print()` and `summary()` methods: `print()`
+Each `gg_*` function has a matching `plot()` S3 method that hands back a single plottable object — a `ggplot`,
+or a `patchwork` composite when the method lays out multiple panels — so you can keep adding layers, scales, or a theme. Every `gg_*` object also has `print()` and `summary()` methods: `print()`
 shows a short header at the REPL rather than dumping every row (use `head()` when you want the rows), and
 `summary()` gives you a diagnostics object you can print or keep.
 
@@ -92,7 +92,7 @@ functions pull a tidy data object out of the forest; the `plot()` methods turn t
 `ggplot2` figure. Two things follow from that split.
 
 First, the data object stands on its own. It carries everything its plot needs, so you can save it,
-inspect it, or come back to it later without keeping the original forest --- which can be large ---
+inspect it, or come back to it later without keeping the original forest — which can be large —
 in memory.
 
 Second, you are never locked into the default figure. Because a `plot()` method returns a plain

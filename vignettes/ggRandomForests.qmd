@@ -114,5 +114,6 @@ facet labels.
 * The full API reference lives at <https://ehrlinger.github.io/ggRandomForests/>.
 * `?gg_error`, `?gg_variable`, `?gg_vimp`, and `?quantile_pts` cover the
   remaining arguments and have their own examples.
-* Every `gg_*` object is a plain data frame underneath, so you can skip the
-  `plot()` methods entirely and build the figure yourself with `ggplot2`.
+* The `gg_error`, `gg_variable`, and `gg_vimp` objects shown here are tidy
+  data frames underneath, so you can skip the `plot()` methods entirely and
+  build the figure yourself with `ggplot2`.

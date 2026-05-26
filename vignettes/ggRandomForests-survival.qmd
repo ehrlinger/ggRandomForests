@@ -649,8 +649,9 @@ We have walked a full random survival forest analysis with
 - `gg_brier()` measured how accurate the predictions actually were, both
   across time and as a single CRPS summary.
 
-Notice the pattern. Each `gg_*()` function returns a plain tidy data frame;
-the plotting comes after. Lean on the package's `plot()` methods when the
+Notice the pattern. Each `gg_*()` function returns a tidy object (often a
+data frame, sometimes a small list of data frames); the plotting comes
+after. Lean on the package's `plot()` methods when the
 default figure works, and drop down to `ggplot2` directly when it does not.
 
 # References

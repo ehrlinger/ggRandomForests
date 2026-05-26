@@ -14,7 +14,7 @@
 #' Plot a \code{\link{gg_brier}} object
 #'
 #' Draws the time-resolved Brier score (the default) or the running CRPS as
-#' a curve against time.  A lower curve means a better-calibrated forecast.
+#' a curve against time.  Lower means more accurate probabilistic predictions.
 #' Turn \code{envelope = TRUE} on and the overall line picks up a ribbon
 #' spanning the 15th to 85th percentile of the per-subject contributions,
 #' which shows how much the score varies across subjects at each time.

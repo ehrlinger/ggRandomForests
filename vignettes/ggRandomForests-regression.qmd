@@ -408,8 +408,9 @@ We have walked a full random forest regression analysis with
 - Conditioning plots and the interactive surface pulled out the `lstat`--`rm`
   interaction, with the room-size effect strongest in high-status tracts.
 
-Notice the pattern in all of this. Each `gg_*()` function returns a plain
-tidy data frame; the plotting is a separate step. Use the package's `plot()`
+Notice the pattern in all of this. Each `gg_*()` function returns a tidy
+object (often a data frame, sometimes a small list of data frames); the
+plotting is a separate step. Use the package's `plot()`
 methods when the default figure is what you want, and reach for `ggplot2`
 directly when it is not.
 
