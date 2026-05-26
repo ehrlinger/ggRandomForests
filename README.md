@@ -23,6 +23,7 @@
 [randomForest](https://cran.r-project.org/package=randomForest).
 It separates data extraction from plotting so the intermediate tidy objects can be inspected, saved, or used
 for custom analyses.
+Listed in the [ggplot2 extensions gallery](https://exts.ggplot2.tidyverse.org/).
 
 ## Installation
 
