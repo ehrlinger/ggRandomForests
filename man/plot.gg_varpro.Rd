@@ -44,6 +44,44 @@ marks the mean.
 (\code{facet_wrap(~class, nrow = 1)}).  Variables keep the sort order set
 by the unconditional median z in \code{$stats}, so the facets line up.
 }
+\section{Reading the boxplot}{
+
+Variables are sorted top to bottom by descending median per-tree
+importance, so the eye lands on the most important variable first.
+For each variable the box spans the 15th to 85th percentile of the
+per-tree scores, the centre line is the median, and the whiskers run
+out to the 5th and 95th percentile — not the usual Tukey 1.5 IQR
+whiskers. The dashed vertical line is the selection cutoff (default
+\code{z = 0.79}); boxes whose aggregate z sits above it are coloured
+blue and flagged \code{selected = TRUE}, the rest are grey. A
+selected variable with a tight, high box is a variable the forest
+agrees on across trees. A selected variable with a wide box that
+straddles the cutoff is one to look at twice before relying on it.
+
+With \code{faithful = TRUE} the box is drawn faint and the per-tree
+values are jittered over it as semi-transparent points, on the same
+scale as the box (z when \code{local.std = TRUE}, raw otherwise). A
+white-outlined dot marks the mean. Use this view when you want to
+see how individual trees voted rather than just the summary.
+
+For a classification forest with \code{conditional = TRUE} the plot
+splits into one facet per class. Variables keep the unconditional
+sort order, so the rows line up across facets and you can read
+across to see which class a variable is informative for.
+}
+
+\section{What this tells you}{
+
+Take the variables above the cutoff as your candidate set. Use the
+width of the box and the per-tree overlay to gauge confidence — a
+narrow box well above the cutoff is a confident pick, a wide box
+that crosses it is a coin flip you should not lean on. For
+classification, conditional importance tells you which variables
+drive which class; a variable that is unconditionally important but
+only important for one class out of several is still useful, just
+useful for a narrower question.
+}
+
 \examples{
 \donttest{
 set.seed(42)
