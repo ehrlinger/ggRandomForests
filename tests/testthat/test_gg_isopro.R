@@ -257,3 +257,24 @@ test_that("gg_isopro: howbad == 1 - predict(quantiles = TRUE)", {
   q_raw   <- as.numeric(stats::predict(fit, newdata = test_df, quantiles = TRUE))
   expect_equal(gg$howbad, 1 - q_raw, tolerance = 1e-12)
 })
+
+test_that("gg_isopro: bind_rows(train, test) plots without error via the method-column path", {
+  fit      <- make_iso_fit()
+  test_df  <- iris[seq(1, nrow(iris), by = 3), 1:4]  # 50 rows
+  gg_train <- gg_isopro(fit)
+  gg_test  <- gg_isopro(fit, newdata = test_df)
+  gg_both  <- rbind(
+    cbind(as.data.frame(gg_train), method = "train"),
+    cbind(as.data.frame(gg_test),  method = "test")
+  )
+  class(gg_both) <- c("gg_isopro", "data.frame")
+  p <- plot(gg_both, panel = "both")
+  expect_s3_class(p, "patchwork")
+  # Each sub-plot must actually build (catches aes/data mismatches the way the
+  # original plot.gg_variable regression test did).
+  built_top <- ggplot2::ggplot_build(p)
+  expect_true(inherits(built_top, "ggplot_built"))
+  for (sub in p$patches$plots) {
+    expect_no_error(ggplot2::ggplot_build(sub))
+  }
+})
