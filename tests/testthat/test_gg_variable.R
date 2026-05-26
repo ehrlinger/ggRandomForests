@@ -411,7 +411,8 @@ test_that("gg_variable.randomForest classification: layer_data works on single-x
   expect_no_error(ggplot2::layer_data(p, 1L))
 })
 
-test_that("gg_variable.randomForest classification: default plot renders every panel (yvar/outcome not treated as predictors)", {
+test_that("gg_variable.randomForest classification: default plot renders every panel", {
+  # yvar / outcome must not be treated as predictors by the default-xvar pick.
   skip_if_not_installed("randomForest")
   # Regression test: the default-xvar selection in plot.gg_variable used to
   # include yvar and outcome (the response factor and the multi-class pivot's
