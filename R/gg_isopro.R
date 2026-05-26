@@ -140,7 +140,11 @@ gg_isopro.isopro <- function(object, newdata = NULL, ...) {
 
   ## ---- Training path (newdata = NULL) ------------------------------------
   if (is.null(newdata)) {
-    howbad <- as.numeric(object$howbad)
+    # varPro's $howbad uses "lower = more anomalous" polarity (it is the
+    # quantile of case.depth, low depth = anomalous). The wrapper convention
+    # is "higher = more anomalous", so flip the polarity here the same way
+    # the prediction path does (howbad = 1 - quantile).
+    howbad <- 1 - as.numeric(object$howbad)
     depth  <- as.numeric(object$case.depth)
     n      <- length(howbad)
 
@@ -161,7 +165,7 @@ gg_isopro.isopro <- function(object, newdata = NULL, ...) {
 
   ## ---- Prediction path (newdata supplied) -------------------------------
   if (!is.data.frame(newdata)) {
-    stop("`newdata` must be a data.frame.", call. = FALSE)
+    stop("newdata must be a data.frame.", call. = FALSE)
   }
 
   # Two calls to predict.isopro: raw depth and quantile-against-training.

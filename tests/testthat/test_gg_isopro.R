@@ -223,3 +223,37 @@ test_that("gg_isopro: training-path provenance has no prediction field set TRUE"
   prov <- attr(gg, "provenance")
   expect_false(isTRUE(prov$prediction))
 })
+
+test_that("gg_isopro: newdata must be a data.frame", {
+  fit <- make_iso_fit()
+  expect_error(gg_isopro(fit, newdata = "not a df"),
+               "newdata must be a data.frame")
+  expect_error(gg_isopro(fit, newdata = 1:10),
+               "newdata must be a data.frame")
+  expect_error(gg_isopro(fit, newdata = list(a = 1)),
+               "newdata must be a data.frame")
+})
+
+test_that("gg_isopro: scoring the training set as newdata matches training howbad in range and top-5 ordering", {
+  fit       <- make_iso_fit()
+  train_df  <- iris[, 1:4]
+  gg_train  <- gg_isopro(fit)
+  gg_pred   <- gg_isopro(fit, newdata = train_df)
+  # The two code paths inside varPro are slightly different so byte equality
+  # is too strong, but the score range and the most-anomalous rows should agree.
+  expect_equal(nrow(gg_pred), nrow(gg_train))
+  expect_true(all(gg_pred$howbad  >= 0 & gg_pred$howbad  <= 1))
+  expect_true(all(gg_train$howbad >= 0 & gg_train$howbad <= 1))
+  top_train <- head(order(-gg_train$howbad), 5)
+  top_pred  <- head(order(-gg_pred$howbad),  5)
+  # At least 3 of the top-5 anomalous rows should overlap between the two paths.
+  expect_gte(length(intersect(top_train, top_pred)), 3L)
+})
+
+test_that("gg_isopro: howbad == 1 - predict(quantiles = TRUE)", {
+  fit     <- make_iso_fit()
+  test_df <- iris[1:30, 1:4]
+  gg      <- gg_isopro(fit, newdata = test_df)
+  q_raw   <- as.numeric(stats::predict(fit, newdata = test_df, quantiles = TRUE))
+  expect_equal(gg$howbad, 1 - q_raw, tolerance = 1e-12)
+})
