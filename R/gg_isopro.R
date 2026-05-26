@@ -110,13 +110,16 @@
 #'
 #' @param object An \code{isopro} fit returned by
 #'   \code{\link[varPro]{isopro}}.
+#' @param ... Currently unused. Present before \code{newdata} so that
+#'   \code{newdata} is only matched by name, preserving backward
+#'   compatibility with callers of the PR #94 signature
+#'   \code{gg_isopro(object, ...)}.
 #' @param newdata Optional \code{data.frame} of new observations to score
-#'   against the fit. When \code{NULL} (default) the extractor returns the
-#'   in-sample tidy frame from the fit's stored \code{$case.depth} and
-#'   \code{$howbad}. When supplied, each row is scored via
-#'   \code{\link[varPro]{predict.isopro}} and the same tidy shape is
-#'   returned for the test data.
-#' @param ... Currently unused.
+#'   against the fit. Must be passed by name. When \code{NULL} (default)
+#'   the extractor returns the in-sample tidy frame from the fit's stored
+#'   \code{$case.depth} and \code{$howbad}. When supplied, each row is
+#'   scored via \code{\link[varPro]{predict.isopro}} and the same tidy
+#'   shape is returned for the test data.
 #'
 #' @return A \code{data.frame} of class \code{c("gg_isopro", "data.frame")},
 #'   one row per observation. Columns:
@@ -164,12 +167,12 @@
 #' }
 #'
 #' @export
-gg_isopro <- function(object, newdata = NULL, ...) {
+gg_isopro <- function(object, ..., newdata = NULL) {
   UseMethod("gg_isopro", object)
 }
 
 #' @export
-gg_isopro.isopro <- function(object, newdata = NULL, ...) {
+gg_isopro.isopro <- function(object, ..., newdata = NULL) {
   if (!inherits(object, "isopro")) {
     stop("gg_isopro expects a 'isopro' object from varPro::isopro().",
          call. = FALSE)
