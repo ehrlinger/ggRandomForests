@@ -11,7 +11,7 @@ to know the internal shape of the fit."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9009</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9010</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ to know the internal shape of the fit.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_isopro</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_isopro</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span>, newdata <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,7 +80,19 @@ to know the internal shape of the fit.</p>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Currently unused.</p></dd>
+<dd><p>Currently unused. Present before <code>newdata</code> so that
+<code>newdata</code> is only matched by name, preserving backward
+compatibility with callers of the PR #94 signature
+<code>gg_isopro(object, ...)</code>.</p></dd>
+
+
+<dt id="arg-newdata">newdata<a class="anchor" aria-label="anchor" href="#arg-newdata"></a></dt>
+<dd><p>Optional <code>data.frame</code> of new observations to score
+against the fit. Must be passed by name. When <code>NULL</code> (default)
+the extractor returns the in-sample tidy frame from the fit's stored
+<code>$case.depth</code> and <code>$howbad</code>. When supplied, each row is
+scored via <code><a href="https://www.randomforestsrc.org/reference/predict.isopro.html" class="external-link">predict.isopro</a></code> and the same tidy
+shape is returned for the test data.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -167,12 +179,46 @@ model;</p></li>
 <li><p>check whether a held-out cohort sits inside the training
 distribution before scoring with a model trained elsewhere;</p></li>
 <li><p>give the analyst a ranked list of "look at these first" cases
-for a manual review.</p></li>
+for a manual review;</p></li>
+<li><p>score a held-out cohort or a fresh batch of incoming data
+against a fitted model and compare the test scores to the training
+distribution.</p></li>
 </ul><p>The score is a <em>rank</em>, not a probability of being an outlier — two
 observations with <code>howbad = 0.92</code> are both unusual, not "92\<!-- % -->
 likely to be anomalous". Pick a cutoff by looking at where the elbow
 rises; <code><a href="plot.gg_isopro.html">plot.gg_isopro</a></code> can annotate either a score
 (<code>threshold</code>) or a top-percent (<code>top_n_pct</code>) for you.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="scoring-new-data">Scoring new data<a class="anchor" aria-label="anchor" href="#scoring-new-data"></a></h2>
+
+
+<p>Pass a <code>data.frame</code> as <code>newdata</code> and the extractor calls
+<code><a href="https://www.randomforestsrc.org/reference/predict.isopro.html" class="external-link">predict.isopro</a></code> twice: once with
+<code>quantiles = FALSE</code> to get the raw mean case depth per row, and once
+with <code>quantiles = TRUE</code> to get the per-row quantile of that depth
+against the training-data depth distribution.</p>
+<p>varPro's <code>predict.isopro</code> returns quantiles where <em>smaller is
+more anomalous</em>, which is the opposite polarity of the wrapper's
+<code>howbad</code> (where <em>higher</em> is more anomalous). The wrapper
+exposes both conventions so nothing is hidden:</p><ul><li><p><code>case.depth</code> carries varPro's native polarity — <em>lower
+= more anomalous</em>. This is the unmodified output of
+<code>predict(object, newdata, quantiles = FALSE)</code>. Use it to
+cross-reference against raw varPro output.</p></li>
+<li><p><code>howbad</code> is the flipped, wrapper-convention version. The
+relationship is <code>howbad = 1 - predict(object, newdata, quantiles = TRUE)</code>.</p></li>
+</ul><p>To overlay training and test scores in one plot, bind the two extractor
+calls with a <code>method</code> label column (the same column
+<code><a href="plot.gg_isopro.html">plot.gg_isopro</a></code> uses to colour rnd / unsupv / auto
+comparisons):</p>
+<div class="sourceCode"><pre><code><span></span>
+<span><span class="va">gg_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_isopro.html">gg_isopro</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="va">gg_test</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_isopro.html">gg_isopro</a></span><span class="op">(</span><span class="va">fit</span>, newdata <span class="op">=</span> <span class="va">test_df</span><span class="op">)</span></span>
+<span><span class="va">gg_both</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">gg_train</span>, method <span class="op">=</span> <span class="st">"train"</span><span class="op">)</span>,</span>
+<span>                  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">gg_test</span>,  method <span class="op">=</span> <span class="st">"test"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">gg_both</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gg_isopro"</span>, <span class="st">"data.frame"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_both</span><span class="op">)</span></span></code></pre></div>
+
     </div>
     <div class="section level2">
     <h2 id="comparing-methods">Comparing methods<a class="anchor" aria-label="anchor" href="#comparing-methods"></a></h2>

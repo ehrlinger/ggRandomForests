@@ -8,7 +8,7 @@ know the internal shape of the fit.
 ## Usage
 
 ``` r
-gg_isopro(object, ...)
+gg_isopro(object, ..., newdata = NULL)
 ```
 
 ## Arguments
@@ -20,7 +20,18 @@ gg_isopro(object, ...)
 
 - ...:
 
-  Currently unused.
+  Currently unused. Present before `newdata` so that `newdata` is only
+  matched by name, preserving backward compatibility with callers of the
+  PR \#94 signature `gg_isopro(object, ...)`.
+
+- newdata:
+
+  Optional `data.frame` of new observations to score against the fit.
+  Must be passed by name. When `NULL` (default) the extractor returns
+  the in-sample tidy frame from the fit's stored `$case.depth` and
+  `$howbad`. When supplied, each row is scored via
+  [`predict.isopro`](https://www.randomforestsrc.org/reference/predict.isopro.html)
+  and the same tidy shape is returned for the test data.
 
 ## Value
 
@@ -109,7 +120,10 @@ This is screening, not inference. Reach for it when you want to:
   before scoring with a model trained elsewhere;
 
 - give the analyst a ranked list of "look at these first" cases for a
-  manual review.
+  manual review;
+
+- score a held-out cohort or a fresh batch of incoming data against a
+  fitted model and compare the test scores to the training distribution.
 
 The score is a *rank*, not a probability of being an outlier — two
 observations with `howbad = 0.92` are both unusual, not "92\\ likely to
@@ -117,6 +131,40 @@ be anomalous". Pick a cutoff by looking at where the elbow rises;
 [`plot.gg_isopro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
 can annotate either a score (`threshold`) or a top-percent (`top_n_pct`)
 for you.
+
+## Scoring new data
+
+Pass a `data.frame` as `newdata` and the extractor calls
+[`predict.isopro`](https://www.randomforestsrc.org/reference/predict.isopro.html)
+twice: once with `quantiles = FALSE` to get the raw mean case depth per
+row, and once with `quantiles = TRUE` to get the per-row quantile of
+that depth against the training-data depth distribution.
+
+varPro's `predict.isopro` returns quantiles where *smaller is more
+anomalous*, which is the opposite polarity of the wrapper's `howbad`
+(where *higher* is more anomalous). The wrapper exposes both conventions
+so nothing is hidden:
+
+- `case.depth` carries varPro's native polarity — *lower = more
+  anomalous*. This is the unmodified output of
+  `predict(object, newdata, quantiles = FALSE)`. Use it to
+  cross-reference against raw varPro output.
+
+- `howbad` is the flipped, wrapper-convention version. The relationship
+  is `howbad = 1 - predict(object, newdata, quantiles = TRUE)`.
+
+To overlay training and test scores in one plot, bind the two extractor
+calls with a `method` label column (the same column
+[`plot.gg_isopro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
+uses to colour rnd / unsupv / auto comparisons):
+
+
+    gg_train <- gg_isopro(fit)
+    gg_test  <- gg_isopro(fit, newdata = test_df)
+    gg_both  <- rbind(cbind(gg_train, method = "train"),
+                      cbind(gg_test,  method = "test"))
+    class(gg_both) <- c("gg_isopro", "data.frame")
+    plot(gg_both)
 
 ## Comparing methods
 

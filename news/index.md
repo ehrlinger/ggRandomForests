@@ -2,6 +2,38 @@
 
 ## ggRandomForests v2.8.0 (development) — continued
 
+- [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
+  gains a `newdata` argument so a fitted
+  [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html)
+  model can score new observations into the same tidy `gg_isopro` frame.
+  Internally the wrapper calls `predict.isopro()` twice: with
+  `quantiles = FALSE` to populate the `case.depth` column (varPro’s
+  native polarity, lower = more anomalous) and with `quantiles = TRUE`
+  to compute `howbad = 1 - quantile` (the wrapper convention, higher =
+  more anomalous). Both polarities are visible in the returned data
+  frame, and the relationship is named in the roxygen. The `plot` /
+  `print` / `summary` / `autoplot` S3 companions work unchanged on the
+  new tidy frame; to overlay training and test scores, bind the two
+  extractor calls with a `method` label column and pass the result to
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html). Second of
+  three Phase 4 sub-projects.
+- **Fix (gg_isopro training-path polarity).** Bug in the original
+  `gg_isopro` (PR
+  [\#94](https://github.com/ehrlinger/ggRandomForests/issues/94)):
+  varPro’s `$howbad` on an `isopro` fit uses “lower = more anomalous”
+  polarity (it is the quantile of `case.depth`), but the wrapper’s plot
+  method and documentation both assume “higher = more anomalous”. Train
+  scores and the new test-data scores were anti-correlated until this
+  PR’s training-path flip (`howbad = 1 - object$howbad`) brought them
+  into agreement. The fix surfaced because the test-data sanity check
+  (training-as-newdata top-5 overlap) failed at 0/5 instead of 5/5
+  before the flip. Note: the two vdiffr baselines recorded in PR
+  [\#94](https://github.com/ehrlinger/ggRandomForests/issues/94)
+  (`gg-isopro-default` and `gg-isopro-threshold`) were recorded under
+  the inverted polarity; they are visually flipped relative to the new
+  behaviour but CI skips snapshots (`VDIFFR_RUN_TESTS = false`) so no
+  failure surfaces. Re-record with `VDIFFR_RUN_TESTS = true` when
+  convenient.
 - Documentation: pedagogical pass over the varPro wrappers
   (`gg_partial_varpro`, `gg_varpro`, `gg_udependent` and their `plot.*`
   methods). Each help page now has explicit “What X is doing”, “What’s
