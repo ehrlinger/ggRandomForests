@@ -121,40 +121,72 @@
 #' }
 #'
 #' @export
-gg_isopro <- function(object, ...) {
+gg_isopro <- function(object, newdata = NULL, ...) {
   UseMethod("gg_isopro", object)
 }
 
 #' @export
-gg_isopro.isopro <- function(object, ...) {
+gg_isopro.isopro <- function(object, newdata = NULL, ...) {
   if (!inherits(object, "isopro")) {
     stop("gg_isopro expects a 'isopro' object from varPro::isopro().",
          call. = FALSE)
   }
 
-  howbad <- as.numeric(object$howbad)
-  depth  <- as.numeric(object$case.depth)
-  n      <- length(howbad)
+  ntree <- tryCatch(
+    as.integer(object$isoforest$ntree),
+    error = function(e) NA_integer_
+  )
+  ntree <- if (length(ntree) == 1L && !is.na(ntree)) ntree else NA_integer_
+
+  ## ---- Training path (newdata = NULL) ------------------------------------
+  if (is.null(newdata)) {
+    howbad <- as.numeric(object$howbad)
+    depth  <- as.numeric(object$case.depth)
+    n      <- length(howbad)
+
+    gg_dta <- data.frame(
+      obs        = seq_len(n),
+      case.depth = depth,
+      howbad     = howbad
+    )
+    class(gg_dta) <- c("gg_isopro", class(gg_dta))
+    attr(gg_dta, "provenance") <- list(
+      source     = "varPro::isopro",
+      n          = n,
+      ntree      = ntree,
+      prediction = FALSE
+    )
+    return(invisible(gg_dta))
+  }
+
+  ## ---- Prediction path (newdata supplied) -------------------------------
+  if (!is.data.frame(newdata)) {
+    stop("`newdata` must be a data.frame.", call. = FALSE)
+  }
+
+  # Two calls to predict.isopro: raw depth and quantile-against-training.
+  # The wrapper polarity is "higher = more anomalous", so we flip the quantile:
+  #   howbad = 1 - predict(object, newdata, quantiles = TRUE)
+  # case.depth keeps varPro's native scale (lower = more anomalous), giving
+  # the user a varPro-polarity number for cross-reference.
+  depth <- as.numeric(stats::predict(object, newdata = newdata,
+                                     quantiles = FALSE))
+  q     <- as.numeric(stats::predict(object, newdata = newdata,
+                                     quantiles = TRUE))
+  howbad <- 1 - q
+  n      <- nrow(newdata)
 
   gg_dta <- data.frame(
     obs        = seq_len(n),
     case.depth = depth,
     howbad     = howbad
   )
-
   class(gg_dta) <- c("gg_isopro", class(gg_dta))
-
-  # isopro-specific provenance (the shared .gg_provenance helper only knows
-  # about rfsrc / randomForest objects, so build the list inline).
-  ntree <- tryCatch(
-    as.integer(object$isoforest$ntree),
-    error = function(e) NA_integer_
-  )
   attr(gg_dta, "provenance") <- list(
-    source = "varPro::isopro",
-    n      = n,
-    ntree  = if (length(ntree) == 1 && !is.na(ntree)) ntree else NA_integer_
+    source     = "varPro::isopro",
+    n          = n,
+    ntree      = ntree,
+    prediction = TRUE
   )
-
   invisible(gg_dta)
 }

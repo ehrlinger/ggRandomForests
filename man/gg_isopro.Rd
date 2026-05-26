@@ -4,7 +4,7 @@
 \alias{gg_isopro}
 \title{Tidy data from a varPro isolation-forest fit}
 \usage{
-gg_isopro(object, ...)
+gg_isopro(object, newdata = NULL, ...)
 }
 \arguments{
 \item{object}{An \code{isopro} fit returned by

@@ -191,3 +191,35 @@ test_that("plot.gg_isopro: top_n_pct must be numeric scalar in (0,100)", {
   expect_error(plot(gg, top_n_pct = 100),  "single numeric value in \\(0, 100\\)")
   expect_error(plot(gg, top_n_pct = 150),  "single numeric value in \\(0, 100\\)")
 })
+
+## ── predict.isopro path (PR for Phase 4b) ──────────────────────────────────
+
+test_that("gg_isopro: newdata returns gg_isopro data.frame with correct columns", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit, newdata = iris[, 1:4])
+  expect_s3_class(gg, "gg_isopro")
+  expect_s3_class(gg, "data.frame")
+  expect_named(gg, c("obs", "case.depth", "howbad"), ignore.order = TRUE)
+  expect_equal(nrow(gg), nrow(iris))
+  expect_equal(gg$obs, seq_len(nrow(iris)))
+  expect_true(all(gg$howbad >= 0 & gg$howbad <= 1))
+})
+
+test_that("gg_isopro: newdata provenance carries prediction = TRUE and right n", {
+  fit  <- make_iso_fit(ntree = 25)
+  test_df <- iris[c(1:10, 51:60, 101:110), 1:4]  # 30 rows
+  gg   <- gg_isopro(fit, newdata = test_df)
+  prov <- attr(gg, "provenance")
+  expect_type(prov, "list")
+  expect_equal(prov$source, "varPro::isopro")
+  expect_equal(prov$n, nrow(test_df))
+  expect_equal(prov$ntree, 25)
+  expect_true(isTRUE(prov$prediction))
+})
+
+test_that("gg_isopro: training-path provenance has no prediction field set TRUE", {
+  fit  <- make_iso_fit()
+  gg   <- gg_isopro(fit)
+  prov <- attr(gg, "provenance")
+  expect_false(isTRUE(prov$prediction))
+})
