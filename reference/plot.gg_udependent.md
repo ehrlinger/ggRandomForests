@@ -1,8 +1,9 @@
 # Plot a `gg_udependent` variable dependency graph
 
-Renders the variable dependency graph from a `gg_udependent` object as a
-ggraph network plot. Nodes are coloured by selection status; edge width
-and opacity reflect dependency strength.
+Draws the dependency graph held in a `gg_udependent` object as a ggraph
+network. Node colour marks whether a variable made the signal set, and
+the width and opacity of an edge tell you how strong the dependency
+between its two variables is.
 
 ## Usage
 
@@ -20,9 +21,9 @@ plot(x, layout = "fr", ...)
 
 - layout:
 
-  Character; igraph/ggraph layout algorithm. Common choices: `"fr"`
-  (Fruchterman-Reingold, default), `"kk"` (Kamada-Kawai), `"stress"`,
-  `"circle"`, `"grid"`.
+  Character; the igraph/ggraph layout algorithm. Common choices are
+  `"fr"` (Fruchterman-Reingold, the default), `"kk"` (Kamada-Kawai),
+  `"stress"`, `"circle"`, and `"grid"`.
 
 - ...:
 
@@ -34,12 +35,12 @@ A `ggplot` object (built via ggraph).
 
 ## Details
 
-Requires the ggraph package (`Suggests`). Install it with
-`install.packages("ggraph")`.
+This plot needs the ggraph package, which is in `Suggests` rather than
+installed for you. If it is missing, run `install.packages("ggraph")`.
 
-Node colour: blue (`#4e8fcd`) for signal variables (`selected = TRUE`),
-grey (`#888888`) otherwise. Node size scales with degree. Edge width and
-opacity scale with raw dependency weight (`I[i,j]`).
+A signal variable (`selected = TRUE`) gets a blue node (`#4e8fcd`); the
+rest are grey (`#888888`). Node size grows with degree. Edge width and
+opacity both grow with the raw dependency weight `I[i,j]`.
 
 ## See also
 

@@ -1,12 +1,14 @@
 # Partial dependence data from a varPro model
 
-Splits the list returned by `varpro::partialpro` into separate data
-frames for continuous and categorical predictors, with provenance- aware
-y-axis labeling for downstream plot methods.
+`varpro::partialpro` returns one list, with continuous and categorical
+predictors mixed together. This function splits that list into two tidy
+data frames, one for each kind, and resolves the y-axis label the plot
+method will use.
 
-*Deprecated.* `gg_partialpro()` has been renamed to
-`gg_partial_varpro()`. This function is a thin alias that will be
-removed in the release after ggRandomForests v2.8.0.
+*Deprecated.* `gg_partialpro()` has been superseded by
+`gg_partial_varpro()` and is now a thin alias for it. It will be removed
+in the release after ggRandomForests v2.8.0; use `gg_partial_varpro()`
+directly.
 
 ## Usage
 
@@ -73,8 +75,8 @@ A named list of class `"gg_partial_varpro"` with elements:
 
 - categorical:
 
-  data.frame with the same columns but one row per observation per
-  category level.
+  data.frame with the same columns, one row per observation per category
+  level.
 
 A `"provenance"` attribute carries `source`, `family`, `ntree`, `n`,
 `scale`, `rmst_tau`, `xvar.names`, and `path`.
@@ -83,20 +85,22 @@ A `gg_partial_varpro` object (see `gg_partial_varpro`).
 
 ## Details
 
-\*\*Scale detection:\*\* `scale = "auto"` with a supplied `object`
-resolves to `"mortality"` for survival forests and `"generic"` for
-regression/classification forests. The RMST horizon \\\tau\\ is *not*
-stored in the `varpro` object (varPro 3.1.0); pass
-`scale = "rmst", time = tau` explicitly for RMST-labeled output.
+\*\*Scale detection:\*\* with `scale = "auto"` and an `object` in hand,
+the scale resolves to `"mortality"` for a survival forest and
+`"generic"` for a regression or classification forest. The RMST horizon
+\\\tau\\ is *not* stored in the `varpro` object (varPro 3.1.0), so for
+RMST-labeled output you have to pass `scale = "rmst", time = tau`
+yourself.
 
-\*\*Ensemble mortality (scale = "mortality"):\*\* The y-axis represents
-*ensemble mortality*: the expected number of events if the subject
-experienced the study-average cumulative hazard, equivalent to the
-`rfsrc` `predicted` value for survival forests (Ishwaran, Kogalur,
-Blackstone & Lauer, 2008 \<doi:10.1214/08-AOAS169\>). This is an
-**unbounded relative-risk score**—*not* a survival probability or \\1 -
-S(t)\\—and must not be interpreted as one. For probability-scale output
-refit with `varpro(..., rmst = tau)` and use `scale = "rmst"`.
+\*\*Ensemble mortality (scale = "mortality"):\*\* here the y-axis is
+*ensemble mortality*, the expected number of events a subject would see
+if they were exposed to the study-average cumulative hazard. It is the
+same quantity as the `rfsrc` `predicted` value for survival forests
+(Ishwaran, Kogalur, Blackstone & Lauer, 2008
+\<doi:10.1214/08-AOAS169\>). This is an **unbounded relative-risk
+score**, *not* a survival probability and not \\1 - S(t)\\; don't read
+it as one. If you want output on the probability scale, refit with
+`varpro(..., rmst = tau)` and use `scale = "rmst"`.
 
 ## References
 

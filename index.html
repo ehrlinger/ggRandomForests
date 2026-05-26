@@ -85,7 +85,7 @@
 <p><a href="https://github.com/ehrlinger/ggRandomForests/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ehrlinger/ggRandomForests/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/ehrlinger/ggRandomForests/actions/workflows/lint.yaml" class="external-link"><img src="https://github.com/ehrlinger/ggRandomForests/actions/workflows/lint.yaml/badge.svg" alt="lint"></a> <a href="https://github.com/ehrlinger/ggRandomForests/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/ehrlinger/ggRandomForests/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a> <a href="https://app.codecov.io/gh/ehrlinger/ggRandomForests" class="external-link"><img src="https://codecov.io/gh/ehrlinger/ggRandomForests/graph/badge.svg" alt="Codecov test coverage"></a></p>
 <p><a href="https://doi.org/10.5281/zenodo.11526" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11526.svg" alt="DOI"></a> <!-- badges: end --></p>
 <p><img src="reference/figures/README-overview.png" alt="ggRandomForests overview: predicted survival, variable importance, OOB error, and partial dependence" width="100%"></p>
-<p><code>ggRandomForests</code> provides <code>ggplot2</code>-based diagnostic and exploration plots for random forests fit with <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">randomForestSRC</a> (&gt;= 3.4.0) or <a href="https://cran.r-project.org/package=randomForest" class="external-link">randomForest</a>. It separates data extraction from plotting so the intermediate tidy objects can be inspected, saved, or used for custom analyses.</p>
+<p><code>ggRandomForests</code> provides <code>ggplot2</code>-based diagnostic and exploration plots for random forests fit with <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">randomForestSRC</a> (&gt;= 3.4.0) or <a href="https://cran.r-project.org/package=randomForest" class="external-link">randomForest</a>. It separates data extraction from plotting so the intermediate tidy objects can be inspected, saved, or used for custom analyses. Listed in the <a href="https://exts.ggplot2.tidyverse.org/" class="external-link">ggplot2 extensions gallery</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -202,19 +202,14 @@
 </tr>
 </tbody>
 </table>
-<p>Each <code>gg_*</code> function has a corresponding <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> S3 method that returns a <code>ggplot2</code> object, making it easy to apply additional <code>ggplot2</code> layers or themes. Every <code>gg_*</code> object also implements <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> (header-only summary at the REPL — use <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code> for rows) and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> (printable diagnostics object).</p>
+<p>Each <code>gg_*</code> function has a matching <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> S3 method that hands back a single plottable object — a <code>ggplot</code>, or a <code>patchwork</code> composite when the method lays out multiple panels — so you can keep adding layers, scales, or a theme. Every <code>gg_*</code> object also has <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> methods: <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows a short header at the REPL rather than dumping every row (use <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code> when you want the rows), and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> gives you a diagnostics object you can print or keep.</p>
 </div>
 <div class="section level2">
 <h2 id="why-ggrandomforests">Why ggRandomForests?<a class="anchor" aria-label="anchor" href="#why-ggrandomforests"></a>
 </h2>
-<ul>
-<li>
-<strong>Separation of data and figures.</strong> <code>gg_*</code> functions extract tidy data objects from the forest. <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods turn those into <code>ggplot2</code> figures. You can inspect, save, or transform the data before plotting.</li>
-<li>
-<strong>Self-contained objects.</strong> Each data object holds everything needed for its plot, so figures are reproducible without the original forest in memory.</li>
-<li>
-<strong>Full <code>ggplot2</code> composability.</strong> Every <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method returns a <code>ggplot</code> object that accepts additional layers, scales, and themes.</li>
-</ul>
+<p>The package is built on one decision: keep the data step and the figure step apart. The <code>gg_*</code> functions pull a tidy data object out of the forest; the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods turn that object into a <code>ggplot2</code> figure. Two things follow from that split.</p>
+<p>First, the data object stands on its own. It carries everything its plot needs, so you can save it, inspect it, or come back to it later without keeping the original forest — which can be large — in memory.</p>
+<p>Second, you are never locked into the default figure. Because a <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> method returns a single plottable object (a <code>ggplot</code>, or a <code>patchwork</code> composite for the multi-panel methods), you can add layers, swap scales, or apply a theme; and if the default is not what you want, you can ignore it entirely and build the figure from the tidy data yourself.</p>
 </div>
 <div class="section level2">
 <h2 id="recent-changes">Recent changes<a class="anchor" aria-label="anchor" href="#recent-changes"></a>

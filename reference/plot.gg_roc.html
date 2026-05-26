@@ -71,38 +71,37 @@
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>A <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> object, or a raw
-<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> classification forest or
-<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code> classification object.  When a
-forest is supplied, <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> is called automatically.</p></dd>
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> or
+<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code> classification forest. Hand it a
+forest and <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> is called for you.</p></dd>
 
 
 <dt id="arg-which-outcome">which_outcome<a class="anchor" aria-label="anchor" href="#arg-which-outcome"></a></dt>
 <dd><p>Integer; for multi-class problems, the index of the
-class whose ROC curve should be plotted.  When <code>NULL</code> (default) and
-the forest has more than two classes, ROC curves for all classes are
-overlaid in a single plot.  For binary forests <code>NULL</code> defaults to
-class index 2.</p></dd>
+class to plot. When <code>NULL</code> (default) and the forest has more than two
+classes, the curves for all classes are overlaid in one plot. For binary
+forests, <code>NULL</code> defaults to class index 2.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments forwarded to <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> when
-<code>x</code> is a raw forest object (e.g. <code>oob = FALSE</code>).</p></dd>
+<dd><p>Additional arguments passed to <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> when
+<code>x</code> is a raw forest (e.g. <code>oob = FALSE</code>).</p></dd>
 
 
 <dt id="arg-panel">panel<a class="anchor" aria-label="anchor" href="#arg-panel"></a></dt>
-<dd><p>Character; layout for per-class ROC objects (those produced by
-<code>gg_roc(..., per_class = TRUE)</code>). <code>"overlay"</code> (default) draws all
-class curves in one panel coloured by class; <code>"facet"</code> wraps each
-class into its own panel. Ignored for single-class <code>gg_roc</code> objects.</p></dd>
+<dd><p>Character; layout for per-class ROC objects, the ones from
+<code>gg_roc(..., per_class = TRUE)</code>. <code>"overlay"</code> (default) draws
+every class curve in one panel, coloured by class; <code>"facet"</code> gives
+each class its own panel. Ignored for single-class <code>gg_roc</code> objects.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>ggplot</code> object.  The x-axis shows 1 - Specificity (FPR)
-  and the y-axis shows Sensitivity (TPR).  A dashed red diagonal reference
-  line marks the random-classifier baseline.  The AUC value is annotated
-  on the plot for single-class curves.  Multi-class plots colour and style
-  each class curve distinctly.</p>
+    <p>A <code>ggplot</code> object. The x-axis is 1 - Specificity (FPR), the
+  y-axis is Sensitivity (TPR), and a dashed red diagonal marks the
+  random-classifier baseline. Single-class curves carry the AUC as an
+  annotation; multi-class plots colour and style each class curve
+  distinctly.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

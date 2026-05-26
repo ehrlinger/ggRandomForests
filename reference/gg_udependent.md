@@ -1,11 +1,13 @@
 # Variable dependency graph from a uvarpro model
 
-Extracts cross-variable dependency scores from a fitted `uvarpro` object
-using
+A `uvarpro` fit records how strongly each variable depends on the
+others. This function pulls those cross-variable dependency scores from
+the fit with
 [`get.beta.entropy`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 and
 [`sdependent`](https://www.randomforestsrc.org/reference/utilities_internal.html),
-and returns a tidy list suitable for `plot.gg_udependent`.
+and returns them as a tidy list that `plot.gg_udependent` can draw as a
+network.
 
 ## Usage
 
@@ -28,13 +30,14 @@ gg_udependent(
 
 - threshold:
 
-  Numeric; positive dependency threshold passed to `sdependent()`. An
-  edge \\i \to j\\ is drawn when `I[i, j] >= threshold`. Default `0.25`.
+  Numeric; the positive dependency threshold passed on to
+  `sdependent()`. An edge \\i \to j\\ is drawn when
+  `I[i, j] >= threshold`. Default `0.25`.
 
 - q.signal:
 
-  Quantile threshold (0–1) for signal variable selection; passed to
-  `sdependent()`. Default `0.75`.
+  Quantile threshold (0–1) for picking out the signal variables; passed
+  on to `sdependent()`. Default `0.75`.
 
 - directed:
 
@@ -42,8 +45,8 @@ gg_udependent(
 
 - min.degree:
 
-  Integer or `NULL`. When non-`NULL`, only nodes with degree \\\ge\\
-  `min.degree` are retained in `$nodes`, `$edges`, and `$graph`.
+  Integer or `NULL`. When set, only nodes with degree \\\ge\\
+  `min.degree` are kept in `$nodes`, `$edges`, and `$graph`.
 
 - ...:
 

@@ -1,10 +1,13 @@
 # Exploring Random Forests with ggRandomForests
 
-The **ggRandomForests** package extracts tidy data objects from either
-`randomForestSRC` or `randomForest` fits and feeds them into familiar
-`ggplot2` workflows. This vignette highlights the most common objects—
-`gg_error`, `gg_variable`, and `gg_vimp`—along with a small helper for
-building balanced conditioning intervals.
+A fitted random forest carries a lot of information, but getting at it
+usually means digging through list structures that were never meant to
+be plotted directly. **ggRandomForests** does that digging for you: it
+pulls tidy data objects out of a `randomForestSRC` or `randomForest`
+fit, and those objects drop straight into the `ggplot2` workflows you
+already know. This vignette walks through the three objects you will
+reach for most often (`gg_error`, `gg_variable`, and `gg_vimp`), plus a
+small helper for cutting a predictor into evenly populated groups.
 
 ## Error trajectories with `gg_error()`
 
@@ -27,12 +30,13 @@ head(err_df)
 
     <gg_error>  from randomForest  |  family: classification  |  ntree: 200  |  n: 150
 
-The
+A forest’s error rate settles down as trees are added, and the
 [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
-object stores the cumulative OOB error rate for each outcome column plus
-the `ntree` counter. When `training = TRUE`, the function reconstructs
-the original model frame and appends the in-bag error trajectory
-(`train`). Plotting overlays both curves by default:
+object lets you watch that happen. It holds the cumulative out-of-bag
+(OOB) error rate for each outcome column, indexed by the `ntree`
+counter. Ask for `training = TRUE` and the function reconstructs the
+original model frame and adds the in-bag error trajectory (`train`) as
+well, so you can see both curves at once:
 
 ``` r
 
@@ -56,13 +60,14 @@ str(var_df[, c("lstat", "yhat")])
      $ lstat: num  4.98 9.14 4.03 2.94 5.33 ...
      $ yhat : num  29.2 22.5 35.1 36.4 33.4 ...
 
-Because the original training data are recovered from the model call,
 [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
-works even when the forest was trained within helper functions or
-against a [`subset()`](https://rdrr.io/r/base/subset.html) expression.
-The output keeps the raw predictors plus either a continuous `yhat`
-column (regression) or per-class probabilities (`yhat.<class>` for
-classification). Plotting a single variable is straightforward:
+recovers the training data straight from the model call, so it still
+works when the forest was fit inside a helper function or against a
+[`subset()`](https://rdrr.io/r/base/subset.html) expression, cases where
+the data is not sitting in the global environment. The object you get
+back keeps the raw predictors alongside the prediction: a single `yhat`
+column for regression, or one `yhat.<class>` column per class for
+classification. To plot one predictor, name it with `xvar`:
 
 ``` r
 
@@ -93,12 +98,13 @@ plot(vimp_df)
 
 ![](ggRandomForests_files/figure-html/vimp-demo-1.png)
 
-If a `randomForest` object lacks stored importance scores,
+Variable importance is not always stored on the fitted object. If a
+`randomForest` fit is missing its importance scores,
 [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
-tries to compute them on the fly. When the forest truly cannot provide
-the information (for example when `importance = FALSE` and the
-predictors are no longer accessible), the function emits a warning and
-returns `NA` placeholders so plots still render.
+will try to compute them for you. When even that is not possible (the
+forest was grown with `importance = FALSE` and the predictors are no
+longer reachable), the function warns and returns `NA` in place of the
+scores, so a plot still draws rather than failing outright.
 
 ## Balanced conditioning cuts with `quantile_pts()`
 
@@ -113,22 +119,26 @@ table(rm_groups)
     (3.56,5.76] (5.76,5.99] (5.99,6.21] (6.21,6.44] (6.44,6.85] (6.85,8.78]
              85          84          84          85          84          84 
 
-The helper wraps
-[`stats::quantile()`](https://rdrr.io/r/stats/quantile.html) to produce
-evenly populated strata that drop directly into
-[`cut()`](https://rdrr.io/r/base/cut.html) when building coplots or
-facet labels.
+When you build a coplot, you want each conditioning group to hold a
+roughly equal share of the data — equal-width bins leave the sparse
+tails nearly empty.
+[`quantile_pts()`](https://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md)
+wraps [`stats::quantile()`](https://rdrr.io/r/stats/quantile.html) to
+give you break points that do exactly that, and they pass straight to
+[`cut()`](https://rdrr.io/r/base/cut.html) for the grouping or facet
+labels.
 
 ## Next steps
 
-- Inspect the full API reference at
+- The full API reference lives at
   <https://ehrlinger.github.io/ggRandomForests/>.
-- Use
-  [`?gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md),
+- [`?gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md),
   [`?gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md),
   [`?gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
   and
   [`?quantile_pts`](https://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md)
-  for additional arguments and examples.
-- Pair these data objects with your own `ggplot2` themes to align with
-  your preferred publication style.
+  cover the remaining arguments and have their own examples.
+- The `gg_error`, `gg_variable`, and `gg_vimp` objects shown here are
+  tidy data frames underneath, so you can skip the
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods
+  entirely and build the figure yourself with `ggplot2`.

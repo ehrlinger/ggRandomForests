@@ -2,146 +2,160 @@
 
 ## ggRandomForests v2.8.0 (development) — continued
 
-- **`gg_roc`: per-class one-vs-rest ROC curves
+- [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md):
+  per-class one-vs-rest ROC curves
   ([\#88](https://github.com/ehrlinger/ggRandomForests/issues/88),
   closes
-  [\#72](https://github.com/ehrlinger/ggRandomForests/issues/72)).**
-  - [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
-    gains a `per_class = FALSE` argument. When `per_class = TRUE` and
-    the forest has more than two classes, returns a long-format `gg_roc`
-    data frame with a `class` factor column and a named AUC vector
-    attribute (one entry per class, ordered by descending AUC).
+  [\#72](https://github.com/ehrlinger/ggRandomForests/issues/72)).
+  - New `per_class` argument, default `FALSE`. With `per_class = TRUE`
+    on a forest of more than two classes,
+    [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+    returns a long-format `gg_roc` data frame with a `class` factor
+    column, plus a named AUC vector attribute with one entry per class,
+    ordered by descending AUC.
   - [`plot.gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
-    gains a `panel = c("overlay", "facet")` argument. When the `gg_roc`
-    object contains a `class` column, the overlay path colours curves by
-    class; the facet path wraps each class into its own panel.
+    gains `panel = c("overlay", "facet")`. When the object has a `class`
+    column, `"overlay"` colours the curves by class and `"facet"` gives
+    each class its own panel.
   - [`summary.gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
-    now prints named per-class AUC values when the `class` column is
+    prints the named per-class AUC values when a `class` column is
     present.
-  - Binary forests: `per_class = TRUE` is a silent no-op (single-curve
-    result returned unchanged).
-  - ROC confidence intervals are deferred to v2.9.0 (issue
+  - On a binary forest, `per_class = TRUE` does nothing, the usual
+    single-curve result comes back unchanged.
+  - ROC confidence intervals are still to come, in v2.9.0 (issue
     [\#7](https://github.com/ehrlinger/ggRandomForests/issues/7) /
     [\#72](https://github.com/ehrlinger/ggRandomForests/issues/72)-CIs).
-- **varPro variable dependency:
-  [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
-  (Phase 3).**
+- New
+  [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md):
+  varPro cross-variable dependency (Phase 3).
   - [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
-    extracts cross-variable dependency scores from a `uvarpro` fit using
-    [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html) +
-    [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html),
-    and returns a tidy list with `$edges` (variable_from, variable_to,
-    weight), `$nodes` (variable, degree, selected), and `$graph` (igraph
-    object).
+    reads cross-variable dependency scores off a `uvarpro` fit, via
+    [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+    and
+    [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html).
+    It returns a tidy list: `$edges` (variable_from, variable_to,
+    weight), `$nodes` (variable, degree, selected), and `$graph`, an
+    igraph object.
   - [`plot.gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.md)
-    renders the dependency network using ggraph with edge width/opacity
-    scaled by dependency strength and node colour by signal-variable
-    status. Layout is configurable (`"fr"`, `"kk"`, `"stress"`, etc.).
+    draws the dependency network with ggraph. Edge width and opacity
+    scale with dependency strength; node colour marks the signal
+    variables. The layout is configurable (`"fr"`, `"kk"`, `"stress"`,
+    and so on).
   - `ggraph` added to `Suggests:`.
-- **varPro variable importance:
-  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
-  ([\#85](https://github.com/ehrlinger/ggRandomForests/issues/85)).**
+- New
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md):
+  varPro variable importance
+  ([\#85](https://github.com/ehrlinger/ggRandomForests/issues/85)).
   - [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
-    extracts per-tree importance scores from a fitted `varpro` object
-    and renders an honest boxplot — hinges at the 15th/85th percentile,
-    whiskers at the 5th/95th — of the per-tree z-score distribution per
-    variable. Variables whose aggregate z \> `cutoff` (default 0.79) are
-    colour-highlighted.
-  - `faithful = TRUE` overlays individual per-tree z-scores as jittered
-    semi-transparent points with a white-outlined mean dot, reproducing
-    the distributional view from varPro’s internal `bxp` output.
-  - `conditional = TRUE` (classification forests only) extracts
-    `$conditional.z` and renders class-conditional importance as a
+    pulls per-tree importance scores from a fitted `varpro` object and
+    draws a boxplot of the per-tree z-score distribution for each
+    variable. The hinges sit at the 15th and 85th percentiles and the
+    whiskers at the 5th and 95th, so the box is not the usual Tukey one
+    — it reports the percentiles it actually shows. Variables with
+    aggregate z above `cutoff` (default 0.79) are colour-highlighted.
+  - With `faithful = TRUE`, the individual per-tree z-scores are
+    jittered over the box as semi-transparent points, with a
+    white-outlined dot at the mean, the same view as varPro’s internal
+    `bxp` output.
+  - With `conditional = TRUE` (classification forests only),
+    [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+    reads `$conditional.z` and draws class-conditional importance as a
     `facet_wrap(~class, nrow=1)` bar chart.
-  - `local.std = FALSE` enables `plot(..., type = "raw")` to display raw
-    per-tree importance instead of z-normalised values.
+  - Set `local.std = FALSE` to allow `plot(..., type = "raw")`, which
+    shows raw per-tree importance instead of the z-normalised values.
 
 ## ggRandomForests v2.8.0 (development)
 
-- **`gg_variable.randomForest` classification fix
-  ([\#87](https://github.com/ehrlinger/ggRandomForests/issues/87)).**
-  - [`gg_variable.randomForest()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
-    for classification forests now stores per-class OOB vote fractions
-    as `yhat.<classname>` columns (from `object$votes`), matching the
-    `rfsrc` path. Previously a single `yhat` factor column (class labels
-    from `object$predicted`) was stored, which prevented the multi-class
-    pivot in `plot.gg_variable` from firing. Vote fractions are
-    row-normalised to `[0, 1]` even when the forest was fit with
-    `norm.votes = FALSE`.
-  - `plot.gg_variable` binary classification: `smooth = TRUE` now
-    correctly maps x/y aesthetics onto the smooth layer.
-  - `plot.gg_variable` multi-class numeric path: `smooth = TRUE` now
-    adds a smooth layer (was silently skipped).
+- `gg_variable.randomForest`: classification fix
+  ([\#87](https://github.com/ehrlinger/ggRandomForests/issues/87)).
+  - For a classification forest,
+    [`gg_variable.randomForest()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
+    now stores per-class OOB vote fractions as `yhat.<classname>`
+    columns, read from `object$votes`, the same layout the `rfsrc` path
+    produces. It used to store a single `yhat` factor column of class
+    labels (from `object$predicted`), and that column shape stopped the
+    multi-class pivot in `plot.gg_variable` from ever running. The vote
+    fractions are row-normalised to `[0, 1]`, even when the forest was
+    fit with `norm.votes = FALSE`.
+  - `plot.gg_variable`, binary classification: with `smooth = TRUE` the
+    x and y aesthetics are now mapped onto the smooth layer correctly.
+  - `plot.gg_variable`, multi-class numeric path: `smooth = TRUE` now
+    adds the smooth layer instead of skipping it silently.
   - Closes stale issues
     [\#81](https://github.com/ehrlinger/ggRandomForests/issues/81)
     (fixed in PR
     [\#83](https://github.com/ehrlinger/ggRandomForests/issues/83)) and
     [\#82](https://github.com/ehrlinger/ggRandomForests/issues/82).
-- **varPro partial dependence:
-  [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  ([\#84](https://github.com/ehrlinger/ggRandomForests/issues/84)).**
+- New
+  [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md):
+  varPro partial dependence
+  ([\#84](https://github.com/ehrlinger/ggRandomForests/issues/84)).
   - [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-    replaces
+    takes over from
     [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-    as the primary entry point for varPro partial dependence plots. The
-    new extractor accepts an optional `object` argument (the originating
-    `varpro` fit) for provenance-aware axis labeling and a `scale`
-    argument (`"auto"`, `"mortality"`, `"rmst"`, `"surv"`, `"chf"`).
-  - **Ensemble mortality labeling** (Ishwaran et al. 2008): when
-    `scale = "mortality"` (or `scale = "auto"` with a survival forest),
-    the y-axis is labeled “Ensemble mortality (expected events)” — an
-    unbounded relative-risk score, not a survival probability. The
-    documentation explicitly warns against misinterpretation.
-  - **Survival path C:** `scale = "surv"` or `scale = "chf"` extracts
-    `object$rf` (the embedded rfsrc forest) and returns true S(t)/CHF
-    partial curves via `gg_partial_rfsrc` infrastructure.
+    as the entry point for varPro partial dependence plots. It accepts
+    an optional `object` argument (the originating `varpro` fit) which
+    it uses for provenance-aware axis labels, and a `scale` argument
+    (`"auto"`, `"mortality"`, `"rmst"`, `"surv"`, `"chf"`).
+  - Ensemble mortality labelling (Ishwaran et al. 2008): with
+    `scale = "mortality"`, or `scale = "auto"` on a survival forest, the
+    y-axis reads “Ensemble mortality (expected events)”. That is an
+    unbounded relative-risk score, not a survival probability, and the
+    documentation says so plainly so it is not misread.
+  - Survival path C: with `scale = "surv"` or `scale = "chf"`,
+    [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+    pulls the embedded rfsrc forest from `object$rf` and returns true
+    S(t) or CHF partial curves through the existing `gg_partial_rfsrc`
+    machinery.
   - `varPro` is now a hard dependency (`Imports:`).
   - [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-    is soft-deprecated: it emits a deprecation warning and delegates to
+    is soft-deprecated: it warns, then hands off to
     [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md).
-    Removal is planned for the release after v2.8.0.
-- **randomForest engine validation & repair
-  ([\#82](https://github.com/ehrlinger/ggRandomForests/issues/82)).**
+    It will be removed in the release after v2.8.0.
+- randomForest engine validation and repair
+  ([\#82](https://github.com/ehrlinger/ggRandomForests/issues/82)).
   Fixes [\#80](https://github.com/ehrlinger/ggRandomForests/issues/80),
-  [\#81](https://github.com/ehrlinger/ggRandomForests/issues/81) and a
-  `plot.gg_error` label wart; adds full randomForest regression
-  coverage. See sub-items below.
+  [\#81](https://github.com/ehrlinger/ggRandomForests/issues/81), and a
+  `plot.gg_error` label wart, and adds full randomForest regression test
+  coverage. Details below.
   - [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
     now always returns a single `ggplot` (one variable) or a `patchwork`
-    composite (multiple variables / default), never a bare list —
-    consistent with the v2.7.3 `plot.gg_partial*` change. Previously a
-    list was returned for multiple `xvar`, which broke `patchwork` /
+    composite (several variables, or the default) — never a bare list.
+    This matches the v2.7.3 `plot.gg_partial*` change. A list used to
+    come back for multiple `xvar`, which broke `patchwork` /
     [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
     /
     [`layer_data()`](https://ggplot2.tidyverse.org/reference/ggplot_build.html)
     composition
     ([\#80](https://github.com/ehrlinger/ggRandomForests/issues/80)).
   - [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
-    /
+    and
     [`calc_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/calc_roc.rfsrc.md)
-    for `randomForest` now compute a correct ROC from class
-    probabilities (OOB votes by default, honoring `oob`) instead of a
-    degenerate ~3-point curve; `which_outcome = "all"` (the default for
-    `gg_roc(rf)`) returns a macro-averaged one-vs-rest ROC with no
-    warning. The shared `.validate_which_outcome` helper and
-    `calc_roc.rfsrc` are byte-unchanged — rfsrc behavior is preserved
+    for `randomForest` now build the ROC from class probabilities (OOB
+    votes by default, honouring `oob`) rather than the degenerate
+    three-point curve they produced before. With `which_outcome = "all"`
+    (the default for `gg_roc(rf)`) the result is a macro-averaged
+    one-vs-rest ROC, and no warning. The shared
+    `.validate_which_outcome` helper and `calc_roc.rfsrc` are
+    byte-for-byte unchanged, so rfsrc behaviour is untouched
     ([\#81](https://github.com/ehrlinger/ggRandomForests/issues/81)).
-- **Dependency modernization (breaking for scripts that relied on
-  attachment).** `randomForestSRC` and `randomForest` moved from
-  `Depends:` to `Imports:`; `igraph`, `callr`, and `varPro` added to
-  `Suggests:` (`varPro` graduates to `Imports:` later in the v2.8.0
-  development series, with the first varPro-integration component).
+- Dependency modernization. This breaks scripts that relied on
+  attachment. `randomForestSRC` and `randomForest` move from `Depends:`
+  to `Imports:`; `igraph`, `callr`, and `varPro` are added to
+  `Suggests:` (`varPro` later moves up to `Imports:`, with the first
+  varPro-integration component).
   [`library(ggRandomForests)`](https://github.com/ehrlinger/ggRandomForests)
-  no longer attaches `randomForestSRC`/`randomForest` to the search
-  path. User scripts that called
-  [`rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)/[`randomForest()`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
+  no longer puts `randomForestSRC` or `randomForest` on the search path.
+  A script that called
+  [`rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html) or
+  [`randomForest()`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
   unqualified after only
   [`library(ggRandomForests)`](https://github.com/ehrlinger/ggRandomForests)
-  must now also
+  now needs its own
   [`library(randomForestSRC)`](https://www.randomforestsrc.org/) /
-  [`library(randomForest)`](https://www.stat.berkeley.edu/~breiman/RandomForests/)
-  (or qualify the calls). All ggRandomForests functions are unaffected —
-  they fully qualify their dependencies.
+  [`library(randomForest)`](https://www.stat.berkeley.edu/~breiman/RandomForests/),
+  or must qualify the calls. ggRandomForests itself is unaffected. It
+  qualifies every call into its dependencies.
 
 ## ggRandomForests v2.7.3
 

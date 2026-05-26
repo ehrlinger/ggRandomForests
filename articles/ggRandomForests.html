@@ -81,7 +81,7 @@
       <h1>Exploring Random Forests with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-05-22</p>
+      <p class="date">2026-05-26</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests.qmd" class="external-link"><code>vignettes/ggRandomForests.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -92,7 +92,7 @@
 
 
 
-    <p>The <strong>ggRandomForests</strong> package extracts tidy data objects from either <code>randomForestSRC</code> or <code>randomForest</code> fits and feeds them into familiar <code>ggplot2</code> workflows. This vignette highlights the most common objects— <code>gg_error</code>, <code>gg_variable</code>, and <code>gg_vimp</code>—along with a small helper for building balanced conditioning intervals.</p>
+    <p>A fitted random forest carries a lot of information, but getting at it usually means digging through list structures that were never meant to be plotted directly. <strong>ggRandomForests</strong> does that digging for you: it pulls tidy data objects out of a <code>randomForestSRC</code> or <code>randomForest</code> fit, and those objects drop straight into the <code>ggplot2</code> workflows you already know. This vignette walks through the three objects you will reach for most often (<code>gg_error</code>, <code>gg_variable</code>, and <code>gg_vimp</code>), plus a small helper for cutting a predictor into evenly populated groups.</p>
 <section class="level2"><h2 id="error-trajectories-with-gg_error">Error trajectories with <code>gg_error()</code>
 <a class="anchor" aria-label="anchor" href="#error-trajectories-with-gg_error"></a>
 </h2>
@@ -114,7 +114,7 @@
 <pre><code>&lt;gg_error&gt;  from randomForest  |  family: classification  |  ntree: 200  |  n: 150</code></pre>
 </div>
 </div>
-<p>The <code><a href="../reference/gg_error.html">gg_error()</a></code> object stores the cumulative OOB error rate for each outcome column plus the <code>ntree</code> counter. When <code>training = TRUE</code>, the function reconstructs the original model frame and appends the in-bag error trajectory (<code>train</code>). Plotting overlays both curves by default:</p>
+<p>A forest’s error rate settles down as trees are added, and the <code><a href="../reference/gg_error.html">gg_error()</a></code> object lets you watch that happen. It holds the cumulative out-of-bag (OOB) error rate for each outcome column, indexed by the <code>ntree</code> counter. Ask for <code>training = TRUE</code> and the function reconstructs the original model frame and adds the in-bag error trajectory (<code>train</code>) as well, so you can see both curves at once:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">err_df</span><span class="op">)</span></span></code></pre></div>
@@ -141,7 +141,7 @@
  $ yhat : num  29.2 22.5 35.1 36.4 33.4 ...</code></pre>
 </div>
 </div>
-<p>Because the original training data are recovered from the model call, <code><a href="../reference/gg_variable.html">gg_variable()</a></code> works even when the forest was trained within helper functions or against a <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code> expression. The output keeps the raw predictors plus either a continuous <code>yhat</code> column (regression) or per-class probabilities (<code>yhat.&lt;class&gt;</code> for classification). Plotting a single variable is straightforward:</p>
+<p><code><a href="../reference/gg_variable.html">gg_variable()</a></code> recovers the training data straight from the model call, so it still works when the forest was fit inside a helper function or against a <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code> expression, cases where the data is not sitting in the global environment. The object you get back keeps the raw predictors alongside the prediction: a single <code>yhat</code> column for regression, or one <code>yhat.&lt;class&gt;</code> column per class for classification. To plot one predictor, name it with <code>xvar</code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">var_df</span>, xvar <span class="op">=</span> <span class="st">"lstat"</span><span class="op">)</span></span></code></pre></div>
@@ -175,7 +175,7 @@
 </div>
 </div>
 </div>
-<p>If a <code>randomForest</code> object lacks stored importance scores, <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> tries to compute them on the fly. When the forest truly cannot provide the information (for example when <code>importance = FALSE</code> and the predictors are no longer accessible), the function emits a warning and returns <code>NA</code> placeholders so plots still render.</p>
+<p>Variable importance is not always stored on the fitted object. If a <code>randomForest</code> fit is missing its importance scores, <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> will try to compute them for you. When even that is not possible (the forest was grown with <code>importance = FALSE</code> and the predictors are no longer reachable), the function warns and returns <code>NA</code> in place of the scores, so a plot still draws rather than failing outright.</p>
 </section><section class="level2"><h2 id="balanced-conditioning-cuts-with-quantile_pts">Balanced conditioning cuts with <code>quantile_pts()</code>
 <a class="anchor" aria-label="anchor" href="#balanced-conditioning-cuts-with-quantile_pts"></a>
 </h2>
@@ -190,13 +190,14 @@
          85          84          84          85          84          84 </code></pre>
 </div>
 </div>
-<p>The helper wraps <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">stats::quantile()</a></code> to produce evenly populated strata that drop directly into <code><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut()</a></code> when building coplots or facet labels.</p>
+<p>When you build a coplot, you want each conditioning group to hold a roughly equal share of the data — equal-width bins leave the sparse tails nearly empty. <code><a href="../reference/quantile_pts.html">quantile_pts()</a></code> wraps <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">stats::quantile()</a></code> to give you break points that do exactly that, and they pass straight to <code><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut()</a></code> for the grouping or facet labels.</p>
 </section><section class="level2"><h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
 <ul>
-<li>Inspect the full API reference at <a href="https://ehrlinger.github.io/ggRandomForests/" class="uri">https://ehrlinger.github.io/ggRandomForests/</a>.</li>
-<li>Use <code><a href="../reference/gg_error.html">?gg_error</a></code>, <code><a href="../reference/gg_variable.html">?gg_variable</a></code>, <code><a href="../reference/gg_vimp.html">?gg_vimp</a></code>, and <code><a href="../reference/quantile_pts.html">?quantile_pts</a></code> for additional arguments and examples.</li>
-<li>Pair these data objects with your own <code>ggplot2</code> themes to align with your preferred publication style.</li>
+<li>The full API reference lives at <a href="https://ehrlinger.github.io/ggRandomForests/" class="uri">https://ehrlinger.github.io/ggRandomForests/</a>.</li>
+<li>
+<code><a href="../reference/gg_error.html">?gg_error</a></code>, <code><a href="../reference/gg_variable.html">?gg_variable</a></code>, <code><a href="../reference/gg_vimp.html">?gg_vimp</a></code>, and <code><a href="../reference/quantile_pts.html">?quantile_pts</a></code> cover the remaining arguments and have their own examples.</li>
+<li>The <code>gg_error</code>, <code>gg_variable</code>, and <code>gg_vimp</code> objects shown here are tidy data frames underneath, so you can skip the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods entirely and build the figure yourself with <code>ggplot2</code>.</li>
 </ul></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

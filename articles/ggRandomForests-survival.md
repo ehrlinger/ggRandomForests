@@ -412,7 +412,7 @@ md_pbc <- max.subtree(rfsrc_pbc)
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
 function computes minimal depth for each variable. The threshold is
-5.78, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+5.95, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
 copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
@@ -688,15 +688,17 @@ confirms the interaction detected in the conditional plots.
 
 ### Brier Score and CRPS
 
-The Brier score measures prediction accuracy at each point on the
-event-time grid by comparing predicted survival probabilities to
-observed outcomes, with inverse-probability-of-censoring weighting
-(IPCW) to account for right-censoring ([Graf et al.
-1999](#ref-graf:1999)).
+VIMP and minimal depth tell us which predictors matter, but they say
+nothing about how good the forest’s survival predictions actually are.
+The Brier score answers that question. At each point on the event-time
+grid it compares the predicted survival probability against what
+actually happened, with inverse-probability-of-censoring weighting
+(IPCW) so that right-censored subjects do not bias the result ([Graf et
+al. 1999](#ref-graf:1999)).
 [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
 wraps
 [`randomForestSRC::get.brier.survival()`](https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html)
-and returns a tidy data frame ready for plotting.
+and hands back a tidy data frame ready to plot.
 
 ``` r
 
@@ -708,14 +710,16 @@ plot(gg_bs)
 
 Time-resolved Brier score for the PBC survival forest.
 
-The score starts near zero (all subjects alive, predictions trivially
-correct), peaks around the median event time where uncertainty is
-greatest, then decreases as the remaining at-risk pool shrinks.
+Read the curve left to right. Early on it sits near zero — almost
+everyone is still alive, so predicting survival is easy. It climbs to a
+peak around the median event time, where the outcome is genuinely
+uncertain, then falls again as the at-risk pool shrinks and the
+remaining predictions get easier.
 
-The 15–85% per-subject envelope shows how spread the individual Brier
-contributions are at each time. A narrow ribbon indicates the forest
-assigns similar predicted risks across subjects; a wide ribbon points to
-heterogeneous risk predictions.
+Setting `envelope = TRUE` adds a 15–85% ribbon around that line, showing
+how spread out the individual subjects’ Brier contributions are at each
+time. A narrow ribbon means the forest is assigning similar risks across
+subjects; a wide one means the predicted risks are pulling apart.
 
 ``` r
 
@@ -726,10 +730,11 @@ plot(gg_bs, envelope = TRUE)
 
 Brier score with 15–85% per-subject envelope.
 
-The running CRPS (continuous ranked probability score) integrates the
-Brier score over time, normalised by elapsed time. It provides a single
-time-averaged accuracy measure that penalises poorly calibrated
-predictions throughout the follow-up period.
+The running CRPS (continuous ranked probability score) is the Brier
+score integrated over time and divided by elapsed time, in other words
+the time-average of the curve above. It collapses the whole trajectory
+into one running number, which is handy when you want a single accuracy
+figure rather than a curve to read.
 
 ``` r
 
@@ -748,45 +753,46 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.399251
+    #> [1] 1.399425
 
 ## Conclusion
 
-This vignette demonstrated a complete random survival forest analysis
-using **randomForestSRC** and **ggRandomForests**:
+We have walked a full random survival forest analysis with
+**randomForestSRC** and **ggRandomForests**, and the results hang
+together:
 
-- **Kaplan–Meier curves** via
-  [`gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
-  confirmed no treatment effect in the PBC trial, consistent with
-  Fleming and Harrington ([1991](#ref-fleming:1991)).
-- **OOB error** via
-  [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
-  showed the forest stabilized quickly.
-- **VIMP** via
-  [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
-  and **minimal depth** via
-  [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-  both identified bilirubin, albumin, copper, prothrombin, and age as
-  key predictors — matching the proportional hazards model.
-- **Variable dependence** via
-  [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
-  revealed non-proportional hazards effects for bilirubin and copper.
-- **Partial dependence** via
+- [`gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
+  drew Kaplan–Meier curves that showed no treatment effect in the PBC
+  trial, the same conclusion reached in Fleming and Harrington
+  ([1991](#ref-fleming:1991)).
+- [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
+  showed the OOB error settling quickly as trees were added.
+- VIMP
+  ([`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md))
+  and minimal depth
+  ([`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html))
+  landed on the same five predictors (bilirubin, albumin, copper,
+  prothrombin, and age), which is also where the proportional hazards
+  model landed.
+- [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
+  exposed non-proportional hazards for bilirubin and copper, where the
+  gap between time horizons widens.
+- Partial dependence from
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-  provided risk-adjusted confirmation and supported the log-transforms
-  used in parametric models.
-- **Conditional plots** and **interactive surfaces** exposed the
+  gave the risk-adjusted version of those curves and backed the
+  log-transforms used in the parametric model.
+- Conditioning plots and the interactive surface drew out the
   bilirubin–albumin interaction.
-- **Brier score and CRPS** via
-  [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
-  quantified time-resolved prediction accuracy and overall calibration
-  of the survival forest.
+- [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
+  measured how accurate the predictions actually were, both across time
+  and as a single CRPS summary.
 
-The **ggRandomForests** design separates data extraction from plotting:
-every `gg_*()` function returns a tidy data frame that can be plotted
-with the package’s
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods or fed
-directly into custom `ggplot2` workflows.
+Notice the pattern. Each `gg_*()` function returns a tidy object (often
+a data frame, sometimes a small list of data frames); the plotting comes
+after. Lean on the package’s
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods when
+the default figure works, and drop down to `ggplot2` directly when it
+does not.
 
 ## References
 

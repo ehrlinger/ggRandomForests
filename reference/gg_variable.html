@@ -6,26 +6,26 @@ data.frame of containing the full set of covariate data (predictor
 variables) and the predicted response for each observation. Marginal
 dependence figures are created using the plot.gg_variable
 function.
-For randomForest fits the original model frame is rebuilt
-from the stored call so that the same predictors can be paired with the
-in-sample predictions.
-Optional arguments include time (scalar or vector of survival times
-of interest), time_labels (labels for multiple survival horizons) and
-oob which toggles between out-of-bag and in-bag predictions when the
-forest stores both."><meta property="og:description" content="plot.variable generates a
+A randomForest fit does not keep the model frame, so for those
+objects gg_variable rebuilds it from the stored call. That lets the
+same predictors be paired with the in-sample predictions.
+A few optional arguments tune the extraction: time (one survival
+time, or a vector of them), time_labels (labels for multiple
+survival horizons), and oob, which switches between out-of-bag and
+in-bag predictions when the forest carries both."><meta property="og:description" content="plot.variable generates a
 data.frame containing the marginal variable dependence or the
 partial variable dependence. The gg_variable function creates a
 data.frame of containing the full set of covariate data (predictor
 variables) and the predicted response for each observation. Marginal
 dependence figures are created using the plot.gg_variable
 function.
-For randomForest fits the original model frame is rebuilt
-from the stored call so that the same predictors can be paired with the
-in-sample predictions.
-Optional arguments include time (scalar or vector of survival times
-of interest), time_labels (labels for multiple survival horizons) and
-oob which toggles between out-of-bag and in-bag predictions when the
-forest stores both."></head><body>
+A randomForest fit does not keep the model frame, so for those
+objects gg_variable rebuilds it from the stored call. That lets the
+same predictors be paired with the in-sample predictions.
+A few optional arguments tune the extraction: time (one survival
+time, or a vector of them), time_labels (labels for multiple
+survival horizons), and oob, which switches between out-of-bag and
+in-bag predictions when the forest carries both."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -89,13 +89,13 @@ partial variable dependence. The <code>gg_variable</code> function creates a
 variables) and the predicted response for each observation. Marginal
 dependence figures are created using the <code><a href="plot.gg_variable.html">plot.gg_variable</a></code>
 function.
-For <code>randomForest</code> fits the original model frame is rebuilt
-from the stored call so that the same predictors can be paired with the
-in-sample predictions.</p>
-<p>Optional arguments include <code>time</code> (scalar or vector of survival times
-of interest), <code>time_labels</code> (labels for multiple survival horizons) and
-<code>oob</code> which toggles between out-of-bag and in-bag predictions when the
-forest stores both.</p>
+A <code>randomForest</code> fit does not keep the model frame, so for those
+objects <code>gg_variable</code> rebuilds it from the stored call. That lets the
+same predictors be paired with the in-sample predictions.</p>
+<p>A few optional arguments tune the extraction: <code>time</code> (one survival
+time, or a vector of them), <code>time_labels</code> (labels for multiple
+survival horizons), and <code>oob</code>, which switches between out-of-bag and
+in-bag predictions when the forest carries both.</p>
     </div>
 
     <div class="section level2">
@@ -114,18 +114,18 @@ forest stores both.</p>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Optional arguments such as <code>time</code>, <code>time_labels</code>, and
-<code>oob</code> that tailor the marginal dependence extraction.</p></dd>
+<dd><p>Optional arguments <code>time</code>, <code>time_labels</code>, and
+<code>oob</code> that tune the marginal dependence extraction.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>gg_variable</code> object: a <code>data.frame</code> of all predictor
-  columns from the training data paired with the OOB (or in-bag) predicted
-  response. For survival forests each requested time horizon produces an
-  additional column named by <code>time_labels</code>. The object carries a
-  <code>"family"</code> class attribute (<code>"regr"</code>, <code>"class"</code>, or
-  <code>"surv"</code>) used by <code><a href="plot.gg_variable.html">plot.gg_variable</a></code> for dispatch.</p>
+    <p>A <code>gg_variable</code> object: a <code>data.frame</code> pairing every
+  training predictor column with the OOB (or in-bag) predicted response.
+  For survival forests, each requested time horizon adds a column named by
+  <code>time_labels</code>. The object carries a <code>"family"</code> class attribute
+  (<code>"regr"</code>, <code>"class"</code>, or <code>"surv"</code>) that
+  <code><a href="plot.gg_variable.html">plot.gg_variable</a></code> uses for dispatch.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

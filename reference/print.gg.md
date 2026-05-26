@@ -1,10 +1,9 @@
 # Print methods for gg\_\* data objects
 
-Each `print.gg_*()` method emits a single-line header containing the
-class label and, when available, forest provenance metadata (source
-package, family, ntree, n). The object is returned invisibly so
-[`print()`](https://rdrr.io/r/base/print.html) calls chain cleanly in
-pipes.
+Each `print.gg_*()` method prints a one-line header: the class label
+and, where the forest recorded it, provenance (source package, family,
+ntree, n). It returns the object invisibly, so
+[`print()`](https://rdrr.io/r/base/print.html) sits cleanly in a pipe.
 
 ## Usage
 
@@ -68,8 +67,9 @@ The object `x`, invisibly.
 
 ## Details
 
-To inspect rows use [`head()`](https://rdrr.io/r/utils/head.html). To
-retrieve per-class diagnostics use
+To see the rows themselves, use
+[`head()`](https://rdrr.io/r/utils/head.html); for per-class
+diagnostics, use
 [`summary.gg`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md).
 
 ## See also

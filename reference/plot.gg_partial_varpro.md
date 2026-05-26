@@ -1,13 +1,13 @@
 # Plot a [`gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md) object
 
-Produces ggplot2 partial dependence curves from the named list returned
-by
-[`gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md).
-Continuous predictors are shown as overlaid line curves (one per effect
-type); categorical predictors as side-by-side boxplots. For survival
-path-C objects (produced when `scale %in% c("surv","chf")` is passed to
-the extractor) the plot is delegated to
-[`plot.gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md).
+Draws the partial dependence curves from the list that
+[`gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+returns. Continuous predictors get overlaid line curves, one per effect
+type; categorical predictors get side-by-side boxplots. Survival path-C
+objects (the ones you get when `scale %in% c("surv","chf")` was passed
+to the extractor) are handed off to
+[`plot.gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
+for drawing.
 
 ## Usage
 
@@ -34,8 +34,8 @@ plot(x, type = c("parametric", "nonparametric", "causal"), ...)
 
 - ...:
 
-  Not currently used for path-A objects; forwarded to
-  `plot.gg_partial_rfsrc` for path-C objects.
+  Unused for path-A objects; forwarded to `plot.gg_partial_rfsrc` for
+  path-C objects.
 
 ## Value
 
@@ -43,10 +43,10 @@ A `ggplot` (or `patchwork`) object.
 
 ## Details
 
-\*\*Ensemble mortality (scale = "mortality"):\*\* When the provenance
-scale is `"mortality"`, the y-axis label reads *"Ensemble mortality
-(expected events)"* to make clear that this is an **unbounded
-relative-risk score**, not a survival probability or \\1 - S(t)\\
+\*\*Ensemble mortality (scale = "mortality"):\*\* when the provenance
+scale is `"mortality"`, the y-axis is labelled *"Ensemble mortality
+(expected events)"*. The wording is deliberate: this is an **unbounded
+relative-risk score**, not a survival probability and not \\1 - S(t)\\
 (Ishwaran, Kogalur, Blackstone & Lauer, 2008
 \<doi:10.1214/08-AOAS169\>).
 

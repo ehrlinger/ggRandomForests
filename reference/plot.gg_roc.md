@@ -18,40 +18,38 @@ plot(x, which_outcome = NULL, ..., panel = c("overlay", "facet"))
   A
   [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   object, or a raw
-  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
-  classification forest or
+  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) or
   [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
-  classification object. When a forest is supplied,
+  classification forest. Hand it a forest and
   [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
-  is called automatically.
+  is called for you.
 
 - which_outcome:
 
-  Integer; for multi-class problems, the index of the class whose ROC
-  curve should be plotted. When `NULL` (default) and the forest has more
-  than two classes, ROC curves for all classes are overlaid in a single
-  plot. For binary forests `NULL` defaults to class index 2.
+  Integer; for multi-class problems, the index of the class to plot.
+  When `NULL` (default) and the forest has more than two classes, the
+  curves for all classes are overlaid in one plot. For binary forests,
+  `NULL` defaults to class index 2.
 
 - ...:
 
-  Additional arguments forwarded to
+  Additional arguments passed to
   [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
-  when `x` is a raw forest object (e.g. `oob = FALSE`).
+  when `x` is a raw forest (e.g. `oob = FALSE`).
 
 - panel:
 
-  Character; layout for per-class ROC objects (those produced by
-  `gg_roc(..., per_class = TRUE)`). `"overlay"` (default) draws all
-  class curves in one panel coloured by class; `"facet"` wraps each
-  class into its own panel. Ignored for single-class `gg_roc` objects.
+  Character; layout for per-class ROC objects, the ones from
+  `gg_roc(..., per_class = TRUE)`. `"overlay"` (default) draws every
+  class curve in one panel, coloured by class; `"facet"` gives each
+  class its own panel. Ignored for single-class `gg_roc` objects.
 
 ## Value
 
-A `ggplot` object. The x-axis shows 1 - Specificity (FPR) and the y-axis
-shows Sensitivity (TPR). A dashed red diagonal reference line marks the
-random-classifier baseline. The AUC value is annotated on the plot for
-single-class curves. Multi-class plots colour and style each class curve
-distinctly.
+A `ggplot` object. The x-axis is 1 - Specificity (FPR), the y-axis is
+Sensitivity (TPR), and a dashed red diagonal marks the random-classifier
+baseline. Single-class curves carry the AUC as an annotation;
+multi-class plots colour and style each class curve distinctly.
 
 ## References
 

@@ -119,10 +119,11 @@ ggplot(dta, aes(x = medv, y = value, color = chas)) +
 EDA: each predictor vs. median home value, colored by Charles River
 indicator.
 
-Even from this simple view, the strong relationship between `medv` and
-both `lstat` (lower status %) and `rm` (rooms per dwelling) is apparent.
-We expect the random forest to confirm these as the most important
-predictors.
+Even from this simple view, two relationships stand out: `medv` against
+`lstat` (lower status %) and `medv` against `rm` (rooms per dwelling).
+Keep those two in mind — we expect the random forest to rank them as the
+most important predictors, and the rest of the vignette comes back to
+check.
 
 ## Growing a Random Forest
 
@@ -140,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 500
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.618
+    #>        Average no. of terminal nodes: 67.036
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -149,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86398415
-    #>    (OOB) Requested performance error: 11.5051354
+    #>                      (OOB) R squared: 0.86790138
+    #>    (OOB) Requested performance error: 11.17378984
 
 The forest grew 500 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -224,8 +225,8 @@ considered most important.
 md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
-The threshold is 3.01, selecting 6 variables: crim, nox, rm, dis,
-ptratio, lstat.
+The threshold is 3, selecting 5 variables: crim, nox, rm, ptratio,
+lstat.
 
 Both VIMP and minimal depth agree on the dominance of `lstat` and `rm`.
 We use the minimal depth top variables for the remainder of the
@@ -288,9 +289,9 @@ We use
 which calls
 [`randomForestSRC::partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
 directly and returns a `gg_partial_rfsrc` object. The quickest path to a
-plot is `plot(pd)`, which handles continuous and categorical variables
-automatically. For a custom layout we can also access `pd$continuous`
-directly.
+figure is `plot(pd)`, which sorts out continuous and categorical
+variables for you. When you want to control the layout yourself, the
+underlying data is in `pd$continuous`.
 
 ``` r
 
@@ -320,10 +321,11 @@ ggplot(pd$continuous, aes(x = x, y = yhat)) +
 
 Partial dependence (custom styling).
 
-`lstat` shows a strongly concave relationship, while `rm` has a flat
-region below ~6 rooms before increasing sharply. These non-linear shapes
-are difficult to capture with simple parametric transforms but are
-naturally handled by the random forest.
+`lstat` shows a strongly concave relationship, while `rm` stays flat
+below about 6 rooms and then climbs sharply. Shapes like these are
+awkward to capture with a simple parametric transform, since you would
+have to guess the form in advance, but the random forest picks them up
+on its own.
 
 ## Variable Interactions and Conditioning Plots
 
@@ -471,35 +473,34 @@ structure that random forests capture naturally.
 
 ## Conclusion
 
-This vignette demonstrated a complete random forest regression analysis
-using **randomForestSRC** and **ggRandomForests**:
+We have walked a full random forest regression analysis with
+**randomForestSRC** and **ggRandomForests**, and the pieces line up:
 
-- **OOB error** via
-  [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
-  showed the forest stabilized quickly.
-- **VIMP** via
-  [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
-  and **minimal depth** via
-  [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-  both identified `lstat` and `rm` as the dominant predictors, with a
-  clear gap to the remaining variables.
-- **Variable dependence** via
-  [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
-  revealed strongly non-linear predictor–response relationships that
-  match the raw data EDA.
-- **Partial dependence** via
+- [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
+  showed the OOB error settling well before 500 trees.
+- VIMP
+  ([`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md))
+  and minimal depth
+  ([`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html))
+  agreed on the same story: `lstat` and `rm` dominate, with a clear gap
+  to everything else.
+- [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
+  traced strongly non-linear predictor–response curves, the same shapes
+  the raw-data EDA hinted at.
+- Partial dependence from
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-  provided risk-adjusted confirmation, showing concave `lstat` and
-  threshold-like `rm` effects.
-- **Conditioning plots** and **interactive surfaces** exposed the
-  `lstat`–`rm` interaction, where the room-size effect is strongest in
-  high-status neighborhoods.
+  gave the risk-adjusted version of those curves: concave for `lstat`,
+  threshold-like for `rm`.
+- Conditioning plots and the interactive surface pulled out the
+  `lstat`–`rm` interaction, with the room-size effect strongest in
+  high-status tracts.
 
-The **ggRandomForests** design separates data extraction from plotting:
-every `gg_*()` function returns a tidy data frame that can be plotted
-with the package’s
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods or fed
-directly into custom `ggplot2` workflows.
+Notice the pattern in all of this. Each `gg_*()` function returns a tidy
+object (often a data frame, sometimes a small list of data frames); the
+plotting is a separate step. Use the package’s
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods when
+the default figure is what you want, and reach for `ggplot2` directly
+when it is not.
 
 ## References
 

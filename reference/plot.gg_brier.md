@@ -1,8 +1,11 @@
 # Plot a [`gg_brier`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md) object
 
-Plot the time-resolved Brier score (default) or running CRPS for a
-survival forest, optionally overlaid with a 15-85 percent per-subject
-envelope.
+Draws the time-resolved Brier score (the default) or the running CRPS as
+a curve against time. Lower means more accurate probabilistic
+predictions. Turn `envelope = TRUE` on and the overall line picks up a
+ribbon spanning the 15th to 85th percentile of the per-subject
+contributions, which shows how much the score varies across subjects at
+each time.
 
 ## Usage
 

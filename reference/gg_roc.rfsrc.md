@@ -1,11 +1,14 @@
 # ROC (Receiver Operating Characteristic) curve data from a classification forest.
 
-Computes sensitivity (true positive rate) and specificity (1 - false
-positive rate) across all prediction thresholds for one class of a
+A classifier does not hand you a class; it hands you a predicted
+probability, and you pick a threshold. Slide that threshold from 0 to 1
+and the trade-off between catching the positives and crying wolf shifts
+the whole way. The ROC curve traces that trade-off. For one class of a
 classification
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) or
 [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
-object.
+forest, `gg_roc` walks every threshold and records sensitivity (the true
+positive rate) against specificity (1 minus the false positive rate).
 
 ## Usage
 
@@ -26,10 +29,10 @@ gg_roc(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
 
 - which_outcome:
 
-  Integer index or character name of the class for which the ROC curve
-  is computed. For binary forests this is typically `1` or `2`; for
-  multi-class forests any valid class index or level name. The behaviour
-  of `which_outcome = "all"` or `0` is engine-specific:
+  Integer index or character name of the class to score. For binary
+  forests this is usually `1` or `2`; for multi-class forests, any valid
+  class index or level name. `which_outcome = "all"` or `0` behaves
+  differently by engine:
 
   `randomForest` method
 
@@ -38,24 +41,25 @@ gg_roc(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
 
   `rfsrc` method
 
-  :   Currently warns and falls back to class 1 (the macro-average /
-      per-class faceting work for the `rfsrc` path is tracked separately
-      under issue \#72).
+  :   Warns and falls back to class 1. The macro-average and per-class
+      faceting for the `rfsrc` path are tracked separately under issue
+      \#72.
 
 - oob:
 
-  Logical; if `TRUE` (default) use out-of-bag predicted probabilities
-  for the curve. Set to `FALSE` to use full in-bag predictions. For
-  `randomForest`, `oob = TRUE` uses out-of-bag vote probabilities
-  (`object$votes`); `FALSE` uses in-bag `predict(type = "prob")`.
+  Logical; if `TRUE` (default), build the curve from out-of-bag
+  predicted probabilities, otherwise from full in-bag predictions. For
+  `randomForest`, `TRUE` uses the out-of-bag vote probabilities in
+  `object$votes`; `FALSE` uses in-bag `predict(type = "prob")`.
 
 - per_class:
 
   Logical; if `TRUE` and the forest has more than two classes, return
-  per-class one-vs-rest ROC curves in a long-format `data.frame` with a
-  `class` factor column and a named AUC vector attribute (ordered by
-  descending AUC). Binary forests treat `per_class = TRUE` as a no-op.
-  Currently honoured by the `randomForest` method only.
+  one ROC curve per class, each class scored against all the others. The
+  result is a long-format `data.frame` with a `class` factor column and
+  a named AUC vector attribute, ordered by descending AUC. Binary
+  forests treat `per_class = TRUE` as a no-op. Honoured by the
+  `randomForest` method only.
 
 - ...:
 
@@ -63,22 +67,22 @@ gg_roc(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
 
 ## Value
 
-A `gg_roc` `data.frame` with one row per unique prediction threshold and
+A `gg_roc` `data.frame`, one row per unique prediction threshold, with
 columns:
 
 - sens:
 
-  Sensitivity (true positive rate) at each threshold.
+  Sensitivity (true positive rate) at the threshold.
 
 - spec:
 
-  Specificity (true negative rate) at each threshold.
+  Specificity (true negative rate) at the threshold.
 
 - yvar:
 
   The observed class label for each observation.
 
-Pass to
+Pass it to
 [`calc_auc`](https://ehrlinger.github.io/ggRandomForests/reference/calc_auc.md)
 for the area under the curve.
 

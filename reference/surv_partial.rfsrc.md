@@ -58,11 +58,10 @@ is itself a list with:
 ## Details
 
 Computes partial dependence curves for a survival or competing-risk
-[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) forest
-by calling
+[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) forest.
+For each predictor it calls
 [`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-at `npts` evenly-spaced unique values of each predictor across all
-stored event times.
+at `npts` evenly-spaced unique values, across every stored event time.
 
 ## See also
 

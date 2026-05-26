@@ -7,14 +7,14 @@ the partial variable dependence. The `gg_variable` function creates a
 variables) and the predicted response for each observation. Marginal
 dependence figures are created using the
 [`plot.gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
-function. For `randomForest` fits the original model frame is rebuilt
-from the stored call so that the same predictors can be paired with the
-in-sample predictions.
+function. A `randomForest` fit does not keep the model frame, so for
+those objects `gg_variable` rebuilds it from the stored call. That lets
+the same predictors be paired with the in-sample predictions.
 
-Optional arguments include `time` (scalar or vector of survival times of
-interest), `time_labels` (labels for multiple survival horizons) and
-`oob` which toggles between out-of-bag and in-bag predictions when the
-forest stores both.
+A few optional arguments tune the extraction: `time` (one survival time,
+or a vector of them), `time_labels` (labels for multiple survival
+horizons), and `oob`, which switches between out-of-bag and in-bag
+predictions when the forest carries both.
 
 ## Usage
 
@@ -34,18 +34,18 @@ gg_variable(object, ...)
 
 - ...:
 
-  Optional arguments such as `time`, `time_labels`, and `oob` that
-  tailor the marginal dependence extraction.
+  Optional arguments `time`, `time_labels`, and `oob` that tune the
+  marginal dependence extraction.
 
 ## Value
 
-A `gg_variable` object: a `data.frame` of all predictor columns from the
-training data paired with the OOB (or in-bag) predicted response. For
-survival forests each requested time horizon produces an additional
-column named by `time_labels`. The object carries a `"family"` class
-attribute (`"regr"`, `"class"`, or `"surv"`) used by
+A `gg_variable` object: a `data.frame` pairing every training predictor
+column with the OOB (or in-bag) predicted response. For survival
+forests, each requested time horizon adds a column named by
+`time_labels`. The object carries a `"family"` class attribute
+(`"regr"`, `"class"`, or `"surv"`) that
 [`plot.gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
-for dispatch.
+uses for dispatch.
 
 ## Details
 

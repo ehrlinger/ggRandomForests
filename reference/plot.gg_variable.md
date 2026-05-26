@@ -65,13 +65,13 @@ plot(
 ## Value
 
 A single `ggplot` object when `length(xvar) == 1` or `panel = TRUE`;
-otherwise a `patchwork` composite stacking one panel per variable in
-`xvar`. Always a single plottable object (never a bare list) so it
-composes naturally with `patchwork` and dispatches through
+otherwise a `patchwork` composite that stacks one panel per variable in
+`xvar`. Either way the result is one plottable object, never a bare
+list, so it composes with `patchwork` and dispatches through
 [`ggplot2::autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html).
-For the patchwork case, callers wanting to inspect a specific panel with
+For the patchwork case, to inspect one panel with
 [`ggplot2::layer_data()`](https://ggplot2.tidyverse.org/reference/ggplot_build.html)
-should extract that panel first (e.g. `ggplot2::layer_data(p[[1]])`).
+pull that panel out first (e.g. `ggplot2::layer_data(p[[1]])`).
 
 ## References
 

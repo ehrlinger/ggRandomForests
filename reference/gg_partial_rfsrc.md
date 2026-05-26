@@ -1,12 +1,15 @@
 # Partial dependence data from an rfsrc model
 
-Computes partial dependence for one or more predictors by calling
+A partial dependence curve answers a what-if question: hold the rest of
+the predictors as they are, sweep one of them across its range, and
+watch how the forest's prediction moves. This function builds those
+curves for one or more predictors by calling
 [`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-internally, then splits the results into separate data frames for
-continuous and categorical variables. Unlike
+for you, then splits the result into separate data frames for continuous
+and categorical variables. Unlike
 [`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md),
-no separate `plot.variable` call is required — supply the fitted `rfsrc`
-object directly.
+there is no separate `plot.variable` step – pass the fitted `rfsrc`
+object straight in.
 
 ## Usage
 
@@ -99,16 +102,16 @@ A named list with two elements:
 ## Survival forests and `partial.time`
 
 [`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-requires that every value in `partial.time` be an exact member of the
-model's `time.interest` vector (the unique observed event times stored
-in the fitted object). Passing arbitrary time values — even plausible
-ones such as `c(1, 3)` for a study measured in years — causes a C-level
-prediction error inside `partial.rfsrc`.
+expects every value in `partial.time` to be an exact member of the
+model's `time.interest` vector, the unique observed event times stored
+in the fitted object. Pass an arbitrary time, even a plausible one such
+as `c(1, 3)` for a study measured in years, and you get a C-level
+prediction error from inside `partial.rfsrc`.
 
-`gg_partial_rfsrc` handles this automatically: every element of
-`partial.time` is silently snapped to its nearest `time.interest` value
-before the call is made. To target a specific follow-up horizon, find
-the closest grid point yourself and pass it explicitly:
+`gg_partial_rfsrc` takes care of this: every element of `partial.time`
+is silently snapped to its nearest `time.interest` value before the
+call. To target a specific follow-up horizon, find the closest grid
+point yourself and pass it explicitly:
 
 
     ti  <- rf_model$time.interest

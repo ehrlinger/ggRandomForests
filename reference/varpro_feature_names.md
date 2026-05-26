@@ -1,9 +1,9 @@
 # Recover original variable names from varpro one-hot encoded feature names
 
 `varpro` one-hot encodes factor variables, appending a numeric suffix
-for each level (e.g., `sex` becomes `sex0` and `sex1`). This function
-strips those suffixes iteratively until every name in `varpro_names` can
-be matched back to a column in `dataset`.
+for each level – `sex` becomes `sex0` and `sex1`. To map those back,
+this function strips the suffix one character at a time until every name
+in `varpro_names` matches a column in `dataset`.
 
 ## Usage
 

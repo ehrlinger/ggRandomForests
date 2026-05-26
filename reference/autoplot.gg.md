@@ -1,10 +1,11 @@
 # `autoplot` methods for ggRandomForests data objects
 
-These methods let you use
+These let you call
 [`ggplot2::autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
-on any `gg_*` object returned by ggRandomForests. They are thin wrappers
-around the corresponding `plot.gg_*()` S3 methods, so all arguments
-accepted by those methods are forwarded via `...`.
+on any `gg_*` object ggRandomForests returns. Each is a thin wrapper
+around the matching `plot.gg_*()` S3 method, and `...` passes straight
+through, so every argument those plot methods take is still available
+here.
 
 ## Usage
 
@@ -57,7 +58,7 @@ autoplot(object, ...)
 
 - ...:
 
-  Additional arguments forwarded to the underlying `plot.gg_*()` method.
+  Additional arguments passed to the underlying `plot.gg_*()` method.
 
 ## Value
 

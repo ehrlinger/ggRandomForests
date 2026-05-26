@@ -1,9 +1,11 @@
 # Variable importance data from a varPro model
 
-Extracts per-tree importance scores from a fitted `varpro` object,
-summarises them into an honest boxplot-ready data structure (hinges at
-15th/85th percentile, whiskers at 5th/95th), and optionally retains
-class-conditional importance for classification forests.
+Pulls the per-tree importance scores out of a fitted `varpro` object and
+summarises them into a data structure the plot method can draw as a
+boxplot. The box hinges are the 15th and 85th percentiles and the
+whiskers run to the 5th and 95th – not the usual Tukey 1.5 IQR whiskers.
+For a classification forest you can also keep the class-conditional
+importances.
 
 ## Usage
 
@@ -27,32 +29,32 @@ gg_varpro(
 
 - local.std:
 
-  Logical; default `TRUE`. When `TRUE` the per-tree importances are
-  normalised to z-scale before computing box statistics. Set to `FALSE`
-  to retain the raw importance scale (required for `type = "raw"` in
-  `plot.gg_varpro`).
+  Logical; default `TRUE`. When `TRUE` the per-tree importances are put
+  on the z-scale before the box statistics are computed. Set it `FALSE`
+  to keep the raw importance scale, which is what `type = "raw"` in
+  `plot.gg_varpro` needs.
 
 - cutoff:
 
-  Numeric z-score threshold for variable selection; default `0.79`.
-  Variables with aggregate z \> cutoff are flagged `selected = TRUE` in
-  `$imp`.
+  Numeric; the z-score above which a variable is treated as selected.
+  Default `0.79`. A variable with aggregate z above the cutoff is
+  flagged `selected = TRUE` in `$imp`.
 
 - faithful:
 
-  Logical; default `FALSE`. When `TRUE`, `$imp.tree` is retained so
-  `plot.gg_varpro` can overlay per-tree jitter points in
-  `plot.gg_varpro`.
+  Logical; default `FALSE`. When `TRUE`, `$imp.tree` is kept so
+  `plot.gg_varpro` can scatter the per-tree points over the box.
 
 - conditional:
 
-  Logical; default `FALSE`. When `TRUE` (classification forests only)
-  extracts the `$conditional.z` matrix and stores it as `$conditional`.
+  Logical; default `FALSE`. When `TRUE`, and only for a classification
+  forest, the `$conditional.z` matrix is extracted and stored as
+  `$conditional`.
 
 - nvar:
 
-  Integer; retain only the top `nvar` variables (by median per-tree z)
-  after applying the cutoff filter. `NULL` keeps all.
+  Integer; keep only the top `nvar` variables, ranked by median per-tree
+  z, after the cutoff filter has been applied. `NULL` keeps all of them.
 
 - ...:
 
@@ -102,7 +104,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 gg <- gg_varpro(vp)
 print(gg)
 #> <gg_varpro>  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE
-#>   3 of 4 variables selected (z > 0.79)
+#>   2 of 4 variables selected (z > 0.79)
 plot(gg)
 
 # }

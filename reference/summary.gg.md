@@ -1,9 +1,10 @@
 # Summary methods for gg\_\* data objects
 
-Each `summary.gg_*()` method returns a `summary.gg` object containing a
-header line and per-class diagnostic statistics (OOB error curve, top
-VIMP variables, time range, integrated CRPS, etc.). `print.summary.gg()`
-renders the object to the console.
+Where `print` gives you a one-line header, `summary` digs a level
+deeper. Each `summary.gg_*()` method returns a `summary.gg` object: a
+header line plus a few diagnostic statistics for that object type (the
+OOB error curve, the top VIMP variables, a time range, the integrated
+CRPS, and so on). `print.summary.gg()` renders it to the console.
 
 ## Usage
 
@@ -67,8 +68,8 @@ summary(object, ...)
 
 ## Value
 
-A `summary.gg` object (a list with `header` and `body` character
-vectors), returned invisibly from `print.summary.gg`.
+A `summary.gg` object: a list with `header` and `body` character
+vectors. `print.summary.gg` returns it invisibly.
 
 ## See also
 
@@ -91,5 +92,5 @@ summary(gg_vimp(rf))
 #> <gg_vimp>  from randomForestSRC  |  family: regr  |  ntree: 50  |  n: 111
 #>   variables: 5
 #>   positive VIMP: 5 / negative: 0
-#>   top 5: Wind (1777), Temp (1319), Solar.R (271.6), Day (212.1), Month (67.78)
+#>   top 5: Wind (1732), Temp (1334), Solar.R (297.4), Day (206.6), Month (69.73)
 ```
