@@ -4,13 +4,23 @@
 \alias{gg_isopro}
 \title{Tidy data from a varPro isolation-forest fit}
 \usage{
-gg_isopro(object, ...)
+gg_isopro(object, ..., newdata = NULL)
 }
 \arguments{
 \item{object}{An \code{isopro} fit returned by
 \code{\link[varPro]{isopro}}.}
 
-\item{...}{Currently unused.}
+\item{...}{Currently unused. Present before \code{newdata} so that
+\code{newdata} is only matched by name, preserving backward
+compatibility with callers of the PR #94 signature
+\code{gg_isopro(object, ...)}.}
+
+\item{newdata}{Optional \code{data.frame} of new observations to score
+against the fit. Must be passed by name. When \code{NULL} (default)
+the extractor returns the in-sample tidy frame from the fit's stored
+\code{$case.depth} and \code{$howbad}. When supplied, each row is
+scored via \code{\link[varPro]{predict.isopro}} and the same tidy
+shape is returned for the test data.}
 }
 \value{
 A \code{data.frame} of class \code{c("gg_isopro", "data.frame")},
@@ -91,13 +101,52 @@ model;
 \item check whether a held-out cohort sits inside the training
 distribution before scoring with a model trained elsewhere;
 \item give the analyst a ranked list of "look at these first" cases
-for a manual review.
+for a manual review;
+\item score a held-out cohort or a fresh batch of incoming data
+against a fitted model and compare the test scores to the training
+distribution.
 }
 The score is a \emph{rank}, not a probability of being an outlier — two
 observations with \code{howbad = 0.92} are both unusual, not "92\\%
 likely to be anomalous". Pick a cutoff by looking at where the elbow
 rises; \code{\link{plot.gg_isopro}} can annotate either a score
 (\code{threshold}) or a top-percent (\code{top_n_pct}) for you.
+}
+
+\section{Scoring new data}{
+
+Pass a \code{data.frame} as \code{newdata} and the extractor calls
+\code{\link[varPro]{predict.isopro}} twice: once with
+\code{quantiles = FALSE} to get the raw mean case depth per row, and once
+with \code{quantiles = TRUE} to get the per-row quantile of that depth
+against the training-data depth distribution.
+
+varPro's \code{predict.isopro} returns quantiles where \emph{smaller is
+more anomalous}, which is the opposite polarity of the wrapper's
+\code{howbad} (where \emph{higher} is more anomalous). The wrapper
+exposes both conventions so nothing is hidden:
+\itemize{
+\item \code{case.depth} carries varPro's native polarity — \emph{lower
+= more anomalous}. This is the unmodified output of
+\code{predict(object, newdata, quantiles = FALSE)}. Use it to
+cross-reference against raw varPro output.
+\item \code{howbad} is the flipped, wrapper-convention version. The
+relationship is \code{howbad = 1 - predict(object, newdata, quantiles = TRUE)}.
+}
+
+To overlay training and test scores in one plot, bind the two extractor
+calls with a \code{method} label column (the same column
+\code{\link{plot.gg_isopro}} uses to colour rnd / unsupv / auto
+comparisons):
+
+\preformatted{
+gg_train <- gg_isopro(fit)
+gg_test  <- gg_isopro(fit, newdata = test_df)
+gg_both  <- rbind(cbind(gg_train, method = "train"),
+                  cbind(gg_test,  method = "test"))
+class(gg_both) <- c("gg_isopro", "data.frame")
+plot(gg_both)
+}
 }
 
 \section{Comparing methods}{

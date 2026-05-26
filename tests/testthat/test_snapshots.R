@@ -339,4 +339,25 @@ if (requireNamespace("varPro", quietly = TRUE)) {
   })
 }
 
+## ── gg_isopro predict.isopro overlay snapshot (Phase 4b) ──────────────────
+if (requireNamespace("varPro", quietly = TRUE)) {
+  local({
+    set.seed(1L)
+    fit      <- varPro::isopro(data = iris[, 1:4], method = "rnd",
+                               sampsize = 32, ntree = 50)
+    test_df  <- iris[seq(1, nrow(iris), by = 3), 1:4]
+    gg_train <- gg_isopro(fit)
+    gg_test  <- gg_isopro(fit, newdata = test_df)
+    gg_both  <- rbind(
+      cbind(as.data.frame(gg_train), method = "train"),
+      cbind(as.data.frame(gg_test),  method = "test")
+    )
+    class(gg_both) <- c("gg_isopro", "data.frame")
+
+    test_that("snapshot: gg-isopro-predict-overlay", {
+      vdiffr::expect_doppelganger("gg-isopro-predict-overlay", plot(gg_both))
+    })
+  })
+}
+
 } # end CI guard
