@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,10 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.8.0" id="ggrandomforests-v280-development--continued">ggRandomForests v2.8.0 (development) — continued<a class="anchor" aria-label="anchor" href="#ggrandomforests-v280-development--continued"></a></h2>
 <ul><li>
+<code><a href="../reference/plot.gg_variable.html">plot.gg_variable()</a></code>: fix render error on the default multi-class classification plot. The default-xvar selection was treating <code>yvar</code> (the observed-class column) and <code>outcome</code> (the multi-class pivot facet) as predictors; pivoting them into <code>var</code> then dropped the column the downstream <code>geom_jitter(aes(color = yvar))</code> referenced, and the patchwork errored when actually rendered. CI did not catch this because the existing test only asserted the patchwork class (lazy) and snapshots run with <code>VDIFFR_RUN_TESTS = false</code>. New test exercises a real build of every sub-plot.</li>
+<li>
+<code><a href="../reference/plot.gg_variable.html">plot.gg_variable()</a></code>: the same default-xvar selection used substring <code>grep("time", ...)</code> / <code>grep("event", ...)</code>, which silently dropped any predictor whose name contained those substrings – e.g. the documented veteran-data survival predictor <code>diagtime</code>. Switch to exact matching for <code>event</code> / <code>time</code> / <code>yvar</code> / <code>outcome</code> and an anchored prefix for <code>yhat</code> (<code>yhat</code> or <code>yhat.&lt;class&gt;</code>). New test exercises <code>diagtime</code> on the veteran survival forest.</li>
+<li>
 <code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code>: per-class one-vs-rest ROC curves (<a href="https://github.com/ehrlinger/ggRandomForests/issues/88" class="external-link">#88</a>, closes <a href="https://github.com/ehrlinger/ggRandomForests/issues/72" class="external-link">#72</a>).
 <ul><li>New <code>per_class</code> argument, default <code>FALSE</code>. With <code>per_class = TRUE</code> on a forest of more than two classes, <code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code> returns a long-format <code>gg_roc</code> data frame with a <code>class</code> factor column, plus a named AUC vector attribute with one entry per class, ordered by descending AUC.</li>
 <li>

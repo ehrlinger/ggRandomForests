@@ -2,6 +2,24 @@
 
 ## ggRandomForests v2.8.0 (development) — continued
 
+- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md):
+  fix render error on the default multi-class classification plot. The
+  default-xvar selection was treating `yvar` (the observed-class column)
+  and `outcome` (the multi-class pivot facet) as predictors; pivoting
+  them into `var` then dropped the column the downstream
+  `geom_jitter(aes(color = yvar))` referenced, and the patchwork errored
+  when actually rendered. CI did not catch this because the existing
+  test only asserted the patchwork class (lazy) and snapshots run with
+  `VDIFFR_RUN_TESTS = false`. New test exercises a real build of every
+  sub-plot.
+- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md):
+  the same default-xvar selection used substring `grep("time", ...)` /
+  `grep("event", ...)`, which silently dropped any predictor whose name
+  contained those substrings – e.g. the documented veteran-data survival
+  predictor `diagtime`. Switch to exact matching for `event` / `time` /
+  `yvar` / `outcome` and an anchored prefix for `yhat` (`yhat` or
+  `yhat.<class>`). New test exercises `diagtime` on the veteran survival
+  forest.
 - [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md):
   per-class one-vs-rest ROC curves
   ([\#88](https://github.com/ehrlinger/ggRandomForests/issues/88),
