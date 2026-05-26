@@ -360,4 +360,16 @@ if (requireNamespace("varPro", quietly = TRUE)) {
   })
 }
 
+## ── gg_beta_varpro default snapshot (Phase 4c) ─────────────────────────────
+test_that("gg-beta-varpro-default", {
+  skip_if_not_installed("vdiffr")
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  v <- .varpro_mtcars()
+  b <- .beta_fit_mtcars()
+  p <- plot(gg_beta_varpro(v, beta_fit = b))
+  vdiffr::expect_doppelganger("gg-beta-varpro-default", p)
+})
+
 } # end CI guard
