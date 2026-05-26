@@ -54,6 +54,68 @@ the fit with \code{\link[varPro]{get.beta.entropy}} and
 \code{\link[varPro]{sdependent}}, and returns them as a tidy list that
 \code{plot.gg_udependent} can draw as a network.
 }
+\section{What cross-variable dependency is doing}{
+
+UVarPro (Zhou, Lu and Ishwaran, 2026) extends the varpro framework to
+the unsupervised setting: grow a forest without a response, then use
+the same region-release contrasts varpro uses for supervised
+importance to ask, "which variables explain the structure in the
+data?" The lasso-driven variant frames each region-release contrast
+as a classification task — does an observation belong to the region
+or to its release? — and fits a lasso logistic regression with the
+other variables as predictors. The coefficient on variable \eqn{j}
+in the model for variable \eqn{i}'s region-release contrast is the
+entry \eqn{I[i, j]} of the matrix \code{varPro::get.beta.entropy()}
+returns.
+
+Read that entry as "how much does knowing \eqn{j} help separate
+\eqn{i}'s region from its release". A large \eqn{I[i, j]} says
+\eqn{j} carries information about the structure varpro picked up in
+\eqn{i}. \code{varPro::sdependent} thresholds that matrix at a
+user-chosen cut and returns the set of "signal" variables — the
+nodes with high enough out-degree to be worth keeping. We pass the
+threshold through to \code{sdependent} and use the same matrix to
+weight the edges of the resulting graph.
+
+The graph is directed by default because \eqn{I[i, j]} and
+\eqn{I[j, i]} are separate lasso coefficients and need not agree;
+setting \code{directed = FALSE} collapses each pair by taking the
+larger of the two, which is appropriate when you only want to see
+that two variables are dependent, not which way the dependency
+reads.
+}
+
+\section{What's in the output}{
+
+\code{$edges} has one row per surviving edge with the raw weight
+\code{I[i, j]} (or, for undirected graphs, the max of the two
+directions). \code{$nodes} has one row per surviving variable with
+its degree (out-degree for directed, total degree for undirected)
+and a \code{selected} flag for membership in the \code{sdependent}
+signal set. \code{$graph} is the same information packaged as an
+\code{igraph} object, with \code{weight}, \code{degree}, and
+\code{selected} attached so \code{plot.gg_udependent} can render it
+without recomputing anything.
+}
+
+\section{What you use this for}{
+
+\itemize{
+  \item screen a wide unsupervised dataset for the small set of
+    variables UVarPro thinks are carrying the signal — the nodes
+    with high degree, or those flagged \code{selected = TRUE};
+  \item spot clusters of mutually dependent variables (hubs and the
+    spokes around them) that may be measuring the same underlying
+    construct;
+  \item compare two datasets, or two preprocessing pipelines, by
+    looking at how their dependency graphs change.
+}
+An edge in this graph is a statistical dependency in the unsupervised
+decomposition of the data — it is not a causal arrow. A high
+\eqn{I[i, j]} says \eqn{j} predicts \eqn{i}'s region membership,
+not that \eqn{j} causes \eqn{i}.
+}
+
 \examples{
 \donttest{
 set.seed(42)
@@ -62,6 +124,11 @@ gg <- gg_udependent(uv)
 print(gg)
 }
 
+}
+\references{
+Zhou, L., Lu, M. and Ishwaran, H. (2026). Variable priority for
+unsupervised variable selection. \emph{Pattern Recognition},
+172:112727.
 }
 \seealso{
 \code{\link{plot.gg_udependent}}
