@@ -1,8 +1,16 @@
 Package: ggRandomForests
-Version: 2.7.3.9008
+Version: 2.7.3.9009
 
 ggRandomForests v2.8.0 (development) — continued
 =================================================
+* Documentation: pedagogical pass over the varPro wrappers
+  (`gg_partial_varpro`, `gg_varpro`, `gg_udependent` and their `plot.*`
+  methods). Each help page now has explicit "What X is doing", "What's
+  in the output", and "What you use this for" sections so a reader new
+  to varPro can learn the underlying method (release rules, beta-entropy
+  dependency, parametric / nonparametric / causal partial estimators)
+  from the help page alone, not just the wrapper mechanics. No API or
+  behavioural change.
 * New `gg_isopro()` and `plot.gg_isopro()`: tidy wrapper and ranked-elbow +
   density visualisation for `varPro::isopro` isolation-forest anomaly
   scores. `plot.gg_isopro()` takes `panel = c("both", "elbow", "density")`
