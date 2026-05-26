@@ -139,5 +139,5 @@ autoplot.gg_udependent <- function(object, ...) {
 #' @rdname autoplot.gg
 #' @export
 autoplot.gg_isopro <- function(object, ...) {
-  plot.gg_isopro(object, ...)
+  plot(object, ...)
 }

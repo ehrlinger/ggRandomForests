@@ -174,3 +174,20 @@ test_that("autoplot.gg_isopro: same return as plot.gg_isopro for the default arg
   gg  <- gg_isopro(fit)
   expect_s3_class(autoplot(gg), "patchwork")
 })
+
+test_that("plot.gg_isopro: threshold must be numeric scalar in [0,1]", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  expect_error(plot(gg, threshold = "high"),  "single numeric value in \\[0, 1\\]")
+  expect_error(plot(gg, threshold = c(0.5, 0.8)), "single numeric value in \\[0, 1\\]")
+  expect_error(plot(gg, threshold = 1.5), "single numeric value in \\[0, 1\\]")
+})
+
+test_that("plot.gg_isopro: top_n_pct must be numeric scalar in (0,100)", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  expect_error(plot(gg, top_n_pct = "5"),  "single numeric value in \\(0, 100\\)")
+  expect_error(plot(gg, top_n_pct = 0),    "single numeric value in \\(0, 100\\)")
+  expect_error(plot(gg, top_n_pct = 100),  "single numeric value in \\(0, 100\\)")
+  expect_error(plot(gg, top_n_pct = 150),  "single numeric value in \\(0, 100\\)")
+})

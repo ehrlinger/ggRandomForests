@@ -13,42 +13,45 @@
 )
 }
 \arguments{
-\item{x}{A `gg_isopro` object from [gg_isopro()].}
+\item{x}{A \code{gg_isopro} object from \code{\link{gg_isopro}}.}
 
-\item{panel}{One of `"both"` (default — a `patchwork` of elbow + density),
-`"elbow"`, or `"density"` (each returns a single `ggplot`).}
+\item{panel}{One of \code{"both"} (default — a \code{patchwork} of
+elbow + density), \code{"elbow"}, or \code{"density"} (each returns a
+single \code{ggplot}).}
 
-\item{threshold}{Numeric in `[0, 1]`, or `NULL` (default). If set, draws
-a reference line at that `howbad` value on the elbow and density.}
+\item{threshold}{Numeric in \code{[0, 1]}, or \code{NULL} (default). If
+set, draws a reference line at that \code{howbad} value on the elbow
+and density.}
 
-\item{top_n_pct}{Numeric in `(0, 100)`, or `NULL` (default). If set,
-resolves to the matching `howbad` quantile and draws the same
-reference line. If both `threshold` and `top_n_pct` are supplied,
-`threshold` wins with a `message()`.}
+\item{top_n_pct}{Numeric in \code{(0, 100)}, or \code{NULL} (default).
+If set, resolves to the matching \code{howbad} quantile and draws the
+same reference line. If both \code{threshold} and \code{top_n_pct}
+are supplied, \code{threshold} wins with a \code{message()}.}
 
 \item{...}{Currently unused.}
 }
 \value{
-A `ggplot` (single panel) or a `patchwork` (panel = "both").
+A \code{ggplot} (single panel) or a \code{patchwork}
+  (\code{panel = "both"}).
 }
 \description{
-Renders a `gg_isopro` object as a ranked elbow (observations sorted by
-anomaly score), a density of scores, or both side-by-side. Optionally
-annotates a threshold either in score-space (`threshold`) or in
-quantile-space (`top_n_pct`).
+Renders a \code{gg_isopro} object as a ranked elbow (observations
+sorted by anomaly score), a density of scores, or both side-by-side.
+Optionally annotates a threshold either in score-space
+(\code{threshold}) or in quantile-space (\code{top_n_pct}).
 }
 \section{Reading the elbow}{
 
 The elbow plot is the canonical anomaly-detection picture. The x-axis
 is observation rank — observations sorted from most ordinary to most
-anomalous — and the y-axis is the `howbad` score. For a clean
+anomalous — and the y-axis is the \code{howbad} score. For a clean
 population the curve sits flat near zero across the bulk of the data
 and then bends sharply upward in the right tail; that bend is where
 the anomalous observations live. The point of the plot is not to read
-off a single score, it is to *see where the curve breaks*. Pick a
-cutoff there. Pass it back in as `threshold` (for a score) or
-`top_n_pct` (for "the top 5\%") and the plot draws a dashed reference
-line so you can record the choice you made.
+off a single score, it is to \emph{see where the curve breaks}. Pick a
+cutoff there. Pass it back in as \code{threshold} (for a score) or
+\code{top_n_pct} (for "the top 5\%") and the plot draws a dashed
+reference line so you can record the choice you made.
 }
 
 \section{Reading the density}{
@@ -64,17 +67,17 @@ suggests.
 
 \section{Comparing methods}{
 
-When the input object carries a `method` column (because you bound
-several `gg_isopro()` calls together), both panels colour by method
-automatically. The point of comparing `"rnd"`, `"unsupv"`, and
-`"auto"` is not to pick a winner from the figure alone — it is to see
-whether the methods agree on which observations are anomalous. Curves
-that overlap in the right tail and elbow at roughly the same rank are
-telling you the same story three ways. Curves that diverge are
-telling you the score is method-sensitive, which is itself useful
-information.
+When the input object carries a \code{method} column (because you
+bound several \code{\link{gg_isopro}} calls together), both panels
+colour by method automatically. The point of comparing \code{"rnd"},
+\code{"unsupv"}, and \code{"auto"} is not to pick a winner from the
+figure alone — it is to see whether the methods agree on which
+observations are anomalous. Curves that overlap in the right tail and
+elbow at roughly the same rank are telling you the same story three
+ways. Curves that diverge are telling you the score is
+method-sensitive, which is itself useful information.
 }
 
 \seealso{
-[gg_isopro()], [varPro::isopro()]
+\code{\link{gg_isopro}}, \code{\link[varPro]{isopro}}
 }

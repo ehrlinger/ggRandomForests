@@ -4,22 +4,22 @@
 
 #' Plot a varPro isolation-forest anomaly score
 #'
-#' Renders a `gg_isopro` object as a ranked elbow (observations sorted by
-#' anomaly score), a density of scores, or both side-by-side. Optionally
-#' annotates a threshold either in score-space (`threshold`) or in
-#' quantile-space (`top_n_pct`).
+#' Renders a \code{gg_isopro} object as a ranked elbow (observations
+#' sorted by anomaly score), a density of scores, or both side-by-side.
+#' Optionally annotates a threshold either in score-space
+#' (\code{threshold}) or in quantile-space (\code{top_n_pct}).
 #'
 #' @section Reading the elbow:
 #' The elbow plot is the canonical anomaly-detection picture. The x-axis
 #' is observation rank — observations sorted from most ordinary to most
-#' anomalous — and the y-axis is the `howbad` score. For a clean
+#' anomalous — and the y-axis is the \code{howbad} score. For a clean
 #' population the curve sits flat near zero across the bulk of the data
 #' and then bends sharply upward in the right tail; that bend is where
 #' the anomalous observations live. The point of the plot is not to read
-#' off a single score, it is to *see where the curve breaks*. Pick a
-#' cutoff there. Pass it back in as `threshold` (for a score) or
-#' `top_n_pct` (for "the top 5\%") and the plot draws a dashed reference
-#' line so you can record the choice you made.
+#' off a single score, it is to \emph{see where the curve breaks}. Pick a
+#' cutoff there. Pass it back in as \code{threshold} (for a score) or
+#' \code{top_n_pct} (for "the top 5\%") and the plot draws a dashed
+#' reference line so you can record the choice you made.
 #'
 #' @section Reading the density:
 #' The density panel is the same scores viewed as a distribution. A
@@ -31,30 +31,33 @@
 #' suggests.
 #'
 #' @section Comparing methods:
-#' When the input object carries a `method` column (because you bound
-#' several `gg_isopro()` calls together), both panels colour by method
-#' automatically. The point of comparing `"rnd"`, `"unsupv"`, and
-#' `"auto"` is not to pick a winner from the figure alone — it is to see
-#' whether the methods agree on which observations are anomalous. Curves
-#' that overlap in the right tail and elbow at roughly the same rank are
-#' telling you the same story three ways. Curves that diverge are
-#' telling you the score is method-sensitive, which is itself useful
-#' information.
+#' When the input object carries a \code{method} column (because you
+#' bound several \code{\link{gg_isopro}} calls together), both panels
+#' colour by method automatically. The point of comparing \code{"rnd"},
+#' \code{"unsupv"}, and \code{"auto"} is not to pick a winner from the
+#' figure alone — it is to see whether the methods agree on which
+#' observations are anomalous. Curves that overlap in the right tail and
+#' elbow at roughly the same rank are telling you the same story three
+#' ways. Curves that diverge are telling you the score is
+#' method-sensitive, which is itself useful information.
 #'
-#' @param x A `gg_isopro` object from [gg_isopro()].
-#' @param panel One of `"both"` (default — a `patchwork` of elbow + density),
-#'   `"elbow"`, or `"density"` (each returns a single `ggplot`).
-#' @param threshold Numeric in `[0, 1]`, or `NULL` (default). If set, draws
-#'   a reference line at that `howbad` value on the elbow and density.
-#' @param top_n_pct Numeric in `(0, 100)`, or `NULL` (default). If set,
-#'   resolves to the matching `howbad` quantile and draws the same
-#'   reference line. If both `threshold` and `top_n_pct` are supplied,
-#'   `threshold` wins with a `message()`.
+#' @param x A \code{gg_isopro} object from \code{\link{gg_isopro}}.
+#' @param panel One of \code{"both"} (default — a \code{patchwork} of
+#'   elbow + density), \code{"elbow"}, or \code{"density"} (each returns a
+#'   single \code{ggplot}).
+#' @param threshold Numeric in \code{[0, 1]}, or \code{NULL} (default). If
+#'   set, draws a reference line at that \code{howbad} value on the elbow
+#'   and density.
+#' @param top_n_pct Numeric in \code{(0, 100)}, or \code{NULL} (default).
+#'   If set, resolves to the matching \code{howbad} quantile and draws the
+#'   same reference line. If both \code{threshold} and \code{top_n_pct}
+#'   are supplied, \code{threshold} wins with a \code{message()}.
 #' @param ... Currently unused.
 #'
-#' @return A `ggplot` (single panel) or a `patchwork` (panel = "both").
+#' @return A \code{ggplot} (single panel) or a \code{patchwork}
+#'   (\code{panel = "both"}).
 #'
-#' @seealso [gg_isopro()], [varPro::isopro()]
+#' @seealso \code{\link{gg_isopro}}, \code{\link[varPro]{isopro}}
 #' @export
 plot.gg_isopro <- function(x,
                            panel     = c("both", "elbow", "density"),
@@ -77,7 +80,7 @@ plot.gg_isopro <- function(x,
   if (panel == "density")  return(density)
 
   # panel == "both"
-  elbow + density
+  patchwork::wrap_plots(elbow, density, nrow = 1)
 }
 
 # Returns the resolved threshold (numeric scalar) or NA_real_ if neither
@@ -85,10 +88,22 @@ plot.gg_isopro <- function(x,
 .resolve_isopro_threshold <- function(howbad, threshold, top_n_pct) {
   if (!is.null(threshold) && !is.null(top_n_pct)) {
     message("Both `threshold` and `top_n_pct` supplied; using `threshold`.")
+    top_n_pct <- NULL
+  }
+  if (!is.null(threshold)) {
+    if (!is.numeric(threshold) || length(threshold) != 1L ||
+        is.na(threshold) || threshold < 0 || threshold > 1) {
+      stop("`threshold` must be a single numeric value in [0, 1].",
+           call. = FALSE)
+    }
     return(as.numeric(threshold))
   }
-  if (!is.null(threshold)) return(as.numeric(threshold))
   if (!is.null(top_n_pct)) {
+    if (!is.numeric(top_n_pct) || length(top_n_pct) != 1L ||
+        is.na(top_n_pct) || top_n_pct <= 0 || top_n_pct >= 100) {
+      stop("`top_n_pct` must be a single numeric value in (0, 100).",
+           call. = FALSE)
+    }
     q <- 1 - (as.numeric(top_n_pct) / 100)
     return(as.numeric(stats::quantile(howbad, probs = q, na.rm = TRUE)))
   }

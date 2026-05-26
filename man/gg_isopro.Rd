@@ -7,30 +7,34 @@
 gg_isopro(object, ...)
 }
 \arguments{
-\item{object}{An `isopro` fit returned by `varPro::isopro()`.}
+\item{object}{An \code{isopro} fit returned by
+\code{\link[varPro]{isopro}}.}
 
 \item{...}{Currently unused.}
 }
 \value{
-A `data.frame` of class `c("gg_isopro", "data.frame")`, one row
-  per observation. Columns:
+A \code{data.frame} of class \code{c("gg_isopro", "data.frame")},
+  one row per observation. Columns:
   \describe{
-    \item{obs}{Integer; observation index `1..n`, in the same order as
-      the rows of the data passed to `isopro()`.}
+    \item{obs}{Integer; observation index \code{1..n}, in the same
+      order as the rows of the data passed to
+      \code{\link[varPro]{isopro}}.}
     \item{case.depth}{Numeric; mean isolation depth across the forest.
       Lower means the observation was isolated quickly — more
       anomalous.}
-    \item{howbad}{Numeric in `[0, 1]`; the `case.depth` values pushed
-      through their own empirical CDF and flipped so higher means more
-      anomalous. This is the score the plot method draws by default.}
+    \item{howbad}{Numeric in \code{[0, 1]}; the \code{case.depth}
+      values pushed through their own empirical CDF and flipped so
+      higher means more anomalous. This is the score the plot method
+      draws by default.}
   }
-  A `provenance` attribute records `source = "varPro::isopro"`, the
-  observation count `n`, and the number of trees `ntree`.
+  A \code{provenance} attribute records
+  \code{source = "varPro::isopro"}, the observation count \code{n}, and
+  the number of trees \code{ntree}.
 }
 \description{
-Pulls per-observation anomaly scores out of a `varPro::isopro` fit so
-you can plot them, sort them, or write them to disk without having to
-know the internal shape of the fit.
+Pulls per-observation anomaly scores out of a \code{\link[varPro]{isopro}}
+fit so you can plot them, sort them, or write them to disk without having
+to know the internal shape of the fit.
 }
 \section{What isopro is doing}{
 
@@ -39,26 +43,26 @@ on very small subsamples of the data and asked to split until each
 observation lands in its own terminal node. The intuition is geometric:
 a typical observation sits in the dense middle of the feature cloud and
 takes many splits to isolate, while an unusual observation sits out
-near an edge and gets cut off after only a few. So **the depth at which
-an observation is isolated is a proxy for how typical it is** — shallow
-depth means anomalous, deep depth means ordinary. Average a single
-observation's depth across many trees and the noise washes out, leaving
-a stable per-observation rank.
+near an edge and gets cut off after only a few. So \strong{the depth at
+which an observation is isolated is a proxy for how typical it is} —
+shallow depth means anomalous, deep depth means ordinary. Average a
+single observation's depth across many trees and the noise washes out,
+leaving a stable per-observation rank.
 
-`varPro::isopro` supports three flavours of isolation forest, which
-differ in how the splits are chosen:
+\code{\link[varPro]{isopro}} supports three flavours of isolation
+forest, which differ in how the splits are chosen:
 \describe{
-  \item{`"rnd"`}{The original Liu/Ting/Zhou method: each tree node
+  \item{\code{"rnd"}}{The original Liu/Ting/Zhou method: each tree node
     picks a variable at random and a split point uniformly at random
     in the variable's range. Fast, no model, surprisingly effective.}
-  \item{`"unsupv"`}{Unsupervised splitting from `randomForestSRC`:
-    splits are chosen to separate the data along the directions of
-    highest variance. More structured than `"rnd"`; sometimes more
-    accurate, especially when the anomalies follow a coherent
-    direction.}
-  \item{`"auto"`}{An auto-encoder formulation that grows a multivariate
-    forest predicting each feature from the others. Most expressive,
-    slowest, best suited to low-dimensional data.}
+  \item{\code{"unsupv"}}{Unsupervised splitting from
+    \code{randomForestSRC}: splits are chosen to separate the data
+    along the directions of highest variance. More structured than
+    \code{"rnd"}; sometimes more accurate, especially when the
+    anomalies follow a coherent direction.}
+  \item{\code{"auto"}}{An auto-encoder formulation that grows a
+    multivariate forest predicting each feature from the others. Most
+    expressive, slowest, best suited to low-dimensional data.}
 }
 No method is universally best. The varPro authors recommend trying at
 least two and comparing the score distributions; the plot method here
@@ -67,13 +71,14 @@ colours per-method curves automatically when you stack the results.
 
 \section{What's in the output}{
 
-The fit gives back two parallel per-observation vectors: `case.depth`
-is the raw mean isolation depth (units of "splits", lower = more
-anomalous) and `howbad` is the same information transformed onto a
-`[0, 1]` scale via the empirical CDF of `case.depth` (higher = more
-anomalous). Both columns are kept so you can plot in either space and
-have the raw depth on hand for diagnostics; `howbad` is the canonical
-score and is what the plot method uses by default.
+The fit gives back two parallel per-observation vectors:
+\code{case.depth} is the raw mean isolation depth (units of "splits",
+lower = more anomalous) and \code{howbad} is the same information
+transformed onto a \code{[0, 1]} scale via the empirical CDF of
+\code{case.depth} (higher = more anomalous). Both columns are kept so
+you can plot in either space and have the raw depth on hand for
+diagnostics; \code{howbad} is the canonical score and is what the plot
+method uses by default.
 }
 
 \section{What you use this for}{
@@ -88,18 +93,19 @@ This is screening, not inference. Reach for it when you want to:
   \item give the analyst a ranked list of "look at these first" cases
     for a manual review.
 }
-The score is a *rank*, not a probability of being an outlier — two
-observations with `howbad = 0.92` are both unusual, not "92\% likely
-to be anomalous". Pick a cutoff by looking at where the elbow rises;
-`plot.gg_isopro` can annotate either a score (`threshold`) or a
-top-percent (`top_n_pct`) for you.
+The score is a \emph{rank}, not a probability of being an outlier — two
+observations with \code{howbad = 0.92} are both unusual, not "92\%
+likely to be anomalous". Pick a cutoff by looking at where the elbow
+rises; \code{\link{plot.gg_isopro}} can annotate either a score
+(\code{threshold}) or a top-percent (\code{top_n_pct}) for you.
 }
 
 \section{Comparing methods}{
 
-To compare methods (`"rnd"`, `"unsupv"`, `"auto"`), call `gg_isopro()`
-on each fit and `dplyr::bind_rows()` the results with a `method` label
-column. The plot method auto-detects `method` and colours the curves.
+To compare methods (\code{"rnd"}, \code{"unsupv"}, \code{"auto"}), call
+\code{\link{gg_isopro}} on each fit and \code{dplyr::bind_rows()} the
+results with a \code{method} label column. The plot method auto-detects
+\code{method} and colours the curves.
 }
 
 \examples{
@@ -123,5 +129,5 @@ Variable Selection via the Rule-Based Variable Priority Framework.
 \emph{R package version 3.x}.
 }
 \seealso{
-[plot.gg_isopro()], [varPro::isopro()]
+\code{\link{plot.gg_isopro}}, \code{\link[varPro]{isopro}}
 }
