@@ -37,3 +37,38 @@ test_that("gg_isopro: provenance attribute attached", {
   expect_equal(prov$n, nrow(iris))
   expect_equal(prov$ntree, 25)
 })
+
+test_that("plot.gg_isopro: panel='both' returns patchwork with 2 sub-plots that build", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  p   <- plot(gg, panel = "both")
+  expect_s3_class(p, "patchwork")
+  expect_length(p$patches$plots, 1L) # left panel is `p` itself; right is in $patches$plots
+  for (sub in c(list(p), p$patches$plots)) {
+    expect_no_error(ggplot2::ggplot_build(sub))
+  }
+})
+
+test_that("plot.gg_isopro: panel='elbow' returns a single ggplot", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  p   <- plot(gg, panel = "elbow")
+  expect_s3_class(p, "ggplot")
+  expect_false(inherits(p, "patchwork"))
+  expect_no_error(ggplot2::ggplot_build(p))
+})
+
+test_that("plot.gg_isopro: panel='density' returns a single ggplot", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  p   <- plot(gg, panel = "density")
+  expect_s3_class(p, "ggplot")
+  expect_false(inherits(p, "patchwork"))
+  expect_no_error(ggplot2::ggplot_build(p))
+})
+
+test_that("plot.gg_isopro: rejects bad panel values via match.arg", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  expect_error(plot(gg, panel = "nope"))
+})
