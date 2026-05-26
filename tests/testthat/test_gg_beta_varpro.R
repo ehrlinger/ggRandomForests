@@ -90,3 +90,41 @@ test_that("gg_beta_varpro warns when ... is supplied alongside beta_fit", {
   )
   expect_s3_class(out, "gg_beta_varpro")
 })
+
+test_that("gg_beta_varpro returns empty frame when beta.varpro yields no rules", {
+  v <- .varpro_mtcars()
+  empty <- structure(
+    list(results = data.frame(tree = integer(0), branch = integer(0),
+                              variable = integer(0), n.oob = integer(0),
+                              imp = numeric(0)),
+         xvar.names = v$xvar.names),
+    class = "varpro"
+  )
+  out <- gg_beta_varpro(v, beta_fit = empty)
+  expect_s3_class(out, "gg_beta_varpro")
+  expect_equal(nrow(out), 0L)
+  expect_setequal(names(out), c("variable", "beta_mean", "n_rules", "selected"))
+  expect_equal(attr(out, "provenance")$n_rules_total, 0L)
+})
+
+test_that("gg_beta_varpro counts lasso-shrunk-to-zero rules in n_rules", {
+  v <- .varpro_mtcars()
+  fake <- structure(
+    list(
+      results = data.frame(
+        tree     = c(1L, 1L, 2L, 2L),
+        branch   = c(1L, 2L, 1L, 2L),
+        variable = c(1L, 1L, 1L, 1L),
+        n.oob    = c(5L, 5L, 5L, 5L),
+        imp      = c(0.0, 0.0, 1.5, -2.5)
+      ),
+      xvar.names = v$xvar.names
+    ),
+    class = "varpro"
+  )
+  out <- gg_beta_varpro(v, beta_fit = fake)
+  expect_equal(nrow(out), 1L)
+  expect_equal(out$n_rules, 4L)
+  # mean(|0|, |0|, |1.5|, |-2.5|) = 1.0
+  expect_equal(out$beta_mean, 1.0, tolerance = 1e-10)
+})
