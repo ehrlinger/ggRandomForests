@@ -411,6 +411,26 @@ test_that("gg_variable.randomForest classification: layer_data works on single-x
   expect_no_error(ggplot2::layer_data(p, 1L))
 })
 
+test_that("gg_variable.randomForest classification: default plot renders every panel (yvar/outcome not treated as predictors)", {
+  skip_if_not_installed("randomForest")
+  # Regression test: the default-xvar selection in plot.gg_variable used to
+  # include yvar and outcome (the response factor and the multi-class pivot's
+  # facet column), pivoting them into `var` and dropping them from the
+  # panel data. The geom_jitter aes then errored at render time with
+  # "Column `yvar` not found". This test exercises a real build of every
+  # patchwork sub-plot, which is what catches the regression — checking the
+  # patchwork class alone does not, because patchwork is lazy.
+  set.seed(42L)
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
+  gg <- gg_variable(rf)
+  p  <- plot(gg)
+  expect_s3_class(p, "patchwork")
+  # Force every sub-plot to actually build.
+  for (sub in p$patches$plots) {
+    expect_no_error(ggplot2::ggplot_build(sub))
+  }
+})
+
 test_that("gg_variable.randomForest classification: norm.votes=FALSE still gives [0,1] fractions", {
   skip_if_not_installed("randomForest")
   set.seed(42L)

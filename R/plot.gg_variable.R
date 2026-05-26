@@ -180,11 +180,18 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
 
   ## ---- Default xvar: all predictor columns -----------------------------
   if (missing(xvar)) {
-    # Remove response-side columns (yhat, event, time) to isolate predictors
+    # Remove response-side and structural columns (yhat, event, time, yvar,
+    # outcome) to isolate predictors. `yvar` is the observed response added
+    # by gg_variable for classification forests; `outcome` is the facet
+    # column added by the multi-class pivot above. Both are referenced by
+    # the geom_jitter aes downstream, so pivoting them into `var` would
+    # drop the column the aes needs.
     cls <- c(
       grep("yhat", colnames(gg_dta)),
       grep("event", colnames(gg_dta)),
-      grep("time", colnames(gg_dta))
+      grep("time", colnames(gg_dta)),
+      which(colnames(gg_dta) == "yvar"),
+      which(colnames(gg_dta) == "outcome")
     )
     xvar <- colnames(gg_dta)[-cls]
   }
