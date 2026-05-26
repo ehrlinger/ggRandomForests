@@ -83,6 +83,24 @@ plot.gg_isopro <- function(x,
   patchwork::wrap_plots(elbow, density, nrow = 1)
 }
 
+# Validate a single threshold-style argument: numeric scalar, not NA, and
+# within (lo, hi). `closed_lo` / `closed_hi` control whether each end is
+# inclusive. stop()s with a clear message; returns the value as numeric.
+.check_threshold_arg <- function(x, name, lo, hi,
+                                 closed_lo = TRUE, closed_hi = TRUE) {
+  ok_type <- is.numeric(x) && length(x) == 1L && !is.na(x)
+  ok_lo   <- ok_type && (if (closed_lo) x >= lo else x > lo)
+  ok_hi   <- ok_type && (if (closed_hi) x <= hi else x < hi)
+  if (!(ok_type && ok_lo && ok_hi)) {
+    bra_lo <- if (closed_lo) "[" else "("
+    bra_hi <- if (closed_hi) "]" else ")"
+    stop(sprintf("`%s` must be a single numeric value in %s%g, %g%s.",
+                 name, bra_lo, lo, hi, bra_hi),
+         call. = FALSE)
+  }
+  as.numeric(x)
+}
+
 # Returns the resolved threshold (numeric scalar) or NA_real_ if neither
 # arg was supplied. Emits a message when both args are set.
 .resolve_isopro_threshold <- function(howbad, threshold, top_n_pct) {
@@ -91,20 +109,12 @@ plot.gg_isopro <- function(x,
     top_n_pct <- NULL
   }
   if (!is.null(threshold)) {
-    if (!is.numeric(threshold) || length(threshold) != 1L ||
-        is.na(threshold) || threshold < 0 || threshold > 1) {
-      stop("`threshold` must be a single numeric value in [0, 1].",
-           call. = FALSE)
-    }
-    return(as.numeric(threshold))
+    return(.check_threshold_arg(threshold, "threshold", 0, 1))
   }
   if (!is.null(top_n_pct)) {
-    if (!is.numeric(top_n_pct) || length(top_n_pct) != 1L ||
-        is.na(top_n_pct) || top_n_pct <= 0 || top_n_pct >= 100) {
-      stop("`top_n_pct` must be a single numeric value in (0, 100).",
-           call. = FALSE)
-    }
-    q <- 1 - (as.numeric(top_n_pct) / 100)
+    pct <- .check_threshold_arg(top_n_pct, "top_n_pct", 0, 100,
+                                closed_lo = FALSE, closed_hi = FALSE)
+    q   <- 1 - (pct / 100)
     return(as.numeric(stats::quantile(howbad, probs = q, na.rm = TRUE)))
   }
   NA_real_
