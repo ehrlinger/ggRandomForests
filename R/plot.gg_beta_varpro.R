@@ -1,7 +1,7 @@
 ##=============================================================================
 #' Plot a \code{gg_beta_varpro} object
 #'
-#' Horizontal bar chart of mean |β̂| per variable, sorted descending.
+#' Horizontal bar chart of mean |beta| per variable, sorted descending.
 #' Bars filled blue when above the selection cutoff, grey otherwise.
 #'
 #' @param x A \code{gg_beta_varpro} object from \code{\link{gg_beta_varpro}}.
@@ -47,9 +47,9 @@ plot.gg_beta_varpro <- function(x, ...) {
     ) +
     ggplot2::labs(
       x = NULL,
-      y = "Mean |β| (per-rule lasso)",
+      y = "Mean |beta| (per-rule lasso)",
       caption = sprintf(
-        "Mean |β| over %d rules. Lasso: %s, cutoff: %.4g.",
+        "Mean |beta| over %d rules. Lasso: %s, cutoff: %.4g.",
         prov$n_rules_total %||% NA_integer_,
         cv_txt,
         cutoff
