@@ -12,6 +12,13 @@ ggRandomForests v2.8.0 (development) — continued
   test only asserted the patchwork class (lazy) and snapshots run with
   `VDIFFR_RUN_TESTS = false`. New test exercises a real build of every
   sub-plot.
+* `plot.gg_variable()`: the same default-xvar selection used substring
+  `grep("time", ...)` / `grep("event", ...)`, which silently dropped any
+  predictor whose name contained those substrings -- e.g. the documented
+  veteran-data survival predictor `diagtime`. Switch to exact matching for
+  `event` / `time` / `yvar` / `outcome` and an anchored prefix for `yhat`
+  (`yhat` or `yhat.<class>`). New test exercises `diagtime` on the veteran
+  survival forest.
 * `gg_roc()`: per-class one-vs-rest ROC curves (#88, closes #72).
   - New `per_class` argument, default `FALSE`. With `per_class = TRUE` on a
     forest of more than two classes, `gg_roc()` returns a long-format

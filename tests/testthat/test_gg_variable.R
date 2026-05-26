@@ -432,6 +432,36 @@ test_that("gg_variable.randomForest classification: default plot renders every p
   }
 })
 
+test_that("plot.gg_variable default xvar matches column names exactly, not substring", {
+  # Regression: the pre-existing default-xvar exclusion used grep("time", ...)
+  # and grep("event", ...), which silently dropped any predictor whose name
+  # *contained* those substrings -- e.g. the documented veteran-data survival
+  # predictor `diagtime`. Switch to exact matching for event/time/yvar/outcome
+  # and a prefix match for yhat (to catch yhat.<class> columns).
+  data(veteran, package = "randomForestSRC")
+  set.seed(42L)
+  Surv <- survival::Surv # nolint: object_name_linter
+  rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                                          ntree = 25, nsplit = 3)
+  gg <- gg_variable(rfsrc_veteran, time = 90)
+  expect_true("diagtime" %in% names(gg))
+  # The default xvar list must include diagtime (not dropped by substring match).
+  p <- plot(gg)
+  # The plot should be a patchwork (multiple predictors) -- and diagtime should
+  # appear as one of the panels. Force every sub-plot to build cleanly.
+  expect_s3_class(p, "patchwork")
+  for (sub in p$patches$plots) {
+    expect_no_error(ggplot2::ggplot_build(sub))
+  }
+  # Spot-check: at least one panel's data has `var` sourced from diagtime by
+  # confirming diagtime is NOT in the residual data columns of every panel
+  # (it was pivoted into `var` for exactly one panel).
+  var_panel_count <- sum(vapply(p$patches$plots, function(sub) {
+    !("diagtime" %in% names(sub$data))
+  }, logical(1L)))
+  expect_gte(var_panel_count, 1L)
+})
+
 test_that("gg_variable.randomForest classification: norm.votes=FALSE still gives [0,1] fractions", {
   skip_if_not_installed("randomForest")
   set.seed(42L)
