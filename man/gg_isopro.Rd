@@ -14,22 +14,22 @@ gg_isopro(object, ...)
 }
 \value{
 A \code{data.frame} of class \code{c("gg_isopro", "data.frame")},
-  one row per observation. Columns:
-  \describe{
-    \item{obs}{Integer; observation index \code{1..n}, in the same
-      order as the rows of the data passed to
-      \code{\link[varPro]{isopro}}.}
-    \item{case.depth}{Numeric; mean isolation depth across the forest.
-      Lower means the observation was isolated quickly — more
-      anomalous.}
-    \item{howbad}{Numeric in \code{[0, 1]}; the \code{case.depth}
-      values pushed through their own empirical CDF and flipped so
-      higher means more anomalous. This is the score the plot method
-      draws by default.}
-  }
-  A \code{provenance} attribute records
-  \code{source = "varPro::isopro"}, the observation count \code{n}, and
-  the number of trees \code{ntree}.
+one row per observation. Columns:
+\describe{
+\item{obs}{Integer; observation index \code{1..n}, in the same
+order as the rows of the data passed to
+\code{\link[varPro]{isopro}}.}
+\item{case.depth}{Numeric; mean isolation depth across the forest.
+Lower means the observation was isolated quickly — more
+anomalous.}
+\item{howbad}{Numeric in \code{[0, 1]}; the \code{case.depth}
+values pushed through their own empirical CDF and flipped so
+higher means more anomalous. This is the score the plot method
+draws by default.}
+}
+A \code{provenance} attribute records
+\code{source = "varPro::isopro"}, the observation count \code{n}, and
+the number of trees \code{ntree}.
 }
 \description{
 Pulls per-observation anomaly scores out of a \code{\link[varPro]{isopro}}
@@ -52,17 +52,17 @@ leaving a stable per-observation rank.
 \code{\link[varPro]{isopro}} supports three flavours of isolation
 forest, which differ in how the splits are chosen:
 \describe{
-  \item{\code{"rnd"}}{The original Liu/Ting/Zhou method: each tree node
-    picks a variable at random and a split point uniformly at random
-    in the variable's range. Fast, no model, surprisingly effective.}
-  \item{\code{"unsupv"}}{Unsupervised splitting from
-    \code{randomForestSRC}: splits are chosen to separate the data
-    along the directions of highest variance. More structured than
-    \code{"rnd"}; sometimes more accurate, especially when the
-    anomalies follow a coherent direction.}
-  \item{\code{"auto"}}{An auto-encoder formulation that grows a
-    multivariate forest predicting each feature from the others. Most
-    expressive, slowest, best suited to low-dimensional data.}
+\item{\code{"rnd"}}{The original Liu/Ting/Zhou method: each tree node
+picks a variable at random and a split point uniformly at random
+in the variable's range. Fast, no model, surprisingly effective.}
+\item{\code{"unsupv"}}{Unsupervised splitting from
+\code{randomForestSRC}: splits are chosen to separate the data
+along the directions of highest variance. More structured than
+\code{"rnd"}; sometimes more accurate, especially when the
+anomalies follow a coherent direction.}
+\item{\code{"auto"}}{An auto-encoder formulation that grows a
+multivariate forest predicting each feature from the others. Most
+expressive, slowest, best suited to low-dimensional data.}
 }
 No method is universally best. The varPro authors recommend trying at
 least two and comparing the score distributions; the plot method here
@@ -85,16 +85,16 @@ method uses by default.
 
 This is screening, not inference. Reach for it when you want to:
 \itemize{
-  \item flag observations that may be data-entry errors, out-of-range
-    measurements, or distinct subpopulations before fitting a primary
-    model;
-  \item check whether a held-out cohort sits inside the training
-    distribution before scoring with a model trained elsewhere;
-  \item give the analyst a ranked list of "look at these first" cases
-    for a manual review.
+\item flag observations that may be data-entry errors, out-of-range
+measurements, or distinct subpopulations before fitting a primary
+model;
+\item check whether a held-out cohort sits inside the training
+distribution before scoring with a model trained elsewhere;
+\item give the analyst a ranked list of "look at these first" cases
+for a manual review.
 }
 The score is a \emph{rank}, not a probability of being an outlier — two
-observations with \code{howbad = 0.92} are both unusual, not "92\%
+observations with \code{howbad = 0.92} are both unusual, not "92\\%
 likely to be anomalous". Pick a cutoff by looking at where the elbow
 rises; \code{\link{plot.gg_isopro}} can annotate either a score
 (\code{threshold}) or a top-percent (\code{top_n_pct}) for you.
