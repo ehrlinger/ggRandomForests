@@ -155,3 +155,15 @@ test_that("gg_beta_varpro cached and uncached paths agree", {
   expect_false(attr(uncached, "provenance")$precomputed)
   expect_true(attr(cached, "provenance")$precomputed)
 })
+
+test_that("plot.gg_beta_varpro returns a ggplot that builds", {
+  v <- .varpro_mtcars()
+  b <- .beta_fit_mtcars()
+  out <- gg_beta_varpro(v, beta_fit = b)
+
+  p <- plot(out)
+  expect_s3_class(p, "ggplot")
+  built <- ggplot2::ggplot_build(p)
+  expect_s3_class(built, "ggplot_built")
+  expect_true(length(built$data) >= 1L)
+})
