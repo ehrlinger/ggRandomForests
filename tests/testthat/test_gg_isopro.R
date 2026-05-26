@@ -72,3 +72,60 @@ test_that("plot.gg_isopro: rejects bad panel values via match.arg", {
   gg  <- gg_isopro(fit)
   expect_error(plot(gg, panel = "nope"))
 })
+
+# Helper: count geom_hline / geom_vline layers in a ggplot or patchwork.
+# Note: a patchwork object is itself the "left" plot (still inherits "ggplot"),
+# while siblings live in $patches$plots. Strip the patchwork class before
+# counting layers on the top-level object to avoid infinite recursion.
+.count_ref_lines <- function(p) {
+  count_one <- function(plt) {
+    sum(vapply(plt$layers, function(l) {
+      inherits(l$geom, "GeomHline") || inherits(l$geom, "GeomVline")
+    }, logical(1L)))
+  }
+  if (inherits(p, "patchwork")) {
+    siblings <- p$patches$plots
+    top <- p
+    class(top) <- setdiff(class(top), "patchwork")
+    return(count_one(top) + sum(vapply(siblings, count_one, integer(1L))))
+  }
+  count_one(p)
+}
+
+test_that("plot.gg_isopro: threshold adds a reference line on each panel", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  p_none <- plot(gg, panel = "both")
+  p_thr  <- plot(gg, panel = "both", threshold = 0.8)
+  # panel = both has elbow + density => one hline + one vline = 2 ref lines.
+  expect_equal(.count_ref_lines(p_none), 0L)
+  expect_equal(.count_ref_lines(p_thr), 2L)
+})
+
+test_that("plot.gg_isopro: top_n_pct resolves to the matching quantile", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  q95 <- as.numeric(stats::quantile(gg$howbad, 0.95))
+  p   <- plot(gg, panel = "elbow", top_n_pct = 5)
+  # Find the hline; check its yintercept equals q95.
+  yints <- vapply(p$layers, function(l) {
+    if (inherits(l$geom, "GeomHline")) l$data$yintercept else NA_real_
+  }, numeric(1L))
+  yints <- yints[!is.na(yints)]
+  expect_length(yints, 1L)
+  expect_equal(yints[[1]], q95, tolerance = 1e-9)
+})
+
+test_that("plot.gg_isopro: threshold + top_n_pct both set => message, threshold wins", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  expect_message(
+    p <- plot(gg, panel = "elbow", threshold = 0.7, top_n_pct = 5),
+    "Both .* using `threshold`"
+  )
+  yints <- vapply(p$layers, function(l) {
+    if (inherits(l$geom, "GeomHline")) l$data$yintercept else NA_real_
+  }, numeric(1L))
+  yints <- yints[!is.na(yints)]
+  expect_equal(yints[[1]], 0.7, tolerance = 1e-9)
+})
