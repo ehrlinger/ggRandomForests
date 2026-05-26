@@ -8,6 +8,33 @@
 #' \code{scale \%in\% c("surv","chf")} was passed to the extractor) are
 #' handed off to \code{\link{plot.gg_partial_rfsrc}} for drawing.
 #'
+#' @section Reading the partial dependence:
+#' For a continuous variable the x-axis is the variable's grid of values
+#' and the y-axis is the partial prediction; each of the three effect
+#' types (\code{parametric}, \code{nonparametric}, \code{causal}) is
+#' drawn as its own line. The shape of the line is the story: a clear
+#' slope says the model uses the variable, a flat line says it
+#' essentially does not, and a U-shape or a threshold says the effect
+#' is nonlinear in a way a single coefficient would miss. For a
+#' categorical variable the picture is a boxplot per level; here the
+#' eye is looking at level-to-level shifts in the centre of each box.
+#'
+#' Where the three effect types track each other, the parametric story
+#' is a fair summary of what the forest is doing. Where they fan
+#' apart — typically the parametric curve smoother than the
+#' nonparametric, or the causal curve flatter than either — the
+#' variable is one to inspect more carefully before reading a single
+#' effect off the plot.
+#'
+#' @section What this tells you:
+#' Use these curves to describe how the model uses each variable, not
+#' to claim how the world works. They are a window into the fitted
+#' relationship; they do not by themselves establish that intervening
+#' on the variable would move the outcome. For survival path-C
+#' (\code{scale = "surv"} or \code{"chf"}), the y-axis is on the
+#' probability or cumulative-hazard scale, which is usually the scale
+#' you want to report to a clinical audience.
+#'
 #' @param x A \code{\link{gg_partial_varpro}} object.
 #' @param type Character vector; one or more of \code{"parametric"},
 #'   \code{"nonparametric"}, \code{"causal"}.  Defaults to all three.

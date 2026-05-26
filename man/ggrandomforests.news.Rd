@@ -11,7 +11,7 @@ ggrandomforests.news(...)
 }
 \value{
 Called for its side-effect of opening the NEWS file in the system
-  pager (\code{file.show}). Returns \code{invisible(NULL)}.
+pager (\code{file.show}). Returns \code{invisible(NULL)}.
 }
 \description{
 Opens the package change log in the system pager so users can read the

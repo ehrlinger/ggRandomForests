@@ -19,11 +19,11 @@ For binary forests this is usually \code{1} or \code{2}; for multi-class
 forests, any valid class index or level name. \code{which_outcome = "all"}
 or \code{0} behaves differently by engine:
 \describe{
-  \item{\code{randomForest} method}{Returns a macro-averaged
-    one-vs-rest ROC computed over the per-class probabilities.}
-  \item{\code{rfsrc} method}{Warns and falls back to class 1. The
-    macro-average and per-class faceting for the \code{rfsrc} path
-    are tracked separately under issue #72.}
+\item{\code{randomForest} method}{Returns a macro-averaged
+one-vs-rest ROC computed over the per-class probabilities.}
+\item{\code{rfsrc} method}{Warns and falls back to class 1. The
+macro-average and per-class faceting for the \code{rfsrc} path
+are tracked separately under issue #72.}
 }}
 
 \item{oob}{Logical; if \code{TRUE} (default), build the curve from
@@ -43,13 +43,13 @@ Honoured by the \code{randomForest} method only.}
 }
 \value{
 A \code{gg_roc} \code{data.frame}, one row per unique prediction
-  threshold, with columns:
-  \describe{
-    \item{sens}{Sensitivity (true positive rate) at the threshold.}
-    \item{spec}{Specificity (true negative rate) at the threshold.}
-    \item{yvar}{The observed class label for each observation.}
-  }
-  Pass it to \code{\link{calc_auc}} for the area under the curve.
+threshold, with columns:
+\describe{
+\item{sens}{Sensitivity (true positive rate) at the threshold.}
+\item{spec}{Specificity (true negative rate) at the threshold.}
+\item{yvar}{The observed class label for each observation.}
+}
+Pass it to \code{\link{calc_auc}} for the area under the curve.
 }
 \description{
 A classifier does not hand you a class; it hands you a predicted probability,
@@ -98,7 +98,7 @@ plot(gg_dta)
 }
 \seealso{
 \code{\link{plot.gg_roc}}, \code{\link{calc_roc}},
-  \code{\link{calc_auc}},
-  \code{\link[randomForestSRC]{rfsrc}},
-  \code{\link[randomForest]{randomForest}}
+\code{\link{calc_auc}},
+\code{\link[randomForestSRC]{rfsrc}},
+\code{\link[randomForest]{randomForest}}
 }

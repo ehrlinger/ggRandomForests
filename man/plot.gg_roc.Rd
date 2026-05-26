@@ -27,10 +27,10 @@ each class its own panel. Ignored for single-class \code{gg_roc} objects.}
 }
 \value{
 A \code{ggplot} object. The x-axis is 1 - Specificity (FPR), the
-  y-axis is Sensitivity (TPR), and a dashed red diagonal marks the
-  random-classifier baseline. Single-class curves carry the AUC as an
-  annotation; multi-class plots colour and style each class curve
-  distinctly.
+y-axis is Sensitivity (TPR), and a dashed red diagonal marks the
+random-classifier baseline. Single-class curves carry the AUC as an
+annotation; multi-class plots colour and style each class curve
+distinctly.
 }
 \description{
 ROC plot generic function for a \code{\link{gg_roc}} object.
@@ -73,6 +73,6 @@ Regression and Classification. R package version >= 3.4.0.
 }
 \seealso{
 \code{\link{gg_roc}} \code{\link{calc_roc}} \code{\link{calc_auc}}
-  \code{\link[randomForestSRC]{rfsrc}}
-  \code{\link[randomForest]{randomForest}}
+\code{\link[randomForestSRC]{rfsrc}}
+\code{\link[randomForest]{randomForest}}
 }

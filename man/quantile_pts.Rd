@@ -17,8 +17,8 @@ quantile points (length \code{groups}).}
 }
 \value{
 Numeric vector of quantile points. When \code{intervals = TRUE}
-  the result is strictly increasing and can be supplied to \code{cut()} to
-  produce \code{groups} balanced strata.
+the result is strictly increasing and can be supplied to \code{cut()} to
+produce \code{groups} balanced strata.
 }
 \description{
 This helper wraps \code{\link[stats]{quantile}} to create well-spaced

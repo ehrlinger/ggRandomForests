@@ -28,9 +28,9 @@ value is used for the ribbon overlay.}
 }
 \value{
 A \code{ggplot} object. The y-axis shows the chosen \code{type}
-  (e.g. survival probability for \code{"surv"}) and the x-axis shows time.
-  Confidence shading, bars, or lines are added when the input object carries
-  confidence-interval columns.
+(e.g. survival probability for \code{"surv"}) and the x-axis shows time.
+Confidence shading, bars, or lines are added when the input object carries
+confidence-interval columns.
 }
 \description{
 Plot a \code{\link{gg_survival}}  object.
@@ -80,5 +80,5 @@ plot(gg_dta, label = "sex", error = "lines")
 }
 \seealso{
 \code{\link{gg_survival}}, \code{\link{kaplan}},
-  \code{\link{nelson}}, \code{\link{gg_rfsrc}}
+\code{\link{nelson}}, \code{\link{gg_rfsrc}}
 }

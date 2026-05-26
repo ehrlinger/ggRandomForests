@@ -43,21 +43,21 @@ gg_partialpro(
 \value{
 A named list of class \code{"gg_partial_varpro"} with elements:
 \describe{
-  \item{continuous}{data.frame with columns \code{variable},
-    \code{parametric}, \code{nonparametric}, \code{causal}, \code{name}
-    (and optionally \code{model}).}
-  \item{categorical}{data.frame with the same columns, one row per
-    observation per category level.}
+\item{continuous}{data.frame with columns \code{variable},
+\code{parametric}, \code{nonparametric}, \code{causal}, \code{name}
+(and optionally \code{model}).}
+\item{categorical}{data.frame with the same columns, one row per
+observation per category level.}
 }
 A \code{"provenance"} attribute carries \code{source}, \code{family},
 \code{ntree}, \code{n}, \code{scale}, \code{rmst_tau},
 \code{xvar.names}, and \code{path}.
 
 A \code{gg_partial_varpro} object (see
-  \code{\link{gg_partial_varpro}}).
+\code{\link{gg_partial_varpro}}).
 }
 \description{
-\code{varpro::partialpro} returns one list, with continuous and
+\code{varPro::partialpro} returns one list, with continuous and
 categorical predictors mixed together. This function splits that list into
 two tidy data frames, one for each kind, and resolves the y-axis label the
 plot method will use.
@@ -68,23 +68,88 @@ be removed in the release after \pkg{ggRandomForests} v2.8.0; use
 \code{\link{gg_partial_varpro}()} directly.
 }
 \details{
-**Scale detection:** with \code{scale = "auto"} and an \code{object} in
+\strong{Scale detection:} with \code{scale = "auto"} and an \code{object} in
 hand, the scale resolves to \code{"mortality"} for a survival forest and
 \code{"generic"} for a regression or classification forest.  The RMST
 horizon \eqn{\tau} is \emph{not} stored in the \code{varpro} object
 (varPro 3.1.0), so for RMST-labeled output you have to pass
 \code{scale = "rmst", time = tau} yourself.
 
-**Ensemble mortality (scale = "mortality"):** here the y-axis is
+\strong{Ensemble mortality (scale = "mortality"):} here the y-axis is
 \emph{ensemble mortality}, the expected number of events a subject would
 see if they were exposed to the study-average cumulative hazard.  It is
 the same quantity as the \code{rfsrc} \code{predicted} value for survival
 forests (Ishwaran, Kogalur, Blackstone & Lauer, 2008
-<doi:10.1214/08-AOAS169>).  This is an \strong{unbounded relative-risk
+\url{doi:10.1214/08-AOAS169}).  This is an \strong{unbounded relative-risk
 score}, \emph{not} a survival probability and not \eqn{1 - S(t)}; don't
 read it as one.  If you want output on the probability scale, refit with
 \code{varpro(..., rmst = tau)} and use \code{scale = "rmst"}.
 }
+\section{What partialpro is doing}{
+
+A partial dependence curve answers the question, "if I hold a single
+variable at a grid of values and average out everything else, how does
+the model's prediction move?" That is the same question \code{rfsrc}
+partial dependence answers. What \code{varPro::partialpro} adds is two
+wrinkles that are worth understanding before you read the curves.
+
+First, \code{partialpro} filters the partial grid through an isolation
+forest (Unlimited Virtual Twins, or UVT) so that unlikely combinations
+of the focal variable with the rest of the data are downweighted. The
+\code{rfsrc} version, by contrast, averages over the full marginal grid
+regardless of plausibility. So when a covariate is highly correlated
+with others, the two methods can disagree, and \code{partialpro}'s
+curve is the one restricted to the data manifold.
+
+Second, \code{partialpro} fits a local polynomial model to the
+predicted values rather than just plotting their mean. That gives
+three parallel curves per variable, stored as \code{yhat.par},
+\code{yhat.nonpar}, and \code{yhat.causal}, which the plot method
+overlays so you can see whether a smooth parametric story and the
+raw forest predictions are telling you the same thing.
+
+Interpretation of the y-axis depends on the outcome (per
+\code{varPro::partialpro}): response scale for regression, log-odds of
+the target class for classification, and either ensemble mortality
+(default) or RMST (if the original \code{varpro} call set
+\code{rmst}) for survival.
+}
+
+\section{What's in the output}{
+
+We split \code{partialpro}'s mixed list into two tidy data frames so
+the plot method does not have to. A variable with more than
+\code{cat_limit} distinct grid points goes into \code{$continuous},
+one row per grid point with the column means of \code{yhat.par},
+\code{yhat.nonpar}, and \code{yhat.causal} stored as
+\code{parametric}, \code{nonparametric}, and \code{causal}. A
+variable at or below \code{cat_limit} goes into \code{$categorical},
+one row per observation per category level, carrying the same three
+columns unaveraged so the plot method can draw boxplots. Path C
+(\code{scale \%in\% c("surv","chf")}) takes a different route: we
+hand the underlying \code{rfsrc} forest to \code{gg_partial_rfsrc} so
+you get a survival-probability or cumulative-hazard curve on the
+usual rfsrc scale instead.
+}
+
+\section{What you use this for}{
+
+\itemize{
+\item read the marginal shape of a relationship the varpro model
+found important — monotone, threshold, U-shape, flat;
+\item compare the three partialpro estimators on the same variable
+and flag the ones where parametric and nonparametric disagree —
+those are the candidates for closer inspection;
+\item report a survival partial dependence on the probability or
+cumulative-hazard scale (\code{scale = "surv"} or \code{"chf"})
+rather than the unbounded mortality scale.
+}
+A varpro partial dependence curve is a description of the model, not
+a causal effect. The \code{causal} column is varpro's local
+estimator, not a structural causal claim about the data-generating
+process.
+}
+
 \examples{
 set.seed(42)
 n_obs <- 30; n_pts <- 15
@@ -116,8 +181,8 @@ Random survival forests. \emph{The Annals of Applied Statistics},
 }
 \seealso{
 \code{\link{plot.gg_partial_varpro}},
-  \code{\link{gg_partialpro}} (deprecated),
-  \code{\link{gg_partial_rfsrc}}, \code{\link{varpro_feature_names}}
+\code{\link{gg_partialpro}} (deprecated),
+\code{\link{gg_partial_rfsrc}}, \code{\link{varpro_feature_names}}
 
 \code{\link{gg_partial_varpro}}
 }

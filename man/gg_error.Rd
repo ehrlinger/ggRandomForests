@@ -19,9 +19,9 @@ supported.}
 }
 \value{
 A \code{gg_error} \code{data.frame} containing at least the
-  cumulative OOB error columns and an \code{ntree} counter. When
-  \code{training = TRUE} is honored an additional \code{train} column is
-  included.
+cumulative OOB error columns and an \code{ntree} counter. When
+\code{training = TRUE} is honored an additional \code{train} column is
+included.
 }
 \description{
 Extract the cumulative out-of-bag (OOB) or in-bag training error rate from
@@ -191,8 +191,8 @@ Regression and Classification. R package version >= 3.4.0.
 }
 \seealso{
 \code{\link{plot.gg_error}}, \code{\link{gg_vimp}},
-  \code{\link{gg_variable}},
-  \code{\link[randomForestSRC]{rfsrc}},
-  \code{\link[randomForest]{randomForest}},
-  \code{\link[randomForestSRC]{plot.rfsrc}}
+\code{\link{gg_variable}},
+\code{\link[randomForestSRC]{rfsrc}},
+\code{\link[randomForest]{randomForest}},
+\code{\link[randomForestSRC]{plot.rfsrc}}
 }

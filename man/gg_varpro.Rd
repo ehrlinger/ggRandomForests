@@ -43,19 +43,19 @@ median per-tree z, after the cutoff filter has been applied.
 \value{
 A named list of class \code{"gg_varpro"} with elements:
 \describe{
-  \item{\code{$imp}}{Summary data frame: \code{variable} (factor with
-    levels ordered by descending median per-tree z), \code{z} (aggregate
-    z-score from \code{importance()}), \code{selected} (logical,
-    \code{z > cutoff}).}
-  \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
-    otherwise an ntree x p matrix of per-tree importance values.}
-  \item{\code{$stats}}{Per-variable summary: \code{variable},
-    \code{median}, \code{q05}, \code{q15}, \code{q85}, \code{q95}
-    (on z-scale when \code{local.std = TRUE}, raw when \code{FALSE}),
-    plus \code{mean} (raw importance mean, always stored).}
-  \item{\code{$conditional}}{\code{NULL} when \code{conditional = FALSE};
-    otherwise a data frame with columns \code{variable}, \code{class},
-    \code{z} (one row per variable x class combination).}
+\item{\code{$imp}}{Summary data frame: \code{variable} (factor with
+levels ordered by descending median per-tree z), \code{z} (aggregate
+z-score from \code{importance()}), \code{selected} (logical,
+\code{z > cutoff}).}
+\item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
+otherwise an ntree x p matrix of per-tree importance values.}
+\item{\code{$stats}}{Per-variable summary: \code{variable},
+\code{median}, \code{q05}, \code{q15}, \code{q85}, \code{q95}
+(on z-scale when \code{local.std = TRUE}, raw when \code{FALSE}),
+plus \code{mean} (raw importance mean, always stored).}
+\item{\code{$conditional}}{\code{NULL} when \code{conditional = FALSE};
+otherwise a data frame with columns \code{variable}, \code{class},
+\code{z} (one row per variable x class combination).}
 }
 A \code{"provenance"} attribute carries \code{family}, \code{local.std},
 \code{cutoff}, \code{faithful}, \code{conditional}, \code{xvar.names},
@@ -69,6 +69,71 @@ whiskers run to the 5th and 95th -- not the usual Tukey 1.5 IQR whiskers.
 For a classification forest you can also keep the class-conditional
 importances.
 }
+\section{What varpro is doing}{
+
+Permutation importance asks "what happens to OOB accuracy when I scramble
+this variable?" That works, but it leans on artificial data — the
+permuted column — and the answer can be unstable when variables are
+correlated. The varpro framework (Lu and Ishwaran, 2024) replaces
+permutation with \emph{release rules}. The forest is grown with guided
+splitting; from a subset of trees varpro samples a collection of
+decision-rule branches; for each variable it then compares the
+response inside the rule's region to the response after the rule's
+constraint on that variable is "released". The size of that change,
+aggregated over many rules and trees, is the variable's importance.
+No synthetic covariates, no permutation — the contrast is between two
+real subsets of the data.
+
+Because varpro builds importance from rules sampled over trees, every
+tree contributes its own importance value for each variable. Those are
+the per-tree scores we summarise here. With \code{local.std = TRUE}
+(the default) the per-tree values are standardised by their column
+standard deviation so the column mean equals the aggregate z-score
+returned by \code{varPro::importance()}; that z-score is the canonical
+"is this variable in or out?" statistic, and \code{cutoff = 0.79} is
+varpro's default selection threshold.
+
+For a classification forest, varpro also returns a class-conditional
+z table: the same importance computed restricting attention to rules
+relevant to each class. \code{conditional = TRUE} keeps that table so
+the plot method can show which variables matter for which class
+rather than only in aggregate.
+}
+
+\section{What's in the output}{
+
+\code{$imp} is the one-row-per-variable summary: aggregate z from
+\code{varPro::importance()}, plus a \code{selected} flag for
+\code{z > cutoff}. \code{$stats} holds the box quantiles
+(5/15/50/85/95 percentiles, plus the raw mean) computed from the
+per-tree matrix; these are what the boxplot draws. \code{$imp.tree}
+is the per-tree matrix itself, kept only when \code{faithful = TRUE}
+so the plot method can scatter individual tree values over the box.
+\code{$conditional} is the tidy class x variable z table, present
+only when \code{conditional = TRUE} and the family is
+classification.
+}
+
+\section{What you use this for}{
+
+\itemize{
+\item rank candidate variables by importance and pick a working set
+above varpro's z cutoff;
+\item see, via the boxplot's spread and the per-tree points
+(\code{faithful = TRUE}), how stable each variable's importance
+is across trees — a high median with a wide box is a different
+story from a high median with a tight box;
+\item for a classification forest, ask which variables drive which
+class (\code{conditional = TRUE}) rather than just which
+variables drive the model overall.
+}
+The z-score is a standardised ranking statistic, not a p-value or a
+probability. Two variables with the same z are "similarly important
+by this method", not "equally likely to be true signal". For a
+data-driven cutoff rather than the 0.79 default, see
+\code{varPro::cv.varpro}.
+}
+
 \examples{
 \donttest{
 set.seed(42)
@@ -78,6 +143,11 @@ print(gg)
 plot(gg)
 }
 
+}
+\references{
+Lu, M. and Ishwaran, H. (2024). Model-independent variable selection
+via the rule-based variable priority framework. \emph{arXiv preprint}
+\href{https://arxiv.org/abs/2409.09003}{arXiv:2409.09003}.
 }
 \seealso{
 \code{\link{plot.gg_varpro}}, \code{\link{gg_vimp}}

@@ -14,25 +14,25 @@ forest (\code{object$family == "surv"}).}
 }
 \value{
 A \code{gg_brier} \code{data.frame} with columns
-  \describe{
-    \item{time}{event time grid (\code{object$time.interest}).}
-    \item{brier}{overall Brier score at each time.}
-    \item{bs.q25, bs.q50, bs.q75, bs.q100}{Brier score within each
-      mortality-risk quartile (lowest to highest risk).}
-    \item{bs.lower, bs.upper}{15th and 85th percentile of per-subject
-      Brier contributions at each time. Used by
-      \code{plot.gg_brier(by_quartile = TRUE)} to draw an envelope
-      around the overall curve.}
-    \item{crps}{running CRPS (overall) at each time, normalised by
-      elapsed time.}
-    \item{crps.q25, crps.q50, crps.q75, crps.q100}{running CRPS within
-      each mortality-risk quartile.}
-    \item{crps.lower, crps.upper}{running CRPS of the 15th / 85th
-      per-subject Brier percentile, normalised by elapsed time.}
-  }
-  The integrated CRPS (a single scalar matching
-  \code{get.brier.survival()$crps}) is attached as
-  \code{attr(., "crps_integrated")}.
+\describe{
+\item{time}{event time grid (\code{object$time.interest}).}
+\item{brier}{overall Brier score at each time.}
+\item{bs.q25, bs.q50, bs.q75, bs.q100}{Brier score within each
+mortality-risk quartile (lowest to highest risk).}
+\item{bs.lower, bs.upper}{15th and 85th percentile of per-subject
+Brier contributions at each time. Used by
+\code{plot.gg_brier(by_quartile = TRUE)} to draw an envelope
+around the overall curve.}
+\item{crps}{running CRPS (overall) at each time, normalised by
+elapsed time.}
+\item{crps.q25, crps.q50, crps.q75, crps.q100}{running CRPS within
+each mortality-risk quartile.}
+\item{crps.lower, crps.upper}{running CRPS of the 15th / 85th
+per-subject Brier percentile, normalised by elapsed time.}
+}
+The integrated CRPS (a single scalar matching
+\code{get.brier.survival()$crps}) is attached as
+\code{attr(., "crps_integrated")}.
 }
 \description{
 The Brier score asks a familiar question of any probabilistic forecast:
@@ -58,8 +58,8 @@ is estimated either by Kaplan-Meier (\code{cens.model = "km"}, the
 default) or by a separate censoring forest (\code{cens.model = "rfsrc"}).
 }
 \note{
-Brier score / CRPS is `randomForestSRC` survival-only; there
-  is no `randomForest` method.
+Brier score / CRPS is \code{randomForestSRC} survival-only; there
+is no \code{randomForest} method.
 }
 \examples{
 \dontrun{
@@ -97,6 +97,6 @@ Biometrical Journal, 48(6):1029-1040.
 }
 \seealso{
 \code{\link{plot.gg_brier}},
-  \code{\link[randomForestSRC]{get.brier.survival}},
-  \code{\link{gg_error}}
+\code{\link[randomForestSRC]{get.brier.survival}},
+\code{\link{gg_error}}
 }

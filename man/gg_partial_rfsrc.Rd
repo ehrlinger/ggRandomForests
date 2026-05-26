@@ -54,14 +54,14 @@ Defaults to 25.}
 }
 \value{
 A named list with two elements:
-  \describe{
-    \item{continuous}{A \code{data.frame} with columns \code{x} (numeric),
-      \code{yhat}, \code{name} (variable name), and optionally \code{grp}
-      (the level of \code{xvar2.name}) and \code{time} (survival forests
-      only) for all continuous predictors.}
-    \item{categorical}{A \code{data.frame} with the same columns but
-      \code{x} kept as character, for low-cardinality predictors.}
-  }
+\describe{
+\item{continuous}{A \code{data.frame} with columns \code{x} (numeric),
+\code{yhat}, \code{name} (variable name), and optionally \code{grp}
+(the level of \code{xvar2.name}) and \code{time} (survival forests
+only) for all continuous predictors.}
+\item{categorical}{A \code{data.frame} with the same columns but
+\code{x} kept as character, for low-cardinality predictors.}
+}
 }
 \description{
 A partial dependence curve answers a what-if question: hold the rest of
@@ -121,5 +121,5 @@ prt_dta <- gg_partial_rfsrc(airq.obj,
 }
 \seealso{
 \code{\link{gg_partial}}, \code{\link[randomForestSRC]{partial.rfsrc}},
-  \code{\link[randomForestSRC]{get.partial.plot.data}}
+\code{\link[randomForestSRC]{get.partial.plot.data}}
 }

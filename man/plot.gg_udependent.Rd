@@ -35,6 +35,38 @@ A signal variable (\code{selected = TRUE}) gets a blue node
 with degree.  Edge width and opacity both grow with the raw dependency
 weight \code{I[i,j]}.
 }
+\section{Reading the network}{
+
+Each node is a variable; each edge is a cross-variable dependency
+that cleared the threshold passed to \code{gg_udependent}. The
+Fruchterman-Reingold layout (the default) places mutually connected
+variables near each other, so the picture tends to show hubs and
+the clusters around them rather than a tidy ring. The eye usually
+goes first to the largest blue node — a variable that is both in
+the signal set and connects to many others is a hub of the
+dependency structure. Edges with wider, more opaque strokes are
+stronger dependencies; thin, faint edges sit near the threshold and
+are the ones that would disappear first if you raised it.
+
+Grey, low-degree nodes are the ones UVarPro thinks are not
+contributing much to the structure. (Truly isolated nodes are
+dropped by \code{gg_udependent()} before the graph is drawn — what you
+see is the connected component.) A cluster of mutually
+connected variables is worth checking for redundancy — they may be
+several views of the same underlying quantity.
+}
+
+\section{What this tells you}{
+
+Use the figure to pick a working set of variables: the hubs and
+their immediate neighbours are the candidates UVarPro flags as
+carrying structure. If a cluster of high-degree variables looks
+like it might be measuring the same thing, that is a cue to look at
+their pairwise correlations or fit them as a block rather than
+individually. The threshold and layout are recorded in the caption
+so a different choice is easy to spot in a later figure.
+}
+
 \examples{
 \donttest{
 if (requireNamespace("ggraph", quietly = TRUE)) {

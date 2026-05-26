@@ -25,34 +25,34 @@ Omit or leave missing to return an unstratified result.}
 \item{...}{Additional arguments controlling output for specific forest
 families:
 \describe{
-  \item{surv_type}{Character; one of \code{"surv"} (default),
-    \code{"chf"}, or \code{"mortality"} for survival forests.}
-  \item{conf.int}{Numeric coverage probability (e.g. \code{0.95}) to
-    request bootstrap pointwise confidence bands for survival forests.
-    Triggers wide-format output with \code{lower}, \code{upper},
-    \code{median}, and \code{mean} columns.}
-  \item{bs.sample}{Integer; number of bootstrap resamples when
-    \code{conf.int} is set. Defaults to the number of observations.}
+\item{surv_type}{Character; one of \code{"surv"} (default),
+\code{"chf"}, or \code{"mortality"} for survival forests.}
+\item{conf.int}{Numeric coverage probability (e.g. \code{0.95}) to
+request bootstrap pointwise confidence bands for survival forests.
+Triggers wide-format output with \code{lower}, \code{upper},
+\code{median}, and \code{mean} columns.}
+\item{bs.sample}{Integer; number of bootstrap resamples when
+\code{conf.int} is set. Defaults to the number of observations.}
 }}
 }
 \value{
 A \code{gg_rfsrc} object (a classed \code{data.frame}) whose
-  structure depends on the forest family:
-  \describe{
-    \item{regression}{Columns \code{yhat} and the response name; optionally
-      a \code{group} column when \code{by} is supplied.}
-    \item{classification}{One column per class with predicted probabilities;
-      a \code{y} column with observed class labels; optionally \code{group}.}
-    \item{survival (no CI / grouping)}{Long-format with columns
-      \code{variable} (event time), \code{value} (survival probability),
-      \code{obs_id}, and \code{event}.}
-    \item{survival (with \code{conf.int} or \code{by})}{Wide-format with
-      pointwise bootstrap CI columns (\code{lower}, \code{upper},
-      \code{median}, \code{mean}) per time point; a \code{group} column
-      when \code{by} is supplied.}
-  }
-  The object carries class attributes for the forest family so that
-  \code{\link{plot.gg_rfsrc}} dispatches correctly.
+structure depends on the forest family:
+\describe{
+\item{regression}{Columns \code{yhat} and the response name; optionally
+a \code{group} column when \code{by} is supplied.}
+\item{classification}{One column per class with predicted probabilities;
+a \code{y} column with observed class labels; optionally \code{group}.}
+\item{survival (no CI / grouping)}{Long-format with columns
+\code{variable} (event time), \code{value} (survival probability),
+\code{obs_id}, and \code{event}.}
+\item{survival (with \code{conf.int} or \code{by})}{Wide-format with
+pointwise bootstrap CI columns (\code{lower}, \code{upper},
+\code{median}, \code{mean}) per time point; a \code{group} column
+when \code{by} is supplied.}
+}
+The object carries class attributes for the forest family so that
+\code{\link{plot.gg_rfsrc}} dispatches correctly.
 }
 \description{
 Extracts the predicted response values from the
@@ -61,10 +61,10 @@ the response using \code{\link{plot.gg_rfsrc}}.
 }
 \details{
 For survival forests, use the \code{surv_type} argument
-  (\code{"surv"}, \code{"chf"}, or \code{"mortality"}) to select the
-  predicted quantity. Bootstrap confidence bands are requested by passing
-  \code{conf.int} (e.g. \code{conf.int = 0.95}); the number of resamples
-  is controlled by \code{bs.sample}.
+(\code{"surv"}, \code{"chf"}, or \code{"mortality"}) to select the
+predicted quantity. Bootstrap confidence bands are requested by passing
+\code{conf.int} (e.g. \code{conf.int = 0.95}); the number of resamples
+is controlled by \code{bs.sample}.
 }
 \examples{
 ## ------------------------------------------------------------
@@ -119,6 +119,6 @@ plot(gg_rfsrc(rfsrc_veteran, by = "trt"))
 }
 \seealso{
 \code{\link{plot.gg_rfsrc}},
-  \code{\link[randomForestSRC]{rfsrc}},
-  \code{\link{gg_survival}}
+\code{\link[randomForestSRC]{rfsrc}},
+\code{\link{gg_survival}}
 }

@@ -383,7 +383,7 @@ gg_rfsrc.rfsrc <- function(object, # nolint: cyclocomp_linter
 #' @param bs_samples Integer; number of bootstrap resamples.
 #' @param level_set Numeric vector of length 2 giving the lower and upper
 #'   quantile probabilities for the confidence band (e.g. \code{c(0.025, 0.975)}
-#'   for a 95\% CI).
+#'   for a 95% CI).
 #'
 #' @return A \code{data.frame} with one row per unique event time and columns
 #'   \code{value} (time), \code{lower}, \code{upper}, \code{median}, and

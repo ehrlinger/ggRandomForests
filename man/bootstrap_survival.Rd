@@ -20,8 +20,8 @@ for a 95\% CI).}
 }
 \value{
 A \code{data.frame} with one row per unique event time and columns
-  \code{value} (time), \code{lower}, \code{upper}, \code{median}, and
-  \code{mean}.
+\code{value} (time), \code{lower}, \code{upper}, \code{median}, and
+\code{mean}.
 }
 \description{
 Draws \code{bs_samples} bootstrap resamples (with replacement) of the

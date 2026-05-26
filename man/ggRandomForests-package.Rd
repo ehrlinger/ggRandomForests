@@ -46,8 +46,8 @@ modify and customize the figures to their liking.
 
 The \code{ggRandomForests} package contains the following data functions:
 \itemize{
-\item \code{\link{gg_rfsrc}}: randomForest[SRC] predictions.
-\item \code{\link{gg_error}}: randomForest[SRC] convergence rate based on
+\item \code{\link{gg_rfsrc}}: randomForestSRC predictions.
+\item \code{\link{gg_error}}: randomForestSRC convergence rate based on
 the OOB error rate.
 \item \code{\link{gg_roc}}: ROC curves for randomForest classification
 models.

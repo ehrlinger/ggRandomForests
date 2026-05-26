@@ -23,10 +23,10 @@ importance information.}
 }
 \value{
 \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank
-  order, optionally containing class-specific scores and a relative importance
-  column. When \code{randomForest} objects lack stored importance values a
-  warning is issued and \code{NA} placeholders are returned so plots remain
-  reproducible.
+order, optionally containing class-specific scores and a relative importance
+column. When \code{randomForest} objects lack stored importance values a
+warning is issued and \code{NA} placeholders are returned so plots remain
+reproducible.
 }
 \description{
 \code{gg_vimp} Extracts the variable importance (VIMP) information from a

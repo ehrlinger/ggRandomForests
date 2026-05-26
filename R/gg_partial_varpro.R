@@ -1,19 +1,78 @@
 ##=============================================================================
 #' Partial dependence data from a varPro model
 #'
-#' \code{varpro::partialpro} returns one list, with continuous and
+#' \code{varPro::partialpro} returns one list, with continuous and
 #' categorical predictors mixed together. This function splits that list into
 #' two tidy data frames, one for each kind, and resolves the y-axis label the
 #' plot method will use.
 #'
-#' @param part_dta Partial plot data from \code{varpro::partialpro}.  Each
+#' @section What partialpro is doing:
+#' A partial dependence curve answers the question, "if I hold a single
+#' variable at a grid of values and average out everything else, how does
+#' the model's prediction move?" That is the same question \code{rfsrc}
+#' partial dependence answers. What \code{varPro::partialpro} adds is two
+#' wrinkles that are worth understanding before you read the curves.
+#'
+#' First, \code{partialpro} filters the partial grid through an isolation
+#' forest (Unlimited Virtual Twins, or UVT) so that unlikely combinations
+#' of the focal variable with the rest of the data are downweighted. The
+#' \code{rfsrc} version, by contrast, averages over the full marginal grid
+#' regardless of plausibility. So when a covariate is highly correlated
+#' with others, the two methods can disagree, and \code{partialpro}'s
+#' curve is the one restricted to the data manifold.
+#'
+#' Second, \code{partialpro} fits a local polynomial model to the
+#' predicted values rather than just plotting their mean. That gives
+#' three parallel curves per variable, stored as \code{yhat.par},
+#' \code{yhat.nonpar}, and \code{yhat.causal}, which the plot method
+#' overlays so you can see whether a smooth parametric story and the
+#' raw forest predictions are telling you the same thing.
+#'
+#' Interpretation of the y-axis depends on the outcome (per
+#' \code{varPro::partialpro}): response scale for regression, log-odds of
+#' the target class for classification, and either ensemble mortality
+#' (default) or RMST (if the original \code{varpro} call set
+#' \code{rmst}) for survival.
+#'
+#' @section What's in the output:
+#' We split \code{partialpro}'s mixed list into two tidy data frames so
+#' the plot method does not have to. A variable with more than
+#' \code{cat_limit} distinct grid points goes into \code{$continuous},
+#' one row per grid point with the column means of \code{yhat.par},
+#' \code{yhat.nonpar}, and \code{yhat.causal} stored as
+#' \code{parametric}, \code{nonparametric}, and \code{causal}. A
+#' variable at or below \code{cat_limit} goes into \code{$categorical},
+#' one row per observation per category level, carrying the same three
+#' columns unaveraged so the plot method can draw boxplots. Path C
+#' (\code{scale \%in\% c("surv","chf")}) takes a different route: we
+#' hand the underlying \code{rfsrc} forest to \code{gg_partial_rfsrc} so
+#' you get a survival-probability or cumulative-hazard curve on the
+#' usual rfsrc scale instead.
+#'
+#' @section What you use this for:
+#' \itemize{
+#'   \item read the marginal shape of a relationship the varpro model
+#'     found important — monotone, threshold, U-shape, flat;
+#'   \item compare the three partialpro estimators on the same variable
+#'     and flag the ones where parametric and nonparametric disagree —
+#'     those are the candidates for closer inspection;
+#'   \item report a survival partial dependence on the probability or
+#'     cumulative-hazard scale (\code{scale = "surv"} or \code{"chf"})
+#'     rather than the unbounded mortality scale.
+#' }
+#' A varpro partial dependence curve is a description of the model, not
+#' a causal effect. The \code{causal} column is varpro's local
+#' estimator, not a structural causal claim about the data-generating
+#' process.
+#'
+#' @param part_dta Partial plot data from \code{varPro::partialpro}.  Each
 #'   element must contain \code{xvirtual}, \code{xorg}, \code{yhat.par},
 #'   \code{yhat.nonpar}, and \code{yhat.causal}.  Supply at least one of
 #'   \code{part_dta} or \code{object}.
 #' @param object A fitted \code{varpro} object, the forest the partial data
 #'   came from.  When supplied it provides the provenance metadata, and when
 #'   \code{part_dta} is \code{NULL} it is passed to
-#'   \code{varpro::partialpro(object)} for you.  Required when
+#'   \code{varPro::partialpro(object)} for you.  Required when
 #'   \code{scale \%in\% c("surv","chf")}.
 #' @param scale Character; sets the y-axis label and, for survival forests,
 #'   the output type.  One of \code{"auto"} (default), \code{"mortality"},

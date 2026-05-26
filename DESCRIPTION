@@ -1,7 +1,7 @@
 Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
-Version: 2.7.3.9008
+Version: 2.7.3.9009
 Date: 2026-05-21
 Authors@R: person("John", "Ehrlinger",
   role = c("aut", "cre"),
@@ -50,3 +50,4 @@ Suggests:
     callr
 VignetteBuilder: quarto
 Config/roxygen2/version: 8.0.0
+Roxygen: list(markdown = TRUE)

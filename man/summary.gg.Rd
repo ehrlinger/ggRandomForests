@@ -58,8 +58,8 @@
 }
 \value{
 A \code{summary.gg} object: a list with \code{header} and
-  \code{body} character vectors. \code{print.summary.gg} returns it
-  invisibly.
+\code{body} character vectors. \code{print.summary.gg} returns it
+invisibly.
 }
 \description{
 Where \code{print} gives you a one-line header, \code{summary} digs a level
