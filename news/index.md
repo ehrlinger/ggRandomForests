@@ -2,6 +2,23 @@
 
 ## ggRandomForests v2.8.0 (development) — continued
 
+- New
+  [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
+  and
+  [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md):
+  tidy wrapper and ranked-elbow + density visualisation for
+  [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html)
+  isolation-forest anomaly scores.
+  [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
+  takes `panel = c("both", "elbow", "density")` and optional `threshold`
+  (score-space) or `top_n_pct` (quantile-space) to draw a reference
+  line; if both are set, `threshold` wins with a message. A `method`
+  column auto-triggers colour grouping for multi-method comparisons (use
+  [`dplyr::bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html)
+  on three
+  [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
+  calls). `print` / `summary` / `autoplot` S3 companions follow the
+  existing `gg_*` conventions. First of three Phase 4 sub-projects.
 - [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md):
   fix render error on the default multi-class classification plot. The
   default-xvar selection was treating `yvar` (the observed-class column)
