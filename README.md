@@ -95,9 +95,10 @@ First, the data object stands on its own. It carries everything its plot needs, 
 inspect it, or come back to it later without keeping the original forest — which can be large —
 in memory.
 
-Second, you are never locked into the default figure. Because a `plot()` method returns a plain
-`ggplot` object, you can add layers, swap scales, or apply a theme; and if the default is not what
-you want, you can ignore it entirely and build the figure from the tidy data yourself.
+Second, you are never locked into the default figure. Because a `plot()` method returns a single
+plottable object (a `ggplot`, or a `patchwork` composite for the multi-panel methods), you can add
+layers, swap scales, or apply a theme; and if the default is not what you want, you can ignore it
+entirely and build the figure from the tidy data yourself.
 
 ## Recent changes
 
