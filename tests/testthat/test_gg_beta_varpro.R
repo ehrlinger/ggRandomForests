@@ -128,3 +128,30 @@ test_that("gg_beta_varpro counts lasso-shrunk-to-zero rules in n_rules", {
   # mean(|0|, |0|, |1.5|, |-2.5|) = 1.0
   expect_equal(out$beta_mean, 1.0, tolerance = 1e-10)
 })
+
+test_that("gg_beta_varpro cached and uncached paths agree", {
+  if (!identical(Sys.getenv("GG_BETA_VARPRO_SLOW_TESTS", "true"), "true")) {
+    skip("Slow test — set GG_BETA_VARPRO_SLOW_TESTS=true to run")
+  }
+  v <- .varpro_mtcars()
+  b <- .beta_fit_mtcars()
+
+  set.seed(20260526L)
+  uncached <- gg_beta_varpro(v)
+  cached   <- gg_beta_varpro(v, beta_fit = b)
+
+  # Strip provenance before comparing the tidy-frame content — `precomputed`
+  # differs (TRUE vs FALSE) between the two paths by design, and that flag is
+  # checked separately below.
+  strip <- function(x) {
+    attr(x, "provenance") <- NULL
+    as.data.frame(x)
+  }
+  expect_equal(
+    strip(uncached),
+    strip(cached),
+    tolerance = 1e-10
+  )
+  expect_false(attr(uncached, "provenance")$precomputed)
+  expect_true(attr(cached, "provenance")$precomputed)
+})
