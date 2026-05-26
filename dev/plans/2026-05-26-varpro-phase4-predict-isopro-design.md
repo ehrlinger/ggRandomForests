@@ -87,9 +87,14 @@ plot(gg_both)
 
 `method` is the existing special column used to colour-group rnd / unsupv / auto curves; reusing it for `train` / `test` works because the plot only cares about the column's existence, not its semantics. A `@section` in the `gg_isopro` roxygen documents this overload so it isn't a hidden trick.
 
-## Polarity reminder
+## Polarity: how the wrapper presents both conventions
 
-`varPro::predict.isopro(quantiles = TRUE)` returns quantiles where *smaller is more anomalous* (a row whose case depth sits in the lower tail of the training depth distribution). `gg_isopro`'s `howbad` is the opposite: *higher is more anomalous*. The wrapper flips so the column is always semantically the same. Document this in the roxygen so a user comparing the wrapper's `howbad` against raw `predict()` output isn't surprised.
+`varPro::predict.isopro(quantiles = TRUE)` returns quantiles where *smaller is more anomalous* (a row whose case depth sits in the lower tail of the training depth distribution). `gg_isopro`'s `howbad` is the opposite: *higher is more anomalous*. The wrapper is **not** trying to hide the conflict — it shows both polarities by keeping both columns:
+
+- `case.depth` carries the raw mean depth from `predict(quantiles = FALSE)`. **Lower = more anomalous.** This is varPro's native scale, exposed directly, with no transformation. A user who wants to cross-reference against `varPro::predict.isopro()` output can do it on this column.
+- `howbad` carries `1 - predict(quantiles = TRUE)`. **Higher = more anomalous.** This is the wrapper convention, and it matches what the training-path `gg_isopro()` already produces. The plot method's elbow shape, the `threshold` annotation, and the `top_n_pct` quantile all assume this polarity.
+
+The roxygen must name this transformation explicitly. A user who reads only the `howbad` column should still come away understanding: (i) it isn't byte-identical to `predict.isopro(quantiles = TRUE)`, (ii) the relationship is `howbad = 1 - quantile`, and (iii) `case.depth` is the unmodified varPro number if you need the raw measure.
 
 ## Validation
 
@@ -114,7 +119,11 @@ One new `vdiffr::expect_doppelganger` inside the existing `VDIFFR_RUN_TESTS` gua
 
 - Extend the existing `gg_isopro` roxygen with:
   - A new `@param newdata` line in the terse register.
-  - A short `@section Scoring new data` block in the narrative register: what `newdata` does, the polarity flip, and the train/test overlay caller pattern.
+  - A short `@section Scoring new data` block in the narrative register, written to make the polarity transformation explicit:
+    - What `newdata` does.
+    - The two `predict.isopro` calls and how their outputs map to the two columns (raw depth → `case.depth`, `1 - quantile` → `howbad`).
+    - One sentence naming the transformation in code form (e.g. "`howbad = 1 - predict(fit, newdata, quantiles = TRUE)`") so a user diffing against raw `predict()` output sees exactly where the difference comes from.
+    - The train/test overlay caller pattern.
 - Update the existing "What you use this for" section to mention the new-data use case (a held-out cohort, a production scoring scenario).
 
 ## Files
