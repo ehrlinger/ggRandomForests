@@ -15,6 +15,7 @@
 \alias{autoplot.gg_brier}
 \alias{autoplot.gg_varpro}
 \alias{autoplot.gg_udependent}
+\alias{autoplot.gg_isopro}
 \title{\code{autoplot} methods for \pkg{ggRandomForests} data objects}
 \usage{
 \method{autoplot}{gg_error}(object, ...)
@@ -42,6 +43,8 @@
 \method{autoplot}{gg_varpro}(object, ...)
 
 \method{autoplot}{gg_udependent}(object, ...)
+
+\method{autoplot}{gg_isopro}(object, ...)
 }
 \arguments{
 \item{object}{A \code{gg_*} data object (see Details).}

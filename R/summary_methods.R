@@ -288,3 +288,19 @@ summary.gg_brier <- function(object, ...) {
   )
   .summary_skel(object, "gg_brier", body)
 }
+
+#' @rdname summary.gg
+#' @export
+summary.gg_isopro <- function(object, ...) {
+  q  <- stats::quantile(object$howbad, probs = c(0.05, 0.50, 0.95),
+                        na.rm = TRUE, names = FALSE)
+  body <- c(
+    sprintf("rows: %d", nrow(object)),
+    sprintf("howbad range: [%.4g, %.4g]",
+            min(object$howbad, na.rm = TRUE),
+            max(object$howbad, na.rm = TRUE)),
+    sprintf("howbad quantiles (5%%/50%%/95%%): %.4g / %.4g / %.4g",
+            q[1], q[2], q[3])
+  )
+  .summary_skel(object, "gg_isopro", body)
+}

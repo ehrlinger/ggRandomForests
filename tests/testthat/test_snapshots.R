@@ -320,4 +320,23 @@ if (requireNamespace("randomForest", quietly = TRUE)) {
   })
 }
 
+## ── gg_isopro snapshots (Phase 4) ────────────────────────────────────────
+if (requireNamespace("varPro", quietly = TRUE)) {
+  local({
+    set.seed(1L)
+    fit <- varPro::isopro(data = iris[, 1:4], method = "rnd",
+                          sampsize = 32, ntree = 50)
+    gg  <- gg_isopro(fit)
+
+    test_that("snapshot: gg-isopro-default", {
+      vdiffr::expect_doppelganger("gg-isopro-default", plot(gg))
+    })
+
+    test_that("snapshot: gg-isopro-threshold", {
+      vdiffr::expect_doppelganger("gg-isopro-threshold",
+                                  plot(gg, threshold = 0.8))
+    })
+  })
+}
+
 } # end CI guard

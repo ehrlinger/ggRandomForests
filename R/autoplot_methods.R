@@ -135,3 +135,9 @@ autoplot.gg_varpro <- function(object, ...) {
 autoplot.gg_udependent <- function(object, ...) {
   plot(object, ...)
 }
+
+#' @rdname autoplot.gg
+#' @export
+autoplot.gg_isopro <- function(object, ...) {
+  plot(object, ...)
+}

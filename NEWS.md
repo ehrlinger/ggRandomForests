@@ -1,8 +1,17 @@
 Package: ggRandomForests
-Version: 2.7.3.9007
+Version: 2.7.3.9008
 
 ggRandomForests v2.8.0 (development) — continued
 =================================================
+* New `gg_isopro()` and `plot.gg_isopro()`: tidy wrapper and ranked-elbow +
+  density visualisation for `varPro::isopro` isolation-forest anomaly
+  scores. `plot.gg_isopro()` takes `panel = c("both", "elbow", "density")`
+  and optional `threshold` (score-space) or `top_n_pct` (quantile-space)
+  to draw a reference line; if both are set, `threshold` wins with a
+  message. A `method` column auto-triggers colour grouping for multi-method
+  comparisons (use `dplyr::bind_rows()` on three `gg_isopro()` calls).
+  `print` / `summary` / `autoplot` S3 companions follow the existing `gg_*`
+  conventions. First of three Phase 4 sub-projects.
 * `plot.gg_variable()`: fix render error on the default multi-class
   classification plot. The default-xvar selection was treating `yvar` (the
   observed-class column) and `outcome` (the multi-class pivot facet) as

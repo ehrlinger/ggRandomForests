@@ -68,6 +68,12 @@ reference:
       - gg_udependent
       - plot.gg_udependent
 
+  - title: "Anomaly Detection"
+    desc: "Score and plot per-observation anomaly scores."
+    contents:
+      - gg_isopro
+      - plot.gg_isopro
+
   - title: "Variable Dependence"
     desc: "Marginal variable dependence plots."
     contents:

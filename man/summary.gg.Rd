@@ -16,6 +16,7 @@
 \alias{summary.gg_varpro}
 \alias{summary.gg_udependent}
 \alias{summary.gg_brier}
+\alias{summary.gg_isopro}
 \title{Summary methods for gg_* data objects}
 \usage{
 \method{print}{summary.gg}(x, ...)
@@ -45,6 +46,8 @@
 \method{summary}{gg_udependent}(object, ...)
 
 \method{summary}{gg_brier}(object, ...)
+
+\method{summary}{gg_isopro}(object, ...)
 }
 \arguments{
 \item{x}{A \code{summary.gg} object (for \code{print.summary.gg}).}

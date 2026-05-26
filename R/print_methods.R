@@ -202,3 +202,10 @@ print.gg_varpro <- function(x, ...) {
       sep = "")
   invisible(x)
 }
+
+#' @rdname print.gg
+#' @export
+print.gg_isopro <- function(x, ...) {
+  cat(.gg_header(x, "gg_isopro"), "\n", sep = "")
+  invisible(x)
+}
