@@ -167,3 +167,34 @@ test_that("plot.gg_beta_varpro returns a ggplot that builds", {
   expect_s3_class(built, "ggplot_built")
   expect_true(length(built$data) >= 1L)
 })
+
+test_that("gg_beta_varpro S3 companions return the expected shapes", {
+  v <- .varpro_mtcars()
+  b <- .beta_fit_mtcars()
+  out <- gg_beta_varpro(v, beta_fit = b)
+
+  # print invisibly returns x
+  pr <- withVisible(print(out))
+  expect_false(pr$visible)
+  expect_identical(pr$value, out)
+
+  # summary returns a named numeric, sorted descending, attribute n_rules present
+  s <- summary(out)
+  expect_s3_class(s, "summary.gg_beta_varpro")
+  expect_type(unclass(s), "double")
+  # as.numeric() strips both names and the n_rules attr so the comparison is
+  # value-only; sort() drops the n_rules attr and would otherwise cause a
+  # spurious attribute-mismatch failure.
+  vals <- as.numeric(unclass(s))
+  expect_equal(vals, sort(vals, decreasing = TRUE))
+  expect_equal(length(s), nrow(out))
+  expect_true(!is.null(attr(s, "n_rules")))
+
+  # autoplot delegates to plot
+  p1 <- plot(out)
+  p2 <- ggplot2::autoplot(out)
+  expect_equal(
+    ggplot2::ggplot_build(p1)$data,
+    ggplot2::ggplot_build(p2)$data
+  )
+})
