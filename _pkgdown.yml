@@ -65,6 +65,8 @@ reference:
       - plot.gg_vimp
       - gg_varpro
       - plot.gg_varpro
+      - gg_beta_varpro
+      - plot.gg_beta_varpro
       - gg_udependent
       - plot.gg_udependent
 
