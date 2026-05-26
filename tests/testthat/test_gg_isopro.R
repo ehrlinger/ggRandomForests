@@ -150,3 +150,27 @@ test_that("plot.gg_isopro: a method column triggers colour grouping in the elbow
   layer_aes <- p$layers[[1]]$mapping
   expect_true("colour" %in% names(layer_aes) || has_colour)
 })
+
+test_that("print.gg_isopro: prints a one-line header, invisibly", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  txt <- utils::capture.output(out <- print(gg))
+  expect_identical(out, gg)               # returns invisibly
+  expect_length(txt, 1L)                  # exactly one line
+  expect_match(txt, "gg_isopro")
+})
+
+test_that("summary.gg_isopro: returns summary.gg with quantile snapshot in body", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  s   <- summary(gg)
+  expect_s3_class(s, "summary.gg")
+  expect_true(any(grepl("rows", s$body)))
+  expect_true(any(grepl("howbad", s$body)))
+})
+
+test_that("autoplot.gg_isopro: same return as plot.gg_isopro for the default args", {
+  fit <- make_iso_fit()
+  gg  <- gg_isopro(fit)
+  expect_s3_class(autoplot(gg), "patchwork")
+})
