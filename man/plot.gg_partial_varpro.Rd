@@ -16,27 +16,27 @@
 \code{"nonparametric"}, \code{"causal"}.  Defaults to all three.
 Ignored for path-C objects.}
 
-\item{...}{Not currently used for path-A objects; forwarded to
+\item{...}{Unused for path-A objects; forwarded to
 \code{plot.gg_partial_rfsrc} for path-C objects.}
 }
 \value{
 A \code{ggplot} (or \code{patchwork}) object.
 }
 \description{
-Produces ggplot2 partial dependence curves from the named list returned
-by \code{\link{gg_partial_varpro}}.  Continuous predictors are shown as
-overlaid line curves (one per effect type); categorical predictors as
-side-by-side boxplots.  For survival path-C objects (produced when
-\code{scale \%in\% c("surv","chf")} is passed to the extractor) the plot
-is delegated to \code{\link{plot.gg_partial_rfsrc}}.
+Draws the partial dependence curves from the list that
+\code{\link{gg_partial_varpro}} returns.  Continuous predictors get
+overlaid line curves, one per effect type; categorical predictors get
+side-by-side boxplots.  Survival path-C objects (the ones you get when
+\code{scale \%in\% c("surv","chf")} was passed to the extractor) are
+handed off to \code{\link{plot.gg_partial_rfsrc}} for drawing.
 }
 \details{
-**Ensemble mortality (scale = "mortality"):** When the provenance scale
-is \code{"mortality"}, the y-axis label reads
-\emph{"Ensemble mortality (expected events)"} to make clear that this
-is an \strong{unbounded relative-risk score}, not a survival probability
-or \eqn{1 - S(t)} (Ishwaran, Kogalur, Blackstone & Lauer, 2008
-<doi:10.1214/08-AOAS169>).
+**Ensemble mortality (scale = "mortality"):** when the provenance scale
+is \code{"mortality"}, the y-axis is labelled
+\emph{"Ensemble mortality (expected events)"}.  The wording is
+deliberate: this is an \strong{unbounded relative-risk score}, not a
+survival probability and not \eqn{1 - S(t)} (Ishwaran, Kogalur,
+Blackstone & Lauer, 2008 <doi:10.1214/08-AOAS169>).
 }
 \examples{
 set.seed(42)

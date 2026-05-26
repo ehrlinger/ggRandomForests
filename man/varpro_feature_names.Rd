@@ -18,9 +18,9 @@ character vector of unique original variable names (no suffixes)
 }
 \description{
 \code{varpro} one-hot encodes factor variables, appending a numeric suffix
-for each level (e.g., \code{sex} becomes \code{sex0} and \code{sex1}).
-This function strips those suffixes iteratively until every name in
-\code{varpro_names} can be matched back to a column in \code{dataset}.
+for each level -- \code{sex} becomes \code{sex0} and \code{sex1}.  To map
+those back, this function strips the suffix one character at a time until
+every name in \code{varpro_names} matches a column in \code{dataset}.
 }
 \examples{
 ## ------------------------------------------------------------------

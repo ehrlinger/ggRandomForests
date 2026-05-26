@@ -23,6 +23,7 @@
 [randomForest](https://cran.r-project.org/package=randomForest).
 It separates data extraction from plotting so the intermediate tidy objects can be inspected, saved, or used
 for custom analyses.
+Listed in the [ggplot2 extensions gallery](https://exts.ggplot2.tidyverse.org/).
 
 ## Installation
 
@@ -80,19 +81,25 @@ vignette("ggRandomForests")
 | `gg_roc()` | `rfsrc` / `randomForest` (class) | ROC curve data |
 | `gg_brier()` | `rfsrc` (survival) | Time-resolved Brier score and CRPS |
 
-Each `gg_*` function has a corresponding `plot()` S3 method that returns a `ggplot2` object, making it easy
-to apply additional `ggplot2` layers or themes. Every `gg_*` object also implements `print()` (header-only
-summary at the REPL — use `head()` for rows) and `summary()` (printable diagnostics object).
+Each `gg_*` function has a matching `plot()` S3 method that hands back a single plottable object — a `ggplot`,
+or a `patchwork` composite when the method lays out multiple panels — so you can keep adding layers, scales, or a theme. Every `gg_*` object also has `print()` and `summary()` methods: `print()`
+shows a short header at the REPL rather than dumping every row (use `head()` when you want the rows), and
+`summary()` gives you a diagnostics object you can print or keep.
 
 ## Why ggRandomForests?
 
-- **Separation of data and figures.** `gg_*` functions extract tidy data objects from the forest.
-  `plot()` methods turn those into `ggplot2` figures. You can inspect, save, or transform the data
-  before plotting.
-- **Self-contained objects.** Each data object holds everything needed for its plot, so figures are
-  reproducible without the original forest in memory.
-- **Full `ggplot2` composability.** Every `plot()` method returns a `ggplot` object that accepts
-  additional layers, scales, and themes.
+The package is built on one decision: keep the data step and the figure step apart. The `gg_*`
+functions pull a tidy data object out of the forest; the `plot()` methods turn that object into a
+`ggplot2` figure. Two things follow from that split.
+
+First, the data object stands on its own. It carries everything its plot needs, so you can save it,
+inspect it, or come back to it later without keeping the original forest — which can be large —
+in memory.
+
+Second, you are never locked into the default figure. Because a `plot()` method returns a single
+plottable object (a `ggplot`, or a `patchwork` composite for the multi-panel methods), you can add
+layers, swap scales, or apply a theme; and if the default is not what you want, you can ignore it
+entirely and build the figure from the tidy data yourself.
 
 ## Recent changes
 

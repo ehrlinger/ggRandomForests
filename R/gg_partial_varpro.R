@@ -1,19 +1,21 @@
 ##=============================================================================
 #' Partial dependence data from a varPro model
 #'
-#' Splits the list returned by \code{varpro::partialpro} into separate
-#' data frames for continuous and categorical predictors, with provenance-
-#' aware y-axis labeling for downstream plot methods.
+#' \code{varpro::partialpro} returns one list, with continuous and
+#' categorical predictors mixed together. This function splits that list into
+#' two tidy data frames, one for each kind, and resolves the y-axis label the
+#' plot method will use.
 #'
 #' @param part_dta Partial plot data from \code{varpro::partialpro}.  Each
 #'   element must contain \code{xvirtual}, \code{xorg}, \code{yhat.par},
-#'   \code{yhat.nonpar}, and \code{yhat.causal}.  At least one of
-#'   \code{part_dta} or \code{object} must be supplied.
-#' @param object A fitted \code{varpro} object (the originating forest).
-#'   When supplied, used for provenance metadata and — when \code{part_dta}
-#'   is \code{NULL} — \code{varpro::partialpro(object)} is called
-#'   internally.  Required when \code{scale \%in\% c("surv","chf")}.
-#' @param scale Character; controls y-axis labeling and (for survival)
+#'   \code{yhat.nonpar}, and \code{yhat.causal}.  Supply at least one of
+#'   \code{part_dta} or \code{object}.
+#' @param object A fitted \code{varpro} object, the forest the partial data
+#'   came from.  When supplied it provides the provenance metadata, and when
+#'   \code{part_dta} is \code{NULL} it is passed to
+#'   \code{varpro::partialpro(object)} for you.  Required when
+#'   \code{scale \%in\% c("surv","chf")}.
+#' @param scale Character; sets the y-axis label and, for survival forests,
 #'   the output type.  One of \code{"auto"} (default), \code{"mortality"},
 #'   \code{"rmst"}, \code{"surv"}, or \code{"chf"}.
 #' @param time Numeric; the evaluation time point.  Required when
@@ -23,29 +25,30 @@
 #'   computation and axis labeling; if \code{NULL}, three quartile time
 #'   points from \code{time.interest} are used (see
 #'   \code{\link{gg_partial_rfsrc}}).
-#' @param nvars Integer; number of variables (list elements) to process.
-#'   Defaults to all variables in \code{part_dta}.
-#' @param cat_limit Integer; variables with
-#'   \code{length(xvirtual) <= cat_limit} are treated as categorical.
+#' @param nvars Integer; how many variables (list elements) to process.
+#'   Defaults to every variable in \code{part_dta}.
+#' @param cat_limit Integer; a variable with
+#'   \code{length(xvirtual) <= cat_limit} is treated as categorical.
 #'   Default \code{10}.
-#' @param model Character; label appended to all rows (useful when
-#'   combining results from multiple models in a single figure).
+#' @param model Character; a label tacked onto every row, handy when you are
+#'   combining results from several models in one figure.
 #'
 #' @details
-#' **Scale detection:** \code{scale = "auto"} with a supplied \code{object}
-#' resolves to \code{"mortality"} for survival forests and \code{"generic"}
-#' for regression/classification forests.  The RMST horizon \eqn{\tau} is
-#' \emph{not} stored in the \code{varpro} object (varPro 3.1.0); pass
-#' \code{scale = "rmst", time = tau} explicitly for RMST-labeled output.
+#' **Scale detection:** with \code{scale = "auto"} and an \code{object} in
+#' hand, the scale resolves to \code{"mortality"} for a survival forest and
+#' \code{"generic"} for a regression or classification forest.  The RMST
+#' horizon \eqn{\tau} is \emph{not} stored in the \code{varpro} object
+#' (varPro 3.1.0), so for RMST-labeled output you have to pass
+#' \code{scale = "rmst", time = tau} yourself.
 #'
-#' **Ensemble mortality (scale = "mortality"):** The y-axis represents
-#' \emph{ensemble mortality}: the expected number of events if the subject
-#' experienced the study-average cumulative hazard, equivalent to the
-#' \code{rfsrc} \code{predicted} value for survival forests (Ishwaran,
-#' Kogalur, Blackstone & Lauer, 2008 <doi:10.1214/08-AOAS169>).  This is
-#' an \strong{unbounded relative-risk score}---\emph{not} a survival
-#' probability or \eqn{1 - S(t)}---and must not be interpreted as one.
-#' For probability-scale output refit with
+#' **Ensemble mortality (scale = "mortality"):** here the y-axis is
+#' \emph{ensemble mortality}, the expected number of events a subject would
+#' see if they were exposed to the study-average cumulative hazard.  It is
+#' the same quantity as the \code{rfsrc} \code{predicted} value for survival
+#' forests (Ishwaran, Kogalur, Blackstone & Lauer, 2008
+#' <doi:10.1214/08-AOAS169>).  This is an \strong{unbounded relative-risk
+#' score}, \emph{not} a survival probability and not \eqn{1 - S(t)}; don't
+#' read it as one.  If you want output on the probability scale, refit with
 #' \code{varpro(..., rmst = tau)} and use \code{scale = "rmst"}.
 #'
 #' @return A named list of class \code{"gg_partial_varpro"} with elements:
@@ -53,7 +56,7 @@
 #'   \item{continuous}{data.frame with columns \code{variable},
 #'     \code{parametric}, \code{nonparametric}, \code{causal}, \code{name}
 #'     (and optionally \code{model}).}
-#'   \item{categorical}{data.frame with the same columns but one row per
+#'   \item{categorical}{data.frame with the same columns, one row per
 #'     observation per category level.}
 #' }
 #' A \code{"provenance"} attribute carries \code{source}, \code{family},

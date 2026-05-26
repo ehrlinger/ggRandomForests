@@ -1,34 +1,36 @@
 ##=============================================================================
 #' Plot a \code{gg_varpro} variable importance object
 #'
-#' Renders a horizontal boxplot of per-tree importance z-scores (or raw
-#' importances) with optional per-tree jitter overlay (\code{faithful=TRUE})
-#' or class-conditional facets (\code{conditional=TRUE}).
+#' Draws a horizontal boxplot of the per-tree importance z-scores, or of the
+#' raw importances if you asked for those.  Set \code{faithful = TRUE} at
+#' extract time and the per-tree points are scattered over the box; for a
+#' classification forest, \code{conditional = TRUE} splits the plot into one
+#' facet per class.
 #'
 #' @param x A \code{gg_varpro} object from \code{\link{gg_varpro}}.
-#' @param type Character; controls the display scale.  When omitted,
-#'   auto-detected from \code{provenance$local.std}: \code{"z"} if
-#'   \code{local.std = TRUE} (the default), \code{"raw"} if
-#'   \code{local.std = FALSE}.  Explicitly supplying a value that conflicts
-#'   with the extract-time setting raises an error.
+#' @param type Character; the display scale.  Leave it off and it is read
+#'   from \code{provenance$local.std}: \code{"z"} when \code{local.std =
+#'   TRUE} (the default), \code{"raw"} when \code{local.std = FALSE}.
+#'   Asking for a scale that the extract step did not prepare raises an
+#'   error.
 #' @param ... Not currently used.
 #'
 #' @details
-#' **Honest boxplot geometry:** Hinges are the 15th and 85th percentiles of
-#' the per-tree z-distribution; whiskers extend to the 5th and 95th
-#' percentiles.  This is \strong{not} a Tukey boxplot.  A mandatory plot
-#' caption states this explicitly.
+#' **Boxplot geometry:** the hinges are the 15th and 85th percentiles of the
+#' per-tree z-distribution, and the whiskers run to the 5th and 95th.  This
+#' is \strong{not} a Tukey boxplot, and the plot carries a caption that says
+#' so.
 #'
-#' **\code{faithful = TRUE}:** Per-tree values are overlaid as jittered
-#' semi-transparent points on the same scale as the boxplot (z-scale when
-#' \code{local.std = TRUE}, raw-scale when \code{local.std = FALSE}); the
-#' box is drawn at reduced opacity; a white-outlined filled dot marks the
-#' mean.
+#' **\code{faithful = TRUE}:** the per-tree values are jittered over the box
+#' as semi-transparent points, on the same scale as the box itself (z when
+#' \code{local.std = TRUE}, raw when \code{local.std = FALSE}).  The box is
+#' drawn faint to let the points show through, and a white-outlined dot
+#' marks the mean.
 #'
-#' **\code{conditional = TRUE}:** The conditional class-importance scores
+#' **\code{conditional = TRUE}:** the class-conditional importances
 #' (\code{$conditional}) are shown as a faceted bar chart
-#' (\code{facet_wrap(~class, nrow = 1)}); variable sort order follows the
-#' unconditional median z from \code{$stats}.
+#' (\code{facet_wrap(~class, nrow = 1)}).  Variables keep the sort order set
+#' by the unconditional median z in \code{$stats}, so the facets line up.
 #'
 #' @return A \code{ggplot} object.
 #'

@@ -1,20 +1,21 @@
 ##=============================================================================
 #' Variable dependency graph from a uvarpro model
 #'
-#' Extracts cross-variable dependency scores from a fitted \code{uvarpro}
-#' object using \code{\link[varPro]{get.beta.entropy}} and
-#' \code{\link[varPro]{sdependent}}, and returns a tidy list suitable for
-#' \code{plot.gg_udependent}.
+#' A \code{uvarpro} fit records how strongly each variable depends on the
+#' others.  This function pulls those cross-variable dependency scores from
+#' the fit with \code{\link[varPro]{get.beta.entropy}} and
+#' \code{\link[varPro]{sdependent}}, and returns them as a tidy list that
+#' \code{plot.gg_udependent} can draw as a network.
 #'
 #' @param object A fitted \code{uvarpro} object (required).
-#' @param threshold Numeric; positive dependency threshold passed to
-#'   \code{sdependent()}. An edge \eqn{i \to j} is drawn when
-#'   \code{I[i, j] >= threshold}. Default \code{0.25}.
-#' @param q.signal Quantile threshold (0--1) for signal variable selection;
-#'   passed to \code{sdependent()}. Default \code{0.75}.
+#' @param threshold Numeric; the positive dependency threshold passed on to
+#'   \code{sdependent()}.  An edge \eqn{i \to j} is drawn when
+#'   \code{I[i, j] >= threshold}.  Default \code{0.25}.
+#' @param q.signal Quantile threshold (0--1) for picking out the signal
+#'   variables; passed on to \code{sdependent()}.  Default \code{0.75}.
 #' @param directed Logical; \code{TRUE} (default) builds a directed igraph.
-#' @param min.degree Integer or \code{NULL}. When non-\code{NULL}, only nodes
-#'   with degree \eqn{\ge} \code{min.degree} are retained in \code{$nodes},
+#' @param min.degree Integer or \code{NULL}.  When set, only nodes with
+#'   degree \eqn{\ge} \code{min.degree} are kept in \code{$nodes},
 #'   \code{$edges}, and \code{$graph}.
 #' @param ... Additional arguments forwarded to \code{varPro::sdependent()}.
 #'

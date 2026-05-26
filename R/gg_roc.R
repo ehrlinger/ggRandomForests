@@ -14,48 +14,51 @@
 #'
 #' ROC (Receiver Operating Characteristic) curve data from a classification forest.
 #'
-#' Computes sensitivity (true positive rate) and specificity (1 - false positive
-#' rate) across all prediction thresholds for one class of a classification
+#' A classifier does not hand you a class; it hands you a predicted probability,
+#' and you pick a threshold. Slide that threshold from 0 to 1 and the trade-off
+#' between catching the positives and crying wolf shifts the whole way. The ROC
+#' curve traces that trade-off. For one class of a classification
 #' \code{\link[randomForestSRC]{rfsrc}} or
-#' \code{\link[randomForest]{randomForest}} object.
+#' \code{\link[randomForest]{randomForest}} forest, \code{gg_roc} walks every
+#' threshold and records sensitivity (the true positive rate) against
+#' specificity (1 minus the false positive rate).
 #'
 #' @param object A classification \code{\link[randomForestSRC]{rfsrc}} or
 #'   \code{\link[randomForest]{randomForest}} object. Only forests with
 #'   \code{family == "class"} (rfsrc) or \code{type == "classification"}
 #'   (randomForest) are supported.
-#' @param which_outcome Integer index or character name of the class for
-#'   which the ROC curve is computed. For binary forests this is typically
-#'   \code{1} or \code{2}; for multi-class forests any valid class index or
-#'   level name. The behaviour of \code{which_outcome = "all"} or \code{0}
-#'   is engine-specific:
+#' @param which_outcome Integer index or character name of the class to score.
+#'   For binary forests this is usually \code{1} or \code{2}; for multi-class
+#'   forests, any valid class index or level name. \code{which_outcome = "all"}
+#'   or \code{0} behaves differently by engine:
 #'   \describe{
 #'     \item{\code{randomForest} method}{Returns a macro-averaged
 #'       one-vs-rest ROC computed over the per-class probabilities.}
-#'     \item{\code{rfsrc} method}{Currently warns and falls back to
-#'       class 1 (the macro-average / per-class faceting work for the
-#'       \code{rfsrc} path is tracked separately under issue #72).}
+#'     \item{\code{rfsrc} method}{Warns and falls back to class 1. The
+#'       macro-average and per-class faceting for the \code{rfsrc} path
+#'       are tracked separately under issue #72.}
 #'   }
-#' @param oob Logical; if \code{TRUE} (default) use out-of-bag predicted
-#'   probabilities for the curve. Set to \code{FALSE} to use full in-bag
-#'   predictions. For \code{randomForest}, \code{oob = TRUE} uses out-of-bag
-#'   vote probabilities (\code{object$votes}); \code{FALSE} uses in-bag
+#' @param oob Logical; if \code{TRUE} (default), build the curve from
+#'   out-of-bag predicted probabilities, otherwise from full in-bag
+#'   predictions. For \code{randomForest}, \code{TRUE} uses the out-of-bag
+#'   vote probabilities in \code{object$votes}; \code{FALSE} uses in-bag
 #'   \code{predict(type = "prob")}.
 #' @param per_class Logical; if \code{TRUE} and the forest has more than two
-#'   classes, return per-class one-vs-rest ROC curves in a long-format
-#'   \code{data.frame} with a \code{class} factor column and a named AUC
-#'   vector attribute (ordered by descending AUC). Binary forests treat
-#'   \code{per_class = TRUE} as a no-op. Currently honoured by the
-#'   \code{randomForest} method only.
+#'   classes, return one ROC curve per class, each class scored against all
+#'   the others. The result is a long-format \code{data.frame} with a
+#'   \code{class} factor column and a named AUC vector attribute, ordered by
+#'   descending AUC. Binary forests treat \code{per_class = TRUE} as a no-op.
+#'   Honoured by the \code{randomForest} method only.
 #' @param ... Extra arguments (currently unused).
 #'
-#' @return A \code{gg_roc} \code{data.frame} with one row per unique prediction
-#'   threshold and columns:
+#' @return A \code{gg_roc} \code{data.frame}, one row per unique prediction
+#'   threshold, with columns:
 #'   \describe{
-#'     \item{sens}{Sensitivity (true positive rate) at each threshold.}
-#'     \item{spec}{Specificity (true negative rate) at each threshold.}
+#'     \item{sens}{Sensitivity (true positive rate) at the threshold.}
+#'     \item{spec}{Specificity (true negative rate) at the threshold.}
 #'     \item{yvar}{The observed class label for each observation.}
 #'   }
-#'   Pass to \code{\link{calc_auc}} for the area under the curve.
+#'   Pass it to \code{\link{calc_auc}} for the area under the curve.
 #'
 #' @seealso \code{\link{plot.gg_roc}}, \code{\link{calc_roc}},
 #'   \code{\link{calc_auc}},

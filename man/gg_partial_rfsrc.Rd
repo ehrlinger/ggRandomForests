@@ -64,25 +64,30 @@ A named list with two elements:
   }
 }
 \description{
-Computes partial dependence for one or more predictors by calling
-\code{\link[randomForestSRC]{partial.rfsrc}} internally, then splits the
-results into separate data frames for continuous and categorical variables.
-Unlike \code{\link{gg_partial}}, no separate \code{plot.variable} call is
-required — supply the fitted \code{rfsrc} object directly.
+A partial dependence curve answers a what-if question: hold the rest of
+the predictors as they are, sweep one of them across its range, and watch
+how the forest's prediction moves.  This function builds those curves for
+one or more predictors by calling
+\code{\link[randomForestSRC]{partial.rfsrc}} for you, then splits the
+result into separate data frames for continuous and categorical
+variables.  Unlike \code{\link{gg_partial}}, there is no separate
+\code{plot.variable} step -- pass the fitted \code{rfsrc} object straight
+in.
 }
 \section{Survival forests and \code{partial.time}}{
 
-\code{\link[randomForestSRC]{partial.rfsrc}} requires that every value in
-\code{partial.time} be an exact member of the model's \code{time.interest}
-vector (the unique observed event times stored in the fitted object).
-Passing arbitrary time values — even plausible ones such as \code{c(1, 3)}
-for a study measured in years — causes a C-level prediction error inside
-\code{partial.rfsrc}.
+\code{\link[randomForestSRC]{partial.rfsrc}} expects every value in
+\code{partial.time} to be an exact member of the model's
+\code{time.interest} vector, the unique observed event times stored in the
+fitted object.  Pass an arbitrary time, even a plausible one such as
+\code{c(1, 3)} for a study measured in years, and you get a C-level
+prediction error from inside \code{partial.rfsrc}.
 
-\code{gg_partial_rfsrc} handles this automatically: every element of
-\code{partial.time} is silently snapped to its nearest \code{time.interest}
-value before the call is made.  To target a specific follow-up horizon,
-find the closest grid point yourself and pass it explicitly:
+\code{gg_partial_rfsrc} takes care of this: every element of
+\code{partial.time} is silently snapped to its nearest
+\code{time.interest} value before the call.  To target a specific
+follow-up horizon, find the closest grid point yourself and pass it
+explicitly:
 
 \preformatted{
 ti  <- rf_model$time.interest

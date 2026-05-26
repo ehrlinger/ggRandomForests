@@ -46,7 +46,7 @@ A named list of class \code{"gg_partial_varpro"} with elements:
   \item{continuous}{data.frame with columns \code{variable},
     \code{parametric}, \code{nonparametric}, \code{causal}, \code{name}
     (and optionally \code{model}).}
-  \item{categorical}{data.frame with the same columns but one row per
+  \item{categorical}{data.frame with the same columns, one row per
     observation per category level.}
 }
 A \code{"provenance"} attribute carries \code{source}, \code{family},
@@ -57,29 +57,32 @@ A \code{gg_partial_varpro} object (see
   \code{\link{gg_partial_varpro}}).
 }
 \description{
-Splits the list returned by \code{varpro::partialpro} into separate
-data frames for continuous and categorical predictors, with provenance-
-aware y-axis labeling for downstream plot methods.
+\code{varpro::partialpro} returns one list, with continuous and
+categorical predictors mixed together. This function splits that list into
+two tidy data frames, one for each kind, and resolves the y-axis label the
+plot method will use.
 
-\emph{Deprecated.} \code{gg_partialpro()} has been renamed to
-\code{\link{gg_partial_varpro}()}.  This function is a thin alias that
-will be removed in the release after \pkg{ggRandomForests} v2.8.0.
+\emph{Deprecated.} \code{gg_partialpro()} has been superseded by
+\code{\link{gg_partial_varpro}()} and is now a thin alias for it.  It will
+be removed in the release after \pkg{ggRandomForests} v2.8.0; use
+\code{\link{gg_partial_varpro}()} directly.
 }
 \details{
-**Scale detection:** \code{scale = "auto"} with a supplied \code{object}
-resolves to \code{"mortality"} for survival forests and \code{"generic"}
-for regression/classification forests.  The RMST horizon \eqn{\tau} is
-\emph{not} stored in the \code{varpro} object (varPro 3.1.0); pass
-\code{scale = "rmst", time = tau} explicitly for RMST-labeled output.
+**Scale detection:** with \code{scale = "auto"} and an \code{object} in
+hand, the scale resolves to \code{"mortality"} for a survival forest and
+\code{"generic"} for a regression or classification forest.  The RMST
+horizon \eqn{\tau} is \emph{not} stored in the \code{varpro} object
+(varPro 3.1.0), so for RMST-labeled output you have to pass
+\code{scale = "rmst", time = tau} yourself.
 
-**Ensemble mortality (scale = "mortality"):** The y-axis represents
-\emph{ensemble mortality}: the expected number of events if the subject
-experienced the study-average cumulative hazard, equivalent to the
-\code{rfsrc} \code{predicted} value for survival forests (Ishwaran,
-Kogalur, Blackstone & Lauer, 2008 <doi:10.1214/08-AOAS169>).  This is
-an \strong{unbounded relative-risk score}---\emph{not} a survival
-probability or \eqn{1 - S(t)}---and must not be interpreted as one.
-For probability-scale output refit with
+**Ensemble mortality (scale = "mortality"):** here the y-axis is
+\emph{ensemble mortality}, the expected number of events a subject would
+see if they were exposed to the study-average cumulative hazard.  It is
+the same quantity as the \code{rfsrc} \code{predicted} value for survival
+forests (Ishwaran, Kogalur, Blackstone & Lauer, 2008
+<doi:10.1214/08-AOAS169>).  This is an \strong{unbounded relative-risk
+score}, \emph{not} a survival probability and not \eqn{1 - S(t)}; don't
+read it as one.  If you want output on the probability scale, refit with
 \code{varpro(..., rmst = tau)} and use \code{scale = "rmst"}.
 }
 \examples{

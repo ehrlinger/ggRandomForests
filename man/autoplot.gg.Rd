@@ -46,17 +46,17 @@
 \arguments{
 \item{object}{A \code{gg_*} data object (see Details).}
 
-\item{...}{Additional arguments forwarded to the underlying
+\item{...}{Additional arguments passed to the underlying
 \code{plot.gg_*()} method.}
 }
 \value{
 A \code{ggplot} object.
 }
 \description{
-These methods let you use \code{ggplot2::autoplot()} on any \code{gg_*}
-object returned by \pkg{ggRandomForests}.  They are thin wrappers around
-the corresponding \code{plot.gg_*()} S3 methods, so all arguments
-accepted by those methods are forwarded via \code{...}.
+These let you call \code{ggplot2::autoplot()} on any \code{gg_*} object
+\pkg{ggRandomForests} returns. Each is a thin wrapper around the matching
+\code{plot.gg_*()} S3 method, and \code{...} passes straight through, so
+every argument those plot methods take is still available here.
 }
 \details{
 The following \code{gg_*} classes are supported:
