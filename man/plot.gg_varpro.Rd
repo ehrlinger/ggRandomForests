@@ -51,9 +51,13 @@ importance, so the eye lands on the most important variable first.
 For each variable the box spans the 15th to 85th percentile of the
 per-tree scores, the centre line is the median, and the whiskers run
 out to the 5th and 95th percentile — not the usual Tukey 1.5 IQR
-whiskers. The dashed vertical line is the selection cutoff (default
-\code{z = 0.79}); boxes whose aggregate z sits above it are coloured
-blue and flagged \code{selected = TRUE}, the rest are grey. A
+whiskers. The dashed vertical line is the selection \code{cutoff}
+(default \code{0.79}). On the default z-score axis
+(\code{local.std = TRUE}) that line is a z; on the raw-importance
+axis (\code{local.std = FALSE}, \code{type = "raw"}) it is the same
+numeric value but in raw-importance units. Boxes whose aggregate
+value sits above the line are coloured blue and flagged
+\code{selected = TRUE}, the rest are grey. A
 selected variable with a tight, high box is a variable the forest
 agrees on across trees. A selected variable with a wide box that
 straddles the cutoff is one to look at twice before relying on it.

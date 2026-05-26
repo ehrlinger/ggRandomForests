@@ -57,7 +57,7 @@ A \code{gg_partial_varpro} object (see
 \code{\link{gg_partial_varpro}}).
 }
 \description{
-\code{varpro::partialpro} returns one list, with continuous and
+\code{varPro::partialpro} returns one list, with continuous and
 categorical predictors mixed together. This function splits that list into
 two tidy data frames, one for each kind, and resolves the y-axis label the
 plot method will use.
@@ -90,7 +90,7 @@ read it as one.  If you want output on the probability scale, refit with
 A partial dependence curve answers the question, "if I hold a single
 variable at a grid of values and average out everything else, how does
 the model's prediction move?" That is the same question \code{rfsrc}
-partial dependence answers. What \code{varpro::partialpro} adds is two
+partial dependence answers. What \code{varPro::partialpro} adds is two
 wrinkles that are worth understanding before you read the curves.
 
 First, \code{partialpro} filters the partial grid through an isolation

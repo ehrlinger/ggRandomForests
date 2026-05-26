@@ -48,8 +48,10 @@ dependency structure. Edges with wider, more opaque strokes are
 stronger dependencies; thin, faint edges sit near the threshold and
 are the ones that would disappear first if you raised it.
 
-Isolated, grey, low-degree nodes are the ones UVarPro thinks are
-not contributing much to the structure. A cluster of mutually
+Grey, low-degree nodes are the ones UVarPro thinks are not
+contributing much to the structure. (Truly isolated nodes are
+dropped by \code{gg_udependent()} before the graph is drawn — what you
+see is the connected component.) A cluster of mutually
 connected variables is worth checking for redundancy — they may be
 several views of the same underlying quantity.
 }

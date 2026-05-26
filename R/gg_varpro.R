@@ -69,7 +69,8 @@
 #'
 #' @references
 #' Lu, M. and Ishwaran, H. (2024). Model-independent variable selection
-#' via the rule-based variable priority. \emph{arXiv} 2409.
+#' via the rule-based variable priority framework. \emph{arXiv preprint}
+#' \href{https://arxiv.org/abs/2409.09003}{arXiv:2409.09003}.
 #'
 #' @param object A fitted \code{varpro} object (required).
 #' @param local.std Logical; default \code{TRUE}.  When \code{TRUE} the
