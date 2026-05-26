@@ -28,18 +28,18 @@ classification forest, \code{conditional = TRUE} splits the plot into one
 facet per class.
 }
 \details{
-**Boxplot geometry:** the hinges are the 15th and 85th percentiles of the
+\strong{Boxplot geometry:} the hinges are the 15th and 85th percentiles of the
 per-tree z-distribution, and the whiskers run to the 5th and 95th.  This
 is \strong{not} a Tukey boxplot, and the plot carries a caption that says
 so.
 
-**\code{faithful = TRUE}:** the per-tree values are jittered over the box
+\strong{\code{faithful = TRUE}:} the per-tree values are jittered over the box
 as semi-transparent points, on the same scale as the box itself (z when
 \code{local.std = TRUE}, raw when \code{local.std = FALSE}).  The box is
 drawn faint to let the points show through, and a white-outlined dot
 marks the mean.
 
-**\code{conditional = TRUE}:** the class-conditional importances
+\strong{\code{conditional = TRUE}:} the class-conditional importances
 (\code{$conditional}) are shown as a faceted bar chart
 (\code{facet_wrap(~class, nrow = 1)}).  Variables keep the sort order set
 by the unconditional median z in \code{$stats}, so the facets line up.

@@ -19,11 +19,11 @@ gg_variable(object, ...)
 }
 \value{
 A \code{gg_variable} object: a \code{data.frame} pairing every
-  training predictor column with the OOB (or in-bag) predicted response.
-  For survival forests, each requested time horizon adds a column named by
-  \code{time_labels}. The object carries a \code{"family"} class attribute
-  (\code{"regr"}, \code{"class"}, or \code{"surv"}) that
-  \code{\link{plot.gg_variable}} uses for dispatch.
+training predictor column with the OOB (or in-bag) predicted response.
+For survival forests, each requested time horizon adds a column named by
+\code{time_labels}. The object carries a \code{"family"} class attribute
+(\code{"regr"}, \code{"class"}, or \code{"surv"}) that
+\code{\link{plot.gg_variable}} uses for dispatch.
 }
 \description{
 \code{\link[randomForestSRC]{plot.variable}} generates a
@@ -151,5 +151,5 @@ plot(gg_dta, xvar = "age")
 }
 \seealso{
 \code{\link{plot.gg_variable}},
-  \code{\link[randomForestSRC]{plot.variable}}
+\code{\link[randomForestSRC]{plot.variable}}
 }

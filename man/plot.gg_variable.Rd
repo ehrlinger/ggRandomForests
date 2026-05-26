@@ -38,13 +38,13 @@
 }
 \value{
 A single \code{ggplot} object when \code{length(xvar) == 1} or
-  \code{panel = TRUE}; otherwise a \code{patchwork} composite that stacks
-  one panel per variable in \code{xvar}. Either way the result is one
-  plottable object, never a bare list, so it composes with
-  \code{patchwork} and dispatches through \code{ggplot2::autoplot()}.
-  For the patchwork case, to inspect one panel with
-  \code{ggplot2::layer_data()} pull that panel out first
-  (e.g. \code{ggplot2::layer_data(p[[1]])}).
+\code{panel = TRUE}; otherwise a \code{patchwork} composite that stacks
+one panel per variable in \code{xvar}. Either way the result is one
+plottable object, never a bare list, so it composes with
+\code{patchwork} and dispatches through \code{ggplot2::autoplot()}.
+For the patchwork case, to inspect one panel with
+\code{ggplot2::layer_data()} pull that panel out first
+(e.g. \code{ggplot2::layer_data(p[[1]])}).
 }
 \description{
 Plot a \code{\link{gg_variable}} object,
@@ -133,5 +133,5 @@ Regression and Classification. R package version >= 3.4.0.
 }
 \seealso{
 \code{\link{gg_variable}}, \code{\link{gg_partial}},
-  \code{\link[randomForestSRC]{plot.variable}}
+\code{\link[randomForestSRC]{plot.variable}}
 }

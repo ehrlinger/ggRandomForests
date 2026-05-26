@@ -19,12 +19,12 @@ multiple partial plot objects in figures.}
 }
 \value{
 A named list with two elements:
-  \describe{
-    \item{continuous}{data.frame with columns \code{x}, \code{yhat},
-      \code{name} (and optionally \code{model}) for continuous variables}
-    \item{categorical}{data.frame with the same columns but with \code{x}
-      as a factor, for low-cardinality / categorical variables}
-  }
+\describe{
+\item{continuous}{data.frame with columns \code{x}, \code{yhat},
+\code{name} (and optionally \code{model}) for continuous variables}
+\item{categorical}{data.frame with the same columns but with \code{x}
+as a factor, for low-cardinality / categorical variables}
+}
 }
 \description{
 Takes the list returned by \code{rfsrc::plot.variable(partial = TRUE)} and
@@ -34,9 +34,9 @@ by \code{cat_limit}: variables with more unique x-values than this threshold
 are treated as continuous; all others are categorical.
 }
 \note{
-Partial-dependence extraction is `randomForestSRC`-only;
-  there is no `randomForest` method (the `randomForest` package
-  provides no comparable partial-dependence interface).
+Partial-dependence extraction is \code{randomForestSRC}-only;
+there is no \code{randomForest} method (the \code{randomForest} package
+provides no comparable partial-dependence interface).
 }
 \examples{
 ## Build a small regression forest on the airquality dataset

@@ -43,5 +43,5 @@ plot(gg_dta, envelope = TRUE)   # adds 15-85\% envelope
 }
 \seealso{
 \code{\link{gg_brier}},
-  \code{\link[randomForestSRC]{get.brier.survival}}
+\code{\link[randomForestSRC]{get.brier.survival}}
 }

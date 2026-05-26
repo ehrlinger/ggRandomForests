@@ -43,19 +43,19 @@ median per-tree z, after the cutoff filter has been applied.
 \value{
 A named list of class \code{"gg_varpro"} with elements:
 \describe{
-  \item{\code{$imp}}{Summary data frame: \code{variable} (factor with
-    levels ordered by descending median per-tree z), \code{z} (aggregate
-    z-score from \code{importance()}), \code{selected} (logical,
-    \code{z > cutoff}).}
-  \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
-    otherwise an ntree x p matrix of per-tree importance values.}
-  \item{\code{$stats}}{Per-variable summary: \code{variable},
-    \code{median}, \code{q05}, \code{q15}, \code{q85}, \code{q95}
-    (on z-scale when \code{local.std = TRUE}, raw when \code{FALSE}),
-    plus \code{mean} (raw importance mean, always stored).}
-  \item{\code{$conditional}}{\code{NULL} when \code{conditional = FALSE};
-    otherwise a data frame with columns \code{variable}, \code{class},
-    \code{z} (one row per variable x class combination).}
+\item{\code{$imp}}{Summary data frame: \code{variable} (factor with
+levels ordered by descending median per-tree z), \code{z} (aggregate
+z-score from \code{importance()}), \code{selected} (logical,
+\code{z > cutoff}).}
+\item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
+otherwise an ntree x p matrix of per-tree importance values.}
+\item{\code{$stats}}{Per-variable summary: \code{variable},
+\code{median}, \code{q05}, \code{q15}, \code{q85}, \code{q95}
+(on z-scale when \code{local.std = TRUE}, raw when \code{FALSE}),
+plus \code{mean} (raw importance mean, always stored).}
+\item{\code{$conditional}}{\code{NULL} when \code{conditional = FALSE};
+otherwise a data frame with columns \code{variable}, \code{class},
+\code{z} (one row per variable x class combination).}
 }
 A \code{"provenance"} attribute carries \code{family}, \code{local.std},
 \code{cutoff}, \code{faithful}, \code{conditional}, \code{xvar.names},
@@ -117,15 +117,15 @@ classification.
 \section{What you use this for}{
 
 \itemize{
-  \item rank candidate variables by importance and pick a working set
-    above varpro's z cutoff;
-  \item see, via the boxplot's spread and the per-tree points
-    (\code{faithful = TRUE}), how stable each variable's importance
-    is across trees — a high median with a wide box is a different
-    story from a high median with a tight box;
-  \item for a classification forest, ask which variables drive which
-    class (\code{conditional = TRUE}) rather than just which
-    variables drive the model overall.
+\item rank candidate variables by importance and pick a working set
+above varpro's z cutoff;
+\item see, via the boxplot's spread and the per-tree points
+(\code{faithful = TRUE}), how stable each variable's importance
+is across trees — a high median with a wide box is a different
+story from a high median with a tight box;
+\item for a classification forest, ask which variables drive which
+class (\code{conditional = TRUE}) rather than just which
+variables drive the model overall.
 }
 The z-score is a standardised ranking statistic, not a p-value or a
 probability. Two variables with the same z are "similarly important

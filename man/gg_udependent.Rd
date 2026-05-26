@@ -34,15 +34,15 @@ degree \eqn{\ge} \code{min.degree} are kept in \code{$nodes},
 \value{
 A named list of class \code{"gg_udependent"} with elements:
 \describe{
-  \item{\code{$edges}}{Data frame: \code{variable_from}, \code{variable_to},
-    \code{weight} (raw cross-importance value).}
-  \item{\code{$nodes}}{Data frame: \code{variable} (factor, levels by
-    descending degree), \code{degree} (integer; out-degree when
-    \code{directed = TRUE}, total degree when \code{directed = FALSE}),
-    \code{selected} (logical, \code{TRUE} if in \code{sdependent}'s
-    signal set).}
-  \item{\code{$graph}}{igraph object. \code{NULL} if no dependencies
-    detected.}
+\item{\code{$edges}}{Data frame: \code{variable_from}, \code{variable_to},
+\code{weight} (raw cross-importance value).}
+\item{\code{$nodes}}{Data frame: \code{variable} (factor, levels by
+descending degree), \code{degree} (integer; out-degree when
+\code{directed = TRUE}, total degree when \code{directed = FALSE}),
+\code{selected} (logical, \code{TRUE} if in \code{sdependent}'s
+signal set).}
+\item{\code{$graph}}{igraph object. \code{NULL} if no dependencies
+detected.}
 }
 A \code{"provenance"} attribute carries \code{threshold}, \code{q.signal},
 \code{directed}, \code{min.degree}, \code{xvar.names}, and \code{n}.
@@ -101,14 +101,14 @@ without recomputing anything.
 \section{What you use this for}{
 
 \itemize{
-  \item screen a wide unsupervised dataset for the small set of
-    variables UVarPro thinks are carrying the signal — the nodes
-    with high degree, or those flagged \code{selected = TRUE};
-  \item spot clusters of mutually dependent variables (hubs and the
-    spokes around them) that may be measuring the same underlying
-    construct;
-  \item compare two datasets, or two preprocessing pipelines, by
-    looking at how their dependency graphs change.
+\item screen a wide unsupervised dataset for the small set of
+variables UVarPro thinks are carrying the signal — the nodes
+with high degree, or those flagged \code{selected = TRUE};
+\item spot clusters of mutually dependent variables (hubs and the
+spokes around them) that may be measuring the same underlying
+construct;
+\item compare two datasets, or two preprocessing pipelines, by
+looking at how their dependency graphs change.
 }
 An edge in this graph is a statistical dependency in the unsupervised
 decomposition of the data — it is not a causal arrow. A high

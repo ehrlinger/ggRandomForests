@@ -63,8 +63,8 @@ only).}
 }
 \value{
 A \code{gg_survival} \code{data.frame} with columns \code{time},
-  \code{surv}, \code{cum_haz}, \code{lower}, \code{upper}, \code{n.risk},
-  and optionally \code{groups} when \code{by} is supplied.
+\code{surv}, \code{cum_haz}, \code{lower}, \code{upper}, \code{n.risk},
+and optionally \code{groups} when \code{by} is supplied.
 }
 \description{
 Nonparametric survival estimates.
@@ -74,17 +74,17 @@ Nonparametric survival estimates.
 survival estimates.  It dispatches on the class of its first argument:
 
 \describe{
-  \item{\code{rfsrc}}{Extracts the response data from the fitted forest and
-    delegates to \code{\link{kaplan}}.  Use the \code{by} argument to
-    stratify on a predictor stored in the model's \code{xvar} slot.}
-  \item{default}{Accepts raw survival data columns via the \code{interval},
-    \code{censor}, \code{by}, and \code{data} arguments, delegating to
-    either \code{\link{kaplan}} (default) or \code{\link{nelson}}.}
+\item{\code{rfsrc}}{Extracts the response data from the fitted forest and
+delegates to \code{\link{kaplan}}.  Use the \code{by} argument to
+stratify on a predictor stored in the model's \code{xvar} slot.}
+\item{default}{Accepts raw survival data columns via the \code{interval},
+\code{censor}, \code{by}, and \code{data} arguments, delegating to
+either \code{\link{kaplan}} (default) or \code{\link{nelson}}.}
 }
 }
 \note{
-Survival estimation is `randomForestSRC`-only; `randomForest`
-  has no survival forest, so no `randomForest` method exists.
+Survival estimation is \code{randomForestSRC}-only; \code{randomForest}
+has no survival forest, so no \code{randomForest} method exists.
 }
 \examples{
 ## -------- pbc data (default method — raw data columns)

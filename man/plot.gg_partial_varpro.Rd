@@ -31,12 +31,12 @@ side-by-side boxplots.  Survival path-C objects (the ones you get when
 handed off to \code{\link{plot.gg_partial_rfsrc}} for drawing.
 }
 \details{
-**Ensemble mortality (scale = "mortality"):** when the provenance scale
+\strong{Ensemble mortality (scale = "mortality"):} when the provenance scale
 is \code{"mortality"}, the y-axis is labelled
 \emph{"Ensemble mortality (expected events)"}.  The wording is
 deliberate: this is an \strong{unbounded relative-risk score}, not a
 survival probability and not \eqn{1 - S(t)} (Ishwaran, Kogalur,
-Blackstone & Lauer, 2008 <doi:10.1214/08-AOAS169>).
+Blackstone & Lauer, 2008 \url{doi:10.1214/08-AOAS169}).
 }
 \section{Reading the partial dependence}{
 

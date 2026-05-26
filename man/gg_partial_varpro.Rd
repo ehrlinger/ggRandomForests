@@ -43,18 +43,18 @@ gg_partialpro(
 \value{
 A named list of class \code{"gg_partial_varpro"} with elements:
 \describe{
-  \item{continuous}{data.frame with columns \code{variable},
-    \code{parametric}, \code{nonparametric}, \code{causal}, \code{name}
-    (and optionally \code{model}).}
-  \item{categorical}{data.frame with the same columns, one row per
-    observation per category level.}
+\item{continuous}{data.frame with columns \code{variable},
+\code{parametric}, \code{nonparametric}, \code{causal}, \code{name}
+(and optionally \code{model}).}
+\item{categorical}{data.frame with the same columns, one row per
+observation per category level.}
 }
 A \code{"provenance"} attribute carries \code{source}, \code{family},
 \code{ntree}, \code{n}, \code{scale}, \code{rmst_tau},
 \code{xvar.names}, and \code{path}.
 
 A \code{gg_partial_varpro} object (see
-  \code{\link{gg_partial_varpro}}).
+\code{\link{gg_partial_varpro}}).
 }
 \description{
 \code{varpro::partialpro} returns one list, with continuous and
@@ -68,19 +68,19 @@ be removed in the release after \pkg{ggRandomForests} v2.8.0; use
 \code{\link{gg_partial_varpro}()} directly.
 }
 \details{
-**Scale detection:** with \code{scale = "auto"} and an \code{object} in
+\strong{Scale detection:} with \code{scale = "auto"} and an \code{object} in
 hand, the scale resolves to \code{"mortality"} for a survival forest and
 \code{"generic"} for a regression or classification forest.  The RMST
 horizon \eqn{\tau} is \emph{not} stored in the \code{varpro} object
 (varPro 3.1.0), so for RMST-labeled output you have to pass
 \code{scale = "rmst", time = tau} yourself.
 
-**Ensemble mortality (scale = "mortality"):** here the y-axis is
+\strong{Ensemble mortality (scale = "mortality"):} here the y-axis is
 \emph{ensemble mortality}, the expected number of events a subject would
 see if they were exposed to the study-average cumulative hazard.  It is
 the same quantity as the \code{rfsrc} \code{predicted} value for survival
 forests (Ishwaran, Kogalur, Blackstone & Lauer, 2008
-<doi:10.1214/08-AOAS169>).  This is an \strong{unbounded relative-risk
+\url{doi:10.1214/08-AOAS169}).  This is an \strong{unbounded relative-risk
 score}, \emph{not} a survival probability and not \eqn{1 - S(t)}; don't
 read it as one.  If you want output on the probability scale, refit with
 \code{varpro(..., rmst = tau)} and use \code{scale = "rmst"}.
@@ -135,14 +135,14 @@ usual rfsrc scale instead.
 \section{What you use this for}{
 
 \itemize{
-  \item read the marginal shape of a relationship the varpro model
-    found important — monotone, threshold, U-shape, flat;
-  \item compare the three partialpro estimators on the same variable
-    and flag the ones where parametric and nonparametric disagree —
-    those are the candidates for closer inspection;
-  \item report a survival partial dependence on the probability or
-    cumulative-hazard scale (\code{scale = "surv"} or \code{"chf"})
-    rather than the unbounded mortality scale.
+\item read the marginal shape of a relationship the varpro model
+found important — monotone, threshold, U-shape, flat;
+\item compare the three partialpro estimators on the same variable
+and flag the ones where parametric and nonparametric disagree —
+those are the candidates for closer inspection;
+\item report a survival partial dependence on the probability or
+cumulative-hazard scale (\code{scale = "surv"} or \code{"chf"})
+rather than the unbounded mortality scale.
 }
 A varpro partial dependence curve is a description of the model, not
 a causal effect. The \code{causal} column is varpro's local
@@ -181,8 +181,8 @@ Random survival forests. \emph{The Annals of Applied Statistics},
 }
 \seealso{
 \code{\link{plot.gg_partial_varpro}},
-  \code{\link{gg_partialpro}} (deprecated),
-  \code{\link{gg_partial_rfsrc}}, \code{\link{varpro_feature_names}}
+\code{\link{gg_partialpro}} (deprecated),
+\code{\link{gg_partial_rfsrc}}, \code{\link{varpro_feature_names}}
 
 \code{\link{gg_partial_varpro}}
 }

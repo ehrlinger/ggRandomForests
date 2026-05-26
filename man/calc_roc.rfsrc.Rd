@@ -30,9 +30,9 @@ probabilities. Forced to \code{FALSE} for \code{randomForest} objects.}
 }
 \value{
 A \code{gg_roc} \code{data.frame} with columns \code{sens}
-  (sensitivity), \code{spec} (specificity), and \code{pct} (the probability
-  threshold), with one row per unique prediction value. Suitable for passing
-  to \code{\link{calc_auc}} or \code{\link{plot.gg_roc}}.
+(sensitivity), \code{spec} (specificity), and \code{pct} (the probability
+threshold), with one row per unique prediction value. Suitable for passing
+to \code{\link{calc_auc}} or \code{\link{plot.gg_roc}}.
 }
 \description{
 Receiver Operator Characteristic calculator

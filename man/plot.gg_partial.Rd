@@ -13,10 +13,10 @@
 }
 \value{
 A \code{ggplot} (or \code{patchwork}) object.  When only one
-  variable type is present a single \code{ggplot} is returned.  When both
-  continuous and categorical variables are present the two panels are
-  combined vertically via \code{patchwork::wrap_plots()}, which also
-  satisfies \code{inherits(p, "ggplot")}.
+variable type is present a single \code{ggplot} is returned.  When both
+continuous and categorical variables are present the two panels are
+combined vertically via \code{patchwork::wrap_plots()}, which also
+satisfies \code{inherits(p, "ggplot")}.
 }
 \description{
 Produces ggplot2 partial dependence curves from the named list returned by

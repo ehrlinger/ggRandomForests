@@ -24,14 +24,14 @@ See \code{\link[randomForestSRC]{partial.rfsrc}} for full details.}
 }
 \value{
 A named list with one element per variable in \code{var_list}. Each
-  element is itself a list with:
-  \describe{
-    \item{name}{The predictor variable name (character).}
-    \item{dta}{The raw output of
-      \code{\link[randomForestSRC]{get.partial.plot.data}}, a list containing
-      at minimum \code{x} (predictor values) and \code{yhat} (partial
-      predictions), and for survival/competing risk, \code{partial.time}.}
-  }
+element is itself a list with:
+\describe{
+\item{name}{The predictor variable name (character).}
+\item{dta}{The raw output of
+\code{\link[randomForestSRC]{get.partial.plot.data}}, a list containing
+at minimum \code{x} (predictor values) and \code{yhat} (partial
+predictions), and for survival/competing risk, \code{partial.time}.}
+}
 }
 \description{
 \strong{Deprecated.} Use \code{\link{gg_partial_rfsrc}} instead, which
@@ -133,6 +133,6 @@ matplot(pdta2$partial.time, t(pdta2$yhat), type = "l", lty = 1,
 }
 \seealso{
 \code{\link{gg_partial_rfsrc}},
-  \code{\link[randomForestSRC]{partial.rfsrc}},
-  \code{\link[randomForestSRC]{get.partial.plot.data}}
+\code{\link[randomForestSRC]{partial.rfsrc}},
+\code{\link[randomForestSRC]{get.partial.plot.data}}
 }

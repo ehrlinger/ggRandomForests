@@ -50,3 +50,4 @@ Suggests:
     callr
 VignetteBuilder: quarto
 Config/roxygen2/version: 8.0.0
+Roxygen: list(markdown = TRUE)

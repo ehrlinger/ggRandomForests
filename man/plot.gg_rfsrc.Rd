@@ -19,11 +19,11 @@ confidence intervals on the median.}
 \item{...}{Additional arguments forwarded to the underlying
 \code{ggplot2} geometry calls.  Commonly useful arguments include:
 \describe{
-  \item{\code{alpha}}{Numeric in \eqn{[0,1]}; point/ribbon transparency.
-    For survival plots with confidence bands the ribbon alpha is
-    automatically halved relative to the value supplied here.}
-  \item{\code{size}}{Point or line size passed to \code{geom_jitter},
-    \code{geom_step}, etc.}
+\item{\code{alpha}}{Numeric in \eqn{[0,1]}; point/ribbon transparency.
+For survival plots with confidence bands the ribbon alpha is
+automatically halved relative to the value supplied here.}
+\item{\code{size}}{Point or line size passed to \code{geom_jitter},
+\code{geom_step}, etc.}
 }
 Arguments that control \code{\link{gg_rfsrc}} (e.g. \code{conf.int},
 \code{surv_type}, \code{by}) should be applied when constructing the
@@ -31,20 +31,20 @@ Arguments that control \code{\link{gg_rfsrc}} (e.g. \code{conf.int},
 }
 \value{
 A \code{ggplot} object.  The plot appearance depends on the forest
-  family stored in \code{x}:
-  \describe{
-    \item{Regression (\code{"regr"})}{Jitter + notched boxplot of OOB
-      predicted values.  If a \code{group} column is present the x-axis
-      shows each group label; otherwise observations are collapsed to a
-      single x-position.}
-    \item{Classification (\code{"class"})}{Binary: jitter + notched
-      boxplot of the predicted class probability.  Multi-class: jitter
-      plot with one panel per class (class probabilities in long form).}
-    \item{Survival (\code{"surv"})}{Step curves of the ensemble survival
-      function.  When \code{gg_rfsrc} was called with \code{conf.int},
-      a shaded ribbon is added.  When called with \code{by}, curves are
-      coloured by group.}
-  }
+family stored in \code{x}:
+\describe{
+\item{Regression (\code{"regr"})}{Jitter + notched boxplot of OOB
+predicted values.  If a \code{group} column is present the x-axis
+shows each group label; otherwise observations are collapsed to a
+single x-position.}
+\item{Classification (\code{"class"})}{Binary: jitter + notched
+boxplot of the predicted class probability.  Multi-class: jitter
+plot with one panel per class (class probabilities in long form).}
+\item{Survival (\code{"surv"})}{Step curves of the ensemble survival
+function.  When \code{gg_rfsrc} was called with \code{conf.int},
+a shaded ribbon is added.  When called with \code{by}, curves are
+coloured by group.}
+}
 }
 \description{
 Plot the predicted response from a \code{\link{gg_rfsrc}} object, the
@@ -174,5 +174,5 @@ Regression and Classification. R package version >= 3.4.0.
 }
 \seealso{
 \code{\link{gg_rfsrc}} \code{\link[randomForestSRC]{rfsrc}}
-  \code{\link[randomForest]{randomForest}}
+\code{\link[randomForest]{randomForest}}
 }
