@@ -111,3 +111,30 @@ plot(gg_pd)
 Each panel is a single predictor. The three curves correspond to the
 three estimators varPro carries — read them as a sensitivity analysis.
 Tight agreement is reassuring; divergence is information.
+
+## Per-rule lasso refinement with `gg_beta_varpro()`
+
+`gg_varpro()`'s ranking is built from the release-rule contrast.
+`gg_beta_varpro()` re-asks the question variable by variable inside each
+rule: it fits a one-predictor lasso of the response on the released
+variable, restricted to the OOB observations in that rule's region. The
+fitted β̂ is the variable's *local* effect inside that rule. Aggregating
+`mean(|β̂|)` across rules gives one number per variable; that number is
+a regression-coefficient-flavoured importance, not a VIMP score.
+
+Because `beta.varpro()` is expensive (a `glmnet` per rule), the wrapper
+accepts a pre-computed `beta_fit` so you can iterate on selection
+without re-fitting.
+
+```{r boston-beta-fit, cache=TRUE}
+b_boston <- varPro::beta.varpro(v_boston)
+```
+
+```{r boston-gg-beta-varpro}
+plot(gg_beta_varpro(v_boston, beta_fit = b_boston))
+```
+
+Compare against `gg_varpro()` above. Disagreement is the diagnostic
+signal: a variable that ranks high here but low there is one whose
+local linear effect inside many rules is real even when the release
+contrast is modest.
