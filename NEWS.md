@@ -12,6 +12,12 @@ ggRandomForests v2.8.0 (development) — continued
   levels are set by `mean(|sum-of-class-beta|)` descending so every
   facet shows rows in the same order. Motivating use case: 30-day
   mortality.
+* Provenance shape change for `gg_beta_varpro()`:
+  `attr(*, "provenance")$cutoff` is now always a named numeric
+  vector — length 1 named `"regr"` for regression, length K named
+  with the response factor levels for classification. Downstream
+  tooling should read it as a vector and select by name; the prior
+  scalar shape is gone.
 * `gg_beta_varpro()` and `plot.gg_beta_varpro()`: tidy wrapper and default
   horizontal bar chart for `varPro::beta.varpro()` — the per-rule lasso-β
   refinement of variable importance. Aggregates per-rule β̂ by variable
