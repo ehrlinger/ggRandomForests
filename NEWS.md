@@ -1,8 +1,15 @@
 Package: ggRandomForests
-Version: 2.7.3.9012
+Version: 2.7.3.9013
 
 ggRandomForests v2.8.0 (development) — continued
 =================================================
+* `gg_ivarpro()` and `plot.gg_ivarpro()`: tidy wrapper and per-variable
+  / per-observation visualisations for `varPro::ivarpro()` (individual /
+  local variable importance). Regression and classification (binary +
+  multi-class). `which_obs` collapses to a single-observation profile;
+  `which_class` collapses to a single class. Optional `ivarpro_fit`
+  argument lets callers cache the expensive `ivarpro()` call. Last of
+  four Phase 4 sub-projects.
 * `gg_beta_varpro()` adds varPro classification support (binary +
   multi-class). Binary fits default to a single positive-class panel
   (last factor level); multi-class fits return a long-format frame
