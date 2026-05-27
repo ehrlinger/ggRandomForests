@@ -4,7 +4,7 @@
 \alias{gg_beta_varpro}
 \title{Per-variable lasso-β importance from a varPro fit}
 \usage{
-gg_beta_varpro(object, ..., cutoff = NULL, beta_fit = NULL)
+gg_beta_varpro(object, ..., cutoff = NULL, beta_fit = NULL, which_class = NULL)
 }
 \arguments{
 \item{object}{A \code{varpro} fit from \code{\link[varPro:varpro]{varPro::varpro()}} (regression family).}
@@ -20,6 +20,12 @@ ignored otherwise (with a warning). Documented forwardables: \code{use.cv},
 the same \code{object}. \code{NULL} (default) → the wrapper runs \code{beta.varpro()}
 itself. When supplied, must be a \code{varpro}-class object whose \verb{$results}
 has columns \code{tree / branch / variable / n.oob / imp}.}
+
+\item{which_class}{For classification fits only: name of a single response
+level to subset on. \code{NULL} (default) returns all classes (binary fits
+resolve to the \emph{last} factor level — the positive-class convention).
+Ignored with a warning on regression fits. Full classification details
+land in a dedicated \verb{@section} in a subsequent doc pass.}
 }
 \value{
 A \code{data.frame} of class \code{c("gg_beta_varpro", "data.frame")},
