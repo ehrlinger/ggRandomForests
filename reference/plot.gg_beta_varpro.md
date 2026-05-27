@@ -42,6 +42,11 @@ exactly zero — those rules are kept in the average, so a variable with
 many shrunk-to-zero rules will sit lower in the ranking than one whose
 released coefficients are consistently non-zero.
 
+For a classification fit, variables are sorted by
+`mean(|sum-of-class-beta|)` descending and that ordering is shared
+across every facet, so rows line up between classes for visual
+comparison. Each facet has its own cutoff line.
+
 ## What this tells you
 
 Use the bar chart as a selection ranking, not as an effect-size axis.
