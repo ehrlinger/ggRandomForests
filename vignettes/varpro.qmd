@@ -259,3 +259,37 @@ Read each panel as: "as predictor X changes from low to high, how does
 the probability of each class shift?" Patterns that match the
 underlying biology (e.g. petal length separating setosa from the
 others) act as a sanity check on the forest.
+
+## Per-class lasso refinement with `gg_beta_varpro()`
+
+On a classification fit, `gg_beta_varpro()` returns one row per
+(variable, class) pair. For a binary fit, `which_class = NULL` defaults
+to the last factor level — the positive class — so the headline view
+is a single panel of that class.[^mortality]
+
+[^mortality]: The same code pattern applies to clinical binary outcomes
+such as 30-day mortality: drop the negative class, set the event class
+as the last factor level, and read the figure for the event panel.
+
+```{r iris-binary-beta-fit, cache=TRUE}
+b_iris_binary <- varPro::beta.varpro(v_iris_binary)
+```
+
+```{r iris-binary-gg-beta-varpro}
+plot(gg_beta_varpro(v_iris_binary, beta_fit = b_iris_binary))
+```
+
+For a multi-class fit, the default view is faceted by class with each
+class sharing the row order set by the unified ranking — same trick as
+`gg_varpro(conditional = TRUE)`.
+
+```{r iris-multi-beta-fit, cache=TRUE}
+b_iris_multi <- varPro::beta.varpro(v_iris_multi)
+```
+
+```{r iris-multi-gg-beta-varpro}
+plot(gg_beta_varpro(v_iris_multi, beta_fit = b_iris_multi))
+```
+
+`which_class = "<level>"` collapses the faceted view to a single class
+when you want it.
