@@ -373,3 +373,24 @@ test_that("plot.gg_beta_varpro multi-class builds (faceted) with per-class cutof
   # facet_wrap engaged -> multiple panels in layout
   expect_true(nrow(built$layout$layout) >= 2L)
 })
+
+# ---- Print + summary: classification ---------------------------------------
+
+test_that("print.gg_beta_varpro classification surfaces class info", {
+  vm <- .varpro_iris_multiclass()
+  bm <- .beta_fit_iris_multiclass()
+  out <- gg_beta_varpro(vm, beta_fit = bm)
+  txt <- utils::capture.output(print(out))
+  expect_true(any(grepl("n_classes", txt) | grepl("class", txt)))
+  expect_true(any(grepl("faceted", txt)))
+})
+
+test_that("summary.gg_beta_varpro classification returns per-class list", {
+  vm <- .varpro_iris_multiclass()
+  bm <- .beta_fit_iris_multiclass()
+  out <- gg_beta_varpro(vm, beta_fit = bm)
+  s <- summary(out)
+  expect_s3_class(s, "summary.gg_beta_varpro")
+  expect_true(is.list(unclass(s)))
+  expect_setequal(names(unclass(s)), levels(iris$Species))
+})
