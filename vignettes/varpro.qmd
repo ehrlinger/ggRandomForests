@@ -27,12 +27,21 @@ knitr::opts_chunk$set(
 ```
 
 ```{r libs}
-# ggRandomForests is auto-attached by the vignette engine; explicit
-# library(ggRandomForests) breaks the Windows R CMD check vignette
-# rebuild because the check-time install library isn't on .libPaths()
-# for that subprocess. The other vignettes follow the same pattern.
-# All varPro calls below are :: qualified, so no library(varPro) either.
 library(ggplot2)
+
+# Match the pattern used by the regression/survival vignettes: try the
+# installed package first, fall back to pkgload::load_all() for the
+# R CMD check vignette rebuild where the package isn't yet on
+# .libPaths(). All varPro calls below are ::-qualified, so no
+# library(varPro) is needed.
+if (requireNamespace("ggRandomForests", quietly = TRUE)) {
+  library(ggRandomForests)
+} else if (requireNamespace("pkgload", quietly = TRUE)) {
+  pkgload::load_all(export_all = FALSE, helpers = FALSE,
+                    attach_testthat = FALSE)
+} else {
+  stop("Install ggRandomForests (or pkgload for dev builds) to render this vignette.")
+}
 ```
 
 # What varPro is
