@@ -358,3 +358,55 @@ pointing at the deferred work, not a silent miscalculation. The
 family-support matrix in §6 records this — and the rest of the toolkit
 that *does* work on survival (`gg_varpro`, `gg_partial_varpro`,
 `gg_isopro` above; `gg_udependent` shown in §3 on the X-matrix).
+
+# Cross-cutting reference
+
+## Family-support matrix
+
+| Wrapper | regr | class | surv | regr+ |
+|---|---|---|---|---|
+| `gg_partial_varpro` | ✓ | ✓ | ✓ (C-path via `$rf`) | ✗ (not audited) |
+| `gg_varpro` | ✓ | ✓ (`conditional = TRUE`) | ✓ | ✗ (errors) |
+| `gg_udependent` | ✓ (uvarpro on X) | ✓ (X) | ✓ (X) | ✓ (X) |
+| `gg_isopro` | ✓ (X) | ✓ (X) | ✓ (X) | ✓ (X) |
+| `gg_beta_varpro` | ✓ | ✓ | ✗ (upstream stop) | ✗ (deferred) |
+| `gg_ivarpro` | ✓ | ✓ | ✗ (deferred) | ✗ (deferred) |
+
+The four wrappers in the lower-right are the v2.9.0 work surface.
+
+## Factor-level ordering
+
+Across `gg_beta_varpro()` and `gg_ivarpro()`, the `variable` column is
+stored as a factor whose levels are set by descending aggregate
+importance (`mean(|imp|)` summed across classes for classification).
+The default plot inherits that ordering, so faceted views show
+variables in the same row order across panels. If you re-shape the
+frame downstream and want the order preserved, keep `variable` as a
+factor rather than coercing to character.
+
+This convention will be propagated to `gg_vimp` and
+`plot.gg_varpro(conditional = TRUE)` in a follow-up release.
+
+## Caching the expensive calls
+
+`varPro::beta.varpro()` and `varPro::ivarpro()` are the two heavy
+calls. Both wrappers accept a pre-computed fit (`beta_fit`,
+`ivarpro_fit`) so you can iterate on selection, observation index, or
+cutoff without re-fitting the lasso or the local-importance machinery.
+The vignette uses this throughout — every section computes the heavy
+fit once in a `cache: true` chunk and re-uses it for every figure.
+
+Provenance carries `precomputed = TRUE` when the cached path was used,
+so downstream tooling can tell the two paths apart.
+
+## Provenance shape
+
+`attr(., "provenance")$cutoff` is always a *named numeric vector*
+across the toolkit:
+
+- regression: length 1, named `"regr"`
+- classification: length K, named with the response factor levels
+
+Downstream code that picks a value should read it as a vector
+(`prov$cutoff[[class_name]]` or `prov$cutoff[[1]]`), not as a scalar.
+This contract was established in v2.7.3.9012 (PR #98).
