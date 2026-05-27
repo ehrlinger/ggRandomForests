@@ -232,3 +232,14 @@ v_iris_binary <- varPro::varpro(Species ~ ., data = iris_binary, ntree = 50)
 set.seed(20260527L)
 v_iris_multi <- varPro::varpro(Species ~ ., data = iris, ntree = 50)
 ```
+
+## Class-conditional importance with `gg_varpro(conditional = TRUE)`
+
+For a classification forest, `gg_varpro()` can split the importance
+view into one facet per class. Variables keep the unconditional sort
+order so rows line up across facets — read along a row to see which
+class a variable is informative for.
+
+```{r iris-multi-gg-varpro-conditional}
+plot(gg_varpro(v_iris_multi, conditional = TRUE))
+```
