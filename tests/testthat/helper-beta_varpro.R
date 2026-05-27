@@ -23,3 +23,39 @@
   }
   .beta_varpro_cache$b
 }
+
+.varpro_iris_binary <- function() {
+  if (is.null(.beta_varpro_cache$vb)) {
+    if (!requireNamespace("varPro", quietly = TRUE)) testthat::skip("varPro not installed")
+    set.seed(20260526L)
+    d <- iris[iris$Species != "setosa", ]
+    d$Species <- droplevels(d$Species)
+    .beta_varpro_cache$vb <- varPro::varpro(Species ~ ., data = d, ntree = 30)
+  }
+  .beta_varpro_cache$vb
+}
+
+.beta_fit_iris_binary <- function() {
+  if (is.null(.beta_varpro_cache$bb)) {
+    set.seed(20260526L)
+    .beta_varpro_cache$bb <- varPro::beta.varpro(.varpro_iris_binary())
+  }
+  .beta_varpro_cache$bb
+}
+
+.varpro_iris_multiclass <- function() {
+  if (is.null(.beta_varpro_cache$vm)) {
+    if (!requireNamespace("varPro", quietly = TRUE)) testthat::skip("varPro not installed")
+    set.seed(20260526L)
+    .beta_varpro_cache$vm <- varPro::varpro(Species ~ ., data = iris, ntree = 30)
+  }
+  .beta_varpro_cache$vm
+}
+
+.beta_fit_iris_multiclass <- function() {
+  if (is.null(.beta_varpro_cache$bm)) {
+    set.seed(20260526L)
+    .beta_varpro_cache$bm <- varPro::beta.varpro(.varpro_iris_multiclass())
+  }
+  .beta_varpro_cache$bm
+}
