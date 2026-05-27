@@ -218,7 +218,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
                         use_cv = dots_use_cv)
 }
 
-#' @keywords internal
+#' @noRd
 .gg_beta_varpro_regr <- function(object, b, cutoff, beta_fit, use_cv) {
   res <- b$results
   res <- res[is.finite(res$imp), , drop = FALSE]
@@ -259,7 +259,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   out
 }
 
-#' @keywords internal
+#' @noRd
 .class_levels_from_varpro <- function(object) {
   # varPro preserves original factor names in y.org; object$y may have been
   # internally relabelled to 0/1 for binary fits.
@@ -275,7 +275,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   sort(unique(as.character(object$y)))
 }
 
-#' @keywords internal
+#' @noRd
 .resolve_class_cutoff <- function(cutoff, per_class_mean, class_levels) {
   n_classes <- length(class_levels)
   if (is.null(cutoff)) {
@@ -301,7 +301,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   cv
 }
 
-#' @keywords internal
+#' @noRd
 .gg_beta_varpro_class <- function(object, b, cutoff, which_class, beta_fit,
                                   use_cv) {
   class_levels <- .class_levels_from_varpro(object)
@@ -391,7 +391,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   long
 }
 
-#' @keywords internal
+#' @noRd
 .gg_beta_varpro_empty <- function(fam, which_class, beta_fit, cutoff) {
   base <- data.frame(
     variable  = factor(character(0)),

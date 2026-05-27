@@ -25,7 +25,6 @@ Imports:
     varPro,
     igraph,
     survival,
-    parallel,
     tidyr,
     dplyr,
     ggplot2,
