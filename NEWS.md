@@ -1,8 +1,14 @@
 Package: ggRandomForests
-Version: 2.7.3.9013
+Version: 2.7.3.9014
 
 ggRandomForests v2.8.0 (development) — continued
 =================================================
+* New vignette: "Exploring variable importance with varPro." Walks the
+  full gg_* varPro layer (gg_partial_varpro, gg_varpro, gg_udependent,
+  gg_isopro, gg_beta_varpro, gg_ivarpro) on three worked examples —
+  regression (Boston), classification (iris binary + multi-class), and
+  survival (PBC). Includes a family-support matrix documenting which
+  wrapper works for which forest family. Headline document for v2.8.0.
 * `gg_ivarpro()` and `plot.gg_ivarpro()`: tidy wrapper and
   per-variable-distribution / per-observation-profile plots for
   `varPro::ivarpro()` (individual / local variable importance) across

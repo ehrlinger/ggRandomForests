@@ -46,6 +46,9 @@ docs
 
 vignettes/ggRandomForests_files
 vignettes/ggRandomForests.html
+vignettes/varpro_cache/
+vignettes/varpro_files/
+vignettes/varpro.html
 
 .claude
 .positai
