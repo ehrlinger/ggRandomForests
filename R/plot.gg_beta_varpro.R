@@ -20,6 +20,11 @@
 #' with many shrunk-to-zero rules will sit lower in the ranking than
 #' one whose released coefficients are consistently non-zero.
 #'
+#' For a classification fit, variables are sorted by
+#' `mean(|sum-of-class-beta|)` descending and that ordering is shared
+#' across every facet, so rows line up between classes for visual
+#' comparison. Each facet has its own cutoff line.
+#'
 #' @section What this tells you:
 #' Use the bar chart as a selection ranking, not as an effect-size axis.
 #' Pair it with [gg_varpro()] to see where split-strength importance and
@@ -52,19 +57,19 @@ plot.gg_beta_varpro <- function(x, ...) {
          call. = FALSE)
   }
   prov          <- attr(x, "provenance")
-  cutoff        <- if (!is.null(prov)) prov$cutoff %||% mean(x$beta_mean) else mean(x$beta_mean)
   n_rules_total <- if (!is.null(prov)) prov$n_rules_total %||% NA_integer_ else NA_integer_
-  cv_txt        <- if (!is.null(prov) && isTRUE(prov$use.cv)) {
-    "cv"
-  } else if (!is.null(prov) && length(prov$use.cv) == 1L && is.na(prov$use.cv)) {
-    "unknown (precomputed)"
+  cv_txt        <- .gg_beta_cv_txt(prov)
+  has_class     <- "class" %in% names(x)
+  cutoff_vec    <- .gg_beta_cutoff_vec(prov, x, has_class)
+  caption_txt   <- if (has_class) {
+    .gg_beta_caption_class(x, n_rules_total, cv_txt)
   } else {
-    "fixed"
+    sprintf("Mean |beta| over %s rules. Lasso: %s. Cutoff: %.4g.",
+            if (is.na(n_rules_total)) "NA" else format(n_rules_total),
+            cv_txt, cutoff_vec[[1]])
   }
 
-  x$variable <- factor(x$variable, levels = x$variable[order(x$beta_mean)])
-
-  ggplot2::ggplot(
+  p <- ggplot2::ggplot(
     x,
     ggplot2::aes(
       x    = .data[["variable"]],
@@ -78,21 +83,73 @@ plot.gg_beta_varpro <- function(x, ...) {
       values = c("TRUE" = "#4e8fcd", "FALSE" = "#888888"),
       guide  = "none"
     ) +
-    ggplot2::geom_hline(
-      yintercept = cutoff,
-      linetype   = "dashed",
-      color      = "#e74c3c",
-      linewidth  = 0.7
-    ) +
     ggplot2::labs(
       x = NULL,
       y = "Mean |beta| (per-rule lasso)",
-      caption = sprintf(
-        "Mean |beta| over %s rules. Lasso: %s, cutoff: %.4g.",
-        if (is.na(n_rules_total)) "NA" else format(n_rules_total),
-        cv_txt,
-        cutoff
-      )
+      caption = caption_txt
     ) +
     ggplot2::theme_minimal()
+
+  if (has_class && length(unique(x$class)) > 1L) {
+    # Per-class cutoff lines via data join
+    hline_df <- data.frame(
+      class  = factor(names(cutoff_vec), levels = levels(x$class)),
+      cutoff = unname(cutoff_vec),
+      stringsAsFactors = FALSE
+    )
+    p <- p +
+      ggplot2::facet_wrap(~ class, nrow = 1L) +
+      ggplot2::geom_hline(
+        data        = hline_df,
+        ggplot2::aes(yintercept = .data[["cutoff"]]),
+        linetype    = "dashed",
+        color       = "#e74c3c",
+        linewidth   = 0.7,
+        inherit.aes = FALSE
+      )
+  } else {
+    # Single panel (regression or single-class) -- one horizontal line
+    cutoff_scalar <- if (has_class) cutoff_vec[[as.character(x$class[1])]] else cutoff_vec[[1]]
+    p <- p + ggplot2::geom_hline(
+      yintercept = cutoff_scalar,
+      linetype   = "dashed",
+      color      = "#e74c3c",
+      linewidth  = 0.7
+    )
+  }
+  p
+}
+
+# ---- Internal helpers ------------------------------------------------------
+
+#' @noRd
+.gg_beta_cv_txt <- function(prov) {
+  if (!is.null(prov) && isTRUE(prov$use.cv)) return("cv")
+  if (!is.null(prov) && length(prov$use.cv) == 1L && is.na(prov$use.cv)) {
+    return("unknown (precomputed)")
+  }
+  "fixed"
+}
+
+#' @noRd
+.gg_beta_cutoff_vec <- function(prov, x, has_class) {
+  if (!is.null(prov) && !is.null(prov$cutoff)) return(prov$cutoff)
+  if (has_class) {
+    return(stats::setNames(vapply(split(x$beta_mean, x$class), mean, numeric(1)),
+                           levels(x$class)))
+  }
+  stats::setNames(mean(x$beta_mean), "regr")
+}
+
+#' @noRd
+.gg_beta_caption_class <- function(x, n_rules_total, cv_txt) {
+  n_panels <- length(unique(x$class))
+  tail <- if (n_panels == 1L) {
+    sprintf("Class: %s.", as.character(x$class[1]))
+  } else {
+    sprintf("%d classes (faceted).", n_panels)
+  }
+  sprintf("Mean |beta| over %s rules. Lasso: %s. %s",
+          if (is.na(n_rules_total)) "NA" else format(n_rules_total),
+          cv_txt, tail)
 }

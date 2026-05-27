@@ -214,29 +214,55 @@ print.gg_isopro <- function(x, ...) {
 #' @export
 print.gg_beta_varpro <- function(x, ...) {
   prov           <- attr(x, "provenance")
-  cutoff         <- if (!is.null(prov)) prov$cutoff         %||% NA_real_ else NA_real_
-  cutoff_default <- isTRUE(if (!is.null(prov)) prov$cutoff_default else FALSE)
-  precomputed    <- isTRUE(if (!is.null(prov)) prov$precomputed   else FALSE)
+  family         <- if (!is.null(prov)) prov$family %||% NA_character_ else NA_character_
+  precomputed    <- isTRUE(if (!is.null(prov)) prov$precomputed else FALSE)
   n_total        <- if (!is.null(prov)) prov$n_rules_total  %||% NA_integer_ else NA_integer_
   n_nonzero      <- if (!is.null(prov)) prov$n_rules_nonzero %||% NA_integer_ else NA_integer_
   n_sel          <- sum(x$selected, na.rm = TRUE)
 
-  cat(.gg_header(x, "gg_beta_varpro"),
-      sprintf("  |  cutoff: %.4g%s", cutoff,
-              if (cutoff_default) " (default)" else ""),
-      sprintf("  |  precomputed: %s", precomputed),
-      "\n",
-      sprintf("  %d of %d variables selected; %d / %d rules with non-zero beta\n",
-              n_sel, nrow(x), n_nonzero, n_total),
-      sep = "")
+  if (identical(family, "class") && "class" %in% names(x)) {
+    n_classes   <- length(unique(x$class))
+    which_class <- if (!is.null(prov)) prov$which_class else NULL
+    view_str <- if (is.null(which_class)) "faceted" else sprintf("which_class: %s", which_class)
+    cat(.gg_header(x, "gg_beta_varpro"),
+        sprintf("  |  n_classes: %d  |  view: %s", n_classes, view_str),
+        sprintf("  |  precomputed: %s", precomputed),
+        "\n",
+        sprintf("  %d of %d (variable, class) pairs selected; %d / %d rules with non-zero beta\n",
+                n_sel, nrow(x), n_nonzero, n_total),
+        sep = "")
+  } else {
+    cutoff         <- if (!is.null(prov)) prov$cutoff %||% NA_real_ else NA_real_
+    cutoff_val     <- if (length(cutoff) >= 1L) cutoff[[1]] else NA_real_
+    cutoff_default <- isTRUE(if (!is.null(prov)) prov$cutoff_default else FALSE)
+    cat(.gg_header(x, "gg_beta_varpro"),
+        sprintf("  |  cutoff: %.4g%s", cutoff_val,
+                if (cutoff_default) " (default)" else ""),
+        sprintf("  |  precomputed: %s", precomputed),
+        "\n",
+        sprintf("  %d of %d variables selected; %d / %d rules with non-zero beta\n",
+                n_sel, nrow(x), n_nonzero, n_total),
+        sep = "")
+  }
   invisible(x)
 }
 
 #' @export
 print.summary.gg_beta_varpro <- function(x, ...) {
-  cat("Mean |beta| per variable (descending):\n")
-  print(unclass(x))
-  cat("\nRule counts:\n")
-  print(attr(x, "n_rules"))
+  if (is.list(unclass(x)) && !is.numeric(unclass(x))) {
+    # Classification: list of per-class summaries
+    for (cls in names(x)) {
+      cat(sprintf("Class '%s' -- mean |beta| per variable (descending):\n", cls))
+      print(unclass(x[[cls]]))
+      cat("\nRule counts:\n")
+      print(attr(x[[cls]], "n_rules"))
+      cat("\n")
+    }
+  } else {
+    cat("Mean |beta| per variable (descending):\n")
+    print(unclass(x))
+    cat("\nRule counts:\n")
+    print(attr(x, "n_rules"))
+  }
   invisible(x)
 }

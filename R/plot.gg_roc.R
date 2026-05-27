@@ -94,7 +94,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...,
 
       if (crv > 2 && is.null(which_outcome)) {
         # Multi-class: compute ROC for every class in parallel
-        gg_dta <- mclapply(seq_len(crv), function(ind) {
+        gg_dta <- lapply(seq_len(crv), function(ind) {
           gg_roc(gg_dta, which_outcome = ind, ...)
         })
       } else {
@@ -113,7 +113,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...,
       crv <- length(levels(gg_dta$predicted))
       if (crv > 2 && is.null(which_outcome)) {
         # Multi-class: compute ROC for every class in parallel
-        gg_dta <- parallel::mclapply(seq_len(crv), function(ind) {
+        gg_dta <- lapply(seq_len(crv), function(ind) {
           gg_roc(gg_dta, which_outcome = ind, ...)
         })
       } else {
@@ -168,23 +168,23 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...,
   } else {
     ## ---- Multi-class ROC plot (list of gg_roc objects) ----------------
     # Sort each class's data by specificity
-    gg_dta <- parallel::mclapply(gg_dta, function(st) {
+    gg_dta <- lapply(gg_dta, function(st) {
       st <- st[order(st$spec), ]
       st
     })
     # Compute FPR for each class
-    gg_dta <- parallel::mclapply(gg_dta, function(st) {
+    gg_dta <- lapply(gg_dta, function(st) {
       st$fpr <- 1 - st$spec
       st
     })
     # Tag each subset with its outcome index for colour/linetype mapping
-    gg_dta <- parallel::mclapply(seq_along(gg_dta), function(ind) {
+    gg_dta <- lapply(seq_along(gg_dta), function(ind) {
       gg_dta[[ind]]$outcome <- ind
       gg_dta[[ind]]
     })
 
     # Compute AUC for each class
-    auc <- parallel::mclapply(gg_dta, function(st) {
+    auc <- lapply(gg_dta, function(st) {
       calc_auc(st)
     })
 

@@ -4,10 +4,11 @@
 \alias{gg_beta_varpro}
 \title{Per-variable lasso-β importance from a varPro fit}
 \usage{
-gg_beta_varpro(object, ..., cutoff = NULL, beta_fit = NULL)
+gg_beta_varpro(object, ..., cutoff = NULL, beta_fit = NULL, which_class = NULL)
 }
 \arguments{
-\item{object}{A \code{varpro} fit from \code{\link[varPro:varpro]{varPro::varpro()}} (regression family).}
+\item{object}{A \code{varpro} fit from \code{\link[varPro:varpro]{varPro::varpro()}} (regression or
+classification family).}
 
 \item{...}{Forwarded to \code{\link[varPro:beta.varpro]{varPro::beta.varpro()}} when \code{beta_fit = NULL};
 ignored otherwise (with a warning). Documented forwardables: \code{use.cv},
@@ -20,22 +21,35 @@ ignored otherwise (with a warning). Documented forwardables: \code{use.cv},
 the same \code{object}. \code{NULL} (default) → the wrapper runs \code{beta.varpro()}
 itself. When supplied, must be a \code{varpro}-class object whose \verb{$results}
 has columns \code{tree / branch / variable / n.oob / imp}.}
+
+\item{which_class}{For a classification fit, name of a single response
+level to subset on. \code{NULL} (default) returns all classes (binary fits
+resolve to the \emph{last} factor level — the positive-class convention
+used by \code{glm} and \code{gg_roc}). Ignored with a warning on regression
+fits.}
 }
 \value{
-A \code{data.frame} of class \code{c("gg_beta_varpro", "data.frame")},
-one row per released variable, sorted by \code{beta_mean} descending.
+A \code{data.frame} of class \code{c("gg_beta_varpro", "data.frame")}.
+For a regression fit: one row per released variable, sorted by
+\code{beta_mean} descending. For a classification fit: long-format with
+an extra \code{class} column, one row per (variable, class) pair;
+\code{variable} is a factor whose levels are set by
+\verb{mean(|sum-of-class-beta|)} descending so every facet / panel shares
+the same row order. \code{which_class} (or the binary default
+last-factor-level) collapses the output to a single class.
 }
 \description{
-Tidy wrapper around \code{\link[varPro:beta.varpro]{varPro::beta.varpro()}} for the regression family.
+Tidy wrapper around \code{\link[varPro:beta.varpro]{varPro::beta.varpro()}} for the regression or
+classification family.
 Aggregates the per-rule lasso coefficient (β̂) by variable into
 \verb{mean(|β̂|)} and flags variables above a scalar cutoff. Optional
 \code{beta_fit} argument lets callers compute the expensive
 \code{beta.varpro()} step once and reuse the result.
 }
 \note{
-Classification, multivariate regression (\verb{regr+}), and survival
-families are out of scope for this release. The non-regression path
-errors with a message naming Phase 4d as the tracker (see NEWS).
+Multivariate regression (\verb{regr+}) and survival families are out
+of scope for this release. The unsupported-family path errors with
+a message naming Phase 4d as the tracker.
 }
 \section{What this is doing}{
 
@@ -110,6 +124,41 @@ gg_b <- gg_beta_varpro(v, beta_fit = b, cutoff = 0.5)
 }\if{html}{\out{</div>}}
 
 Provenance carries \code{precomputed = TRUE} when \code{beta_fit} was supplied.
+}
+
+\section{Classification}{
+
+For a varpro classification fit (\code{object$family == "class"},
+binary or multi-class), the returned frame is long-format with an
+extra \code{class} column: one row per (variable, class) pair. The
+\code{beta_mean} column aggregates the \strong{per-class lasso β̂} stored in
+\code{beta.varpro()}'s \verb{imp.<k>} columns (one per class level). Same
+pedantic-β semantics as regression, applied independently to each
+class.
+
+\strong{Binary default}: \code{which_class = NULL} resolves to the \emph{last}
+factor level of the response — the positive-class convention used
+by \code{glm} and \code{gg_roc}. For a 30-day-mortality outcome with levels
+\code{c("no", "yes")}, that means the wrapper shows you \code{"yes"} (the
+event) by default.
+
+\strong{Multi-class default}: \code{which_class = NULL} returns all K
+classes; the plot method renders \code{facet_wrap(~ class)} with one
+cutoff line per facet.
+
+\strong{\code{which_class = "<name>"}} filters to a single class regardless
+of K. Errors if the name isn't in the response levels.
+
+\strong{Per-class cutoffs}: \code{cutoff = NULL} resolves to each class's
+\code{mean(beta_mean)}. A scalar broadcasts. A named numeric vector
+overrides per class; missing names fall back to that class's mean.
+
+Example (30-day mortality, binary):
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{fit <- varPro::varpro(event_30d ~ ., data = clinical, ntree = 200)
+gg  <- gg_beta_varpro(fit)   # default: "yes" panel
+plot(gg)
+}\if{html}{\out{</div>}}
 }
 
 \section{Reproducibility}{

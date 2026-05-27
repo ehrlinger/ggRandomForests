@@ -1,8 +1,23 @@
 Package: ggRandomForests
-Version: 2.7.3.9011
+Version: 2.7.3.9012
 
 ggRandomForests v2.8.0 (development) — continued
 =================================================
+* `gg_beta_varpro()` adds varPro classification support (binary +
+  multi-class). Binary fits default to a single positive-class panel
+  (last factor level); multi-class fits return a long-format frame
+  with a `class` column and plot as `facet_wrap(~ class)`. Optional
+  `which_class` selects a single class; `cutoff` accepts a scalar or
+  per-class named vector. Variables are stored as a factor whose
+  levels are set by `mean(|sum-of-class-beta|)` descending so every
+  facet shows rows in the same order. Motivating use case: 30-day
+  mortality.
+* Provenance shape change for `gg_beta_varpro()`:
+  `attr(*, "provenance")$cutoff` is now always a named numeric
+  vector — length 1 named `"regr"` for regression, length K named
+  with the response factor levels for classification. Downstream
+  tooling should read it as a vector and select by name; the prior
+  scalar shape is gone.
 * `gg_beta_varpro()` and `plot.gg_beta_varpro()`: tidy wrapper and default
   horizontal bar chart for `varPro::beta.varpro()` — the per-rule lasso-β
   refinement of variable importance. Aggregates per-rule β̂ by variable

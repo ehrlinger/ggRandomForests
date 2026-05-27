@@ -308,11 +308,26 @@ summary.gg_isopro <- function(object, ...) {
 #' @rdname summary.gg
 #' @export
 summary.gg_beta_varpro <- function(object, ...) {
-  v <- object$beta_mean
-  names(v) <- as.character(object$variable)
-  v <- sort(v, decreasing = TRUE)
-  structure(v,
-            n_rules = stats::setNames(object$n_rules,
-                                      as.character(object$variable))[names(v)],
-            class   = "summary.gg_beta_varpro")
+  prov   <- attr(object, "provenance")
+  family <- if (!is.null(prov)) prov$family %||% "regr" else "regr"
+
+  if (identical(family, "class") && "class" %in% names(object)) {
+    per_class <- split(object, object$class, drop = TRUE)
+    by_class  <- lapply(per_class, function(df) {
+      v <- df$beta_mean
+      names(v) <- as.character(df$variable)
+      v <- sort(v, decreasing = TRUE)
+      structure(v,
+                n_rules = stats::setNames(df$n_rules, as.character(df$variable))[names(v)])
+    })
+    structure(by_class, class = "summary.gg_beta_varpro")
+  } else {
+    v <- object$beta_mean
+    names(v) <- as.character(object$variable)
+    v <- sort(v, decreasing = TRUE)
+    structure(v,
+              n_rules = stats::setNames(object$n_rules,
+                                        as.character(object$variable))[names(v)],
+              class   = "summary.gg_beta_varpro")
+  }
 }

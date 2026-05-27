@@ -372,4 +372,27 @@ test_that("gg-beta-varpro-default", {
   vdiffr::expect_doppelganger("gg-beta-varpro-default", p)
 })
 
+## ── gg_beta_varpro classification snapshots (Phase 4c-classification) ─────
+test_that("gg-beta-varpro-class-binary", {
+  skip_if_not_installed("vdiffr")
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  vb <- .varpro_iris_binary()
+  bb <- .beta_fit_iris_binary()
+  p <- plot(gg_beta_varpro(vb, beta_fit = bb))
+  vdiffr::expect_doppelganger("gg-beta-varpro-class-binary", p)
+})
+
+test_that("gg-beta-varpro-class-multiclass", {
+  skip_if_not_installed("vdiffr")
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  vm <- .varpro_iris_multiclass()
+  bm <- .beta_fit_iris_multiclass()
+  p <- plot(gg_beta_varpro(vm, beta_fit = bm))
+  vdiffr::expect_doppelganger("gg-beta-varpro-class-multiclass", p)
+})
+
 } # end CI guard

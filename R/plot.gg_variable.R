@@ -165,7 +165,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       gg_dta_x <- gg_dta[, -grep("yhat.", colnames(gg_dta))]
       gg_dta_y <- gg_dta[, grep("yhat.", colnames(gg_dta))]
       lng <- ncol(gg_dta_y)
-      gg2 <- parallel::mclapply(seq_len(ncol(gg_dta_y)), function(ind) {
+      gg2 <- lapply(seq_len(ncol(gg_dta_y)), function(ind) {
         cbind(gg_dta_x, yhat = gg_dta_y[, ind],
               outcome = sub("^yhat\\.", "", colnames(gg_dta_y)[ind]))
       })

@@ -55,7 +55,6 @@
 #' @seealso \code{\link{calc_auc}} \code{\link{gg_roc}}
 #' @seealso \code{\link{plot.gg_roc}}
 #'
-#' @importFrom parallel mclapply
 #' @importFrom stats xtabs
 #' @importFrom utils head tail
 #' @importFrom randomForest randomForest
@@ -121,7 +120,7 @@ calc_roc.rfsrc <-
     }
 
     # For each threshold, build the 2×2 confusion table and extract TPR/TNR
-    gg_dta <- parallel::mclapply(pct, function(crit) {
+    gg_dta <- lapply(pct, function(crit) {
       if (oob) {
         tbl <- xtabs(~ res + (oob_prd > crit), dta_roc)
       } else {
