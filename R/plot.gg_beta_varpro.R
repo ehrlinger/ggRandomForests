@@ -51,6 +51,38 @@
 #' @importFrom ggplot2 ggplot aes geom_col geom_hline coord_flip
 #' @importFrom ggplot2 scale_fill_manual labs theme_minimal
 #' @export
+#' @keywords internal
+.gg_beta_cv_txt <- function(prov) {
+  if (!is.null(prov) && isTRUE(prov$use.cv)) return("cv")
+  if (!is.null(prov) && length(prov$use.cv) == 1L && is.na(prov$use.cv)) {
+    return("unknown (precomputed)")
+  }
+  "fixed"
+}
+
+#' @keywords internal
+.gg_beta_cutoff_vec <- function(prov, x, has_class) {
+  if (!is.null(prov) && !is.null(prov$cutoff)) return(prov$cutoff)
+  if (has_class) {
+    return(stats::setNames(vapply(split(x$beta_mean, x$class), mean, numeric(1)),
+                           levels(x$class)))
+  }
+  stats::setNames(mean(x$beta_mean), "regr")
+}
+
+#' @keywords internal
+.gg_beta_caption_class <- function(x, n_rules_total, cv_txt) {
+  n_panels <- length(unique(x$class))
+  tail <- if (n_panels == 1L) {
+    sprintf("Class: %s.", as.character(x$class[1]))
+  } else {
+    sprintf("%d classes (faceted).", n_panels)
+  }
+  sprintf("Mean |beta| over %s rules. Lasso: %s. %s",
+          if (is.na(n_rules_total)) "NA" else format(n_rules_total),
+          cv_txt, tail)
+}
+
 plot.gg_beta_varpro <- function(x, ...) {
   if (nrow(x) == 0L) {
     stop("plot.gg_beta_varpro: nothing to plot (gg_beta_varpro has 0 rows).",
@@ -58,23 +90,15 @@ plot.gg_beta_varpro <- function(x, ...) {
   }
   prov          <- attr(x, "provenance")
   n_rules_total <- if (!is.null(prov)) prov$n_rules_total %||% NA_integer_ else NA_integer_
-  cv_txt        <- if (!is.null(prov) && isTRUE(prov$use.cv)) {
-    "cv"
-  } else if (!is.null(prov) && length(prov$use.cv) == 1L && is.na(prov$use.cv)) {
-    "unknown (precomputed)"
+  cv_txt        <- .gg_beta_cv_txt(prov)
+  has_class     <- "class" %in% names(x)
+  cutoff_vec    <- .gg_beta_cutoff_vec(prov, x, has_class)
+  caption_txt   <- if (has_class) {
+    .gg_beta_caption_class(x, n_rules_total, cv_txt)
   } else {
-    "fixed"
-  }
-  has_class <- "class" %in% names(x)
-
-  # Per-class cutoff vector (or scalar wrapped)
-  cutoff_vec <- if (!is.null(prov) && !is.null(prov$cutoff)) {
-    prov$cutoff
-  } else if (has_class) {
-    stats::setNames(vapply(split(x$beta_mean, x$class), mean, numeric(1)),
-                    levels(x$class))
-  } else {
-    stats::setNames(mean(x$beta_mean), "regr")
+    sprintf("Mean |beta| over %s rules. Lasso: %s. Cutoff: %.4g.",
+            if (is.na(n_rules_total)) "NA" else format(n_rules_total),
+            cv_txt, cutoff_vec[[1]])
   }
 
   p <- ggplot2::ggplot(
@@ -94,18 +118,7 @@ plot.gg_beta_varpro <- function(x, ...) {
     ggplot2::labs(
       x = NULL,
       y = "Mean |beta| (per-rule lasso)",
-      caption = sprintf(
-        "Mean |beta| over %s rules. Lasso: %s. %s",
-        if (is.na(n_rules_total)) "NA" else format(n_rules_total),
-        cv_txt,
-        if (has_class) {
-          n_panels <- length(unique(x$class))
-          if (n_panels == 1L) sprintf("Class: %s.", as.character(x$class[1]))
-          else sprintf("%d classes (faceted).", n_panels)
-        } else {
-          sprintf("Cutoff: %.4g.", cutoff_vec[[1]])
-        }
-      )
+      caption = caption_txt
     ) +
     ggplot2::theme_minimal()
 

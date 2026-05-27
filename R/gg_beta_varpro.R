@@ -260,25 +260,53 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
 }
 
 #' @keywords internal
+.class_levels_from_varpro <- function(object) {
+  # varPro preserves original factor names in y.org; object$y may have been
+  # internally relabelled to 0/1 for binary fits.
+  if (!is.null(object$y.org) && is.factor(object$y.org)) {
+    return(levels(object$y.org))
+  }
+  if (is.factor(object$y)) {
+    return(levels(object$y))
+  }
+  if (!is.null(attr(object$y, "levels"))) {
+    return(attr(object$y, "levels"))
+  }
+  sort(unique(as.character(object$y)))
+}
+
+#' @keywords internal
+.resolve_class_cutoff <- function(cutoff, per_class_mean, class_levels) {
+  n_classes <- length(class_levels)
+  if (is.null(cutoff)) {
+    return(per_class_mean)
+  }
+  if (is.null(names(cutoff))) {
+    if (length(cutoff) != 1L) {
+      stop("gg_beta_varpro: cutoff must be NULL, scalar, or a named vector with names in class levels.",
+           call. = FALSE)
+    }
+    return(stats::setNames(rep(as.numeric(cutoff), n_classes), class_levels))
+  }
+  bad <- setdiff(names(cutoff), class_levels)
+  if (length(bad) > 0L) {
+    stop(sprintf(
+      "gg_beta_varpro: cutoff name(s) '%s' is not a level of the response. Levels: %s.",
+      paste(bad, collapse = ", "),
+      paste(class_levels, collapse = ", ")
+    ), call. = FALSE)
+  }
+  cv <- per_class_mean
+  cv[names(cutoff)] <- as.numeric(cutoff)
+  cv
+}
+
+#' @keywords internal
 .gg_beta_varpro_class <- function(object, b, cutoff, which_class, beta_fit,
                                   use_cv) {
-  # Class levels — prefer y.org (varPro preserves original factor names there;
-  # object$y may have been internally relabelled to 0/1 for binary fits).
-  class_levels <- NULL
-  if (!is.null(object$y.org) && is.factor(object$y.org)) {
-    class_levels <- levels(object$y.org)
-  }
-  if (is.null(class_levels) && is.factor(object$y)) {
-    class_levels <- levels(object$y)
-  }
-  if (is.null(class_levels) && !is.null(attr(object$y, "levels"))) {
-    class_levels <- attr(object$y, "levels")
-  }
-  if (is.null(class_levels)) {
-    class_levels <- sort(unique(as.character(object$y)))
-  }
-  K <- length(class_levels)
-  imp_cols <- paste0("imp.", seq_len(K))
+  class_levels <- .class_levels_from_varpro(object)
+  n_classes    <- length(class_levels)
+  imp_cols     <- paste0("imp.", seq_len(n_classes))
 
   # Validate which_class
   if (!is.null(which_class)) {
@@ -288,8 +316,8 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
         which_class, paste(class_levels, collapse = ", ")
       ), call. = FALSE)
     }
-  } else if (K == 2L) {
-    which_class <- class_levels[K]   # binary default = last (positive class)
+  } else if (n_classes == 2L) {
+    which_class <- class_levels[n_classes]   # binary default = last (positive class)
   }
 
   res <- b$results
@@ -303,7 +331,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
 
   # Per-class aggregation — long format
   rows <- list()
-  for (k in seq_len(K)) {
+  for (k in seq_len(n_classes)) {
     col <- imp_cols[k]
     imp_k <- res[[col]]
     keep  <- is.finite(imp_k)
@@ -330,27 +358,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   }, numeric(1))
   names(per_class_mean) <- class_levels
 
-  resolved_cutoff <- if (is.null(cutoff)) {
-    per_class_mean
-  } else if (is.null(names(cutoff))) {
-    if (length(cutoff) != 1L) {
-      stop("gg_beta_varpro: cutoff must be NULL, scalar, or a named vector with names in class levels.",
-           call. = FALSE)
-    }
-    stats::setNames(rep(as.numeric(cutoff), K), class_levels)
-  } else {
-    bad <- setdiff(names(cutoff), class_levels)
-    if (length(bad) > 0L) {
-      stop(sprintf(
-        "gg_beta_varpro: cutoff name(s) '%s' is not a level of the response. Levels: %s.",
-        paste(bad, collapse = ", "),
-        paste(class_levels, collapse = ", ")
-      ), call. = FALSE)
-    }
-    cv <- per_class_mean
-    cv[names(cutoff)] <- as.numeric(cutoff)
-    cv
-  }
+  resolved_cutoff <- .resolve_class_cutoff(cutoff, per_class_mean, class_levels)
 
   long$selected <- mapply(function(bm, cls) bm >= resolved_cutoff[[cls]],
                           long$beta_mean, long$class)
