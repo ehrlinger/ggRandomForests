@@ -331,3 +331,27 @@ summary.gg_beta_varpro <- function(object, ...) {
               class   = "summary.gg_beta_varpro")
   }
 }
+
+#' @rdname summary.gg
+#' @export
+summary.gg_ivarpro <- function(object, ...) {
+  prov   <- attr(object, "provenance")
+  family <- if (!is.null(prov)) prov$family %||% "regr" else "regr"
+
+  per_var <- function(df) {
+    v <- tapply(abs(df$local_imp), df$variable, mean, na.rm = TRUE)
+    v <- v[!is.na(v)]
+    v <- sort(v, decreasing = TRUE)
+    n_obs <- tapply(df$obs, df$variable,
+                    function(o) length(unique(o)))[names(v)]
+    structure(v, n_obs = n_obs)
+  }
+
+  if (identical(family, "class") && "class" %in% names(object)) {
+    per_class <- split(object, object$class, drop = TRUE)
+    by_class  <- lapply(per_class, per_var)
+    structure(by_class, class = "summary.gg_ivarpro")
+  } else {
+    structure(per_var(object), class = "summary.gg_ivarpro")
+  }
+}

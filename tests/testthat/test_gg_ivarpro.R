@@ -197,3 +197,49 @@ test_that("plot.gg_ivarpro classification which_obs builds (faceted)", {
   expect_s3_class(p, "ggplot")
   expect_silent(ggplot2::ggplot_build(p))
 })
+
+# ---- print + summary ------------------------------------------------------
+
+test_that("print.gg_ivarpro prints invisibly with header", {
+  v  <- .varpro_boston()
+  iv <- .ivarpro_boston()
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  pr <- withVisible(print(out))
+  expect_false(pr$visible)
+  expect_identical(pr$value, out)
+})
+
+test_that("summary.gg_ivarpro regression returns descending named numeric", {
+  v  <- .varpro_boston()
+  iv <- .ivarpro_boston()
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  s <- summary(out)
+  expect_s3_class(s, "summary.gg_ivarpro")
+  vals <- as.numeric(unclass(s))
+  expect_equal(vals, sort(vals, decreasing = TRUE))
+})
+
+test_that("summary.gg_ivarpro classification returns per-class list", {
+  v  <- .varpro_iris_multiclass_for_ivarpro()
+  iv <- .ivarpro_iris_multiclass()
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  s <- summary(out)
+  expect_s3_class(s, "summary.gg_ivarpro")
+  expect_true(is.list(unclass(s)))
+  expect_setequal(names(unclass(s)), levels(iris$Species))
+})
+
+test_that("autoplot.gg_ivarpro matches plot", {
+  v  <- .varpro_boston()
+  iv <- .ivarpro_boston()
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  # The aggregate (no which_obs) regression view uses geom_jitter, whose
+  # Stat re-randomises on every ggplot_build(). Seed both builds so the
+  # comparison is deterministic — the test is checking that autoplot
+  # delegates to plot, not testing jitter stability.
+  set.seed(1L)
+  d1 <- ggplot2::ggplot_build(plot(out))$data
+  set.seed(1L)
+  d2 <- ggplot2::ggplot_build(ggplot2::autoplot(out))$data
+  expect_equal(d1, d2)
+})
