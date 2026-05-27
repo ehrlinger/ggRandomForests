@@ -162,3 +162,38 @@ test_that("gg_ivarpro errors on regr+ / surv families", {
   v_fake$family <- "surv"
   expect_error(gg_ivarpro(v_fake), "family = 'surv'")
 })
+
+# ---- plot dispatch matrix --------------------------------------------------
+
+test_that("plot.gg_ivarpro regression distribution builds", {
+  v  <- .varpro_boston()
+  iv <- .ivarpro_boston()
+  p <- plot(gg_ivarpro(v, ivarpro_fit = iv))
+  expect_s3_class(p, "ggplot")
+  expect_silent(ggplot2::ggplot_build(p))
+})
+
+test_that("plot.gg_ivarpro regression which_obs builds (single panel)", {
+  v  <- .varpro_boston()
+  iv <- .ivarpro_boston()
+  p <- plot(gg_ivarpro(v, ivarpro_fit = iv, which_obs = 1L))
+  expect_s3_class(p, "ggplot")
+  expect_silent(ggplot2::ggplot_build(p))
+})
+
+test_that("plot.gg_ivarpro classification distribution builds (faceted)", {
+  v  <- .varpro_iris_multiclass_for_ivarpro()
+  iv <- .ivarpro_iris_multiclass()
+  p <- plot(gg_ivarpro(v, ivarpro_fit = iv))
+  expect_s3_class(p, "ggplot")
+  built <- ggplot2::ggplot_build(p)
+  expect_true(length(unique(built$layout$layout$PANEL)) >= 2L)
+})
+
+test_that("plot.gg_ivarpro classification which_obs builds (faceted)", {
+  v  <- .varpro_iris_multiclass_for_ivarpro()
+  iv <- .ivarpro_iris_multiclass()
+  p <- plot(gg_ivarpro(v, ivarpro_fit = iv, which_obs = 1L))
+  expect_s3_class(p, "ggplot")
+  expect_silent(ggplot2::ggplot_build(p))
+})
