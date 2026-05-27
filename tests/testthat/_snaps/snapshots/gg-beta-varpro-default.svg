@@ -40,17 +40,17 @@
 <polyline points='348.42,531.75 348.42,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='493.71,531.75 493.71,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='639.00,531.75 639.00,22.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
-<rect x='57.83' y='40.96' width='625.42' height='109.06' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #4E8FCD;' />
-<rect x='57.83' y='162.14' width='419.54' height='109.06' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
-<rect x='57.83' y='283.33' width='356.17' height='109.06' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
-<rect x='57.83' y='404.51' width='290.67' height='109.06' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
+<rect x='57.83' y='404.51' width='625.42' height='109.06' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #4E8FCD;' />
+<rect x='57.83' y='283.33' width='419.54' height='109.06' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
+<rect x='57.83' y='162.14' width='356.17' height='109.06' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
+<rect x='57.83' y='40.96' width='290.67' height='109.06' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
 <line x1='480.78' y1='531.75' x2='480.78' y2='22.78' style='stroke-width: 1.49; stroke: #E74C3C; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
-<text x='21.63' y='462.07' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='16.15px' lengthAdjust='spacingAndGlyphs'>disp</text>
-<text x='21.63' y='340.89' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>hp</text>
-<text x='21.63' y='219.70' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='10.76px' lengthAdjust='spacingAndGlyphs'>cyl</text>
-<text x='21.63' y='98.52' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='8.80px' lengthAdjust='spacingAndGlyphs'>wt</text>
+<text x='21.63' y='462.07' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='8.80px' lengthAdjust='spacingAndGlyphs'>wt</text>
+<text x='21.63' y='340.89' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='10.76px' lengthAdjust='spacingAndGlyphs'>cyl</text>
+<text x='21.63' y='219.70' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='9.79px' lengthAdjust='spacingAndGlyphs'>hp</text>
+<text x='21.63' y='98.52' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='16.15px' lengthAdjust='spacingAndGlyphs'>disp</text>
 <text x='57.83' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
 <text x='203.12' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>1</text>
 <text x='348.42' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>2</text>
@@ -58,6 +58,6 @@
 <text x='639.00' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>4</text>
 <text x='370.54' y='554.87' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='134.73px' lengthAdjust='spacingAndGlyphs'>Mean |beta| (per-rule lasso)</text>
 <text x='26.56' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='130.62px' lengthAdjust='spacingAndGlyphs'>gg-beta-varpro-default</text>
-<text x='714.52' y='568.69' text-anchor='end' style='font-size: 8.80px; font-family: sans;' textLength='212.01px' lengthAdjust='spacingAndGlyphs'>Mean |beta| over 252 rules. Lasso: fixed, cutoff: 2.911.</text>
+<text x='714.52' y='568.69' text-anchor='end' style='font-size: 8.80px; font-family: sans;' textLength='290.29px' lengthAdjust='spacingAndGlyphs'>Mean |beta| over 252 rules. Lasso: unknown (precomputed). Cutoff: 2.911.</text>
 </g>
 </svg>
