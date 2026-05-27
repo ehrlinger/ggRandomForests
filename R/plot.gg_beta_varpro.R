@@ -52,7 +52,6 @@ plot.gg_beta_varpro <- function(x, ...) {
          call. = FALSE)
   }
   prov          <- attr(x, "provenance")
-  cutoff        <- if (!is.null(prov)) prov$cutoff %||% mean(x$beta_mean) else mean(x$beta_mean)
   n_rules_total <- if (!is.null(prov)) prov$n_rules_total %||% NA_integer_ else NA_integer_
   cv_txt        <- if (!is.null(prov) && isTRUE(prov$use.cv)) {
     "cv"
@@ -61,10 +60,19 @@ plot.gg_beta_varpro <- function(x, ...) {
   } else {
     "fixed"
   }
+  has_class <- "class" %in% names(x)
 
-  x$variable <- factor(x$variable, levels = x$variable[order(x$beta_mean)])
+  # Per-class cutoff vector (or scalar wrapped)
+  cutoff_vec <- if (!is.null(prov) && !is.null(prov$cutoff)) {
+    prov$cutoff
+  } else if (has_class) {
+    stats::setNames(vapply(split(x$beta_mean, x$class), mean, numeric(1)),
+                    levels(x$class))
+  } else {
+    stats::setNames(mean(x$beta_mean), "regr")
+  }
 
-  ggplot2::ggplot(
+  p <- ggplot2::ggplot(
     x,
     ggplot2::aes(
       x    = .data[["variable"]],
@@ -78,21 +86,50 @@ plot.gg_beta_varpro <- function(x, ...) {
       values = c("TRUE" = "#4e8fcd", "FALSE" = "#888888"),
       guide  = "none"
     ) +
-    ggplot2::geom_hline(
-      yintercept = cutoff,
-      linetype   = "dashed",
-      color      = "#e74c3c",
-      linewidth  = 0.7
-    ) +
     ggplot2::labs(
       x = NULL,
       y = "Mean |beta| (per-rule lasso)",
       caption = sprintf(
-        "Mean |beta| over %s rules. Lasso: %s, cutoff: %.4g.",
+        "Mean |beta| over %s rules. Lasso: %s. %s",
         if (is.na(n_rules_total)) "NA" else format(n_rules_total),
         cv_txt,
-        cutoff
+        if (has_class) {
+          n_panels <- length(unique(x$class))
+          if (n_panels == 1L) sprintf("Class: %s.", as.character(x$class[1]))
+          else sprintf("%d classes (faceted).", n_panels)
+        } else {
+          sprintf("Cutoff: %.4g.", cutoff_vec[[1]])
+        }
       )
     ) +
     ggplot2::theme_minimal()
+
+  if (has_class && length(unique(x$class)) > 1L) {
+    # Per-class cutoff lines via data join
+    hline_df <- data.frame(
+      class  = factor(names(cutoff_vec), levels = levels(x$class)),
+      cutoff = unname(cutoff_vec),
+      stringsAsFactors = FALSE
+    )
+    p <- p +
+      ggplot2::facet_wrap(~ class, nrow = 1L) +
+      ggplot2::geom_hline(
+        data        = hline_df,
+        ggplot2::aes(yintercept = .data[["cutoff"]]),
+        linetype    = "dashed",
+        color       = "#e74c3c",
+        linewidth   = 0.7,
+        inherit.aes = FALSE
+      )
+  } else {
+    # Single panel (regression or single-class) -- one horizontal line
+    cutoff_scalar <- if (has_class) cutoff_vec[[as.character(x$class[1])]] else cutoff_vec[[1]]
+    p <- p + ggplot2::geom_hline(
+      yintercept = cutoff_scalar,
+      linetype   = "dashed",
+      color      = "#e74c3c",
+      linewidth  = 0.7
+    )
+  }
+  p
 }

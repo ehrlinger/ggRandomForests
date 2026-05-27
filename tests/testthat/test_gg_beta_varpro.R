@@ -351,3 +351,25 @@ test_that("gg_beta_varpro which_class on regression warns and is ignored", {
   expect_s3_class(out, "gg_beta_varpro")
   expect_false("class" %in% names(out))
 })
+
+# ---- Plot: binary single panel + multi-class faceted -----------------------
+
+test_that("plot.gg_beta_varpro binary builds (single panel)", {
+  vb <- .varpro_iris_binary()
+  bb <- .beta_fit_iris_binary()
+  out <- gg_beta_varpro(vb, beta_fit = bb)
+  p <- plot(out)
+  expect_s3_class(p, "ggplot")
+  expect_silent(ggplot2::ggplot_build(p))
+})
+
+test_that("plot.gg_beta_varpro multi-class builds (faceted) with per-class cutoff lines", {
+  vm <- .varpro_iris_multiclass()
+  bm <- .beta_fit_iris_multiclass()
+  out <- gg_beta_varpro(vm, beta_fit = bm)
+  p <- plot(out)
+  expect_s3_class(p, "ggplot")
+  built <- ggplot2::ggplot_build(p)
+  # facet_wrap engaged -> multiple panels in layout
+  expect_true(nrow(built$layout$layout) >= 2L)
+})
