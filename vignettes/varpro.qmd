@@ -158,3 +158,28 @@ plot(gg_udependent(u_boston))
 
 Clusters of mutually-connected variables are worth checking for
 redundancy — they may be several views of the same underlying quantity.
+
+## Anomaly scoring with `gg_isopro()`
+
+Variable importance is one axis; *observation* outlierness is another.
+`gg_isopro()` wraps `varPro::isopro()` — an isolation-forest variant
+that scores how anomalous each training row looks — and renders the
+result as a ranked elbow plus a density of the scores. The score is
+on `[0, 1]`; the wrapper's convention is "higher = more anomalous"
+(opposite of varPro's native polarity; the wrapper flips it for
+consistency).
+
+```{r boston-isopro, cache=TRUE}
+iso_boston <- varPro::isopro(data = Boston[, setdiff(names(Boston),
+                                                      "medv")],
+                              method = "rnd", sampsize = 256,
+                              ntree = 50)
+```
+
+```{r boston-gg-isopro}
+plot(gg_isopro(iso_boston))
+```
+
+The elbow flags rows that diverge from the bulk. Pair with the
+domain — anomalous in feature space is not the same as wrong, but it's
+often where the most interesting cases live.
