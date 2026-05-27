@@ -293,3 +293,24 @@ plot(gg_beta_varpro(v_iris_multi, beta_fit = b_iris_multi))
 
 `which_class = "<level>"` collapses the faceted view to a single class
 when you want it.
+
+# Survival: PBC
+
+Survival is the family where the varPro toolchain shows its limits. The
+forest-fitting and the family-agnostic wrappers all work; the
+lasso-refined and individual-importance wrappers don't, because the
+underlying `varPro::beta.varpro()` and `varPro::ivarpro()` calls don't
+support survival fits in the current release.
+
+```{r pbc-data}
+library(survival)
+data(pbc, package = "randomForestSRC")
+pbc_small <- pbc[, c("days", "status", "age", "albumin", "bili",
+                     "edema", "platelet")]
+pbc_small <- na.omit(pbc_small)
+set.seed(20260527L)
+v_pbc <- varPro::varpro(
+  Surv(days, status) ~ .,
+  data = pbc_small, ntree = 50
+)
+```
