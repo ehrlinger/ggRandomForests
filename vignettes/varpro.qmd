@@ -410,3 +410,12 @@ across the toolkit:
 Downstream code that picks a value should read it as a vector
 (`prov$cutoff[[class_name]]` or `prov$cutoff[[1]]`), not as a scalar.
 This contract was established in v2.7.3.9012 (PR #98).
+
+# Further reading
+
+The release-rule framework is laid out in @Lu2024varpro. The ensemble
+mortality scale used by survival partial dependence comes from
+@Ishwaran:2007a. Each wrapper's help page carries a "What this is
+doing" section that goes one level deeper than this vignette.
+
+# References
