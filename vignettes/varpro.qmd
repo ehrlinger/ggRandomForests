@@ -212,3 +212,23 @@ The distribution view tells you which variables drive predictions
 *across* observations. The per-observation view answers the same
 question for a specific case — useful for explaining one prediction
 back to whoever asked.
+
+# Classification: iris
+
+Iris is a small data set — 150 rows, four predictors, three response
+classes — and that's a feature here, not a flaw: every figure renders in
+under a second, and the structure is well-understood enough that any
+strange behaviour stands out. Two fits: a binary problem (drop *setosa*,
+positive class = *virginica*) and the full three-class problem.
+
+```{r iris-fit-binary}
+iris_binary <- iris[iris$Species != "setosa", ]
+iris_binary$Species <- droplevels(iris_binary$Species)
+set.seed(20260527L)
+v_iris_binary <- varPro::varpro(Species ~ ., data = iris_binary, ntree = 50)
+```
+
+```{r iris-fit-multi}
+set.seed(20260527L)
+v_iris_multi <- varPro::varpro(Species ~ ., data = iris, ntree = 50)
+```
