@@ -27,8 +27,11 @@ knitr::opts_chunk$set(
 ```
 
 ```{r libs}
-library(ggRandomForests)
-library(varPro)
+# ggRandomForests is auto-attached by the vignette engine; explicit
+# library(ggRandomForests) breaks the Windows R CMD check vignette
+# rebuild because the check-time install library isn't on .libPaths()
+# for that subprocess. The other vignettes follow the same pattern.
+# All varPro calls below are :: qualified, so no library(varPro) either.
 library(ggplot2)
 ```
 
