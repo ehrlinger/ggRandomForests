@@ -182,35 +182,8 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   if (is.null(beta_fit)) {
     b <- varPro::beta.varpro(object, ...)
   } else {
-    required_cols <- c("tree", "branch", "variable", "n.oob", "imp")
-    if (!inherits(beta_fit, "varpro") || !is.data.frame(beta_fit$results)) {
-      stop("gg_beta_varpro: beta_fit does not look like a varPro::beta.varpro() result. ",
-           "Expected a varpro-class object with a data.frame in $results.",
-           call. = FALSE)
-    }
-    missing_cols <- setdiff(required_cols, names(beta_fit$results))
-    if (length(missing_cols) > 0L) {
-      stop("gg_beta_varpro: beta_fit does not look like a varPro::beta.varpro() result. ",
-           "Missing column(s): ", paste(missing_cols, collapse = ", "), ".",
-           call. = FALSE)
-    }
-    # Classification fits need per-class imp.<k> columns too
-    if (fam == "class") {
-      class_levels_check <- .class_levels_from_varpro(object)
-      class_cols <- paste0("imp.", seq_along(class_levels_check))
-      missing_class_cols <- setdiff(class_cols, names(beta_fit$results))
-      if (length(missing_class_cols) > 0L) {
-        stop("gg_beta_varpro: beta_fit does not look like a classification ",
-             "varPro::beta.varpro() result. Missing per-class column(s): ",
-             paste(missing_class_cols, collapse = ", "), ". ",
-             "Expected one imp.<k> column per response level (",
-             length(class_levels_check), " levels: ",
-             paste(class_levels_check, collapse = ", "), ").",
-             call. = FALSE)
-      }
-    }
-    dots <- list(...)
-    if (length(dots) > 0L) {
+    .validate_beta_fit(beta_fit, object, fam)
+    if (length(list(...)) > 0L) {
       warning("gg_beta_varpro: arguments in '...' ignored because beta_fit is supplied.",
               call. = FALSE)
     }
@@ -279,6 +252,36 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
     xvar.names      = b$xvar.names
   )
   out
+}
+
+#' @noRd
+.validate_beta_fit <- function(beta_fit, object, fam) {
+  if (!inherits(beta_fit, "varpro") || !is.data.frame(beta_fit$results)) {
+    stop("gg_beta_varpro: beta_fit does not look like a varPro::beta.varpro() result. ",
+         "Expected a varpro-class object with a data.frame in $results.",
+         call. = FALSE)
+  }
+  required_cols <- c("tree", "branch", "variable", "n.oob", "imp")
+  missing_cols <- setdiff(required_cols, names(beta_fit$results))
+  if (length(missing_cols) > 0L) {
+    stop("gg_beta_varpro: beta_fit does not look like a varPro::beta.varpro() result. ",
+         "Missing column(s): ", paste(missing_cols, collapse = ", "), ".",
+         call. = FALSE)
+  }
+  if (fam == "class") {
+    cls <- .class_levels_from_varpro(object)
+    cls_cols <- paste0("imp.", seq_along(cls))
+    missing_cls_cols <- setdiff(cls_cols, names(beta_fit$results))
+    if (length(missing_cls_cols) > 0L) {
+      stop("gg_beta_varpro: beta_fit does not look like a classification ",
+           "varPro::beta.varpro() result. Missing per-class column(s): ",
+           paste(missing_cls_cols, collapse = ", "), ". ",
+           "Expected one imp.<k> column per response level (",
+           length(cls), " levels: ", paste(cls, collapse = ", "), ").",
+           call. = FALSE)
+    }
+  }
+  invisible(NULL)
 }
 
 #' @noRd
