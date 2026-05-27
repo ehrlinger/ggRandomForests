@@ -1,0 +1,37 @@
+---
+title: "Exploring variable importance with varPro"
+author: "John Ehrlinger"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    html-math-method: mathjax
+    code-fold: false
+bibliography: ggRandomForests.bib
+vignette: >
+  %\VignetteIndexEntry{Exploring variable importance with varPro}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  message    = FALSE,
+  warning    = FALSE,
+  fig.width  = 7,
+  fig.height = 4.5,
+  cache      = TRUE,
+  cache.path = "varpro_cache/"
+)
+```
+
+```{r libs}
+library(ggRandomForests)
+library(varPro)
+library(ggplot2)
+```
+
+# Placeholder
+
+Scaffold only — sections to follow.
