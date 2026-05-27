@@ -395,4 +395,51 @@ test_that("gg-beta-varpro-class-multiclass", {
   vdiffr::expect_doppelganger("gg-beta-varpro-class-multiclass", p)
 })
 
+## ── gg_ivarpro snapshots (Phase 4d) ────────────────────────────────────────
+test_that("gg-ivarpro-regr-distribution", {
+  skip_if_not_installed("vdiffr")
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  v  <- .varpro_boston()
+  iv <- .ivarpro_boston()
+  set.seed(1L)
+  p <- plot(gg_ivarpro(v, ivarpro_fit = iv))
+  vdiffr::expect_doppelganger("gg-ivarpro-regr-distribution", p)
+})
+
+test_that("gg-ivarpro-regr-which-obs", {
+  skip_if_not_installed("vdiffr")
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  v  <- .varpro_boston()
+  iv <- .ivarpro_boston()
+  p <- plot(gg_ivarpro(v, ivarpro_fit = iv, which_obs = 1L))
+  vdiffr::expect_doppelganger("gg-ivarpro-regr-which-obs", p)
+})
+
+test_that("gg-ivarpro-class-distribution", {
+  skip_if_not_installed("vdiffr")
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  v  <- .varpro_iris_multiclass_for_ivarpro()
+  iv <- .ivarpro_iris_multiclass()
+  set.seed(1L)
+  p <- plot(gg_ivarpro(v, ivarpro_fit = iv))
+  vdiffr::expect_doppelganger("gg-ivarpro-class-distribution", p)
+})
+
+test_that("gg-ivarpro-class-which-obs", {
+  skip_if_not_installed("vdiffr")
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  v  <- .varpro_iris_multiclass_for_ivarpro()
+  iv <- .ivarpro_iris_multiclass()
+  p <- plot(gg_ivarpro(v, ivarpro_fit = iv, which_obs = 1L))
+  vdiffr::expect_doppelganger("gg-ivarpro-class-which-obs", p)
+})
+
 } # end CI guard

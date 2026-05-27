@@ -266,3 +266,56 @@ print.summary.gg_beta_varpro <- function(x, ...) {
   }
   invisible(x)
 }
+
+#' @rdname print.gg
+#' @export
+print.gg_ivarpro <- function(x, ...) {
+  prov        <- attr(x, "provenance")
+  precomputed <- isTRUE(if (!is.null(prov)) prov$precomputed else FALSE)
+  n_obs       <- if (!is.null(prov)) prov$n_obs %||% NA_integer_ else NA_integer_
+  n_var       <- if (!is.null(prov)) prov$n_var %||% NA_integer_ else NA_integer_
+  which_obs   <- if (!is.null(prov)) prov$which_obs else NULL
+  which_cls   <- if (!is.null(prov)) prov$which_class else NULL
+  has_class   <- "class" %in% names(x)
+
+  view <- if (!is.null(which_obs)) sprintf("obs %d", which_obs) else "aggregate"
+  cls_part <- if (has_class) {
+    n_cls <- length(unique(x$class))
+    if (!is.null(which_cls)) {
+      sprintf("  |  class: %s", which_cls)
+    } else {
+      sprintf("  |  %d classes (faceted)", n_cls)
+    }
+  } else {
+    ""
+  }
+
+  cat(.gg_header(x, "gg_ivarpro"),
+      sprintf("  |  view: %s", view),
+      cls_part,
+      sprintf("  |  precomputed: %s", precomputed),
+      "\n",
+      sprintf("  %d (obs x variable) cells; %d unique obs across %d variables\n",
+              nrow(x), n_obs, n_var),
+      sep = "")
+  invisible(x)
+}
+
+#' @export
+print.summary.gg_ivarpro <- function(x, ...) {
+  if (is.list(unclass(x)) && !is.numeric(unclass(x))) {
+    for (cls in names(x)) {
+      cat(sprintf("Class '%s' - mean |local_imp| per variable (descending):\n", cls))
+      print(unclass(x[[cls]]))
+      cat("\nObservation counts:\n")
+      print(attr(x[[cls]], "n_obs"))
+      cat("\n")
+    }
+  } else {
+    cat("Mean |local_imp| per variable (descending):\n")
+    print(unclass(x))
+    cat("\nObservation counts:\n")
+    print(attr(x, "n_obs"))
+  }
+  invisible(x)
+}

@@ -1,8 +1,23 @@
 Package: ggRandomForests
-Version: 2.7.3.9012
+Version: 2.7.3.9013
 
 ggRandomForests v2.8.0 (development) — continued
 =================================================
+* `gg_ivarpro()` and `plot.gg_ivarpro()`: tidy wrapper and
+  per-variable-distribution / per-observation-profile plots for
+  `varPro::ivarpro()` (individual / local variable importance) across
+  regression and classification (binary + multi-class) families. The
+  long-format tidy frame is `(obs, variable, local_imp, selected)` for
+  regression; classification adds a `class` column. NA cells are
+  filtered out and sparsity is surfaced in provenance. `which_obs`
+  (integer index) collapses to a single-observation profile; the plot
+  switches from a jittered distribution view to a horizontal bar
+  chart. `which_class` (response level name) collapses to a single
+  class panel; binary fits default to the last factor level (positive
+  class). `cutoff` accepts `NULL` (per-class mean), a scalar, or a
+  named numeric vector — matching the gg_beta_varpro classification
+  contract. Optional `ivarpro_fit` argument lets callers cache the
+  expensive `ivarpro()` call. Last of four Phase 4 sub-projects.
 * `gg_beta_varpro()` adds varPro classification support (binary +
   multi-class). Binary fits default to a single positive-class panel
   (last factor level); multi-class fits return a long-format frame
