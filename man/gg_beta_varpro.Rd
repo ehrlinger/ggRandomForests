@@ -7,7 +7,8 @@
 gg_beta_varpro(object, ..., cutoff = NULL, beta_fit = NULL, which_class = NULL)
 }
 \arguments{
-\item{object}{A \code{varpro} fit from \code{\link[varPro:varpro]{varPro::varpro()}} (regression family).}
+\item{object}{A \code{varpro} fit from \code{\link[varPro:varpro]{varPro::varpro()}} (regression or
+classification family).}
 
 \item{...}{Forwarded to \code{\link[varPro:beta.varpro]{varPro::beta.varpro()}} when \code{beta_fit = NULL};
 ignored otherwise (with a warning). Documented forwardables: \code{use.cv},
@@ -28,8 +29,14 @@ used by \code{glm} and \code{gg_roc}). Ignored with a warning on regression
 fits.}
 }
 \value{
-A \code{data.frame} of class \code{c("gg_beta_varpro", "data.frame")},
-one row per released variable, sorted by \code{beta_mean} descending.
+A \code{data.frame} of class \code{c("gg_beta_varpro", "data.frame")}.
+For a regression fit: one row per released variable, sorted by
+\code{beta_mean} descending. For a classification fit: long-format with
+an extra \code{class} column, one row per (variable, class) pair;
+\code{variable} is a factor whose levels are set by
+\verb{mean(|sum-of-class-beta|)} descending so every facet / panel shares
+the same row order. \code{which_class} (or the binary default
+last-factor-level) collapses the output to a single class.
 }
 \description{
 Tidy wrapper around \code{\link[varPro:beta.varpro]{varPro::beta.varpro()}} for the regression or

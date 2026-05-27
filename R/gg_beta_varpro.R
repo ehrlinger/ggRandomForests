@@ -116,7 +116,8 @@
 #'   of scope for this release. The unsupported-family path errors with
 #'   a message naming Phase 4d as the tracker.
 #'
-#' @param object A `varpro` fit from [varPro::varpro()] (regression family).
+#' @param object A `varpro` fit from [varPro::varpro()] (regression or
+#'   classification family).
 #' @param ... Forwarded to [varPro::beta.varpro()] when `beta_fit = NULL`;
 #'   ignored otherwise (with a warning). Documented forwardables: `use.cv`,
 #'   `use.1se`, `nfolds`, `maxit`, `thresh`, `max.rules.tree`, `max.tree`.
@@ -132,8 +133,14 @@
 #'   used by `glm` and `gg_roc`). Ignored with a warning on regression
 #'   fits.
 #'
-#' @return A `data.frame` of class `c("gg_beta_varpro", "data.frame")`,
-#'   one row per released variable, sorted by `beta_mean` descending.
+#' @return A `data.frame` of class `c("gg_beta_varpro", "data.frame")`.
+#'   For a regression fit: one row per released variable, sorted by
+#'   `beta_mean` descending. For a classification fit: long-format with
+#'   an extra `class` column, one row per (variable, class) pair;
+#'   `variable` is a factor whose levels are set by
+#'   `mean(|sum-of-class-beta|)` descending so every facet / panel shares
+#'   the same row order. `which_class` (or the binary default
+#'   last-factor-level) collapses the output to a single class.
 #'
 #' @seealso [gg_varpro()], [plot.gg_beta_varpro()], [varPro::beta.varpro()].
 #'
@@ -187,6 +194,21 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
            "Missing column(s): ", paste(missing_cols, collapse = ", "), ".",
            call. = FALSE)
     }
+    # Classification fits need per-class imp.<k> columns too
+    if (fam == "class") {
+      class_levels_check <- .class_levels_from_varpro(object)
+      class_cols <- paste0("imp.", seq_along(class_levels_check))
+      missing_class_cols <- setdiff(class_cols, names(beta_fit$results))
+      if (length(missing_class_cols) > 0L) {
+        stop("gg_beta_varpro: beta_fit does not look like a classification ",
+             "varPro::beta.varpro() result. Missing per-class column(s): ",
+             paste(missing_class_cols, collapse = ", "), ". ",
+             "Expected one imp.<k> column per response level (",
+             length(class_levels_check), " levels: ",
+             paste(class_levels_check, collapse = ", "), ").",
+             call. = FALSE)
+      }
+    }
     dots <- list(...)
     if (length(dots) > 0L) {
       warning("gg_beta_varpro: arguments in '...' ignored because beta_fit is supplied.",
@@ -208,7 +230,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
 
   # Empty fast-path
   if (is.null(b) || nrow(b$results) == 0L) {
-    return(.gg_beta_varpro_empty(fam, which_class, beta_fit, cutoff))
+    return(.gg_beta_varpro_empty(object, fam, which_class, beta_fit, cutoff))
   }
 
   if (fam == "regr") {
@@ -392,7 +414,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
 }
 
 #' @noRd
-.gg_beta_varpro_empty <- function(fam, which_class, beta_fit, cutoff) {
+.gg_beta_varpro_empty <- function(object, fam, which_class, beta_fit, cutoff) {
   base <- data.frame(
     variable  = factor(character(0)),
     beta_mean = numeric(0),
@@ -406,14 +428,36 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
                   base[, c("beta_mean", "n_rules", "selected"), drop = FALSE])
   }
   class(base) <- c("gg_beta_varpro", "data.frame")
-  attr(base, "provenance") <- list(
-    source = "varPro::beta.varpro", family = fam,
-    n_rules_total = 0L,
-    cutoff = if (fam == "regr") stats::setNames(NA_real_, "regr") else NA_real_,
-    cutoff_default = is.null(cutoff),
-    precomputed = !is.null(beta_fit),
-    which_class = which_class
-  )
+
+  # Build provenance with shape-stable cutoff:
+  # regr  → c("regr" = NA_real_)
+  # class → named NA_real_ vector, one entry per class level
+  if (fam == "class") {
+    class_levels <- .class_levels_from_varpro(object)
+    cutoff_empty <- stats::setNames(rep(NA_real_, length(class_levels)),
+                                    class_levels)
+    prov <- list(
+      source = "varPro::beta.varpro", family = "class",
+      n_rules_total = 0L, n_rules_nonzero = 0L,
+      cutoff = cutoff_empty,
+      cutoff_default = is.null(cutoff),
+      use.cv = NA,
+      precomputed = !is.null(beta_fit),
+      class_levels = class_levels,
+      which_class = which_class
+    )
+  } else {
+    prov <- list(
+      source = "varPro::beta.varpro", family = "regr",
+      n_rules_total = 0L, n_rules_nonzero = 0L,
+      cutoff = stats::setNames(NA_real_, "regr"),
+      cutoff_default = is.null(cutoff),
+      use.cv = NA,
+      precomputed = !is.null(beta_fit),
+      which_class = which_class
+    )
+  }
+  attr(base, "provenance") <- prov
   base
 }
 

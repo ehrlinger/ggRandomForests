@@ -394,3 +394,48 @@ test_that("summary.gg_beta_varpro classification returns per-class list", {
   expect_true(is.list(unclass(s)))
   expect_setequal(names(unclass(s)), levels(iris$Species))
 })
+
+# ---- Copilot review fixes (PR #98) -----------------------------------------
+
+test_that("summary on a which_class-filtered classification only lists that class", {
+  vm <- .varpro_iris_multiclass()
+  bm <- .beta_fit_iris_multiclass()
+  out <- gg_beta_varpro(vm, beta_fit = bm, which_class = "setosa")
+  s <- summary(out)
+  expect_equal(names(unclass(s)), "setosa")
+})
+
+test_that("beta_fit shape guard catches missing per-class imp.<k> columns", {
+  vm <- .varpro_iris_multiclass()
+  bm <- .beta_fit_iris_multiclass()
+  bm_bad <- bm
+  bm_bad$results <- bm_bad$results[, setdiff(names(bm_bad$results), "imp.2"),
+                                   drop = FALSE]
+  expect_error(
+    gg_beta_varpro(vm, beta_fit = bm_bad),
+    "Missing per-class column"
+  )
+})
+
+test_that("empty classification fast-path returns named cutoff vector", {
+  vm <- .varpro_iris_multiclass()
+  empty_bm <- structure(
+    list(
+      results = data.frame(
+        tree     = integer(0), branch = integer(0),
+        variable = integer(0), n.oob  = integer(0),
+        imp      = numeric(0),
+        imp.1    = numeric(0), imp.2 = numeric(0), imp.3 = numeric(0)
+      ),
+      xvar.names = vm$xvar.names
+    ),
+    class = "varpro"
+  )
+  out <- gg_beta_varpro(vm, beta_fit = empty_bm)
+  expect_s3_class(out, "gg_beta_varpro")
+  expect_equal(nrow(out), 0L)
+  prov <- attr(out, "provenance")
+  expect_named(prov$cutoff, levels(iris$Species))
+  expect_true(all(is.na(prov$cutoff)))
+  expect_equal(prov$class_levels, levels(iris$Species))
+})

@@ -312,7 +312,7 @@ summary.gg_beta_varpro <- function(object, ...) {
   family <- if (!is.null(prov)) prov$family %||% "regr" else "regr"
 
   if (identical(family, "class") && "class" %in% names(object)) {
-    per_class <- split(object, object$class, drop = FALSE)
+    per_class <- split(object, object$class, drop = TRUE)
     by_class  <- lapply(per_class, function(df) {
       v <- df$beta_mean
       names(v) <- as.character(df$variable)
