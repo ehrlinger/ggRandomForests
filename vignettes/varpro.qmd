@@ -61,3 +61,19 @@ regression problem (Boston housing), a classification problem (iris,
 binary and multi-class), and a survival problem (PBC). The closing
 section is a one-page reference matrix mapping each wrapper to the
 forest families it supports.
+
+# Regression: Boston housing
+
+We start with the Boston housing data: 506 census tracts, 13 numeric
+predictors, median home value as the response.
+
+```{r boston-fit}
+data("Boston", package = "MASS")
+set.seed(20260527L)
+v_boston <- varPro::varpro(medv ~ ., data = Boston, ntree = 50)
+v_boston
+```
+
+`varpro()` builds the importance machinery — release rules, per-tree
+scores, the splitweight vector — once. Every subsequent figure in this
+section reads off that single fit.
