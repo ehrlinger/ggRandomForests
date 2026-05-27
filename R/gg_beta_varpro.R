@@ -1,7 +1,8 @@
 ##=============================================================================
 #' Per-variable lasso-β importance from a varPro fit
 #'
-#' Tidy wrapper around [varPro::beta.varpro()] for the regression family.
+#' Tidy wrapper around [varPro::beta.varpro()] for the regression or
+#' classification family.
 #' Aggregates the per-rule lasso coefficient (β̂) by variable into
 #' `mean(|β̂|)` and flags variables above a scalar cutoff. Optional
 #' `beta_fit` argument lets callers compute the expensive
@@ -70,6 +71,39 @@
 #'
 #' Provenance carries `precomputed = TRUE` when `beta_fit` was supplied.
 #'
+#' @section Classification:
+#' For a varpro classification fit (`object$family == "class"`,
+#' binary or multi-class), the returned frame is long-format with an
+#' extra `class` column: one row per (variable, class) pair. The
+#' `beta_mean` column aggregates the **per-class lasso β̂** stored in
+#' `beta.varpro()`'s `imp.<k>` columns (one per class level). Same
+#' pedantic-β semantics as regression, applied independently to each
+#' class.
+#'
+#' **Binary default**: `which_class = NULL` resolves to the *last*
+#' factor level of the response — the positive-class convention used
+#' by `glm` and `gg_roc`. For a 30-day-mortality outcome with levels
+#' `c("no", "yes")`, that means the wrapper shows you `"yes"` (the
+#' event) by default.
+#'
+#' **Multi-class default**: `which_class = NULL` returns all K
+#' classes; the plot method renders `facet_wrap(~ class)` with one
+#' cutoff line per facet.
+#'
+#' **`which_class = "<name>"`** filters to a single class regardless
+#' of K. Errors if the name isn't in the response levels.
+#'
+#' **Per-class cutoffs**: `cutoff = NULL` resolves to each class's
+#' `mean(beta_mean)`. A scalar broadcasts. A named numeric vector
+#' overrides per class; missing names fall back to that class's mean.
+#'
+#' Example (30-day mortality, binary):
+#' ```r
+#' fit <- varPro::varpro(event_30d ~ ., data = clinical, ntree = 200)
+#' gg  <- gg_beta_varpro(fit)   # default: "yes" panel
+#' plot(gg)
+#' ```
+#'
 #' @section Reproducibility:
 #' Byte-for-byte agreement between cached (`beta_fit = b`) and uncached
 #' (`beta_fit = NULL`) outputs requires that `b` was computed by
@@ -78,9 +112,9 @@
 #' pick slightly different folds across separate calls. Reuse `beta_fit`
 #' when reproducibility matters.
 #'
-#' @note Classification, multivariate regression (`regr+`), and survival
-#'   families are out of scope for this release. The non-regression path
-#'   errors with a message naming Phase 4d as the tracker (see NEWS).
+#' @note Multivariate regression (`regr+`) and survival families are out
+#'   of scope for this release. The unsupported-family path errors with
+#'   a message naming Phase 4d as the tracker.
 #'
 #' @param object A `varpro` fit from [varPro::varpro()] (regression family).
 #' @param ... Forwarded to [varPro::beta.varpro()] when `beta_fit = NULL`;
@@ -92,11 +126,11 @@
 #'   the same `object`. `NULL` (default) → the wrapper runs `beta.varpro()`
 #'   itself. When supplied, must be a `varpro`-class object whose `$results`
 #'   has columns `tree / branch / variable / n.oob / imp`.
-#' @param which_class For classification fits only: name of a single response
+#' @param which_class For a classification fit, name of a single response
 #'   level to subset on. `NULL` (default) returns all classes (binary fits
-#'   resolve to the *last* factor level — the positive-class convention).
-#'   Ignored with a warning on regression fits. Full classification details
-#'   land in a dedicated `@section` in a subsequent doc pass.
+#'   resolve to the *last* factor level — the positive-class convention
+#'   used by `glm` and `gg_roc`). Ignored with a warning on regression
+#'   fits.
 #'
 #' @return A `data.frame` of class `c("gg_beta_varpro", "data.frame")`,
 #'   one row per released variable, sorted by `beta_mean` descending.
