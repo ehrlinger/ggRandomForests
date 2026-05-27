@@ -15,6 +15,16 @@
 #' importance is, on average, large enough to flag. For a classification
 #' fit, every facet shares the same row order so you can read across.
 #'
+#' For a classification fit, variables are sorted by descending
+#' `mean(|local_imp|)` across all (obs, class) rows and that ordering
+#' is shared across every facet, so rows line up between classes for
+#' visual comparison. Each facet has its own cutoff line.
+#'
+#' The per-observation view (`which_obs`) is a horizontal bar chart of
+#' one observation's local importances; bars below the cutoff are grey,
+#' above are blue. Think of it as a SHAP-style waterfall, but the
+#' values are scaled per-rule contributions, not Shapley values.
+#'
 #' @param x A `gg_ivarpro` object from [gg_ivarpro()].
 #' @param ... Not currently used.
 #'
@@ -24,9 +34,10 @@
 #'
 #' @examples
 #' \donttest{
-#' if (requireNamespace("varPro", quietly = TRUE)) {
+#' if (requireNamespace("varPro", quietly = TRUE) &&
+#'     requireNamespace("MASS", quietly = TRUE)) {
 #'   set.seed(1)
-#'   v <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
+#'   v <- varPro::varpro(medv ~ ., data = MASS::Boston, ntree = 50)
 #'   plot(gg_ivarpro(v))
 #' }
 #' }

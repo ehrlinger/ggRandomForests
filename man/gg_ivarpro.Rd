@@ -48,19 +48,125 @@ Classification: long-format with an extra \code{class} column.
 ranking axis shared across facets / panels).
 }
 \description{
-Tidy wrapper around \code{\link[varPro:ivarpro]{varPro::ivarpro()}} for regression and classification
-families. Returns a long-format frame with one row per (observation,
-variable) pair where the local-importance cell is non-NA;
-classification adds an extra \code{class} column. \code{which_obs} collapses to
-a single-observation profile; \code{which_class} collapses to a single
-class. Optional \code{ivarpro_fit} argument lets callers cache the
-expensive \code{ivarpro()} call.
+Tidy wrapper around \code{\link[varPro:ivarpro]{varPro::ivarpro()}} for the regression or
+classification family. Returns one row per (observation, variable)
+pair where the local-importance cell is non-NA; classification adds
+a \code{class} column. \code{which_obs} collapses to a per-observation
+profile; \code{which_class} collapses to a single class. Optional
+\code{ivarpro_fit} argument lets callers cache the expensive
+\code{ivarpro()} call.
 }
+\note{
+Multivariate regression (\verb{regr+}) and survival families are
+out of scope for this release. The non-regression / non-class
+path errors with a message naming Phase 4 follow-ups as the
+tracker.
+}
+\section{What this is doing}{
+
+\code{ivarpro()} walks the varPro forest's rules and, for each
+(observation, variable) pair, computes a scaled per-rule
+contribution to predicting that observation. Per-rule LOO removes
+the observation from its own rule before scoring. Per-region
+scaling (\code{scale = "local"}, default) standardises the contribution
+by the rule's local response standard deviation so values are
+comparable across rules of different size. Aggregating those
+per-rule scores into one number per (obs, variable) pair gives the
+\code{local_imp} cell.
+}
+
+\section{What \code{local_imp} actually is (pedantic)}{
+
+\code{local_imp[i, v]} is the \strong{scaled aggregated rule contribution} of
+variable \code{v} to predicting observation \code{i}, NOT a permutation
+importance and NOT a SHAP value. \strong{Sign carries direction} of the
+local response shift inside the rule's region. \strong{Magnitude is on
+the response scale} when \code{scale = "global"}, or unit-free when
+\code{scale = "local"} (the default). The matrix is \strong{heavily sparse} -
+an observation contributes only to rules that retain it as OOB; on
+real data, per-variable NA fractions of 50-95\% are common.
+Comparison with \code{gg_varpro()} (aggregate split-strength) and
+\code{gg_beta_varpro()} (per-rule lasso beta) is diagnostic: a variable
+that's important globally but has low per-observation contribution
+for a specific case is interesting; the inverse - high local but
+low global - flags a regime-specific signal.
+}
+
+\section{What's in the output}{
+
+Long-format tidy frame. Regression has columns \code{obs}, \code{variable},
+\code{local_imp}, \code{selected}. Classification adds a \code{class} column
+(factor in response-level order). \code{variable} is a factor whose
+levels are set by \verb{mean(|local_imp|)} descending across all rows;
+for classification that aggregate is across all (obs, class) so
+every facet / panel shows variables in the same row order. NA
+cells are filtered out - the source matrix is sparse, and the
+tidy frame only carries the cells where local importance is
+defined.
+
+Provenance attribute carries \code{source}, \code{family}, \code{ntree}, \code{cutoff}
+(named numeric vector - length 1 named \code{"regr"} for regression,
+length K named with class levels for classification),
+\code{cutoff_default}, \code{use.loo}, \code{scale}, \code{n_train}, \code{n_obs}, \code{n_var},
+\code{precomputed}, \code{xvar.names}, \code{class_levels} (classification only),
+\code{which_obs}, \code{which_class}.
+}
+
+\section{What you use this for}{
+
+Per-observation interpretation ("which variables drive \emph{this}
+prediction?"), variable-selection diagnostics via the aggregate
+distribution view, and side-by-side comparison against
+\code{\link[=gg_varpro]{gg_varpro()}} / \code{\link[=gg_beta_varpro]{gg_beta_varpro()}} to spot variables that matter
+locally but not globally (or vice versa).
+}
+
+\section{Caching}{
+
+\code{ivarpro()} is \strong{the most expensive call in varPro} (per-rule
+leave-one-out + per-region scaling, often minutes on real data).
+Compute it once and reuse:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{v   <- varPro::varpro(medv ~ ., data = Boston, ntree = 200)
+iv  <- varPro::ivarpro(v, scale = "local")              # expensive, once
+gg_aggregate <- gg_ivarpro(v, ivarpro_fit = iv)          # cheap
+gg_case1     <- gg_ivarpro(v, ivarpro_fit = iv, which_obs = 1L)
+}\if{html}{\out{</div>}}
+
+Provenance carries \code{precomputed = TRUE} when \code{ivarpro_fit} was supplied.
+}
+
+\section{Classification}{
+
+For a classification fit, \code{ivarpro()} returns a list of K matrices
+(one per class) for multi-class, or a flat data.frame for binary
+(positive-class importances only - the wrapper normalises this to
+a single-element list under the last factor level). The wrapper
+stacks per-class frames into a long-format frame with a \code{class}
+column. \code{which_class = NULL} returns all classes (binary defaults
+to the last factor level, the positive-class convention used by
+\code{glm} and \code{gg_roc}); \code{which_class = "<name>"} filters to a single
+class. \code{cutoff} polymorphism mirrors \code{\link[=gg_beta_varpro]{gg_beta_varpro()}} - \code{NULL}
+is per-class mean(|local_imp|), a scalar broadcasts, a named
+numeric vector overrides per class with fallback to that class's
+mean.
+}
+
+\section{Reproducibility}{
+
+Byte-for-byte agreement between cached (\code{ivarpro_fit = iv}) and
+uncached (\code{ivarpro_fit = NULL}) outputs requires reusing the same
+\code{ivarpro()} result. \code{set.seed()} alone is not sufficient because
+per-rule LOO subsampling can drift across separate calls. Reuse
+\code{ivarpro_fit} when reproducibility matters.
+}
+
 \examples{
-\dontrun{
-if (requireNamespace("varPro", quietly = TRUE)) {
+\donttest{
+if (requireNamespace("varPro", quietly = TRUE) &&
+    requireNamespace("MASS", quietly = TRUE)) {
   set.seed(1)
-  v <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
+  v <- varPro::varpro(medv ~ ., data = MASS::Boston, ntree = 50)
   iv <- varPro::ivarpro(v)
   gg <- gg_ivarpro(v, ivarpro_fit = iv)
   plot(gg)

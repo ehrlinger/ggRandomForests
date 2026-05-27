@@ -1,13 +1,104 @@
 ##=============================================================================
 #' Individual (local) variable importance from a varPro fit
 #'
-#' Tidy wrapper around [varPro::ivarpro()] for regression and classification
-#' families. Returns a long-format frame with one row per (observation,
-#' variable) pair where the local-importance cell is non-NA;
-#' classification adds an extra `class` column. `which_obs` collapses to
-#' a single-observation profile; `which_class` collapses to a single
-#' class. Optional `ivarpro_fit` argument lets callers cache the
-#' expensive `ivarpro()` call.
+#' Tidy wrapper around [varPro::ivarpro()] for the regression or
+#' classification family. Returns one row per (observation, variable)
+#' pair where the local-importance cell is non-NA; classification adds
+#' a `class` column. `which_obs` collapses to a per-observation
+#' profile; `which_class` collapses to a single class. Optional
+#' `ivarpro_fit` argument lets callers cache the expensive
+#' `ivarpro()` call.
+#'
+#' @section What this is doing:
+#' `ivarpro()` walks the varPro forest's rules and, for each
+#' (observation, variable) pair, computes a scaled per-rule
+#' contribution to predicting that observation. Per-rule LOO removes
+#' the observation from its own rule before scoring. Per-region
+#' scaling (`scale = "local"`, default) standardises the contribution
+#' by the rule's local response standard deviation so values are
+#' comparable across rules of different size. Aggregating those
+#' per-rule scores into one number per (obs, variable) pair gives the
+#' `local_imp` cell.
+#'
+#' @section What `local_imp` actually is (pedantic):
+#' `local_imp[i, v]` is the **scaled aggregated rule contribution** of
+#' variable `v` to predicting observation `i`, NOT a permutation
+#' importance and NOT a SHAP value. **Sign carries direction** of the
+#' local response shift inside the rule's region. **Magnitude is on
+#' the response scale** when `scale = "global"`, or unit-free when
+#' `scale = "local"` (the default). The matrix is **heavily sparse** -
+#' an observation contributes only to rules that retain it as OOB; on
+#' real data, per-variable NA fractions of 50-95% are common.
+#' Comparison with `gg_varpro()` (aggregate split-strength) and
+#' `gg_beta_varpro()` (per-rule lasso beta) is diagnostic: a variable
+#' that's important globally but has low per-observation contribution
+#' for a specific case is interesting; the inverse - high local but
+#' low global - flags a regime-specific signal.
+#'
+#' @section What's in the output:
+#' Long-format tidy frame. Regression has columns `obs`, `variable`,
+#' `local_imp`, `selected`. Classification adds a `class` column
+#' (factor in response-level order). `variable` is a factor whose
+#' levels are set by `mean(|local_imp|)` descending across all rows;
+#' for classification that aggregate is across all (obs, class) so
+#' every facet / panel shows variables in the same row order. NA
+#' cells are filtered out - the source matrix is sparse, and the
+#' tidy frame only carries the cells where local importance is
+#' defined.
+#'
+#' Provenance attribute carries `source`, `family`, `ntree`, `cutoff`
+#' (named numeric vector - length 1 named `"regr"` for regression,
+#' length K named with class levels for classification),
+#' `cutoff_default`, `use.loo`, `scale`, `n_train`, `n_obs`, `n_var`,
+#' `precomputed`, `xvar.names`, `class_levels` (classification only),
+#' `which_obs`, `which_class`.
+#'
+#' @section What you use this for:
+#' Per-observation interpretation ("which variables drive *this*
+#' prediction?"), variable-selection diagnostics via the aggregate
+#' distribution view, and side-by-side comparison against
+#' [gg_varpro()] / [gg_beta_varpro()] to spot variables that matter
+#' locally but not globally (or vice versa).
+#'
+#' @section Caching:
+#' `ivarpro()` is **the most expensive call in varPro** (per-rule
+#' leave-one-out + per-region scaling, often minutes on real data).
+#' Compute it once and reuse:
+#'
+#' ```r
+#' v   <- varPro::varpro(medv ~ ., data = Boston, ntree = 200)
+#' iv  <- varPro::ivarpro(v, scale = "local")              # expensive, once
+#' gg_aggregate <- gg_ivarpro(v, ivarpro_fit = iv)          # cheap
+#' gg_case1     <- gg_ivarpro(v, ivarpro_fit = iv, which_obs = 1L)
+#' ```
+#'
+#' Provenance carries `precomputed = TRUE` when `ivarpro_fit` was supplied.
+#'
+#' @section Classification:
+#' For a classification fit, `ivarpro()` returns a list of K matrices
+#' (one per class) for multi-class, or a flat data.frame for binary
+#' (positive-class importances only - the wrapper normalises this to
+#' a single-element list under the last factor level). The wrapper
+#' stacks per-class frames into a long-format frame with a `class`
+#' column. `which_class = NULL` returns all classes (binary defaults
+#' to the last factor level, the positive-class convention used by
+#' `glm` and `gg_roc`); `which_class = "<name>"` filters to a single
+#' class. `cutoff` polymorphism mirrors [gg_beta_varpro()] - `NULL`
+#' is per-class mean(|local_imp|), a scalar broadcasts, a named
+#' numeric vector overrides per class with fallback to that class's
+#' mean.
+#'
+#' @section Reproducibility:
+#' Byte-for-byte agreement between cached (`ivarpro_fit = iv`) and
+#' uncached (`ivarpro_fit = NULL`) outputs requires reusing the same
+#' `ivarpro()` result. `set.seed()` alone is not sufficient because
+#' per-rule LOO subsampling can drift across separate calls. Reuse
+#' `ivarpro_fit` when reproducibility matters.
+#'
+#' @note Multivariate regression (`regr+`) and survival families are
+#'   out of scope for this release. The non-regression / non-class
+#'   path errors with a message naming Phase 4 follow-ups as the
+#'   tracker.
 #'
 #' @param object A `varpro` fit from [varPro::varpro()] (regression or
 #'   classification family).
@@ -39,10 +130,11 @@
 #' @seealso [gg_varpro()], [gg_beta_varpro()], [varPro::ivarpro()].
 #'
 #' @examples
-#' \dontrun{
-#' if (requireNamespace("varPro", quietly = TRUE)) {
+#' \donttest{
+#' if (requireNamespace("varPro", quietly = TRUE) &&
+#'     requireNamespace("MASS", quietly = TRUE)) {
 #'   set.seed(1)
-#'   v <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
+#'   v <- varPro::varpro(medv ~ ., data = MASS::Boston, ntree = 50)
 #'   iv <- varPro::ivarpro(v)
 #'   gg <- gg_ivarpro(v, ivarpro_fit = iv)
 #'   plot(gg)
@@ -83,25 +175,7 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
     NA_character_
   }
 
-  # Resolve ivarpro_fit
-  if (is.null(ivarpro_fit)) {
-    iv <- varPro::ivarpro(object, ...)
-  } else {
-    .validate_ivarpro_fit(ivarpro_fit, object, fam)
-    if (length(list(...)) > 0L) {
-      warning("gg_ivarpro: arguments in '...' ignored because ivarpro_fit is supplied.",
-              call. = FALSE)
-    }
-    iv <- ivarpro_fit
-  }
-
-  # varPro::ivarpro() returns a flat data.frame for binary classification
-  # (positive-class importances only). Normalise to the spec's list-of-K
-  # shape by wrapping under the last factor level (positive class).
-  if (fam == "class" && is.data.frame(iv)) {
-    cls_levels <- .ivarpro_class_levels(object)
-    iv <- stats::setNames(list(iv), cls_levels[length(cls_levels)])
-  }
+  iv <- .resolve_ivarpro_fit(ivarpro_fit, object, fam, list(...))
 
   # Warn on which_class with regression
   if (fam == "regr" && !is.null(which_class)) {
@@ -110,19 +184,8 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
     which_class <- NULL
   }
 
-  # Validate which_obs
   n_train <- if (fam == "regr") nrow(iv) else nrow(iv[[1L]])
-  if (!is.null(which_obs)) {
-    if (!is.numeric(which_obs) || length(which_obs) != 1L ||
-        which_obs != as.integer(which_obs) ||
-        which_obs < 1L || which_obs > n_train) {
-      stop(sprintf(
-        "gg_ivarpro: which_obs = %s is out of range. Valid range: 1..%d.",
-        format(which_obs), n_train
-      ), call. = FALSE)
-    }
-    which_obs <- as.integer(which_obs)
-  }
+  which_obs <- .validate_which_obs(which_obs, n_train)
 
   if (fam == "regr") {
     return(.gg_ivarpro_regr(object, iv, cutoff, which_obs, ivarpro_fit,
@@ -130,6 +193,44 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
   }
   .gg_ivarpro_class(object, iv, cutoff, which_obs, which_class, ivarpro_fit,
                     dots_use_loo, dots_scale)
+}
+
+#' @noRd
+.resolve_ivarpro_fit <- function(ivarpro_fit, object, fam, dots) {
+  if (is.null(ivarpro_fit)) {
+    iv <- do.call(varPro::ivarpro, c(list(object), dots))
+  } else {
+    .validate_ivarpro_fit(ivarpro_fit, object, fam)
+    if (length(dots) > 0L) {
+      warning(
+        "gg_ivarpro: arguments in '...' ignored because ivarpro_fit is supplied.",
+        call. = FALSE
+      )
+    }
+    iv <- ivarpro_fit
+  }
+  # varPro::ivarpro() returns a flat data.frame for binary classification
+  # (positive-class importances only). Normalise to the spec's list-of-K
+  # shape by wrapping under the last factor level (positive class).
+  if (fam == "class" && is.data.frame(iv)) {
+    cls_levels <- .ivarpro_class_levels(object)
+    iv <- stats::setNames(list(iv), cls_levels[length(cls_levels)])
+  }
+  iv
+}
+
+#' @noRd
+.validate_which_obs <- function(which_obs, n_train) {
+  if (is.null(which_obs)) return(NULL)
+  if (!is.numeric(which_obs) || length(which_obs) != 1L ||
+      which_obs != as.integer(which_obs) ||
+      which_obs < 1L || which_obs > n_train) {
+    stop(sprintf(
+      "gg_ivarpro: which_obs = %s is out of range. Valid range: 1..%d.",
+      format(which_obs), n_train
+    ), call. = FALSE)
+  }
+  as.integer(which_obs)
 }
 
 #' @noRd

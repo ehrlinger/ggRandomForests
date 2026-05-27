@@ -18,6 +18,7 @@
 \alias{print.gg_varpro}
 \alias{print.gg_isopro}
 \alias{print.gg_beta_varpro}
+\alias{print.gg_ivarpro}
 \title{Print methods for gg_* data objects}
 \usage{
 \method{print}{gg_error}(x, ...)
@@ -51,6 +52,8 @@
 \method{print}{gg_isopro}(x, ...)
 
 \method{print}{gg_beta_varpro}(x, ...)
+
+\method{print}{gg_ivarpro}(x, ...)
 }
 \arguments{
 \item{x}{A \code{gg_*} data object.}

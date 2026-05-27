@@ -281,9 +281,14 @@ print.gg_ivarpro <- function(x, ...) {
   view <- if (!is.null(which_obs)) sprintf("obs %d", which_obs) else "aggregate"
   cls_part <- if (has_class) {
     n_cls <- length(unique(x$class))
-    if (!is.null(which_cls)) sprintf("  |  class: %s", which_cls)
-    else sprintf("  |  %d classes (faceted)", n_cls)
-  } else ""
+    if (!is.null(which_cls)) {
+      sprintf("  |  class: %s", which_cls)
+    } else {
+      sprintf("  |  %d classes (faceted)", n_cls)
+    }
+  } else {
+    ""
+  }
 
   cat(.gg_header(x, "gg_ivarpro"),
       sprintf("  |  view: %s", view),
