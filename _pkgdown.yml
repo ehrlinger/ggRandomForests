@@ -44,6 +44,8 @@ navbar:
           href: articles/ggRandomForests-survival.html
         - text: "Random Forest Regression"
           href: articles/ggRandomForests-regression.html
+        - text: "Exploring variable importance with varPro"
+          href: articles/varpro.html
 
 reference:
   - title: "Forest Objects"
@@ -137,6 +139,7 @@ articles:
     contents:
       - ggRandomForests-survival
       - ggRandomForests-regression
+      - varpro
 
 news:
   releases:
