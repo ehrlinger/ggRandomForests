@@ -251,9 +251,10 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
            call. = FALSE)
     }
     if (nrow(ivarpro_fit) != n_train) {
-      stop(sprintf("gg_ivarpro: ivarpro_fit has %d rows but object trained ",
-                   "on %d observations.", nrow(ivarpro_fit), n_train),
-           call. = FALSE)
+      stop(sprintf(
+        paste0("gg_ivarpro: ivarpro_fit has %d rows but object trained ",
+               "on %d observations."),
+        nrow(ivarpro_fit), n_train), call. = FALSE)
     }
   } else {
     cls <- .ivarpro_class_levels(object)
@@ -272,6 +273,12 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
         stop("gg_ivarpro: ivarpro_fit has no columns matching the predictors.",
              call. = FALSE)
       }
+      if (nrow(ivarpro_fit) != n_train) {
+        stop(sprintf(
+          paste0("gg_ivarpro: ivarpro_fit has %d rows but object trained ",
+                 "on %d observations."),
+          nrow(ivarpro_fit), n_train), call. = FALSE)
+      }
       return(invisible(NULL))
     }
     if (!is.list(ivarpro_fit)) {
@@ -284,6 +291,28 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
            paste(cls, collapse = ", "), ". Got: ",
            paste(names(ivarpro_fit), collapse = ", "), ".",
            call. = FALSE)
+    }
+    # Each per-class element must be a data.frame with the right row count
+    # and at least one predictor column.
+    for (k in names(ivarpro_fit)) {
+      el <- ivarpro_fit[[k]]
+      if (!is.data.frame(el)) {
+        stop(sprintf(
+          paste0("gg_ivarpro: ivarpro_fit[['%s']] is not a data.frame ",
+                 "(got class '%s')."),
+          k, class(el)[1L]), call. = FALSE)
+      }
+      if (nrow(el) != n_train) {
+        stop(sprintf(
+          paste0("gg_ivarpro: ivarpro_fit[['%s']] has %d rows but object ",
+                 "trained on %d observations."),
+          k, nrow(el), n_train), call. = FALSE)
+      }
+      if (length(intersect(xvars, names(el))) == 0L) {
+        stop(sprintf(
+          "gg_ivarpro: ivarpro_fit[['%s']] has no columns matching the predictors.",
+          k), call. = FALSE)
+      }
     }
   }
   invisible(NULL)

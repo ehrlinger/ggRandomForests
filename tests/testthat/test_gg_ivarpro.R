@@ -142,6 +142,36 @@ test_that("gg_ivarpro classification ivarpro_fit must be list of K named frames"
   )
 })
 
+test_that("gg_ivarpro shape guard catches mismatched row counts (PR #99 Copilot)", {
+  # Regression: rows mismatch
+  v_regr  <- .varpro_boston()
+  iv_regr <- .ivarpro_boston()
+  iv_short <- iv_regr[seq_len(nrow(iv_regr) - 1L), , drop = FALSE]
+  expect_error(
+    gg_ivarpro(v_regr, ivarpro_fit = iv_short),
+    "rows but object trained"
+  )
+
+  # Classification: per-class row count mismatch
+  v_cls  <- .varpro_iris_multiclass_for_ivarpro()
+  iv_cls <- .ivarpro_iris_multiclass()
+  iv_cls_bad <- iv_cls
+  iv_cls_bad$setosa <- iv_cls_bad$setosa[seq_len(nrow(iv_cls_bad$setosa) - 1L), ,
+                                         drop = FALSE]
+  expect_error(
+    gg_ivarpro(v_cls, ivarpro_fit = iv_cls_bad),
+    "rows but object trained"
+  )
+
+  # Classification: a per-class element is not a data.frame
+  iv_cls_bad2 <- iv_cls
+  iv_cls_bad2$setosa <- as.matrix(iv_cls_bad2$setosa)
+  expect_error(
+    gg_ivarpro(v_cls, ivarpro_fit = iv_cls_bad2),
+    "is not a data.frame"
+  )
+})
+
 # ---- ... + ivarpro_fit warning --------------------------------------------
 
 test_that("gg_ivarpro warns when ... is supplied alongside ivarpro_fit", {
@@ -247,7 +277,8 @@ test_that("autoplot.gg_ivarpro matches plot", {
 # ---- slow: cache equivalence ----------------------------------------------
 
 test_that("gg_ivarpro cached and uncached paths agree (slow)", {
-  if (!identical(Sys.getenv("GG_IVARPRO_SLOW_TESTS", "true"), "true")) {
+  testthat::skip_on_cran()
+  if (!identical(Sys.getenv("GG_IVARPRO_SLOW_TESTS", "false"), "true")) {
     skip("Slow test - set GG_IVARPRO_SLOW_TESTS=true to run")
   }
   v  <- .varpro_boston()
