@@ -320,3 +320,16 @@ v_pbc <- varPro::varpro(
 ```{r pbc-gg-varpro}
 plot(gg_varpro(v_pbc))
 ```
+
+## Partial dependence: `gg_partial_varpro()` (C-path)
+
+For survival, `gg_partial_varpro()` dispatches into the
+`randomForestSRC`-backed partial-dependence machinery via the underlying
+`$rf` survival forest — what the package calls the *C-path*. The output
+shape is the same as the regression case (parametric / non-parametric /
+causal panels); the y-axis carries an `ensemble mortality` interpretation
+(Ishwaran 2008), not a survival probability.
+
+```{r pbc-gg-partial-varpro}
+plot(gg_partial_varpro(object = v_pbc))
+```
