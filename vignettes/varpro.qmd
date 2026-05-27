@@ -32,6 +32,32 @@ library(varPro)
 library(ggplot2)
 ```
 
-# Placeholder
+# What varPro is
 
-Scaffold only — sections to follow.
+Random-forest variable importance has, for two decades, mostly meant
+*permutation importance*: shuffle a column, measure the drop in OOB
+accuracy, repeat. It works, but the score depends on artificial data — the
+permuted column — and the answer is unstable when variables are correlated.
+
+varPro [@Lu2024varpro] replaces the shuffling with *release rules*. From a
+guided-splitting forest, varPro samples a collection of decision-rule
+branches; for each variable in each rule, it compares the response inside
+the rule's region with the response after the constraint on that variable
+is "released". The size of that change, aggregated over rules and trees,
+is the variable's importance. No synthetic columns, no permutation — the
+contrast is between two real subsets of the data.
+
+That core machinery feeds several views. **`gg_varpro()`** summarises the
+per-tree importance distribution. **`gg_beta_varpro()`** refines those
+release-rule contrasts with a per-rule lasso. **`gg_partial_varpro()`**
+turns the release machinery into partial-dependence curves.
+**`gg_udependent()`** reads cross-variable dependency off a `uvarpro()`
+fit. **`gg_isopro()`** scores observations for anomaly using an
+isolation-forest variant. **`gg_ivarpro()`** computes per-observation
+local importance.
+
+This vignette walks all six wrappers on three worked examples — a
+regression problem (Boston housing), a classification problem (iris,
+binary and multi-class), and a survival problem (PBC). The closing
+section is a one-page reference matrix mapping each wrapper to the
+forest families it supports.
