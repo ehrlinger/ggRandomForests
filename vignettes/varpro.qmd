@@ -333,3 +333,15 @@ causal panels); the y-axis carries an `ensemble mortality` interpretation
 ```{r pbc-gg-partial-varpro}
 plot(gg_partial_varpro(object = v_pbc))
 ```
+
+## Anomaly scoring: `gg_isopro()` on the X-matrix
+
+Because `isopro()` only sees the predictor matrix, it doesn't care
+about the family. The same call from section 3 works here.
+
+```{r pbc-isopro, cache=TRUE}
+iso_pbc <- varPro::isopro(data = pbc_small[, c("age", "albumin", "bili",
+                                                "platelet")],
+                          method = "rnd", sampsize = 256, ntree = 50)
+plot(gg_isopro(iso_pbc))
+```
