@@ -304,3 +304,15 @@ summary.gg_isopro <- function(object, ...) {
   )
   .summary_skel(object, "gg_isopro", body)
 }
+
+#' @rdname summary.gg
+#' @export
+summary.gg_beta_varpro <- function(object, ...) {
+  v <- object$beta_mean
+  names(v) <- as.character(object$variable)
+  v <- sort(v, decreasing = TRUE)
+  structure(v,
+            n_rules = stats::setNames(object$n_rules,
+                                      as.character(object$variable))[names(v)],
+            class   = "summary.gg_beta_varpro")
+}

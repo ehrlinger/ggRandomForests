@@ -1,8 +1,19 @@
 Package: ggRandomForests
-Version: 2.7.3.9010
+Version: 2.7.3.9011
 
 ggRandomForests v2.8.0 (development) — continued
 =================================================
+* `gg_beta_varpro()` and `plot.gg_beta_varpro()`: tidy wrapper and default
+  horizontal bar chart for `varPro::beta.varpro()` — the per-rule lasso-β
+  refinement of variable importance. Aggregates per-rule β̂ by variable
+  into `beta_mean = mean(|β̂|)` and flags variables above a selection
+  cutoff (default `mean(beta_mean)`). Optional `beta_fit` argument lets
+  callers compute the expensive `beta.varpro()` step once and reuse the
+  result across multiple wrapper calls (different cutoffs, snapshot
+  rebuilds, vignette knits). `print` / `summary` / `autoplot` S3
+  companions follow the existing `gg_*` conventions. **Regression family
+  only** — classification, regr+, and survival are tracked under Phase 4d
+  (see the spec for the endpoint map). Third of three Phase 4 sub-projects.
 * `gg_isopro()` gains a `newdata` argument so a fitted `varPro::isopro`
   model can score new observations into the same tidy `gg_isopro` frame.
   Internally the wrapper calls `predict.isopro()` twice: with
