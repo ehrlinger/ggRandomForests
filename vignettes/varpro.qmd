@@ -183,3 +183,32 @@ plot(gg_isopro(iso_boston))
 The elbow flags rows that diverge from the bulk. Pair with the
 domain — anomalous in feature space is not the same as wrong, but it's
 often where the most interesting cases live.
+
+## Local importance with `gg_ivarpro()`
+
+The wrappers so far aggregate across observations. `gg_ivarpro()` does
+the opposite: it returns one value per (observation, variable) pair,
+capturing how much variable *v* contributed to predicting observation
+*i*. The aggregate view is a distribution of those local importances
+per variable; the per-observation view is a horizontal bar of one row's
+local importances across variables.
+
+`ivarpro()` is the most expensive call in varPro, so the wrapper
+accepts a pre-computed `ivarpro_fit` for reuse across views.
+
+```{r boston-ivarpro-fit, cache=TRUE}
+iv_boston <- varPro::ivarpro(v_boston)
+```
+
+```{r boston-gg-ivarpro-distribution}
+plot(gg_ivarpro(v_boston, ivarpro_fit = iv_boston))
+```
+
+```{r boston-gg-ivarpro-which-obs}
+plot(gg_ivarpro(v_boston, ivarpro_fit = iv_boston, which_obs = 1L))
+```
+
+The distribution view tells you which variables drive predictions
+*across* observations. The per-observation view answers the same
+question for a specific case — useful for explaining one prediction
+back to whoever asked.
