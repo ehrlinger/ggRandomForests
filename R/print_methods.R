@@ -209,3 +209,34 @@ print.gg_isopro <- function(x, ...) {
   cat(.gg_header(x, "gg_isopro"), "\n", sep = "")
   invisible(x)
 }
+
+#' @rdname print.gg
+#' @export
+print.gg_beta_varpro <- function(x, ...) {
+  prov           <- attr(x, "provenance")
+  cutoff         <- if (!is.null(prov)) prov$cutoff         %||% NA_real_ else NA_real_
+  cutoff_default <- isTRUE(if (!is.null(prov)) prov$cutoff_default else FALSE)
+  precomputed    <- isTRUE(if (!is.null(prov)) prov$precomputed   else FALSE)
+  n_total        <- if (!is.null(prov)) prov$n_rules_total  %||% NA_integer_ else NA_integer_
+  n_nonzero      <- if (!is.null(prov)) prov$n_rules_nonzero %||% NA_integer_ else NA_integer_
+  n_sel          <- sum(x$selected, na.rm = TRUE)
+
+  cat(.gg_header(x, "gg_beta_varpro"),
+      sprintf("  |  cutoff: %.4g%s", cutoff,
+              if (cutoff_default) " (default)" else ""),
+      sprintf("  |  precomputed: %s", precomputed),
+      "\n",
+      sprintf("  %d of %d variables selected; %d / %d rules with non-zero beta\n",
+              n_sel, nrow(x), n_nonzero, n_total),
+      sep = "")
+  invisible(x)
+}
+
+#' @export
+print.summary.gg_beta_varpro <- function(x, ...) {
+  cat("Mean |beta| per variable (descending):\n")
+  print(unclass(x))
+  cat("\nRule counts:\n")
+  print(attr(x, "n_rules"))
+  invisible(x)
+}

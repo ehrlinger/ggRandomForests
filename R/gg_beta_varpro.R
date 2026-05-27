@@ -227,46 +227,13 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL, beta_fit = NULL) {
     ntree           = if (!is.null(object$ntree)) as.integer(object$ntree) else NA_integer_,
     cutoff          = resolved_cutoff,
     cutoff_default  = is.null(cutoff),
-    use.cv          = isTRUE(list(...)$use.cv),
+    use.cv          = if (is.null(beta_fit)) isTRUE(list(...)$use.cv) else NA,
     n_rules_total   = n_rules_total,
     n_rules_nonzero = n_rules_nonzero,
     precomputed     = !is.null(beta_fit),
     xvar.names      = b$xvar.names
   )
   agg
-}
-
-#' @export
-print.gg_beta_varpro <- function(x, ...) {
-  prov <- attr(x, "provenance")
-  cat("gg_beta_varpro (varPro::beta.varpro)\n")
-  cat("  family        :", prov$family %||% NA, "\n")
-  cat("  variables     :", nrow(x), "\n")
-  cat("  n_rules_total :", prov$n_rules_total %||% NA, "\n")
-  cat("  cutoff        :", format(prov$cutoff, digits = 4),
-      if (isTRUE(prov$cutoff_default)) " (default)" else "", "\n", sep = "")
-  cat("  precomputed   :", isTRUE(prov$precomputed), "\n")
-  cat("Use head(x) to see rows.\n")
-  invisible(x)
-}
-
-#' @export
-summary.gg_beta_varpro <- function(object, ...) {
-  v <- object$beta_mean
-  names(v) <- as.character(object$variable)
-  v <- sort(v, decreasing = TRUE)
-  structure(v,
-            n_rules  = stats::setNames(object$n_rules, as.character(object$variable))[names(v)],
-            class    = "summary.gg_beta_varpro")
-}
-
-#' @export
-print.summary.gg_beta_varpro <- function(x, ...) {
-  cat("Mean |beta| per variable (descending):\n")
-  print(unclass(x))
-  cat("\nRule counts:\n")
-  print(attr(x, "n_rules"))
-  invisible(x)
 }
 
 #' @importFrom ggplot2 autoplot

@@ -51,9 +51,16 @@ plot.gg_beta_varpro <- function(x, ...) {
     stop("plot.gg_beta_varpro: nothing to plot (gg_beta_varpro has 0 rows).",
          call. = FALSE)
   }
-  prov   <- attr(x, "provenance")
-  cutoff <- prov$cutoff
-  cv_txt <- if (isTRUE(prov$use.cv)) "cv" else "fixed"
+  prov          <- attr(x, "provenance")
+  cutoff        <- if (!is.null(prov)) prov$cutoff %||% mean(x$beta_mean) else mean(x$beta_mean)
+  n_rules_total <- if (!is.null(prov)) prov$n_rules_total %||% NA_integer_ else NA_integer_
+  cv_txt        <- if (!is.null(prov) && isTRUE(prov$use.cv)) {
+    "cv"
+  } else if (!is.null(prov) && length(prov$use.cv) == 1L && is.na(prov$use.cv)) {
+    "unknown (precomputed)"
+  } else {
+    "fixed"
+  }
 
   x$variable <- factor(x$variable, levels = x$variable[order(x$beta_mean)])
 
@@ -81,8 +88,8 @@ plot.gg_beta_varpro <- function(x, ...) {
       x = NULL,
       y = "Mean |beta| (per-rule lasso)",
       caption = sprintf(
-        "Mean |beta| over %d rules. Lasso: %s, cutoff: %.4g.",
-        prov$n_rules_total %||% NA_integer_,
+        "Mean |beta| over %s rules. Lasso: %s, cutoff: %.4g.",
+        if (is.na(n_rules_total)) "NA" else format(n_rules_total),
         cv_txt,
         cutoff
       )
