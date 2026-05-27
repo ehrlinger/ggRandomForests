@@ -77,3 +77,20 @@ v_boston
 `varpro()` builds the importance machinery — release rules, per-tree
 scores, the splitweight vector — once. Every subsequent figure in this
 section reads off that single fit.
+
+## Per-tree importance with `gg_varpro()`
+
+The first question varPro answers is the same one permutation importance
+answers — which variables matter, ranked. `gg_varpro()` extracts the
+per-tree importance scores and draws their distribution as a horizontal
+boxplot, one row per variable, sorted by median z-score. Variables above
+a configurable cutoff (default 0.79) are highlighted.
+
+```{r boston-gg-varpro}
+plot(gg_varpro(v_boston))
+```
+
+The narrow boxes near the top are the variables varPro is confident
+about — every tree agrees they matter. Wide boxes that straddle the
+cutoff line are the ones to look at twice; the forest disagrees with
+itself.
