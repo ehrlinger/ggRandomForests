@@ -403,6 +403,7 @@ test_that("gg-ivarpro-regr-distribution", {
   }
   v  <- .varpro_boston()
   iv <- .ivarpro_boston()
+  set.seed(1L)
   p <- plot(gg_ivarpro(v, ivarpro_fit = iv))
   vdiffr::expect_doppelganger("gg-ivarpro-regr-distribution", p)
 })
@@ -425,6 +426,7 @@ test_that("gg-ivarpro-class-distribution", {
   }
   v  <- .varpro_iris_multiclass_for_ivarpro()
   iv <- .ivarpro_iris_multiclass()
+  set.seed(1L)
   p <- plot(gg_ivarpro(v, ivarpro_fit = iv))
   vdiffr::expect_doppelganger("gg-ivarpro-class-distribution", p)
 })

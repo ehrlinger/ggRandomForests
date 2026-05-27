@@ -243,3 +243,27 @@ test_that("autoplot.gg_ivarpro matches plot", {
   d2 <- ggplot2::ggplot_build(ggplot2::autoplot(out))$data
   expect_equal(d1, d2)
 })
+
+# ---- slow: cache equivalence ----------------------------------------------
+
+test_that("gg_ivarpro cached and uncached paths agree (slow)", {
+  if (!identical(Sys.getenv("GG_IVARPRO_SLOW_TESTS", "true"), "true")) {
+    skip("Slow test - set GG_IVARPRO_SLOW_TESTS=true to run")
+  }
+  v  <- .varpro_boston()
+  iv <- .ivarpro_boston()
+
+  set.seed(20260526L)
+  uncached <- gg_ivarpro(v)
+  cached   <- gg_ivarpro(v, ivarpro_fit = iv)
+
+  strip <- function(df) {
+    attr(df, "provenance") <- NULL
+    df
+  }
+  expect_equal(strip(as.data.frame(uncached)),
+               strip(as.data.frame(cached)),
+               tolerance = 1e-6)
+  expect_false(attr(uncached, "provenance")$precomputed)
+  expect_true(attr(cached,   "provenance")$precomputed)
+})
