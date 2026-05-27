@@ -36,8 +36,14 @@ This matrix lives in section 5 (Cross-cutting reference) of the vignette. It dou
 
 ## Vignette structure
 
+The vignette teaches the same three-beat pedagogical core
+(importance → effect → refined importance) on three families, then
+visits the family-agnostic / specialty wrappers exactly once in the
+regression section. Survival deliberately surfaces a missing capability
+rather than papering over it.
+
 ```
-vignettes/varpro.qmd  (~estimated 600-900 lines)
+vignettes/varpro.qmd  (~estimated 500-750 lines)
 
 1. What varPro is                          (~200-300 words)
    - The problem with permutation importance
@@ -47,30 +53,37 @@ vignettes/varpro.qmd  (~estimated 600-900 lines)
 2. Setup                                   (~one chunk)
    library() calls, helper, knitr cache config
 
-3. Regression: Boston housing              (~headline section, longest)
+3. Regression: Boston housing              (~headline section)
    varpro(medv ~ ., Boston, ntree = 50) on a fixed seed.
+   Core three-beat:
    ├─ gg_varpro()              per-tree importance distribution
-   ├─ gg_beta_varpro()         per-rule lasso β refinement
    ├─ gg_partial_varpro()      partial dependence
-   ├─ gg_udependent()          uvarpro dependency graph
+   └─ gg_beta_varpro()         per-rule lasso β refinement
+   Advanced trio (shown ONCE in the vignette, here):
+   ├─ gg_udependent()          uvarpro dependency graph (ggraph-gated)
    ├─ gg_isopro()              anomaly scores
    └─ gg_ivarpro()             local importance, distribution + which_obs
 
 4. Classification: iris                    (binary + multi-class)
    varpro(Species ~ ., iris[!=setosa]) → binary
    varpro(Species ~ ., iris)             → 3-class
+   Same core three-beat, family-aware:
    ├─ gg_varpro(conditional = TRUE)
-   ├─ gg_beta_varpro()         binary which_class default + multi-class facets
-   └─ gg_ivarpro()             which_class + which_obs cross-product
-   footnote: clinical binary outcomes like 30-day mortality follow this pattern
+   ├─ gg_partial_varpro()       (classification path)
+   └─ gg_beta_varpro()          binary which_class default + multi-class facets
+   footnote on the binary gg_beta_varpro block: clinical binary
+   outcomes like 30-day mortality follow this pattern
 
 5. Survival: PBC                           (honest about partial toolchain)
    varpro(Surv(days, status) ~ ., pbc, ntree = 50)
    ├─ gg_varpro()              survival family — works
    ├─ gg_partial_varpro()      C-path via $rf (Phase 1 tested)
-   ├─ gg_udependent()          uvarpro on X — family-agnostic
-   ├─ gg_isopro()              isopro on X — family-agnostic
-   └─ explicit non-coverage:   gg_beta_varpro, gg_ivarpro NOT available
+   ├─ gg_isopro()              isopro on X — family-agnostic; second
+   │                           appearance demonstrates that it survives
+   │                           the family change
+   └─ explicit non-coverage:   gg_beta_varpro errors upstream on surv;
+                               gg_udependent + gg_ivarpro deferred —
+                               see §6 family-support matrix
 
 6. Cross-cutting reference
    - Family-support matrix (the table above)
@@ -83,6 +96,12 @@ vignettes/varpro.qmd  (~estimated 600-900 lines)
    - Phase 1-4 release notes
    - Function reference index
 ```
+
+**Design rationale for the asymmetric coverage:**
+
+- **The advanced trio (`gg_udependent`, `gg_isopro`, `gg_ivarpro`) appears once, in the regression section.** `gg_udependent` operates on the X-matrix via `uvarpro()` — family-agnostic; one demonstration is enough. `gg_ivarpro` is expensive enough that running it on three datasets in one vignette doubles the cold-cache knit time without teaching anything new. `gg_isopro` is the exception: it gets a second appearance in §5 specifically to demonstrate that it doesn't care about the response family. That repetition is pedagogy, not duplication.
+- **`gg_beta_varpro` is in §3 and §4 but not §5** because the upstream `varPro::beta.varpro()` errors on survival fits. The §5 callout names this explicitly.
+- **`gg_partial_varpro` is in all three** because it has a meaningful family-specific story each time (regression: smooth curves; classification: per-class panels; survival: C-path dispatch into rfsrc-backed partial dependence with the ensemble-mortality scale).
 
 ---
 
@@ -108,13 +127,13 @@ Lifts the pedagogical `@section What this is doing` / `@section What you use thi
 
 ## Data and runtime
 
-| Section | Data | Source | ntree | Wall-clock (estimate) |
-|---|---|---|---|---|
-| Regression | `MASS::Boston` (506 × 13 numeric) | already in `Suggests:` (used by gg_ivarpro examples) | 50 | < 60 s including `ivarpro` |
-| Classification | `iris` and `iris[!=setosa, drop=TRUE]` | base R `datasets` | 50 each | < 30 s combined |
-| Survival | `randomForestSRC::pbc`, dropped to a small subset (5 continuous predictors, na.omit) | already in `Suggests:` | 50 | < 60 s |
+| Section | Data | Source | ntree | Heavy calls | Wall-clock (estimate) |
+|---|---|---|---|---|---|
+| Regression | `MASS::Boston` (506 × 13 numeric) | already in `Suggests:` (used by gg_ivarpro examples) | 50 | `varpro` + `beta.varpro` + `partialpro` + `uvarpro` + `isopro` + `ivarpro` | < 90 s |
+| Classification | `iris` and `iris[!=setosa, drop=TRUE]` | base R `datasets` | 50 each | 2 × (`varpro` + `beta.varpro` + `partialpro`) | < 20 s combined |
+| Survival | `randomForestSRC::pbc`, dropped to a small subset (5 continuous predictors, na.omit) | already in `Suggests:` | 50 | `varpro` + `partialpro` (C-path) + `isopro` | < 45 s |
 
-Estimated total cold-cache knit: **~3 minutes**. Subsequent renders (cache hit): seconds. The CRAN runner will see the cold-cache time, so the vignette must stay under the 5-minute soft cap CRAN flags for vignette build time.
+Estimated total cold-cache knit: **~2.5 minutes** (trimmed from the earlier ~3 min estimate because classification no longer carries an `ivarpro` fit and survival drops the `uvarpro` + `ivarpro` calls). Subsequent renders (cache hit): seconds. Stays well under the 5-minute soft cap CRAN flags for vignette build time.
 
 ## Files
 

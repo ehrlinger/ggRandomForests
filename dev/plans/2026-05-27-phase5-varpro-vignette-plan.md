@@ -305,7 +305,37 @@ git add vignettes/varpro.qmd
 git commit -m "vignette: section 3 — gg_varpro on Boston"
 ```
 
-- [ ] **Step 3: Sub-section `gg_beta_varpro()`**
+- [ ] **Step 3: Sub-section `gg_partial_varpro()`**
+
+Append:
+
+````markdown
+## Partial dependence with `gg_partial_varpro()`
+
+The ranking view tells you *which* variables matter. Partial dependence
+asks the next question: *how* does the response change with a variable,
+holding the others fixed? `gg_partial_varpro()` wraps
+`varPro::partialpro()` and returns a tidy frame of parametric,
+non-parametric, and causal partial-dependence curves.
+
+```{r boston-gg-partial-varpro}
+gg_pd <- gg_partial_varpro(v_boston)
+plot(gg_pd)
+```
+
+Each panel is a single predictor. The three curves correspond to the
+three estimators varPro carries — read them as a sensitivity analysis.
+Tight agreement is reassuring; divergence is information.
+````
+
+Render, commit:
+
+```bash
+git add vignettes/varpro.qmd
+git commit -m "vignette: section 3 — gg_partial_varpro on Boston"
+```
+
+- [ ] **Step 4: Sub-section `gg_beta_varpro()`**
 
 Append:
 
@@ -343,36 +373,6 @@ Render, commit:
 ```bash
 git add vignettes/varpro.qmd
 git commit -m "vignette: section 3 — gg_beta_varpro on Boston"
-```
-
-- [ ] **Step 4: Sub-section `gg_partial_varpro()`**
-
-Append:
-
-````markdown
-## Partial dependence with `gg_partial_varpro()`
-
-The two views above rank variables. Partial dependence asks the next
-question: *how* does the response change with a variable, holding the
-others fixed? `gg_partial_varpro()` wraps `varPro::partialpro()` and
-returns a tidy frame of parametric, non-parametric, and causal
-partial-dependence curves.
-
-```{r boston-gg-partial-varpro}
-gg_pd <- gg_partial_varpro(v_boston)
-plot(gg_pd)
-```
-
-Each panel is a single predictor. The three curves correspond to the
-three estimators varPro carries — read them as a sensitivity analysis.
-Tight agreement is reassuring; divergence is information.
-````
-
-Render, commit:
-
-```bash
-git add vignettes/varpro.qmd
-git commit -m "vignette: section 3 — gg_partial_varpro on Boston"
 ```
 
 - [ ] **Step 5: Sub-section `gg_udependent()`**
@@ -495,7 +495,7 @@ git commit -m "vignette: section 3 — gg_ivarpro on Boston (regression section 
 **Files:**
 - Modify: `vignettes/varpro.qmd`
 
-Section 4 covers binary and multi-class on iris. Three sub-wrappers (the ones with classification support): `gg_varpro` with `conditional`, `gg_beta_varpro`, `gg_ivarpro`. `gg_partial_varpro` works on classification but the vignette gets long; pin to a single mention in section 6's matrix. Same for `gg_udependent` / `gg_isopro` — they're family-agnostic and were already shown in section 3.
+Section 4 covers binary and multi-class on iris with the **core three-beat** only: `gg_varpro(conditional = TRUE)`, `gg_partial_varpro`, `gg_beta_varpro`. The advanced trio (`gg_udependent`, `gg_isopro`, `gg_ivarpro`) was demonstrated in §3 and is not repeated here — `gg_udependent` and `gg_isopro` are family-agnostic; `gg_ivarpro` is expensive and adds no new pedagogical content on iris.
 
 - [ ] **Step 1: Append the section header and the two iris fits**
 
@@ -547,7 +547,36 @@ git add vignettes/varpro.qmd
 git commit -m "vignette: section 4 — iris fits + gg_varpro conditional"
 ```
 
-- [ ] **Step 3: Add binary and multi-class `gg_beta_varpro()`**
+- [ ] **Step 3: Add `gg_partial_varpro()` on the multi-class fit**
+
+Append:
+
+````markdown
+## Partial dependence: `gg_partial_varpro()` on classification
+
+`gg_partial_varpro()` works the same way on a classification fit, but
+each predictor's curve becomes per-class probabilities. The plot
+panels are organised by predictor with class encoded as colour or
+facet (the wrapper defaults handle this).
+
+```{r iris-multi-gg-partial-varpro}
+plot(gg_partial_varpro(v_iris_multi))
+```
+
+Read each panel as: "as predictor X changes from low to high, how does
+the probability of each class shift?" Patterns that match the
+underlying biology (e.g. petal length separating setosa from the
+others) act as a sanity check on the forest.
+````
+
+Render, commit:
+
+```bash
+git add vignettes/varpro.qmd
+git commit -m "vignette: section 4 — gg_partial_varpro on iris multi-class"
+```
+
+- [ ] **Step 4: Add binary and multi-class `gg_beta_varpro()`**
 
 Append:
 
@@ -587,46 +616,11 @@ plot(gg_beta_varpro(v_iris_multi, beta_fit = b_iris_multi))
 when you want it.
 ````
 
-Render, commit:
-
-```bash
-git add vignettes/varpro.qmd
-git commit -m "vignette: section 4 — gg_beta_varpro on iris binary + multi"
-```
-
-- [ ] **Step 4: Add `gg_ivarpro()` on multi-class**
-
-Append:
-
-````markdown
-## Per-observation local importance with `gg_ivarpro()`
-
-The same pattern carries to local importance: classification fits add a
-`class` column, the default plot facets, and `which_class` / `which_obs`
-collapse to single views.
-
-```{r iris-multi-ivarpro-fit, cache=TRUE}
-iv_iris_multi <- varPro::ivarpro(v_iris_multi)
-```
-
-```{r iris-multi-gg-ivarpro-distribution}
-plot(gg_ivarpro(v_iris_multi, ivarpro_fit = iv_iris_multi))
-```
-
-```{r iris-multi-gg-ivarpro-which-obs}
-plot(gg_ivarpro(v_iris_multi, ivarpro_fit = iv_iris_multi,
-                which_obs = 1L))
-```
-
-The per-observation profile is the classification-side counterpart of
-the regression "explain one prediction" view from section 3.
-````
-
 Render. Commit:
 
 ```bash
 git add vignettes/varpro.qmd
-git commit -m "vignette: section 4 — gg_ivarpro on iris multi-class"
+git commit -m "vignette: section 4 — gg_beta_varpro on iris binary + multi"
 ```
 
 ---
@@ -721,12 +715,15 @@ Append:
 ## Not available for survival: `gg_beta_varpro`, `gg_ivarpro`
 
 `varPro::beta.varpro()` errors on survival fits in the current release
-(it only supports `regr` and `class`). `varPro::ivarpro()` is similarly
-restricted in the wrapper layer pending design work on the per-rule
-risk-scaling story. Both are tracked for v2.9.0.
+(it only supports `regr` and `class`). `gg_ivarpro()` for survival is
+similarly deferred pending design work on the per-rule risk-scaling
+story. Both are tracked for v2.9.0.
 
 If you call either on a survival fit you'll get a clear error message
-pointing at the deferred work, not a silent miscalculation.
+pointing at the deferred work, not a silent miscalculation. The
+family-support matrix in §6 records this — and the rest of the toolkit
+that *does* work on survival (`gg_varpro`, `gg_partial_varpro`,
+`gg_isopro` above; `gg_udependent` shown in §3 on the X-matrix).
 ````
 
 Render, commit:
@@ -978,15 +975,17 @@ Return the PR URL.
 
 ## Self-review
 
-**Spec coverage:**
+**Spec coverage (revised structure):**
 
 | Spec requirement | Task |
 |---|---|
 | Section 1 "What varPro is" | T2 |
 | Section 2 "Setup" | T1 step 3 |
-| Section 3 Regression Boston | T3 |
-| Section 4 Classification iris | T4 |
-| Section 5 Survival PBC with non-coverage callout | T5 |
+| Section 3 Regression Boston — core three-beat + advanced trio (only place those three appear) | T3 |
+| Section 3 step order: `gg_varpro` → `gg_partial_varpro` → `gg_beta_varpro` → `gg_udependent` → `gg_isopro` → `gg_ivarpro` | T3 steps 2–7 |
+| Section 4 Classification iris — core three-beat only | T4 |
+| Section 4 step order: `gg_varpro(conditional)` → `gg_partial_varpro` → `gg_beta_varpro` | T4 steps 2–4 |
+| Section 5 Survival PBC — `gg_varpro` + `gg_partial_varpro` (C-path) + `gg_isopro` + explicit non-coverage | T5 |
 | Section 6 Cross-cutting reference + family-support matrix | T6 |
 | Section 7 Further reading + bibliography | T7 |
 | Bibliography entries (Lu & Ishwaran 2024, Ishwaran 2008) | T7 step 1 |
@@ -996,7 +995,9 @@ Return the PR URL.
 | Voice from scratch (no audit pass) | T1 step 1 (read fingerprint) + applied throughout |
 | Live knit with knitr cache + ntree = 50 | T1 step 3 (setup chunk) + each fit chunk uses `cache: true` |
 | Family-support matrix empirically verified | Lifted from spec; matches T6 step 1 verbatim |
-| 30-day mortality footnote only | T4 step 3 (single footnote at the binary `gg_beta_varpro` block) |
+| 30-day mortality footnote only | T4 step 4 (single footnote at the binary `gg_beta_varpro` block) |
+| `gg_udependent` + `gg_ivarpro` appear once (only in §3) | T3 steps 5, 7 (no T4 / T5 step for these) |
+| `gg_isopro` appears in §3 and §5 (family-agnostic demonstration) | T3 step 6 + T5 step 4 |
 
 **Placeholder scan:** none. Every chunk has working R code; every prose block has finished text (not "TBD"). The bibliography entry has a real `arXiv` URL; if a published-journal citation supersedes it before the PR lands, the engineer should update.
 
