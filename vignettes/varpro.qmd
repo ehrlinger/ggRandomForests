@@ -138,3 +138,23 @@ Compare against `gg_varpro()` above. Disagreement is the diagnostic
 signal: a variable that ranks high here but low there is one whose
 local linear effect inside many rules is real even when the release
 contrast is modest.
+
+## Cross-variable dependency with `gg_udependent()`
+
+The three views so far take one variable at a time. `gg_udependent()`
+reads cross-variable structure off a `uvarpro()` fit and draws the
+result as a network: nodes are variables, edges are dependencies above a
+configurable threshold. The visual is built with `ggraph`, which is in
+`Suggests` rather than `Imports` — install it if you want this view.
+
+```{r boston-uvarpro, cache=TRUE}
+u_boston <- varPro::uvarpro(Boston[, setdiff(names(Boston), "medv")],
+                            ntree = 50)
+```
+
+```{r boston-gg-udependent, eval = requireNamespace("ggraph", quietly = TRUE)}
+plot(gg_udependent(u_boston))
+```
+
+Clusters of mutually-connected variables are worth checking for
+redundancy — they may be several views of the same underlying quantity.
