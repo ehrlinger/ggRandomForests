@@ -94,3 +94,20 @@ The narrow boxes near the top are the variables varPro is confident
 about — every tree agrees they matter. Wide boxes that straddle the
 cutoff line are the ones to look at twice; the forest disagrees with
 itself.
+
+## Partial dependence with `gg_partial_varpro()`
+
+The ranking view tells you *which* variables matter. Partial dependence
+asks the next question: *how* does the response change with a variable,
+holding the others fixed? `gg_partial_varpro()` wraps
+`varPro::partialpro()` and returns a tidy frame of parametric,
+non-parametric, and causal partial-dependence curves.
+
+```{r boston-gg-partial-varpro}
+gg_pd <- gg_partial_varpro(object = v_boston)
+plot(gg_pd)
+```
+
+Each panel is a single predictor. The three curves correspond to the
+three estimators varPro carries — read them as a sensitivity analysis.
+Tight agreement is reassuring; divergence is information.
