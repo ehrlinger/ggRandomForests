@@ -56,6 +56,9 @@ summary(object, ...)
 
 # S3 method for class 'gg_beta_varpro'
 summary(object, ...)
+
+# S3 method for class 'gg_ivarpro'
+summary(object, ...)
 ```
 
 ## Arguments
@@ -98,5 +101,5 @@ summary(gg_vimp(rf))
 #> <gg_vimp>  from randomForestSRC  |  family: regr  |  ntree: 50  |  n: 111
 #>   variables: 5
 #>   positive VIMP: 5 / negative: 0
-#>   top 5: Wind (1829), Temp (1336), Solar.R (277), Day (201.2), Month (70.56)
+#>   top 5: Wind (1752), Temp (1341), Solar.R (277.2), Day (194.2), Month (70.73)
 ```

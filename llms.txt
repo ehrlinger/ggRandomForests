@@ -213,6 +213,14 @@ Assess and plot variable importance (VIMP).
 
   Plot a `gg_udependent` variable dependency graph
 
+- [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
+  : Individual (local) variable importance from a varPro fit
+
+- [`plot(`*`<gg_ivarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_ivarpro.md)
+  :
+
+  Plot a `gg_ivarpro` object
+
 ## Anomaly Detection
 
 Score and plot per-observation anomaly scores.
@@ -347,6 +355,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`print(`*`<gg_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_isopro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_beta_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_ivarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   : Print methods for gg\_\* data objects
 
 - [`print(`*`<summary.gg>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
@@ -365,6 +374,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`summary(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_isopro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_beta_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_ivarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   : Summary methods for gg\_\* data objects
 
 ## Utilities

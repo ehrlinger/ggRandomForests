@@ -55,6 +55,9 @@ print(x, ...)
 
 # S3 method for class 'gg_beta_varpro'
 print(x, ...)
+
+# S3 method for class 'gg_ivarpro'
+print(x, ...)
 ```
 
 ## Arguments

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9013</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,8 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.8.0" id="ggrandomforests-v280-development--continued">ggRandomForests v2.8.0 (development) — continued<a class="anchor" aria-label="anchor" href="#ggrandomforests-v280-development--continued"></a></h2>
 <ul><li>
+<code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code> and <code><a href="../reference/plot.gg_ivarpro.html">plot.gg_ivarpro()</a></code>: tidy wrapper and per-variable-distribution / per-observation-profile plots for <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> (individual / local variable importance) across regression and classification (binary + multi-class) families. The long-format tidy frame is <code>(obs, variable, local_imp, selected)</code> for regression; classification adds a <code>class</code> column. NA cells are filtered out and sparsity is surfaced in provenance. <code>which_obs</code> (integer index) collapses to a single-observation profile; the plot switches from a jittered distribution view to a horizontal bar chart. <code>which_class</code> (response level name) collapses to a single class panel; binary fits default to the last factor level (positive class). <code>cutoff</code> accepts <code>NULL</code> (per-class mean), a scalar, or a named numeric vector — matching the gg_beta_varpro classification contract. Optional <code>ivarpro_fit</code> argument lets callers cache the expensive <code>ivarpro()</code> call. Last of four Phase 4 sub-projects.</li>
+<li>
 <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code> adds varPro classification support (binary + multi-class). Binary fits default to a single positive-class panel (last factor level); multi-class fits return a long-format frame with a <code>class</code> column and plot as <code>facet_wrap(~ class)</code>. Optional <code>which_class</code> selects a single class; <code>cutoff</code> accepts a scalar or per-class named vector. Variables are stored as a factor whose levels are set by <code>mean(|sum-of-class-beta|)</code> descending so every facet shows rows in the same order. Motivating use case: 30-day mortality.</li>
 <li>Provenance shape change for <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code>: <code>attr(*, "provenance")$cutoff</code> is now always a named numeric vector — length 1 named <code>"regr"</code> for regression, length K named with the response factor levels for classification. Downstream tooling should read it as a vector and select by name; the prior scalar shape is gone.</li>
 <li>
