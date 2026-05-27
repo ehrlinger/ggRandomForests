@@ -314,3 +314,9 @@ v_pbc <- varPro::varpro(
   data = pbc_small, ntree = 50
 )
 ```
+
+## Variable importance: `gg_varpro()`
+
+```{r pbc-gg-varpro}
+plot(gg_varpro(v_pbc))
+```
