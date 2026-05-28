@@ -43,8 +43,10 @@ median per-tree z, after the cutoff filter has been applied.
 \value{
 A named list of class \code{"gg_varpro"} with elements:
 \describe{
-\item{\code{$imp}}{Summary data frame: \code{variable} (factor with
-levels ordered by descending median per-tree z), \code{z} (aggregate
+\item{\code{$imp}}{Summary data frame: \code{variable} (factor whose
+levels run least- to most-important by median per-tree z, so the
+most-important variable sits at the top of the plot after
+\code{coord_flip}), \code{z} (aggregate
 z-score from \code{importance()}), \code{selected} (logical,
 \code{z > cutoff}).}
 \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};

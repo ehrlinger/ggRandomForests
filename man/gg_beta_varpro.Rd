@@ -48,8 +48,8 @@ Aggregates the per-rule lasso coefficient (β̂) by variable into
 }
 \note{
 Multivariate regression (\verb{regr+}) and survival families are out
-of scope for this release. The unsupported-family path errors with
-a message naming Phase 4d as the tracker.
+of scope for this release and tracked for v3.1.0. The
+unsupported-family path errors with a message pointing at that work.
 }
 \section{What this is doing}{
 

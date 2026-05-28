@@ -118,12 +118,15 @@ test_that("gg_varpro nvar=3 returns exactly 3 variables", {
   expect_equal(nrow(gg$stats), 3L)
 })
 
-test_that("gg_varpro variable factor ordered by descending median z", {
+test_that("gg_varpro variable factor runs least- to most-important median z", {
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)
+  # Factor levels run least-important first so the most-important variable is
+  # the last level (top of the plot after coord_flip). Median z therefore
+  # increases along the factor levels.
   med_vals <- gg$stats$median[order(match(gg$stats$variable,
                                            levels(gg$imp$variable)))]
-  expect_true(all(diff(med_vals) <= 0))
+  expect_true(all(diff(med_vals) >= 0))
 })
 
 test_that("gg_varpro nvar larger than p returns all variables", {

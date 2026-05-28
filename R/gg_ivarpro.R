@@ -160,7 +160,7 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
     stop(sprintf(
       paste0("gg_ivarpro currently supports varpro regression and ",
              "classification forests only; got family = '%s'. regr+ and ",
-             "survival are tracked under Phase 4d follow-ups (see NEWS)."),
+             "survival are tracked for v3.1.0 (see NEWS)."),
       fam
     ), call. = FALSE)
   }
@@ -357,16 +357,20 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
   xvars <- object$xvar.org.names
   long  <- .ivarpro_long(iv, xvars)
 
-  # Factor-level ordering by descending mean(|local_imp|)
+  # Factor levels are REVERSED descending mean(|local_imp|) so the
+  # most-important variable lands at the TOP after coord_flip, matching
+  # the gg_vimp / gg_varpro convention.
   agg <- tapply(abs(long$local_imp), long$variable, mean, na.rm = TRUE)
   ord_names <- names(sort(agg, decreasing = TRUE))
-  long$variable <- factor(long$variable, levels = ord_names)
+  long$variable <- factor(long$variable, levels = rev(ord_names))
 
   resolved_cutoff <- if (is.null(cutoff)) mean(abs(long$local_imp)) else as.numeric(cutoff)
   long$selected <- abs(long$local_imp) >= resolved_cutoff
 
   if (!is.null(which_obs)) long <- long[long$obs == which_obs, , drop = FALSE]
-  long <- long[order(long$variable, long$obs), , drop = FALSE]
+  ## Rows stay most-important-first (obs ascending within variable); the
+  ## reversed factor levels only drive the plot's vertical order.
+  long <- long[order(-as.integer(long$variable), long$obs), , drop = FALSE]
   rownames(long) <- NULL
 
   class(long) <- c("gg_ivarpro", "data.frame")
@@ -411,10 +415,12 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
                              ivarpro_fit, cutoff))
   }
 
-  # Unified factor-level ordering across all (obs, class)
+  # Unified factor-level ordering across all (obs, class), REVERSED so the
+  # most-important variable lands at the TOP after coord_flip — shared
+  # across every class facet for alignment.
   agg <- tapply(abs(long$local_imp), long$variable, mean, na.rm = TRUE)
   ord_names <- names(sort(agg, decreasing = TRUE))
-  long$variable <- factor(long$variable, levels = ord_names)
+  long$variable <- factor(long$variable, levels = rev(ord_names))
 
   # Validate which_class
   if (!is.null(which_class)) {
@@ -444,7 +450,10 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
   if (!is.null(which_obs))   long <- long[long$obs   == which_obs,   , drop = FALSE]
 
   long$class <- factor(long$class, levels = cls)
-  long <- long[order(long$class, long$variable, long$obs), , drop = FALSE]
+  ## Within each class, rows stay most-important-first (obs ascending); the
+  ## reversed variable factor levels only drive the plot's vertical order.
+  long <- long[order(long$class, -as.integer(long$variable), long$obs), ,
+               drop = FALSE]
   rownames(long) <- NULL
 
   class(long) <- c("gg_ivarpro", "data.frame")

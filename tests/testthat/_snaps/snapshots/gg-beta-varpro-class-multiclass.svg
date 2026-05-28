@@ -36,8 +36,8 @@
 <polyline points='120.93,531.75 120.93,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='172.28,531.75 172.28,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='223.63,531.75 223.63,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
-<rect x='69.59' y='296.78' width='148.85' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
-<rect x='69.59' y='73.00' width='195.07' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #4E8FCD;' />
+<rect x='69.59' y='73.00' width='148.85' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
+<rect x='69.59' y='296.78' width='195.07' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #4E8FCD;' />
 <line x1='241.55' y1='531.75' x2='241.55' y2='39.43' style='stroke-width: 1.49; stroke: #E74C3C; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
@@ -58,8 +58,8 @@
 <polyline points='340.99,531.75 340.99,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='392.34,531.75 392.34,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='443.69,531.75 443.69,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
-<rect x='289.64' y='296.78' width='73.04' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #4E8FCD;' />
-<rect x='289.64' y='73.00' width='59.20' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
+<rect x='289.64' y='73.00' width='73.04' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #4E8FCD;' />
+<rect x='289.64' y='296.78' width='59.20' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
 <line x1='355.76' y1='531.75' x2='355.76' y2='39.43' style='stroke-width: 1.49; stroke: #E74C3C; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
@@ -80,8 +80,8 @@
 <polyline points='561.05,531.75 561.05,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='612.39,531.75 612.39,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='663.74,531.75 663.74,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
-<rect x='509.70' y='296.78' width='36.84' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #4E8FCD;' />
-<rect x='509.70' y='73.00' width='26.95' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
+<rect x='509.70' y='73.00' width='36.84' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #4E8FCD;' />
+<rect x='509.70' y='296.78' width='26.95' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
 <line x1='541.59' y1='531.75' x2='541.59' y2='39.43' style='stroke-width: 1.49; stroke: #E74C3C; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
@@ -127,8 +127,8 @@
 <text x='561.05' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>2.5</text>
 <text x='612.39' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>5.0</text>
 <text x='663.74' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='12.23px' lengthAdjust='spacingAndGlyphs'>7.5</text>
-<text x='54.90' y='400.51' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='45.00px' lengthAdjust='spacingAndGlyphs'>Petal.Width</text>
-<text x='54.90' y='176.73' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='49.42px' lengthAdjust='spacingAndGlyphs'>Petal.Length</text>
+<text x='54.90' y='400.51' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='49.42px' lengthAdjust='spacingAndGlyphs'>Petal.Length</text>
+<text x='54.90' y='176.73' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='45.00px' lengthAdjust='spacingAndGlyphs'>Petal.Width</text>
 <text x='387.18' y='554.87' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='134.73px' lengthAdjust='spacingAndGlyphs'>Mean |beta| (per-rule lasso)</text>
 <text x='59.83' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='183.43px' lengthAdjust='spacingAndGlyphs'>gg-beta-varpro-class-multiclass</text>
 <text x='714.52' y='568.69' text-anchor='end' style='font-size: 8.80px; font-family: sans;' textLength='313.77px' lengthAdjust='spacingAndGlyphs'>Mean |beta| over 234 rules. Lasso: unknown (precomputed). 3 classes (faceted).</text>

@@ -113,8 +113,8 @@
 #' when reproducibility matters.
 #'
 #' @note Multivariate regression (`regr+`) and survival families are out
-#'   of scope for this release. The unsupported-family path errors with
-#'   a message naming Phase 4d as the tracker.
+#'   of scope for this release and tracked for v3.1.0. The
+#'   unsupported-family path errors with a message pointing at that work.
 #'
 #' @param object A `varpro` fit from [varPro::varpro()] (regression or
 #'   classification family).
@@ -173,7 +173,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
     stop(sprintf(
       paste0("gg_beta_varpro currently supports varpro regression and ",
              "classification forests only; got family = '%s'. regr+ and ",
-             "survival are tracked under Phase 4d (see vignette / NEWS)."),
+             "survival are tracked for v3.1.0 (see vignette / NEWS)."),
       fam
     ), call. = FALSE)
   }
@@ -224,13 +224,16 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   beta_mean_v <- vapply(split(abs(res$imp), var_name), mean, numeric(1))
   n_rules_v   <- vapply(split(res$imp,        var_name), length, integer(1))
 
-  # Factor levels = imp-descending
+  # Rows are most-important-first (descending); the variable factor levels
+  # are REVERSED so that, after coord_flip() in the plot method, the
+  # most-important variable lands at the TOP. This matches the
+  # gg_vimp / gg_varpro convention.
   ord_names <- names(sort(beta_mean_v, decreasing = TRUE))
 
   resolved_cutoff <- if (is.null(cutoff)) mean(beta_mean_v) else as.numeric(cutoff)
 
   out <- data.frame(
-    variable  = factor(ord_names, levels = ord_names),
+    variable  = factor(ord_names, levels = rev(ord_names)),
     beta_mean = unname(beta_mean_v[ord_names]),
     n_rules   = as.integer(unname(n_rules_v[ord_names])),
     stringsAsFactors = FALSE
@@ -348,11 +351,15 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   res <- b$results
   var_name <- b$xvar.names[res$variable]
 
-  # Total |imp| per variable (for factor-level ordering)
+  # Total |imp| per variable. ord_names is most-important-first (drives row
+  # sort + summary); lvl is the REVERSED order used for the shared factor
+  # levels so the most-important variable lands at the TOP after coord_flip,
+  # consistently across every class facet.
   res_total <- res[is.finite(res$imp), , drop = FALSE]
   total_var <- b$xvar.names[res_total$variable]
   beta_mean_total <- vapply(split(abs(res_total$imp), total_var), mean, numeric(1))
   ord_names <- names(sort(beta_mean_total, decreasing = TRUE))
+  lvl <- rev(ord_names)
 
   # Per-class aggregation — long format
   rows <- list()
@@ -367,7 +374,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
     n_rules_k   <- vapply(split(sub_imp,        sub_var), length, integer(1))
     vars_present <- intersect(ord_names, names(beta_mean_k))
     rows[[k]] <- data.frame(
-      variable  = factor(vars_present, levels = ord_names),
+      variable  = factor(vars_present, levels = lvl),
       class     = class_levels[k],
       beta_mean = unname(beta_mean_k[vars_present]),
       n_rules   = as.integer(unname(n_rules_k[vars_present])),
@@ -393,9 +400,10 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
     long <- long[long$class == which_class, , drop = FALSE]
   }
 
-  # Sort: class factor order, then variable factor order
+  # Sort: class factor order, then most-important-first within class. The
+  # reversed variable factor levels only drive the plot's vertical order.
   long$class <- factor(long$class, levels = class_levels)
-  long <- long[order(long$class, long$variable), , drop = FALSE]
+  long <- long[order(long$class, -as.integer(long$variable)), , drop = FALSE]
   rownames(long) <- NULL
 
   class(long) <- c("gg_beta_varpro", "data.frame")

@@ -50,3 +50,7 @@ framed.sty
 ^\.positai$
 ^\.superpowers$
 ^vignettes/.*_cache$
+# Quarto render artefacts (freeze cache + rendered html/files) — never ship
+^vignettes/\.quarto$
+^vignettes/.*_files$
+^vignettes/.*\.html$
