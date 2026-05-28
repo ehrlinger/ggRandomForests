@@ -187,13 +187,13 @@ local({
     expect_false(identical(yhat_mort, yhat_surv))
   })
 
-  test_that("surv_partial.rfsrc verbose: emits a message with the variable name", {
-    # v2.7.2: cat() -> message() so output is suppressible per CRAN cookbook.
-    expect_message(
+  test_that("surv_partial.rfsrc runs quietly (no per-variable message)", {
+    # v3.0.0: the chatty per-variable message() was removed (CRAN audit).
+    # Only the deprecation warning remains; suppress it and assert silence.
+    expect_no_message(
       suppressWarnings(
         surv_partial.rfsrc(v.obj, var_list = "age", partial.type = "mort")
-      ),
-      regexp = "age"
+      )
     )
   })
 

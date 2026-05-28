@@ -62,7 +62,8 @@ Brier score / CRPS is \code{randomForestSRC} survival-only; there
 is no \code{randomForest} method.
 }
 \examples{
-\dontrun{
+\donttest{
+library(survival)   # Surv() must be on the search path for rfsrc()
 data(pbc, package = "randomForestSRC")
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(days, status) ~ ., data = pbc, nsplit = 10
