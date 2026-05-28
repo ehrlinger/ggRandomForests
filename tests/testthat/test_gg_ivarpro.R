@@ -29,7 +29,9 @@ test_that("gg_ivarpro variable factor levels ordered by descending mean(|local_i
   expect_true(is.factor(out$variable))
 
   expected <- tapply(abs(out$local_imp), out$variable, mean, na.rm = TRUE)
-  expected_order <- names(sort(expected, decreasing = TRUE))
+  # Reversed-descending: most-important variable is the LAST level (top of
+  # the plot after coord_flip).
+  expected_order <- rev(names(sort(expected, decreasing = TRUE)))
   expect_equal(levels(out$variable), expected_order)
 })
 

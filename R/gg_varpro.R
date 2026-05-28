@@ -93,8 +93,10 @@
 #'
 #' @return A named list of class \code{"gg_varpro"} with elements:
 #' \describe{
-#'   \item{\code{$imp}}{Summary data frame: \code{variable} (factor with
-#'     levels ordered by descending median per-tree z), \code{z} (aggregate
+#'   \item{\code{$imp}}{Summary data frame: \code{variable} (factor whose
+#'     levels run least- to most-important by median per-tree z, so the
+#'     most-important variable sits at the top of the plot after
+#'     \code{coord_flip}), \code{z} (aggregate
 #'     z-score from \code{importance()}), \code{selected} (logical,
 #'     \code{z > cutoff}).}
 #'   \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
@@ -303,10 +305,14 @@ gg_varpro <- function(object,
     stats_df <- stats_df[stats_df$variable %in% top_vars, , drop = FALSE]
   }
 
-  ## Order $imp and $stats rows + factor levels by descending median z
+  ## Factor levels run least-important-first (reversed descending median z)
+  ## so the most-important variable lands at the TOP after coord_flip in the
+  ## plot method, matching the gg_vimp convention. `var_order` itself stays
+  ## most-important-first for row ordering and top-nvar selection.
   var_order         <- stats_df$variable[order(-stats_df$median)]
-  imp_df$variable   <- factor(imp_df$variable,   levels = var_order)
-  stats_df$variable <- factor(stats_df$variable, levels = var_order)
+  lvl               <- rev(as.character(var_order))
+  imp_df$variable   <- factor(imp_df$variable,   levels = lvl)
+  stats_df$variable <- factor(stats_df$variable, levels = lvl)
   ## Reorder rows to match factor levels (avoids row-order / level mismatch)
   imp_df   <- imp_df[order(imp_df$variable), , drop = FALSE]
   stats_df <- stats_df[order(stats_df$variable), , drop = FALSE]

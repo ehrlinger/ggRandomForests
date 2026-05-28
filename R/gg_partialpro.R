@@ -4,7 +4,7 @@
 #'
 #' \emph{Deprecated.} \code{gg_partialpro()} has been superseded by
 #' \code{\link{gg_partial_varpro}()} and is now a thin alias for it.  It will
-#' be removed in the release after \pkg{ggRandomForests} v2.8.0; use
+#' be removed in the release after \pkg{ggRandomForests} v3.0.0; use
 #' \code{\link{gg_partial_varpro}()} directly.
 #'
 #' @param part_dta Passed to \code{\link{gg_partial_varpro}}.

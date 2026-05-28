@@ -228,7 +228,9 @@ test_that("gg_beta_varpro variable is a factor ordered by total-|imp| descending
   res <- res[is.finite(res$imp), , drop = FALSE]
   var_name <- bm$xvar.names[res$variable]
   agg <- vapply(split(abs(res$imp), var_name), mean, numeric(1))
-  expected_levels <- names(sort(agg, decreasing = TRUE))
+  # Factor levels are reversed-descending so the most-important variable is
+  # the LAST level (top of the plot after coord_flip).
+  expected_levels <- rev(names(sort(agg, decreasing = TRUE)))
   expect_equal(levels(out$variable), expected_levels)
 })
 
