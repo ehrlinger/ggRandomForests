@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
@@ -81,7 +82,7 @@
       <h1>Exploring Random Forests with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-05-27</p>
+      <p class="date">2026-05-28</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests.qmd" class="external-link"><code>vignettes/ggRandomForests.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -198,6 +199,7 @@
 <li>
 <code><a href="../reference/gg_error.html">?gg_error</a></code>, <code><a href="../reference/gg_variable.html">?gg_variable</a></code>, <code><a href="../reference/gg_vimp.html">?gg_vimp</a></code>, and <code><a href="../reference/quantile_pts.html">?quantile_pts</a></code> cover the remaining arguments and have their own examples.</li>
 <li>The <code>gg_error</code>, <code>gg_variable</code>, and <code>gg_vimp</code> objects shown here are tidy data frames underneath, so you can skip the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods entirely and build the figure yourself with <code>ggplot2</code>.</li>
+<li>For the full varPro toolkit (release-rule importance, lasso-refined importance, per-observation local importance, anomaly scores, and the dependency graph) walked across regression, classification, and survival examples, see <code><a href="../articles/varpro.html">vignette("varpro", package = "ggRandomForests")</a></code>.</li>
 </ul></section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

@@ -142,3 +142,8 @@ labels.
   tidy data frames underneath, so you can skip the
   [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods
   entirely and build the figure yourself with `ggplot2`.
+- For the full varPro toolkit (release-rule importance, lasso-refined
+  importance, per-observation local importance, anomaly scores, and the
+  dependency graph) walked across regression, classification, and
+  survival examples, see
+  [`vignette("varpro", package = "ggRandomForests")`](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md).

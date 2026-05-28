@@ -141,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 500
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.47
+    #>        Average no. of terminal nodes: 66.722
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86490395
-    #>    (OOB) Requested performance error: 11.42733195
+    #>                      (OOB) R squared: 0.86304443
+    #>    (OOB) Requested performance error: 11.58462333
 
 The forest grew 500 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of

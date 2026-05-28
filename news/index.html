@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,6 +24,7 @@
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
+    <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
   </ul></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
@@ -56,7 +57,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.8.0" id="ggrandomforests-v280-development--continued">ggRandomForests v2.8.0 (development) — continued<a class="anchor" aria-label="anchor" href="#ggrandomforests-v280-development--continued"></a></h2>
-<ul><li>
+<ul><li>New vignette: “Exploring variable importance with varPro.” Walks the full gg_* varPro layer (gg_partial_varpro, gg_varpro, gg_udependent, gg_isopro, gg_beta_varpro, gg_ivarpro) on three worked examples — regression (Boston), classification (iris binary + multi-class), and survival (PBC). Includes a family-support matrix documenting which wrapper works for which forest family. Headline document for v2.8.0.</li>
+<li>
 <code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code> and <code><a href="../reference/plot.gg_ivarpro.html">plot.gg_ivarpro()</a></code>: tidy wrapper and per-variable-distribution / per-observation-profile plots for <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> (individual / local variable importance) across regression and classification (binary + multi-class) families. The long-format tidy frame is <code>(obs, variable, local_imp, selected)</code> for regression; classification adds a <code>class</code> column. NA cells are filtered out and sparsity is surfaced in provenance. <code>which_obs</code> (integer index) collapses to a single-observation profile; the plot switches from a jittered distribution view to a horizontal bar chart. <code>which_class</code> (response level name) collapses to a single class panel; binary fits default to the last factor level (positive class). <code>cutoff</code> accepts <code>NULL</code> (per-class mean), a scalar, or a named numeric vector — matching the gg_beta_varpro classification contract. Optional <code>ivarpro_fit</code> argument lets callers cache the expensive <code>ivarpro()</code> call. Last of four Phase 4 sub-projects.</li>
 <li>
 <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code> adds varPro classification support (binary + multi-class). Binary fits default to a single positive-class panel (last factor level); multi-class fits return a long-format frame with a <code>class</code> column and plot as <code>facet_wrap(~ class)</code>. Optional <code>which_class</code> selects a single class; <code>cutoff</code> accepts a scalar or per-class named vector. Variables are stored as a factor whose levels are set by <code>mean(|sum-of-class-beta|)</code> descending so every facet shows rows in the same order. Motivating use case: 30-day mortality.</li>

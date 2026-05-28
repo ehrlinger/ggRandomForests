@@ -11,3 +11,5 @@
   ggRandomForests](https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-survival.md):
 - [Random Forest Regression with
   ggRandomForests](https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-regression.md):
+- [Exploring variable importance with
+  varPro](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md):
