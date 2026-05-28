@@ -1,10 +1,10 @@
 ##=============================================================================
-#' Per-variable lasso-β importance from a varPro fit
+#' Per-variable lasso-beta importance from a varPro fit
 #'
 #' Tidy wrapper around [varPro::beta.varpro()] for the regression or
 #' classification family.
-#' Aggregates the per-rule lasso coefficient (β̂) by variable into
-#' `mean(|β̂|)` and flags variables above a scalar cutoff. Optional
+#' Aggregates the per-rule lasso coefficient (beta-hat) by variable into
+#' `mean(|beta-hat|)` and flags variables above a scalar cutoff. Optional
 #' `beta_fit` argument lets callers compute the expensive
 #' `beta.varpro()` step once and reuse the result.
 #'
@@ -22,28 +22,28 @@
 #'
 #' - Per rule, `glmnet` fits a one-predictor lasso of the response on
 #'   the released variable inside the rule's OOB region. `use.cv = TRUE`
-#'   selects λ by 10-fold CV (default `nfolds = 10`); `use.1se = TRUE`
-#'   (default) picks `lambda.1se`. `use.cv = FALSE` uses the full λ path.
-#' - `imp` is the **fitted coefficient β̂** at the chosen λ. **Sign is
+#'   selects lambda by 10-fold CV (default `nfolds = 10`); `use.1se = TRUE`
+#'   (default) picks `lambda.1se`. `use.cv = FALSE` uses the full lambda path.
+#' - `imp` is the **fitted coefficient beta-hat** at the chosen lambda. **Sign is
 #'   real** (direction of local association). **Magnitude depends on
 #'   the predictor's units** (raw `x`, no standardisation); a predictor
-#'   in millimetres has a smaller |β̂| than the same predictor in metres.
-#' - Lasso shrinkage can drive β̂ to **exactly zero**. Those zeros are
+#'   in millimetres has a smaller |beta-hat| than the same predictor in metres.
+#' - Lasso shrinkage can drive beta-hat to **exactly zero**. Those zeros are
 #'   data, not missingness, and are kept in the aggregation. Convergence
 #'   failures land as `NA_real_` and are dropped.
-#' - The per-variable aggregate is `beta_mean = mean(|β̂|)` across the
+#' - The per-variable aggregate is `beta_mean = mean(|beta-hat|)` across the
 #'   rules where this variable was released. It is **not** a permutation
 #'   importance, **not** a split-strength importance, and **not** directly
 #'   comparable on the same numeric axis to `gg_varpro()`'s z-scores.
 #'   Disagreement with `gg_varpro` is often diagnostic, not a bug.
 #'
-#' In code form: `imp_r = β̂_glmnet(y | x_v restricted to rule r, λ chosen by use.cv / use.1se)`.
+#' In code form: `imp_r = beta-hat_glmnet(y | x_v restricted to rule r, lambda chosen by use.cv / use.1se)`.
 #'
 #' @section What's in the output:
 #' One row per released variable. Columns:
 #' - `variable`: predictor name.
-#' - `beta_mean`: mean of `|β̂|` across that variable's rules.
-#' - `n_rules`: count of rules contributing (zero-β rules included; only
+#' - `beta_mean`: mean of `|beta-hat|` across that variable's rules.
+#' - `n_rules`: count of rules contributing (zero-beta rules included; only
 #'   `NA` failures excluded).
 #' - `selected`: `beta_mean >= cutoff`.
 #'
@@ -75,9 +75,9 @@
 #' For a varpro classification fit (`object$family == "class"`,
 #' binary or multi-class), the returned frame is long-format with an
 #' extra `class` column: one row per (variable, class) pair. The
-#' `beta_mean` column aggregates the **per-class lasso β̂** stored in
+#' `beta_mean` column aggregates the **per-class lasso beta-hat** stored in
 #' `beta.varpro()`'s `imp.<k>` columns (one per class level). Same
-#' pedantic-β semantics as regression, applied independently to each
+#' pedantic-beta semantics as regression, applied independently to each
 #' class.
 #'
 #' **Binary default**: `which_class = NULL` resolves to the *last*

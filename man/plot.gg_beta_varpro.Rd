@@ -15,7 +15,7 @@
 A \code{ggplot} object.
 }
 \description{
-Horizontal bar chart of \verb{mean(|β̂|)} per variable, sorted descending so
+Horizontal bar chart of \verb{mean(|beta-hat|)} per variable, sorted descending so
 the eye lands on the top variable first. Bars filled blue when above the
 selection cutoff, grey otherwise. Dashed red line marks the cutoff.
 }
@@ -30,7 +30,7 @@ units require keeping the units context in mind. Within one data set,
 bars are comparable up to that unit caveat.
 
 Variables above the cutoff are coloured blue and flagged \code{selected};
-variables below are grey. Lasso shrinkage can drive a rule's β̂ to
+variables below are grey. Lasso shrinkage can drive a rule's beta-hat to
 exactly zero — those rules are kept in the average, so a variable
 with many shrunk-to-zero rules will sit lower in the ranking than
 one whose released coefficients are consistently non-zero.
@@ -45,7 +45,7 @@ comparison. Each facet has its own cutoff line.
 
 Use the bar chart as a selection ranking, not as an effect-size axis.
 Pair it with \code{\link[=gg_varpro]{gg_varpro()}} to see where split-strength importance and
-local lasso-β importance agree or disagree; disagreement is often the
+local lasso-beta importance agree or disagree; disagreement is often the
 interesting signal.
 }
 
