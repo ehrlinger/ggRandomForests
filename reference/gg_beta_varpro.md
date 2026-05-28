@@ -1,11 +1,12 @@
-# Per-variable lasso-β importance from a varPro fit
+# Per-variable lasso-beta importance from a varPro fit
 
 Tidy wrapper around
 [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 for the regression or classification family. Aggregates the per-rule
-lasso coefficient (β̂) by variable into `mean(|β̂|)` and flags variables
-above a scalar cutoff. Optional `beta_fit` argument lets callers compute
-the expensive `beta.varpro()` step once and reuse the result.
+lasso coefficient \\\hat{\beta}\\ by variable into the mean absolute
+value \\\mathrm{mean}(\|\hat{\beta}\|)\\ and flags variables above a
+scalar cutoff. Optional `beta_fit` argument lets callers compute the
+expensive `beta.varpro()` step once and reuse the result.
 
 ## Usage
 
@@ -82,28 +83,32 @@ regression coefficient. Specifically:
 
 - Per rule, `glmnet` fits a one-predictor lasso of the response on the
   released variable inside the rule's OOB region. `use.cv = TRUE`
-  selects λ by 10-fold CV (default `nfolds = 10`); `use.1se = TRUE`
-  (default) picks `lambda.1se`. `use.cv = FALSE` uses the full λ path.
+  selects \\\lambda\\ by 10-fold CV (default `nfolds = 10`);
+  `use.1se = TRUE` (default) picks `lambda.1se`. `use.cv = FALSE` uses
+  the full \\\lambda\\ path.
 
-- `imp` is the **fitted coefficient β̂** at the chosen λ. **Sign is
-  real** (direction of local association). **Magnitude depends on the
-  predictor's units** (raw `x`, no standardisation); a predictor in
-  millimetres has a smaller \|β̂\| than the same predictor in metres.
+- `imp` is the **fitted coefficient** \\\hat{\beta}\\ at the chosen
+  \\\lambda\\. **Sign is real** (direction of local association).
+  **Magnitude depends on the predictor's units** (raw `x`, no
+  standardisation); a predictor in millimetres has a smaller
+  \\\|\hat{\beta}\|\\ than the same predictor in metres.
 
-- Lasso shrinkage can drive β̂ to **exactly zero**. Those zeros are data,
-  not missingness, and are kept in the aggregation. Convergence failures
-  land as `NA_real_` and are dropped.
+- Lasso shrinkage can drive \\\hat{\beta}\\ to **exactly zero**. Those
+  zeros are data, not missingness, and are kept in the aggregation.
+  Convergence failures land as `NA_real_` and are dropped.
 
-- The per-variable aggregate is `beta_mean = mean(|β̂|)` across the rules
-  where this variable was released. It is **not** a permutation
-  importance, **not** a split-strength importance, and **not** directly
-  comparable on the same numeric axis to
+- The per-variable aggregate is `beta_mean`,
+  \\\mathrm{mean}(\|\hat{\beta}\|)\\, across the rules where this
+  variable was released. It is **not** a permutation importance, **not**
+  a split-strength importance, and **not** directly comparable on the
+  same numeric axis to
   [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)'s
   z-scores. Disagreement with `gg_varpro` is often diagnostic, not a
   bug.
 
-In code form:
-`imp_r = β̂_glmnet(y | x_v restricted to rule r, λ chosen by use.cv / use.1se)`.
+In code form: `imp_r` is the glmnet coefficient \\\hat{\beta}\\ fit on
+`y ~ x_v` restricted to rule r, with \\\lambda\\ chosen by `use.cv` /
+`use.1se`.
 
 ## What's in the output
 
@@ -111,9 +116,9 @@ One row per released variable. Columns:
 
 - `variable`: predictor name.
 
-- `beta_mean`: mean of `|β̂|` across that variable's rules.
+- `beta_mean`: mean of \\\|\hat{\beta}\|\\ across that variable's rules.
 
-- `n_rules`: count of rules contributing (zero-β rules included; only
+- `n_rules`: count of rules contributing (zero-beta rules included; only
   `NA` failures excluded).
 
 - `selected`: `beta_mean >= cutoff`.
@@ -148,9 +153,10 @@ Provenance carries `precomputed = TRUE` when `beta_fit` was supplied.
 For a varpro classification fit (`object$family == "class"`, binary or
 multi-class), the returned frame is long-format with an extra `class`
 column: one row per (variable, class) pair. The `beta_mean` column
-aggregates the **per-class lasso β̂** stored in `beta.varpro()`'s
-`imp.<k>` columns (one per class level). Same pedantic-β semantics as
-regression, applied independently to each class.
+aggregates the **per-class lasso coefficient** \\\hat{\beta}\\ stored in
+`beta.varpro()`'s `imp.<k>` columns (one per class level). Same
+pedantic-beta semantics as regression, applied independently to each
+class.
 
 **Binary default**: `which_class = NULL` resolves to the *last* factor
 level of the response — the positive-class convention used by `glm` and

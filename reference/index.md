@@ -47,7 +47,7 @@ Assess and plot variable importance (VIMP).
   Plot a `gg_varpro` variable importance object
 
 - [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md)
-  : Per-variable lasso-β importance from a varPro fit
+  : Per-variable lasso-beta importance from a varPro fit
 
 - [`plot(`*`<gg_beta_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_varpro.md)
   :

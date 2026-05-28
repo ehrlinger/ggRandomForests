@@ -1,8 +1,14 @@
 # Changelog
 
-## ggRandomForests v3.0.0 (development) — continued
+## ggRandomForests v3.0.0
 
-- CRAN-audit cleanup ahead of the v3.0.0 release candidate: the
+- **Version jump to 3.0.0.** The varPro integration is a major scope
+  expansion plus the
+  [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  soft-deprecation, which is major-version territory. Survival /
+  multivariate varPro families, ROC confidence intervals, and hazard
+  estimates are deferred to v3.1.0.
+- CRAN-audit cleanup: the
   [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
   /
   [`plot.gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_brier.md)
@@ -16,10 +22,6 @@
   is removed (its one behaviour change: that function no longer prints a
   line per variable), and the README points to the new “varpro”
   vignette.
-- This release is renumbered to **v3.0.0** (from the working v2.8.0
-  label). The varPro integration is a major scope expansion plus a
-  soft-deprecation (`gg_partialpro`), which is major-version territory.
-  Deferred-work references move to v3.1.0.
 - Fix: importance plots now consistently put the most-important variable
   at the **top**.
   [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
@@ -237,9 +239,6 @@
     `facet_wrap(~class, nrow=1)` bar chart.
   - Set `local.std = FALSE` to allow `plot(..., type = "raw")`, which
     shows raw per-tree importance instead of the z-normalised values.
-
-## ggRandomForests v3.0.0 (development)
-
 - `gg_variable.randomForest`: classification fix
   ([\#87](https://github.com/ehrlinger/ggRandomForests/issues/87)).
   - For a classification forest,
