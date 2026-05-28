@@ -7293,7 +7293,7 @@ errors on survival fits in the current release (it only supports `regr`
 and `class`).
 [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
 for survival is similarly deferred pending design work on the per-rule
-risk-scaling story. Both are tracked for v2.9.0.
+risk-scaling story. Both are tracked for v3.1.0.
 
 If you call either on a survival fit you’ll get a clear error message
 pointing at the deferred work, not a silent miscalculation. The
@@ -7314,7 +7314,7 @@ that *does* work on survival (`gg_varpro`, `gg_partial_varpro`,
 | `gg_beta_varpro` | ✓ | ✓ | ✗ (upstream stop) | ✗ (deferred) |
 | `gg_ivarpro` | ✓ | ✓ | ✗ (deferred) | ✗ (deferred) |
 
-The four wrappers in the lower-right are the v2.9.0 work surface.
+The four wrappers in the lower-right are the v3.1.0 work surface.
 
 ### Factor-level ordering
 

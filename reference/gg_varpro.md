@@ -67,9 +67,10 @@ A named list of class `"gg_varpro"` with elements:
 
 - `$imp`:
 
-  Summary data frame: `variable` (factor with levels ordered by
-  descending median per-tree z), `z` (aggregate z-score from
-  `importance()`), `selected` (logical, `z > cutoff`).
+  Summary data frame: `variable` (factor whose levels run least- to
+  most-important by median per-tree z, so the most-important variable
+  sits at the top of the plot after `coord_flip`), `z` (aggregate
+  z-score from `importance()`), `selected` (logical, `z > cutoff`).
 
 - `$imp.tree`:
 
@@ -172,7 +173,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 gg <- gg_varpro(vp)
 print(gg)
 #> <gg_varpro>  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE
-#>   3 of 4 variables selected (z > 0.79)
+#>   2 of 4 variables selected (z > 0.79)
 plot(gg)
 
 # }

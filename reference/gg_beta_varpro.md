@@ -62,8 +62,8 @@ last-factor-level) collapses the output to a single class.
 ## Note
 
 Multivariate regression (`regr+`) and survival families are out of scope
-for this release. The unsupported-family path errors with a message
-naming Phase 4d as the tracker.
+for this release and tracked for v3.1.0. The unsupported-family path
+errors with a message pointing at that work.
 
 ## What this is doing
 

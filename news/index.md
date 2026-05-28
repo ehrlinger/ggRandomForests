@@ -1,13 +1,34 @@
 # Changelog
 
-## ggRandomForests v2.8.0 (development) — continued
+## ggRandomForests v3.0.0 (development) — continued
 
+- This release is renumbered to **v3.0.0** (from the working v2.8.0
+  label). The varPro integration is a major scope expansion plus a
+  soft-deprecation (`gg_partialpro`), which is major-version territory.
+  Deferred-work references move to v3.1.0.
+- Fix: importance plots now consistently put the most-important variable
+  at the **top**.
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
+  [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md),
+  and
+  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
+  previously built their `variable` factor with descending levels, so
+  after
+  [`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html)
+  the most-important variable landed at the bottom — inverted relative
+  to
+  [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md).
+  All three now reverse the factor levels to match the `gg_vimp`
+  convention (and the `varImpPlot` / `vip` standard). Row order and
+  [`summary()`](https://rdrr.io/r/base/summary.html) output are
+  unchanged (still most-important first). A new cross-function test pins
+  the convention.
 - New vignette: “Exploring variable importance with varPro.” Walks the
   full gg\_\* varPro layer (gg_partial_varpro, gg_varpro, gg_udependent,
   gg_isopro, gg_beta_varpro, gg_ivarpro) on three worked examples —
   regression (Boston), classification (iris binary + multi-class), and
   survival (PBC). Includes a family-support matrix documenting which
-  wrapper works for which forest family. Headline document for v2.8.0.
+  wrapper works for which forest family. Headline document for v3.0.0.
 - [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
   and
   [`plot.gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_ivarpro.md):
@@ -161,7 +182,7 @@
     present.
   - On a binary forest, `per_class = TRUE` does nothing, the usual
     single-curve result comes back unchanged.
-  - ROC confidence intervals are still to come, in v2.9.0 (issue
+  - ROC confidence intervals are still to come, in v3.1.0 (issue
     [\#7](https://github.com/ehrlinger/ggRandomForests/issues/7) /
     [\#72](https://github.com/ehrlinger/ggRandomForests/issues/72)-CIs).
 - New
@@ -203,7 +224,7 @@
   - Set `local.std = FALSE` to allow `plot(..., type = "raw")`, which
     shows raw per-tree importance instead of the z-normalised values.
 
-## ggRandomForests v2.8.0 (development)
+## ggRandomForests v3.0.0 (development)
 
 - `gg_variable.randomForest`: classification fix
   ([\#87](https://github.com/ehrlinger/ggRandomForests/issues/87)).
@@ -250,7 +271,7 @@
   - [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
     is soft-deprecated: it warns, then hands off to
     [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md).
-    It will be removed in the release after v2.8.0.
+    It will be removed in the release after v3.0.0.
 - randomForest engine validation and repair
   ([\#82](https://github.com/ehrlinger/ggRandomForests/issues/82)).
   Fixes [\#80](https://github.com/ehrlinger/ggRandomForests/issues/80),

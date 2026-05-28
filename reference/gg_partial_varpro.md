@@ -7,7 +7,7 @@ for each kind, and resolves the y-axis label the plot method will use.
 
 *Deprecated.* `gg_partialpro()` has been superseded by
 `gg_partial_varpro()` and is now a thin alias for it. It will be removed
-in the release after ggRandomForests v2.8.0; use `gg_partial_varpro()`
+in the release after ggRandomForests v3.0.0; use `gg_partial_varpro()`
 directly.
 
 ## Usage

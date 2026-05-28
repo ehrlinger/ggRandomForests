@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9015</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -7269,7 +7269,7 @@ attr(,"class")
 </section><section class="level2"><h3 id="not-available-for-survival-gg_beta_varpro-gg_ivarpro">Not available for survival: <code>gg_beta_varpro</code>, <code>gg_ivarpro</code>
 <a class="anchor" aria-label="anchor" href="#not-available-for-survival-gg_beta_varpro-gg_ivarpro"></a>
 </h3>
-<p><code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> errors on survival fits in the current release (it only supports <code>regr</code> and <code>class</code>). <code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code> for survival is similarly deferred pending design work on the per-rule risk-scaling story. Both are tracked for v2.9.0.</p>
+<p><code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> errors on survival fits in the current release (it only supports <code>regr</code> and <code>class</code>). <code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code> for survival is similarly deferred pending design work on the per-rule risk-scaling story. Both are tracked for v3.1.0.</p>
 <p>If you call either on a survival fit you’ll get a clear error message pointing at the deferred work, not a silent miscalculation. The family-support matrix in §6 records this — and the rest of the toolkit that <em>does</em> work on survival (<code>gg_varpro</code>, <code>gg_partial_varpro</code>, <code>gg_isopro</code> above; <code>gg_udependent</code> shown in §3 on the X-matrix).</p>
 </section></section><section class="section level2"><h2 id="cross-cutting-reference">Cross-cutting reference<a class="anchor" aria-label="anchor" href="#cross-cutting-reference"></a>
 </h2>
@@ -7328,7 +7328,7 @@ attr(,"class")
 </tr>
 </tbody>
 </table>
-<p>The four wrappers in the lower-right are the v2.9.0 work surface.</p>
+<p>The four wrappers in the lower-right are the v3.1.0 work surface.</p>
 </section><section class="level2"><h3 id="factor-level-ordering">Factor-level ordering<a class="anchor" aria-label="anchor" href="#factor-level-ordering"></a>
 </h3>
 <p>Across <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code> and <code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code>, the <code>variable</code> column is stored as a factor whose levels are set by descending aggregate importance (<code>mean(|imp|)</code> summed across classes for classification). The default plot inherits that ordering, so faceted views show variables in the same row order across panels. If you re-shape the frame downstream and want the order preserved, keep <code>variable</code> as a factor rather than coercing to character.</p>

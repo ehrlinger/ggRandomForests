@@ -17,7 +17,7 @@ importances."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9014</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.7.3.9015</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -134,8 +134,10 @@ median per-tree z, after the cutoff filter has been applied.
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of class <code>"gg_varpro"</code> with elements:</p><dl><dt><code>$imp</code></dt>
-<dd><p>Summary data frame: <code>variable</code> (factor with
-levels ordered by descending median per-tree z), <code>z</code> (aggregate
+<dd><p>Summary data frame: <code>variable</code> (factor whose
+levels run least- to most-important by median per-tree z, so the
+most-important variable sits at the top of the plot after
+<code>coord_flip</code>), <code>z</code> (aggregate
 z-score from <code>importance()</code>), <code>selected</code> (logical,
 <code>z &gt; cutoff</code>).</p></dd>
 
@@ -242,7 +244,7 @@ via the rule-based variable priority framework. <em>arXiv preprint</em>
 <span class="r-in"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu">gg_varpro</span><span class="op">(</span><span class="va">vp</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;gg_varpro&gt;  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3 of 4 variables selected (z &gt; 0.79)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2 of 4 variables selected (z &gt; 0.79)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gg_varpro-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
