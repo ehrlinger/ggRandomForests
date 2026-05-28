@@ -135,10 +135,6 @@ surv_partial.rfsrc <- function(rforest, var_list, npts = 25, partial.type = "sur
   )
   ###----------Partial dependency estimation, for each variable, at each time point ----
   surv.lst <- lapply(var_list, function(xvar) {
-    ## extract the key variable. Use message() (suppressible) instead of
-    ## cat() so the function plays nicely inside notebooks/Shiny/quarto.
-    message("partial plot for: ", xvar)
-
     ## determine the partial plot data
     xv <- sort(unique(rforest$xvar[, xvar]))
     xv <- unique(xv[seq(1, length(xv), length = npts)])

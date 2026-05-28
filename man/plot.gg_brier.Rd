@@ -30,7 +30,8 @@ spanning the 15th to 85th percentile of the per-subject contributions,
 which shows how much the score varies across subjects at each time.
 }
 \examples{
-\dontrun{
+\donttest{
+library(survival)   # Surv() must be on the search path for rfsrc()
 data(pbc, package = "randomForestSRC")
 rf <- randomForestSRC::rfsrc(Surv(days, status) ~ ., data = pbc,
                              nsplit = 10)

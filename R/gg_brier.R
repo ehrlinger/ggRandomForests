@@ -74,7 +74,8 @@
 #' Biometrical Journal, 48(6):1029-1040.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
+#' library(survival)   # Surv() must be on the search path for rfsrc()
 #' data(pbc, package = "randomForestSRC")
 #' rfsrc_pbc <- randomForestSRC::rfsrc(
 #'   Surv(days, status) ~ ., data = pbc, nsplit = 10
