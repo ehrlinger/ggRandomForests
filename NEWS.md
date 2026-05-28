@@ -8,9 +8,8 @@ ggRandomForests v3.0.0
   major-version territory. Survival / multivariate varPro families,
   ROC confidence intervals, and hazard estimates are deferred to
   v3.1.0.
-* CRAN-audit cleanup: the
-  `gg_brier()` / `plot.gg_brier()` examples move from `\dontrun` to
-  `\donttest` (so they execute under `R CMD check --as-cran` and on
+* CRAN-audit cleanup: the `gg_brier()` / `plot.gg_brier()` examples move
+  from `\dontrun` to `\donttest` (so they execute under `R CMD check --as-cran` and on
   CRAN; `library(survival)` added so `Surv()` resolves), the
   per-variable `message()` in the deprecated `surv_partial.rfsrc()` is
   removed (its one behaviour change: that function no longer prints a

@@ -41,8 +41,10 @@ last-factor-level) collapses the output to a single class.
 \description{
 Tidy wrapper around \code{\link[varPro:beta.varpro]{varPro::beta.varpro()}} for the regression or
 classification family.
-Aggregates the per-rule lasso coefficient (beta-hat) by variable into
-\verb{mean(|beta-hat|)} and flags variables above a scalar cutoff. Optional
+Aggregates the per-rule lasso coefficient \eqn{\hat{\beta}}{beta hat} by
+variable into the mean absolute value
+\eqn{\mathrm{mean}(|\hat{\beta}|)}{mean(|beta hat|)} and flags variables
+above a scalar cutoff. Optional
 \code{beta_fit} argument lets callers compute the expensive
 \code{beta.varpro()} step once and reuse the result.
 }
@@ -68,23 +70,30 @@ regression coefficient. Specifically:
 \itemize{
 \item Per rule, \code{glmnet} fits a one-predictor lasso of the response on
 the released variable inside the rule's OOB region. \code{use.cv = TRUE}
-selects lambda by 10-fold CV (default \code{nfolds = 10}); \code{use.1se = TRUE}
-(default) picks \code{lambda.1se}. \code{use.cv = FALSE} uses the full lambda path.
-\item \code{imp} is the \strong{fitted coefficient beta-hat} at the chosen lambda. \strong{Sign is
+selects \eqn{\lambda}{lambda} by 10-fold CV (default \code{nfolds = 10});
+\code{use.1se = TRUE} (default) picks \code{lambda.1se}. \code{use.cv = FALSE} uses the
+full \eqn{\lambda}{lambda} path.
+\item \code{imp} is the \strong{fitted coefficient} \eqn{\hat{\beta}}{beta hat} at the
+chosen \eqn{\lambda}{lambda}. \strong{Sign is
 real} (direction of local association). \strong{Magnitude depends on
 the predictor's units} (raw \code{x}, no standardisation); a predictor
-in millimetres has a smaller |beta-hat| than the same predictor in metres.
-\item Lasso shrinkage can drive beta-hat to \strong{exactly zero}. Those zeros are
+in millimetres has a smaller \eqn{|\hat{\beta}|}{|beta hat|} than the
+same predictor in metres.
+\item Lasso shrinkage can drive \eqn{\hat{\beta}}{beta hat} to \strong{exactly zero}.
+Those zeros are
 data, not missingness, and are kept in the aggregation. Convergence
 failures land as \code{NA_real_} and are dropped.
-\item The per-variable aggregate is \verb{beta_mean = mean(|beta-hat|)} across the
+\item The per-variable aggregate is \code{beta_mean},
+\eqn{\mathrm{mean}(|\hat{\beta}|)}{mean(|beta hat|)}, across the
 rules where this variable was released. It is \strong{not} a permutation
 importance, \strong{not} a split-strength importance, and \strong{not} directly
 comparable on the same numeric axis to \code{gg_varpro()}'s z-scores.
 Disagreement with \code{gg_varpro} is often diagnostic, not a bug.
 }
 
-In code form: \verb{imp_r = beta-hat_glmnet(y | x_v restricted to rule r, lambda chosen by use.cv / use.1se)}.
+In code form: \code{imp_r} is the glmnet coefficient \eqn{\hat{\beta}}{beta hat}
+fit on \code{y ~ x_v} restricted to rule r, with \eqn{\lambda}{lambda} chosen by
+\code{use.cv} / \code{use.1se}.
 }
 
 \section{What's in the output}{
@@ -92,7 +101,8 @@ In code form: \verb{imp_r = beta-hat_glmnet(y | x_v restricted to rule r, lambda
 One row per released variable. Columns:
 \itemize{
 \item \code{variable}: predictor name.
-\item \code{beta_mean}: mean of \verb{|beta-hat|} across that variable's rules.
+\item \code{beta_mean}: mean of \eqn{|\hat{\beta}|}{|beta hat|} across that
+variable's rules.
 \item \code{n_rules}: count of rules contributing (zero-beta rules included; only
 \code{NA} failures excluded).
 \item \code{selected}: \code{beta_mean >= cutoff}.
@@ -131,7 +141,8 @@ Provenance carries \code{precomputed = TRUE} when \code{beta_fit} was supplied.
 For a varpro classification fit (\code{object$family == "class"},
 binary or multi-class), the returned frame is long-format with an
 extra \code{class} column: one row per (variable, class) pair. The
-\code{beta_mean} column aggregates the \strong{per-class lasso beta-hat} stored in
+\code{beta_mean} column aggregates the \strong{per-class lasso coefficient}
+\eqn{\hat{\beta}}{beta hat} stored in
 \code{beta.varpro()}'s \verb{imp.<k>} columns (one per class level). Same
 pedantic-beta semantics as regression, applied independently to each
 class.

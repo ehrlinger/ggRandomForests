@@ -1,7 +1,9 @@
 ##=============================================================================
 #' Plot a `gg_beta_varpro` object
 #'
-#' Horizontal bar chart of `mean(|beta-hat|)` per variable, sorted descending so
+#' Horizontal bar chart of the mean absolute coefficient
+#' \eqn{\mathrm{mean}(|\hat{\beta}|)}{mean(|beta hat|)} per variable, sorted
+#' descending so
 #' the eye lands on the top variable first. Bars filled blue when above the
 #' selection cutoff, grey otherwise. Dashed red line marks the cutoff.
 #'
@@ -15,7 +17,8 @@
 #' bars are comparable up to that unit caveat.
 #'
 #' Variables above the cutoff are coloured blue and flagged `selected`;
-#' variables below are grey. Lasso shrinkage can drive a rule's beta-hat to
+#' variables below are grey. Lasso shrinkage can drive a rule's
+#' \eqn{\hat{\beta}}{beta hat} to
 #' exactly zero — those rules are kept in the average, so a variable
 #' with many shrunk-to-zero rules will sit lower in the ranking than
 #' one whose released coefficients are consistently non-zero.
