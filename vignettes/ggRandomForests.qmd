@@ -120,4 +120,4 @@ facet labels.
 * For the full varPro toolkit (release-rule importance, lasso-refined
   importance, per-observation local importance, anomaly scores, and the
   dependency graph) walked across regression, classification, and
-  survival examples, see `vignette("varpro")`.
+  survival examples, see `vignette("varpro", package = "ggRandomForests")`.

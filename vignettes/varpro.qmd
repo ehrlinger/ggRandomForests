@@ -24,6 +24,7 @@ knitr::opts_chunk$set(
   cache      = TRUE,
   cache.path = "varpro_cache/"
 )
+options(mc.cores = 1, rf.cores = 1)
 ```
 
 ```{r libs}
@@ -426,8 +427,10 @@ This contract was established in v2.7.3.9012 (PR #98).
 # Further reading
 
 The release-rule framework is laid out in @Lu2024varpro. The ensemble
-mortality scale used by survival partial dependence comes from
-@Ishwaran:2007a. Each wrapper's help page carries a "What this is
+mortality scale used by survival partial dependence is introduced in
+@Ishwaran:2007a (the Annals of Applied Statistics methods paper for
+random survival forests); the R-package side is described in
+@Ishwaran:2008. Each wrapper's help page carries a "What this is
 doing" section that goes one level deeper than this vignette.
 
 # References
