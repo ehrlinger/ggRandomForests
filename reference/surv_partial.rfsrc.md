@@ -84,7 +84,6 @@ spart <- surv_partial.rfsrc(v.obj, var_list="age", partial.type = "mort")
 #> Warning: 'surv_partial.rfsrc' is deprecated and will be removed in a future release.
 #> Use 'gg_partial_rfsrc()' instead, which returns a classed object with a
 #> dedicated plot() method.
-#> partial plot for: age
 
 ## partial effect of age on mortality
 partial.obj <- randomForestSRC::partial(v.obj,

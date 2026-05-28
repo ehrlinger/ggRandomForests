@@ -50,13 +50,17 @@ A `ggplot` object.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
+library(survival)   # Surv() must be on the search path for rfsrc()
 data(pbc, package = "randomForestSRC")
 rf <- randomForestSRC::rfsrc(Surv(days, status) ~ ., data = pbc,
                              nsplit = 10)
 gg_dta <- gg_brier(rf)
 plot(gg_dta)
+
 plot(gg_dta, type = "crps")
+
 plot(gg_dta, envelope = TRUE)   # adds 15-85% envelope
-} # }
+
+# }
 ```

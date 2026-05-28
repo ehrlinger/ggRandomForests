@@ -106,15 +106,19 @@ Biometrical Journal, 48(6):1029-1040.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
+library(survival)   # Surv() must be on the search path for rfsrc()
 data(pbc, package = "randomForestSRC")
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(days, status) ~ ., data = pbc, nsplit = 10
 )
 gg_dta <- gg_brier(rfsrc_pbc)
 plot(gg_dta)
+
 plot(gg_dta, type = "crps")
+
 plot(gg_dta, envelope = TRUE)   # overall line + 15-85% envelope
+
 
 # Multi-model comparison: stack gg_brier outputs and plot with ggplot2.
 rf2 <- randomForestSRC::rfsrc(
@@ -127,5 +131,6 @@ compare_dta <- dplyr::bind_rows(
 ggplot2::ggplot(compare_dta,
   ggplot2::aes(x = time, y = brier, colour = model)) +
   ggplot2::geom_line()
-} # }
+
+# }
 ```

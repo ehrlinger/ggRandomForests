@@ -2,6 +2,20 @@
 
 ## ggRandomForests v3.0.0 (development) — continued
 
+- CRAN-audit cleanup ahead of the v3.0.0 release candidate: the
+  [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
+  /
+  [`plot.gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_brier.md)
+  examples move from `\dontrun` to `\donttest` (so they execute under
+  `R CMD check --as-cran` and on CRAN;
+  [`library(survival)`](https://github.com/therneau/survival) added so
+  [`Surv()`](https://rdrr.io/pkg/survival/man/Surv.html) resolves), the
+  per-variable [`message()`](https://rdrr.io/r/base/message.html) in the
+  deprecated
+  [`surv_partial.rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.md)
+  is removed (its one behaviour change: that function no longer prints a
+  line per variable), and the README points to the new “varpro”
+  vignette.
 - This release is renumbered to **v3.0.0** (from the working v2.8.0
   label). The varPro integration is a major scope expansion plus a
   soft-deprecation (`gg_partialpro`), which is major-version territory.

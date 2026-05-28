@@ -68,6 +68,15 @@ For survival forests, see the package vignette:
 vignette("ggRandomForests")
 ```
 
+For variable importance with varPro — partial dependence, importance
+z-scores, beta importance, individual/local importance, and isolation
+forests — see the dedicated vignette:
+
+``` r
+
+vignette("varpro", package = "ggRandomForests")
+```
+
 ## Function reference
 
 | Function | Input | What you get |

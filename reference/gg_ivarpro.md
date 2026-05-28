@@ -76,7 +76,7 @@ unified ranking axis shared across facets / panels).
 
 Multivariate regression (`regr+`) and survival families are out of scope
 for this release. The non-regression / non-class path errors with a
-message naming Phase 4 follow-ups as the tracker.
+message naming v3.1.0 as the tracker.
 
 ## What this is doing
 
