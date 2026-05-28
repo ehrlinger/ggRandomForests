@@ -1,7 +1,9 @@
 ##=============================================================================
 #' Plot a `gg_beta_varpro` object
 #'
-#' Horizontal bar chart of `mean(|β̂|)` per variable, sorted descending so
+#' Horizontal bar chart of the mean absolute coefficient
+#' \eqn{\mathrm{mean}(|\hat{\beta}|)}{mean(|beta hat|)} per variable, sorted
+#' descending so
 #' the eye lands on the top variable first. Bars filled blue when above the
 #' selection cutoff, grey otherwise. Dashed red line marks the cutoff.
 #'
@@ -15,7 +17,8 @@
 #' bars are comparable up to that unit caveat.
 #'
 #' Variables above the cutoff are coloured blue and flagged `selected`;
-#' variables below are grey. Lasso shrinkage can drive a rule's β̂ to
+#' variables below are grey. Lasso shrinkage can drive a rule's
+#' \eqn{\hat{\beta}}{beta hat} to
 #' exactly zero — those rules are kept in the average, so a variable
 #' with many shrunk-to-zero rules will sit lower in the ranking than
 #' one whose released coefficients are consistently non-zero.
@@ -28,7 +31,7 @@
 #' @section What this tells you:
 #' Use the bar chart as a selection ranking, not as an effect-size axis.
 #' Pair it with [gg_varpro()] to see where split-strength importance and
-#' local lasso-β importance agree or disagree; disagreement is often the
+#' local lasso-beta importance agree or disagree; disagreement is often the
 #' interesting signal.
 #'
 #' @param x A `gg_beta_varpro` object from [gg_beta_varpro()].
