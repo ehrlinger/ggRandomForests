@@ -35,8 +35,8 @@
 <polyline points='98.62,531.75 98.62,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='159.99,531.75 159.99,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='221.36,531.75 221.36,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
-<rect x='159.27' y='296.78' width='0.72' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
 <rect x='69.59' y='73.00' width='90.40' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #4E8FCD;' />
+<rect x='159.27' y='296.78' width='0.72' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
 <line x1='176.64' y1='531.75' x2='176.64' y2='39.43' style='stroke-width: 1.49; stroke: #E74C3C; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
@@ -56,8 +56,8 @@
 <polyline points='318.68,531.75 318.68,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='380.05,531.75 380.05,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='441.41,531.75 441.41,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
-<rect x='380.05' y='296.78' width='0.72' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
 <rect x='380.05' y='73.00' width='90.40' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
+<rect x='380.05' y='296.78' width='0.72' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
 <line x1='484.71' y1='531.75' x2='484.71' y2='39.43' style='stroke-width: 1.49; stroke: #E74C3C; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
@@ -77,8 +77,8 @@
 <polyline points='538.73,531.75 538.73,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='600.10,531.75 600.10,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
 <polyline points='661.47,531.75 661.47,39.43 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
-<rect x='600.10' y='296.78' width='0.00' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
 <rect x='600.10' y='73.00' width='0.00' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
+<rect x='600.10' y='296.78' width='0.00' height='201.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #888888;' />
 <line x1='688.78' y1='531.75' x2='688.78' y2='39.43' style='stroke-width: 1.49; stroke: #E74C3C; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>

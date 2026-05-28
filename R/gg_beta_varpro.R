@@ -400,9 +400,10 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
     long <- long[long$class == which_class, , drop = FALSE]
   }
 
-  # Sort: class factor order, then variable factor order
+  # Sort: class factor order, then most-important-first within class. The
+  # reversed variable factor levels only drive the plot's vertical order.
   long$class <- factor(long$class, levels = class_levels)
-  long <- long[order(long$class, long$variable), , drop = FALSE]
+  long <- long[order(long$class, -as.integer(long$variable)), , drop = FALSE]
   rownames(long) <- NULL
 
   class(long) <- c("gg_beta_varpro", "data.frame")

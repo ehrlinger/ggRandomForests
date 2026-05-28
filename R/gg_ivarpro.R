@@ -368,7 +368,9 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
   long$selected <- abs(long$local_imp) >= resolved_cutoff
 
   if (!is.null(which_obs)) long <- long[long$obs == which_obs, , drop = FALSE]
-  long <- long[order(long$variable, long$obs), , drop = FALSE]
+  ## Rows stay most-important-first (obs ascending within variable); the
+  ## reversed factor levels only drive the plot's vertical order.
+  long <- long[order(-as.integer(long$variable), long$obs), , drop = FALSE]
   rownames(long) <- NULL
 
   class(long) <- c("gg_ivarpro", "data.frame")
@@ -448,7 +450,10 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
   if (!is.null(which_obs))   long <- long[long$obs   == which_obs,   , drop = FALSE]
 
   long$class <- factor(long$class, levels = cls)
-  long <- long[order(long$class, long$variable, long$obs), , drop = FALSE]
+  ## Within each class, rows stay most-important-first (obs ascending); the
+  ## reversed variable factor levels only drive the plot's vertical order.
+  long <- long[order(long$class, -as.integer(long$variable), long$obs), ,
+               drop = FALSE]
   rownames(long) <- NULL
 
   class(long) <- c("gg_ivarpro", "data.frame")

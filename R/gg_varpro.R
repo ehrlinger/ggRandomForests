@@ -313,9 +313,10 @@ gg_varpro <- function(object,
   lvl               <- rev(as.character(var_order))
   imp_df$variable   <- factor(imp_df$variable,   levels = lvl)
   stats_df$variable <- factor(stats_df$variable, levels = lvl)
-  ## Reorder rows to match factor levels (avoids row-order / level mismatch)
-  imp_df   <- imp_df[order(imp_df$variable), , drop = FALSE]
-  stats_df <- stats_df[order(stats_df$variable), , drop = FALSE]
+  ## Rows stay most-important-first (descending median z); the reversed
+  ## factor levels above only drive the plot's vertical order, not row order.
+  imp_df   <- imp_df[order(imp_df$variable,   decreasing = TRUE), , drop = FALSE]
+  stats_df <- stats_df[order(stats_df$variable, decreasing = TRUE), , drop = FALSE]
   rownames(imp_df)   <- NULL
   rownames(stats_df) <- NULL
 
