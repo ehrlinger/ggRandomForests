@@ -16,8 +16,9 @@
 #'
 #' @return A `data.frame` of class `c("gg_auct", "data.frame")` with columns
 #'   `time`, `auc`, `se`, `lower`, `upper`, `marker` (CI columns `NA` when no
-#'   bootstrap), plus an `iauc` attribute: a list with `uno`, `std`, `uno.se`,
-#'   `std.se`, `conf.level`.
+#'   bootstrap), an `iauc` attribute (a list with `uno`, `std`, `uno.se`,
+#'   `std.se`, `conf.level`), and a `provenance` attribute derived from
+#'   `object` (source, family, ntree, n).
 #'
 #' @seealso [plot.gg_auct()], [randomForestRHF::auct.rhf()]
 #'
@@ -75,5 +76,6 @@ gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL, ...) 
     conf.level = if (!is.null(boot)) boot$conf.level  else NA_real_
   )
   class(gg_dta) <- c("gg_auct", class(gg_dta))
+  gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
 }

@@ -31,3 +31,10 @@ test_that("gg_auct S3 companions work", {
   expect_true(all(c("iAUC.uno", "iAUC.std") %in% names(s)))
   expect_s3_class(autoplot(gg), "ggplot")
 })
+
+test_that("gg_auct attaches provenance from the rhf object", {
+  gg <- gg_auct(.rhf_pbc(), auct_fit = .auct_pbc_noboot())
+  prov <- attr(gg, "provenance")
+  expect_equal(prov$source, "randomForestRHF")
+  expect_equal(prov$ntree, .rhf_pbc()$ntree)
+})

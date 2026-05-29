@@ -24,8 +24,9 @@ Supply it to reuse an expensive bootstrap run.}
 \value{
 A \code{data.frame} of class \code{c("gg_auct", "data.frame")} with columns
 \code{time}, \code{auc}, \code{se}, \code{lower}, \code{upper}, \code{marker} (CI columns \code{NA} when no
-bootstrap), plus an \code{iauc} attribute: a list with \code{uno}, \code{std}, \code{uno.se},
-\code{std.se}, \code{conf.level}.
+bootstrap), an \code{iauc} attribute (a list with \code{uno}, \code{std}, \code{uno.se},
+\code{std.se}, \code{conf.level}), and a \code{provenance} attribute derived from
+\code{object} (source, family, ntree, n).
 }
 \description{
 Extracts the time-dependent AUC curve from \code{\link[randomForestRHF:auct.rhf]{randomForestRHF::auct.rhf()}}
