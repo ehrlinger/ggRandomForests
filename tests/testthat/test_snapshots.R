@@ -442,4 +442,27 @@ test_that("gg-ivarpro-class-which-obs", {
   vdiffr::expect_doppelganger("gg-ivarpro-class-which-obs", p)
 })
 
+test_that("gg-rhf-hazard", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("randomForestRHF")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  gg <- gg_rhf(.rhf_pbc())
+  vdiffr::expect_doppelganger("gg-rhf-hazard", plot(gg, idx = c(1, 5, 10)))
+})
+
+test_that("gg-rhf-chf", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("randomForestRHF")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  gg <- gg_rhf(.rhf_pbc())
+  vdiffr::expect_doppelganger("gg-rhf-chf",
+                              plot(gg, idx = c(1, 5, 10), hazard.only = FALSE))
+})
+
 } # end CI guard
