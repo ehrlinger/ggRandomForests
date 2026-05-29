@@ -18,3 +18,10 @@ test_that("plot.gg_rhf errors on idx not present", {
   gg <- gg_rhf(.rhf_pbc())
   expect_error(plot(gg, idx = -999L), "idx")
 })
+
+test_that("plot.gg_rhf warns on partially-unmatched idx but still builds", {
+  gg <- gg_rhf(.rhf_pbc())
+  expect_warning(p <- plot(gg, idx = c(1L, -999L)), "idx")
+  expect_s3_class(p, "ggplot")
+  expect_gt(nrow(ggplot2::layer_data(p)), 0)
+})

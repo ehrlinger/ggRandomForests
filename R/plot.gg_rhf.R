@@ -39,6 +39,11 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
     stop("none of the requested idx values are present in the gg_rhf id ",
          "column.", call. = FALSE)
   }
+  missing_ids <- idx[!idx %in% ids]
+  if (length(missing_ids)) {
+    warning("idx values not found in gg_rhf and will be ignored: ",
+            paste(missing_ids, collapse = ", "), call. = FALSE)
+  }
   dta <- x[x$id %in% idx, , drop = FALSE]
   dta$id <- factor(dta$id)
 
