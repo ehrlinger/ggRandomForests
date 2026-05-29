@@ -42,8 +42,13 @@ jobs:
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
 
-      # Release line: main / release / manual dispatch -> gh-pages ROOT
-      # (the published v3.x site). Never deploys from dev.
+      # The deploy target follows the ref the run is on, NOT the event type:
+      #   - any non-dev ref (main push, release, or workflow_dispatch on main)
+      #     -> gh-pages ROOT (the published v3.x site).
+      #   - the dev ref (push or workflow_dispatch on dev) -> /dev/ (next step).
+      # So a manual dispatch publishes root only when launched on a non-dev
+      # branch; dispatching on dev refreshes the /dev/ preview instead. Root is
+      # never published from dev.
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request' && github.ref != 'refs/heads/dev'
         uses: JamesIves/github-pages-deploy-action@v4.5.0
@@ -52,9 +57,9 @@ jobs:
           branch: gh-pages
           folder: docs
 
-      # Dev integration line: push/dispatch on dev -> gh-pages /dev/ preview
-      # subfolder. Browsable at <site>/dev/ without clobbering the released
-      # root site. Used to review v4.0.0 work in progress.
+      # Dev integration line: a push OR a workflow_dispatch on the dev ref
+      # -> gh-pages /dev/ preview subfolder. Browsable at <site>/dev/ without
+      # clobbering the released root site. Used to review v4.0.0 work.
       - name: Deploy dev preview to /dev/ 🔍
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/dev'
         uses: JamesIves/github-pages-deploy-action@v4.5.0
