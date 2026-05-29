@@ -10,14 +10,14 @@ Source:
 [`inst/CITATION`](https://github.com/ehrlinger/ggRandomForests/blob/dev/inst/CITATION)
 
 Ehrlinger J (2026). *ggRandomForests: Visually Exploring Random
-Forests*. R package version 3.0.0,
+Forests*. R package version 3.0.0.9000,
 <https://cran.r-project.org/package=ggRandomForests>.
 
     @Manual{,
       title = {ggRandomForests: Visually Exploring Random Forests},
       author = {John Ehrlinger},
       url = {https://cran.r-project.org/package=ggRandomForests},
-      note = {R package version 3.0.0},
+      note = {R package version 3.0.0.9000},
       date = {2020-04-26},
       year = {2026},
     }

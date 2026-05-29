@@ -1,5 +1,13 @@
 # Changelog
 
+## ggRandomForests v4.0.0 (development)
+
+- Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
+  visualization layer wrapping the ‘randomForestRHF’ package (added to
+  Suggests). RHF support is gated — every gg_rhf\* entry point checks
+  [`requireNamespace("randomForestRHF")`](https://www.randomforestsrc.org/).
+  No change for users who do not install it.
+
 ## ggRandomForests v3.0.0
 
 - **Version jump to 3.0.0.** The varPro integration is a major scope

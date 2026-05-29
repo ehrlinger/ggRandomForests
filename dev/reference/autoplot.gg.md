@@ -43,6 +43,9 @@ autoplot(object, ...)
 # S3 method for class 'gg_brier'
 autoplot(object, ...)
 
+# S3 method for class 'gg_rhf'
+autoplot(object, ...)
+
 # S3 method for class 'gg_varpro'
 autoplot(object, ...)
 
