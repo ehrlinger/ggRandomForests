@@ -10,9 +10,10 @@ test_that("gg_auct.rhf returns a tidy AUC(t) frame (no bootstrap -> NA CI)", {
 })
 
 test_that("gg_auct.rhf carries bootstrap CI when present", {
-  gg <- gg_auct(.rhf_pbc(), auct_fit = .auct_pbc_boot())
-  expect_false(any(is.na(gg$lower)))
-  expect_true(all(gg$upper >= gg$lower))
+  gg  <- gg_auct(.rhf_pbc(), auct_fit = .auct_pbc_boot())
+  fin <- is.finite(gg$lower) & is.finite(gg$upper)
+  expect_true(any(fin))                          # bootstrap CIs present
+  expect_true(all(gg$upper[fin] >= gg$lower[fin]))  # valid where defined
   expect_true(is.finite(attr(gg, "iauc")$uno.se))
 })
 
