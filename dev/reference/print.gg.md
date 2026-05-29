@@ -44,6 +44,9 @@ print(x, ...)
 # S3 method for class 'gg_rhf'
 print(x, ...)
 
+# S3 method for class 'gg_auct'
+print(x, ...)
+
 # S3 method for class 'gg_udependent'
 print(x, ...)
 

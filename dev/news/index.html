@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,7 +57,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="4.0.0" id="ggrandomforests-v400-development">ggRandomForests v4.0.0 (development)<a class="anchor" aria-label="anchor" href="#ggrandomforests-v400-development"></a></h2>
-<ul><li>Begin the v4.0.0 development line: a Random Hazard Forests (RHF) visualization layer wrapping the ‘randomForestRHF’ package (added to Suggests). RHF support is gated — every gg_rhf* entry point checks <code><a href="https://www.randomforestsrc.org/" class="external-link">requireNamespace("randomForestRHF")</a></code>. No change for users who do not install it.</li>
+<ul><li>
+<code><a href="../reference/gg_auct.html">gg_auct()</a></code> / <code><a href="../reference/plot.gg_auct.html">plot.gg_auct()</a></code>: tidy wrapper and plot for time-varying AUC from <code><a href="https://www.randomforestsrc.org//reference/auct.rhf.html" class="external-link">randomForestRHF::auct.rhf()</a></code> (RHF Phase 2). Returns a long frame <code>time / auc / se / lower / upper / marker</code> with an <code>iauc</code> attribute (Uno + standardized integrated AUC); <code><a href="../reference/plot.gg_auct.html">plot.gg_auct()</a></code> draws AUC(t) with a bootstrap CI ribbon when available and a 0.5 reference line. <code>gg_auct.rhf(object, marker, auct_fit = NULL)</code> computes <code>auct.rhf()</code> internally or reuses a cached fit.</li>
+<li>Begin the v4.0.0 development line: a Random Hazard Forests (RHF) visualization layer wrapping the ‘randomForestRHF’ package (added to Suggests). RHF support is gated — every gg_rhf* entry point checks <code><a href="https://www.randomforestsrc.org/" class="external-link">requireNamespace("randomForestRHF")</a></code>. No change for users who do not install it.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0.0" id="ggrandomforests-v300">ggRandomForests v3.0.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v300"></a></h2>

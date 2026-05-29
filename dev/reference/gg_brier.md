@@ -108,6 +108,11 @@ Biometrical Journal, 48(6):1029-1040.
 ``` r
 # \donttest{
 library(survival)   # Surv() must be on the search path for rfsrc()
+#> 
+#> Attaching package: ‘survival’
+#> The following object is masked _by_ ‘.GlobalEnv’:
+#> 
+#>     pbc
 data(pbc, package = "randomForestSRC")
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(days, status) ~ ., data = pbc, nsplit = 10

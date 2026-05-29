@@ -2,6 +2,18 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
+  /
+  [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md):
+  tidy wrapper and plot for time-varying AUC from
+  [`randomForestRHF::auct.rhf()`](https://www.randomforestsrc.org//reference/auct.rhf.html)
+  (RHF Phase 2). Returns a long frame
+  `time / auc / se / lower / upper / marker` with an `iauc` attribute
+  (Uno + standardized integrated AUC);
+  [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md)
+  draws AUC(t) with a bootstrap CI ribbon when available and a 0.5
+  reference line. `gg_auct.rhf(object, marker, auct_fit = NULL)`
+  computes `auct.rhf()` internally or reuses a cached fit.
 - Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
   visualization layer wrapping the ‘randomForestRHF’ package (added to
   Suggests). RHF support is gated — every gg_rhf\* entry point checks
