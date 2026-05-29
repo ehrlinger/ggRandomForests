@@ -20,6 +20,7 @@
 \alias{summary.gg_isopro}
 \alias{summary.gg_beta_varpro}
 \alias{summary.gg_ivarpro}
+\alias{summary.gg_auct}
 \title{Summary methods for gg_* data objects}
 \usage{
 \method{print}{summary.gg}(x, ...)
@@ -57,6 +58,8 @@
 \method{summary}{gg_beta_varpro}(object, ...)
 
 \method{summary}{gg_ivarpro}(object, ...)
+
+\method{summary}{gg_auct}(object, ...)
 }
 \arguments{
 \item{x}{A \code{summary.gg} object (for \code{print.summary.gg}).}
