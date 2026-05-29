@@ -16,6 +16,11 @@
     d <- randomForestRHF::convert.counting(
       survival::Surv(days, status) ~ ., stats::na.omit(pbc)
     )
+    # seed = -1L is randomForestRHF's documented reproducibility seed (a
+    # negative integer fixes the forest's RNG); the set.seed() guards any
+    # R-level RNG so the fixture — and the vdiffr snapshots built from it —
+    # are deterministic across sessions.
+    set.seed(20260529L)
     .rhf_cache$pbc <- randomForestRHF::rhf(
       "Surv(id, start, stop, event) ~ .", d, ntree = 30, seed = -1L
     )

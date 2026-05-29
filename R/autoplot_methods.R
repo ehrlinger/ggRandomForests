@@ -127,7 +127,7 @@ autoplot.gg_brier <- function(object, ...) {
 #' @rdname autoplot.gg
 #' @export
 autoplot.gg_rhf <- function(object, ...) {
-  plot.gg_rhf(object, ...)
+  plot(object, ...)
 }
 
 #' @rdname autoplot.gg
