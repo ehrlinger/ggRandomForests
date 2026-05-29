@@ -39,3 +39,12 @@ test_that("gg_rhf falls back to inbag when oob is absent", {
   gg <- gg_rhf(o)
   expect_equal(unique(gg$source), "inbag")
 })
+
+test_that("gg_rhf S3 companions work", {
+  gg <- gg_rhf(.rhf_pbc())
+  expect_output(print(gg), "gg_rhf")
+  expect_invisible(print(gg))
+  s <- summary(gg)
+  expect_true(is.list(s) || is.data.frame(s))
+  expect_s3_class(autoplot(gg, idx = 1), "ggplot")
+})

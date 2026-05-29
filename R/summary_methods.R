@@ -291,6 +291,17 @@ summary.gg_brier <- function(object, ...) {
 
 #' @rdname summary.gg
 #' @export
+summary.gg_rhf <- function(object, ...) {
+  agg <- stats::aggregate(
+    cbind(hazard, chf) ~ time, data = as.data.frame(object),
+    FUN = function(v) mean(v, na.rm = TRUE)
+  )
+  names(agg) <- c("time", "hazard.mean", "chf.mean")
+  agg
+}
+
+#' @rdname summary.gg
+#' @export
 summary.gg_isopro <- function(object, ...) {
   q  <- stats::quantile(object$howbad, probs = c(0.05, 0.50, 0.95),
                         na.rm = TRUE, names = FALSE)

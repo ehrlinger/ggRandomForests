@@ -13,6 +13,7 @@
 \alias{autoplot.gg_roc}
 \alias{autoplot.gg_survival}
 \alias{autoplot.gg_brier}
+\alias{autoplot.gg_rhf}
 \alias{autoplot.gg_varpro}
 \alias{autoplot.gg_udependent}
 \alias{autoplot.gg_isopro}
@@ -39,6 +40,8 @@
 \method{autoplot}{gg_survival}(object, ...)
 
 \method{autoplot}{gg_brier}(object, ...)
+
+\method{autoplot}{gg_rhf}(object, ...)
 
 \method{autoplot}{gg_varpro}(object, ...)
 

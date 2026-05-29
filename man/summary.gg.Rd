@@ -16,6 +16,7 @@
 \alias{summary.gg_varpro}
 \alias{summary.gg_udependent}
 \alias{summary.gg_brier}
+\alias{summary.gg_rhf}
 \alias{summary.gg_isopro}
 \alias{summary.gg_beta_varpro}
 \alias{summary.gg_ivarpro}
@@ -48,6 +49,8 @@
 \method{summary}{gg_udependent}(object, ...)
 
 \method{summary}{gg_brier}(object, ...)
+
+\method{summary}{gg_rhf}(object, ...)
 
 \method{summary}{gg_isopro}(object, ...)
 
