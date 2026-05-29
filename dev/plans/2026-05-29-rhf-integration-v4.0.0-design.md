@@ -1,6 +1,6 @@
 # ggRandomForests v4.0.0 — Random Hazard Forests (RHF) Integration Design
 
-**Status:** Approved (brainstorm) — 2026-05-29
+**Status:** Approved — 2026-05-29
 **Target release:** v4.0.0 (major)
 **Integration branch:** `dev` (this doc is its first artifact)
 
