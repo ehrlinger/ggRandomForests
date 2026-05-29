@@ -20,7 +20,8 @@ is absent (e.g. \code{bootstrap = "none"} has no OOB estimate).}
 }
 \value{
 A \code{data.frame} of class \code{c("gg_rhf", "data.frame")} with columns
-\code{id}, \code{time}, \code{hazard}, \code{chf}, \code{source}, and a \code{provenance} attribute.
+\code{id}, \code{time}, \code{hazard}, \code{chf}, \code{source}, an integer \code{ntime} attribute
+(number of grid points), and a \code{provenance} attribute.
 }
 \description{
 Extracts case-specific ensemble hazard and cumulative-hazard estimates from

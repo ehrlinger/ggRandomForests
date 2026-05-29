@@ -12,7 +12,8 @@
 #' @param ... Not currently used.
 #'
 #' @return A `data.frame` of class `c("gg_rhf", "data.frame")` with columns
-#'   `id`, `time`, `hazard`, `chf`, `source`, and a `provenance` attribute.
+#'   `id`, `time`, `hazard`, `chf`, `source`, an integer `ntime` attribute
+#'   (number of grid points), and a `provenance` attribute.
 #'
 #' @seealso [plot.gg_rhf()], [randomForestRHF::rhf()]
 #'
@@ -56,7 +57,7 @@ gg_rhf.rhf <- function(object, source = c("oob", "inbag"), ...) {
   }
 
   time   <- object$time.interest
-  ids    <- object$ensemble.id
+  ids    <- object$ensemble.id %||% seq_len(nrow(haz))
   n_case <- nrow(haz)
   n_time <- length(time)
 

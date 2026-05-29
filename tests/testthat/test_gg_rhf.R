@@ -17,6 +17,8 @@ test_that("gg_rhf.rhf returns a tidy long frame over time.interest", {
   expect_setequal(unique(gg$id), o$ensemble.id)
   expect_setequal(unique(gg$time), o$time.interest)
   expect_equal(unique(gg$source), "oob")
+  expect_true(all(is.finite(gg$hazard) & gg$hazard >= 0))
+  expect_true(all(is.finite(gg$chf) & gg$chf >= 0))
 })
 
 test_that("gg_rhf source='inbag' selects the inbag matrices", {
@@ -28,4 +30,12 @@ test_that("gg_rhf source='inbag' selects the inbag matrices", {
 
 test_that("gg_rhf rejects non-rhf input", {
   expect_error(gg_rhf(lm(mpg ~ wt, mtcars)), "rhf")
+})
+
+test_that("gg_rhf falls back to inbag when oob is absent", {
+  o <- .rhf_pbc()
+  o$hazard.oob <- NULL
+  o$chf.oob    <- NULL
+  gg <- gg_rhf(o)
+  expect_equal(unique(gg$source), "inbag")
 })
