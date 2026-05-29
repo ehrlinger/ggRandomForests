@@ -132,6 +132,12 @@ autoplot.gg_rhf <- function(object, ...) {
 
 #' @rdname autoplot.gg
 #' @export
+autoplot.gg_auct <- function(object, ...) {
+  plot(object, ...)
+}
+
+#' @rdname autoplot.gg
+#' @export
 autoplot.gg_varpro <- function(object, ...) {
   plot(object, ...)
 }

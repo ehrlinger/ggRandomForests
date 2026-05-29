@@ -465,4 +465,15 @@ test_that("gg-rhf-chf", {
                               plot(gg, idx = c(1, 5, 10), hazard.only = FALSE))
 })
 
+test_that("gg-auct-chf", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("randomForestRHF")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  gg <- gg_auct(.rhf_pbc(), auct_fit = .auct_pbc_boot())
+  vdiffr::expect_doppelganger("gg-auct-chf", plot(gg))
+})
+
 } # end CI guard

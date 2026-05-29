@@ -366,3 +366,16 @@ summary.gg_ivarpro <- function(object, ...) {
     structure(per_var(object), class = "summary.gg_ivarpro")
   }
 }
+
+#' @rdname summary.gg
+#' @export
+summary.gg_auct <- function(object, ...) {
+  iauc <- attr(object, "iauc")
+  data.frame(
+    iAUC.uno    = iauc$uno,
+    iAUC.std    = iauc$std,
+    iAUC.uno.se = iauc$uno.se,
+    iAUC.std.se = iauc$std.se,
+    conf.level  = iauc$conf.level
+  )
+}

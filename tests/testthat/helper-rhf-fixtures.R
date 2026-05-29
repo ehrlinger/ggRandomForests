@@ -27,3 +27,23 @@
   }
   .rhf_cache$pbc
 }
+
+# auct.rhf on the pbc fit — with bootstrap (CI ribbon) and without (NA CI).
+.auct_pbc_boot <- function() {
+  if (is.null(.rhf_cache$auct_boot)) {
+    o <- .rhf_pbc()
+    set.seed(20260529L)
+    .rhf_cache$auct_boot <- randomForestRHF::auct.rhf(
+      o, marker = "chf", bootstrap.rep = 20L
+    )
+  }
+  .rhf_cache$auct_boot
+}
+
+.auct_pbc_noboot <- function() {
+  if (is.null(.rhf_cache$auct_noboot)) {
+    o <- .rhf_pbc()
+    .rhf_cache$auct_noboot <- randomForestRHF::auct.rhf(o, marker = "chf")
+  }
+  .rhf_cache$auct_noboot
+}

@@ -101,7 +101,7 @@ the data-model work is woven into Phase 1 and finalized in the vignette.
   Returns a single `ggplot`/`patchwork`.
 
 ### `gg_auct` (Phase 2)
-- **Input:** `auct.rhf` object.
+- **Input:** fitted `rhf` object; `gg_auct.rhf(object, marker, auct_fit = NULL)` computes `auct.rhf()` internally or reuses a cached `auct_fit` (the `gg_beta_varpro(beta_fit=)` idiom).
 - **Tidy frame:** `time, auc, se, lower, upper, marker` (CI columns `NA`
   when no bootstrap). iAUC (`iAUC.uno`, `iAUC.std`, SEs) as a provenance
   attr.

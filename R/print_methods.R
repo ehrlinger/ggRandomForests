@@ -173,6 +173,18 @@ print.gg_rhf <- function(x, ...) {
 
 #' @rdname print.gg
 #' @export
+print.gg_auct <- function(x, ...) {
+  iauc <- attr(x, "iauc")
+  cat(.gg_header(x, "gg_auct"),
+      sprintf("  |  times: %d  marker: %s  iAUC(Uno): %.3f",
+              nrow(x), x$marker[1],
+              if (!is.null(iauc)) iauc$uno else NA_real_),
+      "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
 print.gg_udependent <- function(x, ...) {
   prov <- attr(x, "provenance")
   n    <- if (!is.null(prov)) prov$n else "?"
