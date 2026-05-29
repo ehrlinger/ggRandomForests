@@ -39,13 +39,6 @@ gg_auct <- function(object, ...) {
 
 #' @rdname gg_auct
 #' @export
-gg_auct.default <- function(object, ...) {
-  stop("gg_auct() only works on 'rhf' objects from randomForestRHF.",
-       call. = FALSE)
-}
-
-#' @rdname gg_auct
-#' @export
 gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL, ...) {
   marker <- match.arg(marker)
 

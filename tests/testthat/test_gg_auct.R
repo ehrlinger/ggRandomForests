@@ -18,6 +18,6 @@ test_that("gg_auct.rhf carries bootstrap CI when present", {
 })
 
 test_that("gg_auct rejects non-rhf input and bad auct_fit", {
-  expect_error(gg_auct(lm(mpg ~ wt, mtcars)), "rhf")
+  expect_error(gg_auct(lm(mpg ~ wt, mtcars)))
   expect_error(gg_auct(.rhf_pbc(), auct_fit = list(1)), "auct.rhf")
 })
