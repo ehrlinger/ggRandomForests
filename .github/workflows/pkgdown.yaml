@@ -2,7 +2,7 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   pull_request:
   release:
     types: [published]
@@ -42,10 +42,24 @@ jobs:
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
 
+      # Release line: main / release / manual dispatch -> gh-pages ROOT
+      # (the published v3.x site). Never deploys from dev.
       - name: Deploy to GitHub pages 🚀
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && github.ref != 'refs/heads/dev'
         uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
           clean: false
           branch: gh-pages
           folder: docs
+
+      # Dev integration line: push/dispatch on dev -> gh-pages /dev/ preview
+      # subfolder. Browsable at <site>/dev/ without clobbering the released
+      # root site. Used to review v4.0.0 work in progress.
+      - name: Deploy dev preview to /dev/ 🔍
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/dev'
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs
+          target-folder: dev
