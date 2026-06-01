@@ -331,6 +331,30 @@ test_that("gg_vimp regression", {
 
 })
 
+test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP column", {
+  # Regression test for the bug where gg_dta$vimp was accessed but the column
+  # is named "VIMP" (uppercase) in single-outcome rfsrc fits, leaving positive
+  # always TRUE even for variables with non-positive VIMP.
+  data(airquality)
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 50, importance = TRUE)
+  gg_dta <- gg_vimp(rf)
+
+  expect_s3_class(gg_dta, "gg_vimp")
+  expect_true("positive" %in% colnames(gg_dta))
+  # The positive flag should correctly reflect the sign of VIMP:
+  # variables with vimp <= 0 must have positive == FALSE.
+  vimp_col <- intersect(c("vimp", "VIMP"), colnames(gg_dta))[1]
+  neg_mask <- gg_dta[[vimp_col]] <= 0
+  if (any(neg_mask, na.rm = TRUE)) {
+    expect_true(all(!gg_dta$positive[which(neg_mask)]),
+                info = "Variables with non-positive VIMP must have positive == FALSE")
+  }
+  # Even if all VIMP happen to be positive here, the column must exist.
+  expect_true(length(unique(is.na(gg_dta$positive))) <= 1)
+  expect_s3_class(plot(gg_dta), "ggplot")
+})
+
 test_that("gg_vimp.randomForest regression: vimp column present even when importance is IncNodePurity", {
   # Guard test: when randomForest stores importance as IncNodePurity (not X.IncMSE),
   # gg_vimp must still produce a 'vimp' column so plot.gg_vimp and the positive

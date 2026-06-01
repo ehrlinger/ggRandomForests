@@ -622,11 +622,12 @@ error is upweighted by the inverse probability of being uncensored at that time,
 so the estimate remains unbiased even under heavy censoring [@graf:1999].
 
 Two reference values help interpret the curve. A Brier score of 0 is perfect
-prediction. A score around 0.25 is what you get from the naive model that
-assigns equal survival probability to everyone (the marginal Kaplan--Meier
-curve). A forest that beats 0.25 is doing better than the no-covariate
-baseline; one that exceeds it has been made worse by its covariates, which is a
-sign of overfitting or a poorly specified model.
+prediction. A score around 0.25 is the uninformative ceiling: a model that
+assigns every subject a survival probability of 0.5, regardless of their
+covariates or the time horizon, scores near 0.25 by construction. A forest
+that beats 0.25 is doing better than that floor; one that exceeds it has been
+made worse by its covariates, which is a sign of overfitting or a poorly
+specified model.
 
 `gg_brier()` wraps `randomForestSRC::get.brier.survival()` and returns a tidy
 data frame ready to plot.
@@ -654,8 +655,8 @@ The running CRPS (continuous ranked probability score) is the Brier score
 integrated over time and divided by elapsed time — the time-average of the
 curve above. It collapses the whole trajectory into one running number, which
 is handy when you want a single calibration figure rather than a curve to read.
-Like the Brier score, a CRPS near 0 is good and a value near 0.25 matches the
-marginal KM baseline. The final (integrated) value at the right edge of the
+Like the Brier score, a CRPS near 0 is good and a value near 0.25 is the
+uninformative ceiling (the same constant-predictor reference as above). The final (integrated) value at the right edge of the
 plot is the one most often reported.
 
 ```{r brier-crps, fig.width=7, fig.height=3.5, fig.cap="Running CRPS for the PBC survival forest."}

@@ -317,8 +317,13 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
 
   # Flag variables with non-positive VIMP so the plot can colour them
   # differently to indicate they do not improve (or actively hurt) predictions.
+  # Use the actual VIMP column name: "vimp" after a multi-outcome pivot,
+  # "VIMP" (uppercase) for single-outcome fits.
+  vimp_col <- intersect(c("vimp", "VIMP"), colnames(gg_dta))[1]
   gg_dta$positive <- TRUE
-  gg_dta$positive[which(gg_dta$vimp <= 0)] <- FALSE
+  if (!is.na(vimp_col)) {
+    gg_dta$positive[which(gg_dta[[vimp_col]] <= 0)] <- FALSE
+  }
 
   class(gg_dta) <- c("gg_vimp", class(gg_dta))
   gg_dta <- .set_provenance(gg_dta, object)
