@@ -88,8 +88,6 @@ gg_partial <- function(part_dta,
 
     } else {
       ## ---- Categorical variable: few unique x values -------------------
-      ## VarPro works with logical or continuous only; factors are
-      ## one-hot encoded internally in the varPro call.
       ## Normalize to character so bind_rows sees a consistent type; we'll
       ## re-factor within each feature after stacking.
       x_chr <- as.character(x_vals)
