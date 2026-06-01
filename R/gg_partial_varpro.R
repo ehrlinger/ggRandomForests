@@ -128,6 +128,7 @@
 #' \bold{2}(3), 841--860. \doi{10.1214/08-AOAS169}.
 #'
 #' @seealso \code{\link{plot.gg_partial_varpro}},
+#'   \code{\link{gg_varpro}}, \code{\link{gg_vimp}},
 #'   \code{\link{gg_partialpro}} (deprecated),
 #'   \code{\link{gg_partial_rfsrc}}, \code{\link{varpro_feature_names}}
 #'

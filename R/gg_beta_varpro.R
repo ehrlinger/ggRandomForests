@@ -11,11 +11,22 @@
 #' `beta.varpro()` step once and reuse the result.
 #'
 #' @section What this is doing:
-#' For each rule (a tree-branch pair) in the forest, [varPro::beta.varpro()]
-#' fits a one-predictor lasso regression of the response on the released
-#' variable's values, restricted to the OOB observations inside the rule's
-#' region. The wrapper aggregates those per-rule coefficients into one
-#' number per variable.
+#' Think of the varPro release-rule mechanism as asking: "given a region of
+#' the feature space that the forest carved out, what changes when I remove
+#' the constraint on this one variable and let observations leave?" The
+#' standard importance answer (from [gg_varpro()]) measures that change as a
+#' z-scored contrast between local estimators — no synthetic data, no
+#' permutation. \code{beta.varpro()} asks the same question with a different
+#' ruler: for each rule (a tree-branch pair), it fits a one-predictor lasso
+#' regression of the response on the released variable's values, restricted
+#' to the OOB observations inside the rule's region. The wrapper aggregates
+#' those per-rule coefficients into one number per variable.
+#'
+#' The key distinction from [gg_vimp()], which measures Breiman-Cutler
+#' permutation importance by perturbing a variable's values and watching OOB
+#' error climb, is that neither [gg_varpro()] nor \code{gg_beta_varpro()}
+#' touches the data synthetically: all contrasts are between real subsets
+#' defined by the forest's rules.
 #'
 #' @section What `imp` actually is (pedantic, because the column name is misleading):
 #' The `imp` column on `beta.varpro()`'s `$results` is **not** a
@@ -153,7 +164,7 @@
 #'   the same row order. `which_class` (or the binary default
 #'   last-factor-level) collapses the output to a single class.
 #'
-#' @seealso [gg_varpro()], [plot.gg_beta_varpro()], [varPro::beta.varpro()].
+#' @seealso [gg_varpro()], [gg_vimp()], [plot.gg_beta_varpro()], [varPro::beta.varpro()].
 #'
 #' @examples
 #' \donttest{
