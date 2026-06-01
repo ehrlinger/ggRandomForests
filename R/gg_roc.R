@@ -56,7 +56,7 @@
 #'   \describe{
 #'     \item{sens}{Sensitivity (true positive rate) at the threshold.}
 #'     \item{spec}{Specificity (true negative rate) at the threshold.}
-#'     \item{yvar}{The observed class label for each observation.}
+#'     \item{pct}{The probability threshold used for that row.}
 #'   }
 #'   Pass it to \code{\link{calc_auc}} for the area under the curve.
 #'
