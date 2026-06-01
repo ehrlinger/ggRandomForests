@@ -1,6 +1,17 @@
 Package: ggRandomForests
 Version: 3.0.0
 
+ggRandomForests v3.1.0 (development)
+====================================
+* Documentation pass. Deepened the varPro-family and rfsrc
+  importance/partial/survival help pages against the upstream
+  randomForestSRC and varPro documentation, and made the line between
+  `gg_vimp()` (permutation, Breiman-Cutler importance) and `gg_varpro()`
+  (varPro release-rule importance) explicit and cross-linked. Vignette
+  prose deepened with the same framing; one-line code-comment fixes;
+  fixed a stale `@return` in `gg_roc()` (documented a `yvar` column the
+  function does not return). No user-facing behaviour change.
+
 ggRandomForests v3.0.0
 ======================
 * **Version jump to 3.0.0.** The varPro integration is a major scope
