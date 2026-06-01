@@ -14,11 +14,21 @@
 ####**********************************************************************
 #' Predicted response plot from a \code{\link{gg_rfsrc}} object.
 #'
-#' Plot the predicted response from a \code{\link{gg_rfsrc}} object, the
-#' \code{\link[randomForestSRC]{rfsrc}} prediction, using the OOB prediction
-#' from the forest.  The plot type adapts automatically to the forest family:
-#' jitter + boxplot for regression and classification, step curves for
-#' survival.
+#' Visualizes the ensemble predictions extracted by \code{\link{gg_rfsrc}}.
+#' By default those are out-of-bag (OOB) predictions -- the forest's built-in
+#' cross-validation estimate, averaging only over the trees that left a given
+#' observation out of their bootstrap sample.
+#'
+#' The geometry adapts to the forest family.  For regression or
+#' classification, you get a jitter-and-boxplot: every observation is a dot
+#' placed at its OOB predicted value, coloured by observed response, with a
+#' notched boxplot overlaid to show the central tendency and spread.  For a
+#' survival forest, each observation contributes one ensemble survival curve
+#' (or CHF / mortality, whichever \code{surv_type} was chosen in
+#' \code{gg_rfsrc}); the bundle of step functions shows the spread of
+#' predicted risk across the cohort.  Pass \code{by} to \code{gg_rfsrc}
+#' beforehand to colour curves by a predictor group, or \code{conf.int} to
+#' replace the individual curves with a mean curve and bootstrap ribbon.
 #'
 #' @param x A \code{\link{gg_rfsrc}} object, or a raw
 #'   \code{\link[randomForestSRC]{rfsrc}} object (which will be passed through

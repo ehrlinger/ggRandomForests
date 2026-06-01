@@ -17,21 +17,27 @@ and categorical variables are present the two panels are combined
 vertically via \code{patchwork::wrap_plots()}.
 }
 \description{
-Produces ggplot2 partial dependence curves from the named list returned by
-\code{\link{gg_partial_rfsrc}}.
+Renders the partial dependence curves from \code{\link{gg_partial_rfsrc}}
+as a ggplot2 figure.  The layout adapts automatically to what the object
+contains.
 }
 \details{
-For standard (non-survival) forests: continuous predictors are line plots,
-categorical predictors are bar charts, both faceted by variable name.
+For a standard regression or classification forest, continuous predictors
+are drawn as line plots and categorical predictors as bar charts, both
+faceted by variable name -- the same arrangement as
+\code{\link{plot.gg_partial}}.
 
-For survival forests (when a \code{time} column is present): each evaluation
-time point is a separate curve over the predictor's value, faceted by
-variable name. The y-axis label adapts to the \code{partial.type} stored on
-the object (\dQuote{Predicted Survival}, \dQuote{Predicted CHF}, or
-\dQuote{Predicted Mortality}).
+For a survival forest, each call to \code{partial.rfsrc} returns a predicted
+quantity (survival probability, cumulative hazard function, or mortality) at
+one or more chosen time horizons.  When a \code{time} column is present in
+the data, each horizon becomes a separate coloured curve over the predictor's
+value, still faceted by variable.  The y-axis label (\dQuote{Predicted
+Survival}, \dQuote{Predicted CHF}, or \dQuote{Predicted Mortality}) tracks
+the \code{partial.type} attribute set by \code{gg_partial_rfsrc()}.
 
-For two-variable surface plots (when a \code{grp} column is present):
-each group level is a separate line, faceted by primary predictor name.
+For a two-variable interaction surface (when \code{xvar2.name} was supplied
+to \code{gg_partial_rfsrc}), the secondary variable's levels become
+separate coloured lines, faceted by the primary predictor.
 }
 \examples{
 ## ------------------------------------------------------------

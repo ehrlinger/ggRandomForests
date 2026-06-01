@@ -14,16 +14,29 @@
 #'
 #' Nonparametric survival estimates.
 #'
-#' @details \code{gg_survival} is an S3 generic for generating nonparametric
-#' survival estimates.  It dispatches on the class of its first argument:
+#' @details
+#' In our practice, comparing the forest's ensemble survival curve to the
+#' marginal Kaplan-Meier baseline is a quick sanity check: if they diverge
+#' drastically the forest has found real structure; if they track each other
+#' you may want to revisit the predictor set.  \code{gg_survival} computes
+#' the nonparametric baseline -- the Kaplan-Meier or Nelson-Aalen estimate --
+#' so you can place it on the same canvas as the forest predictions from
+#' \code{\link{gg_rfsrc}}.
+#'
+#' \code{gg_survival} is an S3 generic that dispatches on the class of its
+#' first argument:
 #'
 #' \describe{
-#'   \item{\code{rfsrc}}{Extracts the response data from the fitted forest and
-#'     delegates to \code{\link{kaplan}}.  Use the \code{by} argument to
-#'     stratify on a predictor stored in the model's \code{xvar} slot.}
-#'   \item{default}{Accepts raw survival data columns via the \code{interval},
-#'     \code{censor}, \code{by}, and \code{data} arguments, delegating to
-#'     either \code{\link{kaplan}} (default) or \code{\link{nelson}}.}
+#'   \item{\code{rfsrc}}{Extracts the outcome columns from the fitted
+#'     forest's \code{$yvar} slot (time in column 1, event indicator in
+#'     column 2) and delegates to \code{\link{kaplan}}.  Use \code{by} to
+#'     stratify on a predictor from \code{$xvar}: you get one
+#'     Kaplan-Meier curve per group, ready to compare against the forest's
+#'     group-specific ensemble curves.}
+#'   \item{default}{Accepts raw survival columns directly via
+#'     \code{interval}, \code{censor}, and \code{data}.  Delegates to
+#'     \code{\link{kaplan}} (the default) or \code{\link{nelson}} depending
+#'     on \code{type}.}
 #' }
 #'
 #' @param object For the \code{rfsrc} method: a fitted

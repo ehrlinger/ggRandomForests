@@ -27,11 +27,24 @@ as a factor, for low-cardinality / categorical variables}
 }
 }
 \description{
-Takes the list returned by \code{rfsrc::plot.variable(partial = TRUE)} and
-separates the variables into two data frames: one for continuous predictors
-and one for categorical (factor-like) predictors.  The split is controlled
-by \code{cat_limit}: variables with more unique x-values than this threshold
-are treated as continuous; all others are categorical.
+A partial dependence curve answers a what-if question about a forest: hold
+every other predictor at its observed value, sweep one of them across its
+range, and watch how the ensemble prediction moves.  Marginalized over the
+joint distribution of the other variables, the resulting curve isolates the
+average effect of the swept predictor alone.
+}
+\details{
+\code{gg_partial} handles the bookkeeping step after you've already called
+\code{rfsrc::plot.variable(partial = TRUE)}: it takes the list that function
+returns and separates the variables into two tidy data frames -- one for
+continuous predictors (plotted as lines) and one for categorical predictors
+(plotted as bar charts).  The split is controlled by \code{cat_limit}:
+variables with more unique x-values than this threshold are treated as
+continuous; all others are categorical.
+
+If you'd rather skip the \code{plot.variable} step and pass the fitted
+forest directly, see \code{\link{gg_partial_rfsrc}}, which calls
+\code{partial.rfsrc} for you.
 }
 \note{
 Partial-dependence extraction is \code{randomForestSRC}-only;

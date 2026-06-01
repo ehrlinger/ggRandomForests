@@ -15,6 +15,19 @@
 #' Plot a \code{\link{gg_vimp}} object, extracted variable importance of a
 #' \code{\link[randomForestSRC]{rfsrc}} object
 #'
+#' Draws a horizontal bar chart of the VIMP scores extracted by
+#' \code{\link{gg_vimp}}.  Each bar represents one predictor; bar length is
+#' proportional to its permutation VIMP -- the average rise in OOB prediction
+#' error when that predictor's OOB values are randomly shuffled.  Predictors
+#' are sorted in descending order of importance so the most influential
+#' variables appear at the top.
+#'
+#' Bars are coloured by the \code{positive} flag: a bar that crosses zero
+#' (negative VIMP) is colour-coded differently to flag predictors that
+#' \emph{hurt} OOB accuracy when their signal is removed -- usually a sign of
+#' collinearity or a very noisy variable.  In a well-behaved forest most bars
+#' are positive; the colour distinction matters when a handful are not.
+#'
 #' @param x \code{\link{gg_vimp}} object created from a
 #' \code{\link[randomForestSRC]{rfsrc}} object
 #' @param relative should we plot vimp or relative vimp. Defaults to vimp.

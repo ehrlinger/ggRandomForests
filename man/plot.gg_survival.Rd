@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.gg_survival.R
 \name{plot.gg_survival}
 \alias{plot.gg_survival}
-\title{Plot a \code{\link{gg_survival}}  object.}
+\title{Plot a \code{\link{gg_survival}} object.}
 \usage{
 \method{plot}{gg_survival}(
   x,
@@ -33,7 +33,19 @@ Confidence shading, bars, or lines are added when the input object carries
 confidence-interval columns.
 }
 \description{
-Plot a \code{\link{gg_survival}}  object.
+Draws a Kaplan-Meier (or Nelson-Aalen) survival curve from a
+\code{\link{gg_survival}} object.  You can overlay a confidence envelope
+around the curve using \code{error}: \code{"shade"} fills the area between
+the pointwise confidence limits, \code{"lines"} draws them as dashed step
+functions, and \code{"bars"} shows them as error bars.  When \code{gg_survival}
+was called with a \code{by} argument, each group gets its own step function
+and the \code{label} argument renames the legend.
+}
+\details{
+The \code{type} argument selects which quantity to plot on the y-axis --
+survival probability (\code{"surv"}) is the default, but cumulative hazard,
+density, and several transformed scales are available for the cases where a
+linear scale reveals more about the tails.
 }
 \examples{
 ## -------- pbc data

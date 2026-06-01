@@ -1,15 +1,26 @@
 ##=============================================================================
 #' Partial dependence data from an rfsrc model
 #'
-#' A partial dependence curve answers a what-if question: hold the rest of
-#' the predictors as they are, sweep one of them across its range, and watch
-#' how the forest's prediction moves.  This function builds those curves for
-#' one or more predictors by calling
-#' \code{\link[randomForestSRC]{partial.rfsrc}} for you, then splits the
-#' result into separate data frames for continuous and categorical
-#' variables.  Unlike \code{\link{gg_partial}}, there is no separate
-#' \code{plot.variable} step -- pass the fitted \code{rfsrc} object straight
-#' in.
+#' A partial dependence curve marginalizes the forest's prediction over all
+#' other predictors: for each evaluation point of the target variable, the
+#' forest scores every training observation with that value substituted in,
+#' then averages the result.  What you get is the average effect of the target
+#' variable after "integrating out" the rest -- a curve that would be flat if
+#' the variable carried no signal.
+#'
+#' This function builds those curves for one or more predictors by calling
+#' \code{\link[randomForestSRC]{partial.rfsrc}} and then tidy-stacking the
+#' results into separate data frames for continuous and categorical variables.
+#' Unlike \code{\link{gg_partial}} (which wraps \code{plot.variable}), you
+#' pass the fitted \code{rfsrc} object directly -- no intermediate
+#' \code{plot.variable} step.
+#'
+#' For survival forests, the marginalized quantity depends on
+#' \code{partial.type}: survival probability (\code{"surv"}), cumulative
+#' hazard function (\code{"chf"}), or expected mortality (\code{"mort"}).
+#' You can request the curve at one or more time horizons via
+#' \code{partial.time}; the resulting data have a \code{time} column so the
+#' plot layers them as separate coloured lines.
 #'
 #' @section Survival forests and \code{partial.time}:
 #' \code{\link[randomForestSRC]{partial.rfsrc}} expects every value in
