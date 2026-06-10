@@ -1,11 +1,12 @@
 ## v3.1.0 — varPro integration + bug fix (major release)
 
-This is a major release following v2.7.3 (current on CRAN). The v3.0.0
-development cycle was never submitted to CRAN, so this submission jumps
-from v2.7.3 to v3.1.0 and carries the full v3.0.0 feature layer plus the
-v3.1.0 fixes and documentation work. The version is in 3.x territory
-because it adds a substantial new feature layer and soft-deprecates one
-user-facing function.
+This is a major release. v2.7.3 is the version currently published on
+CRAN. A v3.0.0 submission did not complete the review cycle, so this
+v3.1.0 release supersedes it: the submission moves CRAN from v2.7.3 to
+v3.1.0 and carries the full v3.0.0 feature layer plus the v3.1.0 bug fix
+and documentation work. The version is in 3.x territory because it adds a
+substantial new feature layer and soft-deprecates one user-facing
+function.
 
 ### Changes in v3.1.0
 
