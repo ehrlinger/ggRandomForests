@@ -15,7 +15,7 @@ plot.gg_udependent can draw as a network."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -147,8 +147,8 @@ the unsupervised setting: grow a forest without a response, then use
 the same region-release contrasts varpro uses for supervised
 importance to ask, "which variables explain the structure in the
 data?" The lasso-driven variant frames each region-release contrast
-as a classification task — does an observation belong to the region
-or to its release? — and fits a lasso logistic regression with the
+as a classification task (does an observation belong to the region
+or to its release?) and fits a lasso logistic regression with the
 other variables as predictors. The coefficient on variable \(j\)
 in the model for variable \(i\)'s region-release contrast is the
 entry \(I[i, j]\) of the matrix <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code>
@@ -157,7 +157,7 @@ returns.</p>
 \(i\)'s region from its release". A large \(I[i, j]\) says
 \(j\) carries information about the structure varpro picked up in
 \(i\). <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent</a></code> thresholds that matrix at a
-user-chosen cut and returns the set of "signal" variables — the
+user-chosen cut and returns the set of "signal" variables: the
 nodes with high enough out-degree to be worth keeping. We pass the
 threshold through to <code>sdependent</code> and use the same matrix to
 weight the edges of the resulting graph.</p>
@@ -187,7 +187,7 @@ without recomputing anything.</p>
 
 
 <ul><li><p>screen a wide unsupervised dataset for the small set of
-variables UVarPro thinks are carrying the signal — the nodes
+variables UVarPro thinks are carrying the signal: the nodes
 with high degree, or those flagged <code>selected = TRUE</code>;</p></li>
 <li><p>spot clusters of mutually dependent variables (hubs and the
 spokes around them) that may be measuring the same underlying
@@ -195,7 +195,7 @@ construct;</p></li>
 <li><p>compare two datasets, or two preprocessing pipelines, by
 looking at how their dependency graphs change.</p></li>
 </ul><p>An edge in this graph is a statistical dependency in the unsupervised
-decomposition of the data — it is not a causal arrow. A high
+decomposition of the data. It is not a causal arrow. A high
 \(I[i, j]\) says \(j\) predicts \(i\)'s region membership,
 not that \(j\) causes \(i\).</p>
     </div>

@@ -1,5 +1,28 @@
 # Changelog
 
+## ggRandomForests v3.1.0
+
+- Fix:
+  [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+  for single-outcome rfsrc forests now correctly flags variables with
+  non-positive VIMP in the `positive` column (affecting plot coloring).
+  The column was named `VIMP` (uppercase) in single-outcome fits but the
+  flag check accessed `$vimp` (lowercase), leaving `positive` stuck at
+  `TRUE` for all variables. Surfaced by the Copilot review on PR
+  [\#109](https://github.com/ehrlinger/ggRandomForests/issues/109).
+- Documentation pass. Deepened the varPro-family and rfsrc
+  importance/partial/survival help pages against the upstream
+  randomForestSRC and varPro documentation, and made the line between
+  [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+  (permutation, Breiman-Cutler importance) and
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  (varPro release-rule importance) explicit and cross-linked. Vignette
+  prose deepened with the same framing; one-line code-comment fixes;
+  fixed a stale `@return` in
+  [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  (documented a `yvar` column the function does not return). No
+  user-facing behaviour change.
+
 ## ggRandomForests v3.0.0
 
 - **Version jump to 3.0.0.** The varPro integration is a major scope

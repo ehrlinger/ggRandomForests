@@ -1,8 +1,9 @@
 # Plot a [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md) object
 
-Produces ggplot2 partial dependence curves from the named list returned
-by
-[`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md).
+Renders the partial dependence curves from
+[`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+as a ggplot2 figure. The layout adapts automatically to what the object
+contains.
 
 ## Usage
 
@@ -31,18 +32,23 @@ variables are present the two panels are combined vertically via
 
 ## Details
 
-For standard (non-survival) forests: continuous predictors are line
-plots, categorical predictors are bar charts, both faceted by variable
-name.
+For a standard regression or classification forest, continuous
+predictors are drawn as line plots and categorical predictors as bar
+charts, both faceted by variable name – the same arrangement as
+[`plot.gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md).
 
-For survival forests (when a `time` column is present): each evaluation
-time point is a separate curve over the predictor's value, faceted by
-variable name. The y-axis label adapts to the `partial.type` stored on
-the object (“Predicted Survival”, “Predicted CHF”, or “Predicted
-Mortality”).
+For a survival forest, each call to `partial.rfsrc` returns a predicted
+quantity (survival probability, cumulative hazard function, or
+mortality) at one or more chosen time horizons. When a `time` column is
+present in the data, each horizon becomes a separate coloured curve over
+the predictor's value, still faceted by variable. The y-axis label
+(“Predicted Survival”, “Predicted CHF”, or “Predicted Mortality”) tracks
+the `partial.type` attribute set by
+[`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md).
 
-For two-variable surface plots (when a `grp` column is present): each
-group level is a separate line, faceted by primary predictor name.
+For a two-variable interaction surface (when `xvar2.name` was supplied
+to `gg_partial_rfsrc`), the secondary variable's levels become separate
+coloured lines, faceted by the primary predictor.
 
 ## See also
 

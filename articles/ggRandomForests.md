@@ -5,9 +5,12 @@ usually means digging through list structures that were never meant to
 be plotted directly. **ggRandomForests** does that digging for you: it
 pulls tidy data objects out of a `randomForestSRC` or `randomForest`
 fit, and those objects drop straight into the `ggplot2` workflows you
-already know. This vignette walks through the three objects you will
-reach for most often (`gg_error`, `gg_variable`, and `gg_vimp`), plus a
-small helper for cutting a predictor into evenly populated groups.
+already know. A second engine, `varPro`, powers a parallel family of
+functions for release-rule importance and related diagnostics; that
+family is covered in the companion vignette referenced at the end. This
+vignette walks through the three objects you will reach for most often
+(`gg_error`, `gg_variable`, and `gg_vimp`), plus a small helper for
+cutting a predictor into evenly populated groups.
 
 ## Error trajectories with `gg_error()`
 
@@ -98,8 +101,12 @@ plot(vimp_df)
 
 ![](ggRandomForests_files/figure-html/vimp-demo-1.png)
 
-Variable importance is not always stored on the fitted object. If a
-`randomForest` fit is missing its importance scores,
+[`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+measures permutation importance: each predictor is permuted in turn, and
+the drop in OOB accuracy gives its score. This contrasts with the
+`gg_varpro` family, which uses release-rule importance from the `varPro`
+engine. Variable importance is not always stored on the fitted object.
+If a `randomForest` fit is missing its importance scores,
 [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
 will try to compute them for you. When even that is not possible (the
 forest was grown with `importance = FALSE` and the predictors are no

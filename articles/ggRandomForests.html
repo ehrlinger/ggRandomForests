@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@
       <h1>Exploring Random Forests with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-05-28</p>
+      <p class="date">2026-06-10</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests.qmd" class="external-link"><code>vignettes/ggRandomForests.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -93,7 +93,7 @@
 
 
 
-    <p>A fitted random forest carries a lot of information, but getting at it usually means digging through list structures that were never meant to be plotted directly. <strong>ggRandomForests</strong> does that digging for you: it pulls tidy data objects out of a <code>randomForestSRC</code> or <code>randomForest</code> fit, and those objects drop straight into the <code>ggplot2</code> workflows you already know. This vignette walks through the three objects you will reach for most often (<code>gg_error</code>, <code>gg_variable</code>, and <code>gg_vimp</code>), plus a small helper for cutting a predictor into evenly populated groups.</p>
+    <p>A fitted random forest carries a lot of information, but getting at it usually means digging through list structures that were never meant to be plotted directly. <strong>ggRandomForests</strong> does that digging for you: it pulls tidy data objects out of a <code>randomForestSRC</code> or <code>randomForest</code> fit, and those objects drop straight into the <code>ggplot2</code> workflows you already know. A second engine, <code>varPro</code>, powers a parallel family of functions for release-rule importance and related diagnostics; that family is covered in the companion vignette referenced at the end. This vignette walks through the three objects you will reach for most often (<code>gg_error</code>, <code>gg_variable</code>, and <code>gg_vimp</code>), plus a small helper for cutting a predictor into evenly populated groups.</p>
 <section class="level2"><h2 id="error-trajectories-with-gg_error">Error trajectories with <code>gg_error()</code>
 <a class="anchor" aria-label="anchor" href="#error-trajectories-with-gg_error"></a>
 </h2>
@@ -176,7 +176,7 @@
 </div>
 </div>
 </div>
-<p>Variable importance is not always stored on the fitted object. If a <code>randomForest</code> fit is missing its importance scores, <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> will try to compute them for you. When even that is not possible (the forest was grown with <code>importance = FALSE</code> and the predictors are no longer reachable), the function warns and returns <code>NA</code> in place of the scores, so a plot still draws rather than failing outright.</p>
+<p><code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> measures permutation importance: each predictor is permuted in turn, and the drop in OOB accuracy gives its score. This contrasts with the <code>gg_varpro</code> family, which uses release-rule importance from the <code>varPro</code> engine. Variable importance is not always stored on the fitted object. If a <code>randomForest</code> fit is missing its importance scores, <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> will try to compute them for you. When even that is not possible (the forest was grown with <code>importance = FALSE</code> and the predictors are no longer reachable), the function warns and returns <code>NA</code> in place of the scores, so a plot still draws rather than failing outright.</p>
 </section><section class="level2"><h2 id="balanced-conditioning-cuts-with-quantile_pts">Balanced conditioning cuts with <code>quantile_pts()</code>
 <a class="anchor" aria-label="anchor" href="#balanced-conditioning-cuts-with-quantile_pts"></a>
 </h2>

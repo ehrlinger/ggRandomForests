@@ -62,9 +62,9 @@ level; here the eye is looking at level-to-level shifts in the centre of
 each box.
 
 Where the three effect types track each other, the parametric story is a
-fair summary of what the forest is doing. Where they fan apart —
-typically the parametric curve smoother than the nonparametric, or the
-causal curve flatter than either — the variable is one to inspect more
+fair summary of what the forest is doing. Where they fan apart
+(typically the parametric curve smoother than the nonparametric, or the
+causal curve flatter than either) the variable is one to inspect more
 carefully before reading a single effect off the plot.
 
 ## What this tells you

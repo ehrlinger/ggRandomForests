@@ -1,12 +1,10 @@
 # Predicted response plot from a [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md) object.
 
-Plot the predicted response from a
-[`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
-object, the
-[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
-prediction, using the OOB prediction from the forest. The plot type
-adapts automatically to the forest family: jitter + boxplot for
-regression and classification, step curves for survival.
+Visualizes the ensemble predictions extracted by
+[`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
+By default those are out-of-bag (OOB) predictions – the forest's
+built-in cross-validation estimate, averaging only over the trees that
+left a given observation out of their bootstrap sample.
 
 ## Usage
 
@@ -77,6 +75,19 @@ stored in `x`:
   Step curves of the ensemble survival function. When `gg_rfsrc` was
   called with `conf.int`, a shaded ribbon is added. When called with
   `by`, curves are coloured by group.
+
+## Details
+
+The geometry adapts to the forest family. For regression or
+classification, you get a jitter-and-boxplot: every observation is a dot
+placed at its OOB predicted value, coloured by observed response, with a
+notched boxplot overlaid to show the central tendency and spread. For a
+survival forest, each observation contributes one ensemble survival
+curve (or CHF / mortality, whichever `surv_type` was chosen in
+`gg_rfsrc`); the bundle of step functions shows the spread of predicted
+risk across the cohort. Pass `by` to `gg_rfsrc` beforehand to colour
+curves by a predictor group, or `conf.int` to replace the individual
+curves with a mean curve and bootstrap ribbon.
 
 ## References
 

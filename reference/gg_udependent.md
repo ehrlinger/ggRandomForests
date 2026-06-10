@@ -83,8 +83,8 @@ the unsupervised setting: grow a forest without a response, then use the
 same region-release contrasts varpro uses for supervised importance to
 ask, "which variables explain the structure in the data?" The
 lasso-driven variant frames each region-release contrast as a
-classification task — does an observation belong to the region or to its
-release? — and fits a lasso logistic regression with the other variables
+classification task (does an observation belong to the region or to its
+release?) and fits a lasso logistic regression with the other variables
 as predictors. The coefficient on variable \\j\\ in the model for
 variable \\i\\'s region-release contrast is the entry \\I\[i, j\]\\ of
 the matrix
@@ -96,7 +96,7 @@ region from its release". A large \\I\[i, j\]\\ says \\j\\ carries
 information about the structure varpro picked up in \\i\\.
 [`varPro::sdependent`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 thresholds that matrix at a user-chosen cut and returns the set of
-"signal" variables — the nodes with high enough out-degree to be worth
+"signal" variables: the nodes with high enough out-degree to be worth
 keeping. We pass the threshold through to `sdependent` and use the same
 matrix to weight the edges of the resulting graph.
 
@@ -119,8 +119,8 @@ total degree for undirected) and a `selected` flag for membership in the
 ## What you use this for
 
 - screen a wide unsupervised dataset for the small set of variables
-  UVarPro thinks are carrying the signal — the nodes with high degree,
-  or those flagged `selected = TRUE`;
+  UVarPro thinks are carrying the signal: the nodes with high degree, or
+  those flagged `selected = TRUE`;
 
 - spot clusters of mutually dependent variables (hubs and the spokes
   around them) that may be measuring the same underlying construct;
@@ -129,7 +129,7 @@ total degree for undirected) and a `selected` flag for membership in the
   how their dependency graphs change.
 
 An edge in this graph is a statistical dependency in the unsupervised
-decomposition of the data — it is not a causal arrow. A high \\I\[i,
+decomposition of the data. It is not a causal arrow. A high \\I\[i,
 j\]\\ says \\j\\ predicts \\i\\'s region membership, not that \\j\\
 causes \\i\\.
 

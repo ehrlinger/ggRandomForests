@@ -2,9 +2,14 @@
 
 The Brier score asks a familiar question of any probabilistic forecast:
 how far did the predicted probability sit from what actually happened?
-For a survival forest the forecast is the predicted survival
-probability, and the score is computed at each event time, so the result
-is a curve rather than a single number – lower is better, at every time.
+For a survival forest the forecast is the predicted survival probability
+at a given moment, and the "what happened" is whether the subject was
+still alive at that moment. The score is computed at every event time,
+so you get a curve rather than a single number – lower is better
+everywhere. A perfectly calibrated forest that predicts `0` for every
+subject who died and `1` for every subject who survived would score `0`;
+a forest that predicts `0.5` for everyone scores roughly `0.25`
+regardless of the true outcome – that is the "uninformative" ceiling.
 
 ## Usage
 
@@ -66,21 +71,27 @@ The integrated CRPS (a single scalar matching
 
 ## Details
 
-This function extracts that time-resolved Brier score for a survival
-forest grown with `randomForestSRC`, both overall and split by
-mortality-risk quartile. It also returns the continuous ranked
-probability score (CRPS), which is the Brier score integrated over time
-and divided by elapsed time – a running average of the curve so far.
+This function extracts the time-resolved Brier score for a survival
+forest grown with `randomForestSRC`, both overall and broken down by
+mortality-risk quartile (lowest-risk to highest-risk subjects). It also
+returns the continuous ranked probability score (CRPS) – the Brier score
+integrated over time and divided by elapsed time, a running average that
+summarises calibration up to each point on the time axis.
 
-This wraps
+Because subjects are right-censored, a plain Brier score is biased:
+censored subjects contribute no outcome information yet still inflate
+the denominator. The score here uses inverse-probability-of-censoring
+weighting (IPCW), which up-weights uncensored observations to
+compensate. The censoring distribution is estimated either by
+Kaplan-Meier (`cens.model = "km"`, the default) or by a separate
+censoring forest (`cens.model = "rfsrc"`) when the censoring mechanism
+is itself covariate-dependent.
+
+Internally, this wraps
 [`get.brier.survival`](https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html)
 and rebuilds the quartile decomposition and running CRPS from the
-returned `brier.matx` and `mort` components, following the computation
-in the internal `plot.survival` function of randomForestSRC.
-Right-censored data make a plain Brier score biased, so the score uses
-inverse-probability-of-censoring weighting. The censoring distribution
-is estimated either by Kaplan-Meier (`cens.model = "km"`, the default)
-or by a separate censoring forest (`cens.model = "rfsrc"`).
+returned `brier.matx` and `mort` components, following the approach in
+the internal `plot.survival` of randomForestSRC.
 
 ## Note
 

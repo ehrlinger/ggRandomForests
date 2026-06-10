@@ -15,13 +15,25 @@ Kogalur 2007](#ref-Ishwaran:2008)) extend the method to right-censored,
 time-to-event data by growing trees with a log-rank splitting rule and
 aggregating Kaplan–Meier estimates within terminal nodes.
 
-The **randomForestSRC** package ([Ishwaran and Kogalur
-2024](#ref-Ishwaran:RFSRC:2014)) provides a unified implementation for
-survival, regression, and classification forests. **ggRandomForests**
-extracts tidy data objects from `rfsrc` fits and renders them with
-**ggplot2** ([Wickham 2016](#ref-Wickham:2009)), making it
-straightforward to explore how a forest is constructed, which variables
-matter, and how the response depends on individual predictors.
+The forest returns three ensemble quantities for each subject. First,
+the survival function $`\hat{S}(t)`$: the probability of surviving past
+time $`t`$, bounded between 0 and 1. Second, the cumulative hazard
+function (CHF): $`\hat{H}(t) = -\log \hat{S}(t)`$, an unbounded,
+monotone-increasing summary of accumulated risk. Third, mortality: the
+expected number of events a subject would accumulate if followed
+indefinitely under their covariate profile, computed by summing the CHF
+over the observed time grid. Mortality is an unbounded relative-risk
+score, not a probability, and works well as a single scalar for ranking
+patients by risk.
+
+The **[randomForestSRC](https://www.randomforestsrc.org)** package
+([Ishwaran and Kogalur 2024](#ref-Ishwaran:RFSRC:2014)) provides a
+unified implementation for survival, regression, and classification
+forests. **ggRandomForests** extracts tidy data objects from `rfsrc`
+fits and renders them with **ggplot2** ([Wickham
+2016](#ref-Wickham:2009)), making it straightforward to explore how a
+forest is constructed, which variables matter, and how the response
+depends on individual predictors.
 
 This vignette demonstrates a complete random survival forest workflow on
 the primary biliary cirrhosis (PBC) data set ([Fleming and Harrington
@@ -201,6 +213,12 @@ values that fall outside the biological range.
 
 ### Kaplan–Meier survival by treatment
 
+The Kaplan–Meier estimate is the marginal survival curve with no
+covariate adjustment. It serves as the no-covariate baseline: once we
+fit a forest, comparing the KM curves to the forest’s OOB predictions
+lets us judge how much predictive signal the covariates add beyond the
+raw event rate.
+
 We restrict to the 312 trial patients and construct KM curves with
 `gg_survival`.
 
@@ -326,9 +344,14 @@ gg_rsf
 
 OOB predicted survival curves. Blue = censored, red = death events.
 
-Each curve represents one patient’s OOB prediction, extended to the last
-follow-up time. Red (death event) curves generally fall faster,
-confirming the forest discriminates between risk groups.
+Each curve is one patient’s OOB ensemble survival function
+$`\hat{S}(t)`$, extended to the last follow-up time. The forest never
+saw that patient when building its prediction, so these are genuine
+out-of-sample estimates. Red (death event) curves generally fall faster
+and reach lower survival probabilities, confirming the forest separates
+risk groups. Comparing this spread to the marginal KM curves from the
+previous section shows how much the covariates tighten risk
+stratification.
 
 ``` r
 
@@ -377,10 +400,15 @@ most, we examine variable importance (VIMP) and minimal depth.
 
 ### Variable importance (VIMP)
 
-VIMP measures the increase in prediction error when a variable is
-randomly permuted. Large positive values mean the variable is essential
-for accuracy; negative values suggest noise is more informative than the
-variable.
+VIMP measures the increase in prediction error when a variable’s values
+are randomly permuted across the out-of-bag sample. For survival forests
+the prediction error is the Harrell C-statistic complement (1 − C), so
+permuting an important variable hurts C and yields a large positive
+VIMP. A negative VIMP means the variable is adding noise: the forest
+would predict better without it. See the
+[randomForestSRC](https://www.randomforestsrc.org) documentation for
+details on the VIMP calculation for censored outcomes ([Ishwaran et al.
+2008](#ref-Ishwaran:2007a)).
 
 ``` r
 
@@ -411,9 +439,9 @@ md_pbc <- max.subtree(rfsrc_pbc)
 
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-function computes minimal depth for each variable. The threshold is 5.9,
-selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper,
-prothrombin.
+function computes minimal depth for each variable. The threshold is
+5.93, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
 `copper`, `prothrombin`, and `age`. We add `edema` (selected by the
@@ -431,9 +459,13 @@ xvar_all <- c(xvar, xvar_cat)
 
 ### Variable dependence plots
 
-Variable dependence shows each patient’s predicted survival at a given
-time horizon plotted against a predictor of interest. Points are colored
-by event status; a loess smooth indicates the trend.
+Variable dependence shows each patient’s predicted survival probability
+$`\hat{S}(t_0)`$ at a fixed time horizon $`t_0`$, plotted against a
+predictor of interest. Because $`\hat{S}(t_0)`$ is a probability, the
+y-axis is always bounded to \[0, 1\]. Points are colored by event
+status; a loess smooth traces the overall trend while the individual
+points show how much variance remains after the forest accounts for all
+other covariates.
 
 ``` r
 
@@ -689,16 +721,29 @@ confirms the interaction detected in the conditional plots.
 ### Brier Score and CRPS
 
 VIMP and minimal depth tell us which predictors matter, but they say
-nothing about how good the forest’s survival predictions actually are.
+nothing about how well the forest’s survival predictions are calibrated.
 The Brier score answers that question. At each point on the event-time
-grid it compares the predicted survival probability against what
-actually happened, with inverse-probability-of-censoring weighting
-(IPCW) so that right-censored subjects do not bias the result ([Graf et
-al. 1999](#ref-graf:1999)).
+grid it measures the mean squared difference between the predicted
+survival probability $`\hat{S}(t)`$ and the binary outcome (survived
+past $`t`$ or not). Because right-censored subjects have unknown true
+outcomes, the calculation uses inverse-probability-of-censoring
+weighting (IPCW): each subject’s squared error is upweighted by the
+inverse probability of being uncensored at that time, so the estimate
+remains unbiased even under heavy censoring ([Graf et al.
+1999](#ref-graf:1999)).
+
+Two reference values help interpret the curve. A Brier score of 0 is
+perfect prediction. A score around 0.25 is the uninformative ceiling: a
+model that assigns every subject a survival probability of 0.5,
+regardless of their covariates or the time horizon, scores near 0.25 by
+construction. A forest that beats 0.25 is doing better than that floor;
+one that exceeds it has been made worse by its covariates, which is a
+sign of overfitting or a poorly specified model.
+
 [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
 wraps
 [`randomForestSRC::get.brier.survival()`](https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html)
-and hands back a tidy data frame ready to plot.
+and returns a tidy data frame ready to plot.
 
 ``` r
 
@@ -731,10 +776,13 @@ plot(gg_bs, envelope = TRUE)
 Brier score with 15–85% per-subject envelope.
 
 The running CRPS (continuous ranked probability score) is the Brier
-score integrated over time and divided by elapsed time, in other words
-the time-average of the curve above. It collapses the whole trajectory
-into one running number, which is handy when you want a single accuracy
-figure rather than a curve to read.
+score integrated over time and divided by elapsed time — the
+time-average of the curve above. It collapses the whole trajectory into
+one running number, which is handy when you want a single calibration
+figure rather than a curve to read. Like the Brier score, a CRPS near 0
+is good and a value near 0.25 is the uninformative ceiling (the same
+constant-predictor reference as above). The final (integrated) value at
+the right edge of the plot is the one most often reported.
 
 ``` r
 
@@ -753,7 +801,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.408444
+    #> [1] 1.396423
 
 ## Conclusion
 

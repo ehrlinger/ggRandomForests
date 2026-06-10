@@ -1,9 +1,12 @@
 # Plot a [`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md) object, extracted variable importance of a [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) object
 
-Plot a
-[`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
-object, extracted variable importance of a
-[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) object
+Draws a horizontal bar chart of the VIMP scores extracted by
+[`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md).
+Each bar represents one predictor; bar length is proportional to its
+permutation VIMP – the average rise in OOB prediction error when that
+predictor's OOB values are randomly shuffled. Predictors are sorted in
+descending order of importance so the most influential variables appear
+at the top.
 
 ## Usage
 
@@ -37,6 +40,15 @@ plot(x, relative, lbls, ...)
 ## Value
 
 `ggplot` object
+
+## Details
+
+Bars are coloured by the `positive` flag: a bar at or below zero
+(non-positive VIMP) is colour-coded differently to flag predictors that
+*hurt* OOB accuracy when their signal is removed – usually a sign of
+collinearity or a very noisy variable. In a well-behaved forest most
+bars are positive; the colour distinction matters when a handful are
+not.
 
 ## References
 

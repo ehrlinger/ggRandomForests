@@ -141,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 500
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.746
+    #>        Average no. of terminal nodes: 66.626
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.8633897
-    #>    (OOB) Requested performance error: 11.55541769
+    #>                      (OOB) R squared: 0.86547914
+    #>    (OOB) Requested performance error: 11.37867913
 
 The forest grew 500 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -195,10 +195,13 @@ predictions.
 
 ### Variable importance (VIMP)
 
-VIMP measures the increase in prediction error when a variable is
-randomly permuted ([Breiman 2001](#ref-Breiman:2001)). Large positive
-values mean the variable is essential; negative values suggest noise is
-more informative.
+VIMP, computed by [randomForestSRC](https://www.randomforestsrc.org),
+measures the increase in OOB prediction error when a variable’s values
+are randomly permuted across the out-of-bag observations ([Breiman
+2001](#ref-Breiman:2001)). Permutation severs the variable’s link to the
+response on purpose: if breaking that link hurts accuracy, the variable
+is carrying real signal. Large positive values mean the variable is
+essential; negative values suggest it is no more informative than noise.
 
 ``` r
 
@@ -213,6 +216,18 @@ VIMP ranking. Longer blue bars indicate more important variables.
 All VIMP values are positive, indicating every predictor contributes at
 least marginally.
 
+The permutation approach contrasts with varPro release-rule importance
+([Lu and Ishwaran 2024](#ref-Lu2024varpro)), available through
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md).
+Rather than perturbing data synthetically, varPro compares local
+estimators on the observed data directly: no permutation, no
+manufactured feature values. Because the two methods measure
+fundamentally different things, a variable can rank high under one and
+low under the other. When they agree, the evidence is strong; when they
+disagree, that disagreement itself is worth investigating, pointing
+either to a variable whose effect is highly non-linear or to one that
+matters only in combination with others.
+
 ### Minimal depth
 
 Minimal depth ([Ishwaran et al. 2010](#ref-Ishwaran:2010)) ranks
@@ -225,8 +240,8 @@ considered most important.
 md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
-The threshold is 3.01, selecting 5 variables: crim, nox, rm, ptratio,
-lstat.
+The threshold is 3.01, selecting 6 variables: crim, nox, rm, dis,
+ptratio, lstat.
 
 Both VIMP and minimal depth agree on the dominance of `lstat` and `rm`.
 We use the minimal depth top variables for the remainder of the
@@ -528,6 +543,10 @@ Ishwaran, Hemant, Udaya B. Kogalur, Eiran Z. Gorodeski, Andy J. Minn,
 and Michael S. Lauer. 2010. “High-Dimensional Variable Selection for
 Survival Data.” *Journal of the American Statistical Association* 105
 (489): 205–17. <https://doi.org/10.1198/jasa.2009.tm08622>.
+
+Lu, M., and H. Ishwaran. 2024. “Model-Independent Variable Selection via
+the Rule-Based Variable Priority.” *arXiv Preprint*.
+<https://arxiv.org/abs/2409.09003>.
 
 Venables, William N., and Brian D. Ripley. 2002. *Modern Applied
 Statistics with S*. 4th ed. Springer.

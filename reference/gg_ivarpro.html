@@ -19,7 +19,7 @@ ivarpro() call."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -150,15 +150,25 @@ path errors with a message naming v3.1.0 as the tracker.</p>
     <h2 id="what-this-is-doing">What this is doing<a class="anchor" aria-label="anchor" href="#what-this-is-doing"></a></h2>
 
 
-<p><code>ivarpro()</code> walks the varPro forest's rules and, for each
-(observation, variable) pair, computes a scaled per-rule
-contribution to predicting that observation. Per-rule LOO removes
-the observation from its own rule before scoring. Per-region
-scaling (<code>scale = "local"</code>, default) standardises the contribution
-by the rule's local response standard deviation so values are
-comparable across rules of different size. Aggregating those
-per-rule scores into one number per (obs, variable) pair gives the
-<code>local_imp</code> cell.</p>
+<p>The varPro framework builds importance from release rules: for a given
+rule region, it compares a local estimator inside that region to what
+the estimator becomes after the constraint on the tested variable is
+removed ("released"). That contrast is summed over many rules and trees
+to get a global z-score: the quantity <code><a href="gg_varpro.html">gg_varpro()</a></code> shows. What
+<code>ivarpro()</code> adds is a per-observation view of the same mechanism.</p>
+<p>Concretely: <code>ivarpro()</code> walks the forest's rules and, for each
+(observation, variable) pair, computes a scaled per-rule contribution
+to predicting that observation. Per-rule LOO removes the observation
+from its own rule before scoring, so the contribution is not inflated
+by the observation having helped define the region. Per-region scaling
+(<code>scale = "local"</code>, default) standardises the contribution by the
+rule's local response standard deviation so values are comparable
+across rules of different size. Aggregating those per-rule scores into
+one number per (obs, variable) pair gives the <code>local_imp</code> cell.</p>
+<p>No permutation, no synthetic data: the contrast is always between real
+subsets of the observed data, defined by the forest's own rules. This
+is the same no-synthetic-features property that distinguishes
+<code><a href="gg_varpro.html">gg_varpro()</a></code> from <code><a href="gg_vimp.html">gg_vimp()</a></code>'s Breiman-Cutler permutation importance.</p>
     </div>
     <div class="section level2">
     <h2 id="what-local-imp-actually-is-pedantic-">What <code>local_imp</code> actually is (pedantic)<a class="anchor" aria-label="anchor" href="#what-local-imp-actually-is-pedantic-"></a></h2>
@@ -250,7 +260,7 @@ per-rule LOO subsampling can drift across separate calls. Reuse
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="gg_varpro.html">gg_varpro()</a></code>, <code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code>, <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="gg_varpro.html">gg_varpro()</a></code>, <code><a href="gg_vimp.html">gg_vimp()</a></code>, <code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code>, <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
