@@ -50,8 +50,8 @@ the primary biliary cirrhosis (PBC) data set ([Fleming and Harrington
     [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
     and
     [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-5.  **Variable interactions** — conditioning plots and interactive 3-D
-    partial dependence surfaces with **plotly**
+5.  **Variable interactions** — conditioning plots and partial
+    dependence surfaces
 
 ``` r
 
@@ -439,9 +439,9 @@ md_pbc <- max.subtree(rfsrc_pbc)
 
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-function computes minimal depth for each variable. The threshold is
-5.93, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
-copper, prothrombin.
+function computes minimal depth for each variable. The threshold is 5.9,
+selecting 7 variables: ascites, edema, bili, chol, albumin, copper,
+prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
 `copper`, `prothrombin`, and `age`. We add `edema` (selected by the
@@ -530,9 +530,9 @@ predicted survival.
 > **Known issue (draft):**
 > [`randomForestSRC::partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
 > currently fails for survival forests in randomForestSRC ≥ 3.3. The
-> partial dependence and interactive surface sections below will show an
-> error until this upstream bug is resolved. All other sections of this
-> vignette are fully functional.
+> partial dependence and surface sections below will show an error until
+> this upstream bug is resolved. All other sections of this vignette are
+> fully functional.
 
 Partial dependence integrates out the effects of other covariates,
 giving a risk-adjusted view of how each predictor influences the
@@ -644,7 +644,7 @@ Variable dependence on bilirubin, conditional on albumin groups.
 The effect of bilirubin attenuates at higher albumin levels, suggesting
 an interaction between these two liver function markers.
 
-## Interactive Partial Dependence Surfaces
+## Partial Dependence Surfaces
 
 For a richer view of the interaction between bilirubin and albumin, we
 construct a partial dependence surface. We compute partial dependence on
@@ -672,35 +672,8 @@ surface_df <- bind_rows(surface_list)
 ``` r
 
 if (!exists("surface_df")) {
-  message("surface_df not available — skipping plotly surface (see surface-data chunk error above).")
-} else if (requireNamespace("plotly", quietly = TRUE)) {
-  # Reshape for surface
-  library(plotly)
-
-  surface_wide <- surface_df |>
-    select(bili = x, albumin, survival = yhat) |>
-    arrange(albumin, bili)
-
-  # Create matrix form
-  bili_vals <- sort(unique(surface_wide$bili))
-  alb_vals  <- sort(unique(surface_wide$albumin))
-  z_matrix  <- matrix(surface_wide$survival,
-                       nrow = length(alb_vals),
-                       ncol = length(bili_vals),
-                       byrow = TRUE)
-
-  plot_ly(x = bili_vals, y = alb_vals, z = z_matrix) |>
-    add_surface(colorscale = "Viridis", showscale = TRUE) |>
-    layout(
-      scene = list(
-        xaxis = list(title = "Bilirubin"),
-        yaxis = list(title = "Albumin"),
-        zaxis = list(title = "Survival")
-      )
-    )
+  message("surface_df not available --- skipping surface (see surface-data chunk error above).")
 } else {
-  message("Install the plotly package for interactive 3D surfaces.")
-  # Fallback: contour plot with ggplot2
   ggplot(surface_df, aes(x = x, y = albumin, fill = yhat)) +
     geom_tile() +
     scale_fill_viridis_c(name = "Survival") +
@@ -709,12 +682,15 @@ if (!exists("surface_df")) {
 }
 ```
 
-Interactive partial dependence surface: survival as a function of
-bilirubin and albumin.
+![](ggRandomForests-survival_files/figure-html/pd-surface-1.png)
+
+Partial dependence surface: survival at 1 year as a function of
+bilirubin and albumin. Fill colour is the predicted survival
+probability.
 
 The surface shows that survival is highest when bilirubin is low and
 albumin is high (upper-left corner), and drops steeply as bilirubin
-increases or albumin decreases. The non-planar shape of the surface —
+increases or albumin decreases. The curvature of the surface —
 particularly the steep gradient at low albumin and high bilirubin —
 confirms the interaction detected in the conditional plots.
 
@@ -801,7 +777,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.396423
+    #> [1] 1.40823
 
 ## Conclusion
 
@@ -829,7 +805,7 @@ together:
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
   gave the risk-adjusted version of those curves and backed the
   log-transforms used in the parametric model.
-- Conditioning plots and the interactive surface drew out the
+- Conditioning plots and the partial dependence surface drew out the
   bilirubin–albumin interaction.
 - [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
   measured how accurate the predictions actually were, both across time

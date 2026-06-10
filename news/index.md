@@ -22,6 +22,11 @@
   [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   (documented a `yvar` column the function does not return). No
   user-facing behaviour change.
+- Vignettes: the regression and survival partial-dependence surfaces are
+  now rendered as static `ggplot2` heat maps instead of interactive
+  `plotly` widgets, and figures render at 96 dpi. This cuts the
+  installed size from ~17 MB to ~5 MB (the `plotly` library is no longer
+  bundled into the vignette HTML). `plotly` is dropped from `Suggests`.
 
 ## ggRandomForests v3.0.0
 

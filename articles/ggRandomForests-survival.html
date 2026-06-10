@@ -14,10 +14,7 @@
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="ggRandomForests-survival_files/libs/quarto-html/popper.min.js"></script><script src="ggRandomForests-survival_files/libs/quarto-html/tippy.umd.min.js"></script><link href="ggRandomForests-survival_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="ggRandomForests-survival_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="ggRandomForests-survival_files/libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
-<script src="ggRandomForests-survival_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="ggRandomForests-survival_files/libs/plotly-binding-4.12.0/plotly.js"></script><script src="ggRandomForests-survival_files/libs/typedarray-0.1/typedarray.min.js"></script><link href="ggRandomForests-survival_files/libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
-<script src="ggRandomForests-survival_files/libs/crosstalk-1.2.2/js/crosstalk.min.js"></script><link href="ggRandomForests-survival_files/libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
-<script src="ggRandomForests-survival_files/libs/plotly-main-2.25.2/plotly-latest.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Random Forest Survival Analysis with ggRandomForests">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Random Forest Survival Analysis with ggRandomForests">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -120,8 +117,7 @@
 <strong>Dependence plots</strong> — variable dependence and partial dependence via <code><a href="../reference/gg_variable.html">gg_variable()</a></code> and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>
 </li>
 <li>
-<strong>Variable interactions</strong> — conditioning plots and interactive 3-D partial dependence surfaces with <strong>plotly</strong>
-</li>
+<strong>Variable interactions</strong> — conditioning plots and partial dependence surfaces</li>
 </ol>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -231,7 +227,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/eda-categorical-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/eda-categorical-1.png"></p>
 <figcaption>EDA for categorical variables. Bar color indicates factor level; white = missing.</figcaption></figure>
 </div>
 </div>
@@ -254,7 +250,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/eda-continuous-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/eda-continuous-1.png"></p>
 <figcaption>EDA for continuous variables. Points colored by death event; rug marks indicate missing values.</figcaption></figure>
 </div>
 </div>
@@ -280,7 +276,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1.01</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/km-survival-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/km-survival-1.png"></p>
 <figcaption>KM survival estimates by treatment group with 95% confidence bands.</figcaption></figure>
 </div>
 </div>
@@ -295,7 +291,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.02</span>, <span class="fl">1.22</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/km-cumhaz-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/km-cumhaz-1.png"></p>
 <figcaption>KM cumulative hazard estimates by treatment group.</figcaption></figure>
 </div>
 </div>
@@ -312,7 +308,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Survival Probability"</span>, x <span class="op">=</span> <span class="st">"Time (years)"</span>, color <span class="op">=</span> <span class="st">"Bilirubin"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/km-bili-1.png" width="576"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/km-bili-1.png"></p>
 <figcaption>KM survival stratified by bilirubin groups.</figcaption></figure>
 </div>
 </div>
@@ -344,7 +340,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_error.html">gg_error</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/error-plot-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/error-plot-1.png"></p>
 <figcaption>OOB prediction error vs. number of trees.</figcaption></figure>
 </div>
 </div>
@@ -362,7 +358,7 @@
 <span><span class="va">gg_rsf</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/rfsrc-predicted-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/rfsrc-predicted-1.png"></p>
 <figcaption>OOB predicted survival curves. Blue = censored, red = death events.</figcaption></figure>
 </div>
 </div>
@@ -376,7 +372,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/rfsrc-by-treatment-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/rfsrc-by-treatment-1.png"></p>
 <figcaption>Median predicted survival by treatment group with 95% confidence bands.</figcaption></figure>
 </div>
 </div>
@@ -397,7 +393,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/predict-test-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/predict-test-1.png"></p>
 <figcaption>Predicted survival for non-trial patients (test set).</figcaption></figure>
 </div>
 </div>
@@ -416,7 +412,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"VIMP &gt; 0"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/vimp-plot-1.png" width="576"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/vimp-plot-1.png"></p>
 <figcaption>Variable importance ranking. Blue = positive VIMP, red = negative.</figcaption></figure>
 </div>
 </div>
@@ -429,7 +425,7 @@
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_pbc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 5.93, selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
+<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 5.9, selecting 7 variables: ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
 <p>Both selection methods agree on the key predictors: <code>bili</code>, <code>albumin</code>, <code>copper</code>, <code>prothrombin</code>, and <code>age</code>. We add <code>edema</code> (selected by the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> model) for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
@@ -455,7 +451,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/vardep-bili-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/vardep-bili-1.png"></p>
 <figcaption>Variable dependence of survival at 1 and 3 years on bilirubin.</figcaption></figure>
 </div>
 </div>
@@ -471,7 +467,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.05</span>, <span class="fl">1.05</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/vardep-panel-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/vardep-panel-1.png"></p>
 <figcaption>Variable dependence at 1 and 3 years for continuous predictors.</figcaption></figure>
 </div>
 </div>
@@ -487,7 +483,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.01</span>, <span class="fl">1.02</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/vardep-categorical-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/vardep-categorical-1.png"></p>
 <figcaption>Variable dependence on edema (categorical).</figcaption></figure>
 </div>
 </div>
@@ -498,7 +494,7 @@
 <div>
 <blockquote>
 <p><strong>Warning</strong></p>
-<p><strong>Known issue (draft):</strong> <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">randomForestSRC::partial.rfsrc()</a></code> currently fails for survival forests in randomForestSRC ≥ 3.3. The partial dependence and interactive surface sections below will show an error until this upstream bug is resolved. All other sections of this vignette are fully functional.</p>
+<p><strong>Known issue (draft):</strong> <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">randomForestSRC::partial.rfsrc()</a></code> currently fails for survival forests in randomForestSRC ≥ 3.3. The partial dependence and surface sections below will show an error until this upstream bug is resolved. All other sections of this vignette are fully functional.</p>
 </blockquote>
 </div>
 <p>Partial dependence integrates out the effects of other covariates, giving a risk-adjusted view of how each predictor influences the response <span class="citation" data-cites="Friedman:2000">(<a href="#ref-Friedman:2000" role="doc-biblioref">Friedman 2001</a>)</span>. We use <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> which calls <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">randomForestSRC::partial.rfsrc()</a></code> directly and returns a <code>gg_partial_rfsrc</code> object. For survival forests, the result includes a <code>time</code> column so <code>plot(pd)</code> produces one curve per predictor value over time, faceted by variable name.</p>
@@ -517,7 +513,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">pd</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/partial-dep-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/partial-dep-1.png"></p>
 <figcaption>Partial dependence of survival at approximately 1 and 3 years on continuous predictors.</figcaption></figure>
 </div>
 </div>
@@ -536,7 +532,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/partial-dep-custom-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/partial-dep-custom-1.png"></p>
 <figcaption>Partial dependence (custom styling).</figcaption></figure>
 </div>
 </div>
@@ -559,7 +555,7 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/coplot-edema-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/coplot-edema-1.png"></p>
 <figcaption>Variable dependence on bilirubin, conditional on edema group.</figcaption></figure>
 </div>
 </div>
@@ -582,13 +578,13 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian</a></span><span class="op">(</span>ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/coplot-albumin-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/coplot-albumin-1.png"></p>
 <figcaption>Variable dependence on bilirubin, conditional on albumin groups.</figcaption></figure>
 </div>
 </div>
 </div>
 <p>The effect of bilirubin attenuates at higher albumin levels, suggesting an interaction between these two liver function markers.</p>
-</section></section><section class="section level2"><h2 id="interactive-partial-dependence-surfaces">Interactive Partial Dependence Surfaces<a class="anchor" aria-label="anchor" href="#interactive-partial-dependence-surfaces"></a>
+</section></section><section class="section level2"><h2 id="partial-dependence-surfaces">Partial Dependence Surfaces<a class="anchor" aria-label="anchor" href="#partial-dependence-surfaces"></a>
 </h2>
 <p>For a richer view of the interaction between bilirubin and albumin, we construct a partial dependence surface. We compute partial dependence on a grid of 25 albumin values, each evaluated at 25 bilirubin points.</p>
 <div class="cell" data-layout-align="center">
@@ -612,35 +608,8 @@
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"surface_df"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"surface_df not available — skipping plotly surface (see surface-data chunk error above)."</span><span class="op">)</span></span>
-<span><span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plotly"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co"># Reshape for surface</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://plotly-r.com" class="external-link">plotly</a></span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="va">surface_wide</span> <span class="op">&lt;-</span> <span class="va">surface_df</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>bili <span class="op">=</span> <span class="va">x</span>, <span class="va">albumin</span>, survival <span class="op">=</span> <span class="va">yhat</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">albumin</span>, <span class="va">bili</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Create matrix form</span></span>
-<span>  <span class="va">bili_vals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">surface_wide</span><span class="op">$</span><span class="va">bili</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">alb_vals</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">surface_wide</span><span class="op">$</span><span class="va">albumin</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">z_matrix</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">surface_wide</span><span class="op">$</span><span class="va">survival</span>,</span>
-<span>                       nrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">alb_vals</span><span class="op">)</span>,</span>
-<span>                       ncol <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">bili_vals</span><span class="op">)</span>,</span>
-<span>                       byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/plot_ly.html" class="external-link">plot_ly</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">bili_vals</span>, y <span class="op">=</span> <span class="va">alb_vals</span>, z <span class="op">=</span> <span class="va">z_matrix</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/pkg/plotly/man/add_trace.html" class="external-link">add_surface</a></span><span class="op">(</span>colorscale <span class="op">=</span> <span class="st">"Viridis"</span>, showscale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="fu">layout</span><span class="op">(</span></span>
-<span>      scene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>        xaxis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Bilirubin"</span><span class="op">)</span>,</span>
-<span>        yaxis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Albumin"</span><span class="op">)</span>,</span>
-<span>        zaxis <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Survival"</span><span class="op">)</span></span>
-<span>      <span class="op">)</span></span>
-<span>    <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"surface_df not available --- skipping surface (see surface-data chunk error above)."</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">message</a></span><span class="op">(</span><span class="st">"Install the plotly package for interactive 3D surfaces."</span><span class="op">)</span></span>
-<span>  <span class="co"># Fallback: contour plot with ggplot2</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">surface_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">albumin</span>, fill <span class="op">=</span> <span class="va">yhat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Survival"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -648,11 +617,13 @@
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-ca7dacd9f58bce5dfc0a" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-ca7dacd9f58bce5dfc0a">{"x":{"visdat":{"220c7a3cfe93":["function () ","plotlyVisDat"]},"cur_data":"220c7a3cfe93","attrs":{"220c7a3cfe93":{"x":[0.29999999999999999,0.5,0.59999999999999998,0.69999999999999996,0.80000000000000004,0.90000000000000002,0.94999999999999996,1.1000000000000001,1.3,1.3500000000000001,1.6000000000000001,2,2.2000000000000002,2.5499999999999998,3.2000000000000002,3.4500000000000002,4.4500000000000002,5.5499999999999998,6.5999999999999996,8.5500000000000007,15.35,28],"y":[1.96,2.7450000000000001,2.96,3.0600000000000001,3.1349999999999998,3.2050000000000001,3.3100000000000001,3.3500000000000001,3.3700000000000001,3.4300000000000002,3.48,3.5149999999999997,3.5499999999999998,3.585,3.625,3.6600000000000001,3.7000000000000002,3.7549999999999999,3.7999999999999998,3.8500000000000001,3.9050000000000002,3.98,4.0800000000000001,4.1749999999999998,4.6399999999999997],"z":[[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colorscale":"Viridis","showscale":true,"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"Bilirubin"},"yaxis":{"title":"Albumin"},"zaxis":{"title":"Survival"}},"hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":"Viridis","showscale":true,"x":[0.29999999999999999,0.5,0.59999999999999998,0.69999999999999996,0.80000000000000004,0.90000000000000002,0.94999999999999996,1.1000000000000001,1.3,1.3500000000000001,1.6000000000000001,2,2.2000000000000002,2.5499999999999998,3.2000000000000002,3.4500000000000002,4.4500000000000002,5.5499999999999998,6.5999999999999996,8.5500000000000007,15.35,28],"y":[1.96,2.7450000000000001,2.96,3.0600000000000001,3.1349999999999998,3.2050000000000001,3.3100000000000001,3.3500000000000001,3.3700000000000001,3.4300000000000002,3.48,3.5149999999999997,3.5499999999999998,3.585,3.625,3.6600000000000001,3.7000000000000002,3.7549999999999999,3.7999999999999998,3.8500000000000001,3.9050000000000002,3.98,4.0800000000000001,4.1749999999999998,4.6399999999999997],"z":[[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453],[0.94652837620496766,0.94588466568479068,0.94588466568479068,0.94577577445628014,0.94555789502024601,0.94555789502024601,0.94536863496239687,0.94510857464492593,0.94499606033322958,0.94490264252039358,0.94456965007025839,0.94187900029527827,0.93936292393525411,0.92640292851391037,0.92139198656413701,0.91735997870524777,0.91464687129892508,0.91220784602545613,0.88508755569139563,0.87375769757186605,0.85715561843171306,0.84455043554750453]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script><p>Interactive partial dependence surface: survival as a function of bilirubin and albumin.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="ggRandomForests-survival_files/figure-html/pd-surface-1.png"></p>
+<figcaption>Partial dependence surface: survival at 1 year as a function of bilirubin and albumin. Fill colour is the predicted survival probability.</figcaption></figure>
 </div>
 </div>
-<p>The surface shows that survival is highest when bilirubin is low and albumin is high (upper-left corner), and drops steeply as bilirubin increases or albumin decreases. The non-planar shape of the surface — particularly the steep gradient at low albumin and high bilirubin — confirms the interaction detected in the conditional plots.</p>
+</div>
+<p>The surface shows that survival is highest when bilirubin is low and albumin is high (upper-left corner), and drops steeply as bilirubin increases or albumin decreases. The curvature of the surface — particularly the steep gradient at low albumin and high bilirubin — confirms the interaction detected in the conditional plots.</p>
 <section class="level2"><h3 id="brier-score-and-crps">Brier Score and CRPS<a class="anchor" aria-label="anchor" href="#brier-score-and-crps"></a>
 </h3>
 <p>VIMP and minimal depth tell us which predictors matter, but they say nothing about how well the forest’s survival predictions are calibrated. The Brier score answers that question. At each point on the event-time grid it measures the mean squared difference between the predicted survival probability <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>S</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{S}(t)</annotation></semantics></math> and the binary outcome (survived past <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> or not). Because right-censored subjects have unknown true outcomes, the calculation uses inverse-probability-of-censoring weighting (IPCW): each subject’s squared error is upweighted by the inverse probability of being uncensored at that time, so the estimate remains unbiased even under heavy censoring <span class="citation" data-cites="graf:1999">(<a href="#ref-graf:1999" role="doc-biblioref">Graf et al. 1999</a>)</span>.</p>
@@ -664,7 +635,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_bs</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/brier-overall-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/brier-overall-1.png"></p>
 <figcaption>Time-resolved Brier score for the PBC survival forest.</figcaption></figure>
 </div>
 </div>
@@ -676,7 +647,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_bs</span>, envelope <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/brier-envelope-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/brier-envelope-1.png"></p>
 <figcaption>Brier score with 15–85% per-subject envelope.</figcaption></figure>
 </div>
 </div>
@@ -687,7 +658,7 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_bs</span>, type <span class="op">=</span> <span class="st">"crps"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
-<figure><p><img src="ggRandomForests-survival_files/figure-html/brier-crps-1.png" width="672"></p>
+<figure><p><img src="ggRandomForests-survival_files/figure-html/brier-crps-1.png"></p>
 <figcaption>Running CRPS for the PBC survival forest.</figcaption></figure>
 </div>
 </div>
@@ -697,7 +668,7 @@
 <div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_integrated"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code><span><span class="co">#&gt; [1] 1.396423</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] 1.40823</span></span></code></pre>
 </div>
 </div>
 </section></section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
@@ -712,7 +683,7 @@
 <li>
 <code><a href="../reference/gg_variable.html">gg_variable()</a></code> exposed non-proportional hazards for bilirubin and copper, where the gap between time horizons widens.</li>
 <li>Partial dependence from <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> gave the risk-adjusted version of those curves and backed the log-transforms used in the parametric model.</li>
-<li>Conditioning plots and the interactive surface drew out the bilirubin–albumin interaction.</li>
+<li>Conditioning plots and the partial dependence surface drew out the bilirubin–albumin interaction.</li>
 <li>
 <code><a href="../reference/gg_brier.html">gg_brier()</a></code> measured how accurate the predictions actually were, both across time and as a single CRPS summary.</li>
 </ul>

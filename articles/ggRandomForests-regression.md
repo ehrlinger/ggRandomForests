@@ -36,8 +36,8 @@ on the Boston Housing data set ([Harrison and Rubinfeld
     [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
     and
     [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-5.  **Variable interactions** — conditioning plots and interactive 3-D
-    partial dependence surfaces with **plotly**
+5.  **Variable interactions** — conditioning plots and partial
+    dependence surfaces
 
 ``` r
 
@@ -141,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 500
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.626
+    #>        Average no. of terminal nodes: 66.684
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86547914
-    #>    (OOB) Requested performance error: 11.37867913
+    #>                      (OOB) R squared: 0.86700511
+    #>    (OOB) Requested performance error: 11.24960179
 
 The forest grew 500 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -420,7 +420,7 @@ The `rm` effect is strongest in low-`lstat` tracts (bottom-left panels)
 and nearly flat in high-`lstat` tracts, confirming a meaningful
 interaction.
 
-## Interactive Partial Dependence Surface
+## Partial Dependence Surface
 
 To visualize the joint partial dependence of `medv` on `lstat` and `rm`,
 we compute partial dependence on a grid: 25 values of `rm`, each
@@ -444,41 +444,17 @@ surface_df <- bind_rows(surface_list)
 
 ``` r
 
-if (requireNamespace("plotly", quietly = TRUE)) {
-  library(plotly)
-
-  surface_wide <- surface_df |>
-    select(lstat = x, rm, medv = yhat) |>
-    arrange(rm, lstat)
-
-  lstat_vals <- sort(unique(surface_wide$lstat))
-  rm_vals    <- sort(unique(surface_wide$rm))
-  z_matrix   <- matrix(surface_wide$medv,
-                        nrow = length(rm_vals),
-                        ncol = length(lstat_vals),
-                        byrow = TRUE)
-
-  plot_ly(x = lstat_vals, y = rm_vals, z = z_matrix) |>
-    add_surface(colorscale = "Viridis", showscale = TRUE) |>
-    layout(
-      scene = list(
-        xaxis = list(title = "Lower Status (%)"),
-        yaxis = list(title = "Rooms per Dwelling"),
-        zaxis = list(title = "Median Value ($1000s)")
-      )
-    )
-} else {
-  message("Install the plotly package for interactive 3D surfaces.")
-  ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
-    geom_tile() +
-    scale_fill_viridis_c(name = "Median Value") +
-    labs(x = "Lower Status (%)", y = "Rooms per Dwelling") +
-    theme_bw()
-}
+ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
+  geom_tile() +
+  scale_fill_viridis_c(name = "Median Value\n($1000s)") +
+  labs(x = "Lower Status (%)", y = "Rooms per Dwelling") +
+  theme_bw()
 ```
 
-Interactive partial dependence surface: median home value as a function
-of lstat and rm.
+![](ggRandomForests-regression_files/figure-html/pd-surface-1.png)
+
+Partial dependence surface: median home value as a function of lstat and
+rm. Fill colour is the predicted median value.
 
 The surface confirms the strong interaction: home values are highest
 when `lstat` is low and `rm` is high (upper-left corner), dropping
@@ -506,7 +482,7 @@ We have walked a full random forest regression analysis with
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
   gave the risk-adjusted version of those curves: concave for `lstat`,
   threshold-like for `rm`.
-- Conditioning plots and the interactive surface pulled out the
+- Conditioning plots and the partial dependence surface pulled out the
   `lstat`–`rm` interaction, with the room-size effect strongest in
   high-status tracts.
 
