@@ -1,12 +1,19 @@
 ## v3.1.0 — varPro integration + bug fix (major release)
 
 This is a major release. v2.7.3 is the version currently published on
-CRAN. A v3.0.0 submission did not complete the review cycle, so this
+CRAN. A v3.0.0 submission (2026-05-28) cleared the incoming pretests on
+Windows and Debian (0/0/0) but was held by the automated service and did
+not complete the review cycle; no changes were ever requested. This
 v3.1.0 release supersedes it: the submission moves CRAN from v2.7.3 to
 v3.1.0 and carries the full v3.0.0 feature layer plus the v3.1.0 bug fix
 and documentation work. The version is in 3.x territory because it adds a
 substantial new feature layer and soft-deprecates one user-facing
 function.
+
+The automated hold on the v3.0.0 submission appeared to be a heuristic
+flag (the major version jump from 2.7.3 plus the Depends-to-Imports move),
+not a package defect: both incoming pretests were clean. We note it here
+in case the same heuristic flags v3.1.0.
 
 ### Changes in v3.1.0
 
