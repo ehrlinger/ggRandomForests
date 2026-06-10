@@ -4,6 +4,8 @@ author: "John Ehrlinger"
 date: today
 format:
   html:
+    fig-format: png
+    fig-dpi: 96
     toc: true
     toc-depth: 3
     html-math-method: mathjax
@@ -68,8 +70,8 @@ primary biliary cirrhosis (PBC) data set [@fleming:1991]:
 3. **Variable selection** --- VIMP and minimal depth via `max.subtree()`
 4. **Dependence plots** --- variable dependence and partial dependence via
    `gg_variable()` and `gg_partial_rfsrc()`
-5. **Variable interactions** --- conditioning plots and interactive 3-D partial
-   dependence surfaces with **plotly**
+5. **Variable interactions** --- conditioning plots and partial dependence
+   surfaces
 
 ```{r packages}
 library(ggplot2)
@@ -452,7 +454,7 @@ survival.
 ::: {.callout-warning}
 **Known issue (draft):** `randomForestSRC::partial.rfsrc()` currently fails for
 survival forests in randomForestSRC ≥ 3.3.  The partial dependence and
-interactive surface sections below will show an error until this upstream bug
+surface sections below will show an error until this upstream bug
 is resolved.  All other sections of this vignette are fully functional.
 :::
 
@@ -540,7 +542,7 @@ plot(gg_v1, xvar = "bili", alpha = 0.5) +
 The effect of bilirubin attenuates at higher albumin levels, suggesting an
 interaction between these two liver function markers.
 
-# Interactive Partial Dependence Surfaces
+# Partial Dependence Surfaces
 
 For a richer view of the interaction between bilirubin and albumin, we construct
 a partial dependence surface. We compute partial dependence on a grid of 25
@@ -564,37 +566,10 @@ surface_list <- lapply(alb_grid, function(alb_val) {
 surface_df <- bind_rows(surface_list)
 ```
 
-```{r plotly-surface, error=TRUE, fig.cap="Interactive partial dependence surface: survival as a function of bilirubin and albumin."}
+```{r pd-surface, error=TRUE, fig.height=5, fig.cap="Partial dependence surface: survival at 1 year as a function of bilirubin and albumin. Fill colour is the predicted survival probability."}
 if (!exists("surface_df")) {
-  message("surface_df not available — skipping plotly surface (see surface-data chunk error above).")
-} else if (requireNamespace("plotly", quietly = TRUE)) {
-  # Reshape for surface
-  library(plotly)
-
-  surface_wide <- surface_df |>
-    select(bili = x, albumin, survival = yhat) |>
-    arrange(albumin, bili)
-
-  # Create matrix form
-  bili_vals <- sort(unique(surface_wide$bili))
-  alb_vals  <- sort(unique(surface_wide$albumin))
-  z_matrix  <- matrix(surface_wide$survival,
-                       nrow = length(alb_vals),
-                       ncol = length(bili_vals),
-                       byrow = TRUE)
-
-  plot_ly(x = bili_vals, y = alb_vals, z = z_matrix) |>
-    add_surface(colorscale = "Viridis", showscale = TRUE) |>
-    layout(
-      scene = list(
-        xaxis = list(title = "Bilirubin"),
-        yaxis = list(title = "Albumin"),
-        zaxis = list(title = "Survival")
-      )
-    )
+  message("surface_df not available --- skipping surface (see surface-data chunk error above).")
 } else {
-  message("Install the plotly package for interactive 3D surfaces.")
-  # Fallback: contour plot with ggplot2
   ggplot(surface_df, aes(x = x, y = albumin, fill = yhat)) +
     geom_tile() +
     scale_fill_viridis_c(name = "Survival") +
@@ -605,7 +580,7 @@ if (!exists("surface_df")) {
 
 The surface shows that survival is highest when bilirubin is low and albumin is
 high (upper-left corner), and drops steeply as bilirubin increases or albumin
-decreases. The non-planar shape of the surface --- particularly the steep
+decreases. The curvature of the surface --- particularly the steep
 gradient at low albumin and high bilirubin --- confirms the interaction detected
 in the conditional plots.
 
@@ -685,7 +660,7 @@ We have walked a full random survival forest analysis with
   where the gap between time horizons widens.
 - Partial dependence from `gg_partial_rfsrc()` gave the risk-adjusted version
   of those curves and backed the log-transforms used in the parametric model.
-- Conditioning plots and the interactive surface drew out the
+- Conditioning plots and the partial dependence surface drew out the
   bilirubin--albumin interaction.
 - `gg_brier()` measured how accurate the predictions actually were, both
   across time and as a single CRPS summary.

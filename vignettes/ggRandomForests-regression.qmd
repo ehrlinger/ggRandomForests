@@ -4,6 +4,8 @@ author: "John Ehrlinger"
 date: today
 format:
   html:
+    fig-format: png
+    fig-dpi: 96
     toc: true
     toc-depth: 3
     html-math-method: mathjax
@@ -56,8 +58,8 @@ Boston Housing data set [@Harrison:1978; @Belsley:1980]:
 3. **Variable selection** --- VIMP and minimal depth via `max.subtree()`
 4. **Dependence plots** --- variable dependence and partial dependence via
    `gg_variable()` and `gg_partial_rfsrc()`
-5. **Variable interactions** --- conditioning plots and interactive 3-D partial
-   dependence surfaces with **plotly**
+5. **Variable interactions** --- conditioning plots and partial dependence
+   surfaces
 
 ```{r packages}
 library(ggplot2)
@@ -346,7 +348,7 @@ plot(gg_v, xvar = "rm", alpha = 0.5) +
 The `rm` effect is strongest in low-`lstat` tracts (bottom-left panels) and
 nearly flat in high-`lstat` tracts, confirming a meaningful interaction.
 
-# Interactive Partial Dependence Surface
+# Partial Dependence Surface
 
 To visualize the joint partial dependence of `medv` on `lstat` and `rm`, we
 compute partial dependence on a grid: 25 values of `rm`, each evaluated at 25
@@ -367,38 +369,12 @@ surface_list <- lapply(rm_grid, function(rm_val) {
 surface_df <- bind_rows(surface_list)
 ```
 
-```{r plotly-surface, fig.cap="Interactive partial dependence surface: median home value as a function of lstat and rm."}
-if (requireNamespace("plotly", quietly = TRUE)) {
-  library(plotly)
-
-  surface_wide <- surface_df |>
-    select(lstat = x, rm, medv = yhat) |>
-    arrange(rm, lstat)
-
-  lstat_vals <- sort(unique(surface_wide$lstat))
-  rm_vals    <- sort(unique(surface_wide$rm))
-  z_matrix   <- matrix(surface_wide$medv,
-                        nrow = length(rm_vals),
-                        ncol = length(lstat_vals),
-                        byrow = TRUE)
-
-  plot_ly(x = lstat_vals, y = rm_vals, z = z_matrix) |>
-    add_surface(colorscale = "Viridis", showscale = TRUE) |>
-    layout(
-      scene = list(
-        xaxis = list(title = "Lower Status (%)"),
-        yaxis = list(title = "Rooms per Dwelling"),
-        zaxis = list(title = "Median Value ($1000s)")
-      )
-    )
-} else {
-  message("Install the plotly package for interactive 3D surfaces.")
-  ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
-    geom_tile() +
-    scale_fill_viridis_c(name = "Median Value") +
-    labs(x = "Lower Status (%)", y = "Rooms per Dwelling") +
-    theme_bw()
-}
+```{r pd-surface, fig.cap="Partial dependence surface: median home value as a function of lstat and rm. Fill colour is the predicted median value."}
+ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
+  geom_tile() +
+  scale_fill_viridis_c(name = "Median Value\n($1000s)") +
+  labs(x = "Lower Status (%)", y = "Rooms per Dwelling") +
+  theme_bw()
 ```
 
 The surface confirms the strong interaction: home values are highest when `lstat`
@@ -419,7 +395,7 @@ We have walked a full random forest regression analysis with
   same shapes the raw-data EDA hinted at.
 - Partial dependence from `gg_partial_rfsrc()` gave the risk-adjusted version
   of those curves: concave for `lstat`, threshold-like for `rm`.
-- Conditioning plots and the interactive surface pulled out the `lstat`--`rm`
+- Conditioning plots and the partial dependence surface pulled out the `lstat`--`rm`
   interaction, with the room-size effect strongest in high-status tracts.
 
 Notice the pattern in all of this. Each `gg_*()` function returns a tidy
