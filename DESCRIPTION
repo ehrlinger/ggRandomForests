@@ -44,7 +44,6 @@ Suggests:
     pkgdown,
     pkgload,
     knitr,
-    plotly,
     ggraph,
     callr
 VignetteBuilder: quarto

@@ -4,6 +4,8 @@ author: "John Ehrlinger"
 date: today
 format:
   html:
+    fig-format: png
+    fig-dpi: 96
     toc: true
     toc-depth: 3
     html-math-method: mathjax
