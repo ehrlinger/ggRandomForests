@@ -35,7 +35,7 @@
       }
     ))
   }
-  # Unknown / non-forest object — return NULL so callers can skip cleanly.
+  # Unknown / non-forest object: return NULL so callers can skip cleanly.
   NULL
 }
 

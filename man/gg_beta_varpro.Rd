@@ -14,17 +14,17 @@ classification family).}
 ignored otherwise (with a warning). Documented forwardables: \code{use.cv},
 \code{use.1se}, \code{nfolds}, \code{maxit}, \code{thresh}, \code{max.rules.tree}, \code{max.tree}.}
 
-\item{cutoff}{Selection threshold on \code{beta_mean}. \code{NULL} (default) →
+\item{cutoff}{Selection threshold on \code{beta_mean}. \code{NULL} (default) means
 \code{mean(beta_mean)} across released variables. Numeric scalar otherwise.}
 
 \item{beta_fit}{Optional pre-computed \code{\link[varPro:beta.varpro]{varPro::beta.varpro()}} result for
-the same \code{object}. \code{NULL} (default) → the wrapper runs \code{beta.varpro()}
+the same \code{object}. \code{NULL} (default) means the wrapper runs \code{beta.varpro()}
 itself. When supplied, must be a \code{varpro}-class object whose \verb{$results}
 has columns \code{tree / branch / variable / n.oob / imp}.}
 
 \item{which_class}{For a classification fit, name of a single response
 level to subset on. \code{NULL} (default) returns all classes (binary fits
-resolve to the \emph{last} factor level — the positive-class convention
+resolve to the \emph{last} factor level, the positive-class convention
 used by \code{glm} and \code{gg_roc}). Ignored with a warning on regression
 fits.}
 }
@@ -59,7 +59,7 @@ Think of the varPro release-rule mechanism as asking: "given a region of
 the feature space that the forest carved out, what changes when I remove
 the constraint on this one variable and let observations leave?" The
 standard importance answer (from \code{\link[=gg_varpro]{gg_varpro()}}) measures that change as a
-z-scored contrast between local estimators — no synthetic data, no
+z-scored contrast between local estimators: no synthetic data, no
 permutation. \code{beta.varpro()} asks the same question with a different
 ruler: for each rule (a tree-branch pair), it fits a one-predictor lasso
 regression of the response on the released variable's values, restricted
@@ -127,7 +127,7 @@ Provenance attribute carries \code{source}, \code{family}, \code{ntree}, \code{c
 \section{What you use this for}{
 
 Picking variables when local effects matter more than aggregate
-split-strength contribution. Compare side-by-side with \code{\link[=gg_varpro]{gg_varpro()}} —
+split-strength contribution. Compare side-by-side with \code{\link[=gg_varpro]{gg_varpro()}}:
 a variable that scores high here but low in \code{gg_varpro} is one whose
 local linear effect inside many rules is real even though its
 release-rule contrast is modest.
@@ -159,7 +159,7 @@ pedantic-beta semantics as regression, applied independently to each
 class.
 
 \strong{Binary default}: \code{which_class = NULL} resolves to the \emph{last}
-factor level of the response — the positive-class convention used
+factor level of the response, the positive-class convention used
 by \code{glm} and \code{gg_roc}. For a 30-day-mortality outcome with levels
 \code{c("no", "yes")}, that means the wrapper shows you \code{"yes"} (the
 event) by default.
@@ -187,7 +187,7 @@ plot(gg)
 
 Byte-for-byte agreement between cached (\code{beta_fit = b}) and uncached
 (\code{beta_fit = NULL}) outputs requires that \code{b} was computed by
-\code{beta.varpro(object, ...)} on the same \code{object} — \code{set.seed()} alone is
+\code{beta.varpro(object, ...)} on the same \code{object}; \code{set.seed()} alone is
 not sufficient, because \code{beta.varpro}'s internal \code{cv.glmnet} fits can
 pick slightly different folds across separate calls. Reuse \code{beta_fit}
 when reproducibility matters.

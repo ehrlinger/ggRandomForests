@@ -43,7 +43,7 @@
 #' rf <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50)
 #'
 #' ## Compute partial dependence via plot.variable (show.plots = FALSE to
-#' ## suppress the base-graphics output — we only want the data)
+#' ## suppress the base-graphics output, we only want the data)
 #' pv <- randomForestSRC::plot.variable(rf, partial = TRUE,
 #'                                       show.plots = FALSE)
 #'

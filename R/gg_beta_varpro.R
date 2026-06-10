@@ -15,7 +15,7 @@
 #' the feature space that the forest carved out, what changes when I remove
 #' the constraint on this one variable and let observations leave?" The
 #' standard importance answer (from [gg_varpro()]) measures that change as a
-#' z-scored contrast between local estimators — no synthetic data, no
+#' z-scored contrast between local estimators: no synthetic data, no
 #' permutation. \code{beta.varpro()} asks the same question with a different
 #' ruler: for each rule (a tree-branch pair), it fits a one-predictor lasso
 #' regression of the response on the released variable's values, restricted
@@ -74,7 +74,7 @@
 #'
 #' @section What you use this for:
 #' Picking variables when local effects matter more than aggregate
-#' split-strength contribution. Compare side-by-side with [gg_varpro()] —
+#' split-strength contribution. Compare side-by-side with [gg_varpro()]:
 #' a variable that scores high here but low in `gg_varpro` is one whose
 #' local linear effect inside many rules is real even though its
 #' release-rule contrast is modest.
@@ -103,7 +103,7 @@
 #' class.
 #'
 #' **Binary default**: `which_class = NULL` resolves to the *last*
-#' factor level of the response — the positive-class convention used
+#' factor level of the response, the positive-class convention used
 #' by `glm` and `gg_roc`. For a 30-day-mortality outcome with levels
 #' `c("no", "yes")`, that means the wrapper shows you `"yes"` (the
 #' event) by default.
@@ -129,7 +129,7 @@
 #' @section Reproducibility:
 #' Byte-for-byte agreement between cached (`beta_fit = b`) and uncached
 #' (`beta_fit = NULL`) outputs requires that `b` was computed by
-#' `beta.varpro(object, ...)` on the same `object` — `set.seed()` alone is
+#' `beta.varpro(object, ...)` on the same `object`; `set.seed()` alone is
 #' not sufficient, because `beta.varpro`'s internal `cv.glmnet` fits can
 #' pick slightly different folds across separate calls. Reuse `beta_fit`
 #' when reproducibility matters.
@@ -143,15 +143,15 @@
 #' @param ... Forwarded to [varPro::beta.varpro()] when `beta_fit = NULL`;
 #'   ignored otherwise (with a warning). Documented forwardables: `use.cv`,
 #'   `use.1se`, `nfolds`, `maxit`, `thresh`, `max.rules.tree`, `max.tree`.
-#' @param cutoff Selection threshold on `beta_mean`. `NULL` (default) →
+#' @param cutoff Selection threshold on `beta_mean`. `NULL` (default) means
 #'   `mean(beta_mean)` across released variables. Numeric scalar otherwise.
 #' @param beta_fit Optional pre-computed [varPro::beta.varpro()] result for
-#'   the same `object`. `NULL` (default) → the wrapper runs `beta.varpro()`
+#'   the same `object`. `NULL` (default) means the wrapper runs `beta.varpro()`
 #'   itself. When supplied, must be a `varpro`-class object whose `$results`
 #'   has columns `tree / branch / variable / n.oob / imp`.
 #' @param which_class For a classification fit, name of a single response
 #'   level to subset on. `NULL` (default) returns all classes (binary fits
-#'   resolve to the *last* factor level — the positive-class convention
+#'   resolve to the *last* factor level, the positive-class convention
 #'   used by `glm` and `gg_roc`). Ignored with a warning on regression
 #'   fits.
 #'
@@ -219,7 +219,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
     which_class <- NULL
   }
 
-  # Capture use.cv from `...` here (NOT inside the internals — the dots
+  # Capture use.cv from `...` here (NOT inside the internals; the dots
   # don't pass through to the internal frame).
   dots_use_cv <- if (is.null(beta_fit)) isTRUE(list(...)$use.cv) else NA
 
@@ -383,7 +383,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   ord_names <- names(sort(beta_mean_total, decreasing = TRUE))
   lvl <- rev(ord_names)
 
-  # Per-class aggregation — long format
+  # Per-class aggregation: long format
   rows <- list()
   for (k in seq_len(n_classes)) {
     col <- imp_cols[k]
@@ -463,8 +463,8 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
   class(base) <- c("gg_beta_varpro", "data.frame")
 
   # Build provenance with shape-stable cutoff:
-  # regr  → c("regr" = NA_real_)
-  # class → named NA_real_ vector, one entry per class level
+  # regr  gives c("regr" = NA_real_)
+  # class gives named NA_real_ vector, one entry per class level
   if (fam == "class") {
     class_levels <- .class_levels_from_varpro(object)
     cutoff_empty <- stats::setNames(rep(NA_real_, length(class_levels)),

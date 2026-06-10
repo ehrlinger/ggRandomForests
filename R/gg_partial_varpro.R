@@ -52,9 +52,9 @@
 #' @section What you use this for:
 #' \itemize{
 #'   \item read the marginal shape of a relationship the varpro model
-#'     found important — monotone, threshold, U-shape, flat;
+#'     found important: monotone, threshold, U-shape, flat;
 #'   \item compare the three partialpro estimators on the same variable
-#'     and flag the ones where parametric and nonparametric disagree —
+#'     and flag the ones where parametric and nonparametric disagree,
 #'     those are the candidates for closer inspection;
 #'   \item report a survival partial dependence on the probability or
 #'     cumulative-hazard scale (\code{scale = "surv"} or \code{"chf"})

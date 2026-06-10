@@ -206,7 +206,7 @@ calc_roc <- function(object,
 }
 
 # Build the sensitivity/specificity table for a single class index k.
-# Plain lapply (not mclapply) — per-threshold work is a single table()
+# Plain lapply (not mclapply): per-threshold work is a single table()
 # + a few arithmetic ops (microseconds); fork overhead would dominate,
 # and the closure-scope fragility caused the earlier xtabs/Windows
 # failure. Returns a data.frame with columns sens, spec, pct.

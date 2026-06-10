@@ -60,7 +60,7 @@
 #'   \code{rf_model$xvar}. All column names must match \code{rf_model$xvar.names}.
 #' @param partial.time Numeric vector of desired time points for survival
 #'   forests (ignored for regression/classification).  Values are automatically
-#'   snapped to the nearest entry in \code{rf_model$time.interest} — see the
+#'   snapped to the nearest entry in \code{rf_model$time.interest}; see the
 #'   \strong{Survival forests} section below.  When \code{NULL} (default),
 #'   three quartile points of \code{time.interest} are used.
 #' @param partial.type Character; type of predicted value for survival

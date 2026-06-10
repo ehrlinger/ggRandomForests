@@ -20,7 +20,7 @@
 #' a typical observation sits in the dense middle of the feature cloud and
 #' takes many splits to isolate, while an unusual observation sits out
 #' near an edge and gets cut off after only a few. So \strong{the depth at
-#' which an observation is isolated is a proxy for how typical it is} —
+#' which an observation is isolated is a proxy for how typical it is}:
 #' shallow depth means anomalous, deep depth means ordinary. Average a
 #' single observation's depth across many trees and the noise washes out,
 #' leaving a stable per-observation rank.
@@ -68,7 +68,7 @@
 #'     against a fitted model and compare the test scores to the training
 #'     distribution.
 #' }
-#' The score is a \emph{rank}, not a probability of being an outlier — two
+#' The score is a \emph{rank}, not a probability of being an outlier: two
 #' observations with \code{howbad = 0.92} are both unusual, not "92\%
 #' likely to be anomalous". Pick a cutoff by looking at where the elbow
 #' rises; \code{\link{plot.gg_isopro}} can annotate either a score
@@ -86,7 +86,7 @@
 #' \code{howbad} (where \emph{higher} is more anomalous). The wrapper
 #' exposes both conventions so nothing is hidden:
 #' \itemize{
-#'   \item \code{case.depth} carries varPro's native polarity — \emph{lower
+#'   \item \code{case.depth} carries varPro's native polarity, \emph{lower
 #'     = more anomalous}. This is the unmodified output of
 #'     \code{predict(object, newdata, quantiles = FALSE)}. Use it to
 #'     cross-reference against raw varPro output.
@@ -128,7 +128,7 @@
 #'       order as the rows of the data passed to
 #'       \code{\link[varPro]{isopro}}.}
 #'     \item{case.depth}{Numeric; mean isolation depth across the forest.
-#'       Lower means the observation was isolated quickly — more
+#'       Lower means the observation was isolated quickly, so more
 #'       anomalous.}
 #'     \item{howbad}{Numeric in \code{[0, 1]}; the \code{case.depth}
 #'       values pushed through their own empirical CDF and flipped so

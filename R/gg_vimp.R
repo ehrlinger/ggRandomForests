@@ -31,15 +31,15 @@
 #' importance}: the forest permutes a variable's observed values across the
 #' out-of-bag (OOB) cases, runs those perturbed cases down the already-grown
 #' trees, and measures how much the OOB prediction error climbs.  That
-#' perturbation is synthetic — the variable's link to the response is broken
-#' on purpose — so a large increase means the variable was carrying genuine
+#' perturbation is synthetic (the variable's link to the response is broken
+#' on purpose) so a large increase means the variable was carrying genuine
 #' signal; near-zero or negative values mean it added noise or nothing at all.
 #'
 #' \code{\link{gg_varpro}()} takes the opposite route, comparing local
 #' estimators on real observed data through varPro's release rules, with no
 #' permutation and no synthetic features.  The two approaches answer "which
 #' variables matter?" by opposite mechanisms, so a variable can rank
-#' differently under each, and that disagreement is itself informative — it
+#' differently under each, and that disagreement is itself informative: it
 #' often signals interaction structure or non-monotone effects that one
 #' mechanism surfaces and the other obscures.
 #'
@@ -211,7 +211,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     gg_dta <- data.frame(object$importance)
   }
 
-  # Single-outcome forests: $importance is a named vector → one-column df.
+  # Single-outcome forests: $importance is a named vector, one-column df.
   # Rename the column and add a "vars" column with the variable names.
   if (ncol(gg_dta) == 1) {
     colnames(gg_dta) <- "VIMP"
@@ -256,8 +256,8 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
         }
       } else {
         # Look up by integer index.
-        # which.outcome = 0  → overall (across-class) importance, column 1
-        # which.outcome = k  → importance for class k, column k+1
+        # which.outcome = 0  gives overall (across-class) importance, column 1
+        # which.outcome = k  gives importance for class k, column k+1
         if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
           stop("which.outcome must be a non-negative integer or a class name.")
         }
@@ -428,8 +428,8 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
           )
         }
       } else {
-        # which.outcome = 0 → overall importance (column 1)
-        # which.outcome = k → class k importance (column k+1)
+        # which.outcome = 0 gives overall importance (column 1)
+        # which.outcome = k gives class k importance (column k+1)
         if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
           stop("which.outcome must be a non-negative integer or a class name.")
         }

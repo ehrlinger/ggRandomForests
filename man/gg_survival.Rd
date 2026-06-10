@@ -99,7 +99,7 @@ Survival estimation is \code{randomForestSRC}-only; \code{randomForest}
 has no survival forest, so no \code{randomForest} method exists.
 }
 \examples{
-## -------- pbc data (default method — raw data columns)
+## -------- pbc data (default method, raw data columns)
 data(pbc, package = "randomForestSRC")
 pbc$time <- pbc$days / 364.25
 

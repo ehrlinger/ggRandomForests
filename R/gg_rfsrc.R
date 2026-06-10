@@ -205,7 +205,7 @@ gg_rfsrc.rfsrc <- function(object, # nolint: cyclocomp_linter
   if (object$family == "class") {
     # For binary classification rfsrc stores exactly two probability columns
     # (one per class); we drop the first (the "negative" class probability)
-    # since it is redundant — prob(class 2) = 1 - prob(class 1).
+    # since it is redundant: prob(class 2) = 1 - prob(class 1).
     # Multi-class forests (3+ classes) keep all columns.
     if (oob) {
       gg_dta <-
@@ -301,7 +301,7 @@ gg_rfsrc.rfsrc <- function(object, # nolint: cyclocomp_linter
         arg_list$conf.int
       }
 
-      # Accept a single coverage probability (e.g. 0.95 → two-sided tails
+      # Accept a single coverage probability (e.g. 0.95 gives two-sided tails
       # at 0.025 and 0.975) or a length-2 vector of explicit quantile probs.
       if (length(level) == 1) {
         if (level > 1) {
@@ -314,7 +314,7 @@ gg_rfsrc.rfsrc <- function(object, # nolint: cyclocomp_linter
         level_set <- sort(level)
       }
 
-      # Number of bootstrap resamples — default to the number of observations.
+      # Number of bootstrap resamples: default to the number of observations.
       if (is.null(arg_list$bs.sample)) {
         bs_samples <- nrow(gg_dta)
       } else {

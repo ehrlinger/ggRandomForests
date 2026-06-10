@@ -351,7 +351,7 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
         }
       )
   } else {
-    # Unknown forest type — not yet implemented
+    # Unknown forest type: not yet implemented
     stop(paste(
       "Plotting for ",
       class(gg_dta)[2],

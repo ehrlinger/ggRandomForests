@@ -38,15 +38,15 @@ object and reshapes it into a tidy data set.
 importance}: the forest permutes a variable's observed values across the
 out-of-bag (OOB) cases, runs those perturbed cases down the already-grown
 trees, and measures how much the OOB prediction error climbs.  That
-perturbation is synthetic — the variable's link to the response is broken
-on purpose — so a large increase means the variable was carrying genuine
+perturbation is synthetic (the variable's link to the response is broken
+on purpose) so a large increase means the variable was carrying genuine
 signal; near-zero or negative values mean it added noise or nothing at all.
 
 \code{\link{gg_varpro}()} takes the opposite route, comparing local
 estimators on real observed data through varPro's release rules, with no
 permutation and no synthetic features.  The two approaches answer "which
 variables matter?" by opposite mechanisms, so a variable can rank
-differently under each, and that disagreement is itself informative — it
+differently under each, and that disagreement is itself informative: it
 often signals interaction structure or non-monotone effects that one
 mechanism surfaces and the other obscures.
 

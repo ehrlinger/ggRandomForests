@@ -1,8 +1,8 @@
 Package: ggRandomForests
-Version: 3.0.0
+Version: 3.1.0
 
-ggRandomForests v3.1.0 (development)
-====================================
+ggRandomForests v3.1.0
+======================
 * Fix: `gg_vimp()` for single-outcome rfsrc forests now correctly flags
   variables with non-positive VIMP in the `positive` column (affecting
   plot coloring). The column was named `VIMP` (uppercase) in single-outcome

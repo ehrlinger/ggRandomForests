@@ -156,7 +156,7 @@ gg_brier.rfsrc <- function(object,
   bs_quartile <- vapply(seq_len(4), function(k) {
     in_bin <- mort > mort_breaks[k] & mort <= mort_breaks[k + 1]
     if (!any(in_bin, na.rm = TRUE)) {
-      # Empty bin — can occur when mort has ties at a quantile boundary.
+      # Empty bin: can occur when mort has ties at a quantile boundary.
       return(rep(NA_real_, nrow(bs_df)))
     }
     colMeans(brier_matx[in_bin, , drop = FALSE], na.rm = TRUE)

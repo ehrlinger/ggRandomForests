@@ -74,8 +74,8 @@ importances.
 \section{What varpro is doing}{
 
 Permutation importance asks "what happens to OOB accuracy when I scramble
-this variable?" That works, but it leans on artificial data — the
-permuted column — and the answer can be unstable when variables are
+this variable?" That works, but it leans on artificial data (the
+permuted column) and the answer can be unstable when variables are
 correlated. The varpro framework (Lu and Ishwaran, 2024) replaces
 permutation with \emph{release rules}. The forest is grown with guided
 splitting; from a subset of trees varpro samples a collection of
@@ -83,7 +83,7 @@ decision-rule branches; for each variable it then compares the
 response inside the rule's region to the response after the rule's
 constraint on that variable is "released". The size of that change,
 aggregated over many rules and trees, is the variable's importance.
-No synthetic covariates, no permutation — the contrast is between two
+No synthetic covariates, no permutation: the contrast is between two
 real subsets of the data.
 
 Because varpro builds importance from rules sampled over trees, every
@@ -123,7 +123,7 @@ classification.
 above varpro's z cutoff;
 \item see, via the boxplot's spread and the per-tree points
 (\code{faithful = TRUE}), how stable each variable's importance
-is across trees — a high median with a wide box is a different
+is across trees: a high median with a wide box is a different
 story from a high median with a tight box;
 \item for a classification forest, ask which variables drive which
 class (\code{conditional = TRUE}) rather than just which

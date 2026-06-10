@@ -14,7 +14,7 @@
 #' rule region, it compares a local estimator inside that region to what
 #' the estimator becomes after the constraint on the tested variable is
 #' removed ("released"). That contrast is summed over many rules and trees
-#' to get a global z-score — the quantity [gg_varpro()] shows. What
+#' to get a global z-score: the quantity [gg_varpro()] shows. What
 #' `ivarpro()` adds is a per-observation view of the same mechanism.
 #'
 #' Concretely: `ivarpro()` walks the forest's rules and, for each
@@ -427,7 +427,7 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
   }
 
   # Unified factor-level ordering across all (obs, class), REVERSED so the
-  # most-important variable lands at the TOP after coord_flip — shared
+  # most-important variable lands at the TOP after coord_flip; shared
   # across every class facet for alignment.
   agg <- tapply(abs(long$local_imp), long$variable, mean, na.rm = TRUE)
   ord_names <- names(sort(agg, decreasing = TRUE))

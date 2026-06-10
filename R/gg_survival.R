@@ -65,7 +65,7 @@
 #' @seealso \code{\link{plot.gg_survival}}
 #'
 #' @examples
-#' ## -------- pbc data (default method — raw data columns)
+#' ## -------- pbc data (default method, raw data columns)
 #' data(pbc, package = "randomForestSRC")
 #' pbc$time <- pbc$days / 364.25
 #'

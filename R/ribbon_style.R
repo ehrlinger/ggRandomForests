@@ -4,7 +4,7 @@
 ####  Every plot.gg_* method that draws a ribbon (CI band on KM/NA curves,
 ####  bootstrap CI band on gg_rfsrc survival curves, per-subject envelope
 ####  on gg_brier) uses these constants so the family renders uniformly.
-####  This is styling only — the underlying probability/coverage of each
+####  This is styling only. The underlying probability/coverage of each
 ####  ribbon is computed elsewhere and is intentionally heterogeneous
 ####  (95% inferential CIs vs. 15-85 percentile descriptive envelopes).
 ####**********************************************************************
@@ -26,9 +26,9 @@
 # error that arises when alpha is both in ... and set explicitly on geom_ribbon.
 #
 # Returns a list with:
-#   $ribbon_alpha  — numeric alpha to pass explicitly to geom_ribbon()
-#   $step_dots     — original dots (forwarded to geom_step / geom_line)
-#   $ribbon_dots   — dots with alpha removed (ribbon alpha is explicit)
+#   $ribbon_alpha  : numeric alpha to pass explicitly to geom_ribbon()
+#   $step_dots     : original dots (forwarded to geom_step / geom_line)
+#   $ribbon_dots   : dots with alpha removed (ribbon alpha is explicit)
 .gg_split_alpha <- function(dots) {
   user_alpha <- dots[["alpha"]]
   list(
