@@ -271,7 +271,7 @@ gg_variable.randomForest <- function(object,
                                      ...) {
   arg_list <- list(...)
 
-  # randomForest uses object$votes (OOB vote matrix) unconditionally — it is the
+  # randomForest uses object$votes (OOB vote matrix) unconditionally; it is the
   # only honest per-class probability estimate.  In-bag class probabilities are
   # not exposed through a consistent randomForest API, so oob=FALSE is not
   # supported.  Warn the caller rather than silently ignoring the argument.
@@ -314,7 +314,7 @@ gg_variable.randomForest <- function(object,
 
   gg_dta <- predictors
   # For classification forests use per-class OOB vote fractions (object$votes),
-  # stored as yhat.<classname> columns — the same shape gg_variable.rfsrc
+  # stored as yhat.<classname> columns: the same shape gg_variable.rfsrc
   # produces.  For regression a single numeric yhat column suffices.
   if (object$type == "classification") {
     preds    <- object$votes   # n × n_classes matrix; may be raw counts or fractions

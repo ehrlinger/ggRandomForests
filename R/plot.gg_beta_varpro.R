@@ -9,8 +9,8 @@
 #'
 #' @section Reading the chart:
 #' Each bar is the average magnitude of a per-rule lasso coefficient for
-#' that variable. **The numeric scale carries the predictor's units** —
-#' if "age" is in years and "creatinine" is in mg/dL, a longer bar for
+#' that variable. **The numeric scale carries the predictor's units.**
+#' If "age" is in years and "creatinine" is in mg/dL, a longer bar for
 #' age does not mean age is "more important" in any unit-free sense.
 #' Comparisons across data sets or across variables with very different
 #' units require keeping the units context in mind. Within one data set,
@@ -19,7 +19,7 @@
 #' Variables above the cutoff are coloured blue and flagged `selected`;
 #' variables below are grey. Lasso shrinkage can drive a rule's
 #' \eqn{\hat{\beta}}{beta hat} to
-#' exactly zero — those rules are kept in the average, so a variable
+#' exactly zero; those rules are kept in the average, so a variable
 #' with many shrunk-to-zero rules will sit lower in the ranking than
 #' one whose released coefficients are consistently non-zero.
 #'

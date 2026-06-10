@@ -63,15 +63,27 @@ path errors with a message naming v3.1.0 as the tracker.
 }
 \section{What this is doing}{
 
-\code{ivarpro()} walks the varPro forest's rules and, for each
-(observation, variable) pair, computes a scaled per-rule
-contribution to predicting that observation. Per-rule LOO removes
-the observation from its own rule before scoring. Per-region
-scaling (\code{scale = "local"}, default) standardises the contribution
-by the rule's local response standard deviation so values are
-comparable across rules of different size. Aggregating those
-per-rule scores into one number per (obs, variable) pair gives the
-\code{local_imp} cell.
+The varPro framework builds importance from release rules: for a given
+rule region, it compares a local estimator inside that region to what
+the estimator becomes after the constraint on the tested variable is
+removed ("released"). That contrast is summed over many rules and trees
+to get a global z-score: the quantity \code{\link[=gg_varpro]{gg_varpro()}} shows. What
+\code{ivarpro()} adds is a per-observation view of the same mechanism.
+
+Concretely: \code{ivarpro()} walks the forest's rules and, for each
+(observation, variable) pair, computes a scaled per-rule contribution
+to predicting that observation. Per-rule LOO removes the observation
+from its own rule before scoring, so the contribution is not inflated
+by the observation having helped define the region. Per-region scaling
+(\code{scale = "local"}, default) standardises the contribution by the
+rule's local response standard deviation so values are comparable
+across rules of different size. Aggregating those per-rule scores into
+one number per (obs, variable) pair gives the \code{local_imp} cell.
+
+No permutation, no synthetic data: the contrast is always between real
+subsets of the observed data, defined by the forest's own rules. This
+is the same no-synthetic-features property that distinguishes
+\code{\link[=gg_varpro]{gg_varpro()}} from \code{\link[=gg_vimp]{gg_vimp()}}'s Breiman-Cutler permutation importance.
 }
 
 \section{What \code{local_imp} actually is (pedantic)}{
@@ -174,5 +186,5 @@ if (requireNamespace("varPro", quietly = TRUE) &&
 
 }
 \seealso{
-\code{\link[=gg_varpro]{gg_varpro()}}, \code{\link[=gg_beta_varpro]{gg_beta_varpro()}}, \code{\link[varPro:ivarpro]{varPro::ivarpro()}}.
+\code{\link[=gg_varpro]{gg_varpro()}}, \code{\link[=gg_vimp]{gg_vimp()}}, \code{\link[=gg_beta_varpro]{gg_beta_varpro()}}, \code{\link[varPro:ivarpro]{varPro::ivarpro()}}.
 }

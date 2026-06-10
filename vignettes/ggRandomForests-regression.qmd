@@ -174,9 +174,13 @@ check --- we are more interested in the *why* behind these predictions.
 
 ## Variable importance (VIMP)
 
-VIMP measures the increase in prediction error when a variable is randomly
-permuted [@Breiman:2001]. Large positive values mean the variable is essential;
-negative values suggest noise is more informative.
+VIMP, computed by [randomForestSRC](https://www.randomforestsrc.org), measures
+the increase in OOB prediction error when a variable's values are randomly
+permuted across the out-of-bag observations [@Breiman:2001]. Permutation severs
+the variable's link to the response on purpose: if breaking that link hurts
+accuracy, the variable is carrying real signal. Large positive values mean the
+variable is essential; negative values suggest it is no more informative than
+noise.
 
 ```{r vimp-plot, fig.cap="VIMP ranking. Longer blue bars indicate more important variables."}
 plot(gg_vimp(rfsrc_Boston), lbls = st_labs)
@@ -185,6 +189,16 @@ plot(gg_vimp(rfsrc_Boston), lbls = st_labs)
 `lstat` and `rm` dominate, with a clear gap to the remaining predictors. All
 VIMP values are positive, indicating every predictor contributes at least
 marginally.
+
+The permutation approach contrasts with varPro release-rule importance
+[@Lu2024varpro], available through `gg_varpro()`. Rather than perturbing data
+synthetically, varPro compares local estimators on the observed data directly:
+no permutation, no manufactured feature values. Because the two methods measure
+fundamentally different things, a variable can rank high under one and low under
+the other. When they agree, the evidence is strong; when they disagree, that
+disagreement itself is worth investigating, pointing either to a variable whose
+effect is highly non-linear or to one that matters only in combination with
+others.
 
 ## Minimal depth
 
