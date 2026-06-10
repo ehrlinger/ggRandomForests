@@ -16,7 +16,7 @@
 #   2. Run devtools::test(filter = "snapshots")
 #   3. Call testthat::snapshot_accept()
 #   4. Commit tests/testthat/_snaps/ to the repo
-if (requireNamespace("vdiffr", quietly = TRUE) &&
+if (requireNamespace("vdiffr", quietly = TRUE) && # nolint: cyclocomp_linter
     identical(Sys.getenv("VDIFFR_RUN_TESTS"), "true")) {
 
 ## ---- Shared fixtures -------------------------------------------------------
