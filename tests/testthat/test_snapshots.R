@@ -476,4 +476,24 @@ test_that("gg-auct-chf", {
   vdiffr::expect_doppelganger("gg-auct-chf", plot(gg))
 })
 
+} else {
+
+## ---- Preserve baselines when the vdiffr comparison is opted out ------------
+# When VDIFFR_RUN_TESTS != "true" (or vdiffr is unavailable) none of the
+# expect_doppelganger() calls above register, so testthat's snapshot cleanup
+# would treat every committed baseline under _snaps/snapshots/ as orphaned and
+# delete it during a normal `devtools::test()` run. Announcing each file marks
+# it as still in use so cleanup leaves the repo untouched.
+# See ?testthat::announce_snapshot_file.
+test_that("vdiffr baseline snapshots are preserved when comparison is skipped", {
+  # announce_snapshot_file() (and vdiffr's file snapshots) are 3rd-edition
+  # features; the package otherwise defaults to edition 2, so opt in locally.
+  local_edition(3)
+  snap_dir <- test_path("_snaps", "snapshots")
+  skip_if(!dir.exists(snap_dir), "no vdiffr baselines present to preserve")
+  svgs <- list.files(snap_dir, pattern = "\\.svg$")
+  for (f in svgs) announce_snapshot_file(name = f)
+  succeed()
+})
+
 } # end CI guard
