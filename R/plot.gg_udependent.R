@@ -12,7 +12,7 @@
 #' Fruchterman-Reingold layout (the default) places mutually connected
 #' variables near each other, so the picture tends to show hubs and
 #' the clusters around them rather than a tidy ring. The eye usually
-#' goes first to the largest blue node — a variable that is both in
+#' goes first to the largest blue node: a variable that is both in
 #' the signal set and connects to many others is a hub of the
 #' dependency structure. Edges with wider, more opaque strokes are
 #' stronger dependencies; thin, faint edges sit near the threshold and
@@ -20,9 +20,9 @@
 #'
 #' Grey, low-degree nodes are the ones UVarPro thinks are not
 #' contributing much to the structure. (Truly isolated nodes are
-#' dropped by `gg_udependent()` before the graph is drawn — what you
+#' dropped by `gg_udependent()` before the graph is drawn; what you
 #' see is the connected component.) A cluster of mutually
-#' connected variables is worth checking for redundancy — they may be
+#' connected variables is worth checking for redundancy; they may be
 #' several views of the same underlying quantity.
 #'
 #' @section What this tells you:

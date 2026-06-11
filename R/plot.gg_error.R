@@ -255,7 +255,7 @@ plot.gg_error <- function(x, ...) {
     gg_plt <- gg_plt + ggplot2::geom_line() + err_labs
   }
 
-  # Hide the legend when there is only a single outcome variable — the colour
+  # Hide the legend when there is only a single outcome variable: the colour
   # key adds no information and clutters the plot.  For single-outcome forests
   # (regression / survival) the data is never gathered, so there is no
   # "variable" column; suppress the legend unconditionally in that case.

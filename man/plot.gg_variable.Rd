@@ -84,16 +84,19 @@ plot(gg_dta, xvar = "Wind")
 plot(gg_dta, xvar = "Temp")
 plot(gg_dta, xvar = "Solar.R")
 
-# Panel plot across continuous predictors
-plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
-
 # Factor variable uses notched boxplots
 plot(gg_dta, xvar = "Month", notch = TRUE)
+
+\donttest{
+# Panel plot across continuous predictors (loess smooths; slower)
+plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
+}
 
 ## ------------------------------------------------------------
 ## survival examples
 ## ------------------------------------------------------------
 ## -------- veteran data
+\donttest{
 data(veteran, package = "randomForestSRC")
 set.seed(42)
 rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., veteran,
@@ -119,6 +122,7 @@ plot(gg_dta, xvar = "age")
 
 # Panel coplot across two predictors and three time points
 plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
+}
 
 }
 \references{

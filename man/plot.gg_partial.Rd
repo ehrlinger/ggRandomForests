@@ -19,10 +19,18 @@ combined vertically via \code{patchwork::wrap_plots()}, which also
 satisfies \code{inherits(p, "ggplot")}.
 }
 \description{
-Produces ggplot2 partial dependence curves from the named list returned by
-\code{\link{gg_partial}}.  Continuous predictors are shown as line plots;
-categorical predictors are shown as bar charts.  Both panels are faceted by
-variable name so multiple predictors can be compared at a glance.
+Turns a \code{\link{gg_partial}} object into a ggplot2 figure.  Each curve
+is a partial dependence trace -- the forest's average prediction as one
+predictor is swept across its range while the rest are marginalized over the
+training data.  Continuous predictors appear as line plots; categorical
+predictors appear as bar charts.  Both panels are faceted by variable name
+so you can compare the shape and scale of each variable's effect at a
+glance.
+}
+\details{
+When a \code{model} label was attached in \code{gg_partial()}, lines are
+coloured by model -- handy for overlaying results from two forests (e.g.,
+one tuned, one default) in the same figure.
 }
 \examples{
 set.seed(42)

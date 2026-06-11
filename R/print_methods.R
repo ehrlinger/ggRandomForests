@@ -3,7 +3,7 @@
 ####
 ####  All print methods follow the same shape: emit a one-line header
 ####  (class label + provenance) and return the object invisibly. They do
-####  NOT print rows — gg_* objects inherit data.frame (or list), so
+####  NOT print rows. gg_* objects inherit data.frame (or list), so
 ####  head() and as.data.frame() remain available for inspecting contents.
 ####**********************************************************************
 

@@ -206,7 +206,7 @@ calc_roc <- function(object,
 }
 
 # Build the sensitivity/specificity table for a single class index k.
-# Plain lapply (not mclapply) — per-threshold work is a single table()
+# Plain lapply (not mclapply): per-threshold work is a single table()
 # + a few arithmetic ops (microseconds); fork overhead would dominate,
 # and the closure-scope fragility caused the earlier xtabs/Windows
 # failure. Returns a data.frame with columns sens, spec, pct.
@@ -320,8 +320,9 @@ calc_auc <- function(x) {
   # Sort in decreasing specificity so FPR = 1-spec increases monotonically
   x <- x[order(x$spec, decreasing = TRUE), ]
 
-  # Δ(FPR) = -(Δspec)  — spec decreases, so (spec[i] - spec[i+1]) > 0
-  # Average height of trapezoid = (sens[i] + sens[i+1]) / 2
+  # Trapezoid area = sens_avg * Δspec, where Δspec = spec[i] - spec[i+1] > 0
+  # (spec decreases left-to-right). This equals sens_avg * Δ(1-FPR), which
+  # gives the standard AUC = ∫ sens d(FPR) with a positive sign.
   auc <- (x$sens + shift(x$sens)) / 2 * (x$spec - shift(x$spec)) # nolint: object_usage_linter
   sum(auc, na.rm = TRUE)
 }

@@ -331,6 +331,34 @@ test_that("gg_vimp regression", {
 
 })
 
+test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP column", {
+  # Regression test for the bug where gg_dta$vimp was accessed but the column
+  # is named "VIMP" (uppercase) in single-outcome rfsrc fits, leaving positive
+  # always TRUE even for variables with non-positive VIMP.
+  #
+  # `const` is a zero-variance predictor: rfsrc cannot split on it, so its VIMP
+  # is exactly 0 (non-positive) on every platform. That deterministically
+  # exercises the bug condition (the pre-fix code left every `positive` TRUE).
+  set.seed(2024L)
+  aq <- na.omit(airquality)
+  aq$const <- 1
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = aq,
+                               ntree = 200, importance = TRUE)
+  gg_dta <- gg_vimp(rf)
+
+  expect_s3_class(gg_dta, "gg_vimp")
+  expect_true("positive" %in% colnames(gg_dta))
+
+  vimp_col <- intersect(c("vimp", "VIMP"), colnames(gg_dta))[1]
+  expect_false(is.na(vimp_col))
+  # The invariant, asserted for every row: positive is TRUE exactly when VIMP > 0.
+  expect_equal(gg_dta$positive, gg_dta[[vimp_col]] > 0)
+  # The constant predictor guarantees at least one non-positive VIMP, so the
+  # pre-fix all-TRUE behaviour would fail here.
+  expect_true(any(!gg_dta$positive))
+  expect_s3_class(plot(gg_dta), "ggplot")
+})
+
 test_that("gg_vimp.randomForest regression: vimp column present even when importance is IncNodePurity", {
   # Guard test: when randomForest stores importance as IncNodePurity (not X.IncMSE),
   # gg_vimp must still produce a 'vimp' column so plot.gg_vimp and the positive

@@ -10,15 +10,27 @@
 #' `ivarpro()` call.
 #'
 #' @section What this is doing:
-#' `ivarpro()` walks the varPro forest's rules and, for each
-#' (observation, variable) pair, computes a scaled per-rule
-#' contribution to predicting that observation. Per-rule LOO removes
-#' the observation from its own rule before scoring. Per-region
-#' scaling (`scale = "local"`, default) standardises the contribution
-#' by the rule's local response standard deviation so values are
-#' comparable across rules of different size. Aggregating those
-#' per-rule scores into one number per (obs, variable) pair gives the
-#' `local_imp` cell.
+#' The varPro framework builds importance from release rules: for a given
+#' rule region, it compares a local estimator inside that region to what
+#' the estimator becomes after the constraint on the tested variable is
+#' removed ("released"). That contrast is summed over many rules and trees
+#' to get a global z-score: the quantity [gg_varpro()] shows. What
+#' `ivarpro()` adds is a per-observation view of the same mechanism.
+#'
+#' Concretely: `ivarpro()` walks the forest's rules and, for each
+#' (observation, variable) pair, computes a scaled per-rule contribution
+#' to predicting that observation. Per-rule LOO removes the observation
+#' from its own rule before scoring, so the contribution is not inflated
+#' by the observation having helped define the region. Per-region scaling
+#' (`scale = "local"`, default) standardises the contribution by the
+#' rule's local response standard deviation so values are comparable
+#' across rules of different size. Aggregating those per-rule scores into
+#' one number per (obs, variable) pair gives the `local_imp` cell.
+#'
+#' No permutation, no synthetic data: the contrast is always between real
+#' subsets of the observed data, defined by the forest's own rules. This
+#' is the same no-synthetic-features property that distinguishes
+#' [gg_varpro()] from [gg_vimp()]'s Breiman-Cutler permutation importance.
 #'
 #' @section What `local_imp` actually is (pedantic):
 #' `local_imp[i, v]` is the **scaled aggregated rule contribution** of
@@ -126,7 +138,7 @@
 #'   `mean(|local_imp|)` descending across all rows (the unified
 #'   ranking axis shared across facets / panels).
 #'
-#' @seealso [gg_varpro()], [gg_beta_varpro()], [varPro::ivarpro()].
+#' @seealso [gg_varpro()], [gg_vimp()], [gg_beta_varpro()], [varPro::ivarpro()].
 #'
 #' @examples
 #' \donttest{
@@ -415,7 +427,7 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
   }
 
   # Unified factor-level ordering across all (obs, class), REVERSED so the
-  # most-important variable lands at the TOP after coord_flip — shared
+  # most-important variable lands at the TOP after coord_flip; shared
   # across every class facet for alignment.
   agg <- tapply(abs(long$local_imp), long$variable, mean, na.rm = TRUE)
   ord_names <- names(sort(agg, decreasing = TRUE))

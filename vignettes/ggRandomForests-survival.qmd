@@ -4,6 +4,8 @@ author: "John Ehrlinger"
 date: today
 format:
   html:
+    fig-format: png
+    fig-dpi: 96
     toc: true
     toc-depth: 3
     html-math-method: mathjax
@@ -42,8 +44,19 @@ extend the method to right-censored, time-to-event data by growing trees with a
 log-rank splitting rule and aggregating Kaplan--Meier estimates within terminal
 nodes.
 
-The **randomForestSRC** package [@Ishwaran:RFSRC:2014] provides a unified
-implementation for survival, regression, and classification forests.
+The forest returns three ensemble quantities for each subject. First, the
+survival function $\hat{S}(t)$: the probability of surviving past time $t$,
+bounded between 0 and 1. Second, the cumulative hazard function (CHF):
+$\hat{H}(t) = -\log \hat{S}(t)$, an unbounded, monotone-increasing summary of
+accumulated risk. Third, mortality: the expected number of events a subject
+would accumulate if followed indefinitely under their covariate profile,
+computed by summing the CHF over the observed time grid. Mortality is an
+unbounded relative-risk score, not a probability, and works well as a single
+scalar for ranking patients by risk.
+
+The **[randomForestSRC](https://www.randomforestsrc.org)** package
+[@Ishwaran:RFSRC:2014] provides a unified implementation for survival,
+regression, and classification forests.
 **ggRandomForests** extracts tidy data objects from `rfsrc` fits and renders
 them with **ggplot2** [@Wickham:2009], making it straightforward to explore how
 a forest is constructed, which variables matter, and how the response depends on
@@ -57,8 +70,8 @@ primary biliary cirrhosis (PBC) data set [@fleming:1991]:
 3. **Variable selection** --- VIMP and minimal depth via `max.subtree()`
 4. **Dependence plots** --- variable dependence and partial dependence via
    `gg_variable()` and `gg_partial_rfsrc()`
-5. **Variable interactions** --- conditioning plots and interactive 3-D partial
-   dependence surfaces with **plotly**
+5. **Variable interactions** --- conditioning plots and partial dependence
+   surfaces
 
 ```{r packages}
 library(ggplot2)
@@ -202,6 +215,11 @@ fall outside the biological range.
 
 ## Kaplan--Meier survival by treatment
 
+The Kaplan--Meier estimate is the marginal survival curve with no covariate
+adjustment. It serves as the no-covariate baseline: once we fit a forest,
+comparing the KM curves to the forest's OOB predictions lets us judge how much
+predictive signal the covariates add beyond the raw event rate.
+
 We restrict to the 312 trial patients and construct KM curves with `gg_survival`.
 
 ```{r km-survival, fig.cap="KM survival estimates by treatment group with 95% confidence bands."}
@@ -259,12 +277,13 @@ state, which is required for `partial.rfsrc()` to work correctly.
 # Step 1: impute missing values via random forest proximity
 pbc_imputed <- impute.rfsrc(Surv(years, status) ~ .,
                              data    = pbc_trial,
-                             ntree   = 500,
+                             ntree   = 100,
                              nimpute = 2)
 
 # Step 2: grow the survival forest on the complete imputed data
 rfsrc_pbc <- rfsrc(Surv(years, status) ~ .,
                    data      = pbc_imputed,
+                   ntree     = 150,
                    nsplit    = 10,
                    tree.err  = TRUE,
                    importance = TRUE)
@@ -294,9 +313,13 @@ gg_rsf <- plot(gg_rfsrc(rfsrc_pbc), alpha = 0.2) +
 gg_rsf
 ```
 
-Each curve represents one patient's OOB prediction, extended to the last
-follow-up time. Red (death event) curves generally fall faster, confirming the
-forest discriminates between risk groups.
+Each curve is one patient's OOB ensemble survival function $\hat{S}(t)$,
+extended to the last follow-up time. The forest never saw that patient when
+building its prediction, so these are genuine out-of-sample estimates. Red
+(death event) curves generally fall faster and reach lower survival
+probabilities, confirming the forest separates risk groups. Comparing this
+spread to the marginal KM curves from the previous section shows how much the
+covariates tighten risk stratification.
 
 ```{r rfsrc-by-treatment, fig.cap="Median predicted survival by treatment group with 95% confidence bands."}
 plot(gg_rfsrc(rfsrc_pbc, by = "treatment")) +
@@ -334,9 +357,13 @@ examine variable importance (VIMP) and minimal depth.
 
 ## Variable importance (VIMP)
 
-VIMP measures the increase in prediction error when a variable is randomly
-permuted. Large positive values mean the variable is essential for accuracy;
-negative values suggest noise is more informative than the variable.
+VIMP measures the increase in prediction error when a variable's values are
+randomly permuted across the out-of-bag sample. For survival forests the
+prediction error is the Harrell C-statistic complement (1 − C), so permuting
+an important variable hurts C and yields a large positive VIMP. A negative VIMP
+means the variable is adding noise: the forest would predict better without it.
+See the [randomForestSRC](https://www.randomforestsrc.org) documentation for
+details on the VIMP calculation for censored outcomes [@Ishwaran:2007a].
 
 ```{r vimp-plot, fig.width=6, fig.cap="Variable importance ranking. Blue = positive VIMP, red = negative."}
 plot(gg_vimp(rfsrc_pbc), lbls = st_labs) +
@@ -376,9 +403,12 @@ xvar_all <- c(xvar, xvar_cat)
 
 ## Variable dependence plots
 
-Variable dependence shows each patient's predicted survival at a given time
-horizon plotted against a predictor of interest. Points are colored by event
-status; a loess smooth indicates the trend.
+Variable dependence shows each patient's predicted survival probability
+$\hat{S}(t_0)$ at a fixed time horizon $t_0$, plotted against a predictor of
+interest. Because $\hat{S}(t_0)$ is a probability, the y-axis is always bounded
+to [0, 1]. Points are colored by event status; a loess smooth traces the
+overall trend while the individual points show how much variance remains after
+the forest accounts for all other covariates.
 
 ```{r vardep-bili, fig.height=4, fig.cap="Variable dependence of survival at 1 and 3 years on bilirubin."}
 gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3),
@@ -425,7 +455,7 @@ survival.
 ::: {.callout-warning}
 **Known issue (draft):** `randomForestSRC::partial.rfsrc()` currently fails for
 survival forests in randomForestSRC ≥ 3.3.  The partial dependence and
-interactive surface sections below will show an error until this upstream bug
+surface sections below will show an error until this upstream bug
 is resolved.  All other sections of this vignette are fully functional.
 :::
 
@@ -513,15 +543,15 @@ plot(gg_v1, xvar = "bili", alpha = 0.5) +
 The effect of bilirubin attenuates at higher albumin levels, suggesting an
 interaction between these two liver function markers.
 
-# Interactive Partial Dependence Surfaces
+# Partial Dependence Surfaces
 
 For a richer view of the interaction between bilirubin and albumin, we construct
-a partial dependence surface. We compute partial dependence on a grid of 25
+a partial dependence surface. We compute partial dependence on a grid of 8
 albumin values, each evaluated at 25 bilirubin points.
 
 ```{r surface-data, error=TRUE, cache=FALSE}
 # Create grid of albumin values
-alb_grid <- quantile_pts(pbc_trial$albumin, groups = 25)
+alb_grid <- quantile_pts(pbc_trial$albumin, groups = 8)
 
 # For each albumin value, compute partial dependence on bili at ~1 year
 surface_list <- lapply(alb_grid, function(alb_val) {
@@ -537,37 +567,10 @@ surface_list <- lapply(alb_grid, function(alb_val) {
 surface_df <- bind_rows(surface_list)
 ```
 
-```{r plotly-surface, error=TRUE, fig.cap="Interactive partial dependence surface: survival as a function of bilirubin and albumin."}
+```{r pd-surface, error=TRUE, fig.height=5, fig.cap="Partial dependence surface: survival at 1 year as a function of bilirubin and albumin. Fill colour is the predicted survival probability."}
 if (!exists("surface_df")) {
-  message("surface_df not available — skipping plotly surface (see surface-data chunk error above).")
-} else if (requireNamespace("plotly", quietly = TRUE)) {
-  # Reshape for surface
-  library(plotly)
-
-  surface_wide <- surface_df |>
-    select(bili = x, albumin, survival = yhat) |>
-    arrange(albumin, bili)
-
-  # Create matrix form
-  bili_vals <- sort(unique(surface_wide$bili))
-  alb_vals  <- sort(unique(surface_wide$albumin))
-  z_matrix  <- matrix(surface_wide$survival,
-                       nrow = length(alb_vals),
-                       ncol = length(bili_vals),
-                       byrow = TRUE)
-
-  plot_ly(x = bili_vals, y = alb_vals, z = z_matrix) |>
-    add_surface(colorscale = "Viridis", showscale = TRUE) |>
-    layout(
-      scene = list(
-        xaxis = list(title = "Bilirubin"),
-        yaxis = list(title = "Albumin"),
-        zaxis = list(title = "Survival")
-      )
-    )
+  message("surface_df not available --- skipping surface (see surface-data chunk error above).")
 } else {
-  message("Install the plotly package for interactive 3D surfaces.")
-  # Fallback: contour plot with ggplot2
   ggplot(surface_df, aes(x = x, y = albumin, fill = yhat)) +
     geom_tile() +
     scale_fill_viridis_c(name = "Survival") +
@@ -578,20 +581,32 @@ if (!exists("surface_df")) {
 
 The surface shows that survival is highest when bilirubin is low and albumin is
 high (upper-left corner), and drops steeply as bilirubin increases or albumin
-decreases. The non-planar shape of the surface --- particularly the steep
+decreases. The curvature of the surface --- particularly the steep
 gradient at low albumin and high bilirubin --- confirms the interaction detected
 in the conditional plots.
 
 ## Brier Score and CRPS
 
 VIMP and minimal depth tell us which predictors matter, but they say nothing
-about how good the forest's survival predictions actually are. The Brier
-score answers that question. At each point on the event-time grid it compares
-the predicted survival probability against what actually happened, with
-inverse-probability-of-censoring weighting (IPCW) so that right-censored
-subjects do not bias the result [@graf:1999]. `gg_brier()` wraps
-`randomForestSRC::get.brier.survival()` and hands back a tidy data frame
-ready to plot.
+about how well the forest's survival predictions are calibrated. The Brier
+score answers that question. At each point on the event-time grid it measures
+the mean squared difference between the predicted survival probability
+$\hat{S}(t)$ and the binary outcome (survived past $t$ or not). Because
+right-censored subjects have unknown true outcomes, the calculation uses
+inverse-probability-of-censoring weighting (IPCW): each subject's squared
+error is upweighted by the inverse probability of being uncensored at that time,
+so the estimate remains unbiased even under heavy censoring [@graf:1999].
+
+Two reference values help interpret the curve. A Brier score of 0 is perfect
+prediction. A score around 0.25 is the uninformative ceiling: a model that
+assigns every subject a survival probability of 0.5, regardless of their
+covariates or the time horizon, scores near 0.25 by construction. A forest
+that beats 0.25 is doing better than that floor; one that exceeds it has been
+made worse by its covariates, which is a sign of overfitting or a poorly
+specified model.
+
+`gg_brier()` wraps `randomForestSRC::get.brier.survival()` and returns a tidy
+data frame ready to plot.
 
 ```{r brier-overall, fig.width=7, fig.height=3.5, fig.cap="Time-resolved Brier score for the PBC survival forest."}
 gg_bs <- gg_brier(rfsrc_pbc)
@@ -613,10 +628,12 @@ plot(gg_bs, envelope = TRUE)
 ```
 
 The running CRPS (continuous ranked probability score) is the Brier score
-integrated over time and divided by elapsed time, in other words the
-time-average of the curve above. It collapses the whole trajectory into one
-running number, which is handy when you want a single accuracy figure rather
-than a curve to read.
+integrated over time and divided by elapsed time — the time-average of the
+curve above. It collapses the whole trajectory into one running number, which
+is handy when you want a single calibration figure rather than a curve to read.
+Like the Brier score, a CRPS near 0 is good and a value near 0.25 is the
+uninformative ceiling (the same constant-predictor reference as above). The final (integrated) value at the right edge of the
+plot is the one most often reported.
 
 ```{r brier-crps, fig.width=7, fig.height=3.5, fig.cap="Running CRPS for the PBC survival forest."}
 plot(gg_bs, type = "crps")
@@ -644,7 +661,7 @@ We have walked a full random survival forest analysis with
   where the gap between time horizons widens.
 - Partial dependence from `gg_partial_rfsrc()` gave the risk-adjusted version
   of those curves and backed the log-transforms used in the parametric model.
-- Conditioning plots and the interactive surface drew out the
+- Conditioning plots and the partial dependence surface drew out the
   bilirubin--albumin interaction.
 - `gg_brier()` measured how accurate the predictions actually were, both
   across time and as a single CRPS summary.

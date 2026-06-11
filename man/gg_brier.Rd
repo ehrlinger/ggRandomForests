@@ -37,25 +37,37 @@ The integrated CRPS (a single scalar matching
 \description{
 The Brier score asks a familiar question of any probabilistic forecast:
 how far did the predicted probability sit from what actually happened?
-For a survival forest the forecast is the predicted survival probability,
-and the score is computed at each event time, so the result is a curve
-rather than a single number -- lower is better, at every time.
+For a survival forest the forecast is the predicted survival probability
+at a given moment, and the "what happened" is whether the subject was
+still alive at that moment.  The score is computed at every event time,
+so you get a curve rather than a single number -- lower is better
+everywhere.  A perfectly calibrated forest that predicts \code{0} for
+every subject who died and \code{1} for every subject who survived would
+score \code{0}; a forest that predicts \code{0.5} for everyone scores
+roughly \code{0.25} regardless of the true outcome -- that is the
+"uninformative" ceiling.
 }
 \details{
-This function extracts that time-resolved Brier score for a survival
-forest grown with \code{randomForestSRC}, both overall and split by
-mortality-risk quartile. It also returns the continuous ranked
-probability score (CRPS), which is the Brier score integrated over time
-and divided by elapsed time -- a running average of the curve so far.
+This function extracts the time-resolved Brier score for a survival
+forest grown with \code{randomForestSRC}, both overall and broken down
+by mortality-risk quartile (lowest-risk to highest-risk subjects).  It
+also returns the continuous ranked probability score (CRPS) -- the Brier
+score integrated over time and divided by elapsed time, a running average
+that summarises calibration up to each point on the time axis.
 
-This wraps \code{\link[randomForestSRC]{get.brier.survival}} and
-rebuilds the quartile decomposition and running CRPS from the returned
-\code{brier.matx} and \code{mort} components, following the computation
-in the internal \code{plot.survival} function of \pkg{randomForestSRC}.
-Right-censored data make a plain Brier score biased, so the score uses
-inverse-probability-of-censoring weighting. The censoring distribution
-is estimated either by Kaplan-Meier (\code{cens.model = "km"}, the
-default) or by a separate censoring forest (\code{cens.model = "rfsrc"}).
+Because subjects are right-censored, a plain Brier score is biased:
+censored subjects contribute no outcome information yet still inflate the
+denominator.  The score here uses inverse-probability-of-censoring
+weighting (IPCW), which up-weights uncensored observations to compensate.
+The censoring distribution is estimated either by Kaplan-Meier
+(\code{cens.model = "km"}, the default) or by a separate censoring
+forest (\code{cens.model = "rfsrc"}) when the censoring mechanism is
+itself covariate-dependent.
+
+Internally, this wraps \code{\link[randomForestSRC]{get.brier.survival}}
+and rebuilds the quartile decomposition and running CRPS from the returned
+\code{brier.matx} and \code{mort} components, following the approach in
+the internal \code{plot.survival} of \pkg{randomForestSRC}.
 }
 \note{
 Brier score / CRPS is \code{randomForestSRC} survival-only; there

@@ -13,11 +13,20 @@
 ####**********************************************************************
 #' Plot a \code{\link{gg_brier}} object
 #'
-#' Draws the time-resolved Brier score (the default) or the running CRPS as
-#' a curve against time.  Lower means more accurate probabilistic predictions.
-#' Turn \code{envelope = TRUE} on and the overall line picks up a ribbon
-#' spanning the 15th to 85th percentile of the per-subject contributions,
-#' which shows how much the score varies across subjects at each time.
+#' Draws the time-resolved Brier score or the running CRPS from a
+#' \code{\link{gg_brier}} object.  The curve moves across the event-time
+#' grid on the x-axis; lower values mean the forest's predicted survival
+#' probabilities are closer to what actually happened.  Think of
+#' \code{0} as "perfect" and roughly \code{0.25} as "uninformative" -- a
+#' forest that predicts \code{0.5} for every subject regardless of
+#' prognosis would sit near that ceiling.
+#'
+#' Set \code{envelope = TRUE} to add a ribbon around the overall curve
+#' spanning the 15th to 85th percentile of the per-subject Brier
+#' contributions at each time.  The ribbon shows how heterogeneous the
+#' scoring is across subjects: a narrow ribbon means most subjects are
+#' predicted equally well (or equally poorly); a wide ribbon means a
+#' minority of subjects are driving the average.
 #'
 #' @param x A \code{\link{gg_brier}} object.
 #' @param type Which series to plot: \code{"brier"} (default) or

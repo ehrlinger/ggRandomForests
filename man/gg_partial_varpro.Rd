@@ -136,9 +136,9 @@ usual rfsrc scale instead.
 
 \itemize{
 \item read the marginal shape of a relationship the varpro model
-found important — monotone, threshold, U-shape, flat;
+found important: monotone, threshold, U-shape, flat;
 \item compare the three partialpro estimators on the same variable
-and flag the ones where parametric and nonparametric disagree —
+and flag the ones where parametric and nonparametric disagree,
 those are the candidates for closer inspection;
 \item report a survival partial dependence on the probability or
 cumulative-hazard scale (\code{scale = "surv"} or \code{"chf"})
@@ -181,6 +181,7 @@ Random survival forests. \emph{The Annals of Applied Statistics},
 }
 \seealso{
 \code{\link{plot.gg_partial_varpro}},
+\code{\link{gg_varpro}}, \code{\link{gg_vimp}},
 \code{\link{gg_partialpro}} (deprecated),
 \code{\link{gg_partial_rfsrc}}, \code{\link{varpro_feature_names}}
 
