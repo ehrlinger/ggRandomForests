@@ -181,16 +181,18 @@ gg_varpro <- function(object,
   if (!inherits(object, "varpro")) {
     stop("'object' must be a varpro fit (class \"varpro\").", call. = FALSE)
   }
-  if (!object$family %in% c("regr", "class")) {
-    if (identical(object$family, "surv")) {
+  fam <- object$family
+  if (!is.character(fam) || length(fam) != 1L || !fam %in% c("regr", "class")) {
+    if (identical(fam, "surv")) {
       stop("gg_varpro() does not support survival varPro fits yet ",
            "(object$family == \"surv\"). Release-rule importance is ",
            "implemented for regression and classification fits. For survival ",
            "variable importance, use gg_vimp() on an rfsrc survival forest.",
            call. = FALSE)
     }
+    fam_lbl <- if (is.character(fam) && length(fam) == 1L) fam else "unknown"
     stop("gg_varpro() supports regression and classification varPro fits ",
-         "(object$family \"regr\" or \"class\"); got \"", object$family, "\".",
+         "(object$family \"regr\" or \"class\"); got \"", fam_lbl, "\".",
          call. = FALSE)
   }
   if (conditional && !identical(object$family, "class")) {
