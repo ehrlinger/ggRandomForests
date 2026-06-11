@@ -59,7 +59,7 @@ gg_varpro(
 - ...:
 
   Additional arguments passed to
-  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html).
+  [`varPro::importance()`](https://luminwin.github.io/reference/importance.html).
 
 ## Value
 
@@ -111,7 +111,7 @@ tree contributes its own importance value for each variable. Those are
 the per-tree scores we summarise here. With `local.std = TRUE` (the
 default) the per-tree values are standardised by their column standard
 deviation so the column mean equals the aggregate z-score returned by
-[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html);
+[`varPro::importance()`](https://luminwin.github.io/reference/importance.html);
 that z-score is the canonical "is this variable in or out?" statistic,
 and `cutoff = 0.79` is varpro's default selection threshold.
 
@@ -124,7 +124,7 @@ only in aggregate.
 ## What's in the output
 
 `$imp` is the one-row-per-variable summary: aggregate z from
-[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html),
+[`varPro::importance()`](https://luminwin.github.io/reference/importance.html),
 plus a `selected` flag for `z > cutoff`. `$stats` holds the box
 quantiles (5/15/50/85/95 percentiles, plus the raw mean) computed from
 the per-tree matrix; these are what the boxplot draws. `$imp.tree` is
@@ -151,7 +151,7 @@ The z-score is a standardised ranking statistic, not a p-value or a
 probability. Two variables with the same z are "similarly important by
 this method", not "equally likely to be true signal". For a data-driven
 cutoff rather than the 0.79 default, see
-[`varPro::cv.varpro`](https://www.randomforestsrc.org/reference/cv.varpro.html).
+[`varPro::cv.varpro`](https://luminwin.github.io/reference/cv.varpro.html).
 
 ## References
 

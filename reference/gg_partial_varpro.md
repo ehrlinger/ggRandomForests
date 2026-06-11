@@ -1,6 +1,6 @@
 # Partial dependence data from a varPro model
 
-[`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+[`varPro::partialpro`](https://luminwin.github.io/reference/partialpro.html)
 returns one list, with continuous and categorical predictors mixed
 together. This function splits that list into two tidy data frames, one
 for each kind, and resolves the y-axis label the plot method will use.
@@ -107,7 +107,7 @@ A partial dependence curve answers the question, "if I hold a single
 variable at a grid of values and average out everything else, how does
 the model's prediction move?" That is the same question `rfsrc` partial
 dependence answers. What
-[`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+[`varPro::partialpro`](https://luminwin.github.io/reference/partialpro.html)
 adds is two wrinkles that are worth understanding before you read the
 curves.
 
@@ -127,7 +127,7 @@ smooth parametric story and the raw forest predictions are telling you
 the same thing.
 
 Interpretation of the y-axis depends on the outcome (per
-[`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)):
+[`varPro::partialpro`](https://luminwin.github.io/reference/partialpro.html)):
 response scale for regression, log-odds of the target class for
 classification, and either ensemble mortality (default) or RMST (if the
 original `varpro` call set `rmst`) for survival.

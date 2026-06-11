@@ -67,8 +67,8 @@ plot.gg_udependent can draw as a network."></head><body>
     <div class="ref-description section level2">
     <p>A <code>uvarpro</code> fit records how strongly each variable depends on the
 others.  This function pulls those cross-variable dependency scores from
-the fit with <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.beta.entropy</a></code> and
-<code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">sdependent</a></code>, and returns them as a tidy list that
+the fit with <code><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">get.beta.entropy</a></code> and
+<code><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">sdependent</a></code>, and returns them as a tidy list that
 <code>plot.gg_udependent</code> can draw as a network.</p>
     </div>
 
@@ -114,7 +114,7 @@ degree \(\ge\) <code>min.degree</code> are kept in <code>$nodes</code>,
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments forwarded to <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent()</a></code>.</p></dd>
+<dd><p>Additional arguments forwarded to <code><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">varPro::sdependent()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -151,12 +151,12 @@ as a classification task (does an observation belong to the region
 or to its release?) and fits a lasso logistic regression with the
 other variables as predictors. The coefficient on variable \(j\)
 in the model for variable \(i\)'s region-release contrast is the
-entry \(I[i, j]\) of the matrix <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code>
+entry \(I[i, j]\) of the matrix <code><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code>
 returns.</p>
 <p>Read that entry as "how much does knowing \(j\) help separate
 \(i\)'s region from its release". A large \(I[i, j]\) says
 \(j\) carries information about the structure varpro picked up in
-\(i\). <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent</a></code> thresholds that matrix at a
+\(i\). <code><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">varPro::sdependent</a></code> thresholds that matrix at a
 user-chosen cut and returns the set of "signal" variables: the
 nodes with high enough out-degree to be worth keeping. We pass the
 threshold through to <code>sdependent</code> and use the same matrix to
@@ -214,7 +214,7 @@ unsupervised variable selection. <em>Pattern Recognition</em>,
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">uv</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">uvarpro</a></span><span class="op">(</span><span class="va">iris</span><span class="op">[</span>, <span class="op">-</span><span class="fl">5</span><span class="op">]</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">uv</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/uvarpro.html" class="external-link">uvarpro</a></span><span class="op">(</span><span class="va">iris</span><span class="op">[</span>, <span class="op">-</span><span class="fl">5</span><span class="op">]</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu">gg_udependent</span><span class="op">(</span><span class="va">uv</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;gg_udependent&gt;  n=150  p=4  threshold=0.25</span>

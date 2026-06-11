@@ -71,7 +71,7 @@ gg_partial_varpro() directly."></head><body>
     </div>
 
     <div class="ref-description section level2">
-    <p><code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro</a></code> returns one list, with continuous and
+    <p><code><a href="https://luminwin.github.io/reference/partialpro.html" class="external-link">varPro::partialpro</a></code> returns one list, with continuous and
 categorical predictors mixed together. This function splits that list into
 two tidy data frames, one for each kind, and resolves the y-axis label the
 plot method will use.</p>
@@ -179,7 +179,7 @@ read it as one.  If you want output on the probability scale, refit with
 <p>A partial dependence curve answers the question, "if I hold a single
 variable at a grid of values and average out everything else, how does
 the model's prediction move?" That is the same question <code>rfsrc</code>
-partial dependence answers. What <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro</a></code> adds is two
+partial dependence answers. What <code><a href="https://luminwin.github.io/reference/partialpro.html" class="external-link">varPro::partialpro</a></code> adds is two
 wrinkles that are worth understanding before you read the curves.</p>
 <p>First, <code>partialpro</code> filters the partial grid through an isolation
 forest (Unlimited Virtual Twins, or UVT) so that unlikely combinations
@@ -195,7 +195,7 @@ three parallel curves per variable, stored as <code>yhat.par</code>,
 overlays so you can see whether a smooth parametric story and the
 raw forest predictions are telling you the same thing.</p>
 <p>Interpretation of the y-axis depends on the outcome (per
-<code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro</a></code>): response scale for regression, log-odds of
+<code><a href="https://luminwin.github.io/reference/partialpro.html" class="external-link">varPro::partialpro</a></code>): response scale for regression, log-odds of
 the target class for classification, and either ensemble mortality
 (default) or RMST (if the original <code>varpro</code> call set
 <code>rmst</code>) for survival.</p>

@@ -61,7 +61,7 @@ to know the internal shape of the fit."></head><body>
     </div>
 
     <div class="ref-description section level2">
-    <p>Pulls per-observation anomaly scores out of a <code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">isopro</a></code>
+    <p>Pulls per-observation anomaly scores out of a <code><a href="https://luminwin.github.io/reference/isopro.html" class="external-link">isopro</a></code>
 fit so you can plot them, sort them, or write them to disk without having
 to know the internal shape of the fit.</p>
     </div>
@@ -77,7 +77,7 @@ to know the internal shape of the fit.</p>
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
 <dd><p>An <code>isopro</code> fit returned by
-<code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">isopro</a></code>.</p></dd>
+<code><a href="https://luminwin.github.io/reference/isopro.html" class="external-link">isopro</a></code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -92,7 +92,7 @@ compatibility with callers of the PR #94 signature
 against the fit. Must be passed by name. When <code>NULL</code> (default)
 the extractor returns the in-sample tidy frame from the fit's stored
 <code>$case.depth</code> and <code>$howbad</code>. When supplied, each row is
-scored via <code><a href="https://www.randomforestsrc.org/reference/predict.isopro.html" class="external-link">predict.isopro</a></code> and the same tidy
+scored via <code><a href="https://luminwin.github.io/reference/predict.isopro.html" class="external-link">predict.isopro</a></code> and the same tidy
 shape is returned for the test data.</p></dd>
 
 </dl></div>
@@ -102,7 +102,7 @@ shape is returned for the test data.</p></dd>
 one row per observation. Columns:</p><dl><dt>obs</dt>
 <dd><p>Integer; observation index <code>1..n</code>, in the same
 order as the rows of the data passed to
-<code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">isopro</a></code>.</p></dd>
+<code><a href="https://luminwin.github.io/reference/isopro.html" class="external-link">isopro</a></code>.</p></dd>
 
 <dt>case.depth</dt>
 <dd><p>Numeric; mean isolation depth across the forest.
@@ -134,7 +134,7 @@ which an observation is isolated is a proxy for how typical it is</strong>:
 shallow depth means anomalous, deep depth means ordinary. Average a
 single observation's depth across many trees and the noise washes out,
 leaving a stable per-observation rank.</p>
-<p><code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">isopro</a></code> supports three flavours of isolation
+<p><code><a href="https://luminwin.github.io/reference/isopro.html" class="external-link">isopro</a></code> supports three flavours of isolation
 forest, which differ in how the splits are chosen:</p><dl><dt><code>"rnd"</code></dt>
 <dd><p>The original Liu/Ting/Zhou method: each tree node
 picks a variable at random and a split point uniformly at random
@@ -195,7 +195,7 @@ rises; <code><a href="plot.gg_isopro.html">plot.gg_isopro</a></code> can annotat
 
 
 <p>Pass a <code>data.frame</code> as <code>newdata</code> and the extractor calls
-<code><a href="https://www.randomforestsrc.org/reference/predict.isopro.html" class="external-link">predict.isopro</a></code> twice: once with
+<code><a href="https://luminwin.github.io/reference/predict.isopro.html" class="external-link">predict.isopro</a></code> twice: once with
 <code>quantiles = FALSE</code> to get the raw mean case depth per row, and once
 with <code>quantiles = TRUE</code> to get the per-row quantile of that depth
 against the training-data depth distribution.</p>
@@ -240,7 +240,7 @@ Variable Selection via the Rule-Based Variable Priority Framework.
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="plot.gg_isopro.html">plot.gg_isopro</a></code>, <code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">isopro</a></code></p></div>
+    <div class="dont-index"><p><code><a href="plot.gg_isopro.html">plot.gg_isopro</a></code>, <code><a href="https://luminwin.github.io/reference/isopro.html" class="external-link">isopro</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -248,7 +248,7 @@ Variable Selection via the Rule-Based Variable Priority Framework.
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"varPro"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">isopro</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, method <span class="op">=</span> <span class="st">"rnd"</span>,</span></span>
+<span class="r-in"><span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/isopro.html" class="external-link">isopro</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">iris</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, method <span class="op">=</span> <span class="st">"rnd"</span>,</span></span>
 <span class="r-in"><span>                        sampsize <span class="op">=</span> <span class="fl">32</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu">gg_isopro</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>

@@ -27,6 +27,22 @@
   `plotly` widgets, and figures render at 96 dpi. This cuts the
   installed size from ~17 MB to ~5 MB (the `plotly` library is no longer
   bundled into the vignette HTML). `plotly` is dropped from `Suggests`.
+- Check time: reduced the `R CMD check` vignette-rebuild and test
+  timings to bring the overall CRAN check comfortably under budget (CRAN
+  flagged the overall check time on the 3.1.0 submission). The
+  regression and survival vignettes use lighter forests (`ntree` 200 /
+  150, imputation `ntree` 100) and coarser partial-dependence grids. The
+  varpro vignette’s three
+  [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  calls and the Boston `beta.varpro()` fit (~34 s combined) are
+  precomputed offline by `vignettes/precompute_varpro.R` and loaded from
+  `vignettes/varpro_precomputed.rds`, with an automatic live-computation
+  fallback if the file is absent. The
+  [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
+  tests memoise the per-fit entropy matrix
+  ([`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/utilities_internal.html),
+  ~1.5 s and a pure function of the fit) instead of recomputing it once
+  per test. No user-facing behaviour change.
 
 ## ggRandomForests v3.0.0
 
@@ -78,7 +94,7 @@
   [`plot.gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_ivarpro.md):
   tidy wrapper and per-variable-distribution / per-observation-profile
   plots for
-  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
+  [`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
   (individual / local variable importance) across regression and
   classification (binary + multi-class) families. The long-format tidy
   frame is `(obs, variable, local_imp, selected)` for regression;
@@ -112,7 +128,7 @@
   and
   [`plot.gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_varpro.md):
   tidy wrapper and default horizontal bar chart for
-  [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  [`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
   — the per-rule lasso-β refinement of variable importance. Aggregates
   per-rule β̂ by variable into `beta_mean = mean(|β̂|)` and flags
   variables above a selection cutoff (default `mean(beta_mean)`).
@@ -125,7 +141,7 @@
   map). Third of three Phase 4 sub-projects.
 - [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
   gains a `newdata` argument so a fitted
-  [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html)
+  [`varPro::isopro`](https://luminwin.github.io/reference/isopro.html)
   model can score new observations into the same tidy `gg_isopro` frame.
   Internally the wrapper calls `predict.isopro()` twice: with
   `quantiles = FALSE` to populate the `case.depth` column (varPro’s
@@ -176,7 +192,7 @@
   and
   [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md):
   tidy wrapper and ranked-elbow + density visualisation for
-  [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html)
+  [`varPro::isopro`](https://luminwin.github.io/reference/isopro.html)
   isolation-forest anomaly scores.
   [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
   takes `panel = c("both", "elbow", "density")` and optional `threshold`
@@ -234,9 +250,9 @@
   varPro cross-variable dependency (Phase 3).
   - [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
     reads cross-variable dependency scores off a `uvarpro` fit, via
-    [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+    [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/utilities_internal.html)
     and
-    [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html).
+    [`varPro::sdependent()`](https://luminwin.github.io/reference/utilities_internal.html).
     It returns a tidy list: `$edges` (variable_from, variable_to,
     weight), `$nodes` (variable, degree, selected), and `$graph`, an
     igraph object.
