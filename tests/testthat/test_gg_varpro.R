@@ -30,6 +30,20 @@ test_that("gg_varpro: conditional=TRUE on regression -> stop", {
                regexp = "classification")
 })
 
+test_that("gg_varpro: survival fit -> clear 'not supported yet' stop", {
+  # gg_varpro extracts regr/class families; a survival fit must fail with a
+  # clear message rather than the cryptic "differing number of rows" cbind
+  # error from the downstream importance reshape. (varPro survival support is
+  # deferred; for survival importance use gg_vimp() on an rfsrc forest.)
+  skip_if_not_installed("survival")
+  Surv <- survival::Surv  # bare Surv(); parseFormula rejects survival::Surv(...)
+  data(pbc, package = "randomForestSRC")
+  set.seed(42L)
+  vp_surv <- varPro::varpro(Surv(days, status) ~ .,
+                            data = na.omit(pbc), ntree = 25L)
+  expect_error(gg_varpro(vp_surv), regexp = "survival")
+})
+
 test_that("gg_varpro: faithful=TRUE + local.std=TRUE is valid, records local.std=TRUE", {
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, faithful = TRUE, local.std = TRUE)

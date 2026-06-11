@@ -3,6 +3,11 @@ Version: 3.0.0.9001
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `gg_varpro()` on a survival `varpro` fit now stops with a clear message
+  ("survival varPro fits not supported yet; use `gg_vimp()` on an rfsrc
+  survival forest") instead of the cryptic downstream `differing number of
+  rows` error. Release-rule importance still covers regression and
+  classification; survival support is future work.
 * `gg_auct()` / `plot.gg_auct()`: tidy wrapper and plot for time-varying
   AUC from `randomForestRHF::auct.rhf()` (RHF Phase 2). Returns a long
   frame `time / auc / se / lower / upper / marker` with an `iauc`
