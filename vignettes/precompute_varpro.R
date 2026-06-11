@@ -15,8 +15,17 @@
 suppressMessages({
   library(varPro)
   library(survival)
-  library(ggRandomForests)
 })
+# Mirror the vignette's loader: prefer the installed package, fall back to
+# pkgload::load_all() so this runs in a fresh clone before installation.
+if (requireNamespace("ggRandomForests", quietly = TRUE)) {
+  suppressMessages(library(ggRandomForests))
+} else if (requireNamespace("pkgload", quietly = TRUE)) {
+  pkgload::load_all(export_all = FALSE, helpers = FALSE,
+                    attach_testthat = FALSE)
+} else {
+  stop("Install ggRandomForests (or pkgload for dev builds) to run this script.")
+}
 options(mc.cores = 1, rf.cores = 1)
 
 # --- Regression: Boston housing ------------------------------------------

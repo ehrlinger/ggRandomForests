@@ -14,10 +14,17 @@ make_uvp <- function(ntree = 25L) {
 # distinct call instead of one per test (this file was ~24s of the suite).
 .ggu_cache <- new.env(parent = emptyenv())
 
-make_ggu <- function(...) {
+# .quiet = TRUE suppresses warnings only for callers that legitimately warn
+# (the empty-graph threshold cases); every other call leaves warnings live so
+# an unexpected new warning still surfaces as a test failure.
+make_ggu <- function(..., .quiet = FALSE) {
   key <- paste(deparse(list(...)), collapse = "")
   if (is.null(.ggu_cache[[key]])) {
-    .ggu_cache[[key]] <- suppressWarnings(gg_udependent(make_uvp(), ...))
+    .ggu_cache[[key]] <- if (.quiet) {
+      suppressWarnings(gg_udependent(make_uvp(), ...))
+    } else {
+      gg_udependent(make_uvp(), ...)
+    }
   }
   .ggu_cache[[key]]
 }
@@ -78,14 +85,14 @@ test_that("gg_udependent directed=FALSE returns undirected igraph", {
 
 test_that("gg_udependent$edges is empty data frame (not NULL) for empty graph", {
   # threshold=999 -> no edges -> empty graph
-  gg <- make_ggu(threshold = 999)
+  gg <- make_ggu(threshold = 999, .quiet = TRUE)
   expect_false(is.null(gg$edges))
   expect_s3_class(gg$edges, "data.frame")
   expect_equal(nrow(gg$edges), 0L)
 })
 
 test_that("gg_udependent$nodes is empty data frame for empty graph", {
-  gg <- make_ggu(threshold = 999)
+  gg <- make_ggu(threshold = 999, .quiet = TRUE)
   expect_false(is.null(gg$nodes))
   expect_equal(nrow(gg$nodes), 0L)
 })
@@ -143,7 +150,7 @@ test_that("plot.gg_udependent layout='kk' returns a ggplot", {
 })
 
 test_that("plot.gg_udependent empty graph -> stop with informative message", {
-  gg <- make_ggu(threshold = 999)
+  gg <- make_ggu(threshold = 999, .quiet = TRUE)
   expect_error(plot(gg), regexp = "no edges")
 })
 
