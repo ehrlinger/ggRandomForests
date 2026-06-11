@@ -54,10 +54,16 @@ if (requireNamespace("ggRandomForests", quietly = TRUE)) {
 # vignette rebuild stays fast. If the file is absent (e.g. a fresh clone
 # that hasn't run the script), each chunk falls back to live computation,
 # so the vignette is reproducible either way.
-.vp <- tryCatch(
-  readRDS("varpro_precomputed.rds"),
-  error = function(e) list()   # missing or unreadable -> live fallback below
-)
+.vp <- tryCatch({
+  # R CMD check rebuilds the vignette in a copy whose working directory is the
+  # vignette dir; an interactive knit from the package root sees vignettes/
+  # instead. Try both locations, and fall back to live computation below if
+  # neither is present or readRDS() fails.
+  .cand <- c("varpro_precomputed.rds",
+             file.path("vignettes", "varpro_precomputed.rds"))
+  .hit <- .cand[file.exists(.cand)]
+  if (length(.hit)) readRDS(.hit[[1]]) else list()
+}, error = function(e) list())   # missing or unreadable -> live fallback below
 ```
 
 # What varPro is
