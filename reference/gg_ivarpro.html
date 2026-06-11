@@ -64,12 +64,12 @@ ivarpro() call."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Individual (local) variable importance from a varPro fit</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_ivarpro.R" class="external-link"><code>R/gg_ivarpro.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.1.0/R/gg_ivarpro.R" class="external-link"><code>R/gg_ivarpro.R</code></a></small>
       <div class="d-none name"><code>gg_ivarpro.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Tidy wrapper around <code><a href="https://luminwin.github.io/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> for the regression or
+    <p>Tidy wrapper around <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> for the regression or
 classification family. Returns one row per (observation, variable)
 pair where the local-importance cell is non-NA; classification adds
 a <code>class</code> column. <code>which_obs</code> collapses to a per-observation
@@ -95,12 +95,12 @@ profile; <code>which_class</code> collapses to a single class. Optional
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>A <code>varpro</code> fit from <code><a href="https://luminwin.github.io/reference/varpro.html" class="external-link">varPro::varpro()</a></code> (regression or
+<dd><p>A <code>varpro</code> fit from <code><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varPro::varpro()</a></code> (regression or
 classification family).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Forwarded to <code><a href="https://luminwin.github.io/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> when <code>ivarpro_fit = NULL</code>;
+<dd><p>Forwarded to <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> when <code>ivarpro_fit = NULL</code>;
 ignored otherwise (with a warning). Documented forwardables:
 <code>adaptive</code>, <code>cut</code>, <code>cut.max</code>, <code>ncut</code>, <code>nmin</code>, <code>nmax</code>, <code>noise.na</code>,
 <code>max.rules.tree</code>, <code>max.tree</code>, <code>use.loo</code>, <code>use.abs</code>, <code>scale</code>.</p></dd>
@@ -127,7 +127,7 @@ fallback to the per-class mean for missing names.</p></dd>
 
 
 <dt id="arg-ivarpro-fit">ivarpro_fit<a class="anchor" aria-label="anchor" href="#arg-ivarpro-fit"></a></dt>
-<dd><p>Optional pre-computed <code><a href="https://luminwin.github.io/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> result
+<dd><p>Optional pre-computed <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> result
 for the same <code>object</code>. Shape-validated.</p></dd>
 
 </dl></div>
@@ -225,8 +225,8 @@ locally but not globally (or vice versa).</p>
 <p><code>ivarpro()</code> is <strong>the most expensive call in varPro</strong> (per-rule
 leave-one-out + per-region scaling, often minutes on real data).
 Compute it once and reuse:</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="va">v</span>   <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Boston</span>, ntree <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
-<span><span class="va">iv</span>  <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/ivarpro.html" class="external-link">ivarpro</a></span><span class="op">(</span><span class="va">v</span>, scale <span class="op">=</span> <span class="st">"local"</span><span class="op">)</span>              <span class="co"># expensive, once</span></span>
+<p></p><div class="sourceCode r"><pre><code><span><span class="va">v</span>   <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Boston</span>, ntree <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<span><span class="va">iv</span>  <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">ivarpro</a></span><span class="op">(</span><span class="va">v</span>, scale <span class="op">=</span> <span class="st">"local"</span><span class="op">)</span>              <span class="co"># expensive, once</span></span>
 <span><span class="va">gg_aggregate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_ivarpro.html">gg_ivarpro</a></span><span class="op">(</span><span class="va">v</span>, ivarpro_fit <span class="op">=</span> <span class="va">iv</span><span class="op">)</span>          <span class="co"># cheap</span></span>
 <span><span class="va">gg_case1</span>     <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_ivarpro.html">gg_ivarpro</a></span><span class="op">(</span><span class="va">v</span>, ivarpro_fit <span class="op">=</span> <span class="va">iv</span>, which_obs <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre><p></p></div>
 <p>Provenance carries <code>precomputed = TRUE</code> when <code>ivarpro_fit</code> was supplied.</p>
@@ -260,7 +260,7 @@ per-rule LOO subsampling can drift across separate calls. Reuse
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="gg_varpro.html">gg_varpro()</a></code>, <code><a href="gg_vimp.html">gg_vimp()</a></code>, <code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code>, <code><a href="https://luminwin.github.io/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="gg_varpro.html">gg_varpro()</a></code>, <code><a href="gg_vimp.html">gg_vimp()</a></code>, <code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code>, <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -269,8 +269,8 @@ per-rule LOO subsampling can drift across separate calls. Reuse
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"varPro"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"MASS"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/MASS/man/Boston.html" class="external-link">Boston</a></span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">iv</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/ivarpro.html" class="external-link">ivarpro</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="fu">MASS</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/MASS/man/Boston.html" class="external-link">Boston</a></span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">iv</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">ivarpro</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu">gg_ivarpro</span><span class="op">(</span><span class="va">v</span>, ivarpro_fit <span class="op">=</span> <span class="va">iv</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

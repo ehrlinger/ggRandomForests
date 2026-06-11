@@ -7030,7 +7030,7 @@ asks the next question: *how* does the response change with a variable,
 holding the others fixed?
 [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
 wraps
-[`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)
+[`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
 and returns a tidy frame of parametric, non-parametric, and causal
 partial-dependence curves.
 
@@ -7151,7 +7151,7 @@ predictive accuracy.
 Variable importance is one axis; *observation* outlierness is another.
 [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
 wraps
-[`varPro::isopro()`](https://luminwin.github.io/reference/isopro.html)
+[`varPro::isopro()`](https://www.randomforestsrc.org/reference/isopro.html)
 (an isolation-forest variant that scores how anomalous each training row
 looks) and renders the result as a ranked elbow plus a density of the
 scores. The score is on `[0, 1]`; the wrapper’s convention is “higher =
@@ -7358,9 +7358,9 @@ being explicit about those limits is more useful than pretending they
 don’t exist. The forest-fitting and the family-agnostic wrappers all
 work; the lasso-refined and individual-importance wrappers don’t,
 because the underlying
-[`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+[`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 and
-[`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+[`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
 calls don’t yet extend to right-censored outcomes. A per-rule local
 lasso for a censored response requires a local partial-likelihood or
 Nelson-Aalen estimator in place of the regression/classification local
@@ -7447,7 +7447,7 @@ plot(gg_isopro(iso_pbc))
 
 ### Not available for survival: `gg_beta_varpro`, `gg_ivarpro`
 
-[`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+[`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 errors on survival fits in the current release (it only supports `regr`
 and `class`).
 [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
@@ -7493,9 +7493,9 @@ This convention will be propagated to `gg_vimp` and
 
 ### Caching the expensive calls
 
-[`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+[`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 and
-[`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+[`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
 are the two heavy calls. Both wrappers accept a pre-computed fit
 (`beta_fit`, `ivarpro_fit`) so you can iterate on selection, observation
 index, or cutoff without re-fitting the lasso or the local-importance

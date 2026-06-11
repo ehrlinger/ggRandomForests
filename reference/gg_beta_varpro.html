@@ -66,12 +66,12 @@ beta.varpro() step once and reuse the result."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Per-variable lasso-beta importance from a varPro fit</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_beta_varpro.R" class="external-link"><code>R/gg_beta_varpro.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.1.0/R/gg_beta_varpro.R" class="external-link"><code>R/gg_beta_varpro.R</code></a></small>
       <div class="d-none name"><code>gg_beta_varpro.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Tidy wrapper around <code><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> for the regression or
+    <p>Tidy wrapper around <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> for the regression or
 classification family.
 Aggregates the per-rule lasso coefficient \(\hat{\beta}\) by
 variable into the mean absolute value
@@ -91,12 +91,12 @@ above a scalar cutoff. Optional
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>A <code>varpro</code> fit from <code><a href="https://luminwin.github.io/reference/varpro.html" class="external-link">varPro::varpro()</a></code> (regression or
+<dd><p>A <code>varpro</code> fit from <code><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varPro::varpro()</a></code> (regression or
 classification family).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Forwarded to <code><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> when <code>beta_fit = NULL</code>;
+<dd><p>Forwarded to <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> when <code>beta_fit = NULL</code>;
 ignored otherwise (with a warning). Documented forwardables: <code>use.cv</code>,
 <code>use.1se</code>, <code>nfolds</code>, <code>maxit</code>, <code>thresh</code>, <code>max.rules.tree</code>, <code>max.tree</code>.</p></dd>
 
@@ -107,7 +107,7 @@ ignored otherwise (with a warning). Documented forwardables: <code>use.cv</code>
 
 
 <dt id="arg-beta-fit">beta_fit<a class="anchor" aria-label="anchor" href="#arg-beta-fit"></a></dt>
-<dd><p>Optional pre-computed <code><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> result for
+<dd><p>Optional pre-computed <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> result for
 the same <code>object</code>. <code>NULL</code> (default) means the wrapper runs <code>beta.varpro()</code>
 itself. When supplied, must be a <code>varpro</code>-class object whose <code>$results</code>
 has columns <code>tree / branch / variable / n.oob / imp</code>.</p></dd>
@@ -219,8 +219,8 @@ release-rule contrast is modest.</p>
 
 <p><code>beta.varpro()</code> is the expensive call (per-rule <code>glmnet</code> / <code>cv.glmnet</code>,
 often minutes on real data). Compute it once and reuse:</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
-<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">beta.varpro</a></span><span class="op">(</span><span class="va">v</span>, use.cv <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>        <span class="co"># expensive, once</span></span>
+<p></p><div class="sourceCode r"><pre><code><span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">beta.varpro</a></span><span class="op">(</span><span class="va">v</span>, use.cv <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>        <span class="co"># expensive, once</span></span>
 <span><span class="va">gg_a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_beta_varpro.html">gg_beta_varpro</a></span><span class="op">(</span><span class="va">v</span>, beta_fit <span class="op">=</span> <span class="va">b</span><span class="op">)</span>            <span class="co"># cheap</span></span>
 <span><span class="va">gg_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_beta_varpro.html">gg_beta_varpro</a></span><span class="op">(</span><span class="va">v</span>, beta_fit <span class="op">=</span> <span class="va">b</span>, cutoff <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre><p></p></div>
 <p>Provenance carries <code>precomputed = TRUE</code> when <code>beta_fit</code> was supplied.</p>
@@ -251,7 +251,7 @@ of K. Errors if the name isn't in the response levels.</p>
 <code>mean(beta_mean)</code>. A scalar broadcasts. A named numeric vector
 overrides per class; missing names fall back to that class's mean.</p>
 <p>Example (30-day mortality, binary):</p>
-<p></p><div class="sourceCode r"><pre><code><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">event_30d</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">clinical</span>, ntree <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<p></p><div class="sourceCode r"><pre><code><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">event_30d</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">clinical</span>, ntree <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
 <span><span class="va">gg</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_beta_varpro.html">gg_beta_varpro</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>   <span class="co"># default: "yes" panel</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></code></pre><p></p></div>
     </div>
@@ -268,7 +268,7 @@ when reproducibility matters.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="gg_varpro.html">gg_varpro()</a></code>, <code><a href="gg_vimp.html">gg_vimp()</a></code>, <code><a href="plot.gg_beta_varpro.html">plot.gg_beta_varpro()</a></code>, <code><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="gg_varpro.html">gg_varpro()</a></code>, <code><a href="gg_vimp.html">gg_vimp()</a></code>, <code><a href="plot.gg_beta_varpro.html">plot.gg_beta_varpro()</a></code>, <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -276,8 +276,8 @@ when reproducibility matters.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"varPro"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/utilities_internal.html" class="external-link">beta.varpro</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">v</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">beta.varpro</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu">gg_beta_varpro</span><span class="op">(</span><span class="va">v</span>, beta_fit <span class="op">=</span> <span class="va">b</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

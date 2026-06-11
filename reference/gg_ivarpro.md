@@ -1,7 +1,7 @@
 # Individual (local) variable importance from a varPro fit
 
 Tidy wrapper around
-[`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+[`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
 for the regression or classification family. Returns one row per
 (observation, variable) pair where the local-importance cell is non-NA;
 classification adds a `class` column. `which_obs` collapses to a
@@ -27,13 +27,13 @@ gg_ivarpro(
 - object:
 
   A `varpro` fit from
-  [`varPro::varpro()`](https://luminwin.github.io/reference/varpro.html)
+  [`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
   (regression or classification family).
 
 - ...:
 
   Forwarded to
-  [`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
   when `ivarpro_fit = NULL`; ignored otherwise (with a warning).
   Documented forwardables: `adaptive`, `cut`, `cut.max`, `ncut`, `nmin`,
   `nmax`, `noise.na`, `max.rules.tree`, `max.tree`, `use.loo`,
@@ -61,7 +61,7 @@ gg_ivarpro(
 - ivarpro_fit:
 
   Optional pre-computed
-  [`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
   result for the same `object`. Shape-validated.
 
 ## Value
@@ -194,7 +194,7 @@ calls. Reuse `ivarpro_fit` when reproducibility matters.
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
 [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md),
-[`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html).
+[`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html).
 
 ## Examples
 

@@ -40,7 +40,7 @@
   fallback if the file is absent. The
   [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
   tests memoise the per-fit entropy matrix
-  ([`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/utilities_internal.html),
+  ([`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html),
   ~1.5 s and a pure function of the fit) instead of recomputing it once
   per test. No user-facing behaviour change.
 
@@ -94,7 +94,7 @@
   [`plot.gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_ivarpro.md):
   tidy wrapper and per-variable-distribution / per-observation-profile
   plots for
-  [`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
   (individual / local variable importance) across regression and
   classification (binary + multi-class) families. The long-format tidy
   frame is `(obs, variable, local_imp, selected)` for regression;
@@ -128,7 +128,7 @@
   and
   [`plot.gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_varpro.md):
   tidy wrapper and default horizontal bar chart for
-  [`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+  [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
   — the per-rule lasso-β refinement of variable importance. Aggregates
   per-rule β̂ by variable into `beta_mean = mean(|β̂|)` and flags
   variables above a selection cutoff (default `mean(beta_mean)`).
@@ -141,7 +141,7 @@
   map). Third of three Phase 4 sub-projects.
 - [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
   gains a `newdata` argument so a fitted
-  [`varPro::isopro`](https://luminwin.github.io/reference/isopro.html)
+  [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html)
   model can score new observations into the same tidy `gg_isopro` frame.
   Internally the wrapper calls `predict.isopro()` twice: with
   `quantiles = FALSE` to populate the `case.depth` column (varPro’s
@@ -192,7 +192,7 @@
   and
   [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md):
   tidy wrapper and ranked-elbow + density visualisation for
-  [`varPro::isopro`](https://luminwin.github.io/reference/isopro.html)
+  [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html)
   isolation-forest anomaly scores.
   [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
   takes `panel = c("both", "elbow", "density")` and optional `threshold`
@@ -250,9 +250,9 @@
   varPro cross-variable dependency (Phase 3).
   - [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
     reads cross-variable dependency scores off a `uvarpro` fit, via
-    [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/utilities_internal.html)
+    [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
     and
-    [`varPro::sdependent()`](https://luminwin.github.io/reference/utilities_internal.html).
+    [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html).
     It returns a tidy list: `$edges` (variable_from, variable_to,
     weight), `$nodes` (variable, degree, selected), and `$graph`, an
     igraph object.

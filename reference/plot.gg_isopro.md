@@ -87,4 +87,4 @@ which is itself useful information.
 ## See also
 
 [`gg_isopro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md),
-[`isopro`](https://luminwin.github.io/reference/isopro.html)
+[`isopro`](https://www.randomforestsrc.org/reference/isopro.html)

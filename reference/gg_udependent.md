@@ -3,9 +3,9 @@
 A `uvarpro` fit records how strongly each variable depends on the
 others. This function pulls those cross-variable dependency scores from
 the fit with
-[`get.beta.entropy`](https://luminwin.github.io/reference/utilities_internal.html)
+[`get.beta.entropy`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 and
-[`sdependent`](https://luminwin.github.io/reference/utilities_internal.html),
+[`sdependent`](https://www.randomforestsrc.org/reference/utilities_internal.html),
 and returns them as a tidy list that `plot.gg_udependent` can draw as a
 network.
 
@@ -51,7 +51,7 @@ gg_udependent(
 - ...:
 
   Additional arguments forwarded to
-  [`varPro::sdependent()`](https://luminwin.github.io/reference/utilities_internal.html).
+  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html).
 
 ## Value
 
@@ -88,13 +88,13 @@ release?) and fits a lasso logistic regression with the other variables
 as predictors. The coefficient on variable \\j\\ in the model for
 variable \\i\\'s region-release contrast is the entry \\I\[i, j\]\\ of
 the matrix
-[`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/utilities_internal.html)
+[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 returns.
 
 Read that entry as "how much does knowing \\j\\ help separate \\i\\'s
 region from its release". A large \\I\[i, j\]\\ says \\j\\ carries
 information about the structure varpro picked up in \\i\\.
-[`varPro::sdependent`](https://luminwin.github.io/reference/utilities_internal.html)
+[`varPro::sdependent`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 thresholds that matrix at a user-chosen cut and returns the set of
 "signal" variables: the nodes with high enough out-degree to be worth
 keeping. We pass the threshold through to `sdependent` and use the same
