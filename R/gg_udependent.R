@@ -13,8 +13,8 @@
 #' the same region-release contrasts varpro uses for supervised
 #' importance to ask, "which variables explain the structure in the
 #' data?" The lasso-driven variant frames each region-release contrast
-#' as a classification task — does an observation belong to the region
-#' or to its release? — and fits a lasso logistic regression with the
+#' as a classification task (does an observation belong to the region
+#' or to its release?) and fits a lasso logistic regression with the
 #' other variables as predictors. The coefficient on variable \eqn{j}
 #' in the model for variable \eqn{i}'s region-release contrast is the
 #' entry \eqn{I[i, j]} of the matrix \code{varPro::get.beta.entropy()}
@@ -24,7 +24,7 @@
 #' \eqn{i}'s region from its release". A large \eqn{I[i, j]} says
 #' \eqn{j} carries information about the structure varpro picked up in
 #' \eqn{i}. \code{varPro::sdependent} thresholds that matrix at a
-#' user-chosen cut and returns the set of "signal" variables — the
+#' user-chosen cut and returns the set of "signal" variables: the
 #' nodes with high enough out-degree to be worth keeping. We pass the
 #' threshold through to \code{sdependent} and use the same matrix to
 #' weight the edges of the resulting graph.
@@ -50,7 +50,7 @@
 #' @section What you use this for:
 #' \itemize{
 #'   \item screen a wide unsupervised dataset for the small set of
-#'     variables UVarPro thinks are carrying the signal — the nodes
+#'     variables UVarPro thinks are carrying the signal: the nodes
 #'     with high degree, or those flagged \code{selected = TRUE};
 #'   \item spot clusters of mutually dependent variables (hubs and the
 #'     spokes around them) that may be measuring the same underlying
@@ -59,7 +59,7 @@
 #'     looking at how their dependency graphs change.
 #' }
 #' An edge in this graph is a statistical dependency in the unsupervised
-#' decomposition of the data — it is not a causal arrow. A high
+#' decomposition of the data. It is not a causal arrow. A high
 #' \eqn{I[i, j]} says \eqn{j} predicts \eqn{i}'s region membership,
 #' not that \eqn{j} causes \eqn{i}.
 #'

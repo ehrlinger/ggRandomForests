@@ -84,16 +84,19 @@
 #' plot(gg_dta, xvar = "Temp")
 #' plot(gg_dta, xvar = "Solar.R")
 #'
-#' # Panel plot across continuous predictors
-#' plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
-#'
 #' # Factor variable uses notched boxplots
 #' plot(gg_dta, xvar = "Month", notch = TRUE)
+#'
+#' \donttest{
+#' # Panel plot across continuous predictors (loess smooths; slower)
+#' plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
+#' }
 #'
 #' ## ------------------------------------------------------------
 #' ## survival examples
 #' ## ------------------------------------------------------------
 #' ## -------- veteran data
+#' \donttest{
 #' data(veteran, package = "randomForestSRC")
 #' set.seed(42)
 #' rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., veteran,
@@ -119,6 +122,7 @@
 #'
 #' # Panel coplot across two predictors and three time points
 #' plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
+#' }
 #'
 #' @export
 plot.gg_variable <- function(x, # nolint: cyclocomp_linter
@@ -227,7 +231,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
   ccls[which(ccls == "integer")] <- "numeric"
 
   ## =========================================================
-  ## PANEL PLOT branch — facet multiple predictors in one figure
+  ## PANEL PLOT branch: facet multiple predictors in one figure
   ## =========================================================
   if (panel) {
     ## ---- Survival panel plot ----------------------------------------
@@ -356,7 +360,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       gg_dta_mlt$variable <-
         factor(gg_dta_mlt$variable, levels = xvar)
 
-      # All continuous predictors → scatter; any factor → boxplot
+      # All continuous predictors give scatter; any factor gives boxplot
       if (sum(ccls[wch_x_var] == "numeric") == length(wch_x_var)) {
         if (family == "class") {
           gg_plt <-
@@ -421,7 +425,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
     }
 
   ## =========================================================
-  ## INDIVIDUAL PLOT branch — one ggplot per predictor variable
+  ## INDIVIDUAL PLOT branch: one ggplot per predictor variable
   ## =========================================================
   } else {
     # Pre-allocate a list; collapsed to a single object when lng == 1
@@ -577,7 +581,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
           } else {
             # Factor predictor (multi-class): boxplot + jitter per facet.
             # smooth=TRUE is intentionally a no-op here for the same reason
-            # as the binary factor path above — geom_smooth requires a
+            # as the binary factor path above: geom_smooth requires a
             # continuous x-axis.
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_boxplot(
@@ -638,7 +642,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       colnames(gg_dta)[ch_indx] <- h_name
     }
     # Return a single object: one ggplot for a single variable, otherwise a
-    # patchwork composite (one panel per variable). Never a bare list — see
+    # patchwork composite (one panel per variable). Never a bare list; see
     # #80 / NEWS; mirrors the v2.7.3 #77/#78 plot.gg_partial* unification.
     if (lng == 1) {
       gg_plt <- gg_plt[[1]]

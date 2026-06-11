@@ -49,10 +49,10 @@
 #'
 #' @export
 varpro_feature_names <- function(varpro_names, dataset) {
-  # Names that already match a column in dataset — keep as-is
+  # Names that already match a column in dataset: keep as-is
   inc_set <- varpro_names[which(varpro_names %in% colnames(dataset))]
 
-  # Names that do not yet match any column — need suffix stripping
+  # Names that do not yet match any column: need suffix stripping
   one_set <- varpro_names[which(!varpro_names %in% colnames(dataset))]
 
   ## Iteratively strip the last character of each unmatched name until every

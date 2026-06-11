@@ -44,7 +44,7 @@
       xvar.names = object$xvar.names %||% character(0)
     ))
   }
-  # Unknown / non-forest object — return NULL so callers can skip cleanly.
+  # Unknown / non-forest object: return NULL so callers can skip cleanly.
   NULL
 }
 

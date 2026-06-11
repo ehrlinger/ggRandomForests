@@ -26,6 +26,29 @@
 #' function if the \code{\link[randomForestSRC]{rfsrc}} object does not contain
 #' importance information.
 #'
+#' @details
+#' \code{gg_vimp()} shows \strong{permutation (Breiman-Cutler) variable
+#' importance}: the forest permutes a variable's observed values across the
+#' out-of-bag (OOB) cases, runs those perturbed cases down the already-grown
+#' trees, and measures how much the OOB prediction error climbs.  That
+#' perturbation is synthetic (the variable's link to the response is broken
+#' on purpose) so a large increase means the variable was carrying genuine
+#' signal; near-zero or negative values mean it added noise or nothing at all.
+#'
+#' \code{\link{gg_varpro}()} takes the opposite route, comparing local
+#' estimators on real observed data through varPro's release rules, with no
+#' permutation and no synthetic features.  The two approaches answer "which
+#' variables matter?" by opposite mechanisms, so a variable can rank
+#' differently under each, and that disagreement is itself informative: it
+#' often signals interaction structure or non-monotone effects that one
+#' mechanism surfaces and the other obscures.
+#'
+#' For survival forests, VIMP is measured against the ensemble cumulative
+#' hazard function (CHF); the error metric is one minus the concordance index
+#' (C-statistic).  Variables with non-positive VIMP are flagged in the
+#' \code{positive} column and colored differently by
+#' \code{\link{plot.gg_vimp}}.
+#'
 #' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank
 #'   order, optionally containing class-specific scores and a relative importance
 #'   column. When \code{randomForest} objects lack stored importance values a
@@ -33,7 +56,7 @@
 #'   reproducible.
 #'
 #' @seealso \code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}}
-#' @seealso \code{\link[randomForestSRC]{vimp}}
+#' @seealso \code{\link[randomForestSRC]{vimp}} \code{\link{gg_varpro}}
 #'
 #' @references
 #' Ishwaran H. (2007). Variable importance in binary regression trees and
@@ -188,7 +211,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     gg_dta <- data.frame(object$importance)
   }
 
-  # Single-outcome forests: $importance is a named vector → one-column df.
+  # Single-outcome forests: $importance is a named vector, one-column df.
   # Rename the column and add a "vars" column with the variable names.
   if (ncol(gg_dta) == 1) {
     colnames(gg_dta) <- "VIMP"
@@ -233,8 +256,8 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
         }
       } else {
         # Look up by integer index.
-        # which.outcome = 0  → overall (across-class) importance, column 1
-        # which.outcome = k  → importance for class k, column k+1
+        # which.outcome = 0  gives overall (across-class) importance, column 1
+        # which.outcome = k  gives importance for class k, column k+1
         if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
           stop("which.outcome must be a non-negative integer or a class name.")
         }
@@ -294,8 +317,13 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
 
   # Flag variables with non-positive VIMP so the plot can colour them
   # differently to indicate they do not improve (or actively hurt) predictions.
+  # Use the actual VIMP column name: "vimp" after a multi-outcome pivot,
+  # "VIMP" (uppercase) for single-outcome fits.
+  vimp_col <- intersect(c("vimp", "VIMP"), colnames(gg_dta))[1]
   gg_dta$positive <- TRUE
-  gg_dta$positive[which(gg_dta$vimp <= 0)] <- FALSE
+  if (!is.na(vimp_col)) {
+    gg_dta$positive[which(gg_dta[[vimp_col]] <= 0)] <- FALSE
+  }
 
   class(gg_dta) <- c("gg_vimp", class(gg_dta))
   gg_dta <- .set_provenance(gg_dta, object)
@@ -400,8 +428,8 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
           )
         }
       } else {
-        # which.outcome = 0 → overall importance (column 1)
-        # which.outcome = k → class k importance (column k+1)
+        # which.outcome = 0 gives overall importance (column 1)
+        # which.outcome = k gives class k importance (column k+1)
         if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
           stop("which.outcome must be a non-negative integer or a class name.")
         }

@@ -56,7 +56,7 @@
 #'   \describe{
 #'     \item{sens}{Sensitivity (true positive rate) at the threshold.}
 #'     \item{spec}{Specificity (true negative rate) at the threshold.}
-#'     \item{yvar}{The observed class label for each observation.}
+#'     \item{pct}{The probability threshold used for that row.}
 #'   }
 #'   Pass it to \code{\link{calc_auc}} for the area under the curve.
 #'
@@ -105,7 +105,7 @@
 gg_roc.rfsrc <- function(object, which_outcome, oob = TRUE,
                          per_class = FALSE, ...) {
   # Validate that the object was grown with randomForestSRC (grow or predict)
-  # or is a randomForest object — the two supported class signatures.
+  # or is a randomForest object: the two supported class signatures.
   if (sum(inherits(object, c("rfsrc", "grow"), TRUE) == c(1, 2)) != 2 &&
     sum(inherits(object, c("rfsrc", "predict"), TRUE) == c(1, 2)) != 2 &&
     !inherits(object, "randomForest")) {
