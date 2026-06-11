@@ -29,6 +29,10 @@ if (requireNamespace("ggRandomForests", quietly = TRUE)) {
 options(mc.cores = 1, rf.cores = 1)
 
 # --- Regression: Boston housing ------------------------------------------
+if (!requireNamespace("MASS", quietly = TRUE)) {
+  stop("Package 'MASS' is required for the Boston housing data; install it to ",
+       "run this script.")
+}
 data("Boston", package = "MASS")
 set.seed(20260527L)
 v_boston  <- varPro::varpro(medv ~ ., data = Boston, ntree = 50)

@@ -335,23 +335,27 @@ test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP c
   # Regression test for the bug where gg_dta$vimp was accessed but the column
   # is named "VIMP" (uppercase) in single-outcome rfsrc fits, leaving positive
   # always TRUE even for variables with non-positive VIMP.
-  data(airquality)
-  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
-                               ntree = 50, importance = TRUE)
+  #
+  # `const` is a zero-variance predictor: rfsrc cannot split on it, so its VIMP
+  # is exactly 0 (non-positive) on every platform. That deterministically
+  # exercises the bug condition (the pre-fix code left every `positive` TRUE).
+  set.seed(2024L)
+  aq <- na.omit(airquality)
+  aq$const <- 1
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = aq,
+                               ntree = 200, importance = TRUE)
   gg_dta <- gg_vimp(rf)
 
   expect_s3_class(gg_dta, "gg_vimp")
   expect_true("positive" %in% colnames(gg_dta))
-  # The positive flag should correctly reflect the sign of VIMP:
-  # variables with vimp <= 0 must have positive == FALSE.
+
   vimp_col <- intersect(c("vimp", "VIMP"), colnames(gg_dta))[1]
-  neg_mask <- gg_dta[[vimp_col]] <= 0
-  if (any(neg_mask, na.rm = TRUE)) {
-    expect_true(all(!gg_dta$positive[which(neg_mask)]),
-                info = "Variables with non-positive VIMP must have positive == FALSE")
-  }
-  # Even if all VIMP happen to be positive here, the column must exist.
-  expect_true(length(unique(is.na(gg_dta$positive))) <= 1)
+  expect_false(is.na(vimp_col))
+  # The invariant, asserted for every row: positive is TRUE exactly when VIMP > 0.
+  expect_equal(gg_dta$positive, gg_dta[[vimp_col]] > 0)
+  # The constant predictor guarantees at least one non-positive VIMP, so the
+  # pre-fix all-TRUE behaviour would fail here.
+  expect_true(any(!gg_dta$positive))
   expect_s3_class(plot(gg_dta), "ggplot")
 })
 
