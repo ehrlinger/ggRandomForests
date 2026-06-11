@@ -87,23 +87,34 @@ supplied.
 
 ## Details
 
-`gg_survival` is an S3 generic for generating nonparametric survival
-estimates. It dispatches on the class of its first argument:
+Comparing the forest's ensemble survival curve to the marginal
+Kaplan-Meier baseline is a quick sanity check: if they diverge the
+forest has found structure the predictors carry; if they track each
+other closely the predictors may add little. `gg_survival` computes the
+nonparametric baseline – the Kaplan-Meier or Nelson-Aalen estimate – so
+you can place it on the same canvas as the forest predictions from
+[`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
+
+`gg_survival` is an S3 generic that dispatches on the class of its first
+argument:
 
 - `rfsrc`:
 
-  Extracts the response data from the fitted forest and delegates to
+  Extracts the outcome columns from the fitted forest's `$yvar` slot
+  (time in column 1, event indicator in column 2) and delegates to
   [`kaplan`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md).
-  Use the `by` argument to stratify on a predictor stored in the model's
-  `xvar` slot.
+  Use `by` to stratify on a predictor from `$xvar`: you get one
+  Kaplan-Meier curve per group, ready to compare against the forest's
+  group-specific ensemble curves.
 
 - default:
 
-  Accepts raw survival data columns via the `interval`, `censor`, `by`,
-  and `data` arguments, delegating to either
+  Accepts raw survival columns directly via `interval`, `censor`, and
+  `data`. Delegates to
   [`kaplan`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)
-  (default) or
-  [`nelson`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md).
+  (the default) or
+  [`nelson`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md)
+  depending on `type`.
 
 ## Note
 
@@ -120,7 +131,7 @@ survival forest, so no `randomForest` method exists.
 ## Examples
 
 ``` r
-## -------- pbc data (default method — raw data columns)
+## -------- pbc data (default method, raw data columns)
 data(pbc, package = "randomForestSRC")
 pbc$time <- pbc$days / 364.25
 

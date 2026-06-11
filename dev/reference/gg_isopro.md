@@ -47,7 +47,7 @@ observation. Columns:
 - case.depth:
 
   Numeric; mean isolation depth across the forest. Lower means the
-  observation was isolated quickly — more anomalous.
+  observation was isolated quickly, so more anomalous.
 
 - howbad:
 
@@ -66,7 +66,7 @@ observation lands in its own terminal node. The intuition is geometric:
 a typical observation sits in the dense middle of the feature cloud and
 takes many splits to isolate, while an unusual observation sits out near
 an edge and gets cut off after only a few. So **the depth at which an
-observation is isolated is a proxy for how typical it is** — shallow
+observation is isolated is a proxy for how typical it is**: shallow
 depth means anomalous, deep depth means ordinary. Average a single
 observation's depth across many trees and the noise washes out, leaving
 a stable per-observation rank.
@@ -125,7 +125,7 @@ This is screening, not inference. Reach for it when you want to:
 - score a held-out cohort or a fresh batch of incoming data against a
   fitted model and compare the test scores to the training distribution.
 
-The score is a *rank*, not a probability of being an outlier — two
+The score is a *rank*, not a probability of being an outlier: two
 observations with `howbad = 0.92` are both unusual, not "92\\ likely to
 be anomalous". Pick a cutoff by looking at where the elbow rises;
 [`plot.gg_isopro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
@@ -145,7 +145,7 @@ anomalous*, which is the opposite polarity of the wrapper's `howbad`
 (where *higher* is more anomalous). The wrapper exposes both conventions
 so nothing is hidden:
 
-- `case.depth` carries varPro's native polarity — *lower = more
+- `case.depth` carries varPro's native polarity, *lower = more
   anomalous*. This is the unmodified output of
   `predict(object, newdata, quantiles = FALSE)`. Use it to
   cross-reference against raw varPro output.

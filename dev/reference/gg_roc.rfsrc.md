@@ -78,9 +78,9 @@ columns:
 
   Specificity (true negative rate) at the threshold.
 
-- yvar:
+- pct:
 
-  The observed class label for each observation.
+  The probability threshold used for that row.
 
 Pass it to
 [`calc_auc`](https://ehrlinger.github.io/ggRandomForests/reference/calc_auc.md)

@@ -149,10 +149,10 @@ cumulative-hazard curve on the usual rfsrc scale instead.
 ## What you use this for
 
 - read the marginal shape of a relationship the varpro model found
-  important — monotone, threshold, U-shape, flat;
+  important: monotone, threshold, U-shape, flat;
 
 - compare the three partialpro estimators on the same variable and flag
-  the ones where parametric and nonparametric disagree — those are the
+  the ones where parametric and nonparametric disagree, those are the
   candidates for closer inspection;
 
 - report a survival partial dependence on the probability or
@@ -172,6 +172,8 @@ forests. *The Annals of Applied Statistics*, **2**(3), 841–860.
 ## See also
 
 [`plot.gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md),
+[`gg_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
+[`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
 `gg_partialpro` (deprecated),
 [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md),
 [`varpro_feature_names`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.md)

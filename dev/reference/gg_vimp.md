@@ -41,6 +41,31 @@ column. When `randomForest` objects lack stored importance values a
 warning is issued and `NA` placeholders are returned so plots remain
 reproducible.
 
+## Details
+
+`gg_vimp()` shows **permutation (Breiman-Cutler) variable importance**:
+the forest permutes a variable's observed values across the out-of-bag
+(OOB) cases, runs those perturbed cases down the already-grown trees,
+and measures how much the OOB prediction error climbs. That perturbation
+is synthetic (the variable's link to the response is broken on purpose)
+so a large increase means the variable was carrying genuine signal;
+near-zero or negative values mean it added noise or nothing at all.
+
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+takes the opposite route, comparing local estimators on real observed
+data through varPro's release rules, with no permutation and no
+synthetic features. The two approaches answer "which variables matter?"
+by opposite mechanisms, so a variable can rank differently under each,
+and that disagreement is itself informative: it often signals
+interaction structure or non-monotone effects that one mechanism
+surfaces and the other obscures.
+
+For survival forests, VIMP is measured against the ensemble cumulative
+hazard function (CHF); the error metric is one minus the concordance
+index (C-statistic). Variables with non-positive VIMP are flagged in the
+`positive` column and colored differently by
+[`plot.gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md).
+
 ## References
 
 Ishwaran H. (2007). Variable importance in binary regression trees and
@@ -52,6 +77,7 @@ forests, *Electronic J. Statist.*, 1:519-537.
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
 
 [`vimp`](https://www.randomforestsrc.org//reference/vimp.rfsrc.html)
+[`gg_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
 
 ## Examples
 

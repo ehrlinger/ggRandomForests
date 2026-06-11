@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,7 @@
       <h1>Exploring variable importance with varPro</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-06-10</p>
+      <p class="date">2026-06-11</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/dev/vignettes/varpro.qmd" class="external-link"><code>vignettes/varpro.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -113,10 +113,14 @@
 </div>
 <section class="section level2"><h2 id="what-varpro-is">What varPro is<a class="anchor" aria-label="anchor" href="#what-varpro-is"></a>
 </h2>
-<p>Random-forest variable importance has, for two decades, mostly meant <em>permutation importance</em>: shuffle a column, measure the drop in OOB accuracy, repeat. It works, but the score depends on artificial data — the permuted column — and the answer is unstable when variables are correlated.</p>
-<p>varPro <span class="citation" data-cites="Lu2024varpro">(<a href="#ref-Lu2024varpro" role="doc-biblioref">Lu and Ishwaran 2024</a>)</span> replaces the shuffling with <em>release rules</em>. From a guided-splitting forest, varPro samples a collection of decision-rule branches; for each variable in each rule, it compares the response inside the rule’s region with the response after the constraint on that variable is “released”. The size of that change, aggregated over rules and trees, is the variable’s importance. No synthetic columns, no permutation — the contrast is between two real subsets of the data.</p>
-<p>That core machinery feeds several views. <strong><code><a href="../reference/gg_varpro.html">gg_varpro()</a></code></strong> summarises the per-tree importance distribution. <strong><code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code></strong> refines those release-rule contrasts with a per-rule lasso. <strong><code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code></strong> turns the release machinery into partial-dependence curves. <strong><code><a href="../reference/gg_udependent.html">gg_udependent()</a></code></strong> reads cross-variable dependency off a <code>uvarpro()</code> fit. <strong><code><a href="../reference/gg_isopro.html">gg_isopro()</a></code></strong> scores observations for anomaly using an isolation-forest variant. <strong><code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code></strong> computes per-observation local importance.</p>
-<p>This vignette walks all six wrappers on three worked examples — a regression problem (Boston housing), a classification problem (iris, binary and multi-class), and a survival problem (PBC). The closing section is a one-page reference matrix mapping each wrapper to the forest families it supports.</p>
+<p>Random-forest variable importance has, for two decades, mostly meant <em>permutation importance</em>: shuffle a column, measure the drop in OOB accuracy, repeat. It works, but the score is computed against artificially modified data that never appeared in the training set, and when predictors are correlated the shuffled column is an implausible counterfactual, not a neutral baseline. Knockoff-style methods clean up some of that, but they introduce their own synthetic features and rely on explicit distributional assumptions about the predictors.</p>
+<p>varPro <span class="citation" data-cites="Lu2024varpro">(<a href="#ref-Lu2024varpro" role="doc-biblioref">Lu and Ishwaran 2024</a>)</span> takes a different path: one grounded entirely in <em>observed</em> data. Think of each decision tree as a long chain of “if/then” clauses. varPro harvests those clauses as <em>rules</em>, and for each rule it identifies a specific region of the predictor space where a handful of variables jointly constrain the response. To measure one variable’s contribution, it compares a <em>local estimator</em> (the response summary restricted to that rule’s region) against a “released” estimator where the constraint on the tested variable has been lifted. That comparison, averaged over rules and trees, is the variable’s importance z-score. Every observation used in the contrast is real training data; nothing is permuted, nothing is synthesised.</p>
+<p>The “release” metaphor is the right one. Imagine holding a rope at several points along its length (the rule constraints). Releasing your grip at one point (while keeping the others in place) tells you how taut that section was. Variables that go slack when released were carrying load; variables that stay taut were redundant given the rest.</p>
+<p>Operationally, varPro’s <em>guided splitting</em> steers tree growth so that rules concentrate in informative regions, and the subsequent <em>rule harvesting</em> step selects the rules that survived the importance pre-filter. Variables below a noise threshold are dropped before reporting (the importance z is pre-filtered), so the final ranking contains only variables that earned a seat at the table (see the <a href="https://www.varprotools.org/articles/getstarted.html" class="external-link">varPro tools reference</a> for worked implementation details). Split-weights encode each variable’s relative importance at each tree node, propagating that signal through the release-rule contrasts and into the partial-dependence curves.</p>
+<p>Cross-validation via <code>cv.varpro()</code> returns three views of the importance ranking: <code>$imp</code> (the default, point-estimate ranking), <code>$imp.conserve</code> (one-SD rule: only variables whose lower confidence bound is positive), and <code>$imp.liberal</code> (any variable with a positive point estimate). The conservative cut is the right default when you want to hand a short list to a collaborator; the liberal cut is better for exploratory screening when you’d rather miss nothing.</p>
+<p>For classification, the importance decomposes into an <code>$unconditional</code> score (averaged over all classes) and per-class <code>$conditional.z</code> scores. When a variable separates <em>one</em> class from the others but is uninformative overall, the unconditional z can be near zero while a single conditional z is large; the conditional view catches that. One-hot consolidation via <code>get.orgvimp()</code> and <code>get.topvars()</code> maps the per-level scores back to the original factor, so downstream reporting stays on familiar ground.</p>
+<p>That core machinery feeds six ggRandomForests wrappers. <strong><code><a href="../reference/gg_varpro.html">gg_varpro()</a></code></strong> summarises the per-tree importance distribution. <strong><code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code></strong> refines those release-rule contrasts with a per-rule lasso. <strong><code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code></strong> turns the release machinery into partial-dependence curves. <strong><code><a href="../reference/gg_udependent.html">gg_udependent()</a></code></strong> reads cross-variable dependency off a <code>uvarpro()</code> fit. <strong><code><a href="../reference/gg_isopro.html">gg_isopro()</a></code></strong> scores observations for anomaly using an isolation-forest variant. <strong><code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code></strong> computes per-observation local importance.</p>
+<p>This vignette walks all six wrappers on three worked examples: a regression problem (Boston housing), a classification problem (iris, binary and multi-class), and a survival problem (PBC). The closing section is a one-page reference matrix mapping each wrapper to the forest families it supports.</p>
 </section><section class="section level2"><h2 id="regression-boston-housing">Regression: Boston housing<a class="anchor" aria-label="anchor" href="#regression-boston-housing"></a>
 </h2>
 <p>We start with the Boston housing data: 506 census tracts, 13 numeric predictors, median home value as the response.</p>
@@ -7007,53 +7011,65 @@ attr(,"class")
 [1] "varpro"</code></pre>
 </div>
 </div>
-<p><code>varpro()</code> builds the importance machinery — release rules, per-tree scores, the splitweight vector — once. Every subsequent figure in this section reads off that single fit.</p>
+<p><code>varpro()</code> builds the importance machinery (release rules, per-tree scores, the splitweight vector) once. Every subsequent figure in this section reads off that single fit. The formula interface is intentional: varPro is model-independent in the sense that it doesn’t assume a linear or parametric relationship between predictors and response, but it does require you to name a response so the guided splitting has something to optimise toward.</p>
 <section class="level2"><h3 id="per-tree-importance-with-gg_varpro">Per-tree importance with <code>gg_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#per-tree-importance-with-gg_varpro"></a>
 </h3>
-<p>The first question varPro answers is the same one permutation importance answers — which variables matter, ranked. <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> extracts the per-tree importance scores and draws their distribution as a horizontal boxplot, one row per variable, sorted by median z-score. Variables above a configurable cutoff (default 0.79) are highlighted.</p>
+<p>The first question varPro answers is the same one permutation importance answers: which variables matter, ranked. <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> extracts the per-tree importance scores and draws their distribution as a horizontal boxplot, one row per variable, sorted by median z-score. Variables above a configurable cutoff (default 0.79) are highlighted.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_varpro.html">gg_varpro</a></span><span class="op">(</span><span class="va">v_boston</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/boston-gg-varpro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/boston-gg-varpro-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The narrow boxes near the top are the variables varPro is confident about — every tree agrees they matter. Wide boxes that straddle the cutoff line are the ones to look at twice; the forest disagrees with itself.</p>
+<p>The narrow boxes near the top are the variables varPro is confident about: every tree agrees they matter. Wide boxes that straddle the cutoff line are the ones to look at twice; the forest disagrees with itself. That disagreement isn’t noise to suppress: it can mean the variable matters in some rule regions but not others, which is exactly the kind of structured heterogeneity that model-independent methods are built to detect. Variables that fall entirely below the cutoff were pre-filtered by the importance z threshold; they’re gone before the plot is drawn.</p>
 </section><section class="level2"><h3 id="partial-dependence-with-gg_partial_varpro">Partial dependence with <code>gg_partial_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#partial-dependence-with-gg_partial_varpro"></a>
 </h3>
 <p>The ranking view tells you <em>which</em> variables matter. Partial dependence asks the next question: <em>how</em> does the response change with a variable, holding the others fixed? <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> wraps <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro()</a></code> and returns a tidy frame of parametric, non-parametric, and causal partial-dependence curves.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gg_pd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_partial_varpro.html">gg_partial_varpro</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">v_boston</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Precomputed offline (see precompute_varpro.R); falls back to a live fit.</span></span>
+<span><span class="va">gg_pd</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">.vp</span><span class="op">$</span><span class="va">pd_boston</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/gg_partial_varpro.html">gg_partial_varpro</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">v_boston</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">.vp</span><span class="op">$</span><span class="va">pd_boston</span></span>
+<span><span class="op">}</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_pd</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/boston-gg-partial-varpro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/boston-gg-partial-varpro-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Each panel is a single predictor. The three curves correspond to the three estimators varPro carries — read them as a sensitivity analysis. Tight agreement is reassuring; divergence is information.</p>
+<p>Each panel is a single predictor. The three curves correspond to the three estimators varPro carries (parametric, non-parametric, and causal); read them as a sensitivity analysis. When all three agree, you have a stable signal; when the causal curve diverges from the others, that’s a hint that the variable’s observed relationship with the response may be partly driven by its correlation with other predictors in the rule regions, not by a direct effect.</p>
+<p>Because <code>partialpro()</code> operates within the <em>local</em> neighborhoods defined by the release rules, these curves reflect what happens in the part of the predictor space the forest actually visited, not a global extrapolation from a fitted model. That is both a strength (no out-of-distribution extrapolation) and a limit (sparse regions of the predictor space will have wider effective intervals, even if the plot doesn’t always show them explicitly).</p>
 </section><section class="level2"><h3 id="per-rule-lasso-refinement-with-gg_beta_varpro">Per-rule lasso refinement with <code>gg_beta_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#per-rule-lasso-refinement-with-gg_beta_varpro"></a>
 </h3>
-<p><code><a href="../reference/gg_varpro.html">gg_varpro()</a></code>’s ranking is built from the release-rule contrast. <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code> re-asks the question variable by variable inside each rule: it fits a one-predictor lasso of the response on the released variable, restricted to the OOB observations in that rule’s region. The fitted β̂ is the variable’s <em>local</em> effect inside that rule. Aggregating <code>mean(|β̂|)</code> across rules gives one number per variable; that number is a regression-coefficient-flavoured importance, not a VIMP score.</p>
-<p>Because <code>beta.varpro()</code> is expensive (a <code>glmnet</code> per rule), the wrapper accepts a pre-computed <code>beta_fit</code> so you can iterate on selection without re-fitting.</p>
+<p><code><a href="../reference/gg_varpro.html">gg_varpro()</a></code>’s ranking is built from the release-rule contrast. <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code> re-asks the question variable by variable inside each rule: it fits a one-predictor lasso of the response on the released variable, restricted to the OOB observations in that rule’s region. The fitted coefficient (call it a “local β”) captures the variable’s linear effect <em>within that rule’s neighborhood</em>, not globally. Aggregating <code>mean(|β|)</code> across rules gives one number per variable: a regression-coefficient-flavoured importance, not a VIMP score, and not a global slope.</p>
+<p>That distinction matters in practice. A variable with a strong nonlinear global relationship may have locally small β values inside any single rule (the local-standardisation step within each rule normalises the scale), but many rules will fire on it, so the aggregated mean is still large. Conversely, a variable with a nearly linear global effect will concentrate most of its weight in a handful of rules, and the between-rule variability in β will be low.</p>
+<p>Because <code>beta.varpro()</code> is expensive (a <code>glmnet</code> per rule), the wrapper accepts a pre-computed <code>beta_fit</code> so you can iterate on selection, cutoff, or class choice without re-fitting.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">b_boston</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">beta.varpro</a></span><span class="op">(</span><span class="va">v_boston</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Precomputed offline (see precompute_varpro.R); falls back to a live fit.</span></span>
+<span><span class="va">b_boston</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">.vp</span><span class="op">$</span><span class="va">b_boston</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">beta.varpro</a></span><span class="op">(</span><span class="va">v_boston</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">.vp</span><span class="op">$</span><span class="va">b_boston</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_beta_varpro.html">gg_beta_varpro</a></span><span class="op">(</span><span class="va">v_boston</span>, beta_fit <span class="op">=</span> <span class="va">b_boston</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/boston-gg-beta-varpro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/boston-gg-beta-varpro-1.png"></p>
 </figure>
 </div>
 </div>
@@ -7062,7 +7078,7 @@ attr(,"class")
 </section><section class="level2"><h3 id="cross-variable-dependency-with-gg_udependent">Cross-variable dependency with <code>gg_udependent()</code>
 <a class="anchor" aria-label="anchor" href="#cross-variable-dependency-with-gg_udependent"></a>
 </h3>
-<p>The three views so far take one variable at a time. <code><a href="../reference/gg_udependent.html">gg_udependent()</a></code> reads cross-variable structure off a <code>uvarpro()</code> fit and draws the result as a network: nodes are variables, edges are dependencies above a configurable threshold. The visual is built with <code>ggraph</code>, which is in <code>Suggests</code> rather than <code>Imports</code> — install it if you want this view.</p>
+<p>The three views so far take one variable at a time. <code><a href="../reference/gg_udependent.html">gg_udependent()</a></code> reads cross-variable structure off a <code>uvarpro()</code> fit and draws the result as a network: nodes are variables, edges are dependencies above a configurable threshold. The visual is built with <code>ggraph</code>, which is in <code>Suggests</code> rather than <code>Imports</code>; install it if you want this view.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">u_boston</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">uvarpro</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">[</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>, <span class="st">"medv"</span><span class="op">)</span><span class="op">]</span>,</span>
@@ -7073,16 +7089,16 @@ attr(,"class")
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_udependent.html">gg_udependent</a></span><span class="op">(</span><span class="va">u_boston</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/boston-gg-udependent-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/boston-gg-udependent-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Clusters of mutually-connected variables are worth checking for redundancy — they may be several views of the same underlying quantity.</p>
+<p>Clusters of mutually-connected variables are worth checking for redundancy: they may be several views of the same underlying quantity. <code>uvarpro()</code> operates on the predictor matrix alone; there is no response in the fit, which is what makes the network genuinely unsupervised. Variables that cluster here are correlated in feature space regardless of whether any of them matters for prediction. That information is complementary to the ranking from <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code>: a variable can be important for prediction and still sit in a tight cluster with a near-duplicate; in that situation, model parsimony may favour dropping one of the cluster members without losing much predictive accuracy.</p>
 </section><section class="level2"><h3 id="anomaly-scoring-with-gg_isopro">Anomaly scoring with <code>gg_isopro()</code>
 <a class="anchor" aria-label="anchor" href="#anomaly-scoring-with-gg_isopro"></a>
 </h3>
-<p>Variable importance is one axis; <em>observation</em> outlierness is another. <code><a href="../reference/gg_isopro.html">gg_isopro()</a></code> wraps <code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">varPro::isopro()</a></code> — an isolation-forest variant that scores how anomalous each training row looks — and renders the result as a ranked elbow plus a density of the scores. The score is on <code>[0, 1]</code>; the wrapper’s convention is “higher = more anomalous” (opposite of varPro’s native polarity; the wrapper flips it for consistency).</p>
+<p>Variable importance is one axis; <em>observation</em> outlierness is another. <code><a href="../reference/gg_isopro.html">gg_isopro()</a></code> wraps <code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">varPro::isopro()</a></code> (an isolation-forest variant that scores how anomalous each training row looks) and renders the result as a ranked elbow plus a density of the scores. The score is on <code>[0, 1]</code>; the wrapper’s convention is “higher = more anomalous” (opposite of varPro’s native polarity; the wrapper flips it for consistency).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">iso_boston</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">isopro</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">Boston</span><span class="op">[</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>,</span>
@@ -7095,12 +7111,13 @@ attr(,"class")
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_isopro.html">gg_isopro</a></span><span class="op">(</span><span class="va">iso_boston</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/boston-gg-isopro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/boston-gg-isopro-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The elbow flags rows that diverge from the bulk. Pair with the domain — anomalous in feature space is not the same as wrong, but it’s often where the most interesting cases live.</p>
+<p>The elbow flags rows that diverge from the bulk. Pair with the domain: anomalous in feature space is not the same as wrong, but it’s often where the most interesting cases live. In a regression context, a high-scoring row is one that the isolation forest isolated quickly because its feature combination is rare; it may or may not be an outlier in the response. Anomaly scoring and residual analysis answer different questions, and it’s worth doing both.</p>
+<p>Note that <code>isopro()</code> scores are not calibrated to a universal scale: a score of 0.7 in one dataset is not comparable to 0.7 in another. What matters is the relative ordering within a dataset and the shape of the elbow: a sharp kink at a small number of observations is a cleaner signal than a gradual slope that never levels off.</p>
 </section><section class="level2"><h3 id="local-importance-with-gg_ivarpro">Local importance with <code>gg_ivarpro()</code>
 <a class="anchor" aria-label="anchor" href="#local-importance-with-gg_ivarpro"></a>
 </h3>
@@ -7115,7 +7132,7 @@ attr(,"class")
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_ivarpro.html">gg_ivarpro</a></span><span class="op">(</span><span class="va">v_boston</span>, ivarpro_fit <span class="op">=</span> <span class="va">iv_boston</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/boston-gg-ivarpro-distribution-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/boston-gg-ivarpro-distribution-1.png"></p>
 </figure>
 </div>
 </div>
@@ -7125,15 +7142,17 @@ attr(,"class")
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_ivarpro.html">gg_ivarpro</a></span><span class="op">(</span><span class="va">v_boston</span>, ivarpro_fit <span class="op">=</span> <span class="va">iv_boston</span>, which_obs <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/boston-gg-ivarpro-which-obs-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/boston-gg-ivarpro-which-obs-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The distribution view tells you which variables drive predictions <em>across</em> observations. The per-observation view answers the same question for a specific case — useful for explaining one prediction back to whoever asked.</p>
+<p>The distribution view tells you which variables drive predictions <em>across</em> observations. The per-observation view answers the same question for a specific case, useful for explaining one prediction back to whoever asked.</p>
+<p>The per-observation importance is computed by replaying the release-rule contrasts restricted to the rules that fire for that observation. It is not a Shapley value, but it shares the local-attribution spirit: each bar shows how much that variable’s release shifted the local estimator for this specific row, averaged over the rules that covered it. Cases that are well-represented in the training data (dense rule coverage) will have sharper attribution than cases in sparse regions of the predictor space.</p>
 </section></section><section class="section level2"><h2 id="classification-iris">Classification: iris<a class="anchor" aria-label="anchor" href="#classification-iris"></a>
 </h2>
-<p>Iris is a small data set — 150 rows, four predictors, three response classes — and that’s a feature here, not a flaw: every figure renders in under a second, and the structure is well-understood enough that any strange behaviour stands out. Two fits: a binary problem (drop <em>setosa</em>, positive class = <em>virginica</em>) and the full three-class problem.</p>
+<p>Iris is a small data set (150 rows, four predictors, three response classes), and that’s a feature here, not a flaw: every figure renders in under a second, and the structure is well-understood enough that any strange behaviour stands out. It is also a good stress-test for the conditional importance path: petal length and petal width separate <em>setosa</em> from everything else very cleanly, but the <em>versicolor</em>/<em>virginica</em> boundary is much softer. A method that only reports unconditional importance would lump both cases together; the conditional decomposition should show the asymmetry.</p>
+<p>Two fits: a binary problem (drop <em>setosa</em>, positive class = <em>virginica</em>) and the full three-class problem.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">iris_binary</span> <span class="op">&lt;-</span> <span class="va">iris</span><span class="op">[</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span> <span class="op">!=</span> <span class="st">"setosa"</span>, <span class="op">]</span></span>
@@ -7149,13 +7168,14 @@ attr(,"class")
 <section class="level2"><h3 id="class-conditional-importance-with-gg_varproconditional-true">Class-conditional importance with <code>gg_varpro(conditional = TRUE)</code>
 <a class="anchor" aria-label="anchor" href="#class-conditional-importance-with-gg_varproconditional-true"></a>
 </h3>
-<p>For a classification forest, <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> can split the importance view into one facet per class. Variables keep the unconditional sort order so rows line up across facets — read along a row to see which class a variable is informative for.</p>
+<p>For a classification forest, <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> can split the importance view into one facet per class. Variables keep the unconditional sort order so rows line up across facets; read along a row to see which class a variable is informative for.</p>
+<p>The conditional importance uses <code>$conditional.z</code> from the varPro fit: per-class release-rule contrasts computed within the same rule regions as the unconditional score, but with the local estimator replaced by a per-class probability. A variable that separates one class from the rest will have a high <code>$conditional.z</code> for that class and a near-zero or even negative value for the others. The unconditional score in <code>$unconditional</code> is the average, and can mask class-specific effects, which is why the <code>conditional = TRUE</code> faceted view exists.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_varpro.html">gg_varpro</a></span><span class="op">(</span><span class="va">v_iris_multi</span>, conditional <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/iris-multi-gg-varpro-conditional-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/iris-multi-gg-varpro-conditional-1.png"></p>
 </figure>
 </div>
 </div>
@@ -7165,10 +7185,16 @@ attr(,"class")
 <p><code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> works the same way on a classification fit, but each predictor’s curve becomes per-class probabilities. The plot panels are organised by predictor with class encoded as colour or facet (the wrapper defaults handle this).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_partial_varpro.html">gg_partial_varpro</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">v_iris_multi</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Precomputed offline (see precompute_varpro.R); falls back to a live fit.</span></span>
+<span><span class="va">gg_pd_iris</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">.vp</span><span class="op">$</span><span class="va">pd_iris_multi</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/gg_partial_varpro.html">gg_partial_varpro</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">v_iris_multi</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">.vp</span><span class="op">$</span><span class="va">pd_iris_multi</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_pd_iris</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/iris-multi-gg-partial-varpro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/iris-multi-gg-partial-varpro-1.png"></p>
 </figure>
 </div>
 </div>
@@ -7177,7 +7203,7 @@ attr(,"class")
 </section><section class="level2"><h3 id="per-class-lasso-refinement-with-gg_beta_varpro">Per-class lasso refinement with <code>gg_beta_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#per-class-lasso-refinement-with-gg_beta_varpro"></a>
 </h3>
-<p>On a classification fit, <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code> returns one row per (variable, class) pair. For a binary fit, <code>which_class = NULL</code> defaults to the last factor level — the positive class — so the headline view is a single panel of that class.<a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The same code pattern applies to clinical binary outcomes such as 30-day mortality: drop the negative class, set the event class as the last factor level, and read the figure for the event panel.&lt;/p&gt;"><sup>1</sup></a></p>
+<p>On a classification fit, <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code> returns one row per (variable, class) pair. For a binary fit, <code>which_class = NULL</code> defaults to the last factor level (the positive class), so the headline view is a single panel of that class.<a class="footnote-ref" role="doc-noteref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The same code pattern applies to clinical binary outcomes such as 30-day mortality: drop the negative class, set the event class as the last factor level, and read the figure for the event panel.&lt;/p&gt;"><sup>1</sup></a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">b_iris_binary</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">beta.varpro</a></span><span class="op">(</span><span class="va">v_iris_binary</span><span class="op">)</span></span></code></pre></div>
@@ -7187,12 +7213,12 @@ attr(,"class")
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_beta_varpro.html">gg_beta_varpro</a></span><span class="op">(</span><span class="va">v_iris_binary</span>, beta_fit <span class="op">=</span> <span class="va">b_iris_binary</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/iris-binary-gg-beta-varpro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/iris-binary-gg-beta-varpro-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>For a multi-class fit, the default view is faceted by class with each class sharing the row order set by the unified ranking — same trick as <code>gg_varpro(conditional = TRUE)</code>.</p>
+<p>For a multi-class fit, the default view is faceted by class with each class sharing the row order set by the unified ranking, same trick as <code>gg_varpro(conditional = TRUE)</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">b_iris_multi</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">beta.varpro</a></span><span class="op">(</span><span class="va">v_iris_multi</span><span class="op">)</span></span></code></pre></div>
@@ -7202,7 +7228,7 @@ attr(,"class")
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_beta_varpro.html">gg_beta_varpro</a></span><span class="op">(</span><span class="va">v_iris_multi</span>, beta_fit <span class="op">=</span> <span class="va">b_iris_multi</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/iris-multi-gg-beta-varpro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/iris-multi-gg-beta-varpro-1.png"></p>
 </figure>
 </div>
 </div>
@@ -7210,7 +7236,9 @@ attr(,"class")
 <p><code>which_class = "&lt;level&gt;"</code> collapses the faceted view to a single class when you want it.</p>
 </section></section><section class="section level2"><h2 id="survival-pbc">Survival: PBC<a class="anchor" aria-label="anchor" href="#survival-pbc"></a>
 </h2>
-<p>Survival is the family where the varPro toolchain shows its limits. The forest-fitting and the family-agnostic wrappers all work; the lasso-refined and individual-importance wrappers don’t, because the underlying <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> and <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> calls don’t support survival fits in the current release.</p>
+<p>Survival is the family where the varPro toolchain shows its limits, and being explicit about those limits is more useful than pretending they don’t exist. The forest-fitting and the family-agnostic wrappers all work; the lasso-refined and individual-importance wrappers don’t, because the underlying <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> and <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> calls don’t yet extend to right-censored outcomes. A per-rule local lasso for a censored response requires a local partial-likelihood or Nelson-Aalen estimator in place of the regression/classification local estimator; the design work for that is tracked but not yet landed.</p>
+<p>What does work is the core release-rule importance, the C-path partial dependence (routed through the embedded <code>$rf</code> random survival forest), and anomaly scoring on the predictor matrix. For many applied problems, those three views cover the questions you actually want to answer.</p>
+<p>The PBC (primary biliary cirrhosis) dataset from <code>randomForestSRC</code> has 418 patients, seven predictors, and a Surv-encoded outcome of days to event (death or transplant, status ∈ {0, 1, 2}). We use a small seven-variable subset so the vignette fits quickly. For a full analysis including time-dependent covariates, <span class="citation" data-cites="Lee:2021">Lee et al. (<a href="#ref-Lee:2021" role="doc-biblioref">2021</a>)</span> demonstrates the boosted nonparametric hazard framework that varPro’s survival path draws on.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span>
@@ -7232,20 +7260,26 @@ attr(,"class")
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_varpro.html">gg_varpro</a></span><span class="op">(</span><span class="va">v_pbc</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/pbc-gg-varpro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/pbc-gg-varpro-1.png"></p>
 </figure>
 </div>
 </div>
 </div>
 </section><section class="level2"><h3 id="partial-dependence-gg_partial_varpro-c-path">Partial dependence: <code>gg_partial_varpro()</code> (C-path)<a class="anchor" aria-label="anchor" href="#partial-dependence-gg_partial_varpro-c-path"></a>
 </h3>
-<p>For survival, <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> dispatches into the <code>randomForestSRC</code>-backed partial-dependence machinery via the underlying <code>$rf</code> survival forest — what the package calls the <em>C-path</em>. The output shape is the same as the regression case (parametric / non-parametric / causal panels); the y-axis carries an <code>ensemble mortality</code> interpretation (Ishwaran 2008), not a survival probability.</p>
+<p>For survival, <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> dispatches into the <code>randomForestSRC</code>-backed partial-dependence machinery via the underlying <code>$rf</code> survival forest (what the package calls the <em>C-path</em> because it routes through the <code>randomForestSRC</code> C-code layer rather than the varPro release-rule engine). The output shape is the same as the regression case (parametric / non-parametric / causal panels); the y-axis carries an “ensemble mortality” interpretation <span class="citation" data-cites="Ishwaran:2007a">(<a href="#ref-Ishwaran:2007a" role="doc-biblioref">Ishwaran et al. 2008</a>)</span>, not a survival probability. Higher values mean higher predicted mortality at a given predictor value, integrated over the event-time horizon in the training data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_partial_varpro.html">gg_partial_varpro</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">v_pbc</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Precomputed offline (see precompute_varpro.R); falls back to a live fit.</span></span>
+<span><span class="va">gg_pd_pbc</span> <span class="op">&lt;-</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">.vp</span><span class="op">$</span><span class="va">pd_pbc</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/gg_partial_varpro.html">gg_partial_varpro</a></span><span class="op">(</span>object <span class="op">=</span> <span class="va">v_pbc</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">.vp</span><span class="op">$</span><span class="va">pd_pbc</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_pd_pbc</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/pbc-gg-partial-varpro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/pbc-gg-partial-varpro-1.png"></p>
 </figure>
 </div>
 </div>
@@ -7261,7 +7295,7 @@ attr(,"class")
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_isopro.html">gg_isopro</a></span><span class="op">(</span><span class="va">iso_pbc</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="varpro_files/figure-html/pbc-isopro-1.png" width="672"></p>
+<figure><p><img src="varpro_files/figure-html/pbc-isopro-1.png"></p>
 </figure>
 </div>
 </div>
@@ -7270,7 +7304,7 @@ attr(,"class")
 <a class="anchor" aria-label="anchor" href="#not-available-for-survival-gg_beta_varpro-gg_ivarpro"></a>
 </h3>
 <p><code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> errors on survival fits in the current release (it only supports <code>regr</code> and <code>class</code>). <code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code> for survival is similarly deferred pending design work on the per-rule risk-scaling story. Both are tracked for v3.1.0.</p>
-<p>If you call either on a survival fit you’ll get a clear error message pointing at the deferred work, not a silent miscalculation. The family-support matrix in §6 records this — and the rest of the toolkit that <em>does</em> work on survival (<code>gg_varpro</code>, <code>gg_partial_varpro</code>, <code>gg_isopro</code> above; <code>gg_udependent</code> shown in §3 on the X-matrix).</p>
+<p>If you call either on a survival fit you’ll get a clear error message pointing at the deferred work, not a silent miscalculation. The family-support matrix in §6 records this; the rest of the toolkit that <em>does</em> work on survival (<code>gg_varpro</code>, <code>gg_partial_varpro</code>, <code>gg_isopro</code> above; <code>gg_udependent</code> shown in §3 on the X-matrix).</p>
 </section></section><section class="section level2"><h2 id="cross-cutting-reference">Cross-cutting reference<a class="anchor" aria-label="anchor" href="#cross-cutting-reference"></a>
 </h2>
 <section class="level2"><h3 id="family-support-matrix">Family-support matrix<a class="anchor" aria-label="anchor" href="#family-support-matrix"></a>
@@ -7335,7 +7369,7 @@ attr(,"class")
 <p>This convention will be propagated to <code>gg_vimp</code> and <code>plot.gg_varpro(conditional = TRUE)</code> in a follow-up release.</p>
 </section><section class="level2"><h3 id="caching-the-expensive-calls">Caching the expensive calls<a class="anchor" aria-label="anchor" href="#caching-the-expensive-calls"></a>
 </h3>
-<p><code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> and <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> are the two heavy calls. Both wrappers accept a pre-computed fit (<code>beta_fit</code>, <code>ivarpro_fit</code>) so you can iterate on selection, observation index, or cutoff without re-fitting the lasso or the local-importance machinery. The vignette uses this throughout — every section computes the heavy fit once in a <code>cache: true</code> chunk and re-uses it for every figure.</p>
+<p><code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> and <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> are the two heavy calls. Both wrappers accept a pre-computed fit (<code>beta_fit</code>, <code>ivarpro_fit</code>) so you can iterate on selection, observation index, or cutoff without re-fitting the lasso or the local-importance machinery. The vignette uses this throughout: every section computes the heavy fit once in a <code>cache: true</code> chunk and re-uses it for every figure.</p>
 <p>Provenance carries <code>precomputed = TRUE</code> when the cached path was used, so downstream tooling can tell the two paths apart.</p>
 </section><section class="level2"><h3 id="provenance-shape">Provenance shape<a class="anchor" aria-label="anchor" href="#provenance-shape"></a>
 </h3>
@@ -7348,7 +7382,9 @@ attr(,"class")
 <p>Downstream code that picks a value should read it as a vector (<code>prov$cutoff[[class_name]]</code> or <code>prov$cutoff[[1]]</code>), not as a scalar. This contract was established in v2.7.3.9012 (PR #98).</p>
 </section></section><section class="section level2"><h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
-<p>The release-rule framework is laid out in <span class="citation" data-cites="Lu2024varpro">Lu and Ishwaran (<a href="#ref-Lu2024varpro" role="doc-biblioref">2024</a>)</span>. The ensemble mortality scale used by survival partial dependence is introduced in <span class="citation" data-cites="Ishwaran:2007a">Ishwaran et al. (<a href="#ref-Ishwaran:2007a" role="doc-biblioref">2008</a>)</span> (the Annals of Applied Statistics methods paper for random survival forests); the R-package side is described in <span class="citation" data-cites="Ishwaran:2008">Ishwaran and Kogalur (<a href="#ref-Ishwaran:2008" role="doc-biblioref">2007</a>)</span>. Each wrapper’s help page carries a “What this is doing” section that goes one level deeper than this vignette.</p>
+<p>The release-rule framework is laid out in <span class="citation" data-cites="Lu2024varpro">Lu and Ishwaran (<a href="#ref-Lu2024varpro" role="doc-biblioref">2024</a>)</span>. Worked implementation examples and the full API are at the <a href="https://www.varprotools.org/articles/getstarted.html" class="external-link">varPro tools reference site</a>.</p>
+<p>The ensemble mortality scale used by survival partial dependence is introduced in <span class="citation" data-cites="Ishwaran:2007a">Ishwaran et al. (<a href="#ref-Ishwaran:2007a" role="doc-biblioref">2008</a>)</span> (the Annals of Applied Statistics methods paper for random survival forests); the R-package side is described in <span class="citation" data-cites="Ishwaran:2008">Ishwaran and Kogalur (<a href="#ref-Ishwaran:2008" role="doc-biblioref">2007</a>)</span>. The boosted nonparametric hazard framework that informs varPro’s survival path (including the treatment of time-dependent covariates) is in <span class="citation" data-cites="Lee:2021">Lee et al. (<a href="#ref-Lee:2021" role="doc-biblioref">2021</a>)</span>.</p>
+<p>Each wrapper’s help page carries a “What this is doing” section that goes one level deeper than this vignette. The cross-cutting reference in §6 maps each wrapper to the forest families it supports and notes which capabilities are deferred to v3.1.0.</p>
 </section><section class="section level2"><h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
@@ -7357,6 +7393,9 @@ Ishwaran, Hemant, and Udaya B. Kogalur. 2007. <span>“Random Survival Forests f
 </div>
 <div id="ref-Ishwaran:2007a" class="csl-entry" role="listitem">
 Ishwaran, Hemant, Udaya B. Kogalur, Eugene H. Blackstone, and Michael S. Lauer. 2008. <span>“Random Survival Forests.”</span> <em>The Annals of Applied Statistics</em> 2 (3): 841–60. <a href="https://doi.org/10.1214/08-AOAS169" class="external-link">https://doi.org/10.1214/08-AOAS169</a>.
+</div>
+<div id="ref-Lee:2021" class="csl-entry" role="listitem">
+Lee, D. K., N. Chen, and H. Ishwaran. 2021. <span>“Boosted Nonparametric Hazards with Time-Dependent Covariates.”</span> <em>The Annals of Statistics</em> 49 (4): 2101–28. <a href="https://doi.org/10.1214/20-AOS2028" class="external-link">https://doi.org/10.1214/20-AOS2028</a>.
 </div>
 <div id="ref-Lu2024varpro" class="csl-entry" role="listitem">
 Lu, M., and H. Ishwaran. 2024. <span>“Model-Independent Variable Selection via the Rule-Based Variable Priority.”</span> <em>arXiv Preprint</em>. <a href="https://arxiv.org/abs/2409.09003" class="external-link">https://arxiv.org/abs/2409.09003</a>.

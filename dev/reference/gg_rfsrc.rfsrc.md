@@ -1,8 +1,12 @@
 # Predicted response data object
 
-Extracts the predicted response values from the
-[`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) object,
-and formats data for plotting the response using
+Every tree in a random forest makes its own prediction, and the forest's
+"ensemble" prediction is the average across all trees. The out-of-bag
+(OOB) variant averages only over the trees that did not include a given
+observation in their bootstrap sample – a built-in cross-validation
+estimate that requires no held-out test set. `gg_rfsrc` pulls those
+ensemble predictions out of the fitted forest and arranges them for
+plotting with
 [`plot.gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md).
 
 ## Usage
@@ -88,6 +92,17 @@ The object carries class attributes for the forest family so that
 dispatches correctly.
 
 ## Details
+
+The structure of the returned data depends on the forest family. For a
+regression forest you get a scatter of OOB predicted values against the
+observed response. For classification you get predicted class
+probabilities alongside the observed class label. For a survival forest
+you get the ensemble survival function (or cumulative hazard, or
+mortality, controlled by `surv_type`) at each unique event time – one
+curve per observation – which together trace the range of predicted risk
+in the cohort. Pass `conf.int` to add pointwise bootstrap confidence
+bands around the mean survival curve, or `by` to stratify all of the
+above by a predictor group.
 
 For survival forests, use the `surv_type` argument (`"surv"`, `"chf"`,
 or `"mortality"`) to select the predicted quantity. Bootstrap confidence

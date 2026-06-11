@@ -59,7 +59,7 @@ Variables are sorted top to bottom by descending median per-tree
 importance, so the eye lands on the most important variable first. For
 each variable the box spans the 15th to 85th percentile of the per-tree
 scores, the centre line is the median, and the whiskers run out to the
-5th and 95th percentile — not the usual Tukey 1.5 IQR whiskers. The
+5th and 95th percentile, not the usual Tukey 1.5 IQR whiskers. The
 dashed vertical line is the selection `cutoff` (default `0.79`). On the
 default z-score axis (`local.std = TRUE`) that line is a z; on the
 raw-importance axis (`local.std = FALSE`, `type = "raw"`) it is the same
@@ -83,7 +83,7 @@ class a variable is informative for.
 ## What this tells you
 
 Take the variables above the cutoff as your candidate set. Use the width
-of the box and the per-tree overlay to gauge confidence — a narrow box
+of the box and the per-tree overlay to gauge confidence: a narrow box
 well above the cutoff is a confident pick, a wide box that crosses it is
 a coin flip you should not lean on. For classification, conditional
 importance tells you which variables drive which class; a variable that

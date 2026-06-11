@@ -1,10 +1,11 @@
 # Split partial dependence data into continuous or categorical datasets
 
-Takes the list returned by `rfsrc::plot.variable(partial = TRUE)` and
-separates the variables into two data frames: one for continuous
-predictors and one for categorical (factor-like) predictors. The split
-is controlled by `cat_limit`: variables with more unique x-values than
-this threshold are treated as continuous; all others are categorical.
+A partial dependence curve answers a what-if question about a forest:
+hold every other predictor at its observed value, sweep one of them
+across its range, and watch how the ensemble prediction moves.
+Marginalized over the joint distribution of the other variables, the
+resulting curve isolates the average effect of the swept predictor
+alone.
 
 ## Usage
 
@@ -46,6 +47,21 @@ A named list with two elements:
   data.frame with the same columns but with `x` as a factor, for
   low-cardinality / categorical variables
 
+## Details
+
+`gg_partial` handles the bookkeeping step after you've already called
+`rfsrc::plot.variable(partial = TRUE)`: it takes the list that function
+returns and separates the variables into two tidy data frames – one for
+continuous predictors (plotted as lines) and one for categorical
+predictors (plotted as bar charts). The split is controlled by
+`cat_limit`: variables with more unique x-values than this threshold are
+treated as continuous; all others are categorical.
+
+If you'd rather skip the `plot.variable` step and pass the fitted forest
+directly, see
+[`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md),
+which calls `partial.rfsrc` for you.
+
 ## Note
 
 Partial-dependence extraction is `randomForestSRC`-only; there is no
@@ -66,7 +82,7 @@ airq <- na.omit(airquality)
 rf <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50)
 
 ## Compute partial dependence via plot.variable (show.plots = FALSE to
-## suppress the base-graphics output — we only want the data)
+## suppress the base-graphics output, we only want the data)
 pv <- randomForestSRC::plot.variable(rf, partial = TRUE,
                                       show.plots = FALSE)
 

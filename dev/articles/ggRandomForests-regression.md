@@ -36,8 +36,8 @@ on the Boston Housing data set ([Harrison and Rubinfeld
     [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
     and
     [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-5.  **Variable interactions** — conditioning plots and interactive 3-D
-    partial dependence surfaces with **plotly**
+5.  **Variable interactions** — conditioning plots and partial
+    dependence surfaces
 
 ``` r
 
@@ -134,14 +134,14 @@ function detects the regression family from the continuous response.
 ``` r
 
 rfsrc_Boston <- rfsrc(medv ~ ., data = Boston, # nolint: object_name_linter
-                      importance = TRUE, err.block = 5)
+                      ntree = 200, importance = TRUE, err.block = 5)
 rfsrc_Boston
 ```
 
     #>                          Sample size: 506
-    #>                      Number of trees: 500
+    #>                      Number of trees: 200
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.628
+    #>        Average no. of terminal nodes: 67.1
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,10 +150,10 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86883526
-    #>    (OOB) Requested performance error: 11.09479543
+    #>                      (OOB) R squared: 0.86582916
+    #>    (OOB) Requested performance error: 11.34907145
 
-The forest grew 500 trees, splitting on 5 randomly selected candidate
+The forest grew 200 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
 5.
 
@@ -195,10 +195,13 @@ predictions.
 
 ### Variable importance (VIMP)
 
-VIMP measures the increase in prediction error when a variable is
-randomly permuted ([Breiman 2001](#ref-Breiman:2001)). Large positive
-values mean the variable is essential; negative values suggest noise is
-more informative.
+VIMP, computed by [randomForestSRC](https://www.randomforestsrc.org),
+measures the increase in OOB prediction error when a variable’s values
+are randomly permuted across the out-of-bag observations ([Breiman
+2001](#ref-Breiman:2001)). Permutation severs the variable’s link to the
+response on purpose: if breaking that link hurts accuracy, the variable
+is carrying real signal. Large positive values mean the variable is
+essential; negative values suggest it is no more informative than noise.
 
 ``` r
 
@@ -213,6 +216,18 @@ VIMP ranking. Longer blue bars indicate more important variables.
 All VIMP values are positive, indicating every predictor contributes at
 least marginally.
 
+The permutation approach contrasts with varPro release-rule importance
+([Lu and Ishwaran 2024](#ref-Lu2024varpro)), available through
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md).
+Rather than perturbing data synthetically, varPro compares local
+estimators on the observed data directly: no permutation, no
+manufactured feature values. Because the two methods measure
+fundamentally different things, a variable can rank high under one and
+low under the other. When they agree, the evidence is strong; when they
+disagree, that disagreement itself is worth investigating, pointing
+either to a variable whose effect is highly non-linear or to one that
+matters only in combination with others.
+
 ### Minimal depth
 
 Minimal depth ([Ishwaran et al. 2010](#ref-Ishwaran:2010)) ranks
@@ -225,7 +240,7 @@ considered most important.
 md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
-The threshold is 3, selecting 6 variables: crim, nox, rm, dis, ptratio,
+The threshold is 3, selecting 5 variables: crim, nox, rm, ptratio,
 lstat.
 
 Both VIMP and minimal depth agree on the dominance of `lstat` and `rm`.
@@ -405,15 +420,15 @@ The `rm` effect is strongest in low-`lstat` tracts (bottom-left panels)
 and nearly flat in high-`lstat` tracts, confirming a meaningful
 interaction.
 
-## Interactive Partial Dependence Surface
+## Partial Dependence Surface
 
 To visualize the joint partial dependence of `medv` on `lstat` and `rm`,
-we compute partial dependence on a grid: 25 values of `rm`, each
+we compute partial dependence on a grid: 10 values of `rm`, each
 evaluated at 25 points along `lstat`.
 
 ``` r
 
-rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 25)
+rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 10)
 
 surface_list <- lapply(rm_grid, function(rm_val) {
   newx <- rfsrc_Boston$xvar
@@ -429,41 +444,17 @@ surface_df <- bind_rows(surface_list)
 
 ``` r
 
-if (requireNamespace("plotly", quietly = TRUE)) {
-  library(plotly)
-
-  surface_wide <- surface_df |>
-    select(lstat = x, rm, medv = yhat) |>
-    arrange(rm, lstat)
-
-  lstat_vals <- sort(unique(surface_wide$lstat))
-  rm_vals    <- sort(unique(surface_wide$rm))
-  z_matrix   <- matrix(surface_wide$medv,
-                        nrow = length(rm_vals),
-                        ncol = length(lstat_vals),
-                        byrow = TRUE)
-
-  plot_ly(x = lstat_vals, y = rm_vals, z = z_matrix) |>
-    add_surface(colorscale = "Viridis", showscale = TRUE) |>
-    layout(
-      scene = list(
-        xaxis = list(title = "Lower Status (%)"),
-        yaxis = list(title = "Rooms per Dwelling"),
-        zaxis = list(title = "Median Value ($1000s)")
-      )
-    )
-} else {
-  message("Install the plotly package for interactive 3D surfaces.")
-  ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
-    geom_tile() +
-    scale_fill_viridis_c(name = "Median Value") +
-    labs(x = "Lower Status (%)", y = "Rooms per Dwelling") +
-    theme_bw()
-}
+ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
+  geom_tile() +
+  scale_fill_viridis_c(name = "Median Value\n($1000s)") +
+  labs(x = "Lower Status (%)", y = "Rooms per Dwelling") +
+  theme_bw()
 ```
 
-Interactive partial dependence surface: median home value as a function
-of lstat and rm.
+![](ggRandomForests-regression_files/figure-html/pd-surface-1.png)
+
+Partial dependence surface: median home value as a function of lstat and
+rm. Fill colour is the predicted median value.
 
 The surface confirms the strong interaction: home values are highest
 when `lstat` is low and `rm` is high (upper-left corner), dropping
@@ -491,7 +482,7 @@ We have walked a full random forest regression analysis with
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
   gave the risk-adjusted version of those curves: concave for `lstat`,
   threshold-like for `rm`.
-- Conditioning plots and the interactive surface pulled out the
+- Conditioning plots and the partial dependence surface pulled out the
   `lstat`–`rm` interaction, with the room-size effect strongest in
   high-status tracts.
 
@@ -528,6 +519,10 @@ Ishwaran, Hemant, Udaya B. Kogalur, Eiran Z. Gorodeski, Andy J. Minn,
 and Michael S. Lauer. 2010. “High-Dimensional Variable Selection for
 Survival Data.” *Journal of the American Statistical Association* 105
 (489): 205–17. <https://doi.org/10.1198/jasa.2009.tm08622>.
+
+Lu, M., and H. Ishwaran. 2024. “Model-Independent Variable Selection via
+the Rule-Based Variable Priority.” *arXiv Preprint*.
+<https://arxiv.org/abs/2409.09003>.
 
 Venables, William N., and Brian D. Ripley. 2002. *Modern Applied
 Statistics with S*. 4th ed. Springer.

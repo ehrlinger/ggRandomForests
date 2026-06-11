@@ -1,8 +1,13 @@
 # Plot a [`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md) object.
 
-Plot a
+Draws a Kaplan-Meier (or Nelson-Aalen) survival curve from a
 [`gg_survival`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md)
-object.
+object. You can overlay a confidence envelope around the curve using
+`error`: `"shade"` fills the area between the pointwise confidence
+limits, `"lines"` draws them as dashed step functions, and `"bars"`
+shows them as error bars. When `gg_survival` was called with a `by`
+argument, each group gets its own step function and the `label` argument
+renames the legend.
 
 ## Usage
 
@@ -53,6 +58,13 @@ A `ggplot` object. The y-axis shows the chosen `type` (e.g. survival
 probability for `"surv"`) and the x-axis shows time. Confidence shading,
 bars, or lines are added when the input object carries
 confidence-interval columns.
+
+## Details
+
+The `type` argument selects which quantity to plot on the y-axis –
+survival probability (`"surv"`) is the default, but cumulative hazard,
+density, and several transformed scales are available for the cases
+where a linear scale reveals more about the tails.
 
 ## See also
 

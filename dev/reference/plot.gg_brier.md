@@ -1,11 +1,12 @@
 # Plot a [`gg_brier`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md) object
 
-Draws the time-resolved Brier score (the default) or the running CRPS as
-a curve against time. Lower means more accurate probabilistic
-predictions. Turn `envelope = TRUE` on and the overall line picks up a
-ribbon spanning the 15th to 85th percentile of the per-subject
-contributions, which shows how much the score varies across subjects at
-each time.
+Draws the time-resolved Brier score or the running CRPS from a
+[`gg_brier`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
+object. The curve moves across the event-time grid on the x-axis; lower
+values mean the forest's predicted survival probabilities are closer to
+what actually happened. Think of `0` as "perfect" and roughly `0.25` as
+"uninformative" – a forest that predicts `0.5` for every subject
+regardless of prognosis would sit near that ceiling.
 
 ## Usage
 
@@ -41,6 +42,15 @@ plot(x, type = c("brier", "crps"), envelope = FALSE, ...)
 ## Value
 
 A `ggplot` object.
+
+## Details
+
+Set `envelope = TRUE` to add a ribbon around the overall curve spanning
+the 15th to 85th percentile of the per-subject Brier contributions at
+each time. The ribbon shows how heterogeneous the scoring is across
+subjects: a narrow ribbon means most subjects are predicted equally well
+(or equally poorly); a wide ribbon means a minority of subjects are
+driving the average.
 
 ## See also
 

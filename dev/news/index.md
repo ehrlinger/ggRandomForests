@@ -2,6 +2,7 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- Development version 3.1.0.9000, opened after the v3.1.0 CRAN release.
 - [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
   /
   [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md):
@@ -19,6 +20,52 @@
   Suggests). RHF support is gated — every gg_rhf\* entry point checks
   [`requireNamespace("randomForestRHF")`](https://www.randomforestsrc.org/).
   No change for users who do not install it.
+
+## ggRandomForests v3.1.0
+
+CRAN release: 2026-06-11
+
+- Fix:
+  [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+  for single-outcome rfsrc forests now correctly flags variables with
+  non-positive VIMP in the `positive` column (affecting plot coloring).
+  The column was named `VIMP` (uppercase) in single-outcome fits but the
+  flag check accessed `$vimp` (lowercase), leaving `positive` stuck at
+  `TRUE` for all variables. Surfaced by the Copilot review on PR
+  [\#109](https://github.com/ehrlinger/ggRandomForests/issues/109).
+- Documentation pass. Deepened the varPro-family and rfsrc
+  importance/partial/survival help pages against the upstream
+  randomForestSRC and varPro documentation, and made the line between
+  [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+  (permutation, Breiman-Cutler importance) and
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  (varPro release-rule importance) explicit and cross-linked. Vignette
+  prose deepened with the same framing; one-line code-comment fixes;
+  fixed a stale `@return` in
+  [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  (documented a `yvar` column the function does not return). No
+  user-facing behaviour change.
+- Vignettes: the regression and survival partial-dependence surfaces are
+  now rendered as static `ggplot2` heat maps instead of interactive
+  `plotly` widgets, and figures render at 96 dpi. This cuts the
+  installed size from ~17 MB to ~5 MB (the `plotly` library is no longer
+  bundled into the vignette HTML). `plotly` is dropped from `Suggests`.
+- Check time: reduced the `R CMD check` vignette-rebuild and test
+  timings to bring the overall CRAN check comfortably under budget (CRAN
+  flagged the overall check time on the 3.1.0 submission). The
+  regression and survival vignettes use lighter forests (`ntree` 200 /
+  150, imputation `ntree` 100) and coarser partial-dependence grids. The
+  varpro vignette’s three
+  [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  calls and the Boston `beta.varpro()` fit (~34 s combined) are
+  precomputed offline by `vignettes/precompute_varpro.R` and loaded from
+  `vignettes/varpro_precomputed.rds`, with an automatic live-computation
+  fallback if the file is absent. The
+  [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
+  tests memoise the per-fit entropy matrix
+  ([`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html),
+  ~1.5 s and a pure function of the fit) instead of recomputing it once
+  per test. No user-facing behaviour change.
 
 ## ggRandomForests v3.0.0
 

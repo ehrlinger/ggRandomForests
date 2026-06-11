@@ -32,14 +32,14 @@ gg_beta_varpro(object, ..., cutoff = NULL, beta_fit = NULL, which_class = NULL)
 
 - cutoff:
 
-  Selection threshold on `beta_mean`. `NULL` (default) →
+  Selection threshold on `beta_mean`. `NULL` (default) means
   `mean(beta_mean)` across released variables. Numeric scalar otherwise.
 
 - beta_fit:
 
   Optional pre-computed
   [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
-  result for the same `object`. `NULL` (default) → the wrapper runs
+  result for the same `object`. `NULL` (default) means the wrapper runs
   `beta.varpro()` itself. When supplied, must be a `varpro`-class object
   whose `$results` has columns `tree / branch / variable / n.oob / imp`.
 
@@ -47,7 +47,7 @@ gg_beta_varpro(object, ..., cutoff = NULL, beta_fit = NULL, which_class = NULL)
 
   For a classification fit, name of a single response level to subset
   on. `NULL` (default) returns all classes (binary fits resolve to the
-  *last* factor level — the positive-class convention used by `glm` and
+  *last* factor level, the positive-class convention used by `glm` and
   `gg_roc`). Ignored with a warning on regression fits.
 
 ## Value
@@ -68,12 +68,26 @@ errors with a message pointing at that work.
 
 ## What this is doing
 
-For each rule (a tree-branch pair) in the forest,
-[`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
-fits a one-predictor lasso regression of the response on the released
+Think of the varPro release-rule mechanism as asking: "given a region of
+the feature space that the forest carved out, what changes when I remove
+the constraint on this one variable and let observations leave?" The
+standard importance answer (from
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md))
+measures that change as a z-scored contrast between local estimators: no
+synthetic data, no permutation. `beta.varpro()` asks the same question
+with a different ruler: for each rule (a tree-branch pair), it fits a
+one-predictor lasso regression of the response on the released
 variable's values, restricted to the OOB observations inside the rule's
 region. The wrapper aggregates those per-rule coefficients into one
 number per variable.
+
+The key distinction from
+[`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
+which measures Breiman-Cutler permutation importance by perturbing a
+variable's values and watching OOB error climb, is that neither
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+nor `gg_beta_varpro()` touches the data synthetically: all contrasts are
+between real subsets defined by the forest's rules.
 
 ## What `imp` actually is (pedantic, because the column name is misleading)
 
@@ -131,8 +145,8 @@ Provenance attribute carries `source`, `family`, `ntree`, `cutoff`,
 
 Picking variables when local effects matter more than aggregate
 split-strength contribution. Compare side-by-side with
-[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
-— a variable that scores high here but low in `gg_varpro` is one whose
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md):
+a variable that scores high here but low in `gg_varpro` is one whose
 local linear effect inside many rules is real even though its
 release-rule contrast is modest.
 
@@ -159,7 +173,7 @@ pedantic-beta semantics as regression, applied independently to each
 class.
 
 **Binary default**: `which_class = NULL` resolves to the *last* factor
-level of the response — the positive-class convention used by `glm` and
+level of the response, the positive-class convention used by `glm` and
 `gg_roc`. For a 30-day-mortality outcome with levels `c("no", "yes")`,
 that means the wrapper shows you `"yes"` (the event) by default.
 
@@ -184,7 +198,7 @@ Example (30-day mortality, binary):
 
 Byte-for-byte agreement between cached (`beta_fit = b`) and uncached
 (`beta_fit = NULL`) outputs requires that `b` was computed by
-`beta.varpro(object, ...)` on the same `object` —
+`beta.varpro(object, ...)` on the same `object`;
 [`set.seed()`](https://rdrr.io/r/base/Random.html) alone is not
 sufficient, because `beta.varpro`'s internal `cv.glmnet` fits can pick
 slightly different folds across separate calls. Reuse `beta_fit` when
@@ -193,6 +207,7 @@ reproducibility matters.
 ## See also
 
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
+[`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
 [`plot.gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_varpro.md),
 [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html).
 

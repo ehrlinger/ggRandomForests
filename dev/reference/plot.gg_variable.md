@@ -142,7 +142,15 @@ plot(gg_dta, xvar = "Solar.R")
 #> (`geom_point()`).
 
 
-# Panel plot across continuous predictors
+# Factor variable uses notched boxplots
+plot(gg_dta, xvar = "Month", notch = TRUE)
+#> Warning: Ignoring unknown parameters: `notch`
+#> Notch went outside hinges
+#> ℹ Do you want `notch = FALSE`?
+
+
+# \donttest{
+# Panel plot across continuous predictors (loess smooths; slower)
 plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
 #> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 #> Warning: Removed 7 rows containing non-finite outside the scale range (`stat_smooth()`).
@@ -151,18 +159,13 @@ plot(gg_dta, xvar = c("Solar.R", "Wind", "Temp", "Day"), panel = TRUE)
 #> Warning: Removed 7 rows containing missing values or values outside the scale range
 #> (`geom_point()`).
 
-
-# Factor variable uses notched boxplots
-plot(gg_dta, xvar = "Month", notch = TRUE)
-#> Warning: Ignoring unknown parameters: `notch`
-#> Notch went outside hinges
-#> ℹ Do you want `notch = FALSE`?
-
+# }
 
 ## ------------------------------------------------------------
 ## survival examples
 ## ------------------------------------------------------------
 ## -------- veteran data
+# \donttest{
 data(veteran, package = "randomForestSRC")
 set.seed(42)
 rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., veteran,
@@ -198,4 +201,5 @@ plot(gg_dta, xvar = "age")
 plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
 #> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
 
+# }
 ```

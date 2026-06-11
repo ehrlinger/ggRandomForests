@@ -15,7 +15,7 @@ facet per class."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,7 +126,7 @@ by the unconditional median z in <code>$stats</code>, so the facets line up.</p>
 importance, so the eye lands on the most important variable first.
 For each variable the box spans the 15th to 85th percentile of the
 per-tree scores, the centre line is the median, and the whiskers run
-out to the 5th and 95th percentile — not the usual Tukey 1.5 IQR
+out to the 5th and 95th percentile, not the usual Tukey 1.5 IQR
 whiskers. The dashed vertical line is the selection <code>cutoff</code>
 (default <code>0.79</code>). On the default z-score axis
 (<code>local.std = TRUE</code>) that line is a z; on the raw-importance
@@ -152,7 +152,7 @@ across to see which class a variable is informative for.</p>
 
 
 <p>Take the variables above the cutoff as your candidate set. Use the
-width of the box and the per-tree overlay to gauge confidence — a
+width of the box and the per-tree overlay to gauge confidence: a
 narrow box well above the cutoff is a confident pick, a wide box
 that crosses it is a coin flip you should not lean on. For
 classification, conditional importance tells you which variables

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,9 +57,17 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="4.0.0" id="ggrandomforests-v400-development">ggRandomForests v4.0.0 (development)<a class="anchor" aria-label="anchor" href="#ggrandomforests-v400-development"></a></h2>
-<ul><li>
+<ul><li>Development version 3.1.0.9000, opened after the v3.1.0 CRAN release.</li>
+<li>
 <code><a href="../reference/gg_auct.html">gg_auct()</a></code> / <code><a href="../reference/plot.gg_auct.html">plot.gg_auct()</a></code>: tidy wrapper and plot for time-varying AUC from <code><a href="https://www.randomforestsrc.org//reference/auct.rhf.html" class="external-link">randomForestRHF::auct.rhf()</a></code> (RHF Phase 2). Returns a long frame <code>time / auc / se / lower / upper / marker</code> with an <code>iauc</code> attribute (Uno + standardized integrated AUC); <code><a href="../reference/plot.gg_auct.html">plot.gg_auct()</a></code> draws AUC(t) with a bootstrap CI ribbon when available and a 0.5 reference line. <code>gg_auct.rhf(object, marker, auct_fit = NULL)</code> computes <code>auct.rhf()</code> internally or reuses a cached fit.</li>
 <li>Begin the v4.0.0 development line: a Random Hazard Forests (RHF) visualization layer wrapping the ‘randomForestRHF’ package (added to Suggests). RHF support is gated — every gg_rhf* entry point checks <code><a href="https://www.randomforestsrc.org/" class="external-link">requireNamespace("randomForestRHF")</a></code>. No change for users who do not install it.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.1.0" id="ggrandomforests-v310">ggRandomForests v3.1.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v310"></a></h2><p class="text-muted">CRAN release: 2026-06-11</p>
+<ul><li>Fix: <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> for single-outcome rfsrc forests now correctly flags variables with non-positive VIMP in the <code>positive</code> column (affecting plot coloring). The column was named <code>VIMP</code> (uppercase) in single-outcome fits but the flag check accessed <code>$vimp</code> (lowercase), leaving <code>positive</code> stuck at <code>TRUE</code> for all variables. Surfaced by the Copilot review on PR <a href="https://github.com/ehrlinger/ggRandomForests/issues/109" class="external-link">#109</a>.</li>
+<li>Documentation pass. Deepened the varPro-family and rfsrc importance/partial/survival help pages against the upstream randomForestSRC and varPro documentation, and made the line between <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> (permutation, Breiman-Cutler importance) and <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> (varPro release-rule importance) explicit and cross-linked. Vignette prose deepened with the same framing; one-line code-comment fixes; fixed a stale <code>@return</code> in <code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code> (documented a <code>yvar</code> column the function does not return). No user-facing behaviour change.</li>
+<li>Vignettes: the regression and survival partial-dependence surfaces are now rendered as static <code>ggplot2</code> heat maps instead of interactive <code>plotly</code> widgets, and figures render at 96 dpi. This cuts the installed size from ~17 MB to ~5 MB (the <code>plotly</code> library is no longer bundled into the vignette HTML). <code>plotly</code> is dropped from <code>Suggests</code>.</li>
+<li>Check time: reduced the <code>R CMD check</code> vignette-rebuild and test timings to bring the overall CRAN check comfortably under budget (CRAN flagged the overall check time on the 3.1.0 submission). The regression and survival vignettes use lighter forests (<code>ntree</code> 200 / 150, imputation <code>ntree</code> 100) and coarser partial-dependence grids. The varpro vignette’s three <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> calls and the Boston <code>beta.varpro()</code> fit (~34 s combined) are precomputed offline by <code>vignettes/precompute_varpro.R</code> and loaded from <code>vignettes/varpro_precomputed.rds</code>, with an automatic live-computation fallback if the file is absent. The <code><a href="../reference/gg_udependent.html">gg_udependent()</a></code> tests memoise the per-fit entropy matrix (<code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code>, ~1.5 s and a pure function of the fit) instead of recomputing it once per test. No user-facing behaviour change.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.0.0" id="ggrandomforests-v300">ggRandomForests v3.0.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v300"></a></h2>

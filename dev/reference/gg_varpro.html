@@ -17,7 +17,7 @@ importances."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -166,8 +166,8 @@ and <code>n</code>.</p>
 
 
 <p>Permutation importance asks "what happens to OOB accuracy when I scramble
-this variable?" That works, but it leans on artificial data — the
-permuted column — and the answer can be unstable when variables are
+this variable?" That works, but it leans on artificial data (the
+permuted column) and the answer can be unstable when variables are
 correlated. The varpro framework (Lu and Ishwaran, 2024) replaces
 permutation with <em>release rules</em>. The forest is grown with guided
 splitting; from a subset of trees varpro samples a collection of
@@ -175,7 +175,7 @@ decision-rule branches; for each variable it then compares the
 response inside the rule's region to the response after the rule's
 constraint on that variable is "released". The size of that change,
 aggregated over many rules and trees, is the variable's importance.
-No synthetic covariates, no permutation — the contrast is between two
+No synthetic covariates, no permutation: the contrast is between two
 real subsets of the data.</p>
 <p>Because varpro builds importance from rules sampled over trees, every
 tree contributes its own importance value for each variable. Those are
@@ -214,7 +214,7 @@ classification.</p>
 above varpro's z cutoff;</p></li>
 <li><p>see, via the boxplot's spread and the per-tree points
 (<code>faithful = TRUE</code>), how stable each variable's importance
-is across trees — a high median with a wide box is a different
+is across trees: a high median with a wide box is a different
 story from a high median with a tight box;</p></li>
 <li><p>for a classification forest, ask which variables drive which
 class (<code>conditional = TRUE</code>) rather than just which

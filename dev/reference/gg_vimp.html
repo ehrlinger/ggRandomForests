@@ -11,7 +11,7 @@ object and reshapes it into a tidy data set."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,6 +101,28 @@ warning is issued and <code>NA</code> placeholders are returned so plots remain
 reproducible.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><code>gg_vimp()</code> shows <strong>permutation (Breiman-Cutler) variable
+importance</strong>: the forest permutes a variable's observed values across the
+out-of-bag (OOB) cases, runs those perturbed cases down the already-grown
+trees, and measures how much the OOB prediction error climbs.  That
+perturbation is synthetic (the variable's link to the response is broken
+on purpose) so a large increase means the variable was carrying genuine
+signal; near-zero or negative values mean it added noise or nothing at all.</p>
+<p><code><a href="gg_varpro.html">gg_varpro()</a></code> takes the opposite route, comparing local
+estimators on real observed data through varPro's release rules, with no
+permutation and no synthetic features.  The two approaches answer "which
+variables matter?" by opposite mechanisms, so a variable can rank
+differently under each, and that disagreement is itself informative: it
+often signals interaction structure or non-monotone effects that one
+mechanism surfaces and the other obscures.</p>
+<p>For survival forests, VIMP is measured against the ensemble cumulative
+hazard function (CHF); the error metric is one minus the concordance index
+(C-statistic).  Variables with non-positive VIMP are flagged in the
+<code>positive</code> column and colored differently by
+<code><a href="plot.gg_vimp.html">plot.gg_vimp</a></code>.</p>
+    </div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Ishwaran H. (2007). Variable importance in binary regression trees and
 forests, <em>Electronic J. Statist.</em>, 1:519-537.</p>
@@ -108,7 +130,7 @@ forests, <em>Electronic J. Statist.</em>, 1:519-537.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="plot.gg_vimp.html">plot.gg_vimp</a></code> <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code></p>
-<p><code><a href="https://www.randomforestsrc.org//reference/vimp.rfsrc.html" class="external-link">vimp</a></code></p></div>
+<p><code><a href="https://www.randomforestsrc.org//reference/vimp.rfsrc.html" class="external-link">vimp</a></code> <code><a href="gg_varpro.html">gg_varpro</a></code></p></div>
     </div>
 
     <div class="section level2">

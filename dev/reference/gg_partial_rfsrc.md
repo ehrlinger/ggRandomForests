@@ -1,15 +1,11 @@
 # Partial dependence data from an rfsrc model
 
-A partial dependence curve answers a what-if question: hold the rest of
-the predictors as they are, sweep one of them across its range, and
-watch how the forest's prediction moves. This function builds those
-curves for one or more predictors by calling
-[`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-for you, then splits the result into separate data frames for continuous
-and categorical variables. Unlike
-[`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md),
-there is no separate `plot.variable` step – pass the fitted `rfsrc`
-object straight in.
+A partial dependence curve marginalizes the forest's prediction over all
+other predictors: for each evaluation point of the target variable, the
+forest scores every training observation with that value substituted in,
+then averages the result. What you get is the average effect of the
+target variable after "integrating out" the rest – a curve that would be
+flat if the variable carried no signal.
 
 ## Usage
 
@@ -55,7 +51,7 @@ gg_partial_rfsrc(
 
   Numeric vector of desired time points for survival forests (ignored
   for regression/classification). Values are automatically snapped to
-  the nearest entry in `rf_model$time.interest` — see the **Survival
+  the nearest entry in `rf_model$time.interest`; see the **Survival
   forests** section below. When `NULL` (default), three quartile points
   of `time.interest` are used.
 
@@ -98,6 +94,23 @@ A named list with two elements:
 
   A `data.frame` with the same columns but `x` kept as character, for
   low-cardinality predictors.
+
+## Details
+
+This function builds those curves for one or more predictors by calling
+[`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+and then tidy-stacking the results into separate data frames for
+continuous and categorical variables. Unlike
+[`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
+(which wraps `plot.variable`), you pass the fitted `rfsrc` object
+directly – no intermediate `plot.variable` step.
+
+For survival forests, the marginalized quantity depends on
+`partial.type`: survival probability (`"surv"`), cumulative hazard
+function (`"chf"`), or expected mortality (`"mort"`). You can request
+the curve at one or more time horizons via `partial.time`; the resulting
+data have a `time` column so the plot layers them as separate coloured
+lines.
 
 ## Survival forests and `partial.time`
 

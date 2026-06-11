@@ -15,7 +15,7 @@ selection cutoff, grey otherwise. Dashed red line marks the cutoff."></head><bod
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -99,8 +99,8 @@ selection cutoff, grey otherwise. Dashed red line marks the cutoff.</p>
 
 
 <p>Each bar is the average magnitude of a per-rule lasso coefficient for
-that variable. <strong>The numeric scale carries the predictor's units</strong> —
-if "age" is in years and "creatinine" is in mg/dL, a longer bar for
+that variable. <strong>The numeric scale carries the predictor's units.</strong>
+If "age" is in years and "creatinine" is in mg/dL, a longer bar for
 age does not mean age is "more important" in any unit-free sense.
 Comparisons across data sets or across variables with very different
 units require keeping the units context in mind. Within one data set,
@@ -108,7 +108,7 @@ bars are comparable up to that unit caveat.</p>
 <p>Variables above the cutoff are coloured blue and flagged <code>selected</code>;
 variables below are grey. Lasso shrinkage can drive a rule's
 \(\hat{\beta}\) to
-exactly zero — those rules are kept in the average, so a variable
+exactly zero; those rules are kept in the average, so a variable
 with many shrunk-to-zero rules will sit lower in the ranking than
 one whose released coefficients are consistently non-zero.</p>
 <p>For a classification fit, variables are sorted by

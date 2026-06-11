@@ -11,7 +11,7 @@ to know the internal shape of the fit."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,7 +106,7 @@ order as the rows of the data passed to
 
 <dt>case.depth</dt>
 <dd><p>Numeric; mean isolation depth across the forest.
-Lower means the observation was isolated quickly — more
+Lower means the observation was isolated quickly, so more
 anomalous.</p></dd>
 
 <dt>howbad</dt>
@@ -130,7 +130,7 @@ observation lands in its own terminal node. The intuition is geometric:
 a typical observation sits in the dense middle of the feature cloud and
 takes many splits to isolate, while an unusual observation sits out
 near an edge and gets cut off after only a few. So <strong>the depth at
-which an observation is isolated is a proxy for how typical it is</strong> —
+which an observation is isolated is a proxy for how typical it is</strong>:
 shallow depth means anomalous, deep depth means ordinary. Average a
 single observation's depth across many trees and the noise washes out,
 leaving a stable per-observation rank.</p>
@@ -184,7 +184,7 @@ for a manual review;</p></li>
 <li><p>score a held-out cohort or a fresh batch of incoming data
 against a fitted model and compare the test scores to the training
 distribution.</p></li>
-</ul><p>The score is a <em>rank</em>, not a probability of being an outlier — two
+</ul><p>The score is a <em>rank</em>, not a probability of being an outlier: two
 observations with <code>howbad = 0.92</code> are both unusual, not "92\<!-- % -->
 likely to be anomalous". Pick a cutoff by looking at where the elbow
 rises; <code><a href="plot.gg_isopro.html">plot.gg_isopro</a></code> can annotate either a score
@@ -202,7 +202,7 @@ against the training-data depth distribution.</p>
 <p>varPro's <code>predict.isopro</code> returns quantiles where <em>smaller is
 more anomalous</em>, which is the opposite polarity of the wrapper's
 <code>howbad</code> (where <em>higher</em> is more anomalous). The wrapper
-exposes both conventions so nothing is hidden:</p><ul><li><p><code>case.depth</code> carries varPro's native polarity — <em>lower
+exposes both conventions so nothing is hidden:</p><ul><li><p><code>case.depth</code> carries varPro's native polarity, <em>lower
 = more anomalous</em>. This is the unmodified output of
 <code>predict(object, newdata, quantiles = FALSE)</code>. Use it to
 cross-reference against raw varPro output.</p></li>

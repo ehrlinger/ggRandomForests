@@ -80,14 +80,32 @@ message naming v3.1.0 as the tracker.
 
 ## What this is doing
 
-`ivarpro()` walks the varPro forest's rules and, for each (observation,
-variable) pair, computes a scaled per-rule contribution to predicting
-that observation. Per-rule LOO removes the observation from its own rule
-before scoring. Per-region scaling (`scale = "local"`, default)
-standardises the contribution by the rule's local response standard
-deviation so values are comparable across rules of different size.
-Aggregating those per-rule scores into one number per (obs, variable)
-pair gives the `local_imp` cell.
+The varPro framework builds importance from release rules: for a given
+rule region, it compares a local estimator inside that region to what
+the estimator becomes after the constraint on the tested variable is
+removed ("released"). That contrast is summed over many rules and trees
+to get a global z-score: the quantity
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+shows. What `ivarpro()` adds is a per-observation view of the same
+mechanism.
+
+Concretely: `ivarpro()` walks the forest's rules and, for each
+(observation, variable) pair, computes a scaled per-rule contribution to
+predicting that observation. Per-rule LOO removes the observation from
+its own rule before scoring, so the contribution is not inflated by the
+observation having helped define the region. Per-region scaling
+(`scale = "local"`, default) standardises the contribution by the rule's
+local response standard deviation so values are comparable across rules
+of different size. Aggregating those per-rule scores into one number per
+(obs, variable) pair gives the `local_imp` cell.
+
+No permutation, no synthetic data: the contrast is always between real
+subsets of the observed data, defined by the forest's own rules. This is
+the same no-synthetic-features property that distinguishes
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+from
+[`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)'s
+Breiman-Cutler permutation importance.
 
 ## What `local_imp` actually is (pedantic)
 
@@ -174,6 +192,7 @@ calls. Reuse `ivarpro_fit` when reproducibility matters.
 ## See also
 
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
+[`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md),
 [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html).
 
