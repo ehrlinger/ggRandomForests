@@ -22,6 +22,18 @@ ggRandomForests v3.1.0
   `plotly` widgets, and figures render at 96 dpi. This cuts the installed
   size from ~17 MB to ~5 MB (the `plotly` library is no longer bundled into
   the vignette HTML). `plotly` is dropped from `Suggests`.
+* Check time: reduced the `R CMD check` vignette-rebuild and test timings to
+  bring the overall CRAN check comfortably under budget (CRAN flagged the
+  overall check time on the 3.1.0 submission). The regression and survival
+  vignettes use lighter forests (`ntree` 200 / 150, imputation `ntree` 100)
+  and coarser partial-dependence grids. The varpro vignette's three
+  `gg_partial_varpro()` calls and the Boston `beta.varpro()` fit (~34 s
+  combined) are precomputed offline by `vignettes/precompute_varpro.R` and
+  loaded from `vignettes/varpro_precomputed.rds`, with an automatic
+  live-computation fallback if the file is absent. The `gg_udependent()`
+  tests memoise the per-fit entropy matrix (`varPro::get.beta.entropy()`,
+  ~1.5 s and a pure function of the fit) instead of recomputing it once per
+  test. No user-facing behaviour change.
 
 ggRandomForests v3.0.0
 ======================

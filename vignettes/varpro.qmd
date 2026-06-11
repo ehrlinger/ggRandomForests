@@ -47,6 +47,20 @@ if (requireNamespace("ggRandomForests", quietly = TRUE)) {
 }
 ```
 
+```{r precomputed, include=FALSE, cache=FALSE}
+# The three gg_partial_varpro() calls and the Boston beta.varpro() fit are
+# the only expensive parts of this vignette (~34s combined). They are
+# precomputed by precompute_varpro.R and loaded here so the R CMD check
+# vignette rebuild stays fast. If the file is absent (e.g. a fresh clone
+# that hasn't run the script), each chunk falls back to live computation,
+# so the vignette is reproducible either way.
+.vp <- if (file.exists("varpro_precomputed.rds")) {
+  readRDS("varpro_precomputed.rds")
+} else {
+  list()
+}
+```
+
 # What varPro is
 
 Random-forest variable importance has, for two decades, mostly meant
@@ -169,7 +183,12 @@ holding the others fixed? `gg_partial_varpro()` wraps
 non-parametric, and causal partial-dependence curves.
 
 ```{r boston-gg-partial-varpro}
-gg_pd <- gg_partial_varpro(object = v_boston)
+# Precomputed offline (see precompute_varpro.R); falls back to a live fit.
+gg_pd <- if (is.null(.vp$pd_boston)) {
+  gg_partial_varpro(object = v_boston)
+} else {
+  .vp$pd_boston
+}
 plot(gg_pd)
 ```
 
@@ -214,7 +233,12 @@ accepts a pre-computed `beta_fit` so you can iterate on selection,
 cutoff, or class choice without re-fitting.
 
 ```{r boston-beta-fit, cache=TRUE}
-b_boston <- varPro::beta.varpro(v_boston)
+# Precomputed offline (see precompute_varpro.R); falls back to a live fit.
+b_boston <- if (is.null(.vp$b_boston)) {
+  varPro::beta.varpro(v_boston)
+} else {
+  .vp$b_boston
+}
 ```
 
 ```{r boston-gg-beta-varpro}
@@ -382,7 +406,13 @@ panels are organised by predictor with class encoded as colour or
 facet (the wrapper defaults handle this).
 
 ```{r iris-multi-gg-partial-varpro}
-plot(gg_partial_varpro(object = v_iris_multi))
+# Precomputed offline (see precompute_varpro.R); falls back to a live fit.
+gg_pd_iris <- if (is.null(.vp$pd_iris_multi)) {
+  gg_partial_varpro(object = v_iris_multi)
+} else {
+  .vp$pd_iris_multi
+}
+plot(gg_pd_iris)
 ```
 
 Read each panel as: "as predictor X changes from low to high, how does
@@ -482,7 +512,13 @@ predictor value, integrated over the event-time horizon in the training
 data.
 
 ```{r pbc-gg-partial-varpro}
-plot(gg_partial_varpro(object = v_pbc))
+# Precomputed offline (see precompute_varpro.R); falls back to a live fit.
+gg_pd_pbc <- if (is.null(.vp$pd_pbc)) {
+  gg_partial_varpro(object = v_pbc)
+} else {
+  .vp$pd_pbc
+}
+plot(gg_pd_pbc)
 ```
 
 ## Anomaly scoring: `gg_isopro()` on the X-matrix

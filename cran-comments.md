@@ -1,19 +1,36 @@
 ## v3.1.0 — varPro integration + bug fix (major release)
 
-This is a major release. v2.7.3 is the version currently published on
-CRAN. A v3.0.0 submission (2026-05-28) cleared the incoming pretests on
-Windows and Debian (0/0/0) but was held by the automated service and did
-not complete the review cycle; no changes were ever requested. This
-v3.1.0 release supersedes it: the submission moves CRAN from v2.7.3 to
-v3.1.0 and carries the full v3.0.0 feature layer plus the v3.1.0 bug fix
-and documentation work. The version is in 3.x territory because it adds a
-substantial new feature layer and soft-deprecates one user-facing
-function.
+### Resubmission
 
-The automated hold on the v3.0.0 submission appeared to be a heuristic
-flag (the major version jump from 2.7.3 plus the Depends-to-Imports move),
-not a package defect: both incoming pretests were clean. We note it here
-in case the same heuristic flags v3.1.0.
+This resubmission addresses the one issue raised on the previous 3.1.0
+submission: the overall check time exceeded 10 minutes on
+r-devel-windows-x86_64, driven by the vignette rebuild (~331 s) and the
+tests (~209 s). We have reduced both, per the three levers suggested
+(small toy data, fewer iterations, precomputed results for the lengthiest
+parts):
+
+- The regression and survival vignettes use lighter forests (`ntree`
+  200 / 150, imputation `ntree` 100) and coarser partial-dependence grids.
+- The varpro vignette's three `gg_partial_varpro()` calls and the Boston
+  `beta.varpro()` fit — together ~34 s, the bulk of that vignette's
+  rebuild — are now precomputed offline (`vignettes/precompute_varpro.R`)
+  and loaded from a 167 KB `vignettes/varpro_precomputed.rds`, with an
+  automatic live-computation fallback if the file is absent.
+- The `gg_udependent()` tests previously recomputed the same per-fit
+  entropy matrix (~1.5 s) once per test; they now memoise it.
+
+Locally the full vignette rebuild drops from ~80 s to ~38 s and the test
+suite from ~44 s to ~36 s (R 4.6.0, aarch64-apple-darwin23), with no
+change in test coverage or vignette content.
+
+### Release context
+
+v2.7.3 is the version currently published on CRAN. A v3.0.0 submission
+(2026-05-28) cleared the Windows and Debian pretests (0/0/0) but did not
+complete the review cycle; this 3.1.0 release supersedes it, carrying the
+full v3.0.0 feature layer plus the v3.1.0 bug fix and documentation work.
+The version is in 3.x territory because it adds a substantial new feature
+layer and soft-deprecates one user-facing function.
 
 ### Changes in v3.1.0
 

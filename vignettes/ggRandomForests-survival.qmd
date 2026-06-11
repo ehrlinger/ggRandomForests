@@ -277,12 +277,13 @@ state, which is required for `partial.rfsrc()` to work correctly.
 # Step 1: impute missing values via random forest proximity
 pbc_imputed <- impute.rfsrc(Surv(years, status) ~ .,
                              data    = pbc_trial,
-                             ntree   = 500,
+                             ntree   = 100,
                              nimpute = 2)
 
 # Step 2: grow the survival forest on the complete imputed data
 rfsrc_pbc <- rfsrc(Surv(years, status) ~ .,
                    data      = pbc_imputed,
+                   ntree     = 150,
                    nsplit    = 10,
                    tree.err  = TRUE,
                    importance = TRUE)
@@ -545,12 +546,12 @@ interaction between these two liver function markers.
 # Partial Dependence Surfaces
 
 For a richer view of the interaction between bilirubin and albumin, we construct
-a partial dependence surface. We compute partial dependence on a grid of 25
+a partial dependence surface. We compute partial dependence on a grid of 8
 albumin values, each evaluated at 25 bilirubin points.
 
 ```{r surface-data, error=TRUE, cache=FALSE}
 # Create grid of albumin values
-alb_grid <- quantile_pts(pbc_trial$albumin, groups = 25)
+alb_grid <- quantile_pts(pbc_trial$albumin, groups = 8)
 
 # For each albumin value, compute partial dependence on bili at ~1 year
 surface_list <- lapply(alb_grid, function(alb_val) {

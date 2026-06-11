@@ -142,7 +142,7 @@ detects the regression family from the continuous response.
 
 ```{r rfsrc-fit}
 rfsrc_Boston <- rfsrc(medv ~ ., data = Boston, # nolint: object_name_linter
-                      importance = TRUE, err.block = 5)
+                      ntree = 200, importance = TRUE, err.block = 5)
 rfsrc_Boston
 ```
 
@@ -351,11 +351,11 @@ nearly flat in high-`lstat` tracts, confirming a meaningful interaction.
 # Partial Dependence Surface
 
 To visualize the joint partial dependence of `medv` on `lstat` and `rm`, we
-compute partial dependence on a grid: 25 values of `rm`, each evaluated at 25
+compute partial dependence on a grid: 10 values of `rm`, each evaluated at 25
 points along `lstat`.
 
 ```{r surface-data, cache=TRUE}
-rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 25)
+rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 10)
 
 surface_list <- lapply(rm_grid, function(rm_val) {
   newx <- rfsrc_Boston$xvar
