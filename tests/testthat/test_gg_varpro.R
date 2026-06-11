@@ -36,7 +36,8 @@ test_that("gg_varpro: survival fit -> clear 'not supported yet' stop", {
   # error from the downstream importance reshape. (varPro survival support is
   # deferred; for survival importance use gg_vimp() on an rfsrc forest.)
   skip_if_not_installed("survival")
-  Surv <- survival::Surv  # bare Surv(); parseFormula rejects survival::Surv(...)
+  # bare Surv(); parseFormula rejects the survival::Surv(...) namespace form
+  Surv <- survival::Surv # nolint: object_name_linter
   data(pbc, package = "randomForestSRC")
   set.seed(42L)
   vp_surv <- varPro::varpro(Surv(days, status) ~ .,
