@@ -1,5 +1,9 @@
 Package: ggRandomForests
-Version: 3.1.0
+Version: 3.1.0.9000
+
+ggRandomForests v3.1.0.9000 (development)
+=========================================
+* Development version opened after the v3.1.0 CRAN release.
 
 ggRandomForests v3.1.0
 ======================
