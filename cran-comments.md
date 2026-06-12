@@ -27,8 +27,8 @@ Two changes, neither touching package R code (ggRandomForests remains
 
 1. The tests that grow a varPro forest now call `testthat::skip_on_cran()`,
    so they do not run on CRAN's check machines (including the gcc-UBSAN
-   check). They continue to run on our CI and for users who run
-   `devtools::test()`.
+   check). They are likewise skipped under `R CMD check` in our CI; they
+   run locally for users who invoke `devtools::test()`.
 2. The `varpro` vignette now loads every varPro fit from a precomputed
    file (`vignettes/varpro_precomputed.rds`) instead of growing forests
    live, so the vignette build performs no varPro grow under `R CMD check`

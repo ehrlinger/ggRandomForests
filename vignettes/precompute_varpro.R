@@ -73,17 +73,20 @@ iso_pbc <- varPro::isopro(data = pbc_small[, c("age", "albumin", "bili",
                           method = "rnd", sampsize = 256, ntree = 50)
 
 # --- Trim to keep the shipped .rds (and the source tarball) small --------
-# The gg_* wrappers that consume these objects in the vignette only read
-# importance/rule summaries, never the embedded forests. Dropping those heavy
+# The gg_* calls this vignette makes (on its cached path) read only
+# importance/rule summaries, not the embedded forests. The survival C-path
+# gg_partial_varpro() and gg_isopro(newdata=) DO use the forest, but the
+# vignette never invokes those on a stripped object (pd_pbc is cached and
+# gg_isopro() is training-path only). Dropping those heavy
 # slots takes the file from ~1.6 MB to ~0.4 MB (validated: every vignette
 # wrapper call returns output identical to the un-stripped object). Two
 # exceptions keep their forest: v_boston is printed in the vignette
 # (print.varpro reads $rf), and u_boston feeds gg_udependent(), which uses it.
-.strip_varpro <- function(v) {              # forest unused by gg_*
+.strip_varpro <- function(v) {              # $rf: unused on the cached path
   v$rf <- NULL
   v
 }
-.strip_isopro <- function(o) {              # gg_isopro reads only $ntree
+.strip_isopro <- function(o) {              # training-path gg_isopro reads only $ntree
   o$isoforest <- list(ntree = o$isoforest$ntree)
   o
 }

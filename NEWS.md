@@ -9,7 +9,8 @@ ggRandomForests v3.1.1
   array access in `rfsrcGrow`, `entry.c:184`) that surfaces when any
   `varPro` grow (`varpro()`, `beta.varpro()`, `uvarpro()`, `isopro()`,
   `ivarpro()`) builds a forest. ggRandomForests is pure R and its code is
-  unchanged; the varPro tests still run on CI and locally. The upstream
+  unchanged; the varPro tests run locally (`devtools::test()`) but are
+  skipped under `R CMD check`, including our CI check jobs. The upstream
   issue has been reported to the randomForestSRC maintainers.
 * The `varpro` vignette now loads every varPro fit from a precomputed
   file (`vignettes/varpro_precomputed.rds`, built by
