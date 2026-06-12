@@ -117,6 +117,26 @@ test_that("plot returns a ggplot", {
   expect_s3_class(p, "ggplot")
 })
 
+test_that("print returns invisibly and shows a header line", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+  expect_output(print(out), "gg_beta_uvarpro")
+  expect_output(print(out), "variables selected")
+  expect_identical(withVisible(print(out))$visible, FALSE)
+})
+
+test_that("summary returns a summary.gg object with the top variables", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+  s <- summary(out)
+  expect_s3_class(s, "summary.gg_beta_uvarpro")
+  expect_s3_class(s, "summary.gg")
+  expect_true(any(grepl("top variables", s$body)))
+})
+
+test_that("autoplot dispatches to plot and returns a ggplot", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+  expect_s3_class(ggplot2::autoplot(out), "ggplot")
+})
+
 test_that("non-uvarpro input is rejected", {
   expect_error(
     gg_beta_uvarpro(structure(list(), class = "varpro")),

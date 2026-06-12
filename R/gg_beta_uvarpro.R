@@ -151,6 +151,49 @@ gg_beta_uvarpro.uvarpro <- function(object, ..., cutoff = NULL,
   invisible(NULL)
 }
 
+#' @rdname print.gg
+#' @export
+print.gg_beta_uvarpro <- function(x, ...) {
+  prov           <- attr(x, "provenance")
+  precomputed    <- isTRUE(if (!is.null(prov)) prov$precomputed else FALSE)
+  n_regions      <- if (!is.null(prov)) prov$n_released_regions %||% NA_integer_ else NA_integer_
+  n_sel          <- sum(x$selected, na.rm = TRUE)
+  cutoff         <- if (!is.null(prov)) prov$cutoff %||% NA_real_ else NA_real_
+  cutoff_val     <- if (length(cutoff) >= 1L) cutoff[[1]] else NA_real_
+  cutoff_default <- isTRUE(if (!is.null(prov)) prov$cutoff_default else FALSE)
+  cat(.gg_header(x, "gg_beta_uvarpro"),
+      sprintf("  |  cutoff: %.4g%s", cutoff_val,
+              if (cutoff_default) " (default)" else ""),
+      sprintf("  |  precomputed: %s", precomputed),
+      "\n",
+      sprintf("  %d of %d variables selected over %s released region(s)\n",
+              n_sel, nrow(x),
+              if (is.na(n_regions)) "NA" else format(n_regions)),
+      sep = "")
+  invisible(x)
+}
+
+#' @rdname summary.gg
+#' @export
+summary.gg_beta_uvarpro <- function(object, ...) {
+  v <- sort(stats::setNames(object$beta_mean, as.character(object$variable)),
+            decreasing = TRUE)
+  top <- utils::head(v, 5L)
+  body <- c(
+    sprintf("variables: %d  (selected: %d)",
+            nrow(object), sum(object$selected, na.rm = TRUE)),
+    "top variables by mean |lasso beta|:",
+    sprintf("  %-14s %.4g", names(top), unname(top))
+  )
+  .summary_skel(object, "gg_beta_uvarpro", body)
+}
+
+#' @importFrom ggplot2 autoplot
+#' @export
+autoplot.gg_beta_uvarpro <- function(object, ...) {
+  plot.gg_beta_uvarpro(object, ...)
+}
+
 #' @noRd
 .gg_beta_uvarpro_empty <- function(object, beta_fit, cutoff) {
   out <- data.frame(
