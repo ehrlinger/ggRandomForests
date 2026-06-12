@@ -4,6 +4,17 @@ Version: 3.1.0.9000
 ggRandomForests v4.0.0 (development)
 ====================================
 * Development version 3.1.0.9000, opened after the v3.1.0 CRAN release.
+* `gg_beta_uvarpro()` / `plot.gg_beta_uvarpro()`: tidy wrapper and default
+  horizontal bar chart for `varPro::get.beta.entropy()` — the unsupervised
+  analogue of `gg_beta_varpro()`. From a `uvarpro()` fit it aggregates the
+  per-region lasso coefficients into `beta_mean = colMeans(|beta|)` (one row
+  per variable, most-important first) and flags variables above a selection
+  cutoff (default `mean(beta_mean)`). An optional `beta_fit` argument accepts
+  a precomputed `get.beta.entropy()` matrix so the expensive cross-validated
+  lasso runs once. Provenance records `source`, `family = "unsupv"`,
+  `cutoff`, `n_var`, and `n_released_regions`. Follows the `get.beta.entropy`
+  + `sdependent` "lasso importance" workflow from the `varPro::uvarpro()`
+  help (iowa-housing example).
 * `gg_auct()` / `plot.gg_auct()`: tidy wrapper and plot for time-varying
   AUC from `randomForestRHF::auct.rhf()` (RHF Phase 2). Returns a long
   frame `time / auc / se / lower / upper / marker` with an `iauc`
