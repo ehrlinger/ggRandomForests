@@ -101,5 +101,5 @@ summary(gg_vimp(rf))
 #> <gg_vimp>  from randomForestSRC  |  family: regr  |  ntree: 50  |  n: 111
 #>   variables: 5
 #>   positive VIMP: 5 / negative: 0
-#>   top 5: Wind (1767), Temp (1313), Solar.R (282.8), Day (205.5), Month (82.84)
+#>   top 5: Wind (1730), Temp (1312), Solar.R (277.4), Day (217), Month (63.51)
 ```

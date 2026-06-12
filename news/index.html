@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,11 +56,12 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.1.0.9000" id="ggrandomforests-v3109000-development">ggRandomForests v3.1.0.9000 (development)<a class="anchor" aria-label="anchor" href="#ggrandomforests-v3109000-development"></a></h2>
-<ul><li>Development version opened after the v3.1.0 CRAN release.</li>
+<h2 class="pkg-version" data-toc-text="3.1.1" id="ggrandomforests-v311">ggRandomForests v3.1.1<a class="anchor" aria-label="anchor" href="#ggrandomforests-v311"></a></h2>
+<ul><li>CRAN fix: the varPro tests now call <code>skip_on_cran()</code> so they do not run on CRAN’s check machines, including the gcc-UBSAN additional check. They were triggering an upstream <code>randomForestSRC</code> sanitizer issue (a 0-length array access in <code>rfsrcGrow</code>, <code>entry.c:184</code>) that surfaces when any <code>varPro</code> grow (<code>varpro()</code>, <code>beta.varpro()</code>, <code>uvarpro()</code>, <code>isopro()</code>, <code>ivarpro()</code>) builds a forest. ggRandomForests is pure R and its code is unchanged; the varPro tests still run in our CI (the workflows set <code>NOT_CRAN=true</code>) and locally; they are skipped only on CRAN’s check machines, including the gcc-UBSAN check. The upstream issue has been reported to the randomForestSRC maintainers.</li>
+<li>The <code>varpro</code> vignette now loads every varPro fit from a precomputed file (<code>vignettes/varpro_precomputed.rds</code>, built by <code>vignettes/precompute_varpro.R</code>), so the vignette performs no live varPro grow during <code>R CMD check</code>. This removes the same upstream sanitizer path from the vignette build and trims check time. Each chunk falls back to a live fit if the precomputed object is absent, so the vignette remains reproducible from source.</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.1.0" id="ggrandomforests-v310">ggRandomForests v3.1.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v310"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.1.0" id="ggrandomforests-v310">ggRandomForests v3.1.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v310"></a></h2><p class="text-muted">CRAN release: 2026-06-11</p>
 <ul><li>Fix: <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> for single-outcome rfsrc forests now correctly flags variables with non-positive VIMP in the <code>positive</code> column (affecting plot coloring). The column was named <code>VIMP</code> (uppercase) in single-outcome fits but the flag check accessed <code>$vimp</code> (lowercase), leaving <code>positive</code> stuck at <code>TRUE</code> for all variables. Surfaced by the Copilot review on PR <a href="https://github.com/ehrlinger/ggRandomForests/issues/109" class="external-link">#109</a>.</li>
 <li>Documentation pass. Deepened the varPro-family and rfsrc importance/partial/survival help pages against the upstream randomForestSRC and varPro documentation, and made the line between <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> (permutation, Breiman-Cutler importance) and <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> (varPro release-rule importance) explicit and cross-linked. Vignette prose deepened with the same framing; one-line code-comment fixes; fixed a stale <code>@return</code> in <code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code> (documented a <code>yvar</code> column the function does not return). No user-facing behaviour change.</li>
 <li>Vignettes: the regression and survival partial-dependence surfaces are now rendered as static <code>ggplot2</code> heat maps instead of interactive <code>plotly</code> widgets, and figures render at 96 dpi. This cuts the installed size from ~17 MB to ~5 MB (the <code>plotly</code> library is no longer bundled into the vignette HTML). <code>plotly</code> is dropped from <code>Suggests</code>.</li>

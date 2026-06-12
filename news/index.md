@@ -1,10 +1,28 @@
 # Changelog
 
-## ggRandomForests v3.1.0.9000 (development)
+## ggRandomForests v3.1.1
 
-- Development version opened after the v3.1.0 CRAN release.
+- CRAN fix: the varPro tests now call `skip_on_cran()` so they do not
+  run on CRAN’s check machines, including the gcc-UBSAN additional
+  check. They were triggering an upstream `randomForestSRC` sanitizer
+  issue (a 0-length array access in `rfsrcGrow`, `entry.c:184`) that
+  surfaces when any `varPro` grow (`varpro()`, `beta.varpro()`,
+  `uvarpro()`, `isopro()`, `ivarpro()`) builds a forest. ggRandomForests
+  is pure R and its code is unchanged; the varPro tests still run in our
+  CI (the workflows set `NOT_CRAN=true`) and locally; they are skipped
+  only on CRAN’s check machines, including the gcc-UBSAN check. The
+  upstream issue has been reported to the randomForestSRC maintainers.
+- The `varpro` vignette now loads every varPro fit from a precomputed
+  file (`vignettes/varpro_precomputed.rds`, built by
+  `vignettes/precompute_varpro.R`), so the vignette performs no live
+  varPro grow during `R CMD check`. This removes the same upstream
+  sanitizer path from the vignette build and trims check time. Each
+  chunk falls back to a live fit if the precomputed object is absent, so
+  the vignette remains reproducible from source.
 
 ## ggRandomForests v3.1.0
+
+CRAN release: 2026-06-11
 
 - Fix:
   [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
