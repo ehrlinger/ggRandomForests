@@ -39,4 +39,7 @@ reported to the randomForestSRC maintainers.
 
 ### NOTE disposition
 
-No notes in local `R CMD check --as-cran`.
+One NOTE on the incoming feasibility check, "Days since last update: 1".
+This is expected: 3.1.0 was published 2026-06-11 and this patch is the
+gcc-UBSAN fix the CRAN team requested (2026-06-12 email, correct before
+2026-06-29), so the short interval is unavoidable. No other notes.
