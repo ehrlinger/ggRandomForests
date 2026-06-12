@@ -15,6 +15,14 @@ ggRandomForests v4.0.0 (development)
   `cutoff`, `n_var`, and `n_released_regions`. Follows the `get.beta.entropy`
   + `sdependent` "lasso importance" workflow from the `varPro::uvarpro()`
   help (iowa-housing example).
+* `gg_sdependent()` / `plot.gg_sdependent()`: tidy wrapper and ranked
+  lollipop for `varPro::sdependent()`'s signal-variable detection. From a
+  `uvarpro()` fit (or a precomputed `beta_fit` entropy matrix) it returns one
+  row per candidate variable — `imp_score`, graph `degree`, and a `signal`
+  flag (membership in `sdependent()$signal.vars`) — ranked by `imp_score`.
+  Complements `gg_udependent()` (the dependency graph) with the "which
+  variables are signal" ranking. `print` / `summary` / `autoplot` companions
+  included.
 * `gg_auct()` / `plot.gg_auct()`: tidy wrapper and plot for time-varying
   AUC from `randomForestRHF::auct.rhf()` (RHF Phase 2). Returns a long
   frame `time / auc / se / lower / upper / marker` with an `iauc`
