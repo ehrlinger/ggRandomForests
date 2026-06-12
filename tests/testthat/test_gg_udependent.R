@@ -3,6 +3,7 @@
 ## ── Helpers ──────────────────────────────────────────────────────────────────
 
 make_uvp <- function(ntree = 25L) {
+  testthat::skip_on_cran()
   set.seed(42L)
   varPro::uvarpro(iris[, -5L], ntree = ntree)
 }

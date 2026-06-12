@@ -4,12 +4,14 @@
 
 # Regression fit — fast, always available (mtcars is base R)
 make_vp_regr <- function(ntree = 25L) {
+  testthat::skip_on_cran()
   set.seed(42L)
   varPro::varpro(mpg ~ ., data = mtcars, ntree = ntree)
 }
 
 # Classification fit — iris, always available
 make_vp_class <- function(ntree = 25L) {
+  testthat::skip_on_cran()
   set.seed(42L)
   varPro::varpro(Species ~ ., data = iris, ntree = ntree)
 }
