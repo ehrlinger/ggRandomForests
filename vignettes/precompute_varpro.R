@@ -79,9 +79,15 @@ iso_pbc <- varPro::isopro(data = pbc_small[, c("age", "albumin", "bili",
 # wrapper call returns output identical to the un-stripped object). Two
 # exceptions keep their forest: v_boston is printed in the vignette
 # (print.varpro reads $rf), and u_boston feeds gg_udependent(), which uses it.
-.strip_varpro  <- function(v)  { v$rf <- NULL; v }                       # forest unused by gg_*
-.strip_isopro  <- function(o)  { o$isoforest <- list(ntree = o$isoforest$ntree); o }  # gg_isopro reads only $ntree
-.strip_ivarpro <- function(iv) {                                         # drop redundant model/path attrs
+.strip_varpro <- function(v) {              # forest unused by gg_*
+  v$rf <- NULL
+  v
+}
+.strip_isopro <- function(o) {              # gg_isopro reads only $ntree
+  o$isoforest <- list(ntree = o$isoforest$ntree)
+  o
+}
+.strip_ivarpro <- function(iv) {            # drop redundant model/path attrs
   for (a in c("ivarpro.path", "model", "data")) attr(iv, a) <- NULL
   iv
 }
