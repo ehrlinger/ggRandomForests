@@ -8,8 +8,8 @@ make_iso_fit <- function(seed = 1L, method = "rnd", ntree = 25, sampsize = 16) {
   # pure R). The default method = "rnd" builds a synthetic-supervised forest and
   # is UBSAN-clean — verified under -fsanitize=undefined. So skip_on_cran() only
   # the unsupervised path; the rnd tests run on CRAN. Both run in CI and locally.
-  if (identical(method, "unsupv")) skip_on_cran()
-  skip_if_not_installed("varPro")
+  if (identical(method, "unsupv")) testthat::skip_on_cran()
+  testthat::skip_if_not_installed("varPro")
   set.seed(seed)
   varPro::isopro(
     data     = iris[, 1:4],
