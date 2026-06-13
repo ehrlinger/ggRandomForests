@@ -71,11 +71,19 @@ gg_sdependent.uvarpro <- function(object, ..., threshold = 0.25,
     stop("gg_sdependent: expected a 'uvarpro' object from varPro::uvarpro().",
          call. = FALSE)
   }
+  if (!is.numeric(threshold) || length(threshold) != 1L || is.na(threshold)) {
+    stop("gg_sdependent: `threshold` must be a single non-NA numeric value.",
+         call. = FALSE)
+  }
+  if (!is.logical(directed) || length(directed) != 1L || is.na(directed)) {
+    stop("gg_sdependent: `directed` must be a single TRUE/FALSE value.",
+         call. = FALSE)
+  }
 
   if (is.null(beta_fit)) {
     imp_mat <- varPro::get.beta.entropy(object, ...)
   } else {
-    .validate_beta_uvarpro(beta_fit)
+    .validate_beta_uvarpro(beta_fit, caller = "gg_sdependent")
     if (length(list(...)) > 0L) {
       warning("gg_sdependent: arguments in '...' ignored because beta_fit is supplied.",
               call. = FALSE)

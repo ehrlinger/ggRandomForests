@@ -81,6 +81,11 @@ gg_beta_uvarpro.uvarpro <- function(object, ..., cutoff = NULL,
     stop("gg_beta_uvarpro: expected a 'uvarpro' object from varPro::uvarpro().",
          call. = FALSE)
   }
+  if (!is.null(cutoff) &&
+        (!is.numeric(cutoff) || length(cutoff) != 1L || is.na(cutoff))) {
+    stop("gg_beta_uvarpro: `cutoff` must be a single non-NA numeric value ",
+         "(or NULL for the mean-beta default).", call. = FALSE)
+  }
 
   # Resolve the beta matrix (cache path)
   if (is.null(beta_fit)) {
@@ -137,14 +142,14 @@ gg_beta_uvarpro.uvarpro <- function(object, ..., cutoff = NULL,
 }
 
 #' @noRd
-.validate_beta_uvarpro <- function(beta_fit) {
+.validate_beta_uvarpro <- function(beta_fit, caller = "gg_beta_uvarpro") {
   if (!is.matrix(beta_fit) || !is.numeric(beta_fit)) {
-    stop("gg_beta_uvarpro: beta_fit does not look like a ",
+    stop(caller, ": beta_fit does not look like a ",
          "varPro::get.beta.entropy() result. Expected a numeric matrix.",
          call. = FALSE)
   }
   if (ncol(beta_fit) > 0L && is.null(colnames(beta_fit))) {
-    stop("gg_beta_uvarpro: beta_fit must have column names (the variables). ",
+    stop(caller, ": beta_fit must have column names (the variables). ",
          "varPro::get.beta.entropy() returns a named matrix.",
          call. = FALSE)
   }

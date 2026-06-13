@@ -1,2 +1,7 @@
 /.quarto/
 **/*.quarto_ipynb
+
+# Quarto/Pandoc render outputs (regenerated on build; .Rbuildignore'd)
+*_files/
+*_cache/
+*.html
