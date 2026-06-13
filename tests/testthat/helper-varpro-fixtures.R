@@ -1,6 +1,12 @@
 # Session-memoised varpro + beta.varpro fixtures for the gg_beta_varpro tests.
 # beta.varpro() is the expensive call (per-rule glmnet); compute once per R
 # session and reuse. In-memory only — no disk cache.
+#
+# These all grow *supervised* varpro/ivarpro/beta.varpro forests (a real Y), so
+# yvar.wt is non-empty and they do NOT trip randomForestSRC's gcc-UBSAN report
+# at entry.c:184 (that fires only for the unsupervised family — verified under
+# -fsanitize=undefined). They intentionally run on CRAN; do not skip_on_cran().
+# Only the unsupervised isopro grow is skipped (see test_gg_isopro.R).
 
 .varpro_cache <- new.env(parent = emptyenv())
 

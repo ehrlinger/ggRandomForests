@@ -336,14 +336,16 @@ test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP c
   # is named "VIMP" (uppercase) in single-outcome rfsrc fits, leaving positive
   # always TRUE even for variables with non-positive VIMP.
   #
-  # `const` is a zero-variance predictor: rfsrc cannot split on it, so its VIMP
-  # is exactly 0 (non-positive) on every platform. That deterministically
-  # exercises the bug condition (the pre-fix code left every `positive` TRUE).
+  # Force one VIMP non-positive so the test deterministically exercises the bug
+  # condition. A zero-variance ("const") predictor is unreliable here:
+  # permutation VIMP of a weak/constant variable can land slightly > 0 (and
+  # rfsrc may drop a constant column), so it does not guarantee a non-positive
+  # VIMP on every platform (observed failing on R-release). The pre-fix code
+  # left `positive` TRUE regardless of the VIMP sign.
   set.seed(2024L)
-  aq <- na.omit(airquality)
-  aq$const <- 1
-  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = aq,
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
                                ntree = 200, importance = TRUE)
+  rf$importance[1] <- -1
   gg_dta <- gg_vimp(rf)
 
   expect_s3_class(gg_dta, "gg_vimp")
@@ -353,8 +355,8 @@ test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP c
   expect_false(is.na(vimp_col))
   # The invariant, asserted for every row: positive is TRUE exactly when VIMP > 0.
   expect_equal(gg_dta$positive, gg_dta[[vimp_col]] > 0)
-  # The constant predictor guarantees at least one non-positive VIMP, so the
-  # pre-fix all-TRUE behaviour would fail here.
+  # The injected -1 guarantees at least one non-positive VIMP, so the pre-fix
+  # all-TRUE behaviour would fail here.
   expect_true(any(!gg_dta$positive))
   expect_s3_class(plot(gg_dta), "ggplot")
 })

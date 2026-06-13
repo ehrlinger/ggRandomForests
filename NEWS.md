@@ -1,9 +1,10 @@
 Package: ggRandomForests
-Version: 3.1.0.9000
+Version: 3.1.2.9000
 
 ggRandomForests v4.0.0 (development)
 ====================================
-* Development version 3.1.0.9000, opened after the v3.1.0 CRAN release.
+* Development version 3.1.2.9000, opened after the v3.1.2 CRAN release
+  (forward-merged the v3.1.1 and v3.1.2 CRAN fixes onto the dev line).
 * `gg_auct()` / `plot.gg_auct()`: tidy wrapper and plot for time-varying
   AUC from `randomForestRHF::auct.rhf()` (RHF Phase 2). Returns a long
   frame `time / auc / se / lower / upper / marker` with an `iauc`
@@ -16,6 +17,44 @@ ggRandomForests v4.0.0 (development)
   Suggests). RHF support is gated — every gg_rhf* entry point checks
   `requireNamespace("randomForestRHF")`. No change for users who do not
   install it.
+
+ggRandomForests v3.1.2
+======================
+* CRAN fix: skip only the single test grow that trips the upstream
+  `randomForestSRC` gcc-UBSAN report at `entry.c:184` — the *unsupervised*
+  isolation forest in `gg_isopro` (`varPro::isopro(method = "unsupv")`). Only
+  an unsupervised grow has a 0-length `yvar.wt`, the vector `rfsrcGrow`
+  decrements to an out-of-bounds pointer; supervised grows are unaffected.
+  We verified this under `-fsanitize=undefined`: of every varPro/rfsrc grow
+  in the test suite, only `isopro(method = "unsupv")` fires `entry.c:184`.
+  `make_iso_fit()` therefore calls `skip_on_cran()` only for
+  `method = "unsupv"`. ggRandomForests is pure R and unchanged.
+* The broader `skip_on_cran()` guards added in v3.1.1 (the `varpro`,
+  `uvarpro`, `ivarpro`, `beta.varpro`, and `isopro(method = "rnd")` test
+  fixtures) are removed: those grows are supervised (or synthetic-supervised)
+  and gcc-UBSAN-clean, so they run on CRAN again, restoring that test
+  coverage. The upstream issue is fixed in `randomForestSRC` and pending a
+  CRAN release.
+
+ggRandomForests v3.1.1
+======================
+* CRAN fix: the varPro tests now call `skip_on_cran()` so they do not run
+  on CRAN's check machines, including the gcc-UBSAN additional check. They
+  were triggering an upstream `randomForestSRC` sanitizer issue (a 0-length
+  array access in `rfsrcGrow`, `entry.c:184`) that surfaces when any
+  `varPro` grow (`varpro()`, `beta.varpro()`, `uvarpro()`, `isopro()`,
+  `ivarpro()`) builds a forest. ggRandomForests is pure R and its code is
+  unchanged; the varPro tests still run in our CI (the workflows set
+  `NOT_CRAN=true`) and locally; they are skipped only on CRAN's check
+  machines, including the gcc-UBSAN check. The upstream issue has been
+  reported to the randomForestSRC maintainers.
+* The `varpro` vignette now loads every varPro fit from a precomputed
+  file (`vignettes/varpro_precomputed.rds`, built by
+  `vignettes/precompute_varpro.R`), so the vignette performs no live
+  varPro grow during `R CMD check`. This removes the same upstream
+  sanitizer path from the vignette build and trims check time. Each chunk
+  falls back to a live fit if the precomputed object is absent, so the
+  vignette remains reproducible from source.
 
 ggRandomForests v3.1.0
 ======================

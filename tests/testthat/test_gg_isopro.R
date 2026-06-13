@@ -2,7 +2,14 @@
 # Phase 4 of the v2.8.0 varPro integration.
 
 make_iso_fit <- function(seed = 1L, method = "rnd", ntree = 25, sampsize = 16) {
-  skip_if_not_installed("varPro")
+  # Only the *unsupervised* isopro grow (method = "unsupv") trips
+  # randomForestSRC's gcc-UBSAN report at entry.c:184 (length-0 yvar.wt
+  # decremented to an out-of-bounds pointer; upstream bug, ggRandomForests is
+  # pure R). The default method = "rnd" builds a synthetic-supervised forest and
+  # is UBSAN-clean — verified under -fsanitize=undefined. So skip_on_cran() only
+  # the unsupervised path; the rnd tests run on CRAN. Both run in CI and locally.
+  if (identical(method, "unsupv")) testthat::skip_on_cran()
+  testthat::skip_if_not_installed("varPro")
   set.seed(seed)
   varPro::isopro(
     data     = iris[, 1:4],

@@ -4,6 +4,8 @@
 
 # Regression fit — fast, always available (mtcars is base R)
 make_vp_regr <- function(ntree = 25L) {
+  # Supervised varpro grow (real Y) — UBSAN-clean; runs on CRAN. See
+  # helper-varpro-fixtures.R for why varPro grows are safe except isopro(unsupv).
   set.seed(42L)
   varPro::varpro(mpg ~ ., data = mtcars, ntree = ntree)
 }

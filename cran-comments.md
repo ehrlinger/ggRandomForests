@@ -1,88 +1,64 @@
-## v3.1.0 — varPro integration + bug fix (major release)
+## v3.1.2 — CRAN fix (gcc-UBSAN additional check, follow-up to 3.1.1)
 
-### Resubmission
+This patch completes the gcc-UBSAN "additional issue" fix. v3.1.1 guarded
+the varPro forest-growing tests with `skip_on_cran()`, but one fixture was
+missed and the auto-check re-flagged the issue (win-builder incoming
+pre-test, 2026-06-12; correct before 2026-06-29).
 
-This resubmission addresses the one issue raised on the previous 3.1.0
-submission: the overall check time exceeded 10 minutes on
-r-devel-windows-x86_64, driven by the vignette rebuild (~331 s) and the
-tests (~209 s). We have reduced both, per the three levers suggested
-(small toy data, fewer iterations, precomputed results for the lengthiest
-parts):
+### The issue
 
-- The regression and survival vignettes use lighter forests (`ntree`
-  200 / 150, imputation `ntree` 100) and coarser partial-dependence grids.
-- The varpro vignette's three `gg_partial_varpro()` calls and the Boston
-  `beta.varpro()` fit — together ~34 s, the bulk of that vignette's
-  rebuild — are now precomputed offline (`vignettes/precompute_varpro.R`)
-  and loaded from a 167 KB `vignettes/varpro_precomputed.rds`, with an
-  automatic live-computation fallback if the file is absent.
-- The `gg_udependent()` tests previously recomputed the same per-fit
-  entropy matrix (~1.5 s) once per test; they now memoise it.
+The sanitizer reports, once, during the package tests:
 
-Locally the full vignette rebuild drops from ~80 s to ~38 s and the test
-suite from ~44 s to ~36 s (R 4.6.0, aarch64-apple-darwin23), with no
-change in test coverage or vignette content.
+```
+entry.c:184:55: runtime error: pointer index expression with base
+0x000000000001 overflowed to 0xfffffffffffffff9
+    #0 rfsrcGrow .../randomForestSRC/src/entry.c:184
+```
 
-### Release context
+This is a 0-length weight-vector access in the compiled code of the
+`randomForestSRC` package (`rfsrcGrow`, `entry.c:184`): when `yvar.wt` has
+length 0 — which happens for the **unsupervised** family — the unconditional
+`RF_yWeight--` forms an out-of-bounds pointer (undefined behaviour, though
+never dereferenced). ggRandomForests is a pure-R package
+(`NeedsCompilation: no`); it contains no C/C++/Fortran of its own, so the
+overflow is not in our code. It is surfaced because our test suite grows an
+unsupervised forest via `varPro::isopro()`.
 
-v2.7.3 is the version currently published on CRAN. A v3.0.0 submission
-(2026-05-28) cleared the Windows and Debian pretests (0/0/0) but did not
-complete the review cycle; this 3.1.0 release supersedes it, carrying the
-full v3.0.0 feature layer plus the v3.1.0 bug fix and documentation work.
-The version is in 3.x territory because it adds a substantial new feature
-layer and soft-deprecates one user-facing function.
+### The fix
 
-### Changes in v3.1.0
+No package R code changes (ggRandomForests remains `NeedsCompilation: no`).
+We built CRAN's `randomForestSRC` 3.6.2 with `-fsanitize=undefined` and ran
+every varPro/rfsrc grow in our test suite under it. Only one grow fires
+`entry.c:184`: the *unsupervised* isolation forest
+(`varPro::isopro(method = "unsupv")`). The bug is a 0-length `yvar.wt`
+(present only for the unsupervised family) that `rfsrcGrow` decrements to an
+out-of-bounds pointer; supervised grows have a non-empty `yvar.wt` and are
+unaffected.
 
-- **Bug fix.** `gg_vimp()` on single-outcome `rfsrc` forests now correctly
-  flags variables with non-positive VIMP in the `positive` column (used for
-  plot colouring). The single-outcome fit names the column `VIMP`
-  (uppercase) while the flag check read `$vimp` (lowercase), so `positive`
-  stayed `TRUE` for every variable. Added a regression test.
-- **Documentation.** Deepened the varPro-family and rfsrc importance /
-  partial / survival help pages, made the `gg_vimp()` (permutation
-  importance) vs `gg_varpro()` (release-rule importance) distinction
-  explicit and cross-linked, and fixed a stale `@return` in `gg_roc()`. No
-  user-facing behaviour change beyond the bug fix above.
+`make_iso_fit()` in the `gg_isopro` tests therefore calls
+`testthat::skip_on_cran()` only when `method = "unsupv"`, so the one
+offending grow never runs on CRAN's check machines (including the gcc-UBSAN
+additional check). All other varPro tests run on CRAN. We confirmed the full
+test suite produces zero gcc-UBSAN errors under the sanitizer configuration
+CRAN uses (GCC `-fsanitize=undefined`, which — unlike clang — does not
+include `float-cast-overflow`).
 
-### Major changes carried from v3.0.0
+The upstream issue has been reported to the randomForestSRC maintainers.
 
-- **New varPro wrapper family.** Tidy extractors and `plot()` methods for
-  the `varPro` package: `gg_partial_varpro()` (partial dependence),
-  `gg_varpro()` (variable importance), `gg_udependent()` (cross-variable
-  dependency graph), `gg_isopro()` (isolation-forest anomaly scores),
-  `gg_beta_varpro()` (per-rule beta importance), and `gg_ivarpro()`
-  (individual / local importance), each with `print` / `summary` /
-  `autoplot` companions and a dedicated "varpro" vignette.
-- **Soft-deprecation.** `gg_partialpro()` now warns and forwards to
-  `gg_partial_varpro()`; it will be removed in a future release.
-- **randomForest engine fixes.** `gg_variable.randomForest()`
-  classification, `gg_roc()` / `calc_roc()` for `randomForest` (true
-  probability-based, macro-averaged ROC), per-class one-vs-rest ROC
-  (`per_class = TRUE`), and `plot.gg_variable()` now returns a single
-  `ggplot` / `patchwork` object rather than a bare list.
-- **Importance-plot ordering.** All importance plots now place the
-  most-important variable at the top, matching the `gg_vimp` convention.
-
-### Dependency change (reverse-dependency safe)
-
-`randomForestSRC` and `randomForest` move from `Depends:` to `Imports:`,
-and `varPro` is added to `Imports:`. `library(ggRandomForests)` no longer
-attaches the forest packages to the search path. There are **0 reverse
-dependencies** on CRAN, so no downstream packages are affected.
-
-## Test environments
+### Test environments
 
 * **Local:** R 4.6.0 on macOS (aarch64-apple-darwin23).
-  `R CMD check --as-cran` returns 0 errors, 0 warnings, 0 notes.
+  `R CMD check --as-cran` (with the manual) returns 0 errors, 0 warnings,
+  1 NOTE (days since last update, see below); the single unsupervised isopro
+  test (`method = "unsupv"`) skips under the CRAN check environment as
+  intended, all other varPro tests run.
 * **GitHub Actions matrix:** ubuntu-latest (R-devel / R-release /
-  R-oldrel-1), windows-latest (R-release), macos-latest (R-release),
-  all green on the head commit.
-* **Reverse-dependency check:** `tools::package_dependencies(reverse =
-  TRUE)` returns 0.
-* **URLs:** `urlchecker::url_check()` clean.
+  R-oldrel-1), windows-latest (R-release), macos-latest (R-release).
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 
-## NOTE disposition
+### NOTE disposition
 
-No notes in local `R CMD check --as-cran`. Examples that fit survival
-forests are wrapped in `\donttest` and run in a few seconds each.
+One NOTE on the incoming feasibility check, "Days since last update: N".
+This is expected: this patch is the follow-up to the gcc-UBSAN fix the CRAN
+team requested (correct before 2026-06-29), so the short interval is
+unavoidable. No other notes.

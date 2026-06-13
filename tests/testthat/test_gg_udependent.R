@@ -3,6 +3,9 @@
 ## ── Helpers ──────────────────────────────────────────────────────────────────
 
 make_uvp <- function(ntree = 25L) {
+  # uvarpro() grows a *synthetic-supervised* forest (yxyz123 ~ ., random Y), so
+  # yvar.wt is non-empty and it does NOT trip the entry.c:184 gcc-UBSAN report
+  # (only the truly-unsupervised isopro grow does). Runs on CRAN.
   set.seed(42L)
   varPro::uvarpro(iris[, -5L], ntree = ntree)
 }
