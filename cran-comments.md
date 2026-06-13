@@ -26,15 +26,22 @@ unsupervised forest via `varPro::isopro()`.
 
 ### The fix
 
-One change, not touching package R code (ggRandomForests remains
-`NeedsCompilation: no`): `make_iso_fit()` in the `gg_isopro` tests now calls
-`testthat::skip_on_cran()`, like the other varPro fixtures already do.
-`varPro::isopro()` grows an unsupervised isolation forest — the one varPro
-grow path v3.1.1 left unguarded (it was gated only by
-`skip_if_not_installed("varPro")`, and varPro is installed on the check
-machines). With the skip in place, CRAN's check machines (including the
-gcc-UBSAN additional check) no longer grow this forest. The isopro tests
-still run in our CI (the workflows set `NOT_CRAN=true`) and locally.
+No package R code changes (ggRandomForests remains `NeedsCompilation: no`).
+We built CRAN's `randomForestSRC` 3.6.2 with `-fsanitize=undefined` and ran
+every varPro/rfsrc grow in our test suite under it. Only one grow fires
+`entry.c:184`: the *unsupervised* isolation forest
+(`varPro::isopro(method = "unsupv")`). The bug is a 0-length `yvar.wt`
+(present only for the unsupervised family) that `rfsrcGrow` decrements to an
+out-of-bounds pointer; supervised grows have a non-empty `yvar.wt` and are
+unaffected.
+
+`make_iso_fit()` in the `gg_isopro` tests therefore calls
+`testthat::skip_on_cran()` only when `method = "unsupv"`, so the one
+offending grow never runs on CRAN's check machines (including the gcc-UBSAN
+additional check). All other varPro tests run on CRAN. We confirmed the full
+test suite produces zero gcc-UBSAN errors under the sanitizer configuration
+CRAN uses (GCC `-fsanitize=undefined`, which — unlike clang — does not
+include `float-cast-overflow`).
 
 The upstream issue has been reported to the randomForestSRC maintainers.
 
