@@ -1,5 +1,17 @@
 Package: ggRandomForests
-Version: 3.1.1
+Version: 3.1.2
+
+ggRandomForests v3.1.2
+======================
+* CRAN fix: `make_iso_fit()` in the `gg_isopro` tests now calls
+  `skip_on_cran()`. It was the one varPro fixture missed by the v3.1.1
+  guards: `varPro::isopro()` grows an *unsupervised* isolation forest, which
+  reaches the same upstream `randomForestSRC` gcc-UBSAN path as the other
+  varPro grows (a 0-length `yvar.wt` decremented to an out-of-bounds pointer
+  in `rfsrcGrow`, `entry.c:184`). With it unguarded, CRAN's gcc-UBSAN
+  additional check still grew the forest and re-flagged the issue.
+  ggRandomForests is pure R and unchanged; the isopro tests still run in CI
+  and locally (`NOT_CRAN=true`), skipped only on CRAN's check machines.
 
 ggRandomForests v3.1.1
 ======================
