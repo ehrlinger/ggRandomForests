@@ -12,7 +12,7 @@ editor:
   markdown: 
     wrap: 80
 vignette: >
-  %\VignetteIndexEntry{Vignette's Title}
+  %\VignetteIndexEntry{Exploring Random Forests with ggRandomForests}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 ---

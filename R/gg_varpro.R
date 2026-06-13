@@ -278,13 +278,33 @@ gg_varpro <- function(object,
     cond_mat   <- NULL
   }
 
+  vars_raw <- rownames(imp_df_raw)
+  z_vec    <- imp_df_raw$z
+
+  ## Guard (issue #118): varPro::importance() occasionally returns a
+  ## degenerate importance table -- 0 rows, or a missing/empty `z` column
+  ## while p variables are named -- for some fits (observed on survival fits
+  ## where the release-rule step selects no variables). Detect that here and
+  ## fail with a clear, specific message instead of the cryptic
+  ## "arguments imply differing number of rows: p, 0" raised when the columns
+  ## below are recycled. Scoped to the degenerate case only: working fits
+  ## (survival included) have length(z_vec) == length(vars_raw) > 0 and are
+  ## unaffected -- this is NOT a blanket survival-family block (cf. #116).
+  if (length(vars_raw) == 0L || length(z_vec) != length(vars_raw)) {
+    stop("gg_varpro(): varPro::importance() returned no usable importance ",
+         "for this ", family, " fit -- the release-rule step selected no ",
+         "variables, so the importance table is empty and there is nothing ",
+         "to plot. This is most often seen on survival fits; refitting with ",
+         "more trees (a larger 'ntree') usually resolves it.",
+         call. = FALSE)
+  }
+
   ## Replace NaN z with 0 for sorting/selection
-  z_vec <- imp_df_raw$z
   z_vec[!is.finite(z_vec)] <- 0
 
   ## $imp: one row per variable
   imp_df <- data.frame(
-    variable = rownames(imp_df_raw),
+    variable = vars_raw,
     z        = as.numeric(z_vec),
     selected = as.numeric(z_vec) > cutoff,
     stringsAsFactors = FALSE
