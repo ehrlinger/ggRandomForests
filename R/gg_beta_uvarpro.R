@@ -81,11 +81,7 @@ gg_beta_uvarpro.uvarpro <- function(object, ..., cutoff = NULL,
     stop("gg_beta_uvarpro: expected a 'uvarpro' object from varPro::uvarpro().",
          call. = FALSE)
   }
-  if (!is.null(cutoff) &&
-        (!is.numeric(cutoff) || length(cutoff) != 1L || is.na(cutoff))) {
-    stop("gg_beta_uvarpro: `cutoff` must be a single non-NA numeric value ",
-         "(or NULL for the mean-beta default).", call. = FALSE)
-  }
+  .assert_scalar_numeric_or_null(cutoff, "cutoff", "gg_beta_uvarpro")
 
   # Resolve the beta matrix (cache path)
   if (is.null(beta_fit)) {
@@ -100,7 +96,7 @@ gg_beta_uvarpro.uvarpro <- function(object, ..., cutoff = NULL,
   }
 
   # Empty fast-path: no regions / no variables survived
-  if (is.null(b) || !is.matrix(b) || nrow(b) == 0L || ncol(b) == 0L) {
+  if (.is_empty_beta_matrix(b)) {
     return(.gg_beta_uvarpro_empty(object, beta_fit, cutoff))
   }
 
@@ -151,6 +147,21 @@ gg_beta_uvarpro.uvarpro <- function(object, ..., cutoff = NULL,
   if (ncol(beta_fit) > 0L && is.null(colnames(beta_fit))) {
     stop(caller, ": beta_fit must have column names (the variables). ",
          "varPro::get.beta.entropy() returns a named matrix.",
+         call. = FALSE)
+  }
+  invisible(NULL)
+}
+
+#' @noRd
+.is_empty_beta_matrix <- function(m) {
+  is.null(m) || !is.matrix(m) || nrow(m) == 0L || ncol(m) == 0L
+}
+
+#' @noRd
+.assert_scalar_numeric_or_null <- function(x, arg, caller) {
+  if (!is.null(x) &&
+        (!is.numeric(x) || length(x) != 1L || is.na(x))) {
+    stop(caller, ": `", arg, "` must be a single non-NA numeric value (or NULL).",
          call. = FALSE)
   }
   invisible(NULL)

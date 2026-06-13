@@ -67,18 +67,9 @@ gg_sdependent.default <- function(object, ...) {
 gg_sdependent.uvarpro <- function(object, ..., threshold = 0.25,
                                   q.signal = 0.75, directed = TRUE,
                                   min.degree = NULL, beta_fit = NULL) {
-  if (!inherits(object, "uvarpro")) {
-    stop("gg_sdependent: expected a 'uvarpro' object from varPro::uvarpro().",
-         call. = FALSE)
-  }
-  if (!is.numeric(threshold) || length(threshold) != 1L || is.na(threshold)) {
-    stop("gg_sdependent: `threshold` must be a single non-NA numeric value.",
-         call. = FALSE)
-  }
-  if (!is.logical(directed) || length(directed) != 1L || is.na(directed)) {
-    stop("gg_sdependent: `directed` must be a single TRUE/FALSE value.",
-         call. = FALSE)
-  }
+  # Shared uvarpro-object + scalar threshold/directed validation (the same
+  # centralized check gg_udependent() uses).
+  .validate_udep_inputs(object, threshold, directed)
 
   if (is.null(beta_fit)) {
     imp_mat <- varPro::get.beta.entropy(object, ...)
@@ -101,8 +92,7 @@ gg_sdependent.uvarpro <- function(object, ..., threshold = 0.25,
     precomputed = !is.null(beta_fit)
   )
 
-  if (is.null(imp_mat) || !is.matrix(imp_mat) || nrow(imp_mat) == 0L ||
-        ncol(imp_mat) == 0L) {
+  if (.is_empty_beta_matrix(imp_mat)) {
     return(.gg_sdependent_empty(prov))
   }
   .gg_sdependent_build(imp_mat, threshold, q.signal, directed, min.degree, prov)
