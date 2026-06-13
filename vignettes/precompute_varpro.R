@@ -35,6 +35,10 @@ if (requireNamespace("ggRandomForests", quietly = TRUE)) {
 }
 options(mc.cores = 1, rf.cores = 1)
 
+if (!requireNamespace("MASS", quietly = TRUE)) {
+  stop("Install 'MASS' to run this script (the regression fits use MASS::Boston).")
+}
+
 # --- Regression: Boston housing ------------------------------------------
 data("Boston", package = "MASS")
 boston_x <- Boston[, setdiff(names(Boston), "medv")]
