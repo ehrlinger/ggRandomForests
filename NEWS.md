@@ -1,7 +1,7 @@
 Package: ggRandomForests
-Version: 3.1.2
+Version: 3.1.3
 
-ggRandomForests v3.1.2
+ggRandomForests v3.1.3
 ======================
 * Fix (#118): `gg_varpro()` no longer fails with the cryptic
   "arguments imply differing number of rows: <p>, 0" when
@@ -12,7 +12,6 @@ ggRandomForests v3.1.2
   suggesting a larger `ntree`. The guard is scoped to the degenerate case
   only; well-formed fits (survival included) are unaffected -- this is not
   a blanket survival-family block (cf. the reverted #116).
-
 * `gg_beta_uvarpro()` / `plot.gg_beta_uvarpro()`: tidy wrapper and bar chart
   for `varPro::get.beta.entropy()` -- the unsupervised analogue of
   `gg_beta_varpro()`. From a `uvarpro()` fit it aggregates the per-region
@@ -27,6 +26,26 @@ ggRandomForests v3.1.2
   graph) with the "which variables are signal" ranking; shares the
   `beta_fit` entropy matrix. Follows the `get.beta.entropy` + `sdependent`
   workflow from the `varPro::uvarpro()` help (iowa-housing example).
+* Fixes the intro vignette's placeholder `\VignetteIndexEntry`
+  ("Vignette's Title" -> "Exploring Random Forests with ggRandomForests").
+
+ggRandomForests v3.1.2
+======================
+* CRAN fix: skip only the single test grow that trips the upstream
+  `randomForestSRC` gcc-UBSAN report at `entry.c:184` — the *unsupervised*
+  isolation forest in `gg_isopro` (`varPro::isopro(method = "unsupv")`). Only
+  an unsupervised grow has a 0-length `yvar.wt`, the vector `rfsrcGrow`
+  decrements to an out-of-bounds pointer; supervised grows are unaffected.
+  We verified this under `-fsanitize=undefined`: of every varPro/rfsrc grow
+  in the test suite, only `isopro(method = "unsupv")` fires `entry.c:184`.
+  `make_iso_fit()` therefore calls `skip_on_cran()` only for
+  `method = "unsupv"`. ggRandomForests is pure R and unchanged.
+* The broader `skip_on_cran()` guards added in v3.1.1 (the `varpro`,
+  `uvarpro`, `ivarpro`, `beta.varpro`, and `isopro(method = "rnd")` test
+  fixtures) are removed: those grows are supervised (or synthetic-supervised)
+  and gcc-UBSAN-clean, so they run on CRAN again, restoring that test
+  coverage. The upstream issue is fixed in `randomForestSRC` and pending a
+  CRAN release.
 
 ggRandomForests v3.1.1
 ======================

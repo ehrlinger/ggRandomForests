@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.0">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="John Ehrlinger">
+<meta name="dcterms.date" content="2026-06-01">
+
+<title>Random Forest Survival Analysis with ggRandomForests</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="ggRandomForests-survival_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ggRandomForests-survival_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="ggRandomForests-survival_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="ggRandomForests-survival_files/libs/quarto-html/popper.min.js"></script>
+<script src="ggRandomForests-survival_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="ggRandomForests-survival_files/libs/quarto-html/anchor.min.js"></script>
+<link href="ggRandomForests-survival_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ggRandomForests-survival_files/libs/quarto-html/quarto-syntax-highlighting-9c5e1a58ae97b3faeeb5cca0e0e2eaf1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="ggRandomForests-survival_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="ggRandomForests-survival_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="ggRandomForests-survival_files/libs/bootstrap/bootstrap-138a6193a3bd40baf1e627da441a4734.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="ggRandomForests-survival_files/libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="ggRandomForests-survival_files/libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="ggRandomForests-survival_files/libs/plotly-binding-4.12.0/plotly.js"></script>
+<script src="ggRandomForests-survival_files/libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="ggRandomForests-survival_files/libs/jquery-3.5.1/jquery.min.js"></script>
+<link href="ggRandomForests-survival_files/libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="ggRandomForests-survival_files/libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="ggRandomForests-survival_files/libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="ggRandomForests-survival_files/libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#data-primary-biliary-cirrhosis-pbc" id="toc-data-primary-biliary-cirrhosis-pbc" class="nav-link" data-scroll-target="#data-primary-biliary-cirrhosis-pbc">Data: Primary Biliary Cirrhosis (PBC)</a>
+  <ul class="collapse">
+  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning">Data cleaning</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory data analysis</a></li>
+  <li><a href="#kaplanmeier-survival-by-treatment" id="toc-kaplanmeier-survival-by-treatment" class="nav-link" data-scroll-target="#kaplanmeier-survival-by-treatment">Kaplan–Meier survival by treatment</a></li>
+  </ul></li>
+  <li><a href="#growing-a-random-survival-forest" id="toc-growing-a-random-survival-forest" class="nav-link" data-scroll-target="#growing-a-random-survival-forest">Growing a Random Survival Forest</a>
+  <ul class="collapse">
+  <li><a href="#oob-error-convergence" id="toc-oob-error-convergence" class="nav-link" data-scroll-target="#oob-error-convergence">OOB error convergence</a></li>
+  <li><a href="#oob-predicted-survival" id="toc-oob-predicted-survival" class="nav-link" data-scroll-target="#oob-predicted-survival">OOB predicted survival</a></li>
+  <li><a href="#test-set-predictions" id="toc-test-set-predictions" class="nav-link" data-scroll-target="#test-set-predictions">Test set predictions</a></li>
+  </ul></li>
+  <li><a href="#variable-selection" id="toc-variable-selection" class="nav-link" data-scroll-target="#variable-selection">Variable Selection</a>
+  <ul class="collapse">
+  <li><a href="#variable-importance-vimp" id="toc-variable-importance-vimp" class="nav-link" data-scroll-target="#variable-importance-vimp">Variable importance (VIMP)</a></li>
+  <li><a href="#minimal-depth" id="toc-minimal-depth" class="nav-link" data-scroll-target="#minimal-depth">Minimal depth</a></li>
+  </ul></li>
+  <li><a href="#variable-dependence" id="toc-variable-dependence" class="nav-link" data-scroll-target="#variable-dependence">Variable Dependence</a>
+  <ul class="collapse">
+  <li><a href="#variable-dependence-plots" id="toc-variable-dependence-plots" class="nav-link" data-scroll-target="#variable-dependence-plots">Variable dependence plots</a></li>
+  <li><a href="#partial-dependence" id="toc-partial-dependence" class="nav-link" data-scroll-target="#partial-dependence">Partial dependence</a></li>
+  <li><a href="#conditional-dependence" id="toc-conditional-dependence" class="nav-link" data-scroll-target="#conditional-dependence">Conditional dependence</a></li>
+  </ul></li>
+  <li><a href="#interactive-partial-dependence-surfaces" id="toc-interactive-partial-dependence-surfaces" class="nav-link" data-scroll-target="#interactive-partial-dependence-surfaces">Interactive Partial Dependence Surfaces</a>
+  <ul class="collapse">
+  <li><a href="#brier-score-and-crps" id="toc-brier-score-and-crps" class="nav-link" data-scroll-target="#brier-score-and-crps">Brier Score and CRPS</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Random Forest Survival Analysis with ggRandomForests</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>John Ehrlinger </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 1, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Work in progress
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This vignette is under active development. Code examples and narrative may change before the next release.</p>
+</div>
+</div>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional assumptions on the relation between covariates and the response. Random survival forests (RSF) <span class="citation" data-cites="Ishwaran:2007a Ishwaran:2008">(<a href="#ref-Ishwaran:2007a" role="doc-biblioref">Ishwaran et al. 2008</a>; <a href="#ref-Ishwaran:2008" role="doc-biblioref">Ishwaran and Kogalur 2007</a>)</span> extend the method to right-censored, time-to-event data by growing trees with a log-rank splitting rule and aggregating Kaplan–Meier estimates within terminal nodes.</p>
+<p>The forest returns three ensemble quantities for each subject. First, the survival function <span class="math inline">\(\hat{S}(t)\)</span>: the probability of surviving past time <span class="math inline">\(t\)</span>, bounded between 0 and 1. Second, the cumulative hazard function (CHF): <span class="math inline">\(\hat{H}(t) = -\log \hat{S}(t)\)</span>, an unbounded, monotone-increasing summary of accumulated risk. Third, mortality: the expected number of events a subject would accumulate if followed indefinitely under their covariate profile, computed by summing the CHF over the observed time grid. Mortality is an unbounded relative-risk score, not a probability, and works well as a single scalar for ranking patients by risk.</p>
+<p>The <strong><a href="https://www.randomforestsrc.org">randomForestSRC</a></strong> package <span class="citation" data-cites="Ishwaran:RFSRC:2014">(<a href="#ref-Ishwaran:RFSRC:2014" role="doc-biblioref">Ishwaran and Kogalur 2024</a>)</span> provides a unified implementation for survival, regression, and classification forests. <strong>ggRandomForests</strong> extracts tidy data objects from <code>rfsrc</code> fits and renders them with <strong>ggplot2</strong> <span class="citation" data-cites="Wickham:2009">(<a href="#ref-Wickham:2009" role="doc-biblioref">Wickham 2016</a>)</span>, making it straightforward to explore how a forest is constructed, which variables matter, and how the response depends on individual predictors.</p>
+<p>This vignette demonstrates a complete random survival forest workflow on the primary biliary cirrhosis (PBC) data set <span class="citation" data-cites="fleming:1991">(<a href="#ref-fleming:1991" role="doc-biblioref">Fleming and Harrington 1991</a>)</span>:</p>
+<ol type="1">
+<li><strong>Data preparation and exploration</strong> — cleaning, EDA, Kaplan–Meier curves</li>
+<li><strong>Growing the forest</strong> — fitting an RSF, checking convergence and OOB error</li>
+<li><strong>Variable selection</strong> — VIMP and minimal depth via <code>max.subtree()</code></li>
+<li><strong>Dependence plots</strong> — variable dependence and partial dependence via <code>gg_variable()</code> and <code>gg_partial_rfsrc()</code></li>
+<li><strong>Variable interactions</strong> — conditioning plots and interactive 3-D partial dependence surfaces with <strong>plotly</strong></li>
+</ol>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(randomForestSRC)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">requireNamespace</span>(<span class="st">"ggRandomForests"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggRandomForests)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">requireNamespace</span>(<span class="st">"pkgload"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  pkgload<span class="sc">::</span><span class="fu">load_all</span>(<span class="at">export_all =</span> <span class="cn">FALSE</span>, <span class="at">helpers =</span> <span class="cn">FALSE</span>, <span class="at">attach_testthat =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">"Install ggRandomForests (or pkgload for dev builds) to render this vignette."</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>())</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotting constants</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>event_marks  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>event_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Censored"</span>, <span class="st">"Death"</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>event_colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>, <span class="st">"firebrick"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="data-primary-biliary-cirrhosis-pbc" class="level1">
+<h1>Data: Primary Biliary Cirrhosis (PBC)</h1>
+<p>The PBC study consists of 424 patients referred to Mayo Clinic between 1974 and 1984, of whom 312 were randomized into a trial of D-penicillamine (DPCA) versus placebo. The data is described in <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> Chapter 0.2, with a proportional hazards model developed in Chapter 4.4. We use the copy bundled with <strong>randomForestSRC</strong>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"pbc"</span>, <span class="at">package =</span> <span class="st">"randomForestSRC"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="data-cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning">Data cleaning</h2>
+<p>We convert <code>days</code> to <code>years</code>, recode <code>treatment</code> as a factor, and coerce low-cardinality numeric columns (five or fewer unique values, including binary 0/1 indicators) to factors. We avoid converting binary columns to <code>logical</code> because <code>randomForestSRC::partial.rfsrc()</code> does not handle logical predictors correctly in survival forests.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pbc <span class="ot">&lt;-</span> pbc <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">years     =</span> days <span class="sc">/</span> <span class="fl">365.25</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">age       =</span> age <span class="sc">/</span> <span class="fl">365.25</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">treatment =</span> <span class="fu">factor</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ifelse</span>(treatment <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"DPCA"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>             <span class="fu">ifelse</span>(treatment <span class="sc">==</span> <span class="dv">2</span>, <span class="st">"Placebo"</span>, <span class="cn">NA</span>)),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"DPCA"</span>, <span class="st">"Placebo"</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>days)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Low-cardinality numerics (including binary 0/1) to factor.</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: do NOT convert to logical — partial.rfsrc() fails with logical</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># predictors in survival forests (randomForestSRC &lt;= 3.5.1).</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude the response columns (status, years) from conversion.</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>resp_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"status"</span>, <span class="st">"years"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (nm <span class="cf">in</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(pbc), resp_cols)) {</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> pbc[[nm]]</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.numeric</span>(v) <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.factor</span>(v) <span class="sc">&amp;&amp;</span> <span class="fu">length</span>(<span class="fu">unique</span>(v[<span class="sc">!</span><span class="fu">is.na</span>(v)])) <span class="sc">&lt;=</span> <span class="dv">5</span>) {</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    pbc[[nm]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(v)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Human-readable labels for plot axes</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>st_labs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">status       =</span> <span class="st">"Death Event"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">treatment    =</span> <span class="st">"Treatment"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">age          =</span> <span class="st">"Age (years)"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sex          =</span> <span class="st">"Female"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ascites      =</span> <span class="st">"Ascites"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">hepato       =</span> <span class="st">"Hepatomegaly"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">spiders      =</span> <span class="st">"Spiders"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">edema        =</span> <span class="st">"Edema (0, 0.5, 1)"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">bili         =</span> <span class="st">"Serum Bilirubin (mg/dl)"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">chol         =</span> <span class="st">"Serum Cholesterol (mg/dl)"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">albumin      =</span> <span class="st">"Albumin (gm/dl)"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">copper       =</span> <span class="st">"Urine Copper (ug/day)"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">alk.phos     =</span> <span class="st">"Alkaline Phosphatase (U/liter)"</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">ast          =</span> <span class="st">"SGOT (U/ml)"</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">trig         =</span> <span class="st">"Triglycerides (mg/dl)"</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">platelet     =</span> <span class="st">"Platelets (per cubic ml/1000)"</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">prothrombin  =</span> <span class="st">"Prothrombin Time (sec)"</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">stage        =</span> <span class="st">"Histologic Stage"</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">years        =</span> <span class="st">"Follow-up Time (years)"</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="exploratory-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory data analysis</h2>
+<p>Good practice before modeling: scan categorical variables as stacked histograms over follow-up time, and continuous variables as scatter plots colored by event status.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cls <span class="ot">&lt;-</span> <span class="fu">sapply</span>(pbc, class)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cnt_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(cls <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"numeric"</span>, <span class="st">"integer"</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fct_idx <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">seq_along</span>(pbc), cnt_idx)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>fct_idx <span class="ot">&lt;-</span> <span class="fu">union</span>(fct_idx, <span class="fu">which</span>(<span class="fu">names</span>(pbc) <span class="sc">==</span> <span class="st">"years"</span>))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>dta_cat <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  pbc[, fct_idx] <span class="sc">|&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="sc">-</span>years, <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">values_transform =</span> <span class="fu">list</span>(<span class="at">value =</span> as.character))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dta_cat, <span class="fu">aes</span>(<span class="at">x =</span> years, <span class="at">fill =</span> value)) <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">binwidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">""</span>, <span class="at">x =</span> st_labs[<span class="st">"years"</span>]) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"RdBu"</span>, <span class="at">na.value =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>variable, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">nrow =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/eda-categorical-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>EDA for categorical variables. Bar color indicates factor level; white = missing.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cnt_idx <span class="ot">&lt;-</span> <span class="fu">union</span>(cnt_idx, <span class="fu">which</span>(<span class="fu">names</span>(pbc) <span class="sc">==</span> <span class="st">"status"</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dta_cont <span class="ot">&lt;-</span> pbc[, cnt_idx] <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(<span class="sc">-</span>years, <span class="sc">-</span>status),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dta_cont <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(value)),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> years, <span class="at">y =</span> value, <span class="at">color =</span> <span class="fu">factor</span>(status), <span class="at">shape =</span> <span class="fu">factor</span>(status))) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="at">data =</span> dta_cont <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(value)), <span class="at">color =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">""</span>, <span class="at">x =</span> st_labs[<span class="st">"years"</span>], <span class="at">color =</span> <span class="st">"Death"</span>, <span class="at">shape =</span> <span class="st">"Death"</span>) <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> event_colors) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> event_marks) <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>variable, <span class="at">scales =</span> <span class="st">"free_y"</span>, <span class="at">ncol =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/eda-continuous-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>EDA for continuous variables. Points colored by death event; rug marks indicate missing values.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Look for patterns of missingness (white bars, rug marks) and extreme values that fall outside the biological range.</p>
+</section>
+<section id="kaplanmeier-survival-by-treatment" class="level2">
+<h2 class="anchored" data-anchor-id="kaplanmeier-survival-by-treatment">Kaplan–Meier survival by treatment</h2>
+<p>The Kaplan–Meier estimate is the marginal survival curve with no covariate adjustment. It serves as the no-covariate baseline: once we fit a forest, comparing the KM curves to the forest’s OOB predictions lets us judge how much predictive signal the covariates add beyond the raw event rate.</p>
+<p>We restrict to the 312 trial patients and construct KM curves with <code>gg_survival</code>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pbc_trial <span class="ot">&lt;-</span> pbc <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(treatment))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pbc_test  <span class="ot">&lt;-</span> pbc <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(treatment))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>gg_km <span class="ot">&lt;-</span> <span class="fu">gg_survival</span>(<span class="at">interval =</span> <span class="st">"years"</span>, <span class="at">censor =</span> <span class="st">"status"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">by =</span> <span class="st">"treatment"</span>, <span class="at">data =</span> pbc_trial,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">conf.int =</span> <span class="fl">0.95</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_km) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival Probability"</span>, <span class="at">x =</span> <span class="st">"Time (years)"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Treatment"</span>, <span class="at">fill =</span> <span class="st">"Treatment"</span>) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.2</span>)) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/km-survival-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>KM survival estimates by treatment group with 95% confidence bands.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The curves largely overlap, consistent with the original finding that DPCA offered no clear survival benefit over placebo <span class="citation" data-cites="fleming:1991">(<a href="#ref-fleming:1991" role="doc-biblioref">Fleming and Harrington 1991</a>)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_km, <span class="at">type =</span> <span class="st">"cum_haz"</span>) <span class="sc">+</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Cumulative Hazard"</span>, <span class="at">x =</span> <span class="st">"Time (years)"</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"Treatment"</span>, <span class="at">fill =</span> <span class="st">"Treatment"</span>) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.8</span>)) <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.02</span>, <span class="fl">1.22</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/km-cumhaz-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>KM cumulative hazard estimates by treatment group.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>We can also stratify on continuous variables. Here we reproduce the bilirubin groupings from <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> Figure 4.4.2:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pbc_bili <span class="ot">&lt;-</span> pbc_trial <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bili_grp =</span> <span class="fu">cut</span>(bili, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.8</span>, <span class="fl">1.3</span>, <span class="fl">3.4</span>, <span class="dv">29</span>)))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">gg_survival</span>(<span class="at">interval =</span> <span class="st">"years"</span>, <span class="at">censor =</span> <span class="st">"status"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">by =</span> <span class="st">"bili_grp"</span>, <span class="at">data =</span> pbc_bili),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">error =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival Probability"</span>, <span class="at">x =</span> <span class="st">"Time (years)"</span>, <span class="at">color =</span> <span class="st">"Bilirubin"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/km-bili-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>KM survival stratified by bilirubin groups.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Higher bilirubin strongly predicts worse survival — an effect the random forest will rediscover without any prior specification.</p>
+</section>
+</section>
+<section id="growing-a-random-survival-forest" class="level1">
+<h1>Growing a Random Survival Forest</h1>
+<p>Several predictors in the PBC trial data contain missing values (cholesterol, copper, triglycerides, and others). We handle these with a two-step approach: first impute using <code>impute.rfsrc()</code>, which uses the random forest proximity structure to fill in missing values, then fit the survival forest on the complete imputed data. This keeps the fitted forest object free of imputation state, which is required for <code>partial.rfsrc()</code> to work correctly.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1: impute missing values via random forest proximity</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pbc_imputed <span class="ot">&lt;-</span> <span class="fu">impute.rfsrc</span>(<span class="fu">Surv</span>(years, status) <span class="sc">~</span> .,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">data    =</span> pbc_trial,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                             <span class="at">ntree   =</span> <span class="dv">500</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                             <span class="at">nimpute =</span> <span class="dv">2</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2: grow the survival forest on the complete imputed data</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>rfsrc_pbc <span class="ot">&lt;-</span> <span class="fu">rfsrc</span>(<span class="fu">Surv</span>(years, status) <span class="sc">~</span> .,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data      =</span> pbc_imputed,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                   <span class="at">nsplit    =</span> <span class="dv">10</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">tree.err  =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">importance =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The forest grew 500 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 15.</p>
+<section id="oob-error-convergence" class="level2">
+<h2 class="anchored" data-anchor-id="oob-error-convergence">OOB error convergence</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">gg_error</span>(rfsrc_pbc))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/error-plot-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>OOB prediction error vs.&nbsp;number of trees.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The error stabilizes well before 1000 trees, indicating the forest is large enough for reliable predictions.</p>
+</section>
+<section id="oob-predicted-survival" class="level2">
+<h2 class="anchored" data-anchor-id="oob-predicted-survival">OOB predicted survival</h2>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>gg_rsf <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">gg_rfsrc</span>(rfsrc_pbc), <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> event_colors) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival Probability"</span>, <span class="at">x =</span> <span class="st">"Time (years)"</span>) <span class="sc">+</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>gg_rsf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/rfsrc-predicted-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>OOB predicted survival curves. Blue = censored, red = death events.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Each curve is one patient’s OOB ensemble survival function <span class="math inline">\(\hat{S}(t)\)</span>, extended to the last follow-up time. The forest never saw that patient when building its prediction, so these are genuine out-of-sample estimates. Red (death event) curves generally fall faster and reach lower survival probabilities, confirming the forest separates risk groups. Comparing this spread to the marginal KM curves from the previous section shows how much the covariates tighten risk stratification.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">gg_rfsrc</span>(rfsrc_pbc, <span class="at">by =</span> <span class="st">"treatment"</span>)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.2</span>)) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival Probability"</span>, <span class="at">x =</span> <span class="st">"Time (years)"</span>) <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/rfsrc-by-treatment-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Median predicted survival by treatment group with 95% confidence bands.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="test-set-predictions" class="level2">
+<h2 class="anchored" data-anchor-id="test-set-predictions">Test set predictions</h2>
+<p>The non-trial patients (<code>pbc_test</code>) have substantial missing data. <code>predict.rfsrc()</code> handles these transparently at prediction time via <code>na.action = "na.impute"</code> — this is distinct from training-time imputation and does not affect the fitted forest object.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rfsrc_pbc_test <span class="ot">&lt;-</span> <span class="fu">predict</span>(rfsrc_pbc, <span class="at">newdata =</span> pbc_test,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">na.action =</span> <span class="st">"na.impute"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">importance =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">gg_rfsrc</span>(rfsrc_pbc_test), <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> event_colors) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival Probability"</span>, <span class="at">x =</span> <span class="st">"Time (years)"</span>) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/predict-test-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Predicted survival for non-trial patients (test set).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Because the training curves use OOB estimates, both plots represent out-of-sample predictions and are directly comparable.</p>
+</section>
+</section>
+<section id="variable-selection" class="level1">
+<h1>Variable Selection</h1>
+<p>Random forest uses all available predictors. To understand which matter most, we examine variable importance (VIMP) and minimal depth.</p>
+<section id="variable-importance-vimp" class="level2">
+<h2 class="anchored" data-anchor-id="variable-importance-vimp">Variable importance (VIMP)</h2>
+<p>VIMP measures the increase in prediction error when a variable’s values are randomly permuted across the out-of-bag sample. For survival forests the prediction error is the Harrell C-statistic complement (1 − C), so permuting an important variable hurts C and yields a large positive VIMP. A negative VIMP means the variable is adding noise: the forest would predict better without it. See the <a href="https://www.randomforestsrc.org">randomForestSRC</a> documentation for details on the VIMP calculation for censored outcomes <span class="citation" data-cites="Ishwaran:2007a">(<a href="#ref-Ishwaran:2007a" role="doc-biblioref">Ishwaran et al. 2008</a>)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">gg_vimp</span>(rfsrc_pbc), <span class="at">lbls =</span> st_labs) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>)) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"VIMP &gt; 0"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/vimp-plot-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>Variable importance ranking. Blue = positive VIMP, red = negative.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Bilirubin ranks highest, followed by copper, prothrombin time, albumin, and age — closely matching the variables selected in the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> proportional hazards model.</p>
+</section>
+<section id="minimal-depth" class="level2">
+<h2 class="anchored" data-anchor-id="minimal-depth">Minimal depth</h2>
+<p>Minimal depth <span class="citation" data-cites="Ishwaran:2010">(<a href="#ref-Ishwaran:2010" role="doc-biblioref">Ishwaran et al. 2010</a>)</span> ranks variables by how close to the root node they first split, on average. Variables that partition large portions of the population early are considered most important.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>md_pbc <span class="ot">&lt;-</span> <span class="fu">max.subtree</span>(rfsrc_pbc)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The <code>max.subtree()</code> function computes minimal depth for each variable. The threshold is 5.85, selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
+<p>Both selection methods agree on the key predictors: <code>bili</code>, <code>albumin</code>, <code>copper</code>, <code>prothrombin</code>, and <code>age</code>. We add <code>edema</code> (selected by the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> model) for the remainder of the analysis.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>xvar     <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"bili"</span>, <span class="st">"albumin"</span>, <span class="st">"copper"</span>, <span class="st">"prothrombin"</span>, <span class="st">"age"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>xvar_cat <span class="ot">&lt;-</span> <span class="st">"edema"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>xvar_all <span class="ot">&lt;-</span> <span class="fu">c</span>(xvar, xvar_cat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="variable-dependence" class="level1">
+<h1>Variable Dependence</h1>
+<section id="variable-dependence-plots" class="level2">
+<h2 class="anchored" data-anchor-id="variable-dependence-plots">Variable dependence plots</h2>
+<p>Variable dependence shows each patient’s predicted survival probability <span class="math inline">\(\hat{S}(t_0)\)</span> at a fixed time horizon <span class="math inline">\(t_0\)</span>, plotted against a predictor of interest. Because <span class="math inline">\(\hat{S}(t_0)\)</span> is a probability, the y-axis is always bounded to [0, 1]. Points are colored by event status; a loess smooth traces the overall trend while the individual points show how much variance remains after the forest accounts for all other covariates.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>gg_v <span class="ot">&lt;-</span> <span class="fu">gg_variable</span>(rfsrc_pbc, <span class="at">time =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>),</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">time.labels =</span> <span class="fu">c</span>(<span class="st">"1 Year"</span>, <span class="st">"3 Years"</span>))</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_v, <span class="at">xvar =</span> <span class="st">"bili"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival"</span>, <span class="at">x =</span> st_labs[<span class="st">"bili"</span>]) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> event_colors, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> event_marks, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/vardep-bili-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Variable dependence of survival at 1 and 3 years on bilirubin.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Survival drops sharply with increasing bilirubin, and the 3-year curve drops further than the 1-year curve, suggesting a non-proportional hazards effect.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_v, <span class="at">xvar =</span> xvar[<span class="sc">-</span><span class="dv">1</span>], <span class="at">panel =</span> <span class="cn">TRUE</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival"</span>) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> event_colors, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> event_marks, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.05</span>, <span class="fl">1.05</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/vardep-panel-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Variable dependence at 1 and 3 years for continuous predictors.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The plots confirm survival increases with albumin and decreases with copper, prothrombin time, and age. The divergence between time curves for <code>copper</code> further supports a non-proportional hazards mechanism.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_v, <span class="at">xvar =</span> xvar_cat, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival"</span>) <span class="sc">+</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> event_colors, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> event_marks, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">1.02</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/vardep-categorical-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Variable dependence on edema (categorical).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Patients with edema = 1 (edema despite diuretics) have markedly lower predicted survival.</p>
+</section>
+<section id="partial-dependence" class="level2">
+<h2 class="anchored" data-anchor-id="partial-dependence">Partial dependence</h2>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Known issue (draft):</strong> <code>randomForestSRC::partial.rfsrc()</code> currently fails for survival forests in randomForestSRC ≥ 3.3. The partial dependence and interactive surface sections below will show an error until this upstream bug is resolved. All other sections of this vignette are fully functional.</p>
+</div>
+</div>
+<p>Partial dependence integrates out the effects of other covariates, giving a risk-adjusted view of how each predictor influences the response <span class="citation" data-cites="Friedman:2000">(<a href="#ref-Friedman:2000" role="doc-biblioref">Friedman 2001</a>)</span>. We use <code>gg_partial_rfsrc()</code> which calls <code>randomForestSRC::partial.rfsrc()</code> directly and returns a <code>gg_partial_rfsrc</code> object. For survival forests, the result includes a <code>time</code> column so <code>plot(pd)</code> produces one curve per predictor value over time, faceted by variable name.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># partial.rfsrc() requires times that match the model's time.interest grid;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gg_partial_rfsrc() snaps the requested values to the nearest observed times.</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>ti   <span class="ot">&lt;-</span> rfsrc_pbc<span class="sc">$</span>time.interest</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>t1yr <span class="ot">&lt;-</span> ti[<span class="fu">which.min</span>(<span class="fu">abs</span>(ti <span class="sc">-</span> <span class="dv">1</span>))]</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>t3yr <span class="ot">&lt;-</span> ti[<span class="fu">which.min</span>(<span class="fu">abs</span>(ti <span class="sc">-</span> <span class="dv">3</span>))]</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>pd <span class="ot">&lt;-</span> <span class="fu">gg_partial_rfsrc</span>(rfsrc_pbc, <span class="at">xvar.names =</span> xvar,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">partial.time =</span> <span class="fu">c</span>(t1yr, t3yr))</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick S3 plot — survival forests produce time-series curves per predictor value</span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/partial-dep-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Partial dependence of survival at approximately 1 and 3 years on continuous predictors.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>For a publication-ready layout with custom colour scale, access <code>pd$continuous</code> directly:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pd<span class="sc">$</span>continuous, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> yhat,</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">color =</span> <span class="fu">factor</span>(<span class="fu">round</span>(time, <span class="dv">2</span>)),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">group =</span> <span class="fu">factor</span>(time))) <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>name, <span class="at">scales =</span> <span class="st">"free_x"</span>) <span class="sc">+</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Predicted Survival"</span>, <span class="at">x =</span> <span class="st">""</span>, <span class="at">color =</span> <span class="st">"Year"</span>) <span class="sc">+</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"steelblue"</span>, <span class="st">"firebrick"</span>),</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>                                       <span class="fu">as.character</span>(<span class="fu">round</span>(<span class="fu">c</span>(t1yr, t3yr), <span class="dv">2</span>)))) <span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/partial-dep-custom-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Partial dependence (custom styling).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The partial dependence curves at approximately 1 and 3 years confirm the variable dependence findings and support the log-transforms used in the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> model for <code>bili</code>, <code>albumin</code>, and <code>prothrombin</code>. The divergence between time curves for <code>bili</code> and <code>copper</code> supports non-proportional hazards.</p>
+</section>
+<section id="conditional-dependence" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-dependence">Conditional dependence</h2>
+<p>To investigate interactions, we can condition variable dependence on group membership in another variable. Here we examine the dependence of survival on bilirubin, stratified by edema group.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>gg_v1 <span class="ot">&lt;-</span> <span class="fu">gg_variable</span>(rfsrc_pbc, <span class="at">time =</span> <span class="dv">1</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>gg_v1<span class="sc">$</span>edema <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"edema ="</span>, gg_v1<span class="sc">$</span>edema)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_v1, <span class="at">xvar =</span> <span class="st">"bili"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival at 1 Year"</span>, <span class="at">x =</span> st_labs[<span class="st">"bili"</span>]) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> event_colors, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> event_marks, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span>edema) <span class="sc">+</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/coplot-edema-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Variable dependence on bilirubin, conditional on edema group.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The decreasing trend with bilirubin holds across all edema groups, but survival is uniformly lower in the edema = 1 panel, confirming an additive effect.</p>
+<p>We can also condition on a continuous variable by binning into quantile groups:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>albumin_cts <span class="ot">&lt;-</span> <span class="fu">quantile_pts</span>(gg_v1<span class="sc">$</span>albumin, <span class="at">groups =</span> <span class="dv">6</span>, <span class="at">intervals =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>gg_v1<span class="sc">$</span>albumin_grp <span class="ot">&lt;-</span> <span class="fu">cut</span>(gg_v1<span class="sc">$</span>albumin, <span class="at">breaks =</span> albumin_cts)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(gg_v1<span class="sc">$</span>albumin_grp) <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"albumin ="</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">levels</span>(gg_v1<span class="sc">$</span>albumin_grp))</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_v1, <span class="at">xvar =</span> <span class="st">"bili"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Survival at 1 Year"</span>, <span class="at">x =</span> st_labs[<span class="st">"bili"</span>]) <span class="sc">+</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> event_colors, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_shape_manual</span>(<span class="at">values =</span> event_marks, <span class="at">labels =</span> event_labels) <span class="sc">+</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>albumin_grp) <span class="sc">+</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.01</span>, <span class="fl">1.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/coplot-albumin-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Variable dependence on bilirubin, conditional on albumin groups.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The effect of bilirubin attenuates at higher albumin levels, suggesting an interaction between these two liver function markers.</p>
+</section>
+</section>
+<section id="interactive-partial-dependence-surfaces" class="level1">
+<h1>Interactive Partial Dependence Surfaces</h1>
+<p>For a richer view of the interaction between bilirubin and albumin, we construct a partial dependence surface. We compute partial dependence on a grid of 25 albumin values, each evaluated at 25 bilirubin points.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create grid of albumin values</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>alb_grid <span class="ot">&lt;-</span> <span class="fu">quantile_pts</span>(pbc_trial<span class="sc">$</span>albumin, <span class="at">groups =</span> <span class="dv">25</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># For each albumin value, compute partial dependence on bili at ~1 year</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>surface_list <span class="ot">&lt;-</span> <span class="fu">lapply</span>(alb_grid, <span class="cf">function</span>(alb_val) {</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  newx <span class="ot">&lt;-</span> pbc_trial[, rfsrc_pbc<span class="sc">$</span>xvar.names, drop <span class="ot">=</span> <span class="cn">FALSE</span>]</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  newx<span class="sc">$</span>albumin <span class="ot">&lt;-</span> alb_val</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  pd_alb <span class="ot">&lt;-</span> <span class="fu">gg_partial_rfsrc</span>(rfsrc_pbc, <span class="at">xvar.names =</span> <span class="st">"bili"</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>                              <span class="at">newx =</span> newx, <span class="at">partial.time =</span> t1yr)</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> pd_alb<span class="sc">$</span>continuous</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>albumin <span class="ot">&lt;-</span> alb_val</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  df</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>surface_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(surface_list)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">exists</span>(<span class="st">"surface_df"</span>)) {</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"surface_df not available — skipping plotly surface (see surface-data chunk error above)."</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (<span class="fu">requireNamespace</span>(<span class="st">"plotly"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Reshape for surface</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(plotly)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  surface_wide <span class="ot">&lt;-</span> surface_df <span class="sc">|&gt;</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="at">bili =</span> x, albumin, <span class="at">survival =</span> yhat) <span class="sc">|&gt;</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(albumin, bili)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create matrix form</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  bili_vals <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(surface_wide<span class="sc">$</span>bili))</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  alb_vals  <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(surface_wide<span class="sc">$</span>albumin))</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  z_matrix  <span class="ot">&lt;-</span> <span class="fu">matrix</span>(surface_wide<span class="sc">$</span>survival,</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>                       <span class="at">nrow =</span> <span class="fu">length</span>(alb_vals),</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>                       <span class="at">ncol =</span> <span class="fu">length</span>(bili_vals),</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>                       <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_ly</span>(<span class="at">x =</span> bili_vals, <span class="at">y =</span> alb_vals, <span class="at">z =</span> z_matrix) <span class="sc">|&gt;</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_surface</span>(<span class="at">colorscale =</span> <span class="st">"Viridis"</span>, <span class="at">showscale =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">layout</span>(</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">scene =</span> <span class="fu">list</span>(</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">xaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Bilirubin"</span>),</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Albumin"</span>),</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">zaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Survival"</span>)</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Install the plotly package for interactive 3D surfaces."</span>)</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fallback: contour plot with ggplot2</span></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(surface_df, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> albumin, <span class="at">fill =</span> yhat)) <span class="sc">+</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_viridis_c</span>(<span class="at">name =</span> <span class="st">"Survival"</span>) <span class="sc">+</span></span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Bilirubin"</span>, <span class="at">y =</span> <span class="st">"Albumin"</span>) <span class="sc">+</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-3b15324e4371dc231f84" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-3b15324e4371dc231f84">{"x":{"visdat":{"113ba415fbf09":["function () ","plotlyVisDat"]},"cur_data":"113ba415fbf09","attrs":{"113ba415fbf09":{"x":[0.29999999999999999,0.5,0.59999999999999998,0.69999999999999996,0.80000000000000004,0.90000000000000002,0.94999999999999996,1.1000000000000001,1.3,1.3500000000000001,1.6000000000000001,2,2.2000000000000002,2.5499999999999998,3.2000000000000002,3.4500000000000002,4.4500000000000002,5.5499999999999998,6.5999999999999996,8.5500000000000007,15.35,28],"y":[1.96,2.7450000000000001,2.96,3.0600000000000001,3.1349999999999998,3.2050000000000001,3.3100000000000001,3.3500000000000001,3.3700000000000001,3.4300000000000002,3.48,3.5149999999999997,3.5499999999999998,3.585,3.625,3.6600000000000001,3.7000000000000002,3.7549999999999999,3.7999999999999998,3.8500000000000001,3.9050000000000002,3.98,4.0800000000000001,4.1749999999999998,4.6399999999999997],"z":[[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586]],"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","colorscale":"Viridis","showscale":true,"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"Bilirubin"},"yaxis":{"title":"Albumin"},"zaxis":{"title":"Survival"}},"hovermode":"closest","showlegend":false,"legend":{"yanchor":"top","y":0.5}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"colorbar":{"title":"","ticklen":2,"len":0.5,"lenmode":"fraction","y":1,"yanchor":"top"},"colorscale":"Viridis","showscale":true,"x":[0.29999999999999999,0.5,0.59999999999999998,0.69999999999999996,0.80000000000000004,0.90000000000000002,0.94999999999999996,1.1000000000000001,1.3,1.3500000000000001,1.6000000000000001,2,2.2000000000000002,2.5499999999999998,3.2000000000000002,3.4500000000000002,4.4500000000000002,5.5499999999999998,6.5999999999999996,8.5500000000000007,15.35,28],"y":[1.96,2.7450000000000001,2.96,3.0600000000000001,3.1349999999999998,3.2050000000000001,3.3100000000000001,3.3500000000000001,3.3700000000000001,3.4300000000000002,3.48,3.5149999999999997,3.5499999999999998,3.585,3.625,3.6600000000000001,3.7000000000000002,3.7549999999999999,3.7999999999999998,3.8500000000000001,3.9050000000000002,3.98,4.0800000000000001,4.1749999999999998,4.6399999999999997],"z":[[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586],[0.94877457268632759,0.94812154753060818,0.94812154753060818,0.94808706399276133,0.94723325204797959,0.94717886991899125,0.9471615851577041,0.94676363539195763,0.94677004464183345,0.94656779765406218,0.94645962351239543,0.94337038622165581,0.93837352435151389,0.92701313364436166,0.92205542440750998,0.91503786909286022,0.91143706317924111,0.90935669592877477,0.8865237531760024,0.87121840387670679,0.84608057066273401,0.83973522519529586]],"type":"surface","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>Interactive partial dependence surface: survival as a function of bilirubin and albumin.</p>
+</div>
+</div>
+<p>The surface shows that survival is highest when bilirubin is low and albumin is high (upper-left corner), and drops steeply as bilirubin increases or albumin decreases. The non-planar shape of the surface — particularly the steep gradient at low albumin and high bilirubin — confirms the interaction detected in the conditional plots.</p>
+<section id="brier-score-and-crps" class="level2">
+<h2 class="anchored" data-anchor-id="brier-score-and-crps">Brier Score and CRPS</h2>
+<p>VIMP and minimal depth tell us which predictors matter, but they say nothing about how well the forest’s survival predictions are calibrated. The Brier score answers that question. At each point on the event-time grid it measures the mean squared difference between the predicted survival probability <span class="math inline">\(\hat{S}(t)\)</span> and the binary outcome (survived past <span class="math inline">\(t\)</span> or not). Because right-censored subjects have unknown true outcomes, the calculation uses inverse-probability-of-censoring weighting (IPCW): each subject’s squared error is upweighted by the inverse probability of being uncensored at that time, so the estimate remains unbiased even under heavy censoring <span class="citation" data-cites="graf:1999">(<a href="#ref-graf:1999" role="doc-biblioref">Graf et al. 1999</a>)</span>.</p>
+<p>Two reference values help interpret the curve. A Brier score of 0 is perfect prediction. A score around 0.25 is what you get from the naive model that assigns equal survival probability to everyone (the marginal Kaplan–Meier curve). A forest that beats 0.25 is doing better than the no-covariate baseline; one that exceeds it has been made worse by its covariates, which is a sign of overfitting or a poorly specified model.</p>
+<p><code>gg_brier()</code> wraps <code>randomForestSRC::get.brier.survival()</code> and returns a tidy data frame ready to plot.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>gg_bs <span class="ot">&lt;-</span> <span class="fu">gg_brier</span>(rfsrc_pbc)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_bs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/brier-overall-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Time-resolved Brier score for the PBC survival forest.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Read the curve left to right. Early on it sits near zero — almost everyone is still alive, so predicting survival is easy. It climbs to a peak around the median event time, where the outcome is genuinely uncertain, then falls again as the at-risk pool shrinks and the remaining predictions get easier.</p>
+<p>Setting <code>envelope = TRUE</code> adds a 15–85% ribbon around that line, showing how spread out the individual subjects’ Brier contributions are at each time. A narrow ribbon means the forest is assigning similar risks across subjects; a wide one means the predicted risks are pulling apart.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_bs, <span class="at">envelope =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/brier-envelope-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Brier score with 15–85% per-subject envelope.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The running CRPS (continuous ranked probability score) is the Brier score integrated over time and divided by elapsed time — the time-average of the curve above. It collapses the whole trajectory into one running number, which is handy when you want a single calibration figure rather than a curve to read. Like the Brier score, a CRPS near 0 is good and a value near 0.25 matches the marginal KM baseline. The final (integrated) value at the right edge of the plot is the one most often reported.</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gg_bs, <span class="at">type =</span> <span class="st">"crps"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="ggRandomForests-survival_files/figure-html/brier-crps-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Running CRPS for the PBC survival forest.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The integrated CRPS — a scalar summary of overall calibration — is stored as an attribute and can be retrieved with:</p>
+<div class="cell" data-layout-align="center">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(gg_bs, <span class="st">"crps_integrated"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; [1] 1.396148</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>We have walked a full random survival forest analysis with <strong>randomForestSRC</strong> and <strong>ggRandomForests</strong>, and the results hang together:</p>
+<ul>
+<li><code>gg_survival()</code> drew Kaplan–Meier curves that showed no treatment effect in the PBC trial, the same conclusion reached in <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span>.</li>
+<li><code>gg_error()</code> showed the OOB error settling quickly as trees were added.</li>
+<li>VIMP (<code>gg_vimp()</code>) and minimal depth (<code>max.subtree()</code>) landed on the same five predictors (bilirubin, albumin, copper, prothrombin, and age), which is also where the proportional hazards model landed.</li>
+<li><code>gg_variable()</code> exposed non-proportional hazards for bilirubin and copper, where the gap between time horizons widens.</li>
+<li>Partial dependence from <code>gg_partial_rfsrc()</code> gave the risk-adjusted version of those curves and backed the log-transforms used in the parametric model.</li>
+<li>Conditioning plots and the interactive surface drew out the bilirubin–albumin interaction.</li>
+<li><code>gg_brier()</code> measured how accurate the predictions actually were, both across time and as a single CRPS summary.</li>
+</ul>
+<p>Notice the pattern. Each <code>gg_*()</code> function returns a tidy object (often a data frame, sometimes a small list of data frames); the plotting comes after. Lean on the package’s <code>plot()</code> methods when the default figure works, and drop down to <code>ggplot2</code> directly when it does not.</p>
+</section>
+<section id="references" class="level1 unnumbered">
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Breiman:2001" class="csl-entry" role="listitem">
+Breiman, Leo. 2001. <span>“Random Forests.”</span> <em>Machine Learning</em> 45 (1): 5–32. <a href="https://doi.org/10.1023/A:1010933404324">https://doi.org/10.1023/A:1010933404324</a>.
+</div>
+<div id="ref-fleming:1991" class="csl-entry" role="listitem">
+Fleming, Thomas R., and David P. Harrington. 1991. <em>Counting Processes and Survival Analysis</em>. Wiley Series in Probability and Statistics. John Wiley &amp; Sons.
+</div>
+<div id="ref-Friedman:2000" class="csl-entry" role="listitem">
+Friedman, Jerome H. 2001. <span>“Greedy Function Approximation: A Gradient Boosting Machine.”</span> <em>The Annals of Statistics</em> 29 (5): 1189–232. <a href="https://doi.org/10.1214/aos/1013203451">https://doi.org/10.1214/aos/1013203451</a>.
+</div>
+<div id="ref-graf:1999" class="csl-entry" role="listitem">
+Graf, Erika, Claudia Schmoor, Willi Sauerbrei, and Martin Schumacher. 1999. <span>“Assessment and Comparison of Prognostic Classification Schemes for Survival Data.”</span> <em>Statistics in Medicine</em> 18 (17–18): 2529–45. <a href="https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18<2529::AID-SIM274>3.0.CO;2-5">https://doi.org/10.1002/(SICI)1097-0258(19990915/30)18:17/18&lt;2529::AID-SIM274&gt;3.0.CO;2-5</a>.
+</div>
+<div id="ref-Ishwaran:2008" class="csl-entry" role="listitem">
+Ishwaran, Hemant, and Udaya B. Kogalur. 2007. <span>“Random Survival Forests for <span>R</span>.”</span> <em>R News</em> 7 (2): 25–31.
+</div>
+<div id="ref-Ishwaran:RFSRC:2014" class="csl-entry" role="listitem">
+Ishwaran, Hemant, and Udaya B. Kogalur. 2024. <em><span class="nocase">randomForestSRC</span>: Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC">https://cran.r-project.org/package=randomForestSRC</a>.
+</div>
+<div id="ref-Ishwaran:2007a" class="csl-entry" role="listitem">
+Ishwaran, Hemant, Udaya B. Kogalur, Eugene H. Blackstone, and Michael S. Lauer. 2008. <span>“Random Survival Forests.”</span> <em>The Annals of Applied Statistics</em> 2 (3): 841–60. <a href="https://doi.org/10.1214/08-AOAS169">https://doi.org/10.1214/08-AOAS169</a>.
+</div>
+<div id="ref-Ishwaran:2010" class="csl-entry" role="listitem">
+Ishwaran, Hemant, Udaya B. Kogalur, Eiran Z. Gorodeski, Andy J. Minn, and Michael S. Lauer. 2010. <span>“High-Dimensional Variable Selection for Survival Data.”</span> <em>Journal of the American Statistical Association</em> 105 (489): 205–17. <a href="https://doi.org/10.1198/jasa.2009.tm08622">https://doi.org/10.1198/jasa.2009.tm08622</a>.
+</div>
+<div id="ref-Wickham:2009" class="csl-entry" role="listitem">
+Wickham, Hadley. 2016. <em><span class="nocase">ggplot2</span>: Elegant Graphics for Data Analysis</em>. 2nd ed. Springer. <a href="https://doi.org/10.1007/978-3-319-24277-4">https://doi.org/10.1007/978-3-319-24277-4</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

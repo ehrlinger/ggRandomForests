@@ -1,11 +1,16 @@
 # Session-memoised varpro + beta.varpro fixtures for the gg_beta_varpro tests.
 # beta.varpro() is the expensive call (per-rule glmnet); compute once per R
 # session and reuse. In-memory only — no disk cache.
+#
+# These all grow *supervised* varpro/ivarpro/beta.varpro forests (a real Y), so
+# yvar.wt is non-empty and they do NOT trip randomForestSRC's gcc-UBSAN report
+# at entry.c:184 (that fires only for the unsupervised family — verified under
+# -fsanitize=undefined). They intentionally run on CRAN; do not skip_on_cran().
+# Only the unsupervised isopro grow is skipped (see test_gg_isopro.R).
 
 .varpro_cache <- new.env(parent = emptyenv())
 
 .varpro_mtcars <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$v)) {
     if (!requireNamespace("varPro", quietly = TRUE)) {
       testthat::skip("varPro not installed")
@@ -17,7 +22,6 @@
 }
 
 .beta_fit_mtcars <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$b)) {
     v <- .varpro_mtcars()
     set.seed(20260526L)
@@ -27,7 +31,6 @@
 }
 
 .varpro_iris_binary <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$vb)) {
     if (!requireNamespace("varPro", quietly = TRUE)) testthat::skip("varPro not installed")
     set.seed(20260526L)
@@ -39,7 +42,6 @@
 }
 
 .beta_fit_iris_binary <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$bb)) {
     set.seed(20260526L)
     .varpro_cache$bb <- varPro::beta.varpro(.varpro_iris_binary())
@@ -48,7 +50,6 @@
 }
 
 .varpro_iris_multiclass <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$vm)) {
     if (!requireNamespace("varPro", quietly = TRUE)) testthat::skip("varPro not installed")
     set.seed(20260526L)
@@ -58,7 +59,6 @@
 }
 
 .beta_fit_iris_multiclass <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$bm)) {
     set.seed(20260526L)
     .varpro_cache$bm <- varPro::beta.varpro(.varpro_iris_multiclass())
@@ -67,7 +67,6 @@
 }
 
 .ivarpro_boston <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$iv_boston)) {
     if (!requireNamespace("varPro", quietly = TRUE)) testthat::skip("varPro not installed")
     if (!requireNamespace("MASS", quietly = TRUE))   testthat::skip("MASS not installed")
@@ -80,7 +79,6 @@
 }
 
 .varpro_boston <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$v_boston)) {
     invisible(.ivarpro_boston())   # populates v_boston as a side-effect
   }
@@ -88,7 +86,6 @@
 }
 
 .ivarpro_iris_binary <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$iv_iris_binary)) {
     if (!requireNamespace("varPro", quietly = TRUE)) testthat::skip("varPro not installed")
     set.seed(20260526L)
@@ -102,13 +99,11 @@
 }
 
 .varpro_iris_binary_for_ivarpro <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$v_iris_binary)) invisible(.ivarpro_iris_binary())
   .varpro_cache$v_iris_binary
 }
 
 .ivarpro_iris_multiclass <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$iv_iris_multi)) {
     if (!requireNamespace("varPro", quietly = TRUE)) testthat::skip("varPro not installed")
     set.seed(20260526L)
@@ -120,7 +115,6 @@
 }
 
 .varpro_iris_multiclass_for_ivarpro <- function() {
-  testthat::skip_on_cran()
   if (is.null(.varpro_cache$v_iris_multi)) invisible(.ivarpro_iris_multiclass())
   .varpro_cache$v_iris_multi
 }
