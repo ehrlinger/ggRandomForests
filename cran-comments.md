@@ -49,15 +49,16 @@ The upstream issue has been reported to the randomForestSRC maintainers.
 
 * **Local:** R 4.6.0 on macOS (aarch64-apple-darwin23).
   `R CMD check --as-cran` (with the manual) returns 0 errors, 0 warnings,
-  0 notes; the varPro/isopro tests skip under the CRAN check environment as
-  intended.
+  1 NOTE (days since last update, see below); the single unsupervised isopro
+  test (`method = "unsupv"`) skips under the CRAN check environment as
+  intended, all other varPro tests run.
 * **GitHub Actions matrix:** ubuntu-latest (R-devel / R-release /
   R-oldrel-1), windows-latest (R-release), macos-latest (R-release).
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 
 ### NOTE disposition
 
-One NOTE on the incoming feasibility check, "Days since last update: 1".
+One NOTE on the incoming feasibility check, "Days since last update: N".
 This is expected: this patch is the follow-up to the gcc-UBSAN fix the CRAN
 team requested (correct before 2026-06-29), so the short interval is
 unavoidable. No other notes.
