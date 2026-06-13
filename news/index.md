@@ -2,6 +2,8 @@
 
 ## ggRandomForests v3.1.2
 
+CRAN release: 2026-06-13
+
 - CRAN fix: skip only the single test grow that trips the upstream
   `randomForestSRC` gcc-UBSAN report at `entry.c:184` — the
   *unsupervised* isolation forest in `gg_isopro`

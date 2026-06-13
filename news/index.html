@@ -52,11 +52,11 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.1.2/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.1.2" id="ggrandomforests-v312">ggRandomForests v3.1.2<a class="anchor" aria-label="anchor" href="#ggrandomforests-v312"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.1.2" id="ggrandomforests-v312">ggRandomForests v3.1.2<a class="anchor" aria-label="anchor" href="#ggrandomforests-v312"></a></h2><p class="text-muted">CRAN release: 2026-06-13</p>
 <ul><li>CRAN fix: skip only the single test grow that trips the upstream <code>randomForestSRC</code> gcc-UBSAN report at <code>entry.c:184</code> — the <em>unsupervised</em> isolation forest in <code>gg_isopro</code> (<code>varPro::isopro(method = "unsupv")</code>). Only an unsupervised grow has a 0-length <code>yvar.wt</code>, the vector <code>rfsrcGrow</code> decrements to an out-of-bounds pointer; supervised grows are unaffected. We verified this under <code>-fsanitize=undefined</code>: of every varPro/rfsrc grow in the test suite, only <code>isopro(method = "unsupv")</code> fires <code>entry.c:184</code>. <code>make_iso_fit()</code> therefore calls <code>skip_on_cran()</code> only for <code>method = "unsupv"</code>. ggRandomForests is pure R and unchanged.</li>
 <li>The broader <code>skip_on_cran()</code> guards added in v3.1.1 (the <code>varpro</code>, <code>uvarpro</code>, <code>ivarpro</code>, <code>beta.varpro</code>, and <code>isopro(method = "rnd")</code> test fixtures) are removed: those grows are supervised (or synthetic-supervised) and gcc-UBSAN-clean, so they run on CRAN again, restoring that test coverage. The upstream issue is fixed in <code>randomForestSRC</code> and pending a CRAN release.</li>
 </ul></div>
