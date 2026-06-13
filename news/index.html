@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,6 +55,11 @@
       <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.1.2" id="ggrandomforests-v312">ggRandomForests v3.1.2<a class="anchor" aria-label="anchor" href="#ggrandomforests-v312"></a></h2>
+<ul><li>CRAN fix: skip only the single test grow that trips the upstream <code>randomForestSRC</code> gcc-UBSAN report at <code>entry.c:184</code> — the <em>unsupervised</em> isolation forest in <code>gg_isopro</code> (<code>varPro::isopro(method = "unsupv")</code>). Only an unsupervised grow has a 0-length <code>yvar.wt</code>, the vector <code>rfsrcGrow</code> decrements to an out-of-bounds pointer; supervised grows are unaffected. We verified this under <code>-fsanitize=undefined</code>: of every varPro/rfsrc grow in the test suite, only <code>isopro(method = "unsupv")</code> fires <code>entry.c:184</code>. <code>make_iso_fit()</code> therefore calls <code>skip_on_cran()</code> only for <code>method = "unsupv"</code>. ggRandomForests is pure R and unchanged.</li>
+<li>The broader <code>skip_on_cran()</code> guards added in v3.1.1 (the <code>varpro</code>, <code>uvarpro</code>, <code>ivarpro</code>, <code>beta.varpro</code>, and <code>isopro(method = "rnd")</code> test fixtures) are removed: those grows are supervised (or synthetic-supervised) and gcc-UBSAN-clean, so they run on CRAN again, restoring that test coverage. The upstream issue is fixed in <code>randomForestSRC</code> and pending a CRAN release.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1.1" id="ggrandomforests-v311">ggRandomForests v3.1.1<a class="anchor" aria-label="anchor" href="#ggrandomforests-v311"></a></h2>
 <ul><li>CRAN fix: the varPro tests now call <code>skip_on_cran()</code> so they do not run on CRAN’s check machines, including the gcc-UBSAN additional check. They were triggering an upstream <code>randomForestSRC</code> sanitizer issue (a 0-length array access in <code>rfsrcGrow</code>, <code>entry.c:184</code>) that surfaces when any <code>varPro</code> grow (<code>varpro()</code>, <code>beta.varpro()</code>, <code>uvarpro()</code>, <code>isopro()</code>, <code>ivarpro()</code>) builds a forest. ggRandomForests is pure R and its code is unchanged; the varPro tests still run in our CI (the workflows set <code>NOT_CRAN=true</code>) and locally; they are skipped only on CRAN’s check machines, including the gcc-UBSAN check. The upstream issue has been reported to the randomForestSRC maintainers.</li>
