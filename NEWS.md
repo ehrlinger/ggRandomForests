@@ -1,8 +1,8 @@
 Package: ggRandomForests
-Version: 3.1.3
+Version: 3.1.2.9000
 
-ggRandomForests v3.1.3
-======================
+ggRandomForests v4.0.0 (development)
+====================================
 * Fix (#118): `gg_varpro()` no longer fails with the cryptic
   "arguments imply differing number of rows: <p>, 0" when
   `varPro::importance()` returns a degenerate importance table (0 rows, or
