@@ -45,7 +45,8 @@ Suggests:
     pkgload,
     knitr,
     ggraph,
-    callr
+    callr,
+    randomForestRHF
 VignetteBuilder: quarto
 Config/roxygen2/version: 8.0.0
 Roxygen: list(markdown = TRUE)

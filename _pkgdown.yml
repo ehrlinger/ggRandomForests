@@ -116,6 +116,10 @@ reference:
       - nelson
       - gg_brier
       - plot.gg_brier
+      - gg_rhf
+      - plot.gg_rhf
+      - gg_auct
+      - plot.gg_auct
 
   - title: "S3 Methods"
     desc: "Standard R generics implemented for all gg_* data objects."

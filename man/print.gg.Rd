@@ -16,6 +16,8 @@
 \alias{print.gg_roc}
 \alias{print.gg_survival}
 \alias{print.gg_brier}
+\alias{print.gg_rhf}
+\alias{print.gg_auct}
 \alias{print.gg_udependent}
 \alias{print.summary.gg_udependent}
 \alias{print.gg_varpro}
@@ -49,6 +51,10 @@
 \method{print}{gg_survival}(x, ...)
 
 \method{print}{gg_brier}(x, ...)
+
+\method{print}{gg_rhf}(x, ...)
+
+\method{print}{gg_auct}(x, ...)
 
 \method{print}{gg_udependent}(x, ...)
 

@@ -54,3 +54,6 @@ framed.sty
 ^vignettes/\.quarto$
 ^vignettes/.*_files$
 ^vignettes/.*\.html$
+# Stray default-device plot dumps from running examples/tests locally
+# (already in .gitignore; this keeps them out of the build tarball too)
+Rplots\.pdf$

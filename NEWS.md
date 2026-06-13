@@ -3,15 +3,20 @@ Version: 3.1.2.9000
 
 ggRandomForests v4.0.0 (development)
 ====================================
-* Fix (#118): `gg_varpro()` no longer fails with the cryptic
-  "arguments imply differing number of rows: <p>, 0" when
-  `varPro::importance()` returns a degenerate importance table (0 rows, or
-  `p` variables with no usable `z` column) -- observed intermittently on
-  survival fits where the release-rule step selects no variables. It now
-  stops with a clear, specific message explaining the empty importance and
-  suggesting a larger `ntree`. The guard is scoped to the degenerate case
-  only; well-formed fits (survival included) are unaffected -- this is not
-  a blanket survival-family block (cf. the reverted #116).
+* Development version 3.1.2.9000, opened after the v3.1.2 CRAN release
+  (forward-merged the v3.1.1 and v3.1.2 CRAN fixes onto the dev line).
+* Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
+  visualization layer wrapping the 'randomForestRHF' package (added to
+  Suggests). RHF support is gated — every gg_rhf* entry point checks
+  `requireNamespace("randomForestRHF")`. No change for users who do not
+  install it.
+* `gg_auct()` / `plot.gg_auct()`: tidy wrapper and plot for time-varying
+  AUC from `randomForestRHF::auct.rhf()` (RHF Phase 2). Returns a long
+  frame `time / auc / se / lower / upper / marker` with an `iauc`
+  attribute (Uno + standardized integrated AUC); `plot.gg_auct()` draws
+  AUC(t) with a bootstrap CI ribbon when available and a 0.5 reference
+  line. `gg_auct.rhf(object, marker, auct_fit = NULL)` computes
+  `auct.rhf()` internally or reuses a cached fit.
 * `gg_beta_uvarpro()` / `plot.gg_beta_uvarpro()`: tidy wrapper and bar chart
   for `varPro::get.beta.entropy()` -- the unsupervised analogue of
   `gg_beta_varpro()`. From a `uvarpro()` fit it aggregates the per-region
@@ -26,6 +31,15 @@ ggRandomForests v4.0.0 (development)
   graph) with the "which variables are signal" ranking; shares the
   `beta_fit` entropy matrix. Follows the `get.beta.entropy` + `sdependent`
   workflow from the `varPro::uvarpro()` help (iowa-housing example).
+* Fix (#118): `gg_varpro()` no longer fails with the cryptic
+  "arguments imply differing number of rows: <p>, 0" when
+  `varPro::importance()` returns a degenerate importance table (0 rows, or
+  `p` variables with no usable `z` column) -- observed intermittently on
+  survival fits where the release-rule step selects no variables. It now
+  stops with a clear, specific message explaining the empty importance and
+  suggesting a larger `ntree`. The guard is scoped to the degenerate case
+  only; well-formed fits (survival included) are unaffected -- this is not
+  a blanket survival-family block (cf. the reverted #116).
 * Fixes the intro vignette's placeholder `\VignetteIndexEntry`
   ("Vignette's Title" -> "Exploring Random Forests with ggRandomForests").
 

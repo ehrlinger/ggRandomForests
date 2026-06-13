@@ -126,6 +126,18 @@ autoplot.gg_brier <- function(object, ...) {
 
 #' @rdname autoplot.gg
 #' @export
+autoplot.gg_rhf <- function(object, ...) {
+  plot(object, ...)
+}
+
+#' @rdname autoplot.gg
+#' @export
+autoplot.gg_auct <- function(object, ...) {
+  plot(object, ...)
+}
+
+#' @rdname autoplot.gg
+#' @export
 autoplot.gg_varpro <- function(object, ...) {
   plot(object, ...)
 }
