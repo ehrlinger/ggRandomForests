@@ -214,6 +214,14 @@ Assess and plot variable importance (VIMP).
 
   Plot a `gg_beta_varpro` object
 
+- [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
+  : Per-variable lasso-beta importance from an unsupervised varPro fit
+
+- [`plot(`*`<gg_beta_uvarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_uvarpro.md)
+  :
+
+  Plot a `gg_beta_uvarpro` object
+
 - [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
   : Variable dependency graph from a uvarpro model
 
@@ -221,6 +229,14 @@ Assess and plot variable importance (VIMP).
   :
 
   Plot a `gg_udependent` variable dependency graph
+
+- [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
+  : Signal-variable detection from an unsupervised varPro fit
+
+- [`plot(`*`<gg_sdependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.md)
+  :
+
+  Plot a `gg_sdependent` object
 
 - [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
   : Individual (local) variable importance from a varPro fit
@@ -362,7 +378,9 @@ Standard R generics implemented for all gg\_\* data objects.
 
   `autoplot` methods for ggRandomForests data objects
 
-- [`print(`*`<gg_error>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+- [`print(`*`<gg_beta_uvarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_sdependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_error>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_vimp>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_variable>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
@@ -383,7 +401,9 @@ Standard R generics implemented for all gg\_\* data objects.
   [`print(`*`<gg_ivarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   : Print methods for gg\_\* data objects
 
-- [`print(`*`<summary.gg>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+- [`summary(`*`<gg_beta_uvarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_sdependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`print(`*`<summary.gg>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_error>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_vimp>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)

@@ -9,6 +9,12 @@ CRPS, and so on). `print.summary.gg()` renders it to the console.
 ## Usage
 
 ``` r
+# S3 method for class 'gg_beta_uvarpro'
+summary(object, ...)
+
+# S3 method for class 'gg_sdependent'
+summary(object, ...)
+
 # S3 method for class 'summary.gg'
 print(x, ...)
 
@@ -69,17 +75,17 @@ summary(object, ...)
 
 ## Arguments
 
-- x:
+- object:
 
-  A `summary.gg` object (for `print.summary.gg`).
+  A `gg_*` data object.
 
 - ...:
 
   Not currently used.
 
-- object:
+- x:
 
-  A `gg_*` data object.
+  A `summary.gg` object (for `print.summary.gg`).
 
 ## Value
 
@@ -107,5 +113,5 @@ summary(gg_vimp(rf))
 #> <gg_vimp>  from randomForestSRC  |  family: regr  |  ntree: 50  |  n: 111
 #>   variables: 5
 #>   positive VIMP: 5 / negative: 0
-#>   top 5: Wind (1732), Temp (1334), Solar.R (297.4), Day (206.6), Month (69.73)
+#>   top 5: Wind (1762), Temp (1317), Solar.R (268.4), Day (206.7), Month (67.43)
 ```

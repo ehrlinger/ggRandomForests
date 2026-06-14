@@ -4,6 +4,13 @@
 
 - Development version 3.1.2.9000, opened after the v3.1.2 CRAN release
   (forward-merged the v3.1.1 and v3.1.2 CRAN fixes onto the dev line).
+
+- Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
+  visualization layer wrapping the ‘randomForestRHF’ package (added to
+  Suggests). RHF support is gated — every gg_rhf\* entry point checks
+  [`requireNamespace("randomForestRHF")`](https://www.randomforestsrc.org/).
+  No change for users who do not install it.
+
 - [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
   /
   [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md):
@@ -16,11 +23,55 @@
   draws AUC(t) with a bootstrap CI ribbon when available and a 0.5
   reference line. `gg_auct.rhf(object, marker, auct_fit = NULL)`
   computes `auct.rhf()` internally or reuses a cached fit.
-- Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
-  visualization layer wrapping the ‘randomForestRHF’ package (added to
-  Suggests). RHF support is gated — every gg_rhf\* entry point checks
-  [`requireNamespace("randomForestRHF")`](https://www.randomforestsrc.org/).
-  No change for users who do not install it.
+
+- [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
+  /
+  [`plot.gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_uvarpro.md):
+  tidy wrapper and bar chart for
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  – the unsupervised analogue of
+  [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md).
+  From a `uvarpro()` fit it aggregates the per-region lasso coefficients
+  into `beta_mean = colMeans(|beta|)` per variable (most-important
+  first), flags variables above a selection cutoff, and accepts a
+  precomputed `beta_fit` matrix. `print`/`summary`/`autoplot` companions
+  follow the `gg_*` conventions.
+
+- [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
+  /
+  [`plot.gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.md):
+  tidy wrapper and ranked lollipop for
+  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  signal-variable detection. Returns one row per candidate variable
+  (`imp_score`, graph `degree`, `signal` flag) ranked by `imp_score`.
+  Complements
+  [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
+  (the dependency graph) with the “which variables are signal” ranking;
+  shares the `beta_fit` entropy matrix. Follows the `get.beta.entropy` +
+  `sdependent` workflow from the
+  [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+  help (iowa-housing example).
+
+- Fix
+  ([\#118](https://github.com/ehrlinger/ggRandomForests/issues/118)):
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  no longer fails with the cryptic “arguments imply differing number of
+  rows:
+
+  , 0” when
+  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
+  returns a degenerate importance table (0 rows, or `p` variables with
+  no usable `z` column) – observed intermittently on survival fits where
+  the release-rule step selects no variables. It now stops with a clear,
+  specific message explaining the empty importance and suggesting a
+  larger `ntree`. The guard is scoped to the degenerate case only;
+  well-formed fits (survival included) are unaffected – this is not a
+  blanket survival-family block (cf. the reverted
+  [\#116](https://github.com/ehrlinger/ggRandomForests/issues/116)).
+
+- Fixes the intro vignette’s placeholder `\VignetteIndexEntry`
+  (“Vignette’s Title” -\> “Exploring Random Forests with
+  ggRandomForests”).
 
 ## ggRandomForests v3.1.2
 
