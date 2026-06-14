@@ -69,8 +69,12 @@ reference:
       - plot.gg_varpro
       - gg_beta_varpro
       - plot.gg_beta_varpro
+      - gg_beta_uvarpro
+      - plot.gg_beta_uvarpro
       - gg_udependent
       - plot.gg_udependent
+      - gg_sdependent
+      - plot.gg_sdependent
       - gg_ivarpro
       - plot.gg_ivarpro
 

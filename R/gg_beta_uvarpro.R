@@ -1,0 +1,235 @@
+##=============================================================================
+#' Per-variable lasso-beta importance from an unsupervised varPro fit
+#'
+#' Tidy wrapper around [varPro::get.beta.entropy()] for a `uvarpro` object.
+#' Where [gg_beta_varpro()] refines the *supervised* release-rule contrast,
+#' `gg_beta_uvarpro()` does the unsupervised analogue: `uvarpro()` builds
+#' entropy regions with no response, and `get.beta.entropy()` fits a
+#' cross-validated lasso within each region to ask how strongly every other
+#' variable explains the released variable. Averaging the absolute lasso
+#' coefficients per variable gives one number per variable: an unsupervised,
+#' lasso-flavoured importance.
+#'
+#' @details
+#' `get.beta.entropy(o)` returns a (released-variable x variable) numeric
+#' matrix of absolute lasso coefficients. The column mean (`na.rm = TRUE`) is
+#' the per-variable importance reported here, matching the canonical
+#' `sort(colMeans(beta, na.rm = TRUE), decreasing = TRUE)` idiom in the
+#' `varPro::uvarpro()` help ("iowa housing - illustrates lasso importance").
+#'
+#' Because `get.beta.entropy()` is expensive (a cross-validated `glmnet` per
+#' region), the `beta_fit` argument accepts a pre-computed matrix so you can
+#' iterate on the cutoff without re-fitting. The pairing mirrors the
+#' `beta_fit` argument of [gg_beta_varpro()].
+#'
+#' @param object A `uvarpro` object from [varPro::uvarpro()].
+#' @param ... Forwarded to [varPro::get.beta.entropy()] when
+#'   `beta_fit = NULL` (e.g. `pre.filter`, `second.stage`, `use.cv`).
+#'   Ignored, with a warning, when `beta_fit` is supplied.
+#' @param cutoff Selection threshold on `beta_mean`. `NULL` (default) uses
+#'   `mean(beta_mean)`; a scalar sets it explicitly. Variables at or above the
+#'   cutoff are flagged `selected`.
+#' @param beta_fit Optional pre-computed [varPro::get.beta.entropy()] matrix
+#'   for `object`. When supplied, must be a numeric matrix with column names
+#'   (the variables); `...` is then ignored.
+#'
+#' @return A `gg_beta_uvarpro` object (a `data.frame`), one row per variable,
+#'   most-important first, with columns:
+#'   \describe{
+#'     \item{`variable`}{factor; levels reversed so the most-important
+#'       variable lands at the top after `coord_flip()` (the `gg_vimp`
+#'       convention).}
+#'     \item{`beta_mean`}{`mean(|lasso beta|)` over the released regions
+#'       (`colMeans(beta, na.rm = TRUE)`).}
+#'     \item{`n_released`}{number of regions contributing a non-`NA`
+#'       coefficient for the variable.}
+#'     \item{`selected`}{logical; `beta_mean >= cutoff`.}
+#'   }
+#'   The `provenance` attribute records `source`, `family` (`"unsupv"`),
+#'   `cutoff`, `n_var`, `n_released_regions`, and `precomputed`.
+#'
+#' @seealso [gg_beta_varpro()] (supervised analogue), [gg_udependent()],
+#'   [varPro::get.beta.entropy()], [varPro::uvarpro()].
+#'
+#' @examples
+#' \donttest{
+#' if (requireNamespace("varPro", quietly = TRUE)) {
+#'   set.seed(1)
+#'   o <- varPro::uvarpro(mtcars, ntree = 50)
+#'   gg <- gg_beta_uvarpro(o)
+#'   plot(gg)
+#' }
+#' }
+#'
+#' @export
+gg_beta_uvarpro <- function(object, ..., cutoff = NULL, beta_fit = NULL) {
+  UseMethod("gg_beta_uvarpro", object)
+}
+
+#' @export
+gg_beta_uvarpro.default <- function(object, ..., cutoff = NULL,
+                                    beta_fit = NULL) {
+  stop("gg_beta_uvarpro: expected a 'uvarpro' object from varPro::uvarpro(); ",
+       "got an object of class ", paste(class(object), collapse = "/"), ".",
+       call. = FALSE)
+}
+
+#' @export
+gg_beta_uvarpro.uvarpro <- function(object, ..., cutoff = NULL,
+                                    beta_fit = NULL) {
+  if (!inherits(object, "uvarpro")) {
+    stop("gg_beta_uvarpro: expected a 'uvarpro' object from varPro::uvarpro().",
+         call. = FALSE)
+  }
+  .assert_scalar_numeric_or_null(cutoff, "cutoff", "gg_beta_uvarpro")
+
+  # Resolve the beta matrix (cache path)
+  if (is.null(beta_fit)) {
+    b <- varPro::get.beta.entropy(object, ...)
+  } else {
+    .validate_beta_uvarpro(beta_fit)
+    if (length(list(...)) > 0L) {
+      warning("gg_beta_uvarpro: arguments in '...' ignored because beta_fit is supplied.",
+              call. = FALSE)
+    }
+    b <- beta_fit
+  }
+
+  # Empty fast-path: no regions / no variables survived
+  if (.is_empty_beta_matrix(b)) {
+    return(.gg_beta_uvarpro_empty(object, beta_fit, cutoff))
+  }
+
+  beta_mean_v  <- colMeans(b, na.rm = TRUE)
+  n_released_v <- colSums(!is.na(b))
+
+  # Most-important first; reverse the factor levels so coord_flip() puts the
+  # top variable at the top (matches gg_vimp / gg_beta_varpro).
+  ord_names <- names(sort(beta_mean_v, decreasing = TRUE))
+
+  resolved_cutoff <- if (is.null(cutoff)) {
+    mean(beta_mean_v, na.rm = TRUE)
+  } else {
+    as.numeric(cutoff)
+  }
+
+  out <- data.frame(
+    variable   = factor(ord_names, levels = rev(ord_names)),
+    beta_mean  = unname(beta_mean_v[ord_names]),
+    n_released = as.integer(unname(n_released_v[ord_names])),
+    stringsAsFactors = FALSE
+  )
+  out$selected <- out$beta_mean >= resolved_cutoff
+  rownames(out) <- NULL
+
+  class(out) <- c("gg_beta_uvarpro", "data.frame")
+  attr(out, "provenance") <- list(
+    source             = "varPro::get.beta.entropy",
+    family             = "unsupv",
+    ntree              = if (!is.null(object$ntree)) as.integer(object$ntree) else NA_integer_,
+    cutoff             = stats::setNames(resolved_cutoff, "unsupv"),
+    cutoff_default     = is.null(cutoff),
+    n_var              = ncol(b),
+    n_released_regions = nrow(b),
+    precomputed        = !is.null(beta_fit),
+    xvar.names         = colnames(b)
+  )
+  out
+}
+
+#' @noRd
+.validate_beta_uvarpro <- function(beta_fit, caller = "gg_beta_uvarpro") {
+  if (!is.matrix(beta_fit) || !is.numeric(beta_fit)) {
+    stop(caller, ": beta_fit does not look like a ",
+         "varPro::get.beta.entropy() result. Expected a numeric matrix.",
+         call. = FALSE)
+  }
+  if (ncol(beta_fit) > 0L && is.null(colnames(beta_fit))) {
+    stop(caller, ": beta_fit must have column names (the variables). ",
+         "varPro::get.beta.entropy() returns a named matrix.",
+         call. = FALSE)
+  }
+  invisible(NULL)
+}
+
+#' @noRd
+.is_empty_beta_matrix <- function(m) {
+  is.null(m) || !is.matrix(m) || nrow(m) == 0L || ncol(m) == 0L
+}
+
+#' @noRd
+.assert_scalar_numeric_or_null <- function(x, arg, caller) {
+  if (!is.null(x) &&
+        (!is.numeric(x) || length(x) != 1L || is.na(x))) {
+    stop(caller, ": `", arg, "` must be a single non-NA numeric value (or NULL).",
+         call. = FALSE)
+  }
+  invisible(NULL)
+}
+
+#' @rdname print.gg
+#' @export
+print.gg_beta_uvarpro <- function(x, ...) {
+  prov           <- attr(x, "provenance")
+  precomputed    <- isTRUE(if (!is.null(prov)) prov$precomputed else FALSE)
+  n_regions      <- if (!is.null(prov)) prov$n_released_regions %||% NA_integer_ else NA_integer_
+  n_sel          <- sum(x$selected, na.rm = TRUE)
+  cutoff         <- if (!is.null(prov)) prov$cutoff %||% NA_real_ else NA_real_
+  cutoff_val     <- if (length(cutoff) >= 1L) cutoff[[1]] else NA_real_
+  cutoff_default <- isTRUE(if (!is.null(prov)) prov$cutoff_default else FALSE)
+  cat(.gg_header(x, "gg_beta_uvarpro"),
+      sprintf("  |  cutoff: %.4g%s", cutoff_val,
+              if (cutoff_default) " (default)" else ""),
+      sprintf("  |  precomputed: %s", precomputed),
+      "\n",
+      sprintf("  %d of %d variables selected over %s released region(s)\n",
+              n_sel, nrow(x),
+              if (is.na(n_regions)) "NA" else format(n_regions)),
+      sep = "")
+  invisible(x)
+}
+
+#' @rdname summary.gg
+#' @export
+summary.gg_beta_uvarpro <- function(object, ...) {
+  v <- sort(stats::setNames(object$beta_mean, as.character(object$variable)),
+            decreasing = TRUE)
+  top <- utils::head(v, 5L)
+  body <- c(
+    sprintf("variables: %d  (selected: %d)",
+            nrow(object), sum(object$selected, na.rm = TRUE)),
+    "top variables by mean |lasso beta|:",
+    sprintf("  %-14s %.4g", names(top), unname(top))
+  )
+  .summary_skel(object, "gg_beta_uvarpro", body)
+}
+
+#' @importFrom ggplot2 autoplot
+#' @export
+autoplot.gg_beta_uvarpro <- function(object, ...) {
+  plot.gg_beta_uvarpro(object, ...)
+}
+
+#' @noRd
+.gg_beta_uvarpro_empty <- function(object, beta_fit, cutoff) {
+  out <- data.frame(
+    variable   = factor(character(0)),
+    beta_mean  = numeric(0),
+    n_released = integer(0),
+    selected   = logical(0),
+    stringsAsFactors = FALSE
+  )
+  class(out) <- c("gg_beta_uvarpro", "data.frame")
+  attr(out, "provenance") <- list(
+    source             = "varPro::get.beta.entropy",
+    family             = "unsupv",
+    ntree              = if (!is.null(object$ntree)) as.integer(object$ntree) else NA_integer_,
+    cutoff             = stats::setNames(if (is.null(cutoff)) NA_real_ else as.numeric(cutoff), "unsupv"),
+    cutoff_default     = is.null(cutoff),
+    n_var              = 0L,
+    n_released_regions = 0L,
+    precomputed        = !is.null(beta_fit),
+    xvar.names         = character(0)
+  )
+  out
+}
