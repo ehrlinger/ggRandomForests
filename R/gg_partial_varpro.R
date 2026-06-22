@@ -429,9 +429,14 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## through to plot.gg_partial_rfsrc for rendering.
   class(pd) <- c("gg_partial_varpro", class(pd))
 
+  ## Guard nrow > 0: a C-path frame is empty when the variable is all-
+  ## continuous or all-categorical, and `df$model <- scalar` errors on a
+  ## 0-row data.frame ("replacement has 1 row, data has 0 rows").
   if (!is.null(model)) {
-    if (is.data.frame(pd$continuous))  pd$continuous$model  <- model
-    if (is.data.frame(pd$categorical)) pd$categorical$model <- model
+    if (is.data.frame(pd$continuous)  && nrow(pd$continuous)  > 0L)
+      pd$continuous$model  <- model
+    if (is.data.frame(pd$categorical) && nrow(pd$categorical) > 0L)
+      pd$categorical$model <- model
   }
 
   attr(pd, "provenance") <- list(

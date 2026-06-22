@@ -224,6 +224,23 @@ test_that(".rmst_from_survival integrates a step survival curve to tau", {
   expect_equal(ggRandomForests:::.rmst_from_survival(surv, times, tau = 0.5), 0.5)
 })
 
+test_that(".rmst_from_survival accepts a bare numeric vector (single curve)", {
+  out <- ggRandomForests:::.rmst_from_survival(c(0.8, 0.5, 0.2), c(1, 2, 3),
+                                               tau = 3)
+  expect_equal(out, 2.3)            # same as the 1-row matrix case
+})
+
+test_that(".resolve_varpro_scale maps 'auto' by family, passes others through", {
+  expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", "surv"),
+               "mortality")
+  expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", "regr"),
+               "generic")
+  expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", NA_character_),
+               "generic")
+  expect_equal(ggRandomForests:::.resolve_varpro_scale("rmst", "surv"),
+               "rmst")             # explicit scale returned unchanged
+})
+
 test_that(".rmst_from_survival is vectorised over rows and bounded by tau", {
   times <- c(1, 2, 3, 4)
   surv  <- rbind(c(0.9, 0.7, 0.4, 0.1),
@@ -310,6 +327,11 @@ test_that("gg_partial_varpro: scale='rmst' is genuinely tau-dependent", {
     max(abs(r_long$continuous$parametric - r_short$continuous$parametric)),
     50
   )
+
+  # Default (mortality) recompute exercises the plain partialpro(object) path.
+  r_mort <- gg_partial_varpro(object = vp, scale = "mortality", nvars = 1)
+  expect_s3_class(r_mort, "gg_partial_varpro")
+  expect_equal(attr(r_mort, "provenance")$scale, "mortality")
 })
 
 ## ── Helper: mock C-path varpro object ────────────────────────────────────────
@@ -328,6 +350,20 @@ make_mock_cpath <- function(xvar_subset = NULL) {
   class(vp) <- "varpro"
   list(vp = vp, rf = rf)
 }
+
+## ── .rmst_learner closure (small rfsrc fit; no varpro grow → CRAN-safe) ───────
+test_that(".rmst_learner returns RMST(tau) for OOB and newdata calls", {
+  skip_if_not_installed("randomForestSRC")
+  m       <- make_mock_cpath()
+  tau     <- stats::median(m$rf$time.interest)
+  learner <- ggRandomForests:::.rmst_learner(list(rf = m$rf), tau)
+
+  oob <- learner()                              # missing(newx) → OOB branch
+  nd  <- learner(survival::veteran[1:5, ])      # newdata branch
+  expect_length(oob, nrow(m$rf$xvar))
+  expect_length(nd, 5L)
+  expect_true(all(oob >= 0 & oob <= tau + 1e-6))
+})
 
 ## ── C-path (scale = surv / chf) ──────────────────────────────────────────────
 test_that("gg_partial_varpro: C-path returns gg_partial_varpro class", {
@@ -360,4 +396,23 @@ test_that("gg_partial_varpro: plot C-path returns ggplot", {
   )
   gg <- plot(result)
   expect_s3_class(gg, "ggplot")
+})
+
+test_that("gg_partial_varpro: C-path 'model' label is attached to the frames", {
+  skip_if_not_installed("randomForestSRC")
+  # full var set → both continuous (age/karno) and categorical (celltype)
+  # frames populate, so the model column is attached to each.
+  m      <- make_mock_cpath()
+  result <- suppressWarnings(
+    gg_partial_varpro(object = m$vp, scale = "surv",
+                      time = median(m$rf$time.interest), model = "forestC")
+  )
+  got_cont <- is.data.frame(result$continuous) &&
+    nrow(result$continuous) > 0 && "model" %in% names(result$continuous)
+  got_cat  <- is.data.frame(result$categorical) &&
+    nrow(result$categorical) > 0 && "model" %in% names(result$categorical)
+  expect_true(got_cont || got_cat)
+  # at least the populated continuous frame should carry the label
+  if (is.data.frame(result$continuous) && nrow(result$continuous) > 0)
+    expect_equal(unique(result$continuous$model), "forestC")
 })

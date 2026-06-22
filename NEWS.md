@@ -26,6 +26,10 @@ ggRandomForests v3.2.0
   truncated there) and when `time` is passed to a scale that ignores it.
   `Imports` now requires `varPro (>= 3.1.0)` (the version exposing the
   `partialpro()` `learner` argument this path relies on).
+* Fix: `gg_partial_varpro(scale = "surv"/"chf", model = ...)` no longer
+  errors when a variable yields an empty continuous or categorical frame
+  (the survival path-C `model`-label assignment now guards against a 0-row
+  data.frame).
 
 ggRandomForests v3.1.2
 ======================
