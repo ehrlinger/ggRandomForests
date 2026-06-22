@@ -114,7 +114,10 @@ test_that("gg_partial_varpro: scale='mortality' recorded in provenance", {
 })
 
 test_that("gg_partial_varpro: scale='rmst' with time stored in provenance", {
-  result <- gg_partial_varpro(make_mock_vpro_data(), scale = "rmst", time = 365)
+  # precomputed part_dta → label-only RMST (warns); provenance still records it
+  result <- suppressWarnings(
+    gg_partial_varpro(make_mock_vpro_data(), scale = "rmst", time = 365)
+  )
   prov <- attr(result, "provenance")
   expect_equal(prov$scale, "rmst")
   expect_equal(prov$rmst_tau, 365)
@@ -182,8 +185,10 @@ test_that("plot.gg_partial_varpro: scale='mortality' → honest y-label", {
 })
 
 test_that("plot.gg_partial_varpro: scale='rmst' with time → RMST y-label", {
-  result <- gg_partial_varpro(make_mock_vpro_data(), nvars = 1,
-                               scale = "rmst", time = 365)
+  result <- suppressWarnings(
+    gg_partial_varpro(make_mock_vpro_data(), nvars = 1,
+                      scale = "rmst", time = 365)
+  )
   gg <- plot(result)
   expect_true(grepl("RMST|365", gg$labels$y))
 })
@@ -205,6 +210,80 @@ test_that("summary.gg_partial_varpro: returns summary.gg", {
   result  <- gg_partial_varpro(make_mock_vpro_data())
   s       <- summary(result)
   expect_s3_class(s, "summary.gg")
+})
+
+## ── RMST integration helper (.rmst_from_survival) ────────────────────────────
+test_that(".rmst_from_survival integrates a step survival curve to tau", {
+  times <- c(1, 2, 3)
+  surv  <- matrix(c(0.8, 0.5, 0.2), nrow = 1)   # S(1), S(2), S(3)
+  # [0,1) S=1, [1,2) S=0.8, [2,3) S=0.5  → 1 + 0.8 + 0.5 = 2.3
+  expect_equal(ggRandomForests:::.rmst_from_survival(surv, times, tau = 3), 2.3)
+  # tau = 2.5 caps the last interval at width 0.5 → 1 + 0.8 + 0.25 = 2.05
+  expect_equal(ggRandomForests:::.rmst_from_survival(surv, times, tau = 2.5), 2.05)
+  # tau = 0.5 lands inside the first (S=1) interval → 0.5
+  expect_equal(ggRandomForests:::.rmst_from_survival(surv, times, tau = 0.5), 0.5)
+})
+
+test_that(".rmst_from_survival is vectorised over rows and bounded by tau", {
+  times <- c(1, 2, 3, 4)
+  surv  <- rbind(c(0.9, 0.7, 0.4, 0.1),
+                 c(0.5, 0.3, 0.2, 0.1))
+  out <- ggRandomForests:::.rmst_from_survival(surv, times, tau = 4)
+  expect_length(out, 2L)
+  expect_true(all(out <= 4))          # RMST(tau) <= tau
+  expect_true(out[1] > out[2])        # higher survival → larger RMST
+})
+
+## ── RMST guardrails ──────────────────────────────────────────────────────────
+test_that("gg_partial_varpro: scale='rmst' with precomputed part_dta warns", {
+  expect_warning(
+    gg_partial_varpro(part_dta = make_mock_vpro_data(), scale = "rmst",
+                      time = 365),
+    regexp = "cannot drive|precomputed"
+  )
+})
+
+test_that("gg_partial_varpro: 'time' on a scale that ignores it warns", {
+  expect_warning(
+    gg_partial_varpro(make_mock_vpro_data(), scale = "mortality", time = 365),
+    regexp = "ignored"
+  )
+})
+
+test_that("gg_partial_varpro: scale='rmst' on a non-survival fit errors", {
+  fake <- structure(list(family = "regr", rf = list()), class = "varpro")
+  expect_error(
+    gg_partial_varpro(object = fake, scale = "rmst", time = 1),
+    regexp = "survival varpro fit"
+  )
+})
+
+## ── RMST learner end-to-end (real varpro fit) ────────────────────────────────
+test_that("gg_partial_varpro: scale='rmst' is genuinely tau-dependent", {
+  skip_on_cran()                      # varpro fit + 2 partialpro calls (~15 s)
+  skip_if_not_installed("randomForestSRC")
+  skip_if_not_installed("varPro")
+  set.seed(11)
+  pbc <- get(utils::data("pbc", package = "randomForestSRC",
+                         envir = environment()))
+  pbc <- pbc[stats::complete.cases(pbc), ]
+  vp  <- varPro::varpro(Surv(days, status) ~ ., pbc, ntree = 60, nvar = 3)
+
+  r_short <- gg_partial_varpro(object = vp, scale = "rmst", time = 500,
+                               nvars = 1)
+  r_long  <- gg_partial_varpro(object = vp, scale = "rmst", time = 2000,
+                               nvars = 1)
+
+  expect_s3_class(r_short, "gg_partial_varpro")
+  expect_equal(attr(r_short, "provenance")$scale, "rmst")
+  expect_equal(attr(r_short, "provenance")$rmst_tau, 500)
+
+  # RMST(500) is bounded by 500; the two horizons must differ (not MC noise).
+  expect_true(all(r_short$continuous$parametric <= 500 + 1e-6))
+  expect_gt(
+    max(abs(r_long$continuous$parametric - r_short$continuous$parametric)),
+    50
+  )
 })
 
 ## ── Helper: mock C-path varpro object ────────────────────────────────────────

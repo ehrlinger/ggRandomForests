@@ -72,8 +72,22 @@ be removed in the release after \pkg{ggRandomForests} v3.0.0; use
 hand, the scale resolves to \code{"mortality"} for a survival forest and
 \code{"generic"} for a regression or classification forest.  The RMST
 horizon \eqn{\tau} is \emph{not} stored in the \code{varpro} object
-(varPro 3.1.0), so for RMST-labeled output you have to pass
-\code{scale = "rmst", time = tau} yourself.
+(varPro 3.1.0), so RMST output requires you to pass
+\code{scale = "rmst", time = tau} explicitly.
+
+\strong{RMST partial dependence (scale = "rmst"):} \code{varPro::partialpro}
+has no time argument, so its default survival learner returns ensemble
+mortality at every horizon -- passing a horizon through \code{...} is
+silently dropped, and multi-horizon plots built that way differ only by
+Monte-Carlo noise, not by \eqn{\tau}.  To get a genuine RMST(\eqn{\tau})
+curve, \code{scale = "rmst"} supplies \code{partialpro} a \code{learner}
+that returns \eqn{\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,dt} from the
+survival forest, so the curve actually depends on \eqn{\tau}.  This path
+\strong{recomputes} from \code{object}, so it needs \code{object} (a
+survival fit) with \code{part_dta = NULL}; a precomputed \code{part_dta}
+can only be relabeled, and \code{gg_partial_varpro} warns when you try.
+A \eqn{\tau} beyond the model's largest event time is truncated there
+(with a warning), since \eqn{S(t)} cannot be extrapolated.
 
 \strong{Ensemble mortality (scale = "mortality"):} here the y-axis is
 \emph{ensemble mortality}, the expected number of events a subject would
@@ -82,8 +96,9 @@ the same quantity as the \code{rfsrc} \code{predicted} value for survival
 forests (Ishwaran, Kogalur, Blackstone & Lauer, 2008
 \url{doi:10.1214/08-AOAS169}).  This is an \strong{unbounded relative-risk
 score}, \emph{not} a survival probability and not \eqn{1 - S(t)}; don't
-read it as one.  If you want output on the probability scale, refit with
-\code{varpro(..., rmst = tau)} and use \code{scale = "rmst"}.
+read it as one.  For a bounded, time-anchored survival summary, use
+\code{scale = "rmst", time = tau} (restricted mean survival time, in the
+time units of the outcome) or \code{scale = "surv"} / \code{"chf"}.
 }
 \section{What partialpro is doing}{
 

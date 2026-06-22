@@ -1,5 +1,20 @@
 Package: ggRandomForests
-Version: 3.1.2
+Version: 3.2.0
+
+ggRandomForests v3.2.0
+======================
+* Fix: `gg_partial_varpro(scale = "rmst", time = tau)` now *drives* the
+  survival partial computation instead of only relabeling the y-axis.
+  `varPro::partialpro()` has no time argument, so its default survival
+  learner returns ensemble mortality at every horizon -- multi-horizon RMST
+  plots built that way differed only by Monte-Carlo noise, not by `tau`.
+  `scale = "rmst"` now passes `partialpro()` an RMST(`tau`) learner that
+  integrates the survival curve (`integral_0^tau S(t) dt`) from `object$rf`,
+  so the curve genuinely depends on `tau`. This path recomputes from
+  `object` (a survival fit) with `part_dta = NULL`; a precomputed
+  `part_dta` can only be relabeled, and the function now warns when you try.
+  Also warns when `tau` exceeds the model's event-time range (RMST is
+  truncated there) and when `time` is passed to a scale that ignores it.
 
 ggRandomForests v3.1.2
 ======================

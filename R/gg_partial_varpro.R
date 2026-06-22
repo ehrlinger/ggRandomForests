@@ -78,7 +78,9 @@
 #'   the output type.  One of \code{"auto"} (default), \code{"mortality"},
 #'   \code{"rmst"}, \code{"surv"}, or \code{"chf"}.
 #' @param time Numeric; the evaluation time point.  Required when
-#'   \code{scale = "rmst"} (the RMST horizon \eqn{\tau}).  Optional when
+#'   \code{scale = "rmst"} (the RMST horizon \eqn{\tau}), where it now
+#'   \emph{drives} the partial computation through an RMST(\eqn{\tau})
+#'   learner (see \strong{Details}), not just the axis label.  Optional when
 #'   \code{scale \%in\% c("surv","chf")}: if supplied it is snapped to the
 #'   nearest value in \code{object\$rf\$time.interest} and used for both
 #'   computation and axis labeling; if \code{NULL}, three quartile time
@@ -97,8 +99,22 @@
 #' hand, the scale resolves to \code{"mortality"} for a survival forest and
 #' \code{"generic"} for a regression or classification forest.  The RMST
 #' horizon \eqn{\tau} is \emph{not} stored in the \code{varpro} object
-#' (varPro 3.1.0), so for RMST-labeled output you have to pass
-#' \code{scale = "rmst", time = tau} yourself.
+#' (varPro 3.1.0), so RMST output requires you to pass
+#' \code{scale = "rmst", time = tau} explicitly.
+#'
+#' **RMST partial dependence (scale = "rmst"):** \code{varPro::partialpro}
+#' has no time argument, so its default survival learner returns ensemble
+#' mortality at every horizon -- passing a horizon through \code{...} is
+#' silently dropped, and multi-horizon plots built that way differ only by
+#' Monte-Carlo noise, not by \eqn{\tau}.  To get a genuine RMST(\eqn{\tau})
+#' curve, \code{scale = "rmst"} supplies \code{partialpro} a \code{learner}
+#' that returns \eqn{\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,dt} from the
+#' survival forest, so the curve actually depends on \eqn{\tau}.  This path
+#' \strong{recomputes} from \code{object}, so it needs \code{object} (a
+#' survival fit) with \code{part_dta = NULL}; a precomputed \code{part_dta}
+#' can only be relabeled, and \code{gg_partial_varpro} warns when you try.
+#' A \eqn{\tau} beyond the model's largest event time is truncated there
+#' (with a warning), since \eqn{S(t)} cannot be extrapolated.
 #'
 #' **Ensemble mortality (scale = "mortality"):** here the y-axis is
 #' \emph{ensemble mortality}, the expected number of events a subject would
@@ -107,8 +123,9 @@
 #' forests (Ishwaran, Kogalur, Blackstone & Lauer, 2008
 #' <doi:10.1214/08-AOAS169>).  This is an \strong{unbounded relative-risk
 #' score}, \emph{not} a survival probability and not \eqn{1 - S(t)}; don't
-#' read it as one.  If you want output on the probability scale, refit with
-#' \code{varpro(..., rmst = tau)} and use \code{scale = "rmst"}.
+#' read it as one.  For a bounded, time-anchored survival summary, use
+#' \code{scale = "rmst", time = tau} (restricted mean survival time, in the
+#' time units of the outcome) or \code{scale = "surv"} / \code{"chf"}.
 #'
 #' @return A named list of class \code{"gg_partial_varpro"} with elements:
 #' \describe{
@@ -175,9 +192,20 @@ gg_partial_varpro <- function(part_dta  = NULL,
     return(.gg_partial_varpro_cpath(object, scale, time, model))
   }
 
+  ## ---- RMST guardrails (A-path) ------------------------------------------
+  .warn_varpro_rmst(part_dta, object, scale, time)
+
   ## ---- A-path: partialpro-based partial dependence -----------------------
+  ## scale = "rmst" drives the partialpro computation with an RMST(tau)
+  ## learner so the curve genuinely depends on tau, rather than relabeling
+  ## the default ensemble-mortality curve.  This requires recomputing from
+  ## 'object'; a precomputed 'part_dta' can only be relabeled (warned above).
   if (is.null(part_dta)) {
-    part_dta <- varPro::partialpro(object)
+    part_dta <- if (scale == "rmst") {
+      varPro::partialpro(object, learner = .rmst_learner(object, time))
+    } else {
+      varPro::partialpro(object)
+    }
   }
   if (is.null(nvars)) {
     nvars <- length(part_dta)
@@ -217,7 +245,87 @@ gg_partial_varpro <- function(part_dta  = NULL,
     stop("scale = 'rmst' requires 'time' (the RMST horizon tau)",
          call. = FALSE)
   }
+  ## RMST is only meaningful for a survival fit; when we will recompute from
+  ## 'object' (part_dta = NULL), the fit must be survival.
+  if (scale == "rmst" && is.null(part_dta) && !is.null(object) &&
+      !identical(object$family, "surv")) {
+    stop("scale = 'rmst' requires a survival varpro fit ",
+         "(object$family == \"surv\")", call. = FALSE)
+  }
   invisible(NULL)
+}
+
+## Surface the two RMST traps: a precomputed part_dta can't be driven by tau
+## (curve is mortality with an RMST label only), and a tau past the model's
+## event-time range is truncated.  Also flag a 'time' a scale ignores.
+#' @keywords internal
+.warn_varpro_rmst <- function(part_dta, object, scale, time) {
+  if (scale == "rmst") {
+    if (!is.null(part_dta)) {
+      warning("gg_partial_varpro: scale = 'rmst' cannot drive the partial ",
+              "computation from a precomputed 'part_dta'; the curves are ",
+              "ensemble mortality carrying an RMST(tau) label only. Supply ",
+              "'object' with part_dta = NULL for a genuine RMST(tau) curve.",
+              call. = FALSE)
+    } else if (!is.null(object)) {
+      ti <- object$rf$time.interest
+      if (!is.null(ti) && (time > max(ti) || time < min(ti))) {
+        warning(sprintf(
+          paste0("gg_partial_varpro: RMST horizon tau = %g is outside the ",
+                 "model's event-time range [%g, %g]; RMST is truncated at ",
+                 "the nearest observed event time."),
+          time, min(ti), max(ti)), call. = FALSE)
+      }
+    }
+  } else if (!is.null(time)) {
+    ## 'time' only feeds rmst/surv/chf; warn when the resolved scale ignores it.
+    fam      <- if (!is.null(object)) object$family else NA_character_
+    resolved <- .resolve_varpro_scale(scale, fam)
+    if (!resolved %in% c("rmst", "surv", "chf")) {
+      warning("gg_partial_varpro: 'time' is ignored for scale = '", scale,
+              "' (resolved to '", resolved, "').", call. = FALSE)
+    }
+  }
+  invisible(NULL)
+}
+
+## RMST(tau) learner for varPro::partialpro: maps feature rows to
+## RMST(tau) = integral_0^tau S(t) dt from the survival forest in object$rf.
+## Called with no argument it returns OOB predictions on the training data,
+## matching partialpro's default-learner contract.
+#' @keywords internal
+.rmst_learner <- function(object, tau) {
+  rf    <- object$rf
+  times <- rf$time.interest
+  function(newx) {
+    if (missing(newx)) {
+      pr   <- randomForestSRC::predict.rfsrc(rf, perf.type = "none")
+      surv <- pr$survival.oob
+      if (is.null(surv)) surv <- pr$survival
+    } else {
+      surv <- randomForestSRC::predict.rfsrc(rf, newx,
+                                             perf.type = "none")$survival
+    }
+    .rmst_from_survival(surv, times, tau)
+  }
+}
+
+## Restricted mean survival time from a survival matrix:
+## RMST(tau) = integral_0^tau S(t) dt.  'surv' is n x J with column k =
+## S(times[k]) (randomForestSRC layout); the curve is constant on each
+## [times[k-1], times[k]) interval, S = 1 on [0, times[1]).  Beyond
+## max(times) S cannot be extrapolated, so RMST is truncated there.
+#' @keywords internal
+.rmst_from_survival <- function(surv, times, tau) {
+  if (is.null(dim(surv))) surv <- matrix(surv, nrow = 1L)
+  n_times <- length(times)
+  t_left  <- c(0, times)                                  # length J + 1
+  upper   <- pmin(t_left[-1], tau)                        # length J
+  lower   <- pmin(t_left[-(n_times + 1L)], tau)           # length J
+  width   <- pmax(upper - lower, 0)                       # length J
+  ## Survival level on interval k is S at its left endpoint: 1, then S(t_{k-1}).
+  level   <- cbind(1, surv[, -n_times, drop = FALSE])     # n x J
+  as.numeric(level %*% width)
 }
 
 #' @keywords internal
