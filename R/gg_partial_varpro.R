@@ -245,6 +245,13 @@ gg_partial_varpro <- function(part_dta  = NULL,
     stop("scale = 'rmst' requires 'time' (the RMST horizon tau)",
          call. = FALSE)
   }
+  ## 'time' drives RMST integration (and the surv/chf snap) as a scalar; a
+  ## vector would silently recycle, so require a single finite numeric.
+  if (!is.null(time) &&
+      (!is.numeric(time) || length(time) != 1L || !is.finite(time))) {
+    stop("'time' must be a single finite numeric value (the horizon tau)",
+         call. = FALSE)
+  }
   ## RMST is only meaningful for a survival fit; when we will recompute from
   ## 'object' (part_dta = NULL), the fit must be survival.
   if (scale == "rmst" && is.null(part_dta) && !is.null(object) &&
@@ -257,7 +264,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
 
 ## Surface the two RMST traps: a precomputed part_dta can't be driven by tau
 ## (curve is mortality with an RMST label only), and a tau past the model's
-## event-time range is truncated.  Also flag a 'time' a scale ignores.
+## largest event time is truncated.  Also flag a 'time' a scale ignores.
 #' @keywords internal
 .warn_varpro_rmst <- function(part_dta, object, scale, time) {
   if (scale == "rmst") {
@@ -268,13 +275,16 @@ gg_partial_varpro <- function(part_dta  = NULL,
               "'object' with part_dta = NULL for a genuine RMST(tau) curve.",
               call. = FALSE)
     } else if (!is.null(object)) {
+      ## Only tau beyond the largest event time is truncated: S(t) cannot be
+      ## extrapolated past max(ti).  A small tau is fine -- the integration
+      ## assumes S(t) = 1 on [0, ti[1]) -- so it is not flagged.
       ti <- object$rf$time.interest
-      if (!is.null(ti) && (time > max(ti) || time < min(ti))) {
+      if (!is.null(ti) && time > max(ti)) {
         warning(sprintf(
-          paste0("gg_partial_varpro: RMST horizon tau = %g is outside the ",
-                 "model's event-time range [%g, %g]; RMST is truncated at ",
-                 "the nearest observed event time."),
-          time, min(ti), max(ti)), call. = FALSE)
+          paste0("gg_partial_varpro: RMST horizon tau = %g exceeds the ",
+                 "model's largest event time (%g); RMST is truncated there, ",
+                 "since S(t) cannot be extrapolated beyond it."),
+          time, max(ti)), call. = FALSE)
       }
     }
   } else if (!is.null(time)) {

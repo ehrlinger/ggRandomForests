@@ -258,6 +258,32 @@ test_that("gg_partial_varpro: scale='rmst' on a non-survival fit errors", {
   )
 })
 
+test_that("gg_partial_varpro: non-scalar / non-finite 'time' errors", {
+  expect_error(
+    gg_partial_varpro(make_mock_vpro_data(), scale = "rmst", time = c(1, 2)),
+    regexp = "single finite numeric"
+  )
+  expect_error(
+    gg_partial_varpro(make_mock_vpro_data(), scale = "rmst", time = NA_real_),
+    regexp = "single finite numeric"
+  )
+})
+
+test_that("gg_partial_varpro: tau below the first event time is not flagged", {
+  # tau < min(time.interest) is valid (S(t)=1 on [0, t1)), so no truncation warning
+  ti <- c(10, 20, 30)
+  fake <- structure(list(family = "surv", rf = list(time.interest = ti)),
+                    class = "varpro")
+  expect_no_warning(
+    ggRandomForests:::.warn_varpro_rmst(NULL, fake, "rmst", time = 5)
+  )
+  # tau beyond the largest event time IS flagged
+  expect_warning(
+    ggRandomForests:::.warn_varpro_rmst(NULL, fake, "rmst", time = 40),
+    regexp = "exceeds the model's largest event time|truncated"
+  )
+})
+
 ## ── RMST learner end-to-end (real varpro fit) ────────────────────────────────
 test_that("gg_partial_varpro: scale='rmst' is genuinely tau-dependent", {
   skip_on_cran()                      # varpro fit + 2 partialpro calls (~15 s)
