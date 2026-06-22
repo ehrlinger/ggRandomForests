@@ -241,20 +241,32 @@ gg_partial_varpro <- function(part_dta  = NULL,
     stop("scale = '", scale, "' requires 'object' (the varpro fit)",
          call. = FALSE)
   }
-  if (scale == "rmst" && is.null(time)) {
-    stop("scale = 'rmst' requires 'time' (the RMST horizon tau)",
-         call. = FALSE)
-  }
-  ## 'time' drives RMST integration (and the surv/chf snap) as a scalar; a
-  ## vector would silently recycle, so require a single finite numeric.
+  .validate_partial_time(time)
+  if (scale == "rmst") .validate_rmst_inputs(part_dta, object, time)
+  invisible(NULL)
+}
+
+## 'time' drives RMST integration (and the surv/chf snap) as a scalar; a vector
+## would silently recycle, so require a single finite numeric when supplied.
+#' @keywords internal
+.validate_partial_time <- function(time) {
   if (!is.null(time) &&
       (!is.numeric(time) || length(time) != 1L || !is.finite(time))) {
     stop("'time' must be a single finite numeric value (the horizon tau)",
          call. = FALSE)
   }
-  ## RMST is only meaningful for a survival fit; when we will recompute from
-  ## 'object' (part_dta = NULL), the fit must be survival.
-  if (scale == "rmst" && is.null(part_dta) && !is.null(object) &&
+  invisible(NULL)
+}
+
+## RMST needs a horizon, and (when we recompute from 'object', part_dta = NULL)
+## a survival fit.
+#' @keywords internal
+.validate_rmst_inputs <- function(part_dta, object, time) {
+  if (is.null(time)) {
+    stop("scale = 'rmst' requires 'time' (the RMST horizon tau)",
+         call. = FALSE)
+  }
+  if (is.null(part_dta) && !is.null(object) &&
       !identical(object$family, "surv")) {
     stop("scale = 'rmst' requires a survival varpro fit ",
          "(object$family == \"surv\")", call. = FALSE)
