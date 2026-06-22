@@ -3,6 +3,15 @@ Version: 3.2.0
 
 ggRandomForests v3.2.0
 ======================
+* Fix (#118): `gg_varpro()` no longer fails with the cryptic
+  "arguments imply differing number of rows: <p>, 0" when
+  `varPro::importance()` returns a degenerate importance table (0 rows, or
+  `p` variables with no usable `z` column) -- observed intermittently on
+  survival fits where the release-rule step selects no variables. It now
+  stops with a clear, specific message explaining the empty importance and
+  suggesting a larger `ntree`. The guard is scoped to the degenerate case
+  only; well-formed fits (survival included) are unaffected -- this is not
+  a blanket survival-family block (cf. the reverted #116).
 * Fix: `gg_partial_varpro(scale = "rmst", time = tau)` now *drives* the
   survival partial computation instead of only relabeling the y-axis.
   `varPro::partialpro()` has no time argument, so its default survival
