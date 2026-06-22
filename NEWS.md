@@ -24,6 +24,8 @@ ggRandomForests v3.2.0
   `part_dta` can only be relabeled, and the function now warns when you try.
   Also warns when `tau` exceeds the model's event-time range (RMST is
   truncated there) and when `time` is passed to a scale that ignores it.
+  `Imports` now requires `varPro (>= 3.1.0)` (the version exposing the
+  `partialpro()` `learner` argument this path relies on).
 
 ggRandomForests v3.1.2
 ======================

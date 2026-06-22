@@ -22,7 +22,7 @@ Depends:
 Imports:
     randomForestSRC (>= 3.4.0),
     randomForest,
-    varPro,
+    varPro (>= 3.1.0),
     igraph,
     survival,
     tidyr,
