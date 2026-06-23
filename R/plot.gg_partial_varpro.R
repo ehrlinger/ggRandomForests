@@ -43,7 +43,7 @@
 #'
 #' @section Reading a survival-probability curve (scale = "surv"):
 #' The y-axis is \eqn{S(\tau \mid x)}, the predicted probability of surviving
-#' past \eqn{\tau}, bounded in [0, 1] and read in the model's time units.
+#' past \eqn{\tau}, bounded in \eqn{[0, 1]} and read in the model's time units.
 #' Higher is better (more survival).  \eqn{\tau} defaults to the median
 #' follow-up time when not supplied.
 #'

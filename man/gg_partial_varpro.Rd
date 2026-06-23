@@ -19,7 +19,7 @@ gg_partial_varpro(
 gg_partialpro(
   part_dta,
   object = NULL,
-  scale = c("auto", "rmst", "mortality", "surv", "chf"),
+  scale = c("auto", "prob", "odds", "logodds", "rmst", "surv", "mortality", "chf"),
   time = NULL,
   nvars = NULL,
   cat_limit = 10,
@@ -137,7 +137,7 @@ predicted probability, not the probability of the mean log-odds.  The
 
 \strong{Survival probability (scale = "surv"):} \code{scale = "surv"} (the
 survival default) computes \eqn{S(\tau \mid x)} through \code{partialpro}
-(the same UVT engine as mortality and RMST), bounded in \link{0, 1}.  When
+(the same UVT engine as mortality and RMST), bounded in \eqn{[0, 1]}.  When
 \code{time} is not supplied, \eqn{\tau} defaults to the \strong{median
 follow-up time} of the fit -- a data-driven horizon that is always in the
 model's own time units, so it cannot be mis-specified the way a hand-typed
