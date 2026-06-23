@@ -74,9 +74,13 @@
 #'   \code{part_dta} is \code{NULL} it is passed to
 #'   \code{varPro::partialpro(object)} for you.  Required when
 #'   \code{scale \%in\% c("surv","chf")}.
-#' @param scale Character; sets the y-axis label and, for survival forests,
-#'   the output type.  One of \code{"auto"} (default), \code{"mortality"},
-#'   \code{"rmst"}, \code{"surv"}, or \code{"chf"}.
+#' @param scale Character; the y-axis scale.  One of \code{"auto"} (default),
+#'   the classification scales \code{"prob"} / \code{"odds"} / \code{"logodds"},
+#'   or the survival scales \code{"rmst"} / \code{"surv"} / \code{"mortality"} /
+#'   \code{"chf"}.  With \code{"auto"}: classification fits resolve to
+#'   \code{"prob"} (probability of the target class) and survival fits to
+#'   \code{"surv"} (survival probability at a default horizon \eqn{\tau}); see
+#'   \strong{Details}.
 #' @param time Numeric; the evaluation time point.  Required when
 #'   \code{scale = "rmst"} (the RMST horizon \eqn{\tau}), where it now
 #'   \emph{drives} the partial computation through an RMST(\eqn{\tau})
@@ -124,6 +128,27 @@
 #' A \eqn{\tau} beyond the model's largest event time is truncated there
 #' (with a warning), since \eqn{S(t)} cannot be extrapolated.
 #'
+#' **Classification scale (scale = "prob"/"odds"/"logodds"):**
+#' \code{varPro::partialpro} returns classification effects as \emph{log-odds}
+#' of the target class.  \code{scale = "prob"} (the classification default)
+#' back-transforms to probability \eqn{P(Y = \mathrm{target})}, \code{"odds"} to
+#' the odds, and \code{"logodds"} keeps the raw scale.  The back-transform is
+#' applied per observation \emph{before} averaging, so the curve is the mean
+#' predicted probability, not the probability of the mean log-odds.  The
+#' \code{causal} contrast is shown only on \code{"logodds"} (see
+#' \code{\link{plot.gg_partial_varpro}}).
+#'
+#' **Survival probability (scale = "surv"):** \code{scale = "surv"} (the
+#' survival default) computes \eqn{S(\tau \mid x)} through \code{partialpro}
+#' (the same UVT engine as mortality and RMST), bounded in [0, 1].  When
+#' \code{time} is not supplied, \eqn{\tau} defaults to the \strong{median
+#' follow-up time} of the fit -- a data-driven horizon that is always in the
+#' model's own time units, so it cannot be mis-specified the way a hand-typed
+#' \eqn{\tau} can.  The resolved \eqn{\tau} is reported in a message and the
+#' axis label; pass \code{time = tau} to choose another.  \code{scale =
+#' "mortality"} keeps the unbounded ensemble-mortality score as an explicit
+#' opt-in.
+#'
 #' **Ensemble mortality (scale = "mortality"):** here the y-axis is
 #' \emph{ensemble mortality}, the expected number of events a subject would
 #' see if they were exposed to the study-average cumulative hazard.  It is
@@ -151,6 +176,11 @@
 #' Ishwaran H, Kogalur UB, Blackstone EH, Lauer MS (2008).
 #' Random survival forests. \emph{The Annals of Applied Statistics},
 #' \bold{2}(3), 841--860. \doi{10.1214/08-AOAS169}.
+#'
+#' Ishwaran H, Blackstone EH (2025).
+#' Harnessing the power of virtual (digital) twins: Graphical causal tools for
+#' understanding patient and hospital differences.
+#' \emph{Computational and Structural Biotechnology Journal}, \bold{28}, 312.
 #'
 #' @seealso \code{\link{plot.gg_partial_varpro}},
 #'   \code{\link{gg_varpro}}, \code{\link{gg_vimp}},

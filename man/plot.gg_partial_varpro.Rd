@@ -64,9 +64,41 @@ Use these curves to describe how the model uses each variable, not
 to claim how the world works. They are a window into the fitted
 relationship; they do not by themselves establish that intervening
 on the variable would move the outcome. For survival path-C
-(\code{scale = "surv"} or \code{"chf"}), the y-axis is on the
-probability or cumulative-hazard scale, which is usually the scale
-you want to report to a clinical audience.
+(\code{scale = "chf"}), the y-axis is on the cumulative-hazard scale.
+}
+
+\section{Reading a probability curve (scale = "prob")}{
+
+The y-axis is \eqn{P(Y = \mathrm{target})}, the model's predicted probability
+of the target class as the focal variable varies (others held at their
+UVT-plausible average).  \code{"odds"} and \code{"logodds"} are the same
+curve on the odds and log-odds scales.  The \code{causal} curve is a
+contrast (below) and is \emph{not} shown on \code{"prob"}/\code{"odds"};
+use \code{"logodds"} to see it.
+}
+
+\section{Reading a survival-probability curve (scale = "surv")}{
+
+The y-axis is \eqn{S(\tau \mid x)}, the predicted probability of surviving
+past \eqn{\tau}, bounded in \link{0, 1} and read in the model's time units.
+Higher is better (more survival).  \eqn{\tau} defaults to the median
+follow-up time when not supplied.
+}
+
+\section{What the causal curve is, and when to use it}{
+
+\code{causal} is the \strong{baseline-subtracted local effect} -- varPro's
+virtual- ("digital-") twins estimator (Ishwaran & Blackstone, 2025).  It
+shows how the prediction shifts as the focal variable moves away from the
+reference grid point, with the other covariates held at on-manifold
+(UVT-plausible) values; it is a \strong{contrast} (it starts at 0), not a
+level.  Use it when you want the local effect (change-from-baseline) rather
+than the absolute predicted level, and as a cross-check on the parametric
+and nonparametric curves.  It is varpro's local estimator \emph{within the
+fitted model}, \strong{not a structural causal claim} about the
+data-generating process.  Because it is a contrast it cannot share a
+probability/odds axis with the absolute curves, so it is shown only on the
+additive scales (\code{"logodds"}, \code{"mortality"}, \code{"rmst"}).
 }
 
 \section{Reading an RMST curve (scale = "rmst")}{
@@ -120,6 +152,11 @@ plot(pp, type = "parametric")
 Ishwaran H, Kogalur UB, Blackstone EH, Lauer MS (2008).
 Random survival forests. \emph{The Annals of Applied Statistics},
 \bold{2}(3), 841--860. \doi{10.1214/08-AOAS169}.
+
+Ishwaran H, Blackstone EH (2025).
+Harnessing the power of virtual (digital) twins: Graphical causal tools for
+understanding patient and hospital differences.
+\emph{Computational and Structural Biotechnology Journal}, \bold{28}, 312.
 }
 \seealso{
 \code{\link{gg_partial_varpro}}
