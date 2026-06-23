@@ -126,6 +126,10 @@ Rule (consistent across families):
   `NA` for bounded scales; the plot drops it from `type` and **warns** if the
   user explicitly passed `type = "causal"`.
 
+This rule must be accompanied by an explicit explanation of *what* the `causal`
+curve is and *when* to use it — see §4. The warning message should point the
+user to `scale = "logodds"` (or `mortality`/`rmst` for survival) to see it.
+
 ### 3e. Survival: S(t) learner + data-driven default τ
 
 **New internal `.surv_learner(object, tau)`** — a near-clone of `.rmst_learner`,
@@ -200,6 +204,25 @@ can build the label without re-deriving it.
     log-odds variants; why `causal` is hidden here.
   - **Reading a survival-probability curve (scale = "surv")** — S(τ | x),
     bounded 0–1, τ in the model's time units, higher = more survival.
+  - **What the `causal` curve is, and when to use it** — a dedicated section
+    (it is the most easily-misread of the three curves):
+    - *What it is:* the **baseline-subtracted local effect** — varPro's
+      **virtual- ("digital-") twins** estimator (Ishwaran & Blackstone, 2025).
+      It shows how the prediction shifts as the focal variable moves *away from
+      the reference grid point*, with the other covariates held at on-manifold
+      (UVT-plausible) values. It is a **contrast** (starts at 0), not a level.
+    - *When to use it:* when you want the local **effect / change-from-baseline**
+      rather than the absolute predicted level — and as a cross-check against the
+      parametric/nonparametric curves (agreement = a trustworthy effect;
+      divergence = inspect).
+    - *Caveat (keep the existing wording):* it is varpro's local estimator
+      *within the fitted model*, **not a structural causal claim** about the
+      data-generating process (no confounding adjustment).
+    - *Why it's hidden on bounded scales (ties to §3d):* a baseline-subtracted
+      contrast cannot share a probability/odds axis with the absolute level
+      curves; it lives on the additive scales (`logodds`/`mortality`/`rmst`).
+    - Add the Ishwaran & Blackstone (2025) virtual-twins reference to
+      `@references` on both `gg_partial_varpro` and `plot.gg_partial_varpro`.
 - `gg_partial_varpro` `@details`: the classification probability default; the
   survival `surv` default at median-follow-up τ; the `surv` learner; the
   units-safe data-driven τ (and how to override with `time`).
