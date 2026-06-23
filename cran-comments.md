@@ -30,6 +30,8 @@ This is a minor feature-and-fix release for the varPro survival workflow.
   0 notes.
 * **win-builder:** R-devel, R-release, and R-oldrelease (Windows Server 2022,
   x86_64) — all Status: OK (0 errors, 0 warnings, 0 notes).
+* **mac-builder:** R 4.6.0 (aarch64-apple-darwin23, macOS) — Status: OK
+  (0 errors, 0 warnings, 0 notes).
 * **GitHub Actions matrix:** ubuntu-latest (R-devel / R-release /
   R-oldrel-1), windows-latest (R-release), macos-latest (R-release).
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
