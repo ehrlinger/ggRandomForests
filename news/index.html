@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,9 +52,20 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.1.2/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2.0" id="ggrandomforests-v320">ggRandomForests v3.2.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v320"></a></h2>
+<ul><li>Fix (<a href="https://github.com/ehrlinger/ggRandomForests/issues/118" class="external-link">#118</a>): <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> no longer fails with the cryptic “arguments imply differing number of rows:
+<p>
+, 0” when <code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code> returns a degenerate importance table (0 rows, or <code>p</code> variables with no usable <code>z</code> column) – observed intermittently on survival fits where the release-rule step selects no variables. It now stops with a clear, specific message explaining the empty importance and suggesting a larger <code>ntree</code>. The guard is scoped to the degenerate case only; well-formed fits (survival included) are unaffected – this is not a blanket survival-family block (cf. the reverted <a href="https://github.com/ehrlinger/ggRandomForests/issues/116" class="external-link">#116</a>).</p>
+</li>
+<li>Fix: <code>gg_partial_varpro(scale = "rmst", time = tau)</code> now <em>drives</em> the survival partial computation instead of only relabeling the y-axis. <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro()</a></code> has no time argument, so its default survival learner returns ensemble mortality at every horizon – multi-horizon RMST plots built that way differed only by Monte-Carlo noise, not by <code>tau</code>. <code>scale = "rmst"</code> now passes <code>partialpro()</code> an RMST(<code>tau</code>) learner that integrates the survival curve (<code>integral_0^tau S(t) dt</code>) from <code>object$rf</code>, so the curve genuinely depends on <code>tau</code>. This path recomputes from <code>object</code> (a survival fit) with <code>part_dta = NULL</code>; a precomputed <code>part_dta</code> can only be relabeled, and the function now warns when you try. Also warns when <code>tau</code> exceeds the model’s event-time range (RMST is truncated there) and when <code>time</code> is passed to a scale that ignores it. <code>Imports</code> now requires <code>varPro (&gt;= 3.1.0)</code> (the version exposing the <code>partialpro()</code> <code>learner</code> argument this path relies on).</li>
+<li>Fix: <code>gg_partial_varpro(scale = "surv"/"chf", model = ...)</code> no longer errors when a variable yields an empty continuous or categorical frame (the survival path-C <code>model</code>-label assignment now guards against a 0-row data.frame).</li>
+<li>
+<code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> (and the <code><a href="../reference/gg_partial_varpro.html">gg_partialpro()</a></code> alias) now forward <code>...</code> to <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro()</a></code> on the object-driven path. This restores control over which variables are computed (<code>xvar.names</code>, <code>nvar</code>) and the UVT step (<code>cut</code>, <code>nsmp</code>, …) for the RMST path, which must recompute from <code>object</code> and so cannot accept a precomputed <code>part_dta</code>. Without an explicit <code>xvar.names</code>, <code>partialpro()</code> falls back to <code>varPro::get.topvars(object)</code>, which can return few or no variables for some fits.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.1.2" id="ggrandomforests-v312">ggRandomForests v3.1.2<a class="anchor" aria-label="anchor" href="#ggrandomforests-v312"></a></h2><p class="text-muted">CRAN release: 2026-06-13</p>
 <ul><li>CRAN fix: skip only the single test grow that trips the upstream <code>randomForestSRC</code> gcc-UBSAN report at <code>entry.c:184</code> — the <em>unsupervised</em> isolation forest in <code>gg_isopro</code> (<code>varPro::isopro(method = "unsupv")</code>). Only an unsupervised grow has a 0-length <code>yvar.wt</code>, the vector <code>rfsrcGrow</code> decrements to an out-of-bounds pointer; supervised grows are unaffected. We verified this under <code>-fsanitize=undefined</code>: of every varPro/rfsrc grow in the test suite, only <code>isopro(method = "unsupv")</code> fires <code>entry.c:184</code>. <code>make_iso_fit()</code> therefore calls <code>skip_on_cran()</code> only for <code>method = "unsupv"</code>. ggRandomForests is pure R and unchanged.</li>

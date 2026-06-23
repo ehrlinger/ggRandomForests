@@ -21,7 +21,7 @@ gg_partial_varpro() directly."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.1.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@ gg_partial_varpro() directly."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Partial dependence data from a varPro model</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.1.2/R/gg_partial_varpro.R" class="external-link"><code>R/gg_partial_varpro.R</code></a>, <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.1.2/R/gg_partialpro.R" class="external-link"><code>R/gg_partialpro.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_partial_varpro.R" class="external-link"><code>R/gg_partial_varpro.R</code></a>, <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_partialpro.R" class="external-link"><code>R/gg_partialpro.R</code></a></small>
       <div class="d-none name"><code>gg_partial_varpro.Rd</code></div>
     </div>
 
@@ -90,7 +90,8 @@ be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0;
 <span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nvars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  model <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">gg_partialpro</span><span class="op">(</span></span>
@@ -100,7 +101,8 @@ be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0;
 <span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nvars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  model <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -109,31 +111,63 @@ be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0;
 
 
 <dl><dt id="arg-part-dta">part_dta<a class="anchor" aria-label="anchor" href="#arg-part-dta"></a></dt>
-<dd><p>Passed to <code>gg_partial_varpro</code>.</p></dd>
+<dd><p>Partial plot data from <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro</a></code>.  Each
+element must contain <code>xvirtual</code>, <code>xorg</code>, <code>yhat.par</code>,
+<code>yhat.nonpar</code>, and <code>yhat.causal</code>.  Supply at least one of
+<code>part_dta</code> or <code>object</code>.</p></dd>
 
 
 <dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>Passed to <code>gg_partial_varpro</code>.</p></dd>
+<dd><p>A fitted <code>varpro</code> object, the forest the partial data
+came from.  When supplied it provides the provenance metadata, and when
+<code>part_dta</code> is <code>NULL</code> it is passed to
+<code>varPro::partialpro(object)</code> for you.  Required when
+<code>scale %in% c("surv","chf")</code>.</p></dd>
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>Passed to <code>gg_partial_varpro</code>.</p></dd>
+<dd><p>Character; sets the y-axis label and, for survival forests,
+the output type.  One of <code>"auto"</code> (default), <code>"mortality"</code>,
+<code>"rmst"</code>, <code>"surv"</code>, or <code>"chf"</code>.</p></dd>
 
 
 <dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
-<dd><p>Passed to <code>gg_partial_varpro</code>.</p></dd>
+<dd><p>Numeric; the evaluation time point.  Required when
+<code>scale = "rmst"</code> (the RMST horizon \(\tau\)), where it now
+<em>drives</em> the partial computation through an RMST(\(\tau\))
+learner (see <strong>Details</strong>), not just the axis label.  Optional when
+<code>scale %in% c("surv","chf")</code>: if supplied it is snapped to the
+nearest value in <code>object\$rf\$time.interest</code> and used for both
+computation and axis labeling; if <code>NULL</code>, three quartile time
+points from <code>time.interest</code> are used (see
+<code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code>).</p></dd>
 
 
 <dt id="arg-nvars">nvars<a class="anchor" aria-label="anchor" href="#arg-nvars"></a></dt>
-<dd><p>Passed to <code>gg_partial_varpro</code>.</p></dd>
+<dd><p>Integer; how many variables (list elements) to process.
+Defaults to every variable in <code>part_dta</code>.</p></dd>
 
 
 <dt id="arg-cat-limit">cat_limit<a class="anchor" aria-label="anchor" href="#arg-cat-limit"></a></dt>
-<dd><p>Passed to <code>gg_partial_varpro</code>.</p></dd>
+<dd><p>Integer; a variable with
+<code>length(xvirtual) &lt;= cat_limit</code> is treated as categorical.
+Default <code>10</code>.</p></dd>
 
 
 <dt id="arg-model">model<a class="anchor" aria-label="anchor" href="#arg-model"></a></dt>
-<dd><p>Passed to <code>gg_partial_varpro</code>.</p></dd>
+<dd><p>Character; a label tacked onto every row, handy when you are
+combining results from several models in one figure.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Forwarded to <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">partialpro</a></code> on the
+object-driven path (when <code>part_dta</code> is <code>NULL</code>).  Use this to
+control which variables are computed – e.g. <code>xvar.names</code> or
+<code>nvar</code> – or to tune the isolation-forest UVT step (<code>cut</code>,
+<code>nsmp</code>, ...).  Without it, <code>partialpro</code> falls back to
+<code>varPro::get.topvars(object)</code>, which can return few or no variables
+for some fits (yielding empty <code>continuous</code>/<code>categorical</code>
+frames).  Ignored, with a warning, when <code>part_dta</code> is supplied.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -160,8 +194,21 @@ observation per category level.</p></dd>
 hand, the scale resolves to <code>"mortality"</code> for a survival forest and
 <code>"generic"</code> for a regression or classification forest.  The RMST
 horizon \(\tau\) is <em>not</em> stored in the <code>varpro</code> object
-(varPro 3.1.0), so for RMST-labeled output you have to pass
-<code>scale = "rmst", time = tau</code> yourself.</p>
+(varPro 3.1.0), so RMST output requires you to pass
+<code>scale = "rmst", time = tau</code> explicitly.</p>
+<p><strong>RMST partial dependence (scale = "rmst"):</strong> <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro</a></code>
+has no time argument, so its default survival learner returns ensemble
+mortality at every horizon – passing a horizon through <code>...</code> is
+silently dropped, and multi-horizon plots built that way differ only by
+Monte-Carlo noise, not by \(\tau\).  To get a genuine RMST(\(\tau\))
+curve, <code>scale = "rmst"</code> supplies <code>partialpro</code> a <code>learner</code>
+that returns \(\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,dt\) from the
+survival forest, so the curve actually depends on \(\tau\).  This path
+<strong>recomputes</strong> from <code>object</code>, so it needs <code>object</code> (a
+survival fit) with <code>part_dta = NULL</code>; a precomputed <code>part_dta</code>
+can only be relabeled, and <code>gg_partial_varpro</code> warns when you try.
+A \(\tau\) beyond the model's largest event time is truncated there
+(with a warning), since \(S(t)\) cannot be extrapolated.</p>
 <p><strong>Ensemble mortality (scale = "mortality"):</strong> here the y-axis is
 <em>ensemble mortality</em>, the expected number of events a subject would
 see if they were exposed to the study-average cumulative hazard.  It is
@@ -169,8 +216,11 @@ the same quantity as the <code>rfsrc</code> <code>predicted</code> value for sur
 forests (Ishwaran, Kogalur, Blackstone &amp; Lauer, 2008
 <a href="doi:10.1214/08-AOAS169">doi:10.1214/08-AOAS169</a>).  This is an <strong>unbounded relative-risk
 score</strong>, <em>not</em> a survival probability and not \(1 - S(t)\); don't
-read it as one.  If you want output on the probability scale, refit with
-<code>varpro(..., rmst = tau)</code> and use <code>scale = "rmst"</code>.</p>
+read it as one.  For a bounded, time-anchored survival summary, use
+<code>scale = "rmst", time = tau</code> (restricted mean survival time, in the
+time units of the outcome) or <code>scale = "surv"</code> / <code>"chf"</code>.</p>
+<p>Arguments are documented on <code>gg_partial_varpro</code>; this alias
+shares its formals and forwards every argument unchanged.</p>
     </div>
     <div class="section level2">
     <h2 id="what-partialpro-is-doing">What partialpro is doing<a class="anchor" aria-label="anchor" href="#what-partialpro-is-doing"></a></h2>
