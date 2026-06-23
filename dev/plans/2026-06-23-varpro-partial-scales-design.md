@@ -30,8 +30,9 @@ section. v3.3.0 extends the same idea to **classification probability** and
 2. Survival partial plots can return **survival probability S(τ)** on the same
    partialpro/UVT engine as mortality and RMST.
 3. Never silently hand back the misleading unbounded mortality score for a
-   survival fit: a no-scale/no-time survival call **errors** asking the user to
-   choose.
+   survival fit: `scale = "auto"` defaults to bounded **survival probability**
+   S(τ) at a units-safe, data-driven default τ (mortality stays an explicit
+   opt-in).
 4. Document every scale's interpretation honestly.
 
 ### Non-goals
@@ -86,7 +87,7 @@ scale = c("auto", "prob", "odds", "logodds",      # classification (+ generic)
 |---|---|---|---|
 | `auto` | class | `prob` | **changed** (was `generic`) |
 | `auto` | regr | `generic` | unchanged |
-| `auto` | surv | — | **errors** (see 3e) |
+| `auto` | surv | `surv` | **changed** (was `mortality`); τ defaults to median follow-up (3e) |
 | `auto` | unknown (part_dta only) | `generic` | unchanged — backward compatible |
 | explicit | any | itself | unchanged |
 
@@ -125,7 +126,7 @@ Rule (consistent across families):
   `NA` for bounded scales; the plot drops it from `type` and **warns** if the
   user explicitly passed `type = "causal"`.
 
-### 3e. Survival: S(t) learner + required τ
+### 3e. Survival: S(t) learner + data-driven default τ
 
 **New internal `.surv_learner(object, tau)`** — a near-clone of `.rmst_learner`,
 replacing the integral with a single-column pull:
@@ -140,20 +141,31 @@ surv[, which.min(abs(times - tau))]    # S(tau | x), snapped to nearest event ti
 Returns a bounded 0–1 vector; partialpro fits par/nonpar on it directly (no
 extractor-level transform needed — the learner already yields probability).
 
+**Default τ (the key safety property).** When `time` is `NULL` for a survival
+scale that needs one (`surv`, `rmst`), τ defaults to the **median follow-up
+time** — `median()` of the model's observed event/censoring times. This is
+*units-safe by construction*: it is computed from the fit, so it is always in
+the model's own time units and cannot mismatch them — unlike a hand-typed τ,
+which is exactly how the ST1267 days-vs-years bug arose. A derived default is
+therefore *safer* than requiring the user to type a number. The resolved τ
+appears in the y-label (`"... at t = X"`) and a one-time message; `time = τ`
+overrides it.
+
 Routing & defaults:
 
+- `scale = "auto"` + survival → **`surv`** at the default τ — the bounded,
+  interpretable default (retires the old unbounded `mortality` default).
 - `scale = "surv"` → **path A** via `.surv_learner` (retires the old path-C
-  `surv` route). **Requires `time = τ`.**
-- `scale = "rmst"` → path A via `.rmst_learner`, requires `time = τ` (unchanged).
-- `scale = "mortality"` → path A, default learner, no τ (explicit opt-in).
+  `surv` route); τ defaults to median follow-up if not supplied.
+- `scale = "rmst"` → path A via `.rmst_learner`; τ defaults to median follow-up
+  if not supplied (**loosened** from v3.2.0, which *required* `time`).
+- `scale = "mortality"` → path A, default learner, no τ (explicit opt-in; the
+  unbounded score is never the silent default now).
 - `scale = "chf"` → **path C** unchanged (no learner; cumulative hazard).
-- `scale = "auto"` + survival → **error**: no silent default. Message asks for
-  an explicit `scale` (`surv`/`rmst`/`mortality`/`chf`) and, for `surv`/`rmst`,
-  a `time`.
 
-τ is always user-supplied for survival; no auto/median default (user decision).
-`.validate_varpro_inputs` / `.validate_rmst_inputs` extend to require `time` for
-`scale = "surv"` too, and to raise the `auto`+survival error.
+No survival scale errors on a missing `time` any more — the default τ fills in.
+`.validate_*` drop the `surv`/`rmst` "requires time" stops; a *supplied* `time`
+still gets the scalar-finite check.
 
 ### 3f. Y-axis labels (`.partial_varpro_ylabel`)
 
@@ -188,11 +200,13 @@ can build the label without re-deriving it.
     log-odds variants; why `causal` is hidden here.
   - **Reading a survival-probability curve (scale = "surv")** — S(τ | x),
     bounded 0–1, τ in the model's time units, higher = more survival.
-- `gg_partial_varpro` `@details`: the classification probability default, the
-  survival no-default error, the `surv` learner.
-- NEWS v3.3.0 bullets: classification probability default (behaviour change),
-  survival `surv` learner + required-scale/time for survival (behaviour change),
-  RMST interpretation docs (already present).
+- `gg_partial_varpro` `@details`: the classification probability default; the
+  survival `surv` default at median-follow-up τ; the `surv` learner; the
+  units-safe data-driven τ (and how to override with `time`).
+- NEWS v3.3.0 bullets: classification probability default (behaviour change);
+  survival `auto` → `surv` default + `surv`/`rmst` τ defaulting to median
+  follow-up (behaviour change); the `surv` learner; RMST interpretation docs
+  (already present).
 
 ---
 
@@ -209,8 +223,10 @@ CRAN-safe unit tests (no varpro grow) where possible:
   plogis-of-mean) verified on a hand-computable case.
 - `causal` hidden on bounded scales; warning when `type = "causal"` requested
   with `prob`/`odds`/`surv`.
-- Validation: `scale = "surv"` without `time` errors; `scale = "auto"` +
-  survival object errors asking for scale/time.
+- Default τ: `scale = "surv"`/`"rmst"` with `time = NULL` resolve τ to the
+  median follow-up (verify the resolved τ equals `median()` of the observed
+  times and is surfaced in the label/message); `scale = "auto"` + a survival
+  object resolves to `surv` (not mortality, no error).
 - Labels: y-label strings for each scale (incl. target-class name).
 - End-to-end (skip_on_cran): a real classification varpro fit →
   `scale = "prob"` populated, values in [0, 1]; a survival fit →
@@ -228,9 +244,12 @@ Two deliberate behaviour changes, documented prominently in NEWS:
 1. **Classification `scale = "auto"` default changes** from generic log-odds to
    probability. Existing object-driven classification calls now return
    probability values + a `P(Y=…)` label. (`part_dta`-only calls are unchanged.)
-2. **Survival `scale = "auto"` now errors** (was ensemble mortality). Existing
-   no-arg survival calls must add an explicit `scale` (+ `time`). The old
-   mortality behaviour remains available via `scale = "mortality"`.
+2. **Survival `scale = "auto"` now returns survival probability** S(τ) at the
+   median-follow-up default τ (was ensemble mortality). The old mortality
+   behaviour remains available via `scale = "mortality"`. Also: `scale = "rmst"`
+   and `"surv"` now **default τ to median follow-up** when `time` is omitted
+   (v3.2.0's `rmst` required `time` — this is a loosening, not a break); a
+   supplied `time` behaves as before.
 
 The old path-C `surv` route is retired (replaced by the learner); `chf` is
 unchanged.
@@ -244,6 +263,11 @@ unchanged.
   levels (`object$y` vs `object$yvar.org`), so the label names the correct
   class. Resolve during implementation; fall back to `Probability` (no class
   name) if it can't be determined.
+- **Median-follow-up source.** Confirm the object slot for the observed survival
+  times to compute the default τ = `median(follow-up)` — likely the time column
+  of `object$rf$yvar` (the survival response), *not* `time.interest` (which is
+  the distinct event times, unweighted by subjects). Fall back to
+  `median(object$rf$time.interest)` if the raw times aren't cleanly reachable.
 
 ---
 
