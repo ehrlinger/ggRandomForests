@@ -333,17 +333,21 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## matching partialpro's default-learner contract.
 #' @keywords internal
 .rmst_learner <- function(object, tau) {
-  rf    <- object$rf
-  times <- rf$time.interest
+  rf <- object$rf
   function(newx) {
     if (missing(newx)) {
       pr   <- randomForestSRC::predict.rfsrc(rf, perf.type = "none")
       surv <- pr$survival.oob
       if (is.null(surv)) surv <- pr$survival
     } else {
-      surv <- randomForestSRC::predict.rfsrc(rf, newx,
-                                             perf.type = "none")$survival
+      pr   <- randomForestSRC::predict.rfsrc(rf, newx, perf.type = "none")
+      surv <- pr$survival
     }
+    ## Integrate against THIS prediction's own time grid: predict.rfsrc may
+    ## return survival on a different grid than rf$time.interest (e.g. for
+    ## newdata), and a mismatch would silently misalign the integral.
+    times <- pr$time.interest
+    if (is.null(times)) times <- rf$time.interest
     .rmst_from_survival(surv, times, tau)
   }
 }
@@ -357,6 +361,14 @@ gg_partial_varpro <- function(part_dta  = NULL,
 .rmst_from_survival <- function(surv, times, tau) {
   if (is.null(dim(surv))) surv <- matrix(surv, nrow = 1L)
   n_times <- length(times)
+  ## Columns of `surv` must line up 1:1 with `times`, else the integration
+  ## below silently misaligns (R recycles / drops via negative indexing) and
+  ## returns a wrong RMST. Fail loud instead.
+  if (ncol(surv) != n_times) {
+    stop(sprintf(paste0(".rmst_from_survival: survival matrix has %d column(s) ",
+                        "but %d time point(s); the grids must match."),
+                 ncol(surv), n_times), call. = FALSE)
+  }
   t_left  <- c(0, times)                                  # length J + 1
   upper   <- pmin(t_left[-1], tau)                        # length J
   lower   <- pmin(t_left[-(n_times + 1L)], tau)           # length J

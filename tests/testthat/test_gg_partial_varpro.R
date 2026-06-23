@@ -230,6 +230,15 @@ test_that(".rmst_from_survival accepts a bare numeric vector (single curve)", {
   expect_equal(out, 2.3)            # same as the 1-row matrix case
 })
 
+test_that(".rmst_from_survival errors on a time-grid / column mismatch", {
+  # surv has 3 columns but only 2 time points -> must fail loud, not misalign
+  expect_error(
+    ggRandomForests:::.rmst_from_survival(matrix(c(0.9, 0.6, 0.3), nrow = 1),
+                                          c(1, 2), tau = 2),
+    regexp = "grids must match|time point"
+  )
+})
+
 test_that(".resolve_varpro_scale maps 'auto' by family, passes others through", {
   expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", "surv"),
                "mortality")
