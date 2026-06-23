@@ -1,5 +1,15 @@
 Package: ggRandomForests
-Version: 3.2.0
+Version: 3.3.0
+
+ggRandomForests v3.3.0
+======================
+* Documentation: `plot.gg_partial_varpro()` gains a "Reading an RMST curve"
+  section explaining how to interpret the `scale = "rmst"` y-axis -- RMST(tau)
+  is the expected event-free time within the first tau time-units (area under
+  S(t) out to tau), read in the model's own time units, bounded by tau, and
+  higher-is-better (the opposite direction from ensemble mortality). It also
+  notes that tau must be supplied in the fit's time units, since a tau beyond
+  the largest event time truncates to the full restricted mean. No code change.
 
 ggRandomForests v3.2.0
 ======================
