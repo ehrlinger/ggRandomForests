@@ -112,6 +112,8 @@ plot.gg_partial_varpro <- function(x,
                                     type = c("parametric", "nonparametric",
                                              "causal"),
                                     ...) {
+  type_user <- !missing(type)   # was 'causal' asked for, or is it the default?
+
   ## C-path: delegate to plot.gg_partial_rfsrc via NextMethod().
   prov <- attr(x, "provenance")
   if (!is.null(prov) && identical(prov$path, "C")) {
@@ -121,6 +123,20 @@ plot.gg_partial_varpro <- function(x,
   ## A-path rendering.
   type   <- match.arg(type, several.ok = TRUE)
   ylabel <- .partial_varpro_ylabel(prov)
+
+  ## On bounded scales (prob/odds/surv) the causal contrast is not shown
+  ## (it cannot share the level axis). Drop it; warn only if asked explicitly.
+  if (!is.null(prov) && .is_bounded_scale(prov$scale %||% "generic")) {
+    if (type_user && "causal" %in% type) {
+      warning("plot.gg_partial_varpro: 'causal' is not shown on the ",
+              prov$scale, " scale (it is a contrast, not a level). ",
+              "Use scale = 'logodds' (classification) or 'mortality'/'rmst' ",
+              "(survival) to see it.", call. = FALSE)
+    }
+    type <- setdiff(type, "causal")
+    # if causal was the only requested curve, fall back to the level curves
+    if (length(type) == 0L) type <- c("parametric", "nonparametric")
+  }
 
   gg_cont <- NULL
   if (!is.null(x$continuous) && nrow(x$continuous) > 0) {
@@ -181,32 +197,28 @@ plot.gg_partial_varpro <- function(x,
 .partial_varpro_ylabel <- function(prov) {
   if (is.null(prov)) return("Partial Effect")
   scale <- prov$scale %||% "generic"
+  tgt <- prov$target
+  has_tgt <- !is.null(tgt) && !is.na(tgt)
   switch(scale,
+    prob      = if (has_tgt) sprintf("P(Y = %s)", tgt) else "Probability",
+    odds      = if (has_tgt) sprintf("Odds(Y = %s)", tgt) else "Odds",
+    logodds   = if (has_tgt) sprintf("Log-odds(Y = %s)", tgt) else "Log-odds",
     mortality = "Ensemble mortality (expected events)",
     rmst      = {
       tau <- prov$rmst_tau
-      if (!is.null(tau) && !is.na(tau)) {
-        sprintf("RMST (\u03c4 = %g)", tau)
-      } else {
-        "RMST"
-      }
+      if (!is.null(tau) && !is.na(tau)) sprintf("RMST (\u03c4 = %g)", tau)
+      else "RMST"
     },
     surv      = {
       t <- prov$rmst_tau
-      if (!is.null(t) && !is.na(t)) {
-        sprintf("Survival probability at t = %g", t)
-      } else {
-        "Survival probability"
-      }
+      if (!is.null(t) && !is.na(t)) sprintf("Survival probability at t = %g", t)
+      else "Survival probability"
     },
     chf       = {
       t <- prov$rmst_tau
-      if (!is.null(t) && !is.na(t)) {
-        sprintf("Cumulative hazard at t = %g", t)
-      } else {
-        "Cumulative hazard"
-      }
+      if (!is.null(t) && !is.na(t)) sprintf("Cumulative hazard at t = %g", t)
+      else "Cumulative hazard"
     },
-    "Partial Effect"   # generic / auto-regr / auto-class / unknown
+    "Partial Effect"   # generic / regr / unknown
   )
 }

@@ -41,11 +41,11 @@ test_that("gg_partial_varpro: scale='chf' without object → stop", {
   )
 })
 
-test_that("gg_partial_varpro: scale='rmst' without time → stop", {
-  expect_error(
-    gg_partial_varpro(part_dta = make_mock_vpro_data(), scale = "rmst"),
-    regexp = "requires 'time'"
-  )
+test_that("gg_partial_varpro: scale='rmst' part_dta-only no longer needs time", {
+  # 3.3.0: tau defaults when recomputing from object; with part_dta only there
+  # is nothing to recompute, so this is a label-only call and must not error.
+  expect_no_error(suppressWarnings(
+    gg_partial_varpro(part_dta = make_mock_vpro_data(), scale = "rmst")))
 })
 
 ## ── Class & structure ────────────────────────────────────────────────────────
@@ -240,14 +240,86 @@ test_that(".rmst_from_survival errors on a time-grid / column mismatch", {
 })
 
 test_that(".resolve_varpro_scale maps 'auto' by family, passes others through", {
-  expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", "surv"),
-               "mortality")
+  # 3.3.0: bounded/interpretable defaults
+  expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", "surv"),  "surv")
+  expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", "class"), "prob")
   expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", "regr"),
                "generic")
   expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", NA_character_),
                "generic")
-  expect_equal(ggRandomForests:::.resolve_varpro_scale("rmst", "surv"),
-               "rmst")             # explicit scale returned unchanged
+  # explicit scales returned unchanged
+  expect_equal(ggRandomForests:::.resolve_varpro_scale("rmst", "surv"), "rmst")
+  expect_equal(ggRandomForests:::.resolve_varpro_scale("odds", "class"), "odds")
+})
+
+## ── v3.3.0 scale transform + bounded predicate ───────────────────────────────
+test_that(".scale_transform applies prob/odds/identity", {
+  z <- matrix(c(0, log(3)), nrow = 1)        # log-odds: 0->.5, log(3)->.75
+  expect_equal(ggRandomForests:::.scale_transform(z, "prob"),
+               matrix(c(0.5, 0.75), nrow = 1))
+  expect_equal(ggRandomForests:::.scale_transform(z, "odds"),
+               matrix(c(1, 3), nrow = 1))
+  for (s in c("logodds", "generic", "surv", "rmst", "mortality"))
+    expect_equal(ggRandomForests:::.scale_transform(z, s), z)
+})
+
+test_that(".is_bounded_scale flags prob/odds/surv only", {
+  for (s in c("prob", "odds", "surv"))
+    expect_true(ggRandomForests:::.is_bounded_scale(s))
+  for (s in c("logodds", "generic", "mortality", "rmst", "chf"))
+    expect_false(ggRandomForests:::.is_bounded_scale(s))
+})
+
+## ── v3.3.0 conversion in the extractor (mean of probabilities) ───────────────
+test_that("gg_partial_varpro: scale='prob' is mean of plogis, causal NA", {
+  d <- make_mock_vpro_data()
+  res <- gg_partial_varpro(d, scale = "prob")
+  age <- res$continuous[res$continuous$name == "age", ]
+  expected <- colMeans(stats::plogis(d$age$yhat.par), na.rm = TRUE)
+  expect_equal(age$parametric, expected)
+  expect_true(all(age$parametric >= 0 & age$parametric <= 1))
+  expect_true(all(is.na(res$continuous$causal)))
+})
+
+test_that("gg_partial_varpro: scale='logodds' keeps raw values + causal", {
+  d <- make_mock_vpro_data()
+  res <- gg_partial_varpro(d, scale = "logodds")
+  age <- res$continuous[res$continuous$name == "age", ]
+  expect_equal(age$parametric, colMeans(d$age$yhat.par, na.rm = TRUE))
+  expect_false(all(is.na(res$continuous$causal)))
+})
+
+## ── v3.3.0 survival probability at tau (pure) + default-tau fallback ──────────
+test_that(".surv_at_tau pulls S(tau) snapped to nearest event time", {
+  surv  <- matrix(c(0.9, 0.6, 0.3), nrow = 1)
+  times <- c(1, 2, 3)
+  expect_equal(ggRandomForests:::.surv_at_tau(surv, times, 2),   0.6)
+  expect_equal(ggRandomForests:::.surv_at_tau(surv, times, 2.1), 0.6)
+  expect_equal(ggRandomForests:::.surv_at_tau(surv, times, 3),   0.3)
+})
+
+test_that(".default_surv_tau falls back to median(time.interest)", {
+  fake <- list(rf = list(time.interest = c(2, 4, 6, 8)))
+  expect_equal(ggRandomForests:::.default_surv_tau(fake), 5)
+})
+
+## ── v3.3.0 y-axis labels ─────────────────────────────────────────────────────
+test_that(".partial_varpro_ylabel: prob/odds/logodds/surv labels", {
+  lab <- ggRandomForests:::.partial_varpro_ylabel
+  expect_match(lab(list(scale = "prob", target = "yes")),    "P\\(Y = yes\\)")
+  expect_match(lab(list(scale = "odds", target = "yes")),    "Odds\\(Y = yes\\)")
+  expect_match(lab(list(scale = "logodds", target = "yes")), "Log-odds")
+  expect_equal(lab(list(scale = "prob", target = NA)),       "Probability")
+  expect_match(lab(list(scale = "surv", rmst_tau = 1000)),
+               "Survival probability at t = 1000")
+})
+
+## ── v3.3.0 plot: causal hidden on bounded scales ─────────────────────────────
+test_that("plot.gg_partial_varpro: bounded scale drops causal, warns if asked", {
+  d   <- make_mock_vpro_data()
+  res <- gg_partial_varpro(d, nvars = 1, scale = "prob")
+  expect_s3_class(plot(res), "ggplot")
+  expect_warning(plot(res, type = "causal"), regexp = "causal")
 })
 
 test_that(".rmst_from_survival is vectorised over rows and bounded by tau", {
@@ -392,12 +464,71 @@ test_that(".rmst_learner returns RMST(tau) for OOB and newdata calls", {
   expect_true(all(oob >= 0 & oob <= tau + 1e-6))
 })
 
-## ── C-path (scale = surv / chf) ──────────────────────────────────────────────
+## ── v3.3.0 survival S(t) learner + default tau (rfsrc fit; no varpro grow) ────
+test_that(".surv_learner returns S(tau) in [0,1] for OOB and newdata", {
+  skip_if_not_installed("randomForestSRC")
+  m       <- make_mock_cpath()
+  tau     <- stats::median(m$rf$time.interest)
+  learner <- ggRandomForests:::.surv_learner(list(rf = m$rf), tau)
+  oob <- learner()
+  nd  <- learner(survival::veteran[1:5, ])
+  expect_length(oob, nrow(m$rf$xvar))
+  expect_length(nd, 5L)
+  expect_true(all(oob >= 0 & oob <= 1))
+  expect_true(all(nd  >= 0 & nd  <= 1))
+})
+
+test_that(".default_surv_tau is the median observed survival time", {
+  skip_if_not_installed("randomForestSRC")
+  m   <- make_mock_cpath()
+  tau <- ggRandomForests:::.default_surv_tau(list(rf = m$rf))
+  expect_equal(tau, stats::median(survival::veteran$time))
+})
+
+## ── v3.3.0 survival routing + classification provenance (real varpro fits) ───
+test_that("gg_partial_varpro: scale='surv' via learner, in [0,1], default tau", {
+  skip_on_cran()
+  skip_if_not_installed("randomForestSRC"); skip_if_not_installed("varPro")
+  set.seed(13)
+  pbc <- get(utils::data("pbc", package = "randomForestSRC",
+                         envir = environment()))
+  pbc <- pbc[stats::complete.cases(pbc), ]
+  vp  <- varPro::varpro(Surv(days, status) ~ ., pbc, ntree = 60, nvar = 2)
+
+  r <- gg_partial_varpro(object = vp, scale = "surv", time = 1000, nvars = 1)
+  expect_equal(attr(r, "provenance")$scale, "surv")
+  expect_equal(attr(r, "provenance")$path,  "A")
+  expect_true(all(r$continuous$parametric >= 0 &
+                  r$continuous$parametric <= 1))
+  expect_true(all(is.na(r$continuous$causal)))
+
+  rd <- suppressMessages(gg_partial_varpro(object = vp, scale = "surv",
+                                           nvars = 1))
+  expect_equal(attr(rd, "provenance")$rmst_tau,
+               ggRandomForests:::.default_surv_tau(vp))
+
+  ra <- suppressMessages(gg_partial_varpro(object = vp, nvars = 1))
+  expect_equal(attr(ra, "provenance")$scale, "surv")
+})
+
+test_that("gg_partial_varpro: classification provenance records target class", {
+  skip_on_cran(); skip_if_not_installed("varPro")
+  set.seed(5)
+  dat <- data.frame(y = factor(rep(c("a", "b"), 60)),
+                    x1 = rnorm(120), x2 = rnorm(120))
+  vp  <- varPro::varpro(y ~ ., dat, ntree = 40, nvar = 2)
+  r   <- suppressMessages(
+    gg_partial_varpro(object = vp, scale = "prob", nvars = 1))
+  expect_equal(attr(r, "provenance")$scale, "prob")
+  expect_equal(attr(r, "provenance")$target, "b")
+})
+
+## ── C-path (scale = chf; surv now uses the path-A learner) ───────────────────
 test_that("gg_partial_varpro: C-path returns gg_partial_varpro class", {
   skip_if_not_installed("randomForestSRC")
   m      <- make_mock_cpath()
   result <- suppressWarnings(
-    gg_partial_varpro(object = m$vp, scale = "surv",
+    gg_partial_varpro(object = m$vp, scale = "chf",
                       time = median(m$rf$time.interest))
   )
   expect_s3_class(result, "gg_partial_varpro")
@@ -407,18 +538,18 @@ test_that("gg_partial_varpro: C-path provenance path='C'", {
   skip_if_not_installed("randomForestSRC")
   m      <- make_mock_cpath()
   result <- suppressWarnings(
-    gg_partial_varpro(object = m$vp, scale = "surv",
+    gg_partial_varpro(object = m$vp, scale = "chf",
                       time = median(m$rf$time.interest))
   )
   expect_equal(attr(result, "provenance")$path, "C")
-  expect_equal(attr(result, "provenance")$scale, "surv")
+  expect_equal(attr(result, "provenance")$scale, "chf")
 })
 
 test_that("gg_partial_varpro: plot C-path returns ggplot", {
   skip_if_not_installed("randomForestSRC")
   m      <- make_mock_cpath(xvar_subset = 1L)
   result <- suppressWarnings(
-    gg_partial_varpro(object = m$vp, scale = "surv",
+    gg_partial_varpro(object = m$vp, scale = "chf",
                       time = median(m$rf$time.interest))
   )
   gg <- plot(result)
@@ -431,7 +562,7 @@ test_that("gg_partial_varpro: C-path 'model' label is attached to the frames", {
   # frames populate, so the model column is attached to each.
   m      <- make_mock_cpath()
   result <- suppressWarnings(
-    gg_partial_varpro(object = m$vp, scale = "surv",
+    gg_partial_varpro(object = m$vp, scale = "chf",
                       time = median(m$rf$time.interest), model = "forestC")
   )
   got_cont <- is.data.frame(result$continuous) &&

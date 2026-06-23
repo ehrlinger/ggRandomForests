@@ -184,8 +184,8 @@
 #' @export
 gg_partial_varpro <- function(part_dta  = NULL,
                                object    = NULL,
-                               scale     = c("auto", "rmst", "mortality",
-                                             "surv", "chf"),
+                               scale     = c("auto", "prob", "odds", "logodds",
+                                             "rmst", "surv", "mortality", "chf"),
                                time      = NULL,
                                nvars     = NULL,
                                cat_limit = 10,
@@ -200,9 +200,23 @@ gg_partial_varpro <- function(part_dta  = NULL,
             "'part_dta' is supplied (nothing is recomputed).", call. = FALSE)
   }
 
-  ## ---- C-path: route through gg_partial_rfsrc ----------------------------
-  if (!is.null(object) && scale %in% c("surv", "chf")) {
+  ## Resolve 'auto' to a concrete scale once; all routing, conversion, labels
+  ## and provenance below use the resolved value. (Validation above used the
+  ## raw scale, which must still distinguish 'auto'.)
+  scale <- .resolve_varpro_scale(
+    scale, if (!is.null(object)) object$family else NA_character_)
+
+  ## ---- C-path: route CHF through gg_partial_rfsrc ------------------------
+  ## (surv now uses the partialpro S(t) learner on path A, below.)
+  if (!is.null(object) && scale == "chf") {
     return(.gg_partial_varpro_cpath(object, scale, time, model))
+  }
+
+  ## ---- Survival default horizon: surv/rmst fill tau from the data --------
+  if (!is.null(object) && scale %in% c("surv", "rmst") && is.null(time)) {
+    time <- .default_surv_tau(object)
+    message("gg_partial_varpro: using default horizon tau = ", signif(time, 4),
+            " (median follow-up). Set 'time' to choose another.")
   }
 
   ## ---- RMST guardrails (A-path) ------------------------------------------
@@ -217,19 +231,24 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## object-driven path can select/limit variables the same way an explicit
   ## partialpro() call would -- otherwise it falls back to get.topvars(object).
   if (is.null(part_dta)) {
-    part_dta <- if (scale == "rmst") {
-      varPro::partialpro(object, learner = .rmst_learner(object, time), ...)
-    } else {
+    learner <- switch(scale,
+      rmst = .rmst_learner(object, time),
+      surv = .surv_learner(object, time),
+      NULL)
+    part_dta <- if (is.null(learner)) {
       varPro::partialpro(object, ...)
+    } else {
+      varPro::partialpro(object, learner = learner, ...)
     }
   }
   if (is.null(nvars)) {
     nvars <- length(part_dta)
   }
 
-  prov <- .varpro_provenance(object, scale, time, path = "A")
+  prov <- .varpro_provenance(object, scale, time, path = "A",
+                             target = .varpro_target(object, list(...)))
 
-  dfs <- .build_varpro_dfs(part_dta, nvars, cat_limit)
+  dfs <- .build_varpro_dfs(part_dta, nvars, cat_limit, scale)
   continuous  <- dfs$continuous
   categorical <- dfs$categorical
 
@@ -258,7 +277,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
          call. = FALSE)
   }
   .validate_partial_time(time)
-  if (scale == "rmst") .validate_rmst_inputs(part_dta, object, time)
+  if (scale %in% c("rmst", "surv")) .validate_rmst_inputs(part_dta, object, time)
   invisible(NULL)
 }
 
@@ -274,14 +293,10 @@ gg_partial_varpro <- function(part_dta  = NULL,
   invisible(NULL)
 }
 
-## RMST needs a horizon, and (when we recompute from 'object', part_dta = NULL)
-## a survival fit.
+## Survival learner scales (rmst/surv) need a survival fit when recomputing
+## from 'object'. tau is optional now (defaults to median follow-up).
 #' @keywords internal
 .validate_rmst_inputs <- function(part_dta, object, time) {
-  if (is.null(time)) {
-    stop("scale = 'rmst' requires 'time' (the RMST horizon tau)",
-         call. = FALSE)
-  }
   if (is.null(part_dta) && !is.null(object) &&
       !identical(object$family, "surv")) {
     stop("scale = 'rmst' requires a survival varpro fit ",
@@ -295,7 +310,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## largest event time is truncated.  Also flag a 'time' a scale ignores.
 #' @keywords internal
 .warn_varpro_rmst <- function(part_dta, object, scale, time) {
-  if (scale == "rmst") {
+  if (scale %in% c("rmst", "surv")) {
     if (!is.null(part_dta)) {
       warning("gg_partial_varpro: scale = 'rmst' cannot drive the partial ",
               "computation from a precomputed 'part_dta'; the curves are ",
@@ -378,8 +393,74 @@ gg_partial_varpro <- function(part_dta  = NULL,
   as.numeric(level %*% width)
 }
 
+## Survival probability at horizon tau from a survival matrix: the S(tau)
+## column, snapped to the nearest event time. `surv` is n x J with column k =
+## S(times[k]) (randomForestSRC layout).
 #' @keywords internal
-.varpro_provenance <- function(object, scale, time, path = "A") {
+.surv_at_tau <- function(surv, times, tau) {
+  if (is.null(dim(surv))) surv <- matrix(surv, nrow = 1L)
+  if (ncol(surv) != length(times)) {
+    stop(sprintf(paste0(".surv_at_tau: survival matrix has %d column(s) but ",
+                        "%d time point(s); the grids must match."),
+                 ncol(surv), length(times)), call. = FALSE)
+  }
+  surv[, which.min(abs(times - tau))]
+}
+
+## S(tau) learner for varPro::partialpro: maps feature rows to S(tau | x) from
+## the survival forest in object$rf. Same prediction machinery as
+## .rmst_learner; pulls the S(tau) column instead of integrating.
+#' @keywords internal
+.surv_learner <- function(object, tau) {
+  rf <- object$rf
+  function(newx) {
+    if (missing(newx)) {
+      pr   <- randomForestSRC::predict.rfsrc(rf, perf.type = "none")
+      surv <- pr$survival.oob
+      if (is.null(surv)) surv <- pr$survival
+    } else {
+      pr   <- randomForestSRC::predict.rfsrc(rf, newx, perf.type = "none")
+      surv <- pr$survival
+    }
+    times <- pr$time.interest
+    if (is.null(times)) times <- rf$time.interest
+    .surv_at_tau(surv, times, tau)
+  }
+}
+
+## Data-driven, units-safe default horizon for survival scales: the median
+## observed follow-up time (the survival response's time column). Always in the
+## model's own units, so it cannot mismatch them. Falls back to the median of
+## the distinct event times if the raw response is not reachable.
+#' @keywords internal
+.default_surv_tau <- function(object) {
+  rf  <- object$rf
+  yv  <- rf$yvar
+  tms <- NULL
+  if (!is.null(yv)) {
+    yv   <- as.data.frame(yv)
+    tcol <- if (!is.null(rf$yvar.names)) rf$yvar.names[1] else names(yv)[1]
+    tms  <- suppressWarnings(as.numeric(yv[[tcol]]))
+  }
+  if (is.null(tms) || !any(is.finite(tms))) tms <- rf$time.interest
+  stats::median(tms, na.rm = TRUE)
+}
+
+## Classification target class label: the `target` passed through ... if any,
+## else the last factor level of the response (partialpro's default target).
+## NA for non-classification fits or when only part_dta is supplied.
+#' @keywords internal
+.varpro_target <- function(object, dots) {
+  if (is.null(object) || !identical(object$family, "class"))
+    return(NA_character_)
+  if (!is.null(dots$target)) return(as.character(dots$target))
+  lv <- levels(object$y.org)
+  if (is.null(lv)) lv <- levels(as.factor(object$y))
+  if (is.null(lv)) NA_character_ else lv[length(lv)]
+}
+
+#' @keywords internal
+.varpro_provenance <- function(object, scale, time, path = "A", target = NA) {
   prov_family <- if (!is.null(object)) object$family     else NA_character_
   prov_xvars  <- if (!is.null(object)) object$xvar.names else NA_character_
   prov_n      <- if (!is.null(object)) nrow(object$x)    else NA_integer_
@@ -392,13 +473,15 @@ gg_partial_varpro <- function(part_dta  = NULL,
     n          = prov_n,
     scale      = scale_used,
     rmst_tau   = time,
+    target     = target,
     xvar.names = prov_xvars,
     path       = path
   )
 }
 
 #' @keywords internal
-.build_varpro_dfs <- function(part_dta, nvars, cat_limit) {
+.build_varpro_dfs <- function(part_dta, nvars, cat_limit, scale = "generic") {
+  bounded   <- .is_bounded_scale(scale)
   cont_list <- list()
   cat_list  <- list()
   for (feature in seq(nvars)) {
@@ -407,14 +490,18 @@ gg_partial_varpro <- function(part_dta  = NULL,
     if (length(feat$xvirtual) > cat_limit) {
       plt.df <- dplyr::bind_cols(
         variable      = feat$xvirtual,
-        parametric    = colMeans(feat$yhat.par,    na.rm = TRUE),
-        nonparametric = colMeans(feat$yhat.nonpar, na.rm = TRUE),
-        causal        = colMeans(feat$yhat.causal, na.rm = TRUE)
+        parametric    = colMeans(.scale_transform(feat$yhat.par,    scale),
+                                 na.rm = TRUE),
+        nonparametric = colMeans(.scale_transform(feat$yhat.nonpar, scale),
+                                 na.rm = TRUE),
+        # `causal` is a centered contrast: not shown on bounded scales
+        causal        = if (bounded) NA_real_ else
+          colMeans(feat$yhat.causal, na.rm = TRUE)
       )
       plt.df$name <- feat_name
       cont_list[[feature]] <- plt.df
     } else {
-      cat_list[[feature]] <- .process_cat_var(feat, feat_name)
+      cat_list[[feature]] <- .process_cat_var(feat, feat_name, scale)
     }
   }
   list(
@@ -427,19 +514,40 @@ gg_partial_varpro <- function(part_dta  = NULL,
 .resolve_varpro_scale <- function(scale, family) {
   if (scale != "auto") return(scale)
   if (is.na(family) || is.null(family)) return("generic")
-  if (family == "surv")  return("mortality")
-  "generic"   # regr, class, or unknown
+  if (family == "surv")  return("surv")    # bounded survival default (3.3.0)
+  if (family == "class") return("prob")    # probability default (3.3.0)
+  "generic"   # regr or unknown
+}
+
+## Transform partialpro's (log-odds) values to the requested classification
+## scale. Identity for everything except prob/odds, because the survival
+## learners already return their own scale and the additive scales are raw.
+#' @keywords internal
+.scale_transform <- function(z, scale) {
+  switch(scale,
+    prob = stats::plogis(z),
+    odds = exp(z),
+    z)
+}
+
+## Bounded scales: probability (class), odds (class), survival probability.
+## On these the absolute level curves convert and the centered `causal`
+## contrast is not shown (it cannot share the axis).
+#' @keywords internal
+.is_bounded_scale <- function(scale) {
+  scale %in% c("prob", "odds", "surv")
 }
 
 #' @keywords internal
-.process_cat_var <- function(feat, feat_name) {
+.process_cat_var <- function(feat, feat_name, scale = "generic") {
+  bounded  <- .is_bounded_scale(scale)
   n_cats   <- length(unique(feat$xorg))
   cat_feat <- list()
   for (ind in seq(n_cats)) {
     cat_feat[[ind]] <- dplyr::bind_cols(
-      parametric    = feat$yhat.par[, ind],
-      nonparametric = feat$yhat.nonpar[, ind],
-      causal        = feat$yhat.causal[, ind]
+      parametric    = .scale_transform(feat$yhat.par[, ind],    scale),
+      nonparametric = .scale_transform(feat$yhat.nonpar[, ind], scale),
+      causal        = if (bounded) NA_real_ else feat$yhat.causal[, ind]
     )
     cat_feat[[ind]]$variable <- unique(feat$xorg)[ind]
     plt.df <- if (ind == 1L) cat_feat[[ind]] else
