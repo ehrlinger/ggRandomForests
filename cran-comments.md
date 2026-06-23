@@ -28,8 +28,8 @@ This is a minor feature-and-fix release for the varPro survival workflow.
 * **Local:** R 4.6.0 on macOS (aarch64-apple-darwin23).
   `R CMD check --as-cran` (with the manual) returns 0 errors, 0 warnings,
   0 notes.
-* **win-builder:** R-devel and R-release (Windows Server 2022, x86_64) —
-  both Status: OK (0 errors, 0 warnings, 0 notes).
+* **win-builder:** R-devel, R-release, and R-oldrelease (Windows Server 2022,
+  x86_64) — all Status: OK (0 errors, 0 warnings, 0 notes).
 * **GitHub Actions matrix:** ubuntu-latest (R-devel / R-release /
   R-oldrel-1), windows-latest (R-release), macos-latest (R-release).
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
