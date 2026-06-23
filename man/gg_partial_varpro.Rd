@@ -28,21 +28,49 @@ gg_partialpro(
 )
 }
 \arguments{
-\item{part_dta}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{part_dta}{Partial plot data from \code{varPro::partialpro}.  Each
+element must contain \code{xvirtual}, \code{xorg}, \code{yhat.par},
+\code{yhat.nonpar}, and \code{yhat.causal}.  Supply at least one of
+\code{part_dta} or \code{object}.}
 
-\item{object}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{object}{A fitted \code{varpro} object, the forest the partial data
+came from.  When supplied it provides the provenance metadata, and when
+\code{part_dta} is \code{NULL} it is passed to
+\code{varPro::partialpro(object)} for you.  Required when
+\code{scale \%in\% c("surv","chf")}.}
 
-\item{scale}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{scale}{Character; sets the y-axis label and, for survival forests,
+the output type.  One of \code{"auto"} (default), \code{"mortality"},
+\code{"rmst"}, \code{"surv"}, or \code{"chf"}.}
 
-\item{time}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{time}{Numeric; the evaluation time point.  Required when
+\code{scale = "rmst"} (the RMST horizon \eqn{\tau}), where it now
+\emph{drives} the partial computation through an RMST(\eqn{\tau})
+learner (see \strong{Details}), not just the axis label.  Optional when
+\code{scale \%in\% c("surv","chf")}: if supplied it is snapped to the
+nearest value in \code{object\$rf\$time.interest} and used for both
+computation and axis labeling; if \code{NULL}, three quartile time
+points from \code{time.interest} are used (see
+\code{\link{gg_partial_rfsrc}}).}
 
-\item{nvars}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{nvars}{Integer; how many variables (list elements) to process.
+Defaults to every variable in \code{part_dta}.}
 
-\item{cat_limit}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{cat_limit}{Integer; a variable with
+\code{length(xvirtual) <= cat_limit} is treated as categorical.
+Default \code{10}.}
 
-\item{model}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{model}{Character; a label tacked onto every row, handy when you are
+combining results from several models in one figure.}
 
-\item{...}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{...}{Forwarded to \code{\link[varPro]{partialpro}} on the
+object-driven path (when \code{part_dta} is \code{NULL}).  Use this to
+control which variables are computed -- e.g. \code{xvar.names} or
+\code{nvar} -- or to tune the isolation-forest UVT step (\code{cut},
+\code{nsmp}, ...).  Without it, \code{partialpro} falls back to
+\code{varPro::get.topvars(object)}, which can return few or no variables
+for some fits (yielding empty \code{continuous}/\code{categorical}
+frames).  Ignored, with a warning, when \code{part_dta} is supplied.}
 }
 \value{
 A named list of class \code{"gg_partial_varpro"} with elements:
@@ -103,6 +131,9 @@ score}, \emph{not} a survival probability and not \eqn{1 - S(t)}; don't
 read it as one.  For a bounded, time-anchored survival summary, use
 \code{scale = "rmst", time = tau} (restricted mean survival time, in the
 time units of the outcome) or \code{scale = "surv"} / \code{"chf"}.
+
+Arguments are documented on \code{\link{gg_partial_varpro}}; this alias
+shares its formals and forwards every argument unchanged.
 }
 \section{What partialpro is doing}{
 

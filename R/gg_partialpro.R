@@ -7,14 +7,8 @@
 #' be removed in the release after \pkg{ggRandomForests} v3.0.0; use
 #' \code{\link{gg_partial_varpro}()} directly.
 #'
-#' @param part_dta Passed to \code{\link{gg_partial_varpro}}.
-#' @param object Passed to \code{\link{gg_partial_varpro}}.
-#' @param scale Passed to \code{\link{gg_partial_varpro}}.
-#' @param time Passed to \code{\link{gg_partial_varpro}}.
-#' @param nvars Passed to \code{\link{gg_partial_varpro}}.
-#' @param cat_limit Passed to \code{\link{gg_partial_varpro}}.
-#' @param model Passed to \code{\link{gg_partial_varpro}}.
-#' @param ... Passed to \code{\link{gg_partial_varpro}}.
+#' Arguments are documented on \code{\link{gg_partial_varpro}}; this alias
+#' shares its formals and forwards every argument unchanged.
 #'
 #' @return A \code{gg_partial_varpro} object (see
 #'   \code{\link{gg_partial_varpro}}).
