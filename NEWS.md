@@ -1,10 +1,10 @@
 Package: ggRandomForests
-Version: 3.1.2.9000
+Version: 4.0.0.9000
 
 ggRandomForests v4.0.0 (development)
 ====================================
-* Development version 3.1.2.9000, opened after the v3.1.2 CRAN release
-  (forward-merged the v3.1.1 and v3.1.2 CRAN fixes onto the dev line).
+* Development version 4.0.0.9000, opened after the v3.2.0 CRAN release
+  (forward-merged the v3.2.0 RMST/varPro fixes onto the dev line).
 * Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
   visualization layer wrapping the 'randomForestRHF' package (added to
   Suggests). RHF support is gated — every gg_rhf* entry point checks
@@ -31,6 +31,11 @@ ggRandomForests v4.0.0 (development)
   graph) with the "which variables are signal" ranking; shares the
   `beta_fit` entropy matrix. Follows the `get.beta.entropy` + `sdependent`
   workflow from the `varPro::uvarpro()` help (iowa-housing example).
+* Fixes the intro vignette's placeholder `\VignetteIndexEntry`
+  ("Vignette's Title" -> "Exploring Random Forests with ggRandomForests").
+
+ggRandomForests v3.2.0
+======================
 * Fix (#118): `gg_varpro()` no longer fails with the cryptic
   "arguments imply differing number of rows: <p>, 0" when
   `varPro::importance()` returns a degenerate importance table (0 rows, or
@@ -40,8 +45,31 @@ ggRandomForests v4.0.0 (development)
   suggesting a larger `ntree`. The guard is scoped to the degenerate case
   only; well-formed fits (survival included) are unaffected -- this is not
   a blanket survival-family block (cf. the reverted #116).
-* Fixes the intro vignette's placeholder `\VignetteIndexEntry`
-  ("Vignette's Title" -> "Exploring Random Forests with ggRandomForests").
+* Fix: `gg_partial_varpro(scale = "rmst", time = tau)` now *drives* the
+  survival partial computation instead of only relabeling the y-axis.
+  `varPro::partialpro()` has no time argument, so its default survival
+  learner returns ensemble mortality at every horizon -- multi-horizon RMST
+  plots built that way differed only by Monte-Carlo noise, not by `tau`.
+  `scale = "rmst"` now passes `partialpro()` an RMST(`tau`) learner that
+  integrates the survival curve (`integral_0^tau S(t) dt`) from `object$rf`,
+  so the curve genuinely depends on `tau`. This path recomputes from
+  `object` (a survival fit) with `part_dta = NULL`; a precomputed
+  `part_dta` can only be relabeled, and the function now warns when you try.
+  Also warns when `tau` exceeds the model's event-time range (RMST is
+  truncated there) and when `time` is passed to a scale that ignores it.
+  `Imports` now requires `varPro (>= 3.1.0)` (the version exposing the
+  `partialpro()` `learner` argument this path relies on).
+* Fix: `gg_partial_varpro(scale = "surv"/"chf", model = ...)` no longer
+  errors when a variable yields an empty continuous or categorical frame
+  (the survival path-C `model`-label assignment now guards against a 0-row
+  data.frame).
+* `gg_partial_varpro()` (and the `gg_partialpro()` alias) now forward `...`
+  to `varPro::partialpro()` on the object-driven path. This restores control
+  over which variables are computed (`xvar.names`, `nvar`) and the UVT step
+  (`cut`, `nsmp`, ...) for the RMST path, which must recompute from `object`
+  and so cannot accept a precomputed `part_dta`. Without an explicit
+  `xvar.names`, `partialpro()` falls back to `varPro::get.topvars(object)`,
+  which can return few or no variables for some fits.
 
 ggRandomForests v3.1.2
 ======================
