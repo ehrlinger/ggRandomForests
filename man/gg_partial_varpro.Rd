@@ -12,7 +12,8 @@ gg_partial_varpro(
   time = NULL,
   nvars = NULL,
   cat_limit = 10,
-  model = NULL
+  model = NULL,
+  ...
 )
 
 gg_partialpro(
@@ -22,23 +23,54 @@ gg_partialpro(
   time = NULL,
   nvars = NULL,
   cat_limit = 10,
-  model = NULL
+  model = NULL,
+  ...
 )
 }
 \arguments{
-\item{part_dta}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{part_dta}{Partial plot data from \code{varPro::partialpro}.  Each
+element must contain \code{xvirtual}, \code{xorg}, \code{yhat.par},
+\code{yhat.nonpar}, and \code{yhat.causal}.  Supply at least one of
+\code{part_dta} or \code{object}.}
 
-\item{object}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{object}{A fitted \code{varpro} object, the forest the partial data
+came from.  When supplied it provides the provenance metadata, and when
+\code{part_dta} is \code{NULL} it is passed to
+\code{varPro::partialpro(object)} for you.  Required when
+\code{scale \%in\% c("surv","chf")}.}
 
-\item{scale}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{scale}{Character; sets the y-axis label and, for survival forests,
+the output type.  One of \code{"auto"} (default), \code{"mortality"},
+\code{"rmst"}, \code{"surv"}, or \code{"chf"}.}
 
-\item{time}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{time}{Numeric; the evaluation time point.  Required when
+\code{scale = "rmst"} (the RMST horizon \eqn{\tau}), where it now
+\emph{drives} the partial computation through an RMST(\eqn{\tau})
+learner (see \strong{Details}), not just the axis label.  Optional when
+\code{scale \%in\% c("surv","chf")}: if supplied it is snapped to the
+nearest value in \code{object\$rf\$time.interest} and used for both
+computation and axis labeling; if \code{NULL}, three quartile time
+points from \code{time.interest} are used (see
+\code{\link{gg_partial_rfsrc}}).}
 
-\item{nvars}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{nvars}{Integer; how many variables (list elements) to process.
+Defaults to every variable in \code{part_dta}.}
 
-\item{cat_limit}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{cat_limit}{Integer; a variable with
+\code{length(xvirtual) <= cat_limit} is treated as categorical.
+Default \code{10}.}
 
-\item{model}{Passed to \code{\link{gg_partial_varpro}}.}
+\item{model}{Character; a label tacked onto every row, handy when you are
+combining results from several models in one figure.}
+
+\item{...}{Forwarded to \code{\link[varPro]{partialpro}} on the
+object-driven path (when \code{part_dta} is \code{NULL}).  Use this to
+control which variables are computed -- e.g. \code{xvar.names} or
+\code{nvar} -- or to tune the isolation-forest UVT step (\code{cut},
+\code{nsmp}, ...).  Without it, \code{partialpro} falls back to
+\code{varPro::get.topvars(object)}, which can return few or no variables
+for some fits (yielding empty \code{continuous}/\code{categorical}
+frames).  Ignored, with a warning, when \code{part_dta} is supplied.}
 }
 \value{
 A named list of class \code{"gg_partial_varpro"} with elements:
@@ -72,8 +104,22 @@ be removed in the release after \pkg{ggRandomForests} v3.0.0; use
 hand, the scale resolves to \code{"mortality"} for a survival forest and
 \code{"generic"} for a regression or classification forest.  The RMST
 horizon \eqn{\tau} is \emph{not} stored in the \code{varpro} object
-(varPro 3.1.0), so for RMST-labeled output you have to pass
-\code{scale = "rmst", time = tau} yourself.
+(varPro 3.1.0), so RMST output requires you to pass
+\code{scale = "rmst", time = tau} explicitly.
+
+\strong{RMST partial dependence (scale = "rmst"):} \code{varPro::partialpro}
+has no time argument, so its default survival learner returns ensemble
+mortality at every horizon -- passing a horizon through \code{...} is
+silently dropped, and multi-horizon plots built that way differ only by
+Monte-Carlo noise, not by \eqn{\tau}.  To get a genuine RMST(\eqn{\tau})
+curve, \code{scale = "rmst"} supplies \code{partialpro} a \code{learner}
+that returns \eqn{\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,dt} from the
+survival forest, so the curve actually depends on \eqn{\tau}.  This path
+\strong{recomputes} from \code{object}, so it needs \code{object} (a
+survival fit) with \code{part_dta = NULL}; a precomputed \code{part_dta}
+can only be relabeled, and \code{gg_partial_varpro} warns when you try.
+A \eqn{\tau} beyond the model's largest event time is truncated there
+(with a warning), since \eqn{S(t)} cannot be extrapolated.
 
 \strong{Ensemble mortality (scale = "mortality"):} here the y-axis is
 \emph{ensemble mortality}, the expected number of events a subject would
@@ -82,8 +128,12 @@ the same quantity as the \code{rfsrc} \code{predicted} value for survival
 forests (Ishwaran, Kogalur, Blackstone & Lauer, 2008
 \url{doi:10.1214/08-AOAS169}).  This is an \strong{unbounded relative-risk
 score}, \emph{not} a survival probability and not \eqn{1 - S(t)}; don't
-read it as one.  If you want output on the probability scale, refit with
-\code{varpro(..., rmst = tau)} and use \code{scale = "rmst"}.
+read it as one.  For a bounded, time-anchored survival summary, use
+\code{scale = "rmst", time = tau} (restricted mean survival time, in the
+time units of the outcome) or \code{scale = "surv"} / \code{"chf"}.
+
+Arguments are documented on \code{\link{gg_partial_varpro}}; this alias
+shares its formals and forwards every argument unchanged.
 }
 \section{What partialpro is doing}{
 
