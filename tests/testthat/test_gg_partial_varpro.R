@@ -332,6 +332,24 @@ test_that("gg_partial_varpro: scale='rmst' is genuinely tau-dependent", {
   r_mort <- gg_partial_varpro(object = vp, scale = "mortality", nvars = 1)
   expect_s3_class(r_mort, "gg_partial_varpro")
   expect_equal(attr(r_mort, "provenance")$scale, "mortality")
+
+  # '...' is forwarded to partialpro(): xvar.names restricts which variables
+  # are computed (instead of falling back to get.topvars()).
+  one  <- varPro::get.topvars(vp)[1]
+  r1   <- gg_partial_varpro(object = vp, scale = "rmst", time = 500,
+                            xvar.names = one)
+  vars <- unique(c(
+    if (nrow(r1$continuous)  > 0) r1$continuous$name,
+    if (nrow(r1$categorical) > 0) r1$categorical$name
+  ))
+  expect_equal(vars, one)
+})
+
+test_that("gg_partial_varpro: '...' with a precomputed part_dta warns", {
+  expect_warning(
+    gg_partial_varpro(make_mock_vpro_data(), xvar.names = "age"),
+    regexp = "ignored because 'part_dta'"
+  )
 })
 
 ## ── Helper: mock C-path varpro object ────────────────────────────────────────

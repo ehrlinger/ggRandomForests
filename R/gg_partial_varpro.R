@@ -93,6 +93,14 @@
 #'   Default \code{10}.
 #' @param model Character; a label tacked onto every row, handy when you are
 #'   combining results from several models in one figure.
+#' @param ... Forwarded to \code{\link[varPro]{partialpro}} on the
+#'   object-driven path (when \code{part_dta} is \code{NULL}).  Use this to
+#'   control which variables are computed -- e.g. \code{xvar.names} or
+#'   \code{nvar} -- or to tune the isolation-forest UVT step (\code{cut},
+#'   \code{nsmp}, ...).  Without it, \code{partialpro} falls back to
+#'   \code{varPro::get.topvars(object)}, which can return few or no variables
+#'   for some fits (yielding empty \code{continuous}/\code{categorical}
+#'   frames).  Ignored, with a warning, when \code{part_dta} is supplied.
 #'
 #' @details
 #' **Scale detection:** with \code{scale = "auto"} and an \code{object} in
@@ -181,11 +189,16 @@ gg_partial_varpro <- function(part_dta  = NULL,
                                time      = NULL,
                                nvars     = NULL,
                                cat_limit = 10,
-                               model     = NULL) {
+                               model     = NULL,
+                               ...) {
   scale <- match.arg(scale)
 
   ## ---- Input validation --------------------------------------------------
   .validate_varpro_inputs(part_dta, object, scale, time)
+  if (!is.null(part_dta) && ...length() > 0L) {
+    warning("gg_partial_varpro: arguments in '...' are ignored because ",
+            "'part_dta' is supplied (nothing is recomputed).", call. = FALSE)
+  }
 
   ## ---- C-path: route through gg_partial_rfsrc ----------------------------
   if (!is.null(object) && scale %in% c("surv", "chf")) {
@@ -200,11 +213,14 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## learner so the curve genuinely depends on tau, rather than relabeling
   ## the default ensemble-mortality curve.  This requires recomputing from
   ## 'object'; a precomputed 'part_dta' can only be relabeled (warned above).
+  ## '...' (e.g. xvar.names, nvar, cut) is forwarded to partialpro() so the
+  ## object-driven path can select/limit variables the same way an explicit
+  ## partialpro() call would -- otherwise it falls back to get.topvars(object).
   if (is.null(part_dta)) {
     part_dta <- if (scale == "rmst") {
-      varPro::partialpro(object, learner = .rmst_learner(object, time))
+      varPro::partialpro(object, learner = .rmst_learner(object, time), ...)
     } else {
-      varPro::partialpro(object)
+      varPro::partialpro(object, ...)
     }
   }
   if (is.null(nvars)) {

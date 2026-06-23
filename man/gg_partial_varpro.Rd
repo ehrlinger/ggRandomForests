@@ -12,7 +12,8 @@ gg_partial_varpro(
   time = NULL,
   nvars = NULL,
   cat_limit = 10,
-  model = NULL
+  model = NULL,
+  ...
 )
 
 gg_partialpro(
@@ -22,7 +23,8 @@ gg_partialpro(
   time = NULL,
   nvars = NULL,
   cat_limit = 10,
-  model = NULL
+  model = NULL,
+  ...
 )
 }
 \arguments{
@@ -39,6 +41,8 @@ gg_partialpro(
 \item{cat_limit}{Passed to \code{\link{gg_partial_varpro}}.}
 
 \item{model}{Passed to \code{\link{gg_partial_varpro}}.}
+
+\item{...}{Passed to \code{\link{gg_partial_varpro}}.}
 }
 \value{
 A named list of class \code{"gg_partial_varpro"} with elements:

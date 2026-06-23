@@ -14,6 +14,7 @@
 #' @param nvars Passed to \code{\link{gg_partial_varpro}}.
 #' @param cat_limit Passed to \code{\link{gg_partial_varpro}}.
 #' @param model Passed to \code{\link{gg_partial_varpro}}.
+#' @param ... Passed to \code{\link{gg_partial_varpro}}.
 #'
 #' @return A \code{gg_partial_varpro} object (see
 #'   \code{\link{gg_partial_varpro}}).
@@ -29,7 +30,8 @@ gg_partialpro <- function(part_dta,
                           time      = NULL,
                           nvars     = NULL,
                           cat_limit = 10,
-                          model     = NULL) {
+                          model     = NULL,
+                          ...) {
   .Deprecated(
     new     = "gg_partial_varpro",
     package = "ggRandomForests",
@@ -42,5 +44,6 @@ gg_partialpro <- function(part_dta,
                     time      = time,
                     nvars     = nvars,
                     cat_limit = cat_limit,
-                    model     = model)
+                    model     = model,
+                    ...)
 }

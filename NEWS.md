@@ -30,6 +30,13 @@ ggRandomForests v3.2.0
   errors when a variable yields an empty continuous or categorical frame
   (the survival path-C `model`-label assignment now guards against a 0-row
   data.frame).
+* `gg_partial_varpro()` (and the `gg_partialpro()` alias) now forward `...`
+  to `varPro::partialpro()` on the object-driven path. This restores control
+  over which variables are computed (`xvar.names`, `nvar`) and the UVT step
+  (`cut`, `nsmp`, ...) for the RMST path, which must recompute from `object`
+  and so cannot accept a precomputed `part_dta`. Without an explicit
+  `xvar.names`, `partialpro()` falls back to `varPro::get.topvars(object)`,
+  which can return few or no variables for some fits.
 
 ggRandomForests v3.1.2
 ======================
