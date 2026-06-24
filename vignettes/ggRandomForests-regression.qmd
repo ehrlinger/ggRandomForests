@@ -41,7 +41,7 @@ Random forests [@Breiman:2001] are a non-parametric ensemble method that
 requires no distributional or functional assumptions on how covariates relate to
 the response. The method builds a large collection of de-correlated decision
 trees via bootstrap aggregation (bagging) and random feature selection, then
-averages their predictions to produce a stable, low-variance estimator. The
+averages their predictions to smooth out the noise any single tree carries. The
 **randomForestSRC** package [@Ishwaran:RFSRC:2014] provides a unified
 implementation for survival, regression, and classification forests.
 
