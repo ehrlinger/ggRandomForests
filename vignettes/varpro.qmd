@@ -292,6 +292,45 @@ important for prediction and still sit in a tight cluster with a
 near-duplicate; in that situation, model parsimony may favour dropping
 one of the cluster members without losing much predictive accuracy.
 
+## Unsupervised importance with `gg_beta_uvarpro()`
+
+The dependency network shows *structure*; `gg_beta_uvarpro()` turns the
+same `uvarpro()` fit into a *ranking*. It is the unsupervised analogue of
+`gg_beta_varpro()`: from `varPro::get.beta.entropy()` it aggregates the
+per-region lasso coefficients into a mean absolute weight per variable
+(`beta_mean`), orders most-important first, and flags the variables above
+a selection cutoff. With no response in the fit, "important" means a
+variable that carries entropy the others do not — it helps reconstruct
+the feature space, not predict an outcome.
+
+```{r boston-gg-beta-uvarpro}
+plot(gg_beta_uvarpro(u_boston))
+```
+
+Read it as the unsupervised counterpart to a VIMP bar chart: the tall
+bars are the variables that most define the structure of the predictor
+space. Pairing this with the `gg_udependent()` network tells you both
+*which* variables carry the most unsupervised signal and *how* they
+group.
+
+## Signal-variable detection with `gg_sdependent()`
+
+`gg_sdependent()` answers a narrower question off the same fit: *which*
+variables are signal rather than noise? It wraps `varPro::sdependent()`
+and returns one row per candidate variable with an importance score, its
+degree in the dependency graph, and a `signal` flag, drawn as a ranked
+lollipop.
+
+```{r boston-gg-sdependent}
+plot(gg_sdependent(u_boston))
+```
+
+Where `gg_beta_uvarpro()` ranks *all* variables by entropy contribution,
+`gg_sdependent()` makes the cut explicit: it separates the variables the
+unsupervised analysis treats as carrying genuine signal from those it
+treats as noise. The two views share the `get.beta.entropy()` matrix, so
+they are cheap to compute together once `uvarpro()` has run.
+
 ## Anomaly scoring with `gg_isopro()`
 
 Variable importance is one axis; *observation* outlierness is another.
