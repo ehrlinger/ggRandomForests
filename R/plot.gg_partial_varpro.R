@@ -74,7 +74,7 @@
 #' time event-free -- which is the opposite of the ensemble-mortality scale.
 #'
 #' A continuous variable's curve sloping \emph{up} means higher values of that
-#' covariate buy \emph{more} restricted-mean event-free time within \eqn{\tau}
+#' covariate buy you \emph{more} restricted-mean event-free time within \eqn{\tau}
 #' (with the other covariates held at their UVT-plausible average); a flat curve
 #' means the covariate does not move it. Unlike ensemble mortality, RMST reads
 #' on a directly clinical scale, "so many event-free time-units within

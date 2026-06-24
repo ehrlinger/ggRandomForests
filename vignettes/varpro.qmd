@@ -169,8 +169,8 @@ answers: which variables matter, ranked. `gg_varpro()` extracts the
 per-tree importance scores and draws their distribution as a horizontal
 boxplot, one row per variable, sorted by median z-score, with the
 variables above a configurable cutoff (default 0.79) highlighted. Read the
-spread, not just the position: a tight box is a variable every tree agrees
-on.
+spread, not just the position: a tight box means every tree agrees on that
+variable.
 
 ```{r boston-gg-varpro}
 plot(gg_varpro(v_boston))
