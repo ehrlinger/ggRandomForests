@@ -109,23 +109,22 @@ the additive scales (`"logodds"`, `"mortality"`, `"rmst"`).
 ## Reading an RMST curve (scale = "rmst")
 
 The y-axis is restricted mean survival time at horizon \\\tau\\,
-\\\mathrm{RMST}(\tau)=\int_0^\tau S(t)\\dt\\ – the **expected event-free
-time during the first \\\tau\\ time-units** (the area under the survival
-curve out to \\\tau\\). Read it in the **model's own time units**, and
-note it is **bounded**: \\0 \le \mathrm{RMST}(\tau) \le \tau\\. Two
-consequences are worth stating to a reader: \\\tau\\ must be given in
-the fit's time units – a \\\tau\\ past the largest event time simply
-truncates to the full restricted mean and stops varying with \\\tau\\ –
-and **higher is better** (more expected time event-free), the opposite
-direction from the ensemble-mortality scale.
+\\\mathrm{RMST}(\tau)=\int_0^\tau S(t)\\dt\\: the **expected event-free
+time during the first \\\tau\\ time-units**, the area under the survival
+curve out to \\\tau\\. Read it in the **model's own time units**, where
+it is bounded by \\0 \le \mathrm{RMST}(\tau) \le \tau\\.
+
+Two things follow. First, \\\tau\\ must be given in the fit's time
+units; a \\\tau\\ past the largest event time just truncates to the full
+restricted mean and stops changing. Second, higher is better here – more
+time event-free – which is the opposite of the ensemble-mortality scale.
 
 A continuous variable's curve sloping *up* means higher values of that
-covariate are associated with *more* restricted-mean event-free time
-within \\\tau\\ (holding the other covariates at their UVT-plausible
-average); a flat curve means the covariate does not shift
-restricted-mean survival. Unlike ensemble mortality, RMST is on a
-directly interpretable clinical scale – "so many event-free time-units
-within \\\tau\\" – usually the scale to report.
+covariate buy you *more* restricted-mean event-free time within \\\tau\\
+(with the other covariates held at their UVT-plausible average); a flat
+curve means the covariate does not move it. Unlike ensemble mortality,
+RMST reads on a directly clinical scale, "so many event-free time-units
+within \\\tau\\", which is usually the one you want to report.
 
 ## References
 

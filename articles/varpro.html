@@ -7020,7 +7020,7 @@ attr(,"class")
 <section class="level2"><h3 id="per-tree-importance-with-gg_varpro">Per-tree importance with <code>gg_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#per-tree-importance-with-gg_varpro"></a>
 </h3>
-<p>The first question varPro answers is the same one permutation importance answers: which variables matter, ranked. <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> extracts the per-tree importance scores and draws their distribution as a horizontal boxplot, one row per variable, sorted by median z-score. Variables above a configurable cutoff (default 0.79) are highlighted.</p>
+<p>The first question varPro answers is the same one permutation importance answers: which variables matter, ranked. <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> extracts the per-tree importance scores and draws their distribution as a horizontal boxplot, one row per variable, sorted by median z-score, with the variables above a configurable cutoff (default 0.79) highlighted. Read the spread, not just the position: a tight box means every tree agrees on that variable.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_varpro.html">gg_varpro</a></span><span class="op">(</span><span class="va">v_boston</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -7122,7 +7122,7 @@ attr(,"class")
 </section><section class="level2"><h3 id="signal-variable-detection-with-gg_sdependent">Signal-variable detection with <code>gg_sdependent()</code>
 <a class="anchor" aria-label="anchor" href="#signal-variable-detection-with-gg_sdependent"></a>
 </h3>
-<p><code><a href="../reference/gg_sdependent.html">gg_sdependent()</a></code> answers a narrower question off the same fit: <em>which</em> variables are signal rather than noise? It wraps <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent()</a></code> and returns one row per candidate variable with an importance score, its degree in the dependency graph, and a <code>signal</code> flag, drawn as a ranked lollipop.</p>
+<p>You have a ranking from <code><a href="../reference/gg_beta_uvarpro.html">gg_beta_uvarpro()</a></code>; now you want the cut line. Which variables are signal, and which are noise? <code><a href="../reference/gg_sdependent.html">gg_sdependent()</a></code> answers that narrower question off the same fit. It wraps <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent()</a></code> and returns one row per candidate variable with an importance score, its degree in the dependency graph, and a <code>signal</code> flag, drawn as a ranked lollipop.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_sdependent.html">gg_sdependent</a></span><span class="op">(</span><span class="va">u_boston</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>

@@ -101,7 +101,7 @@
 </div>
 <section class="section level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional or functional assumptions on how covariates relate to the response. The method builds a large collection of de-correlated decision trees via bootstrap aggregation (bagging) and random feature selection, then averages their predictions to produce a stable, low-variance estimator. The <strong>randomForestSRC</strong> package <span class="citation" data-cites="Ishwaran:RFSRC:2014">(<a href="#ref-Ishwaran:RFSRC:2014" role="doc-biblioref">Ishwaran and Kogalur 2024</a>)</span> provides a unified implementation for survival, regression, and classification forests.</p>
+<p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional or functional assumptions on how covariates relate to the response. The method builds a large collection of de-correlated decision trees via bootstrap aggregation (bagging) and random feature selection, then averages their predictions to smooth out the noise any single tree carries. The <strong>randomForestSRC</strong> package <span class="citation" data-cites="Ishwaran:RFSRC:2014">(<a href="#ref-Ishwaran:RFSRC:2014" role="doc-biblioref">Ishwaran and Kogalur 2024</a>)</span> provides a unified implementation for survival, regression, and classification forests.</p>
 <p><strong>ggRandomForests</strong> extracts tidy data objects from <code>rfsrc</code> fits and renders them with <strong>ggplot2</strong> <span class="citation" data-cites="Wickham:2009">(<a href="#ref-Wickham:2009" role="doc-biblioref">Wickham 2016</a>)</span>, making it straightforward to explore how a forest is constructed, which variables matter, and how the response depends on individual predictors.</p>
 <p>This vignette demonstrates a complete random forest regression workflow on the Boston Housing data set <span class="citation" data-cites="Harrison:1978 Belsley:1980">(<a href="#ref-Harrison:1978" role="doc-biblioref">Harrison and Rubinfeld 1978</a>; <a href="#ref-Belsley:1980" role="doc-biblioref">Belsley et al. 1980</a>)</span>:</p>
 <ol type="1">
@@ -197,7 +197,7 @@
 <pre><code><span><span class="co">#&gt;                          Sample size: 506</span></span>
 <span><span class="co">#&gt;                      Number of trees: 200</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 5</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 66.73</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 67.06</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 5</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 13</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -206,8 +206,8 @@
 <span><span class="co">#&gt;                               Family: regr</span></span>
 <span><span class="co">#&gt;                       Splitting rule: mse *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                      (OOB) R squared: 0.86696046</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 11.25337852</span></span></code></pre>
+<span><span class="co">#&gt;                      (OOB) R squared: 0.86291531</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 11.59554449</span></span></code></pre>
 </div>
 </div>
 <p>The forest grew 200 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
@@ -265,7 +265,7 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span> <span class="co"># nolint: object_name_linter</span></span></code></pre></div>
 </div>
-<p>The threshold is 3.01, selecting 5 variables: crim, nox, rm, ptratio, lstat.</p>
+<p>The threshold is 3, selecting 5 variables: crim, nox, rm, ptratio, lstat.</p>
 <p>Both VIMP and minimal depth agree on the dominance of <code>lstat</code> and <code>rm</code>. We use the minimal depth top variables for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">

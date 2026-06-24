@@ -22,18 +22,18 @@ function (CHF): $`\hat{H}(t) = -\log \hat{S}(t)`$, an unbounded,
 monotone-increasing summary of accumulated risk. Third, mortality: the
 expected number of events a subject would accumulate if followed
 indefinitely under their covariate profile, computed by summing the CHF
-over the observed time grid. Mortality is an unbounded relative-risk
-score, not a probability, and works well as a single scalar for ranking
-patients by risk.
+over the observed time grid. Mortality is not a probability; it is an
+unbounded relative-risk score. Read it as a single number for ranking
+patients from low to high risk, not as a survival chance.
 
 The **[randomForestSRC](https://www.randomforestsrc.org)** package
 ([Ishwaran and Kogalur 2024](#ref-Ishwaran:RFSRC:2014)) provides a
 unified implementation for survival, regression, and classification
 forests. **ggRandomForests** extracts tidy data objects from `rfsrc`
 fits and renders them with **ggplot2** ([Wickham
-2016](#ref-Wickham:2009)), making it straightforward to explore how a
-forest is constructed, which variables matter, and how the response
-depends on individual predictors.
+2016](#ref-Wickham:2009)), so you can see how a survival forest is
+built, which predictors carry the risk, and how survival shifts across
+each one.
 
 This vignette demonstrates a complete random survival forest workflow on
 the primary biliary cirrhosis (PBC) data set ([Fleming and Harrington
@@ -441,7 +441,7 @@ md_pbc <- max.subtree(rfsrc_pbc)
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
 function computes minimal depth for each variable. The threshold is
-5.89, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+5.82, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
 copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
@@ -778,7 +778,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.411664
+    #> [1] 1.402942
 
 ## Conclusion
 

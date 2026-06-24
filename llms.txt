@@ -18,9 +18,9 @@ plots for random forests fit with
 [randomForestSRC](https://cran.r-project.org/package=randomForestSRC)
 (\>= 3.4.0) or
 [randomForest](https://cran.r-project.org/package=randomForest). It
-separates data extraction from plotting so the intermediate tidy objects
-can be inspected, saved, or used for custom analyses. Listed in the
-[ggplot2 extensions gallery](https://exts.ggplot2.tidyverse.org/).
+keeps the data step apart from the figure step, so you can inspect,
+save, or reuse the tidy object on its own. Listed in the [ggplot2
+extensions gallery](https://exts.ggplot2.tidyverse.org/).
 
 ## Installation
 
@@ -93,10 +93,9 @@ vignette("varpro", package = "ggRandomForests")
 
 Each `gg_*` function has a matching
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) S3 method that
-hands back a single plottable object — a `ggplot`, or a `patchwork`
-composite when the method lays out multiple panels — so you can keep
-adding layers, scales, or a theme. Every `gg_*` object also has
-[`print()`](https://rdrr.io/r/base/print.html) and
+hands back a single plottable object: a `ggplot` you extend with `+`, or
+a `patchwork` composite for the multi-panel methods. Every `gg_*` object
+also has [`print()`](https://rdrr.io/r/base/print.html) and
 [`summary()`](https://rdrr.io/r/base/summary.html) methods:
 [`print()`](https://rdrr.io/r/base/print.html) shows a short header at
 the REPL rather than dumping every row (use

@@ -188,23 +188,20 @@ additive scales (<code>"logodds"</code>, <code>"mortality"</code>, <code>"rmst"<
 
 
 <p>The y-axis is restricted mean survival time at horizon \(\tau\),
-\(\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,dt\) – the <strong>expected
-event-free time during the first \(\tau\) time-units</strong> (the area under
-the survival curve out to \(\tau\)). Read it in the <strong>model's own
-time units</strong>, and note it is <strong>bounded</strong>:
-\(0 \le \mathrm{RMST}(\tau) \le \tau\). Two consequences are worth
-stating to a reader: \(\tau\) must be given in the fit's time units – a
-\(\tau\) past the largest event time simply truncates to the full
-restricted mean and stops varying with \(\tau\) – and <strong>higher is
-better</strong> (more expected time event-free), the opposite direction from the
-ensemble-mortality scale.</p>
+\(\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,dt\): the <strong>expected
+event-free time during the first \(\tau\) time-units</strong>, the area under the
+survival curve out to \(\tau\). Read it in the <strong>model's own time
+units</strong>, where it is bounded by \(0 \le \mathrm{RMST}(\tau) \le \tau\).</p>
+<p>Two things follow. First, \(\tau\) must be given in the fit's time units;
+a \(\tau\) past the largest event time just truncates to the full
+restricted mean and stops changing. Second, higher is better here – more
+time event-free – which is the opposite of the ensemble-mortality scale.</p>
 <p>A continuous variable's curve sloping <em>up</em> means higher values of that
-covariate are associated with <em>more</em> restricted-mean event-free time
-within \(\tau\) (holding the other covariates at their UVT-plausible
-average); a flat curve means the covariate does not shift restricted-mean
-survival. Unlike ensemble mortality, RMST is on a directly interpretable
-clinical scale – "so many event-free time-units within \(\tau\)" –
-usually the scale to report.</p>
+covariate buy you <em>more</em> restricted-mean event-free time within \(\tau\)
+(with the other covariates held at their UVT-plausible average); a flat curve
+means the covariate does not move it. Unlike ensemble mortality, RMST reads
+on a directly clinical scale, "so many event-free time-units within
+\(\tau\)", which is usually the one you want to report.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

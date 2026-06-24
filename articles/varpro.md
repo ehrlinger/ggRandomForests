@@ -7008,8 +7008,10 @@ The first question varPro answers is the same one permutation importance
 answers: which variables matter, ranked.
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
 extracts the per-tree importance scores and draws their distribution as
-a horizontal boxplot, one row per variable, sorted by median z-score.
-Variables above a configurable cutoff (default 0.79) are highlighted.
+a horizontal boxplot, one row per variable, sorted by median z-score,
+with the variables above a configurable cutoff (default 0.79)
+highlighted. Read the spread, not just the position: a tight box means
+every tree agrees on that variable.
 
 ``` r
 
@@ -7186,9 +7188,12 @@ signal and *how* they group.
 
 ### Signal-variable detection with `gg_sdependent()`
 
+You have a ranking from
+[`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md);
+now you want the cut line. Which variables are signal, and which are
+noise?
 [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
-answers a narrower question off the same fit: *which* variables are
-signal rather than noise? It wraps
+answers that narrower question off the same fit. It wraps
 [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 and returns one row per candidate variable with an importance score, its
 degree in the dependency graph, and a `signal` flag, drawn as a ranked
