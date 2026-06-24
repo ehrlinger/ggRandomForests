@@ -1,5 +1,34 @@
 # Changelog
 
+## ggRandomForests v3.4.0
+
+- [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
+  /
+  [`plot.gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_uvarpro.md):
+  tidy wrapper and bar chart for
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  – the unsupervised analogue of
+  [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md).
+  From a `uvarpro()` fit it aggregates the per-region lasso coefficients
+  into `beta_mean = colMeans(|beta|)` per variable (most-important
+  first), flags variables above a selection cutoff, and accepts a
+  precomputed `beta_fit` matrix. `print`/`summary`/`autoplot` companions
+  follow the `gg_*` conventions.
+- [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
+  /
+  [`plot.gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.md):
+  tidy wrapper and ranked lollipop for
+  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  signal-variable detection. Returns one row per candidate variable
+  (`imp_score`, graph `degree`, `signal` flag) ranked by `imp_score`.
+  Complements
+  [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
+  (the dependency graph) with the “which variables are signal” ranking;
+  shares the `beta_fit` entropy matrix. Follows the `get.beta.entropy` +
+  `sdependent` workflow from the
+  [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+  help (iowa-housing example).
+
 ## ggRandomForests v3.3.0
 
 - [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md):

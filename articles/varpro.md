@@ -7155,6 +7155,61 @@ cluster with a near-duplicate; in that situation, model parsimony may
 favour dropping one of the cluster members without losing much
 predictive accuracy.
 
+### Unsupervised importance with `gg_beta_uvarpro()`
+
+The dependency network shows *structure*;
+[`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
+turns the same `uvarpro()` fit into a *ranking*. It is the unsupervised
+analogue of
+[`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md):
+from
+[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+it aggregates the per-region lasso coefficients into a mean absolute
+weight per variable (`beta_mean`), orders most-important first, and
+flags the variables above a selection cutoff. With no response in the
+fit, “important” means a variable that carries entropy the others do not
+— it helps reconstruct the feature space, not predict an outcome.
+
+``` r
+
+plot(gg_beta_uvarpro(u_boston))
+```
+
+![](varpro_files/figure-html/boston-gg-beta-uvarpro-1.png)
+
+Read it as the unsupervised counterpart to a VIMP bar chart: the tall
+bars are the variables that most define the structure of the predictor
+space. Pairing this with the
+[`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
+network tells you both *which* variables carry the most unsupervised
+signal and *how* they group.
+
+### Signal-variable detection with `gg_sdependent()`
+
+[`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
+answers a narrower question off the same fit: *which* variables are
+signal rather than noise? It wraps
+[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+and returns one row per candidate variable with an importance score, its
+degree in the dependency graph, and a `signal` flag, drawn as a ranked
+lollipop.
+
+``` r
+
+plot(gg_sdependent(u_boston))
+```
+
+![](varpro_files/figure-html/boston-gg-sdependent-1.png)
+
+Where
+[`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
+ranks *all* variables by entropy contribution,
+[`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
+makes the cut explicit: it separates the variables the unsupervised
+analysis treats as carrying genuine signal from those it treats as
+noise. The two views share the `get.beta.entropy()` matrix, so they are
+cheap to compute together once `uvarpro()` has run.
+
 ### Anomaly scoring with `gg_isopro()`
 
 Variable importance is one axis; *observation* outlierness is another.

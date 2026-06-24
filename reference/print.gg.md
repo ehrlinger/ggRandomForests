@@ -8,6 +8,12 @@ ntree, n). It returns the object invisibly, so
 ## Usage
 
 ``` r
+# S3 method for class 'gg_beta_uvarpro'
+print(x, ...)
+
+# S3 method for class 'gg_sdependent'
+print(x, ...)
+
 # S3 method for class 'gg_error'
 print(x, ...)
 
