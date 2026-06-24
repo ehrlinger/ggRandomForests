@@ -52,3 +52,13 @@ vignettes/varpro.html
 
 .claude
 .positai
+
+# Brainstorm / visual-companion scratch
+.superpowers/
+# Rendered vignette artifacts (current quarto vignette names)
+vignettes/ggRandomForests-regression.html
+vignettes/ggRandomForests-survival.html
+vignettes/ggRandomForests-regression_files/
+vignettes/ggRandomForests-survival_files/
+# Built package tarballs
+*.tar.gz

@@ -1,5 +1,31 @@
 Package: ggRandomForests
-Version: 3.2.0
+Version: 3.3.0
+
+ggRandomForests v3.3.0
+======================
+* `gg_partial_varpro()`: **classification partial plots now default to
+  probability.** `scale = "auto"` on a classification fit resolves to `"prob"`
+  (P(Y = target class)) instead of raw log-odds; `"odds"` and `"logodds"` are
+  options. The back-transform is applied before averaging (mean predicted
+  probability). The `causal` contrast is shown only on `"logodds"`.
+* `gg_partial_varpro()`: **survival partial plots now default to survival
+  probability.** `scale = "auto"` on a survival fit resolves to `"surv"`
+  (S(tau | x), bounded 0-1) via a new partialpro learner, instead of the
+  unbounded ensemble-mortality score (still available via
+  `scale = "mortality"`). `"surv"` and `"rmst"` default `tau` to the median
+  follow-up time when `time` is omitted -- a units-safe, data-driven horizon
+  (v3.2.0's `rmst` required `time`; this is a loosening). The resolved `tau` is
+  reported in a message and the axis label.
+* `plot.gg_partial_varpro()`: documents what the `causal` (virtual-twins)
+  estimator is and when to use it, and explains why it is hidden on the bounded
+  probability scales.
+* Documentation: `plot.gg_partial_varpro()` gains a "Reading an RMST curve"
+  section explaining how to interpret the `scale = "rmst"` y-axis -- RMST(tau)
+  is the expected event-free time within the first tau time-units (area under
+  S(t) out to tau), read in the model's own time units, bounded by tau, and
+  higher-is-better (the opposite direction from ensemble mortality). It also
+  notes that tau must be supplied in the fit's time units, since a tau beyond
+  the largest event time truncates to the full restricted mean. No code change.
 
 ggRandomForests v3.2.0
 ======================
