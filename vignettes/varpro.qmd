@@ -566,8 +566,8 @@ time** of the fit. Because that horizon is derived from the data it is
 always in the model's units and cannot be mis-specified the way a
 hand-typed number can — a units mismatch (days vs. years) is the classic
 survival partial-plot trap, and a data-driven default sidesteps it. The
-resolved $\tau$ is shown in the axis label and a one-time message; pass
-`time = tau` to choose another horizon. As on the classification
+resolved $\tau$ is shown in the axis label and reported with a message;
+pass `time = tau` to choose another horizon. As on the classification
 probability scale, the `causal` contrast is hidden here (use
 `scale = "rmst"` or `"mortality"` to see it).
 

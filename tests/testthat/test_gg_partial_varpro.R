@@ -48,6 +48,23 @@ test_that("gg_partial_varpro: scale='rmst' part_dta-only no longer needs time", 
     gg_partial_varpro(part_dta = make_mock_vpro_data(), scale = "rmst")))
 })
 
+test_that("gg_partial_varpro: precomputed part_dta skips the default-tau path", {
+  # With part_dta supplied the call is label-only: the default-tau logic must
+  # NOT run (no 'default horizon' message, and no call to .default_surv_tau,
+  # which would error on a non-survival rf).
+  fake <- structure(list(family = "surv", x = data.frame(a = 1),
+                         xvar.names = "a", max.tree = 1L,
+                         rf = list(time.interest = c(1, 2, 3))),
+                    class = "varpro")
+  expect_no_error(suppressWarnings(
+    gg_partial_varpro(part_dta = make_mock_vpro_data(), object = fake,
+                      scale = "rmst")))
+  expect_message(
+    suppressWarnings(gg_partial_varpro(part_dta = make_mock_vpro_data(),
+                                       object = fake, scale = "rmst")),
+    NA)   # no 'using default horizon' message
+})
+
 ## ── Class & structure ────────────────────────────────────────────────────────
 test_that("gg_partial_varpro returns gg_partial_varpro class", {
   result <- gg_partial_varpro(make_mock_vpro_data())

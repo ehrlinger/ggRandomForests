@@ -243,11 +243,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
   }
 
   ## ---- Survival default horizon: surv/rmst fill tau from the data --------
-  if (!is.null(object) && scale %in% c("surv", "rmst") && is.null(time)) {
-    time <- .default_surv_tau(object)
-    message("gg_partial_varpro: using default horizon tau = ", signif(time, 4),
-            " (median follow-up). Set 'time' to choose another.")
-  }
+  time <- .resolve_default_tau(part_dta, object, scale, time)
 
   ## ---- RMST guardrails (A-path) ------------------------------------------
   .warn_varpro_rmst(part_dta, object, scale, time)
@@ -458,6 +454,21 @@ gg_partial_varpro <- function(part_dta  = NULL,
     if (is.null(times)) times <- rf$time.interest
     .surv_at_tau(surv, times, tau)
   }
+}
+
+## Fill a missing horizon for surv/rmst with the median-follow-up default --
+## but only when recomputing from 'object' (part_dta = NULL). A precomputed
+## part_dta is label-only, so picking/announcing a horizon there would mislead,
+## and .default_surv_tau() assumes a survival rf.
+#' @keywords internal
+.resolve_default_tau <- function(part_dta, object, scale, time) {
+  if (is.null(part_dta) && !is.null(object) &&
+      scale %in% c("surv", "rmst") && is.null(time)) {
+    time <- .default_surv_tau(object)
+    message("gg_partial_varpro: using default horizon tau = ", signif(time, 4),
+            " (median follow-up). Set 'time' to choose another.")
+  }
+  time
 }
 
 ## Data-driven, units-safe default horizon for survival scales: the median
