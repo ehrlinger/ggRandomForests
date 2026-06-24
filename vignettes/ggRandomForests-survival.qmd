@@ -50,17 +50,16 @@ bounded between 0 and 1. Second, the cumulative hazard function (CHF):
 $\hat{H}(t) = -\log \hat{S}(t)$, an unbounded, monotone-increasing summary of
 accumulated risk. Third, mortality: the expected number of events a subject
 would accumulate if followed indefinitely under their covariate profile,
-computed by summing the CHF over the observed time grid. Mortality is an
-unbounded relative-risk score, not a probability, and works well as a single
-scalar for ranking patients by risk.
+computed by summing the CHF over the observed time grid. Mortality is not a
+probability; it is an unbounded relative-risk score. Read it as a single number
+for ranking patients from low to high risk, not as a survival chance.
 
 The **[randomForestSRC](https://www.randomforestsrc.org)** package
 [@Ishwaran:RFSRC:2014] provides a unified implementation for survival,
 regression, and classification forests.
 **ggRandomForests** extracts tidy data objects from `rfsrc` fits and renders
-them with **ggplot2** [@Wickham:2009], making it straightforward to explore how
-a forest is constructed, which variables matter, and how the response depends on
-individual predictors.
+them with **ggplot2** [@Wickham:2009], so you can see how a survival forest is
+built, which predictors carry the risk, and how survival shifts across each one.
 
 This vignette demonstrates a complete random survival forest workflow on the
 primary biliary cirrhosis (PBC) data set [@fleming:1991]:
