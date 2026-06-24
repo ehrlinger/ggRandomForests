@@ -307,7 +307,8 @@ gg_partial_varpro <- function(part_dta  = NULL,
          call. = FALSE)
   }
   .validate_partial_time(time)
-  if (scale %in% c("rmst", "surv")) .validate_rmst_inputs(part_dta, object, time)
+  if (scale %in% c("rmst", "surv"))
+    .validate_surv_scale_inputs(part_dta, object, scale)
   invisible(NULL)
 }
 
@@ -326,38 +327,39 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## Survival learner scales (rmst/surv) need a survival fit when recomputing
 ## from 'object'. tau is optional now (defaults to median follow-up).
 #' @keywords internal
-.validate_rmst_inputs <- function(part_dta, object, time) {
+.validate_surv_scale_inputs <- function(part_dta, object, scale) {
   if (is.null(part_dta) && !is.null(object) &&
       !identical(object$family, "surv")) {
-    stop("scale = 'rmst' requires a survival varpro fit ",
+    stop("scale = '", scale, "' requires a survival varpro fit ",
          "(object$family == \"surv\")", call. = FALSE)
   }
   invisible(NULL)
 }
 
-## Surface the two RMST traps: a precomputed part_dta can't be driven by tau
-## (curve is mortality with an RMST label only), and a tau past the model's
-## largest event time is truncated.  Also flag a 'time' a scale ignores.
+## Surface the two horizon traps for the learner scales (rmst/surv): a
+## precomputed part_dta can't be driven by tau (it carries only the scale
+## label), and a tau past the model's largest event time is truncated there.
+## Also flag a 'time' a scale ignores.
 #' @keywords internal
 .warn_varpro_rmst <- function(part_dta, object, scale, time) {
   if (scale %in% c("rmst", "surv")) {
     if (!is.null(part_dta)) {
-      warning("gg_partial_varpro: scale = 'rmst' cannot drive the partial ",
-              "computation from a precomputed 'part_dta'; the curves are ",
-              "ensemble mortality carrying an RMST(tau) label only. Supply ",
-              "'object' with part_dta = NULL for a genuine RMST(tau) curve.",
-              call. = FALSE)
+      warning("gg_partial_varpro: scale = '", scale, "' cannot drive the ",
+              "partial computation from a precomputed 'part_dta' (the values ",
+              "are whatever was passed in, carrying a '", scale, "' label ",
+              "only). Supply 'object' with part_dta = NULL for a genuine ",
+              scale, " curve.", call. = FALSE)
     } else if (!is.null(object)) {
       ## Only tau beyond the largest event time is truncated: S(t) cannot be
-      ## extrapolated past max(ti).  A small tau is fine -- the integration
-      ## assumes S(t) = 1 on [0, ti[1]) -- so it is not flagged.
+      ## extrapolated past max(ti).  A small tau is fine.
       ti <- object$rf$time.interest
       if (!is.null(ti) && time > max(ti)) {
         warning(sprintf(
-          paste0("gg_partial_varpro: RMST horizon tau = %g exceeds the ",
-                 "model's largest event time (%g); RMST is truncated there, ",
-                 "since S(t) cannot be extrapolated beyond it."),
-          time, max(ti)), call. = FALSE)
+          paste0("gg_partial_varpro: horizon tau = %g for scale = '%s' ",
+                 "exceeds the model's largest event time (%g); it is ",
+                 "truncated there, since S(t) cannot be extrapolated beyond ",
+                 "it."),
+          time, scale, max(ti)), call. = FALSE)
       }
     }
   } else if (!is.null(time)) {
