@@ -1,5 +1,22 @@
 Package: ggRandomForests
-Version: 3.3.0
+Version: 3.4.0
+
+ggRandomForests v3.4.0
+======================
+* `gg_beta_uvarpro()` / `plot.gg_beta_uvarpro()`: tidy wrapper and bar chart
+  for `varPro::get.beta.entropy()` -- the unsupervised analogue of
+  `gg_beta_varpro()`. From a `uvarpro()` fit it aggregates the per-region
+  lasso coefficients into `beta_mean = colMeans(|beta|)` per variable
+  (most-important first), flags variables above a selection cutoff, and
+  accepts a precomputed `beta_fit` matrix. `print`/`summary`/`autoplot`
+  companions follow the `gg_*` conventions.
+* `gg_sdependent()` / `plot.gg_sdependent()`: tidy wrapper and ranked
+  lollipop for `varPro::sdependent()` signal-variable detection. Returns one
+  row per candidate variable (`imp_score`, graph `degree`, `signal` flag)
+  ranked by `imp_score`. Complements `gg_udependent()` (the dependency
+  graph) with the "which variables are signal" ranking; shares the
+  `beta_fit` entropy matrix. Follows the `get.beta.entropy` + `sdependent`
+  workflow from the `varPro::uvarpro()` help (iowa-housing example).
 
 ggRandomForests v3.3.0
 ======================
