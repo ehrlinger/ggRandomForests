@@ -21,7 +21,7 @@ gg_partial_varpro() directly."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@ gg_partial_varpro() directly."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Partial dependence data from a varPro model</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.2.0/R/gg_partial_varpro.R" class="external-link"><code>R/gg_partial_varpro.R</code></a>, <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.2.0/R/gg_partialpro.R" class="external-link"><code>R/gg_partialpro.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_partial_varpro.R" class="external-link"><code>R/gg_partial_varpro.R</code></a>, <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_partialpro.R" class="external-link"><code>R/gg_partialpro.R</code></a></small>
       <div class="d-none name"><code>gg_partial_varpro.Rd</code></div>
     </div>
 
@@ -86,7 +86,7 @@ be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0;
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_partial_varpro</span><span class="op">(</span></span>
 <span>  part_dta <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"rmst"</span>, <span class="st">"mortality"</span>, <span class="st">"surv"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>, <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
 <span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nvars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -97,7 +97,7 @@ be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0;
 <span><span class="fu">gg_partialpro</span><span class="op">(</span></span>
 <span>  <span class="va">part_dta</span>,</span>
 <span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"rmst"</span>, <span class="st">"mortality"</span>, <span class="st">"surv"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>, <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
 <span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nvars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -126,9 +126,13 @@ came from.  When supplied it provides the provenance metadata, and when
 
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
-<dd><p>Character; sets the y-axis label and, for survival forests,
-the output type.  One of <code>"auto"</code> (default), <code>"mortality"</code>,
-<code>"rmst"</code>, <code>"surv"</code>, or <code>"chf"</code>.</p></dd>
+<dd><p>Character; the y-axis scale.  One of <code>"auto"</code> (default),
+the classification scales <code>"prob"</code> / <code>"odds"</code> / <code>"logodds"</code>,
+or the survival scales <code>"rmst"</code> / <code>"surv"</code> / <code>"mortality"</code> /
+<code>"chf"</code>.  With <code>"auto"</code>: classification fits resolve to
+<code>"prob"</code> (probability of the target class) and survival fits to
+<code>"surv"</code> (survival probability at a default horizon \(\tau\)); see
+<strong>Details</strong>.</p></dd>
 
 
 <dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
@@ -209,6 +213,25 @@ survival fit) with <code>part_dta = NULL</code>; a precomputed <code>part_dta</c
 can only be relabeled, and <code>gg_partial_varpro</code> warns when you try.
 A \(\tau\) beyond the model's largest event time is truncated there
 (with a warning), since \(S(t)\) cannot be extrapolated.</p>
+<p><strong>Classification scale (scale = "prob"/"odds"/"logodds"):</strong>
+<code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro</a></code> returns classification effects as <em>log-odds</em>
+of the target class.  <code>scale = "prob"</code> (the classification default)
+back-transforms to probability \(P(Y = \mathrm{target})\), <code>"odds"</code> to
+the odds, and <code>"logodds"</code> keeps the raw scale.  The back-transform is
+applied per observation <em>before</em> averaging, so the curve is the mean
+predicted probability, not the probability of the mean log-odds.  The
+<code>causal</code> contrast is shown only on <code>"logodds"</code> (see
+<code><a href="plot.gg_partial_varpro.html">plot.gg_partial_varpro</a></code>).</p>
+<p><strong>Survival probability (scale = "surv"):</strong> <code>scale = "surv"</code> (the
+survival default) computes \(S(\tau \mid x)\) through <code>partialpro</code>
+(the same UVT engine as mortality and RMST), bounded in \([0, 1]\).  When
+<code>time</code> is not supplied, \(\tau\) defaults to the <strong>median
+follow-up time</strong> of the fit – a data-driven horizon that is always in the
+model's own time units, so it cannot be mis-specified the way a hand-typed
+\(\tau\) can.  The resolved \(\tau\) is reported in a message and the
+axis label; pass <code>time = tau</code> to choose another.  <code>scale =
+"mortality"</code> keeps the unbounded ensemble-mortality score as an explicit
+opt-in.</p>
 <p><strong>Ensemble mortality (scale = "mortality"):</strong> here the y-axis is
 <em>ensemble mortality</em>, the expected number of events a subject would
 see if they were exposed to the study-average cumulative hazard.  It is
@@ -291,6 +314,10 @@ process.</p>
 Random survival forests. <em>The Annals of Applied Statistics</em>,
 <b>2</b>(3), 841–860. <a href="https://doi.org/10.1214/08-AOAS169" class="external-link">doi:10.1214/08-AOAS169</a>
 .</p>
+<p>Ishwaran H, Blackstone EH (2025).
+Harnessing the power of virtual (digital) twins: Graphical causal tools for
+understanding patient and hospital differences.
+<em>Computational and Structural Biotechnology Journal</em>, <b>28</b>, 312.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

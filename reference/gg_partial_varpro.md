@@ -16,7 +16,7 @@ directly.
 gg_partial_varpro(
   part_dta = NULL,
   object = NULL,
-  scale = c("auto", "rmst", "mortality", "surv", "chf"),
+  scale = c("auto", "prob", "odds", "logodds", "rmst", "surv", "mortality", "chf"),
   time = NULL,
   nvars = NULL,
   cat_limit = 10,
@@ -27,7 +27,7 @@ gg_partial_varpro(
 gg_partialpro(
   part_dta,
   object = NULL,
-  scale = c("auto", "rmst", "mortality", "surv", "chf"),
+  scale = c("auto", "prob", "odds", "logodds", "rmst", "surv", "mortality", "chf"),
   time = NULL,
   nvars = NULL,
   cat_limit = 10,
@@ -55,9 +55,12 @@ gg_partialpro(
 
 - scale:
 
-  Character; sets the y-axis label and, for survival forests, the output
-  type. One of `"auto"` (default), `"mortality"`, `"rmst"`, `"surv"`, or
-  `"chf"`.
+  Character; the y-axis scale. One of `"auto"` (default), the
+  classification scales `"prob"` / `"odds"` / `"logodds"`, or the
+  survival scales `"rmst"` / `"surv"` / `"mortality"` / `"chf"`. With
+  `"auto"`: classification fits resolve to `"prob"` (probability of the
+  target class) and survival fits to `"surv"` (survival probability at a
+  default horizon \\\tau\\); see **Details**.
 
 - time:
 
@@ -138,6 +141,27 @@ so the curve actually depends on \\\tau\\. This path **recomputes** from
 a precomputed `part_dta` can only be relabeled, and `gg_partial_varpro`
 warns when you try. A \\\tau\\ beyond the model's largest event time is
 truncated there (with a warning), since \\S(t)\\ cannot be extrapolated.
+
+**Classification scale (scale = "prob"/"odds"/"logodds"):**
+[`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+returns classification effects as *log-odds* of the target class.
+`scale = "prob"` (the classification default) back-transforms to
+probability \\P(Y = \mathrm{target})\\, `"odds"` to the odds, and
+`"logodds"` keeps the raw scale. The back-transform is applied per
+observation *before* averaging, so the curve is the mean predicted
+probability, not the probability of the mean log-odds. The `causal`
+contrast is shown only on `"logodds"` (see
+[`plot.gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)).
+
+**Survival probability (scale = "surv"):** `scale = "surv"` (the
+survival default) computes \\S(\tau \mid x)\\ through `partialpro` (the
+same UVT engine as mortality and RMST), bounded in \\\[0, 1\]\\. When
+`time` is not supplied, \\\tau\\ defaults to the **median follow-up
+time** of the fit – a data-driven horizon that is always in the model's
+own time units, so it cannot be mis-specified the way a hand-typed
+\\\tau\\ can. The resolved \\\tau\\ is reported in a message and the
+axis label; pass `time = tau` to choose another. `scale = "mortality"`
+keeps the unbounded ensemble-mortality score as an explicit opt-in.
 
 **Ensemble mortality (scale = "mortality"):** here the y-axis is
 *ensemble mortality*, the expected number of events a subject would see
@@ -220,6 +244,11 @@ structural causal claim about the data-generating process.
 Ishwaran H, Kogalur UB, Blackstone EH, Lauer MS (2008). Random survival
 forests. *The Annals of Applied Statistics*, **2**(3), 841–860.
 [doi:10.1214/08-AOAS169](https://doi.org/10.1214/08-AOAS169) .
+
+Ishwaran H, Blackstone EH (2025). Harnessing the power of virtual
+(digital) twins: Graphical causal tools for understanding patient and
+hospital differences. *Computational and Structural Biotechnology
+Journal*, **28**, 312.
 
 ## See also
 

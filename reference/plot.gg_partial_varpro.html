@@ -17,7 +17,7 @@ handed off to plot.gg_partial_rfsrc for drawing.'></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ handed off to plot.gg_partial_rfsrc for drawing.'></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Plot a <code><a href="gg_partial_varpro.html">gg_partial_varpro</a></code> object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.2.0/R/plot.gg_partial.R" class="external-link"><code>R/plot.gg_partial.R</code></a>, <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.2.0/R/plot.gg_partial_varpro.R" class="external-link"><code>R/plot.gg_partial_varpro.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/plot.gg_partial.R" class="external-link"><code>R/plot.gg_partial.R</code></a>, <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/plot.gg_partial_varpro.R" class="external-link"><code>R/plot.gg_partial_varpro.R</code></a></small>
       <div class="d-none name"><code>plot.gg_partial_varpro.Rd</code></div>
     </div>
 
@@ -144,9 +144,67 @@ effect off the plot.</p>
 to claim how the world works. They are a window into the fitted
 relationship; they do not by themselves establish that intervening
 on the variable would move the outcome. For survival path-C
-(<code>scale = "surv"</code> or <code>"chf"</code>), the y-axis is on the
-probability or cumulative-hazard scale, which is usually the scale
-you want to report to a clinical audience.</p>
+(<code>scale = "chf"</code>), the y-axis is on the cumulative-hazard scale.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="reading-a-probability-curve-scale-prob-">Reading a probability curve (scale = "prob")<a class="anchor" aria-label="anchor" href="#reading-a-probability-curve-scale-prob-"></a></h2>
+
+
+<p>The y-axis is \(P(Y = \mathrm{target})\), the model's predicted probability
+of the target class as the focal variable varies (others held at their
+UVT-plausible average).  <code>"odds"</code> and <code>"logodds"</code> are the same
+curve on the odds and log-odds scales.  The <code>causal</code> curve is a
+contrast (below) and is <em>not</em> shown on <code>"prob"</code>/<code>"odds"</code>;
+use <code>"logodds"</code> to see it.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="reading-a-survival-probability-curve-scale-surv-">Reading a survival-probability curve (scale = "surv")<a class="anchor" aria-label="anchor" href="#reading-a-survival-probability-curve-scale-surv-"></a></h2>
+
+
+<p>The y-axis is \(S(\tau \mid x)\), the predicted probability of surviving
+past \(\tau\), bounded in \([0, 1]\) and read in the model's time units.
+Higher is better (more survival).  \(\tau\) defaults to the median
+follow-up time when not supplied.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="what-the-causal-curve-is-and-when-to-use-it">What the causal curve is, and when to use it<a class="anchor" aria-label="anchor" href="#what-the-causal-curve-is-and-when-to-use-it"></a></h2>
+
+
+<p><code>causal</code> is the <strong>baseline-subtracted local effect</strong> – varPro's
+virtual- ("digital-") twins estimator (Ishwaran &amp; Blackstone, 2025).  It
+shows how the prediction shifts as the focal variable moves away from the
+reference grid point, with the other covariates held at on-manifold
+(UVT-plausible) values; it is a <strong>contrast</strong> (it starts at 0), not a
+level.  Use it when you want the local effect (change-from-baseline) rather
+than the absolute predicted level, and as a cross-check on the parametric
+and nonparametric curves.  It is varpro's local estimator <em>within the
+fitted model</em>, <strong>not a structural causal claim</strong> about the
+data-generating process.  Because it is a contrast it cannot share a
+probability/odds axis with the absolute curves, so it is shown only on the
+additive scales (<code>"logodds"</code>, <code>"mortality"</code>, <code>"rmst"</code>).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="reading-an-rmst-curve-scale-rmst-">Reading an RMST curve (scale = "rmst")<a class="anchor" aria-label="anchor" href="#reading-an-rmst-curve-scale-rmst-"></a></h2>
+
+
+<p>The y-axis is restricted mean survival time at horizon \(\tau\),
+\(\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,dt\) – the <strong>expected
+event-free time during the first \(\tau\) time-units</strong> (the area under
+the survival curve out to \(\tau\)). Read it in the <strong>model's own
+time units</strong>, and note it is <strong>bounded</strong>:
+\(0 \le \mathrm{RMST}(\tau) \le \tau\). Two consequences are worth
+stating to a reader: \(\tau\) must be given in the fit's time units – a
+\(\tau\) past the largest event time simply truncates to the full
+restricted mean and stops varying with \(\tau\) – and <strong>higher is
+better</strong> (more expected time event-free), the opposite direction from the
+ensemble-mortality scale.</p>
+<p>A continuous variable's curve sloping <em>up</em> means higher values of that
+covariate are associated with <em>more</em> restricted-mean event-free time
+within \(\tau\) (holding the other covariates at their UVT-plausible
+average); a flat curve means the covariate does not shift restricted-mean
+survival. Unlike ensemble mortality, RMST is on a directly interpretable
+clinical scale – "so many event-free time-units within \(\tau\)" –
+usually the scale to report.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -154,6 +212,10 @@ you want to report to a clinical audience.</p>
 Random survival forests. <em>The Annals of Applied Statistics</em>,
 <b>2</b>(3), 841–860. <a href="https://doi.org/10.1214/08-AOAS169" class="external-link">doi:10.1214/08-AOAS169</a>
 .</p>
+<p>Ishwaran H, Blackstone EH (2025).
+Harnessing the power of virtual (digital) twins: Graphical causal tools for
+understanding patient and hospital differences.
+<em>Computational and Structural Biotechnology Journal</em>, <b>28</b>, 312.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

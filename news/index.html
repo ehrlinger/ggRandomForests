@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,11 +52,21 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.2.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.2.0" id="ggrandomforests-v320">ggRandomForests v3.2.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v320"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.3.0" id="ggrandomforests-v330">ggRandomForests v3.3.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v330"></a></h2>
+<ul><li>
+<code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code>: <strong>classification partial plots now default to probability.</strong> <code>scale = "auto"</code> on a classification fit resolves to <code>"prob"</code> (P(Y = target class)) instead of raw log-odds; <code>"odds"</code> and <code>"logodds"</code> are options. The back-transform is applied before averaging (mean predicted probability). The <code>causal</code> contrast is shown only on <code>"logodds"</code>.</li>
+<li>
+<code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code>: <strong>survival partial plots now default to survival probability.</strong> <code>scale = "auto"</code> on a survival fit resolves to <code>"surv"</code> (S(tau | x), bounded 0-1) via a new partialpro learner, instead of the unbounded ensemble-mortality score (still available via <code>scale = "mortality"</code>). <code>"surv"</code> and <code>"rmst"</code> default <code>tau</code> to the median follow-up time when <code>time</code> is omitted – a units-safe, data-driven horizon (v3.2.0’s <code>rmst</code> required <code>time</code>; this is a loosening). The resolved <code>tau</code> is reported in a message and the axis label.</li>
+<li>
+<code><a href="../reference/plot.gg_partial_varpro.html">plot.gg_partial_varpro()</a></code>: documents what the <code>causal</code> (virtual-twins) estimator is and when to use it, and explains why it is hidden on the bounded probability scales.</li>
+<li>Documentation: <code><a href="../reference/plot.gg_partial_varpro.html">plot.gg_partial_varpro()</a></code> gains a “Reading an RMST curve” section explaining how to interpret the <code>scale = "rmst"</code> y-axis – RMST(tau) is the expected event-free time within the first tau time-units (area under S(t) out to tau), read in the model’s own time units, bounded by tau, and higher-is-better (the opposite direction from ensemble mortality). It also notes that tau must be supplied in the fit’s time units, since a tau beyond the largest event time truncates to the full restricted mean. No code change.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.2.0" id="ggrandomforests-v320">ggRandomForests v3.2.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v320"></a></h2><p class="text-muted">CRAN release: 2026-06-23</p>
 <ul><li>Fix (<a href="https://github.com/ehrlinger/ggRandomForests/issues/118" class="external-link">#118</a>): <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> no longer fails with the cryptic “arguments imply differing number of rows:
 <p>
 , 0” when <code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code> returns a degenerate importance table (0 rows, or <code>p</code> variables with no usable <code>z</code> column) – observed intermittently on survival fits where the release-rule step selects no variables. It now stops with a clear, specific message explaining the empty importance and suggesting a larger <code>ntree</code>. The guard is scoped to the degenerate case only; well-formed fits (survival included) are unaffected – this is not a blanket survival-family block (cf. the reverted <a href="https://github.com/ehrlinger/ggRandomForests/issues/116" class="external-link">#116</a>).</p>

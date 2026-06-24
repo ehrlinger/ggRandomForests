@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,9 +82,9 @@
       <h1>Exploring variable importance with varPro</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-06-23</p>
+      <p class="date">2026-06-24</p>
 
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.2.0/vignettes/varpro.qmd" class="external-link"><code>vignettes/varpro.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/varpro.qmd" class="external-link"><code>vignettes/varpro.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -7209,7 +7209,7 @@ attr(,"class")
 </div>
 </section><section class="level2"><h3 id="partial-dependence-gg_partial_varpro-on-classification">Partial dependence: <code>gg_partial_varpro()</code> on classification<a class="anchor" aria-label="anchor" href="#partial-dependence-gg_partial_varpro-on-classification"></a>
 </h3>
-<p><code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> works the same way on a classification fit, but each predictor’s curve becomes per-class probabilities. The plot panels are organised by predictor with class encoded as colour or facet (the wrapper defaults handle this).</p>
+<p>On a classification fit <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> defaults to the <strong>probability scale</strong> (<code>scale = "auto"</code> resolves to <code>"prob"</code>): each predictor’s curve is the predicted probability of the <em>target class</em> — by default the last factor level (here <em>virginica</em>), selectable with <code>target =</code>. <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro()</a></code> works internally on the log-odds of that class; the wrapper back-transforms each observation to a probability <em>before</em> averaging, so the curve is the mean predicted probability (not the probability of the mean log-odds). On this bounded <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math> scale only the parametric and non-parametric curves are shown — the <code>causal</code> contrast is a log odds-ratio, not a level, so it cannot share the probability axis (use <code>scale = "logodds"</code> to see it). <code>scale = "odds"</code> and <code>"logodds"</code> give the same relationship on the odds and log-odds scales.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Precomputed offline (see precompute_varpro.R); falls back to a live fit.</span></span>
@@ -7226,7 +7226,7 @@ attr(,"class")
 </div>
 </div>
 </div>
-<p>Read each panel as: “as predictor X changes from low to high, how does the probability of each class shift?” Patterns that match the underlying biology (e.g. petal length separating setosa from the others) act as a sanity check on the forest.</p>
+<p>Read each panel as: “as predictor X changes from low to high, how does the probability of the target class shift?” Patterns that match the underlying biology (e.g. petal length separating <em>virginica</em> from the others) act as a sanity check on the forest.</p>
 </section><section class="level2"><h3 id="per-class-lasso-refinement-with-gg_beta_varpro">Per-class lasso refinement with <code>gg_beta_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#per-class-lasso-refinement-with-gg_beta_varpro"></a>
 </h3>
@@ -7274,7 +7274,7 @@ attr(,"class")
 </section></section><section class="section level2"><h2 id="survival-pbc">Survival: PBC<a class="anchor" aria-label="anchor" href="#survival-pbc"></a>
 </h2>
 <p>Survival is the family where the varPro toolchain shows its limits, and being explicit about those limits is more useful than pretending they don’t exist. The forest-fitting and the family-agnostic wrappers all work; the lasso-refined and individual-importance wrappers don’t, because the underlying <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> and <code><a href="https://www.randomforestsrc.org/reference/ivarpro.html" class="external-link">varPro::ivarpro()</a></code> calls don’t yet extend to right-censored outcomes. A per-rule local lasso for a censored response requires a local partial-likelihood or Nelson-Aalen estimator in place of the regression/classification local estimator; the design work for that is tracked but not yet landed.</p>
-<p>What does work is the core release-rule importance, the C-path partial dependence (routed through the embedded <code>$rf</code> random survival forest), and anomaly scoring on the predictor matrix. For many applied problems, those three views cover the questions you actually want to answer.</p>
+<p>What does work is the core release-rule importance, partial dependence (survival probability <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo stretchy="false" form="prefix">(</mo><mi>τ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">S(\tau)</annotation></semantics></math> and RMST through the release-rule engine, plus cumulative hazard via the embedded <code>$rf</code> survival forest), and anomaly scoring on the predictor matrix. For many applied problems, those three views cover the questions you actually want to answer.</p>
 <p>The PBC (primary biliary cirrhosis) dataset from <code>randomForestSRC</code> has 418 patients, seven predictors, and a Surv-encoded outcome of days to event (death or transplant, status ∈ {0, 1, 2}). We use a small seven-variable subset so the vignette fits quickly. For a full analysis including time-dependent covariates, <span class="citation" data-cites="Lee:2021">Lee et al. (<a href="#ref-Lee:2021" role="doc-biblioref">2021</a>)</span> demonstrates the boosted nonparametric hazard framework that varPro’s survival path draws on.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
@@ -7304,9 +7304,11 @@ attr(,"class")
 </div>
 </div>
 </div>
-</section><section class="level2"><h3 id="partial-dependence-gg_partial_varpro-c-path">Partial dependence: <code>gg_partial_varpro()</code> (C-path)<a class="anchor" aria-label="anchor" href="#partial-dependence-gg_partial_varpro-c-path"></a>
+</section><section class="level2"><h3 id="partial-dependence-gg_partial_varpro-on-survival">Partial dependence: <code>gg_partial_varpro()</code> on survival<a class="anchor" aria-label="anchor" href="#partial-dependence-gg_partial_varpro-on-survival"></a>
 </h3>
-<p>For survival, <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> dispatches into the <code>randomForestSRC</code>-backed partial-dependence machinery via the underlying <code>$rf</code> survival forest (what the package calls the <em>C-path</em> because it routes through the <code>randomForestSRC</code> C-code layer rather than the varPro release-rule engine). The output shape is the same as the regression case (parametric / non-parametric / causal panels); the y-axis carries an “ensemble mortality” interpretation <span class="citation" data-cites="Ishwaran:2007a">(<a href="#ref-Ishwaran:2007a" role="doc-biblioref">Ishwaran et al. 2008</a>)</span>, not a survival probability. Higher values mean higher predicted mortality at a given predictor value, integrated over the event-time horizon in the training data.</p>
+<p>For survival <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> defaults to <strong>survival probability</strong> (<code>scale = "auto"</code> resolves to <code>"surv"</code>): each curve is <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mo stretchy="false" form="prefix">(</mo><mi>τ</mi><mo>∣</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">S(\tau \mid x)</annotation></semantics></math>, the predicted probability of surviving past a horizon <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>, computed through <code>partialpro()</code> on the same release-rule (UVT) engine as the regression and classification fits — bounded in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math> and read in the model’s own time units.</p>
+<p>When you do not supply <code>time</code>, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math> defaults to the <strong>median follow-up time</strong> of the fit. Because that horizon is derived from the data it is always in the model’s units and cannot be mis-specified the way a hand-typed number can — a units mismatch (days vs. years) is the classic survival partial-plot trap, and a data-driven default sidesteps it. The resolved <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math> is shown in the axis label and reported with a message; pass <code>time = tau</code> to choose another horizon. As on the classification probability scale, the <code>causal</code> contrast is hidden here (use <code>scale = "rmst"</code> or <code>"mortality"</code> to see it).</p>
+<p>Other survival scales are explicit opt-ins: <code>scale = "rmst"</code> gives restricted mean survival time RMST<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>τ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\tau)</annotation></semantics></math> (also on the release-rule engine, with the same median-follow-up default <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>), and <code>scale = "mortality"</code> keeps the unbounded ensemble-mortality score <span class="citation" data-cites="Ishwaran:2007a">(<a href="#ref-Ishwaran:2007a" role="doc-biblioref">Ishwaran et al. 2008</a>)</span> — a relative-risk index, <em>not</em> a survival probability.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Precomputed offline (see precompute_varpro.R); falls back to a live fit.</span></span>
@@ -7353,6 +7355,13 @@ attr(,"class")
 <section class="level2"><h3 id="family-support-matrix">Family-support matrix<a class="anchor" aria-label="anchor" href="#family-support-matrix"></a>
 </h3>
 <table class="table caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
 <thead><tr class="header">
 <th>Wrapper</th>
 <th>regr</th>
@@ -7364,8 +7373,8 @@ attr(,"class")
 <tr class="odd">
 <td><code>gg_partial_varpro</code></td>
 <td>✓</td>
-<td>✓</td>
-<td>✓ (C-path via <code>$rf</code>)</td>
+<td>✓ (prob)</td>
+<td>✓ (S(τ); rmst/mortality/chf)</td>
 <td>✗ (not audited)</td>
 </tr>
 <tr class="even">
@@ -7426,7 +7435,7 @@ attr(,"class")
 </section></section><section class="section level2"><h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <p>The release-rule framework is laid out in <span class="citation" data-cites="Lu2024varpro">Lu and Ishwaran (<a href="#ref-Lu2024varpro" role="doc-biblioref">2024</a>)</span>. Worked implementation examples and the full API are at the <a href="https://www.varprotools.org/articles/getstarted.html" class="external-link">varPro tools reference site</a>.</p>
-<p>The ensemble mortality scale used by survival partial dependence is introduced in <span class="citation" data-cites="Ishwaran:2007a">Ishwaran et al. (<a href="#ref-Ishwaran:2007a" role="doc-biblioref">2008</a>)</span> (the Annals of Applied Statistics methods paper for random survival forests); the R-package side is described in <span class="citation" data-cites="Ishwaran:2008">Ishwaran and Kogalur (<a href="#ref-Ishwaran:2008" role="doc-biblioref">2007</a>)</span>. The boosted nonparametric hazard framework that informs varPro’s survival path (including the treatment of time-dependent covariates) is in <span class="citation" data-cites="Lee:2021">Lee et al. (<a href="#ref-Lee:2021" role="doc-biblioref">2021</a>)</span>.</p>
+<p>The ensemble-mortality scale (<code>scale = "mortality"</code>), one of the survival partial-dependence options alongside the default survival probability, is introduced in <span class="citation" data-cites="Ishwaran:2007a">Ishwaran et al. (<a href="#ref-Ishwaran:2007a" role="doc-biblioref">2008</a>)</span> (the Annals of Applied Statistics methods paper for random survival forests); the R-package side is described in <span class="citation" data-cites="Ishwaran:2008">Ishwaran and Kogalur (<a href="#ref-Ishwaran:2008" role="doc-biblioref">2007</a>)</span>. The boosted nonparametric hazard framework that informs varPro’s survival path (including the treatment of time-dependent covariates) is in <span class="citation" data-cites="Lee:2021">Lee et al. (<a href="#ref-Lee:2021" role="doc-biblioref">2021</a>)</span>.</p>
 <p>Each wrapper’s help page carries a “What this is doing” section that goes one level deeper than this vignette. The cross-cutting reference in §6 maps each wrapper to the forest families it supports and notes which capabilities are deferred to v3.1.0.</p>
 </section><section class="section level2"><h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
