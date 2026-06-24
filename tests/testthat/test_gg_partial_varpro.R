@@ -488,7 +488,8 @@ test_that(".default_surv_tau is the median observed survival time", {
 ## ── v3.3.0 survival routing + classification provenance (real varpro fits) ───
 test_that("gg_partial_varpro: scale='surv' via learner, in [0,1], default tau", {
   skip_on_cran()
-  skip_if_not_installed("randomForestSRC"); skip_if_not_installed("varPro")
+  skip_if_not_installed("randomForestSRC")
+  skip_if_not_installed("varPro")
   set.seed(13)
   pbc <- get(utils::data("pbc", package = "randomForestSRC",
                          envir = environment()))
@@ -512,7 +513,8 @@ test_that("gg_partial_varpro: scale='surv' via learner, in [0,1], default tau", 
 })
 
 test_that("gg_partial_varpro: classification provenance records target class", {
-  skip_on_cran(); skip_if_not_installed("varPro")
+  skip_on_cran()
+  skip_if_not_installed("varPro")
   set.seed(5)
   dat <- data.frame(y = factor(rep(c("a", "b"), 60)),
                     x1 = rnorm(120), x2 = rnorm(120))
