@@ -92,7 +92,8 @@ A named list with two elements:
 
 - categorical:
 
-  A `data.frame` with the same columns but `x` kept as character, for
+  A `data.frame` with the same columns but `x` kept as a `factor`
+  (levels in the model's level order, not alphabetical), for
   low-cardinality predictors.
 
 ## Details

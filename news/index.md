@@ -2,6 +2,21 @@
 
 ## ggRandomForests v3.4.0
 
+- Fix:
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  now computes partial dependence correctly for `factor` predictors. It
+  was passing factor *labels* as `partial.values` to
+  [`randomForestSRC::partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html),
+  which imposes a level by its integer code (internally
+  `as.numeric(partial.values)`). Character labels (“No”/“Yes”) became
+  `NA` and numeric-looking labels (“4”/“6”/“8”) became out-of-range
+  codes, so every level collapsed to a single value (a flat categorical
+  partial plot). The wrapper now passes the integer codes and relabels
+  the output, matching `plot.variable(partial = TRUE)` and the
+  ground-truth partial dependence. The categorical `x` is now returned
+  as a `factor` in the model’s level order, so the plot keeps that order
+  instead of re-sorting alphabetically. Continuous and numeric
+  low-cardinality predictors are unaffected.
 - [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
   /
   [`plot.gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_uvarpro.md):
