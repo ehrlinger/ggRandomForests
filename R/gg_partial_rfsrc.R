@@ -195,8 +195,9 @@ snap_partial_time <- function(rf_model, partial.time) {
 ## Build the evaluation grid (xval vector + categorical flag) for one variable.
 make_eval_grid <- function(xname, newx, cat_limit, n_eval) {
   # Use `[[` to preserve the column's class (factor, character, numeric, …).
-  # unlist(dplyr::select(...)) would coerce factors to integer codes, breaking
-  # both the cat_limit check and the partial.values passed to partial.rfsrc().
+  # unlist(dplyr::select(...)) would coerce factors to their integer codes,
+  # losing the level labels we need for the cat_limit check and for mapping
+  # partial.rfsrc()'s numeric output back to labels (see partial_one_var()).
   xval <- newx[[xname]]
   xval <- xval[!is.na(xval)]
   if (length(xval) == 0L) {
@@ -207,14 +208,22 @@ make_eval_grid <- function(xname, newx, cat_limit, n_eval) {
     return(NULL)
   }
   gr <- is.factor(xval) || is.character(xval) || length(unique(xval)) < cat_limit
-  if (!gr && length(unique(xval)) > n_eval) {
+  flevels <- NULL
+  if (is.factor(xval)) {
+    # partial.rfsrc() imposes a factor level by its INTEGER CODE -- internally
+    # it does as.numeric(partial.values). Passing the labels coerces character
+    # levels ("No"/"Yes") to NA, or numeric-looking labels ("4"/"6"/"8") to
+    # out-of-range codes, and every level collapses to a single value. Pass the
+    # codes here and relabel get.partial.plot.data()'s output in partial_one_var().
+    flevels <- levels(xval)
+    present <- levels(droplevels(xval))       # levels actually present in newx
+    xval    <- match(present, flevels)        # codes in the model's factor coding
+  } else if (!gr && length(unique(xval)) > n_eval) {
     xval <- quantile_pts(xval, groups = n_eval)
-  } else if (is.factor(xval)) {
-    xval <- levels(droplevels(xval))   # preserve factor ordering; drop unused levels
   } else {
     xval <- sort(unique(xval))
   }
-  list(xval = xval, categorical = gr)
+  list(xval = xval, categorical = gr, flevels = flevels)
 }
 
 ## Thin wrapper around partial.rfsrc that builds the argument list.
@@ -250,6 +259,11 @@ partial_one_var <- function(xname, newx, rf_model,
                                      is_surv, partial.time, partial.type,
                                      xvar2.name, x2val)
   pout    <- randomForestSRC::get.partial.plot.data(partial.obj, granule = gr)
+  # Factor levels were passed to partial.rfsrc() as integer codes; map the
+  # numeric x that comes back to the original level labels.
+  if (!is.null(eg$flevels)) {
+    pout$x <- eg$flevels[as.integer(pout$x)]
+  }
   # Survival forests with >1 partial.time return yhat as an
   # [length(partial.values) x length(partial.time)] matrix; expand to long form
   # so each (x, time) pair is its own row. For non-survival or single-time
