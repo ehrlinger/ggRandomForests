@@ -17,6 +17,15 @@ ggRandomForests v3.4.0
   graph) with the "which variables are signal" ranking; shares the
   `beta_fit` entropy matrix. Follows the `get.beta.entropy` + `sdependent`
   workflow from the `varPro::uvarpro()` help (iowa-housing example).
+* New `uvarpro` vignette: a short, focused walk-through of the unsupervised
+  varPro wrappers (`gg_udependent()`, `gg_beta_uvarpro()`, `gg_sdependent()`)
+  on a single `uvarpro()` fit, using the shared `beta_fit` matrix. The three
+  unsupervised sections were lifted out of the `varpro` vignette, which now
+  points to the new one and covers the five supervised wrappers.
+* Fixed the main vignette's `\VignetteIndexEntry`, which still carried the
+  template placeholder "Vignette's Title" -- it now reads "Exploring Random
+  Forests with ggRandomForests" (the index entry CRAN lists, not the document
+  title, was the stale one).
 
 ggRandomForests v3.3.0
 ======================
