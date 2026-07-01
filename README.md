@@ -73,6 +73,13 @@ forests — see the dedicated vignette:
 vignette("varpro", package = "ggRandomForests")
 ```
 
+The unsupervised varPro tools — `gg_udependent()`, `gg_beta_uvarpro()`, and
+`gg_sdependent()`, which read structure off a `uvarpro()` fit with no outcome —
+have their own short vignette:
+```r
+vignette("uvarpro", package = "ggRandomForests")
+```
+
 ## Function reference
 
 | Function | Input | What you get |
@@ -109,11 +116,11 @@ entirely and build the figure from the tidy data yourself.
 
 ## Recent changes
 
-See [NEWS.md](NEWS.md) for the full changelog. Highlights since v2.4.0:
+See [NEWS.md](NEWS.md) for the full changelog. Recent highlights:
 
-- **v2.6.1** Fix factor-level assignment in `gg_partial` for categorical variables.
-- **v2.6.0** New plotting functions exported; test coverage raised to 83%; removed internal dependency on `hvtiRutilities`.
-- **v2.5.0** New `gg_partial_rfsrc()` computes partial dependence directly from an `rfsrc` model without a separate `plot.variable` call; supports a grouping variable via `xvar2.name`.
+- **v3.4.0** Unsupervised varPro wrappers (`gg_beta_uvarpro()`, `gg_sdependent()`) with their own vignette; `gg_partial_rfsrc()` now handles factor predictors correctly.
+- **v3.3.0** varPro partial plots default to interpretable scales — probability for classification, survival S(&tau;) for survival.
+- **v3.1.0** varPro integration: release-rule importance, partial dependence, local importance, anomaly scores, and the dependency graph.
 
 ## References
 
