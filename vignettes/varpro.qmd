@@ -594,9 +594,9 @@ story. Both are tracked for v3.1.0.
 
 If you call either on a survival fit you'll get a clear error message
 pointing at the deferred work, not a silent miscalculation. The
-family-support matrix in §6 records this; the rest of the toolkit
-that *does* work on survival (`gg_varpro`, `gg_partial_varpro`, and
-`gg_isopro` above).
+family-support matrix in the closing reference section records this; the
+rest of the toolkit that *does* work on survival (`gg_varpro`,
+`gg_partial_varpro`, and `gg_isopro` above).
 
 # Cross-cutting reference
 
@@ -664,8 +664,8 @@ varPro's survival path (including the treatment of time-dependent
 covariates) is in @Lee:2021.
 
 Each wrapper's help page carries a "What this is doing" section that
-goes one level deeper than this vignette. The cross-cutting reference
-in §6 maps each wrapper to the forest families it supports and notes
-which capabilities are deferred to v3.1.0.
+goes one level deeper than this vignette. The cross-cutting reference at
+the end of this vignette maps each wrapper to the forest families it
+supports and notes which capabilities are deferred.
 
 # References
