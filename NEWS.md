@@ -3,6 +3,18 @@ Version: 3.4.0
 
 ggRandomForests v3.4.0
 ======================
+* Fix: `gg_partial_rfsrc()` now computes partial dependence correctly for
+  `factor` predictors. It was passing factor *labels* as
+  `partial.values` to `randomForestSRC::partial.rfsrc()`, which imposes a
+  level by its integer code (internally `as.numeric(partial.values)`).
+  Character labels ("No"/"Yes") became `NA` and numeric-looking labels
+  ("4"/"6"/"8") became out-of-range codes, so every level collapsed to a
+  single value (a flat categorical partial plot). The wrapper now passes the
+  integer codes and relabels the output, matching `plot.variable(partial =
+  TRUE)` and the ground-truth partial dependence. The categorical `x` is now
+  returned as a `factor` in the model's level order, so the plot keeps that
+  order instead of re-sorting alphabetically. Continuous and numeric
+  low-cardinality predictors are unaffected.
 * `gg_beta_uvarpro()` / `plot.gg_beta_uvarpro()`: tidy wrapper and bar chart
   for `varPro::get.beta.entropy()` -- the unsupervised analogue of
   `gg_beta_varpro()`. From a `uvarpro()` fit it aggregates the per-region
