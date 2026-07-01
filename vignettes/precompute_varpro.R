@@ -44,8 +44,6 @@ pd_boston  <- gg_partial_varpro(object = v_boston)
 b_boston   <- varPro::beta.varpro(v_boston)
 iv_boston  <- varPro::ivarpro(v_boston)
 set.seed(20260527L)
-u_boston   <- varPro::uvarpro(boston_x, ntree = 50)
-set.seed(20260527L)
 iso_boston <- varPro::isopro(data = boston_x, method = "rnd",
                              sampsize = 256, ntree = 50)
 
@@ -79,9 +77,9 @@ iso_pbc <- varPro::isopro(data = pbc_small[, c("age", "albumin", "bili",
 # vignette never invokes those on a stripped object (pd_pbc is cached and
 # gg_isopro() is training-path only). Dropping those heavy
 # slots takes the file from ~1.6 MB to ~0.4 MB (validated: every vignette
-# wrapper call returns output identical to the un-stripped object). Two
-# exceptions keep their forest: v_boston is printed in the vignette
-# (print.varpro reads $rf), and u_boston feeds gg_udependent(), which uses it.
+# wrapper call returns output identical to the un-stripped object). One
+# exception keeps its forest: v_boston is printed in the vignette
+# (print.varpro reads $rf).
 .strip_varpro <- function(v) {              # $rf: unused on the cached path
   v$rf <- NULL
   v
@@ -109,7 +107,6 @@ saveRDS(
     pd_boston     = pd_boston,
     b_boston      = b_boston,
     iv_boston     = iv_boston,
-    u_boston      = u_boston,
     iso_boston    = iso_boston,
     # iris (class)
     v_iris_binary = v_iris_binary,
