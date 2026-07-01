@@ -36,9 +36,9 @@ test_that("gg_partial_rfsrc factor partial dependence matches ground truth", {
   rf  <- randomForestSRC::rfsrc(y ~ ., data = d, ntree = 300)
 
   lv    <- levels(grp)
-  truth <- vapply(lv, function(L) {
+  truth <- vapply(lv, function(lev) {
     dd <- d
-    dd$grp <- factor(L, levels = lv)
+    dd$grp <- factor(lev, levels = lv)
     mean(predict(rf, newdata = dd)$predicted)
   }, numeric(1))
 
