@@ -85,7 +85,8 @@
 #'       (the level of \code{xvar2.name}) and \code{time} (survival forests
 #'       only) for all continuous predictors.}
 #'     \item{categorical}{A \code{data.frame} with the same columns but
-#'       \code{x} kept as character, for low-cardinality predictors.}
+#'       \code{x} kept as a \code{factor} (levels in the model's level order,
+#'       not alphabetical), for low-cardinality predictors.}
 #'   }
 #'
 #' @seealso \code{\link{gg_partial}}, \code{\link[randomForestSRC]{partial.rfsrc}},
@@ -334,6 +335,13 @@ split_partial_result <- function(pdta) {
   continuous$type <- NULL
   categorical      <- pdta[!cont_idx, , drop = FALSE]
   categorical$type <- NULL
+  # Keep the model's factor-level order. The rows arrive blocked by level in
+  # ascending code order (i.e. the model's level order), so first-appearance is
+  # that order; make x a factor so plot.gg_partial_rfsrc()'s factor(x) does not
+  # re-sort the levels alphabetically.
+  if (nrow(categorical) > 0L) {
+    categorical$x <- factor(categorical$x, levels = unique(categorical$x))
+  }
   result <- list(continuous = continuous, categorical = categorical)
   class(result) <- "gg_partial_rfsrc"
   result

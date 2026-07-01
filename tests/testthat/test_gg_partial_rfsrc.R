@@ -47,4 +47,9 @@ test_that("gg_partial_rfsrc factor partial dependence matches ground truth", {
 
   # gg_partial_rfsrc should track the ground-truth partial dependence.
   expect_equal(as.numeric(means), as.numeric(truth), tolerance = 0.15)
+
+  # x is returned as a factor in the model's level order (lo, mid, hi), not
+  # alphabetical (hi, lo, mid), so downstream factor(x) does not re-sort it.
+  expect_s3_class(g$categorical$x, "factor")
+  expect_identical(levels(g$categorical$x), lv)
 })
