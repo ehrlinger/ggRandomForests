@@ -77,25 +77,31 @@ One-hot consolidation via `get.orgvimp()` and `get.topvars()` maps the
 per-level scores back to the original factor, so downstream reporting
 stays on familiar ground.
 
-That core machinery feeds six ggRandomForests wrappers.
+That core machinery feeds five supervised ggRandomForests wrappers.
 **[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)**
 summarises the per-tree importance distribution.
 **[`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md)**
 refines those release-rule contrasts with a per-rule lasso.
 **[`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)**
 turns the release machinery into partial-dependence curves.
-**[`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)**
-reads cross-variable dependency off a `uvarpro()` fit.
 **[`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)**
 scores observations for anomaly using an isolation-forest variant.
 **[`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)**
-computes per-observation local importance.
+computes per-observation local importance. A separate set of
+*unsupervised* wrappers —
+[`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md),
+[`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md),
+and
+[`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
+— reads structure off a `uvarpro()` fit that has no response at all;
+those get their own walk-through in the companion [uvarpro
+vignette](https://ehrlinger.github.io/ggRandomForests/articles/uvarpro.md).
 
-This vignette walks all six wrappers on three worked examples: a
-regression problem (Boston housing), a classification problem (iris,
-binary and multi-class), and a survival problem (PBC). The closing
-section is a one-page reference matrix mapping each wrapper to the
-forest families it supports.
+This vignette walks the five supervised wrappers on three worked
+examples: a regression problem (Boston housing), a classification
+problem (iris, binary and multi-class), and a survival problem (PBC).
+The closing section is a one-page reference matrix mapping each wrapper
+to the forest families it supports.
 
 ## Regression: Boston housing
 
@@ -7118,102 +7124,21 @@ above. Disagreement is the diagnostic signal: a variable that ranks high
 here but low there is one whose local linear effect inside many rules is
 real even when the release contrast is modest.
 
-### Cross-variable dependency with `gg_udependent()`
+### Unsupervised views: see the uvarpro vignette
 
-The three views so far take one variable at a time.
+The wrappers so far all score variables against a response. varPro also
+has an unsupervised mode:
+[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+grows a forest on the predictor matrix alone, and three more wrappers
+read off that fit —
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
-reads cross-variable structure off a `uvarpro()` fit and draws the
-result as a network: nodes are variables, edges are dependencies above a
-configurable threshold. The visual is built with `ggraph`, which is in
-`Suggests` rather than `Imports`; install it if you want this view.
-
-``` r
-
-# Precomputed offline (see precompute_varpro.R); falls back to a live fit.
-u_boston <- if (is.null(.vp$u_boston)) {
-  varPro::uvarpro(Boston[, setdiff(names(Boston), "medv")], ntree = 50)
-} else {
-  .vp$u_boston
-}
-```
-
-``` r
-
-plot(gg_udependent(u_boston))
-```
-
-![](varpro_files/figure-html/boston-gg-udependent-1.png)
-
-Clusters of mutually-connected variables are worth checking for
-redundancy: they may be several views of the same underlying quantity.
-`uvarpro()` operates on the predictor matrix alone; there is no response
-in the fit, which is what makes the network genuinely unsupervised.
-Variables that cluster here are correlated in feature space regardless
-of whether any of them matters for prediction. That information is
-complementary to the ranking from
-[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md):
-a variable can be important for prediction and still sit in a tight
-cluster with a near-duplicate; in that situation, model parsimony may
-favour dropping one of the cluster members without losing much
-predictive accuracy.
-
-### Unsupervised importance with `gg_beta_uvarpro()`
-
-The dependency network shows *structure*;
+draws the cross-variable dependency network,
 [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
-turns the same `uvarpro()` fit into a *ranking*. It is the unsupervised
-analogue of
-[`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md):
-from
-[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
-it aggregates the per-region lasso coefficients into a mean absolute
-weight per variable (`beta_mean`), orders most-important first, and
-flags the variables above a selection cutoff. With no response in the
-fit, “important” means a variable that carries entropy the others do not
-— it helps reconstruct the feature space, not predict an outcome.
-
-``` r
-
-plot(gg_beta_uvarpro(u_boston))
-```
-
-![](varpro_files/figure-html/boston-gg-beta-uvarpro-1.png)
-
-Read it as the unsupervised counterpart to a VIMP bar chart: the tall
-bars are the variables that most define the structure of the predictor
-space. Pairing this with the
-[`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
-network tells you both *which* variables carry the most unsupervised
-signal and *how* they group.
-
-### Signal-variable detection with `gg_sdependent()`
-
-You have a ranking from
-[`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md);
-now you want the cut line. Which variables are signal, and which are
-noise?
+ranks the variables by their entropy contribution, and
 [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
-answers that narrower question off the same fit. It wraps
-[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
-and returns one row per candidate variable with an importance score, its
-degree in the dependency graph, and a `signal` flag, drawn as a ranked
-lollipop.
-
-``` r
-
-plot(gg_sdependent(u_boston))
-```
-
-![](varpro_files/figure-html/boston-gg-sdependent-1.png)
-
-Where
-[`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
-ranks *all* variables by entropy contribution,
-[`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
-makes the cut explicit: it separates the variables the unsupervised
-analysis treats as carrying genuine signal from those it treats as
-noise. The two views share the `get.beta.entropy()` matrix, so they are
-cheap to compute together once `uvarpro()` has run.
+marks the cut between signal and noise. Because there is no outcome in
+play, they get their own short walk-through in the companion [uvarpro
+vignette](https://ehrlinger.github.io/ggRandomForests/articles/uvarpro.md).
 
 ### Anomaly scoring with `gg_isopro()`
 
@@ -7582,9 +7507,9 @@ risk-scaling story. Both are tracked for v3.1.0.
 
 If you call either on a survival fit you’ll get a clear error message
 pointing at the deferred work, not a silent miscalculation. The
-family-support matrix in §6 records this; the rest of the toolkit that
-*does* work on survival (`gg_varpro`, `gg_partial_varpro`, `gg_isopro`
-above; `gg_udependent` shown in §3 on the X-matrix).
+family-support matrix in the closing reference section records this; the
+rest of the toolkit that *does* work on survival (`gg_varpro`,
+`gg_partial_varpro`, and `gg_isopro` above).
 
 ## Cross-cutting reference
 
@@ -7594,7 +7519,6 @@ above; `gg_udependent` shown in §3 on the X-matrix).
 |----|----|----|----|----|
 | `gg_partial_varpro` | ✓ | ✓ (prob) | ✓ (S(τ); rmst/mortality/chf) | ✗ (not audited) |
 | `gg_varpro` | ✓ | ✓ (`conditional = TRUE`) | ✓ | ✗ (errors) |
-| `gg_udependent` | ✓ (uvarpro on X) | ✓ (X) | ✓ (X) | ✓ (X) |
 | `gg_isopro` | ✓ (X) | ✓ (X) | ✓ (X) | ✓ (X) |
 | `gg_beta_varpro` | ✓ | ✓ | ✗ (upstream stop) | ✗ (deferred) |
 | `gg_ivarpro` | ✓ | ✓ | ✗ (deferred) | ✗ (deferred) |
@@ -7661,9 +7585,9 @@ nonparametric hazard framework that informs varPro’s survival path
 ([2021](#ref-Lee:2021)).
 
 Each wrapper’s help page carries a “What this is doing” section that
-goes one level deeper than this vignette. The cross-cutting reference in
-§6 maps each wrapper to the forest families it supports and notes which
-capabilities are deferred to v3.1.0.
+goes one level deeper than this vignette. The cross-cutting reference at
+the end of this vignette maps each wrapper to the forest families it
+supports and notes which capabilities are deferred.
 
 ## References
 

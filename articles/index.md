@@ -13,3 +13,5 @@
   ggRandomForests](https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-regression.md):
 - [Exploring variable importance with
   varPro](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md):
+- [Variable selection without an outcome: unsupervised
+  varPro](https://ehrlinger.github.io/ggRandomForests/articles/uvarpro.md):
