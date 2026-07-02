@@ -1,3 +1,12 @@
+# ---- Dispatch --------------------------------------------------------------
+
+test_that("gg_ivarpro: non-varpro input errors via the default method", {
+  # No varPro fit needed — the default method fires before any varpro work.
+  expect_error(gg_ivarpro(data.frame(a = 1:3)),
+               "expected a 'varpro' object")
+  expect_error(gg_ivarpro(1:3), "got an object of class integer")
+})
+
 # ---- Shape ----------------------------------------------------------------
 
 test_that("gg_ivarpro regression returns long-format tidy frame", {

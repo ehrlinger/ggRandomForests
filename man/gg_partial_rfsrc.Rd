@@ -60,7 +60,8 @@ A named list with two elements:
 (the level of \code{xvar2.name}) and \code{time} (survival forests
 only) for all continuous predictors.}
 \item{categorical}{A \code{data.frame} with the same columns but
-\code{x} kept as character, for low-cardinality predictors.}
+\code{x} kept as a \code{factor} (levels in the model's level order,
+not alphabetical), for low-cardinality predictors.}
 }
 }
 \description{

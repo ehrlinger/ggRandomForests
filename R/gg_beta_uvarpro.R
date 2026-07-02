@@ -77,10 +77,6 @@ gg_beta_uvarpro.default <- function(object, ..., cutoff = NULL,
 #' @export
 gg_beta_uvarpro.uvarpro <- function(object, ..., cutoff = NULL,
                                     beta_fit = NULL) {
-  if (!inherits(object, "uvarpro")) {
-    stop("gg_beta_uvarpro: expected a 'uvarpro' object from varPro::uvarpro().",
-         call. = FALSE)
-  }
   .assert_scalar_numeric_or_null(cutoff, "cutoff", "gg_beta_uvarpro")
 
   # Resolve the beta matrix (cache path)
