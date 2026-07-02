@@ -1,5 +1,15 @@
 Package: ggRandomForests
-Version: 3.4.0
+Version: 3.4.1
+
+ggRandomForests v3.4.1
+======================
+* The remaining `rfsrc`/`randomForest` wrappers -- `gg_error()`, `gg_vimp()`,
+  `gg_variable()`, `gg_rfsrc()`, and `gg_brier()` -- now have `default` S3
+  methods, so a wrong-class input gives a clear "expected an 'rfsrc' or
+  'randomForest' object" error (naming the class it got) instead of R's generic
+  "no applicable method". This finishes the dispatch-consistency pass started
+  for the varPro family in 3.4.0. (`gg_roc()` keeps its existing
+  `gg_roc.rfsrc` default, which accepts rfsrc-shaped objects.)
 
 ggRandomForests v3.4.0
 ======================

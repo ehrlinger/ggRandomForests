@@ -159,6 +159,13 @@
 gg_variable <- function(object, ...) {
   UseMethod("gg_variable", object)
 }
+
+#' @export
+gg_variable.default <- function(object, ...) {
+  stop("gg_variable: expected an 'rfsrc' or 'randomForest' object; ",
+       "got an object of class ", paste(class(object), collapse = "/"), ".",
+       call. = FALSE)
+}
 #' @export
 gg_variable.rfsrc <- function(object,
                               ...) {

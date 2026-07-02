@@ -455,6 +455,13 @@ gg_rfsrc <- function(object,
 }
 
 #' @export
+gg_rfsrc.default <- function(object, oob = TRUE, by, ...) {
+  stop("gg_rfsrc: expected an 'rfsrc' or 'randomForest' object; ",
+       "got an object of class ", paste(class(object), collapse = "/"), ".",
+       call. = FALSE)
+}
+
+#' @export
 gg_rfsrc.randomForest <- function(object,
                                   oob = TRUE,
                                   by,

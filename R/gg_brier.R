@@ -120,6 +120,13 @@ gg_brier <- function(object, ...) {
 }
 
 #' @export
+gg_brier.default <- function(object, ...) {
+  stop("gg_brier: expected an 'rfsrc' survival object from ",
+       "randomForestSRC::rfsrc(); got an object of class ",
+       paste(class(object), collapse = "/"), ".", call. = FALSE)
+}
+
+#' @export
 gg_brier.rfsrc <- function(object,
                            subset = NULL,
                            cens.model = c("km", "rfsrc"),
