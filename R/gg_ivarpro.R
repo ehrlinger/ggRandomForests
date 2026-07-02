@@ -159,13 +159,18 @@ gg_ivarpro <- function(object, ..., which_obs = NULL, which_class = NULL,
 }
 
 #' @export
+gg_ivarpro.default <- function(object, ..., which_obs = NULL,
+                               which_class = NULL, cutoff = NULL,
+                               ivarpro_fit = NULL) {
+  stop("gg_ivarpro: expected a 'varpro' object from varPro::varpro(); ",
+       "got an object of class ", paste(class(object), collapse = "/"), ".",
+       call. = FALSE)
+}
+
+#' @export
 gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
                               which_class = NULL, cutoff = NULL,
                               ivarpro_fit = NULL) {
-  if (!inherits(object, "varpro")) {
-    stop("gg_ivarpro: expected a 'varpro' object from varPro::varpro().",
-         call. = FALSE)
-  }
   fam <- object$family
   if (!fam %in% c("regr", "class")) {
     stop(sprintf(

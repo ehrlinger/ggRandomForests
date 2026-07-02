@@ -3,6 +3,12 @@ Version: 3.4.0
 
 ggRandomForests v3.4.0
 ======================
+* `gg_isopro()`, `gg_beta_varpro()`, and `gg_ivarpro()` now have `default` S3
+  methods, so a wrong-class input gives a clear "expected a '<class>' object"
+  error (naming the class it got) instead of R's generic "no applicable
+  method". This makes the varPro-family wrappers consistent with
+  `gg_beta_uvarpro()` / `gg_sdependent()`; the previously-unreachable inner
+  class checks were removed.
 * Fix: `gg_partial_rfsrc()` now computes partial dependence correctly for
   `factor` predictors. It was passing factor *labels* as
   `partial.values` to `randomForestSRC::partial.rfsrc()`, which imposes a

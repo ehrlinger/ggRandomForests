@@ -19,6 +19,15 @@ make_iso_fit <- function(seed = 1L, method = "rnd", ntree = 25, sampsize = 16) {
   )
 }
 
+test_that("gg_isopro: non-isopro input errors via the default method", {
+  # No varPro fit needed — the default method fires before any isopro work,
+  # so this runs everywhere (incl. CRAN).
+  expect_error(gg_isopro(data.frame(a = 1:3)),
+               "expected an 'isopro' object")
+  expect_error(gg_isopro(1:3),
+               "got an object of class integer")
+})
+
 test_that("gg_isopro: returns gg_isopro data.frame with correct columns", {
   fit <- make_iso_fit()
   gg  <- gg_isopro(fit)
