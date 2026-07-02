@@ -1,3 +1,10 @@
+test_that("gg_beta_varpro: non-varpro input errors via the default method", {
+  # No varPro fit needed — the default method fires before any varpro work.
+  expect_error(gg_beta_varpro(data.frame(a = 1:3)),
+               "expected a 'varpro' object")
+  expect_error(gg_beta_varpro(1:3), "got an object of class integer")
+})
+
 test_that("gg_beta_varpro returns the expected tidy shape", {
   b <- .beta_fit_mtcars()
   v <- .varpro_mtcars()
