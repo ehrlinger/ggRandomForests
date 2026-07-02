@@ -3,6 +3,10 @@ Version: 3.4.0
 
 ggRandomForests v3.4.0
 ======================
+* `gg_isopro()` now has a `default` S3 method, so a non-`isopro` input gives a
+  clear "expected an 'isopro' object" error (naming the class it got) instead
+  of R's generic "no applicable method". This matches the other `gg_*`
+  wrappers; the previously-unreachable inner class check was removed.
 * Fix: `gg_partial_rfsrc()` now computes partial dependence correctly for
   `factor` predictors. It was passing factor *labels* as
   `partial.values` to `randomForestSRC::partial.rfsrc()`, which imposes a
