@@ -584,18 +584,17 @@ gg_partial_varpro <- function(part_dta  = NULL,
 #' @keywords internal
 .process_cat_var <- function(feat, feat_name, scale = "generic") {
   bounded  <- .is_bounded_scale(scale)
-  n_cats   <- length(unique(feat$xorg))
+  cats     <- unique(feat$xorg)
   cat_feat <- list()
-  for (ind in seq(n_cats)) {
+  for (ind in seq_along(cats)) {
     cat_feat[[ind]] <- dplyr::bind_cols(
       parametric    = .scale_transform(feat$yhat.par[, ind],    scale),
       nonparametric = .scale_transform(feat$yhat.nonpar[, ind], scale),
       causal        = if (bounded) NA_real_ else feat$yhat.causal[, ind]
     )
-    cat_feat[[ind]]$variable <- unique(feat$xorg)[ind]
-    plt.df <- if (ind == 1L) cat_feat[[ind]] else
-      dplyr::bind_rows(plt.df, cat_feat[[ind]])
+    cat_feat[[ind]]$variable <- cats[ind]
   }
+  plt.df <- dplyr::bind_rows(cat_feat)
   plt.df$name <- feat_name
   plt.df
 }
