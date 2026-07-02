@@ -1,5 +1,22 @@
 # Changelog
 
+## ggRandomForests v3.4.1
+
+- The remaining `rfsrc`/`randomForest` wrappers –
+  [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md),
+  [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
+  [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md),
+  [`gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md),
+  and
+  [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
+  – now have `default` S3 methods, so a wrong-class input gives a clear
+  “expected an ‘rfsrc’ or ‘randomForest’ object” error (naming the class
+  it got) instead of R’s generic “no applicable method”. This finishes
+  the dispatch-consistency pass started for the varPro family in 3.4.0.
+  ([`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  keeps its existing `gg_roc.rfsrc` default, which accepts rfsrc-shaped
+  objects.)
+
 ## ggRandomForests v3.4.0
 
 - [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md),

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,9 +53,13 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.4.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="3.4.1" id="ggrandomforests-v341">ggRandomForests v3.4.1<a class="anchor" aria-label="anchor" href="#ggrandomforests-v341"></a></h2>
+<ul><li>The remaining <code>rfsrc</code>/<code>randomForest</code> wrappers – <code><a href="../reference/gg_error.html">gg_error()</a></code>, <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code>, <code><a href="../reference/gg_variable.html">gg_variable()</a></code>, <code><a href="../reference/gg_rfsrc.rfsrc.html">gg_rfsrc()</a></code>, and <code><a href="../reference/gg_brier.html">gg_brier()</a></code> – now have <code>default</code> S3 methods, so a wrong-class input gives a clear “expected an ‘rfsrc’ or ‘randomForest’ object” error (naming the class it got) instead of R’s generic “no applicable method”. This finishes the dispatch-consistency pass started for the varPro family in 3.4.0. (<code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code> keeps its existing <code>gg_roc.rfsrc</code> default, which accepts rfsrc-shaped objects.)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.4.0" id="ggrandomforests-v340">ggRandomForests v3.4.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v340"></a></h2>
 <ul><li>
