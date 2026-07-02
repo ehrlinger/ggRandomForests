@@ -35,9 +35,12 @@ single submission.
 * **Local:** R 4.6.0 on macOS (aarch64-apple-darwin23).
   `R CMD check --as-cran` (with the manual) returns 0 errors, 0 warnings,
   0 notes.
-* **win-builder:** R-devel, R-release, and R-oldrelease (Windows Server 2022,
-  x86_64) — Status: OK.
-* **mac-builder:** R 4.6.0 (aarch64-apple-darwin23, macOS) — Status: OK.
+* **win-builder:** R-devel (R 90199), R-release (4.6.1), and R-oldrelease
+  (4.5.3), Windows Server 2022, x86_64 — all Status: OK.
+* **macOS:** covered by the local aarch64-apple-darwin23 check above. The
+  mac.r-project.org macOS builder was unavailable at submission time
+  (HTTP 502), so no mac-builder result is included; the macOS platform is
+  also exercised by the macos-latest GitHub Actions job below.
 * **GitHub Actions matrix:** ubuntu-latest (R-devel / R-release /
   R-oldrel-1), windows-latest (R-release), macos-latest (R-release).
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
