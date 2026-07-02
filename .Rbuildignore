@@ -54,3 +54,6 @@ framed.sty
 ^vignettes/\.quarto$
 ^vignettes/.*_files$
 ^vignettes/.*\.html$
+# Stray default-device plot artefact (created by plotting with no open device),
+# at the root or under tests/ — never ship it.
+Rplots\.pdf$
