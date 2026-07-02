@@ -2,6 +2,18 @@
 
 ## ggRandomForests v3.4.0
 
+- [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md),
+  [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md),
+  and
+  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
+  now have `default` S3 methods, so a wrong-class input gives a clear
+  “expected a ‘’ object” error (naming the class it got) instead of R’s
+  generic “no applicable method”. This makes the varPro-family wrappers
+  consistent with
+  [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
+  /
+  [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md);
+  the previously-unreachable inner class checks were removed.
 - Fix:
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
   now computes partial dependence correctly for `factor` predictors. It
