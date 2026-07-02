@@ -172,12 +172,14 @@ gg_isopro <- function(object, ..., newdata = NULL) {
 }
 
 #' @export
-gg_isopro.isopro <- function(object, ..., newdata = NULL) {
-  if (!inherits(object, "isopro")) {
-    stop("gg_isopro expects a 'isopro' object from varPro::isopro().",
-         call. = FALSE)
-  }
+gg_isopro.default <- function(object, ..., newdata = NULL) {
+  stop("gg_isopro: expected an 'isopro' object from varPro::isopro(); ",
+       "got an object of class ", paste(class(object), collapse = "/"), ".",
+       call. = FALSE)
+}
 
+#' @export
+gg_isopro.isopro <- function(object, ..., newdata = NULL) {
   ntree <- tryCatch(
     as.integer(object$isoforest$ntree),
     error = function(e) NA_integer_

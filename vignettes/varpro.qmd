@@ -122,16 +122,18 @@ is large; the conditional view catches that. One-hot consolidation via
 `get.orgvimp()` and `get.topvars()` maps the per-level scores back to the
 original factor, so downstream reporting stays on familiar ground.
 
-That core machinery feeds six ggRandomForests wrappers. **`gg_varpro()`**
-summarises the per-tree importance distribution. **`gg_beta_varpro()`**
-refines those release-rule contrasts with a per-rule lasso. **`gg_partial_varpro()`**
-turns the release machinery into partial-dependence curves.
-**`gg_udependent()`** reads cross-variable dependency off a `uvarpro()`
-fit. **`gg_isopro()`** scores observations for anomaly using an
-isolation-forest variant. **`gg_ivarpro()`** computes per-observation
-local importance.
+That core machinery feeds five supervised ggRandomForests wrappers.
+**`gg_varpro()`** summarises the per-tree importance distribution.
+**`gg_beta_varpro()`** refines those release-rule contrasts with a per-rule
+lasso. **`gg_partial_varpro()`** turns the release machinery into
+partial-dependence curves. **`gg_isopro()`** scores observations for anomaly
+using an isolation-forest variant. **`gg_ivarpro()`** computes per-observation
+local importance. A separate set of *unsupervised* wrappers —
+`gg_udependent()`, `gg_beta_uvarpro()`, and `gg_sdependent()` — reads structure
+off a `uvarpro()` fit that has no response at all; those get their own
+walk-through in the companion [uvarpro vignette](uvarpro.html).
 
-This vignette walks all six wrappers on three worked examples: a
+This vignette walks the five supervised wrappers on three worked examples: a
 regression problem (Boston housing), a classification problem (iris,
 binary and multi-class), and a survival problem (PBC). The closing
 section is a one-page reference matrix mapping each wrapper to the
@@ -167,8 +169,10 @@ optimise toward.
 The first question varPro answers is the same one permutation importance
 answers: which variables matter, ranked. `gg_varpro()` extracts the
 per-tree importance scores and draws their distribution as a horizontal
-boxplot, one row per variable, sorted by median z-score. Variables above
-a configurable cutoff (default 0.79) are highlighted.
+boxplot, one row per variable, sorted by median z-score, with the
+variables above a configurable cutoff (default 0.79) highlighted. Read the
+spread, not just the position: a tight box means every tree agrees on that
+variable.
 
 ```{r boston-gg-varpro}
 plot(gg_varpro(v_boston))
@@ -260,37 +264,15 @@ signal: a variable that ranks high here but low there is one whose
 local linear effect inside many rules is real even when the release
 contrast is modest.
 
-## Cross-variable dependency with `gg_udependent()`
+## Unsupervised views: see the uvarpro vignette
 
-The three views so far take one variable at a time. `gg_udependent()`
-reads cross-variable structure off a `uvarpro()` fit and draws the
-result as a network: nodes are variables, edges are dependencies above a
-configurable threshold. The visual is built with `ggraph`, which is in
-`Suggests` rather than `Imports`; install it if you want this view.
-
-```{r boston-uvarpro, cache=TRUE}
-# Precomputed offline (see precompute_varpro.R); falls back to a live fit.
-u_boston <- if (is.null(.vp$u_boston)) {
-  varPro::uvarpro(Boston[, setdiff(names(Boston), "medv")], ntree = 50)
-} else {
-  .vp$u_boston
-}
-```
-
-```{r boston-gg-udependent, eval = requireNamespace("ggraph", quietly = TRUE)}
-plot(gg_udependent(u_boston))
-```
-
-Clusters of mutually-connected variables are worth checking for
-redundancy: they may be several views of the same underlying quantity.
-`uvarpro()` operates on the predictor matrix alone; there is no response
-in the fit, which is what makes the network genuinely unsupervised.
-Variables that cluster here are correlated in feature space regardless of
-whether any of them matters for prediction. That information is
-complementary to the ranking from `gg_varpro()`: a variable can be
-important for prediction and still sit in a tight cluster with a
-near-duplicate; in that situation, model parsimony may favour dropping
-one of the cluster members without losing much predictive accuracy.
+The wrappers so far all score variables against a response. varPro also has an
+unsupervised mode: `varPro::uvarpro()` grows a forest on the predictor matrix
+alone, and three more wrappers read off that fit — `gg_udependent()` draws the
+cross-variable dependency network, `gg_beta_uvarpro()` ranks the variables by
+their entropy contribution, and `gg_sdependent()` marks the cut between signal
+and noise. Because there is no outcome in play, they get their own short
+walk-through in the companion [uvarpro vignette](uvarpro.html).
 
 ## Anomaly scoring with `gg_isopro()`
 
@@ -432,10 +414,19 @@ plot(gg_varpro(v_iris_multi, conditional = TRUE))
 
 ## Partial dependence: `gg_partial_varpro()` on classification
 
-`gg_partial_varpro()` works the same way on a classification fit, but
-each predictor's curve becomes per-class probabilities. The plot
-panels are organised by predictor with class encoded as colour or
-facet (the wrapper defaults handle this).
+On a classification fit `gg_partial_varpro()` defaults to the
+**probability scale** (`scale = "auto"` resolves to `"prob"`): each
+predictor's curve is the predicted probability of the *target class* —
+by default the last factor level (here *virginica*), selectable with
+`target =`. `varPro::partialpro()` works internally on the log-odds of
+that class; the wrapper back-transforms each observation to a
+probability *before* averaging, so the curve is the mean predicted
+probability (not the probability of the mean log-odds). On this bounded
+$[0, 1]$ scale only the parametric and non-parametric curves are shown —
+the `causal` contrast is a log odds-ratio, not a level, so it cannot
+share the probability axis (use `scale = "logodds"` to see it).
+`scale = "odds"` and `"logodds"` give the same relationship on the odds
+and log-odds scales.
 
 ```{r iris-multi-gg-partial-varpro}
 # Precomputed offline (see precompute_varpro.R); falls back to a live fit.
@@ -448,8 +439,8 @@ plot(gg_pd_iris)
 ```
 
 Read each panel as: "as predictor X changes from low to high, how does
-the probability of each class shift?" Patterns that match the
-underlying biology (e.g. petal length separating setosa from the
+the probability of the target class shift?" Patterns that match the
+underlying biology (e.g. petal length separating *virginica* from the
 others) act as a sanity check on the forest.
 
 ## Per-class lasso refinement with `gg_beta_varpro()`
@@ -508,9 +499,10 @@ censored response requires a local partial-likelihood or Nelson-Aalen
 estimator in place of the regression/classification local estimator;
 the design work for that is tracked but not yet landed.
 
-What does work is the core release-rule importance, the C-path partial
-dependence (routed through the embedded `$rf` random survival forest),
-and anomaly scoring on the predictor matrix. For many applied problems,
+What does work is the core release-rule importance, partial dependence
+(survival probability $S(\tau)$ and RMST through the release-rule engine,
+plus cumulative hazard via the embedded `$rf` survival forest), and
+anomaly scoring on the predictor matrix. For many applied problems,
 those three views cover the questions you actually want to answer.
 
 The PBC (primary biliary cirrhosis) dataset from `randomForestSRC` has
@@ -542,18 +534,30 @@ v_pbc <- if (is.null(.vp$v_pbc)) {
 plot(gg_varpro(v_pbc))
 ```
 
-## Partial dependence: `gg_partial_varpro()` (C-path)
+## Partial dependence: `gg_partial_varpro()` on survival
 
-For survival, `gg_partial_varpro()` dispatches into the
-`randomForestSRC`-backed partial-dependence machinery via the underlying
-`$rf` survival forest (what the package calls the *C-path* because it
-routes through the `randomForestSRC` C-code layer rather than the varPro
-release-rule engine). The output shape is the same as the regression case
-(parametric / non-parametric / causal panels); the y-axis carries an
-"ensemble mortality" interpretation [@Ishwaran:2007a], not a survival
-probability. Higher values mean higher predicted mortality at a given
-predictor value, integrated over the event-time horizon in the training
-data.
+For survival `gg_partial_varpro()` defaults to **survival probability**
+(`scale = "auto"` resolves to `"surv"`): each curve is
+$S(\tau \mid x)$, the predicted probability of surviving past a horizon
+$\tau$, computed through `partialpro()` on the same release-rule (UVT)
+engine as the regression and classification fits — bounded in $[0, 1]$
+and read in the model's own time units.
+
+When you do not supply `time`, $\tau$ defaults to the **median follow-up
+time** of the fit. Because that horizon is derived from the data it is
+always in the model's units and cannot be mis-specified the way a
+hand-typed number can — a units mismatch (days vs. years) is the classic
+survival partial-plot trap, and a data-driven default sidesteps it. The
+resolved $\tau$ is shown in the axis label and reported with a message;
+pass `time = tau` to choose another horizon. As on the classification
+probability scale, the `causal` contrast is hidden here (use
+`scale = "rmst"` or `"mortality"` to see it).
+
+Other survival scales are explicit opt-ins: `scale = "rmst"` gives
+restricted mean survival time RMST$(\tau)$ (also on the release-rule
+engine, with the same median-follow-up default $\tau$), and
+`scale = "mortality"` keeps the unbounded ensemble-mortality score
+[@Ishwaran:2007a] — a relative-risk index, *not* a survival probability.
 
 ```{r pbc-gg-partial-varpro}
 # Precomputed offline (see precompute_varpro.R); falls back to a live fit.
@@ -590,9 +594,9 @@ story. Both are tracked for v3.1.0.
 
 If you call either on a survival fit you'll get a clear error message
 pointing at the deferred work, not a silent miscalculation. The
-family-support matrix in §6 records this; the rest of the toolkit
-that *does* work on survival (`gg_varpro`, `gg_partial_varpro`,
-`gg_isopro` above; `gg_udependent` shown in §3 on the X-matrix).
+family-support matrix in the closing reference section records this; the
+rest of the toolkit that *does* work on survival (`gg_varpro`,
+`gg_partial_varpro`, and `gg_isopro` above).
 
 # Cross-cutting reference
 
@@ -600,9 +604,8 @@ that *does* work on survival (`gg_varpro`, `gg_partial_varpro`,
 
 | Wrapper | regr | class | surv | regr+ |
 |---|---|---|---|---|
-| `gg_partial_varpro` | ✓ | ✓ | ✓ (C-path via `$rf`) | ✗ (not audited) |
+| `gg_partial_varpro` | ✓ | ✓ (prob) | ✓ (S(τ); rmst/mortality/chf) | ✗ (not audited) |
 | `gg_varpro` | ✓ | ✓ (`conditional = TRUE`) | ✓ | ✗ (errors) |
-| `gg_udependent` | ✓ (uvarpro on X) | ✓ (X) | ✓ (X) | ✓ (X) |
 | `gg_isopro` | ✓ (X) | ✓ (X) | ✓ (X) | ✓ (X) |
 | `gg_beta_varpro` | ✓ | ✓ | ✗ (upstream stop) | ✗ (deferred) |
 | `gg_ivarpro` | ✓ | ✓ | ✗ (deferred) | ✗ (deferred) |
@@ -652,16 +655,17 @@ The release-rule framework is laid out in @Lu2024varpro. Worked
 implementation examples and the full API are at the
 [varPro tools reference site](https://www.varprotools.org/articles/getstarted.html).
 
-The ensemble mortality scale used by survival partial dependence is
-introduced in @Ishwaran:2007a (the Annals of Applied Statistics methods
-paper for random survival forests); the R-package side is described in
-@Ishwaran:2008. The boosted nonparametric hazard framework that informs
+The ensemble-mortality scale (`scale = "mortality"`), one of the
+survival partial-dependence options alongside the default survival
+probability, is introduced in @Ishwaran:2007a (the Annals of Applied
+Statistics methods paper for random survival forests); the R-package
+side is described in @Ishwaran:2008. The boosted nonparametric hazard framework that informs
 varPro's survival path (including the treatment of time-dependent
 covariates) is in @Lee:2021.
 
 Each wrapper's help page carries a "What this is doing" section that
-goes one level deeper than this vignette. The cross-cutting reference
-in §6 maps each wrapper to the forest families it supports and notes
-which capabilities are deferred to v3.1.0.
+goes one level deeper than this vignette. The cross-cutting reference at
+the end of this vignette maps each wrapper to the forest families it
+supports and notes which capabilities are deferred.
 
 # References

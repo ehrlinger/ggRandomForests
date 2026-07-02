@@ -21,8 +21,7 @@
 `ggRandomForests` provides `ggplot2`-based diagnostic and exploration plots for random forests fit with
 [randomForestSRC](https://cran.r-project.org/package=randomForestSRC) (>= 3.4.0) or
 [randomForest](https://cran.r-project.org/package=randomForest).
-It separates data extraction from plotting so the intermediate tidy objects can be inspected, saved, or used
-for custom analyses.
+It keeps the data step apart from the figure step, so you can inspect, save, or reuse the tidy object on its own.
 Listed in the [ggplot2 extensions gallery](https://exts.ggplot2.tidyverse.org/).
 
 ## Installation
@@ -74,6 +73,13 @@ forests — see the dedicated vignette:
 vignette("varpro", package = "ggRandomForests")
 ```
 
+The unsupervised varPro tools — `gg_udependent()`, `gg_beta_uvarpro()`, and
+`gg_sdependent()`, which read structure off a `uvarpro()` fit with no outcome —
+have their own short vignette:
+```r
+vignette("uvarpro", package = "ggRandomForests")
+```
+
 ## Function reference
 
 | Function | Input | What you get |
@@ -88,8 +94,8 @@ vignette("varpro", package = "ggRandomForests")
 | `gg_roc()` | `rfsrc` / `randomForest` (class) | ROC curve data |
 | `gg_brier()` | `rfsrc` (survival) | Time-resolved Brier score and CRPS |
 
-Each `gg_*` function has a matching `plot()` S3 method that hands back a single plottable object — a `ggplot`,
-or a `patchwork` composite when the method lays out multiple panels — so you can keep adding layers, scales, or a theme. Every `gg_*` object also has `print()` and `summary()` methods: `print()`
+Each `gg_*` function has a matching `plot()` S3 method that hands back a single plottable object: a `ggplot`
+you extend with `+`, or a `patchwork` composite for the multi-panel methods. Every `gg_*` object also has `print()` and `summary()` methods: `print()`
 shows a short header at the REPL rather than dumping every row (use `head()` when you want the rows), and
 `summary()` gives you a diagnostics object you can print or keep.
 
@@ -110,11 +116,11 @@ entirely and build the figure from the tidy data yourself.
 
 ## Recent changes
 
-See [NEWS.md](NEWS.md) for the full changelog. Highlights since v2.4.0:
+See [NEWS.md](NEWS.md) for the full changelog. Recent highlights:
 
-- **v2.6.1** Fix factor-level assignment in `gg_partial` for categorical variables.
-- **v2.6.0** New plotting functions exported; test coverage raised to 83%; removed internal dependency on `hvtiRutilities`.
-- **v2.5.0** New `gg_partial_rfsrc()` computes partial dependence directly from an `rfsrc` model without a separate `plot.variable` call; supports a grouping variable via `xvar2.name`.
+- **v3.4.0** Unsupervised varPro wrappers (`gg_beta_uvarpro()`, `gg_sdependent()`) with their own vignette; `gg_partial_rfsrc()` now handles factor predictors correctly.
+- **v3.3.0** varPro partial plots default to interpretable scales — probability for classification, survival S(&tau;) for survival.
+- **v3.1.0** varPro integration: release-rule importance, partial dependence, local importance, anomaly scores, and the dependency graph.
 
 ## References
 

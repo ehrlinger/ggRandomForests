@@ -49,9 +49,20 @@ vignettes/ggRandomForests.html
 vignettes/varpro_cache/
 vignettes/varpro_files/
 vignettes/varpro.html
+vignettes/uvarpro_cache/
+vignettes/uvarpro_files/
+vignettes/uvarpro.html
 
 .claude
+CLAUDE.md
 .positai
 
-# Local dev tool state (brainstorm/superpowers)
+# Brainstorm / visual-companion scratch
 .superpowers/
+# Rendered vignette artifacts (current quarto vignette names)
+vignettes/ggRandomForests-regression.html
+vignettes/ggRandomForests-survival.html
+vignettes/ggRandomForests-regression_files/
+vignettes/ggRandomForests-survival_files/
+# Built package tarballs
+*.tar.gz

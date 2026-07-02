@@ -1,48 +1,60 @@
-## v3.2.0 — minor release (RMST partial dependence; bug fixes)
+## v3.4.0 — minor release (interpretable varPro partial scales; unsupervised varPro wrappers; factor partial-dependence fix)
 
-This is a minor feature-and-fix release for the varPro survival workflow.
+This is a minor feature-and-fix release. It consolidates the work developed
+since the CRAN 3.2.0 release (the 3.3.0 and 3.4.0 development cycles) into a
+single submission.
 
 ### What's new / fixed
 
-* `gg_partial_varpro(scale = "rmst", time = tau)` now *drives* the survival
-  partial-dependence computation through an RMST(tau) learner
-  (RMST(tau) = integral_0^tau S(t) dt), rather than only relabeling the
-  default ensemble-mortality curve. `varPro::partialpro()` exposes no time
-  argument, so multi-horizon RMST plots built the old way differed only by
-  Monte-Carlo noise, not by tau; the learner makes the curve genuinely
-  tau-dependent. Guardrails warn when a precomputed `part_dta` cannot be
-  driven by tau, when tau exceeds the model's largest event time (RMST is
-  truncated there), and when `time` is supplied to a scale that ignores it.
-* `gg_partial_varpro()` (and the deprecated `gg_partialpro()` alias) now
-  forward `...` to `varPro::partialpro()` on the object-driven path, restoring
-  control over which variables are computed (`xvar.names`, `nvar`) and the
-  isolation-forest step (`cut`, `nsmp`, ...).
-* `gg_varpro()` now fails with a clear message instead of a cryptic
-  "differing number of rows" error when `varPro::importance()` returns a
-  degenerate importance table (issue #118).
-* `Imports` requires `varPro (>= 3.1.0)` (the version exposing the
-  `partialpro()` `learner` argument the RMST path relies on).
+* **Interpretable varPro partial-plot scales.** `gg_partial_varpro()` now
+  defaults to bounded, interpretable y-axes: probability P(Y = target class)
+  for classification, and survival probability S(tau) for survival (via a
+  partialpro survival learner), with tau defaulting to the median follow-up
+  time when omitted. The unbounded ensemble-mortality scale remains available
+  via `scale = "mortality"`. The `causal` (virtual-twins) contrast is hidden on
+  the bounded scales and documented.
+* **Unsupervised varPro wrappers.** New `gg_beta_uvarpro()` (lasso-importance
+  ranking from `varPro::get.beta.entropy()`) and `gg_sdependent()`
+  (signal-variable detection from `varPro::sdependent()`), each with
+  `plot`/`print`/`summary`/`autoplot` methods, complementing the existing
+  `gg_udependent()` dependency graph. A new short "uvarpro" vignette walks the
+  three unsupervised views on a single `uvarpro()` fit.
+* **Bug fix: factor partial dependence in `gg_partial_rfsrc()`.** The wrapper
+  passed factor *labels* to `randomForestSRC::partial.rfsrc()`, which imposes a
+  level by its integer code; character labels became `NA` and numeric-looking
+  labels went out of range, collapsing every level to a single value (a flat
+  categorical partial plot). It now passes the integer codes and relabels the
+  output, matching `plot.variable(partial = TRUE)`. The categorical `x` is
+  returned as a factor in the model's level order.
+* Documentation: fixed the main vignette's `\VignetteIndexEntry` (it carried a
+  template placeholder); split the unsupervised varPro material out of the
+  varPro vignette into the new companion vignette.
 
 ### Test environments
 
 * **Local:** R 4.6.0 on macOS (aarch64-apple-darwin23).
   `R CMD check --as-cran` (with the manual) returns 0 errors, 0 warnings,
   0 notes.
-* **win-builder:** R-devel, R-release, and R-oldrelease (Windows Server 2022,
-  x86_64) — all Status: OK (0 errors, 0 warnings, 0 notes).
-* **mac-builder:** R 4.6.0 (aarch64-apple-darwin23, macOS) — Status: OK
-  (0 errors, 0 warnings, 0 notes).
+* **win-builder:** R-devel (R 90199), R-release (4.6.1), and R-oldrelease
+  (4.5.3), Windows Server 2022, x86_64 — all Status: OK.
+* **macOS:** covered by the local aarch64-apple-darwin23 check above. The
+  mac.r-project.org macOS builder was unavailable at submission time
+  (HTTP 502), so no mac-builder result is included; the macOS platform is
+  also exercised by the macos-latest GitHub Actions job below.
 * **GitHub Actions matrix:** ubuntu-latest (R-devel / R-release /
   R-oldrel-1), windows-latest (R-release), macos-latest (R-release).
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 
 ### NOTE disposition
 
-`R CMD check --as-cran` is clean (0/0/0) locally. No notes expected beyond the
-usual incoming-feasibility items (e.g. maintainer/timestamp), if any.
+`R CMD check --as-cran` is clean (0/0/0) locally. The only note expected at
+incoming feasibility is the usual "days since last update" item (3.2.0 was
+published 2026-06-23).
 
 The gcc-UBSAN guard from v3.1.1/v3.1.2 is unchanged: the single unsupervised
 `varPro::isopro(method = "unsupv")` test still calls `skip_on_cran()` to avoid
 an upstream `randomForestSRC` sanitizer report (`rfsrcGrow`, `entry.c:184`);
-all other varPro tests run. ggRandomForests remains a pure-R package
-(`NeedsCompilation: no`).
+all other varPro tests run. This is the only grow that trips the report (its
+`yvar.wt` is length-0); `uvarpro()` and the other varPro grows are
+synthetic-supervised and sanitizer-clean. ggRandomForests remains a pure-R
+package (`NeedsCompilation: no`).
