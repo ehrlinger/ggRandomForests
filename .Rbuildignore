@@ -29,6 +29,7 @@ framed.sty
 ^CRAN-SUBMISSION$
 ^\.github$
 ^\.claude$
+^CLAUDE\.md$
 ^\.git$
 ^\.vscode$
 ^doc$
