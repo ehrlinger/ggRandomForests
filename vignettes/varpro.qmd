@@ -153,7 +153,10 @@ v_boston <- if (is.null(.vp$v_boston)) {
 } else {
   .vp$v_boston
 }
-v_boston
+# varPro has no print method for `varpro` objects, so a bare `v_boston`
+# dumps the whole list (including the 5730-row `$results` rule table).
+# Show the structure instead: what varpro() built, one line per component.
+str(v_boston, max.level = 1)
 ```
 
 `varpro()` builds the importance machinery (release rules, per-tree
