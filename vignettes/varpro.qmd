@@ -153,9 +153,9 @@ v_boston <- if (is.null(.vp$v_boston)) {
 } else {
   .vp$v_boston
 }
-# varPro has no print method for `varpro` objects, so a bare `v_boston`
-# dumps the whole list (including the 5730-row `$results` rule table).
-# Show the structure instead: what varpro() built, one line per component.
+# A varpro fit is a large list; a bare `v_boston` would render every
+# component, including the full per-rule `$results` table. Show its
+# structure instead: one line per component.
 str(v_boston, max.level = 1)
 ```
 
