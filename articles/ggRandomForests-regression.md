@@ -141,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 200
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.595
+    #>        Average no. of terminal nodes: 66.835
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86299567
-    #>    (OOB) Requested performance error: 11.58874711
+    #>                      (OOB) R squared: 0.86202594
+    #>    (OOB) Requested performance error: 11.67077331
 
 The forest grew 200 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -240,7 +240,7 @@ considered most important.
 md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
-The threshold is 3, selecting 5 variables: crim, nox, rm, ptratio,
+The threshold is 3, selecting 6 variables: crim, nox, rm, dis, ptratio,
 lstat.
 
 Both VIMP and minimal depth agree on the dominance of `lstat` and `rm`.
