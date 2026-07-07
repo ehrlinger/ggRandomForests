@@ -82,8 +82,8 @@ iso_pbc <- varPro::isopro(data = pbc_small[, c("age", "albumin", "bili",
 # gg_isopro() is training-path only). Dropping those heavy
 # slots takes the file from ~1.6 MB to ~0.4 MB (validated: every vignette
 # wrapper call returns output identical to the un-stripped object). One
-# exception keeps its forest: v_boston is printed in the vignette
-# (print.varpro reads $rf).
+# exception keeps its forest: later chunks thread the v_boston fit through
+# the regression section (gg_partial_varpro(object=), gg_ivarpro()).
 .strip_varpro <- function(v) {              # $rf: unused on the cached path
   v$rf <- NULL
   v

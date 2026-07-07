@@ -153,7 +153,10 @@ v_boston <- if (is.null(.vp$v_boston)) {
 } else {
   .vp$v_boston
 }
-v_boston
+# A varpro fit is a large list; a bare `v_boston` would render every
+# component, including the full per-rule `$results` table. Show its
+# structure instead: one line per component.
+str(v_boston, max.level = 1)
 ```
 
 `varpro()` builds the importance machinery (release rules, per-tree
