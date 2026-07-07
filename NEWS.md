@@ -17,6 +17,37 @@ ggRandomForests v4.0.0 (development)
   AUC(t) with a bootstrap CI ribbon when available and a 0.5 reference
   line. `gg_auct.rhf(object, marker, auct_fit = NULL)` computes
   `auct.rhf()` internally or reuses a cached fit.
+
+ggRandomForests v3.4.1
+======================
+* The remaining `rfsrc`/`randomForest` wrappers -- `gg_error()`, `gg_vimp()`,
+  `gg_variable()`, `gg_rfsrc()`, and `gg_brier()` -- now have `default` S3
+  methods, so a wrong-class input gives a clear "expected an 'rfsrc' or
+  'randomForest' object" error (naming the class it got) instead of R's generic
+  "no applicable method". This finishes the dispatch-consistency pass started
+  for the varPro family in 3.4.0. (`gg_roc()` keeps its existing
+  `gg_roc.rfsrc` default, which accepts rfsrc-shaped objects.)
+
+ggRandomForests v3.4.0
+======================
+* `gg_isopro()`, `gg_beta_varpro()`, and `gg_ivarpro()` now have `default` S3
+  methods, so a wrong-class input gives a clear "expected a '<class>' object"
+  error (naming the class it got) instead of R's generic "no applicable
+  method". This makes the varPro-family wrappers consistent with
+  `gg_beta_uvarpro()` / `gg_sdependent()`; the previously-unreachable inner
+  class checks were removed.
+* Fix: `gg_partial_rfsrc()` now computes partial dependence correctly for
+  `factor` predictors. It was passing factor *labels* as
+  `partial.values` to `randomForestSRC::partial.rfsrc()`, which imposes a
+  level by its integer code (internally `as.numeric(partial.values)`).
+  Character labels ("No"/"Yes") became `NA` and numeric-looking labels
+  ("4"/"6"/"8") became out-of-range codes, so every level collapsed to a
+  single value (a flat categorical partial plot). The wrapper now passes the
+  integer codes and relabels the output, matching `plot.variable(partial =
+  TRUE)` and the ground-truth partial dependence. The categorical `x` is now
+  returned as a `factor` in the model's level order, so the plot keeps that
+  order instead of re-sorting alphabetically. Continuous and numeric
+  low-cardinality predictors are unaffected.
 * `gg_beta_uvarpro()` / `plot.gg_beta_uvarpro()`: tidy wrapper and bar chart
   for `varPro::get.beta.entropy()` -- the unsupervised analogue of
   `gg_beta_varpro()`. From a `uvarpro()` fit it aggregates the per-region
@@ -31,8 +62,41 @@ ggRandomForests v4.0.0 (development)
   graph) with the "which variables are signal" ranking; shares the
   `beta_fit` entropy matrix. Follows the `get.beta.entropy` + `sdependent`
   workflow from the `varPro::uvarpro()` help (iowa-housing example).
-* Fixes the intro vignette's placeholder `\VignetteIndexEntry`
-  ("Vignette's Title" -> "Exploring Random Forests with ggRandomForests").
+* New `uvarpro` vignette: a short, focused walk-through of the unsupervised
+  varPro wrappers (`gg_udependent()`, `gg_beta_uvarpro()`, `gg_sdependent()`)
+  on a single `uvarpro()` fit, using the shared `beta_fit` matrix. The three
+  unsupervised sections were lifted out of the `varpro` vignette, which now
+  points to the new one and covers the five supervised wrappers.
+* Fixed the main vignette's `\VignetteIndexEntry`, which still carried the
+  template placeholder "Vignette's Title" -- it now reads "Exploring Random
+  Forests with ggRandomForests" (the index entry CRAN lists, not the document
+  title, was the stale one).
+
+ggRandomForests v3.3.0
+======================
+* `gg_partial_varpro()`: **classification partial plots now default to
+  probability.** `scale = "auto"` on a classification fit resolves to `"prob"`
+  (P(Y = target class)) instead of raw log-odds; `"odds"` and `"logodds"` are
+  options. The back-transform is applied before averaging (mean predicted
+  probability). The `causal` contrast is shown only on `"logodds"`.
+* `gg_partial_varpro()`: **survival partial plots now default to survival
+  probability.** `scale = "auto"` on a survival fit resolves to `"surv"`
+  (S(tau | x), bounded 0-1) via a new partialpro learner, instead of the
+  unbounded ensemble-mortality score (still available via
+  `scale = "mortality"`). `"surv"` and `"rmst"` default `tau` to the median
+  follow-up time when `time` is omitted -- a units-safe, data-driven horizon
+  (v3.2.0's `rmst` required `time`; this is a loosening). The resolved `tau` is
+  reported in a message and the axis label.
+* `plot.gg_partial_varpro()`: documents what the `causal` (virtual-twins)
+  estimator is and when to use it, and explains why it is hidden on the bounded
+  probability scales.
+* Documentation: `plot.gg_partial_varpro()` gains a "Reading an RMST curve"
+  section explaining how to interpret the `scale = "rmst"` y-axis -- RMST(tau)
+  is the expected event-free time within the first tau time-units (area under
+  S(t) out to tau), read in the model's own time units, bounded by tau, and
+  higher-is-better (the opposite direction from ensemble mortality). It also
+  notes that tau must be supplied in the fit's time units, since a tau beyond
+  the largest event time truncates to the full restricted mean. No code change.
 
 ggRandomForests v3.2.0
 ======================

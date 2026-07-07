@@ -184,12 +184,16 @@ gg_beta_varpro <- function(object, ..., cutoff = NULL, beta_fit = NULL,
 }
 
 #' @export
+gg_beta_varpro.default <- function(object, ..., cutoff = NULL,
+                                   beta_fit = NULL, which_class = NULL) {
+  stop("gg_beta_varpro: expected a 'varpro' object from varPro::varpro(); ",
+       "got an object of class ", paste(class(object), collapse = "/"), ".",
+       call. = FALSE)
+}
+
+#' @export
 gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
                                   beta_fit = NULL, which_class = NULL) {
-  if (!inherits(object, "varpro")) {
-    stop("gg_beta_varpro: expected a 'varpro' object from varPro::varpro().",
-         call. = FALSE)
-  }
   fam <- object$family
   if (!fam %in% c("regr", "class")) {
     stop(sprintf(

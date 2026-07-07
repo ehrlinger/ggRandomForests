@@ -46,6 +46,8 @@ navbar:
           href: articles/ggRandomForests-regression.html
         - text: "Exploring variable importance with varPro"
           href: articles/varpro.html
+        - text: "Variable selection without an outcome: unsupervised varPro"
+          href: articles/uvarpro.html
 
 reference:
   - title: "Forest Objects"
@@ -148,6 +150,7 @@ articles:
       - ggRandomForests-survival
       - ggRandomForests-regression
       - varpro
+      - uvarpro
 
 news:
   releases:

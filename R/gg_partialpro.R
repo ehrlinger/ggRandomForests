@@ -19,8 +19,8 @@
 #' @export
 gg_partialpro <- function(part_dta,
                           object    = NULL,
-                          scale     = c("auto", "rmst", "mortality",
-                                        "surv", "chf"),
+                          scale     = c("auto", "prob", "odds", "logodds",
+                                        "rmst", "surv", "mortality", "chf"),
                           time      = NULL,
                           nvars     = NULL,
                           cat_limit = 10,

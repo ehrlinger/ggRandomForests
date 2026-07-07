@@ -190,6 +190,13 @@
 gg_vimp <- function(object, nvar, ...) {
   UseMethod("gg_vimp", object)
 }
+
+#' @export
+gg_vimp.default <- function(object, nvar, ...) {
+  stop("gg_vimp: expected an 'rfsrc' or 'randomForest' object; ",
+       "got an object of class ", paste(class(object), collapse = "/"), ".",
+       call. = FALSE)
+}
 #' @export
 gg_vimp.rfsrc <- function(object, nvar, ...) {
   # Validate that the object is an rfsrc grow or predict result.

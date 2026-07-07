@@ -204,6 +204,13 @@
 gg_error <- function(object, ...) {
   UseMethod("gg_error", object)
 }
+
+#' @export
+gg_error.default <- function(object, ...) {
+  stop("gg_error: expected an 'rfsrc' or 'randomForest' object; ",
+       "got an object of class ", paste(class(object), collapse = "/"), ".",
+       call. = FALSE)
+}
 #' @export
 gg_error.rfsrc <- function(object, ...) {
   ## Check that the input object is of the correct type.
