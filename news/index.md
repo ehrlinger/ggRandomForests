@@ -19,6 +19,8 @@
 
 ## ggRandomForests v3.4.0
 
+CRAN release: 2026-07-02
+
 - [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md),
   [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md),
   and
