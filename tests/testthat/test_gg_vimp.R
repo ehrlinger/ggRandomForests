@@ -342,9 +342,10 @@ test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP c
   # rfsrc may drop a constant column), so it does not guarantee a non-positive
   # VIMP on every platform (observed failing on R-release). The pre-fix code
   # left `positive` TRUE regardless of the VIMP sign.
+  data(airquality, package = "datasets")
   set.seed(2024L)
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
-                               ntree = 200, importance = TRUE)
+                               ntree = 50, importance = TRUE)
   rf$importance[1] <- -1
   gg_dta <- gg_vimp(rf)
 
