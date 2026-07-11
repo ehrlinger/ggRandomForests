@@ -56,3 +56,16 @@ test_that("gg_shap.randomForest works for regression", {
   expect_s3_class(gg_dta, "gg_shap")
   expect_true(all(c("id", "vars", "shap") %in% colnames(gg_dta)))
 })
+
+test_that("gg_shap.randomForest handles classification via which.class", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20, which.class = 2)
+
+  expect_s3_class(gg_dta, "gg_shap")
+  expect_equal(nrow(gg_dta), nrow(iris) * 4L)
+  expect_equal(attr(gg_dta, "which.class"), 2)
+})

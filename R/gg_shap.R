@@ -91,6 +91,11 @@ gg_shap.randomForest <- function(object, newdata, bg_n = 50,
          "install.packages('kernelshap').", call. = FALSE)
   }
 
+  if (!object$type %in% c("regression", "classification")) {
+    stop("gg_shap: only regression and classification forests are supported; ",
+         "got type '", object$type, "'.", call. = FALSE)
+  }
+
   info <- .rf_recover_model_frame(object)
   if (is.null(info)) {
     stop("gg_shap: could not recover training predictors from this ",
