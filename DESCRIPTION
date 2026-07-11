@@ -31,22 +31,22 @@ Imports:
     patchwork,
     stringr
 Suggests:
-    testthat,
     bookdown,
-    RColorBrewer,
-    MASS,
-    lintr,
+    callr,
     covr,
-    fastshap,
-    vdiffr,
     datasets,
-    rmarkdown,
-    quarto,
+    ggraph,
+    kernelshap,
+    knitr,
+    lintr,
+    MASS,
     pkgdown,
     pkgload,
-    knitr,
-    ggraph,
-    callr
+    quarto,
+    RColorBrewer,
+    rmarkdown,
+    testthat,
+    vdiffr
 VignetteBuilder: quarto
 Config/roxygen2/version: 8.0.0
 Roxygen: list(markdown = TRUE)
