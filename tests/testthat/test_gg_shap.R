@@ -95,3 +95,21 @@ test_that("shap_beeswarm and default plot() return ggplots", {
   expect_s3_class(shap_beeswarm(gg_dta), "ggplot")
   expect_s3_class(plot(gg_dta), "ggplot")   # default type = "beeswarm"
 })
+
+test_that("shap_beeswarm scales feature values per-variable into [0,1]", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20)
+
+  gg_plt <- shap_beeswarm(gg_dta)
+  scaled <- gg_plt$data$value_scaled
+
+  expect_true(all(scaled >= 0 & scaled <= 1, na.rm = TRUE))
+  # each variable's scaled range should span close to [0,1] unless constant
+  ranges <- tapply(scaled, gg_plt$data$vars, function(v) diff(range(v, na.rm = TRUE)))
+  expect_true(all(ranges > 0.9, na.rm = TRUE))
+})
