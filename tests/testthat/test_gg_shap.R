@@ -82,3 +82,16 @@ test_that("shap_importance and plot(type='importance') return ggplots", {
   expect_s3_class(shap_importance(gg_dta), "ggplot")
   expect_s3_class(plot(gg_dta, type = "importance"), "ggplot")
 })
+
+test_that("shap_beeswarm and default plot() return ggplots", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20)
+
+  expect_s3_class(shap_beeswarm(gg_dta), "ggplot")
+  expect_s3_class(plot(gg_dta), "ggplot")   # default type = "beeswarm"
+})
