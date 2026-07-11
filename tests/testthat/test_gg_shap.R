@@ -69,3 +69,16 @@ test_that("gg_shap.randomForest handles classification via which.class", {
   expect_equal(nrow(gg_dta), nrow(iris) * 4L)
   expect_equal(attr(gg_dta, "which.class"), 2)
 })
+
+test_that("shap_importance and plot(type='importance') return ggplots", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20)
+
+  expect_s3_class(shap_importance(gg_dta), "ggplot")
+  expect_s3_class(plot(gg_dta, type = "importance"), "ggplot")
+})
