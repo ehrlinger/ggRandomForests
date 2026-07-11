@@ -30,3 +30,29 @@ test_that("gg_shap.rfsrc errors on survival forests", {
                                ntree = 20)
   expect_error(gg_shap(rf), "regression and classification")
 })
+
+test_that("gg_shap.rfsrc handles classification via which.class", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20, which.class = 2)
+
+  expect_s3_class(gg_dta, "gg_shap")
+  expect_equal(nrow(gg_dta), nrow(iris) * 4L)
+  expect_equal(attr(gg_dta, "which.class"), 2)
+})
+
+test_that("gg_shap.randomForest works for regression", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  dta <- na.omit(airquality)
+  rf <- randomForest::randomForest(Ozone ~ ., data = dta, ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20)
+
+  expect_s3_class(gg_dta, "gg_shap")
+  expect_true(all(c("id", "vars", "shap") %in% colnames(gg_dta)))
+})

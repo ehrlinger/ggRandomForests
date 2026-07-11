@@ -83,6 +83,41 @@ gg_shap.rfsrc <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
                              bg_n = bg_n, which.class = which.class))
 }
 
+#' @export
+gg_shap.randomForest <- function(object, newdata, bg_n = 50,
+                                 which.class = 1, ...) {
+  if (!requireNamespace("kernelshap", quietly = TRUE)) {
+    stop("gg_shap requires the 'kernelshap' package. Install it with ",
+         "install.packages('kernelshap').", call. = FALSE)
+  }
+
+  info <- .rf_recover_model_frame(object)
+  if (is.null(info)) {
+    stop("gg_shap: could not recover training predictors from this ",
+         "randomForest object.", call. = FALSE)
+  }
+  x_train <- info$model_frame[, setdiff(colnames(info$model_frame),
+                                        info$response_name), drop = FALSE]
+  x_explain <- if (missing(newdata) || is.null(newdata)) x_train else newdata
+  bg_x <- x_train[sample.int(nrow(x_train), min(bg_n, nrow(x_train))), ,
+                  drop = FALSE]
+
+  is_class <- object$type == "classification"
+  pred_fun <- function(object, newdata) {
+    if (is_class) {
+      as.numeric(predict(object, newdata, type = "prob")[, which.class])
+    } else {
+      as.numeric(predict(object, newdata))
+    }
+  }
+
+  res <- kernelshap::kernelshap(object, X = x_explain, bg_X = bg_x,
+                                pred_fun = pred_fun, verbose = FALSE, ...)
+
+  invisible(.gg_shap_reshape(res$S, x_explain, res$baseline, object,
+                             bg_n = bg_n, which.class = which.class))
+}
+
 # Internal: turn a SHAP matrix (obs x vars) + the explained predictors into a
 # long tidy gg_shap data.frame. Not exported.
 .gg_shap_reshape <- function(sv, x_explain, baseline, object,
