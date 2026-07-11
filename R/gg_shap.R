@@ -59,6 +59,12 @@ gg_shap.rfsrc <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
          "install.packages('kernelshap').", call. = FALSE)
   }
 
+  if (!object$family %in% c("regr", "class")) {
+    stop("gg_shap: only regression and classification forests are supported ",
+         "in this version; got family '", object$family, "'. Survival ",
+         "support is not yet implemented.", call. = FALSE)
+  }
+
   x_train <- object$xvar
   x_explain <- if (missing(newdata) || is.null(newdata)) x_train else newdata
   bg_x <- x_train[sample.int(nrow(x_train), min(bg_n, nrow(x_train))), ,
@@ -73,8 +79,8 @@ gg_shap.rfsrc <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
   res <- kernelshap::kernelshap(object, X = x_explain, bg_X = bg_x,
                                 pred_fun = pred_fun, verbose = FALSE, ...)
 
-  .gg_shap_reshape(res$S, x_explain, res$baseline, object,
-                   bg_n = bg_n, which.class = which.class)
+  invisible(.gg_shap_reshape(res$S, x_explain, res$baseline, object,
+                             bg_n = bg_n, which.class = which.class))
 }
 
 # Internal: turn a SHAP matrix (obs x vars) + the explained predictors into a
@@ -90,7 +96,7 @@ gg_shap.rfsrc <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
                                    names_to = "vars", values_to = "shap")
 
   # numeric feature value (NA for non-numeric columns), for beeswarm coloring
-  num_mat <- vapply(x_explain, function(col) {
+  num_mat <- vapply(x_explain[vars], function(col) {
     if (is.numeric(col)) as.numeric(col) else rep(NA_real_, length(col))
   }, numeric(n))
   val_num <- data.frame(

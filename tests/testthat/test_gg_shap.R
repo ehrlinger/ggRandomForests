@@ -22,3 +22,11 @@ test_that("gg_shap.rfsrc returns a long tidy object for regression", {
 test_that("gg_shap.default errors on a non-forest object", {
   expect_error(gg_shap(lm(mpg ~ wt, mtcars)), "rfsrc.*randomForest")
 })
+
+test_that("gg_shap.rfsrc errors on survival forests", {
+  skip_if_not_installed("kernelshap")
+  data(veteran, package = "randomForestSRC")
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                               ntree = 20)
+  expect_error(gg_shap(rf), "regression and classification")
+})
