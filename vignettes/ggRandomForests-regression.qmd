@@ -246,8 +246,8 @@ plenty to see the patterns at a fraction of the cost.
 
 ```{r shap-fit}
 set.seed(42)
-sub <- Boston[sample(nrow(Boston), 40), setdiff(colnames(Boston), "medv")]
-gg_shp <- gg_shap(rfsrc_Boston, newdata = sub, bg_n = 50)
+shap_sample <- Boston[sample(nrow(Boston), 40), setdiff(colnames(Boston), "medv")]
+gg_shp <- gg_shap(rfsrc_Boston, newdata = shap_sample, bg_n = 50)
 ```
 
 ## SHAP importance
