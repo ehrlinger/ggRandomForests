@@ -157,6 +157,20 @@ test_that("autoplot.gg_shap delegates to plot", {
   expect_s3_class(ggplot2::autoplot(gg_dta), "ggplot")
 })
 
+test_that("gg_shap.rfsrc errors on out-of-range which.class", {
+  skip_if_not_installed("kernelshap")
+
+  rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 20)
+  expect_error(gg_shap(rf, which.class = 99), "which.class")
+})
+
+test_that("gg_shap.randomForest errors on out-of-range which.class", {
+  skip_if_not_installed("kernelshap")
+
+  rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 20)
+  expect_error(gg_shap(rf, which.class = 99), "which.class")
+})
+
 ## ── vdiffr snapshots — see test_snapshots.R ──────────────────────────────────
 ## Visual regression tests for the three plot.gg_shap types are in
 ## test_snapshots.R (guarded by VDIFFR_RUN_TESTS=true), following the package

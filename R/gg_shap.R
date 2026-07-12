@@ -71,6 +71,13 @@ gg_shap.rfsrc <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
                   drop = FALSE]
 
   is_class <- object$family == "class"
+  if (is_class) {
+    n_class <- ncol(object$predicted)
+    if (which.class < 1 || which.class > n_class) {
+      stop("gg_shap: which.class (", which.class, ") is out of range. Valid ",
+           "values are 1 to ", n_class, ".", call. = FALSE)
+    }
+  }
   pred_fun <- function(object, newdata) {
     pr <- predict(object, newdata)$predicted
     if (is_class) as.numeric(pr[, which.class]) else as.numeric(pr)
@@ -108,6 +115,13 @@ gg_shap.randomForest <- function(object, newdata, bg_n = 50,
                   drop = FALSE]
 
   is_class <- object$type == "classification"
+  if (is_class) {
+    n_class <- length(object$classes)
+    if (which.class < 1 || which.class > n_class) {
+      stop("gg_shap: which.class (", which.class, ") is out of range. Valid ",
+           "values are 1 to ", n_class, ".", call. = FALSE)
+    }
+  }
   pred_fun <- function(object, newdata) {
     if (is_class) {
       as.numeric(predict(object, newdata, type = "prob")[, which.class])
