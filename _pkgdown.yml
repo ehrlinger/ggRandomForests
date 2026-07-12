@@ -44,6 +44,8 @@ navbar:
           href: articles/ggRandomForests-survival.html
         - text: "Random Forest Regression"
           href: articles/ggRandomForests-regression.html
+        - text: "Random Forest Classification"
+          href: articles/ggRandomForests-classification.html
         - text: "Exploring variable importance with varPro"
           href: articles/varpro.html
         - text: "Variable selection without an outcome: unsupervised varPro"
@@ -154,6 +156,7 @@ articles:
     contents:
       - ggRandomForests-survival
       - ggRandomForests-regression
+      - ggRandomForests-classification
       - varpro
       - uvarpro
 
