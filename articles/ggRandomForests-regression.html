@@ -198,7 +198,7 @@
 <pre><code><span><span class="co">#&gt;                          Sample size: 506</span></span>
 <span><span class="co">#&gt;                      Number of trees: 200</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 5</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 67.09</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 67.045</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 5</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 13</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -207,8 +207,8 @@
 <span><span class="co">#&gt;                               Family: regr</span></span>
 <span><span class="co">#&gt;                       Splitting rule: mse *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                      (OOB) R squared: 0.86795664</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 11.16911488</span></span></code></pre>
+<span><span class="co">#&gt;                      (OOB) R squared: 0.86295679</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 11.59203576</span></span></code></pre>
 </div>
 </div>
 <p>The forest grew 200 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
@@ -266,19 +266,71 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span> <span class="co"># nolint: object_name_linter</span></span></code></pre></div>
 </div>
-<p>The threshold is 2.99, selecting 6 variables: crim, nox, rm, dis, ptratio, lstat.</p>
+<p>The threshold is 3, selecting 5 variables: crim, nox, rm, ptratio, lstat.</p>
 <p>Both VIMP and minimal depth agree on the dominance of <code>lstat</code> and <code>rm</code>. We use the minimal depth top variables for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xvar</span> <span class="op">&lt;-</span> <span class="va">md_Boston</span><span class="op">$</span><span class="va">topvars</span></span></code></pre></div>
 </div>
+</section></section><section class="section level2"><h2 id="shap-analysis">SHAP Analysis<a class="anchor" aria-label="anchor" href="#shap-analysis"></a>
+</h2>
+<p>VIMP and varPro both rank <em>how much</em> a variable matters, averaged over the whole forest. They cannot tell you how much a variable mattered for one specific tract’s prediction — that requires a different kind of accounting. SHAP (SHapley Additive exPlanations) borrows an idea from cooperative game theory: treat the 13 predictors as players splitting a payout, and ask how much each one contributed to this tract’s predicted <code>medv</code>, averaged fairly over every order the players could have joined the game. The result is a signed contribution per predictor per tract, and those contributions add up exactly: the forest’s overall average prediction (the <em>baseline</em>) plus the sum of one tract’s contributions equals that tract’s actual predicted value. No other importance measure in this vignette makes that promise.</p>
+<p><code><a href="../reference/gg_shap.html">gg_shap()</a></code> computes these contributions by calling <a href="https://cran.r-project.org/package=kernelshap" class="external-link">kernelshap</a>, which needs one prediction per predictor per background draw, per tract explained. Scoring all 506 tracts is expensive, so we explain a random sample of 40 instead, plenty to see the patterns at a fraction of the cost.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">shap_sample</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>, <span class="st">"medv"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">gg_shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_shap.html">gg_shap</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span>, newdata <span class="op">=</span> <span class="va">shap_sample</span>, bg_n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+</div>
+<section class="level2"><h3 id="shap-importance">SHAP importance<a class="anchor" aria-label="anchor" href="#shap-importance"></a>
+</h3>
+<p>Averaging the absolute contribution of each variable across the 40 tracts gives a ranking directly comparable to VIMP.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_shp</span>, type <span class="op">=</span> <span class="st">"importance"</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="ggRandomForests-regression_files/figure-html/shap-importance-plot-1.png"></p>
+<figcaption>Mean absolute SHAP value per predictor.</figcaption></figure>
+</div>
+</div>
+</div>
+<p><code>lstat</code> and <code>rm</code> come out on top again, same as VIMP and minimal depth — three different mechanisms, one answer. That agreement is reassuring, but it’s the next two plots where SHAP earns its keep.</p>
+</section><section class="level2"><h3 id="shap-beeswarm">SHAP beeswarm<a class="anchor" aria-label="anchor" href="#shap-beeswarm"></a>
+</h3>
+<p>The beeswarm plot is one dot per tract per variable: its horizontal position is the SHAP contribution (negative pulls the prediction down, positive pushes it up), and its color is that tract’s value for the variable, scaled low to high within each row so the pattern doesn’t get washed out by variables on very different scales.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_shp</span>, type <span class="op">=</span> <span class="st">"beeswarm"</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="ggRandomForests-regression_files/figure-html/shap-beeswarm-plot-1.png"></p>
+<figcaption>SHAP beeswarm: every dot is one tract’s contribution for one predictor.</figcaption></figure>
+</div>
+</div>
+</div>
+<p><code>lstat</code> shows a clean color gradient: the yellow (high lower-status population) dots sit on the negative side, the purple (low) dots on the positive side. <code>rm</code> runs the other way. Both track what the EDA scatterplot already hinted at, but now stated as a contribution to an individual prediction rather than a marginal trend.</p>
+</section><section class="level2"><h3 id="shap-dependence">SHAP dependence<a class="anchor" aria-label="anchor" href="#shap-dependence"></a>
+</h3>
+<p>Plotting one variable’s SHAP contribution against its own value is the closest SHAP gets to a partial dependence plot, tract by tract instead of averaged.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_shp</span>, type <span class="op">=</span> <span class="st">"dependence"</span>, xvar <span class="op">=</span> <span class="st">"lstat"</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="ggRandomForests-regression_files/figure-html/shap-dependence-plot-1.png"></p>
+<figcaption>SHAP dependence for lstat.</figcaption></figure>
+</div>
+</div>
+</div>
+<p>The downward slope matches the sign of the correlation directly: tracts with more lower-status population get pulled below the baseline prediction, tracts with less get pushed above it. The next section asks the same question a second way, partial dependence averaged over the whole forest instead of tract by tract, and the two views should agree on the shape even though they’re built from entirely different mechanics.</p>
 </section></section><section class="section level2"><h2 id="variable-dependence">Variable Dependence<a class="anchor" aria-label="anchor" href="#variable-dependence"></a>
 </h2>
 <section class="level2"><h3 id="variable-dependence-plots">Variable dependence plots<a class="anchor" aria-label="anchor" href="#variable-dependence-plots"></a>
 </h3>
 <p>Variable dependence shows each tract’s OOB predicted <code>medv</code> plotted against a predictor, with a loess smooth indicating the trend.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gg_v</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_v</span>, xvar <span class="op">=</span> <span class="va">xvar</span>, panel <span class="op">=</span> <span class="cn">TRUE</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
@@ -292,7 +344,7 @@
 </div>
 <p>The panels confirm what EDA suggested: <code>medv</code> decreases sharply with <code>lstat</code> and increases with <code>rm</code>, both in strongly non-linear ways. The remaining variables show weaker but still discernible trends.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_v</span>, xvar <span class="op">=</span> <span class="st">"chas"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">st_labs</span><span class="op">[</span><span class="st">"medv"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
@@ -311,7 +363,7 @@
 </annotation></semantics></math></p>
 <p>We use <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>, which calls <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">randomForestSRC::partial.rfsrc()</a></code> directly and returns a <code>gg_partial_rfsrc</code> object. The quickest path to a figure is <code>plot(pd)</code>, which sorts out continuous and categorical variables for you. When you want to control the layout yourself, the underlying data is in <code>pd$continuous</code>.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span>, xvar.names <span class="op">=</span> <span class="va">xvar</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Quick S3 plot — works out of the box for the standard regression case</span></span>
@@ -325,7 +377,7 @@
 </div>
 <p>For a publication-ready layout with custom axis labels, access the underlying data frame directly:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">pd</span><span class="op">$</span><span class="va">continuous</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">yhat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"steelblue"</span>, linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">name</span>, scales <span class="op">=</span> <span class="st">"free_x"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -345,7 +397,7 @@
 </h3>
 <p>The simplest coplot conditions on a categorical variable. Here we examine <code>medv</code> vs. <code>lstat</code>, split by Charles River status:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gg_v</span><span class="op">$</span><span class="va">chas_label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">gg_v</span><span class="op">$</span><span class="va">chas</span>, <span class="st">"Borders Charles River"</span>,</span>
 <span>                          <span class="st">"Does not border"</span><span class="op">)</span></span>
 <span></span>
@@ -365,7 +417,7 @@
 </h3>
 <p>To investigate the <code>lstat</code>–<code>rm</code> interaction, we bin <code>rm</code> into six quantile groups using <code><a href="../reference/quantile_pts.html">quantile_pts()</a></code> and facet:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rm_pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, groups <span class="op">=</span> <span class="fl">6</span>, intervals <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">gg_v</span><span class="op">$</span><span class="va">rm_grp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, breaks <span class="op">=</span> <span class="va">rm_pts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">gg_v</span><span class="op">$</span><span class="va">rm_grp</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"rm in"</span>, <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">gg_v</span><span class="op">$</span><span class="va">rm_grp</span><span class="op">)</span><span class="op">)</span></span>
@@ -385,7 +437,7 @@
 <p>Median values decrease with <code>lstat</code> within every <code>rm</code> group, but the intercept shifts upward with more rooms. Smaller homes in low-<code>lstat</code> (high-status) neighborhoods still command high prices.</p>
 <p>The complement view — <code>medv</code> vs. <code>rm</code>, conditional on <code>lstat</code> groups — completes the picture:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lstat_pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">lstat</span>, groups <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>                          intervals <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">gg_v</span><span class="op">$</span><span class="va">lstat_grp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html" class="external-link">cut</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">lstat</span>, breaks <span class="op">=</span> <span class="va">lstat_pts</span><span class="op">)</span></span>
@@ -408,7 +460,7 @@
 </h2>
 <p>To visualize the joint partial dependence of <code>medv</code> on <code>lstat</code> and <code>rm</code>, we compute partial dependence on a grid: 10 values of <code>rm</code>, each evaluated at 25 points along <code>lstat</code>.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rm_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, groups <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">surface_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">rm_grid</span>, <span class="kw">function</span><span class="op">(</span><span class="va">rm_val</span><span class="op">)</span> <span class="op">{</span></span>
@@ -423,7 +475,7 @@
 <span><span class="va">surface_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">surface_list</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">surface_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">rm</span>, fill <span class="op">=</span> <span class="va">yhat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Median Value\n($1000s)"</span><span class="op">)</span> <span class="op">+</span></span>

@@ -141,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 200
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 67.09
+    #>        Average no. of terminal nodes: 67.045
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86795664
-    #>    (OOB) Requested performance error: 11.16911488
+    #>                      (OOB) R squared: 0.86295679
+    #>    (OOB) Requested performance error: 11.59203576
 
 The forest grew 200 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -240,8 +240,8 @@ considered most important.
 md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
-The threshold is 2.99, selecting 6 variables: crim, nox, rm, dis,
-ptratio, lstat.
+The threshold is 3, selecting 5 variables: crim, nox, rm, ptratio,
+lstat.
 
 Both VIMP and minimal depth agree on the dominance of `lstat` and `rm`.
 We use the minimal depth top variables for the remainder of the
@@ -251,6 +251,99 @@ analysis.
 
 xvar <- md_Boston$topvars
 ```
+
+## SHAP Analysis
+
+VIMP and varPro both rank *how much* a variable matters, averaged over
+the whole forest. They cannot tell you how much a variable mattered for
+one specific tract’s prediction — that requires a different kind of
+accounting. SHAP (SHapley Additive exPlanations) borrows an idea from
+cooperative game theory: treat the 13 predictors as players splitting a
+payout, and ask how much each one contributed to this tract’s predicted
+`medv`, averaged fairly over every order the players could have joined
+the game. The result is a signed contribution per predictor per tract,
+and those contributions add up exactly: the forest’s overall average
+prediction (the *baseline*) plus the sum of one tract’s contributions
+equals that tract’s actual predicted value. No other importance measure
+in this vignette makes that promise.
+
+[`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
+computes these contributions by calling
+[kernelshap](https://cran.r-project.org/package=kernelshap), which needs
+one prediction per predictor per background draw, per tract explained.
+Scoring all 506 tracts is expensive, so we explain a random sample of 40
+instead, plenty to see the patterns at a fraction of the cost.
+
+``` r
+
+set.seed(42)
+shap_sample <- Boston[sample(nrow(Boston), 40), setdiff(colnames(Boston), "medv")]
+gg_shp <- gg_shap(rfsrc_Boston, newdata = shap_sample, bg_n = 50)
+```
+
+### SHAP importance
+
+Averaging the absolute contribution of each variable across the 40
+tracts gives a ranking directly comparable to VIMP.
+
+``` r
+
+plot(gg_shp, type = "importance")
+```
+
+![](ggRandomForests-regression_files/figure-html/shap-importance-plot-1.png)
+
+Mean absolute SHAP value per predictor.
+
+`lstat` and `rm` come out on top again, same as VIMP and minimal depth —
+three different mechanisms, one answer. That agreement is reassuring,
+but it’s the next two plots where SHAP earns its keep.
+
+### SHAP beeswarm
+
+The beeswarm plot is one dot per tract per variable: its horizontal
+position is the SHAP contribution (negative pulls the prediction down,
+positive pushes it up), and its color is that tract’s value for the
+variable, scaled low to high within each row so the pattern doesn’t get
+washed out by variables on very different scales.
+
+``` r
+
+plot(gg_shp, type = "beeswarm")
+```
+
+![](ggRandomForests-regression_files/figure-html/shap-beeswarm-plot-1.png)
+
+SHAP beeswarm: every dot is one tract’s contribution for one predictor.
+
+`lstat` shows a clean color gradient: the yellow (high lower-status
+population) dots sit on the negative side, the purple (low) dots on the
+positive side. `rm` runs the other way. Both track what the EDA
+scatterplot already hinted at, but now stated as a contribution to an
+individual prediction rather than a marginal trend.
+
+### SHAP dependence
+
+Plotting one variable’s SHAP contribution against its own value is the
+closest SHAP gets to a partial dependence plot, tract by tract instead
+of averaged.
+
+``` r
+
+plot(gg_shp, type = "dependence", xvar = "lstat")
+```
+
+![](ggRandomForests-regression_files/figure-html/shap-dependence-plot-1.png)
+
+SHAP dependence for lstat.
+
+The downward slope matches the sign of the correlation directly: tracts
+with more lower-status population get pulled below the baseline
+prediction, tracts with less get pushed above it. The next section asks
+the same question a second way, partial dependence averaged over the
+whole forest instead of tract by tract, and the two views should agree
+on the shape even though they’re built from entirely different
+mechanics.
 
 ## Variable Dependence
 
