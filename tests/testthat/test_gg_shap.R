@@ -156,3 +156,8 @@ test_that("autoplot.gg_shap delegates to plot", {
 
   expect_s3_class(ggplot2::autoplot(gg_dta), "ggplot")
 })
+
+## ── vdiffr snapshots — see test_snapshots.R ──────────────────────────────────
+## Visual regression tests for the three plot.gg_shap types are in
+## test_snapshots.R (guarded by VDIFFR_RUN_TESTS=true), following the package
+## convention.
