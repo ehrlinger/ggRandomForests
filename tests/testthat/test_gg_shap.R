@@ -127,3 +127,20 @@ test_that("shap_dependence honors xvar and defaults to top variable", {
   expect_s3_class(shap_dependence(gg_dta), "ggplot")            # NULL -> top var
   expect_error(shap_dependence(gg_dta, xvar = "not_a_var"), "not_a_var")
 })
+
+test_that("shap_dependence uses geom_boxplot for a categorical feature", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  dta <- na.omit(airquality)
+  dta$hot <- factor(ifelse(dta$Temp > 80, "hot", "cool"))
+  dta$Temp <- NULL  # avoid near-duplicate signal with Ozone predictors
+
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = dta, ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20)
+
+  gg_plt <- shap_dependence(gg_dta, xvar = "hot")
+  expect_s3_class(gg_plt, "ggplot")
+  expect_s3_class(gg_plt$layers[[2]]$geom, "GeomBoxplot")
+})
