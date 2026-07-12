@@ -33,6 +33,7 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.html</loc></url>
@@ -54,6 +55,7 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_shap.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_survival.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.html</loc></url>
@@ -61,6 +63,9 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/print.gg.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/shap_beeswarm.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/shap_importance.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.html</loc></url>

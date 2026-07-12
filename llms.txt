@@ -260,6 +260,28 @@ Assess and plot variable importance (VIMP).
 
   Plot a `gg_ivarpro` object
 
+## SHAP Analysis
+
+Per-observation additive SHAP explanations for regression and
+classification forests.
+
+- [`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
+  : SHAP (Shapley additive explanations) data object
+
+- [`plot(`*`<gg_shap>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_shap.md)
+  :
+
+  Plot a `gg_shap` object
+
+- [`shap_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_importance.md)
+  : SHAP global importance bar chart
+
+- [`shap_beeswarm()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_beeswarm.md)
+  : SHAP beeswarm summary plot
+
+- [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md)
+  : SHAP dependence plot
+
 ## Anomaly Detection
 
 Score and plot per-observation anomaly scores.
@@ -374,6 +396,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`autoplot(`*`<gg_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_isopro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_shap>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   :
 
   `autoplot` methods for ggRandomForests data objects

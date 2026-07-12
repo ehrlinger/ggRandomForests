@@ -1,5 +1,18 @@
 # Changelog
 
+## ggRandomForests v3.5.0
+
+- Added
+  [`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
+  and
+  [`plot.gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_shap.md)
+  (with
+  [`shap_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_importance.md),
+  [`shap_beeswarm()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_beeswarm.md),
+  [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md))
+  for SHAP explanations of regression and classification forests,
+  wrapping `kernelshap` (Suggests).
+
 ## ggRandomForests v3.4.1
 
 - The remaining `rfsrc`/`randomForest` wrappers –

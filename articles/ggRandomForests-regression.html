@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,7 +83,7 @@
       <h1>Random Forest Regression with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-07-07</p>
+      <p class="date">2026-07-12</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests-regression.qmd" class="external-link"><code>vignettes/ggRandomForests-regression.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -198,7 +198,7 @@
 <pre><code><span><span class="co">#&gt;                          Sample size: 506</span></span>
 <span><span class="co">#&gt;                      Number of trees: 200</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 5</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 66.835</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 67.09</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 5</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 13</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -207,8 +207,8 @@
 <span><span class="co">#&gt;                               Family: regr</span></span>
 <span><span class="co">#&gt;                       Splitting rule: mse *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                      (OOB) R squared: 0.86202594</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 11.67077331</span></span></code></pre>
+<span><span class="co">#&gt;                      (OOB) R squared: 0.86795664</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 11.16911488</span></span></code></pre>
 </div>
 </div>
 <p>The forest grew 200 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
@@ -266,7 +266,7 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span> <span class="co"># nolint: object_name_linter</span></span></code></pre></div>
 </div>
-<p>The threshold is 3, selecting 6 variables: crim, nox, rm, dis, ptratio, lstat.</p>
+<p>The threshold is 2.99, selecting 6 variables: crim, nox, rm, dis, ptratio, lstat.</p>
 <p>Both VIMP and minimal depth agree on the dominance of <code>lstat</code> and <code>rm</code>. We use the minimal depth top variables for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">

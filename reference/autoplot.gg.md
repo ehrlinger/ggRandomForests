@@ -51,6 +51,9 @@ autoplot(object, ...)
 
 # S3 method for class 'gg_isopro'
 autoplot(object, ...)
+
+# S3 method for class 'gg_shap'
+autoplot(object, ...)
 ```
 
 ## Arguments
@@ -118,6 +121,10 @@ The following `gg_*` classes are supported:
 - `gg_brier`:
 
   Time-resolved Brier score and CRPS
+
+- `gg_shap`:
+
+  SHAP explanations
 
 ## Examples
 
