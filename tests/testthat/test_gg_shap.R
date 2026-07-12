@@ -144,3 +144,15 @@ test_that("shap_dependence uses geom_boxplot for a categorical feature", {
   expect_s3_class(gg_plt, "ggplot")
   expect_s3_class(gg_plt$layers[[2]]$geom, "GeomBoxplot")
 })
+
+test_that("autoplot.gg_shap delegates to plot", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20)
+
+  expect_s3_class(ggplot2::autoplot(gg_dta), "ggplot")
+})

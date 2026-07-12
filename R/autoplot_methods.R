@@ -40,6 +40,7 @@ NULL
 #'   \item{\code{gg_roc}}{ROC curve}
 #'   \item{\code{gg_survival}}{Survival / cumulative hazard curves}
 #'   \item{\code{gg_brier}}{Time-resolved Brier score and CRPS}
+#'   \item{\code{gg_shap}}{SHAP explanations}
 #' }
 #'
 #' @name autoplot.gg
@@ -139,5 +140,11 @@ autoplot.gg_udependent <- function(object, ...) {
 #' @rdname autoplot.gg
 #' @export
 autoplot.gg_isopro <- function(object, ...) {
+  plot(object, ...)
+}
+
+#' @rdname autoplot.gg
+#' @export
+autoplot.gg_shap <- function(object, ...) {
   plot(object, ...)
 }
