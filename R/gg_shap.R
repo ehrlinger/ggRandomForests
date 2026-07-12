@@ -46,6 +46,14 @@ gg_shap <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
   UseMethod("gg_shap", object)
 }
 
+# Internal: validate and coerce bg_n to a single positive integer. Not exported.
+.gg_shap_validate_bg_n <- function(bg_n) {
+  if (!is.numeric(bg_n) || length(bg_n) != 1L || is.na(bg_n) || bg_n < 1) {
+    stop("gg_shap: bg_n must be a single positive integer.", call. = FALSE)
+  }
+  as.integer(bg_n)
+}
+
 #' @export
 gg_shap.default <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
   stop("gg_shap: expected an 'rfsrc' or 'randomForest' object; got an object ",
@@ -64,6 +72,8 @@ gg_shap.rfsrc <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
          "in this version; got family '", object$family, "'. Survival ",
          "support is not yet implemented.", call. = FALSE)
   }
+
+  bg_n <- .gg_shap_validate_bg_n(bg_n)
 
   x_train <- object$xvar
   x_explain <- if (missing(newdata) || is.null(newdata)) x_train else newdata
@@ -102,6 +112,8 @@ gg_shap.randomForest <- function(object, newdata, bg_n = 50,
     stop("gg_shap: only regression and classification forests are supported; ",
          "got type '", object$type, "'.", call. = FALSE)
   }
+
+  bg_n <- .gg_shap_validate_bg_n(bg_n)
 
   info <- .rf_recover_model_frame(object)
   if (is.null(info)) {

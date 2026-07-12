@@ -171,6 +171,41 @@ test_that("gg_shap.randomForest errors on out-of-range which.class", {
   expect_error(gg_shap(rf, which.class = 99), "which.class")
 })
 
+test_that("gg_shap.rfsrc validates bg_n", {
+  skip_if_not_installed("kernelshap")
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality), ntree = 20)
+  expect_error(gg_shap(rf, bg_n = 0), "bg_n")
+  expect_error(gg_shap(rf, bg_n = NA), "bg_n")
+  expect_error(gg_shap(rf, bg_n = c(10, 20)), "bg_n")
+})
+
+test_that("gg_shap.randomForest validates bg_n", {
+  skip_if_not_installed("kernelshap")
+  rf <- randomForest::randomForest(Ozone ~ ., data = na.omit(airquality), ntree = 20)
+  expect_error(gg_shap(rf, bg_n = 0), "bg_n")
+  expect_error(gg_shap(rf, bg_n = NA), "bg_n")
+})
+
+test_that("shap_beeswarm scales finite values even when a variable has Inf entries", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality), ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20)
+
+  # inject an Inf into one row of one variable's `value` column
+  temp_rows <- which(as.character(gg_dta$vars) == "Temp")
+  gg_dta$value[temp_rows[1]] <- Inf
+
+  gg_plt <- shap_beeswarm(gg_dta)
+  temp_scaled <- gg_plt$data$value_scaled[as.character(gg_plt$data$vars) == "Temp"]
+
+  # not everything should be NA -- the finite Temp values should still scale
+  expect_false(all(is.na(temp_scaled)))
+  expect_true(any(!is.na(temp_scaled) & temp_scaled >= 0 & temp_scaled <= 1))
+})
+
 ## ── vdiffr snapshots — see test_snapshots.R ──────────────────────────────────
 ## Visual regression tests for the three plot.gg_shap types are in
 ## test_snapshots.R (guarded by VDIFFR_RUN_TESTS=true), following the package

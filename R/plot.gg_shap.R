@@ -75,13 +75,17 @@ shap_importance <- function(x, ...) {
 shap_beeswarm <- function(x, ...) {
   x <- dplyr::mutate(dplyr::group_by(x, .data$vars),
                      value_scaled = {
-                       rng <- range(.data$value, na.rm = TRUE)
-                       if (!is.finite(rng[1]) || !is.finite(rng[2])) {
+                       finite_vals <- .data$value[is.finite(.data$value)]
+                       if (length(finite_vals) == 0) {
                          rep(NA_real_, dplyr::n())
-                       } else if (rng[1] == rng[2]) {
-                         rep(0.5, dplyr::n())
                        } else {
-                         (.data$value - rng[1]) / (rng[2] - rng[1])
+                         rng <- range(finite_vals)
+                         if (rng[1] == rng[2]) {
+                           rep(0.5, dplyr::n())
+                         } else {
+                           scaled <- (.data$value - rng[1]) / (rng[2] - rng[1])
+                           pmin(pmax(scaled, 0), 1)
+                         }
                        }
                      })
   x <- dplyr::ungroup(x)
