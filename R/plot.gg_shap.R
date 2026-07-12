@@ -95,3 +95,44 @@ shap_beeswarm <- function(x, ...) {
                                     labels = c("Low", "High")) +
     ggplot2::labs(x = "SHAP value (impact on prediction)", y = "")
 }
+
+#' SHAP dependence plot
+#'
+#' SHAP value against the value of a single feature — the SHAP analog of a
+#' partial-dependence plot. Numeric features use a continuous x-axis; factor
+#' or character features fall back to their labels on a discrete axis.
+#'
+#' @param x A \code{\link{gg_shap}} object.
+#' @param xvar The variable to plot. When \code{NULL}, the top-ranked variable
+#'   (largest mean absolute SHAP) is used.
+#' @param ... Unused.
+#'
+#' @return A \code{ggplot} object.
+#' @seealso \code{\link{gg_shap}} \code{\link{plot.gg_shap}}
+#' @export
+shap_dependence <- function(x, xvar = NULL, ...) {
+  # vars levels are reversed (most important last); top variable is the last
+  # level.
+  if (is.null(xvar)) {
+    xvar <- utils::tail(levels(x$vars), 1)
+  }
+  if (!xvar %in% levels(x$vars)) {
+    stop("shap_dependence: '", xvar, "' is not a variable in this gg_shap ",
+         "object.", call. = FALSE)
+  }
+
+  sub <- x[as.character(x$vars) == xvar, , drop = FALSE]
+  is_numeric_feature <- any(!is.na(sub$value))
+
+  gg_plt <- ggplot2::ggplot(sub) +
+    ggplot2::geom_hline(yintercept = 0, linetype = 2, colour = "grey60") +
+    ggplot2::labs(x = xvar, y = paste("SHAP value for", xvar))
+
+  if (is_numeric_feature) {
+    gg_plt + ggplot2::geom_point(
+      ggplot2::aes(x = .data$value, y = .data$shap), alpha = 0.6)
+  } else {
+    gg_plt + ggplot2::geom_boxplot(
+      ggplot2::aes(x = .data$value_label, y = .data$shap))
+  }
+}

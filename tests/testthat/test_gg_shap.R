@@ -113,3 +113,17 @@ test_that("shap_beeswarm scales feature values per-variable into [0,1]", {
   ranges <- tapply(scaled, gg_plt$data$vars, function(v) diff(range(v, na.rm = TRUE)))
   expect_true(all(ranges > 0.9, na.rm = TRUE))
 })
+
+test_that("shap_dependence honors xvar and defaults to top variable", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 50)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 20)
+
+  expect_s3_class(shap_dependence(gg_dta, xvar = "Temp"), "ggplot")
+  expect_s3_class(shap_dependence(gg_dta), "ggplot")            # NULL -> top var
+  expect_error(shap_dependence(gg_dta, xvar = "not_a_var"), "not_a_var")
+})
