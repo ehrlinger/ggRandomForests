@@ -1,5 +1,11 @@
 Package: ggRandomForests
-Version: 3.4.1
+Version: 3.5.0
+
+ggRandomForests v3.5.0
+======================
+* Added `gg_shap()` and `plot.gg_shap()` (with `shap_importance()`,
+  `shap_beeswarm()`, `shap_dependence()`) for SHAP explanations of
+  regression and classification forests, wrapping `kernelshap` (Suggests).
 
 ggRandomForests v3.4.1
 ======================
