@@ -80,6 +80,15 @@ reference:
       - gg_ivarpro
       - plot.gg_ivarpro
 
+  - title: "SHAP Analysis"
+    desc: "Per-observation additive SHAP explanations for regression and classification forests."
+    contents:
+      - gg_shap
+      - plot.gg_shap
+      - shap_importance
+      - shap_beeswarm
+      - shap_dependence
+
   - title: "Anomaly Detection"
     desc: "Score and plot per-observation anomaly scores."
     contents:
