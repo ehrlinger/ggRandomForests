@@ -1,3 +1,14 @@
+# Archived reference script -- not part of the package.
+#
+# A preserved record of an exploratory k-fold XGBoost SHAP summary analysis. It
+# is kept for reference only and will not run as-is: it depends on objects
+# (`model_list`, `X`, `figure_dir`, `formula_var_name_to_english`, `x_to_x_mat`)
+# that are never defined here, and on packages (`SHAPforxgboost`, `dplyr`) that
+# are not fully declared for this workflow.
+#
+# This directory is listed in .Rbuildignore, so nothing here is built, checked,
+# linted, or shipped in the tarball.
+
 shap_values_list_mat <- lapply(model_list, function(model) {
   as.matrix(shap.values(xgb_model = model, X_train = x_to_x_mat(X))$shap_score)
 })
