@@ -87,6 +87,16 @@ You can request the curve at one or more time horizons via
 \code{partial.time}; the resulting data have a \code{time} column so the
 plot layers them as separate coloured lines.
 }
+\note{
+For survival forests this function defaults to
+\code{partial.type = "surv"}, so \code{yhat} is a survival probability on
+\eqn{[0, 1]}. \code{\link{gg_partial}} wraps
+\code{rfsrc::plot.variable} instead, which defaults to
+\code{surv.type = "mort"} and therefore yields \emph{mortality} (an
+expected event count). The two entry points consequently report different
+quantities by default; check the y-axis label, which each records on the
+returned object.
+}
 \section{Survival forests and \code{partial.time}}{
 
 \code{\link[randomForestSRC]{partial.rfsrc}} expects every value in

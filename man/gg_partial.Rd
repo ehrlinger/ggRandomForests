@@ -61,6 +61,10 @@ comparable quantity, ask for it explicitly:
 describing the plotted quantity is recorded on the returned object as
 \code{attr(x, "ylabel")} and is used as the y-axis title by
 \code{\link{plot.gg_partial}}.
+
+Note that \code{\link{gg_partial_rfsrc}} defaults to
+\code{partial.type = "surv"} and so reports survival probabilities. The
+two entry points therefore report different quantities by default.
 }
 \examples{
 ## Build a small regression forest on the airquality dataset
