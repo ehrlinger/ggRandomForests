@@ -6,6 +6,16 @@ ggRandomForests v3.5.0
 * Added `gg_shap()` and `plot.gg_shap()` (with `shap_importance()`,
   `shap_beeswarm()`, `shap_dependence()`) for SHAP explanations of
   regression and classification forests, wrapping `kernelshap` (Suggests).
+* `gg_partial()` no longer lets survival partial dependence be mistaken for a
+  probability. `randomForestSRC::plot.variable()` defaults to
+  `surv.type = "mort"`, so `yhat` is *mortality* -- an expected event count,
+  not a value on [0, 1] -- and it only superficially resembles a percentage.
+  `yhat` is passed through unscaled (rescaling it would corrupt the quantity);
+  instead the label describing what was plotted is carried on the object as
+  `attr(x, "ylabel")` and used as the y-axis title by `plot.gg_partial()`.
+  Note that `gg_partial_rfsrc()` defaults to `partial.type = "surv"` and so
+  does report survival probabilities: the two entry points report different
+  quantities by default. (#15)
 
 ggRandomForests v3.4.1
 ======================
