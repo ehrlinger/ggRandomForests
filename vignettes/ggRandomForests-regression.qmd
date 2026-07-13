@@ -223,6 +223,81 @@ the minimal depth top variables for the remainder of the analysis.
 xvar <- md_Boston$topvars
 ```
 
+# SHAP Analysis
+
+VIMP and varPro both rank *how much* a variable matters, averaged over the
+whole forest. They cannot tell you how much a variable mattered for one
+specific tract's prediction --- that requires a different kind of
+accounting. SHAP (SHapley Additive exPlanations) borrows an idea from
+cooperative game theory: treat the 13 predictors as players splitting a
+payout, and ask how much each one contributed to this tract's predicted
+`medv`, averaged fairly over every order the players could have joined the
+game. The result is a signed contribution per predictor per tract, and those
+contributions add up exactly: the forest's overall average prediction (the
+*baseline*) plus the sum of one tract's contributions equals that tract's
+actual predicted value. No other importance measure in this vignette makes
+that promise.
+
+`gg_shap()` computes these contributions by calling
+[kernelshap](https://cran.r-project.org/package=kernelshap), which needs one
+prediction per predictor per background draw, per tract explained. Scoring
+all 506 tracts is expensive, so we explain a random sample of 40 instead,
+plenty to see the patterns at a fraction of the cost.
+
+```{r shap-fit}
+set.seed(42)
+shap_sample <- Boston[sample(nrow(Boston), 40), setdiff(colnames(Boston), "medv")]
+gg_shp <- gg_shap(rfsrc_Boston, newdata = shap_sample, bg_n = 50)
+```
+
+## SHAP importance
+
+Averaging the absolute contribution of each variable across the 40 tracts
+gives a ranking directly comparable to VIMP.
+
+```{r shap-importance-plot, fig.cap="Mean absolute SHAP value per predictor."}
+plot(gg_shp, type = "importance")
+```
+
+`lstat` and `rm` come out on top again, same as VIMP and minimal depth ---
+three different mechanisms, one answer. That agreement is reassuring, but
+it's the next two plots where SHAP earns its keep.
+
+## SHAP beeswarm
+
+The beeswarm plot is one dot per tract per variable: its horizontal position
+is the SHAP contribution (negative pulls the prediction down, positive pushes
+it up), and its color is that tract's value for the variable, scaled low to
+high within each row so the pattern doesn't get washed out by variables on
+very different scales.
+
+```{r shap-beeswarm-plot, fig.cap="SHAP beeswarm: every dot is one tract's contribution for one predictor."}
+plot(gg_shp, type = "beeswarm")
+```
+
+`lstat` shows a clean color gradient: the yellow (high lower-status
+population) dots sit on the negative side, the purple (low) dots on the
+positive side. `rm` runs the other way. Both track what the EDA scatterplot
+already hinted at, but now stated as a contribution to an individual
+prediction rather than a marginal trend.
+
+## SHAP dependence
+
+Plotting one variable's SHAP contribution against its own value is the
+closest SHAP gets to a partial dependence plot, tract by tract instead of
+averaged.
+
+```{r shap-dependence-plot, fig.cap="SHAP dependence for lstat."}
+plot(gg_shp, type = "dependence", xvar = "lstat")
+```
+
+The downward slope matches the sign of the correlation directly: tracts with
+more lower-status population get pulled below the baseline prediction, tracts
+with less get pushed above it. The next section asks the same question a
+second way, partial dependence averaged over the whole forest instead of
+tract by tract, and the two views should agree on the shape even though
+they're built from entirely different mechanics.
+
 # Variable Dependence
 
 ## Variable dependence plots

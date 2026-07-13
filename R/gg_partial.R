@@ -8,18 +8,19 @@
 #' average effect of the swept predictor alone.
 #'
 #' \code{gg_partial} handles the bookkeeping step after you've already called
-#' \code{rfsrc::plot.variable(partial = TRUE)}: it takes the list that function
-#' returns and separates the variables into two tidy data frames -- one for
-#' continuous predictors (plotted as lines) and one for categorical predictors
-#' (plotted as bar charts).  The split is controlled by \code{cat_limit}:
-#' variables with more unique x-values than this threshold are treated as
-#' continuous; all others are categorical.
+#' \code{randomForestSRC::plot.variable(partial = TRUE)}: it takes the list
+#' that function returns and separates the variables into two tidy data frames
+#' -- one for continuous predictors (plotted as lines) and one for categorical
+#' predictors (plotted as bar charts).  The split is controlled by
+#' \code{cat_limit}: variables with more unique x-values than this threshold
+#' are treated as continuous; all others are categorical.
 #'
 #' If you'd rather skip the \code{plot.variable} step and pass the fitted
 #' forest directly, see \code{\link{gg_partial_rfsrc}}, which calls
 #' \code{partial.rfsrc} for you.
 #'
-#' @param part_dta partial plot data from \code{rfsrc::plot.variable}
+#' @param part_dta partial plot data from
+#'   \code{randomForestSRC::plot.variable}
 #' @param nvars how many of the partial plot variables to calculate
 #' @param cat_limit Categorical features are built when there are fewer than
 #'  \code{cat_limit} unique feature values.
@@ -58,6 +59,21 @@
 #' @note Partial-dependence extraction is `randomForestSRC`-only;
 #'   there is no `randomForest` method (the `randomForest` package
 #'   provides no comparable partial-dependence interface).
+#'
+#' @note For survival forests, \code{randomForestSRC::plot.variable} defaults
+#'   to \code{surv.type = "mort"}, so \code{yhat} is \emph{mortality} -- the
+#'   expected number of events -- and not a survival probability. It is
+#'   therefore not on \eqn{[0, 1]} and is not directly comparable with the
+#'   survival probabilities returned by \code{\link{gg_variable}}. For a
+#'   comparable quantity, ask for it explicitly:
+#'   \code{randomForestSRC::plot.variable(rf, partial = TRUE,
+#'   surv.type = "surv")}. The label describing the plotted quantity is
+#'   recorded on the returned object as \code{attr(x, "ylabel")} and is used
+#'   as the y-axis title by \code{\link{plot.gg_partial}}.
+#'
+#'   Note that \code{\link{gg_partial_rfsrc}} defaults to
+#'   \code{partial.type = "surv"} and so reports survival probabilities. The
+#'   two entry points therefore report different quantities by default.
 #' @export
 gg_partial <- function(part_dta,
                        nvars = NULL,
@@ -126,5 +142,10 @@ gg_partial <- function(part_dta,
 
   result <- list(continuous = continuous, categorical = categorical)
   class(result) <- "gg_partial"
+  ## Carry plot.variable()'s own description of the plotted quantity. For
+  ## survival forests it defaults to surv.type = "mort", so yhat is mortality
+  ## (an expected event count) rather than a survival probability; without this
+  ## label the two are easily confused. See gg_partial's @note.
+  attr(result, "ylabel") <- part_dta$ylabel
   return(result)
 }

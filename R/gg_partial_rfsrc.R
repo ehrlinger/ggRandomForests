@@ -105,6 +105,15 @@
 #' prt_dta <- gg_partial_rfsrc(airq.obj,
 #'                        xvar.names = c("Wind"))
 #'
+#' @note For survival forests this function defaults to
+#'   \code{partial.type = "surv"}, so \code{yhat} is a survival probability on
+#'   \eqn{[0, 1]}. \code{\link{gg_partial}} wraps
+#'   \code{randomForestSRC::plot.variable} instead, which defaults to
+#'   \code{surv.type = "mort"} and therefore yields \emph{mortality} (an
+#'   expected event count). The two entry points consequently report different
+#'   quantities by default; check the y-axis label, which each records on the
+#'   returned object.
+#'
 #' @importFrom dplyr mutate filter select all_of
 #' @export
 gg_partial_rfsrc <- function(rf_model,

@@ -11,6 +11,7 @@ linters: linters_with_defaults(
   )
 exclusions: list(
     "R/ggrandomforests.news.R",
-    "R/zzz.R"
+    "R/zzz.R",
+    "data-raw"
   )
 encoding: "UTF-8"
