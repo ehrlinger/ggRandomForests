@@ -286,9 +286,10 @@ plot(pd)
 
 Both curves fall sharply and then flatten near zero --- the risk-adjusted
 version of what the EDA already showed: past a certain petal size, a flower
-is essentially never *setosa*. If you want the same kind of curve for
-*versicolor* or *virginica* instead, `shap_dependence()` is the tool that
-lets you pick.
+is essentially never *setosa*. Getting the same kind of curve for
+*versicolor* or *virginica* instead means going back to `gg_shap()`:
+re-run it with `which.class = 2` or `3`, then `shap_dependence()` on that
+new object picks up wherever `which.class` left off.
 
 # Classification Performance: ROC and AUC
 
@@ -308,7 +309,7 @@ calc_auc(roc_virginica)
 ```
 
 An AUC of `r round(calc_auc(roc_virginica), 3)` for *virginica* confirms the
-forest separates it well, even with the overlap versicolor. *setosa*'s ROC
+forest separates it well, even given its overlap with *versicolor*. *setosa*'s ROC
 curve is not worth plotting --- it is a right angle, AUC 1, the geometric
 version of the confusion matrix's perfect row.
 
