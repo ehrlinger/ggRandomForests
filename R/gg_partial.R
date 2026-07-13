@@ -58,6 +58,17 @@
 #' @note Partial-dependence extraction is `randomForestSRC`-only;
 #'   there is no `randomForest` method (the `randomForest` package
 #'   provides no comparable partial-dependence interface).
+#'
+#' @note For survival forests, \code{rfsrc::plot.variable} defaults to
+#'   \code{surv.type = "mort"}, so \code{yhat} is \emph{mortality} -- the
+#'   expected number of events -- and not a survival probability. It is
+#'   therefore not on \eqn{[0, 1]} and is not directly comparable with the
+#'   survival probabilities returned by \code{\link{gg_variable}}. For a
+#'   comparable quantity, ask for it explicitly:
+#'   \code{plot.variable(rf, partial = TRUE, surv.type = "surv")}. The label
+#'   describing the plotted quantity is recorded on the returned object as
+#'   \code{attr(x, "ylabel")} and is used as the y-axis title by
+#'   \code{\link{plot.gg_partial}}.
 #' @export
 gg_partial <- function(part_dta,
                        nvars = NULL,
@@ -126,5 +137,10 @@ gg_partial <- function(part_dta,
 
   result <- list(continuous = continuous, categorical = categorical)
   class(result) <- "gg_partial"
+  ## Carry rfsrc's own description of the plotted quantity. For survival forests
+  ## plot.variable defaults to surv.type = "mort", so yhat is mortality (an
+  ## expected event count) rather than a survival probability; without this
+  ## label the two are easily confused. See gg_partial's @note.
+  attr(result, "ylabel") <- part_dta$ylabel
   return(result)
 }

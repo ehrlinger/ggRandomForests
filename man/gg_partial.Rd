@@ -50,6 +50,17 @@ forest directly, see \code{\link{gg_partial_rfsrc}}, which calls
 Partial-dependence extraction is \code{randomForestSRC}-only;
 there is no \code{randomForest} method (the \code{randomForest} package
 provides no comparable partial-dependence interface).
+
+For survival forests, \code{rfsrc::plot.variable} defaults to
+\code{surv.type = "mort"}, so \code{yhat} is \emph{mortality} -- the
+expected number of events -- and not a survival probability. It is
+therefore not on \eqn{[0, 1]} and is not directly comparable with the
+survival probabilities returned by \code{\link{gg_variable}}. For a
+comparable quantity, ask for it explicitly:
+\code{plot.variable(rf, partial = TRUE, surv.type = "surv")}. The label
+describing the plotted quantity is recorded on the returned object as
+\code{attr(x, "ylabel")} and is used as the y-axis title by
+\code{\link{plot.gg_partial}}.
 }
 \examples{
 ## Build a small regression forest on the airquality dataset
