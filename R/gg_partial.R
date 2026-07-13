@@ -59,16 +59,16 @@
 #'   there is no `randomForest` method (the `randomForest` package
 #'   provides no comparable partial-dependence interface).
 #'
-#' @note For survival forests, \code{rfsrc::plot.variable} defaults to
-#'   \code{surv.type = "mort"}, so \code{yhat} is \emph{mortality} -- the
+#' @note For survival forests, \code{randomForestSRC::plot.variable} defaults
+#'   to \code{surv.type = "mort"}, so \code{yhat} is \emph{mortality} -- the
 #'   expected number of events -- and not a survival probability. It is
 #'   therefore not on \eqn{[0, 1]} and is not directly comparable with the
 #'   survival probabilities returned by \code{\link{gg_variable}}. For a
 #'   comparable quantity, ask for it explicitly:
-#'   \code{plot.variable(rf, partial = TRUE, surv.type = "surv")}. The label
-#'   describing the plotted quantity is recorded on the returned object as
-#'   \code{attr(x, "ylabel")} and is used as the y-axis title by
-#'   \code{\link{plot.gg_partial}}.
+#'   \code{randomForestSRC::plot.variable(rf, partial = TRUE,
+#'   surv.type = "surv")}. The label describing the plotted quantity is
+#'   recorded on the returned object as \code{attr(x, "ylabel")} and is used
+#'   as the y-axis title by \code{\link{plot.gg_partial}}.
 #'
 #'   Note that \code{\link{gg_partial_rfsrc}} defaults to
 #'   \code{partial.type = "surv"} and so reports survival probabilities. The
