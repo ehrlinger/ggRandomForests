@@ -64,6 +64,15 @@ partial_surv_y_label <- function(partial.type) {
 plot.gg_partial <- function(x, ...) {
   gg_dta <- x
 
+  ## plot.variable() records what the partial yhat actually is ("mortality",
+  ## "predicted survival (time=...)", "probability setosa", expression(hat(y))).
+  ## Prefer it over the generic label so mortality is never mistaken for a
+  ## probability.
+  y_lab <- attr(gg_dta, "ylabel")
+  if (is.null(y_lab)) {
+    y_lab <- "Partial Effect"
+  }
+
   gg_cont <- NULL
   if (!is.null(gg_dta$continuous) && nrow(gg_dta$continuous) > 0) {
     cont <- gg_dta$continuous
@@ -78,7 +87,7 @@ plot.gg_partial <- function(x, ...) {
 
     gg_cont <- gg_cont +
       ggplot2::facet_wrap(~name, scales = "free_x") +
-      ggplot2::labs(x = NULL, y = "Partial Effect")
+      ggplot2::labs(x = NULL, y = y_lab)
   }
 
   gg_cat <- NULL
@@ -88,7 +97,7 @@ plot.gg_partial <- function(x, ...) {
                               ggplot2::aes(x = .data$x, y = .data$yhat)) +
       ggplot2::geom_bar(stat = "identity", width = 0.5) +
       ggplot2::facet_wrap(~name, scales = "free_x") +
-      ggplot2::labs(x = NULL, y = "Partial Effect")
+      ggplot2::labs(x = NULL, y = y_lab)
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
