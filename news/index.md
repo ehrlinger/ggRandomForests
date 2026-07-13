@@ -12,6 +12,23 @@
   [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md))
   for SHAP explanations of regression and classification forests,
   wrapping `kernelshap` (Suggests).
+- [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
+  no longer lets survival partial dependence be mistaken for a
+  probability.
+  [`randomForestSRC::plot.variable()`](https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html)
+  defaults to `surv.type = "mort"`, so `yhat` is *mortality* – an
+  expected event count, not a value on \[0, 1\] – and it only
+  superficially resembles a percentage. `yhat` is passed through
+  unscaled (rescaling it would corrupt the quantity); instead the label
+  describing what was plotted is carried on the object as
+  `attr(x, "ylabel")` and used as the y-axis title by
+  [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md).
+  Note that
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  defaults to `partial.type = "surv"` and so does report survival
+  probabilities: the two entry points report different quantities by
+  default.
+  ([\#15](https://github.com/ehrlinger/ggRandomForests/issues/15))
 
 ## ggRandomForests v3.4.1
 
