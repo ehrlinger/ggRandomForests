@@ -28,6 +28,7 @@ framed.sty
 ^CRAN-RELEASE$
 ^CRAN-SUBMISSION$
 ^\.github$
+^data-raw$
 ^\.claude$
 ^CLAUDE\.md$
 ^\.git$

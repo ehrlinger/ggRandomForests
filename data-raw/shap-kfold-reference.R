@@ -1,3 +1,14 @@
+# Archived reference script -- not part of the package.
+#
+# A preserved record of an exploratory k-fold XGBoost SHAP analysis. It is kept
+# for reference only and will not run as-is: it depends on objects
+# (`model_list`, `X`, `folds`, `formula_var_name_to_english`, `x_to_x_mat`)
+# that are never defined here, and on packages (`xgboost`, `SHAPforxgboost`,
+# `data.table`, `pacman`) that are not package dependencies.
+#
+# This directory is listed in .Rbuildignore, so nothing here is built, checked,
+# linted, or shipped in the tarball.
+
 pacman::p_load(xgboost, SHAPforxgboost, data.table)
 
 # Extract SHAP per fold ----
