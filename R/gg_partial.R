@@ -142,9 +142,9 @@ gg_partial <- function(part_dta,
 
   result <- list(continuous = continuous, categorical = categorical)
   class(result) <- "gg_partial"
-  ## Carry rfsrc's own description of the plotted quantity. For survival forests
-  ## plot.variable defaults to surv.type = "mort", so yhat is mortality (an
-  ## expected event count) rather than a survival probability; without this
+  ## Carry plot.variable()'s own description of the plotted quantity. For
+  ## survival forests it defaults to surv.type = "mort", so yhat is mortality
+  ## (an expected event count) rather than a survival probability; without this
   ## label the two are easily confused. See gg_partial's @note.
   attr(result, "ylabel") <- part_dta$ylabel
   return(result)

@@ -1,6 +1,7 @@
 # Tests for gg_partial and gg_partial_rfsrc
 
-# Helper: create mock partial plot data (matching rfsrc::plot.variable structure)
+# Helper: create mock partial plot data (matching the structure returned by
+# randomForestSRC::plot.variable())
 make_mock_partial_data <- function() {
   set.seed(42)
   # Wind: continuous (15 unique values > cat_limit of 10)
@@ -424,11 +425,12 @@ test_that("gg_partial_rfsrc survival: returns correct column names", {
 # ---- yhat scale / ylabel provenance (issue #15) ---------------------------
 
 test_that("gg_partial passes yhat through unscaled", {
-  # Guards issue #15. rfsrc::plot.variable defaults to surv.type = "mort", so a
-  # survival forest's yhat is *mortality* (an expected event count), not a
-  # survival probability. It only superficially resembles a percentage. Any
-  # rescaling here (e.g. dividing by 100 to "match" gg_variable's [0, 1])
-  # would silently corrupt it into a meaningless quantity.
+  # Guards issue #15. randomForestSRC::plot.variable() defaults to
+  # surv.type = "mort", so a survival forest's yhat is *mortality* (an
+  # expected event count), not a survival probability. It only superficially
+  # resembles a percentage. Any rescaling here (e.g. dividing by 100 to
+  # "match" gg_variable's [0, 1]) would silently corrupt it into a
+  # meaningless quantity.
   mock_dta <- make_mock_partial_data()
   result <- gg_partial(mock_dta)
 

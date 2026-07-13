@@ -64,9 +64,10 @@ partial_surv_y_label <- function(partial.type) {
 plot.gg_partial <- function(x, ...) {
   gg_dta <- x
 
-  ## rfsrc records what the partial yhat actually is ("mortality", "predicted
-  ## survival (time=...)", "probability setosa", expression(hat(y))). Prefer it
-  ## over the generic label so mortality is never mistaken for a probability.
+  ## plot.variable() records what the partial yhat actually is ("mortality",
+  ## "predicted survival (time=...)", "probability setosa", expression(hat(y))).
+  ## Prefer it over the generic label so mortality is never mistaken for a
+  ## probability.
   y_lab <- attr(gg_dta, "ylabel")
   if (is.null(y_lab)) {
     y_lab <- "Partial Effect"
