@@ -8,18 +8,19 @@
 #' average effect of the swept predictor alone.
 #'
 #' \code{gg_partial} handles the bookkeeping step after you've already called
-#' \code{rfsrc::plot.variable(partial = TRUE)}: it takes the list that function
-#' returns and separates the variables into two tidy data frames -- one for
-#' continuous predictors (plotted as lines) and one for categorical predictors
-#' (plotted as bar charts).  The split is controlled by \code{cat_limit}:
-#' variables with more unique x-values than this threshold are treated as
-#' continuous; all others are categorical.
+#' \code{randomForestSRC::plot.variable(partial = TRUE)}: it takes the list
+#' that function returns and separates the variables into two tidy data frames
+#' -- one for continuous predictors (plotted as lines) and one for categorical
+#' predictors (plotted as bar charts).  The split is controlled by
+#' \code{cat_limit}: variables with more unique x-values than this threshold
+#' are treated as continuous; all others are categorical.
 #'
 #' If you'd rather skip the \code{plot.variable} step and pass the fitted
 #' forest directly, see \code{\link{gg_partial_rfsrc}}, which calls
 #' \code{partial.rfsrc} for you.
 #'
-#' @param part_dta partial plot data from \code{rfsrc::plot.variable}
+#' @param part_dta partial plot data from
+#'   \code{randomForestSRC::plot.variable}
 #' @param nvars how many of the partial plot variables to calculate
 #' @param cat_limit Categorical features are built when there are fewer than
 #'  \code{cat_limit} unique feature values.
