@@ -178,6 +178,17 @@ You can request the curve at one or more time horizons via
 plot layers them as separate coloured lines.</p>
     </div>
     <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>For survival forests this function defaults to
+<code>partial.type = "surv"</code>, so <code>yhat</code> is a survival probability on
+\([0, 1]\). <code><a href="gg_partial.html">gg_partial</a></code> wraps
+<code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">randomForestSRC::plot.variable</a></code> instead, which defaults to
+<code>surv.type = "mort"</code> and therefore yields <em>mortality</em> (an
+expected event count). The two entry points consequently report different
+quantities by default; check the y-axis label, which each records on the
+returned object.</p>
+    </div>
+    <div class="section level2">
     <h2 id="survival-forests-and-partial-time">Survival forests and <code>partial.time</code><a class="anchor" aria-label="anchor" href="#survival-forests-and-partial-time"></a></h2>
 
 

@@ -84,7 +84,8 @@ average effect of the swept predictor alone.</p>
 
 
 <dl><dt id="arg-part-dta">part_dta<a class="anchor" aria-label="anchor" href="#arg-part-dta"></a></dt>
-<dd><p>partial plot data from <code>rfsrc::plot.variable</code></p></dd>
+<dd><p>partial plot data from
+<code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">randomForestSRC::plot.variable</a></code></p></dd>
 
 
 <dt id="arg-nvars">nvars<a class="anchor" aria-label="anchor" href="#arg-nvars"></a></dt>
@@ -116,12 +117,12 @@ as a factor, for low-cardinality / categorical variables</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>gg_partial</code> handles the bookkeeping step after you've already called
-<code>rfsrc::plot.variable(partial = TRUE)</code>: it takes the list that function
-returns and separates the variables into two tidy data frames – one for
-continuous predictors (plotted as lines) and one for categorical predictors
-(plotted as bar charts).  The split is controlled by <code>cat_limit</code>:
-variables with more unique x-values than this threshold are treated as
-continuous; all others are categorical.</p>
+<code>randomForestSRC::plot.variable(partial = TRUE)</code>: it takes the list
+that function returns and separates the variables into two tidy data frames
+– one for continuous predictors (plotted as lines) and one for categorical
+predictors (plotted as bar charts).  The split is controlled by
+<code>cat_limit</code>: variables with more unique x-values than this threshold
+are treated as continuous; all others are categorical.</p>
 <p>If you'd rather skip the <code>plot.variable</code> step and pass the fitted
 forest directly, see <code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code>, which calls
 <code>partial.rfsrc</code> for you.</p>
@@ -131,6 +132,19 @@ forest directly, see <code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a><
     <p>Partial-dependence extraction is <code>randomForestSRC</code>-only;
 there is no <code>randomForest</code> method (the <code>randomForest</code> package
 provides no comparable partial-dependence interface).</p>
+<p>For survival forests, <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">randomForestSRC::plot.variable</a></code> defaults
+to <code>surv.type = "mort"</code>, so <code>yhat</code> is <em>mortality</em> – the
+expected number of events – and not a survival probability. It is
+therefore not on \([0, 1]\) and is not directly comparable with the
+survival probabilities returned by <code><a href="gg_variable.html">gg_variable</a></code>. For a
+comparable quantity, ask for it explicitly:
+<code>randomForestSRC::plot.variable(rf, partial = TRUE,
+  surv.type = "surv")</code>. The label describing the plotted quantity is
+recorded on the returned object as <code>attr(x, "ylabel")</code> and is used
+as the y-axis title by <code><a href="plot.gg_partial.html">plot.gg_partial</a></code>.</p>
+<p>Note that <code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code> defaults to
+<code>partial.type = "surv"</code> and so reports survival probabilities. The
+two entry points therefore report different quantities by default.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

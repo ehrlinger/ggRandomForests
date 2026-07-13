@@ -113,6 +113,18 @@ the curve at one or more time horizons via `partial.time`; the resulting
 data have a `time` column so the plot layers them as separate coloured
 lines.
 
+## Note
+
+For survival forests this function defaults to `partial.type = "surv"`,
+so `yhat` is a survival probability on \\\[0, 1\]\\.
+[`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
+wraps
+[`randomForestSRC::plot.variable`](https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html)
+instead, which defaults to `surv.type = "mort"` and therefore yields
+*mortality* (an expected event count). The two entry points consequently
+report different quantities by default; check the y-axis label, which
+each records on the returned object.
+
 ## Survival forests and `partial.time`
 
 [`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
