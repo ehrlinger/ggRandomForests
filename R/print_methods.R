@@ -343,3 +343,13 @@ print.summary.gg_ivarpro <- function(x, ...) {
   }
   invisible(x)
 }
+
+#' @rdname print.gg
+#' @export
+print.gg_shap <- function(x, ...) {
+  cat(.gg_header(x, "gg_shap"),
+      sprintf("  |  variables: %d  |  observations: %d",
+              nlevels(x$vars), length(unique(x$id))),
+      "\n", sep = "")
+  invisible(x)
+}

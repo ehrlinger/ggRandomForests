@@ -379,3 +379,34 @@ summary.gg_auct <- function(object, ...) {
     conf.level  = iauc$conf.level
   )
 }
+
+#' @rdname summary.gg
+#' @export
+summary.gg_shap <- function(object, ...) {
+  # Rank variables the same way gg_shap() does: mean |SHAP| across observations.
+  imp <- stats::aggregate(abs(object$shap),
+                          by = list(vars = object$vars), FUN = mean)
+  names(imp)[2] <- "mean_abs_shap"
+  imp <- imp[order(-imp$mean_abs_shap), , drop = FALSE]
+  top_n <- min(5L, nrow(imp))
+
+  # which.class is only meaningful for a classification forest; gg_shap()
+  # records its default (1) regardless, so gate on the recorded family rather
+  # than report a class index for a regression fit.
+  family <- attr(object, "provenance")$family
+  is_class <- !is.null(family) && grepl("class", family)
+
+  body <- c(
+    sprintf("observations: %d", length(unique(object$id))),
+    sprintf("variables: %d", nlevels(object$vars)),
+    sprintf("baseline: %.4g", attr(object, "baseline")[1]),
+    sprintf("background sample: %d", attr(object, "bg_n")),
+    if (is_class) sprintf("which.class: %s", attr(object, "which.class")),
+    sprintf("top %d by mean |SHAP|: %s", top_n,
+            paste(sprintf("%s (%.4g)",
+                          utils::head(as.character(imp$vars), top_n),
+                          utils::head(imp$mean_abs_shap, top_n)),
+                  collapse = ", "))
+  )
+  .summary_skel(object, "gg_shap", body)
+}
