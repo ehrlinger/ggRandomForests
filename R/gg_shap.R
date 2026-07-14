@@ -47,11 +47,32 @@ gg_shap <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
 }
 
 # Internal: validate and coerce bg_n to a single positive integer. Not exported.
+# The whole-number and integer-range checks matter: as.integer() would turn 1.9
+# into 1, and Inf or 1e10 into NA, silently sampling the wrong number of
+# background rows instead of reporting the bad input.
 .gg_shap_validate_bg_n <- function(bg_n) {
-  if (!is.numeric(bg_n) || length(bg_n) != 1L || is.na(bg_n) || bg_n < 1) {
+  if (!is.numeric(bg_n) || length(bg_n) != 1L || !is.finite(bg_n) ||
+        bg_n < 1 || bg_n != trunc(bg_n) || bg_n > .Machine$integer.max) {
     stop("gg_shap: bg_n must be a single positive integer.", call. = FALSE)
   }
   as.integer(bg_n)
+}
+
+# Internal: validate which.class as a single in-range class index. Not exported.
+# A bare range check lets 2.9 through, and matrix indexing then truncates it to
+# column 2 -- silently returning SHAP values for a class the caller did not ask
+# for. NA/NaN would instead fail the range test itself with R's opaque
+# "missing value where TRUE/FALSE needed".
+.gg_shap_validate_which_class <- function(which.class, n_class) {
+  if (!is.numeric(which.class) || length(which.class) != 1L ||
+        !is.finite(which.class) || which.class != trunc(which.class)) {
+    stop("gg_shap: which.class must be a single integer.", call. = FALSE)
+  }
+  if (which.class < 1 || which.class > n_class) {
+    stop("gg_shap: which.class (", which.class, ") is out of range. Valid ",
+         "values are 1 to ", n_class, ".", call. = FALSE)
+  }
+  as.integer(which.class)
 }
 
 #' @export
@@ -82,11 +103,8 @@ gg_shap.rfsrc <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
 
   is_class <- object$family == "class"
   if (is_class) {
-    n_class <- ncol(object$predicted)
-    if (which.class < 1 || which.class > n_class) {
-      stop("gg_shap: which.class (", which.class, ") is out of range. Valid ",
-           "values are 1 to ", n_class, ".", call. = FALSE)
-    }
+    which.class <- .gg_shap_validate_which_class(which.class,
+                                                 ncol(object$predicted))
   }
   pred_fun <- function(object, newdata) {
     pr <- predict(object, newdata)$predicted
@@ -128,11 +146,8 @@ gg_shap.randomForest <- function(object, newdata, bg_n = 50,
 
   is_class <- object$type == "classification"
   if (is_class) {
-    n_class <- length(object$classes)
-    if (which.class < 1 || which.class > n_class) {
-      stop("gg_shap: which.class (", which.class, ") is out of range. Valid ",
-           "values are 1 to ", n_class, ".", call. = FALSE)
-    }
+    which.class <- .gg_shap_validate_which_class(which.class,
+                                                 length(object$classes))
   }
   pred_fun <- function(object, newdata) {
     if (is_class) {

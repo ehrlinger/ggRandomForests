@@ -210,3 +210,37 @@ test_that("shap_beeswarm scales finite values even when a variable has Inf entri
 ## Visual regression tests for the three plot.gg_shap types are in
 ## test_snapshots.R (guarded by VDIFFR_RUN_TESTS=true), following the package
 ## convention.
+
+test_that("gg_shap rejects bg_n that is not a whole, finite, in-range number", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 50)
+
+  # as.integer() would silently turn each of these into 1 or NA, so the
+  # "positive integer" contract has to be enforced, not coerced into.
+  expect_error(gg_shap(rf, bg_n = 1.9), "positive integer")
+  expect_error(gg_shap(rf, bg_n = Inf), "positive integer")
+  expect_error(gg_shap(rf, bg_n = 1e10), "positive integer")
+  expect_error(gg_shap(rf, bg_n = NA_real_), "positive integer")
+  expect_error(gg_shap(rf, bg_n = c(10, 20)), "positive integer")
+})
+
+test_that("gg_shap rejects which.class that is not a whole, finite number", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
+
+  # 2.9 passes a bare range check and then silently indexes column 2.
+  expect_error(gg_shap(rf, bg_n = 20, which.class = 2.9), "single integer")
+  expect_error(gg_shap(rf, bg_n = 20, which.class = NA_real_), "single integer")
+  expect_error(gg_shap(rf, bg_n = 20, which.class = Inf), "single integer")
+  # In-range check still applies.
+  expect_error(gg_shap(rf, bg_n = 20, which.class = 99), "out of range")
+
+  rf_rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50)
+  expect_error(gg_shap(rf_rf, bg_n = 20, which.class = 2.9), "single integer")
+  expect_error(gg_shap(rf_rf, bg_n = 20, which.class = 99), "out of range")
+})
