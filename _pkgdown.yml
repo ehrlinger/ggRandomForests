@@ -44,6 +44,8 @@ navbar:
           href: articles/ggRandomForests-survival.html
         - text: "Random Forest Regression"
           href: articles/ggRandomForests-regression.html
+        - text: "Random Forest Classification"
+          href: articles/ggRandomForests-classification.html
         - text: "Exploring variable importance with varPro"
           href: articles/varpro.html
         - text: "Variable selection without an outcome: unsupervised varPro"
@@ -79,6 +81,15 @@ reference:
       - plot.gg_sdependent
       - gg_ivarpro
       - plot.gg_ivarpro
+
+  - title: "SHAP Analysis"
+    desc: "Per-observation additive SHAP explanations for regression and classification forests."
+    contents:
+      - gg_shap
+      - plot.gg_shap
+      - shap_importance
+      - shap_beeswarm
+      - shap_dependence
 
   - title: "Anomaly Detection"
     desc: "Score and plot per-observation anomaly scores."
@@ -149,6 +160,7 @@ articles:
     contents:
       - ggRandomForests-survival
       - ggRandomForests-regression
+      - ggRandomForests-classification
       - varpro
       - uvarpro
 

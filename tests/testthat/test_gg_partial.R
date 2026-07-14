@@ -1,6 +1,7 @@
 # Tests for gg_partial and gg_partial_rfsrc
 
-# Helper: create mock partial plot data (matching rfsrc::plot.variable structure)
+# Helper: create mock partial plot data (matching the structure returned by
+# randomForestSRC::plot.variable())
 make_mock_partial_data <- function() {
   set.seed(42)
   # Wind: continuous (15 unique values > cat_limit of 10)
@@ -419,4 +420,54 @@ test_that("gg_partial_rfsrc survival: returns correct column names", {
   )
 
   expect_true(all(c("x", "yhat", "name", "time") %in% colnames(result$continuous)))
+})
+
+# ---- yhat scale / ylabel provenance (issue #15) ---------------------------
+
+test_that("gg_partial passes yhat through unscaled", {
+  # Guards issue #15. randomForestSRC::plot.variable() defaults to
+  # surv.type = "mort", so a survival forest's yhat is *mortality* (an
+  # expected event count), not a survival probability. It only superficially
+  # resembles a percentage. Any rescaling here (e.g. dividing by 100 to
+  # "match" gg_variable's [0, 1]) would silently corrupt it into a
+  # meaningless quantity.
+  mock_dta <- make_mock_partial_data()
+  result <- gg_partial(mock_dta)
+
+  expect_equal(
+    result$continuous$yhat,
+    mock_dta$plotthis$Wind$yhat
+  )
+})
+
+test_that("gg_partial records the ylabel describing the plotted quantity", {
+  mock_dta <- make_mock_partial_data()
+  mock_dta$ylabel <- "mortality"
+
+  result <- gg_partial(mock_dta)
+  expect_equal(attr(result, "ylabel"), "mortality")
+})
+
+test_that("gg_partial tolerates part_dta with no ylabel", {
+  mock_dta <- make_mock_partial_data()  # helper supplies no ylabel
+  result <- gg_partial(mock_dta)
+
+  expect_null(attr(result, "ylabel"))
+  expect_s3_class(result, "gg_partial")
+})
+
+test_that("plot.gg_partial labels the y axis with the recorded quantity", {
+  mock_dta <- make_mock_partial_data()
+  mock_dta$ylabel <- "mortality"
+
+  gg <- plot(gg_partial(mock_dta))
+  # continuous and categorical are combined by patchwork; check the first panel
+  expect_equal(gg[[1]]$labels$y, "mortality")
+})
+
+test_that("plot.gg_partial falls back to 'Partial Effect' with no ylabel", {
+  mock_dta <- make_mock_partial_data()
+
+  gg <- plot(gg_partial(mock_dta))
+  expect_equal(gg[[1]]$labels$y, "Partial Effect")
 })

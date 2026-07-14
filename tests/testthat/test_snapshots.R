@@ -476,6 +476,32 @@ test_that("gg-auct-chf", {
   vdiffr::expect_doppelganger("gg-auct-chf", plot(gg))
 })
 
+## ── gg_shap snapshots (Task 8) ───────────────────────────────────────────────
+if (requireNamespace("kernelshap", quietly = TRUE)) {
+  local({
+    set.seed(42L)
+    rf_shap <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                                      ntree = 50L)
+    set.seed(42L)
+    gg_dta <- gg_shap(rf_shap, bg_n = 20L)
+
+    test_that("snapshot: gg-shap-importance", {
+      vdiffr::expect_doppelganger("gg-shap-importance",
+                                  plot(gg_dta, type = "importance"))
+    })
+
+    test_that("snapshot: gg-shap-beeswarm", {
+      vdiffr::expect_doppelganger("gg-shap-beeswarm",
+                                  plot(gg_dta, type = "beeswarm"))
+    })
+
+    test_that("snapshot: gg-shap-dependence", {
+      vdiffr::expect_doppelganger("gg-shap-dependence",
+                                  plot(gg_dta, type = "dependence", xvar = "Temp"))
+    })
+  })
+}
+
 } else {
 
 ## ---- Preserve baselines when the vdiffr comparison is opted out ------------
