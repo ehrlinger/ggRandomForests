@@ -246,6 +246,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`print(`*`<gg_isopro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_beta_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_ivarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_shap>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   : Print methods for gg\_\* data objects
 
 - [`summary(`*`<gg_beta_uvarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
@@ -267,6 +268,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`summary(`*`<gg_isopro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_beta_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_ivarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_shap>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   : Summary methods for gg\_\* data objects
 
 ## Utilities

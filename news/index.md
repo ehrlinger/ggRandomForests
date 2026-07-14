@@ -12,6 +12,34 @@
   [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md))
   for SHAP explanations of regression and classification forests,
   wrapping `kernelshap` (Suggests).
+- [`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
+  now enforces the integer contract on `bg_n` and `which.class` instead
+  of silently coercing them. Both are documented as integers, but were
+  only loosely checked: `bg_n = 1.9` was truncated to 1 and `bg_n = Inf`
+  (or any value above `.Machine$integer.max`) became `NA`, while
+  `which.class = 2.9` passed the range check and then indexed column 2 –
+  returning SHAP values for a class the caller never asked for.
+  Non-whole, non-finite, out-of-range and non-scalar values now raise a
+  clear error. Valid input is unaffected.
+- Added
+  [`print.gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  and
+  [`summary.gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md).
+  `gg_shap` was the only `gg_*` class without them, so it dumped every
+  row at the REPL instead of showing a header.
+  [`print()`](https://rdrr.io/r/base/print.html) now gives the standard
+  one-line header (with the variable and observation counts) and
+  [`summary()`](https://rdrr.io/r/base/summary.html) returns a
+  `summary.gg` object reporting the baseline, background-sample size,
+  the explained class for classification fits, and the top variables by
+  mean \|SHAP\|.
+- The package help page (`?ggRandomForests`) now describes the whole
+  current surface – the SHAP, Brier, varPro and unsupervised-varPro
+  families were missing – and no longer claims that
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods may
+  return a *list* of `ggplot2` objects; each returns a single plottable
+  object (a `ggplot`, or a `patchwork` composite for the multi-panel
+  methods).
 - [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
   no longer lets survival partial dependence be mistaken for a
   probability.
