@@ -13,6 +13,12 @@ ggRandomForests v3.5.0
   passed the range check and then indexed column 2 -- returning SHAP values for
   a class the caller never asked for. Non-whole, non-finite, out-of-range and
   non-scalar values now raise a clear error. Valid input is unaffected.
+* Added `print.gg_shap()` and `summary.gg_shap()`. `gg_shap` was the only
+  `gg_*` class without them, so it dumped every row at the REPL instead of
+  showing a header. `print()` now gives the standard one-line header (with the
+  variable and observation counts) and `summary()` returns a `summary.gg`
+  object reporting the baseline, background-sample size, the explained class
+  for classification fits, and the top variables by mean |SHAP|.
 * The package help page (`?ggRandomForests`) now describes the whole current
   surface -- the SHAP, Brier, varPro and unsupervised-varPro families were
   missing -- and no longer claims that `plot()` methods may return a *list* of

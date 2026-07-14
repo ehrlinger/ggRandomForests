@@ -101,3 +101,38 @@ test_that("summary methods return summary.gg objects that print cleanly", {
     expect_true(length(out) >= 1L)
   }
 })
+
+test_that("print.gg_shap emits a single header line and returns invisibly", {
+  skip_if_not_installed("kernelshap")
+
+  set.seed(42)
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 10)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 10)
+
+  out <- capture.output(res <- withVisible(print(gg_dta)))
+  # Same header-only contract as every other print.gg_* method.
+  expect_length(out, 1L)
+  expect_match(out, "gg_shap")
+  expect_false(res$visible)
+  expect_s3_class(res$value, "gg_shap")
+})
+
+test_that("summary.gg_shap returns a summary.gg object that prints cleanly", {
+  skip_if_not_installed("kernelshap")
+
+  set.seed(42)
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 10)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 10)
+
+  s <- summary(gg_dta)
+  expect_s3_class(s, "summary.gg")
+  out <- capture.output(print(s))
+  expect_true(length(out) > 1L)
+  # The summary should surface what gg_shap actually records.
+  expect_true(any(grepl("baseline", out, ignore.case = TRUE)))
+  expect_true(any(grepl("background", out, ignore.case = TRUE)))
+})

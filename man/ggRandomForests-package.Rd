@@ -27,9 +27,10 @@ You are never locked into the default figure. Each \code{plot()} method
 returns a single plottable object: a \code{ggplot} you extend with \code{+},
 or a \code{patchwork} composite for the multi-panel methods. Add layers, swap
 scales, apply a theme -- or ignore the default entirely and build the figure
-from the tidy data yourself. Most \code{gg_*} objects also carry
-\code{print()} and \code{summary()} methods; \code{\link{gg_shap}} is the
-exception, and prints as the \code{data.frame} it is.
+from the tidy data yourself. Every \code{gg_*} object also carries
+\code{print()} and \code{summary()} methods: \code{print()} shows a short
+header rather than dumping every row, and \code{summary()} returns a
+diagnostics object.
 
 \strong{Forest diagnostics}
 \itemize{
