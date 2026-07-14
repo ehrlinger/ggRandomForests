@@ -102,14 +102,33 @@ test_that("summary methods return summary.gg objects that print cleanly", {
   }
 })
 
-test_that("print.gg_shap emits a single header line and returns invisibly", {
-  skip_if_not_installed("kernelshap")
+# A gg_shap object built by hand, so the method contracts can be exercised
+# without running kernelshap. These tests carry no skip_on_cran(): they are the
+# ones that keep print/summary.gg_shap covered in a default R CMD check, since
+# the forest-driven tests below are skipped there.
+make_mock_gg_shap <- function(provenance = TRUE) {
+  vars <- c("Temp", "Wind")
+  gg_dta <- data.frame(
+    id          = rep(1:3, times = 2),
+    vars        = factor(rep(vars, each = 3), levels = rev(vars)),
+    shap        = c(2, -3, 4, 0.5, -0.25, 0.75),
+    value       = c(80, 72, 90, 5, 12, 8),
+    value_label = as.character(c(80, 72, 90, 5, 12, 8)),
+    stringsAsFactors = FALSE
+  )
+  class(gg_dta) <- c("gg_shap", "data.frame")
+  attr(gg_dta, "baseline")    <- 42
+  attr(gg_dta, "bg_n")        <- 10L
+  attr(gg_dta, "which.class") <- 1
+  if (provenance) {
+    attr(gg_dta, "provenance") <- list(source = "randomForestSRC",
+                                       family = "regr", ntree = 10L, n = 3L)
+  }
+  gg_dta
+}
 
-  set.seed(42)
-  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
-                               ntree = 10)
-  set.seed(42)
-  gg_dta <- gg_shap(rf, bg_n = 10)
+test_that("print.gg_shap emits a single header line and returns invisibly", {
+  gg_dta <- make_mock_gg_shap()
 
   out <- capture.output(res <- withVisible(print(gg_dta)))
   # Same header-only contract as every other print.gg_* method.
@@ -120,13 +139,7 @@ test_that("print.gg_shap emits a single header line and returns invisibly", {
 })
 
 test_that("summary.gg_shap returns a summary.gg object that prints cleanly", {
-  skip_if_not_installed("kernelshap")
-
-  set.seed(42)
-  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
-                               ntree = 10)
-  set.seed(42)
-  gg_dta <- gg_shap(rf, bg_n = 10)
+  gg_dta <- make_mock_gg_shap()
 
   s <- summary(gg_dta)
   expect_s3_class(s, "summary.gg")
@@ -135,4 +148,52 @@ test_that("summary.gg_shap returns a summary.gg object that prints cleanly", {
   # The summary should surface what gg_shap actually records.
   expect_true(any(grepl("baseline", out, ignore.case = TRUE)))
   expect_true(any(grepl("background", out, ignore.case = TRUE)))
+  # Ranked by mean |SHAP|: Temp (3) outranks Wind (0.5).
+  expect_match(paste(out, collapse = " "), "Temp.*Wind")
+})
+
+test_that("print/summary.gg_shap tolerate a missing provenance attribute", {
+  # Provenance is best-effort (see R/print_helpers.R) -- objects saved before it
+  # existed have none. Both methods must degrade to the bare header rather than
+  # fail on a NULL lookup.
+  gg_dta <- make_mock_gg_shap(provenance = FALSE)
+
+  out <- capture.output(print(gg_dta))
+  expect_length(out, 1L)
+  expect_match(out, "^<gg_shap>")
+
+  s <- summary(gg_dta)
+  expect_s3_class(s, "summary.gg")
+  body <- capture.output(print(s))
+  # which.class is meaningless without a family to gate on, so it is omitted.
+  expect_false(any(grepl("which.class", body)))
+})
+
+test_that("summary.gg_shap reports which.class only for classification fits", {
+  reg <- make_mock_gg_shap()
+  expect_false(any(grepl("which.class", capture.output(print(summary(reg))))))
+
+  cls <- make_mock_gg_shap()
+  attr(cls, "provenance")$family <- "class"
+  attr(cls, "which.class") <- 2
+  expect_true(any(grepl("which.class: 2", capture.output(print(summary(cls))))))
+})
+
+test_that("print/summary.gg_shap work on a real kernelshap-backed object", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+
+  set.seed(42)
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                               ntree = 10)
+  set.seed(42)
+  gg_dta <- gg_shap(rf, bg_n = 10)
+
+  out <- capture.output(print(gg_dta))
+  expect_length(out, 1L)
+  expect_match(out, "gg_shap")
+
+  s <- summary(gg_dta)
+  expect_s3_class(s, "summary.gg")
+  expect_true(any(grepl("baseline", capture.output(print(s)))))
 })
