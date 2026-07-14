@@ -39,8 +39,9 @@
 #' returns a single plottable object: a \code{ggplot} you extend with \code{+},
 #' or a \code{patchwork} composite for the multi-panel methods. Add layers, swap
 #' scales, apply a theme -- or ignore the default entirely and build the figure
-#' from the tidy data yourself. Every \code{gg_*} object also has \code{print()}
-#' and \code{summary()} methods.
+#' from the tidy data yourself. Most \code{gg_*} objects also carry
+#' \code{print()} and \code{summary()} methods; \code{\link{gg_shap}} is the
+#' exception, and prints as the \code{data.frame} it is.
 #'
 #' \strong{Forest diagnostics}
 #' \itemize{
@@ -89,9 +90,10 @@
 #' \item \code{\link{gg_sdependent}}: signal-variable detection.
 #' }
 #'
-#' The varPro and SHAP families depend on packages listed in \code{Suggests}
-#' (\code{varPro}, \code{kernelshap}); each entry point checks for them and
-#' fails with a clear message when they are absent.
+#' \code{varPro} is a required dependency (\code{Imports}), so the varPro
+#' families are always available. \code{kernelshap} is in \code{Suggests}:
+#' \code{\link{gg_shap}} checks for it and fails with a clear message when it
+#' is not installed.
 #'
 #' @references
 #' Breiman, L. (2001). Random forests, Machine Learning, 45:5-32.

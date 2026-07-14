@@ -95,9 +95,10 @@ vignette("uvarpro", package = "ggRandomForests")
 | `gg_brier()` | `rfsrc` (survival) | Time-resolved Brier score and CRPS |
 
 Each `gg_*` function has a matching `plot()` S3 method that hands back a single plottable object: a `ggplot`
-you extend with `+`, or a `patchwork` composite for the multi-panel methods. Every `gg_*` object also has `print()` and `summary()` methods: `print()`
+you extend with `+`, or a `patchwork` composite for the multi-panel methods. Most `gg_*` objects also carry `print()` and `summary()` methods: `print()`
 shows a short header at the REPL rather than dumping every row (use `head()` when you want the rows), and
-`summary()` gives you a diagnostics object you can print or keep.
+`summary()` gives you a diagnostics object you can print or keep. `gg_shap()` is the exception — it has
+neither, and prints as the `data.frame` it is.
 
 ## Why ggRandomForests?
 
