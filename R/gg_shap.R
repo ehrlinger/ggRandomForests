@@ -46,13 +46,18 @@ gg_shap <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
   UseMethod("gg_shap", object)
 }
 
+# Internal: TRUE when x is one finite, whole number. Both gg_shap index-ish
+# arguments need exactly this test, so it lives in one place. Not exported.
+.gg_shap_is_count <- function(x) {
+  is.numeric(x) && length(x) == 1L && is.finite(x) && x == trunc(x)
+}
+
 # Internal: validate and coerce bg_n to a single positive integer. Not exported.
 # The whole-number and integer-range checks matter: as.integer() would turn 1.9
 # into 1, and Inf or 1e10 into NA, silently sampling the wrong number of
 # background rows instead of reporting the bad input.
 .gg_shap_validate_bg_n <- function(bg_n) {
-  if (!is.numeric(bg_n) || length(bg_n) != 1L || !is.finite(bg_n) ||
-        bg_n < 1 || bg_n != trunc(bg_n) || bg_n > .Machine$integer.max) {
+  if (!.gg_shap_is_count(bg_n) || bg_n < 1 || bg_n > .Machine$integer.max) {
     stop("gg_shap: bg_n must be a single positive integer between 1 and ",
          .Machine$integer.max, ".", call. = FALSE)
   }
@@ -65,8 +70,7 @@ gg_shap <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
 # for. NA/NaN would instead fail the range test itself with R's opaque
 # "missing value where TRUE/FALSE needed".
 .gg_shap_validate_which_class <- function(which.class, n_class) {
-  if (!is.numeric(which.class) || length(which.class) != 1L ||
-        !is.finite(which.class) || which.class != trunc(which.class)) {
+  if (!.gg_shap_is_count(which.class)) {
     stop("gg_shap: which.class must be a single integer.", call. = FALSE)
   }
   if (which.class < 1 || which.class > n_class) {
