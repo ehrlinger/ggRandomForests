@@ -12,7 +12,12 @@
     if (!requireNamespace("randomForestSRC", quietly = TRUE)) {
       testthat::skip("randomForestSRC not installed")
     }
-    data(pbc, package = "randomForestSRC")
+    # envir = environment() is required, not stylistic: data() defaults to
+    # .GlobalEnv, which is not on this function's lexical chain under
+    # devtools::test() (testthat roots the helper env in the attached search
+    # path), so a bare data(pbc) binds a pbc this function cannot see.
+    utils::data("pbc", package = "randomForestSRC", envir = environment())
+
     d <- randomForestRHF::convert.counting(
       survival::Surv(days, status) ~ ., stats::na.omit(pbc)
     )
