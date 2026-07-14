@@ -53,7 +53,8 @@ gg_shap <- function(object, newdata, bg_n = 50, which.class = 1, ...) {
 .gg_shap_validate_bg_n <- function(bg_n) {
   if (!is.numeric(bg_n) || length(bg_n) != 1L || !is.finite(bg_n) ||
         bg_n < 1 || bg_n != trunc(bg_n) || bg_n > .Machine$integer.max) {
-    stop("gg_shap: bg_n must be a single positive integer.", call. = FALSE)
+    stop("gg_shap: bg_n must be a single positive integer between 1 and ",
+         .Machine$integer.max, ".", call. = FALSE)
   }
   as.integer(bg_n)
 }

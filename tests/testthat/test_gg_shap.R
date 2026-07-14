@@ -213,10 +213,13 @@ test_that("shap_beeswarm scales finite values even when a variable has Inf entri
 
 test_that("gg_shap rejects bg_n that is not a whole, finite, in-range number", {
   skip_if_not_installed("kernelshap")
-  skip_on_cran()
-
+  # No skip_on_cran(): every expectation below errors during argument
+  # validation, before kernelshap::kernelshap() is ever reached, so the test
+  # costs one small forest fit. Skipping it would leave the integer contract
+  # unguarded in a default R CMD check. ntree is minimal for the same reason --
+  # the fit only has to produce a valid rfsrc object.
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
-                               ntree = 50)
+                               ntree = 10)
 
   # as.integer() would silently turn each of these into 1 or NA, so the
   # "positive integer" contract has to be enforced, not coerced into.
@@ -229,9 +232,9 @@ test_that("gg_shap rejects bg_n that is not a whole, finite, in-range number", {
 
 test_that("gg_shap rejects which.class that is not a whole, finite number", {
   skip_if_not_installed("kernelshap")
-  skip_on_cran()
 
-  rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
+  # As above: validation-only, so no skip_on_cran() and a minimal ntree.
+  rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 10)
 
   # 2.9 passes a bare range check and then silently indexes column 2.
   expect_error(gg_shap(rf, bg_n = 20, which.class = 2.9), "single integer")
@@ -240,7 +243,7 @@ test_that("gg_shap rejects which.class that is not a whole, finite number", {
   # In-range check still applies.
   expect_error(gg_shap(rf, bg_n = 20, which.class = 99), "out of range")
 
-  rf_rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50)
+  rf_rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 10)
   expect_error(gg_shap(rf_rf, bg_n = 20, which.class = 2.9), "single integer")
   expect_error(gg_shap(rf_rf, bg_n = 20, which.class = 99), "out of range")
 })
