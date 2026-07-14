@@ -6,6 +6,18 @@ ggRandomForests v3.5.0
 * Added `gg_shap()` and `plot.gg_shap()` (with `shap_importance()`,
   `shap_beeswarm()`, `shap_dependence()`) for SHAP explanations of
   regression and classification forests, wrapping `kernelshap` (Suggests).
+* `gg_shap()` now enforces the integer contract on `bg_n` and `which.class`
+  instead of silently coercing them. Both are documented as integers, but were
+  only loosely checked: `bg_n = 1.9` was truncated to 1 and `bg_n = Inf` (or any
+  value above `.Machine$integer.max`) became `NA`, while `which.class = 2.9`
+  passed the range check and then indexed column 2 -- returning SHAP values for
+  a class the caller never asked for. Non-whole, non-finite, out-of-range and
+  non-scalar values now raise a clear error. Valid input is unaffected.
+* The package help page (`?ggRandomForests`) now describes the whole current
+  surface -- the SHAP, Brier, varPro and unsupervised-varPro families were
+  missing -- and no longer claims that `plot()` methods may return a *list* of
+  `ggplot2` objects; each returns a single plottable object (a `ggplot`, or a
+  `patchwork` composite for the multi-panel methods).
 * `gg_partial()` no longer lets survival partial dependence be mistaken for a
   probability. `randomForestSRC::plot.variable()` defaults to
   `surv.type = "mort"`, so `yhat` is *mortality* -- an expected event count,

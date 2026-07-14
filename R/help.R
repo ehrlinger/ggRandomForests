@@ -16,64 +16,82 @@
 ###############################################################################
 #' @title ggRandomForests: Visually Exploring Random Forests
 #'
-#' @description \code{ggRandomForests} is a utility package for
-#' \code{randomForestSRC} (Ishwaran and Kogalur) for survival,
-#' regression and classification forests and uses the \code{ggplot2}
-#' (Wickham 2009) package for plotting results. \code{ggRandomForests} is
-#' structured to extract data objects from the random forest and provides S3
-#' functions for printing and plotting these objects.
-#' Requires \code{randomForestSRC} >= 3.4.0.
+#' @description \code{ggRandomForests} provides \code{ggplot2} (Wickham 2009)
+#' diagnostic and exploration figures for random forests grown with
+#' \code{\link[randomForestSRC]{rfsrc}} (>= 3.4.0) or
+#' \code{\link[randomForest]{randomForest}}.
 #'
-#' The \code{randomForestSRC} package provides a unified treatment of
-#' Breiman's (2001) random forests for a variety of data settings. Regression
-#' and classification forests are grown when the response is numeric or
-#' categorical (factor) while survival and competing risk forests
-#' (Ishwaran et al. 2008, 2012) are grown for right-censored survival data.
+#' \code{randomForestSRC} gives a unified treatment of Breiman's (2001) random
+#' forests across data settings: regression and classification forests when the
+#' response is numeric or categorical, survival and competing-risk forests
+#' (Ishwaran et al. 2008) for right-censored data.
 #'
-#' Many of the figures created by the \code{ggRandomForests} package are also
-#' available directly from within the \code{randomForestSRC} package. However,
-#' \code{ggRandomForests} offers the following advantages:
+#' @details
+#' The package is built on one decision: keep the data step and the figure step
+#' apart. A \code{gg_*} function pulls a tidy data object out of the forest; its
+#' \code{plot()} method turns that object into a figure. Two things follow.
+#'
+#' The data object stands on its own. It carries everything its plot needs, so
+#' you can save it, inspect it, or come back to it later without keeping the
+#' original forest -- which can be large -- in memory.
+#'
+#' You are never locked into the default figure. Each \code{plot()} method
+#' returns a single plottable object: a \code{ggplot} you extend with \code{+},
+#' or a \code{patchwork} composite for the multi-panel methods. Add layers, swap
+#' scales, apply a theme -- or ignore the default entirely and build the figure
+#' from the tidy data yourself. Every \code{gg_*} object also has \code{print()}
+#' and \code{summary()} methods.
+#'
+#' \strong{Forest diagnostics}
 #' \itemize{
-#' \item Separation of data and figures: \code{ggRandomForest} contains
-#' functions that operate on either the \code{\link[randomForestSRC]{rfsrc}}
-#' forest object directly, or on the output from \code{randomForestSRC} post
-#' processing functions (i.e. \code{plot.variable}) to generate intermediate
-#' \code{ggRandomForests}
-#' data objects. S3 functions are provide to further process these objects and
-#' plot results using the \code{ggplot2} graphics package. Alternatively,
-#' users can use these data objects for additional custom plotting or
-#' analysis operations.
-#'
-#' \item Each data object/figure is a single, self contained object. This
-#' allows simple modification and manipulation of the data or \code{ggplot2}
-#' objects to meet users specific needs and requirements.
-#'
-#' \item The use of \code{ggplot2} for plotting. We chose to use the
-#' \code{ggplot2} package for our figures to allow users flexibility in
-#' modifying the figures to their liking. Each S3 plot function returns either
-#' a single \code{ggplot2} object, or a \code{list} of \code{ggplot2} objects,
-#' allowing users to use additional \code{ggplot2} functions or themes to
-#' modify and customize the figures to their liking.
+#' \item \code{\link{gg_rfsrc}}: predicted versus observed values.
+#' \item \code{\link{gg_error}}: OOB error against the number of trees.
+#' \item \code{\link{gg_vimp}}: variable importance ranking
+#'   (Ishwaran et al. 2010).
+#' \item \code{\link{gg_variable}}: marginal variable dependence.
+#' \item \code{\link{gg_roc}}: ROC curves for classification forests
+#'   (see also \code{\link{calc_roc}} and \code{\link{calc_auc}}).
+#' \item \code{\link{gg_survival}}: Kaplan-Meier / Nelson-Aalen estimates.
+#' \item \code{\link{gg_brier}}: time-resolved Brier score and CRPS for
+#'   survival forests.
 #' }
 #'
-#' The \code{ggRandomForests} package contains the following data functions:
+#' \strong{Partial dependence}
 #' \itemize{
-#' \item \code{\link{gg_rfsrc}}: randomForestSRC predictions.
-#' \item \code{\link{gg_error}}: randomForestSRC convergence rate based on
-#' the OOB error rate.
-#' \item \code{\link{gg_roc}}: ROC curves for randomForest classification
-#' models.
-#' \item \code{\link{gg_vimp}}: Variable Importance ranking for variable
-#' selection.
-#' (Ishwaran et.al. 2010).
-#' \item \code{\link{gg_variable}}: Marginal variable dependence.
-#'
-#' \item \code{\link{gg_survival}}: Kaplan-Meier/Nelson-Aalen hazard analysis.
+#' \item \code{\link{gg_partial}}: tidies the output of
+#'   \code{randomForestSRC::plot.variable(partial = TRUE)}.
+#' \item \code{\link{gg_partial_rfsrc}}: computes partial dependence from the
+#'   fitted forest directly, via \code{partial.rfsrc}.
 #' }
 #'
-#' Each of these data functions has an associated S3 plot function that
-#' returns \code{ggplot2} objects, either individually or as a list, which can
-#' be further customized using standard \code{ggplot2} commands.
+#' \strong{SHAP explanations}
+#' \itemize{
+#' \item \code{\link{gg_shap}}: SHAP values for regression and classification
+#'   forests, wrapping \code{\link[kernelshap]{kernelshap}}, with
+#'   \code{\link{shap_importance}}, \code{\link{shap_beeswarm}} and
+#'   \code{\link{shap_dependence}} figures.
+#' }
+#'
+#' \strong{varPro rule-based variable selection}
+#' \itemize{
+#' \item \code{\link{gg_varpro}}: variable importance from a \code{varpro} fit.
+#' \item \code{\link{gg_partial_varpro}} (alias
+#'   \code{\link{gg_partialpro}}): partial effects on an interpretable scale.
+#' \item \code{\link{gg_beta_varpro}}: per-region lasso coefficients.
+#' \item \code{\link{gg_isopro}}: isolation-forest outlier scores.
+#' \item \code{\link{gg_ivarpro}}: individual (per-observation) importance.
+#' }
+#'
+#' \strong{Unsupervised varPro}
+#' \itemize{
+#' \item \code{\link{gg_udependent}}: variable dependency graph.
+#' \item \code{\link{gg_beta_uvarpro}}: entropy-based variable ranking.
+#' \item \code{\link{gg_sdependent}}: signal-variable detection.
+#' }
+#'
+#' The varPro and SHAP families depend on packages listed in \code{Suggests}
+#' (\code{varPro}, \code{kernelshap}); each entry point checks for them and
+#' fails with a clear message when they are absent.
 #'
 #' @references
 #' Breiman, L. (2001). Random forests, Machine Learning, 45:5-32.
