@@ -29,6 +29,16 @@ ggRandomForests v3.5.0
   at `split.weight = FALSE`. Supplying `part_dta` yourself is unchanged -- the
   variables are already gone by then. The function's examples now cover the
   object-driven path, which had none.
+* `gg_partial_varpro(scale = "chf")` now computes the variables you name in
+  `xvar.names` instead of every variable the fit can reach. The `chf` path
+  routes through `gg_partial_rfsrc()` rather than `partialpro()`, and it had
+  never been given the variable list -- so asking for one variable quietly did
+  the work for all fourteen. This is the mirror image of the `partialpro()` bug
+  above: that one returns fewer variables than you asked for, this one returned
+  all of them. Naming a variable the forest does not carry has always been an
+  error and still is. The `partialpro`-only arguments (`cut`, `nsmp`) mean
+  nothing on this path and are now ignored with a warning rather than in
+  silence.
 * Added `gg_shap()` and `plot.gg_shap()` (with `shap_importance()`,
   `shap_beeswarm()`, `shap_dependence()`) for SHAP explanations of
   regression and classification forests, wrapping `kernelshap` (Suggests).

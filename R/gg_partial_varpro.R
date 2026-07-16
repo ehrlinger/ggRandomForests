@@ -108,7 +108,10 @@
 #'   is dropped by \code{partialpro} without comment, so you can ask for twelve
 #'   variables and get ten; we warn and name the missing ones.  See
 #'   \strong{Details}.  Ignored, with a warning, when \code{part_dta} is
-#'   supplied.
+#'   supplied.  With \code{scale = "chf"} the work goes through
+#'   \code{\link{gg_partial_rfsrc}} rather than \code{partialpro}, so
+#'   \code{xvar.names} is honoured but the \code{partialpro}-only arguments
+#'   (\code{cut}, \code{nsmp}) do not apply and are ignored with a warning.
 #'
 #' @details
 #' **Which variables you actually get:** \code{varpro} screens twice before
@@ -297,8 +300,13 @@ gg_partial_varpro <- function(part_dta  = NULL,
 
   ## ---- C-path: route CHF through gg_partial_rfsrc ------------------------
   ## (surv now uses the partialpro S(t) learner on path A, below.)
+  ## 'xvar.names' is honoured here as it is on path A; the rest of '...' is
+  ## partialpro's own vocabulary and means nothing to gg_partial_rfsrc(), which
+  ## has no '...' to absorb it.
   if (!is.null(object) && scale == "chf") {
-    return(.gg_partial_varpro_cpath(object, scale, time, model))
+    .warn_varpro_cpath_dots(list(...))
+    return(.gg_partial_varpro_cpath(object, scale, time, model,
+                                    xvar.names = list(...)$xvar.names))
   }
 
   ## ---- Survival default horizon: surv/rmst fill tau from the data --------
@@ -700,8 +708,27 @@ gg_partial_varpro <- function(part_dta  = NULL,
   plt.df
 }
 
+## The C-path reaches gg_partial_rfsrc(), whose signature is fixed -- it takes
+## no '...'. So only the arguments it actually understands can be forwarded;
+## anything else in '...' is partialpro vocabulary (cut, nsmp, ...) that would
+## error as an unused argument. Warn rather than error: these were silently
+## accepted before, and a hard failure on a previously-working call is a worse
+## trade than a warning.
 #' @keywords internal
-.gg_partial_varpro_cpath <- function(object, scale, time, model) {
+.warn_varpro_cpath_dots <- function(dots) {
+  extra <- setdiff(names(dots), "xvar.names")
+  extra <- extra[nzchar(extra)]
+  if (length(extra) == 0L) return(invisible(NULL))
+  warning("gg_partial_varpro: scale = 'chf' computes partial dependence from ",
+          "the rfsrc forest rather than varPro::partialpro(), so these ",
+          "arguments do not apply and are ignored: ",
+          paste(extra, collapse = ", "), ".", call. = FALSE)
+  invisible(NULL)
+}
+
+#' @keywords internal
+.gg_partial_varpro_cpath <- function(object, scale, time, model,
+                                     xvar.names = NULL) {
   rf           <- object$rf
   partial_type <- if (scale == "surv") "surv" else "chf"
 
@@ -711,8 +738,13 @@ gg_partial_varpro <- function(part_dta  = NULL,
     partial_time <- ti[which.min(abs(ti - time))]
   }
 
+  ## Default to every reachable variable, as before; honour a requested subset
+  ## when one is given. gg_partial_rfsrc() errors on a name the forest does not
+  ## carry, so a bad request fails loudly here rather than being dropped.
+  if (is.null(xvar.names)) xvar.names <- object$xvar.names
+
   pd <- gg_partial_rfsrc(rf,
-                          xvar.names   = object$xvar.names,
+                          xvar.names   = xvar.names,
                           partial.time = partial_time,
                           partial.type = partial_type)
 
