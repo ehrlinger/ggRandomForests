@@ -30,6 +30,14 @@ single submission.
   `plot.gg_partial()`. Note that `gg_partial_rfsrc()` defaults to
   `partial.type = "surv"` and so does report survival probabilities: the two
   entry points report different quantities by default. (#15)
+* **Smaller tarball.** The vignettes now render figures with `ragg` and quantise
+  them to a 256-colour palette, taking the source tarball from 4.7 MB to 2.3 MB
+  and `inst/doc` from 5.3 MB to 1.9 MB (the installed-size INFO is gone). The
+  vignettes had never set a graphics device and so fell through to the default
+  `png()`, which writes RGBA truecolor. Figures are visually unchanged (mean
+  pixel difference 1.55 on a 0-255 scale). Both steps are guarded by
+  `requireNamespace()` and degrade to no-ops, so a vignette rebuild on a machine
+  without `ragg` or ImageMagick still succeeds.
 * Documentation: the package help page (`?ggRandomForests`) now describes the
   whole current surface — the SHAP, Brier, varPro and unsupervised-varPro
   families were missing — and no longer claims that `plot()` methods may return
@@ -40,7 +48,7 @@ single submission.
 
 * **Local:** R 4.6.0 on macOS (aarch64-apple-darwin23).
   `R CMD check --as-cran` (with the manual) returns 0 errors, 0 warnings,
-  0 notes; overall check time 3m31s.
+  0 notes; overall check time under 5 minutes.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
 
