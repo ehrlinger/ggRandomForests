@@ -3,6 +3,15 @@ Version: 3.5.0
 
 ggRandomForests v3.5.0
 ======================
+* The vignettes now render their figures with `ragg` and quantise them to a
+  256-colour palette, cutting the source tarball from 4.7 MB to 2.3 MB. The
+  vignettes had never chosen a graphics device, so they fell through to the
+  default `png()`, which writes RGBA truecolor: an alpha channel these opaque
+  plots never use, over tens of thousands of anti-aliased colours that PNG
+  cannot compress. Figures are visually unchanged (mean pixel difference 1.55
+  on a 0-255 scale). Both steps are build-time only and degrade to no-ops when
+  `ragg` or `magick` is absent, so a vignette rebuild without them still
+  succeeds -- at the old file size.
 * The varPro vignette now documents which variables a `varpro` fit actually
   makes available. A fit narrows the predictors twice -- `object$xvar.names`
   holds what `varPro::partialpro()` can reach, `get.topvars()` only the reported
