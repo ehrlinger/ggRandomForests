@@ -132,7 +132,8 @@
 #' was dropped.  A quick \code{setdiff(my_names, object$xvar.names)} answers
 #' the same question before you spend the computation.
 #'
-#' To lift the ceiling, refit with \code{varpro(..., split.weight = FALSE)},
+#' To lift the ceiling, refit with
+#' \code{varPro::varpro(..., split.weight = FALSE)},
 #' which puts every predictor in \code{object$xvar.names}.  \code{nvar} and
 #' \code{sparse = FALSE} will not do it: \code{nvar} caps what gets reported,
 #' and \code{sparse} only deepens the topvars list.
@@ -317,8 +318,10 @@ gg_partial_varpro <- function(part_dta  = NULL,
   if (is.null(part_dta)) {
     ## Before the expensive call: partialpro() silently discards any requested
     ## name outside object$xvar.names, so flag it while we still know what was
-    ## asked for.
-    .warn_varpro_dropped_xvars(list(...)$xvar.names, object)
+    ## asked for.  [["..."]] rather than $: `$` partial-matches on a list, so a
+    ## dots argument merely *starting* with "xvar.names" would be picked up as
+    ## the variable request.
+    .warn_varpro_dropped_xvars(list(...)[["xvar.names"]], object)
     learner <- switch(scale,
       rmst = .rmst_learner(object, time),
       surv = .surv_learner(object, time),
@@ -460,7 +463,8 @@ gg_partial_varpro <- function(part_dta  = NULL,
     "fit's reachable set and are silently dropped by varPro::partialpro(): %s. ",
     "The fit reaches %d of %d predictors (object$xvar.names); varpro() screens ",
     "in two stages, so a variable can be in the data and still be unreachable. ",
-    "Refit with varpro(..., split.weight = FALSE) to reach every predictor."),
+    "Refit with varPro::varpro(..., split.weight = FALSE) to reach every ",
+    "predictor."),
     length(dropped), length(requested), paste(dropped, collapse = ", "),
     length(object$xvar.names), n_pred), call. = FALSE)
   invisible(NULL)

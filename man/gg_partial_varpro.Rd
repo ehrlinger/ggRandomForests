@@ -129,7 +129,8 @@ compare the two sets before calling \code{partialpro} and warn, naming what
 was dropped.  A quick \code{setdiff(my_names, object$xvar.names)} answers
 the same question before you spend the computation.
 
-To lift the ceiling, refit with \code{varpro(..., split.weight = FALSE)},
+To lift the ceiling, refit with
+\code{varPro::varpro(..., split.weight = FALSE)},
 which puts every predictor in \code{object$xvar.names}.  \code{nvar} and
 \code{sparse = FALSE} will not do it: \code{nvar} caps what gets reported,
 and \code{sparse} only deepens the topvars list.

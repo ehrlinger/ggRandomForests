@@ -667,11 +667,21 @@ test_that("gg_partial_varpro: object path warns on unreachable xvar.names", {
   # rather than made up. Cheap (~0.3 s).
   set.seed(42)
   vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
-  skip_if_not(length(vp$xvar.names) < ncol(vp$x),
-              "varpro screening retained every predictor; no ceiling to test")
 
   unreachable <- setdiff(colnames(vp$x), vp$xvar.names)
-  reachable   <- vp$xvar.names[1:2]
+  reachable   <- vp$xvar.names
+
+  # Assert the fixture, do not assume it. The split-weight screen is stochastic
+  # and colnames(vp$x) is not guaranteed, so both sets could come back empty on
+  # a different varPro/rfsrc. An NA reaching `regexp` below would be silent and
+  # inverting -- expect_warning(regexp = NA) asserts NO warning, so the test
+  # would pass while checking the opposite of what it claims.
+  skip_if_not(length(unreachable) >= 1L && !anyNA(unreachable),
+              "no unreachable variable on this fit; nothing to drop")
+  skip_if_not(length(reachable) >= 2L && !anyNA(reachable),
+              "need >= 2 reachable variables")
+  reachable <- reachable[1:2]
+
   expect_warning(
     gg_partial_varpro(object = vp,
                       xvar.names = c(reachable, unreachable[1])),
