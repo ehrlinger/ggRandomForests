@@ -2,6 +2,17 @@
 
 ## ggRandomForests v3.5.0
 
+- The vignettes now render their figures with `ragg` and quantise them
+  to a 256-colour palette, cutting the source tarball from 4.7 MB to 2.3
+  MB. The vignettes had never chosen a graphics device, so they fell
+  through to the default
+  [`png()`](https://rdrr.io/r/grDevices/png.html), which writes RGBA
+  truecolor: an alpha channel these opaque plots never use, over tens of
+  thousands of anti-aliased colours that PNG cannot compress. Figures
+  are visually unchanged (mean pixel difference 1.55 on a 0-255 scale).
+  Both steps are build-time only and degrade to no-ops when `ragg` or
+  `magick` is absent, so a vignette rebuild without them still succeeds
+  – at the old file size.
 - Added
   [`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
   and
