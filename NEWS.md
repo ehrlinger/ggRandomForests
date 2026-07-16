@@ -12,6 +12,14 @@ ggRandomForests v3.5.0
   on a 0-255 scale). Both steps are build-time only and degrade to no-ops when
   `ragg` or `magick` is absent, so a vignette rebuild without them still
   succeeds -- at the old file size.
+* The varPro vignette now documents which variables a `varpro` fit actually
+  makes available. A fit narrows the predictors twice -- `object$xvar.names`
+  holds what `varPro::partialpro()` can reach, `varPro::get.topvars()` only the
+  reported ranking -- and `partialpro()` silently drops any requested name
+  outside the first set. The new section covers naming `xvar.names` to get past
+  the reported ranking, `split.weight = FALSE` to widen the candidate set
+  itself, and the two arguments (`nvar`, `sparse`) that look like they should
+  help and don't.
 * Added `gg_shap()` and `plot.gg_shap()` (with `shap_importance()`,
   `shap_beeswarm()`, `shap_dependence()`) for SHAP explanations of
   regression and classification forests, wrapping `kernelshap` (Suggests).
