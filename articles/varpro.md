@@ -669,6 +669,94 @@ rest of the toolkit that *does* work on survival (`gg_varpro`,
 
 The four wrappers in the lower-right are the v3.1.0 work surface.
 
+### Which variables can you actually get?
+
+A `varpro` fit narrows your predictors twice, and telling the two
+narrowings apart matters the moment you want a partial-dependence curve
+for a variable that didn’t make the ranking.
+
+Three components carry three different counts:
+
+| Component | What it holds |
+|----|----|
+| `object$x` | every predictor you handed to `varpro()` |
+| `object$xvar.names` | the variables [`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html) can reach |
+| `varPro::get.topvars(object)` | the reported ranking, and the default for `xvar.names` |
+
+For the Boston fit above:
+
+``` r
+
+c(handed_in = ncol(v_boston$x),
+  reachable = length(v_boston$xvar.names),
+  reported  = length(varPro::get.topvars(v_boston)))
+```
+
+    handed_in reachable  reported
+           13        13         9 
+
+Every predictor stays reachable here; the importance pre-filter only
+trims what gets *reported*. A curve for a variable outside the reported
+ranking is a matter of naming it:
+
+``` r
+
+varPro::partialpro(v_boston, xvar.names = c("lstat", "age", "zn"))
+```
+
+`partialpro()` computes `get.topvars()` only to use as a default. Name
+`xvar.names` yourself and the ranking is ignored.
+
+The second narrowing is the one that surprises people. Guided
+tree-splitting (`split.weight = TRUE`, the default) runs a preliminary
+lasso to decide which variables are worth splitting on, and a variable
+that never gets split on never lands in `object$xvar.names`. It is gone
+well before `partialpro()` sees it. The binary iris fit shows this in
+miniature:
+
+``` r
+
+c(handed_in = ncol(v_iris_binary$x),
+  reachable = length(v_iris_binary$xvar.names))
+```
+
+    handed_in reachable
+            4         3 
+
+Four predictors go in and one of them never becomes a candidate. With p
+in the hundreds the gap is not small.
+
+One sharp edge. `partialpro()` matches your `xvar.names` against
+`object$xvar.names` and quietly drops whatever it cannot find. Ask for
+twelve variables and you may get ten back, with no error, no warning,
+and nothing on the returned object to say so. A misspelled name behaves
+the same way. When it matters, check:
+
+``` r
+
+pd <- varPro::partialpro(v_boston, xvar.names = my_vars)
+setdiff(my_vars, names(pd))   # anything here was dropped
+```
+
+To widen the candidate set itself, turn guided splitting off:
+
+``` r
+
+varPro::varpro(medv ~ ., data = Boston, split.weight = FALSE)
+```
+
+Every predictor is then reachable. The cost is real: guided splitting is
+how varPro concentrates its release rules, so the importance values
+change, and wide data fits slower. If what you want is partial effects
+on a variable set you settled on elsewhere, the top of an
+[`rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html) VIMP
+ranking say, that trade is usually worth making. If you are also reading
+varPro’s importance off the same fit, it isn’t.
+
+Two knobs look like they belong here and don’t. `nvar` caps how many
+variables are reported, not how many compete. `sparse = FALSE` deepens
+the reported ranking and leaves `object$xvar.names` where it was.
+
 ### Factor-level ordering
 
 Across

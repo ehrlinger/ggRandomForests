@@ -533,6 +533,77 @@
 </tbody>
 </table>
 <p>The four wrappers in the lower-right are the v3.1.0 work surface.</p>
+</section><section class="level2"><h3 id="which-variables-can-you-actually-get">Which variables can you actually get?<a class="anchor" aria-label="anchor" href="#which-variables-can-you-actually-get"></a>
+</h3>
+<p>A <code>varpro</code> fit narrows your predictors twice, and telling the two narrowings apart matters the moment you want a partial-dependence curve for a variable that didn’t make the ranking.</p>
+<p>Three components carry three different counts:</p>
+<table class="table caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead><tr class="header">
+<th>Component</th>
+<th>What it holds</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>object$x</code></td>
+<td>every predictor you handed to <code>varpro()</code>
+</td>
+</tr>
+<tr class="even">
+<td><code>object$xvar.names</code></td>
+<td>the variables <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro()</a></code> can reach</td>
+</tr>
+<tr class="odd">
+<td><code>varPro::get.topvars(object)</code></td>
+<td>the reported ranking, and the default for <code>xvar.names</code>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For the Boston fit above:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>handed_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">v_boston</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>  reachable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">v_boston</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span>,</span>
+<span>  reported  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.topvars</a></span><span class="op">(</span><span class="va">v_boston</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>handed_in reachable  reported
+       13        13         9 </code></pre>
+</div>
+</div>
+<p>Every predictor stays reachable here; the importance pre-filter only trims what gets <em>reported</em>. A curve for a variable outside the reported ranking is a matter of naming it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">partialpro</a></span><span class="op">(</span><span class="va">v_boston</span>, xvar.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lstat"</span>, <span class="st">"age"</span>, <span class="st">"zn"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p><code>partialpro()</code> computes <code>get.topvars()</code> only to use as a default. Name <code>xvar.names</code> yourself and the ranking is ignored.</p>
+<p>The second narrowing is the one that surprises people. Guided tree-splitting (<code>split.weight = TRUE</code>, the default) runs a preliminary lasso to decide which variables are worth splitting on, and a variable that never gets split on never lands in <code>object$xvar.names</code>. It is gone well before <code>partialpro()</code> sees it. The binary iris fit shows this in miniature:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>handed_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">v_iris_binary</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>,</span>
+<span>  reachable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">v_iris_binary</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>handed_in reachable
+        4         3 </code></pre>
+</div>
+</div>
+<p>Four predictors go in and one of them never becomes a candidate. With p in the hundreds the gap is not small.</p>
+<p>One sharp edge. <code>partialpro()</code> matches your <code>xvar.names</code> against <code>object$xvar.names</code> and quietly drops whatever it cannot find. Ask for twelve variables and you may get ten back, with no error, no warning, and nothing on the returned object to say so. A misspelled name behaves the same way. When it matters, check:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">partialpro</a></span><span class="op">(</span><span class="va">v_boston</span>, xvar.names <span class="op">=</span> <span class="va">my_vars</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">my_vars</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">pd</span><span class="op">)</span><span class="op">)</span>   <span class="co"># anything here was dropped</span></span></code></pre></div>
+</div>
+<p>To widen the candidate set itself, turn guided splitting off:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Boston</span>, split.weight <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>Every predictor is then reachable. The cost is real: guided splitting is how varPro concentrates its release rules, so the importance values change, and wide data fits slower. If what you want is partial effects on a variable set you settled on elsewhere, the top of an <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc()</a></code> VIMP ranking say, that trade is usually worth making. If you are also reading varPro’s importance off the same fit, it isn’t.</p>
+<p>Two knobs look like they belong here and don’t. <code>nvar</code> caps how many variables are reported, not how many compete. <code>sparse = FALSE</code> deepens the reported ranking and leaves <code>object$xvar.names</code> where it was.</p>
 </section><section class="level2"><h3 id="factor-level-ordering">Factor-level ordering<a class="anchor" aria-label="anchor" href="#factor-level-ordering"></a>
 </h3>
 <p>Across <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code> and <code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code>, the <code>variable</code> column is stored as a factor whose levels are set by descending aggregate importance (<code>mean(|imp|)</code> summed across classes for classification). The default plot inherits that ordering, so faceted views show variables in the same row order across panels. If you re-shape the frame downstream and want the order preserved, keep <code>variable</code> as a factor rather than coercing to character.</p>
