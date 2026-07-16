@@ -2,7 +2,7 @@ Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
 Version: 3.5.0
-Date: 2026-07-12
+Date: 2026-07-16
 Authors@R: person("John", "Ehrlinger",
   role = c("aut", "cre"),
   email = "john.ehrlinger@gmail.com")
