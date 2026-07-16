@@ -78,7 +78,10 @@ frames).  A name you pass in \code{xvar.names} that the fit cannot reach
 is dropped by \code{partialpro} without comment, so you can ask for twelve
 variables and get ten; we warn and name the missing ones.  See
 \strong{Details}.  Ignored, with a warning, when \code{part_dta} is
-supplied.}
+supplied.  With \code{scale = "chf"} the work goes through
+\code{\link{gg_partial_rfsrc}} rather than \code{partialpro}, so
+\code{xvar.names} is honoured but the \code{partialpro}-only arguments
+(\code{cut}, \code{nsmp}) do not apply and are ignored with a warning.}
 }
 \value{
 A named list of class \code{"gg_partial_varpro"} with elements:

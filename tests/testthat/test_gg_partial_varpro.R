@@ -692,3 +692,83 @@ test_that("gg_partial_varpro: object path warns on unreachable xvar.names", {
     gg_partial_varpro(object = vp, xvar.names = reachable)
   )
 })
+
+## ── chf C-path honours xvar.names ────────────────────────────────────────────
+## The C-path routes through gg_partial_rfsrc() rather than partialpro(). It
+## used to hardcode xvar.names = object$xvar.names and never see '...', so a
+## requested subset was ignored and every reachable variable was computed --
+## the inverse of the partialpro drop above.
+
+test_that("gg_partial_varpro: chf C-path honours a requested xvar.names", {
+  skip_on_cran()                      # varpro fit + rfsrc partial (~10 s)
+  skip_if_not_installed("varPro")
+  skip_if_not_installed("randomForestSRC")
+  set.seed(42)
+  pbc <- get(utils::data("pbc", package = "randomForestSRC",
+                         envir = environment()))
+  pbc <- pbc[stats::complete.cases(pbc), ]
+  vp  <- varPro::varpro(Surv(days, status) ~ ., pbc, ntree = 30)
+  skip_if_not(length(vp$xvar.names) > 2, "need >2 reachable variables")
+
+  want <- vp$xvar.names[1]
+  pd <- gg_partial_varpro(object = vp, scale = "chf", xvar.names = want)
+  got <- unique(c(pd$continuous$name, pd$categorical$name))
+  expect_setequal(got, want)
+
+  # default (no xvar.names) still computes the full reachable set
+  pd_all <- gg_partial_varpro(object = vp, scale = "chf")
+  got_all <- unique(c(pd_all$continuous$name, pd_all$categorical$name))
+  expect_gt(length(got_all), length(want))
+})
+
+test_that("gg_partial_varpro: chf C-path warns on partialpro-only dots", {
+  # 'cut' is a partialpro UVT knob; it means nothing on the rfsrc C-path, and
+  # gg_partial_rfsrc() has no '...' to absorb it. Warn rather than error.
+  fake <- structure(
+    list(family = "surv", xvar.names = c("age", "bili"),
+         x = matrix(0, 2, 2),
+         rf = structure(list(time.interest = c(1, 2)), class = "rfsrc")),
+    class = "varpro")
+  expect_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(cut = 0.5, nsmp = 10)),
+    regexp = "cut|ignored"
+  )
+  # xvar.names is honoured, not ignored -- it must not trigger the warning
+  expect_no_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(xvar.names = "age"))
+  )
+  expect_no_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list())
+  )
+})
+
+test_that(".warn_varpro_cpath_dots: unnamed dots are reported, not swallowed", {
+  # An unnamed positional argument reaching the chf path is still an argument
+  # we ignore. A guard against silent drops must not silently drop.
+  expect_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(0.5)),
+    regexp = "unnamed"
+  )
+  # mixed named + unnamed: both are surfaced
+  expect_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(0.5, cut = 1)),
+    regexp = "cut"
+  )
+  expect_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(0.5, cut = 1)),
+    regexp = "unnamed"
+  )
+  # xvar.names alone is honoured on this path, so it is not "ignored"
+  expect_no_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(xvar.names = "age"))
+  )
+  expect_no_warning(ggRandomForests:::.warn_varpro_cpath_dots(list()))
+})
+
+test_that("gg_partial_varpro: chf xvar.names extraction is an exact match", {
+  # `$` partial-matches on a list, so a dots argument merely starting with
+  # "xvar.names" must not be taken as the variable request.
+  fake_dots <- list(xvar.names.bogus = "qsec")
+  expect_null(fake_dots[["xvar.names"]])
+  expect_identical(fake_dots$xvar.names, "qsec")   # documents why [[ is required
+})
