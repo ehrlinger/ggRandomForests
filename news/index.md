@@ -24,6 +24,16 @@
   `xvar.names` to get past the reported ranking, `split.weight = FALSE`
   to widen the candidate set itself, and the two arguments (`nvar`,
   `sparse`) that look like they should help and don’t.
+- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  now warns when a name passed in `xvar.names` is one the `varpro` fit
+  cannot reach, instead of letting it disappear. `partialpro()` keeps
+  only the names it finds in `object$xvar.names` and says nothing about
+  the rest, so a request for twelve variables could come back with ten.
+  The check runs before `partialpro()` does, so the warning arrives
+  ahead of the computation rather than after it; it names every dropped
+  variable and points at `split.weight = FALSE`. Supplying `part_dta`
+  yourself is unchanged – the variables are already gone by then. The
+  function’s examples now cover the object-driven path, which had none.
 - Added
   [`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
   and
