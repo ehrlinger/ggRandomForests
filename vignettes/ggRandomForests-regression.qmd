@@ -24,6 +24,7 @@ change before the next release.
 :::
 
 ```{r setup, include=FALSE}
+source("_fig_optim.R")
 knitr::opts_chunk$set(
   fig.align = "center",
   fig.width = 7,

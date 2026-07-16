@@ -30,6 +30,7 @@ This vignette walks through the three objects you will reach for most often
 cutting a predictor into evenly populated groups.
 
 ```{r pkg-setup, include=FALSE}
+source("_fig_optim.R")
 if (requireNamespace("ggRandomForests", quietly = TRUE)) {
   library(ggRandomForests)
 } else if (requireNamespace("pkgload", quietly = TRUE)) {
