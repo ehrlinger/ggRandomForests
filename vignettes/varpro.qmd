@@ -629,8 +629,8 @@ Three components carry three different counts:
 | Component | What it holds |
 |---|---|
 | `object$x` | every predictor you handed to `varpro()` |
-| `object$xvar.names` | the variables `partialpro()` can reach |
-| `get.topvars(object)` | the reported ranking, and the default for `xvar.names` |
+| `object$xvar.names` | the variables `varPro::partialpro()` can reach |
+| `varPro::get.topvars(object)` | the reported ranking, and the default for `xvar.names` |
 
 For the Boston fit above:
 
