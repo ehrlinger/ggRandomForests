@@ -71,10 +71,14 @@ combining results from several models in one figure.}
 object-driven path (when \code{part_dta} is \code{NULL}).  Use this to
 control which variables are computed -- e.g. \code{xvar.names} or
 \code{nvar} -- or to tune the isolation-forest UVT step (\code{cut},
-\code{nsmp}, ...).  Without it, \code{partialpro} falls back to
+\code{nsmp}).  Without it, \code{partialpro} falls back to
 \code{varPro::get.topvars(object)}, which can return few or no variables
 for some fits (yielding empty \code{continuous}/\code{categorical}
-frames).  Ignored, with a warning, when \code{part_dta} is supplied.}
+frames).  A name you pass in \code{xvar.names} that the fit cannot reach
+is dropped by \code{partialpro} without comment, so you can ask for twelve
+variables and get ten; we warn and name the missing ones.  See
+\strong{Details}.  Ignored, with a warning, when \code{part_dta} is
+supplied.}
 }
 \value{
 A named list of class \code{"gg_partial_varpro"} with elements:
@@ -104,6 +108,33 @@ be removed in the release after \pkg{ggRandomForests} v3.0.0; use
 \code{\link{gg_partial_varpro}()} directly.
 }
 \details{
+\strong{Which variables you actually get:} \code{varpro} screens twice before
+anything reaches partial dependence.  The split-weight screen decides which
+predictors are worth guiding the trees with, and what survives it lands in
+\code{object$xvar.names}; \code{varPro::get.topvars} then ranks a shorter
+list out of that.  So the design matrix, the reachable set, and the default
+list are three different sizes -- a fit on 45 predictors might carry 26 in
+\code{object$xvar.names} and 15 in \code{get.topvars}.  \code{partialpro}
+can only reach the middle one.  How much gets screened off depends on the
+data and the fit, so check rather than assume: \code{length(object$xvar.names)}
+against \code{ncol(object$x)} tells you where you stand.
+
+This bites when you bring a variable list in from somewhere else, say the
+top names off an \code{rfsrc} VIMP ranking.  \code{partialpro} intersects
+your \code{xvar.names} with what it can reach and keeps the overlap without
+remarking on it, so a request for twelve variables can come back with ten
+and nothing in the result says so.  It is the intermittent kind of trap: a
+top-10 list may come back whole while a top-12 list quietly loses two.  We
+compare the two sets before calling \code{partialpro} and warn, naming what
+was dropped.  A quick \code{setdiff(my_names, object$xvar.names)} answers
+the same question before you spend the computation.
+
+To lift the ceiling, refit with
+\code{varPro::varpro(..., split.weight = FALSE)},
+which puts every predictor in \code{object$xvar.names}.  \code{nvar} and
+\code{sparse = FALSE} will not do it: \code{nvar} caps what gets reported,
+and \code{sparse} only deepens the topvars list.
+
 \strong{Scale detection:} with \code{scale = "auto"} and an \code{object} in
 hand, the scale resolves to \code{"mortality"} for a survival forest and
 \code{"generic"} for a regression or classification forest.  The RMST
@@ -247,6 +278,34 @@ mock_data <- list(
 result <- gg_partial_varpro(mock_data)
 head(result$continuous)
 head(result$categorical)
+
+\donttest{
+## The object-driven path: hand gg_partial_varpro() the varpro fit and let
+## it call partialpro() for you.  This is where the reachability ceiling
+## shows up (see Details).
+set.seed(42)
+vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
+
+## Three different sizes.  partialpro() can only reach the second.
+ncol(vp$x)                    # predictors in the data
+length(vp$xvar.names)         # what the fit reaches
+length(varPro::get.topvars(vp))   # the default when xvar.names is absent
+
+## Say these came from an rfsrc VIMP ranking.  Check what the fit cannot
+## reach before you spend the computation -- this is the habit worth having.
+wanted <- c("wt", "hp", "qsec", "vs")
+setdiff(wanted, vp$xvar.names)
+
+## Ask anyway and we warn, naming what partialpro() would have dropped
+## in silence.
+pd <- gg_partial_varpro(object = vp, xvar.names = wanted)
+
+## Refitting without the split-weight screen reaches every predictor.
+vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,
+                         split.weight = FALSE)
+length(vp_all$xvar.names)
+setdiff(wanted, vp_all$xvar.names)   # empty; nothing to drop
+}
 
 }
 \references{
