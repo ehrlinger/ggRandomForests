@@ -304,9 +304,13 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## partialpro's own vocabulary and means nothing to gg_partial_rfsrc(), which
   ## has no '...' to absorb it.
   if (!is.null(object) && scale == "chf") {
-    .warn_varpro_cpath_dots(list(...))
+    ## Capture dots once. [["..."]] rather than $: `$` partial-matches on a
+    ## list, so a dots argument merely starting with "xvar.names" would be
+    ## taken as the variable request.
+    dots <- list(...)
+    .warn_varpro_cpath_dots(dots)
     return(.gg_partial_varpro_cpath(object, scale, time, model,
-                                    xvar.names = list(...)$xvar.names))
+                                    xvar.names = dots[["xvar.names"]]))
   }
 
   ## ---- Survival default horizon: surv/rmst fill tau from the data --------
@@ -716,13 +720,22 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## trade than a warning.
 #' @keywords internal
 .warn_varpro_cpath_dots <- function(dots) {
-  extra <- setdiff(names(dots), "xvar.names")
-  extra <- extra[nzchar(extra)]
-  if (length(extra) == 0L) return(invisible(NULL))
+  nm <- names(dots)
+  if (is.null(nm)) nm <- rep("", length(dots))
+  ## Count the unnamed ones rather than filtering them away: an unnamed
+  ## positional argument is still an argument we are ignoring, and a guard
+  ## against silent drops must not itself drop silently.
+  named   <- setdiff(nm[nzchar(nm)], "xvar.names")
+  unnamed <- sum(!nzchar(nm))
+  if (length(named) == 0L && unnamed == 0L) return(invisible(NULL))
+  what <- c(named,
+            if (unnamed > 0L)
+              sprintf("%d unnamed argument%s", unnamed,
+                      if (unnamed > 1L) "s" else ""))
   warning("gg_partial_varpro: scale = 'chf' computes partial dependence from ",
           "the rfsrc forest rather than varPro::partialpro(), so these ",
           "arguments do not apply and are ignored: ",
-          paste(extra, collapse = ", "), ".", call. = FALSE)
+          paste(what, collapse = ", "), ".", call. = FALSE)
   invisible(NULL)
 }
 

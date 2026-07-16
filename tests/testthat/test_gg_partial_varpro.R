@@ -741,3 +741,34 @@ test_that("gg_partial_varpro: chf C-path warns on partialpro-only dots", {
     ggRandomForests:::.warn_varpro_cpath_dots(list())
   )
 })
+
+test_that(".warn_varpro_cpath_dots: unnamed dots are reported, not swallowed", {
+  # An unnamed positional argument reaching the chf path is still an argument
+  # we ignore. A guard against silent drops must not silently drop.
+  expect_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(0.5)),
+    regexp = "unnamed"
+  )
+  # mixed named + unnamed: both are surfaced
+  expect_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(0.5, cut = 1)),
+    regexp = "cut"
+  )
+  expect_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(0.5, cut = 1)),
+    regexp = "unnamed"
+  )
+  # xvar.names alone is honoured on this path, so it is not "ignored"
+  expect_no_warning(
+    ggRandomForests:::.warn_varpro_cpath_dots(list(xvar.names = "age"))
+  )
+  expect_no_warning(ggRandomForests:::.warn_varpro_cpath_dots(list()))
+})
+
+test_that("gg_partial_varpro: chf xvar.names extraction is an exact match", {
+  # `$` partial-matches on a list, so a dots argument merely starting with
+  # "xvar.names" must not be taken as the variable request.
+  fake_dots <- list(xvar.names.bogus = "qsec")
+  expect_null(fake_dots[["xvar.names"]])
+  expect_identical(fake_dots$xvar.names, "qsec")   # documents why [[ is required
+})
