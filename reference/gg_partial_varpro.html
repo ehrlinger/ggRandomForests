@@ -177,7 +177,10 @@ frames).  A name you pass in <code>xvar.names</code> that the fit cannot reach
 is dropped by <code>partialpro</code> without comment, so you can ask for twelve
 variables and get ten; we warn and name the missing ones.  See
 <strong>Details</strong>.  Ignored, with a warning, when <code>part_dta</code> is
-supplied.</p></dd>
+supplied.  With <code>scale = "chf"</code> the work goes through
+<code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code> rather than <code>partialpro</code>, so
+<code>xvar.names</code> is honoured but the <code>partialpro</code>-only arguments
+(<code>cut</code>, <code>nsmp</code>) do not apply and are ignored with a warning.</p></dd>
 
 </dl></div>
     <div class="section level2">

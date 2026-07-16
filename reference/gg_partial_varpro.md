@@ -102,7 +102,11 @@ gg_partialpro(
   that the fit cannot reach is dropped by `partialpro` without comment,
   so you can ask for twelve variables and get ten; we warn and name the
   missing ones. See **Details**. Ignored, with a warning, when
-  `part_dta` is supplied.
+  `part_dta` is supplied. With `scale = "chf"` the work goes through
+  [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  rather than `partialpro`, so `xvar.names` is honoured but the
+  `partialpro`-only arguments (`cut`, `nsmp`) do not apply and are
+  ignored with a warning.
 
 ## Value
 
