@@ -540,6 +540,14 @@ test_that("gg_vimp: randomForest classification nvar counts variables, not rows"
   # so it never eats whole measures off the end of the ranking.
   expect_length(unique(as.character(gg$vars)), 2L)
   expect_equal(nrow(gg), 8L)
+
+  # ... and it keeps the top nvar, not the first nvar. randomForest's
+  # importance matrix arrives in model-matrix order, which is nothing to do
+  # with rank, so trimming it unsorted would return the *least* important
+  # variables while `@return` promises rank order.
+  top2 <- names(sort(rf$importance[, "MeanDecreaseAccuracy"],
+                     decreasing = TRUE))[1:2]
+  expect_setequal(unique(as.character(gg$vars)), top2)
 })
 
 test_that("gg_vimp: randomForest classification importance=FALSE falls back to

@@ -539,6 +539,20 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
       gg_dta <- gg_v
     } else {
       gg_dta$vars <- rownames(gg_dta)
+      # Rank before trimming. randomForest hands back $importance in
+      # model-matrix order, so the frame reaching here is unsorted, and the
+      # sort below runs after the pivot -- too late to decide which variables
+      # survive. Trimming now without ordering would keep the first nvar
+      # variables and hence, on iris, the two *least* important ones. Rank on
+      # the overall permutation measure where the fit has one; a single-measure
+      # frame has only the one column to rank on.
+      primary <- colnames(gg_dta)[1]
+      if ("MeanDecreaseAccuracy" %in% colnames(gg_dta)) {
+        primary <- "MeanDecreaseAccuracy"
+      }
+      gg_dta <- gg_dta[order(gg_dta[[primary]], decreasing = TRUE), ,
+        drop = FALSE
+      ]
     }
 
     # Trim while the frame is still one row per variable: nvar counts
