@@ -115,21 +115,23 @@
 #'
 #'
 #' ## ------------- Boston data
-#' data(Boston, package = "MASS")
-#' Boston$chas <- as.logical(Boston$chas)
-#' rfsrc_boston <- randomForestSRC::rfsrc(medv ~ .,
-#'   data = Boston,
-#'   forest = TRUE,
-#'   importance = TRUE,
-#'   tree.err = TRUE,
-#'   save.memory = TRUE
-#' )
+#' if (requireNamespace("MASS", quietly = TRUE)) {
+#'   data(Boston, package = "MASS")
+#'   Boston$chas <- as.logical(Boston$chas)
+#'   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ .,
+#'     data = Boston,
+#'     forest = TRUE,
+#'     importance = TRUE,
+#'     tree.err = TRUE,
+#'     save.memory = TRUE
+#'   )
 #'
-#' # Get a data.frame containing error rates
-#' gg_dta <- gg_error(rfsrc_boston)
+#'   # Get a data.frame containing error rates
+#'   gg_dta <- gg_error(rfsrc_boston)
 #'
-#' # Plot the gg_error object
-#' plot(gg_dta)
+#'   # Plot the gg_error object
+#'   plot(gg_dta)
+#' }
 #'
 #'
 #' ## ------------- mtcars data
