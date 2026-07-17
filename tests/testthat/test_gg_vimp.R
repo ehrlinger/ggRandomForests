@@ -156,6 +156,38 @@ test_that("gg_vimp randomForest which.outcome maps to the right column", {
   expect_error(gg_vimp(rf_iris, which.outcome = -1))
 })
 
+test_that("gg_vimp which.outcome names the measure in set", {
+  data(iris, package = "datasets")
+  set.seed(1)
+
+  # Selecting one measure must name it in `set`, the way the unfiltered
+  # pivot already does -- not report the literal "vimp".
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~ .,
+                                       data = iris,
+                                       importance = TRUE)
+
+  expect_equal(unique(gg_vimp(rfsrc_iris, which.outcome = 0)$set), "all")
+  expect_equal(unique(gg_vimp(rfsrc_iris, which.outcome = 2)$set), "versicolor")
+  expect_equal(unique(gg_vimp(rfsrc_iris, which.outcome = "setosa")$set),
+               "setosa")
+  expect_equal(unique(gg_vimp(rfsrc_iris, which.outcome = "all")$set), "all")
+
+  rf_iris <- randomForest::randomForest(Species ~ .,
+                                        data = iris,
+                                        importance = TRUE)
+
+  expect_equal(unique(gg_vimp(rf_iris, which.outcome = 0)$set),
+               "MeanDecreaseAccuracy")
+  expect_equal(unique(gg_vimp(rf_iris, which.outcome = 1)$set), "setosa")
+  expect_equal(unique(gg_vimp(rf_iris, which.outcome = "virginica")$set),
+               "virginica")
+
+  # Naming the measure must not disturb the values it labels.
+  expect_equal(gg_vimp(rf_iris, which.outcome = 0)$vimp,
+               unname(sort(rf_iris$importance[, "MeanDecreaseAccuracy"],
+                           decreasing = TRUE)))
+})
+
 
 test_that("gg_vimp survival", {
   dta <- new.env()

@@ -79,6 +79,18 @@ ggRandomForests v3.5.0
   `k`, and `which.outcome = 1` agrees with `which.outcome = "setosa"`. Fits
   grown with `importance = FALSE` keep no `MeanDecreaseAccuracy` column and
   their single measure answers to `0` as before.
+* `which.outcome` now names the measure it selected in the `set` column, for
+  both `rfsrc` and `randomForest` fits. Asking for one measure reported `set`
+  as the literal `"vimp"` -- the pivot takes `set` from the source column name,
+  and the selected column was named after the `vimp` column it was about to be
+  written into rather than after the measure it held. So the one path where you
+  have to say which measure you want was the one path that would not tell you
+  which measure you got. `gg_vimp(rfsrc_iris, which.outcome = 0)` now reports
+  `set == "all"`, `gg_vimp(rf_iris, which.outcome = 0)` reports
+  `set == "MeanDecreaseAccuracy"`, and both agree with the names the unfiltered
+  pivot has always used. Values and ordering are unchanged, and plots are
+  unaffected: `plot.gg_vimp()` only facets on `set` when there is more than one
+  of them, and selecting a measure leaves exactly one.
 * `nvar` counts variables again for `randomForest` fits, not rows. It was
   applied after the multiclass pivot, where a frame holds one row per
   variable *per measure*, so it lopped whole measures off the end of the

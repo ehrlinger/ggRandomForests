@@ -267,17 +267,14 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     arg_set <- list(...)
 
     if (!is.null(arg_set$which.outcome)) {
-      # Caller requested importance for one specific class only.
+      # Caller requested importance for one specific class only. Resolve the
+      # request to a column name, then carry that name through to `set` below:
+      # naming the measure is the whole point of the `set` column, and the
+      # unfiltered pivot in the else branch already does it.
       if (!is.numeric(arg_set$which.outcome)) {
         # Look up by class name (column name).
         if (arg_set$which.outcome %in% colnames(gg_dta)) {
-          gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome],
-            decreasing = TRUE
-          ))
-          gg_v$vars <-
-            rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome],
-              decreasing = TRUE
-            )]
+          which_col <- arg_set$which.outcome
         } else {
           stop(
             paste(
@@ -289,20 +286,15 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
           )
         }
       } else {
-        # Look up by integer index.
+        # Look up by integer index. rfsrc's $importance leads with an "all"
+        # column, so the overall measure really is column 1 here.
         # which.outcome = 0  gives overall (across-class) importance, column 1
         # which.outcome = k  gives importance for class k, column k+1
-        if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
+        if (arg_set$which.outcome < 0) {
           stop("which.outcome must be a non-negative integer or a class name.")
         }
         if (arg_set$which.outcome < ncol(gg_dta)) {
-          gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome + 1],
-            decreasing = TRUE
-          ))
-          gg_v$vars <-
-            rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome + 1],
-              decreasing = TRUE
-            )]
+          which_col <- colnames(gg_dta)[arg_set$which.outcome + 1]
         } else {
           stop(
             paste0(
@@ -313,6 +305,17 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
           )
         }
       }
+      gg_v <- data.frame(vimp = sort(gg_dta[, which_col],
+        decreasing = TRUE
+      ))
+      gg_v$vars <-
+        rownames(gg_dta)[order(gg_dta[, which_col],
+          decreasing = TRUE
+        )]
+      # Name the column after the measure it holds, not after the "vimp"
+      # column the pivot below writes it into -- pivot_longer() takes `set`
+      # from the source column name.
+      colnames(gg_v)[1] <- which_col
       gg_dta <- gg_v
     } else {
       # No specific class requested: attach variable names and pivot.
@@ -465,16 +468,12 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     arg_set <- list(...)
 
     if (!is.null(arg_set$which.outcome)) {
-      # test which.outcome specification
+      # test which.outcome specification. Both paths resolve the request to a
+      # column name, which then names the measure in `set` below, the way the
+      # unfiltered pivot in the else branch already does.
       if (!is.numeric(arg_set$which.outcome)) {
         if (arg_set$which.outcome %in% colnames(gg_dta)) {
-          gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome],
-            decreasing = TRUE
-          ))
-          gg_v$vars <-
-            rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome],
-              decreasing = TRUE
-            )]
+          which_col <- arg_set$which.outcome
         } else {
           stop(
             paste(
@@ -520,14 +519,18 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
             )
           )
         }
-        gg_v <- data.frame(vimp = sort(gg_dta[, which_col],
-          decreasing = TRUE
-        ))
-        gg_v$vars <-
-          rownames(gg_dta)[order(gg_dta[, which_col],
-            decreasing = TRUE
-          )]
       }
+      gg_v <- data.frame(vimp = sort(gg_dta[, which_col],
+        decreasing = TRUE
+      ))
+      gg_v$vars <-
+        rownames(gg_dta)[order(gg_dta[, which_col],
+          decreasing = TRUE
+        )]
+      # Name the column after the measure it holds, not after the "vimp"
+      # column the pivot below writes it into -- pivot_longer() takes `set`
+      # from the source column name.
+      colnames(gg_v)[1] <- which_col
       gg_dta <- gg_v
     } else {
       gg_dta$vars <- rownames(gg_dta)
