@@ -367,6 +367,62 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
   invisible(gg_dta)
 }
 
+# Resolve a which.outcome request against the columns of a randomForest
+# importance frame, returning the name of the column it selects. Both the
+# name and the index form resolve to a name, which then labels the measure in
+# `set` once the caller pivots.
+#
+# randomForest's importance matrix has no overall-first column: it runs one
+# permutation column per class, then MeanDecreaseAccuracy (the overall
+# permutation measure). rfsrc leads with an "all" column instead, so
+# gg_vimp.rfsrc's index arithmetic -- 0 for column 1, k for column k + 1 --
+# does not carry over here: applied to a randomForest fit it hands back the
+# first class for 0 and shifts every class by one.
+#   which.outcome = 0 gives overall (MeanDecreaseAccuracy)
+#   which.outcome = k gives class k
+# A fit grown with importance = FALSE keeps no MeanDecreaseAccuracy column;
+# its sole surviving measure is the overall one by default.
+.rf_which_outcome_col <- function(gg_dta, which_outcome) {
+  if (!is.numeric(which_outcome)) {
+    if (!which_outcome %in% colnames(gg_dta)) {
+      stop(
+        paste(
+          "which.outcome naming is incorrect.",
+          which_outcome,
+          "\nis not in",
+          colnames(gg_dta)
+        )
+      )
+    }
+    return(which_outcome)
+  }
+
+  if (which_outcome < 0) {
+    stop("which.outcome must be a non-negative integer or a class name.")
+  }
+
+  measures <- setdiff(colnames(gg_dta), "vars")
+  classes <- setdiff(measures, "MeanDecreaseAccuracy")
+
+  if (which_outcome == 0) {
+    if ("MeanDecreaseAccuracy" %in% measures) {
+      return("MeanDecreaseAccuracy")
+    }
+    return(measures[1])
+  }
+
+  if (which_outcome > length(classes)) {
+    stop(
+      paste0(
+        "which.outcome (", which_outcome, ") is out of range. ",
+        "Valid values are 0 (overall) to ", length(classes),
+        " (number of classes)."
+      )
+    )
+  }
+  classes[which_outcome]
+}
+
 #' @export
 gg_vimp.randomForest <- function(object, nvar, ...) {
   ## Check that the input object is of the correct type.
@@ -468,58 +524,7 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     arg_set <- list(...)
 
     if (!is.null(arg_set$which.outcome)) {
-      # test which.outcome specification. Both paths resolve the request to a
-      # column name, which then names the measure in `set` below, the way the
-      # unfiltered pivot in the else branch already does.
-      if (!is.numeric(arg_set$which.outcome)) {
-        if (arg_set$which.outcome %in% colnames(gg_dta)) {
-          which_col <- arg_set$which.outcome
-        } else {
-          stop(
-            paste(
-              "which.outcome naming is incorrect.",
-              arg_set$which.outcome,
-              "\nis not in",
-              colnames(gg_dta)
-            )
-          )
-        }
-      } else {
-        # Resolve the column by name rather than by offset. randomForest's
-        # importance matrix has no overall-first column: it runs one
-        # permutation column per class, then MeanDecreaseAccuracy (the overall
-        # permutation measure), then MeanDecreaseGini. rfsrc leads with an
-        # "all" column instead, so gg_vimp.rfsrc's index arithmetic -- 0 for
-        # column 1, k for column k+1 -- does not carry over here. Applied to a
-        # randomForest fit it silently hands back the first class for 0 and
-        # shifts every class by one.
-        #   which.outcome = 0 gives overall (MeanDecreaseAccuracy)
-        #   which.outcome = k gives class k
-        # A fit grown with importance = FALSE keeps no MeanDecreaseAccuracy
-        # column; the sole surviving measure is the overall one by default.
-        if (arg_set$which.outcome < 0) {
-          stop("which.outcome must be a non-negative integer or a class name.")
-        }
-        measures <- setdiff(colnames(gg_dta), "vars")
-        classes <- setdiff(measures, "MeanDecreaseAccuracy")
-        if (arg_set$which.outcome == 0) {
-          which_col <- if ("MeanDecreaseAccuracy" %in% measures) {
-            "MeanDecreaseAccuracy"
-          } else {
-            measures[1]
-          }
-        } else if (arg_set$which.outcome <= length(classes)) {
-          which_col <- classes[arg_set$which.outcome]
-        } else {
-          stop(
-            paste0(
-              "which.outcome (", arg_set$which.outcome, ") is out of range. ",
-              "Valid values are 0 (overall) to ", length(classes),
-              " (number of classes)."
-            )
-          )
-        }
-      }
+      which_col <- .rf_which_outcome_col(gg_dta, arg_set$which.outcome)
       gg_v <- data.frame(vimp = sort(gg_dta[, which_col],
         decreasing = TRUE
       ))
