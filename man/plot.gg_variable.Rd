@@ -77,7 +77,7 @@ rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airquality,
                     na.action = "na.impute", ntree = 50)
 gg_dta <- gg_variable(rfsrc_airq)
 
-# Treat Month as an ordinal factor for better visualisation
+# Treat Month as an ordinal factor for better visualization
 gg_dta[, "Month"] <- factor(gg_dta[, "Month"])
 
 plot(gg_dta, xvar = "Wind")
