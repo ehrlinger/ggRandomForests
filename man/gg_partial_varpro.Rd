@@ -138,8 +138,8 @@ For a complete view, fit with both screens off:
 every predictor in \code{object$xvar.names}, so partial dependence can reach
 them all, and it leaves a strong variable's curve where it was.
 \code{sparse = FALSE} does the smaller thing, deepening
-\code{get.topvars} so the reported ranking shows its tail rather than the
-screened top.  Both are \code{varPro}'s own arguments, and its defaults
+\code{varPro::get.topvars} so the reported ranking shows its tail rather than
+the screened top.  Both are \code{varPro}'s own arguments, and its defaults
 (both \code{TRUE}) go the other way, toward the screened set; keep the
 defaults when that sparser set is what you want.  \code{nvar} is not the
 knob here -- it only caps how much gets reported.
