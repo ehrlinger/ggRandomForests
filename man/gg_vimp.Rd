@@ -34,13 +34,38 @@ reproducible.
 object and reshapes it into a tidy data set.
 }
 \details{
-\code{gg_vimp()} shows \strong{permutation (Breiman-Cutler) variable
-importance}: the forest permutes a variable's observed values across the
-out-of-bag (OOB) cases, runs those perturbed cases down the already-grown
-trees, and measures how much the OOB prediction error climbs.  That
-perturbation is synthetic (the variable's link to the response is broken
-on purpose) so a large increase means the variable was carrying genuine
-signal; near-zero or negative values mean it added noise or nothing at all.
+\code{gg_vimp()} reports whatever importance the forest stored; it computes
+nothing itself.  Usually that is \strong{permutation (Breiman-Cutler)
+variable importance}: the forest permutes a variable's observed values
+across the out-of-bag (OOB) cases, runs those perturbed cases down the
+already-grown trees, and measures how much the OOB prediction error climbs.
+That perturbation is synthetic (the variable's link to the response is
+broken on purpose) so a large increase means the variable was carrying
+genuine signal; near-zero or negative values mean it added noise or nothing
+at all.
+
+\strong{A \code{randomForest} fit needs \code{importance = TRUE} to give you
+this.}  \code{randomForest::randomForest()} defaults to
+\code{importance = FALSE}, and that fit stores only \code{IncNodePurity} --
+a node-impurity (RSS or Gini) measure, which is not a permutation quantity
+and is not comparable to one.  It is the only importance the forest kept, so
+it is what \code{gg_vimp()} reports, in the \code{vimp} column, same as any
+other.  Nothing marks the difference in the plot.  So
+\code{gg_vimp(randomForest(y ~ ., data))} ranks by node purity; pass
+\code{importance = TRUE} and you get permutation VIMP (\code{\%IncMSE}), and
+\code{colnames(object$importance)} tells you which one you have.
+\code{randomForestSRC::rfsrc()} has no such trap: its \code{importance}
+argument yields permutation VIMP.
+
+When a \code{randomForest} fit carries both measures, \code{gg_vimp()}
+reports the permutation one and leaves node purity out of the ranking --
+the two run on different scales and mean different things, so putting them
+in one ordering would be meaningless.  Read
+\code{randomForest::importance(object)} if you want both.  A classification
+fit names that pair \code{MeanDecreaseAccuracy} and \code{MeanDecreaseGini},
+and stores a permutation column per class besides.  Those per-class columns
+are all permutation measures on one scale, so \code{gg_vimp()} keeps them
+together, names each in the \code{set} column, and drops only the Gini one.
 
 \code{\link{gg_varpro}()} takes the opposite route, comparing local
 estimators on real observed data through varPro's release rules, with no
@@ -89,7 +114,9 @@ gg_dta <- gg_vimp(rfsrc_boston)
 plot(gg_dta)
 
 ## -------- Boston data
-rf_boston <- randomForest::randomForest(medv ~ ., Boston)
+## importance = TRUE for permutation VIMP; without it randomForest stores
+## only IncNodePurity, which is what you would be ranking (see Details).
+rf_boston <- randomForest::randomForest(medv ~ ., Boston, importance = TRUE)
 gg_dta <- gg_vimp(rf_boston)
 plot(gg_dta)
 

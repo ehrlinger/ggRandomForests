@@ -84,12 +84,15 @@ the released variable inside the rule's OOB region. \code{use.cv = TRUE}
 selects \eqn{\lambda}{lambda} by 10-fold CV (default \code{nfolds = 10});
 \code{use.1se = TRUE} (default) picks \code{lambda.1se}. \code{use.cv = FALSE} uses the
 full \eqn{\lambda}{lambda} path.
-\item \code{imp} is the \strong{fitted coefficient} \eqn{\hat{\beta}}{beta hat} at the
-chosen \eqn{\lambda}{lambda}. \strong{Sign is
-real} (direction of local association). \strong{Magnitude depends on
-the predictor's units} (raw \code{x}, no standardisation); a predictor
-in millimetres has a smaller \eqn{|\hat{\beta}|}{|beta hat|} than the
-same predictor in metres.
+\item \code{imp} is the \strong{absolute} fitted coefficient
+\eqn{|\hat{\beta}|}{|beta hat|} at the chosen \eqn{\lambda}{lambda}.
+\strong{There is no direction here}: \code{varPro::beta.varpro()} wraps every
+coefficient it returns in \code{abs()}, so the sign is discarded upstream and
+never reaches us. Read \code{imp} as strength of local association, not its
+direction. (For a signed local estimator, see \code{\link[=gg_ivarpro]{gg_ivarpro()}}, where the
+sign does survive.) \strong{Magnitude depends on the predictor's units} (raw
+\code{x}, no standardisation); a predictor in millimetres has a smaller
+\eqn{|\hat{\beta}|}{|beta hat|} than the same predictor in metres.
 \item Lasso shrinkage can drive \eqn{\hat{\beta}}{beta hat} to \strong{exactly zero}.
 Those zeros are
 data, not missingness, and are kept in the aggregation. Convergence

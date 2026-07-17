@@ -121,6 +121,73 @@ test_that("gg_vimp classifications", {
   gg_dta <- gg_vimp(rf_iris, which.outcome = NULL)
 })
 
+test_that("gg_vimp randomForest which.outcome maps to the right column", {
+  data(iris, package = "datasets")
+  set.seed(1)
+  rf_iris <- randomForest::randomForest(Species ~ .,
+                                        data = iris,
+                                        importance = TRUE)
+
+  # randomForest's importance matrix leads with the per-class columns, so
+  # which.outcome = 0 must reach MeanDecreaseAccuracy, not column 1 (setosa).
+  overall <- sort(rf_iris$importance[, "MeanDecreaseAccuracy"],
+                  decreasing = TRUE)
+  gg_dta <- gg_vimp(rf_iris, which.outcome = 0)
+
+  expect_equal(gg_dta$vimp, unname(overall))
+  expect_equal(as.character(gg_dta$vars), names(overall))
+
+  # which.outcome = k stays class k, counting from the first class.
+  for (k in seq_len(3)) {
+    class_k <- sort(rf_iris$importance[, levels(iris$Species)[k]],
+                    decreasing = TRUE)
+    gg_k <- gg_vimp(rf_iris, which.outcome = k)
+
+    expect_equal(gg_k$vimp, unname(class_k))
+    expect_equal(as.character(gg_k$vars), names(class_k))
+  }
+
+  # Naming a class must agree with the equivalent index.
+  expect_equal(gg_vimp(rf_iris, which.outcome = "setosa")$vimp,
+               gg_vimp(rf_iris, which.outcome = 1)$vimp)
+
+  # Three classes, so 0:3 is the valid range.
+  expect_error(gg_vimp(rf_iris, which.outcome = 4))
+  expect_error(gg_vimp(rf_iris, which.outcome = -1))
+})
+
+test_that("gg_vimp which.outcome names the measure in set", {
+  data(iris, package = "datasets")
+  set.seed(1)
+
+  # Selecting one measure must name it in `set`, the way the unfiltered
+  # pivot already does -- not report the literal "vimp".
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~ .,
+                                       data = iris,
+                                       importance = TRUE)
+
+  expect_equal(unique(gg_vimp(rfsrc_iris, which.outcome = 0)$set), "all")
+  expect_equal(unique(gg_vimp(rfsrc_iris, which.outcome = 2)$set), "versicolor")
+  expect_equal(unique(gg_vimp(rfsrc_iris, which.outcome = "setosa")$set),
+               "setosa")
+  expect_equal(unique(gg_vimp(rfsrc_iris, which.outcome = "all")$set), "all")
+
+  rf_iris <- randomForest::randomForest(Species ~ .,
+                                        data = iris,
+                                        importance = TRUE)
+
+  expect_equal(unique(gg_vimp(rf_iris, which.outcome = 0)$set),
+               "MeanDecreaseAccuracy")
+  expect_equal(unique(gg_vimp(rf_iris, which.outcome = 1)$set), "setosa")
+  expect_equal(unique(gg_vimp(rf_iris, which.outcome = "virginica")$set),
+               "virginica")
+
+  # Naming the measure must not disturb the values it labels.
+  expect_equal(gg_vimp(rf_iris, which.outcome = 0)$vimp,
+               unname(sort(rf_iris$importance[, "MeanDecreaseAccuracy"],
+                           decreasing = TRUE)))
+})
+
 
 test_that("gg_vimp survival", {
   dta <- new.env()
@@ -379,4 +446,120 @@ test_that("gg_vimp.randomForest regression: vimp column present even when import
                info = "vimp values must not be NA")
   expect_true("positive" %in% colnames(gg_dta))
   expect_s3_class(plot(gg_dta), "ggplot")
+})
+
+## ── randomForest: one importance measure per ranking ─────────────────────────
+## gg_vimp used to pivot every column of randomForest's $importance into a
+## single `vimp` column and rank them together. %IncMSE (tens) and
+## IncNodePurity (thousands) are incommensurable, so node purity swept the top
+## of the ranking and the permutation values the user asked for by passing
+## importance = TRUE were truncated off the end and never shown.
+
+test_that("gg_vimp: randomForest importance=TRUE reports permutation VIMP", {
+  skip_on_cran()
+  skip_if_not_installed("randomForest")
+  skip_if_not_installed("MASS")
+  data(Boston, package = "MASS")
+  set.seed(1)
+  rf <- randomForest::randomForest(medv ~ ., Boston, importance = TRUE)
+  skip_if_not(all(c("%IncMSE", "IncNodePurity") %in% colnames(rf$importance)),
+              "randomForest did not store both measures")
+
+  gg <- as.data.frame(gg_vimp(rf))
+
+  # one measure only -- never both stacked in the same column
+  expect_length(unique(gg$set), 1L)
+  # and it is the permutation measure, not node purity
+  expect_false(any(grepl("Purity", gg$set)))
+
+  pct <- rf$importance[, "%IncMSE"]
+  expect_equal(gg$vimp[1], unname(max(pct)))
+  expect_equal(as.character(gg$vars[1]), names(which.max(pct)))
+})
+
+test_that("gg_vimp: randomForest importance=FALSE reports node purity, labelled", {
+  skip_on_cran()
+  skip_if_not_installed("randomForest")
+  skip_if_not_installed("MASS")
+  data(Boston, package = "MASS")
+  set.seed(1)
+  rf <- randomForest::randomForest(medv ~ ., Boston)
+  expect_equal(colnames(rf$importance), "IncNodePurity")
+
+  gg <- as.data.frame(gg_vimp(rf))
+  expect_length(unique(gg$set), 1L)
+  inc <- rf$importance[, "IncNodePurity"]
+  expect_equal(gg$vimp[1], unname(max(inc)))
+})
+
+## The classification matrix mixes the same two scales: the per-class columns
+## and MeanDecreaseAccuracy are permutation measures, MeanDecreaseGini is node
+## impurity. Ranking them together left MeanDecreaseGini as the only survivor.
+## The permutation columns are mutually commensurable, so they are kept and
+## pivoted together, mirroring gg_vimp.rfsrc's all/<class> columns.
+
+test_that("gg_vimp: randomForest classification importance=TRUE keeps the
+          permutation block", {
+  skip_on_cran()
+  skip_if_not_installed("randomForest")
+  set.seed(1)
+  rf <- randomForest::randomForest(Species ~ ., iris, importance = TRUE)
+  skip_if_not("MeanDecreaseGini" %in% colnames(rf$importance),
+              "randomForest did not store node impurity")
+
+  gg <- as.data.frame(gg_vimp(rf))
+
+  # node impurity is incommensurable with the permutation columns, so it goes
+  expect_false(any(grepl("Gini", gg$set)))
+  # every permutation measure survives: one per class, plus the overall
+  expect_setequal(
+    unique(gg$set),
+    c(levels(iris$Species), "MeanDecreaseAccuracy")
+  )
+  # and every variable is reported for every measure
+  expect_equal(nrow(gg), 16L)
+
+  # values are carried through untouched
+  acc <- rf$importance[, "MeanDecreaseAccuracy"]
+  got <- gg[gg$set == "MeanDecreaseAccuracy", ]
+  expect_equal(
+    got$vimp[order(as.character(got$vars))],
+    unname(acc[order(names(acc))])
+  )
+})
+
+test_that("gg_vimp: randomForest classification nvar counts variables, not rows", {
+  skip_on_cran()
+  skip_if_not_installed("randomForest")
+  set.seed(1)
+  rf <- randomForest::randomForest(Species ~ ., iris, importance = TRUE)
+
+  gg <- as.data.frame(gg_vimp(rf, nvar = 2))
+
+  # 2 variables x 4 permutation measures -- nvar truncates before the pivot,
+  # so it never eats whole measures off the end of the ranking.
+  expect_length(unique(as.character(gg$vars)), 2L)
+  expect_equal(nrow(gg), 8L)
+
+  # ... and it keeps the top nvar, not the first nvar. randomForest's
+  # importance matrix arrives in model-matrix order, which is nothing to do
+  # with rank, so trimming it unsorted would return the *least* important
+  # variables while `@return` promises rank order.
+  top2 <- names(sort(rf$importance[, "MeanDecreaseAccuracy"],
+                     decreasing = TRUE))[1:2]
+  expect_setequal(unique(as.character(gg$vars)), top2)
+})
+
+test_that("gg_vimp: randomForest classification importance=FALSE falls back to
+          node purity", {
+  skip_on_cran()
+  skip_if_not_installed("randomForest")
+  set.seed(1)
+  rf <- randomForest::randomForest(Species ~ ., iris)
+  expect_equal(colnames(rf$importance), "MeanDecreaseGini")
+
+  gg <- as.data.frame(gg_vimp(rf))
+  expect_length(unique(gg$set), 1L)
+  gini <- rf$importance[, "MeanDecreaseGini"]
+  expect_equal(gg$vimp[1], unname(max(gini)))
 })

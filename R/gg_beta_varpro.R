@@ -38,12 +38,15 @@
 #'   selects \eqn{\lambda}{lambda} by 10-fold CV (default `nfolds = 10`);
 #'   `use.1se = TRUE` (default) picks `lambda.1se`. `use.cv = FALSE` uses the
 #'   full \eqn{\lambda}{lambda} path.
-#' - `imp` is the **fitted coefficient** \eqn{\hat{\beta}}{beta hat} at the
-#'   chosen \eqn{\lambda}{lambda}. **Sign is
-#'   real** (direction of local association). **Magnitude depends on
-#'   the predictor's units** (raw `x`, no standardisation); a predictor
-#'   in millimetres has a smaller \eqn{|\hat{\beta}|}{|beta hat|} than the
-#'   same predictor in metres.
+#' - `imp` is the **absolute** fitted coefficient
+#'   \eqn{|\hat{\beta}|}{|beta hat|} at the chosen \eqn{\lambda}{lambda}.
+#'   **There is no direction here**: `varPro::beta.varpro()` wraps every
+#'   coefficient it returns in `abs()`, so the sign is discarded upstream and
+#'   never reaches us. Read `imp` as strength of local association, not its
+#'   direction. (For a signed local estimator, see [gg_ivarpro()], where the
+#'   sign does survive.) **Magnitude depends on the predictor's units** (raw
+#'   `x`, no standardisation); a predictor in millimetres has a smaller
+#'   \eqn{|\hat{\beta}|}{|beta hat|} than the same predictor in metres.
 #' - Lasso shrinkage can drive \eqn{\hat{\beta}}{beta hat} to **exactly zero**.
 #'   Those zeros are
 #'   data, not missingness, and are kept in the aggregation. Convergence

@@ -27,13 +27,38 @@
 #' importance information.
 #'
 #' @details
-#' \code{gg_vimp()} shows \strong{permutation (Breiman-Cutler) variable
-#' importance}: the forest permutes a variable's observed values across the
-#' out-of-bag (OOB) cases, runs those perturbed cases down the already-grown
-#' trees, and measures how much the OOB prediction error climbs.  That
-#' perturbation is synthetic (the variable's link to the response is broken
-#' on purpose) so a large increase means the variable was carrying genuine
-#' signal; near-zero or negative values mean it added noise or nothing at all.
+#' \code{gg_vimp()} reports whatever importance the forest stored; it computes
+#' nothing itself.  Usually that is \strong{permutation (Breiman-Cutler)
+#' variable importance}: the forest permutes a variable's observed values
+#' across the out-of-bag (OOB) cases, runs those perturbed cases down the
+#' already-grown trees, and measures how much the OOB prediction error climbs.
+#' That perturbation is synthetic (the variable's link to the response is
+#' broken on purpose) so a large increase means the variable was carrying
+#' genuine signal; near-zero or negative values mean it added noise or nothing
+#' at all.
+#'
+#' \strong{A \code{randomForest} fit needs \code{importance = TRUE} to give you
+#' this.}  \code{randomForest::randomForest()} defaults to
+#' \code{importance = FALSE}, and that fit stores only \code{IncNodePurity} --
+#' a node-impurity (RSS or Gini) measure, which is not a permutation quantity
+#' and is not comparable to one.  It is the only importance the forest kept, so
+#' it is what \code{gg_vimp()} reports, in the \code{vimp} column, same as any
+#' other.  Nothing marks the difference in the plot.  So
+#' \code{gg_vimp(randomForest(y ~ ., data))} ranks by node purity; pass
+#' \code{importance = TRUE} and you get permutation VIMP (\code{\%IncMSE}), and
+#' \code{colnames(object$importance)} tells you which one you have.
+#' \code{randomForestSRC::rfsrc()} has no such trap: its \code{importance}
+#' argument yields permutation VIMP.
+#'
+#' When a \code{randomForest} fit carries both measures, \code{gg_vimp()}
+#' reports the permutation one and leaves node purity out of the ranking --
+#' the two run on different scales and mean different things, so putting them
+#' in one ordering would be meaningless.  Read
+#' \code{randomForest::importance(object)} if you want both.  A classification
+#' fit names that pair \code{MeanDecreaseAccuracy} and \code{MeanDecreaseGini},
+#' and stores a permutation column per class besides.  Those per-class columns
+#' are all permutation measures on one scale, so \code{gg_vimp()} keeps them
+#' together, names each in the \code{set} column, and drops only the Gini one.
 #'
 #' \code{\link{gg_varpro}()} takes the opposite route, comparing local
 #' estimators on real observed data through varPro's release rules, with no
@@ -97,7 +122,9 @@
 #' plot(gg_dta)
 #'
 #' ## -------- Boston data
-#' rf_boston <- randomForest::randomForest(medv ~ ., Boston)
+#' ## importance = TRUE for permutation VIMP; without it randomForest stores
+#' ## only IncNodePurity, which is what you would be ranking (see Details).
+#' rf_boston <- randomForest::randomForest(medv ~ ., Boston, importance = TRUE)
 #' gg_dta <- gg_vimp(rf_boston)
 #' plot(gg_dta)
 #'
@@ -240,17 +267,14 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     arg_set <- list(...)
 
     if (!is.null(arg_set$which.outcome)) {
-      # Caller requested importance for one specific class only.
+      # Caller requested importance for one specific class only. Resolve the
+      # request to a column name, then carry that name through to `set` below:
+      # naming the measure is the whole point of the `set` column, and the
+      # unfiltered pivot in the else branch already does it.
       if (!is.numeric(arg_set$which.outcome)) {
         # Look up by class name (column name).
         if (arg_set$which.outcome %in% colnames(gg_dta)) {
-          gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome],
-            decreasing = TRUE
-          ))
-          gg_v$vars <-
-            rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome],
-              decreasing = TRUE
-            )]
+          which_col <- arg_set$which.outcome
         } else {
           stop(
             paste(
@@ -262,20 +286,15 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
           )
         }
       } else {
-        # Look up by integer index.
+        # Look up by integer index. rfsrc's $importance leads with an "all"
+        # column, so the overall measure really is column 1 here.
         # which.outcome = 0  gives overall (across-class) importance, column 1
         # which.outcome = k  gives importance for class k, column k+1
-        if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
+        if (arg_set$which.outcome < 0) {
           stop("which.outcome must be a non-negative integer or a class name.")
         }
         if (arg_set$which.outcome < ncol(gg_dta)) {
-          gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome + 1],
-            decreasing = TRUE
-          ))
-          gg_v$vars <-
-            rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome + 1],
-              decreasing = TRUE
-            )]
+          which_col <- colnames(gg_dta)[arg_set$which.outcome + 1]
         } else {
           stop(
             paste0(
@@ -286,6 +305,17 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
           )
         }
       }
+      gg_v <- data.frame(vimp = sort(gg_dta[, which_col],
+        decreasing = TRUE
+      ))
+      gg_v$vars <-
+        rownames(gg_dta)[order(gg_dta[, which_col],
+          decreasing = TRUE
+        )]
+      # Name the column after the measure it holds, not after the "vimp"
+      # column the pivot below writes it into -- pivot_longer() takes `set`
+      # from the source column name.
+      colnames(gg_v)[1] <- which_col
       gg_dta <- gg_v
     } else {
       # No specific class requested: attach variable names and pivot.
@@ -337,6 +367,62 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
   invisible(gg_dta)
 }
 
+# Resolve a which.outcome request against the columns of a randomForest
+# importance frame, returning the name of the column it selects. Both the
+# name and the index form resolve to a name, which then labels the measure in
+# `set` once the caller pivots.
+#
+# randomForest's importance matrix has no overall-first column: it runs one
+# permutation column per class, then MeanDecreaseAccuracy (the overall
+# permutation measure). rfsrc leads with an "all" column instead, so
+# gg_vimp.rfsrc's index arithmetic -- 0 for column 1, k for column k + 1 --
+# does not carry over here: applied to a randomForest fit it hands back the
+# first class for 0 and shifts every class by one.
+#   which.outcome = 0 gives overall (MeanDecreaseAccuracy)
+#   which.outcome = k gives class k
+# A fit grown with importance = FALSE keeps no MeanDecreaseAccuracy column;
+# its sole surviving measure is the overall one by default.
+.rf_which_outcome_col <- function(gg_dta, which_outcome) {
+  if (!is.numeric(which_outcome)) {
+    if (!which_outcome %in% colnames(gg_dta)) {
+      stop(
+        paste(
+          "which.outcome naming is incorrect.",
+          which_outcome,
+          "\nis not in",
+          colnames(gg_dta)
+        )
+      )
+    }
+    return(which_outcome)
+  }
+
+  if (which_outcome < 0) {
+    stop("which.outcome must be a non-negative integer or a class name.")
+  }
+
+  measures <- setdiff(colnames(gg_dta), "vars")
+  classes <- setdiff(measures, "MeanDecreaseAccuracy")
+
+  if (which_outcome == 0) {
+    if ("MeanDecreaseAccuracy" %in% measures) {
+      return("MeanDecreaseAccuracy")
+    }
+    return(measures[1])
+  }
+
+  if (which_outcome > length(classes)) {
+    stop(
+      paste0(
+        "which.outcome (", which_outcome, ") is out of range. ",
+        "Valid values are 0 (overall) to ", length(classes),
+        " (number of classes)."
+      )
+    )
+  }
+  classes[which_outcome]
+}
+
 #' @export
 gg_vimp.randomForest <- function(object, nvar, ...) {
   ## Check that the input object is of the correct type.
@@ -386,6 +472,22 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
   } else {
     gg_dta <- data.frame(object$importance)
   }
+  # Drop the node-impurity measure up front, for the same reason the
+  # single-outcome branch below keeps only one measure: impurity is not a
+  # permutation quantity and runs orders of magnitude larger, so it cannot
+  # share a ranking with the permutation measures. Classification skips that
+  # branch entirely (its importance matrix is wider than 2 columns), which
+  # left MeanDecreaseGini as the sole survivor of the pivot. What remains for
+  # a classification fit is the per-class columns plus MeanDecreaseAccuracy --
+  # all permutation measures, mutually commensurable, and the direct analogue
+  # of the all/<class> columns gg_vimp.rfsrc pivots together. Forests grown
+  # with importance = FALSE store impurity alone, so keep it in that case.
+  impurity <- c("IncNodePurity", "MeanDecreaseGini")
+  measures <- setdiff(colnames(gg_dta), impurity)
+  if (length(measures) > 0) {
+    gg_dta <- gg_dta[, measures, drop = FALSE]
+  }
+
   if (ncol(gg_dta) < 3) {
     gg_dta$vars <- rownames(gg_dta)
     colnames(gg_dta)[which(colnames(gg_dta) == "X.IncMSE")] <-
@@ -400,6 +502,14 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
       # plot.gg_vimp both work regardless of what randomForest named the column.
       colnames(gg_dta)[1] <- "vimp"
     }
+    # With importance = TRUE, randomForest stores a node-impurity measure
+    # (IncNodePurity / MeanDecreaseGini) alongside the permutation one, and the
+    # multiclass pivot below would stack both into `vimp` and rank them
+    # together. They are not commensurable -- node purity runs in the thousands
+    # where %IncMSE runs in the tens -- so the impurity rows would sweep the top
+    # of the ranking and the permutation values the caller asked for would be
+    # truncated away entirely. Keep only the measure chosen above.
+    gg_dta <- gg_dta[, c("vimp", "vars"), drop = FALSE]
   }
   if (missing(nvar)) {
     nvar <- nrow(gg_dta)
@@ -414,54 +524,41 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     arg_set <- list(...)
 
     if (!is.null(arg_set$which.outcome)) {
-      # test which.outcome specification
-      if (!is.numeric(arg_set$which.outcome)) {
-        if (arg_set$which.outcome %in% colnames(gg_dta)) {
-          gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome],
-            decreasing = TRUE
-          ))
-          gg_v$vars <-
-            rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome],
-              decreasing = TRUE
-            )]
-        } else {
-          stop(
-            paste(
-              "which.outcome naming is incorrect.",
-              arg_set$which.outcome,
-              "\nis not in",
-              colnames(gg_dta)
-            )
-          )
-        }
-      } else {
-        # which.outcome = 0 gives overall importance (column 1)
-        # which.outcome = k gives class k importance (column k+1)
-        if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
-          stop("which.outcome must be a non-negative integer or a class name.")
-        }
-        if (arg_set$which.outcome < ncol(gg_dta)) {
-          gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome + 1],
-            decreasing = TRUE
-          ))
-          gg_v$vars <-
-            rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome + 1],
-              decreasing = TRUE
-            )]
-        } else {
-          stop(
-            paste0(
-              "which.outcome (", arg_set$which.outcome, ") is out of range. ",
-              "Valid values are 0 (overall) to ", ncol(gg_dta) - 1,
-              " (number of classes)."
-            )
-          )
-        }
-      }
+      which_col <- .rf_which_outcome_col(gg_dta, arg_set$which.outcome)
+      gg_v <- data.frame(vimp = sort(gg_dta[, which_col],
+        decreasing = TRUE
+      ))
+      gg_v$vars <-
+        rownames(gg_dta)[order(gg_dta[, which_col],
+          decreasing = TRUE
+        )]
+      # Name the column after the measure it holds, not after the "vimp"
+      # column the pivot below writes it into -- pivot_longer() takes `set`
+      # from the source column name.
+      colnames(gg_v)[1] <- which_col
       gg_dta <- gg_v
     } else {
       gg_dta$vars <- rownames(gg_dta)
+      # Rank before trimming. randomForest hands back $importance in
+      # model-matrix order, so the frame reaching here is unsorted, and the
+      # sort below runs after the pivot -- too late to decide which variables
+      # survive. Trimming now without ordering would keep the first nvar
+      # variables and hence, on iris, the two *least* important ones. Rank on
+      # the overall permutation measure where the fit has one; a single-measure
+      # frame has only the one column to rank on.
+      primary <- colnames(gg_dta)[1]
+      if ("MeanDecreaseAccuracy" %in% colnames(gg_dta)) {
+        primary <- "MeanDecreaseAccuracy"
+      }
+      gg_dta <- gg_dta[order(gg_dta[[primary]], decreasing = TRUE), ,
+        drop = FALSE
+      ]
     }
+
+    # Trim while the frame is still one row per variable: nvar counts
+    # variables, so truncating the pivoted frame would instead lop whole
+    # measures off the end of the ranking. gg_vimp.rfsrc trims here too.
+    gg_dta <- gg_dta[seq_len(nvar), , drop = FALSE]
 
     pivot_cols <-
       colnames(gg_dta)[-which(colnames(gg_dta) == "vars")]
@@ -476,8 +573,8 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
   } else {
     gg_dta$vars[which(is.na(gg_dta$vars))] <-
       rownames(gg_dta)[which(is.na(gg_dta$vars))]
+    gg_dta <- gg_dta[seq_len(nvar), ]
   }
-  gg_dta <- gg_dta[seq_len(nvar), ]
 
   gg_dta$vars <-
     factor(gg_dta$vars, levels = rev(unique(gg_dta$vars)))

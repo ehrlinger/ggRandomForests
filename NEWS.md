@@ -39,6 +39,82 @@ ggRandomForests v3.5.0
   error and still is. The `partialpro`-only arguments (`cut`, `nsmp`) mean
   nothing on this path and are now ignored with a warning rather than in
   silence.
+* Fix: `gg_vimp()` on a `randomForest` fit grown with `importance = TRUE` now
+  reports the permutation importance you asked for. It was reporting node
+  purity instead, and silently: `randomForest` stores `%IncMSE` and
+  `IncNodePurity` side by side, and `gg_vimp()` stacked both into one `vimp`
+  column and ranked them together. The two are not commensurable -- node purity
+  runs in the thousands where `%IncMSE` runs in the tens -- so every impurity
+  row outranked every permutation row, and the truncation to `nvar` cut the
+  permutation values away entirely. On `randomForest(medv ~ ., Boston,
+  importance = TRUE)` the plot showed `lstat = 12576.7` (node purity) where the
+  permutation value is `lstat = 62.4`. Node purity is now left out of the
+  ranking; read `randomForest::importance(object)` if you want both. Fits grown
+  without `importance = TRUE` are unaffected -- they only ever stored node
+  purity, and that is still what you get.
+* Fix: `gg_vimp()` on a `randomForest` *classification* fit grown with
+  `importance = TRUE` now reports permutation importance as well. That matrix
+  mixes the same two scales -- a permutation column per class plus
+  `MeanDecreaseAccuracy`, alongside `MeanDecreaseGini` -- but it is wider than
+  the single-outcome branch that picks one measure, so it skipped that branch
+  and every column was ranked together. `MeanDecreaseGini` came out the sole
+  survivor: on `randomForest(Species ~ ., iris, importance = TRUE)`,
+  `gg_vimp()` returned 4 rows of node purity where 16 rows of permutation
+  importance were there to report. The per-class columns and
+  `MeanDecreaseAccuracy` are all permutation measures on one scale, so they are
+  now kept together and named in the `set` column, the way an `rfsrc` fit's
+  `all`/`<class>` columns already were; only `MeanDecreaseGini` is dropped.
+* Fix: `which.outcome` now selects the column you asked for on a `randomForest`
+  classification fit. `which.outcome = 0` documented itself as overall
+  importance and took column 1 to get it, and `which.outcome = k` took column
+  `k + 1` for class `k`. Both are right for an `rfsrc` fit, whose `$importance`
+  leads with an `all` column, and neither is right here: a `randomForest`
+  matrix opens on the classes and keeps the overall permutation measure in
+  `MeanDecreaseAccuracy`, near the end. So `0` returned the first class
+  labelled as overall -- on `randomForest(Species ~ ., iris, importance =
+  TRUE)` it handed back setosa's values, ranking `Petal.Width` above
+  `Petal.Length` where the overall measure has them the other way round -- and
+  every class index was shifted by one, `1` giving versicolor. The columns are
+  now resolved by name: `0` reaches `MeanDecreaseAccuracy`, `k` reaches class
+  `k`, and `which.outcome = 1` agrees with `which.outcome = "setosa"`. Fits
+  grown with `importance = FALSE` keep no `MeanDecreaseAccuracy` column and
+  their single measure answers to `0` as before.
+* `which.outcome` now names the measure it selected in the `set` column, for
+  both `rfsrc` and `randomForest` fits. Asking for one measure reported `set`
+  as the literal `"vimp"` -- the pivot takes `set` from the source column name,
+  and the selected column was named after the `vimp` column it was about to be
+  written into rather than after the measure it held. So the one path where you
+  have to say which measure you want was the one path that would not tell you
+  which measure you got. `gg_vimp(rfsrc_iris, which.outcome = 0)` now reports
+  `set == "all"`, `gg_vimp(rf_iris, which.outcome = 0)` reports
+  `set == "MeanDecreaseAccuracy"`, and both agree with the names the unfiltered
+  pivot has always used. Values and ordering are unchanged, and plots are
+  unaffected: `plot.gg_vimp()` only facets on `set` when there is more than one
+  of them, and selecting a measure leaves exactly one.
+* `nvar` counts variables again for `randomForest` fits, not rows. It was
+  applied after the multiclass pivot, where a frame holds one row per
+  variable *per measure*, so it lopped whole measures off the end of the
+  ranking instead of trimming the ranking itself.
+* `gg_vimp()` now says in `?gg_vimp` that a `randomForest` fit without
+  `importance = TRUE` stores only `IncNodePurity`, so the ranking is node
+  purity rather than permutation VIMP, and nothing in the plot marks the
+  difference. The example now passes `importance = TRUE`.
+* `gg_error()` now explains that the error trajectory is `randomForestSRC`'s to
+  record, not ours: `rfsrc()`'s `block.size` defaults to `NULL` unless you
+  request importance, which stores the error at the final tree only, so a
+  default fit gives `gg_error()` a single point rather than a curve --
+  `tree.err = TRUE` alone does not change that. Grow with `block.size = 1` for
+  an error at every tree. The examples do this now; they had all been plotting
+  one dot.
+* `gg_beta_varpro()`: the `imp` column is documented as the *absolute*
+  coefficient. `varPro::beta.varpro()` wraps every coefficient it returns in
+  `abs()`, so the sign is discarded upstream and never reaches us -- the docs
+  had said "Sign is real (direction of local association)", which cannot be
+  read off this output. Use `gg_ivarpro()` for a signed local estimator.
+* `gg_isopro()`: the "What's in the output" section now says the polarity flip
+  is ours. `varPro::isopro()`'s `howbad` is *lower* = more anomalous; we return
+  `1 - howbad` so that higher = more anomalous. The section had credited that
+  to the fit, contradicting this function's own `@return`.
 * Added `gg_shap()` and `plot.gg_shap()` (with `shap_importance()`,
   `shap_beeswarm()`, `shap_dependence()`) for SHAP explanations of
   regression and classification forests, wrapping `kernelshap` (Suggests).
