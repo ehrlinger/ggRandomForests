@@ -222,11 +222,17 @@ top-10 list may come back whole while a top-12 list quietly loses two.  We
 compare the two sets before calling <code>partialpro</code> and warn, naming what
 was dropped.  A quick <code>setdiff(my_names, object$xvar.names)</code> answers
 the same question before you spend the computation.</p>
-<p>To lift the ceiling, refit with
-<code>varPro::varpro(..., split.weight = FALSE)</code>,
-which puts every predictor in <code>object$xvar.names</code>.  <code>nvar</code> and
-<code>sparse = FALSE</code> will not do it: <code>nvar</code> caps what gets reported,
-and <code>sparse</code> only deepens the topvars list.</p>
+<p>For a complete view, fit with both screens off:
+<code>varPro::varpro(..., sparse = FALSE, split.weight = FALSE)</code>.
+<code>split.weight = FALSE</code> is the one that lifts the ceiling – it puts
+every predictor in <code>object$xvar.names</code>, so partial dependence can reach
+them all, and it leaves a strong variable's curve where it was.
+<code>sparse = FALSE</code> does the smaller thing, deepening
+<code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.topvars</a></code> so the reported ranking shows its tail rather than
+the screened top.  Both are <code>varPro</code>'s own arguments, and its defaults
+(both <code>TRUE</code>) go the other way, toward the screened set; keep the
+defaults when that sparser set is what you want.  <code>nvar</code> is not the
+knob here – it only caps how much gets reported.</p>
 <p><strong>Scale detection:</strong> with <code>scale = "auto"</code> and an <code>object</code> in
 hand, the scale resolves to <code>"mortality"</code> for a survival forest and
 <code>"generic"</code> for a regression or classification forest.  The RMST
@@ -414,7 +420,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>                    <span class="co"># predictors in the data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span>         <span class="co"># what the fit reaches</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.topvars</a></span><span class="op">(</span><span class="va">vp</span><span class="op">)</span><span class="op">)</span>   <span class="co"># the default when xvar.names is absent</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span></span></span>
@@ -422,12 +428,12 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="co">## reach before you spend the computation -- this is the habit worth having.</span></span></span>
 <span class="r-in"><span><span class="va">wanted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wt"</span>, <span class="st">"hp"</span>, <span class="st">"qsec"</span>, <span class="st">"vs"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">wanted</span>, <span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "qsec" "vs"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "vs"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Ask anyway and we warn, naming what partialpro() would have dropped</span></span></span>
 <span class="r-in"><span><span class="co">## in silence.</span></span></span>
 <span class="r-in"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span>object <span class="op">=</span> <span class="va">vp</span>, xvar.names <span class="op">=</span> <span class="va">wanted</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): vs. The fit reaches 8 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Refitting without the split-weight screen reaches every predictor.</span></span></span>
 <span class="r-in"><span><span class="va">vp_all</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span>,</span></span>

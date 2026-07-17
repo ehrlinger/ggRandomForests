@@ -152,11 +152,18 @@ loses two. We compare the two sets before calling `partialpro` and warn,
 naming what was dropped. A quick `setdiff(my_names, object$xvar.names)`
 answers the same question before you spend the computation.
 
-To lift the ceiling, refit with
-`varPro::varpro(..., split.weight = FALSE)`, which puts every predictor
-in `object$xvar.names`. `nvar` and `sparse = FALSE` will not do it:
-`nvar` caps what gets reported, and `sparse` only deepens the topvars
-list.
+For a complete view, fit with both screens off:
+`varPro::varpro(..., sparse = FALSE, split.weight = FALSE)`.
+`split.weight = FALSE` is the one that lifts the ceiling – it puts every
+predictor in `object$xvar.names`, so partial dependence can reach them
+all, and it leaves a strong variable's curve where it was.
+`sparse = FALSE` does the smaller thing, deepening
+[`varPro::get.topvars`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+so the reported ranking shows its tail rather than the screened top.
+Both are `varPro`'s own arguments, and its defaults (both `TRUE`) go the
+other way, toward the screened set; keep the defaults when that sparser
+set is what you want. `nvar` is not the knob here – it only caps how
+much gets reported.
 
 **Scale detection:** with `scale = "auto"` and an `object` in hand, the
 scale resolves to `"mortality"` for a survival forest and `"generic"`
@@ -351,7 +358,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 6
+#> [1] 8
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
@@ -359,12 +366,12 @@ length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 ## reach before you spend the computation -- this is the habit worth having.
 wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
-#> [1] "qsec" "vs"  
+#> [1] "vs"
 
 ## Ask anyway and we warn, naming what partialpro() would have dropped
 ## in silence.
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted)
-#> Warning: gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
+#> Warning: gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): vs. The fit reaches 8 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,

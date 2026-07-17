@@ -738,24 +738,33 @@ pd <- varPro::partialpro(v_boston, xvar.names = my_vars)
 setdiff(my_vars, names(pd))   # anything here was dropped
 ```
 
-To widen the candidate set itself, turn guided splitting off:
+For a complete view, where every predictor is reachable and the reported
+ranking shows its full tail, fit with both screens off:
 
 ``` r
 
-varPro::varpro(medv ~ ., data = Boston, split.weight = FALSE)
+varPro::varpro(medv ~ ., data = Boston, sparse = FALSE, split.weight = FALSE)
 ```
 
-Every predictor is then reachable. The cost is real: guided splitting is
-how varPro concentrates its release rules, so the importance values
-change, and wide data fits slower. If what you want is partial effects
-on a variable set you settled on elsewhere, the top of an
-[`rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html) VIMP
-ranking say, that trade is usually worth making. If you are also reading
-varPro’s importance off the same fit, it isn’t.
+`split.weight = FALSE` is the one that lifts the ceiling. With guided
+splitting off, every predictor stays a candidate and lands in
+`object$xvar.names`, so `partialpro()` can reach them all. It is safer
+than it sounds: the partial curve of a variable that was already
+reachable barely moves, because you are changing which variables compete
+for splits, not the local effect the release rules estimate for a strong
+one. What changes is varPro’s importance ranking, where the weak
+variables now earn nonzero scores, so read the ranking off a screened
+fit when a screened ranking is what you are after. `sparse = FALSE` is
+the smaller companion: it deepens the reported ranking so its tail
+shows, and leaves `object$xvar.names` alone.
 
-Two knobs look like they belong here and don’t. `nvar` caps how many
-variables are reported, not how many compete. `sparse = FALSE` deepens
-the reported ranking and leaves `object$xvar.names` where it was.
+Two ways to fit, then, for two questions. Keep varPro’s defaults, both
+screens on, when you want the parsimonious set: the variables that carry
+the signal, ranked. Turn both off for the exploratory sweep, where you
+would rather see every predictor and filter by your own judgment than
+let the screen decide, and where a variable that scores weakly can still
+be the one that turns out to matter. `nvar` is a red herring either way;
+it caps how much gets reported, not how much competes.
 
 ### Factor-level ordering
 
