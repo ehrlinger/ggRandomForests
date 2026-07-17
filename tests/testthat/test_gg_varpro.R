@@ -222,36 +222,31 @@ test_that("plot.gg_varpro type='raw' with local.std=TRUE -> stop", {
 ## those to the truncated $imp levels orphaned the extras to NA, which rendered
 ## as an empty "NA" box/bar. plot.gg_varpro must drop them.
 
-## The orphaned rows land in a real "NA" category on the *variable* (discrete)
-## axis, so inspect that axis's break labels. Identify it as the axis whose
-## non-"NA" labels are non-numeric (the value axis is numeric).
-.varpro_discrete_labels <- function(p) {
-  pp   <- ggplot2::ggplot_build(p)$layout$panel_params[[1]]
-  grab <- function(ax) if (!is.null(ax) && !is.null(ax$get_labels)) ax$get_labels() else character()
-  cand <- list(grab(pp$x), grab(pp$y))
-  is_disc <- vapply(cand, function(l) {
-    l <- l[!is.na(l) & l != "NA"]
-    length(l) > 0 && all(is.na(suppressWarnings(as.numeric(l))))
-  }, logical(1))
-  unlist(cand[is_disc])
+## The `variable` scale is mapped to x (aes(x = variable)); coord_flip() flips
+## the rendering, not the aesthetic-to-scale mapping, so the variable categories
+## are always the trained x-scale range. Reading them there needs no guessing
+## about which rendered axis is discrete, and the phantom NA appears directly as
+## an NA category in that range.
+.varpro_variable_cats <- function(p) {
+  ggplot2::ggplot_build(p)$layout$panel_scales_x[[1]]$range$range
 }
 
 test_that("plot.gg_varpro faithful: no phantom 'NA' variable when nvar < p", {
-  vp   <- make_vp_regr()                  # mtcars: 10 predictors
-  gg   <- gg_varpro(vp, faithful = TRUE, nvar = 3L)
-  labs <- .varpro_discrete_labels(plot(gg))
-  expect_gt(length(labs), 0L)             # we did find the variable axis
-  expect_false(any(is.na(labs)))
-  expect_false(any(labs == "NA"))
+  # imp.tree keeps every variable, so nvar = 3 (< 10 predictors) orphans the
+  # rest -- they would collapse into an NA category without the fix.
+  vp   <- make_vp_regr()
+  cats <- .varpro_variable_cats(plot(gg_varpro(vp, faithful = TRUE, nvar = 3L)))
+  expect_gt(length(cats), 0L)
+  expect_false(anyNA(cats))
 })
 
 test_that("plot.gg_varpro conditional: no phantom 'NA' variable when nvar < p", {
-  vp   <- make_vp_class()                 # iris: 4 predictors, 3 classes
-  gg   <- gg_varpro(vp, conditional = TRUE, nvar = 2L)
-  labs <- .varpro_discrete_labels(plot(gg))
-  expect_gt(length(labs), 0L)
-  expect_false(any(is.na(labs)))
-  expect_false(any(labs == "NA"))
+  # nvar = 1 truncates below the conditional table's variable count, which is
+  # what orphans a variable to NA in the buggy path.
+  vp   <- make_vp_class()
+  cats <- .varpro_variable_cats(plot(gg_varpro(vp, conditional = TRUE, nvar = 1L)))
+  expect_gt(length(cats), 0L)
+  expect_false(anyNA(cats))
 })
 
 test_that("plot.gg_varpro type='z' with local.std=FALSE -> stop", {
