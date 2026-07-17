@@ -216,6 +216,44 @@ test_that("plot.gg_varpro type='raw' with local.std=TRUE -> stop", {
   expect_error(plot(gg, type = "raw"), regexp = "local\\.std")
 })
 
+## ── Regression: no phantom "NA" category when nvar < p ───────────────────────
+## gg_varpro(nvar = k) truncates $imp/$stats to k variables, but $imp.tree (the
+## per-tree matrix) and $conditional still carry every variable. Re-levelling
+## those to the truncated $imp levels orphaned the extras to NA, which rendered
+## as an empty "NA" box/bar. plot.gg_varpro must drop them.
+
+## The orphaned rows land in a real "NA" category on the *variable* (discrete)
+## axis, so inspect that axis's break labels. Identify it as the axis whose
+## non-"NA" labels are non-numeric (the value axis is numeric).
+.varpro_discrete_labels <- function(p) {
+  pp   <- ggplot2::ggplot_build(p)$layout$panel_params[[1]]
+  grab <- function(ax) if (!is.null(ax) && !is.null(ax$get_labels)) ax$get_labels() else character()
+  cand <- list(grab(pp$x), grab(pp$y))
+  is_disc <- vapply(cand, function(l) {
+    l <- l[!is.na(l) & l != "NA"]
+    length(l) > 0 && all(is.na(suppressWarnings(as.numeric(l))))
+  }, logical(1))
+  unlist(cand[is_disc])
+}
+
+test_that("plot.gg_varpro faithful: no phantom 'NA' variable when nvar < p", {
+  vp   <- make_vp_regr()                  # mtcars: 10 predictors
+  gg   <- gg_varpro(vp, faithful = TRUE, nvar = 3L)
+  labs <- .varpro_discrete_labels(plot(gg))
+  expect_gt(length(labs), 0L)             # we did find the variable axis
+  expect_false(any(is.na(labs)))
+  expect_false(any(labs == "NA"))
+})
+
+test_that("plot.gg_varpro conditional: no phantom 'NA' variable when nvar < p", {
+  vp   <- make_vp_class()                 # iris: 4 predictors, 3 classes
+  gg   <- gg_varpro(vp, conditional = TRUE, nvar = 2L)
+  labs <- .varpro_discrete_labels(plot(gg))
+  expect_gt(length(labs), 0L)
+  expect_false(any(is.na(labs)))
+  expect_false(any(labs == "NA"))
+})
+
 test_that("plot.gg_varpro type='z' with local.std=FALSE -> stop", {
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, local.std = FALSE)
