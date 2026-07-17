@@ -54,7 +54,11 @@
 #' reports the permutation one and leaves node purity out of the ranking --
 #' the two run on different scales and mean different things, so putting them
 #' in one ordering would be meaningless.  Read
-#' \code{randomForest::importance(object)} if you want both.
+#' \code{randomForest::importance(object)} if you want both.  A classification
+#' fit names that pair \code{MeanDecreaseAccuracy} and \code{MeanDecreaseGini},
+#' and stores a permutation column per class besides.  Those per-class columns
+#' are all permutation measures on one scale, so \code{gg_vimp()} keeps them
+#' together, names each in the \code{set} column, and drops only the Gini one.
 #'
 #' \code{\link{gg_varpro}()} takes the opposite route, comparing local
 #' estimators on real observed data through varPro's release rules, with no
@@ -409,6 +413,22 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
   } else {
     gg_dta <- data.frame(object$importance)
   }
+  # Drop the node-impurity measure up front, for the same reason the
+  # single-outcome branch below keeps only one measure: impurity is not a
+  # permutation quantity and runs orders of magnitude larger, so it cannot
+  # share a ranking with the permutation measures. Classification skips that
+  # branch entirely (its importance matrix is wider than 2 columns), which
+  # left MeanDecreaseGini as the sole survivor of the pivot. What remains for
+  # a classification fit is the per-class columns plus MeanDecreaseAccuracy --
+  # all permutation measures, mutually commensurable, and the direct analogue
+  # of the all/<class> columns gg_vimp.rfsrc pivots together. Forests grown
+  # with importance = FALSE store impurity alone, so keep it in that case.
+  impurity <- c("IncNodePurity", "MeanDecreaseGini")
+  measures <- setdiff(colnames(gg_dta), impurity)
+  if (length(measures) > 0) {
+    gg_dta <- gg_dta[, measures, drop = FALSE]
+  }
+
   if (ncol(gg_dta) < 3) {
     gg_dta$vars <- rownames(gg_dta)
     colnames(gg_dta)[which(colnames(gg_dta) == "X.IncMSE")] <-
@@ -494,6 +514,11 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
       gg_dta$vars <- rownames(gg_dta)
     }
 
+    # Trim while the frame is still one row per variable: nvar counts
+    # variables, so truncating the pivoted frame would instead lop whole
+    # measures off the end of the ranking. gg_vimp.rfsrc trims here too.
+    gg_dta <- gg_dta[seq_len(nvar), , drop = FALSE]
+
     pivot_cols <-
       colnames(gg_dta)[-which(colnames(gg_dta) == "vars")]
     gg_dta <- tidyr::pivot_longer(
@@ -507,8 +532,8 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
   } else {
     gg_dta$vars[which(is.na(gg_dta$vars))] <-
       rownames(gg_dta)[which(is.na(gg_dta$vars))]
+    gg_dta <- gg_dta[seq_len(nvar), ]
   }
-  gg_dta <- gg_dta[seq_len(nvar), ]
 
   gg_dta$vars <-
     factor(gg_dta$vars, levels = rev(unique(gg_dta$vars)))

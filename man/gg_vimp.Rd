@@ -61,7 +61,11 @@ When a \code{randomForest} fit carries both measures, \code{gg_vimp()}
 reports the permutation one and leaves node purity out of the ranking --
 the two run on different scales and mean different things, so putting them
 in one ordering would be meaningless.  Read
-\code{randomForest::importance(object)} if you want both.
+\code{randomForest::importance(object)} if you want both.  A classification
+fit names that pair \code{MeanDecreaseAccuracy} and \code{MeanDecreaseGini},
+and stores a permutation column per class besides.  Those per-class columns
+are all permutation measures on one scale, so \code{gg_vimp()} keeps them
+together, names each in the \code{set} column, and drops only the Gini one.
 
 \code{\link{gg_varpro}()} takes the opposite route, comparing local
 estimators on real observed data through varPro's release rules, with no

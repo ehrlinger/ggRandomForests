@@ -52,6 +52,22 @@ ggRandomForests v3.5.0
   ranking; read `randomForest::importance(object)` if you want both. Fits grown
   without `importance = TRUE` are unaffected -- they only ever stored node
   purity, and that is still what you get.
+* Fix: `gg_vimp()` on a `randomForest` *classification* fit grown with
+  `importance = TRUE` now reports permutation importance as well. That matrix
+  mixes the same two scales -- a permutation column per class plus
+  `MeanDecreaseAccuracy`, alongside `MeanDecreaseGini` -- but it is wider than
+  the single-outcome branch that picks one measure, so it skipped that branch
+  and every column was ranked together. `MeanDecreaseGini` came out the sole
+  survivor: on `randomForest(Species ~ ., iris, importance = TRUE)`,
+  `gg_vimp()` returned 4 rows of node purity where 16 rows of permutation
+  importance were there to report. The per-class columns and
+  `MeanDecreaseAccuracy` are all permutation measures on one scale, so they are
+  now kept together and named in the `set` column, the way an `rfsrc` fit's
+  `all`/`<class>` columns already were; only `MeanDecreaseGini` is dropped.
+* `nvar` counts variables again for `randomForest` fits, not rows. It was
+  applied after the multiclass pivot, where a frame holds one row per
+  variable *per measure*, so it lopped whole measures off the end of the
+  ranking instead of trimming the ranking itself.
 * `gg_vimp()` now says in `?gg_vimp` that a `randomForest` fit without
   `importance = TRUE` stores only `IncNodePurity`, so the ranking is node
   purity rather than permutation VIMP, and nothing in the plot marks the
