@@ -165,6 +165,10 @@ plot.gg_varpro <- function(x, type, ...) {
     long_df <- tidyr::pivot_longer(long_df, !"tree",
                                    names_to = "variable", values_to = "imp_raw")
     long_df$variable <- factor(long_df$variable, levels = levels(x$imp$variable))
+    ## imp is truncated to the displayed variables (e.g. nvar); the per-tree
+    ## matrix still carries every variable, so re-levelling orphans the rest to
+    ## NA. Drop them -- otherwise geom_jitter renders a phantom "NA" category.
+    long_df <- long_df[!is.na(long_df$variable), , drop = FALSE]
 
     ## Overlay y-values match the box scale (type-aware) --------------------
     if (identical(type, "z")) {
@@ -208,6 +212,9 @@ plot.gg_varpro <- function(x, type, ...) {
   ## Replace NA/NaN z with 0 to suppress geom_col remove_missing warnings
   cond_df$z[!is.finite(cond_df$z)] <- 0
   cond_df$variable <- factor(cond_df$variable, levels = levels(x$imp$variable))
+  ## Drop conditional rows for variables outside the displayed set (same
+  ## truncation as the faithful overlay) so no phantom "NA" bar appears.
+  cond_df <- cond_df[!is.na(cond_df$variable), , drop = FALSE]
   cutoff    <- prov$cutoff %||% 0.79
 
   ggplot2::ggplot(cond_df,

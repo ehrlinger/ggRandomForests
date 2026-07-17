@@ -216,6 +216,39 @@ test_that("plot.gg_varpro type='raw' with local.std=TRUE -> stop", {
   expect_error(plot(gg, type = "raw"), regexp = "local\\.std")
 })
 
+## ── Regression: no phantom "NA" category when nvar < p ───────────────────────
+## gg_varpro(nvar = k) truncates $imp/$stats to k variables, but $imp.tree (the
+## per-tree matrix) and $conditional still carry every variable. Re-levelling
+## those to the truncated $imp levels orphaned the extras to NA, which rendered
+## as an empty "NA" box/bar. plot.gg_varpro must drop them.
+
+## The `variable` scale is mapped to x (aes(x = variable)); coord_flip() flips
+## the rendering, not the aesthetic-to-scale mapping, so the variable categories
+## are always the trained x-scale range. Reading them there needs no guessing
+## about which rendered axis is discrete, and the phantom NA appears directly as
+## an NA category in that range.
+.varpro_variable_cats <- function(p) {
+  ggplot2::ggplot_build(p)$layout$panel_scales_x[[1]]$range$range
+}
+
+test_that("plot.gg_varpro faithful: no phantom 'NA' variable when nvar < p", {
+  # imp.tree keeps every variable, so nvar = 3 (< 10 predictors) orphans the
+  # rest -- they would collapse into an NA category without the fix.
+  vp   <- make_vp_regr()
+  cats <- .varpro_variable_cats(plot(gg_varpro(vp, faithful = TRUE, nvar = 3L)))
+  expect_gt(length(cats), 0L)
+  expect_false(anyNA(cats))
+})
+
+test_that("plot.gg_varpro conditional: no phantom 'NA' variable when nvar < p", {
+  # nvar = 1 truncates below the conditional table's variable count, which is
+  # what orphans a variable to NA in the buggy path.
+  vp   <- make_vp_class()
+  cats <- .varpro_variable_cats(plot(gg_varpro(vp, conditional = TRUE, nvar = 1L)))
+  expect_gt(length(cats), 0L)
+  expect_false(anyNA(cats))
+})
+
 test_that("plot.gg_varpro type='z' with local.std=FALSE -> stop", {
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, local.std = FALSE)
