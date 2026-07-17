@@ -132,11 +132,17 @@ compare the two sets before calling \code{partialpro} and warn, naming what
 was dropped.  A quick \code{setdiff(my_names, object$xvar.names)} answers
 the same question before you spend the computation.
 
-To lift the ceiling, refit with
-\code{varPro::varpro(..., split.weight = FALSE)},
-which puts every predictor in \code{object$xvar.names}.  \code{nvar} and
-\code{sparse = FALSE} will not do it: \code{nvar} caps what gets reported,
-and \code{sparse} only deepens the topvars list.
+For a complete view, fit with both screens off:
+\code{varPro::varpro(..., sparse = FALSE, split.weight = FALSE)}.
+\code{split.weight = FALSE} is the one that lifts the ceiling -- it puts
+every predictor in \code{object$xvar.names}, so partial dependence can reach
+them all, and it leaves a strong variable's curve where it was.
+\code{sparse = FALSE} does the smaller thing, deepening
+\code{get.topvars} so the reported ranking shows its tail rather than the
+screened top.  Both are \code{varPro}'s own arguments, and its defaults
+(both \code{TRUE}) go the other way, toward the screened set; keep the
+defaults when that sparser set is what you want.  \code{nvar} is not the
+knob here -- it only caps how much gets reported.
 
 \strong{Scale detection:} with \code{scale = "auto"} and an \code{object} in
 hand, the scale resolves to \code{"mortality"} for a survival forest and
