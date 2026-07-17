@@ -64,6 +64,21 @@ ggRandomForests v3.5.0
   `MeanDecreaseAccuracy` are all permutation measures on one scale, so they are
   now kept together and named in the `set` column, the way an `rfsrc` fit's
   `all`/`<class>` columns already were; only `MeanDecreaseGini` is dropped.
+* Fix: `which.outcome` now selects the column you asked for on a `randomForest`
+  classification fit. `which.outcome = 0` documented itself as overall
+  importance and took column 1 to get it, and `which.outcome = k` took column
+  `k + 1` for class `k`. Both are right for an `rfsrc` fit, whose `$importance`
+  leads with an `all` column, and neither is right here: a `randomForest`
+  matrix opens on the classes and keeps the overall permutation measure in
+  `MeanDecreaseAccuracy`, near the end. So `0` returned the first class
+  labelled as overall -- on `randomForest(Species ~ ., iris, importance =
+  TRUE)` it handed back setosa's values, ranking `Petal.Width` above
+  `Petal.Length` where the overall measure has them the other way round -- and
+  every class index was shifted by one, `1` giving versicolor. The columns are
+  now resolved by name: `0` reaches `MeanDecreaseAccuracy`, `k` reaches class
+  `k`, and `which.outcome = 1` agrees with `which.outcome = "setosa"`. Fits
+  grown with `importance = FALSE` keep no `MeanDecreaseAccuracy` column and
+  their single measure answers to `0` as before.
 * `nvar` counts variables again for `randomForest` fits, not rows. It was
   applied after the multiclass pivot, where a frame holds one row per
   variable *per measure*, so it lopped whole measures off the end of the

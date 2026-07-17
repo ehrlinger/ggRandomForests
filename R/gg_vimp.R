@@ -486,28 +486,47 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
           )
         }
       } else {
-        # which.outcome = 0 gives overall importance (column 1)
-        # which.outcome = k gives class k importance (column k+1)
-        if (!is.numeric(arg_set$which.outcome) || arg_set$which.outcome < 0) {
+        # Resolve the column by name rather than by offset. randomForest's
+        # importance matrix has no overall-first column: it runs one
+        # permutation column per class, then MeanDecreaseAccuracy (the overall
+        # permutation measure), then MeanDecreaseGini. rfsrc leads with an
+        # "all" column instead, so gg_vimp.rfsrc's index arithmetic -- 0 for
+        # column 1, k for column k+1 -- does not carry over here. Applied to a
+        # randomForest fit it silently hands back the first class for 0 and
+        # shifts every class by one.
+        #   which.outcome = 0 gives overall (MeanDecreaseAccuracy)
+        #   which.outcome = k gives class k
+        # A fit grown with importance = FALSE keeps no MeanDecreaseAccuracy
+        # column; the sole surviving measure is the overall one by default.
+        if (arg_set$which.outcome < 0) {
           stop("which.outcome must be a non-negative integer or a class name.")
         }
-        if (arg_set$which.outcome < ncol(gg_dta)) {
-          gg_v <- data.frame(vimp = sort(gg_dta[, arg_set$which.outcome + 1],
-            decreasing = TRUE
-          ))
-          gg_v$vars <-
-            rownames(gg_dta)[order(gg_dta[, arg_set$which.outcome + 1],
-              decreasing = TRUE
-            )]
+        measures <- setdiff(colnames(gg_dta), "vars")
+        classes <- setdiff(measures, "MeanDecreaseAccuracy")
+        if (arg_set$which.outcome == 0) {
+          which_col <- if ("MeanDecreaseAccuracy" %in% measures) {
+            "MeanDecreaseAccuracy"
+          } else {
+            measures[1]
+          }
+        } else if (arg_set$which.outcome <= length(classes)) {
+          which_col <- classes[arg_set$which.outcome]
         } else {
           stop(
             paste0(
               "which.outcome (", arg_set$which.outcome, ") is out of range. ",
-              "Valid values are 0 (overall) to ", ncol(gg_dta) - 1,
+              "Valid values are 0 (overall) to ", length(classes),
               " (number of classes)."
             )
           )
         }
+        gg_v <- data.frame(vimp = sort(gg_dta[, which_col],
+          decreasing = TRUE
+        ))
+        gg_v$vars <-
+          rownames(gg_dta)[order(gg_dta[, which_col],
+            decreasing = TRUE
+          )]
       }
       gg_dta <- gg_v
     } else {

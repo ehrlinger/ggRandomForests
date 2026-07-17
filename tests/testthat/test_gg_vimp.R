@@ -121,6 +121,41 @@ test_that("gg_vimp classifications", {
   gg_dta <- gg_vimp(rf_iris, which.outcome = NULL)
 })
 
+test_that("gg_vimp randomForest which.outcome maps to the right column", {
+  data(iris, package = "datasets")
+  set.seed(1)
+  rf_iris <- randomForest::randomForest(Species ~ .,
+                                        data = iris,
+                                        importance = TRUE)
+
+  # randomForest's importance matrix leads with the per-class columns, so
+  # which.outcome = 0 must reach MeanDecreaseAccuracy, not column 1 (setosa).
+  overall <- sort(rf_iris$importance[, "MeanDecreaseAccuracy"],
+                  decreasing = TRUE)
+  gg_dta <- gg_vimp(rf_iris, which.outcome = 0)
+
+  expect_equal(gg_dta$vimp, unname(overall))
+  expect_equal(as.character(gg_dta$vars), names(overall))
+
+  # which.outcome = k stays class k, counting from the first class.
+  for (k in seq_len(3)) {
+    class_k <- sort(rf_iris$importance[, levels(iris$Species)[k]],
+                    decreasing = TRUE)
+    gg_k <- gg_vimp(rf_iris, which.outcome = k)
+
+    expect_equal(gg_k$vimp, unname(class_k))
+    expect_equal(as.character(gg_k$vars), names(class_k))
+  }
+
+  # Naming a class must agree with the equivalent index.
+  expect_equal(gg_vimp(rf_iris, which.outcome = "setosa")$vimp,
+               gg_vimp(rf_iris, which.outcome = 1)$vimp)
+
+  # Three classes, so 0:3 is the valid range.
+  expect_error(gg_vimp(rf_iris, which.outcome = 4))
+  expect_error(gg_vimp(rf_iris, which.outcome = -1))
+})
+
 
 test_that("gg_vimp survival", {
   dta <- new.env()
