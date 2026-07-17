@@ -37,17 +37,19 @@
 #' @importFrom stats quantile
 #'
 #' @examples
-#' data(Boston, package = "MASS")
-#' rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
+#' if (requireNamespace("MASS", quietly = TRUE)) {
+#'   data(Boston, package = "MASS")
+#'   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
 #'
-#' # To create 6 intervals, we want 7 points.
-#' # quantile_pts will find balanced intervals
-#' rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups = 6, intervals = TRUE)
+#'   # To create 6 intervals, we want 7 points.
+#'   # quantile_pts will find balanced intervals
+#'   rm_pts <- quantile_pts(rfsrc_boston$xvar$rm, groups = 6, intervals = TRUE)
 #'
-#' # Use cut to create the intervals
-#' rm_grp <- cut(rfsrc_boston$xvar$rm, breaks = rm_pts)
+#'   # Use cut to create the intervals
+#'   rm_grp <- cut(rfsrc_boston$xvar$rm, breaks = rm_pts)
 #'
-#' summary(rm_grp)
+#'   summary(rm_grp)
+#' }
 #'
 #' @export
 quantile_pts <- function(object, groups, intervals = FALSE) {
