@@ -32,9 +32,23 @@ additional `train` column is included.
 
 ## Details
 
+**You have to ask rfsrc for the trajectory.** How many trees you get a
+curve over is decided by
+[`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html),
+not here. Its `block.size` argument controls how often the error is
+recorded, and it defaults to `NULL` unless you request importance –
+which records the error at the *final tree only*. So a default fit gives
+`gg_error()` a single point, not a curve, and `tree.err = TRUE` on its
+own does not change that. Grow the forest with `block.size = 1` for an
+error recorded at every tree, or a larger `block.size` for every *n*th.
+If a
+[`plot.gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.md)
+figure comes back as one dot, this is why.
+
 For `randomForestSRC` objects the function reshapes the
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)`$err.rate`
-matrix and annotates it with the tree index required by
+matrix, drops the trees where rfsrc recorded nothing, and annotates the
+rest with the tree index required by
 [`plot.gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.md).
 When supplied a
 [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
@@ -74,7 +88,8 @@ Survival, Regression and Classification. R package version \>= 3.4.0.
 ## ------------------------------------------------------------
 ## ------------- iris data
 ## You can build a randomForest
-rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, tree.err = TRUE)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris,
+  tree.err = TRUE, block.size = 1)
 
 # Get a data.frame containing error rates
 gg_dta <- gg_error(rfsrc_iris)
@@ -102,7 +117,7 @@ plot(gg_dta)
 ## ------------- airq data
 rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ .,
   data = airquality,
-  na.action = "na.impute", tree.err = TRUE,
+  na.action = "na.impute", tree.err = TRUE, block.size = 1,
 )
 
 # Get a data.frame containing error rates
@@ -133,7 +148,8 @@ plot(gg_dta)
 
 
 ## ------------- mtcars data
-rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
+rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars,
+  tree.err = TRUE, block.size = 1)
 
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_mtcars)
@@ -150,7 +166,7 @@ plot(gg_dta)
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
 rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
-                       tree.err = TRUE)
+                       tree.err = TRUE, block.size = 1)
 
 gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)

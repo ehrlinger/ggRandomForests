@@ -104,13 +104,36 @@ reproducible.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>gg_vimp()</code> shows <strong>permutation (Breiman-Cutler) variable
-importance</strong>: the forest permutes a variable's observed values across the
-out-of-bag (OOB) cases, runs those perturbed cases down the already-grown
-trees, and measures how much the OOB prediction error climbs.  That
-perturbation is synthetic (the variable's link to the response is broken
-on purpose) so a large increase means the variable was carrying genuine
-signal; near-zero or negative values mean it added noise or nothing at all.</p>
+    <p><code>gg_vimp()</code> reports whatever importance the forest stored; it computes
+nothing itself.  Usually that is <strong>permutation (Breiman-Cutler)
+variable importance</strong>: the forest permutes a variable's observed values
+across the out-of-bag (OOB) cases, runs those perturbed cases down the
+already-grown trees, and measures how much the OOB prediction error climbs.
+That perturbation is synthetic (the variable's link to the response is
+broken on purpose) so a large increase means the variable was carrying
+genuine signal; near-zero or negative values mean it added noise or nothing
+at all.</p>
+<p><strong>A <code>randomForest</code> fit needs <code>importance = TRUE</code> to give you
+this.</strong>  <code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest::randomForest()</a></code> defaults to
+<code>importance = FALSE</code>, and that fit stores only <code>IncNodePurity</code> –
+a node-impurity (RSS or Gini) measure, which is not a permutation quantity
+and is not comparable to one.  It is the only importance the forest kept, so
+it is what <code>gg_vimp()</code> reports, in the <code>vimp</code> column, same as any
+other.  Nothing marks the difference in the plot.  So
+<code>gg_vimp(randomForest(y ~ ., data))</code> ranks by node purity; pass
+<code>importance = TRUE</code> and you get permutation VIMP (<code>%IncMSE</code>), and
+<code>colnames(object$importance)</code> tells you which one you have.
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">randomForestSRC::rfsrc()</a></code> has no such trap: its <code>importance</code>
+argument yields permutation VIMP.</p>
+<p>When a <code>randomForest</code> fit carries both measures, <code>gg_vimp()</code>
+reports the permutation one and leaves node purity out of the ranking –
+the two run on different scales and mean different things, so putting them
+in one ordering would be meaningless.  Read
+<code>randomForest::importance(object)</code> if you want both.  A classification
+fit names that pair <code>MeanDecreaseAccuracy</code> and <code>MeanDecreaseGini</code>,
+and stores a permutation column per class besides.  Those per-class columns
+are all permutation measures on one scale, so <code>gg_vimp()</code> keeps them
+together, names each in the <code>set</code> column, and drops only the Gini one.</p>
 <p><code><a href="gg_varpro.html">gg_varpro()</a></code> takes the opposite route, comparing local
 estimators on real observed data through varPro's release rules, with no
 permutation and no synthetic features.  The two approaches answer "which
@@ -172,7 +195,9 @@ forests, <em>Electronic J. Statist.</em>, 1:519-537.</p>
 <span class="r-plt img"><img src="gg_vimp-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## -------- Boston data</span></span></span>
-<span class="r-in"><span><span class="va">rf_boston</span> <span class="op">&lt;-</span> <span class="fu">randomForest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">Boston</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## importance = TRUE for permutation VIMP; without it randomForest stores</span></span></span>
+<span class="r-in"><span><span class="co">## only IncNodePurity, which is what you would be ranking (see Details).</span></span></span>
+<span class="r-in"><span><span class="va">rf_boston</span> <span class="op">&lt;-</span> <span class="fu">randomForest</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, <span class="va">Boston</span>, importance <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gg_dta</span> <span class="op">&lt;-</span> <span class="fu">gg_vimp</span><span class="op">(</span><span class="va">rf_boston</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_dta</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gg_vimp-4.png" alt="" width="700" height="433"></span>

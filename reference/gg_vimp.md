@@ -43,13 +43,38 @@ reproducible.
 
 ## Details
 
-`gg_vimp()` shows **permutation (Breiman-Cutler) variable importance**:
-the forest permutes a variable's observed values across the out-of-bag
-(OOB) cases, runs those perturbed cases down the already-grown trees,
-and measures how much the OOB prediction error climbs. That perturbation
-is synthetic (the variable's link to the response is broken on purpose)
-so a large increase means the variable was carrying genuine signal;
-near-zero or negative values mean it added noise or nothing at all.
+`gg_vimp()` reports whatever importance the forest stored; it computes
+nothing itself. Usually that is **permutation (Breiman-Cutler) variable
+importance**: the forest permutes a variable's observed values across
+the out-of-bag (OOB) cases, runs those perturbed cases down the
+already-grown trees, and measures how much the OOB prediction error
+climbs. That perturbation is synthetic (the variable's link to the
+response is broken on purpose) so a large increase means the variable
+was carrying genuine signal; near-zero or negative values mean it added
+noise or nothing at all.
+
+**A `randomForest` fit needs `importance = TRUE` to give you this.**
+[`randomForest::randomForest()`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
+defaults to `importance = FALSE`, and that fit stores only
+`IncNodePurity` – a node-impurity (RSS or Gini) measure, which is not a
+permutation quantity and is not comparable to one. It is the only
+importance the forest kept, so it is what `gg_vimp()` reports, in the
+`vimp` column, same as any other. Nothing marks the difference in the
+plot. So `gg_vimp(randomForest(y ~ ., data))` ranks by node purity; pass
+`importance = TRUE` and you get permutation VIMP (`%IncMSE`), and
+`colnames(object$importance)` tells you which one you have.
+[`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)
+has no such trap: its `importance` argument yields permutation VIMP.
+
+When a `randomForest` fit carries both measures, `gg_vimp()` reports the
+permutation one and leaves node purity out of the ranking – the two run
+on different scales and mean different things, so putting them in one
+ordering would be meaningless. Read `randomForest::importance(object)`
+if you want both. A classification fit names that pair
+`MeanDecreaseAccuracy` and `MeanDecreaseGini`, and stores a permutation
+column per class besides. Those per-class columns are all permutation
+measures on one scale, so `gg_vimp()` keeps them together, names each in
+the `set` column, and drops only the Gini one.
 
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
 takes the opposite route, comparing local estimators on real observed
@@ -117,7 +142,9 @@ plot(gg_dta)
 
 
 ## -------- Boston data
-rf_boston <- randomForest::randomForest(medv ~ ., Boston)
+## importance = TRUE for permutation VIMP; without it randomForest stores
+## only IncNodePurity, which is what you would be ranking (see Details).
+rf_boston <- randomForest::randomForest(medv ~ ., Boston, importance = TRUE)
 gg_dta <- gg_vimp(rf_boston)
 plot(gg_dta)
 

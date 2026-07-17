@@ -171,12 +171,15 @@ the released variable inside the rule's OOB region. <code>use.cv = TRUE</code>
 selects \(\lambda\) by 10-fold CV (default <code>nfolds = 10</code>);
 <code>use.1se = TRUE</code> (default) picks <code>lambda.1se</code>. <code>use.cv = FALSE</code> uses the
 full \(\lambda\) path.</p></li>
-<li><p><code>imp</code> is the <strong>fitted coefficient</strong> \(\hat{\beta}\) at the
-chosen \(\lambda\). <strong>Sign is
-real</strong> (direction of local association). <strong>Magnitude depends on
-the predictor's units</strong> (raw <code>x</code>, no standardisation); a predictor
-in millimetres has a smaller \(|\hat{\beta}|\) than the
-same predictor in metres.</p></li>
+<li><p><code>imp</code> is the <strong>absolute</strong> fitted coefficient
+\(|\hat{\beta}|\) at the chosen \(\lambda\).
+<strong>There is no direction here</strong>: <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> wraps every
+coefficient it returns in <code><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs()</a></code>, so the sign is discarded upstream and
+never reaches us. Read <code>imp</code> as strength of local association, not its
+direction. (For a signed local estimator, see <code><a href="gg_ivarpro.html">gg_ivarpro()</a></code>, where the
+sign does survive.) <strong>Magnitude depends on the predictor's units</strong> (raw
+<code>x</code>, no standardisation); a predictor in millimetres has a smaller
+\(|\hat{\beta}|\) than the same predictor in metres.</p></li>
 <li><p>Lasso shrinkage can drive \(\hat{\beta}\) to <strong>exactly zero</strong>.
 Those zeros are
 data, not missingness, and are kept in the aggregation. Convergence

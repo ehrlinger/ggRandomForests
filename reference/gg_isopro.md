@@ -102,11 +102,18 @@ colours per-method curves automatically when you stack the results.
 
 The fit gives back two parallel per-observation vectors: `case.depth` is
 the raw mean isolation depth (units of "splits", lower = more anomalous)
-and `howbad` is the same information transformed onto a `[0, 1]` scale
-via the empirical CDF of `case.depth` (higher = more anomalous). Both
-columns are kept so you can plot in either space and have the raw depth
-on hand for diagnostics; `howbad` is the canonical score and is what the
-plot method uses by default.
+and `howbad` is the same information on a `[0, 1]` scale, the empirical
+CDF of `case.depth`. On the fit those two run the same way:
+[`varPro::isopro()`](https://www.randomforestsrc.org/reference/isopro.html)'s
+`howbad` is *lower* = more anomalous, like the depth it came from.
+
+We flip it. `gg_isopro()` returns `1 - object$howbad`, so the column you
+get is **higher = more anomalous** and reads the way a score should.
+That is our transformation, not the fit's, and it means `gg$howbad` is
+`1 - fit$howbad` rather than a copy of it – worth knowing if you compare
+the two side by side. Both columns are kept so you can plot in either
+space and have the raw depth on hand for diagnostics; `howbad` is the
+canonical score and is what the plot method uses by default.
 
 ## What you use this for
 

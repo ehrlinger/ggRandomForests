@@ -101,11 +101,18 @@ regression coefficient. Specifically:
   `use.1se = TRUE` (default) picks `lambda.1se`. `use.cv = FALSE` uses
   the full \\\lambda\\ path.
 
-- `imp` is the **fitted coefficient** \\\hat{\beta}\\ at the chosen
-  \\\lambda\\. **Sign is real** (direction of local association).
-  **Magnitude depends on the predictor's units** (raw `x`, no
-  standardisation); a predictor in millimetres has a smaller
-  \\\|\hat{\beta}\|\\ than the same predictor in metres.
+- `imp` is the **absolute** fitted coefficient \\\|\hat{\beta}\|\\ at
+  the chosen \\\lambda\\. **There is no direction here**:
+  [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  wraps every coefficient it returns in
+  [`abs()`](https://rdrr.io/r/base/MathFun.html), so the sign is
+  discarded upstream and never reaches us. Read `imp` as strength of
+  local association, not its direction. (For a signed local estimator,
+  see
+  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md),
+  where the sign does survive.) **Magnitude depends on the predictor's
+  units** (raw `x`, no standardisation); a predictor in millimetres has
+  a smaller \\\|\hat{\beta}\|\\ than the same predictor in metres.
 
 - Lasso shrinkage can drive \\\hat{\beta}\\ to **exactly zero**. Those
   zeros are data, not missingness, and are kept in the aggregation.

@@ -165,12 +165,18 @@ colours per-method curves automatically when you stack the results.</p>
 
 <p>The fit gives back two parallel per-observation vectors:
 <code>case.depth</code> is the raw mean isolation depth (units of "splits",
-lower = more anomalous) and <code>howbad</code> is the same information
-transformed onto a <code>[0, 1]</code> scale via the empirical CDF of
-<code>case.depth</code> (higher = more anomalous). Both columns are kept so
-you can plot in either space and have the raw depth on hand for
-diagnostics; <code>howbad</code> is the canonical score and is what the plot
-method uses by default.</p>
+lower = more anomalous) and <code>howbad</code> is the same information on a
+<code>[0, 1]</code> scale, the empirical CDF of <code>case.depth</code>. On the fit
+those two run the same way: <code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">varPro::isopro()</a></code>'s <code>howbad</code> is
+<em>lower</em> = more anomalous, like the depth it came from.</p>
+<p>We flip it. <code>gg_isopro()</code> returns <code>1 - object$howbad</code>, so the
+column you get is <strong>higher = more anomalous</strong> and reads the way a
+score should. That is our transformation, not the fit's, and it means
+<code>gg$howbad</code> is <code>1 - fit$howbad</code> rather than a copy of it – worth
+knowing if you compare the two side by side. Both columns are kept so you
+can plot in either space and have the raw depth on hand for diagnostics;
+<code>howbad</code> is the canonical score and is what the plot method uses by
+default.</p>
     </div>
     <div class="section level2">
     <h2 id="what-you-use-this-for">What you use this for<a class="anchor" aria-label="anchor" href="#what-you-use-this-for"></a></h2>
