@@ -2,6 +2,14 @@
 
 ## ggRandomForests v3.5.0
 
+- [`plot.gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md)
+  no longer draws a phantom “NA” category when `nvar` is smaller than
+  the number of variables the fit reports. `$imp`/`$stats` are truncated
+  to `nvar`, but the per-tree overlay (`$imp.tree`) and the
+  class-conditional data (`$conditional`) still carry every variable;
+  re-levelling those to the truncated `$imp` levels orphaned the extras
+  to `NA`, which rendered as an empty box/bar. Those rows are now
+  dropped, so only the displayed variables appear.
 - The vignettes now render their figures with `ragg` and quantise them
   to a 256-colour palette, cutting the source tarball from 4.7 MB to 2.3
   MB. The vignettes had never chosen a graphics device, so they fell
