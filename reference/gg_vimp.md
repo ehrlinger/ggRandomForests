@@ -133,20 +133,22 @@ plot(gg_dta)
 
 
 ## -------- Boston data
-data(Boston, package = "MASS")
-rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston,
-  importance = TRUE
-)
-gg_dta <- gg_vimp(rfsrc_boston)
-plot(gg_dta)
+if (requireNamespace("MASS", quietly = TRUE)) {
+  data(Boston, package = "MASS")
+  rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston,
+    importance = TRUE
+  )
+  gg_dta <- gg_vimp(rfsrc_boston)
+  plot(gg_dta)
 
-
-## -------- Boston data
-## importance = TRUE for permutation VIMP; without it randomForest stores
-## only IncNodePurity, which is what you would be ranking (see Details).
-rf_boston <- randomForest::randomForest(medv ~ ., Boston, importance = TRUE)
-gg_dta <- gg_vimp(rf_boston)
-plot(gg_dta)
+  ## importance = TRUE for permutation VIMP; without it randomForest stores
+  ## only IncNodePurity, which is what you would be ranking (see Details).
+  rf_boston <- randomForest::randomForest(medv ~ ., Boston,
+    importance = TRUE
+  )
+  gg_dta <- gg_vimp(rf_boston)
+  plot(gg_dta)
+}
 
 
 
