@@ -39,6 +39,39 @@ ggRandomForests v3.5.0
   error and still is. The `partialpro`-only arguments (`cut`, `nsmp`) mean
   nothing on this path and are now ignored with a warning rather than in
   silence.
+* Fix: `gg_vimp()` on a `randomForest` fit grown with `importance = TRUE` now
+  reports the permutation importance you asked for. It was reporting node
+  purity instead, and silently: `randomForest` stores `%IncMSE` and
+  `IncNodePurity` side by side, and `gg_vimp()` stacked both into one `vimp`
+  column and ranked them together. The two are not commensurable -- node purity
+  runs in the thousands where `%IncMSE` runs in the tens -- so every impurity
+  row outranked every permutation row, and the truncation to `nvar` cut the
+  permutation values away entirely. On `randomForest(medv ~ ., Boston,
+  importance = TRUE)` the plot showed `lstat = 12576.7` (node purity) where the
+  permutation value is `lstat = 62.4`. Node purity is now left out of the
+  ranking; read `randomForest::importance(object)` if you want both. Fits grown
+  without `importance = TRUE` are unaffected -- they only ever stored node
+  purity, and that is still what you get.
+* `gg_vimp()` now says in `?gg_vimp` that a `randomForest` fit without
+  `importance = TRUE` stores only `IncNodePurity`, so the ranking is node
+  purity rather than permutation VIMP, and nothing in the plot marks the
+  difference. The example now passes `importance = TRUE`.
+* `gg_error()` now explains that the error trajectory is `randomForestSRC`'s to
+  record, not ours: `rfsrc()`'s `block.size` defaults to `NULL` unless you
+  request importance, which stores the error at the final tree only, so a
+  default fit gives `gg_error()` a single point rather than a curve --
+  `tree.err = TRUE` alone does not change that. Grow with `block.size = 1` for
+  an error at every tree. The examples do this now; they had all been plotting
+  one dot.
+* `gg_beta_varpro()`: the `imp` column is documented as the *absolute*
+  coefficient. `varPro::beta.varpro()` wraps every coefficient it returns in
+  `abs()`, so the sign is discarded upstream and never reaches us -- the docs
+  had said "Sign is real (direction of local association)", which cannot be
+  read off this output. Use `gg_ivarpro()` for a signed local estimator.
+* `gg_isopro()`: the "What's in the output" section now says the polarity flip
+  is ours. `varPro::isopro()`'s `howbad` is *lower* = more anomalous; we return
+  `1 - howbad` so that higher = more anomalous. The section had credited that
+  to the fit, contradicting this function's own `@return`.
 * Added `gg_shap()` and `plot.gg_shap()` (with `shap_importance()`,
   `shap_beeswarm()`, `shap_dependence()`) for SHAP explanations of
   regression and classification forests, wrapping `kernelshap` (Suggests).

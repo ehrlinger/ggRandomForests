@@ -380,3 +380,47 @@ test_that("gg_vimp.randomForest regression: vimp column present even when import
   expect_true("positive" %in% colnames(gg_dta))
   expect_s3_class(plot(gg_dta), "ggplot")
 })
+
+## ── randomForest: one importance measure per ranking ─────────────────────────
+## gg_vimp used to pivot every column of randomForest's $importance into a
+## single `vimp` column and rank them together. %IncMSE (tens) and
+## IncNodePurity (thousands) are incommensurable, so node purity swept the top
+## of the ranking and the permutation values the user asked for by passing
+## importance = TRUE were truncated off the end and never shown.
+
+test_that("gg_vimp: randomForest importance=TRUE reports permutation VIMP", {
+  skip_on_cran()
+  skip_if_not_installed("randomForest")
+  skip_if_not_installed("MASS")
+  data(Boston, package = "MASS")
+  set.seed(1)
+  rf <- randomForest::randomForest(medv ~ ., Boston, importance = TRUE)
+  skip_if_not(all(c("%IncMSE", "IncNodePurity") %in% colnames(rf$importance)),
+              "randomForest did not store both measures")
+
+  gg <- as.data.frame(gg_vimp(rf))
+
+  # one measure only -- never both stacked in the same column
+  expect_length(unique(gg$set), 1L)
+  # and it is the permutation measure, not node purity
+  expect_false(any(grepl("Purity", gg$set)))
+
+  pct <- rf$importance[, "%IncMSE"]
+  expect_equal(gg$vimp[1], unname(max(pct)))
+  expect_equal(as.character(gg$vars[1]), names(which.max(pct)))
+})
+
+test_that("gg_vimp: randomForest importance=FALSE reports node purity, labelled", {
+  skip_on_cran()
+  skip_if_not_installed("randomForest")
+  skip_if_not_installed("MASS")
+  data(Boston, package = "MASS")
+  set.seed(1)
+  rf <- randomForest::randomForest(medv ~ ., Boston)
+  expect_equal(colnames(rf$importance), "IncNodePurity")
+
+  gg <- as.data.frame(gg_vimp(rf))
+  expect_length(unique(gg$set), 1L)
+  inc <- rf$importance[, "IncNodePurity"]
+  expect_equal(gg$vimp[1], unname(max(inc)))
+})

@@ -18,8 +18,21 @@
 #' \code{randomForestSRC} and \code{randomForest} fits as a function of the
 #' number of grown trees.
 #'
-#' @details For \code{randomForestSRC} objects the function reshapes the
-#' \code{\link[randomForestSRC]{rfsrc}$err.rate} matrix and annotates it with
+#' @details
+#' \strong{You have to ask rfsrc for the trajectory.}  How many trees you get
+#' a curve over is decided by \code{randomForestSRC::rfsrc()}, not here.  Its
+#' \code{block.size} argument controls how often the error is recorded, and it
+#' defaults to \code{NULL} unless you request importance -- which records the
+#' error at the \emph{final tree only}.  So a default fit gives
+#' \code{gg_error()} a single point, not a curve, and \code{tree.err = TRUE}
+#' on its own does not change that.  Grow the forest with
+#' \code{block.size = 1} for an error recorded at every tree, or a larger
+#' \code{block.size} for every \emph{n}th.  If a \code{plot.gg_error()} figure
+#' comes back as one dot, this is why.
+#'
+#' For \code{randomForestSRC} objects the function reshapes the
+#' \code{\link[randomForestSRC]{rfsrc}$err.rate} matrix, drops the trees where
+#' rfsrc recorded nothing, and annotates the rest with
 #' the tree index required by \code{\link{plot.gg_error}}. When supplied a
 #' \code{\link[randomForest]{randomForest}} object, the method inspects either
 #' the \code{$mse} or \code{$err.rate} component and, when
@@ -65,7 +78,8 @@
 #' ## ------------------------------------------------------------
 #' ## ------------- iris data
 #' ## You can build a randomForest
-#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, tree.err = TRUE)
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris,
+#'   tree.err = TRUE, block.size = 1)
 #'
 #' # Get a data.frame containing error rates
 #' gg_dta <- gg_error(rfsrc_iris)
@@ -90,7 +104,7 @@
 #' ## ------------- airq data
 #' rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ .,
 #'   data = airquality,
-#'   na.action = "na.impute", tree.err = TRUE,
+#'   na.action = "na.impute", tree.err = TRUE, block.size = 1,
 #' )
 #'
 #' # Get a data.frame containing error rates
@@ -119,7 +133,8 @@
 #'
 #'
 #' ## ------------- mtcars data
-#' rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, tree.err = TRUE)
+#' rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars,
+#'   tree.err = TRUE, block.size = 1)
 #'
 
 #' # Get a data.frame containing error rates
@@ -136,7 +151,7 @@
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRC")
 #' rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
-#'                        tree.err = TRUE)
+#'                        tree.err = TRUE, block.size = 1)
 #'
 #' gg_dta <- gg_error(rfsrc_veteran)
 #' plot(gg_dta)
