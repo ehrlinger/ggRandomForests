@@ -160,7 +160,7 @@ all, and it leaves a strong variable's curve where it was.
 `sparse = FALSE` does the smaller thing, deepening
 [`varPro::get.topvars`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 so the reported ranking shows its tail rather than the screened top.
-Both are `varPro`'s own arguments, and its defaults (both `TRUE`) go the
+Both are varPro's own arguments, and its defaults (both `TRUE`) go the
 other way, toward the screened set; keep the defaults when that sparser
 set is what you want. `nvar` is not the knob here – it only caps how
 much gets reported.

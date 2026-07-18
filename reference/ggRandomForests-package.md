@@ -112,8 +112,8 @@ object.
 - [`gg_sdependent`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md):
   signal-variable detection.
 
-`varPro` is a required dependency (`Imports`), so the varPro families
-are always available. `kernelshap` is in `Suggests`:
+varPro is a required dependency (`Imports`), so the varPro families are
+always available. `kernelshap` is in `Suggests`:
 [`gg_shap`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
 checks for it and fails with a clear message when it is not installed.
 

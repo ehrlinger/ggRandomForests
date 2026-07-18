@@ -100,15 +100,15 @@ The following `gg_*` classes are supported:
 
 - `gg_partial_varpro`:
 
-  Partial dependence (via `varPro`)
+  Partial dependence (via varPro)
 
 - `gg_partialpro`:
 
-  Partial dependence via `varPro` (deprecated alias)
+  Partial dependence via varPro (deprecated alias)
 
 - `gg_varpro`:
 
-  Variable importance from `varPro`
+  Variable importance from varPro
 
 - `gg_roc`:
 
