@@ -73,9 +73,9 @@ The following \code{gg_*} classes are supported:
 \item{\code{gg_variable}}{Marginal dependence}
 \item{\code{gg_partial}}{Partial dependence (via \code{plot.variable})}
 \item{\code{gg_partial_rfsrc}}{Partial dependence (via \code{partial.rfsrc})}
-\item{\code{gg_partial_varpro}}{Partial dependence (via \code{varPro})}
-\item{\code{gg_partialpro}}{Partial dependence via \code{varPro} (deprecated alias)}
-\item{\code{gg_varpro}}{Variable importance from \code{varPro}}
+\item{\code{gg_partial_varpro}}{Partial dependence (via \pkg{varPro})}
+\item{\code{gg_partialpro}}{Partial dependence via \pkg{varPro} (deprecated alias)}
+\item{\code{gg_varpro}}{Variable importance from \pkg{varPro}}
 \item{\code{gg_roc}}{ROC curve}
 \item{\code{gg_survival}}{Survival / cumulative hazard curves}
 \item{\code{gg_brier}}{Time-resolved Brier score and CRPS}

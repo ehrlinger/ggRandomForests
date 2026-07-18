@@ -142,7 +142,7 @@
 #' them all, and it leaves a strong variable's curve where it was.
 #' \code{sparse = FALSE} does the smaller thing, deepening
 #' \code{varPro::get.topvars} so the reported ranking shows its tail rather than
-#' the screened top.  Both are \code{varPro}'s own arguments, and its defaults
+#' the screened top.  Both are \pkg{varPro}'s own arguments, and its defaults
 #' (both \code{TRUE}) go the other way, toward the screened set; keep the
 #' defaults when that sparser set is what you want.  \code{nvar} is not the
 #' knob here -- it only caps how much gets reported.
