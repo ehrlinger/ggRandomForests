@@ -1,6 +1,6 @@
 # Contributing to ggRandomForests
 
-Thank you for your interest in contributing! This guide is written for R programrs who are new to package development. It covers everything from setting up your environment to opening a pull request.
+Thank you for your interest in contributing! This guide is written for R programmers who are new to package development. It covers everything from setting up your environment to opening a pull request.
 
 ---
 
