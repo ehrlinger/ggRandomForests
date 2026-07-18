@@ -52,11 +52,12 @@ load; variables that stay taut were redundant given the rest.
 Operationally, varPro’s *guided splitting* steers tree growth so that
 rules concentrate in informative regions, and the subsequent *rule
 harvesting* step selects the rules that survived the importance
-pre-filter. Variables below a noise threshold are dropped before
-reporting (the importance z is pre-filtered), so the final ranking
-contains only variables that earned a seat at the table (see the [varPro
-tools reference](https://www.varprotools.org/articles/getstarted.html)
-for worked implementation details). Split-weights encode each variable’s
+pre-filter. By default, variables below a noise threshold are dropped
+before reporting (the importance z is pre-filtered), so the final
+ranking contains only variables that earned a seat at the table (see the
+[varPro tools
+reference](https://www.varprotools.org/articles/getstarted.html) for
+worked implementation details). Split-weights encode each variable’s
 relative importance at each tree node, propagating that signal through
 the release-rule contrasts and into the partial-dependence curves.
 
@@ -127,12 +128,11 @@ str(v_boston, max.level = 1)
     List of 13
      $ rf              :List of 49
       ..- attr(*, "class")= chr [1:3] "rfsrc" "grow" "regr"
-     $ split.weight    : Named num [1:13] 0.01303 0.00279 0.00254 0.02425 0.06228 ...
-      ..- attr(*, "names")= chr [1:13] "crim" "zn" "indus" "chas" ...
-     $ split.weight.raw:List of 2
+     $ split.weight    : NULL
+     $ split.weight.raw: list()
      $ max.rules.tree  : num 150
      $ max.tree        : num 50
-     $ results         :'data.frame':   5730 obs. of  5 variables:
+     $ results         :'data.frame':   6587 obs. of  5 variables:
      $ xvar.org.names  : chr [1:13] "crim" "zn" "indus" "chas" ...
      $ xvar.names      : chr [1:13] "crim" "zn" "indus" "chas" ...
      $ yvar.names      : chr "medv"
@@ -176,9 +176,10 @@ cutoff line are the ones to look at twice; the forest disagrees with
 itself. That disagreement isn’t noise to suppress: it can mean the
 variable matters in some rule regions but not others, which is exactly
 the kind of structured heterogeneity that model-independent methods are
-built to detect. Variables that fall entirely below the cutoff were
-pre-filtered by the importance z threshold; they’re gone before the plot
-is drawn.
+built to detect. Variables that fall entirely below the cutoff are still
+drawn here, just not highlighted. That is the completeness fit at work:
+on varPro’s defaults the weakest of them are screened out upstream, and
+the plot never shows they were candidates at all.
 
 ### Partial dependence with `gg_partial_varpro()`
 
@@ -693,11 +694,17 @@ c(handed_in = ncol(v_boston$x),
 ```
 
     handed_in reachable  reported
-           13        13         9 
+           13        13        13 
 
-Every predictor stays reachable here; the importance pre-filter only
-trims what gets *reported*. A curve for a variable outside the reported
-ranking is a matter of naming it:
+All three coincide. This fit uses the completeness settings recommended
+below, so every predictor is reachable and the ranking runs to its tail
+instead of stopping at the screened top. That is what fitting with both
+screens off buys you, and it is why the counts here are boring. On
+varPro’s defaults they come apart, which the rest of this section is
+about.
+
+Even where the ranking is the shorter list, a curve for a variable
+outside it is a matter of naming it:
 
 ``` r
 
@@ -711,8 +718,8 @@ The second narrowing is the one that surprises people. Guided
 tree-splitting (`split.weight = TRUE`, the default) runs a preliminary
 lasso to decide which variables are worth splitting on, and a variable
 that never gets split on never lands in `object$xvar.names`. It is gone
-well before `partialpro()` sees it. The binary iris fit shows this in
-miniature:
+well before `partialpro()` sees it. The binary iris fit, left on
+varPro’s defaults so it has something to show, is this in miniature:
 
 ``` r
 

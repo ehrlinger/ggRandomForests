@@ -84,7 +84,7 @@
       <h1>Exploring variable importance with varPro</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-07-17</p>
+      <p class="date">2026-07-18</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/varpro.qmd" class="external-link"><code>vignettes/varpro.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -118,7 +118,7 @@
 <p>Random-forest variable importance has, for two decades, mostly meant <em>permutation importance</em>: shuffle a column, measure the drop in OOB accuracy, repeat. It works, but the score is computed against artificially modified data that never appeared in the training set, and when predictors are correlated the shuffled column is an implausible counterfactual, not a neutral baseline. Knockoff-style methods clean up some of that, but they introduce their own synthetic features and rely on explicit distributional assumptions about the predictors.</p>
 <p>varPro <span class="citation" data-cites="Lu2024varpro">(<a href="#ref-Lu2024varpro" role="doc-biblioref">Lu and Ishwaran 2024</a>)</span> takes a different path: one grounded entirely in <em>observed</em> data. Think of each decision tree as a long chain of “if/then” clauses. varPro harvests those clauses as <em>rules</em>, and for each rule it identifies a specific region of the predictor space where a handful of variables jointly constrain the response. To measure one variable’s contribution, it compares a <em>local estimator</em> (the response summary restricted to that rule’s region) against a “released” estimator where the constraint on the tested variable has been lifted. That comparison, averaged over rules and trees, is the variable’s importance z-score. Every observation used in the contrast is real training data; nothing is permuted, nothing is synthesised.</p>
 <p>The “release” metaphor is the right one. Imagine holding a rope at several points along its length (the rule constraints). Releasing your grip at one point (while keeping the others in place) tells you how taut that section was. Variables that go slack when released were carrying load; variables that stay taut were redundant given the rest.</p>
-<p>Operationally, varPro’s <em>guided splitting</em> steers tree growth so that rules concentrate in informative regions, and the subsequent <em>rule harvesting</em> step selects the rules that survived the importance pre-filter. Variables below a noise threshold are dropped before reporting (the importance z is pre-filtered), so the final ranking contains only variables that earned a seat at the table (see the <a href="https://www.varprotools.org/articles/getstarted.html" class="external-link">varPro tools reference</a> for worked implementation details). Split-weights encode each variable’s relative importance at each tree node, propagating that signal through the release-rule contrasts and into the partial-dependence curves.</p>
+<p>Operationally, varPro’s <em>guided splitting</em> steers tree growth so that rules concentrate in informative regions, and the subsequent <em>rule harvesting</em> step selects the rules that survived the importance pre-filter. By default, variables below a noise threshold are dropped before reporting (the importance z is pre-filtered), so the final ranking contains only variables that earned a seat at the table (see the <a href="https://www.varprotools.org/articles/getstarted.html" class="external-link">varPro tools reference</a> for worked implementation details). Split-weights encode each variable’s relative importance at each tree node, propagating that signal through the release-rule contrasts and into the partial-dependence curves.</p>
 <p>Cross-validation via <code>cv.varpro()</code> returns three views of the importance ranking: <code>$imp</code> (the default, point-estimate ranking), <code>$imp.conserve</code> (one-SD rule: only variables whose lower confidence bound is positive), and <code>$imp.liberal</code> (any variable with a positive point estimate). The conservative cut is the right default when you want to hand a short list to a collaborator; the liberal cut is better for exploratory screening when you’d rather miss nothing.</p>
 <p>For classification, the importance decomposes into an <code>$unconditional</code> score (averaged over all classes) and per-class <code>$conditional.z</code> scores. When a variable separates <em>one</em> class from the others but is uninformative overall, the unconditional z can be near zero while a single conditional z is large; the conditional view catches that. One-hot consolidation via <code>get.orgvimp()</code> and <code>get.topvars()</code> maps the per-level scores back to the original factor, so downstream reporting stays on familiar ground.</p>
 <p>That core machinery feeds five supervised ggRandomForests wrappers. <strong><code><a href="../reference/gg_varpro.html">gg_varpro()</a></code></strong> summarises the per-tree importance distribution. <strong><code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code></strong> refines those release-rule contrasts with a per-rule lasso. <strong><code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code></strong> turns the release machinery into partial-dependence curves. <strong><code><a href="../reference/gg_isopro.html">gg_isopro()</a></code></strong> scores observations for anomaly using an isolation-forest variant. <strong><code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code></strong> computes per-observation local importance. A separate set of <em>unsupervised</em> wrappers — <code><a href="../reference/gg_udependent.html">gg_udependent()</a></code>, <code><a href="../reference/gg_beta_uvarpro.html">gg_beta_uvarpro()</a></code>, and <code><a href="../reference/gg_sdependent.html">gg_sdependent()</a></code> — reads structure off a <code>uvarpro()</code> fit that has no response at all; those get their own walk-through in the companion <a href="uvarpro.html">uvarpro vignette</a>.</p>
@@ -144,12 +144,11 @@
 <pre><code>List of 13
  $ rf              :List of 49
   ..- attr(*, "class")= chr [1:3] "rfsrc" "grow" "regr"
- $ split.weight    : Named num [1:13] 0.01303 0.00279 0.00254 0.02425 0.06228 ...
-  ..- attr(*, "names")= chr [1:13] "crim" "zn" "indus" "chas" ...
- $ split.weight.raw:List of 2
+ $ split.weight    : NULL
+ $ split.weight.raw: list()
  $ max.rules.tree  : num 150
  $ max.tree        : num 50
- $ results         :'data.frame':   5730 obs. of  5 variables:
+ $ results         :'data.frame':   6587 obs. of  5 variables:
  $ xvar.org.names  : chr [1:13] "crim" "zn" "indus" "chas" ...
  $ xvar.names      : chr [1:13] "crim" "zn" "indus" "chas" ...
  $ yvar.names      : chr "medv"
@@ -177,7 +176,7 @@
 </div>
 </div>
 </div>
-<p>The narrow boxes near the top are the variables varPro is confident about: every tree agrees they matter. Wide boxes that straddle the cutoff line are the ones to look at twice; the forest disagrees with itself. That disagreement isn’t noise to suppress: it can mean the variable matters in some rule regions but not others, which is exactly the kind of structured heterogeneity that model-independent methods are built to detect. Variables that fall entirely below the cutoff were pre-filtered by the importance z threshold; they’re gone before the plot is drawn.</p>
+<p>The narrow boxes near the top are the variables varPro is confident about: every tree agrees they matter. Wide boxes that straddle the cutoff line are the ones to look at twice; the forest disagrees with itself. That disagreement isn’t noise to suppress: it can mean the variable matters in some rule regions but not others, which is exactly the kind of structured heterogeneity that model-independent methods are built to detect. Variables that fall entirely below the cutoff are still drawn here, just not highlighted. That is the completeness fit at work: on varPro’s defaults the weakest of them are screened out upstream, and the plot never shows they were candidates at all.</p>
 </section><section class="level2"><h3 id="partial-dependence-with-gg_partial_varpro">Partial dependence with <code>gg_partial_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#partial-dependence-with-gg_partial_varpro"></a>
 </h3>
@@ -571,16 +570,17 @@
 <span>  reported  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.topvars</a></span><span class="op">(</span><span class="va">v_boston</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>handed_in reachable  reported
-       13        13         9 </code></pre>
+       13        13        13 </code></pre>
 </div>
 </div>
-<p>Every predictor stays reachable here; the importance pre-filter only trims what gets <em>reported</em>. A curve for a variable outside the reported ranking is a matter of naming it:</p>
+<p>All three coincide. This fit uses the completeness settings recommended below, so every predictor is reachable and the ranking runs to its tail instead of stopping at the screened top. That is what fitting with both screens off buys you, and it is why the counts here are boring. On varPro’s defaults they come apart, which the rest of this section is about.</p>
+<p>Even where the ranking is the shorter list, a curve for a variable outside it is a matter of naming it:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">partialpro</a></span><span class="op">(</span><span class="va">v_boston</span>, xvar.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lstat"</span>, <span class="st">"age"</span>, <span class="st">"zn"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p><code>partialpro()</code> computes <code>get.topvars()</code> only to use as a default. Name <code>xvar.names</code> yourself and the ranking is ignored.</p>
-<p>The second narrowing is the one that surprises people. Guided tree-splitting (<code>split.weight = TRUE</code>, the default) runs a preliminary lasso to decide which variables are worth splitting on, and a variable that never gets split on never lands in <code>object$xvar.names</code>. It is gone well before <code>partialpro()</code> sees it. The binary iris fit shows this in miniature:</p>
+<p>The second narrowing is the one that surprises people. Guided tree-splitting (<code>split.weight = TRUE</code>, the default) runs a preliminary lasso to decide which variables are worth splitting on, and a variable that never gets split on never lands in <code>object$xvar.names</code>. It is gone well before <code>partialpro()</code> sees it. The binary iris fit, left on varPro’s defaults so it has something to show, is this in miniature:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>handed_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">v_iris_binary</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>,</span>
