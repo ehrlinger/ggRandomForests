@@ -294,7 +294,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
         gg_plt <- gg_plt +
           ggplot2::geom_boxplot(
             ggplot2::aes(x = .data$value, y = .data$yhat),
-            color = "grey",
+            color = "gray",
             ...,
             outlier.shape = NA
           ) +
@@ -553,7 +553,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
               ) +
               ggplot2::geom_boxplot(
                 ggplot2::aes(x = .data$var, y = .data$yhat),
-                color = "grey",
+                color = "gray",
                 ...,
                 outlier.shape = NA
               )
@@ -586,7 +586,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
             gg_plt[[ind]] <- gg_plt[[ind]] +
               ggplot2::geom_boxplot(
                 ggplot2::aes(x = .data$var, y = .data$yhat),
-                color = "grey",
+                color = "gray",
                 ...,
                 outlier.shape = NA
               ) +
@@ -630,7 +630,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::geom_boxplot(
               ggplot2::aes(x = .data$var, y = .data$yhat),
-              color = "grey",
+              color = "gray",
               ...,
               outlier.shape = NA
             ) +

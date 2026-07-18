@@ -91,10 +91,10 @@ shap_beeswarm <- function(x, ...) {
   x <- dplyr::ungroup(x)
 
   ggplot2::ggplot(x, ggplot2::aes(x = .data$shap, y = .data$vars)) +
-    ggplot2::geom_vline(xintercept = 0, linetype = 2, colour = "grey60") +
-    ggplot2::geom_jitter(ggplot2::aes(colour = .data$value_scaled),
+    ggplot2::geom_vline(xintercept = 0, linetype = 2, color = "gray60") +
+    ggplot2::geom_jitter(ggplot2::aes(color = .data$value_scaled),
                          height = 0.2, width = 0, alpha = 0.6) +
-    ggplot2::scale_colour_viridis_c(name = "Feature value",
+    ggplot2::scale_color_viridis_c(name = "Feature value",
                                     breaks = c(0, 1),
                                     labels = c("Low", "High")) +
     ggplot2::labs(x = "SHAP value (impact on prediction)", y = "")
@@ -129,7 +129,7 @@ shap_dependence <- function(x, xvar = NULL, ...) {
   is_numeric_feature <- any(!is.na(sub$value))
 
   gg_plt <- ggplot2::ggplot(sub) +
-    ggplot2::geom_hline(yintercept = 0, linetype = 2, colour = "grey60") +
+    ggplot2::geom_hline(yintercept = 0, linetype = 2, color = "gray60") +
     ggplot2::labs(x = xvar, y = paste("SHAP value for", xvar))
 
   if (is_numeric_feature) {

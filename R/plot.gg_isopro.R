@@ -130,7 +130,7 @@ plot.gg_isopro <- function(x,
   x <- x[order(x$rank), , drop = FALSE]
 
   aes_line <- if (has_method) {
-    ggplot2::aes(x = .data$rank, y = .data$howbad, colour = .data$method)
+    ggplot2::aes(x = .data$rank, y = .data$howbad, color = .data$method)
   } else {
     ggplot2::aes(x = .data$rank, y = .data$howbad)
   }
@@ -143,7 +143,7 @@ plot.gg_isopro <- function(x,
   if (!is.na(thr)) {
     p <- p +
       ggplot2::geom_hline(yintercept = thr, linetype = "dashed",
-                          colour = "red", linewidth = 0.4)
+                          color = "red", linewidth = 0.4)
   }
   p
 }
@@ -163,7 +163,7 @@ plot.gg_isopro <- function(x,
   if (!is.na(thr)) {
     p <- p +
       ggplot2::geom_vline(xintercept = thr, linetype = "dashed",
-                          colour = "red", linewidth = 0.4)
+                          color = "red", linewidth = 0.4)
   }
   p
 }

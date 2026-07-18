@@ -126,7 +126,7 @@ dta <- Boston |>
 
 ggplot(dta, aes(x = medv, y = value, color = chas)) +
   geom_point(alpha = 0.4) +
-  geom_smooth(aes(x = medv, y = value), color = "grey30",
+  geom_smooth(aes(x = medv, y = value), color = "gray30",
               inherit.aes = FALSE, se = FALSE) +
   labs(y = "", x = st_labs["medv"]) +
   scale_color_brewer(palette = "Set2") +

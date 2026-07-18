@@ -222,7 +222,7 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
         ) +
         ggplot2::geom_boxplot(
           ggplot2::aes(x = 1, y = .data[[prob_col]]),
-          outlier.colour = "transparent",
+          outlier.color = "transparent",
           fill = "transparent",
           notch = notch
         ) +
@@ -334,7 +334,7 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
     gg_plt <- gg_plt +
       ggplot2::geom_jitter(...) +
       ggplot2::geom_boxplot(
-        outlier.colour = "transparent",
+        outlier.color = "transparent",
         fill = "transparent",
         notch = notch
       ) +

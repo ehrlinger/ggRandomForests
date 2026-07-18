@@ -204,7 +204,7 @@ dta_cont <- pbc[, cnt_idx] |>
 ggplot(dta_cont |> filter(!is.na(value)),
        aes(x = years, y = value, color = factor(status), shape = factor(status))) +
   geom_point(alpha = 0.4) +
-  geom_rug(data = dta_cont |> filter(is.na(value)), color = "grey50") +
+  geom_rug(data = dta_cont |> filter(is.na(value)), color = "gray50") +
   labs(y = "", x = st_labs["years"], color = "Death", shape = "Death") +
   scale_color_manual(values = event_colors) +
   scale_shape_manual(values = event_marks) +
