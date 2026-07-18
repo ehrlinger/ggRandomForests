@@ -35,11 +35,19 @@ if (requireNamespace("ggRandomForests", quietly = TRUE)) {
 }
 options(mc.cores = 1, rf.cores = 1)
 
+# The worked fits below use the completeness settings the vignette recommends:
+# sparse = FALSE deepens the reported ranking so its tail shows, and
+# split.weight = FALSE keeps every predictor reachable for partialpro(). One
+# exception is deliberate -- v_iris_binary stays on varPro's defaults, because
+# the vignette uses it to demonstrate the split-weight narrowing, and a fit
+# with the screen off has no narrowing left to show.
+
 # --- Regression: Boston housing ------------------------------------------
 data("Boston", package = "MASS")
 boston_x <- Boston[, setdiff(names(Boston), "medv")]
 set.seed(20260527L)
-v_boston   <- varPro::varpro(medv ~ ., data = Boston, ntree = 50)
+v_boston   <- varPro::varpro(medv ~ ., data = Boston, ntree = 50,
+                             sparse = FALSE, split.weight = FALSE)
 pd_boston  <- gg_partial_varpro(object = v_boston)
 b_boston   <- varPro::beta.varpro(v_boston)
 iv_boston  <- varPro::ivarpro(v_boston)
@@ -51,10 +59,14 @@ iso_boston <- varPro::isopro(data = boston_x, method = "rnd",
 iris_binary <- iris[iris$Species != "setosa", ]
 iris_binary$Species <- droplevels(iris_binary$Species)
 set.seed(20260527L)
+# Left on varPro's defaults on purpose: this is the fit the vignette uses to
+# show the split-weight screen dropping a predictor before partialpro() sees
+# it. Fitting it with split.weight = FALSE would erase the demonstration.
 v_iris_binary <- varPro::varpro(Species ~ ., data = iris_binary, ntree = 50)
 b_iris_binary <- varPro::beta.varpro(v_iris_binary)
 set.seed(20260527L)
-v_iris_multi  <- varPro::varpro(Species ~ ., data = iris, ntree = 50)
+v_iris_multi  <- varPro::varpro(Species ~ ., data = iris, ntree = 50,
+                                sparse = FALSE, split.weight = FALSE)
 pd_iris_multi <- gg_partial_varpro(object = v_iris_multi)
 b_iris_multi  <- varPro::beta.varpro(v_iris_multi)
 
@@ -63,7 +75,8 @@ data(pbc, package = "randomForestSRC")
 pbc_small <- na.omit(pbc[, c("days", "status", "age", "albumin", "bili",
                              "edema", "platelet")])
 set.seed(20260527L)
-v_pbc   <- varPro::varpro(Surv(days, status) ~ ., data = pbc_small, ntree = 50)
+v_pbc   <- varPro::varpro(Surv(days, status) ~ ., data = pbc_small, ntree = 50,
+                          sparse = FALSE, split.weight = FALSE)
 pd_pbc  <- gg_partial_varpro(object = v_pbc)
 set.seed(20260527L)
 iso_pbc <- varPro::isopro(data = pbc_small[, c("age", "albumin", "bili",
