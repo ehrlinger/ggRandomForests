@@ -154,7 +154,7 @@ test_that("gg_varpro local.std=FALSE stats equal raw-column medians", {
     tolerance = 1e-10
   )
 
-  ## local.std = TRUE: stats$median == median of z-normalised column
+  ## local.std = TRUE: stats$median == median of z-normalized column
   gg_z <- gg_varpro(vp, local.std = TRUE)
   sd_j <- apply(mat, 2L, stats::sd, na.rm = TRUE)
   sd_j[sd_j < .Machine$double.eps] <- 1

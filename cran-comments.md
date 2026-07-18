@@ -1,4 +1,4 @@
-## v3.5.0 — minor release (SHAP explanations; default S3 methods; survival partial-dependence labelling; randomForest VIMP fixes)
+## v3.5.0 — minor release (SHAP explanations; default S3 methods; survival partial-dependence labeling; randomForest VIMP fixes)
 
 This is a minor feature-and-fix release. It consolidates the work developed
 since the CRAN 3.4.0 release (the 3.4.1 and 3.5.0 development cycles) into a
@@ -30,7 +30,7 @@ single submission.
   measure is now reported and node impurity left out of the ranking, for both
   regression and classification. Alongside: `which.outcome` resolves the class
   column by name (a `randomForest` matrix has no overall-first column, so `0`
-  had returned the first class mislabelled as overall), `nvar` counts variables
+  had returned the first class mislabeled as overall), `nvar` counts variables
   and ranks before trimming (it had been keeping the least-important variables),
   and the selected measure is named in the `set` column rather than the
   literal `"vimp"`.
@@ -45,7 +45,7 @@ single submission.
   `partial.type = "surv"` and so does report survival probabilities: the two
   entry points report different quantities by default. (#15)
 * **Smaller tarball.** The vignettes now render figures with `ragg` and quantise
-  them to a 256-colour palette, taking the source tarball from 4.7 MB to 2.3 MB
+  them to a 256-color palette, taking the source tarball from 4.7 MB to 2.3 MB
   and `inst/doc` from 5.3 MB to 1.9 MB (the installed-size INFO is gone). The
   vignettes had never set a graphics device and so fell through to the default
   `png()`, which writes RGBA truecolor. Figures are visually unchanged (mean

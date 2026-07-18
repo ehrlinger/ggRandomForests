@@ -21,7 +21,7 @@ A \code{ggplot} object (built via ggraph).
 }
 \description{
 Draws the dependency graph held in a \code{gg_udependent} object as a
-ggraph network.  Node colour marks whether a variable made the signal
+ggraph network.  Node color marks whether a variable made the signal
 set, and the width and opacity of an edge tell you how strong the
 dependency between its two variables is.
 }
@@ -31,7 +31,7 @@ rather than installed for you.  If it is missing, run
 \code{install.packages("ggraph")}.
 
 A signal variable (\code{selected = TRUE}) gets a blue node
-(\code{#4e8fcd}); the rest are grey (\code{#888888}).  Node size grows
+(\code{#4e8fcd}); the rest are gray (\code{#888888}).  Node size grows
 with degree.  Edge width and opacity both grow with the raw dependency
 weight \code{I[i,j]}.
 }
@@ -48,7 +48,7 @@ dependency structure. Edges with wider, more opaque strokes are
 stronger dependencies; thin, faint edges sit near the threshold and
 are the ones that would disappear first if you raised it.
 
-Grey, low-degree nodes are the ones UVarPro thinks are not
+Gray, low-degree nodes are the ones UVarPro thinks are not
 contributing much to the structure. (Truly isolated nodes are
 dropped by \code{gg_udependent()} before the graph is drawn; what you
 see is the connected component.) A cluster of mutually
@@ -59,7 +59,7 @@ several views of the same underlying quantity.
 \section{What this tells you}{
 
 Use the figure to pick a working set of variables: the hubs and
-their immediate neighbours are the candidates UVarPro flags as
+their immediate neighbors are the candidates UVarPro flags as
 carrying structure. If a cluster of high-degree variables looks
 like it might be measuring the same thing, that is a cue to look at
 their pairwise correlations or fit them as a block rather than

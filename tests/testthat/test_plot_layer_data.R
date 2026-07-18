@@ -173,7 +173,7 @@ test_that("gg_partial_rfsrc survival multi-time expands to long form", {
 
   p <- plot(pd)
   ld <- expect_layer_nonempty(p)
-  # The fixed plot maps time → colour, so we should see two groups.
+  # The fixed plot maps time → color, so we should see two groups.
   expect_gte(length(unique(ld$colour)), 2)
 })
 
@@ -299,7 +299,7 @@ test_that("plot.gg_vimp renders one bar per variable", {
 test_that("plot.gg_vimp produces a single merged 'VIMP > 0' legend", {
   # Regression: previously the bar geom mapped both `fill` and `color` to
   # `positive` but only the fill legend got a custom title via labs(). ggplot
-  # rendered two legends -- one labelled "VIMP > 0" (fill) and one labelled
+  # rendered two legends -- one labeled "VIMP > 0" (fill) and one labeled
   # "positive" (column name). Setting matching titles on both aesthetics
   # merges them into a single legend.
   #
@@ -420,11 +420,11 @@ test_that("plot.gg_error randomForest regression has no stray colour label (#82 
   expect_s3_class(p, "ggplot")
   expect_layer_nonempty(p)
   # #82 wart: plot.gg_error.R:244,248 apply labs(color="Outcome") even on
-  # the regression / single-outcome path where no colour aesthetic is
-  # mapped — which produces "Ignoring unknown labels: colour Outcome" at
+  # the regression / single-outcome path where no color aesthetic is
+  # mapped — which produces "Ignoring unknown labels: color Outcome" at
   # build time. ggplot2 emits that warning once-per-session (cli .freq =
   # "once"), so warning-based detection is unreliable inside a long
-  # test_file. Assert STRUCTURALLY: if a colour label is set, a colour
+  # test_file. Assert STRUCTURALLY: if a color label is set, a color
   # aesthetic must be mapped somewhere in the plot.
   has_colour_aes <- "colour" %in% names(p$mapping) ||
     any(vapply(p$layers, function(l) "colour" %in% names(l$mapping),

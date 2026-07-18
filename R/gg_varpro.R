@@ -2,7 +2,7 @@
 #' Variable importance data from a varPro model
 #'
 #' Pulls the per-tree importance scores out of a fitted \code{varpro} object
-#' and summarises them into a data structure the plot method can draw as a
+#' and summarizes them into a data structure the plot method can draw as a
 #' boxplot.  The box hinges are the 15th and 85th percentiles and the
 #' whiskers run to the 5th and 95th -- not the usual Tukey 1.5 IQR whiskers.
 #' For a classification forest you can also keep the class-conditional
@@ -24,8 +24,8 @@
 #'
 #' Because varpro builds importance from rules sampled over trees, every
 #' tree contributes its own importance value for each variable. Those are
-#' the per-tree scores we summarise here. With \code{local.std = TRUE}
-#' (the default) the per-tree values are standardised by their column
+#' the per-tree scores we summarize here. With \code{local.std = TRUE}
+#' (the default) the per-tree values are standardized by their column
 #' standard deviation so the column mean equals the aggregate z-score
 #' returned by \code{varPro::importance()}; that z-score is the canonical
 #' "is this variable in or out?" statistic, and \code{cutoff = 0.79} is
@@ -61,7 +61,7 @@
 #'     class (\code{conditional = TRUE}) rather than just which
 #'     variables drive the model overall.
 #' }
-#' The z-score is a standardised ranking statistic, not a p-value or a
+#' The z-score is a standardized ranking statistic, not a p-value or a
 #' probability. Two variables with the same z are "similarly important
 #' by this method", not "equally likely to be true signal". For a
 #' data-driven cutoff rather than the 0.79 default, see
@@ -231,10 +231,10 @@ gg_varpro <- function(object,
 
 #' Compute per-variable box statistics from a per-tree importance matrix
 #'
-#' When \code{local.std = TRUE} the columns of \code{mat} are standardised
+#' When \code{local.std = TRUE} the columns of \code{mat} are standardized
 #' to unit variance before computing quantiles so that the display scale
 #' matches the aggregate z-score.  The \code{mean} column always stores raw
-#' (unstandardised) column means.
+#' (unstandardized) column means.
 #' @keywords internal
 .varpro_imp_stats <- function(mat, local.std = TRUE) {
   if (local.std) {

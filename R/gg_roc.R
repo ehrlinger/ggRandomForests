@@ -48,7 +48,7 @@
 #'   the others. The result is a long-format \code{data.frame} with a
 #'   \code{class} factor column and a named AUC vector attribute, ordered by
 #'   descending AUC. Binary forests treat \code{per_class = TRUE} as a no-op.
-#'   Honoured by the \code{randomForest} method only.
+#'   Honored by the \code{randomForest} method only.
 #' @param ... Extra arguments (currently unused).
 #'
 #' @return A \code{gg_roc} \code{data.frame}, one row per unique prediction
@@ -127,7 +127,7 @@ gg_roc.rfsrc <- function(object, which_outcome, oob = TRUE,
 
   # Redundant guard: rfsrc sets family = "class" for classification forests.
   # Kept here to surface a clearer error message if the object is somehow
-  # mis-labelled.
+  # mis-labeled.
   if (object$family != "class") {
     stop("gg_roc is intended for classification forests only.")
   }

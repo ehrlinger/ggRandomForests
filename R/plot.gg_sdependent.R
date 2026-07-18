@@ -2,14 +2,14 @@
 #' Plot a `gg_sdependent` object
 #'
 #' Ranked lollipop of the per-variable `sdependent()` signal score, sorted
-#' descending so the strongest signal lands at the top. Points are coloured
-#' blue for variables flagged as signal (`signal == TRUE`) and grey otherwise.
+#' descending so the strongest signal lands at the top. Points are colored
+#' blue for variables flagged as signal (`signal == TRUE`) and gray otherwise.
 #'
 #' @section Reading the chart:
 #' Each lollipop is a variable's signal score from [varPro::sdependent()],
 #' computed on the unsupervised entropy-region lasso structure of a
 #' [varPro::uvarpro()] fit. Blue variables cleared the detection threshold and
-#' are reported in `sdependent()$signal.vars`; grey ones did not. Pair with
+#' are reported in `sdependent()$signal.vars`; gray ones did not. Pair with
 #' [gg_udependent()] (the dependency graph) to see *how* the signal variables
 #' connect, and with [gg_beta_uvarpro()] for the lasso-importance ranking.
 #'

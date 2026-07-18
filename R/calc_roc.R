@@ -11,7 +11,7 @@
 ####
 ####**********************************************************************
 ####**********************************************************************
-# Internal helper: normalise the which_outcome argument.
+# Internal helper: normalize the which_outcome argument.
 # "all" is not yet fully supported; fall back to class 1 with a warning.
 .validate_which_outcome <- function(which_outcome) {
   if (identical(which_outcome, "all")) {
@@ -163,7 +163,7 @@ calc_roc <- function(object,
 # Build the per-class probability matrix used by the ROC sweep:
 #   oob = TRUE  -> object$votes (OOB class proportions; honest)
 #   else        -> predict(object, type = "prob") (in-bag)
-# randomForest votes can be raw counts; row-normalise to probabilities.
+# randomForest votes can be raw counts; row-normalize to probabilities.
 .rf_prob_matrix <- function(object, oob, lvls) {
   prob <- if (isTRUE(oob) && !is.null(object$votes)) {
     as.matrix(object$votes)

@@ -73,7 +73,7 @@ quantile_pts <- function(object, groups, intervals = FALSE) {
     seq(0, 1, length.out = groups)
   }
 
-  # type = 2 uses the "nearest even" convention, matching the behaviour of
+  # type = 2 uses the "nearest even" convention, matching the behavior of
   # SAS PROC UNIVARIATE and ensuring consistent results on small samples.
   pts <- as.numeric(stats::quantile(object,
     probs = probs,

@@ -642,7 +642,7 @@ test_that(".warn_varpro_dropped_xvars: silent when every request is reachable", 
 
 test_that(".warn_varpro_dropped_xvars: silent when xvar.names is not supplied", {
   # No xvar.names => partialpro falls back to get.topvars(), which is
-  # documented, expected behaviour rather than a silent drop.
+  # documented, expected behavior rather than a silent drop.
   expect_no_warning(
     ggRandomForests:::.warn_varpro_dropped_xvars(NULL, make_fake_varpro_fit())
   )
@@ -693,7 +693,7 @@ test_that("gg_partial_varpro: object path warns on unreachable xvar.names", {
   )
 })
 
-## ── chf C-path honours xvar.names ────────────────────────────────────────────
+## ── chf C-path honors xvar.names ────────────────────────────────────────────
 ## The C-path routes through gg_partial_rfsrc() rather than partialpro(). It
 ## used to hardcode xvar.names = object$xvar.names and never see '...', so a
 ## requested subset was ignored and every reachable variable was computed --
@@ -733,7 +733,7 @@ test_that("gg_partial_varpro: chf C-path warns on partialpro-only dots", {
     ggRandomForests:::.warn_varpro_cpath_dots(list(cut = 0.5, nsmp = 10)),
     regexp = "cut|ignored"
   )
-  # xvar.names is honoured, not ignored -- it must not trigger the warning
+  # xvar.names is honored, not ignored -- it must not trigger the warning
   expect_no_warning(
     ggRandomForests:::.warn_varpro_cpath_dots(list(xvar.names = "age"))
   )
@@ -758,7 +758,7 @@ test_that(".warn_varpro_cpath_dots: unnamed dots are reported, not swallowed", {
     ggRandomForests:::.warn_varpro_cpath_dots(list(0.5, cut = 1)),
     regexp = "unnamed"
   )
-  # xvar.names alone is honoured on this path, so it is not "ignored"
+  # xvar.names alone is honored on this path, so it is not "ignored"
   expect_no_warning(
     ggRandomForests:::.warn_varpro_cpath_dots(list(xvar.names = "age"))
   )

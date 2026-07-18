@@ -330,7 +330,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       wch_y_var <- which(colnames(gg_dta) %in% c("yhat"))
 
       if (family == "class") {
-        # Include the observed class label column for colouring
+        # Include the observed class label column for coloring
         wch_y_var <- c(wch_y_var, which(colnames(gg_dta) == "yvar"))
         tmp_dta <- gg_dta[, c(wch_y_var, wch_x_var)]
         pivot_cols <-
@@ -470,7 +470,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
               ggplot2::geom_smooth(ggplot2::aes(x = .data$var, y = .data$yhat), ...)
           }
         } else {
-          # Factor predictor: boxplot + jittered points coloured by event
+          # Factor predictor: boxplot + jittered points colored by event
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::geom_boxplot(
               ggplot2::aes(x = .data$var, y = .data$yhat),
@@ -536,7 +536,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                 )
             }
           } else {
-            # Factor predictor: jitter + boxplot coloured by observed class.
+            # Factor predictor: jitter + boxplot colored by observed class.
             # smooth=TRUE is intentionally a no-op here: geom_smooth requires
             # a continuous x-axis and has no meaningful interpretation for
             # discrete factor levels.  The boxplot IQR serves as the spread

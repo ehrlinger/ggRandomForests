@@ -76,7 +76,7 @@ expressive, slowest, best suited to low-dimensional data.}
 }
 No method is universally best. The varPro authors recommend trying at
 least two and comparing the score distributions; the plot method here
-colours per-method curves automatically when you stack the results.
+colors per-method curves automatically when you stack the results.
 }
 
 \section{What's in the output}{
@@ -143,7 +143,7 @@ relationship is \code{howbad = 1 - predict(object, newdata, quantiles = TRUE)}.
 
 To overlay training and test scores in one plot, bind the two extractor
 calls with a \code{method} label column (the same column
-\code{\link{plot.gg_isopro}} uses to colour rnd / unsupv / auto
+\code{\link{plot.gg_isopro}} uses to color rnd / unsupv / auto
 comparisons):
 
 \preformatted{
@@ -161,7 +161,7 @@ plot(gg_both)
 To compare methods (\code{"rnd"}, \code{"unsupv"}, \code{"auto"}), call
 \code{\link{gg_isopro}} on each fit and \code{dplyr::bind_rows()} the
 results with a \code{method} label column. The plot method auto-detects
-\code{method} and colours the curves.
+\code{method} and colors the curves.
 }
 
 \examples{

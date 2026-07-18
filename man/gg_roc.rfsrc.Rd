@@ -37,7 +37,7 @@ classes, return one ROC curve per class, each class scored against all
 the others. The result is a long-format \code{data.frame} with a
 \code{class} factor column and a named AUC vector attribute, ordered by
 descending AUC. Binary forests treat \code{per_class = TRUE} as a no-op.
-Honoured by the \code{randomForest} method only.}
+Honored by the \code{randomForest} method only.}
 
 \item{...}{Extra arguments (currently unused).}
 }

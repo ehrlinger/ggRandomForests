@@ -110,7 +110,7 @@
 #'   \strong{Details}.  Ignored, with a warning, when \code{part_dta} is
 #'   supplied.  With \code{scale = "chf"} the work goes through
 #'   \code{\link{gg_partial_rfsrc}} rather than \code{partialpro}, so
-#'   \code{xvar.names} is honoured but the \code{partialpro}-only arguments
+#'   \code{xvar.names} is honored but the \code{partialpro}-only arguments
 #'   (\code{cut}, \code{nsmp}) do not apply and are ignored with a warning.
 #'
 #' @details
@@ -306,7 +306,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
 
   ## ---- C-path: route CHF through gg_partial_rfsrc ------------------------
   ## (surv now uses the partialpro S(t) learner on path A, below.)
-  ## 'xvar.names' is honoured here as it is on path A; the rest of '...' is
+  ## 'xvar.names' is honored here as it is on path A; the rest of '...' is
   ## partialpro's own vocabulary and means nothing to gg_partial_rfsrc(), which
   ## has no '...' to absorb it.
   if (!is.null(object) && scale == "chf") {
@@ -466,7 +466,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## Only meaningful when xvar.names was supplied: partialpro() applies its nvar
 ## cap solely in the missing(xvar.names) branch, so a supplied vector is
 ## filtered by reachability alone, and the get.topvars() fallback is documented
-## behaviour rather than a silent drop.
+## behavior rather than a silent drop.
 #' @keywords internal
 .warn_varpro_dropped_xvars <- function(requested, object) {
   if (is.null(requested) || is.null(object) || is.null(object$xvar.names))
@@ -757,7 +757,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
     partial_time <- ti[which.min(abs(ti - time))]
   }
 
-  ## Default to every reachable variable, as before; honour a requested subset
+  ## Default to every reachable variable, as before; honor a requested subset
   ## when one is given. gg_partial_rfsrc() errors on a name the forest does not
   ## carry, so a bad request fails loudly here rather than being dropped.
   if (is.null(xvar.names)) xvar.names <- object$xvar.names

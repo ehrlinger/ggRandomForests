@@ -447,7 +447,7 @@ surface_list <- lapply(rm_grid, function(rm_val) {
 surface_df <- bind_rows(surface_list)
 ```
 
-```{r pd-surface, fig.cap="Partial dependence surface: median home value as a function of lstat and rm. Fill colour is the predicted median value."}
+```{r pd-surface, fig.cap="Partial dependence surface: median home value as a function of lstat and rm. Fill color is the predicted median value."}
 ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
   geom_tile() +
   scale_fill_viridis_c(name = "Median Value\n($1000s)") +

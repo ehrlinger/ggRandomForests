@@ -33,7 +33,7 @@
 #' @section Comparing methods:
 #' When the input object carries a \code{method} column (because you
 #' bound several \code{\link{gg_isopro}} calls together), both panels
-#' colour by method automatically. The point of comparing \code{"rnd"},
+#' color by method automatically. The point of comparing \code{"rnd"},
 #' \code{"unsupv"}, and \code{"auto"} is not to pick a winner from the
 #' figure alone, it is to see whether the methods agree on which
 #' observations are anomalous. Curves that overlap in the right tail and
@@ -70,7 +70,7 @@ plot.gg_isopro <- function(x,
   thr <- .resolve_isopro_threshold(x$howbad, threshold, top_n_pct)
 
   # Multi-method detection: a `method` column means the user bound several
-  # fits together with bind_rows; colour/group by method.
+  # fits together with bind_rows; color/group by method.
   has_method <- "method" %in% names(x)
 
   elbow   <- .gg_isopro_elbow(x, thr, has_method)

@@ -30,14 +30,14 @@ faceted by variable name -- the same arrangement as
 For a survival forest, each call to \code{partial.rfsrc} returns a predicted
 quantity (survival probability, cumulative hazard function, or mortality) at
 one or more chosen time horizons.  When a \code{time} column is present in
-the data, each horizon becomes a separate coloured curve over the predictor's
+the data, each horizon becomes a separate colored curve over the predictor's
 value, still faceted by variable.  The y-axis label (\dQuote{Predicted
 Survival}, \dQuote{Predicted CHF}, or \dQuote{Predicted Mortality}) tracks
 the \code{partial.type} attribute set by \code{gg_partial_rfsrc()}.
 
 For a two-variable interaction surface (when \code{xvar2.name} was supplied
 to \code{gg_partial_rfsrc}), the secondary variable's levels become
-separate coloured lines, faceted by the primary predictor.
+separate colored lines, faceted by the primary predictor.
 }
 \examples{
 ## ------------------------------------------------------------
