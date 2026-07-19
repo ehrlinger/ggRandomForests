@@ -76,9 +76,9 @@ is a sanity check on what the elbow suggests.
 When the input object carries a `method` column (because you bound
 several
 [`gg_isopro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
-calls together), both panels colour by method automatically. The point
-of comparing `"rnd"`, `"unsupv"`, and `"auto"` is not to pick a winner
-from the figure alone, it is to see whether the methods agree on which
+calls together), both panels color by method automatically. The point of
+comparing `"rnd"`, `"unsupv"`, and `"auto"` is not to pick a winner from
+the figure alone, it is to see whether the methods agree on which
 observations are anomalous. Curves that overlap in the right tail and
 elbow at roughly the same rank are telling you the same story three
 ways. Curves that diverge are telling you the score is method-sensitive,

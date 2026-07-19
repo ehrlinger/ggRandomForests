@@ -40,7 +40,7 @@ charts, both faceted by variable name – the same arrangement as
 For a survival forest, each call to `partial.rfsrc` returns a predicted
 quantity (survival probability, cumulative hazard function, or
 mortality) at one or more chosen time horizons. When a `time` column is
-present in the data, each horizon becomes a separate coloured curve over
+present in the data, each horizon becomes a separate colored curve over
 the predictor's value, still faceted by variable. The y-axis label
 (“Predicted Survival”, “Predicted CHF”, or “Predicted Mortality”) tracks
 the `partial.type` attribute set by
@@ -48,7 +48,7 @@ the `partial.type` attribute set by
 
 For a two-variable interaction surface (when `xvar2.name` was supplied
 to `gg_partial_rfsrc`), the secondary variable's levels become separate
-coloured lines, faceted by the primary predictor.
+colored lines, faceted by the primary predictor.
 
 ## See also
 

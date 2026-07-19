@@ -1,7 +1,7 @@
 # Variable importance data from a varPro model
 
 Pulls the per-tree importance scores out of a fitted `varpro` object and
-summarises them into a data structure the plot method can draw as a
+summarizes them into a data structure the plot method can draw as a
 boxplot. The box hinges are the 15th and 85th percentiles and the
 whiskers run to the 5th and 95th – not the usual Tukey 1.5 IQR whiskers.
 For a classification forest you can also keep the class-conditional
@@ -108,8 +108,8 @@ the data.
 
 Because varpro builds importance from rules sampled over trees, every
 tree contributes its own importance value for each variable. Those are
-the per-tree scores we summarise here. With `local.std = TRUE` (the
-default) the per-tree values are standardised by their column standard
+the per-tree scores we summarize here. With `local.std = TRUE` (the
+default) the per-tree values are standardized by their column standard
 deviation so the column mean equals the aggregate z-score returned by
 [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html);
 that z-score is the canonical "is this variable in or out?" statistic,
@@ -147,7 +147,7 @@ is the tidy class x variable z table, present only when
   (`conditional = TRUE`) rather than just which variables drive the
   model overall.
 
-The z-score is a standardised ranking statistic, not a p-value or a
+The z-score is a standardized ranking statistic, not a p-value or a
 probability. Two variables with the same z are "similarly important by
 this method", not "equally likely to be true signal". For a data-driven
 cutoff rather than the 0.79 default, see
@@ -173,7 +173,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 gg <- gg_varpro(vp)
 print(gg)
 #> <gg_varpro>  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE
-#>   3 of 4 variables selected (z > 0.79)
+#>   2 of 4 variables selected (z > 0.79)
 plot(gg)
 
 # }

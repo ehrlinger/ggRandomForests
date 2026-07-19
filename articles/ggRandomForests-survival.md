@@ -195,7 +195,7 @@ dta_cont <- pbc[, cnt_idx] |>
 ggplot(dta_cont |> filter(!is.na(value)),
        aes(x = years, y = value, color = factor(status), shape = factor(status))) +
   geom_point(alpha = 0.4) +
-  geom_rug(data = dta_cont |> filter(is.na(value)), color = "grey50") +
+  geom_rug(data = dta_cont |> filter(is.na(value)), color = "gray50") +
   labs(y = "", x = st_labs["years"], color = "Death", shape = "Death") +
   scale_color_manual(values = event_colors) +
   scale_shape_manual(values = event_marks) +
@@ -441,8 +441,8 @@ md_pbc <- max.subtree(rfsrc_pbc)
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
 function computes minimal depth for each variable. The threshold is
-5.94, selecting 8 variables: ascites, edema, bili, chol, albumin,
-copper, sgot, prothrombin.
+5.71, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
 `copper`, `prothrombin`, and `age`. We add `edema` (selected by the
@@ -565,7 +565,7 @@ plot(pd)
 Partial dependence of survival at approximately 1 and 3 years on
 continuous predictors.
 
-For a publication-ready layout with custom colour scale, access
+For a publication-ready layout with custom color scale, access
 `pd$continuous` directly:
 
 ``` r
@@ -686,8 +686,7 @@ if (!exists("surface_df")) {
 ![](ggRandomForests-survival_files/figure-html/pd-surface-1.png)
 
 Partial dependence surface: survival at 1 year as a function of
-bilirubin and albumin. Fill colour is the predicted survival
-probability.
+bilirubin and albumin. Fill color is the predicted survival probability.
 
 The surface shows that survival is highest when bilirubin is low and
 albumin is high (upper-left corner), and drops steeply as bilirubin
@@ -778,7 +777,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.419147
+    #> [1] 1.390379
 
 ## Conclusion
 

@@ -80,7 +80,7 @@ stays on familiar ground.
 
 That core machinery feeds five supervised ggRandomForests wrappers.
 **[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)**
-summarises the per-tree importance distribution.
+summarizes the per-tree importance distribution.
 **[`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md)**
 refines those release-rule contrasts with a per-rule lasso.
 **[`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)**
@@ -150,7 +150,7 @@ section reads off that single fit. The formula interface is intentional:
 varPro is model-independent in the sense that it doesn’t assume a linear
 or parametric relationship between predictors and response, but it does
 require you to name a response so the guided splitting has something to
-optimise toward.
+optimize toward.
 
 ### Per-tree importance with `gg_varpro()`
 
@@ -236,7 +236,7 @@ importance, not a VIMP score, and not a global slope.
 
 That distinction matters in practice. A variable with a strong nonlinear
 global relationship may have locally small β values inside any single
-rule (the local-standardisation step within each rule normalises the
+rule (the local-standardization step within each rule normalizes the
 scale), but many rules will fire on it, so the aggregated mean is still
 large. Conversely, a variable with a nearly linear global effect will
 concentrate most of its weight in a handful of rules, and the
@@ -385,7 +385,7 @@ predictor space.
 Iris is a small data set (150 rows, four predictors, three response
 classes), and that’s a feature here, not a flaw: every figure renders in
 under a second, and the structure is well-understood enough that any
-strange behaviour stands out. It is also a good stress-test for the
+strange behavior stands out. It is also a good stress-test for the
 conditional importance path: petal length and petal width separate
 *setosa* from everything else very cleanly, but the
 *versicolor*/*virginica* boundary is much softer. A method that only

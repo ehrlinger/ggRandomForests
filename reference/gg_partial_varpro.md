@@ -104,7 +104,7 @@ gg_partialpro(
   missing ones. See **Details**. Ignored, with a warning, when
   `part_dta` is supplied. With `scale = "chf"` the work goes through
   [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-  rather than `partialpro`, so `xvar.names` is honoured but the
+  rather than `partialpro`, so `xvar.names` is honored but the
   `partialpro`-only arguments (`cut`, `nsmp`) do not apply and are
   ignored with a warning.
 
@@ -358,7 +358,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 6
+#> [1] 7
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
@@ -371,7 +371,7 @@ setdiff(wanted, vp$xvar.names)
 ## Ask anyway and we warn, naming what partialpro() would have dropped
 ## in silence.
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted)
-#> Warning: gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
+#> Warning: gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 7 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,

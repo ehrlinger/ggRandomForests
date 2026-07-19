@@ -120,7 +120,7 @@ head(result$continuous)
 #> 6    81  36.0 Solar.R
 
 ## Label this model for later comparison with a second forest
-result_labelled <- gg_partial(pv, model = "airq_model")
-unique(result_labelled$continuous$model)
+result_labeled <- gg_partial(pv, model = "airq_model")
+unique(result_labeled$continuous$model)
 #> [1] "airq_model"
 ```

@@ -129,7 +129,7 @@ plot with one panel per class (class probabilities in long form).</p></dd>
 <dd><p>Step curves of the ensemble survival
 function.  When <code>gg_rfsrc</code> was called with <code>conf.int</code>,
 a shaded ribbon is added.  When called with <code>by</code>, curves are
-coloured by group.</p></dd>
+colored by group.</p></dd>
 
 
 </dl></div>
@@ -137,13 +137,13 @@ coloured by group.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The geometry adapts to the forest family.  For regression or
 classification, you get a jitter-and-boxplot: every observation is a dot
-placed at its OOB predicted value, coloured by observed response, with a
+placed at its OOB predicted value, colored by observed response, with a
 notched boxplot overlaid to show the central tendency and spread.  For a
 survival forest, each observation contributes one ensemble survival curve
 (or CHF / mortality, whichever <code>surv_type</code> was chosen in
 <code>gg_rfsrc</code>); the bundle of step functions shows the spread of
 predicted risk across the cohort.  Pass <code>by</code> to <code>gg_rfsrc</code>
-beforehand to colour curves by a predictor group, or <code>conf.int</code> to
+beforehand to color curves by a predictor group, or <code>conf.int</code> to
 replace the individual curves with a mean curve and bootstrap ribbon.</p>
     </div>
     <div class="section level2">

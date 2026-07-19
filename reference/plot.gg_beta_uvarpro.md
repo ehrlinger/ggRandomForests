@@ -3,7 +3,7 @@
 Horizontal bar chart of the mean absolute lasso coefficient
 \\\mathrm{mean}(\|\hat{\beta}\|)\\ per variable from an unsupervised
 varPro fit, sorted descending so the eye lands on the top variable
-first. Bars are filled blue above the selection cutoff, grey otherwise,
+first. Bars are filled blue above the selection cutoff, gray otherwise,
 with a dashed red line at the cutoff.
 
 ## Usage

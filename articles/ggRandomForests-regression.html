@@ -84,7 +84,7 @@
       <h1>Random Forest Regression with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-07-18</p>
+      <p class="date">2026-07-19</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests-regression.qmd" class="external-link"><code>vignettes/ggRandomForests-regression.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -174,7 +174,7 @@
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dta</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">medv</span>, y <span class="op">=</span> <span class="va">value</span>, color <span class="op">=</span> <span class="va">chas</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">medv</span>, y <span class="op">=</span> <span class="va">value</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"grey30"</span>,</span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">medv</span>, y <span class="op">=</span> <span class="va">value</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"gray30"</span>,</span>
 <span>              inherit.aes <span class="op">=</span> <span class="cn">FALSE</span>, se <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">""</span>, x <span class="op">=</span> <span class="va">st_labs</span><span class="op">[</span><span class="st">"medv"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html" class="external-link">scale_color_brewer</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Set2"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -199,7 +199,7 @@
 <pre><code><span><span class="co">#&gt;                          Sample size: 506</span></span>
 <span><span class="co">#&gt;                      Number of trees: 200</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 5</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 66.75</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 66.83</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 5</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 13</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -208,8 +208,8 @@
 <span><span class="co">#&gt;                               Family: regr</span></span>
 <span><span class="co">#&gt;                       Splitting rule: mse *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                      (OOB) R squared: 0.8628504</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 11.60103494</span></span></code></pre>
+<span><span class="co">#&gt;                      (OOB) R squared: 0.86479215</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 11.43678864</span></span></code></pre>
 </div>
 </div>
 <p>The forest grew 200 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
@@ -485,7 +485,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure><p><img src="ggRandomForests-regression_files/figure-html/pd-surface-1.png"></p>
-<figcaption>Partial dependence surface: median home value as a function of lstat and rm. Fill colour is the predicted median value.</figcaption></figure>
+<figcaption>Partial dependence surface: median home value as a function of lstat and rm. Fill color is the predicted median value.</figcaption></figure>
 </div>
 </div>
 </div>

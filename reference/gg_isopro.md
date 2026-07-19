@@ -96,7 +96,7 @@ splits are chosen:
 
 No method is universally best. The varPro authors recommend trying at
 least two and comparing the score distributions; the plot method here
-colours per-method curves automatically when you stack the results.
+colors per-method curves automatically when you stack the results.
 
 ## What's in the output
 
@@ -163,7 +163,7 @@ so nothing is hidden:
 To overlay training and test scores in one plot, bind the two extractor
 calls with a `method` label column (the same column
 [`plot.gg_isopro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
-uses to colour rnd / unsupv / auto comparisons):
+uses to color rnd / unsupv / auto comparisons):
 
 
     gg_train <- gg_isopro(fit)
@@ -179,7 +179,7 @@ To compare methods (`"rnd"`, `"unsupv"`, `"auto"`), call `gg_isopro` on
 each fit and
 [`dplyr::bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html)
 the results with a `method` label column. The plot method auto-detects
-`method` and colours the curves.
+`method` and colors the curves.
 
 ## References
 

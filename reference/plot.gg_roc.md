@@ -41,15 +41,15 @@ plot(x, which_outcome = NULL, ..., panel = c("overlay", "facet"))
 
   Character; layout for per-class ROC objects, the ones from
   `gg_roc(..., per_class = TRUE)`. `"overlay"` (default) draws every
-  class curve in one panel, coloured by class; `"facet"` gives each
-  class its own panel. Ignored for single-class `gg_roc` objects.
+  class curve in one panel, colored by class; `"facet"` gives each class
+  its own panel. Ignored for single-class `gg_roc` objects.
 
 ## Value
 
 A `ggplot` object. The x-axis is 1 - Specificity (FPR), the y-axis is
 Sensitivity (TPR), and a dashed red diagonal marks the random-classifier
 baseline. Single-class curves carry the AUC as an annotation;
-multi-class plots colour and style each class curve distinctly.
+multi-class plots color and style each class curve distinctly.
 
 ## References
 

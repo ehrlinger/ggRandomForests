@@ -11,14 +11,14 @@
   to `NA`, which rendered as an empty box/bar. Those rows are now
   dropped, so only the displayed variables appear.
 - The vignettes now render their figures with `ragg` and quantise them
-  to a 256-colour palette, cutting the source tarball from 4.7 MB to 2.3
+  to a 256-color palette, cutting the source tarball from 4.7 MB to 2.3
   MB. The vignettes had never chosen a graphics device, so they fell
   through to the default
   [`png()`](https://rdrr.io/r/grDevices/png.html), which writes RGBA
   truecolor: an alpha channel these opaque plots never use, over tens of
-  thousands of anti-aliased colours that PNG cannot compress. Figures
-  are visually unchanged (mean pixel difference 1.55 on a 0-255 scale).
-  Both steps are build-time only and degrade to no-ops when `ragg` or
+  thousands of anti-aliased colors that PNG cannot compress. Figures are
+  visually unchanged (mean pixel difference 1.55 on a 0-255 scale). Both
+  steps are build-time only and degrade to no-ops when `ragg` or
   `magick` is absent, so a vignette rebuild without them still succeeds
   – at the old file size.
 - The varPro vignette now documents which variables a `varpro` fit
@@ -97,7 +97,7 @@
   and neither is right here: a `randomForest` matrix opens on the
   classes and keeps the overall permutation measure in
   `MeanDecreaseAccuracy`, near the end. So `0` returned the first class
-  labelled as overall – on
+  labeled as overall – on
   `randomForest(Species ~ ., iris, importance = TRUE)` it handed back
   setosa’s values, ranking `Petal.Width` above `Petal.Length` where the
   overall measure has them the other way round – and every class index
@@ -454,7 +454,7 @@ CRAN release: 2026-06-11
   fixed a stale `@return` in
   [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   (documented a `yvar` column the function does not return). No
-  user-facing behaviour change.
+  user-facing behavior change.
 - Vignettes: the regression and survival partial-dependence surfaces are
   now rendered as static `ggplot2` heat maps instead of interactive
   `plotly` widgets, and figures render at 96 dpi. This cuts the
@@ -475,7 +475,7 @@ CRAN release: 2026-06-11
   tests memoise the per-fit entropy matrix
   ([`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html),
   ~1.5 s and a pure function of the fit) instead of recomputing it once
-  per test. No user-facing behaviour change.
+  per test. No user-facing behavior change.
 
 ## ggRandomForests v3.0.0
 
@@ -496,7 +496,7 @@ CRAN release: 2026-06-11
   per-variable [`message()`](https://rdrr.io/r/base/message.html) in the
   deprecated
   [`surv_partial.rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.md)
-  is removed (its one behaviour change: that function no longer prints a
+  is removed (its one behavior change: that function no longer prints a
   line per variable), and the README points to the new “varpro”
   vignette.
 - Fix: importance plots now consistently put the most-important variable
@@ -601,7 +601,7 @@ CRAN release: 2026-06-11
   [\#94](https://github.com/ehrlinger/ggRandomForests/issues/94)
   (`gg-isopro-default` and `gg-isopro-threshold`) were recorded under
   the inverted polarity; they are visually flipped relative to the new
-  behaviour but CI skips snapshots (`VDIFFR_RUN_TESTS = false`) so no
+  behavior but CI skips snapshots (`VDIFFR_RUN_TESTS = false`) so no
   failure surfaces. Re-record with `VDIFFR_RUN_TESTS = true` when
   convenient.
 - Documentation: pedagogical pass over the varPro wrappers
@@ -611,7 +611,7 @@ CRAN release: 2026-06-11
   to varPro can learn the underlying method (release rules, beta-entropy
   dependency, parametric / nonparametric / causal partial estimators)
   from the help page alone, not just the wrapper mechanics. No API or
-  behavioural change.
+  behavioral change.
 - Documentation: enable roxygen2 markdown package-wide via
   `Roxygen: list(markdown = TRUE)` in `DESCRIPTION`. New roxygen blocks
   can use backticks and `[fn()]` link syntax; existing `\code{}` /
@@ -619,19 +619,19 @@ CRAN release: 2026-06-11
   check clean: `randomForest[SRC]` in `R/help.R` (markdown read it as an
   unfinished link) becomes plain `randomForestSRC`; the `95\%` escape in
   `R/gg_rfsrc.R::bootstrap_survival` becomes a literal `95%`. No API or
-  rendered-doc behavioural change beyond the conventions switch.
+  rendered-doc behavioral change beyond the conventions switch.
 - New
   [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
   and
   [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md):
-  tidy wrapper and ranked-elbow + density visualisation for
+  tidy wrapper and ranked-elbow + density visualization for
   [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html)
   isolation-forest anomaly scores.
   [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
   takes `panel = c("both", "elbow", "density")` and optional `threshold`
   (score-space) or `top_n_pct` (quantile-space) to draw a reference
   line; if both are set, `threshold` wins with a message. A `method`
-  column auto-triggers colour grouping for multi-method comparisons (use
+  column auto-triggers color grouping for multi-method comparisons (use
   [`dplyr::bind_rows()`](https://dplyr.tidyverse.org/reference/bind_rows.html)
   on three
   [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
@@ -668,7 +668,7 @@ CRAN release: 2026-06-11
     ordered by descending AUC.
   - [`plot.gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
     gains `panel = c("overlay", "facet")`. When the object has a `class`
-    column, `"overlay"` colours the curves by class and `"facet"` gives
+    column, `"overlay"` colors the curves by class and `"facet"` gives
     each class its own panel.
   - [`summary.gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
     prints the named per-class AUC values when a `class` column is
@@ -691,7 +691,7 @@ CRAN release: 2026-06-11
     igraph object.
   - [`plot.gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.md)
     draws the dependency network with ggraph. Edge width and opacity
-    scale with dependency strength; node colour marks the signal
+    scale with dependency strength; node color marks the signal
     variables. The layout is configurable (`"fr"`, `"kk"`, `"stress"`,
     and so on).
   - `ggraph` added to `Suggests:`.
@@ -705,7 +705,7 @@ CRAN release: 2026-06-11
     variable. The hinges sit at the 15th and 85th percentiles and the
     whiskers at the 5th and 95th, so the box is not the usual Tukey one
     — it reports the percentiles it actually shows. Variables with
-    aggregate z above `cutoff` (default 0.79) are colour-highlighted.
+    aggregate z above `cutoff` (default 0.79) are color-highlighted.
   - With `faithful = TRUE`, the individual per-tree z-scores are
     jittered over the box as semi-transparent points, with a
     white-outlined dot at the mean, the same view as varPro’s internal
@@ -715,7 +715,7 @@ CRAN release: 2026-06-11
     reads `$conditional.z` and draws class-conditional importance as a
     `facet_wrap(~class, nrow=1)` bar chart.
   - Set `local.std = FALSE` to allow `plot(..., type = "raw")`, which
-    shows raw per-tree importance instead of the z-normalised values.
+    shows raw per-tree importance instead of the z-normalized values.
 - `gg_variable.randomForest`: classification fix
   ([\#87](https://github.com/ehrlinger/ggRandomForests/issues/87)).
   - For a classification forest,
@@ -725,7 +725,7 @@ CRAN release: 2026-06-11
     produces. It used to store a single `yhat` factor column of class
     labels (from `object$predicted`), and that column shape stopped the
     multi-class pivot in `plot.gg_variable` from ever running. The vote
-    fractions are row-normalised to `[0, 1]`, even when the forest was
+    fractions are row-normalized to `[0, 1]`, even when the forest was
     fit with `norm.votes = FALSE`.
   - `plot.gg_variable`, binary classification: with `smooth = TRUE` the
     x and y aesthetics are now mapped onto the smooth layer correctly.
@@ -747,7 +747,7 @@ CRAN release: 2026-06-11
     an optional `object` argument (the originating `varpro` fit) which
     it uses for provenance-aware axis labels, and a `scale` argument
     (`"auto"`, `"mortality"`, `"rmst"`, `"surv"`, `"chf"`).
-  - Ensemble mortality labelling (Ishwaran et al. 2008): with
+  - Ensemble mortality labeling (Ishwaran et al. 2008): with
     `scale = "mortality"`, or `scale = "auto"` on a survival forest, the
     y-axis reads “Ensemble mortality (expected events)”. That is an
     unbounded relative-risk score, not a survival probability, and the
@@ -782,12 +782,12 @@ CRAN release: 2026-06-11
     and
     [`calc_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/calc_roc.rfsrc.md)
     for `randomForest` now build the ROC from class probabilities (OOB
-    votes by default, honouring `oob`) rather than the degenerate
+    votes by default, honoring `oob`) rather than the degenerate
     three-point curve they produced before. With `which_outcome = "all"`
     (the default for `gg_roc(rf)`) the result is a macro-averaged
     one-vs-rest ROC, and no warning. The shared
     `.validate_which_outcome` helper and `calc_roc.rfsrc` are
-    byte-for-byte unchanged, so rfsrc behaviour is untouched
+    byte-for-byte unchanged, so rfsrc behavior is untouched
     ([\#81](https://github.com/ehrlinger/ggRandomForests/issues/81)).
 - Dependency modernization. This breaks scripts that relied on
   attachment. `randomForestSRC` and `randomForest` move from `Depends:`
@@ -860,8 +860,8 @@ CRAN release: 2026-05-12
   now use a shared alpha (`.gg_ribbon_alpha = 0.2`) and a shared fill
   (`.gg_ribbon_fill = "steelblue"`) for single-series cases (KM/NA CIs,
   bootstrap CIs, `gg_brier` envelope); group-stratified ribbons keep
-  their group-coloured fill. Statistical bounds unchanged — only
-  styling. ggRandomForests v2.7.2 =====================
+  their group-colored fill. Statistical bounds unchanged — only styling.
+  ggRandomForests v2.7.2 =====================
 - Address CRAN reviewer (Benjamin Altmann) feedback on the v2.7.1
   resubmission:
   - Add methods references to `DESCRIPTION` (Breiman 2001 and Ishwaran
@@ -904,7 +904,7 @@ CRAN release: 2026-05-12
 - Improve
   [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
   survival layout: predictor value is now on the x-axis with one curve
-  per (rounded) time point coloured by `Time`, faceted by variable name.
+  per (rounded) time point colored by `Time`, faceted by variable name.
   The previous default put time on the x-axis and one curve per
   predictor value, producing a saturated legend with dozens of
   nearly-identical lines.
@@ -1065,7 +1065,7 @@ CRAN release: 2026-05-12
 - Fix model-label assignment in `gg_partial` for categorical variable
   data
 - Refactor `gg_partial` and `gg_partial_rfsrc` to improve factor-level
-  normalisation and categorical data handling
+  normalization and categorical data handling
 
 ## ggRandomForests v2.6.0
 
@@ -1192,7 +1192,7 @@ CRAN release: 2015-03-29
 
 - Some optimizations to reduce package size.
 
-- Remove all tests from CRAN build to optimise R CMD CHECK times.
+- Remove all tests from CRAN build to optimize R CMD CHECK times.
 
 - Remove pdf vignette figure from CRAN build.
 

@@ -33,7 +33,7 @@ plot(x, ...)
 
 A `ggplot` object with `ntree` on the x-axis and OOB error rate on the
 y-axis. Single-outcome forests (regression, survival) produce a single
-line; multi-outcome forests (classification) produce one coloured line
+line; multi-outcome forests (classification) produce one colored line
 per class.
 
 ## Details

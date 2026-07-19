@@ -157,7 +157,7 @@ expressive, slowest, best suited to low-dimensional data.</p></dd>
 
 </dl><p>No method is universally best. The varPro authors recommend trying at
 least two and comparing the score distributions; the plot method here
-colours per-method curves automatically when you stack the results.</p>
+colors per-method curves automatically when you stack the results.</p>
     </div>
     <div class="section level2">
     <h2 id="what-s-in-the-output">What's in the output<a class="anchor" aria-label="anchor" href="#what-s-in-the-output"></a></h2>
@@ -218,7 +218,7 @@ cross-reference against raw varPro output.</p></li>
 relationship is <code>howbad = 1 - predict(object, newdata, quantiles = TRUE)</code>.</p></li>
 </ul><p>To overlay training and test scores in one plot, bind the two extractor
 calls with a <code>method</code> label column (the same column
-<code><a href="plot.gg_isopro.html">plot.gg_isopro</a></code> uses to colour rnd / unsupv / auto
+<code><a href="plot.gg_isopro.html">plot.gg_isopro</a></code> uses to color rnd / unsupv / auto
 comparisons):</p>
 <div class="sourceCode"><pre><code><span></span>
 <span><span class="va">gg_train</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_isopro.html">gg_isopro</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
@@ -236,7 +236,7 @@ comparisons):</p>
 <p>To compare methods (<code>"rnd"</code>, <code>"unsupv"</code>, <code>"auto"</code>), call
 <code>gg_isopro</code> on each fit and <code><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">dplyr::bind_rows()</a></code> the
 results with a <code>method</code> label column. The plot method auto-detects
-<code>method</code> and colours the curves.</p>
+<code>method</code> and colors the curves.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

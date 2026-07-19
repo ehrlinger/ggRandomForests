@@ -58,14 +58,14 @@ the unconditional median z in `$stats`, so the facets line up.
 Variables are sorted top to bottom by descending median per-tree
 importance, so the eye lands on the most important variable first. For
 each variable the box spans the 15th to 85th percentile of the per-tree
-scores, the centre line is the median, and the whiskers run out to the
+scores, the center line is the median, and the whiskers run out to the
 5th and 95th percentile, not the usual Tukey 1.5 IQR whiskers. The
 dashed vertical line is the selection `cutoff` (default `0.79`). On the
 default z-score axis (`local.std = TRUE`) that line is a z; on the
 raw-importance axis (`local.std = FALSE`, `type = "raw"`) it is the same
 numeric value but in raw-importance units. Boxes whose aggregate value
-sits above the line are coloured blue and flagged `selected = TRUE`, the
-rest are grey. A selected variable with a tight, high box is a variable
+sits above the line are colored blue and flagged `selected = TRUE`, the
+rest are gray. A selected variable with a tight, high box is a variable
 the forest agrees on across trees. A selected variable with a wide box
 that straddles the cutoff is one to look at twice before relying on it.
 

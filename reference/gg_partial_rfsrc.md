@@ -110,7 +110,7 @@ For survival forests, the marginalized quantity depends on
 `partial.type`: survival probability (`"surv"`), cumulative hazard
 function (`"chf"`), or expected mortality (`"mort"`). You can request
 the curve at one or more time horizons via `partial.time`; the resulting
-data have a `time` column so the plot layers them as separate coloured
+data have a `time` column so the plot layers them as separate colored
 lines.
 
 ## Note

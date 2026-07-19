@@ -44,7 +44,7 @@ A `ggplot` (or `patchwork`) object.
 ## Details
 
 **Ensemble mortality (scale = "mortality"):** when the provenance scale
-is `"mortality"`, the y-axis is labelled *"Ensemble mortality (expected
+is `"mortality"`, the y-axis is labeled *"Ensemble mortality (expected
 events)"*. The wording is deliberate: this is an **unbounded
 relative-risk score**, not a survival probability and not \\1 - S(t)\\
 (Ishwaran, Kogalur, Blackstone & Lauer, 2008 <doi:10.1214/08-AOAS169>).
@@ -58,7 +58,7 @@ shape of the line is the story: a clear slope says the model uses the
 variable, a flat line says it essentially does not, and a U-shape or a
 threshold says the effect is nonlinear in a way a single coefficient
 would miss. For a categorical variable the picture is a boxplot per
-level; here the eye is looking at level-to-level shifts in the centre of
+level; here the eye is looking at level-to-level shifts in the center of
 each box.
 
 Where the three effect types track each other, the parametric story is a

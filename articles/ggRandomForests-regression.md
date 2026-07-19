@@ -107,7 +107,7 @@ dta <- Boston |>
 
 ggplot(dta, aes(x = medv, y = value, color = chas)) +
   geom_point(alpha = 0.4) +
-  geom_smooth(aes(x = medv, y = value), color = "grey30",
+  geom_smooth(aes(x = medv, y = value), color = "gray30",
               inherit.aes = FALSE, se = FALSE) +
   labs(y = "", x = st_labs["medv"]) +
   scale_color_brewer(palette = "Set2") +
@@ -141,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 200
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.75
+    #>        Average no. of terminal nodes: 66.83
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.8628504
-    #>    (OOB) Requested performance error: 11.60103494
+    #>                      (OOB) R squared: 0.86479215
+    #>    (OOB) Requested performance error: 11.43678864
 
 The forest grew 200 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -547,7 +547,7 @@ ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
 ![](ggRandomForests-regression_files/figure-html/pd-surface-1.png)
 
 Partial dependence surface: median home value as a function of lstat and
-rm. Fill colour is the predicted median value.
+rm. Fill color is the predicted median value.
 
 The surface confirms the strong interaction: home values are highest
 when `lstat` is low and `rm` is high (upper-left corner), dropping

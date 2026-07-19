@@ -58,7 +58,7 @@ gg_roc(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
   one ROC curve per class, each class scored against all the others. The
   result is a long-format `data.frame` with a `class` factor column and
   a named AUC vector attribute, ordered by descending AUC. Binary
-  forests treat `per_class = TRUE` as a no-op. Honoured by the
+  forests treat `per_class = TRUE` as a no-op. Honored by the
   `randomForest` method only.
 
 - ...:

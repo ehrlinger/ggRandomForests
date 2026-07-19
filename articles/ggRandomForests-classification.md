@@ -66,7 +66,7 @@ petal length and width for 150 flowers, 50 each from three species:
 *setosa*, *versicolor*, and *virginica*. It is a small data set, and
 that is a feature here, not a flaw: every figure in this vignette
 renders in under a second, and the structure is well-understood enough
-that any strange behaviour stands out.
+that any strange behavior stands out.
 
 ``` r
 

@@ -42,7 +42,7 @@ which also satisfies `inherits(p, "ggplot")`.
 
 When a `model` label was attached in
 [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md),
-lines are coloured by model – handy for overlaying results from two
+lines are colored by model – handy for overlaying results from two
 forests (e.g., one tuned, one default) in the same figure.
 
 ## See also

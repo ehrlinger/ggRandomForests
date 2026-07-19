@@ -111,7 +111,7 @@ regression coefficient. Specifically:
   see
   [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md),
   where the sign does survive.) **Magnitude depends on the predictor's
-  units** (raw `x`, no standardisation); a predictor in millimetres has
+  units** (raw `x`, no standardization); a predictor in millimetres has
   a smaller \\\|\hat{\beta}\|\\ than the same predictor in metres.
 
 - Lasso shrinkage can drive \\\hat{\beta}\\ to **exactly zero**. Those

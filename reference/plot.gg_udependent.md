@@ -1,7 +1,7 @@
 # Plot a `gg_udependent` variable dependency graph
 
 Draws the dependency graph held in a `gg_udependent` object as a ggraph
-network. Node colour marks whether a variable made the signal set, and
+network. Node color marks whether a variable made the signal set, and
 the width and opacity of an edge tell you how strong the dependency
 between its two variables is.
 
@@ -39,7 +39,7 @@ This plot needs the ggraph package, which is in `Suggests` rather than
 installed for you. If it is missing, run `install.packages("ggraph")`.
 
 A signal variable (`selected = TRUE`) gets a blue node (`#4e8fcd`); the
-rest are grey (`#888888`). Node size grows with degree. Edge width and
+rest are gray (`#888888`). Node size grows with degree. Edge width and
 opacity both grow with the raw dependency weight `I[i,j]`.
 
 ## Reading the network
@@ -55,7 +55,7 @@ wider, more opaque strokes are stronger dependencies; thin, faint edges
 sit near the threshold and are the ones that would disappear first if
 you raised it.
 
-Grey, low-degree nodes are the ones UVarPro thinks are not contributing
+Gray, low-degree nodes are the ones UVarPro thinks are not contributing
 much to the structure. (Truly isolated nodes are dropped by
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
 before the graph is drawn; what you see is the connected component.) A
@@ -65,7 +65,7 @@ redundancy; they may be several views of the same underlying quantity.
 ## What this tells you
 
 Use the figure to pick a working set of variables: the hubs and their
-immediate neighbours are the candidates UVarPro flags as carrying
+immediate neighbors are the candidates UVarPro flags as carrying
 structure. If a cluster of high-degree variables looks like it might be
 measuring the same thing, that is a cue to look at their pairwise
 correlations or fit them as a block rather than individually. The

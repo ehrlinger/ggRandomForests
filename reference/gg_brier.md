@@ -54,7 +54,7 @@ A `gg_brier` `data.frame` with columns
 
 - crps:
 
-  running CRPS (overall) at each time, normalised by elapsed time.
+  running CRPS (overall) at each time, normalized by elapsed time.
 
 - crps.q25, crps.q50, crps.q75, crps.q100:
 
@@ -63,7 +63,7 @@ A `gg_brier` `data.frame` with columns
 - crps.lower, crps.upper:
 
   running CRPS of the 15th / 85th per-subject Brier percentile,
-  normalised by elapsed time.
+  normalized by elapsed time.
 
 The integrated CRPS (a single scalar matching
 `get.brier.survival()$crps`) is attached as
@@ -76,7 +76,7 @@ forest grown with `randomForestSRC`, both overall and broken down by
 mortality-risk quartile (lowest-risk to highest-risk subjects). It also
 returns the continuous ranked probability score (CRPS) – the Brier score
 integrated over time and divided by elapsed time, a running average that
-summarises calibration up to each point on the time axis.
+summarizes calibration up to each point on the time axis.
 
 Because subjects are right-censored, a plain Brier score is biased:
 censored subjects contribute no outcome information yet still inflate
@@ -140,7 +140,7 @@ compare_dta <- dplyr::bind_rows(
   dplyr::mutate(gg_brier(rf2),       model = "mtry=4")
 )
 ggplot2::ggplot(compare_dta,
-  ggplot2::aes(x = time, y = brier, colour = model)) +
+  ggplot2::aes(x = time, y = brier, color = model)) +
   ggplot2::geom_line()
 
 # }
