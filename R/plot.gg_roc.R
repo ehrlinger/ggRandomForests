@@ -25,7 +25,7 @@
 #'   forests, \code{NULL} defaults to class index 2.
 #' @param panel Character; layout for per-class ROC objects, the ones from
 #'   \code{gg_roc(..., per_class = TRUE)}. \code{"overlay"} (default) draws
-#'   every class curve in one panel, coloured by class; \code{"facet"} gives
+#'   every class curve in one panel, colored by class; \code{"facet"} gives
 #'   each class its own panel. Ignored for single-class \code{gg_roc} objects.
 #' @param ... Additional arguments passed to \code{\link{gg_roc}} when
 #'   \code{x} is a raw forest (e.g. \code{oob = FALSE}).
@@ -33,7 +33,7 @@
 #' @return A \code{ggplot} object. The x-axis is 1 - Specificity (FPR), the
 #'   y-axis is Sensitivity (TPR), and a dashed red diagonal marks the
 #'   random-classifier baseline. Single-class curves carry the AUC as an
-#'   annotation; multi-class plots colour and style each class curve
+#'   annotation; multi-class plots color and style each class curve
 #'   distinctly.
 #'
 #' @seealso \code{\link{gg_roc}} \code{\link{calc_roc}} \code{\link{calc_auc}}
@@ -177,7 +177,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...,
       st$fpr <- 1 - st$spec
       st
     })
-    # Tag each subset with its outcome index for colour/linetype mapping
+    # Tag each subset with its outcome index for color/linetype mapping
     gg_dta <- lapply(seq_along(gg_dta), function(ind) {
       gg_dta[[ind]]$outcome <- ind
       gg_dta[[ind]]
@@ -188,7 +188,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...,
       calc_auc(st)
     })
 
-    # Combine all classes into a single data frame for faceting/colouring
+    # Combine all classes into a single data frame for faceting/coloring
     o_dta <- do.call(rbind, gg_dta)
     o_dta$outcome <- factor(o_dta$outcome)
 
@@ -221,7 +221,7 @@ plot.gg_roc <- function(x, which_outcome = NULL, ...,
 #
 # gg_dta : long-format gg_roc data frame with a 'class' factor column
 # auc    : named numeric AUC vector (one entry per class) or NULL
-# panel  : "overlay" (curves coloured by class) or "facet" (one panel each)
+# panel  : "overlay" (curves colored by class) or "facet" (one panel each)
 .plot_gg_roc_per_class <- function(gg_dta, auc, panel) {
   gg_dta$fpr <- 1 - gg_dta$spec
 

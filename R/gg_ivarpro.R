@@ -22,7 +22,7 @@
 #' to predicting that observation. Per-rule LOO removes the observation
 #' from its own rule before scoring, so the contribution is not inflated
 #' by the observation having helped define the region. Per-region scaling
-#' (`scale = "local"`, default) standardises the contribution by the
+#' (`scale = "local"`, default) standardizes the contribution by the
 #' rule's local response standard deviation so values are comparable
 #' across rules of different size. Aggregating those per-rule scores into
 #' one number per (obs, variable) pair gives the `local_imp` cell.
@@ -89,7 +89,7 @@
 #' @section Classification:
 #' For a classification fit, `ivarpro()` returns a list of K matrices
 #' (one per class) for multi-class, or a flat data.frame for binary
-#' (positive-class importances only - the wrapper normalises this to
+#' (positive-class importances only - the wrapper normalizes this to
 #' a single-element list under the last factor level). The wrapper
 #' stacks per-class frames into a long-format frame with a `class`
 #' column. `which_class = NULL` returns all classes (binary defaults
@@ -226,7 +226,7 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
     iv <- ivarpro_fit
   }
   # varPro::ivarpro() returns a flat data.frame for binary classification
-  # (positive-class importances only). Normalise to the spec's list-of-K
+  # (positive-class importances only). Normalize to the spec's list-of-K
   # shape by wrapping under the last factor level (positive class).
   if (fam == "class" && is.data.frame(iv)) {
     cls_levels <- .ivarpro_class_levels(object)

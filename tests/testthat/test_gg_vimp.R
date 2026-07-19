@@ -424,7 +424,7 @@ test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP c
   # The invariant, asserted for every row: positive is TRUE exactly when VIMP > 0.
   expect_equal(gg_dta$positive, gg_dta[[vimp_col]] > 0)
   # The injected -1 guarantees at least one non-positive VIMP, so the pre-fix
-  # all-TRUE behaviour would fail here.
+  # all-TRUE behavior would fail here.
   expect_true(any(!gg_dta$positive))
   expect_s3_class(plot(gg_dta), "ggplot")
 })

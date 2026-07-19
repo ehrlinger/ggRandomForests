@@ -109,7 +109,7 @@ fit has no response, a cluster tells you these columns are correlated in feature
 space regardless of whether any of them would matter for a prediction. When you
 do have a downstream model, that is useful on its own: a variable can be
 important for prediction and still sit in a tight cluster with a near-duplicate,
-and in that case parsimony may favour dropping one member of the cluster without
+and in that case parsimony may favor dropping one member of the cluster without
 losing much.
 
 ## What ranks highest: `gg_beta_uvarpro()`

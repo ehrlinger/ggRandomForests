@@ -75,7 +75,7 @@ Concretely: \code{ivarpro()} walks the forest's rules and, for each
 to predicting that observation. Per-rule LOO removes the observation
 from its own rule before scoring, so the contribution is not inflated
 by the observation having helped define the region. Per-region scaling
-(\code{scale = "local"}, default) standardises the contribution by the
+(\code{scale = "local"}, default) standardizes the contribution by the
 rule's local response standard deviation so values are comparable
 across rules of different size. Aggregating those per-rule scores into
 one number per (obs, variable) pair gives the \code{local_imp} cell.
@@ -151,7 +151,7 @@ Provenance carries \code{precomputed = TRUE} when \code{ivarpro_fit} was supplie
 
 For a classification fit, \code{ivarpro()} returns a list of K matrices
 (one per class) for multi-class, or a flat data.frame for binary
-(positive-class importances only - the wrapper normalises this to
+(positive-class importances only - the wrapper normalizes this to
 a single-element list under the last factor level). The wrapper
 stacks per-class frames into a long-format frame with a \code{class}
 column. \code{which_class = NULL} returns all classes (binary defaults

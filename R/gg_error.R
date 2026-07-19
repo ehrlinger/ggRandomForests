@@ -295,7 +295,7 @@ gg_error.randomForest <- function(object, ...) {
     # Regression forests store the cumulative OOB mean squared error in $mse.
     gg_dta <- data.frame(object$mse)
 
-    # Normalise the auto-generated column name to "error".
+    # Normalize the auto-generated column name to "error".
     if ("object.mse" %in% colnames(gg_dta)) {
       colnames(gg_dta)[which(colnames(gg_dta) == "object.mse")] <-
         "error"

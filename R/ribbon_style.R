@@ -13,7 +13,7 @@
 # readable when several models are layered, high enough to read on white.
 .gg_ribbon_alpha <- 0.2
 
-# Default fill for single-series ribbons (no group aesthetic). Group-coloured
+# Default fill for single-series ribbons (no group aesthetic). Group-colored
 # ribbons override via aes(fill = group) and ignore this constant.
 .gg_ribbon_fill <- "steelblue"
 

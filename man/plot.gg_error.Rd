@@ -20,7 +20,7 @@ geometry calls (e.g. \code{size}, \code{linetype}).}
 A \code{ggplot} object with \code{ntree} on the x-axis and
 OOB error rate on the y-axis.  Single-outcome forests (regression,
 survival) produce a single line; multi-outcome forests (classification)
-produce one coloured line per class.
+produce one colored line per class.
 }
 \description{
 A plot of the cumulative OOB error rates of the random forest as a

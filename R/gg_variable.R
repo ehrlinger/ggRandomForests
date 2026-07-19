@@ -327,7 +327,7 @@ gg_variable.randomForest <- function(object,
     preds    <- object$votes   # n × n_classes matrix; may be raw counts or fractions
     rs       <- rowSums(preds)
     if (any(rs > 1 + 1e-8, na.rm = TRUE)) {
-      preds  <- preds / rs   # normalise raw vote counts to [0, 1]
+      preds  <- preds / rs   # normalize raw vote counts to [0, 1]
     }
     colnames(preds) <- paste0("yhat.", colnames(preds))
     gg_dta          <- cbind(gg_dta, preds)

@@ -321,7 +321,7 @@ Every user-visible change needs a bullet in `NEWS.md` under the appropriate vers
 ```md
 ggRandomForests v2.7.0
 =====================
-* Add `gg_depth()` to visualise average tree depth per forest (#42)
+* Add `gg_depth()` to visualize average tree depth per forest (#42)
 ```
 
 ---
@@ -389,7 +389,7 @@ rhub::rhub_check()
 1. **Commit your changes** with a clear, present-tense message:
    ```bash
    git add R/gg_depth.R R/plot.gg_depth.R tests/testthat/test_gg_depth.R
-   git commit -m "Add gg_depth() for average tree depth visualisation"
+   git commit -m "Add gg_depth() for average tree depth visualization"
    ```
 
 2. **Push to your fork:**

@@ -85,7 +85,7 @@ For survival forests, the marginalized quantity depends on
 hazard function (\code{"chf"}), or expected mortality (\code{"mort"}).
 You can request the curve at one or more time horizons via
 \code{partial.time}; the resulting data have a \code{time} column so the
-plot layers them as separate coloured lines.
+plot layers them as separate colored lines.
 }
 \note{
 For survival forests this function defaults to

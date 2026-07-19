@@ -355,7 +355,7 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
   gg_dta$vars <-
     factor(gg_dta$vars, levels = rev(unique(gg_dta$vars)))
 
-  # Flag variables with non-positive VIMP so the plot can colour them
+  # Flag variables with non-positive VIMP so the plot can color them
   # differently to indicate they do not improve (or actively hurt) predictions.
   # Use the actual VIMP column name: "vimp" after a multi-outcome pivot,
   # "VIMP" (uppercase) for single-outcome fits.

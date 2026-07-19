@@ -4,15 +4,15 @@
 #
 #   The vignettes never chose a graphics device, so they fell through to the
 #   default png(), which writes RGBA truecolor -- an alpha channel these opaque
-#   plots never use, over ~30,000 anti-aliased colours that PNG cannot compress.
+#   plots never use, over ~30,000 anti-aliased colors that PNG cannot compress.
 #   The result was 3.5 MB of figures in inst/doc and a 4.7 MB tarball against
 #   CRAN's 5 MB limit, none of it visible in the source tree (inst/doc only
 #   exists after R CMD build renders it).
 #
 #   Two independent savings, measured on the gg_rfsrc() survival-curve figure:
 #     * ragg::agg_png writes RGB, dropping the unused alpha channel   (-20%)
-#     * quantising to a 256-colour palette absorbs the anti-aliasing  (-54%)
-#   256 colours is visually indistinguishable here: mean |pixel difference|
+#     * quantising to a 256-color palette absorbs the anti-aliasing  (-54%)
+#   256 colors is visually indistinguishable here: mean |pixel difference|
 #   against the unquantised render is 1.55 on a 0-255 scale (~0.6%).
 #
 # colorspace = "sRGB" is load-bearing. ImageMagick's "RGB" means *linear* RGB,

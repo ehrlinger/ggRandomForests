@@ -80,7 +80,7 @@ variables and get ten; we warn and name the missing ones.  See
 \strong{Details}.  Ignored, with a warning, when \code{part_dta} is
 supplied.  With \code{scale = "chf"} the work goes through
 \code{\link{gg_partial_rfsrc}} rather than \code{partialpro}, so
-\code{xvar.names} is honoured but the \code{partialpro}-only arguments
+\code{xvar.names} is honored but the \code{partialpro}-only arguments
 (\code{cut}, \code{nsmp}) do not apply and are ignored with a warning.}
 }
 \value{

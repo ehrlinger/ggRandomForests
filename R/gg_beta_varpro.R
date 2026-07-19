@@ -45,7 +45,7 @@
 #'   never reaches us. Read `imp` as strength of local association, not its
 #'   direction. (For a signed local estimator, see [gg_ivarpro()], where the
 #'   sign does survive.) **Magnitude depends on the predictor's units** (raw
-#'   `x`, no standardisation); a predictor in millimetres has a smaller
+#'   `x`, no standardization); a predictor in millimetres has a smaller
 #'   \eqn{|\hat{\beta}|}{|beta hat|} than the same predictor in metres.
 #' - Lasso shrinkage can drive \eqn{\hat{\beta}}{beta hat} to **exactly zero**.
 #'   Those zeros are
@@ -319,7 +319,7 @@ gg_beta_varpro.varpro <- function(object, ..., cutoff = NULL,
 #' @noRd
 .class_levels_from_varpro <- function(object) {
   # varPro preserves original factor names in y.org; object$y may have been
-  # internally relabelled to 0/1 for binary fits.
+  # internally relabeled to 0/1 for binary fits.
   if (!is.null(object$y.org) && is.factor(object$y.org)) {
     return(levels(object$y.org))
   }

@@ -42,7 +42,7 @@
 #' }
 #' No method is universally best. The varPro authors recommend trying at
 #' least two and comparing the score distributions; the plot method here
-#' colours per-method curves automatically when you stack the results.
+#' colors per-method curves automatically when you stack the results.
 #'
 #' @section What's in the output:
 #' The fit gives back two parallel per-observation vectors:
@@ -103,7 +103,7 @@
 #'
 #' To overlay training and test scores in one plot, bind the two extractor
 #' calls with a \code{method} label column (the same column
-#' \code{\link{plot.gg_isopro}} uses to colour rnd / unsupv / auto
+#' \code{\link{plot.gg_isopro}} uses to color rnd / unsupv / auto
 #' comparisons):
 #'
 #' \preformatted{
@@ -150,7 +150,7 @@
 #' To compare methods (\code{"rnd"}, \code{"unsupv"}, \code{"auto"}), call
 #' \code{\link{gg_isopro}} on each fit and \code{dplyr::bind_rows()} the
 #' results with a \code{method} label column. The plot method auto-detects
-#' \code{method} and colours the curves.
+#' \code{method} and colors the curves.
 #'
 #' @references
 #' Liu, F. T., Ting, K. M., and Zhou, Z. H. (2008). Isolation Forest.

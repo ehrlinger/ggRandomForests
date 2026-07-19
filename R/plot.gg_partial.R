@@ -36,7 +36,7 @@ partial_surv_y_label <- function(partial.type) {
 #' glance.
 #'
 #' When a \code{model} label was attached in \code{gg_partial()}, lines are
-#' coloured by model -- handy for overlaying results from two forests (e.g.,
+#' colored by model -- handy for overlaying results from two forests (e.g.,
 #' one tuned, one default) in the same figure.
 #'
 #' @param x A \code{\link{gg_partial}} object (output of \code{\link{gg_partial}}).
@@ -123,14 +123,14 @@ plot.gg_partial <- function(x, ...) {
 #' For a survival forest, each call to \code{partial.rfsrc} returns a predicted
 #' quantity (survival probability, cumulative hazard function, or mortality) at
 #' one or more chosen time horizons.  When a \code{time} column is present in
-#' the data, each horizon becomes a separate coloured curve over the predictor's
+#' the data, each horizon becomes a separate colored curve over the predictor's
 #' value, still faceted by variable.  The y-axis label (\dQuote{Predicted
 #' Survival}, \dQuote{Predicted CHF}, or \dQuote{Predicted Mortality}) tracks
 #' the \code{partial.type} attribute set by \code{gg_partial_rfsrc()}.
 #'
 #' For a two-variable interaction surface (when \code{xvar2.name} was supplied
 #' to \code{gg_partial_rfsrc}), the secondary variable's levels become
-#' separate coloured lines, faceted by the primary predictor.
+#' separate colored lines, faceted by the primary predictor.
 #'
 #' @param x A \code{\link{gg_partial_rfsrc}} object.
 #' @param ... Not currently used.
@@ -193,9 +193,9 @@ plot.gg_partial_rfsrc <- function(x, ...) {
 
     if (!is.null(cont$time)) {
       ## Survival forest: predictor value on x-axis, one curve per time point.
-      ## Group/colour by the *full-precision* time so distinct horizons that
+      ## Group/color by the *full-precision* time so distinct horizons that
       ## happen to round to the same value are not silently merged. The legend
-      ## is relabelled with rounded values for readability.
+      ## is relabeled with rounded values for readability.
       time_levels <- sort(unique(cont$time))
       cont$.time_factor <- factor(cont$time, levels = time_levels)
       legend_labels <- format(round(time_levels, 2), trim = TRUE)

@@ -19,7 +19,7 @@ The signature SHAP summary: one jittered point per (observation, variable),
 positioned by SHAP value and colored by the feature value, min-max scaled
 to \code{[0, 1]} within each variable so every variable's own range maps
 to the full color gradient. Categorical features have no numeric value and
-render as a neutral grey (no numeric value to scale).
+render as a neutral gray (no numeric value to scale).
 }
 \seealso{
 \code{\link{gg_shap}} \code{\link{plot.gg_shap}}

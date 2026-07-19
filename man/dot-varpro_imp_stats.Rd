@@ -7,9 +7,9 @@
 .varpro_imp_stats(mat, local.std = TRUE)
 }
 \description{
-When \code{local.std = TRUE} the columns of \code{mat} are standardised
+When \code{local.std = TRUE} the columns of \code{mat} are standardized
 to unit variance before computing quantiles so that the display scale
 matches the aggregate z-score.  The \code{mean} column always stores raw
-(unstandardised) column means.
+(unstandardized) column means.
 }
 \keyword{internal}

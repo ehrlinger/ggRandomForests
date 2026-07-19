@@ -248,7 +248,7 @@ test_that("plot.gg_error direct: classification rfsrc (multi-outcome path, legen
   expect_s3_class(gg_plt, "ggplot")
   # Multi-outcome: more than 2 columns before pivot
   expect_true(ncol(gg_dta) > 2L)
-  # Legend should NOT be suppressed — multiple outcomes need the colour key
+  # Legend should NOT be suppressed — multiple outcomes need the color key
   expect_false(identical(gg_plt$theme$legend.position, "none"))
 })
 

@@ -19,7 +19,7 @@ Horizontal bar chart of the mean absolute coefficient
 \eqn{\mathrm{mean}(|\hat{\beta}|)}{mean(|beta hat|)} per variable, sorted
 descending so
 the eye lands on the top variable first. Bars filled blue when above the
-selection cutoff, grey otherwise. Dashed red line marks the cutoff.
+selection cutoff, gray otherwise. Dashed red line marks the cutoff.
 }
 \section{Reading the chart}{
 
@@ -31,8 +31,8 @@ Comparisons across data sets or across variables with very different
 units require keeping the units context in mind. Within one data set,
 bars are comparable up to that unit caveat.
 
-Variables above the cutoff are coloured blue and flagged \code{selected};
-variables below are grey. Lasso shrinkage can drive a rule's
+Variables above the cutoff are colored blue and flagged \code{selected};
+variables below are gray. Lasso shrinkage can drive a rule's
 \eqn{\hat{\beta}}{beta hat} to
 exactly zero; those rules are kept in the average, so a variable
 with many shrunk-to-zero rules will sit lower in the ranking than

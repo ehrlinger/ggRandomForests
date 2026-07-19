@@ -91,7 +91,7 @@ coefficient it returns in \code{abs()}, so the sign is discarded upstream and
 never reaches us. Read \code{imp} as strength of local association, not its
 direction. (For a signed local estimator, see \code{\link[=gg_ivarpro]{gg_ivarpro()}}, where the
 sign does survive.) \strong{Magnitude depends on the predictor's units} (raw
-\code{x}, no standardisation); a predictor in millimetres has a smaller
+\code{x}, no standardization); a predictor in millimetres has a smaller
 \eqn{|\hat{\beta}|}{|beta hat|} than the same predictor in metres.
 \item Lasso shrinkage can drive \eqn{\hat{\beta}}{beta hat} to \strong{exactly zero}.
 Those zeros are

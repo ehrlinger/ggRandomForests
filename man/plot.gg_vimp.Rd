@@ -30,11 +30,11 @@ are sorted in descending order of importance so the most influential
 variables appear at the top.
 }
 \details{
-Bars are coloured by the \code{positive} flag: a bar at or below zero
-(non-positive VIMP) is colour-coded differently to flag predictors that
+Bars are colored by the \code{positive} flag: a bar at or below zero
+(non-positive VIMP) is color-coded differently to flag predictors that
 \emph{hurt} OOB accuracy when their signal is removed -- usually a sign of
 collinearity or a very noisy variable.  In a well-behaved forest most bars
-are positive; the colour distinction matters when a handful are not.
+are positive; the color distinction matters when a handful are not.
 }
 \examples{
 ## ------------------------------------------------------------

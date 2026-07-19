@@ -28,7 +28,7 @@
 #' @return A \code{ggplot} object with \code{ntree} on the x-axis and
 #'   OOB error rate on the y-axis.  Single-outcome forests (regression,
 #'   survival) produce a single line; multi-outcome forests (classification)
-#'   produce one coloured line per class.
+#'   produce one colored line per class.
 #'
 #' @details The gg_error plot is used to track the convergence of the
 #' randomForest. This figure is a reproduction of the error plot
@@ -227,7 +227,7 @@ plot.gg_error <- function(x, ...) {
   multi_outcome <- ncol(gg_dta) > 2
   if (multi_outcome) {
     # Multi-outcome (classification): gg_error has one column per class plus
-    # the "ntree" column.  Pivot to long form so we can colour by outcome.
+    # the "ntree" column.  Pivot to long form so we can color by outcome.
     gg_dta <- tidyr::pivot_longer(gg_dta, -"ntree", names_to = "variable", values_to = "value")
     gg_plt <-
       ggplot2::ggplot(na.omit(gg_dta),
@@ -241,10 +241,10 @@ plot.gg_error <- function(x, ...) {
                                                     y = .data[["error"]]))
   }
 
-  # Build the labs() once with the colour label only mapped on the
+  # Build the labs() once with the color label only mapped on the
   # multi-outcome / classification path (avoids the "Ignoring unknown
-  # labels: colour Outcome" warning on the single-outcome path where no
-  # colour aesthetic is mapped). #82.
+  # labels: color Outcome" warning on the single-outcome path where no
+  # color aesthetic is mapped). #82.
   err_labs <- if (multi_outcome) {
     ggplot2::labs(x = "Number of Trees", y = "OOB Error Rate",
                   color = "Outcome")
@@ -257,7 +257,7 @@ plot.gg_error <- function(x, ...) {
     gg_plt <- gg_plt + ggplot2::geom_line() + err_labs
   }
 
-  # Hide the legend when there is only a single outcome variable: the colour
+  # Hide the legend when there is only a single outcome variable: the color
   # key adds no information and clutters the plot.  For single-outcome forests
   # (regression / survival) the data is never gathered, so there is no
   # "variable" column; suppress the legend unconditionally in that case.

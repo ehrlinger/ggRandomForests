@@ -83,8 +83,8 @@ result <- gg_partial(pv)
 head(result$continuous)
 
 ## Label this model for later comparison with a second forest
-result_labelled <- gg_partial(pv, model = "airq_model")
-unique(result_labelled$continuous$model)
+result_labeled <- gg_partial(pv, model = "airq_model")
+unique(result_labeled$continuous$model)
 
 }
 \seealso{

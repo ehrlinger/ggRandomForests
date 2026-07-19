@@ -16,15 +16,15 @@ A \code{ggplot} object.
 }
 \description{
 Ranked lollipop of the per-variable \code{sdependent()} signal score, sorted
-descending so the strongest signal lands at the top. Points are coloured
-blue for variables flagged as signal (\code{signal == TRUE}) and grey otherwise.
+descending so the strongest signal lands at the top. Points are colored
+blue for variables flagged as signal (\code{signal == TRUE}) and gray otherwise.
 }
 \section{Reading the chart}{
 
 Each lollipop is a variable's signal score from \code{\link[varPro:sdependent]{varPro::sdependent()}},
 computed on the unsupervised entropy-region lasso structure of a
 \code{\link[varPro:uvarpro]{varPro::uvarpro()}} fit. Blue variables cleared the detection threshold and
-are reported in \code{sdependent()$signal.vars}; grey ones did not. Pair with
+are reported in \code{sdependent()$signal.vars}; gray ones did not. Pair with
 \code{\link[=gg_udependent]{gg_udependent()}} (the dependency graph) to see \emph{how} the signal variables
 connect, and with \code{\link[=gg_beta_uvarpro]{gg_beta_uvarpro()}} for the lasso-importance ranking.
 }
