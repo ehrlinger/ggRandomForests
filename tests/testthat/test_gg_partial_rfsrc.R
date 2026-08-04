@@ -14,7 +14,7 @@ test_that("gg_partial_rfsrc imposes factor levels correctly (not collapsed)", {
   g     <- gg_partial_rfsrc(rf, xvar.names = "grp")
   means <- tapply(g$categorical$yhat, g$categorical$x, mean)
 
-  # All three levels are present and labelled (not integer codes).
+  # All three levels are present and labeled (not integer codes).
   expect_setequal(names(means), c("A", "B", "C"))
 
   # The levels must NOT collapse to a single value.

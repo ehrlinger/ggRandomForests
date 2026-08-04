@@ -18,6 +18,9 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
+# vignette dir under R CMD check, package root under an interactive knit
+.fo <- c("_fig_optim.R", file.path("vignettes", "_fig_optim.R"))
+if (any(file.exists(.fo))) source(.fo[file.exists(.fo)][1])
 knitr::opts_chunk$set(
   message    = FALSE,
   warning    = FALSE,
@@ -98,8 +101,8 @@ variables that stay taut were redundant given the rest.
 Operationally, varPro's *guided splitting* steers tree growth so that
 rules concentrate in informative regions, and the subsequent *rule
 harvesting* step selects the rules that survived the importance
-pre-filter. Variables below a noise threshold are dropped before
-reporting (the importance z is pre-filtered), so the final ranking
+pre-filter. By default, variables below a noise threshold are dropped
+before reporting (the importance z is pre-filtered), so the final ranking
 contains only variables that earned a seat at the table
 (see the [varPro tools reference](https://www.varprotools.org/articles/getstarted.html)
 for worked implementation details). Split-weights encode each variable's
@@ -123,7 +126,7 @@ is large; the conditional view catches that. One-hot consolidation via
 original factor, so downstream reporting stays on familiar ground.
 
 That core machinery feeds five supervised ggRandomForests wrappers.
-**`gg_varpro()`** summarises the per-tree importance distribution.
+**`gg_varpro()`** summarizes the per-tree importance distribution.
 **`gg_beta_varpro()`** refines those release-rule contrasts with a per-rule
 lasso. **`gg_partial_varpro()`** turns the release machinery into
 partial-dependence curves. **`gg_isopro()`** scores observations for anomaly
@@ -165,7 +168,7 @@ section reads off that single fit. The formula interface is intentional:
 varPro is model-independent in the sense that it doesn't assume a linear
 or parametric relationship between predictors and response, but it does
 require you to name a response so the guided splitting has something to
-optimise toward.
+optimize toward.
 
 ## Per-tree importance with `gg_varpro()`
 
@@ -187,9 +190,10 @@ cutoff line are the ones to look at twice; the forest disagrees with
 itself. That disagreement isn't noise to suppress: it can mean the
 variable matters in some rule regions but not others, which is exactly
 the kind of structured heterogeneity that model-independent methods are
-built to detect. Variables that fall entirely below the cutoff were
-pre-filtered by the importance z threshold; they're gone before the plot
-is drawn.
+built to detect. Variables that fall entirely below the cutoff are still
+drawn here, just not highlighted. That is the completeness fit at work:
+on varPro's defaults the weakest of them are screened out upstream, and
+the plot never shows they were candidates at all.
 
 ## Partial dependence with `gg_partial_varpro()`
 
@@ -239,7 +243,7 @@ global slope.
 
 That distinction matters in practice. A variable with a strong nonlinear
 global relationship may have locally small β values inside any single
-rule (the local-standardisation step within each rule normalises the
+rule (the local-standardization step within each rule normalizes the
 scale), but many rules will fire on it, so the aggregated mean is still
 large. Conversely, a variable with a nearly linear global effect will
 concentrate most of its weight in a handful of rules, and the
@@ -363,7 +367,7 @@ space.
 Iris is a small data set (150 rows, four predictors, three response
 classes), and that's a feature here, not a flaw: every figure renders in
 under a second, and the structure is well-understood enough that any
-strange behaviour stands out. It is also a good stress-test for the
+strange behavior stands out. It is also a good stress-test for the
 conditional importance path: petal length and petal width separate
 *setosa* from everything else very cleanly, but the *versicolor*/*virginica*
 boundary is much softer. A method that only reports unconditional
@@ -614,6 +618,96 @@ rest of the toolkit that *does* work on survival (`gg_varpro`,
 | `gg_ivarpro` | ✓ | ✓ | ✗ (deferred) | ✗ (deferred) |
 
 The four wrappers in the lower-right are the v3.1.0 work surface.
+
+## Which variables can you actually get?
+
+A `varpro` fit narrows your predictors twice, and telling the two narrowings
+apart matters the moment you want a partial-dependence curve for a variable
+that didn't make the ranking.
+
+Three components carry three different counts:
+
+| Component | What it holds |
+|---|---|
+| `object$x` | every predictor you handed to `varpro()` |
+| `object$xvar.names` | the variables `varPro::partialpro()` can reach |
+| `varPro::get.topvars(object)` | the reported ranking, and the default for `xvar.names` |
+
+For the Boston fit above:
+
+```{r varpro-counts}
+c(handed_in = ncol(v_boston$x),
+  reachable = length(v_boston$xvar.names),
+  reported  = length(varPro::get.topvars(v_boston)))
+```
+
+All three coincide. This fit uses the completeness settings recommended below,
+so every predictor is reachable and the ranking runs to its tail instead of
+stopping at the screened top. That is what fitting with both screens off buys
+you, and it is why the counts here are boring. On varPro's defaults they come
+apart, which the rest of this section is about.
+
+Even where the ranking is the shorter list, a curve for a variable outside it
+is a matter of naming it:
+
+```{r topvars-widen, eval=FALSE}
+varPro::partialpro(v_boston, xvar.names = c("lstat", "age", "zn"))
+```
+
+`partialpro()` computes `get.topvars()` only to use as a default. Name
+`xvar.names` yourself and the ranking is ignored.
+
+The second narrowing is the one that surprises people. Guided tree-splitting
+(`split.weight = TRUE`, the default) runs a preliminary lasso to decide which
+variables are worth splitting on, and a variable that never gets split on never
+lands in `object$xvar.names`. It is gone well before `partialpro()` sees it.
+The binary iris fit, left on varPro's defaults so it has something to show,
+is this in miniature:
+
+```{r varpro-counts-iris}
+c(handed_in = ncol(v_iris_binary$x),
+  reachable = length(v_iris_binary$xvar.names))
+```
+
+Four predictors go in and one of them never becomes a candidate. With p in the
+hundreds the gap is not small.
+
+One sharp edge. `partialpro()` matches your `xvar.names` against
+`object$xvar.names` and quietly drops whatever it cannot find. Ask for twelve
+variables and you may get ten back, with no error, no warning, and nothing on
+the returned object to say so. A misspelled name behaves the same way. When it
+matters, check:
+
+```{r partialpro-check, eval=FALSE}
+pd <- varPro::partialpro(v_boston, xvar.names = my_vars)
+setdiff(my_vars, names(pd))   # anything here was dropped
+```
+
+For a complete view, where every predictor is reachable and the reported
+ranking shows its full tail, fit with both screens off:
+
+```{r both-off, eval=FALSE}
+varPro::varpro(medv ~ ., data = Boston, sparse = FALSE, split.weight = FALSE)
+```
+
+`split.weight = FALSE` is the one that lifts the ceiling. With guided splitting
+off, every predictor stays a candidate and lands in `object$xvar.names`, so
+`partialpro()` can reach them all. It is safer than it sounds: the partial
+curve of a variable that was already reachable barely moves, because you are
+changing which variables compete for splits, not the local effect the release
+rules estimate for a strong one. What changes is varPro's importance ranking,
+where the weak variables now earn nonzero scores, so read the ranking off a
+screened fit when a screened ranking is what you are after. `sparse = FALSE` is
+the smaller companion: it deepens the reported ranking so its tail shows, and
+leaves `object$xvar.names` alone.
+
+Two ways to fit, then, for two questions. Keep varPro's defaults, both screens
+on, when you want the parsimonious set: the variables that carry the signal,
+ranked. Turn both off for the exploratory sweep, where you would rather see
+every predictor and filter by your own judgment than let the screen decide, and
+where a variable that scores weakly can still be the one that turns out to
+matter. `nvar` is a red herring either way; it caps how much gets reported, not
+how much competes.
 
 ## Factor-level ordering
 

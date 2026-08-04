@@ -42,17 +42,24 @@
 #' }
 #' No method is universally best. The varPro authors recommend trying at
 #' least two and comparing the score distributions; the plot method here
-#' colours per-method curves automatically when you stack the results.
+#' colors per-method curves automatically when you stack the results.
 #'
 #' @section What's in the output:
 #' The fit gives back two parallel per-observation vectors:
 #' \code{case.depth} is the raw mean isolation depth (units of "splits",
-#' lower = more anomalous) and \code{howbad} is the same information
-#' transformed onto a \code{[0, 1]} scale via the empirical CDF of
-#' \code{case.depth} (higher = more anomalous). Both columns are kept so
-#' you can plot in either space and have the raw depth on hand for
-#' diagnostics; \code{howbad} is the canonical score and is what the plot
-#' method uses by default.
+#' lower = more anomalous) and \code{howbad} is the same information on a
+#' \code{[0, 1]} scale, the empirical CDF of \code{case.depth}. On the fit
+#' those two run the same way: \code{varPro::isopro()}'s \code{howbad} is
+#' \emph{lower} = more anomalous, like the depth it came from.
+#'
+#' We flip it. \code{gg_isopro()} returns \code{1 - object$howbad}, so the
+#' column you get is \strong{higher = more anomalous} and reads the way a
+#' score should. That is our transformation, not the fit's, and it means
+#' \code{gg$howbad} is \code{1 - fit$howbad} rather than a copy of it -- worth
+#' knowing if you compare the two side by side. Both columns are kept so you
+#' can plot in either space and have the raw depth on hand for diagnostics;
+#' \code{howbad} is the canonical score and is what the plot method uses by
+#' default.
 #'
 #' @section What you use this for:
 #' This is screening, not inference. Reach for it when you want to:
@@ -96,7 +103,7 @@
 #'
 #' To overlay training and test scores in one plot, bind the two extractor
 #' calls with a \code{method} label column (the same column
-#' \code{\link{plot.gg_isopro}} uses to colour rnd / unsupv / auto
+#' \code{\link{plot.gg_isopro}} uses to color rnd / unsupv / auto
 #' comparisons):
 #'
 #' \preformatted{
@@ -143,7 +150,7 @@
 #' To compare methods (\code{"rnd"}, \code{"unsupv"}, \code{"auto"}), call
 #' \code{\link{gg_isopro}} on each fit and \code{dplyr::bind_rows()} the
 #' results with a \code{method} label column. The plot method auto-detects
-#' \code{method} and colours the curves.
+#' \code{method} and colors the curves.
 #'
 #' @references
 #' Liu, F. T., Ting, K. M., and Zhou, Z. H. (2008). Isolation Forest.

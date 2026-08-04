@@ -1,6 +1,6 @@
 # Tests for surv_partial.rfsrc
 #
-# surv_partial.rfsrc() is deprecated in favour of gg_partial_rfsrc().
+# surv_partial.rfsrc() is deprecated in favor of gg_partial_rfsrc().
 # All calls are wrapped in suppressWarnings() so the deprecation message does
 # not produce noise in the test output.  The deprecation warning itself is
 # verified in the first test_that block below.

@@ -69,7 +69,7 @@ suggests.
 
 When the input object carries a \code{method} column (because you
 bound several \code{\link{gg_isopro}} calls together), both panels
-colour by method automatically. The point of comparing \code{"rnd"},
+color by method automatically. The point of comparing \code{"rnd"},
 \code{"unsupv"}, and \code{"auto"} is not to pick a winner from the
 figure alone, it is to see whether the methods agree on which
 observations are anomalous. Curves that overlap in the right tail and

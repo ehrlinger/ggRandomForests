@@ -11,15 +11,15 @@
 #' Variables are sorted top to bottom by descending median per-tree
 #' importance, so the eye lands on the most important variable first.
 #' For each variable the box spans the 15th to 85th percentile of the
-#' per-tree scores, the centre line is the median, and the whiskers run
+#' per-tree scores, the center line is the median, and the whiskers run
 #' out to the 5th and 95th percentile, not the usual Tukey 1.5 IQR
 #' whiskers. The dashed vertical line is the selection \code{cutoff}
 #' (default \code{0.79}). On the default z-score axis
 #' (\code{local.std = TRUE}) that line is a z; on the raw-importance
 #' axis (\code{local.std = FALSE}, \code{type = "raw"}) it is the same
 #' numeric value but in raw-importance units. Boxes whose aggregate
-#' value sits above the line are coloured blue and flagged
-#' \code{selected = TRUE}, the rest are grey. A
+#' value sits above the line are colored blue and flagged
+#' \code{selected = TRUE}, the rest are gray. A
 #' selected variable with a tight, high box is a variable the forest
 #' agrees on across trees. A selected variable with a wide box that
 #' straddles the cutoff is one to look at twice before relying on it.
@@ -165,6 +165,10 @@ plot.gg_varpro <- function(x, type, ...) {
     long_df <- tidyr::pivot_longer(long_df, !"tree",
                                    names_to = "variable", values_to = "imp_raw")
     long_df$variable <- factor(long_df$variable, levels = levels(x$imp$variable))
+    ## imp is truncated to the displayed variables (e.g. nvar); the per-tree
+    ## matrix still carries every variable, so re-levelling orphans the rest to
+    ## NA. Drop them -- otherwise geom_jitter renders a phantom "NA" category.
+    long_df <- long_df[!is.na(long_df$variable), , drop = FALSE]
 
     ## Overlay y-values match the box scale (type-aware) --------------------
     if (identical(type, "z")) {
@@ -208,6 +212,9 @@ plot.gg_varpro <- function(x, type, ...) {
   ## Replace NA/NaN z with 0 to suppress geom_col remove_missing warnings
   cond_df$z[!is.finite(cond_df$z)] <- 0
   cond_df$variable <- factor(cond_df$variable, levels = levels(x$imp$variable))
+  ## Drop conditional rows for variables outside the displayed set (same
+  ## truncation as the faithful overlay) so no phantom "NA" bar appears.
+  cond_df <- cond_df[!is.na(cond_df$variable), , drop = FALSE]
   cutoff    <- prov$cutoff %||% 0.79
 
   ggplot2::ggplot(cond_df,

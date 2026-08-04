@@ -157,12 +157,12 @@ test_that("plot.gg_isopro: a method column triggers colour grouping in the elbow
 
   p <- plot(gg, panel = "elbow")
   expect_s3_class(p, "ggplot")
-  # Built scales should include a colour scale because `method` is mapped.
+  # Built scales should include a color scale because `method` is mapped.
   built <- ggplot2::ggplot_build(p)
   scales <- built$plot$scales$scales
   has_colour <- any(vapply(scales, function(s) "colour" %in% s$aesthetics, logical(1L)))
-  # Even when ggplot2 hasn't materialised a discrete colour scale into
-  # $scales, the layer's aes mapping must include `colour = method`.
+  # Even when ggplot2 hasn't materialised a discrete color scale into
+  # $scales, the layer's aes mapping must include `color = method`.
   layer_aes <- p$layers[[1]]$mapping
   expect_true("colour" %in% names(layer_aes) || has_colour)
 })

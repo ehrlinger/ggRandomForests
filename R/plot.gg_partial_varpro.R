@@ -17,7 +17,7 @@
 #' essentially does not, and a U-shape or a threshold says the effect
 #' is nonlinear in a way a single coefficient would miss. For a
 #' categorical variable the picture is a boxplot per level; here the
-#' eye is looking at level-to-level shifts in the centre of each box.
+#' eye is looking at level-to-level shifts in the center of each box.
 #'
 #' Where the three effect types track each other, the parametric story
 #' is a fair summary of what the forest is doing. Where they fan
@@ -89,7 +89,7 @@
 #'
 #' @details
 #' **Ensemble mortality (scale = "mortality"):** when the provenance scale
-#' is \code{"mortality"}, the y-axis is labelled
+#' is \code{"mortality"}, the y-axis is labeled
 #' \emph{"Ensemble mortality (expected events)"}.  The wording is
 #' deliberate: this is an \strong{unbounded relative-risk score}, not a
 #' survival probability and not \eqn{1 - S(t)} (Ishwaran, Kogalur,
