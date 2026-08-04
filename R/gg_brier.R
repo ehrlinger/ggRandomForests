@@ -31,7 +31,7 @@
 #' by mortality-risk quartile (lowest-risk to highest-risk subjects).  It
 #' also returns the continuous ranked probability score (CRPS) -- the Brier
 #' score integrated over time and divided by elapsed time, a running average
-#' that summarises calibration up to each point on the time axis.
+#' that summarizes calibration up to each point on the time axis.
 #'
 #' @details
 #' Because subjects are right-censored, a plain Brier score is biased:
@@ -62,12 +62,12 @@
 #'       Brier contributions at each time. Used by
 #'       \code{plot.gg_brier(by_quartile = TRUE)} to draw an envelope
 #'       around the overall curve.}
-#'     \item{crps}{running CRPS (overall) at each time, normalised by
+#'     \item{crps}{running CRPS (overall) at each time, normalized by
 #'       elapsed time.}
 #'     \item{crps.q25, crps.q50, crps.q75, crps.q100}{running CRPS within
 #'       each mortality-risk quartile.}
 #'     \item{crps.lower, crps.upper}{running CRPS of the 15th / 85th
-#'       per-subject Brier percentile, normalised by elapsed time.}
+#'       per-subject Brier percentile, normalized by elapsed time.}
 #'   }
 #'   The integrated CRPS (a single scalar matching
 #'   \code{get.brier.survival()$crps}) is attached as
@@ -107,7 +107,7 @@
 #'   dplyr::mutate(gg_brier(rf2),       model = "mtry=4")
 #' )
 #' ggplot2::ggplot(compare_dta,
-#'   ggplot2::aes(x = time, y = brier, colour = model)) +
+#'   ggplot2::aes(x = time, y = brier, color = model)) +
 #'   ggplot2::geom_line()
 #' }
 #'
@@ -178,7 +178,7 @@ gg_brier.rfsrc <- function(object,
   time_grid <- bs_df$time
   bs_all    <- bs_df$brier.score
 
-  # Running, time-normalised CRPS via single-pass cumulative trapezoid rule.
+  # Running, time-normalized CRPS via single-pass cumulative trapezoid rule.
   # O(n) per series: accumulate area incrementally rather than recomputing
   # from scratch at every time point.
   crps_running <- function(times, scores) {

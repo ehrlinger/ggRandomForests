@@ -101,12 +101,52 @@
 #'   object-driven path (when \code{part_dta} is \code{NULL}).  Use this to
 #'   control which variables are computed -- e.g. \code{xvar.names} or
 #'   \code{nvar} -- or to tune the isolation-forest UVT step (\code{cut},
-#'   \code{nsmp}, ...).  Without it, \code{partialpro} falls back to
+#'   \code{nsmp}).  Without it, \code{partialpro} falls back to
 #'   \code{varPro::get.topvars(object)}, which can return few or no variables
 #'   for some fits (yielding empty \code{continuous}/\code{categorical}
-#'   frames).  Ignored, with a warning, when \code{part_dta} is supplied.
+#'   frames).  A name you pass in \code{xvar.names} that the fit cannot reach
+#'   is dropped by \code{partialpro} without comment, so you can ask for twelve
+#'   variables and get ten; we warn and name the missing ones.  See
+#'   \strong{Details}.  Ignored, with a warning, when \code{part_dta} is
+#'   supplied.  With \code{scale = "chf"} the work goes through
+#'   \code{\link{gg_partial_rfsrc}} rather than \code{partialpro}, so
+#'   \code{xvar.names} is honored but the \code{partialpro}-only arguments
+#'   (\code{cut}, \code{nsmp}) do not apply and are ignored with a warning.
 #'
 #' @details
+#' **Which variables you actually get:** \code{varpro} screens twice before
+#' anything reaches partial dependence.  The split-weight screen decides which
+#' predictors are worth guiding the trees with, and what survives it lands in
+#' \code{object$xvar.names}; \code{varPro::get.topvars} then ranks a shorter
+#' list out of that.  So the design matrix, the reachable set, and the default
+#' list are three different sizes -- a fit on 45 predictors might carry 26 in
+#' \code{object$xvar.names} and 15 in \code{get.topvars}.  \code{partialpro}
+#' can only reach the middle one.  How much gets screened off depends on the
+#' data and the fit, so check rather than assume: \code{length(object$xvar.names)}
+#' against \code{ncol(object$x)} tells you where you stand.
+#'
+#' This bites when you bring a variable list in from somewhere else, say the
+#' top names off an \code{rfsrc} VIMP ranking.  \code{partialpro} intersects
+#' your \code{xvar.names} with what it can reach and keeps the overlap without
+#' remarking on it, so a request for twelve variables can come back with ten
+#' and nothing in the result says so.  It is the intermittent kind of trap: a
+#' top-10 list may come back whole while a top-12 list quietly loses two.  We
+#' compare the two sets before calling \code{partialpro} and warn, naming what
+#' was dropped.  A quick \code{setdiff(my_names, object$xvar.names)} answers
+#' the same question before you spend the computation.
+#'
+#' For a complete view, fit with both screens off:
+#' \code{varPro::varpro(..., sparse = FALSE, split.weight = FALSE)}.
+#' \code{split.weight = FALSE} is the one that lifts the ceiling -- it puts
+#' every predictor in \code{object$xvar.names}, so partial dependence can reach
+#' them all, and it leaves a strong variable's curve where it was.
+#' \code{sparse = FALSE} does the smaller thing, deepening
+#' \code{varPro::get.topvars} so the reported ranking shows its tail rather than
+#' the screened top.  Both are \pkg{varPro}'s own arguments, and its defaults
+#' (both \code{TRUE}) go the other way, toward the screened set; keep the
+#' defaults when that sparser set is what you want.  \code{nvar} is not the
+#' knob here -- it only caps how much gets reported.
+#'
 #' **Scale detection:** with \code{scale = "auto"} and an \code{object} in
 #' hand, the scale resolves to \code{"mortality"} for a survival forest and
 #' \code{"generic"} for a regression or classification forest.  The RMST
@@ -210,6 +250,34 @@
 #' head(result$continuous)
 #' head(result$categorical)
 #'
+#' \donttest{
+#' ## The object-driven path: hand gg_partial_varpro() the varpro fit and let
+#' ## it call partialpro() for you.  This is where the reachability ceiling
+#' ## shows up (see Details).
+#' set.seed(42)
+#' vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
+#'
+#' ## Three different sizes.  partialpro() can only reach the second.
+#' ncol(vp$x)                    # predictors in the data
+#' length(vp$xvar.names)         # what the fit reaches
+#' length(varPro::get.topvars(vp))   # the default when xvar.names is absent
+#'
+#' ## Say these came from an rfsrc VIMP ranking.  Check what the fit cannot
+#' ## reach before you spend the computation -- this is the habit worth having.
+#' wanted <- c("wt", "hp", "qsec", "vs")
+#' setdiff(wanted, vp$xvar.names)
+#'
+#' ## Ask anyway and we warn, naming what partialpro() would have dropped
+#' ## in silence.
+#' pd <- gg_partial_varpro(object = vp, xvar.names = wanted)
+#'
+#' ## Refitting without the split-weight screen reaches every predictor.
+#' vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,
+#'                          split.weight = FALSE)
+#' length(vp_all$xvar.names)
+#' setdiff(wanted, vp_all$xvar.names)   # empty; nothing to drop
+#' }
+#'
 #' @importFrom varPro partialpro
 #' @export
 gg_partial_varpro <- function(part_dta  = NULL,
@@ -238,8 +306,17 @@ gg_partial_varpro <- function(part_dta  = NULL,
 
   ## ---- C-path: route CHF through gg_partial_rfsrc ------------------------
   ## (surv now uses the partialpro S(t) learner on path A, below.)
+  ## 'xvar.names' is honored here as it is on path A; the rest of '...' is
+  ## partialpro's own vocabulary and means nothing to gg_partial_rfsrc(), which
+  ## has no '...' to absorb it.
   if (!is.null(object) && scale == "chf") {
-    return(.gg_partial_varpro_cpath(object, scale, time, model))
+    ## Capture dots once. [["..."]] rather than $: `$` partial-matches on a
+    ## list, so a dots argument merely starting with "xvar.names" would be
+    ## taken as the variable request.
+    dots <- list(...)
+    .warn_varpro_cpath_dots(dots)
+    return(.gg_partial_varpro_cpath(object, scale, time, model,
+                                    xvar.names = dots[["xvar.names"]]))
   }
 
   ## ---- Survival default horizon: surv/rmst fill tau from the data --------
@@ -257,6 +334,12 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## object-driven path can select/limit variables the same way an explicit
   ## partialpro() call would -- otherwise it falls back to get.topvars(object).
   if (is.null(part_dta)) {
+    ## Before the expensive call: partialpro() silently discards any requested
+    ## name outside object$xvar.names, so flag it while we still know what was
+    ## asked for.  [["..."]] rather than $: `$` partial-matches on a list, so a
+    ## dots argument merely *starting* with "xvar.names" would be picked up as
+    ## the variable request.
+    .warn_varpro_dropped_xvars(list(...)[["xvar.names"]], object)
     learner <- switch(scale,
       rmst = .rmst_learner(object, time),
       surv = .surv_learner(object, time),
@@ -367,6 +450,41 @@ gg_partial_varpro <- function(part_dta  = NULL,
               "' (resolved to '", resolved, "').", call. = FALSE)
     }
   }
+  invisible(NULL)
+}
+
+## varPro::partialpro() selects variables with
+## object$xvar.names[na.omit(match(xvar.names, object$xvar.names))], so a
+## requested name outside the fit's reachable set is discarded with no error,
+## no warning, and nothing recorded on the return value -- asking for 12
+## variables can quietly return 10. varpro() screens in two stages, so
+## object$xvar.names is a strict subset of the design matrix, and an
+## externally-derived variable set (rfsrc VIMP names, say) can easily sit
+## outside it. Compare before calling partialpro(), so the warning arrives
+## ahead of the isolation-forest work rather than after it.
+##
+## Only meaningful when xvar.names was supplied: partialpro() applies its nvar
+## cap solely in the missing(xvar.names) branch, so a supplied vector is
+## filtered by reachability alone, and the get.topvars() fallback is documented
+## behavior rather than a silent drop.
+#' @keywords internal
+.warn_varpro_dropped_xvars <- function(requested, object) {
+  if (is.null(requested) || is.null(object) || is.null(object$xvar.names))
+    return(invisible(NULL))
+  dropped <- setdiff(as.character(requested), object$xvar.names)
+  if (length(dropped) == 0L) return(invisible(NULL))
+  ## NA rather than a hard failure if 'x' is absent: a guard that errors is a
+  ## worse failure mode than the one it reports.
+  n_pred <- if (is.null(object$x)) NA_integer_ else ncol(object$x)
+  warning(sprintf(paste0(
+    "gg_partial_varpro: %d of %d requested 'xvar.names' are not in the varpro ",
+    "fit's reachable set and are silently dropped by varPro::partialpro(): %s. ",
+    "The fit reaches %d of %d predictors (object$xvar.names); varpro() screens ",
+    "in two stages, so a variable can be in the data and still be unreachable. ",
+    "Refit with varPro::varpro(..., split.weight = FALSE) to reach every ",
+    "predictor."),
+    length(dropped), length(requested), paste(dropped, collapse = ", "),
+    length(object$xvar.names), n_pred), call. = FALSE)
   invisible(NULL)
 }
 
@@ -600,8 +718,36 @@ gg_partial_varpro <- function(part_dta  = NULL,
   plt.df
 }
 
+## The C-path reaches gg_partial_rfsrc(), whose signature is fixed -- it takes
+## no '...'. So only the arguments it actually understands can be forwarded;
+## anything else in '...' is partialpro vocabulary (cut, nsmp, ...) that would
+## error as an unused argument. Warn rather than error: these were silently
+## accepted before, and a hard failure on a previously-working call is a worse
+## trade than a warning.
 #' @keywords internal
-.gg_partial_varpro_cpath <- function(object, scale, time, model) {
+.warn_varpro_cpath_dots <- function(dots) {
+  nm <- names(dots)
+  if (is.null(nm)) nm <- rep("", length(dots))
+  ## Count the unnamed ones rather than filtering them away: an unnamed
+  ## positional argument is still an argument we are ignoring, and a guard
+  ## against silent drops must not itself drop silently.
+  named   <- setdiff(nm[nzchar(nm)], "xvar.names")
+  unnamed <- sum(!nzchar(nm))
+  if (length(named) == 0L && unnamed == 0L) return(invisible(NULL))
+  what <- c(named,
+            if (unnamed > 0L)
+              sprintf("%d unnamed argument%s", unnamed,
+                      if (unnamed > 1L) "s" else ""))
+  warning("gg_partial_varpro: scale = 'chf' computes partial dependence from ",
+          "the rfsrc forest rather than varPro::partialpro(), so these ",
+          "arguments do not apply and are ignored: ",
+          paste(what, collapse = ", "), ".", call. = FALSE)
+  invisible(NULL)
+}
+
+#' @keywords internal
+.gg_partial_varpro_cpath <- function(object, scale, time, model,
+                                     xvar.names = NULL) {
   rf           <- object$rf
   partial_type <- if (scale == "surv") "surv" else "chf"
 
@@ -611,8 +757,13 @@ gg_partial_varpro <- function(part_dta  = NULL,
     partial_time <- ti[which.min(abs(ti - time))]
   }
 
+  ## Default to every reachable variable, as before; honor a requested subset
+  ## when one is given. gg_partial_rfsrc() errors on a name the forest does not
+  ## carry, so a bad request fails loudly here rather than being dropped.
+  if (is.null(xvar.names)) xvar.names <- object$xvar.names
+
   pd <- gg_partial_rfsrc(rf,
-                          xvar.names   = object$xvar.names,
+                          xvar.names   = xvar.names,
                           partial.time = partial_time,
                           partial.type = partial_type)
 

@@ -29,7 +29,7 @@ glance.
 }
 \details{
 When a \code{model} label was attached in \code{gg_partial()}, lines are
-coloured by model -- handy for overlaying results from two forests (e.g.,
+colored by model -- handy for overlaying results from two forests (e.g.,
 one tuned, one default) in the same figure.
 }
 \examples{

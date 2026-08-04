@@ -79,7 +79,7 @@ forests, wrapping \code{\link[kernelshap]{kernelshap}}, with
 \item \code{\link{gg_sdependent}}: signal-variable detection.
 }
 
-\code{varPro} is a required dependency (\code{Imports}), so the varPro
+\pkg{varPro} is a required dependency (\code{Imports}), so the varPro
 families are always available. \code{kernelshap} is in \code{Suggests}:
 \code{\link{gg_shap}} checks for it and fails with a clear message when it
 is not installed.

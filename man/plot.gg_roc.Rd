@@ -22,14 +22,14 @@ forests, \code{NULL} defaults to class index 2.}
 
 \item{panel}{Character; layout for per-class ROC objects, the ones from
 \code{gg_roc(..., per_class = TRUE)}. \code{"overlay"} (default) draws
-every class curve in one panel, coloured by class; \code{"facet"} gives
+every class curve in one panel, colored by class; \code{"facet"} gives
 each class its own panel. Ignored for single-class \code{gg_roc} objects.}
 }
 \value{
 A \code{ggplot} object. The x-axis is 1 - Specificity (FPR), the
 y-axis is Sensitivity (TPR), and a dashed red diagonal marks the
 random-classifier baseline. Single-class curves carry the AUC as an
-annotation; multi-class plots colour and style each class curve
+annotation; multi-class plots color and style each class curve
 distinctly.
 }
 \description{

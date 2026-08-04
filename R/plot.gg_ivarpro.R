@@ -21,7 +21,7 @@
 #' visual comparison. Each facet has its own cutoff line.
 #'
 #' The per-observation view (`which_obs`) is a horizontal bar chart of
-#' one observation's local importances; bars below the cutoff are grey,
+#' one observation's local importances; bars below the cutoff are gray,
 #' above are blue. The visual resembles a SHAP waterfall, but the values
 #' are release-rule contributions: scaled per-rule contrasts on observed
 #' data, not Shapley values and not permutation-based.

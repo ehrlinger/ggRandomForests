@@ -4,7 +4,7 @@
 #' Horizontal bar chart of the mean absolute lasso coefficient
 #' \eqn{\mathrm{mean}(|\hat{\beta}|)}{mean(|beta hat|)} per variable from an
 #' unsupervised varPro fit, sorted descending so the eye lands on the top
-#' variable first. Bars are filled blue above the selection cutoff, grey
+#' variable first. Bars are filled blue above the selection cutoff, gray
 #' otherwise, with a dashed red line at the cutoff.
 #'
 #' @section Reading the chart:

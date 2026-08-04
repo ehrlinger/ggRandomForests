@@ -20,6 +20,125 @@ ggRandomForests v4.0.0 (development)
 
 ggRandomForests v3.5.0
 ======================
+* `plot.gg_varpro()` no longer draws a phantom "NA" category when `nvar` is
+  smaller than the number of variables the fit reports. `$imp`/`$stats` are
+  truncated to `nvar`, but the per-tree overlay (`$imp.tree`) and the
+  class-conditional data (`$conditional`) still carry every variable;
+  re-levelling those to the truncated `$imp` levels orphaned the extras to
+  `NA`, which rendered as an empty box/bar. Those rows are now dropped, so only
+  the displayed variables appear.
+* The vignettes now render their figures with `ragg` and quantise them to a
+  256-color palette, cutting the source tarball from 4.7 MB to 2.3 MB. The
+  vignettes had never chosen a graphics device, so they fell through to the
+  default `png()`, which writes RGBA truecolor: an alpha channel these opaque
+  plots never use, over tens of thousands of anti-aliased colors that PNG
+  cannot compress. Figures are visually unchanged (mean pixel difference 1.55
+  on a 0-255 scale). Both steps are build-time only and degrade to no-ops when
+  `ragg` or `magick` is absent, so a vignette rebuild without them still
+  succeeds -- at the old file size.
+* The varPro vignette now documents which variables a `varpro` fit actually
+  makes available. A fit narrows the predictors twice -- `object$xvar.names`
+  holds what `varPro::partialpro()` can reach, `varPro::get.topvars()` only the
+  reported ranking -- and `partialpro()` silently drops any requested name
+  outside the first set. The new section covers naming `xvar.names` to get past
+  the reported ranking, `split.weight = FALSE` to widen the candidate set
+  itself, and the two arguments (`nvar`, `sparse`) that look like they should
+  help and don't.
+* `gg_partial_varpro()` now warns when a name passed in `xvar.names` is one the
+  `varpro` fit cannot reach, instead of letting it disappear. `partialpro()`
+  keeps only the names it finds in `object$xvar.names` and says nothing about
+  the rest, so a request for twelve variables could come back with ten. The
+  check runs before `partialpro()` does, so the warning arrives ahead of the
+  computation rather than after it; it names every dropped variable and points
+  at `split.weight = FALSE`. Supplying `part_dta` yourself is unchanged -- the
+  variables are already gone by then. The function's examples now cover the
+  object-driven path, which had none.
+* `gg_partial_varpro(scale = "chf")` now computes the variables you name in
+  `xvar.names` instead of every variable the fit can reach. The `chf` path
+  routes through `gg_partial_rfsrc()` rather than `partialpro()`, and it had
+  never been given the variable list -- so asking for one variable quietly did
+  the work for all fourteen. This is the mirror image of the `partialpro()` bug
+  above: that one returns fewer variables than you asked for, this one returned
+  all of them. Naming a variable the forest does not carry has always been an
+  error and still is. The `partialpro`-only arguments (`cut`, `nsmp`) mean
+  nothing on this path and are now ignored with a warning rather than in
+  silence.
+* Fix: `gg_vimp()` on a `randomForest` fit grown with `importance = TRUE` now
+  reports the permutation importance you asked for. It was reporting node
+  purity instead, and silently: `randomForest` stores `%IncMSE` and
+  `IncNodePurity` side by side, and `gg_vimp()` stacked both into one `vimp`
+  column and ranked them together. The two are not commensurable -- node purity
+  runs in the thousands where `%IncMSE` runs in the tens -- so every impurity
+  row outranked every permutation row, and the truncation to `nvar` cut the
+  permutation values away entirely. On `randomForest(medv ~ ., Boston,
+  importance = TRUE)` the plot showed `lstat = 12576.7` (node purity) where the
+  permutation value is `lstat = 62.4`. Node purity is now left out of the
+  ranking; read `randomForest::importance(object)` if you want both. Fits grown
+  without `importance = TRUE` are unaffected -- they only ever stored node
+  purity, and that is still what you get.
+* Fix: `gg_vimp()` on a `randomForest` *classification* fit grown with
+  `importance = TRUE` now reports permutation importance as well. That matrix
+  mixes the same two scales -- a permutation column per class plus
+  `MeanDecreaseAccuracy`, alongside `MeanDecreaseGini` -- but it is wider than
+  the single-outcome branch that picks one measure, so it skipped that branch
+  and every column was ranked together. `MeanDecreaseGini` came out the sole
+  survivor: on `randomForest(Species ~ ., iris, importance = TRUE)`,
+  `gg_vimp()` returned 4 rows of node purity where 16 rows of permutation
+  importance were there to report. The per-class columns and
+  `MeanDecreaseAccuracy` are all permutation measures on one scale, so they are
+  now kept together and named in the `set` column, the way an `rfsrc` fit's
+  `all`/`<class>` columns already were; only `MeanDecreaseGini` is dropped.
+* Fix: `which.outcome` now selects the column you asked for on a `randomForest`
+  classification fit. `which.outcome = 0` documented itself as overall
+  importance and took column 1 to get it, and `which.outcome = k` took column
+  `k + 1` for class `k`. Both are right for an `rfsrc` fit, whose `$importance`
+  leads with an `all` column, and neither is right here: a `randomForest`
+  matrix opens on the classes and keeps the overall permutation measure in
+  `MeanDecreaseAccuracy`, near the end. So `0` returned the first class
+  labeled as overall -- on `randomForest(Species ~ ., iris, importance =
+  TRUE)` it handed back setosa's values, ranking `Petal.Width` above
+  `Petal.Length` where the overall measure has them the other way round -- and
+  every class index was shifted by one, `1` giving versicolor. The columns are
+  now resolved by name: `0` reaches `MeanDecreaseAccuracy`, `k` reaches class
+  `k`, and `which.outcome = 1` agrees with `which.outcome = "setosa"`. Fits
+  grown with `importance = FALSE` keep no `MeanDecreaseAccuracy` column and
+  their single measure answers to `0` as before.
+* `which.outcome` now names the measure it selected in the `set` column, for
+  both `rfsrc` and `randomForest` fits. Asking for one measure reported `set`
+  as the literal `"vimp"` -- the pivot takes `set` from the source column name,
+  and the selected column was named after the `vimp` column it was about to be
+  written into rather than after the measure it held. So the one path where you
+  have to say which measure you want was the one path that would not tell you
+  which measure you got. `gg_vimp(rfsrc_iris, which.outcome = 0)` now reports
+  `set == "all"`, `gg_vimp(rf_iris, which.outcome = 0)` reports
+  `set == "MeanDecreaseAccuracy"`, and both agree with the names the unfiltered
+  pivot has always used. Values and ordering are unchanged, and plots are
+  unaffected: `plot.gg_vimp()` only facets on `set` when there is more than one
+  of them, and selecting a measure leaves exactly one.
+* `nvar` counts variables again for `randomForest` fits, not rows. It was
+  applied after the multiclass pivot, where a frame holds one row per
+  variable *per measure*, so it lopped whole measures off the end of the
+  ranking instead of trimming the ranking itself.
+* `gg_vimp()` now says in `?gg_vimp` that a `randomForest` fit without
+  `importance = TRUE` stores only `IncNodePurity`, so the ranking is node
+  purity rather than permutation VIMP, and nothing in the plot marks the
+  difference. The example now passes `importance = TRUE`.
+* `gg_error()` now explains that the error trajectory is `randomForestSRC`'s to
+  record, not ours: `rfsrc()`'s `block.size` defaults to `NULL` unless you
+  request importance, which stores the error at the final tree only, so a
+  default fit gives `gg_error()` a single point rather than a curve --
+  `tree.err = TRUE` alone does not change that. Grow with `block.size = 1` for
+  an error at every tree. The examples do this now; they had all been plotting
+  one dot.
+* `gg_beta_varpro()`: the `imp` column is documented as the *absolute*
+  coefficient. `varPro::beta.varpro()` wraps every coefficient it returns in
+  `abs()`, so the sign is discarded upstream and never reaches us -- the docs
+  had said "Sign is real (direction of local association)", which cannot be
+  read off this output. Use `gg_ivarpro()` for a signed local estimator.
+* `gg_isopro()`: the "What's in the output" section now says the polarity flip
+  is ours. `varPro::isopro()`'s `howbad` is *lower* = more anomalous; we return
+  `1 - howbad` so that higher = more anomalous. The section had credited that
+  to the fit, contradicting this function's own `@return`.
 * Added `gg_shap()` and `plot.gg_shap()` (with `shap_importance()`,
   `shap_beeswarm()`, `shap_dependence()`) for SHAP explanations of
   regression and classification forests, wrapping `kernelshap` (Suggests).
@@ -222,7 +341,7 @@ ggRandomForests v3.1.0
   (varPro release-rule importance) explicit and cross-linked. Vignette
   prose deepened with the same framing; one-line code-comment fixes;
   fixed a stale `@return` in `gg_roc()` (documented a `yvar` column the
-  function does not return). No user-facing behaviour change.
+  function does not return). No user-facing behavior change.
 * Vignettes: the regression and survival partial-dependence surfaces are
   now rendered as static `ggplot2` heat maps instead of interactive
   `plotly` widgets, and figures render at 96 dpi. This cuts the installed
@@ -239,7 +358,7 @@ ggRandomForests v3.1.0
   live-computation fallback if the file is absent. The `gg_udependent()`
   tests memoise the per-fit entropy matrix (`varPro::get.beta.entropy()`,
   ~1.5 s and a pure function of the fit) instead of recomputing it once per
-  test. No user-facing behaviour change.
+  test. No user-facing behavior change.
 
 ggRandomForests v3.0.0
 ======================
@@ -252,7 +371,7 @@ ggRandomForests v3.0.0
   from `\dontrun` to `\donttest` (so they execute under `R CMD check --as-cran` and on
   CRAN; `library(survival)` added so `Surv()` resolves), the
   per-variable `message()` in the deprecated `surv_partial.rfsrc()` is
-  removed (its one behaviour change: that function no longer prints a
+  removed (its one behavior change: that function no longer prints a
   line per variable), and the README points to the new "varpro"
   vignette.
 * Fix: importance plots now consistently put the most-important variable
@@ -333,7 +452,7 @@ ggRandomForests v3.0.0
   overlap) failed at 0/5 instead of 5/5 before the flip. Note: the two
   vdiffr baselines recorded in PR #94 (`gg-isopro-default` and
   `gg-isopro-threshold`) were recorded under the inverted polarity; they
-  are visually flipped relative to the new behaviour but CI skips
+  are visually flipped relative to the new behavior but CI skips
   snapshots (`VDIFFR_RUN_TESTS = false`) so no failure surfaces. Re-record
   with `VDIFFR_RUN_TESTS = true` when convenient.
 * Documentation: pedagogical pass over the varPro wrappers
@@ -343,7 +462,7 @@ ggRandomForests v3.0.0
   to varPro can learn the underlying method (release rules, beta-entropy
   dependency, parametric / nonparametric / causal partial estimators)
   from the help page alone, not just the wrapper mechanics. No API or
-  behavioural change.
+  behavioral change.
 * Documentation: enable roxygen2 markdown package-wide via
   `Roxygen: list(markdown = TRUE)` in `DESCRIPTION`. New roxygen blocks
   can use backticks and `[fn()]` link syntax; existing `\code{}` /
@@ -351,14 +470,14 @@ ggRandomForests v3.0.0
   R CMD check clean: `randomForest[SRC]` in `R/help.R` (markdown read
   it as an unfinished link) becomes plain `randomForestSRC`; the `95\%`
   escape in `R/gg_rfsrc.R::bootstrap_survival` becomes a literal `95%`.
-  No API or rendered-doc behavioural change beyond the conventions
+  No API or rendered-doc behavioral change beyond the conventions
   switch.
 * New `gg_isopro()` and `plot.gg_isopro()`: tidy wrapper and ranked-elbow +
-  density visualisation for `varPro::isopro` isolation-forest anomaly
+  density visualization for `varPro::isopro` isolation-forest anomaly
   scores. `plot.gg_isopro()` takes `panel = c("both", "elbow", "density")`
   and optional `threshold` (score-space) or `top_n_pct` (quantile-space)
   to draw a reference line; if both are set, `threshold` wins with a
-  message. A `method` column auto-triggers colour grouping for multi-method
+  message. A `method` column auto-triggers color grouping for multi-method
   comparisons (use `dplyr::bind_rows()` on three `gg_isopro()` calls).
   `print` / `summary` / `autoplot` S3 companions follow the existing `gg_*`
   conventions. First of three Phase 4 sub-projects.
@@ -384,7 +503,7 @@ ggRandomForests v3.0.0
     `gg_roc` data frame with a `class` factor column, plus a named AUC
     vector attribute with one entry per class, ordered by descending AUC.
   - `plot.gg_roc()` gains `panel = c("overlay", "facet")`. When the object
-    has a `class` column, `"overlay"` colours the curves by class and
+    has a `class` column, `"overlay"` colors the curves by class and
     `"facet"` gives each class its own panel.
   - `summary.gg_roc()` prints the named per-class AUC values when a `class`
     column is present.
@@ -397,7 +516,7 @@ ggRandomForests v3.0.0
     returns a tidy list: `$edges` (variable_from, variable_to, weight),
     `$nodes` (variable, degree, selected), and `$graph`, an igraph object.
   - `plot.gg_udependent()` draws the dependency network with ggraph. Edge
-    width and opacity scale with dependency strength; node colour marks the
+    width and opacity scale with dependency strength; node color marks the
     signal variables. The layout is configurable (`"fr"`, `"kk"`,
     `"stress"`, and so on).
   - `ggraph` added to `Suggests:`.
@@ -407,7 +526,7 @@ ggRandomForests v3.0.0
     variable. The hinges sit at the 15th and 85th percentiles and the
     whiskers at the 5th and 95th, so the box is not the usual Tukey one —
     it reports the percentiles it actually shows. Variables with aggregate
-    z above `cutoff` (default 0.79) are colour-highlighted.
+    z above `cutoff` (default 0.79) are color-highlighted.
   - With `faithful = TRUE`, the individual per-tree z-scores are jittered
     over the box as semi-transparent points, with a white-outlined dot at
     the mean, the same view as varPro's internal `bxp` output.
@@ -415,7 +534,7 @@ ggRandomForests v3.0.0
     reads `$conditional.z` and draws class-conditional importance as a
     `facet_wrap(~class, nrow=1)` bar chart.
   - Set `local.std = FALSE` to allow `plot(..., type = "raw")`, which shows
-    raw per-tree importance instead of the z-normalised values.
+    raw per-tree importance instead of the z-normalized values.
 * `gg_variable.randomForest`: classification fix (#87).
   - For a classification forest, `gg_variable.randomForest()` now stores
     per-class OOB vote fractions as `yhat.<classname>` columns, read from
@@ -423,7 +542,7 @@ ggRandomForests v3.0.0
     store a single `yhat` factor column of class labels (from
     `object$predicted`), and that column shape stopped the multi-class
     pivot in `plot.gg_variable` from ever running. The vote fractions are
-    row-normalised to `[0, 1]`, even when the forest was fit with
+    row-normalized to `[0, 1]`, even when the forest was fit with
     `norm.votes = FALSE`.
   - `plot.gg_variable`, binary classification: with `smooth = TRUE` the
     x and y aesthetics are now mapped onto the smooth layer correctly.
@@ -436,7 +555,7 @@ ggRandomForests v3.0.0
     `object` argument (the originating `varpro` fit) which it uses for
     provenance-aware axis labels, and a `scale` argument
     (`"auto"`, `"mortality"`, `"rmst"`, `"surv"`, `"chf"`).
-  - Ensemble mortality labelling (Ishwaran et al. 2008): with
+  - Ensemble mortality labeling (Ishwaran et al. 2008): with
     `scale = "mortality"`, or `scale = "auto"` on a survival forest, the
     y-axis reads "Ensemble mortality (expected events)". That is an
     unbounded relative-risk score, not a survival probability, and the
@@ -458,12 +577,12 @@ ggRandomForests v3.0.0
     `xvar`, which broke `patchwork` / `autoplot()` / `layer_data()`
     composition (#80).
   - `gg_roc()` and `calc_roc()` for `randomForest` now build the ROC from
-    class probabilities (OOB votes by default, honouring `oob`) rather
+    class probabilities (OOB votes by default, honoring `oob`) rather
     than the degenerate three-point curve they produced before. With
     `which_outcome = "all"` (the default for `gg_roc(rf)`) the result is a
     macro-averaged one-vs-rest ROC, and no warning. The shared
     `.validate_which_outcome` helper and `calc_roc.rfsrc` are
-    byte-for-byte unchanged, so rfsrc behaviour is untouched (#81).
+    byte-for-byte unchanged, so rfsrc behavior is untouched (#81).
 * Dependency modernization. This breaks scripts that relied on attachment.
   `randomForestSRC` and `randomForest` move from `Depends:` to `Imports:`;
   `igraph`, `callr`, and `varPro` are added to `Suggests:` (`varPro` later
@@ -506,7 +625,7 @@ ggRandomForests v2.7.3
   ribbons now use a shared alpha (`.gg_ribbon_alpha = 0.2`) and a
   shared fill (`.gg_ribbon_fill = "steelblue"`) for single-series
   cases (KM/NA CIs, bootstrap CIs, `gg_brier` envelope); group-stratified
-  ribbons keep their group-coloured fill. Statistical bounds unchanged —
+  ribbons keep their group-colored fill. Statistical bounds unchanged —
   only styling.
 ggRandomForests v2.7.2
 =====================
@@ -541,7 +660,7 @@ ggRandomForests v2.7.1
   `time`. The result is now reshaped to long form so each `(x, time)` pair
   is a single row.
 * Improve `plot.gg_partial_rfsrc()` survival layout: predictor value is now
-  on the x-axis with one curve per (rounded) time point coloured by `Time`,
+  on the x-axis with one curve per (rounded) time point colored by `Time`,
   faceted by variable name. The previous default put time on the x-axis
   and one curve per predictor value, producing a saturated legend with
   dozens of nearly-identical lines.
@@ -653,7 +772,7 @@ ggRandomForests v2.6.1
 =====================
 * Fix model-label assignment in `gg_partial` for categorical variable data
 * Refactor `gg_partial` and `gg_partial_rfsrc` to improve factor-level
-  normalisation and categorical data handling
+  normalization and categorical data handling
 
 ggRandomForests v2.6.0
 =====================
@@ -741,7 +860,7 @@ ggRandomForests v1.1.4
 * Vignette updates for arXiv submission of ggRandomForests: Random Forests for Regression
 
 * Some optimizations to reduce package size.
-* Remove all tests from CRAN build to optimise R CMD CHECK times.
+* Remove all tests from CRAN build to optimize R CMD CHECK times.
 * Remove pdf vignette figure from CRAN build.
 * Return S3method calls to NAMESPACE for "S3 methods exported but not registered" for R V3.2+.
   

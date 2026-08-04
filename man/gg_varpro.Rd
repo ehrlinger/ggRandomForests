@@ -65,7 +65,7 @@ and \code{n}.
 }
 \description{
 Pulls the per-tree importance scores out of a fitted \code{varpro} object
-and summarises them into a data structure the plot method can draw as a
+and summarizes them into a data structure the plot method can draw as a
 boxplot.  The box hinges are the 15th and 85th percentiles and the
 whiskers run to the 5th and 95th -- not the usual Tukey 1.5 IQR whiskers.
 For a classification forest you can also keep the class-conditional
@@ -88,8 +88,8 @@ real subsets of the data.
 
 Because varpro builds importance from rules sampled over trees, every
 tree contributes its own importance value for each variable. Those are
-the per-tree scores we summarise here. With \code{local.std = TRUE}
-(the default) the per-tree values are standardised by their column
+the per-tree scores we summarize here. With \code{local.std = TRUE}
+(the default) the per-tree values are standardized by their column
 standard deviation so the column mean equals the aggregate z-score
 returned by \code{varPro::importance()}; that z-score is the canonical
 "is this variable in or out?" statistic, and \code{cutoff = 0.79} is
@@ -129,7 +129,7 @@ story from a high median with a tight box;
 class (\code{conditional = TRUE}) rather than just which
 variables drive the model overall.
 }
-The z-score is a standardised ranking statistic, not a p-value or a
+The z-score is a standardized ranking statistic, not a p-value or a
 probability. Two variables with the same z are "similarly important
 by this method", not "equally likely to be true signal". For a
 data-driven cutoff rather than the 0.79 default, see
