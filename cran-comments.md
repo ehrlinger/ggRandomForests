@@ -63,9 +63,9 @@ single submission.
 * **Local:** R 4.6.0 on macOS (aarch64-apple-darwin23).
   `R CMD check --as-cran` (with the manual) returns 0 errors, 0 warnings,
   0 notes; overall check time under 4 minutes.
-* **win-builder:** R-devel (x86_64-w64-mingw32) —
-  _TODO: paste win-builder result here (expected 0 errors, 0 warnings; 1 note:
-  "Days since last update")._
+* **win-builder:** R-oldrelease (R 4.5.3, x86_64-w64-mingw32, Windows Server
+  2022) — `R CMD check --as-cran` returns 0 errors, 0 warnings, 0 notes;
+  CRAN incoming feasibility clean (no "Days since last update" note).
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
 
