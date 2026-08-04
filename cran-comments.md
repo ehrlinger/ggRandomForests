@@ -63,6 +63,10 @@ single submission.
 * **Local:** R 4.6.0 on macOS (aarch64-apple-darwin23).
   `R CMD check --as-cran` (with the manual) returns 0 errors, 0 warnings,
   0 notes; overall check time under 4 minutes.
+* **win-builder:** x86_64-w64-mingw32, Windows Server 2022. Both R-release
+  (R 4.6.1) and R-oldrelease (R 4.5.3) return `R CMD check --as-cran`
+  Status OK -- 0 errors, 0 warnings, 0 notes; CRAN incoming feasibility clean
+  (no "Days since last update" note).
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
 
@@ -70,9 +74,10 @@ single submission.
 
 `R CMD check --as-cran` is clean (0/0/0) locally.
 
-The note expected at incoming feasibility is "Days since last update: 14"
-(3.4.0 was published 2026-07-02). The submission is deliberate rather than a
-correction to 3.4.0: it lands the SHAP family, a self-contained feature set
+3.4.0 was published 2026-07-02, so this update follows 33 days later; any
+"Days since last update" note simply reflects that cadence. The submission is
+deliberate rather than a correction to 3.4.0: it lands the SHAP family, a
+self-contained feature set
 developed and reviewed as a unit, together with the `gg_partial()` fix in #15,
 where the plotted quantity could be read as a probability when it is an
 expected event count, and the `gg_vimp()` fixes, where a `randomForest` fit
