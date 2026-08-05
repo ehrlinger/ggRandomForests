@@ -1,10 +1,10 @@
 Package: ggRandomForests
-Version: 4.0.0.9000
+Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
-* Development version 4.0.0.9000, opened after the v3.2.0 CRAN release
-  (forward-merged the v3.2.0 RMST/varPro fixes onto the dev line).
+* Development line opened after the v3.2.0 CRAN release (forward-merged the
+  v3.2.0 RMST/varPro fixes onto the dev line).
 * Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
   visualization layer wrapping the 'randomForestRHF' package (added to
   Suggests). RHF support is gated — every gg_rhf* entry point checks
