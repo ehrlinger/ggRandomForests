@@ -22,10 +22,9 @@ upstream, and this release removes the call path that reaches it.
 
 One test grew that forest indirectly. `gg_partial_varpro()` calls
 `varPro::partialpro()`, which grows its own isolation forest through
-`isopro()` and lets `method` default to `"unsupv"`. `partialpro()` downgrades
-to the safe `"rnd"` method when only one variable survives its screen, so the
-tests using `nvars = 1` were unaffected; the one test that deliberately
-requests two reachable variables was not, and it ran on CRAN.
+`isopro()` and lets `method` default to `"unsupv"`. The package's other
+live-`partialpro()` tests were already `skip_on_cran()`'d for runtime, which
+left this one as the only one running on CRAN — and so the only one reported.
 
 That test now passes `method = "rnd"` itself. Verified by tracing every
 `rfsrc` grow across the suite under CRAN skip semantics: 311 grows, 0 reached

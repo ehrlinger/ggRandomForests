@@ -8,13 +8,12 @@ ggRandomForests v3.5.1
   `randomForestSRC` hand `yvar.wt = numeric(0)` to its native code and
   decrement that zero-length pointer (`entry.c:184`). The route was indirect:
   `gg_partial_varpro()` calls `varPro::partialpro()`, which grows its own
-  `isopro()` forest and lets `method` default to `"unsupv"`. `partialpro()`
-  quietly downgrades to the safe `"rnd"` method when only one variable
-  survives its screen, so every test using `nvars = 1` was rescued by accident
-  and the one test that deliberately asks for two variables was not. That test
-  now requests `method = "rnd"` itself; it asserts the same warnings over the
-  same number of rows. No user-facing code changed -- `ggRandomForests` is pure
-  R, and the undefined behaviour is upstream.
+  `isopro()` forest and lets `method` default to `"unsupv"`. The other
+  live-`partialpro()` tests were already `skip_on_cran()`'d, which left this
+  one as the only one running on CRAN. It now requests `method = "rnd"`
+  itself; it asserts the same warnings over the same number of rows. No
+  user-facing code changed -- `ggRandomForests` is pure R, and the undefined
+  behaviour is upstream.
 * The comments in the varPro test fixtures claimed the report fires only for
   `isopro(method = "unsupv")`. That was true of direct calls and wrong as a
   rule about the package, which is why the `partialpro()` route went unnoticed.
