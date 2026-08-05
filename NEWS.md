@@ -19,6 +19,20 @@ ggRandomForests v3.5.1
   rule about the package, which is why the `partialpro()` route went unnoticed.
   They now state the actual condition -- any `rfsrc` grow reached without a
   formula -- and name the paths that satisfy it.
+* An audit of the rest of the package found one more call on the same path:
+  the `\donttest` example in `?gg_partial_varpro` used the object path without
+  `method = "rnd"`. It did not fire on CRAN only because that check flavor did
+  not run `\donttest` code, which is CRAN's setting to change rather than ours,
+  so the example now passes `method = "rnd"` too. Every other varPro entry
+  point is clean: `gg_varpro()`, `gg_ivarpro()`, `gg_udependent()`,
+  `uvarpro()` (defaults to a formula-based `method = "auto"`) and every
+  `isopro()` call in the package, all of which name `method = "rnd"`.
+* `?gg_partial_varpro` now documents the underlying issue rather than leaving
+  it to the tests. Any `gg_partial_varpro(object = )` call reaches it, because
+  `partialpro()` grows its isolation forest with `isopro()`'s default
+  `method = "unsupv"`. It is benign -- the pointer is formed, never
+  dereferenced -- and the fix belongs upstream (`kogalur/randomForestSRC` PR
+  #478); `method = "rnd"` avoids it in the meantime.
 
 ggRandomForests v3.5.0
 ======================
