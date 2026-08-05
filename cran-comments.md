@@ -31,8 +31,14 @@ That test now passes `method = "rnd"` itself. Verified by tracing every
 without a formula (previously 2, both in that one test). The test asserts the
 same warnings over the same number of rows, so CRAN coverage is unchanged.
 
-No user-facing code changed — the diff is five test files plus `DESCRIPTION`
-and `NEWS.md`.
+No user-facing code changed — the diff is five test files, one roxygen block
+documenting the issue (with its regenerated `.Rd`), `DESCRIPTION` and
+`NEWS.md`. Nothing executable in `R/` changed.
+
+The same audit found the `\donttest` example in `?gg_partial_varpro` on that
+same path; it did not fire under gcc-UBSAN because that flavor did not run
+`\donttest` code, but it is fixed here too rather than left to a future
+check-flavor change.
 
 ### Test environments
 
