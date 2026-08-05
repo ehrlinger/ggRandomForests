@@ -61,8 +61,9 @@ months: 7`. This submission is the fix you requested on 2026-08-05 for the
 why it follows the previous release so closely. I would not otherwise submit
 on this cadence.
 
-The change is deliberately narrow: five test files, one roxygen block, and the
-version metadata. There is **no executable R code change** in this release --
+The change is deliberately narrow: five test files, one roxygen block with its
+regenerated `.Rd`, and the version metadata (`DESCRIPTION`, `NEWS.md`) -- the
+same list given above. There is **no executable R code change** in this release --
 the diff over `R/` between v3.5.0 and v3.5.1 is comments only -- so the
 runtime profile is identical to the 3.5.0 you accepted on 2026-08-04.
 
