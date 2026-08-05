@@ -31,17 +31,41 @@ That test now passes `method = "rnd"` itself. Verified by tracing every
 without a formula (previously 2, both in that one test). The test asserts the
 same warnings over the same number of rows, so CRAN coverage is unchanged.
 
-No user-facing code changed — the diff is five test files plus `DESCRIPTION`
-and `NEWS.md`.
+No user-facing code changed — the diff is five test files, one roxygen block
+documenting the issue (with its regenerated `.Rd`), `DESCRIPTION` and
+`NEWS.md`. Nothing executable in `R/` changed.
+
+The same audit found the `\donttest` example in `?gg_partial_varpro` on that
+same path; it did not fire under gcc-UBSAN because that flavor did not run
+`\donttest` code, but it is fixed here too rather than left to a future
+check-flavor change.
 
 ### Test environments
 
-* local macOS (darwin), R 4.6.1 — `R CMD check --as-cran` with the manual:
-  **0 ERRORs, 0 WARNINGs, 1 NOTE**. Total check time 4m11s.
+* **Local:** macOS (darwin), R 4.6.1 — `R CMD check --as-cran` with the
+  manual, built from a clean `git archive` export: **0 ERRORs, 0 WARNINGs,
+  1 NOTE**. Total check time 4m44s.
+* **win-builder:** x86_64-w64-mingw32, Windows Server 2022.
+  * R-devel (2026-08-04 r90350 ucrt) — **0 ERRORs, 0 WARNINGs, 1 NOTE**.
+  * R-release (R 4.6.1) — **0 ERRORs, 0 WARNINGs, 1 NOTE**.
+  * PDF and HTML manuals build on both; vignettes re-build on both.
+
+Both win-builder runs report the same single NOTE as the local check, and
+nothing else.
+
+### NOTE disposition
 
 The one NOTE is `Days since last update: 1` / `Number of updates in past 6
-months: 7`. This submission is the requested fix for the 3.5.0 check failure,
-which is why it follows so closely.
+months: 7`. This submission is the fix you requested on 2026-08-05 for the
+`gcc-UBSAN` additional issue in 3.5.0, with a 2026-08-21 deadline, which is
+why it follows the previous release so closely. I would not otherwise submit
+on this cadence.
+
+The change is deliberately narrow: five test files, one roxygen block with its
+regenerated `.Rd`, and the version metadata (`DESCRIPTION`, `NEWS.md`) -- the
+same list given above. There is **no executable R code change** in this release --
+the diff over `R/` between v3.5.0 and v3.5.1 is comments only -- so the
+runtime profile is identical to the 3.5.0 you accepted on 2026-08-04.
 
 ---
 
