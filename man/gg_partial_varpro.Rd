@@ -216,6 +216,18 @@ regardless of plausibility. So when a covariate is highly correlated
 with others, the two methods can disagree, and \code{partialpro}'s
 curve is the one restricted to the data manifold.
 
+That isolation forest is worth one note. \code{partialpro} grows it with
+\code{varPro::isopro}, whose \code{method} defaults to \code{"unsupv"} --
+a forest with no outcome. \code{randomForestSRC} then passes a zero-length
+\code{yvar.wt} into its native code and decrements that pointer
+(\code{entry.c:184}), which is undefined behaviour and is reported by
+UBSAN builds. It is benign in practice -- the pointer is formed but never
+dereferenced -- and it is an upstream issue rather than one this package
+can fix (\code{ggRandomForests} is pure R); a one-line guard is proposed
+in \code{kogalur/randomForestSRC} PR #478. Passing \code{method = "rnd"}
+through to \code{partialpro} avoids the unsupervised grow entirely, which
+is what this package's own tests and examples do.
+
 Second, \code{partialpro} fits a local polynomial model to the
 predicted values rather than just plotting their mean. That gives
 three parallel curves per variable, stored as \code{yhat.par},
@@ -306,8 +318,10 @@ wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
 
 ## Ask anyway and we warn, naming what partialpro() would have dropped
-## in silence.
-pd <- gg_partial_varpro(object = vp, xvar.names = wanted)
+## in silence.  (method = "rnd" is passed through to partialpro(); see
+## the note on isolation-forest method in Details.)
+pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
+                        method = "rnd")
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,

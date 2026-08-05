@@ -2,11 +2,22 @@
 # beta.varpro() is the expensive call (per-rule glmnet); compute once per R
 # session and reuse. In-memory only — no disk cache.
 #
-# These all grow *supervised* varpro/ivarpro/beta.varpro forests (a real Y), so
-# yvar.wt is non-empty and they do NOT trip randomForestSRC's gcc-UBSAN report
-# at entry.c:184 (that fires only for the unsupervised family — verified under
-# -fsanitize=undefined). They intentionally run on CRAN; do not skip_on_cran().
-# Only the unsupervised isopro grow is skipped (see test_gg_isopro.R).
+# randomForestSRC's gcc-UBSAN report at entry.c:184 fires for any rfsrc grow
+# with NO outcome: rfsrc passes yvar.wt = numeric(0) and the native code
+# decrements that zero-length pointer. The test is therefore not "is this
+# function unsupervised?" but "does this call reach rfsrc without a formula?",
+# which can happen several layers down:
+#   * varPro::isopro(method = "unsupv")   — direct; skipped (test_gg_isopro.R)
+#   * varPro::partialpro()                — calls isopro() internally and lets
+#     it default to "unsupv" whenever more than one variable survives, so
+#     gg_partial_varpro() reaches it without ever naming isopro. This is what
+#     escaped the 3.5.0 audit; see test_gg_partial_varpro.R.
+# uvarpro() defaults to method = "auto" and isopro(method = "rnd"/"auto") both
+# pass a formula, so those are supervised grows and are clean.
+#
+# The fixtures below all grow *supervised* varpro/ivarpro/beta.varpro forests
+# (a real Y), so yvar.wt is non-empty. They intentionally run on CRAN; do not
+# skip_on_cran().
 
 .varpro_cache <- new.env(parent = emptyenv())
 
