@@ -238,6 +238,18 @@ plausibility. So when a covariate is highly correlated with others, the
 two methods can disagree, and `partialpro`'s curve is the one restricted
 to the data manifold.
 
+That isolation forest is worth one note. `partialpro` grows it with
+[`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html),
+whose `method` defaults to `"unsupv"` – a forest with no outcome.
+`randomForestSRC` then passes a zero-length `yvar.wt` into its native
+code and decrements that pointer (`entry.c:184`), which is undefined
+behaviour and is reported by UBSAN builds. It is benign in practice –
+the pointer is formed but never dereferenced – and it is an upstream
+issue rather than one this package can fix (`ggRandomForests` is pure
+R); a one-line guard is proposed in `kogalur/randomForestSRC` PR \#478.
+Passing `method = "rnd"` through to `partialpro` avoids the unsupervised
+grow entirely, which is what this package's own tests and examples do.
+
 Second, `partialpro` fits a local polynomial model to the predicted
 values rather than just plotting their mean. That gives three parallel
 curves per variable, stored as `yhat.par`, `yhat.nonpar`, and
@@ -358,7 +370,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 8
+#> [1] 6
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
@@ -366,12 +378,14 @@ length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 ## reach before you spend the computation -- this is the habit worth having.
 wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
-#> [1] "vs"
+#> [1] "qsec" "vs"  
 
 ## Ask anyway and we warn, naming what partialpro() would have dropped
-## in silence.
-pd <- gg_partial_varpro(object = vp, xvar.names = wanted)
-#> Warning: gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): vs. The fit reaches 8 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
+## in silence.  (method = "rnd" is passed through to partialpro(); see
+## the note on isolation-forest method in Details.)
+pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
+                        method = "rnd")
+#> Warning: gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,
