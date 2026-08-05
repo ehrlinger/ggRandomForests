@@ -1,5 +1,25 @@
 Package: ggRandomForests
-Version: 3.5.0
+Version: 3.5.1
+
+ggRandomForests v3.5.1
+======================
+* Test-only fix for the `gcc-UBSAN` additional issue reported against 3.5.0.
+  One test grew an isolation forest with no outcome, which makes
+  `randomForestSRC` hand `yvar.wt = numeric(0)` to its native code and
+  decrement that zero-length pointer (`entry.c:184`). The route was indirect:
+  `gg_partial_varpro()` calls `varPro::partialpro()`, which grows its own
+  `isopro()` forest and lets `method` default to `"unsupv"`. `partialpro()`
+  quietly downgrades to the safe `"rnd"` method when only one variable
+  survives its screen, so every test using `nvars = 1` was rescued by accident
+  and the one test that deliberately asks for two variables was not. That test
+  now requests `method = "rnd"` itself; it asserts the same warnings over the
+  same number of rows. No user-facing code changed -- `ggRandomForests` is pure
+  R, and the undefined behaviour is upstream.
+* The comments in the varPro test fixtures claimed the report fires only for
+  `isopro(method = "unsupv")`. That was true of direct calls and wrong as a
+  rule about the package, which is why the `partialpro()` route went unnoticed.
+  They now state the actual condition -- any `rfsrc` grow reached without a
+  formula -- and name the paths that satisfy it.
 
 ggRandomForests v3.5.0
 ======================

@@ -3,9 +3,10 @@
 ## ── Helpers ──────────────────────────────────────────────────────────────────
 
 make_uvp <- function(ntree = 25L) {
-  # uvarpro() grows a *synthetic-supervised* forest (yxyz123 ~ ., random Y), so
-  # yvar.wt is non-empty and it does NOT trip the entry.c:184 gcc-UBSAN report
-  # (only the truly-unsupervised isopro grow does). Runs on CRAN.
+  # uvarpro() defaults to method = "auto", which grows a multivariate forest
+  # from a real formula, so yvar.wt is non-empty and it does NOT trip the
+  # entry.c:184 gcc-UBSAN report. Runs on CRAN. See helper-varpro-fixtures.R
+  # for the calls that DO reach rfsrc without a formula.
   set.seed(42L)
   varPro::uvarpro(iris[, -5L], ntree = ntree)
 }

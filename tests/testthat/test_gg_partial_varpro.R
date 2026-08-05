@@ -682,14 +682,23 @@ test_that("gg_partial_varpro: object path warns on unreachable xvar.names", {
               "need >= 2 reachable variables")
   reachable <- reachable[1:2]
 
+  # method = "rnd" is required, not cosmetic. varPro::partialpro() grows an
+  # isolation forest via isopro(), and isopro()'s default method is "unsupv" --
+  # a forest with no y, so rfsrc sends yvar.wt = numeric(0) to the native code
+  # and entry.c:184 decrements that zero-length pointer (upstream rfsrc UB;
+  # ggRandomForests is pure R). partialpro() silently downgrades to "rnd" when
+  # only one variable survives, which is why the nvars = 1 tests above are
+  # unaffected -- but this test needs two, so it must ask for "rnd" itself.
+  # Asserted behavior is unchanged: same warnings, same rows.
   expect_warning(
     gg_partial_varpro(object = vp,
-                      xvar.names = c(reachable, unreachable[1])),
+                      xvar.names = c(reachable, unreachable[1]),
+                      method = "rnd"),
     regexp = unreachable[1]
   )
   # asking only for reachable variables stays quiet
   expect_no_warning(
-    gg_partial_varpro(object = vp, xvar.names = reachable)
+    gg_partial_varpro(object = vp, xvar.names = reachable, method = "rnd")
   )
 })
 
