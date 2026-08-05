@@ -1,3 +1,50 @@
+## v3.5.1 — patch release (fixes the gcc-UBSAN additional issue in 3.5.0)
+
+Submitted in response to the CRAN check request of 2026-08-05 (correct before
+2026-08-21). This release fixes only the `gcc-UBSAN` additional issue; all
+other flavors were OK on 3.5.0.
+
+### The report
+
+`entry.c:184` in `randomForestSRC`:
+
+```c
+RF_yWeight = REAL(yWeight);  RF_yWeight--;
+```
+
+`randomForestSRC` decrements the `yvar.wt` pointer to index from 1. A forest
+grown with no outcome makes `rfsrc` pass `yvar.wt = numeric(0)`, so the
+decrement runs off a zero-length allocation — the "use of 0x1" the report
+describes. `ggRandomForests` has no compiled code; the undefined behaviour is
+upstream, and this release removes the call path that reaches it.
+
+### The path, and the fix
+
+One test grew that forest indirectly. `gg_partial_varpro()` calls
+`varPro::partialpro()`, which grows its own isolation forest through
+`isopro()` and lets `method` default to `"unsupv"`. The package's other
+live-`partialpro()` tests were already `skip_on_cran()`'d for runtime, which
+left this one as the only one running on CRAN — and so the only one reported.
+
+That test now passes `method = "rnd"` itself. Verified by tracing every
+`rfsrc` grow across the suite under CRAN skip semantics: 311 grows, 0 reached
+without a formula (previously 2, both in that one test). The test asserts the
+same warnings over the same number of rows, so CRAN coverage is unchanged.
+
+No user-facing code changed — the diff is five test files plus `DESCRIPTION`
+and `NEWS.md`.
+
+### Test environments
+
+* local macOS (darwin), R 4.6.1 — `R CMD check --as-cran` with the manual:
+  **0 ERRORs, 0 WARNINGs, 1 NOTE**. Total check time 4m11s.
+
+The one NOTE is `Days since last update: 1` / `Number of updates in past 6
+months: 7`. This submission is the requested fix for the 3.5.0 check failure,
+which is why it follows so closely.
+
+---
+
 ## v3.5.0 — minor release (SHAP explanations; default S3 methods; survival partial-dependence labeling; randomForest VIMP fixes)
 
 This is a minor feature-and-fix release. It consolidates the work developed

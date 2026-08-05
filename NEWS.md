@@ -18,6 +18,39 @@ ggRandomForests v4.0.0 (development)
   line. `gg_auct.rhf(object, marker, auct_fit = NULL)` computes
   `auct.rhf()` internally or reuses a cached fit.
 
+ggRandomForests v3.5.1
+======================
+* Test-only fix for the `gcc-UBSAN` additional issue reported against 3.5.0.
+  One test grew an isolation forest with no outcome, which makes
+  `randomForestSRC` hand `yvar.wt = numeric(0)` to its native code and
+  decrement that zero-length pointer (`entry.c:184`). The route was indirect:
+  `gg_partial_varpro()` calls `varPro::partialpro()`, which grows its own
+  `isopro()` forest and lets `method` default to `"unsupv"`. The other
+  live-`partialpro()` tests were already `skip_on_cran()`'d, which left this
+  one as the only one running on CRAN. It now requests `method = "rnd"`
+  itself; it asserts the same warnings over the same number of rows. No
+  user-facing code changed -- `ggRandomForests` is pure R, and the undefined
+  behaviour is upstream.
+* The comments in the varPro test fixtures claimed the report fires only for
+  `isopro(method = "unsupv")`. That was true of direct calls and wrong as a
+  rule about the package, which is why the `partialpro()` route went unnoticed.
+  They now state the actual condition -- any `rfsrc` grow reached without a
+  formula -- and name the paths that satisfy it.
+* An audit of the rest of the package found one more call on the same path:
+  the `\donttest` example in `?gg_partial_varpro` used the object path without
+  `method = "rnd"`. It did not fire on CRAN only because that check flavor did
+  not run `\donttest` code, which is CRAN's setting to change rather than ours,
+  so the example now passes `method = "rnd"` too. Every other varPro entry
+  point is clean: `gg_varpro()`, `gg_ivarpro()`, `gg_udependent()`,
+  `uvarpro()` (defaults to a formula-based `method = "auto"`) and every
+  `isopro()` call in the package, all of which name `method = "rnd"`.
+* `?gg_partial_varpro` now documents the underlying issue rather than leaving
+  it to the tests. Any `gg_partial_varpro(object = )` call reaches it, because
+  `partialpro()` grows its isolation forest with `isopro()`'s default
+  `method = "unsupv"`. It is benign -- the pointer is formed, never
+  dereferenced -- and the fix belongs upstream (`kogalur/randomForestSRC` PR
+  #478); `method = "rnd"` avoids it in the meantime.
+
 ggRandomForests v3.5.0
 ======================
 * `plot.gg_varpro()` no longer draws a phantom "NA" category when `nvar` is
