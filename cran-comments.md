@@ -45,13 +45,22 @@ check-flavor change.
 * **Local:** macOS (darwin), R 4.6.1 — `R CMD check --as-cran` with the
   manual, built from a clean `git archive` export: **0 ERRORs, 0 WARNINGs,
   1 NOTE**. Total check time 4m44s.
-* **win-builder:** x86_64-w64-mingw32, Windows Server 2022.
-  * R-devel (2026-08-04 r90350 ucrt) — **0 ERRORs, 0 WARNINGs, 1 NOTE**.
-  * R-release (R 4.6.1) — **0 ERRORs, 0 WARNINGs, 1 NOTE**.
-  * PDF and HTML manuals build on both; vignettes re-build on both.
+* **win-builder:** x86_64-w64-mingw32, Windows Server 2022 — all three
+  branches, each **0 ERRORs, 0 WARNINGs, 1 NOTE**:
+  * R-devel (2026-08-04 r90350 ucrt)
+  * R-release (R 4.6.1)
+  * R-oldrelease (R 4.5.3)
+  * PDF and HTML manuals build on all three; vignettes re-build on all three.
 
-Both win-builder runs report the same single NOTE as the local check, and
-nothing else.
+All four checks report the same single NOTE and nothing else.
+
+On check time: the win-builder totals are roughly 8 minutes (R-release),
+10 minutes (R-devel) and 12 minutes (R-oldrelease), with the vignette rebuild
+the dominant term in each. I want to flag rather than hide that: this release
+contains **no executable R code change**, so the runtime is unchanged from the
+3.5.0 your own check farm ran and accepted on 2026-08-04. If check time is a
+concern, the vignette rebuild is the lever and I am glad to precompute further,
+as I did for 3.1.0.
 
 ### NOTE disposition
 
