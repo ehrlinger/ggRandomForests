@@ -1,0 +1,40 @@
+# Guards the one CI constraint that YAML itself cannot express: r-lib actions
+# which shell out to R (setup-tinytex, setup-r-dependencies) must appear after
+# setup-r, because GitHub runs a job's steps strictly top-to-bottom and `needs:`
+# sequences jobs, not steps. Getting it wrong does not reliably fail at the
+# offending step -- it can surface much later as a missing-LaTeX error during
+# the manual build -- which is how the same ordering bug reached eight repos
+# before it was caught. See .github/scripts/check-workflow-order.py.
+#
+# Runs on pull requests so the failure lands while the diff is still open,
+# rather than after merge. Needs no R and no package cache, so it finishes in
+# seconds and is cheap to leave on every PR.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - '.github/scripts/check-workflow-order.py'
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '.github/scripts/check-workflow-order.py'
+  workflow_dispatch:
+
+name: Lint workflows
+
+permissions:
+  contents: read
+
+jobs:
+  workflow-order:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PyYAML
+        run: pip install --quiet pyyaml
+
+      - name: Check setup-r ordering
+        run: python3 .github/scripts/check-workflow-order.py
