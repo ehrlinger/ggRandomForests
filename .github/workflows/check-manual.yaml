@@ -1,9 +1,9 @@
 # Builds the PDF manual (--as-cran, no --no-manual) so raw Unicode in .Rd
 # files (Greek letters, β̂, combining marks) is caught here rather than at
 # CRAN submission, where --no-manual would otherwise let it through in
-# silence. Runs on merge rather than every push because the manual build is
-# slow, and a check that makes every PR wait is one people learn to route
-# around.
+# silence. Runs on pushes to the default branch, not on pull requests,
+# because building the manual is slow and a check that makes every PR wait
+# is one people learn to route around.
 on:
   push:
     branches: [main]
@@ -11,9 +11,10 @@ on:
     types: [published]
   workflow_dispatch:
 
-name: check-manual.yaml
+name: Check manual
 
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   check-manual:
@@ -21,7 +22,6 @@ jobs:
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      NOT_CRAN: "true"
       R_KEEP_PKG_SOURCE: yes
       VDIFFR_RUN_TESTS: "false"
 
