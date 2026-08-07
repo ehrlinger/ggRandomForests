@@ -24,7 +24,10 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::lintr, any::cyclocomp, any::pak
+          # local::. installs the package itself, not just its dependencies.
+          # Without it object_usage_linter cannot resolve the package's own
+          # internals and reports every call to one as an undefined global.
+          extra-packages: any::lintr, any::cyclocomp, any::pak, local::.
           needs: lint
           cache-version: 2
 
