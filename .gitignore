@@ -53,7 +53,8 @@ vignettes/uvarpro_cache/
 vignettes/uvarpro_files/
 vignettes/uvarpro.html
 
-.claude
+.claude/*
+!.claude/house-style.md
 .positai
 
 # Brainstorm / visual-companion scratch

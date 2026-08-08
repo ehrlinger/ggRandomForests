@@ -1,0 +1,47 @@
+# Fails the build when .claude/house-style.md drifts from the vault sources
+# it was composed from. The artifact is generated; a hand edit or a stale
+# copy is the failure this check exists to make loud.
+name: house-style
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  house-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the house style composer
+        uses: actions/checkout@v4
+        with:
+          repository: ehrlinger/house-style
+          # Pinned to a tag, not the default branch: an in-progress change to
+          # the composer must not redden this repo's CI. The tag moves when the
+          # standard changes, which is exactly when every repo should start
+          # reporting drift until it recomposes.
+          ref: house-style-v1
+          path: .house-style-tools
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install composer dependencies
+        run: install.packages(c("yaml", "digest"))
+        shell: Rscript {0}
+
+      - name: Point the registry at this checkout
+        run: |
+          sed -i "s|path: ~/Documents/GitHub/ggRandomForests|path: $GITHUB_WORKSPACE|" \
+            .house-style-tools/repos.yml
+
+      - name: Verify the house style artifact is current
+        run: |
+          Rscript .house-style-tools/compose-house-style.R \
+            --check --repo ggRandomForests
