@@ -1,10 +1,10 @@
 <!--
   GENERATED FILE - DO NOT EDIT.
 
-  Composed by tools/house-style/compose-house-style.R in the
-  ehrlinger-personal repository. Edit the sources in the Obsidian vault
-  (memory/), then recompose. Editing this file directly will be reverted
-  by the next compose and flagged by --check.
+  Composed by compose-house-style.R in the ehrlinger/house-style
+  repository. Edit the sources in the Obsidian vault (memory/), then
+  recompose. Editing this file directly will be reverted by the next
+  compose and flagged by --check.
 
   repo:            ggRandomForests
   profile:         package-cran
@@ -13,7 +13,7 @@
     writing-voice.md               sha256:6ca5d2b7682a
     writing-reader-profile.md      sha256:179212de138c
     writing-context.md             sha256:87d5555936e1
-    r-package-structure.md         sha256:9761d9e8dc0b
+    r-package-structure.md         sha256:e64cb6f25dbd
 -->
 
 # House Style — ggRandomForests
@@ -742,7 +742,7 @@ Quarto pre-install. It is the weaker twin, not the complement it looks like.
 
 Every repo carrying a composed `.claude/house-style.md` also carries a CI job
 that recomposes from source and fails when the committed artifact disagrees.
-That job checks out the composer from `ehrlinger/ehrlinger-personal`, and it
+That job checks out the composer from `ehrlinger/house-style`, and it
 **pins `ref: house-style-v1`** rather than taking the default branch.
 
 The pin is a tag, not a commit SHA, and the distinction matters. That repo
