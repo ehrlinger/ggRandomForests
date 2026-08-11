@@ -132,7 +132,7 @@
 #' ## -------- pbc data (larger dataset -- skipped on CRAN)
 #' \donttest{
 #' data(pbc, package = "randomForestSRC")
-#' # For whatever reason, the age variable is in days; convert to years
+#' # Recode: binary columns to logical, low-cardinality columns to factors.
 #' for (ind in seq_len(dim(pbc)[2])) {
 #'   if (!is.factor(pbc[, ind])) {
 #'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {

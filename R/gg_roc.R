@@ -27,10 +27,11 @@
 #'   \code{\link[randomForest]{randomForest}} object. Only forests with
 #'   \code{family == "class"} (rfsrc) or \code{type == "classification"}
 #'   (randomForest) are supported.
-#' @param which_outcome Integer index or character name of the class to score.
-#'   For binary forests this is usually \code{1} or \code{2}; for multi-class
-#'   forests, any valid class index or level name. \code{which_outcome = "all"}
-#'   or \code{0} behaves differently by engine:
+#' @param which_outcome Index of the class to score: \code{1} or \code{2} for
+#'   a binary forest, any valid class index for a multi-class one. A character
+#'   level name is accepted by the \code{randomForest} method only; the
+#'   \code{rfsrc} method requires an integer index.
+#'   \code{which_outcome = "all"} or \code{0} behaves differently by engine:
 #'   \describe{
 #'     \item{\code{randomForest} method}{Returns a macro-averaged
 #'       one-vs-rest ROC computed over the per-class probabilities.}
@@ -59,6 +60,13 @@
 #'     \item{pct}{The probability threshold used for that row.}
 #'   }
 #'   Pass it to \code{\link{calc_auc}} for the area under the curve.
+#'
+#' @section Defaults across entry points:
+#' \code{plot(gg_roc(x))} and \code{plot(x)} on a raw multi-class forest do
+#' not draw the same figure. \code{gg_roc(x)} returns one curve, while
+#' \code{\link{plot.gg_roc}} handed a raw forest overlays one curve per class.
+#' Pass \code{which_outcome} explicitly when the distinction matters. Issue
+#' #72 tracks reconciling the two.
 #'
 #' @seealso \code{\link{plot.gg_roc}}, \code{\link{calc_roc}},
 #'   \code{\link{calc_auc}},

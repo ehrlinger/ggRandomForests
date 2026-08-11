@@ -17,8 +17,18 @@
 #'
 #' @param x A \code{\link{gg_roc}} object, or a raw
 #'   \code{\link[randomForestSRC]{rfsrc}} or
-#'   \code{\link[randomForest]{randomForest}} classification forest. Hand it a
-#'   forest and \code{\link{gg_roc}} is called for you.
+#'   \code{\link[randomForest]{randomForest}} classification forest.
+#'
+#'   Note that handing a raw forest to \code{plot} is not the same as
+#'   \code{plot(gg_roc(x))}. This method does not use \code{gg_roc}'s own
+#'   default for \code{which_outcome}: given a multi-class forest and
+#'   \code{which_outcome = NULL} it calls \code{\link{gg_roc}} once per class
+#'   and overlays the resulting one-vs-rest curves. \code{gg_roc(x)} on its
+#'   own instead returns a single curve -- a macro-average for
+#'   \code{randomForest}, or class 1 with a warning for \code{rfsrc}. The
+#'   three entry points therefore still disagree on what "all classes" means;
+#'   reconciling them is tracked under issue #72. Pass \code{which_outcome}
+#'   explicitly whenever the distinction matters.
 #' @param which_outcome Integer; for multi-class problems, the index of the
 #'   class to plot. When \code{NULL} (default) and the forest has more than two
 #'   classes, the curves for all classes are overlaid in one plot. For binary

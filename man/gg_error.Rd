@@ -138,10 +138,8 @@ gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)
 
 ## ------------- pbc data
-# Load a cached randomForestSRC object
-# We need to create this dataset
-data(pbc, package = "randomForestSRC",)
-# For whatever reason, the age variable is in days... makes no sense to me
+data(pbc, package = "randomForestSRC")
+# Recode: binary columns to logical, low-cardinality columns to factors.
 for (ind in seq_len(dim(pbc)[2])) {
  if (!is.factor(pbc[, ind])) {
    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {

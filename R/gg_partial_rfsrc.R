@@ -124,6 +124,15 @@ gg_partial_rfsrc <- function(rf_model,
                              partial.type = c("surv", "chf", "mort"),
                              cat_limit = 10,
                              n_eval = 25) {
+  # Validate before dereferencing. $xvar and $xvar.names on a non-forest give
+  # NULL, and the ncol()/sum() comparison below then fails with base R's
+  # "argument is of length zero" rather than naming the real problem.
+  if (!inherits(rf_model, "rfsrc")) {
+    stop("gg_partial_rfsrc: expected an 'rfsrc' object; ",
+         "got an object of class ", paste(class(rf_model), collapse = "/"), ".",
+         call. = FALSE)
+  }
+
   if (is.null(newx)) {
     newx <- rf_model$xvar
   }
