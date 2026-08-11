@@ -129,43 +129,11 @@
 #' gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt")
 #' plot(gg_dta)
 #'
-#' ## -------- pbc data (larger dataset -- skipped on CRAN)
-#' \donttest{
-#' data(pbc, package = "randomForestSRC")
-#' # Recode: binary columns to logical, low-cardinality columns to factors.
-#' for (ind in seq_len(dim(pbc)[2])) {
-#'   if (!is.factor(pbc[, ind])) {
-#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'       if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-#'         pbc[, ind] <- as.logical(pbc[, ind])
-#'       }
-#'     }
-#'   } else {
-#'     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-#'       if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-#'         pbc[, ind] <- as.logical(pbc[, ind])
-#'       }
-#'       if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-#'         pbc[, ind] <- as.logical(pbc[, ind])
-#'       }
-#'     }
-#'   }
-#'   if (!is.logical(pbc[, ind]) &
-#'     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-#'     pbc[, ind] <- factor(pbc[, ind])
-#'   }
-#' }
-#' # Convert age from days to years
-#' pbc$age <- pbc$age / 364.24
-#' pbc$years <- pbc$days / 364.24
-#' pbc <- pbc[, -which(colnames(pbc) == "days")]
-#' pbc$treatment <- as.numeric(pbc$treatment)
-#' pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
-#' pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
-#' pbc$treatment <- factor(pbc$treatment)
-#' # Remove test-set patients (those with no assigned treatment)
-#' dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+#' ## -------- pbc data (larger dataset -- forest fit skipped on CRAN)
+#' @example inst/examples/pbc-setup.R
+#' @examples
 #'
+#' \donttest{
 #' set.seed(42)
 #' rfsrc_pbc <- randomForestSRC::rfsrc(
 #'   Surv(years, status) ~ .,
