@@ -43,11 +43,16 @@ ggRandomForests v3.5.1
   is still tracked under #72.
 * The three ROC entry points still disagree about what "all classes" means --
   `gg_roc()` on a `randomForest` fit macro-averages, `gg_roc()` on an `rfsrc`
-  fit falls back to class 1, and `plot()` handed a raw multi-class forest
-  overlays one curve per class. That divergence is unchanged here, but
-  `?gg_roc` and `?plot.gg_roc` now say so instead of implying the paths agree.
-  `?gg_roc` also no longer advertises character class names on the `rfsrc`
-  path, which only the `randomForest` method accepts.
+  fit falls back to class 1, and a direct `plot.gg_roc()` call on a raw
+  multi-class forest overlays one curve per class. That divergence is
+  unchanged here, but `?gg_roc` and `?plot.gg_roc` now say so instead of
+  implying the paths agree. Both also correct a longer-standing claim: a raw
+  forest passed to plain `plot()` never reaches `plot.gg_roc()` at all,
+  because `randomForestSRC` and `randomForest` register their own `plot`
+  methods and S3 dispatch prefers them. That branch is reachable only by
+  naming the method outright. `?gg_roc` further stops advertising character
+  class names on the `rfsrc` path, which only the `randomForest` method
+  accepts.
 * `gg_partial_rfsrc()` validates `rf_model` before using it. It read `$xvar`
   and `$xvar.names` first, so a non-forest failed with base R's "argument is of
   length zero" rather than naming the problem. It now matches the error style

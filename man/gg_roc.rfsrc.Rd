@@ -64,11 +64,13 @@ specificity (1 minus the false positive rate).
 }
 \section{Defaults across entry points}{
 
-\code{plot(gg_roc(x))} and \code{plot(x)} on a raw multi-class forest do
-not draw the same figure. \code{gg_roc(x)} returns one curve, while
-\code{\link{plot.gg_roc}} handed a raw forest overlays one curve per class.
-Pass \code{which_outcome} explicitly when the distinction matters. Issue
-#72 tracks reconciling the two.
+\code{plot(gg_roc(x))} and a direct \code{plot.gg_roc(x)} call on a raw
+multi-class forest do not draw the same figure: \code{gg_roc(x)} returns a
+single curve, while \code{\link{plot.gg_roc}} given a raw forest overlays
+one curve per class. Plain \code{plot(x)} on a forest reaches neither, as
+it dispatches to the forest's own method in \code{randomForestSRC} or
+\code{randomForest}. Pass \code{which_outcome} explicitly when the
+distinction matters; issue #72 tracks reconciling the two.
 }
 
 \examples{
