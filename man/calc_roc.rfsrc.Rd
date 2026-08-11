@@ -49,7 +49,7 @@ not intended for use by the end user.
 }
 \examples{
 ## Taken from the gg_roc example
-rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 100)
 
 gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
   which_outcome = 1, oob = TRUE
