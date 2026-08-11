@@ -70,7 +70,7 @@ plot(gg_dta)
 ## RandomForest example
 rf_iris <- randomForest::randomForest(Species ~ .,
   data = iris,
-  tree.err = TRUE,
+  tree.err = TRUE
 )
 gg_dta <- gg_error(rf_iris)
 plot(gg_dta)
@@ -84,7 +84,7 @@ plot(gg_dta)
 ## ------------- airq data
 rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ .,
   data = airquality, ntree = 250,
-  na.action = "na.impute", tree.err = TRUE, block.size = 1,
+  na.action = "na.impute", tree.err = TRUE, block.size = 1
 )
 
 # Get a data.frame containing error rates
