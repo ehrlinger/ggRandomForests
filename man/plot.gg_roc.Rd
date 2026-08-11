@@ -9,8 +9,23 @@
 \arguments{
 \item{x}{A \code{\link{gg_roc}} object, or a raw
 \code{\link[randomForestSRC]{rfsrc}} or
-\code{\link[randomForest]{randomForest}} classification forest. Hand it a
-forest and \code{\link{gg_roc}} is called for you.}
+\code{\link[randomForest]{randomForest}} classification forest.
+
+A raw forest is accepted, but plain \code{plot(forest)} does not arrive
+here. Both \code{randomForestSRC} and \code{randomForest} register their
+own \code{plot} methods, so S3 dispatch sends a raw forest to
+\code{\link[randomForestSRC]{plot.rfsrc}} or \code{plot.randomForest}
+instead. This branch is reached only by naming the method outright, as
+\code{plot.gg_roc(forest)}.
+
+That branch also does not use \code{gg_roc}'s own default for
+\code{which_outcome}: given a multi-class forest and
+\code{which_outcome = NULL} it calls \code{\link{gg_roc}} once per class
+and overlays the one-vs-rest curves, where \code{gg_roc(x)} alone returns
+a single curve -- a macro-average for \code{randomForest}, or class 1
+with a warning for \code{rfsrc}. Prefer
+\code{plot(gg_roc(x, which_outcome))}, which is explicit about both the
+class and the engine. Issue #72 tracks reconciling the entry points.}
 
 \item{which_outcome}{Integer; for multi-class problems, the index of the
 class to plot. When \code{NULL} (default) and the forest has more than two

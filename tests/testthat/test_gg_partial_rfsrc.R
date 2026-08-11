@@ -53,3 +53,17 @@ test_that("gg_partial_rfsrc factor partial dependence matches ground truth", {
   expect_s3_class(g$categorical$x, "factor")
   expect_identical(levels(g$categorical$x), lv)
 })
+
+test_that("gg_partial_rfsrc rejects a non-rfsrc rf_model with a package error", {
+  # Previously $xvar / $xvar.names were dereferenced before any class check,
+  # so a bad model died with base R's "argument is of length zero".
+  expect_error(
+    gg_partial_rfsrc(list(), xvar.names = "x"),
+    "expected an 'rfsrc' object"
+  )
+  expect_error(
+    gg_partial_rfsrc(list(), xvar.names = "x"),
+    "class list"
+  )
+  expect_error(gg_partial_rfsrc(NULL), "expected an 'rfsrc' object")
+})
