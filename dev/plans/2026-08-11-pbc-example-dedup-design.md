@@ -188,6 +188,49 @@ surface, so it does not on its own warrant a minor bump. It should ride along
 with whatever minor cycle it lands in, accumulating under the current minor
 rather than inflating it.
 
+## Implementation notes
+
+Two deviations from the design surfaced during implementation. Both are
+recorded here rather than silently absorbed.
+
+### `data(..., envir = environment())`
+
+The design assumed the shared file could be sourced into a scoped environment
+for the test. It cannot as written: `data()` defaults to `envir = .GlobalEnv`,
+so sourcing it would have written `pbc` to the global environment from inside a
+test — itself a CRAN issue, and the very thing the existing test avoided with
+its `new.env()` dance.
+
+The shared file therefore passes `envir = environment()` explicitly. At the top
+level of an example this resolves to the global environment, so example
+behaviour is unchanged; under `sys.source(..., envir = env)` it resolves to the
+scoped environment. One line, correct in both contexts.
+
+### `&` → `&&`
+
+Consolidating the block moved it from roxygen comment text into a real `.R`
+file, so `lintr::lint_package()` sees it for the first time. It immediately
+flagged `vector_logic_linter` on:
+
+```r
+if (!is.logical(pbc[, ind]) &
+  length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+```
+
+Both operands are length-1 scalars, so `&` and `&&` are behaviourally identical
+here and the fix is safe. The defect has been present in all five copies since
+they were written and was invisible because lintr does not lint example prose.
+
+This is a second, unbudgeted benefit of consolidation: example code becomes
+lintable. It also means the shared file is now subject to the 0-lint CI gate,
+which is desirable but worth knowing.
+
+### Equivalence verification
+
+Before and after the `&&` change, the shared file was checked to produce objects
+`identical()` to those from the original inline block for all three of `pbc`,
+`dta_train`, and `pbc_test`. Both runs returned TRUE on all three.
+
 ## Definition of done
 
 1. `inst/examples/pbc-setup.R` exists and contains the block once, seeded from
