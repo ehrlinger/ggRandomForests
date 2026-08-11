@@ -41,7 +41,7 @@ are positive; the color distinction matters when a handful are not.
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 100)
 gg_dta <- gg_vimp(rfsrc_iris)
 plot(gg_dta)
 
@@ -49,7 +49,7 @@ plot(gg_dta)
 ## regression example
 ## ------------------------------------------------------------
 ## -------- air quality data
-rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality)
+rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality, ntree = 100)
 gg_dta <- gg_vimp(rfsrc_airq)
 plot(gg_dta)
 

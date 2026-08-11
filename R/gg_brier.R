@@ -91,7 +91,7 @@
 #' library(survival)   # Surv() must be on the search path for rfsrc()
 #' data(pbc, package = "randomForestSRC")
 #' rfsrc_pbc <- randomForestSRC::rfsrc(
-#'   Surv(days, status) ~ ., data = pbc, nsplit = 10
+#'   Surv(days, status) ~ ., data = pbc, nsplit = 10, ntree = 100
 #' )
 #' gg_dta <- gg_brier(rfsrc_pbc)
 #' plot(gg_dta)
@@ -100,7 +100,7 @@
 #'
 #' # Multi-model comparison: stack gg_brier outputs and plot with ggplot2.
 #' rf2 <- randomForestSRC::rfsrc(
-#'   Surv(days, status) ~ ., data = pbc, nsplit = 10, mtry = 4
+#'   Surv(days, status) ~ ., data = pbc, nsplit = 10, mtry = 4, ntree = 100
 #' )
 #' compare_dta <- dplyr::bind_rows(
 #'   dplyr::mutate(gg_brier(rfsrc_pbc), model = "default"),

@@ -25,7 +25,7 @@ This is a helper function for the \code{\link{gg_roc}} functions.
 \examples{
 ##
 ## Taken from the gg_roc example
-rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 100)
 
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)
 
