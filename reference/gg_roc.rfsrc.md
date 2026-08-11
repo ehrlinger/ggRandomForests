@@ -29,10 +29,11 @@ gg_roc(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
 
 - which_outcome:
 
-  Integer index or character name of the class to score. For binary
-  forests this is usually `1` or `2`; for multi-class forests, any valid
-  class index or level name. `which_outcome = "all"` or `0` behaves
-  differently by engine:
+  Index of the class to score: `1` or `2` for a binary forest, any valid
+  class index for a multi-class one. A character level name is accepted
+  by the `randomForest` method only; the `rfsrc` method requires an
+  integer index. `which_outcome = "all"` or `0` behaves differently by
+  engine:
 
   `randomForest` method
 
@@ -85,6 +86,17 @@ columns:
 Pass it to
 [`calc_auc`](https://ehrlinger.github.io/ggRandomForests/reference/calc_auc.md)
 for the area under the curve.
+
+## Defaults across entry points
+
+`plot(gg_roc(x))` and a direct `plot.gg_roc(x)` call on a raw
+multi-class forest do not draw the same figure: `gg_roc(x)` returns a
+single curve, while
+[`plot.gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
+given a raw forest overlays one curve per class. Plain `plot(x)` on a
+forest reaches neither, as it dispatches to the forest's own method in
+`randomForestSRC` or `randomForest`. Pass `which_outcome` explicitly
+when the distinction matters; issue \#72 tracks reconciling the two.
 
 ## See also
 

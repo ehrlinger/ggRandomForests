@@ -42,6 +42,64 @@
   dereferenced – and the fix belongs upstream (`kogalur/randomForestSRC`
   PR [\#478](https://github.com/ehrlinger/ggRandomForests/issues/478));
   `method = "rnd"` avoids it in the meantime.
+- [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  on an `rfsrc` forest now honors `which_outcome = 0`. The help page has
+  always documented `0` as the numeric spelling of `"all"`, but only the
+  string was normalized, so `0` fell through to `predicted[, 0]`. That
+  is a legal zero-column subset rather than an error, so the threshold
+  sweep ran on empty input and returned a two-row frame with no
+  `sens`/`spec` columns, which then broke
+  [`calc_auc()`](https://ehrlinger.github.io/ggRandomForests/reference/calc_auc.md).
+  Both spellings now take the same route: a warning, and a fallback to
+  class 1. The macro-average that will replace the fallback is still
+  tracked under
+  [\#72](https://github.com/ehrlinger/ggRandomForests/issues/72).
+- The three ROC entry points still disagree about what “all classes”
+  means –
+  [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  on a `randomForest` fit macro-averages,
+  [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  on an `rfsrc` fit falls back to class 1, and a direct
+  [`plot.gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
+  call on a raw multi-class forest overlays one curve per class. That
+  divergence is unchanged here, but
+  [`?gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  and
+  [`?plot.gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
+  now say so instead of implying the paths agree. Both also correct a
+  longer-standing claim: a raw forest passed to plain
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) never reaches
+  [`plot.gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.md)
+  at all, because `randomForestSRC` and `randomForest` register their
+  own `plot` methods and S3 dispatch prefers them. That branch is
+  reachable only by naming the method outright.
+  [`?gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  further stops advertising character class names on the `rfsrc` path,
+  which only the `randomForest` method accepts.
+- [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  validates `rf_model` before using it. It read `$xvar` and
+  `$xvar.names` first, so a non-forest failed with base R’s “argument is
+  of length zero” rather than naming the problem. It now matches the
+  error style already used by
+  [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md),
+  [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
+  [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
+  and
+  [`gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
+- The `pbc` examples on
+  [`?gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md),
+  [`?plot.gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.md),
+  [`?gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+  and
+  [`?plot.gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md)
+  lost their editorial asides and a stray trailing comma in the
+  [`data()`](https://rdrr.io/r/utils/data.html) call. The munging block
+  itself is still duplicated across those pages; consolidating it is
+  deferred.
+- `tests/testthat/test_lint.R` runs again, wrapped in `skip_on_cran()`.
+  It had been commented out entirely, so the suite enforced nothing
+  about style locally even though CI kept its own lint job. The guard
+  keeps it off the `R CMD check` clock.
 
 ## ggRandomForests v3.5.0
 

@@ -92,17 +92,70 @@ vignette("uvarpro", package = "ggRandomForests")
 
 ## Function reference
 
+Grouped by what you are trying to look at. The first column is the
+function you call, the second is what you hand it.
+
+### The forest itself
+
 | Function | Input | What you get |
 |----|----|----|
 | [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md) | `rfsrc` / `randomForest` | OOB error vs. number of trees |
 | [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md) | `rfsrc` / `randomForest` | Variable importance ranking |
 | [`gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md) | `rfsrc` / `randomForest` | Predicted vs. observed values |
 | [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md) | `rfsrc` / `randomForest` | Marginal dependence data frame |
+
+### Partial dependence
+
+| Function | Input | What you get |
+|----|----|----|
 | [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md) | `plot.variable` output | Partial dependence (continuous + categorical) |
 | [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md) | `rfsrc` model | Partial dependence via `partial.rfsrc` |
-| [`gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md) | `rfsrc` survival forest | Kaplan–Meier / Nelson–Aalen estimates |
-| [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md) | `rfsrc` / `randomForest` (class) | ROC curve data |
+| [`surv_partial.rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.md) | `rfsrc` survival forest | Survival partial dependence, one or more predictors |
+| [`quantile_pts()`](https://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md) | numeric vector | Quantile cut points for coplot panels |
+
+### Survival
+
+| Function | Input | What you get |
+|----|----|----|
+| [`gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.md) | `rfsrc` survival forest, or a data frame | Kaplan–Meier / Nelson–Aalen estimates |
 | [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md) | `rfsrc` (survival) | Time-resolved Brier score and CRPS |
+| [`kaplan()`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md) | data frame + interval/censor columns | Nonparametric Kaplan–Meier estimate |
+| [`nelson()`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md) | data frame + interval/censor columns | Nonparametric Nelson–Aalen estimate |
+
+### Classification and ROC
+
+| Function | Input | What you get |
+|----|----|----|
+| [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md) | `rfsrc` / `randomForest` (class) | ROC curve data |
+| [`calc_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/calc_roc.rfsrc.md) | `rfsrc` / `randomForest` (class) | The sensitivity/specificity sweep behind [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md) |
+| [`calc_auc()`](https://ehrlinger.github.io/ggRandomForests/reference/calc_auc.md) | `gg_roc` object | Area under the curve |
+
+### varPro — variable priority
+
+These read a `varPro` fit rather than a forest. `varpro()` is the
+supervised fit; `uvarpro()` is the unsupervised one, which needs no
+outcome.
+
+| Function | Input | What you get |
+|----|----|----|
+| [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md) | `varpro` fit | Release-rule variable importance |
+| [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md) | `varpro` fit | Per-variable lasso-beta importance |
+| [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md) | `varpro` fit | Individual (local) variable importance |
+| [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md) | `varpro` fit | Partial dependence (alias: [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)) |
+| [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md) | `isopro` fit | Isolation-forest anomaly scores |
+| [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md) | `uvarpro` fit | Variable dependency graph |
+| [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md) | `uvarpro` fit | Per-variable lasso-beta importance |
+| [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md) | `uvarpro` fit | Signal-variable detection |
+| [`varpro_feature_names()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.md) | character vector | Original names behind one-hot encoded features |
+
+### SHAP
+
+| Function | Input | What you get |
+|----|----|----|
+| [`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md) | `rfsrc` / `randomForest` | Shapley additive explanation values |
+| [`shap_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_importance.md) | `gg_shap` object | Global importance bar chart |
+| [`shap_beeswarm()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_beeswarm.md) | `gg_shap` object | Beeswarm summary plot |
+| [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md) | `gg_shap` object | Dependence plot for one predictor |
 
 Each `gg_*` function has a matching
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) S3 method that
@@ -140,6 +193,22 @@ entirely and build the figure from the tidy data yourself.
 See [NEWS.md](https://ehrlinger.github.io/ggRandomForests/NEWS.md) for
 the full changelog. Recent highlights:
 
+- **v3.5.1**
+  [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  on an `rfsrc` forest now honors the documented `which_outcome = 0`,
+  which had been returning an unusable two-row object;
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  rejects a non-forest with a real error instead of “argument is of
+  length zero”. Also a test-only fix for the `gcc-UBSAN` report filed
+  against 3.5.0.
+- **v3.5.0** varPro fixes:
+  [`plot.gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md)
+  no longer draws a phantom “NA” category,
+  [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  warns when you name a variable the fit cannot reach, and
+  `scale = "chf"` now honors `xvar.names` instead of computing every
+  variable. Vignette figures render with `ragg`, which cut the source
+  tarball from 4.7 MB to 2.3 MB.
 - **v3.4.0** Unsupervised varPro wrappers
   ([`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md),
   [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md))

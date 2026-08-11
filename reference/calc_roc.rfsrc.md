@@ -29,8 +29,10 @@ calc_roc(object, dta, which_outcome = "all", oob = TRUE, ...)
 - which_outcome:
 
   Integer index of the class for which the ROC curve is computed (e.g.
-  `1` for the first class, `2` for the second). Use `"all"` to request
-  all classes (currently falls back to class 1 with a warning).
+  `1` for the first class, `2` for the second). Use `"all"`, or its
+  numeric spelling `0`, to request all classes. The `randomForest`
+  method returns a macro-averaged one-vs-rest curve; the `rfsrc` method
+  warns and falls back to class 1 (see \#72).
 
 - oob:
 

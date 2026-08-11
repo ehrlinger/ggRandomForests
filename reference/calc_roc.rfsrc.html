@@ -88,8 +88,10 @@ labels, one per observation. Typically <code>object$yvar</code> for rfsrc or
 <dt id="arg-which-outcome">which_outcome<a class="anchor" aria-label="anchor" href="#arg-which-outcome"></a></dt>
 <dd><p>Integer index of the class for which the ROC curve is
 computed (e.g. <code>1</code> for the first class, <code>2</code> for the second).
-Use <code>"all"</code> to request all classes (currently falls back to class 1
-with a warning).</p></dd>
+Use <code>"all"</code>, or its numeric spelling <code>0</code>, to request all
+classes. The <code>randomForest</code> method returns a macro-averaged
+one-vs-rest curve; the <code>rfsrc</code> method warns and falls back to
+class 1 (see #72).</p></dd>
 
 
 <dt id="arg-oob">oob<a class="anchor" aria-label="anchor" href="#arg-oob"></a></dt>

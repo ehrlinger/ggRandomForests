@@ -20,9 +20,24 @@ plot(x, which_outcome = NULL, ..., panel = c("overlay", "facet"))
   object, or a raw
   [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) or
   [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
-  classification forest. Hand it a forest and
+  classification forest.
+
+  A raw forest is accepted, but plain `plot(forest)` does not arrive
+  here. Both `randomForestSRC` and `randomForest` register their own
+  `plot` methods, so S3 dispatch sends a raw forest to
+  [`plot.rfsrc`](https://www.randomforestsrc.org//reference/plot.rfsrc.html)
+  or `plot.randomForest` instead. This branch is reached only by naming
+  the method outright, as `plot.gg_roc(forest)`.
+
+  That branch also does not use `gg_roc`'s own default for
+  `which_outcome`: given a multi-class forest and `which_outcome = NULL`
+  it calls
   [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
-  is called for you.
+  once per class and overlays the one-vs-rest curves, where `gg_roc(x)`
+  alone returns a single curve – a macro-average for `randomForest`, or
+  class 1 with a warning for `rfsrc`. Prefer
+  `plot(gg_roc(x, which_outcome))`, which is explicit about both the
+  class and the engine. Issue \#72 tracks reconciling the entry points.
 
 - which_outcome:
 

@@ -75,8 +75,21 @@
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>A <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> object, or a raw
 <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> or
-<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code> classification forest. Hand it a
-forest and <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> is called for you.</p></dd>
+<code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></code> classification forest.</p>
+<p>A raw forest is accepted, but plain <code>plot(forest)</code> does not arrive
+here. Both <code>randomForestSRC</code> and <code>randomForest</code> register their
+own <code>plot</code> methods, so S3 dispatch sends a raw forest to
+<code><a href="https://www.randomforestsrc.org//reference/plot.rfsrc.html" class="external-link">plot.rfsrc</a></code> or <code>plot.randomForest</code>
+instead. This branch is reached only by naming the method outright, as
+<code>plot.gg_roc(forest)</code>.</p>
+<p>That branch also does not use <code>gg_roc</code>'s own default for
+<code>which_outcome</code>: given a multi-class forest and
+<code>which_outcome = NULL</code> it calls <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> once per class
+and overlays the one-vs-rest curves, where <code>gg_roc(x)</code> alone returns
+a single curve – a macro-average for <code>randomForest</code>, or class 1
+with a warning for <code>rfsrc</code>. Prefer
+<code>plot(gg_roc(x, which_outcome))</code>, which is explicit about both the
+class and the engine. Issue #72 tracks reconciling the entry points.</p></dd>
 
 
 <dt id="arg-which-outcome">which_outcome<a class="anchor" aria-label="anchor" href="#arg-which-outcome"></a></dt>

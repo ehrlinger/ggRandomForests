@@ -101,10 +101,11 @@ specificity (1 minus the false positive rate).</p>
 
 
 <dt id="arg-which-outcome">which_outcome<a class="anchor" aria-label="anchor" href="#arg-which-outcome"></a></dt>
-<dd><p>Integer index or character name of the class to score.
-For binary forests this is usually <code>1</code> or <code>2</code>; for multi-class
-forests, any valid class index or level name. <code>which_outcome = "all"</code>
-or <code>0</code> behaves differently by engine:</p><dl><dt><code>randomForest</code> method</dt>
+<dd><p>Index of the class to score: <code>1</code> or <code>2</code> for
+a binary forest, any valid class index for a multi-class one. A character
+level name is accepted by the <code>randomForest</code> method only; the
+<code>rfsrc</code> method requires an integer index.
+<code>which_outcome = "all"</code> or <code>0</code> behaves differently by engine:</p><dl><dt><code>randomForest</code> method</dt>
 <dd><p>Returns a macro-averaged
 one-vs-rest ROC computed over the per-class probabilities.</p></dd>
 
@@ -152,6 +153,18 @@ threshold, with columns:</p><dl><dt>sens</dt>
 
 
 </dl><p>Pass it to <code><a href="calc_auc.html">calc_auc</a></code> for the area under the curve.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="defaults-across-entry-points">Defaults across entry points<a class="anchor" aria-label="anchor" href="#defaults-across-entry-points"></a></h2>
+
+
+<p><code>plot(gg_roc(x))</code> and a direct <code>plot.gg_roc(x)</code> call on a raw
+multi-class forest do not draw the same figure: <code>gg_roc(x)</code> returns a
+single curve, while <code><a href="plot.gg_roc.html">plot.gg_roc</a></code> given a raw forest overlays
+one curve per class. Plain <code>plot(x)</code> on a forest reaches neither, as
+it dispatches to the forest's own method in <code>randomForestSRC</code> or
+<code>randomForest</code>. Pass <code>which_outcome</code> explicitly when the
+distinction matters; issue #72 tracks reconciling the two.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

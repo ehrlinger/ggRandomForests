@@ -138,6 +138,10 @@
 <div class="section level2">
 <h2 id="function-reference">Function reference<a class="anchor" aria-label="anchor" href="#function-reference"></a>
 </h2>
+<p>Grouped by what you are trying to look at. The first column is the function you call, the second is what you hand it.</p>
+<div class="section level3">
+<h3 id="the-forest-itself">The forest itself<a class="anchor" aria-label="anchor" href="#the-forest-itself"></a>
+</h3>
 <table class="table">
 <colgroup>
 <col width="33%">
@@ -178,6 +182,24 @@
 </td>
 <td>Marginal dependence data frame</td>
 </tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="partial-dependence">Partial dependence<a class="anchor" aria-label="anchor" href="#partial-dependence"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Input</th>
+<th>What you get</th>
+</tr></thead>
+<tbody>
 <tr>
 <td><code><a href="reference/gg_partial.html">gg_partial()</a></code></td>
 <td>
@@ -192,16 +214,39 @@
 </td>
 </tr>
 <tr>
-<td><code><a href="reference/gg_survival.html">gg_survival()</a></code></td>
+<td><code><a href="reference/surv_partial.rfsrc.html">surv_partial.rfsrc()</a></code></td>
 <td>
 <code>rfsrc</code> survival forest</td>
-<td>Kaplan–Meier / Nelson–Aalen estimates</td>
+<td>Survival partial dependence, one or more predictors</td>
 </tr>
 <tr>
-<td><code><a href="reference/gg_roc.rfsrc.html">gg_roc()</a></code></td>
+<td><code><a href="reference/quantile_pts.html">quantile_pts()</a></code></td>
+<td>numeric vector</td>
+<td>Quantile cut points for coplot panels</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="survival">Survival<a class="anchor" aria-label="anchor" href="#survival"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Input</th>
+<th>What you get</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/gg_survival.html">gg_survival()</a></code></td>
 <td>
-<code>rfsrc</code> / <code>randomForest</code> (class)</td>
-<td>ROC curve data</td>
+<code>rfsrc</code> survival forest, or a data frame</td>
+<td>Kaplan–Meier / Nelson–Aalen estimates</td>
 </tr>
 <tr>
 <td><code><a href="reference/gg_brier.html">gg_brier()</a></code></td>
@@ -209,9 +254,172 @@
 <code>rfsrc</code> (survival)</td>
 <td>Time-resolved Brier score and CRPS</td>
 </tr>
+<tr>
+<td><code><a href="reference/kaplan.html">kaplan()</a></code></td>
+<td>data frame + interval/censor columns</td>
+<td>Nonparametric Kaplan–Meier estimate</td>
+</tr>
+<tr>
+<td><code><a href="reference/nelson.html">nelson()</a></code></td>
+<td>data frame + interval/censor columns</td>
+<td>Nonparametric Nelson–Aalen estimate</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="classification-and-roc">Classification and ROC<a class="anchor" aria-label="anchor" href="#classification-and-roc"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Input</th>
+<th>What you get</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/gg_roc.rfsrc.html">gg_roc()</a></code></td>
+<td>
+<code>rfsrc</code> / <code>randomForest</code> (class)</td>
+<td>ROC curve data</td>
+</tr>
+<tr>
+<td><code><a href="reference/calc_roc.rfsrc.html">calc_roc()</a></code></td>
+<td>
+<code>rfsrc</code> / <code>randomForest</code> (class)</td>
+<td>The sensitivity/specificity sweep behind <code><a href="reference/gg_roc.rfsrc.html">gg_roc()</a></code>
+</td>
+</tr>
+<tr>
+<td><code><a href="reference/calc_auc.html">calc_auc()</a></code></td>
+<td>
+<code>gg_roc</code> object</td>
+<td>Area under the curve</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="varpro--variable-priority">varPro — variable priority<a class="anchor" aria-label="anchor" href="#varpro--variable-priority"></a>
+</h3>
+<p>These read a <code>varPro</code> fit rather than a forest. <code>varpro()</code> is the supervised fit; <code>uvarpro()</code> is the unsupervised one, which needs no outcome.</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Input</th>
+<th>What you get</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/gg_varpro.html">gg_varpro()</a></code></td>
+<td>
+<code>varpro</code> fit</td>
+<td>Release-rule variable importance</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_beta_varpro.html">gg_beta_varpro()</a></code></td>
+<td>
+<code>varpro</code> fit</td>
+<td>Per-variable lasso-beta importance</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_ivarpro.html">gg_ivarpro()</a></code></td>
+<td>
+<code>varpro</code> fit</td>
+<td>Individual (local) variable importance</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_partial_varpro.html">gg_partial_varpro()</a></code></td>
+<td>
+<code>varpro</code> fit</td>
+<td>Partial dependence (alias: <code><a href="reference/gg_partial_varpro.html">gg_partialpro()</a></code>)</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_isopro.html">gg_isopro()</a></code></td>
+<td>
+<code>isopro</code> fit</td>
+<td>Isolation-forest anomaly scores</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_udependent.html">gg_udependent()</a></code></td>
+<td>
+<code>uvarpro</code> fit</td>
+<td>Variable dependency graph</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_beta_uvarpro.html">gg_beta_uvarpro()</a></code></td>
+<td>
+<code>uvarpro</code> fit</td>
+<td>Per-variable lasso-beta importance</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_sdependent.html">gg_sdependent()</a></code></td>
+<td>
+<code>uvarpro</code> fit</td>
+<td>Signal-variable detection</td>
+</tr>
+<tr>
+<td><code><a href="reference/varpro_feature_names.html">varpro_feature_names()</a></code></td>
+<td>character vector</td>
+<td>Original names behind one-hot encoded features</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="shap">SHAP<a class="anchor" aria-label="anchor" href="#shap"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Input</th>
+<th>What you get</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/gg_shap.html">gg_shap()</a></code></td>
+<td>
+<code>rfsrc</code> / <code>randomForest</code>
+</td>
+<td>Shapley additive explanation values</td>
+</tr>
+<tr>
+<td><code><a href="reference/shap_importance.html">shap_importance()</a></code></td>
+<td>
+<code>gg_shap</code> object</td>
+<td>Global importance bar chart</td>
+</tr>
+<tr>
+<td><code><a href="reference/shap_beeswarm.html">shap_beeswarm()</a></code></td>
+<td>
+<code>gg_shap</code> object</td>
+<td>Beeswarm summary plot</td>
+</tr>
+<tr>
+<td><code><a href="reference/shap_dependence.html">shap_dependence()</a></code></td>
+<td>
+<code>gg_shap</code> object</td>
+<td>Dependence plot for one predictor</td>
+</tr>
 </tbody>
 </table>
 <p>Each <code>gg_*</code> function has a matching <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> S3 method that hands back a single plottable object: a <code>ggplot</code> you extend with <code>+</code>, or a <code>patchwork</code> composite for the multi-panel methods. Every <code>gg_*</code> object also has <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> methods: <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows a short header at the REPL rather than dumping every row (use <code><a href="https://rdrr.io/r/utils/head.html" class="external-link">head()</a></code> when you want the rows), and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> gives you a diagnostics object you can print or keep.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="why-ggrandomforests">Why ggRandomForests?<a class="anchor" aria-label="anchor" href="#why-ggrandomforests"></a>
@@ -225,6 +433,10 @@
 </h2>
 <p>See <a href="NEWS.html">NEWS.md</a> for the full changelog. Recent highlights:</p>
 <ul>
+<li>
+<strong>v3.5.1</strong> <code><a href="reference/gg_roc.rfsrc.html">gg_roc()</a></code> on an <code>rfsrc</code> forest now honors the documented <code>which_outcome = 0</code>, which had been returning an unusable two-row object; <code><a href="reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> rejects a non-forest with a real error instead of “argument is of length zero”. Also a test-only fix for the <code>gcc-UBSAN</code> report filed against 3.5.0.</li>
+<li>
+<strong>v3.5.0</strong> varPro fixes: <code><a href="reference/plot.gg_varpro.html">plot.gg_varpro()</a></code> no longer draws a phantom “NA” category, <code><a href="reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> warns when you name a variable the fit cannot reach, and <code>scale = "chf"</code> now honors <code>xvar.names</code> instead of computing every variable. Vignette figures render with <code>ragg</code>, which cut the source tarball from 4.7 MB to 2.3 MB.</li>
 <li>
 <strong>v3.4.0</strong> Unsupervised varPro wrappers (<code><a href="reference/gg_beta_uvarpro.html">gg_beta_uvarpro()</a></code>, <code><a href="reference/gg_sdependent.html">gg_sdependent()</a></code>) with their own vignette; <code><a href="reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> now handles factor predictors correctly.</li>
 <li>
