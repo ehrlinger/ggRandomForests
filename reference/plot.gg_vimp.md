@@ -71,7 +71,7 @@ Survival, Regression and Classification. R package version \>= 3.4.0.
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 100)
 gg_dta <- gg_vimp(rfsrc_iris)
 #> Warning: rfsrc object does not contain VIMP information. Calculating...
 plot(gg_dta)
@@ -81,7 +81,7 @@ plot(gg_dta)
 ## regression example
 ## ------------------------------------------------------------
 ## -------- air quality data
-rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality)
+rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality, ntree = 100)
 gg_dta <- gg_vimp(rfsrc_airq)
 #> Warning: rfsrc object does not contain VIMP information. Calculating...
 plot(gg_dta)

@@ -64,7 +64,7 @@ driving the average.
 library(survival)   # Surv() must be on the search path for rfsrc()
 data(pbc, package = "randomForestSRC")
 rf <- randomForestSRC::rfsrc(Surv(days, status) ~ ., data = pbc,
-                             nsplit = 10)
+                             nsplit = 10, ntree = 100)
 gg_dta <- gg_brier(rf)
 plot(gg_dta)
 

@@ -206,6 +206,7 @@ set.seed(42)
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(years, status) ~ .,
   dta_train,
+  ntree = 100,
   nsplit = 10,
   na.action = "na.impute",
   forest = TRUE,

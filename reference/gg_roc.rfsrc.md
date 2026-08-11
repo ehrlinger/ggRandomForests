@@ -113,7 +113,7 @@ when the distinction matters; issue \#72 tracks reconciling the two.
 ## classification example
 ## ------------------------------------------------------------
 ## -------- iris data
-rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 100)
 
 # ROC for setosa
 gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)

@@ -89,7 +89,7 @@ Survival, Regression and Classification. R package version \>= 3.4.0.
 ## ------------- iris data
 ## You can build a randomForest
 rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris,
-  tree.err = TRUE, block.size = 1)
+  ntree = 250, tree.err = TRUE, block.size = 1)
 
 # Get a data.frame containing error rates
 gg_dta <- gg_error(rfsrc_iris)
@@ -101,7 +101,7 @@ plot(gg_dta)
 ## RandomForest example
 rf_iris <- randomForest::randomForest(Species ~ .,
   data = iris,
-  tree.err = TRUE,
+  tree.err = TRUE
 )
 gg_dta <- gg_error(rf_iris)
 plot(gg_dta)
@@ -116,8 +116,8 @@ plot(gg_dta)
 
 ## ------------- airq data
 rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ .,
-  data = airquality,
-  na.action = "na.impute", tree.err = TRUE, block.size = 1,
+  data = airquality, ntree = 250,
+  na.action = "na.impute", tree.err = TRUE, block.size = 1
 )
 
 # Get a data.frame containing error rates
@@ -134,6 +134,7 @@ if (requireNamespace("MASS", quietly = TRUE)) {
   Boston$chas <- as.logical(Boston$chas)
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ .,
     data = Boston,
+    ntree = 250,
     forest = TRUE,
     importance = TRUE,
     tree.err = TRUE,
@@ -151,7 +152,7 @@ if (requireNamespace("MASS", quietly = TRUE)) {
 
 ## ------------- mtcars data
 rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars,
-  tree.err = TRUE, block.size = 1)
+  ntree = 250, tree.err = TRUE, block.size = 1)
 
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_mtcars)
@@ -168,7 +169,7 @@ plot(gg_dta)
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
 rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
-                       tree.err = TRUE, block.size = 1)
+                       ntree = 250, tree.err = TRUE, block.size = 1)
 
 gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)
@@ -216,6 +217,7 @@ pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(years, status) ~ .,
  dta_train,
+ ntree = 250,
  nsplit = 10,
  na.action = "na.impute",
  tree.err = TRUE,
