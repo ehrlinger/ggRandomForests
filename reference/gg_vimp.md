@@ -178,7 +178,7 @@ plot(gg_dta)
 
 
 ## -------- pbc data
-data(pbc, package = "randomForestSRC")
+data(pbc, package = "randomForestSRC", envir = environment())
 # Recode: binary columns to logical, low-cardinality columns to factors.
 for (ind in seq_len(dim(pbc)[2])) {
   if (!is.factor(pbc[, ind])) {
@@ -197,22 +197,21 @@ for (ind in seq_len(dim(pbc)[2])) {
       }
     }
   }
-  if (!is.logical(pbc[, ind]) &
+  if (!is.logical(pbc[, ind]) &&
     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
     pbc[, ind] <- factor(pbc[, ind])
   }
 }
-# Convert age to years
+# Convert age from days to years
 pbc$age <- pbc$age / 364.24
-
 pbc$years <- pbc$days / 364.24
 pbc <- pbc[, -which(colnames(pbc) == "days")]
 pbc$treatment <- as.numeric(pbc$treatment)
 pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
 pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
 pbc$treatment <- factor(pbc$treatment)
+# Split into a training set (assigned treatment) and a test set (not assigned)
 dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-# Create a test set from the remaining patients
 pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 
 # ========

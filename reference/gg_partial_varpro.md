@@ -372,7 +372,7 @@ ncol(vp$x)                    # predictors in the data
 length(vp$xvar.names)         # what the fit reaches
 #> [1] 6
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
-#> [1] 4
+#> [1] 5
 
 ## Say these came from an rfsrc VIMP ranking.  Check what the fit cannot
 ## reach before you spend the computation -- this is the habit worth having.
