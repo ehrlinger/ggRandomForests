@@ -1,7 +1,7 @@
 # De-duplicating the `pbc` example setup block
 
 **Date:** 2026-08-11
-**Status:** Approved, implementation deferred (see Sequencing)
+**Status:** Implemented (see Sequencing for the blocker that gated it)
 **Origin:** Item 5 of the Codex review of 3.5.1
 
 ## Problem
@@ -173,13 +173,15 @@ Explicitly **not** included, per surgical-changes:
 
 ## Sequencing
 
-`fix/codex-review-3.5.1` is **not merged into `main`**. This worktree branched
-from `8348409d`, so all four editorial comments are still present here, and that
-branch edits all four of the same files.
+**Resolved.** At the time this design was written, `fix/codex-review-3.5.1` was
+not yet merged into `main`. It edits all four of the same files, so starting
+then would have guaranteed a four-file conflict and risked reintroducing the
+editorial comments that branch removes. Implementation was deferred on that
+basis.
 
-**Implementation is deferred until `fix/codex-review-3.5.1` lands on `main`.**
-Starting now would guarantee a four-file conflict and risk reintroducing the
-comments that branch removes.
+That branch merged as PR #185 (`b32202a1`). The work was rebased onto the
+merged `main` and implemented from the post-merge text, so the shared file was
+seeded with the cleaned-up comments rather than re-cleaning them a second time.
 
 ## Versioning
 
@@ -233,14 +235,17 @@ Before and after the `&&` change, the shared file was checked to produce objects
 
 ## Definition of done
 
+All eight criteria met; recorded results follow each.
+
 1. `inst/examples/pbc-setup.R` exists and contains the block once, seeded from
-   the post-`9e029b6f` text.
+   the post-`9e029b6f` text. — **Met.**
 2. All four roxygen blocks reference it via `@example`; no literal copy remains
-   in `R/`.
+   in `R/`. — **Met.** `grep 364.24 R/` returns nothing outside
+   `plot.gg_variable.R`, which is out of scope.
 3. `tests/testthat/test_gg_vimp.R` sources the shared file rather than inlining
-   the block.
+   the block. — **Met**, via `sys.source(..., envir = new.env())`.
 4. `\donttest{` in `plot.gg_rfsrc.R` opens after the shared block, and roxygen
-   reports no brace-balance errors.
+   reports no brace-balance errors. — **Met.**
 5. `devtools::document()` regenerates the four `.Rd` files. Reviewing
    `git diff man/*.Rd`, the only changes are:
    - comment/whitespace normalisation, as the three drifted variants converge on
@@ -249,9 +254,18 @@ Before and after the `&&` change, the shared file was checked to produce objects
      contract);
    - the relocated `\donttest{` in `plot.gg_rfsrc.Rd`.
 
-   No change to the munging logic itself in any of the four.
-6. `Rscript -e 'lintr::lint_package()'` reports 0 lints.
+   No change to the munging logic itself in any of the four. — **Met, plus two
+   changes this list did not anticipate**: `envir = environment()` and `&` →
+   `&&`, both documented under Implementation notes.
+6. `Rscript -e 'lintr::lint_package()'` reports 0 lints. — **Met**, after the
+   `&&` fix.
 7. `NOT_CRAN=true VDIFFR_RUN_TESTS=true Rscript -e 'devtools::test()'` passes,
-   with `test_gg_vimp.R` genuinely running rather than skipping.
+   with `test_gg_vimp.R` genuinely running rather than skipping. — **Met.**
+   1468 pass / 0 fail; the `gg_vimp` survival test runs at 0 skips. Snapshots
+   went 40 → 49, all additions, none pruned.
 8. `R CMD check --as-cran` with the manual, built from a clean `git archive`
-   export, is 0/0/0 and the examples step runs clean.
+   export, is 0/0/0 and the examples step runs clean. — **Met with one
+   qualification.** 0 errors, 0 warnings, 1 NOTE — the standard CRAN
+   incoming-feasibility note (`Number of updates in past 6 months: 7`), which is
+   about release cadence, not this change, and cannot be cleared locally.
+   Timings: examples 16s, `--run-donttest` 36s, tests 30s, vignettes 48s.
