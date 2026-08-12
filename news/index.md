@@ -94,8 +94,14 @@
   [`?plot.gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md)
   lost their editorial asides and a stray trailing comma in the
   [`data()`](https://rdrr.io/r/utils/data.html) call. The munging block
-  itself is still duplicated across those pages; consolidating it is
-  deferred.
+  that all four repeated is now a single shared
+  `inst/examples/pbc-setup.R`, pulled in with `@example`, so the four
+  pages cannot drift apart.
+- Every `rfsrc` fit in an example now names an explicit `ntree`. The
+  examples had been taking
+  [`rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)’s
+  500-tree default, which is far more forest than an illustration needs;
+  bounding them took the local `R CMD check` total from 4m44s to 3m16s.
 - `tests/testthat/test_lint.R` runs again, wrapped in `skip_on_cran()`.
   It had been commented out entirely, so the suite enforced nothing
   about style locally even though CI kept its own lint job. The guard
