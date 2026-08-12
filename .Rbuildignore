@@ -59,3 +59,5 @@ framed.sty
 # Stray default-device plot artefact (created by plotting with no open device),
 # at the root or under tests/ — never ship it.
 Rplots\.pdf$
+^\.Renviron$
+^\.githooks$
