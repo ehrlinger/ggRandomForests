@@ -1,0 +1,58 @@
+#!/bin/sh
+# Block commits that stage deletions of vdiffr snapshot baselines.
+#
+# Running the test suite without VDIFFR_RUN_TESTS=true makes testthat prune
+# every SVG under tests/testthat/_snaps/. A pruned working tree is recoverable;
+# a *committed* prune is what actually costs baselines, so this hook guards the
+# commit rather than the test run.
+#
+# Enable once per clone:
+#   git config core.hooksPath .githooks
+#
+# Deliberately removing a baseline (a test was retired, a plot was dropped):
+#   ALLOW_SNAPSHOT_DELETION=1 git commit ...
+
+SNAP_PATH='tests/testthat/_snaps'
+
+deleted=$(git diff --cached --name-only --diff-filter=D -- "$SNAP_PATH")
+
+if [ -z "$deleted" ]; then
+    exit 0
+fi
+
+count=$(printf '%s\n' "$deleted" | grep -c .)
+
+if [ "${ALLOW_SNAPSHOT_DELETION:-}" = "1" ]; then
+    printf 'pre-commit: allowing %s staged snapshot deletion(s) (ALLOW_SNAPSHOT_DELETION=1).\n' "$count"
+    exit 0
+fi
+
+cat >&2 <<EOF
+
+pre-commit: BLOCKED — this commit deletes $count vdiffr snapshot baseline(s).
+
+$(printf '%s\n' "$deleted" | sed 's/^/    /')
+
+The usual cause is a test run without the guard, which makes testthat treat
+the baselines as unused and delete them. It is almost never an intended change.
+
+To undo the deletions and keep your other work:
+
+    git restore --staged --worktree -- $SNAP_PATH
+
+Then re-run the suite with the guard set:
+
+    NOT_CRAN=true VDIFFR_RUN_TESTS=true Rscript -e 'devtools::test()'
+
+If a measurement run genuinely needs the guard off, run it against a throwaway
+export instead of this checkout:
+
+    git archive HEAD | tar -x -C "\$TMPDIR/tree" && cd "\$TMPDIR/tree"
+
+If you really are retiring these baselines, say so explicitly:
+
+    ALLOW_SNAPSHOT_DELETION=1 git commit ...
+
+EOF
+
+exit 1
