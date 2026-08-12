@@ -301,8 +301,8 @@ stopping at a minimum terminal node size of `r rfsrc_pbc$nodesize`.
 plot(gg_error(rfsrc_pbc))
 ```
 
-The error stabilizes well before the 150 trees grown here, indicating the forest
-is large enough for reliable predictions.
+The error stabilizes well before the `r rfsrc_pbc$ntree` trees grown here,
+indicating the forest is large enough for reliable predictions.
 
 ## OOB predicted survival
 
