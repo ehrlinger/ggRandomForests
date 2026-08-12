@@ -59,8 +59,13 @@ ggRandomForests v3.5.1
   already used by `gg_error()`, `gg_vimp()`, `gg_variable()` and `gg_rfsrc()`.
 * The `pbc` examples on `?gg_error`, `?plot.gg_error`, `?gg_vimp` and
   `?plot.gg_rfsrc` lost their editorial asides and a stray trailing comma in
-  the `data()` call. The munging block itself is still duplicated across those
-  pages; consolidating it is deferred.
+  the `data()` call. The munging block that all four repeated is now a single
+  shared `inst/examples/pbc-setup.R`, pulled in with `@example`, so the four
+  pages cannot drift apart.
+* Every `rfsrc` fit in an example now names an explicit `ntree`. The examples
+  had been taking the 1000-tree default, which is far more forest than an
+  illustration needs; bounding them took the local `R CMD check` total from
+  4m44s to 3m16s.
 * `tests/testthat/test_lint.R` runs again, wrapped in `skip_on_cran()`. It had
   been commented out entirely, so the suite enforced nothing about style
   locally even though CI kept its own lint job. The guard keeps it off the
