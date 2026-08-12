@@ -1,8 +1,9 @@
 ## v3.5.1 — patch release (fixes the gcc-UBSAN additional issue in 3.5.0)
 
 Submitted in response to the CRAN check request of 2026-08-05 (correct before
-2026-08-21). This release fixes only the `gcc-UBSAN` additional issue; all
-other flavors were OK on 3.5.0.
+2026-08-21). All other flavors were OK on 3.5.0. The `gcc-UBSAN` fix is the
+reason for the release; it also carries two small defensive fixes in `R/`,
+described under "What else is in this release" below.
 
 ### The report
 
@@ -27,54 +28,74 @@ live-`partialpro()` tests were already `skip_on_cran()`'d for runtime, which
 left this one as the only one running on CRAN — and so the only one reported.
 
 That test now passes `method = "rnd"` itself. Verified by tracing every
-`rfsrc` grow across the suite under CRAN skip semantics: 311 grows, 0 reached
+`rfsrc` grow across the suite under CRAN skip semantics: 299 grows, 0 reached
 without a formula (previously 2, both in that one test). The test asserts the
 same warnings over the same number of rows, so CRAN coverage is unchanged.
-
-No user-facing code changed — the diff is five test files, one roxygen block
-documenting the issue (with its regenerated `.Rd`), `DESCRIPTION` and
-`NEWS.md`. Nothing executable in `R/` changed.
 
 The same audit found the `\donttest` example in `?gg_partial_varpro` on that
 same path; it did not fire under gcc-UBSAN because that flavor did not run
 `\donttest` code, but it is fixed here too rather than left to a future
 check-flavor change.
 
+### What else is in this release
+
+The sanitizer fix is the reason for the submission, but it is not the whole
+diff, so let me set out the rest. Two small defensive fixes in `R/` came out of
+a code review of the same files:
+
+* `calc_roc()` now routes `which_outcome = 0` through the same fallback as
+  `which_outcome = "all"`, with a warning. `0` is the documented numeric
+  spelling of "all", and left unnormalized it indexed as `predicted[, 0]` —
+  legal R that yields a zero-column matrix, so the threshold sweep ran on empty
+  input and returned a degenerate two-row object with no sensitivity or
+  specificity columns instead of raising an error.
+* `gg_partial_rfsrc()` now checks its first argument is an `rfsrc` object and
+  stops with a message naming the class it got. Previously a non-forest reached
+  an `ncol()` comparison on a `NULL` and failed with base R's "argument is of
+  length zero", which does not point at the real problem.
+
+Both replace a silent wrong answer with a clear one; neither changes results for
+valid input. The rest of the diff is the test suite, the roxygen examples (every
+`rfsrc` fit in an example now carries an explicit `ntree`, and the repeated
+`pbc` setup is collapsed into one shared `inst/examples/pbc-setup.R`), the
+regenerated `.Rd` files, and the version metadata.
+
 ### Test environments
 
-* **Local:** macOS (darwin), R 4.6.1 — `R CMD check --as-cran` with the
-  manual, built from a clean `git archive` export: **0 ERRORs, 0 WARNINGs,
-  1 NOTE**. Total check time 4m44s.
-* **win-builder:** x86_64-w64-mingw32, Windows Server 2022 — all three
-  branches, each **0 ERRORs, 0 WARNINGs, 1 NOTE**:
-  * R-devel (2026-08-04 r90350 ucrt)
-  * R-release (R 4.6.1)
-  * R-oldrelease (R 4.5.3)
-  * PDF and HTML manuals build on all three; vignettes re-build on all three.
+* **Local:** macOS (aarch64-apple-darwin), R 4.6.0 — `R CMD check --as-cran`
+  with the manual, built from a clean `git archive` export: **0 ERRORs,
+  0 WARNINGs, 1 NOTE**. Total check time 3m16s; the source tarball is 2.3 MB.
+  The full test suite, run with `NOT_CRAN=true` so the `skip_on_cran()` tests
+  execute too, is 1468 passing and 0 failing.
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
+* **URL check:** `urlchecker::url_check()` reports all URLs correct.
 
-All four checks report the same single NOTE and nothing else.
+**win-builder:** to be re-run against this tree before submission; the earlier
+results predate the `R/` changes described above and are not reported here.
 
-On check time: the win-builder totals are roughly 8 minutes (R-release),
-10 minutes (R-devel) and 12 minutes (R-oldrelease), with the vignette rebuild
-the dominant term in each. I want to flag rather than hide that: this release
-contains **no executable R code change**, so the runtime is unchanged from the
-3.5.0 your own check farm ran and accepted on 2026-08-04. If check time is a
-concern, the vignette rebuild is the lever and I am glad to precompute further,
-as I did for 3.1.0.
+On check time: the win-builder totals on 3.5.0 ran to roughly 8 minutes
+(R-release), 10 minutes (R-devel) and 12 minutes (R-oldrelease), with the
+vignette rebuild the dominant term in each. I want to flag that rather than
+hide it. This release should come in under those figures, since bounding the
+example fits with `ntree` took the local total from 4m44s to 3m16s, but I will
+confirm it on win-builder before submitting. If check time is a concern, the
+vignette rebuild is the lever and I am glad to precompute further, as I did for
+3.1.0.
 
 ### NOTE disposition
 
-The one NOTE is `Days since last update: 1` / `Number of updates in past 6
-months: 7`. This submission is the fix you requested on 2026-08-05 for the
-`gcc-UBSAN` additional issue in 3.5.0, with a 2026-08-21 deadline, which is
-why it follows the previous release so closely. I would not otherwise submit
-on this cadence.
+The one NOTE is `Number of updates in past 6 months: 7`. This submission is the
+fix you requested on 2026-08-05 for the `gcc-UBSAN` additional issue in 3.5.0,
+with a 2026-08-21 deadline, which is why it follows the previous release so
+closely. I would not otherwise submit on this cadence.
 
-The change is deliberately narrow: five test files, one roxygen block with its
-regenerated `.Rd`, and the version metadata (`DESCRIPTION`, `NEWS.md`) -- the
-same list given above. There is **no executable R code change** in this release --
-the diff over `R/` between v3.5.0 and v3.5.1 is comments only -- so the
-runtime profile is identical to the 3.5.0 you accepted on 2026-08-04.
+The change is narrow, and I would rather describe it accurately than call it
+smaller than it is. Beyond the sanitizer fix there are the two defensive fixes
+in `calc_roc()` and `gg_partial_rfsrc()` set out above, both of which turn a
+silent wrong answer into an error or a warning and neither of which changes
+results for valid input. Everything else is tests, examples, regenerated `.Rd`
+files and version metadata. Local check time is 3m16s, down from 4m44s on
+3.5.0, because every `rfsrc` fit in an example now carries an explicit `ntree`.
 
 ---
 
