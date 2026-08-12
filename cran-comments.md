@@ -70,12 +70,6 @@ regenerated `.Rd` files, and the version metadata.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
 
-<!-- TODO before submitting: re-run win-builder against the current tree.
-     The R-devel (r90350) / R-release (4.6.1) / R-oldrelease (4.5.3) results
-     previously recorded here checked the tree as it stood on 2026-08-05,
-     before the two `R/` fixes described above landed, so they no longer
-     describe this tarball. Removed rather than carried forward. -->
-
 **win-builder:** to be re-run against this tree before submission; the earlier
 results predate the `R/` changes described above and are not reported here.
 

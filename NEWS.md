@@ -63,7 +63,7 @@ ggRandomForests v3.5.1
   shared `inst/examples/pbc-setup.R`, pulled in with `@example`, so the four
   pages cannot drift apart.
 * Every `rfsrc` fit in an example now names an explicit `ntree`. The examples
-  had been taking the 1000-tree default, which is far more forest than an
+  had been taking `rfsrc()`'s 500-tree default, which is far more forest than an
   illustration needs; bounding them took the local `R CMD check` total from
   4m44s to 3m16s.
 * `tests/testthat/test_lint.R` runs again, wrapped in `skip_on_cran()`. It had
