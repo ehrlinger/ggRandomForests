@@ -348,7 +348,7 @@
 </div>
 </div>
 </div>
-<p>The error stabilizes well before 1000 trees, indicating the forest is large enough for reliable predictions.</p>
+<p>The error stabilizes well before the 150 trees grown here, indicating the forest is large enough for reliable predictions.</p>
 </section><section class="level2"><h3 id="oob-predicted-survival">OOB predicted survival<a class="anchor" aria-label="anchor" href="#oob-predicted-survival"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -428,7 +428,7 @@
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_pbc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 5.79, selecting 7 variables: ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
+<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 5.93, selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
 <p>Both selection methods agree on the key predictors: <code>bili</code>, <code>albumin</code>, <code>copper</code>, <code>prothrombin</code>, and <code>age</code>. We add <code>edema</code> (selected by the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> model) for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
@@ -671,7 +671,7 @@
 <div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_integrated"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code><span><span class="co">#&gt; [1] 1.413033</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] 1.424557</span></span></code></pre>
 </div>
 </div>
 </section></section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>

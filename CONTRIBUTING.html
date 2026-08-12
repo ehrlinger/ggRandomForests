@@ -263,7 +263,7 @@ plot(gg_object)       ← R/plot.gg_*.R — builds and returns a ggplot2 object<
 </div>
 <div class="section level3">
 <h3 id="practical-tips">Practical tips<a class="anchor" aria-label="anchor" href="#practical-tips"></a></h3>
-<ul><li>Keep forests small in tests — <code>ntree = 50</code> is plenty, faster than the default 1000.</li>
+<ul><li>Keep forests small in tests — <code>ntree = 50</code> is plenty, faster than the default 500.</li>
 <li>Test the error path as well as the happy path (<code>expect_error</code>, <code>expect_warning</code>).</li>
 <li>Use <code>expect_s3_class()</code> rather than the older <code>expect_is()</code>.</li>
 <li>Avoid <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> unless you are explicitly testing something random — randomForestSRC results are stochastic and exact-value tests break across versions.</li>

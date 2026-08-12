@@ -326,8 +326,8 @@ plot(gg_error(rfsrc_pbc))
 
 OOB prediction error vs. number of trees.
 
-The error stabilizes well before 1000 trees, indicating the forest is
-large enough for reliable predictions.
+The error stabilizes well before the 150 trees grown here, indicating
+the forest is large enough for reliable predictions.
 
 ### OOB predicted survival
 
@@ -441,7 +441,7 @@ md_pbc <- max.subtree(rfsrc_pbc)
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
 function computes minimal depth for each variable. The threshold is
-5.79, selecting 7 variables: ascites, edema, bili, chol, albumin,
+5.93, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
 copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
@@ -777,7 +777,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.413033
+    #> [1] 1.424557
 
 ## Conclusion
 
