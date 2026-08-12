@@ -248,7 +248,7 @@ test_that("gg_depth throws on wrong input", {
 
 ### Practical tips
 
-- Keep forests small in tests — `ntree = 50` is plenty, faster than the default 1000.
+- Keep forests small in tests — `ntree = 50` is plenty, faster than the default 500.
 - Test the error path as well as the happy path (`expect_error`, `expect_warning`).
 - Use `expect_s3_class()` rather than the older `expect_is()`.
 - Avoid `set.seed()` unless you are explicitly testing something random — randomForestSRC results are stochastic and exact-value tests break across versions.
