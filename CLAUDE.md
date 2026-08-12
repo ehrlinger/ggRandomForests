@@ -97,6 +97,39 @@ So the guard is the fix, not the cleanup. Check `git status` before and
 after any local suite run, and treat a wave of staged snapshot deletions
 as a signal that the env var was missing — not as a change to commit.
 
+**Two protections now sit under that advice, because remembering an env
+var has failed repeatedly.**
+
+1.  **`.Renviron` inverts the default.** It sets
+    `VDIFFR_RUN_TESTS=${VDIFFR_RUN_TESTS-true}`, so an unset variable —
+    the state of every fresh shell, script and agent session, and the
+    cause of every prune so far — now reads as `true`. An explicit value
+    still wins, so the three CI workflows that set `"false"` are
+    unaffected. `R --vanilla` ignores `.Renviron`, and an explicit
+    `"false"` still prunes.
+
+2.  **`.githooks/pre-commit` blocks the commit.** A pruned working tree
+    is recoverable; a committed prune is the real loss, so the hook
+    guards the commit. **It needs one command per clone:**
+
+    ``` bash
+    git config core.hooksPath .githooks
+    ```
+
+    Without that, the hook does nothing. To retire a baseline
+    deliberately, use `ALLOW_SNAPSHOT_DELETION=1 git commit ...`.
+
+Note that the guard style in the test file is *not* a lever.
+`test_snapshots.R` wraps most tests in a file-level
+`if (Sys.getenv(...) == "true")` and the rest in `skip()` inside
+`test_that()`; on testthat 3.3.2 a prune takes the baselines of both.
+Rewriting the guards would not have prevented any of this.
+
+If a measurement genuinely needs the guard off (tracing under CRAN skip
+semantics, say), run it against a throwaway export rather than this
+checkout — `git archive HEAD | tar -x -C "$TMPDIR/tree"` — so pruning
+has nothing of yours to delete.
+
 Only the three CI workflows set `VDIFFR_RUN_TESTS: "false"` deliberately
 (`R-CMD-check`, `test-coverage`, `check-manual`), where snapshots are
 not regenerated and pruning has nothing to prune. That CI setting is why
