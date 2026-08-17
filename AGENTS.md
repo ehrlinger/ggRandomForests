@@ -1,0 +1,194 @@
+# ggRandomForests
+
+CRAN R package. A visualisation and exploration layer over `randomForestSRC`, `randomForest`
+and `varPro` objects, built on ggplot2. The public API is the `gg_*` extractor family plus
+their `plot()` and `autoplot()` methods (19 of each, as declared in `NAMESPACE`).
+
+This file is the operational contract for any agent working in this repo. It is deliberately
+short. Structure, the `gg_*` design pattern, roxygen standards and code style are documented
+once in `CONTRIBUTING.md`; read that rather than expecting them restated here.
+
+## Definition of done
+
+A change is not done until these pass, in this order:
+
+```bash
+Rscript -e 'devtools::document()'
+Rscript -e 'lintr::lint_package()'                                  # must be 0 lints
+NOT_CRAN=true VDIFFR_RUN_TESTS=true Rscript -e 'devtools::test()'    # 0 failures, 0 errors
+```
+
+Then, once per PR rather than once per edit:
+
+```bash
+R CMD check --as-cran   # with the manual; do not pass --no-manual
+```
+
+Run the commands. Reading the code is not evidence, and neither is a subagent's report.
+
+Three details in that list are load bearing:
+
+- **`document()` runs first, every time.** `man/` and `NAMESPACE` are generated. A stale
+  `NAMESPACE` makes the test run answer a question about the previous commit.
+- **Lint runs before tests** because it costs about 17 seconds against about 130 for the
+  suite. Cheap failures first.
+- **The test command needs both environment variables.** See "The one thing that destroys
+  work" below. `devtools::test()` sets `NOT_CRAN=true` itself, but a bare
+  `testthat::test_file()` under `load_all()` does not, so every `skip_on_cran()` test
+  silently skips and the run reports `SS` instead of a result. Reading `SS` as "fine" is how
+  you conclude a test passed when it never ran. There are 34 `skip_on_cran()` calls in this
+  suite, so this is not a hypothetical.
+
+`R CMD check` runs with `NOT_CRAN` false, so it does **not** exercise those 34 tests. A green
+check is not evidence that they pass; only the `devtools::test()` line above is.
+
+## The one thing that destroys work
+
+**A suite run with `VDIFFR_RUN_TESTS` unset deletes every vdiffr baseline as "unused."**
+There are 49 of them under `tests/testthat/_snaps/snapshots/`, and they are the package's
+only visual regression coverage.
+
+Always run the suite as:
+
+```bash
+NOT_CRAN=true VDIFFR_RUN_TESTS=true Rscript -e 'devtools::test()'
+```
+
+Check `git status` before and after any local suite run. A wave of staged snapshot deletions
+is a signal that the variable was missing, not a change to commit.
+
+This has happened repeatedly, so two protections now sit under that advice:
+
+1. **`.Renviron` inverts the default.** It sets `VDIFFR_RUN_TESTS=${VDIFFR_RUN_TESTS-true}`,
+   so an unset variable (the natural state of every fresh shell, script and agent session,
+   and the cause of every prune so far) now reads as `true`. An explicit value still wins, so
+   the three CI workflows that set `"false"` are unaffected. Note that `R --vanilla` ignores
+   `.Renviron`, and an explicit `"false"` still prunes.
+
+2. **`.githooks/pre-commit` blocks the commit.** A pruned working tree is recoverable; a
+   committed prune is the real loss. **This needs one command per clone:**
+
+   ```bash
+   git config core.hooksPath .githooks
+   ```
+
+   Without it the hook does nothing. To retire a baseline deliberately, use
+   `ALLOW_SNAPSHOT_DELETION=1 git commit ...`.
+
+Further notes, so nobody re-derives them:
+
+- If you regenerate a baseline, do it **last**. A later full-suite run deletes it, and a
+  blanket `git checkout -- tests/testthat/_snaps/` to undo that silently reverts your
+  regeneration along with the pruning.
+- All 49 baselines are tracked today. That was not true on 2026-08-06, when one unguarded run
+  pruned 49 files and the 9 untracked ones survived only because a stale copy happened to
+  remain in `ggRandomForests.Rcheck/00_pkg_src/`. That is not a backup and will not reliably
+  be there.
+- The guard style in the test file is **not** a lever. `test_snapshots.R` wraps most tests in
+  a file-level `if (Sys.getenv(...) == "true")` and the rest in `skip()` inside `test_that()`;
+  on testthat 3.3.2 a prune takes the baselines of both. Rewriting the guards would not have
+  prevented any of this.
+- If a measurement genuinely needs the guard off (tracing under CRAN skip semantics, say), run
+  it against a throwaway export rather than this checkout:
+  `git archive HEAD | tar -x -C "$TMPDIR/tree"`, so pruning has nothing of yours to delete.
+- Only `R-CMD-check`, `test-coverage` and `check-manual` set `VDIFFR_RUN_TESTS: "false"`
+  deliberately, where snapshots are not regenerated and pruning has nothing to prune. That CI
+  setting is why the hazard stays invisible until someone runs the suite on a laptop.
+
+## Before you touch code
+
+Orient on the public API surface and where things live **before** editing. Do not infer the
+structure of this package from a partial file read: there are 60 exported symbols across
+19 extractor families, and the S3 dispatch layer means the function you found is often not the
+one that runs.
+
+## Generated files: never hand-edit
+
+| Path | Generated by |
+|---|---|
+| `man/`, `NAMESPACE` | roxygen2, via `devtools::document()` |
+| `.claude/house-style.md` | the `ehrlinger/house-style` composer |
+
+`.claude/house-style.md` carries a `DO NOT EDIT` banner and the `house-style` CI job **fails
+the build** when it drifts from its vault sources. Editing it reddens CI and the next
+recompose reverts you.
+
+## Rules for this repo
+
+- `gg_*` functions return an object. `plot()` and `autoplot()` methods **return** a ggplot
+  object; they never `print()` it.
+- **Changing the class, element names or column names of a returned object is a breaking
+  change.** This package is on CRAN. Check reverse dependencies before proposing one.
+- **Importance plots put the most-important variable at the top.** After `coord_flip()` that
+  means it is the *last* factor level of the variable axis. `test_plot_conventions.R` pins
+  this across `gg_vimp`, `gg_varpro`, `gg_beta_varpro` and `gg_ivarpro`, because a
+  bottom-heavy ordering was a real bug once.
+- **`Depends` carries only the R version constraint.** `randomForestSRC`, `randomForest` and
+  `varPro` are `Imports` and are never attached from `R/`. `test_namespace_hygiene.R` pins
+  this. (`tests/testthat/setup.R` attaches them for the tests only; that is not licence to do
+  it in `R/`.)
+- Every `plot()` / `autoplot()` method should have a `vdiffr::expect_doppelganger()` test in
+  `test_snapshots.R`. There are 49 today against 38 methods; coverage is broad but has not
+  been audited per method.
+- Tests are deterministic. Any randomness gets an explicit `set.seed()`.
+- Anything slow gets `skip_on_cran()`.
+- No `browser()`, no bare `print()`, no `library()` inside `R/`.
+
+### Known gap, being addressed
+
+Tests currently fit forests inline at roughly 200 call sites across 23 files, which is why the
+suite takes about 130 seconds. There is no `tests/testthat/fixtures/` directory yet; the only
+precomputed fixtures are the in-memory session cache in `helper-varpro-fixtures.R`. Prefer
+reusing an existing fixture or a memoised helper over adding another inline fit, and keep any
+new fit small (few trees, few rows). It exists to exercise a code path, not to be
+statistically realistic.
+
+## Change discipline
+
+1. **Think before coding.** Do not assume, ask. If the request is ambiguous or a name, path or
+   signature is uncertain, surface the confusion instead of running with a guess. One good
+   clarifying question beats a confident wrong edit.
+2. **Simplicity first.** Write the minimum code that solves the stated problem. No speculative
+   abstractions, no "while I'm here" generalising. For this scientific code, prefer the plain
+   readable form a future reader can follow over the clever one.
+3. **Surgical changes.** Touch only what the task requires. Do not refactor, reformat or
+   re-style adjacent code, and do not reorganise imports or rename things that were not asked
+   for. If you spot something worth changing nearby, note it separately rather than folding it
+   in.
+4. **Define "done" as a passing test.** State what done looks like before you start. If no
+   test covers the change, add or propose one rather than declaring success from inspection.
+
+A new dependency is a CRAN cost. Ask first.
+
+## Git and versioning
+
+- **Never push to `main`.** Branch, commit, push the branch, open a PR, then stop. The
+  maintainer merges.
+- **Never roll the MINOR or MAJOR digit.** That is the maintainer's call, made when a feature
+  set is consolidated into a release. Patch bumps (`3.5.1` to `3.5.2`) are fine for
+  incremental work; say so when you make one.
+- **Always a plain three-digit version.** No `.9000` suffix, no fourth digit.
+- Every version bump updates **both** `DESCRIPTION` and the `Version:` line in `NEWS.md`. A
+  test greps `NEWS.md` for the exact `DESCRIPTION` version.
+
+## Prose
+
+Documentation prose (vignettes, README, roxygen `@description` and `@details`, release copy)
+follows the house style in `.claude/house-style.md`: a specific voice, reader persona and
+project context. Read it before writing user-facing text.
+
+## Gotchas
+
+- `object_usage_linter` is currently **disabled** in `.lintr`, so lint will not catch an
+  undefined symbol or an unused local. Do not rely on a green lint for that class of error.
+- `testthat` runs on **edition 2** here: `DESCRIPTION` has no `Config/testthat/edition` field.
+  Do not assume 3rd-edition semantics.
+- `randomForestSRC` output structure varies by version (3.6.2 is installed; `DESCRIPTION`
+  requires `>= 3.4.0`). Never index its fields by position.
+- CRAN rejects a package whose overall `R CMD check` exceeds about 10 minutes even at 0/0/0.
+  The current baseline is about 3.8 minutes of timed steps, dominated by the vignette rebuild
+  (53s) and `--run-donttest` examples (35s). Watch that budget when adding either.
+- Build `R CMD check` from a clean `git archive` export, not the working tree. An empty
+  `inst/doc` fabricates two vignette WARNINGs, and in a git worktree `.git` is a *file*, so
+  the VCS exclusion misses it and it lands in the tarball as a spurious hidden-files NOTE.
+  Both look like package defects and are not.

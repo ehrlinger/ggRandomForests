@@ -61,3 +61,4 @@ framed.sty
 Rplots\.pdf$
 ^\.Renviron$
 ^\.githooks$
+^AGENTS\.md$
