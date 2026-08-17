@@ -123,8 +123,25 @@ if [ -n "$tokens" ]; then
   )
 fi
 
+# Cross-cutting test files, always run when anything changed.
+#
+# These pin invariants across the whole package rather than testing one
+# extractor, so they are named after the property they check and NO per-file
+# token will ever select them. Leaving them out made the gate miss the thing it
+# exists for: editing R/gg_rfsrc.R selected only test_gg_rfsrc.R, while the
+# cross-check that catches a wrong value (predicted.oob swapped for the in-bag
+# predicted) lives in test_extractor_contracts.R. The hook passed a forest
+# extractor that had been made to report in-bag predictions.
+#
+# Both halves of the harness worked in isolation and did not compose. Only an
+# end-to-end run against merged main showed it.
+#
+# All six together cost about 3.2 seconds, so this is close to free.
+always='extractor_contracts|autoplot_equivalence|determinism|plot_conventions|default_dispatch|namespace_hygiene'
+
 if [ -n "$matched" ]; then
   filter=$(printf '%s' "$tokens" | paste -sd'|' -)
+  filter="$filter|$always"
   # No quote characters in scope: it is interpolated into an R string literal
   # inside a double-quoted bash string, and a stray ' ends that literal early.
   scope="filter $filter"
