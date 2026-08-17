@@ -374,6 +374,40 @@ A clean check means:
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 ```
 
+### If you use Claude Code, or hit an unexplained hook failure
+
+`.claude/settings.json` registers a `Stop` hook, `.claude/hooks/verify.sh`, which
+refuses to let a Claude Code session end while the harness is failing. It runs
+only when something under `R/` or `tests/` changed, and then it runs
+`lintr::lint_package()` plus the test files that correspond to what you touched,
+not the whole suite. Roughly 27 seconds for a typical change.
+
+None of this affects a normal contributor working in another editor: the hook is
+read by Claude Code and by nothing else. It also does not replace anything. CI
+and `R CMD check --as-cran` remain the full-coverage gates, and the hook is
+allowed to miss a cross-file breakage that CI will catch.
+
+It assumes `jq`, `Rscript`, `lintr` and `devtools` are on `PATH`. If any is
+missing, or the hook misbehaves, move `.claude/settings.json` aside:
+
+```bash
+mv .claude/settings.json .claude/settings.json.off
+```
+
+Separately, and for everyone regardless of editor, please run this once per
+clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+That enables `.githooks/pre-commit`, which blocks a commit that deletes vdiffr
+baselines. It is the repo's protection against the single most destructive
+mistake available here: a test run with `VDIFFR_RUN_TESTS` unset deletes all 49
+visual-regression baselines. See `AGENTS.md` for the full story. The `Stop` hook
+also warns about deleted baselines in the working tree, which is earlier but
+weaker; the pre-commit hook is the one that actually stops the loss.
+
 One note about the package size or installed path is acceptable. Errors or warnings must be fixed before a PR can be merged.
 
 To reproduce the exact CI matrix locally you can use [rhub](https://r-hub.github.io/rhub/):

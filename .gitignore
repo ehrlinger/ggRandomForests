@@ -52,8 +52,15 @@ vignettes/uvarpro_cache/
 vignettes/uvarpro_files/
 vignettes/uvarpro.html
 
+# Everything under .claude is personal and stays out of the repo, EXCEPT the
+# few files that are shared project configuration. settings.local.json in
+# particular is a per-machine permissions allowlist and must stay ignored;
+# settings.json is the shared hook registration and must not.
 .claude/*
 !.claude/house-style.md
+!.claude/settings.json
+!.claude/hooks/
+!.claude/agents/
 .positai
 
 # Brainstorm / visual-companion scratch
