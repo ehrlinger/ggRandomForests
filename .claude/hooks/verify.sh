@@ -53,7 +53,19 @@ cd "${CLAUDE_PROJECT_DIR:-$PWD}" || exit 0
 #
 # So: everything committed on this branch since it left the base, plus anything
 # still uncommitted, plus untracked files.
-base=$(git merge-base HEAD main 2>/dev/null || true)
+# Resolving the base has to survive a clone with no local `main`. `gh pr
+# checkout` and a single-branch clone both leave only `origin/main`, and a fork
+# may use another name. If this resolves to nothing, `changed` falls back to the
+# working tree alone and the committed-work blind spot comes straight back, so
+# try in order and take the first that answers.
+base=""
+for ref in main origin/main origin/HEAD master origin/master; do
+  if candidate=$(git merge-base HEAD "$ref" 2>/dev/null) && [ -n "$candidate" ]; then
+    base="$candidate"
+    break
+  fi
+done
+
 changed=$(
   {
     [ -n "$base" ] && git diff --name-only "$base" HEAD -- R/ tests/ 2>/dev/null
@@ -61,7 +73,19 @@ changed=$(
     git ls-files --others --exclude-standard -- R/ tests/ 2>/dev/null
   } | sort -u
 )
-[ -z "$changed" ] && exit 0
+
+# A clone where NO base resolves (git clone --single-branch fetches neither
+# `main` nor `origin/main`) cannot answer "what changed on this branch".
+# Exiting 0 there is the committed-work blind spot again by another route, so
+# say so and verify everything instead. Correct and slow beats silent. A normal
+# clone never takes this path, so "nothing changed, end immediately" is
+# unaffected.
+if [ -z "$base" ] && [ -z "$changed" ]; then
+  base_unknown=1
+else
+  base_unknown=0
+  [ -z "$changed" ] && exit 0
+fi
 
 # NOT_CRAN keeps the 34 skip_on_cran() tests live: without it they report SS
 # and a run that skipped everything looks like a run that passed.
@@ -183,6 +207,10 @@ fi
 #
 # All six together cost about 3.2 seconds, so this is close to free.
 always='extractor_contracts|autoplot_equivalence|determinism|plot_conventions|default_dispatch|namespace_hygiene'
+
+if [ "$base_unknown" = "1" ]; then
+  matched=""
+fi
 
 if [ -n "$matched" ]; then
   filter=$(printf '%s' "$tokens" | paste -sd'|' -)
