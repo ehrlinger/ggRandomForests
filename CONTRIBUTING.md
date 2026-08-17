@@ -387,7 +387,7 @@ read by Claude Code and by nothing else. It also does not replace anything. CI
 and `R CMD check --as-cran` remain the full-coverage gates, and the hook is
 allowed to miss a cross-file breakage that CI will catch.
 
-It assumes `jq`, `Rscript`, `lintr` and `devtools` are on `PATH`. If any is
+It assumes `jq`, `Rscript`, `lintr` and `devtools` are on `PATH`. If any are
 missing, or the hook misbehaves, move `.claude/settings.json` aside:
 
 ```bash

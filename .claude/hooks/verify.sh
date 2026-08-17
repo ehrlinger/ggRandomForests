@@ -24,9 +24,17 @@ payload=$(cat)
 
 # Mandatory loop guard. Without it, a failure the agent cannot fix traps the
 # session in a stop / block / stop cycle forever.
-if [ "$(printf '%s' "$payload" | jq -r '.stop_hook_active // false')" = "true" ]; then
+#
+# Reading it needs jq, so a missing or failing jq has to mean "let the session
+# end", never "carry on without the guard". Carrying on is precisely the
+# endless loop this guard exists to prevent: the hook would block, the retry
+# would arrive with stop_hook_active true, and we still could not read it.
+# Fail open, and treat unparseable input the same way.
+if ! command -v jq >/dev/null 2>&1; then
   exit 0
 fi
+stop_active=$(printf '%s' "$payload" | jq -r '.stop_hook_active // false' 2>/dev/null) || exit 0
+[ "$stop_active" = "true" ] && exit 0
 
 cd "${CLAUDE_PROJECT_DIR:-$PWD}" || exit 0
 
@@ -81,31 +89,62 @@ token_for () {
     tests/testthat/test_*.R)
       basename "$f" .R | sed 's/^test_//' ;;
     R/*.R)
+      # Strip a method prefix, then truncate at the first remaining dot.
+      # R/plot.gg_vimp.R      -> gg_vimp
+      # R/surv_partial.rfsrc.R-> surv_partial   (matches test_surv_partial.R)
+      # R/ggrandomforests.news.R -> ggrandomforests (matches the _news test)
+      # Without the truncation those last two produce tokens that match no
+      # test file at all.
       basename "$f" .R | sed -e 's/^\.//' -e 's/^plot\.//' -e 's/^autoplot\.//' \
-                             -e 's/^print\.//' -e 's/^summary\.//' ;;
+                             -e 's/^print\.//' -e 's/^summary\.//' | cut -d. -f1 ;;
   esac
 }
 
 tokens=$(
   printf '%s\n' "$changed" | while read -r f; do
     token_for "$f"
-  done | sed 's/[^A-Za-z0-9_.]//g' | grep -v '^$' | sort -u
+  done | sed 's/[^A-Za-z0-9_]//g' | grep -v '^$' | sort -u
 )
 
-if [ -z "$tokens" ]; then
-  exit 0
+# Which test files do those tokens actually select? Eight files in R/
+# (calc_roc.R, print_methods.R, utils.R and friends) have no same-named test
+# and are covered indirectly, so "no match" is a normal case, not an edge one.
+#
+# Running zero tests and exiting 0 would be the worst possible outcome: the
+# hook would report success having verified nothing. So when targeting fails,
+# fall back to the whole suite. Cheap when we can target, correct when we
+# cannot.
+matched=""
+if [ -n "$tokens" ]; then
+  matched=$(
+    printf '%s\n' "$tokens" | while read -r t; do
+      ls tests/testthat/test_*.R 2>/dev/null | grep -- "$t" || true
+    done | sort -u
+  )
 fi
 
-filter=$(printf '%s' "$tokens" | paste -sd'|' -)
+if [ -n "$matched" ]; then
+  filter=$(printf '%s' "$tokens" | paste -sd'|' -)
+  # No quote characters in scope: it is interpolated into an R string literal
+  # inside a double-quoted bash string, and a stray ' ends that literal early.
+  scope="filter $filter"
+else
+  filter=""
+  scope="the FULL suite (nothing under R/ mapped to a test file)"
+fi
 
 test_out=$(Rscript -e "
   suppressMessages(devtools::load_all(quiet = TRUE))
-  res <- testthat::test_local(filter = '$filter', reporter = 'summary',
-                              stop_on_failure = FALSE)
-  df <- as.data.frame(res)
+  f   <- '$filter'
+  res <- testthat::test_local(filter = if (nzchar(f)) f else NULL,
+                              reporter = 'summary', stop_on_failure = FALSE)
+  df  <- as.data.frame(res)
   bad <- sum(df\$failed) + sum(df\$error)
-  cat('\nFILTER: $filter\n')
+  cat('\nSCOPE: $scope\n')
   cat('FILES:', length(unique(df\$file)), ' FAILED:', bad, '\n')
+  # Running nothing is not a pass. If the scope selected no files at all,
+  # something is wrong with the mapping and the run proved nothing.
+  if (length(unique(df\$file)) == 0L) quit(status = 1)
   if (bad > 0) quit(status = 1)
 " 2>&1) || fail "Tests failed for the files you changed.
 
