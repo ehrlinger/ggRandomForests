@@ -36,7 +36,7 @@ Three details in that list are load bearing:
   generated. A stale `NAMESPACE` makes the test run answer a question
   about the previous commit.
 - **Lint runs before tests** because it costs about 17 seconds against
-  about 130 for the suite. Cheap failures first.
+  about 110 for the suite. Cheap failures first.
 - **The test command needs both environment variables.** See “The one
   thing that destroys work” below. `devtools::test()` sets
   `NOT_CRAN=true` itself, but a bare
@@ -157,22 +157,50 @@ sources. Editing it reddens CI and the next recompose reverts you.
   [`vdiffr::expect_doppelganger()`](https://vdiffr.r-lib.org/reference/expect_doppelganger.html)
   test in `test_snapshots.R`. There are 49 today against 38 methods;
   coverage is broad but has not been audited per method.
-- Tests are deterministic. Any randomness gets an explicit
-  [`set.seed()`](https://rdrr.io/r/base/Random.html).
+- **Tests are deterministic, and every `test_that()` block that touches
+  the RNG calls [`set.seed()`](https://rdrr.io/r/base/Random.html)
+  inside that block.** A file-level seed does not count: testthat
+  promises no execution order, and every earlier block advances the
+  stream. `test_determinism.R` pins this by parsing the suite, so a new
+  unseeded block fails a test rather than passing review.
 - Anything slow gets `skip_on_cran()`.
 - No [`browser()`](https://rdrr.io/r/base/browser.html), no bare
   [`print()`](https://rdrr.io/r/base/print.html), no
   [`library()`](https://rdrr.io/r/base/library.html) inside `R/`.
 
-### Known gap, being addressed
+### Where the suite’s time actually goes
 
-Tests currently fit forests inline at roughly 200 call sites across 23
-files, which is why the suite takes about 130 seconds. There is no
-`tests/testthat/fixtures/` directory yet; the only precomputed fixtures
-are the in-memory session cache in `helper-varpro-fixtures.R`. Prefer
-reusing an existing fixture or a memoised helper over adding another
-inline fit, and keep any new fit small (few trees, few rows). It exists
-to exercise a code path, not to be statistically realistic.
+Roughly 110 seconds, and it is **not** the forest fits. Measured
+2026-08-17:
+
+| Component | Time | Note |
+|----|----|----|
+| Two `gg_partial_varpro` tests (surv, rmst) | 47 s | `partialpro()` is the function under test |
+| `test_snapshots.R` | 17 s | vdiffr SVG rendering |
+| `test_gg_udependent.R` | 12 s | `get.beta.entropy()`, already memoised per signature |
+| Everything else, including about 200 forest fits | about 34 s | spread thin |
+
+Fits are cheap: `test_gg_rfsrc.R` has 61 of them and runs in 1.9
+seconds, while `test_gg_partial_varpro.R` has 3 and runs in 59. Inside
+the worst test the fit is 0.2 s against 22 s of `partialpro()`, so **the
+setup is 1 percent of the cost.**
+
+Two consequences worth not re-deriving:
+
+- **Do not build a `tests/testthat/fixtures/` directory of saved
+  forests.** It cannot reach the real cost, and it is expensive: one
+  survival forest is 1.2 MB with gzip and 314 KB with xz, against a 2.4
+  MB tarball and CRAN’s 5 MB limit. It would also pin serialised
+  `randomForestSRC` internals to one version. Use session-memoised
+  helpers instead, as `helper-varpro-fixtures.R` and
+  `test_gg_udependent.R` already do.
+- **The suite is near its floor.** Anything that needs a fast local gate
+  should run lint plus the tests for the changed files, not the whole
+  suite.
+
+Still, prefer reusing an existing fixture or memoised helper over adding
+another inline fit, and keep any new fit small (few trees, few rows). It
+exists to exercise a code path, not to be statistically realistic.
 
 ## Change discipline
 

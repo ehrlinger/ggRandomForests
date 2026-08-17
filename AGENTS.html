@@ -74,7 +74,7 @@
 <ul><li>
 <strong><code>document()</code> runs first, every time.</strong> <code>man/</code> and <code>NAMESPACE</code> are generated. A stale <code>NAMESPACE</code> makes the test run answer a question about the previous commit.</li>
 <li>
-<strong>Lint runs before tests</strong> because it costs about 17 seconds against about 130 for the suite. Cheap failures first.</li>
+<strong>Lint runs before tests</strong> because it costs about 17 seconds against about 110 for the suite. Cheap failures first.</li>
 <li>
 <strong>The test command needs both environment variables.</strong> See “The one thing that destroys work” below. <code>devtools::test()</code> sets <code>NOT_CRAN=true</code> itself, but a bare <code><a href="https://testthat.r-lib.org/reference/test_file.html" class="external-link">testthat::test_file()</a></code> under <code>load_all()</code> does not, so every <code>skip_on_cran()</code> test silently skips and the run reports <code>SS</code> instead of a result. Reading <code>SS</code> as “fine” is how you conclude a test passed when it never ran. There are 34 <code>skip_on_cran()</code> calls in this suite, so this is not a hypothetical.</li>
 </ul><p><code>R CMD check</code> runs with <code>NOT_CRAN</code> false, so it does <strong>not</strong> exercise those 34 tests. A green check is not evidence that they pass; only the <code>devtools::test()</code> line above is.</p>
@@ -127,12 +127,37 @@
 <li>
 <strong><code>Depends</code> carries only the R version constraint.</strong> <code>randomForestSRC</code>, <code>randomForest</code> and <code>varPro</code> are <code>Imports</code> and are never attached from <code>R/</code>. <code>test_namespace_hygiene.R</code> pins this. (<code>tests/testthat/setup.R</code> attaches them for the tests only; that is not licence to do it in <code>R/</code>.)</li>
 <li>Every <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> / <code>autoplot()</code> method should have a <code><a href="https://vdiffr.r-lib.org/reference/expect_doppelganger.html" class="external-link">vdiffr::expect_doppelganger()</a></code> test in <code>test_snapshots.R</code>. There are 49 today against 38 methods; coverage is broad but has not been audited per method.</li>
-<li>Tests are deterministic. Any randomness gets an explicit <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code>.</li>
+<li>
+<strong>Tests are deterministic, and every <code>test_that()</code> block that touches the RNG calls <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> inside that block.</strong> A file-level seed does not count: testthat promises no execution order, and every earlier block advances the stream. <code>test_determinism.R</code> pins this by parsing the suite, so a new unseeded block fails a test rather than passing review.</li>
 <li>Anything slow gets <code>skip_on_cran()</code>.</li>
 <li>No <code><a href="https://rdrr.io/r/base/browser.html" class="external-link">browser()</a></code>, no bare <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, no <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library()</a></code> inside <code>R/</code>.</li>
 </ul><div class="section level3">
-<h3 id="known-gap-being-addressed">Known gap, being addressed<a class="anchor" aria-label="anchor" href="#known-gap-being-addressed"></a></h3>
-<p>Tests currently fit forests inline at roughly 200 call sites across 23 files, which is why the suite takes about 130 seconds. There is no <code>tests/testthat/fixtures/</code> directory yet; the only precomputed fixtures are the in-memory session cache in <code>helper-varpro-fixtures.R</code>. Prefer reusing an existing fixture or a memoised helper over adding another inline fit, and keep any new fit small (few trees, few rows). It exists to exercise a code path, not to be statistically realistic.</p>
+<h3 id="where-the-suites-time-actually-goes">Where the suite’s time actually goes<a class="anchor" aria-label="anchor" href="#where-the-suites-time-actually-goes"></a></h3>
+<p>Roughly 110 seconds, and it is <strong>not</strong> the forest fits. Measured 2026-08-17:</p>
+<table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th>Component</th>
+<th>Time</th>
+<th>Note</th>
+</tr></thead><tbody><tr><td>Two <code>gg_partial_varpro</code> tests (surv, rmst)</td>
+<td>47 s</td>
+<td>
+<code>partialpro()</code> is the function under test</td>
+</tr><tr><td><code>test_snapshots.R</code></td>
+<td>17 s</td>
+<td>vdiffr SVG rendering</td>
+</tr><tr><td><code>test_gg_udependent.R</code></td>
+<td>12 s</td>
+<td>
+<code>get.beta.entropy()</code>, already memoised per signature</td>
+</tr><tr><td>Everything else, including about 200 forest fits</td>
+<td>about 34 s</td>
+<td>spread thin</td>
+</tr></tbody></table><p>Fits are cheap: <code>test_gg_rfsrc.R</code> has 61 of them and runs in 1.9 seconds, while <code>test_gg_partial_varpro.R</code> has 3 and runs in 59. Inside the worst test the fit is 0.2 s against 22 s of <code>partialpro()</code>, so <strong>the setup is 1 percent of the cost.</strong></p>
+<p>Two consequences worth not re-deriving:</p>
+<ul><li>
+<strong>Do not build a <code>tests/testthat/fixtures/</code> directory of saved forests.</strong> It cannot reach the real cost, and it is expensive: one survival forest is 1.2 MB with gzip and 314 KB with xz, against a 2.4 MB tarball and CRAN’s 5 MB limit. It would also pin serialised <code>randomForestSRC</code> internals to one version. Use session-memoised helpers instead, as <code>helper-varpro-fixtures.R</code> and <code>test_gg_udependent.R</code> already do.</li>
+<li>
+<strong>The suite is near its floor.</strong> Anything that needs a fast local gate should run lint plus the tests for the changed files, not the whole suite.</li>
+</ul><p>Still, prefer reusing an existing fixture or memoised helper over adding another inline fit, and keep any new fit small (few trees, few rows). It exists to exercise a code path, not to be statistically realistic.</p>
 </div>
 </div>
 <div class="section level2">
