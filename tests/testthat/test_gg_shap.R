@@ -1,4 +1,5 @@
 test_that("gg_shap.rfsrc returns a long tidy object for regression", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -33,6 +34,7 @@ test_that("gg_shap.rfsrc errors on survival forests", {
 })
 
 test_that("gg_shap.rfsrc handles classification via which.class", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -46,6 +48,7 @@ test_that("gg_shap.rfsrc handles classification via which.class", {
 })
 
 test_that("gg_shap.randomForest works for regression", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -59,6 +62,7 @@ test_that("gg_shap.randomForest works for regression", {
 })
 
 test_that("gg_shap.randomForest handles classification via which.class", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -72,6 +76,7 @@ test_that("gg_shap.randomForest handles classification via which.class", {
 })
 
 test_that("shap_importance and plot(type='importance') return ggplots", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -85,6 +90,7 @@ test_that("shap_importance and plot(type='importance') return ggplots", {
 })
 
 test_that("shap_beeswarm and default plot() return ggplots", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -98,6 +104,7 @@ test_that("shap_beeswarm and default plot() return ggplots", {
 })
 
 test_that("shap_beeswarm scales feature values per-variable into [0,1]", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -116,6 +123,7 @@ test_that("shap_beeswarm scales feature values per-variable into [0,1]", {
 })
 
 test_that("shap_dependence honors xvar and defaults to top variable", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -130,6 +138,7 @@ test_that("shap_dependence honors xvar and defaults to top variable", {
 })
 
 test_that("shap_dependence uses geom_boxplot for a categorical feature", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -147,6 +156,7 @@ test_that("shap_dependence uses geom_boxplot for a categorical feature", {
 })
 
 test_that("autoplot.gg_shap delegates to plot", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 
@@ -192,6 +202,7 @@ test_that("gg_shap.randomForest validates bg_n", {
 })
 
 test_that("shap_beeswarm scales finite values even when a variable has Inf entries", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   skip_on_cran()
 

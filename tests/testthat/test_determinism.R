@@ -17,8 +17,25 @@
 
 rng_consumers <- paste0(
   "^(rfsrc|randomForest|varpro|uvarpro|isopro|partialpro|beta\\.varpro|",
-  "sample|rnorm|runif|rbinom|rpois)$"
+  "sample|sample\\.int|rnorm|runif|rbinom|rpois|rexp|rgamma|rbeta)$"
 )
+
+# Deliberately NOT in that list: ggplot_build() and expect_doppelganger().
+#
+# They do consume the RNG, because plot.gg_rfsrc, plot.gg_shap,
+# plot.gg_variable, plot.gg_varpro and plot.gg_ivarpro all draw geom_jitter,
+# and the draw happens at build time rather than when the plot object is
+# constructed. But listing them flags 59 blocks, 46 of them in
+# test_snapshots.R, where a file-level local({ set.seed(42L); ... }) wraps the
+# fits and most of the rendered plots are bar charts that jitter nothing.
+#
+# Seeding all 46 would regenerate 46 of the 49 baselines to fix a latent
+# problem in about six of them, and a wave of regenerated baselines is exactly
+# the change that hides a real visual regression. This guard cannot tell a
+# jittered plot from a bar chart by parsing, so the blanket rule is worse than
+# the gap. The six genuinely jitter-dependent snapshot blocks are stable today
+# only because execution within a file is sequential; inserting a test earlier
+# in test_snapshots.R would shift them. That is a known, recorded gap.
 
 # TRUE when any call anywhere inside `expr` has a function name matching
 # `pattern`, ignoring any pkg:: prefix.
@@ -42,15 +59,61 @@ calls_any <- function(expr, pattern) {
   found
 }
 
+# The pkg:: prefix is stripped here for the same reason calls_any() strips it.
+# Without that, testthat::test_that(...) was invisible to this guard entirely:
+# the block was never examined, so any amount of unseeded randomness inside it
+# passed. Verified against a probe file before the fix: zero of six offending
+# blocks were flagged.
 is_test_that_call <- function(expr) {
   is.call(expr) &&
-    identical(paste(deparse(expr[[1]]), collapse = ""), "test_that") &&
+    identical(
+      sub("^.*::", "", paste(deparse(expr[[1]]), collapse = "")),
+      "test_that"
+    ) &&
     length(expr) >= 3L
 }
 
-# The offending combination: the block reaches the RNG but never seeds it.
+# Every set.seed() and RNG-consuming call inside `expr`, in source order.
+#
+# Order matters and was previously not checked at all. The failure message told
+# the reader to seed "before the first RNG-consuming call" while the check only
+# asked whether set.seed appeared anywhere in the block, so a seed placed AFTER
+# the forest fit it was meant to control satisfied the guard and controlled
+# nothing.
+#
+# A `{` block's elements are in source order, and the function of a call is
+# visited before its arguments, so a single depth-first walk in element order
+# yields the events in the order R will run them. Good enough for this: the
+# cases it cannot resolve are ones where both appear inside a single expression,
+# which is not a shape any test here uses.
+rng_events <- function(expr) {
+  events <- character(0)
+  recurse <- function(x) {
+    if (is.call(x)) {
+      nm <- sub("^.*::", "", paste(deparse(x[[1]]), collapse = ""))
+      if (grepl("^set\\.seed$", nm)) {
+        events <<- c(events, "seed")
+      } else if (grepl(rng_consumers, nm)) {
+        events <<- c(events, "rng")
+      }
+    }
+    if (is.recursive(x)) {
+      for (i in seq_along(x)) try(recurse(x[[i]]), silent = TRUE)
+    }
+    invisible(NULL)
+  }
+  recurse(expr)
+  events
+}
+
+# The offending combination: the block reaches the RNG, and either never seeds
+# it or seeds it too late to matter.
 block_is_unseeded <- function(expr) {
-  calls_any(expr[[3]], rng_consumers) && !calls_any(expr[[3]], "^set\\.seed$")
+  events <- rng_events(expr[[3]])
+  if (!("rng" %in% events)) {
+    return(FALSE)
+  }
+  !identical(events[1], "seed")
 }
 
 block_description <- function(expr) {

@@ -35,17 +35,46 @@
 # inside ggplot_build(), not when the plot object is constructed. Two builds of
 # the very same object therefore differ. Seeding before each build is what
 # makes this a comparison of delegation rather than of jitter.
+# ggplot_build()$data is post-stat but PRE-COORD, and $labels carries nothing
+# about coords, themes, scales or facets. Comparing only those two plus the
+# geoms therefore treated several whole classes of divergence as a match.
+# Measured on ggplot2 4.0.3 against plot(gg_error(rf)), each of these is
+# invisible to labels + built data + geoms alone:
+#
+#   + coord_flip()      transposes the plot
+#   + theme_bw()        restyles it
+#   + scale_fill_grey() recolours it
+#   + facet_wrap(...)   splits it into panels
+#
+# Note that a coord mutation on gg_vimp specifically is NOT detectable, and
+# should not be: plot.gg_vimp already applies coord_flip(), so adding another
+# replaces CoordFlip with CoordFlip and the plot really is unchanged. The
+# self-test below uses gg_error, whose plot is CoordCartesian, for exactly that
+# reason.
+# Everything about the plot that is an ordinary R object and so can be compared
+# with identical(). Kept separate from same_plot() because chaining these as one
+# && expression pushed cyclocomp past this repo's limit of 20, and the house
+# rule is to extract a helper rather than raise the cap.
+plot_shape <- function(p) {
+  list(
+    labels = p$labels,
+    geoms  = vapply(p$layers, function(l) class(l$geom)[1], character(1)),
+    coord  = class(p$coordinates)[1],
+    facet  = class(p$facet)[1],
+    scales = vapply(p$scales$scales, function(s) class(s)[1], character(1)),
+    theme  = p$theme
+  )
+}
+
+# Seeded because the draw happens here, not at construction.
+built_data <- function(p, seed) {
+  set.seed(seed)
+  ggplot2::ggplot_build(p)$data
+}
+
 same_plot <- function(a, b, seed = 101L) {
-  built <- function(p) {
-    set.seed(seed)
-    ggplot2::ggplot_build(p)$data
-  }
-  geoms <- function(p) {
-    vapply(p$layers, function(l) class(l$geom)[1], character(1))
-  }
-  identical(a$labels, b$labels) &&
-    isTRUE(all.equal(built(a), built(b))) &&
-    identical(geoms(a), geoms(b))
+  identical(plot_shape(a), plot_shape(b)) &&
+    isTRUE(all.equal(built_data(a, seed), built_data(b, seed)))
 }
 
 test_that("autoplot() equals plot() for every cheaply constructible gg_* class", {
@@ -112,10 +141,20 @@ test_that("same_plot() can actually tell two plots apart", {
   # pins the discriminating power itself rather than trusting it.
   skip_if_not_installed("randomForestSRC")
   set.seed(20260817L)
-  rf <- randomForestSRC::rfsrc(Species ~ ., iris, ntree = 20, importance = TRUE)
-  base <- plot(gg_vimp(rf))
+  rf <- randomForestSRC::rfsrc(
+    Species ~ ., iris,
+    ntree = 20, importance = TRUE, tree.err = TRUE
+  )
+
+  # gg_error, not gg_vimp: plot.gg_vimp already applies coord_flip(), so
+  # adding another is genuinely a no-op there and would make the coord case
+  # untestable. plot.gg_error is CoordCartesian.
+  base <- plot(gg_error(rf))
 
   expect_true(same_plot(base, base))
   expect_false(same_plot(base, base + ggplot2::labs(caption = "drifted")))
   expect_false(same_plot(base, base + ggplot2::ggtitle("different")))
+  expect_false(same_plot(base, base + ggplot2::coord_flip()))
+  expect_false(same_plot(base, base + ggplot2::theme_bw()))
+  expect_false(same_plot(base, base + ggplot2::scale_colour_grey()))
 })
