@@ -101,7 +101,9 @@ test_that("every RNG-consuming test_that() block seeds itself", {
     sort(offenders), character(0),
     info = paste0(
       "These test_that() blocks consume the RNG without calling set.seed() ",
-      "inside the block. Add set.seed() as the first line of each:\n  ",
+      "inside the block. Add a set.seed() call anywhere inside each block, ",
+      "before the first RNG-consuming call. Placing it after skip_*() guards ",
+      "is fine and is what most blocks here do:\n  ",
       paste(offenders, collapse = "\n  ")
     )
   )
