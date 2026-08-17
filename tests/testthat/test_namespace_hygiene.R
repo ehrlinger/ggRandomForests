@@ -16,6 +16,7 @@ test_that("DESCRIPTION Depends declares only the R version constraint", {
 })
 
 test_that("core extractors run without randomForestSRC/randomForest attached", {
+  set.seed(20260817L)
   skip_if_not_installed("callr")
   skip_if_not_installed("randomForestSRC")
   skip_if_not_installed("randomForest")

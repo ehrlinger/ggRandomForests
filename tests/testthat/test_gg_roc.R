@@ -1,6 +1,7 @@
 # testthat for gg_roc function
 
 test_that("gg_roc classifications", {
+  set.seed(20260817L)
   ## Load the cached forest
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
@@ -60,6 +61,7 @@ test_that("gg_roc classifications", {
 })
 
 test_that("gg_roc randomForest classifications", {
+  set.seed(20260817L)
   ## Load the cached forest
   rf_iris <- randomForest(Species ~ ., data = iris)
 
@@ -119,6 +121,7 @@ test_that("gg_roc default oob=TRUE works without explicit argument", {
 })
 
 test_that("gg_roc regression", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
 
@@ -147,6 +150,7 @@ test_that("gg_roc regression", {
 })
 
 test_that("calc_roc", {
+  set.seed(20260817L)
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
     data = iris,

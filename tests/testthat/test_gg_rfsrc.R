@@ -6,6 +6,7 @@
 Surv <- survival::Surv  # nolint: object_name_linter
 
 test_that("gg_rfsrc classifications", {
+  set.seed(20260817L)
   ## Load the cached forest
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
@@ -61,6 +62,7 @@ test_that("gg_rfsrc classifications", {
 })
 
 test_that("gg_rfsrc regression", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
 
@@ -416,6 +418,7 @@ test_that("gg_rfsrc survival: conf.int with two-element level_set", {
 })
 
 test_that("gg_rfsrc classification: by argument adds group column", {
+  set.seed(20260817L)
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
     data = iris,
@@ -432,6 +435,7 @@ test_that("gg_rfsrc classification: by argument adds group column", {
 })
 
 test_that("gg_rfsrc regression: by = vector works", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)

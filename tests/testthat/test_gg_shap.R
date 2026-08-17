@@ -24,6 +24,7 @@ test_that("gg_shap.default errors on a non-forest object", {
 })
 
 test_that("gg_shap.rfsrc errors on survival forests", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   data(veteran, package = "randomForestSRC")
   rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
@@ -158,6 +159,7 @@ test_that("autoplot.gg_shap delegates to plot", {
 })
 
 test_that("gg_shap.rfsrc errors on out-of-range which.class", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
 
   rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 20)
@@ -165,6 +167,7 @@ test_that("gg_shap.rfsrc errors on out-of-range which.class", {
 })
 
 test_that("gg_shap.randomForest errors on out-of-range which.class", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
 
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 20)
@@ -172,6 +175,7 @@ test_that("gg_shap.randomForest errors on out-of-range which.class", {
 })
 
 test_that("gg_shap.rfsrc validates bg_n", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality), ntree = 20)
   expect_error(gg_shap(rf, bg_n = 0), "bg_n")
@@ -180,6 +184,7 @@ test_that("gg_shap.rfsrc validates bg_n", {
 })
 
 test_that("gg_shap.randomForest validates bg_n", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   rf <- randomForest::randomForest(Ozone ~ ., data = na.omit(airquality), ntree = 20)
   expect_error(gg_shap(rf, bg_n = 0), "bg_n")
@@ -212,6 +217,7 @@ test_that("shap_beeswarm scales finite values even when a variable has Inf entri
 ## convention.
 
 test_that("gg_shap rejects bg_n that is not a whole, finite, in-range number", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
   # No skip_on_cran(): every expectation below errors during argument
   # validation, before kernelshap::kernelshap() is ever reached, so the test
@@ -231,6 +237,7 @@ test_that("gg_shap rejects bg_n that is not a whole, finite, in-range number", {
 })
 
 test_that("gg_shap rejects which.class that is not a whole, finite number", {
+  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
 
   # As above: validation-only, so no skip_on_cran() and a minimal ntree.
