@@ -1,6 +1,7 @@
 # testthat for gg_vimp function
 
 test_that("gg_vimp classifications", {
+  set.seed(20260817L)
   ## Load the cached forest
   data(iris, package = "datasets")
   rfsrc_iris <- randomForestSRC::rfsrc(
@@ -190,6 +191,7 @@ test_that("gg_vimp which.outcome names the measure in set", {
 
 
 test_that("gg_vimp survival", {
+  set.seed(20260817L)
   # Shared with the roxygen examples; see inst/examples/pbc-setup.R. That file
   # passes envir = environment() to data(), which is what lets it be sourced
   # into a scoped environment here instead of writing pbc to .GlobalEnv.
@@ -267,6 +269,7 @@ test_that("gg_vimp survival", {
 })
 
 test_that("gg_vimp regression", {
+  set.seed(20260817L)
   ## Load the cached forest
   data(Boston, package = "MASS")
   boston <- Boston
@@ -402,6 +405,7 @@ test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP c
 })
 
 test_that("gg_vimp.randomForest regression: vimp column present even when importance is IncNodePurity", {
+  set.seed(20260817L)
   # Guard test: when randomForest stores importance as IncNodePurity (not X.IncMSE),
   # gg_vimp must still produce a 'vimp' column so plot.gg_vimp and the positive
   # flag work correctly.

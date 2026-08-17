@@ -4,6 +4,7 @@
 Surv <- survival::Surv # nolint: object_name_linter
 
 test_that("gg_variable classifications", {
+  set.seed(20260817L)
   ## Load the cached forest
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
@@ -75,6 +76,7 @@ test_that("gg_variable classifications", {
 
 
 test_that("gg_variable regression", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
 
@@ -124,6 +126,7 @@ test_that("gg_variable regression", {
 })
 
 test_that("gg_variable survival handles late time requests", {
+  set.seed(20260817L)
   data(veteran, package = "randomForestSRC")
   Surv <- survival::Surv # nolint: object_name_linter
   rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ .,
@@ -238,6 +241,7 @@ test_that("gg_variable survival: oob=FALSE uses in-bag predictions", {
 })
 
 test_that("plot.gg_variable regression: points=FALSE smooth=TRUE", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
@@ -259,6 +263,7 @@ test_that("plot.gg_variable regression: points=FALSE smooth=TRUE", {
 })
 
 test_that("plot.gg_variable regression: factor x variable triggers boxplot", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
@@ -278,6 +283,7 @@ test_that("plot.gg_variable regression: factor x variable triggers boxplot", {
 })
 
 test_that("plot.gg_variable regression: panel with two continuous variables", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
@@ -295,6 +301,7 @@ test_that("plot.gg_variable regression: panel with two continuous variables", {
 })
 
 test_that("plot.gg_variable regression: panel points=FALSE smooth=TRUE", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
@@ -313,6 +320,7 @@ test_that("plot.gg_variable regression: panel points=FALSE smooth=TRUE", {
 })
 
 test_that("plot.gg_variable classification: panel with multiple continuous vars", {
+  set.seed(20260817L)
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
     data = iris,
@@ -326,6 +334,7 @@ test_that("plot.gg_variable classification: panel with multiple continuous vars"
 })
 
 test_that("plot.gg_variable classification: smooth and no-points path", {
+  set.seed(20260817L)
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
     data = iris,
@@ -339,6 +348,7 @@ test_that("plot.gg_variable classification: smooth and no-points path", {
 })
 
 test_that("plot.gg_variable: missing xvar returns list for all predictors", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
