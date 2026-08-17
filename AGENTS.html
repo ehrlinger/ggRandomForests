@@ -100,6 +100,27 @@
 <li>Only <code>R-CMD-check</code>, <code>test-coverage</code> and <code>check-manual</code> set <code>VDIFFR_RUN_TESTS: "false"</code> deliberately, where snapshots are not regenerated and pruning has nothing to prune. That CI setting is why the hazard stays invisible until someone runs the suite on a laptop.</li>
 </ul></div>
 <div class="section level2">
+<h2 id="the-automated-gates">The automated gates<a class="anchor" aria-label="anchor" href="#the-automated-gates"></a></h2>
+<p>Three layers, at three different moments. They are complementary, not redundant.</p>
+<table class="table"><colgroup><col width="33%"><col width="33%"><col width="33%"></colgroup><thead><tr><th>Gate</th>
+<th>When</th>
+<th>What it runs</th>
+</tr></thead><tbody><tr><td>
+<code>.claude/hooks/verify.sh</code> (Claude Code <code>Stop</code> hook)</td>
+<td>session end</td>
+<td>lint, plus the test files matching what changed. About 27 seconds</td>
+</tr><tr><td><code>.githooks/pre-commit</code></td>
+<td><code>git commit</code></td>
+<td>blocks a commit that deletes vdiffr baselines</td>
+</tr><tr><td>CI, and <code>R CMD check --as-cran</code>
+</td>
+<td>PR</td>
+<td>everything</td>
+</tr></tbody></table><p>The <code>Stop</code> hook deliberately does <strong>not</strong> run the full suite. At about 109 seconds the suite’s cost is the code under test, not setup, so a full-suite gate would add roughly 126 seconds to every session end, and a gate that expensive gets switched off. It is allowed to miss a cross-file breakage that CI catches.</p>
+<p>There is <strong>no auto-formatting hook.</strong> <code>styler</code> was measured against this repo and would rewrite 48 of 51 files in <code>R/</code>, 2917 diff lines, so a one-line edit would come back with hundreds of lines of unrelated reformatting attached. Lint is the style gate here, and it is already at zero.</p>
+<p>Neither hook is a substitute for running the definition of done yourself.</p>
+</div>
+<div class="section level2">
 <h2 id="before-you-touch-code">Before you touch code<a class="anchor" aria-label="anchor" href="#before-you-touch-code"></a></h2>
 <p>Orient on the public API surface and where things live <strong>before</strong> editing. Do not infer the structure of this package from a partial file read: there are 60 exported symbols across 19 extractor families, and the S3 dispatch layer means the function you found is often not the one that runs.</p>
 </div>

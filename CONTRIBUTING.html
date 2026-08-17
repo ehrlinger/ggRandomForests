@@ -386,21 +386,31 @@ plot(gg_object)       ← R/plot.gg_*.R — builds and returns a ggplot2 object<
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">check</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>A clean check means:</p>
 <pre><code>0 errors ✔ | 0 warnings ✔ | 0 notes ✔</code></pre>
+<div class="section level3">
+<h3 id="if-you-use-claude-code-or-hit-an-unexplained-hook-failure">If you use Claude Code, or hit an unexplained hook failure<a class="anchor" aria-label="anchor" href="#if-you-use-claude-code-or-hit-an-unexplained-hook-failure"></a></h3>
+<p><code>.claude/settings.json</code> registers a <code>Stop</code> hook, <code>.claude/hooks/verify.sh</code>, which refuses to let a Claude Code session end while the harness is failing. It runs only when something under <code>R/</code> or <code>tests/</code> changed, and then it runs <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code> plus the test files that correspond to what you touched, not the whole suite. Roughly 27 seconds for a typical change.</p>
+<p>None of this affects a normal contributor working in another editor: the hook is read by Claude Code and by nothing else. It also does not replace anything. CI and <code>R CMD check --as-cran</code> remain the full-coverage gates, and the hook is allowed to miss a cross-file breakage that CI will catch.</p>
+<p>It assumes <code>jq</code>, <code>Rscript</code>, <code>lintr</code> and <code>devtools</code> are on <code>PATH</code>. If any are missing, or the hook misbehaves, move <code>.claude/settings.json</code> aside:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">mv</span> .claude/settings.json .claude/settings.json.off</span></code></pre></div>
+<p>Separately, and for everyone regardless of editor, please run this once per clone:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">git</span> config core.hooksPath .githooks</span></code></pre></div>
+<p>That enables <code>.githooks/pre-commit</code>, which blocks a commit that deletes vdiffr baselines. It is the repo’s protection against the single most destructive mistake available here: a test run with <code>VDIFFR_RUN_TESTS</code> unset deletes all 49 visual-regression baselines. See <code>AGENTS.md</code> for the full story. The <code>Stop</code> hook also warns about deleted baselines in the working tree, which is earlier but weaker; the pre-commit hook is the one that actually stops the loss.</p>
 <p>One note about the package size or installed path is acceptable. Errors or warnings must be fixed before a PR can be merged.</p>
 <p>To reproduce the exact CI matrix locally you can use <a href="https://r-hub.github.io/rhub/" class="external-link">rhub</a>:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rhub</span><span class="fu">::</span><span class="fu">rhub_check</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <hr></div>
+</div>
 <div class="section level2">
 <h2 id="id_10-opening-a-pull-request">10. Opening a pull request<a class="anchor" aria-label="anchor" href="#id_10-opening-a-pull-request"></a></h2>
 <ol style="list-style-type: decimal"><li>
 <p><strong>Commit your changes</strong> with a clear, present-tense message:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">git</span> add R/gg_depth.R R/plot.gg_depth.R tests/testthat/test_gg_depth.R</span>
-<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Add gg_depth() for average tree depth visualization"</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">git</span> add R/gg_depth.R R/plot.gg_depth.R tests/testthat/test_gg_depth.R</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Add gg_depth() for average tree depth visualization"</span></span></code></pre></div>
 </li>
 <li>
 <p><strong>Push to your fork:</strong></p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">git</span> push origin my-feature-name</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">git</span> push origin my-feature-name</span></code></pre></div>
 </li>
 <li><p><strong>Open a PR</strong> on GitHub against the <code>main</code> branch of <code>ehrlinger/ggRandomForests</code>.</p></li>
 <li>
@@ -430,7 +440,7 @@ Refactor bootstrap_survival to utils.R              ← refactor</code></pre>
 <li>
 <strong>randomForestSRC questions:</strong> the <a href="https://www.randomforestsrc.org" class="external-link">randomForestSRC documentation</a> and its own GitHub issues.</li>
 </ul><p>When filing a bug, always include:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Minimum reproducible example</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ehrlinger/ggRandomForests" class="external-link">ggRandomForests</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.randomforestsrc.org/" class="external-link">randomForestSRC</a></span><span class="op">)</span></span>

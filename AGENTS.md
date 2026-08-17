@@ -114,6 +114,32 @@ Further notes, so nobody re-derives them:
   regenerated and pruning has nothing to prune. That CI setting is why
   the hazard stays invisible until someone runs the suite on a laptop.
 
+## The automated gates
+
+Three layers, at three different moments. They are complementary, not
+redundant.
+
+| Gate | When | What it runs |
+|----|----|----|
+| `.claude/hooks/verify.sh` (Claude Code `Stop` hook) | session end | lint, plus the test files matching what changed. About 27 seconds |
+| `.githooks/pre-commit` | `git commit` | blocks a commit that deletes vdiffr baselines |
+| CI, and `R CMD check --as-cran` | PR | everything |
+
+The `Stop` hook deliberately does **not** run the full suite. At about
+109 seconds the suite’s cost is the code under test, not setup, so a
+full-suite gate would add roughly 126 seconds to every session end, and
+a gate that expensive gets switched off. It is allowed to miss a
+cross-file breakage that CI catches.
+
+There is **no auto-formatting hook.** `styler` was measured against this
+repo and would rewrite 48 of 51 files in `R/`, 2917 diff lines, so a
+one-line edit would come back with hundreds of lines of unrelated
+reformatting attached. Lint is the style gate here, and it is already at
+zero.
+
+Neither hook is a substitute for running the definition of done
+yourself.
+
 ## Before you touch code
 
 Orient on the public API surface and where things live **before**
