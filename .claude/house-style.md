@@ -10,7 +10,7 @@
   profile:         package-cran
   default persona: (d)
   sources:
-    writing-voice.md               sha256:19e1e5dcbb41
+    writing-voice.md               sha256:3018e1e0bf8e
     writing-reader-profile.md      sha256:179212de138c
     writing-context.md             sha256:87d5555936e1
     r-package-structure.md         sha256:e64cb6f25dbd
@@ -63,7 +63,7 @@ personality or a slightly imperfect sentence.
   overused, so the drafting rule is a comma, parentheses, or a full stop. John
   adds them back where he wants the pause. (Changed 2026-08-17 from "use
   sparingly, keep one where it earns the pause", which conflicted with the
-  absolute rule in [[preferences]] and [[identity]]. Placing them is a judgement
+  absolute rule in [[preferences]] and [[identity]]. Placing them is a judgment
   about his own voice, so he makes it rather than delegating it.)
 - Ellipses: an informal-register habit (text, email). Keep them out of package docs.
 - Don't overstate. No overselling. Cut "enhanced", "powerful", "seamlessly",
