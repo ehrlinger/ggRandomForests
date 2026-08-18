@@ -6,9 +6,10 @@
 # is one people learn to route around.
 on:
   # A commit that only touches the generated house-style artifact cannot change
-  # the package: .claude is in .Rbuildignore, so it never reaches the build.
-  # Running this on such a commit burns runner minutes and queues ahead of
-  # checks that can actually fail.
+  # the package: .claude is in .Rbuildignore, so it is excluded from the built
+  # package, and no step in this workflow reads it from the checkout. Running
+  # this on such a commit burns runner minutes and queues ahead of checks that
+  # can actually fail.
   push:
     paths-ignore:
       - '.claude/**'
