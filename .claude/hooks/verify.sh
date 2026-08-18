@@ -40,13 +40,52 @@ cd "${CLAUDE_PROJECT_DIR:-$PWD}" || exit 0
 
 # Only source and test changes are worth verifying. A session that read files,
 # edited a vignette or updated docs ends immediately.
+#
+# THREE SOURCES, AND THE FIRST ONE IS THE POINT.
+#
+# The original version asked `git diff HEAD` alone, which sees only uncommitted
+# work. AGENTS.md mandates branch, commit, push, open a PR, then stop, so the
+# hook fires precisely when the tree is clean, and it exited 0 having checked
+# nothing. Verified before the fix: syntactically invalid R committed to a
+# branch produced exit 0. Every case in the 5f suite had used an uncommitted
+# change, so the suite was green against a code path the real workflow never
+# takes.
+#
+# So: everything committed on this branch since it left the base, plus anything
+# still uncommitted, plus untracked files.
+# Resolving the base has to survive a clone with no local `main`. `gh pr
+# checkout` and a single-branch clone both leave only `origin/main`, and a fork
+# may use another name. If this resolves to nothing, `changed` falls back to the
+# working tree alone and the committed-work blind spot comes straight back, so
+# try in order and take the first that answers.
+base=""
+for ref in main origin/main origin/HEAD master origin/master; do
+  if candidate=$(git merge-base HEAD "$ref" 2>/dev/null) && [ -n "$candidate" ]; then
+    base="$candidate"
+    break
+  fi
+done
+
 changed=$(
   {
-    git diff  --name-only HEAD -- R/ tests/ 2>/dev/null
+    [ -n "$base" ] && git diff --name-only "$base" HEAD -- R/ tests/ 2>/dev/null
+    git diff --name-only HEAD -- R/ tests/ 2>/dev/null
     git ls-files --others --exclude-standard -- R/ tests/ 2>/dev/null
   } | sort -u
 )
-[ -z "$changed" ] && exit 0
+
+# A clone where NO base resolves (git clone --single-branch fetches neither
+# `main` nor `origin/main`) cannot answer "what changed on this branch".
+# Exiting 0 there is the committed-work blind spot again by another route, so
+# say so and verify everything instead. Correct and slow beats silent. A normal
+# clone never takes this path, so "nothing changed, end immediately" is
+# unaffected.
+if [ -z "$base" ] && [ -z "$changed" ]; then
+  base_unknown=1
+else
+  base_unknown=0
+  [ -z "$changed" ] && exit 0
+fi
 
 # NOT_CRAN keeps the 34 skip_on_cran() tests live: without it they report SS
 # and a run that skipped everything looks like a run that passed.
@@ -62,6 +101,36 @@ fail () {
   printf 'Do not stop yet. The verification harness is failing.\n\n%s\n' "$1" >&2
   exit 2
 }
+
+snapshot_deletions () {
+  git status --porcelain -- tests/testthat/_snaps 2>/dev/null | grep '^.D\|^D' || true
+}
+
+# ---- 0. snapshot check, BEFORE anything runs ---------------------------------
+# This has to come first, and the reason is not obvious.
+#
+# Checking only after the test step cannot see a prune that the test step
+# healed. If a suite ran earlier in the session with VDIFFR_RUN_TESTS unset,
+# the working tree holds 49 deletions. None of those paths map to a token, so
+# the hook takes the full-suite fallback, and that run regenerates every
+# missing baseline from the current rendering (vdiffr writes new snapshots
+# rather than failing when fail_on_new is FALSE, which it is off CI). The
+# deletions are replaced by files, the after-check finds nothing, and the hook
+# exits 0. The prune is now invisible AND .githooks/pre-commit has nothing left
+# to refuse.
+if [ -n "$(snapshot_deletions)" ]; then
+  fail "Deleted vdiffr baselines are already present in the working tree, before
+this hook ran anything:
+
+$(snapshot_deletions)
+
+That is the signature of a suite run without VDIFFR_RUN_TESTS=true. Restore
+them before doing anything else:
+  git checkout -- tests/testthat/_snaps/
+
+This check runs BEFORE the tests deliberately. A later full-suite run would
+regenerate the missing files from the current rendering and hide the loss."
+fi
 
 # ---- 1. lint -----------------------------------------------------------------
 if ! lint_out=$(Rscript -e 'l <- lintr::lint_package(); if (length(l)) { print(l); quit(status = 1) }' 2>&1); then
@@ -139,6 +208,10 @@ fi
 # All six together cost about 3.2 seconds, so this is close to free.
 always='extractor_contracts|autoplot_equivalence|determinism|plot_conventions|default_dispatch|namespace_hygiene'
 
+if [ "$base_unknown" = "1" ]; then
+  matched=""
+fi
+
 if [ -n "$matched" ]; then
   filter=$(printf '%s' "$tokens" | paste -sd'|' -)
   filter="$filter|$always"
@@ -157,11 +230,25 @@ test_out=$(Rscript -e "
                               reporter = 'summary', stop_on_failure = FALSE)
   df  <- as.data.frame(res)
   bad <- sum(df\$failed) + sum(df\$error)
+  executed <- sum(!df\$skipped)
   cat('\nSCOPE: $scope\n')
-  cat('FILES:', length(unique(df\$file)), ' FAILED:', bad, '\n')
-  # Running nothing is not a pass. If the scope selected no files at all,
-  # something is wrong with the mapping and the run proved nothing.
-  if (length(unique(df\$file)) == 0L) quit(status = 1)
+  cat('FILES:', length(unique(df\$file)),
+      ' TESTS:', nrow(df), ' EXECUTED:', executed,
+      ' SKIPPED:', sum(df\$skipped), ' FAILED:', bad, '\n')
+  # Running nothing is not a pass, in either of the two ways it can happen.
+  #
+  # Selecting no file at all means the mapping is broken. Selecting files that
+  # then skip every block means the run proved nothing either: that is the
+  # SS-reads-as-a-pass failure AGENTS.md warns about, and counting only
+  # failed + error reproduced it inside the gate built to prevent it. A missing
+  # randomForestSRC, for instance, skips essentially the whole scope.
+  if (length(unique(df\$file)) == 0L) {
+    cat('ERROR: the scope selected no test file.\n'); quit(status = 1)
+  }
+  if (executed == 0L) {
+    cat('ERROR: every test in scope skipped. Nothing was verified.\n')
+    quit(status = 1)
+  }
   if (bad > 0) quit(status = 1)
 " 2>&1) || fail "Tests failed for the files you changed.
 
