@@ -65,11 +65,37 @@ line does not clip it. The screen version has no bleed; the print master adds
 
 ## Typography
 
-`ggRandomForests`, Outfit SemiBold, 19 units in the hex's 173-unit width, slight
-negative tracking, centred on the baseline band.
+`ggRandomForests`, Outfit SemiBold, 18 units in the hex's 173-unit width,
+tracking -0.3, centred, baseline at y = 147.
+
+**The wordmark must sit above y = 148.5.** That is where the hexagon stops being
+full width and the bottom triangle begins closing, and that triangle is 24% of
+the total height. A fifteen-character name at 18 units is about 140 wide, and at
+y = 176 the hex is only about 71 across, so a wordmark placed low does not merely
+look cramped, it runs past the outline on both sides. The first draft of this
+design did exactly that.
+
+The consequence is that the lower triangle stays empty field colour. That is
+deliberate. It is also why the curves end at y = 123 rather than running to the
+bottom: they clear the wordmark band instead of colliding with the type.
 
 Outfit is already the pkgdown base font, so the sticker and the site share a
 voice rather than colliding. At 2 in the wordmark renders around 13 pt.
+
+**The wordmark is converted to SVG paths, not left as a `<text>` element.**
+
+A logo that references a font by name renders in whatever the viewer happens to
+have installed. Outfit is a Google font and is not present on a stock macOS or
+Linux machine, so `font-family="Outfit"` silently falls back: on this machine it
+fell back to SF, and the first mockup of this design was reviewed in the wrong
+typeface without anyone noticing until it was pointed out. The same failure would
+reach pkgdown, the printer, and anyone opening the SVG.
+
+Converting to paths makes the file self-contained and byte-identical everywhere,
+at the cost of the text no longer being editable as text. For an asset that
+changes roughly never, that is the right trade. Keep the live-text version
+alongside as `logo-editable.svg` so the wordmark can be re-set if the name or
+font ever changes.
 
 ## Palette
 
@@ -103,7 +129,8 @@ the right trade for an asset that changes roughly never.
 
 | File | Purpose | Committed |
 |---|---|---|
-| `man/figures/logo.svg` | source of truth, hand edited | yes |
+| `man/figures/logo.svg` | source of truth, wordmark as paths | yes |
+| `man/figures/logo-editable.svg` | same art, wordmark as live text | yes |
 | `man/figures/logo.png` | 240 px wide, used by pkgdown and the README | yes |
 | print master, 2 in at 1200 dpi with bleed | physical stickers | no |
 
