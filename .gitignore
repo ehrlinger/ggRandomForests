@@ -56,11 +56,26 @@ vignettes/uvarpro.html
 # few files that are shared project configuration. settings.local.json in
 # particular is a per-machine permissions allowlist and must stay ignored;
 # settings.json is the shared hook registration and must not.
+# Everything under .claude is personal and stays out of the repo, EXCEPT the
+# few files that are shared project configuration. settings.local.json in
+# particular is a per-machine permissions allowlist and must stay ignored;
+# settings.json is the shared hook registration and must not.
+#
+# The hooks and agents entries are three lines each on purpose. Git will not
+# descend into an ignored directory, so the directory has to be un-ignored
+# first; but un-ignoring it alone exposes EVERYTHING inside, so a personal
+# subagent saved by /agents, or a local hook holding a machine path or token,
+# would be picked up by `git add -A`. Re-ignore the contents, then name the one
+# shared file.
 .claude/*
 !.claude/house-style.md
 !.claude/settings.json
 !.claude/hooks/
+.claude/hooks/*
+!.claude/hooks/verify.sh
 !.claude/agents/
+.claude/agents/*
+!.claude/agents/r-reviewer.md
 .positai
 
 # Brainstorm / visual-companion scratch

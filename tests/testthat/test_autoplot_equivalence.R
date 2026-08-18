@@ -108,16 +108,26 @@ test_that("autoplot() equals plot() for every cheaply constructible gg_* class",
     "gg_roc (classification)"          = gg_roc(rc, which_outcome = 1),
     "gg_variable (regression)"         = gg_variable(rr),
     "gg_brier (survival)"              = gg_brier(rs),
-    "gg_shap (regression)"             = gg_shap(rr),
     "gg_survival"                      = gg_survival(
       interval = "time", censor = "status", by = "trt", data = survival::veteran
     )
   )
 
+  # gg_shap() stops() when kernelshap is absent, and kernelshap is Suggests.
+  # Built inside the list literal above it took the whole block down with it on
+  # any machine without the package, losing all the other comparisons, and
+  # since this is one of the files the Stop hook always runs, it blocked every
+  # session end there too. Add it only when it can be built, rather than
+  # guarding the whole test and skipping eleven working comparisons.
+  if (requireNamespace("kernelshap", quietly = TRUE)) {
+    objects[["gg_shap (regression)"]] <- gg_shap(rr)
+  }
+
   # Some plot methods are not deterministic: plot.gg_rfsrc and plot.gg_shap
   # jitter or beeswarm their points, so two renders of the SAME object differ
   # in built data. Reseed immediately before each render so both draw the same
   # random numbers and the comparison measures delegation, not jitter.
+  compared <- 0L
   for (label in names(objects)) {
     obj <- objects[[label]]
     set.seed(101L)
@@ -128,11 +138,16 @@ test_that("autoplot() equals plot() for every cheaply constructible gg_* class",
       same_plot(rendered_autoplot, rendered_plot),
       label = paste0("autoplot() matches plot() for ", label)
     )
+    compared <- compared + 1L
   }
 
-  # A guard on the guard: if a future refactor makes these objects fail to
-  # build, the loop above would silently assert nothing at all.
-  expect_length(objects, 12L)
+  # A guard on the guard. The previous version asserted length(objects) == 12,
+  # which could not fail as intended: a constructor that errors takes the list
+  # literal down before the assertion is reached, and if every constructor
+  # succeeds the length is 12 by construction. Counting the comparisons the
+  # loop actually performed is the property that was wanted.
+  expect_equal(compared, length(objects))
+  expect_gte(compared, 11L)
 })
 
 test_that("same_plot() can actually tell two plots apart", {
