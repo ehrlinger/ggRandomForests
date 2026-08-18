@@ -1,6 +1,7 @@
 test_that("gg_shap.rfsrc returns a long tidy object for regression", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   dta <- na.omit(airquality)
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = dta, ntree = 50)
@@ -24,8 +25,8 @@ test_that("gg_shap.default errors on a non-forest object", {
 })
 
 test_that("gg_shap.rfsrc errors on survival forests", {
-  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
+  set.seed(20260817L)
   data(veteran, package = "randomForestSRC")
   rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
                                ntree = 20)
@@ -35,6 +36,7 @@ test_that("gg_shap.rfsrc errors on survival forests", {
 test_that("gg_shap.rfsrc handles classification via which.class", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
   set.seed(42)
@@ -48,6 +50,7 @@ test_that("gg_shap.rfsrc handles classification via which.class", {
 test_that("gg_shap.randomForest works for regression", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   dta <- na.omit(airquality)
   rf <- randomForest::randomForest(Ozone ~ ., data = dta, ntree = 50)
@@ -61,6 +64,7 @@ test_that("gg_shap.randomForest works for regression", {
 test_that("gg_shap.randomForest handles classification via which.class", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50)
   set.seed(42)
@@ -74,6 +78,7 @@ test_that("gg_shap.randomForest handles classification via which.class", {
 test_that("shap_importance and plot(type='importance') return ggplots", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
                                ntree = 50)
@@ -87,6 +92,7 @@ test_that("shap_importance and plot(type='importance') return ggplots", {
 test_that("shap_beeswarm and default plot() return ggplots", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
                                ntree = 50)
@@ -100,6 +106,7 @@ test_that("shap_beeswarm and default plot() return ggplots", {
 test_that("shap_beeswarm scales feature values per-variable into [0,1]", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
                                ntree = 50)
@@ -118,6 +125,7 @@ test_that("shap_beeswarm scales feature values per-variable into [0,1]", {
 test_that("shap_dependence honors xvar and defaults to top variable", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
                                ntree = 50)
@@ -132,6 +140,7 @@ test_that("shap_dependence honors xvar and defaults to top variable", {
 test_that("shap_dependence uses geom_boxplot for a categorical feature", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   dta <- na.omit(airquality)
   dta$hot <- factor(ifelse(dta$Temp > 80, "hot", "cool"))
@@ -149,6 +158,7 @@ test_that("shap_dependence uses geom_boxplot for a categorical feature", {
 test_that("autoplot.gg_shap delegates to plot", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
                                ntree = 50)
@@ -159,24 +169,24 @@ test_that("autoplot.gg_shap delegates to plot", {
 })
 
 test_that("gg_shap.rfsrc errors on out-of-range which.class", {
-  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
+  set.seed(20260817L)
 
   rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 20)
   expect_error(gg_shap(rf, which.class = 99), "which.class")
 })
 
 test_that("gg_shap.randomForest errors on out-of-range which.class", {
-  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
+  set.seed(20260817L)
 
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 20)
   expect_error(gg_shap(rf, which.class = 99), "which.class")
 })
 
 test_that("gg_shap.rfsrc validates bg_n", {
-  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
+  set.seed(20260817L)
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality), ntree = 20)
   expect_error(gg_shap(rf, bg_n = 0), "bg_n")
   expect_error(gg_shap(rf, bg_n = NA), "bg_n")
@@ -184,8 +194,8 @@ test_that("gg_shap.rfsrc validates bg_n", {
 })
 
 test_that("gg_shap.randomForest validates bg_n", {
-  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
+  set.seed(20260817L)
   rf <- randomForest::randomForest(Ozone ~ ., data = na.omit(airquality), ntree = 20)
   expect_error(gg_shap(rf, bg_n = 0), "bg_n")
   expect_error(gg_shap(rf, bg_n = NA), "bg_n")
@@ -194,6 +204,7 @@ test_that("gg_shap.randomForest validates bg_n", {
 test_that("shap_beeswarm scales finite values even when a variable has Inf entries", {
   skip_if_not_installed("kernelshap")
   skip_on_cran()
+  set.seed(20260817L)
 
   rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality), ntree = 50)
   set.seed(42)
@@ -217,8 +228,8 @@ test_that("shap_beeswarm scales finite values even when a variable has Inf entri
 ## convention.
 
 test_that("gg_shap rejects bg_n that is not a whole, finite, in-range number", {
-  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
+  set.seed(20260817L)
   # No skip_on_cran(): every expectation below errors during argument
   # validation, before kernelshap::kernelshap() is ever reached, so the test
   # costs one small forest fit. Skipping it would leave the integer contract
@@ -237,8 +248,8 @@ test_that("gg_shap rejects bg_n that is not a whole, finite, in-range number", {
 })
 
 test_that("gg_shap rejects which.class that is not a whole, finite number", {
-  set.seed(20260817L)
   skip_if_not_installed("kernelshap")
+  set.seed(20260817L)
 
   # As above: validation-only, so no skip_on_cran() and a minimal ntree.
   rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 10)
