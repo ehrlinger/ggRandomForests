@@ -43,7 +43,7 @@
 #
 #   + coord_flip()      transposes the plot
 #   + theme_bw()        restyles it
-#   + scale_fill_grey() recolours it
+#   + scale_colour_grey() recolours it (gg_error maps colour, not fill)
 #   + facet_wrap(...)   splits it into panels
 #
 # Note that a coord mutation on gg_vimp specifically is NOT detectable, and
