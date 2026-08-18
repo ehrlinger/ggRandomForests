@@ -44,11 +44,11 @@ Three details in that list are load bearing:
   under `load_all()` does not, so every `skip_on_cran()` test silently
   skips and the run reports `SS` instead of a result. Reading `SS` as
   “fine” is how you conclude a test passed when it never ran. There are
-  34 `skip_on_cran()` calls in this suite, so this is not a
+  37 `skip_on_cran()` calls in this suite, so this is not a
   hypothetical.
 
 `R CMD check` runs with `NOT_CRAN` false, so it does **not** exercise
-those 34 tests. A green check is not evidence that they pass; only the
+those 37 tests. A green check is not evidence that they pass; only the
 `devtools::test()` line above is.
 
 ## The one thing that destroys work
@@ -121,7 +121,7 @@ redundant.
 
 | Gate | When | What it runs |
 |----|----|----|
-| `.claude/hooks/verify.sh` (Claude Code `Stop` hook) | session end | lint, plus the test files matching what changed. About 27 seconds |
+| `.claude/hooks/verify.sh` (Claude Code `Stop` hook) | session end | lint, plus the test files matching what changed, plus the six cross-cutting files. About 25 seconds, or about 130 when a changed file maps to no test and it falls back to the whole suite |
 | `.githooks/pre-commit` | `git commit` | blocks a commit that deletes vdiffr baselines |
 | CI, and `R CMD check --as-cran` | PR | everything |
 
@@ -144,9 +144,9 @@ yourself.
 
 Orient on the public API surface and where things live **before**
 editing. Do not infer the structure of this package from a partial file
-read: there are 60 exported symbols across 19 extractor families, and
-the S3 dispatch layer means the function you found is often not the one
-that runs.
+read: `NAMESPACE` carries 29 `export()` directives and 115 `S3method()`
+registrations across 19 extractor families, and the S3 dispatch layer
+means the function you found is often not the one that runs.
 
 ## Generated files: never hand-edit
 

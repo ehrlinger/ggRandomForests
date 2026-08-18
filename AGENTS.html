@@ -76,8 +76,8 @@
 <li>
 <strong>Lint runs before tests</strong> because it costs about 17 seconds against about 110 for the suite. Cheap failures first.</li>
 <li>
-<strong>The test command needs both environment variables.</strong> See “The one thing that destroys work” below. <code>devtools::test()</code> sets <code>NOT_CRAN=true</code> itself, but a bare <code><a href="https://testthat.r-lib.org/reference/test_file.html" class="external-link">testthat::test_file()</a></code> under <code>load_all()</code> does not, so every <code>skip_on_cran()</code> test silently skips and the run reports <code>SS</code> instead of a result. Reading <code>SS</code> as “fine” is how you conclude a test passed when it never ran. There are 34 <code>skip_on_cran()</code> calls in this suite, so this is not a hypothetical.</li>
-</ul><p><code>R CMD check</code> runs with <code>NOT_CRAN</code> false, so it does <strong>not</strong> exercise those 34 tests. A green check is not evidence that they pass; only the <code>devtools::test()</code> line above is.</p>
+<strong>The test command needs both environment variables.</strong> See “The one thing that destroys work” below. <code>devtools::test()</code> sets <code>NOT_CRAN=true</code> itself, but a bare <code><a href="https://testthat.r-lib.org/reference/test_file.html" class="external-link">testthat::test_file()</a></code> under <code>load_all()</code> does not, so every <code>skip_on_cran()</code> test silently skips and the run reports <code>SS</code> instead of a result. Reading <code>SS</code> as “fine” is how you conclude a test passed when it never ran. There are 37 <code>skip_on_cran()</code> calls in this suite, so this is not a hypothetical.</li>
+</ul><p><code>R CMD check</code> runs with <code>NOT_CRAN</code> false, so it does <strong>not</strong> exercise those 37 tests. A green check is not evidence that they pass; only the <code>devtools::test()</code> line above is.</p>
 </div>
 <div class="section level2">
 <h2 id="the-one-thing-that-destroys-work">The one thing that destroys work<a class="anchor" aria-label="anchor" href="#the-one-thing-that-destroys-work"></a></h2>
@@ -108,7 +108,7 @@
 </tr></thead><tbody><tr><td>
 <code>.claude/hooks/verify.sh</code> (Claude Code <code>Stop</code> hook)</td>
 <td>session end</td>
-<td>lint, plus the test files matching what changed. About 27 seconds</td>
+<td>lint, plus the test files matching what changed, plus the six cross-cutting files. About 25 seconds, or about 130 when a changed file maps to no test and it falls back to the whole suite</td>
 </tr><tr><td><code>.githooks/pre-commit</code></td>
 <td><code>git commit</code></td>
 <td>blocks a commit that deletes vdiffr baselines</td>
@@ -122,7 +122,7 @@
 </div>
 <div class="section level2">
 <h2 id="before-you-touch-code">Before you touch code<a class="anchor" aria-label="anchor" href="#before-you-touch-code"></a></h2>
-<p>Orient on the public API surface and where things live <strong>before</strong> editing. Do not infer the structure of this package from a partial file read: there are 60 exported symbols across 19 extractor families, and the S3 dispatch layer means the function you found is often not the one that runs.</p>
+<p>Orient on the public API surface and where things live <strong>before</strong> editing. Do not infer the structure of this package from a partial file read: <code>NAMESPACE</code> carries 29 <code>export()</code> directives and 115 <code>S3method()</code> registrations across 19 extractor families, and the S3 dispatch layer means the function you found is often not the one that runs.</p>
 </div>
 <div class="section level2">
 <h2 id="generated-files-never-hand-edit">Generated files: never hand-edit<a class="anchor" aria-label="anchor" href="#generated-files-never-hand-edit"></a></h2>
