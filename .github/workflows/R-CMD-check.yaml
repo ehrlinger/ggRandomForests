@@ -1,9 +1,17 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
+  # A commit that only touches the generated house-style artifact cannot change
+  # the package: .claude is in .Rbuildignore, so it never reaches the build.
+  # Running this on such a commit burns runner minutes and queues ahead of
+  # checks that can actually fail.
   push:
+    paths-ignore:
+      - '.claude/**'
     branches: [main]
   pull_request:
+    paths-ignore:
+      - '.claude/**'
 
 name: R-CMD-check.yaml
 
