@@ -66,20 +66,39 @@ regenerated `.Rd` files, and the version metadata.
   with the manual, built from a clean `git archive` export: **0 ERRORs,
   0 WARNINGs, 1 NOTE**. Check time 3m53s across timed steps; the source tarball
   is 2.27 MB. The full test suite, run with `NOT_CRAN=true` so the
-  `skip_on_cran()` tests execute too, is 1510 passing and 0 failing.
+  `skip_on_cran()` tests execute too, is 1512 passing and 0 failing.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
 
-**win-builder:** R-devel, R-release and R-oldrelease, run against this exact
-tarball.
+**win-builder:** x86_64-w64-mingw32, Windows Server 2022. All three branches
+return **Status: 1 NOTE**, the same `Number of updates in past 6 months: 7`
+reported locally, with no second NOTE and no ERRORs or WARNINGs:
 
-On check time: the 3.5.0 win-builder totals ran to roughly 8 minutes
-(R-release), 10 minutes (R-devel) and 12 minutes (R-oldrelease), with the
-vignette rebuild the dominant term in each. R-oldrelease has come down sharply
-on 3.5.1, because every `rfsrc` fit in an example now carries an explicit
-`ntree`; R-release and R-devel are essentially unchanged, with R-devel the
-closest to the line. If that is too long, the vignette rebuild is the lever and
-I am glad to precompute further, as I did for 3.1.0.
+| Branch | R | Status | Check time |
+|---|---|---|---|
+| R-devel | 2026-08-17 r90424 | 1 NOTE | 10m19s |
+| R-release | 4.6.1 | 1 NOTE | 8m21s |
+| R-oldrelease | 4.5.3 | 1 NOTE | 6m33s |
+
+One caveat, so the record is exact: those three runs were made against this tree
+with a single later change, a paragraph added to `README.md` naming `varPro` in
+the opening description. `R CMD check` does not parse `README.md`, so no check
+outcome depends on it, but the tarball was rebuilt after the runs and I would
+rather say so than let "run against this exact tarball" stand unqualified.
+
+On check time, which I would rather flag than leave you to find. The 3.5.0
+totals were roughly 8 minutes (R-release), 10 minutes (R-devel) and 12m15s
+(R-oldrelease). Measured on 3.5.1:
+
+* **R-oldrelease 12m15s to 6m33s.** Every `rfsrc` fit in an example now carries
+  an explicit `ntree`, which nearly halved the branch that was furthest over.
+* **R-release 8m21s and R-devel 10m19s**, both essentially unchanged from the
+  3.5.0 you accepted on 2026-08-04.
+
+R-devel is therefore the one sitting just above ten minutes, and the vignette
+rebuild is 299s of its 619s. That is the lever: I am glad to precompute the
+expensive vignette calls, as I did for 3.1.0, and can turn that around quickly
+if you would like it before acceptance rather than after.
 
 ### NOTE disposition
 
