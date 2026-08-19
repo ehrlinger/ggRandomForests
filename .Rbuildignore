@@ -1,9 +1,14 @@
 .gitignore
-^.*\.Rproj$         # Automatically added by RStudio,
-^\.Rproj\.user$     # used for temporary files. 
-^README\.Rmd$       # An Rmarkdown file used to generate README.md
-^cran-comments\.md$ # Comments for CRAN submission
-^\.travis\.yml$    # Used for continuous integration testing with traviswercker.yml
+# Automatically added by RStudio,
+^.*\.Rproj$
+# used for temporary files.
+^\.Rproj\.user$
+# An Rmarkdown file used to generate README.md
+^README\.Rmd$
+# Comments for CRAN submission
+^cran-comments\.md$
+# Used for continuous integration testing with traviswercker.yml
+^\.travis\.yml$
 ^\.coveralls\.yml$
 ^packrat$
 ^\.Rprofile$
@@ -62,3 +67,16 @@ Rplots\.pdf$
 ^\.Renviron$
 ^\.githooks$
 ^AGENTS\.md$
+
+# Agent and editor scratch directories. These are untracked, so a build from a
+# clean `git archive` export never sees them, but a build from the working tree
+# does: win-builder reported `.remember` as a hidden-directory NOTE on
+# 2026-08-18 from exactly that. Every line here is a regex; .Rbuildignore has no
+# comment syntax, which is why the notes above sit on their own lines.
+#
+# Anchored with (^|/) rather than ^ alone: R CMD build matches these against the
+# path relative to the package root, so a bare ^ catches only a root-level
+# occurrence and would let vignettes/.DS_Store through.
+(^|/)\.remember$
+(^|/)\.Rhistory$
+(^|/)\.DS_Store$
