@@ -73,6 +73,10 @@ Rplots\.pdf$
 # does: win-builder reported `.remember` as a hidden-directory NOTE on
 # 2026-08-18 from exactly that. Every line here is a regex; .Rbuildignore has no
 # comment syntax, which is why the notes above sit on their own lines.
-^\.remember$
-^\.Rhistory$
-^\.DS_Store$
+#
+# Anchored with (^|/) rather than ^ alone: R CMD build matches these against the
+# path relative to the package root, so a bare ^ catches only a root-level
+# occurrence and would let vignettes/.DS_Store through.
+(^|/)\.remember$
+(^|/)\.Rhistory$
+(^|/)\.DS_Store$

@@ -70,8 +70,10 @@ regenerated `.Rd` files, and the version metadata.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
 
-**win-builder:** R-devel, R-release and R-oldrelease, run against the exact
-tarball submitted here.
+**win-builder:** R-devel, R-release and R-oldrelease, run against this exact
+tarball.
+
+PENDING WIN-BUILDER: insert the three Status lines and check times here.
 
 On check time: the 3.5.0 win-builder totals ran to roughly 8 minutes
 (R-release), 10 minutes (R-devel) and 12 minutes (R-oldrelease), with the
