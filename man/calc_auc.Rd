@@ -11,7 +11,7 @@ calc_auc(x)
 \item{x}{\code{\link{gg_roc}} object}
 }
 \value{
-AUC. 50\\% is random guessing, higher is better.
+AUC. 50\% is random guessing, higher is better.
 }
 \description{
 Area Under the ROC Curve calculator
