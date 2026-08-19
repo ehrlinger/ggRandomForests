@@ -1,5 +1,24 @@
 Package: ggRandomForests
-Version: 3.5.1
+Version: 3.5.2
+
+ggRandomForests v3.5.2
+======================
+* `?gg_partial_varpro` now documents varPro's missing-data contract, which
+  governs every fit this package plots. varPro has no imputation: each entry
+  point grows a stump through `randomForestSRC::rfsrc` and inherits its
+  `na.action = "na.omit"`, so any case missing a predictor or the outcome is
+  deleted before the fit, silently. `na.action = "na.impute"` passed to
+  `varpro()` lands in `...` and is discarded without remark. The loss
+  compounds as `0.95^p`, and the fitted object keeps only the post-deletion
+  count, so neither the user nor this package can recover the original from
+  the object -- the check has to happen before the fit.
+* The same section covers imputing beforehand without inventing outcomes.
+  `roughfix()` and `randomForestSRC::impute()` both fill every column handed
+  to them, the outcome included, so a frame with missing outcomes comes back
+  with manufactured responses and the release rules are fit partly to them.
+  Documents von Hippel's impute-then-delete, and the two cautions that follow:
+  outcome-informed imputation crosses fold boundaries in `cv.varpro()`, and a
+  completed frame carries no imputation uncertainty into the curves.
 
 ggRandomForests v3.5.1
 ======================
