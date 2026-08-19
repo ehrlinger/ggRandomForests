@@ -73,8 +73,6 @@ regenerated `.Rd` files, and the version metadata.
 **win-builder:** R-devel, R-release and R-oldrelease, run against this exact
 tarball.
 
-PENDING WIN-BUILDER: insert the three Status lines and check times here.
-
 On check time: the 3.5.0 win-builder totals ran to roughly 8 minutes
 (R-release), 10 minutes (R-devel) and 12 minutes (R-oldrelease), with the
 vignette rebuild the dominant term in each. R-oldrelease has come down sharply
