@@ -96,7 +96,7 @@
 #' ## -------- iris data
 #' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ .,
 #'   data = iris,
-#'   ntree = 100,
+#'   ntree = 50,
 #'   importance = TRUE
 #' )
 #' gg_dta <- gg_vimp(rfsrc_iris)
@@ -108,7 +108,7 @@
 #'
 #' ## -------- air quality data
 #' rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality,
-#'   ntree = 100,
+#'   ntree = 50,
 #'   importance = TRUE
 #' )
 #' gg_dta <- gg_vimp(rfsrc_airq)
@@ -119,7 +119,7 @@
 #' if (requireNamespace("MASS", quietly = TRUE)) {
 #'   data(Boston, package = "MASS")
 #'   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston,
-#'     ntree = 100,
+#'     ntree = 50,
 #'     importance = TRUE
 #'   )
 #'   gg_dta <- gg_vimp(rfsrc_boston)
@@ -138,7 +138,7 @@
 #' ## -------- mtcars data
 #' rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ .,
 #'   data = mtcars,
-#'   ntree = 100,
+#'   ntree = 50,
 #'   importance = TRUE
 #' )
 #' gg_dta <- gg_vimp(rfsrc_mtcars)
@@ -152,7 +152,7 @@
 #' data(veteran, package = "randomForestSRC")
 #' rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ .,
 #'   data = veteran,
-#'   ntree = 100,
+#'   ntree = 50,
 #'   importance = TRUE
 #' )
 #'
@@ -168,7 +168,7 @@
 #' rfsrc_pbc <- randomForestSRC::rfsrc(
 #'   Surv(years, status) ~ .,
 #'   dta_train,
-#'   ntree = 100,
+#'   ntree = 50,
 #'   nsplit = 10,
 #'   na.action = "na.impute",
 #'   forest = TRUE,

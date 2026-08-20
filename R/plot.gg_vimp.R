@@ -54,7 +54,7 @@
 #' ## classification example
 #' ## ------------------------------------------------------------
 #' ## -------- iris data
-#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 100)
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
 #' gg_dta <- gg_vimp(rfsrc_iris)
 #' plot(gg_dta)
 #'
@@ -62,7 +62,7 @@
 #' ## regression example
 #' ## ------------------------------------------------------------
 #' ## -------- air quality data
-#' rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality, ntree = 100)
+#' rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality, ntree = 50)
 #' gg_dta <- gg_vimp(rfsrc_airq)
 #' plot(gg_dta)
 #'

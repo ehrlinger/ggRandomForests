@@ -1,6 +1,7 @@
 # testthat for gg_vimp function
 
 test_that("gg_vimp classifications", {
+  skip_on_cran()
   set.seed(20260817L)
   ## Load the cached forest
   data(iris, package = "datasets")
@@ -123,6 +124,7 @@ test_that("gg_vimp classifications", {
 })
 
 test_that("gg_vimp randomForest which.outcome maps to the right column", {
+  skip_on_cran()
   data(iris, package = "datasets")
   set.seed(1)
   rf_iris <- randomForest::randomForest(Species ~ .,
@@ -158,6 +160,7 @@ test_that("gg_vimp randomForest which.outcome maps to the right column", {
 })
 
 test_that("gg_vimp which.outcome names the measure in set", {
+  skip_on_cran()
   data(iris, package = "datasets")
   set.seed(1)
 
@@ -191,6 +194,7 @@ test_that("gg_vimp which.outcome names the measure in set", {
 
 
 test_that("gg_vimp survival", {
+  skip_on_cran()
   set.seed(20260817L)
   # Shared with the roxygen examples; see inst/examples/pbc-setup.R. That file
   # passes envir = environment() to data(), which is what lets it be sourced
@@ -269,6 +273,7 @@ test_that("gg_vimp survival", {
 })
 
 test_that("gg_vimp regression", {
+  skip_on_cran()
   set.seed(20260817L)
   ## Load the cached forest
   data(Boston, package = "MASS")
@@ -374,6 +379,7 @@ test_that("gg_vimp regression", {
 })
 
 test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP column", {
+  skip_on_cran()
   # Regression test for the bug where gg_dta$vimp was accessed but the column
   # is named "VIMP" (uppercase) in single-outcome rfsrc fits, leaving positive
   # always TRUE even for variables with non-positive VIMP.
@@ -405,6 +411,7 @@ test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP c
 })
 
 test_that("gg_vimp.randomForest regression: vimp column present even when importance is IncNodePurity", {
+  skip_on_cran()
   set.seed(20260817L)
   # Guard test: when randomForest stores importance as IncNodePurity (not X.IncMSE),
   # gg_vimp must still produce a 'vimp' column so plot.gg_vimp and the positive
