@@ -2,7 +2,7 @@
 
 # Claude Code specifics
 
-`AGENTS.md`, imported above, is the operational contract and applies in full. It is written to
+[`AGENTS.md`](AGENTS.md), imported above, is the operational contract and applies in full. It is written to
 be tool neutral so that Codex and other agents read the same rules. Only the Claude Code
 affordances live here.
 
