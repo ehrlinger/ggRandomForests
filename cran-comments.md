@@ -1,3 +1,89 @@
+## v3.5.2: resubmission, check time back under ten minutes
+
+This replaces the 3.5.1 submission of 2026-08-19, which the incoming pretest
+declined with `Overall checktime 12 min > 10 min` on r-devel-windows, and it
+answers your question of whether I could bring it under ten minutes. That is
+what the release is for. No exported function, argument or returned object
+changed.
+
+### Where the twelve minutes went
+
+From the pretest logs for the 3.5.1 tarball, so these are your numbers rather
+than mine:
+
+| Step | r-devel-windows | r-devel-debian |
+|---|---|---|
+| re-building vignette outputs | 287s | 108s |
+| tests | 195s | 68s |
+| examples | 51s | 28s |
+| incoming feasibility, R code, PDF manual | 75s | 24s |
+| **overall** | **720s** | |
+
+Two steps carry two thirds of the Windows total. Both are cut at the source
+below, rather than moved somewhere the check does not look.
+
+### What changed
+
+**Vignettes.** The `rfsrc` walkthroughs had grown forests and
+partial-dependence grids sized for the narrative rather than for a check
+budget. Boston and iris now grow 100 trees instead of 200, the `pbc`
+impute-and-fit pair 50 and 100 instead of 100 and 150, and the two
+partial-dependence surface grids 6 and 5 points instead of 10 and 8. The SHAP
+sections explain 25 rows against 30 background draws instead of 40 against 50.
+Every number the prose quotes is either interpolated from the fit or updated to
+match, and the conclusions each section draws are unchanged.
+
+**Examples.** `gg_error()` and `plot.gg_error()` each fit six forests at
+`ntree = 250` with `block.size = 1`, which makes every tree a separate error
+evaluation, so `ntree` was the whole cost. They now fit 100, which still shows
+the convergence those examples exist to show. `gg_vimp()` and `plot.gg_vimp()`
+drop from 100 trees to 50.
+
+**Tests.** The four heaviest test files under CRAN skip semantics
+(`test_gg_udependent`, `test_gg_varpro`, `test_gg_variable`, `test_gg_vimp`)
+were 52% of the suite's CRAN-side cost between them, and now carry
+`skip_on_cran()`. They still run in full under `devtools::test()` locally and
+in CI, so the coverage is not lost, only moved off your machines.
+
+### What it bought
+
+Same machine, same method, 3.5.1 against 3.5.2:
+
+| Step | 3.5.1 | 3.5.2 |
+|---|---|---|
+| examples | 16s | 12s |
+| examples with `--run-donttest` | 39s | 31s |
+| tests | 34s | 14s |
+| re-building vignette outputs | 55s | 36s |
+
+### The other change in this release
+
+`?gg_partial_varpro` gains a section on varPro's missing-data contract, which
+governs every fit this package plots. varPro has no imputation: each entry
+point grows a stump through `randomForestSRC::rfsrc` and inherits its
+`na.action = "na.omit"`, so any case missing a predictor or the outcome is
+deleted before the fit, silently, and `na.action = "na.impute"` passed to
+`varpro()` lands in `...` and is discarded without remark. The section also
+covers imputing beforehand without manufacturing outcomes. Documentation only;
+no code path changed.
+
+### Test environments
+
+* **Local:** macOS (aarch64-apple-darwin), R 4.6.0, `R CMD check --as-cran`
+  with the manual, built from a clean `git archive` export: **0 ERRORs,
+  0 WARNINGs, 1 NOTE**. The source tarball is 2.39 MB.
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
+* **URL check:** `urlchecker::url_check()` reports all URLs correct.
+
+### NOTE disposition
+
+The one NOTE is `Number of updates in past 6 months: 7`. This submission is the
+resubmission you asked for after the 3.5.1 pretest, against the 2026-08-21
+deadline on the `gcc-UBSAN` additional issue, which is why it follows so
+closely. I would not otherwise submit on this cadence.
+
+---
+
 ## v3.5.1 — patch release (fixes the gcc-UBSAN additional issue in 3.5.0)
 
 Submitted in response to the CRAN check request of 2026-08-05 (correct before

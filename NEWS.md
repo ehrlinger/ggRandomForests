@@ -3,6 +3,18 @@ Version: 3.5.2
 
 ggRandomForests v3.5.2
 ======================
+* `R CMD check` is back inside CRAN's ten-minute budget. On the 3.5.1
+  win-builder run the vignette rebuild was 287s and the tests 195s of a
+  12-minute total, so both were cut at the source rather than moved around.
+  The `rfsrc` vignettes grow smaller forests (Boston and iris at 100 trees,
+  the `pbc` impute-and-fit pair at 50 and 100) and coarser partial-dependence
+  surface grids (6 and 5 points, from 10 and 8); the SHAP sections explain 25
+  rows against 30 background draws instead of 40 against 50. In the examples,
+  `gg_error()` and `plot.gg_error()` grow 100 trees instead of 250, and
+  `gg_vimp()` and `plot.gg_vimp()` 50 instead of 100. The four heaviest test
+  files, `gg_udependent`, `gg_varpro`, `gg_variable` and `gg_vimp`, now
+  `skip_on_cran()`; they still run in full under `devtools::test()`. No
+  function, argument or returned object changed.
 * `?gg_partial_varpro` now documents varPro's missing-data contract, which
   governs every fit this package plots. varPro has no imputation: each entry
   point grows a stump through `randomForestSRC::rfsrc` and inherits its
