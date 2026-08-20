@@ -113,7 +113,7 @@ forests, *Electronic J. Statist.*, 1:519-537.
 ## -------- iris data
 rfsrc_iris <- randomForestSRC::rfsrc(Species ~ .,
   data = iris,
-  ntree = 100,
+  ntree = 50,
   importance = TRUE
 )
 gg_dta <- gg_vimp(rfsrc_iris)
@@ -126,7 +126,7 @@ plot(gg_dta)
 
 ## -------- air quality data
 rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., airquality,
-  ntree = 100,
+  ntree = 50,
   importance = TRUE
 )
 gg_dta <- gg_vimp(rfsrc_airq)
@@ -138,7 +138,7 @@ plot(gg_dta)
 if (requireNamespace("MASS", quietly = TRUE)) {
   data(Boston, package = "MASS")
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston,
-    ntree = 100,
+    ntree = 50,
     importance = TRUE
   )
   gg_dta <- gg_vimp(rfsrc_boston)
@@ -158,7 +158,7 @@ if (requireNamespace("MASS", quietly = TRUE)) {
 ## -------- mtcars data
 rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ .,
   data = mtcars,
-  ntree = 100,
+  ntree = 50,
   importance = TRUE
 )
 gg_dta <- gg_vimp(rfsrc_mtcars)
@@ -173,7 +173,7 @@ plot(gg_dta)
 data(veteran, package = "randomForestSRC")
 rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ .,
   data = veteran,
-  ntree = 100,
+  ntree = 50,
   importance = TRUE
 )
 
@@ -223,7 +223,7 @@ pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(years, status) ~ .,
   dta_train,
-  ntree = 100,
+  ntree = 50,
   nsplit = 10,
   na.action = "na.impute",
   forest = TRUE,

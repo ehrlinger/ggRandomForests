@@ -17,7 +17,7 @@ calc_auc(x)
 
 ## Value
 
-AUC. 50\\
+AUC. 50% is random guessing, higher is better.
 
 ## Details
 

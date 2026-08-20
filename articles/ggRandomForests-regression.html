@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@
       <h1>Random Forest Regression with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-08-19</p>
+      <p class="date">2026-08-20</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests-regression.qmd" class="external-link"><code>vignettes/ggRandomForests-regression.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -193,13 +193,13 @@
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rfsrc_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Boston</span>, <span class="co"># nolint: object_name_linter</span></span>
-<span>                      ntree <span class="op">=</span> <span class="fl">200</span>, importance <span class="op">=</span> <span class="cn">TRUE</span>, err.block <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span>                      ntree <span class="op">=</span> <span class="fl">100</span>, importance <span class="op">=</span> <span class="cn">TRUE</span>, err.block <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">rfsrc_Boston</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code><span><span class="co">#&gt;                          Sample size: 506</span></span>
-<span><span class="co">#&gt;                      Number of trees: 200</span></span>
+<span><span class="co">#&gt;                      Number of trees: 100</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 5</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 67.1</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 66.84</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 5</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 13</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -208,11 +208,11 @@
 <span><span class="co">#&gt;                               Family: regr</span></span>
 <span><span class="co">#&gt;                       Splitting rule: mse *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                      (OOB) R squared: 0.86096762</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 11.76029314</span></span></code></pre>
+<span><span class="co">#&gt;                      (OOB) R squared: 0.86048593</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 11.80103773</span></span></code></pre>
 </div>
 </div>
-<p>The forest grew 200 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
+<p>The forest grew 100 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
 <section class="level2"><h3 id="oob-error-convergence">OOB error convergence<a class="anchor" aria-label="anchor" href="#oob-error-convergence"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -267,7 +267,7 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span> <span class="co"># nolint: object_name_linter</span></span></code></pre></div>
 </div>
-<p>The threshold is 3.01, selecting 6 variables: crim, nox, rm, dis, ptratio, lstat.</p>
+<p>The threshold is 2.99, selecting 4 variables: crim, nox, rm, lstat.</p>
 <p>Both VIMP and minimal depth agree on the dominance of <code>lstat</code> and <code>rm</code>. We use the minimal depth top variables for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
@@ -276,16 +276,16 @@
 </section></section><section class="section level2"><h2 id="shap-analysis">SHAP Analysis<a class="anchor" aria-label="anchor" href="#shap-analysis"></a>
 </h2>
 <p>VIMP and varPro both rank <em>how much</em> a variable matters, averaged over the whole forest. They cannot tell you how much a variable mattered for one specific tract’s prediction — that requires a different kind of accounting. SHAP (SHapley Additive exPlanations) borrows an idea from cooperative game theory: treat the 13 predictors as players splitting a payout, and ask how much each one contributed to this tract’s predicted <code>medv</code>, averaged fairly over every order the players could have joined the game. The result is a signed contribution per predictor per tract, and those contributions add up exactly: the forest’s overall average prediction (the <em>baseline</em>) plus the sum of one tract’s contributions equals that tract’s actual predicted value. No other importance measure in this vignette makes that promise.</p>
-<p><code><a href="../reference/gg_shap.html">gg_shap()</a></code> computes these contributions by calling <a href="https://cran.r-project.org/package=kernelshap" class="external-link">kernelshap</a>, which needs one prediction per predictor per background draw, per tract explained. Scoring all 506 tracts is expensive, so we explain a random sample of 40 instead, plenty to see the patterns at a fraction of the cost.</p>
+<p><code><a href="../reference/gg_shap.html">gg_shap()</a></code> computes these contributions by calling <a href="https://cran.r-project.org/package=kernelshap" class="external-link">kernelshap</a>, which needs one prediction per predictor per background draw, per tract explained. Scoring all 506 tracts is expensive, so we explain a random sample of 25 instead, plenty to see the patterns at a fraction of the cost.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">shap_sample</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>, <span class="fl">40</span><span class="op">)</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>, <span class="st">"medv"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">gg_shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_shap.html">gg_shap</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span>, newdata <span class="op">=</span> <span class="va">shap_sample</span>, bg_n <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">shap_sample</span> <span class="op">&lt;-</span> <span class="va">Boston</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://generics.r-lib.org/reference/setops.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">Boston</span><span class="op">)</span>, <span class="st">"medv"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">gg_shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_shap.html">gg_shap</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span>, newdata <span class="op">=</span> <span class="va">shap_sample</span>, bg_n <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span></code></pre></div>
 </div>
 <section class="level2"><h3 id="shap-importance">SHAP importance<a class="anchor" aria-label="anchor" href="#shap-importance"></a>
 </h3>
-<p>Averaging the absolute contribution of each variable across the 40 tracts gives a ranking directly comparable to VIMP.</p>
+<p>Averaging the absolute contribution of each variable across the 25 tracts gives a ranking directly comparable to VIMP.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_shp</span>, type <span class="op">=</span> <span class="st">"importance"</span><span class="op">)</span></span></code></pre></div>
@@ -459,10 +459,10 @@
 <p>The <code>rm</code> effect is strongest in low-<code>lstat</code> tracts (bottom-left panels) and nearly flat in high-<code>lstat</code> tracts, confirming a meaningful interaction.</p>
 </section></section><section class="section level2"><h2 id="partial-dependence-surface">Partial Dependence Surface<a class="anchor" aria-label="anchor" href="#partial-dependence-surface"></a>
 </h2>
-<p>To visualize the joint partial dependence of <code>medv</code> on <code>lstat</code> and <code>rm</code>, we compute partial dependence on a grid: 10 values of <code>rm</code>, each evaluated at 25 points along <code>lstat</code>.</p>
+<p>To visualize the joint partial dependence of <code>medv</code> on <code>lstat</code> and <code>rm</code>, we compute partial dependence on a grid: 6 values of <code>rm</code>, each evaluated at 25 points along <code>lstat</code>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rm_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, groups <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">rm_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, groups <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">surface_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">rm_grid</span>, <span class="kw">function</span><span class="op">(</span><span class="va">rm_val</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">newx</span> <span class="op">&lt;-</span> <span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span></span>

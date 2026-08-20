@@ -134,14 +134,14 @@ function detects the regression family from the continuous response.
 ``` r
 
 rfsrc_Boston <- rfsrc(medv ~ ., data = Boston, # nolint: object_name_linter
-                      ntree = 200, importance = TRUE, err.block = 5)
+                      ntree = 100, importance = TRUE, err.block = 5)
 rfsrc_Boston
 ```
 
     #>                          Sample size: 506
-    #>                      Number of trees: 200
+    #>                      Number of trees: 100
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 67.1
+    #>        Average no. of terminal nodes: 66.84
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,10 +150,10 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86096762
-    #>    (OOB) Requested performance error: 11.76029314
+    #>                      (OOB) R squared: 0.86048593
+    #>    (OOB) Requested performance error: 11.80103773
 
-The forest grew 200 trees, splitting on 5 randomly selected candidate
+The forest grew 100 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
 5.
 
@@ -240,8 +240,7 @@ considered most important.
 md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
-The threshold is 3.01, selecting 6 variables: crim, nox, rm, dis,
-ptratio, lstat.
+The threshold is 2.99, selecting 4 variables: crim, nox, rm, lstat.
 
 Both VIMP and minimal depth agree on the dominance of `lstat` and `rm`.
 We use the minimal depth top variables for the remainder of the
@@ -271,19 +270,19 @@ in this vignette makes that promise.
 computes these contributions by calling
 [kernelshap](https://cran.r-project.org/package=kernelshap), which needs
 one prediction per predictor per background draw, per tract explained.
-Scoring all 506 tracts is expensive, so we explain a random sample of 40
+Scoring all 506 tracts is expensive, so we explain a random sample of 25
 instead, plenty to see the patterns at a fraction of the cost.
 
 ``` r
 
 set.seed(42)
-shap_sample <- Boston[sample(nrow(Boston), 40), setdiff(colnames(Boston), "medv")]
-gg_shp <- gg_shap(rfsrc_Boston, newdata = shap_sample, bg_n = 50)
+shap_sample <- Boston[sample(nrow(Boston), 25), setdiff(colnames(Boston), "medv")]
+gg_shp <- gg_shap(rfsrc_Boston, newdata = shap_sample, bg_n = 30)
 ```
 
 ### SHAP importance
 
-Averaging the absolute contribution of each variable across the 40
+Averaging the absolute contribution of each variable across the 25
 tracts gives a ranking directly comparable to VIMP.
 
 ``` r
@@ -516,12 +515,12 @@ interaction.
 ## Partial Dependence Surface
 
 To visualize the joint partial dependence of `medv` on `lstat` and `rm`,
-we compute partial dependence on a grid: 10 values of `rm`, each
+we compute partial dependence on a grid: 6 values of `rm`, each
 evaluated at 25 points along `lstat`.
 
 ``` r
 
-rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 10)
+rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 6)
 
 surface_list <- lapply(rm_grid, function(rm_val) {
   newx <- rfsrc_Boston$xvar

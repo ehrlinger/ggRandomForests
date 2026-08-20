@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@
       <h1>Random Forest Classification with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-08-19</p>
+      <p class="date">2026-08-20</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests-classification.qmd" class="external-link"><code>vignettes/ggRandomForests-classification.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -182,14 +182,14 @@
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">rfsrc_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span>,</span>
-<span>                    ntree <span class="op">=</span> <span class="fl">200</span>, importance <span class="op">=</span> <span class="cn">TRUE</span>, err.block <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span>                    ntree <span class="op">=</span> <span class="fl">100</span>, importance <span class="op">=</span> <span class="cn">TRUE</span>, err.block <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">rfsrc_iris</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code><span><span class="co">#&gt;                          Sample size: 150</span></span>
 <span><span class="co">#&gt;            Frequency of class labels: setosa=50, versicolor=50, virginica=50</span></span>
-<span><span class="co">#&gt;                      Number of trees: 200</span></span>
+<span><span class="co">#&gt;                      Number of trees: 100</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 1</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 9.75</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 9.41</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 2</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 4</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -198,27 +198,27 @@
 <span><span class="co">#&gt;                               Family: class</span></span>
 <span><span class="co">#&gt;                       Splitting rule: gini *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                    (OOB) Brier score: 0.02253931</span></span>
-<span><span class="co">#&gt;         (OOB) Normalized Brier score: 0.10142687</span></span>
-<span><span class="co">#&gt;                            (OOB) AUC: 0.994</span></span>
-<span><span class="co">#&gt;                       (OOB) Log-loss: 0.11724994</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 0.04, 0, 0.06, 0.06</span></span>
+<span><span class="co">#&gt;                    (OOB) Brier score: 0.02572345</span></span>
+<span><span class="co">#&gt;         (OOB) Normalized Brier score: 0.11575554</span></span>
+<span><span class="co">#&gt;                            (OOB) AUC: 0.9928</span></span>
+<span><span class="co">#&gt;                       (OOB) Log-loss: 0.13208151</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 0.05333333, 0.02, 0.08, 0.06</span></span>
 <span><span class="co">#&gt;</span></span>
 <span><span class="co">#&gt; Confusion matrix:</span></span>
 <span><span class="co">#&gt;</span></span>
 <span><span class="co">#&gt;             predicted</span></span>
 <span><span class="co">#&gt;   observed   setosa versicolor virginica class.error</span></span>
-<span><span class="co">#&gt;   setosa         50          0         0        0.00</span></span>
-<span><span class="co">#&gt;   versicolor      0         47         3        0.06</span></span>
+<span><span class="co">#&gt;   setosa         49          1         0        0.02</span></span>
+<span><span class="co">#&gt;   versicolor      0         46         4        0.08</span></span>
 <span><span class="co">#&gt;   virginica       0          3        47        0.06</span></span>
 <span><span class="co">#&gt;</span></span>
-<span><span class="co">#&gt;       (OOB) Misclassification rate: 0.04</span></span>
+<span><span class="co">#&gt;       (OOB) Misclassification rate: 0.05333333</span></span>
 <span><span class="co">#&gt;</span></span>
 <span><span class="co">#&gt; Random-classifier baselines (uniform):</span></span>
 <span><span class="co">#&gt;    Brier: 0.22222222   Normalized Brier: 1   Log-loss: 1.09861229</span></span></code></pre>
 </div>
 </div>
-<p>The forest grew 200 trees. The confusion matrix confirms what the EDA suggested: every <em>setosa</em> is classified correctly, while <em>versicolor</em> and <em>virginica</em> trade three misclassifications each way, for an overall OOB misclassification rate of 4%.</p>
+<p>The forest grew 100 trees. The confusion matrix confirms what the EDA suggested: every <em>setosa</em> is classified correctly, while <em>versicolor</em> and <em>virginica</em> trade three misclassifications each way, for an overall OOB misclassification rate of 4%.</p>
 <section class="level2"><h3 id="oob-error-convergence">OOB error convergence<a class="anchor" aria-label="anchor" href="#oob-error-convergence"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -268,7 +268,7 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The threshold is 1.88, selecting 2 variables: Petal.Length, Petal.Width. VIMP and minimal depth agree.</p>
+<p>The threshold is 1.91, selecting 2 variables: Petal.Length, Petal.Width. VIMP and minimal depth agree.</p>
 </section></section><section class="section level2"><h2 id="shap-analysis">SHAP Analysis<a class="anchor" aria-label="anchor" href="#shap-analysis"></a>
 </h2>
 <p>VIMP ranks importance averaged over the whole forest, and it does not change with the question you ask. SHAP does: a classification forest predicts one probability per class, and <code><a href="../reference/gg_shap.html">gg_shap()</a></code> explains exactly one of those probabilities at a time, chosen with the <code>which.class</code> argument. Ask for class 1 (<em>setosa</em>) and you get contributions to the <em>setosa</em> probability; switch to class 3 (<em>virginica</em>) and every contribution is recomputed for <em>virginica</em> instead. Nothing else about the method changes — same players, same game, different payout to split.</p>
@@ -276,7 +276,7 @@
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">43</span><span class="op">)</span></span>
-<span><span class="va">gg_shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_shap.html">gg_shap</a></span><span class="op">(</span><span class="va">rfsrc_iris</span>, bg_n <span class="op">=</span> <span class="fl">50</span>, which.class <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">gg_shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_shap.html">gg_shap</a></span><span class="op">(</span><span class="va">rfsrc_iris</span>, bg_n <span class="op">=</span> <span class="fl">30</span>, which.class <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 </div>
 <section class="level2"><h3 id="shap-importance">SHAP importance<a class="anchor" aria-label="anchor" href="#shap-importance"></a>
 </h3>
@@ -368,10 +368,10 @@
 <div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calc_auc.html">calc_auc</a></span><span class="op">(</span><span class="va">roc_virginica</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code><span><span class="co">#&gt; [1] 0.9928</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] 0.991</span></span></code></pre>
 </div>
 </div>
-<p>An AUC of 0.993 for <em>virginica</em> confirms the forest separates it well, even given its overlap with <em>versicolor</em>. <em>setosa</em>’s ROC curve is not worth plotting — it is a right angle, AUC 1, the geometric version of the confusion matrix’s perfect row.</p>
+<p>An AUC of 0.991 for <em>virginica</em> confirms the forest separates it well, even given its overlap with <em>versicolor</em>. <em>setosa</em>’s ROC curve is not worth plotting — it is a right angle, AUC 1, the geometric version of the confusion matrix’s perfect row.</p>
 </section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
 <p>We have walked a full random forest classification analysis with <strong>randomForestSRC</strong> and <strong>ggRandomForests</strong>, and the pieces line up:</p>

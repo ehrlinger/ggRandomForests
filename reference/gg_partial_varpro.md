@@ -165,6 +165,54 @@ other way, toward the screened set; keep the defaults when that sparser
 set is what you want. `nvar` is not the knob here – it only caps how
 much gets reported.
 
+**Which rows you actually get:** varPro has no imputation. Every entry
+point opens by growing a one-node stump through
+[`randomForestSRC::rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+to settle the family and hand back cleaned data, and that call takes
+`rfsrc`'s default `na.action = "na.omit"`. Any case with a missing value
+– in a predictor or in the outcome – is deleted before the fit, with no
+warning and no message. Passing `na.action = "na.impute"` to
+[`varPro::varpro`](https://www.randomforestsrc.org/reference/varpro.html)
+does not change this: it lands in `...`, never reaches the stump, and is
+discarded without remark (varPro 3.1.0).
+
+The loss compounds across predictors rather than adding up. At 5%
+missing per column, independently, retention is \\0.95^p\\ – 60% of rows
+at 10 predictors, 36% at 20, 8% at 50. On a wide clinical frame a little
+missingness everywhere can delete most of the cohort. Nothing in the fit
+records it: `object$rf$n` is the count *after* deletion and no original
+is kept, so neither you nor this package can recover the number from the
+object. Check before you fit – `nrow(dta)` against
+`sum(complete.cases(dta))`.
+
+**Imputing first, without inventing outcomes:**
+[`varPro::roughfix`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+does mean and modal fill,
+[`randomForestSRC::impute`](https://www.randomforestsrc.org//reference/impute.rfsrc.html)
+does the forest-based job, and varPro's own help pages use the latter.
+Both fill **every** column they are handed, the outcome included – so
+where the outcome is itself missing they manufacture it, and the release
+rules are then fit partly to invented responses. Put the observed
+outcome back and drop the cases that never had one:
+
+
+    imp   <- randomForestSRC::impute(y ~ ., data = dta)
+    imp$y <- dta$y                    # restore the observed outcome
+    imp   <- imp[!is.na(imp$y), ]     # drop cases with no real outcome
+
+That is von Hippel's impute-then-delete: keep the outcome in the
+imputation model, since leaving it out attenuates the associations
+varPro is looking for, then discard the cases whose outcome was imputed,
+which carry no information about the response. Only the deletion step
+depends on having missing outcomes; the imputation matters whenever a
+*predictor* is missing. Two cautions. Imputing with the outcome stamps
+its signal into the filled predictor cells, which is right for a single
+fit but crosses fold boundaries in
+[`varPro::cv.varpro`](https://www.randomforestsrc.org/reference/cv.varpro.html)
+– impute inside the folds if the selection error has to mean anything.
+And a completed frame is one dataset, not many, so the curves here carry
+no uncertainty from the imputation; read them as conditional on it.
+
 **Scale detection:** with `scale = "auto"` and an `object` in hand, the
 scale resolves to `"mortality"` for a survival forest and `"generic"`
 for a regression or classification forest. The RMST horizon \\\tau\\ is
@@ -296,6 +344,12 @@ structural causal claim about the data-generating process.
 
 ## References
 
+von Hippel PT (2007). Regression with missing Ys: An improved strategy
+for analyzing multiply imputed data. *Sociological Methodology*,
+**37**(1), 83–117.
+[doi:10.1111/j.1467-9531.2007.00180.x](https://doi.org/10.1111/j.1467-9531.2007.00180.x)
+.
+
 Ishwaran H, Kogalur UB, Blackstone EH, Lauer MS (2008). Random survival
 forests. *The Annals of Applied Statistics*, **2**(3), 841–860.
 [doi:10.1214/08-AOAS169](https://doi.org/10.1214/08-AOAS169) .
@@ -370,7 +424,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 7
+#> [1] 8
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
@@ -385,7 +439,7 @@ setdiff(wanted, vp$xvar.names)
 ## the note on isolation-forest method in Details.)
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
                         method = "rnd")
-#> Warning: gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec. The fit reaches 7 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
+#> Warning: gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec. The fit reaches 8 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,

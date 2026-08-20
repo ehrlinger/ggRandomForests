@@ -133,7 +133,7 @@ This is screening, not inference. Reach for it when you want to:
   fitted model and compare the test scores to the training distribution.
 
 The score is a *rank*, not a probability of being an outlier: two
-observations with `howbad = 0.92` are both unusual, not "92\\ likely to
+observations with `howbad = 0.92` are both unusual, not "92% likely to
 be anomalous". Pick a cutoff by looking at where the elbow rises;
 [`plot.gg_isopro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
 can annotate either a score (`threshold`) or a top-percent (`top_n_pct`)

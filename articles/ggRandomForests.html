@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,7 +84,7 @@
       <h1>Exploring Random Forests with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-08-19</p>
+      <p class="date">2026-08-20</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests.qmd" class="external-link"><code>vignettes/ggRandomForests.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -110,11 +110,11 @@
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
-<span><span class="va">rf_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span>, ntree <span class="op">=</span> <span class="fl">200</span>, keep.forest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">rf_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></span><span class="op">(</span><span class="va">Species</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">iris</span>, ntree <span class="op">=</span> <span class="fl">100</span>, keep.forest <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">err_df</span> <span class="op">&lt;-</span> <span class="fu">ggRandomForests</span><span class="fu">::</span><span class="fu"><a href="../reference/gg_error.html">gg_error</a></span><span class="op">(</span><span class="va">rf_iris</span>, training <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">err_df</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;gg_error&gt;  from randomForest  |  family: classification  |  ntree: 200  |  n: 150</code></pre>
+<pre><code>&lt;gg_error&gt;  from randomForest  |  family: classification  |  ntree: 100  |  n: 150</code></pre>
 </div>
 </div>
 <p>A forest’s error rate settles down as trees are added, and the <code><a href="../reference/gg_error.html">gg_error()</a></code> object lets you watch that happen. It holds the cumulative out-of-bag (OOB) error rate for each outcome column, indexed by the <code>ntree</code> counter. Ask for <code>training = TRUE</code> and the function reconstructs the original model frame and adds the in-bag error trajectory (<code>train</code>) as well, so you can see both curves at once:</p>
@@ -135,13 +135,13 @@
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">99</span><span class="op">)</span></span>
 <span><span class="va">boston</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/MASS/man/Boston.html" class="external-link">Boston</a></span></span>
-<span><span class="va">rf_boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">boston</span>, ntree <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span>
+<span><span class="va">rf_boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html" class="external-link">randomForest</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">boston</span>, ntree <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">var_df</span> <span class="op">&lt;-</span> <span class="fu">ggRandomForests</span><span class="fu">::</span><span class="fu"><a href="../reference/gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rf_boston</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">var_df</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lstat"</span>, <span class="st">"yhat"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Classes 'gg_variable', 'regression' and 'data.frame':   506 obs. of  2 variables:
  $ lstat: num  4.98 9.14 4.03 2.94 5.33 ...
- $ yhat : num  29.2 22.5 35.1 36.4 33.4 ...</code></pre>
+ $ yhat : num  28.8 22.7 34.5 36.9 33.7 ...</code></pre>
 </div>
 </div>
 <p><code><a href="../reference/gg_variable.html">gg_variable()</a></code> recovers the training data straight from the model call, so it still works when the forest was fit inside a helper function or against a <code><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset()</a></code> expression, cases where the data is not sitting in the global environment. The object you get back keeps the raw predictors alongside the prediction: a single <code>yhat</code> column for regression, or one <code>yhat.&lt;class&gt;</code> column per class for classification. To plot one predictor, name it with <code>xvar</code>:</p>
@@ -167,7 +167,7 @@
 <code class="sourceCode R"><span><span class="va">vimp_df</span> <span class="op">&lt;-</span> <span class="fu">ggRandomForests</span><span class="fu">::</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rf_boston</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">vimp_df</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;gg_vimp&gt;  from randomForest  |  family: regression  |  ntree: 150  |  n: 506  |  variables: 6</code></pre>
+<pre><code>&lt;gg_vimp&gt;  from randomForest  |  family: regression  |  ntree: 100  |  n: 506  |  variables: 6</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">vimp_df</span><span class="op">)</span></span></code></pre></div>

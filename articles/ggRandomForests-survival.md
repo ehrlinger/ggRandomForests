@@ -299,19 +299,19 @@ to work correctly.
 # Step 1: impute missing values via random forest proximity
 pbc_imputed <- impute.rfsrc(Surv(years, status) ~ .,
                              data    = pbc_trial,
-                             ntree   = 100,
+                             ntree   = 50,
                              nimpute = 2)
 
 # Step 2: grow the survival forest on the complete imputed data
 rfsrc_pbc <- rfsrc(Surv(years, status) ~ .,
                    data      = pbc_imputed,
-                   ntree     = 150,
+                   ntree     = 100,
                    nsplit    = 10,
                    tree.err  = TRUE,
                    importance = TRUE)
 ```
 
-The forest grew 150 trees, splitting on 5 randomly selected candidate
+The forest grew 100 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
 15.
 
@@ -326,7 +326,7 @@ plot(gg_error(rfsrc_pbc))
 
 OOB prediction error vs. number of trees.
 
-The error stabilizes well before the 150 trees grown here, indicating
+The error stabilizes well before the 100 trees grown here, indicating
 the forest is large enough for reliable predictions.
 
 ### OOB predicted survival
@@ -440,9 +440,9 @@ md_pbc <- max.subtree(rfsrc_pbc)
 
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-function computes minimal depth for each variable. The threshold is 5.9,
-selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper,
-prothrombin.
+function computes minimal depth for each variable. The threshold is
+6.08, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
 `copper`, `prothrombin`, and `age`. We add `edema` (selected by the
@@ -649,12 +649,12 @@ an interaction between these two liver function markers.
 
 For a richer view of the interaction between bilirubin and albumin, we
 construct a partial dependence surface. We compute partial dependence on
-a grid of 8 albumin values, each evaluated at 25 bilirubin points.
+a grid of 5 albumin values, each evaluated at 25 bilirubin points.
 
 ``` r
 
 # Create grid of albumin values
-alb_grid <- quantile_pts(pbc_trial$albumin, groups = 8)
+alb_grid <- quantile_pts(pbc_trial$albumin, groups = 5)
 
 # For each albumin value, compute partial dependence on bili at ~1 year
 surface_list <- lapply(alb_grid, function(alb_val) {
@@ -777,7 +777,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.418651
+    #> [1] 1.405224
 
 ## Conclusion
 

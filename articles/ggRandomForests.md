@@ -26,12 +26,12 @@ library(randomForest)
 ``` r
 
 set.seed(42)
-rf_iris <- randomForest(Species ~ ., data = iris, ntree = 200, keep.forest = TRUE)
+rf_iris <- randomForest(Species ~ ., data = iris, ntree = 100, keep.forest = TRUE)
 err_df <- ggRandomForests::gg_error(rf_iris, training = TRUE)
 head(err_df)
 ```
 
-    <gg_error>  from randomForest  |  family: classification  |  ntree: 200  |  n: 150
+    <gg_error>  from randomForest  |  family: classification  |  ntree: 100  |  n: 150
 
 A forest’s error rate settles down as trees are added, and the
 [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
@@ -54,14 +54,14 @@ plot(err_df)
 
 set.seed(99)
 boston <- MASS::Boston
-rf_boston <- randomForest(medv ~ ., data = boston, ntree = 150)
+rf_boston <- randomForest(medv ~ ., data = boston, ntree = 100)
 var_df <- ggRandomForests::gg_variable(rf_boston)
 str(var_df[, c("lstat", "yhat")])
 ```
 
     Classes 'gg_variable', 'regression' and 'data.frame':   506 obs. of  2 variables:
      $ lstat: num  4.98 9.14 4.03 2.94 5.33 ...
-     $ yhat : num  29.2 22.5 35.1 36.4 33.4 ...
+     $ yhat : num  28.8 22.7 34.5 36.9 33.7 ...
 
 [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
 recovers the training data straight from the model call, so it still
@@ -92,7 +92,7 @@ vimp_df <- ggRandomForests::gg_vimp(rf_boston)
 head(vimp_df)
 ```
 
-    <gg_vimp>  from randomForest  |  family: regression  |  ntree: 150  |  n: 506  |  variables: 6
+    <gg_vimp>  from randomForest  |  family: regression  |  ntree: 100  |  n: 506  |  variables: 6
 
 ``` r
 

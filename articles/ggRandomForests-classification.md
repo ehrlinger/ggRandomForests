@@ -116,15 +116,15 @@ function detects the classification family from the factor response.
 
 set.seed(42)
 rfsrc_iris <- rfsrc(Species ~ ., data = iris,
-                    ntree = 200, importance = TRUE, err.block = 5)
+                    ntree = 100, importance = TRUE, err.block = 5)
 rfsrc_iris
 ```
 
     #>                          Sample size: 150
     #>            Frequency of class labels: setosa=50, versicolor=50, virginica=50
-    #>                      Number of trees: 200
+    #>                      Number of trees: 100
     #>            Forest terminal node size: 1
-    #>        Average no. of terminal nodes: 9.75
+    #>        Average no. of terminal nodes: 9.41
     #> No. of variables tried at each split: 2
     #>               Total no. of variables: 4
     #>        Resampling used to grow trees: swor
@@ -133,26 +133,26 @@ rfsrc_iris
     #>                               Family: class
     #>                       Splitting rule: gini *random*
     #>        Number of random split points: 10
-    #>                    (OOB) Brier score: 0.02253931
-    #>         (OOB) Normalized Brier score: 0.10142687
-    #>                            (OOB) AUC: 0.994
-    #>                       (OOB) Log-loss: 0.11724994
-    #>    (OOB) Requested performance error: 0.04, 0, 0.06, 0.06
+    #>                    (OOB) Brier score: 0.02572345
+    #>         (OOB) Normalized Brier score: 0.11575554
+    #>                            (OOB) AUC: 0.9928
+    #>                       (OOB) Log-loss: 0.13208151
+    #>    (OOB) Requested performance error: 0.05333333, 0.02, 0.08, 0.06
     #>
     #> Confusion matrix:
     #>
     #>             predicted
     #>   observed   setosa versicolor virginica class.error
-    #>   setosa         50          0         0        0.00
-    #>   versicolor      0         47         3        0.06
+    #>   setosa         49          1         0        0.02
+    #>   versicolor      0         46         4        0.08
     #>   virginica       0          3        47        0.06
     #>
-    #>       (OOB) Misclassification rate: 0.04
+    #>       (OOB) Misclassification rate: 0.05333333
     #>
     #> Random-classifier baselines (uniform):
     #>    Brier: 0.22222222   Normalized Brier: 1   Log-loss: 1.09861229
 
-The forest grew 200 trees. The confusion matrix confirms what the EDA
+The forest grew 100 trees. The confusion matrix confirms what the EDA
 suggested: every *setosa* is classified correctly, while *versicolor*
 and *virginica* trade three misclassifications each way, for an overall
 OOB misclassification rate of 4%.
@@ -236,7 +236,7 @@ variables by how close to the root node they first split, on average.
 md_iris <- max.subtree(rfsrc_iris)
 ```
 
-The threshold is 1.88, selecting 2 variables: Petal.Length, Petal.Width.
+The threshold is 1.91, selecting 2 variables: Petal.Length, Petal.Width.
 VIMP and minimal depth agree.
 
 ## SHAP Analysis
@@ -261,7 +261,7 @@ the larger, higher- dimensional Boston housing data.
 ``` r
 
 set.seed(43)
-gg_shp <- gg_shap(rfsrc_iris, bg_n = 50, which.class = 3)
+gg_shp <- gg_shap(rfsrc_iris, bg_n = 30, which.class = 3)
 ```
 
 ### SHAP importance
@@ -403,9 +403,9 @@ ROC curve for virginica vs. the rest.
 calc_auc(roc_virginica)
 ```
 
-    #> [1] 0.9928
+    #> [1] 0.991
 
-An AUC of 0.993 for *virginica* confirms the forest separates it well,
+An AUC of 0.991 for *virginica* confirms the forest separates it well,
 even given its overlap with *versicolor*. *setosa*’s ROC curve is not
 worth plotting — it is a right angle, AUC 1, the geometric version of
 the confusion matrix’s perfect row.

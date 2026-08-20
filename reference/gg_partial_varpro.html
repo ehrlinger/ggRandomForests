@@ -21,7 +21,7 @@ gg_partial_varpro() directly."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -233,6 +233,46 @@ the screened top.  Both are <span class="pkg">varPro</span>'s own arguments, and
 (both <code>TRUE</code>) go the other way, toward the screened set; keep the
 defaults when that sparser set is what you want.  <code>nvar</code> is not the
 knob here – it only caps how much gets reported.</p>
+<p><strong>Which rows you actually get:</strong> <span class="pkg">varPro</span> has no imputation.  Every
+entry point opens by growing a one-node stump through
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">randomForestSRC::rfsrc</a></code> to settle the family and hand back cleaned
+data, and that call takes <code>rfsrc</code>'s default <code>na.action =
+"na.omit"</code>.  Any case with a missing value – in a predictor or in the
+outcome – is deleted before the fit, with no warning and no message.
+Passing <code>na.action = "na.impute"</code> to <code><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varPro::varpro</a></code> does not
+change this: it lands in <code>...</code>, never reaches the stump, and is
+discarded without remark (varPro 3.1.0).</p>
+<p>The loss compounds across predictors rather than adding up.  At 5% missing
+per column, independently, retention is \(0.95^p\) – 60% of rows at 10
+predictors, 36% at 20, 8% at 50.  On a wide clinical frame a little
+missingness everywhere can delete most of the cohort.  Nothing in the fit
+records it: <code>object$rf$n</code> is the count <em>after</em> deletion and no
+original is kept, so neither you nor this package can recover the number
+from the object.  Check before you fit – <code>nrow(dta)</code> against
+<code>sum(complete.cases(dta))</code>.</p>
+<p><strong>Imputing first, without inventing outcomes:</strong> <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::roughfix</a></code>
+does mean and modal fill, <code><a href="https://www.randomforestsrc.org//reference/impute.rfsrc.html" class="external-link">randomForestSRC::impute</a></code> does the
+forest-based job, and varPro's own help pages use the latter.  Both fill
+<strong>every</strong> column they are handed, the outcome included – so where the
+outcome is itself missing they manufacture it, and the release rules are
+then fit partly to invented responses.  Put the observed outcome back and
+drop the cases that never had one:</p>
+<div class="sourceCode"><pre><code><span></span>
+<span><span class="va">imp</span>   <span class="op">&lt;-</span> <span class="fu">randomForestSRC</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org//reference/impute.rfsrc.html" class="external-link">impute</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">dta</span><span class="op">)</span></span>
+<span><span class="va">imp</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">dta</span><span class="op">$</span><span class="va">y</span>                    <span class="co"># restore the observed outcome</span></span>
+<span><span class="va">imp</span>   <span class="op">&lt;-</span> <span class="va">imp</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">imp</span><span class="op">$</span><span class="va">y</span><span class="op">)</span>, <span class="op">]</span>     <span class="co"># drop cases with no real outcome</span></span></code></pre></div>
+
+<p>That is von Hippel's impute-then-delete: keep the outcome in the imputation
+model, since leaving it out attenuates the associations varPro is looking
+for, then discard the cases whose outcome was imputed, which carry no
+information about the response.  Only the deletion step depends on having
+missing outcomes; the imputation matters whenever a <em>predictor</em> is
+missing.  Two cautions.  Imputing with the outcome stamps its signal into
+the filled predictor cells, which is right for a single fit but crosses
+fold boundaries in <code><a href="https://www.randomforestsrc.org/reference/cv.varpro.html" class="external-link">varPro::cv.varpro</a></code> – impute inside the folds if
+the selection error has to mean anything.  And a completed frame is one
+dataset, not many, so the curves here carry no uncertainty from the
+imputation; read them as conditional on it.</p>
 <p><strong>Scale detection:</strong> with <code>scale = "auto"</code> and an <code>object</code> in
 hand, the scale resolves to <code>"mortality"</code> for a survival forest and
 <code>"generic"</code> for a regression or classification forest.  The RMST
@@ -360,7 +400,12 @@ process.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Ishwaran H, Kogalur UB, Blackstone EH, Lauer MS (2008).
+    <p>von Hippel PT (2007).
+Regression with missing Ys: An improved strategy for analyzing multiply
+imputed data. <em>Sociological Methodology</em>, <b>37</b>(1), 83–117.
+<a href="https://doi.org/10.1111/j.1467-9531.2007.00180.x" class="external-link">doi:10.1111/j.1467-9531.2007.00180.x</a>
+.</p>
+<p>Ishwaran H, Kogalur UB, Blackstone EH, Lauer MS (2008).
 Random survival forests. <em>The Annals of Applied Statistics</em>,
 <b>2</b>(3), 841–860. <a href="https://doi.org/10.1214/08-AOAS169" class="external-link">doi:10.1214/08-AOAS169</a>
 .</p>
@@ -431,7 +476,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>                    <span class="co"># predictors in the data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span>         <span class="co"># what the fit reaches</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.topvars</a></span><span class="op">(</span><span class="va">vp</span><span class="op">)</span><span class="op">)</span>   <span class="co"># the default when xvar.names is absent</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span></span></span>
@@ -446,7 +491,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="co">## the note on isolation-forest method in Details.)</span></span></span>
 <span class="r-in"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span>object <span class="op">=</span> <span class="va">vp</span>, xvar.names <span class="op">=</span> <span class="va">wanted</span>,</span></span>
 <span class="r-in"><span>                        method <span class="op">=</span> <span class="st">"rnd"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec. The fit reaches 7 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec. The fit reaches 8 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Refitting without the split-weight screen reaches every predictor.</span></span></span>
 <span class="r-in"><span><span class="va">vp_all</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span>,</span></span>
