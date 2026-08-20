@@ -237,7 +237,7 @@ project context. Read it before writing user-facing text.
   3.5.2 (2026-08-20): locally about 100s of timed steps, vignette rebuild 37s,
   `--run-donttest` examples 32s, tests 14s; on win-builder, 265s of timed steps on r-devel
   and 277s on r-oldrelease, against 608s for the 3.5.1 pretest.
-  win-builder runs roughly 5x a local mac on tests and vignettes and about 3x on examples,
+  win-builder runs roughly 5x a local macOS box on tests and vignettes and about 3x on examples,
   so multiply per step rather than applying one factor. Watch that budget when adding to
   either.
 - Build `R CMD check` from a clean `git archive` export, not the working tree. An empty
