@@ -69,11 +69,39 @@ no code path changed.
 
 ### Test environments
 
-* **Local:** macOS (aarch64-apple-darwin), R 4.6.0, `R CMD check --as-cran`
+* **Local:** macOS (aarch64-apple-darwin), R 4.6.1, `R CMD check --as-cran`
   with the manual, built from a clean `git archive` export: **0 ERRORs,
-  0 WARNINGs, 1 NOTE**. The source tarball is 2.39 MB.
+  0 WARNINGs, 1 NOTE**. The source tarball is 2.37 MB. The full test suite, run
+  with `NOT_CRAN=true` so the `skip_on_cran()` tests execute too, is 1512
+  passing and 0 failing.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
+
+**win-builder:** x86_64-w64-mingw32, Windows Server 2022, all three branches
+run against this exact tarball. Each returns **Status: 1 NOTE**, the same
+`Number of updates in past 6 months: 7` reported locally, with no second NOTE
+and no ERRORs or WARNINGs. `checking for hidden files and directories` is OK on
+all three.
+
+| Step | R-devel (r90424) | R-release (4.6.1) | R-oldrelease (4.5.3) |
+|---|---|---|---|
+| CRAN incoming feasibility | 10s | 11s | 17s |
+| R code for possible problems | 24s | 19s | 24s |
+| examples | 31s | 29s | 36s |
+| tests | 45s | 35s | 43s |
+| re-building vignette outputs | 140s | 110s | 131s |
+| PDF version of manual | 15s | 15s | 13s |
+| HTML version of manual | | 15s | 13s |
+| **timed steps** | **265s** | **234s** | **277s** |
+
+`00check.log` does not report an overall time, so I am giving you the sum of
+the timed steps rather than a total I did not measure. For the comparison you
+care about: the 3.5.1 pretest that was declined had 608s of timed steps against
+a 720s overall, so on the same 112s of untimed overhead these land near six
+minutes, and R-devel is the branch the pretest gates on.
+
+The heaviest branch is R-oldrelease at 277s, and it is now the same shape as
+the other two rather than the outlier it was.
 
 ### NOTE disposition
 

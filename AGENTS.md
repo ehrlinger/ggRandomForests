@@ -230,10 +230,41 @@ project context. Read it before writing user-facing text.
   Do not assume 3rd-edition semantics.
 - `randomForestSRC` output structure varies by version (3.6.2 is installed; `DESCRIPTION`
   requires `>= 3.4.0`). Never index its fields by position.
-- CRAN rejects a package whose overall `R CMD check` exceeds about 10 minutes even at 0/0/0.
-  The current baseline is about 3.8 minutes of timed steps, dominated by the vignette rebuild
-  (53s) and `--run-donttest` examples (35s). Watch that budget when adding either.
+- CRAN rejects a package whose overall `R CMD check` exceeds about 10 minutes even at 0/0/0,
+  and the rule bites at the **incoming pretest**, not per-flavor afterwards. The released
+  3.5.0 sat at 673s on CRAN's own `r-devel-windows` marked OK, while 3.5.1 at 720s was
+  declined, so a green CRAN check results page is not evidence of headroom. Measured on
+  3.5.2 (2026-08-20): locally about 100s of timed steps, vignette rebuild 37s,
+  `--run-donttest` examples 32s, tests 14s; on win-builder, 265s of timed steps on r-devel
+  and 277s on r-oldrelease, against 608s for the 3.5.1 pretest.
+  win-builder runs roughly 5x a local macOS box on tests and vignettes and about 3x on examples,
+  so multiply per step rather than applying one factor. Watch that budget when adding to
+  either.
 - Build `R CMD check` from a clean `git archive` export, not the working tree. An empty
   `inst/doc` fabricates two vignette WARNINGs, and in a git worktree `.git` is a *file*, so
   the VCS exclusion misses it and it lands in the tarball as a spurious hidden-files NOTE.
   Both look like package defects and are not.
+- **Verify the tarball before it leaves, rather than reasoning about `.Rbuildignore`.** The
+  release-gate check is one line:
+
+  ```bash
+  tar tzf ggRandomForests_<version>.tar.gz | grep -E '/\.[^/]+'
+  ```
+
+  Anything other than `ggRandomForests/.Rinstignore` means stop and rebuild. This is the
+  check that would have caught the `.remember` directory win-builder reported on
+  2026-08-18. Also confirm `Version`/`Date` and that `cran-comments.md` is absent:
+
+  ```bash
+  tar xzf ggRandomForests_<version>.tar.gz -O ggRandomForests/DESCRIPTION | sed -n '4,5p'
+  tar tzf ggRandomForests_<version>.tar.gz | grep -c cran-comments   # expect 0
+  ```
+- A working-tree `R CMD build .` is **not** a reason to rebuild on its own. Measured
+  2026-08-20 at `26416c6c`: a build from the full working tree (71 MB of untracked
+  `.Rcheck`, `docs/`, `.claude/`, `.remember/`, `.Rproj.user/`) and a build from a clean
+  `git archive` export produced tarballs with an identical 247-entry file list, no
+  difference in either direction. The `(^|/)\.remember$`, `(^|/)\.Rhistory$` and
+  `(^|/)\.DS_Store$` guards at the foot of `.Rbuildignore` close the 2026-08-18 hole, and
+  `R CMD build` prunes matched *directories* wholesale, so `.claude/settings.local.json` and
+  the `.Rcheck` tree are never walked. Testing an ignore pattern against a full file path
+  wrongly reports those two as leaks. Run the `tar tzf` check above instead of predicting.
