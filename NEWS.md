@@ -3,6 +3,10 @@ Version: 3.5.2
 
 ggRandomForests v3.5.2
 ======================
+* Three help pages no longer render a stray backslash where a percent sign
+  belongs. roxygen2 escapes `%` for you, so the `\%` written in the roxygen
+  prose of `calc_auc()`, `gg_isopro()` and `plot.gg_isopro()` reached the `.Rd`
+  as `\\%` and rendered as `50\%` rather than `50%`. Documentation only.
 * `R CMD check` is back inside CRAN's ten-minute budget. On the 3.5.1
   win-builder run the vignette rebuild was 287s and the tests 195s of a
   12-minute total, so both were cut at the source rather than moved around.
