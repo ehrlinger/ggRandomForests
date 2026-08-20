@@ -114,7 +114,7 @@ against a fitted model and compare the test scores to the training
 distribution.
 }
 The score is a \emph{rank}, not a probability of being an outlier: two
-observations with \code{howbad = 0.92} are both unusual, not "92\\%
+observations with \code{howbad = 0.92} are both unusual, not "92\%
 likely to be anomalous". Pick a cutoff by looking at where the elbow
 rises; \code{\link{plot.gg_isopro}} can annotate either a score
 (\code{threshold}) or a top-percent (\code{top_n_pct}) for you.

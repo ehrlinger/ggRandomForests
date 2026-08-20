@@ -159,6 +159,51 @@
 #' defaults when that sparser set is what you want.  \code{nvar} is not the
 #' knob here -- it only caps how much gets reported.
 #'
+#' **Which rows you actually get:** \pkg{varPro} has no imputation.  Every
+#' entry point opens by growing a one-node stump through
+#' \code{randomForestSRC::rfsrc} to settle the family and hand back cleaned
+#' data, and that call takes \code{rfsrc}'s default \code{na.action =
+#' "na.omit"}.  Any case with a missing value -- in a predictor or in the
+#' outcome -- is deleted before the fit, with no warning and no message.
+#' Passing \code{na.action = "na.impute"} to \code{varPro::varpro} does not
+#' change this: it lands in \code{...}, never reaches the stump, and is
+#' discarded without remark (varPro 3.1.0).
+#'
+#' The loss compounds across predictors rather than adding up.  At 5% missing
+#' per column, independently, retention is \eqn{0.95^p} -- 60% of rows at 10
+#' predictors, 36% at 20, 8% at 50.  On a wide clinical frame a little
+#' missingness everywhere can delete most of the cohort.  Nothing in the fit
+#' records it: \code{object$rf$n} is the count \emph{after} deletion and no
+#' original is kept, so neither you nor this package can recover the number
+#' from the object.  Check before you fit -- \code{nrow(dta)} against
+#' \code{sum(complete.cases(dta))}.
+#'
+#' **Imputing first, without inventing outcomes:** \code{varPro::roughfix}
+#' does mean and modal fill, \code{randomForestSRC::impute} does the
+#' forest-based job, and varPro's own help pages use the latter.  Both fill
+#' \strong{every} column they are handed, the outcome included -- so where the
+#' outcome is itself missing they manufacture it, and the release rules are
+#' then fit partly to invented responses.  Put the observed outcome back and
+#' drop the cases that never had one:
+#'
+#' \preformatted{
+#' imp   <- randomForestSRC::impute(y ~ ., data = dta)
+#' imp$y <- dta$y                    # restore the observed outcome
+#' imp   <- imp[!is.na(imp$y), ]     # drop cases with no real outcome
+#' }
+#'
+#' That is von Hippel's impute-then-delete: keep the outcome in the imputation
+#' model, since leaving it out attenuates the associations varPro is looking
+#' for, then discard the cases whose outcome was imputed, which carry no
+#' information about the response.  Only the deletion step depends on having
+#' missing outcomes; the imputation matters whenever a \emph{predictor} is
+#' missing.  Two cautions.  Imputing with the outcome stamps its signal into
+#' the filled predictor cells, which is right for a single fit but crosses
+#' fold boundaries in \code{varPro::cv.varpro} -- impute inside the folds if
+#' the selection error has to mean anything.  And a completed frame is one
+#' dataset, not many, so the curves here carry no uncertainty from the
+#' imputation; read them as conditional on it.
+#'
 #' **Scale detection:** with \code{scale = "auto"} and an \code{object} in
 #' hand, the scale resolves to \code{"mortality"} for a survival forest and
 #' \code{"generic"} for a regression or classification forest.  The RMST
@@ -225,6 +270,11 @@
 #' \code{xvar.names}, and \code{path}.
 #'
 #' @references
+#' von Hippel PT (2007).
+#' Regression with missing Ys: An improved strategy for analyzing multiply
+#' imputed data. \emph{Sociological Methodology}, \bold{37}(1), 83--117.
+#' \doi{10.1111/j.1467-9531.2007.00180.x}.
+#'
 #' Ishwaran H, Kogalur UB, Blackstone EH, Lauer MS (2008).
 #' Random survival forests. \emph{The Annals of Applied Statistics},
 #' \bold{2}(3), 841--860. \doi{10.1214/08-AOAS169}.

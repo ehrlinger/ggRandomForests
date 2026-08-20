@@ -55,7 +55,7 @@
 #' ## ------------- iris data
 #' ## You can build a randomForest
 #' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris,
-#'   ntree = 250,
+#'   ntree = 100,
 #'   forest = TRUE,
 #'   importance = TRUE,
 #'   tree.err = TRUE,
@@ -86,7 +86,7 @@
 #' ## ------------- airq data
 #' rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ .,
 #'   data = airquality,
-#'   ntree = 250,
+#'   ntree = 100,
 #'   na.action = "na.impute",
 #'   forest = TRUE,
 #'   importance = TRUE,
@@ -107,7 +107,7 @@
 #'   Boston$chas <- as.logical(Boston$chas)
 #'   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ .,
 #'     data = Boston,
-#'     ntree = 250,
+#'     ntree = 100,
 #'     forest = TRUE,
 #'     importance = TRUE,
 #'     tree.err = TRUE,
@@ -123,7 +123,7 @@
 #'
 #' ## ------------- mtcars data
 #' rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars,
-#'   ntree = 250,
+#'   ntree = 100,
 #'   importance = TRUE,
 #'   save.memory = TRUE,
 #'   forest = TRUE,
@@ -143,7 +143,7 @@
 #' ## randomized trial of two treatment regimens for lung cancer
 #' data(veteran, package = "randomForestSRC")
 #' rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
-#'                        ntree = 250, tree.err = TRUE)
+#'                        ntree = 100, tree.err = TRUE)
 #'
 #' gg_dta <- gg_error(rfsrc_veteran)
 #' plot(gg_dta)
@@ -157,7 +157,7 @@
 #' rfsrc_pbc <- randomForestSRC::rfsrc(
 #'   Surv(years, status) ~ .,
 #'  dta_train,
-#'  ntree = 250,
+#'  ntree = 100,
 #'  nsplit = 10,
 #'  na.action = "na.impute",
 #'  tree.err = TRUE,

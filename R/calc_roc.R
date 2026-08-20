@@ -299,7 +299,7 @@ calc_roc.randomForest <-
 #'
 #' @param x \code{\link{gg_roc}} object
 #'
-#' @return AUC. 50\% is random guessing, higher is better.
+#' @return AUC. 50% is random guessing, higher is better.
 #'
 # @importFrom dplyr lead
 #'

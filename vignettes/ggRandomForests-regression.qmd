@@ -145,7 +145,7 @@ detects the regression family from the continuous response.
 
 ```{r rfsrc-fit}
 rfsrc_Boston <- rfsrc(medv ~ ., data = Boston, # nolint: object_name_linter
-                      ntree = 200, importance = TRUE, err.block = 5)
+                      ntree = 100, importance = TRUE, err.block = 5)
 rfsrc_Boston
 ```
 
@@ -244,18 +244,18 @@ that promise.
 `gg_shap()` computes these contributions by calling
 [kernelshap](https://cran.r-project.org/package=kernelshap), which needs one
 prediction per predictor per background draw, per tract explained. Scoring
-all 506 tracts is expensive, so we explain a random sample of 40 instead,
+all 506 tracts is expensive, so we explain a random sample of 25 instead,
 plenty to see the patterns at a fraction of the cost.
 
 ```{r shap-fit}
 set.seed(42)
-shap_sample <- Boston[sample(nrow(Boston), 40), setdiff(colnames(Boston), "medv")]
-gg_shp <- gg_shap(rfsrc_Boston, newdata = shap_sample, bg_n = 50)
+shap_sample <- Boston[sample(nrow(Boston), 25), setdiff(colnames(Boston), "medv")]
+gg_shp <- gg_shap(rfsrc_Boston, newdata = shap_sample, bg_n = 30)
 ```
 
 ## SHAP importance
 
-Averaging the absolute contribution of each variable across the 40 tracts
+Averaging the absolute contribution of each variable across the 25 tracts
 gives a ranking directly comparable to VIMP.
 
 ```{r shap-importance-plot, fig.cap="Mean absolute SHAP value per predictor."}
@@ -429,11 +429,11 @@ nearly flat in high-`lstat` tracts, confirming a meaningful interaction.
 # Partial Dependence Surface
 
 To visualize the joint partial dependence of `medv` on `lstat` and `rm`, we
-compute partial dependence on a grid: 10 values of `rm`, each evaluated at 25
+compute partial dependence on a grid: 6 values of `rm`, each evaluated at 25
 points along `lstat`.
 
 ```{r surface-data, cache=TRUE}
-rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 10)
+rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 6)
 
 surface_list <- lapply(rm_grid, function(rm_val) {
   newx <- rfsrc_Boston$xvar

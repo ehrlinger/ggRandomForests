@@ -1,5 +1,40 @@
 Package: ggRandomForests
-Version: 3.5.1
+Version: 3.5.2
+
+ggRandomForests v3.5.2
+======================
+* Three help pages no longer render a stray backslash where a percent sign
+  belongs. roxygen2 escapes `%` for you, so the `\%` written in the roxygen
+  prose of `calc_auc()`, `gg_isopro()` and `plot.gg_isopro()` reached the `.Rd`
+  as `\\%` and rendered as `50\%` rather than `50%`. Documentation only.
+* `R CMD check` is back inside CRAN's ten-minute budget. On the 3.5.1
+  win-builder run the vignette rebuild was 287s and the tests 195s of a
+  12-minute total, so both were cut at the source rather than moved around.
+  The `rfsrc` vignettes grow smaller forests (Boston and iris at 100 trees,
+  the `pbc` impute-and-fit pair at 50 and 100) and coarser partial-dependence
+  surface grids (6 and 5 points, from 10 and 8); the SHAP sections explain 25
+  rows against 30 background draws instead of 40 against 50. In the examples,
+  `gg_error()` and `plot.gg_error()` grow 100 trees instead of 250, and
+  `gg_vimp()` and `plot.gg_vimp()` 50 instead of 100. The four heaviest test
+  files, `gg_udependent`, `gg_varpro`, `gg_variable` and `gg_vimp`, now
+  `skip_on_cran()`; they still run in full under `devtools::test()`. No
+  function, argument or returned object changed.
+* `?gg_partial_varpro` now documents varPro's missing-data contract, which
+  governs every fit this package plots. varPro has no imputation: each entry
+  point grows a stump through `randomForestSRC::rfsrc` and inherits its
+  `na.action = "na.omit"`, so any case missing a predictor or the outcome is
+  deleted before the fit, silently. `na.action = "na.impute"` passed to
+  `varpro()` lands in `...` and is discarded without remark. The loss
+  compounds as `0.95^p`, and the fitted object keeps only the post-deletion
+  count, so neither the user nor this package can recover the original from
+  the object -- the check has to happen before the fit.
+* The same section covers imputing beforehand without inventing outcomes.
+  `roughfix()` and `randomForestSRC::impute()` both fill every column handed
+  to them, the outcome included, so a frame with missing outcomes comes back
+  with manufactured responses and the release rules are fit partly to them.
+  Documents von Hippel's impute-then-delete, and the two cautions that follow:
+  outcome-informed imputation crosses fold boundaries in `cv.varpro()`, and a
+  completed frame carries no imputation uncertainty into the curves.
 
 ggRandomForests v3.5.1
 ======================
