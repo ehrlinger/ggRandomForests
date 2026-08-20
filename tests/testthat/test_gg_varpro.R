@@ -20,12 +20,10 @@ make_vp_class <- function(ntree = 25L) {
 ## ── Input validation ─────────────────────────────────────────────────────────
 
 test_that("gg_varpro: missing object -> stop", {
-  skip_on_cran()
   expect_error(gg_varpro(), regexp = "object")
 })
 
 test_that("gg_varpro: non-varpro object -> stop", {
-  skip_on_cran()
   expect_error(gg_varpro(list(x = 1)), regexp = "varpro")
 })
 

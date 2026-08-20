@@ -36,12 +36,10 @@ make_ggu <- function(..., .quiet = FALSE) {
 ## ── Input validation ─────────────────────────────────────────────────────────
 
 test_that("gg_udependent: missing object -> stop", {
-  skip_on_cran()
   expect_error(gg_udependent(), regexp = "object")
 })
 
 test_that("gg_udependent: non-uvarpro object -> stop", {
-  skip_on_cran()
   expect_error(gg_udependent(list(x = 1)), regexp = "uvarpro")
 })
 
