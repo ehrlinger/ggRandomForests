@@ -40,3 +40,63 @@ jobs:
             quit(status = 1L)
           }
         shell: Rscript {0}
+
+  house-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # This job executes a script checked out from another repository.
+          # Not persisting the token keeps it out of .git/config for every
+          # step that follows, so a later `git` call cannot reach the remote
+          # with this repo's credentials.
+          persist-credentials: false
+
+      - name: Check out the house style composer
+        uses: actions/checkout@v4
+        with:
+          repository: ehrlinger/house-style
+          # Pinned to a tag, not the default branch: an in-progress change to
+          # the composer must not redden this repo's CI. The tag moves when the
+          # standard changes, which is exactly when every repo should start
+          # reporting drift until it recomposes.
+          ref: house-style-v1
+          path: .house-style-tools
+          persist-credentials: false
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      # Only the composer's two dependencies. This job never builds the
+      # package, so resolving the full DESCRIPTION tree would cost minutes
+      # to install code nothing here calls.
+      - name: Install composer dependencies
+        run: install.packages(c("yaml", "digest"))
+        shell: Rscript {0}
+
+      - name: Point the registry at this checkout
+        run: |
+          # repos.yml carries workstation paths; CI must repoint this entry at
+          # the runner's checkout. A sed that matches nothing exits 0, and the
+          # failure would surface two steps later as "path not found" drift --
+          # a true failure with a misleading cause. Check first and say so.
+          if ! grep -qF 'path: ~/Documents/GitHub/ggRandomForests' .house-style-tools/repos.yml; then
+            echo "::error::repos.yml no longer contains 'path: ~/Documents/GitHub/ggRandomForests'. The registry format or this repo's entry changed upstream; update this workflow rather than trusting the check." >&2
+            exit 1
+          fi
+          # & means "the whole match" to sed, and \ and the | delimiter are
+          # special too. GITHUB_WORKSPACE is /home/runner/work/<repo>/<repo>
+          # on a hosted runner, built from names GitHub restricts to
+          # alphanumerics, hyphen, underscore and period, so none of them can
+          # appear. Escaping anyway costs one line and removes the need to
+          # know that -- and keeps this correct on a self-hosted runner whose
+          # workspace root is not so constrained.
+          workspace=$(printf '%s' "$GITHUB_WORKSPACE" | sed 's/[&|\\]/\\&/g')
+          sed -i "s|path: ~/Documents/GitHub/ggRandomForests|path: $workspace|" \
+            .house-style-tools/repos.yml
+
+      - name: Verify the house style artifact is current
+        run: |
+          Rscript .house-style-tools/compose-house-style.R \
+            --check --repo ggRandomForests
