@@ -22,6 +22,12 @@
 [randomForestSRC](https://cran.r-project.org/package=randomForestSRC) (>= 3.4.0) or
 [randomForest](https://cran.r-project.org/package=randomForest).
 It keeps the data step apart from the figure step, so you can inspect, save, or reuse the tidy object on its own.
+
+It also covers [varPro](https://cran.r-project.org/package=varPro) (>= 3.1.0), which reaches the same
+questions by a different route: variable selection built from rules rather than permutation, importance
+for one observation rather than the whole fit, and dependency and signal detection on unsupervised fits.
+Eight of the nineteen `gg_*` families read a varPro object.
+
 Listed in the [ggplot2 extensions gallery](https://exts.ggplot2.tidyverse.org/).
 
 ## Installation
@@ -82,17 +88,69 @@ vignette("uvarpro", package = "ggRandomForests")
 
 ## Function reference
 
+Grouped by what you are trying to look at. The first column is the function you
+call, the second is what you hand it.
+
+### The forest itself
+
 | Function | Input | What you get |
 |---|---|---|
 | `gg_error()` | `rfsrc` / `randomForest` | OOB error vs. number of trees |
 | `gg_vimp()` | `rfsrc` / `randomForest` | Variable importance ranking |
 | `gg_rfsrc()` | `rfsrc` / `randomForest` | Predicted vs. observed values |
 | `gg_variable()` | `rfsrc` / `randomForest` | Marginal dependence data frame |
+
+### Partial dependence
+
+| Function | Input | What you get |
+|---|---|---|
 | `gg_partial()` | `plot.variable` output | Partial dependence (continuous + categorical) |
 | `gg_partial_rfsrc()` | `rfsrc` model | Partial dependence via `partial.rfsrc` |
-| `gg_survival()` | `rfsrc` survival forest | Kaplan–Meier / Nelson–Aalen estimates |
-| `gg_roc()` | `rfsrc` / `randomForest` (class) | ROC curve data |
+| `surv_partial.rfsrc()` | `rfsrc` survival forest | Survival partial dependence, one or more predictors |
+| `quantile_pts()` | numeric vector | Quantile cut points for coplot panels |
+
+### Survival
+
+| Function | Input | What you get |
+|---|---|---|
+| `gg_survival()` | `rfsrc` survival forest, or a data frame | Kaplan–Meier / Nelson–Aalen estimates |
 | `gg_brier()` | `rfsrc` (survival) | Time-resolved Brier score and CRPS |
+| `kaplan()` | data frame + interval/censor columns | Nonparametric Kaplan–Meier estimate |
+| `nelson()` | data frame + interval/censor columns | Nonparametric Nelson–Aalen estimate |
+
+### Classification and ROC
+
+| Function | Input | What you get |
+|---|---|---|
+| `gg_roc()` | `rfsrc` / `randomForest` (class) | ROC curve data |
+| `calc_roc()` | `rfsrc` / `randomForest` (class) | The sensitivity/specificity sweep behind `gg_roc()` |
+| `calc_auc()` | `gg_roc` object | Area under the curve |
+
+### varPro — variable priority
+
+These read a `varPro` fit rather than a forest. `varpro()` is the supervised
+fit; `uvarpro()` is the unsupervised one, which needs no outcome.
+
+| Function | Input | What you get |
+|---|---|---|
+| `gg_varpro()` | `varpro` fit | Release-rule variable importance |
+| `gg_beta_varpro()` | `varpro` fit | Per-variable lasso-beta importance |
+| `gg_ivarpro()` | `varpro` fit | Individual (local) variable importance |
+| `gg_partial_varpro()` | `varpro` fit | Partial dependence (alias: `gg_partialpro()`) |
+| `gg_isopro()` | `isopro` fit | Isolation-forest anomaly scores |
+| `gg_udependent()` | `uvarpro` fit | Variable dependency graph |
+| `gg_beta_uvarpro()` | `uvarpro` fit | Per-variable lasso-beta importance |
+| `gg_sdependent()` | `uvarpro` fit | Signal-variable detection |
+| `varpro_feature_names()` | character vector | Original names behind one-hot encoded features |
+
+### SHAP
+
+| Function | Input | What you get |
+|---|---|---|
+| `gg_shap()` | `rfsrc` / `randomForest` | Shapley additive explanation values |
+| `shap_importance()` | `gg_shap` object | Global importance bar chart |
+| `shap_beeswarm()` | `gg_shap` object | Beeswarm summary plot |
+| `shap_dependence()` | `gg_shap` object | Dependence plot for one predictor |
 
 Each `gg_*` function has a matching `plot()` S3 method that hands back a single plottable object: a `ggplot`
 you extend with `+`, or a `patchwork` composite for the multi-panel methods. Every `gg_*` object also has `print()` and `summary()` methods: `print()`
@@ -118,6 +176,8 @@ entirely and build the figure from the tidy data yourself.
 
 See [NEWS.md](NEWS.md) for the full changelog. Recent highlights:
 
+- **v3.5.1** `gg_roc()` on an `rfsrc` forest now honors the documented `which_outcome = 0`, which had been returning an unusable two-row object; `gg_partial_rfsrc()` rejects a non-forest with a real error instead of "argument is of length zero". Also a test-only fix for the `gcc-UBSAN` report filed against 3.5.0.
+- **v3.5.0** varPro fixes: `plot.gg_varpro()` no longer draws a phantom "NA" category, `gg_partial_varpro()` warns when you name a variable the fit cannot reach, and `scale = "chf"` now honors `xvar.names` instead of computing every variable. Vignette figures render with `ragg`, which cut the source tarball from 4.7 MB to 2.3 MB.
 - **v3.4.0** Unsupervised varPro wrappers (`gg_beta_uvarpro()`, `gg_sdependent()`) with their own vignette; `gg_partial_rfsrc()` now handles factor predictors correctly.
 - **v3.3.0** varPro partial plots default to interpretable scales — probability for classification, survival S(&tau;) for survival.
 - **v3.1.0** varPro integration: release-rule importance, partial dependence, local importance, anomaly scores, and the dependency graph.

@@ -1,6 +1,7 @@
 # testthat for gg_roc function
 
 test_that("gg_roc classifications", {
+  set.seed(20260817L)
   ## Load the cached forest
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
@@ -60,6 +61,7 @@ test_that("gg_roc classifications", {
 })
 
 test_that("gg_roc randomForest classifications", {
+  set.seed(20260817L)
   ## Load the cached forest
   rf_iris <- randomForest(Species ~ ., data = iris)
 
@@ -119,6 +121,7 @@ test_that("gg_roc default oob=TRUE works without explicit argument", {
 })
 
 test_that("gg_roc regression", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
 
@@ -147,6 +150,7 @@ test_that("gg_roc regression", {
 })
 
 test_that("calc_roc", {
+  set.seed(20260817L)
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
     data = iris,
@@ -248,6 +252,28 @@ test_that("calc_roc.rfsrc output is unchanged for an explicit which_outcome (gua
   expect_equal(ncol(g), 3L)                       # sens, spec, pct (existing contract)
   expect_true(all(c("sens", "spec", "pct") %in% colnames(g)))
   expect_gte(calc_auc(g), 0.9)                    # rfsrc iris setosa-vs-rest stays strong
+})
+
+test_that("gg_roc rfsrc: which_outcome = 0 takes the same route as 'all'", {
+  set.seed(42)
+  rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
+
+  # 0 is the documented numeric spelling of "all". Before the fix it fell
+  # through to predicted[, 0], which is a legal zero-column subset, so the
+  # threshold sweep ran on empty input and produced a two-row frame whose
+  # columns were X1/X2/pct -- calc_auc() then failed on the missing $spec.
+  expect_warning(g_zero <- gg_roc(rfsrc_iris, which_outcome = 0),
+                 "falling back to class 1")
+  expect_warning(g_all <- gg_roc(rfsrc_iris, which_outcome = "all"),
+                 "falling back to class 1")
+
+  expect_s3_class(g_zero, "gg_roc")
+  expect_true(all(c("sens", "spec", "pct") %in% colnames(g_zero)))
+  expect_gt(nrow(g_zero), 2L)
+  expect_equal(as.data.frame(g_zero), as.data.frame(g_all))
+
+  # calc_auc() has to survive the object the fallback hands back.
+  expect_equal(calc_auc(g_zero), calc_auc(gg_roc(rfsrc_iris, which_outcome = 1)))
 })
 
 ## ── per_class = TRUE (PR #88) ──────────────────────────────────────────────

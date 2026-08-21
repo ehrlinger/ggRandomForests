@@ -20,8 +20,10 @@ labels, one per observation. Typically \code{object$yvar} for rfsrc or
 
 \item{which_outcome}{Integer index of the class for which the ROC curve is
 computed (e.g. \code{1} for the first class, \code{2} for the second).
-Use \code{"all"} to request all classes (currently falls back to class 1
-with a warning).}
+Use \code{"all"}, or its numeric spelling \code{0}, to request all
+classes. The \code{randomForest} method returns a macro-averaged
+one-vs-rest curve; the \code{rfsrc} method warns and falls back to
+class 1 (see #72).}
 
 \item{oob}{Logical; if \code{TRUE} (default for rfsrc) use OOB predicted
 probabilities. Forced to \code{FALSE} for \code{randomForest} objects.}
@@ -47,7 +49,7 @@ not intended for use by the end user.
 }
 \examples{
 ## Taken from the gg_roc example
-rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
+rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 100)
 
 gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
   which_outcome = 1, oob = TRUE

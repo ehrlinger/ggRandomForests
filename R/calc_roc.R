@@ -12,10 +12,24 @@
 ####**********************************************************************
 ####**********************************************************************
 # Internal helper: normalize the which_outcome argument.
-# "all" is not yet fully supported; fall back to class 1 with a warning.
+# "all" is not yet fully supported on the rfsrc path; fall back to class 1
+# with a warning. `0` is the documented numeric spelling of "all" and must
+# take the same route: left unnormalized it indexes as `predicted[, 0]`,
+# which is legal R that yields a zero-column matrix, so the whole threshold
+# sweep runs on empty input and returns a degenerate two-row object with no
+# sens/spec columns rather than raising an error. See #72 for the
+# macro-average that will eventually replace this fallback.
 .validate_which_outcome <- function(which_outcome) {
-  if (identical(which_outcome, "all")) {
-    warning("Must specify which_outcome for now.")
+  is_zero <- is.numeric(which_outcome) &&
+    length(which_outcome) == 1L &&
+    !is.na(which_outcome) &&
+    which_outcome == 0
+  if (identical(which_outcome, "all") || is_zero) {
+    warning(
+      "which_outcome = ", if (is_zero) "0" else "\"all\"",
+      " is not yet supported for rfsrc forests; falling back to class 1. ",
+      "Pass an explicit class index to select a different class."
+    )
     return(1L)
   }
   which_outcome
@@ -39,8 +53,10 @@
 #'   \code{object$y} for randomForest.
 #' @param which_outcome Integer index of the class for which the ROC curve is
 #'   computed (e.g. \code{1} for the first class, \code{2} for the second).
-#'   Use \code{"all"} to request all classes (currently falls back to class 1
-#'   with a warning).
+#'   Use \code{"all"}, or its numeric spelling \code{0}, to request all
+#'   classes. The \code{randomForest} method returns a macro-averaged
+#'   one-vs-rest curve; the \code{rfsrc} method warns and falls back to
+#'   class 1 (see #72).
 #' @param oob Logical; if \code{TRUE} (default for rfsrc) use OOB predicted
 #'   probabilities. Forced to \code{FALSE} for \code{randomForest} objects.
 #' @param ... Extra arguments passed to helper functions (currently unused).
@@ -61,7 +77,7 @@
 #'
 #' @examples
 #' ## Taken from the gg_roc example
-#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 100)
 #'
 #' gg_dta <- calc_roc(rfsrc_iris, rfsrc_iris$yvar,
 #'   which_outcome = 1, oob = TRUE
@@ -283,7 +299,7 @@ calc_roc.randomForest <-
 #'
 #' @param x \code{\link{gg_roc}} object
 #'
-#' @return AUC. 50\% is random guessing, higher is better.
+#' @return AUC. 50% is random guessing, higher is better.
 #'
 # @importFrom dplyr lead
 #'
@@ -293,7 +309,7 @@ calc_roc.randomForest <-
 #' @examples
 #' ##
 #' ## Taken from the gg_roc example
-#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris)
+#' rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 100)
 #'
 #' gg_dta <- gg_roc(rfsrc_iris, which_outcome = 1)
 #'

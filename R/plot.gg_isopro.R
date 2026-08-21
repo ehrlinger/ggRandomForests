@@ -18,7 +18,7 @@
 #' the anomalous observations live. The point of the plot is not to read
 #' off a single score, it is to \emph{see where the curve breaks}. Pick a
 #' cutoff there. Pass it back in as \code{threshold} (for a score) or
-#' \code{top_n_pct} (for "the top 5\%") and the plot draws a dashed
+#' \code{top_n_pct} (for "the top 5%") and the plot draws a dashed
 #' reference line so you can record the choice you made.
 #'
 #' @section Reading the density:

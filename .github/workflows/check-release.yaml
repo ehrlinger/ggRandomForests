@@ -1,38 +1,68 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+# CRAN submission pre-flight check.
+# Runs the full --as-cran gauntlet, manual included, on a published GitHub
+# release tag. Mirrors what CRAN's win-builder and macOS builders will do.
+#
+# Trigger manually via workflow_dispatch or automatically on release publication.
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:
 
-name: R-CMD-check-release
+name: check-release.yaml
+
+permissions: read-all
 
 jobs:
-  R-CMD-check:
-    runs-on: ubuntu-latest
+  cran-check:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }}) [--as-cran]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          # Mirror the platforms CRAN actually checks
+          - {os: windows-latest,  r: 'release'}
+          - {os: windows-latest,  r: 'devel'}
+          - {os: macos-latest,    r: 'release'}
+          - {os: ubuntu-latest,   r: 'release'}
+          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      # Run skip_on_cran() tests in CI (incl. the varPro grow tests): CI is
-      # not a sanitizer build, so the upstream UBSAN path is harmless here;
-      # only CRAN's own check machines (NOT_CRAN unset) skip them.
-      NOT_CRAN: "true"
       R_KEEP_PKG_SOURCE: yes
-      VDIFFR_RUN_TESTS: "false"
+      _R_CHECK_CRAN_INCOMING_: true
+      _R_CHECK_CRAN_INCOMING_REMOTE_: true
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: quarto-dev/quarto-actions/setup@v2
 
       - uses: r-lib/actions/setup-r@v2
         with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-          rtools-version: '44'
+
+      - uses: r-lib/actions/setup-tinytex@v2
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: rcmdcheck
-          cache-version: 2
+          extra-packages: any::rcmdcheck
+          needs: check
 
-      - uses: r-lib/actions/setup-tinytex@v2
       - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          # Upload check/ on success as well as failure: 00check.log carries
+          # per-step timings, and the passing runs are the ones worth trending
+          # against the CRAN check-time budget.
+          upload-results: true
+          # No --no-manual anywhere: this is the one workflow where TinyTeX
+          # is actually exercised, so the PDF manual is genuinely built.
+          args: 'c("--as-cran")'
+          build_args: 'c("--compact-vignettes=gs+qpdf")'

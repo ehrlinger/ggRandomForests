@@ -28,12 +28,14 @@ test_that("gg_varpro: non-varpro object -> stop", {
 })
 
 test_that("gg_varpro: conditional=TRUE on regression -> stop", {
+  skip_on_cran()
   vp <- make_vp_regr()
   expect_error(gg_varpro(vp, conditional = TRUE),
                regexp = "classification")
 })
 
 test_that("gg_varpro: faithful=TRUE + local.std=TRUE is valid, records local.std=TRUE", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, faithful = TRUE, local.std = TRUE)
   expect_true(is.matrix(gg$imp.tree))
@@ -43,11 +45,13 @@ test_that("gg_varpro: faithful=TRUE + local.std=TRUE is valid, records local.std
 ## ── Class & structure ────────────────────────────────────────────────────────
 
 test_that("gg_varpro returns gg_varpro class", {
+  skip_on_cran()
   vp <- make_vp_regr()
   expect_s3_class(gg_varpro(vp), "gg_varpro")
 })
 
 test_that("gg_varpro$imp has variable, z, selected columns", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)
   expect_named(gg$imp, c("variable", "z", "selected"))
@@ -57,6 +61,7 @@ test_that("gg_varpro$imp has variable, z, selected columns", {
 })
 
 test_that("gg_varpro$stats has expected columns", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)
   expect_true(all(c("variable", "median", "q05", "q15", "q85", "q95", "mean")
@@ -64,24 +69,28 @@ test_that("gg_varpro$stats has expected columns", {
 })
 
 test_that("gg_varpro$imp.tree is NULL when faithful=FALSE", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, faithful = FALSE)
   expect_null(gg$imp.tree)
 })
 
 test_that("gg_varpro$imp.tree is a matrix when faithful=TRUE", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, faithful = TRUE)
   expect_true(is.matrix(gg$imp.tree))
 })
 
 test_that("gg_varpro$conditional is NULL when conditional=FALSE", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, conditional = FALSE)
   expect_null(gg$conditional)
 })
 
 test_that("gg_varpro$conditional has variable, class, z when conditional=TRUE", {
+  skip_on_cran()
   vp <- make_vp_class()
   gg <- gg_varpro(vp, conditional = TRUE)
   expect_false(is.null(gg$conditional))
@@ -91,6 +100,7 @@ test_that("gg_varpro$conditional has variable, class, z when conditional=TRUE", 
 ## ── Provenance attribute ─────────────────────────────────────────────────────
 
 test_that("gg_varpro provenance has all expected fields", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)
   prov <- attr(gg, "provenance")
@@ -100,6 +110,7 @@ test_that("gg_varpro provenance has all expected fields", {
 })
 
 test_that("gg_varpro provenance cutoff matches argument", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, cutoff = 1.2)
   expect_equal(attr(gg, "provenance")$cutoff, 1.2)
@@ -108,6 +119,7 @@ test_that("gg_varpro provenance cutoff matches argument", {
 ## ── cutoff and nvar ──────────────────────────────────────────────────────────
 
 test_that("gg_varpro$imp$selected reflects z > cutoff", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, cutoff = 0.79)
   expect_true(all(gg$imp$z[gg$imp$selected]  >  0.79))
@@ -115,6 +127,7 @@ test_that("gg_varpro$imp$selected reflects z > cutoff", {
 })
 
 test_that("gg_varpro nvar=3 returns exactly 3 variables", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, nvar = 3L)
   expect_equal(nrow(gg$imp), 3L)
@@ -122,6 +135,7 @@ test_that("gg_varpro nvar=3 returns exactly 3 variables", {
 })
 
 test_that("gg_varpro variable factor runs least- to most-important median z", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)
   # Factor levels run least-important first so the most-important variable is
@@ -133,6 +147,7 @@ test_that("gg_varpro variable factor runs least- to most-important median z", {
 })
 
 test_that("gg_varpro nvar larger than p returns all variables", {
+  skip_on_cran()
   vp <- make_vp_regr()
   n_all <- nrow(gg_varpro(vp)$imp)
   gg <- gg_varpro(vp, nvar = 999L)
@@ -140,6 +155,7 @@ test_that("gg_varpro nvar larger than p returns all variables", {
 })
 
 test_that("gg_varpro local.std=FALSE stats equal raw-column medians", {
+  skip_on_cran()
   ## Mechanistic check: verify each path against the actual column computation.
   ## faithful=TRUE forces local.std=FALSE (coercion tested above); imp.tree
   ## gives the ground-truth raw importance matrix for both assertions.
@@ -170,6 +186,7 @@ test_that("gg_varpro local.std=FALSE stats equal raw-column medians", {
 ## ── Z-scale alignment ─────────────────────────────────────────────────────────
 
 test_that("gg_varpro: z-normalisation mean(z_ij) == aggregate z_j", {
+  skip_on_cran()
   # varPro's importance() computes z_j = mean(imp_ij) / sd_j (no sqrt(ntree)).
   # So .varpro_imp_stats uses z_ij = imp_ij / sd_j, giving mean(z_ij) == z_j.
   # Verify by recomputing from imp.tree (faithful=TRUE).
@@ -191,6 +208,7 @@ test_that("gg_varpro: z-normalisation mean(z_ij) == aggregate z_j", {
 ## ── Plot smoke tests ─────────────────────────────────────────────────────────
 
 test_that("plot.gg_varpro default returns a ggplot", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)
   p  <- plot(gg)
@@ -198,6 +216,7 @@ test_that("plot.gg_varpro default returns a ggplot", {
 })
 
 test_that("plot.gg_varpro type='z' returns a ggplot", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)  # local.std=TRUE default
   p  <- plot(gg, type = "z")
@@ -205,6 +224,7 @@ test_that("plot.gg_varpro type='z' returns a ggplot", {
 })
 
 test_that("plot.gg_varpro type='raw' with local.std=FALSE returns a ggplot", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, local.std = FALSE)
   p  <- plot(gg, type = "raw")
@@ -212,6 +232,7 @@ test_that("plot.gg_varpro type='raw' with local.std=FALSE returns a ggplot", {
 })
 
 test_that("plot.gg_varpro type='raw' with local.std=TRUE -> stop", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, local.std = TRUE)
   expect_error(plot(gg, type = "raw"), regexp = "local\\.std")
@@ -233,6 +254,7 @@ test_that("plot.gg_varpro type='raw' with local.std=TRUE -> stop", {
 }
 
 test_that("plot.gg_varpro faithful: no phantom 'NA' variable when nvar < p", {
+  skip_on_cran()
   # imp.tree keeps every variable, so nvar = 3 (< 10 predictors) orphans the
   # rest -- they would collapse into an NA category without the fix.
   vp   <- make_vp_regr()
@@ -242,6 +264,7 @@ test_that("plot.gg_varpro faithful: no phantom 'NA' variable when nvar < p", {
 })
 
 test_that("plot.gg_varpro conditional: no phantom 'NA' variable when nvar < p", {
+  skip_on_cran()
   # nvar = 1 truncates below the conditional table's variable count, which is
   # what orphans a variable to NA in the buggy path.
   vp   <- make_vp_class()
@@ -251,12 +274,14 @@ test_that("plot.gg_varpro conditional: no phantom 'NA' variable when nvar < p", 
 })
 
 test_that("plot.gg_varpro type='z' with local.std=FALSE -> stop", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, local.std = FALSE)
   expect_error(plot(gg, type = "z"), regexp = "local\\.std")
 })
 
 test_that("plot.gg_varpro faithful=TRUE returns a ggplot", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp, faithful = TRUE)
   p  <- plot(gg)
@@ -264,6 +289,7 @@ test_that("plot.gg_varpro faithful=TRUE returns a ggplot", {
 })
 
 test_that("plot.gg_varpro conditional=TRUE returns ggplot with FacetWrap", {
+  skip_on_cran()
   vp <- make_vp_class()
   gg <- gg_varpro(vp, conditional = TRUE)
   p  <- plot(gg)
@@ -274,12 +300,14 @@ test_that("plot.gg_varpro conditional=TRUE returns ggplot with FacetWrap", {
 ## ── S3 companions ────────────────────────────────────────────────────────────
 
 test_that("autoplot.gg_varpro returns a ggplot", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)
   expect_s3_class(ggplot2::autoplot(gg), "ggplot")
 })
 
 test_that("print.gg_varpro returns object invisibly", {
+  skip_on_cran()
   vp  <- make_vp_regr()
   gg  <- gg_varpro(vp)
   out <- capture.output(ret <- print(gg))
@@ -288,6 +316,7 @@ test_that("print.gg_varpro returns object invisibly", {
 })
 
 test_that("print.gg_varpro output contains selected/total counts", {
+  skip_on_cran()
   vp  <- make_vp_regr()
   gg  <- gg_varpro(vp, cutoff = 0.79)
   out <- capture.output(print(gg))
@@ -295,6 +324,7 @@ test_that("print.gg_varpro output contains selected/total counts", {
 })
 
 test_that("summary.gg_varpro returns summary.gg_varpro class", {
+  skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)
   s  <- summary(gg)

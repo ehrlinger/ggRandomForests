@@ -34,6 +34,7 @@ test_that("importance with p rows but no z column fails clearly (the real #118 s
 })
 
 test_that("a well-formed importance table is NOT blocked (working path preserved)", {
+  set.seed(20260817L)
   # 3 variables with a real z column + a matching per-tree matrix
   imp_ok <- data.frame(mean = c(1, 2, 3), std = c(1, 1, 1), z = c(0.5, 1.5, 2.5),
                        row.names = c("age", "bili", "albumin"))

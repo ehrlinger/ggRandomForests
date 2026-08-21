@@ -47,7 +47,7 @@ if (requireNamespace("ggRandomForests", quietly = TRUE)) {
 ```{r error-demo}
 library(randomForest)
 set.seed(42)
-rf_iris <- randomForest(Species ~ ., data = iris, ntree = 200, keep.forest = TRUE)
+rf_iris <- randomForest(Species ~ ., data = iris, ntree = 100, keep.forest = TRUE)
 err_df <- ggRandomForests::gg_error(rf_iris, training = TRUE)
 head(err_df)
 ```
@@ -68,7 +68,7 @@ plot(err_df)
 ```{r variable-demo}
 set.seed(99)
 boston <- MASS::Boston
-rf_boston <- randomForest(medv ~ ., data = boston, ntree = 150)
+rf_boston <- randomForest(medv ~ ., data = boston, ntree = 100)
 var_df <- ggRandomForests::gg_variable(rf_boston)
 str(var_df[, c("lstat", "yhat")])
 ```

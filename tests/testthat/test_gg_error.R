@@ -1,6 +1,7 @@
 # testthat for gg_error function
 
 test_that("gg_error.rfsrc classifications", {
+  set.seed(20260817L)
   ## Load the cached forest
   data(iris, package = "datasets")
   rfsrc_iris <- randomForestSRC::rfsrc(
@@ -62,6 +63,7 @@ test_that("gg_error.rfsrc classifications", {
 
 
 test_that("gg_error.randomForest classifications", {
+  set.seed(20260817L)
   ## Load the cached forest
   data(iris, package = "datasets")
   ## Load the cached forest
@@ -114,6 +116,7 @@ test_that("gg_error.randomForest classifications", {
 
 
 test_that("gg_error regression rfsrc", {
+  set.seed(20260817L)
   ## Load the cached forest
   data(Boston, package = "MASS")
 
@@ -160,6 +163,7 @@ test_that("gg_error regression rfsrc", {
 
 
 test_that("gg_error regression randomForest", {
+  set.seed(20260817L)
   ## Load the cached forest
   data(Boston, package = "MASS")
 
@@ -205,6 +209,7 @@ test_that("gg_error regression randomForest", {
 # and all branches are covered explicitly.
 
 test_that("plot.gg_error direct: regression rfsrc (single-outcome path, no legend)", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston, ntree = 50L)
@@ -221,6 +226,7 @@ test_that("plot.gg_error direct: regression rfsrc (single-outcome path, no legen
 })
 
 test_that("plot.gg_error direct: survival rfsrc (single-outcome path)", {
+  set.seed(20260817L)
   data(pbc, package = "randomForestSRC")
   pbc$time <- pbc$days / 364.25
   pbc_sub <- pbc[, c("time", "status", "age", "bili")]
@@ -238,6 +244,7 @@ test_that("plot.gg_error direct: survival rfsrc (single-outcome path)", {
 })
 
 test_that("plot.gg_error direct: classification rfsrc (multi-outcome path, legend shown)", {
+  set.seed(20260817L)
   data(iris, package = "datasets")
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ ., data = iris, importance = TRUE, tree.err = TRUE
@@ -253,6 +260,7 @@ test_that("plot.gg_error direct: classification rfsrc (multi-outcome path, legen
 })
 
 test_that("plot.gg_error direct: accepts raw rfsrc object (auto-extract path)", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston, ntree = 50L)
@@ -268,6 +276,7 @@ test_that("plot.gg_error direct: errors on non-gg_error non-rfsrc input", {
 })
 
 test_that("plot.gg_error direct: point geometry used when only one valid row", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   Boston$chas <- as.logical(Boston$chas) # nolint: object_name_linter
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., data = Boston, ntree = 50L)

@@ -32,7 +32,7 @@ The output can be passed directly into the breaks argument of the
 \examples{
 if (requireNamespace("MASS", quietly = TRUE)) {
   data(Boston, package = "MASS")
-  rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston)
+  rfsrc_boston <- randomForestSRC::rfsrc(medv ~ ., Boston, ntree = 100)
 
   # To create 6 intervals, we want 7 points.
   # quantile_pts will find balanced intervals
