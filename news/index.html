@@ -54,11 +54,11 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.2/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="3.5.2" id="ggrandomforests-v352">ggRandomForests v3.5.2<a class="anchor" aria-label="anchor" href="#ggrandomforests-v352"></a></h2>
+<h2 class="pkg-version" data-toc-text="3.5.2" id="ggrandomforests-v352">ggRandomForests v3.5.2<a class="anchor" aria-label="anchor" href="#ggrandomforests-v352"></a></h2><p class="text-muted">CRAN release: 2026-08-21</p>
 <ul><li>Three help pages no longer render a stray backslash where a percent sign belongs. roxygen2 escapes <code>%</code> for you, so the <code>\%</code> written in the roxygen prose of <code><a href="../reference/calc_auc.html">calc_auc()</a></code>, <code><a href="../reference/gg_isopro.html">gg_isopro()</a></code> and <code><a href="../reference/plot.gg_isopro.html">plot.gg_isopro()</a></code> reached the <code>.Rd</code> as <code>\\%</code> and rendered as <code>50\%</code> rather than <code>50%</code>. Documentation only.</li>
 <li>
 <code>R CMD check</code> is back inside CRAN’s ten-minute budget. On the 3.5.1 win-builder run the vignette rebuild was 287s and the tests 195s of a 12-minute total, so both were cut at the source rather than moved around. The <code>rfsrc</code> vignettes grow smaller forests (Boston and iris at 100 trees, the <code>pbc</code> impute-and-fit pair at 50 and 100) and coarser partial-dependence surface grids (6 and 5 points, from 10 and 8); the SHAP sections explain 25 rows against 30 background draws instead of 40 against 50. In the examples, <code><a href="../reference/gg_error.html">gg_error()</a></code> and <code><a href="../reference/plot.gg_error.html">plot.gg_error()</a></code> grow 100 trees instead of 250, and <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> and <code><a href="../reference/plot.gg_vimp.html">plot.gg_vimp()</a></code> 50 instead of 100. The four heaviest test files, <code>gg_udependent</code>, <code>gg_varpro</code>, <code>gg_variable</code> and <code>gg_vimp</code>, now <code>skip_on_cran()</code>; they still run in full under <code>devtools::test()</code>. No function, argument or returned object changed.</li>

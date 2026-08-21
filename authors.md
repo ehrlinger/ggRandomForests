@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/ehrlinger/ggRandomForests/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/ehrlinger/ggRandomForests/blob/v3.5.2/inst/CITATION)
 
 Ehrlinger J (2026). *ggRandomForests: Visually Exploring Random
 Forests*. R package version 3.5.2,

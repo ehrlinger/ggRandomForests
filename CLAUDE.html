@@ -54,14 +54,14 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Claude Code specifics</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/CLAUDE.md" class="external-link"><code>CLAUDE.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.2/CLAUDE.md" class="external-link"><code>CLAUDE.md</code></a></small>
     </div>
 
 
 <p>@AGENTS.md</p>
 <div id="claude-code-specifics" class="section level1">
 
-<p><a href="AGENTS.html"><code>AGENTS.md</code></a>, imported above, is the operational contract and applies in full. It is written to be tool neutral so that Codex and other agents read the same rules. Only the Claude Code affordances live here.</p>
+<p><code>AGENTS.md</code>, imported above, is the operational contract and applies in full. It is written to be tool neutral so that Codex and other agents read the same rules. Only the Claude Code affordances live here.</p>
 <div class="section level2">
 <h2 id="before-you-touch-code">Before you touch code<a class="anchor" aria-label="anchor" href="#before-you-touch-code"></a></h2>
 <p><code>AGENTS.md</code> says to orient on the public API surface before editing. In Claude Code the way to do that is the codemap: it lives in the Obsidian vault under <code>Claude/repomaps/</code> and is read via the <code>read-codemap</code> skill (<code>/codemap ggRandomForests</code>). If the codemap looks stale, say so and offer to refresh it (<code>/regenerate-codemap</code>) rather than working from a guess.</p>

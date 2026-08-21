@@ -2,6 +2,8 @@
 
 ## ggRandomForests v3.5.2
 
+CRAN release: 2026-08-21
+
 - Three help pages no longer render a stray backslash where a percent
   sign belongs. roxygen2 escapes `%` for you, so the `\%` written in the
   roxygen prose of

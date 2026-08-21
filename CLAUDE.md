@@ -2,10 +2,9 @@
 
 @AGENTS.md
 
-[`AGENTS.md`](https://ehrlinger.github.io/ggRandomForests/AGENTS.md),
-imported above, is the operational contract and applies in full. It is
-written to be tool neutral so that Codex and other agents read the same
-rules. Only the Claude Code affordances live here.
+`AGENTS.md`, imported above, is the operational contract and applies in
+full. It is written to be tool neutral so that Codex and other agents
+read the same rules. Only the Claude Code affordances live here.
 
 ## Before you touch code
 
