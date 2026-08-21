@@ -40,6 +40,25 @@ test_that("cran-comments.md carries no unfinished-work markers", {
   )
 })
 
+# A version whose NEWS section is marked "(development)" has not been submitted
+# and is not about to be: cran-comments.md carries the history of the release
+# line, not a section for it. The v4 line on dev_rhf is exactly this case, so
+# without the guard the assertion below fails on every run of that branch and
+# stops meaning anything.
+#
+# Deliberately keyed on the NEWS marker rather than the branch name. The test
+# runs from a tarball and an installed package too, where no branch is
+# visible, and "(development)" is a claim the maintainer makes in a tracked
+# file rather than something inferred from the checkout.
+news_marks_development <- function(version) {
+  p <- testthat::test_path("..", "..", "NEWS.md")
+  if (!file.exists(p)) return(FALSE)
+  txt <- readLines(p, warn = FALSE)
+  head <- grep(paste0("^ggRandomForests v", gsub(".", "[.]", version, fixed = TRUE),
+                      "([^0-9.]|$)"), txt, value = TRUE, perl = TRUE)
+  length(head) > 0L && grepl("(development)", head[1], fixed = TRUE)
+}
+
 test_that("cran-comments.md leads with the version being submitted", {
   skip_on_cran()
   p <- cran_comments_path()
@@ -48,6 +67,10 @@ test_that("cran-comments.md leads with the version being submitted", {
   desc_path <- system.file("DESCRIPTION", package = "ggRandomForests")
   if (!nzchar(desc_path)) desc_path <- testthat::test_path("..", "..", "DESCRIPTION")
   version <- unname(read.dcf(desc_path, fields = "Version")[1, 1])
+
+  skip_if(news_marks_development(version),
+          paste0("DESCRIPTION ", version, " is a development version per NEWS.md; ",
+                 "cran-comments.md documents the release line, not this tree"))
 
   # The first "## vX.Y.Z" heading is the release being submitted; older
   # releases are kept below it as history.
