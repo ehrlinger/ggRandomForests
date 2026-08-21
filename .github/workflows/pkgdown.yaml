@@ -1,18 +1,21 @@
 # Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
-  # A commit that only touches the generated house-style artifact cannot change
-  # the package: .claude is in .Rbuildignore, so it is excluded from the built
-  # package, and no step in this workflow reads it from the checkout. Running
-  # this on such a commit burns runner minutes and queues ahead of checks that
-  # can actually fail.
+  # A push that only touches the generated house-style artifact cannot change the
+  # package: .claude is in .Rbuildignore, so it is excluded from the built package,
+  # and no step here reads it from the checkout. Skipping those pushes saves runner
+  # minutes.
+  #
+  # The pull_request trigger deliberately carries NO paths-ignore. These jobs are
+  # required status checks on main and dev_rhf, and a required check that never
+  # runs is reported as permanently pending, so a .claude-only PR would be blocked
+  # with no way to merge it. Paying for a full matrix on those rare PRs is the
+  # price of having the gate work at all.
   push:
     paths-ignore:
       - '.claude/**'
     branches: [main]
   pull_request:
-    paths-ignore:
-      - '.claude/**'
   release:
     types: [published]
   workflow_dispatch:
