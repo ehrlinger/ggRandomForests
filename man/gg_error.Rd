@@ -59,7 +59,7 @@ predictions. Training curves are only available when the forest was stored
 ## ------------- iris data
 ## You can build a randomForest
 rfsrc_iris <- randomForestSRC::rfsrc(Species ~ ., data = iris,
-  tree.err = TRUE, block.size = 1)
+  ntree = 100, tree.err = TRUE, block.size = 1)
 
 # Get a data.frame containing error rates
 gg_dta <- gg_error(rfsrc_iris)
@@ -70,7 +70,7 @@ plot(gg_dta)
 ## RandomForest example
 rf_iris <- randomForest::randomForest(Species ~ .,
   data = iris,
-  tree.err = TRUE,
+  tree.err = TRUE
 )
 gg_dta <- gg_error(rf_iris)
 plot(gg_dta)
@@ -83,8 +83,8 @@ plot(gg_dta)
 
 ## ------------- airq data
 rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ .,
-  data = airquality,
-  na.action = "na.impute", tree.err = TRUE, block.size = 1,
+  data = airquality, ntree = 100,
+  na.action = "na.impute", tree.err = TRUE, block.size = 1
 )
 
 # Get a data.frame containing error rates
@@ -100,6 +100,7 @@ if (requireNamespace("MASS", quietly = TRUE)) {
   Boston$chas <- as.logical(Boston$chas)
   rfsrc_boston <- randomForestSRC::rfsrc(medv ~ .,
     data = Boston,
+    ntree = 100,
     forest = TRUE,
     importance = TRUE,
     tree.err = TRUE,
@@ -116,7 +117,7 @@ if (requireNamespace("MASS", quietly = TRUE)) {
 
 ## ------------- mtcars data
 rfsrc_mtcars <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars,
-  tree.err = TRUE, block.size = 1)
+  ntree = 100, tree.err = TRUE, block.size = 1)
 
 # Get a data.frame containing error rates
 gg_dta<- gg_error(rfsrc_mtcars)
@@ -132,49 +133,46 @@ plot(gg_dta)
 ## randomized trial of two treatment regimens for lung cancer
 data(veteran, package = "randomForestSRC")
 rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
-                       tree.err = TRUE, block.size = 1)
+                       ntree = 100, tree.err = TRUE, block.size = 1)
 
 gg_dta <- gg_error(rfsrc_veteran)
 plot(gg_dta)
 
 ## ------------- pbc data
-# Load a cached randomForestSRC object
-# We need to create this dataset
-data(pbc, package = "randomForestSRC",)
-# For whatever reason, the age variable is in days... makes no sense to me
+data(pbc, package = "randomForestSRC", envir = environment())
+# Recode: binary columns to logical, low-cardinality columns to factors.
 for (ind in seq_len(dim(pbc)[2])) {
- if (!is.factor(pbc[, ind])) {
-   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-     if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-       pbc[, ind] <- as.logical(pbc[, ind])
-     }
-   }
- } else {
-   if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-     if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-       pbc[, ind] <- as.logical(pbc[, ind])
-     }
-     if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-       pbc[, ind] <- as.logical(pbc[, ind])
-     }
-   }
- }
- if (!is.logical(pbc[, ind]) &
-     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-   pbc[, ind] <- factor(pbc[, ind])
- }
+  if (!is.factor(pbc[, ind])) {
+    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+      if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+    }
+  } else {
+    if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
+      if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+      if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
+        pbc[, ind] <- as.logical(pbc[, ind])
+      }
+    }
+  }
+  if (!is.logical(pbc[, ind]) &&
+    length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
+    pbc[, ind] <- factor(pbc[, ind])
+  }
 }
-#Convert age to years
+# Convert age from days to years
 pbc$age <- pbc$age / 364.24
-
 pbc$years <- pbc$days / 364.24
 pbc <- pbc[, -which(colnames(pbc) == "days")]
 pbc$treatment <- as.numeric(pbc$treatment)
 pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
 pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
 pbc$treatment <- factor(pbc$treatment)
+# Split into a training set (assigned treatment) and a test set (not assigned)
 dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-# Create a test set from the remaining patients
 pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 
 #========
@@ -182,6 +180,7 @@ pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(years, status) ~ .,
  dta_train,
+ ntree = 100,
  nsplit = 10,
  na.action = "na.impute",
  tree.err = TRUE,

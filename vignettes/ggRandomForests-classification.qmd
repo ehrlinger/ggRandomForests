@@ -124,7 +124,7 @@ function detects the classification family from the factor response.
 ```{r rfsrc-fit}
 set.seed(42)
 rfsrc_iris <- rfsrc(Species ~ ., data = iris,
-                    ntree = 200, importance = TRUE, err.block = 5)
+                    ntree = 100, importance = TRUE, err.block = 5)
 rfsrc_iris
 ```
 
@@ -213,7 +213,7 @@ dimensional Boston housing data.
 
 ```{r shap-fit}
 set.seed(43)
-gg_shp <- gg_shap(rfsrc_iris, bg_n = 50, which.class = 3)
+gg_shp <- gg_shap(rfsrc_iris, bg_n = 30, which.class = 3)
 ```
 
 ## SHAP importance

@@ -1,6 +1,8 @@
 # testthat for gg_vimp function
 
 test_that("gg_vimp classifications", {
+  skip_on_cran()
+  set.seed(20260817L)
   ## Load the cached forest
   data(iris, package = "datasets")
   rfsrc_iris <- randomForestSRC::rfsrc(
@@ -122,6 +124,7 @@ test_that("gg_vimp classifications", {
 })
 
 test_that("gg_vimp randomForest which.outcome maps to the right column", {
+  skip_on_cran()
   data(iris, package = "datasets")
   set.seed(1)
   rf_iris <- randomForest::randomForest(Species ~ .,
@@ -157,6 +160,7 @@ test_that("gg_vimp randomForest which.outcome maps to the right column", {
 })
 
 test_that("gg_vimp which.outcome names the measure in set", {
+  skip_on_cran()
   data(iris, package = "datasets")
   set.seed(1)
 
@@ -190,47 +194,21 @@ test_that("gg_vimp which.outcome names the measure in set", {
 
 
 test_that("gg_vimp survival", {
-  dta <- new.env()
-  data(pbc, package = "randomForestSRC",
-       envir = dta)
-  pbc <- dta$pbc
-  # For whatever reason, the age variable is in days... makes no sense to me
-  for (ind in seq_len(dim(pbc)[2])) {
-    if (!is.factor(pbc[, ind])) {
-      if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-        if (sum(range(pbc[, ind], na.rm = TRUE) == c(0, 1)) == 2) {
-          pbc[, ind] <- as.logical(pbc[, ind])
-        }
-      }
-    } else {
-      if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
-        if (sum(sort(unique(pbc[, ind])) == c(0, 1)) == 2) {
-          pbc[, ind] <- as.logical(pbc[, ind])
-        }
-        if (sum(sort(unique(pbc[, ind])) == c(FALSE, TRUE)) == 2) {
-          pbc[, ind] <- as.logical(pbc[, ind])
-        }
-      }
-    }
-    if (!is.logical(pbc[, ind]) &
-        length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
-      pbc[, ind] <- factor(pbc[, ind])
-    }
-  }
-  # Convert age to years
-  pbc$age <- pbc$age / 364.24
-
-  pbc$years <- pbc$days / 364.24
-  pbc <- pbc[, -which(colnames(pbc) == "days")]
-  pbc$treatment <- as.numeric(pbc$treatment)
-  pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
-  pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
-  pbc$treatment <- factor(pbc$treatment)
+  skip_on_cran()
+  set.seed(20260817L)
+  # Shared with the roxygen examples; see inst/examples/pbc-setup.R. That file
+  # passes envir = environment() to data(), which is what lets it be sourced
+  # into a scoped environment here instead of writing pbc to .GlobalEnv.
+  setup <- new.env()
+  sys.source(
+    system.file("examples", "pbc-setup.R", package = "ggRandomForests"),
+    envir = setup
+  )
+  pbc <- setup$pbc
 
   cat("pbc: rfsrc\n")
-  dta_train <- pbc[-which(is.na(pbc$treatment)), ]
-  # Create a test set from the remaining patients
-  pbc_test <- pbc[which(is.na(pbc$treatment)), ]
+  dta_train <- setup$dta_train
+  pbc_test <- setup$pbc_test
 
   rfsrc_pbc <- randomForestSRC::rfsrc(
     Surv(years, status) ~ .,
@@ -295,6 +273,8 @@ test_that("gg_vimp survival", {
 })
 
 test_that("gg_vimp regression", {
+  skip_on_cran()
+  set.seed(20260817L)
   ## Load the cached forest
   data(Boston, package = "MASS")
   boston <- Boston
@@ -399,6 +379,7 @@ test_that("gg_vimp regression", {
 })
 
 test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP column", {
+  skip_on_cran()
   # Regression test for the bug where gg_dta$vimp was accessed but the column
   # is named "VIMP" (uppercase) in single-outcome rfsrc fits, leaving positive
   # always TRUE even for variables with non-positive VIMP.
@@ -430,6 +411,8 @@ test_that("gg_vimp.rfsrc single-outcome: positive flag correctly uses the VIMP c
 })
 
 test_that("gg_vimp.randomForest regression: vimp column present even when importance is IncNodePurity", {
+  skip_on_cran()
+  set.seed(20260817L)
   # Guard test: when randomForest stores importance as IncNodePurity (not X.IncMSE),
   # gg_vimp must still produce a 'vimp' column so plot.gg_vimp and the positive
   # flag work correctly.

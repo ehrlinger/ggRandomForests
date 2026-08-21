@@ -18,6 +18,41 @@ ggRandomForests v4.0.0 (development)
   line. `gg_auct.rhf(object, marker, auct_fit = NULL)` computes
   `auct.rhf()` internally or reuses a cached fit.
 
+ggRandomForests v3.5.2
+======================
+* Three help pages no longer render a stray backslash where a percent sign
+  belongs. roxygen2 escapes `%` for you, so the `\%` written in the roxygen
+  prose of `calc_auc()`, `gg_isopro()` and `plot.gg_isopro()` reached the `.Rd`
+  as `\\%` and rendered as `50\%` rather than `50%`. Documentation only.
+* `R CMD check` is back inside CRAN's ten-minute budget. On the 3.5.1
+  win-builder run the vignette rebuild was 287s and the tests 195s of a
+  12-minute total, so both were cut at the source rather than moved around.
+  The `rfsrc` vignettes grow smaller forests (Boston and iris at 100 trees,
+  the `pbc` impute-and-fit pair at 50 and 100) and coarser partial-dependence
+  surface grids (6 and 5 points, from 10 and 8); the SHAP sections explain 25
+  rows against 30 background draws instead of 40 against 50. In the examples,
+  `gg_error()` and `plot.gg_error()` grow 100 trees instead of 250, and
+  `gg_vimp()` and `plot.gg_vimp()` 50 instead of 100. The four heaviest test
+  files, `gg_udependent`, `gg_varpro`, `gg_variable` and `gg_vimp`, now
+  `skip_on_cran()`; they still run in full under `devtools::test()`. No
+  function, argument or returned object changed.
+* `?gg_partial_varpro` now documents varPro's missing-data contract, which
+  governs every fit this package plots. varPro has no imputation: each entry
+  point grows a stump through `randomForestSRC::rfsrc` and inherits its
+  `na.action = "na.omit"`, so any case missing a predictor or the outcome is
+  deleted before the fit, silently. `na.action = "na.impute"` passed to
+  `varpro()` lands in `...` and is discarded without remark. The loss
+  compounds as `0.95^p`, and the fitted object keeps only the post-deletion
+  count, so neither the user nor this package can recover the original from
+  the object -- the check has to happen before the fit.
+* The same section covers imputing beforehand without inventing outcomes.
+  `roughfix()` and `randomForestSRC::impute()` both fill every column handed
+  to them, the outcome included, so a frame with missing outcomes comes back
+  with manufactured responses and the release rules are fit partly to them.
+  Documents von Hippel's impute-then-delete, and the two cautions that follow:
+  outcome-informed imputation crosses fold boundaries in `cv.varpro()`, and a
+  completed frame carries no imputation uncertainty into the curves.
+
 ggRandomForests v3.5.1
 ======================
 * Test-only fix for the `gcc-UBSAN` additional issue reported against 3.5.0.
@@ -50,6 +85,43 @@ ggRandomForests v3.5.1
   `method = "unsupv"`. It is benign -- the pointer is formed, never
   dereferenced -- and the fix belongs upstream (`kogalur/randomForestSRC` PR
   #478); `method = "rnd"` avoids it in the meantime.
+* `gg_roc()` on an `rfsrc` forest now honors `which_outcome = 0`. The help page
+  has always documented `0` as the numeric spelling of `"all"`, but only the
+  string was normalized, so `0` fell through to `predicted[, 0]`. That is a
+  legal zero-column subset rather than an error, so the threshold sweep ran on
+  empty input and returned a two-row frame with no `sens`/`spec` columns, which
+  then broke `calc_auc()`. Both spellings now take the same route: a warning,
+  and a fallback to class 1. The macro-average that will replace the fallback
+  is still tracked under #72.
+* The three ROC entry points still disagree about what "all classes" means --
+  `gg_roc()` on a `randomForest` fit macro-averages, `gg_roc()` on an `rfsrc`
+  fit falls back to class 1, and a direct `plot.gg_roc()` call on a raw
+  multi-class forest overlays one curve per class. That divergence is
+  unchanged here, but `?gg_roc` and `?plot.gg_roc` now say so instead of
+  implying the paths agree. Both also correct a longer-standing claim: a raw
+  forest passed to plain `plot()` never reaches `plot.gg_roc()` at all,
+  because `randomForestSRC` and `randomForest` register their own `plot`
+  methods and S3 dispatch prefers them. That branch is reachable only by
+  naming the method outright. `?gg_roc` further stops advertising character
+  class names on the `rfsrc` path, which only the `randomForest` method
+  accepts.
+* `gg_partial_rfsrc()` validates `rf_model` before using it. It read `$xvar`
+  and `$xvar.names` first, so a non-forest failed with base R's "argument is of
+  length zero" rather than naming the problem. It now matches the error style
+  already used by `gg_error()`, `gg_vimp()`, `gg_variable()` and `gg_rfsrc()`.
+* The `pbc` examples on `?gg_error`, `?plot.gg_error`, `?gg_vimp` and
+  `?plot.gg_rfsrc` lost their editorial asides and a stray trailing comma in
+  the `data()` call. The munging block that all four repeated is now a single
+  shared `inst/examples/pbc-setup.R`, pulled in with `@example`, so the four
+  pages cannot drift apart.
+* Every `rfsrc` fit in an example now names an explicit `ntree`. The examples
+  had been taking `rfsrc()`'s 500-tree default, which is far more forest than an
+  illustration needs; bounding them took the local `R CMD check` total from
+  4m44s to 3m16s.
+* `tests/testthat/test_lint.R` runs again, wrapped in `skip_on_cran()`. It had
+  been commented out entirely, so the suite enforced nothing about style
+  locally even though CI kept its own lint job. The guard keeps it off the
+  `R CMD check` clock.
 
 ggRandomForests v3.5.0
 ======================

@@ -1,6 +1,7 @@
 # testthat for quantile_pts function
 
 test_that("cutting a vector at evenly space points", {
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)

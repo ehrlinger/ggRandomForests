@@ -1,0 +1,17 @@
+# Project-level R environment.
+#
+# VDIFFR_RUN_TESTS guards the vdiffr visual-regression tests in
+# tests/testthat/test_snapshots.R. When it is not "true" those tests do not
+# run, and testthat then treats every baseline under
+# tests/testthat/_snaps/snapshots/ as unused and deletes it. The destructive
+# state is therefore the *absence* of a setting, which is the natural state of
+# any fresh shell, script, or CI-less local run. That is how all 49 baselines
+# have been pruned repeatedly.
+#
+# This line inverts that default: unset becomes "true" (tests register, nothing
+# is pruned), while an explicit value still wins. The three CI workflows that
+# deliberately set VDIFFR_RUN_TESTS: "false" are unaffected.
+#
+# Note that R --vanilla ignores this file, and an explicit "false" still
+# prunes; .githooks/pre-commit is the backstop for both.
+VDIFFR_RUN_TESTS=${VDIFFR_RUN_TESTS-true}

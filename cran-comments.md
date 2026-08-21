@@ -1,8 +1,123 @@
+## v3.5.2: resubmission, check time back under ten minutes
+
+This replaces the 3.5.1 submission of 2026-08-19, which the incoming pretest
+declined with `Overall checktime 12 min > 10 min` on r-devel-windows, and it
+answers your question of whether I could bring it under ten minutes. That is
+what the release is for. No exported function, argument or returned object
+changed.
+
+### Where the twelve minutes went
+
+From the pretest logs for the 3.5.1 tarball, so these are your numbers rather
+than mine:
+
+| Step | r-devel-windows | r-devel-debian |
+|---|---|---|
+| re-building vignette outputs | 287s | 108s |
+| tests | 195s | 68s |
+| examples | 51s | 28s |
+| incoming feasibility, R code, PDF manual | 75s | 24s |
+| **overall** | **720s** | |
+
+Two steps carry two thirds of the Windows total. Both are cut at the source
+below, rather than moved somewhere the check does not look.
+
+### What changed
+
+**Vignettes.** The `rfsrc` walkthroughs had grown forests and
+partial-dependence grids sized for the narrative rather than for a check
+budget. Boston and iris now grow 100 trees instead of 200, the `pbc`
+impute-and-fit pair 50 and 100 instead of 100 and 150, and the two
+partial-dependence surface grids 6 and 5 points instead of 10 and 8. The SHAP
+sections explain 25 rows against 30 background draws instead of 40 against 50.
+Every number the prose quotes is either interpolated from the fit or updated to
+match, and the conclusions each section draws are unchanged.
+
+**Examples.** `gg_error()` and `plot.gg_error()` each fit six forests at
+`ntree = 250` with `block.size = 1`, which makes every tree a separate error
+evaluation, so `ntree` was the whole cost. They now fit 100, which still shows
+the convergence those examples exist to show. `gg_vimp()` and `plot.gg_vimp()`
+drop from 100 trees to 50.
+
+**Tests.** The four heaviest test files under CRAN skip semantics
+(`test_gg_udependent`, `test_gg_varpro`, `test_gg_variable`, `test_gg_vimp`)
+were 52% of the suite's CRAN-side cost between them, and now carry
+`skip_on_cran()`. They still run in full under `devtools::test()` locally and
+in CI, so the coverage is not lost, only moved off your machines.
+
+### What it bought
+
+Same machine, same method, 3.5.1 against 3.5.2:
+
+| Step | 3.5.1 | 3.5.2 |
+|---|---|---|
+| examples | 16s | 12s |
+| examples with `--run-donttest` | 39s | 31s |
+| tests | 34s | 14s |
+| re-building vignette outputs | 55s | 36s |
+
+### The other change in this release
+
+`?gg_partial_varpro` gains a section on varPro's missing-data contract, which
+governs every fit this package plots. varPro has no imputation: each entry
+point grows a stump through `randomForestSRC::rfsrc` and inherits its
+`na.action = "na.omit"`, so any case missing a predictor or the outcome is
+deleted before the fit, silently, and `na.action = "na.impute"` passed to
+`varpro()` lands in `...` and is discarded without remark. The section also
+covers imputing beforehand without manufacturing outcomes. Documentation only;
+no code path changed.
+
+### Test environments
+
+* **Local:** macOS (aarch64-apple-darwin), R 4.6.1, `R CMD check --as-cran`
+  with the manual, built from a clean `git archive` export: **0 ERRORs,
+  0 WARNINGs, 1 NOTE**. The source tarball is 2.37 MB. The full test suite, run
+  with `NOT_CRAN=true` so the `skip_on_cran()` tests execute too, is 1512
+  passing and 0 failing.
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
+* **URL check:** `urlchecker::url_check()` reports all URLs correct.
+
+**win-builder:** x86_64-w64-mingw32, Windows Server 2022, all three branches
+run against this exact tarball. Each returns **Status: 1 NOTE**, the same
+`Number of updates in past 6 months: 7` reported locally, with no second NOTE
+and no ERRORs or WARNINGs. `checking for hidden files and directories` is OK on
+all three.
+
+| Step | R-devel (r90424) | R-release (4.6.1) | R-oldrelease (4.5.3) |
+|---|---|---|---|
+| CRAN incoming feasibility | 10s | 11s | 17s |
+| R code for possible problems | 24s | 19s | 24s |
+| examples | 31s | 29s | 36s |
+| tests | 45s | 35s | 43s |
+| re-building vignette outputs | 140s | 110s | 131s |
+| PDF version of manual | 15s | 15s | 13s |
+| HTML version of manual | | 15s | 13s |
+| **timed steps** | **265s** | **234s** | **277s** |
+
+`00check.log` does not report an overall time, so I am giving you the sum of
+the timed steps rather than a total I did not measure. For the comparison you
+care about: the 3.5.1 pretest that was declined had 608s of timed steps against
+a 720s overall, so on the same 112s of untimed overhead these land near six
+minutes, and R-devel is the branch the pretest gates on.
+
+The heaviest branch is R-oldrelease at 277s, and it is now the same shape as
+the other two rather than the outlier it was.
+
+### NOTE disposition
+
+The one NOTE is `Number of updates in past 6 months: 7`. This submission is the
+resubmission you asked for after the 3.5.1 pretest, against the 2026-08-21
+deadline on the `gcc-UBSAN` additional issue, which is why it follows so
+closely. I would not otherwise submit on this cadence.
+
+---
+
 ## v3.5.1 — patch release (fixes the gcc-UBSAN additional issue in 3.5.0)
 
 Submitted in response to the CRAN check request of 2026-08-05 (correct before
-2026-08-21). This release fixes only the `gcc-UBSAN` additional issue; all
-other flavors were OK on 3.5.0.
+2026-08-21). All other flavors were OK on 3.5.0. The `gcc-UBSAN` fix is the
+reason for the release; it also carries two small defensive fixes in `R/`,
+described under "What else is in this release" below.
 
 ### The report
 
@@ -27,21 +142,93 @@ live-`partialpro()` tests were already `skip_on_cran()`'d for runtime, which
 left this one as the only one running on CRAN — and so the only one reported.
 
 That test now passes `method = "rnd"` itself. Verified by tracing every
-`rfsrc` grow across the suite under CRAN skip semantics: 311 grows, 0 reached
+`rfsrc` grow across the suite under CRAN skip semantics: 299 grows, 0 reached
 without a formula (previously 2, both in that one test). The test asserts the
 same warnings over the same number of rows, so CRAN coverage is unchanged.
 
-No user-facing code changed — the diff is five test files plus `DESCRIPTION`
-and `NEWS.md`.
+The same audit found the `\donttest` example in `?gg_partial_varpro` on that
+same path; it did not fire under gcc-UBSAN because that flavor did not run
+`\donttest` code, but it is fixed here too rather than left to a future
+check-flavor change.
+
+### What else is in this release
+
+The sanitizer fix is the reason for the submission, but it is not the whole
+diff, so let me set out the rest. Two small defensive fixes in `R/` came out of
+a code review of the same files:
+
+* `calc_roc()` now routes `which_outcome = 0` through the same fallback as
+  `which_outcome = "all"`, with a warning. `0` is the documented numeric
+  spelling of "all", and left unnormalized it indexed as `predicted[, 0]` —
+  legal R that yields a zero-column matrix, so the threshold sweep ran on empty
+  input and returned a degenerate two-row object with no sensitivity or
+  specificity columns instead of raising an error.
+* `gg_partial_rfsrc()` now checks its first argument is an `rfsrc` object and
+  stops with a message naming the class it got. Previously a non-forest reached
+  an `ncol()` comparison on a `NULL` and failed with base R's "argument is of
+  length zero", which does not point at the real problem.
+
+Both replace a silent wrong answer with a clear one; neither changes results for
+valid input. The rest of the diff is the test suite, the roxygen examples (every
+`rfsrc` fit in an example now carries an explicit `ntree`, and the repeated
+`pbc` setup is collapsed into one shared `inst/examples/pbc-setup.R`), the
+regenerated `.Rd` files, and the version metadata.
 
 ### Test environments
 
-* local macOS (darwin), R 4.6.1 — `R CMD check --as-cran` with the manual:
-  **0 ERRORs, 0 WARNINGs, 1 NOTE**. Total check time 4m11s.
+* **Local:** macOS (aarch64-apple-darwin), R 4.6.0, `R CMD check --as-cran`
+  with the manual, built from a clean `git archive` export: **0 ERRORs,
+  0 WARNINGs, 1 NOTE**. Check time 3m53s across timed steps; the source tarball
+  is 2.27 MB. The full test suite, run with `NOT_CRAN=true` so the
+  `skip_on_cran()` tests execute too, is 1512 passing and 0 failing.
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
+* **URL check:** `urlchecker::url_check()` reports all URLs correct.
 
-The one NOTE is `Days since last update: 1` / `Number of updates in past 6
-months: 7`. This submission is the requested fix for the 3.5.0 check failure,
-which is why it follows so closely.
+**win-builder:** x86_64-w64-mingw32, Windows Server 2022. All three branches
+return **Status: 1 NOTE**, the same `Number of updates in past 6 months: 7`
+reported locally, with no second NOTE and no ERRORs or WARNINGs:
+
+| Branch | R | Status | Check time |
+|---|---|---|---|
+| R-devel | 2026-08-17 r90424 | 1 NOTE | 10m19s |
+| R-release | 4.6.1 | 1 NOTE | 8m21s |
+| R-oldrelease | 4.5.3 | 1 NOTE | 6m33s |
+
+One caveat, so the record is exact: those three runs were made against this tree
+with a single later change, a paragraph added to `README.md` naming `varPro` in
+the opening description. `R CMD check` does not parse `README.md`, so no check
+outcome depends on it, but the tarball was rebuilt after the runs and I would
+rather say so than let "run against this exact tarball" stand unqualified.
+
+On check time, which I would rather flag than leave you to find. The 3.5.0
+totals were roughly 8 minutes (R-release), 10 minutes (R-devel) and 12m15s
+(R-oldrelease). Measured on 3.5.1:
+
+* **R-oldrelease 12m15s to 6m33s.** Every `rfsrc` fit in an example now carries
+  an explicit `ntree`, which nearly halved the branch that was furthest over.
+* **R-release 8m21s and R-devel 10m19s**, both essentially unchanged from the
+  3.5.0 you accepted on 2026-08-04.
+
+R-devel is therefore the one sitting just above ten minutes, and the vignette
+rebuild is 299s of its 619s. That is the lever: I am glad to precompute the
+expensive vignette calls, as I did for 3.1.0, and can turn that around quickly
+if you would like it before acceptance rather than after.
+
+### NOTE disposition
+
+The one NOTE is `Number of updates in past 6 months: 7`. This submission is the
+fix you requested on 2026-08-05 for the `gcc-UBSAN` additional issue in 3.5.0,
+with a 2026-08-21 deadline, which is why it follows the previous release so
+closely. I would not otherwise submit on this cadence.
+
+The change is narrow, and I would rather describe it accurately than call it
+smaller than it is. Beyond the sanitizer fix there are the two defensive fixes
+in `calc_roc()` and `gg_partial_rfsrc()` set out above, both of which turn a
+silent wrong answer into an error or a warning and neither of which changes
+results for valid input. Everything else is tests, examples, regenerated `.Rd`
+files and version metadata. Local check time is 3m53s, and on win-builder
+R-oldrelease has roughly halved against 3.5.0, because every `rfsrc` fit in an
+example now carries an explicit `ntree`.
 
 ---
 

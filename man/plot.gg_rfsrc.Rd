@@ -114,10 +114,9 @@ plot(gg_dta)
 gg_dta <- gg_rfsrc(rfsrc_veteran, by = "trt")
 plot(gg_dta)
 
-## -------- pbc data (larger dataset -- skipped on CRAN)
-\donttest{
-data(pbc, package = "randomForestSRC")
-# For whatever reason, the age variable is in days; convert to years
+## -------- pbc data (larger dataset -- forest fit skipped on CRAN)
+data(pbc, package = "randomForestSRC", envir = environment())
+# Recode: binary columns to logical, low-cardinality columns to factors.
 for (ind in seq_len(dim(pbc)[2])) {
   if (!is.factor(pbc[, ind])) {
     if (length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 2) {
@@ -135,7 +134,7 @@ for (ind in seq_len(dim(pbc)[2])) {
       }
     }
   }
-  if (!is.logical(pbc[, ind]) &
+  if (!is.logical(pbc[, ind]) &&
     length(unique(pbc[which(!is.na(pbc[, ind])), ind])) <= 5) {
     pbc[, ind] <- factor(pbc[, ind])
   }
@@ -148,13 +147,16 @@ pbc$treatment <- as.numeric(pbc$treatment)
 pbc$treatment[which(pbc$treatment == 1)] <- "DPCA"
 pbc$treatment[which(pbc$treatment == 2)] <- "placebo"
 pbc$treatment <- factor(pbc$treatment)
-# Remove test-set patients (those with no assigned treatment)
+# Split into a training set (assigned treatment) and a test set (not assigned)
 dta_train <- pbc[-which(is.na(pbc$treatment)), ]
+pbc_test <- pbc[which(is.na(pbc$treatment)), ]
 
+\donttest{
 set.seed(42)
 rfsrc_pbc <- randomForestSRC::rfsrc(
   Surv(years, status) ~ .,
   dta_train,
+  ntree = 100,
   nsplit = 10,
   na.action = "na.impute",
   forest = TRUE,

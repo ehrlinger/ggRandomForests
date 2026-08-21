@@ -4,6 +4,8 @@
 Surv <- survival::Surv # nolint: object_name_linter
 
 test_that("gg_variable classifications", {
+  skip_on_cran()
+  set.seed(20260817L)
   ## Load the cached forest
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
@@ -75,6 +77,8 @@ test_that("gg_variable classifications", {
 
 
 test_that("gg_variable regression", {
+  skip_on_cran()
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
 
@@ -124,6 +128,8 @@ test_that("gg_variable regression", {
 })
 
 test_that("gg_variable survival handles late time requests", {
+  skip_on_cran()
+  set.seed(20260817L)
   data(veteran, package = "randomForestSRC")
   Surv <- survival::Surv # nolint: object_name_linter
   rfsrc_veteran <- randomForestSRC::rfsrc(Surv(time, status) ~ .,
@@ -136,6 +142,7 @@ test_that("gg_variable survival handles late time requests", {
 })
 
 test_that("gg_variable survival: single time, single continuous variable plot", {
+  skip_on_cran()
   data(veteran, package = "randomForestSRC")
   set.seed(42)
   rfsrc_veteran <- randomForestSRC::rfsrc(
@@ -153,6 +160,7 @@ test_that("gg_variable survival: single time, single continuous variable plot", 
 })
 
 test_that("gg_variable survival: single time, panel plot", {
+  skip_on_cran()
   data(veteran, package = "randomForestSRC")
   set.seed(42)
   rfsrc_veteran <- randomForestSRC::rfsrc(
@@ -168,6 +176,7 @@ test_that("gg_variable survival: single time, panel plot", {
 })
 
 test_that("gg_variable survival: multiple times, single variable facets", {
+  skip_on_cran()
   data(veteran, package = "randomForestSRC")
   set.seed(42)
   rfsrc_veteran <- randomForestSRC::rfsrc(
@@ -190,6 +199,7 @@ test_that("gg_variable survival: multiple times, single variable facets", {
 })
 
 test_that("gg_variable survival: multiple times, panel plot", {
+  skip_on_cran()
   data(veteran, package = "randomForestSRC")
   set.seed(42)
   rfsrc_veteran <- randomForestSRC::rfsrc(
@@ -205,6 +215,7 @@ test_that("gg_variable survival: multiple times, panel plot", {
 })
 
 test_that("gg_variable survival: points=FALSE smooth=TRUE options", {
+  skip_on_cran()
   data(veteran, package = "randomForestSRC")
   set.seed(42)
   rfsrc_veteran <- randomForestSRC::rfsrc(
@@ -224,6 +235,7 @@ test_that("gg_variable survival: points=FALSE smooth=TRUE options", {
 })
 
 test_that("gg_variable survival: oob=FALSE uses in-bag predictions", {
+  skip_on_cran()
   data(veteran, package = "randomForestSRC")
   set.seed(42)
   rfsrc_veteran <- randomForestSRC::rfsrc(
@@ -238,6 +250,8 @@ test_that("gg_variable survival: oob=FALSE uses in-bag predictions", {
 })
 
 test_that("plot.gg_variable regression: points=FALSE smooth=TRUE", {
+  skip_on_cran()
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
@@ -259,6 +273,8 @@ test_that("plot.gg_variable regression: points=FALSE smooth=TRUE", {
 })
 
 test_that("plot.gg_variable regression: factor x variable triggers boxplot", {
+  skip_on_cran()
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
@@ -278,6 +294,8 @@ test_that("plot.gg_variable regression: factor x variable triggers boxplot", {
 })
 
 test_that("plot.gg_variable regression: panel with two continuous variables", {
+  skip_on_cran()
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
@@ -295,6 +313,8 @@ test_that("plot.gg_variable regression: panel with two continuous variables", {
 })
 
 test_that("plot.gg_variable regression: panel points=FALSE smooth=TRUE", {
+  skip_on_cran()
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
@@ -313,6 +333,8 @@ test_that("plot.gg_variable regression: panel points=FALSE smooth=TRUE", {
 })
 
 test_that("plot.gg_variable classification: panel with multiple continuous vars", {
+  skip_on_cran()
+  set.seed(20260817L)
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
     data = iris,
@@ -326,6 +348,8 @@ test_that("plot.gg_variable classification: panel with multiple continuous vars"
 })
 
 test_that("plot.gg_variable classification: smooth and no-points path", {
+  skip_on_cran()
+  set.seed(20260817L)
   rfsrc_iris <- randomForestSRC::rfsrc(
     Species ~ .,
     data = iris,
@@ -339,6 +363,8 @@ test_that("plot.gg_variable classification: smooth and no-points path", {
 })
 
 test_that("plot.gg_variable: missing xvar returns list for all predictors", {
+  skip_on_cran()
+  set.seed(20260817L)
   data(Boston, package = "MASS")
   boston <- Boston
   boston$chas <- as.logical(boston$chas)
@@ -357,6 +383,7 @@ test_that("plot.gg_variable: missing xvar returns list for all predictors", {
 })
 
 test_that("gg_variable.randomForest classification: class attr uses 'class' not 'classification'", {
+  skip_on_cran()
   # randomForest stores the family in $type as "classification", but
   # plot.gg_variable and the rfsrc path both dispatch on "class".
   # Verify the mapping is applied so callers see a consistent class attribute.
@@ -372,6 +399,7 @@ test_that("gg_variable.randomForest classification: class attr uses 'class' not 
 ## ── randomForest classification (PR #87) ─────────────────────────────────────
 
 test_that("gg_variable.randomForest classification: produces yhat.* columns not yhat", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
@@ -391,6 +419,7 @@ test_that("gg_variable.randomForest classification: produces yhat.* columns not 
 })
 
 test_that("gg_variable.randomForest classification: plot returns patchwork for all xvar", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
@@ -403,6 +432,7 @@ test_that("gg_variable.randomForest classification: plot returns patchwork for a
 })
 
 test_that("gg_variable.randomForest classification: layer_data works on single-xvar plot", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
@@ -412,6 +442,7 @@ test_that("gg_variable.randomForest classification: layer_data works on single-x
 })
 
 test_that("gg_variable.randomForest classification: default plot renders every panel", {
+  skip_on_cran()
   # yvar / outcome must not be treated as predictors by the default-xvar pick.
   skip_if_not_installed("randomForest")
   # Regression test: the default-xvar selection in plot.gg_variable used to
@@ -433,6 +464,7 @@ test_that("gg_variable.randomForest classification: default plot renders every p
 })
 
 test_that("plot.gg_variable default xvar matches column names exactly, not substring", {
+  skip_on_cran()
   # Regression: the pre-existing default-xvar exclusion used grep("time", ...)
   # and grep("event", ...), which silently dropped any predictor whose name
   # *contained* those substrings -- e.g. the documented veteran-data survival
@@ -463,6 +495,7 @@ test_that("plot.gg_variable default xvar matches column names exactly, not subst
 })
 
 test_that("gg_variable.randomForest classification: norm.votes=FALSE still gives [0,1] fractions", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L,
@@ -476,6 +509,7 @@ test_that("gg_variable.randomForest classification: norm.votes=FALSE still gives
 })
 
 test_that("plot.gg_variable RF classification: smooth=TRUE layer_data smokeable (binary smooth aes bug)", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   # Two-class subset to exercise the *binary* classification path
   set.seed(42L)
@@ -490,6 +524,7 @@ test_that("plot.gg_variable RF classification: smooth=TRUE layer_data smokeable 
 })
 
 test_that("plot.gg_variable RF classification: smooth=TRUE works for multi-class (missing block)", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
@@ -503,6 +538,7 @@ test_that("plot.gg_variable RF classification: smooth=TRUE works for multi-class
 })
 
 test_that("plot.gg_variable RF classification multi-class: outcome column is class names not integers", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
@@ -518,6 +554,7 @@ test_that("plot.gg_variable RF classification multi-class: outcome column is cla
 })
 
 test_that("plot.gg_variable RF classification multi-class: outcome factor levels match column order", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
@@ -531,6 +568,7 @@ test_that("plot.gg_variable RF classification multi-class: outcome factor levels
 })
 
 test_that("gg_variable.randomForest: oob=FALSE triggers a warning", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   rf <- randomForest::randomForest(Species ~ ., data = iris, ntree = 50L)
@@ -555,6 +593,7 @@ has_smooth_layer <- function(p) {
 }
 
 test_that("plot.gg_variable binary classification + factor predictor: smooth=TRUE adds no smooth layer", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   bin_data         <- iris[iris$Species != "virginica", ]
@@ -570,6 +609,7 @@ test_that("plot.gg_variable binary classification + factor predictor: smooth=TRU
 })
 
 test_that("plot.gg_variable multi-class classification + factor predictor: smooth=TRUE adds no smooth layer", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   iris2      <- iris
@@ -584,6 +624,7 @@ test_that("plot.gg_variable multi-class classification + factor predictor: smoot
 })
 
 test_that("plot.gg_variable regression + factor predictor: smooth=TRUE adds no smooth layer", {
+  skip_on_cran()
   skip_if_not_installed("randomForest")
   set.seed(42L)
   iris2      <- iris

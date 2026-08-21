@@ -36,6 +36,7 @@ test_that("gg_brier.rfsrc produces a tidy survival frame", {
 })
 
 test_that("gg_brier rejects non-survival forests", {
+  set.seed(20260817L)
   data(iris, package = "datasets")
   rf <- randomForestSRC::rfsrc(Species ~ ., data = iris, ntree = 50)
   expect_error(gg_brier(rf), "right-censored survival")
