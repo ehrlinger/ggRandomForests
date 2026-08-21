@@ -43,6 +43,12 @@ jobs:
 
   house-style:
     runs-on: ubuntu-latest
+    # Narrower than the workflow-level read-all, which this job would
+    # otherwise inherit. It only reads two checkouts and runs an R script,
+    # and it executes a script from another repository, so it keeps the
+    # contents: read it had as a standalone workflow.
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
