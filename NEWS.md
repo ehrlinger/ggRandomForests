@@ -17,6 +17,14 @@ ggRandomForests v4.0.0 (development)
   AUC(t) with a bootstrap CI ribbon when available and a 0.5 reference
   line. `gg_auct.rhf(object, marker, auct_fit = NULL)` computes
   `auct.rhf()` internally or reuses a cached fit.
+* `gg_rhf_importance()` / `plot.gg_rhf_importance()`: tidy wrapper and point
+  matrix for time-localized variable priority from
+  `randomForestRHF::importance.rhf()` (RHF Phase 3). It returns
+  `variable / time_window / time / time_index / start / stop / midpoint /
+  n_risk / n_rules / priority`, accepts a supplied `importance_fit` or
+  calculates one when absent, and orders variables by their q90 priority over
+  time windows. Priority is a ranking score, not a z-score; no selection
+  cutoff is applied. RHF support now requires `randomForestRHF >= 1.0.1`.
 
 ggRandomForests v3.5.2
 ======================

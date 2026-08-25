@@ -15,6 +15,10 @@
 #'   `id`, `time`, `hazard`, `chf`, `source`, an integer `ntime` attribute
 #'   (number of grid points), and a `provenance` attribute.
 #'
+#' @references
+#' Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.
+#' arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
+#'
 #' @seealso [plot.gg_rhf()], [randomForestRHF::rhf()]
 #'
 #' @examples
