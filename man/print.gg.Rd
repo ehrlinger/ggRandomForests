@@ -17,6 +17,7 @@
 \alias{print.gg_survival}
 \alias{print.gg_brier}
 \alias{print.gg_rhf}
+\alias{print.gg_tune_rhf}
 \alias{print.gg_auct}
 \alias{print.gg_rhf_importance}
 \alias{print.gg_udependent}
@@ -55,6 +56,8 @@
 \method{print}{gg_brier}(x, ...)
 
 \method{print}{gg_rhf}(x, ...)
+
+\method{print}{gg_tune_rhf}(x, ...)
 
 \method{print}{gg_auct}(x, ...)
 

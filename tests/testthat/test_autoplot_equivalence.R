@@ -1,6 +1,6 @@
 # autoplot() and plot() must produce the same plot for every gg_* class.
 #
-# All 19 autoplot methods are thin delegators: autoplot.gg_x() calls plot() or
+# All 20 autoplot methods are thin delegators: autoplot.gg_x() calls plot() or
 # plot.gg_x() and returns the result. That makes the failure mode a drift one.
 # Someone adds an argument, a default or a layer to plot.gg_x and does not
 # carry it through the delegator, or replaces a delegator with a second
@@ -112,6 +112,7 @@ test_that("autoplot() equals plot() for every cheaply constructible gg_* class",
       interval = "time", censor = "status", by = "trt", data = survival::veteran
     )
   )
+  objects[["gg_tune_rhf (iAUC)"]] <- gg_tune_rhf(.fake_rhf_tune_iauc())
 
   # gg_shap() stops() when kernelshap is absent, and kernelshap is Suggests.
   # Built inside the list literal above it took the whole block down with it on

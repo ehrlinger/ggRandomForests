@@ -14,6 +14,7 @@
 \alias{autoplot.gg_survival}
 \alias{autoplot.gg_brier}
 \alias{autoplot.gg_rhf}
+\alias{autoplot.gg_tune_rhf}
 \alias{autoplot.gg_auct}
 \alias{autoplot.gg_rhf_importance}
 \alias{autoplot.gg_varpro}
@@ -45,6 +46,8 @@
 \method{autoplot}{gg_brier}(object, ...)
 
 \method{autoplot}{gg_rhf}(object, ...)
+
+\method{autoplot}{gg_tune_rhf}(object, ...)
 
 \method{autoplot}{gg_auct}(object, ...)
 
@@ -89,6 +92,7 @@ The following \code{gg_*} classes are supported:
 \item{\code{gg_survival}}{Survival / cumulative hazard curves}
 \item{\code{gg_brier}}{Time-resolved Brier score and CRPS}
 \item{\code{gg_rhf}}{Random Hazard Forest hazard curves}
+\item{\code{gg_tune_rhf}}{Random Hazard Forest tuning path}
 \item{\code{gg_auct}}{Random Hazard Forest time-varying AUC}
 \item{\code{gg_rhf_importance}}{Random Hazard Forest variable priority}
 \item{\code{gg_shap}}{SHAP explanations}

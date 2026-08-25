@@ -138,3 +138,33 @@ test_that("gg_tune_rhf records provenance without copying the forest", {
   expect_identical(prov$n_evaluations, 4L)
   expect_false("forest" %in% names(risk))
 })
+
+test_that("gg_tune_rhf print reports the tuning context invisibly", {
+  x <- gg_tune_rhf(.fake_rhf_tune_iauc())
+  expect_output(print(x), "gg_tune_rhf")
+  expect_output(print(x), "OOB iAUC")
+  expect_output(print(x), "evaluations: 3")
+  expect_output(print(x), "selected treesize: 6")
+  expect_invisible(print(x))
+})
+
+test_that("gg_tune_rhf summary returns the selected result", {
+  x <- gg_tune_rhf(.fake_rhf_tune_risk())
+  s <- summary(x)
+  expect_identical(names(s),
+                   c("metric", "treesize", "value", "se", "n_evaluations"))
+  expect_identical(s$metric, "OOB risk")
+  expect_identical(s$treesize, 8L)
+  expect_equal(s$value, 0.24)
+  expect_true(is.na(s$se))
+  expect_identical(s$n_evaluations, 4L)
+})
+
+test_that("gg_tune_rhf autoplot delegates display arguments", {
+  x <- gg_tune_rhf(.fake_rhf_tune_iauc())
+  p <- ggplot2::autoplot(x, se_band = FALSE, color = "purple")
+  expect_s3_class(p, "ggplot")
+  expect_false(any(vapply(p$layers, function(layer) {
+    inherits(layer$geom, "GeomRibbon")
+  }, logical(1))))
+})

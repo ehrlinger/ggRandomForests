@@ -302,6 +302,20 @@ summary.gg_rhf <- function(object, ...) {
 
 #' @rdname summary.gg
 #' @export
+summary.gg_tune_rhf <- function(object, ...) {
+  selected <- object[object$selected, , drop = FALSE]
+  data.frame(
+    metric = selected$metric,
+    treesize = selected$treesize,
+    value = selected$value,
+    se = selected$se,
+    n_evaluations = nrow(object),
+    stringsAsFactors = FALSE
+  )
+}
+
+#' @rdname summary.gg
+#' @export
 summary.gg_rhf_importance <- function(object, ...) {
   .rhf_priority_summary(object)
 }
