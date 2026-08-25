@@ -32,8 +32,8 @@ unsupervised variable priority where that method is discussed.
 | [ ] | README | Reconcile package, dependency, and method citations and version language. | pending | `README.md` |
 | [ ] | Package help | Reconcile package-level citation and supported object descriptions. | pending | Package help pages |
 | [ ] | Roxygen/help | Reconcile extractor, plotting, and RHF-facing documentation. | pending | `R/` roxygen sources |
-| [ ] | Six vignettes | Audit package calls, citations, versions, and runnable examples. | pending | `vignettes/*.qmd` |
-| [ ] | Shared bibliography | Add or reconcile software and method references used by the docs. | pending | `vignettes/ggRandomForests.bib` |
+| [x] | Six vignettes | Corrected RF-SRC and varPro software citation callouts; retained unqualified `rfsrc()` calls where the vignette explicitly attaches randomForestSRC. | verified | Stable software keys; all six sources rendered successfully on 2026-08-25. |
+| [x] | Shared bibliography | Corrected RF-SRC software citation and added the varPro software citation. | verified | `Ishwaran:RFSRC:software:2026`, `Ishwaran:varPro:software:2026`, and `Ishwaran:RHF:software:2026` |
 | [ ] | v4 NEWS | Record the v4 consistency sweep and RHF support changes. | pending | `NEWS.md` |
 | [ ] | Active v3 NEWS | Preserve and reconcile the active v3 release notes. | pending | `NEWS.md` |
 | [ ] | Runnable examples | Verify examples run with supported package versions and imports. | pending | Examples and guarded tests |

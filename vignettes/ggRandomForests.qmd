@@ -11,6 +11,7 @@ format:
 editor: 
   markdown: 
     wrap: 80
+bibliography: ggRandomForests.bib
 vignette: >
   %\VignetteIndexEntry{Exploring Random Forests with ggRandomForests}
   %\VignetteEngine{quarto::html}
@@ -22,12 +23,18 @@ usually means digging through list structures that were never meant to be
 plotted directly. **ggRandomForests** does that digging for you: it pulls
 tidy data objects out of a `randomForestSRC` or `randomForest` fit, and
 those objects drop straight into the `ggplot2` workflows you already know.
-A second engine, `varPro`, powers a parallel family of functions for
-release-rule importance and related diagnostics; that family is covered in
-the companion vignette referenced at the end.
+A second engine, `varPro` [@Lu2024varpro; @Ishwaran:varPro:software:2026],
+powers a parallel family of functions for release-rule importance and related
+diagnostics; that family is covered in the companion vignette referenced at
+the end.
 This vignette walks through the three objects you will reach for most often
 (`gg_error`, `gg_variable`, and `gg_vimp`), plus a small helper for
 cutting a predictor into evenly populated groups.
+
+`ggRandomForests` works with three upstream fit mappings:
+`randomForestSRC::rfsrc()` -> `rfsrc`, `varPro::varpro()` -> `varpro`, and
+`randomForestRHF::rhf()` -> `rhf`. RHF support is only an overview here; the
+dedicated RHF vignette carries the worked longitudinal analysis.
 
 ```{r pkg-setup, include=FALSE}
 # vignette dir under R CMD check, package root under an interactive knit

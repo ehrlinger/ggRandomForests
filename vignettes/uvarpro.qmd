@@ -62,7 +62,8 @@ know which columns carry the structure of the data: which variables define its
 shape, which travel together, and which are close to noise. That is the job of
 unsupervised varPro. `varPro::uvarpro()` grows a forest on the predictor matrix
 alone, with no response, and scores each variable by how much entropy it
-contributes to the regions the forest carves out [@Lu2024varpro]. "Important"
+contributes to the regions the forest carves out [@Lu2024varpro;
+@Ishwaran:varPro:software:2026]. "Important"
 here
 does not mean useful for prediction. It means a variable helps reconstruct the
 feature space that the others cannot.
