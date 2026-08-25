@@ -59,14 +59,14 @@ unsupervised variable priority where that method is discussed.
 
 | Done | Check | Disposition | Evidence |
 |---|---|---|---|
-| [x] | Documentation changes reviewed against the canonical table | verified | Task 5 fit-call and version/citation inventories; final stale-pattern searches returned no hits. |
-| [x] | Spelling and prose review | verified | `spelling::spell_check_package(use_wordlist = TRUE)` exited 0 on 2026-08-25. Its reported project terminology, package/API names, citations, and regional spellings were reviewed; no genuine spelling errors or source changes. |
-| [x] | Documentation regeneration and lint | verified | `devtools::document()` exited 0, then `lintr::lint_package()` reported no lints on 2026-08-25. |
-| [x] | Six vignette renders | verified | `quarto::quarto_render()` rendered all six `vignettes/*.qmd` files with exit 0 on 2026-08-25, using an isolated temporary `HOME` and the existing R library. |
-| [x] | Guarded tests | verified | `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` exited 0: 1,646 passes, 0 failures, 59 existing warnings, and 6 documented skips on 2026-08-25. |
-| [x] | Snapshot integrity | verified | Scoped `git status --short tests/testthat/_snaps` before and after the guarded suite, plus the scoped name-status diff after, were empty; no vdiffr baseline changed. |
-| [x] | pkgdown | verified | `pkgdown::build_site()` exited 0 on 2026-08-25 using the isolated temporary `HOME`; it downloaded the required Google Fonts only after network access was enabled. Rendered site artifacts were not staged. |
-| [x] | Clean-archive check | verified | Clean `git archive HEAD` build exited 0 with the isolated temporary `HOME`; `R CMD check --as-cran` exited 0 with 0 errors, 0 warnings, and 1 NOTE. The NOTE requests a DOI-form arXiv reference for the single raw varPro arXiv citation in `DESCRIPTION`; it is recorded for release review and does not authorize submission. Tarball checks found only `ggRandomForests/.Rinstignore`, `Version: 4.0.0`, `Date: 2026-08-05`, and 0 `cran-comments` entries. |
+| [x] | Documentation changes reviewed against the canonical table | verified | Final-review mapping inventory confirmed all three qualified fit calls, classes, and package-attached minima; stale-pattern searches returned no hits. |
+| [x] | Spelling and prose review | verified | Fresh `spelling::spell_check_package(use_wordlist = TRUE)` exited 0 on 2026-08-25. Its reported project terminology, package/API names, citations, and regional spellings were reviewed; no genuine spelling errors or source changes. |
+| [x] | Documentation regeneration and lint | verified | Fresh `devtools::document()` exited 0, then `lintr::lint_package()` reported no lints on 2026-08-25. |
+| [x] | Six vignette renders | verified | Fresh `quarto::quarto_render()` rendered all six `vignettes/*.qmd` files with exit 0 on 2026-08-25, using an isolated temporary `HOME` and the existing R library. |
+| [x] | Guarded tests | verified | Fresh `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` exited 0: 1,646 passes, 0 failures, 59 existing warnings, and 6 documented skips on 2026-08-25. |
+| [x] | Snapshot integrity | verified | Scoped `git status --short tests/testthat/_snaps` before and after the fresh guarded suite, plus the scoped name-status diff after, were empty; no vdiffr baseline changed. |
+| [x] | pkgdown | verified | Fresh `pkgdown::build_site()` used an isolated temporary `HOME`. Its first attempt was DNS-blocked at Google Fonts; the approved network-enabled retry exited 0. Rendered site artifacts were not staged. |
+| [x] | Clean-archive check | verified | Fresh clean `git archive HEAD` build exited 0 with the isolated temporary `HOME`; the first check was DNS-blocked at CRAN/Bioconductor indexes, and the approved retry of `R CMD check --as-cran` exited 0 with 0 errors, 0 warnings, and 1 NOTE. The NOTE requests a DOI-form arXiv reference for the single raw varPro arXiv citation in `DESCRIPTION`; it is recorded for release review and does not authorize submission. Tarball checks found only `ggRandomForests/.Rinstignore`, `Version: 4.0.0`, `Date: 2026-08-05`, and 0 `cran-comments` entries. |
 
 ## Release gates
 
@@ -107,3 +107,24 @@ unsupervised variable priority where that method is discussed.
   `DESCRIPTION` use a DOI-form arXiv link. This is a retained release-review
   item, not an authorization to submit. The RHF vignette, explicit authorization,
   submission, and CRAN-acceptance holds remain in force.
+
+## Final-review verification evidence: 2026-08-25
+
+- Final review corrected the first user-facing mention of each upstream mapping
+  in package help and the main vignette, corrected the README `varpro` object
+  class, and added a separate audit-disposition/gate-status legend.
+- With an isolated temporary `HOME` and the existing R library,
+  `devtools::document()`, `lintr::lint_package()`, and
+  `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` exited 0 in that
+  order. The suite reported 1,646 passes, 0 failures, 59 existing warnings,
+  and 6 documented skips; snapshot status and its scoped diff were empty
+  before and after the suite.
+- `spelling::spell_check_package(use_wordlist = TRUE)` and all six
+  `quarto::quarto_render()` vignette renders exited 0. The pkgdown build and
+  clean-archive check each required an approved retry after their initial DNS
+  failures; both retries exited 0. `R CMD check --as-cran` completed with the
+  manual and reported 0 errors, 0 warnings, and the retained single raw varPro
+  arXiv NOTE.
+- Only the consistency-sweep gate remains checked. The RHF-vignette, full
+  release-verification, explicit-authorization, submission, and CRAN-
+  acceptance gates remain pending.
