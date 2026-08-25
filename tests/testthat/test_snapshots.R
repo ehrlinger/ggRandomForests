@@ -476,6 +476,21 @@ test_that("gg-auct-chf", {
   vdiffr::expect_doppelganger("gg-auct-chf", plot(gg))
 })
 
+test_that("snapshot: gg_rhf_importance priority matrix", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("randomForestRHF")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  set.seed(20260825L)
+  x <- gg_rhf_importance(.rhf_pbc(), importance_fit = .rhf_importance_pbc())
+  vdiffr::expect_doppelganger(
+    "gg-rhf-importance-priority",
+    plot(x, top_n_union = 8L)
+  )
+})
+
 ## ── gg_shap snapshots (Task 8) ───────────────────────────────────────────────
 if (requireNamespace("kernelshap", quietly = TRUE)) {
   local({
