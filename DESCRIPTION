@@ -19,7 +19,7 @@ Description: Graphic elements for exploring Random Forests using
     Implements visualizations of the methods described in Breiman (2001)
     <doi:10.1023/A:1010933404324>, Ishwaran, Kogalur, Blackstone, and Lauer
     (2008) <doi:10.1214/08-AOAS169>, Lu and Ishwaran (2024)
-    <arXiv:2409.09003>, and Ishwaran, Hsich, Kogalur, and Lee (2026)
+    <doi:10.48550/arXiv.2409.09003>, and Ishwaran, Hsich, Kogalur, and Lee (2026)
     <doi:10.48550/arXiv.2608.21597>.
 Depends:
     R (>= 4.4.0)

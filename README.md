@@ -79,7 +79,7 @@ vignette("varpro", package = "ggRandomForests")
 ```
 
 The unsupervised varPro tools — `gg_udependent()`, `gg_beta_uvarpro()`, and
-`gg_sdependent()`, which read structure off a `uvarpro()` fit with no outcome —
+`gg_sdependent()`, which read structure off a `varPro::uvarpro()` fit with no outcome —
 have their own short vignette:
 ```r
 vignette("uvarpro", package = "ggRandomForests")
@@ -139,7 +139,7 @@ an `rhf` fit. A hazard is the event-risk rate at a particular time.
 ### varPro — variable priority
 
 These read a `varpro` fit rather than a forest. `varPro::varpro()` is the
-supervised fit; `uvarpro()` is the unsupervised one, which needs no outcome.
+supervised fit; `varPro::uvarpro()` is the unsupervised one, which needs no outcome.
 
 | Function | Input | What you get |
 |---|---|---|
