@@ -27,37 +27,39 @@ unsupervised variable priority where that method is discussed.
 
 | Done | Surface | Finding | Disposition | Evidence |
 |---|---|---|---|---|
-| [x] | DESCRIPTION | Added the three engine roles and current method citations; retained version, date, and dependency floors. | verified | `DESCRIPTION`; documentation regeneration on 2026-08-25. |
-| [ ] | `inst/CITATION` | Confirm the package citation describes ggRandomForests itself. | retained | `inst/CITATION` |
-| [x] | README | Standardized the three fit-call/object-class mappings; kept supported minima separate from current software citations; added the three implemented RHF families and their references. | verified | `README.md`; Task 4 audit on 2026-08-25. |
-| [x] | Package help | Added the three engine mappings, RHF families, dependency gates, and current software and method citations. | verified | `R/help.R`, generated `man/ggRandomForests-package.Rd`; documentation regeneration on 2026-08-25. |
-| [x] | Roxygen citations | Replaced stale RF-SRC and varPro software citations; added RHF software citations to the extractors. | verified | Scoped `R/` sources; documentation regeneration on 2026-08-25. |
-| [x] | Generated help | Regenerated only the Rd pages corresponding to the edited roxygen sources. | verified | `man/`; documentation regeneration on 2026-08-25. |
-| [x] | Six vignettes | Corrected RF-SRC and varPro software citation callouts; retained unqualified `rfsrc()` calls where the vignette explicitly attaches randomForestSRC. | verified | Stable software keys; all six sources rendered successfully on 2026-08-25. |
-| [x] | Shared bibliography | Corrected RF-SRC software citation and added the varPro software citation. | verified | `Ishwaran:RFSRC:software:2026`, `Ishwaran:varPro:software:2026`, and `Ishwaran:RHF:software:2026` |
-| [x] | v4 NEWS | Added the current-software/minimum-version distinction and all three canonical fit-call/object-class mappings. | verified | `NEWS.md`; Task 4 audit on 2026-08-25. |
+| [x] | DESCRIPTION | Added the three engine roles and current method citations; retained version, date, and dependency floors. | corrected | `DESCRIPTION`; version/citation inventory and documentation regeneration on 2026-08-25. |
+| [x] | `inst/CITATION` | The package citation describes ggRandomForests itself; dependency citations belong on their documentation surfaces. | retained | `inst/CITATION`; Task 5 source audit on 2026-08-25. |
+| [x] | README | Standardized the three fit-call/object-class mappings; kept supported minima separate from current software citations; added the three implemented RHF families and their references. | corrected | `README.md`; fit-call and version/citation inventories on 2026-08-25. |
+| [x] | Package help | Added the three engine mappings, RHF families, dependency gates, and current software and method citations. | corrected | `R/help.R`, generated `man/ggRandomForests-package.Rd`; fit-call and version/citation inventories on 2026-08-25. |
+| [x] | Roxygen citations | Replaced stale RF-SRC and varPro software citations; added RHF software citations to the extractors; removed obsolete v3.1.0 promises from the beta/local-importance notes. | corrected | Scoped `R/` sources; generated `man/gg_beta_varpro.Rd` and `man/gg_ivarpro.Rd`; documentation regeneration on 2026-08-25. |
+| [x] | Generated help | Regenerated the Rd pages corresponding to the edited roxygen sources. | corrected | `man/`; `devtools::document()` on 2026-08-25. |
+| [x] | Six vignettes | Corrected software citation callouts and current unsupported-family prose; retained unqualified `rfsrc()` calls only where randomForestSRC is explicitly attached. | corrected | All six sources audited; `varpro.qmd` and `ggRandomForests.qmd` rendered after Task 5 changes on 2026-08-25. |
+| [x] | Shared bibliography | Corrected RF-SRC software citation and added the varPro software citation. | corrected | `Ishwaran:RFSRC:software:2026`, `Ishwaran:varPro:software:2026`, and `Ishwaran:RHF:software:2026`. |
+| [x] | v4 NEWS | Added the current-software/minimum-version distinction and all three canonical fit-call/object-class mappings. | corrected | `NEWS.md`; fit-call and version/citation inventories on 2026-08-25. |
 | [x] | Active v3 NEWS | Retained v3.0.0--v3.5.2 as historical release facts; no present-tense instruction conflicts with the canonical mapping or current method/software citations. | retained | `NEWS.md`; Task 4 audit on 2026-08-25. |
-| [ ] | Runnable examples | Verify examples run with supported package versions and imports. | pending | Examples and guarded tests |
-| [x] | pkgdown | Moved the six implemented RHF topics into their own reference group; no RHF article link was added because the vignette is not yet present. | verified | `_pkgdown.yml`; Task 4 pkgdown build on 2026-08-25. |
+| [x] | Runnable examples | Package-qualified fits are used throughout R examples; unqualified README and vignette calls follow explicit package attachment; RHF examples retain Suggests guards. | retained | Direct fitting-call inventory; focused guarded tests on 2026-08-25. |
+| [x] | pkgdown | Moved the six implemented RHF topics into their own reference group; no RHF article link was added because the vignette is not yet present. | corrected | `_pkgdown.yml`; Task 4 pkgdown build and Task 5 source audit on 2026-08-25. |
+| [x] | RHF tuning family | No current surface advertises `gg_tune_rhf()` before it exists. | deferred | PR 2 owns the tuning family and its documentation. |
+| [x] | RHF vignette | Removed the overview's present-tense claim about a vignette that does not yet exist; no article link is published. | deferred | PR 3 owns `vignettes/rhf.qmd`; `vignettes/ggRandomForests.qmd` and `_pkgdown.yml`. |
 
 ## Behavioral defect log
 
 | Done | Finding | Disposition | Evidence |
 |---|---|---|---|
-| [ ] | `gg_beta_varpro()` reports that unsupported `regr+` and survival families are "tracked for v3.1.0". The current v4 error should describe the unsupported families without pointing users to a release that has already shipped. | blocked | `R/gg_beta_varpro.R`; run `Rscript -e 'devtools::load_all(quiet = TRUE); x <- structure(list(family = "surv"), class = "varpro"); tryCatch(gg_beta_varpro(x), error = function(e) message(conditionMessage(e)))'` to reproduce: `regr+ and survival are tracked for v3.1.0 (see vignette / NEWS).` |
-| [ ] | `gg_ivarpro()` reports that unsupported `regr+` and survival families are "tracked for v3.1.0". The current v4 error should describe the unsupported families without pointing users to a release that has already shipped. | blocked | `R/gg_ivarpro.R`; run `Rscript -e 'devtools::load_all(quiet = TRUE); x <- structure(list(family = "surv"), class = "varpro"); tryCatch(gg_ivarpro(x), error = function(e) message(conditionMessage(e)))'` to reproduce: `regr+ and survival are tracked for v3.1.0 (see NEWS).` |
+| [x] | `gg_beta_varpro()` reported that unsupported `regr+` and survival families were "tracked for v3.1.0". It now names the wrapper, supported regression/classification fits, and received family without a release promise. | corrected | RED 1 failure/87 passes; GREEN 88 passes in `test_gg_beta_varpro.R` with `NOT_CRAN=true VDIFFR_RUN_TESTS=true` on 2026-08-25. |
+| [x] | `gg_ivarpro()` reported that unsupported `regr+` and survival families were "tracked for v3.1.0". It now names the wrapper, supported regression/classification fits, and received family without a release promise. | corrected | RED 1 failure/51 passes/1 skip; GREEN 52 passes/1 skip in `test_gg_ivarpro.R` with `NOT_CRAN=true VDIFFR_RUN_TESTS=true` on 2026-08-25. |
 
 ## PR 1 verification
 
 | Done | Check | Disposition | Evidence |
 |---|---|---|---|
-| [ ] | Documentation changes reviewed against the canonical table | pending | Diff review |
-| [ ] | Spelling and prose review | pending | House-style review |
-| [ ] | Lint | pending | `lintr::lint_package()` |
-| [ ] | Six vignette renders | pending | Quarto render output |
-| [ ] | Guarded tests | pending | `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` |
-| [ ] | Snapshot integrity | pending | vdiffr baselines and `git status` |
-| [ ] | pkgdown | pending | pkgdown build output |
+| [x] | Documentation changes reviewed against the canonical table | verified | Task 5 fit-call and version/citation inventories; final stale-pattern searches returned no hits. |
+| [x] | Spelling and prose review | verified | House-style review across the Task 1--5 documentation diff. |
+| [x] | Lint | verified | `lintr::lint_package()`: no lints on 2026-08-25. |
+| [x] | Six vignette renders | verified | All six rendered in Task 2; the changed `varpro.qmd` and `ggRandomForests.qmd` rendered again in Task 5. |
+| [x] | Guarded tests | verified | `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()`: 1,646 passes, 0 failures, 59 existing warnings, 6 documented skips on 2026-08-25. |
+| [x] | Snapshot integrity | verified | Identical scoped `git status` before and after the guarded suite; no vdiffr baseline changed. |
+| [x] | pkgdown | verified | Task 4 pkgdown build on 2026-08-25. |
 | [ ] | Clean-archive check | pending | `git archive` build/check |
 
 ## Release gates
@@ -65,7 +67,7 @@ unsupervised variable priority where that method is discussed.
 | Done | Gate | Disposition | Evidence |
 |---|---|---|---|
 | [ ] | RHF vignette | pending | Rendered and reviewed RHF article |
-| [ ] | Consistency sweep | pending | Documentation audit complete |
+| [x] | Consistency sweep | verified | Task 5 documentation audit complete; all rows are corrected, retained, or deferred to PR 2/PR 3. |
 | [ ] | Full release verification | pending | Definition-of-done commands and `R CMD check --as-cran` |
 | [ ] | Explicit maintainer authorization | pending | Maintainer approval recorded |
 | [ ] | Submission | pending | CRAN submission record |
