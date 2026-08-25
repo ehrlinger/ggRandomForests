@@ -318,6 +318,31 @@ full release gate passes. The CRAN submission remains on hold until the
 maintainer explicitly lifts that hold. After submission, v4 is not treated as
 released and no release tag is cut until CRAN accepts it.
 
+### V3/V4 cross-generation consistency sweep
+
+- [ ] Before the RHF vignette gate is closed, complete and record an overall
+  consistency sweep across the v3 and v4 public documentation. Audit
+  `DESCRIPTION`, package citation metadata, README source, every vignette,
+  roxygen source and generated help, NEWS, and runnable examples for the three
+  related upstream workflows:
+  `randomForestSRC::rfsrc()`, `randomForestRHF::rhf()`, and
+  `varPro::varpro()`.
+
+The sweep must use the exact package and function names consistently, preserve
+namespace-qualified calls wherever the dependency is not deliberately
+attached, and distinguish package names, fitting functions, and fitted-object
+classes. It reconciles method and software citations across all public
+surfaces, including authors, year, title, DOI, package version, and canonical
+URL. It also compares the declared dependency floors with the current CRAN
+releases, updates a floor only when the public API used by ggRandomForests
+requires it, and verifies both the minimum supported versions and the current
+versions where practical.
+
+The completed sweep is recorded in the release checklist with every discovered
+inconsistency either corrected or explicitly resolved. It is a release gate:
+an unresolved naming, citation, dependency, or workflow inconsistency blocks
+the RHF vignette sign-off, CRAN submission, and v4 release.
+
 ## Test design
 
 Most tests use a small constructed `importance.rhf` object. This keeps unit
