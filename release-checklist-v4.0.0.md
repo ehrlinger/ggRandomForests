@@ -49,7 +49,7 @@ unsupervised variable priority where that method is discussed.
 | [x] | Active v3 NEWS | Retained v3.0.0--v3.5.2 as historical release facts; no present-tense instruction conflicts with the canonical mapping or current method/software citations. | retained | `NEWS.md`; Task 4 audit on 2026-08-25. |
 | [x] | Runnable examples | Package-qualified fits are used throughout R examples; unqualified README and vignette calls follow explicit package attachment; RHF examples retain Suggests guards. | retained | Direct fitting-call inventory; focused guarded tests on 2026-08-25. |
 | [x] | pkgdown | Moved the six implemented RHF topics into their own reference group; no RHF article link was added because the vignette is not yet present. | corrected | `_pkgdown.yml`; Task 4 pkgdown build and Task 5 source audit on 2026-08-25. |
-| [x] | RHF tuning family | No current surface advertises `gg_tune_rhf()` before it exists. | deferred | PR 2 owns the tuning family and its documentation. |
+| [x] | RHF tuning family | Published supplied-object-only tree-size tuning inspection by OOB risk or OOB iAUC, with the selected-size marker and conditional iAUC standard-error ribbon. | corrected | `R/gg_tune_rhf.R`, `R/plot.gg_tune_rhf.R`, generated `man/gg_tune_rhf.Rd` and `man/plot.gg_tune_rhf.Rd`, `tests/testthat/test_gg_tune_rhf.R`, `tests/testthat/test_plot_gg_tune_rhf.R`, and `tests/testthat/test_snapshots.R`; PR 2 verification on 2026-08-25. |
 | [x] | RHF vignette | Removed the overview's present-tense claim about a vignette that does not yet exist; no article link is published. | deferred | PR 3 owns `vignettes/rhf.qmd`; `vignettes/ggRandomForests.qmd` and `_pkgdown.yml`. |
 
 ## Behavioral defect log
@@ -163,3 +163,12 @@ unsupervised variable priority where that method is discussed.
   result from the preceding review pass remains the PR-level check evidence.
   Only the consistency-sweep gate remains checked; every release,
   authorization, submission, and CRAN-acceptance hold remains pending.
+
+## PR 2 verification
+
+| Done | Check | Disposition | Evidence |
+|---|---|---|---|
+| [x] | Saved tuning extractor | verified | `ea7b11f1` added the supplied-object-only `gg_tune_rhf()` family, strict tuning-path validation, five-column result, and provenance. Focused extractor tests reported 42 expectations; the guarded suite reported 1,690 passes, 0 failures, 6 expected skips, and 59 existing warnings. |
+| [x] | Tuning plot and S3 companions | verified | `7ac58872`, `84c13837`, and `0ca0efe0` added the selected-size plot marker, conditional finite-SE iAUC ribbon, shared fixtures, and print/summary/autoplot methods. Focused companion tests reported 87 expectations with 0 failures and 0 errors. |
+| [x] | Installed upstream integration and snapshot | verified | `875d8252` added the memoised `randomForestRHF::tune.iAUC.rhf()` integration check and `gg-tune-rhf-iauc.svg`. The guarded suite reported 1,722 passes, 0 failures, 6 expected skips, and 59 existing warnings; the new SVG was the only snapshot delta. |
+| [x] | CRAN-facing tuning documentation | verified | `R/gg_tune_rhf.R`, `R/plot.gg_tune_rhf.R`, `R/help.R`, `README.md`, `_pkgdown.yml`, `NEWS.md`, and generated help now document retaining the upstream tuning object, the five-column path, selected-size marker, and conditional iAUC ribbon. `devtools::document()` exited 0, `lintr::lint_package()` reported no lints, and the guarded suite reported 1,722 passes, 0 failures, 6 expected skips, and 59 existing warnings. |

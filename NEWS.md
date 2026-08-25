@@ -29,6 +29,11 @@ ggRandomForests v4.0.0 (development)
   calculates one when absent, and orders variables by their q90 priority over
   time windows. Priority is a ranking score, not a z-score; no selection
   cutoff is applied. RHF support now requires `randomForestRHF >= 1.0.1`.
+* `gg_tune_rhf()` / `plot.gg_tune_rhf()`: supplied-object-only inspection of a
+  `tune.treesize.rhf` tree-size tuning path. The five returned columns are
+  `treesize / metric / value / se / selected`; the plot marks the selected
+  size and draws an iAUC standard-error ribbon only when finite supplied iAUC
+  standard errors are available. `gg_tune_rhf()` never recalculates tuning.
 
 ggRandomForests v3.5.2
 ======================

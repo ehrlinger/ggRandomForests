@@ -103,6 +103,8 @@
 #' \item \code{\link{gg_rhf}}: per-case event-risk curves over time.
 #' \item \code{\link{gg_auct}}: AUC curves over follow-up time.
 #' \item \code{\link{gg_rhf_importance}}: variable priority by time window.
+#' \item \code{\link{gg_tune_rhf}}: saved tree-size tuning paths by OOB risk
+#'   or OOB iAUC.
 #' }
 #'
 #' \pkg{varPro} is a required dependency (\code{Imports}), so the varPro

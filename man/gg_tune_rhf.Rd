@@ -26,33 +26,42 @@ upstream settings described in \code{\link{gg_tune_rhf}}.
 \description{
 Extracts an already calculated tree-size tuning path from
 \code{\link[randomForestRHF:tune.treesize.rhf]{randomForestRHF::tune.treesize.rhf()}} into a data frame for inspection and
-plotting. The function does no tuning. Calculate the upstream result once,
-retain it, and supply it to \code{gg_tune_rhf()} when you need the tidy path or
-its plot.
+plotting. The expensive step is upstream tuning. Calculate and retain that
+result once, then supply it to \code{gg_tune_rhf()} when you need the saved search
+path or its plot. \code{gg_tune_rhf()} only prepares that path; it never tunes a
+forest.
 }
 \details{
 The returned path preserves the row order in \code{tune_fit$path}. Its columns
 are \code{treesize} (evaluated forest size), \code{metric} (\code{"OOB risk"} or
-\code{"OOB iAUC"}), \code{value} (the selected metric), \code{se} (the supplied bootstrap
+\code{"OOB iAUC"}), \code{value} (the observed metric), \code{se} (the supplied bootstrap
 iAUC standard error, or \code{NA_real_}), and \code{selected} (whether that size is
-the upstream \code{best.size}).
+the upstream \code{best.size}). Upstream tuning minimizes OOB risk or maximizes
+OOB iAUC.
 
-Provenance is stored in the \code{provenance} attribute. It records \code{best_size},
-\code{best_err}, \code{perf}, \code{method}, \code{bounds}, \code{n_evaluations}, and the installed
-\code{randomForestRHF_version}. The optional fitted forest is not copied into the
-tidy result.
+Provenance is stored in the \code{provenance} attribute: \code{best_size} is the
+selected tree size; \code{best_err} is the optimized upstream criterion; \code{perf}
+identifies the criterion; \code{method} is the upstream search method; \code{bounds}
+gives its tree-size range; \code{n_evaluations} counts the evaluated sizes; and
+\code{randomForestRHF_version} records the installed upstream package version.
+The optional fitted forest is not copied into the tidy result.
 }
 \examples{
 \donttest{
 if (requireNamespace("randomForestRHF", quietly = TRUE)) {
   ## Calculate this expensive result once and retain it for reuse.
-  sim <- randomForestRHF::hazard.simulation(1, n = 100, nrecords = 3)
+  simulated <- randomForestRHF::hazard.simulation(1, n = 100, nrecords = 3)
   tune_fit <- randomForestRHF::tune.iAUC.rhf(
-    "Surv(id, start, stop, event) ~ .", sim$dta,
-    ntree = 30, nsplit = 5, lower = 2L, upper = 12L,
-    max.evals = 8L, seed = -1L, verbose = FALSE
+    "Surv(id, start, stop, event) ~ .",
+    simulated$dta,
+    ntree = 12L,
+    lower = 2L,
+    upper = 5L,
+    verbose = FALSE,
+    forest = FALSE
   )
-  gg_tune_rhf(tune_fit)
+  tuning <- gg_tune_rhf(tune_fit)
+  plot(tuning)
 }
 }
 

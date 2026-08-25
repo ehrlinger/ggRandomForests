@@ -19,8 +19,10 @@
 A \code{ggplot} object.
 }
 \description{
-Draws the evaluated metric at each tree size, highlighting the selected
-size. iAUC paths can include a standard-error band when finite standard
+Draws the saved evaluated metric at each tree size, highlighting the
+upstream selected size. OOB risk paths show the criterion minimized by
+upstream tuning; OOB iAUC paths show the criterion it maximizes. An iAUC
+path includes a standard-error band only when finite supplied standard
 errors are available.
 }
 \seealso{
