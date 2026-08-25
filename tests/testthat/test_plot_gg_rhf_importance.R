@@ -19,6 +19,12 @@ test_that("plot.gg_rhf_importance returns the published point matrix", {
   expect_equal(levels(p$data$time_window), c("(0, 1]", "(1, 2]"))
 })
 
+test_that("plot.gg_rhf_importance lets geom_point arguments override defaults", {
+  p <- plot(.rhf_priority_test_object(), alpha = 0.4)
+
+  expect_equal(p$layers[[1L]]$aes_params$alpha, 0.4)
+})
+
 test_that("plot.gg_rhf_importance keeps the highest q90 variable on top", {
   p <- plot(.rhf_priority_test_object(), top_n_union = NULL)
 

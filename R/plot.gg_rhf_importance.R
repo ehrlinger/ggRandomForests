@@ -91,6 +91,10 @@ plot.gg_rhf_importance <- function(x, vars = NULL, top_n_union = 15L,
   note <- .rhf_priority_display_note(
     size$applied, color$applied, size_cap, color_cap, display_note
   )
+  point_args <- list(...)
+  if (is.null(point_args$alpha)) {
+    point_args$alpha <- 0.9
+  }
 
   ggplot2::ggplot(d, ggplot2::aes(
     x = .data[["time_window"]],
@@ -98,7 +102,7 @@ plot.gg_rhf_importance <- function(x, vars = NULL, top_n_union = 15L,
     size = .data[["size_display"]],
     color = .data[["color_display"]]
   )) +
-    ggplot2::geom_point(alpha = 0.9, ...) +
+    do.call(ggplot2::geom_point, point_args) +
     ggplot2::scale_size_continuous(range = c(1.5, 7)) +
     ggplot2::scale_color_gradient(low = "grey85", high = "steelblue4") +
     ggplot2::labs(

@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-25
 
-**Status:** Approved in conversation; implementation not started
+**Status:** Implemented; PR #219 open against `dev_rhf`
 
 **Target:** `dev_rhf`
 
