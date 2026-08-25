@@ -299,6 +299,17 @@ Documentation explains inherited upstream behavior and leads with the cached,
 precomputed workflow. Examples use public package data and remain inside
 `\donttest{}` because RHF fitting and priority calculation are slow.
 
+### Phase 5 vignette follow-up
+
+- [ ] At the RHF Phase 5 documentation pass, create a dedicated RHF vignette
+  if the package still has none. If an RHF vignette has been added before
+  then, update it instead. The vignette must cover the fitted-object workflow,
+  `gg_rhf()`, `gg_auct()`, `gg_rhf_importance()`, and the Phase 4 tuning
+  wrapper; lead with precomputed importance reuse; explain predictable
+  covariate paths and no-lookahead routing; distinguish cumulative from
+  incident AUC; interpret time-localized priority without a significance
+  cutoff; and cite both the 2026 RHF paper and `randomForestRHF` software.
+
 ## Test design
 
 Most tests use a small constructed `importance.rhf` object. This keeps unit
