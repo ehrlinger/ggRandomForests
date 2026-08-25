@@ -29,16 +29,16 @@ unsupervised variable priority where that method is discussed.
 |---|---|---|---|---|
 | [x] | DESCRIPTION | Added the three engine roles and current method citations; retained version, date, and dependency floors. | verified | `DESCRIPTION`; documentation regeneration on 2026-08-25. |
 | [ ] | `inst/CITATION` | Confirm the package citation describes ggRandomForests itself. | retained | `inst/CITATION` |
-| [ ] | README | Reconcile package, dependency, and method citations and version language. | pending | `README.md` |
+| [x] | README | Standardized the three fit-call/object-class mappings; kept supported minima separate from current software citations; added the three implemented RHF families and their references. | verified | `README.md`; Task 4 audit on 2026-08-25. |
 | [x] | Package help | Added the three engine mappings, RHF families, dependency gates, and current software and method citations. | verified | `R/help.R`, generated `man/ggRandomForests-package.Rd`; documentation regeneration on 2026-08-25. |
 | [x] | Roxygen citations | Replaced stale RF-SRC and varPro software citations; added RHF software citations to the extractors. | verified | Scoped `R/` sources; documentation regeneration on 2026-08-25. |
 | [x] | Generated help | Regenerated only the Rd pages corresponding to the edited roxygen sources. | verified | `man/`; documentation regeneration on 2026-08-25. |
 | [x] | Six vignettes | Corrected RF-SRC and varPro software citation callouts; retained unqualified `rfsrc()` calls where the vignette explicitly attaches randomForestSRC. | verified | Stable software keys; all six sources rendered successfully on 2026-08-25. |
 | [x] | Shared bibliography | Corrected RF-SRC software citation and added the varPro software citation. | verified | `Ishwaran:RFSRC:software:2026`, `Ishwaran:varPro:software:2026`, and `Ishwaran:RHF:software:2026` |
-| [ ] | v4 NEWS | Record the v4 consistency sweep and RHF support changes. | pending | `NEWS.md` |
-| [ ] | Active v3 NEWS | Preserve and reconcile the active v3 release notes. | pending | `NEWS.md` |
+| [x] | v4 NEWS | Added the current-software/minimum-version distinction and all three canonical fit-call/object-class mappings. | verified | `NEWS.md`; Task 4 audit on 2026-08-25. |
+| [x] | Active v3 NEWS | Retained v3.0.0--v3.5.2 as historical release facts; no present-tense instruction conflicts with the canonical mapping or current method/software citations. | retained | `NEWS.md`; Task 4 audit on 2026-08-25. |
 | [ ] | Runnable examples | Verify examples run with supported package versions and imports. | pending | Examples and guarded tests |
-| [ ] | pkgdown | Verify navigation, reference pages, articles, and rendered links. | pending | pkgdown build |
+| [x] | pkgdown | Moved the six implemented RHF topics into their own reference group; no RHF article link was added because the vignette is not yet present. | verified | `_pkgdown.yml`; Task 4 pkgdown build on 2026-08-25. |
 
 ## Behavioral defect log
 
