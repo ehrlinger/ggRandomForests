@@ -12,6 +12,15 @@ test_that("plot.gg_tune_rhf draws the risk path and selected size", {
   }, logical(1))), 0L)
 })
 
+test_that("plot.gg_tune_rhf connects evaluated sizes in upstream path order", {
+  fit <- .fake_rhf_tune_risk()
+  fit$path <- fit$path[c(3L, 1L, 4L, 2L), , drop = FALSE]
+  x <- gg_tune_rhf(fit)
+  built <- ggplot2::ggplot_build(plot(x))
+
+  expect_equal(built$data[[1L]]$x, x$treesize)
+})
+
 test_that("plot.gg_tune_rhf adds an iAUC ribbon only for finite standard errors", {
   with_se <- plot(gg_tune_rhf(.fake_rhf_tune_iauc()))
   without_se <- plot(gg_tune_rhf(.fake_rhf_tune_iauc(with_se = FALSE)))

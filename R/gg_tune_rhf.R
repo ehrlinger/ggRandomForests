@@ -22,8 +22,9 @@
 #' OOB iAUC.
 #'
 #' Provenance is stored in the `provenance` attribute: `best_size` is the
-#' selected tree size; `best_err` is the optimized upstream criterion; `perf`
-#' identifies the criterion; `method` is the upstream search method; `bounds`
+#' selected tree size; `best_err` is OOB risk for risk tuning and `1 - iAUC`
+#' for iAUC tuning; `perf` identifies the criterion; `method` is the upstream
+#' search method; `bounds`
 #' gives its tree-size range; `n_evaluations` counts the evaluated sizes; and
 #' `randomForestRHF_version` records the installed upstream package version.
 #' The optional fitted forest is not copied into the tidy result.

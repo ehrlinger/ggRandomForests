@@ -40,8 +40,9 @@ the upstream \code{best.size}). Upstream tuning minimizes OOB risk or maximizes
 OOB iAUC.
 
 Provenance is stored in the \code{provenance} attribute: \code{best_size} is the
-selected tree size; \code{best_err} is the optimized upstream criterion; \code{perf}
-identifies the criterion; \code{method} is the upstream search method; \code{bounds}
+selected tree size; \code{best_err} is OOB risk for risk tuning and \code{1 - iAUC}
+for iAUC tuning; \code{perf} identifies the criterion; \code{method} is the upstream
+search method; \code{bounds}
 gives its tree-size range; \code{n_evaluations} counts the evaluated sizes; and
 \code{randomForestRHF_version} records the installed upstream package version.
 The optional fitted forest is not copied into the tidy result.

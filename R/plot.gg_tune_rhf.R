@@ -16,7 +16,7 @@
 #'
 #' @seealso [gg_tune_rhf()].
 #'
-#' @importFrom ggplot2 aes geom_line geom_point geom_ribbon ggplot labs theme_bw
+#' @importFrom ggplot2 aes geom_path geom_point geom_ribbon ggplot labs theme_bw
 #' @name plot.gg_tune_rhf
 #' @export
 plot.gg_tune_rhf <- function(x, se_band = TRUE, se_mult = 1, ...) {
@@ -41,7 +41,7 @@ plot.gg_tune_rhf <- function(x, se_band = TRUE, se_mult = 1, ...) {
   }
 
   p +
-    ggplot2::geom_line(color = "grey45", linewidth = 0.6) +
+    ggplot2::geom_path(color = "grey45", linewidth = 0.6) +
     do.call(ggplot2::geom_point, point_args) +
     ggplot2::geom_point(
       data = x[x$selected, , drop = FALSE],

@@ -84,8 +84,9 @@ forests, wrapping \code{\link[kernelshap]{kernelshap}}, with
 
 \strong{Random Hazard Forests}
 These functions are for time-to-event data whose predictors can change
-during follow-up. They show how event risk and variable priority change over
-time.
+during follow-up. They show how event risk, time-varying discrimination, and
+variable priority change over time, and let you inspect a saved tree-size
+tuning search.
 
 \itemize{
 \item \code{\link{gg_rhf}}: per-case event-risk curves over time.

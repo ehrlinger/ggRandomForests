@@ -161,6 +161,7 @@ test_that("gg_tune_rhf print reports the tuning context invisibly", {
   expect_output(print(x), "OOB iAUC")
   expect_output(print(x), "evaluations: 3")
   expect_output(print(x), "selected treesize: 6")
+  expect_output(print(x), "value: 0.79")
   expect_invisible(print(x))
 })
 
