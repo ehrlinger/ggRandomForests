@@ -66,7 +66,7 @@ unsupervised variable priority where that method is discussed.
 | [x] | Guarded tests | verified | Fresh `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` exited 0: 1,646 passes, 0 failures, 59 existing warnings, and 6 documented skips on 2026-08-25. |
 | [x] | Snapshot integrity | verified | Scoped `git status --short tests/testthat/_snaps` before and after the fresh guarded suite, plus the scoped name-status diff after, were empty; no vdiffr baseline changed. |
 | [x] | pkgdown | verified | Fresh `pkgdown::build_site()` used an isolated temporary `HOME`. Its first attempt was DNS-blocked at Google Fonts; the approved network-enabled retry exited 0. Rendered site artifacts were not staged. |
-| [x] | Clean-archive check | verified | Fresh clean `git archive HEAD` build exited 0 with the isolated temporary `HOME`; the first check was DNS-blocked at CRAN/Bioconductor indexes, and the approved retry of `R CMD check --as-cran` exited 0 with 0 errors, 0 warnings, and 1 NOTE. The NOTE requests a DOI-form arXiv reference for the single raw varPro arXiv citation in `DESCRIPTION`; it is recorded for release review and does not authorize submission. Tarball checks found only `ggRandomForests/.Rinstignore`, `Version: 4.0.0`, `Date: 2026-08-05`, and 0 `cran-comments` entries. |
+| [x] | Clean-archive check | verified | After Copilot review, a fresh clean `git archive HEAD` build exited 0 with the isolated temporary `HOME`; the first check was DNS-blocked at CRAN/Bioconductor indexes, and the approved retry of `R CMD check --as-cran` exited 0 with 0 errors, 0 warnings, and 1 NOTE. The earlier citation NOTE is resolved. The remaining incoming-feasibility NOTE reports 4 days since the last update and 8 updates in the preceding 6 months. Tarball checks found only `ggRandomForests/.Rinstignore`, `Version: 4.0.0`, `Date: 2026-08-05`, and 0 `cran-comments` entries. |
 
 ## Release gates
 
@@ -102,11 +102,11 @@ unsupervised variable priority where that method is discussed.
   Sass cache and failed while rebuilding vignettes. Repeating the same clean
   archive build with the isolated temporary `HOME` succeeded, as did the
   subsequent manual-inclusive check.
-- `R CMD check --as-cran` reported 0 errors, 0 warnings, and 1 NOTE: CRAN
-  incoming feasibility asks that the single raw varPro arXiv citation in
-  `DESCRIPTION` use a DOI-form arXiv link. This is a retained release-review
-  item, not an authorization to submit. The RHF vignette, explicit authorization,
-  submission, and CRAN-acceptance holds remain in force.
+- At this stage, `R CMD check --as-cran` reported 0 errors, 0 warnings, and
+  1 NOTE asking that the raw varPro arXiv citation in `DESCRIPTION` use its
+  DOI form. The later Copilot-review pass resolved that citation NOTE. The RHF
+  vignette, explicit authorization, submission, and CRAN-acceptance holds
+  remain in force.
 
 ## Final-review verification evidence: 2026-08-25
 
@@ -122,9 +122,25 @@ unsupervised variable priority where that method is discussed.
 - `spelling::spell_check_package(use_wordlist = TRUE)` and all six
   `quarto::quarto_render()` vignette renders exited 0. The pkgdown build and
   clean-archive check each required an approved retry after their initial DNS
-  failures; both retries exited 0. `R CMD check --as-cran` completed with the
-  manual and reported 0 errors, 0 warnings, and the retained single raw varPro
-  arXiv NOTE.
+  failures; both retries exited 0. At this stage, `R CMD check --as-cran`
+  completed with the manual and reported 0 errors, 0 warnings, and the raw
+  varPro arXiv NOTE later resolved during Copilot review.
 - Only the consistency-sweep gate remains checked. The RHF-vignette, full
   release-verification, explicit-authorization, submission, and CRAN-
   acceptance gates remain pending.
+
+## Copilot-review verification evidence: 2026-08-25
+
+- `DESCRIPTION` now cites the varPro preprint as
+  `<doi:10.48550/arXiv.2409.09003>`, and the README qualifies
+  `varPro::uvarpro()` at its first mention and in the varPro overview.
+- `devtools::document()`, `lintr::lint_package()`, and the guarded full suite
+  exited 0 in that order. The suite reported 1,646 passes, 0 failures,
+  59 existing warnings, and 6 documented skips; snapshot status remained
+  empty.
+- A fresh clean-archive build and manual-inclusive `R CMD check --as-cran`
+  completed with 0 errors, 0 warnings, and 1 unrelated incoming-feasibility
+  NOTE: 4 days since the last update and 8 updates in the preceding 6 months.
+  The former citation NOTE did not recur.
+- Only the consistency-sweep gate remains checked. All release,
+  authorization, submission, and CRAN-acceptance holds remain pending.
