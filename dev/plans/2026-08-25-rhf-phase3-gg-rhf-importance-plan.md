@@ -23,7 +23,9 @@
 - Slow tests call `skip_on_cran()` and RHF tests call `skip_if_not_installed("randomForestRHF")`.
 - Do not hand-edit `NAMESPACE` or `man/`; regenerate them with `devtools::document()`.
 - Keep the package version at `4.0.0`; update both version files only if the maintainer separately requests a patch bump.
-- The Phase 5 RHF vignette checkbox remains deferred; Phase 3 adds its bibliography entries but does not build the vignette.
+- The Phase 5 RHF vignette is a mandatory release gate. Phase 3 adds its bibliography entries but does not build the vignette.
+- Phase 3 may merge into `dev_rhf`, but it does not authorize a v4 release PR, tag, GitHub Release, or CRAN submission.
+- The CRAN submission remains on hold until the maintainer explicitly lifts it; v4 is not released or tagged until CRAN accepts it.
 
 ---
 
@@ -625,7 +627,7 @@ git commit -m "feat: complete RHF priority S3 methods"
 
 - [ ] **Step 5: Reconcile the May umbrella design.** Replace its Phase 3 input/output/plot paragraph with the approved signature, ten columns, `priority` terminology, and point matrix. Add the new paper and CRAN software to its references. Preserve the historical phase/version notes outside the Phase 3 correction.
 
-- [ ] **Step 6: Confirm the Phase 5 vignette checkbox remains open.** Do not create or render the vignette in this phase. The checkbox in the approved Phase 3 design must still be `- [ ]` and must name all four RHF families.
+- [ ] **Step 6: Confirm the Phase 5 vignette release gate remains open.** Do not create or render the vignette in this phase. The checkbox in the approved Phase 3 design must still be `- [ ]`, must name all four RHF families, and must state that no v4 release or CRAN submission proceeds before it is completed.
 
 - [ ] **Step 7: Generate documentation first.**
 
@@ -724,7 +726,7 @@ git status --short tests/testthat/_snaps
 
 Expected: documentation exits 0; lint reports 0 lints; tests report 0 failures and 0 errors; snapshot status is unchanged across the suite.
 
-- [ ] **Step 7: Run `R CMD check --as-cran` from a clean archive export with the manual.** Use a throwaway directory so worktree-only files cannot enter the tarball:
+- [ ] **Step 7: Run `R CMD check --as-cran` from a clean archive export with the manual as a Phase 3 quality gate, not as release authorization.** Use a throwaway directory so worktree-only files cannot enter the tarball:
 
 ```bash
 phase3_check_dir=$(mktemp -d)
@@ -742,6 +744,10 @@ count must be `0`.
 
 Expected: `Status: OK` or only the repository's explicitly understood time-sensitive CRAN NOTE. Any new warning, error, or note blocks completion.
 
+This local check does not lift the CRAN hold. Do not call
+`devtools::submit_cran()`, create a v4 tag, or create a GitHub Release in this
+phase.
+
 - [ ] **Step 8: Commit the snapshot and any regenerated files.**
 
 ```bash
@@ -749,4 +755,18 @@ git add tests/testthat/test_snapshots.R tests/testthat/_snaps/snapshots/gg-rhf-i
 git commit -m "test: add RHF priority visual regression"
 ```
 
-- [ ] **Step 9: Request code review before integration.** Use `superpowers:requesting-code-review`, resolve findings with `superpowers:receiving-code-review`, and rerun proportionate verification after any change. The Phase 5 vignette checkbox remains open after Phase 3 merges.
+- [ ] **Step 9: Request code review before integration.** Use `superpowers:requesting-code-review`, resolve findings with `superpowers:receiving-code-review`, and rerun proportionate verification after any change. The Phase 5 vignette release gate and CRAN hold remain open after Phase 3 merges.
+
+---
+
+## Release Hold After Phase 3
+
+Finishing this plan means Phase 3 is eligible to merge into `dev_rhf`. It does
+not mean v4 is releasable. Release work resumes only when all of these are
+true:
+
+1. Phase 4 is complete.
+2. The Phase 5 RHF vignette release-gate checkbox is completed.
+3. The full package and CRAN release gates pass.
+4. The maintainer explicitly lifts the CRAN submission hold.
+5. CRAN accepts v4 before the release tag and GitHub Release are created.

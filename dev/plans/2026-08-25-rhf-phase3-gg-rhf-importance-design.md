@@ -299,9 +299,10 @@ Documentation explains inherited upstream behavior and leads with the cached,
 precomputed workflow. Examples use public package data and remain inside
 `\donttest{}` because RHF fitting and priority calculation are slow.
 
-### Phase 5 vignette follow-up
+### Phase 5 vignette and release gate
 
-- [ ] At the RHF Phase 5 documentation pass, create a dedicated RHF vignette
+- [ ] Before any v4 release candidate is submitted to CRAN, create a dedicated
+  RHF vignette
   if the package still has none. If an RHF vignette has been added before
   then, update it instead. The vignette must cover the fitted-object workflow,
   `gg_rhf()`, `gg_auct()`, `gg_rhf_importance()`, and the Phase 4 tuning
@@ -309,6 +310,13 @@ precomputed workflow. Examples use public package data and remain inside
   covariate paths and no-lookahead routing; distinguish cumulative from
   incident AUC; interpret time-localized priority without a significance
   cutoff; and cite both the 2026 RHF paper and `randomForestRHF` software.
+
+This checkbox is a release gate, not a documentation follow-up. Phase 3 may
+merge into `dev_rhf` with the checkbox open, but no v4 release PR, tag, GitHub
+Release, or CRAN submission proceeds until the vignette is complete and the
+full release gate passes. The CRAN submission remains on hold until the
+maintainer explicitly lifts that hold. After submission, v4 is not treated as
+released and no release tag is cut until CRAN accepts it.
 
 ## Test design
 
