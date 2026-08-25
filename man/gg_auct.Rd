@@ -49,6 +49,10 @@ if (requireNamespace("randomForestRHF", quietly = TRUE)) {
 \references{
 Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.
 arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
+
+Ishwaran H, Kogalur UB (2026). \emph{randomForestRHF: Random Hazard
+Forests}. R package version 1.0.1.
+\url{https://CRAN.R-project.org/package=randomForestRHF}.
 }
 \seealso{
 \code{\link[=plot.gg_auct]{plot.gg_auct()}}, \code{\link[randomForestRHF:auct.rhf]{randomForestRHF::auct.rhf()}}

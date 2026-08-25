@@ -27,11 +27,12 @@ unsupervised variable priority where that method is discussed.
 
 | Done | Surface | Finding | Disposition | Evidence |
 |---|---|---|---|---|
-| [ ] | DESCRIPTION | Verify dependency floors, version, and package metadata. | pending | `DESCRIPTION` |
+| [x] | DESCRIPTION | Added the three engine roles and current method citations; retained version, date, and dependency floors. | verified | `DESCRIPTION`; documentation regeneration on 2026-08-25. |
 | [ ] | `inst/CITATION` | Confirm the package citation describes ggRandomForests itself. | retained | `inst/CITATION` |
 | [ ] | README | Reconcile package, dependency, and method citations and version language. | pending | `README.md` |
-| [ ] | Package help | Reconcile package-level citation and supported object descriptions. | pending | Package help pages |
-| [ ] | Roxygen/help | Reconcile extractor, plotting, and RHF-facing documentation. | pending | `R/` roxygen sources |
+| [x] | Package help | Added the three engine mappings, RHF families, dependency gates, and current software and method citations. | verified | `R/help.R`, generated `man/ggRandomForests-package.Rd`; documentation regeneration on 2026-08-25. |
+| [x] | Roxygen citations | Replaced stale RF-SRC and varPro software citations; added RHF software citations to the extractors. | verified | Scoped `R/` sources; documentation regeneration on 2026-08-25. |
+| [x] | Generated help | Regenerated only the Rd pages corresponding to the edited roxygen sources. | verified | `man/`; documentation regeneration on 2026-08-25. |
 | [x] | Six vignettes | Corrected RF-SRC and varPro software citation callouts; retained unqualified `rfsrc()` calls where the vignette explicitly attaches randomForestSRC. | verified | Stable software keys; all six sources rendered successfully on 2026-08-25. |
 | [x] | Shared bibliography | Corrected RF-SRC software citation and added the varPro software citation. | verified | `Ishwaran:RFSRC:software:2026`, `Ishwaran:varPro:software:2026`, and `Ishwaran:RHF:software:2026` |
 | [ ] | v4 NEWS | Record the v4 consistency sweep and RHF support changes. | pending | `NEWS.md` |
