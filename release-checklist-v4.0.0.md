@@ -63,7 +63,7 @@ unsupervised variable priority where that method is discussed.
 | [x] | Spelling and prose review | verified | Fresh `spelling::spell_check_package(use_wordlist = TRUE)` exited 0 on 2026-08-25. Its reported project terminology, package/API names, citations, and regional spellings were reviewed; no genuine spelling errors or source changes. |
 | [x] | Documentation regeneration and lint | verified | Fresh `devtools::document()` exited 0, then `lintr::lint_package()` reported no lints on 2026-08-25. |
 | [x] | Six vignette renders | verified | Fresh `quarto::quarto_render()` rendered all six `vignettes/*.qmd` files with exit 0 on 2026-08-25, using an isolated temporary `HOME` and the existing R library. |
-| [x] | Guarded tests | verified | Fresh `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` exited 0: 1,646 passes, 0 failures, 59 existing warnings, and 6 documented skips on 2026-08-25. |
+| [x] | Guarded tests | verified | After the second Copilot review, fresh `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` exited 0: 1,648 passes, 0 failures, 59 existing warnings, and 6 documented skips on 2026-08-25. |
 | [x] | Snapshot integrity | verified | Scoped `git status --short tests/testthat/_snaps` before and after the fresh guarded suite, plus the scoped name-status diff after, were empty; no vdiffr baseline changed. |
 | [x] | pkgdown | verified | Fresh `pkgdown::build_site()` used an isolated temporary `HOME`. Its first attempt was DNS-blocked at Google Fonts; the approved network-enabled retry exited 0. Rendered site artifacts were not staged. |
 | [x] | Clean-archive check | verified | After Copilot review, a fresh clean `git archive HEAD` build exited 0 with the isolated temporary `HOME`; the first check was DNS-blocked at CRAN/Bioconductor indexes, and the approved retry of `R CMD check --as-cran` exited 0 with 0 errors, 0 warnings, and 1 NOTE. The earlier citation NOTE is resolved. The remaining incoming-feasibility NOTE reports 4 days since the last update and 8 updates in the preceding 6 months. Tarball checks found only `ggRandomForests/.Rinstignore`, `Version: 4.0.0`, `Date: 2026-08-05`, and 0 `cran-comments` entries. |
@@ -144,3 +144,18 @@ unsupervised variable priority where that method is discussed.
   The former citation NOTE did not recur.
 - Only the consistency-sweep gate remains checked. All release,
   authorization, submission, and CRAN-acceptance holds remain pending.
+
+## Second Copilot-review verification evidence: 2026-08-25
+
+- Exact, anchored error expectations now cover both unsupported families,
+  `surv` and `regr+`, for `gg_beta_varpro()` and `gg_ivarpro()`.
+- Focused runs reported 89 passes for `test_gg_beta_varpro.R` and 53 passes
+  with the documented slow-test skip for `test_gg_ivarpro.R`.
+- `devtools::document()`, `lintr::lint_package()`, and the guarded full suite
+  exited 0 in that order. The full suite reported 1,648 passes, 0 failures,
+  59 existing warnings, and 6 documented skips; snapshot status remained
+  empty.
+- No production or generated documentation changed, so the clean-archive
+  result from the preceding review pass remains the PR-level check evidence.
+  Only the consistency-sweep gate remains checked; every release,
+  authorization, submission, and CRAN-acceptance hold remains pending.

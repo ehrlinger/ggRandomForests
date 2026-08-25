@@ -197,12 +197,17 @@ test_that("gg_ivarpro warns when ... is supplied alongside ivarpro_fit", {
 
 # ---- family guard ---------------------------------------------------------
 
-test_that("gg_ivarpro names its supported families in survival errors", {
-  v <- structure(list(family = "surv"), class = "varpro")
+test_that("gg_ivarpro names its supported families in unsupported-family errors", {
+  surv <- structure(list(family = "surv"), class = "varpro")
+  regr_plus <- structure(list(family = "regr+"), class = "varpro")
 
   expect_error(
-    gg_ivarpro(v),
+    gg_ivarpro(surv),
     "^gg_ivarpro supports varPro regression and classification fits only; got family = 'surv'\\.$"
+  )
+  expect_error(
+    gg_ivarpro(regr_plus),
+    "^gg_ivarpro supports varPro regression and classification fits only; got family = 'regr\\+'\\.$"
   )
 })
 
