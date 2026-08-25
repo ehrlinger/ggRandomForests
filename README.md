@@ -138,8 +138,8 @@ an `rhf` fit. A hazard is the event-risk rate at a particular time.
 
 ### varPro — variable priority
 
-These read a `varPro` fit rather than a forest. `varpro()` is the supervised
-fit; `uvarpro()` is the unsupervised one, which needs no outcome.
+These read a `varpro` fit rather than a forest. `varPro::varpro()` is the
+supervised fit; `uvarpro()` is the unsupervised one, which needs no outcome.
 
 | Function | Input | What you get |
 |---|---|---|

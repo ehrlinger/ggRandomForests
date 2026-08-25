@@ -5,10 +5,12 @@
 \title{ggRandomForests: Visually Exploring Random Forests}
 \description{
 \code{ggRandomForests} provides \code{ggplot2} (Wickham 2009)
-diagnostic and exploration figures for random forests grown with
-\code{\link[randomForestSRC]{rfsrc}} (>= 3.4.0) or
-\code{\link[randomForest]{randomForest}}, and for rule-based variable
-priority fits from \code{\link[varPro]{varpro}}.
+diagnostic and exploration figures for fits from
+\code{randomForestSRC::rfsrc()} (\code{rfsrc} class;
+\pkg{randomForestSRC} >= 3.4.0), \code{randomForestRHF::rhf()}
+(\code{rhf} class; \pkg{randomForestRHF} >= 1.0.1),
+\code{varPro::varpro()} (\code{varpro} class; \pkg{varPro} >= 3.1.0),
+or \code{\link[randomForest]{randomForest}}.
 
 \code{randomForestSRC} gives a unified treatment of Breiman's (2001) random
 forests across data settings: regression and classification forests when the

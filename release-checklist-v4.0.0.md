@@ -11,8 +11,14 @@ acceptance remains the final release condition.
 
 ## Canonical metadata
 
-The dispositions used throughout this checklist are `pending`, `retained`,
-`update`, `blocked`, and `verified`.
+Audit dispositions record what happened to a finding: `corrected` means the
+surface was changed in this sweep; `retained` means the existing language is
+correct and remains in place; and `deferred` means the work has a stated future
+boundary.
+
+Gate statuses record whether a required check can advance: `pending` means it
+has not yet been completed, `verified` means current evidence satisfies it, and
+`blocked` means a stated issue prevents it from advancing.
 
 | Package | Fit call | Object class | Current CRAN | Supported minimum | Software citation | Method citation |
 |---|---|---|---:|---:|---|---|
@@ -29,11 +35,11 @@ unsupervised variable priority where that method is discussed.
 |---|---|---|---|---|
 | [x] | DESCRIPTION | Added the three engine roles and current method citations; retained version, date, and dependency floors. | corrected | `DESCRIPTION`; version/citation inventory and documentation regeneration on 2026-08-25. |
 | [x] | `inst/CITATION` | The package citation describes ggRandomForests itself; dependency citations belong on their documentation surfaces. | retained | `inst/CITATION`; Task 5 source audit on 2026-08-25. |
-| [x] | README | Standardized the three fit-call/object-class mappings; kept supported minima separate from current software citations; added the three implemented RHF families and their references. | corrected | `README.md`; fit-call and version/citation inventories on 2026-08-25. |
-| [x] | Package help | Added the three engine mappings, RHF families, dependency gates, and current software and method citations. | corrected | `R/help.R`, generated `man/ggRandomForests-package.Rd`; fit-call and version/citation inventories on 2026-08-25. |
+| [x] | README | Standardized the three fit-call/object-class mappings; corrected the varPro object class to `varpro`; kept supported minima separate from current software citations; added the three implemented RHF families and their references. | corrected | `README.md`; final-review mapping correction and fit-call/version/citation inventories on 2026-08-25. |
+| [x] | Package help | Added the three engine mappings, RHF families, dependency gates, and current software and method citations. The first mention now pairs every qualified fit call with its object class and attaches each supported minimum to its package. | corrected | `R/help.R`, generated `man/ggRandomForests-package.Rd`; final-review mapping correction on 2026-08-25. |
 | [x] | Roxygen citations | Replaced stale RF-SRC and varPro software citations; added RHF software citations to the extractors; removed obsolete v3.1.0 promises from the beta/local-importance notes. | corrected | Scoped `R/` sources; generated `man/gg_beta_varpro.Rd` and `man/gg_ivarpro.Rd`; documentation regeneration on 2026-08-25. |
 | [x] | Generated help | Regenerated the Rd pages corresponding to the edited roxygen sources. | corrected | `man/`; `devtools::document()` on 2026-08-25. |
-| [x] | Six vignettes | Corrected software citation callouts and current unsupported-family prose; retained unqualified `rfsrc()` calls only where randomForestSRC is explicitly attached. | corrected | All six sources audited; `varpro.qmd` and `ggRandomForests.qmd` rendered after Task 5 changes on 2026-08-25. |
+| [x] | Six vignettes | Corrected software citation callouts and current unsupported-family prose; retained unqualified `rfsrc()` calls only where randomForestSRC is explicitly attached. The main vignette now states the three mappings before naming an upstream fit. | corrected | All six sources audited; `varpro.qmd` and `ggRandomForests.qmd` rendered after Task 5 and final-review changes on 2026-08-25. |
 | [x] | Shared bibliography | Corrected RF-SRC software citation and added the varPro software citation. | corrected | `Ishwaran:RFSRC:software:2026`, `Ishwaran:varPro:software:2026`, and `Ishwaran:RHF:software:2026`. |
 | [x] | v4 NEWS | Added the current-software/minimum-version distinction and all three canonical fit-call/object-class mappings. | corrected | `NEWS.md`; fit-call and version/citation inventories on 2026-08-25. |
 | [x] | Active v3 NEWS | Retained v3.0.0--v3.5.2 as historical release facts; no present-tense instruction conflicts with the canonical mapping or current method/software citations. | retained | `NEWS.md`; Task 4 audit on 2026-08-25. |
