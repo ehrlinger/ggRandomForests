@@ -29,6 +29,22 @@ test_that("gg_tune_rhf uses iAUC and optional bootstrap standard errors", {
   expect_true(is.na(gg_tune_rhf(missing_one)$se[2L]))
 })
 
+test_that("gg_tune_rhf accepts a real CRAN randomForestRHF tuning result", {
+  skip_on_cran()
+  skip_if_not_installed("randomForestRHF", minimum_version = "1.0.1")
+  set.seed(20260825L)
+  fit <- .rhf_tune_iauc()
+  out <- gg_tune_rhf(fit)
+
+  expect_s3_class(fit, "tune.treesize.rhf")
+  expect_s3_class(out, "gg_tune_rhf")
+  expect_identical(out$treesize, fit$path$treesize)
+  expect_equal(out$value, fit$path$iAUC)
+  expect_identical(sum(out$selected), 1L)
+  expect_identical(attr(out, "provenance")$randomForestRHF_version,
+                   as.character(utils::packageVersion("randomForestRHF")))
+})
+
 test_that("gg_tune_rhf rejects the wrong upstream class", {
   expect_error(gg_tune_rhf(unclass(.fake_rhf_tune_risk())),
                "tune.treesize.rhf")

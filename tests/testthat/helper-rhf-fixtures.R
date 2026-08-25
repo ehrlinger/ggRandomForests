@@ -157,3 +157,26 @@
   ), class = "importance.rhf")
   list(object = object, fit = fit)
 }
+
+.rhf_tune_iauc <- function() {
+  if (is.null(.rhf_cache$tune_iauc)) {
+    if (!requireNamespace("randomForestRHF", quietly = TRUE)) {
+      testthat::skip("randomForestRHF not installed")
+    }
+    # Measured 0.171 seconds locally on 2026-08-25.
+    set.seed(20260825L)
+    simulated <- randomForestRHF::hazard.simulation(1)
+    .rhf_cache$tune_iauc <- randomForestRHF::tune.iAUC.rhf(
+      "Surv(id, start, stop, event) ~ .",
+      simulated$dta,
+      ntree = 12L,
+      lower = 2L,
+      upper = 5L,
+      max.evals = 4L,
+      seed = 20260825L,
+      verbose = FALSE,
+      forest = FALSE
+    )
+  }
+  .rhf_cache$tune_iauc
+}
