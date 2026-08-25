@@ -180,9 +180,9 @@ if (requireNamespace("varPro", quietly = TRUE)) {
 Liu, F. T., Ting, K. M., and Zhou, Z. H. (2008). Isolation Forest.
 \emph{Eighth IEEE International Conference on Data Mining}, 413-422.
 
-Ishwaran, H., Mantero, A., and Lu, M. (2025). varPro: Model-Independent
-Variable Selection via the Rule-Based Variable Priority Framework.
-\emph{R package version 3.x}.
+Ishwaran H, Kogalur U (2026). \emph{varPro: Model-Independent Variable
+Selection via the Rule-Based Variable Priority}. R package version 3.2.0.
+\url{https://CRAN.R-project.org/package=varPro}
 }
 \seealso{
 \code{\link{plot.gg_isopro}}, \code{\link[varPro]{isopro}}

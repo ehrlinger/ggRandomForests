@@ -10,6 +10,10 @@ ggRandomForests v4.0.0 (development)
   Suggests). RHF support is gated — every gg_rhf* entry point checks
   `requireNamespace("randomForestRHF")`. No change for users who do not
   install it.
+* The consistency sweep distinguishes current CRAN software versions from
+  supported minimum versions and standardizes the three package-qualified fit
+  calls and object classes: `randomForestSRC::rfsrc()` -> `rfsrc`,
+  `randomForestRHF::rhf()` -> `rhf`, and `varPro::varpro()` -> `varpro`.
 * `gg_auct()` / `plot.gg_auct()`: tidy wrapper and plot for time-varying
   AUC from `randomForestRHF::auct.rhf()` (RHF Phase 2). Returns a long
   frame `time / auc / se / lower / upper / marker` with an `iauc`

@@ -129,6 +129,10 @@ reference:
       - nelson
       - gg_brier
       - plot.gg_brier
+
+  - title: "Random Hazard Forests"
+    desc: "For time-to-event data with predictors that change during follow-up."
+    contents:
       - gg_rhf
       - plot.gg_rhf
       - gg_auct
