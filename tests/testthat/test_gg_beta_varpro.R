@@ -10,7 +10,7 @@ test_that("gg_beta_varpro names its supported families in survival errors", {
 
   expect_error(
     gg_beta_varpro(v),
-    "gg_beta_varpro supports varPro regression and classification fits only; got family = 'surv'"
+    "^gg_beta_varpro supports varPro regression and classification fits only; got family = 'surv'\\.$"
   )
 })
 

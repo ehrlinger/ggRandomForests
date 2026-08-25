@@ -202,7 +202,7 @@ test_that("gg_ivarpro names its supported families in survival errors", {
 
   expect_error(
     gg_ivarpro(v),
-    "gg_ivarpro supports varPro regression and classification fits only; got family = 'surv'"
+    "^gg_ivarpro supports varPro regression and classification fits only; got family = 'surv'\\.$"
   )
 })
 
