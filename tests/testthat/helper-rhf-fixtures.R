@@ -3,6 +3,44 @@
 
 .rhf_cache <- new.env(parent = emptyenv())
 
+.fake_rhf_tune_risk <- function() {
+  structure(list(
+    best.size = 8L,
+    best.err = 0.24,
+    bounds = c(lower = 2L, upper = 12L),
+    n.subjects = 40L,
+    C = 3,
+    method = "golden",
+    perf = "risk",
+    path = data.frame(
+      treesize = c(2L, 5L, 8L, 12L),
+      risk = c(0.40, 0.30, 0.24, 0.29)
+    ),
+    forest = structure(list(marker = "must not be copied"), class = "rhf")
+  ), class = "tune.treesize.rhf")
+}
+
+.fake_rhf_tune_iauc <- function(with_se = TRUE) {
+  path <- data.frame(
+    treesize = c(3L, 6L, 9L),
+    risk = c(0.32, 0.21, 0.26),
+    iAUC = c(0.68, 0.79, 0.74)
+  )
+  if (with_se) {
+    path$iAUC.se <- c(0.04, 0.03, 0.05)
+  }
+  structure(list(
+    best.size = 6L,
+    best.err = 0.21,
+    bounds = c(lower = 3L, upper = 9L),
+    n.subjects = 30L,
+    C = 3,
+    method = "bisect",
+    perf = "iAUC",
+    path = path
+  ), class = "tune.treesize.rhf")
+}
+
 # Static-covariate pbc fit in counting-process form.
 .rhf_pbc <- function() {
   if (is.null(.rhf_cache$pbc)) {
