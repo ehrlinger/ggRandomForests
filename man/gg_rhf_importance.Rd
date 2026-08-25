@@ -16,7 +16,7 @@ gg_rhf_importance(object, ...)
 )
 }
 \arguments{
-\item{object}{A fitted \code{rhf} object from pkg{randomForestRHF}.}
+\item{object}{A fitted \code{rhf} object from \pkg{randomForestRHF}.}
 
 \item{...}{Additional arguments passed to
 \code{\link[randomForestRHF:importance.rhf]{randomForestRHF::importance.rhf()}} when \code{importance_fit} is \code{NULL}.}
@@ -47,7 +47,7 @@ A \code{data.frame} of class
 }
 A \code{provenance} attribute records the source forest, upstream settings,
 whether \code{importance_fit} was supplied, and the installed
-pkg{randomForestRHF} version.
+\pkg{randomForestRHF} version.
 }
 \description{
 Extracts the variable-priority matrix from

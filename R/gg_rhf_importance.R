@@ -6,7 +6,7 @@
 #' variable and time window. The score measures how much the fitted integrated
 #' hazard changes when rules involving a variable are released.
 #'
-#' @param object A fitted `rhf` object from pkg{randomForestRHF}.
+#' @param object A fitted `rhf` object from \pkg{randomForestRHF}.
 #' @param importance_fit Optional precomputed
 #'   [randomForestRHF::importance.rhf()] result for the same `object`. Supply
 #'   this object when you have already calculated variable priority. `NULL`
@@ -47,7 +47,7 @@
 #'   }
 #'   A `provenance` attribute records the source forest, upstream settings,
 #'   whether `importance_fit` was supplied, and the installed
-#'   pkg{randomForestRHF} version.
+#'   \pkg{randomForestRHF} version.
 #'
 #' @references
 #' Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.
