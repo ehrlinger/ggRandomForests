@@ -154,3 +154,41 @@ test_that("computed and precomputed paths return the same priority frame", {
   expect_equal(lapply(computed, identity), lapply(cached, identity))
   expect_false(attr(computed, "provenance")$precomputed)
 })
+
+test_that("gg_rhf_importance print reports its priority context", {
+  f <- .fake_rhf_importance()
+  x <- gg_rhf_importance(f$object, importance_fit = f$fit)
+
+  expect_output(print(x), "variables: 3")
+  expect_output(print(x), "windows: 2")
+  expect_output(print(x), "precomputed: TRUE")
+  expect_output(print(x), "rank: q90")
+  expect_output(print(x), "y_source: int.haz.oob")
+  expect_invisible(print(x))
+})
+
+test_that("gg_rhf_importance summary ranks variables by q90 priority", {
+  f <- .fake_rhf_importance()
+  x <- gg_rhf_importance(f$object, importance_fit = f$fit)
+  s <- summary(x)
+
+  expect_identical(names(s), c(
+    "variable", "q90", "median", "mean", "max", "n_windows", "n_finite"
+  ))
+  expect_identical(s$variable, c("x1", "x2", "x3"))
+  expect_equal(s$q90, c(1.1, 0.76, 0.28))
+  expect_equal(s$median, c(0.7, 0.6, 0.2))
+  expect_equal(s$max, c(1.2, 0.8, 0.3))
+  expect_identical(s$n_windows, c(2L, 2L, 2L))
+  expect_identical(s$n_finite, c(2L, 2L, 2L))
+  expect_true(all(diff(s$q90) <= 0))
+})
+
+test_that("gg_rhf_importance autoplot forwards variable filters", {
+  f <- .fake_rhf_importance()
+  x <- gg_rhf_importance(f$object, importance_fit = f$fit)
+  p <- ggplot2::autoplot(x, vars = "x2")
+
+  expect_s3_class(p, "ggplot")
+  expect_identical(unique(as.character(p$data$variable)), "x2")
+})

@@ -302,6 +302,12 @@ summary.gg_rhf <- function(object, ...) {
 
 #' @rdname summary.gg
 #' @export
+summary.gg_rhf_importance <- function(object, ...) {
+  .rhf_priority_summary(object)
+}
+
+#' @rdname summary.gg
+#' @export
 summary.gg_isopro <- function(object, ...) {
   q  <- stats::quantile(object$howbad, probs = c(0.05, 0.50, 0.95),
                         na.rm = TRUE, names = FALSE)
