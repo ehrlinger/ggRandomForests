@@ -60,7 +60,7 @@ unsupervised variable priority where that method is discussed.
 | [x] | Guarded tests | verified | `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` exited 0: 1,646 passes, 0 failures, 59 existing warnings, and 6 documented skips on 2026-08-25. |
 | [x] | Snapshot integrity | verified | Scoped `git status --short tests/testthat/_snaps` before and after the guarded suite, plus the scoped name-status diff after, were empty; no vdiffr baseline changed. |
 | [x] | pkgdown | verified | `pkgdown::build_site()` exited 0 on 2026-08-25 using the isolated temporary `HOME`; it downloaded the required Google Fonts only after network access was enabled. Rendered site artifacts were not staged. |
-| [x] | Clean-archive check | verified | Clean `git archive HEAD` build exited 0 with the isolated temporary `HOME`; `R CMD check --as-cran` exited 0 with 0 errors, 0 warnings, and 1 NOTE. The NOTE requests DOI-form arXiv references for the two DESCRIPTION citations; it is recorded for release review and does not authorize submission. Tarball checks found only `ggRandomForests/.Rinstignore`, `Version: 4.0.0`, `Date: 2026-08-05`, and 0 `cran-comments` entries. |
+| [x] | Clean-archive check | verified | Clean `git archive HEAD` build exited 0 with the isolated temporary `HOME`; `R CMD check --as-cran` exited 0 with 0 errors, 0 warnings, and 1 NOTE. The NOTE requests a DOI-form arXiv reference for the single raw varPro arXiv citation in `DESCRIPTION`; it is recorded for release review and does not authorize submission. Tarball checks found only `ggRandomForests/.Rinstignore`, `Version: 4.0.0`, `Date: 2026-08-05`, and 0 `cran-comments` entries. |
 
 ## Release gates
 
@@ -68,7 +68,7 @@ unsupervised variable priority where that method is discussed.
 |---|---|---|---|
 | [ ] | RHF vignette | pending | Rendered and reviewed RHF article |
 | [x] | Consistency sweep | verified | All audit rows have a disposition; fresh documentation, lint, guarded-suite, spelling, vignette, pkgdown, and archive evidence was recorded on 2026-08-25. |
-| [x] | Full release verification | verified | Fresh definition-of-done commands passed in order; clean-archive `R CMD check --as-cran` passed with 0 errors, 0 warnings, and the recorded incoming-feasibility arXiv DOI NOTE. |
+| [ ] | Full release verification | pending | Requires a maintainer-authorized release verification after the remaining RHF vignette and release gates are complete. Fresh consistency-sweep command evidence is recorded above. |
 | [ ] | Explicit maintainer authorization | pending | Maintainer approval recorded |
 | [ ] | Submission | pending | CRAN submission record |
 | [ ] | CRAN acceptance | pending | CRAN acceptance notice |
@@ -97,7 +97,7 @@ unsupervised variable priority where that method is discussed.
   archive build with the isolated temporary `HOME` succeeded, as did the
   subsequent manual-inclusive check.
 - `R CMD check --as-cran` reported 0 errors, 0 warnings, and 1 NOTE: CRAN
-  incoming feasibility asks that the two arXiv citations in `DESCRIPTION` use
-  DOI-form arXiv links. This is a retained release-review item, not an
-  authorization to submit. The RHF vignette, explicit authorization,
+  incoming feasibility asks that the single raw varPro arXiv citation in
+  `DESCRIPTION` use a DOI-form arXiv link. This is a retained release-review
+  item, not an authorization to submit. The RHF vignette, explicit authorization,
   submission, and CRAN-acceptance holds remain in force.
