@@ -44,7 +44,8 @@ unsupervised variable priority where that method is discussed.
 
 | Done | Finding | Disposition | Evidence |
 |---|---|---|---|
-| [ ] | None found during planning | verified | Planning review |
+| [ ] | `gg_beta_varpro()` reports that unsupported `regr+` and survival families are "tracked for v3.1.0". The current v4 error should describe the unsupported families without pointing users to a release that has already shipped. | blocked | `R/gg_beta_varpro.R`; run `Rscript -e 'devtools::load_all(quiet = TRUE); x <- structure(list(family = "surv"), class = "varpro"); tryCatch(gg_beta_varpro(x), error = function(e) message(conditionMessage(e)))'` to reproduce: `regr+ and survival are tracked for v3.1.0 (see vignette / NEWS).` |
+| [ ] | `gg_ivarpro()` reports that unsupported `regr+` and survival families are "tracked for v3.1.0". The current v4 error should describe the unsupported families without pointing users to a release that has already shipped. | blocked | `R/gg_ivarpro.R`; run `Rscript -e 'devtools::load_all(quiet = TRUE); x <- structure(list(family = "surv"), class = "varpro"); tryCatch(gg_ivarpro(x), error = function(e) message(conditionMessage(e)))'` to reproduce: `regr+ and survival are tracked for v3.1.0 (see NEWS).` |
 
 ## PR 1 verification
 
