@@ -107,9 +107,8 @@
 #' per-rule LOO subsampling can drift across separate calls. Reuse
 #' `ivarpro_fit` when reproducibility matters.
 #'
-#' @note Multivariate regression (`regr+`) and survival families are
-#'   out of scope for this release. The non-regression / non-class
-#'   path errors with a message naming v3.1.0 as the tracker.
+#' @note Multivariate regression (`regr+`) and survival fits are not
+#'   supported. The unsupported-family path reports the family it received.
 #'
 #' @param object A `varpro` fit from [varPro::varpro()] (regression or
 #'   classification family).
@@ -174,9 +173,8 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
   fam <- object$family
   if (!fam %in% c("regr", "class")) {
     stop(sprintf(
-      paste0("gg_ivarpro currently supports varpro regression and ",
-             "classification forests only; got family = '%s'. regr+ and ",
-             "survival are tracked for v3.1.0 (see NEWS)."),
+      paste0("gg_ivarpro supports varPro regression and classification ",
+             "fits only; got family = '%s'."),
       fam
     ), call. = FALSE)
   }

@@ -49,9 +49,8 @@ above a scalar cutoff. Optional
 \code{beta.varpro()} step once and reuse the result.
 }
 \note{
-Multivariate regression (\verb{regr+}) and survival families are out
-of scope for this release and tracked for v3.1.0. The
-unsupported-family path errors with a message pointing at that work.
+Multivariate regression (\verb{regr+}) and survival fits are not
+supported. The unsupported-family path reports the family it received.
 }
 \section{What this is doing}{
 

@@ -5,6 +5,15 @@ test_that("gg_beta_varpro: non-varpro input errors via the default method", {
   expect_error(gg_beta_varpro(1:3), "got an object of class integer")
 })
 
+test_that("gg_beta_varpro names its supported families in survival errors", {
+  v <- structure(list(family = "surv"), class = "varpro")
+
+  expect_error(
+    gg_beta_varpro(v),
+    "gg_beta_varpro supports varPro regression and classification fits only; got family = 'surv'"
+  )
+})
+
 test_that("gg_beta_varpro returns the expected tidy shape", {
   b <- .beta_fit_mtcars()
   v <- .varpro_mtcars()

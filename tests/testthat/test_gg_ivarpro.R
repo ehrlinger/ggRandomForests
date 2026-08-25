@@ -197,11 +197,13 @@ test_that("gg_ivarpro warns when ... is supplied alongside ivarpro_fit", {
 
 # ---- family guard ---------------------------------------------------------
 
-test_that("gg_ivarpro errors on regr+ / surv families", {
-  v <- .varpro_boston()
-  v_fake <- v
-  v_fake$family <- "surv"
-  expect_error(gg_ivarpro(v_fake), "family = 'surv'")
+test_that("gg_ivarpro names its supported families in survival errors", {
+  v <- structure(list(family = "surv"), class = "varpro")
+
+  expect_error(
+    gg_ivarpro(v),
+    "gg_ivarpro supports varPro regression and classification fits only; got family = 'surv'"
+  )
 })
 
 # ---- plot dispatch matrix --------------------------------------------------

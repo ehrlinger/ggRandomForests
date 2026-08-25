@@ -33,8 +33,7 @@ cutting a predictor into evenly populated groups.
 
 `ggRandomForests` works with three upstream fit mappings:
 `randomForestSRC::rfsrc()` -> `rfsrc`, `varPro::varpro()` -> `varpro`, and
-`randomForestRHF::rhf()` -> `rhf`. RHF support is only an overview here; the
-dedicated RHF vignette carries the worked longitudinal analysis.
+`randomForestRHF::rhf()` -> `rhf`. RHF support is only an overview here.
 
 ```{r pkg-setup, include=FALSE}
 # vignette dir under R CMD check, package root under an interactive knit

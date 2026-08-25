@@ -57,9 +57,8 @@ profile; \code{which_class} collapses to a single class. Optional
 \code{ivarpro()} call.
 }
 \note{
-Multivariate regression (\verb{regr+}) and survival families are
-out of scope for this release. The non-regression / non-class
-path errors with a message naming v3.1.0 as the tracker.
+Multivariate regression (\verb{regr+}) and survival fits are not
+supported. The unsupported-family path reports the family it received.
 }
 \section{What this is doing}{
 
