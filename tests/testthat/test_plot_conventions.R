@@ -42,6 +42,12 @@ test_that("importance plots agree: most-important variable is the last factor le
   top_ivar <- names(which.max(agg_i))
   expect_equal(tail(levels(gi$variable), 1), top_ivar,
                label = "gg_ivarpro top factor level")
+
+  # ---- gg_rhf_importance (synthetic RHF priority result) ------------------
+  rhf <- .fake_rhf_importance()
+  gri <- gg_rhf_importance(rhf$object, importance_fit = rhf$fit)
+  expect_equal(tail(levels(gri$variable), 1), "x1",
+               label = "gg_rhf_importance top factor level")
 })
 
 # Companion contract: reversing the factor levels for the plot must NOT
@@ -82,4 +88,13 @@ test_that("importance frames keep rows most-important-first despite reversed lev
   top_ivar <- names(which.max(agg_i))
   expect_equal(as.character(gi$variable[1]), top_ivar,
                label = "gg_ivarpro long-frame first row")
+
+  # ---- gg_rhf_importance: each window stays highest-priority-first --------
+  rhf <- .fake_rhf_importance()
+  gri <- gg_rhf_importance(rhf$object, importance_fit = rhf$fit)
+  first_by_window <- vapply(split(gri, gri$time_index), function(d) {
+    as.character(d$variable[1L])
+  }, character(1))
+  expect_identical(unname(first_by_window), c("x2", "x1"),
+                   label = "gg_rhf_importance first row per window")
 })

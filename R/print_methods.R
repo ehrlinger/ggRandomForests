@@ -185,6 +185,19 @@ print.gg_auct <- function(x, ...) {
 
 #' @rdname print.gg
 #' @export
+print.gg_rhf_importance <- function(x, ...) {
+  prov <- attr(x, "provenance") %||% list()
+  cat(.gg_header(x, "gg_rhf_importance"),
+      sprintf("  |  variables: %d  windows: %d  y_source: %s",
+              nlevels(x$variable), length(unique(x$time_index)),
+              prov$y_source %||% NA_character_),
+      sprintf("  |  precomputed: %s  rank: q90", isTRUE(prov$precomputed)),
+      "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
 print.gg_udependent <- function(x, ...) {
   prov <- attr(x, "provenance")
   n    <- if (!is.null(prov)) prov$n else "?"

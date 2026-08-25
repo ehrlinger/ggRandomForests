@@ -41,6 +41,10 @@ if (requireNamespace("randomForestRHF", quietly = TRUE)) {
 }
 
 }
+\references{
+Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.
+arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
+}
 \seealso{
 \code{\link[=plot.gg_rhf]{plot.gg_rhf()}}, \code{\link[randomForestRHF:rhf]{randomForestRHF::rhf()}}
 }

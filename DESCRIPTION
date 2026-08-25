@@ -46,7 +46,7 @@ Suggests:
     pkgload,
     quarto,
     ragg,
-    randomForestRHF,
+    randomForestRHF (>= 1.0.1),
     RColorBrewer,
     rmarkdown,
     testthat,

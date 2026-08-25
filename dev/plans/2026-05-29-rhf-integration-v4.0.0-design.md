@@ -51,13 +51,13 @@ layer became v3.0.0.
 
 ### Why importance is its own shape (not gg_vimp / gg_varpro reuse)
 
-`importance.rhf` returns an `"importance.rhf"` object: a **variable ×
-time-window z-matrix** (time-varying importance, hence RHF's own
-`dotmatrix.importance.rhf`). It does not map onto `gg_vimp` (one VIMP per
-variable) or `gg_varpro` (per-tree z boxplot). `varpro.cache.rhf` builds a
-rule-membership cache with a `"regr"` working response that the importance
-engine consumes. So `gg_rhf_importance` is a new wrapper with a
-heatmap/dotmatrix default plot.
+`importance.rhf` returns an `"importance.rhf"` object: a variable-priority
+matrix over time windows. The score is the average absolute rule-release
+contrast in log integrated hazard, not a z-score. It does not map onto
+`gg_vimp` (one VIMP per variable) or `gg_varpro` (per-tree z boxplot).
+`varpro.cache.rhf` builds the rule-membership cache consumed by the priority
+calculation. So `gg_rhf_importance` is a new wrapper with a point-matrix
+default plot and no selection cutoff.
 
 ## Phase breakdown
 
@@ -75,9 +75,9 @@ All five phases land on `dev`; v4.0.0 ships them as a set.
 - **Phase 2 — `gg_auct` (time-varying performance).** Wraps `auct.rhf`
   AUC(t) + iAUC (Uno/standard), `marker = "chf"/"haz"`, bootstrap-SE
   ribbon.
-- **Phase 3 — `gg_rhf_importance` (time-windowed importance).** Wraps
-  `importance.rhf` / `varpro.cache.rhf`; heatmap of variable × time-window
-  z-values.
+- **Phase 3 — `gg_rhf_importance` (time-windowed variable priority).** Wraps
+  `importance.rhf` / `varpro.cache.rhf`; point matrix of variable ×
+  time-window priority values.
 - **Phase 4 — `gg_tune_rhf` (tuning).** Wraps `tune.treesize.rhf` /
   `tune.iAUC.rhf`.
 - **Phase 5 — Vignette + RC.** Consolidated "Random Hazard Forests with
@@ -110,12 +110,19 @@ the data-model work is woven into Phase 1 and finalized in the vignette.
   markers are bound.
 
 ### `gg_rhf_importance` (Phase 3)
-- **Input:** `importance.rhf` object (variable × time-window z-matrix)
-  [+ optional `varpro.cache.rhf` reuse].
-- **Tidy frame** (long): `variable, time_window, z, selected`.
-- **Plot:** `geom_tile` heatmap (variable × time-window, fill = z),
-  modeled on RHF's `dotmatrix.importance`; variable axis ordered
-  most-important-at-top (v3.0.0 convention).
+- **Input:** fitted `rhf` object;
+  `gg_rhf_importance.rhf(object, importance_fit = NULL, cache = NULL,
+  time.index = NULL, ...)` calculates `importance.rhf()` internally or reuses
+  a supplied result. Supplying `importance_fit` is the documented default
+  workflow for repeated analysis.
+- **Tidy frame** (long): `variable, time_window, time, time_index, start,
+  stop, midpoint, n_risk, n_rules, priority`. Rows retain the upstream
+  chronological and within-window order; factor levels order variables by q90
+  priority with the highest-ranked variable at the top.
+- **Plot:** `geom_point` matrix (variable × time-window), with size and color
+  mapped to display priority. Optional log transformation and quantile caps
+  affect display values only. No z-score interpretation, `selected` field, or
+  significance cutoff is supplied.
 
 ### `gg_tune_rhf` (Phase 4)
 - **Input:** `tune.treesize.rhf` / `tune.iAUC.rhf` object.
@@ -177,5 +184,9 @@ provenance attributes.
 - Ishwaran, H., Kogalur, U.B., Blackstone, E.H., Lauer, M.S. (2008).
   Random survival forests. *Ann. Appl. Statist.*, 2:841–860.
   <doi:10.1214/08-AOAS169>
-- Ishwaran, H., Kogalur, U.B., Hsich, E.M., Lee, D.K. (2026). Random
-  hazard forests.
+- Ishwaran, H., Hsich, E.M., Kogalur, U.B., Lee, D.K.K. (2026). Random
+  hazard forests. *arXiv preprint* 2608.21597.
+  <doi:10.48550/arXiv.2608.21597>
+- Ishwaran, H., Kogalur, U.B. (2026). *randomForestRHF: Random Hazard
+  Forests*. R package version 1.0.1.
+  <https://CRAN.R-project.org/package=randomForestRHF>

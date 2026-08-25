@@ -20,6 +20,10 @@
 #'   `std.se`, `conf.level`), and a `provenance` attribute derived from
 #'   `object` (source, family, ntree, n).
 #'
+#' @references
+#' Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.
+#' arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
+#'
 #' @seealso [plot.gg_auct()], [randomForestRHF::auct.rhf()]
 #'
 #' @examples
