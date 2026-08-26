@@ -56,6 +56,7 @@ run_supported_workflows <- function() {
     inherits(plot(varpro_view), "ggplot")
   )
 
+  set.seed(20260826L)
   simulated <- randomForestRHF::hazard.simulation(1)
   rhf_formula <- "Surv(id, start, stop, event) ~ ."
   set.seed(20260826L)

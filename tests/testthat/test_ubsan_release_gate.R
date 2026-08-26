@@ -78,3 +78,21 @@ test_that("the release probe completes supported upstream workflows", {
 
   expect_invisible(run_supported_workflows())
 })
+
+test_that("the release probe seeds the RHF simulation directly", {
+  source_root <- normalizePath(
+    file.path(testthat::test_path(), "..", ".."),
+    mustWork = FALSE
+  )
+  if (!file.exists(file.path(source_root, ".git"))) {
+    skip("repository-only release probe")
+  }
+
+  probe <- readLines(
+    file.path(source_root, "tools", "check-upstream-ubsan.R"),
+    warn = FALSE
+  )
+  simulation_line <- grep("hazard\\.simulation", probe, fixed = FALSE)
+  expect_length(simulation_line, 1L)
+  expect_match(probe[[simulation_line - 1L]], "set.seed\\(20260826L\\)")
+})
