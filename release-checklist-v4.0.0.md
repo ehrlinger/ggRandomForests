@@ -48,9 +48,9 @@ unsupervised variable priority where that method is discussed.
 | [x] | v4 NEWS | Added the current-software/minimum-version distinction and all three canonical fit-call/object-class mappings. | corrected | `NEWS.md`; fit-call and version/citation inventories on 2026-08-25. |
 | [x] | Active v3 NEWS | Retained v3.0.0--v3.5.2 as historical release facts; no present-tense instruction conflicts with the canonical mapping or current method/software citations. | retained | `NEWS.md`; Task 4 audit on 2026-08-25. |
 | [x] | Runnable examples | Package-qualified fits are used throughout R examples; unqualified README and vignette calls follow explicit package attachment; RHF examples retain Suggests guards. | retained | Direct fitting-call inventory; focused guarded tests on 2026-08-25. |
-| [x] | pkgdown | Moved the six implemented RHF topics into their own reference group; no RHF article link was added because the vignette is not yet present. | corrected | `_pkgdown.yml`; Task 4 pkgdown build and Task 5 source audit on 2026-08-25. |
+| [x] | pkgdown | Moved the eight implemented RHF topics into their own reference group and added the RHF article to the tutorials index and navbar. | corrected | `_pkgdown.yml`; Task 4 source integration on 2026-08-25. Task 5 owns the fresh pkgdown build. |
 | [x] | RHF tuning family | Published supplied-object-only tree-size tuning inspection by OOB risk or OOB iAUC, with the selected-size marker and conditional iAUC standard-error ribbon. | corrected | `R/gg_tune_rhf.R`, `R/plot.gg_tune_rhf.R`, generated `man/gg_tune_rhf.Rd` and `man/plot.gg_tune_rhf.Rd`, `tests/testthat/test_gg_tune_rhf.R`, `tests/testthat/test_plot_gg_tune_rhf.R`, and `tests/testthat/test_snapshots.R`; PR 2 verification on 2026-08-25. |
-| [x] | RHF vignette | Removed the overview's present-tense claim about a vignette that does not yet exist; no article link is published. | deferred | PR 3 owns `vignettes/rhf.qmd`; `vignettes/ggRandomForests.qmd` and `_pkgdown.yml`. |
+| [x] | RHF vignette | Added and published the longitudinal four-family RHF article. | corrected | `vignettes/rhf.qmd`; Tasks 2 and 3 rendered the article with `Rscript -e 'quarto::quarto_render("vignettes/rhf.qmd")'` and completed focused artifact review; commits `b31097c4` and `06d939ae`; `_pkgdown.yml`, `README.md`, and `R/help.R`. |
 
 ## Behavioral defect log
 
@@ -76,9 +76,9 @@ unsupervised variable priority where that method is discussed.
 
 | Done | Gate | Disposition | Evidence |
 |---|---|---|---|
-| [ ] | RHF vignette | pending | Rendered and reviewed RHF article |
+| [x] | RHF vignette | verified | `vignettes/rhf.qmd` rendered after Tasks 2 and 3 with `Rscript -e 'quarto::quarto_render("vignettes/rhf.qmd")'`; focused review of the complete article was clean at `06d939ae`; public links are in `_pkgdown.yml`, `README.md`, and `R/help.R`. |
 | [x] | Consistency sweep | verified | All audit rows have a disposition; fresh documentation, lint, guarded-suite, spelling, vignette, pkgdown, and archive evidence was recorded on 2026-08-25. |
-| [ ] | Full release verification | pending | Requires a maintainer-authorized release verification after the remaining RHF vignette and release gates are complete. Fresh consistency-sweep command evidence is recorded above. |
+| [ ] | Full release verification | pending | Requires a maintainer-authorized release verification after the remaining release gates are complete. Fresh consistency-sweep command evidence is recorded above. |
 | [ ] | Explicit maintainer authorization | pending | Maintainer approval recorded |
 | [ ] | Submission | pending | CRAN submission record |
 | [ ] | CRAN acceptance | pending | CRAN acceptance notice |

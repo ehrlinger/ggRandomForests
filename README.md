@@ -71,6 +71,12 @@ For survival forests, see the package vignette:
 vignette("ggRandomForests")
 ```
 
+For Random Hazard Forests with predictors that change during follow-up, see
+the RHF vignette:
+```r
+vignette("rhf", package = "ggRandomForests")
+```
+
 For variable importance with varPro — partial dependence, importance
 z-scores, beta importance, individual/local importance, and isolation
 forests — see the dedicated vignette:

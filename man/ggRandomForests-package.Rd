@@ -96,6 +96,9 @@ tuning search.
 or OOB iAUC.
 }
 
+See \code{vignette("rhf", package = "ggRandomForests")} for a longitudinal
+workflow that uses all four RHF families.
+
 \pkg{varPro} is a required dependency (\code{Imports}), so the varPro
 families are always available. \pkg{randomForestRHF} and \pkg{kernelshap}
 are in \code{Suggests}: their functions check for the package and fail with
