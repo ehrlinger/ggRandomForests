@@ -78,6 +78,7 @@ unsupervised variable priority where that method is discussed.
 |---|---|---|---|
 | [x] | RHF vignette | verified | `vignettes/rhf.qmd` rendered after Tasks 2 and 3 with `Rscript -e 'quarto::quarto_render("vignettes/rhf.qmd")'`; focused review of the complete article was clean at `06d939ae`; public links are in `_pkgdown.yml`, `README.md`, and `R/help.R`. |
 | [x] | Consistency sweep | verified | All audit rows have a disposition; fresh documentation, lint, guarded-suite, spelling, vignette, pkgdown, and archive evidence was recorded on 2026-08-25. |
+| [ ] | Upstream Linux GCC UBSAN execution | pending | Manually run `upstream-ubsan.yaml` on the release candidate. It builds `randomForestSRC`, `randomForestRHF`, and `varPro` from source with GCC 16 and `-fsanitize=undefined,bounds-strict`, confirms the contained unsupervised `randomForestSRC` finding, and requires the supported `rfsrc`, `varpro`, and RHF paths to remain clean. |
 | [ ] | Full release verification | pending | Requires a maintainer-authorized release verification after the remaining release gates are complete. Fresh consistency-sweep command evidence is recorded above. |
 | [ ] | Explicit maintainer authorization | pending | Maintainer approval recorded |
 | [ ] | Submission | pending | CRAN submission record |
