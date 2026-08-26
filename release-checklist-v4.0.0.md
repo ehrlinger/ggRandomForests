@@ -209,3 +209,15 @@ maintainer authorization, submission, and CRAN acceptance remain pending, and
 the overall release status remains **HOLD**. This check does not authorize a
 release, CRAN submission, tag, version change, merge to `main`, or closure of
 CRAN acceptance.
+
+## RC topology verification evidence: 2026-08-26
+
+- Before recording the internal release-candidate topology,
+  `devtools::document()`, `lintr::lint_package()`, and the guarded full suite
+  exited 0 in that order. The suite reported 1,766 passes, 0 failures,
+  59 existing warnings, and 6 documented skips.
+- Scoped snapshot status and name-status diff were empty before and after the
+  suite. No vdiffr baseline changed or was deleted.
+- This run verifies the documentation-only topology record. It does not
+  advance the UBSAN, full release-verification, submission, or CRAN-acceptance
+  gates.
