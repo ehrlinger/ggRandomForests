@@ -14,6 +14,8 @@ ggRandomForests v4.0.0 (development)
   supported minimum versions and standardizes the three package-qualified fit
   calls and object classes: `randomForestSRC::rfsrc()` -> `rfsrc`,
   `randomForestRHF::rhf()` -> `rhf`, and `varPro::varpro()` -> `varpro`.
+* Add a longitudinal RHF vignette covering `gg_rhf()`, `gg_auct()`,
+  `gg_rhf_importance()`, and `gg_tune_rhf()` from one saved analysis.
 * `gg_auct()` / `plot.gg_auct()`: tidy wrapper and plot for time-varying
   AUC from `randomForestRHF::auct.rhf()` (RHF Phase 2). Returns a long
   frame `time / auc / se / lower / upper / marker` with an `iauc`

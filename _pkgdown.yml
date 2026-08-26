@@ -42,6 +42,8 @@ navbar:
         - text: "Tutorials"
         - text: "Random Forest Survival Analysis"
           href: articles/ggRandomForests-survival.html
+        - text: "Random Hazard Forests for Longitudinal Survival Data"
+          href: articles/rhf.html
         - text: "Random Forest Regression"
           href: articles/ggRandomForests-regression.html
         - text: "Random Forest Classification"
@@ -167,6 +169,7 @@ articles:
   - title: "Tutorials"
     contents:
       - ggRandomForests-survival
+      - rhf
       - ggRandomForests-regression
       - ggRandomForests-classification
       - varpro
