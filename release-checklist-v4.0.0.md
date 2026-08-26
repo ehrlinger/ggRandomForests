@@ -92,6 +92,20 @@ unsupervised variable priority where that method is discussed.
 - Dependency floors are **retained** because they state supported
   compatibility, while this checklist separately states current CRAN versions.
 
+## Internal release-candidate topology
+
+- `maint/v3` preserves the v3 line from the last pre-v4 `main` commit. A v3
+  correction is made and released there, then forward-ported to the v4 line.
+- After v4 integration, `main` is the internal release-candidate channel.
+  `hvtiR::install()` therefore installs the v4 candidate from GitHub even while
+  CRAN remains on v3.
+- **hvtiR follow-up:** make `hvtiR::status()` and `hvtiR::update()` commit-aware.
+  Their current version comparison cannot distinguish two candidate commits
+  that both declare `Version: 4.0.0`. Until that work lands, internal testers
+  need an explicit reinstall to move between v4 release-candidate commits.
+  This tooling follow-up does not replace or advance any ggRandomForests CRAN
+  release gate.
+
 ## Verification evidence: 2026-08-25
 
 - The working tree and `tests/testthat/_snaps` were clean before verification.
