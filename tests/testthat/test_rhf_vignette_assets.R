@@ -13,6 +13,7 @@ test_that("the precomputed RHF vignette bundle satisfies its artifact contract",
   expect_lte(file.info(path)$size, 1.75 * 1024^2)
 
   expect_s3_class(bundle$fit, "rhf")
+  expect_s3_class(bundle$importance, "importance.rhf")
   expect_s3_class(bundle$tune_risk, "tune.treesize.rhf")
   expect_s3_class(bundle$tune_iauc, "tune.treesize.rhf")
   expect_false("forest" %in% names(bundle$tune_risk))
@@ -31,11 +32,9 @@ test_that("the precomputed RHF vignette bundle satisfies its artifact contract",
   expect_identical(bundle$auct_incident$method, "incident")
   expect_identical(bundle$auct_incident$marker, "hazard")
 
-  time_index <- bundle$settings$importance_time_index
-  expect_length(time_index, 5L)
-  expect_true(is.integer(time_index))
-  expect_true(all(time_index > 0L))
-  expect_identical(length(unique(time_index)), 5L)
+  expected_time_index <- c(1L, 11L, 22L, 32L, 42L)
+  expect_identical(bundle$settings$importance_time_index, expected_time_index)
+  expect_identical(bundle$importance$window.info$index, expected_time_index)
 
   expect_identical(bundle$tune_risk$perf, "risk")
   expect_identical(bundle$tune_iauc$perf, "iAUC")
@@ -68,6 +67,7 @@ test_that("the precomputed RHF vignette bundle satisfies its artifact contract",
   expect_identical(names(bundle$versions), c(
     "R", "ggRandomForests", "randomForestRHF", "ggplot2"
   ))
+  expect_true(is.character(bundle$versions))
   expect_true(all(nzchar(unname(bundle$versions))))
   expect_false(any(startsWith(
     unlist(lapply(bundle, class), use.names = FALSE), "gg_"
