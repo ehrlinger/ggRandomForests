@@ -119,9 +119,14 @@ stopifnot(
   !"forest" %in% names(verified_bundle$tune_iauc)
 )
 
-if (!file.rename(temporary_path, artifact_path)) {
+if (!file.copy(temporary_path, artifact_path, overwrite = TRUE)) {
   stop("Could not place the verified RHF vignette bundle.")
 }
+stopifnot(identical(
+  unname(tools::md5sum(temporary_path)),
+  unname(tools::md5sum(artifact_path))
+))
+stopifnot(unlink(temporary_path) == 0L)
 
 cat(
   "Wrote ", artifact_path, " (",
