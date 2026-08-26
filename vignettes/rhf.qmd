@@ -299,3 +299,225 @@ stitched case curve may contain a downward step. That step does not mean a
 negative hazard or that past event pressure disappeared. It marks the upstream
 model's transition to a different active-record estimate
 [@Ishwaran:RHF:software:2026].
+
+## How does discrimination change over time?
+
+Survival AUC needs a definition of a case and a control at each time. The two
+definitions below answer different questions, and each uses the marker that
+matches its question. The saved AUC calculations are supplied to `gg_auct()`;
+only the extraction and plotting run during this render.
+
+### Cumulative/dynamic AUC uses cumulative hazard
+
+Suppose the question is whether a subject who has experienced the event by a
+horizon ranks above a subject who remains event-free at that horizon. This is
+the cumulative/dynamic target. The corresponding marker is cumulative hazard,
+named `"chf"` in `gg_auct()` and `"cumhaz"` in the retained upstream object.
+
+```{r auct-cumulative}
+auct_cumulative <- gg_auct(
+  bundle$fit,
+  marker = "chf",
+  auct_fit = bundle$auct_cumulative
+)
+plot(auct_cumulative)
+```
+
+The saved curve has a Uno iAUC of
+`r sprintf("%.3f", attr(auct_cumulative, "iauc")$uno)`. Its finite AUC values
+range from `r sprintf("%.3f", min(auct_cumulative$auc, na.rm = TRUE))` to
+`r sprintf("%.3f", max(auct_cumulative$auc, na.rm = TRUE))` over this fitted
+time grid. AUC is a ranking probability on a 0 to 1 scale, with 0.5 shown as
+the chance reference. The retained calculation did not use a bootstrap, so
+the plot has no confidence ribbon.
+
+### Incident/dynamic AUC uses hazard
+
+A different question asks whether a subject who experiences the event near
+time $t$ ranks above a subject in the relevant risk set at $t$. This is the
+incident/dynamic target. It uses the local hazard marker, named `"haz"` in
+`gg_auct()` and `"hazard"` upstream.
+
+```{r auct-incident}
+auct_incident <- gg_auct(
+  bundle$fit,
+  marker = "haz",
+  auct_fit = bundle$auct_incident
+)
+plot(auct_incident)
+```
+
+Here the Uno iAUC is
+`r sprintf("%.3f", attr(auct_incident, "iauc")$uno)`. The curve is more
+variable than the cumulative/dynamic curve, with finite AUC values from
+`r sprintf("%.3f", min(auct_incident$auc, na.rm = TRUE))` to
+`r sprintf("%.3f", max(auct_incident$auc, na.rm = TRUE))`. These values do not
+show that one marker is a better version of the other. Cumulative/dynamic AUC
+ranks accumulated risk through a horizon, while incident/dynamic AUC ranks
+local failures within a risk set. They estimate different targets.
+
+## Which variables matter, and when?
+
+The retained `importance.rhf` object is the starting point here. Its expensive
+upstream work was performed once: `varpro.cache.rhf()` collected the rule and
+near-miss information, then `importance.rhf()` evaluated five selected time
+windows. Supplying that result avoids repeating either calculation.
+
+```{r rhf-importance, fig.width=8, fig.height=5.25}
+rhf_priority <- gg_rhf_importance(
+  bundle$fit,
+  importance_fit = bundle$importance
+)
+plot(rhf_priority) +
+  ggplot2::theme(plot.margin = ggplot2::margin(l = 80))
+```
+
+RHF priority is a time-local rule-release contrast. Within a window, it
+compares the log integrated-hazard working response for a rule with its
+near-miss set and asks how much that fitted response changes when rules
+involving a variable are released. Larger nonnegative values in this supplied
+object mean a larger contrast. They do not say that a covariate raises or
+lowers hazard, and they are not z-scores, p-values, or automatic variable
+selection thresholds.
+
+The dot size and color show the same priority value, with a 99th-percentile
+cap applied to the display only. The extracted values do not change. In this
+simulation, `xtd` has the largest early-window value, about
+`r sprintf("%.2f", max(rhf_priority$priority, na.rm = TRUE))`, while `x.1`
+has the largest value in several later windows. The number at risk falls from
+`r max(rhf_priority$n_risk)` to `r min(rhf_priority$n_risk)` across the five
+displayed windows, so the late-window comparisons use less information. One
+late `x.4` result is unavailable in the upstream object and appears without a
+point. For work you plan to revisit, retain both the upstream cache and the
+`importance.rhf` result; supply the latter to `gg_rhf_importance()` for each
+display.
+
+## Which tree size did the upstream searches select?
+
+The two retained `tune.treesize.rhf` objects contain the evaluated paths and
+their selected sizes. `gg_tune_rhf()` preserves the upstream evaluation order,
+so the connecting line follows the order in which candidates were evaluated,
+not a newly sorted sequence. The emphasized point marks the size selected by
+the upstream search.
+
+### OOB risk tuning
+
+```{r tune-risk}
+risk_tuning <- gg_tune_rhf(bundle$tune_risk)
+risk_tuning
+plot(risk_tuning)
+```
+
+The risk search evaluated tree sizes
+`r paste(risk_tuning$treesize, collapse = ", ")` in that order and selected
+size `r risk_tuning$treesize[risk_tuning$selected]`, where the saved mean OOB
+risk was smallest. The retained risk path has no standard-error field.
+`gg_tune_rhf()` sets its `se` values to missing and does not fabricate
+uncertainty, so a risk plot has no ribbon.
+
+### OOB iAUC tuning
+
+```{r tune-iauc}
+iauc_tuning <- gg_tune_rhf(bundle$tune_iauc)
+iauc_tuning
+plot(iauc_tuning)
+```
+
+The iAUC search evaluated tree sizes
+`r paste(iauc_tuning$treesize, collapse = ", ")` and selected size
+`r iauc_tuning$treesize[iauc_tuning$selected]`, where OOB iAUC was largest.
+An iAUC ribbon is drawn only when finite upstream standard errors are present.
+This saved path has `r sum(is.finite(iauc_tuning$se))` finite standard errors,
+so its plot has no ribbon. Retaining each tuning result preserves the actual
+candidate path, search order, and selected point without rerunning the fits.
+
+## What does each extractor return?
+
+All four families keep extraction separate from plotting. The intermediate
+object is a data frame with an added class, so you can inspect it before
+calling `plot()`.
+
+```{r extractor-support}
+support <- data.frame(
+  extractor = c(
+    "gg_rhf()",
+    "gg_auct()",
+    "gg_rhf_importance()",
+    "gg_tune_rhf()"
+  ),
+  upstream_input = c(
+    "rhf fit",
+    "rhf fit plus an optional auct.rhf object",
+    "rhf fit plus an optional importance.rhf object",
+    "tune.treesize.rhf object"
+  ),
+  returned_class = c(
+    "gg_rhf, data.frame",
+    "gg_auct, data.frame",
+    "gg_rhf_importance, data.frame",
+    "gg_tune_rhf, data.frame"
+  ),
+  scale = c(
+    paste(
+      "Hazard is a local event rate; cumulative hazard is accumulated",
+      "event pressure. Neither is a probability."
+    ),
+    paste(
+      "AUC(t) and iAUC are ranking measures from 0 to 1; interpretation",
+      "depends on the case definition and marker."
+    ),
+    paste(
+      "Time-local rule-release priority; larger values mean a larger",
+      "working-response contrast, not statistical significance."
+    ),
+    paste(
+      "OOB risk is minimized or OOB iAUC is maximized; the selected",
+      "tree size is marked."
+    )
+  ),
+  check.names = FALSE
+)
+knitr::kable(
+  support,
+  col.names = c(
+    "Extractor", "Upstream input class or object",
+    "Returned class", "Output scale and interpretation"
+  )
+)
+```
+
+## How can this analysis be reproduced?
+
+The bundle records the public simulation, seed, calculation settings, and
+package versions used for this render. These are the saved versions:
+
+```{r bundle-versions}
+version_table <- data.frame(
+  package = names(bundle$versions),
+  version = unname(bundle$versions),
+  row.names = NULL
+)
+knitr::kable(
+  version_table,
+  col.names = c("Software", "Saved version")
+)
+```
+
+Run `Rscript vignettes/precompute_rhf.R` from the package root to regenerate
+all ten bundle components. That script repeats the sole longitudinal
+simulation and uses `bundle$seed` and the settings shown earlier. The exact
+numerical result can still change when the recorded package versions change.
+
+For routine use, retain the fitted forest and each expensive upstream result:
+the two `auct.rhf` calculations, the importance cache and result, and both
+tuning objects. Supplying those objects is the default workflow for a report
+you expect to render more than once. It separates a long model calculation
+from a short, repeatable extraction and plot.
+
+## Further reading
+
+The RHF method, including its counting-process construction and hazard-based
+forest, is described by Ishwaran, Hsich, Kogalur, and Lee
+[@Ishwaran:RHF:2026]. The `randomForestRHF` software reference documents the
+R implementation and the upstream objects used throughout this article
+[@Ishwaran:RHF:software:2026].
