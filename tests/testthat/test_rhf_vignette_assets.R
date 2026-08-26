@@ -1,13 +1,22 @@
 test_that("the precomputed RHF vignette bundle satisfies its artifact contract", {
-  candidate_paths <- c(
-    testthat::test_path("..", "..", "vignettes", "rhf_precomputed.rds"),
+  candidate_roots <- c(
+    testthat::test_path("..", ".."),
     testthat::test_path(
-      "..", "..", "00_pkg_src", "ggRandomForests", "vignettes",
-      "rhf_precomputed.rds"
+      "..", "..", "00_pkg_src", "ggRandomForests"
     )
   )
-  existing_paths <- candidate_paths[file.exists(candidate_paths)]
-  path <- if (length(existing_paths)) existing_paths[[1L]] else candidate_paths[[1L]]
+  is_source_root <- vapply(candidate_roots, function(root) {
+    file.exists(file.path(root, "DESCRIPTION")) &&
+      dir.exists(file.path(root, "vignettes"))
+  }, logical(1))
+  source_roots <- candidate_roots[is_source_root]
+  if (!length(source_roots)) {
+    skip(paste(
+      "Source-only RHF vignette artifact is unavailable in",
+      "installed-package tests"
+    ))
+  }
+  path <- file.path(source_roots[[1L]], "vignettes", "rhf_precomputed.rds")
   expect_true(file.exists(path), info = "Missing vignettes/rhf_precomputed.rds")
   if (!file.exists(path)) {
     return(invisible())
