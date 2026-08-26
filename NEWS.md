@@ -1,5 +1,41 @@
 Package: ggRandomForests
-Version: 3.5.2
+Version: 4.0.0
+
+ggRandomForests v4.0.0 (development)
+====================================
+* Development line opened after the v3.2.0 CRAN release (forward-merged the
+  v3.2.0 RMST/varPro fixes onto the dev line).
+* Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
+  visualization layer wrapping the 'randomForestRHF' package (added to
+  Suggests). RHF support is gated — every gg_rhf* entry point checks
+  `requireNamespace("randomForestRHF")`. No change for users who do not
+  install it.
+* The consistency sweep distinguishes current CRAN software versions from
+  supported minimum versions and standardizes the three package-qualified fit
+  calls and object classes: `randomForestSRC::rfsrc()` -> `rfsrc`,
+  `randomForestRHF::rhf()` -> `rhf`, and `varPro::varpro()` -> `varpro`.
+* Add a longitudinal RHF vignette covering `gg_rhf()`, `gg_auct()`,
+  `gg_rhf_importance()`, and `gg_tune_rhf()` from one saved analysis.
+* `gg_auct()` / `plot.gg_auct()`: tidy wrapper and plot for time-varying
+  AUC from `randomForestRHF::auct.rhf()` (RHF Phase 2). Returns a long
+  frame `time / auc / se / lower / upper / marker` with an `iauc`
+  attribute (Uno + standardized integrated AUC); `plot.gg_auct()` draws
+  AUC(t) with a bootstrap CI ribbon when available and a 0.5 reference
+  line. `gg_auct.rhf(object, marker, auct_fit = NULL)` computes
+  `auct.rhf()` internally or reuses a cached fit.
+* `gg_rhf_importance()` / `plot.gg_rhf_importance()`: tidy wrapper and point
+  matrix for time-localized variable priority from
+  `randomForestRHF::importance.rhf()` (RHF Phase 3). It returns
+  `variable / time_window / time / time_index / start / stop / midpoint /
+  n_risk / n_rules / priority`, accepts a supplied `importance_fit` or
+  calculates one when absent, and orders variables by their q90 priority over
+  time windows. Priority is a ranking score, not a z-score; no selection
+  cutoff is applied. RHF support now requires `randomForestRHF >= 1.0.1`.
+* `gg_tune_rhf()` / `plot.gg_tune_rhf()`: supplied-object-only inspection of a
+  `tune.treesize.rhf` tree-size tuning path. The five returned columns are
+  `treesize / metric / value / se / selected`; the plot marks the selected
+  size and draws an iAUC standard-error ribbon only when finite supplied iAUC
+  standard errors are available. `gg_tune_rhf()` never recalculates tuning.
 
 ggRandomForests v3.5.2
 ======================

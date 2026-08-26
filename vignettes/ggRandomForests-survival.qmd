@@ -58,7 +58,7 @@ probability; it is an unbounded relative-risk score. Read it as a single number
 for ranking patients from low to high risk, not as a survival chance.
 
 The **[randomForestSRC](https://www.randomforestsrc.org)** package
-[@Ishwaran:RFSRC:2014] provides a unified implementation for survival,
+[@Ishwaran:RFSRC:software:2026] provides a unified implementation for survival,
 regression, and classification forests.
 **ggRandomForests** extracts tidy data objects from `rfsrc` fits and renders
 them with **ggplot2** [@Wickham:2009], so you can see how a survival forest is

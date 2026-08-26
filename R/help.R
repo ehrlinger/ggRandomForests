@@ -17,9 +17,12 @@
 #' @title ggRandomForests: Visually Exploring Random Forests
 #'
 #' @description \code{ggRandomForests} provides \code{ggplot2} (Wickham 2009)
-#' diagnostic and exploration figures for random forests grown with
-#' \code{\link[randomForestSRC]{rfsrc}} (>= 3.4.0) or
-#' \code{\link[randomForest]{randomForest}}.
+#' diagnostic and exploration figures for fits from
+#' \code{randomForestSRC::rfsrc()} (\code{rfsrc} class;
+#' \pkg{randomForestSRC} >= 3.4.0), \code{randomForestRHF::rhf()}
+#' (\code{rhf} class; \pkg{randomForestRHF} >= 1.0.1),
+#' \code{varPro::varpro()} (\code{varpro} class; \pkg{varPro} >= 3.1.0),
+#' or \code{\link[randomForest]{randomForest}}.
 #'
 #' \code{randomForestSRC} gives a unified treatment of Breiman's (2001) random
 #' forests across data settings: regression and classification forests when the
@@ -91,16 +94,33 @@
 #' \item \code{\link{gg_sdependent}}: signal-variable detection.
 #' }
 #'
+#' \strong{Random Hazard Forests}
+#' These functions are for time-to-event data whose predictors can change
+#' during follow-up. They show how event risk, time-varying discrimination, and
+#' variable priority change over time, and let you inspect a saved tree-size
+#' tuning search.
+#'
+#' \itemize{
+#' \item \code{\link{gg_rhf}}: per-case event-risk curves over time.
+#' \item \code{\link{gg_auct}}: AUC curves over follow-up time.
+#' \item \code{\link{gg_rhf_importance}}: variable priority by time window.
+#' \item \code{\link{gg_tune_rhf}}: saved tree-size tuning paths by OOB risk
+#'   or OOB iAUC.
+#' }
+#'
+#' See \code{vignette("rhf", package = "ggRandomForests")} for a longitudinal
+#' workflow that uses all four RHF families.
+#'
 #' \pkg{varPro} is a required dependency (\code{Imports}), so the varPro
-#' families are always available. \code{kernelshap} is in \code{Suggests}:
-#' \code{\link{gg_shap}} checks for it and fails with a clear message when it
-#' is not installed.
+#' families are always available. \pkg{randomForestRHF} and \pkg{kernelshap}
+#' are in \code{Suggests}: their functions check for the package and fail with
+#' a clear message when it is not installed.
 #'
 #' @references
 #' Breiman, L. (2001). Random forests, Machine Learning, 45:5-32.
 #'
-#' Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
-#' Regression and Classification. R package version >= 3.4.0.
+#' Ishwaran H, Kogalur U (2026). Fast Unified Random Forests for Survival,
+#' Regression, and Classification (RF-SRC). R package version 3.6.2.
 #' \url{https://cran.r-project.org/package=randomForestSRC}
 #'
 #' Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R. R News
@@ -115,6 +135,21 @@
 #'
 #' Ishwaran, H. (2007). Variable importance in binary regression trees and
 #' forests. Electronic J. Statist., 1, 519-537.
+#'
+#' Lu M, Ishwaran H (2024). Model-independent variable selection via the
+#' rule-based variable priority framework. arXiv:2409.09003.
+#' \url{https://arxiv.org/abs/2409.09003}
+#'
+#' Ishwaran H, Kogalur U (2026). Model-Independent Variable Selection via the
+#' Rule-Based Variable Priority. R package version 3.2.0.
+#' \url{https://CRAN.R-project.org/package=varPro}
+#'
+#' Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.
+#' arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
+#'
+#' Ishwaran H, Kogalur UB (2026). \emph{randomForestRHF: Random Hazard
+#' Forests}. R package version 1.0.1.
+#' \url{https://CRAN.R-project.org/package=randomForestRHF}
 #'
 #' Wickham, H. ggplot2: elegant graphics for data analysis. Springer New York,
 #' 2009.

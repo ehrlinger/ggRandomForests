@@ -18,15 +18,14 @@
 
 <img src="man/figures/README-overview.png" alt="ggRandomForests overview: predicted survival, variable importance, OOB error, and partial dependence" width="100%" />
 
-`ggRandomForests` provides `ggplot2`-based diagnostic and exploration plots for random forests fit with
-[randomForestSRC](https://cran.r-project.org/package=randomForestSRC) (>= 3.4.0) or
-[randomForest](https://cran.r-project.org/package=randomForest).
-It keeps the data step apart from the figure step, so you can inspect, save, or reuse the tidy object on its own.
-
-It also covers [varPro](https://cran.r-project.org/package=varPro) (>= 3.1.0), which reaches the same
-questions by a different route: variable selection built from rules rather than permutation, importance
-for one observation rather than the whole fit, and dependency and signal detection on unsupervised fits.
-Eight of the nineteen `gg_*` families read a varPro object.
+`ggRandomForests` provides `ggplot2`-based diagnostic and exploration plots for random forests. It reads
+`rfsrc` fits from [randomForestSRC::rfsrc()](https://cran.r-project.org/package=randomForestSRC), `varpro`
+fits from [varPro::varpro()](https://cran.r-project.org/package=varPro), and `rhf` fits from
+[randomForestRHF::rhf()](https://cran.r-project.org/package=randomForestRHF), a random-hazard forest for
+time-to-event data whose predictor values can change during follow-up. It also supports `randomForest`
+fits. Supported minimum versions are randomForestSRC 3.4.0, varPro 3.1.0, and randomForestRHF 1.0.1.
+The package keeps the data step apart from the figure step, so you can inspect, save, or reuse the tidy
+object on its own.
 
 Listed in the [ggplot2 extensions gallery](https://exts.ggplot2.tidyverse.org/).
 
@@ -72,6 +71,12 @@ For survival forests, see the package vignette:
 vignette("ggRandomForests")
 ```
 
+For Random Hazard Forests with predictors that change during follow-up, see
+the RHF vignette:
+```r
+vignette("rhf", package = "ggRandomForests")
+```
+
 For variable importance with varPro — partial dependence, importance
 z-scores, beta importance, individual/local importance, and isolation
 forests — see the dedicated vignette:
@@ -80,7 +85,7 @@ vignette("varpro", package = "ggRandomForests")
 ```
 
 The unsupervised varPro tools — `gg_udependent()`, `gg_beta_uvarpro()`, and
-`gg_sdependent()`, which read structure off a `uvarpro()` fit with no outcome —
+`gg_sdependent()`, which read structure off a `varPro::uvarpro()` fit with no outcome —
 have their own short vignette:
 ```r
 vignette("uvarpro", package = "ggRandomForests")
@@ -126,10 +131,23 @@ call, the second is what you hand it.
 | `calc_roc()` | `rfsrc` / `randomForest` (class) | The sensitivity/specificity sweep behind `gg_roc()` |
 | `calc_auc()` | `gg_roc` object | Area under the curve |
 
+### Random Hazard Forests
+
+For time-to-event data with predictors that change during follow-up, these read
+an `rhf` fit or a saved tree-size tuning object. A hazard is the event-risk rate
+at a particular time.
+
+| Function | Input | What you get |
+|---|---|---|
+| `gg_rhf()` | `rhf` fit | Case-specific hazard or cumulative-hazard curves |
+| `gg_auct()` | `rhf` fit | Time-varying AUC curve for event-risk discrimination |
+| `gg_rhf_importance()` | `rhf` fit | Variable-priority matrix across time windows |
+| `gg_tune_rhf()` | `tune.treesize.rhf` object | Inspected tree-size tuning path |
+
 ### varPro — variable priority
 
-These read a `varPro` fit rather than a forest. `varpro()` is the supervised
-fit; `uvarpro()` is the unsupervised one, which needs no outcome.
+These read a `varpro` fit rather than a forest. `varPro::varpro()` is the
+supervised fit; `varPro::uvarpro()` is the unsupervised one, which needs no outcome.
 
 | Function | Input | What you get |
 |---|---|---|
@@ -176,6 +194,7 @@ entirely and build the figure from the tidy data yourself.
 
 See [NEWS.md](NEWS.md) for the full changelog. Recent highlights:
 
+- **v4.0.0 (development)** Random Hazard Forests: `gg_rhf()` for case-specific event-risk curves, `gg_auct()` for time-varying discrimination, `gg_rhf_importance()` for variable priority across time windows, and `gg_tune_rhf()` for inspecting a saved tree-size tuning path.
 - **v3.5.1** `gg_roc()` on an `rfsrc` forest now honors the documented `which_outcome = 0`, which had been returning an unusable two-row object; `gg_partial_rfsrc()` rejects a non-forest with a real error instead of "argument is of length zero". Also a test-only fix for the `gcc-UBSAN` report filed against 3.5.0.
 - **v3.5.0** varPro fixes: `plot.gg_varpro()` no longer draws a phantom "NA" category, `gg_partial_varpro()` warns when you name a variable the fit cannot reach, and `scale = "chf"` now honors `xvar.names` instead of computing every variable. Vignette figures render with `ragg`, which cut the source tarball from 4.7 MB to 2.3 MB.
 - **v3.4.0** Unsupervised varPro wrappers (`gg_beta_uvarpro()`, `gg_sdependent()`) with their own vignette; `gg_partial_rfsrc()` now handles factor predictors correctly.
@@ -186,13 +205,29 @@ See [NEWS.md](NEWS.md) for the full changelog. Recent highlights:
 
 Breiman, L. (2001). Random forests, *Machine Learning*, 45:5–32.
 
-Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival, Regression and
-Classification. R package version >= 3.4.0. <https://cran.r-project.org/package=randomForestSRC>
+Ishwaran H. and Kogalur U.B. (2026). *Fast Unified Random Forests for Survival,
+Regression, and Classification (RF-SRC).* R package version 3.6.2.
+<https://cran.r-project.org/package=randomForestSRC>
 
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R. *R News* 7(2), 25–31.
 
 Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S. (2008). Random survival forests.
 *Ann. Appl. Statist.* 2(3), 841–860.
+
+Lu M. and Ishwaran H. (2024). Model-independent variable selection via the
+rule-based variable priority framework. *arXiv preprint* arXiv:2409.09003.
+<https://arxiv.org/abs/2409.09003>
+
+Ishwaran H. and Kogalur U.B. (2026). *Model-Independent Variable Selection via
+the Rule-Based Variable Priority.* R package version 3.2.0.
+<https://cran.r-project.org/package=varPro>
+
+Ishwaran H., Hsich E.M., Kogalur U.B. and Lee D.K.K. (2026). Random Hazard
+Forests. *arXiv preprint* arXiv:2608.21597.
+<https://doi.org/10.48550/arXiv.2608.21597>
+
+Ishwaran H. and Kogalur U.B. (2026). *randomForestRHF: Random Hazard Forests.*
+R package version 1.0.1. <https://cran.r-project.org/package=randomForestRHF>
 
 Liaw A. and Wiener M. (2002). Classification and Regression by randomForest. *R News* 2(3), 18–22.
 

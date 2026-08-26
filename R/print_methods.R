@@ -161,6 +161,56 @@ print.gg_brier <- function(x, ...) {
 
 #' @rdname print.gg
 #' @export
+print.gg_rhf <- function(x, ...) {
+  cat(.gg_header(x, "gg_rhf"),
+      sprintf("  |  cases: %d  times: %d  source: %s",
+              length(unique(x$id)),
+              attr(x, "ntime") %||% length(unique(x$time)),
+              x$source[1]),
+      "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
+print.gg_tune_rhf <- function(x, ...) {
+  selected <- x[x$selected, , drop = FALSE]
+  cat(.gg_header(x, "gg_tune_rhf"),
+      sprintf("  |  metric: %s  evaluations: %d",
+              x$metric[1L], nrow(x)),
+      sprintf("  |  selected treesize: %d  value: %.4g",
+              selected$treesize, selected$value),
+      "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
+print.gg_auct <- function(x, ...) {
+  iauc <- attr(x, "iauc")
+  cat(.gg_header(x, "gg_auct"),
+      sprintf("  |  times: %d  marker: %s  iAUC(Uno): %.3f",
+              nrow(x), x$marker[1],
+              if (!is.null(iauc)) iauc$uno else NA_real_),
+      "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
+print.gg_rhf_importance <- function(x, ...) {
+  prov <- attr(x, "provenance") %||% list()
+  cat(.gg_header(x, "gg_rhf_importance"),
+      sprintf("  |  variables: %d  windows: %d  y_source: %s",
+              nlevels(x$variable), length(unique(x$time_index)),
+              prov$y_source %||% NA_character_),
+      sprintf("  |  precomputed: %s  rank: q90", isTRUE(prov$precomputed)),
+      "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
 print.gg_udependent <- function(x, ...) {
   prov <- attr(x, "provenance")
   n    <- if (!is.null(prov)) prov$n else "?"

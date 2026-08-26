@@ -35,6 +35,15 @@
       }
     ))
   }
+  if (inherits(object, "rhf")) {
+    return(list(
+      source     = "randomForestRHF",
+      family     = object$family %||% NA_character_,
+      ntree      = object$ntree %||% NA_integer_,
+      n          = object$n %||% NA_integer_,
+      xvar.names = object$xvar.names %||% character(0)
+    ))
+  }
   # Unknown / non-forest object: return NULL so callers can skip cleanly.
   NULL
 }

@@ -14,7 +14,7 @@ on:
   push:
     paths-ignore:
       - '.claude/**'
-    branches: [main]
+    branches: [main, dev]
   pull_request:
 
 name: R-CMD-check.yaml

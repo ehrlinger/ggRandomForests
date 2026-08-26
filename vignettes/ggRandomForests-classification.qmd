@@ -44,7 +44,7 @@ Random forests [@Breiman:2001] are a non-parametric ensemble method that
 requires no distributional or functional assumptions on how covariates relate
 to the response. For classification, each tree votes for a class, and the
 forest reports the vote fractions as class probabilities. The
-**randomForestSRC** package [@Ishwaran:RFSRC:2014] provides a unified
+**randomForestSRC** package [@Ishwaran:RFSRC:software:2026] provides a unified
 implementation for survival, regression, and classification forests.
 
 **ggRandomForests** extracts tidy data objects from `rfsrc` fits and renders

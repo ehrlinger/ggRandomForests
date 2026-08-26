@@ -291,6 +291,37 @@ summary.gg_brier <- function(object, ...) {
 
 #' @rdname summary.gg
 #' @export
+summary.gg_rhf <- function(object, ...) {
+  agg <- stats::aggregate(
+    cbind(hazard, chf) ~ time, data = as.data.frame(object),
+    FUN = function(v) mean(v, na.rm = TRUE)
+  )
+  names(agg) <- c("time", "hazard.mean", "chf.mean")
+  agg
+}
+
+#' @rdname summary.gg
+#' @export
+summary.gg_tune_rhf <- function(object, ...) {
+  selected <- object[object$selected, , drop = FALSE]
+  data.frame(
+    metric = selected$metric,
+    treesize = selected$treesize,
+    value = selected$value,
+    se = selected$se,
+    n_evaluations = nrow(object),
+    stringsAsFactors = FALSE
+  )
+}
+
+#' @rdname summary.gg
+#' @export
+summary.gg_rhf_importance <- function(object, ...) {
+  .rhf_priority_summary(object)
+}
+
+#' @rdname summary.gg
+#' @export
 summary.gg_isopro <- function(object, ...) {
   q  <- stats::quantile(object$howbad, probs = c(0.05, 0.50, 0.95),
                         na.rm = TRUE, names = FALSE)
@@ -354,6 +385,19 @@ summary.gg_ivarpro <- function(object, ...) {
   } else {
     structure(per_var(object), class = "summary.gg_ivarpro")
   }
+}
+
+#' @rdname summary.gg
+#' @export
+summary.gg_auct <- function(object, ...) {
+  iauc <- attr(object, "iauc")
+  data.frame(
+    iAUC.uno    = iauc$uno,
+    iAUC.std    = iauc$std,
+    iAUC.uno.se = iauc$uno.se,
+    iAUC.std.se = iauc$std.se,
+    conf.level  = iauc$conf.level
+  )
 }
 
 #' @rdname summary.gg

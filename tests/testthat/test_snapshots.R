@@ -16,7 +16,7 @@
 #   2. Run devtools::test(filter = "snapshots")
 #   3. Call testthat::snapshot_accept()
 #   4. Commit tests/testthat/_snaps/ to the repo
-if (requireNamespace("vdiffr", quietly = TRUE) &&
+if (requireNamespace("vdiffr", quietly = TRUE) && # nolint: cyclocomp_linter
     identical(Sys.getenv("VDIFFR_RUN_TESTS"), "true")) {
 
 ## ---- Shared fixtures -------------------------------------------------------
@@ -442,6 +442,66 @@ test_that("gg-ivarpro-class-which-obs", {
   vdiffr::expect_doppelganger("gg-ivarpro-class-which-obs", p)
 })
 
+test_that("gg-rhf-hazard", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("randomForestRHF")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  gg <- gg_rhf(.rhf_pbc())
+  vdiffr::expect_doppelganger("gg-rhf-hazard", plot(gg, idx = c(1, 5, 10)))
+})
+
+test_that("gg-rhf-chf", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("randomForestRHF")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  gg <- gg_rhf(.rhf_pbc())
+  vdiffr::expect_doppelganger("gg-rhf-chf",
+                              plot(gg, idx = c(1, 5, 10), hazard.only = FALSE))
+})
+
+test_that("gg-auct-chf", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("randomForestRHF")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  gg <- gg_auct(.rhf_pbc(), auct_fit = .auct_pbc_boot())
+  vdiffr::expect_doppelganger("gg-auct-chf", plot(gg))
+})
+
+test_that("snapshot: gg_tune_rhf iAUC path", {
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  set.seed(20260825L)
+  x <- gg_tune_rhf(.fake_rhf_tune_iauc())
+  vdiffr::expect_doppelganger("gg-tune-rhf-iauc", plot(x))
+})
+
+test_that("snapshot: gg_rhf_importance priority matrix", {
+  skip_if_not_installed("vdiffr")
+  skip_if_not_installed("randomForestRHF")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  set.seed(20260825L)
+  x <- gg_rhf_importance(.rhf_pbc(), importance_fit = .rhf_importance_pbc())
+  vdiffr::expect_doppelganger(
+    "gg-rhf-importance-priority",
+    plot(x, top_n_union = 8L)
+  )
+})
+
 ## ── gg_shap snapshots (Task 8) ───────────────────────────────────────────────
 if (requireNamespace("kernelshap", quietly = TRUE)) {
   local({
@@ -467,5 +527,25 @@ if (requireNamespace("kernelshap", quietly = TRUE)) {
     })
   })
 }
+
+} else {
+
+## ---- Preserve baselines when the vdiffr comparison is opted out ------------
+# When VDIFFR_RUN_TESTS != "true" (or vdiffr is unavailable) none of the
+# expect_doppelganger() calls above register, so testthat's snapshot cleanup
+# would treat every committed baseline under _snaps/snapshots/ as orphaned and
+# delete it during a normal `devtools::test()` run. Announcing each file marks
+# it as still in use so cleanup leaves the repo untouched.
+# See ?testthat::announce_snapshot_file.
+test_that("vdiffr baseline snapshots are preserved when comparison is skipped", {
+  # announce_snapshot_file() (and vdiffr's file snapshots) are 3rd-edition
+  # features; the package otherwise defaults to edition 2, so opt in locally.
+  local_edition(3)
+  snap_dir <- test_path("_snaps", "snapshots")
+  skip_if(!dir.exists(snap_dir), "no vdiffr baselines present to preserve")
+  svgs <- list.files(snap_dir, pattern = "\\.svg$")
+  for (f in svgs) announce_snapshot_file(name = f)
+  succeed()
+})
 
 } # end CI guard

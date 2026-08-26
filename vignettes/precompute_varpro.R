@@ -35,6 +35,10 @@ if (requireNamespace("ggRandomForests", quietly = TRUE)) {
 }
 options(mc.cores = 1, rf.cores = 1)
 
+if (!requireNamespace("MASS", quietly = TRUE)) {
+  stop("Install 'MASS' to run this script (the regression fits use MASS::Boston).")
+}
+
 # The worked fits below use the completeness settings the vignette recommends:
 # sparse = FALSE deepens the reported ranking so its tail shows, and
 # split.weight = FALSE keeps every predictor reachable for partialpro(). One

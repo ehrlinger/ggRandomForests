@@ -1,0 +1,65 @@
+# Release-only sanitizer probe for native code in upstream forest engines.
+# This is intentionally manual: randomForestSRC has a known UBSAN defect in
+# unsupervised growth, so the workflow first confirms that calibration signal
+# and then requires the supported ggRandomForests paths to remain clean.
+on:
+  workflow_dispatch:
+
+name: Upstream GCC UBSAN
+
+permissions:
+  contents: read
+
+jobs:
+  upstream-ubsan:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/r-hub/containers/gcc16:latest
+    env:
+      R_LIBS_USER: ${{ github.workspace }}/.ubsan-library
+      R_MAKEVARS_USER: ${{ github.workspace }}/tools/Makevars.ubsan
+      UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record sanitizer toolchain
+        run: |
+          gcc --version
+          R --version
+          cat "$R_MAKEVARS_USER"
+
+      - name: Install dependencies and upstream engines from source
+        shell: bash
+        run: |
+          mkdir -p "$R_LIBS_USER"
+          Rscript -e 'install.packages("remotes", repos = "https://cloud.r-project.org", type = "source")'
+          Rscript -e 'remotes::install_deps(dependencies = c("Depends", "Imports", "LinkingTo"), upgrade = "never")'
+          Rscript -e 'install.packages(c("randomForestSRC", "randomForestRHF", "varPro"), repos = "https://cloud.r-project.org", type = "source")'
+          R CMD INSTALL .
+
+      - name: Confirm the known randomForestSRC sanitizer signal
+        shell: bash
+        run: |
+          set +e
+          Rscript tools/check-upstream-ubsan.R --known-rfsrc 2>&1 | tee known-rfsrc-ubsan.log
+          probe_status=${PIPESTATUS[0]}
+          set -e
+          if [[ "$probe_status" -eq 0 ]]; then
+            echo "The calibration probe returned without a UBSAN failure."
+            exit 1
+          fi
+          Rscript tools/check-upstream-ubsan.R --check-known known-rfsrc-ubsan.log
+
+      - name: Run supported rfsrc, varpro, and RHF workflows
+        shell: bash
+        run: |
+          Rscript tools/check-upstream-ubsan.R 2>&1 | tee supported-ubsan.log
+          Rscript tools/check-upstream-ubsan.R --check-clean supported-ubsan.log
+
+      - name: Upload sanitizer logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: upstream-gcc16-ubsan-logs
+          path: '*-ubsan.log'

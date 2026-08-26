@@ -45,7 +45,7 @@ requires no distributional or functional assumptions on how covariates relate to
 the response. The method builds a large collection of de-correlated decision
 trees via bootstrap aggregation (bagging) and random feature selection, then
 averages their predictions to smooth out the noise any single tree carries. The
-**randomForestSRC** package [@Ishwaran:RFSRC:2014] provides a unified
+**randomForestSRC** package [@Ishwaran:RFSRC:software:2026] provides a unified
 implementation for survival, regression, and classification forests.
 
 **ggRandomForests** extracts tidy data objects from `rfsrc` fits and renders
