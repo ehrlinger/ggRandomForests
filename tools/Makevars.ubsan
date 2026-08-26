@@ -1,0 +1,7 @@
+CFLAGS += -fsanitize=undefined,bounds-strict -fno-omit-frame-pointer
+CXXFLAGS += -fsanitize=undefined,bounds-strict -fno-omit-frame-pointer
+CXX11FLAGS += -fsanitize=undefined,bounds-strict -fno-omit-frame-pointer
+CXX14FLAGS += -fsanitize=undefined,bounds-strict -fno-omit-frame-pointer
+CXX17FLAGS += -fsanitize=undefined,bounds-strict -fno-omit-frame-pointer
+CXX20FLAGS += -fsanitize=undefined,bounds-strict -fno-omit-frame-pointer
+LDFLAGS += -fsanitize=undefined,bounds-strict
