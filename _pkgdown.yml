@@ -139,6 +139,8 @@ reference:
       - plot.gg_auct
       - gg_rhf_importance
       - plot.gg_rhf_importance
+      - gg_tune_rhf
+      - plot.gg_tune_rhf
 
   - title: "S3 Methods"
     desc: "Standard R generics implemented for all gg_* data objects."

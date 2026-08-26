@@ -476,6 +476,17 @@ test_that("gg-auct-chf", {
   vdiffr::expect_doppelganger("gg-auct-chf", plot(gg))
 })
 
+test_that("snapshot: gg_tune_rhf iAUC path", {
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  set.seed(20260825L)
+  x <- gg_tune_rhf(.fake_rhf_tune_iauc())
+  vdiffr::expect_doppelganger("gg-tune-rhf-iauc", plot(x))
+})
+
 test_that("snapshot: gg_rhf_importance priority matrix", {
   skip_if_not_installed("vdiffr")
   skip_if_not_installed("randomForestRHF")

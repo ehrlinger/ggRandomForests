@@ -173,6 +173,19 @@ print.gg_rhf <- function(x, ...) {
 
 #' @rdname print.gg
 #' @export
+print.gg_tune_rhf <- function(x, ...) {
+  selected <- x[x$selected, , drop = FALSE]
+  cat(.gg_header(x, "gg_tune_rhf"),
+      sprintf("  |  metric: %s  evaluations: %d",
+              x$metric[1L], nrow(x)),
+      sprintf("  |  selected treesize: %d  value: %.4g",
+              selected$treesize, selected$value),
+      "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
 print.gg_auct <- function(x, ...) {
   iauc <- attr(x, "iauc")
   cat(.gg_header(x, "gg_auct"),

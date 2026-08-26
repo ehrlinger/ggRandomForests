@@ -128,13 +128,15 @@ call, the second is what you hand it.
 ### Random Hazard Forests
 
 For time-to-event data with predictors that change during follow-up, these read
-an `rhf` fit. A hazard is the event-risk rate at a particular time.
+an `rhf` fit or a saved tree-size tuning object. A hazard is the event-risk rate
+at a particular time.
 
 | Function | Input | What you get |
 |---|---|---|
 | `gg_rhf()` | `rhf` fit | Case-specific hazard or cumulative-hazard curves |
 | `gg_auct()` | `rhf` fit | Time-varying AUC curve for event-risk discrimination |
 | `gg_rhf_importance()` | `rhf` fit | Variable-priority matrix across time windows |
+| `gg_tune_rhf()` | `tune.treesize.rhf` object | Inspected tree-size tuning path |
 
 ### varPro — variable priority
 
@@ -186,7 +188,7 @@ entirely and build the figure from the tidy data yourself.
 
 See [NEWS.md](NEWS.md) for the full changelog. Recent highlights:
 
-- **v4.0.0 (development)** Random Hazard Forests: `gg_rhf()` for case-specific event-risk curves, `gg_auct()` for time-varying discrimination, and `gg_rhf_importance()` for variable priority across time windows.
+- **v4.0.0 (development)** Random Hazard Forests: `gg_rhf()` for case-specific event-risk curves, `gg_auct()` for time-varying discrimination, `gg_rhf_importance()` for variable priority across time windows, and `gg_tune_rhf()` for inspecting a saved tree-size tuning path.
 - **v3.5.1** `gg_roc()` on an `rfsrc` forest now honors the documented `which_outcome = 0`, which had been returning an unusable two-row object; `gg_partial_rfsrc()` rejects a non-forest with a real error instead of "argument is of length zero". Also a test-only fix for the `gcc-UBSAN` report filed against 3.5.0.
 - **v3.5.0** varPro fixes: `plot.gg_varpro()` no longer draws a phantom "NA" category, `gg_partial_varpro()` warns when you name a variable the fit cannot reach, and `scale = "chf"` now honors `xvar.names` instead of computing every variable. Vignette figures render with `ragg`, which cut the source tarball from 4.7 MB to 2.3 MB.
 - **v3.4.0** Unsupervised varPro wrappers (`gg_beta_uvarpro()`, `gg_sdependent()`) with their own vignette; `gg_partial_rfsrc()` now handles factor predictors correctly.
