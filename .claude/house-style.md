@@ -10,10 +10,10 @@
   profile:         package-cran
   default persona: (d)
   sources:
-    writing-voice.md               sha256:3018e1e0bf8e
-    writing-reader-profile.md      sha256:179212de138c
-    writing-context.md             sha256:87d5555936e1
-    r-package-structure.md         sha256:0b90e3e645fd
+    writing-voice.md               sha256:15e75ca9cb97
+    writing-reader-profile.md      sha256:5131ade189c9
+    writing-context.md             sha256:51f197dc0c97
+    r-package-structure.md         sha256:532534260e0f
 -->
 
 # House Style — ggRandomForests
@@ -125,7 +125,7 @@ register matches the task.
   opener, one rhetorical-question hook, one carried picture, understatement,
   "we"/"you", no marketing tricolons.
 - **Recipe book ("When to use it" sections)**: the Survival Plots chapter
-  opener in `hvti_graphics/survival.qmd`. Narrative register aimed at a
+  opener in `hvtiGraphics/survival.qmd`. Narrative register aimed at a
   biostatistician reader: names the clinical question first ("how long until an
   event"), defines the one idea that makes the method its own (right-censoring),
   ties the function to the SAS macro the reader already trusts (`%kaplan`), and
@@ -170,7 +170,7 @@ throughout. No forced tricolon, no padded feature list, no overselling.
 
 A menu of selectable audiences for the `ehrlinger-writing` harness. Write for
 ONE persona at a time, not a blend. The active persona is chosen per task
-(explicit choice → repo `CLAUDE.md` default → ask). The `hvti_graphics` recipes
+(explicit choice → repo `CLAUDE.md` default → ask). The `hvtiGraphics` recipes
 book defaults to persona (a); the public CRAN packages (`ggRandomForests`,
 `temporal_hazard`) default to persona (d).
 
@@ -219,7 +219,7 @@ assumptions about purpose and constraints.
   (varPro), built on randomForestSRC.
 - **temporal_hazard** — additive (Blackstone, Naftel, and Turner, 1986) hazard
   models in pure R.
-- **hvti_graphics** — this recipes book, which ties the three together into a
+- **hvtiGraphics** — this recipes book, which ties the three together into a
   house style for clinical figures.
 
 ## Purpose
@@ -253,11 +253,11 @@ and versioning. `writing-voice.md` and `writing-reader-profile.md` govern how
 you write; this one governs what has to be there and in what order. It is
 written for the person about to write or audit a package README — most often
 the biostatistician who already knows R and is deciding whether this
-package's front door matches the other seven.
+package's front door matches its siblings.
 
-Derived from `hvtiPlotR`, the de-facto template across the eight-package
+Derived from `hvtiPlotR`, the de-facto template across the governed
 portfolio, with a small number of deliberate improvements it does not yet
-itself reflect. Recorded so the other seven — and hvtiPlotR, on those few
+itself reflect. Recorded so its siblings — and hvtiPlotR, on those few
 points — can be brought into line with it rather than the rules drifting to
 match whichever package they came from.
 
@@ -290,7 +290,7 @@ would flatten a real difference between them:
 - *The pain you already have* — the reader still needs convincing to adopt.
   Current example: hvtiRtables.
 - *What works today* — the reader is judging whether the package is ready.
-  Current example: hvtiRdatasets.
+  Current example: hvtiRdatabuild.
 
 Whichever opening you use, the first paragraph says what the package does.
 That part isn't optional across the three.
@@ -331,17 +331,17 @@ Six are required of every package, in this order:
 5. **GitHub r-package version**
 6. **lint**
 
-These are required because they're already true. Seven of the eight packages
-run the lint, pkgdown, and test-coverage workflows today; what's missing is
-mostly the badge, not the machinery. A workflow running green that the README
+These are required because they're already true. Every governed package runs
+the lint, pkgdown, and test-coverage workflows today; what's missing is
+sometimes the badge, not the machinery. A workflow running green that the README
 never mentions is coverage nobody can see, which is its own small version of
 the staleness problem — the check works, and the reader has no way to know.
 repostatus is a static shield with no infrastructure behind it at all, and the
 version badge just reads `DESCRIPTION`, so neither has an excuse.
 
 Where a badge is genuinely missing because the underlying thing is missing,
-the fix is to add the workflow, not to drop the badge. Only hvtiRdatasets is
-in that position, lacking lint, pkgdown, and test-coverage entirely.
+the fix is to add the workflow, not to drop the badge. No governed repo is in
+that position today; every one carries lint, pkgdown and test-coverage.
 
 **Required for the `package-cran` profile**, after the six:
 
@@ -447,7 +447,7 @@ reference vignette, not a free-form topic outside the table above.
 than renaming to the standard filename. Renaming a published vignette breaks
 `vignette()` calls and indexed pkgdown URLs that are already out in the
 world, and that's not a price worth paying just for filename consistency.
-hvtiRdatasets, whose `coming-from-sas.qmd` isn't published yet, renames to
+hvtiRdatabuild, whose `coming-from-sas.qmd` isn't published yet, renames to
 the standard name — there's nothing to break.
 
 **Front matter** carries `title`, `author`, `date: today`, `format: html`
@@ -829,6 +829,39 @@ exists to catch. Audit it with:
 gh api repos/ehrlinger/<repo>/rulesets \
   -q '.[] | select(.target=="branch") | "\(.enforcement) \(.name)"'
 ```
+
+## Naming
+
+An HVTI package is named `hvtiR<domain>`, subject to the two exceptions below.
+The `hvtiR` prefix is literal, and is also
+the umbrella package's own name, so the brand string and the namespace prefix
+are one thing. `<domain>` is lowercase, noun-shaped, and may be a compound word
+(`lifetables`, `databuild`).
+
+The GitHub repository name is exactly the package name — one string per
+package: what you `library()`, what follows `ehrlinger/` in `pak::pak()`, and
+what the pkgdown URL is built from. A Quarto book takes the bare `hvti` prefix
+instead (`hvtiGraphics`), because the `R` in `hvtiR` means "an R package you
+can `library()`".
+
+A package published on CRAN keeps its published name: renaming it orphans the
+installations already out there and breaks published citations. That protects
+the *package* name only — a CRAN package's repository still takes the package's
+name.
+
+`hvtiPlotR` is the one grandfathered exception, and the reason is recorded so a
+later sweep does not "fix" it: it is the most-used package in the family and
+its `hv_*` functions are called across every downstream analysis, so
+invalidating those call sites costs more than the inconsistency. No new
+exception without an argument of the same shape.
+
+Renaming is not free, even though GitHub redirects a renamed repository. The
+redirect does not cover GitHub Pages, so every pkgdown or book URL under the
+old name becomes a hard 404 rather than a redirect; and it cannot cover a
+package name, which is a namespace change. So treat any file holding a URL as
+functional however much prose surrounds it — a README's badges and links are
+published by pkgdown — and fetch the new targets before substituting, not
+after.
 
 ## DESCRIPTION
 
