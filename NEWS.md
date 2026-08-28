@@ -36,6 +36,37 @@ ggRandomForests v4.0.0 (development)
   `treesize / metric / value / se / selected`; the plot marks the selected
   size and draws an iAUC standard-error ribbon only when finite supplied iAUC
   standard errors are available. `gg_tune_rhf()` never recalculates tuning.
+* `plot.gg_partial_varpro()`, `plot.gg_partial()`, `plot.gg_vimp()` and
+  `plot.gg_varpro()` gain a `labels` argument for human-readable variable
+  names. It accepts a named character vector, a labelled data frame (reading
+  `attr(col, "label")`), or a two-column `key`/`label` data frame. Variables
+  with no label keep their raw name. Labels apply at draw time only — the
+  returned object still carries raw variable names, so downstream consumers
+  are unaffected. `plot.gg_varpro()` honours `labels` on both the main panel
+  and the class-conditional panel.
+* `plot.gg_vimp()`: `lbls` is **deprecated** in favour of `labels` and will be
+  removed in a future release. Its old `length(lbls) >= length(vars)` gate is
+  also gone, so a partial label set is now honoured, falling back to the raw
+  name per variable. Previously supplying fewer labels than variables silently
+  applied none.
+* `gg_partial_varpro()` orders variables by varPro importance
+  (`varPro::get.topvars()`) when `object` is supplied, and `name` is now a
+  **factor**, so facets follow importance order instead of being re-sorted
+  alphabetically. Variables absent from the ranking keep their incoming order
+  and are appended after the ranked block; none are dropped.
+* `gg_partial_varpro()`: **`nvars` now selects the top n by importance.** It
+  previously took the first n elements of the partial-dependence list before
+  any ranking was applied, returning an arbitrary subset with no symptom in
+  the output.
+* `gg_partial_varpro()` warns when `scale = "auto"` cannot be resolved because
+  no `object` was supplied, instead of silently falling back to the generic
+  "Partial Effect" axis. The fallback label itself was never wrong — it was
+  honest about an unknown scale — but the silence around it was, so the
+  fallback now says so.
+* The package's own vignettes (`ggRandomForests-regression.qmd`,
+  `ggRandomForests-survival.qmd`) are moved off the now-deprecated `lbls`
+  argument onto `labels`, so the shipped examples model the current API
+  rather than the one being phased out.
 
 ggRandomForests v3.5.2
 ======================
