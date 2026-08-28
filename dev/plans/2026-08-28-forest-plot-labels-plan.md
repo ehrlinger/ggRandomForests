@@ -524,6 +524,15 @@ test_that("a classification fit resolves auto to prob without warning", {
   expect_no_warning(sc <- .resolve_varpro_scale("auto", fake$family))
   expect_equal(sc, "prob")
 })
+
+test_that("the prob scale labels the y axis P(Y = target)", {
+  prov <- list(scale = "prob", target = "1")
+  expect_equal(.partial_varpro_ylabel(prov), "P(Y = 1)")
+})
+
+test_that("an unresolved scale still labels the y axis Partial Effect", {
+  expect_equal(.partial_varpro_ylabel(list(scale = "generic")), "Partial Effect")
+})
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -983,24 +992,38 @@ test_that("plot.gg_varpro labels the variable axis", {
 ```
 
 If `tests/testthat/helper-varpro-fixtures.R` does not already provide a
-`gg_varpro` fixture, add one there first:
+`gg_varpro` fixture, add one there first. `.plot_varpro_main()` draws from
+`x$stats` (**not** `x$imp`), mapping `variable`, `q05`, `q15`, `median`, `q85`,
+`q95` and `selected`, and reads `cutoff` from the provenance attribute:
 
 ```r
 make_mock_gg_varpro <- function(vars = c("bpd", "vis", "age")) {
+  stats <- data.frame(variable = factor(vars, levels = vars),
+                      q05      = c(1.0, 0.6, 0.1),
+                      q15      = c(1.5, 0.9, 0.2),
+                      median   = c(2.1, 1.4, 0.5),
+                      q85      = c(2.6, 1.8, 0.8),
+                      q95      = c(3.0, 2.1, 1.0),
+                      selected = c(TRUE, TRUE, FALSE),
+                      stringsAsFactors = FALSE)
   imp <- data.frame(variable = factor(vars, levels = vars),
-                    z = c(2.1, 1.4, 0.5),
+                    z        = c(2.1, 1.4, 0.5),
                     selected = c(TRUE, TRUE, FALSE),
                     stringsAsFactors = FALSE)
-  out <- list(imp = imp, stats = NULL, imp.tree = NULL, conditional = NULL)
-  class(out) <- c("gg_varpro", "list")
-  attr(out, "provenance") <- list(family = "class", cutoff = 0.79)
+  out <- structure(
+    list(imp = imp, imp.tree = NULL, stats = stats, conditional = NULL),
+    class = c("gg_varpro", "list")
+  )
+  attr(out, "provenance") <- list(family      = "class",
+                                  local.std   = TRUE,
+                                  cutoff      = 0.79,
+                                  faithful    = FALSE,
+                                  conditional = FALSE,
+                                  xvar.names  = vars,
+                                  n           = 200L)
   out
 }
 ```
-
-Adjust the fixture's element names to match what `gg_varpro()` actually returns —
-run `Rscript -e 'devtools::load_all("."); str(gg_varpro(<a small fit>), max.level = 2)'`
-once and mirror the real shape rather than guessing.
 
 - [ ] **Step 2: Run test to verify it fails**
 
@@ -1029,21 +1052,20 @@ Change `.plot_varpro_main()`'s signature:
 .plot_varpro_main <- function(x, type, prov, lab_lookup = NULL) {
 ```
 
-and immediately before that function returns its plot object, add:
+The plot object inside `.plot_varpro_main()` is called **`p`** (built at
+`R/plot.gg_varpro.R:143` and returned implicitly as the function's last value).
+Immediately before that final `p`, add:
 
 ```r
   ## Variable names sit on a discrete x scale here (the plot coord_flip()s), so
   ## relabelling goes through scale_x_discrete, not a facet labeller.
   if (!is.null(lab_lookup)) {
-    gg_plt <- gg_plt +
+    p <- p +
       ggplot2::scale_x_discrete(
         labels = function(v) .apply_forest_labels(v, lab_lookup)
       )
   }
 ```
-
-Substitute the function's actual plot variable name for `gg_plt` if it differs —
-read the function before editing.
 
 Add the same `@param labels` roxygen block as in Task 7.
 
