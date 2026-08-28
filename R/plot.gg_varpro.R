@@ -113,17 +113,19 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
          call. = FALSE)
   }
 
+  ## ---- Compute labels once for both paths --------------------------------
+  lab_lookup <- .forest_labels(labels)
+
   ## ---- Conditional view ---------------------------------------------------
   if (!is.null(x$conditional)) {
     if (!missing(type) && !identical(type, "z")) {
       message("Conditional plot ignores type = '", type,
               "'; showing class-conditional z scores.")
     }
-    return(.plot_varpro_conditional(x, prov))
+    return(.plot_varpro_conditional(x, prov, lab_lookup))
   }
 
   ## ---- Default / faithful view --------------------------------------------
-  lab_lookup <- .forest_labels(labels)
   .plot_varpro_main(x, type, prov, lab_lookup)
 }
 
@@ -221,7 +223,7 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
 }
 
 #' @keywords internal
-.plot_varpro_conditional <- function(x, prov) {
+.plot_varpro_conditional <- function(x, prov, lab_lookup = NULL) {
   ## Class-conditional z-scores as faceted bar chart.
   cond_df   <- x$conditional
   ## Replace NA/NaN z with 0 to suppress geom_col remove_missing warnings
@@ -232,10 +234,10 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
   cond_df <- cond_df[!is.na(cond_df$variable), , drop = FALSE]
   cutoff    <- prov$cutoff %||% 0.79
 
-  ggplot2::ggplot(cond_df,
-                  ggplot2::aes(x    = .data[["variable"]],
-                               y    = .data[["z"]],
-                               fill = .data[["z"]] > cutoff)) +
+  p <- ggplot2::ggplot(cond_df,
+                       ggplot2::aes(x    = .data[["variable"]],
+                                    y    = .data[["z"]],
+                                    fill = .data[["z"]] > cutoff)) +
     ggplot2::geom_col() +
     ggplot2::coord_flip() +
     ggplot2::facet_wrap(~ class, nrow = 1L) +
@@ -251,6 +253,17 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
                   caption = paste0("Dashed line at z = ", cutoff,
                                    ". Conditional class importance.")) +
     ggplot2::theme_minimal()
+
+  ## Variable names sit on a discrete x scale here (the plot coord_flip()s), so
+  ## relabelling goes through scale_x_discrete, not a facet labeller.
+  if (!is.null(lab_lookup)) {
+    p <- p +
+      ggplot2::scale_x_discrete(
+        labels = function(v) .apply_forest_labels(v, lab_lookup)
+      )
+  }
+
+  p
 }
 
 #' @keywords internal

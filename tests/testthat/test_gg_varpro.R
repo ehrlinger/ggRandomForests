@@ -340,3 +340,18 @@ test_that("plot.gg_varpro labels the variable axis", {
                         unlist(lapply(built$layout$panel_params,
                                       function(pp) as.character(pp$y$get_labels()))))))
 })
+
+test_that("plot.gg_varpro conditional labels the variable axis", {
+  skip_if_not(exists("make_mock_gg_varpro"), "no gg_varpro fixture available")
+  # Regression test: conditional path must honour labels argument, not ignore it.
+  # When x$conditional is non-NULL, lab_lookup is computed and passed to
+  # .plot_varpro_conditional(), which applies scale_x_discrete labelling.
+  obj <- make_mock_gg_varpro(conditional = TRUE)
+  p <- plot(obj, labels = c(bpd = "BP Diastole"))
+  built <- ggplot2::ggplot_build(p)
+  # Conditional plots facet by class; each panel has a discrete x scale.
+  # After coord_flip(), variable categories are on the y-scale.
+  labels_all <- unlist(lapply(built$layout$panel_params,
+                              function(pp) as.character(pp$y$get_labels())))
+  expect_true(any(grepl("BP Diastole", labels_all)))
+})
