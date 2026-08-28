@@ -36,6 +36,13 @@ ggRandomForests v4.0.0 (development)
   `treesize / metric / value / se / selected`; the plot marks the selected
   size and draws an iAUC standard-error ribbon only when finite supplied iAUC
   standard errors are available. `gg_tune_rhf()` never recalculates tuning.
+* Pin `randomForestRHF (< 2.0.0)` in Suggests. 2.0.0 reached CRAN on
+  2026-08-28 and the macOS arm64 binary fails the `gg_rhf()` non-negativity
+  check -- `hazard` comes back with a value below zero while `chf`, its
+  cumulative sum, stays non-negative, which points at a small negative rather
+  than a non-finite one. The same 2.0.0 built from source on Linux passes, so
+  the pin is a CI unblock while the cause is settled upstream, not a verdict
+  on 2.0.0. See issue #229.
 
 ggRandomForests v3.5.2
 ======================
