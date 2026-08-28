@@ -143,6 +143,11 @@ plot.gg_partial <- function(x, labels = NULL, ...) {
 #' separate colored lines, faceted by the primary predictor.
 #'
 #' @param x A \code{\link{gg_partial_rfsrc}} object.
+#' @param labels Optional variable labels for the facet strips.  One of: a named
+#'   character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+#'   whose \code{attr(col, "label")} values are read; or a two-column
+#'   \code{key}/\code{label} data frame.  Variables with no label keep their raw
+#'   name.  Defaults to \code{NULL} (raw names).
 #' @param ... Not currently used.
 #'
 #' @return A \code{ggplot} (or \code{patchwork}) object.  When both continuous
@@ -194,8 +199,13 @@ plot.gg_partial <- function(x, labels = NULL, ...) {
 #' @importFrom ggplot2 .data
 #' @importFrom patchwork wrap_plots
 #' @export
-plot.gg_partial_rfsrc <- function(x, ...) {
+plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
   gg_dta <- x
+
+  ## Labels are a presentation concern: resolved here and applied to the facet
+  ## strips, never written back into x.  The returned object keeps raw variable
+  ## names, because changing them would be a breaking change downstream.
+  strip_labeller <- .forest_strip_labeller(labels)
 
   gg_cont <- NULL
   if (!is.null(gg_dta$continuous) && nrow(gg_dta$continuous) > 0) {
@@ -220,7 +230,7 @@ plot.gg_partial_rfsrc <- function(x, ...) {
         )
       ) +
         ggplot2::geom_line() +
-        ggplot2::facet_wrap(~name, scales = "free_x") +
+        ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
         ggplot2::scale_color_discrete(labels = legend_labels) +
         ggplot2::labs(x = NULL, y = y_lab, color = "Time")
 
@@ -236,7 +246,7 @@ plot.gg_partial_rfsrc <- function(x, ...) {
         )
       ) +
         ggplot2::geom_line() +
-        ggplot2::facet_wrap(~name, scales = "free_x") +
+        ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
         ggplot2::labs(x = NULL, y = "Partial Effect", color = "Group")
 
     } else {
@@ -244,7 +254,7 @@ plot.gg_partial_rfsrc <- function(x, ...) {
       gg_cont <- ggplot2::ggplot(cont,
                                  ggplot2::aes(x = .data$x, y = .data$yhat)) +
         ggplot2::geom_line() +
-        ggplot2::facet_wrap(~name, scales = "free_x") +
+        ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
         ggplot2::labs(x = NULL, y = "Partial Effect")
     }
   }
@@ -257,7 +267,7 @@ plot.gg_partial_rfsrc <- function(x, ...) {
       ggplot2::aes(x = factor(.data$x), y = .data$yhat)
     ) +
       ggplot2::geom_bar(stat = "identity", width = 0.5) +
-      ggplot2::facet_wrap(~name, scales = "free_x") +
+      ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
       ggplot2::labs(x = NULL, y = "Partial Effect")
   }
 
