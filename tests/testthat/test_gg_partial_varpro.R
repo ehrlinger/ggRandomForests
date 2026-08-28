@@ -576,6 +576,22 @@ test_that("gg_partial_varpro: plot C-path returns ggplot", {
   expect_s3_class(gg, "ggplot")
 })
 
+test_that("gg_partial_varpro: plot C-path honours labels on the facet strips", {
+  # Path-C dispatches via NextMethod() to plot.gg_partial_rfsrc(); this pins
+  # that `labels` survives that hand-off instead of evaporating into `...`.
+  # xvar_subset = 5L is "age" alone -- continuous-only, so the result is a
+  # single ggplot rather than a patchwork of stacked panels.
+  skip_if_not_installed("randomForestSRC")
+  m      <- make_mock_cpath(xvar_subset = 5L)
+  result <- suppressWarnings(
+    gg_partial_varpro(object = m$vp, scale = "chf",
+                      time = median(m$rf$time.interest))
+  )
+  gg <- plot(result, labels = c(age = "Patient Age"))
+  strips <- as.character(ggplot2::get_strip_labels(gg)$facets$name)
+  expect_true("Patient Age" %in% strips)
+})
+
 test_that("gg_partial_varpro: C-path 'model' label is attached to the frames", {
   skip_if_not_installed("randomForestSRC")
   # full var set → both continuous (age/karno) and categorical (celltype)
@@ -839,6 +855,28 @@ test_that("an unnamed part_dta does not crash the constructor", {
   expect_no_error(suppressWarnings(gg_partial_varpro(pd, cat_limit = 5)))
 })
 
+test_that("duplicate names in part_dta do not crash factor(levels=)", {
+  # Regression test: lvls used to be names(part_dta)[seq_len(nvars)] without
+  # unique(), so a duplicated name fed a duplicated 'levels=' to factor() and
+  # errored "factor level [2] is duplicated" instead of just collapsing the
+  # duplicate into a single facet.
+  set.seed(42)
+  pd <- make_mock_part_dta(c("age", "age", "bpd"))
+  res <- suppressWarnings(gg_partial_varpro(pd, cat_limit = 5))
+  expect_s3_class(res$continuous$name, "factor")
+  expect_equal(levels(res$continuous$name), c("age", "bpd"))
+})
+
+test_that("a zero-length part_dta does not crash on seq(nvars)", {
+  # Regression test: seq(0) is c(1, 0), not integer(0), so the
+  # nvars <- min(nvars, length(part_dta)) clamp made an empty part_dta reach
+  # part_dta[[1]] and error "subscript out of bounds". seq_len(0) is
+  # integer(0), so the loop simply does not run.
+  res <- suppressWarnings(gg_partial_varpro(part_dta = list()))
+  expect_equal(nrow(res$continuous), 0L)
+  expect_equal(nrow(res$categorical), 0L)
+})
+
 ## ── Audible fallback when 'auto' cannot resolve a scale (Task 4) ────────────
 
 test_that("auto scale warns when no fit is available to resolve it", {
@@ -913,6 +951,21 @@ test_that("the deprecated shim forwards labels identically", {
   shim <- res
   class(shim) <- c("gg_partialpro", "list")
   p <- plot(shim, labels = c(bpd = "BP Diastole"))
+  strips <- as.character(ggplot2::get_strip_labels(p)$facets$name)
+  expect_true("BP Diastole" %in% strips)
+})
+
+test_that("autoplot.gg_partialpro forwards labels through '...'", {
+  # autoplot.gg_partialpro() has no 'labels' formal of its own -- it takes
+  # only (object, ...) and re-dispatches to autoplot.gg_partial_varpro(),
+  # which forwards '...' to plot(). This pins that the forwarding actually
+  # reaches the facet strips rather than silently landing nowhere.
+  set.seed(42)
+  pd   <- make_mock_part_dta(c("bpd", "vis"))
+  res  <- gg_partial_varpro(pd, scale = "logodds", cat_limit = 5)
+  shim <- res
+  class(shim) <- c("gg_partialpro", "list")
+  p <- ggplot2::autoplot(shim, labels = c(bpd = "BP Diastole"))
   strips <- as.character(ggplot2::get_strip_labels(p)$facets$name)
   expect_true("BP Diastole" %in% strips)
 })

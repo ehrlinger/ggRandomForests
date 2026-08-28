@@ -17,6 +17,21 @@ test_that(".varpro_rank_of prefers an exact match over a prefix match", {
   expect_equal(unname(.varpro_rank_of("age", c("age_group", "age"))), 2)
 })
 
+test_that(".varpro_rank_of requires a digit suffix, not just a prefix", {
+  # Pins the only thing stopping 'age' from ranking as a one-hot level of
+  # 'age_group': the pattern requires trailing digits, so a name-only prefix
+  # match is not accepted.
+  expect_equal(unname(.varpro_rank_of("age", c("age_group"))), Inf)
+})
+
+test_that(".varpro_rank_of escapes regex metacharacters in the name", {
+  # 're.gion' contains a literal '.', which is a regex metacharacter. Against
+  # 'reXgion0' (where the '.' would match any character) there must be no
+  # match; against 're.gion0' (the literal, escaped '.') there must be.
+  expect_equal(unname(.varpro_rank_of("re.gion", c("reXgion0"))), Inf)
+  expect_equal(unname(.varpro_rank_of("re.gion", c("re.gion0"))), 1)
+})
+
 test_that(".varpro_importance_order returns list order when object is NULL", {
   pd <- list(age = 1, bpd = 2, vis = 3)
   expect_equal(.varpro_importance_order(pd, NULL), c("age", "bpd", "vis"))

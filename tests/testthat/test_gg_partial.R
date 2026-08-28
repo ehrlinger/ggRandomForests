@@ -506,3 +506,20 @@ test_that("plot.gg_partial layers still carry data when labelled", {
   built <- ggplot2::ggplot_build(plot(gg_dta, labels = c(bpd = "BP Diastole")))
   expect_gt(nrow(built$data[[1]]), 0L)
 })
+
+test_that("plot.gg_partial labels the categorical facet strips", {
+  # Both tests above build continuous-only data, so the categorical
+  # facet_wrap()'s labeller was never asserted -- this pins it.
+  set.seed(42)
+  gg_dta <- list(
+    continuous = NULL,
+    categorical = data.frame(x = rep(1:2, 2),
+                             yhat = rnorm(4),
+                             name = rep(c("sex", "vis"), each = 2),
+                             stringsAsFactors = FALSE)
+  )
+  class(gg_dta) <- c("gg_partial", "list")
+  p <- plot(gg_dta, labels = c(sex = "Sex"))
+  strips <- as.character(ggplot2::get_strip_labels(p)$facets$name)
+  expect_true(all(c("Sex", "vis") %in% strips))
+})
