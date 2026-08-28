@@ -38,3 +38,41 @@ test_that("gg_auct attaches provenance from the rhf object", {
   expect_equal(prov$source, "randomForestRHF")
   expect_equal(prov$ntree, .rhf_pbc()$ntree)
 })
+
+test_that("gg_auct forwards method to auct.rhf", {
+  # auct.rhf()'s own method default is "cumulative", so without this argument
+  # the incident/dynamic path was unreachable through gg_auct(): the only route
+  # was to call auct.rhf() directly and hand the result back via auct_fit.
+  o <- .rhf_pbc()
+  set.seed(20260828L)
+  inc <- gg_auct(o, marker = "haz", method = "incident")
+  ref <- randomForestRHF::auct.rhf(o, marker = "haz", method = "incident")
+  expect_s3_class(inc, "gg_auct")
+  expect_equal(attr(inc, "iauc")$uno, ref$iAUC.uno)
+  expect_equal(inc$auc, ref$AUC.by.time$AUC)
+})
+
+test_that("gg_auct method='cumulative' stays the default", {
+  o <- .rhf_pbc()
+  expect_equal(
+    attr(gg_auct(o, marker = "chf"), "iauc")$uno,
+    attr(gg_auct(o, marker = "chf", method = "cumulative"), "iauc")$uno
+  )
+})
+
+test_that("gg_auct passes ... through to auct.rhf", {
+  # bootstrap.rep drives the CI ribbon in plot.gg_auct(), and before ... was
+  # forwarded there was no way to request it without precomputing the fit.
+  o <- .rhf_pbc()
+  set.seed(20260828L)
+  gg <- gg_auct(o, marker = "chf", bootstrap.rep = 5L)
+  expect_true(any(is.finite(gg$lower)))
+  expect_true(any(is.finite(gg$upper)))
+})
+
+test_that("gg_auct ignores method and ... when auct_fit is supplied", {
+  o <- .rhf_pbc()
+  fit <- .auct_pbc_noboot()
+  gg <- gg_auct(o, marker = "chf", method = "incident", auct_fit = fit)
+  expect_equal(attr(gg, "iauc")$uno, fit$iAUC.uno)
+})

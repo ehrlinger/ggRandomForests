@@ -59,6 +59,19 @@ ggRandomForests v4.0.0 (development)
   simulated data. The incident/dynamic definition compares subjects within a
   risk set and is unaffected. Reported upstream as
   kogalur/randomForestRHF#1; the section returns once that is settled.
+* `gg_auct()` gains a `method` argument and now forwards `...` to
+  `randomForestRHF::auct.rhf()`. `auct.rhf()` defaults `method` to
+  `"cumulative"`, and `gg_auct()` previously passed only `marker`, so the
+  incident/dynamic definition could not be reached from `gg_auct()` at all:
+  the only route was to call `auct.rhf()` directly and hand the result back
+  through `auct_fit`. That matters under randomForestRHF 2.0.0, where the
+  cumulative/dynamic curve inherits the flattened cumulative hazard and can
+  drop below the chance line. `?gg_auct` now carries a note naming the
+  upstream behavior and pointing at kogalur/randomForestRHF#1. Forwarding
+  `...` also makes `bootstrap.rep` reachable, so the confidence ribbon no
+  longer requires precomputing the fit. `method` sits after `auct_fit` in the
+  signature, so positional calls are unchanged, and the default behavior is
+  the same as before.
 * `plot.gg_partial_varpro()`, `plot.gg_partial()`, `plot.gg_vimp()` and
   `plot.gg_varpro()` gain a `labels` argument for human-readable variable
   names. It accepts a named character vector, a labelled data frame (reading
