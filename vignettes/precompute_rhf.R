@@ -72,6 +72,16 @@ versions <- c(
   randomForestRHF = as.character(utils::packageVersion("randomForestRHF")),
   ggplot2 = as.character(utils::packageVersion("ggplot2"))
 )
+# randomForestRHF 2.0.0 returns four per-tree ensembles on the fit object that
+# 1.0.1 did not, which alone adds about 1.3 MB to this artifact and pushed the
+# built tarball from 2.43 MB to 3.78 MB -- 76% of CRAN's 5 MB limit before the
+# vignettes are built in. Everything downstream of this point has already been
+# computed from the complete object, so the three the vignette can never reach
+# are dropped here. hazard.tree.oob is deliberately kept: auct.rhf() reads it
+# to restore incident-marker cases, so dropping it would break the one
+# supported call a reader might re-run against the bundled fit.
+fit[c("hazard.tree.inbag", "chf.tree.inbag", "chf.tree.oob")] <- NULL
+
 bundle <- list(
   data = data,
   fit = fit,

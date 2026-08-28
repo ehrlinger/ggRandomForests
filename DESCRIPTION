@@ -49,7 +49,7 @@ Suggests:
     pkgload,
     quarto,
     ragg,
-    randomForestRHF (>= 1.0.1),
+    randomForestRHF (>= 2.0.0),
     RColorBrewer,
     rmarkdown,
     testthat,

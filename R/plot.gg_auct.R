@@ -3,7 +3,10 @@
 #'
 #' Draws AUC(t) from a [gg_auct()] object: a line over time, a bootstrap
 #' confidence ribbon when available, and a dashed reference line at 0.5
-#' (chance). The integrated AUC (iAUC) appears in the caption.
+#' (chance). The integrated AUC (iAUC) appears in the caption. Times with a
+#' non-finite AUC are dropped before drawing: from \pkg{randomForestRHF} 2.0.0
+#' the final grid time can be `NA`, where the censoring-weight denominator is
+#' undefined once the control set is nearly exhausted.
 #'
 #' @param x A `gg_auct` object from [gg_auct()].
 #' @param ... Not currently used.
@@ -38,7 +41,14 @@ plot.gg_auct <- function(x, ...) {
     NULL
   }
 
-  p <- ggplot2::ggplot(x, ggplot2::aes(x = .data[["time"]], y = .data[["auc"]]))
+  # randomForestRHF >= 2.0.0 can return an NA AUC at the final grid time, where
+  # the censoring-weight denominator is undefined once the control set is
+  # nearly exhausted. Drop those rows so geom_line() is not handed missing
+  # values; the ribbon below is already guarded on finite bounds.
+  dta <- x[is.finite(x$auc), , drop = FALSE]
+
+  p <- ggplot2::ggplot(dta,
+                       ggplot2::aes(x = .data[["time"]], y = .data[["auc"]]))
 
   ci <- x[is.finite(x$lower) & is.finite(x$upper), , drop = FALSE]
   if (nrow(ci) > 0L) {
