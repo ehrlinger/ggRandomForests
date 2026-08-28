@@ -65,8 +65,11 @@ ggRandomForests v4.0.0 (development)
   `attr(col, "label")`), or a two-column `key`/`label` data frame. Variables
   with no label keep their raw name. Labels apply at draw time only — the
   returned object still carries raw variable names, so downstream consumers
-  are unaffected. `plot.gg_varpro()` honours `labels` on both the main panel
-  and the class-conditional panel.
+  are unaffected. The argument reaches every branch of these methods, not just
+  their default one: `plot.gg_varpro()` honours it on both the main panel and
+  the class-conditional panel, and `plot.gg_partial_varpro()` honours it on
+  survival path-C objects (those extracted with `scale = "surv"` or `"chf"`),
+  which are handed off to `plot.gg_partial_rfsrc()`.
 * `plot.gg_vimp()`: `lbls` is **deprecated** in favour of `labels` and will be
   removed in a future release. Its old `length(lbls) >= length(vars)` gate is
   also gone, so a partial label set is now honoured, falling back to the raw
