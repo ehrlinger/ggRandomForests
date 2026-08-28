@@ -20,6 +20,11 @@
 #'   of `1` applies no cap.
 #' @param display_note Logical; if `TRUE`, an applied size or color cap is
 #'   reported in the caption.
+#' @param labels Optional variable labels for the variable axis. One of: a
+#'   named character vector (`c(bili = "Serum bilirubin")`); a labelled data
+#'   frame, whose `attr(col, "label")` values are read; or a two-column
+#'   `key`/`label` data frame. Variables with no label keep their raw name.
+#'   Defaults to `NULL` (raw names).
 #' @param ... Additional arguments passed to [ggplot2::geom_point()].
 #'
 #' @details
@@ -62,7 +67,7 @@
 plot.gg_rhf_importance <- function(x, vars = NULL, top_n_union = 15L,
                                    transform = c("none", "log10"),
                                    size_cap = 0.99, color_cap = 0.99,
-                                   display_note = TRUE, ...) {
+                                   display_note = TRUE, labels = NULL, ...) {
   if (!inherits(x, "gg_rhf_importance")) {
     stop("plot.gg_rhf_importance() requires a 'gg_rhf_importance' object.",
          call. = FALSE)
@@ -96,7 +101,7 @@ plot.gg_rhf_importance <- function(x, vars = NULL, top_n_union = 15L,
     point_args$alpha <- 0.9
   }
 
-  ggplot2::ggplot(d, ggplot2::aes(
+  gg_plt <- ggplot2::ggplot(d, ggplot2::aes(
     x = .data[["time_window"]],
     y = .data[["variable"]],
     size = .data[["size_display"]],
@@ -116,6 +121,19 @@ plot.gg_rhf_importance <- function(x, vars = NULL, top_n_union = 15L,
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)
     )
+
+  # Labels are a display concern only: the variable factor keeps its raw names
+  # and its q90 ordering, and the scale renames the axis text.  Unlike the other
+  # importance methods there is no coord_flip() here, so the variable axis is y.
+  lab_lookup <- .forest_labels(labels)
+  if (!is.null(lab_lookup)) {
+    gg_plt <- gg_plt +
+      ggplot2::scale_y_discrete(
+        labels = function(v) .apply_forest_labels(v, lab_lookup)
+      )
+  }
+
+  gg_plt
 }
 
 .rhf_priority_plot_data <- function(x, vars, top_n_union) {

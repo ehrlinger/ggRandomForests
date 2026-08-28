@@ -12,6 +12,7 @@
   size_cap = 0.99,
   color_cap = 0.99,
   display_note = TRUE,
+  labels = NULL,
   ...
 )
 }
@@ -36,6 +37,12 @@ of \code{1} applies no cap.}
 
 \item{display_note}{Logical; if \code{TRUE}, an applied size or color cap is
 reported in the caption.}
+
+\item{labels}{Optional variable labels for the variable axis. One of: a
+named character vector (\code{c(bili = "Serum bilirubin")}); a labelled data
+frame, whose \code{attr(col, "label")} values are read; or a two-column
+\code{key}/\code{label} data frame. Variables with no label keep their raw name.
+Defaults to \code{NULL} (raw names).}
 
 \item{...}{Additional arguments passed to \code{\link[ggplot2:geom_point]{ggplot2::geom_point()}}.}
 }
