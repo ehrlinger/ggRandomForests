@@ -8,11 +8,19 @@
 #'
 #' @param object A fitted `rhf` object from \pkg{randomForestRHF}.
 #' @param marker Risk marker for the AUC: `"chf"` (cumulative hazard, default)
-#'   or `"haz"` (hazard). Ignored when `auct_fit` is supplied.
+#'   or `"haz"` (hazard). Not used when `auct_fit` is supplied, though the
+#'   value is still validated.
 #' @param auct_fit Optional precomputed [randomForestRHF::auct.rhf()] result
 #'   (class `"auct.rhf"`) for the same `object`. `NULL` (default) computes it.
 #'   Supply it to reuse an expensive bootstrap run.
-#' @param ... Not currently used.
+#' @param method Which time-dependent AUC definition to compute, passed to
+#'   [randomForestRHF::auct.rhf()]. `"cumulative"` (default) ranks accumulated
+#'   risk through a horizon; `"incident"` ranks local failures within the risk
+#'   set at each time. See the note below before relying on the default. Not
+#'   used when `auct_fit` is supplied, though the value is still validated.
+#' @param ... Further arguments passed to [randomForestRHF::auct.rhf()], for
+#'   example `bootstrap.rep` to request confidence bounds, or `riskset` for the
+#'   incident definition. Ignored when `auct_fit` is supplied.
 #'
 #' @return A `data.frame` of class `c("gg_auct", "data.frame")` with columns
 #'   `time`, `auc`, `se`, `lower`, `upper`, `marker` (CI columns `NA` when no
@@ -27,6 +35,24 @@
 #' Ishwaran H, Kogalur UB (2026). \emph{randomForestRHF: Random Hazard
 #' Forests}. R package version 2.0.0.
 #' \url{https://CRAN.R-project.org/package=randomForestRHF}.
+#'
+#' @note
+#' Cumulative/dynamic AUC is unreliable under \pkg{randomForestRHF} 2.0.0, so
+#' treat the `method = "cumulative"` default with care. That release holds the
+#' in-sample cumulative hazard flat once a subject's supplied records end,
+#' which `?randomForestRHF::rhf` documents. At a fixed grid point the marker
+#' then reflects how long a subject was observed as well as how much risk they
+#' carried, and the cumulative/dynamic definition compares subjects who have
+#' already failed against subjects still under follow-up. The curve can fall
+#' below the 0.5 chance line on data the forest fits well.
+#'
+#' The incident/dynamic definition does not inherit this, because it compares
+#' subjects within a risk set at each time, before any of them has left
+#' follow-up. It answers a different question rather than a better version of
+#' the same one, so reach for `method = "incident"` where that question is the
+#' one you are asking. The behavior is upstream, reported at
+#' \url{https://github.com/kogalur/randomForestRHF/issues/1}; `gg_auct()`
+#' passes the values through unchanged in every case.
 #'
 #' @seealso [plot.gg_auct()], [randomForestRHF::auct.rhf()]
 #'
@@ -48,15 +74,18 @@ gg_auct <- function(object, ...) {
 
 #' @rdname gg_auct
 #' @export
-gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL, ...) {
+gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL,
+                        method = c("cumulative", "incident"), ...) {
   marker <- match.arg(marker)
+  method <- match.arg(method)
 
   if (is.null(auct_fit)) {
     if (!requireNamespace("randomForestRHF", quietly = TRUE)) {
       stop("Install the 'randomForestRHF' package to use gg_auct(): ",
            "install.packages('randomForestRHF')", call. = FALSE)
     }
-    auct_fit <- randomForestRHF::auct.rhf(object, marker = marker)
+    auct_fit <- randomForestRHF::auct.rhf(object, marker = marker,
+                                          method = method, ...)
   }
   if (!inherits(auct_fit, "auct.rhf")) {
     stop("auct_fit must be an 'auct.rhf' object from ",

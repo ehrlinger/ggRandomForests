@@ -7,19 +7,34 @@
 \usage{
 gg_auct(object, ...)
 
-\method{gg_auct}{rhf}(object, marker = c("chf", "haz"), auct_fit = NULL, ...)
+\method{gg_auct}{rhf}(
+  object,
+  marker = c("chf", "haz"),
+  auct_fit = NULL,
+  method = c("cumulative", "incident"),
+  ...
+)
 }
 \arguments{
 \item{object}{A fitted \code{rhf} object from \pkg{randomForestRHF}.}
 
-\item{...}{Not currently used.}
+\item{...}{Further arguments passed to \code{\link[randomForestRHF:auct.rhf]{randomForestRHF::auct.rhf()}}, for
+example \code{bootstrap.rep} to request confidence bounds, or \code{riskset} for the
+incident definition. Ignored when \code{auct_fit} is supplied.}
 
 \item{marker}{Risk marker for the AUC: \code{"chf"} (cumulative hazard, default)
-or \code{"haz"} (hazard). Ignored when \code{auct_fit} is supplied.}
+or \code{"haz"} (hazard). Not used when \code{auct_fit} is supplied, though the
+value is still validated.}
 
 \item{auct_fit}{Optional precomputed \code{\link[randomForestRHF:auct.rhf]{randomForestRHF::auct.rhf()}} result
 (class \code{"auct.rhf"}) for the same \code{object}. \code{NULL} (default) computes it.
 Supply it to reuse an expensive bootstrap run.}
+
+\item{method}{Which time-dependent AUC definition to compute, passed to
+\code{\link[randomForestRHF:auct.rhf]{randomForestRHF::auct.rhf()}}. \code{"cumulative"} (default) ranks accumulated
+risk through a horizon; \code{"incident"} ranks local failures within the risk
+set at each time. See the note below before relying on the default. Not
+used when \code{auct_fit} is supplied, though the value is still validated.}
 }
 \value{
 A \code{data.frame} of class \code{c("gg_auct", "data.frame")} with columns
@@ -33,6 +48,24 @@ Extracts the time-dependent AUC curve from \code{\link[randomForestRHF:auct.rhf]
 into a tidy long data frame, one row per time point, with bootstrap
 confidence bounds when available and the integrated AUC (iAUC) summary
 attached as an attribute.
+}
+\note{
+Cumulative/dynamic AUC is unreliable under \pkg{randomForestRHF} 2.0.0, so
+treat the \code{method = "cumulative"} default with care. That release holds the
+in-sample cumulative hazard flat once a subject's supplied records end,
+which \code{?randomForestRHF::rhf} documents. At a fixed grid point the marker
+then reflects how long a subject was observed as well as how much risk they
+carried, and the cumulative/dynamic definition compares subjects who have
+already failed against subjects still under follow-up. The curve can fall
+below the 0.5 chance line on data the forest fits well.
+
+The incident/dynamic definition does not inherit this, because it compares
+subjects within a risk set at each time, before any of them has left
+follow-up. It answers a different question rather than a better version of
+the same one, so reach for \code{method = "incident"} where that question is the
+one you are asking. The behavior is upstream, reported at
+\url{https://github.com/kogalur/randomForestRHF/issues/1}; \code{gg_auct()}
+passes the values through unchanged in every case.
 }
 \examples{
 \donttest{
