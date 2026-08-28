@@ -10,6 +10,7 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-survival.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/articles/index.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/articles/rhf.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/articles/uvarpro.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/articles/varpro.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/authors.html</loc></url>
@@ -24,6 +25,7 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-build_varpro_imp_tree.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-varpro_imp_stats.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/ggRandomForests-package.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.html</loc></url>
@@ -34,10 +36,13 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf_importance.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_survival.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.html</loc></url>
@@ -46,6 +51,7 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/index.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/kaplan.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/nelson.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_uvarpro.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_varpro.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_brier.html</loc></url>
@@ -56,10 +62,13 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf_importance.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_roc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_shap.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_survival.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_tune_rhf.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.html</loc></url>
@@ -73,5 +82,6 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/release-checklist-v2.7.1.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/release-checklist-v4.0.0.html</loc></url>
 </urlset>
 

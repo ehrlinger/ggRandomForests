@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -437,6 +438,71 @@
         </dt>
         <dd>Plot a <code>gg_brier</code> object</dd>
       </dl></div><div class="section level2">
+      <h2 id="random-hazard-forests">Random Hazard Forests<a class="anchor" aria-label="anchor" href="#random-hazard-forests"></a></h2>
+
+      <div class="section-desc"><p>For time-to-event data with predictors that change during follow-up.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gg_rhf.html">gg_rhf()</a></code>
+
+        </dt>
+        <dd>Tidy hazard and cumulative-hazard curves from a Random Hazard Forest</dd>
+
+        <dt>
+
+          <code><a href="plot.gg_rhf.html">plot(<i>&lt;gg_rhf&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot Random Hazard Forest hazard / cumulative-hazard curves</dd>
+
+        <dt>
+
+          <code><a href="gg_auct.html">gg_auct()</a></code>
+
+        </dt>
+        <dd>Tidy time-varying AUC from a Random Hazard Forest</dd>
+
+        <dt>
+
+          <code><a href="plot.gg_auct.html">plot(<i>&lt;gg_auct&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a time-varying AUC curve</dd>
+
+        <dt>
+
+          <code><a href="gg_rhf_importance.html">gg_rhf_importance()</a></code>
+
+        </dt>
+        <dd>Tidy time-localized variable priority from a Random Hazard Forest</dd>
+
+        <dt>
+
+          <code><a href="plot.gg_rhf_importance.html">plot(<i>&lt;gg_rhf_importance&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot Random Hazard Forest variable priority over time</dd>
+
+        <dt>
+
+          <code><a href="gg_tune_rhf.html">gg_tune_rhf()</a></code>
+
+        </dt>
+        <dd>Tidy a Random Hazard Forest tuning path</dd>
+
+        <dt>
+
+          <code><a href="plot.gg_tune_rhf.html">plot(<i>&lt;gg_tune_rhf&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot a Random Hazard Forest tuning path</dd>
+      </dl></div><div class="section level2">
       <h2 id="s-methods">S3 Methods<a class="anchor" aria-label="anchor" href="#s-methods"></a></h2>
 
       <div class="section-desc"><p>Standard R generics implemented for all gg_* data objects.</p></div>
@@ -448,21 +514,21 @@
 
       <dl><dt>
 
-          <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_error&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_vimp&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_rfsrc&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_variable&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_partial&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_partial_rfsrc&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_partialpro&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_partial_varpro&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_roc&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_survival&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_brier&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_varpro&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_udependent&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_isopro&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_shap&gt;</i>)</a></code>
+          <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_error&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_vimp&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_rfsrc&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_variable&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_partial&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_partial_rfsrc&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_partialpro&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_partial_varpro&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_roc&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_survival&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_brier&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_rhf&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_tune_rhf&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_auct&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_rhf_importance&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_varpro&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_udependent&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_isopro&gt;</i>)</a></code> <code><a href="autoplot.gg.html">autoplot(<i>&lt;gg_shap&gt;</i>)</a></code>
 
         </dt>
         <dd><code>autoplot</code> methods for <span class="pkg">ggRandomForests</span> data objects</dd>
 
         <dt>
 
-          <code><a href="print.gg.html">print(<i>&lt;gg_beta_uvarpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_sdependent&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_error&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_vimp&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_rfsrc&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_variable&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_partial&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_partial_rfsrc&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_partialpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_partial_varpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_roc&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_survival&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_brier&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_udependent&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;summary.gg_udependent&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_varpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_isopro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_beta_varpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_ivarpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_shap&gt;</i>)</a></code>
+          <code><a href="print.gg.html">print(<i>&lt;gg_beta_uvarpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_sdependent&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_error&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_vimp&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_rfsrc&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_variable&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_partial&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_partial_rfsrc&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_partialpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_partial_varpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_roc&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_survival&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_brier&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_rhf&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_tune_rhf&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_auct&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_rhf_importance&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_udependent&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;summary.gg_udependent&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_varpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_isopro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_beta_varpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_ivarpro&gt;</i>)</a></code> <code><a href="print.gg.html">print(<i>&lt;gg_shap&gt;</i>)</a></code>
 
         </dt>
         <dd>Print methods for gg_* data objects</dd>
 
         <dt>
 
-          <code><a href="summary.gg.html">summary(<i>&lt;gg_beta_uvarpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_sdependent&gt;</i>)</a></code> <code><a href="summary.gg.html">print(<i>&lt;summary.gg&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_error&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_vimp&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_rfsrc&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_variable&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_partial&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_partial_rfsrc&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_partialpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_partial_varpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_roc&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_survival&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_varpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_udependent&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_brier&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_isopro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_beta_varpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_ivarpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_shap&gt;</i>)</a></code>
+          <code><a href="summary.gg.html">summary(<i>&lt;gg_beta_uvarpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_sdependent&gt;</i>)</a></code> <code><a href="summary.gg.html">print(<i>&lt;summary.gg&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_error&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_vimp&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_rfsrc&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_variable&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_partial&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_partial_rfsrc&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_partialpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_partial_varpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_roc&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_survival&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_varpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_udependent&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_brier&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_rhf&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_tune_rhf&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_rhf_importance&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_isopro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_beta_varpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_ivarpro&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_auct&gt;</i>)</a></code> <code><a href="summary.gg.html">summary(<i>&lt;gg_shap&gt;</i>)</a></code>
 
         </dt>
         <dd>Summary methods for gg_* data objects</dd>

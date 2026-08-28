@@ -57,6 +57,15 @@ summary(object, ...)
 # S3 method for class 'gg_brier'
 summary(object, ...)
 
+# S3 method for class 'gg_rhf'
+summary(object, ...)
+
+# S3 method for class 'gg_tune_rhf'
+summary(object, ...)
+
+# S3 method for class 'gg_rhf_importance'
+summary(object, ...)
+
 # S3 method for class 'gg_isopro'
 summary(object, ...)
 
@@ -64,6 +73,9 @@ summary(object, ...)
 summary(object, ...)
 
 # S3 method for class 'gg_ivarpro'
+summary(object, ...)
+
+# S3 method for class 'gg_auct'
 summary(object, ...)
 
 # S3 method for class 'gg_shap'
@@ -110,5 +122,5 @@ summary(gg_vimp(rf))
 #> <gg_vimp>  from randomForestSRC  |  family: regr  |  ntree: 50  |  n: 111
 #>   variables: 5
 #>   positive VIMP: 5 / negative: 0
-#>   top 5: Wind (1770), Temp (1370), Solar.R (298.2), Day (202.5), Month (67.97)
+#>   top 5: Wind (1714), Temp (1360), Solar.R (311.2), Day (194.7), Month (68.32)
 ```

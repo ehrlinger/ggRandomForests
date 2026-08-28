@@ -12,9 +12,9 @@ ensemble method that requires no distributional or functional
 assumptions on how covariates relate to the response. For
 classification, each tree votes for a class, and the forest reports the
 vote fractions as class probabilities. The **randomForestSRC** package
-([Ishwaran and Kogalur 2024](#ref-Ishwaran:RFSRC:2014)) provides a
-unified implementation for survival, regression, and classification
-forests.
+([Ishwaran and Kogalur 2026](#ref-Ishwaran:RFSRC:software:2026))
+provides a unified implementation for survival, regression, and
+classification forests.
 
 **ggRandomForests** extracts tidy data objects from `rfsrc` fits and
 renders them with **ggplot2** ([Wickham 2016](#ref-Wickham:2009)),
@@ -458,9 +458,9 @@ Friedman, Jerome H. 2001. “Greedy Function Approximation: A Gradient
 Boosting Machine.” *The Annals of Statistics* 29 (5): 1189–232.
 <https://doi.org/10.1214/aos/1013203451>.
 
-Ishwaran, Hemant, and Udaya B. Kogalur. 2024. *randomForestSRC: Fast
-Unified Random Forests for Survival, Regression, and Classification
-(RF-SRC)*. <https://cran.r-project.org/package=randomForestSRC>.
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. *Fast Unified Random
+Forests for Survival, Regression, and Classification (RF-SRC)*.
+<https://cran.r-project.org/package=randomForestSRC>.
 
 Ishwaran, Hemant, Udaya B. Kogalur, Eiran Z. Gorodeski, Andy J. Minn,
 and Michael S. Lauer. 2010. “High-Dimensional Variable Selection for

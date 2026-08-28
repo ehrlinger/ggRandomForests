@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -84,7 +85,7 @@
       <h1>Random Forest Classification with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-08-21</p>
+      <p class="date">2026-08-28</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests-classification.qmd" class="external-link"><code>vignettes/ggRandomForests-classification.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -103,7 +104,7 @@
 </div>
 <section class="section level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional or functional assumptions on how covariates relate to the response. For classification, each tree votes for a class, and the forest reports the vote fractions as class probabilities. The <strong>randomForestSRC</strong> package <span class="citation" data-cites="Ishwaran:RFSRC:2014">(<a href="#ref-Ishwaran:RFSRC:2014" role="doc-biblioref">Ishwaran and Kogalur 2024</a>)</span> provides a unified implementation for survival, regression, and classification forests.</p>
+<p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional or functional assumptions on how covariates relate to the response. For classification, each tree votes for a class, and the forest reports the vote fractions as class probabilities. The <strong>randomForestSRC</strong> package <span class="citation" data-cites="Ishwaran:RFSRC:software:2026">(<a href="#ref-Ishwaran:RFSRC:software:2026" role="doc-biblioref">Ishwaran and Kogalur 2026</a>)</span> provides a unified implementation for survival, regression, and classification forests.</p>
 <p><strong>ggRandomForests</strong> extracts tidy data objects from <code>rfsrc</code> fits and renders them with <strong>ggplot2</strong> <span class="citation" data-cites="Wickham:2009">(<a href="#ref-Wickham:2009" role="doc-biblioref">Wickham 2016</a>)</span>, making it straightforward to explore how a forest is constructed, which variables matter, and how the predicted probabilities depend on individual predictors.</p>
 <p>This vignette demonstrates a complete random forest classification workflow on Fisher’s iris data <span class="citation" data-cites="Fisher:1936">(<a href="#ref-Fisher:1936" role="doc-biblioref">Fisher 1936</a>)</span>:</p>
 <ol type="1">
@@ -399,8 +400,8 @@ Fisher, Ronald A. 1936. <span>“The Use of Multiple Measurements in Taxonomic P
 <div id="ref-Friedman:2000" class="csl-entry" role="listitem">
 Friedman, Jerome H. 2001. <span>“Greedy Function Approximation: A Gradient Boosting Machine.”</span> <em>The Annals of Statistics</em> 29 (5): 1189–232. <a href="https://doi.org/10.1214/aos/1013203451" class="external-link">https://doi.org/10.1214/aos/1013203451</a>.
 </div>
-<div id="ref-Ishwaran:RFSRC:2014" class="csl-entry" role="listitem">
-Ishwaran, Hemant, and Udaya B. Kogalur. 2024. <em><span class="nocase">randomForestSRC</span>: Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
+<div id="ref-Ishwaran:RFSRC:software:2026" class="csl-entry" role="listitem">
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. <em>Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
 </div>
 <div id="ref-Ishwaran:2010" class="csl-entry" role="listitem">
 Ishwaran, Hemant, Udaya B. Kogalur, Eiran Z. Gorodeski, Andy J. Minn, and Michael S. Lauer. 2010. <span>“High-Dimensional Variable Selection for Survival Data.”</span> <em>Journal of the American Statistical Association</em> 105 (489): 205–17. <a href="https://doi.org/10.1198/jasa.2009.tm08622" class="external-link">https://doi.org/10.1198/jasa.2009.tm08622</a>.

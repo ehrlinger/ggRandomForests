@@ -30,10 +30,11 @@ counterfactual, not a neutral baseline. Knockoff-style methods clean up
 some of that, but they introduce their own synthetic features and rely
 on explicit distributional assumptions about the predictors.
 
-varPro ([Lu and Ishwaran 2024](#ref-Lu2024varpro)) takes a different
-path: one grounded entirely in *observed* data. Think of each decision
-tree as a long chain of “if/then” clauses. varPro harvests those clauses
-as *rules*, and for each rule it identifies a specific region of the
+varPro ([Lu and Ishwaran 2024](#ref-Lu2024varpro); [Ishwaran and Kogalur
+2026](#ref-Ishwaran:varPro:software:2026)) takes a different path: one
+grounded entirely in *observed* data. Think of each decision tree as a
+long chain of “if/then” clauses. varPro harvests those clauses as
+*rules*, and for each rule it identifies a specific region of the
 predictor space where a handful of variables jointly constrain the
 response. To measure one variable’s contribution, it compares a *local
 estimator* (the response summary restricted to that rule’s region)
@@ -647,14 +648,18 @@ plot(gg_isopro(iso_pbc))
 errors on survival fits in the current release (it only supports `regr`
 and `class`).
 [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
-for survival is similarly deferred pending design work on the per-rule
-risk-scaling story. Both are tracked for v3.1.0.
+also supports only regression and classification fits. Neither wrapper
+computes local or lasso-beta importance for a survival outcome, where
+the response records an event time and whether the event was observed.
 
-If you call either on a survival fit you’ll get a clear error message
-pointing at the deferred work, not a silent miscalculation. The
-family-support matrix in the closing reference section records this; the
-rest of the toolkit that *does* work on survival (`gg_varpro`,
-`gg_partial_varpro`, and `gg_isopro` above).
+If you call either wrapper on a survival fit, the error names the
+unsupported family. The family-support matrix in the closing reference
+section records this. For survival fits, use the parts of the toolkit
+that do work:
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
+[`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md),
+and
+[`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md).
 
 ## Cross-cutting reference
 
@@ -665,10 +670,11 @@ rest of the toolkit that *does* work on survival (`gg_varpro`,
 | `gg_partial_varpro` | ✓ | ✓ (prob) | ✓ (S(τ); rmst/mortality/chf) | ✗ (not audited) |
 | `gg_varpro` | ✓ | ✓ (`conditional = TRUE`) | ✓ | ✗ (errors) |
 | `gg_isopro` | ✓ (X) | ✓ (X) | ✓ (X) | ✓ (X) |
-| `gg_beta_varpro` | ✓ | ✓ | ✗ (upstream stop) | ✗ (deferred) |
-| `gg_ivarpro` | ✓ | ✓ | ✗ (deferred) | ✗ (deferred) |
+| `gg_beta_varpro` | ✓ | ✓ | ✗ (upstream stop) | ✗ (not supported) |
+| `gg_ivarpro` | ✓ | ✓ | ✗ (not supported) | ✗ (not supported) |
 
-The four wrappers in the lower-right are the v3.1.0 work surface.
+The lower-right cells mark combinations that the current wrappers do not
+support. Here, `regr+` is varPro’s label for multivariate regression.
 
 ### Which variables can you actually get?
 
@@ -841,6 +847,10 @@ supports and notes which capabilities are deferred.
 
 Ishwaran, Hemant, and Udaya B. Kogalur. 2007. “Random Survival Forests
 for R.” *R News* 7 (2): 25–31.
+
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. *Model-Independent
+Variable Selection via the Rule-Based Variable Priority*.
+<https://cran.r-project.org/package=varPro>.
 
 Ishwaran, Hemant, Udaya B. Kogalur, Eugene H. Blackstone, and Michael S.
 Lauer. 2008. “Random Survival Forests.” *The Annals of Applied

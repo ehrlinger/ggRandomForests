@@ -56,8 +56,8 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for
-Survival, Regression and Classification. R package version \>= 3.4.0.
+Ishwaran H, Kogalur U (2026). Fast Unified Random Forests for Survival,
+Regression, and Classification (RF-SRC). R package version 3.6.2.
 <https://cran.r-project.org/package=randomForestSRC>
 
 ## See also

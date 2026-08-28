@@ -27,10 +27,10 @@ unbounded relative-risk score. Read it as a single number for ranking
 patients from low to high risk, not as a survival chance.
 
 The **[randomForestSRC](https://www.randomforestsrc.org)** package
-([Ishwaran and Kogalur 2024](#ref-Ishwaran:RFSRC:2014)) provides a
-unified implementation for survival, regression, and classification
-forests. **ggRandomForests** extracts tidy data objects from `rfsrc`
-fits and renders them with **ggplot2** ([Wickham
+([Ishwaran and Kogalur 2026](#ref-Ishwaran:RFSRC:software:2026))
+provides a unified implementation for survival, regression, and
+classification forests. **ggRandomForests** extracts tidy data objects
+from `rfsrc` fits and renders them with **ggplot2** ([Wickham
 2016](#ref-Wickham:2009)), so you can see how a survival forest is
 built, which predictors carry the risk, and how survival shifts across
 each one.
@@ -441,8 +441,8 @@ md_pbc <- max.subtree(rfsrc_pbc)
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
 function computes minimal depth for each variable. The threshold is
-5.81, selecting 8 variables: ascites, edema, bili, chol, albumin,
-copper, sgot, prothrombin.
+5.98, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+copper, prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
 `copper`, `prothrombin`, and `age`. We add `edema` (selected by the
@@ -777,7 +777,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.42525
+    #> [1] 1.43169
 
 ## Conclusion
 
@@ -839,9 +839,9 @@ for Survival Data.” *Statistics in Medicine* 18 (17–18): 2529–45.
 Ishwaran, Hemant, and Udaya B. Kogalur. 2007. “Random Survival Forests
 for R.” *R News* 7 (2): 25–31.
 
-Ishwaran, Hemant, and Udaya B. Kogalur. 2024. *randomForestSRC: Fast
-Unified Random Forests for Survival, Regression, and Classification
-(RF-SRC)*. <https://cran.r-project.org/package=randomForestSRC>.
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. *Fast Unified Random
+Forests for Survival, Regression, and Classification (RF-SRC)*.
+<https://cran.r-project.org/package=randomForestSRC>.
 
 Ishwaran, Hemant, Udaya B. Kogalur, Eugene H. Blackstone, and Michael S.
 Lauer. 2008. “Random Survival Forests.” *The Annals of Applied

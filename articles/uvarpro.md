@@ -36,7 +36,8 @@ to noise. That is the job of unsupervised varPro.
 [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 grows a forest on the predictor matrix alone, with no response, and
 scores each variable by how much entropy it contributes to the regions
-the forest carves out ([Lu and Ishwaran 2024](#ref-Lu2024varpro)).
+the forest carves out ([Lu and Ishwaran 2024](#ref-Lu2024varpro);
+[Ishwaran and Kogalur 2026](#ref-Ishwaran:varPro:software:2026)).
 “Important” here does not mean useful for prediction. It means a
 variable helps reconstruct the feature space that the others cannot.
 
@@ -160,6 +161,10 @@ companion [varPro
 vignette](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md).
 
 ## References
+
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. *Model-Independent
+Variable Selection via the Rule-Based Variable Priority*.
+<https://cran.r-project.org/package=varPro>.
 
 Lu, M., and H. Ishwaran. 2024. “Model-Independent Variable Selection via
 the Rule-Based Variable Priority.” *arXiv Preprint*.

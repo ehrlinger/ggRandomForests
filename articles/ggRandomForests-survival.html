@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -84,7 +85,7 @@
       <h1>Random Forest Survival Analysis with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-08-21</p>
+      <p class="date">2026-08-28</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests-survival.qmd" class="external-link"><code>vignettes/ggRandomForests-survival.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -105,7 +106,7 @@
 </h2>
 <p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional assumptions on the relation between covariates and the response. Random survival forests (RSF) <span class="citation" data-cites="Ishwaran:2007a Ishwaran:2008">(<a href="#ref-Ishwaran:2007a" role="doc-biblioref">Ishwaran et al. 2008</a>; <a href="#ref-Ishwaran:2008" role="doc-biblioref">Ishwaran and Kogalur 2007</a>)</span> extend the method to right-censored, time-to-event data by growing trees with a log-rank splitting rule and aggregating Kaplan–Meier estimates within terminal nodes.</p>
 <p>The forest returns three ensemble quantities for each subject. First, the survival function <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>S</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{S}(t)</annotation></semantics></math>: the probability of surviving past time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>, bounded between 0 and 1. Second, the cumulative hazard function (CHF): <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>H</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mover><mi>S</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{H}(t) = -\log \hat{S}(t)</annotation></semantics></math>, an unbounded, monotone-increasing summary of accumulated risk. Third, mortality: the expected number of events a subject would accumulate if followed indefinitely under their covariate profile, computed by summing the CHF over the observed time grid. Mortality is not a probability; it is an unbounded relative-risk score. Read it as a single number for ranking patients from low to high risk, not as a survival chance.</p>
-<p>The <strong><a href="https://www.randomforestsrc.org" class="external-link">randomForestSRC</a></strong> package <span class="citation" data-cites="Ishwaran:RFSRC:2014">(<a href="#ref-Ishwaran:RFSRC:2014" role="doc-biblioref">Ishwaran and Kogalur 2024</a>)</span> provides a unified implementation for survival, regression, and classification forests. <strong>ggRandomForests</strong> extracts tidy data objects from <code>rfsrc</code> fits and renders them with <strong>ggplot2</strong> <span class="citation" data-cites="Wickham:2009">(<a href="#ref-Wickham:2009" role="doc-biblioref">Wickham 2016</a>)</span>, so you can see how a survival forest is built, which predictors carry the risk, and how survival shifts across each one.</p>
+<p>The <strong><a href="https://www.randomforestsrc.org" class="external-link">randomForestSRC</a></strong> package <span class="citation" data-cites="Ishwaran:RFSRC:software:2026">(<a href="#ref-Ishwaran:RFSRC:software:2026" role="doc-biblioref">Ishwaran and Kogalur 2026</a>)</span> provides a unified implementation for survival, regression, and classification forests. <strong>ggRandomForests</strong> extracts tidy data objects from <code>rfsrc</code> fits and renders them with <strong>ggplot2</strong> <span class="citation" data-cites="Wickham:2009">(<a href="#ref-Wickham:2009" role="doc-biblioref">Wickham 2016</a>)</span>, so you can see how a survival forest is built, which predictors carry the risk, and how survival shifts across each one.</p>
 <p>This vignette demonstrates a complete random survival forest workflow on the primary biliary cirrhosis (PBC) data set <span class="citation" data-cites="fleming:1991">(<a href="#ref-fleming:1991" role="doc-biblioref">Fleming and Harrington 1991</a>)</span>:</p>
 <ol type="1">
 <li>
@@ -428,7 +429,7 @@
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_pbc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 5.81, selecting 8 variables: ascites, edema, bili, chol, albumin, copper, sgot, prothrombin.</p>
+<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 5.98, selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
 <p>Both selection methods agree on the key predictors: <code>bili</code>, <code>albumin</code>, <code>copper</code>, <code>prothrombin</code>, and <code>age</code>. We add <code>edema</code> (selected by the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> model) for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
@@ -671,7 +672,7 @@
 <div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_integrated"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code><span><span class="co">#&gt; [1] 1.42525</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] 1.43169</span></span></code></pre>
 </div>
 </div>
 </section></section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
@@ -709,8 +710,8 @@ Graf, Erika, Claudia Schmoor, Willi Sauerbrei, and Martin Schumacher. 1999. <spa
 <div id="ref-Ishwaran:2008" class="csl-entry" role="listitem">
 Ishwaran, Hemant, and Udaya B. Kogalur. 2007. <span>“Random Survival Forests for <span>R</span>.”</span> <em>R News</em> 7 (2): 25–31.
 </div>
-<div id="ref-Ishwaran:RFSRC:2014" class="csl-entry" role="listitem">
-Ishwaran, Hemant, and Udaya B. Kogalur. 2024. <em><span class="nocase">randomForestSRC</span>: Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
+<div id="ref-Ishwaran:RFSRC:software:2026" class="csl-entry" role="listitem">
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. <em>Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
 </div>
 <div id="ref-Ishwaran:2007a" class="csl-entry" role="listitem">
 Ishwaran, Hemant, Udaya B. Kogalur, Eugene H. Blackstone, and Michael S. Lauer. 2008. <span>“Random Survival Forests.”</span> <em>The Annals of Applied Statistics</em> 2 (3): 841–60. <a href="https://doi.org/10.1214/08-AOAS169" class="external-link">https://doi.org/10.1214/08-AOAS169</a>.

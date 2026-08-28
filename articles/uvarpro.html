@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -84,7 +85,7 @@
       <h1>Variable selection without an outcome: unsupervised varPro</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-08-21</p>
+      <p class="date">2026-08-28</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/uvarpro.qmd" class="external-link"><code>vignettes/uvarpro.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -115,7 +116,7 @@
 <section class="section level2"><h2 id="importance-without-a-response">Importance without a response<a class="anchor" aria-label="anchor" href="#importance-without-a-response"></a>
 </h2>
 <p>Most measures of variable importance start from a question: which predictors help explain <em>this</em> outcome? Permutation VIMP, the varPro release rules, the per-rule lasso weights behind <code><a href="../reference/gg_beta_varpro.html">gg_beta_varpro()</a></code> — all of them score a variable by how much it moves a response <code>y</code>. The companion <a href="varpro.html">varPro vignette</a> walks that supervised toolkit end to end.</p>
-<p>But sometimes there is no <code>y</code>. You have a matrix of predictors and you want to know which columns carry the structure of the data: which variables define its shape, which travel together, and which are close to noise. That is the job of unsupervised varPro. <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code> grows a forest on the predictor matrix alone, with no response, and scores each variable by how much entropy it contributes to the regions the forest carves out <span class="citation" data-cites="Lu2024varpro">(<a href="#ref-Lu2024varpro" role="doc-biblioref">Lu and Ishwaran 2024</a>)</span>. “Important” here does not mean useful for prediction. It means a variable helps reconstruct the feature space that the others cannot.</p>
+<p>But sometimes there is no <code>y</code>. You have a matrix of predictors and you want to know which columns carry the structure of the data: which variables define its shape, which travel together, and which are close to noise. That is the job of unsupervised varPro. <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code> grows a forest on the predictor matrix alone, with no response, and scores each variable by how much entropy it contributes to the regions the forest carves out <span class="citation" data-cites="Lu2024varpro Ishwaran:varPro:software:2026">(<a href="#ref-Lu2024varpro" role="doc-biblioref">Lu and Ishwaran 2024</a>; <a href="#ref-Ishwaran:varPro:software:2026" role="doc-biblioref">Ishwaran and Kogalur 2026</a>)</span>. “Important” here does not mean useful for prediction. It means a variable helps reconstruct the feature space that the others cannot.</p>
 <p>This is a short vignette. It walks the three <code>gg_*</code> views of a single <code>uvarpro()</code> fit, and each one answers a different question about that fit: what depends on what, what ranks highest, and where to draw the line between signal and noise.</p>
 </section><section class="section level2"><h2 id="one-fit-three-views">One fit, three views<a class="anchor" aria-label="anchor" href="#one-fit-three-views"></a>
 </h2>
@@ -182,6 +183,9 @@
 </section><section class="section level2"><h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Ishwaran:varPro:software:2026" class="csl-entry" role="listitem">
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. <em>Model-Independent Variable Selection via the Rule-Based Variable Priority</em>. <a href="https://cran.r-project.org/package=varPro" class="external-link">https://cran.r-project.org/package=varPro</a>.
+</div>
 <div id="ref-Lu2024varpro" class="csl-entry" role="listitem">
 Lu, M., and H. Ishwaran. 2024. <span>“Model-Independent Variable Selection via the Rule-Based Variable Priority.”</span> <em>arXiv Preprint</em>. <a href="https://arxiv.org/abs/2409.09003" class="external-link">https://arxiv.org/abs/2409.09003</a>.
 </div>

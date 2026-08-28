@@ -1,16 +1,26 @@
 # Exploring Random Forests with ggRandomForests
 
-A fitted random forest carries a lot of information, but getting at it
-usually means digging through list structures that were never meant to
-be plotted directly. **ggRandomForests** does that digging for you: it
-pulls tidy data objects out of a `randomForestSRC` or `randomForest`
-fit, and those objects drop straight into the `ggplot2` workflows you
-already know. A second engine, `varPro`, powers a parallel family of
+`ggRandomForests` reads three upstream fit mappings:
+[`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)
+-\> `rfsrc`,
+[`randomForestRHF::rhf()`](https://www.randomforestsrc.org//reference/rhf.html)
+-\> `rhf`, and
+[`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
+-\> `varpro`. It also reads `randomForest` fits. A fitted forest carries
+a lot of information, but getting at it usually means digging through
+list structures that were never meant to be plotted directly.
+**ggRandomForests** does that digging for you, pulling tidy data objects
+out of the fit so they drop straight into the `ggplot2` workflows you
+already know. The `varPro` engine ([Lu and Ishwaran
+2024](#ref-Lu2024varpro); [Ishwaran and Kogalur
+2026](#ref-Ishwaran:varPro:software:2026)) powers a parallel family of
 functions for release-rule importance and related diagnostics; that
 family is covered in the companion vignette referenced at the end. This
 vignette walks through the three objects you will reach for most often
 (`gg_error`, `gg_variable`, and `gg_vimp`), plus a small helper for
 cutting a predictor into evenly populated groups.
+
+RHF support is only an overview here.
 
 ## Error trajectories with `gg_error()`
 
@@ -154,3 +164,11 @@ labels.
   dependency graph) walked across regression, classification, and
   survival examples, see
   [`vignette("varpro", package = "ggRandomForests")`](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md).
+
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. *Model-Independent
+Variable Selection via the Rule-Based Variable Priority*.
+<https://cran.r-project.org/package=varPro>.
+
+Lu, M., and H. Ishwaran. 2024. “Model-Independent Variable Selection via
+the Rule-Based Variable Priority.” *arXiv Preprint*.
+<https://arxiv.org/abs/2409.09003>.

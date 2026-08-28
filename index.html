@@ -13,8 +13,8 @@
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Visually Exploring Random Forests">
-<meta name="description" content="Graphic elements for exploring Random Forests using the randomForest or randomForestSRC package for survival, regression and classification forests and ggplot2 package plotting. Implements visualizations of the methods described in Breiman (2001) &lt;doi:10.1023/A:1010933404324&gt; and Ishwaran, Kogalur, Blackstone, and Lauer (2008) &lt;doi:10.1214/08-AOAS169&gt;.">
-<meta property="og:description" content="Graphic elements for exploring Random Forests using the randomForest or randomForestSRC package for survival, regression and classification forests and ggplot2 package plotting. Implements visualizations of the methods described in Breiman (2001) &lt;doi:10.1023/A:1010933404324&gt; and Ishwaran, Kogalur, Blackstone, and Lauer (2008) &lt;doi:10.1214/08-AOAS169&gt;.">
+<meta name="description" content="Graphic elements for exploring Random Forests using randomForestSRC and randomForest for survival, regression, and classification forests, and varPro for rule-based variable priority. Suggests randomForestRHF for hazards with time-dependent covariates. Implements visualizations of the methods described in Breiman (2001) &lt;doi:10.1023/A:1010933404324&gt;, Ishwaran, Kogalur, Blackstone, and Lauer (2008) &lt;doi:10.1214/08-AOAS169&gt;, Lu and Ishwaran (2024) &lt;doi:10.48550/arXiv.2409.09003&gt;, and Ishwaran, Hsich, Kogalur, and Lee (2026) &lt;doi:10.48550/arXiv.2608.21597&gt;.">
+<meta property="og:description" content="Graphic elements for exploring Random Forests using randomForestSRC and randomForest for survival, regression, and classification forests, and varPro for rule-based variable priority. Suggests randomForestRHF for hazards with time-dependent covariates. Implements visualizations of the methods described in Breiman (2001) &lt;doi:10.1023/A:1010933404324&gt;, Ishwaran, Kogalur, Blackstone, and Lauer (2008) &lt;doi:10.1214/08-AOAS169&gt;, Lu and Ishwaran (2024) &lt;doi:10.48550/arXiv.2409.09003&gt;, and Ishwaran, Hsich, Kogalur, and Lee (2026) &lt;doi:10.48550/arXiv.2608.21597&gt;.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -88,8 +89,7 @@
 <p><a href="https://github.com/ehrlinger/ggRandomForests/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/ehrlinger/ggRandomForests/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/ehrlinger/ggRandomForests/actions/workflows/lint.yaml" class="external-link"><img src="https://github.com/ehrlinger/ggRandomForests/actions/workflows/lint.yaml/badge.svg" alt="lint"></a> <a href="https://github.com/ehrlinger/ggRandomForests/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/ehrlinger/ggRandomForests/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a> <a href="https://app.codecov.io/gh/ehrlinger/ggRandomForests" class="external-link"><img src="https://codecov.io/gh/ehrlinger/ggRandomForests/graph/badge.svg" alt="Codecov test coverage"></a></p>
 <p><a href="https://doi.org/10.5281/zenodo.11526" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11526.svg" alt="DOI"></a> <!-- badges: end --></p>
 <p><img src="reference/figures/README-overview.png" alt="ggRandomForests overview: predicted survival, variable importance, OOB error, and partial dependence" width="100%"></p>
-<p><code>ggRandomForests</code> provides <code>ggplot2</code>-based diagnostic and exploration plots for random forests fit with <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">randomForestSRC</a> (&gt;= 3.4.0) or <a href="https://cran.r-project.org/package=randomForest" class="external-link">randomForest</a>. It keeps the data step apart from the figure step, so you can inspect, save, or reuse the tidy object on its own.</p>
-<p>It also covers <a href="https://cran.r-project.org/package=varPro" class="external-link">varPro</a> (&gt;= 3.1.0), which reaches the same questions by a different route: variable selection built from rules rather than permutation, importance for one observation rather than the whole fit, and dependency and signal detection on unsupervised fits. Eight of the nineteen <code>gg_*</code> families read a varPro object.</p>
+<p><code>ggRandomForests</code> provides <code>ggplot2</code>-based diagnostic and exploration plots for random forests. It reads <code>rfsrc</code> fits from <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">randomForestSRC::rfsrc()</a>, <code>varpro</code> fits from <a href="https://cran.r-project.org/package=varPro" class="external-link">varPro::varpro()</a>, and <code>rhf</code> fits from <a href="https://cran.r-project.org/package=randomForestRHF" class="external-link">randomForestRHF::rhf()</a>, a random-hazard forest for time-to-event data whose predictor values can change during follow-up. It also supports <code>randomForest</code> fits. Supported minimum versions are randomForestSRC 3.4.0, varPro 3.1.0, and randomForestRHF 2.0.0. The package keeps the data step apart from the figure step, so you can inspect, save, or reuse the tidy object on its own.</p>
 <p>Listed in the <a href="https://exts.ggplot2.tidyverse.org/" class="external-link">ggplot2 extensions gallery</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -130,11 +130,14 @@
 <p>For survival forests, see the package vignette:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"ggRandomForests"</span><span class="op">)</span></span></code></pre></div>
-<p>For variable importance with varPro — partial dependence, importance z-scores, beta importance, individual/local importance, and isolation forests — see the dedicated vignette:</p>
+<p>For Random Hazard Forests with predictors that change during follow-up, see the RHF vignette:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"varpro"</span>, package <span class="op">=</span> <span class="st">"ggRandomForests"</span><span class="op">)</span></span></code></pre></div>
-<p>The unsupervised varPro tools — <code><a href="reference/gg_udependent.html">gg_udependent()</a></code>, <code><a href="reference/gg_beta_uvarpro.html">gg_beta_uvarpro()</a></code>, and <code><a href="reference/gg_sdependent.html">gg_sdependent()</a></code>, which read structure off a <code>uvarpro()</code> fit with no outcome — have their own short vignette:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"rhf"</span>, package <span class="op">=</span> <span class="st">"ggRandomForests"</span><span class="op">)</span></span></code></pre></div>
+<p>For variable importance with varPro — partial dependence, importance z-scores, beta importance, individual/local importance, and isolation forests — see the dedicated vignette:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"varpro"</span>, package <span class="op">=</span> <span class="st">"ggRandomForests"</span><span class="op">)</span></span></code></pre></div>
+<p>The unsupervised varPro tools — <code><a href="reference/gg_udependent.html">gg_udependent()</a></code>, <code><a href="reference/gg_beta_uvarpro.html">gg_beta_uvarpro()</a></code>, and <code><a href="reference/gg_sdependent.html">gg_sdependent()</a></code>, which read structure off a <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code> fit with no outcome — have their own short vignette:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"uvarpro"</span>, package <span class="op">=</span> <span class="st">"ggRandomForests"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -307,9 +310,52 @@
 </table>
 </div>
 <div class="section level3">
+<h3 id="random-hazard-forests">Random Hazard Forests<a class="anchor" aria-label="anchor" href="#random-hazard-forests"></a>
+</h3>
+<p>For time-to-event data with predictors that change during follow-up, these read an <code>rhf</code> fit or a saved tree-size tuning object. A hazard is the event-risk rate at a particular time.</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Input</th>
+<th>What you get</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/gg_rhf.html">gg_rhf()</a></code></td>
+<td>
+<code>rhf</code> fit</td>
+<td>Case-specific hazard or cumulative-hazard curves</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_auct.html">gg_auct()</a></code></td>
+<td>
+<code>rhf</code> fit</td>
+<td>Time-varying AUC curve for event-risk discrimination</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_rhf_importance.html">gg_rhf_importance()</a></code></td>
+<td>
+<code>rhf</code> fit</td>
+<td>Variable-priority matrix across time windows</td>
+</tr>
+<tr>
+<td><code><a href="reference/gg_tune_rhf.html">gg_tune_rhf()</a></code></td>
+<td>
+<code>tune.treesize.rhf</code> object</td>
+<td>Inspected tree-size tuning path</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
 <h3 id="varpro--variable-priority">varPro — variable priority<a class="anchor" aria-label="anchor" href="#varpro--variable-priority"></a>
 </h3>
-<p>These read a <code>varPro</code> fit rather than a forest. <code>varpro()</code> is the supervised fit; <code>uvarpro()</code> is the unsupervised one, which needs no outcome.</p>
+<p>These read a <code>varpro</code> fit rather than a forest. <code><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varPro::varpro()</a></code> is the supervised fit; <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code> is the unsupervised one, which needs no outcome.</p>
 <table class="table">
 <colgroup>
 <col width="33%">
@@ -436,6 +482,8 @@
 <p>See <a href="NEWS.html">NEWS.md</a> for the full changelog. Recent highlights:</p>
 <ul>
 <li>
+<strong>v4.0.0 (development)</strong> Random Hazard Forests: <code><a href="reference/gg_rhf.html">gg_rhf()</a></code> for case-specific event-risk curves, <code><a href="reference/gg_auct.html">gg_auct()</a></code> for time-varying discrimination, <code><a href="reference/gg_rhf_importance.html">gg_rhf_importance()</a></code> for variable priority across time windows, and <code><a href="reference/gg_tune_rhf.html">gg_tune_rhf()</a></code> for inspecting a saved tree-size tuning path.</li>
+<li>
 <strong>v3.5.1</strong> <code><a href="reference/gg_roc.rfsrc.html">gg_roc()</a></code> on an <code>rfsrc</code> forest now honors the documented <code>which_outcome = 0</code>, which had been returning an unusable two-row object; <code><a href="reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> rejects a non-forest with a real error instead of “argument is of length zero”. Also a test-only fix for the <code>gcc-UBSAN</code> report filed against 3.5.0.</li>
 <li>
 <strong>v3.5.0</strong> varPro fixes: <code><a href="reference/plot.gg_varpro.html">plot.gg_varpro()</a></code> no longer draws a phantom “NA” category, <code><a href="reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> warns when you name a variable the fit cannot reach, and <code>scale = "chf"</code> now honors <code>xvar.names</code> instead of computing every variable. Vignette figures render with <code>ragg</code>, which cut the source tarball from 4.7 MB to 2.3 MB.</li>
@@ -451,9 +499,13 @@
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <p>Breiman, L. (2001). Random forests, <em>Machine Learning</em>, 45:5–32.</p>
-<p>Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival, Regression and Classification. R package version &gt;= 3.4.0. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link uri">https://cran.r-project.org/package=randomForestSRC</a></p>
+<p>Ishwaran H. and Kogalur U.B. (2026). <em>Fast Unified Random Forests for Survival, Regression, and Classification (RF-SRC).</em> R package version 3.6.2. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link uri">https://cran.r-project.org/package=randomForestSRC</a></p>
 <p>Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R. <em>R News</em> 7(2), 25–31.</p>
 <p>Ishwaran H., Kogalur U.B., Blackstone E.H. and Lauer M.S. (2008). Random survival forests. <em>Ann. Appl. Statist.</em> 2(3), 841–860.</p>
+<p>Lu M. and Ishwaran H. (2024). Model-independent variable selection via the rule-based variable priority framework. <em>arXiv preprint</em> arXiv:2409.09003. <a href="https://arxiv.org/abs/2409.09003" class="external-link uri">https://arxiv.org/abs/2409.09003</a></p>
+<p>Ishwaran H. and Kogalur U.B. (2026). <em>Model-Independent Variable Selection via the Rule-Based Variable Priority.</em> R package version 3.2.0. <a href="https://cran.r-project.org/package=varPro" class="external-link uri">https://cran.r-project.org/package=varPro</a></p>
+<p>Ishwaran H., Hsich E.M., Kogalur U.B. and Lee D.K.K. (2026). Random Hazard Forests. <em>arXiv preprint</em> arXiv:2608.21597. <a href="https://doi.org/10.48550/arXiv.2608.21597" class="external-link uri">https://doi.org/10.48550/arXiv.2608.21597</a></p>
+<p>Ishwaran H. and Kogalur U.B. (2026). <em>randomForestRHF: Random Hazard Forests.</em> R package version 2.0.0. <a href="https://cran.r-project.org/package=randomForestRHF" class="external-link uri">https://cran.r-project.org/package=randomForestRHF</a></p>
 <p>Liaw A. and Wiener M. (2002). Classification and Regression by randomForest. <em>R News</em> 2(3), 18–22.</p>
 <p>Wickham H. (2009). <em>ggplot2: Elegant Graphics for Data Analysis</em>. Springer New York.</p>
 </div>

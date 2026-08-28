@@ -204,6 +204,27 @@ Survival curves, ROC, and related diagnostics.
 
   Plot a `gg_brier` object
 
+## Random Hazard Forests
+
+For time-to-event data with predictors that change during follow-up.
+
+- [`gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf.md)
+  : Tidy hazard and cumulative-hazard curves from a Random Hazard Forest
+- [`plot(`*`<gg_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md)
+  : Plot Random Hazard Forest hazard / cumulative-hazard curves
+- [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
+  : Tidy time-varying AUC from a Random Hazard Forest
+- [`plot(`*`<gg_auct>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md)
+  : Plot a time-varying AUC curve
+- [`gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf_importance.md)
+  : Tidy time-localized variable priority from a Random Hazard Forest
+- [`plot(`*`<gg_rhf_importance>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf_importance.md)
+  : Plot Random Hazard Forest variable priority over time
+- [`gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.md)
+  : Tidy a Random Hazard Forest tuning path
+- [`plot(`*`<gg_tune_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_tune_rhf.md)
+  : Plot a Random Hazard Forest tuning path
+
 ## S3 Methods
 
 Standard R generics implemented for all gg\_\* data objects.
@@ -219,6 +240,10 @@ Standard R generics implemented for all gg\_\* data objects.
   [`autoplot(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_tune_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_auct>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_rhf_importance>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_isopro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
@@ -240,6 +265,10 @@ Standard R generics implemented for all gg\_\* data objects.
   [`print(`*`<gg_roc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_survival>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_tune_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_auct>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_rhf_importance>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<summary.gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
@@ -265,9 +294,13 @@ Standard R generics implemented for all gg\_\* data objects.
   [`summary(`*`<gg_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_tune_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_rhf_importance>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_isopro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_beta_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_ivarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_auct>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_shap>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   : Summary methods for gg\_\* data objects
 

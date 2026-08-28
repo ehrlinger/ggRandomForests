@@ -9,6 +9,8 @@
 
 - [Random Forest Survival Analysis with
   ggRandomForests](https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-survival.md):
+- [Random Hazard Forests with
+  ggRandomForests](https://ehrlinger.github.io/ggRandomForests/articles/rhf.md):
 - [Random Forest Regression with
   ggRandomForests](https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-regression.md):
 - [Random Forest Classification with

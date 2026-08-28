@@ -62,9 +62,8 @@ last-factor-level) collapses the output to a single class.
 
 ## Note
 
-Multivariate regression (`regr+`) and survival families are out of scope
-for this release and tracked for v3.1.0. The unsupported-family path
-errors with a message pointing at that work.
+Multivariate regression (`regr+`) and survival fits are not supported.
+The unsupported-family path reports the family it received.
 
 ## What this is doing
 

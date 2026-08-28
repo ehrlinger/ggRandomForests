@@ -6,9 +6,10 @@ articles:
   ggRandomForests-regression: ggRandomForests-regression.html
   ggRandomForests-survival: ggRandomForests-survival.html
   ggRandomForests: ggRandomForests.html
+  rhf: rhf.html
   uvarpro: uvarpro.html
   varpro: varpro.html
-last_built: 2026-08-21T16:08Z
+last_built: 2026-08-28T14:28Z
 urls:
   reference: https://ehrlinger.github.io/ggRandomForests/reference
   article: https://ehrlinger.github.io/ggRandomForests/articles

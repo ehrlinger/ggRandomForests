@@ -43,6 +43,18 @@ autoplot(object, ...)
 # S3 method for class 'gg_brier'
 autoplot(object, ...)
 
+# S3 method for class 'gg_rhf'
+autoplot(object, ...)
+
+# S3 method for class 'gg_tune_rhf'
+autoplot(object, ...)
+
+# S3 method for class 'gg_auct'
+autoplot(object, ...)
+
+# S3 method for class 'gg_rhf_importance'
+autoplot(object, ...)
+
 # S3 method for class 'gg_varpro'
 autoplot(object, ...)
 
@@ -121,6 +133,22 @@ The following `gg_*` classes are supported:
 - `gg_brier`:
 
   Time-resolved Brier score and CRPS
+
+- `gg_rhf`:
+
+  Random Hazard Forest hazard curves
+
+- `gg_tune_rhf`:
+
+  Random Hazard Forest tuning path
+
+- `gg_auct`:
+
+  Random Hazard Forest time-varying AUC
+
+- `gg_rhf_importance`:
+
+  Random Hazard Forest variable priority
 
 - `gg_shap`:
 

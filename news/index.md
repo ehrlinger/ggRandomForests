@@ -1,5 +1,96 @@
 # Changelog
 
+## ggRandomForests v4.0.0 (development)
+
+- Development line opened after the v3.2.0 CRAN release (forward-merged
+  the v3.2.0 RMST/varPro fixes onto the dev line).
+- Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
+  visualization layer wrapping the ‘randomForestRHF’ package (added to
+  Suggests). RHF support is gated — every gg_rhf\* entry point checks
+  [`requireNamespace("randomForestRHF")`](https://www.randomforestsrc.org/).
+  No change for users who do not install it.
+- The consistency sweep distinguishes current CRAN software versions
+  from supported minimum versions and standardizes the three
+  package-qualified fit calls and object classes:
+  [`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  -\> `rfsrc`,
+  [`randomForestRHF::rhf()`](https://www.randomforestsrc.org//reference/rhf.html)
+  -\> `rhf`, and
+  [`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
+  -\> `varpro`.
+- Add a longitudinal RHF vignette covering
+  [`gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf.md),
+  [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md),
+  [`gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf_importance.md),
+  and
+  [`gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.md)
+  from one saved analysis.
+- [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
+  /
+  [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md):
+  tidy wrapper and plot for time-varying AUC from
+  [`randomForestRHF::auct.rhf()`](https://www.randomforestsrc.org//reference/auct.rhf.html)
+  (RHF Phase 2). Returns a long frame
+  `time / auc / se / lower / upper / marker` with an `iauc` attribute
+  (Uno + standardized integrated AUC);
+  [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md)
+  draws AUC(t) with a bootstrap CI ribbon when available and a 0.5
+  reference line. `gg_auct.rhf(object, marker, auct_fit = NULL)`
+  computes `auct.rhf()` internally or reuses a cached fit.
+- [`gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf_importance.md)
+  /
+  [`plot.gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf_importance.md):
+  tidy wrapper and point matrix for time-localized variable priority
+  from
+  [`randomForestRHF::importance.rhf()`](https://www.randomforestsrc.org//reference/importance.rhf.html)
+  (RHF Phase 3). It returns
+  `variable / time_window / time / time_index / start / stop / midpoint / n_risk / n_rules / priority`,
+  accepts a supplied `importance_fit` or calculates one when absent, and
+  orders variables by their q90 priority over time windows. Priority is
+  a ranking score, not a z-score; no selection cutoff is applied.
+- [`gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.md)
+  /
+  [`plot.gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_tune_rhf.md):
+  supplied-object-only inspection of a `tune.treesize.rhf` tree-size
+  tuning path. The five returned columns are
+  `treesize / metric / value / se / selected`; the plot marks the
+  selected size and draws an iAUC standard-error ribbon only when finite
+  supplied iAUC standard errors are available.
+  [`gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.md)
+  never recalculates tuning.
+- Require `randomForestRHF (>= 2.0.0)` in Suggests, and adopt its
+  revised hazard semantics. From 2.0.0 the pointwise hazard is defined
+  only where a grid point falls inside one of the case’s supplied
+  `(start, stop]` intervals, and is `NA` in gaps and after the final
+  stop; the cumulative hazard is unaffected, because it accumulates the
+  exact interval overlap and stays flat across those regions.
+  `auct.rhf()` can likewise return an `NA` AUC at the final grid time,
+  where the censoring-weight denominator is undefined once the control
+  set is nearly exhausted.
+  [`gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf.md)
+  passes the mask through unchanged, so `hazard` may be `NA` where it
+  previously was not;
+  [`plot.gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md)
+  and
+  [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md)
+  drop those cells before drawing, so a hazard curve now ends with its
+  case’s follow-up instead of reporting removed missing values on every
+  plot. 2.0.0 also changes the default hazard aggregation
+  (`adaptive = TRUE`), which shifts fitted values; four RHF vdiffr
+  baselines and the precomputed vignette analysis were regenerated
+  against it. This resolves issue
+  [\#229](https://github.com/ehrlinger/ggRandomForests/issues/229),
+  where the earlier reading (a small negative hazard, specific to the
+  macOS arm64 binary) was wrong on both counts.
+- The RHF vignette drops its cumulative/dynamic AUC section for now and
+  keeps the incident/dynamic one. Holding the in-sample cumulative
+  hazard flat after follow-up makes it track observation length as well
+  as risk, which pushes the cumulative/dynamic curve below the chance
+  line on the vignette’s simulated data. The incident/dynamic definition
+  compares subjects within a risk set and is unaffected. Reported
+  upstream as kogalur/randomForestRHF#1; the section returns once that
+  is settled.
+
 ## ggRandomForests v3.5.2
 
 CRAN release: 2026-08-21

@@ -14,8 +14,8 @@ a large collection of de-correlated decision trees via bootstrap
 aggregation (bagging) and random feature selection, then averages their
 predictions to smooth out the noise any single tree carries. The
 **randomForestSRC** package ([Ishwaran and Kogalur
-2024](#ref-Ishwaran:RFSRC:2014)) provides a unified implementation for
-survival, regression, and classification forests.
+2026](#ref-Ishwaran:RFSRC:software:2026)) provides a unified
+implementation for survival, regression, and classification forests.
 
 **ggRandomForests** extracts tidy data objects from `rfsrc` fits and
 renders them with **ggplot2** ([Wickham 2016](#ref-Wickham:2009)),
@@ -141,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 100
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.36
+    #>        Average no. of terminal nodes: 67.14
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86073222
-    #>    (OOB) Requested performance error: 11.7802053
+    #>                      (OOB) R squared: 0.86220653
+    #>    (OOB) Requested performance error: 11.65549809
 
 The forest grew 100 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -604,9 +604,9 @@ and the Demand for a Clean Environment.” *Journal of Environmental
 Economics and Management* 5 (1): 81–102.
 <https://doi.org/10.1016/0095-0696(78)90006-2>.
 
-Ishwaran, Hemant, and Udaya B. Kogalur. 2024. *randomForestSRC: Fast
-Unified Random Forests for Survival, Regression, and Classification
-(RF-SRC)*. <https://cran.r-project.org/package=randomForestSRC>.
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. *Fast Unified Random
+Forests for Survival, Regression, and Classification (RF-SRC)*.
+<https://cran.r-project.org/package=randomForestSRC>.
 
 Ishwaran, Hemant, Udaya B. Kogalur, Eiran Z. Gorodeski, Andy J. Minn,
 and Michael S. Lauer. 2010. “High-Dimensional Variable Selection for
