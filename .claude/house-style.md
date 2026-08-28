@@ -13,7 +13,7 @@
     writing-voice.md               sha256:15e75ca9cb97
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:c1758211012e
+    r-package-structure.md         sha256:81d181998e89
 -->
 
 # House Style — ggRandomForests
@@ -470,6 +470,51 @@ Every exported object appears in exactly one `reference:` section. pkgdown
 fails the build on an unreferenced topic, and that failure is the check that
 keeps this rule honest rather than aspirational.
 
+## Development records
+
+Design documents and implementation plans are tracked in `dev/specs/`, one
+directory per repository, with the whole `dev/` tree carried by a single
+`^dev$` line in `.Rbuildignore`. They are tracked rather than ignored because
+the record of why a thing was built the way it was outlives the diff that built
+it, and it is worth more to the next reader.
+
+A file is named `<YYYY-MM-DD>-<slug>-<kind>.md`. The kind carries the
+design/plan distinction, and the path does not: a design and the plan
+implementing it share a slug, so they sort adjacent and one directory listing
+answers whether a design was ever planned.
+
+`design` and `plan` are the two kinds that pair, and most records are one or
+the other. They are not the only two — a `-findings` report, a `-learnings`
+write-up or a `-sweep` is a development record and lives here under its own
+kind. What the name has to carry is a date, a slug and a kind; the requirement
+is not that the kind be one of a closed set. Do not relabel a findings report as
+a design to satisfy a pattern, which loses the one thing the name was telling
+you.
+
+The portfolio previously encoded that distinction twice, as a `-design` suffix
+*and* a `specs/plans/` subdirectory. Two encodings of one fact drift, and this
+pair had already started to: by the time this rule was written `hvtiRtemplates`
+carried a top-level `plans/` beside its `specs/`, holding plans that its own
+convention placed in `specs/plans/`. The suffix is the encoding that survives,
+because it is the one still legible when a file is quoted on its own — in a
+`NEWS.md` entry, a roxygen block, or a commit message — where a path prefix is
+usually dropped.
+
+Two kinds of file live under `dev/` but outside `dev/specs/`. Superseded records
+move to `dev/archive/` under their existing names rather than being deleted. A
+loose working note that is neither a design nor a plan sits directly in `dev/`.
+
+A generated corpus that a spec asserts against — scan output, extracted maps,
+and the CI scripts comparing the two — goes in `dev/specs/artifacts/`, nested
+inside the prose directory rather than placed beside it. That nesting is
+load-bearing: those scripts locate the document they check relative to their
+own file, so lifting `artifacts/` up one level silently repoints them at the
+wrong directory.
+
+`ROADMAP.md` is not a development record. It says where the package is going
+rather than what was decided on a given date, and it is read by people who will
+never open `dev/`, so it belongs at the repository root.
+
 ## Continuous integration
 
 Five workflows required of every package, two more on the CRAN profile. A
@@ -866,7 +911,8 @@ after.
 Title Case in `Title`. Software names quoted in `Description`. DOIs written
 space-free as `<doi:10.xxxx/yyyy>`. `URL` lists both the GitHub repo and the
 pkgdown site. `BugReports` set. `VignetteBuilder: quarto`.
-`Config/roxygen2/version: 8.0.0`.
+`Config/roxygen2/version` matches the roxygen the package was last documented
+with; the family is on 8.1.0.
 
 ## Versioning
 
