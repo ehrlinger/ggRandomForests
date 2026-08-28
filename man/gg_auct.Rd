@@ -23,7 +23,8 @@ example \code{bootstrap.rep} to request confidence bounds, or \code{riskset} for
 incident definition. Ignored when \code{auct_fit} is supplied.}
 
 \item{marker}{Risk marker for the AUC: \code{"chf"} (cumulative hazard, default)
-or \code{"haz"} (hazard). Ignored when \code{auct_fit} is supplied.}
+or \code{"haz"} (hazard). Not used when \code{auct_fit} is supplied, though the
+value is still validated.}
 
 \item{auct_fit}{Optional precomputed \code{\link[randomForestRHF:auct.rhf]{randomForestRHF::auct.rhf()}} result
 (class \code{"auct.rhf"}) for the same \code{object}. \code{NULL} (default) computes it.
@@ -32,8 +33,8 @@ Supply it to reuse an expensive bootstrap run.}
 \item{method}{Which time-dependent AUC definition to compute, passed to
 \code{\link[randomForestRHF:auct.rhf]{randomForestRHF::auct.rhf()}}. \code{"cumulative"} (default) ranks accumulated
 risk through a horizon; \code{"incident"} ranks local failures within the risk
-set at each time. See the note below before relying on the default.
-Ignored when \code{auct_fit} is supplied.}
+set at each time. See the note below before relying on the default. Not
+used when \code{auct_fit} is supplied, though the value is still validated.}
 }
 \value{
 A \code{data.frame} of class \code{c("gg_auct", "data.frame")} with columns

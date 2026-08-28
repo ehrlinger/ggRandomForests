@@ -8,15 +8,16 @@
 #'
 #' @param object A fitted `rhf` object from \pkg{randomForestRHF}.
 #' @param marker Risk marker for the AUC: `"chf"` (cumulative hazard, default)
-#'   or `"haz"` (hazard). Ignored when `auct_fit` is supplied.
+#'   or `"haz"` (hazard). Not used when `auct_fit` is supplied, though the
+#'   value is still validated.
 #' @param auct_fit Optional precomputed [randomForestRHF::auct.rhf()] result
 #'   (class `"auct.rhf"`) for the same `object`. `NULL` (default) computes it.
 #'   Supply it to reuse an expensive bootstrap run.
 #' @param method Which time-dependent AUC definition to compute, passed to
 #'   [randomForestRHF::auct.rhf()]. `"cumulative"` (default) ranks accumulated
 #'   risk through a horizon; `"incident"` ranks local failures within the risk
-#'   set at each time. See the note below before relying on the default.
-#'   Ignored when `auct_fit` is supplied.
+#'   set at each time. See the note below before relying on the default. Not
+#'   used when `auct_fit` is supplied, though the value is still validated.
 #' @param ... Further arguments passed to [randomForestRHF::auct.rhf()], for
 #'   example `bootstrap.rep` to request confidence bounds, or `riskset` for the
 #'   incident definition. Ignored when `auct_fit` is supplied.
