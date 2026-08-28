@@ -39,7 +39,7 @@ tests/testthat/Rplots.pdf
 /Rplots.pdf
 vignettes/ggrfRegression.html
 vignettes/ggrfRegression.R
-docs
+/docs/
 # FUSE filesystem temporaries (macOS / Linux FUSE driver artefacts)
 .fuse_hidden*
 
