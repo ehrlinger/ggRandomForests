@@ -26,7 +26,7 @@
 
 | File | Responsibility | Action |
 |---|---|---|
-| `R/utils.R` | `.forest_labels()`, `.forest_labels_check()`, `.apply_forest_labels()`, `.varpro_importance_order()`, `.varpro_rank_of()` | Modify (append) |
+| `R/utils.R` | `.forest_labels()`, `.forest_labels_check()`, `.apply_forest_labels()`, `.forest_strip_labeller()`, `.varpro_importance_order()`, `.varpro_rank_of()`, `.escape_regex()` | Modify (append) |
 | `R/gg_partial_varpro.R` | Set `name` as an ordered factor; slice `nvars` after ranking | Modify |
 | `R/plot.gg_partial_varpro.R` | `labels =` argument; loud generic-scale warning | Modify |
 | `R/plot.gg_partial.R` | `labels =` on `plot.gg_partial()` and the `plot.gg_partialpro()` shim | Modify |
@@ -52,6 +52,7 @@
 - Produces:
   - `.forest_labels(labels)` → named `character` (names = variable, values = label), or `NULL` when `labels` is `NULL`.
   - `.apply_forest_labels(vars, lookup)` → `character` the same length as `vars`, unmatched entries falling back to the raw name.
+  - `.forest_strip_labeller(labels)` → a ggplot2 labeller function for `facet_wrap(labeller = )`, built from `labels` in one step. Used by Tasks 5 and 6 so the resolve-then-wrap pair is written once.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -109,6 +110,19 @@ test_that(".apply_forest_labels falls back per variable", {
 
 test_that(".apply_forest_labels is identity when lookup is NULL", {
   expect_equal(.apply_forest_labels(c("a", "b"), NULL), c("a", "b"))
+})
+
+test_that(".forest_strip_labeller builds a labeller that renames and falls back", {
+  lb <- .forest_strip_labeller(c(bpd = "BP Diastole"))
+  expect_true(is.function(lb))
+  out <- lb(list(name = c("bpd", "vis")))
+  expect_equal(unname(unlist(out)), c("BP Diastole", "vis"))
+})
+
+test_that(".forest_strip_labeller with NULL labels leaves names unchanged", {
+  lb <- .forest_strip_labeller(NULL)
+  out <- lb(list(name = c("bpd", "vis")))
+  expect_equal(unname(unlist(out)), c("bpd", "vis"))
 })
 ```
 
@@ -193,12 +207,20 @@ Append to `R/utils.R`:
   out[is.na(out)] <- vars[is.na(out)]
   out
 }
+
+## Facet-strip labeller built straight from the user's 'labels' argument, so the
+## resolve-then-wrap pair is written once rather than at every faceted call site.
+#' @keywords internal
+.forest_strip_labeller <- function(labels) {
+  lookup <- .forest_labels(labels)
+  ggplot2::as_labeller(function(v) .apply_forest_labels(v, lookup))
+}
 ```
 
 - [ ] **Step 4: Run tests to verify they pass**
 
 Run: `Rscript -e 'devtools::load_all("."); testthat::test_file("tests/testthat/test_forest_labels.R")'`
-Expected: PASS, 9 tests, 0 failures
+Expected: PASS, 11 tests, 0 failures
 
 - [ ] **Step 5: Lint and commit**
 
@@ -674,10 +696,7 @@ Immediately after `ylabel <- .partial_varpro_ylabel(prov)`, add:
   ## Labels are a presentation concern: resolved here and applied to the facet
   ## strips, never written back into x.  The returned object keeps raw variable
   ## names, because changing them would be a breaking change downstream.
-  lab_lookup <- .forest_labels(labels)
-  strip_labeller <- ggplot2::as_labeller(
-    function(v) .apply_forest_labels(v, lab_lookup)
-  )
+  strip_labeller <- .forest_strip_labeller(labels)
 ```
 
 Then change **both** `facet_wrap` calls in this function from:
@@ -810,10 +829,7 @@ plot.gg_partial <- function(x, labels = NULL, ...) {
 After the `y_lab` block, add:
 
 ```r
-  lab_lookup <- .forest_labels(labels)
-  strip_labeller <- ggplot2::as_labeller(
-    function(v) .apply_forest_labels(v, lab_lookup)
-  )
+  strip_labeller <- .forest_strip_labeller(labels)
 ```
 
 Change **both** `facet_wrap` calls in this function from:
