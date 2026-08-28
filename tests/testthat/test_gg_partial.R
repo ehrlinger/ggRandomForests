@@ -475,6 +475,7 @@ test_that("plot.gg_partial falls back to 'Partial Effect' with no ylabel", {
 # ---- labels= on plot.gg_partial() (Task 6) --------------------------------
 
 test_that("plot.gg_partial labels facet strips", {
+  set.seed(42)
   gg_dta <- list(
     continuous = data.frame(x = rep(1:5, 2),
                             yhat = rnorm(10),
@@ -493,6 +494,7 @@ test_that("plot.gg_partial labels facet strips", {
 })
 
 test_that("plot.gg_partial layers still carry data when labelled", {
+  set.seed(42)
   gg_dta <- list(
     continuous = data.frame(x = rep(1:5, 2),
                             yhat = rnorm(10),

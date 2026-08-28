@@ -438,8 +438,8 @@ test_that("gg_partial_varpro: scale='rmst' is genuinely tau-dependent", {
   r1   <- gg_partial_varpro(object = vp, scale = "rmst", time = 500,
                             xvar.names = one)
   vars <- unique(c(
-    if (nrow(r1$continuous)  > 0) r1$continuous$name,
-    if (nrow(r1$categorical) > 0) r1$categorical$name
+    if (nrow(r1$continuous)  > 0) as.character(r1$continuous$name),
+    if (nrow(r1$categorical) > 0) as.character(r1$categorical$name)
   ))
   expect_equal(vars, one)
 })
