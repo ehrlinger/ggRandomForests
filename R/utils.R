@@ -163,3 +163,49 @@ shift <- function(x, shift_by = 1) {
   lookup <- .forest_labels(labels)
   ggplot2::as_labeller(function(v) .apply_forest_labels(v, lookup))
 }
+
+## ---------------------------------------------------------------------------
+## Rank the variables in a partialpro list by varPro importance.
+##
+## get.topvars() returns a SHORT ranked vector -- far shorter than the fit
+## reaches -- so most names arrive unranked.  Those keep their incoming order and
+## are appended after the ranked block; nothing is ever dropped.
+#' @keywords internal
+.varpro_importance_order <- function(part_dta, object) {
+  nms <- names(part_dta)
+  if (is.null(object) || is.null(nms)) {
+    return(nms)
+  }
+
+  ranked <- tryCatch(as.character(varPro::get.topvars(object)),
+                     error = function(e) character(0L))
+  if (length(ranked) == 0L) {
+    return(nms)
+  }
+
+  rank_key <- .varpro_rank_of(nms, ranked)
+  ## seq_along() as the tiebreaker keeps incoming order stable among names that
+  ## share a rank (in practice, all the unranked ones at Inf).
+  nms[order(rank_key, seq_along(nms))]
+}
+
+## Position of each name in the ranked vector.  Exact match wins; failing that a
+## one-hot level (name followed by digits, e.g. sex0/sex1) is accepted and the
+## best -- lowest -- position across levels is taken.  Requiring digits keeps
+## 'age' from being captured by 'age_group'.
+#' @keywords internal
+.varpro_rank_of <- function(nms, ranked) {
+  vapply(nms, function(nm) {
+    hit <- which(ranked == nm)
+    if (length(hit) == 0L) {
+      pat <- paste0("^", .escape_regex(nm), "[0-9]+$")
+      hit <- grep(pat, ranked)
+    }
+    if (length(hit) == 0L) Inf else min(hit)
+  }, numeric(1L))
+}
+
+#' @keywords internal
+.escape_regex <- function(x) {
+  gsub("([.\\\\|()\\[\\]{}^$*+?])", "\\\\\\1", x, perl = TRUE)
+}
