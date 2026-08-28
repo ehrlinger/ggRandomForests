@@ -83,6 +83,15 @@ ggRandomForests v4.0.0 (development)
   the class-conditional panel, and `plot.gg_partial_varpro()` honours it on
   survival path-C objects (those extracted with `scale = "surv"` or `"chf"`),
   which are handed off to `plot.gg_partial_rfsrc()`.
+* `plot.gg_rhf_importance()` also gains `labels`, so the RHF priority matrix can
+  carry human-readable variable names. It takes the same three shapes and falls
+  back to the raw name per variable. The variable axis here is `y`, not a
+  flipped `x`, so the labelled scale is the y scale. The q90 variable ordering
+  and the raw names in the returned data are untouched, and
+  `autoplot.gg_rhf_importance()` forwards the argument. Previously `labels` fell
+  through `...` into `ggplot2::geom_point()` and was dropped with only ggplot2's
+  generic "Ignoring unknown parameters" warning, so the call looked accepted and
+  did nothing.
 * `plot.gg_vimp()`: `lbls` is **deprecated** in favour of `labels` and will be
   removed in a future release. Its old `length(lbls) >= length(vars)` gate is
   also gone, so a partial label set is now honoured, falling back to the raw

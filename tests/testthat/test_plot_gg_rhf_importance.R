@@ -119,3 +119,87 @@ test_that("plot.gg_rhf_importance rejects wrong and empty inputs", {
   x$priority[] <- NA_real_
   expect_error(plot(x, top_n_union = NULL), "No finite RHF priority values")
 })
+
+## ---- labels= on the variable axis -----------------------------------------
+## Unlike the other importance methods, this one draws variables on y directly
+## (no coord_flip), so the labelled scale is scale_y_discrete.
+
+.rhf_priority_axis_labels <- function(p) {
+  built <- ggplot2::ggplot_build(p)
+  unlist(lapply(built$layout$panel_params,
+                function(pp) as.character(pp$y$get_labels())))
+}
+
+test_that("plot.gg_rhf_importance labels the variable axis", {
+  p <- plot(.rhf_priority_test_object(), top_n_union = NULL,
+            labels = c(x1 = "Serum bilirubin"))
+
+  expect_true("Serum bilirubin" %in% .rhf_priority_axis_labels(p))
+})
+
+test_that("plot.gg_rhf_importance falls back to the raw name per variable", {
+  p <- plot(.rhf_priority_test_object(), top_n_union = NULL,
+            labels = c(x1 = "Serum bilirubin"))
+  axis <- .rhf_priority_axis_labels(p)
+
+  expect_true(all(c("x2", "x3") %in% axis))
+  expect_false("x1" %in% axis)
+})
+
+test_that("plot.gg_rhf_importance accepts a labelled data frame", {
+  d <- data.frame(x1 = 1:2, x2 = 3:4)
+  attr(d$x1, "label") <- "Serum bilirubin"
+  attr(d$x2, "label") <- "Prothrombin time"
+  p <- plot(.rhf_priority_test_object(), top_n_union = NULL, labels = d)
+
+  expect_true(all(c("Serum bilirubin", "Prothrombin time") %in%
+                    .rhf_priority_axis_labels(p)))
+})
+
+test_that("plot.gg_rhf_importance accepts a key/label data frame", {
+  m <- data.frame(key = "x1", label = "Serum bilirubin",
+                  stringsAsFactors = FALSE)
+  p <- plot(.rhf_priority_test_object(), top_n_union = NULL, labels = m)
+
+  expect_true("Serum bilirubin" %in% .rhf_priority_axis_labels(p))
+})
+
+test_that("plot.gg_rhf_importance with labels = NULL keeps the raw names", {
+  p <- plot(.rhf_priority_test_object(), top_n_union = NULL)
+
+  expect_setequal(.rhf_priority_axis_labels(p), c("x1", "x2", "x3"))
+})
+
+test_that("plot.gg_rhf_importance warns once when no label resolves", {
+  expect_warning(
+    plot(.rhf_priority_test_object(), top_n_union = NULL,
+         labels = c(x1 = "")),
+    "No variable labels"
+  )
+})
+
+test_that("plot.gg_rhf_importance keeps raw names in the returned data", {
+  # Labels are a display concern: the plot's data must still carry the raw
+  # variable names, so downstream code reading p$data is unaffected.
+  p <- plot(.rhf_priority_test_object(), top_n_union = NULL,
+            labels = c(x1 = "Serum bilirubin"))
+
+  expect_setequal(as.character(unique(p$data$variable)), c("x1", "x2", "x3"))
+})
+
+test_that("plot.gg_rhf_importance preserves importance order under labels", {
+  # The q90 ordering lives in the factor levels; relabelling the scale must
+  # not disturb it. Highest-ranked variable stays the last level (top of axis).
+  p <- plot(.rhf_priority_test_object(), top_n_union = NULL,
+            labels = c(x1 = "Serum bilirubin"))
+
+  expect_equal(tail(levels(p$data$variable), 1L), "x1")
+  expect_equal(tail(.rhf_priority_axis_labels(p), 1L), "Serum bilirubin")
+})
+
+test_that("autoplot.gg_rhf_importance forwards labels to the plot method", {
+  p <- ggplot2::autoplot(.rhf_priority_test_object(), top_n_union = NULL,
+                         labels = c(x1 = "Serum bilirubin"))
+
+  expect_true("Serum bilirubin" %in% .rhf_priority_axis_labels(p))
+})
