@@ -13,7 +13,7 @@
     writing-voice.md               sha256:15e75ca9cb97
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:532534260e0f
+    r-package-structure.md         sha256:5729e9210a1f
 -->
 
 # House Style — ggRandomForests
@@ -331,17 +331,15 @@ Six are required of every package, in this order:
 5. **GitHub r-package version**
 6. **lint**
 
-These are required because they're already true. Every governed package runs
-the lint, pkgdown, and test-coverage workflows today; what's missing is
-sometimes the badge, not the machinery. A workflow running green that the README
-never mentions is coverage nobody can see, which is its own small version of
-the staleness problem — the check works, and the reader has no way to know.
-repostatus is a static shield with no infrastructure behind it at all, and the
+Where the thing behind a badge exists, the badge is required: what is missing
+is more often the badge than the machinery. A check running green that the
+README never mentions is signal nobody can see, which is its own small version
+of the staleness problem — the check works, and the reader has no way to know.
+Two of the six need no machinery at all: repostatus is a static shield, and the
 version badge just reads `DESCRIPTION`, so neither has an excuse.
 
 Where a badge is genuinely missing because the underlying thing is missing,
-the fix is to add the workflow, not to drop the badge. No governed repo is in
-that position today; every one carries lint, pkgdown and test-coverage.
+the fix is to add the workflow, not to drop the badge.
 
 **Required for the `package-cran` profile**, after the six:
 
