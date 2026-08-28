@@ -416,7 +416,10 @@ gg_partial_varpro <- function(part_dta  = NULL,
   }
   ## Rank BEFORE slicing.  Slicing first would make nvars mean "the first n list
   ## elements", which is an arbitrary subset rather than the top n by importance.
-  part_dta <- part_dta[.varpro_importance_order(part_dta, object)]
+  ord <- .varpro_importance_order(part_dta, object)
+  if (!is.null(ord)) {
+    part_dta <- part_dta[ord]
+  }
 
   if (is.null(nvars)) {
     nvars <- length(part_dta)
@@ -739,8 +742,10 @@ gg_partial_varpro <- function(part_dta  = NULL,
   lvls <- names(part_dta)[seq(nvars)]
   cont <- dplyr::bind_rows(cont_list)
   cats <- dplyr::bind_rows(cat_list)
-  if (nrow(cont) > 0L) cont$name <- factor(cont$name, levels = lvls)
-  if (nrow(cats) > 0L) cats$name <- factor(cats$name, levels = lvls)
+  if (nrow(cont) > 0L && !is.null(lvls) && length(lvls) > 0L)
+    cont$name <- factor(cont$name, levels = lvls)
+  if (nrow(cats) > 0L && !is.null(lvls) && length(lvls) > 0L)
+    cats$name <- factor(cats$name, levels = lvls)
 
   list(continuous = cont, categorical = cats)
 }

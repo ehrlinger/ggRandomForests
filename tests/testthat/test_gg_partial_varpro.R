@@ -830,3 +830,10 @@ test_that("no object leaves part_dta list order intact", {
   res <- gg_partial_varpro(pd, cat_limit = 5)
   expect_equal(levels(res$continuous$name), c("zulu", "alpha", "mike"))
 })
+
+test_that("an unnamed part_dta does not crash the constructor", {
+  set.seed(42)
+  pd <- make_mock_part_dta(c("age", "bpd", "vis"))
+  names(pd) <- NULL
+  expect_no_error(suppressWarnings(gg_partial_varpro(pd, cat_limit = 5)))
+})
