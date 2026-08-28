@@ -52,9 +52,12 @@ These were verified, not assumed. They shape the design.
    passed to `rfsrc()` comes back with `f$xvar$age` label `NULL`.
 2. **`varpro` strips them too.** `v$x$age` label is `NULL`.
    ⇒ Labels **cannot** be recovered from a fit. The caller must supply them.
-3. **`varpro` carries `$xvar.org.names` and `$xvar.names`** — the original-vs-one-hot
-   mapping is on the object. Preferred over `varpro_feature_names()`'s
-   character-stripping heuristic for resolving `sex0`/`sex1` back to `sex`.
+3. **`$xvar.org.names` and `$xvar.names` are NOT parallel vectors.** On a fit with
+   a 3-level factor: `xvar.org.names` = `age, bpd, grp` (3), `xvar.names` =
+   `age, bpd` (2) — the factor was dropped from the reachable set, not one-hot
+   expanded, and `get.topvars()` returned no factor either. So neither vector can
+   index the other, and the one-hot case is version-dependent rather than
+   guaranteed. Rank resolution must not depend on them.
 4. **`get.topvars()` returns far fewer names than `xvar.names`.** On a 3-variable
    test fit it returned one. Variables with no importance rank are the **common
    case**, not an edge case.
@@ -90,9 +93,12 @@ never names an internal package in its DESCRIPTION.
 
 Returns `names(part_dta)` reordered by importance.
 
-- **With `object`:** rank against `varPro::get.topvars(object)`, resolving one-hot
-  names via `$xvar.org.names` / `$xvar.names`. Where a variable has several one-hot
-  levels, it takes its **best** rank across them.
+- **With `object`:** rank against `varPro::get.topvars(object)`. For each name in
+  `part_dta`, its rank is its position in that vector by **exact match**; failing
+  that, by a `name` + digits pattern (`sex0`, `sex1`), taking the **best** (lowest)
+  position across matching levels. Exact-first avoids misfiring on `age` versus
+  `age_group`, and the fallback covers one-hot encoding where it occurs without
+  depending on `$xvar.org.names` / `$xvar.names` (constraint 3).
 - **Unranked variables:** keep `part_dta` order, appended after the ranked block.
   Per constraint 4 this carries most of the weight. **Nothing is dropped.**
 - **Without `object`:** return `names(part_dta)` unchanged — list order, still
@@ -201,7 +207,9 @@ Deliberately not addressed, each separable:
 **Ordering**
 - factor levels of `name` match `get.topvars()` order for a mocked fit
 - unranked variables append after the ranked block; **none are dropped**
-- one-hot names resolve to the original variable via `$xvar.org.names`
+- one-hot names (`sex0`, `sex1`) resolve to `sex` via the digit-suffix fallback
+- a variable whose name is a prefix of another (`age` vs `age_group`) is not
+  mis-ranked by the fallback
 - `nvars = 3` returns the top 3 **by importance**, not the first 3 — regression
   test for defect 2
 - no `object` → `part_dta` list order preserved
