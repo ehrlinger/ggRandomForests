@@ -72,7 +72,7 @@ Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.
 arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
 
 Ishwaran H, Kogalur UB (2026). \emph{randomForestRHF: Random Hazard
-Forests}. R package version 1.0.1.
+Forests}. R package version 2.0.0.
 \url{https://CRAN.R-project.org/package=randomForestRHF}.
 }
 \seealso{

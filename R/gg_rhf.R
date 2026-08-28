@@ -15,12 +15,21 @@
 #'   `id`, `time`, `hazard`, `chf`, `source`, an integer `ntime` attribute
 #'   (number of grid points), and a `provenance` attribute.
 #'
+#'   The frame always has `ntime` rows per case. `hazard` may be `NA`: from
+#'   \pkg{randomForestRHF} 2.0.0 the pointwise hazard is defined only where a
+#'   grid point falls inside one of the case's supplied `(start, stop]`
+#'   intervals, and is `NA` in gaps and after the final stop time. `chf` is not
+#'   masked. It accumulates the exact interval overlap, so it stays flat across
+#'   those regions. The values are passed through unchanged; use
+#'   `na.rm = TRUE` when summarising `hazard`, or see [plot.gg_rhf()], which
+#'   drops the masked cells before drawing.
+#'
 #' @references
 #' Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.
 #' arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
 #'
 #' Ishwaran H, Kogalur UB (2026). \emph{randomForestRHF: Random Hazard
-#' Forests}. R package version 1.0.1.
+#' Forests}. R package version 2.0.0.
 #' \url{https://CRAN.R-project.org/package=randomForestRHF}.
 #'
 #' @seealso [plot.gg_rhf()], [randomForestRHF::rhf()]
