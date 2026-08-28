@@ -133,7 +133,7 @@
 #'     yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
 #'   )
 #' )
-#' pp <- gg_partial_varpro(mock_data)
+#' pp <- gg_partial_varpro(mock_data, scale = "logodds")
 #' plot(pp)
 #' plot(pp, type = "parametric")
 #'

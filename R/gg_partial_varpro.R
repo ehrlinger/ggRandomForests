@@ -102,8 +102,11 @@
 #'   computation and axis labeling; if \code{NULL}, three quartile time
 #'   points from \code{time.interest} are used (see
 #'   \code{\link{gg_partial_rfsrc}}).
-#' @param nvars Integer; how many variables (list elements) to process.
-#'   Defaults to every variable in \code{part_dta}.
+#' @param nvars Integer; how many variables to keep, selected as the top
+#'   \code{nvars} \strong{by varPro importance} when \code{object} is
+#'   supplied (falling back to the incoming \code{part_dta} list order
+#'   otherwise).  Defaults to every variable in \code{part_dta}.  See
+#'   \strong{Details}.
 #' @param cat_limit Integer; a variable with
 #'   \code{length(xvirtual) <= cat_limit} is treated as categorical.
 #'   Default \code{10}.
@@ -203,6 +206,20 @@
 #' the selection error has to mean anything.  And a completed frame is one
 #' dataset, not many, so the curves here carry no uncertainty from the
 #' imputation; read them as conditional on it.
+#'
+#' **\code{nvars} selects by importance, not by list position:** when
+#' \code{object} is supplied, the variables in \code{part_dta} are first
+#' reordered by their rank in \code{varPro::get.topvars(object)}, and
+#' \code{nvars} then keeps the top \code{nvars} of \emph{that} ordering --
+#' not simply the first \code{nvars} elements as they arrived.
+#' \code{get.topvars()} typically ranks far fewer variables than
+#' \code{part_dta} contains; any variable it does not rank keeps its
+#' incoming order and is appended after the ranked block, so nothing is
+#' ever dropped from consideration, only reordered.  The returned
+#' \code{continuous$name} / \code{categorical$name} column is a
+#' \code{factor} whose levels follow this same importance order (raw list
+#' order when no \code{object} was supplied), so facet panels and legend
+#' entries sort by importance rather than alphabetically.
 #'
 #' **Scale detection:** with \code{scale = "auto"} and an \code{object} in
 #' hand, the scale resolves to \code{"mortality"} for a survival forest and
@@ -308,7 +325,7 @@
 #'     yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
 #'   )
 #' )
-#' result <- gg_partial_varpro(mock_data)
+#' result <- gg_partial_varpro(mock_data, scale = "logodds")
 #' head(result$continuous)
 #' head(result$categorical)
 #'
@@ -717,7 +734,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
   bounded   <- .is_bounded_scale(scale)
   cont_list <- list()
   cat_list  <- list()
-  for (feature in seq(nvars)) {
+  for (feature in seq_len(nvars)) {
     feat      <- part_dta[[feature]]
     feat_name <- names(part_dta)[[feature]]
     if (length(feat$xvirtual) > cat_limit) {
@@ -739,7 +756,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
   }
   ## 'name' must be a factor: as a character column facet_wrap() re-sorts it
   ## alphabetically and the importance order established above is discarded.
-  lvls <- names(part_dta)[seq(nvars)]
+  lvls <- unique(names(part_dta)[seq_len(nvars)])
   cont <- dplyr::bind_rows(cont_list)
   cats <- dplyr::bind_rows(cat_list)
   if (nrow(cont) > 0L && !is.null(lvls) && length(lvls) > 0L)
@@ -757,10 +774,12 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## silently falls back to the generic "Partial Effect" label, which is honest
   ## but is rarely the scale a reader wants.
   if (is.na(family) || is.null(family)) {
-    warning("gg_partial_varpro: scale could not be resolved because no ",
-            "'object' was supplied; the y-axis will be labelled ",
-            "'Partial Effect'. Pass object = <varpro fit> to get the ",
-            "probability scale, or set 'scale' explicitly.", call. = FALSE)
+    warning("gg_partial_varpro: scale could not be resolved because the ",
+            "fit family is unknown (no 'object' was supplied, or its ",
+            "'family' element is missing); the y-axis will be labelled ",
+            "'Partial Effect'. Pass object = <varpro fit> with a resolvable ",
+            "family to get the probability scale, or set 'scale' ",
+            "explicitly.", call. = FALSE)
     return("generic")
   }
   if (family == "surv")  return("surv")    # bounded survival default (3.3.0)
