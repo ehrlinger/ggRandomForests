@@ -29,6 +29,13 @@ Separately, every forest plot that draws variable names draws the **raw column
 name** (`bpd_last`, `vis_last`) where the deliverable needs a human label
 ("BP Diastole", "VIS").
 
+**A fourth bug, found while planning.** `plot.gg_vimp()` already exports an `lbls`
+argument for exactly this purpose, but gates it on
+`if (length(lbls) >= length(gg_dta$vars))` (`R/plot.gg_vimp.R:135`). Supplying
+labels for *some* variables silently does nothing — no warning, no partial
+labelling. Same failure class as row 2: a guard that turns a partial request into
+a no-op instead of honouring what it can.
+
 Rows 1 and 2 are defects in **both** views — importance order and top-n selection
 are wrong whatever scale you draw on. **Row 3 is not a defect**; it is a default
 that makes the generic path easier to reach than the probability path CORR reads.
@@ -120,6 +127,16 @@ dependency); or keep patchwork and fix only its symptoms (shared y-limits,
 
 ### Component 3 — apply at four sites
 
+**Argument name.** The argument is `labels =` at all four sites.
+`plot.gg_vimp()`'s existing `lbls` is **deprecated** in favour of it: it keeps
+working for one cycle, emits a deprecation warning when supplied, and forwards to
+`labels`. v4.0.0 is a major release, which is the correct window for this; doing it
+in a patch would not be. Supplying both is an error.
+
+The deprecation also retires the `length(lbls) >= length(vars)` gate: `labels`
+honours a partial lookup and falls back to raw names per variable, matching
+`.forest_labels()` everywhere else.
+
 **Where each concern lives.** Ordering is a **data** concern and belongs in the
 constructor (`name`'s factor levels are set there). Labels are a **presentation**
 concern and belong in the **plot method**: a new `labels =` argument on each
@@ -134,7 +151,7 @@ display labels.
 |---|---|---|
 | varPro partial | `plot.gg_partial_varpro.R` | labels + ordering |
 | rfsrc partial | `plot.gg_partial.R` | labels |
-| rfsrc VIMP | `plot.gg_vimp.R` | labels |
+| rfsrc VIMP | `plot.gg_vimp.R` | labels + `lbls` deprecation + length-gate fix |
 | varPro importance | `plot.gg_varpro.R` | labels |
 
 Labels apply to facet strips and to the categorical axis.
@@ -176,6 +193,10 @@ Deliberately not addressed, each separable:
 - `labels = NULL` reproduces current output
 - the returned object's columns still carry **raw** names after plotting with labels
 - `plot.gg_partialpro()` (deprecated shim) forwards `labels=` identically
+- `plot.gg_vimp(lbls = ...)` still labels, and warns once about deprecation
+- `plot.gg_vimp(labels = ...)` with **fewer labels than variables** labels what it
+  can and falls back per variable — regression test for the length-gate bug
+- supplying both `lbls` and `labels` is an error
 
 **Ordering**
 - factor levels of `name` match `get.topvars()` order for a mocked fit
