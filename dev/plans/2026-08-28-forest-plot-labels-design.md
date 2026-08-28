@@ -9,21 +9,32 @@ session's work land.
 
 ## Problem
 
-`plot()` on a `gg_partial_varpro` object produces a figure that is not usable in
-a CORR deliverable without hand-rebuilding it. Three defects, all originating in
-the constructor, all surfacing in the plot:
+`plot()` on a `gg_partial_varpro` object produces a **methods** figure where the
+default should be a **deliverable** figure. The current output is not wrong — the
+three-series overlay on an additive scale is a legitimate diagnostic, and the
+plot method's own documentation describes reading where the parametric,
+nonparametric and causal curves fan apart. That view earns its keep. It is simply
+not the one you want by default, and getting the deliverable view currently means
+rebuilding the figure by hand.
+
+Underneath that framing sit **two genuine bugs** and **one default problem**:
 
 | # | Symptom | Root cause | Site |
 |---|---|---|---|
 | 1 | Facets sorted alphabetically | `plt.df$name <- feat_name` writes a **character**; `facet_wrap()` re-sorts it, discarding `part_dta` order | `.build_varpro_dfs()` |
 | 2 | `nvars` returns the wrong variables | Slices `seq(nvars)` — the **first** n list elements, before any ranking | `.build_varpro_dfs()` |
-| 3 | y-axis reads "Partial Effect" | `object=` absent → `family` is `NA` → `.resolve_varpro_scale()` returns `"generic"` → label hits the fallback branch. Silent. | `.resolve_varpro_scale()` |
+| 3 | y-axis reads "Partial Effect" (**not a bug**) | `object=` absent → `family` is `NA` → `.resolve_varpro_scale()` returns `"generic"`. The label is *honest* — the scale genuinely could not be determined. The problem is that this path is silent and easy to fall into. | `.resolve_varpro_scale()` |
 
 Separately, every forest plot that draws variable names draws the **raw column
 name** (`bpd_last`, `vis_last`) where the deliverable needs a human label
 ("BP Diastole", "VIS").
 
-Defect 2 is the serious one: it silently substitutes an arbitrary subset for the
+Rows 1 and 2 are defects in **both** views — importance order and top-n selection
+are wrong whatever scale you draw on. **Row 3 is not a defect**; it is a default
+that makes the generic path easier to reach than the probability path CORR reads.
+Its fix is a warning, not a changed label.
+
+Row 2 is the serious one: it silently substitutes an arbitrary subset for the
 top-n and there is no symptom in the output.
 
 ## Constraints established by investigation
@@ -124,7 +135,9 @@ the axis `P(Y = target)`.
 Deliberately not addressed, each separable:
 
 - The three-series overlay (`parametric` / `nonparametric` / `causal`) drawn
-  without a legend or annotation.
+  without a legend or annotation. **Deliberately retained** — it is the diagnostic
+  view, and the docs teach reading it. Annotating the series (house style: annotate,
+  never a legend) is a separate improvement, not part of this change.
 - The categorical panel's `patchwork` layout and default fills.
 - RHF importance sites (above).
 
