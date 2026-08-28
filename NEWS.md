@@ -30,12 +30,35 @@ ggRandomForests v4.0.0 (development)
   n_risk / n_rules / priority`, accepts a supplied `importance_fit` or
   calculates one when absent, and orders variables by their q90 priority over
   time windows. Priority is a ranking score, not a z-score; no selection
-  cutoff is applied. RHF support now requires `randomForestRHF >= 1.0.1`.
+  cutoff is applied.
 * `gg_tune_rhf()` / `plot.gg_tune_rhf()`: supplied-object-only inspection of a
   `tune.treesize.rhf` tree-size tuning path. The five returned columns are
   `treesize / metric / value / se / selected`; the plot marks the selected
   size and draws an iAUC standard-error ribbon only when finite supplied iAUC
   standard errors are available. `gg_tune_rhf()` never recalculates tuning.
+* Require `randomForestRHF (>= 2.0.0)` in Suggests, and adopt its revised
+  hazard semantics. From 2.0.0 the pointwise hazard is defined only where a
+  grid point falls inside one of the case's supplied `(start, stop]`
+  intervals, and is `NA` in gaps and after the final stop; the cumulative
+  hazard is unaffected, because it accumulates the exact interval overlap and
+  stays flat across those regions. `auct.rhf()` can likewise return an `NA`
+  AUC at the final grid time, where the censoring-weight denominator is
+  undefined once the control set is nearly exhausted. `gg_rhf()` passes the
+  mask through unchanged, so `hazard` may be `NA` where it previously was not;
+  `plot.gg_rhf()` and `plot.gg_auct()` drop those cells before drawing, so a
+  hazard curve now ends with its case's follow-up instead of reporting removed
+  missing values on every plot. 2.0.0 also changes the default hazard
+  aggregation (`adaptive = TRUE`), which shifts fitted values; four RHF vdiffr
+  baselines and the precomputed vignette analysis were regenerated against it.
+  This resolves issue #229, where the earlier reading (a small negative hazard,
+  specific to the macOS arm64 binary) was wrong on both counts.
+* The RHF vignette drops its cumulative/dynamic AUC section for now and keeps
+  the incident/dynamic one. Holding the in-sample cumulative hazard flat after
+  follow-up makes it track observation length as well as risk, which pushes
+  the cumulative/dynamic curve below the chance line on the vignette's
+  simulated data. The incident/dynamic definition compares subjects within a
+  risk set and is unaffected. Reported upstream as
+  kogalur/randomForestRHF#1; the section returns once that is settled.
 * `plot.gg_partial_varpro()`, `plot.gg_partial()`, `plot.gg_vimp()` and
   `plot.gg_varpro()` gain a `labels` argument for human-readable variable
   names. It accepts a named character vector, a labelled data frame (reading

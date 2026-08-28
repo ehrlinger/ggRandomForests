@@ -20,7 +20,7 @@
 #' diagnostic and exploration figures for fits from
 #' \code{randomForestSRC::rfsrc()} (\code{rfsrc} class;
 #' \pkg{randomForestSRC} >= 3.4.0), \code{randomForestRHF::rhf()}
-#' (\code{rhf} class; \pkg{randomForestRHF} >= 1.0.1),
+#' (\code{rhf} class; \pkg{randomForestRHF} >= 2.0.0),
 #' \code{varPro::varpro()} (\code{varpro} class; \pkg{varPro} >= 3.1.0),
 #' or \code{\link[randomForest]{randomForest}}.
 #'
@@ -148,7 +148,7 @@
 #' arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
 #'
 #' Ishwaran H, Kogalur UB (2026). \emph{randomForestRHF: Random Hazard
-#' Forests}. R package version 1.0.1.
+#' Forests}. R package version 2.0.0.
 #' \url{https://CRAN.R-project.org/package=randomForestRHF}
 #'
 #' Wickham, H. ggplot2: elegant graphics for data analysis. Springer New York,
