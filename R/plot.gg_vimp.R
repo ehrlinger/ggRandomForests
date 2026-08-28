@@ -31,8 +31,13 @@
 #' @param x \code{\link{gg_vimp}} object created from a
 #' \code{\link[randomForestSRC]{rfsrc}} object
 #' @param relative should we plot vimp or relative vimp. Defaults to vimp.
-#' @param lbls A vector of alternative variable labels. Item names should be
-#' the same as the variable names.
+#' @param lbls \emph{Deprecated} as of v4.0.0; use \code{labels}.  A named
+#'   character vector of alternative variable labels.
+#' @param labels Optional variable labels for the variable axis.  One of: a named
+#'   character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+#'   whose \code{attr(col, "label")} values are read; or a two-column
+#'   \code{key}/\code{label} data frame.  Variables with no label keep their raw
+#'   name.  Defaults to \code{NULL} (raw names).
 #' @param ... optional arguments passed to gg_vimp if necessary
 #'
 #' @return \code{ggplot} object
@@ -68,7 +73,7 @@
 #'
 #'
 #' @export
-plot.gg_vimp <- function(x, relative, lbls, ...) {
+plot.gg_vimp <- function(x, relative, lbls, labels = NULL, ...) {
   gg_dta <- x
 
   # Accept raw rfsrc / randomForest objects and compute VIMP on the fly
@@ -129,19 +134,26 @@ plot.gg_vimp <- function(x, relative, lbls, ...) {
     ggplot2::labs(x = "", y = msr,
                   fill = legend_title, color = legend_title)
 
+  ## 'lbls' is deprecated in favour of 'labels' (v4.0.0).  The old argument took
+  ## a named character vector only, and silently did nothing unless at least as
+  ## many labels as variables were supplied; 'labels' honours a partial lookup
+  ## and falls back per variable.
   if (!missing(lbls)) {
-    # Map internal variable names to human-readable labels.  lbls should be a
-    # named character vector; any unmatched variables keep their original name.
-    if (length(lbls) >= length(gg_dta$vars)) {
-      st_lbls <- lbls[as.character(gg_dta$vars)]
-      names(st_lbls) <- as.character(gg_dta$vars)
-      # Fall back to the raw variable name when no label was supplied
-      st_lbls[which(is.na(st_lbls))] <-
-        names(st_lbls[which(is.na(st_lbls))])
-
-      gg_plt <- gg_plt +
-        ggplot2::scale_x_discrete(labels = st_lbls)
+    if (!is.null(labels)) {
+      stop("plot.gg_vimp: supply either 'lbls' or 'labels', not both. ",
+           "'lbls' is deprecated; use 'labels'.", call. = FALSE)
     }
+    warning("plot.gg_vimp: 'lbls' is deprecated and will be removed in a ",
+            "future release; use 'labels' instead.", call. = FALSE)
+    labels <- lbls
+  }
+
+  lab_lookup <- .forest_labels(labels)
+  if (!is.null(lab_lookup)) {
+    gg_plt <- gg_plt +
+      ggplot2::scale_x_discrete(
+        labels = function(v) .apply_forest_labels(v, lab_lookup)
+      )
   }
 
   # Flip coordinates so variable names appear on the y-axis (horizontal bars
