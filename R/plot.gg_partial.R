@@ -40,6 +40,11 @@ partial_surv_y_label <- function(partial.type) {
 #' one tuned, one default) in the same figure.
 #'
 #' @param x A \code{\link{gg_partial}} object (output of \code{\link{gg_partial}}).
+#' @param labels Optional variable labels for the facet strips.  One of: a named
+#'   character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+#'   whose \code{attr(col, "label")} values are read; or a two-column
+#'   \code{key}/\code{label} data frame.  Variables with no label keep their raw
+#'   name.  Defaults to \code{NULL} (raw names).
 #' @param ... Not currently used; reserved for future arguments.
 #'
 #' @return A \code{ggplot} (or \code{patchwork}) object.  When only one
@@ -61,7 +66,7 @@ partial_surv_y_label <- function(partial.type) {
 #' @importFrom ggplot2 .data
 #' @importFrom patchwork wrap_plots
 #' @export
-plot.gg_partial <- function(x, ...) {
+plot.gg_partial <- function(x, labels = NULL, ...) {
   gg_dta <- x
 
   ## plot.variable() records what the partial yhat actually is ("mortality",
@@ -72,6 +77,11 @@ plot.gg_partial <- function(x, ...) {
   if (is.null(y_lab)) {
     y_lab <- "Partial Effect"
   }
+
+  ## Labels are a presentation concern: resolved here and applied to the facet
+  ## strips, never written back into x.  The returned object keeps raw variable
+  ## names, because changing them would be a breaking change downstream.
+  strip_labeller <- .forest_strip_labeller(labels)
 
   gg_cont <- NULL
   if (!is.null(gg_dta$continuous) && nrow(gg_dta$continuous) > 0) {
@@ -86,7 +96,7 @@ plot.gg_partial <- function(x, ...) {
     }
 
     gg_cont <- gg_cont +
-      ggplot2::facet_wrap(~name, scales = "free_x") +
+      ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
       ggplot2::labs(x = NULL, y = y_lab)
   }
 
@@ -96,7 +106,7 @@ plot.gg_partial <- function(x, ...) {
     gg_cat <- ggplot2::ggplot(cat_dta,
                               ggplot2::aes(x = .data$x, y = .data$yhat)) +
       ggplot2::geom_bar(stat = "identity", width = 0.5) +
-      ggplot2::facet_wrap(~name, scales = "free_x") +
+      ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
       ggplot2::labs(x = NULL, y = y_lab)
   }
 

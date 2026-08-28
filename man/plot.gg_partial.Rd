@@ -4,10 +4,16 @@
 \alias{plot.gg_partial}
 \title{Plot a \code{\link{gg_partial}} object}
 \usage{
-\method{plot}{gg_partial}(x, ...)
+\method{plot}{gg_partial}(x, labels = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{\link{gg_partial}} object (output of \code{\link{gg_partial}}).}
+
+\item{labels}{Optional variable labels for the facet strips.  One of: a named
+character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+whose \code{attr(col, "label")} values are read; or a two-column
+\code{key}/\code{label} data frame.  Variables with no label keep their raw
+name.  Defaults to \code{NULL} (raw names).}
 
 \item{...}{Not currently used; reserved for future arguments.}
 }
