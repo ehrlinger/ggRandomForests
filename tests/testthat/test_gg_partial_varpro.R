@@ -67,37 +67,37 @@ test_that("gg_partial_varpro: precomputed part_dta skips the default-tau path", 
 
 ## ── Class & structure ────────────────────────────────────────────────────────
 test_that("gg_partial_varpro returns gg_partial_varpro class", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   expect_s3_class(result, "gg_partial_varpro")
 })
 
 test_that("gg_partial_varpro has continuous and categorical elements", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   expect_named(result, c("continuous", "categorical"))
   expect_s3_class(result$continuous, "data.frame")
   expect_s3_class(result$categorical, "data.frame")
 })
 
 test_that("gg_partial_varpro continuous has required columns", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   expect_true(all(c("variable", "parametric", "nonparametric", "causal", "name")
                   %in% colnames(result$continuous)))
 })
 
 test_that("gg_partial_varpro categorical has required columns", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   expect_true(all(c("parametric", "nonparametric", "causal", "variable", "name")
                   %in% colnames(result$categorical)))
 })
 
 test_that("gg_partial_varpro continuous: one row per xvirtual point (age)", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   age_rows <- result$continuous[result$continuous$name == "age", ]
   expect_equal(nrow(age_rows), 15L)
 })
 
 test_that("gg_partial_varpro: age is continuous, sex is categorical", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   expect_true("age" %in% result$continuous$name)
   expect_false("age" %in% result$categorical$name)
   expect_true("sex" %in% result$categorical$name)
@@ -106,7 +106,7 @@ test_that("gg_partial_varpro: age is continuous, sex is categorical", {
 
 ## ── Provenance attribute ─────────────────────────────────────────────────────
 test_that("gg_partial_varpro attaches provenance list attr", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   prov <- attr(result, "provenance")
   expect_type(prov, "list")
   expect_true(all(c("family", "scale", "rmst_tau", "xvar.names", "n", "path",
@@ -115,13 +115,13 @@ test_that("gg_partial_varpro attaches provenance list attr", {
 })
 
 test_that("gg_partial_varpro: provenance path = 'A' for A-path", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   expect_equal(attr(result, "provenance")$path, "A")
 })
 
 ## ── Scale resolution ─────────────────────────────────────────────────────────
 test_that("gg_partial_varpro: scale='auto' no object → prov scale='generic'", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   expect_equal(attr(result, "provenance")$scale, "generic")
 })
 
@@ -142,53 +142,53 @@ test_that("gg_partial_varpro: scale='rmst' with time stored in provenance", {
 
 ## ── nvars + model ────────────────────────────────────────────────────────────
 test_that("gg_partial_varpro: nvars=1 processes only first variable", {
-  result <- gg_partial_varpro(make_mock_vpro_data(), nvars = 1)
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data(), nvars = 1))
   expect_true("age" %in% result$continuous$name)
   expect_equal(nrow(result$categorical), 0L)
 })
 
 test_that("gg_partial_varpro: model arg adds column", {
-  result <- gg_partial_varpro(make_mock_vpro_data(), model = "forest1")
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data(), model = "forest1"))
   expect_true("model" %in% colnames(result$continuous))
   expect_true("model" %in% colnames(result$categorical))
   expect_equal(unique(result$continuous$model), "forest1")
 })
 
 test_that("gg_partial_varpro: no model arg → no model column", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   expect_false("model" %in% colnames(result$continuous))
 })
 
 ## ── Numeric/structural tests ──────────────────────────────────────────────────
 test_that("gg_partial_varpro: continuous parametric equals colMeans(yhat.par)", {
   d      <- make_mock_vpro_data()
-  result <- gg_partial_varpro(d)
+  result <- suppressWarnings(gg_partial_varpro(d))
   expected <- colMeans(d$age$yhat.par, na.rm = TRUE)
   expect_equal(result$continuous$parametric[result$continuous$name == "age"],
                expected)
 })
 
 test_that("gg_partial_varpro: categorical sex has n_obs * 2 rows", {
-  result  <- gg_partial_varpro(make_mock_vpro_data())
+  result  <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   sex_rows <- result$categorical[result$categorical$name == "sex", ]
   expect_equal(nrow(sex_rows), 30L * 2L)
 })
 
 ## ── plot.gg_partial_varpro (A-path) ──────────────────────────────────────────
 test_that("plot.gg_partial_varpro: continuous-only returns ggplot", {
-  result <- gg_partial_varpro(make_mock_vpro_data(), nvars = 1)
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data(), nvars = 1))
   gg <- plot(result)
   expect_s3_class(gg, "ggplot")
 })
 
 test_that("plot.gg_partial_varpro: both cont + cat returns ggplot", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   gg <- plot(result)
   expect_s3_class(gg, "ggplot")
 })
 
 test_that("plot.gg_partial_varpro: type arg selects effect columns", {
-  result <- gg_partial_varpro(make_mock_vpro_data(), nvars = 1)
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data(), nvars = 1))
   gg <- plot(result, type = "parametric")
   expect_s3_class(gg, "ggplot")
 })
@@ -212,19 +212,19 @@ test_that("plot.gg_partial_varpro: scale='rmst' with time → RMST y-label", {
 
 ## ── autoplot / print / summary ───────────────────────────────────────────────
 test_that("autoplot.gg_partial_varpro: returns ggplot", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   expect_s3_class(ggplot2::autoplot(result), "ggplot")
 })
 
 test_that("print.gg_partial_varpro: returns x invisibly", {
-  result <- gg_partial_varpro(make_mock_vpro_data())
+  result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   out <- capture.output(ret <- print(result))
   expect_identical(ret, result)
   expect_true(any(grepl("gg_partial_varpro", out)))
 })
 
 test_that("summary.gg_partial_varpro: returns summary.gg", {
-  result  <- gg_partial_varpro(make_mock_vpro_data())
+  result  <- suppressWarnings(gg_partial_varpro(make_mock_vpro_data()))
   s       <- summary(result)
   expect_s3_class(s, "summary.gg")
 })
@@ -262,7 +262,8 @@ test_that(".resolve_varpro_scale maps 'auto' by family, passes others through", 
   expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", "class"), "prob")
   expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", "regr"),
                "generic")
-  expect_equal(ggRandomForests:::.resolve_varpro_scale("auto", NA_character_),
+  expect_equal(suppressWarnings(
+    ggRandomForests:::.resolve_varpro_scale("auto", NA_character_)),
                "generic")
   # explicit scales returned unchanged
   expect_equal(ggRandomForests:::.resolve_varpro_scale("rmst", "surv"), "rmst")
@@ -806,7 +807,7 @@ make_mock_part_dta <- function(names_vec, n_obs = 20, n_pts = 12) {
 test_that("name is a factor so facet order is not alphabetical", {
   set.seed(42)
   pd <- make_mock_part_dta(c("vis", "age", "bpd"))
-  res <- gg_partial_varpro(pd, cat_limit = 5)
+  res <- suppressWarnings(gg_partial_varpro(pd, cat_limit = 5))
   expect_s3_class(res$continuous$name, "factor")
   expect_equal(levels(res$continuous$name), c("vis", "age", "bpd"))
 })
@@ -827,7 +828,7 @@ test_that("nvars selects the top n by importance, not the first n", {
 test_that("no object leaves part_dta list order intact", {
   set.seed(42)
   pd <- make_mock_part_dta(c("zulu", "alpha", "mike"))
-  res <- gg_partial_varpro(pd, cat_limit = 5)
+  res <- suppressWarnings(gg_partial_varpro(pd, cat_limit = 5))
   expect_equal(levels(res$continuous$name), c("zulu", "alpha", "mike"))
 })
 
@@ -836,4 +837,34 @@ test_that("an unnamed part_dta does not crash the constructor", {
   pd <- make_mock_part_dta(c("age", "bpd", "vis"))
   names(pd) <- NULL
   expect_no_error(suppressWarnings(gg_partial_varpro(pd, cat_limit = 5)))
+})
+
+## ── Audible fallback when 'auto' cannot resolve a scale (Task 4) ────────────
+
+test_that("auto scale warns when no fit is available to resolve it", {
+  set.seed(42)
+  pd <- make_mock_part_dta(c("age", "bpd"))
+  expect_warning(gg_partial_varpro(pd, cat_limit = 5),
+                 "scale could not be resolved")
+})
+
+test_that("an explicit scale does not warn", {
+  set.seed(42)
+  pd <- make_mock_part_dta(c("age", "bpd"))
+  expect_no_warning(gg_partial_varpro(pd, scale = "logodds", cat_limit = 5))
+})
+
+test_that("a classification fit resolves auto to prob without warning", {
+  fake <- structure(list(family = "class"), class = "varpro")
+  expect_no_warning(sc <- .resolve_varpro_scale("auto", fake$family))
+  expect_equal(sc, "prob")
+})
+
+test_that("the prob scale labels the y axis P(Y = target)", {
+  prov <- list(scale = "prob", target = "1")
+  expect_equal(.partial_varpro_ylabel(prov), "P(Y = 1)")
+})
+
+test_that("an unresolved scale still labels the y axis Partial Effect", {
+  expect_equal(.partial_varpro_ylabel(list(scale = "generic")), "Partial Effect")
 })

@@ -753,7 +753,16 @@ gg_partial_varpro <- function(part_dta  = NULL,
 #' @keywords internal
 .resolve_varpro_scale <- function(scale, family) {
   if (scale != "auto") return(scale)
-  if (is.na(family) || is.null(family)) return("generic")
+  ## No fit means no family, and no family means no scale.  Say so: the y-axis
+  ## silently falls back to the generic "Partial Effect" label, which is honest
+  ## but is rarely the scale a reader wants.
+  if (is.na(family) || is.null(family)) {
+    warning("gg_partial_varpro: scale could not be resolved because no ",
+            "'object' was supplied; the y-axis will be labelled ",
+            "'Partial Effect'. Pass object = <varpro fit> to get the ",
+            "probability scale, or set 'scale' explicitly.", call. = FALSE)
+    return("generic")
+  }
   if (family == "surv")  return("surv")    # bounded survival default (3.3.0)
   if (family == "class") return("prob")    # probability default (3.3.0)
   "generic"   # regr or unknown
