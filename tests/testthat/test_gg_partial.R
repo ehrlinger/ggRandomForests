@@ -475,6 +475,7 @@ test_that("plot.gg_partial falls back to 'Partial Effect' with no ylabel", {
 # ---- labels= on plot.gg_partial() (Task 6) --------------------------------
 
 test_that("plot.gg_partial labels facet strips", {
+  skip_if_not_installed("ggplot2", "4.0.0")
   set.seed(42)
   gg_dta <- list(
     continuous = data.frame(x = rep(1:5, 2),
@@ -508,6 +509,7 @@ test_that("plot.gg_partial layers still carry data when labelled", {
 })
 
 test_that("plot.gg_partial labels the categorical facet strips", {
+  skip_if_not_installed("ggplot2", "4.0.0")
   # Both tests above build continuous-only data, so the categorical
   # facet_wrap()'s labeller was never asserted -- this pins it.
   set.seed(42)

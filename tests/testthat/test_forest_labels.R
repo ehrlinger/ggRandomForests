@@ -63,3 +63,48 @@ test_that(".forest_strip_labeller with NULL labels leaves names unchanged", {
   out <- lb(list(name = c("bpd", "vis")))
   expect_equal(unname(unlist(out)), c("bpd", "vis"))
 })
+
+test_that("a blank or NA label is dropped, so the variable falls back to its name", {
+  # The labelled-data-frame arm already dropped these; a named vector must
+  # behave identically for the same information.
+  out <- .forest_labels(c(bpd = "", vis = "VIS"))
+  expect_false("bpd" %in% names(out))
+  expect_equal(out[["vis"]], "VIS")
+  expect_equal(.apply_forest_labels(c("bpd", "vis"), out), c("bpd", "VIS"))
+
+  out_na <- .forest_labels(c(bpd = NA_character_, vis = "VIS"))
+  expect_false("bpd" %in% names(out_na))
+})
+
+test_that("a key/label frame with a blank label drops it too", {
+  m <- data.frame(key = c("bpd", "vis"), label = c("", "VIS"),
+                  stringsAsFactors = FALSE)
+  out <- .forest_labels(m)
+  expect_false("bpd" %in% names(out))
+  expect_equal(out[["vis"]], "VIS")
+})
+
+test_that("an entry with a blank or NA name is dropped", {
+  # A zero-length name cannot be written as a literal, so build it by assignment.
+  v <- c("Orphan", "VIS")
+  names(v) <- c("", "vis")
+  expect_equal(unname(.forest_labels(v)), "VIS")
+
+  names(v) <- c(NA_character_, "vis")
+  expect_equal(unname(.forest_labels(v)), "VIS")
+})
+
+test_that("all three shapes agree on the same information", {
+  vec <- .forest_labels(c(bpd = "BP Diastole", vis = ""))
+  df  <- data.frame(key = c("bpd", "vis"), label = c("BP Diastole", ""),
+                    stringsAsFactors = FALSE)
+  lab <- data.frame(bpd = 1:2, vis = 3:4)
+  attr(lab$bpd, "label") <- "BP Diastole"
+  attr(lab$vis, "label") <- ""
+  expect_equal(.forest_labels(df), vec)
+  expect_equal(.forest_labels(lab), vec)
+})
+
+test_that("a lookup whose every label is blank warns like an empty one", {
+  expect_warning(.forest_labels(c(bpd = "", vis = "")), "No variable labels")
+})

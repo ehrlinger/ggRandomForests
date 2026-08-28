@@ -577,6 +577,7 @@ test_that("gg_partial_varpro: plot C-path returns ggplot", {
 })
 
 test_that("gg_partial_varpro: plot C-path honours labels on the facet strips", {
+  skip_if_not_installed("ggplot2", "4.0.0")
   # Path-C dispatches via NextMethod() to plot.gg_partial_rfsrc(); this pins
   # that `labels` survives that hand-off instead of evaporating into `...`.
   # xvar_subset = 5L is "age" alone -- continuous-only, so the result is a
@@ -919,6 +920,7 @@ test_that("an unresolved scale still labels the y axis Partial Effect", {
 ## ── labels = on facet strips (Task 5) ────────────────────────────────────────
 
 test_that("labels rename facet strips without touching the data", {
+  skip_if_not_installed("ggplot2", "4.0.0")
   set.seed(42)
   pd  <- make_mock_part_dta(c("bpd", "vis"))
   res <- gg_partial_varpro(pd, scale = "logodds", cat_limit = 5)
@@ -936,6 +938,7 @@ test_that("labels rename facet strips without touching the data", {
 })
 
 test_that("an unlabelled variable keeps its raw name", {
+  skip_if_not_installed("ggplot2", "4.0.0")
   set.seed(42)
   pd  <- make_mock_part_dta(c("bpd", "vis"))
   res <- gg_partial_varpro(pd, scale = "logodds", cat_limit = 5)
@@ -945,6 +948,7 @@ test_that("an unlabelled variable keeps its raw name", {
 })
 
 test_that("labels = NULL reproduces the unlabelled plot", {
+  skip_if_not_installed("ggplot2", "4.0.0")
   set.seed(42)
   pd  <- make_mock_part_dta(c("bpd", "vis"))
   res <- gg_partial_varpro(pd, scale = "logodds", cat_limit = 5)
@@ -954,6 +958,7 @@ test_that("labels = NULL reproduces the unlabelled plot", {
 })
 
 test_that("the deprecated shim forwards labels identically", {
+  skip_if_not_installed("ggplot2", "4.0.0")
   set.seed(42)
   pd  <- make_mock_part_dta(c("bpd", "vis"))
   res <- gg_partial_varpro(pd, scale = "logodds", cat_limit = 5)
@@ -965,6 +970,7 @@ test_that("the deprecated shim forwards labels identically", {
 })
 
 test_that("autoplot.gg_partialpro forwards labels through '...'", {
+  skip_if_not_installed("ggplot2", "4.0.0")
   # autoplot.gg_partialpro() has no 'labels' formal of its own -- it takes
   # only (object, ...) and re-dispatches to autoplot.gg_partial_varpro(),
   # which forwards '...' to plot(). This pins that the forwarding actually

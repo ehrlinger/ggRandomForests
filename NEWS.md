@@ -89,6 +89,11 @@ ggRandomForests v4.0.0 (development)
   "Partial Effect" axis. The fallback label itself was never wrong — it was
   honest about an unknown scale — but the silence around it was, so the
   fallback now says so.
+* The `labels` lookup now drops entries whose label or name is blank or `NA`,
+  so a variable given an empty label falls back to its raw name rather than
+  drawing blank axis or strip text. All three accepted input shapes now agree
+  on the same information; previously the labelled-data-frame arm dropped
+  blanks while a named vector or `key`/`label` frame kept them.
 * `gg_partial_varpro()` now rejects an unnamed `part_dta` with a clear error
   instead of accepting it. The names of that list *are* the variable
   identities; without them the constructor cannot build a `name` column at all,

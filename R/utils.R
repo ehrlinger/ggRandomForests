@@ -135,6 +135,17 @@ shift <- function(x, shift_by = 1) {
 ## simply unlabelled with no explanation.
 #' @keywords internal
 .forest_labels_check <- function(x) {
+  ## A blank or missing label is not a label: drop it so the variable falls back
+  ## to its raw name. Done centrally because the labelled-data-frame arm already
+  ## dropped these, and a named vector or key/label frame must not behave
+  ## differently for the same information -- "never blank" is the contract.
+  if (length(x) > 0L) {
+    nms  <- names(x)
+    keep <- !is.na(x) & nzchar(x)
+    keep <- if (is.null(nms)) rep(FALSE, length(x)) else
+      keep & !is.na(nms) & nzchar(nms)
+    x <- x[keep]
+  }
   if (length(x) == 0L) {
     warning("No variable labels were found. If the data came through a ",
             "parquet round-trip, 'label' attributes may have been dropped; ",
