@@ -83,3 +83,83 @@ shift <- function(x, shift_by = 1) {
   }
   tbl
 }
+
+# --------------------------------------------------------------------------- #
+# Variable-label resolution, shared by every plot method that draws variable
+# names.  Base R only: 'ggRandomForests' is on CRAN and must not take a
+# dependency on 'labelled' or on an internal package for a cosmetic feature.
+#
+# Three input shapes are accepted, because attr(x, "label") is a haven/SAS-era
+# carrier that does not reliably survive a parquet round-trip.  The named-vector
+# and key/label arms are format-agnostic and are the durable ones.
+#' @keywords internal
+.forest_labels <- function(labels) {
+  if (is.null(labels)) {
+    return(NULL)
+  }
+
+  ## Shape 3 first: a two-column key/label lookup (the shape
+  ## hvtiRutilities::label_map() returns).  Checked before attribute reading so
+  ## a lookup table is never mistaken for a labelled data frame.
+  if (is.data.frame(labels) && all(c("key", "label") %in% names(labels))) {
+    out <- as.character(labels[["label"]])
+    names(out) <- as.character(labels[["key"]])
+    return(.forest_labels_check(out))
+  }
+
+  ## Shape 1: a labelled data frame -- read attr(col, "label") per column.
+  if (is.data.frame(labels)) {
+    out <- vapply(labels, function(col) {
+      lb <- attr(col, "label")
+      if (is.null(lb) || !nzchar(as.character(lb)[1L])) {
+        NA_character_
+      } else {
+        as.character(lb)[1L]
+      }
+    }, character(1L))
+    return(.forest_labels_check(out[!is.na(out)]))
+  }
+
+  ## Shape 2: a named character vector.
+  if (is.character(labels) && !is.null(names(labels))) {
+    return(.forest_labels_check(labels))
+  }
+
+  stop("'labels' must be a named character vector, a labelled data frame, ",
+       "or a two-column key/label data frame.", call. = FALSE)
+}
+
+## Warn once when a lookup resolves nothing at all.  The usual cause is that
+## 'label' attributes were dropped in transit (a parquet round-trip written by a
+## non-R stage does this silently), which otherwise presents as a figure that is
+## simply unlabelled with no explanation.
+#' @keywords internal
+.forest_labels_check <- function(x) {
+  if (length(x) == 0L) {
+    warning("No variable labels were found. If the data came through a ",
+            "parquet round-trip, 'label' attributes may have been dropped; ",
+            "pass a named character vector instead.", call. = FALSE)
+  }
+  x
+}
+
+## Map raw variable names onto display labels, falling back per variable.  A
+## variable with no label keeps its raw name: never blank, never an error.
+#' @keywords internal
+.apply_forest_labels <- function(vars, lookup) {
+  vars <- as.character(vars)
+  if (is.null(lookup) || length(lookup) == 0L) {
+    return(vars)
+  }
+  out <- unname(lookup[vars])
+  out[is.na(out)] <- vars[is.na(out)]
+  out
+}
+
+## Facet-strip labeller built straight from the user's 'labels' argument, so the
+## resolve-then-wrap pair is written once rather than at every faceted call site.
+#' @keywords internal
+.forest_strip_labeller <- function(labels) {
+  lookup <- .forest_labels(labels)
+  ggplot2::as_labeller(function(v) .apply_forest_labels(v, lookup))
+}
