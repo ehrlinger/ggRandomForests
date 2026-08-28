@@ -787,3 +787,46 @@ test_that("gg_partial_varpro: chf xvar.names extraction is an exact match", {
   expect_null(fake_dots[["xvar.names"]])
   expect_identical(fake_dots$xvar.names, "qsec")   # documents why [[ is required
 })
+
+## ── Ordering: name is a factor in importance order, and nvars slices AFTER ──
+## ranking rather than before (Task 3: the nvars bug fix).
+
+make_mock_part_dta <- function(names_vec, n_obs = 20, n_pts = 12) {
+  out <- lapply(names_vec, function(nm) {
+    list(xvirtual    = seq_len(n_pts),
+         xorg        = sample(seq_len(n_pts), n_obs, replace = TRUE),
+         yhat.par    = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+         yhat.nonpar = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+         yhat.causal = matrix(rnorm(n_obs * n_pts), nrow = n_obs))
+  })
+  names(out) <- names_vec
+  out
+}
+
+test_that("name is a factor so facet order is not alphabetical", {
+  set.seed(42)
+  pd <- make_mock_part_dta(c("vis", "age", "bpd"))
+  res <- gg_partial_varpro(pd, cat_limit = 5)
+  expect_s3_class(res$continuous$name, "factor")
+  expect_equal(levels(res$continuous$name), c("vis", "age", "bpd"))
+})
+
+test_that("nvars selects the top n by importance, not the first n", {
+  set.seed(42)
+  pd <- make_mock_part_dta(c("age", "bpd", "vis"))
+  fake <- structure(list(family = "class"), class = "varpro")
+  local_mocked_bindings(get.topvars = function(...) c("vis", "bpd", "age"),
+                        .package = "varPro")
+  res <- gg_partial_varpro(pd, object = fake, scale = "logodds",
+                           nvars = 2, cat_limit = 5)
+  # Ranked order is vis, bpd, age -- so the top 2 are vis and bpd, NOT age/bpd.
+  expect_setequal(levels(droplevels(res$continuous$name)), c("vis", "bpd"))
+  expect_false("age" %in% as.character(res$continuous$name))
+})
+
+test_that("no object leaves part_dta list order intact", {
+  set.seed(42)
+  pd <- make_mock_part_dta(c("zulu", "alpha", "mike"))
+  res <- gg_partial_varpro(pd, cat_limit = 5)
+  expect_equal(levels(res$continuous$name), c("zulu", "alpha", "mike"))
+})

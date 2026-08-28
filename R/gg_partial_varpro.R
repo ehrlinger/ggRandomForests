@@ -414,9 +414,14 @@ gg_partial_varpro <- function(part_dta  = NULL,
       varPro::partialpro(object, learner = learner, ...)
     }
   }
+  ## Rank BEFORE slicing.  Slicing first would make nvars mean "the first n list
+  ## elements", which is an arbitrary subset rather than the top n by importance.
+  part_dta <- part_dta[.varpro_importance_order(part_dta, object)]
+
   if (is.null(nvars)) {
     nvars <- length(part_dta)
   }
+  nvars <- min(nvars, length(part_dta))
 
   prov <- .varpro_provenance(object, scale, time, path = "A",
                              target = .varpro_target(object, list(...)))
@@ -729,10 +734,15 @@ gg_partial_varpro <- function(part_dta  = NULL,
       cat_list[[feature]] <- .process_cat_var(feat, feat_name, scale)
     }
   }
-  list(
-    continuous  = dplyr::bind_rows(cont_list),
-    categorical = dplyr::bind_rows(cat_list)
-  )
+  ## 'name' must be a factor: as a character column facet_wrap() re-sorts it
+  ## alphabetically and the importance order established above is discarded.
+  lvls <- names(part_dta)[seq(nvars)]
+  cont <- dplyr::bind_rows(cont_list)
+  cats <- dplyr::bind_rows(cat_list)
+  if (nrow(cont) > 0L) cont$name <- factor(cont$name, levels = lvls)
+  if (nrow(cats) > 0L) cats$name <- factor(cats$name, levels = lvls)
+
+  list(continuous = cont, categorical = cats)
 }
 
 #' @keywords internal
