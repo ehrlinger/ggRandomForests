@@ -51,6 +51,11 @@
 #'   TRUE} (the default), \code{"raw"} when \code{local.std = FALSE}.
 #'   Asking for a scale that the extract step did not prepare raises an
 #'   error.
+#' @param labels Optional variable labels for the variable axis.  One of: a named
+#'   character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+#'   whose \code{attr(col, "label")} values are read; or a two-column
+#'   \code{key}/\code{label} data frame.  Variables with no label keep their raw
+#'   name.  Defaults to \code{NULL} (raw names).
 #' @param ... Not currently used.
 #'
 #' @details
@@ -88,7 +93,7 @@
 #' @importFrom ggplot2 scale_fill_manual labs theme_minimal
 #' @importFrom tidyr pivot_longer
 #' @export
-plot.gg_varpro <- function(x, type, ...) {
+plot.gg_varpro <- function(x, type, labels = NULL, ...) {
   prov <- attr(x, "provenance")
 
   ## ---- Auto-detect type from provenance when not supplied ------------------
@@ -118,13 +123,14 @@ plot.gg_varpro <- function(x, type, ...) {
   }
 
   ## ---- Default / faithful view --------------------------------------------
-  .plot_varpro_main(x, type, prov)
+  lab_lookup <- .forest_labels(labels)
+  .plot_varpro_main(x, type, prov, lab_lookup)
 }
 
 ## ---- Internal renderers ----------------------------------------------------
 
 #' @keywords internal
-.plot_varpro_main <- function(x, type, prov) {
+.plot_varpro_main <- function(x, type, prov, lab_lookup = NULL) {
   stats_df <- x$stats
   # Merge selected flag
   sel_df <- unique(x$imp[, c("variable", "selected")])
@@ -200,6 +206,15 @@ plot.gg_varpro <- function(x, type, ...) {
                           inherit.aes = FALSE,
                           shape = 21, fill = "white", color = "#4e8fcd",
                           size = 2.5)
+  }
+
+  ## Variable names sit on a discrete x scale here (the plot coord_flip()s), so
+  ## relabelling goes through scale_x_discrete, not a facet labeller.
+  if (!is.null(lab_lookup)) {
+    p <- p +
+      ggplot2::scale_x_discrete(
+        labels = function(v) .apply_forest_labels(v, lab_lookup)
+      )
   }
 
   p

@@ -330,3 +330,13 @@ test_that("summary.gg_varpro returns summary.gg_varpro class", {
   s  <- summary(gg)
   expect_s3_class(s, "summary.gg_varpro")
 })
+
+test_that("plot.gg_varpro labels the variable axis", {
+  skip_if_not(exists("make_mock_gg_varpro"), "no gg_varpro fixture available")
+  obj <- make_mock_gg_varpro()
+  p <- plot(obj, labels = c(bpd = "BP Diastole"))
+  built <- ggplot2::ggplot_build(p)
+  expect_true(any(grepl("BP Diastole",
+                        unlist(lapply(built$layout$panel_params,
+                                      function(pp) as.character(pp$y$get_labels()))))))
+})
