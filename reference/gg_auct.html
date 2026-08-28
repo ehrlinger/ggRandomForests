@@ -77,7 +77,13 @@ attached as an attribute.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_auct</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'rhf'</span></span>
-<span><span class="fu">gg_auct</span><span class="op">(</span><span class="va">object</span>, marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"chf"</span>, <span class="st">"haz"</span><span class="op">)</span>, auct_fit <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">gg_auct</span><span class="op">(</span></span>
+<span>  <span class="va">object</span>,</span>
+<span>  marker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"chf"</span>, <span class="st">"haz"</span><span class="op">)</span>,</span>
+<span>  auct_fit <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"cumulative"</span>, <span class="st">"incident"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -89,18 +95,29 @@ attached as an attribute.</p>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Not currently used.</p></dd>
+<dd><p>Further arguments passed to <code><a href="https://www.randomforestsrc.org//reference/auct.rhf.html" class="external-link">randomForestRHF::auct.rhf()</a></code>, for
+example <code>bootstrap.rep</code> to request confidence bounds, or <code>riskset</code> for the
+incident definition. Ignored when <code>auct_fit</code> is supplied.</p></dd>
 
 
 <dt id="arg-marker">marker<a class="anchor" aria-label="anchor" href="#arg-marker"></a></dt>
 <dd><p>Risk marker for the AUC: <code>"chf"</code> (cumulative hazard, default)
-or <code>"haz"</code> (hazard). Ignored when <code>auct_fit</code> is supplied.</p></dd>
+or <code>"haz"</code> (hazard). Not used when <code>auct_fit</code> is supplied, though the
+value is still validated.</p></dd>
 
 
 <dt id="arg-auct-fit">auct_fit<a class="anchor" aria-label="anchor" href="#arg-auct-fit"></a></dt>
 <dd><p>Optional precomputed <code><a href="https://www.randomforestsrc.org//reference/auct.rhf.html" class="external-link">randomForestRHF::auct.rhf()</a></code> result
 (class <code>"auct.rhf"</code>) for the same <code>object</code>. <code>NULL</code> (default) computes it.
 Supply it to reuse an expensive bootstrap run.</p></dd>
+
+
+<dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
+<dd><p>Which time-dependent AUC definition to compute, passed to
+<code><a href="https://www.randomforestsrc.org//reference/auct.rhf.html" class="external-link">randomForestRHF::auct.rhf()</a></code>. <code>"cumulative"</code> (default) ranks accumulated
+risk through a horizon; <code>"incident"</code> ranks local failures within the risk
+set at each time. See the note below before relying on the default. Not
+used when <code>auct_fit</code> is supplied, though the value is still validated.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -110,6 +127,24 @@ Supply it to reuse an expensive bootstrap run.</p></dd>
 bootstrap), an <code>iauc</code> attribute (a list with <code>uno</code>, <code>std</code>, <code>uno.se</code>,
 <code>std.se</code>, <code>conf.level</code>), and a <code>provenance</code> attribute derived from
 <code>object</code> (source, family, ntree, n).</p>
+    </div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p>Cumulative/dynamic AUC is unreliable under <span class="pkg">randomForestRHF</span> 2.0.0, so
+treat the <code>method = "cumulative"</code> default with care. That release holds the
+in-sample cumulative hazard flat once a subject's supplied records end,
+which <code><a href="https://www.randomforestsrc.org//reference/rhf.html" class="external-link">?randomForestRHF::rhf</a></code> documents. At a fixed grid point the marker
+then reflects how long a subject was observed as well as how much risk they
+carried, and the cumulative/dynamic definition compares subjects who have
+already failed against subjects still under follow-up. The curve can fall
+below the 0.5 chance line on data the forest fits well.</p>
+<p>The incident/dynamic definition does not inherit this, because it compares
+subjects within a risk set at each time, before any of them has left
+follow-up. It answers a different question rather than a better version of
+the same one, so reach for <code>method = "incident"</code> where that question is the
+one you are asking. The behavior is upstream, reported at
+<a href="https://github.com/kogalur/randomForestRHF/issues/1" class="external-link">https://github.com/kogalur/randomForestRHF/issues/1</a>; <code>gg_auct()</code>
+passes the values through unchanged in every case.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

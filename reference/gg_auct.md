@@ -12,7 +12,13 @@ attached as an attribute.
 gg_auct(object, ...)
 
 # S3 method for class 'rhf'
-gg_auct(object, marker = c("chf", "haz"), auct_fit = NULL, ...)
+gg_auct(
+  object,
+  marker = c("chf", "haz"),
+  auct_fit = NULL,
+  method = c("cumulative", "incident"),
+  ...
+)
 ```
 
 ## Arguments
@@ -23,12 +29,16 @@ gg_auct(object, marker = c("chf", "haz"), auct_fit = NULL, ...)
 
 - ...:
 
-  Not currently used.
+  Further arguments passed to
+  [`randomForestRHF::auct.rhf()`](https://www.randomforestsrc.org//reference/auct.rhf.html),
+  for example `bootstrap.rep` to request confidence bounds, or `riskset`
+  for the incident definition. Ignored when `auct_fit` is supplied.
 
 - marker:
 
   Risk marker for the AUC: `"chf"` (cumulative hazard, default) or
-  `"haz"` (hazard). Ignored when `auct_fit` is supplied.
+  `"haz"` (hazard). Not used when `auct_fit` is supplied, though the
+  value is still validated.
 
 - auct_fit:
 
@@ -37,6 +47,15 @@ gg_auct(object, marker = c("chf", "haz"), auct_fit = NULL, ...)
   result (class `"auct.rhf"`) for the same `object`. `NULL` (default)
   computes it. Supply it to reuse an expensive bootstrap run.
 
+- method:
+
+  Which time-dependent AUC definition to compute, passed to
+  [`randomForestRHF::auct.rhf()`](https://www.randomforestsrc.org//reference/auct.rhf.html).
+  `"cumulative"` (default) ranks accumulated risk through a horizon;
+  `"incident"` ranks local failures within the risk set at each time.
+  See the note below before relying on the default. Not used when
+  `auct_fit` is supplied, though the value is still validated.
+
 ## Value
 
 A `data.frame` of class `c("gg_auct", "data.frame")` with columns
@@ -44,6 +63,27 @@ A `data.frame` of class `c("gg_auct", "data.frame")` with columns
 bootstrap), an `iauc` attribute (a list with `uno`, `std`, `uno.se`,
 `std.se`, `conf.level`), and a `provenance` attribute derived from
 `object` (source, family, ntree, n).
+
+## Note
+
+Cumulative/dynamic AUC is unreliable under randomForestRHF 2.0.0, so
+treat the `method = "cumulative"` default with care. That release holds
+the in-sample cumulative hazard flat once a subject's supplied records
+end, which
+[`?randomForestRHF::rhf`](https://www.randomforestsrc.org//reference/rhf.html)
+documents. At a fixed grid point the marker then reflects how long a
+subject was observed as well as how much risk they carried, and the
+cumulative/dynamic definition compares subjects who have already failed
+against subjects still under follow-up. The curve can fall below the 0.5
+chance line on data the forest fits well.
+
+The incident/dynamic definition does not inherit this, because it
+compares subjects within a risk set at each time, before any of them has
+left follow-up. It answers a different question rather than a better
+version of the same one, so reach for `method = "incident"` where that
+question is the one you are asking. The behavior is upstream, reported
+at <https://github.com/kogalur/randomForestRHF/issues/1>; `gg_auct()`
+passes the values through unchanged in every case.
 
 ## References
 
