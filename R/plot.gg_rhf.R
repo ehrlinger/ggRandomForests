@@ -65,8 +65,7 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
   # mask, so this is a no-op when hazard.only = FALSE.
   dropped <- !is.finite(dta[[yvar]])
   if (all(dropped)) {
-    warning("no finite ", yvar, " values remain for the requested idx; ",
-            "every requested case lies outside its observed path.",
+    warning("no finite ", yvar, " values remain for the requested idx.",
             call. = FALSE)
   }
   dta <- dta[!dropped, , drop = FALSE]

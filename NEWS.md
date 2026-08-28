@@ -30,7 +30,7 @@ ggRandomForests v4.0.0 (development)
   n_risk / n_rules / priority`, accepts a supplied `importance_fit` or
   calculates one when absent, and orders variables by their q90 priority over
   time windows. Priority is a ranking score, not a z-score; no selection
-  cutoff is applied. RHF support now requires `randomForestRHF >= 1.0.1`.
+  cutoff is applied.
 * `gg_tune_rhf()` / `plot.gg_tune_rhf()`: supplied-object-only inspection of a
   `tune.treesize.rhf` tree-size tuning path. The five returned columns are
   `treesize / metric / value / se / selected`; the plot marks the selected
@@ -52,6 +52,13 @@ ggRandomForests v4.0.0 (development)
   baselines and the precomputed vignette analysis were regenerated against it.
   This resolves issue #229, where the earlier reading (a small negative hazard,
   specific to the macOS arm64 binary) was wrong on both counts.
+* The RHF vignette drops its cumulative/dynamic AUC section for now and keeps
+  the incident/dynamic one. Holding the in-sample cumulative hazard flat after
+  follow-up makes it track observation length as well as risk, which pushes
+  the cumulative/dynamic curve below the chance line on the vignette's
+  simulated data. The incident/dynamic definition compares subjects within a
+  risk set and is unaffected. Reported upstream as
+  kogalur/randomForestRHF#1; the section returns once that is settled.
 
 ggRandomForests v3.5.2
 ======================
