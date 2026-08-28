@@ -794,7 +794,11 @@ test_that("plot.gg_partial labels facet strips", {
   )
   class(gg_dta) <- c("gg_partial", "list")
   p <- plot(gg_dta, labels = c(bpd = "BP Diastole"))
-  strips <- as.character(ggplot2::ggplot_build(p)$layout$layout$name)
+  # NOTE: ggplot2 4.x separates build from render. ggplot_build(p)$layout$layout$name
+  # holds the faceting variable's DATA values, not the rendered strip text, and returns
+  # raw names whether or not a labeller is attached. Strip text must be read with
+  # get_strip_labels(), which walks the same format_strip_labels() path as the renderer.
+  strips <- as.character(ggplot2::get_strip_labels(p)$facets$name)
   expect_true(all(c("BP Diastole", "vis") %in% strips))
 })
 
