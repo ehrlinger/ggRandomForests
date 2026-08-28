@@ -127,6 +127,18 @@
   honours it on survival path-C objects (those extracted with
   `scale = "surv"` or `"chf"`), which are handed off to
   [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md).
+- [`plot.gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf_importance.md)
+  also gains `labels`, so the RHF priority matrix can carry
+  human-readable variable names. It takes the same three shapes and
+  falls back to the raw name per variable. The variable axis here is
+  `y`, not a flipped `x`, so the labelled scale is the y scale. The q90
+  variable ordering and the raw names in the returned data are
+  untouched, and
+  [`autoplot.gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  forwards the argument. Previously `labels` fell through `...` into
+  [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
+  and was dropped with only ggplot2’s generic “Ignoring unknown
+  parameters” warning, so the call looked accepted and did nothing.
 - [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md):
   `lbls` is **deprecated** in favour of `labels` and will be removed in
   a future release. Its old `length(lbls) >= length(vars)` gate is also

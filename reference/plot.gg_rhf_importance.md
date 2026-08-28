@@ -17,6 +17,7 @@ plot(
   size_cap = 0.99,
   color_cap = 0.99,
   display_note = TRUE,
+  labels = NULL,
   ...
 )
 ```
@@ -55,6 +56,14 @@ plot(
 
   Logical; if `TRUE`, an applied size or color cap is reported in the
   caption.
+
+- labels:
+
+  Optional variable labels for the variable axis. One of: a named
+  character vector (`c(bili = "Serum bilirubin")`); a labelled data
+  frame, whose `attr(col, "label")` values are read; or a two-column
+  `key`/`label` data frame. Variables with no label keep their raw name.
+  Defaults to `NULL` (raw names).
 
 - ...:
 

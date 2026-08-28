@@ -80,6 +80,7 @@ time-localized RHF variable-priority score.</p>
 <span>  size_cap <span class="op">=</span> <span class="fl">0.99</span>,</span>
 <span>  color_cap <span class="op">=</span> <span class="fl">0.99</span>,</span>
 <span>  display_note <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -119,6 +120,14 @@ of <code>1</code> applies no cap.</p></dd>
 <dt id="arg-display-note">display_note<a class="anchor" aria-label="anchor" href="#arg-display-note"></a></dt>
 <dd><p>Logical; if <code>TRUE</code>, an applied size or color cap is
 reported in the caption.</p></dd>
+
+
+<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
+<dd><p>Optional variable labels for the variable axis. One of: a
+named character vector (<code>c(bili = "Serum bilirubin")</code>); a labelled data
+frame, whose <code>attr(col, "label")</code> values are read; or a two-column
+<code>key</code>/<code>label</code> data frame. Variables with no label keep their raw name.
+Defaults to <code>NULL</code> (raw names).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
