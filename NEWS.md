@@ -36,6 +36,22 @@ ggRandomForests v4.0.0 (development)
   `treesize / metric / value / se / selected`; the plot marks the selected
   size and draws an iAUC standard-error ribbon only when finite supplied iAUC
   standard errors are available. `gg_tune_rhf()` never recalculates tuning.
+* Require `randomForestRHF (>= 2.0.0)` in Suggests, and adopt its revised
+  hazard semantics. From 2.0.0 the pointwise hazard is defined only where a
+  grid point falls inside one of the case's supplied `(start, stop]`
+  intervals, and is `NA` in gaps and after the final stop; the cumulative
+  hazard is unaffected, because it accumulates the exact interval overlap and
+  stays flat across those regions. `auct.rhf()` can likewise return an `NA`
+  AUC at the final grid time, where the censoring-weight denominator is
+  undefined once the control set is nearly exhausted. `gg_rhf()` passes the
+  mask through unchanged, so `hazard` may be `NA` where it previously was not;
+  `plot.gg_rhf()` and `plot.gg_auct()` drop those cells before drawing, so a
+  hazard curve now ends with its case's follow-up instead of reporting removed
+  missing values on every plot. 2.0.0 also changes the default hazard
+  aggregation (`adaptive = TRUE`), which shifts fitted values; four RHF vdiffr
+  baselines and the precomputed vignette analysis were regenerated against it.
+  This resolves issue #229, where the earlier reading (a small negative hazard,
+  specific to the macOS arm64 binary) was wrong on both counts.
 
 ggRandomForests v3.5.2
 ======================

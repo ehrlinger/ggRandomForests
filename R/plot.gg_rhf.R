@@ -4,6 +4,13 @@
 #' Draws case-specific ensemble curves from a [gg_rhf()] object: hazard
 #' (default) or cumulative hazard, one line per case selected by `idx`.
 #'
+#' Cells the forest left undefined are dropped before drawing. From
+#' \pkg{randomForestRHF} 2.0.0 the hazard is `NA` outside each case's observed
+#' `(start, stop]` path, so a hazard curve simply ends with that case's
+#' follow-up, and a case whose hazard is masked throughout is left out of the
+#' legend rather than shown as an empty one. Cumulative hazard carries no such
+#' mask, so `hazard.only = FALSE` draws every grid point.
+#'
 #' @param x A `gg_rhf` object from [gg_rhf()].
 #' @param idx Integer vector of case ids (matched against the `id` column) to
 #'   draw. `NULL` (default) draws every case.
@@ -45,10 +52,25 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
             paste(missing_ids, collapse = ", "), call. = FALSE)
   }
   dta <- x[x$id %in% idx, , drop = FALSE]
-  dta$id <- factor(dta$id)
 
   yvar <- if (hazard.only) "hazard" else "chf"
   ylab <- if (hazard.only) "Hazard" else "Cumulative hazard"
+
+  # randomForestRHF >= 2.0.0 returns NA hazard outside each case's observed
+  # (start, stop] path. Drop those cells rather than hand geom_line() missing
+  # values it reports as removed rows on every hazard plot: the curve is
+  # identical either way, it simply ends with the case's follow-up. Filtering
+  # before factor() also keeps a case whose hazard is entirely masked out of
+  # the legend instead of leaving it there as an empty level. chf carries no
+  # mask, so this is a no-op when hazard.only = FALSE.
+  dropped <- !is.finite(dta[[yvar]])
+  if (all(dropped)) {
+    warning("no finite ", yvar, " values remain for the requested idx; ",
+            "every requested case lies outside its observed path.",
+            call. = FALSE)
+  }
+  dta <- dta[!dropped, , drop = FALSE]
+  dta$id <- factor(dta$id)
 
   ggplot2::ggplot(
     dta,

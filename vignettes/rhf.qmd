@@ -278,6 +278,22 @@ not the probability that a subject has the event at that time, so neither its
 height nor its scale should be read as a percentage. RHF estimates this local
 quantity directly [@Ishwaran:RHF:2026].
 
+### Why do the hazard curves stop early?
+
+Each line ends where that subject's follow-up ends. This is upstream behavior:
+from version 2.0.0, `randomForestRHF::rhf()` returns a pointwise hazard only
+where a grid point falls inside one of the subject's supplied `(start, stop]`
+records, and `NA` everywhere else, both in the gaps between records and after
+the final stop time. Earlier versions carried an estimate across the whole
+grid. `gg_rhf()` passes those `NA` values through unchanged, and `plot()` drops
+them before drawing, so a curve covers the range the forest was asked about and
+no more.
+
+Cumulative hazard is not masked this way. It accumulates the exact overlap
+between the working grid and the supplied records, so it stays flat through a
+gap rather than going missing, and the panel below draws every grid point. If
+you summarize `hazard` yourself, remember to pass `na.rm = TRUE`.
+
 ### Cumulative hazard adds the local rates
 
 The same `gg_rhf` object carries `chf`. Set the public `hazard.only` argument
