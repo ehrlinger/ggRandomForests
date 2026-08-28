@@ -57,8 +57,11 @@ computation and axis labeling; if \code{NULL}, three quartile time
 points from \code{time.interest} are used (see
 \code{\link{gg_partial_rfsrc}}).}
 
-\item{nvars}{Integer; how many variables (list elements) to process.
-Defaults to every variable in \code{part_dta}.}
+\item{nvars}{Integer; how many variables to keep, selected as the top
+\code{nvars} \strong{by varPro importance} when \code{object} is
+supplied (falling back to the incoming \code{part_dta} list order
+otherwise).  Defaults to every variable in \code{part_dta}.  See
+\strong{Details}.}
 
 \item{cat_limit}{Integer; a variable with
 \code{length(xvirtual) <= cat_limit} is treated as categorical.
@@ -188,6 +191,20 @@ fold boundaries in \code{varPro::cv.varpro} -- impute inside the folds if
 the selection error has to mean anything.  And a completed frame is one
 dataset, not many, so the curves here carry no uncertainty from the
 imputation; read them as conditional on it.
+
+\strong{\code{nvars} selects by importance, not by list position:} when
+\code{object} is supplied, the variables in \code{part_dta} are first
+reordered by their rank in \code{varPro::get.topvars(object)}, and
+\code{nvars} then keeps the top \code{nvars} of \emph{that} ordering --
+not simply the first \code{nvars} elements as they arrived.
+\code{get.topvars()} typically ranks far fewer variables than
+\code{part_dta} contains; any variable it does not rank keeps its
+incoming order and is appended after the ranked block, so nothing is
+ever dropped from consideration, only reordered.  The returned
+\code{continuous$name} / \code{categorical$name} column is a
+\code{factor} whose levels follow this same importance order (raw list
+order when no \code{object} was supplied), so facet panels and legend
+entries sort by importance rather than alphabetically.
 
 \strong{Scale detection:} with \code{scale = "auto"} and an \code{object} in
 hand, the scale resolves to \code{"mortality"} for a survival forest and
@@ -341,7 +358,7 @@ mock_data <- list(
     yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
   )
 )
-result <- gg_partial_varpro(mock_data)
+result <- gg_partial_varpro(mock_data, scale = "logodds")
 head(result$continuous)
 head(result$categorical)
 

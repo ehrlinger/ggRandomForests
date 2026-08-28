@@ -213,18 +213,18 @@ local({
   }
 
   test_that("snapshot: gg-partial-varpro-continuous", {
-    result <- gg_partial_varpro(make_mock_vpro_snap(), nvars = 1)
+    result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_snap(), nvars = 1))
     vdiffr::expect_doppelganger("gg-partial-varpro-continuous", plot(result))
   })
 
   test_that("snapshot: gg-partial-varpro-categorical", {
     mock <- make_mock_vpro_snap()
-    result <- gg_partial_varpro(mock["sex"])
+    result <- suppressWarnings(gg_partial_varpro(mock["sex"]))
     vdiffr::expect_doppelganger("gg-partial-varpro-categorical", plot(result))
   })
 
   test_that("snapshot: gg-partial-varpro-both", {
-    result <- gg_partial_varpro(make_mock_vpro_snap())
+    result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_snap()))
     vdiffr::expect_doppelganger("gg-partial-varpro-both", plot(result))
   })
 

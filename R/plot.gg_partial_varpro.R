@@ -84,6 +84,11 @@
 #' @param type Character vector; one or more of \code{"parametric"},
 #'   \code{"nonparametric"}, \code{"causal"}.  Defaults to all three.
 #'   Ignored for path-C objects.
+#' @param labels Optional variable labels for the facet strips.  One of: a named
+#'   character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+#'   whose \code{attr(col, "label")} values are read; or a two-column
+#'   \code{key}/\code{label} data frame.  Variables with no label keep their raw
+#'   name.  Defaults to \code{NULL} (raw names).
 #' @param ... Unused for path-A objects; forwarded to
 #'   \code{plot.gg_partial_rfsrc} for path-C objects.
 #'
@@ -128,7 +133,7 @@
 #'     yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
 #'   )
 #' )
-#' pp <- gg_partial_varpro(mock_data)
+#' pp <- gg_partial_varpro(mock_data, scale = "logodds")
 #' plot(pp)
 #' plot(pp, type = "parametric")
 #'
@@ -140,6 +145,7 @@
 plot.gg_partial_varpro <- function(x,
                                     type = c("parametric", "nonparametric",
                                              "causal"),
+                                    labels = NULL,
                                     ...) {
   type_user <- !missing(type)   # was 'causal' asked for, or is it the default?
 
@@ -152,6 +158,11 @@ plot.gg_partial_varpro <- function(x,
   ## A-path rendering.
   type   <- match.arg(type, several.ok = TRUE)
   ylabel <- .partial_varpro_ylabel(prov)
+
+  ## Labels are a presentation concern: resolved here and applied to the facet
+  ## strips, never written back into x.  The returned object keeps raw variable
+  ## names, because changing them would be a breaking change downstream.
+  strip_labeller <- .forest_strip_labeller(labels)
 
   ## On bounded scales (prob/odds/surv) the causal contrast is not shown.
   type <- .partial_varpro_plot_type(type, type_user, prov)
@@ -174,7 +185,7 @@ plot.gg_partial_varpro <- function(x,
       )
     ) +
       ggplot2::geom_line() +
-      ggplot2::facet_wrap(~name, scales = "free_x") +
+      ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
       ggplot2::labs(x = NULL, y = ylabel,
                     color = "Effect type", linetype = "Effect type")
   }
@@ -196,7 +207,7 @@ plot.gg_partial_varpro <- function(x,
       )
     ) +
       ggplot2::geom_boxplot() +
-      ggplot2::facet_wrap(~name, scales = "free_x") +
+      ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
       ggplot2::labs(x = NULL, y = ylabel, fill = "Effect type")
   }
 

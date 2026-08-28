@@ -4,7 +4,7 @@
 \alias{plot.gg_varpro}
 \title{Plot a \code{gg_varpro} variable importance object}
 \usage{
-\method{plot}{gg_varpro}(x, type, ...)
+\method{plot}{gg_varpro}(x, type, labels = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{gg_varpro} object from \code{\link{gg_varpro}}.}
@@ -14,6 +14,12 @@ from \code{provenance$local.std}: \code{"z"} when \code{local.std =
 TRUE} (the default), \code{"raw"} when \code{local.std = FALSE}.
 Asking for a scale that the extract step did not prepare raises an
 error.}
+
+\item{labels}{Optional variable labels for the variable axis.  One of: a named
+character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+whose \code{attr(col, "label")} values are read; or a two-column
+\code{key}/\code{label} data frame.  Variables with no label keep their raw
+name.  Defaults to \code{NULL} (raw names).}
 
 \item{...}{Not currently used.}
 }

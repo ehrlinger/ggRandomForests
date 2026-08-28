@@ -129,3 +129,50 @@
   if (is.null(.varpro_cache$v_iris_multi)) invisible(.ivarpro_iris_multiclass())
   .varpro_cache$v_iris_multi
 }
+
+# Lightweight synthetic gg_varpro fixture for plot.gg_varpro() labels tests.
+# .plot_varpro_main() draws from x$stats (variable, q05, q15, median, q85,
+# q95 -- NOT "selected"; that column lives on x$imp only, and .plot_varpro_main()
+# merges it in) and reads cutoff from the provenance attribute. Mirrors the
+# real shape produced by .varpro_imp_stats() in R/gg_varpro.R.
+# When conditional = TRUE, includes class-conditional data for .plot_varpro_conditional().
+make_mock_gg_varpro <- function(vars = c("bpd", "vis", "age"), conditional = FALSE) {
+  stats <- data.frame(variable = factor(vars, levels = vars),
+                      q05      = c(1.0, 0.6, 0.1),
+                      q15      = c(1.5, 0.9, 0.2),
+                      median   = c(2.1, 1.4, 0.5),
+                      q85      = c(2.6, 1.8, 0.8),
+                      q95      = c(3.0, 2.1, 1.0),
+                      mean     = c(2.1, 1.4, 0.5),
+                      stringsAsFactors = FALSE)
+  imp <- data.frame(variable = factor(vars, levels = vars),
+                    z        = c(2.1, 1.4, 0.5),
+                    selected = c(TRUE, TRUE, FALSE),
+                    stringsAsFactors = FALSE)
+
+  ## Build conditional data frame if requested: one row per variable per class.
+  cond_data <- NULL
+  if (conditional) {
+    classes <- c("class_a", "class_b")
+    cond_rows <- expand.grid(
+      variable = factor(vars, levels = vars),
+      class = factor(classes, levels = classes),
+      stringsAsFactors = FALSE
+    )
+    cond_rows$z <- c(1.5, 0.8, 0.4, 2.0, 1.2, 0.3)  # Heterogeneous z per class
+    cond_data <- cond_rows
+  }
+
+  out <- structure(
+    list(imp = imp, imp.tree = NULL, stats = stats, conditional = cond_data),
+    class = c("gg_varpro", "list")
+  )
+  attr(out, "provenance") <- list(family      = "class",
+                                  local.std   = TRUE,
+                                  cutoff      = 0.79,
+                                  faithful    = FALSE,
+                                  conditional = conditional,
+                                  xvar.names  = vars,
+                                  n           = 200L)
+  out
+}

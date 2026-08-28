@@ -4,10 +4,16 @@
 \alias{plot.gg_partial_rfsrc}
 \title{Plot a \code{\link{gg_partial_rfsrc}} object}
 \usage{
-\method{plot}{gg_partial_rfsrc}(x, ...)
+\method{plot}{gg_partial_rfsrc}(x, labels = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{\link{gg_partial_rfsrc}} object.}
+
+\item{labels}{Optional variable labels for the facet strips.  One of: a named
+character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+whose \code{attr(col, "label")} values are read; or a two-column
+\code{key}/\code{label} data frame.  Variables with no label keep their raw
+name.  Defaults to \code{NULL} (raw names).}
 
 \item{...}{Not currently used.}
 }

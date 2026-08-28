@@ -368,7 +368,7 @@ See the [randomForestSRC](https://www.randomforestsrc.org) documentation for
 details on the VIMP calculation for censored outcomes [@Ishwaran:2007a].
 
 ```{r vimp-plot, fig.width=6, fig.cap="Variable importance ranking. Blue = positive VIMP, red = negative."}
-plot(gg_vimp(rfsrc_pbc), lbls = st_labs) +
+plot(gg_vimp(rfsrc_pbc), labels = st_labs) +
   theme(legend.position = c(0.8, 0.2)) +
   labs(fill = "VIMP > 0")
 ```

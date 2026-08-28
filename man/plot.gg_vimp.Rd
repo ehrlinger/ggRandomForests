@@ -5,7 +5,7 @@
 \title{Plot a \code{\link{gg_vimp}} object, extracted variable importance of a
 \code{\link[randomForestSRC]{rfsrc}} object}
 \usage{
-\method{plot}{gg_vimp}(x, relative, lbls, ...)
+\method{plot}{gg_vimp}(x, relative, lbls, labels = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_vimp}} object created from a
@@ -13,8 +13,14 @@
 
 \item{relative}{should we plot vimp or relative vimp. Defaults to vimp.}
 
-\item{lbls}{A vector of alternative variable labels. Item names should be
-the same as the variable names.}
+\item{lbls}{\emph{Deprecated} as of v4.0.0; use \code{labels}.  A named
+character vector of alternative variable labels.}
+
+\item{labels}{Optional variable labels for the variable axis.  One of: a named
+character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+whose \code{attr(col, "label")} values are read; or a two-column
+\code{key}/\code{label} data frame.  Variables with no label keep their raw
+name.  Defaults to \code{NULL} (raw names).}
 
 \item{...}{optional arguments passed to gg_vimp if necessary}
 }
