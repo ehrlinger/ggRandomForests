@@ -86,6 +86,16 @@ the plot method needs no change for ordering.
 
 ### Component 3 — apply at four sites
 
+**Where each concern lives.** Ordering is a **data** concern and belongs in the
+constructor (`name`'s factor levels are set there). Labels are a **presentation**
+concern and belong in the **plot method**: a new `labels =` argument on each
+`plot.*` method, applied at draw time via ggplot2's `labeller=` and scale labels.
+
+The returned object's columns keep **raw** variable names. This is deliberate —
+per the family rule, changing a returned object's column names is a breaking
+change for downstream consumers, and nothing downstream should have to know about
+display labels.
+
 | Surface | File | Gets |
 |---|---|---|
 | varPro partial | `plot.gg_partial_varpro.R` | labels + ordering |
@@ -94,6 +104,10 @@ the plot method needs no change for ordering.
 | varPro importance | `plot.gg_varpro.R` | labels |
 
 Labels apply to facet strips and to the categorical axis.
+
+`plot.gg_partialpro()` is a deprecated class shim that re-dispatches to
+`plot.gg_partial_varpro()`; it must forward `labels=` so the deprecated path
+behaves identically. Same for `autoplot.gg_partialpro()`.
 
 **Excluded: RHF** (`gg_rhf_importance.R`, `plot.gg_rhf_importance.R`). A parallel
 session owns those files. Follow-up once it lands.
@@ -123,6 +137,8 @@ Deliberately not addressed, each separable:
 - unlabelled variables fall back to their raw name
 - a lookup resolving nothing warns exactly once
 - `labels = NULL` reproduces current output
+- the returned object's columns still carry **raw** names after plotting with labels
+- `plot.gg_partialpro()` (deprecated shim) forwards `labels=` identically
 
 **Ordering**
 - factor levels of `name` match `get.topvars()` order for a mocked fit
