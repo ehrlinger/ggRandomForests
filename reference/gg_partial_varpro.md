@@ -76,8 +76,10 @@ gg_partialpro(
 
 - nvars:
 
-  Integer; how many variables (list elements) to process. Defaults to
-  every variable in `part_dta`.
+  Integer; how many variables to keep, selected as the top `nvars` **by
+  varPro importance** when `object` is supplied (falling back to the
+  incoming `part_dta` list order otherwise). Defaults to every variable
+  in `part_dta`. See **Details**.
 
 - cat_limit:
 
@@ -212,6 +214,19 @@ fit but crosses fold boundaries in
 – impute inside the folds if the selection error has to mean anything.
 And a completed frame is one dataset, not many, so the curves here carry
 no uncertainty from the imputation; read them as conditional on it.
+
+**`nvars` selects by importance, not by list position:** when `object`
+is supplied, the variables in `part_dta` are first reordered by their
+rank in `varPro::get.topvars(object)`, and `nvars` then keeps the top
+`nvars` of *that* ordering – not simply the first `nvars` elements as
+they arrived. `get.topvars()` typically ranks far fewer variables than
+`part_dta` contains; any variable it does not rank keeps its incoming
+order and is appended after the ranked block, so nothing is ever dropped
+from consideration, only reordered. The returned `continuous$name` /
+`categorical$name` column is a `factor` whose levels follow this same
+importance order (raw list order when no `object` was supplied), so
+facet panels and legend entries sort by importance rather than
+alphabetically.
 
 **Scale detection:** with `scale = "auto"` and an `object` in hand, the
 scale resolves to `"mortality"` for a survival forest and `"generic"`
@@ -391,11 +406,11 @@ mock_data <- list(
     yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
   )
 )
-result <- gg_partial_varpro(mock_data)
+result <- gg_partial_varpro(mock_data, scale = "logodds")
 head(result$continuous)
 #> # A tibble: 6 × 5
 #>   variable parametric nonparametric  causal name 
-#>      <dbl>      <dbl>         <dbl>   <dbl> <chr>
+#>      <dbl>      <dbl>         <dbl>   <dbl> <fct>
 #> 1     30      -0.0695       -0.120   0.436  age  
 #> 2     33.6     0.149        -0.477   0.0438 age  
 #> 3     37.1    -0.237        -0.270   0.0531 age  
@@ -405,7 +420,7 @@ head(result$continuous)
 head(result$categorical)
 #> # A tibble: 6 × 5
 #>   parametric nonparametric causal variable name 
-#>        <dbl>         <dbl>  <dbl>    <dbl> <chr>
+#>        <dbl>         <dbl>  <dbl>    <dbl> <fct>
 #> 1      0.850       -0.0338  0.751        0 sex  
 #> 2      1.76        -0.901  -0.829        0 sex  
 #> 3      0.846       -1.18    0.710        0 sex  
@@ -424,7 +439,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 10
+#> [1] 6
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
@@ -432,13 +447,14 @@ length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 ## reach before you spend the computation -- this is the habit worth having.
 wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
-#> character(0)
+#> [1] "qsec" "vs"  
 
 ## Ask anyway and we warn, naming what partialpro() would have dropped
 ## in silence.  (method = "rnd" is passed through to partialpro(); see
 ## the note on isolation-forest method in Details.)
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
                         method = "rnd")
+#> Warning: gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,

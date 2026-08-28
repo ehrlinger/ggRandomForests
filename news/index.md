@@ -109,6 +109,66 @@
   the fit. `method` sits after `auct_fit` in the signature, so
   positional calls are unchanged, and the default behavior is the same
   as before.
+- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md),
+  [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md),
+  [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md)
+  and
+  [`plot.gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md)
+  gain a `labels` argument for human-readable variable names. It accepts
+  a named character vector, a labelled data frame (reading
+  `attr(col, "label")`), or a two-column `key`/`label` data frame.
+  Variables with no label keep their raw name. Labels apply at draw time
+  only — the returned object still carries raw variable names, so
+  downstream consumers are unaffected. The argument reaches every branch
+  of these methods, not just their default one:
+  [`plot.gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md)
+  honours it on both the main panel and the class-conditional panel, and
+  [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
+  honours it on survival path-C objects (those extracted with
+  `scale = "surv"` or `"chf"`), which are handed off to
+  [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md).
+- [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md):
+  `lbls` is **deprecated** in favour of `labels` and will be removed in
+  a future release. Its old `length(lbls) >= length(vars)` gate is also
+  gone, so a partial label set is now honoured, falling back to the raw
+  name per variable. Previously supplying fewer labels than variables
+  silently applied none.
+- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  orders variables by varPro importance
+  ([`varPro::get.topvars()`](https://www.randomforestsrc.org/reference/utilities_internal.html))
+  when `object` is supplied, and `name` is now a **factor**, so facets
+  follow importance order instead of being re-sorted alphabetically.
+  Variables absent from the ranking keep their incoming order and are
+  appended after the ranked block; none are dropped.
+- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md):
+  **`nvars` now selects the top n by importance.** It previously took
+  the first n elements of the partial-dependence list before any ranking
+  was applied, returning an arbitrary subset with no symptom in the
+  output.
+- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  warns when `scale = "auto"` cannot be resolved because no `object` was
+  supplied, instead of silently falling back to the generic “Partial
+  Effect” axis. The fallback label itself was never wrong — it was
+  honest about an unknown scale — but the silence around it was, so the
+  fallback now says so.
+- The `labels` lookup now drops entries whose label or name is blank or
+  `NA`, so a variable given an empty label falls back to its raw name
+  rather than drawing blank axis or strip text. All three accepted input
+  shapes now agree on the same information; previously the
+  labelled-data-frame arm dropped blanks while a named vector or
+  `key`/`label` frame kept them.
+- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  now rejects an unnamed `part_dta` with a clear error instead of
+  accepting it. The names of that list *are* the variable identities;
+  without them the constructor cannot build a `name` column at all, and
+  the omission used to surface two calls later as an opaque
+  [`facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html)
+  failure about a missing faceting variable. An empty `part_dta` remains
+  legal.
+- The package’s own vignettes (`ggRandomForests-regression.qmd`,
+  `ggRandomForests-survival.qmd`) are moved off the now-deprecated
+  `lbls` argument onto `labels`, so the shipped examples model the
+  current API rather than the one being phased out.
 
 ## ggRandomForests v3.5.2
 

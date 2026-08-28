@@ -411,7 +411,7 @@
 <p>VIMP measures the increase in prediction error when a variable’s values are randomly permuted across the out-of-bag sample. For survival forests the prediction error is the Harrell C-statistic complement (1 − C), so permuting an important variable hurts C and yields a large positive VIMP. A negative VIMP means the variable is adding noise: the forest would predict better without it. See the <a href="https://www.randomforestsrc.org" class="external-link">randomForestSRC</a> documentation for details on the VIMP calculation for censored outcomes <span class="citation" data-cites="Ishwaran:2007a">(<a href="#ref-Ishwaran:2007a" role="doc-biblioref">Ishwaran et al. 2008</a>)</span>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span>, lbls <span class="op">=</span> <span class="va">st_labs</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span>, labels <span class="op">=</span> <span class="va">st_labs</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"VIMP &gt; 0"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
@@ -672,7 +672,7 @@
 <div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_integrated"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code><span><span class="co">#&gt; [1] 1.410692</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] 1.415164</span></span></code></pre>
 </div>
 </div>
 </section></section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>

@@ -10,7 +10,7 @@ facet per class.
 
 ``` r
 # S3 method for class 'gg_varpro'
-plot(x, type, ...)
+plot(x, type, labels = NULL, ...)
 ```
 
 ## Arguments
@@ -26,6 +26,14 @@ plot(x, type, ...)
   `provenance$local.std`: `"z"` when `local.std = TRUE` (the default),
   `"raw"` when `local.std = FALSE`. Asking for a scale that the extract
   step did not prepare raises an error.
+
+- labels:
+
+  Optional variable labels for the variable axis. One of: a named
+  character vector (`c(bpd_last = "BP Diastole")`); a labelled data
+  frame, whose `attr(col, "label")` values are read; or a two-column
+  `key`/`label` data frame. Variables with no label keep their raw name.
+  Defaults to `NULL` (raw names).
 
 - ...:
 

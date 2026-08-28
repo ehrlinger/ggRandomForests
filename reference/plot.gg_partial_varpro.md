@@ -13,10 +13,10 @@ for drawing.
 
 ``` r
 # S3 method for class 'gg_partialpro'
-plot(x, type = c("parametric", "nonparametric", "causal"), ...)
+plot(x, type = c("parametric", "nonparametric", "causal"), labels = NULL, ...)
 
 # S3 method for class 'gg_partial_varpro'
-plot(x, type = c("parametric", "nonparametric", "causal"), ...)
+plot(x, type = c("parametric", "nonparametric", "causal"), labels = NULL, ...)
 ```
 
 ## Arguments
@@ -31,6 +31,14 @@ plot(x, type = c("parametric", "nonparametric", "causal"), ...)
 
   Character vector; one or more of `"parametric"`, `"nonparametric"`,
   `"causal"`. Defaults to all three. Ignored for path-C objects.
+
+- labels:
+
+  Optional variable labels for the facet strips. One of: a named
+  character vector (`c(bpd_last = "BP Diastole")`); a labelled data
+  frame, whose `attr(col, "label")` values are read; or a two-column
+  `key`/`label` data frame. Variables with no label keep their raw name.
+  Defaults to `NULL` (raw names).
 
 - ...:
 
@@ -162,7 +170,7 @@ mock_data <- list(
     yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
   )
 )
-pp <- gg_partial_varpro(mock_data)
+pp <- gg_partial_varpro(mock_data, scale = "logodds")
 plot(pp)
 
 plot(pp, type = "parametric")

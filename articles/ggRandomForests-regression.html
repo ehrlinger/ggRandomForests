@@ -200,7 +200,7 @@
 <pre><code><span><span class="co">#&gt;                          Sample size: 506</span></span>
 <span><span class="co">#&gt;                      Number of trees: 100</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 5</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 66.28</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 66.49</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 5</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 13</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -209,8 +209,8 @@
 <span><span class="co">#&gt;                               Family: regr</span></span>
 <span><span class="co">#&gt;                       Splitting rule: mse *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                      (OOB) R squared: 0.86506964</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 11.41331725</span></span></code></pre>
+<span><span class="co">#&gt;                      (OOB) R squared: 0.86401107</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 11.50285782</span></span></code></pre>
 </div>
 </div>
 <p>The forest grew 100 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
@@ -251,7 +251,7 @@
 <p>VIMP, computed by <a href="https://www.randomforestsrc.org" class="external-link">randomForestSRC</a>, measures the increase in OOB prediction error when a variable’s values are randomly permuted across the out-of-bag observations <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span>. Permutation severs the variable’s link to the response on purpose: if breaking that link hurts accuracy, the variable is carrying real signal. Large positive values mean the variable is essential; negative values suggest it is no more informative than noise.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span>, lbls <span class="op">=</span> <span class="va">st_labs</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span>, labels <span class="op">=</span> <span class="va">st_labs</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure><p><img src="ggRandomForests-regression_files/figure-html/vimp-plot-1.png"></p>
@@ -268,7 +268,7 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span> <span class="co"># nolint: object_name_linter</span></span></code></pre></div>
 </div>
-<p>The threshold is 2.99, selecting 6 variables: crim, nox, rm, dis, ptratio, lstat.</p>
+<p>The threshold is 3, selecting 6 variables: crim, nox, rm, dis, ptratio, lstat.</p>
 <p>Both VIMP and minimal depth agree on the dominance of <code>lstat</code> and <code>rm</code>. We use the minimal depth top variables for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">

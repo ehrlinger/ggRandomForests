@@ -13,7 +13,7 @@ shape and scale of each variable's effect at a glance.
 
 ``` r
 # S3 method for class 'gg_partial'
-plot(x, ...)
+plot(x, labels = NULL, ...)
 ```
 
 ## Arguments
@@ -24,6 +24,14 @@ plot(x, ...)
   [`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
   object (output of
   [`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)).
+
+- labels:
+
+  Optional variable labels for the facet strips. One of: a named
+  character vector (`c(bpd_last = "BP Diastole")`); a labelled data
+  frame, whose `attr(col, "label")` values are read; or a two-column
+  `key`/`label` data frame. Variables with no label keep their raw name.
+  Defaults to `NULL` (raw names).
 
 - ...:
 

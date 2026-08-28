@@ -151,8 +151,11 @@ points from <code>time.interest</code> are used (see
 
 
 <dt id="arg-nvars">nvars<a class="anchor" aria-label="anchor" href="#arg-nvars"></a></dt>
-<dd><p>Integer; how many variables (list elements) to process.
-Defaults to every variable in <code>part_dta</code>.</p></dd>
+<dd><p>Integer; how many variables to keep, selected as the top
+<code>nvars</code> <strong>by varPro importance</strong> when <code>object</code> is
+supplied (falling back to the incoming <code>part_dta</code> list order
+otherwise).  Defaults to every variable in <code>part_dta</code>.  See
+<strong>Details</strong>.</p></dd>
 
 
 <dt id="arg-cat-limit">cat_limit<a class="anchor" aria-label="anchor" href="#arg-cat-limit"></a></dt>
@@ -274,6 +277,19 @@ fold boundaries in <code><a href="https://www.randomforestsrc.org/reference/cv.v
 the selection error has to mean anything.  And a completed frame is one
 dataset, not many, so the curves here carry no uncertainty from the
 imputation; read them as conditional on it.</p>
+<p><strong><code>nvars</code> selects by importance, not by list position:</strong> when
+<code>object</code> is supplied, the variables in <code>part_dta</code> are first
+reordered by their rank in <code>varPro::get.topvars(object)</code>, and
+<code>nvars</code> then keeps the top <code>nvars</code> of <em>that</em> ordering –
+not simply the first <code>nvars</code> elements as they arrived.
+<code>get.topvars()</code> typically ranks far fewer variables than
+<code>part_dta</code> contains; any variable it does not rank keeps its
+incoming order and is appended after the ranked block, so nothing is
+ever dropped from consideration, only reordered.  The returned
+<code>continuous$name</code> / <code>categorical$name</code> column is a
+<code>factor</code> whose levels follow this same importance order (raw list
+order when no <code>object</code> was supplied), so facet panels and legend
+entries sort by importance rather than alphabetically.</p>
 <p><strong>Scale detection:</strong> with <code>scale = "auto"</code> and an <code>object</code> in
 hand, the scale resolves to <code>"mortality"</code> for a survival forest and
 <code>"generic"</code> for a regression or classification forest.  The RMST
@@ -444,11 +460,11 @@ understanding patient and hospital differences.
 <span class="r-in"><span>    yhat.causal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_obs</span> <span class="op">*</span> <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">n_obs</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span><span class="va">mock_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span><span class="va">mock_data</span>, scale <span class="op">=</span> <span class="st">"logodds"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">continuous</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   variable parametric nonparametric  causal name </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     30      -<span style="color: #BB0000;">0.069</span><span style="color: #BB0000; text-decoration: underline;">5</span>       -<span style="color: #BB0000;">0.120</span>   0.436  age  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     33.6     0.149        -<span style="color: #BB0000;">0.477</span>   0.043<span style="text-decoration: underline;">8</span> age  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     37.1    -<span style="color: #BB0000;">0.237</span>        -<span style="color: #BB0000;">0.270</span>   0.053<span style="text-decoration: underline;">1</span> age  </span>
@@ -458,7 +474,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">categorical</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   parametric nonparametric causal variable name </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>      0.850       -<span style="color: #BB0000;">0.033</span><span style="color: #BB0000; text-decoration: underline;">8</span>  0.751        0 sex  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>      1.76        -<span style="color: #BB0000;">0.901</span>  -<span style="color: #BB0000;">0.829</span>        0 sex  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>      0.846       -<span style="color: #BB0000;">1.18</span>    0.710        0 sex  </span>
@@ -477,7 +493,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>                    <span class="co"># predictors in the data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span>         <span class="co"># what the fit reaches</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.topvars</a></span><span class="op">(</span><span class="va">vp</span><span class="op">)</span><span class="op">)</span>   <span class="co"># the default when xvar.names is absent</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span></span></span>
@@ -485,13 +501,14 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="co">## reach before you spend the computation -- this is the habit worth having.</span></span></span>
 <span class="r-in"><span><span class="va">wanted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wt"</span>, <span class="st">"hp"</span>, <span class="st">"qsec"</span>, <span class="st">"vs"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">wanted</span>, <span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "qsec" "vs"  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Ask anyway and we warn, naming what partialpro() would have dropped</span></span></span>
 <span class="r-in"><span><span class="co">## in silence.  (method = "rnd" is passed through to partialpro(); see</span></span></span>
 <span class="r-in"><span><span class="co">## the note on isolation-forest method in Details.)</span></span></span>
 <span class="r-in"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span>object <span class="op">=</span> <span class="va">vp</span>, xvar.names <span class="op">=</span> <span class="va">wanted</span>,</span></span>
 <span class="r-in"><span>                        method <span class="op">=</span> <span class="st">"rnd"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Refitting without the split-weight screen reaches every predictor.</span></span></span>
 <span class="r-in"><span><span class="va">vp_all</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span>,</span></span>

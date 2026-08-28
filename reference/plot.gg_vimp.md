@@ -12,7 +12,7 @@ at the top.
 
 ``` r
 # S3 method for class 'gg_vimp'
-plot(x, relative, lbls, ...)
+plot(x, relative, lbls, labels = NULL, ...)
 ```
 
 ## Arguments
@@ -30,8 +30,16 @@ plot(x, relative, lbls, ...)
 
 - lbls:
 
-  A vector of alternative variable labels. Item names should be the same
-  as the variable names.
+  *Deprecated* as of v4.0.0; use `labels`. A named character vector of
+  alternative variable labels.
+
+- labels:
+
+  Optional variable labels for the variable axis. One of: a named
+  character vector (`c(bpd_last = "BP Diastole")`); a labelled data
+  frame, whose `attr(col, "label")` values are read; or a two-column
+  `key`/`label` data frame. Variables with no label keep their raw name.
+  Defaults to `NULL` (raw names).
 
 - ...:
 

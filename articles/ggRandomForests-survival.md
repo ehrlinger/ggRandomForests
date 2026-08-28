@@ -413,7 +413,7 @@ details on the VIMP calculation for censored outcomes ([Ishwaran et al.
 
 ``` r
 
-plot(gg_vimp(rfsrc_pbc), lbls = st_labs) +
+plot(gg_vimp(rfsrc_pbc), labels = st_labs) +
   theme(legend.position = c(0.8, 0.2)) +
   labs(fill = "VIMP > 0")
 ```
@@ -777,7 +777,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.410692
+    #> [1] 1.415164
 
 ## Conclusion
 
