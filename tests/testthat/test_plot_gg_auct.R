@@ -21,3 +21,15 @@ test_that("plot.gg_auct adds a ribbon when bootstrap CI is present (no warning)"
 test_that("plot.gg_auct rejects non-gg_auct input", {
   expect_error(plot.gg_auct(mtcars), "gg_auct")
 })
+
+test_that("plot.gg_auct drops NA AUC rows instead of warning", {
+  # Under randomForestRHF >= 2.0.0 the final grid time can carry an NA AUC,
+  # because the censoring-weight denominator is undefined once the control set
+  # is nearly exhausted. Drop it rather than let geom_line() warn.
+  gg <- gg_auct(.rhf_pbc(), auct_fit = .auct_pbc_noboot())
+  p  <- plot(gg)
+  expect_no_warning(ggplot2::ggplot_gtable(ggplot2::ggplot_build(p)))
+  ld <- ggplot2::layer_data(p)
+  expect_gt(nrow(ld), 0)
+  expect_false(anyNA(ld$y))
+})

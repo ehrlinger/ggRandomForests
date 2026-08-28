@@ -17,7 +17,10 @@ A \code{ggplot} object.
 \description{
 Draws AUC(t) from a \code{\link[=gg_auct]{gg_auct()}} object: a line over time, a bootstrap
 confidence ribbon when available, and a dashed reference line at 0.5
-(chance). The integrated AUC (iAUC) appears in the caption.
+(chance). The integrated AUC (iAUC) appears in the caption. Times with a
+non-finite AUC are dropped before drawing: from \pkg{randomForestRHF} 2.0.0
+the final grid time can be \code{NA}, where the censoring-weight denominator is
+undefined once the control set is nearly exhausted.
 }
 \examples{
 \donttest{

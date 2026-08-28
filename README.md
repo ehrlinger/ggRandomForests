@@ -23,7 +23,7 @@
 fits from [varPro::varpro()](https://cran.r-project.org/package=varPro), and `rhf` fits from
 [randomForestRHF::rhf()](https://cran.r-project.org/package=randomForestRHF), a random-hazard forest for
 time-to-event data whose predictor values can change during follow-up. It also supports `randomForest`
-fits. Supported minimum versions are randomForestSRC 3.4.0, varPro 3.1.0, and randomForestRHF 1.0.1.
+fits. Supported minimum versions are randomForestSRC 3.4.0, varPro 3.1.0, and randomForestRHF 2.0.0.
 The package keeps the data step apart from the figure step, so you can inspect, save, or reuse the tidy
 object on its own.
 
@@ -227,7 +227,7 @@ Forests. *arXiv preprint* arXiv:2608.21597.
 <https://doi.org/10.48550/arXiv.2608.21597>
 
 Ishwaran H. and Kogalur U.B. (2026). *randomForestRHF: Random Hazard Forests.*
-R package version 1.0.1. <https://cran.r-project.org/package=randomForestRHF>
+R package version 2.0.0. <https://cran.r-project.org/package=randomForestRHF>
 
 Liaw A. and Wiener M. (2002). Classification and Regression by randomForest. *R News* 2(3), 18–22.
 

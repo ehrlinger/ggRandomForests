@@ -17,8 +17,22 @@ test_that("gg_rhf.rhf returns a tidy long frame over time.interest", {
   expect_setequal(unique(gg$id), o$ensemble.id)
   expect_setequal(unique(gg$time), o$time.interest)
   expect_equal(unique(gg$source), "oob")
-  expect_true(all(is.finite(gg$hazard) & gg$hazard >= 0))
+  expect_true(all(gg$hazard >= 0, na.rm = TRUE))
   expect_true(all(is.finite(gg$chf) & gg$chf >= 0))
+})
+
+test_that("gg_rhf carries the rhf hazard NA mask through unchanged", {
+  o  <- .rhf_pbc()
+  gg <- gg_rhf(o)
+  # randomForestRHF >= 2.0.0 defines the pointwise hazard only where the grid
+  # point falls inside one of the case's supplied (start, stop] intervals, and
+  # returns NA in gaps and after the final stop. chf is unaffected: it
+  # accumulates the exact interval overlap, so it stays flat across those
+  # regions rather than going NA. gg_rhf is a passthrough, so the mask has to
+  # arrive in the frame unrepaired, undropped and in column-major order.
+  expect_identical(is.na(gg$hazard), as.vector(is.na(o$hazard.oob)))
+  expect_true(all(is.finite(gg$hazard[!is.na(gg$hazard)])))
+  expect_false(anyNA(gg$chf))
 })
 
 test_that("gg_rhf source='inbag' selects the inbag matrices", {
