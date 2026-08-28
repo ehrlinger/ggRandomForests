@@ -95,6 +95,29 @@ Returns `names(part_dta)` reordered by importance.
 `nvars` slices **after** ranking. `facet_wrap()` inherits factor level order, so
 the plot method needs no change for ordering.
 
+### Known limitation — ordering does not cross the categorical/continuous split
+
+`plot.gg_partial_varpro()` builds **two** ggplots and staples them with
+`patchwork::wrap_plots(ncol = 1)`. Component 2 therefore orders correctly *within*
+the continuous block and *within* the categorical block, but the blocks cannot
+interleave: if importance ranks `female` third, it still draws in the lower block.
+
+This is structural, not an oversight. Verified 2026-08-28: ggplot2 rejects a
+numeric x in one panel and a discrete x in another within one `facet_wrap` —
+*"Discrete value supplied to a continuous scale."* Scale **type** is per-plot;
+`scales = "free_x"` frees the range, not the type.
+
+Two further consequences of the split, also left in place here: `plot()` returns a
+**patchwork**, not a ggplot, so `+ theme_hv_*()` does not compose as callers
+expect; and the two blocks get independent y-scales, which is why the categorical
+panel appears on a different range despite carrying the same units.
+
+Unifying this is **follow-up work**, tracked separately. The candidate paths are:
+map categorical levels onto numeric x positions (one facet, plain ggplot, per-panel
+tick labels become the open problem); `ggh4x::facetted_pos_scales()` (new
+dependency); or keep patchwork and fix only its symptoms (shared y-limits,
+`heights=` proportional to panel counts).
+
 ### Component 3 — apply at four sites
 
 **Where each concern lives.** Ordering is a **data** concern and belongs in the
@@ -138,7 +161,8 @@ Deliberately not addressed, each separable:
   without a legend or annotation. **Deliberately retained** — it is the diagnostic
   view, and the docs teach reading it. Annotating the series (house style: annotate,
   never a legend) is a separate improvement, not part of this change.
-- The categorical panel's `patchwork` layout and default fills.
+- The categorical panel's `patchwork` layout and default fills, and the
+  categorical/continuous split itself — see **Known limitation** above.
 - RHF importance sites (above).
 
 ## Testing
