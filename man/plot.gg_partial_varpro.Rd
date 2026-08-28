@@ -5,9 +5,9 @@
 \alias{plot.gg_partialpro}
 \title{Plot a \code{\link{gg_partial_varpro}} object}
 \usage{
-\method{plot}{gg_partialpro}(x, type = c("parametric", "nonparametric", "causal"), ...)
+\method{plot}{gg_partialpro}(x, type = c("parametric", "nonparametric", "causal"), labels = NULL, ...)
 
-\method{plot}{gg_partial_varpro}(x, type = c("parametric", "nonparametric", "causal"), ...)
+\method{plot}{gg_partial_varpro}(x, type = c("parametric", "nonparametric", "causal"), labels = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{\link{gg_partial_varpro}} object.}
@@ -15,6 +15,12 @@
 \item{type}{Character vector; one or more of \code{"parametric"},
 \code{"nonparametric"}, \code{"causal"}.  Defaults to all three.
 Ignored for path-C objects.}
+
+\item{labels}{Optional variable labels for the facet strips.  One of: a named
+character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
+whose \code{attr(col, "label")} values are read; or a two-column
+\code{key}/\code{label} data frame.  Variables with no label keep their raw
+name.  Defaults to \code{NULL} (raw names).}
 
 \item{...}{Unused for path-A objects; forwarded to
 \code{plot.gg_partial_rfsrc} for path-C objects.}

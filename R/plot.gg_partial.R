@@ -264,8 +264,8 @@ plot.gg_partial_rfsrc <- function(x, ...) {
 #' @name plot.gg_partial_varpro
 #' @export
 plot.gg_partialpro <- function(x, type = c("parametric", "nonparametric",
-                                            "causal"), ...) {
+                                            "causal"), labels = NULL, ...) {
   ## Deprecated class shim: re-dispatch to plot.gg_partial_varpro.
   class(x) <- c("gg_partial_varpro", setdiff(class(x), "gg_partialpro"))
-  plot.gg_partial_varpro(x, type = type, ...)
+  plot.gg_partial_varpro(x, type = type, labels = labels, ...)
 }

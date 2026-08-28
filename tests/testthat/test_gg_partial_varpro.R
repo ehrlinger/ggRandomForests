@@ -868,3 +868,51 @@ test_that("the prob scale labels the y axis P(Y = target)", {
 test_that("an unresolved scale still labels the y axis Partial Effect", {
   expect_equal(.partial_varpro_ylabel(list(scale = "generic")), "Partial Effect")
 })
+
+## ── labels = on facet strips (Task 5) ────────────────────────────────────────
+
+test_that("labels rename facet strips without touching the data", {
+  set.seed(42)
+  pd  <- make_mock_part_dta(c("bpd", "vis"))
+  res <- gg_partial_varpro(pd, scale = "logodds", cat_limit = 5)
+  p   <- plot(res, labels = c(bpd = "BP Diastole", vis = "VIS"))
+
+  # ggplot_build()$layout$layout carries the RAW facet values (labellers are
+  # applied at render time, not at build time), so the labelled strip text is
+  # read via ggplot2::get_strip_labels(), which drives the same
+  # format_strip_labels()/labeller path used to draw the strips.
+  strips <- ggplot2::get_strip_labels(p)$facets$name
+  expect_true("BP Diastole" %in% as.character(strips))
+
+  # The object itself must still carry raw names.
+  expect_true("bpd" %in% as.character(res$continuous$name))
+})
+
+test_that("an unlabelled variable keeps its raw name", {
+  set.seed(42)
+  pd  <- make_mock_part_dta(c("bpd", "vis"))
+  res <- gg_partial_varpro(pd, scale = "logodds", cat_limit = 5)
+  p   <- plot(res, labels = c(bpd = "BP Diastole"))
+  strips <- as.character(ggplot2::get_strip_labels(p)$facets$name)
+  expect_true(all(c("BP Diastole", "vis") %in% strips))
+})
+
+test_that("labels = NULL reproduces the unlabelled plot", {
+  set.seed(42)
+  pd  <- make_mock_part_dta(c("bpd", "vis"))
+  res <- gg_partial_varpro(pd, scale = "logodds", cat_limit = 5)
+  a <- ggplot2::get_strip_labels(plot(res))$facets$name
+  b <- ggplot2::get_strip_labels(plot(res, labels = NULL))$facets$name
+  expect_equal(as.character(a), as.character(b))
+})
+
+test_that("the deprecated shim forwards labels identically", {
+  set.seed(42)
+  pd  <- make_mock_part_dta(c("bpd", "vis"))
+  res <- gg_partial_varpro(pd, scale = "logodds", cat_limit = 5)
+  shim <- res
+  class(shim) <- c("gg_partialpro", "list")
+  p <- plot(shim, labels = c(bpd = "BP Diastole"))
+  strips <- as.character(ggplot2::get_strip_labels(p)$facets$name)
+  expect_true("BP Diastole" %in% strips)
+})
