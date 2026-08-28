@@ -474,6 +474,20 @@ gg_partial_varpro <- function(part_dta  = NULL,
     stop("scale = '", scale, "' requires 'object' (the varpro fit)",
          call. = FALSE)
   }
+  ## A supplied 'part_dta' must be named: the names ARE the variable identities.
+  ## Without them the constructor cannot build a 'name' column at all, and the
+  ## omission surfaces two calls later as an opaque facet_wrap() failure rather
+  ## than as a complaint about the input that caused it.
+  ## An EMPTY part_dta is a different case and stays legal: it has no variables
+  ## to name, and downstream code already handles a zero-row result.
+  if (!is.null(part_dta) && length(part_dta) > 0L) {
+    nms <- names(part_dta)
+    if (is.null(nms) || any(is.na(nms)) || !all(nzchar(nms))) {
+      stop("'part_dta' must be a named list; its names identify the variables. ",
+           "varPro::partialpro() returns one, so unnamed input usually means the ",
+           "names were dropped in transit.", call. = FALSE)
+    }
+  }
   .validate_partial_time(time)
   if (scale %in% c("rmst", "surv"))
     .validate_surv_scale_inputs(part_dta, object, scale)

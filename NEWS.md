@@ -89,6 +89,11 @@ ggRandomForests v4.0.0 (development)
   "Partial Effect" axis. The fallback label itself was never wrong — it was
   honest about an unknown scale — but the silence around it was, so the
   fallback now says so.
+* `gg_partial_varpro()` now rejects an unnamed `part_dta` with a clear error
+  instead of accepting it. The names of that list *are* the variable
+  identities; without them the constructor cannot build a `name` column at all,
+  and the omission used to surface two calls later as an opaque `facet_wrap()`
+  failure about a missing faceting variable. An empty `part_dta` remains legal.
 * The package's own vignettes (`ggRandomForests-regression.qmd`,
   `ggRandomForests-survival.qmd`) are moved off the now-deprecated `lbls`
   argument onto `labels`, so the shipped examples model the current API

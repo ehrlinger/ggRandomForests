@@ -848,11 +848,20 @@ test_that("no object leaves part_dta list order intact", {
   expect_equal(levels(res$continuous$name), c("zulu", "alpha", "mike"))
 })
 
-test_that("an unnamed part_dta does not crash the constructor", {
+test_that("an unnamed part_dta is rejected, not silently accepted", {
   set.seed(42)
   pd <- make_mock_part_dta(c("age", "bpd", "vis"))
   names(pd) <- NULL
-  expect_no_error(suppressWarnings(gg_partial_varpro(pd, cat_limit = 5)))
+  expect_error(gg_partial_varpro(pd, cat_limit = 5), "must be a named list")
+})
+
+test_that("a part_dta with a blank or NA name is rejected", {
+  set.seed(42)
+  pd <- make_mock_part_dta(c("age", "bpd"))
+  names(pd) <- c("age", "")
+  expect_error(gg_partial_varpro(pd, cat_limit = 5), "must be a named list")
+  names(pd) <- c("age", NA_character_)
+  expect_error(gg_partial_varpro(pd, cat_limit = 5), "must be a named list")
 })
 
 test_that("duplicate names in part_dta do not crash factor(levels=)", {
