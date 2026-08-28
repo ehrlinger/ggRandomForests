@@ -13,7 +13,7 @@
     writing-voice.md               sha256:15e75ca9cb97
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:81d181998e89
+    r-package-structure.md         sha256:c43a528bedf9
 -->
 
 # House Style — ggRandomForests
@@ -472,11 +472,17 @@ keeps this rule honest rather than aspirational.
 
 ## Development records
 
-Design documents and implementation plans are tracked in `dev/specs/`, one
-directory per repository, with the whole `dev/` tree carried by a single
-`^dev$` line in `.Rbuildignore`. They are tracked rather than ignored because
-the record of why a thing was built the way it was outlives the diff that built
-it, and it is worth more to the next reader.
+Design documents and implementation plans live in `dev/specs/`. That is one
+directory; the convention it replaced used two, a `specs/` directory paired with
+a `specs/plans/` subdirectory beneath it. Only the count is being claimed. There
+is no per-repository subdirectory, and nesting below `dev/specs/` is expected
+rather than forbidden — `dev/specs/artifacts/` is required further down.
+
+These files are committed to the repository, and nothing in `.gitignore` covers
+them: the record of why a thing was built the way it was outlives the diff that
+built it. Separately, a single `^dev$` line in `.Rbuildignore` keeps the tree out
+of the built package. The two mechanisms are unrelated — one decides what the
+repository stores, the other what the tarball ships.
 
 A file is named `<YYYY-MM-DD>-<slug>-<kind>.md`. The kind carries the
 design/plan distinction, and the path does not: a design and the plan
