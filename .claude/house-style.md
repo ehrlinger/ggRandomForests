@@ -13,7 +13,7 @@
     writing-voice.md               sha256:15e75ca9cb97
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:d1dbeb83c1e7
+    r-package-structure.md         sha256:c43a528bedf9
 -->
 
 # House Style — ggRandomForests
@@ -472,17 +472,17 @@ keeps this rule honest rather than aspirational.
 
 ## Development records
 
-Design documents and implementation plans live in `dev/specs/` — one directory,
-where the convention this replaced used a `specs/` and `specs/plans/` pair. That
-is all "one directory" claims: it says nothing about nesting, since
-`dev/specs/artifacts/` sits below it, and there is no per-repository
-subdirectory.
+Design documents and implementation plans live in `dev/specs/`. That is one
+directory; the convention it replaced used two, a `specs/` directory paired with
+a `specs/plans/` subdirectory beneath it. Only the count is being claimed. There
+is no per-repository subdirectory, and nesting below `dev/specs/` is expected
+rather than forbidden — `dev/specs/artifacts/` is required further down.
 
-They are committed to git rather than gitignored, because the record of why a
-thing was built the way it was outlives the diff that built it, and is worth
-more to the next reader. A single `^dev$` line in `.Rbuildignore` then keeps the
-whole tree out of the built package — out of the tarball, not out of the
-repository.
+These files are committed to the repository, and nothing in `.gitignore` covers
+them: the record of why a thing was built the way it was outlives the diff that
+built it. Separately, a single `^dev$` line in `.Rbuildignore` keeps the tree out
+of the built package. The two mechanisms are unrelated — one decides what the
+repository stores, the other what the tarball ships.
 
 A file is named `<YYYY-MM-DD>-<slug>-<kind>.md`. The kind carries the
 design/plan distinction, and the path does not: a design and the plan
