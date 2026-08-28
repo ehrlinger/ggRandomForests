@@ -13,7 +13,7 @@
     writing-voice.md               sha256:15e75ca9cb97
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:532534260e0f
+    r-package-structure.md         sha256:c1758211012e
 -->
 
 # House Style — ggRandomForests
@@ -331,17 +331,15 @@ Six are required of every package, in this order:
 5. **GitHub r-package version**
 6. **lint**
 
-These are required because they're already true. Every governed package runs
-the lint, pkgdown, and test-coverage workflows today; what's missing is
-sometimes the badge, not the machinery. A workflow running green that the README
-never mentions is coverage nobody can see, which is its own small version of
-the staleness problem — the check works, and the reader has no way to know.
-repostatus is a static shield with no infrastructure behind it at all, and the
-version badge just reads `DESCRIPTION`, so neither has an excuse.
+Where the thing behind a badge exists, the badge is required: what is missing
+is more often the badge than the machinery. A check running green that the
+README never mentions is signal nobody can see, which is its own small version
+of the staleness problem — the check works, and the reader has no way to know.
+Some need no machinery at all: repostatus is a static shield, and the version
+badge just reads `DESCRIPTION`, so neither has an excuse.
 
 Where a badge is genuinely missing because the underlying thing is missing,
-the fix is to add the workflow, not to drop the badge. No governed repo is in
-that position today; every one carries lint, pkgdown and test-coverage.
+the fix is to add the workflow, not to drop the badge.
 
 **Required for the `package-cran` profile**, after the six:
 
@@ -359,9 +357,9 @@ between the released version and the development one is worth seeing.
 DOI appears only where a Zenodo deposit exists; lifecycle only where the
 package makes a stability claim it means.
 
-Because five of the six required badges report on a workflow, this rule and
-the CI standard have to move together. Requiring the codecov, pkgdown, and
-lint badges is the same as requiring those three workflows.
+Because most of the required badges report on a workflow, this rule and the CI
+standard have to move together. Requiring the codecov, pkgdown, and lint
+badges is the same as requiring those three workflows.
 
 The hand-rolled dynamic-regex version badge currently living in
 hvtiRutilities is replaced by the standard GitHub r-package badge — it's
