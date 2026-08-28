@@ -188,7 +188,7 @@ variable is essential; negative values suggest it is no more informative than
 noise.
 
 ```{r vimp-plot, fig.cap="VIMP ranking. Longer blue bars indicate more important variables."}
-plot(gg_vimp(rfsrc_Boston), lbls = st_labs)
+plot(gg_vimp(rfsrc_Boston), labels = st_labs)
 ```
 
 `lstat` and `rm` dominate, with a clear gap to the remaining predictors. All
