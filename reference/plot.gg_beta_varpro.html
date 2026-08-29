@@ -78,7 +78,7 @@ selection cutoff, gray otherwise. Dashed red line marks the cutoff.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'gg_beta_varpro'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, labels <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -87,6 +87,14 @@ selection cutoff, gray otherwise. Dashed red line marks the cutoff.</p>
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>A <code>gg_beta_varpro</code> object from <code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code>.</p></dd>
+
+
+<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
+<dd><p>Optional variable labels for the variable axis. One of: a
+named character vector (<code>c(wt = "Weight")</code>); a labelled data frame, whose
+<code>attr(col, "label")</code> values are read; or a two-column <code>key</code>/<code>label</code> data
+frame. Variables with no label keep their raw name. Defaults to <code>NULL</code>
+(raw names).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

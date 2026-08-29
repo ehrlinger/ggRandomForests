@@ -139,6 +139,17 @@
   [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
   and was dropped with only ggplot2’s generic “Ignoring unknown
   parameters” warning, so the call looked accepted and did nothing.
+- [`plot.gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_varpro.md),
+  [`plot.gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_ivarpro.md)
+  and
+  [`plot.gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_uvarpro.md)
+  gain `labels` on the same terms, completing the varPro importance
+  family. These three had been dropping the argument in complete
+  silence: each declares `...` and does not use it, so `labels` was
+  absorbed with no warning, no error, and an unlabelled plot as the only
+  symptom. Their facets are per class rather than per variable, so the
+  class strips are left alone and only the variable axis is relabelled;
+  in a faceted plot every panel is relabelled.
 - [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md):
   `lbls` is **deprecated** in favour of `labels` and will be removed in
   a future release. Its old `length(lbls) >= length(vars)` gate is also
