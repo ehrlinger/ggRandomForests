@@ -99,6 +99,16 @@ ggRandomForests v4.0.0 (development)
   error, and an unlabelled plot as the only symptom. Their facets are per class
   rather than per variable, so the class strips are left alone and only the
   variable axis is relabelled; in a faceted plot every panel is relabelled.
+* `plot.gg_shap()` and the three exported mode functions it dispatches to,
+  `shap_importance()`, `shap_beeswarm()` and `shap_dependence()`, gain
+  `labels`. Each of the three puts variable names somewhere different, so each
+  honours the argument differently: `shap_importance()` labels a flipped
+  discrete `x` scale, `shap_beeswarm()` labels `y` directly because it does not
+  flip, and `shap_dependence()` has no variable scale at all and substitutes
+  the label into both axis titles instead. In that last mode `xvar` still
+  matches on raw variable names, so the label is display only and passing a
+  label where a variable name belongs is still an error. As with the varPro
+  methods above, `labels` was previously accepted and discarded in silence.
 * `plot.gg_vimp()`: `lbls` is **deprecated** in favour of `labels` and will be
   removed in a future release. Its old `length(lbls) >= length(vars)` gate is
   also gone, so a partial label set is now honoured, falling back to the raw

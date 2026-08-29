@@ -265,3 +265,127 @@ test_that("gg_shap rejects which.class that is not a whole, finite number", {
   expect_error(gg_shap(rf_rf, bg_n = 20, which.class = 2.9), "single integer")
   expect_error(gg_shap(rf_rf, bg_n = 20, which.class = 99), "out of range")
 })
+
+## ---- labels= across the three modes (issue #241) ---------------------------
+
+# Session-memoised so the eight blocks below share one forest fit and one
+# kernelshap run.  The file's older blocks each build their own; this is the
+# pattern helper-varpro-fixtures.R uses, and it keeps the added cost near zero.
+.shap_cache <- new.env(parent = emptyenv())
+
+.gg_shap_airq <- function() {
+  if (is.null(.shap_cache$g)) {
+    set.seed(20260817L)
+    rf <- randomForestSRC::rfsrc(Ozone ~ ., data = na.omit(airquality),
+                                 ntree = 50)
+    set.seed(42)
+    .shap_cache$g <- gg_shap(rf, bg_n = 20)
+  }
+  .shap_cache$g
+}
+
+# vars sit on a flipped x scale for importance and on y for beeswarm, so
+# collect both and let the caller assert membership.
+.shap_axis_labels <- function(p) {
+  built <- ggplot2::ggplot_build(p)
+  unlist(lapply(built$layout$panel_params, function(pp) {
+    c(as.character(pp$x$get_labels()), as.character(pp$y$get_labels()))
+  }))
+}
+
+test_that("shap_importance labels the variable axis", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+  g <- .gg_shap_airq()
+  axis <- .shap_axis_labels(shap_importance(g, labels = c(Temp = "Temperature")))
+
+  expect_true("Temperature" %in% axis)
+  expect_false("Temp" %in% axis)
+  expect_true("Wind" %in% axis)          # unlabelled falls back to raw name
+})
+
+test_that("shap_beeswarm labels the variable axis", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+  set.seed(42)                            # beeswarm jitters at build time
+  g <- .gg_shap_airq()
+  axis <- .shap_axis_labels(shap_beeswarm(g, labels = c(Temp = "Temperature")))
+
+  expect_true("Temperature" %in% axis)
+  expect_true("Wind" %in% axis)
+})
+
+test_that("shap_dependence substitutes the label into both axis titles", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+  g <- .gg_shap_airq()
+  p <- shap_dependence(g, xvar = "Temp", labels = c(Temp = "Temperature"))
+
+  expect_equal(p$labels$x, "Temperature")
+  expect_equal(p$labels$y, "SHAP value for Temperature")
+})
+
+test_that("shap_dependence still resolves xvar against raw names", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+  g <- .gg_shap_airq()
+
+  # The label is display only: passing the *label* as xvar must still error.
+  expect_error(
+    shap_dependence(g, xvar = "Temperature", labels = c(Temp = "Temperature")),
+    "Temperature"
+  )
+  expect_s3_class(
+    shap_dependence(g, xvar = "Temp", labels = c(Temp = "Temperature")),
+    "ggplot"
+  )
+})
+
+test_that("shap_dependence falls back to the raw name in its titles", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+  g <- .gg_shap_airq()
+  p <- shap_dependence(g, xvar = "Wind", labels = c(Temp = "Temperature"))
+
+  expect_equal(p$labels$x, "Wind")
+  expect_equal(p$labels$y, "SHAP value for Wind")
+})
+
+test_that("plot.gg_shap forwards labels to every mode", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+  set.seed(42)
+  g <- .gg_shap_airq()
+  lb <- c(Temp = "Temperature")
+
+  expect_true("Temperature" %in%
+                .shap_axis_labels(plot(g, type = "importance", labels = lb)))
+  expect_true("Temperature" %in%
+                .shap_axis_labels(plot(g, type = "beeswarm", labels = lb)))
+  expect_equal(plot(g, type = "dependence", xvar = "Temp", labels = lb)$labels$x,
+               "Temperature")
+})
+
+test_that("labels = NULL leaves every mode unchanged", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+  set.seed(42)
+  g <- .gg_shap_airq()
+
+  expect_true("Temp" %in% .shap_axis_labels(shap_importance(g)))
+  expect_true("Temp" %in% .shap_axis_labels(shap_beeswarm(g)))
+  expect_equal(shap_dependence(g, xvar = "Temp")$labels$x, "Temp")
+})
+
+test_that("gg_shap labels warn once when nothing resolves, and never touch the data", {
+  skip_if_not_installed("kernelshap")
+  skip_on_cran()
+  g <- .gg_shap_airq()
+
+  expect_warning(shap_importance(g, labels = c(Temp = "")), "No variable labels")
+
+  # Ordering is meaningful here: vars levels are reversed, top variable last.
+  p <- shap_importance(g, labels = c(Temp = "Temperature"))
+  expect_true("Temp" %in% as.character(p$data$vars))
+  expect_equal(levels(p$data$vars), levels(g$vars))
+})
