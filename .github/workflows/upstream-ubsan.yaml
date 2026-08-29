@@ -34,7 +34,7 @@ jobs:
           R --version
           cat "$R_MAKEVARS_USER"
 
-      - name: Provide and prove the UBSAN runtime
+      - name: Provide and prove the build prerequisites
         shell: bash
         run: |
           # The gcc16 image is referenced as :latest and has shipped without the
@@ -47,9 +47,25 @@ jobs:
             dnf -y install libubsan || true
           fi
 
+          # 'fs' needs libuv headers and the image ships none, so it fails
+          # configure with "fatal error: uv.h: No such file or directory".
+          # It is the single primary failure that cascades through
+          # sass -> bslib -> rmarkdown -> htmlwidgets -> visNetwork ->
+          # DiagrammeR -> randomForestSRC, i.e. it blocks the sanitizer target
+          # itself. See run 33267620518.
+          if [ ! -f /usr/include/uv.h ]; then
+            dnf -y install libuv-devel || true
+          fi
+
           echo "--- what the toolchain resolves ---"
           gcc -print-file-name=libubsan.so || true
           ls -l /usr/lib64/libubsan* 2>&1 || true
+          ls -l /usr/include/uv.h 2>&1 || true
+
+          if [ ! -f /usr/include/uv.h ]; then
+            echo "::error::libuv headers (uv.h) are still missing; package 'fs' will fail to configure and take randomForestSRC down with it."
+            exit 1
+          fi
 
           # Fail HERE, with a linkable/not-linkable answer, rather than 78
           # packages later behind an unrelated-looking error.
