@@ -462,3 +462,70 @@ test_that("empty classification fast-path returns named cutoff vector", {
   expect_true(all(is.na(prov$cutoff)))
   expect_equal(prov$class_levels, levels(iris$Species))
 })
+
+## ---- labels= on the variable axis (issue #239) -----------------------------
+
+test_that("plot.gg_beta_varpro labels the variable axis", {
+  out <- gg_beta_varpro(.varpro_mtcars(), beta_fit = .beta_fit_mtcars())
+  p <- plot(out, labels = c(wt = "Weight (1000 lbs)"))
+
+  expect_true("Weight (1000 lbs)" %in% .varpro_axis_labels(p))
+})
+
+test_that("plot.gg_beta_varpro falls back to the raw name per variable", {
+  out <- gg_beta_varpro(.varpro_mtcars(), beta_fit = .beta_fit_mtcars())
+  axis <- .varpro_axis_labels(plot(out, labels = c(wt = "Weight (1000 lbs)")))
+
+  expect_false("wt" %in% axis)
+  expect_true("hp" %in% axis)
+})
+
+test_that("plot.gg_beta_varpro accepts a key/label data frame", {
+  out <- gg_beta_varpro(.varpro_mtcars(), beta_fit = .beta_fit_mtcars())
+  m <- data.frame(key = "wt", label = "Weight (1000 lbs)",
+                  stringsAsFactors = FALSE)
+
+  expect_true("Weight (1000 lbs)" %in% .varpro_axis_labels(plot(out, labels = m)))
+})
+
+test_that("plot.gg_beta_varpro labels every panel when faceted by class", {
+  # Facets are per class, not per variable, so the variable axis must be
+  # relabelled in each panel while the strips keep their class names.
+  v <- .varpro_iris_multiclass()
+  out <- gg_beta_varpro(v, beta_fit = .beta_fit_iris_multiclass())
+  p <- plot(out, labels = c(Petal.Width = "Petal width"))
+  built <- ggplot2::ggplot_build(p)
+
+  per_panel <- vapply(built$layout$panel_params,
+                      function(pp) "Petal width" %in% as.character(pp$y$get_labels()),
+                      logical(1))
+  expect_gt(length(per_panel), 1L)
+  expect_true(all(per_panel))
+})
+
+test_that("plot.gg_beta_varpro with labels = NULL keeps the raw names", {
+  out <- gg_beta_varpro(.varpro_mtcars(), beta_fit = .beta_fit_mtcars())
+
+  expect_true("wt" %in% .varpro_axis_labels(plot(out)))
+})
+
+test_that("plot.gg_beta_varpro warns once when no label resolves", {
+  out <- gg_beta_varpro(.varpro_mtcars(), beta_fit = .beta_fit_mtcars())
+
+  expect_warning(plot(out, labels = c(wt = "")), "No variable labels")
+})
+
+test_that("plot.gg_beta_varpro keeps raw names and order in the returned data", {
+  out <- gg_beta_varpro(.varpro_mtcars(), beta_fit = .beta_fit_mtcars())
+  p <- plot(out, labels = c(wt = "Weight (1000 lbs)"))
+
+  expect_true("wt" %in% as.character(p$data$variable))
+  expect_equal(levels(p$data$variable), levels(out$variable))
+})
+
+test_that("autoplot.gg_beta_varpro forwards labels", {
+  out <- gg_beta_varpro(.varpro_mtcars(), beta_fit = .beta_fit_mtcars())
+  p <- ggplot2::autoplot(out, labels = c(wt = "Weight (1000 lbs)"))
+
+  expect_true("Weight (1000 lbs)" %in% .varpro_axis_labels(p))
+})

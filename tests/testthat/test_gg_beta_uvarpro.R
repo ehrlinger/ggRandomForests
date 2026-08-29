@@ -158,3 +158,57 @@ test_that("gg_beta_uvarpro agrees with a live get.beta.entropy() fit", {
   exp <- colMeans(b, na.rm = TRUE)
   expect_equal(got[names(exp)], exp[names(exp)])
 })
+
+## ---- labels= on the variable axis (issue #239) -----------------------------
+
+test_that("plot.gg_beta_uvarpro labels the variable axis", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+  p <- plot(out, labels = c(a = "Alpha channel"))
+
+  expect_true("Alpha channel" %in% .varpro_axis_labels(p))
+})
+
+test_that("plot.gg_beta_uvarpro falls back to the raw name per variable", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+  axis <- .varpro_axis_labels(plot(out, labels = c(a = "Alpha channel")))
+
+  expect_false("a" %in% axis)
+  expect_true("b" %in% axis)
+})
+
+test_that("plot.gg_beta_uvarpro accepts a labelled data frame", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+  d <- data.frame(a = 1:2, b = 3:4)
+  attr(d$a, "label") <- "Alpha channel"
+  attr(d$b, "label") <- "Beta channel"
+
+  expect_true(all(c("Alpha channel", "Beta channel") %in%
+                    .varpro_axis_labels(plot(out, labels = d))))
+})
+
+test_that("plot.gg_beta_uvarpro with labels = NULL keeps the raw names", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+
+  expect_true("a" %in% .varpro_axis_labels(plot(out)))
+})
+
+test_that("plot.gg_beta_uvarpro warns once when no label resolves", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+
+  expect_warning(plot(out, labels = c(a = "")), "No variable labels")
+})
+
+test_that("plot.gg_beta_uvarpro keeps raw names and order in the returned data", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+  p <- plot(out, labels = c(a = "Alpha channel"))
+
+  expect_true("a" %in% as.character(p$data$variable))
+  expect_equal(levels(p$data$variable), levels(out$variable))
+})
+
+test_that("autoplot.gg_beta_uvarpro forwards labels", {
+  out <- gg_beta_uvarpro(.stub_uvarpro(), beta_fit = .mock_beta_entropy())
+  p <- ggplot2::autoplot(out, labels = c(a = "Alpha channel"))
+
+  expect_true("Alpha channel" %in% .varpro_axis_labels(p))
+})

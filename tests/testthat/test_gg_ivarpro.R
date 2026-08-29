@@ -316,3 +316,68 @@ test_that("gg_ivarpro cached and uncached paths agree (slow)", {
   expect_false(attr(uncached, "provenance")$precomputed)
   expect_true(attr(cached,   "provenance")$precomputed)
 })
+
+## ---- labels= on the variable axis (issue #239) -----------------------------
+
+test_that("plot.gg_ivarpro labels the variable axis on the jitter path", {
+  out <- gg_ivarpro(.varpro_boston(), ivarpro_fit = .ivarpro_boston())
+  p <- plot(out, labels = c(rm = "Rooms per dwelling"))
+
+  expect_true("Rooms per dwelling" %in% .varpro_axis_labels(p))
+})
+
+test_that("plot.gg_ivarpro labels the variable axis on the which_obs bar path", {
+  # The two branches build different geoms, so both need covering.
+  out <- gg_ivarpro(.varpro_boston(), ivarpro_fit = .ivarpro_boston(),
+                    which_obs = 1L)
+  p <- plot(out, labels = c(rm = "Rooms per dwelling"))
+
+  expect_true("Rooms per dwelling" %in% .varpro_axis_labels(p))
+})
+
+test_that("plot.gg_ivarpro falls back to the raw name per variable", {
+  out <- gg_ivarpro(.varpro_boston(), ivarpro_fit = .ivarpro_boston())
+  axis <- .varpro_axis_labels(plot(out, labels = c(rm = "Rooms per dwelling")))
+
+  expect_false("rm" %in% axis)
+  expect_true("crim" %in% axis)
+})
+
+test_that("plot.gg_ivarpro labels every panel when faceted by class", {
+  out <- gg_ivarpro(.varpro_iris_multiclass_for_ivarpro(),
+                    ivarpro_fit = .ivarpro_iris_multiclass())
+  built <- ggplot2::ggplot_build(plot(out, labels = c(Petal.Width = "Petal width")))
+
+  per_panel <- vapply(built$layout$panel_params,
+                      function(pp) "Petal width" %in% as.character(pp$y$get_labels()),
+                      logical(1))
+  expect_gt(length(per_panel), 1L)
+  expect_true(all(per_panel))
+})
+
+test_that("plot.gg_ivarpro with labels = NULL keeps the raw names", {
+  out <- gg_ivarpro(.varpro_boston(), ivarpro_fit = .ivarpro_boston())
+
+  expect_true("rm" %in% .varpro_axis_labels(plot(out)))
+})
+
+test_that("plot.gg_ivarpro warns once when no label resolves", {
+  out <- gg_ivarpro(.varpro_boston(), ivarpro_fit = .ivarpro_boston())
+
+  expect_warning(plot(out, labels = c(rm = "")), "No variable labels")
+})
+
+test_that("plot.gg_ivarpro keeps raw names and order in the returned data", {
+  out <- gg_ivarpro(.varpro_boston(), ivarpro_fit = .ivarpro_boston())
+  p <- plot(out, labels = c(rm = "Rooms per dwelling"))
+
+  expect_true("rm" %in% as.character(p$data$variable))
+  expect_equal(levels(p$data$variable), levels(out$variable))
+})
+
+test_that("autoplot.gg_ivarpro forwards labels", {
+  out <- gg_ivarpro(.varpro_boston(), ivarpro_fit = .ivarpro_boston())
+  p <- ggplot2::autoplot(out, labels = c(rm = "Rooms per dwelling"))
+
+  expect_true("Rooms per dwelling" %in% .varpro_axis_labels(p))
+})
