@@ -14,6 +14,7 @@
   points = TRUE,
   smooth = TRUE,
   labels = NULL,
+  time_units = NULL,
   ...
 )
 }
@@ -41,6 +42,13 @@
 \code{key}/\code{label} data frame. Variables with no label keep their raw
 name. Applied to the facet strips in the panel plot and to the x axis title
 in the individual plot. Defaults to \code{NULL} (raw names).}
+
+\item{time_units}{Optional name of the time unit the forest was fit in, used
+only in the survival y axis title. \code{plot(gg_dta, time = 1191)} titles
+the axis \code{"Survival at 1191"}; \code{time_units = "days"} makes that
+\code{"Survival at 1191 days"}. Nothing on an
+\code{\link[randomForestSRC]{rfsrc}} object records the unit, so the
+package cannot infer it. Defaults to \code{NULL} (no unit printed).}
 
 \item{...}{arguments passed to the \code{ggplot2} functions.}
 }

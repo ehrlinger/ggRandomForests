@@ -155,6 +155,15 @@ ggRandomForests v4.0.0 (development)
   `ggRandomForests-survival.qmd`) are moved off the now-deprecated `lbls`
   argument onto `labels`, so the shipped examples model the current API
   rather than the one being phased out.
+* `plot.gg_variable()` and `plot.gg_rfsrc()` no longer hard-code a "year" time
+  unit in survival axis titles. The unit was never derived from the data, so a
+  fit measured in days -- `randomForestSRC::pbc`, this package's own canonical
+  survival example, among them -- rendered "Survival at 1191 year" for a horizon
+  of 1191 days. The titles now read "Survival at 1191" and "time" by default,
+  and a new `time_units` argument on both methods restores an explicit unit:
+  `time_units = "days"` gives "Survival at 1191 days" and "time (days)". Users
+  whose data really is in years should pass `time_units = "years"` to keep the
+  word.
 
 ggRandomForests v3.5.2
 ======================
