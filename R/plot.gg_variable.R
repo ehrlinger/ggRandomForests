@@ -328,8 +328,12 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       # Multiple time points: grid of (time × variable); single time: wrap
       if (length(levels(gg_dta$time)) > 1) {
         gg_plt <- gg_plt +
+          ## Scope the labeller to the 'variable' dimension only.  A bare
+          ## labeller here would also be applied to the 'time' strips, so a
+          ## lookup key that happened to equal a time value would relabel them.
           ggplot2::facet_grid(stats::reformulate("variable", "time"),
-            scales = "free_x", labeller = strip_labeller
+            scales = "free_x",
+            labeller = ggplot2::labeller(variable = strip_labeller)
           ) +
           labs(x = "")
       } else {

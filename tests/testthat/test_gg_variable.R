@@ -735,3 +735,26 @@ test_that("plot.gg_variable keeps raw names in the returned data", {
             labels = c(wt = "Weight (1000 lbs)"))
   expect_true("wt" %in% as.character(p$data$variable))
 })
+
+test_that("plot.gg_variable never relabels the time strips (PR #244 review)", {
+  skip_on_cran()
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ ., data = veteran, ntree = 50, nsplit = 5
+  )
+  gg_dta <- gg_variable(rfsrc_veteran, time = c(30, 90))
+
+  # facet_grid(time ~ variable) has two dimensions. A lookup key that collides
+  # with a time value must relabel the variable strip and leave time alone.
+  p <- plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE,
+            labels = c(age = "Age at diagnosis", "30" = "SHOULD NOT APPEAR"))
+  gs <- ggplot2::get_strip_labels(p)
+  all_strips <- as.character(unlist(lapply(gs, function(d) {
+    if (is.data.frame(d)) unlist(lapply(d, as.character)) else NULL
+  })))
+
+  expect_true("Age at diagnosis" %in% all_strips)
+  expect_false("SHOULD NOT APPEAR" %in% all_strips)
+  expect_true("30" %in% all_strips)
+})

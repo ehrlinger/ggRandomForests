@@ -114,7 +114,9 @@ ggRandomForests v4.0.0 (development)
   package that renders variable names. `plot.gg_variable()` labels the facet strips in its panel
   plot, through all three faceting branches, and the x axis title in its
   individual plot; the `time` facet is untouched, because it facets by time
-  rather than by variable. `plot.gg_udependent()` labels the node text of its dependency
+  rather than by variable, and the multi-time survival panel scopes its
+  labeller to the variable dimension so a label key that collides with a time
+  value cannot reach the time strips. `plot.gg_udependent()` labels the node text of its dependency
   network. There the display string is written to a separate vertex attribute
   and the igraph `name` is left alone, because `name` is the key the
   edge-weight backfill matches on and rewriting it would break edge weights on
