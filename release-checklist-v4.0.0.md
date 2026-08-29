@@ -1,6 +1,6 @@
 # Release Checklist: ggRandomForests v4.0.0
 
-**Audit date:** 2026-08-25 **Integration branch:** `dev_rhf` **Release
+**Audit date:** 2026-08-25 **Integration branch:** `main` **Release
 status:** HOLD
 
 This checklist records the v3/v4 consistency sweep and later RHF release
@@ -102,6 +102,12 @@ unsupervised variable priority where that method is discussed.
 - After v4 integration, `main` is the internal release-candidate
   channel. `hvtiR::install()` therefore installs the v4 candidate from
   GitHub even while CRAN remains on v3.
+- `dev_rhf` is **retired** (2026-08-29). It was the pre-integration
+  branch; once the v4 work reached `main` it held no commits `main` did
+  not, so the local branch, the remote branch, and the `protect dev_rhf`
+  ruleset were removed. `main` had already taken over as the candidate
+  channel, per the point above. Anything that still points at `dev_rhf`
+  is stale.
 - **hvtiR follow-up:** make `hvtiR::status()` and `hvtiR::update()`
   commit-aware. Their current version comparison cannot distinguish two
   candidate commits that both declare `Version: 4.0.0`. Until that work

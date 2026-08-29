@@ -60,7 +60,7 @@
 
 <div id="release-checklist-ggrandomforests-v400" class="section level1">
 
-<p><strong>Audit date:</strong> 2026-08-25 <strong>Integration branch:</strong> <code>dev_rhf</code> <strong>Release status:</strong> HOLD</p>
+<p><strong>Audit date:</strong> 2026-08-25 <strong>Integration branch:</strong> <code>main</code> <strong>Release status:</strong> HOLD</p>
 <p>This checklist records the v3/v4 consistency sweep and later RHF release gates. It does not authorize a release, CRAN submission, tag, version change, or merge to <code>main</code>. Those actions require explicit maintainer approval. CRAN acceptance remains the final release condition.</p>
 <div class="section level2">
 <h2 id="canonical-metadata">Canonical metadata<a class="anchor" aria-label="anchor" href="#canonical-metadata"></a></h2>
@@ -292,6 +292,8 @@
 <ul><li>
 <code>maint/v3</code> preserves the v3 line from the last pre-v4 <code>main</code> commit. A v3 correction is made and released there, then forward-ported to the v4 line.</li>
 <li>After v4 integration, <code>main</code> is the internal release-candidate channel. <code>hvtiR::install()</code> therefore installs the v4 candidate from GitHub even while CRAN remains on v3.</li>
+<li>
+<code>dev_rhf</code> is <strong>retired</strong> (2026-08-29). It was the pre-integration branch; once the v4 work reached <code>main</code> it held no commits <code>main</code> did not, so the local branch, the remote branch, and the <code>protect dev_rhf</code> ruleset were removed. <code>main</code> had already taken over as the candidate channel, per the point above. Anything that still points at <code>dev_rhf</code> is stale.</li>
 <li>
 <strong>hvtiR follow-up:</strong> make <code>hvtiR::status()</code> and <code>hvtiR::update()</code> commit-aware. Their current version comparison cannot distinguish two candidate commits that both declare <code>Version: 4.0.0</code>. Until that work lands, internal testers need an explicit reinstall to move between v4 release-candidate commits. This tooling follow-up does not replace or advance any ggRandomForests CRAN release gate.</li>
 </ul></div>
