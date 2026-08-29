@@ -31,11 +31,13 @@
 #'   name. Applied to the facet strips in the panel plot and to the x axis title
 #'   in the individual plot. Defaults to \code{NULL} (raw names).
 #' @param time_units Optional name of the time unit the forest was fit in, used
-#'   only in the survival y axis title. \code{plot(gg_dta, time = 1191)} titles
-#'   the axis \code{"Survival at 1191"}; \code{time_units = "days"} makes that
+#'   only in the survival y axis title. The horizon is chosen at
+#'   \code{gg_variable(rf, time = 1191)}; \code{plot(gg_dta)} then titles the
+#'   axis \code{"Survival at 1191"}, and \code{time_units = "days"} makes that
 #'   \code{"Survival at 1191 days"}. Nothing on an
 #'   \code{\link[randomForestSRC]{rfsrc}} object records the unit, so the
-#'   package cannot infer it. Defaults to \code{NULL} (no unit printed).
+#'   package cannot infer it. Defaults to \code{NULL} (no unit printed). Not
+#'   printed when multiple times are faceted.
 #' @param ... arguments passed to the \code{ggplot2} functions.
 #'
 #' @return A single \code{ggplot} object when \code{length(xvar) == 1} or
