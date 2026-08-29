@@ -4,7 +4,13 @@
 \alias{plot.gg_shap}
 \title{Plot a \code{\link{gg_shap}} object}
 \usage{
-\method{plot}{gg_shap}(x, type = c("beeswarm", "importance", "dependence"), xvar = NULL, ...)
+\method{plot}{gg_shap}(
+  x,
+  type = c("beeswarm", "importance", "dependence"),
+  xvar = NULL,
+  labels = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{\link{gg_shap}} object.}
@@ -14,6 +20,13 @@
 
 \item{xvar}{For \code{type = "dependence"}, the variable to plot. When
 \code{NULL}, the top-ranked variable is used.}
+
+\item{labels}{Optional variable labels, forwarded to the mode function. One
+of: a named character vector (\code{c(Temp = "Temperature")}); a labelled data
+frame, whose \code{attr(col, "label")} values are read; or a two-column
+\code{key}/\code{label} data frame. Variables with no label keep their raw
+name. In \code{"dependence"} mode the label is substituted into the axis
+titles; \code{xvar} still matches on raw names.}
 
 \item{...}{Passed to the underlying builder.}
 }
