@@ -24,6 +24,12 @@
 #' @param oob oob estimates (boolean)
 #' @param points plot the raw data points (boolean)
 #' @param smooth include a smooth curve (boolean)
+#' @param labels Optional variable labels. One of: a named character vector
+#'   (\code{c(wt = "Weight")}); a labelled data frame, whose
+#'   \code{attr(col, "label")} values are read; or a two-column
+#'   \code{key}/\code{label} data frame. Variables with no label keep their raw
+#'   name. Applied to the facet strips in the panel plot and to the x axis title
+#'   in the individual plot. Defaults to \code{NULL} (raw names).
 #' @param ... arguments passed to the \code{ggplot2} functions.
 #'
 #' @return A single \code{ggplot} object when \code{length(xvar) == 1} or
@@ -133,8 +139,18 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                              oob = TRUE,
                              points = TRUE,
                              smooth = TRUE,
+                             labels = NULL,
                              ...) {
   gg_dta <- x
+
+  ## Resolve the label lookup ONCE.  .forest_strip_labeller() would resolve it
+  ## again internally, and a lookup that matches nothing warns on every
+  ## resolution, so a second call would double the warning.  Strips and axis
+  ## titles are both built from this one lookup.
+  lab_lookup <- .forest_labels(labels)
+  strip_labeller <- ggplot2::as_labeller(
+    function(v) .apply_forest_labels(v, lab_lookup)
+  )
 
   # I don't think this will work with latest S3 models.
   if (inherits(x, "rfsrc")) {
@@ -312,13 +328,18 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       # Multiple time points: grid of (time × variable); single time: wrap
       if (length(levels(gg_dta$time)) > 1) {
         gg_plt <- gg_plt +
+          ## Scope the labeller to the 'variable' dimension only.  A bare
+          ## labeller here would also be applied to the 'time' strips, so a
+          ## lookup key that happened to equal a time value would relabel them.
           ggplot2::facet_grid(stats::reformulate("variable", "time"),
-            scales = "free_x"
+            scales = "free_x",
+            labeller = ggplot2::labeller(variable = strip_labeller)
           ) +
           labs(x = "")
       } else {
         gg_plt <- gg_plt +
-          ggplot2::facet_wrap(~variable, scales = "free_x") +
+          ggplot2::facet_wrap(~variable, scales = "free_x",
+                              labeller = strip_labeller) +
           labs(
             x = "",
             y = paste("Survival at", gg_dta$time[1], "year")
@@ -420,7 +441,8 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       }
 
       gg_plt <- gg_plt +
-        ggplot2::facet_wrap(~variable, scales = "free_x") +
+        ggplot2::facet_wrap(~variable, scales = "free_x",
+                              labeller = strip_labeller) +
         ggplot2::labs(x = "")
     }
 
@@ -435,6 +457,9 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       # Temporarily rename the target predictor column to "var" for aes()
       ch_indx <- which(colnames(gg_dta) == xvar[ind])
       h_name <- colnames(gg_dta)[ch_indx]
+      # Display name for axis titles only.  h_name stays raw: it is written back
+      # to colnames() at the foot of this loop.
+      h_display <- .apply_forest_labels(h_name, lab_lookup)
       colnames(gg_dta)[ch_indx] <- "var"
       # Use only the primary class (class() can return multiple strings, e.g.
       # c("POSIXct", "POSIXt")); a multi-element vector in if() triggers a warning.
@@ -446,7 +471,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       ## ---- Survival individual plot -----------------------------------
       if (family == "surv") {
         gg_plt[[ind]] <- gg_plt[[ind]] +
-          ggplot2::labs(x = h_name, y = "Survival")
+          ggplot2::labs(x = h_display, y = "Survival")
 
         if (ccls_var == "numeric") {
           # Continuous predictor: scatter (and optional smooth)
@@ -495,7 +520,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
         } else {
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::labs(
-              x = h_name,
+              x = h_display,
               y = paste("Survival at", gg_dta$time[1], "year")
             )
         }
@@ -503,7 +528,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       ## ---- Classification individual plot ----------------------------
       } else if (family == "class") {
         gg_plt[[ind]] <- gg_plt[[ind]] +
-          ggplot2::labs(x = h_name, y = "Predicted")
+          ggplot2::labs(x = h_display, y = "Predicted")
 
         if (sum(colnames(gg_dta) == "outcome") == 0) {
           # Single-outcome (binary) classification
@@ -609,7 +634,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
       } else {
         # assume regression
         gg_plt[[ind]] <- gg_plt[[ind]] +
-          ggplot2::labs(x = h_name, y = "Predicted")
+          ggplot2::labs(x = h_display, y = "Predicted")
         if (ccls_var == "numeric") {
           if (points) {
             gg_plt[[ind]] <- gg_plt[[ind]] +

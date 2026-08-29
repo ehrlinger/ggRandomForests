@@ -637,3 +637,124 @@ test_that("plot.gg_variable regression + factor predictor: smooth=TRUE adds no s
   expect_s3_class(p, "ggplot")
   expect_false(has_smooth_layer(p))
 })
+
+## ---- labels= on strips and axis titles (issue #243) ------------------------
+
+# Rendered strip text.  built$layout$layout holds the faceting variable's DATA
+# values, not the rendered text, so use get_strip_labels(), which walks the same
+# path as the renderer.  facet_wrap fills $facets; facet_grid fills $rows/$cols.
+.gg_variable_strips <- function(p) {
+  gs <- ggplot2::get_strip_labels(p)
+  as.character(unlist(lapply(gs, function(d) {
+    if (is.data.frame(d) && "variable" %in% names(d)) d$variable else NULL
+  })))
+}
+
+test_that("plot.gg_variable labels the facet strips in the panel branch", {
+  skip_on_cran()
+  set.seed(20260817L)
+  rf <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+  gg_dta <- gg_variable(rf)
+
+  p <- plot(gg_dta, xvar = c("wt", "hp"), panel = TRUE,
+            labels = c(wt = "Weight (1000 lbs)"))
+  strips <- .gg_variable_strips(p)
+
+  expect_true("Weight (1000 lbs)" %in% strips)
+  expect_true("hp" %in% strips)          # unlabelled falls back to raw name
+  expect_false("wt" %in% strips)
+})
+
+test_that("plot.gg_variable no longer warns when given labels", {
+  skip_on_cran()
+  set.seed(20260817L)
+  rf <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+  gg_dta <- gg_variable(rf)
+
+  # Before this change labels fell through ... into a ggplot2 layer and tripped
+  # "Ignoring unknown parameters".  geom_smooth() emits its own loess *message*
+  # here regardless, so assert on warnings rather than on silence.
+  expect_warning(
+    suppressMessages(ggplot2::ggplot_build(
+      plot(gg_dta, xvar = c("wt", "hp"), panel = TRUE,
+           labels = c(wt = "Weight (1000 lbs)"))
+    )),
+    regexp = NA
+  )
+})
+
+test_that("plot.gg_variable labels the x axis title in the individual branch", {
+  skip_on_cran()
+  set.seed(20260817L)
+  rf <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+  gg_dta <- gg_variable(rf)
+
+  p <- plot(gg_dta, xvar = "wt", labels = c(wt = "Weight (1000 lbs)"))
+  expect_equal(p$labels$x, "Weight (1000 lbs)")
+
+  # Unlabelled variable keeps its raw name in the title.
+  p2 <- plot(gg_dta, xvar = "hp", labels = c(wt = "Weight (1000 lbs)"))
+  expect_equal(p2$labels$x, "hp")
+})
+
+test_that("plot.gg_variable with labels = NULL is unchanged", {
+  skip_on_cran()
+  set.seed(20260817L)
+  rf <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+  gg_dta <- gg_variable(rf)
+
+  expect_equal(plot(gg_dta, xvar = "wt")$labels$x, "wt")
+  expect_true("wt" %in% .gg_variable_strips(
+    plot(gg_dta, xvar = c("wt", "hp"), panel = TRUE)))
+})
+
+test_that("plot.gg_variable still forwards other ... arguments to ggplot2", {
+  skip_on_cran()
+  set.seed(20260817L)
+  rf <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+  gg_dta <- gg_variable(rf)
+
+  # 'labels' becoming a formal must not stop ... reaching the geoms.
+  p <- plot(gg_dta, xvar = "wt", alpha = 0.3,
+            labels = c(wt = "Weight (1000 lbs)"))
+  alphas <- vapply(p$layers, function(l) {
+    a <- l$aes_params$alpha
+    if (is.null(a)) NA_real_ else as.numeric(a)
+  }, numeric(1))
+
+  expect_true(any(!is.na(alphas) & alphas == 0.3))
+})
+
+test_that("plot.gg_variable keeps raw names in the returned data", {
+  skip_on_cran()
+  set.seed(20260817L)
+  rf <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+  gg_dta <- gg_variable(rf)
+
+  p <- plot(gg_dta, xvar = c("wt", "hp"), panel = TRUE,
+            labels = c(wt = "Weight (1000 lbs)"))
+  expect_true("wt" %in% as.character(p$data$variable))
+})
+
+test_that("plot.gg_variable never relabels the time strips (PR #244 review)", {
+  skip_on_cran()
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ ., data = veteran, ntree = 50, nsplit = 5
+  )
+  gg_dta <- gg_variable(rfsrc_veteran, time = c(30, 90))
+
+  # facet_grid(time ~ variable) has two dimensions. A lookup key that collides
+  # with a time value must relabel the variable strip and leave time alone.
+  p <- plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE,
+            labels = c(age = "Age at diagnosis", "30" = "SHOULD NOT APPEAR"))
+  gs <- ggplot2::get_strip_labels(p)
+  all_strips <- as.character(unlist(lapply(gs, function(d) {
+    if (is.data.frame(d)) unlist(lapply(d, as.character)) else NULL
+  })))
+
+  expect_true("Age at diagnosis" %in% all_strips)
+  expect_false("SHOULD NOT APPEAR" %in% all_strips)
+  expect_true("30" %in% all_strips)
+})

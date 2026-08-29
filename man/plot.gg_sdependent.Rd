@@ -4,10 +4,16 @@
 \alias{plot.gg_sdependent}
 \title{Plot a \code{gg_sdependent} object}
 \usage{
-\method{plot}{gg_sdependent}(x, ...)
+\method{plot}{gg_sdependent}(x, labels = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{gg_sdependent} object from \code{\link[=gg_sdependent]{gg_sdependent()}}.}
+
+\item{labels}{Optional variable labels for the variable axis. One of: a
+named character vector (\code{c(bpd = "BP Diastole")}); a labelled data frame,
+whose \code{attr(col, "label")} values are read; or a two-column \code{key}/\code{label}
+data frame. Variables with no label keep their raw name. Defaults to
+\code{NULL} (raw names).}
 
 \item{...}{Not currently used.}
 }

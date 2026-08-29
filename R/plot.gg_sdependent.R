@@ -14,6 +14,11 @@
 #' connect, and with [gg_beta_uvarpro()] for the lasso-importance ranking.
 #'
 #' @param x A `gg_sdependent` object from [gg_sdependent()].
+#' @param labels Optional variable labels for the variable axis. One of: a
+#'   named character vector (`c(bpd = "BP Diastole")`); a labelled data frame,
+#'   whose `attr(col, "label")` values are read; or a two-column `key`/`label`
+#'   data frame. Variables with no label keep their raw name. Defaults to
+#'   `NULL` (raw names).
 #' @param ... Not currently used.
 #'
 #' @return A `ggplot` object.
@@ -33,7 +38,7 @@
 #' @importFrom ggplot2 ggplot aes geom_segment geom_point coord_flip
 #' @importFrom ggplot2 scale_color_manual labs theme_minimal
 #' @export
-plot.gg_sdependent <- function(x, ...) {
+plot.gg_sdependent <- function(x, labels = NULL, ...) {
   if (nrow(x) == 0L) {
     stop("plot.gg_sdependent: nothing to plot (gg_sdependent has 0 rows).",
          call. = FALSE)
@@ -47,7 +52,7 @@ plot.gg_sdependent <- function(x, ...) {
     n_signal, nrow(x), thr
   )
 
-  ggplot2::ggplot(
+  gg_plt <- ggplot2::ggplot(
     x,
     ggplot2::aes(
       x     = .data[["variable"]],
@@ -73,4 +78,13 @@ plot.gg_sdependent <- function(x, ...) {
       caption = caption_txt
     ) +
     ggplot2::theme_minimal()
+
+  # coord_flip(), so the variable axis is a flipped x, as in plot.gg_vimp().
+  lab_lookup <- .forest_labels(labels)
+  if (!is.null(lab_lookup)) {
+    gg_plt <- gg_plt + ggplot2::scale_x_discrete(
+      labels = function(v) .apply_forest_labels(v, lab_lookup)
+    )
+  }
+  gg_plt
 }
