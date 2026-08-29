@@ -28,8 +28,18 @@ assert_known_rfsrc_ubsan <- function(path) {
 }
 
 run_known_rfsrc_probe <- function() {
+  ## The LHS must be written BARE as `Unsupervised()`, never
+  ## `randomForestSRC::Unsupervised()`.  rfsrc's parseFormula() matches the
+  ## response symbol textually and never evaluates it, so the `::`-qualified
+  ## call does not match and the call dies with "formula is incorrectly
+  ## specified" before it reaches any native code.  The probe then reports
+  ## "Did not observe the known randomForestSRC UBSAN diagnostic", which reads
+  ## like the upstream defect was fixed rather than like a broken probe.
+  ## `Unsupervised` is not exported, but that does not matter here precisely
+  ## because the LHS is never evaluated.  Verified against randomForestSRC
+  ## 3.6.2: bare form OK, qualified form errors.  See run 33278882599.
   randomForestSRC::rfsrc(
-    randomForestSRC::Unsupervised() ~ .,
+    Unsupervised() ~ .,
     data = mtcars,
     ntree = 1L
   )
