@@ -34,6 +34,33 @@ jobs:
           R --version
           cat "$R_MAKEVARS_USER"
 
+      - name: Provide and prove the UBSAN runtime
+        shell: bash
+        run: |
+          # The gcc16 image is referenced as :latest and has shipped without the
+          # UBSAN runtime: every -fsanitize link then fails with
+          #   ld.bfd: cannot find /usr/lib64/libubsan.so.1.0.0
+          # which surfaces as "compilation failed for package rlang" and then as
+          # ~70 cascading "not available" errors, none of which name the cause.
+          # See run 33266002924.
+          if ! ls /usr/lib64/libubsan.so* >/dev/null 2>&1; then
+            dnf -y install libubsan || true
+          fi
+
+          echo "--- what the toolchain resolves ---"
+          gcc -print-file-name=libubsan.so || true
+          ls -l /usr/lib64/libubsan* 2>&1 || true
+
+          # Fail HERE, with a linkable/not-linkable answer, rather than 78
+          # packages later behind an unrelated-looking error.
+          printf 'int main(void){return 0;}\n' > /tmp/ubsan-probe.c
+          if gcc -fsanitize=undefined,bounds-strict -o /tmp/ubsan-probe /tmp/ubsan-probe.c; then
+            echo "UBSAN runtime links OK"
+          else
+            echo "::error::The UBSAN runtime is not linkable in this image. The sanitizer build cannot proceed; pin the container to a tag that ships libubsan, or install it explicitly."
+            exit 1
+          fi
+
       - name: Install dependencies and upstream engines from source
         shell: bash
         run: |
