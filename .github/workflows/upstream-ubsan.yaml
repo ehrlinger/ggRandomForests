@@ -2,6 +2,11 @@
 # This is intentionally manual: randomForestSRC has a known UBSAN defect in
 # unsupervised growth, so the workflow first confirms that calibration signal
 # and then requires the supported ggRandomForests paths to remain clean.
+#
+# Every install here pins repos= to CRAN. The gcc16 container defaults to an
+# r-hub binary repo whose PACKAGES index resolves but whose tarballs 404
+# (fedora-44/4.7, observed 2026-08-29), so an unpinned install fails on every
+# dependency before any sanitizer runs. See run 33264064851.
 on:
   workflow_dispatch:
 
@@ -34,7 +39,7 @@ jobs:
         run: |
           mkdir -p "$R_LIBS_USER"
           Rscript -e 'install.packages("remotes", repos = "https://cloud.r-project.org", type = "source")'
-          Rscript -e 'remotes::install_deps(dependencies = c("Depends", "Imports", "LinkingTo"), upgrade = "never")'
+          Rscript -e 'remotes::install_deps(dependencies = c("Depends", "Imports", "LinkingTo"), upgrade = "never", repos = "https://cloud.r-project.org")'
           Rscript -e 'install.packages(c("randomForestSRC", "randomForestRHF", "varPro"), repos = "https://cloud.r-project.org", type = "source")'
           R CMD INSTALL .
 
