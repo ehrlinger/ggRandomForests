@@ -17,6 +17,7 @@ plot(
   oob = TRUE,
   points = TRUE,
   smooth = TRUE,
+  labels = NULL,
   ...
 )
 ```
@@ -57,6 +58,15 @@ plot(
 - smooth:
 
   include a smooth curve (boolean)
+
+- labels:
+
+  Optional variable labels. One of: a named character vector
+  (`c(wt = "Weight")`); a labelled data frame, whose
+  `attr(col, "label")` values are read; or a two-column `key`/`label`
+  data frame. Variables with no label keep their raw name. Applied to
+  the facet strips in the panel plot and to the x axis title in the
+  individual plot. Defaults to `NULL` (raw names).
 
 - ...:
 

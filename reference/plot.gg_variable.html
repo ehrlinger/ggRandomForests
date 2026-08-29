@@ -75,6 +75,7 @@
 <span>  oob <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  points <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  smooth <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -114,6 +115,15 @@
 
 <dt id="arg-smooth">smooth<a class="anchor" aria-label="anchor" href="#arg-smooth"></a></dt>
 <dd><p>include a smooth curve (boolean)</p></dd>
+
+
+<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
+<dd><p>Optional variable labels. One of: a named character vector
+(<code>c(wt = "Weight")</code>); a labelled data frame, whose
+<code>attr(col, "label")</code> values are read; or a two-column
+<code>key</code>/<code>label</code> data frame. Variables with no label keep their raw
+name. Applied to the facet strips in the panel plot and to the x axis title
+in the individual plot. Defaults to <code>NULL</code> (raw names).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

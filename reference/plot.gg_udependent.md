@@ -9,7 +9,7 @@ between its two variables is.
 
 ``` r
 # S3 method for class 'gg_udependent'
-plot(x, layout = "fr", ...)
+plot(x, layout = "fr", labels = NULL, ...)
 ```
 
 ## Arguments
@@ -24,6 +24,14 @@ plot(x, layout = "fr", ...)
   Character; the igraph/ggraph layout algorithm. Common choices are
   `"fr"` (Fruchterman-Reingold, the default), `"kk"` (Kamada-Kawai),
   `"stress"`, `"circle"`, and `"grid"`.
+
+- labels:
+
+  Optional variable labels for the node text. One of: a named character
+  vector (`c(bpd = "BP Diastole")`); a labelled data frame, whose
+  `attr(col, "label")` values are read; or a two-column `key`/`label`
+  data frame. Nodes with no label keep their raw name. Defaults to
+  `NULL` (raw names).
 
 - ...:
 

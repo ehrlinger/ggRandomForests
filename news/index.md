@@ -168,6 +168,28 @@
   names, so the label is display only and passing a label where a
   variable name belongs is still an error. As with the varPro methods
   above, `labels` was previously accepted and discarded in silence.
+- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md),
+  [`plot.gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.md)
+  and
+  [`plot.gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.md)
+  gain `labels`, which completes the argument across every plot method
+  in the package that renders variable names.
+  [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
+  labels the facet strips in its panel plot, through all three faceting
+  branches, and the x axis title in its individual plot; the `time`
+  facet is untouched, because it facets by time rather than by variable,
+  and the multi-time survival panel scopes its labeller to the variable
+  dimension so a label key that collides with a time value cannot reach
+  the time strips.
+  [`plot.gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.md)
+  labels the node text of its dependency network. There the display
+  string is written to a separate vertex attribute and the igraph `name`
+  is left alone, because `name` is the key the edge-weight backfill
+  matches on and rewriting it would break edge weights on graphs saved
+  before those weights were stored.
+  [`plot.gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.md)
+  is the plain case, a flipped discrete axis like
+  [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md).
 - [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md):
   `lbls` is **deprecated** in favour of `labels` and will be removed in
   a future release. Its old `length(lbls) >= length(vars)` gate is also
