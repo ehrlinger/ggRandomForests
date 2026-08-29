@@ -19,6 +19,11 @@
 #' variables on very different scales.
 #'
 #' @param x A `gg_beta_uvarpro` object from [gg_beta_uvarpro()].
+#' @param labels Optional variable labels for the variable axis. One of: a
+#'   named character vector (`c(wt = "Weight")`); a labelled data frame, whose
+#'   `attr(col, "label")` values are read; or a two-column `key`/`label` data
+#'   frame. Variables with no label keep their raw name. Defaults to `NULL`
+#'   (raw names).
 #' @param ... Not currently used.
 #'
 #' @return A `ggplot` object.
@@ -38,7 +43,7 @@
 #' @importFrom ggplot2 ggplot aes geom_col geom_hline coord_flip
 #' @importFrom ggplot2 scale_fill_manual labs theme_minimal
 #' @export
-plot.gg_beta_uvarpro <- function(x, ...) {
+plot.gg_beta_uvarpro <- function(x, labels = NULL, ...) {
   if (nrow(x) == 0L) {
     stop("plot.gg_beta_uvarpro: nothing to plot (gg_beta_uvarpro has 0 rows).",
          call. = FALSE)
@@ -58,7 +63,7 @@ plot.gg_beta_uvarpro <- function(x, ...) {
     format(n_var), cutoff
   )
 
-  ggplot2::ggplot(
+  p <- ggplot2::ggplot(
     x,
     ggplot2::aes(
       x    = .data[["variable"]],
@@ -84,4 +89,14 @@ plot.gg_beta_uvarpro <- function(x, ...) {
       caption = caption_txt
     ) +
     ggplot2::theme_minimal()
+
+  # Labels rename the axis text only: the variable factor keeps its raw names
+  # and its importance ordering.
+  lab_lookup <- .forest_labels(labels)
+  if (!is.null(lab_lookup)) {
+    p <- p + ggplot2::scale_x_discrete(
+      labels = function(v) .apply_forest_labels(v, lab_lookup)
+    )
+  }
+  p
 }

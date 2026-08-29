@@ -176,3 +176,12 @@ make_mock_gg_varpro <- function(vars = c("bpd", "vis", "age"), conditional = FAL
                                   n           = 200L)
   out
 }
+
+# Variable-axis tick labels from a built plot.  These methods coord_flip(), so
+# the variable categories land on the y scale.  Faceted plots have one panel
+# per class, so collect across every panel.
+.varpro_axis_labels <- function(p) {
+  built <- ggplot2::ggplot_build(p)
+  unlist(lapply(built$layout$panel_params,
+                function(pp) as.character(pp$y$get_labels())))
+}

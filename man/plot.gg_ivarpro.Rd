@@ -4,10 +4,16 @@
 \alias{plot.gg_ivarpro}
 \title{Plot a \code{gg_ivarpro} object}
 \usage{
-\method{plot}{gg_ivarpro}(x, ...)
+\method{plot}{gg_ivarpro}(x, labels = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{gg_ivarpro} object from \code{\link[=gg_ivarpro]{gg_ivarpro()}}.}
+
+\item{labels}{Optional variable labels for the variable axis. One of: a
+named character vector (\code{c(wt = "Weight")}); a labelled data frame, whose
+\code{attr(col, "label")} values are read; or a two-column \code{key}/\code{label} data
+frame. Variables with no label keep their raw name. Defaults to \code{NULL}
+(raw names).}
 
 \item{...}{Not currently used.}
 }

@@ -92,6 +92,13 @@ ggRandomForests v4.0.0 (development)
   through `...` into `ggplot2::geom_point()` and was dropped with only ggplot2's
   generic "Ignoring unknown parameters" warning, so the call looked accepted and
   did nothing.
+* `plot.gg_beta_varpro()`, `plot.gg_ivarpro()` and `plot.gg_beta_uvarpro()`
+  gain `labels` on the same terms, completing the varPro importance family.
+  These three had been dropping the argument in complete silence: each declares
+  `...` and does not use it, so `labels` was absorbed with no warning, no
+  error, and an unlabelled plot as the only symptom. Their facets are per class
+  rather than per variable, so the class strips are left alone and only the
+  variable axis is relabelled; in a faceted plot every panel is relabelled.
 * `plot.gg_vimp()`: `lbls` is **deprecated** in favour of `labels` and will be
   removed in a future release. Its old `length(lbls) >= length(vars)` gate is
   also gone, so a partial label set is now honoured, falling back to the raw
