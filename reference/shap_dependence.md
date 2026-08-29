@@ -8,7 +8,7 @@ axis.
 ## Usage
 
 ``` r
-shap_dependence(x, xvar = NULL, ...)
+shap_dependence(x, xvar = NULL, labels = NULL, ...)
 ```
 
 ## Arguments
@@ -23,6 +23,14 @@ shap_dependence(x, xvar = NULL, ...)
 
   The variable to plot. When `NULL`, the top-ranked variable (largest
   mean absolute SHAP) is used.
+
+- labels:
+
+  Optional variable labels. One of: a named character vector
+  (`c(Temp = "Temperature")`); a labelled data frame, whose
+  `attr(col, "label")` values are read; or a two-column `key`/`label`
+  data frame. Variables with no label keep their raw name. Defaults to
+  `NULL` (raw names).
 
 - ...:
 

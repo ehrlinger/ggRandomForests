@@ -150,6 +150,24 @@
   symptom. Their facets are per class rather than per variable, so the
   class strips are left alone and only the variable axis is relabelled;
   in a faceted plot every panel is relabelled.
+- [`plot.gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_shap.md)
+  and the three exported mode functions it dispatches to,
+  [`shap_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_importance.md),
+  [`shap_beeswarm()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_beeswarm.md)
+  and
+  [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md),
+  gain `labels`. Each of the three puts variable names somewhere
+  different, so each honours the argument differently:
+  [`shap_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_importance.md)
+  labels a flipped discrete `x` scale,
+  [`shap_beeswarm()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_beeswarm.md)
+  labels `y` directly because it does not flip, and
+  [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md)
+  has no variable scale at all and substitutes the label into both axis
+  titles instead. In that last mode `xvar` still matches on raw variable
+  names, so the label is display only and passing a label where a
+  variable name belongs is still an error. As with the varPro methods
+  above, `labels` was previously accepted and discarded in silence.
 - [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md):
   `lbls` is **deprecated** in favour of `labels` and will be removed in
   a future release. Its old `length(lbls) >= length(vars)` gate is also

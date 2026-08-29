@@ -71,7 +71,7 @@ or character features fall back to their labels on a discrete axis.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">shap_dependence</span><span class="op">(</span><span class="va">x</span>, xvar <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">shap_dependence</span><span class="op">(</span><span class="va">x</span>, xvar <span class="op">=</span> <span class="cn">NULL</span>, labels <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -85,6 +85,14 @@ or character features fall back to their labels on a discrete axis.</p>
 <dt id="arg-xvar">xvar<a class="anchor" aria-label="anchor" href="#arg-xvar"></a></dt>
 <dd><p>The variable to plot. When <code>NULL</code>, the top-ranked variable
 (largest mean absolute SHAP) is used.</p></dd>
+
+
+<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
+<dd><p>Optional variable labels. One of: a named character vector
+(<code>c(Temp = "Temperature")</code>); a labelled data frame, whose
+<code>attr(col, "label")</code> values are read; or a two-column
+<code>key</code>/<code>label</code> data frame. Variables with no label keep their raw
+name. Defaults to <code>NULL</code> (raw names).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
