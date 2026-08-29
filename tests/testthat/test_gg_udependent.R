@@ -178,3 +178,71 @@ test_that("plot.gg_udependent empty graph -> stop with informative message", {
 ## ── vdiffr snapshots — see test_snapshots.R ──────────────────────────────────
 ## Visual regression tests for plot.gg_udependent are in test_snapshots.R
 ## (guarded by VDIFFR_RUN_TESTS=true), following the package convention.
+
+## ---- labels= on the node text (issue #243) ---------------------------------
+
+# The node text is drawn by geom_node_label(); ggraph resolves node data at
+# build time, so read the built layer rather than the graph.
+.ggu_node_labels <- function(p) {
+  built <- ggplot2::ggplot_build(p)
+  lab <- unlist(lapply(built$data, function(d) {
+    if ("label" %in% names(d)) as.character(d$label) else NULL
+  }))
+  sort(unique(lab))
+}
+
+test_that("plot.gg_udependent labels the node text", {
+  skip_on_cran()
+  skip_if_not_installed("ggraph")
+  gg <- make_ggu()
+  raw <- igraph::V(gg$graph)$name
+  target <- raw[1L]
+
+  p <- plot(gg, labels = stats::setNames("RENAMED NODE", target))
+  labs <- .ggu_node_labels(p)
+
+  expect_true("RENAMED NODE" %in% labs)
+  expect_false(target %in% labs)
+  if (length(raw) > 1L) expect_true(raw[2L] %in% labs)   # fallback per node
+})
+
+test_that("plot.gg_udependent leaves the igraph vertex key untouched", {
+  skip_on_cran()
+  skip_if_not_installed("ggraph")
+  gg <- make_ggu()
+  raw <- igraph::V(gg$graph)$name
+  target <- raw[1L]
+
+  # 'name' is the vertex key the edge-weight backfill matches on, so relabelling
+  # must not rewrite it, and the display string must live on a separate
+  # attribute.
+  expect_null(igraph::vertex_attr(gg$graph, "node_label"))
+
+  p <- plot(gg, labels = stats::setNames("RENAMED NODE", target))
+
+  # The caller's graph is untouched: same key, and still no display attribute.
+  expect_equal(igraph::V(gg$graph)$name, raw)
+  expect_null(igraph::vertex_attr(gg$graph, "node_label"))
+
+  # ...while the drawn node text did change, so the two are genuinely distinct.
+  expect_true("RENAMED NODE" %in% .ggu_node_labels(p))
+})
+
+test_that("plot.gg_udependent with labels = NULL keeps the raw node names", {
+  skip_on_cran()
+  skip_if_not_installed("ggraph")
+  gg <- make_ggu()
+  raw <- igraph::V(gg$graph)$name
+
+  expect_true(all(raw %in% .ggu_node_labels(plot(gg))))
+})
+
+test_that("plot.gg_udependent warns once when no label resolves", {
+  skip_on_cran()
+  skip_if_not_installed("ggraph")
+  gg <- make_ggu()
+  target <- igraph::V(gg$graph)$name[1L]
+
+  expect_warning(plot(gg, labels = stats::setNames("", target)),
+                 "No variable labels")
+})

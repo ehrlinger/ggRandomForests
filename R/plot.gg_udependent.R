@@ -39,6 +39,11 @@
 #'   choices are \code{"fr"} (Fruchterman-Reingold, the default),
 #'   \code{"kk"} (Kamada-Kawai), \code{"stress"}, \code{"circle"}, and
 #'   \code{"grid"}.
+#' @param labels Optional variable labels for the node text. One of: a named
+#'   character vector (\code{c(bpd = "BP Diastole")}); a labelled data frame,
+#'   whose \code{attr(col, "label")} values are read; or a two-column
+#'   \code{key}/\code{label} data frame. Nodes with no label keep their raw
+#'   name. Defaults to \code{NULL} (raw names).
 #' @param ... Not currently used.
 #'
 #' @details
@@ -68,7 +73,7 @@
 #' @importFrom ggplot2 aes labs scale_color_manual theme_void
 #' @importFrom igraph vertex_attr V edge_attr as_data_frame E
 #' @export
-plot.gg_udependent <- function(x, layout = "fr", ...) {
+plot.gg_udependent <- function(x, layout = "fr", labels = NULL, ...) {
   prov <- attr(x, "provenance")
 
   if (is.null(x$graph) || nrow(x$edges) == 0L) {
@@ -113,6 +118,14 @@ plot.gg_udependent <- function(x, layout = "fr", ...) {
     igraph::E(x$graph)$weight <- x$edges$weight[idx]
   }
 
+  ## Node text is a display concern.  'name' is the igraph vertex key that the
+  ## edge-weight backfill above matches on, so write the display string to a
+  ## separate attribute and leave the key alone.  Set unconditionally so the
+  ## aes() below is the same in both branches.
+  lab_lookup <- .forest_labels(labels)
+  igraph::V(x$graph)$node_label <-
+    .apply_forest_labels(igraph::V(x$graph)$name, lab_lookup)
+
   ggraph::ggraph(x$graph, layout = layout) +
     ggraph::geom_edge_link(
       ggplot2::aes(width = .data[["weight"]],
@@ -124,7 +137,7 @@ plot.gg_udependent <- function(x, layout = "fr", ...) {
                    size  = .data[["degree"]])
     ) +
     ggraph::geom_node_label(
-      ggplot2::aes(label = .data[["name"]]),
+      ggplot2::aes(label = .data[["node_label"]]),
       size = 3, show.legend = FALSE
     ) +
     ggplot2::scale_color_manual(

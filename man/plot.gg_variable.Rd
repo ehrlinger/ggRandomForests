@@ -13,6 +13,7 @@
   oob = TRUE,
   points = TRUE,
   smooth = TRUE,
+  labels = NULL,
   ...
 )
 }
@@ -33,6 +34,13 @@
 \item{points}{plot the raw data points (boolean)}
 
 \item{smooth}{include a smooth curve (boolean)}
+
+\item{labels}{Optional variable labels. One of: a named character vector
+(\code{c(wt = "Weight")}); a labelled data frame, whose
+\code{attr(col, "label")} values are read; or a two-column
+\code{key}/\code{label} data frame. Variables with no label keep their raw
+name. Applied to the facet strips in the panel plot and to the x axis title
+in the individual plot. Defaults to \code{NULL} (raw names).}
 
 \item{...}{arguments passed to the \code{ggplot2} functions.}
 }

@@ -109,6 +109,17 @@ ggRandomForests v4.0.0 (development)
   matches on raw variable names, so the label is display only and passing a
   label where a variable name belongs is still an error. As with the varPro
   methods above, `labels` was previously accepted and discarded in silence.
+* `plot.gg_variable()`, `plot.gg_udependent()` and `plot.gg_sdependent()` gain
+  `labels`, which completes the argument across every plot method in the
+  package that renders variable names. `plot.gg_variable()` labels the facet strips in its panel
+  plot, through all three faceting branches, and the x axis title in its
+  individual plot; the `time` facet is untouched, because it facets by time
+  rather than by variable. `plot.gg_udependent()` labels the node text of its dependency
+  network. There the display string is written to a separate vertex attribute
+  and the igraph `name` is left alone, because `name` is the key the
+  edge-weight backfill matches on and rewriting it would break edge weights on
+  graphs saved before those weights were stored. `plot.gg_sdependent()` is the
+  plain case, a flipped discrete axis like `plot.gg_vimp()`.
 * `plot.gg_vimp()`: `lbls` is **deprecated** in favour of `labels` and will be
   removed in a future release. Its old `length(lbls) >= length(vars)` gate is
   also gone, so a partial label set is now honoured, falling back to the raw

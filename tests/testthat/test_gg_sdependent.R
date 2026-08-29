@@ -108,3 +108,41 @@ test_that("gg_sdependent agrees with a live uvarpro + sdependent fit", {
   s <- varPro::sdependent(b, plot = FALSE)
   expect_setequal(as.character(out$variable[out$signal]), s$signal.vars)
 })
+
+## ---- labels= on the variable axis (issue #243) -----------------------------
+
+# coord_flip(), so the variable categories land on the y scale once built.
+.sdep_axis_labels <- function(p) {
+  built <- ggplot2::ggplot_build(p)
+  unlist(lapply(built$layout$panel_params,
+                function(pp) as.character(pp$y$get_labels())))
+}
+
+test_that("plot.gg_sdependent labels the variable axis", {
+  out <- gg_sdependent(.stub_uvarpro(), beta_fit = .mock_entropy_sq())
+  axis <- .sdep_axis_labels(plot(out, labels = c(a = "Alpha channel")))
+
+  expect_true("Alpha channel" %in% axis)
+  expect_false("a" %in% axis)
+  expect_true("b" %in% axis)             # unlabelled falls back to raw name
+})
+
+test_that("plot.gg_sdependent with labels = NULL keeps the raw names", {
+  out <- gg_sdependent(.stub_uvarpro(), beta_fit = .mock_entropy_sq())
+
+  expect_true("a" %in% .sdep_axis_labels(plot(out)))
+})
+
+test_that("plot.gg_sdependent warns once when no label resolves", {
+  out <- gg_sdependent(.stub_uvarpro(), beta_fit = .mock_entropy_sq())
+
+  expect_warning(plot(out, labels = c(a = "")), "No variable labels")
+})
+
+test_that("plot.gg_sdependent keeps raw names and rank order in the data", {
+  out <- gg_sdependent(.stub_uvarpro(), beta_fit = .mock_entropy_sq())
+  p <- plot(out, labels = c(a = "Alpha channel"))
+
+  expect_true("a" %in% as.character(p$data$variable))
+  expect_equal(levels(p$data$variable), levels(out$variable))
+})

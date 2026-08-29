@@ -4,7 +4,7 @@
 \alias{plot.gg_udependent}
 \title{Plot a \code{gg_udependent} variable dependency graph}
 \usage{
-\method{plot}{gg_udependent}(x, layout = "fr", ...)
+\method{plot}{gg_udependent}(x, layout = "fr", labels = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{gg_udependent} object from \code{\link{gg_udependent}}.}
@@ -13,6 +13,12 @@
 choices are \code{"fr"} (Fruchterman-Reingold, the default),
 \code{"kk"} (Kamada-Kawai), \code{"stress"}, \code{"circle"}, and
 \code{"grid"}.}
+
+\item{labels}{Optional variable labels for the node text. One of: a named
+character vector (\code{c(bpd = "BP Diastole")}); a labelled data frame,
+whose \code{attr(col, "label")} values are read; or a two-column
+\code{key}/\code{label} data frame. Nodes with no label keep their raw
+name. Defaults to \code{NULL} (raw names).}
 
 \item{...}{Not currently used.}
 }
