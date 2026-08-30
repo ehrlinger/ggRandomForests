@@ -45,7 +45,7 @@ check is not evidence that they pass; only the `devtools::test()` line above is.
 ## The one thing that destroys work
 
 **A suite run with `VDIFFR_RUN_TESTS` unset deletes every vdiffr baseline as "unused."**
-There are 49 of them under `tests/testthat/_snaps/snapshots/`, and they are the package's
+There are 58 of them under `tests/testthat/_snaps/snapshots/`, and they are the package's
 only visual regression coverage.
 
 Always run the suite as:
@@ -80,7 +80,17 @@ Further notes, so nobody re-derives them:
 - If you regenerate a baseline, do it **last**. A later full-suite run deletes it, and a
   blanket `git checkout -- tests/testthat/_snaps/` to undo that silently reverts your
   regeneration along with the pruning.
-- All 49 baselines are tracked today. That was not true on 2026-08-06, when one unguarded run
+- **That rule is branch-local, and the merge case is the one it misses.** A branch that
+  adds baselines and a branch that changes what those baselines render are both green on
+  their own, and the files never textually conflict, so nothing fails until the second
+  one merges. It happened on 2026-08-29: #252 added four `plot.gg_variable()` survival
+  baselines while #250, which removed the hard-coded `"year"` from that same axis title,
+  sat in review. Two of the four baked in `Survival at 1 year`, and #250 would have
+  merged clean and left `main` red. **Before merging a PR that changes rendered output,
+  re-check `main` for baselines added since you branched**, then merge `main` in,
+  regenerate, and push. `git diff --stat <merge-commit>..HEAD` afterwards should name
+  only the baselines you meant to touch.
+- All 58 baselines are tracked today. That was not true on 2026-08-06, when one unguarded run
   pruned 49 files and the 9 untracked ones survived only because a stale copy happened to
   remain in `ggRandomForests.Rcheck/00_pkg_src/`. That is not a backup and will not reliably
   be there.
@@ -150,7 +160,7 @@ recompose reverts you.
   this. (`tests/testthat/setup.R` attaches them for the tests only; that is not licence to do
   it in `R/`.)
 - Every `plot()` / `autoplot()` method should have a `vdiffr::expect_doppelganger()` test in
-  `test_snapshots.R`. There are 49 today against 38 methods; coverage is broad but has not
+  `test_snapshots.R`. There are 58 today against 38 methods; coverage is broad but has not
   been audited per method.
 - **Tests are deterministic, and every `test_that()` block that touches the RNG calls
   `set.seed()` inside that block.** A file-level seed does not count: testthat promises no
