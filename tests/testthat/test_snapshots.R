@@ -528,6 +528,76 @@ if (requireNamespace("kernelshap", quietly = TRUE)) {
   })
 }
 
+# Survival — pbc, plot.gg_variable() across all four survival paths
+#
+# plot.gg_variable()'s survival branch forks twice: on `panel`, and on whether
+# gg_dta carries one time or several. The four combinations differ in both
+# faceting and y-axis title, and none of them had a visual baseline:
+#
+#   panel = FALSE, one time    no facet                y = "Survival at <t> year"
+#   panel = FALSE, many times  facet_wrap(~time)       y = "Survival"
+#   panel = TRUE,  one time    facet_wrap(~variable)   y = "Survival at <t> year"
+#   panel = TRUE,  many times  facet_grid(time ~ var)  y = "Survival"
+#
+# The two single-time paths are the ones carrying the hard-coded time unit, so
+# they are the ones that a change to that axis title has to redraw. Before this
+# block the only guard on that title was expect_equal() on p$labels$y, which
+# cannot see the rest of the panel.
+#
+# This block sits last in the file deliberately. expect_doppelganger() consumes
+# the RNG whenever a plot draws geom_jitter (see the note in
+# test_determinism.R), so a new block inserted higher up would shift the stream
+# for every jitter-dependent snapshot below it. Appending cannot.
+local({
+  data(pbc, package = "randomForestSRC")
+  pbc$time <- pbc$days / 364.25
+  pbc_sub <- pbc[, c("time", "status", "treatment", "age", "bili", "albumin")]
+
+  # Same data subset and seed as the survival fixture above. importance and
+  # tree.err are omitted because gg_variable() reads neither, and permutation
+  # importance would draw from the RNG for nothing.
+  set.seed(42L)
+  rfsrc_pbc <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = pbc_sub,
+    ntree = 100L
+  )
+
+  # bili and albumin are both numeric, so these four plots draw geom_point plus
+  # geom_smooth and never geom_jitter. The baselines therefore do not depend on
+  # RNG state at draw time.
+  gg_one <- gg_variable(rfsrc_pbc, time = 1)
+  gg_many <- gg_variable(rfsrc_pbc, time = c(1, 3))
+
+  test_that("snapshot: gg_variable survival single time", {
+    vdiffr::expect_doppelganger(
+      "gg_variable survival single time",
+      plot(gg_one, xvar = "bili")
+    )
+  })
+
+  test_that("snapshot: gg_variable survival multiple times", {
+    vdiffr::expect_doppelganger(
+      "gg_variable survival multi time",
+      plot(gg_many, xvar = "bili")
+    )
+  })
+
+  test_that("snapshot: gg_variable survival panel single time", {
+    vdiffr::expect_doppelganger(
+      "gg_variable survival panel single time",
+      plot(gg_one, xvar = c("bili", "albumin"), panel = TRUE)
+    )
+  })
+
+  test_that("snapshot: gg_variable survival panel multiple times", {
+    vdiffr::expect_doppelganger(
+      "gg_variable survival panel multi time",
+      plot(gg_many, xvar = c("bili", "albumin"), panel = TRUE)
+    )
+  })
+})
+
 } else {
 
 ## ---- Preserve baselines when the vdiffr comparison is opted out ------------
