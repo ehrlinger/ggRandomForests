@@ -18,6 +18,7 @@ plot(
   points = TRUE,
   smooth = TRUE,
   labels = NULL,
+  time_units = NULL,
   ...
 )
 ```
@@ -67,6 +68,17 @@ plot(
   data frame. Variables with no label keep their raw name. Applied to
   the facet strips in the panel plot and to the x axis title in the
   individual plot. Defaults to `NULL` (raw names).
+
+- time_units:
+
+  Optional name of the time unit the forest was fit in, used only in the
+  survival y axis title. The horizon is chosen at
+  `gg_variable(rf, time = 1191)`; `plot(gg_dta)` then titles the axis
+  `"Survival at 1191"`, and `time_units = "days"` makes that
+  `"Survival at 1191 days"`. Nothing on an
+  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  object records the unit, so the package cannot infer it. Defaults to
+  `NULL` (no unit printed). Not printed when multiple times are faceted.
 
 - ...:
 

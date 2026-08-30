@@ -10,7 +10,7 @@ left a given observation out of their bootstrap sample.
 
 ``` r
 # S3 method for class 'gg_rfsrc'
-plot(x, notch = TRUE, ...)
+plot(x, notch = TRUE, time_units = NULL, ...)
 ```
 
 ## Arguments
@@ -31,6 +31,15 @@ plot(x, notch = TRUE, ...)
   classification forests (default `TRUE`). Set `notch = FALSE` to
   suppress notches when sample sizes are too small for reliable
   confidence intervals on the median.
+
+- time_units:
+
+  Optional name of the time unit the forest was fit in, used only in the
+  survival x axis title. The default titles the axis `"time"`;
+  `time_units = "days"` makes that `"time (days)"`. Nothing on an
+  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  object records the unit, so the package cannot infer it. Defaults to
+  `NULL` (no unit printed).
 
 - ...:
 
