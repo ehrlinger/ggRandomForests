@@ -164,6 +164,13 @@ ggRandomForests v4.0.0 (development)
   `time_units = "days"` gives "Survival at 1191 days" and "time (days)". Users
   whose data really is in years should pass `time_units = "years"` to keep the
   word.
+* `plot.gg_variable()`'s survival branch has visual regression cover for the
+  first time. The branch forks on `panel` and on whether the object carries one
+  time or several, and the four resulting paths differ in both faceting and
+  y-axis title; each now has a `vdiffr` baseline. The two single-time paths are
+  the ones that render a time unit into the axis title, so a change to that
+  title now surfaces as an SVG diff rather than resting on an `expect_equal()`
+  of `p$labels$y`, which cannot see the rest of the panel. Tests only.
 
 ggRandomForests v3.5.2
 ======================

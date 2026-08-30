@@ -19,7 +19,26 @@ jobs:
   upstream-ubsan:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/r-hub/containers/gcc16:latest
+      # Pinned by DIGEST, not by tag. Three regressions reached this workflow
+      # through the floating :latest reference: an r-hub binary repo whose
+      # PACKAGES index resolved but whose tarballs 404'd (#246), an image with
+      # no UBSAN runtime (#247), and one with no libuv headers (#248). None was
+      # visible until a manual dispatch, because this workflow has no automatic
+      # trigger.
+      #
+      # This digest is the image under which run 33282093658 built the full
+      # dependency tree and produced a LIVE calibration signal (the known
+      # randomForestSRC entry.c:184 diagnostic reproduced), so the sanitizer is
+      # known to be correctly instrumented here.
+      #
+      # The dnf installs in "Provide and prove the build prerequisites" are NOT
+      # made redundant by this pin: this exact image still ships without
+      # libubsan and without libuv-devel. The pin stops NEW drift; the installs
+      # fix what is already absent. Removing either breaks the workflow.
+      #
+      # To move: dispatch against a new digest, confirm the calibration step
+      # still goes red, then update here.
+      image: ghcr.io/r-hub/containers/gcc16@sha256:fb5a9bc713098627de4ea5dcebebab0794c540b663fb8e5b61592de0d6137ec2
     env:
       R_LIBS_USER: ${{ github.workspace }}/.ubsan-library
       R_MAKEVARS_USER: ${{ github.workspace }}/tools/Makevars.ubsan
@@ -33,6 +52,49 @@ jobs:
           gcc --version
           R --version
           cat "$R_MAKEVARS_USER"
+
+      - name: Provide and prove the build prerequisites
+        shell: bash
+        run: |
+          # The gcc16 image is referenced as :latest and has shipped without the
+          # UBSAN runtime: every -fsanitize link then fails with
+          #   ld.bfd: cannot find /usr/lib64/libubsan.so.1.0.0
+          # which surfaces as "compilation failed for package rlang" and then as
+          # ~70 cascading "not available" errors, none of which name the cause.
+          # See run 33266002924.
+          if ! ls /usr/lib64/libubsan.so* >/dev/null 2>&1; then
+            dnf -y install libubsan || true
+          fi
+
+          # 'fs' needs libuv headers and the image ships none, so it fails
+          # configure with "fatal error: uv.h: No such file or directory".
+          # It is the single primary failure that cascades through
+          # sass -> bslib -> rmarkdown -> htmlwidgets -> visNetwork ->
+          # DiagrammeR -> randomForestSRC, i.e. it blocks the sanitizer target
+          # itself. See run 33267620518.
+          if [ ! -f /usr/include/uv.h ]; then
+            dnf -y install libuv-devel || true
+          fi
+
+          echo "--- what the toolchain resolves ---"
+          gcc -print-file-name=libubsan.so || true
+          ls -l /usr/lib64/libubsan* 2>&1 || true
+          ls -l /usr/include/uv.h 2>&1 || true
+
+          if [ ! -f /usr/include/uv.h ]; then
+            echo "::error::libuv headers (uv.h) are still missing; package 'fs' will fail to configure and take randomForestSRC down with it."
+            exit 1
+          fi
+
+          # Fail HERE, with a linkable/not-linkable answer, rather than 78
+          # packages later behind an unrelated-looking error.
+          printf 'int main(void){return 0;}\n' > /tmp/ubsan-probe.c
+          if gcc -fsanitize=undefined,bounds-strict -o /tmp/ubsan-probe /tmp/ubsan-probe.c; then
+            echo "UBSAN runtime links OK"
+          else
+            echo "::error::The UBSAN runtime is not linkable in this image. The sanitizer build cannot proceed; pin the container to a tag that ships libubsan, or install it explicitly."
+            exit 1
+          fi
 
       - name: Install dependencies and upstream engines from source
         shell: bash
