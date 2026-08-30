@@ -86,10 +86,12 @@ Further notes, so nobody re-derives them:
   one merges. It happened on 2026-08-29: #252 added four `plot.gg_variable()` survival
   baselines while #250, which removed the hard-coded `"year"` from that same axis title,
   sat in review. Two of the four baked in `Survival at 1 year`, and #250 would have
-  merged clean and left `main` red. **Before merging a PR that changes rendered output,
+  merged clean and left `main` quietly wrong. CI would have stayed green, because it never
+  compares an SVG, and the mismatch would have surfaced only when someone next ran the
+  suite locally with the guard on. **Before merging a PR that changes rendered output,
   re-check `main` for baselines added since you branched**, then merge `main` in,
-  regenerate, and push. `git diff --stat <merge-commit>..HEAD` afterwards should name
-  only the baselines you meant to touch.
+  regenerate, and push. `git diff --stat <merge-commit>..HEAD` afterwards should name only
+  the baselines you meant to touch.
 - All 58 baselines are tracked today. That was not true on 2026-08-06, when one unguarded run
   pruned 49 files and the 9 untracked ones survived only because a stale copy happened to
   remain in `ggRandomForests.Rcheck/00_pkg_src/`. That is not a backup and will not reliably
