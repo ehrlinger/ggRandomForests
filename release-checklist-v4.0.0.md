@@ -78,8 +78,8 @@ unsupervised variable priority where that method is discussed.
 |---|---|---|---|
 | [x] | RHF vignette | verified | `vignettes/rhf.qmd` rendered after Tasks 2 and 3 with `Rscript -e 'quarto::quarto_render("vignettes/rhf.qmd")'`; focused review of the complete article was clean at `06d939ae`; public links are in `_pkgdown.yml`, `README.md`, and `R/help.R`. |
 | [x] | Consistency sweep | verified | All audit rows have a disposition; fresh documentation, lint, guarded-suite, spelling, vignette, pkgdown, and archive evidence was recorded on 2026-08-25. |
-| [ ] | Upstream Linux GCC UBSAN execution | pending | Manually run `upstream-ubsan.yaml` on the release candidate. It builds `randomForestSRC`, `randomForestRHF`, and `varPro` from source with GCC 16 and `-fsanitize=undefined,bounds-strict`, confirms the contained unsupervised `randomForestSRC` finding, and requires the supported `rfsrc`, `varpro`, and RHF paths to remain clean. |
-| [ ] | Full release verification | pending | Requires a maintainer-authorized release verification after the remaining release gates are complete. Fresh consistency-sweep command evidence is recorded above. |
+| [x] | Upstream Linux GCC UBSAN execution | verified, two contained upstream findings | Run [33288367135](https://github.com/ehrlinger/ggRandomForests/actions/runs/33288367135) on `main` @ `0f0335fe`. Calibration observed the contained `randomForestSRC` finding (`entry.c:184`, [kogalur/randomForestSRC#477](https://github.com/kogalur/randomForestSRC/issues/477)), so the sanitizer is provably live. The supported paths enumerated **exactly one** diagnostic under `halt_on_error=0`: `allocateAuxiliaryInfo` at `shared/stackAuxiliaryInfo.c:165`, reached via `varProStrength`, filed as [kogalur/varPro#6](https://github.com/kogalur/varPro/issues/6). `run_supported_workflows()` printed its completion message, so every supported `rfsrc`, `varpro` and RHF path ran; the count is a total, not a first-hit. **Criterion amended 2026-08-30:** this gate previously required the supported paths to be clean with a carve-out for the single `randomForestSRC` finding. It now admits **two** contained upstream findings, both in upstream C code that ggRandomForests cannot reach (no `src/`, no `LinkingTo`, no `NeedsCompilation`), both filed, and neither dereferencing the offending pointer. Any *third* finding, or any finding whose top frame is not upstream, fails this gate. |
+| [x] | Full release verification | verified for the internal RC | Run 2026-08-30 on `main` @ `0f0335fe`: `devtools::document()` produced no drift, `lintr::lint_package()` 0 lints, and `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` reported 1,975 passes, 0 failures, 58 existing warnings, 6 documented skips. All 58 vdiffr baselines present before and after, working tree byte-identical. Clean `git archive` build: only `ggRandomForests/.Rinstignore` matches `/\.[^/]+`, `cran-comments` count 0, tarball 4.0 MB. `R CMD check --as-cran` with the manual: **1 NOTE, 0 WARNING, 0 ERROR** (the maintainer-cadence incoming-feasibility NOTE), 3:12 wall. This covers the **internal** release candidate. A CRAN submission additionally needs win-builder check-time measurement; 3:12 local is comfortable but the win-builder ratio differs per step and must be measured, not extrapolated. Fresh consistency-sweep command evidence is recorded above. |
 | [ ] | Explicit maintainer authorization | pending | Maintainer approval recorded |
 | [ ] | Submission | pending | CRAN submission record |
 | [ ] | CRAN acceptance | pending | CRAN acceptance notice |
@@ -110,6 +110,46 @@ unsupervised variable priority where that method is discussed.
   need an explicit reinstall to move between v4 release-candidate commits.
   This tooling follow-up does not replace or advance any ggRandomForests CRAN
   release gate.
+
+## Verification evidence: 2026-08-30 (internal RC2)
+
+- `main` @ `0f0335fe`, zero open pull requests, 110 commits ahead of
+  `v4.0.0-rc1`.
+- `devtools::document()`, `lintr::lint_package()` and
+  `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` run in that order:
+  no documentation drift, 0 lints, 1,975 passes, 0 failures, 58 existing
+  warnings, 6 documented skips. All 58 vdiffr baselines present before and
+  after; the working tree was byte-identical, so nothing was pruned.
+- Clean `git archive` build, checked with the manual: **1 NOTE, 0 WARNING,
+  0 ERROR**, 3:12 wall. The NOTE is the maintainer-cadence incoming-feasibility
+  one. Tarball gate: only `ggRandomForests/.Rinstignore` matches `/\.[^/]+`,
+  `cran-comments` absent, 4.0 MB against CRAN's 5 MB limit.
+- **The UBSAN gate produced a verdict for the first time.** It had never
+  completed before: five defects sat between the dispatch and a result, each
+  visible only once the previous was cleared, and none reachable from CI
+  because the workflow is `workflow_dispatch` only. In order: the r-hub binary
+  repo whose `PACKAGES` index resolved while its tarballs 404'd (PR 246); an
+  image with no UBSAN runtime, which surfaced as ~70 cascading "not available"
+  errors and one buried `ld.bfd` line (PR 247); an image with no libuv headers,
+  where `fs` failing to configure took `randomForestSRC` down with it (PR 248);
+  a calibration probe written as `randomForestSRC::Unsupervised() ~ .`, which
+  `parseFormula()` cannot match because it compares the response symbol
+  textually, so the probe errored before reaching native code and **could never
+  go red** (PR 249); and a floating `:latest` container reference, now pinned by
+  digest (PR 254). `halt_on_error=0` (PR 255) then turned "the first finding"
+  into "every finding".
+- ⚠️ **A calibration step that cannot fail certifies nothing.** Before PR 249
+  the probe reported "Did not observe the known randomForestSRC UBSAN
+  diagnostic", which reads like upstream had fixed the defect rather than like
+  a broken probe. Any future change to the probe must be checked by confirming
+  it still goes red, not by confirming the run is green.
+- Two contained upstream findings, both filed, neither in ggRandomForests
+  (which has no `src/`, no `LinkingTo` and no `NeedsCompilation`, so it cannot
+  contribute to a C-level diagnostic): `randomForestSRC` `entry.c:184`
+  ([#477](https://github.com/kogalur/randomForestSRC/issues/477)) and `varPro`
+  `shared/stackAuxiliaryInfo.c:165`
+  ([#6](https://github.com/kogalur/varPro/issues/6)). Both are the same shape,
+  a 1-based-indexing adjustment applied to a null or zero-length array.
 
 ## Verification evidence: 2026-08-25
 
