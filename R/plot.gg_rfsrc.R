@@ -37,6 +37,11 @@
 #'   classification forests (default \code{TRUE}).  Set \code{notch = FALSE}
 #'   to suppress notches when sample sizes are too small for reliable
 #'   confidence intervals on the median.
+#' @param time_units Optional name of the time unit the forest was fit in, used
+#'   only in the survival x axis title. The default titles the axis
+#'   \code{"time"}; \code{time_units = "days"} makes that \code{"time (days)"}.
+#'   Nothing on an \code{\link[randomForestSRC]{rfsrc}} object records the unit,
+#'   so the package cannot infer it. Defaults to \code{NULL} (no unit printed).
 #' @param ... Additional arguments forwarded to the underlying
 #'   \code{ggplot2} geometry calls.  Commonly useful arguments include:
 #'   \describe{
@@ -157,8 +162,9 @@
 #' }
 #'
 #' @export
-plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
+plot.gg_rfsrc <- function(x, notch = TRUE, time_units = NULL, ...) {
   gg_dta <- x
+  time_units <- .check_time_units(time_units)
 
   # Capture extra passthrough args (e.g. alpha for survival ribbons).
   # notch is a named formal above so it is never present in arg_set.
@@ -287,7 +293,7 @@ plot.gg_rfsrc <- function(x, notch = TRUE, ...) {
     }
 
     gg_plt <- gg_plt +
-      ggplot2::labs(x = "time (years)", y = "Survival (%)")
+      ggplot2::labs(x = .time_axis_label(time_units), y = "Survival (%)")
 
   ## ---- Regression forest branch ----------------------------------------
   } else if (inherits(gg_dta, "regr") ||

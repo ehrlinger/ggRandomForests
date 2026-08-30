@@ -30,6 +30,14 @@
 #'   \code{key}/\code{label} data frame. Variables with no label keep their raw
 #'   name. Applied to the facet strips in the panel plot and to the x axis title
 #'   in the individual plot. Defaults to \code{NULL} (raw names).
+#' @param time_units Optional name of the time unit the forest was fit in, used
+#'   only in the survival y axis title. The horizon is chosen at
+#'   \code{gg_variable(rf, time = 1191)}; \code{plot(gg_dta)} then titles the
+#'   axis \code{"Survival at 1191"}, and \code{time_units = "days"} makes that
+#'   \code{"Survival at 1191 days"}. Nothing on an
+#'   \code{\link[randomForestSRC]{rfsrc}} object records the unit, so the
+#'   package cannot infer it. Defaults to \code{NULL} (no unit printed). Not
+#'   printed when multiple times are faceted.
 #' @param ... arguments passed to the \code{ggplot2} functions.
 #'
 #' @return A single \code{ggplot} object when \code{length(xvar) == 1} or
@@ -140,8 +148,10 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                              points = TRUE,
                              smooth = TRUE,
                              labels = NULL,
+                             time_units = NULL,
                              ...) {
   gg_dta <- x
+  time_units <- .check_time_units(time_units)
 
   ## Resolve the label lookup ONCE.  .forest_strip_labeller() would resolve it
   ## again internally, and a lookup that matches nothing warns on every
@@ -342,7 +352,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                               labeller = strip_labeller) +
           labs(
             x = "",
-            y = paste("Survival at", gg_dta$time[1], "year")
+            y = .survival_at_label(gg_dta$time[1], time_units)
           )
       }
 
@@ -521,7 +531,7 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
           gg_plt[[ind]] <- gg_plt[[ind]] +
             ggplot2::labs(
               x = h_display,
-              y = paste("Survival at", gg_dta$time[1], "year")
+              y = .survival_at_label(gg_dta$time[1], time_units)
             )
         }
 

@@ -220,3 +220,40 @@ shift <- function(x, shift_by = 1) {
 .escape_regex <- function(x) {
   gsub("([.\\\\|()\\[\\]{}^$*+?])", "\\\\\\1", x, perl = TRUE)
 }
+
+# --------------------------------------------------------------------------- #
+# Survival time-unit labelling.  Nothing on an rfsrc fit records what the time
+# column was measured in -- randomForestSRC carries no units metadata, and
+# gg_variable() builds its 'time' column from rf$time.interest -- so the package
+# cannot derive the unit and must not assert one.  The default prints no unit,
+# which is always correct; a caller who knows the unit supplies it.
+#' @keywords internal
+.check_time_units <- function(time_units) {
+  if (is.null(time_units)) {
+    return(NULL)
+  }
+  if (!is.character(time_units) || length(time_units) != 1L ||
+        is.na(time_units) || !nzchar(time_units)) {
+    stop("'time_units' must be NULL or a single non-empty character string.",
+         call. = FALSE)
+  }
+  time_units
+}
+
+# Survival y-axis title: "Survival at 1191" / "Survival at 1191 days".
+# time_value is typically a factor level, so as.character() takes the label
+# rather than the integer code.
+#' @keywords internal
+.survival_at_label <- function(time_value, time_units) {
+  paste(c("Survival at", as.character(time_value), time_units), collapse = " ")
+}
+
+# Survival x-axis title: "time" / "time (days)".
+#' @keywords internal
+.time_axis_label <- function(time_units) {
+  if (is.null(time_units)) {
+    "time"
+  } else {
+    paste0("time (", time_units, ")")
+  }
+}
