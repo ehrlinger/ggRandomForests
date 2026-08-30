@@ -3,6 +3,11 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* The survival vignette's variable-dependence figure passed `time.labels` where
+  `gg_variable()` reads `time_labels`. The dotted name matched nothing and was
+  dropped without a warning, so the facet strips rendered as bare "1" and "3"
+  instead of the intended "1 Year" and "3 Years". Corrected; the figure now
+  carries the labels its code always asked for.
 * Development line opened after the v3.2.0 CRAN release (forward-merged the
   v3.2.0 RMST/varPro fixes onto the dev line).
 * Begin the v4.0.0 development line: a Random Hazard Forests (RHF)

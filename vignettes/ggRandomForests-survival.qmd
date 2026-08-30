@@ -414,7 +414,7 @@ the forest accounts for all other covariates.
 
 ```{r vardep-bili, fig.height=4, fig.cap="Variable dependence of survival at 1 and 3 years on bilirubin."}
 gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3),
-                    time.labels = c("1 Year", "3 Years"))
+                    time_labels = c("1 Year", "3 Years"))
 
 plot(gg_v, xvar = "bili", alpha = 0.4) +
   labs(y = "Survival", x = st_labs["bili"]) +
