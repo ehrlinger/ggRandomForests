@@ -758,3 +758,77 @@ test_that("plot.gg_variable never relabels the time strips (PR #244 review)", {
   expect_false("SHOULD NOT APPEAR" %in% all_strips)
   expect_true("30" %in% all_strips)
 })
+
+test_that("plot.gg_variable survival panel: no unit by default, unit when given", {
+  skip_on_cran()
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_veteran, time = 90)
+
+  gg_plt <- plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE)
+  expect_equal(gg_plt$labels$y, "Survival at 90")
+  expect_false(grepl("year", gg_plt$labels$y, fixed = TRUE))
+
+  gg_units <- plot(gg_dta, xvar = c("age", "diagtime"), panel = TRUE,
+                   time_units = "days")
+  expect_equal(gg_units$labels$y, "Survival at 90 days")
+})
+
+test_that("plot.gg_variable survival individual: no unit by default, unit when given", {
+  skip_on_cran()
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_veteran, time = 90)
+
+  gg_plt <- plot(gg_dta, xvar = "age")
+  expect_equal(gg_plt$labels$y, "Survival at 90")
+  expect_false(grepl("year", gg_plt$labels$y, fixed = TRUE))
+
+  gg_units <- plot(gg_dta, xvar = "age", time_units = "days")
+  expect_equal(gg_units$labels$y, "Survival at 90 days")
+})
+
+test_that("plot.gg_variable rejects a malformed time_units", {
+  skip_on_cran()
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_veteran, time = 90)
+  expect_error(plot(gg_dta, xvar = "age", time_units = c("a", "b")),
+               "single non-empty character")
+})
+
+test_that("plot.gg_variable regression y label is untouched by the units change", {
+  skip_on_cran()
+  set.seed(42)
+  rfsrc_air <- randomForestSRC::rfsrc(
+    Ozone ~ .,
+    data = stats::na.omit(airquality),
+    ntree = 50,
+    nsplit = 5
+  )
+
+  gg_dta <- gg_variable(rfsrc_air)
+  gg_plt <- plot(gg_dta, xvar = "Temp")
+  expect_false(grepl("Survival at", gg_plt$labels$y, fixed = TRUE))
+})
