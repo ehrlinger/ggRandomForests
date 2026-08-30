@@ -475,3 +475,42 @@ test_that("plot.gg_rfsrc notch=FALSE suppresses notch in boxplot", {
   gg_plt_regr <- plot.gg_rfsrc(gg_dta_regr, notch = FALSE)
   expect_s3_class(gg_plt_regr, "ggplot")
 })
+
+test_that("plot.gg_rfsrc survival: no unit by default, unit when given", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran)
+
+  gg_plt <- plot(gg_dta)
+  expect_equal(gg_plt$labels$x, "time")
+  expect_false(grepl("year", gg_plt$labels$x, fixed = TRUE))
+  expect_equal(gg_plt$labels$y, "Survival (%)")
+
+  gg_units <- plot(gg_dta, time_units = "days")
+  expect_equal(gg_units$labels$x, "time (days)")
+})
+
+test_that("plot.gg_rfsrc rejects a malformed time_units", {
+  data(veteran, package = "randomForestSRC")
+  set.seed(42)
+  rfsrc_veteran <- randomForestSRC::rfsrc(
+    Surv(time, status) ~ .,
+    data = veteran,
+    ntree = 50,
+    nsplit = 5,
+    forest = TRUE,
+    save.memory = TRUE
+  )
+
+  gg_dta <- gg_rfsrc(rfsrc_veteran)
+  expect_error(plot(gg_dta, time_units = 7), "single non-empty character")
+})
