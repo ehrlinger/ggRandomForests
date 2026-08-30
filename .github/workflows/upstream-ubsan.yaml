@@ -42,7 +42,20 @@ jobs:
     env:
       R_LIBS_USER: ${{ github.workspace }}/.ubsan-library
       R_MAKEVARS_USER: ${{ github.workspace }}/tools/Makevars.ubsan
-      UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+      # halt_on_error=0 so a run ENUMERATES every diagnostic instead of
+      # stopping at the first. With halt_on_error=1 the supported-paths check
+      # reported exactly one finding and said nothing about what lay behind it,
+      # so "one finding" was a floor, not a count, and clearing it would only
+      # have advanced the run to the next one. The whole environment debug
+      # (#246 through #249) was that loop; there is no reason to repeat it for
+      # the findings themselves.
+      #
+      # The calibration step still works: with halt_on_error=0 the probe's
+      # rfsrc call returns instead of aborting, so run_known_rfsrc_probe()
+      # reaches its own stop("...unexpectedly returned") and still exits
+      # non-zero, and --check-known still finds the entry.c:184 diagnostic in
+      # the log because UBSAN keeps printing it.
+      UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=0
 
     steps:
       - uses: actions/checkout@v4
