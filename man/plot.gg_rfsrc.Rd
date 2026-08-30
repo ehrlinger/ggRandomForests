@@ -4,7 +4,7 @@
 \alias{plot.gg_rfsrc}
 \title{Predicted response plot from a \code{\link{gg_rfsrc}} object.}
 \usage{
-\method{plot}{gg_rfsrc}(x, notch = TRUE, ...)
+\method{plot}{gg_rfsrc}(x, notch = TRUE, time_units = NULL, ...)
 }
 \arguments{
 \item{x}{A \code{\link{gg_rfsrc}} object, or a raw
@@ -15,6 +15,12 @@
 classification forests (default \code{TRUE}).  Set \code{notch = FALSE}
 to suppress notches when sample sizes are too small for reliable
 confidence intervals on the median.}
+
+\item{time_units}{Optional name of the time unit the forest was fit in, used
+only in the survival x axis title. The default titles the axis
+\code{"time"}; \code{time_units = "days"} makes that \code{"time (days)"}.
+Nothing on an \code{\link[randomForestSRC]{rfsrc}} object records the unit,
+so the package cannot infer it. Defaults to \code{NULL} (no unit printed).}
 
 \item{...}{Additional arguments forwarded to the underlying
 \code{ggplot2} geometry calls.  Commonly useful arguments include:
