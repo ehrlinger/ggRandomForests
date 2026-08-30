@@ -440,9 +440,9 @@ md_pbc <- max.subtree(rfsrc_pbc)
 
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-function computes minimal depth for each variable. The threshold is
-6.06, selecting 9 variables: age, ascites, edema, bili, chol, albumin,
-copper, sgot, prothrombin.
+function computes minimal depth for each variable. The threshold is 5.9,
+selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper,
+prothrombin.
 
 Both selection methods agree on the key predictors: `bili`, `albumin`,
 `copper`, `prothrombin`, and `age`. We add `edema` (selected by the
@@ -471,7 +471,7 @@ other covariates.
 ``` r
 
 gg_v <- gg_variable(rfsrc_pbc, time = c(1, 3),
-                    time.labels = c("1 Year", "3 Years"))
+                    time_labels = c("1 Year", "3 Years"))
 
 plot(gg_v, xvar = "bili", alpha = 0.4) +
   labs(y = "Survival", x = st_labs["bili"]) +
@@ -777,7 +777,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.434399
+    #> [1] 1.420334
 
 ## Conclusion
 
