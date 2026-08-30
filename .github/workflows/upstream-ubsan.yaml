@@ -19,7 +19,26 @@ jobs:
   upstream-ubsan:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/r-hub/containers/gcc16:latest
+      # Pinned by DIGEST, not by tag. Three regressions reached this workflow
+      # through the floating :latest reference: an r-hub binary repo whose
+      # PACKAGES index resolved but whose tarballs 404'd (#246), an image with
+      # no UBSAN runtime (#247), and one with no libuv headers (#248). None was
+      # visible until a manual dispatch, because this workflow has no automatic
+      # trigger.
+      #
+      # This digest is the image under which run 33282093658 built the full
+      # dependency tree and produced a LIVE calibration signal (the known
+      # randomForestSRC entry.c:184 diagnostic reproduced), so the sanitizer is
+      # known to be correctly instrumented here.
+      #
+      # The dnf installs in "Provide and prove the build prerequisites" are NOT
+      # made redundant by this pin: this exact image still ships without
+      # libubsan and without libuv-devel. The pin stops NEW drift; the installs
+      # fix what is already absent. Removing either breaks the workflow.
+      #
+      # To move: dispatch against a new digest, confirm the calibration step
+      # still goes red, then update here.
+      image: ghcr.io/r-hub/containers/gcc16@sha256:fb5a9bc713098627de4ea5dcebebab0794c540b663fb8e5b61592de0d6137ec2
     env:
       R_LIBS_USER: ${{ github.workspace }}/.ubsan-library
       R_MAKEVARS_USER: ${{ github.workspace }}/tools/Makevars.ubsan
