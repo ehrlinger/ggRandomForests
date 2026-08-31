@@ -1041,7 +1041,7 @@ test_that("plot.gg_partial_varpro: panels lays out one panel per row", {
   expect_true(inherits(p, "patchwork"))
   expect_equal(length(p), nrow(spec))
   ## Titles come from the spec, in row order.
-  expect_equal(vapply(seq_len(length(p)), function(i) p[[i]]$labels$x,
+  expect_equal(vapply(seq_along(p), function(i) p[[i]]$labels$x,
                       character(1)),
                spec$xlab)
 })
@@ -1139,7 +1139,7 @@ test_that("plot.gg_partial_varpro: panels share one y range", {
   ## p[[i]] is the per-panel accessor: $patches$plots holds only the first
   ## n-1 plots, so comparing p[[1]] against $patches$plots[[1]] compares a
   ## plot with itself and passes even when y is free.
-  yr <- lapply(seq_len(length(p)), function(i) {
+  yr <- lapply(seq_along(p), function(i) {
     ggplot2::ggplot_build(p[[i]])$layout$panel_params[[1]]$y.range
   })
   expect_length(yr, 2L)
