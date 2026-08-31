@@ -69,15 +69,13 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">xvar</span>,</span>
-<span>  <span class="va">time</span>,</span>
-<span>  <span class="va">time_labels</span>,</span>
 <span>  panel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  oob <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  points <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  smooth <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  time_units <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  time_units <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -92,14 +90,6 @@
 
 <dt id="arg-xvar">xvar<a class="anchor" aria-label="anchor" href="#arg-xvar"></a></dt>
 <dd><p>variable (or list of variables) of interest.</p></dd>
-
-
-<dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
-<dd><p>For survival, one or more times of interest</p></dd>
-
-
-<dt id="arg-time-labels">time_labels<a class="anchor" aria-label="anchor" href="#arg-time-labels"></a></dt>
-<dd><p>string labels for times</p></dd>
 
 
 <dt id="arg-panel">panel<a class="anchor" aria-label="anchor" href="#arg-panel"></a></dt>
@@ -127,6 +117,10 @@ name. Applied to the facet strips in the panel plot and to the x axis title
 in the individual plot. Defaults to <code>NULL</code> (raw names).</p></dd>
 
 
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>arguments passed to the <code>ggplot2</code> functions.</p></dd>
+
+
 <dt id="arg-time-units">time_units<a class="anchor" aria-label="anchor" href="#arg-time-units"></a></dt>
 <dd><p>Optional name of the time unit the forest was fit in, used
 only in the survival y axis title. The horizon is chosen at
@@ -136,10 +130,6 @@ axis <code>"Survival at 1191"</code>, and <code>time_units = "days"</code> makes
 <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object records the unit, so the
 package cannot infer it. Defaults to <code>NULL</code> (no unit printed). Not
 printed when multiple times are faceted.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>arguments passed to the <code>ggplot2</code> functions.</p></dd>
 
 </dl></div>
     <div class="section level2">

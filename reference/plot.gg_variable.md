@@ -11,15 +11,13 @@ object,
 plot(
   x,
   xvar,
-  time,
-  time_labels,
   panel = FALSE,
   oob = TRUE,
   points = TRUE,
   smooth = TRUE,
   labels = NULL,
-  time_units = NULL,
-  ...
+  ...,
+  time_units = NULL
 )
 ```
 
@@ -35,14 +33,6 @@ plot(
 - xvar:
 
   variable (or list of variables) of interest.
-
-- time:
-
-  For survival, one or more times of interest
-
-- time_labels:
-
-  string labels for times
 
 - panel:
 
@@ -69,6 +59,10 @@ plot(
   the facet strips in the panel plot and to the x axis title in the
   individual plot. Defaults to `NULL` (raw names).
 
+- ...:
+
+  arguments passed to the `ggplot2` functions.
+
 - time_units:
 
   Optional name of the time unit the forest was fit in, used only in the
@@ -79,10 +73,6 @@ plot(
   [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
   object records the unit, so the package cannot infer it. Defaults to
   `NULL` (no unit printed). Not printed when multiple times are faceted.
-
-- ...:
-
-  arguments passed to the `ggplot2` functions.
 
 ## Value
 

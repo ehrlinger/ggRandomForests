@@ -175,6 +175,36 @@
   names, so the label is display only and passing a label where a
   variable name belongs is still an error. As with the varPro methods
   above, `labels` was previously accepted and discarded in silence.
+- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
+  no longer declares `time` and `time_labels`, two formals its body
+  never read. They are parameters of
+  [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md),
+  the extractor, which bakes the horizon into the object before
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) runs, so the
+  man page had been promising a horizon selection the method never
+  performed. Supplying either now warns and names the call that works.
+  ⚠️ `time_units` moved to **after** `...` in the signature as part of
+  this: R partial-matches argument names only before `...`, so with
+  `time_units` ahead of it a caller writing `time = 1191` bound silently
+  to `time_units` and died on its type check. Past the dots, matching is
+  exact. `time_units` always had to be named, so no working call
+  changes.
+- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
+  sanity-checks `time_units` against the data it describes. A year-like
+  unit supplied against values above 150 warns, because that is almost
+  always a forest fit on a smaller unit and produces an axis title wrong
+  by a factor of
+  365. It warns rather than errors, and only in that one direction:
+       small values labelled `"days"` is ordinary, so there is no signal
+       to check. The package still cannot derive the unit and does not
+       try to. Scoped to
+       [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
+       for now:
+       [`plot.gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md)
+       also takes `time_units`, but a `gg_rfsrc` object has no `time`
+       column (its time points live in `variable`, which holds class
+       names for a classification fit), so there is no unambiguous
+       column to check and extending it is not a one-line change.
 - [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md),
   [`plot.gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.md)
   and
