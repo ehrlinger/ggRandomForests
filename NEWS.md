@@ -3,6 +3,18 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `plot.gg_partial_varpro()` gains `complement`, plotting 1 - p and prefixing
+  the y label with `1 - `. It reads a fit that targets one class as the
+  probability of the other -- a weaning-failure model shown as probability of
+  successful weaning -- without recomputing `partialpro()` against the other
+  target. Requires a probability scale (`prob` or `surv`); on the additive,
+  multiplicative and unbounded scales 1 - x has no referent, so it errors
+  rather than drawing something unreadable.
+* `plot.gg_partial_varpro()` now warns, naming them, when arguments reach `...`
+  that it does not use. Its own arguments sit after `...` and match by exact
+  name, so a typo (or an argument from a newer version than the one installed)
+  previously vanished without a word and left the default plot looking like a
+  correct answer.
 * `plot.gg_partial_varpro()` gains per-panel scale control. `facet_wrap(scales =
   "free_x")` gives each variable its own x *range* but a single shared x
   *scale*, so per-panel breaks, limits and axis titles were unreachable and a

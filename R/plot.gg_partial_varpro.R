@@ -139,6 +139,15 @@
 #'   figures usually want a smaller point than a screen figure.
 #' @param linewidth Numeric; width of the line or smooth.  Default \code{0.5},
 #'   \pkg{ggplot2}'s own.
+#' @param complement Logical; plot \eqn{1 - p} instead of \eqn{p}, and prefix
+#'   the y axis label with \code{"1 - "}.  Use it when the fit targets the
+#'   class you do \emph{not} want on the axis -- a model of weaning failure
+#'   read as the probability of weaning success, say -- so you do not have to
+#'   recompute \code{\link[varPro]{partialpro}} against the other target.
+#'   Requires a probability scale (\code{scale = "prob"} or \code{"surv"});
+#'   on the additive, multiplicative and unbounded scales \eqn{1 - x} has no
+#'   referent and this is an error rather than a silent no-op.  Default
+#'   \code{FALSE}.
 #'
 #' @details
 #' **Ensemble mortality (scale = "mortality"):** when the provenance scale
@@ -197,6 +206,10 @@
 #' ## A patchwork takes `&`, not `+`, to reach every panel.
 #' plot(pp, type = "parametric", panels = spec) & ggplot2::theme_minimal()
 #'
+#' ## complement = TRUE reads a failure model as its success probability.
+#' pp_prob <- gg_partial_varpro(mock_data, scale = "prob")
+#' plot(pp_prob, type = "parametric", complement = TRUE)
+#'
 #' @importFrom ggplot2 .data ggplot aes geom_line geom_boxplot facet_wrap labs
 #' @importFrom ggplot2 geom_point geom_smooth scale_x_continuous waiver
 #' @importFrom ggplot2 coord_cartesian scale_color_brewer scale_fill_brewer
@@ -224,7 +237,8 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
                                     ncol    = NULL,
                                     point_size  = 1.1,
                                     point_alpha = 0.55,
-                                    linewidth   = 0.5) {
+                                    linewidth   = 0.5,
+                                    complement  = FALSE) {
   type_user <- !missing(type)   # was 'causal' asked for, or is it the default?
 
   ## C-path: delegate to plot.gg_partial_rfsrc via NextMethod().
@@ -233,10 +247,16 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
     return(NextMethod())
   }
 
-  ## A-path rendering.
+  ## A-path rendering.  '...' means nothing here, so name what was dropped
+  ## rather than discarding it in silence (path C returned above, and does
+  ## use its dots).
+  .warn_partial_varpro_dots(list(...))
+
   type   <- match.arg(type, several.ok = TRUE)
   which  <- match.arg(which)
+  .check_complement(complement, prov)
   ylabel <- .partial_varpro_ylabel(prov)
+  if (isTRUE(complement)) ylabel <- paste("1 -", ylabel)
 
   ## 'panels' is continuous-only vocabulary (xmin/xby/span describe a numeric
   ## axis), so supplying it selects the continuous frame.
@@ -263,6 +283,7 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
       names_to  = "effect_type",
       values_to = "yhat"
     )
+    if (isTRUE(complement)) cont_long$yhat <- 1 - cont_long$yhat
 
     if (is.null(panels)) {
       gg_cont <- .partial_varpro_faceted(cont_long, ylabel, strip_labeller,
@@ -298,6 +319,7 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
       names_to  = "effect_type",
       values_to = "yhat"
     )
+    if (isTRUE(complement)) cat_long$yhat <- 1 - cat_long$yhat
     gg_cat <- ggplot2::ggplot(
       cat_long,
       ggplot2::aes(
@@ -506,4 +528,44 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
     },
     "Partial Effect"   # generic / regr / unknown
   )
+}
+
+## Path A ignores '...'.  Accepting an argument and discarding it without a word
+## is the defect class this package removed from plot.gg_variable() on
+## 2026-08-31 (see R/plot.gg_variable.R): the caller cannot tell a typo, a
+## retired name, or an argument from a newer version from one that worked.
+#' @keywords internal
+.warn_partial_varpro_dots <- function(dots) {
+  if (length(dots) == 0L) {
+    return(invisible(NULL))
+  }
+  nms <- names(dots)
+  if (is.null(nms)) nms <- rep("", length(dots))
+  shown <- ifelse(nzchar(nms), nms, "<unnamed>")
+  warning("plot.gg_partial_varpro: ", length(dots),
+          " argument(s) in '...' are not used by this method and were ",
+          "ignored: ", paste(shown, collapse = ", "),
+          ". This method's own arguments sit after '...' and so match by ",
+          "exact name; check the spelling, or check that the installed ",
+          "version has the argument you meant.", call. = FALSE)
+  invisible(NULL)
+}
+
+## 1 - p is only meaningful where p is a probability.  On the additive
+## (logodds), multiplicative (odds) and unbounded (mortality, rmst, chf) scales
+## it is arithmetic without a referent, so this errors rather than quietly
+## producing a plot nobody should read.
+#' @keywords internal
+.check_complement <- function(complement, prov) {
+  if (!isTRUE(complement)) {
+    return(invisible(NULL))
+  }
+  scale <- if (is.null(prov)) "generic" else (prov$scale %||% "generic")
+  if (!scale %in% c("prob", "surv")) {
+    stop("plot.gg_partial_varpro: 'complement' needs a probability scale, ",
+         "but this object is on the '", scale, "' scale. Re-extract with ",
+         "gg_partial_varpro(scale = \"prob\") for a classification fit, or ",
+         "scale = \"surv\" for a survival fit.", call. = FALSE)
+  }
+  invisible(NULL)
 }

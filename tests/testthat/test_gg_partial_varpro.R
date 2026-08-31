@@ -1147,3 +1147,48 @@ test_that("plot.gg_partial_varpro: panels share one y range", {
   ## And the shared range must span BOTH panels' data, not just one.
   expect_gt(diff(yr[[1]]), 3)
 })
+
+## ── complement and the unused-dots guard ────────────────────────────────────
+test_that("plot.gg_partial_varpro: complement plots 1 - p and relabels", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "prob"))
+  y <- function(p) ggplot2::ggplot_build(p)$data[[1]]$y
+  base <- plot(pp, which = "continuous", type = "parametric")
+  comp <- plot(pp, which = "continuous", type = "parametric",
+               complement = TRUE)
+  expect_equal(y(comp), 1 - y(base))
+  expect_match(comp$labels$y, "^1 - ")
+  expect_false(grepl("^1 - ", base$labels$y))
+})
+
+test_that("plot.gg_partial_varpro: complement reaches the panels route too", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "prob"))
+  spec <- data.frame(name = c("age", "bmi"), stringsAsFactors = FALSE)
+  p <- plot(pp, type = "parametric", panels = spec, complement = TRUE)
+  ## Every panel is complemented, and the shared y stays inside [0, 1].
+  yr <- range(unlist(lapply(seq_along(p), function(i) {
+    ggplot2::ggplot_build(p[[i]])$data[[1]]$y
+  })))
+  expect_gte(yr[1], 0)
+  expect_lte(yr[2], 1)
+})
+
+test_that("plot.gg_partial_varpro: complement off a probability scale → stop", {
+  for (sc in c("logodds", "odds", "mortality")) {
+    pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                             scale = sc))
+    expect_error(plot(pp, complement = TRUE), regexp = "probability scale")
+  }
+})
+
+test_that("plot.gg_partial_varpro: unused '...' warns and names them", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  ## A misspelling that would otherwise be discarded without a word.
+  expect_warning(plot(pp, panls = data.frame(name = "age")),
+                 regexp = "panls")
+  expect_warning(plot(pp, nonsense = 1, other = 2), regexp = "2 argument")
+  ## The supported spellings bind to formals and must stay silent.
+  expect_silent(plot(pp, which = "continuous", points = TRUE))
+})

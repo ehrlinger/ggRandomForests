@@ -20,7 +20,8 @@
   ncol = NULL,
   point_size = 1.1,
   point_alpha = 0.55,
-  linewidth = 0.5
+  linewidth = 0.5,
+  complement = FALSE
 )
 }
 \arguments{
@@ -94,6 +95,16 @@ figures usually want a smaller point than a screen figure.}
 
 \item{linewidth}{Numeric; width of the line or smooth.  Default \code{0.5},
 \pkg{ggplot2}'s own.}
+
+\item{complement}{Logical; plot \eqn{1 - p} instead of \eqn{p}, and prefix
+the y axis label with \code{"1 - "}.  Use it when the fit targets the
+class you do \emph{not} want on the axis -- a model of weaning failure
+read as the probability of weaning success, say -- so you do not have to
+recompute \code{\link[varPro]{partialpro}} against the other target.
+Requires a probability scale (\code{scale = "prob"} or \code{"surv"});
+on the additive, multiplicative and unbounded scales \eqn{1 - x} has no
+referent and this is an error rather than a silent no-op.  Default
+\code{FALSE}.}
 }
 \value{
 A \code{ggplot} (or \code{patchwork}) object.
@@ -232,6 +243,10 @@ plot(pp, type = "parametric", panels = spec, points = TRUE, smooth = TRUE,
 
 ## A patchwork takes `&`, not `+`, to reach every panel.
 plot(pp, type = "parametric", panels = spec) & ggplot2::theme_minimal()
+
+## complement = TRUE reads a failure model as its success probability.
+pp_prob <- gg_partial_varpro(mock_data, scale = "prob")
+plot(pp_prob, type = "parametric", complement = TRUE)
 
 }
 \references{
