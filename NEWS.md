@@ -114,6 +114,22 @@ ggRandomForests v4.0.0 (development)
   matches on raw variable names, so the label is display only and passing a
   label where a variable name belongs is still an error. As with the varPro
   methods above, `labels` was previously accepted and discarded in silence.
+* `plot.gg_variable()` no longer declares `time` and `time_labels`, two formals
+  its body never read. They are parameters of `gg_variable()`, the extractor,
+  which bakes the horizon into the object before `plot()` runs, so the man page
+  had been promising a horizon selection the method never performed. Supplying
+  either now warns and names the call that works. ⚠️ `time_units` moved to
+  **after** `...` in the signature as part of this: R partial-matches argument
+  names only before `...`, so with `time_units` ahead of it a caller writing
+  `time = 1191` bound silently to `time_units` and died on its type check.
+  Past the dots, matching is exact. `time_units` always had to be named, so no
+  working call changes.
+* `time_units` is now sanity-checked against the data it describes. A year-like
+  unit supplied against values above 150 warns, because that is almost always a
+  forest fit on a smaller unit and produces an axis title wrong by a factor of
+  365. It warns rather than errors, and only in that one direction: small values
+  labelled `"days"` is ordinary, so there is no signal to check. The package
+  still cannot derive the unit and does not try to.
 * `plot.gg_variable()`, `plot.gg_udependent()` and `plot.gg_sdependent()` gain
   `labels`, which completes the argument across every plot method in the
   package that renders variable names. `plot.gg_variable()` labels the facet strips in its panel

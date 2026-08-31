@@ -7,15 +7,13 @@
 \method{plot}{gg_variable}(
   x,
   xvar,
-  time,
-  time_labels,
   panel = FALSE,
   oob = TRUE,
   points = TRUE,
   smooth = TRUE,
   labels = NULL,
-  time_units = NULL,
-  ...
+  ...,
+  time_units = NULL
 )
 }
 \arguments{
@@ -23,10 +21,6 @@
 \code{\link[randomForestSRC]{rfsrc}} object}
 
 \item{xvar}{variable (or list of variables) of interest.}
-
-\item{time}{For survival, one or more times of interest}
-
-\item{time_labels}{string labels for times}
 
 \item{panel}{Should plots be faceted along multiple xvar?}
 
@@ -43,6 +37,8 @@
 name. Applied to the facet strips in the panel plot and to the x axis title
 in the individual plot. Defaults to \code{NULL} (raw names).}
 
+\item{...}{arguments passed to the \code{ggplot2} functions.}
+
 \item{time_units}{Optional name of the time unit the forest was fit in, used
 only in the survival y axis title. The horizon is chosen at
 \code{gg_variable(rf, time = 1191)}; \code{plot(gg_dta)} then titles the
@@ -51,8 +47,6 @@ axis \code{"Survival at 1191"}, and \code{time_units = "days"} makes that
 \code{\link[randomForestSRC]{rfsrc}} object records the unit, so the
 package cannot infer it. Defaults to \code{NULL} (no unit printed). Not
 printed when multiple times are faceted.}
-
-\item{...}{arguments passed to the \code{ggplot2} functions.}
 }
 \value{
 A single \code{ggplot} object when \code{length(xvar) == 1} or

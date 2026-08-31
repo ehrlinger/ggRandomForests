@@ -18,8 +18,6 @@
 #' @param x \code{\link{gg_variable}} object created from a
 #' \code{\link[randomForestSRC]{rfsrc}} object
 #' @param xvar variable (or list of variables) of interest.
-#' @param time For survival, one or more times of interest
-#' @param time_labels string labels for times
 #' @param panel Should plots be faceted along multiple xvar?
 #' @param oob oob estimates (boolean)
 #' @param points plot the raw data points (boolean)
@@ -141,17 +139,24 @@
 #' @export
 plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                              xvar,
-                             time,
-                             time_labels,
                              panel = FALSE,
                              oob = TRUE,
                              points = TRUE,
                              smooth = TRUE,
                              labels = NULL,
-                             time_units = NULL,
-                             ...) {
+                             ...,
+                             ## AFTER the dots deliberately.  R partial-matches
+                             ## argument names only BEFORE ..., so with
+                             ## time_units ahead of it a caller writing
+                             ## time = 1191 (the retired argument) silently bound
+                             ## to time_units and died on its type check, and
+                             ## .check_retired_time_args() never saw the name.
+                             ## Past the dots, matching is exact and 'time' falls
+                             ## into ... where the guard can report it.
+                             time_units = NULL) {
   gg_dta <- x
-  time_units <- .check_time_units(time_units)
+  .check_retired_time_args(...)
+  time_units <- .check_time_units(time_units, gg_dta[["time"]])
 
   ## Resolve the label lookup ONCE.  .forest_strip_labeller() would resolve it
   ## again internally, and a lookup that matches nothing warns on every
