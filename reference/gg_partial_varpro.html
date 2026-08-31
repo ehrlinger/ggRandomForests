@@ -89,7 +89,8 @@ be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0;
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_partial_varpro</span><span class="op">(</span></span>
 <span>  part_dta <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>, <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"prob_typical"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>,</span>
+<span>    <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
 <span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nvars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -100,7 +101,8 @@ be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0;
 <span><span class="fu">gg_partialpro</span><span class="op">(</span></span>
 <span>  <span class="va">part_dta</span>,</span>
 <span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>, <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"prob_typical"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>,</span>
+<span>    <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
 <span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nvars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -130,7 +132,8 @@ came from.  When supplied it provides the provenance metadata, and when
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>Character; the y-axis scale.  One of <code>"auto"</code> (default),
-the classification scales <code>"prob"</code> / <code>"odds"</code> / <code>"logodds"</code>,
+the classification scales <code>"prob"</code> / <code>"prob_typical"</code> /
+<code>"odds"</code> / <code>"logodds"</code>,
 or the survival scales <code>"rmst"</code> / <code>"surv"</code> / <code>"mortality"</code> /
 <code>"chf"</code>.  With <code>"auto"</code>: classification fits resolve to
 <code>"prob"</code> (probability of the target class) and survival fits to
@@ -318,6 +321,39 @@ applied per observation <em>before</em> averaging, so the curve is the mean
 predicted probability, not the probability of the mean log-odds.  The
 <code>causal</code> contrast is shown only on <code>"logodds"</code> (see
 <code><a href="plot.gg_partial_varpro.html">plot.gg_partial_varpro</a></code>).</p>
+<p><strong>Two probability scales, and why they disagree (scale = "prob" vs
+"prob_typical"):</strong> <code>partialpro</code> returns a matrix of per-subject
+log-odds, one row per observation and one column per grid point. Collapsing
+it to a curve takes an average and a back-transform, and the <em>order</em>
+of those two steps is a modelling choice, not a detail:</p>
+<p>$$\mathrm{prob}(x) = \frac{1}{n}\sum_i \mathrm{logit}^{-1}(z_i(x))
+  \qquad
+  \mathrm{prob\_typical}(x) = \mathrm{logit}^{-1}\!\left(
+  \frac{1}{n}\sum_i z_i(x)\right)$$</p>
+<p><code>"prob"</code> (the classification default) transforms per observation and
+then averages, so the curve is the <strong>mean predicted probability</strong> –
+the expected proportion of this cohort, and the standard partial dependence
+quantity on a probability scale. <code>"prob_typical"</code> averages on the
+log-odds scale and then transforms once, giving the probability for a
+<strong>subject sitting at the mean log-odds</strong>.</p>
+<p>These are different estimands and they do not agree.
+\(\mathrm{logit}^{-1}\) is concave above zero and convex below it, so by
+Jensen's inequality <code>"prob"</code> is pulled toward \(0.5\) relative to
+<code>"prob_typical"</code>, at both ends of the curve. The gap widens with the
+spread of per-subject log-odds, and on a heterogeneous cohort it is not
+small: where the per-subject log-odds carry an SD near 4.5, a point reading
+\(0.96\) under <code>"prob_typical"</code> reads \(0.74\) under
+<code>"prob"</code>.</p>
+<p>Which to report is a question about the claim, not about the code. If the
+sentence is "what fraction of these patients would wean", that is
+<code>"prob"</code>. If it is "what would we predict for a typical patient", that
+is <code>"prob_typical"</code> – while remembering that the mean-log-odds
+subject need not resemble anyone in the data. A figure captioned as a
+percentage of patients wants <code>"prob"</code>.</p>
+<p>The distinction applies only to the <code>continuous</code> frame. The
+<code>categorical</code> frame keeps its values unaveraged so the plot method can
+draw boxplots, so there is no averaging order to choose and the two scales
+return the same numbers there.</p>
 <p><strong>Survival probability (scale = "surv"):</strong> <code>scale = "surv"</code> (the
 survival default) computes \(S(\tau \mid x)\) through <code>partialpro</code>
 (the same UVT engine as mortality and RMST), bounded in \([0, 1]\).  When
@@ -460,6 +496,20 @@ understanding patient and hospital differences.
 <span class="r-in"><span>    yhat.causal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_obs</span> <span class="op">*</span> <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">n_obs</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## The two probability scales differ by the ORDER of averaging and</span></span></span>
+<span class="r-in"><span><span class="co">## back-transform, and disagree whenever subjects are heterogeneous.</span></span></span>
+<span class="r-in"><span><span class="va">pa</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span><span class="va">mock_data</span>, scale <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span><span class="va">mock_data</span>, scale <span class="op">=</span> <span class="st">"prob_typical"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="va">pa</span><span class="op">$</span><span class="va">continuous</span><span class="op">$</span><span class="va">parametric</span>,</span></span>
+<span class="r-in"><span>                prob_typical <span class="op">=</span> <span class="va">pt</span><span class="op">$</span><span class="va">continuous</span><span class="op">$</span><span class="va">parametric</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        prob prob_typical</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4958844    0.4826433</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.5369944    0.5370850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.4503772    0.4409043</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.4901751    0.4913387</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.4713283    0.4660901</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.4976647    0.5054140</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span><span class="va">mock_data</span>, scale <span class="op">=</span> <span class="st">"logodds"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">continuous</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 5</span></span>

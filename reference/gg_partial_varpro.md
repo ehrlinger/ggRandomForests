@@ -16,7 +16,8 @@ directly.
 gg_partial_varpro(
   part_dta = NULL,
   object = NULL,
-  scale = c("auto", "prob", "odds", "logodds", "rmst", "surv", "mortality", "chf"),
+  scale = c("auto", "prob", "prob_typical", "odds", "logodds", "rmst", "surv",
+    "mortality", "chf"),
   time = NULL,
   nvars = NULL,
   cat_limit = 10,
@@ -27,7 +28,8 @@ gg_partial_varpro(
 gg_partialpro(
   part_dta,
   object = NULL,
-  scale = c("auto", "prob", "odds", "logodds", "rmst", "surv", "mortality", "chf"),
+  scale = c("auto", "prob", "prob_typical", "odds", "logodds", "rmst", "surv",
+    "mortality", "chf"),
   time = NULL,
   nvars = NULL,
   cat_limit = 10,
@@ -56,11 +58,12 @@ gg_partialpro(
 - scale:
 
   Character; the y-axis scale. One of `"auto"` (default), the
-  classification scales `"prob"` / `"odds"` / `"logodds"`, or the
-  survival scales `"rmst"` / `"surv"` / `"mortality"` / `"chf"`. With
-  `"auto"`: classification fits resolve to `"prob"` (probability of the
-  target class) and survival fits to `"surv"` (survival probability at a
-  default horizon \\\tau\\); see **Details**.
+  classification scales `"prob"` / `"prob_typical"` / `"odds"` /
+  `"logodds"`, or the survival scales `"rmst"` / `"surv"` /
+  `"mortality"` / `"chf"`. With `"auto"`: classification fits resolve to
+  `"prob"` (probability of the target class) and survival fits to
+  `"surv"` (survival probability at a default horizon \\\tau\\); see
+  **Details**.
 
 - time:
 
@@ -259,6 +262,43 @@ probability, not the probability of the mean log-odds. The `causal`
 contrast is shown only on `"logodds"` (see
 [`plot.gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)).
 
+**Two probability scales, and why they disagree (scale = "prob" vs
+"prob_typical"):** `partialpro` returns a matrix of per-subject
+log-odds, one row per observation and one column per grid point.
+Collapsing it to a curve takes an average and a back-transform, and the
+*order* of those two steps is a modelling choice, not a detail:
+
+\$\$\mathrm{prob}(x) = \frac{1}{n}\sum_i \mathrm{logit}^{-1}(z_i(x))
+\qquad \mathrm{prob\\typical}(x) = \mathrm{logit}^{-1}\\\left(
+\frac{1}{n}\sum_i z_i(x)\right)\$\$
+
+`"prob"` (the classification default) transforms per observation and
+then averages, so the curve is the **mean predicted probability** – the
+expected proportion of this cohort, and the standard partial dependence
+quantity on a probability scale. `"prob_typical"` averages on the
+log-odds scale and then transforms once, giving the probability for a
+**subject sitting at the mean log-odds**.
+
+These are different estimands and they do not agree.
+\\\mathrm{logit}^{-1}\\ is concave above zero and convex below it, so by
+Jensen's inequality `"prob"` is pulled toward \\0.5\\ relative to
+`"prob_typical"`, at both ends of the curve. The gap widens with the
+spread of per-subject log-odds, and on a heterogeneous cohort it is not
+small: where the per-subject log-odds carry an SD near 4.5, a point
+reading \\0.96\\ under `"prob_typical"` reads \\0.74\\ under `"prob"`.
+
+Which to report is a question about the claim, not about the code. If
+the sentence is "what fraction of these patients would wean", that is
+`"prob"`. If it is "what would we predict for a typical patient", that
+is `"prob_typical"` – while remembering that the mean-log-odds subject
+need not resemble anyone in the data. A figure captioned as a percentage
+of patients wants `"prob"`.
+
+The distinction applies only to the `continuous` frame. The
+`categorical` frame keeps its values unaveraged so the plot method can
+draw boxplots, so there is no averaging order to choose and the two
+scales return the same numbers there.
+
 **Survival probability (scale = "surv"):** `scale = "surv"` (the
 survival default) computes \\S(\tau \mid x)\\ through `partialpro` (the
 same UVT engine as mortality and RMST), bounded in \\\[0, 1\]\\. When
@@ -406,6 +446,20 @@ mock_data <- list(
     yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
   )
 )
+## The two probability scales differ by the ORDER of averaging and
+## back-transform, and disagree whenever subjects are heterogeneous.
+pa <- gg_partial_varpro(mock_data, scale = "prob")
+pt <- gg_partial_varpro(mock_data, scale = "prob_typical")
+head(data.frame(prob = pa$continuous$parametric,
+                prob_typical = pt$continuous$parametric))
+#>        prob prob_typical
+#> 1 0.4958844    0.4826433
+#> 2 0.5369944    0.5370850
+#> 3 0.4503772    0.4409043
+#> 4 0.4901751    0.4913387
+#> 5 0.4713283    0.4660901
+#> 6 0.4976647    0.5054140
+
 result <- gg_partial_varpro(mock_data, scale = "logodds")
 head(result$continuous)
 #> # A tibble: 6 × 5
