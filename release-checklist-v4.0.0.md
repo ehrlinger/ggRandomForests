@@ -314,7 +314,7 @@ CRAN acceptance.
 - `DESCRIPTION` `Date:` **unchanged at `2026-08-31`**: RC3 was cut the same day.
   Version stays `4.0.0`.
 - **This RC adds public API**, which RC2 and RC3 did not.
-  `plot.gg_partial_varpro()` gains ten formals (`which`, `panels`, `points`,
+  `plot.gg_partial_varpro()` gains eleven formals (`which`, `panels`, `points`,
   `smooth`, `palette`, `ncol`, `point_size`, `point_alpha`, `linewidth`,
   `complement`, `ylim`) and `gg_partial_varpro()` gains
   `scale = "prob_typical"`. All are additive; every default reproduces the
