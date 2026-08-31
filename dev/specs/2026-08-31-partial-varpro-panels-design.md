@@ -1,8 +1,8 @@
 # Design: per-panel scale control for `plot.gg_partial_varpro()`
 
 **Date:** 2026-08-31
-**Issue:** not yet filed
-**Status:** proposed, not implemented
+**Issue:** none; raised directly from a manuscript figure
+**Status:** implemented in [#262](https://github.com/ehrlinger/ggRandomForests/pull/262)
 **Target version:** 4.0.0 (unreleased development line)
 
 ## Problem

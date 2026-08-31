@@ -1239,3 +1239,24 @@ test_that("plot.gg_partial_varpro: mono palette reaches the categorical fill", {
   p <- plot(pp, which = "categorical", type = "parametric", palette = "black")
   expect_equal(unique(ggplot2::ggplot_build(p)$data[[1]]$fill), "black")
 })
+
+test_that("plot.gg_partial_varpro: factor scale columns coerce by label", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  ## as.numeric() on a factor yields integer CODES: factor(c(30, 80)) would
+  ## become 1, 2 and draw the panel on an axis nobody asked for.
+  spec <- data.frame(name = c("age", "bmi"),
+                     xmin = factor(c(30, 30)), xmax = factor(c(80, 80)),
+                     stringsAsFactors = FALSE)
+  p <- plot(pp, type = "parametric", panels = spec)
+  xr <- ggplot2::ggplot_build(p[[1]])$layout$panel_params[[1]]$x.range
+  expect_gte(xr[2], 80)   # not 2
+})
+
+test_that("plot.gg_partial_varpro: non-numeric scale column → stop", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  spec <- data.frame(name = "age", xmin = "wide", stringsAsFactors = FALSE)
+  expect_error(plot(pp, type = "parametric", panels = spec),
+               regexp = "must be numeric")
+})

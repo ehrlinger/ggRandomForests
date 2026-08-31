@@ -449,7 +449,7 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
 
   for (nm in c("xmin", "xmax", "xby", "span")) {
     if (is.null(panels[[nm]])) panels[[nm]] <- NA_real_
-    panels[[nm]] <- as.numeric(panels[[nm]])
+    panels[[nm]] <- .panels_numeric_col(panels[[nm]], nm)
   }
   if (is.null(panels[["xlab"]])) panels[["xlab"]] <- NA_character_
   panels[["xlab"]] <- as.character(panels[["xlab"]])
@@ -633,4 +633,21 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
     return(ggplot2::scale_fill_manual(values = rep(mono, 3L)))
   }
   ggplot2::scale_fill_brewer(palette = palette)
+}
+
+## Coerce one scale column to numeric.  as.numeric() on a factor returns the
+## integer CODES, not the labels, so a factor xmin of c(0, 20) silently becomes
+## c(1, 2) and the panel is drawn on an axis nobody asked for.  Go through
+## as.character() first, and make junk an error rather than a silent NA.
+#' @keywords internal
+.panels_numeric_col <- function(x, nm) {
+  if (is.factor(x)) x <- as.character(x)
+  out <- suppressWarnings(as.numeric(x))
+  bad <- is.na(out) & !is.na(x)
+  if (any(bad)) {
+    stop("'panels' column '", nm, "' must be numeric, but could not coerce: ",
+         paste(unique(as.character(x)[bad]), collapse = ", "), ".",
+         call. = FALSE)
+  }
+  out
 }
