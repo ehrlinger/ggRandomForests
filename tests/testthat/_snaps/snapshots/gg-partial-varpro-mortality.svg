@@ -27,9 +27,9 @@
 </defs>
 <g clip-path='url(#cpNDMuMDZ8NjI0LjU0fDM5LjQzfDU1Ny43MQ==)'>
 <rect x='43.06' y='39.43' width='581.48' height='518.27' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<polyline points='69.49,62.99 107.25,265.50 145.01,260.70 182.77,313.00 220.53,197.32 258.29,226.60 296.05,424.82 333.80,76.49 371.56,194.19 409.32,146.17 447.08,299.62 484.84,287.14 522.60,290.92 560.35,286.06 598.11,138.69 ' style='stroke-width: 1.07; stroke: #F8766D; stroke-linecap: butt;' />
-<polyline points='69.49,349.82 107.25,534.15 145.01,427.66 182.77,322.86 220.53,199.57 258.29,279.89 296.05,217.55 333.80,433.47 371.56,189.82 409.32,159.16 447.08,224.02 484.84,221.21 522.60,348.13 560.35,432.76 598.11,393.90 ' style='stroke-width: 1.07; stroke: #00BA38; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
-<polyline points='69.49,323.97 107.25,211.37 145.01,410.73 182.77,306.00 220.53,358.25 258.29,276.92 296.05,413.46 333.80,421.39 371.56,473.01 409.32,217.46 447.08,182.30 484.84,129.35 522.60,447.10 560.35,373.44 598.11,288.99 ' style='stroke-width: 1.07; stroke: #619CFF; stroke-dasharray: 5.69,2.85; stroke-linecap: butt;' />
+<polyline points='69.49,62.99 107.25,265.50 145.01,260.70 182.77,313.00 220.53,197.32 258.29,226.60 296.05,424.82 333.80,76.49 371.56,194.19 409.32,146.17 447.08,299.62 484.84,287.14 522.60,290.92 560.35,286.06 598.11,138.69 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
+<polyline points='69.49,349.82 107.25,534.15 145.01,427.66 182.77,322.86 220.53,199.57 258.29,279.89 296.05,217.55 333.80,433.47 371.56,189.82 409.32,159.16 447.08,224.02 484.84,221.21 522.60,348.13 560.35,432.76 598.11,393.90 ' style='stroke-width: 1.07; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
+<polyline points='69.49,323.97 107.25,211.37 145.01,410.73 182.77,306.00 220.53,358.25 258.29,276.92 296.05,413.46 333.80,421.39 371.56,473.01 409.32,217.46 447.08,182.30 484.84,129.35 522.60,447.10 560.35,373.44 598.11,288.99 ' style='stroke-width: 1.07; stroke-dasharray: 5.69,2.85; stroke-linecap: butt;' />
 <rect x='43.06' y='39.43' width='581.48' height='518.27' style='stroke-width: 1.07; stroke: #333333;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
@@ -68,11 +68,11 @@
 <rect x='635.50' y='264.98' width='79.02' height='67.17' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='635.50' y='273.70' style='font-size: 11.00px; font-family: sans;' textLength='51.98px' lengthAdjust='spacingAndGlyphs'>Effect type</text>
 <rect x='635.50' y='280.32' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='637.23' y1='288.96' x2='651.05' y2='288.96' style='stroke-width: 1.07; stroke: #F8766D; stroke-linecap: butt;' />
+<line x1='637.23' y1='288.96' x2='651.05' y2='288.96' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <rect x='635.50' y='297.60' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='637.23' y1='306.24' x2='651.05' y2='306.24' style='stroke-width: 1.07; stroke: #00BA38; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
+<line x1='637.23' y1='306.24' x2='651.05' y2='306.24' style='stroke-width: 1.07; stroke-dasharray: 2.85,2.85; stroke-linecap: butt;' />
 <rect x='635.50' y='314.88' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<line x1='637.23' y1='323.52' x2='651.05' y2='323.52' style='stroke-width: 1.07; stroke: #619CFF; stroke-dasharray: 5.69,2.85; stroke-linecap: butt;' />
+<line x1='637.23' y1='323.52' x2='651.05' y2='323.52' style='stroke-width: 1.07; stroke-dasharray: 5.69,2.85; stroke-linecap: butt;' />
 <text x='658.26' y='291.98' style='font-size: 8.80px; font-family: sans;' textLength='25.44px' lengthAdjust='spacingAndGlyphs'>causal</text>
 <text x='658.26' y='309.26' style='font-size: 8.80px; font-family: sans;' textLength='56.26px' lengthAdjust='spacingAndGlyphs'>nonparametric</text>
 <text x='658.26' y='326.54' style='font-size: 8.80px; font-family: sans;' textLength='41.57px' lengthAdjust='spacingAndGlyphs'>parametric</text>

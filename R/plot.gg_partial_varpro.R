@@ -91,6 +91,80 @@
 #'   name.  Defaults to \code{NULL} (raw names).
 #' @param ... Unused for path-A objects; forwarded to
 #'   \code{plot.gg_partial_rfsrc} for path-C objects.
+#' @param which Character; which frame to draw.  \code{"both"} (default) keeps
+#'   the historical behaviour, returning a \pkg{patchwork} stack when the object
+#'   carries both continuous and categorical variables.  \code{"continuous"} or
+#'   \code{"categorical"} returns a bare \code{ggplot} for that frame alone.
+#'   Use it when you want to add scales or themes with \code{+}: on a patchwork
+#'   \code{+} reaches only the last panel, so \code{which} is how you get one
+#'   plot to modify.  Implied by \code{panels}.
+#' @param panels Optional data frame giving per-panel scales, one row per panel.
+#'   Supplying it selects the continuous frame and switches rendering from
+#'   \code{facet_wrap()} to \pkg{patchwork}, which is the only way to vary the
+#'   x scale between panels.  Only \code{name} is required; every other column
+#'   is optional and an absent one leaves that decision to \pkg{ggplot2}.
+#'   \describe{
+#'     \item{name}{variable, matched against \code{x$continuous$name}.  A name
+#'       the frame does not carry is an error rather than a silent drop.}
+#'     \item{xlab}{panel x axis title.  Falls back to the \code{labels} value
+#'       for that variable, then to \code{name}.}
+#'     \item{xmin, xmax}{clipped range, applied with \code{coord_cartesian()}
+#'       so points outside are hidden rather than dropped from the smooth.
+#'       Supplying both also removes the axis padding.}
+#'     \item{xby}{tick spacing, expanded to \code{seq(xmin, xmax, xby)}.}
+#'     \item{span}{per-panel \code{geom_smooth()} span.}
+#'   }
+#'   Panels are drawn in row order, so the frame pins panel order explicitly.
+#'   A variable absent from \code{panels} is not drawn; selecting a subset is
+#'   the usual reason to supply it.
+#'
+#'   The y axis is shared across panels, matching the facet route, and is
+#'   computed over the selected variables only -- so dropping a variable
+#'   rescales the figure. Only the x scale varies between panels; four partial
+#'   dependence curves on four different y ranges would not compare.
+#' @param points Logical; add the grid-point values as points.  Default
+#'   \code{FALSE}.
+#' @param smooth Logical; draw a \code{geom_smooth()} loess instead of the
+#'   line.  Default \code{FALSE}.  Note that \code{parametric} is already
+#'   partialpro's local-polynomial fit, so smoothing it is a smooth of a smooth;
+#'   this is here for the raw-looking figure some journals ask for, not as a
+#'   better estimate.
+#' @param palette Character; the effect-type colour or fill scale.  Defaults to
+#'   \code{"black"}: this package's figures are made for manuscripts, and
+#'   \code{linetype} is mapped to the effect type as well, so the three
+#'   estimators stay legible as solid, dotted and dashed with no colour at all.
+#'   \code{"mono"} is a synonym, and \code{"grey"} / \code{"gray"} give a
+#'   flat grey.  Any ColorBrewer palette name (e.g. \code{"Set1"}) routes to
+#'   the brewer scale instead, which is worth reaching for when you are
+#'   comparing two or three estimators on screen and colour separates them
+#'   faster than a dash pattern.  \code{NULL} keeps \pkg{ggplot2}'s own
+#'   scale.
+#' @param ncol Integer; columns in the \code{panels} layout.  \code{NULL}
+#'   (default) lets \pkg{patchwork} choose.
+#' @param point_size,point_alpha Numeric; size and alpha of the points drawn
+#'   when \code{points = TRUE}.  Defaults \code{1.1} and \code{0.55}.  Print
+#'   figures usually want a smaller point than a screen figure.
+#' @param linewidth Numeric; width of the line or smooth.  Default \code{0.5},
+#'   \pkg{ggplot2}'s own.
+#' @param complement Logical; plot \eqn{1 - p} instead of \eqn{p}, and prefix
+#'   the y axis label with \code{"1 - "}.  Use it when the fit targets the
+#'   class you do \emph{not} want on the axis -- a model of weaning failure
+#'   read as the probability of weaning success, say -- so you do not have to
+#'   recompute \code{\link[varPro]{partialpro}} against the other target.
+#'   Requires a probability scale (\code{scale = "prob"} or \code{"surv"});
+#'   on the additive, multiplicative and unbounded scales \eqn{1 - x} has no
+#'   referent and this is an error rather than a silent no-op.  Default
+#'   \code{FALSE}.
+#' @param ylim Numeric length-2; the shared y range for every panel.
+#'   \code{NULL} (default) takes the range of the plotted values, which is what
+#'   the facet route has always done.  Supply it to pin a scale that means
+#'   something independent of the data -- \code{c(0, 1)} on a probability
+#'   scale, say, so a flat curve reads as flat rather than filling the panel.
+#'   It cannot be set from outside: on the \code{panels} route a
+#'   \code{coord_cartesian()} added with \code{&} replaces the per-panel
+#'   coordinate system and takes the per-panel x ranges down with it, and
+#'   \code{scale_y_continuous(limits = )} is overridden by that coordinate
+#'   system.
 #'
 #' @details
 #' **Ensemble mortality (scale = "mortality"):** when the provenance scale
@@ -137,16 +211,59 @@
 #' plot(pp)
 #' plot(pp, type = "parametric")
 #'
+#' ## The continuous frame alone, so `+` reaches the plot you meant.
+#' plot(pp, which = "continuous") + ggplot2::labs(title = "Continuous only")
+#'
+#' ## Per-panel scales.  Only 'name' is required; the rest tune one axis each.
+#' spec <- data.frame(name = "age", xlab = "Age (years)",
+#'                    xmin = 30, xmax = 80, xby = 10, span = 0.6)
+#' plot(pp, type = "parametric", panels = spec, points = TRUE, smooth = TRUE)
+#'
+#' ## Colour earns its place when several estimators share a panel: two curves
+#' ## separate faster by hue than by dash pattern.  Any ColorBrewer name works.
+#' plot(pp, type = c("parametric", "nonparametric"), palette = "Set1")
+#'
+#' ## The default is monochrome, for print.
+#' plot(pp, type = c("parametric", "nonparametric"))
+#'
+#' ## A patchwork takes `&`, not `+`, to reach every panel.
+#' plot(pp, type = "parametric", panels = spec) & ggplot2::theme_minimal()
+#'
+#' ## complement = TRUE reads a failure model as its success probability.
+#' pp_prob <- gg_partial_varpro(mock_data, scale = "prob")
+#' plot(pp_prob, type = "parametric", complement = TRUE)
+#'
 #' @importFrom ggplot2 .data ggplot aes geom_line geom_boxplot facet_wrap labs
+#' @importFrom ggplot2 geom_point geom_smooth scale_x_continuous waiver
+#' @importFrom ggplot2 coord_cartesian scale_color_brewer scale_fill_brewer
+#' @importFrom ggplot2 scale_color_manual scale_fill_manual
 #' @importFrom tidyr pivot_longer all_of
 #' @importFrom patchwork wrap_plots
 #' @name plot.gg_partial_varpro
 #' @export
-plot.gg_partial_varpro <- function(x,
+plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
                                     type = c("parametric", "nonparametric",
                                              "causal"),
                                     labels = NULL,
-                                    ...) {
+                                    ...,
+                                    ## AFTER the dots deliberately.  R
+                                    ## partial-matches argument names only
+                                    ## BEFORE ..., so a caller writing
+                                    ## 'pan = ' or 'point = ' binds exactly
+                                    ## or falls into ... rather than silently
+                                    ## capturing a neighbouring formal.
+                                    which   = c("both", "continuous",
+                                                "categorical"),
+                                    panels  = NULL,
+                                    points  = FALSE,
+                                    smooth  = FALSE,
+                                    palette = "black",
+                                    ncol    = NULL,
+                                    point_size  = 1.1,
+                                    point_alpha = 0.55,
+                                    linewidth   = 0.5,
+                                    complement  = FALSE,
+                                    ylim        = NULL) {
   type_user <- !missing(type)   # was 'causal' asked for, or is it the default?
 
   ## C-path: delegate to plot.gg_partial_rfsrc via NextMethod().
@@ -155,9 +272,22 @@ plot.gg_partial_varpro <- function(x,
     return(NextMethod())
   }
 
-  ## A-path rendering.
+  ## A-path rendering.  '...' means nothing here, so name what was dropped
+  ## rather than discarding it in silence (path C returned above, and does
+  ## use its dots).
+  .warn_partial_varpro_dots(list(...))
+
   type   <- match.arg(type, several.ok = TRUE)
+  which  <- match.arg(which)
+  .check_complement(complement, prov)
   ylabel <- .partial_varpro_ylabel(prov)
+  if (isTRUE(complement)) ylabel <- paste("1 -", ylabel)
+
+  ## 'panels' is continuous-only vocabulary (xmin/xby/span describe a numeric
+  ## axis), so supplying it selects the continuous frame.
+  if (!is.null(panels)) {
+    which <- "continuous"
+  }
 
   ## Labels are a presentation concern: resolved here and applied to the facet
   ## strips, never written back into x.  The returned object keeps raw variable
@@ -167,37 +297,57 @@ plot.gg_partial_varpro <- function(x,
   ## On bounded scales (prob/odds/surv) the causal contrast is not shown.
   type <- .partial_varpro_plot_type(type, type_user, prov)
 
+  want_cont <- which %in% c("both", "continuous")
+  want_cat  <- which %in% c("both", "categorical")
+
   gg_cont <- NULL
-  if (!is.null(x$continuous) && nrow(x$continuous) > 0) {
+  if (want_cont && !is.null(x$continuous) && nrow(x$continuous) > 0) {
     cont_long <- tidyr::pivot_longer(
       x$continuous,
       cols      = tidyr::all_of(type),
       names_to  = "effect_type",
       values_to = "yhat"
     )
-    gg_cont <- ggplot2::ggplot(
-      cont_long,
-      ggplot2::aes(
-        x        = .data$variable,
-        y        = .data$yhat,
-        color    = .data$effect_type,
-        linetype = .data$effect_type
-      )
-    ) +
-      ggplot2::geom_line() +
-      ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
-      ggplot2::labs(x = NULL, y = ylabel,
-                    color = "Effect type", linetype = "Effect type")
+    if (isTRUE(complement)) cont_long$yhat <- 1 - cont_long$yhat
+
+    if (is.null(panels)) {
+      gg_cont <- .partial_varpro_faceted(cont_long, ylabel, strip_labeller,
+                                         points, smooth, palette,
+                                         point_size, point_alpha, linewidth,
+                                         ylim)
+    } else {
+      spec    <- .check_partial_panels(panels, x$continuous)
+      lookup  <- .forest_labels(labels)
+      ## Shared y across panels.  facet_wrap(scales = "free_x") frees only x, so
+      ## the facet route has always given a common y; patchwork panels would
+      ## each compute their own, and four partial dependence curves on four
+      ## different y ranges do not compare.  Computed over the SELECTED
+      ## variables only, so dropping a variable rescales the figure.
+      if (is.null(ylim)) {
+        sel  <- cont_long[as.character(cont_long$name) %in% spec$name, ,
+                          drop = FALSE]
+        ylim <- range(sel$yhat, na.rm = TRUE, finite = TRUE)
+        if (!all(is.finite(ylim))) ylim <- NULL
+      }
+      built   <- lapply(seq_len(nrow(spec)), function(i) {
+        .partial_varpro_panel(spec[i, , drop = FALSE], cont_long, ylabel,
+                              lookup, points, smooth, palette,
+                              point_size, point_alpha, linewidth, ylim)
+      })
+      return(patchwork::wrap_plots(built, ncol = ncol) +
+               patchwork::plot_layout(axis_titles = "collect"))
+    }
   }
 
   gg_cat <- NULL
-  if (!is.null(x$categorical) && nrow(x$categorical) > 0) {
+  if (want_cat && !is.null(x$categorical) && nrow(x$categorical) > 0) {
     cat_long <- tidyr::pivot_longer(
       x$categorical,
       cols      = tidyr::all_of(type),
       names_to  = "effect_type",
       values_to = "yhat"
     )
+    if (isTRUE(complement)) cat_long$yhat <- 1 - cat_long$yhat
     gg_cat <- ggplot2::ggplot(
       cat_long,
       ggplot2::aes(
@@ -209,6 +359,7 @@ plot.gg_partial_varpro <- function(x,
       ggplot2::geom_boxplot() +
       ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
       ggplot2::labs(x = NULL, y = ylabel, fill = "Effect type")
+    gg_cat <- gg_cat + .partial_varpro_fill_scale(palette)
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
@@ -218,6 +369,141 @@ plot.gg_partial_varpro <- function(x,
   } else {
     gg_cat
   }
+}
+
+## The default continuous rendering: one facet per variable, free x RANGE but a
+## single shared x SCALE.  Unchanged from 4.0.0-rc3 when points/smooth/palette
+## are left at their defaults.
+#' @keywords internal
+.partial_varpro_faceted <- function(cont_long, ylabel, strip_labeller,
+                                    points, smooth, palette,
+                                    point_size, point_alpha, linewidth,
+                                    ylim = NULL) {
+  p <- ggplot2::ggplot(
+    cont_long,
+    ggplot2::aes(
+      x        = .data$variable,
+      y        = .data$yhat,
+      color    = .data$effect_type,
+      linetype = .data$effect_type
+    )
+  ) +
+    .partial_varpro_marks(points, smooth, span = NA_real_,
+                          point_size, point_alpha, linewidth) +
+    ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
+    ggplot2::labs(x = NULL, y = ylabel,
+                  color = "Effect type", linetype = "Effect type")
+  p <- p + .partial_varpro_colour_scale(palette)
+  if (!is.null(ylim)) {
+    p <- p + ggplot2::coord_cartesian(ylim = ylim)
+  }
+  p
+}
+
+## Mark grammar, shared by both routes.  'smooth' REPLACES the line rather than
+## adding to it: a loess over partialpro's already-local-polynomial 'parametric'
+## column would otherwise be a smooth of a smooth.
+#' @keywords internal
+.partial_varpro_marks <- function(points, smooth, span,
+                                  point_size, point_alpha, linewidth) {
+  out <- list()
+  if (isTRUE(points)) {
+    out <- c(out, list(ggplot2::geom_point(alpha = point_alpha,
+                                           size  = point_size)))
+  }
+  if (isTRUE(smooth)) {
+    args <- list(se = FALSE, linewidth = linewidth)
+    if (!is.na(span)) args$span <- span
+    out <- c(out, list(do.call(ggplot2::geom_smooth, args)))
+  } else {
+    out <- c(out, list(ggplot2::geom_line(linewidth = linewidth)))
+  }
+  out
+}
+
+## Validate the per-panel spec frame and fill its optional columns with NA so
+## the builder can test them uniformly.  A name the continuous frame does not
+## carry is an error: silently dropping it is the defect class this package
+## spent 2026-08-29 removing.
+#' @keywords internal
+.check_partial_panels <- function(panels, cont) {
+  if (!is.data.frame(panels)) {
+    stop("'panels' must be a data frame with a 'name' column.", call. = FALSE)
+  }
+  if (!"name" %in% names(panels)) {
+    stop("'panels' must have a 'name' column naming the variables to draw.",
+         call. = FALSE)
+  }
+  if (nrow(panels) == 0L) {
+    stop("'panels' has no rows; supply one row per panel.", call. = FALSE)
+  }
+  panels <- as.data.frame(panels, stringsAsFactors = FALSE)
+  panels$name <- as.character(panels$name)
+
+  absent <- setdiff(panels$name, as.character(cont$name))
+  if (length(absent) > 0L) {
+    stop("'panels' names ", length(absent),
+         " variable(s) absent from the continuous frame: ",
+         paste(absent, collapse = ", "), ".", call. = FALSE)
+  }
+
+  for (nm in c("xmin", "xmax", "xby", "span")) {
+    if (is.null(panels[[nm]])) panels[[nm]] <- NA_real_
+    panels[[nm]] <- .panels_numeric_col(panels[[nm]], nm)
+  }
+  if (is.null(panels[["xlab"]])) panels[["xlab"]] <- NA_character_
+  panels[["xlab"]] <- as.character(panels[["xlab"]])
+  panels
+}
+
+## Build one panel of the patchwork route.  Every scale column is optional; an
+## absent one leaves that decision to ggplot2, which is what the facet does.
+#' @keywords internal
+.partial_varpro_panel <- function(spec, cont_long, ylabel, lookup,
+                                  points, smooth, palette,
+                                  point_size, point_alpha, linewidth,
+                                  ylim = NULL) {
+  dta <- cont_long[as.character(cont_long$name) == spec$name, , drop = FALSE]
+
+  xlab <- if (!is.na(spec$xlab)) {
+    spec$xlab
+  } else if (!is.null(lookup) && spec$name %in% names(lookup)) {
+    lookup[[spec$name]]
+  } else {
+    spec$name
+  }
+
+  p <- ggplot2::ggplot(
+    dta,
+    ggplot2::aes(
+      x        = .data$variable,
+      y        = .data$yhat,
+      color    = .data$effect_type,
+      linetype = .data$effect_type
+    )
+  ) +
+    .partial_varpro_marks(points, smooth, span = spec$span,
+                          point_size, point_alpha, linewidth) +
+    ggplot2::labs(x = xlab, y = ylabel,
+                  color = "Effect type", linetype = "Effect type")
+
+  ## An explicit range means the caller is taking control of the axis, so the
+  ## padding goes too -- that is what makes the panels butt against the axes.
+  xlim <- NULL
+  if (!is.na(spec$xmin) && !is.na(spec$xmax)) {
+    brks <- if (!is.na(spec$xby)) {
+      seq(spec$xmin, spec$xmax, by = spec$xby)
+    } else {
+      ggplot2::waiver()
+    }
+    p <- p + ggplot2::scale_x_continuous(breaks = brks, expand = c(0, 0))
+    xlim <- c(spec$xmin, spec$xmax)
+  }
+  ## coord_cartesian() rather than scale limits: it clips the VIEW, so a point
+  ## outside the range still informs the smooth instead of being dropped.
+  p <- p + ggplot2::coord_cartesian(xlim = xlim, ylim = ylim)
+
+  p + .partial_varpro_colour_scale(palette)
 }
 
 ## Drop the `causal` contrast on bounded scales (prob/odds/surv) -- it cannot
@@ -267,4 +553,101 @@ plot.gg_partial_varpro <- function(x,
     },
     "Partial Effect"   # generic / regr / unknown
   )
+}
+
+## Path A ignores '...'.  Accepting an argument and discarding it without a word
+## is the defect class this package removed from plot.gg_variable() on
+## 2026-08-31 (see R/plot.gg_variable.R): the caller cannot tell a typo, a
+## retired name, or an argument from a newer version from one that worked.
+#' @keywords internal
+.warn_partial_varpro_dots <- function(dots) {
+  if (length(dots) == 0L) {
+    return(invisible(NULL))
+  }
+  nms <- names(dots)
+  if (is.null(nms)) nms <- rep("", length(dots))
+  shown <- ifelse(nzchar(nms), nms, "<unnamed>")
+  warning("plot.gg_partial_varpro: ", length(dots),
+          " argument(s) in '...' are not used by this method and were ",
+          "ignored: ", paste(shown, collapse = ", "),
+          ". This method's own arguments sit after '...' and so match by ",
+          "exact name; check the spelling, or check that the installed ",
+          "version has the argument you meant.", call. = FALSE)
+  invisible(NULL)
+}
+
+## 1 - p is only meaningful where p is a probability.  On the additive
+## (logodds), multiplicative (odds) and unbounded (mortality, rmst, chf) scales
+## it is arithmetic without a referent, so this errors rather than quietly
+## producing a plot nobody should read.
+#' @keywords internal
+.check_complement <- function(complement, prov) {
+  if (!isTRUE(complement)) {
+    return(invisible(NULL))
+  }
+  scale <- if (is.null(prov)) "generic" else (prov$scale %||% "generic")
+  if (!scale %in% c("prob", "surv")) {
+    stop("plot.gg_partial_varpro: 'complement' needs a probability scale, ",
+         "but this object is on the '", scale, "' scale. Re-extract with ",
+         "gg_partial_varpro(scale = \"prob\") for a classification fit, or ",
+         "scale = \"surv\" for a survival fit.", call. = FALSE)
+  }
+  invisible(NULL)
+}
+
+## Resolve the 'palette' argument to a scale.  A ColorBrewer name goes to the
+## brewer scale; the monochrome keywords resolve to a flat manual scale, since
+## print journals routinely ask for a figure with no colour in it and there is
+## no brewer ramp that means "all black".  linetype is already mapped to
+## effect_type, so a monochrome figure still separates the estimators.
+#' @keywords internal
+.partial_varpro_mono <- function(palette) {
+  if (is.null(palette) || length(palette) != 1L || is.na(palette)) return(NULL)
+  switch(tolower(as.character(palette)),
+    black = "black", mono = "black",
+    grey = "grey30", gray = "grey30",
+    NULL)
+}
+
+#' @keywords internal
+.partial_varpro_colour_scale <- function(palette) {
+  if (is.null(palette)) {
+    return(NULL)
+  }
+  mono <- .partial_varpro_mono(palette)
+  if (!is.null(mono)) {
+    ## Three, because there are at most three effect types.
+    return(ggplot2::scale_color_manual(values = rep(mono, 3L),
+                                       guide = "none"))
+  }
+  ggplot2::scale_color_brewer(palette = palette)
+}
+
+#' @keywords internal
+.partial_varpro_fill_scale <- function(palette) {
+  if (is.null(palette)) {
+    return(NULL)
+  }
+  mono <- .partial_varpro_mono(palette)
+  if (!is.null(mono)) {
+    return(ggplot2::scale_fill_manual(values = rep(mono, 3L)))
+  }
+  ggplot2::scale_fill_brewer(palette = palette)
+}
+
+## Coerce one scale column to numeric.  as.numeric() on a factor returns the
+## integer CODES, not the labels, so a factor xmin of c(0, 20) silently becomes
+## c(1, 2) and the panel is drawn on an axis nobody asked for.  Go through
+## as.character() first, and make junk an error rather than a silent NA.
+#' @keywords internal
+.panels_numeric_col <- function(x, nm) {
+  if (is.factor(x)) x <- as.character(x)
+  out <- suppressWarnings(as.numeric(x))
+  bad <- is.na(out) & !is.na(x)
+  if (any(bad)) {
+    stop("'panels' column '", nm, "' must be numeric, but could not coerce: ",
+         paste(unique(as.character(x)[bad]), collapse = ", "), ".",
+         call. = FALSE)
+  }
+  out
 }
