@@ -239,7 +239,7 @@
 </tr><tr><td>[x]</td>
 <td>pkgdown</td>
 <td>verified</td>
-<td>Fresh <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> used an isolated temporary <code>HOME</code>. Its first attempt was DNS-blocked at Google Fonts; the approved network-enabled retry exited 0. Rendered site artifacts were not staged.</td>
+<td>Fresh <code><a href="https://rdrr.io/pkg/pkgdown/man/build_site.html" class="external-link">pkgdown::build_site()</a></code> used an isolated temporary <code>HOME</code>. Its first attempt was DNS-blocked at Google Fonts; the approved network-enabled retry exited 0. Rendered site artifacts were not staged.</td>
 </tr><tr><td>[x]</td>
 <td>Clean-archive check</td>
 <td>verified</td>
@@ -404,7 +404,7 @@
 </tr><tr><td>[x]</td>
 <td>RHF article and pkgdown integration</td>
 <td>verified</td>
-<td>2026-08-25: a fresh clean-export <code><a href="https://pkgdown.r-lib.org/reference/build_site.html" class="external-link">pkgdown::build_site()</a></code> completed in 129.22 seconds and published all seven articles. The RHF article, navigation, two citation targets, 41 local targets, seven figures, and five tables were complete. Page-level and original-resolution figure review found no clipping, overlap, unresolved citation, raw diagnostic output, or hidden setup text.</td>
+<td>2026-08-25: a fresh clean-export <code><a href="https://rdrr.io/pkg/pkgdown/man/build_site.html" class="external-link">pkgdown::build_site()</a></code> completed in 129.22 seconds and published all seven articles. The RHF article, navigation, two citation targets, 41 local targets, seven figures, and five tables were complete. Page-level and original-resolution figure review found no clipping, overlap, unresolved citation, raw diagnostic output, or hidden setup text.</td>
 </tr><tr><td>[x]</td>
 <td>Package suite and snapshot integrity before archive verification</td>
 <td>verified</td>
@@ -437,6 +437,22 @@
 <li>Scoped snapshot status and name-status diff were empty before and after the suite. No vdiffr baseline changed or was deleted.</li>
 <li>This run verifies the documentation-only topology record. It does not advance the UBSAN, full release-verification, submission, or CRAN-acceptance gates.</li>
 </ul></div>
+<div class="section level2">
+<h2 id="verification-evidence-2026-08-31-internal-rc4">Verification evidence: 2026-08-31 (internal RC4)<a class="anchor" aria-label="anchor" href="#verification-evidence-2026-08-31-internal-rc4"></a></h2>
+<ul><li><p><code>main</code> at <code>17aec30f</code>, after <a href="https://github.com/ehrlinger/ggRandomForests/pull/262" class="external-link">#262</a>, <a href="https://github.com/ehrlinger/ggRandomForests/pull/263" class="external-link">#263</a> and <a href="https://github.com/ehrlinger/ggRandomForests/pull/264" class="external-link">#264</a>. Zero open pull requests.</p></li>
+<li><p><code>DESCRIPTION</code> <code>Date:</code> <strong>unchanged at <code>2026-08-31</code></strong>: RC3 was cut the same day. Version stays <code>4.0.0</code>.</p></li>
+<li><p><strong>This RC adds public API</strong>, which RC2 and RC3 did not. <code><a href="reference/plot.gg_partial_varpro.html">plot.gg_partial_varpro()</a></code> gains eleven formals (<code>which</code>, <code>panels</code>, <code>points</code>, <code>smooth</code>, <code>palette</code>, <code>ncol</code>, <code>point_size</code>, <code>point_alpha</code>, <code>linewidth</code>, <code>complement</code>, <code>ylim</code>) and <code><a href="reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> gains <code>scale = "prob_typical"</code>. All are additive; every default reproduces the previous rendering except <code>palette</code>, which now defaults to <code>"black"</code> and changed five vdiffr baselines. Nothing changes class, element names or column names, so there is nothing here for a reverse dependency to notice.</p></li>
+<li><p><code>devtools::document()</code>, <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code> and <code>NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()</code> run in that order on <code>main</code>: <code>document()</code> produced no drift (<code>git status</code> empty), <code>lint_package()</code> reported 0 lints, and the guarded suite reported <strong>2,082 passes, 0 failures, 0 errors, 6 documented skips and 58 existing warnings</strong>. Baseline count was 60 before and 60 after, with <code>git status</code> empty both times: no baseline changed or was deleted. The 58 warnings are the pre-existing <code>geom_smooth()</code> loess messages from <code>plot.gg_variable</code> tests; the unused-dots guard added in #262 contributes none.</p></li>
+<li><p><code>R CMD check --as-cran</code> <strong>with the manual and with vignettes</strong>, built from a clean <code>git archive</code> export: <strong>1 NOTE, 0 WARNINGs, 0 ERRORs</strong>. The NOTE is incoming feasibility (maintainer identity, 8 updates in the preceding 6 months). <code>checking PDF version of manual ... OK</code>, which matters this RC because #263 adds <code>\deqn{}</code> math to <code><a href="reference/gg_partial_varpro.html">?gg_partial_varpro</a></code>. Timed steps: vignette rebuild 40s, <code>--run-donttest</code> examples 33s, examples 13s. Projected to roughly 6–8 minutes on win-builder using the ratios in <code>AGENTS.md</code>, under the ~700s line at which 3.5.1 was declined.</p></li>
+<li><p>Tarball <strong>3.59 MB</strong>, down from 4.0 MB at RC3, because #264 excludes the vdiffr baselines from the build. Headroom against CRAN’s 5 MB limit rises from 0.98 MB to 1.41 MB. Tar inspection reported only <code>ggRandomForests/.Rinstignore</code> among hidden entries, <strong>0 baseline SVGs</strong>, 0 <code>cran-comments</code> entries, <code>Version: 4.0.0</code> and <code>Date: 2026-08-31</code>. The 60 baselines remain in the repository and remain available to local and CI runs; only the built tarball loses them.</p></li>
+<li><p>The gated tree is <code>b0de0fbe</code>, and <code>main</code> at <code>17aec30f</code> has the <strong>identical tree</strong>, verified by <code>git rev-parse main^{tree}</code> against <code>git rev-parse 841fdd6b^{tree}</code>. The check evidence above therefore applies to the tagged commit verbatim rather than by argument.</p></li>
+<li>
+<p>⚠️ <strong>The UBSAN gate result is CARRIED FORWARD again, not re-run.</strong> Maintainer decision, 2026-08-31.</p>
+<p><strong>Justification.</strong> #262, #263 and #264 change only R code, tests, documentation and <code>.Rbuildignore</code>. ggRandomForests has no <code>src/</code>, no <code>LinkingTo</code> and no <code>NeedsCompilation</code>, so it contributes no compiled code, and the sanitizer’s targets are the <code>rfsrc</code>, <code>varpro</code> and RHF C paths that these changes do not alter.</p>
+<p>⚠️ <strong>This is now the second consecutive carry-forward</strong>, RC2 → RC3 → RC4, and the chain is weaker than any single link in it. The RC2 carry was backed by a provably byte-identical tarball; RC3’s and this one are arguments about an invariant, and the tarball genuinely differs in both. A future reader should not read three RCs’ worth of green as three measurements. <strong>A fresh UBSAN run is recommended before CRAN submission</strong>, and this note should be treated as the outstanding item rather than a satisfied gate.</p>
+</li>
+</ul><p>Release status remains <strong>HOLD</strong>. This is an internal release candidate. CRAN remains on 3.5.2. This evidence does not authorize a CRAN submission, a version change, or closure of CRAN acceptance.</p>
+</div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
