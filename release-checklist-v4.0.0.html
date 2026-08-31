@@ -298,6 +298,18 @@
 <strong>hvtiR follow-up:</strong> make <code>hvtiR::status()</code> and <code>hvtiR::update()</code> commit-aware. Their current version comparison cannot distinguish two candidate commits that both declare <code>Version: 4.0.0</code>. Until that work lands, internal testers need an explicit reinstall to move between v4 release-candidate commits. This tooling follow-up does not replace or advance any ggRandomForests CRAN release gate.</li>
 </ul></div>
 <div class="section level2">
+<h2 id="verification-evidence-2026-08-31-internal-rc3">Verification evidence: 2026-08-31 (internal RC3)<a class="anchor" aria-label="anchor" href="#verification-evidence-2026-08-31-internal-rc3"></a></h2>
+<ul><li><p><code>main</code> after <a href="https://github.com/ehrlinger/ggRandomForests/pull/260" class="external-link">#260</a>, zero open pull requests, and <strong>zero open issues</strong>: #229 was closed as already fixed by #231, and #251 closed by #260.</p></li>
+<li><p><code>DESCRIPTION</code> <code>Date:</code> bumped <code>2026-08-30</code> to <code>2026-08-31</code>. Version stays <code>4.0.0</code>.</p></li>
+<li><p><code>devtools::document()</code>, <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code> and <code>NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()</code> run in that order. Results recorded at the foot of this section.</p></li>
+<li>
+<p>⚠️ <strong>The UBSAN gate result is CARRIED FORWARD from RC2, not re-run.</strong> Maintainer decision, 2026-08-31. Recording it as carried forward rather than as a fresh pass, because gate 81’s text says “run on the release candidate” and RC3 is a different candidate.</p>
+<p><strong>Justification.</strong> #260 changes only R code (<code>R/plot.gg_variable.R</code>, <code>R/utils.R</code>). ggRandomForests has no <code>src/</code>, no <code>LinkingTo</code> and no <code>NeedsCompilation</code>, so it contributes no compiled code at all, and the sanitizer’s targets are the <code>rfsrc</code>, <code>varpro</code> and RHF C paths that this change does not alter.</p>
+<p>⚠️ <strong>This is an argument about an invariant, not a measurement.</strong> It is weaker evidence than the RC2 carry-forward across <code>6630516e</code> to <code>bf663c51</code>, where <code>AGENTS.md</code> is <code>.Rbuildignore</code>d and <code>git diff</code> excluding markdown was empty, so the tarball was provably byte-identical. Here the tarball genuinely differs. A future reader should not mistake the two for the same standard.</p>
+<p>The carried result is <a href="https://github.com/ehrlinger/ggRandomForests/actions/runs/33288367135" class="external-link">run 33288367135</a>: calibration observed <code>entry.c:184</code>, and the supported paths enumerated exactly one diagnostic, <code>varPro</code> <code>shared/stackAuxiliaryInfo.c:165</code> (<a href="https://github.com/kogalur/varPro/issues/6" class="external-link">kogalur/varPro#6</a>).</p>
+</li>
+</ul></div>
+<div class="section level2">
 <h2 id="verification-evidence-2026-08-30-internal-rc2">Verification evidence: 2026-08-30 (internal RC2)<a class="anchor" aria-label="anchor" href="#verification-evidence-2026-08-30-internal-rc2"></a></h2>
 <ul><li>
 <code>main</code> @ <code>0f0335fe</code>, zero open pull requests, 110 commits ahead of <code>v4.0.0-rc1</code>.</li>

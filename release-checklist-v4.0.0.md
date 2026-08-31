@@ -115,6 +115,45 @@ unsupervised variable priority where that method is discussed.
   release-candidate commits. This tooling follow-up does not replace or
   advance any ggRandomForests CRAN release gate.
 
+## Verification evidence: 2026-08-31 (internal RC3)
+
+- `main` after
+  [\#260](https://github.com/ehrlinger/ggRandomForests/pull/260), zero
+  open pull requests, and **zero open issues**: \#229 was closed as
+  already fixed by \#231, and \#251 closed by \#260.
+
+- `DESCRIPTION` `Date:` bumped `2026-08-30` to `2026-08-31`. Version
+  stays `4.0.0`.
+
+- `devtools::document()`,
+  [`lintr::lint_package()`](https://lintr.r-lib.org/reference/lint.html)
+  and `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` run in that
+  order. Results recorded at the foot of this section.
+
+- ⚠️ **The UBSAN gate result is CARRIED FORWARD from RC2, not re-run.**
+  Maintainer decision, 2026-08-31. Recording it as carried forward
+  rather than as a fresh pass, because gate 81’s text says “run on the
+  release candidate” and RC3 is a different candidate.
+
+  **Justification.** \#260 changes only R code (`R/plot.gg_variable.R`,
+  `R/utils.R`). ggRandomForests has no `src/`, no `LinkingTo` and no
+  `NeedsCompilation`, so it contributes no compiled code at all, and the
+  sanitizer’s targets are the `rfsrc`, `varpro` and RHF C paths that
+  this change does not alter.
+
+  ⚠️ **This is an argument about an invariant, not a measurement.** It
+  is weaker evidence than the RC2 carry-forward across `6630516e` to
+  `bf663c51`, where `AGENTS.md` is `.Rbuildignore`d and `git diff`
+  excluding markdown was empty, so the tarball was provably
+  byte-identical. Here the tarball genuinely differs. A future reader
+  should not mistake the two for the same standard.
+
+  The carried result is [run
+  33288367135](https://github.com/ehrlinger/ggRandomForests/actions/runs/33288367135):
+  calibration observed `entry.c:184`, and the supported paths enumerated
+  exactly one diagnostic, `varPro` `shared/stackAuxiliaryInfo.c:165`
+  ([kogalur/varPro#6](https://github.com/kogalur/varPro/issues/6)).
+
 ## Verification evidence: 2026-08-30 (internal RC2)
 
 - `main` @ `0f0335fe`, zero open pull requests, 110 commits ahead of
