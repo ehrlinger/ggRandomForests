@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-31
 **Issue:** [#251](https://github.com/ehrlinger/ggRandomForests/issues/251)
-**Status:** design approved, not yet implemented
+**Status:** implemented in [#260](https://github.com/ehrlinger/ggRandomForests/pull/260)
 **Target version:** 4.0.0 (unreleased development line)
 
 ## Problem

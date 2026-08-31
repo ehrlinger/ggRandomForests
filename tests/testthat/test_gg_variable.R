@@ -905,3 +905,40 @@ test_that("plot.gg_variable: 'time' does not partial-match 'time_units'", {
   expect_match(w, "selects a horizon at extraction")
   expect_false(grepl("single non-empty character string", w))
 })
+
+test_that("plot.gg_variable does not warn 'ignored' on the rfsrc path, where time IS used", {
+  skip_on_cran()
+  set.seed(42)
+  data(veteran, package = "randomForestSRC")
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                               ntree = 50, nsplit = 5)
+
+  # plot.gg_variable() also accepts a raw rfsrc and forwards ... to
+  # gg_variable(), where 'time' is a real, working parameter. The retired-arg
+  # guard must not fire there: it would report as dead the one path that
+  # honours the argument. Found in review of #260.
+  msgs <- character(0)
+  p <- withCallingHandlers(
+    plot.gg_variable(rf, xvar = "age", time = 90),
+    warning = function(w) {
+      msgs <<- c(msgs, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_false(any(grepl("selects a horizon at extraction", msgs)))
+  expect_true(inherits(p, "ggplot") || inherits(p, "patchwork"))
+})
+
+test_that("plot.gg_variable still warns on an already-extracted object", {
+  skip_on_cran()
+  set.seed(42)
+  data(veteran, package = "randomForestSRC")
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                               ntree = 50, nsplit = 5)
+  gg_dta <- gg_variable(rf, time = 90)
+
+  # The complement of the test above: once extracted, the horizon is baked in
+  # and the argument really is dead, so the guard must still fire.
+  expect_warning(plot(gg_dta, xvar = "age", time = 1191),
+                 "selects a horizon at extraction")
+})

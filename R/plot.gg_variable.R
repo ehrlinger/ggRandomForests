@@ -154,8 +154,22 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
                              ## Past the dots, matching is exact and 'time' falls
                              ## into ... where the guard can report it.
                              time_units = NULL) {
+  ## Coerce FIRST.  plot.gg_variable() also accepts a raw rfsrc and forwards ...
+  ## to gg_variable(), where 'time' and 'time_labels' are real, working
+  ## parameters.  Guarding before this point warned that they were ignored on
+  ## the one path where they are honoured, and left the plausibility check
+  ## reading gg_dta[["time"]] off an rfsrc rather than off the extracted frame.
   gg_dta <- x
-  .check_retired_time_args(...)
+  from_rfsrc <- inherits(x, "rfsrc")
+  if (from_rfsrc) {
+    gg_dta <- gg_variable(x, ...)
+  }
+
+  ## Only meaningful for an already-extracted gg_variable object: that is the
+  ## call where the horizon is already baked in and the argument really is dead.
+  if (!from_rfsrc) {
+    .check_retired_time_args(...)
+  }
   time_units <- .check_time_units(time_units, gg_dta[["time"]])
 
   ## Resolve the label lookup ONCE.  .forest_strip_labeller() would resolve it
@@ -166,11 +180,6 @@ plot.gg_variable <- function(x, # nolint: cyclocomp_linter
   strip_labeller <- ggplot2::as_labeller(
     function(v) .apply_forest_labels(v, lab_lookup)
   )
-
-  # I don't think this will work with latest S3 models.
-  if (inherits(x, "rfsrc")) {
-    gg_dta <- gg_variable(x, ...)
-  }
 
   ## ---- Detect forest family from gg_variable class attributes ----------
   # Default to classification; override if survival or regression flags found

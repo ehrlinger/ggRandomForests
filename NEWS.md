@@ -124,12 +124,16 @@ ggRandomForests v4.0.0 (development)
   `time = 1191` bound silently to `time_units` and died on its type check.
   Past the dots, matching is exact. `time_units` always had to be named, so no
   working call changes.
-* `time_units` is now sanity-checked against the data it describes. A year-like
+* `plot.gg_variable()` sanity-checks `time_units` against the data it describes. A year-like
   unit supplied against values above 150 warns, because that is almost always a
   forest fit on a smaller unit and produces an axis title wrong by a factor of
   365. It warns rather than errors, and only in that one direction: small values
   labelled `"days"` is ordinary, so there is no signal to check. The package
-  still cannot derive the unit and does not try to.
+  still cannot derive the unit and does not try to. Scoped to
+  `plot.gg_variable()` for now: `plot.gg_rfsrc()` also takes `time_units`, but a
+  `gg_rfsrc` object has no `time` column (its time points live in `variable`,
+  which holds class names for a classification fit), so there is no unambiguous
+  column to check and extending it is not a one-line change.
 * `plot.gg_variable()`, `plot.gg_udependent()` and `plot.gg_sdependent()` gain
   `labels`, which completes the argument across every plot method in the
   package that renders variable names. `plot.gg_variable()` labels the facet strips in its panel
