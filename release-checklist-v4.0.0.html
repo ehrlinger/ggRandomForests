@@ -55,7 +55,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Release Checklist: ggRandomForests v4.0.0</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc2/release-checklist-v4.0.0.md" class="external-link"><code>release-checklist-v4.0.0.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/release-checklist-v4.0.0.md" class="external-link"><code>release-checklist-v4.0.0.md</code></a></small>
     </div>
 
 <div id="release-checklist-ggrandomforests-v400" class="section level1">
@@ -303,6 +303,7 @@
 <code>main</code> @ <code>0f0335fe</code>, zero open pull requests, 110 commits ahead of <code>v4.0.0-rc1</code>.</li>
 <li>
 <code>devtools::document()</code>, <code><a href="https://lintr.r-lib.org/reference/lint.html" class="external-link">lintr::lint_package()</a></code> and <code>NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()</code> run in that order: no documentation drift, 0 lints, 1,975 passes, 0 failures, 58 existing warnings, 6 documented skips. All 58 vdiffr baselines present before and after; the working tree was byte-identical, so nothing was pruned.</li>
+<li>⚠️ <strong>Read those two facts separately.</strong> “58 baselines present before and after” evidences only that <strong>nothing was pruned</strong>; it says nothing about whether any SVG matched. The visual comparisons are evidenced by the <strong>pass count</strong>, because that suite ran with <code>VDIFFR_RUN_TESTS=true</code>. <strong>CI cannot supply this evidence at all:</strong> <code>R-CMD-check</code>, <code>test-coverage</code> and <code>check-manual</code> all set <code>VDIFFR_RUN_TESTS: "false"</code>, so no CI job ever compares an SVG, and a green board is not evidence about visual regression. Only a local guarded run is.</li>
 <li>Clean <code>git archive</code> build, checked with the manual: <strong>1 NOTE, 0 WARNING, 0 ERROR</strong>, 3:12 wall. The NOTE is the maintainer-cadence incoming-feasibility one. Tarball gate: only <code>ggRandomForests/.Rinstignore</code> matches <code>/\.[^/]+</code>, <code>cran-comments</code> absent, 4.0 MB against CRAN’s 5 MB limit.</li>
 <li>
 <strong>The UBSAN gate produced a verdict for the first time.</strong> It had never completed before: five defects sat between the dispatch and a result, each visible only once the previous was cleared, and none reachable from CI because the workflow is <code>workflow_dispatch</code> only. In order: the r-hub binary repo whose <code>PACKAGES</code> index resolved while its tarballs 404’d (PR 246); an image with no UBSAN runtime, which surfaced as ~70 cascading “not available” errors and one buried <code>ld.bfd</code> line (PR 247); an image with no libuv headers, where <code>fs</code> failing to configure took <code>randomForestSRC</code> down with it (PR 248); a calibration probe written as <code>randomForestSRC::Unsupervised() ~ .</code>, which <code>parseFormula()</code> cannot match because it compares the response symbol textually, so the probe errored before reaching native code and <strong>could never go red</strong> (PR 249); and a floating <code>:latest</code> container reference, now pinned by digest (PR 254). <code>halt_on_error=0</code> (PR 255) then turned “the first finding” into “every finding”.</li>
