@@ -120,6 +120,13 @@ unsupervised variable priority where that method is discussed.
   no documentation drift, 0 lints, 1,975 passes, 0 failures, 58 existing
   warnings, 6 documented skips. All 58 vdiffr baselines present before and
   after; the working tree was byte-identical, so nothing was pruned.
+- ⚠️ **Read those two facts separately.** "58 baselines present before and after"
+  evidences only that **nothing was pruned**; it says nothing about whether any
+  SVG matched. The visual comparisons are evidenced by the **pass count**, because
+  that suite ran with `VDIFFR_RUN_TESTS=true`. **CI cannot supply this evidence at
+  all:** `R-CMD-check`, `test-coverage` and `check-manual` all set
+  `VDIFFR_RUN_TESTS: "false"`, so no CI job ever compares an SVG, and a green board
+  is not evidence about visual regression. Only a local guarded run is.
 - Clean `git archive` build, checked with the manual: **1 NOTE, 0 WARNING,
   0 ERROR**, 3:12 wall. The NOTE is the maintainer-cadence incoming-feasibility
   one. Tarball gate: only `ggRandomForests/.Rinstignore` matches `/\.[^/]+`,
