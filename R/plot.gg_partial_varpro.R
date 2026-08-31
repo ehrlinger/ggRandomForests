@@ -129,9 +129,16 @@
 #'   partialpro's local-polynomial fit, so smoothing it is a smooth of a smooth;
 #'   this is here for the raw-looking figure some journals ask for, not as a
 #'   better estimate.
-#' @param palette Character; a ColorBrewer palette name (e.g.
-#'   \code{"Set1"}) applied to the effect-type colour or fill scale.
-#'   \code{NULL} (default) keeps \pkg{ggplot2}'s.
+#' @param palette Character; the effect-type colour or fill scale.  Defaults to
+#'   \code{"black"}: this package's figures are made for manuscripts, and
+#'   \code{linetype} is mapped to the effect type as well, so the three
+#'   estimators stay legible as solid, dotted and dashed with no colour at all.
+#'   \code{"mono"} is a synonym, and \code{"grey"} / \code{"gray"} give a
+#'   flat grey.  Any ColorBrewer palette name (e.g. \code{"Set1"}) routes to
+#'   the brewer scale instead, which is worth reaching for when you are
+#'   comparing two or three estimators on screen and colour separates them
+#'   faster than a dash pattern.  \code{NULL} keeps \pkg{ggplot2}'s own
+#'   scale.
 #' @param ncol Integer; columns in the \code{panels} layout.  \code{NULL}
 #'   (default) lets \pkg{patchwork} choose.
 #' @param point_size,point_alpha Numeric; size and alpha of the points drawn
@@ -148,6 +155,16 @@
 #'   on the additive, multiplicative and unbounded scales \eqn{1 - x} has no
 #'   referent and this is an error rather than a silent no-op.  Default
 #'   \code{FALSE}.
+#' @param ylim Numeric length-2; the shared y range for every panel.
+#'   \code{NULL} (default) takes the range of the plotted values, which is what
+#'   the facet route has always done.  Supply it to pin a scale that means
+#'   something independent of the data -- \code{c(0, 1)} on a probability
+#'   scale, say, so a flat curve reads as flat rather than filling the panel.
+#'   It cannot be set from outside: on the \code{panels} route a
+#'   \code{coord_cartesian()} added with \code{&} replaces the per-panel
+#'   coordinate system and takes the per-panel x ranges down with it, and
+#'   \code{scale_y_continuous(limits = )} is overridden by that coordinate
+#'   system.
 #'
 #' @details
 #' **Ensemble mortality (scale = "mortality"):** when the provenance scale
@@ -200,8 +217,14 @@
 #' ## Per-panel scales.  Only 'name' is required; the rest tune one axis each.
 #' spec <- data.frame(name = "age", xlab = "Age (years)",
 #'                    xmin = 30, xmax = 80, xby = 10, span = 0.6)
-#' plot(pp, type = "parametric", panels = spec, points = TRUE, smooth = TRUE,
-#'      palette = "Set1")
+#' plot(pp, type = "parametric", panels = spec, points = TRUE, smooth = TRUE)
+#'
+#' ## Colour earns its place when several estimators share a panel: two curves
+#' ## separate faster by hue than by dash pattern.  Any ColorBrewer name works.
+#' plot(pp, type = c("parametric", "nonparametric"), palette = "Set1")
+#'
+#' ## The default is monochrome, for print.
+#' plot(pp, type = c("parametric", "nonparametric"))
 #'
 #' ## A patchwork takes `&`, not `+`, to reach every panel.
 #' plot(pp, type = "parametric", panels = spec) & ggplot2::theme_minimal()
@@ -213,6 +236,7 @@
 #' @importFrom ggplot2 .data ggplot aes geom_line geom_boxplot facet_wrap labs
 #' @importFrom ggplot2 geom_point geom_smooth scale_x_continuous waiver
 #' @importFrom ggplot2 coord_cartesian scale_color_brewer scale_fill_brewer
+#' @importFrom ggplot2 scale_color_manual scale_fill_manual
 #' @importFrom tidyr pivot_longer all_of
 #' @importFrom patchwork wrap_plots
 #' @name plot.gg_partial_varpro
@@ -233,12 +257,13 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
                                     panels  = NULL,
                                     points  = FALSE,
                                     smooth  = FALSE,
-                                    palette = NULL,
+                                    palette = "black",
                                     ncol    = NULL,
                                     point_size  = 1.1,
                                     point_alpha = 0.55,
                                     linewidth   = 0.5,
-                                    complement  = FALSE) {
+                                    complement  = FALSE,
+                                    ylim        = NULL) {
   type_user <- !missing(type)   # was 'causal' asked for, or is it the default?
 
   ## C-path: delegate to plot.gg_partial_rfsrc via NextMethod().
@@ -288,7 +313,8 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
     if (is.null(panels)) {
       gg_cont <- .partial_varpro_faceted(cont_long, ylabel, strip_labeller,
                                          points, smooth, palette,
-                                         point_size, point_alpha, linewidth)
+                                         point_size, point_alpha, linewidth,
+                                         ylim)
     } else {
       spec    <- .check_partial_panels(panels, x$continuous)
       lookup  <- .forest_labels(labels)
@@ -297,10 +323,12 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
       ## each compute their own, and four partial dependence curves on four
       ## different y ranges do not compare.  Computed over the SELECTED
       ## variables only, so dropping a variable rescales the figure.
-      sel     <- cont_long[as.character(cont_long$name) %in% spec$name, ,
-                           drop = FALSE]
-      ylim    <- range(sel$yhat, na.rm = TRUE, finite = TRUE)
-      if (!all(is.finite(ylim))) ylim <- NULL
+      if (is.null(ylim)) {
+        sel  <- cont_long[as.character(cont_long$name) %in% spec$name, ,
+                          drop = FALSE]
+        ylim <- range(sel$yhat, na.rm = TRUE, finite = TRUE)
+        if (!all(is.finite(ylim))) ylim <- NULL
+      }
       built   <- lapply(seq_len(nrow(spec)), function(i) {
         .partial_varpro_panel(spec[i, , drop = FALSE], cont_long, ylabel,
                               lookup, points, smooth, palette,
@@ -331,9 +359,7 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
       ggplot2::geom_boxplot() +
       ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
       ggplot2::labs(x = NULL, y = ylabel, fill = "Effect type")
-    if (!is.null(palette)) {
-      gg_cat <- gg_cat + ggplot2::scale_fill_brewer(palette = palette)
-    }
+    gg_cat <- gg_cat + .partial_varpro_fill_scale(palette)
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
@@ -351,7 +377,8 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
 #' @keywords internal
 .partial_varpro_faceted <- function(cont_long, ylabel, strip_labeller,
                                     points, smooth, palette,
-                                    point_size, point_alpha, linewidth) {
+                                    point_size, point_alpha, linewidth,
+                                    ylim = NULL) {
   p <- ggplot2::ggplot(
     cont_long,
     ggplot2::aes(
@@ -366,8 +393,9 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
     ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
     ggplot2::labs(x = NULL, y = ylabel,
                   color = "Effect type", linetype = "Effect type")
-  if (!is.null(palette)) {
-    p <- p + ggplot2::scale_color_brewer(palette = palette)
+  p <- p + .partial_varpro_colour_scale(palette)
+  if (!is.null(ylim)) {
+    p <- p + ggplot2::coord_cartesian(ylim = ylim)
   }
   p
 }
@@ -475,10 +503,7 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
   ## outside the range still informs the smooth instead of being dropped.
   p <- p + ggplot2::coord_cartesian(xlim = xlim, ylim = ylim)
 
-  if (!is.null(palette)) {
-    p <- p + ggplot2::scale_color_brewer(palette = palette)
-  }
-  p
+  p + .partial_varpro_colour_scale(palette)
 }
 
 ## Drop the `causal` contrast on bounded scales (prob/odds/surv) -- it cannot
@@ -568,4 +593,44 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
          "scale = \"surv\" for a survival fit.", call. = FALSE)
   }
   invisible(NULL)
+}
+
+## Resolve the 'palette' argument to a scale.  A ColorBrewer name goes to the
+## brewer scale; the monochrome keywords resolve to a flat manual scale, since
+## print journals routinely ask for a figure with no colour in it and there is
+## no brewer ramp that means "all black".  linetype is already mapped to
+## effect_type, so a monochrome figure still separates the estimators.
+#' @keywords internal
+.partial_varpro_mono <- function(palette) {
+  if (is.null(palette) || length(palette) != 1L || is.na(palette)) return(NULL)
+  switch(tolower(as.character(palette)),
+    black = "black", mono = "black",
+    grey = "grey30", gray = "grey30",
+    NULL)
+}
+
+#' @keywords internal
+.partial_varpro_colour_scale <- function(palette) {
+  if (is.null(palette)) {
+    return(NULL)
+  }
+  mono <- .partial_varpro_mono(palette)
+  if (!is.null(mono)) {
+    ## Three, because there are at most three effect types.
+    return(ggplot2::scale_color_manual(values = rep(mono, 3L),
+                                       guide = "none"))
+  }
+  ggplot2::scale_color_brewer(palette = palette)
+}
+
+#' @keywords internal
+.partial_varpro_fill_scale <- function(palette) {
+  if (is.null(palette)) {
+    return(NULL)
+  }
+  mono <- .partial_varpro_mono(palette)
+  if (!is.null(mono)) {
+    return(ggplot2::scale_fill_manual(values = rep(mono, 3L)))
+  }
+  ggplot2::scale_fill_brewer(palette = palette)
 }

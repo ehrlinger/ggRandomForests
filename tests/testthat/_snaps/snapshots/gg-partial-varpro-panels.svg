@@ -74,7 +74,7 @@
 <polyline points='182.20,539.63 182.20,28.26 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
 <polyline points='228.38,539.63 228.38,28.26 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
 <polyline points='274.57,539.63 274.57,28.26 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='43.65,314.77 60.14,162.46 76.64,432.14 93.13,290.46 109.62,361.15 126.12,251.13 142.61,435.83 159.11,446.56 175.60,516.39 192.09,170.69 208.59,123.14 225.08,51.51 241.58,481.34 258.07,381.70 274.57,267.45 ' style='stroke-width: 1.07; stroke: #F8766D; stroke-linecap: butt;' />
+<polyline points='43.65,314.77 60.14,162.46 76.64,432.14 93.13,290.46 109.62,361.15 126.12,251.13 142.61,435.83 159.11,446.56 175.60,516.39 192.09,170.69 208.59,123.14 225.08,51.51 241.58,481.34 258.07,381.70 274.57,267.45 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <text x='38.72' y='408.98' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='15.16px' lengthAdjust='spacingAndGlyphs'>-0.2</text>
@@ -100,7 +100,7 @@
 <rect x='285.52' y='262.16' width='75.29' height='43.57' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='291.00' y='276.35' style='font-size: 11.00px; font-family: sans;' textLength='51.98px' lengthAdjust='spacingAndGlyphs'>Effect type</text>
 <rect x='291.00' y='282.97' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #EBEBEB;' />
-<line x1='292.73' y1='291.61' x2='306.56' y2='291.61' style='stroke-width: 1.07; stroke: #F8766D; stroke-linecap: butt;' />
+<line x1='292.73' y1='291.61' x2='306.56' y2='291.61' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <text x='313.76' y='294.64' style='font-size: 8.80px; font-family: sans;' textLength='41.57px' lengthAdjust='spacingAndGlyphs'>parametric</text>
 </g>
 <defs>
@@ -128,7 +128,7 @@
 <polyline points='530.42,539.63 530.42,28.26 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
 <polyline points='576.61,539.63 576.61,28.26 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
 <polyline points='622.79,539.63 622.79,28.26 ' style='stroke-width: 1.07; stroke: #FFFFFF; stroke-linecap: butt;' />
-<polyline points='391.87,314.77 408.37,162.46 424.86,432.14 441.35,290.46 457.85,361.15 474.34,251.13 490.84,435.83 507.33,446.56 523.82,516.39 540.32,170.69 556.81,123.14 573.31,51.51 589.80,481.34 606.30,381.70 622.79,267.45 ' style='stroke-width: 1.07; stroke: #F8766D; stroke-linecap: butt;' />
+<polyline points='391.87,314.77 408.37,162.46 424.86,432.14 441.35,290.46 457.85,361.15 474.34,251.13 490.84,435.83 507.33,446.56 523.82,516.39 540.32,170.69 556.81,123.14 573.31,51.51 589.80,481.34 606.30,381.70 622.79,267.45 ' style='stroke-width: 1.07; stroke-linecap: butt;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 <text x='386.94' y='408.98' text-anchor='end' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='15.16px' lengthAdjust='spacingAndGlyphs'>-0.2</text>
@@ -153,7 +153,7 @@
 <rect x='633.75' y='262.16' width='75.29' height='43.57' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
 <text x='639.23' y='276.35' style='font-size: 11.00px; font-family: sans;' textLength='51.98px' lengthAdjust='spacingAndGlyphs'>Effect type</text>
 <rect x='639.23' y='282.97' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #EBEBEB;' />
-<line x1='640.96' y1='291.61' x2='654.78' y2='291.61' style='stroke-width: 1.07; stroke: #F8766D; stroke-linecap: butt;' />
+<line x1='640.96' y1='291.61' x2='654.78' y2='291.61' style='stroke-width: 1.07; stroke-linecap: butt;' />
 <text x='661.99' y='294.64' style='font-size: 8.80px; font-family: sans;' textLength='41.57px' lengthAdjust='spacingAndGlyphs'>parametric</text>
 <text x='10.96' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='140.14px' lengthAdjust='spacingAndGlyphs'>gg-partial-varpro-panels</text>
 </g>

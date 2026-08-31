@@ -3,6 +3,21 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `plot.gg_partial_varpro()` gains `ylim`, pinning the shared y range across
+  panels. It could not be set from outside: on the `panels` route a
+  `coord_cartesian()` added with `&` replaces the per-panel coordinate system
+  and silently takes the per-panel x ranges with it (0-50 collapsed to the
+  data's 0-46), while `scale_y_continuous(limits = )` is overridden by that
+  same coordinate system. `ylim = c(0, 1)` now pins a probability axis so a
+  flat curve reads as flat instead of filling the panel.
+* `plot.gg_partial_varpro()` now defaults `palette` to `"black"`. These figures
+  are made for manuscripts, and `linetype` is mapped to the effect type as
+  well, so the three estimators stay legible as solid, dotted and dashed with
+  no colour at all. Pass any ColorBrewer name (`palette = "Set1"`) for the
+  colour scale, which separates two or three overlaid estimators faster on
+  screen. `"mono"` is a synonym for black and `"grey"`/`"gray"` give a flat
+  grey. **This changes rendered output**: five vdiffr baselines were
+  regenerated.
 * `plot.gg_partial_varpro()` gains `complement`, plotting 1 - p and prefixing
   the y label with `1 - `. It reads a fit that targets one class as the
   probability of the other -- a weaning-failure model shown as probability of

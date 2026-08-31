@@ -16,12 +16,13 @@
   panels = NULL,
   points = FALSE,
   smooth = FALSE,
-  palette = NULL,
+  palette = "black",
   ncol = NULL,
   point_size = 1.1,
   point_alpha = 0.55,
   linewidth = 0.5,
-  complement = FALSE
+  complement = FALSE,
+  ylim = NULL
 )
 }
 \arguments{
@@ -82,9 +83,16 @@ partialpro's local-polynomial fit, so smoothing it is a smooth of a smooth;
 this is here for the raw-looking figure some journals ask for, not as a
 better estimate.}
 
-\item{palette}{Character; a ColorBrewer palette name (e.g.
-\code{"Set1"}) applied to the effect-type colour or fill scale.
-\code{NULL} (default) keeps \pkg{ggplot2}'s.}
+\item{palette}{Character; the effect-type colour or fill scale.  Defaults to
+\code{"black"}: this package's figures are made for manuscripts, and
+\code{linetype} is mapped to the effect type as well, so the three
+estimators stay legible as solid, dotted and dashed with no colour at all.
+\code{"mono"} is a synonym, and \code{"grey"} / \code{"gray"} give a
+flat grey.  Any ColorBrewer palette name (e.g. \code{"Set1"}) routes to
+the brewer scale instead, which is worth reaching for when you are
+comparing two or three estimators on screen and colour separates them
+faster than a dash pattern.  \code{NULL} keeps \pkg{ggplot2}'s own
+scale.}
 
 \item{ncol}{Integer; columns in the \code{panels} layout.  \code{NULL}
 (default) lets \pkg{patchwork} choose.}
@@ -105,6 +113,17 @@ Requires a probability scale (\code{scale = "prob"} or \code{"surv"});
 on the additive, multiplicative and unbounded scales \eqn{1 - x} has no
 referent and this is an error rather than a silent no-op.  Default
 \code{FALSE}.}
+
+\item{ylim}{Numeric length-2; the shared y range for every panel.
+\code{NULL} (default) takes the range of the plotted values, which is what
+the facet route has always done.  Supply it to pin a scale that means
+something independent of the data -- \code{c(0, 1)} on a probability
+scale, say, so a flat curve reads as flat rather than filling the panel.
+It cannot be set from outside: on the \code{panels} route a
+\code{coord_cartesian()} added with \code{&} replaces the per-panel
+coordinate system and takes the per-panel x ranges down with it, and
+\code{scale_y_continuous(limits = )} is overridden by that coordinate
+system.}
 }
 \value{
 A \code{ggplot} (or \code{patchwork}) object.
@@ -238,8 +257,14 @@ plot(pp, which = "continuous") + ggplot2::labs(title = "Continuous only")
 ## Per-panel scales.  Only 'name' is required; the rest tune one axis each.
 spec <- data.frame(name = "age", xlab = "Age (years)",
                    xmin = 30, xmax = 80, xby = 10, span = 0.6)
-plot(pp, type = "parametric", panels = spec, points = TRUE, smooth = TRUE,
-     palette = "Set1")
+plot(pp, type = "parametric", panels = spec, points = TRUE, smooth = TRUE)
+
+## Colour earns its place when several estimators share a panel: two curves
+## separate faster by hue than by dash pattern.  Any ColorBrewer name works.
+plot(pp, type = c("parametric", "nonparametric"), palette = "Set1")
+
+## The default is monochrome, for print.
+plot(pp, type = c("parametric", "nonparametric"))
 
 ## A patchwork takes `&`, not `+`, to reach every panel.
 plot(pp, type = "parametric", panels = spec) & ggplot2::theme_minimal()

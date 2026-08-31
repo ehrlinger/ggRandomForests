@@ -1192,3 +1192,50 @@ test_that("plot.gg_partial_varpro: unused '...' warns and names them", {
   ## The supported spellings bind to formals and must stay silent.
   expect_silent(plot(pp, which = "continuous", points = TRUE))
 })
+
+## ── ylim and the monochrome palette ─────────────────────────────────────────
+test_that("plot.gg_partial_varpro: ylim pins the shared range on both routes", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "prob"))
+  yr <- function(q) ggplot2::ggplot_build(q)$layout$panel_params[[1]]$y.range
+
+  ## Facet route.
+  f <- plot(pp, which = "continuous", type = "parametric", ylim = c(0, 1))
+  expect_lte(yr(f)[1], 0)
+  expect_gte(yr(f)[2], 1)
+
+  ## Panels route: every panel takes it, and the per-panel x survives.
+  spec <- data.frame(name = c("age", "bmi"), xmin = 30, xmax = 100, xby = 10,
+                     stringsAsFactors = FALSE)
+  p <- plot(pp, type = "parametric", panels = spec, ylim = c(0, 1))
+  for (i in seq_along(p)) {
+    expect_lte(yr(p[[i]])[1], 0)
+    expect_gte(yr(p[[i]])[2], 1)
+    ## xmax = 100 is beyond the data (30..80); it must still be honoured.
+    expect_gte(ggplot2::ggplot_build(p[[i]])$layout$panel_params[[1]]$x.range[2],
+               100)
+  }
+})
+
+test_that("plot.gg_partial_varpro: palette = 'black' gives a mono scale", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  cols <- function(pal) {
+    unique(ggplot2::ggplot_build(
+      plot(pp, which = "continuous", type = "parametric", palette = pal)
+    )$data[[1]]$colour)
+  }
+  expect_equal(cols("black"), "black")
+  expect_equal(cols("mono"), "black")
+  expect_equal(cols("grey"), "grey30")
+  expect_equal(cols("gray"), "grey30")
+  ## A real brewer name still routes to the brewer scale.
+  expect_true("#E41A1C" %in% cols("Set1"))
+})
+
+test_that("plot.gg_partial_varpro: mono palette reaches the categorical fill", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  p <- plot(pp, which = "categorical", type = "parametric", palette = "black")
+  expect_equal(unique(ggplot2::ggplot_build(p)$data[[1]]$fill), "black")
+})
