@@ -87,7 +87,8 @@
 #'   \code{varPro::partialpro(object)} for you.  Required when
 #'   \code{scale \%in\% c("surv","chf")}.
 #' @param scale Character; the y-axis scale.  One of \code{"auto"} (default),
-#'   the classification scales \code{"prob"} / \code{"odds"} / \code{"logodds"},
+#'   the classification scales \code{"prob"} / \code{"prob_typical"} /
+#'   \code{"odds"} / \code{"logodds"},
 #'   or the survival scales \code{"rmst"} / \code{"surv"} / \code{"mortality"} /
 #'   \code{"chf"}.  With \code{"auto"}: classification fits resolve to
 #'   \code{"prob"} (probability of the target class) and survival fits to
@@ -252,6 +253,45 @@
 #' \code{causal} contrast is shown only on \code{"logodds"} (see
 #' \code{\link{plot.gg_partial_varpro}}).
 #'
+#' **Two probability scales, and why they disagree (scale = "prob" vs
+#' "prob_typical"):** \code{partialpro} returns a matrix of per-subject
+#' log-odds, one row per observation and one column per grid point. Collapsing
+#' it to a curve takes an average and a back-transform, and the \emph{order}
+#' of those two steps is a modelling choice, not a detail:
+#'
+#' \deqn{\mathrm{prob}(x) = \frac{1}{n}\sum_i \mathrm{logit}^{-1}(z_i(x))
+#'   \qquad
+#'   \mathrm{prob\_typical}(x) = \mathrm{logit}^{-1}\!\left(
+#'   \frac{1}{n}\sum_i z_i(x)\right)}
+#'
+#' \code{"prob"} (the classification default) transforms per observation and
+#' then averages, so the curve is the \strong{mean predicted probability} --
+#' the expected proportion of this cohort, and the standard partial dependence
+#' quantity on a probability scale. \code{"prob_typical"} averages on the
+#' log-odds scale and then transforms once, giving the probability for a
+#' \strong{subject sitting at the mean log-odds}.
+#'
+#' These are different estimands and they do not agree.
+#' \eqn{\mathrm{logit}^{-1}} is concave above zero and convex below it, so by
+#' Jensen's inequality \code{"prob"} is pulled toward \eqn{0.5} relative to
+#' \code{"prob_typical"}, at both ends of the curve. The gap widens with the
+#' spread of per-subject log-odds, and on a heterogeneous cohort it is not
+#' small: where the per-subject log-odds carry an SD near 4.5, a point reading
+#' \eqn{0.96} under \code{"prob_typical"} reads \eqn{0.74} under
+#' \code{"prob"}.
+#'
+#' Which to report is a question about the claim, not about the code. If the
+#' sentence is "what fraction of these patients would wean", that is
+#' \code{"prob"}. If it is "what would we predict for a typical patient", that
+#' is \code{"prob_typical"} -- while remembering that the mean-log-odds
+#' subject need not resemble anyone in the data. A figure captioned as a
+#' percentage of patients wants \code{"prob"}.
+#'
+#' The distinction applies only to the \code{continuous} frame. The
+#' \code{categorical} frame keeps its values unaveraged so the plot method can
+#' draw boxplots, so there is no averaging order to choose and the two scales
+#' return the same numbers there.
+#'
 #' **Survival probability (scale = "surv"):** \code{scale = "surv"} (the
 #' survival default) computes \eqn{S(\tau \mid x)} through \code{partialpro}
 #' (the same UVT engine as mortality and RMST), bounded in \eqn{[0, 1]}.  When
@@ -325,6 +365,13 @@
 #'     yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
 #'   )
 #' )
+#' ## The two probability scales differ by the ORDER of averaging and
+#' ## back-transform, and disagree whenever subjects are heterogeneous.
+#' pa <- gg_partial_varpro(mock_data, scale = "prob")
+#' pt <- gg_partial_varpro(mock_data, scale = "prob_typical")
+#' head(data.frame(prob = pa$continuous$parametric,
+#'                 prob_typical = pt$continuous$parametric))
+#'
 #' result <- gg_partial_varpro(mock_data, scale = "logodds")
 #' head(result$continuous)
 #' head(result$categorical)
@@ -363,7 +410,8 @@
 #' @export
 gg_partial_varpro <- function(part_dta  = NULL,
                                object    = NULL,
-                               scale     = c("auto", "prob", "odds", "logodds",
+                               scale     = c("auto", "prob", "prob_typical",
+                                             "odds", "logodds",
                                              "rmst", "surv", "mortality", "chf"),
                                time      = NULL,
                                nvars     = NULL,
@@ -754,10 +802,8 @@ gg_partial_varpro <- function(part_dta  = NULL,
     if (length(feat$xvirtual) > cat_limit) {
       plt.df <- dplyr::bind_cols(
         variable      = feat$xvirtual,
-        parametric    = colMeans(.scale_transform(feat$yhat.par,    scale),
-                                 na.rm = TRUE),
-        nonparametric = colMeans(.scale_transform(feat$yhat.nonpar, scale),
-                                 na.rm = TRUE),
+        parametric    = .varpro_column_summary(feat$yhat.par,    scale),
+        nonparametric = .varpro_column_summary(feat$yhat.nonpar, scale),
         # `causal` is a centered contrast: not shown on bounded scales
         causal        = if (bounded) NA_real_ else
           colMeans(feat$yhat.causal, na.rm = TRUE)
@@ -808,6 +854,11 @@ gg_partial_varpro <- function(part_dta  = NULL,
 .scale_transform <- function(z, scale) {
   switch(scale,
     prob = stats::plogis(z),
+    ## Elementwise only. On the categorical frame the values stay unaveraged,
+    ## so "average first" has nothing to bite on and this matches `prob`; the
+    ## two scales differ only on the continuous frame. See
+    ## .varpro_column_summary().
+    prob_typical = stats::plogis(z),
     odds = exp(z),
     z)
 }
@@ -817,7 +868,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## contrast is not shown (it cannot share the axis).
 #' @keywords internal
 .is_bounded_scale <- function(scale) {
-  scale %in% c("prob", "odds", "surv")
+  scale %in% c("prob", "prob_typical", "odds", "surv")
 }
 
 #' @keywords internal
@@ -913,4 +964,28 @@ gg_partial_varpro <- function(part_dta  = NULL,
     path       = "C"
   )
   pd
+}
+
+## Collapse one partialpro matrix (observations x grid points) to one value per
+## grid point.  The ORDER matters and is the whole difference between "prob"
+## and "prob_typical".
+##
+##   prob          mean_i(plogis(z_i))   the mean predicted probability -- the
+##                                       expected proportion of this cohort,
+##                                       and the standard partial dependence
+##                                       quantity on a probability scale.
+##   prob_typical  plogis(mean_i(z_i))   the probability for a subject sitting
+##                                       at the mean log-odds.
+##
+## plogis is concave above 0 and convex below it, so by Jensen these are not
+## the same curve: "prob" is pulled toward 0.5 relative to "prob_typical", and
+## the gap widens with the spread of per-subject log-odds.  On a heterogeneous
+## cohort it is large -- a point where "prob_typical" reads 0.96 can read 0.74
+## under "prob" when the per-subject log-odds carry an SD near 4.5.
+#' @keywords internal
+.varpro_column_summary <- function(mat, scale) {
+  if (identical(scale, "prob_typical")) {
+    return(stats::plogis(colMeans(mat, na.rm = TRUE)))
+  }
+  colMeans(.scale_transform(mat, scale), na.rm = TRUE)
 }
