@@ -304,3 +304,68 @@ CRAN acceptance.
 - This run verifies the documentation-only topology record. It does not
   advance the UBSAN, full release-verification, submission, or CRAN-acceptance
   gates.
+
+## Verification evidence: 2026-08-31 (internal RC4)
+
+- `main` at `17aec30f`, after [#262](https://github.com/ehrlinger/ggRandomForests/pull/262),
+  [#263](https://github.com/ehrlinger/ggRandomForests/pull/263) and
+  [#264](https://github.com/ehrlinger/ggRandomForests/pull/264). Zero open pull
+  requests.
+- `DESCRIPTION` `Date:` **unchanged at `2026-08-31`**: RC3 was cut the same day.
+  Version stays `4.0.0`.
+- **This RC adds public API**, which RC2 and RC3 did not.
+  `plot.gg_partial_varpro()` gains ten formals (`which`, `panels`, `points`,
+  `smooth`, `palette`, `ncol`, `point_size`, `point_alpha`, `linewidth`,
+  `complement`, `ylim`) and `gg_partial_varpro()` gains
+  `scale = "prob_typical"`. All are additive; every default reproduces the
+  previous rendering except `palette`, which now defaults to `"black"` and
+  changed five vdiffr baselines. Nothing changes class, element names or column
+  names, so there is nothing here for a reverse dependency to notice.
+- `devtools::document()`, `lintr::lint_package()` and
+  `NOT_CRAN=true VDIFFR_RUN_TESTS=true devtools::test()` run in that order on
+  `main`: `document()` produced no drift (`git status` empty), `lint_package()`
+  reported 0 lints, and the guarded suite reported **2,082 passes, 0 failures,
+  0 errors, 6 documented skips and 58 existing warnings**. Baseline count was 60
+  before and 60 after, with `git status` empty both times: no baseline changed
+  or was deleted. The 58 warnings are the pre-existing `geom_smooth()` loess
+  messages from `plot.gg_variable` tests; the unused-dots guard added in #262
+  contributes none.
+- `R CMD check --as-cran` **with the manual and with vignettes**, built from a
+  clean `git archive` export: **1 NOTE, 0 WARNINGs, 0 ERRORs**. The NOTE is
+  incoming feasibility (maintainer identity, 8 updates in the preceding 6
+  months). `checking PDF version of manual ... OK`, which matters this RC
+  because #263 adds `\deqn{}` math to `?gg_partial_varpro`. Timed steps:
+  vignette rebuild 40s, `--run-donttest` examples 33s, examples 13s. Projected
+  to roughly 6–8 minutes on win-builder using the ratios in `AGENTS.md`, under
+  the ~700s line at which 3.5.1 was declined.
+- Tarball **3.59 MB**, down from 4.0 MB at RC3, because #264 excludes the vdiffr
+  baselines from the build. Headroom against CRAN's 5 MB limit rises from
+  0.98 MB to 1.41 MB. Tar inspection reported only
+  `ggRandomForests/.Rinstignore` among hidden entries, **0 baseline SVGs**,
+  0 `cran-comments` entries, `Version: 4.0.0` and `Date: 2026-08-31`. The 60
+  baselines remain in the repository and remain available to local and CI runs;
+  only the built tarball loses them.
+- The gated tree is `b0de0fbe`, and `main` at `17aec30f` has the **identical
+  tree**, verified by `git rev-parse main^{tree}` against
+  `git rev-parse 841fdd6b^{tree}`. The check evidence above therefore applies to
+  the tagged commit verbatim rather than by argument.
+- ⚠️ **The UBSAN gate result is CARRIED FORWARD again, not re-run.** Maintainer
+  decision, 2026-08-31.
+
+  **Justification.** #262, #263 and #264 change only R code, tests,
+  documentation and `.Rbuildignore`. ggRandomForests has no `src/`, no
+  `LinkingTo` and no `NeedsCompilation`, so it contributes no compiled code, and
+  the sanitizer's targets are the `rfsrc`, `varpro` and RHF C paths that these
+  changes do not alter.
+
+  ⚠️ **This is now the second consecutive carry-forward**, RC2 → RC3 → RC4, and
+  the chain is weaker than any single link in it. The RC2 carry was backed by a
+  provably byte-identical tarball; RC3's and this one are arguments about an
+  invariant, and the tarball genuinely differs in both. A future reader should
+  not read three RCs' worth of green as three measurements. **A fresh UBSAN run
+  is recommended before CRAN submission**, and this note should be treated as
+  the outstanding item rather than a satisfied gate.
+
+Release status remains **HOLD**. This is an internal release candidate. CRAN
+remains on 3.5.2. This evidence does not authorize a CRAN submission, a version
+change, or closure of CRAN acceptance.
