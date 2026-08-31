@@ -16,7 +16,23 @@ for drawing.
 plot(x, type = c("parametric", "nonparametric", "causal"), labels = NULL, ...)
 
 # S3 method for class 'gg_partial_varpro'
-plot(x, type = c("parametric", "nonparametric", "causal"), labels = NULL, ...)
+plot(
+  x,
+  type = c("parametric", "nonparametric", "causal"),
+  labels = NULL,
+  ...,
+  which = c("both", "continuous", "categorical"),
+  panels = NULL,
+  points = FALSE,
+  smooth = FALSE,
+  palette = "black",
+  ncol = NULL,
+  point_size = 1.1,
+  point_alpha = 0.55,
+  linewidth = 0.5,
+  complement = FALSE,
+  ylim = NULL
+)
 ```
 
 ## Arguments
@@ -44,6 +60,127 @@ plot(x, type = c("parametric", "nonparametric", "causal"), labels = NULL, ...)
 
   Unused for path-A objects; forwarded to `plot.gg_partial_rfsrc` for
   path-C objects.
+
+- which:
+
+  Character; which frame to draw. `"both"` (default) keeps the
+  historical behaviour, returning a patchwork stack when the object
+  carries both continuous and categorical variables. `"continuous"` or
+  `"categorical"` returns a bare `ggplot` for that frame alone. Use it
+  when you want to add scales or themes with `+`: on a patchwork `+`
+  reaches only the last panel, so `which` is how you get one plot to
+  modify. Implied by `panels`.
+
+- panels:
+
+  Optional data frame giving per-panel scales, one row per panel.
+  Supplying it selects the continuous frame and switches rendering from
+  [`facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html)
+  to patchwork, which is the only way to vary the x scale between
+  panels. Only `name` is required; every other column is optional and an
+  absent one leaves that decision to ggplot2.
+
+  name
+
+  :   variable, matched against `x$continuous$name`. A name the frame
+      does not carry is an error rather than a silent drop.
+
+  xlab
+
+  :   panel x axis title. Falls back to the `labels` value for that
+      variable, then to `name`.
+
+  xmin, xmax
+
+  :   clipped range, applied with
+      [`coord_cartesian()`](https://ggplot2.tidyverse.org/reference/coord_cartesian.html)
+      so points outside are hidden rather than dropped from the smooth.
+      Supplying both also removes the axis padding.
+
+  xby
+
+  :   tick spacing, expanded to `seq(xmin, xmax, xby)`.
+
+  span
+
+  :   per-panel
+      [`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html)
+      span.
+
+  Panels are drawn in row order, so the frame pins panel order
+  explicitly. A variable absent from `panels` is not drawn; selecting a
+  subset is the usual reason to supply it.
+
+  The y axis is shared across panels, matching the facet route, and is
+  computed over the selected variables only – so dropping a variable
+  rescales the figure. Only the x scale varies between panels; four
+  partial dependence curves on four different y ranges would not
+  compare.
+
+- points:
+
+  Logical; add the grid-point values as points. Default `FALSE`.
+
+- smooth:
+
+  Logical; draw a
+  [`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html)
+  loess instead of the line. Default `FALSE`. Note that `parametric` is
+  already partialpro's local-polynomial fit, so smoothing it is a smooth
+  of a smooth; this is here for the raw-looking figure some journals ask
+  for, not as a better estimate.
+
+- palette:
+
+  Character; the effect-type colour or fill scale. Defaults to
+  `"black"`: this package's figures are made for manuscripts, and
+  `linetype` is mapped to the effect type as well, so the three
+  estimators stay legible as solid, dotted and dashed with no colour at
+  all. `"mono"` is a synonym, and `"grey"` / `"gray"` give a flat grey.
+  Any ColorBrewer palette name (e.g. `"Set1"`) routes to the brewer
+  scale instead, which is worth reaching for when you are comparing two
+  or three estimators on screen and colour separates them faster than a
+  dash pattern. `NULL` keeps ggplot2's own scale.
+
+- ncol:
+
+  Integer; columns in the `panels` layout. `NULL` (default) lets
+  patchwork choose.
+
+- point_size, point_alpha:
+
+  Numeric; size and alpha of the points drawn when `points = TRUE`.
+  Defaults `1.1` and `0.55`. Print figures usually want a smaller point
+  than a screen figure.
+
+- linewidth:
+
+  Numeric; width of the line or smooth. Default `0.5`, ggplot2's own.
+
+- complement:
+
+  Logical; plot \\1 - p\\ instead of \\p\\, and prefix the y axis label
+  with `"1 - "`. Use it when the fit targets the class you do *not* want
+  on the axis – a model of weaning failure read as the probability of
+  weaning success, say – so you do not have to recompute
+  [`partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+  against the other target. Requires a probability scale
+  (`scale = "prob"` or `"surv"`); on the additive, multiplicative and
+  unbounded scales \\1 - x\\ has no referent and this is an error rather
+  than a silent no-op. Default `FALSE`.
+
+- ylim:
+
+  Numeric length-2; the shared y range for every panel. `NULL` (default)
+  takes the range of the plotted values, which is what the facet route
+  has always done. Supply it to pin a scale that means something
+  independent of the data – `c(0, 1)` on a probability scale, say, so a
+  flat curve reads as flat rather than filling the panel. It cannot be
+  set from outside: on the `panels` route a
+  [`coord_cartesian()`](https://ggplot2.tidyverse.org/reference/coord_cartesian.html)
+  added with `&` replaces the per-panel coordinate system and takes the
+  per-panel x ranges down with it, and `scale_y_continuous(limits = )`
+  is overridden by that coordinate system.
 
 ## Value
 
@@ -174,5 +311,34 @@ pp <- gg_partial_varpro(mock_data, scale = "logodds")
 plot(pp)
 
 plot(pp, type = "parametric")
+
+
+## The continuous frame alone, so `+` reaches the plot you meant.
+plot(pp, which = "continuous") + ggplot2::labs(title = "Continuous only")
+
+
+## Per-panel scales.  Only 'name' is required; the rest tune one axis each.
+spec <- data.frame(name = "age", xlab = "Age (years)",
+                   xmin = 30, xmax = 80, xby = 10, span = 0.6)
+plot(pp, type = "parametric", panels = spec, points = TRUE, smooth = TRUE)
+#> `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+
+## Colour earns its place when several estimators share a panel: two curves
+## separate faster by hue than by dash pattern.  Any ColorBrewer name works.
+plot(pp, type = c("parametric", "nonparametric"), palette = "Set1")
+
+
+## The default is monochrome, for print.
+plot(pp, type = c("parametric", "nonparametric"))
+
+
+## A patchwork takes `&`, not `+`, to reach every panel.
+plot(pp, type = "parametric", panels = spec) & ggplot2::theme_minimal()
+
+
+## complement = TRUE reads a failure model as its success probability.
+pp_prob <- gg_partial_varpro(mock_data, scale = "prob")
+plot(pp_prob, type = "parametric", complement = TRUE)
 
 ```

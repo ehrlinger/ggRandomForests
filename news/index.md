@@ -2,6 +2,59 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
+  gains `ylim`, pinning the shared y range across panels. It could not
+  be set from outside: on the `panels` route a
+  [`coord_cartesian()`](https://ggplot2.tidyverse.org/reference/coord_cartesian.html)
+  added with `&` replaces the per-panel coordinate system and silently
+  takes the per-panel x ranges with it (0-50 collapsed to the data’s
+  0-46), while `scale_y_continuous(limits = )` is overridden by that
+  same coordinate system. `ylim = c(0, 1)` now pins a probability axis
+  so a flat curve reads as flat instead of filling the panel.
+- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
+  now defaults `palette` to `"black"`. These figures are made for
+  manuscripts, and `linetype` is mapped to the effect type as well, so
+  the three estimators stay legible as solid, dotted and dashed with no
+  colour at all. Pass any ColorBrewer name (`palette = "Set1"`) for the
+  colour scale, which separates two or three overlaid estimators faster
+  on screen. `"mono"` is a synonym for black and `"grey"`/`"gray"` give
+  a flat grey. **This changes rendered output**: five vdiffr baselines
+  were regenerated.
+- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
+  gains `complement`, plotting 1 - p and prefixing the y label with
+  `1 -`. It reads a fit that targets one class as the probability of the
+  other – a weaning-failure model shown as probability of successful
+  weaning – without recomputing `partialpro()` against the other target.
+  Requires a probability scale (`prob` or `surv`); on the additive,
+  multiplicative and unbounded scales 1 - x has no referent, so it
+  errors rather than drawing something unreadable.
+- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
+  now warns, naming them, when arguments reach `...` that it does not
+  use. Its own arguments sit after `...` and match by exact name, so a
+  typo (or an argument from a newer version than the one installed)
+  previously vanished without a word and left the default plot looking
+  like a correct answer.
+- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
+  gains per-panel scale control. `facet_wrap(scales = "free_x")` gives
+  each variable its own x *range* but a single shared x *scale*, so
+  per-panel breaks, limits and axis titles were unreachable and a
+  manuscript figure had to be hand-built one
+  [`ggplot()`](https://ggplot2.tidyverse.org/reference/ggplot.html) per
+  variable. A new `panels` data frame – one row per panel, keyed by
+  `name`, with optional `xlab`, `xmin`, `xmax`, `xby` and `span` columns
+  – switches rendering to patchwork, where the x scale can vary between
+  panels. `panels = NULL` (the default) is unchanged.
+- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
+  gains `which`, to return the continuous or categorical frame alone as
+  a bare `ggplot`. With both frames populated the method returns a
+  patchwork, where `+` reaches only the last panel, so adding a scale or
+  theme silently modified the categorical plot. `which` is the supported
+  way to get one plot to modify.
+- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
+  gains `points`, `smooth`, `palette`, `ncol`, `point_size`,
+  `point_alpha` and `linewidth`. `palette` takes a ColorBrewer name and
+  goes through ggplot2’s brewer scales, so `RColorBrewer` stays in
+  `Suggests`. All default to the previous rendering.
 - The survival vignette’s variable-dependence figure passed
   `time.labels` where
   [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
