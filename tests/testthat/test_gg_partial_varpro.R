@@ -984,3 +984,155 @@ test_that("autoplot.gg_partialpro forwards labels through '...'", {
   strips <- as.character(ggplot2::get_strip_labels(p)$facets$name)
   expect_true("BP Diastole" %in% strips)
 })
+
+## ── plot(): which, panels, marks and palette ─────────────────────────────────
+## Two continuous variables plus the categorical one, so the panels route has
+## something to lay out and `which` has both frames to choose between.
+make_mock_vpro_two_cont <- function(n_obs = 30, n_pts = 15) {
+  set.seed(42)
+  cont <- function() {
+    list(
+      xvirtual    = seq(30, 80, length.out = n_pts),
+      xorg        = sample(seq(30, 80, by = 5), n_obs, replace = TRUE),
+      yhat.par    = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+      yhat.nonpar = matrix(rnorm(n_obs * n_pts), nrow = n_obs),
+      yhat.causal = matrix(rnorm(n_obs * n_pts), nrow = n_obs)
+    )
+  }
+  list(age = cont(), bmi = cont(), sex = list(
+    xvirtual    = c(0, 1),
+    xorg        = sample(c(0, 1), n_obs, replace = TRUE),
+    yhat.par    = matrix(rnorm(n_obs * 2), nrow = n_obs),
+    yhat.nonpar = matrix(rnorm(n_obs * 2), nrow = n_obs),
+    yhat.causal = matrix(rnorm(n_obs * 2), nrow = n_obs)
+  ))
+}
+
+test_that("plot.gg_partial_varpro: panels = NULL is the unchanged facet route", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  p <- plot(pp, which = "continuous")
+  expect_s3_class(p, "ggplot")
+  expect_false(inherits(p, "patchwork"))
+  ## One facet layer, and it is the free_x wrap this method has always drawn.
+  expect_s3_class(p$facet, "FacetWrap")
+  expect_true(p$facet$params$free$x)
+})
+
+test_that("plot.gg_partial_varpro: which returns a bare ggplot per frame", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  ## Default keeps the historical patchwork when both frames are populated.
+  expect_true(inherits(plot(pp), "patchwork"))
+  for (w in c("continuous", "categorical")) {
+    p <- plot(pp, which = w)
+    expect_s3_class(p, "ggplot")
+    expect_false(inherits(p, "patchwork"))
+  }
+})
+
+test_that("plot.gg_partial_varpro: panels lays out one panel per row", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  spec <- data.frame(name = c("age", "bmi"), xlab = c("Age (y)", "BMI"),
+                     xmin = 30, xmax = 80, xby = 10,
+                     stringsAsFactors = FALSE)
+  p <- plot(pp, type = "parametric", panels = spec)
+  expect_true(inherits(p, "patchwork"))
+  expect_equal(length(p$patches$plots) + 1L, nrow(spec))
+})
+
+test_that("plot.gg_partial_varpro: panels selects a subset, in row order", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  spec <- data.frame(name = "bmi", stringsAsFactors = FALSE)
+  p <- plot(pp, type = "parametric", panels = spec)
+  ## A single row yields a one-panel patchwork, not the two-variable facet.
+  expect_true(inherits(p, "patchwork"))
+  expect_equal(length(p$patches$plots) + 1L, 1L)
+})
+
+test_that("plot.gg_partial_varpro: panels names an absent variable → stop", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  expect_error(
+    plot(pp, panels = data.frame(name = "nope", stringsAsFactors = FALSE)),
+    regexp = "nope"
+  )
+})
+
+test_that("plot.gg_partial_varpro: panels needs a data frame with 'name'", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  expect_error(plot(pp, panels = "age"), regexp = "data frame")
+  expect_error(plot(pp, panels = data.frame(v = 1)), regexp = "'name' column")
+  expect_error(plot(pp, panels = data.frame(name = character(0))),
+               regexp = "no rows")
+})
+
+test_that("plot.gg_partial_varpro: panels with only 'name' still renders", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  spec <- data.frame(name = c("age", "bmi"), stringsAsFactors = FALSE)
+  p <- plot(pp, type = "parametric", panels = spec)
+  expect_silent(invisible(ggplot2::ggplot_build(p$patches$plots[[1]])))
+})
+
+test_that("plot.gg_partial_varpro: palette reaches the built colours", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  cols <- function(p) unique(ggplot2::ggplot_build(p)$data[[1]]$colour)
+  default <- cols(plot(pp, which = "continuous", type = "parametric"))
+  brewed  <- cols(plot(pp, which = "continuous", type = "parametric",
+                       palette = "Set1"))
+  expect_false(identical(default, brewed))
+  expect_true("#E41A1C" %in% brewed)   # Set1's first colour
+})
+
+test_that("plot.gg_partial_varpro: points and linewidth reach the layers", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  p <- plot(pp, which = "continuous", type = "parametric",
+            points = TRUE, point_size = 0.6, linewidth = 1.4)
+  geoms <- vapply(p$layers, function(l) class(l$geom)[1], character(1))
+  expect_true("GeomPoint" %in% geoms)
+  expect_true("GeomLine"  %in% geoms)
+  pt <- p$layers[[which(geoms == "GeomPoint")[1]]]
+  ln <- p$layers[[which(geoms == "GeomLine")[1]]]
+  expect_equal(pt$aes_params$size, 0.6)
+  expect_equal(ln$aes_params$linewidth, 1.4)
+})
+
+test_that("plot.gg_partial_varpro: smooth replaces the line, not adds to it", {
+  pp <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                           scale = "logodds"))
+  p <- plot(pp, which = "continuous", type = "parametric", smooth = TRUE)
+  geoms <- vapply(p$layers, function(l) class(l$geom)[1], character(1))
+  expect_true("GeomSmooth" %in% geoms)
+  expect_false("GeomLine" %in% geoms)
+})
+
+test_that("plot.gg_partial_varpro: panels share one y range", {
+  set.seed(42)
+  n <- 30
+  np <- 15
+  cont <- function(m) {
+    list(
+      xvirtual    = seq(30, 80, length.out = np),
+      xorg        = sample(seq(30, 80, by = 5), n, replace = TRUE),
+      yhat.par    = matrix(rnorm(n * np, mean = m), nrow = n),
+      yhat.nonpar = matrix(rnorm(n * np), nrow = n),
+      yhat.causal = matrix(rnorm(n * np), nrow = n)
+    )
+  }
+  ## Deliberately offset so free y would be visibly different.
+  pp <- suppressWarnings(
+    gg_partial_varpro(list(age = cont(0), bmi = cont(3)), scale = "logodds"))
+  p <- plot(pp, type = "parametric",
+            panels = data.frame(name = c("age", "bmi"),
+                                stringsAsFactors = FALSE))
+  yr <- lapply(c(list(p[[1]]), p$patches$plots), function(q) {
+    ggplot2::ggplot_build(q)$layout$panel_params[[1]]$y.range
+  })
+  expect_equal(yr[[1]], yr[[2]])
+})

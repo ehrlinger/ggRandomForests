@@ -234,6 +234,29 @@ local({
     vdiffr::expect_doppelganger("gg-partial-varpro-mortality", plot(result))
   })
 
+  test_that("snapshot: gg-partial-varpro-panels", {
+    mock <- make_mock_vpro_snap()
+    mock$bmi <- mock$age
+    result <- suppressWarnings(gg_partial_varpro(mock, scale = "logodds"))
+    spec <- data.frame(name = c("age", "bmi"),
+                       xlab = c("Age (years)", "BMI"),
+                       xmin = 30, xmax = 80, xby = 10,
+                       stringsAsFactors = FALSE)
+    vdiffr::expect_doppelganger(
+      "gg-partial-varpro-panels",
+      plot(result, type = "parametric", panels = spec, ncol = 2))
+  })
+
+  test_that("snapshot: gg-partial-varpro-points-smooth", {
+    result <- suppressWarnings(gg_partial_varpro(make_mock_vpro_snap(),
+                                                 nvars = 1))
+    vdiffr::expect_doppelganger(
+      "gg-partial-varpro-points-smooth",
+      plot(result, which = "continuous", type = "parametric",
+           points = TRUE, smooth = TRUE, palette = "Set1",
+           point_size = 1.6, linewidth = 1.2))
+  })
+
   ## ---- gg_varpro snapshots ------------------------------------------------
   local({
     set.seed(42L)

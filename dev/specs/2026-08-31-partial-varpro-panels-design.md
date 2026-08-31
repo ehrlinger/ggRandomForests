@@ -244,10 +244,14 @@ already reads `Version: 4.0.0` under an open `v4.0.0 (development)` section, so
 this needs a NEWS bullet and nothing else. The test that greps `NEWS.md` for the
 exact `DESCRIPTION` version stays satisfied.
 
-**Consequence to accept, not hide:** rc3's release-gate evidence describes a tree
-without this change. Landing it makes that evidence stale, so the gate is re-run
-and an rc4 cut before submission. That is the cost of putting a methods extension
-in the methods-extension release, and it is the right trade.
+**rc3 is not moved.** Maintainer decision, 2026-08-31: `v4.0.0-rc3` was pushed
+to `origin` and published as a GitHub pre-release at 16:25:58Z, so it stays
+immutable and this work rolls into the next RC instead. A force-moved tag would
+make `v4.0.0-rc3` name two different trees depending on when a clone last
+fetched, and rc4 costs almost nothing.
+
+The branch therefore merges to `main` on its own schedule, and rc4 picks it up
+with a fresh release gate.
 
 Check-time budget is not at risk: the new render paths add two vdiffr snapshots
 to a file that runs in about 17 seconds, and no forest fit.

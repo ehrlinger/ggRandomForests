@@ -3,6 +3,23 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `plot.gg_partial_varpro()` gains per-panel scale control. `facet_wrap(scales =
+  "free_x")` gives each variable its own x *range* but a single shared x
+  *scale*, so per-panel breaks, limits and axis titles were unreachable and a
+  manuscript figure had to be hand-built one `ggplot()` per variable. A new
+  `panels` data frame -- one row per panel, keyed by `name`, with optional
+  `xlab`, `xmin`, `xmax`, `xby` and `span` columns -- switches rendering to
+  patchwork, where the x scale can vary between panels. `panels = NULL`
+  (the default) is unchanged.
+* `plot.gg_partial_varpro()` gains `which`, to return the continuous or
+  categorical frame alone as a bare `ggplot`. With both frames populated the
+  method returns a patchwork, where `+` reaches only the last panel, so adding
+  a scale or theme silently modified the categorical plot. `which` is the
+  supported way to get one plot to modify.
+* `plot.gg_partial_varpro()` gains `points`, `smooth`, `palette`, `ncol`,
+  `point_size`, `point_alpha` and `linewidth`. `palette` takes a ColorBrewer
+  name and goes through ggplot2's brewer scales, so `RColorBrewer` stays
+  in `Suggests`. All default to the previous rendering.
 * The survival vignette's variable-dependence figure passed `time.labels` where
   `gg_variable()` reads `time_labels`. The dotted name matched nothing and was
   dropped without a warning, so the facet strips rendered as bare "1" and "3"
