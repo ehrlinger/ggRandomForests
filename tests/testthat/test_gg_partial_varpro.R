@@ -1260,3 +1260,67 @@ test_that("plot.gg_partial_varpro: non-numeric scale column → stop", {
   expect_error(plot(pp, type = "parametric", panels = spec),
                regexp = "must be numeric")
 })
+
+## ── scale = "prob_typical": averaging order ─────────────────────────────────
+test_that("gg_partial_varpro: prob_typical is plogis(mean), prob is mean(plogis)", {
+  set.seed(5)
+  n <- 200
+  np <- 12
+  grid <- seq(25, 85, length.out = np)
+  ## Wide per-subject spread, so Jensen has something to bite on.
+  z <- sapply(grid, function(x) rnorm(n, mean = -2 + 0.06 * x, sd = 4.5))
+  md <- list(bpd = list(xvirtual = grid, xorg = runif(n, 25, 85),
+                        yhat.par = z, yhat.nonpar = z,
+                        yhat.causal = matrix(rnorm(n * np), nrow = n)))
+
+  a <- suppressWarnings(gg_partial_varpro(md, scale = "prob"))$continuous
+  b <- suppressWarnings(gg_partial_varpro(md, scale = "prob_typical"))$continuous
+
+  expect_equal(a$parametric, as.numeric(colMeans(stats::plogis(z))))
+  expect_equal(b$parametric, as.numeric(stats::plogis(colMeans(z))))
+
+  ## Jensen: prob is pulled TOWARD 0.5 relative to prob_typical, both ends.
+  hi <- b$parametric > 0.5
+  expect_true(all(a$parametric[hi] < b$parametric[hi]))
+  expect_true(all(a$parametric[!hi] > b$parametric[!hi]))
+
+  ## Both stay in [0, 1].
+  expect_true(all(a$parametric >= 0 & a$parametric <= 1))
+  expect_true(all(b$parametric >= 0 & b$parametric <= 1))
+})
+
+test_that("gg_partial_varpro: prob_typical is bounded, and drops causal", {
+  o <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                          scale = "prob_typical"))
+  expect_true(all(is.na(o$continuous$causal)))
+  expect_equal(attr(o, "provenance")$scale, "prob_typical")
+})
+
+test_that("gg_partial_varpro: the two scales agree on the categorical frame", {
+  ## No averaging happens there, so there is no order to choose.
+  md <- make_mock_vpro_data()
+  a <- suppressWarnings(gg_partial_varpro(md, scale = "prob"))$categorical
+  b <- suppressWarnings(gg_partial_varpro(md, scale = "prob_typical"))$categorical
+  expect_equal(a$parametric, b$parametric)
+})
+
+test_that("plot.gg_partial_varpro: prob_typical labels the axis and takes complement", {
+  o <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                          scale = "prob_typical"))
+  p <- plot(o, which = "continuous", type = "parametric")
+  expect_match(p$labels$y, "typical subject")
+  q <- plot(o, which = "continuous", type = "parametric", complement = TRUE)
+  expect_match(q$labels$y, "^1 - ")
+})
+
+test_that("plot.gg_partial_varpro: complement error names every valid scale", {
+  o <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                          scale = "logodds"))
+  msg <- tryCatch(plot(o, complement = TRUE),
+                  error = function(e) conditionMessage(e))
+  ## The guard accepts three scales; a message listing a subset sends the
+  ## caller to the wrong estimand.
+  for (sc in c("prob", "prob_typical", "surv")) {
+    expect_match(msg, sc, fixed = TRUE)
+  }
+})

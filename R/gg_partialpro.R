@@ -19,7 +19,12 @@
 #' @export
 gg_partialpro <- function(part_dta,
                           object    = NULL,
-                          scale     = c("auto", "prob", "odds", "logodds",
+                          ## Must stay in step with gg_partial_varpro()'s own
+                          ## choices: this default vector is forwarded whole,
+                          ## and match.arg() there errors on any vector that is
+                          ## not exactly that formal's default.
+                          scale     = c("auto", "prob", "prob_typical",
+                                        "odds", "logodds",
                                         "rmst", "surv", "mortality", "chf"),
                           time      = NULL,
                           nvars     = NULL,

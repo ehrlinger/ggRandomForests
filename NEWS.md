@@ -3,6 +3,24 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `gg_partial_varpro()` gains `scale = "prob_typical"`. `partialpro()` returns
+  per-subject log-odds, and collapsing them to a curve takes an average and a
+  back-transform; the ORDER is a modelling choice. `"prob"` (unchanged, still
+  the classification default) transforms per observation then averages, giving
+  the mean predicted probability -- the expected proportion of the cohort.
+  `"prob_typical"` averages on the log-odds scale then transforms once, giving
+  the probability for a subject at the mean log-odds.
+
+  They are different estimands and they disagree. The inverse logit is concave
+  above zero and convex below it, so by Jensen `"prob"` is pulled toward 0.5 at
+  both ends, by more the more heterogeneous the cohort. Where the per-subject
+  log-odds carry an SD near 4.5, a point reading 0.96 under `"prob_typical"`
+  reads 0.74 under `"prob"` -- large enough to change how a figure is read, so
+  the choice should be deliberate. A figure captioned as a percentage of
+  patients wants `"prob"`. `?gg_partial_varpro` sets out both.
+
+  The distinction applies only to the `continuous` frame; the `categorical`
+  frame keeps values unaveraged, so both scales return the same numbers there.
 * `plot.gg_partial_varpro()` gains `ylim`, pinning the shared y range across
   panels. It could not be set from outside: on the `panels` route a
   `coord_cartesian()` added with `&` replaces the per-panel coordinate system
