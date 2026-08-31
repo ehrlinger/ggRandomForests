@@ -1039,7 +1039,11 @@ test_that("plot.gg_partial_varpro: panels lays out one panel per row", {
                      stringsAsFactors = FALSE)
   p <- plot(pp, type = "parametric", panels = spec)
   expect_true(inherits(p, "patchwork"))
-  expect_equal(length(p$patches$plots) + 1L, nrow(spec))
+  expect_equal(length(p), nrow(spec))
+  ## Titles come from the spec, in row order.
+  expect_equal(vapply(seq_len(length(p)), function(i) p[[i]]$labels$x,
+                      character(1)),
+               spec$xlab)
 })
 
 test_that("plot.gg_partial_varpro: panels selects a subset, in row order", {
@@ -1049,7 +1053,8 @@ test_that("plot.gg_partial_varpro: panels selects a subset, in row order", {
   p <- plot(pp, type = "parametric", panels = spec)
   ## A single row yields a one-panel patchwork, not the two-variable facet.
   expect_true(inherits(p, "patchwork"))
-  expect_equal(length(p$patches$plots) + 1L, 1L)
+  expect_equal(length(p), 1L)
+  expect_equal(p[[1]]$labels$x, "bmi")
 })
 
 test_that("plot.gg_partial_varpro: panels names an absent variable → stop", {
@@ -1075,7 +1080,7 @@ test_that("plot.gg_partial_varpro: panels with only 'name' still renders", {
                                            scale = "logodds"))
   spec <- data.frame(name = c("age", "bmi"), stringsAsFactors = FALSE)
   p <- plot(pp, type = "parametric", panels = spec)
-  expect_silent(invisible(ggplot2::ggplot_build(p$patches$plots[[1]])))
+  expect_silent(invisible(ggplot2::ggplot_build(p[[1]])))
 })
 
 test_that("plot.gg_partial_varpro: palette reaches the built colours", {
@@ -1131,8 +1136,14 @@ test_that("plot.gg_partial_varpro: panels share one y range", {
   p <- plot(pp, type = "parametric",
             panels = data.frame(name = c("age", "bmi"),
                                 stringsAsFactors = FALSE))
-  yr <- lapply(c(list(p[[1]]), p$patches$plots), function(q) {
-    ggplot2::ggplot_build(q)$layout$panel_params[[1]]$y.range
+  ## p[[i]] is the per-panel accessor: $patches$plots holds only the first
+  ## n-1 plots, so comparing p[[1]] against $patches$plots[[1]] compares a
+  ## plot with itself and passes even when y is free.
+  yr <- lapply(seq_len(length(p)), function(i) {
+    ggplot2::ggplot_build(p[[i]])$layout$panel_params[[1]]$y.range
   })
+  expect_length(yr, 2L)
   expect_equal(yr[[1]], yr[[2]])
+  ## And the shared range must span BOTH panels' data, not just one.
+  expect_gt(diff(yr[[1]]), 3)
 })
