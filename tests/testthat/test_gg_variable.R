@@ -832,3 +832,113 @@ test_that("plot.gg_variable regression y label is untouched by the units change"
   gg_plt <- plot(gg_dta, xvar = "Temp")
   expect_false(grepl("Survival at", gg_plt$labels$y, fixed = TRUE))
 })
+
+## ---- retired time / time_labels formals (issue #251) -----------------------
+
+test_that("plot.gg_variable warns and redirects when given the retired time arg", {
+  skip_on_cran()
+  set.seed(42)
+  data(veteran, package = "randomForestSRC")
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                               ntree = 50, nsplit = 5)
+  gg_dta <- gg_variable(rf, time = 90)
+
+  expect_warning(plot(gg_dta, xvar = "age", time = 1191),
+                 "gg_variable\\(rf, time =")
+  expect_warning(plot(gg_dta, xvar = "age", time_labels = "x"),
+                 "gg_variable\\(rf, time_labels =")
+})
+
+test_that("plot.gg_variable still returns a usable plot after the warning", {
+  skip_on_cran()
+  set.seed(42)
+  data(veteran, package = "randomForestSRC")
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                               ntree = 50, nsplit = 5)
+  gg_dta <- gg_variable(rf, time = 90)
+
+  # The warning corrects; it must not abort. The plot is still right for the
+  # horizon the object actually holds.
+  p <- suppressWarnings(plot(gg_dta, xvar = "age", time = 1191))
+  expect_s3_class(p, "ggplot")
+})
+
+test_that("plot.gg_variable warns about neither on a normal call", {
+  skip_on_cran()
+  set.seed(20260817L)
+  rf <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+  gg_dta <- gg_variable(rf)
+
+  expect_warning(suppressMessages(ggplot2::ggplot_build(
+    plot(gg_dta, xvar = "wt"))), regexp = NA)
+})
+
+test_that("plot.gg_variable still forwards other ... arguments to the geoms", {
+  skip_on_cran()
+  set.seed(20260817L)
+  rf <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50)
+  gg_dta <- gg_variable(rf)
+
+  # Inspecting ... must not consume it: this method relays ... to ggplot2.
+  p <- plot(gg_dta, xvar = "wt", alpha = 0.3)
+  alphas <- vapply(p$layers, function(l) {
+    a <- l$aes_params$alpha
+    if (is.null(a)) NA_real_ else as.numeric(a)
+  }, numeric(1))
+  expect_true(any(!is.na(alphas) & alphas == 0.3))
+})
+
+test_that("plot.gg_variable: 'time' does not partial-match 'time_units'", {
+  skip_on_cran()
+  set.seed(42)
+  data(veteran, package = "randomForestSRC")
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                               ntree = 50, nsplit = 5)
+  gg_dta <- gg_variable(rf, time = 90)
+
+  # Regression test. With time_units declared BEFORE ..., R matched the retired
+  # 'time' as a prefix of 'time_units', so the call died on time_units' type
+  # check instead of reaching the guard. time_units now sits after ..., where
+  # matching is exact.
+  w <- tryCatch(plot(gg_dta, xvar = "age", time = 1191),
+                warning = function(w) conditionMessage(w))
+  expect_match(w, "selects a horizon at extraction")
+  expect_false(grepl("single non-empty character string", w))
+})
+
+test_that("plot.gg_variable does not warn 'ignored' on the rfsrc path, where time IS used", {
+  skip_on_cran()
+  set.seed(42)
+  data(veteran, package = "randomForestSRC")
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                               ntree = 50, nsplit = 5)
+
+  # plot.gg_variable() also accepts a raw rfsrc and forwards ... to
+  # gg_variable(), where 'time' is a real, working parameter. The retired-arg
+  # guard must not fire there: it would report as dead the one path that
+  # honours the argument. Found in review of #260.
+  msgs <- character(0)
+  p <- withCallingHandlers(
+    plot.gg_variable(rf, xvar = "age", time = 90),
+    warning = function(w) {
+      msgs <<- c(msgs, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_false(any(grepl("selects a horizon at extraction", msgs)))
+  expect_true(inherits(p, "ggplot") || inherits(p, "patchwork"))
+})
+
+test_that("plot.gg_variable still warns on an already-extracted object", {
+  skip_on_cran()
+  set.seed(42)
+  data(veteran, package = "randomForestSRC")
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ ., data = veteran,
+                               ntree = 50, nsplit = 5)
+  gg_dta <- gg_variable(rf, time = 90)
+
+  # The complement of the test above: once extracted, the horizon is baked in
+  # and the argument really is dead, so the guard must still fire.
+  expect_warning(plot(gg_dta, xvar = "age", time = 1191),
+                 "selects a horizon at extraction")
+})

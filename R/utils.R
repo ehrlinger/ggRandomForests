@@ -228,7 +228,7 @@ shift <- function(x, shift_by = 1) {
 # cannot derive the unit and must not assert one.  The default prints no unit,
 # which is always correct; a caller who knows the unit supplies it.
 #' @keywords internal
-.check_time_units <- function(time_units) {
+.check_time_units <- function(time_units, time_values = NULL) {
   if (is.null(time_units)) {
     return(NULL)
   }
@@ -237,7 +237,68 @@ shift <- function(x, shift_by = 1) {
     stop("'time_units' must be NULL or a single non-empty character string.",
          call. = FALSE)
   }
+  .warn_implausible_time_units(time_units, time_values)
   time_units
+}
+
+## One-directional plausibility check on a SUPPLIED unit.  The package cannot
+## derive the unit (randomForestSRC stores none), so this never errors and never
+## guesses: it flags only the case that actually occurred, a day-scale horizon
+## labelled in years, which renders "Survival at 1191 years" and is wrong by a
+## factor of 365.
+##
+## Deliberately not checked in reverse.  Small values with "days" is ordinary
+## (a five-day ICU study), so there is no signal there and a check would be noise.
+##
+## The check is opportunistic: 'time_values' is absent for regression and
+## classification, because plot.gg_variable() resolves units before it branches
+## on family.  A missing, empty or non-numeric column simply skips the check.
+#' @keywords internal
+.warn_implausible_time_units <- function(time_units, time_values) {
+  if (is.null(time_values) || !length(time_values)) {
+    return(invisible(NULL))
+  }
+  if (!grepl("^(year|years|yr|yrs)$", time_units, ignore.case = TRUE)) {
+    return(invisible(NULL))
+  }
+  ## gg_dta$time is a FACTOR whose integer codes are not its labels, so compare
+  ## through as.character() or this silently tests the wrong numbers.
+  num <- suppressWarnings(as.numeric(as.character(time_values)))
+  num <- num[is.finite(num)]
+  if (!length(num) || max(num) <= 150) {
+    return(invisible(NULL))
+  }
+  warning("time_units = \"", time_units, "\" against time values up to ",
+          format(max(num)), ". That is implausible for years and usually means ",
+          "the forest was fit on a smaller unit, such as days. The axis title ",
+          "is taken from 'time_units' as supplied and is not derived from the ",
+          "data.", call. = FALSE)
+  invisible(NULL)
+}
+
+## plot.gg_variable() once declared 'time' and 'time_labels' as formals it never
+## read.  They are parameters of gg_variable(), the extractor, which bakes the
+## horizon into gg_dta$time before plot() ever runs.  Removing them alone would
+## let the names fall into ... and trip ggplot2's generic "Ignoring unknown
+## parameters", which points at a geom rather than at the call that works, so
+## catch them here and name the right one.
+##
+## MUST NOT consume anything from ...: plot.gg_variable() forwards ... to ggplot2
+## layers, and swallowing an argument meant to be relayed would reintroduce the
+## defect this replaced.
+#' @keywords internal
+.check_retired_time_args <- function(...) {
+  supplied <- names(list(...))
+  if (is.null(supplied)) {
+    return(invisible(NULL))
+  }
+  hit <- intersect(c("time", "time_labels"), supplied)
+  for (arg in hit) {
+    warning("plot.gg_variable(): '", arg, "' selects a horizon at extraction ",
+            "time, not at plot time, and is ignored here. Use ",
+            "gg_variable(rf, ", arg, " = ...) instead.", call. = FALSE)
+  }
+  invisible(NULL)
 }
 
 # Survival y-axis title: "Survival at 1191" / "Survival at 1191 days".
