@@ -594,10 +594,15 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
   }
   scale <- if (is.null(prov)) "generic" else (prov$scale %||% "generic")
   if (!scale %in% c("prob", "prob_typical", "surv")) {
+    ## Name every scale the guard above accepts.  A message that lists a
+    ## subset sends the caller to the wrong estimand, which on these two is
+    ## not a cosmetic difference.
     stop("plot.gg_partial_varpro: 'complement' needs a probability scale, ",
          "but this object is on the '", scale, "' scale. Re-extract with ",
-         "gg_partial_varpro(scale = \"prob\") for a classification fit, or ",
-         "scale = \"surv\" for a survival fit.", call. = FALSE)
+         "gg_partial_varpro(scale = \"prob\") for the mean predicted ",
+         "probability across subjects, scale = \"prob_typical\" for the ",
+         "probability at the mean log-odds, or scale = \"surv\" for a ",
+         "survival fit.", call. = FALSE)
   }
   invisible(NULL)
 }

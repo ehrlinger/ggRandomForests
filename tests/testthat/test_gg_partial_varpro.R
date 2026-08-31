@@ -1312,3 +1312,15 @@ test_that("plot.gg_partial_varpro: prob_typical labels the axis and takes comple
   q <- plot(o, which = "continuous", type = "parametric", complement = TRUE)
   expect_match(q$labels$y, "^1 - ")
 })
+
+test_that("plot.gg_partial_varpro: complement error names every valid scale", {
+  o <- suppressWarnings(gg_partial_varpro(make_mock_vpro_two_cont(),
+                                          scale = "logodds"))
+  msg <- tryCatch(plot(o, complement = TRUE),
+                  error = function(e) conditionMessage(e))
+  ## The guard accepts three scales; a message listing a subset sends the
+  ## caller to the wrong estimand.
+  for (sc in c("prob", "prob_typical", "surv")) {
+    expect_match(msg, sc, fixed = TRUE)
+  }
+})
