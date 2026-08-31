@@ -80,3 +80,9 @@ Rplots\.pdf$
 (^|/)\.remember$
 (^|/)\.Rhistory$
 (^|/)\.DS_Store$
+
+# vdiffr baselines. They are visual-regression fixtures for local and CI runs,
+# never read on CRAN: R CMD check runs with NOT_CRAN false and test_snapshots.R
+# registers nothing unless VDIFFR_RUN_TESTS is "true", which no check sets. They
+# stay in git; only the built tarball loses them.
+^tests/testthat/_snaps$
