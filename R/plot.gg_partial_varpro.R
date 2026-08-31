@@ -533,6 +533,13 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
   has_tgt <- !is.null(tgt) && !is.na(tgt)
   switch(scale,
     prob      = if (has_tgt) sprintf("P(Y = %s)", tgt) else "Probability",
+    ## Named on the axis, because the difference from "prob" is invisible in
+    ## the curve itself and a reader cannot be expected to infer it.
+    prob_typical = if (has_tgt) {
+      sprintf("P(Y = %s), typical subject", tgt)
+    } else {
+      "Probability, typical subject"
+    },
     odds      = if (has_tgt) sprintf("Odds(Y = %s)", tgt) else "Odds",
     logodds   = if (has_tgt) sprintf("Log-odds(Y = %s)", tgt) else "Log-odds",
     mortality = "Ensemble mortality (expected events)",
@@ -586,7 +593,7 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
     return(invisible(NULL))
   }
   scale <- if (is.null(prov)) "generic" else (prov$scale %||% "generic")
-  if (!scale %in% c("prob", "surv")) {
+  if (!scale %in% c("prob", "prob_typical", "surv")) {
     stop("plot.gg_partial_varpro: 'complement' needs a probability scale, ",
          "but this object is on the '", scale, "' scale. Re-extract with ",
          "gg_partial_varpro(scale = \"prob\") for a classification fit, or ",
