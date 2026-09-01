@@ -13,7 +13,7 @@
     writing-voice.md               sha256:15e75ca9cb97
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:c43a528bedf9
+    r-package-structure.md         sha256:cc35f4c2e152
 -->
 
 # House Style — ggRandomForests
@@ -928,8 +928,75 @@ incremental work, and the minor and major digits reserved for the
 maintainer's own consolidation decisions — never rolled by an agent on its
 own judgment.
 
-A documentation-only retrofit against this house style is a patch bump, with
-the matching `NEWS.md` entry so the version-grep test passes.
+### The bump is not part of the pull request
+
+Bumping on every merge turns the version into a count of branches. The number
+then tells you how the work was divided, not what changed in the package.
+hvtiRtables moved through eight versions in the ten days from 0.9.1 to 1.0.0,
+three of them on 2026-08-05 alone, and its `NEWS.md` for that stretch reads as
+a branch log.
+
+So a pull request lands without touching `Version:`. The bump is a separate,
+deliberate act, at most once a day and only on a day the package changed.
+
+`NEWS.md` carries a standing heading at the top for work that has merged and
+not yet been named:
+
+```markdown
+# <package> (unreleased)
+```
+
+Every pull request adds its entry under that heading, a documentation-only
+change included. That case used to carry a bump of its own, which is the rule
+this replaces. When you want a marker, one commit renames the heading to the
+new version and moves `DESCRIPTION` to match.
+
+### Heading level
+
+Version headings are level one, and so is the unreleased heading. That is not
+only tidiness. pkgdown reads the top heading level present in the file as the
+version level, so a `NEWS.md` opening with a bare `# <package>` title pushes
+its versions to level two, and pkgdown then reports no releases at all.
+hvtiRpropensity published an empty changelog page that way. It went unseen
+because `utils::news()` uses a different parser and read the same file
+correctly the whole time, so nothing local ever failed.
+
+Nine packages already used level one. ggRandomForests writes its level-one
+headings in setext form, with a rule of `=` underneath, which is the same
+level spelled differently and needs no change. hvtiR and hvtiRpropensity were
+at level two and moved. Subsections within a release, `## New features` and
+the like, sit below the version heading as usual.
+
+The two records answer different questions. `NEWS.md` answers what changed,
+and it is best written while the change is fresh, in the branch that made it.
+The version answers which set of changes is worth naming, and only the
+maintainer knows when a set has reached that point. Tying them to one commit
+forces the second question to be answered every time the first one is.
+
+### What this asks of the version checks
+
+Three packages check the version against `NEWS.md` today, and they do not all
+need the same change.
+
+`hvtiRbootstrap` takes the first `# hvtiRbootstrap` heading in `NEWS.md` and
+requires it to equal the `DESCRIPTION` version. An unreleased heading now sits
+above that one and breaks it. Skip headings that carry no version, and compare
+against the first heading that does.
+
+`ggRandomForests` asks only that the `DESCRIPTION` version appear somewhere in
+`NEWS.md`. An unreleased heading above it changes nothing, so that test is
+already correct.
+
+`hvtiR` is the one that conflicts outright. `tools/check_version.py` fails a
+pull request whose version has not moved past the base branch, which is what
+most pull requests now look like. The defect it was built for is real, two
+branches claiming one number after a silent merge, so the rule becomes: the
+version must not go backwards, and when it moves it moves by a legal step. Not
+moving is no longer a failure.
+
+The other nine packages have no such check. Adding one is worth doing, and the
+unreleased heading makes it easier to write than it was, since the test finally
+has something unambiguous to key on.
 
 What has to happen before a version actually ships — the CRAN Cookbook audit,
 `R CMD check --as-cran` with the manual built, the check-time budget, the
