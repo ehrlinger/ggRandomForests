@@ -59,7 +59,7 @@ row per (case, time) pair on the forest's time.interest grid."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Tidy hazard and cumulative-hazard curves from a Random Hazard Forest</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc4/R/gg_rhf.R" class="external-link"><code>R/gg_rhf.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_rhf.R" class="external-link"><code>R/gg_rhf.R</code></a></small>
       <div class="d-none name"><code>gg_rhf.Rd</code></div>
     </div>
 
@@ -100,14 +100,18 @@ is absent (e.g. <code>bootstrap = "none"</code> has no OOB estimate).</p></dd>
     <p>A <code>data.frame</code> of class <code>c("gg_rhf", "data.frame")</code> with columns
 <code>id</code>, <code>time</code>, <code>hazard</code>, <code>chf</code>, <code>source</code>, an integer <code>ntime</code> attribute
 (number of grid points), and a <code>provenance</code> attribute.</p>
-<p>The frame always has <code>ntime</code> rows per case. <code>hazard</code> may be <code>NA</code>: from
-<span class="pkg">randomForestRHF</span> 2.0.0 the pointwise hazard is defined only where a
-grid point falls inside one of the case's supplied <code>(start, stop]</code>
-intervals, and is <code>NA</code> in gaps and after the final stop time. <code>chf</code> is not
-masked. It accumulates the exact interval overlap, so it stays flat across
-those regions. The values are passed through unchanged; use
-<code>na.rm = TRUE</code> when summarising <code>hazard</code>, or see <code><a href="plot.gg_rhf.html">plot.gg_rhf()</a></code>, which
-drops the masked cells before drawing.</p>
+<p>The frame always has <code>ntime</code> rows per case. Both <code>hazard</code> and <code>chf</code> may be
+<code>NA</code>, and they are masked on different rules. From <span class="pkg">randomForestRHF</span>
+2.0.0 the pointwise hazard is defined only where a grid point falls inside
+one of the case's supplied <code>(start, stop]</code> intervals, and is <code>NA</code> in gaps
+and after the final stop time. From 2.0.3 the cumulative hazard is <code>NA</code>
+after each case's final stop, but stays flat through an internal gap
+rather than going missing there. So on a fit whose cases each have a
+single interval the two masks look the same, and with time-dependent
+covariates they do not. Earlier versions carried <code>chf</code> across the whole
+grid. The values are passed through unchanged; use <code>na.rm = TRUE</code> when
+summarising either column, or see <code><a href="plot.gg_rhf.html">plot.gg_rhf()</a></code>, which drops the masked
+cells before drawing.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -115,7 +119,7 @@ drops the masked cells before drawing.</p>
 arXiv:2608.21597. <a href="https://doi.org/10.48550/arXiv.2608.21597" class="external-link">doi:10.48550/arXiv.2608.21597</a>
 .</p>
 <p>Ishwaran H, Kogalur UB (2026). <em>randomForestRHF: Random Hazard
-Forests</em>. R package version 2.0.0.
+Forests</em>. R package version 2.0.3.
 <a href="https://CRAN.R-project.org/package=randomForestRHF" class="external-link">https://CRAN.R-project.org/package=randomForestRHF</a>.</p>
     </div>
     <div class="section level2">

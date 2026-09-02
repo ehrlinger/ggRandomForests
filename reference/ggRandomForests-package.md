@@ -177,7 +177,7 @@ arXiv:2608.21597.
 .
 
 Ishwaran H, Kogalur UB (2026). *randomForestRHF: Random Hazard Forests*.
-R package version 2.0.0.
+R package version 2.0.3.
 <https://CRAN.R-project.org/package=randomForestRHF>
 
 Wickham, H. ggplot2: elegant graphics for data analysis. Springer New

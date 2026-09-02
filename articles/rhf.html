@@ -85,9 +85,9 @@
       <h1>Random Hazard Forests with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-09-01</p>
+      <p class="date">2026-09-02</p>
 
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc4/vignettes/rhf.qmd" class="external-link"><code>vignettes/rhf.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/rhf.qmd" class="external-link"><code>vignettes/rhf.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -336,7 +336,7 @@
 </section><section class="level3"><h3 id="why-do-the-hazard-curves-stop-early">Why do the hazard curves stop early?<a class="anchor" aria-label="anchor" href="#why-do-the-hazard-curves-stop-early"></a>
 </h3>
 <p>Each line ends where that subject’s follow-up ends. This is upstream behavior: from version 2.0.0, <code><a href="https://www.randomforestsrc.org//reference/rhf.html" class="external-link">randomForestRHF::rhf()</a></code> returns a pointwise hazard only where a grid point falls inside one of the subject’s supplied <code>(start, stop]</code> records, and <code>NA</code> everywhere else, both in the gaps between records and after the final stop time. Earlier versions carried an estimate across the whole grid. <code><a href="../reference/gg_rhf.html">gg_rhf()</a></code> passes those <code>NA</code> values through unchanged, and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> drops them before drawing, so a curve covers the range the forest was asked about and no more.</p>
-<p>Cumulative hazard is not masked this way. It accumulates the exact overlap between the working grid and the supplied records, so it stays flat through a gap rather than going missing, and the panel below draws every grid point. If you summarize <code>hazard</code> yourself, remember to pass <code>na.rm = TRUE</code>.</p>
+<p>Cumulative hazard is masked too, but on a different rule, and version 2.0.3 changed it. It accumulates the exact overlap between the working grid and the supplied records, so it stays flat through a gap between two records rather than going missing there. After a subject’s final stop, though, there is no more overlap to accumulate, and from 2.0.3 the value is <code>NA</code> instead of the last level carried forward. So the cumulative-hazard panel below ends each curve where the hazard panel does, and the difference between the two masks only shows up on a fit with time-dependent covariates, where the gaps are real. If you summarize either column yourself, remember to pass <code>na.rm = TRUE</code>.</p>
 </section><section class="level3"><h3 id="cumulative-hazard-adds-the-local-rates">Cumulative hazard adds the local rates<a class="anchor" aria-label="anchor" href="#cumulative-hazard-adds-the-local-rates"></a>
 </h3>
 <p>The same <code>gg_rhf</code> object carries <code>chf</code>. Set the public <code>hazard.only</code> argument to <code>FALSE</code> to draw it:</p>

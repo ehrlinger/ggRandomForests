@@ -173,7 +173,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 gg <- gg_varpro(vp)
 print(gg)
 #> <gg_varpro>  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE
-#>   3 of 4 variables selected (z > 0.79)
+#>   2 of 4 variables selected (z > 0.79)
 plot(gg)
 
 # }

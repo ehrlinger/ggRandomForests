@@ -233,11 +233,16 @@ passes those `NA` values through unchanged, and
 before drawing, so a curve covers the range the forest was asked about
 and no more.
 
-Cumulative hazard is not masked this way. It accumulates the exact
-overlap between the working grid and the supplied records, so it stays
-flat through a gap rather than going missing, and the panel below draws
-every grid point. If you summarize `hazard` yourself, remember to pass
-`na.rm = TRUE`.
+Cumulative hazard is masked too, but on a different rule, and version
+2.0.3 changed it. It accumulates the exact overlap between the working
+grid and the supplied records, so it stays flat through a gap between
+two records rather than going missing there. After a subject’s final
+stop, though, there is no more overlap to accumulate, and from 2.0.3 the
+value is `NA` instead of the last level carried forward. So the
+cumulative-hazard panel below ends each curve where the hazard panel
+does, and the difference between the two masks only shows up on a fit
+with time-dependent covariates, where the gaps are real. If you
+summarize either column yourself, remember to pass `na.rm = TRUE`.
 
 ### Cumulative hazard adds the local rates
 

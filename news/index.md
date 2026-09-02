@@ -158,27 +158,30 @@
   [`gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.md)
   never recalculates tuning.
 
-- Require `randomForestRHF (>= 2.0.0)` in Suggests, and adopt its
+- Require `randomForestRHF (>= 2.0.3)` in Suggests, and adopt its
   revised hazard semantics. From 2.0.0 the pointwise hazard is defined
   only where a grid point falls inside one of the case’s supplied
   `(start, stop]` intervals, and is `NA` in gaps and after the final
-  stop; the cumulative hazard is unaffected, because it accumulates the
-  exact interval overlap and stays flat across those regions.
-  `auct.rhf()` can likewise return an `NA` AUC at the final grid time,
-  where the censoring-weight denominator is undefined once the control
-  set is nearly exhausted.
+  stop. 2.0.0 left the cumulative hazard unmasked; 2.0.3 masks it as
+  well, on its own rule, setting it to `NA` after each case’s final stop
+  while still holding it flat through an internal gap. The two masks
+  therefore coincide on a fit whose cases carry a single interval each,
+  and come apart only with time-dependent covariates. `auct.rhf()` can
+  likewise return an `NA` AUC at the final grid time, where the
+  censoring-weight denominator is undefined once the control set is
+  nearly exhausted.
   [`gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf.md)
-  passes the mask through unchanged, so `hazard` may be `NA` where it
-  previously was not;
+  passes both masks through unchanged, so `hazard` and `chf` may be `NA`
+  where they previously were not;
   [`plot.gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md)
   and
   [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md)
-  drop those cells before drawing, so a hazard curve now ends with its
-  case’s follow-up instead of reporting removed missing values on every
-  plot. 2.0.0 also changes the default hazard aggregation
-  (`adaptive = TRUE`), which shifts fitted values; four RHF vdiffr
-  baselines and the precomputed vignette analysis were regenerated
-  against it. This resolves issue
+  drop those cells before drawing, so a curve now ends with its case’s
+  follow-up instead of reporting removed missing values on every plot.
+  2.0.0 also changes the default hazard aggregation (`adaptive = TRUE`),
+  which shifts fitted values; four RHF vdiffr baselines and the
+  precomputed vignette analysis were regenerated against it. This
+  resolves issue
   [\#229](https://github.com/ehrlinger/ggRandomForests/issues/229),
   where the earlier reading (a small negative hazard, specific to the
   macOS arm64 binary) was wrong on both counts.

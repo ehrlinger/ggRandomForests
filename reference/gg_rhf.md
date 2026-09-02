@@ -37,13 +37,17 @@ A `data.frame` of class `c("gg_rhf", "data.frame")` with columns `id`,
 `time`, `hazard`, `chf`, `source`, an integer `ntime` attribute (number
 of grid points), and a `provenance` attribute.
 
-The frame always has `ntime` rows per case. `hazard` may be `NA`: from
-randomForestRHF 2.0.0 the pointwise hazard is defined only where a grid
-point falls inside one of the case's supplied `(start, stop]` intervals,
-and is `NA` in gaps and after the final stop time. `chf` is not masked.
-It accumulates the exact interval overlap, so it stays flat across those
-regions. The values are passed through unchanged; use `na.rm = TRUE`
-when summarising `hazard`, or see
+The frame always has `ntime` rows per case. Both `hazard` and `chf` may
+be `NA`, and they are masked on different rules. From randomForestRHF
+2.0.0 the pointwise hazard is defined only where a grid point falls
+inside one of the case's supplied `(start, stop]` intervals, and is `NA`
+in gaps and after the final stop time. From 2.0.3 the cumulative hazard
+is `NA` after each case's final stop, but stays flat through an internal
+gap rather than going missing there. So on a fit whose cases each have a
+single interval the two masks look the same, and with time-dependent
+covariates they do not. Earlier versions carried `chf` across the whole
+grid. The values are passed through unchanged; use `na.rm = TRUE` when
+summarising either column, or see
 [`plot.gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md),
 which drops the masked cells before drawing.
 
@@ -55,7 +59,7 @@ arXiv:2608.21597.
 .
 
 Ishwaran H, Kogalur UB (2026). *randomForestRHF: Random Hazard Forests*.
-R package version 2.0.0.
+R package version 2.0.3.
 <https://CRAN.R-project.org/package=randomForestRHF>.
 
 ## See also

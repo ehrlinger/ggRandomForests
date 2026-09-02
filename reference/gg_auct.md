@@ -93,7 +93,7 @@ arXiv:2608.21597.
 .
 
 Ishwaran H, Kogalur UB (2026). *randomForestRHF: Random Hazard Forests*.
-R package version 2.0.0.
+R package version 2.0.3.
 <https://CRAN.R-project.org/package=randomForestRHF>.
 
 ## See also
