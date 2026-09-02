@@ -124,6 +124,16 @@ ggRandomForests v4.0.0 (development)
   resolves issue #229, where the earlier reading (a small negative hazard,
   specific to the macOS arm64 binary) was wrong on both counts, and
   kogalur/randomForestRHF#1, the inverted cumulative/dynamic AUC.
+* `gg_auct()` now errors rather than compute a cumulative/dynamic AUC it knows
+  to be wrong. `DESCRIPTION` asks for `randomForestRHF (>= 2.0.3)`, but R does
+  not enforce a `Suggests` version at run time, so a session still carrying
+  2.0.0 previously got the inverted curve with no warning. The check is
+  deliberately narrow: it applies only to `method = "cumulative"`, since the
+  incident definition never inherited the problem, and only when `gg_auct()`
+  does the computation. A supplied `auct_fit` is taken as given, because an
+  `auct.rhf` object records no version and may have been read from a file
+  built elsewhere. The message names the installed version and points at
+  `method = "incident"` as the alternative.
 * `gg_auct()` gains a `method` argument and now forwards `...` to
   `randomForestRHF::auct.rhf()`. `auct.rhf()` defaults `method` to
   `"cumulative"`, and `gg_auct()` previously passed only `marker`, so the
