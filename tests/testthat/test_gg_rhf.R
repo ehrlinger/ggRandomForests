@@ -18,21 +18,26 @@ test_that("gg_rhf.rhf returns a tidy long frame over time.interest", {
   expect_setequal(unique(gg$time), o$time.interest)
   expect_equal(unique(gg$source), "oob")
   expect_true(all(gg$hazard >= 0, na.rm = TRUE))
-  expect_true(all(is.finite(gg$chf) & gg$chf >= 0))
+  expect_true(all(gg$chf >= 0, na.rm = TRUE))
+  expect_true(all(is.finite(gg$chf[!is.na(gg$chf)])))
 })
 
-test_that("gg_rhf carries the rhf hazard NA mask through unchanged", {
+test_that("gg_rhf carries both rhf NA masks through unchanged", {
   o  <- .rhf_pbc()
   gg <- gg_rhf(o)
   # randomForestRHF >= 2.0.0 defines the pointwise hazard only where the grid
   # point falls inside one of the case's supplied (start, stop] intervals, and
-  # returns NA in gaps and after the final stop. chf is unaffected: it
-  # accumulates the exact interval overlap, so it stays flat across those
-  # regions rather than going NA. gg_rhf is a passthrough, so the mask has to
-  # arrive in the frame unrepaired, undropped and in column-major order.
+  # returns NA in gaps and after the final stop. From 2.0.3 chf is masked too,
+  # but on its own rule: NA after each case's final stop, flat through internal
+  # gaps. The two masks coincide on this fixture, whose cases each carry a
+  # single interval, and would differ on a fit with real time-dependent
+  # covariates. So assert each against its own source matrix rather than
+  # against the other. gg_rhf is a passthrough, so both masks have to arrive in
+  # the frame unrepaired, undropped and in column-major order.
   expect_identical(is.na(gg$hazard), as.vector(is.na(o$hazard.oob)))
+  expect_identical(is.na(gg$chf), as.vector(is.na(o$chf.oob)))
   expect_true(all(is.finite(gg$hazard[!is.na(gg$hazard)])))
-  expect_false(anyNA(gg$chf))
+  expect_true(all(is.finite(gg$chf[!is.na(gg$chf)])))
 })
 
 test_that("gg_rhf source='inbag' selects the inbag matrices", {
