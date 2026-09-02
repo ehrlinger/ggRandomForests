@@ -273,18 +273,58 @@ a different active-record estimate ([Ishwaran and Kogalur
 ## How does discrimination change over time?
 
 Survival AUC needs a definition of a case and a control at each time.
-Different definitions answer different questions, and each uses the
-marker that matches its question. This section covers the
-incident/dynamic definition. The saved AUC calculation is supplied to
+The two definitions below answer different questions, and each uses the
+marker that matches its question. The saved AUC calculations are
+supplied to
 [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md);
-only the extraction and plotting run during this render.
+only the extraction and plotting run during this render. Each call below
+still names its own `method`, which the saved fit already fixes, so that
+dropping `auct_fit` and letting
+[`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
+compute leaves the chunk asking for the same estimand instead of falling
+back to the `"cumulative"` default.
+
+### Cumulative/dynamic AUC uses cumulative hazard
+
+Suppose the question is whether a subject who has experienced the event
+by a horizon ranks above a subject who remains event-free at that
+horizon. This is the cumulative/dynamic target. The corresponding marker
+is cumulative hazard, named `"chf"` in
+[`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
+and `"cumhaz"` in the retained upstream object.
+
+``` r
+
+auct_cumulative <- gg_auct(
+  bundle$fit,
+  marker = "chf",
+  method = "cumulative",
+  auct_fit = bundle$auct_cumulative
+)
+plot(auct_cumulative)
+```
+
+![](rhf_files/figure-html/auct-cumulative-1.png)
+
+The saved curve has a Uno iAUC of 0.737. Its finite AUC values range
+from 0.684 to 0.903 over this fitted time grid. AUC is a ranking
+probability on a 0 to 1 scale, with 0.5 shown as the chance reference.
+The retained calculation did not use a bootstrap, so the plot has no
+confidence ribbon.
+
+This curve needs `randomForestRHF` 2.0.3 or newer, which is why the
+package asks for that version. Before 2.0.3, `auct.rhf()` could put the
+cumulative/dynamic curve below the chance line on data the forest fits
+well. That was upstream rather than in
+[`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md),
+which passes the values through unchanged either way.
 
 ### Incident/dynamic AUC uses hazard
 
-The question here is whether a subject who experiences the event near
-time $`t`$ ranks above a subject in the relevant risk set at $`t`$. This
-is the incident/dynamic target. It uses the local hazard marker, named
-`"haz"` in
+A different question asks whether a subject who experiences the event
+near time $`t`$ ranks above a subject in the relevant risk set at $`t`$.
+This is the incident/dynamic target. It uses the local hazard marker,
+named `"haz"` in
 [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
 and `"hazard"` upstream.
 
@@ -293,6 +333,8 @@ and `"hazard"` upstream.
 auct_incident <- gg_auct(
   bundle$fit,
   marker = "haz",
+  method = "incident",
+  riskset = "subject",
   auct_fit = bundle$auct_incident
 )
 plot(auct_incident)
@@ -300,32 +342,12 @@ plot(auct_incident)
 
 ![](rhf_files/figure-html/auct-incident-1.png)
 
-The saved curve has a Uno iAUC of 0.531. Its finite AUC values range
-from 0.244 to 0.867 over this fitted time grid. AUC is a ranking
-probability on a 0 to 1 scale, with 0.5 shown as the chance reference.
-The retained calculation did not use a bootstrap, so the plot has no
-confidence ribbon.
-
-### Why cumulative/dynamic AUC is not shown here
-
-The companion definition is cumulative/dynamic AUC, which asks whether a
-subject who has experienced the event by a horizon ranks above a subject
-who remains event-free at that horizon. It ranks accumulated risk
-through a horizon rather than local failures within a risk set, so it
-estimates a different target, not a better or worse version of the same
-one. Its matching marker is cumulative hazard.
-
-We have left it out for now. From `randomForestRHF` 2.0.0, the in-sample
-cumulative hazard is held flat once a subject’s supplied records end,
-which `?rhf` documents. That is reasonable for a fitted curve, but it
-means the cumulative hazard at a fixed grid time reflects how long each
-subject was observed as well as how much risk they carried, and the
-cumulative/dynamic comparison puts subjects who have already failed
-against subjects still under follow-up. On this simulated data that is
-enough to push the curve below the chance line. The behavior is upstream
-rather than in
-[`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md),
-we have reported it, and the section will come back once it is settled.
+Here the Uno iAUC is 0.531. The curve is more variable than the
+cumulative/dynamic curve, with finite AUC values from 0.244 to 0.867.
+These values do not show that one marker is a better version of the
+other. Cumulative/dynamic AUC ranks accumulated risk through a horizon,
+while incident/dynamic AUC ranks local failures within a risk set. They
+estimate different targets.
 
 ## Which variables matter, and when?
 
@@ -409,7 +431,7 @@ iauc_tuning <- gg_tune_rhf(bundle$tune_iauc)
 iauc_tuning
 ```
 
-    #> <gg_tune_rhf>  n: 4  |  metric: OOB iAUC  evaluations: 4  |  selected treesize: 6  value: 0.1626
+    #> <gg_tune_rhf>  n: 4  |  metric: OOB iAUC  evaluations: 4  |  selected treesize: 4  value: 0.7119
 
 ``` r
 
@@ -418,7 +440,7 @@ plot(iauc_tuning)
 
 ![](rhf_files/figure-html/tune-iauc-1.png)
 
-The iAUC search evaluated tree sizes 2, 4, 5, 6 and selected size 6,
+The iAUC search evaluated tree sizes 2, 3, 4, 5 and selected size 4,
 where OOB iAUC was largest. An iAUC ribbon is drawn only when finite
 upstream standard errors are present. This saved path has 0 finite
 standard errors, so its plot has no ribbon. Retaining each tuning result
@@ -511,7 +533,7 @@ knitr::kable(
 |:----------------|:--------------|
 | R               | 4.6.1         |
 | ggRandomForests | 4.0.0         |
-| randomForestRHF | 2.0.0         |
+| randomForestRHF | 2.0.3         |
 | ggplot2         | 4.0.3         |
 
 Run `Rscript vignettes/precompute_rhf.R` from the package root to

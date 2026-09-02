@@ -179,21 +179,14 @@
   drop those cells before drawing, so a curve now ends with its case’s
   follow-up instead of reporting removed missing values on every plot.
   2.0.0 also changes the default hazard aggregation (`adaptive = TRUE`),
-  which shifts fitted values; four RHF vdiffr baselines and the
-  precomputed vignette analysis were regenerated against it. This
-  resolves issue
+  which shifts fitted values, and 2.0.3 corrects cumulative/dynamic
+  `auct.rhf()`, which had inverted that curve; the RHF vdiffr baselines
+  and the precomputed vignette analysis were regenerated against 2.0.3.
+  This resolves issue
   [\#229](https://github.com/ehrlinger/ggRandomForests/issues/229),
   where the earlier reading (a small negative hazard, specific to the
-  macOS arm64 binary) was wrong on both counts.
-
-- The RHF vignette drops its cumulative/dynamic AUC section for now and
-  keeps the incident/dynamic one. Holding the in-sample cumulative
-  hazard flat after follow-up makes it track observation length as well
-  as risk, which pushes the cumulative/dynamic curve below the chance
-  line on the vignette’s simulated data. The incident/dynamic definition
-  compares subjects within a risk set and is unaffected. Reported
-  upstream as kogalur/randomForestRHF#1; the section returns once that
-  is settled.
+  macOS arm64 binary) was wrong on both counts, and
+  kogalur/randomForestRHF#1, the inverted cumulative/dynamic AUC.
 
 - [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
   gains a `method` argument and now forwards `...` to
@@ -204,16 +197,14 @@
   could not be reached from
   [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
   at all: the only route was to call `auct.rhf()` directly and hand the
-  result back through `auct_fit`. That matters under randomForestRHF
-  2.0.0, where the cumulative/dynamic curve inherits the flattened
-  cumulative hazard and can drop below the chance line.
+  result back through `auct_fit`.
   [`?gg_auct`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
-  now carries a note naming the upstream behavior and pointing at
-  kogalur/randomForestRHF#1. Forwarding `...` also makes `bootstrap.rep`
-  reachable, so the confidence ribbon no longer requires precomputing
-  the fit. `method` sits after `auct_fit` in the signature, so
-  positional calls are unchanged, and the default behavior is the same
-  as before.
+  now carries a note on choosing between the two definitions, which
+  estimate different targets rather than better and worse versions of
+  one. Forwarding `...` also makes `bootstrap.rep` reachable, so the
+  confidence ribbon no longer requires precomputing the fit. `method`
+  sits after `auct_fit` in the signature, so positional calls are
+  unchanged, and the default behavior is the same as before.
 
 - [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md),
   [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md),

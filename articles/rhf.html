@@ -354,15 +354,38 @@
 <p>There is one wrinkle in these time-dependent curves. <code>randomForestRHF</code> stitches record-specific ensemble estimates as each subject’s active record changes. A new record’s estimated CHF can start below the preceding record’s value, so a stitched case curve may contain a downward step. That step does not mean a negative hazard or that past event pressure disappeared. It marks the upstream model’s transition to a different active-record estimate <span class="citation" data-cites="Ishwaran:RHF:software:2026">(<a href="#ref-Ishwaran:RHF:software:2026" role="doc-biblioref">Ishwaran and Kogalur 2026</a>)</span>.</p>
 </section></section><section class="level2"><h2 id="how-does-discrimination-change-over-time">How does discrimination change over time?<a class="anchor" aria-label="anchor" href="#how-does-discrimination-change-over-time"></a>
 </h2>
-<p>Survival AUC needs a definition of a case and a control at each time. Different definitions answer different questions, and each uses the marker that matches its question. This section covers the incident/dynamic definition. The saved AUC calculation is supplied to <code><a href="../reference/gg_auct.html">gg_auct()</a></code>; only the extraction and plotting run during this render.</p>
-<section class="level3"><h3 id="incidentdynamic-auc-uses-hazard">Incident/dynamic AUC uses hazard<a class="anchor" aria-label="anchor" href="#incidentdynamic-auc-uses-hazard"></a>
+<p>Survival AUC needs a definition of a case and a control at each time. The two definitions below answer different questions, and each uses the marker that matches its question. The saved AUC calculations are supplied to <code><a href="../reference/gg_auct.html">gg_auct()</a></code>; only the extraction and plotting run during this render. Each call below still names its own <code>method</code>, which the saved fit already fixes, so that dropping <code>auct_fit</code> and letting <code><a href="../reference/gg_auct.html">gg_auct()</a></code> compute leaves the chunk asking for the same estimand instead of falling back to the <code>"cumulative"</code> default.</p>
+<section class="level3"><h3 id="cumulativedynamic-auc-uses-cumulative-hazard">Cumulative/dynamic AUC uses cumulative hazard<a class="anchor" aria-label="anchor" href="#cumulativedynamic-auc-uses-cumulative-hazard"></a>
 </h3>
-<p>The question here is whether a subject who experiences the event near time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> ranks above a subject in the relevant risk set at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>. This is the incident/dynamic target. It uses the local hazard marker, named <code>"haz"</code> in <code><a href="../reference/gg_auct.html">gg_auct()</a></code> and <code>"hazard"</code> upstream.</p>
+<p>Suppose the question is whether a subject who has experienced the event by a horizon ranks above a subject who remains event-free at that horizon. This is the cumulative/dynamic target. The corresponding marker is cumulative hazard, named <code>"chf"</code> in <code><a href="../reference/gg_auct.html">gg_auct()</a></code> and <code>"cumhaz"</code> in the retained upstream object.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">auct_cumulative</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_auct.html">gg_auct</a></span><span class="op">(</span></span>
+<span>  <span class="va">bundle</span><span class="op">$</span><span class="va">fit</span>,</span>
+<span>  marker <span class="op">=</span> <span class="st">"chf"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"cumulative"</span>,</span>
+<span>  auct_fit <span class="op">=</span> <span class="va">bundle</span><span class="op">$</span><span class="va">auct_cumulative</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">auct_cumulative</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure><p><img src="rhf_files/figure-html/auct-cumulative-1.png" class="quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The saved curve has a Uno iAUC of 0.737. Its finite AUC values range from 0.684 to 0.903 over this fitted time grid. AUC is a ranking probability on a 0 to 1 scale, with 0.5 shown as the chance reference. The retained calculation did not use a bootstrap, so the plot has no confidence ribbon.</p>
+<p>This curve needs <code>randomForestRHF</code> 2.0.3 or newer, which is why the package asks for that version. Before 2.0.3, <code>auct.rhf()</code> could put the cumulative/dynamic curve below the chance line on data the forest fits well. That was upstream rather than in <code><a href="../reference/gg_auct.html">gg_auct()</a></code>, which passes the values through unchanged either way.</p>
+</section><section class="level3"><h3 id="incidentdynamic-auc-uses-hazard">Incident/dynamic AUC uses hazard<a class="anchor" aria-label="anchor" href="#incidentdynamic-auc-uses-hazard"></a>
+</h3>
+<p>A different question asks whether a subject who experiences the event near time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> ranks above a subject in the relevant risk set at <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>. This is the incident/dynamic target. It uses the local hazard marker, named <code>"haz"</code> in <code><a href="../reference/gg_auct.html">gg_auct()</a></code> and <code>"hazard"</code> upstream.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">auct_incident</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_auct.html">gg_auct</a></span><span class="op">(</span></span>
 <span>  <span class="va">bundle</span><span class="op">$</span><span class="va">fit</span>,</span>
 <span>  marker <span class="op">=</span> <span class="st">"haz"</span>,</span>
+<span>  method <span class="op">=</span> <span class="st">"incident"</span>,</span>
+<span>  riskset <span class="op">=</span> <span class="st">"subject"</span>,</span>
 <span>  auct_fit <span class="op">=</span> <span class="va">bundle</span><span class="op">$</span><span class="va">auct_incident</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">auct_incident</span><span class="op">)</span></span></code></pre></div>
@@ -373,16 +396,12 @@
 </div>
 </div>
 </div>
-<p>The saved curve has a Uno iAUC of 0.531. Its finite AUC values range from 0.244 to 0.867 over this fitted time grid. AUC is a ranking probability on a 0 to 1 scale, with 0.5 shown as the chance reference. The retained calculation did not use a bootstrap, so the plot has no confidence ribbon.</p>
-</section><section class="level3"><h3 id="why-cumulativedynamic-auc-is-not-shown-here">Why cumulative/dynamic AUC is not shown here<a class="anchor" aria-label="anchor" href="#why-cumulativedynamic-auc-is-not-shown-here"></a>
-</h3>
-<p>The companion definition is cumulative/dynamic AUC, which asks whether a subject who has experienced the event by a horizon ranks above a subject who remains event-free at that horizon. It ranks accumulated risk through a horizon rather than local failures within a risk set, so it estimates a different target, not a better or worse version of the same one. Its matching marker is cumulative hazard.</p>
-<p>We have left it out for now. From <code>randomForestRHF</code> 2.0.0, the in-sample cumulative hazard is held flat once a subject’s supplied records end, which <code>?rhf</code> documents. That is reasonable for a fitted curve, but it means the cumulative hazard at a fixed grid time reflects how long each subject was observed as well as how much risk they carried, and the cumulative/dynamic comparison puts subjects who have already failed against subjects still under follow-up. On this simulated data that is enough to push the curve below the chance line. The behavior is upstream rather than in <code><a href="../reference/gg_auct.html">gg_auct()</a></code>, we have reported it, and the section will come back once it is settled.</p>
+<p>Here the Uno iAUC is 0.531. The curve is more variable than the cumulative/dynamic curve, with finite AUC values from 0.244 to 0.867. These values do not show that one marker is a better version of the other. Cumulative/dynamic AUC ranks accumulated risk through a horizon, while incident/dynamic AUC ranks local failures within a risk set. They estimate different targets.</p>
 </section></section><section class="level2"><h2 id="which-variables-matter-and-when">Which variables matter, and when?<a class="anchor" aria-label="anchor" href="#which-variables-matter-and-when"></a>
 </h2>
 <p>The retained <code>importance.rhf</code> object is the starting point here. Its expensive upstream work was performed once: <code>varpro.cache.rhf()</code> collected the rule and near-miss information, then <code>importance.rhf()</code> evaluated five selected time windows. Supplying that result avoids repeating either calculation.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rhf_priority</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_rhf_importance.html">gg_rhf_importance</a></span><span class="op">(</span></span>
 <span>  <span class="va">bundle</span><span class="op">$</span><span class="va">fit</span>,</span>
 <span>  importance_fit <span class="op">=</span> <span class="va">bundle</span><span class="op">$</span><span class="va">importance</span></span>
@@ -404,13 +423,13 @@
 <section class="level3"><h3 id="oob-risk-tuning">OOB risk tuning<a class="anchor" aria-label="anchor" href="#oob-risk-tuning"></a>
 </h3>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">risk_tuning</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_tune_rhf.html">gg_tune_rhf</a></span><span class="op">(</span><span class="va">bundle</span><span class="op">$</span><span class="va">tune_risk</span><span class="op">)</span></span>
 <span><span class="va">risk_tuning</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code><span><span class="co">#&gt; &lt;gg_tune_rhf&gt;  n: 4  |  metric: OOB risk  evaluations: 4  |  selected treesize: 4  value: -0.9771</span></span></code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">risk_tuning</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -423,13 +442,13 @@
 </section><section class="level3"><h3 id="oob-iauc-tuning">OOB iAUC tuning<a class="anchor" aria-label="anchor" href="#oob-iauc-tuning"></a>
 </h3>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">iauc_tuning</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_tune_rhf.html">gg_tune_rhf</a></span><span class="op">(</span><span class="va">bundle</span><span class="op">$</span><span class="va">tune_iauc</span><span class="op">)</span></span>
 <span><span class="va">iauc_tuning</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code><span><span class="co">#&gt; &lt;gg_tune_rhf&gt;  n: 4  |  metric: OOB iAUC  evaluations: 4  |  selected treesize: 6  value: 0.1626</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; &lt;gg_tune_rhf&gt;  n: 4  |  metric: OOB iAUC  evaluations: 4  |  selected treesize: 4  value: 0.7119</span></span></code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">iauc_tuning</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -438,12 +457,12 @@
 </div>
 </div>
 </div>
-<p>The iAUC search evaluated tree sizes 2, 4, 5, 6 and selected size 6, where OOB iAUC was largest. An iAUC ribbon is drawn only when finite upstream standard errors are present. This saved path has 0 finite standard errors, so its plot has no ribbon. Retaining each tuning result preserves the actual candidate path, search order, and selected point without rerunning the fits.</p>
+<p>The iAUC search evaluated tree sizes 2, 3, 4, 5 and selected size 4, where OOB iAUC was largest. An iAUC ribbon is drawn only when finite upstream standard errors are present. This saved path has 0 finite standard errors, so its plot has no ribbon. Retaining each tuning result preserves the actual candidate path, search order, and selected point without rerunning the fits.</p>
 </section></section><section class="level2"><h2 id="what-does-each-extractor-return">What does each extractor return?<a class="anchor" aria-label="anchor" href="#what-does-each-extractor-return"></a>
 </h2>
 <p>All four families keep extraction separate from plotting. The intermediate object is a data frame with an added class, so you can inspect it before calling <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">support</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  extractor <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"gg_rhf()"</span>,</span>
@@ -537,7 +556,7 @@
 </h2>
 <p>The bundle records the public simulation, seed, calculation settings, and package versions used for this render. These are the saved versions:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">version_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  package <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">bundle</span><span class="op">$</span><span class="va">versions</span><span class="op">)</span>,</span>
 <span>  version <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">bundle</span><span class="op">$</span><span class="va">versions</span><span class="op">)</span>,</span>
@@ -564,7 +583,7 @@
 </tr>
 <tr class="odd">
 <td style="text-align: left;">randomForestRHF</td>
-<td style="text-align: left;">2.0.0</td>
+<td style="text-align: left;">2.0.3</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">ggplot2</td>
