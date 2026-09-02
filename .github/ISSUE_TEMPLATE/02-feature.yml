@@ -8,7 +8,7 @@ body:
       value: |
         If you are not sure this belongs in `ggRandomForests` rather than another
         package in the family, file it anyway and say so — moving an issue is
-        easy, and guessing wrong should not stop you asking.
+        easy, and guessing wrong should not stop you from asking.
 
   - type: textarea
     id: problem
