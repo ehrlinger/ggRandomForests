@@ -42,11 +42,33 @@ test_that("plot.gg_rhf drops the NA hazard cells instead of warning", {
   expect_false(anyNA(ld$y))
 })
 
-test_that("plot.gg_rhf hazard.only = FALSE keeps every chf row", {
-  # chf carries no NA mask, so the cumulative-hazard panel must not lose rows
-  # to the hazard-side filter.
-  gg <- gg_rhf(.rhf_pbc())
-  p  <- plot(gg, idx = c(1, 5, 10), hazard.only = FALSE)
-  ld <- ggplot2::layer_data(p)
-  expect_equal(nrow(ld), 3L * attr(gg, "ntime"))
+test_that("plot.gg_rhf hazard.only = FALSE keeps every unmasked chf row", {
+  # From randomForestRHF 2.0.3 chf is NA after each case's final stop, so the
+  # cumulative-hazard panel loses those cells and no others.
+  idx <- c(1, 5, 10)
+  gg  <- gg_rhf(.rhf_pbc())
+  p   <- plot(gg, idx = idx, hazard.only = FALSE)
+  ld  <- ggplot2::layer_data(p)
+  expect_equal(nrow(ld), sum(!is.na(gg$chf[gg$id %in% idx])))
+  expect_false(anyNA(ld$y))
+})
+
+test_that("plot.gg_rhf filters on the column it draws, not on hazard", {
+  # The two masks coincide on the .rhf_pbc() fixture, whose cases each carry a
+  # single interval, so it cannot catch a panel filtered by the wrong column.
+  # With time-dependent covariates they come apart: randomForestRHF 2.0.3 holds
+  # chf flat through an internal gap while the hazard goes NA there. Build that
+  # shape directly rather than fitting a forest to reach it.
+  gg <- data.frame(
+    id     = rep(1L, 4L),
+    time   = c(1, 2, 3, 4),
+    hazard = c(0.1, NA, 0.3, NA),   # NA in an internal gap and after the stop
+    chf    = c(0.1, 0.1, 0.4, NA),  # flat through the gap, NA after the stop
+    source = "oob"
+  )
+  attr(gg, "ntime") <- 4L
+  class(gg) <- c("gg_rhf", "data.frame")
+
+  expect_equal(nrow(ggplot2::layer_data(plot(gg))), 2L)
+  expect_equal(nrow(ggplot2::layer_data(plot(gg, hazard.only = FALSE))), 3L)
 })

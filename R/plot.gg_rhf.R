@@ -8,8 +8,11 @@
 #' \pkg{randomForestRHF} 2.0.0 the hazard is `NA` outside each case's observed
 #' `(start, stop]` path, so a hazard curve simply ends with that case's
 #' follow-up, and a case whose hazard is masked throughout is left out of the
-#' legend rather than shown as an empty one. Cumulative hazard carries no such
-#' mask, so `hazard.only = FALSE` draws every grid point.
+#' legend rather than shown as an empty one. From 2.0.3 the cumulative hazard
+#' is masked too, though on a different rule: it is `NA` after each case's
+#' final stop, and stays flat through an internal gap. So `hazard.only = FALSE`
+#' also ends each curve with that case's follow-up, but it keeps the grid
+#' points a gap would have cost the hazard panel.
 #'
 #' @param x A `gg_rhf` object from [gg_rhf()].
 #' @param idx Integer vector of case ids (matched against the `id` column) to
@@ -61,8 +64,10 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
   # values it reports as removed rows on every hazard plot: the curve is
   # identical either way, it simply ends with the case's follow-up. Filtering
   # before factor() also keeps a case whose hazard is entirely masked out of
-  # the legend instead of leaving it there as an empty level. chf carries no
-  # mask, so this is a no-op when hazard.only = FALSE.
+  # the legend instead of leaving it there as an empty level. Since 2.0.3 chf
+  # is masked as well (NA after each case's final stop, flat through internal
+  # gaps), so this filter applies to both columns; it is not a no-op when
+  # hazard.only = FALSE, and it drops fewer rows there on a fit with gaps.
   dropped <- !is.finite(dta[[yvar]])
   if (all(dropped)) {
     warning("no finite ", yvar, " values remain for the requested idx.",
