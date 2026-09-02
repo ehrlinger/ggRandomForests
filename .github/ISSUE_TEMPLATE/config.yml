@@ -1,0 +1,17 @@
+# ggRandomForests is installed through hvtiR, so installation problems are diagnosed
+# there rather than here. These links move that traffic before it is typed.
+
+blank_issues_enabled: true
+
+contact_links:
+  - name: Installation or update problems
+    url: https://github.com/ehrlinger/hvtiR/issues/new/choose
+    about: >-
+      ggRandomForests failed to install or update, or you are not sure it installed at
+      all. hvtiR is the installer for the family, and its form asks for the
+      diagnostics that case needs.
+  - name: Not sure which package this belongs to?
+    url: https://github.com/ehrlinger/hvtiR
+    about: >-
+      hvtiR lists the family and what each package is for. File it where it
+      looks closest — an issue in the wrong place is easy to move.

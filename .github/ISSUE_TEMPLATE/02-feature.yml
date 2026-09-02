@@ -1,0 +1,40 @@
+name: Feature request
+description: Suggest a change or addition to ggRandomForests
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If you are not sure this belongs in `ggRandomForests` rather than another
+        package in the family, file it anyway and say so — moving an issue is
+        easy, and guessing wrong should not stop you from asking.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: >-
+        What you were trying to do, and where the current package made it hard.
+        Describing the problem rather than the solution usually leads to a
+        better answer than the one either of us had in mind.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: What do you have in mind?
+      description: Optional. A sketch of the interface, or example code that does not exist yet.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What did you do instead?
+      description: >-
+        Optional, and genuinely useful — a workaround shows what the shape of
+        the real solution needs to be.
+    validations:
+      required: false
