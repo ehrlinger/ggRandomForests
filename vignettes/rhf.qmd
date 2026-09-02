@@ -326,7 +326,10 @@ model's transition to a different active-record estimate
 Survival AUC needs a definition of a case and a control at each time. The two
 definitions below answer different questions, and each uses the marker that
 matches its question. The saved AUC calculations are supplied to `gg_auct()`;
-only the extraction and plotting run during this render.
+only the extraction and plotting run during this render. Each call below still
+names its own `method`, which the saved fit already fixes, so that dropping
+`auct_fit` and letting `gg_auct()` compute leaves the chunk asking for the same
+estimand instead of falling back to the `"cumulative"` default.
 
 ### Cumulative/dynamic AUC uses cumulative hazard
 
@@ -339,6 +342,7 @@ named `"chf"` in `gg_auct()` and `"cumhaz"` in the retained upstream object.
 auct_cumulative <- gg_auct(
   bundle$fit,
   marker = "chf",
+  method = "cumulative",
   auct_fit = bundle$auct_cumulative
 )
 plot(auct_cumulative)
@@ -369,6 +373,8 @@ incident/dynamic target. It uses the local hazard marker, named `"haz"` in
 auct_incident <- gg_auct(
   bundle$fit,
   marker = "haz",
+  method = "incident",
+  riskset = "subject",
   auct_fit = bundle$auct_incident
 )
 plot(auct_incident)

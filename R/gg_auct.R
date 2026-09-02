@@ -47,9 +47,13 @@
 #'
 #' Cumulative/dynamic AUC was unreliable under \pkg{randomForestRHF} 2.0.0,
 #' which could push the curve below the 0.5 chance line on data the forest
-#' fits well. That was an upstream problem, fixed in 2.0.3, and this package
-#' requires that version. `gg_auct()` passes the values through unchanged in
-#' every case.
+#' fits well. That was an upstream problem, fixed in 2.0.3. `DESCRIPTION` asks
+#' for 2.0.3 in `Suggests`, but R does not enforce a `Suggests` version at run
+#' time, and `gg_auct()` checks only that the package is installed. A session
+#' that still has 2.0.0 will return the old inverted curve with no warning, so
+#' check `packageVersion("randomForestRHF")` before trusting a
+#' cumulative/dynamic result. `gg_auct()` passes the values through unchanged
+#' in every case.
 #'
 #' @seealso [plot.gg_auct()], [randomForestRHF::auct.rhf()]
 #'

@@ -60,9 +60,13 @@ rather than as a check on each other.
 
 Cumulative/dynamic AUC was unreliable under \pkg{randomForestRHF} 2.0.0,
 which could push the curve below the 0.5 chance line on data the forest
-fits well. That was an upstream problem, fixed in 2.0.3, and this package
-requires that version. \code{gg_auct()} passes the values through unchanged in
-every case.
+fits well. That was an upstream problem, fixed in 2.0.3. \code{DESCRIPTION} asks
+for 2.0.3 in \code{Suggests}, but R does not enforce a \code{Suggests} version at run
+time, and \code{gg_auct()} checks only that the package is installed. A session
+that still has 2.0.0 will return the old inverted curve with no warning, so
+check \code{packageVersion("randomForestRHF")} before trusting a
+cumulative/dynamic result. \code{gg_auct()} passes the values through unchanged
+in every case.
 }
 \examples{
 \donttest{
