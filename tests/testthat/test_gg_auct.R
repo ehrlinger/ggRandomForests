@@ -76,3 +76,58 @@ test_that("gg_auct ignores method and ... when auct_fit is supplied", {
   gg <- gg_auct(o, marker = "chf", method = "incident", auct_fit = fit)
   expect_equal(attr(gg, "iauc")$uno, fit$iAUC.uno)
 })
+
+test_that("the cumulative/dynamic version guard gates only what it should", {
+  # randomForestRHF < 2.0.3 returns an inverted cumulative/dynamic AUC, and a
+  # Suggests version is not enforced at run time, so gg_auct() checks it. The
+  # guard takes the version as an argument precisely so this can be exercised
+  # without a downgraded install.
+  guard <- ggRandomForests:::.stop_if_auct_cumulative_unsupported
+
+  # Gated: the affected definition on an affected version.
+  for (v in c("1.0.1", "2.0.0", "2.0.2")) {
+    expect_error(
+      guard("cumulative", package_version(v)),
+      "needs randomForestRHF >= 2.0.3"
+    )
+  }
+
+  # Not gated: fixed versions, including a later one.
+  for (v in c("2.0.3", "2.1.0", "3.0.0")) {
+    expect_silent(guard("cumulative", package_version(v)))
+    expect_null(guard("cumulative", package_version(v)))
+  }
+
+  # Not gated: the incident definition never inherited the problem, so gating
+  # it would break working code.
+  for (v in c("2.0.0", "2.0.3")) {
+    expect_silent(guard("incident", package_version(v)))
+  }
+})
+
+test_that("the version guard names the installed version and a way out", {
+  guard <- ggRandomForests:::.stop_if_auct_cumulative_unsupported
+  msg <- tryCatch(
+    guard("cumulative", package_version("2.0.0")),
+    error = function(e) conditionMessage(e)
+  )
+  expect_match(msg, "2.0.0", fixed = TRUE)
+  expect_match(msg, "method = \"incident\"", fixed = TRUE)
+})
+
+test_that("gg_auct.rhf still calls the version guard on the compute path", {
+  # The guard's logic is tested directly above, which would keep passing if the
+  # call site were dropped in a refactor. Pin that it is still wired in, and
+  # still inside the branch that computes rather than the one that accepts a
+  # supplied auct_fit.
+  txt <- paste(
+    deparse(body(ggRandomForests:::gg_auct.rhf)), collapse = "\n"
+  )
+  expect_match(txt, ".stop_if_auct_cumulative_unsupported", fixed = TRUE)
+  compute_branch <- sub(
+    ".*is\\.null\\(auct_fit\\)", "", sub("inherits\\(auct_fit.*", "", txt)
+  )
+  expect_match(
+    compute_branch, ".stop_if_auct_cumulative_unsupported", fixed = TRUE
+  )
+})
