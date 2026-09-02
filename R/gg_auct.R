@@ -16,7 +16,7 @@
 #' @param method Which time-dependent AUC definition to compute, passed to
 #'   [randomForestRHF::auct.rhf()]. `"cumulative"` (default) ranks accumulated
 #'   risk through a horizon; `"incident"` ranks local failures within the risk
-#'   set at each time. See the note below before relying on the default. Not
+#'   set at each time. See the note below on choosing between them. Not
 #'   used when `auct_fit` is supplied, though the value is still validated.
 #' @param ... Further arguments passed to [randomForestRHF::auct.rhf()], for
 #'   example `bootstrap.rep` to request confidence bounds, or `riskset` for the
@@ -37,22 +37,23 @@
 #' \url{https://CRAN.R-project.org/package=randomForestRHF}.
 #'
 #' @note
-#' Cumulative/dynamic AUC is unreliable under \pkg{randomForestRHF} 2.0.0, so
-#' treat the `method = "cumulative"` default with care. That release holds the
-#' in-sample cumulative hazard flat once a subject's supplied records end,
-#' which `?randomForestRHF::rhf` documents. At a fixed grid point the marker
-#' then reflects how long a subject was observed as well as how much risk they
-#' carried, and the cumulative/dynamic definition compares subjects who have
-#' already failed against subjects still under follow-up. The curve can fall
-#' below the 0.5 chance line on data the forest fits well.
+#' The two definitions answer different questions rather than better and worse
+#' versions of the same one. Cumulative/dynamic AUC ranks accumulated risk
+#' through a horizon, comparing subjects who have failed by that horizon
+#' against subjects still event-free at it. Incident/dynamic AUC ranks local
+#' failures within the risk set at each time. Pick the one that matches the
+#' question you are asking, and read the two curves as separate estimands
+#' rather than as a check on each other.
 #'
-#' The incident/dynamic definition does not inherit this, because it compares
-#' subjects within a risk set at each time, before any of them has left
-#' follow-up. It answers a different question rather than a better version of
-#' the same one, so reach for `method = "incident"` where that question is the
-#' one you are asking. The behavior is upstream, reported at
-#' \url{https://github.com/kogalur/randomForestRHF/issues/1}; `gg_auct()`
-#' passes the values through unchanged in every case.
+#' Cumulative/dynamic AUC was unreliable under \pkg{randomForestRHF} 2.0.0,
+#' which could push the curve below the 0.5 chance line on data the forest
+#' fits well. That was an upstream problem, fixed in 2.0.3. `DESCRIPTION` asks
+#' for 2.0.3 in `Suggests`, but R does not enforce a `Suggests` version at run
+#' time, and `gg_auct()` checks only that the package is installed. A session
+#' that still has 2.0.0 will return the old inverted curve with no warning, so
+#' check `packageVersion("randomForestRHF")` before trusting a
+#' cumulative/dynamic result. `gg_auct()` passes the values through unchanged
+#' in every case.
 #'
 #' @seealso [plot.gg_auct()], [randomForestRHF::auct.rhf()]
 #'
