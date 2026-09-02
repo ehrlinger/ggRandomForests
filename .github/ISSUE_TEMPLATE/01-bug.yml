@@ -1,0 +1,75 @@
+name: Bug report
+description: ggRandomForests returned a wrong answer, errored, or behaved unexpectedly
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **If the problem is installing or updating**, report it at
+        [ehrlinger/hvtiR](https://github.com/ehrlinger/hvtiR/issues/new/choose)
+        instead. `hvtiR` is the installer for this family, and that is where an
+        install failure can actually be diagnosed.
+
+        This form is for `ggRandomForests` doing the wrong thing once it is installed.
+
+  - type: input
+    id: fn
+    attributes:
+      label: Which function?
+      placeholder: ggRandomForests::some_function()
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What you ran, and what you got
+      description: >-
+        The smallest example that shows the problem, as pasted text rather than
+        a screenshot. Include the error or the wrong output in full.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: dropdown
+    id: origin
+    attributes:
+      label: How was ggRandomForests installed?
+      description: >-
+        This matters more than it looks. Family versions land on GitHub first,
+        so a package installed from CRAN can be behind the one the bug was
+        fixed in — and a plain `update.packages()` can silently move a package
+        back to its CRAN version.
+      options:
+        - hvtiR::install() or hvtiR::update()
+        - pak or remotes, directly from GitHub
+        - CRAN
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: sessioninfo
+    attributes:
+      label: Output of sessionInfo()
+      description: >-
+        Or `hvtiR::status()` if you have it, which also shows how each family
+        package compares with its source.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+    validations:
+      required: false
