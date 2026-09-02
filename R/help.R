@@ -148,7 +148,7 @@
 #' arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
 #'
 #' Ishwaran H, Kogalur UB (2026). \emph{randomForestRHF: Random Hazard
-#' Forests}. R package version 2.0.0.
+#' Forests}. R package version 2.0.3.
 #' \url{https://CRAN.R-project.org/package=randomForestRHF}
 #'
 #' Wickham, H. ggplot2: elegant graphics for data analysis. Springer New York,

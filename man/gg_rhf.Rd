@@ -23,14 +23,18 @@ A \code{data.frame} of class \code{c("gg_rhf", "data.frame")} with columns
 \code{id}, \code{time}, \code{hazard}, \code{chf}, \code{source}, an integer \code{ntime} attribute
 (number of grid points), and a \code{provenance} attribute.
 
-The frame always has \code{ntime} rows per case. \code{hazard} may be \code{NA}: from
-\pkg{randomForestRHF} 2.0.0 the pointwise hazard is defined only where a
-grid point falls inside one of the case's supplied \verb{(start, stop]}
-intervals, and is \code{NA} in gaps and after the final stop time. \code{chf} is not
-masked. It accumulates the exact interval overlap, so it stays flat across
-those regions. The values are passed through unchanged; use
-\code{na.rm = TRUE} when summarising \code{hazard}, or see \code{\link[=plot.gg_rhf]{plot.gg_rhf()}}, which
-drops the masked cells before drawing.
+The frame always has \code{ntime} rows per case. Both \code{hazard} and \code{chf} may be
+\code{NA}, and they are masked on different rules. From \pkg{randomForestRHF}
+2.0.0 the pointwise hazard is defined only where a grid point falls inside
+one of the case's supplied \verb{(start, stop]} intervals, and is \code{NA} in gaps
+and after the final stop time. From 2.0.3 the cumulative hazard is \code{NA}
+after each case's final stop, but stays flat through an internal gap
+rather than going missing there. So on a fit whose cases each have a
+single interval the two masks look the same, and with time-dependent
+covariates they do not. Earlier versions carried \code{chf} across the whole
+grid. The values are passed through unchanged; use \code{na.rm = TRUE} when
+summarising either column, or see \code{\link[=plot.gg_rhf]{plot.gg_rhf()}}, which drops the masked
+cells before drawing.
 }
 \description{
 Extracts case-specific ensemble hazard and cumulative-hazard estimates from
@@ -55,7 +59,7 @@ Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.
 arXiv:2608.21597. \doi{10.48550/arXiv.2608.21597}.
 
 Ishwaran H, Kogalur UB (2026). \emph{randomForestRHF: Random Hazard
-Forests}. R package version 2.0.0.
+Forests}. R package version 2.0.3.
 \url{https://CRAN.R-project.org/package=randomForestRHF}.
 }
 \seealso{
