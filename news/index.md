@@ -189,6 +189,20 @@
   kogalur/randomForestRHF#1, the inverted cumulative/dynamic AUC.
 
 - [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
+  now errors rather than compute a cumulative/dynamic AUC it knows to be
+  wrong. `DESCRIPTION` asks for `randomForestRHF (>= 2.0.3)`, but R does
+  not enforce a `Suggests` version at run time, so a session still
+  carrying 2.0.0 previously got the inverted curve with no warning. The
+  check is deliberately narrow: it applies only to
+  `method = "cumulative"`, since the incident definition never inherited
+  the problem, and only when
+  [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
+  does the computation. A supplied `auct_fit` is taken as given, because
+  an `auct.rhf` object records no version and may have been read from a
+  file built elsewhere. The message names the installed version and
+  points at `method = "incident"` as the alternative.
+
+- [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
   gains a `method` argument and now forwards `...` to
   [`randomForestRHF::auct.rhf()`](https://www.randomforestsrc.org//reference/auct.rhf.html).
   `auct.rhf()` defaults `method` to `"cumulative"`, and

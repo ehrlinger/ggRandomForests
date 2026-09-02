@@ -76,13 +76,14 @@ estimands rather than as a check on each other.
 
 Cumulative/dynamic AUC was unreliable under randomForestRHF 2.0.0, which
 could push the curve below the 0.5 chance line on data the forest fits
-well. That was an upstream problem, fixed in 2.0.3. `DESCRIPTION` asks
-for 2.0.3 in `Suggests`, but R does not enforce a `Suggests` version at
-run time, and `gg_auct()` checks only that the package is installed. A
-session that still has 2.0.0 will return the old inverted curve with no
-warning, so check `packageVersion("randomForestRHF")` before trusting a
-cumulative/dynamic result. `gg_auct()` passes the values through
-unchanged in every case.
+well. That was an upstream problem, fixed in 2.0.3. R does not enforce a
+`Suggests` version at run time, so `gg_auct()` checks the installed
+version itself and errors rather than compute a cumulative/dynamic curve
+it knows to be wrong. The check applies only when `gg_auct()` does the
+computation: `method = "incident"` is unaffected by the upstream problem
+and is never gated, and a supplied `auct_fit` is taken as given, since
+an `auct.rhf` object records no version and may have been read from a
+file. `gg_auct()` passes the values through unchanged in every case.
 
 ## References
 

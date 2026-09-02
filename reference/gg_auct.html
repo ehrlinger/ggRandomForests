@@ -139,13 +139,14 @@ question you are asking, and read the two curves as separate estimands
 rather than as a check on each other.</p>
 <p>Cumulative/dynamic AUC was unreliable under <span class="pkg">randomForestRHF</span> 2.0.0,
 which could push the curve below the 0.5 chance line on data the forest
-fits well. That was an upstream problem, fixed in 2.0.3. <code>DESCRIPTION</code> asks
-for 2.0.3 in <code>Suggests</code>, but R does not enforce a <code>Suggests</code> version at run
-time, and <code>gg_auct()</code> checks only that the package is installed. A session
-that still has 2.0.0 will return the old inverted curve with no warning, so
-check <code>packageVersion("randomForestRHF")</code> before trusting a
-cumulative/dynamic result. <code>gg_auct()</code> passes the values through unchanged
-in every case.</p>
+fits well. That was an upstream problem, fixed in 2.0.3. R does not enforce
+a <code>Suggests</code> version at run time, so <code>gg_auct()</code> checks the installed
+version itself and errors rather than compute a cumulative/dynamic curve it
+knows to be wrong. The check applies only when <code>gg_auct()</code> does the
+computation: <code>method = "incident"</code> is unaffected by the upstream problem and
+is never gated, and a supplied <code>auct_fit</code> is taken as given, since an
+<code>auct.rhf</code> object records no version and may have been read from a file.
+<code>gg_auct()</code> passes the values through unchanged in every case.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
