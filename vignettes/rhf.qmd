@@ -323,16 +323,45 @@ model's transition to a different active-record estimate
 
 ## How does discrimination change over time?
 
-Survival AUC needs a definition of a case and a control at each time.
-Different definitions answer different questions, and each uses the marker
-that matches its question. This section covers the incident/dynamic
-definition. The saved AUC calculation is supplied to `gg_auct()`; only the
-extraction and plotting run during this render.
+Survival AUC needs a definition of a case and a control at each time. The two
+definitions below answer different questions, and each uses the marker that
+matches its question. The saved AUC calculations are supplied to `gg_auct()`;
+only the extraction and plotting run during this render.
+
+### Cumulative/dynamic AUC uses cumulative hazard
+
+Suppose the question is whether a subject who has experienced the event by a
+horizon ranks above a subject who remains event-free at that horizon. This is
+the cumulative/dynamic target. The corresponding marker is cumulative hazard,
+named `"chf"` in `gg_auct()` and `"cumhaz"` in the retained upstream object.
+
+```{r auct-cumulative}
+auct_cumulative <- gg_auct(
+  bundle$fit,
+  marker = "chf",
+  auct_fit = bundle$auct_cumulative
+)
+plot(auct_cumulative)
+```
+
+The saved curve has a Uno iAUC of
+`r sprintf("%.3f", attr(auct_cumulative, "iauc")$uno)`. Its finite AUC values
+range from `r sprintf("%.3f", min(auct_cumulative$auc, na.rm = TRUE))` to
+`r sprintf("%.3f", max(auct_cumulative$auc, na.rm = TRUE))` over this fitted
+time grid. AUC is a ranking probability on a 0 to 1 scale, with 0.5 shown as
+the chance reference. The retained calculation did not use a bootstrap, so
+the plot has no confidence ribbon.
+
+This curve needs `randomForestRHF` 2.0.3 or newer, which is why the package
+asks for that version. Before 2.0.3, `auct.rhf()` could put the
+cumulative/dynamic curve below the chance line on data the forest fits well.
+That was upstream rather than in `gg_auct()`, which passes the values through
+unchanged either way.
 
 ### Incident/dynamic AUC uses hazard
 
-The question here is whether a subject who experiences the event near time $t$
-ranks above a subject in the relevant risk set at $t$. This is the
+A different question asks whether a subject who experiences the event near
+time $t$ ranks above a subject in the relevant risk set at $t$. This is the
 incident/dynamic target. It uses the local hazard marker, named `"haz"` in
 `gg_auct()` and `"hazard"` upstream.
 
@@ -345,32 +374,14 @@ auct_incident <- gg_auct(
 plot(auct_incident)
 ```
 
-The saved curve has a Uno iAUC of
-`r sprintf("%.3f", attr(auct_incident, "iauc")$uno)`. Its finite AUC values
-range from `r sprintf("%.3f", min(auct_incident$auc, na.rm = TRUE))` to
-`r sprintf("%.3f", max(auct_incident$auc, na.rm = TRUE))` over this fitted
-time grid. AUC is a ranking probability on a 0 to 1 scale, with 0.5 shown as
-the chance reference. The retained calculation did not use a bootstrap, so the
-plot has no confidence ribbon.
-
-### Why cumulative/dynamic AUC is not shown here
-
-The companion definition is cumulative/dynamic AUC, which asks whether a
-subject who has experienced the event by a horizon ranks above a subject who
-remains event-free at that horizon. It ranks accumulated risk through a
-horizon rather than local failures within a risk set, so it estimates a
-different target, not a better or worse version of the same one. Its matching
-marker is cumulative hazard.
-
-We have left it out for now. From `randomForestRHF` 2.0.0, the in-sample
-cumulative hazard is held flat once a subject's supplied records end, which
-`?rhf` documents. That is reasonable for a fitted curve, but it means the
-cumulative hazard at a fixed grid time reflects how long each subject was
-observed as well as how much risk they carried, and the cumulative/dynamic
-comparison puts subjects who have already failed against subjects still under
-follow-up. On this simulated data that is enough to push the curve below the
-chance line. The behavior is upstream rather than in `gg_auct()`, we have
-reported it, and the section will come back once it is settled.
+Here the Uno iAUC is
+`r sprintf("%.3f", attr(auct_incident, "iauc")$uno)`. The curve is more
+variable than the cumulative/dynamic curve, with finite AUC values from
+`r sprintf("%.3f", min(auct_incident$auc, na.rm = TRUE))` to
+`r sprintf("%.3f", max(auct_incident$auc, na.rm = TRUE))`. These values do not
+show that one marker is a better version of the other. Cumulative/dynamic AUC
+ranks accumulated risk through a horizon, while incident/dynamic AUC ranks
+local failures within a risk set. They estimate different targets.
 
 ## Which variables matter, and when?
 
