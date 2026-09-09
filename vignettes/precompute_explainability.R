@@ -22,7 +22,25 @@
 # Run from the package root:
 #   Rscript vignettes/precompute_explainability.R
 
-library(ggRandomForests)
+# Match precompute_varpro.R / precompute_rhf.R: try the installed package,
+# fall back to pkgload::load_all() so this runs in a fresh clone before
+# installation, and fail with a message that names the missing piece rather
+# than whatever error the first unguarded call happens to throw.
+if (requireNamespace("ggRandomForests", quietly = TRUE)) {
+  suppressMessages(library(ggRandomForests))
+} else if (requireNamespace("pkgload", quietly = TRUE)) {
+  pkgload::load_all(export_all = FALSE, helpers = FALSE,
+                    attach_testthat = FALSE)
+} else {
+  stop("Install ggRandomForests (or pkgload for dev builds) to run this script.")
+}
+
+for (pkg in c("MASS", "randomForestSRC", "kernelshap", "varPro")) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    stop("Install '", pkg, "' to run this script.", call. = FALSE)
+  }
+}
+
 data(Boston, package = "MASS")
 
 set.seed(20260909L)

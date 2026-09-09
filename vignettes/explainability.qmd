@@ -259,6 +259,20 @@ if (!is.null(.pc$shap_boston)) {
 if (!is.null(shap_boston)) plot(shap_boston)
 ```
 
+```{r shap-note, echo=FALSE, results="asis"}
+# Without the precomputed bundle AND without kernelshap there is no figure
+# above, and the prose below would describe a plot that is not on the page.
+# Say so rather than leaving a silent gap.
+if (is.null(shap_boston)) {
+  cat("::: {.callout-note}\n",
+      "The SHAP figure is not shown: neither the precomputed bundle ",
+      "(`explainability_precomputed.rds`) nor the **kernelshap** package is ",
+      "available in this build. Install kernelshap, or run ",
+      "`vignettes/precompute_explainability.R`, to render it. The paragraphs ",
+      "below describe what it shows.\n:::\n", sep = "")
+}
+```
+
 Each point is one tract for one variable, positioned by its contribution and
 coloured by that tract's value of the variable. The spread is the point. A
 variable whose points fan out wide matters a lot, but differently for
