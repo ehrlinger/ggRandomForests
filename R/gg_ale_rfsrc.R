@@ -118,35 +118,16 @@ gg_ale_rfsrc <- function(rf_model,
          "supported in this version; got family '", rf_model$family, "'. ",
          "Survival support is not yet implemented.", call. = FALSE)
   }
-  if (missing(xvar.names) || is.null(xvar.names)) {
+  ## length 0 is caught here with the same message as missing/NULL. Left to
+  ## fall through, character(0) reaches do.call("rbind", list()) and fails with
+  ## base R's "argument is of length zero", which names neither the argument
+  ## nor the function.
+  if (missing(xvar.names) || is.null(xvar.names) ||
+        length(xvar.names) == 0L) {
     stop("gg_ale_rfsrc: 'xvar.names' is required.", call. = FALSE)
   }
 
-  if (is.null(newx)) {
-    newx <- rf_model$xvar
-  }
-  if (!is.data.frame(newx)) {
-    stop("gg_ale_rfsrc: 'newx' must be a data.frame; got an object of class ",
-         paste(class(newx), collapse = "/"), ".", call. = FALSE)
-  }
-  ## predict.rfsrc() needs every training predictor, not just the ones being
-  ## profiled: the other columns are held at their observed values. Checking
-  ## only that the supplied names are known would let a subset through, to fail
-  ## later inside predict() with a message that names no column.
-  missing_cols <- setdiff(rf_model$xvar.names, colnames(newx))
-  if (length(missing_cols) > 0L) {
-    stop("gg_ale_rfsrc: 'newx' is missing ", length(missing_cols),
-         " predictor(s) the forest was trained on: ",
-         paste(missing_cols, collapse = ", "), ".", call. = FALSE)
-  }
-  extra_cols <- setdiff(colnames(newx), rf_model$xvar.names)
-  if (length(extra_cols) > 0L) {
-    stop("gg_ale_rfsrc: 'newx' carries column(s) the forest was not trained ",
-         "on: ", paste(extra_cols, collapse = ", "), ".", call. = FALSE)
-  }
-  if (sum(xvar.names %in% colnames(newx)) != length(xvar.names)) {
-    stop("xvar.names contains column names not found in the rfsrc object")
-  }
+  newx <- .ale_validate_newx(rf_model, newx, xvar.names)
 
   ## validate_partial_args() is defined in gg_partial_rfsrc.R and shared here.
   v         <- validate_partial_args(n_eval, cat_limit)
@@ -200,14 +181,54 @@ gg_ale_rfsrc <- function(rf_model,
   result
 }
 
+## Resolve and validate the frame ALE is evaluated on. Split out of
+## gg_ale_rfsrc() to keep that function under the cyclomatic complexity the
+## repo lints for; it is all one concern, so it reads as one function.
+.ale_validate_newx <- function(rf_model, newx, xvar.names) {
+  if (is.null(newx)) {
+    newx <- rf_model$xvar
+  }
+  if (!is.data.frame(newx)) {
+    stop("gg_ale_rfsrc: 'newx' must be a data.frame; got an object of class ",
+         paste(class(newx), collapse = "/"), ".", call. = FALSE)
+  }
+  ## predict.rfsrc() needs every training predictor, not just the ones being
+  ## profiled: the other columns are held at their observed values. Checking
+  ## only that the supplied names are known would let a subset through, to fail
+  ## later inside predict() with a message that names no column.
+  missing_cols <- setdiff(rf_model$xvar.names, colnames(newx))
+  if (length(missing_cols) > 0L) {
+    stop("gg_ale_rfsrc: 'newx' is missing ", length(missing_cols),
+         " predictor(s) the forest was trained on: ",
+         paste(missing_cols, collapse = ", "), ".", call. = FALSE)
+  }
+  extra_cols <- setdiff(colnames(newx), rf_model$xvar.names)
+  if (length(extra_cols) > 0L) {
+    stop("gg_ale_rfsrc: 'newx' carries column(s) the forest was not trained ",
+         "on: ", paste(extra_cols, collapse = ", "), ".", call. = FALSE)
+  }
+  if (sum(xvar.names %in% colnames(newx)) != length(xvar.names)) {
+    stop("xvar.names contains column names not found in the rfsrc object")
+  }
+  newx
+}
+
 ## ---------------------------------------------------------------------------
 ## Internal: shared bin construction, accumulation, and per-variable ALE.
 ## ---------------------------------------------------------------------------
 
 ## Same cat_limit convention used throughout the package (see
-## make_eval_grid() in gg_partial_rfsrc.R).
+## make_eval_grid() in gg_partial_rfsrc.R), NA handling included: NA is
+## missingness, not a level, and counting it as one lets a predictor with
+## cat_limit - 1 genuine values plus some NA read as continuous. The two
+## routes then disagree about the same column, which is worse than either
+## answer on its own. make_eval_grid() drops NA before the count for this
+## reason (gg_partial_rfsrc.R:221) and so does this.
 .ale_is_categorical <- function(xval, cat_limit) {
-  is.factor(xval) || is.character(xval) || length(unique(xval)) < cat_limit
+  if (is.factor(xval) || is.character(xval)) {
+    return(TRUE)
+  }
+  length(unique(xval[!is.na(xval)])) < cat_limit
 }
 
 ## Quantile-based bin edges for a continuous predictor (n_bin + 1 edges, n_bin bins).

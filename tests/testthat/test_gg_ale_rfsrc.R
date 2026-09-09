@@ -279,3 +279,48 @@ test_that("gg_ale_rfsrc rejects a newx missing training predictors", {
     "must be a data.frame"
   )
 })
+
+test_that("gg_ale_rfsrc treats an empty xvar.names as missing", {
+  # Catches: character(0) falling through validation to fail inside
+  # do.call("rbind", list()) with base R's "argument is of length zero", which
+  # names neither the argument nor the function. Easy to hit from
+  # programmatic use, where xvar.names comes from a filter that matched
+  # nothing.
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  air <- stats::na.omit(airquality)
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = air, ntree = 30)
+
+  expect_error(gg_ale_rfsrc(rf, xvar.names = character(0)),
+               "'xvar.names' is required")
+  expect_error(gg_ale_rfsrc(rf, xvar.names = NULL),
+               "'xvar.names' is required")
+})
+
+test_that("gg_ale_rfsrc does not count NA toward the cat_limit cardinality", {
+  # Catches: unique() including NA, so a predictor with cat_limit - 1 genuine
+  # values plus some missingness reads as continuous and is binned by
+  # quantile instead of being treated as categorical. make_eval_grid() drops
+  # NA before the same check, so the two routes would classify the same
+  # column differently -- a disagreement between gg_partial_rfsrc() and
+  # gg_ale_rfsrc() on the same data.
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  n <- 300
+  v <- sample(1:9, n, TRUE)
+  v[sample(n, 20)] <- NA
+  d <- data.frame(v = v, noise = stats::rnorm(n))
+  d$y <- d$v + stats::rnorm(n, sd = 0.2)
+
+  # 9 genuine values, 10 counting NA: the boundary the bug sat on.
+  expect_equal(length(unique(v)), 10L)
+  expect_equal(length(unique(v[!is.na(v)])), 9L)
+
+  expect_true(ggRandomForests:::.ale_is_categorical(v, 10))
+  expect_false(ggRandomForests:::.ale_is_categorical(v, 9))
+
+  rf <- randomForestSRC::rfsrc(y ~ ., data = stats::na.omit(d), ntree = 100)
+  g <- gg_ale_rfsrc(rf, xvar.names = "v", cat_limit = 10)
+  expect_gt(nrow(g$categorical), 0L)
+  expect_equal(nrow(g$continuous), 0L)
+})
