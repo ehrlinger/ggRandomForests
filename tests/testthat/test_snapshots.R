@@ -621,6 +621,35 @@ local({
   })
 })
 
+
+## ---- Accumulated local effects ---------------------------------------------
+
+local({
+  set.seed(20260909L)
+  airq <- stats::na.omit(airquality)
+  rfsrc_airq <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50L)
+
+  # Continuous-only, so plot() returns a plain ggplot rather than a patchwork.
+  gg_ale_cont <- gg_ale_rfsrc(rfsrc_airq, xvar.names = c("Wind", "Temp"),
+                              n_eval = 8)
+  gg_ale_int <- gg_ale_rfsrc(rfsrc_airq, xvar.names = "Wind",
+                             xvar2.name = "Temp", n_eval = 6)
+
+  test_that("snapshot: gg_ale_rfsrc continuous", {
+    vdiffr::expect_doppelganger(
+      "gg_ale_rfsrc continuous",
+      plot(gg_ale_cont)
+    )
+  })
+
+  test_that("snapshot: gg_ale_rfsrc interaction heatmap", {
+    vdiffr::expect_doppelganger(
+      "gg_ale_rfsrc interaction",
+      plot(gg_ale_int)
+    )
+  })
+})
+
 } else {
 
 ## ---- Preserve baselines when the vdiffr comparison is opted out ------------

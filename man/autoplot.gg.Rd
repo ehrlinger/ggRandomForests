@@ -21,6 +21,8 @@
 \alias{autoplot.gg_udependent}
 \alias{autoplot.gg_isopro}
 \alias{autoplot.gg_shap}
+\alias{autoplot.gg_ale_rfsrc}
+\alias{autoplot.gg_ale_interaction}
 \title{\code{autoplot} methods for \pkg{ggRandomForests} data objects}
 \usage{
 \method{autoplot}{gg_error}(object, ...)
@@ -60,6 +62,10 @@
 \method{autoplot}{gg_isopro}(object, ...)
 
 \method{autoplot}{gg_shap}(object, ...)
+
+\method{autoplot}{gg_ale_rfsrc}(object, ...)
+
+\method{autoplot}{gg_ale_interaction}(object, ...)
 }
 \arguments{
 \item{object}{A \code{gg_*} data object (see Details).}

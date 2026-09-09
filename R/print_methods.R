@@ -379,3 +379,33 @@ print.gg_shap <- function(x, ...) {
       "\n", sep = "")
   invisible(x)
 }
+
+#' @rdname print.gg
+#' @export
+print.gg_ale_rfsrc <- function(x, ...) {
+  nvar_cont <- if (is.data.frame(x$continuous) && nrow(x$continuous) > 0) {
+    length(unique(x$continuous$name))
+  } else {
+    0L
+  }
+  nvar_cat  <- if (is.data.frame(x$categorical) && nrow(x$categorical) > 0) {
+    length(unique(x$categorical$name))
+  } else {
+    0L
+  }
+  cat(.gg_header(x, "gg_ale_rfsrc"),
+      sprintf("  |  continuous: %d, categorical: %d", nvar_cont, nvar_cat),
+      "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
+print.gg_ale_interaction <- function(x, ...) {
+  cat(.gg_header(x, "gg_ale_interaction"),
+      sprintf("  |  %s x %s  |  grid: %d x %d",
+              x$name1[1], x$name2[1],
+              length(unique(x$x)), length(unique(x$y))),
+      "\n", sep = "")
+  invisible(x)
+}

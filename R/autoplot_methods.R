@@ -176,3 +176,15 @@ autoplot.gg_isopro <- function(object, ...) {
 autoplot.gg_shap <- function(object, ...) {
   plot(object, ...)
 }
+
+#' @rdname autoplot.gg
+#' @export
+autoplot.gg_ale_rfsrc <- function(object, ...) {
+  plot(object, ...)
+}
+
+#' @rdname autoplot.gg
+#' @export
+autoplot.gg_ale_interaction <- function(object, ...) {
+  plot(object, ...)
+}

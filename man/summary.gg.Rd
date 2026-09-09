@@ -27,6 +27,8 @@
 \alias{summary.gg_ivarpro}
 \alias{summary.gg_auct}
 \alias{summary.gg_shap}
+\alias{summary.gg_ale_rfsrc}
+\alias{summary.gg_ale_interaction}
 \title{Summary methods for gg_* data objects}
 \usage{
 \method{summary}{gg_beta_uvarpro}(object, ...)
@@ -76,6 +78,10 @@
 \method{summary}{gg_auct}(object, ...)
 
 \method{summary}{gg_shap}(object, ...)
+
+\method{summary}{gg_ale_rfsrc}(object, ...)
+
+\method{summary}{gg_ale_interaction}(object, ...)
 }
 \arguments{
 \item{object}{A \code{gg_*} data object.}

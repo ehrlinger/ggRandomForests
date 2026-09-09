@@ -430,3 +430,29 @@ summary.gg_shap <- function(object, ...) {
   )
   .summary_skel(object, "gg_shap", body)
 }
+
+#' @rdname summary.gg
+#' @export
+summary.gg_ale_rfsrc <- function(object, ...) {
+  .summary_skel(object, "gg_ale_rfsrc", .partial_body(object))
+}
+
+## Body lines for summary.gg_ale_interaction(). The interaction surface is
+## centered by construction, so its range is the informative summary: a
+## purely additive pair returns a surface that is zero everywhere, and the
+## range is how far from additive this pair actually is.
+.ale_interaction_body <- function(x) {
+  c(
+    sprintf("pair: %s x %s", x$name1[1], x$name2[1]),
+    sprintf("grid: %d x %d", length(unique(x$x)), length(unique(x$y))),
+    sprintf("interaction ALE range: [%.4g, %.4g]",
+            min(x$ale, na.rm = TRUE), max(x$ale, na.rm = TRUE)),
+    sprintf("max |interaction|: %.4g", max(abs(x$ale), na.rm = TRUE))
+  )
+}
+
+#' @rdname summary.gg
+#' @export
+summary.gg_ale_interaction <- function(object, ...) {
+  .summary_skel(object, "gg_ale_interaction", .ale_interaction_body(object))
+}

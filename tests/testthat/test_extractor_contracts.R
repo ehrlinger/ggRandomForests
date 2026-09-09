@@ -212,3 +212,105 @@ test_that("gg_vimp separates known signal from known noise", {
   expect_true(min(signal) > max(noise))
   expect_equal(names(which.max(imp)), "x1")
 })
+
+## ---- gg_ale_rfsrc ----------------------------------------------------------
+
+test_that("gg_ale_rfsrc returns a curve centered on the data", {
+  # Catches: the centering step dropped, or applied before accumulation rather
+  # than after. Either leaves a curve of the right shape at the wrong level, so
+  # every shape assertion still passes and the plotted y-axis is silently
+  # offset.
+  #
+  # ALE has no field on the source forest to compare against -- it is
+  # accumulated from local differences -- so the cross-check is the property
+  # the estimator is defined by: the bin-population-weighted trapezoidal mean
+  # of the curve is zero. Bin membership is recomputed here from the returned
+  # grid and the training data, not read from the extractor's internals.
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  air <- stats::na.omit(airquality)
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = air, ntree = 50)
+
+  gg <- gg_ale_rfsrc(rf, xvar.names = c("Wind", "Temp"), n_eval = 10)
+
+  for (v in c("Wind", "Temp")) {
+    cur <- gg$continuous[gg$continuous$name == v, ]
+    edges <- cur$x
+    fj <- cur$yhat
+    # The extractor nudges the lowest edge down so the minimum observation
+    # lands in bin 1; mirror that here or the first bin's count is short by
+    # however many observations sit exactly at the minimum.
+    e <- edges
+    e[1] <- e[1] - 1e-8 * max(1, abs(e[1]))
+    bin <- findInterval(air[[v]], e, rightmost.closed = TRUE, all.inside = TRUE)
+    nk <- tabulate(bin, nbins = length(edges) - 1L)
+    weighted_mean <- sum((nk / sum(nk)) * (fj[-1] + fj[-length(fj)]) / 2)
+    expect_equal(weighted_mean, 0, tolerance = 1e-8)
+  }
+})
+
+test_that("gg_ale_rfsrc separates an additive pair from an interacting one", {
+  # Catches: the row/column/grand-mean decomposition dropped or mis-signed, so
+  # the "interaction" surface still carries the two main effects. That surface
+  # renders as a perfectly plausible heatmap and is wrong.
+  #
+  # Ground truth is imposed on the data rather than read from the forest: with
+  # y = 3*x1 + 2*x2 the pair is additive by construction and the interaction
+  # surface must be near zero, while y = 3*x1*x2 over the same predictors is
+  # not. The comparison is a ratio between the two, so it does not depend on
+  # the response scale or on a constant recorded from a previous run.
+  skip_on_cran()
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  n <- 300
+  d <- data.frame(x1 = stats::runif(n, 0, 10), x2 = stats::runif(n, 0, 10))
+  d$additive <- 3 * d$x1 + 2 * d$x2 + stats::rnorm(n, sd = 0.1)
+  d$product <- 3 * d$x1 * d$x2 + stats::rnorm(n, sd = 0.1)
+
+  rf_add <- randomForestSRC::rfsrc(additive ~ x1 + x2, data = d, ntree = 200)
+  rf_mul <- randomForestSRC::rfsrc(product ~ x1 + x2, data = d, ntree = 200)
+
+  ale_add <- gg_ale_rfsrc(rf_add, xvar.names = "x1", xvar2.name = "x2",
+                          n_eval = 8)
+  ale_mul <- gg_ale_rfsrc(rf_mul, xvar.names = "x1", xvar2.name = "x2",
+                          n_eval = 8)
+
+  peak_add <- max(abs(ale_add$ale))
+  peak_mul <- max(abs(ale_mul$ale))
+
+  # The additive surface is not exactly zero: a forest is a step function, so
+  # it is only approximately additive even on additive data. What must hold is
+  # that it is small relative to both the imposed main effects (3 and 2 per
+  # unit, over a range of 10) and to a real interaction.
+  expect_lt(peak_add, 5)
+  expect_gt(peak_mul / peak_add, 5)
+})
+
+test_that("gg_ale_rfsrc centers a categorical curve on the level frequencies", {
+  # Catches: reusing the continuous trapezoidal centering for levels. That form
+  # weights by BIN counts, of which there are m - 1 for m levels, so the first
+  # level's population never enters the constant. The curve then sits at the
+  # wrong level while its shape, ordering and span all stay correct -- and a
+  # roughly balanced fixture hides it, because the missing weight is small.
+  # This one is deliberately imbalanced, 80/15/5: the empirical weighted mean
+  # was -0.936 before the fix.
+  #
+  # The property is the categorical counterpart of the trapezoidal check
+  # above: the expected ALE over the observed data is zero.
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  n <- 400
+  grp <- factor(sample(c("a", "b", "c"), n, TRUE, prob = c(0.80, 0.15, 0.05)))
+  d <- data.frame(grp = grp, noise = stats::rnorm(n))
+  d$y <- c(a = 0, b = 5, c = 10)[as.character(grp)] + stats::rnorm(n, sd = 0.5)
+  rf <- randomForestSRC::rfsrc(y ~ ., data = d, ntree = 200)
+
+  gg <- gg_ale_rfsrc(rf, xvar.names = "grp")
+
+  counts <- table(d$grp)[as.character(gg$categorical$x)]
+  weighted_mean <- sum((counts / sum(counts)) * gg$categorical$yhat)
+  expect_equal(weighted_mean, 0, tolerance = 1e-8)
+
+  # The imbalance has to be real, or the test cannot fail as intended.
+  expect_gt(max(counts) / min(counts), 5)
+})
