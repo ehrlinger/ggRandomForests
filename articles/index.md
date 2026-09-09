@@ -15,6 +15,8 @@
   ggRandomForests](https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-regression.md):
 - [Random Forest Classification with
   ggRandomForests](https://ehrlinger.github.io/ggRandomForests/articles/ggRandomForests-classification.md):
+- [Explaining a forest: five views of a variable's
+  effect](https://ehrlinger.github.io/ggRandomForests/articles/explainability.md):
 - [Exploring variable importance with
   varPro](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md):
 - [Variable selection without an outcome: unsupervised
