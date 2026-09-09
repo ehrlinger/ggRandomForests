@@ -1,11 +1,84 @@
 # Handoff: `gg_ale_rfsrc()`, accumulated local effects for `rfsrc` forests
 
 **Date:** 2026-09-09
-**Status:** 🔴 **blocked on code transfer.** The implementation described below is
-not in this repository and has never been in it.
+**Status:** ✅ **RESOLVED the same day.** The source arrived by paste rather than by
+push, and landed on `docs/gg-ale-handoff`. See the resolution below; the body
+after it is kept unedited, as written before the code existed here.
 **Target version:** 4.0.x (patch line; a new extractor family is the maintainer's
 call on the minor digit, see "Versioning" below)
 **Issue:** none filed. ggRandomForests has zero open issues as of 2026-09-09.
+
+## Resolution
+
+✅ **Landed.** Both source files were pasted in full and applied here; the three
+"remaining work" items are done and the package checks clean.
+
+| Gate | Result |
+|---|---|
+| `devtools::document()` | Regenerated `NAMESPACE` and 5 `.Rd` files |
+| `lintr::lint_package()` | **0 lints** |
+| Suite, both env vars set | **2139 pass, 5 fail** — all five pre-existing, see below |
+| `R CMD check --as-cran`, clean `git archive` export, with manual | **0 errors, 0 warnings, 1 NOTE** (the maintainer "8 updates in 6 months" note) |
+| Tarball hidden-file gate | Only `.Rinstignore`, as required |
+
+⭐ **The five failures are not ours.** `gg_vimp survival`, `gg_error survival`
+and three `gg_brier` vdiffr baselines fail identically on a clean `git archive`
+export of `main` with none of this work applied. They are a pre-existing
+survival-plot rendering drift and want their own issue.
+
+### Three changes made while landing it
+
+1. 🔴 **`geom_raster()` → `geom_tile()` in `plot.gg_ale_interaction()`.** This is
+   a correctness fix, not style. The ALE grid is *quantile*-based, so its cells
+   are unevenly spaced by construction, and `geom_raster()` assumes a regular
+   grid — it silently shifts the cells onto one, moving the interaction away
+   from the predictor values it belongs to. ggplot2 warns about it, and the
+   warning only appears once the code renders against a real forest, which is
+   exactly what the offline session could not do.
+2. `K`, `K1`, `K2` renamed to `n_bin`, `n_bin1`, `n_bin2`, and the
+   compound-semicolon block in `.ale_interaction()` split across lines. Twelve
+   lints, all in the new file, against a repo gate of zero.
+3. `NAMESPACE` regenerated rather than hand-edited, which is what supplied the
+   `summary` and `export` lines the handoff listed as missing. See the warning
+   further down about hand-editing it.
+
+### What running it against real forests established
+
+The offline session's own caveat was that the `predict()` wiring and the
+`validate_partial_args()` / `cat_limit` interplay were unverified. Both work:
+
+- ✅ Prediction plumbing is correct for regression and classification, and
+  `which.class` genuinely changes the curve.
+- ✅ Factor level order survives. A predictor releveled to `c("C", "A", "B")`
+  comes back in that order, not alphabetically, and the levels do not collapse.
+- ✅ All five error paths fire with the intended messages.
+- ✅ **Centering holds to 1e-15.** The bin-population-weighted trapezoidal mean
+  of the returned curve is zero on real data, which is the property the
+  estimator is defined by.
+- ✅ **The interaction decomposition separates additive from interacting.** On
+  `y = 3*x1 + 2*x2` the peak surface value is 1.29; on `y = 3*x1*x2` it is
+  54.8, a 42x ratio.
+
+⚠️ **The check-time worry in the budget section below did not materialise, and
+the reasoning there was wrong.** Measured: all four ALE examples together cost
+**0.86 s**, and the suite grew by about 6 s. The `partialpro()` analogy does not
+transfer — ALE's cost is `predict()` calls on small frames, not a slow upstream
+routine.
+
+### Still open
+
+- **Vignette coverage.** ALE is documented in `?gg_ale_rfsrc` but appears in no
+  vignette. The partial-dependence-versus-ALE contrast under correlated
+  predictors is the argument for the function existing and is not made anywhere
+  a reader will find it.
+- **`.ale_split_result()` duplicates `split_partial_result()`** byte for byte
+  except the class string it stamps. Left as-is deliberately — it is the
+  offline session's reviewed code and deduplicating it touches
+  `gg_partial_rfsrc`'s path — but it is one parameter away from being shared.
+- **Survival ALE**, and **mixed continuous/categorical interaction**, both
+  excluded on purpose.
+
+---
 
 ## Why this file exists
 
