@@ -129,9 +129,12 @@ Marginal variable dependence plots.
 
   Plot a `gg_variable` object,
 
-## Partial Dependence
+## Partial Dependence and Accumulated Local Effects
 
-Partial dependence plots for individual variables.
+Marginal-effect plots for individual variables. Partial dependence
+averages over the other predictors; accumulated local effects perturb a
+predictor only within neighbourhoods of its own observed values, and so
+do not extrapolate when predictors are correlated.
 
 - [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
   : Split partial dependence data into continuous or categorical
@@ -159,6 +162,19 @@ Partial dependence plots for individual variables.
   :
 
   Plot a `gg_partial_varpro` object
+
+- [`gg_ale_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ale_rfsrc.md)
+  : Accumulated Local Effects (ALE) data from an rfsrc model
+
+- [`plot(`*`<gg_ale_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_ale_rfsrc.md)
+  :
+
+  Plot a `gg_ale_rfsrc` object
+
+- [`plot(`*`<gg_ale_interaction>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_ale_interaction.md)
+  :
+
+  Plot a `gg_ale_rfsrc` interaction object
 
 ## Survival Analysis
 
@@ -248,6 +264,8 @@ Standard R generics implemented for all gg\_\* data objects.
   [`autoplot(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_isopro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_shap>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_ale_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_ale_interaction>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   :
 
   `autoplot` methods for ggRandomForests data objects
@@ -276,6 +294,8 @@ Standard R generics implemented for all gg\_\* data objects.
   [`print(`*`<gg_beta_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_ivarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_shap>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_ale_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_ale_interaction>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   : Print methods for gg\_\* data objects
 
 - [`summary(`*`<gg_beta_uvarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
@@ -302,6 +322,8 @@ Standard R generics implemented for all gg\_\* data objects.
   [`summary(`*`<gg_ivarpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_auct>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_shap>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_ale_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_ale_interaction>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   : Summary methods for gg\_\* data objects
 
 ## Utilities

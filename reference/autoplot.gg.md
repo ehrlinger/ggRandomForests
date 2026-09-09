@@ -66,6 +66,12 @@ autoplot(object, ...)
 
 # S3 method for class 'gg_shap'
 autoplot(object, ...)
+
+# S3 method for class 'gg_ale_rfsrc'
+autoplot(object, ...)
+
+# S3 method for class 'gg_ale_interaction'
+autoplot(object, ...)
 ```
 
 ## Arguments

@@ -79,6 +79,12 @@ print(x, ...)
 
 # S3 method for class 'gg_shap'
 print(x, ...)
+
+# S3 method for class 'gg_ale_rfsrc'
+print(x, ...)
+
+# S3 method for class 'gg_ale_interaction'
+print(x, ...)
 ```
 
 ## Arguments
