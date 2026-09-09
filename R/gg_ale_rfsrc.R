@@ -125,8 +125,24 @@ gg_ale_rfsrc <- function(rf_model,
   if (is.null(newx)) {
     newx <- rf_model$xvar
   }
-  if (sum(colnames(newx) %in% rf_model$xvar.names) != ncol(newx)) {
-    stop("newx must be a dataframe with the same columns used to train the rfsrc object")
+  if (!is.data.frame(newx)) {
+    stop("gg_ale_rfsrc: 'newx' must be a data.frame; got an object of class ",
+         paste(class(newx), collapse = "/"), ".", call. = FALSE)
+  }
+  ## predict.rfsrc() needs every training predictor, not just the ones being
+  ## profiled: the other columns are held at their observed values. Checking
+  ## only that the supplied names are known would let a subset through, to fail
+  ## later inside predict() with a message that names no column.
+  missing_cols <- setdiff(rf_model$xvar.names, colnames(newx))
+  if (length(missing_cols) > 0L) {
+    stop("gg_ale_rfsrc: 'newx' is missing ", length(missing_cols),
+         " predictor(s) the forest was trained on: ",
+         paste(missing_cols, collapse = ", "), ".", call. = FALSE)
+  }
+  extra_cols <- setdiff(colnames(newx), rf_model$xvar.names)
+  if (length(extra_cols) > 0L) {
+    stop("gg_ale_rfsrc: 'newx' carries column(s) the forest was not trained ",
+         "on: ", paste(extra_cols, collapse = ", "), ".", call. = FALSE)
   }
   if (sum(xvar.names %in% colnames(newx)) != length(xvar.names)) {
     stop("xvar.names contains column names not found in the rfsrc object")
@@ -167,9 +183,17 @@ gg_ale_rfsrc <- function(rf_model,
     return(result)
   }
 
+  ## The documented grid for a factor is the MODEL's level order. newx may be a
+  ## subset, or carry a relevelled copy, so read the ordering from the fitted
+  ## forest rather than from whatever was passed in.
+  model_levels <- lapply(rf_model$xvar, function(col) {
+    if (is.factor(col)) levels(col) else NULL
+  })
+
   pdta <- lapply(xvar.names, .ale_one_var,
                 newx = newx, pred_fun = pred_fun,
-                cat_limit = cat_limit, n_eval = n_eval)
+                cat_limit = cat_limit, n_eval = n_eval,
+                model_levels = model_levels)
   pdta   <- Filter(Negate(is.null), pdta)
   result <- .ale_split_result(do.call("rbind", pdta))
   result <- .set_provenance(result, rf_model)
@@ -248,56 +272,99 @@ gg_ale_rfsrc <- function(rf_model,
   data.frame(x = edges, yhat = ale, name = xname, type = "continuous")
 }
 
-## First-order ALE for one categorical predictor. Levels are ordered as in
-## the fitted factor (the model's own level order). Level 1 has no
+## Accumulate per-level effects into a centered categorical ALE curve. The
+## continuous form in .ale_accumulate() cannot be reused: it averages
+## neighbouring grid points trapezoidally and weights by BIN counts, of which
+## there are m - 1 for m levels, so the first level's population never enters
+## the centering. Levels are points, not intervals -- there is nothing between
+## two of them to integrate over -- so the centering constant is the plain
+## frequency-weighted mean over all m levels, which is what makes the expected
+## ALE over the observed data zero.
+.ale_accumulate_categorical <- function(delta, n_level) {
+  fj <- c(0, cumsum(delta))
+  n <- sum(n_level)
+  if (n == 0) {
+    return(fj)
+  }
+  fj - sum((n_level / n) * fj)
+}
+
+## Impose one grid value on a predictor column, keeping the column's type.
+## Substituting a factor into a numeric column changes that column's type, and
+## the forest then scores a variable it was not fit on -- silently, because
+## predict() still returns numbers. This matters because .ale_is_categorical()
+## treats ANY predictor with fewer than cat_limit unique values as categorical,
+## so a numeric 0/1 indicator reaches this path.
+.ale_impose_level <- function(col, value) {
+  if (is.factor(col)) {
+    factor(as.character(value), levels = levels(col))
+  } else {
+    value
+  }
+}
+
+## First-order ALE for one categorical predictor. Levels are ordered as in the
+## fitted model, not as they happen to appear in newx. Level 1 has no
 ## predecessor and contributes no local-effect step of its own -- it is the
-## zero anchor the accumulation starts from, exactly as a continuous
-## variable's first bin edge is.
-.ale_categorical <- function(xname, newx, pred_fun) {
+## zero anchor the accumulation starts from, exactly as a continuous variable's
+## first bin edge is -- but its observations do count toward the centering.
+.ale_categorical <- function(xname, newx, pred_fun, model_levels = NULL) {
   xval <- newx[[xname]]
   keep <- !is.na(xval)
   dd_all <- newx[keep, , drop = FALSE]
   xval   <- xval[keep]
 
-  flevels <- if (is.factor(xval)) {
-    levels(droplevels(xval))
+  if (is.factor(xval)) {
+    ## droplevels(xval) would follow newx's ordering; the documented grid is
+    ## the model's. Restrict to levels actually present, keeping that order.
+    lev <- if (is.null(model_levels)) levels(xval) else model_levels
+    flabels <- lev[lev %in% as.character(xval)]
+  } else if (is.character(xval)) {
+    flabels <- sort(unique(xval))
   } else {
-    sort(unique(as.character(xval)))
+    ## Sort numerically. Sorting the labels instead would order "10" before
+    ## "2", which reverses part of the grid and therefore part of the curve.
+    flabels <- as.character(sort(unique(xval)))
   }
-  m <- length(flevels)
+  fvalues <- if (is.numeric(xval)) as.numeric(flabels) else flabels
+
+  m <- length(flabels)
   if (m < 2L) {
     stop("gg_ale_rfsrc: categorical predictor '", xname,
          "' has fewer than 2 observed levels.", call. = FALSE)
   }
-  code <- match(as.character(xval), flevels)
+  code <- match(as.character(xval), flabels)
 
-  n_bin     <- m - 1L
+  ## Population of every level, the first included: it takes no step, but it
+  ## weighs on where the curve is centered.
+  n_level <- tabulate(code, nbins = m)
+
+  n_bin <- m - 1L
   delta <- numeric(n_bin)
-  nk    <- numeric(n_bin)
   for (k in seq_len(n_bin)) {
     ## Bin k's members are observations at the UPPER level of the step, the
     ## same convention as the continuous case (bin k = values up through
     ## edge_k).
     idx <- which(code == k + 1L)
-    nk[k] <- length(idx)
-    if (nk[k] == 0L) next
+    if (length(idx) == 0L) next
     dd_lo <- dd_all[idx, , drop = FALSE]
     dd_hi <- dd_lo
-    dd_lo[[xname]] <- factor(flevels[k],      levels = flevels)
-    dd_hi[[xname]] <- factor(flevels[k + 1L], levels = flevels)
+    dd_lo[[xname]] <- .ale_impose_level(dd_all[[xname]], fvalues[k])
+    dd_hi[[xname]] <- .ale_impose_level(dd_all[[xname]], fvalues[k + 1L])
     delta[k] <- mean(pred_fun(dd_hi) - pred_fun(dd_lo))
   }
 
-  ale <- .ale_accumulate(delta, nk)
-  data.frame(x = factor(flevels, levels = flevels), yhat = ale, name = xname,
-            type = "categorical")
+  ale <- .ale_accumulate_categorical(delta, n_level)
+  data.frame(x = factor(flabels, levels = flabels), yhat = ale, name = xname,
+             type = "categorical")
 }
 
 ## Dispatch one predictor to the continuous or categorical ALE builder.
-.ale_one_var <- function(xname, newx, pred_fun, cat_limit, n_eval) {
+.ale_one_var <- function(xname, newx, pred_fun, cat_limit, n_eval,
+                         model_levels = NULL) {
   xval <- newx[[xname]]
   if (.ale_is_categorical(xval, cat_limit)) {
-    .ale_categorical(xname, newx, pred_fun)
+    .ale_categorical(xname, newx, pred_fun, model_levels[[xname]])
   } else {
     .ale_continuous(xname, newx, pred_fun, n_eval)
   }
@@ -376,9 +443,19 @@ gg_ale_rfsrc <- function(rf_model,
     }
   }
 
-  ## Double cumulative sum: cumsum down columns, then across the transposed
-  ## result (apply(..., 1, ...) transposes; undone by the outer t()).
-  g <- t(apply(apply(delta, 2, cumsum), 1, cumsum))
+  ## Double cumulative sum, down columns then across rows. Written as loops
+  ## rather than nested apply(): apply() drops the dimension when an axis has a
+  ## single bin, and the outer call then fails with "dim(X) must have a
+  ## positive length". A one-bin axis is not exotic -- quantile edges collapse
+  ## on tied values, so a predictor with most of its mass at one value reaches
+  ## it for any modest n_eval.
+  g <- delta
+  if (n_bin1 > 1L) {
+    for (k in 2:n_bin1) g[k, ] <- g[k, ] + g[k - 1L, ]
+  }
+  if (n_bin2 > 1L) {
+    for (l in 2:n_bin2) g[, l] <- g[, l] + g[, l - 1L]
+  }
   g <- rbind(0, g)
   g <- cbind(0, g)
 

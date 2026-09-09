@@ -285,3 +285,32 @@ test_that("gg_ale_rfsrc separates an additive pair from an interacting one", {
   expect_lt(peak_add, 5)
   expect_gt(peak_mul / peak_add, 5)
 })
+
+test_that("gg_ale_rfsrc centers a categorical curve on the level frequencies", {
+  # Catches: reusing the continuous trapezoidal centering for levels. That form
+  # weights by BIN counts, of which there are m - 1 for m levels, so the first
+  # level's population never enters the constant. The curve then sits at the
+  # wrong level while its shape, ordering and span all stay correct -- and a
+  # roughly balanced fixture hides it, because the missing weight is small.
+  # This one is deliberately imbalanced, 80/15/5: the empirical weighted mean
+  # was -0.936 before the fix.
+  #
+  # The property is the categorical counterpart of the trapezoidal check
+  # above: the expected ALE over the observed data is zero.
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  n <- 400
+  grp <- factor(sample(c("a", "b", "c"), n, TRUE, prob = c(0.80, 0.15, 0.05)))
+  d <- data.frame(grp = grp, noise = stats::rnorm(n))
+  d$y <- c(a = 0, b = 5, c = 10)[as.character(grp)] + stats::rnorm(n, sd = 0.5)
+  rf <- randomForestSRC::rfsrc(y ~ ., data = d, ntree = 200)
+
+  gg <- gg_ale_rfsrc(rf, xvar.names = "grp")
+
+  counts <- table(d$grp)[as.character(gg$categorical$x)]
+  weighted_mean <- sum((counts / sum(counts)) * gg$categorical$yhat)
+  expect_equal(weighted_mean, 0, tolerance = 1e-8)
+
+  # The imbalance has to be real, or the test cannot fail as intended.
+  expect_gt(max(counts) / min(counts), 5)
+})

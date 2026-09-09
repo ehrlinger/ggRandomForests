@@ -79,6 +79,22 @@ plot.gg_ale_rfsrc <- function(x, labels = NULL, ...) {
   }
 }
 
+## Width of the cell each grid point stands for, on an irregular axis. The ALE
+## surface carries a value AT each bin edge, so a point's cell runs from the
+## midpoint to its left neighbour to the midpoint to its right, and the end
+## points get a half-cell mirrored outward. Adjacent cells then share an edge
+## exactly, which is what leaves the heatmap gapless.
+.ale_cell_span <- function(v) {
+  u <- sort(unique(v))
+  if (length(u) < 2L) {
+    return(rep(1, length(v)))
+  }
+  mid <- (u[-1] + u[-length(u)]) / 2
+  lower <- c(u[1] - (mid[1] - u[1]), mid)
+  upper <- c(mid, u[length(u)] + (u[length(u)] - mid[length(mid)]))
+  (upper - lower)[match(v, u)]
+}
+
 #' Plot a \code{\link{gg_ale_rfsrc}} interaction object
 #'
 #' Renders the second-order (interaction) ALE surface from
@@ -110,12 +126,20 @@ plot.gg_ale_interaction <- function(x, ...) {
   name1 <- x$name1[1]
   name2 <- x$name2[1]
 
-  ## geom_tile(), not geom_raster(): the ALE grid is quantile-based, so its
-  ## cells are unevenly spaced by construction. geom_raster() assumes a regular
-  ## grid and silently shifts the cells onto one, which moves the interaction
-  ## away from the predictor values it belongs to.
+  ## The ALE grid is quantile-based, so its cells are unevenly spaced by
+  ## construction, and neither raster geom handles that on its own.
+  ## geom_raster() assumes a regular grid outright. geom_tile() without an
+  ## explicit size is no better: it takes ONE width from the smallest gap in
+  ## the data, so wide cells shrink to the narrowest one and the surface comes
+  ## out as scattered tiles with gaps between them. Both move the interaction
+  ## away from the predictor values it belongs to. Sizing each cell from its
+  ## own neighbours is what makes the tiles abut and cover the range.
+  x$.cell_w <- .ale_cell_span(x$x)
+  x$.cell_h <- .ale_cell_span(x$y)
+
   ggplot2::ggplot(x, ggplot2::aes(x = .data$x, y = .data$y, fill = .data$ale)) +
-    ggplot2::geom_tile() +
+    ggplot2::geom_tile(ggplot2::aes(width = .data$.cell_w,
+                                    height = .data$.cell_h)) +
     ggplot2::scale_fill_gradient2(low = "#2166AC", mid = "white",
                                   high = "#B2182B", midpoint = 0) +
     ggplot2::labs(x = name1, y = name2, fill = "Interaction\nALE")

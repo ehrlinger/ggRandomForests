@@ -148,3 +148,134 @@ test_that("print and summary methods report the ALE object without erroring", {
   expect_output(print(gi), "Wind x Temp")
   expect_output(print(summary(gi)), "interaction ALE range")
 })
+
+test_that("gg_ale_rfsrc keeps a low-cardinality numeric predictor numeric", {
+  # Catches: imposing the counterfactual level as a factor on a numeric column.
+  # .ale_is_categorical() routes ANY predictor with fewer than cat_limit unique
+  # values down the categorical path, so a 0/1 indicator lands there while
+  # still being numeric. Substituting a factor changes the column's type, and
+  # the forest then scores a variable it was not fit on -- silently, because
+  # predict() still returns numbers. The symptom is a flat curve: the effect
+  # measured 0 against a true 9.85 before this was fixed.
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  n <- 300
+  d <- data.frame(bin = stats::rbinom(n, 1, 0.5), noise = stats::rnorm(n))
+  d$y <- 10 * d$bin + stats::rnorm(n, sd = 0.5)
+  rf <- randomForestSRC::rfsrc(y ~ ., data = d, ntree = 200)
+
+  g <- gg_ale_rfsrc(rf, xvar.names = "bin")
+
+  # Ground truth from the forest itself, not from a stored number: score every
+  # observation at bin = 0 and at bin = 1 and take the mean difference.
+  d0 <- d
+  d0$bin <- 0
+  d1 <- d
+  d1$bin <- 1
+  truth <- mean(stats::predict(rf, d1)$predicted -
+                  stats::predict(rf, d0)$predicted)
+
+  expect_equal(diff(range(g$categorical$yhat)), truth, tolerance = 0.1)
+  expect_gt(diff(range(g$categorical$yhat)), 5)
+})
+
+test_that("gg_ale_rfsrc uses the model's factor levels, not newx's", {
+  # Catches: reading the grid from droplevels(newx[[x]]) instead of the fitted
+  # model. A newx that omits one level, or carries a relevelled copy, would
+  # then silently reorder the curve while every shape assertion still passed.
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  n <- 240
+  grp <- factor(sample(c("A", "B", "C"), n, TRUE), levels = c("C", "A", "B"))
+  d <- data.frame(y = c(A = 5, B = 10, C = 0)[as.character(grp)] +
+                    stats::rnorm(n, 0, 0.5),
+                  grp = grp, noise = stats::rnorm(n))
+  rf <- randomForestSRC::rfsrc(y ~ ., data = d, ntree = 200)
+
+  # newx relevelled alphabetically; the model's order is still C, A, B.
+  newx <- rf$xvar
+  newx$grp <- factor(as.character(newx$grp), levels = c("A", "B", "C"))
+
+  g <- gg_ale_rfsrc(rf, xvar.names = "grp", newx = newx)
+
+  expect_equal(levels(g$categorical$x), c("C", "A", "B"))
+})
+
+test_that("gg_ale_rfsrc survives a quantile grid that collapses to one bin", {
+  # Catches: nested apply() in the interaction accumulation. apply() drops the
+  # dimension when an axis has a single bin, and the outer call then failed
+  # with "dim(X) must have a positive length". Tied values collapse quantile
+  # edges, so a predictor with most of its mass at one value reaches this for
+  # any modest n_eval -- it is not an exotic input.
+  skip_on_cran()
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  n <- 200
+  tied <- c(rep(0, round(0.91 * n)), sample(1:9, n - round(0.91 * n), TRUE))
+  d <- data.frame(tied = tied, x2 = stats::runif(n, 0, 10))
+  d$y <- d$tied + d$x2 + stats::rnorm(n, sd = 0.1)
+  rf <- randomForestSRC::rfsrc(y ~ ., data = d, ntree = 100)
+
+  expect_no_error(
+    g <- gg_ale_rfsrc(rf, xvar.names = "tied", xvar2.name = "x2",
+                      n_eval = 2, cat_limit = 3)
+  )
+  expect_s3_class(g, "gg_ale_interaction")
+  expect_gt(nrow(g), 0L)
+})
+
+test_that("plot.gg_ale_interaction sizes cells to the irregular grid", {
+  # Catches: geom_raster(), or a geom_tile() with no explicit width/height.
+  # Both impose one constant cell size -- geom_tile() takes it from the
+  # smallest gap -- so on a quantile grid the wide cells shrink to the
+  # narrowest and the surface renders as scattered tiles with gaps. The
+  # rendered extent is xmin/xmax, not the layer's `width` column.
+  skip_on_cran()
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  air <- stats::na.omit(airquality)
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = air, ntree = 50)
+
+  g <- gg_ale_rfsrc(rf, xvar.names = "Wind", xvar2.name = "Temp", n_eval = 6)
+  built <- ggplot2::ggplot_build(plot(g))$data[[1]]
+
+  # The grid is genuinely uneven, so the cells must be too.
+  expect_gt(length(unique(round(diff(sort(unique(g$x))), 6))), 1L)
+  expect_gt(length(unique(round(built$xmax - built$xmin, 6))), 1L)
+  expect_gt(length(unique(round(built$ymax - built$ymin, 6))), 1L)
+
+  # Cells abut: every gap between adjacent grid points is fully covered, so
+  # the drawn surface spans at least the data range.
+  expect_gte(diff(range(c(built$xmin, built$xmax))), diff(range(g$x)))
+  expect_gte(diff(range(c(built$ymin, built$ymax))), diff(range(g$y)))
+})
+
+test_that("gg_ale_rfsrc rejects a newx missing training predictors", {
+  # Catches: validating only that supplied names are known, which lets a
+  # column subset through to fail inside predict.rfsrc() with a message that
+  # names no column.
+  skip_if_not_installed("randomForestSRC")
+  set.seed(20260909L)
+  air <- stats::na.omit(airquality)
+  rf <- randomForestSRC::rfsrc(Ozone ~ ., data = air, ntree = 30)
+
+  expect_error(
+    gg_ale_rfsrc(rf, xvar.names = "Wind", newx = air[, c("Wind", "Temp")]),
+    "missing 3 predictor"
+  )
+  expect_error(
+    gg_ale_rfsrc(rf, xvar.names = "Wind", newx = air[, c("Wind", "Temp")]),
+    "Solar.R"
+  )
+
+  bad <- rf$xvar
+  bad$not_a_predictor <- 1
+  expect_error(
+    gg_ale_rfsrc(rf, xvar.names = "Wind", newx = bad),
+    "not trained on: not_a_predictor"
+  )
+  expect_error(
+    gg_ale_rfsrc(rf, xvar.names = "Wind", newx = as.matrix(air)),
+    "must be a data.frame"
+  )
+})

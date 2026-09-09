@@ -105,8 +105,12 @@ reference:
       - gg_variable
       - plot.gg_variable
 
-  - title: "Partial Dependence"
-    desc: "Partial dependence plots for individual variables."
+  - title: "Partial Dependence and Accumulated Local Effects"
+    desc: >
+      Marginal-effect plots for individual variables. Partial dependence
+      averages over the other predictors; accumulated local effects perturb a
+      predictor only within neighbourhoods of its own observed values, and so
+      do not extrapolate when predictors are correlated.
     contents:
       - gg_partial
       - plot.gg_partial
@@ -116,6 +120,9 @@ reference:
       - plot.gg_partial_varpro
       - gg_partialpro
       - plot.gg_partialpro
+      - gg_ale_rfsrc
+      - plot.gg_ale_rfsrc
+      - plot.gg_ale_interaction
 
   - title: "Survival Analysis"
     desc: "Survival curves, ROC, and related diagnostics."
