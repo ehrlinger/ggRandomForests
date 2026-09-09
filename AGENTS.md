@@ -240,8 +240,23 @@ project context. Read it before writing user-facing text.
   undefined symbol or an unused local. Do not rely on a green lint for that class of error.
 - `testthat` runs on **edition 2** here: `DESCRIPTION` has no `Config/testthat/edition` field.
   Do not assume 3rd-edition semantics.
-- `randomForestSRC` output structure varies by version (3.6.2 is installed; `DESCRIPTION`
+- `randomForestSRC` output structure varies by version (3.7.0 is installed; `DESCRIPTION`
   requires `>= 3.4.0`). Never index its fields by position.
+- **A `randomForestSRC` upgrade can move rendered output, and CI will not tell you.** The
+  3.6.2 to 3.7.0 bump shifted five survival vdiffr baselines — `gg_vimp survival`,
+  `gg_error survival` and three `gg_brier` — in the third significant figure, while every
+  regression and classification baseline held. 3.7.0's NEWS documents the Brier half
+  ("Corrected `plot.survival()` and the underlying Brier calculations"), so those numbers
+  are an upstream fix and the old baselines encoded the bug; the `gg_vimp` and `gg_error`
+  drift is real but undocumented upstream.
+
+  The failure is invisible in CI, because all three workflows set `VDIFFR_RUN_TESTS:
+  "false"` and never compare an SVG. It surfaces only on a laptop, only after that machine
+  upgrades, and it looks exactly like a defect in whatever branch happens to be checked
+  out. **Before treating five failing survival baselines as your bug, check
+  `packageVersion("randomForestSRC")` against the version named above.** Regenerating them
+  is a change to what "correct output" means, so it belongs on its own branch with this
+  line updated in the same commit — never folded into a feature PR.
 - CRAN rejects a package whose overall `R CMD check` exceeds about 10 minutes even at 0/0/0,
   and the rule bites at the **incoming pretest**, not per-flavor afterwards. The released
   3.5.0 sat at 673s on CRAN's own `r-devel-windows` marked OK, while 3.5.1 at 720s was
