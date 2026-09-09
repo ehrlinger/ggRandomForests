@@ -114,6 +114,16 @@ test_that("autoplot() equals plot() for every cheaply constructible gg_* class",
   )
   objects[["gg_tune_rhf (iAUC)"]] <- gg_tune_rhf(.fake_rhf_tune_iauc())
 
+  # ALE, both classes. Continuous predictors only: with a categorical variable
+  # in the mix plot.gg_ale_rfsrc() returns a patchwork rather than a ggplot,
+  # and same_plot() compares built ggplots.
+  objects[["gg_ale_rfsrc (regression)"]] <- gg_ale_rfsrc(
+    rr, xvar.names = "wt", n_eval = 5
+  )
+  objects[["gg_ale_interaction (regression)"]] <- gg_ale_rfsrc(
+    rr, xvar.names = "wt", xvar2.name = "disp", n_eval = 4
+  )
+
   # gg_shap() stops() when kernelshap is absent, and kernelshap is Suggests.
   # Built inside the list literal above it took the whole block down with it on
   # any machine without the package, losing all the other comparisons, and

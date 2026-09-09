@@ -3,6 +3,21 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* New `gg_ale_rfsrc()` computes Accumulated Local Effects (Apley and Zhu,
+  2020) for regression and classification forests, as a counterpart to
+  `gg_partial_rfsrc()`. Partial dependence averages the forest's prediction
+  over the joint distribution of the other predictors, which evaluates the
+  forest at predictor combinations that never occur together when predictors
+  are correlated. ALE only ever perturbs a predictor inside local
+  neighbourhoods of its own observed values, so it does not extrapolate into
+  those regions. Supplying `xvar2.name` returns the second-order (interaction)
+  surface for a pair of continuous predictors, which is zero everywhere when
+  the two act additively. Survival forests are not supported, the same
+  limitation `gg_shap()` carries.
+
+  `plot()` and `autoplot()` methods draw the first-order curves as lines and
+  bars faceted by variable, matching `plot.gg_partial_rfsrc()`'s layout so the
+  two can be read side by side, and the interaction surface as a heatmap.
 * `gg_partial_varpro()` gains `scale = "prob_typical"`. `partialpro()` returns
   per-subject log-odds, and collapsing them to a curve takes an average and a
   back-transform; the ORDER is a modelling choice. `"prob"` (unchanged, still

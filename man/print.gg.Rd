@@ -27,6 +27,8 @@
 \alias{print.gg_beta_varpro}
 \alias{print.gg_ivarpro}
 \alias{print.gg_shap}
+\alias{print.gg_ale_rfsrc}
+\alias{print.gg_ale_interaction}
 \title{Print methods for gg_* data objects}
 \usage{
 \method{print}{gg_beta_uvarpro}(x, ...)
@@ -76,6 +78,10 @@
 \method{print}{gg_ivarpro}(x, ...)
 
 \method{print}{gg_shap}(x, ...)
+
+\method{print}{gg_ale_rfsrc}(x, ...)
+
+\method{print}{gg_ale_interaction}(x, ...)
 }
 \arguments{
 \item{x}{A \code{gg_*} data object.}
