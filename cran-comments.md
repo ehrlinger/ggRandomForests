@@ -1,3 +1,42 @@
+## v3.5.3: test-only fix for the upcoming varPro 3.2.1
+
+varPro's maintainer, Udaya Kogalur, asked me to make this change ahead of his
+varPro 3.2.1 submission. That release has `varPro::sdependent()` reject
+non-finite input. A mock importance matrix in `test_gg_sdependent.R` carried
+`NA` on its diagonal, so six tests in ggRandomForests 3.5.2 error against
+varPro 3.2.1, and his reverse-dependency check would report it. Live
+`get.beta.entropy()` output puts `0` on that diagonal, and the mock now does
+too.
+
+The diff is that one test fixture plus the version metadata. No function,
+argument, example, vignette or returned object changed, and the mock gives
+identical results on the current CRAN varPro 3.2.0.
+
+### Test environments
+
+* **Local:** macOS (aarch64-apple-darwin), R 4.6.1, `R CMD check --as-cran`
+  with the manual, built from a clean `git archive` export: **0 ERRORs,
+  0 WARNINGs, 1 NOTE**. The source tarball is 2.38 MB. Timed steps are
+  essentially unchanged from 3.5.2: examples 16s, examples with
+  `--run-donttest` 31s, tests 14s, vignette rebuild 38s.
+* **Against varPro 3.2.1:** the test suite under CRAN skip semantics, run
+  against the varPro 3.2.1 candidate from its development branch, passes with
+  0 failures. Against 3.2.0 it passes as part of the check above.
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
+* **URL check:** `urlchecker::url_check()` reports all URLs correct.
+* **win-builder:** PENDING. Fill in the R-devel, R-release and R-oldrelease
+  status and timed steps before submitting.
+
+### NOTE disposition
+
+The one NOTE is `Number of updates in past 6 months: 8`. 3.5.2 was published
+on 2026-08-21, and I would not otherwise submit this soon. This release exists
+so that varPro 3.2.1 passes its reverse-dependency checks. It carries nothing
+else, and it can be accepted before or after varPro 3.2.1 without affecting
+either.
+
+---
+
 ## v3.5.2: resubmission, check time back under ten minutes
 
 This replaces the 3.5.1 submission of 2026-08-19, which the incoming pretest
