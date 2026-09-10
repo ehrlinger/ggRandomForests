@@ -33,9 +33,9 @@ A \code{data.frame} of class \code{c("gg_beta_varpro", "data.frame")}.
 For a regression fit: one row per released variable, sorted by
 \code{beta_mean} descending. For a classification fit: long-format with
 an extra \code{class} column, one row per (variable, class) pair;
-\code{variable} is a factor whose levels are set by
-\verb{mean(|sum-of-class-beta|)} descending so every facet / panel shares
-the same row order. \code{which_class} (or the binary default
+\code{variable} is a factor whose levels run in ascending
+\verb{mean(|sum-of-class-beta|)}, most important last, so every facet /
+panel shares the same row order with the top variable at the top. \code{which_class} (or the binary default
 last-factor-level) collapses the output to a single class.
 }
 \description{
