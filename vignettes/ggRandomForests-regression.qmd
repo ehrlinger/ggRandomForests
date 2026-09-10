@@ -144,6 +144,7 @@ We grow a regression forest using all 13 predictors. The `rfsrc()` function
 detects the regression family from the continuous response.
 
 ```{r rfsrc-fit}
+set.seed(42)
 rfsrc_Boston <- rfsrc(medv ~ ., data = Boston, # nolint: object_name_linter
                       ntree = 100, importance = TRUE, err.block = 5)
 rfsrc_Boston
