@@ -72,7 +72,7 @@
 #'   The integrated CRPS is attached as \code{attr(., "crps_integrated")}.
 #'   It is \code{get.brier.survival()$crps}, the raw area under the Brier
 #'   curve, not normalized by time, so it is in the units of the time axis
-#'   and grows with follow-up. Divide by \code{max(time)} for
+#'   and grows with follow-up. Divide by \code{max(.$time)} for
 #'   \code{get.brier.survival()$crps.std}; the last value of the \code{crps}
 #'   column instead divides by the time elapsed since the first event time.
 #'

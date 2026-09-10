@@ -85,7 +85,7 @@ ggRandomForests v4.0.0 (development)
   dropped without a warning, so the facet strips rendered as bare "1" and "3"
   instead of the intended "1 Year" and "3 Years". Corrected; the figure now
   carries the labels its code always asked for.
-* The survival vignette described `attr(gg_brier(), "crps_integrated")` as a
+* The survival vignette described `attr(gg_brier(rf), "crps_integrated")` as a
   time-normalised score on the 0 to 0.25 Brier scale, then printed 1.44. The
   attribute is `get.brier.survival()$crps`, the raw area under the Brier
   curve in time units, and always has been. The vignette now says so and shows

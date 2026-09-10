@@ -648,7 +648,8 @@ attribute. Be careful with it. That number is the raw area under the Brier
 curve, *not* divided by elapsed time, so it carries the units of the time axis
 (years here) and grows with the length of follow-up. It is not on the 0 to 0.25
 scale, and you cannot compare it across studies with different follow-up.
-Divide it by the follow-up time to put it back on the Brier scale:
+Divide it by the largest event time, `max(gg_bs$time)`, to put it back on the
+Brier scale:
 
 ```{r brier-crps-scalar}
 crps_raw <- attr(gg_bs, "crps_integrated")
