@@ -163,8 +163,8 @@ class(gg_e) <- c("gg_error", class(gg_e))
 plot(gg_e)
 ```
 
-The error flattens out by about 60 trees, well inside the 100 we grew, so the
-forest is large enough for reliable predictions.
+The error falls steeply over the first 20 trees and changes little after that,
+so the 100 we grew are enough for reliable predictions.
 
 ## OOB predictions
 
@@ -308,7 +308,7 @@ they're built from entirely different mechanics.
 Variable dependence shows each tract's OOB predicted `medv` plotted against a
 predictor, with a loess smooth indicating the trend.
 
-```{r vardep-panel, fig.cap="Variable dependence for top predictors (minimal depth rank order)."}
+```{r vardep-panel, fig.cap="Variable dependence for top predictors (minimal depth top variables)."}
 gg_v <- gg_variable(rfsrc_Boston)
 
 plot(gg_v, xvar = xvar, panel = TRUE, alpha = 0.5) +
@@ -325,8 +325,8 @@ plot(gg_v, xvar = "chas", alpha = 0.4) +
 ```
 
 Most tracts do not border the Charles River, and the predicted value
-distributions largely overlap, consistent with `chas` ranking last in both
-VIMP and minimal depth.
+distributions largely overlap, consistent with `chas` ranking last by minimal
+depth. VIMP ranks it fifth, so here the two measures disagree.
 
 ## Partial dependence
 
@@ -361,8 +361,8 @@ ggplot(pd$continuous, aes(x = x, y = yhat)) +
   theme_bw()
 ```
 
-`lstat` shows a strongly concave relationship, while `rm` stays flat below
-about 6 rooms and then climbs sharply. Shapes like these are awkward to
+`lstat` falls steeply up to about 10 percent and then levels off, while `rm`
+stays flat up to about 6.5 rooms and then climbs sharply to about 7.8. Shapes like these are awkward to
 capture with a simple parametric transform, since you would have to guess
 the form in advance, but the random forest picks them up on its own.
 
@@ -423,8 +423,8 @@ plot(gg_v, xvar = "rm", alpha = 0.5) +
   facet_wrap(~lstat_grp)
 ```
 
-The `rm` effect is strongest in low-`lstat` tracts (bottom-left panels) and
-nearly flat in high-`lstat` tracts, confirming a meaningful interaction.
+The `rm` effect is strongest in low-`lstat` tracts (top row) and nearly flat
+in high-`lstat` tracts (bottom row), confirming a meaningful interaction.
 
 # Partial Dependence Surface
 
@@ -465,13 +465,14 @@ kind of non-linear structure that random forests capture naturally.
 We have walked a full random forest regression analysis with
 **randomForestSRC** and **ggRandomForests**, and the pieces line up:
 
-- `gg_error()` showed the OOB error settling by about 60 of the 100 trees.
+- `gg_error()` showed the OOB error settling within the first 20 of the 100
+  trees.
 - VIMP (`gg_vimp()`) and minimal depth (`max.subtree()`) agreed on the same
   story: `lstat` and `rm` dominate, with a clear gap to everything else.
 - `gg_variable()` traced strongly non-linear predictor--response curves, the
   same shapes the raw-data EDA hinted at.
 - Partial dependence from `gg_partial_rfsrc()` gave the risk-adjusted version
-  of those curves: concave for `lstat`, threshold-like for `rm`.
+  of those curves: steep then flat for `lstat`, threshold-like for `rm`.
 - Conditioning plots and the partial dependence surface pulled out the `lstat`--`rm`
   interaction, with the room-size effect strongest in high-status tracts.
 
