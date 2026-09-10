@@ -8,24 +8,50 @@ varPro 3.2.1, and his reverse-dependency check would report it. Live
 `get.beta.entropy()` output puts `0` on that diagonal, and the mock now does
 too.
 
-The diff is that one test fixture plus the version metadata. No function,
+The diff is that one test fixture, five regenerated `vdiffr` survival
+baselines under `tests/testthat/_snaps/`, and the version metadata. The
+baselines follow a numerical change in `randomForestSRC` 3.7.0 and are compared
+only when `VDIFFR_RUN_TESTS` is set, which it is not on CRAN. No function,
 argument, example, vignette or returned object changed, and the mock gives
 identical results on the current CRAN varPro 3.2.0.
 
 ### Test environments
 
 * **Local:** macOS (aarch64-apple-darwin), R 4.6.1, `R CMD check --as-cran`
-  with the manual, built from a clean `git archive` export: **0 ERRORs,
-  0 WARNINGs, 1 NOTE**. The source tarball is 2.38 MB. Timed steps are
-  essentially unchanged from 3.5.2: examples 16s, examples with
-  `--run-donttest` 31s, tests 14s, vignette rebuild 38s.
+  with the manual, built from a clean `git archive` export of the submitted
+  commit: **0 ERRORs, 0 WARNINGs, 1 NOTE**. The source tarball is 2.37 MB.
+  Timed steps are essentially unchanged from 3.5.2: examples 15s, examples
+  with `--run-donttest` 35s, tests 17s, vignette rebuild 42s.
 * **Against varPro 3.2.1:** the test suite under CRAN skip semantics, run
   against the varPro 3.2.1 candidate from its development branch, passes with
   0 failures. Against 3.2.0 it passes as part of the check above.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
-* **win-builder:** PENDING. Fill in the R-devel, R-release and R-oldrelease
-  status and timed steps before submitting.
+
+**win-builder:** x86_64-w64-mingw32, Windows Server 2022, all three branches.
+Each returns **Status: 1 NOTE**, the same `Number of updates in past 6 months:
+8` reported locally, with no second NOTE and no ERRORs or WARNINGs.
+`checking for hidden files and directories` is OK on all three.
+
+| Step | R-devel (r90510) | R-release (4.6.1) | R-oldrelease (4.5.3) |
+|---|---|---|---|
+| CRAN incoming feasibility | | | 18s |
+| R code for possible problems | 23s | 21s | 25s |
+| examples | 36s | 33s | 37s |
+| tests | 37s | 38s | 43s |
+| re-building vignette outputs | 112s | 108s | 136s |
+| PDF version of manual | 15s | 15s | 14s |
+| HTML version of manual | | 14s | 13s |
+| **timed steps** | **223s** | **229s** | **286s** |
+
+The blank cells are steps that `00check.log` did not time on that branch. For
+3.5.2 the same branches came to 265s, 234s and 277s, so check time is unchanged
+within run-to-run noise.
+
+One caveat, so the record is exact. These runs used the tarball built before
+the five `vdiffr` baselines above were merged. The submitted tarball differs
+from it only in those five `.svg` files, which `R CMD check` does not compare
+on CRAN, and the local check above was run on the submitted tarball itself.
 
 ### NOTE disposition
 
