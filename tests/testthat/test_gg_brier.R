@@ -27,6 +27,14 @@ test_that("gg_brier.rfsrc produces a tidy survival frame", {
 
   # integrated CRPS attribute matches the upstream scalar.
   expect_true(!is.null(attr(gg_dta, "crps_integrated")))
+  # crps_std is the raw integral over the largest event time, on the Brier
+  # scale, and it is the value print() reports.
+  expect_equal(attr(gg_dta, "crps_std"),
+               attr(gg_dta, "crps_integrated") / max(gg_dta$time))
+  expect_output(print(gg_dta), "CRPS \\(time-normalized\\)")
+  s <- summary(gg_dta)
+  expect_true(any(grepl("CRPS (time-normalized)", s$body, fixed = TRUE)))
+  expect_true(any(grepl("integrated CRPS (time units)", s$body, fixed = TRUE)))
 
   # plot method returns a ggplot for each supported display.
   expect_s3_class(plot(gg_dta), "ggplot")

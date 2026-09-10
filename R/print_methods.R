@@ -149,9 +149,9 @@ print.gg_survival <- function(x, ...) {
 #' @rdname print.gg
 #' @export
 print.gg_brier <- function(x, ...) {
-  crps <- attr(x, "crps_integrated")
+  crps <- attr(x, "crps_std")
   suffix <- if (!is.null(crps)) {
-    sprintf("  |  integrated CRPS: %.4g", crps)
+    sprintf("  |  CRPS (time-normalized): %.4g", crps)
   } else {
     ""
   }

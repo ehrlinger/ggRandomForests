@@ -273,7 +273,8 @@ summary.gg_udependent <- function(object, ...) {
 #' @rdname summary.gg
 #' @export
 summary.gg_brier <- function(object, ...) {
-  crps <- attr(object, "crps_integrated")
+  crps     <- attr(object, "crps_integrated")
+  crps_std <- attr(object, "crps_std")
   envelope_mean <- mean(object$bs.upper - object$bs.lower, na.rm = TRUE)
   body <- c(
     sprintf("time range: [%.4g, %.4g]",
@@ -282,7 +283,9 @@ summary.gg_brier <- function(object, ...) {
     sprintf("peak Brier: %.4g at time %.4g",
             max(object$brier, na.rm = TRUE),
             object$time[which.max(object$brier)]),
-    sprintf("integrated CRPS: %s",
+    sprintf("CRPS (time-normalized): %s",
+            if (is.null(crps_std)) "NA" else sprintf("%.4g", crps_std)),
+    sprintf("integrated CRPS (time units): %s",
             if (is.null(crps)) "NA" else sprintf("%.4g", crps)),
     sprintf("mean 15-85%% envelope width: %.4g", envelope_mean)
   )

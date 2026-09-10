@@ -72,9 +72,11 @@
 #'   The integrated CRPS is attached as \code{attr(., "crps_integrated")}.
 #'   It is \code{get.brier.survival()$crps}, the raw area under the Brier
 #'   curve, not normalized by time, so it is in the units of the time axis
-#'   and grows with follow-up. Divide by \code{max(.$time)} for
-#'   \code{get.brier.survival()$crps.std}; the last value of the \code{crps}
-#'   column instead divides by the time elapsed since the first event time.
+#'   and grows with follow-up. The time-normalized value,
+#'   \code{get.brier.survival()$crps.std} (the raw integral divided by
+#'   \code{max(.$time)}), is attached as \code{attr(., "crps_std")} and reads
+#'   on the Brier scale. The last value of the \code{crps} column instead
+#'   divides by the time elapsed since the first event time.
 #'
 #' @seealso \code{\link{plot.gg_brier}},
 #'   \code{\link[randomForestSRC]{get.brier.survival}},
@@ -224,6 +226,7 @@ gg_brier.rfsrc <- function(object,
   )
 
   attr(gg_dta, "crps_integrated") <- brier_obj$crps
+  attr(gg_dta, "crps_std")        <- brier_obj$crps.std
   attr(gg_dta, "cens.model")      <- cens.model
   class(gg_dta) <- c("gg_brier", class(gg_dta))
   gg_dta <- .set_provenance(gg_dta, object)
