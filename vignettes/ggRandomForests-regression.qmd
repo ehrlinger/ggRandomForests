@@ -162,8 +162,8 @@ class(gg_e) <- c("gg_error", class(gg_e))
 plot(gg_e)
 ```
 
-The error stabilizes well before 500 trees, so the forest is large enough
-for reliable predictions.
+The error flattens out by about 60 trees, well inside the 100 we grew, so the
+forest is large enough for reliable predictions.
 
 ## OOB predictions
 
@@ -464,7 +464,7 @@ kind of non-linear structure that random forests capture naturally.
 We have walked a full random forest regression analysis with
 **randomForestSRC** and **ggRandomForests**, and the pieces line up:
 
-- `gg_error()` showed the OOB error settling well before 500 trees.
+- `gg_error()` showed the OOB error settling by about 60 of the 100 trees.
 - VIMP (`gg_vimp()`) and minimal depth (`max.subtree()`) agreed on the same
   story: `lstat` and `rm` dominate, with a clear gap to everything else.
 - `gg_variable()` traced strongly non-linear predictor--response curves, the

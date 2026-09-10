@@ -139,9 +139,9 @@ plot(gg_error(rfsrc_iris))
 ```
 
 The *setosa* error drops to zero almost immediately. *versicolor* and
-*virginica* settle in around 6% each, and the overall rate levels off near
-4% well before 200 trees, so the forest is not still learning by the time we
-stop growing it.
+*virginica* settle in around 6% each, and the overall rate levels off between
+4% and 5% within about 20 trees, so the forest is not still learning by the
+time we stop growing it at 100.
 
 ## OOB predictions
 

@@ -45,13 +45,15 @@ at all.
 
 \strong{A \code{randomForest} fit needs \code{importance = TRUE} to give you
 this.}  \code{randomForest::randomForest()} defaults to
-\code{importance = FALSE}, and that fit stores only \code{IncNodePurity},
-a node-impurity (RSS or Gini) measure, which is not a permutation quantity
-and is not comparable to one.  It is the only importance the forest kept, so
+\code{importance = FALSE}, and that fit stores only a node-impurity measure
+(\code{IncNodePurity}, RSS, for regression; \code{MeanDecreaseGini} for
+classification), which is not a permutation quantity and is not comparable
+to one.  It is the only importance the forest kept, so
 it is what \code{gg_vimp()} reports, in the \code{vimp} column, same as any
 other.  Nothing marks the difference in the plot.  So
 \code{gg_vimp(randomForest(y ~ ., data))} ranks by node purity; pass
-\code{importance = TRUE} and you get permutation VIMP (\code{\%IncMSE}), and
+\code{importance = TRUE} and you get permutation VIMP (\code{\%IncMSE} for
+regression), and
 \code{colnames(object$importance)} tells you which one you have.
 \code{randomForestSRC::rfsrc()} has no such trap: its \code{importance}
 argument yields permutation VIMP.
