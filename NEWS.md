@@ -85,6 +85,14 @@ ggRandomForests v4.0.0 (development)
   dropped without a warning, so the facet strips rendered as bare "1" and "3"
   instead of the intended "1 Year" and "3 Years". Corrected; the figure now
   carries the labels its code always asked for.
+* The regression vignette's partial dependence surface was flat in `rm`. It
+  overwrote `newx$rm` and called `gg_partial_rfsrc()` once per `rm` value,
+  but `newx` only sets the evaluation grid and `partial.rfsrc()` always
+  averages over the training data, so all six curves were identical. It now
+  holds `rm` fixed through `xvar2.name`, and the prose describes what the
+  corrected figure shows: a modest interaction, not a strong one. The
+  `newx` and `xvar2.name` documentation now says what `newx` does and does
+  not control.
 * Development line opened after the v3.2.0 CRAN release (forward-merged the
   v3.2.0 RMST/varPro fixes onto the dev line).
 * Begin the v4.0.0 development line: a Random Hazard Forests (RHF)

@@ -54,10 +54,21 @@
 #'   dependence should be computed. Must be a subset of \code{rf_model$xvar.names}.
 #' @param xvar2.name Optional single character name of a grouping variable in
 #'   \code{newx}. When supplied, partial dependence is computed separately for
-#'   each unique level of this variable and a \code{grp} column is appended.
-#' @param newx Optional \code{data.frame} of predictor values to evaluate
-#'   partial effects at. Defaults to the training data stored in
-#'   \code{rf_model$xvar}. All column names must match \code{rf_model$xvar.names}.
+#'   each unique value of this column in \code{newx}, with the variable held
+#'   at that value for every training observation, and a \code{grp} column is
+#'   appended. For a continuous variable, set \code{newx[[xvar2.name]]} to a
+#'   short grid first, since every distinct value costs one more
+#'   \code{partial.rfsrc()} call.
+#' @param newx Optional \code{data.frame} that sets the evaluation grid, not
+#'   the data being averaged over. Each of \code{xvar.names} is evaluated at
+#'   the quantile grid (or unique levels) of its column in \code{newx}, and
+#'   \code{xvar2.name} takes its values from the same place. The average is
+#'   always taken over the training data held in \code{rf_model} (see
+#'   \code{\link[randomForestSRC]{partial.rfsrc}}), so overwriting any other
+#'   column of \code{newx} has no effect on \code{yhat}; to hold a second
+#'   variable fixed, pass it as \code{xvar2.name}. Defaults to
+#'   \code{rf_model$xvar}. All column names must match
+#'   \code{rf_model$xvar.names}.
 #' @param partial.time Numeric vector of desired time points for survival
 #'   forests (ignored for regression/classification).  Values are automatically
 #'   snapped to the nearest entry in \code{rf_model$time.interest}; see the
