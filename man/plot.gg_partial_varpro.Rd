@@ -70,7 +70,7 @@ A variable absent from \code{panels} is not drawn; selecting a subset is
 the usual reason to supply it.
 
 The y axis is shared across panels, matching the facet route, and is
-computed over the selected variables only -- so dropping a variable
+computed over the selected variables only, so dropping a variable
 rescales the figure. Only the x scale varies between panels; four partial
 dependence curves on four different y ranges would not compare.}
 
@@ -78,7 +78,7 @@ dependence curves on four different y ranges would not compare.}
 \code{FALSE}.}
 
 \item{smooth}{Logical; draw a \code{geom_smooth()} loess instead of the
-line.  Default \code{FALSE}.  Note that \code{parametric} is already
+line.  Default \code{FALSE}.  \code{parametric} is already
 partialpro's local-polynomial fit, so smoothing it is a smooth of a smooth;
 this is here for the raw-looking figure some journals ask for, not as a
 better estimate.}
@@ -106,8 +106,8 @@ figures usually want a smaller point than a screen figure.}
 
 \item{complement}{Logical; plot \eqn{1 - p} instead of \eqn{p}, and prefix
 the y axis label with \code{"1 - "}.  Use it when the fit targets the
-class you do \emph{not} want on the axis -- a model of weaning failure
-read as the probability of weaning success, say -- so you do not have to
+class you do \emph{not} want on the axis (a model of weaning failure
+read as the probability of weaning success, say), so you do not have to
 recompute \code{\link[varPro]{partialpro}} against the other target.
 Requires a probability scale (\code{scale = "prob"} or \code{"surv"});
 on the additive, multiplicative and unbounded scales \eqn{1 - x} has no
@@ -117,7 +117,7 @@ referent and this is an error rather than a silent no-op.  Default
 \item{ylim}{Numeric length-2; the shared y range for every panel.
 \code{NULL} (default) takes the range of the plotted values, which is what
 the facet route has always done.  Supply it to pin a scale that means
-something independent of the data -- \code{c(0, 1)} on a probability
+something independent of the data: \code{c(0, 1)} on a probability
 scale, say, so a flat curve reads as flat rather than filling the panel.
 It cannot be set from outside: on the \code{panels} route a
 \code{coord_cartesian()} added with \code{&} replaces the per-panel
@@ -193,7 +193,7 @@ follow-up time when not supplied.
 
 \section{What the causal curve is, and when to use it}{
 
-\code{causal} is the \strong{baseline-subtracted local effect} -- varPro's
+\code{causal} is the \strong{baseline-subtracted local effect}, varPro's
 virtual- ("digital-") twins estimator (Ishwaran & Blackstone, 2025).  It
 shows how the prediction shifts as the focal variable moves away from the
 reference grid point, with the other covariates held at on-manifold
@@ -216,9 +216,9 @@ survival curve out to \eqn{\tau}. Read it in the \strong{model's own time
 units}, where it is bounded by \eqn{0 \le \mathrm{RMST}(\tau) \le \tau}.
 
 Two things follow. First, \eqn{\tau} must be given in the fit's time units;
-a \eqn{\tau} past the largest event time just truncates to the full
-restricted mean and stops changing. Second, higher is better here -- more
-time event-free -- which is the opposite of the ensemble-mortality scale.
+a \eqn{\tau} past the largest event time truncates to the full
+restricted mean and stops changing. Second, higher is better here (more
+time event-free), which is the opposite of the ensemble-mortality scale.
 
 A continuous variable's curve sloping \emph{up} means higher values of that
 covariate buy you \emph{more} restricted-mean event-free time within \eqn{\tau}

@@ -22,7 +22,7 @@ ignored otherwise (with a warning). Documented forwardables:
 \code{adaptive}, \code{cut}, \code{cut.max}, \code{ncut}, \code{nmin}, \code{nmax}, \code{noise.na},
 \code{max.rules.tree}, \code{max.tree}, \code{use.loo}, \code{use.abs}, \code{scale}.}
 
-\item{which_obs}{Optional integer scalar - 1-based row index into the
+\item{which_obs}{Optional integer scalar; 1-based row index into the
 training data. \code{NULL} (default) returns the aggregate view.}
 
 \item{which_class}{Optional response level name. \code{NULL} default on a
@@ -92,14 +92,14 @@ variable \code{v} to predicting observation \code{i}, NOT a permutation
 importance and NOT a SHAP value. \strong{Sign carries direction} of the
 local response shift inside the rule's region. \strong{Magnitude is on
 the response scale} when \code{scale = "global"}, or unit-free when
-\code{scale = "local"} (the default). The matrix is \strong{heavily sparse} -
+\code{scale = "local"} (the default). The matrix is \strong{heavily sparse}:
 an observation contributes only to rules that retain it as OOB; on
 real data, per-variable NA fractions of 50-95\% are common.
 Comparison with \code{gg_varpro()} (aggregate split-strength) and
 \code{gg_beta_varpro()} (per-rule lasso beta) is diagnostic: a variable
 that's important globally but has low per-observation contribution
-for a specific case is interesting; the inverse - high local but
-low global - flags a regime-specific signal.
+for a specific case is interesting; the inverse (high local but
+low global) flags a regime-specific signal.
 }
 
 \section{What's in the output}{
@@ -110,12 +110,12 @@ Long-format tidy frame. Regression has columns \code{obs}, \code{variable},
 levels are set by \verb{mean(|local_imp|)} descending across all rows;
 for classification that aggregate is across all (obs, class) so
 every facet / panel shows variables in the same row order. NA
-cells are filtered out - the source matrix is sparse, and the
+cells are filtered out; the source matrix is sparse, and the
 tidy frame only carries the cells where local importance is
 defined.
 
 Provenance attribute carries \code{source}, \code{family}, \code{ntree}, \code{cutoff}
-(named numeric vector - length 1 named \code{"regr"} for regression,
+(named numeric vector: length 1 named \code{"regr"} for regression,
 length K named with class levels for classification),
 \code{cutoff_default}, \code{use.loo}, \code{scale}, \code{n_train}, \code{n_obs}, \code{n_var},
 \code{precomputed}, \code{xvar.names}, \code{class_levels} (classification only),
@@ -150,13 +150,13 @@ Provenance carries \code{precomputed = TRUE} when \code{ivarpro_fit} was supplie
 
 For a classification fit, \code{ivarpro()} returns a list of K matrices
 (one per class) for multi-class, or a flat data.frame for binary
-(positive-class importances only - the wrapper normalizes this to
+(positive-class importances only; the wrapper normalizes this to
 a single-element list under the last factor level). The wrapper
 stacks per-class frames into a long-format frame with a \code{class}
 column. \code{which_class = NULL} returns all classes (binary defaults
 to the last factor level, the positive-class convention used by
 \code{glm} and \code{gg_roc}); \code{which_class = "<name>"} filters to a single
-class. \code{cutoff} polymorphism mirrors \code{\link[=gg_beta_varpro]{gg_beta_varpro()}} - \code{NULL}
+class. \code{cutoff} polymorphism mirrors \code{\link[=gg_beta_varpro]{gg_beta_varpro()}}: \code{NULL}
 is per-class mean(|local_imp|), a scalar broadcasts, a named
 numeric vector overrides per class with fallback to that class's
 mean.

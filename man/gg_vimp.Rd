@@ -14,8 +14,7 @@ gg_vimp(object, nvar, ...)
 \code{\link[randomForestSRC]{vimp}}, or a fitted
 \code{\link[randomForest]{randomForest}}.}
 
-\item{nvar}{argument to control the number of variables included in the
-output.}
+\item{nvar}{Number of variables to include in the output.}
 
 \item{...}{arguments passed to the \code{\link[randomForestSRC]{vimp.rfsrc}}
 function if the \code{\link[randomForestSRC]{rfsrc}} object does not contain
@@ -29,7 +28,7 @@ warning is issued and \code{NA} placeholders are returned so plots remain
 reproducible.
 }
 \description{
-\code{gg_vimp} Extracts the variable importance (VIMP) information from a
+\code{gg_vimp} extracts the variable importance (VIMP) information from a
 \code{\link[randomForestSRC]{rfsrc}} or \code{\link[randomForest]{randomForest}}
 object and reshapes it into a tidy data set.
 }
@@ -46,7 +45,7 @@ at all.
 
 \strong{A \code{randomForest} fit needs \code{importance = TRUE} to give you
 this.}  \code{randomForest::randomForest()} defaults to
-\code{importance = FALSE}, and that fit stores only \code{IncNodePurity} --
+\code{importance = FALSE}, and that fit stores only \code{IncNodePurity},
 a node-impurity (RSS or Gini) measure, which is not a permutation quantity
 and is not comparable to one.  It is the only importance the forest kept, so
 it is what \code{gg_vimp()} reports, in the \code{vimp} column, same as any
@@ -58,7 +57,7 @@ other.  Nothing marks the difference in the plot.  So
 argument yields permutation VIMP.
 
 When a \code{randomForest} fit carries both measures, \code{gg_vimp()}
-reports the permutation one and leaves node purity out of the ranking --
+reports the permutation one and leaves node purity out of the ranking;
 the two run on different scales and mean different things, so putting them
 in one ordering would be meaningless.  Read
 \code{randomForest::importance(object)} if you want both.  A classification

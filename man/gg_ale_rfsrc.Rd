@@ -63,7 +63,7 @@ of \code{xvar.names}), \code{y} (grid values of \code{xvar2.name}),
 \description{
 A partial dependence curve (\code{\link{gg_partial_rfsrc}}) marginalizes
 the forest's prediction by averaging over the joint distribution of the
-other predictors -- a computation that is misleading when predictors are
+other predictors, a computation that is misleading when predictors are
 correlated, because it evaluates the forest at combinations of predictor
 values that never occur together in the data. Accumulated Local Effects
 (Apley and Zhu, 2020) avoid this by only ever perturbing a predictor
@@ -92,7 +92,7 @@ forest to control this ordering.
 Supplying \code{xvar2.name} switches to second-order (interaction) ALE
 between \code{xvar.names} and \code{xvar2.name}, isolating the part of
 their joint effect that is not explained by either variable's own main
-effect -- the ALE analogue of an interaction term. This is computed on a
+effect. It is the ALE analogue of an interaction term, computed on a
 2-D grid of bins using the same local-perturbation idea, with the main
 effects removed via a row/column/grand weighted-mean decomposition (the
 same device used to isolate an interaction term in a two-way ANOVA). A

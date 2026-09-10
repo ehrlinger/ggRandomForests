@@ -17,14 +17,14 @@
 #'
 #' Draws a horizontal bar chart of the VIMP scores extracted by
 #' \code{\link{gg_vimp}}.  Each bar represents one predictor; bar length is
-#' proportional to its permutation VIMP -- the average rise in OOB prediction
+#' proportional to its permutation VIMP, the average rise in OOB prediction
 #' error when that predictor's OOB values are randomly shuffled.  Predictors
 #' are sorted in descending order of importance so the most influential
 #' variables appear at the top.
 #'
 #' Bars are colored by the \code{positive} flag: a bar at or below zero
 #' (non-positive VIMP) is color-coded differently to flag predictors that
-#' \emph{hurt} OOB accuracy when their signal is removed -- usually a sign of
+#' \emph{hurt} OOB accuracy when their signal is removed, usually a sign of
 #' collinearity or a very noisy variable.  In a well-behaved forest most bars
 #' are positive; the color distinction matters when a handful are not.
 #'

@@ -6,7 +6,7 @@
 #'
 #' Cells the forest left undefined are dropped before drawing. From
 #' \pkg{randomForestRHF} 2.0.0 the hazard is `NA` outside each case's observed
-#' `(start, stop]` path, so a hazard curve simply ends with that case's
+#' `(start, stop]` path, so a hazard curve ends with that case's
 #' follow-up, and a case whose hazard is masked throughout is left out of the
 #' legend rather than shown as an empty one. From 2.0.3 the cumulative hazard
 #' is masked too, though on a different rule: it is `NA` after each case's

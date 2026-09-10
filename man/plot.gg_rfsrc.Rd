@@ -54,8 +54,8 @@ colored by group.}
 }
 \description{
 Visualizes the ensemble predictions extracted by \code{\link{gg_rfsrc}}.
-By default those are out-of-bag (OOB) predictions -- the forest's built-in
-cross-validation estimate, averaging only over the trees that left a given
+By default those are out-of-bag (OOB) predictions, the forest's built-in
+cross-validation estimate, which averages only over the trees that left a given
 observation out of their bootstrap sample.
 }
 \details{

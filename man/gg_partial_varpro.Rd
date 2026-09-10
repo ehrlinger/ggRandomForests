@@ -75,8 +75,8 @@ combining results from several models in one figure.}
 
 \item{...}{Forwarded to \code{\link[varPro]{partialpro}} on the
 object-driven path (when \code{part_dta} is \code{NULL}).  Use this to
-control which variables are computed -- e.g. \code{xvar.names} or
-\code{nvar} -- or to tune the isolation-forest UVT step (\code{cut},
+control which variables are computed (e.g. \code{xvar.names} or
+\code{nvar}) or to tune the isolation-forest UVT step (\code{cut},
 \code{nsmp}).  Without it, \code{partialpro} falls back to
 \code{varPro::get.topvars(object)}, which can return few or no variables
 for some fits (yielding empty \code{continuous}/\code{categorical}
@@ -122,7 +122,7 @@ anything reaches partial dependence.  The split-weight screen decides which
 predictors are worth guiding the trees with, and what survives it lands in
 \code{object$xvar.names}; \code{varPro::get.topvars} then ranks a shorter
 list out of that.  So the design matrix, the reachable set, and the default
-list are three different sizes -- a fit on 45 predictors might carry 26 in
+list are three different sizes; a fit on 45 predictors might carry 26 in
 \code{object$xvar.names} and 15 in \code{get.topvars}.  \code{partialpro}
 can only reach the middle one.  How much gets screened off depends on the
 data and the fit, so check rather than assume: \code{length(object$xvar.names)}
@@ -140,7 +140,7 @@ the same question before you spend the computation.
 
 For a complete view, fit with both screens off:
 \code{varPro::varpro(..., sparse = FALSE, split.weight = FALSE)}.
-\code{split.weight = FALSE} is the one that lifts the ceiling -- it puts
+\code{split.weight = FALSE} is the one that lifts the ceiling. It puts
 every predictor in \code{object$xvar.names}, so partial dependence can reach
 them all, and it leaves a strong variable's curve where it was.
 \code{sparse = FALSE} does the smaller thing, deepening
@@ -148,31 +148,31 @@ them all, and it leaves a strong variable's curve where it was.
 the screened top.  Both are \pkg{varPro}'s own arguments, and its defaults
 (both \code{TRUE}) go the other way, toward the screened set; keep the
 defaults when that sparser set is what you want.  \code{nvar} is not the
-knob here -- it only caps how much gets reported.
+knob here; it only caps how much gets reported.
 
 \strong{Which rows you actually get:} \pkg{varPro} has no imputation.  Every
 entry point opens by growing a one-node stump through
 \code{randomForestSRC::rfsrc} to settle the family and hand back cleaned
 data, and that call takes \code{rfsrc}'s default \code{na.action =
-"na.omit"}.  Any case with a missing value -- in a predictor or in the
-outcome -- is deleted before the fit, with no warning and no message.
+"na.omit"}.  Any case with a missing value, in a predictor or in the
+outcome, is deleted before the fit, with no warning and no message.
 Passing \code{na.action = "na.impute"} to \code{varPro::varpro} does not
 change this: it lands in \code{...}, never reaches the stump, and is
 discarded without remark (varPro 3.1.0).
 
 The loss compounds across predictors rather than adding up.  At 5\% missing
-per column, independently, retention is \eqn{0.95^p} -- 60\% of rows at 10
+per column, independently, retention is \eqn{0.95^p}: 60\% of rows at 10
 predictors, 36\% at 20, 8\% at 50.  On a wide clinical frame a little
 missingness everywhere can delete most of the cohort.  Nothing in the fit
 records it: \code{object$rf$n} is the count \emph{after} deletion and no
 original is kept, so neither you nor this package can recover the number
-from the object.  Check before you fit -- \code{nrow(dta)} against
+from the object.  Check before you fit: \code{nrow(dta)} against
 \code{sum(complete.cases(dta))}.
 
 \strong{Imputing first, without inventing outcomes:} \code{varPro::roughfix}
 does mean and modal fill, \code{randomForestSRC::impute} does the
 forest-based job, and varPro's own help pages use the latter.  Both fill
-\strong{every} column they are handed, the outcome included -- so where the
+\strong{every} column they are handed, the outcome included, so where the
 outcome is itself missing they manufacture it, and the release rules are
 then fit partly to invented responses.  Put the observed outcome back and
 drop the cases that never had one:
@@ -190,7 +190,7 @@ information about the response.  Only the deletion step depends on having
 missing outcomes; the imputation matters whenever a \emph{predictor} is
 missing.  Two cautions.  Imputing with the outcome stamps its signal into
 the filled predictor cells, which is right for a single fit but crosses
-fold boundaries in \code{varPro::cv.varpro} -- impute inside the folds if
+fold boundaries in \code{varPro::cv.varpro}; impute inside the folds if
 the selection error has to mean anything.  And a completed frame is one
 dataset, not many, so the curves here carry no uncertainty from the
 imputation; read them as conditional on it.
@@ -198,8 +198,8 @@ imputation; read them as conditional on it.
 \strong{\code{nvars} selects by importance, not by list position:} when
 \code{object} is supplied, the variables in \code{part_dta} are first
 reordered by their rank in \code{varPro::get.topvars(object)}, and
-\code{nvars} then keeps the top \code{nvars} of \emph{that} ordering --
-not simply the first \code{nvars} elements as they arrived.
+\code{nvars} then keeps the top \code{nvars} of \emph{that} ordering,
+not the first \code{nvars} elements as they arrived.
 \code{get.topvars()} typically ranks far fewer variables than
 \code{part_dta} contains; any variable it does not rank keeps its
 incoming order and is appended after the ranked block, so nothing is
@@ -218,7 +218,7 @@ horizon \eqn{\tau} is \emph{not} stored in the \code{varpro} object
 
 \strong{RMST partial dependence (scale = "rmst"):} \code{varPro::partialpro}
 has no time argument, so its default survival learner returns ensemble
-mortality at every horizon -- passing a horizon through \code{...} is
+mortality at every horizon; passing a horizon through \code{...} is
 silently dropped, and multi-horizon plots built that way differ only by
 Monte-Carlo noise, not by \eqn{\tau}.  To get a genuine RMST(\eqn{\tau})
 curve, \code{scale = "rmst"} supplies \code{partialpro} a \code{learner}
@@ -252,7 +252,7 @@ of those two steps is a modelling choice, not a detail:
   \frac{1}{n}\sum_i z_i(x)\right)}
 
 \code{"prob"} (the classification default) transforms per observation and
-then averages, so the curve is the \strong{mean predicted probability} --
+then averages, so the curve is the \strong{mean predicted probability},
 the expected proportion of this cohort, and the standard partial dependence
 quantity on a probability scale. \code{"prob_typical"} averages on the
 log-odds scale and then transforms once, giving the probability for a
@@ -270,7 +270,7 @@ small: where the per-subject log-odds carry an SD near 4.5, a point reading
 Which to report is a question about the claim, not about the code. If the
 sentence is "what fraction of these patients would wean", that is
 \code{"prob"}. If it is "what would we predict for a typical patient", that
-is \code{"prob_typical"} -- while remembering that the mean-log-odds
+is \code{"prob_typical"}, while remembering that the mean-log-odds
 subject need not resemble anyone in the data. A figure captioned as a
 percentage of patients wants \code{"prob"}.
 
@@ -283,7 +283,7 @@ return the same numbers there.
 survival default) computes \eqn{S(\tau \mid x)} through \code{partialpro}
 (the same UVT engine as mortality and RMST), bounded in \eqn{[0, 1]}.  When
 \code{time} is not supplied, \eqn{\tau} defaults to the \strong{median
-follow-up time} of the fit -- a data-driven horizon that is always in the
+follow-up time} of the fit, a data-driven horizon that is always in the
 model's own time units, so it cannot be mis-specified the way a hand-typed
 \eqn{\tau} can.  The resolved \eqn{\tau} is reported in a message and the
 axis label; pass \code{time = tau} to choose another.  \code{scale =
@@ -321,12 +321,12 @@ with others, the two methods can disagree, and \code{partialpro}'s
 curve is the one restricted to the data manifold.
 
 That isolation forest is worth one note. \code{partialpro} grows it with
-\code{varPro::isopro}, whose \code{method} defaults to \code{"unsupv"} --
+\code{varPro::isopro}, whose \code{method} defaults to \code{"unsupv"},
 a forest with no outcome. \code{randomForestSRC} then passes a zero-length
 \code{yvar.wt} into its native code and decrements that pointer
 (\code{entry.c:184}), which is undefined behaviour and is reported by
-UBSAN builds. It is benign in practice -- the pointer is formed but never
-dereferenced -- and it is an upstream issue rather than one this package
+UBSAN builds. It is benign in practice (the pointer is formed but never
+dereferenced), and it is an upstream issue rather than one this package
 can fix (\code{ggRandomForests} is pure R); a one-line guard is proposed
 in \code{kogalur/randomForestSRC} PR #478. Passing \code{method = "rnd"}
 through to \code{partialpro} avoids the unsupervised grow entirely, which

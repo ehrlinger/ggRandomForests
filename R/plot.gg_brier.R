@@ -17,7 +17,7 @@
 #' \code{\link{gg_brier}} object.  The curve moves across the event-time
 #' grid on the x-axis; lower values mean the forest's predicted survival
 #' probabilities are closer to what actually happened.  Think of
-#' \code{0} as "perfect" and roughly \code{0.25} as "uninformative" -- a
+#' \code{0} as "perfect" and roughly \code{0.25} as "uninformative"; a
 #' forest that predicts \code{0.5} for every subject regardless of
 #' prognosis would sit near that ceiling.
 #'

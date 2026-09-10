@@ -74,7 +74,7 @@ Comparing the forest's ensemble survival curve to the marginal
 Kaplan-Meier baseline is a quick sanity check: if they diverge the forest
 has found structure the predictors carry; if they track each other closely
 the predictors may add little.  \code{gg_survival} computes
-the nonparametric baseline -- the Kaplan-Meier or Nelson-Aalen estimate --
+the nonparametric baseline (the Kaplan-Meier or Nelson-Aalen estimate)
 so you can place it on the same canvas as the forest predictions from
 \code{\link{gg_rfsrc}}.
 

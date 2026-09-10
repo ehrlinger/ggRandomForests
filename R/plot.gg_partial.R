@@ -28,7 +28,7 @@ partial_surv_y_label <- function(partial.type) {
 #' Plot a \code{\link{gg_partial}} object
 #'
 #' Turns a \code{\link{gg_partial}} object into a ggplot2 figure.  Each curve
-#' is a partial dependence trace -- the forest's average prediction as one
+#' is a partial dependence trace, the forest's average prediction as one
 #' predictor is swept across its range while the rest are marginalized over the
 #' training data.  Continuous predictors appear as line plots; categorical
 #' predictors appear as bar charts.  Both panels are faceted by variable name
@@ -36,7 +36,7 @@ partial_surv_y_label <- function(partial.type) {
 #' glance.
 #'
 #' When a \code{model} label was attached in \code{gg_partial()}, lines are
-#' colored by model -- handy for overlaying results from two forests (e.g.,
+#' colored by model, which is handy for overlaying results from two forests (e.g.,
 #' one tuned, one default) in the same figure.
 #'
 #' @param x A \code{\link{gg_partial}} object (output of \code{\link{gg_partial}}).
@@ -127,7 +127,7 @@ plot.gg_partial <- function(x, labels = NULL, ...) {
 #'
 #' For a standard regression or classification forest, continuous predictors
 #' are drawn as line plots and categorical predictors as bar charts, both
-#' faceted by variable name -- the same arrangement as
+#' faceted by variable name, the same arrangement as
 #' \code{\link{plot.gg_partial}}.
 #'
 #' For a survival forest, each call to \code{partial.rfsrc} returns a predicted

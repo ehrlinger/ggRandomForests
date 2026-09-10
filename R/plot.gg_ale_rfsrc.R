@@ -16,7 +16,7 @@
 #'
 #' Renders first-order Accumulated Local Effects as a ggplot2 figure.
 #' Continuous predictors are drawn as line plots and categorical predictors
-#' as bar charts, both faceted by variable name -- the same arrangement as
+#' as bar charts, both faceted by variable name, the same arrangement as
 #' \code{\link{plot.gg_partial_rfsrc}}, so the two are directly comparable
 #' side by side.
 #'
