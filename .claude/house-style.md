@@ -10,10 +10,10 @@
   profile:         package-cran
   default persona: (d)
   sources:
-    writing-voice.md               sha256:3018e1e0bf8e
-    writing-reader-profile.md      sha256:179212de138c
-    writing-context.md             sha256:87d5555936e1
-    r-package-structure.md         sha256:0b90e3e645fd
+    writing-voice.md               sha256:15e75ca9cb97
+    writing-reader-profile.md      sha256:5131ade189c9
+    writing-context.md             sha256:51f197dc0c97
+    r-package-structure.md         sha256:cc35f4c2e152
 -->
 
 # House Style — ggRandomForests
@@ -125,7 +125,7 @@ register matches the task.
   opener, one rhetorical-question hook, one carried picture, understatement,
   "we"/"you", no marketing tricolons.
 - **Recipe book ("When to use it" sections)**: the Survival Plots chapter
-  opener in `hvti_graphics/survival.qmd`. Narrative register aimed at a
+  opener in `hvtiGraphics/survival.qmd`. Narrative register aimed at a
   biostatistician reader: names the clinical question first ("how long until an
   event"), defines the one idea that makes the method its own (right-censoring),
   ties the function to the SAS macro the reader already trusts (`%kaplan`), and
@@ -170,7 +170,7 @@ throughout. No forced tricolon, no padded feature list, no overselling.
 
 A menu of selectable audiences for the `ehrlinger-writing` harness. Write for
 ONE persona at a time, not a blend. The active persona is chosen per task
-(explicit choice → repo `CLAUDE.md` default → ask). The `hvti_graphics` recipes
+(explicit choice → repo `CLAUDE.md` default → ask). The `hvtiGraphics` recipes
 book defaults to persona (a); the public CRAN packages (`ggRandomForests`,
 `temporal_hazard`) default to persona (d).
 
@@ -219,7 +219,7 @@ assumptions about purpose and constraints.
   (varPro), built on randomForestSRC.
 - **temporal_hazard** — additive (Blackstone, Naftel, and Turner, 1986) hazard
   models in pure R.
-- **hvti_graphics** — this recipes book, which ties the three together into a
+- **hvtiGraphics** — this recipes book, which ties the three together into a
   house style for clinical figures.
 
 ## Purpose
@@ -253,11 +253,11 @@ and versioning. `writing-voice.md` and `writing-reader-profile.md` govern how
 you write; this one governs what has to be there and in what order. It is
 written for the person about to write or audit a package README — most often
 the biostatistician who already knows R and is deciding whether this
-package's front door matches the other seven.
+package's front door matches its siblings.
 
-Derived from `hvtiPlotR`, the de-facto template across the eight-package
+Derived from `hvtiPlotR`, the de-facto template across the governed
 portfolio, with a small number of deliberate improvements it does not yet
-itself reflect. Recorded so the other seven — and hvtiPlotR, on those few
+itself reflect. Recorded so its siblings — and hvtiPlotR, on those few
 points — can be brought into line with it rather than the rules drifting to
 match whichever package they came from.
 
@@ -290,7 +290,7 @@ would flatten a real difference between them:
 - *The pain you already have* — the reader still needs convincing to adopt.
   Current example: hvtiRtables.
 - *What works today* — the reader is judging whether the package is ready.
-  Current example: hvtiRdatasets.
+  Current example: hvtiRdatabuild.
 
 Whichever opening you use, the first paragraph says what the package does.
 That part isn't optional across the three.
@@ -331,17 +331,15 @@ Six are required of every package, in this order:
 5. **GitHub r-package version**
 6. **lint**
 
-These are required because they're already true. Seven of the eight packages
-run the lint, pkgdown, and test-coverage workflows today; what's missing is
-mostly the badge, not the machinery. A workflow running green that the README
-never mentions is coverage nobody can see, which is its own small version of
-the staleness problem — the check works, and the reader has no way to know.
-repostatus is a static shield with no infrastructure behind it at all, and the
-version badge just reads `DESCRIPTION`, so neither has an excuse.
+Where the thing behind a badge exists, the badge is required: what is missing
+is more often the badge than the machinery. A check running green that the
+README never mentions is signal nobody can see, which is its own small version
+of the staleness problem — the check works, and the reader has no way to know.
+Some need no machinery at all: repostatus is a static shield, and the version
+badge just reads `DESCRIPTION`, so neither has an excuse.
 
 Where a badge is genuinely missing because the underlying thing is missing,
-the fix is to add the workflow, not to drop the badge. Only hvtiRdatasets is
-in that position, lacking lint, pkgdown, and test-coverage entirely.
+the fix is to add the workflow, not to drop the badge.
 
 **Required for the `package-cran` profile**, after the six:
 
@@ -359,9 +357,9 @@ between the released version and the development one is worth seeing.
 DOI appears only where a Zenodo deposit exists; lifecycle only where the
 package makes a stability claim it means.
 
-Because five of the six required badges report on a workflow, this rule and
-the CI standard have to move together. Requiring the codecov, pkgdown, and
-lint badges is the same as requiring those three workflows.
+Because most of the required badges report on a workflow, this rule and the CI
+standard have to move together. Requiring the codecov, pkgdown, and lint
+badges is the same as requiring those three workflows.
 
 The hand-rolled dynamic-regex version badge currently living in
 hvtiRutilities is replaced by the standard GitHub r-package badge — it's
@@ -447,7 +445,7 @@ reference vignette, not a free-form topic outside the table above.
 than renaming to the standard filename. Renaming a published vignette breaks
 `vignette()` calls and indexed pkgdown URLs that are already out in the
 world, and that's not a price worth paying just for filename consistency.
-hvtiRdatasets, whose `coming-from-sas.qmd` isn't published yet, renames to
+hvtiRdatabuild, whose `coming-from-sas.qmd` isn't published yet, renames to
 the standard name — there's nothing to break.
 
 **Front matter** carries `title`, `author`, `date: today`, `format: html`
@@ -471,6 +469,57 @@ Follows the hvtiPlotR model:
 Every exported object appears in exactly one `reference:` section. pkgdown
 fails the build on an unreferenced topic, and that failure is the check that
 keeps this rule honest rather than aspirational.
+
+## Development records
+
+Design documents and implementation plans live in `dev/specs/`. That is one
+directory; the convention it replaced used two, a `specs/` directory paired with
+a `specs/plans/` subdirectory beneath it. Only the count is being claimed. There
+is no per-repository subdirectory, and nesting below `dev/specs/` is expected
+rather than forbidden — `dev/specs/artifacts/` is required further down.
+
+These files are committed to the repository, and nothing in `.gitignore` covers
+them: the record of why a thing was built the way it was outlives the diff that
+built it. Separately, a single `^dev$` line in `.Rbuildignore` keeps the tree out
+of the built package. The two mechanisms are unrelated — one decides what the
+repository stores, the other what the tarball ships.
+
+A file is named `<YYYY-MM-DD>-<slug>-<kind>.md`. The kind carries the
+design/plan distinction, and the path does not: a design and the plan
+implementing it share a slug, so they sort adjacent and one directory listing
+answers whether a design was ever planned.
+
+`design` and `plan` are the two kinds that pair, and most records are one or
+the other. They are not the only two — a `-findings` report, a `-learnings`
+write-up or a `-sweep` is a development record and lives here under its own
+kind. What the name has to carry is a date, a slug and a kind; the requirement
+is not that the kind be one of a closed set. Do not relabel a findings report as
+a design to satisfy a pattern, which loses the one thing the name was telling
+you.
+
+The portfolio previously encoded that distinction twice, as a `-design` suffix
+*and* a `specs/plans/` subdirectory. Two encodings of one fact drift, and this
+pair had already started to: by the time this rule was written `hvtiRtemplates`
+carried a top-level `plans/` beside its `specs/`, holding plans that its own
+convention placed in `specs/plans/`. The suffix is the encoding that survives,
+because it is the one still legible when a file is quoted on its own — in a
+`NEWS.md` entry, a roxygen block, or a commit message — where a path prefix is
+usually dropped.
+
+Two kinds of file live under `dev/` but outside `dev/specs/`. Superseded records
+move to `dev/archive/` under their existing names rather than being deleted. A
+loose working note that is neither a design nor a plan sits directly in `dev/`.
+
+A generated corpus that a spec asserts against — scan output, extracted maps,
+and the CI scripts comparing the two — goes in `dev/specs/artifacts/`, nested
+inside the prose directory rather than placed beside it. That nesting is
+load-bearing: those scripts locate the document they check relative to their
+own file, so lifting `artifacts/` up one level silently repoints them at the
+wrong directory.
+
+`ROADMAP.md` is not a development record. It says where the package is going
+rather than what was decided on a given date, and it is read by people who will
+never open `dev/`, so it belongs at the repository root.
 
 ## Continuous integration
 
@@ -830,12 +879,46 @@ gh api repos/ehrlinger/<repo>/rulesets \
   -q '.[] | select(.target=="branch") | "\(.enforcement) \(.name)"'
 ```
 
+## Naming
+
+An HVTI package is named `hvtiR<domain>`, subject to the two exceptions below.
+The `hvtiR` prefix is literal, and is also
+the umbrella package's own name, so the brand string and the namespace prefix
+are one thing. `<domain>` is lowercase, noun-shaped, and may be a compound word
+(`lifetables`, `databuild`).
+
+The GitHub repository name is exactly the package name — one string per
+package: what you `library()`, what follows `ehrlinger/` in `pak::pak()`, and
+what the pkgdown URL is built from. A Quarto book takes the bare `hvti` prefix
+instead (`hvtiGraphics`), because the `R` in `hvtiR` means "an R package you
+can `library()`".
+
+A package published on CRAN keeps its published name: renaming it orphans the
+installations already out there and breaks published citations. That protects
+the *package* name only — a CRAN package's repository still takes the package's
+name.
+
+`hvtiPlotR` is the one grandfathered exception, and the reason is recorded so a
+later sweep does not "fix" it: it is the most-used package in the family and
+its `hv_*` functions are called across every downstream analysis, so
+invalidating those call sites costs more than the inconsistency. No new
+exception without an argument of the same shape.
+
+Renaming is not free, even though GitHub redirects a renamed repository. The
+redirect does not cover GitHub Pages, so every pkgdown or book URL under the
+old name becomes a hard 404 rather than a redirect; and it cannot cover a
+package name, which is a namespace change. So treat any file holding a URL as
+functional however much prose surrounds it — a README's badges and links are
+published by pkgdown — and fetch the new targets before substituting, not
+after.
+
 ## DESCRIPTION
 
 Title Case in `Title`. Software names quoted in `Description`. DOIs written
 space-free as `<doi:10.xxxx/yyyy>`. `URL` lists both the GitHub repo and the
 pkgdown site. `BugReports` set. `VignetteBuilder: quarto`.
-`Config/roxygen2/version: 8.0.0`.
+`Config/roxygen2/version` matches the roxygen the package was last documented
+with; the family is on 8.1.0.
 
 ## Versioning
 
@@ -845,8 +928,75 @@ incremental work, and the minor and major digits reserved for the
 maintainer's own consolidation decisions — never rolled by an agent on its
 own judgment.
 
-A documentation-only retrofit against this house style is a patch bump, with
-the matching `NEWS.md` entry so the version-grep test passes.
+### The bump is not part of the pull request
+
+Bumping on every merge turns the version into a count of branches. The number
+then tells you how the work was divided, not what changed in the package.
+hvtiRtables moved through eight versions in the ten days from 0.9.1 to 1.0.0,
+three of them on 2026-08-05 alone, and its `NEWS.md` for that stretch reads as
+a branch log.
+
+So a pull request lands without touching `Version:`. The bump is a separate,
+deliberate act, at most once a day and only on a day the package changed.
+
+`NEWS.md` carries a standing heading at the top for work that has merged and
+not yet been named:
+
+```markdown
+# <package> (unreleased)
+```
+
+Every pull request adds its entry under that heading, a documentation-only
+change included. That case used to carry a bump of its own, which is the rule
+this replaces. When you want a marker, one commit renames the heading to the
+new version and moves `DESCRIPTION` to match.
+
+### Heading level
+
+Version headings are level one, and so is the unreleased heading. That is not
+only tidiness. pkgdown reads the top heading level present in the file as the
+version level, so a `NEWS.md` opening with a bare `# <package>` title pushes
+its versions to level two, and pkgdown then reports no releases at all.
+hvtiRpropensity published an empty changelog page that way. It went unseen
+because `utils::news()` uses a different parser and read the same file
+correctly the whole time, so nothing local ever failed.
+
+Nine packages already used level one. ggRandomForests writes its level-one
+headings in setext form, with a rule of `=` underneath, which is the same
+level spelled differently and needs no change. hvtiR and hvtiRpropensity were
+at level two and moved. Subsections within a release, `## New features` and
+the like, sit below the version heading as usual.
+
+The two records answer different questions. `NEWS.md` answers what changed,
+and it is best written while the change is fresh, in the branch that made it.
+The version answers which set of changes is worth naming, and only the
+maintainer knows when a set has reached that point. Tying them to one commit
+forces the second question to be answered every time the first one is.
+
+### What this asks of the version checks
+
+Three packages check the version against `NEWS.md` today, and they do not all
+need the same change.
+
+`hvtiRbootstrap` takes the first `# hvtiRbootstrap` heading in `NEWS.md` and
+requires it to equal the `DESCRIPTION` version. An unreleased heading now sits
+above that one and breaks it. Skip headings that carry no version, and compare
+against the first heading that does.
+
+`ggRandomForests` asks only that the `DESCRIPTION` version appear somewhere in
+`NEWS.md`. An unreleased heading above it changes nothing, so that test is
+already correct.
+
+`hvtiR` is the one that conflicts outright. `tools/check_version.py` fails a
+pull request whose version has not moved past the base branch, which is what
+most pull requests now look like. The defect it was built for is real, two
+branches claiming one number after a silent merge, so the rule becomes: the
+version must not go backwards, and when it moves it moves by a legal step. Not
+moving is no longer a failure.
+
+The other nine packages have no such check. Adding one is worth doing, and the
+unreleased heading makes it easier to write than it was, since the test finally
+has something unambiguous to key on.
 
 What has to happen before a version actually ships — the CRAN Cookbook audit,
 `R CMD check --as-cran` with the manual built, the check-time budget, the
