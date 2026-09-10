@@ -1,5 +1,14 @@
 Package: ggRandomForests
-Version: 3.5.2
+Version: 3.5.3
+
+ggRandomForests v3.5.3
+======================
+* The `gg_sdependent()` tests now pass against varPro 3.2.1. That release has
+  `sdependent()` reject non-finite input, and the tests' mock importance
+  matrix carried `NA` on its diagonal, so six of them errored. Live
+  `get.beta.entropy()` output puts `0` there, and the mock now does too; it
+  gives identical scores and signal sets on varPro 3.2.0. Tests only: no
+  function, argument or returned object changed.
 
 ggRandomForests v3.5.2
 ======================
