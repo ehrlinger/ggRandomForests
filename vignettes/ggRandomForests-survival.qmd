@@ -374,9 +374,9 @@ plot(gg_vimp(rfsrc_pbc), labels = st_labs) +
   labs(fill = "VIMP > 0")
 ```
 
-Bilirubin ranks highest, followed by copper, prothrombin time, albumin, and age
---- closely matching the variables selected in the @fleming:1991 proportional
-hazards model.
+Bilirubin ranks highest, followed by edema, ascites, albumin, copper, age, and
+prothrombin time --- closely matching the variables selected in the
+@fleming:1991 proportional hazards model.
 
 ## Minimal depth
 
@@ -392,9 +392,10 @@ The `max.subtree()` function computes minimal depth for each variable. The
 threshold is `r round(md_pbc$threshold, 2)`, selecting
 `r length(md_pbc$topvars)` variables: `r paste(md_pbc$topvars, collapse = ", ")`.
 
-Both selection methods agree on the key predictors: `bili`, `albumin`, `copper`,
-`prothrombin`, and `age`. We add `edema` (selected by the @fleming:1991 model)
-for the remainder of the analysis.
+Both selection methods agree on the key continuous predictors: `bili`,
+`albumin`, `copper`, `prothrombin`, and `age`. Both also rank the categorical
+`edema` and `ascites` highly; we carry `edema` (selected by the @fleming:1991
+model) forward for the remainder of the analysis.
 
 ```{r select-vars}
 xvar     <- c("bili", "albumin", "copper", "prothrombin", "age")
@@ -658,8 +659,9 @@ We have walked a full random survival forest analysis with
   the PBC trial, the same conclusion reached in @fleming:1991.
 - `gg_error()` showed the OOB error settling quickly as trees were added.
 - VIMP (`gg_vimp()`) and minimal depth (`max.subtree()`) landed on the same
-  five predictors (bilirubin, albumin, copper, prothrombin, and age),
-  which is also where the proportional hazards model landed.
+  five continuous predictors (bilirubin, albumin, copper, prothrombin, and
+  age), plus edema and ascites, largely where the proportional hazards model
+  landed.
 - `gg_variable()` exposed non-proportional hazards for bilirubin and copper,
   where the gap between time horizons widens.
 - Partial dependence from `gg_partial_rfsrc()` gave the risk-adjusted version
