@@ -276,6 +276,7 @@ complete imputed data. This keeps the fitted forest object free of imputation
 state, which is required for `partial.rfsrc()` to work correctly.
 
 ```{r rfsrc-fit}
+set.seed(42)
 # Step 1: impute missing values via random forest proximity
 pbc_imputed <- impute.rfsrc(Surv(years, status) ~ .,
                              data    = pbc_trial,
