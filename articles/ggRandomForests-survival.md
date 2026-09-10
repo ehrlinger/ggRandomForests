@@ -296,6 +296,7 @@ to work correctly.
 
 ``` r
 
+set.seed(42)
 # Step 1: impute missing values via random forest proximity
 pbc_imputed <- impute.rfsrc(Surv(years, status) ~ .,
                              data    = pbc_trial,
@@ -422,9 +423,10 @@ plot(gg_vimp(rfsrc_pbc), labels = st_labs) +
 
 Variable importance ranking. Blue = positive VIMP, red = negative.
 
-Bilirubin ranks highest, followed by copper, prothrombin time, albumin,
-and age — closely matching the variables selected in the Fleming and
-Harrington ([1991](#ref-fleming:1991)) proportional hazards model.
+Bilirubin ranks highest, followed by edema, ascites, albumin, copper,
+age, and prothrombin time — closely matching the variables selected in
+the Fleming and Harrington ([1991](#ref-fleming:1991)) proportional
+hazards model.
 
 ### Minimal depth
 
@@ -441,13 +443,14 @@ md_pbc <- max.subtree(rfsrc_pbc)
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
 function computes minimal depth for each variable. The threshold is
-6.03, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
+5.81, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
 copper, prothrombin.
 
-Both selection methods agree on the key predictors: `bili`, `albumin`,
-`copper`, `prothrombin`, and `age`. We add `edema` (selected by the
-Fleming and Harrington ([1991](#ref-fleming:1991)) model) for the
-remainder of the analysis.
+Both selection methods agree on the key continuous predictors: `bili`,
+`albumin`, `copper`, `prothrombin`, and `age`. Both also rank the
+categorical `edema` and `ascites` highly; we carry `edema` (selected by
+the Fleming and Harrington ([1991](#ref-fleming:1991)) model) forward
+for the remainder of the analysis.
 
 ``` r
 
@@ -777,7 +780,7 @@ stored as an attribute and can be retrieved with:
 attr(gg_bs, "crps_integrated")
 ```
 
-    #> [1] 1.419627
+    #> [1] 1.440241
 
 ## Conclusion
 
@@ -795,9 +798,9 @@ together:
   ([`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md))
   and minimal depth
   ([`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html))
-  landed on the same five predictors (bilirubin, albumin, copper,
-  prothrombin, and age), which is also where the proportional hazards
-  model landed.
+  landed on the same five continuous predictors (bilirubin, albumin,
+  copper, prothrombin, and age), plus edema and ascites, largely where
+  the proportional hazards model landed.
 - [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
   exposed non-proportional hazards for bilirubin and copper, where the
   gap between time horizons widens.

@@ -322,7 +322,8 @@
 <p>Several predictors in the PBC trial data contain missing values (cholesterol, copper, triglycerides, and others). We handle these with a two-step approach: first impute using <code><a href="https://www.randomforestsrc.org//reference/impute.rfsrc.html" class="external-link">impute.rfsrc()</a></code>, which uses the random forest proximity structure to fill in missing values, then fit the survival forest on the complete imputed data. This keeps the fitted forest object free of imputation state, which is required for <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> to work correctly.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Step 1: impute missing values via random forest proximity</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="co"># Step 1: impute missing values via random forest proximity</span></span>
 <span><span class="va">pbc_imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/impute.rfsrc.html" class="external-link">impute.rfsrc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">years</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>                             data    <span class="op">=</span> <span class="va">pbc_trial</span>,</span>
 <span>                             ntree   <span class="op">=</span> <span class="fl">50</span>,</span>
@@ -421,7 +422,7 @@
 </div>
 </div>
 </div>
-<p>Bilirubin ranks highest, followed by copper, prothrombin time, albumin, and age — closely matching the variables selected in the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> proportional hazards model.</p>
+<p>Bilirubin ranks highest, followed by edema, ascites, albumin, copper, age, and prothrombin time — closely matching the variables selected in the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> proportional hazards model.</p>
 </section><section class="level2"><h3 id="minimal-depth">Minimal depth<a class="anchor" aria-label="anchor" href="#minimal-depth"></a>
 </h3>
 <p>Minimal depth <span class="citation" data-cites="Ishwaran:2010">(<a href="#ref-Ishwaran:2010" role="doc-biblioref">Ishwaran et al. 2010</a>)</span> ranks variables by how close to the root node they first split, on average. Variables that partition large portions of the population early are considered most important.</p>
@@ -429,8 +430,8 @@
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_pbc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 6.03, selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
-<p>Both selection methods agree on the key predictors: <code>bili</code>, <code>albumin</code>, <code>copper</code>, <code>prothrombin</code>, and <code>age</code>. We add <code>edema</code> (selected by the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> model) for the remainder of the analysis.</p>
+<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 5.81, selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
+<p>Both selection methods agree on the key continuous predictors: <code>bili</code>, <code>albumin</code>, <code>copper</code>, <code>prothrombin</code>, and <code>age</code>. Both also rank the categorical <code>edema</code> and <code>ascites</code> highly; we carry <code>edema</code> (selected by the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> model) forward for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xvar</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bili"</span>, <span class="st">"albumin"</span>, <span class="st">"copper"</span>, <span class="st">"prothrombin"</span>, <span class="st">"age"</span><span class="op">)</span></span>
@@ -672,7 +673,7 @@
 <div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_integrated"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code><span><span class="co">#&gt; [1] 1.419627</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] 1.440241</span></span></code></pre>
 </div>
 </div>
 </section></section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
@@ -683,7 +684,7 @@
 <code><a href="../reference/gg_survival.html">gg_survival()</a></code> drew Kaplan–Meier curves that showed no treatment effect in the PBC trial, the same conclusion reached in <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span>.</li>
 <li>
 <code><a href="../reference/gg_error.html">gg_error()</a></code> showed the OOB error settling quickly as trees were added.</li>
-<li>VIMP (<code><a href="../reference/gg_vimp.html">gg_vimp()</a></code>) and minimal depth (<code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>) landed on the same five predictors (bilirubin, albumin, copper, prothrombin, and age), which is also where the proportional hazards model landed.</li>
+<li>VIMP (<code><a href="../reference/gg_vimp.html">gg_vimp()</a></code>) and minimal depth (<code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>) landed on the same five continuous predictors (bilirubin, albumin, copper, prothrombin, and age), plus edema and ascites, largely where the proportional hazards model landed.</li>
 <li>
 <code><a href="../reference/gg_variable.html">gg_variable()</a></code> exposed non-proportional hazards for bilirubin and copper, where the gap between time horizons widens.</li>
 <li>Partial dependence from <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> gave the risk-adjusted version of those curves and backed the log-transforms used in the parametric model.</li>
