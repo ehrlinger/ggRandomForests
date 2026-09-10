@@ -274,7 +274,8 @@ project context. Read it before writing user-facing text.
   tar xzf ggRandomForests_<version>.tar.gz -O ggRandomForests/DESCRIPTION | sed -n '4,5p'
   tar tzf ggRandomForests_<version>.tar.gz | grep -c cran-comments   # expect 0
   ```
-- A working-tree `R CMD build .` is **not** a reason to rebuild on its own. Measured
+- A working-tree `R CMD build .` does not leak **files**. Its **vignette output** is a
+  different matter; see the next bullet. Measured
   2026-08-20 at `26416c6c`: a build from the full working tree (71 MB of untracked
   `.Rcheck`, `docs/`, `.claude/`, `.remember/`, `.Rproj.user/`) and a build from a clean
   `git archive` export produced tarballs with an identical 247-entry file list, no
@@ -283,3 +284,21 @@ project context. Read it before writing user-facing text.
   `R CMD build` prunes matched *directories* wholesale, so `.claude/settings.local.json` and
   the `.Rcheck` tree are never walked. Testing an ignore pattern against a full file path
   wrongly reports those two as leaks. Run the `tar tzf` check above instead of predicting.
+- **Do not submit with `devtools::submit_cran()`. Upload the checked tarball.**
+  `submit_cran()` does not send the tarball you checked. It rebuilds from the working tree
+  (`pkgbuild::build(pkg$path, tempdir())`), and the vignettes in that build render against
+  whatever git-ignored knitr caches are lying in `vignettes/`. Measured 2026-09-10 on 3.5.3 at
+  `e7a9a092`, with caches from 2026-08-25: the file list and the vignette text were identical
+  to the `git archive` build, but `inst/doc/varpro.html` had **2 figures instead of 13** and
+  `uvarpro.html` **0 instead of 3**. `R CMD check --as-cran` on that tarball was still 0/0/1
+  NOTE, because the check re-renders the vignettes in its own tree and never inspects the
+  shipped HTML, so nothing flags it. CRAN would have published the figure-less pages.
+  `submit_cran()` also sends **all** of `cran-comments.md` as the comment, every past
+  version's section included. Submit the gate-checked `git archive` tarball through
+  <https://cran.r-project.org/submit.html> instead, paste only the current version's section,
+  and update `CRAN-SUBMISSION` by hand afterwards. To compare two tarballs' vignettes:
+
+  ```bash
+  tar xzf ggRandomForests_<version>.tar.gz -O ggRandomForests/inst/doc/varpro.html |
+    grep -o 'data:image/png;base64' | wc -l
+  ```
