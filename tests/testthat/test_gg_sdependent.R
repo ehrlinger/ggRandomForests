@@ -5,13 +5,15 @@
 # tests run on CRAN with skip_if_not_installed("varPro"); only the live
 # uvarpro() grow is skip_on_cran().
 
-# A get.beta.entropy()-shaped matrix: square, named, NA diagonal.
+# A get.beta.entropy()-shaped matrix: square, named, zero diagonal.
+# varPro >= 3.2.1 sdependent() rejects non-finite entries, and live
+# get.beta.entropy() output carries 0 (not NA) for self-links.
 .mock_entropy_sq <- function() {
   v <- c("a", "b", "c", "d")
-  matrix(c(NA, .6, .1, .7,
-           .5, NA, .2, .8,
-           .1, .3, NA, .2,
-           .6, .7, .1, NA),
+  matrix(c(0, .6, .1, .7,
+           .5, 0, .2, .8,
+           .1, .3, 0, .2,
+           .6, .7, .1, 0),
          nrow = 4, byrow = TRUE, dimnames = list(v, v))
 }
 .stub_uvarpro <- function(ntree = 50L) {
