@@ -276,6 +276,7 @@ complete imputed data. This keeps the fitted forest object free of imputation
 state, which is required for `partial.rfsrc()` to work correctly.
 
 ```{r rfsrc-fit}
+set.seed(42)
 # Step 1: impute missing values via random forest proximity
 pbc_imputed <- impute.rfsrc(Surv(years, status) ~ .,
                              data    = pbc_trial,
@@ -373,9 +374,9 @@ plot(gg_vimp(rfsrc_pbc), labels = st_labs) +
   labs(fill = "VIMP > 0")
 ```
 
-Bilirubin ranks highest, followed by copper, prothrombin time, albumin, and age
---- closely matching the variables selected in the @fleming:1991 proportional
-hazards model.
+Bilirubin ranks highest, followed by edema, ascites, albumin, copper, age, and
+prothrombin time --- closely matching the variables selected in the
+@fleming:1991 proportional hazards model.
 
 ## Minimal depth
 
@@ -391,9 +392,10 @@ The `max.subtree()` function computes minimal depth for each variable. The
 threshold is `r round(md_pbc$threshold, 2)`, selecting
 `r length(md_pbc$topvars)` variables: `r paste(md_pbc$topvars, collapse = ", ")`.
 
-Both selection methods agree on the key predictors: `bili`, `albumin`, `copper`,
-`prothrombin`, and `age`. We add `edema` (selected by the @fleming:1991 model)
-for the remainder of the analysis.
+Both selection methods agree on the key continuous predictors: `bili`,
+`albumin`, `copper`, `prothrombin`, and `age`. Both also rank the categorical
+`edema` and `ascites` highly; we carry `edema` (selected by the @fleming:1991
+model) forward for the remainder of the analysis.
 
 ```{r select-vars}
 xvar     <- c("bili", "albumin", "copper", "prothrombin", "age")
@@ -629,24 +631,37 @@ wide one means the predicted risks are pulling apart.
 plot(gg_bs, envelope = TRUE)
 ```
 
-The running CRPS (continuous ranked probability score) is the Brier score
-integrated over time and divided by elapsed time — the time-average of the
-curve above. It collapses the whole trajectory into one running number, which
-is handy when you want a single calibration figure rather than a curve to read.
-Like the Brier score, a CRPS near 0 is good and a value near 0.25 is the
-uninformative ceiling (the same constant-predictor reference as above). The final (integrated) value at the right edge of the
-plot is the one most often reported.
+The running CRPS (continuous ranked probability score) integrates the Brier
+score over time and divides by the time elapsed since the first event, so each
+point on the curve is the average of the Brier curve up to that time. It
+collapses the whole trajectory into one running number, which is handy when
+you want a single calibration figure rather than a curve to read. Because it is
+an average of Brier scores it reads on the same scale: near 0 is good, and 0.25
+is the constant-predictor reference from above. The value at the right edge of
+the plot is the average over the whole follow-up.
 
 ```{r brier-crps, fig.width=7, fig.height=3.5, fig.cap="Running CRPS for the PBC survival forest."}
 plot(gg_bs, type = "crps")
 ```
 
-The integrated CRPS --- a scalar summary of overall calibration --- is stored
-as an attribute and can be retrieved with:
+`gg_brier()` also keeps the integrated CRPS that
+`randomForestSRC::get.brier.survival()` returns, as the `crps_integrated`
+attribute. Be careful with it. That number is the raw area under the Brier
+curve, *not* divided by elapsed time, so it carries the units of the time axis
+(years here) and grows with the length of follow-up. It is not on the 0 to 0.25
+scale, and you cannot compare it across studies with different follow-up.
+For a single number to report, use the `crps_std` attribute instead. It is
+upstream's `crps.std`, the raw integral divided by the largest event time,
+`max(gg_bs$time)`, and it is the value `print()` and `summary()` report:
 
 ```{r brier-crps-scalar}
-attr(gg_bs, "crps_integrated")
+attr(gg_bs, "crps_integrated")  # area under the Brier curve, in years
+attr(gg_bs, "crps_std")         # divided by max(gg_bs$time)
+tail(gg_bs$crps, 1)             # right edge of the running CRPS plot
 ```
+
+The last two differ slightly. `crps_std` divides by the largest event time,
+while the running curve divides by the time elapsed since the first one.
 
 # Conclusion
 
@@ -657,8 +672,9 @@ We have walked a full random survival forest analysis with
   the PBC trial, the same conclusion reached in @fleming:1991.
 - `gg_error()` showed the OOB error settling quickly as trees were added.
 - VIMP (`gg_vimp()`) and minimal depth (`max.subtree()`) landed on the same
-  five predictors (bilirubin, albumin, copper, prothrombin, and age),
-  which is also where the proportional hazards model landed.
+  five continuous predictors (bilirubin, albumin, copper, prothrombin, and
+  age), plus edema and ascites, largely where the proportional hazards model
+  landed.
 - `gg_variable()` exposed non-proportional hazards for bilirubin and copper,
   where the gap between time horizons widens.
 - Partial dependence from `gg_partial_rfsrc()` gave the risk-adjusted version
