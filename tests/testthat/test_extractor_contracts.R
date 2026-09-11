@@ -58,6 +58,24 @@ test_that("gg_vimp uses %IncMSE for randomForest, not IncNodePurity", {
   expect_equal(gg$vimp, unname(rf$importance[as.character(gg$vars), "%IncMSE"]))
 })
 
+test_that("gg_vimp returns vars/set/vimp/positive for every fit type", {
+  # Catches: a column documented in @return that no code path returns (the old
+  # rel_vimp), or a fit type whose frame drifts from the shared shape that
+  # plot.gg_vimp reads.
+  skip_if_not_installed("randomForestSRC")
+  skip_if_not_installed("randomForest")
+  set.seed(20260911L)
+  fits <- list(
+    randomForestSRC::rfsrc(mpg ~ ., mtcars, ntree = 20, importance = TRUE),
+    randomForestSRC::rfsrc(Species ~ ., iris, ntree = 20, importance = TRUE),
+    randomForest::randomForest(mpg ~ ., mtcars, ntree = 20, importance = TRUE),
+    randomForest::randomForest(Species ~ ., iris, ntree = 20, importance = TRUE)
+  )
+  for (rf in fits) {
+    expect_setequal(colnames(gg_vimp(rf)), c("vars", "set", "vimp", "positive"))
+  }
+})
+
 ## ---- gg_error --------------------------------------------------------------
 
 test_that("gg_error drops rfsrc's NA error rows and keeps the tree index", {

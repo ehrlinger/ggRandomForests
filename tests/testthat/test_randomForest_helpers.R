@@ -79,5 +79,5 @@ test_that("gg_vimp falls back to placeholder when importance is unavailable", {
   rf_noimp$importance <- NULL
   expect_warning(gg_na <- gg_vimp(rf_noimp), "Returning NA values")
   expect_true(all(is.na(gg_na$vimp)))
-  expect_true(all(is.na(gg_na$rel_vimp)))
+  expect_setequal(colnames(gg_na), c("vimp", "vars", "positive"))
 })

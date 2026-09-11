@@ -21,10 +21,12 @@ function if the \code{\link[randomForestSRC]{rfsrc}} object does not contain
 importance information.}
 }
 \value{
-\code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank
-order, optionally containing class-specific scores and a relative importance
-column. When \code{randomForest} objects lack stored importance values a
-warning is issued and \code{NA} placeholders are returned so plots remain
+\code{gg_vimp} object. A \code{data.frame} of VIMP measures in rank
+order, with columns \code{vars}, \code{set} (the importance measure; for
+classification, one set per class plus the overall measure), \code{vimp}
+and \code{positive}. When \code{randomForest} objects lack stored
+importance values a warning is issued and \code{NA} placeholders (columns
+\code{vimp}, \code{vars} and \code{positive}) are returned so plots remain
 reproducible.
 }
 \description{
