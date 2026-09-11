@@ -15,10 +15,14 @@
 #' Nonparametric survival estimates.
 #'
 #' @details
-#' Comparing the forest's ensemble survival curve to the marginal
-#' Kaplan-Meier baseline is a quick sanity check: if they diverge the forest
-#' has found structure the predictors carry; if they track each other closely
-#' the predictors may add little.  \code{gg_survival} computes
+#' Placing the forest's ensemble survival curve over the marginal
+#' Kaplan-Meier baseline is a calibration check, not a test of signal. The
+#' ensemble curve averages the per-subject curves, so it should track the
+#' Kaplan-Meier estimate whether or not the predictors carry information; a
+#' forest grown on pure noise tracks it about as closely as one grown on real
+#' predictors. A clear gap points to miscalibration, most often at late times
+#' when few subjects remain at risk. To see what the predictors carry,
+#' stratify with \code{by} and compare the groups.  \code{gg_survival} computes
 #' the nonparametric baseline (the Kaplan-Meier or Nelson-Aalen estimate)
 #' so you can place it on the same canvas as the forest predictions from
 #' \code{\link{gg_rfsrc}}.

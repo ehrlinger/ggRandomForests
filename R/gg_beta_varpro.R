@@ -161,9 +161,9 @@
 #'   For a regression fit: one row per released variable, sorted by
 #'   `beta_mean` descending. For a classification fit: long-format with
 #'   an extra `class` column, one row per (variable, class) pair;
-#'   `variable` is a factor whose levels are set by
-#'   `mean(|sum-of-class-beta|)` descending so every facet / panel shares
-#'   the same row order. `which_class` (or the binary default
+#'   `variable` is a factor whose levels run in ascending
+#'   `mean(|sum-of-class-beta|)`, most important last, so every facet /
+#'   panel shares the same row order with the top variable at the top. `which_class` (or the binary default
 #'   last-factor-level) collapses the output to a single class.
 #'
 #' @seealso [gg_varpro()], [gg_vimp()], [plot.gg_beta_varpro()], [varPro::beta.varpro()].

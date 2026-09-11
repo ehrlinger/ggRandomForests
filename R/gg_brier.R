@@ -19,19 +19,21 @@
 #' For a survival forest the forecast is the predicted survival probability
 #' at a given moment, and the "what happened" is whether the subject was
 #' still alive at that moment.  The score is computed at every event time,
-#' so you get a curve rather than a single number -- lower is better
+#' so you get a curve rather than a single number, and lower is better
 #' everywhere.  A perfectly calibrated forest that predicts \code{0} for
 #' every subject who died and \code{1} for every subject who survived would
 #' score \code{0}; a forest that predicts \code{0.5} for everyone scores
-#' roughly \code{0.25} regardless of the true outcome -- that is the
-#' "uninformative" ceiling.
+#' roughly \code{0.25} regardless of the true outcome.  That is the
+#' "uninformative" reference, not a ceiling; a forest can score worse than
+#' it.
 #'
 #' This function extracts the time-resolved Brier score for a survival
 #' forest grown with \code{randomForestSRC}, both overall and broken down
 #' by mortality-risk quartile (lowest-risk to highest-risk subjects).  It
-#' also returns the continuous ranked probability score (CRPS) -- the Brier
-#' score integrated over time and divided by elapsed time, a running average
-#' that summarizes calibration up to each point on the time axis.
+#' also returns, in the \code{crps} column, the running continuous ranked
+#' probability score (CRPS): the Brier score integrated over time and divided
+#' by elapsed time, so each value summarizes calibration up to that point on
+#' the time axis.
 #'
 #' @details
 #' Because subjects are right-censored, a plain Brier score is biased:
@@ -69,9 +71,14 @@
 #'     \item{crps.lower, crps.upper}{running CRPS of the 15th / 85th
 #'       per-subject Brier percentile, normalized by elapsed time.}
 #'   }
-#'   The integrated CRPS (a single scalar matching
-#'   \code{get.brier.survival()$crps}) is attached as
-#'   \code{attr(., "crps_integrated")}.
+#'   The integrated CRPS is attached as \code{attr(., "crps_integrated")}.
+#'   It is \code{get.brier.survival()$crps}, the raw area under the Brier
+#'   curve, not normalized by time, so it is in the units of the time axis
+#'   and grows with follow-up. The time-normalized value,
+#'   \code{get.brier.survival()$crps.std} (the raw integral divided by
+#'   \code{max(.$time)}), is attached as \code{attr(., "crps_std")} and reads
+#'   on the Brier scale. The last value of the \code{crps} column instead
+#'   divides by the time elapsed since the first event time.
 #'
 #' @seealso \code{\link{plot.gg_brier}},
 #'   \code{\link[randomForestSRC]{get.brier.survival}},
@@ -221,10 +228,23 @@ gg_brier.rfsrc <- function(object,
   )
 
   attr(gg_dta, "crps_integrated") <- brier_obj$crps
+  attr(gg_dta, "crps_std")        <- brier_obj$crps.std
   attr(gg_dta, "cens.model")      <- cens.model
   class(gg_dta) <- c("gg_brier", class(gg_dta))
   gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
+}
+
+# Time-normalized CRPS for print() and summary(). A gg_brier object saved
+# before crps_std existed carries only the raw integral, so rebuild the value
+# the same way randomForestSRC does: crps / max(time).
+.gg_brier_crps_std <- function(x) {
+  crps_std <- attr(x, "crps_std")
+  crps_raw <- attr(x, "crps_integrated")
+  if (is.null(crps_std) && !is.null(crps_raw)) {
+    crps_std <- crps_raw / max(x$time, na.rm = TRUE)
+  }
+  crps_std
 }
 
 # Internal trapezoidal integrator: sum_i (x[i+1]-x[i]) * (y[i]+y[i+1])/2.

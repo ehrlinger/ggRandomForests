@@ -30,7 +30,11 @@
 #'
 #' @param x \code{\link{gg_vimp}} object created from a
 #' \code{\link[randomForestSRC]{rfsrc}} object
-#' @param relative should we plot vimp or relative vimp. Defaults to vimp.
+#' @param relative If \code{TRUE}, plot relative VIMP: each variable's VIMP
+#'   divided by the largest VIMP in its \code{set}, so the top variable reads
+#'   1 (for classification, the top variable within each class).  A set with
+#'   no positive VIMP is divided by its largest absolute VIMP instead, and an
+#'   all-zero set stays at zero.  Defaults to \code{FALSE}, raw VIMP.
 #' @param lbls \emph{Deprecated} as of v4.0.0; use \code{labels}.  A named
 #'   character vector of alternative variable labels.
 #' @param labels Optional variable labels for the variable axis.  One of: a named
@@ -73,7 +77,7 @@
 #'
 #'
 #' @export
-plot.gg_vimp <- function(x, relative, lbls, labels = NULL, ...) {
+plot.gg_vimp <- function(x, relative = FALSE, lbls, labels = NULL, ...) {
   gg_dta <- x
 
   # Accept raw rfsrc / randomForest objects and compute VIMP on the fly
@@ -84,26 +88,52 @@ plot.gg_vimp <- function(x, relative, lbls, labels = NULL, ...) {
   # Capture extra args so we can inspect nvar.
   arg_set <- list(...)
 
-  # Optionally restrict to the top-nvar most important variables (gg_vimp
-  # already sorts by descending VIMP, so we just trim the tail).
-  nvar <- nrow(gg_dta)
-  if (!is.null(arg_set$nvar)) {
-    if (is.numeric(arg_set$nvar) && arg_set$nvar > 1) {
-      if (arg_set$nvar < nrow(gg_dta)) {
-        nvar <- arg_set$nvar
-        gg_dta <- gg_dta[seq_len(nvar), ]
-      }
-    }
-  }
-
-  gg_plt <- ggplot2::ggplot(gg_dta)
-
   # Use "vimp" as the bar-height column when it exists; fall back to the
   # first column name for objects that store a renamed importance measure.
   msr <- "vimp"
   if (!msr %in% colnames(gg_dta)) {
     msr <- colnames(gg_dta)[1]
   }
+
+  # relative = TRUE rescales each bar to a fraction of the largest VIMP in its
+  # set (per class for multi-outcome fits). gg_vimp() does not return a
+  # relative column, so it is computed here, before the nvar trim, so that a
+  # set's largest VIMP counts even when its variable is trimmed away.
+  if (isTRUE(relative)) {
+    grp <- if (is.null(gg_dta$set)) {
+      rep("all", nrow(gg_dta))
+    } else {
+      as.character(gg_dta$set)
+    }
+    # A set with no positive VIMP has no top variable to scale to: fall back
+    # to its largest magnitude so bars keep their sign, and leave an all-zero
+    # set at zero rather than divide by zero.
+    top <- tapply(gg_dta[[msr]], grp, function(v) {
+      v <- v[is.finite(v)]
+      if (length(v) == 0L) return(NA_real_)
+      top_v <- max(v)
+      if (top_v <= 0) top_v <- max(abs(v))
+      if (top_v == 0) 1 else top_v
+    })
+    gg_dta$rel_vimp <- gg_dta[[msr]] / unname(top[grp])
+    msr <- "rel_vimp"
+  }
+
+  # Optionally restrict to the top-nvar most important variables. gg_vimp
+  # already sorts by descending VIMP, so keep the first nvar variables. Trim
+  # by variable, not by row: a multi-outcome frame has one row per variable
+  # and class, so a row trim would drop whole class panels.
+  if (!is.null(arg_set$nvar)) {
+    if (is.numeric(arg_set$nvar) && arg_set$nvar > 1) {
+      vars_ord <- unique(as.character(gg_dta$vars))
+      if (arg_set$nvar < length(vars_ord)) {
+        keep <- vars_ord[seq_len(arg_set$nvar)]
+        gg_dta <- gg_dta[as.character(gg_dta$vars) %in% keep, ]
+      }
+    }
+  }
+
+  gg_plt <- ggplot2::ggplot(gg_dta)
 
   # Always map both `fill` and `color` to `positive` -- this gives filled bars
   # (rather than hollow outlines) and ensures the function-level
