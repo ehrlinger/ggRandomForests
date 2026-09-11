@@ -10,7 +10,7 @@
   profile:         package-cran
   default persona: (d)
   sources:
-    writing-voice.md               sha256:15e75ca9cb97
+    writing-voice.md               sha256:71b8ba2fc9b0
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
     r-package-structure.md         sha256:cc35f4c2e152
@@ -101,6 +101,61 @@ convention.
 - "in order to", "it is important to note", "leverage", "utilize".
 
 Punctuation density is NOT a tell. The tells are structural.
+
+### The no-ai-slop pass
+
+After drafting, run one editing pass against the patterns below. They are
+adapted from petergyang/no-ai-slop (MIT); in Claude Code and Cowork the same
+rules ship as the `no-ai-slop` skill, which the `ehrlinger-writing` skill runs
+as its edit step. Make the minimum effective edit: fix the pattern and leave
+strong sentences alone. Most sentences should come through untouched. (Added
+2026-09-10.)
+
+- Banned words: delve, foster, leverage, utilize, facilitate, empower,
+  streamline, robust, cutting-edge, paradigm shift, game changer, tapestry,
+  realm, beacon, multifaceted, meticulous, intricate, paramount, transformative,
+  elevate, embark, supercharge, harness, ever-evolving.
+- Often-empty adverbs and phrases: just, simply, actually, truly,
+  fundamentally, importantly, crucially; "it's worth noting", "when it comes
+  to", "at its core", "in terms of". Cut them when they add nothing; keep them
+  when they carry contrast or real uncertainty.
+- Binary contrasts ("This is not X. It's Y.") and negative listing ("Not X.
+  Not Y. Z."): state Y.
+- Throat-clearing and faux-insight openers: "Here's the thing", "The key point
+  is", "What most people miss".
+- Colon reveals ("The best part: it learns."). Colons are for lists, labels and
+  definitions.
+- Trailing -ing analysis ("..., highlighting the need for ...") and importance
+  puffery ("plays a vital role"): state the consequence or the fact.
+- Interpretive metadiscourse ("As you can see", "This distinction matters"):
+  delete it when the point is already clear.
+- Fake-strong verbs: "serves as" and "stands as" become "is".
+- Weasel attribution ("studies show", "widely regarded"): name the source or
+  flag the claim. Never invent a source.
+- Summary-recap endings and fake-profound kickers: end on the last concrete
+  point.
+- Formatting slop: emoji in headings, decorative bold, bullets that should be
+  two sentences of prose.
+
+### Where this voice overrides no-ai-slop
+
+The pass serves the voice, not the other way round. Where the two disagree,
+keep the voice:
+
+- Question-headed sections, and one rhetorical-question hook opening a section
+  ("So why do we so often force a single Weibull curve...?"). Self-answered
+  question pairs in mid-paragraph still go.
+- A short flat sentence after a long one. That is rhythm; only stacked
+  fragments count as dramatic fragmentation.
+- Teaching repetition and callbacks (see Rules). Synonym cycling still goes.
+- A contrast that names a footgun or separates two estimands (`prob` is not
+  `prob_typical`). The reader needs the wrong reading named before making it.
+  Only rhetorical contrasts go.
+- Inline glosses and first-use scare quotes. "In other words" goes only when
+  it restates instead of glossing.
+- Passive voice in the Formal academic register.
+- The text exempted under "When NOT to apply this voice" is exempt from the
+  pass as well, except for the em-dash rule, which holds everywhere.
 
 ## Before / after
 
