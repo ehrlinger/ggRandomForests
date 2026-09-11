@@ -3,17 +3,15 @@
 gg_brier object.  The curve moves across the event-time
 grid on the x-axis; lower values mean the forest's predicted survival
 probabilities are closer to what actually happened.  Think of
-0 as &quot;perfect&quot; and roughly 0.25 as &quot;uninformative&quot;; a
+0 as &quot;perfect&quot; and roughly 0.25 as &quot;uninformative&quot; – a
 forest that predicts 0.5 for every subject regardless of
-prognosis would sit near that reference.  It is not a ceiling; a forest
-can do worse."><meta property="og:description" content="Draws the time-resolved Brier score or the running CRPS from a
+prognosis would sit near that ceiling."><meta property="og:description" content="Draws the time-resolved Brier score or the running CRPS from a
 gg_brier object.  The curve moves across the event-time
 grid on the x-axis; lower values mean the forest's predicted survival
 probabilities are closer to what actually happened.  Think of
-0 as &quot;perfect&quot; and roughly 0.25 as &quot;uninformative&quot;; a
+0 as &quot;perfect&quot; and roughly 0.25 as &quot;uninformative&quot; – a
 forest that predicts 0.5 for every subject regardless of
-prognosis would sit near that reference.  It is not a ceiling; a forest
-can do worse."></head><body>
+prognosis would sit near that ceiling."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +19,7 @@ can do worse."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +35,6 @@ can do worse."></head><body>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -69,7 +66,7 @@ can do worse."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Plot a <code><a href="gg_brier.html">gg_brier</a></code> object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/plot.gg_brier.R" class="external-link"><code>R/plot.gg_brier.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/plot.gg_brier.R" class="external-link"><code>R/plot.gg_brier.R</code></a></small>
       <div class="d-none name"><code>plot.gg_brier.Rd</code></div>
     </div>
 
@@ -78,10 +75,9 @@ can do worse."></head><body>
 <code><a href="gg_brier.html">gg_brier</a></code> object.  The curve moves across the event-time
 grid on the x-axis; lower values mean the forest's predicted survival
 probabilities are closer to what actually happened.  Think of
-<code>0</code> as "perfect" and roughly <code>0.25</code> as "uninformative"; a
+<code>0</code> as "perfect" and roughly <code>0.25</code> as "uninformative" – a
 forest that predicts <code>0.5</code> for every subject regardless of
-prognosis would sit near that reference.  It is not a ceiling; a forest
-can do worse.</p>
+prognosis would sit near that ceiling.</p>
     </div>
 
     <div class="section level2">

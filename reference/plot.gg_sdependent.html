@@ -11,7 +11,7 @@ blue for variables flagged as signal (signal == TRUE) and gray otherwise."></hea
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,7 +27,6 @@ blue for variables flagged as signal (signal == TRUE) and gray otherwise."></hea
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -59,7 +58,7 @@ blue for variables flagged as signal (signal == TRUE) and gray otherwise."></hea
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Plot a <code>gg_sdependent</code> object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/plot.gg_sdependent.R" class="external-link"><code>R/plot.gg_sdependent.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/plot.gg_sdependent.R" class="external-link"><code>R/plot.gg_sdependent.R</code></a></small>
       <div class="d-none name"><code>plot.gg_sdependent.Rd</code></div>
     </div>
 
@@ -72,7 +71,7 @@ blue for variables flagged as signal (<code>signal == TRUE</code>) and gray othe
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'gg_sdependent'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, labels <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -81,14 +80,6 @@ blue for variables flagged as signal (<code>signal == TRUE</code>) and gray othe
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>A <code>gg_sdependent</code> object from <code><a href="gg_sdependent.html">gg_sdependent()</a></code>.</p></dd>
-
-
-<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
-<dd><p>Optional variable labels for the variable axis. One of: a
-named character vector (<code>c(bpd = "BP Diastole")</code>); a labelled data frame,
-whose <code>attr(col, "label")</code> values are read; or a two-column <code>key</code>/<code>label</code>
-data frame. Variables with no label keep their raw name. Defaults to
-<code>NULL</code> (raw names).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

@@ -52,7 +52,7 @@ A named list with two elements:
 
 `gg_partial` handles the bookkeeping step after you've already called
 `randomForestSRC::plot.variable(partial = TRUE)`: it takes the list that
-function returns and separates the variables into two tidy data frames,
+function returns and separates the variables into two tidy data frames –
 one for continuous predictors (plotted as lines) and one for categorical
 predictors (plotted as bar charts). The split is controlled by
 `cat_limit`: variables with more unique x-values than this threshold are
@@ -71,10 +71,10 @@ partial-dependence interface).
 
 For survival forests,
 [`randomForestSRC::plot.variable`](https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html)
-defaults to `surv.type = "mort"`, so `yhat` is *mortality* (the expected
-number of events) and not a survival probability. It is therefore not on
-\\\[0, 1\]\\ and is not directly comparable with the survival
-probabilities returned by
+defaults to `surv.type = "mort"`, so `yhat` is *mortality* – the
+expected number of events – and not a survival probability. It is
+therefore not on \\\[0, 1\]\\ and is not directly comparable with the
+survival probabilities returned by
 [`gg_variable`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md).
 For a comparable quantity, ask for it explicitly:
 `randomForestSRC::plot.variable(rf, partial = TRUE, surv.type = "surv")`.
@@ -82,6 +82,7 @@ The label describing the plotted quantity is recorded on the returned
 object as `attr(x, "ylabel")` and is used as the y-axis title by
 [`plot.gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md).
 
+Note that
 [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
 defaults to `partial.type = "surv"` and so reports survival
 probabilities. The two entry points therefore report different

@@ -15,7 +15,7 @@ average effect of the swept predictor alone."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +31,6 @@ average effect of the swept predictor alone."></head><body>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -63,7 +62,7 @@ average effect of the swept predictor alone."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Split partial dependence data into continuous or categorical datasets</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/R/gg_partial.R" class="external-link"><code>R/gg_partial.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/gg_partial.R" class="external-link"><code>R/gg_partial.R</code></a></small>
       <div class="d-none name"><code>gg_partial.Rd</code></div>
     </div>
 
@@ -119,8 +118,8 @@ as a factor, for low-cardinality / categorical variables</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>gg_partial</code> handles the bookkeeping step after you've already called
 <code>randomForestSRC::plot.variable(partial = TRUE)</code>: it takes the list
-that function returns and separates the variables into two tidy data frames,
-one for continuous predictors (plotted as lines) and one for categorical
+that function returns and separates the variables into two tidy data frames
+– one for continuous predictors (plotted as lines) and one for categorical
 predictors (plotted as bar charts).  The split is controlled by
 <code>cat_limit</code>: variables with more unique x-values than this threshold
 are treated as continuous; all others are categorical.</p>
@@ -134,8 +133,8 @@ forest directly, see <code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a><
 there is no <code>randomForest</code> method (the <code>randomForest</code> package
 provides no comparable partial-dependence interface).</p>
 <p>For survival forests, <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">randomForestSRC::plot.variable</a></code> defaults
-to <code>surv.type = "mort"</code>, so <code>yhat</code> is <em>mortality</em> (the
-expected number of events) and not a survival probability. It is
+to <code>surv.type = "mort"</code>, so <code>yhat</code> is <em>mortality</em> – the
+expected number of events – and not a survival probability. It is
 therefore not on \([0, 1]\) and is not directly comparable with the
 survival probabilities returned by <code><a href="gg_variable.html">gg_variable</a></code>. For a
 comparable quantity, ask for it explicitly:
@@ -143,7 +142,7 @@ comparable quantity, ask for it explicitly:
   surv.type = "surv")</code>. The label describing the plotted quantity is
 recorded on the returned object as <code>attr(x, "ylabel")</code> and is used
 as the y-axis title by <code><a href="plot.gg_partial.html">plot.gg_partial</a></code>.</p>
-<p><code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code> defaults to
+<p>Note that <code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code> defaults to
 <code>partial.type = "surv"</code> and so reports survival probabilities. The
 two entry points therefore report different quantities by default.</p>
     </div>

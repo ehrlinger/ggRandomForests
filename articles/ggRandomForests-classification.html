@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,7 +42,6 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -87,7 +86,7 @@
       <p class="author">John Ehrlinger</p>
       <p class="date">2026-09-11</p>
 
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests-classification.qmd" class="external-link"><code>vignettes/ggRandomForests-classification.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/vignettes/ggRandomForests-classification.qmd" class="external-link"><code>vignettes/ggRandomForests-classification.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -104,25 +103,25 @@
 </div>
 <section class="section level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional or functional assumptions on how covariates relate to the response. For classification, each tree votes for a class, and the forest reports the vote fractions as class probabilities. The <strong>randomForestSRC</strong> package <span class="citation" data-cites="Ishwaran:RFSRC:software:2026">(<a href="#ref-Ishwaran:RFSRC:software:2026" role="doc-biblioref">Ishwaran and Kogalur 2026</a>)</span> provides a unified implementation for survival, regression, and classification forests.</p>
+<p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional or functional assumptions on how covariates relate to the response. For classification, each tree votes for a class, and the forest reports the vote fractions as class probabilities. The <strong>randomForestSRC</strong> package <span class="citation" data-cites="Ishwaran:RFSRC:2014">(<a href="#ref-Ishwaran:RFSRC:2014" role="doc-biblioref">Ishwaran and Kogalur 2024</a>)</span> provides a unified implementation for survival, regression, and classification forests.</p>
 <p><strong>ggRandomForests</strong> extracts tidy data objects from <code>rfsrc</code> fits and renders them with <strong>ggplot2</strong> <span class="citation" data-cites="Wickham:2009">(<a href="#ref-Wickham:2009" role="doc-biblioref">Wickham 2016</a>)</span>, making it straightforward to explore how a forest is constructed, which variables matter, and how the predicted probabilities depend on individual predictors.</p>
 <p>This vignette demonstrates a complete random forest classification workflow on Fisher’s iris data <span class="citation" data-cites="Fisher:1936">(<a href="#ref-Fisher:1936" role="doc-biblioref">Fisher 1936</a>)</span>:</p>
 <ol type="1">
 <li>
-<strong>Data exploration</strong>: EDA scatter panels, the two variable pairs that separate the three species</li>
+<strong>Data exploration</strong> — EDA scatter panels, the two variable pairs that separate the three species</li>
 <li>
-<strong>Growing the forest</strong>: fitting an RF, checking OOB error convergence</li>
+<strong>Growing the forest</strong> — fitting an RF, checking OOB error convergence</li>
 <li>
-<strong>Variable selection</strong>: VIMP and minimal depth via <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>
+<strong>Variable selection</strong> — VIMP and minimal depth via <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>
 </li>
 <li>
-<strong>SHAP analysis</strong>: per-observation, per-class additive explanations via <code><a href="../reference/gg_shap.html">gg_shap()</a></code>
+<strong>SHAP analysis</strong> — per-observation, per-class additive explanations via <code><a href="../reference/gg_shap.html">gg_shap()</a></code>
 </li>
 <li>
-<strong>Dependence plots</strong>: variable dependence and partial dependence via <code><a href="../reference/gg_variable.html">gg_variable()</a></code> and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>
+<strong>Dependence plots</strong> — variable dependence and partial dependence via <code><a href="../reference/gg_variable.html">gg_variable()</a></code> and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>
 </li>
 <li>
-<strong>Classification performance</strong>: ROC curves and AUC via <code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code>
+<strong>Classification performance</strong> — ROC curves and AUC via <code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code>
 </li>
 </ol>
 <div class="cell" data-layout-align="center">
@@ -143,7 +142,7 @@
 </div>
 </section><section class="section level2"><h2 id="data-iris-flower-measurements">Data: Iris Flower Measurements<a class="anchor" aria-label="anchor" href="#data-iris-flower-measurements"></a>
 </h2>
-<p>Fisher’s iris data <span class="citation" data-cites="Fisher:1936">(<a href="#ref-Fisher:1936" role="doc-biblioref">Fisher 1936</a>)</span> measures sepal and petal length and width for 150 flowers, 50 each from three species: <em>setosa</em>, <em>versicolor</em>, and <em>virginica</em>. It is a small data set, which helps here: every figure in this vignette renders in under a second, and the structure is well-understood enough that any strange behavior stands out.</p>
+<p>Fisher’s iris data <span class="citation" data-cites="Fisher:1936">(<a href="#ref-Fisher:1936" role="doc-biblioref">Fisher 1936</a>)</span> measures sepal and petal length and width for 150 flowers, 50 each from three species: <em>setosa</em>, <em>versicolor</em>, and <em>virginica</em>. It is a small data set, and that is a feature here, not a flaw: every figure in this vignette renders in under a second, and the structure is well-understood enough that any strange behavior stands out.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span></span></code></pre></div>
@@ -175,7 +174,7 @@
 </div>
 </div>
 </div>
-<p><em>setosa</em> sits in its own corner of petal space, clean of the other two. <em>versicolor</em> and <em>virginica</em> overlap in both plots, more so on sepals than petals. Keep that overlap in mind. It is the interesting case for everything that follows, since <em>setosa</em> is trivial for the forest to get right.</p>
+<p><em>setosa</em> sits in its own corner of petal space, clean of the other two. <em>versicolor</em> and <em>virginica</em> overlap in both plots, more so on sepals than petals. Keep that overlap in mind — it is the interesting case for everything that follows, since <em>setosa</em> is trivial for the forest to get right.</p>
 </section></section><section class="section level2"><h2 id="growing-a-random-forest">Growing a Random Forest<a class="anchor" aria-label="anchor" href="#growing-a-random-forest"></a>
 </h2>
 <p>We grow a classification forest using all four predictors. The <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc()</a></code> function detects the classification family from the factor response.</p>
@@ -232,7 +231,7 @@
 </div>
 </div>
 </div>
-<p>The <em>setosa</em> error drops to zero almost immediately. <em>versicolor</em> and <em>virginica</em> settle in around 6% each, and the overall rate levels off between 4% and 5% within about 20 trees, so the forest is not still learning by the time we stop growing it at 100.</p>
+<p>The <em>setosa</em> error drops to zero almost immediately. <em>versicolor</em> and <em>virginica</em> settle in around 6% each, and the overall rate levels off near 4% well before 200 trees — the forest is not still learning by the time we stop growing it.</p>
 </section><section class="level2"><h3 id="oob-predictions">OOB predictions<a class="anchor" aria-label="anchor" href="#oob-predictions"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -245,7 +244,7 @@
 </div>
 </div>
 </div>
-<p>Each panel is one true species; each point is one flower’s predicted probability for one of the three classes. <em>setosa</em> flowers pin their probability at 1 for <em>setosa</em> and 0 for the other two, with no ambiguity at all. The <em>versicolor</em> and <em>virginica</em> panels show real spread: most flowers are still classified confidently, but a handful sit in the 0.2–0.6 range where the forest is genuinely unsure which of the two they are.</p>
+<p>Each panel is one true species; each point is one flower’s predicted probability for one of the three classes. <em>setosa</em> flowers pin their probability at 1 for <em>setosa</em> and 0 for the other two — no ambiguity at all. The <em>versicolor</em> and <em>virginica</em> panels show real spread: most flowers are still classified confidently, but a handful sit in the 0.2–0.6 range where the forest is genuinely unsure which of the two they are.</p>
 </section></section><section class="section level2"><h2 id="variable-selection">Variable Selection<a class="anchor" aria-label="anchor" href="#variable-selection"></a>
 </h2>
 <section class="level2"><h3 id="variable-importance-vimp">Variable importance (VIMP)<a class="anchor" aria-label="anchor" href="#variable-importance-vimp"></a>
@@ -261,7 +260,7 @@
 </div>
 </div>
 </div>
-<p><code>Petal.Length</code> and <code>Petal.Width</code> dominate every facet; <code>Sepal.Length</code> and <code>Sepal.Width</code> barely register, consistent with the EDA. Look closely at the <em>virginica</em> facet: <code>Sepal.Length</code> has a small negative VIMP there (colored differently), meaning permuting it very slightly <em>helped</em> virginica predictions in this fit. That kind of disagreement across facets is exactly what a per-class VIMP breakdown is for; a single overall score would have hidden it. (This is a distinct question from the permutation-vs-varPro comparison covered in <code><a href="../articles/varpro.html">vignette("varpro", package = "ggRandomForests")</a></code>, which contrasts <em>how</em> importance is measured rather than <em>for which class</em>.)</p>
+<p><code>Petal.Length</code> and <code>Petal.Width</code> dominate every facet, <code>Sepal.Length</code> and <code>Sepal.Width</code> barely register — consistent with the EDA. Look closely at the <em>virginica</em> facet: <code>Sepal.Length</code> has a small negative VIMP there (colored differently), meaning permuting it very slightly <em>helped</em> virginica predictions in this fit. That kind of disagreement across facets is exactly what a per-class VIMP breakdown is for; a single overall score would have hidden it. (This is a distinct question from the permutation-vs-varPro comparison covered in <code><a href="../articles/varpro.html">vignette("varpro", package = "ggRandomForests")</a></code>, which contrasts <em>how</em> importance is measured rather than <em>for which class</em>.)</p>
 </section><section class="level2"><h3 id="minimal-depth">Minimal depth<a class="anchor" aria-label="anchor" href="#minimal-depth"></a>
 </h3>
 <p>Minimal depth <span class="citation" data-cites="Ishwaran:2010">(<a href="#ref-Ishwaran:2010" role="doc-biblioref">Ishwaran et al. 2010</a>)</span> ranks variables by how close to the root node they first split, on average.</p>
@@ -272,8 +271,8 @@
 <p>The threshold is 1.91, selecting 2 variables: Petal.Length, Petal.Width. VIMP and minimal depth agree.</p>
 </section></section><section class="section level2"><h2 id="shap-analysis">SHAP Analysis<a class="anchor" aria-label="anchor" href="#shap-analysis"></a>
 </h2>
-<p>VIMP ranks importance averaged over the whole forest, and it does not change with the question you ask. SHAP does: a classification forest predicts one probability per class, and <code><a href="../reference/gg_shap.html">gg_shap()</a></code> explains exactly one of those probabilities at a time, chosen with the <code>which.class</code> argument. Ask for class 1 (<em>setosa</em>) and you get contributions to the <em>setosa</em> probability; switch to class 3 (<em>virginica</em>) and every contribution is recomputed for <em>virginica</em> instead. Nothing else about the method changes: same players, same game, different payout to split.</p>
-<p>We target <em>virginica</em> (<code>which.class = 3</code>), the harder of the two overlapping species. With only four predictors, <code>kernelshap</code> runs in exact mode, so explaining all 150 flowers takes about two seconds, so there is no need for the random-sample workaround the regression vignette uses on the larger, higher-dimensional Boston housing data.</p>
+<p>VIMP ranks importance averaged over the whole forest, and it does not change with the question you ask. SHAP does: a classification forest predicts one probability per class, and <code><a href="../reference/gg_shap.html">gg_shap()</a></code> explains exactly one of those probabilities at a time, chosen with the <code>which.class</code> argument. Ask for class 1 (<em>setosa</em>) and you get contributions to the <em>setosa</em> probability; switch to class 3 (<em>virginica</em>) and every contribution is recomputed for <em>virginica</em> instead. Nothing else about the method changes — same players, same game, different payout to split.</p>
+<p>We target <em>virginica</em> (<code>which.class = 3</code>), the harder of the two overlapping species. With only four predictors, <code>kernelshap</code> runs in exact mode, so explaining all 150 flowers takes about two seconds — no need for the random-sample workaround the regression vignette uses on the larger, higher- dimensional Boston housing data.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">43</span><span class="op">)</span></span>
@@ -291,7 +290,7 @@
 </div>
 </div>
 </div>
-<p>Same two variables on top as VIMP and minimal depth, <code>Petal.Length</code> ahead of <code>Petal.Width</code>. Three different mechanisms, one answer for the dominant variables. The disagreement worth watching for is further down the ranking, not at the top.</p>
+<p>Same two variables on top as VIMP and minimal depth, <code>Petal.Length</code> ahead of <code>Petal.Width</code>. Three different mechanisms, one answer for the dominant variables — the disagreement worth watching for is further down the ranking, not at the top.</p>
 </section><section class="level2"><h3 id="shap-beeswarm">SHAP beeswarm<a class="anchor" aria-label="anchor" href="#shap-beeswarm"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -304,7 +303,7 @@
 </div>
 </div>
 </div>
-<p><code>Petal.Width</code> shows a clean gradient: the yellow (wide petal) dots sit on the positive side, pushing the predicted <em>virginica</em> probability up; the purple (narrow petal) dots sit on the negative side, pulling it down. That is exactly what you would expect from the EDA scatter, since <em>virginica</em> has the widest petals of the three species.</p>
+<p><code>Petal.Width</code> shows a clean gradient: the yellow (wide petal) dots sit on the positive side, pushing the predicted <em>virginica</em> probability up; the purple (narrow petal) dots sit on the negative side, pulling it down. That is exactly what you would expect from the EDA scatter — <em>virginica</em> has the widest petals of the three species.</p>
 </section><section class="level2"><h3 id="shap-dependence">SHAP dependence<a class="anchor" aria-label="anchor" href="#shap-dependence"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -335,7 +334,7 @@
 </div>
 </div>
 </div>
-<p>Three curves, three stories: <em>setosa</em>’s probability collapses to zero past a petal width of about 0.6, <em>versicolor</em> peaks in the middle of the range and falls off on both sides, and <em>virginica</em> rises steadily from zero starting around 1.0. That is the same three-panel pattern the beeswarm and dependence plots already showed for <em>virginica</em> alone, now visible for all three classes at once.</p>
+<p>Three curves, three stories: <em>setosa</em>’s probability collapses to zero past a petal width of about 0.6, <em>versicolor</em> peaks in the middle of the range and falls off on both sides, and <em>virginica</em> rises steadily from zero starting around 1.0 — the same three-panel pattern the beeswarm and dependence plots already showed for <em>virginica</em> alone, now visible for all three classes at once.</p>
 </section><section class="level2"><h3 id="partial-dependence">Partial dependence<a class="anchor" aria-label="anchor" href="#partial-dependence"></a>
 </h3>
 <p>Partial dependence integrates out the effects of all other covariates, giving a risk-adjusted view of each predictor’s marginal effect on one class’s predicted probability <span class="citation" data-cites="Friedman:2000">(<a href="#ref-Friedman:2000" role="doc-biblioref">Friedman 2001</a>)</span>. Unlike <code><a href="../reference/gg_shap.html">gg_shap()</a></code>, <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> has no <code>which.class</code> argument for classification forests; it defers to <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">randomForestSRC::partial.rfsrc()</a></code>’s own default, which targets the first factor level, <em>setosa</em> here.</p>
@@ -350,10 +349,10 @@
 </div>
 </div>
 </div>
-<p>Both curves fall sharply and then flatten near zero. This is the risk-adjusted version of what the EDA already showed: past a certain petal size, a flower is essentially never <em>setosa</em>. Getting the same kind of curve for <em>versicolor</em> or <em>virginica</em> instead means going back to <code><a href="../reference/gg_shap.html">gg_shap()</a></code>: re-run it with <code>which.class = 2</code> or <code>3</code>, then <code><a href="../reference/shap_dependence.html">shap_dependence()</a></code> on that new object picks up wherever <code>which.class</code> left off.</p>
+<p>Both curves fall sharply and then flatten near zero — the risk-adjusted version of what the EDA already showed: past a certain petal size, a flower is essentially never <em>setosa</em>. Getting the same kind of curve for <em>versicolor</em> or <em>virginica</em> instead means going back to <code><a href="../reference/gg_shap.html">gg_shap()</a></code>: re-run it with <code>which.class = 2</code> or <code>3</code>, then <code><a href="../reference/shap_dependence.html">shap_dependence()</a></code> on that new object picks up wherever <code>which.class</code> left off.</p>
 </section></section><section class="section level2"><h2 id="classification-performance-roc-and-auc">Classification Performance: ROC and AUC<a class="anchor" aria-label="anchor" href="#classification-performance-roc-and-auc"></a>
 </h2>
-<p>ROC curves and AUC have no equivalent in the regression vignette; they are specific to classification, where “how well does the forest separate this class from the rest” is itself a well-posed question. <code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code> computes the curve for one class at a time, indexed the same way as <code><a href="../reference/gg_shap.html">gg_shap()</a></code>’s <code>which.class</code>, just under the name <code>which_outcome</code>.</p>
+<p>ROC curves and AUC have no equivalent in the regression vignette — they are specific to classification, where “how well does the forest separate this class from the rest” is itself a well-posed question. <code><a href="../reference/gg_roc.rfsrc.html">gg_roc()</a></code> computes the curve for one class at a time, indexed the same way as <code><a href="../reference/gg_shap.html">gg_shap()</a></code>’s <code>which.class</code>, just under the name <code>which_outcome</code>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">roc_virginica</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_roc.rfsrc.html">gg_roc</a></span><span class="op">(</span><span class="va">rfsrc_iris</span>, which_outcome <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -372,7 +371,7 @@
 <pre><code><span><span class="co">#&gt; [1] 0.991</span></span></code></pre>
 </div>
 </div>
-<p>An AUC of 0.991 for <em>virginica</em> confirms the forest separates it well, even given its overlap with <em>versicolor</em>. <em>setosa</em>’s ROC curve is not worth plotting. It is a right angle, AUC 1, the geometric version of the confusion matrix’s perfect row.</p>
+<p>An AUC of 0.991 for <em>virginica</em> confirms the forest separates it well, even given its overlap with <em>versicolor</em>. <em>setosa</em>’s ROC curve is not worth plotting — it is a right angle, AUC 1, the geometric version of the confusion matrix’s perfect row.</p>
 </section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
 <p>We have walked a full random forest classification analysis with <strong>randomForestSRC</strong> and <strong>ggRandomForests</strong>, and the pieces line up:</p>
@@ -400,8 +399,8 @@ Fisher, Ronald A. 1936. <span>“The Use of Multiple Measurements in Taxonomic P
 <div id="ref-Friedman:2000" class="csl-entry" role="listitem">
 Friedman, Jerome H. 2001. <span>“Greedy Function Approximation: A Gradient Boosting Machine.”</span> <em>The Annals of Statistics</em> 29 (5): 1189–232. <a href="https://doi.org/10.1214/aos/1013203451" class="external-link">https://doi.org/10.1214/aos/1013203451</a>.
 </div>
-<div id="ref-Ishwaran:RFSRC:software:2026" class="csl-entry" role="listitem">
-Ishwaran, Hemant, and Udaya B. Kogalur. 2026. <em>Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
+<div id="ref-Ishwaran:RFSRC:2014" class="csl-entry" role="listitem">
+Ishwaran, Hemant, and Udaya B. Kogalur. 2024. <em><span class="nocase">randomForestSRC</span>: Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
 </div>
 <div id="ref-Ishwaran:2010" class="csl-entry" role="listitem">
 Ishwaran, Hemant, Udaya B. Kogalur, Eiran Z. Gorodeski, Andy J. Minn, and Michael S. Lauer. 2010. <span>“High-Dimensional Variable Selection for Survival Data.”</span> <em>Journal of the American Statistical Association</em> 105 (489): 205–17. <a href="https://doi.org/10.1198/jasa.2009.tm08622" class="external-link">https://doi.org/10.1198/jasa.2009.tm08622</a>.

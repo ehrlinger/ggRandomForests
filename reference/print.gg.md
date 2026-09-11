@@ -47,18 +47,6 @@ print(x, ...)
 # S3 method for class 'gg_brier'
 print(x, ...)
 
-# S3 method for class 'gg_rhf'
-print(x, ...)
-
-# S3 method for class 'gg_tune_rhf'
-print(x, ...)
-
-# S3 method for class 'gg_auct'
-print(x, ...)
-
-# S3 method for class 'gg_rhf_importance'
-print(x, ...)
-
 # S3 method for class 'gg_udependent'
 print(x, ...)
 
@@ -78,12 +66,6 @@ print(x, ...)
 print(x, ...)
 
 # S3 method for class 'gg_shap'
-print(x, ...)
-
-# S3 method for class 'gg_ale_rfsrc'
-print(x, ...)
-
-# S3 method for class 'gg_ale_interaction'
 print(x, ...)
 ```
 

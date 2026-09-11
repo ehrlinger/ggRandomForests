@@ -4,7 +4,7 @@ A partial dependence curve marginalizes the forest's prediction over all
 other predictors: for each evaluation point of the target variable, the
 forest scores every training observation with that value substituted in,
 then averages the result. What you get is the average effect of the
-target variable after "integrating out" the rest, a curve that would be
+target variable after "integrating out" the rest – a curve that would be
 flat if the variable carried no signal.
 
 ## Usage
@@ -39,24 +39,13 @@ gg_partial_rfsrc(
 
   Optional single character name of a grouping variable in `newx`. When
   supplied, partial dependence is computed separately for each unique
-  value of this column in `newx`, with the variable held at that value
-  for every training observation, and a `grp` column is appended. For a
-  continuous variable, set `newx[[xvar2.name]]` to a short grid first,
-  since every distinct value costs one more
-  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-  call for each variable in `xvar.names`.
+  level of this variable and a `grp` column is appended.
 
 - newx:
 
-  Optional `data.frame` that sets the evaluation grid, not the data
-  being averaged over. Each of `xvar.names` is evaluated at the quantile
-  grid (or unique levels) of its column in `newx`, and `xvar2.name`
-  takes its values from the same place. The average is always taken over
-  the training data held in `rf_model` (see
-  [`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)),
-  so overwriting any other column of `newx` has no effect on `yhat`; to
-  hold a second variable fixed, pass it as `xvar2.name`. Defaults to
-  `rf_model$xvar`. All column names must match `rf_model$xvar.names`.
+  Optional `data.frame` of predictor values to evaluate partial effects
+  at. Defaults to the training data stored in `rf_model$xvar`. All
+  column names must match `rf_model$xvar.names`.
 
 - partial.time:
 
@@ -115,7 +104,7 @@ and then tidy-stacking the results into separate data frames for
 continuous and categorical variables. Unlike
 [`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
 (which wraps `plot.variable`), you pass the fitted `rfsrc` object
-directly, with no intermediate `plot.variable` step.
+directly – no intermediate `plot.variable` step.
 
 For survival forests, the marginalized quantity depends on
 `partial.type`: survival probability (`"surv"`), cumulative hazard

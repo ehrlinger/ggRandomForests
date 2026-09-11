@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,7 +23,6 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
-    <li><a class="dropdown-item" href="articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -55,7 +54,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>ggRandomForests</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/AGENTS.md" class="external-link"><code>AGENTS.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/AGENTS.md" class="external-link"><code>AGENTS.md</code></a></small>
     </div>
 
 <div id="ggrandomforests" class="section level1">
@@ -82,7 +81,7 @@
 </div>
 <div class="section level2">
 <h2 id="the-one-thing-that-destroys-work">The one thing that destroys work<a class="anchor" aria-label="anchor" href="#the-one-thing-that-destroys-work"></a></h2>
-<p><strong>A suite run with <code>VDIFFR_RUN_TESTS</code> unset deletes every vdiffr baseline as “unused.”</strong> There are 58 of them under <code>tests/testthat/_snaps/snapshots/</code>, and they are the package’s only visual regression coverage.</p>
+<p><strong>A suite run with <code>VDIFFR_RUN_TESTS</code> unset deletes every vdiffr baseline as “unused.”</strong> There are 49 of them under <code>tests/testthat/_snaps/snapshots/</code>, and they are the package’s only visual regression coverage.</p>
 <p>Always run the suite as:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="va">NOT_CRAN</span><span class="op">=</span>true <span class="va">VDIFFR_RUN_TESTS</span><span class="op">=</span>true <span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'devtools::test()'</span></span></code></pre></div>
 <p>Check <code>git status</code> before and after any local suite run. A wave of staged snapshot deletions is a signal that the variable was missing, not a change to commit.</p>
@@ -95,9 +94,7 @@
 </li>
 </ol><p>Further notes, so nobody re-derives them:</p>
 <ul><li>If you regenerate a baseline, do it <strong>last</strong>. A later full-suite run deletes it, and a blanket <code>git checkout -- tests/testthat/_snaps/</code> to undo that silently reverts your regeneration along with the pruning.</li>
-<li>
-<strong>That rule is branch-local, and the merge case is the one it misses.</strong> A branch that adds baselines and a branch that changes what those baselines render are both green on their own, and the files never textually conflict, so nothing fails until the second one merges. It happened on 2026-08-29: #252 added four <code><a href="reference/plot.gg_variable.html">plot.gg_variable()</a></code> survival baselines while #250, which removed the hard-coded <code>"year"</code> from that same axis title, sat in review. Two of the four baked in <code>Survival at 1 year</code>, and #250 would have merged clean and left <code>main</code> quietly wrong. CI would have stayed green, because it never compares an SVG, and the mismatch would have surfaced only when someone next ran the suite locally with the guard on. <strong>Before merging a PR that changes rendered output, re-check <code>main</code> for baselines added since you branched</strong>, then merge <code>main</code> in, regenerate, and push. <code>git diff --stat &lt;merge-commit&gt;..HEAD</code> afterwards should name only the baselines you meant to touch.</li>
-<li>All 58 baselines are tracked today. That was not true on 2026-08-06, when one unguarded run pruned 49 files and the 9 untracked ones survived only because a stale copy happened to remain in <code>ggRandomForests.Rcheck/00_pkg_src/</code>. That is not a backup and will not reliably be there.</li>
+<li>All 49 baselines are tracked today. That was not true on 2026-08-06, when one unguarded run pruned 49 files and the 9 untracked ones survived only because a stale copy happened to remain in <code>ggRandomForests.Rcheck/00_pkg_src/</code>. That is not a backup and will not reliably be there.</li>
 <li>The guard style in the test file is <strong>not</strong> a lever. <code>test_snapshots.R</code> wraps most tests in a file-level <code>if (Sys.getenv(...) == "true")</code> and the rest in <code>skip()</code> inside <code>test_that()</code>; on testthat 3.3.2 a prune takes the baselines of both. Rewriting the guards would not have prevented any of this.</li>
 <li>If a measurement genuinely needs the guard off (tracing under CRAN skip semantics, say), run it against a throwaway export rather than this checkout: <code>git archive HEAD | tar -x -C "$TMPDIR/tree"</code>, so pruning has nothing of yours to delete.</li>
 <li>Only <code>R-CMD-check</code>, <code>test-coverage</code> and <code>check-manual</code> set <code>VDIFFR_RUN_TESTS: "false"</code> deliberately, where snapshots are not regenerated and pruning has nothing to prune. That CI setting is why the hazard stays invisible until someone runs the suite on a laptop.</li>
@@ -150,7 +147,7 @@
 <strong>Importance plots put the most-important variable at the top.</strong> After <code>coord_flip()</code> that means it is the <em>last</em> factor level of the variable axis. <code>test_plot_conventions.R</code> pins this across <code>gg_vimp</code>, <code>gg_varpro</code>, <code>gg_beta_varpro</code> and <code>gg_ivarpro</code>, because a bottom-heavy ordering was a real bug once.</li>
 <li>
 <strong><code>Depends</code> carries only the R version constraint.</strong> <code>randomForestSRC</code>, <code>randomForest</code> and <code>varPro</code> are <code>Imports</code> and are never attached from <code>R/</code>. <code>test_namespace_hygiene.R</code> pins this. (<code>tests/testthat/setup.R</code> attaches them for the tests only; that is not licence to do it in <code>R/</code>.)</li>
-<li>Every <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> / <code>autoplot()</code> method should have a <code><a href="https://vdiffr.r-lib.org/reference/expect_doppelganger.html" class="external-link">vdiffr::expect_doppelganger()</a></code> test in <code>test_snapshots.R</code>. There are 58 today against 38 methods; coverage is broad but has not been audited per method.</li>
+<li>Every <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> / <code>autoplot()</code> method should have a <code><a href="https://vdiffr.r-lib.org/reference/expect_doppelganger.html" class="external-link">vdiffr::expect_doppelganger()</a></code> test in <code>test_snapshots.R</code>. There are 49 today against 38 methods; coverage is broad but has not been audited per method.</li>
 <li>
 <strong>Tests are deterministic, and every <code>test_that()</code> block that touches the RNG calls <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> inside that block.</strong> A file-level seed does not count: testthat promises no execution order, and every earlier block advances the stream. <code>test_determinism.R</code> pins this by parsing the suite, so a new unseeded block fails a test rather than passing review.</li>
 <li>Anything slow gets <code>skip_on_cran()</code>.</li>
@@ -228,12 +225,7 @@
 <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">tar</span> xzf ggRandomForests_<span class="op">&lt;</span>version<span class="op">&gt;</span>.tar.gz <span class="at">-O</span> ggRandomForests/DESCRIPTION <span class="kw">|</span> <span class="fu">sed</span> <span class="at">-n</span> <span class="st">'4,5p'</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">tar</span> tzf ggRandomForests_<span class="op">&lt;</span>version<span class="op">&gt;</span>.tar.gz <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-c</span> cran-comments   <span class="co"># expect 0</span></span></code></pre></div>
 </li>
-<li><p>A working-tree <code>R CMD build .</code> does not leak <strong>files</strong>. Its <strong>vignette output</strong> is a different matter; see the next bullet. Measured 2026-08-20 at <code>26416c6c</code>: a build from the full working tree (71 MB of untracked <code>.Rcheck</code>, <code>docs/</code>, <code>.claude/</code>, <code>.remember/</code>, <code>.Rproj.user/</code>) and a build from a clean <code>git archive</code> export produced tarballs with an identical 247-entry file list, no difference in either direction. The <code>(^|/)\.remember$</code>, <code>(^|/)\.Rhistory$</code> and <code>(^|/)\.DS_Store$</code> guards at the foot of <code>.Rbuildignore</code> close the 2026-08-18 hole, and <code>R CMD build</code> prunes matched <em>directories</em> wholesale, so <code>.claude/settings.local.json</code> and the <code>.Rcheck</code> tree are never walked. Testing an ignore pattern against a full file path wrongly reports those two as leaks. Run the <code>tar tzf</code> check above instead of predicting.</p></li>
-<li>
-<p><strong>Do not submit with <code>devtools::submit_cran()</code>. Upload the checked tarball.</strong> <code>submit_cran()</code> does not send the tarball you checked. It rebuilds from the working tree (<code>pkgbuild::build(pkg$path, tempdir())</code>), and the vignettes in that build render against whatever git-ignored knitr caches are lying in <code>vignettes/</code>. Measured 2026-09-10 on 3.5.3 at <code>e7a9a092</code>, with caches from 2026-08-25: the file list and the vignette text were identical to the <code>git archive</code> build, but <code>inst/doc/varpro.html</code> had <strong>2 figures instead of 13</strong> and <code>uvarpro.html</code> <strong>0 instead of 3</strong>. <code>R CMD check --as-cran</code> on that tarball was still 0/0/1 NOTE, because the check re-renders the vignettes in its own tree and never inspects the shipped HTML, so nothing flags it. CRAN would have published the figure-less pages. <code>submit_cran()</code> also sends <strong>all</strong> of <code>cran-comments.md</code> as the comment, every past version’s section included. Submit the gate-checked <code>git archive</code> tarball through <a href="https://cran.r-project.org/submit.html" class="external-link uri">https://cran.r-project.org/submit.html</a> instead, paste only the current version’s section, and update <code>CRAN-SUBMISSION</code> by hand afterwards. To compare two tarballs’ vignettes:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">tar</span> xzf ggRandomForests_<span class="op">&lt;</span>version<span class="op">&gt;</span>.tar.gz <span class="at">-O</span> ggRandomForests/inst/doc/varpro.html <span class="kw">|</span></span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="fu">grep</span> <span class="at">-o</span> <span class="st">'data:image/png;base64'</span> <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span></span></code></pre></div>
-</li>
+<li><p>A working-tree <code>R CMD build .</code> is <strong>not</strong> a reason to rebuild on its own. Measured 2026-08-20 at <code>26416c6c</code>: a build from the full working tree (71 MB of untracked <code>.Rcheck</code>, <code>docs/</code>, <code>.claude/</code>, <code>.remember/</code>, <code>.Rproj.user/</code>) and a build from a clean <code>git archive</code> export produced tarballs with an identical 247-entry file list, no difference in either direction. The <code>(^|/)\.remember$</code>, <code>(^|/)\.Rhistory$</code> and <code>(^|/)\.DS_Store$</code> guards at the foot of <code>.Rbuildignore</code> close the 2026-08-18 hole, and <code>R CMD build</code> prunes matched <em>directories</em> wholesale, so <code>.claude/settings.local.json</code> and the <code>.Rcheck</code> tree are never walked. Testing an ignore pattern against a full file path wrongly reports those two as leaks. Run the <code>tar tzf</code> check above instead of predicting.</p></li>
 </ul></div>
 </div>
 
