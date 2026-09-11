@@ -6,7 +6,8 @@ object. The curve moves across the event-time grid on the x-axis; lower
 values mean the forest's predicted survival probabilities are closer to
 what actually happened. Think of `0` as "perfect" and roughly `0.25` as
 "uninformative"; a forest that predicts `0.5` for every subject
-regardless of prognosis would sit near that ceiling.
+regardless of prognosis would sit near that reference. It is not a
+ceiling; a forest can do worse.
 
 ## Usage
 

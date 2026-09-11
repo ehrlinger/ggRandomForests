@@ -4,22 +4,24 @@ how far did the predicted probability sit from what actually happened?
 For a survival forest the forecast is the predicted survival probability
 at a given moment, and the "what happened" is whether the subject was
 still alive at that moment.  The score is computed at every event time,
-so you get a curve rather than a single number – lower is better
+so you get a curve rather than a single number, and lower is better
 everywhere.  A perfectly calibrated forest that predicts 0 for
 every subject who died and 1 for every subject who survived would
 score 0; a forest that predicts 0.5 for everyone scores
-roughly 0.25 regardless of the true outcome – that is the
-"uninformative" ceiling.'><meta property="og:description" content='The Brier score asks a familiar question of any probabilistic forecast:
+roughly 0.25 regardless of the true outcome.  That is the
+"uninformative" reference, not a ceiling; a forest can score worse than
+it.'><meta property="og:description" content='The Brier score asks a familiar question of any probabilistic forecast:
 how far did the predicted probability sit from what actually happened?
 For a survival forest the forecast is the predicted survival probability
 at a given moment, and the "what happened" is whether the subject was
 still alive at that moment.  The score is computed at every event time,
-so you get a curve rather than a single number – lower is better
+so you get a curve rather than a single number, and lower is better
 everywhere.  A perfectly calibrated forest that predicts 0 for
 every subject who died and 1 for every subject who survived would
 score 0; a forest that predicts 0.5 for everyone scores
-roughly 0.25 regardless of the true outcome – that is the
-"uninformative" ceiling.'></head><body>
+roughly 0.25 regardless of the true outcome.  That is the
+"uninformative" reference, not a ceiling; a forest can score worse than
+it.'></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -85,12 +87,13 @@ how far did the predicted probability sit from what actually happened?
 For a survival forest the forecast is the predicted survival probability
 at a given moment, and the "what happened" is whether the subject was
 still alive at that moment.  The score is computed at every event time,
-so you get a curve rather than a single number – lower is better
+so you get a curve rather than a single number, and lower is better
 everywhere.  A perfectly calibrated forest that predicts <code>0</code> for
 every subject who died and <code>1</code> for every subject who survived would
 score <code>0</code>; a forest that predicts <code>0.5</code> for everyone scores
-roughly <code>0.25</code> regardless of the true outcome – that is the
-"uninformative" ceiling.</p>
+roughly <code>0.25</code> regardless of the true outcome.  That is the
+"uninformative" reference, not a ceiling; a forest can score worse than
+it.</p>
     </div>
 
     <div class="section level2">
@@ -156,9 +159,10 @@ divides by the time elapsed since the first event time.</p>
     <p>This function extracts the time-resolved Brier score for a survival
 forest grown with <code>randomForestSRC</code>, both overall and broken down
 by mortality-risk quartile (lowest-risk to highest-risk subjects).  It
-also returns the continuous ranked probability score (CRPS) – the Brier
-score integrated over time and divided by elapsed time, a running average
-that summarizes calibration up to each point on the time axis.</p>
+also returns, in the <code>crps</code> column, the running continuous ranked
+probability score (CRPS): the Brier score integrated over time and divided
+by elapsed time, so each value summarizes calibration up to that point on
+the time axis.</p>
 <p>Because subjects are right-censored, a plain Brier score is biased:
 censored subjects contribute no outcome information yet still inflate the
 denominator.  The score here uses inverse-probability-of-censoring

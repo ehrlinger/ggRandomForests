@@ -39,19 +39,18 @@ This vignette demonstrates a complete random survival forest workflow on
 the primary biliary cirrhosis (PBC) data set ([Fleming and Harrington
 1991](#ref-fleming:1991)):
 
-1.  **Data preparation and exploration** — cleaning, EDA, Kaplan–Meier
+1.  **Data preparation and exploration**: cleaning, EDA, Kaplan–Meier
     curves
-2.  **Growing the forest** — fitting an RSF, checking convergence and
-    OOB error
-3.  **Variable selection** — VIMP and minimal depth via
+2.  **Growing the forest**: fitting an RSF, checking convergence and OOB
+    error
+3.  **Variable selection**: VIMP and minimal depth via
     [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-4.  **Dependence plots** — variable dependence and partial dependence
-    via
+4.  **Dependence plots**: variable dependence and partial dependence via
     [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
     and
     [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-5.  **Variable interactions** — conditioning plots and partial
-    dependence surfaces
+5.  **Variable interactions**: conditioning plots and partial dependence
+    surfaces
 
 ``` r
 
@@ -214,10 +213,10 @@ values that fall outside the biological range.
 ### Kaplan–Meier survival by treatment
 
 The Kaplan–Meier estimate is the marginal survival curve with no
-covariate adjustment. It serves as the no-covariate baseline: once we
-fit a forest, comparing the KM curves to the forest’s OOB predictions
-lets us judge how much predictive signal the covariates add beyond the
-raw event rate.
+covariate adjustment. It is the no-covariate baseline: once we fit a
+forest, comparing the KM curves to the forest’s OOB predictions lets us
+judge how much predictive signal the covariates add beyond the raw event
+rate.
 
 We restrict to the 312 trial patients and construct KM curves with
 `gg_survival`.
@@ -278,7 +277,7 @@ plot(gg_survival(interval = "years", censor = "status",
 
 KM survival stratified by bilirubin groups.
 
-Higher bilirubin strongly predicts worse survival — an effect the random
+Higher bilirubin strongly predicts worse survival, an effect the random
 forest will rediscover without any prior specification.
 
 ## Growing a Random Survival Forest
@@ -327,8 +326,8 @@ plot(gg_error(rfsrc_pbc))
 
 OOB prediction error vs. number of trees.
 
-The error stabilizes well before the 100 trees grown here, indicating
-the forest is large enough for reliable predictions.
+The error stabilizes well before the 100 trees grown here, so the forest
+is large enough for reliable predictions.
 
 ### OOB predicted survival
 
@@ -350,8 +349,8 @@ Each curve is one patient’s OOB ensemble survival function
 $`\hat{S}(t)`$, extended to the last follow-up time. The forest never
 saw that patient when building its prediction, so these are genuine
 out-of-sample estimates. Red (death event) curves generally fall faster
-and reach lower survival probabilities, confirming the forest separates
-risk groups. Comparing this spread to the marginal KM curves from the
+and reach lower survival probabilities, so the forest does separate risk
+groups. Comparing this spread to the marginal KM curves from the
 previous section shows how much the covariates tighten risk
 stratification.
 
@@ -372,7 +371,7 @@ Median predicted survival by treatment group with 95% confidence bands.
 The non-trial patients (`pbc_test`) have substantial missing data.
 [`predict.rfsrc()`](https://www.randomforestsrc.org//reference/predict.rfsrc.html)
 handles these transparently at prediction time via
-`na.action = "na.impute"` — this is distinct from training-time
+`na.action = "na.impute"`. This is distinct from training-time
 imputation and does not affect the fitted forest object.
 
 ``` r
@@ -424,8 +423,8 @@ plot(gg_vimp(rfsrc_pbc), labels = st_labs) +
 Variable importance ranking. Blue = positive VIMP, red = negative.
 
 Bilirubin ranks highest, followed by edema, ascites, albumin, copper,
-age, and prothrombin time — closely matching the variables selected in
-the Fleming and Harrington ([1991](#ref-fleming:1991)) proportional
+age, and prothrombin time, which closely matches the variables selected
+in the Fleming and Harrington ([1991](#ref-fleming:1991)) proportional
 hazards model.
 
 ### Minimal depth
@@ -693,8 +692,8 @@ bilirubin and albumin. Fill color is the predicted survival probability.
 
 The surface shows that survival is highest when bilirubin is low and
 albumin is high (upper-left corner), and drops steeply as bilirubin
-increases or albumin decreases. The curvature of the surface —
-particularly the steep gradient at low albumin and high bilirubin —
+increases or albumin decreases. The curvature of the surface,
+particularly the steep gradient at low albumin and high bilirubin,
 confirms the interaction detected in the conditional plots.
 
 ### Brier Score and CRPS
@@ -712,12 +711,13 @@ remains unbiased even under heavy censoring ([Graf et al.
 1999](#ref-graf:1999)).
 
 Two reference values help interpret the curve. A Brier score of 0 is
-perfect prediction. A score around 0.25 is the uninformative ceiling: a
-model that assigns every subject a survival probability of 0.5,
+perfect prediction. A score around 0.25 is the uninformative reference:
+a model that assigns every subject a survival probability of 0.5,
 regardless of their covariates or the time horizon, scores near 0.25 by
-construction. A forest that beats 0.25 is doing better than that floor;
-one that exceeds it has been made worse by its covariates, which is a
-sign of overfitting or a poorly specified model.
+construction. That is a reference, not a ceiling; a forest can score
+above it. A forest below 0.25 at a given time beats that constant guess
+there. One above it is doing worse than the guess at that time, which
+tells you the forest is miscalibrated there but not why.
 
 [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
 wraps
@@ -734,11 +734,13 @@ plot(gg_bs)
 
 Time-resolved Brier score for the PBC survival forest.
 
-Read the curve left to right. Early on it sits near zero — almost
-everyone is still alive, so predicting survival is easy. It climbs to a
-peak around the median event time, where the outcome is genuinely
-uncertain, then falls again as the at-risk pool shrinks and the
-remaining predictions get easier.
+Read the curve left to right. Early on it sits near zero; almost
+everyone is still alive, so predicting survival is easy. It then climbs
+for the rest of follow-up and is highest at the last event time, about
+11.5 years, at just under 0.2, so it never reaches the 0.25 reference.
+Deaths accumulate, so the outcome grows less certain, and the censoring
+weights grow as the at-risk pool thins, so the late estimates rest on
+fewer subjects.
 
 Setting `envelope = TRUE` adds a 15–85% ribbon around that line, showing
 how spread out the individual subjects’ Brier contributions are at each
@@ -841,12 +843,12 @@ together:
 - Conditioning plots and the partial dependence surface drew out the
   bilirubin–albumin interaction.
 - [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
-  measured how accurate the predictions actually were, both across time
-  and as a single CRPS summary.
+  measured how accurate the predictions were, both across time and as a
+  single CRPS summary.
 
-Notice the pattern. Each `gg_*()` function returns a tidy object (often
-a data frame, sometimes a small list of data frames); the plotting comes
-after. Lean on the package’s
+Each `gg_*()` function returns a tidy object (often a data frame,
+sometimes a small list of data frames); the plotting comes after. Lean
+on the package’s
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods when
 the default figure works, and drop down to `ggplot2` directly when it
 does not.
