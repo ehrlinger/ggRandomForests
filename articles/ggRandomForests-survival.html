@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -86,7 +87,7 @@
       <p class="author">John Ehrlinger</p>
       <p class="date">2026-09-11</p>
 
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/vignettes/ggRandomForests-survival.qmd" class="external-link"><code>vignettes/ggRandomForests-survival.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc5/vignettes/ggRandomForests-survival.qmd" class="external-link"><code>vignettes/ggRandomForests-survival.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -105,21 +106,21 @@
 </h2>
 <p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional assumptions on the relation between covariates and the response. Random survival forests (RSF) <span class="citation" data-cites="Ishwaran:2007a Ishwaran:2008">(<a href="#ref-Ishwaran:2007a" role="doc-biblioref">Ishwaran et al. 2008</a>; <a href="#ref-Ishwaran:2008" role="doc-biblioref">Ishwaran and Kogalur 2007</a>)</span> extend the method to right-censored, time-to-event data by growing trees with a log-rank splitting rule and aggregating Kaplan–Meier estimates within terminal nodes.</p>
 <p>The forest returns three ensemble quantities for each subject. First, the survival function <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>S</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{S}(t)</annotation></semantics></math>: the probability of surviving past time <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>, bounded between 0 and 1. Second, the cumulative hazard function (CHF): <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>H</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mi>−</mi><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mover><mi>S</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{H}(t) = -\log \hat{S}(t)</annotation></semantics></math>, an unbounded, monotone-increasing summary of accumulated risk. Third, mortality: the expected number of events a subject would accumulate if followed indefinitely under their covariate profile, computed by summing the CHF over the observed time grid. Mortality is not a probability; it is an unbounded relative-risk score. Read it as a single number for ranking patients from low to high risk, not as a survival chance.</p>
-<p>The <strong><a href="https://www.randomforestsrc.org" class="external-link">randomForestSRC</a></strong> package <span class="citation" data-cites="Ishwaran:RFSRC:2014">(<a href="#ref-Ishwaran:RFSRC:2014" role="doc-biblioref">Ishwaran and Kogalur 2024</a>)</span> provides a unified implementation for survival, regression, and classification forests. <strong>ggRandomForests</strong> extracts tidy data objects from <code>rfsrc</code> fits and renders them with <strong>ggplot2</strong> <span class="citation" data-cites="Wickham:2009">(<a href="#ref-Wickham:2009" role="doc-biblioref">Wickham 2016</a>)</span>, so you can see how a survival forest is built, which predictors carry the risk, and how survival shifts across each one.</p>
+<p>The <strong><a href="https://www.randomforestsrc.org" class="external-link">randomForestSRC</a></strong> package <span class="citation" data-cites="Ishwaran:RFSRC:software:2026">(<a href="#ref-Ishwaran:RFSRC:software:2026" role="doc-biblioref">Ishwaran and Kogalur 2026</a>)</span> provides a unified implementation for survival, regression, and classification forests. <strong>ggRandomForests</strong> extracts tidy data objects from <code>rfsrc</code> fits and renders them with <strong>ggplot2</strong> <span class="citation" data-cites="Wickham:2009">(<a href="#ref-Wickham:2009" role="doc-biblioref">Wickham 2016</a>)</span>, so you can see how a survival forest is built, which predictors carry the risk, and how survival shifts across each one.</p>
 <p>This vignette demonstrates a complete random survival forest workflow on the primary biliary cirrhosis (PBC) data set <span class="citation" data-cites="fleming:1991">(<a href="#ref-fleming:1991" role="doc-biblioref">Fleming and Harrington 1991</a>)</span>:</p>
 <ol type="1">
 <li>
-<strong>Data preparation and exploration</strong> — cleaning, EDA, Kaplan–Meier curves</li>
+<strong>Data preparation and exploration</strong>: cleaning, EDA, Kaplan–Meier curves</li>
 <li>
-<strong>Growing the forest</strong> — fitting an RSF, checking convergence and OOB error</li>
+<strong>Growing the forest</strong>: fitting an RSF, checking convergence and OOB error</li>
 <li>
-<strong>Variable selection</strong> — VIMP and minimal depth via <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>
+<strong>Variable selection</strong>: VIMP and minimal depth via <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>
 </li>
 <li>
-<strong>Dependence plots</strong> — variable dependence and partial dependence via <code><a href="../reference/gg_variable.html">gg_variable()</a></code> and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>
+<strong>Dependence plots</strong>: variable dependence and partial dependence via <code><a href="../reference/gg_variable.html">gg_variable()</a></code> and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>
 </li>
 <li>
-<strong>Variable interactions</strong> — conditioning plots and partial dependence surfaces</li>
+<strong>Variable interactions</strong>: conditioning plots and partial dependence surfaces</li>
 </ol>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -260,7 +261,7 @@
 <p>Look for patterns of missingness (white bars, rug marks) and extreme values that fall outside the biological range.</p>
 </section><section class="level2"><h3 id="kaplanmeier-survival-by-treatment">Kaplan–Meier survival by treatment<a class="anchor" aria-label="anchor" href="#kaplanmeier-survival-by-treatment"></a>
 </h3>
-<p>The Kaplan–Meier estimate is the marginal survival curve with no covariate adjustment. It serves as the no-covariate baseline: once we fit a forest, comparing the KM curves to the forest’s OOB predictions lets us judge how much predictive signal the covariates add beyond the raw event rate.</p>
+<p>The Kaplan–Meier estimate is the marginal survival curve with no covariate adjustment. It is the no-covariate baseline: once we fit a forest, comparing the KM curves to the forest’s OOB predictions lets us judge how much predictive signal the covariates add beyond the raw event rate.</p>
 <p>We restrict to the 312 trial patients and construct KM curves with <code>gg_survival</code>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
@@ -315,13 +316,14 @@
 </div>
 </div>
 </div>
-<p>Higher bilirubin strongly predicts worse survival — an effect the random forest will rediscover without any prior specification.</p>
+<p>Higher bilirubin strongly predicts worse survival, an effect the random forest will rediscover without any prior specification.</p>
 </section></section><section class="section level2"><h2 id="growing-a-random-survival-forest">Growing a Random Survival Forest<a class="anchor" aria-label="anchor" href="#growing-a-random-survival-forest"></a>
 </h2>
 <p>Several predictors in the PBC trial data contain missing values (cholesterol, copper, triglycerides, and others). We handle these with a two-step approach: first impute using <code><a href="https://www.randomforestsrc.org//reference/impute.rfsrc.html" class="external-link">impute.rfsrc()</a></code>, which uses the random forest proximity structure to fill in missing values, then fit the survival forest on the complete imputed data. This keeps the fitted forest object free of imputation state, which is required for <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> to work correctly.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Step 1: impute missing values via random forest proximity</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="co"># Step 1: impute missing values via random forest proximity</span></span>
 <span><span class="va">pbc_imputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/impute.rfsrc.html" class="external-link">impute.rfsrc</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">years</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>                             data    <span class="op">=</span> <span class="va">pbc_trial</span>,</span>
 <span>                             ntree   <span class="op">=</span> <span class="fl">50</span>,</span>
@@ -348,7 +350,7 @@
 </div>
 </div>
 </div>
-<p>The error stabilizes well before the 100 trees grown here, indicating the forest is large enough for reliable predictions.</p>
+<p>The error stabilizes well before the 100 trees grown here, so the forest is large enough for reliable predictions.</p>
 </section><section class="level2"><h3 id="oob-predicted-survival">OOB predicted survival<a class="anchor" aria-label="anchor" href="#oob-predicted-survival"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -366,7 +368,7 @@
 </div>
 </div>
 </div>
-<p>Each curve is one patient’s OOB ensemble survival function <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>S</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{S}(t)</annotation></semantics></math>, extended to the last follow-up time. The forest never saw that patient when building its prediction, so these are genuine out-of-sample estimates. Red (death event) curves generally fall faster and reach lower survival probabilities, confirming the forest separates risk groups. Comparing this spread to the marginal KM curves from the previous section shows how much the covariates tighten risk stratification.</p>
+<p>Each curve is one patient’s OOB ensemble survival function <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>S</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{S}(t)</annotation></semantics></math>, extended to the last follow-up time. The forest never saw that patient when building its prediction, so these are genuine out-of-sample estimates. Red (death event) curves generally fall faster and reach lower survival probabilities, so the forest does separate risk groups. Comparing this spread to the marginal KM curves from the previous section shows how much the covariates tighten risk stratification.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_rfsrc.rfsrc.html">gg_rfsrc</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span>, by <span class="op">=</span> <span class="st">"treatment"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -382,7 +384,7 @@
 </div>
 </section><section class="level2"><h3 id="test-set-predictions">Test set predictions<a class="anchor" aria-label="anchor" href="#test-set-predictions"></a>
 </h3>
-<p>The non-trial patients (<code>pbc_test</code>) have substantial missing data. <code><a href="https://www.randomforestsrc.org//reference/predict.rfsrc.html" class="external-link">predict.rfsrc()</a></code> handles these transparently at prediction time via <code>na.action = "na.impute"</code> — this is distinct from training-time imputation and does not affect the fitted forest object.</p>
+<p>The non-trial patients (<code>pbc_test</code>) have substantial missing data. <code><a href="https://www.randomforestsrc.org//reference/predict.rfsrc.html" class="external-link">predict.rfsrc()</a></code> handles these transparently at prediction time via <code>na.action = "na.impute"</code>. This is distinct from training-time imputation and does not affect the fitted forest object.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rfsrc_pbc_test</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span>, newdata <span class="op">=</span> <span class="va">pbc_test</span>,</span>
@@ -410,7 +412,7 @@
 <p>VIMP measures the increase in prediction error when a variable’s values are randomly permuted across the out-of-bag sample. For survival forests the prediction error is the Harrell C-statistic complement (1 − C), so permuting an important variable hurts C and yields a large positive VIMP. A negative VIMP means the variable is adding noise: the forest would predict better without it. See the <a href="https://www.randomforestsrc.org" class="external-link">randomForestSRC</a> documentation for details on the VIMP calculation for censored outcomes <span class="citation" data-cites="Ishwaran:2007a">(<a href="#ref-Ishwaran:2007a" role="doc-biblioref">Ishwaran et al. 2008</a>)</span>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span>, lbls <span class="op">=</span> <span class="va">st_labs</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span>, labels <span class="op">=</span> <span class="va">st_labs</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"VIMP &gt; 0"</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
@@ -420,7 +422,7 @@
 </div>
 </div>
 </div>
-<p>Bilirubin ranks highest, followed by copper, prothrombin time, albumin, and age — closely matching the variables selected in the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> proportional hazards model.</p>
+<p>Bilirubin ranks highest, followed by edema, ascites, albumin, copper, age, and prothrombin time, which closely matches the variables selected in the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> proportional hazards model.</p>
 </section><section class="level2"><h3 id="minimal-depth">Minimal depth<a class="anchor" aria-label="anchor" href="#minimal-depth"></a>
 </h3>
 <p>Minimal depth <span class="citation" data-cites="Ishwaran:2010">(<a href="#ref-Ishwaran:2010" role="doc-biblioref">Ishwaran et al. 2010</a>)</span> ranks variables by how close to the root node they first split, on average. Variables that partition large portions of the population early are considered most important.</p>
@@ -428,8 +430,8 @@
 <div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_pbc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 5.89, selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
-<p>Both selection methods agree on the key predictors: <code>bili</code>, <code>albumin</code>, <code>copper</code>, <code>prothrombin</code>, and <code>age</code>. We add <code>edema</code> (selected by the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> model) for the remainder of the analysis.</p>
+<p>The <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code> function computes minimal depth for each variable. The threshold is 5.81, selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper, prothrombin.</p>
+<p>Both selection methods agree on the key continuous predictors: <code>bili</code>, <code>albumin</code>, <code>copper</code>, <code>prothrombin</code>, and <code>age</code>. Both also rank the categorical <code>edema</code> and <code>ascites</code> highly; we carry <code>edema</code> (selected by the <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span> model) forward for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">xvar</span>     <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bili"</span>, <span class="st">"albumin"</span>, <span class="st">"copper"</span>, <span class="st">"prothrombin"</span>, <span class="st">"age"</span><span class="op">)</span></span>
@@ -444,7 +446,7 @@
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gg_v</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_variable.html">gg_variable</a></span><span class="op">(</span><span class="va">rfsrc_pbc</span>, time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span>                    time.labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1 Year"</span>, <span class="st">"3 Years"</span><span class="op">)</span><span class="op">)</span></span>
+<span>                    time_labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1 Year"</span>, <span class="st">"3 Years"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_v</span>, xvar <span class="op">=</span> <span class="st">"bili"</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"Survival"</span>, x <span class="op">=</span> <span class="va">st_labs</span><span class="op">[</span><span class="st">"bili"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -626,11 +628,11 @@
 </div>
 </div>
 </div>
-<p>The surface shows that survival is highest when bilirubin is low and albumin is high (upper-left corner), and drops steeply as bilirubin increases or albumin decreases. The curvature of the surface — particularly the steep gradient at low albumin and high bilirubin — confirms the interaction detected in the conditional plots.</p>
+<p>The surface shows that survival is highest when bilirubin is low and albumin is high (upper-left corner), and drops steeply as bilirubin increases or albumin decreases. The curvature of the surface, particularly the steep gradient at low albumin and high bilirubin, confirms the interaction detected in the conditional plots.</p>
 <section class="level2"><h3 id="brier-score-and-crps">Brier Score and CRPS<a class="anchor" aria-label="anchor" href="#brier-score-and-crps"></a>
 </h3>
 <p>VIMP and minimal depth tell us which predictors matter, but they say nothing about how well the forest’s survival predictions are calibrated. The Brier score answers that question. At each point on the event-time grid it measures the mean squared difference between the predicted survival probability <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>S</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{S}(t)</annotation></semantics></math> and the binary outcome (survived past <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> or not). Because right-censored subjects have unknown true outcomes, the calculation uses inverse-probability-of-censoring weighting (IPCW): each subject’s squared error is upweighted by the inverse probability of being uncensored at that time, so the estimate remains unbiased even under heavy censoring <span class="citation" data-cites="graf:1999">(<a href="#ref-graf:1999" role="doc-biblioref">Graf et al. 1999</a>)</span>.</p>
-<p>Two reference values help interpret the curve. A Brier score of 0 is perfect prediction. A score around 0.25 is the uninformative ceiling: a model that assigns every subject a survival probability of 0.5, regardless of their covariates or the time horizon, scores near 0.25 by construction. A forest that beats 0.25 is doing better than that floor; one that exceeds it has been made worse by its covariates, which is a sign of overfitting or a poorly specified model.</p>
+<p>Two reference values help interpret the curve. A Brier score of 0 is perfect prediction. A score around 0.25 is the uninformative reference: a model that assigns every subject a survival probability of 0.5, regardless of their covariates or the time horizon, scores near 0.25 by construction. That is a reference, not a ceiling; a forest can score above it. A forest below 0.25 at a given time beats that constant guess there. One above it is doing worse than the guess at that time, which tells you the forest is miscalibrated there but not why.</p>
 <p><code><a href="../reference/gg_brier.html">gg_brier()</a></code> wraps <code><a href="https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html" class="external-link">randomForestSRC::get.brier.survival()</a></code> and returns a tidy data frame ready to plot.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb27"><pre class="downlit sourceCode r">
@@ -643,7 +645,7 @@
 </div>
 </div>
 </div>
-<p>Read the curve left to right. Early on it sits near zero — almost everyone is still alive, so predicting survival is easy. It climbs to a peak around the median event time, where the outcome is genuinely uncertain, then falls again as the at-risk pool shrinks and the remaining predictions get easier.</p>
+<p>Read the curve left to right. Early on it sits near zero; almost everyone is still alive, so predicting survival is easy. It then climbs for the rest of follow-up and is highest at the last event time, about 11.5 years, at just under 0.2, so it never reaches the 0.25 reference. Deaths accumulate, so the outcome grows less certain, and the censoring weights grow as the at-risk pool thins, so the late estimates rest on fewer subjects.</p>
 <p>Setting <code>envelope = TRUE</code> adds a 15–85% ribbon around that line, showing how spread out the individual subjects’ Brier contributions are at each time. A narrow ribbon means the forest is assigning similar risks across subjects; a wide one means the predicted risks are pulling apart.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb28"><pre class="downlit sourceCode r">
@@ -655,7 +657,7 @@
 </div>
 </div>
 </div>
-<p>The running CRPS (continuous ranked probability score) is the Brier score integrated over time and divided by elapsed time — the time-average of the curve above. It collapses the whole trajectory into one running number, which is handy when you want a single calibration figure rather than a curve to read. Like the Brier score, a CRPS near 0 is good and a value near 0.25 is the uninformative ceiling (the same constant-predictor reference as above). The final (integrated) value at the right edge of the plot is the one most often reported.</p>
+<p>The running CRPS (continuous ranked probability score) integrates the Brier score over time and divides by the time elapsed since the first event, so each point on the curve is the average of the Brier curve up to that time. It collapses the whole trajectory into one running number, which is handy when you want a single calibration figure rather than a curve to read. Because it is an average of Brier scores it reads on the same scale: near 0 is good, and 0.25 is the constant-predictor reference from above. The value at the right edge of the plot is the average over the whole follow-up.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_bs</span>, type <span class="op">=</span> <span class="st">"crps"</span><span class="op">)</span></span></code></pre></div>
@@ -666,14 +668,25 @@
 </div>
 </div>
 </div>
-<p>The integrated CRPS — a scalar summary of overall calibration — is stored as an attribute and can be retrieved with:</p>
+<p><code><a href="../reference/gg_brier.html">gg_brier()</a></code> also keeps the integrated CRPS that <code><a href="https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html" class="external-link">randomForestSRC::get.brier.survival()</a></code> returns, as the <code>crps_integrated</code> attribute. Be careful with it. That number is the raw area under the Brier curve, <em>not</em> divided by elapsed time, so it carries the units of the time axis (years here) and grows with the length of follow-up. It is not on the 0 to 0.25 scale, and you cannot compare it across studies with different follow-up. For a single number to report, use the <code>crps_std</code> attribute instead. It is upstream’s <code>crps.std</code>, the raw integral divided by the largest event time, <code>max(gg_bs$time)</code>, and it is the value <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> report:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_integrated"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_integrated"</span><span class="op">)</span>  <span class="co"># area under the Brier curve, in years</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code><span><span class="co">#&gt; [1] 1.454856</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] 1.440241</span></span></code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_std"</span><span class="op">)</span>         <span class="co"># divided by max(gg_bs$time)</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code><span><span class="co">#&gt; [1] 0.1255185</span></span></code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">gg_bs</span><span class="op">$</span><span class="va">crps</span>, <span class="fl">1</span><span class="op">)</span>             <span class="co"># right edge of the running CRPS plot</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code><span><span class="co">#&gt; [1] 0.1267585</span></span></code></pre>
 </div>
 </div>
+<p>The last two differ slightly. <code>crps_std</code> divides by the largest event time, while the running curve divides by the time elapsed since the first one.</p>
 </section></section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
 <p>We have walked a full random survival forest analysis with <strong>randomForestSRC</strong> and <strong>ggRandomForests</strong>, and the results hang together:</p>
@@ -682,15 +695,15 @@
 <code><a href="../reference/gg_survival.html">gg_survival()</a></code> drew Kaplan–Meier curves that showed no treatment effect in the PBC trial, the same conclusion reached in <span class="citation" data-cites="fleming:1991">Fleming and Harrington (<a href="#ref-fleming:1991" role="doc-biblioref">1991</a>)</span>.</li>
 <li>
 <code><a href="../reference/gg_error.html">gg_error()</a></code> showed the OOB error settling quickly as trees were added.</li>
-<li>VIMP (<code><a href="../reference/gg_vimp.html">gg_vimp()</a></code>) and minimal depth (<code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>) landed on the same five predictors (bilirubin, albumin, copper, prothrombin, and age), which is also where the proportional hazards model landed.</li>
+<li>VIMP (<code><a href="../reference/gg_vimp.html">gg_vimp()</a></code>) and minimal depth (<code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>) landed on the same five continuous predictors (bilirubin, albumin, copper, prothrombin, and age), plus edema and ascites, largely where the proportional hazards model landed.</li>
 <li>
 <code><a href="../reference/gg_variable.html">gg_variable()</a></code> exposed non-proportional hazards for bilirubin and copper, where the gap between time horizons widens.</li>
 <li>Partial dependence from <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> gave the risk-adjusted version of those curves and backed the log-transforms used in the parametric model.</li>
 <li>Conditioning plots and the partial dependence surface drew out the bilirubin–albumin interaction.</li>
 <li>
-<code><a href="../reference/gg_brier.html">gg_brier()</a></code> measured how accurate the predictions actually were, both across time and as a single CRPS summary.</li>
+<code><a href="../reference/gg_brier.html">gg_brier()</a></code> measured how accurate the predictions were, both across time and as a single CRPS summary.</li>
 </ul>
-<p>Notice the pattern. Each <code>gg_*()</code> function returns a tidy object (often a data frame, sometimes a small list of data frames); the plotting comes after. Lean on the package’s <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods when the default figure works, and drop down to <code>ggplot2</code> directly when it does not.</p>
+<p>Each <code>gg_*()</code> function returns a tidy object (often a data frame, sometimes a small list of data frames); the plotting comes after. Lean on the package’s <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods when the default figure works, and drop down to <code>ggplot2</code> directly when it does not.</p>
 </section><section class="section level2"><h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent" role="list">
@@ -709,8 +722,8 @@ Graf, Erika, Claudia Schmoor, Willi Sauerbrei, and Martin Schumacher. 1999. <spa
 <div id="ref-Ishwaran:2008" class="csl-entry" role="listitem">
 Ishwaran, Hemant, and Udaya B. Kogalur. 2007. <span>“Random Survival Forests for <span>R</span>.”</span> <em>R News</em> 7 (2): 25–31.
 </div>
-<div id="ref-Ishwaran:RFSRC:2014" class="csl-entry" role="listitem">
-Ishwaran, Hemant, and Udaya B. Kogalur. 2024. <em><span class="nocase">randomForestSRC</span>: Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
+<div id="ref-Ishwaran:RFSRC:software:2026" class="csl-entry" role="listitem">
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. <em>Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
 </div>
 <div id="ref-Ishwaran:2007a" class="csl-entry" role="listitem">
 Ishwaran, Hemant, Udaya B. Kogalur, Eugene H. Blackstone, and Michael S. Lauer. 2008. <span>“Random Survival Forests.”</span> <em>The Annals of Applied Statistics</em> 2 (3): 841–60. <a href="https://doi.org/10.1214/08-AOAS169" class="external-link">https://doi.org/10.1214/08-AOAS169</a>.

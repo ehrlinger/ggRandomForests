@@ -11,13 +11,13 @@ object,
 plot(
   x,
   xvar,
-  time,
-  time_labels,
   panel = FALSE,
   oob = TRUE,
   points = TRUE,
   smooth = TRUE,
-  ...
+  labels = NULL,
+  ...,
+  time_units = NULL
 )
 ```
 
@@ -33,14 +33,6 @@ plot(
 - xvar:
 
   variable (or list of variables) of interest.
-
-- time:
-
-  For survival, one or more times of interest
-
-- time_labels:
-
-  string labels for times
 
 - panel:
 
@@ -58,9 +50,29 @@ plot(
 
   include a smooth curve (boolean)
 
+- labels:
+
+  Optional variable labels. One of: a named character vector
+  (`c(wt = "Weight")`); a labelled data frame, whose
+  `attr(col, "label")` values are read; or a two-column `key`/`label`
+  data frame. Variables with no label keep their raw name. Applied to
+  the facet strips in the panel plot and to the x axis title in the
+  individual plot. Defaults to `NULL` (raw names).
+
 - ...:
 
   arguments passed to the `ggplot2` functions.
+
+- time_units:
+
+  Optional name of the time unit the forest was fit in, used only in the
+  survival y axis title. The horizon is chosen at
+  `gg_variable(rf, time = 1191)`; `plot(gg_dta)` then titles the axis
+  `"Survival at 1191"`, and `time_units = "days"` makes that
+  `"Survival at 1191 days"`. Nothing on an
+  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  object records the unit, so the package cannot infer it. Defaults to
+  `NULL` (no unit printed). Not printed when multiple times are faceted.
 
 ## Value
 
@@ -80,8 +92,8 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for
-Survival, Regression and Classification. R package version \>= 3.4.0.
+Ishwaran H, Kogalur U (2026). Fast Unified Random Forests for Survival,
+Regression, and Classification (RF-SRC). R package version 3.6.2.
 <https://cran.r-project.org/package=randomForestSRC>
 
 ## See also

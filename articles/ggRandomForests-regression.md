@@ -14,8 +14,8 @@ a large collection of de-correlated decision trees via bootstrap
 aggregation (bagging) and random feature selection, then averages their
 predictions to smooth out the noise any single tree carries. The
 **randomForestSRC** package ([Ishwaran and Kogalur
-2024](#ref-Ishwaran:RFSRC:2014)) provides a unified implementation for
-survival, regression, and classification forests.
+2026](#ref-Ishwaran:RFSRC:software:2026)) provides a unified
+implementation for survival, regression, and classification forests.
 
 **ggRandomForests** extracts tidy data objects from `rfsrc` fits and
 renders them with **ggplot2** ([Wickham 2016](#ref-Wickham:2009)),
@@ -26,18 +26,17 @@ This vignette demonstrates a complete random forest regression workflow
 on the Boston Housing data set ([Harrison and Rubinfeld
 1978](#ref-Harrison:1978); [Belsley et al. 1980](#ref-Belsley:1980)):
 
-1.  **Data exploration** — EDA scatter panels, variable descriptions
-2.  **Growing the forest** — fitting an RF, checking OOB error
+1.  **Data exploration**: EDA scatter panels, variable descriptions
+2.  **Growing the forest**: fitting an RF, checking OOB error
     convergence
-3.  **Variable selection** — VIMP and minimal depth via
+3.  **Variable selection**: VIMP and minimal depth via
     [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-4.  **Dependence plots** — variable dependence and partial dependence
-    via
+4.  **Dependence plots**: variable dependence and partial dependence via
     [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
     and
     [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-5.  **Variable interactions** — conditioning plots and partial
-    dependence surfaces
+5.  **Variable interactions**: conditioning plots and partial dependence
+    surfaces
 
 ``` r
 
@@ -121,7 +120,7 @@ indicator.
 
 Even from this simple view, two relationships stand out: `medv` against
 `lstat` (lower status %) and `medv` against `rm` (rooms per dwelling).
-Keep those two in mind — we expect the random forest to rank them as the
+Keep those two in mind. We expect the random forest to rank them as the
 most important predictors, and the rest of the vignette comes back to
 check.
 
@@ -133,6 +132,7 @@ function detects the regression family from the continuous response.
 
 ``` r
 
+set.seed(42)
 rfsrc_Boston <- rfsrc(medv ~ ., data = Boston, # nolint: object_name_linter
                       ntree = 100, importance = TRUE, err.block = 5)
 rfsrc_Boston
@@ -141,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 100
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.14
+    #>        Average no. of terminal nodes: 67.06
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86702915
-    #>    (OOB) Requested performance error: 11.24756871
+    #>                      (OOB) R squared: 0.8647388
+    #>    (OOB) Requested performance error: 11.44130184
 
 The forest grew 100 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -171,8 +171,8 @@ plot(gg_e)
 
 OOB mean squared error vs. number of trees.
 
-The error stabilizes well before 500 trees, indicating the forest is
-large enough for reliable predictions.
+The error falls steeply over the first 20 trees and changes little after
+that, so the 100 we grew are enough for reliable predictions.
 
 ### OOB predictions
 
@@ -188,7 +188,7 @@ OOB predicted median home values. Points are jittered; boxplot shows the
 distribution.
 
 Each point is a single tract’s OOB prediction. The distribution is a
-sanity check — we are more interested in the *why* behind these
+sanity check; we are more interested in the *why* behind these
 predictions.
 
 ## Variable Selection
@@ -205,7 +205,7 @@ essential; negative values suggest it is no more informative than noise.
 
 ``` r
 
-plot(gg_vimp(rfsrc_Boston), lbls = st_labs)
+plot(gg_vimp(rfsrc_Boston), labels = st_labs)
 ```
 
 ![](ggRandomForests-regression_files/figure-html/vimp-plot-1.png)
@@ -213,17 +213,16 @@ plot(gg_vimp(rfsrc_Boston), lbls = st_labs)
 VIMP ranking. Longer blue bars indicate more important variables.
 
 `lstat` and `rm` dominate, with a clear gap to the remaining predictors.
-All VIMP values are positive, indicating every predictor contributes at
-least marginally.
+All VIMP values are positive, so every predictor contributes at least
+marginally.
 
 The permutation approach contrasts with varPro release-rule importance
 ([Lu and Ishwaran 2024](#ref-Lu2024varpro)), available through
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md).
 Rather than perturbing data synthetically, varPro compares local
-estimators on the observed data directly: no permutation, no
-manufactured feature values. Because the two methods measure
-fundamentally different things, a variable can rank high under one and
-low under the other. When they agree, the evidence is strong; when they
+estimators on the observed data directly. Because the two methods
+measure different things, a variable can rank high under one and low
+under the other. When they agree, the evidence is strong; when they
 disagree, that disagreement itself is worth investigating, pointing
 either to a variable whose effect is highly non-linear or to one that
 matters only in combination with others.
@@ -240,7 +239,7 @@ considered most important.
 md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
-The threshold is 2.99, selecting 6 variables: crim, nox, rm, dis,
+The threshold is 3.01, selecting 6 variables: crim, nox, rm, dis,
 ptratio, lstat.
 
 Both VIMP and minimal depth agree on the dominance of `lstat` and `rm`.
@@ -256,7 +255,7 @@ xvar <- md_Boston$topvars
 
 VIMP and varPro both rank *how much* a variable matters, averaged over
 the whole forest. They cannot tell you how much a variable mattered for
-one specific tract’s prediction — that requires a different kind of
+one specific tract’s prediction. That requires a different kind of
 accounting. SHAP (SHapley Additive exPlanations) borrows an idea from
 cooperative game theory: treat the 13 predictors as players splitting a
 payout, and ask how much each one contributed to this tract’s predicted
@@ -295,8 +294,8 @@ plot(gg_shp, type = "importance")
 
 Mean absolute SHAP value per predictor.
 
-`lstat` and `rm` come out on top again, same as VIMP and minimal depth —
-three different mechanisms, one answer. That agreement is reassuring,
+`lstat` and `rm` come out on top again, same as VIMP and minimal depth.
+Three different mechanisms, one answer. That agreement is reassuring,
 but it’s the next two plots where SHAP earns its keep.
 
 ### SHAP beeswarm
@@ -362,7 +361,7 @@ plot(gg_v, xvar = xvar, panel = TRUE, alpha = 0.5) +
 
 ![](ggRandomForests-regression_files/figure-html/vardep-panel-1.png)
 
-Variable dependence for top predictors (minimal depth rank order).
+Variable dependence for top predictors (minimal depth top variables).
 
 The panels confirm what EDA suggested: `medv` decreases sharply with
 `lstat` and increases with `rm`, both in strongly non-linear ways. The
@@ -379,8 +378,8 @@ plot(gg_v, xvar = "chas", alpha = 0.4) +
 Variable dependence for Charles River (categorical).
 
 Most tracts do not border the Charles River, and the predicted value
-distributions largely overlap — consistent with `chas` ranking last in
-both VIMP and minimal depth.
+distributions largely overlap, consistent with `chas` ranking last by
+minimal depth. VIMP ranks it fifth, so here the two measures disagree.
 
 ### Partial dependence
 
@@ -429,11 +428,11 @@ ggplot(pd$continuous, aes(x = x, y = yhat)) +
 
 Partial dependence (custom styling).
 
-`lstat` shows a strongly concave relationship, while `rm` stays flat
-below about 6 rooms and then climbs sharply. Shapes like these are
-awkward to capture with a simple parametric transform, since you would
-have to guess the form in advance, but the random forest picks them up
-on its own.
+`lstat` falls steeply up to about 10 percent and then levels off, while
+`rm` stays flat up to about 6.5 rooms and then climbs sharply to about
+7.8. Shapes like these are awkward to capture with a simple parametric
+transform, since you would have to guess the form in advance, but the
+random forest picks them up on its own.
 
 ## Variable Interactions and Conditioning Plots
 
@@ -488,7 +487,7 @@ Median values decrease with `lstat` within every `rm` group, but the
 intercept shifts upward with more rooms. Smaller homes in low-`lstat`
 (high-status) neighborhoods still command high prices.
 
-The complement view — `medv` vs. `rm`, conditional on `lstat` groups —
+The complement view (`medv` vs. `rm`, conditional on `lstat` groups)
 completes the picture:
 
 ``` r
@@ -509,9 +508,9 @@ plot(gg_v, xvar = "rm", alpha = 0.5) +
 
 Predicted medv vs. rooms, conditional on lower-status groups.
 
-The `rm` effect is strongest in low-`lstat` tracts (bottom-left panels)
-and nearly flat in high-`lstat` tracts, confirming a meaningful
-interaction.
+The `rm` effect is strongest in low-`lstat` tracts (the top row of
+panels) and nearly flat in high-`lstat` tracts (the bottom row),
+confirming a meaningful interaction.
 
 ## Partial Dependence Surface
 
@@ -523,37 +522,56 @@ evaluated at 25 points along `lstat`.
 
 rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 6)
 
-surface_list <- lapply(rm_grid, function(rm_val) {
-  newx <- rfsrc_Boston$xvar
-  newx$rm <- rm_val
-  pd_rm <- gg_partial_rfsrc(rfsrc_Boston, xvar.names = "lstat", newx = newx)
-  df <- pd_rm$continuous
-  df$rm <- rm_val
-  df
-})
+# newx only sets the evaluation grid: the lstat quantile points, and the
+# distinct rm values to condition on through xvar2.name. The average itself
+# always runs over the training data, so overwriting newx$rm alone would
+# change nothing.
+newx <- rfsrc_Boston$xvar
+newx$rm <- rep_len(rm_grid, nrow(newx))
 
-surface_df <- bind_rows(surface_list)
+pd_surface <- gg_partial_rfsrc(rfsrc_Boston, xvar.names = "lstat",
+                               xvar2.name = "rm", newx = newx)
+surface_df <- pd_surface$continuous
+surface_df$rm <- surface_df$grp
 ```
 
 ``` r
 
-ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
-  geom_tile() +
-  scale_fill_viridis_c(name = "Median Value\n($1000s)") +
-  labs(x = "Lower Status (%)", y = "Rooms per Dwelling") +
+ggplot(surface_df, aes(x = x, y = yhat, color = factor(round(rm, 2)))) +
+  geom_line(linewidth = 1) +
+  scale_color_viridis_d(name = "Rooms per\nDwelling") +
+  labs(x = st_labs["lstat"], y = st_labs["medv"]) +
   theme_bw()
 ```
 
 ![](ggRandomForests-regression_files/figure-html/pd-surface-1.png)
 
-Partial dependence surface: median home value as a function of lstat and
-rm. Fill color is the predicted median value.
+Partial dependence of median home value on lstat, one line for each of
+six rm values held fixed across all tracts.
 
-The surface confirms the strong interaction: home values are highest
-when `lstat` is low and `rm` is high (upper-left corner), dropping
-steeply along both axes. The non-planar curvature — particularly the
-sharp step near `rm` = 7 — demonstrates the kind of complex, non-linear
-structure that random forests capture naturally.
+Each line is one value of `rm`, held fixed for every tract while `lstat`
+sweeps its range. Two things stand out. The four lowest lines, `rm` from
+3.6 to 6.4 rooms, nearly coincide; the room effect only appears above
+that, averaging about 2 thousand dollars more at 6.75 rooms and another
+5.5 at 8.8, with the larger gaps at low `lstat`. That is the threshold
+the one-variable partial dependence curve for `rm` showed. And the lines
+are close to parallel. Value falls by about 12 thousand dollars as
+`lstat` climbs from 2 to 38 percent at every `rm` up to 6.75, and by
+14.5 at 8.8 rooms, with most of the drop coming before `lstat` reaches
+15 percent.
+
+So the interaction the forest itself carries between `lstat` and `rm` is
+modest: holding everything else as observed, moving from the smallest to
+the largest homes adds 10.4 thousand dollars at the low end of the
+`lstat` axis, 2 percent, and 8.1 at the high end, 38 percent. The
+coplots above suggested something stronger, and the two views answer
+different questions. A coplot conditions on tracts that exist, and large
+homes in high-`lstat` tracts are rare, so each panel mixes the `rm`
+effect with everything else that differs between those tracts. Partial
+dependence scores every tract at every (`lstat`, `rm`) pair, which
+isolates the forest’s response to the two variables but also scores
+combinations the data never contain, such as nine-room homes in the
+poorest tracts.
 
 ## Conclusion
 
@@ -561,7 +579,7 @@ We have walked a full random forest regression analysis with
 **randomForestSRC** and **ggRandomForests**, and the pieces line up:
 
 - [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
-  showed the OOB error settling well before 500 trees.
+  showed the OOB error settling within the first 20 of the 100 trees.
 - VIMP
   ([`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md))
   and minimal depth
@@ -573,11 +591,12 @@ We have walked a full random forest regression analysis with
   the raw-data EDA hinted at.
 - Partial dependence from
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-  gave the risk-adjusted version of those curves: concave for `lstat`,
-  threshold-like for `rm`.
-- Conditioning plots and the partial dependence surface pulled out the
-  `lstat`–`rm` interaction, with the room-size effect strongest in
-  high-status tracts.
+  gave the risk-adjusted version of those curves: steep then flat for
+  `lstat`, threshold-like for `rm`.
+- Conditioning plots suggested an `lstat`–`rm` interaction. The partial
+  dependence surface shows the forest’s own version is modest: the two
+  effects are close to additive, with the room-size effect only slightly
+  larger in high-status tracts.
 
 Notice the pattern in all of this. Each `gg_*()` function returns a tidy
 object (often a data frame, sometimes a small list of data frames); the
@@ -604,9 +623,9 @@ and the Demand for a Clean Environment.” *Journal of Environmental
 Economics and Management* 5 (1): 81–102.
 <https://doi.org/10.1016/0095-0696(78)90006-2>.
 
-Ishwaran, Hemant, and Udaya B. Kogalur. 2024. *randomForestSRC: Fast
-Unified Random Forests for Survival, Regression, and Classification
-(RF-SRC)*. <https://cran.r-project.org/package=randomForestSRC>.
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. *Fast Unified Random
+Forests for Survival, Regression, and Classification (RF-SRC)*.
+<https://cran.r-project.org/package=randomForestSRC>.
 
 Ishwaran, Hemant, Udaya B. Kogalur, Eiran Z. Gorodeski, Andy J. Minn,
 and Michael S. Lauer. 2010. “High-Dimensional Variable Selection for

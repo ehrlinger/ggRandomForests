@@ -87,12 +87,16 @@ supplied.
 
 ## Details
 
-Comparing the forest's ensemble survival curve to the marginal
-Kaplan-Meier baseline is a quick sanity check: if they diverge the
-forest has found structure the predictors carry; if they track each
-other closely the predictors may add little. `gg_survival` computes the
-nonparametric baseline – the Kaplan-Meier or Nelson-Aalen estimate – so
-you can place it on the same canvas as the forest predictions from
+Placing the forest's ensemble survival curve over the marginal
+Kaplan-Meier baseline is a calibration check, not a test of signal. The
+ensemble curve averages the per-subject curves, so it should track the
+Kaplan-Meier estimate whether or not the predictors carry information; a
+forest grown on pure noise tracks it about as closely as one grown on
+real predictors. A clear gap points to miscalibration, most often at
+late times when few subjects remain at risk. To see what the predictors
+carry, stratify with `by` and compare the groups. `gg_survival` computes
+the nonparametric baseline (the Kaplan-Meier or Nelson-Aalen estimate)
+so you can place it on the same canvas as the forest predictions from
 [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
 
 `gg_survival` is an S3 generic that dispatches on the class of its first

@@ -10,7 +10,7 @@ with a dashed red line at the cutoff.
 
 ``` r
 # S3 method for class 'gg_beta_uvarpro'
-plot(x, ...)
+plot(x, labels = NULL, ...)
 ```
 
 ## Arguments
@@ -19,6 +19,14 @@ plot(x, ...)
 
   A `gg_beta_uvarpro` object from
   [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md).
+
+- labels:
+
+  Optional variable labels for the variable axis. One of: a named
+  character vector (`c(wt = "Weight")`); a labelled data frame, whose
+  `attr(col, "label")` values are read; or a two-column `key`/`label`
+  data frame. Variables with no label keep their raw name. Defaults to
+  `NULL` (raw names).
 
 - ...:
 

@@ -4,22 +4,24 @@ how far did the predicted probability sit from what actually happened?
 For a survival forest the forecast is the predicted survival probability
 at a given moment, and the "what happened" is whether the subject was
 still alive at that moment.  The score is computed at every event time,
-so you get a curve rather than a single number – lower is better
+so you get a curve rather than a single number, and lower is better
 everywhere.  A perfectly calibrated forest that predicts 0 for
 every subject who died and 1 for every subject who survived would
 score 0; a forest that predicts 0.5 for everyone scores
-roughly 0.25 regardless of the true outcome – that is the
-"uninformative" ceiling.'><meta property="og:description" content='The Brier score asks a familiar question of any probabilistic forecast:
+roughly 0.25 regardless of the true outcome.  That is the
+"uninformative" reference, not a ceiling; a forest can score worse than
+it.'><meta property="og:description" content='The Brier score asks a familiar question of any probabilistic forecast:
 how far did the predicted probability sit from what actually happened?
 For a survival forest the forecast is the predicted survival probability
 at a given moment, and the "what happened" is whether the subject was
 still alive at that moment.  The score is computed at every event time,
-so you get a curve rather than a single number – lower is better
+so you get a curve rather than a single number, and lower is better
 everywhere.  A perfectly calibrated forest that predicts 0 for
 every subject who died and 1 for every subject who survived would
 score 0; a forest that predicts 0.5 for everyone scores
-roughly 0.25 regardless of the true outcome – that is the
-"uninformative" ceiling.'></head><body>
+roughly 0.25 regardless of the true outcome.  That is the
+"uninformative" reference, not a ceiling; a forest can score worse than
+it.'></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -27,7 +29,7 @@ roughly 0.25 regardless of the true outcome – that is the
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +45,7 @@ roughly 0.25 regardless of the true outcome – that is the
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -74,7 +77,7 @@ roughly 0.25 regardless of the true outcome – that is the
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Brier score and CRPS for survival forests</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/gg_brier.R" class="external-link"><code>R/gg_brier.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc5/R/gg_brier.R" class="external-link"><code>R/gg_brier.R</code></a></small>
       <div class="d-none name"><code>gg_brier.Rd</code></div>
     </div>
 
@@ -84,12 +87,13 @@ how far did the predicted probability sit from what actually happened?
 For a survival forest the forecast is the predicted survival probability
 at a given moment, and the "what happened" is whether the subject was
 still alive at that moment.  The score is computed at every event time,
-so you get a curve rather than a single number – lower is better
+so you get a curve rather than a single number, and lower is better
 everywhere.  A perfectly calibrated forest that predicts <code>0</code> for
 every subject who died and <code>1</code> for every subject who survived would
 score <code>0</code>; a forest that predicts <code>0.5</code> for everyone scores
-roughly <code>0.25</code> regardless of the true outcome – that is the
-"uninformative" ceiling.</p>
+roughly <code>0.25</code> regardless of the true outcome.  That is the
+"uninformative" reference, not a ceiling; a forest can score worse than
+it.</p>
     </div>
 
     <div class="section level2">
@@ -141,18 +145,24 @@ each mortality-risk quartile.</p></dd>
 per-subject Brier percentile, normalized by elapsed time.</p></dd>
 
 
-</dl><p>The integrated CRPS (a single scalar matching
-<code>get.brier.survival()$crps</code>) is attached as
-<code>attr(., "crps_integrated")</code>.</p>
+</dl><p>The integrated CRPS is attached as <code>attr(., "crps_integrated")</code>.
+It is <code>get.brier.survival()$crps</code>, the raw area under the Brier
+curve, not normalized by time, so it is in the units of the time axis
+and grows with follow-up. The time-normalized value,
+<code>get.brier.survival()$crps.std</code> (the raw integral divided by
+<code>max(.$time)</code>), is attached as <code>attr(., "crps_std")</code> and reads
+on the Brier scale. The last value of the <code>crps</code> column instead
+divides by the time elapsed since the first event time.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function extracts the time-resolved Brier score for a survival
 forest grown with <code>randomForestSRC</code>, both overall and broken down
 by mortality-risk quartile (lowest-risk to highest-risk subjects).  It
-also returns the continuous ranked probability score (CRPS) – the Brier
-score integrated over time and divided by elapsed time, a running average
-that summarizes calibration up to each point on the time axis.</p>
+also returns, in the <code>crps</code> column, the running continuous ranked
+probability score (CRPS): the Brier score integrated over time and divided
+by elapsed time, so each value summarizes calibration up to that point on
+the time axis.</p>
 <p>Because subjects are right-censored, a plain Brier score is biased:
 censored subjects contribute no outcome information yet still inflate the
 denominator.  The score here uses inverse-probability-of-censoring
@@ -191,6 +201,11 @@ Biometrical Journal, 48(6):1029-1040.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span>   <span class="co"># Surv() must be on the search path for rfsrc()</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘survival’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked _by_ ‘.GlobalEnv’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     pbc</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">pbc</span>, package <span class="op">=</span> <span class="st">"randomForestSRC"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">rfsrc_pbc</span> <span class="op">&lt;-</span> <span class="fu">randomForestSRC</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">days</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">pbc</span>, nsplit <span class="op">=</span> <span class="fl">10</span>, ntree <span class="op">=</span> <span class="fl">100</span></span></span>

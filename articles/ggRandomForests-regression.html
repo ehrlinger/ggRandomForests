@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -86,7 +87,7 @@
       <p class="author">John Ehrlinger</p>
       <p class="date">2026-09-11</p>
 
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/vignettes/ggRandomForests-regression.qmd" class="external-link"><code>vignettes/ggRandomForests-regression.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc5/vignettes/ggRandomForests-regression.qmd" class="external-link"><code>vignettes/ggRandomForests-regression.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -103,22 +104,22 @@
 </div>
 <section class="section level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional or functional assumptions on how covariates relate to the response. The method builds a large collection of de-correlated decision trees via bootstrap aggregation (bagging) and random feature selection, then averages their predictions to smooth out the noise any single tree carries. The <strong>randomForestSRC</strong> package <span class="citation" data-cites="Ishwaran:RFSRC:2014">(<a href="#ref-Ishwaran:RFSRC:2014" role="doc-biblioref">Ishwaran and Kogalur 2024</a>)</span> provides a unified implementation for survival, regression, and classification forests.</p>
+<p>Random forests <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span> are a non-parametric ensemble method that requires no distributional or functional assumptions on how covariates relate to the response. The method builds a large collection of de-correlated decision trees via bootstrap aggregation (bagging) and random feature selection, then averages their predictions to smooth out the noise any single tree carries. The <strong>randomForestSRC</strong> package <span class="citation" data-cites="Ishwaran:RFSRC:software:2026">(<a href="#ref-Ishwaran:RFSRC:software:2026" role="doc-biblioref">Ishwaran and Kogalur 2026</a>)</span> provides a unified implementation for survival, regression, and classification forests.</p>
 <p><strong>ggRandomForests</strong> extracts tidy data objects from <code>rfsrc</code> fits and renders them with <strong>ggplot2</strong> <span class="citation" data-cites="Wickham:2009">(<a href="#ref-Wickham:2009" role="doc-biblioref">Wickham 2016</a>)</span>, making it straightforward to explore how a forest is constructed, which variables matter, and how the response depends on individual predictors.</p>
 <p>This vignette demonstrates a complete random forest regression workflow on the Boston Housing data set <span class="citation" data-cites="Harrison:1978 Belsley:1980">(<a href="#ref-Harrison:1978" role="doc-biblioref">Harrison and Rubinfeld 1978</a>; <a href="#ref-Belsley:1980" role="doc-biblioref">Belsley et al. 1980</a>)</span>:</p>
 <ol type="1">
 <li>
-<strong>Data exploration</strong> — EDA scatter panels, variable descriptions</li>
+<strong>Data exploration</strong>: EDA scatter panels, variable descriptions</li>
 <li>
-<strong>Growing the forest</strong> — fitting an RF, checking OOB error convergence</li>
+<strong>Growing the forest</strong>: fitting an RF, checking OOB error convergence</li>
 <li>
-<strong>Variable selection</strong> — VIMP and minimal depth via <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>
+<strong>Variable selection</strong>: VIMP and minimal depth via <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>
 </li>
 <li>
-<strong>Dependence plots</strong> — variable dependence and partial dependence via <code><a href="../reference/gg_variable.html">gg_variable()</a></code> and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>
+<strong>Dependence plots</strong>: variable dependence and partial dependence via <code><a href="../reference/gg_variable.html">gg_variable()</a></code> and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>
 </li>
 <li>
-<strong>Variable interactions</strong> — conditioning plots and partial dependence surfaces</li>
+<strong>Variable interactions</strong>: conditioning plots and partial dependence surfaces</li>
 </ol>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -186,20 +187,21 @@
 </div>
 </div>
 </div>
-<p>Even from this simple view, two relationships stand out: <code>medv</code> against <code>lstat</code> (lower status %) and <code>medv</code> against <code>rm</code> (rooms per dwelling). Keep those two in mind — we expect the random forest to rank them as the most important predictors, and the rest of the vignette comes back to check.</p>
+<p>Even from this simple view, two relationships stand out: <code>medv</code> against <code>lstat</code> (lower status %) and <code>medv</code> against <code>rm</code> (rooms per dwelling). Keep those two in mind. We expect the random forest to rank them as the most important predictors, and the rest of the vignette comes back to check.</p>
 </section></section><section class="section level2"><h2 id="growing-a-random-forest">Growing a Random Forest<a class="anchor" aria-label="anchor" href="#growing-a-random-forest"></a>
 </h2>
 <p>We grow a regression forest using all 13 predictors. The <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc()</a></code> function detects the regression family from the continuous response.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rfsrc_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Boston</span>, <span class="co"># nolint: object_name_linter</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">rfsrc_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Boston</span>, <span class="co"># nolint: object_name_linter</span></span>
 <span>                      ntree <span class="op">=</span> <span class="fl">100</span>, importance <span class="op">=</span> <span class="cn">TRUE</span>, err.block <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">rfsrc_Boston</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code><span><span class="co">#&gt;                          Sample size: 506</span></span>
 <span><span class="co">#&gt;                      Number of trees: 100</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 5</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 66.14</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 67.06</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 5</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 13</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -208,8 +210,8 @@
 <span><span class="co">#&gt;                               Family: regr</span></span>
 <span><span class="co">#&gt;                       Splitting rule: mse *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                      (OOB) R squared: 0.86702915</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 11.24756871</span></span></code></pre>
+<span><span class="co">#&gt;                      (OOB) R squared: 0.8647388</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 11.44130184</span></span></code></pre>
 </div>
 </div>
 <p>The forest grew 100 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
@@ -228,7 +230,7 @@
 </div>
 </div>
 </div>
-<p>The error stabilizes well before 500 trees, indicating the forest is large enough for reliable predictions.</p>
+<p>The error falls steeply over the first 20 trees and changes little after that, so the 100 we grew are enough for reliable predictions.</p>
 </section><section class="level2"><h3 id="oob-predictions">OOB predictions<a class="anchor" aria-label="anchor" href="#oob-predictions"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -242,7 +244,7 @@
 </div>
 </div>
 </div>
-<p>Each point is a single tract’s OOB prediction. The distribution is a sanity check — we are more interested in the <em>why</em> behind these predictions.</p>
+<p>Each point is a single tract’s OOB prediction. The distribution is a sanity check; we are more interested in the <em>why</em> behind these predictions.</p>
 </section></section><section class="section level2"><h2 id="variable-selection">Variable Selection<a class="anchor" aria-label="anchor" href="#variable-selection"></a>
 </h2>
 <section class="level2"><h3 id="variable-importance-vimp">Variable importance (VIMP)<a class="anchor" aria-label="anchor" href="#variable-importance-vimp"></a>
@@ -250,7 +252,7 @@
 <p>VIMP, computed by <a href="https://www.randomforestsrc.org" class="external-link">randomForestSRC</a>, measures the increase in OOB prediction error when a variable’s values are randomly permuted across the out-of-bag observations <span class="citation" data-cites="Breiman:2001">(<a href="#ref-Breiman:2001" role="doc-biblioref">Breiman 2001</a>)</span>. Permutation severs the variable’s link to the response on purpose: if breaking that link hurts accuracy, the variable is carrying real signal. Large positive values mean the variable is essential; negative values suggest it is no more informative than noise.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span>, lbls <span class="op">=</span> <span class="va">st_labs</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_vimp.html">gg_vimp</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span>, labels <span class="op">=</span> <span class="va">st_labs</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure><p><img src="ggRandomForests-regression_files/figure-html/vimp-plot-1.png"></p>
@@ -258,8 +260,8 @@
 </div>
 </div>
 </div>
-<p><code>lstat</code> and <code>rm</code> dominate, with a clear gap to the remaining predictors. All VIMP values are positive, indicating every predictor contributes at least marginally.</p>
-<p>The permutation approach contrasts with varPro release-rule importance <span class="citation" data-cites="Lu2024varpro">(<a href="#ref-Lu2024varpro" role="doc-biblioref">Lu and Ishwaran 2024</a>)</span>, available through <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code>. Rather than perturbing data synthetically, varPro compares local estimators on the observed data directly: no permutation, no manufactured feature values. Because the two methods measure fundamentally different things, a variable can rank high under one and low under the other. When they agree, the evidence is strong; when they disagree, that disagreement itself is worth investigating, pointing either to a variable whose effect is highly non-linear or to one that matters only in combination with others.</p>
+<p><code>lstat</code> and <code>rm</code> dominate, with a clear gap to the remaining predictors. All VIMP values are positive, so every predictor contributes at least marginally.</p>
+<p>The permutation approach contrasts with varPro release-rule importance <span class="citation" data-cites="Lu2024varpro">(<a href="#ref-Lu2024varpro" role="doc-biblioref">Lu and Ishwaran 2024</a>)</span>, available through <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code>. Rather than perturbing data synthetically, varPro compares local estimators on the observed data directly. Because the two methods measure different things, a variable can rank high under one and low under the other. When they agree, the evidence is strong; when they disagree, that disagreement itself is worth investigating, pointing either to a variable whose effect is highly non-linear or to one that matters only in combination with others.</p>
 </section><section class="level2"><h3 id="minimal-depth">Minimal depth<a class="anchor" aria-label="anchor" href="#minimal-depth"></a>
 </h3>
 <p>Minimal depth <span class="citation" data-cites="Ishwaran:2010">(<a href="#ref-Ishwaran:2010" role="doc-biblioref">Ishwaran et al. 2010</a>)</span> ranks variables by how close to the root node they first split, on average. Variables that partition large portions of the population early are considered most important.</p>
@@ -267,7 +269,7 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span> <span class="co"># nolint: object_name_linter</span></span></code></pre></div>
 </div>
-<p>The threshold is 2.99, selecting 6 variables: crim, nox, rm, dis, ptratio, lstat.</p>
+<p>The threshold is 3.01, selecting 6 variables: crim, nox, rm, dis, ptratio, lstat.</p>
 <p>Both VIMP and minimal depth agree on the dominance of <code>lstat</code> and <code>rm</code>. We use the minimal depth top variables for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
@@ -275,7 +277,7 @@
 </div>
 </section></section><section class="section level2"><h2 id="shap-analysis">SHAP Analysis<a class="anchor" aria-label="anchor" href="#shap-analysis"></a>
 </h2>
-<p>VIMP and varPro both rank <em>how much</em> a variable matters, averaged over the whole forest. They cannot tell you how much a variable mattered for one specific tract’s prediction — that requires a different kind of accounting. SHAP (SHapley Additive exPlanations) borrows an idea from cooperative game theory: treat the 13 predictors as players splitting a payout, and ask how much each one contributed to this tract’s predicted <code>medv</code>, averaged fairly over every order the players could have joined the game. The result is a signed contribution per predictor per tract, and those contributions add up exactly: the forest’s overall average prediction (the <em>baseline</em>) plus the sum of one tract’s contributions equals that tract’s actual predicted value. No other importance measure in this vignette makes that promise.</p>
+<p>VIMP and varPro both rank <em>how much</em> a variable matters, averaged over the whole forest. They cannot tell you how much a variable mattered for one specific tract’s prediction. That requires a different kind of accounting. SHAP (SHapley Additive exPlanations) borrows an idea from cooperative game theory: treat the 13 predictors as players splitting a payout, and ask how much each one contributed to this tract’s predicted <code>medv</code>, averaged fairly over every order the players could have joined the game. The result is a signed contribution per predictor per tract, and those contributions add up exactly: the forest’s overall average prediction (the <em>baseline</em>) plus the sum of one tract’s contributions equals that tract’s actual predicted value. No other importance measure in this vignette makes that promise.</p>
 <p><code><a href="../reference/gg_shap.html">gg_shap()</a></code> computes these contributions by calling <a href="https://cran.r-project.org/package=kernelshap" class="external-link">kernelshap</a>, which needs one prediction per predictor per background draw, per tract explained. Scoring all 506 tracts is expensive, so we explain a random sample of 25 instead, plenty to see the patterns at a fraction of the cost.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
@@ -296,7 +298,7 @@
 </div>
 </div>
 </div>
-<p><code>lstat</code> and <code>rm</code> come out on top again, same as VIMP and minimal depth — three different mechanisms, one answer. That agreement is reassuring, but it’s the next two plots where SHAP earns its keep.</p>
+<p><code>lstat</code> and <code>rm</code> come out on top again, same as VIMP and minimal depth. Three different mechanisms, one answer. That agreement is reassuring, but it’s the next two plots where SHAP earns its keep.</p>
 </section><section class="level2"><h3 id="shap-beeswarm">SHAP beeswarm<a class="anchor" aria-label="anchor" href="#shap-beeswarm"></a>
 </h3>
 <p>The beeswarm plot is one dot per tract per variable: its horizontal position is the SHAP contribution (negative pulls the prediction down, positive pushes it up), and its color is that tract’s value for the variable, scaled low to high within each row so the pattern doesn’t get washed out by variables on very different scales.</p>
@@ -339,7 +341,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure><p><img src="ggRandomForests-regression_files/figure-html/vardep-panel-1.png"></p>
-<figcaption>Variable dependence for top predictors (minimal depth rank order).</figcaption></figure>
+<figcaption>Variable dependence for top predictors (minimal depth top variables).</figcaption></figure>
 </div>
 </div>
 </div>
@@ -355,7 +357,7 @@
 </div>
 </div>
 </div>
-<p>Most tracts do not border the Charles River, and the predicted value distributions largely overlap — consistent with <code>chas</code> ranking last in both VIMP and minimal depth.</p>
+<p>Most tracts do not border the Charles River, and the predicted value distributions largely overlap, consistent with <code>chas</code> ranking last by minimal depth. VIMP ranks it fifth, so here the two measures disagree.</p>
 </section><section class="level2"><h3 id="partial-dependence">Partial dependence<a class="anchor" aria-label="anchor" href="#partial-dependence"></a>
 </h3>
 <p>Partial dependence integrates out the effects of all other covariates, giving a risk-adjusted view of each predictor’s marginal effect <span class="citation" data-cites="Friedman:2000">(<a href="#ref-Friedman:2000" role="doc-biblioref">Friedman 2001</a>)</span>:</p>
@@ -391,7 +393,7 @@
 </div>
 </div>
 </div>
-<p><code>lstat</code> shows a strongly concave relationship, while <code>rm</code> stays flat below about 6 rooms and then climbs sharply. Shapes like these are awkward to capture with a simple parametric transform, since you would have to guess the form in advance, but the random forest picks them up on its own.</p>
+<p><code>lstat</code> falls steeply up to about 10 percent and then levels off, while <code>rm</code> stays flat up to about 6.5 rooms and then climbs sharply to about 7.8. Shapes like these are awkward to capture with a simple parametric transform, since you would have to guess the form in advance, but the random forest picks them up on its own.</p>
 </section></section><section class="section level2"><h2 id="variable-interactions-and-conditioning-plots">Variable Interactions and Conditioning Plots<a class="anchor" aria-label="anchor" href="#variable-interactions-and-conditioning-plots"></a>
 </h2>
 <section class="level2"><h3 id="conditioning-on-a-categorical-variable">Conditioning on a categorical variable<a class="anchor" aria-label="anchor" href="#conditioning-on-a-categorical-variable"></a>
@@ -436,7 +438,7 @@
 </div>
 </div>
 <p>Median values decrease with <code>lstat</code> within every <code>rm</code> group, but the intercept shifts upward with more rooms. Smaller homes in low-<code>lstat</code> (high-status) neighborhoods still command high prices.</p>
-<p>The complement view — <code>medv</code> vs. <code>rm</code>, conditional on <code>lstat</code> groups — completes the picture:</p>
+<p>The complement view (<code>medv</code> vs. <code>rm</code>, conditional on <code>lstat</code> groups) completes the picture:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lstat_pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">lstat</span>, groups <span class="op">=</span> <span class="fl">6</span>,</span>
@@ -456,7 +458,7 @@
 </div>
 </div>
 </div>
-<p>The <code>rm</code> effect is strongest in low-<code>lstat</code> tracts (bottom-left panels) and nearly flat in high-<code>lstat</code> tracts, confirming a meaningful interaction.</p>
+<p>The <code>rm</code> effect is strongest in low-<code>lstat</code> tracts (the top row of panels) and nearly flat in high-<code>lstat</code> tracts (the bottom row), confirming a meaningful interaction.</p>
 </section></section><section class="section level2"><h2 id="partial-dependence-surface">Partial Dependence Surface<a class="anchor" aria-label="anchor" href="#partial-dependence-surface"></a>
 </h2>
 <p>To visualize the joint partial dependence of <code>medv</code> on <code>lstat</code> and <code>rm</code>, we compute partial dependence on a grid: 6 values of <code>rm</code>, each evaluated at 25 points along <code>lstat</code>.</p>
@@ -464,43 +466,45 @@
 <div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rm_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">rm</span>, groups <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">surface_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">rm_grid</span>, <span class="kw">function</span><span class="op">(</span><span class="va">rm_val</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">newx</span> <span class="op">&lt;-</span> <span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span></span>
-<span>  <span class="va">newx</span><span class="op">$</span><span class="va">rm</span> <span class="op">&lt;-</span> <span class="va">rm_val</span></span>
-<span>  <span class="va">pd_rm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span>, xvar.names <span class="op">=</span> <span class="st">"lstat"</span>, newx <span class="op">=</span> <span class="va">newx</span><span class="op">)</span></span>
-<span>  <span class="va">df</span> <span class="op">&lt;-</span> <span class="va">pd_rm</span><span class="op">$</span><span class="va">continuous</span></span>
-<span>  <span class="va">df</span><span class="op">$</span><span class="va">rm</span> <span class="op">&lt;-</span> <span class="va">rm_val</span></span>
-<span>  <span class="va">df</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="co"># newx only sets the evaluation grid: the lstat quantile points, and the</span></span>
+<span><span class="co"># distinct rm values to condition on through xvar2.name. The average itself</span></span>
+<span><span class="co"># always runs over the training data, so overwriting newx$rm alone would</span></span>
+<span><span class="co"># change nothing.</span></span>
+<span><span class="va">newx</span> <span class="op">&lt;-</span> <span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span></span>
+<span><span class="va">newx</span><span class="op">$</span><span class="va">rm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep_len</a></span><span class="op">(</span><span class="va">rm_grid</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">newx</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">surface_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">surface_list</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">pd_surface</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span>, xvar.names <span class="op">=</span> <span class="st">"lstat"</span>,</span>
+<span>                               xvar2.name <span class="op">=</span> <span class="st">"rm"</span>, newx <span class="op">=</span> <span class="va">newx</span><span class="op">)</span></span>
+<span><span class="va">surface_df</span> <span class="op">&lt;-</span> <span class="va">pd_surface</span><span class="op">$</span><span class="va">continuous</span></span>
+<span><span class="va">surface_df</span><span class="op">$</span><span class="va">rm</span> <span class="op">&lt;-</span> <span class="va">surface_df</span><span class="op">$</span><span class="va">grp</span></span></code></pre></div>
 </div>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">surface_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">rm</span>, fill <span class="op">=</span> <span class="va">yhat</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_fill_viridis_c</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Median Value\n($1000s)"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Lower Status (%)"</span>, y <span class="op">=</span> <span class="st">"Rooms per Dwelling"</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">surface_df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">yhat</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">rm</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html" class="external-link">scale_color_viridis_d</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Rooms per\nDwelling"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">st_labs</span><span class="op">[</span><span class="st">"lstat"</span><span class="op">]</span>, y <span class="op">=</span> <span class="va">st_labs</span><span class="op">[</span><span class="st">"medv"</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure><p><img src="ggRandomForests-regression_files/figure-html/pd-surface-1.png"></p>
-<figcaption>Partial dependence surface: median home value as a function of lstat and rm. Fill color is the predicted median value.</figcaption></figure>
+<figcaption>Partial dependence of median home value on lstat, one line for each of six rm values held fixed across all tracts.</figcaption></figure>
 </div>
 </div>
 </div>
-<p>The surface confirms the strong interaction: home values are highest when <code>lstat</code> is low and <code>rm</code> is high (upper-left corner), dropping steeply along both axes. The non-planar curvature — particularly the sharp step near <code>rm</code> = 7 — demonstrates the kind of complex, non-linear structure that random forests capture naturally.</p>
+<p>Each line is one value of <code>rm</code>, held fixed for every tract while <code>lstat</code> sweeps its range. Two things stand out. The four lowest lines, <code>rm</code> from 3.6 to 6.4 rooms, nearly coincide; the room effect only appears above that, averaging about 2 thousand dollars more at 6.75 rooms and another 5.5 at 8.8, with the larger gaps at low <code>lstat</code>. That is the threshold the one-variable partial dependence curve for <code>rm</code> showed. And the lines are close to parallel. Value falls by about 12 thousand dollars as <code>lstat</code> climbs from 2 to 38 percent at every <code>rm</code> up to 6.75, and by 14.5 at 8.8 rooms, with most of the drop coming before <code>lstat</code> reaches 15 percent.</p>
+<p>So the interaction the forest itself carries between <code>lstat</code> and <code>rm</code> is modest: holding everything else as observed, moving from the smallest to the largest homes adds 10.4 thousand dollars at the low end of the <code>lstat</code> axis, 2 percent, and 8.1 at the high end, 38 percent. The coplots above suggested something stronger, and the two views answer different questions. A coplot conditions on tracts that exist, and large homes in high-<code>lstat</code> tracts are rare, so each panel mixes the <code>rm</code> effect with everything else that differs between those tracts. Partial dependence scores every tract at every (<code>lstat</code>, <code>rm</code>) pair, which isolates the forest’s response to the two variables but also scores combinations the data never contain, such as nine-room homes in the poorest tracts.</p>
 </section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
 <p>We have walked a full random forest regression analysis with <strong>randomForestSRC</strong> and <strong>ggRandomForests</strong>, and the pieces line up:</p>
 <ul>
 <li>
-<code><a href="../reference/gg_error.html">gg_error()</a></code> showed the OOB error settling well before 500 trees.</li>
+<code><a href="../reference/gg_error.html">gg_error()</a></code> showed the OOB error settling within the first 20 of the 100 trees.</li>
 <li>VIMP (<code><a href="../reference/gg_vimp.html">gg_vimp()</a></code>) and minimal depth (<code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>) agreed on the same story: <code>lstat</code> and <code>rm</code> dominate, with a clear gap to everything else.</li>
 <li>
 <code><a href="../reference/gg_variable.html">gg_variable()</a></code> traced strongly non-linear predictor–response curves, the same shapes the raw-data EDA hinted at.</li>
-<li>Partial dependence from <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> gave the risk-adjusted version of those curves: concave for <code>lstat</code>, threshold-like for <code>rm</code>.</li>
-<li>Conditioning plots and the partial dependence surface pulled out the <code>lstat</code>–<code>rm</code> interaction, with the room-size effect strongest in high-status tracts.</li>
+<li>Partial dependence from <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> gave the risk-adjusted version of those curves: steep then flat for <code>lstat</code>, threshold-like for <code>rm</code>.</li>
+<li>Conditioning plots suggested an <code>lstat</code>–<code>rm</code> interaction. The partial dependence surface shows the forest’s own version is modest: the two effects are close to additive, with the room-size effect only slightly larger in high-status tracts.</li>
 </ul>
 <p>Notice the pattern in all of this. Each <code>gg_*()</code> function returns a tidy object (often a data frame, sometimes a small list of data frames); the plotting is a separate step. Use the package’s <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods when the default figure is what you want, and reach for <code>ggplot2</code> directly when it is not.</p>
 </section><section class="section level2"><h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -518,8 +522,8 @@ Friedman, Jerome H. 2001. <span>“Greedy Function Approximation: A Gradient Boo
 <div id="ref-Harrison:1978" class="csl-entry" role="listitem">
 Harrison, David, and Daniel L. Rubinfeld. 1978. <span>“Hedonic Housing Prices and the Demand for a Clean Environment.”</span> <em>Journal of Environmental Economics and Management</em> 5 (1): 81–102. <a href="https://doi.org/10.1016/0095-0696(78)90006-2" class="external-link">https://doi.org/10.1016/0095-0696(78)90006-2</a>.
 </div>
-<div id="ref-Ishwaran:RFSRC:2014" class="csl-entry" role="listitem">
-Ishwaran, Hemant, and Udaya B. Kogalur. 2024. <em><span class="nocase">randomForestSRC</span>: Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
+<div id="ref-Ishwaran:RFSRC:software:2026" class="csl-entry" role="listitem">
+Ishwaran, Hemant, and Udaya B. Kogalur. 2026. <em>Fast Unified Random Forests for Survival, Regression, and Classification (<span>RF-SRC</span>)</em>. <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a>.
 </div>
 <div id="ref-Ishwaran:2010" class="csl-entry" role="listitem">
 Ishwaran, Hemant, Udaya B. Kogalur, Eiran Z. Gorodeski, Andy J. Minn, and Michael S. Lauer. 2010. <span>“High-Dimensional Variable Selection for Survival Data.”</span> <em>Journal of the American Statistical Association</em> 105 (489): 205–17. <a href="https://doi.org/10.1198/jasa.2009.tm08622" class="external-link">https://doi.org/10.1198/jasa.2009.tm08622</a>.

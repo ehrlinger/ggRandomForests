@@ -56,15 +56,15 @@ A `data.frame` of class `c("gg_beta_varpro", "data.frame")`. For a
 regression fit: one row per released variable, sorted by `beta_mean`
 descending. For a classification fit: long-format with an extra `class`
 column, one row per (variable, class) pair; `variable` is a factor whose
-levels are set by `mean(|sum-of-class-beta|)` descending so every facet
-/ panel shares the same row order. `which_class` (or the binary default
+levels run in ascending `mean(|sum-of-class-beta|)`, most important
+last, so every facet / panel shares the same row order with the top
+variable at the top. `which_class` (or the binary default
 last-factor-level) collapses the output to a single class.
 
 ## Note
 
-Multivariate regression (`regr+`) and survival families are out of scope
-for this release and tracked for v3.1.0. The unsupported-family path
-errors with a message pointing at that work.
+Multivariate regression (`regr+`) and survival fits are not supported.
+The unsupported-family path reports the family it received.
 
 ## What this is doing
 

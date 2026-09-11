@@ -54,7 +54,7 @@ those 37 tests. A green check is not evidence that they pass; only the
 ## The one thing that destroys work
 
 **A suite run with `VDIFFR_RUN_TESTS` unset deletes every vdiffr
-baseline as “unused.”** There are 49 of them under
+baseline as “unused.”** There are 58 of them under
 `tests/testthat/_snaps/snapshots/`, and they are the package’s only
 visual regression coverage.
 
@@ -95,7 +95,23 @@ Further notes, so nobody re-derives them:
 - If you regenerate a baseline, do it **last**. A later full-suite run
   deletes it, and a blanket `git checkout -- tests/testthat/_snaps/` to
   undo that silently reverts your regeneration along with the pruning.
-- All 49 baselines are tracked today. That was not true on 2026-08-06,
+- **That rule is branch-local, and the merge case is the one it
+  misses.** A branch that adds baselines and a branch that changes what
+  those baselines render are both green on their own, and the files
+  never textually conflict, so nothing fails until the second one
+  merges. It happened on 2026-08-29: \#252 added four
+  [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
+  survival baselines while \#250, which removed the hard-coded `"year"`
+  from that same axis title, sat in review. Two of the four baked in
+  `Survival at 1 year`, and \#250 would have merged clean and left
+  `main` quietly wrong. CI would have stayed green, because it never
+  compares an SVG, and the mismatch would have surfaced only when
+  someone next ran the suite locally with the guard on. **Before merging
+  a PR that changes rendered output, re-check `main` for baselines added
+  since you branched**, then merge `main` in, regenerate, and push.
+  `git diff --stat <merge-commit>..HEAD` afterwards should name only the
+  baselines you meant to touch.
+- All 58 baselines are tracked today. That was not true on 2026-08-06,
   when one unguarded run pruned 49 files and the 9 untracked ones
   survived only because a stale copy happened to remain in
   `ggRandomForests.Rcheck/00_pkg_src/`. That is not a backup and will
@@ -181,7 +197,7 @@ sources. Editing it reddens CI and the next recompose reverts you.
 - Every [`plot()`](https://rdrr.io/r/graphics/plot.default.html) /
   `autoplot()` method should have a
   [`vdiffr::expect_doppelganger()`](https://vdiffr.r-lib.org/reference/expect_doppelganger.html)
-  test in `test_snapshots.R`. There are 49 today against 38 methods;
+  test in `test_snapshots.R`. There are 58 today against 38 methods;
   coverage is broad but has not been audited per method.
 - **Tests are deterministic, and every `test_that()` block that touches
   the RNG calls [`set.seed()`](https://rdrr.io/r/base/Random.html)
@@ -339,9 +355,10 @@ context. Read it before writing user-facing text.
   tar tzf ggRandomForests_<version>.tar.gz | grep -c cran-comments   # expect 0
   ```
 
-- A working-tree `R CMD build .` is **not** a reason to rebuild on its
-  own. Measured 2026-08-20 at `26416c6c`: a build from the full working
-  tree (71 MB of untracked `.Rcheck`, `docs/`, `.claude/`, `.remember/`,
+- A working-tree `R CMD build .` does not leak **files**. Its **vignette
+  output** is a different matter; see the next bullet. Measured
+  2026-08-20 at `26416c6c`: a build from the full working tree (71 MB of
+  untracked `.Rcheck`, `docs/`, `.claude/`, `.remember/`,
   `.Rproj.user/`) and a build from a clean `git archive` export produced
   tarballs with an identical 247-entry file list, no difference in
   either direction. The `(^|/)\.remember$`, `(^|/)\.Rhistory$` and
@@ -351,3 +368,27 @@ context. Read it before writing user-facing text.
   never walked. Testing an ignore pattern against a full file path
   wrongly reports those two as leaks. Run the `tar tzf` check above
   instead of predicting.
+
+- **Do not submit with `devtools::submit_cran()`. Upload the checked
+  tarball.** `submit_cran()` does not send the tarball you checked. It
+  rebuilds from the working tree
+  (`pkgbuild::build(pkg$path, tempdir())`), and the vignettes in that
+  build render against whatever git-ignored knitr caches are lying in
+  `vignettes/`. Measured 2026-09-10 on 3.5.3 at `e7a9a092`, with caches
+  from 2026-08-25: the file list and the vignette text were identical to
+  the `git archive` build, but `inst/doc/varpro.html` had **2 figures
+  instead of 13** and `uvarpro.html` **0 instead of 3**.
+  `R CMD check --as-cran` on that tarball was still 0/0/1 NOTE, because
+  the check re-renders the vignettes in its own tree and never inspects
+  the shipped HTML, so nothing flags it. CRAN would have published the
+  figure-less pages. `submit_cran()` also sends **all** of
+  `cran-comments.md` as the comment, every past version’s section
+  included. Submit the gate-checked `git archive` tarball through
+  <https://cran.r-project.org/submit.html> instead, paste only the
+  current version’s section, and update `CRAN-SUBMISSION` by hand
+  afterwards. To compare two tarballs’ vignettes:
+
+  ``` bash
+  tar xzf ggRandomForests_<version>.tar.gz -O ggRandomForests/inst/doc/varpro.html |
+    grep -o 'data:image/png;base64' | wc -l
+  ```

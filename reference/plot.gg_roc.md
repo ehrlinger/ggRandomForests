@@ -34,8 +34,8 @@ plot(x, which_outcome = NULL, ..., panel = c("overlay", "facet"))
   it calls
   [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   once per class and overlays the one-vs-rest curves, where `gg_roc(x)`
-  alone returns a single curve – a macro-average for `randomForest`, or
-  class 1 with a warning for `rfsrc`. Prefer
+  alone returns a single curve (a macro-average for `randomForest`, or
+  class 1 with a warning for `rfsrc`). Prefer
   `plot(gg_roc(x, which_outcome))`, which is explicit about both the
   class and the engine. Issue \#72 tracks reconciling the entry points.
 
@@ -73,8 +73,8 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for
-Survival, Regression and Classification. R package version \>= 3.4.0.
+Ishwaran H, Kogalur U (2026). Fast Unified Random Forests for Survival,
+Regression, and Classification (RF-SRC). R package version 3.6.2.
 <https://cran.r-project.org/package=randomForestSRC>
 
 ## See also

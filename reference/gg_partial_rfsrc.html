@@ -3,12 +3,12 @@
 other predictors: for each evaluation point of the target variable, the
 forest scores every training observation with that value substituted in,
 then averages the result.  What you get is the average effect of the target
-variable after &quot;integrating out&quot; the rest – a curve that would be flat if
+variable after &quot;integrating out&quot; the rest, a curve that would be flat if
 the variable carried no signal."><meta property="og:description" content="A partial dependence curve marginalizes the forest's prediction over all
 other predictors: for each evaluation point of the target variable, the
 forest scores every training observation with that value substituted in,
 then averages the result.  What you get is the average effect of the target
-variable after &quot;integrating out&quot; the rest – a curve that would be flat if
+variable after &quot;integrating out&quot; the rest, a curve that would be flat if
 the variable carried no signal."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -17,7 +17,7 @@ the variable carried no signal."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,7 @@ the variable carried no signal."></head><body>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -64,7 +65,7 @@ the variable carried no signal."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Partial dependence data from an rfsrc model</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/gg_partial_rfsrc.R" class="external-link"><code>R/gg_partial_rfsrc.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc5/R/gg_partial_rfsrc.R" class="external-link"><code>R/gg_partial_rfsrc.R</code></a></small>
       <div class="d-none name"><code>gg_partial_rfsrc.Rd</code></div>
     </div>
 
@@ -73,7 +74,7 @@ the variable carried no signal."></head><body>
 other predictors: for each evaluation point of the target variable, the
 forest scores every training observation with that value substituted in,
 then averages the result.  What you get is the average effect of the target
-variable after "integrating out" the rest – a curve that would be flat if
+variable after "integrating out" the rest, a curve that would be flat if
 the variable carried no signal.</p>
     </div>
 
@@ -107,13 +108,24 @@ dependence should be computed. Must be a subset of <code>rf_model$xvar.names</co
 <dt id="arg-xvar-name">xvar2.name<a class="anchor" aria-label="anchor" href="#arg-xvar-name"></a></dt>
 <dd><p>Optional single character name of a grouping variable in
 <code>newx</code>. When supplied, partial dependence is computed separately for
-each unique level of this variable and a <code>grp</code> column is appended.</p></dd>
+each unique value of this column in <code>newx</code>, with the variable held
+at that value for every training observation, and a <code>grp</code> column is
+appended. For a continuous variable, set <code>newx[[xvar2.name]]</code> to a
+short grid first, since every distinct value costs one more
+<code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> call for each variable in <code>xvar.names</code>.</p></dd>
 
 
 <dt id="arg-newx">newx<a class="anchor" aria-label="anchor" href="#arg-newx"></a></dt>
-<dd><p>Optional <code>data.frame</code> of predictor values to evaluate
-partial effects at. Defaults to the training data stored in
-<code>rf_model$xvar</code>. All column names must match <code>rf_model$xvar.names</code>.</p></dd>
+<dd><p>Optional <code>data.frame</code> that sets the evaluation grid, not
+the data being averaged over. Each of <code>xvar.names</code> is evaluated at
+the quantile grid (or unique levels) of its column in <code>newx</code>, and
+<code>xvar2.name</code> takes its values from the same place. The average is
+always taken over the training data held in <code>rf_model</code> (see
+<code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc</a></code>), so overwriting any other
+column of <code>newx</code> has no effect on <code>yhat</code>; to hold a second
+variable fixed, pass it as <code>xvar2.name</code>. Defaults to
+<code>rf_model$xvar</code>. All column names must match
+<code>rf_model$xvar.names</code>.</p></dd>
 
 
 <dt id="arg-partial-time">partial.time<a class="anchor" aria-label="anchor" href="#arg-partial-time"></a></dt>
@@ -168,7 +180,7 @@ not alphabetical), for low-cardinality predictors.</p></dd>
 <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc</a></code> and then tidy-stacking the
 results into separate data frames for continuous and categorical variables.
 Unlike <code><a href="gg_partial.html">gg_partial</a></code> (which wraps <code>plot.variable</code>), you
-pass the fitted <code>rfsrc</code> object directly – no intermediate
+pass the fitted <code>rfsrc</code> object directly, with no intermediate
 <code>plot.variable</code> step.</p>
 <p>For survival forests, the marginalized quantity depends on
 <code>partial.type</code>: survival probability (<code>"surv"</code>), cumulative

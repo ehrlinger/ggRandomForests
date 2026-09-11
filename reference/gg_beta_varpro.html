@@ -21,7 +21,7 @@ beta.varpro() step once and reuse the result."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,7 @@ beta.varpro() step once and reuse the result."></head><body>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -68,7 +69,7 @@ beta.varpro() step once and reuse the result."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Per-variable lasso-beta importance from a varPro fit</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/gg_beta_varpro.R" class="external-link"><code>R/gg_beta_varpro.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc5/R/gg_beta_varpro.R" class="external-link"><code>R/gg_beta_varpro.R</code></a></small>
       <div class="d-none name"><code>gg_beta_varpro.Rd</code></div>
     </div>
 
@@ -129,16 +130,15 @@ fits.</p></dd>
 For a regression fit: one row per released variable, sorted by
 <code>beta_mean</code> descending. For a classification fit: long-format with
 an extra <code>class</code> column, one row per (variable, class) pair;
-<code>variable</code> is a factor whose levels are set by
-<code>mean(|sum-of-class-beta|)</code> descending so every facet / panel shares
-the same row order. <code>which_class</code> (or the binary default
+<code>variable</code> is a factor whose levels run in ascending
+<code>mean(|sum-of-class-beta|)</code>, most important last, so every facet /
+panel shares the same row order with the top variable at the top. <code>which_class</code> (or the binary default
 last-factor-level) collapses the output to a single class.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>Multivariate regression (<code>regr+</code>) and survival families are out
-of scope for this release and tracked for v3.1.0. The
-unsupported-family path errors with a message pointing at that work.</p>
+    <p>Multivariate regression (<code>regr+</code>) and survival fits are not
+supported. The unsupported-family path reports the family it received.</p>
     </div>
     <div class="section level2">
     <h2 id="what-this-is-doing">What this is doing<a class="anchor" aria-label="anchor" href="#what-this-is-doing"></a></h2>

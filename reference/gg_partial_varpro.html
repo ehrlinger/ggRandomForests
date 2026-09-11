@@ -5,14 +5,14 @@ two tidy data frames, one for each kind, and resolves the y-axis label the
 plot method will use.
 Deprecated. gg_partialpro() has been superseded by
 gg_partial_varpro() and is now a thin alias for it.  It will
-be removed in the release after ggRandomForests v3.0.0; use
+be removed in a future release; use
 gg_partial_varpro() directly."><meta property="og:description" content="varPro::partialpro returns one list, with continuous and
 categorical predictors mixed together. This function splits that list into
 two tidy data frames, one for each kind, and resolves the y-axis label the
 plot method will use.
 Deprecated. gg_partialpro() has been superseded by
 gg_partial_varpro() and is now a thin alias for it.  It will
-be removed in the release after ggRandomForests v3.0.0; use
+be removed in a future release; use
 gg_partial_varpro() directly."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -21,7 +21,7 @@ gg_partial_varpro() directly."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,7 @@ gg_partial_varpro() directly."></head><body>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -68,7 +69,7 @@ gg_partial_varpro() directly."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Partial dependence data from a varPro model</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/gg_partial_varpro.R" class="external-link"><code>R/gg_partial_varpro.R</code></a>, <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/gg_partialpro.R" class="external-link"><code>R/gg_partialpro.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc5/R/gg_partial_varpro.R" class="external-link"><code>R/gg_partial_varpro.R</code></a>, <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc5/R/gg_partialpro.R" class="external-link"><code>R/gg_partialpro.R</code></a></small>
       <div class="d-none name"><code>gg_partial_varpro.Rd</code></div>
     </div>
 
@@ -79,7 +80,7 @@ two tidy data frames, one for each kind, and resolves the y-axis label the
 plot method will use.</p>
 <p><em>Deprecated.</em> <code>gg_partialpro()</code> has been superseded by
 <code>gg_partial_varpro()</code> and is now a thin alias for it.  It will
-be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0; use
+be removed in a future release; use
 <code>gg_partial_varpro()</code> directly.</p>
     </div>
 
@@ -88,7 +89,8 @@ be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0;
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gg_partial_varpro</span><span class="op">(</span></span>
 <span>  part_dta <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>, <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"prob_typical"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>,</span>
+<span>    <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
 <span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nvars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -99,7 +101,8 @@ be removed in the release after <span class="pkg">ggRandomForests</span> v3.0.0;
 <span><span class="fu">gg_partialpro</span><span class="op">(</span></span>
 <span>  <span class="va">part_dta</span>,</span>
 <span>  object <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>, <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"prob"</span>, <span class="st">"prob_typical"</span>, <span class="st">"odds"</span>, <span class="st">"logodds"</span>, <span class="st">"rmst"</span>, <span class="st">"surv"</span>,</span>
+<span>    <span class="st">"mortality"</span>, <span class="st">"chf"</span><span class="op">)</span>,</span>
 <span>  time <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nvars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  cat_limit <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -129,7 +132,8 @@ came from.  When supplied it provides the provenance metadata, and when
 
 <dt id="arg-scale">scale<a class="anchor" aria-label="anchor" href="#arg-scale"></a></dt>
 <dd><p>Character; the y-axis scale.  One of <code>"auto"</code> (default),
-the classification scales <code>"prob"</code> / <code>"odds"</code> / <code>"logodds"</code>,
+the classification scales <code>"prob"</code> / <code>"prob_typical"</code> /
+<code>"odds"</code> / <code>"logodds"</code>,
 or the survival scales <code>"rmst"</code> / <code>"surv"</code> / <code>"mortality"</code> /
 <code>"chf"</code>.  With <code>"auto"</code>: classification fits resolve to
 <code>"prob"</code> (probability of the target class) and survival fits to
@@ -150,8 +154,11 @@ points from <code>time.interest</code> are used (see
 
 
 <dt id="arg-nvars">nvars<a class="anchor" aria-label="anchor" href="#arg-nvars"></a></dt>
-<dd><p>Integer; how many variables (list elements) to process.
-Defaults to every variable in <code>part_dta</code>.</p></dd>
+<dd><p>Integer; how many variables to keep, selected as the top
+<code>nvars</code> <strong>by varPro importance</strong> when <code>object</code> is
+supplied (falling back to the incoming <code>part_dta</code> list order
+otherwise).  Defaults to every variable in <code>part_dta</code>.  See
+<strong>Details</strong>.</p></dd>
 
 
 <dt id="arg-cat-limit">cat_limit<a class="anchor" aria-label="anchor" href="#arg-cat-limit"></a></dt>
@@ -168,8 +175,8 @@ combining results from several models in one figure.</p></dd>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Forwarded to <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">partialpro</a></code> on the
 object-driven path (when <code>part_dta</code> is <code>NULL</code>).  Use this to
-control which variables are computed – e.g. <code>xvar.names</code> or
-<code>nvar</code> – or to tune the isolation-forest UVT step (<code>cut</code>,
+control which variables are computed (e.g. <code>xvar.names</code> or
+<code>nvar</code>) or to tune the isolation-forest UVT step (<code>cut</code>,
 <code>nsmp</code>).  Without it, <code>partialpro</code> falls back to
 <code>varPro::get.topvars(object)</code>, which can return few or no variables
 for some fits (yielding empty <code>continuous</code>/<code>categorical</code>
@@ -208,7 +215,7 @@ anything reaches partial dependence.  The split-weight screen decides which
 predictors are worth guiding the trees with, and what survives it lands in
 <code>object$xvar.names</code>; <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.topvars</a></code> then ranks a shorter
 list out of that.  So the design matrix, the reachable set, and the default
-list are three different sizes – a fit on 45 predictors might carry 26 in
+list are three different sizes; a fit on 45 predictors might carry 26 in
 <code>object$xvar.names</code> and 15 in <code>get.topvars</code>.  <code>partialpro</code>
 can only reach the middle one.  How much gets screened off depends on the
 data and the fit, so check rather than assume: <code>length(object$xvar.names)</code>
@@ -224,7 +231,7 @@ was dropped.  A quick <code>setdiff(my_names, object$xvar.names)</code> answers
 the same question before you spend the computation.</p>
 <p>For a complete view, fit with both screens off:
 <code>varPro::varpro(..., sparse = FALSE, split.weight = FALSE)</code>.
-<code>split.weight = FALSE</code> is the one that lifts the ceiling – it puts
+<code>split.weight = FALSE</code> is the one that lifts the ceiling. It puts
 every predictor in <code>object$xvar.names</code>, so partial dependence can reach
 them all, and it leaves a strong variable's curve where it was.
 <code>sparse = FALSE</code> does the smaller thing, deepening
@@ -232,28 +239,28 @@ them all, and it leaves a strong variable's curve where it was.
 the screened top.  Both are <span class="pkg">varPro</span>'s own arguments, and its defaults
 (both <code>TRUE</code>) go the other way, toward the screened set; keep the
 defaults when that sparser set is what you want.  <code>nvar</code> is not the
-knob here – it only caps how much gets reported.</p>
+knob here; it only caps how much gets reported.</p>
 <p><strong>Which rows you actually get:</strong> <span class="pkg">varPro</span> has no imputation.  Every
 entry point opens by growing a one-node stump through
 <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">randomForestSRC::rfsrc</a></code> to settle the family and hand back cleaned
 data, and that call takes <code>rfsrc</code>'s default <code>na.action =
-"na.omit"</code>.  Any case with a missing value – in a predictor or in the
-outcome – is deleted before the fit, with no warning and no message.
+"na.omit"</code>.  Any case with a missing value, in a predictor or in the
+outcome, is deleted before the fit, with no warning and no message.
 Passing <code>na.action = "na.impute"</code> to <code><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varPro::varpro</a></code> does not
 change this: it lands in <code>...</code>, never reaches the stump, and is
 discarded without remark (varPro 3.1.0).</p>
 <p>The loss compounds across predictors rather than adding up.  At 5% missing
-per column, independently, retention is \(0.95^p\) – 60% of rows at 10
+per column, independently, retention is \(0.95^p\): 60% of rows at 10
 predictors, 36% at 20, 8% at 50.  On a wide clinical frame a little
 missingness everywhere can delete most of the cohort.  Nothing in the fit
 records it: <code>object$rf$n</code> is the count <em>after</em> deletion and no
 original is kept, so neither you nor this package can recover the number
-from the object.  Check before you fit – <code>nrow(dta)</code> against
+from the object.  Check before you fit: <code>nrow(dta)</code> against
 <code>sum(complete.cases(dta))</code>.</p>
 <p><strong>Imputing first, without inventing outcomes:</strong> <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::roughfix</a></code>
 does mean and modal fill, <code><a href="https://www.randomforestsrc.org//reference/impute.rfsrc.html" class="external-link">randomForestSRC::impute</a></code> does the
 forest-based job, and varPro's own help pages use the latter.  Both fill
-<strong>every</strong> column they are handed, the outcome included – so where the
+<strong>every</strong> column they are handed, the outcome included, so where the
 outcome is itself missing they manufacture it, and the release rules are
 then fit partly to invented responses.  Put the observed outcome back and
 drop the cases that never had one:</p>
@@ -269,10 +276,23 @@ information about the response.  Only the deletion step depends on having
 missing outcomes; the imputation matters whenever a <em>predictor</em> is
 missing.  Two cautions.  Imputing with the outcome stamps its signal into
 the filled predictor cells, which is right for a single fit but crosses
-fold boundaries in <code><a href="https://www.randomforestsrc.org/reference/cv.varpro.html" class="external-link">varPro::cv.varpro</a></code> – impute inside the folds if
+fold boundaries in <code><a href="https://www.randomforestsrc.org/reference/cv.varpro.html" class="external-link">varPro::cv.varpro</a></code>; impute inside the folds if
 the selection error has to mean anything.  And a completed frame is one
 dataset, not many, so the curves here carry no uncertainty from the
 imputation; read them as conditional on it.</p>
+<p><strong><code>nvars</code> selects by importance, not by list position:</strong> when
+<code>object</code> is supplied, the variables in <code>part_dta</code> are first
+reordered by their rank in <code>varPro::get.topvars(object)</code>, and
+<code>nvars</code> then keeps the top <code>nvars</code> of <em>that</em> ordering,
+not the first <code>nvars</code> elements as they arrived.
+<code>get.topvars()</code> typically ranks far fewer variables than
+<code>part_dta</code> contains; any variable it does not rank keeps its
+incoming order and is appended after the ranked block, so nothing is
+ever dropped from consideration, only reordered.  The returned
+<code>continuous$name</code> / <code>categorical$name</code> column is a
+<code>factor</code> whose levels follow this same importance order (raw list
+order when no <code>object</code> was supplied), so facet panels and legend
+entries sort by importance rather than alphabetically.</p>
 <p><strong>Scale detection:</strong> with <code>scale = "auto"</code> and an <code>object</code> in
 hand, the scale resolves to <code>"mortality"</code> for a survival forest and
 <code>"generic"</code> for a regression or classification forest.  The RMST
@@ -281,7 +301,7 @@ horizon \(\tau\) is <em>not</em> stored in the <code>varpro</code> object
 <code>scale = "rmst", time = tau</code> explicitly.</p>
 <p><strong>RMST partial dependence (scale = "rmst"):</strong> <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro</a></code>
 has no time argument, so its default survival learner returns ensemble
-mortality at every horizon – passing a horizon through <code>...</code> is
+mortality at every horizon; passing a horizon through <code>...</code> is
 silently dropped, and multi-horizon plots built that way differ only by
 Monte-Carlo noise, not by \(\tau\).  To get a genuine RMST(\(\tau\))
 curve, <code>scale = "rmst"</code> supplies <code>partialpro</code> a <code>learner</code>
@@ -301,11 +321,44 @@ applied per observation <em>before</em> averaging, so the curve is the mean
 predicted probability, not the probability of the mean log-odds.  The
 <code>causal</code> contrast is shown only on <code>"logodds"</code> (see
 <code><a href="plot.gg_partial_varpro.html">plot.gg_partial_varpro</a></code>).</p>
+<p><strong>Two probability scales, and why they disagree (scale = "prob" vs
+"prob_typical"):</strong> <code>partialpro</code> returns a matrix of per-subject
+log-odds, one row per observation and one column per grid point. Collapsing
+it to a curve takes an average and a back-transform, and the <em>order</em>
+of those two steps is a modelling choice, not a detail:</p>
+<p>$$\mathrm{prob}(x) = \frac{1}{n}\sum_i \mathrm{logit}^{-1}(z_i(x))
+  \qquad
+  \mathrm{prob\_typical}(x) = \mathrm{logit}^{-1}\!\left(
+  \frac{1}{n}\sum_i z_i(x)\right)$$</p>
+<p><code>"prob"</code> (the classification default) transforms per observation and
+then averages, so the curve is the <strong>mean predicted probability</strong>,
+the expected proportion of this cohort, and the standard partial dependence
+quantity on a probability scale. <code>"prob_typical"</code> averages on the
+log-odds scale and then transforms once, giving the probability for a
+<strong>subject sitting at the mean log-odds</strong>.</p>
+<p>These are different estimands and they do not agree.
+\(\mathrm{logit}^{-1}\) is concave above zero and convex below it, so by
+Jensen's inequality <code>"prob"</code> is pulled toward \(0.5\) relative to
+<code>"prob_typical"</code>, at both ends of the curve. The gap widens with the
+spread of per-subject log-odds, and on a heterogeneous cohort it is not
+small: where the per-subject log-odds carry an SD near 4.5, a point reading
+\(0.96\) under <code>"prob_typical"</code> reads \(0.74\) under
+<code>"prob"</code>.</p>
+<p>Which to report is a question about the claim, not about the code. If the
+sentence is "what fraction of these patients would wean", that is
+<code>"prob"</code>. If it is "what would we predict for a typical patient", that
+is <code>"prob_typical"</code>, while remembering that the mean-log-odds
+subject need not resemble anyone in the data. A figure captioned as a
+percentage of patients wants <code>"prob"</code>.</p>
+<p>The distinction applies only to the <code>continuous</code> frame. The
+<code>categorical</code> frame keeps its values unaveraged so the plot method can
+draw boxplots, so there is no averaging order to choose and the two scales
+return the same numbers there.</p>
 <p><strong>Survival probability (scale = "surv"):</strong> <code>scale = "surv"</code> (the
 survival default) computes \(S(\tau \mid x)\) through <code>partialpro</code>
 (the same UVT engine as mortality and RMST), bounded in \([0, 1]\).  When
 <code>time</code> is not supplied, \(\tau\) defaults to the <strong>median
-follow-up time</strong> of the fit – a data-driven horizon that is always in the
+follow-up time</strong> of the fit, a data-driven horizon that is always in the
 model's own time units, so it cannot be mis-specified the way a hand-typed
 \(\tau\) can.  The resolved \(\tau\) is reported in a message and the
 axis label; pass <code>time = tau</code> to choose another.  <code>scale =
@@ -341,12 +394,12 @@ regardless of plausibility. So when a covariate is highly correlated
 with others, the two methods can disagree, and <code>partialpro</code>'s
 curve is the one restricted to the data manifold.</p>
 <p>That isolation forest is worth one note. <code>partialpro</code> grows it with
-<code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">varPro::isopro</a></code>, whose <code>method</code> defaults to <code>"unsupv"</code> –
+<code><a href="https://www.randomforestsrc.org/reference/isopro.html" class="external-link">varPro::isopro</a></code>, whose <code>method</code> defaults to <code>"unsupv"</code>,
 a forest with no outcome. <code>randomForestSRC</code> then passes a zero-length
 <code>yvar.wt</code> into its native code and decrements that pointer
 (<code>entry.c:184</code>), which is undefined behaviour and is reported by
-UBSAN builds. It is benign in practice – the pointer is formed but never
-dereferenced – and it is an upstream issue rather than one this package
+UBSAN builds. It is benign in practice (the pointer is formed but never
+dereferenced), and it is an upstream issue rather than one this package
 can fix (<code>ggRandomForests</code> is pure R); a one-line guard is proposed
 in <code>kogalur/randomForestSRC</code> PR #478. Passing <code>method = "rnd"</code>
 through to <code>partialpro</code> avoids the unsupervised grow entirely, which
@@ -443,11 +496,25 @@ understanding patient and hospital differences.
 <span class="r-in"><span>    yhat.causal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_obs</span> <span class="op">*</span> <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">n_obs</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span><span class="va">mock_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## The two probability scales differ by the ORDER of averaging and</span></span></span>
+<span class="r-in"><span><span class="co">## back-transform, and disagree whenever subjects are heterogeneous.</span></span></span>
+<span class="r-in"><span><span class="va">pa</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span><span class="va">mock_data</span>, scale <span class="op">=</span> <span class="st">"prob"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">pt</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span><span class="va">mock_data</span>, scale <span class="op">=</span> <span class="st">"prob_typical"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>prob <span class="op">=</span> <span class="va">pa</span><span class="op">$</span><span class="va">continuous</span><span class="op">$</span><span class="va">parametric</span>,</span></span>
+<span class="r-in"><span>                prob_typical <span class="op">=</span> <span class="va">pt</span><span class="op">$</span><span class="va">continuous</span><span class="op">$</span><span class="va">parametric</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        prob prob_typical</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.4958844    0.4826433</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 0.5369944    0.5370850</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 0.4503772    0.4409043</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 0.4901751    0.4913387</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 0.4713283    0.4660901</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6 0.4976647    0.5054140</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span><span class="va">mock_data</span>, scale <span class="op">=</span> <span class="st">"logodds"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">continuous</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   variable parametric nonparametric  causal name </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     30      -<span style="color: #BB0000;">0.069</span><span style="color: #BB0000; text-decoration: underline;">5</span>       -<span style="color: #BB0000;">0.120</span>   0.436  age  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     33.6     0.149        -<span style="color: #BB0000;">0.477</span>   0.043<span style="text-decoration: underline;">8</span> age  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     37.1    -<span style="color: #BB0000;">0.237</span>        -<span style="color: #BB0000;">0.270</span>   0.053<span style="text-decoration: underline;">1</span> age  </span>
@@ -457,7 +524,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">categorical</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 6 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   parametric nonparametric causal variable name </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>      0.850       -<span style="color: #BB0000;">0.033</span><span style="color: #BB0000; text-decoration: underline;">8</span>  0.751        0 sex  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>      1.76        -<span style="color: #BB0000;">0.901</span>  -<span style="color: #BB0000;">0.829</span>        0 sex  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>      0.846       -<span style="color: #BB0000;">1.18</span>    0.710        0 sex  </span>
@@ -476,7 +543,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>                    <span class="co"># predictors in the data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span>         <span class="co"># what the fit reaches</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.topvars</a></span><span class="op">(</span><span class="va">vp</span><span class="op">)</span><span class="op">)</span>   <span class="co"># the default when xvar.names is absent</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span></span></span>
@@ -491,7 +558,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="co">## the note on isolation-forest method in Details.)</span></span></span>
 <span class="r-in"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span>object <span class="op">=</span> <span class="va">vp</span>, xvar.names <span class="op">=</span> <span class="va">wanted</span>,</span></span>
 <span class="r-in"><span>                        method <span class="op">=</span> <span class="st">"rnd"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 7 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 5 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Refitting without the split-weight screen reaches every predictor.</span></span></span>
 <span class="r-in"><span><span class="va">vp_all</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span>,</span></span>

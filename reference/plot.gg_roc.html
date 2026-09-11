@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -54,7 +55,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>ROC plot generic function for a <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> object.</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/plot.gg_roc.R" class="external-link"><code>R/plot.gg_roc.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc5/R/plot.gg_roc.R" class="external-link"><code>R/plot.gg_roc.R</code></a></small>
       <div class="d-none name"><code>plot.gg_roc.Rd</code></div>
     </div>
 
@@ -86,8 +87,8 @@ instead. This branch is reached only by naming the method outright, as
 <code>which_outcome</code>: given a multi-class forest and
 <code>which_outcome = NULL</code> it calls <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> once per class
 and overlays the one-vs-rest curves, where <code>gg_roc(x)</code> alone returns
-a single curve – a macro-average for <code>randomForest</code>, or class 1
-with a warning for <code>rfsrc</code>. Prefer
+a single curve (a macro-average for <code>randomForest</code>, or class 1
+with a warning for <code>rfsrc</code>). Prefer
 <code>plot(gg_roc(x, which_outcome))</code>, which is explicit about both the
 class and the engine. Issue #72 tracks reconciling the entry points.</p></dd>
 
@@ -124,8 +125,8 @@ distinctly.</p>
     <p>Breiman L. (2001). Random forests, Machine Learning, 45:5-32.</p>
 <p>Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.</p>
-<p>Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
-Regression and Classification. R package version &gt;= 3.4.0.
+<p>Ishwaran H, Kogalur U (2026). Fast Unified Random Forests for Survival,
+Regression, and Classification (RF-SRC). R package version 3.6.2.
 <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a></p>
     </div>
     <div class="section level2">

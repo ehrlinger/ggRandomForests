@@ -3,7 +3,7 @@
 Pulls the per-tree importance scores out of a fitted `varpro` object and
 summarizes them into a data structure the plot method can draw as a
 boxplot. The box hinges are the 15th and 85th percentiles and the
-whiskers run to the 5th and 95th – not the usual Tukey 1.5 IQR whiskers.
+whiskers run to the 5th and 95th, not the usual Tukey 1.5 IQR whiskers.
 For a classification forest you can also keep the class-conditional
 importances.
 
@@ -173,7 +173,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 gg <- gg_varpro(vp)
 print(gg)
 #> <gg_varpro>  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE
-#>   2 of 4 variables selected (z > 0.79)
+#>   3 of 4 variables selected (z > 0.79)
 plot(gg)
 
 # }

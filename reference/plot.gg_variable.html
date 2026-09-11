@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.5.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Tutorials</h6></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-survival.html">Random Forest Survival Analysis</a></li>
+    <li><a class="dropdown-item" href="../articles/rhf.html">Random Hazard Forests for Longitudinal Survival Data</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
@@ -54,7 +55,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Plot a <code><a href="gg_variable.html">gg_variable</a></code> object,</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v3.5.3/R/plot.gg_variable.R" class="external-link"><code>R/plot.gg_variable.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/v4.0.0-rc5/R/plot.gg_variable.R" class="external-link"><code>R/plot.gg_variable.R</code></a></small>
       <div class="d-none name"><code>plot.gg_variable.Rd</code></div>
     </div>
 
@@ -68,13 +69,13 @@
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">xvar</span>,</span>
-<span>  <span class="va">time</span>,</span>
-<span>  <span class="va">time_labels</span>,</span>
 <span>  panel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  oob <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  points <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  smooth <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  time_units <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -89,14 +90,6 @@
 
 <dt id="arg-xvar">xvar<a class="anchor" aria-label="anchor" href="#arg-xvar"></a></dt>
 <dd><p>variable (or list of variables) of interest.</p></dd>
-
-
-<dt id="arg-time">time<a class="anchor" aria-label="anchor" href="#arg-time"></a></dt>
-<dd><p>For survival, one or more times of interest</p></dd>
-
-
-<dt id="arg-time-labels">time_labels<a class="anchor" aria-label="anchor" href="#arg-time-labels"></a></dt>
-<dd><p>string labels for times</p></dd>
 
 
 <dt id="arg-panel">panel<a class="anchor" aria-label="anchor" href="#arg-panel"></a></dt>
@@ -115,8 +108,28 @@
 <dd><p>include a smooth curve (boolean)</p></dd>
 
 
+<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
+<dd><p>Optional variable labels. One of: a named character vector
+(<code>c(wt = "Weight")</code>); a labelled data frame, whose
+<code>attr(col, "label")</code> values are read; or a two-column
+<code>key</code>/<code>label</code> data frame. Variables with no label keep their raw
+name. Applied to the facet strips in the panel plot and to the x axis title
+in the individual plot. Defaults to <code>NULL</code> (raw names).</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>arguments passed to the <code>ggplot2</code> functions.</p></dd>
+
+
+<dt id="arg-time-units">time_units<a class="anchor" aria-label="anchor" href="#arg-time-units"></a></dt>
+<dd><p>Optional name of the time unit the forest was fit in, used
+only in the survival y axis title. The horizon is chosen at
+<code>gg_variable(rf, time = 1191)</code>; <code>plot(gg_dta)</code> then titles the
+axis <code>"Survival at 1191"</code>, and <code>time_units = "days"</code> makes that
+<code>"Survival at 1191 days"</code>. Nothing on an
+<code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></code> object records the unit, so the
+package cannot infer it. Defaults to <code>NULL</code> (no unit printed). Not
+printed when multiple times are faceted.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -135,8 +148,8 @@ For the patchwork case, to inspect one panel with
     <p>Breiman L. (2001). Random forests, Machine Learning, 45:5-32.</p>
 <p>Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R, Rnews,
 7(2):25-31.</p>
-<p>Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for Survival,
-Regression and Classification. R package version &gt;= 3.4.0.
+<p>Ishwaran H, Kogalur U (2026). Fast Unified Random Forests for Survival,
+Regression, and Classification (RF-SRC). R package version 3.6.2.
 <a href="https://cran.r-project.org/package=randomForestSRC" class="external-link">https://cran.r-project.org/package=randomForestSRC</a></p>
     </div>
     <div class="section level2">

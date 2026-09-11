@@ -3,7 +3,7 @@
 Draws a horizontal bar chart of the VIMP scores extracted by
 [`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md).
 Each bar represents one predictor; bar length is proportional to its
-permutation VIMP – the average rise in OOB prediction error when that
+permutation VIMP, the average rise in OOB prediction error when that
 predictor's OOB values are randomly shuffled. Predictors are sorted in
 descending order of importance so the most influential variables appear
 at the top.
@@ -12,7 +12,7 @@ at the top.
 
 ``` r
 # S3 method for class 'gg_vimp'
-plot(x, relative, lbls, ...)
+plot(x, relative = FALSE, lbls, labels = NULL, ...)
 ```
 
 ## Arguments
@@ -26,12 +26,24 @@ plot(x, relative, lbls, ...)
 
 - relative:
 
-  should we plot vimp or relative vimp. Defaults to vimp.
+  If `TRUE`, plot relative VIMP: each variable's VIMP divided by the
+  largest VIMP in its `set`, so the top variable reads 1 (for
+  classification, the top variable within each class). A set with no
+  positive VIMP is divided by its largest absolute VIMP instead, and an
+  all-zero set stays at zero. Defaults to `FALSE`, raw VIMP.
 
 - lbls:
 
-  A vector of alternative variable labels. Item names should be the same
-  as the variable names.
+  *Deprecated* as of v4.0.0; use `labels`. A named character vector of
+  alternative variable labels.
+
+- labels:
+
+  Optional variable labels for the variable axis. One of: a named
+  character vector (`c(bpd_last = "BP Diastole")`); a labelled data
+  frame, whose `attr(col, "label")` values are read; or a two-column
+  `key`/`label` data frame. Variables with no label keep their raw name.
+  Defaults to `NULL` (raw names).
 
 - ...:
 
@@ -45,7 +57,7 @@ plot(x, relative, lbls, ...)
 
 Bars are colored by the `positive` flag: a bar at or below zero
 (non-positive VIMP) is color-coded differently to flag predictors that
-*hurt* OOB accuracy when their signal is removed – usually a sign of
+*hurt* OOB accuracy when their signal is removed, usually a sign of
 collinearity or a very noisy variable. In a well-behaved forest most
 bars are positive; the color distinction matters when a handful are not.
 
@@ -56,8 +68,8 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for
-Survival, Regression and Classification. R package version \>= 3.4.0.
+Ishwaran H, Kogalur U (2026). Fast Unified Random Forests for Survival,
+Regression, and Classification (RF-SRC). R package version 3.6.2.
 <https://cran.r-project.org/package=randomForestSRC>
 
 ## See also
