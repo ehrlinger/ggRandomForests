@@ -51,7 +51,8 @@
 #' Long-format tidy frame. Regression has columns `obs`, `variable`,
 #' `local_imp`, `selected`. Classification adds a `class` column
 #' (factor in response-level order). `variable` is a factor whose
-#' levels are set by `mean(|local_imp|)` descending across all rows;
+#' levels run in ascending `mean(|local_imp|)` across all rows, so the
+#' most important variable is the last level and plots at the top;
 #' for classification that aggregate is across all (obs, class) so
 #' every facet / panel shows variables in the same row order. NA
 #' cells are filtered out; the source matrix is sparse, and the
@@ -133,8 +134,8 @@
 #' @return A `data.frame` of class `c("gg_ivarpro", "data.frame")`.
 #'   Regression: columns `obs / variable / local_imp / selected`.
 #'   Classification: long-format with an extra `class` column.
-#'   `variable` is a factor whose levels are set by
-#'   `mean(|local_imp|)` descending across all rows (the unified
+#'   `variable` is a factor whose levels run in ascending
+#'   `mean(|local_imp|)` across all rows, most important last (the unified
 #'   ranking axis shared across facets / panels).
 #'
 #' @seealso [gg_varpro()], [gg_vimp()], [gg_beta_varpro()], [varPro::ivarpro()].

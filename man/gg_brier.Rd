@@ -33,9 +33,11 @@ per-subject Brier percentile, normalized by elapsed time.}
 The integrated CRPS is attached as \code{attr(., "crps_integrated")}.
 It is \code{get.brier.survival()$crps}, the raw area under the Brier
 curve, not normalized by time, so it is in the units of the time axis
-and grows with follow-up. Divide by \code{max(.$time)} for
-\code{get.brier.survival()$crps.std}; the last value of the \code{crps}
-column instead divides by the time elapsed since the first event time.
+and grows with follow-up. The time-normalized value,
+\code{get.brier.survival()$crps.std} (the raw integral divided by
+\code{max(.$time)}), is attached as \code{attr(., "crps_std")} and reads
+on the Brier scale. The last value of the \code{crps} column instead
+divides by the time elapsed since the first event time.
 }
 \description{
 The Brier score asks a familiar question of any probabilistic forecast:
@@ -43,20 +45,22 @@ how far did the predicted probability sit from what actually happened?
 For a survival forest the forecast is the predicted survival probability
 at a given moment, and the "what happened" is whether the subject was
 still alive at that moment.  The score is computed at every event time,
-so you get a curve rather than a single number -- lower is better
+so you get a curve rather than a single number, and lower is better
 everywhere.  A perfectly calibrated forest that predicts \code{0} for
 every subject who died and \code{1} for every subject who survived would
 score \code{0}; a forest that predicts \code{0.5} for everyone scores
-roughly \code{0.25} regardless of the true outcome -- that is the
-"uninformative" ceiling.
+roughly \code{0.25} regardless of the true outcome.  That is the
+"uninformative" reference, not a ceiling; a forest can score worse than
+it.
 }
 \details{
 This function extracts the time-resolved Brier score for a survival
 forest grown with \code{randomForestSRC}, both overall and broken down
 by mortality-risk quartile (lowest-risk to highest-risk subjects).  It
-also returns the continuous ranked probability score (CRPS) -- the Brier
-score integrated over time and divided by elapsed time, a running average
-that summarizes calibration up to each point on the time axis.
+also returns, in the \code{crps} column, the running continuous ranked
+probability score (CRPS): the Brier score integrated over time and divided
+by elapsed time, so each value summarizes calibration up to that point on
+the time axis.
 
 Because subjects are right-censored, a plain Brier score is biased:
 censored subjects contribute no outcome information yet still inflate the
