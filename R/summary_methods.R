@@ -274,7 +274,7 @@ summary.gg_udependent <- function(object, ...) {
 #' @export
 summary.gg_brier <- function(object, ...) {
   crps     <- attr(object, "crps_integrated")
-  crps_std <- attr(object, "crps_std")
+  crps_std <- .gg_brier_crps_std(object)
   envelope_mean <- mean(object$bs.upper - object$bs.lower, na.rm = TRUE)
   body <- c(
     sprintf("time range: [%.4g, %.4g]",

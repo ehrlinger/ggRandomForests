@@ -233,6 +233,18 @@ gg_brier.rfsrc <- function(object,
   invisible(gg_dta)
 }
 
+# Time-normalized CRPS for print() and summary(). A gg_brier object saved
+# before crps_std existed carries only the raw integral, so rebuild the value
+# the same way randomForestSRC does: crps / max(time).
+.gg_brier_crps_std <- function(x) {
+  crps_std <- attr(x, "crps_std")
+  crps_raw <- attr(x, "crps_integrated")
+  if (is.null(crps_std) && !is.null(crps_raw)) {
+    crps_std <- crps_raw / max(x$time, na.rm = TRUE)
+  }
+  crps_std
+}
+
 # Internal trapezoidal integrator: sum_i (x[i+1]-x[i]) * (y[i]+y[i+1])/2.
 .trapz <- function(x, y) {
   n <- length(x)

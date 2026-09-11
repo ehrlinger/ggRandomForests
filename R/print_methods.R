@@ -149,7 +149,7 @@ print.gg_survival <- function(x, ...) {
 #' @rdname print.gg
 #' @export
 print.gg_brier <- function(x, ...) {
-  crps <- attr(x, "crps_std")
+  crps <- .gg_brier_crps_std(x)
   suffix <- if (!is.null(crps)) {
     sprintf("  |  CRPS (time-normalized): %.4g", crps)
   } else {
