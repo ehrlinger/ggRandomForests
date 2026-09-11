@@ -193,14 +193,15 @@
 <p>We grow a regression forest using all 13 predictors. The <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc()</a></code> function detects the regression family from the continuous response.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rfsrc_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Boston</span>, <span class="co"># nolint: object_name_linter</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span><span class="va">rfsrc_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc</a></span><span class="op">(</span><span class="va">medv</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">Boston</span>, <span class="co"># nolint: object_name_linter</span></span>
 <span>                      ntree <span class="op">=</span> <span class="fl">100</span>, importance <span class="op">=</span> <span class="cn">TRUE</span>, err.block <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">rfsrc_Boston</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code><span><span class="co">#&gt;                          Sample size: 506</span></span>
 <span><span class="co">#&gt;                      Number of trees: 100</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 5</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 66.44</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 67.06</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 5</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 13</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -209,8 +210,8 @@
 <span><span class="co">#&gt;                               Family: regr</span></span>
 <span><span class="co">#&gt;                       Splitting rule: mse *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                      (OOB) R squared: 0.8655597</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 11.37186455</span></span></code></pre>
+<span><span class="co">#&gt;                      (OOB) R squared: 0.8647388</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 11.44130184</span></span></code></pre>
 </div>
 </div>
 <p>The forest grew 100 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
@@ -229,7 +230,7 @@
 </div>
 </div>
 </div>
-<p>The error flattens out by about 60 trees, well inside the 100 we grew, so the forest is large enough for reliable predictions.</p>
+<p>The error falls steeply over the first 20 trees and changes little after that, so the 100 we grew are enough for reliable predictions.</p>
 </section><section class="level2"><h3 id="oob-predictions">OOB predictions<a class="anchor" aria-label="anchor" href="#oob-predictions"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -340,7 +341,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure><p><img src="ggRandomForests-regression_files/figure-html/vardep-panel-1.png"></p>
-<figcaption>Variable dependence for top predictors (minimal depth rank order).</figcaption></figure>
+<figcaption>Variable dependence for top predictors (minimal depth top variables).</figcaption></figure>
 </div>
 </div>
 </div>
@@ -356,7 +357,7 @@
 </div>
 </div>
 </div>
-<p>Most tracts do not border the Charles River, and the predicted value distributions largely overlap, consistent with <code>chas</code> ranking last in both VIMP and minimal depth.</p>
+<p>Most tracts do not border the Charles River, and the predicted value distributions largely overlap, consistent with <code>chas</code> ranking last by minimal depth. VIMP ranks it fifth, so here the two measures disagree.</p>
 </section><section class="level2"><h3 id="partial-dependence">Partial dependence<a class="anchor" aria-label="anchor" href="#partial-dependence"></a>
 </h3>
 <p>Partial dependence integrates out the effects of all other covariates, giving a risk-adjusted view of each predictor’s marginal effect <span class="citation" data-cites="Friedman:2000">(<a href="#ref-Friedman:2000" role="doc-biblioref">Friedman 2001</a>)</span>:</p>
@@ -392,7 +393,7 @@
 </div>
 </div>
 </div>
-<p><code>lstat</code> shows a strongly concave relationship, while <code>rm</code> stays flat below about 6 rooms and then climbs sharply. Shapes like these are awkward to capture with a simple parametric transform, since you would have to guess the form in advance, but the random forest picks them up on its own.</p>
+<p><code>lstat</code> falls steeply up to about 10 percent and then levels off, while <code>rm</code> stays flat up to about 6.5 rooms and then climbs sharply to about 7.8. Shapes like these are awkward to capture with a simple parametric transform, since you would have to guess the form in advance, but the random forest picks them up on its own.</p>
 </section></section><section class="section level2"><h2 id="variable-interactions-and-conditioning-plots">Variable Interactions and Conditioning Plots<a class="anchor" aria-label="anchor" href="#variable-interactions-and-conditioning-plots"></a>
 </h2>
 <section class="level2"><h3 id="conditioning-on-a-categorical-variable">Conditioning on a categorical variable<a class="anchor" aria-label="anchor" href="#conditioning-on-a-categorical-variable"></a>
@@ -496,11 +497,11 @@
 <p>We have walked a full random forest regression analysis with <strong>randomForestSRC</strong> and <strong>ggRandomForests</strong>, and the pieces line up:</p>
 <ul>
 <li>
-<code><a href="../reference/gg_error.html">gg_error()</a></code> showed the OOB error settling by about 60 of the 100 trees.</li>
+<code><a href="../reference/gg_error.html">gg_error()</a></code> showed the OOB error settling within the first 20 of the 100 trees.</li>
 <li>VIMP (<code><a href="../reference/gg_vimp.html">gg_vimp()</a></code>) and minimal depth (<code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>) agreed on the same story: <code>lstat</code> and <code>rm</code> dominate, with a clear gap to everything else.</li>
 <li>
 <code><a href="../reference/gg_variable.html">gg_variable()</a></code> traced strongly non-linear predictor–response curves, the same shapes the raw-data EDA hinted at.</li>
-<li>Partial dependence from <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> gave the risk-adjusted version of those curves: concave for <code>lstat</code>, threshold-like for <code>rm</code>.</li>
+<li>Partial dependence from <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> gave the risk-adjusted version of those curves: steep then flat for <code>lstat</code>, threshold-like for <code>rm</code>.</li>
 <li>Conditioning plots and the partial dependence surface pulled out the <code>lstat</code>–<code>rm</code> interaction, with the room-size effect strongest in high-status tracts.</li>
 </ul>
 <p>Notice the pattern in all of this. Each <code>gg_*()</code> function returns a tidy object (often a data frame, sometimes a small list of data frames); the plotting is a separate step. Use the package’s <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods when the default figure is what you want, and reach for <code>ggplot2</code> directly when it is not.</p>

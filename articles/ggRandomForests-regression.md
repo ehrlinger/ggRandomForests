@@ -132,6 +132,7 @@ function detects the regression family from the continuous response.
 
 ``` r
 
+set.seed(42)
 rfsrc_Boston <- rfsrc(medv ~ ., data = Boston, # nolint: object_name_linter
                       ntree = 100, importance = TRUE, err.block = 5)
 rfsrc_Boston
@@ -140,7 +141,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 100
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.44
+    #>        Average no. of terminal nodes: 67.06
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -149,8 +150,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.8655597
-    #>    (OOB) Requested performance error: 11.37186455
+    #>                      (OOB) R squared: 0.8647388
+    #>    (OOB) Requested performance error: 11.44130184
 
 The forest grew 100 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -170,8 +171,8 @@ plot(gg_e)
 
 OOB mean squared error vs. number of trees.
 
-The error flattens out by about 60 trees, well inside the 100 we grew,
-so the forest is large enough for reliable predictions.
+The error falls steeply over the first 20 trees and changes little after
+that, so the 100 we grew are enough for reliable predictions.
 
 ### OOB predictions
 
@@ -360,7 +361,7 @@ plot(gg_v, xvar = xvar, panel = TRUE, alpha = 0.5) +
 
 ![](ggRandomForests-regression_files/figure-html/vardep-panel-1.png)
 
-Variable dependence for top predictors (minimal depth rank order).
+Variable dependence for top predictors (minimal depth top variables).
 
 The panels confirm what EDA suggested: `medv` decreases sharply with
 `lstat` and increases with `rm`, both in strongly non-linear ways. The
@@ -377,8 +378,8 @@ plot(gg_v, xvar = "chas", alpha = 0.4) +
 Variable dependence for Charles River (categorical).
 
 Most tracts do not border the Charles River, and the predicted value
-distributions largely overlap, consistent with `chas` ranking last in
-both VIMP and minimal depth.
+distributions largely overlap, consistent with `chas` ranking last by
+minimal depth. VIMP ranks it fifth, so here the two measures disagree.
 
 ### Partial dependence
 
@@ -427,11 +428,11 @@ ggplot(pd$continuous, aes(x = x, y = yhat)) +
 
 Partial dependence (custom styling).
 
-`lstat` shows a strongly concave relationship, while `rm` stays flat
-below about 6 rooms and then climbs sharply. Shapes like these are
-awkward to capture with a simple parametric transform, since you would
-have to guess the form in advance, but the random forest picks them up
-on its own.
+`lstat` falls steeply up to about 10 percent and then levels off, while
+`rm` stays flat up to about 6.5 rooms and then climbs sharply to about
+7.8. Shapes like these are awkward to capture with a simple parametric
+transform, since you would have to guess the form in advance, but the
+random forest picks them up on its own.
 
 ## Variable Interactions and Conditioning Plots
 
@@ -559,7 +560,7 @@ We have walked a full random forest regression analysis with
 **randomForestSRC** and **ggRandomForests**, and the pieces line up:
 
 - [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
-  showed the OOB error settling by about 60 of the 100 trees.
+  showed the OOB error settling within the first 20 of the 100 trees.
 - VIMP
   ([`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md))
   and minimal depth
@@ -571,8 +572,8 @@ We have walked a full random forest regression analysis with
   the raw-data EDA hinted at.
 - Partial dependence from
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-  gave the risk-adjusted version of those curves: concave for `lstat`,
-  threshold-like for `rm`.
+  gave the risk-adjusted version of those curves: steep then flat for
+  `lstat`, threshold-like for `rm`.
 - Conditioning plots and the partial dependence surface pulled out the
   `lstat`–`rm` interaction, with the room-size effect strongest in
   high-status tracts.
