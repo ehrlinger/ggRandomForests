@@ -18,6 +18,13 @@ ggRandomForests v4.0.0 (development)
   `plot()` and `autoplot()` methods draw the first-order curves as lines and
   bars faceted by variable, matching `plot.gg_partial_rfsrc()`'s layout so the
   two can be read side by side, and the interaction surface as a heatmap.
+* `plot.gg_vimp(relative = TRUE)` now plots relative VIMP: each variable's
+  VIMP divided by the largest VIMP in its `set`, so the top variable reads 1
+  (per class for classification). The argument was documented but never read,
+  so it silently plotted raw VIMP. It now defaults to `FALSE`. A set with no
+  positive VIMP is scaled by its largest absolute VIMP, never divided by zero.
+* `plot.gg_vimp(nvar = )` now keeps the top `nvar` variables rather than the
+  top `nvar` rows, so a classification plot no longer loses class panels.
 * `gg_partial_varpro()` gains `scale = "prob_typical"`. `partialpro()` returns
   per-subject log-odds, and collapsing them to a curve takes an average and a
   back-transform; the ORDER is a modelling choice. `"prob"` (unchanged, still
@@ -85,6 +92,18 @@ ggRandomForests v4.0.0 (development)
   dropped without a warning, so the facet strips rendered as bare "1" and "3"
   instead of the intended "1 Year" and "3 Years". Corrected; the figure now
   carries the labels its code always asked for.
+* The survival vignette described `attr(gg_brier(rf), "crps_integrated")` as a
+  time-normalised score on the 0 to 0.25 Brier scale, then printed 1.44. The
+  attribute is `get.brier.survival()$crps`, the raw area under the Brier
+  curve in time units, and always has been. The vignette now says so and shows
+  the normalised value (`crps.std`, and the right edge of the running CRPS
+  curve); the `gg_brier()` help says the same. No change to any returned value.
+* `gg_brier()` gains a `crps_std` attribute, `get.brier.survival()$crps.std`:
+  the integrated CRPS divided by the largest event time, so it reads on the
+  Brier scale. `print()` and `summary()` now report it as
+  "CRPS (time-normalized)", and `summary()` labels the raw `crps_integrated`
+  as "integrated CRPS (time units)". The value of `crps_integrated` is
+  unchanged.
 * Development line opened after the v3.2.0 CRAN release (forward-merged the
   v3.2.0 RMST/varPro fixes onto the dev line).
 * Begin the v4.0.0 development line: a Random Hazard Forests (RHF)

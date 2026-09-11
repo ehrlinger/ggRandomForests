@@ -19,7 +19,8 @@
 #' probabilities are closer to what actually happened.  Think of
 #' \code{0} as "perfect" and roughly \code{0.25} as "uninformative"; a
 #' forest that predicts \code{0.5} for every subject regardless of
-#' prognosis would sit near that ceiling.
+#' prognosis would sit near that reference.  It is not a ceiling; a forest
+#' can do worse.
 #'
 #' Set \code{envelope = TRUE} to add a ribbon around the overall curve
 #' spanning the 15th to 85th percentile of the per-subject Brier
