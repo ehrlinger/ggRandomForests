@@ -83,10 +83,12 @@ splits are chosen:
 
 - `"unsupv"`:
 
-  Unsupervised splitting from `randomForestSRC`: splits are chosen to
-  separate the data along the directions of highest variance. More
-  structured than `"rnd"`; sometimes more accurate, especially when the
-  anomalies follow a coherent direction.
+  Unsupervised splitting from `randomForestSRC`: at each split a random
+  subset of the features serves as pseudo-responses (`ytry` of them,
+  about the square root of the number of features by default) and the
+  split is chosen to separate those pseudo-responses. More structured
+  than `"rnd"`; sometimes more accurate, especially when the anomalies
+  follow a coherent direction.
 
 - `"auto"`:
 

@@ -12,7 +12,7 @@ at the top.
 
 ``` r
 # S3 method for class 'gg_vimp'
-plot(x, relative, lbls, labels = NULL, ...)
+plot(x, relative = FALSE, lbls, labels = NULL, ...)
 ```
 
 ## Arguments
@@ -26,7 +26,11 @@ plot(x, relative, lbls, labels = NULL, ...)
 
 - relative:
 
-  should we plot vimp or relative vimp. Defaults to vimp.
+  If `TRUE`, plot relative VIMP: each variable's VIMP divided by the
+  largest VIMP in its `set`, so the top variable reads 1 (for
+  classification, the top variable within each class). A set with no
+  positive VIMP is divided by its largest absolute VIMP instead, and an
+  all-zero set stays at zero. Defaults to `FALSE`, raw VIMP.
 
 - lbls:
 

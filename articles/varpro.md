@@ -550,12 +550,13 @@ and anomaly scoring on the predictor matrix. For many applied problems,
 those three views cover the questions you want to answer.
 
 The PBC (primary biliary cirrhosis) dataset from `randomForestSRC` has
-418 patients, seven predictors, and a Surv-encoded outcome of days to
-event (death or transplant, status ∈ {0, 1, 2}). We use a small
-seven-variable subset so the vignette fits quickly. For a full analysis
-including time-dependent covariates, Lee et al. ([2021](#ref-Lee:2021))
-demonstrates the boosted nonparametric hazard framework that varPro’s
-survival path draws on.
+418 patients, 17 predictors, and a Surv-encoded outcome of days to death
+(`status` is 1 for death and 0 for censored; the 25 transplants are
+coded as censored). We use a five-predictor subset (`age`, `albumin`,
+`bili`, `edema`, `platelet`) so the vignette fits quickly. For a full
+analysis including time-dependent covariates, Lee et al.
+([2021](#ref-Lee:2021)) demonstrates the boosted nonparametric hazard
+framework that varPro’s survival path draws on.
 
 ``` r
 
@@ -626,7 +627,8 @@ plot(gg_pd_pbc)
 ### Anomaly scoring: `gg_isopro()` on the X-matrix
 
 Because `isopro()` only sees the predictor matrix, it doesn’t care about
-the family. The same call from section 3 works here.
+the family. The same call from the Boston anomaly-scoring section works
+here.
 
 ``` r
 
@@ -782,18 +784,25 @@ it caps how much gets reported, not how much competes.
 ### Factor-level ordering
 
 Across
+[`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md)
 and
 [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md),
-the `variable` column is stored as a factor whose levels are set by
-descending aggregate importance (`mean(|imp|)` summed across classes for
-classification). The default plot inherits that ordering, so faceted
-views show variables in the same row order across panels. If you
-re-shape the frame downstream and want the order preserved, keep
-`variable` as a factor rather than coercing to character.
-
-This convention will be propagated to `gg_vimp` and
-`plot.gg_varpro(conditional = TRUE)` in a follow-up release.
+rows come most-important-first, but the variable column (`vars` in
+[`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
+`variable` elsewhere) is a factor whose levels run the other way: the
+most important variable is the *last* level. For classification the
+three varPro extractors rank on importance aggregated across classes,
+while
+[`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+ranks each variable by its largest VIMP over the `all` and per-class
+columns. After
+[`coord_flip()`](https://ggplot2.tidyverse.org/reference/coord_flip.html)
+the last level sits at the top of the plot, and faceted views share one
+row order across panels. If you re-shape the frame downstream and want
+the order preserved, keep the variable column as a factor rather than
+coercing to character.
 
 ### Caching the expensive calls
 
@@ -803,11 +812,15 @@ and
 are the two heavy calls. Both wrappers accept a pre-computed fit
 (`beta_fit`, `ivarpro_fit`) so you can iterate on selection, observation
 index, or cutoff without re-fitting the lasso or the local-importance
-machinery. The vignette uses this throughout: every section computes the
-heavy fit once in a `cache: true` chunk and re-uses it for every figure.
+machinery. The vignette uses this throughout: each heavy fit is computed
+once and passed in for every figure. To keep the `R CMD check` rebuild
+fast, those fits are precomputed by `precompute_varpro.R` and loaded
+from `varpro_precomputed.rds`; when the file is absent, each chunk fits
+live instead.
 
-Provenance carries `precomputed = TRUE` when the cached path was used,
-so downstream tooling can tell the two paths apart.
+Provenance carries `precomputed = TRUE` when a fit was passed in through
+`beta_fit` or `ivarpro_fit`, so downstream tooling can tell the two
+paths apart.
 
 ### Provenance shape
 

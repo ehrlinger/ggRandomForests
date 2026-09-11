@@ -25,8 +25,8 @@ question every applied analysis reaches eventually, and
 
 That is a problem, because the five answers are not interchangeable.
 They estimate different things. Read one as though it were another and
-you will report a number that is off by a factor of two or three, with a
-figure that looks entirely reasonable.
+you will report a number that is off by as much as a factor of two or
+three, with a figure that looks entirely reasonable.
 
 This vignette puts them side by side on one forest. No one method wins;
 the point is to know which question you asked.
@@ -211,8 +211,8 @@ read its y-axis as the size of the effect, you are understating it.
 
 Two cautions before you conclude that ALE always wins. On `ptratio` the
 two methods agree closely, and on `lstat` partial dependence gives the
-*larger* range. The methods usually agree; knowing when they do not is
-the useful part.
+*larger* range. The gap usually runs one way but not always, so check
+both before you report the size of an effect.
 
 ## Where two variables act together
 

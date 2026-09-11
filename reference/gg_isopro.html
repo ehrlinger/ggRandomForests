@@ -145,8 +145,10 @@ in the variable's range. Fast, no model, surprisingly effective.</p></dd>
 
 <dt><code>"unsupv"</code></dt>
 <dd><p>Unsupervised splitting from
-<code>randomForestSRC</code>: splits are chosen to separate the data
-along the directions of highest variance. More structured than
+<code>randomForestSRC</code>: at each split a random subset of the features
+serves as pseudo-responses (<code>ytry</code> of them, about the square root
+of the number of features by default) and the split is chosen to
+separate those pseudo-responses. More structured than
 <code>"rnd"</code>; sometimes more accurate, especially when the
 anomalies follow a coherent direction.</p></dd>
 

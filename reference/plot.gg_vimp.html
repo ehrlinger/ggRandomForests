@@ -81,7 +81,7 @@ variables appear at the top.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'gg_vimp'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">relative</span>, <span class="va">lbls</span>, labels <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, relative <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">lbls</span>, labels <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -94,7 +94,11 @@ variables appear at the top.</p>
 
 
 <dt id="arg-relative">relative<a class="anchor" aria-label="anchor" href="#arg-relative"></a></dt>
-<dd><p>should we plot vimp or relative vimp. Defaults to vimp.</p></dd>
+<dd><p>If <code>TRUE</code>, plot relative VIMP: each variable's VIMP
+divided by the largest VIMP in its <code>set</code>, so the top variable reads
+1 (for classification, the top variable within each class).  A set with
+no positive VIMP is divided by its largest absolute VIMP instead, and an
+all-zero set stays at zero.  Defaults to <code>FALSE</code>, raw VIMP.</p></dd>
 
 
 <dt id="arg-lbls">lbls<a class="anchor" aria-label="anchor" href="#arg-lbls"></a></dt>

@@ -139,8 +139,8 @@ for the same <code>object</code>. Shape-validated.</p></dd>
     <p>A <code>data.frame</code> of class <code>c("gg_ivarpro", "data.frame")</code>.
 Regression: columns <code>obs / variable / local_imp / selected</code>.
 Classification: long-format with an extra <code>class</code> column.
-<code>variable</code> is a factor whose levels are set by
-<code>mean(|local_imp|)</code> descending across all rows (the unified
+<code>variable</code> is a factor whose levels run in ascending
+<code>mean(|local_imp|)</code> across all rows, most important last (the unified
 ranking axis shared across facets / panels).</p>
     </div>
     <div class="section level2">
@@ -197,7 +197,8 @@ low global) flags a regime-specific signal.</p>
 <p>Long-format tidy frame. Regression has columns <code>obs</code>, <code>variable</code>,
 <code>local_imp</code>, <code>selected</code>. Classification adds a <code>class</code> column
 (factor in response-level order). <code>variable</code> is a factor whose
-levels are set by <code>mean(|local_imp|)</code> descending across all rows;
+levels run in ascending <code>mean(|local_imp|)</code> across all rows, so the
+most important variable is the last level and plots at the top;
 for classification that aggregate is across all (obs, class) so
 every facet / panel shows variables in the same row order. NA
 cells are filtered out; the source matrix is sparse, and the

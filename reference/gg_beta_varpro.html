@@ -130,9 +130,9 @@ fits.</p></dd>
 For a regression fit: one row per released variable, sorted by
 <code>beta_mean</code> descending. For a classification fit: long-format with
 an extra <code>class</code> column, one row per (variable, class) pair;
-<code>variable</code> is a factor whose levels are set by
-<code>mean(|sum-of-class-beta|)</code> descending so every facet / panel shares
-the same row order. <code>which_class</code> (or the binary default
+<code>variable</code> is a factor whose levels run in ascending
+<code>mean(|sum-of-class-beta|)</code>, most important last, so every facet /
+panel shares the same row order with the top variable at the top. <code>which_class</code> (or the binary default
 last-factor-level) collapses the output to a single class.</p>
     </div>
     <div class="section level2">

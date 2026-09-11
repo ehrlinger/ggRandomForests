@@ -29,6 +29,17 @@
   layout so the two can be read side by side, and the interaction
   surface as a heatmap.
 
+- `plot.gg_vimp(relative = TRUE)` now plots relative VIMP: each
+  variable’s VIMP divided by the largest VIMP in its `set`, so the top
+  variable reads 1 (per class for classification). The argument was
+  documented but never read, so it silently plotted raw VIMP. It now
+  defaults to `FALSE`. A set with no positive VIMP is scaled by its
+  largest absolute VIMP, never divided by zero.
+
+- `plot.gg_vimp(nvar = )` now keeps the top `nvar` variables rather than
+  the top `nvar` rows, so a classification plot no longer loses class
+  panels.
+
 - [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
   gains `scale = "prob_typical"`. `partialpro()` returns per-subject
   log-odds, and collapsing them to a curve takes an average and a

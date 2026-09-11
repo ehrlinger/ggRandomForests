@@ -114,7 +114,7 @@
 <section class="level2"><h2 id="what-does-this-variable-do">What does this variable do?<a class="anchor" aria-label="anchor" href="#what-does-this-variable-do"></a>
 </h2>
 <p>You have fit a forest, it predicts well, and now someone asks the obvious question: what is this variable actually doing? It is the question every applied analysis reaches eventually, and <code>ggRandomForests</code> gives you five different ways to answer it.</p>
-<p>That is a problem, because the five answers are not interchangeable. They estimate different things. Read one as though it were another and you will report a number that is off by a factor of two or three, with a figure that looks entirely reasonable.</p>
+<p>That is a problem, because the five answers are not interchangeable. They estimate different things. Read one as though it were another and you will report a number that is off by as much as a factor of two or three, with a figure that looks entirely reasonable.</p>
 <p>This vignette puts them side by side on one forest. No one method wins; the point is to know which question you asked.</p>
 <table class="table caption-top">
 <colgroup>
@@ -271,7 +271,7 @@ No. of variables tried at each split: 5
 </div>
 <p>On <code>crim</code> the two disagree by a lot, and they disagree in a consistent direction: partial dependence reports the smaller effect. That is not an accident of this fit. Across all eleven continuous predictors in Boston, averaged over three forests, ALE’s range exceeds partial dependence’s in nine of them, with a median ratio near 0.6.</p>
 <p>Averaging over the joint distribution pulls the curve toward the overall mean, because a good part of what it averages is the forest’s opinion of tracts that do not exist, and the forest has no strong opinion about those. Partial dependence is not wrong here so much as diluted. If you read its y-axis as the size of the effect, you are understating it.</p>
-<p>Two cautions before you conclude that ALE always wins. On <code>ptratio</code> the two methods agree closely, and on <code>lstat</code> partial dependence gives the <em>larger</em> range. The methods usually agree; knowing when they do not is the useful part.</p>
+<p>Two cautions before you conclude that ALE always wins. On <code>ptratio</code> the two methods agree closely, and on <code>lstat</code> partial dependence gives the <em>larger</em> range. The gap usually runs one way but not always, so check both before you report the size of an effect.</p>
 </section><section class="level2"><h2 id="where-two-variables-act-together">Where two variables act together<a class="anchor" aria-label="anchor" href="#where-two-variables-act-together"></a>
 </h2>
 <p>Second-order ALE has no partial dependence counterpart in this package. Give <code><a href="../reference/gg_ale_rfsrc.html">gg_ale_rfsrc()</a></code> a second variable and it returns the part of the pair’s joint effect that neither variable’s own main effect explains.</p>
