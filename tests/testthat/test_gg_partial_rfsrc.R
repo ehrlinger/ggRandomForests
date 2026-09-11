@@ -67,3 +67,29 @@ test_that("gg_partial_rfsrc rejects a non-rfsrc rf_model with a package error", 
   )
   expect_error(gg_partial_rfsrc(NULL), "expected an 'rfsrc' object")
 })
+
+test_that("gg_partial_rfsrc averages over the training data, not newx", {
+  # newx sets only the evaluation grid. Overwriting a non-target column must
+  # leave yhat unchanged; holding that column fixed through xvar2.name must
+  # move it. The regression vignette's surface once relied on the first and
+  # drew a flat figure.
+  set.seed(303)
+  n <- 200
+  d <- data.frame(x1 = runif(n), x2 = runif(n))
+  d$y <- 5 * d$x1 + 10 * (d$x2 > 0.5) + rnorm(n, sd = 0.1)
+  rf <- randomForestSRC::rfsrc(y ~ ., data = d, ntree = 50)
+
+  base <- gg_partial_rfsrc(rf, xvar.names = "x1", n_eval = 5)
+
+  newx <- rf$xvar
+  newx$x2 <- 0.9
+  ignored <- gg_partial_rfsrc(rf, xvar.names = "x1", newx = newx, n_eval = 5)
+  expect_equal(ignored$continuous$yhat, base$continuous$yhat)
+
+  newx$x2 <- rep_len(c(0.1, 0.9), nrow(newx))
+  grouped <- gg_partial_rfsrc(rf, xvar.names = "x1", xvar2.name = "x2",
+                              newx = newx, n_eval = 5)
+  cont <- grouped$continuous
+  expect_setequal(unique(cont$grp), c(0.1, 0.9))
+  expect_gt(mean(cont$yhat[cont$grp == 0.9] - cont$yhat[cont$grp == 0.1]), 5)
+})

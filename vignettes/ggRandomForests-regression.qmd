@@ -436,30 +436,48 @@ points along `lstat`.
 ```{r surface-data}
 rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 6)
 
-surface_list <- lapply(rm_grid, function(rm_val) {
-  newx <- rfsrc_Boston$xvar
-  newx$rm <- rm_val
-  pd_rm <- gg_partial_rfsrc(rfsrc_Boston, xvar.names = "lstat", newx = newx)
-  df <- pd_rm$continuous
-  df$rm <- rm_val
-  df
-})
+# newx only sets the evaluation grid: the lstat quantile points, and the
+# distinct rm values to condition on through xvar2.name. The average itself
+# always runs over the training data, so overwriting newx$rm alone would
+# change nothing.
+newx <- rfsrc_Boston$xvar
+newx$rm <- rep_len(rm_grid, nrow(newx))
 
-surface_df <- bind_rows(surface_list)
+pd_surface <- gg_partial_rfsrc(rfsrc_Boston, xvar.names = "lstat",
+                               xvar2.name = "rm", newx = newx)
+surface_df <- pd_surface$continuous
+surface_df$rm <- surface_df$grp
 ```
 
-```{r pd-surface, fig.cap="Partial dependence surface: median home value as a function of lstat and rm. Fill color is the predicted median value."}
-ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
-  geom_tile() +
-  scale_fill_viridis_c(name = "Median Value\n($1000s)") +
-  labs(x = "Lower Status (%)", y = "Rooms per Dwelling") +
+```{r pd-surface, fig.cap="Partial dependence of median home value on lstat, one line for each of six rm values held fixed across all tracts."}
+ggplot(surface_df, aes(x = x, y = yhat, color = factor(round(rm, 2)))) +
+  geom_line(linewidth = 1) +
+  scale_color_viridis_d(name = "Rooms per\nDwelling") +
+  labs(x = st_labs["lstat"], y = st_labs["medv"]) +
   theme_bw()
 ```
 
-The surface confirms the strong interaction: home values are highest when `lstat`
-is low and `rm` is high (upper-left corner), dropping steeply along both axes.
-The non-planar curvature, particularly the sharp step near `rm` = 7, is the
-kind of non-linear structure that random forests capture naturally.
+Each line is one value of `rm`, held fixed for every tract while `lstat`
+sweeps its range. Two things stand out. The four lowest lines, `rm` from 3.6
+to 6.4 rooms, nearly coincide; the room effect only appears above that,
+averaging about 2 thousand dollars more at 6.75 rooms and another 5.5 at
+8.8, with the larger gaps at low `lstat`. That is the
+threshold the one-variable partial dependence curve for `rm` showed. And the
+lines are close to parallel. Value falls by about 12 thousand dollars as
+`lstat` climbs from 2 to 38 percent at every `rm` up to 6.75, and by 14.5 at
+8.8 rooms, with most of the drop coming before `lstat` reaches 15 percent.
+
+So the interaction the forest itself carries between `lstat` and `rm` is
+modest: holding everything else as observed, moving from the smallest to the
+largest homes adds 10.4 thousand dollars at the low end of the `lstat` axis,
+2 percent, and 8.1 at the high end, 38 percent. The coplots above suggested something stronger, and the
+two views answer different questions. A coplot conditions on tracts that
+exist, and large homes in high-`lstat` tracts are rare, so each panel mixes
+the `rm` effect with everything else that differs between those tracts.
+Partial dependence scores every tract at every (`lstat`, `rm`) pair, which
+isolates the forest's response to the two variables but also scores
+combinations the data never contain, such as nine-room homes in the poorest
+tracts.
 
 # Conclusion
 
@@ -474,8 +492,10 @@ We have walked a full random forest regression analysis with
   same shapes the raw-data EDA hinted at.
 - Partial dependence from `gg_partial_rfsrc()` gave the risk-adjusted version
   of those curves: steep then flat for `lstat`, threshold-like for `rm`.
-- Conditioning plots and the partial dependence surface pulled out the `lstat`--`rm`
-  interaction, with the room-size effect strongest in high-status tracts.
+- Conditioning plots suggested an `lstat`--`rm` interaction. The partial
+  dependence surface shows the forest's own version is modest: the two
+  effects are close to additive, with the room-size effect only slightly
+  larger in high-status tracts.
 
 Notice the pattern in all of this. Each `gg_*()` function returns a tidy
 object (often a data frame, sometimes a small list of data frames); the
