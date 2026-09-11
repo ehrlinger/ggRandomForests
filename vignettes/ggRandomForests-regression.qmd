@@ -422,8 +422,9 @@ plot(gg_v, xvar = "rm", alpha = 0.5) +
   facet_wrap(~lstat_grp)
 ```
 
-The `rm` effect is strongest in low-`lstat` tracts (bottom-left panels) and
-nearly flat in high-`lstat` tracts, confirming a meaningful interaction.
+The `rm` effect is strongest in low-`lstat` tracts (the top row of panels) and
+nearly flat in high-`lstat` tracts (the bottom row), confirming a meaningful
+interaction.
 
 # Partial Dependence Surface
 

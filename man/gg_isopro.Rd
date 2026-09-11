@@ -66,8 +66,10 @@ forest, which differ in how the splits are chosen:
 picks a variable at random and a split point uniformly at random
 in the variable's range. Fast, no model, surprisingly effective.}
 \item{\code{"unsupv"}}{Unsupervised splitting from
-\code{randomForestSRC}: splits are chosen to separate the data
-along the directions of highest variance. More structured than
+\code{randomForestSRC}: at each split a random subset of the features
+serves as pseudo-responses (\code{ytry} of them, about the square root
+of the number of features by default) and the split is chosen to
+separate those pseudo-responses. More structured than
 \code{"rnd"}; sometimes more accurate, especially when the
 anomalies follow a coherent direction.}
 \item{\code{"auto"}}{An auto-encoder formulation that grows a
