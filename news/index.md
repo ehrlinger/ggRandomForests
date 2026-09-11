@@ -2,6 +2,15 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
+  drops code that was meant to add a `rel_vimp` column but could never
+  run: every fit, single-outcome included, takes the pivot branch, so no
+  forest with stored importance ever returned it, and their output is
+  unchanged. The `@return` now lists the columns actually returned
+  (`vars`, `set`, `vimp`, `positive`), and the `NA` placeholder for a
+  `randomForest` fit without stored importance no longer carries an
+  all-`NA` `rel_vimp` column.
+
 - New
   [`gg_ale_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ale_rfsrc.md)
   computes Accumulated Local Effects (Apley and Zhu,

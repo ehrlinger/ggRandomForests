@@ -96,10 +96,15 @@ importance information.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p><code>gg_vimp</code> object. A <code>data.frame</code> of VIMP measures, in rank
-order, optionally containing class-specific scores and a relative importance
-column. When <code>randomForest</code> objects lack stored importance values a
-warning is issued and <code>NA</code> placeholders are returned so plots remain
+    <p><code>gg_vimp</code> object. A <code>data.frame</code> of VIMP measures in rank
+order, with columns <code>vars</code>, <code>set</code> (the importance measure),
+<code>vimp</code> and <code>positive</code>. A classification forest with class-wise
+permutation importance has one set per class plus the overall measure; a
+<code>randomForest</code> classification fit grown with
+<code>importance = FALSE</code> stores only node impurity, so it has a single
+set. When <code>randomForest</code> objects lack stored
+importance values a warning is issued and <code>NA</code> placeholders (columns
+<code>vimp</code>, <code>vars</code> and <code>positive</code>) are returned so plots remain
 reproducible.</p>
     </div>
     <div class="section level2">

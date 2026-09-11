@@ -35,11 +35,14 @@ gg_vimp(object, nvar, ...)
 
 ## Value
 
-`gg_vimp` object. A `data.frame` of VIMP measures, in rank order,
-optionally containing class-specific scores and a relative importance
-column. When `randomForest` objects lack stored importance values a
-warning is issued and `NA` placeholders are returned so plots remain
-reproducible.
+`gg_vimp` object. A `data.frame` of VIMP measures in rank order, with
+columns `vars`, `set` (the importance measure), `vimp` and `positive`. A
+classification forest with class-wise permutation importance has one set
+per class plus the overall measure; a `randomForest` classification fit
+grown with `importance = FALSE` stores only node impurity, so it has a
+single set. When `randomForest` objects lack stored importance values a
+warning is issued and `NA` placeholders (columns `vimp`, `vars` and
+`positive`) are returned so plots remain reproducible.
 
 ## Details
 
