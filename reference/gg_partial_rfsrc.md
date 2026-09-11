@@ -39,13 +39,24 @@ gg_partial_rfsrc(
 
   Optional single character name of a grouping variable in `newx`. When
   supplied, partial dependence is computed separately for each unique
-  level of this variable and a `grp` column is appended.
+  value of this column in `newx`, with the variable held at that value
+  for every training observation, and a `grp` column is appended. For a
+  continuous variable, set `newx[[xvar2.name]]` to a short grid first,
+  since every distinct value costs one more
+  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+  call for each variable in `xvar.names`.
 
 - newx:
 
-  Optional `data.frame` of predictor values to evaluate partial effects
-  at. Defaults to the training data stored in `rf_model$xvar`. All
-  column names must match `rf_model$xvar.names`.
+  Optional `data.frame` that sets the evaluation grid, not the data
+  being averaged over. Each of `xvar.names` is evaluated at the quantile
+  grid (or unique levels) of its column in `newx`, and `xvar2.name`
+  takes its values from the same place. The average is always taken over
+  the training data held in `rf_model` (see
+  [`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)),
+  so overwriting any other column of `newx` has no effect on `yhat`; to
+  hold a second variable fixed, pass it as `xvar2.name`. Defaults to
+  `rf_model$xvar`. All column names must match `rf_model$xvar.names`.
 
 - partial.time:
 

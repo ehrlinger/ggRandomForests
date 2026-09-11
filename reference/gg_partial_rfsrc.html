@@ -108,13 +108,24 @@ dependence should be computed. Must be a subset of <code>rf_model$xvar.names</co
 <dt id="arg-xvar-name">xvar2.name<a class="anchor" aria-label="anchor" href="#arg-xvar-name"></a></dt>
 <dd><p>Optional single character name of a grouping variable in
 <code>newx</code>. When supplied, partial dependence is computed separately for
-each unique level of this variable and a <code>grp</code> column is appended.</p></dd>
+each unique value of this column in <code>newx</code>, with the variable held
+at that value for every training observation, and a <code>grp</code> column is
+appended. For a continuous variable, set <code>newx[[xvar2.name]]</code> to a
+short grid first, since every distinct value costs one more
+<code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> call for each variable in <code>xvar.names</code>.</p></dd>
 
 
 <dt id="arg-newx">newx<a class="anchor" aria-label="anchor" href="#arg-newx"></a></dt>
-<dd><p>Optional <code>data.frame</code> of predictor values to evaluate
-partial effects at. Defaults to the training data stored in
-<code>rf_model$xvar</code>. All column names must match <code>rf_model$xvar.names</code>.</p></dd>
+<dd><p>Optional <code>data.frame</code> that sets the evaluation grid, not
+the data being averaged over. Each of <code>xvar.names</code> is evaluated at
+the quantile grid (or unique levels) of its column in <code>newx</code>, and
+<code>xvar2.name</code> takes its values from the same place. The average is
+always taken over the training data held in <code>rf_model</code> (see
+<code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc</a></code>), so overwriting any other
+column of <code>newx</code> has no effect on <code>yhat</code>; to hold a second
+variable fixed, pass it as <code>xvar2.name</code>. Defaults to
+<code>rf_model$xvar</code>. All column names must match
+<code>rf_model$xvar.names</code>.</p></dd>
 
 
 <dt id="arg-partial-time">partial.time<a class="anchor" aria-label="anchor" href="#arg-partial-time"></a></dt>
