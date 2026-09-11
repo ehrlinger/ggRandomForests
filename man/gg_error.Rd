@@ -32,7 +32,7 @@ number of grown trees.
 \strong{You have to ask rfsrc for the trajectory.}  How many trees you get
 a curve over is decided by \code{randomForestSRC::rfsrc()}, not here.  Its
 \code{block.size} argument controls how often the error is recorded, and it
-defaults to \code{NULL} unless you request importance -- which records the
+defaults to \code{NULL} unless you request importance; \code{NULL} records the
 error at the \emph{final tree only}.  So a default fit gives
 \code{gg_error()} a single point, not a curve, and \code{tree.err = TRUE}
 on its own does not change that.  Grow the forest with

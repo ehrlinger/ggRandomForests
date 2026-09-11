@@ -37,8 +37,8 @@ average effect of the swept predictor alone.
 \details{
 \code{gg_partial} handles the bookkeeping step after you've already called
 \code{randomForestSRC::plot.variable(partial = TRUE)}: it takes the list
-that function returns and separates the variables into two tidy data frames
--- one for continuous predictors (plotted as lines) and one for categorical
+that function returns and separates the variables into two tidy data frames,
+one for continuous predictors (plotted as lines) and one for categorical
 predictors (plotted as bar charts).  The split is controlled by
 \code{cat_limit}: variables with more unique x-values than this threshold
 are treated as continuous; all others are categorical.
@@ -53,8 +53,8 @@ there is no \code{randomForest} method (the \code{randomForest} package
 provides no comparable partial-dependence interface).
 
 For survival forests, \code{randomForestSRC::plot.variable} defaults
-to \code{surv.type = "mort"}, so \code{yhat} is \emph{mortality} -- the
-expected number of events -- and not a survival probability. It is
+to \code{surv.type = "mort"}, so \code{yhat} is \emph{mortality} (the
+expected number of events) and not a survival probability. It is
 therefore not on \eqn{[0, 1]} and is not directly comparable with the
 survival probabilities returned by \code{\link{gg_variable}}. For a
 comparable quantity, ask for it explicitly:
@@ -63,7 +63,7 @@ comparable quantity, ask for it explicitly:
 recorded on the returned object as \code{attr(x, "ylabel")} and is used
 as the y-axis title by \code{\link{plot.gg_partial}}.
 
-Note that \code{\link{gg_partial_rfsrc}} defaults to
+\code{\link{gg_partial_rfsrc}} defaults to
 \code{partial.type = "surv"} and so reports survival probabilities. The
 two entry points therefore report different quantities by default.
 }

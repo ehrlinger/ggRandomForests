@@ -21,7 +21,7 @@ name. Defaults to \code{NULL} (raw names).}
 A \code{ggplot} object.
 }
 \description{
-Bar chart of mean absolute SHAP value per variable -- the SHAP analog of
+Bar chart of mean absolute SHAP value per variable, the SHAP analog of
 \code{\link{plot.gg_vimp}}.
 }
 \seealso{
