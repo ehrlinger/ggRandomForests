@@ -58,7 +58,7 @@
 #'   at that value for every training observation, and a \code{grp} column is
 #'   appended. For a continuous variable, set \code{newx[[xvar2.name]]} to a
 #'   short grid first, since every distinct value costs one more
-#'   \code{partial.rfsrc()} call.
+#'   \code{partial.rfsrc()} call for each variable in \code{xvar.names}.
 #' @param newx Optional \code{data.frame} that sets the evaluation grid, not
 #'   the data being averaged over. Each of \code{xvar.names} is evaluated at
 #'   the quantile grid (or unique levels) of its column in \code{newx}, and

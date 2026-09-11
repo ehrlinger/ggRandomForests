@@ -27,7 +27,7 @@ each unique value of this column in \code{newx}, with the variable held
 at that value for every training observation, and a \code{grp} column is
 appended. For a continuous variable, set \code{newx[[xvar2.name]]} to a
 short grid first, since every distinct value costs one more
-\code{partial.rfsrc()} call.}
+\code{partial.rfsrc()} call for each variable in \code{xvar.names}.}
 
 \item{newx}{Optional \code{data.frame} that sets the evaluation grid, not
 the data being averaged over. Each of \code{xvar.names} is evaluated at

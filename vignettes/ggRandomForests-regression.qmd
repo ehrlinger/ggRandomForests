@@ -468,8 +468,8 @@ lines are close to parallel. Value falls by about 12 thousand dollars as
 
 So the interaction the forest itself carries between `lstat` and `rm` is
 modest: holding everything else as observed, moving from the smallest to the
-largest homes adds 10.4 thousand dollars in the highest-status tracts and
-8.1 in the lowest. The coplots above suggested something stronger, and the
+largest homes adds 10.4 thousand dollars at the low end of the `lstat` axis,
+2 percent, and 8.1 at the high end, 38 percent. The coplots above suggested something stronger, and the
 two views answer different questions. A coplot conditions on tracts that
 exist, and large homes in high-`lstat` tracts are rare, so each panel mixes
 the `rm` effect with everything else that differs between those tracts.
