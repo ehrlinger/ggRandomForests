@@ -604,11 +604,11 @@ so the estimate remains unbiased even under heavy censoring [@graf:1999].
 Two reference values help interpret the curve. A Brier score of 0 is perfect
 prediction. A score around 0.25 is the uninformative reference: a model that
 assigns every subject a survival probability of 0.5, regardless of their
-covariates or the time horizon, scores near 0.25 by construction. It is not a
-ceiling, since the score runs up to 1. A forest that scores below 0.25 is
-doing better than that constant guess; one that scores above it has been
-made worse by its covariates, which is a sign of overfitting or a poorly
-specified model.
+covariates or the time horizon, scores near 0.25 by construction. That is a
+reference, not a ceiling; a forest can score above it. A forest below 0.25 at
+a given time beats that constant guess there. One above it is doing worse than
+the guess at that time, which tells you the forest is miscalibrated there but
+not why.
 
 `gg_brier()` wraps `randomForestSRC::get.brier.survival()` and returns a tidy
 data frame ready to plot.
@@ -619,9 +619,11 @@ plot(gg_bs)
 ```
 
 Read the curve left to right. Early on it sits near zero; almost everyone
-is still alive, so predicting survival is easy. It climbs to a peak around the
-median event time, where the outcome is genuinely uncertain, then falls again
-as the at-risk pool shrinks and the remaining predictions get easier.
+is still alive, so predicting survival is easy. It then climbs for the rest of
+follow-up and is highest at the last event time, about 11.5 years, at just
+under 0.2, so it never reaches the 0.25 reference. Deaths accumulate, so the
+outcome grows less certain, and the censoring weights grow as the at-risk pool
+thins, so the late estimates rest on fewer subjects.
 
 Setting `envelope = TRUE` adds a 15--85% ribbon around that line, showing how
 spread out the individual subjects' Brier contributions are at each time. A

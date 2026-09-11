@@ -24,15 +24,16 @@
 #' every subject who died and \code{1} for every subject who survived would
 #' score \code{0}; a forest that predicts \code{0.5} for everyone scores
 #' roughly \code{0.25} regardless of the true outcome.  That is the
-#' "uninformative" reference, not a ceiling: the score runs up to \code{1},
-#' so a forest can do worse than it.
+#' "uninformative" reference, not a ceiling; a forest can score worse than
+#' it.
 #'
 #' This function extracts the time-resolved Brier score for a survival
 #' forest grown with \code{randomForestSRC}, both overall and broken down
 #' by mortality-risk quartile (lowest-risk to highest-risk subjects).  It
-#' also returns the continuous ranked probability score (CRPS), which is the
-#' Brier score integrated over time and divided by elapsed time: a running
-#' average that summarizes calibration up to each point on the time axis.
+#' also returns, in the \code{crps} column, the running continuous ranked
+#' probability score (CRPS): the Brier score integrated over time and divided
+#' by elapsed time, so each value summarizes calibration up to that point on
+#' the time axis.
 #'
 #' @details
 #' Because subjects are right-censored, a plain Brier score is biased:

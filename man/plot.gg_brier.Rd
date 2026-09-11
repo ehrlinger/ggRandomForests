@@ -29,8 +29,8 @@ grid on the x-axis; lower values mean the forest's predicted survival
 probabilities are closer to what actually happened.  Think of
 \code{0} as "perfect" and roughly \code{0.25} as "uninformative".  A
 forest that predicts \code{0.5} for every subject regardless of
-prognosis would sit near that reference.  It is not a ceiling: the score
-runs up to \code{1}, so a forest can do worse.
+prognosis would sit near that reference.  It is not a ceiling; a forest
+can do worse.
 }
 \details{
 Set \code{envelope = TRUE} to add a ribbon around the overall curve
