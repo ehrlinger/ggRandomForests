@@ -432,7 +432,7 @@ To visualize the joint partial dependence of `medv` on `lstat` and `rm`, we
 compute partial dependence on a grid: 6 values of `rm`, each evaluated at 25
 points along `lstat`.
 
-```{r surface-data, cache=TRUE}
+```{r surface-data}
 rm_grid <- quantile_pts(rfsrc_Boston$xvar$rm, groups = 6)
 
 surface_list <- lapply(rm_grid, function(rm_val) {
