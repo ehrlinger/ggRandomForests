@@ -69,7 +69,7 @@ A partial dependence curve marginalizes the forest's prediction over all
 other predictors: for each evaluation point of the target variable, the
 forest scores every training observation with that value substituted in,
 then averages the result.  What you get is the average effect of the target
-variable after "integrating out" the rest -- a curve that would be flat if
+variable after "integrating out" the rest, a curve that would be flat if
 the variable carried no signal.
 }
 \details{
@@ -77,7 +77,7 @@ This function builds those curves for one or more predictors by calling
 \code{\link[randomForestSRC]{partial.rfsrc}} and then tidy-stacking the
 results into separate data frames for continuous and categorical variables.
 Unlike \code{\link{gg_partial}} (which wraps \code{plot.variable}), you
-pass the fitted \code{rfsrc} object directly -- no intermediate
+pass the fitted \code{rfsrc} object directly, with no intermediate
 \code{plot.variable} step.
 
 For survival forests, the marginalized quantity depends on

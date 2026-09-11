@@ -56,12 +56,12 @@ individual predictors.
 This vignette demonstrates a complete random forest regression workflow on the
 Boston Housing data set [@Harrison:1978; @Belsley:1980]:
 
-1. **Data exploration** --- EDA scatter panels, variable descriptions
-2. **Growing the forest** --- fitting an RF, checking OOB error convergence
-3. **Variable selection** --- VIMP and minimal depth via `max.subtree()`
-4. **Dependence plots** --- variable dependence and partial dependence via
+1. **Data exploration**: EDA scatter panels, variable descriptions
+2. **Growing the forest**: fitting an RF, checking OOB error convergence
+3. **Variable selection**: VIMP and minimal depth via `max.subtree()`
+4. **Dependence plots**: variable dependence and partial dependence via
    `gg_variable()` and `gg_partial_rfsrc()`
-5. **Variable interactions** --- conditioning plots and partial dependence
+5. **Variable interactions**: conditioning plots and partial dependence
    surfaces
 
 ```{r packages}
@@ -135,7 +135,7 @@ ggplot(dta, aes(x = medv, y = value, color = chas)) +
 
 Even from this simple view, two relationships stand out: `medv` against
 `lstat` (lower status %) and `medv` against `rm` (rooms per dwelling). Keep
-those two in mind --- we expect the random forest to rank them as the most
+those two in mind. We expect the random forest to rank them as the most
 important predictors, and the rest of the vignette comes back to check.
 
 # Growing a Random Forest
@@ -162,8 +162,8 @@ class(gg_e) <- c("gg_error", class(gg_e))
 plot(gg_e)
 ```
 
-The error stabilizes well before 500 trees, indicating the forest is large
-enough for reliable predictions.
+The error flattens out by about 60 trees, well inside the 100 we grew, so the
+forest is large enough for reliable predictions.
 
 ## OOB predictions
 
@@ -173,7 +173,7 @@ plot(gg_rfsrc(rfsrc_Boston), alpha = 0.5) +
 ```
 
 Each point is a single tract's OOB prediction. The distribution is a sanity
-check --- we are more interested in the *why* behind these predictions.
+check; we are more interested in the *why* behind these predictions.
 
 # Variable Selection
 
@@ -192,14 +192,13 @@ plot(gg_vimp(rfsrc_Boston), labels = st_labs)
 ```
 
 `lstat` and `rm` dominate, with a clear gap to the remaining predictors. All
-VIMP values are positive, indicating every predictor contributes at least
+VIMP values are positive, so every predictor contributes at least
 marginally.
 
 The permutation approach contrasts with varPro release-rule importance
 [@Lu2024varpro], available through `gg_varpro()`. Rather than perturbing data
-synthetically, varPro compares local estimators on the observed data directly:
-no permutation, no manufactured feature values. Because the two methods measure
-fundamentally different things, a variable can rank high under one and low under
+synthetically, varPro compares local estimators on the observed data directly.
+Because the two methods measure different things, a variable can rank high under one and low under
 the other. When they agree, the evidence is strong; when they disagree, that
 disagreement itself is worth investigating, pointing either to a variable whose
 effect is highly non-linear or to one that matters only in combination with
@@ -230,7 +229,7 @@ xvar <- md_Boston$topvars
 
 VIMP and varPro both rank *how much* a variable matters, averaged over the
 whole forest. They cannot tell you how much a variable mattered for one
-specific tract's prediction --- that requires a different kind of
+specific tract's prediction. That requires a different kind of
 accounting. SHAP (SHapley Additive exPlanations) borrows an idea from
 cooperative game theory: treat the 13 predictors as players splitting a
 payout, and ask how much each one contributed to this tract's predicted
@@ -262,8 +261,8 @@ gives a ranking directly comparable to VIMP.
 plot(gg_shp, type = "importance")
 ```
 
-`lstat` and `rm` come out on top again, same as VIMP and minimal depth ---
-three different mechanisms, one answer. That agreement is reassuring, but
+`lstat` and `rm` come out on top again, same as VIMP and minimal depth.
+Three different mechanisms, one answer. That agreement is reassuring, but
 it's the next two plots where SHAP earns its keep.
 
 ## SHAP beeswarm
@@ -325,7 +324,7 @@ plot(gg_v, xvar = "chas", alpha = 0.4) +
 ```
 
 Most tracts do not border the Charles River, and the predicted value
-distributions largely overlap --- consistent with `chas` ranking last in both
+distributions largely overlap, consistent with `chas` ranking last in both
 VIMP and minimal depth.
 
 ## Partial dependence
@@ -407,7 +406,7 @@ Median values decrease with `lstat` within every `rm` group, but the intercept
 shifts upward with more rooms. Smaller homes in low-`lstat` (high-status)
 neighborhoods still command high prices.
 
-The complement view --- `medv` vs. `rm`, conditional on `lstat` groups ---
+The complement view (`medv` vs. `rm`, conditional on `lstat` groups)
 completes the picture:
 
 ```{r coplot-lstat, fig.cap="Predicted medv vs. rooms, conditional on lower-status groups."}
@@ -457,16 +456,15 @@ ggplot(surface_df, aes(x = x, y = rm, fill = yhat)) +
 
 The surface confirms the strong interaction: home values are highest when `lstat`
 is low and `rm` is high (upper-left corner), dropping steeply along both axes.
-The non-planar curvature --- particularly the sharp step near `rm` = 7 ---
-demonstrates the kind of complex, non-linear structure that random forests
-capture naturally.
+The non-planar curvature, particularly the sharp step near `rm` = 7, is the
+kind of non-linear structure that random forests capture naturally.
 
 # Conclusion
 
 We have walked a full random forest regression analysis with
 **randomForestSRC** and **ggRandomForests**, and the pieces line up:
 
-- `gg_error()` showed the OOB error settling well before 500 trees.
+- `gg_error()` showed the OOB error settling by about 60 of the 100 trees.
 - VIMP (`gg_vimp()`) and minimal depth (`max.subtree()`) agreed on the same
   story: `lstat` and `rm` dominate, with a clear gap to everything else.
 - `gg_variable()` traced strongly non-linear predictor--response curves, the

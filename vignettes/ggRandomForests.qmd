@@ -121,7 +121,7 @@ table(rm_groups)
 ```
 
 When you build a coplot, you want each conditioning group to hold a roughly
-equal share of the data --- equal-width bins leave the sparse tails nearly
+equal share of the data; equal-width bins leave the sparse tails nearly
 empty. `quantile_pts()` wraps `stats::quantile()` to give you break points
 that do exactly that, and they pass straight to `cut()` for the grouping or
 facet labels.

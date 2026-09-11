@@ -17,7 +17,7 @@
 #' Every tree in a random forest makes its own prediction, and the forest's
 #' "ensemble" prediction is the average across all trees.  The out-of-bag
 #' (OOB) variant averages only over the trees that did not include a given
-#' observation in their bootstrap sample -- a built-in cross-validation
+#' observation in their bootstrap sample, a built-in cross-validation
 #' estimate that requires no held-out test set.  \code{gg_rfsrc} pulls those
 #' ensemble predictions out of the fitted forest and arranges them for plotting
 #' with \code{\link{plot.gg_rfsrc}}.
@@ -27,8 +27,8 @@
 #' observed response.  For classification you get predicted class probabilities
 #' alongside the observed class label.  For a survival forest you get the
 #' ensemble survival function (or cumulative hazard, or mortality, controlled
-#' by \code{surv_type}) at each unique event time -- one curve per
-#' observation -- which together trace the range of predicted risk in the
+#' by \code{surv_type}) at each unique event time (one curve per
+#' observation), which together trace the range of predicted risk in the
 #' cohort.  Pass \code{conf.int} to add pointwise bootstrap confidence bands
 #' around the mean survival curve, or \code{by} to stratify all of the above
 #' by a predictor group.

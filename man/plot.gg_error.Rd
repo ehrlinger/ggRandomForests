@@ -27,8 +27,8 @@ A plot of the cumulative OOB error rates of the random forest as a
 function of number of trees.
 }
 \details{
-The gg_error plot is used to track the convergence of the
-randomForest. This figure is a reproduction of the error plot
+The gg_error plot tracks the convergence of the
+randomForest. It reproduces the error plot
 from the \code{\link[randomForestSRC]{plot.rfsrc}} function.
 }
 \examples{

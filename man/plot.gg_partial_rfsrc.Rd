@@ -30,7 +30,7 @@ contains.
 \details{
 For a standard regression or classification forest, continuous predictors
 are drawn as line plots and categorical predictors as bar charts, both
-faceted by variable name -- the same arrangement as
+faceted by variable name, the same arrangement as
 \code{\link{plot.gg_partial}}.
 
 For a survival forest, each call to \code{partial.rfsrc} returns a predicted

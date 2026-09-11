@@ -55,7 +55,7 @@
 #' We flip it. \code{gg_isopro()} returns \code{1 - object$howbad}, so the
 #' column you get is \strong{higher = more anomalous} and reads the way a
 #' score should. That is our transformation, not the fit's, and it means
-#' \code{gg$howbad} is \code{1 - fit$howbad} rather than a copy of it -- worth
+#' \code{gg$howbad} is \code{1 - fit$howbad} rather than a copy of it, worth
 #' knowing if you compare the two side by side. Both columns are kept so you
 #' can plot in either space and have the raw depth on hand for diagnostics;
 #' \code{howbad} is the canonical score and is what the plot method uses by

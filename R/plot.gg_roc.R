@@ -30,8 +30,8 @@
 #'   \code{which_outcome}: given a multi-class forest and
 #'   \code{which_outcome = NULL} it calls \code{\link{gg_roc}} once per class
 #'   and overlays the one-vs-rest curves, where \code{gg_roc(x)} alone returns
-#'   a single curve -- a macro-average for \code{randomForest}, or class 1
-#'   with a warning for \code{rfsrc}. Prefer
+#'   a single curve (a macro-average for \code{randomForest}, or class 1
+#'   with a warning for \code{rfsrc}). Prefer
 #'   \code{plot(gg_roc(x, which_outcome))}, which is explicit about both the
 #'   class and the engine. Issue #72 tracks reconciling the entry points.
 #' @param which_outcome Integer; for multi-class problems, the index of the
