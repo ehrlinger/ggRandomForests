@@ -151,6 +151,7 @@ test_that("gg_brier agrees with randomForestSRC's own Brier calculation", {
   expect_equal(
     as.numeric(attr(gg, "crps_integrated")), as.numeric(src$crps)
   )
+  expect_equal(as.numeric(attr(gg, "crps_std")), as.numeric(src$crps.std))
   expect_true(all(gg$brier >= 0 & gg$brier <= 1, na.rm = TRUE))
 })
 
