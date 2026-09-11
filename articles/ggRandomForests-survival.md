@@ -761,8 +761,8 @@ to that time. It collapses the whole trajectory into one running number,
 which is handy when you want a single calibration figure rather than a
 curve to read. Because it is an average of Brier scores it reads on the
 same scale: near 0 is good, and 0.25 is the constant-predictor reference
-from above. The value at the right edge of the plot, the average over
-the whole follow-up, is the one to report.
+from above. The value at the right edge of the plot is the average over
+the whole follow-up.
 
 ``` r
 
@@ -780,33 +780,35 @@ returns, as the `crps_integrated` attribute. Be careful with it. That
 number is the raw area under the Brier curve, *not* divided by elapsed
 time, so it carries the units of the time axis (years here) and grows
 with the length of follow-up. It is not on the 0 to 0.25 scale, and you
-cannot compare it across studies with different follow-up. Divide it by
-the largest event time, `max(gg_bs$time)`, to put it back on the Brier
-scale:
+cannot compare it across studies with different follow-up. For a single
+number to report, use the `crps_std` attribute instead. It is upstream’s
+`crps.std`, the raw integral divided by the largest event time,
+`max(gg_bs$time)`, and it is the value
+[`print()`](https://rdrr.io/r/base/print.html) and
+[`summary()`](https://rdrr.io/r/base/summary.html) report:
 
 ``` r
 
-crps_raw <- attr(gg_bs, "crps_integrated")
-crps_raw                     # area under the Brier curve, in years
+attr(gg_bs, "crps_integrated")  # area under the Brier curve, in years
 ```
 
     #> [1] 1.440241
 
 ``` r
 
-crps_raw / max(gg_bs$time)   # get.brier.survival()'s crps.std
+attr(gg_bs, "crps_std")         # divided by max(gg_bs$time)
 ```
 
     #> [1] 0.1255185
 
 ``` r
 
-tail(gg_bs$crps, 1)          # right edge of the running CRPS plot
+tail(gg_bs$crps, 1)             # right edge of the running CRPS plot
 ```
 
     #> [1] 0.1267585
 
-The last two differ slightly. `crps.std` divides by the largest event
+The last two differ slightly. `crps_std` divides by the largest event
 time, while the running curve divides by the time elapsed since the
 first one.
 

@@ -110,7 +110,7 @@ CDF of `case.depth`. On the fit those two run the same way:
 We flip it. `gg_isopro()` returns `1 - object$howbad`, so the column you
 get is **higher = more anomalous** and reads the way a score should.
 That is our transformation, not the fit's, and it means `gg$howbad` is
-`1 - fit$howbad` rather than a copy of it – worth knowing if you compare
+`1 - fit$howbad` rather than a copy of it, worth knowing if you compare
 the two side by side. Both columns are kept so you can plot in either
 space and have the raw depth on hand for diagnostics; `howbad` is the
 canonical score and is what the plot method uses by default.

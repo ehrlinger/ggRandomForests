@@ -110,7 +110,7 @@ ignored otherwise (with a warning). Documented forwardables:
 
 
 <dt id="arg-which-obs">which_obs<a class="anchor" aria-label="anchor" href="#arg-which-obs"></a></dt>
-<dd><p>Optional integer scalar - 1-based row index into the
+<dd><p>Optional integer scalar; 1-based row index into the
 training data. <code>NULL</code> (default) returns the aggregate view.</p></dd>
 
 
@@ -181,14 +181,14 @@ variable <code>v</code> to predicting observation <code>i</code>, NOT a permutat
 importance and NOT a SHAP value. <strong>Sign carries direction</strong> of the
 local response shift inside the rule's region. <strong>Magnitude is on
 the response scale</strong> when <code>scale = "global"</code>, or unit-free when
-<code>scale = "local"</code> (the default). The matrix is <strong>heavily sparse</strong> -
+<code>scale = "local"</code> (the default). The matrix is <strong>heavily sparse</strong>:
 an observation contributes only to rules that retain it as OOB; on
 real data, per-variable NA fractions of 50-95% are common.
 Comparison with <code><a href="gg_varpro.html">gg_varpro()</a></code> (aggregate split-strength) and
 <code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code> (per-rule lasso beta) is diagnostic: a variable
 that's important globally but has low per-observation contribution
-for a specific case is interesting; the inverse - high local but
-low global - flags a regime-specific signal.</p>
+for a specific case is interesting; the inverse (high local but
+low global) flags a regime-specific signal.</p>
     </div>
     <div class="section level2">
     <h2 id="what-s-in-the-output">What's in the output<a class="anchor" aria-label="anchor" href="#what-s-in-the-output"></a></h2>
@@ -200,11 +200,11 @@ low global - flags a regime-specific signal.</p>
 levels are set by <code>mean(|local_imp|)</code> descending across all rows;
 for classification that aggregate is across all (obs, class) so
 every facet / panel shows variables in the same row order. NA
-cells are filtered out - the source matrix is sparse, and the
+cells are filtered out; the source matrix is sparse, and the
 tidy frame only carries the cells where local importance is
 defined.</p>
 <p>Provenance attribute carries <code>source</code>, <code>family</code>, <code>ntree</code>, <code>cutoff</code>
-(named numeric vector - length 1 named <code>"regr"</code> for regression,
+(named numeric vector: length 1 named <code>"regr"</code> for regression,
 length K named with class levels for classification),
 <code>cutoff_default</code>, <code>use.loo</code>, <code>scale</code>, <code>n_train</code>, <code>n_obs</code>, <code>n_var</code>,
 <code>precomputed</code>, <code>xvar.names</code>, <code>class_levels</code> (classification only),
@@ -239,13 +239,13 @@ Compute it once and reuse:</p>
 
 <p>For a classification fit, <code>ivarpro()</code> returns a list of K matrices
 (one per class) for multi-class, or a flat data.frame for binary
-(positive-class importances only - the wrapper normalizes this to
+(positive-class importances only; the wrapper normalizes this to
 a single-element list under the last factor level). The wrapper
 stacks per-class frames into a long-format frame with a <code>class</code>
 column. <code>which_class = NULL</code> returns all classes (binary defaults
 to the last factor level, the positive-class convention used by
 <code>glm</code> and <code>gg_roc</code>); <code>which_class = "&lt;name&gt;"</code> filters to a single
-class. <code>cutoff</code> polymorphism mirrors <code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code> - <code>NULL</code>
+class. <code>cutoff</code> polymorphism mirrors <code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code>: <code>NULL</code>
 is per-class mean(|local_imp|), a scalar broadcasts, a named
 numeric vector overrides per class with fallback to that class's
 mean.</p>

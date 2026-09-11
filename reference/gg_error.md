@@ -36,12 +36,12 @@ additional `train` column is included.
 curve over is decided by
 [`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html),
 not here. Its `block.size` argument controls how often the error is
-recorded, and it defaults to `NULL` unless you request importance –
-which records the error at the *final tree only*. So a default fit gives
-`gg_error()` a single point, not a curve, and `tree.err = TRUE` on its
-own does not change that. Grow the forest with `block.size = 1` for an
-error recorded at every tree, or a larger `block.size` for every *n*th.
-If a
+recorded, and it defaults to `NULL` unless you request importance;
+`NULL` records the error at the *final tree only*. So a default fit
+gives `gg_error()` a single point, not a curve, and `tree.err = TRUE` on
+its own does not change that. Grow the forest with `block.size = 1` for
+an error recorded at every tree, or a larger `block.size` for every
+*n*th. If a
 [`plot.gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.md)
 figure comes back as one dot, this is why.
 

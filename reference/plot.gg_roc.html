@@ -87,8 +87,8 @@ instead. This branch is reached only by naming the method outright, as
 <code>which_outcome</code>: given a multi-class forest and
 <code>which_outcome = NULL</code> it calls <code><a href="gg_roc.rfsrc.html">gg_roc</a></code> once per class
 and overlays the one-vs-rest curves, where <code>gg_roc(x)</code> alone returns
-a single curve – a macro-average for <code>randomForest</code>, or class 1
-with a warning for <code>rfsrc</code>. Prefer
+a single curve (a macro-average for <code>randomForest</code>, or class 1
+with a warning for <code>rfsrc</code>). Prefer
 <code>plot(gg_roc(x, which_outcome))</code>, which is explicit about both the
 class and the engine. Issue #72 tracks reconciling the entry points.</p></dd>
 

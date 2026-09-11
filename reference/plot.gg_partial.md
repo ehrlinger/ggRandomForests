@@ -2,7 +2,7 @@
 
 Turns a
 [`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
-object into a ggplot2 figure. Each curve is a partial dependence trace –
+object into a ggplot2 figure. Each curve is a partial dependence trace,
 the forest's average prediction as one predictor is swept across its
 range while the rest are marginalized over the training data. Continuous
 predictors appear as line plots; categorical predictors appear as bar
@@ -50,8 +50,8 @@ which also satisfies `inherits(p, "ggplot")`.
 
 When a `model` label was attached in
 [`gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md),
-lines are colored by model – handy for overlaying results from two
-forests (e.g., one tuned, one default) in the same figure.
+lines are colored by model, which is handy for overlaying results from
+two forests (e.g., one tuned, one default) in the same figure.
 
 ## See also
 

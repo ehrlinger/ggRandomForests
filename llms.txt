@@ -84,23 +84,23 @@ see the RHF vignette:
 vignette("rhf", package = "ggRandomForests")
 ```
 
-For variable importance with varPro — partial dependence, importance
+For variable importance with varPro (partial dependence, importance
 z-scores, beta importance, individual/local importance, and isolation
-forests — see the dedicated vignette:
+forests), see the dedicated vignette:
 
 ``` r
 
 vignette("varpro", package = "ggRandomForests")
 ```
 
-The unsupervised varPro tools —
+The unsupervised varPro tools,
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md),
 [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md),
 and
 [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md),
-which read structure off a
+read structure off a
 [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
-fit with no outcome — have their own short vignette:
+fit with no outcome. They have their own short vignette:
 
 ``` r
 
@@ -160,7 +160,7 @@ the event-risk rate at a particular time.
 | [`gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf_importance.md) | `rhf` fit | Variable-priority matrix across time windows |
 | [`gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.md) | `tune.treesize.rhf` object | Inspected tree-size tuning path |
 
-### varPro — variable priority
+### varPro (variable priority)
 
 These read a `varpro` fit rather than a forest.
 [`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
@@ -211,7 +211,7 @@ that split.
 
 First, the data object stands on its own. It carries everything its plot
 needs, so you can save it, inspect it, or come back to it later without
-keeping the original forest — which can be large — in memory.
+keeping the original forest (which can be large) in memory.
 
 Second, you are never locked into the default figure. Because a
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) method returns
@@ -256,7 +256,7 @@ the full changelog. Recent highlights:
   with their own vignette;
   [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
   now handles factor predictors correctly.
-- **v3.3.0** varPro partial plots default to interpretable scales —
+- **v3.3.0** varPro partial plots default to interpretable scales:
   probability for classification, survival S(τ) for survival.
 - **v3.1.0** varPro integration: release-rule importance, partial
   dependence, local importance, anomaly scores, and the dependency

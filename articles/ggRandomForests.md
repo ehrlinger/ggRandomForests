@@ -137,8 +137,8 @@ table(rm_groups)
              85          84          84          85          84          84 
 
 When you build a coplot, you want each conditioning group to hold a
-roughly equal share of the data — equal-width bins leave the sparse
-tails nearly empty.
+roughly equal share of the data; equal-width bins leave the sparse tails
+nearly empty.
 [`quantile_pts()`](https://ehrlinger.github.io/ggRandomForests/reference/quantile_pts.md)
 wraps [`stats::quantile()`](https://rdrr.io/r/stats/quantile.html) to
 give you break points that do exactly that, and they pass straight to

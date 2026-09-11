@@ -115,7 +115,7 @@
 </h2>
 <p>You have fit a forest, it predicts well, and now someone asks the obvious question: what is this variable actually doing? It is the question every applied analysis reaches eventually, and <code>ggRandomForests</code> gives you five different ways to answer it.</p>
 <p>That is a problem, because the five answers are not interchangeable. They estimate different things. Read one as though it were another and you will report a number that is off by a factor of two or three, with a figure that looks entirely reasonable.</p>
-<p>This vignette puts them side by side on one forest. The point is not that one method wins. It is that you should know which question you asked.</p>
+<p>This vignette puts them side by side on one forest. No one method wins; the point is to know which question you asked.</p>
 <table class="table caption-top">
 <colgroup>
 <col style="width: 50%">
@@ -222,8 +222,8 @@ No. of variables tried at each split: 5
 <p>This is the workhorse, and for a lot of problems it is exactly right. But notice what the recipe requires. To evaluate <code>crim</code> at its 95th percentile, partial dependence takes every tract in the data, including the leafy low-crime ones, and asks the forest to price them as though they had that crime rate while keeping all their other characteristics.</p>
 </section><section class="level2"><h2 id="the-neighborhood-that-doesnt-exist">The neighborhood that doesn’t exist<a class="anchor" aria-label="anchor" href="#the-neighborhood-that-doesnt-exist"></a>
 </h2>
-<p>That last step is worth saying plainly, because in Boston it is literal.</p>
-<p>To score <code>tax</code> at its maximum, partial dependence hands the forest a tract with the highest property tax rate in the state and the highway access of a low-tax suburb. No such tract exists. The forest has never seen one, was never asked to price one, and its answer there is an extrapolation dressed up as an average.</p>
+<p>In Boston that last step is literal.</p>
+<p>To score <code>tax</code> at its maximum, partial dependence hands the forest a tract with the highest property tax rate in the state and the highway access of a low-tax suburb. No such tract exists. The forest has never seen one, so its answer there is an extrapolation dressed up as an average.</p>
 <p>Accumulated local effects <span class="citation" data-cites="Apley2020ale">(<a href="#ref-Apley2020ale" role="doc-biblioref">Apley and Zhu 2020</a>)</span> avoid the problem by never building that tract. Instead of substituting a value across the whole dataset, ALE splits the variable into quantile bins and, inside each bin, asks only what happens when an observation moves from one edge of <em>its own</em> bin to the other. Everything else stays where it actually was. Those local differences are then accumulated across bins into a single curve and centered.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
@@ -313,7 +313,7 @@ No. of variables tried at each split: 5
 </div>
 </div>
 <p>Each point is one tract for one variable, positioned by its contribution and coloured by that tract’s value of the variable. The spread is the point. A variable whose points fan out wide matters a lot, but differently for different tracts, which is something no averaged curve can tell you.</p>
-<p>One trap worth naming, because it costs people an afternoon. Averaging the absolute SHAP values gives you a ranking, and that ranking is an <em>importance</em> measure, not a shape. It answers “how much does this variable move predictions” and says nothing about which direction or where. Reach for <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> if ranking is what you want.</p>
+<p>One trap is worth naming. Averaging the absolute SHAP values gives you a ranking, and that ranking is an <em>importance</em> measure, not a shape. It answers “how much does this variable move predictions” and says nothing about which direction or where. Reach for <code><a href="../reference/gg_vimp.html">gg_vimp()</a></code> if ranking is what you want.</p>
 <p>Two practical notes. <code><a href="../reference/gg_shap.html">gg_shap()</a></code> needs <code>kernelshap</code>, which is a suggested dependency, so guard it as above if you are writing something others will run. And <code>newdata</code> takes predictors only. Handing it a frame that still carries the response fails inside <code>kernelshap</code> with a message about column names that mentions neither your column nor <code><a href="../reference/gg_shap.html">gg_shap()</a></code>.</p>
 </section><section class="level2"><h2 id="local-by-construction">Local by construction<a class="anchor" aria-label="anchor" href="#local-by-construction"></a>
 </h2>

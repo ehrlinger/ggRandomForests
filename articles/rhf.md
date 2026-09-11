@@ -47,12 +47,12 @@ time and the subject’s fixed `x.4` and `x.5`, its value at `stop` is
 also its left-hand limit there. It is available for the interval ending
 at that time.
 
-That distinction matters with data collected in practice. A lab value
-measured after an interval ends cannot be copied backward into that
-interval. At any candidate split time, the subject must be routed using
-the active record, not a later measurement. This is the no-lookahead
-rule: future covariate values never select an earlier branch. The
-active-record stitching and tree routing are behavior of
+In data collected in practice, a lab value measured after an interval
+ends cannot be copied backward into that interval. At any candidate
+split time, the subject must be routed using the active record, not a
+later measurement. This is the no-lookahead rule: future covariate
+values never select an earlier branch. The active-record stitching and
+tree routing are behavior of
 [`randomForestRHF::rhf()`](https://www.randomforestsrc.org//reference/rhf.html),
 not **ggRandomForests**. **ggRandomForests** reads the fitted estimates
 after the upstream model has applied those rules ([Ishwaran et al.

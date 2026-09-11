@@ -132,6 +132,16 @@
   [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
   help says the same. No change to any returned value.
 
+- [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
+  gains a `crps_std` attribute, `get.brier.survival()$crps.std`: the
+  integrated CRPS divided by the largest event time, so it reads on the
+  Brier scale. [`print()`](https://rdrr.io/r/base/print.html) and
+  [`summary()`](https://rdrr.io/r/base/summary.html) now report it as
+  “CRPS (time-normalized)”, and
+  [`summary()`](https://rdrr.io/r/base/summary.html) labels the raw
+  `crps_integrated` as “integrated CRPS (time units)”. The value of
+  `crps_integrated` is unchanged.
+
 - Development line opened after the v3.2.0 CRAN release (forward-merged
   the v3.2.0 RMST/varPro fixes onto the dev line).
 

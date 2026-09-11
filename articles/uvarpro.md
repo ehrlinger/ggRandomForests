@@ -23,8 +23,8 @@ if (requireNamespace("ggRandomForests", quietly = TRUE)) {
 Most measures of variable importance start from a question: which
 predictors help explain *this* outcome? Permutation VIMP, the varPro
 release rules, the per-rule lasso weights behind
-[`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md)
-— all of them score a variable by how much it moves a response `y`. The
+[`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md):
+all of them score a variable by how much it moves a response `y`. The
 companion [varPro
 vignette](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md)
 walks that supervised toolkit end to end.
@@ -49,8 +49,8 @@ line between signal and noise.
 ## One fit, three views
 
 We’ll use `mtcars`. Its columns are all numeric, and several of them
-measure closely related things — displacement, horsepower, weight, and
-cylinder count all track engine size — so the unsupervised structure is
+measure closely related things (displacement, horsepower, weight, and
+cylinder count all track engine size), so the unsupervised structure is
 easy to read.
 
 ``` r
@@ -124,8 +124,8 @@ variables are signal, and which are noise?
 [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
 answers that narrower question off the same fit. It wraps
 [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
-and returns one row per candidate variable — an importance score, its
-degree in the dependency graph, and a `signal` flag — drawn as a ranked
+and returns one row per candidate variable (an importance score, its
+degree in the dependency graph, and a `signal` flag), drawn as a ranked
 lollipop.
 
 ``` r
@@ -144,7 +144,7 @@ treats as signal from the ones it treats as noise.
 
 ## Reading the three together
 
-The three views are one workflow, not three unrelated plots. Start with
+The three views are one workflow. Start with
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
 to see the structure, rank it with
 [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md),
@@ -155,8 +155,8 @@ draw the signal-versus-noise line. They all derive from the one
 matrix, so computing that matrix once (as we did above) and passing it
 in keeps the whole sequence cheap.
 
-For the supervised side of varPro — VIMP, partial dependence, per-rule
-lasso refinement, local importance, and anomaly scoring — see the
+For the supervised side of varPro (VIMP, partial dependence, per-rule
+lasso refinement, local importance, and anomaly scoring), see the
 companion [varPro
 vignette](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md).
 

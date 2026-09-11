@@ -1,6 +1,6 @@
 # Variable Importance (VIMP) data object
 
-`gg_vimp` Extracts the variable importance (VIMP) information from a
+`gg_vimp` extracts the variable importance (VIMP) information from a
 [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html) or
 [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
 object and reshapes it into a tidy data set.
@@ -23,7 +23,7 @@ gg_vimp(object, nvar, ...)
 
 - nvar:
 
-  argument to control the number of variables included in the output.
+  Number of variables to include in the output.
 
 - ...:
 
@@ -55,19 +55,21 @@ noise or nothing at all.
 
 **A `randomForest` fit needs `importance = TRUE` to give you this.**
 [`randomForest::randomForest()`](https://rdrr.io/pkg/randomForest/man/randomForest.html)
-defaults to `importance = FALSE`, and that fit stores only
-`IncNodePurity` – a node-impurity (RSS or Gini) measure, which is not a
-permutation quantity and is not comparable to one. It is the only
-importance the forest kept, so it is what `gg_vimp()` reports, in the
-`vimp` column, same as any other. Nothing marks the difference in the
-plot. So `gg_vimp(randomForest(y ~ ., data))` ranks by node purity; pass
-`importance = TRUE` and you get permutation VIMP (`%IncMSE`), and
-`colnames(object$importance)` tells you which one you have.
+defaults to `importance = FALSE`, and that fit stores only a
+node-impurity measure (`IncNodePurity`, RSS, for regression;
+`MeanDecreaseGini` for classification), which is not a permutation
+quantity and is not comparable to one. It is the only importance the
+forest kept, so it is what `gg_vimp()` reports, in the `vimp` column,
+same as any other. Nothing marks the difference in the plot. So
+`gg_vimp(randomForest(y ~ ., data))` ranks by node purity; pass
+`importance = TRUE` and you get permutation VIMP (`%IncMSE` for
+regression), and `colnames(object$importance)` tells you which one you
+have.
 [`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)
 has no such trap: its `importance` argument yields permutation VIMP.
 
 When a `randomForest` fit carries both measures, `gg_vimp()` reports the
-permutation one and leaves node purity out of the ranking – the two run
+permutation one and leaves node purity out of the ranking; the two run
 on different scales and mean different things, so putting them in one
 ordering would be meaningless. Read `randomForest::importance(object)`
 if you want both. A classification fit names that pair

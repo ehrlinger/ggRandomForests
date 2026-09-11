@@ -169,7 +169,7 @@ Supplying both also removes the axis padding.</p></dd>
 A variable absent from <code>panels</code> is not drawn; selecting a subset is
 the usual reason to supply it.</p>
 <p>The y axis is shared across panels, matching the facet route, and is
-computed over the selected variables only – so dropping a variable
+computed over the selected variables only, so dropping a variable
 rescales the figure. Only the x scale varies between panels; four partial
 dependence curves on four different y ranges would not compare.</p></dd>
 
@@ -181,7 +181,7 @@ dependence curves on four different y ranges would not compare.</p></dd>
 
 <dt id="arg-smooth">smooth<a class="anchor" aria-label="anchor" href="#arg-smooth"></a></dt>
 <dd><p>Logical; draw a <code><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth()</a></code> loess instead of the
-line.  Default <code>FALSE</code>.  Note that <code>parametric</code> is already
+line.  Default <code>FALSE</code>.  <code>parametric</code> is already
 partialpro's local-polynomial fit, so smoothing it is a smooth of a smooth;
 this is here for the raw-looking figure some journals ask for, not as a
 better estimate.</p></dd>
@@ -219,8 +219,8 @@ figures usually want a smaller point than a screen figure.</p></dd>
 <dt id="arg-complement">complement<a class="anchor" aria-label="anchor" href="#arg-complement"></a></dt>
 <dd><p>Logical; plot \(1 - p\) instead of \(p\), and prefix
 the y axis label with <code>"1 - "</code>.  Use it when the fit targets the
-class you do <em>not</em> want on the axis – a model of weaning failure
-read as the probability of weaning success, say – so you do not have to
+class you do <em>not</em> want on the axis (a model of weaning failure
+read as the probability of weaning success, say), so you do not have to
 recompute <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">partialpro</a></code> against the other target.
 Requires a probability scale (<code>scale = "prob"</code> or <code>"surv"</code>);
 on the additive, multiplicative and unbounded scales \(1 - x\) has no
@@ -232,7 +232,7 @@ referent and this is an error rather than a silent no-op.  Default
 <dd><p>Numeric length-2; the shared y range for every panel.
 <code>NULL</code> (default) takes the range of the plotted values, which is what
 the facet route has always done.  Supply it to pin a scale that means
-something independent of the data – <code>c(0, 1)</code> on a probability
+something independent of the data: <code>c(0, 1)</code> on a probability
 scale, say, so a flat curve reads as flat rather than filling the panel.
 It cannot be set from outside: on the <code>panels</code> route a
 <code><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html" class="external-link">coord_cartesian()</a></code> added with <code>&amp;</code> replaces the per-panel
@@ -308,7 +308,7 @@ follow-up time when not supplied.</p>
     <h2 id="what-the-causal-curve-is-and-when-to-use-it">What the causal curve is, and when to use it<a class="anchor" aria-label="anchor" href="#what-the-causal-curve-is-and-when-to-use-it"></a></h2>
 
 
-<p><code>causal</code> is the <strong>baseline-subtracted local effect</strong> – varPro's
+<p><code>causal</code> is the <strong>baseline-subtracted local effect</strong>, varPro's
 virtual- ("digital-") twins estimator (Ishwaran &amp; Blackstone, 2025).  It
 shows how the prediction shifts as the focal variable moves away from the
 reference grid point, with the other covariates held at on-manifold
@@ -331,9 +331,9 @@ event-free time during the first \(\tau\) time-units</strong>, the area under th
 survival curve out to \(\tau\). Read it in the <strong>model's own time
 units</strong>, where it is bounded by \(0 \le \mathrm{RMST}(\tau) \le \tau\).</p>
 <p>Two things follow. First, \(\tau\) must be given in the fit's time units;
-a \(\tau\) past the largest event time just truncates to the full
-restricted mean and stops changing. Second, higher is better here – more
-time event-free – which is the opposite of the ensemble-mortality scale.</p>
+a \(\tau\) past the largest event time truncates to the full
+restricted mean and stops changing. Second, higher is better here (more
+time event-free), which is the opposite of the ensemble-mortality scale.</p>
 <p>A continuous variable's curve sloping <em>up</em> means higher values of that
 covariate buy you <em>more</em> restricted-mean event-free time within \(\tau\)
 (with the other covariates held at their UVT-plausible average); a flat curve

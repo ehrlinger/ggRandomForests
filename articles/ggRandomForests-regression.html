@@ -109,17 +109,17 @@
 <p>This vignette demonstrates a complete random forest regression workflow on the Boston Housing data set <span class="citation" data-cites="Harrison:1978 Belsley:1980">(<a href="#ref-Harrison:1978" role="doc-biblioref">Harrison and Rubinfeld 1978</a>; <a href="#ref-Belsley:1980" role="doc-biblioref">Belsley et al. 1980</a>)</span>:</p>
 <ol type="1">
 <li>
-<strong>Data exploration</strong> — EDA scatter panels, variable descriptions</li>
+<strong>Data exploration</strong>: EDA scatter panels, variable descriptions</li>
 <li>
-<strong>Growing the forest</strong> — fitting an RF, checking OOB error convergence</li>
+<strong>Growing the forest</strong>: fitting an RF, checking OOB error convergence</li>
 <li>
-<strong>Variable selection</strong> — VIMP and minimal depth via <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>
+<strong>Variable selection</strong>: VIMP and minimal depth via <code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>
 </li>
 <li>
-<strong>Dependence plots</strong> — variable dependence and partial dependence via <code><a href="../reference/gg_variable.html">gg_variable()</a></code> and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>
+<strong>Dependence plots</strong>: variable dependence and partial dependence via <code><a href="../reference/gg_variable.html">gg_variable()</a></code> and <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code>
 </li>
 <li>
-<strong>Variable interactions</strong> — conditioning plots and partial dependence surfaces</li>
+<strong>Variable interactions</strong>: conditioning plots and partial dependence surfaces</li>
 </ol>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -187,7 +187,7 @@
 </div>
 </div>
 </div>
-<p>Even from this simple view, two relationships stand out: <code>medv</code> against <code>lstat</code> (lower status %) and <code>medv</code> against <code>rm</code> (rooms per dwelling). Keep those two in mind — we expect the random forest to rank them as the most important predictors, and the rest of the vignette comes back to check.</p>
+<p>Even from this simple view, two relationships stand out: <code>medv</code> against <code>lstat</code> (lower status %) and <code>medv</code> against <code>rm</code> (rooms per dwelling). Keep those two in mind. We expect the random forest to rank them as the most important predictors, and the rest of the vignette comes back to check.</p>
 </section></section><section class="section level2"><h2 id="growing-a-random-forest">Growing a Random Forest<a class="anchor" aria-label="anchor" href="#growing-a-random-forest"></a>
 </h2>
 <p>We grow a regression forest using all 13 predictors. The <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">rfsrc()</a></code> function detects the regression family from the continuous response.</p>
@@ -200,7 +200,7 @@
 <pre><code><span><span class="co">#&gt;                          Sample size: 506</span></span>
 <span><span class="co">#&gt;                      Number of trees: 100</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 5</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 66.77</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 67.14</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 5</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 13</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -209,8 +209,8 @@
 <span><span class="co">#&gt;                               Family: regr</span></span>
 <span><span class="co">#&gt;                       Splitting rule: mse *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                      (OOB) R squared: 0.86118328</span></span>
-<span><span class="co">#&gt;    (OOB) Requested performance error: 11.74205123</span></span></code></pre>
+<span><span class="co">#&gt;                      (OOB) R squared: 0.86355214</span></span>
+<span><span class="co">#&gt;    (OOB) Requested performance error: 11.54167748</span></span></code></pre>
 </div>
 </div>
 <p>The forest grew 100 trees, splitting on 5 randomly selected candidate variables at each node, and stopping at a minimum terminal node size of 5.</p>
@@ -229,7 +229,7 @@
 </div>
 </div>
 </div>
-<p>The error stabilizes well before 500 trees, indicating the forest is large enough for reliable predictions.</p>
+<p>The error flattens out by about 60 trees, well inside the 100 we grew, so the forest is large enough for reliable predictions.</p>
 </section><section class="level2"><h3 id="oob-predictions">OOB predictions<a class="anchor" aria-label="anchor" href="#oob-predictions"></a>
 </h3>
 <div class="cell" data-layout-align="center">
@@ -243,7 +243,7 @@
 </div>
 </div>
 </div>
-<p>Each point is a single tract’s OOB prediction. The distribution is a sanity check — we are more interested in the <em>why</em> behind these predictions.</p>
+<p>Each point is a single tract’s OOB prediction. The distribution is a sanity check; we are more interested in the <em>why</em> behind these predictions.</p>
 </section></section><section class="section level2"><h2 id="variable-selection">Variable Selection<a class="anchor" aria-label="anchor" href="#variable-selection"></a>
 </h2>
 <section class="level2"><h3 id="variable-importance-vimp">Variable importance (VIMP)<a class="anchor" aria-label="anchor" href="#variable-importance-vimp"></a>
@@ -259,8 +259,8 @@
 </div>
 </div>
 </div>
-<p><code>lstat</code> and <code>rm</code> dominate, with a clear gap to the remaining predictors. All VIMP values are positive, indicating every predictor contributes at least marginally.</p>
-<p>The permutation approach contrasts with varPro release-rule importance <span class="citation" data-cites="Lu2024varpro">(<a href="#ref-Lu2024varpro" role="doc-biblioref">Lu and Ishwaran 2024</a>)</span>, available through <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code>. Rather than perturbing data synthetically, varPro compares local estimators on the observed data directly: no permutation, no manufactured feature values. Because the two methods measure fundamentally different things, a variable can rank high under one and low under the other. When they agree, the evidence is strong; when they disagree, that disagreement itself is worth investigating, pointing either to a variable whose effect is highly non-linear or to one that matters only in combination with others.</p>
+<p><code>lstat</code> and <code>rm</code> dominate, with a clear gap to the remaining predictors. All VIMP values are positive, so every predictor contributes at least marginally.</p>
+<p>The permutation approach contrasts with varPro release-rule importance <span class="citation" data-cites="Lu2024varpro">(<a href="#ref-Lu2024varpro" role="doc-biblioref">Lu and Ishwaran 2024</a>)</span>, available through <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code>. Rather than perturbing data synthetically, varPro compares local estimators on the observed data directly. Because the two methods measure different things, a variable can rank high under one and low under the other. When they agree, the evidence is strong; when they disagree, that disagreement itself is worth investigating, pointing either to a variable whose effect is highly non-linear or to one that matters only in combination with others.</p>
 </section><section class="level2"><h3 id="minimal-depth">Minimal depth<a class="anchor" aria-label="anchor" href="#minimal-depth"></a>
 </h3>
 <p>Minimal depth <span class="citation" data-cites="Ishwaran:2010">(<a href="#ref-Ishwaran:2010" role="doc-biblioref">Ishwaran et al. 2010</a>)</span> ranks variables by how close to the root node they first split, on average. Variables that partition large portions of the population early are considered most important.</p>
@@ -268,7 +268,7 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_Boston</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">)</span> <span class="co"># nolint: object_name_linter</span></span></code></pre></div>
 </div>
-<p>The threshold is 3, selecting 5 variables: crim, nox, rm, ptratio, lstat.</p>
+<p>The threshold is 3.01, selecting 5 variables: crim, nox, rm, ptratio, lstat.</p>
 <p>Both VIMP and minimal depth agree on the dominance of <code>lstat</code> and <code>rm</code>. We use the minimal depth top variables for the remainder of the analysis.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
@@ -276,7 +276,7 @@
 </div>
 </section></section><section class="section level2"><h2 id="shap-analysis">SHAP Analysis<a class="anchor" aria-label="anchor" href="#shap-analysis"></a>
 </h2>
-<p>VIMP and varPro both rank <em>how much</em> a variable matters, averaged over the whole forest. They cannot tell you how much a variable mattered for one specific tract’s prediction — that requires a different kind of accounting. SHAP (SHapley Additive exPlanations) borrows an idea from cooperative game theory: treat the 13 predictors as players splitting a payout, and ask how much each one contributed to this tract’s predicted <code>medv</code>, averaged fairly over every order the players could have joined the game. The result is a signed contribution per predictor per tract, and those contributions add up exactly: the forest’s overall average prediction (the <em>baseline</em>) plus the sum of one tract’s contributions equals that tract’s actual predicted value. No other importance measure in this vignette makes that promise.</p>
+<p>VIMP and varPro both rank <em>how much</em> a variable matters, averaged over the whole forest. They cannot tell you how much a variable mattered for one specific tract’s prediction. That requires a different kind of accounting. SHAP (SHapley Additive exPlanations) borrows an idea from cooperative game theory: treat the 13 predictors as players splitting a payout, and ask how much each one contributed to this tract’s predicted <code>medv</code>, averaged fairly over every order the players could have joined the game. The result is a signed contribution per predictor per tract, and those contributions add up exactly: the forest’s overall average prediction (the <em>baseline</em>) plus the sum of one tract’s contributions equals that tract’s actual predicted value. No other importance measure in this vignette makes that promise.</p>
 <p><code><a href="../reference/gg_shap.html">gg_shap()</a></code> computes these contributions by calling <a href="https://cran.r-project.org/package=kernelshap" class="external-link">kernelshap</a>, which needs one prediction per predictor per background draw, per tract explained. Scoring all 506 tracts is expensive, so we explain a random sample of 25 instead, plenty to see the patterns at a fraction of the cost.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
@@ -297,7 +297,7 @@
 </div>
 </div>
 </div>
-<p><code>lstat</code> and <code>rm</code> come out on top again, same as VIMP and minimal depth — three different mechanisms, one answer. That agreement is reassuring, but it’s the next two plots where SHAP earns its keep.</p>
+<p><code>lstat</code> and <code>rm</code> come out on top again, same as VIMP and minimal depth. Three different mechanisms, one answer. That agreement is reassuring, but it’s the next two plots where SHAP earns its keep.</p>
 </section><section class="level2"><h3 id="shap-beeswarm">SHAP beeswarm<a class="anchor" aria-label="anchor" href="#shap-beeswarm"></a>
 </h3>
 <p>The beeswarm plot is one dot per tract per variable: its horizontal position is the SHAP contribution (negative pulls the prediction down, positive pushes it up), and its color is that tract’s value for the variable, scaled low to high within each row so the pattern doesn’t get washed out by variables on very different scales.</p>
@@ -356,7 +356,7 @@
 </div>
 </div>
 </div>
-<p>Most tracts do not border the Charles River, and the predicted value distributions largely overlap — consistent with <code>chas</code> ranking last in both VIMP and minimal depth.</p>
+<p>Most tracts do not border the Charles River, and the predicted value distributions largely overlap, consistent with <code>chas</code> ranking last in both VIMP and minimal depth.</p>
 </section><section class="level2"><h3 id="partial-dependence">Partial dependence<a class="anchor" aria-label="anchor" href="#partial-dependence"></a>
 </h3>
 <p>Partial dependence integrates out the effects of all other covariates, giving a risk-adjusted view of each predictor’s marginal effect <span class="citation" data-cites="Friedman:2000">(<a href="#ref-Friedman:2000" role="doc-biblioref">Friedman 2001</a>)</span>:</p>
@@ -437,7 +437,7 @@
 </div>
 </div>
 <p>Median values decrease with <code>lstat</code> within every <code>rm</code> group, but the intercept shifts upward with more rooms. Smaller homes in low-<code>lstat</code> (high-status) neighborhoods still command high prices.</p>
-<p>The complement view — <code>medv</code> vs. <code>rm</code>, conditional on <code>lstat</code> groups — completes the picture:</p>
+<p>The complement view (<code>medv</code> vs. <code>rm</code>, conditional on <code>lstat</code> groups) completes the picture:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lstat_pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/quantile_pts.html">quantile_pts</a></span><span class="op">(</span><span class="va">rfsrc_Boston</span><span class="op">$</span><span class="va">xvar</span><span class="op">$</span><span class="va">lstat</span>, groups <span class="op">=</span> <span class="fl">6</span>,</span>
@@ -490,13 +490,13 @@
 </div>
 </div>
 </div>
-<p>The surface confirms the strong interaction: home values are highest when <code>lstat</code> is low and <code>rm</code> is high (upper-left corner), dropping steeply along both axes. The non-planar curvature — particularly the sharp step near <code>rm</code> = 7 — demonstrates the kind of complex, non-linear structure that random forests capture naturally.</p>
+<p>The surface confirms the strong interaction: home values are highest when <code>lstat</code> is low and <code>rm</code> is high (upper-left corner), dropping steeply along both axes. The non-planar curvature, particularly the sharp step near <code>rm</code> = 7, is the kind of non-linear structure that random forests capture naturally.</p>
 </section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
 <p>We have walked a full random forest regression analysis with <strong>randomForestSRC</strong> and <strong>ggRandomForests</strong>, and the pieces line up:</p>
 <ul>
 <li>
-<code><a href="../reference/gg_error.html">gg_error()</a></code> showed the OOB error settling well before 500 trees.</li>
+<code><a href="../reference/gg_error.html">gg_error()</a></code> showed the OOB error settling by about 60 of the 100 trees.</li>
 <li>VIMP (<code><a href="../reference/gg_vimp.html">gg_vimp()</a></code>) and minimal depth (<code><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree()</a></code>) agreed on the same story: <code>lstat</code> and <code>rm</code> dominate, with a clear gap to everything else.</li>
 <li>
 <code><a href="../reference/gg_variable.html">gg_variable()</a></code> traced strongly non-linear predictor–response curves, the same shapes the raw-data EDA hinted at.</li>

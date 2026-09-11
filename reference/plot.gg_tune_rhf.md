@@ -1,6 +1,6 @@
 # Plot a Random Hazard Forest tuning path
 
-Draws the saved evaluated metric at each tree size, highlighting the
+Draws the saved evaluated metric at each tree size and highlights the
 upstream selected size. OOB risk paths show the criterion minimized by
 upstream tuning; OOB iAUC paths show the criterion it maximizes. An iAUC
 path includes a standard-error band only when finite supplied standard

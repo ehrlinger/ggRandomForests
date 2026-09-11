@@ -1,6 +1,6 @@
 # SHAP dependence plot
 
-SHAP value against the value of a single feature — the SHAP analog of a
+SHAP value against the value of a single feature, the SHAP analog of a
 partial-dependence plot. Numeric features use a continuous x-axis;
 factor or character features fall back to their labels on a discrete
 axis.

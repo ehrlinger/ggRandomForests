@@ -2,7 +2,7 @@
 
 Renders first-order Accumulated Local Effects as a ggplot2 figure.
 Continuous predictors are drawn as line plots and categorical predictors
-as bar charts, both faceted by variable name – the same arrangement as
+as bar charts, both faceted by variable name, the same arrangement as
 [`plot.gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md),
 so the two are directly comparable side by side.
 

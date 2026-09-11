@@ -112,7 +112,7 @@ plot(
   subset is the usual reason to supply it.
 
   The y axis is shared across panels, matching the facet route, and is
-  computed over the selected variables only – so dropping a variable
+  computed over the selected variables only, so dropping a variable
   rescales the figure. Only the x scale varies between panels; four
   partial dependence curves on four different y ranges would not
   compare.
@@ -125,10 +125,10 @@ plot(
 
   Logical; draw a
   [`geom_smooth()`](https://ggplot2.tidyverse.org/reference/geom_smooth.html)
-  loess instead of the line. Default `FALSE`. Note that `parametric` is
-  already partialpro's local-polynomial fit, so smoothing it is a smooth
-  of a smooth; this is here for the raw-looking figure some journals ask
-  for, not as a better estimate.
+  loess instead of the line. Default `FALSE`. `parametric` is already
+  partialpro's local-polynomial fit, so smoothing it is a smooth of a
+  smooth; this is here for the raw-looking figure some journals ask for,
+  not as a better estimate.
 
 - palette:
 
@@ -161,8 +161,8 @@ plot(
 
   Logical; plot \\1 - p\\ instead of \\p\\, and prefix the y axis label
   with `"1 - "`. Use it when the fit targets the class you do *not* want
-  on the axis – a model of weaning failure read as the probability of
-  weaning success, say – so you do not have to recompute
+  on the axis (a model of weaning failure read as the probability of
+  weaning success, say), so you do not have to recompute
   [`partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
   against the other target. Requires a probability scale
   (`scale = "prob"` or `"surv"`); on the additive, multiplicative and
@@ -174,7 +174,7 @@ plot(
   Numeric length-2; the shared y range for every panel. `NULL` (default)
   takes the range of the plotted values, which is what the facet route
   has always done. Supply it to pin a scale that means something
-  independent of the data – `c(0, 1)` on a probability scale, say, so a
+  independent of the data: `c(0, 1)` on a probability scale, say, so a
   flat curve reads as flat rather than filling the panel. It cannot be
   set from outside: on the `panels` route a
   [`coord_cartesian()`](https://ggplot2.tidyverse.org/reference/coord_cartesian.html)
@@ -238,7 +238,7 @@ follow-up time when not supplied.
 
 ## What the causal curve is, and when to use it
 
-`causal` is the **baseline-subtracted local effect** – varPro's virtual-
+`causal` is the **baseline-subtracted local effect**, varPro's virtual-
 ("digital-") twins estimator (Ishwaran & Blackstone, 2025). It shows how
 the prediction shifts as the focal variable moves away from the
 reference grid point, with the other covariates held at on-manifold
@@ -260,9 +260,9 @@ curve out to \\\tau\\. Read it in the **model's own time units**, where
 it is bounded by \\0 \le \mathrm{RMST}(\tau) \le \tau\\.
 
 Two things follow. First, \\\tau\\ must be given in the fit's time
-units; a \\\tau\\ past the largest event time just truncates to the full
-restricted mean and stops changing. Second, higher is better here – more
-time event-free – which is the opposite of the ensemble-mortality scale.
+units; a \\\tau\\ past the largest event time truncates to the full
+restricted mean and stops changing. Second, higher is better here (more
+time event-free), which is the opposite of the ensemble-mortality scale.
 
 A continuous variable's curve sloping *up* means higher values of that
 covariate buy you *more* restricted-mean event-free time within \\\tau\\

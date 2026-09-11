@@ -28,9 +28,8 @@ They estimate different things. Read one as though it were another and
 you will report a number that is off by a factor of two or three, with a
 figure that looks entirely reasonable.
 
-This vignette puts them side by side on one forest. The point is not
-that one method wins. It is that you should know which question you
-asked.
+This vignette puts them side by side on one forest. No one method wins;
+the point is to know which question you asked.
 
 | Function | The question it answers |
 |----|----|
@@ -136,13 +135,13 @@ they had that crime rate while keeping all their other characteristics.
 
 ## The neighborhood that doesn’t exist
 
-That last step is worth saying plainly, because in Boston it is literal.
+In Boston that last step is literal.
 
 To score `tax` at its maximum, partial dependence hands the forest a
 tract with the highest property tax rate in the state and the highway
 access of a low-tax suburb. No such tract exists. The forest has never
-seen one, was never asked to price one, and its answer there is an
-extrapolation dressed up as an average.
+seen one, so its answer there is an extrapolation dressed up as an
+average.
 
 Accumulated local effects ([Apley and Zhu 2020](#ref-Apley2020ale))
 avoid the problem by never building that tract. Instead of substituting
@@ -268,11 +267,10 @@ point. A variable whose points fan out wide matters a lot, but
 differently for different tracts, which is something no averaged curve
 can tell you.
 
-One trap worth naming, because it costs people an afternoon. Averaging
-the absolute SHAP values gives you a ranking, and that ranking is an
-*importance* measure, not a shape. It answers “how much does this
-variable move predictions” and says nothing about which direction or
-where. Reach for
+One trap is worth naming. Averaging the absolute SHAP values gives you a
+ranking, and that ranking is an *importance* measure, not a shape. It
+answers “how much does this variable move predictions” and says nothing
+about which direction or where. Reach for
 [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
 if ranking is what you want.
 

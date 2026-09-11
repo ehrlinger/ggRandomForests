@@ -145,9 +145,11 @@ per-subject Brier percentile, normalized by elapsed time.</p></dd>
 </dl><p>The integrated CRPS is attached as <code>attr(., "crps_integrated")</code>.
 It is <code>get.brier.survival()$crps</code>, the raw area under the Brier
 curve, not normalized by time, so it is in the units of the time axis
-and grows with follow-up. Divide by <code>max(.$time)</code> for
-<code>get.brier.survival()$crps.std</code>; the last value of the <code>crps</code>
-column instead divides by the time elapsed since the first event time.</p>
+and grows with follow-up. The time-normalized value,
+<code>get.brier.survival()$crps.std</code> (the raw integral divided by
+<code>max(.$time)</code>), is attached as <code>attr(., "crps_std")</code> and reads
+on the Brier scale. The last value of the <code>crps</code> column instead
+divides by the time elapsed since the first event time.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

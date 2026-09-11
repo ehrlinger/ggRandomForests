@@ -99,8 +99,8 @@ gg_partialpro(
   Forwarded to
   [`partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
   on the object-driven path (when `part_dta` is `NULL`). Use this to
-  control which variables are computed – e.g. `xvar.names` or `nvar` –
-  or to tune the isolation-forest UVT step (`cut`, `nsmp`). Without it,
+  control which variables are computed (e.g. `xvar.names` or `nvar`) or
+  to tune the isolation-forest UVT step (`cut`, `nsmp`). Without it,
   `partialpro` falls back to `varPro::get.topvars(object)`, which can
   return few or no variables for some fits (yielding empty
   `continuous`/`categorical` frames). A name you pass in `xvar.names`
@@ -140,7 +140,7 @@ which predictors are worth guiding the trees with, and what survives it
 lands in `object$xvar.names`;
 [`varPro::get.topvars`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 then ranks a shorter list out of that. So the design matrix, the
-reachable set, and the default list are three different sizes – a fit on
+reachable set, and the default list are three different sizes; a fit on
 45 predictors might carry 26 in `object$xvar.names` and 15 in
 `get.topvars`. `partialpro` can only reach the middle one. How much gets
 screened off depends on the data and the fit, so check rather than
@@ -159,7 +159,7 @@ answers the same question before you spend the computation.
 
 For a complete view, fit with both screens off:
 `varPro::varpro(..., sparse = FALSE, split.weight = FALSE)`.
-`split.weight = FALSE` is the one that lifts the ceiling – it puts every
+`split.weight = FALSE` is the one that lifts the ceiling. It puts every
 predictor in `object$xvar.names`, so partial dependence can reach them
 all, and it leaves a strong variable's curve where it was.
 `sparse = FALSE` does the smaller thing, deepening
@@ -167,27 +167,27 @@ all, and it leaves a strong variable's curve where it was.
 so the reported ranking shows its tail rather than the screened top.
 Both are varPro's own arguments, and its defaults (both `TRUE`) go the
 other way, toward the screened set; keep the defaults when that sparser
-set is what you want. `nvar` is not the knob here – it only caps how
-much gets reported.
+set is what you want. `nvar` is not the knob here; it only caps how much
+gets reported.
 
 **Which rows you actually get:** varPro has no imputation. Every entry
 point opens by growing a one-node stump through
 [`randomForestSRC::rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
 to settle the family and hand back cleaned data, and that call takes
-`rfsrc`'s default `na.action = "na.omit"`. Any case with a missing value
-– in a predictor or in the outcome – is deleted before the fit, with no
-warning and no message. Passing `na.action = "na.impute"` to
+`rfsrc`'s default `na.action = "na.omit"`. Any case with a missing
+value, in a predictor or in the outcome, is deleted before the fit, with
+no warning and no message. Passing `na.action = "na.impute"` to
 [`varPro::varpro`](https://www.randomforestsrc.org/reference/varpro.html)
 does not change this: it lands in `...`, never reaches the stump, and is
 discarded without remark (varPro 3.1.0).
 
 The loss compounds across predictors rather than adding up. At 5%
-missing per column, independently, retention is \\0.95^p\\ – 60% of rows
+missing per column, independently, retention is \\0.95^p\\: 60% of rows
 at 10 predictors, 36% at 20, 8% at 50. On a wide clinical frame a little
 missingness everywhere can delete most of the cohort. Nothing in the fit
 records it: `object$rf$n` is the count *after* deletion and no original
 is kept, so neither you nor this package can recover the number from the
-object. Check before you fit – `nrow(dta)` against
+object. Check before you fit: `nrow(dta)` against
 `sum(complete.cases(dta))`.
 
 **Imputing first, without inventing outcomes:**
@@ -195,7 +195,7 @@ object. Check before you fit – `nrow(dta)` against
 does mean and modal fill,
 [`randomForestSRC::impute`](https://www.randomforestsrc.org//reference/impute.rfsrc.html)
 does the forest-based job, and varPro's own help pages use the latter.
-Both fill **every** column they are handed, the outcome included – so
+Both fill **every** column they are handed, the outcome included, so
 where the outcome is itself missing they manufacture it, and the release
 rules are then fit partly to invented responses. Put the observed
 outcome back and drop the cases that never had one:
@@ -213,16 +213,16 @@ depends on having missing outcomes; the imputation matters whenever a
 *predictor* is missing. Two cautions. Imputing with the outcome stamps
 its signal into the filled predictor cells, which is right for a single
 fit but crosses fold boundaries in
-[`varPro::cv.varpro`](https://www.randomforestsrc.org/reference/cv.varpro.html)
-– impute inside the folds if the selection error has to mean anything.
-And a completed frame is one dataset, not many, so the curves here carry
-no uncertainty from the imputation; read them as conditional on it.
+[`varPro::cv.varpro`](https://www.randomforestsrc.org/reference/cv.varpro.html);
+impute inside the folds if the selection error has to mean anything. And
+a completed frame is one dataset, not many, so the curves here carry no
+uncertainty from the imputation; read them as conditional on it.
 
 **`nvars` selects by importance, not by list position:** when `object`
 is supplied, the variables in `part_dta` are first reordered by their
 rank in `varPro::get.topvars(object)`, and `nvars` then keeps the top
-`nvars` of *that* ordering – not simply the first `nvars` elements as
-they arrived. `get.topvars()` typically ranks far fewer variables than
+`nvars` of *that* ordering, not the first `nvars` elements as they
+arrived. `get.topvars()` typically ranks far fewer variables than
 `part_dta` contains; any variable it does not rank keeps its incoming
 order and is appended after the ranked block, so nothing is ever dropped
 from consideration, only reordered. The returned `continuous$name` /
@@ -240,7 +240,7 @@ requires you to pass `scale = "rmst", time = tau` explicitly.
 **RMST partial dependence (scale = "rmst"):**
 [`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
 has no time argument, so its default survival learner returns ensemble
-mortality at every horizon – passing a horizon through `...` is silently
+mortality at every horizon; passing a horizon through `...` is silently
 dropped, and multi-horizon plots built that way differ only by
 Monte-Carlo noise, not by \\\tau\\. To get a genuine RMST(\\\tau\\)
 curve, `scale = "rmst"` supplies `partialpro` a `learner` that returns
@@ -273,7 +273,7 @@ Collapsing it to a curve takes an average and a back-transform, and the
 \frac{1}{n}\sum_i z_i(x)\right)\$\$
 
 `"prob"` (the classification default) transforms per observation and
-then averages, so the curve is the **mean predicted probability** – the
+then averages, so the curve is the **mean predicted probability**, the
 expected proportion of this cohort, and the standard partial dependence
 quantity on a probability scale. `"prob_typical"` averages on the
 log-odds scale and then transforms once, giving the probability for a
@@ -290,7 +290,7 @@ reading \\0.96\\ under `"prob_typical"` reads \\0.74\\ under `"prob"`.
 Which to report is a question about the claim, not about the code. If
 the sentence is "what fraction of these patients would wean", that is
 `"prob"`. If it is "what would we predict for a typical patient", that
-is `"prob_typical"` – while remembering that the mean-log-odds subject
+is `"prob_typical"`, while remembering that the mean-log-odds subject
 need not resemble anyone in the data. A figure captioned as a percentage
 of patients wants `"prob"`.
 
@@ -303,7 +303,7 @@ scales return the same numbers there.
 survival default) computes \\S(\tau \mid x)\\ through `partialpro` (the
 same UVT engine as mortality and RMST), bounded in \\\[0, 1\]\\. When
 `time` is not supplied, \\\tau\\ defaults to the **median follow-up
-time** of the fit – a data-driven horizon that is always in the model's
+time** of the fit, a data-driven horizon that is always in the model's
 own time units, so it cannot be mis-specified the way a hand-typed
 \\\tau\\ can. The resolved \\\tau\\ is reported in a message and the
 axis label; pass `time = tau` to choose another. `scale = "mortality"`
@@ -343,13 +343,13 @@ to the data manifold.
 
 That isolation forest is worth one note. `partialpro` grows it with
 [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html),
-whose `method` defaults to `"unsupv"` – a forest with no outcome.
+whose `method` defaults to `"unsupv"`, a forest with no outcome.
 `randomForestSRC` then passes a zero-length `yvar.wt` into its native
 code and decrements that pointer (`entry.c:184`), which is undefined
-behaviour and is reported by UBSAN builds. It is benign in practice –
-the pointer is formed but never dereferenced – and it is an upstream
-issue rather than one this package can fix (`ggRandomForests` is pure
-R); a one-line guard is proposed in `kogalur/randomForestSRC` PR \#478.
+behaviour and is reported by UBSAN builds. It is benign in practice (the
+pointer is formed but never dereferenced), and it is an upstream issue
+rather than one this package can fix (`ggRandomForests` is pure R); a
+one-line guard is proposed in `kogalur/randomForestSRC` PR \#478.
 Passing `method = "rnd"` through to `partialpro` avoids the unsupervised
 grow entirely, which is what this package's own tests and examples do.
 
@@ -493,7 +493,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 7
+#> [1] 6
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
@@ -501,14 +501,14 @@ length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 ## reach before you spend the computation -- this is the habit worth having.
 wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
-#> [1] "vs"
+#> [1] "qsec" "vs"  
 
 ## Ask anyway and we warn, naming what partialpro() would have dropped
 ## in silence.  (method = "rnd" is passed through to partialpro(); see
 ## the note on isolation-forest method in Details.)
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
                         method = "rnd")
-#> Warning: gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): vs. The fit reaches 7 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
+#> Warning: gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,

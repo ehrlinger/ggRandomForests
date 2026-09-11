@@ -1,6 +1,6 @@
 # SHAP global importance bar chart
 
-Bar chart of mean absolute SHAP value per variable – the SHAP analog of
+Bar chart of mean absolute SHAP value per variable, the SHAP analog of
 [`plot.gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md).
 
 ## Usage

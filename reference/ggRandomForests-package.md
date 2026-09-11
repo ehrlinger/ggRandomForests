@@ -24,13 +24,13 @@ method turns that object into a figure. Two things follow.
 
 The data object stands on its own. It carries everything its plot needs,
 so you can save it, inspect it, or come back to it later without keeping
-the original forest – which can be large – in memory.
+the original forest (which can be large) in memory.
 
 You are never locked into the default figure. Each
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) method returns
 a single plottable object: a `ggplot` you extend with `+`, or a
 `patchwork` composite for the multi-panel methods. Add layers, swap
-scales, apply a theme – or ignore the default entirely and build the
+scales, apply a theme, or ignore the default entirely and build the
 figure from the tidy data yourself. Every `gg_*` object also carries
 [`print()`](https://rdrr.io/r/base/print.html) and
 [`summary()`](https://rdrr.io/r/base/summary.html) methods:

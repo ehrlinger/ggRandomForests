@@ -4,7 +4,7 @@ A partial dependence curve marginalizes the forest's prediction over all
 other predictors: for each evaluation point of the target variable, the
 forest scores every training observation with that value substituted in,
 then averages the result. What you get is the average effect of the
-target variable after "integrating out" the rest – a curve that would be
+target variable after "integrating out" the rest, a curve that would be
 flat if the variable carried no signal.
 
 ## Usage
@@ -104,7 +104,7 @@ and then tidy-stacking the results into separate data frames for
 continuous and categorical variables. Unlike
 [`gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial.md)
 (which wraps `plot.variable`), you pass the fitted `rfsrc` object
-directly – no intermediate `plot.variable` step.
+directly, with no intermediate `plot.variable` step.
 
 For survival forests, the marginalized quantity depends on
 `partial.type`: survival probability (`"surv"`), cumulative hazard

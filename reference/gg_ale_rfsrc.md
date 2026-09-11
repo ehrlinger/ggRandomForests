@@ -3,7 +3,7 @@
 A partial dependence curve
 ([`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md))
 marginalizes the forest's prediction by averaging over the joint
-distribution of the other predictors – a computation that is misleading
+distribution of the other predictors, a computation that is misleading
 when predictors are correlated, because it evaluates the forest at
 combinations of predictor values that never occur together in the data.
 Accumulated Local Effects (Apley and Zhu, 2020) avoid this by only ever
@@ -113,12 +113,12 @@ this ordering.
 
 Supplying `xvar2.name` switches to second-order (interaction) ALE
 between `xvar.names` and `xvar2.name`, isolating the part of their joint
-effect that is not explained by either variable's own main effect – the
-ALE analogue of an interaction term. This is computed on a 2-D grid of
-bins using the same local-perturbation idea, with the main effects
-removed via a row/column/grand weighted-mean decomposition (the same
-device used to isolate an interaction term in a two-way ANOVA). A purely
-additive forest returns an all-zero surface.
+effect that is not explained by either variable's own main effect. It is
+the ALE analogue of an interaction term, computed on a 2-D grid of bins
+using the same local-perturbation idea, with the main effects removed
+via a row/column/grand weighted-mean decomposition (the same device used
+to isolate an interaction term in a two-way ANOVA). A purely additive
+forest returns an all-zero surface.
 
 ## References
 

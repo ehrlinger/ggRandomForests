@@ -25,21 +25,20 @@ individual predictors.
 This vignette demonstrates a complete random forest classification
 workflow on Fisher’s iris data ([Fisher 1936](#ref-Fisher:1936)):
 
-1.  **Data exploration** — EDA scatter panels, the two variable pairs
+1.  **Data exploration**: EDA scatter panels, the two variable pairs
     that separate the three species
-2.  **Growing the forest** — fitting an RF, checking OOB error
+2.  **Growing the forest**: fitting an RF, checking OOB error
     convergence
-3.  **Variable selection** — VIMP and minimal depth via
+3.  **Variable selection**: VIMP and minimal depth via
     [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-4.  **SHAP analysis** — per-observation, per-class additive explanations
+4.  **SHAP analysis**: per-observation, per-class additive explanations
     via
     [`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
-5.  **Dependence plots** — variable dependence and partial dependence
-    via
+5.  **Dependence plots**: variable dependence and partial dependence via
     [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
     and
     [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-6.  **Classification performance** — ROC curves and AUC via
+6.  **Classification performance**: ROC curves and AUC via
     [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
 
 ``` r
@@ -63,10 +62,10 @@ theme_set(theme_bw())
 
 Fisher’s iris data ([Fisher 1936](#ref-Fisher:1936)) measures sepal and
 petal length and width for 150 flowers, 50 each from three species:
-*setosa*, *versicolor*, and *virginica*. It is a small data set, and
-that is a feature here, not a flaw: every figure in this vignette
-renders in under a second, and the structure is well-understood enough
-that any strange behavior stands out.
+*setosa*, *versicolor*, and *virginica*. It is a small data set, which
+helps here: every figure in this vignette renders in under a second, and
+the structure is well-understood enough that any strange behavior stands
+out.
 
 ``` r
 
@@ -102,7 +101,7 @@ Sepal length vs. sepal width, colored by species.
 
 *setosa* sits in its own corner of petal space, clean of the other two.
 *versicolor* and *virginica* overlap in both plots, more so on sepals
-than petals. Keep that overlap in mind — it is the interesting case for
+than petals. Keep that overlap in mind. It is the interesting case for
 everything that follows, since *setosa* is trivial for the forest to get
 right.
 
@@ -170,8 +169,8 @@ OOB misclassification rate vs. number of trees, overall and per class.
 
 The *setosa* error drops to zero almost immediately. *versicolor* and
 *virginica* settle in around 6% each, and the overall rate levels off
-near 4% well before 200 trees — the forest is not still learning by the
-time we stop growing it.
+between 4% and 5% within about 20 trees, so the forest is not still
+learning by the time we stop growing it at 100.
 
 ### OOB predictions
 
@@ -186,8 +185,8 @@ OOB predicted class probabilities, faceted by the flower’s true species.
 
 Each panel is one true species; each point is one flower’s predicted
 probability for one of the three classes. *setosa* flowers pin their
-probability at 1 for *setosa* and 0 for the other two — no ambiguity at
-all. The *versicolor* and *virginica* panels show real spread: most
+probability at 1 for *setosa* and 0 for the other two, with no ambiguity
+at all. The *versicolor* and *virginica* panels show real spread: most
 flowers are still classified confidently, but a handful sit in the
 0.2–0.6 range where the forest is genuinely unsure which of the two they
 are.
@@ -214,14 +213,14 @@ plot(gg_vimp(rfsrc_iris))
 
 VIMP ranking, overall and per class.
 
-`Petal.Length` and `Petal.Width` dominate every facet, `Sepal.Length`
-and `Sepal.Width` barely register — consistent with the EDA. Look
-closely at the *virginica* facet: `Sepal.Length` has a small negative
-VIMP there (colored differently), meaning permuting it very slightly
-*helped* virginica predictions in this fit. That kind of disagreement
-across facets is exactly what a per-class VIMP breakdown is for; a
-single overall score would have hidden it. (This is a distinct question
-from the permutation-vs-varPro comparison covered in
+`Petal.Length` and `Petal.Width` dominate every facet; `Sepal.Length`
+and `Sepal.Width` barely register, consistent with the EDA. Look closely
+at the *virginica* facet: `Sepal.Length` has a small negative VIMP there
+(colored differently), meaning permuting it very slightly *helped*
+virginica predictions in this fit. That kind of disagreement across
+facets is exactly what a per-class VIMP breakdown is for; a single
+overall score would have hidden it. (This is a distinct question from
+the permutation-vs-varPro comparison covered in
 [`vignette("varpro", package = "ggRandomForests")`](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md),
 which contrasts *how* importance is measured rather than *for which
 class*.)
@@ -249,14 +248,14 @@ explains exactly one of those probabilities at a time, chosen with the
 `which.class` argument. Ask for class 1 (*setosa*) and you get
 contributions to the *setosa* probability; switch to class 3
 (*virginica*) and every contribution is recomputed for *virginica*
-instead. Nothing else about the method changes — same players, same
-game, different payout to split.
+instead. Nothing else about the method changes: same players, same game,
+different payout to split.
 
 We target *virginica* (`which.class = 3`), the harder of the two
 overlapping species. With only four predictors, `kernelshap` runs in
-exact mode, so explaining all 150 flowers takes about two seconds — no
-need for the random-sample workaround the regression vignette uses on
-the larger, higher- dimensional Boston housing data.
+exact mode, so explaining all 150 flowers takes about two seconds, so
+there is no need for the random-sample workaround the regression
+vignette uses on the larger, higher-dimensional Boston housing data.
 
 ``` r
 
@@ -277,7 +276,7 @@ Mean absolute SHAP value per predictor, virginica probability.
 
 Same two variables on top as VIMP and minimal depth, `Petal.Length`
 ahead of `Petal.Width`. Three different mechanisms, one answer for the
-dominant variables — the disagreement worth watching for is further down
+dominant variables. The disagreement worth watching for is further down
 the ranking, not at the top.
 
 ### SHAP beeswarm
@@ -295,7 +294,7 @@ contribution for one predictor.
 `Petal.Width` shows a clean gradient: the yellow (wide petal) dots sit
 on the positive side, pushing the predicted *virginica* probability up;
 the purple (narrow petal) dots sit on the negative side, pulling it
-down. That is exactly what you would expect from the EDA scatter —
+down. That is exactly what you would expect from the EDA scatter, since
 *virginica* has the widest petals of the three species.
 
 ### SHAP dependence
@@ -343,9 +342,9 @@ probability.
 Three curves, three stories: *setosa*’s probability collapses to zero
 past a petal width of about 0.6, *versicolor* peaks in the middle of the
 range and falls off on both sides, and *virginica* rises steadily from
-zero starting around 1.0 — the same three-panel pattern the beeswarm and
-dependence plots already showed for *virginica* alone, now visible for
-all three classes at once.
+zero starting around 1.0. That is the same three-panel pattern the
+beeswarm and dependence plots already showed for *virginica* alone, now
+visible for all three classes at once.
 
 ### Partial dependence
 
@@ -369,10 +368,11 @@ plot(pd)
 
 Partial dependence for petal measurements, setosa probability.
 
-Both curves fall sharply and then flatten near zero — the risk-adjusted
-version of what the EDA already showed: past a certain petal size, a
-flower is essentially never *setosa*. Getting the same kind of curve for
-*versicolor* or *virginica* instead means going back to
+Both curves fall sharply and then flatten near zero. This is the
+risk-adjusted version of what the EDA already showed: past a certain
+petal size, a flower is essentially never *setosa*. Getting the same
+kind of curve for *versicolor* or *virginica* instead means going back
+to
 [`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md):
 re-run it with `which.class = 2` or `3`, then
 [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md)
@@ -380,7 +380,7 @@ on that new object picks up wherever `which.class` left off.
 
 ## Classification Performance: ROC and AUC
 
-ROC curves and AUC have no equivalent in the regression vignette — they
+ROC curves and AUC have no equivalent in the regression vignette; they
 are specific to classification, where “how well does the forest separate
 this class from the rest” is itself a well-posed question.
 [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
@@ -407,8 +407,8 @@ calc_auc(roc_virginica)
 
 An AUC of 0.991 for *virginica* confirms the forest separates it well,
 even given its overlap with *versicolor*. *setosa*’s ROC curve is not
-worth plotting — it is a right angle, AUC 1, the geometric version of
-the confusion matrix’s perfect row.
+worth plotting. It is a right angle, AUC 1, the geometric version of the
+confusion matrix’s perfect row.
 
 ## Conclusion
 

@@ -31,7 +31,7 @@ some of that, but they introduce their own synthetic features and rely
 on explicit distributional assumptions about the predictors.
 
 varPro ([Lu and Ishwaran 2024](#ref-Lu2024varpro); [Ishwaran and Kogalur
-2026](#ref-Ishwaran:varPro:software:2026)) takes a different path: one
+2026](#ref-Ishwaran:varPro:software:2026)) takes a different path,
 grounded entirely in *observed* data. Think of each decision tree as a
 long chain of “if/then” clauses. varPro harvests those clauses as
 *rules*, and for each rule it identifies a specific region of the
@@ -90,13 +90,13 @@ turns the release machinery into partial-dependence curves.
 scores observations for anomaly using an isolation-forest variant.
 **[`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)**
 computes per-observation local importance. A separate set of
-*unsupervised* wrappers —
-[`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md),
+*unsupervised* wrappers
+([`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md),
 [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md),
 and
-[`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
-— reads structure off a `uvarpro()` fit that has no response at all;
-those get their own walk-through in the companion [uvarpro
+[`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md))
+reads structure off a `uvarpro()` fit that has no response at all; those
+get their own walk-through in the companion [uvarpro
 vignette](https://ehrlinger.github.io/ggRandomForests/articles/uvarpro.md).
 
 This vignette walks the five supervised wrappers on three worked
@@ -175,12 +175,12 @@ The narrow boxes near the top are the variables varPro is confident
 about: every tree agrees they matter. Wide boxes that straddle the
 cutoff line are the ones to look at twice; the forest disagrees with
 itself. That disagreement isn’t noise to suppress: it can mean the
-variable matters in some rule regions but not others, which is exactly
-the kind of structured heterogeneity that model-independent methods are
-built to detect. Variables that fall entirely below the cutoff are still
-drawn here, just not highlighted. That is the completeness fit at work:
-on varPro’s defaults the weakest of them are screened out upstream, and
-the plot never shows they were candidates at all.
+variable matters in some rule regions but not others, which is the kind
+of structured heterogeneity that model-independent methods are built to
+detect. Variables that fall entirely below the cutoff are still drawn
+here, just not highlighted. That is the completeness fit at work: on
+varPro’s defaults the weakest of them are screened out upstream, and the
+plot never shows they were candidates at all.
 
 ### Partial dependence with `gg_partial_varpro()`
 
@@ -235,13 +235,12 @@ rule’s neighborhood*, not globally. Aggregating `mean(|β|)` across rules
 gives one number per variable: a regression-coefficient-flavoured
 importance, not a VIMP score, and not a global slope.
 
-That distinction matters in practice. A variable with a strong nonlinear
-global relationship may have locally small β values inside any single
-rule (the local-standardization step within each rule normalizes the
-scale), but many rules will fire on it, so the aggregated mean is still
-large. Conversely, a variable with a nearly linear global effect will
-concentrate most of its weight in a handful of rules, and the
-between-rule variability in β will be low.
+A variable with a strong nonlinear global relationship may have locally
+small β values inside any single rule (the local-standardization step
+within each rule normalizes the scale), but many rules will fire on it,
+so the aggregated mean is still large. Conversely, a variable with a
+nearly linear global effect will concentrate most of its weight in a
+handful of rules, and the between-rule variability in β will be low.
 
 Because `beta.varpro()` is expensive (a `glmnet` per rule), the wrapper
 accepts a pre-computed `beta_fit` so you can iterate on selection,
@@ -276,7 +275,7 @@ The wrappers so far all score variables against a response. varPro also
 has an unsupervised mode:
 [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 grows a forest on the predictor matrix alone, and three more wrappers
-read off that fit —
+read off that fit:
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
 draws the cross-variable dependency network,
 [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
@@ -324,11 +323,11 @@ because its feature combination is rare; it may or may not be an outlier
 in the response. Anomaly scoring and residual analysis answer different
 questions, and it’s worth doing both.
 
-Note that `isopro()` scores are not calibrated to a universal scale: a
-score of 0.7 in one dataset is not comparable to 0.7 in another. What
-matters is the relative ordering within a dataset and the shape of the
-elbow: a sharp kink at a small number of observations is a cleaner
-signal than a gradual slope that never levels off.
+`isopro()` scores are not calibrated to a universal scale: a score of
+0.7 in one dataset is not comparable to 0.7 in another. What matters is
+the relative ordering within a dataset and the shape of the elbow: a
+sharp kink at a small number of observations is a cleaner signal than a
+gradual slope that never levels off.
 
 ### Local importance with `gg_ivarpro()`
 
@@ -384,14 +383,14 @@ predictor space.
 ## Classification: iris
 
 Iris is a small data set (150 rows, four predictors, three response
-classes), and that’s a feature here, not a flaw: every figure renders in
-under a second, and the structure is well-understood enough that any
-strange behavior stands out. It is also a good stress-test for the
-conditional importance path: petal length and petal width separate
-*setosa* from everything else very cleanly, but the
-*versicolor*/*virginica* boundary is much softer. A method that only
-reports unconditional importance would lump both cases together; the
-conditional decomposition should show the asymmetry.
+classes), and here that is an advantage: every figure renders in under a
+second, and the structure is well-understood enough that any strange
+behavior stands out. It is also a good stress-test for the conditional
+importance path: petal length and petal width separate *setosa* from
+everything else very cleanly, but the *versicolor*/*virginica* boundary
+is much softer. A method that only reports unconditional importance
+would lump both cases together; the conditional decomposition should
+show the asymmetry.
 
 Two fits: a binary problem (drop *setosa*, positive class = *virginica*)
 and the full three-class problem.
@@ -450,14 +449,14 @@ On a classification fit
 [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
 defaults to the **probability scale** (`scale = "auto"` resolves to
 `"prob"`): each predictor’s curve is the predicted probability of the
-*target class* — by default the last factor level (here *virginica*),
+*target class*, by default the last factor level (here *virginica*),
 selectable with `target =`.
 [`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
 works internally on the log-odds of that class; the wrapper
 back-transforms each observation to a probability *before* averaging, so
 the curve is the mean predicted probability (not the probability of the
 mean log-odds). On this bounded $`[0, 1]`$ scale only the parametric and
-non-parametric curves are shown — the `causal` contrast is a log
+non-parametric curves are shown; the `causal` contrast is a log
 odds-ratio, not a level, so it cannot share the probability axis (use
 `scale = "logodds"` to see it). `scale = "odds"` and `"logodds"` give
 the same relationship on the odds and log-odds scales.
@@ -548,7 +547,7 @@ What does work is the core release-rule importance, partial dependence
 (survival probability $`S(\tau)`$ and RMST through the release-rule
 engine, plus cumulative hazard via the embedded `$rf` survival forest),
 and anomaly scoring on the predictor matrix. For many applied problems,
-those three views cover the questions you actually want to answer.
+those three views cover the questions you want to answer.
 
 The PBC (primary biliary cirrhosis) dataset from `randomForestSRC` has
 418 patients, seven predictors, and a Surv-encoded outcome of days to
@@ -591,12 +590,13 @@ defaults to **survival probability** (`scale = "auto"` resolves to
 `"surv"`): each curve is $`S(\tau \mid x)`$, the predicted probability
 of surviving past a horizon $`\tau`$, computed through `partialpro()` on
 the same release-rule (UVT) engine as the regression and classification
-fits — bounded in $`[0, 1]`$ and read in the model’s own time units.
+fits. The curve is bounded in $`[0, 1]`$ and read in the model’s own
+time units.
 
 When you do not supply `time`, $`\tau`$ defaults to the **median
 follow-up time** of the fit. Because that horizon is derived from the
 data it is always in the model’s units and cannot be mis-specified the
-way a hand-typed number can — a units mismatch (days vs. years) is the
+way a hand-typed number can. A units mismatch (days vs. years) is the
 classic survival partial-plot trap, and a data-driven default sidesteps
 it. The resolved $`\tau`$ is shown in the axis label and reported with a
 message; pass `time = tau` to choose another horizon. As on the
@@ -607,8 +607,8 @@ Other survival scales are explicit opt-ins: `scale = "rmst"` gives
 restricted mean survival time RMST$`(\tau)`$ (also on the release-rule
 engine, with the same median-follow-up default $`\tau`$), and
 `scale = "mortality"` keeps the unbounded ensemble-mortality score
-([Ishwaran et al. 2008](#ref-Ishwaran:2007a)) — a relative-risk index,
-*not* a survival probability.
+([Ishwaran et al. 2008](#ref-Ishwaran:2007a)); it is a relative-risk
+index, *not* a survival probability.
 
 ``` r
 
@@ -839,9 +839,7 @@ nonparametric hazard framework that informs varPro’s survival path
 ([2021](#ref-Lee:2021)).
 
 Each wrapper’s help page carries a “What this is doing” section that
-goes one level deeper than this vignette. The cross-cutting reference at
-the end of this vignette maps each wrapper to the forest families it
-supports and notes which capabilities are deferred.
+goes one level deeper than this vignette.
 
 ## References
 

@@ -101,7 +101,7 @@ included.</p>
     <p><strong>You have to ask rfsrc for the trajectory.</strong>  How many trees you get
 a curve over is decided by <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">randomForestSRC::rfsrc()</a></code>, not here.  Its
 <code>block.size</code> argument controls how often the error is recorded, and it
-defaults to <code>NULL</code> unless you request importance – which records the
+defaults to <code>NULL</code> unless you request importance; <code>NULL</code> records the
 error at the <em>final tree only</em>.  So a default fit gives
 <code>gg_error()</code> a single point, not a curve, and <code>tree.err = TRUE</code>
 on its own does not change that.  Grow the forest with

@@ -61,8 +61,8 @@ confidence-interval columns.
 
 ## Details
 
-The `type` argument selects which quantity to plot on the y-axis –
-survival probability (`"surv"`) is the default, but cumulative hazard,
+The `type` argument selects which quantity to plot on the y-axis.
+Survival probability (`"surv"`) is the default, but cumulative hazard,
 density, and several transformed scales are available for the cases
 where a linear scale reveals more about the tails.
 

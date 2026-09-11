@@ -26,18 +26,17 @@ This vignette demonstrates a complete random forest regression workflow
 on the Boston Housing data set ([Harrison and Rubinfeld
 1978](#ref-Harrison:1978); [Belsley et al. 1980](#ref-Belsley:1980)):
 
-1.  **Data exploration** — EDA scatter panels, variable descriptions
-2.  **Growing the forest** — fitting an RF, checking OOB error
+1.  **Data exploration**: EDA scatter panels, variable descriptions
+2.  **Growing the forest**: fitting an RF, checking OOB error
     convergence
-3.  **Variable selection** — VIMP and minimal depth via
+3.  **Variable selection**: VIMP and minimal depth via
     [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-4.  **Dependence plots** — variable dependence and partial dependence
-    via
+4.  **Dependence plots**: variable dependence and partial dependence via
     [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
     and
     [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-5.  **Variable interactions** — conditioning plots and partial
-    dependence surfaces
+5.  **Variable interactions**: conditioning plots and partial dependence
+    surfaces
 
 ``` r
 
@@ -121,7 +120,7 @@ indicator.
 
 Even from this simple view, two relationships stand out: `medv` against
 `lstat` (lower status %) and `medv` against `rm` (rooms per dwelling).
-Keep those two in mind — we expect the random forest to rank them as the
+Keep those two in mind. We expect the random forest to rank them as the
 most important predictors, and the rest of the vignette comes back to
 check.
 
@@ -141,7 +140,7 @@ rfsrc_Boston
     #>                          Sample size: 506
     #>                      Number of trees: 100
     #>            Forest terminal node size: 5
-    #>        Average no. of terminal nodes: 66.77
+    #>        Average no. of terminal nodes: 67.14
     #> No. of variables tried at each split: 5
     #>               Total no. of variables: 13
     #>        Resampling used to grow trees: swor
@@ -150,8 +149,8 @@ rfsrc_Boston
     #>                               Family: regr
     #>                       Splitting rule: mse *random*
     #>        Number of random split points: 10
-    #>                      (OOB) R squared: 0.86118328
-    #>    (OOB) Requested performance error: 11.74205123
+    #>                      (OOB) R squared: 0.86355214
+    #>    (OOB) Requested performance error: 11.54167748
 
 The forest grew 100 trees, splitting on 5 randomly selected candidate
 variables at each node, and stopping at a minimum terminal node size of
@@ -171,8 +170,8 @@ plot(gg_e)
 
 OOB mean squared error vs. number of trees.
 
-The error stabilizes well before 500 trees, indicating the forest is
-large enough for reliable predictions.
+The error flattens out by about 60 trees, well inside the 100 we grew,
+so the forest is large enough for reliable predictions.
 
 ### OOB predictions
 
@@ -188,7 +187,7 @@ OOB predicted median home values. Points are jittered; boxplot shows the
 distribution.
 
 Each point is a single tract’s OOB prediction. The distribution is a
-sanity check — we are more interested in the *why* behind these
+sanity check; we are more interested in the *why* behind these
 predictions.
 
 ## Variable Selection
@@ -213,17 +212,16 @@ plot(gg_vimp(rfsrc_Boston), labels = st_labs)
 VIMP ranking. Longer blue bars indicate more important variables.
 
 `lstat` and `rm` dominate, with a clear gap to the remaining predictors.
-All VIMP values are positive, indicating every predictor contributes at
-least marginally.
+All VIMP values are positive, so every predictor contributes at least
+marginally.
 
 The permutation approach contrasts with varPro release-rule importance
 ([Lu and Ishwaran 2024](#ref-Lu2024varpro)), available through
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md).
 Rather than perturbing data synthetically, varPro compares local
-estimators on the observed data directly: no permutation, no
-manufactured feature values. Because the two methods measure
-fundamentally different things, a variable can rank high under one and
-low under the other. When they agree, the evidence is strong; when they
+estimators on the observed data directly. Because the two methods
+measure different things, a variable can rank high under one and low
+under the other. When they agree, the evidence is strong; when they
 disagree, that disagreement itself is worth investigating, pointing
 either to a variable whose effect is highly non-linear or to one that
 matters only in combination with others.
@@ -240,7 +238,7 @@ considered most important.
 md_Boston <- max.subtree(rfsrc_Boston) # nolint: object_name_linter
 ```
 
-The threshold is 3, selecting 5 variables: crim, nox, rm, ptratio,
+The threshold is 3.01, selecting 5 variables: crim, nox, rm, ptratio,
 lstat.
 
 Both VIMP and minimal depth agree on the dominance of `lstat` and `rm`.
@@ -256,7 +254,7 @@ xvar <- md_Boston$topvars
 
 VIMP and varPro both rank *how much* a variable matters, averaged over
 the whole forest. They cannot tell you how much a variable mattered for
-one specific tract’s prediction — that requires a different kind of
+one specific tract’s prediction. That requires a different kind of
 accounting. SHAP (SHapley Additive exPlanations) borrows an idea from
 cooperative game theory: treat the 13 predictors as players splitting a
 payout, and ask how much each one contributed to this tract’s predicted
@@ -295,8 +293,8 @@ plot(gg_shp, type = "importance")
 
 Mean absolute SHAP value per predictor.
 
-`lstat` and `rm` come out on top again, same as VIMP and minimal depth —
-three different mechanisms, one answer. That agreement is reassuring,
+`lstat` and `rm` come out on top again, same as VIMP and minimal depth.
+Three different mechanisms, one answer. That agreement is reassuring,
 but it’s the next two plots where SHAP earns its keep.
 
 ### SHAP beeswarm
@@ -379,7 +377,7 @@ plot(gg_v, xvar = "chas", alpha = 0.4) +
 Variable dependence for Charles River (categorical).
 
 Most tracts do not border the Charles River, and the predicted value
-distributions largely overlap — consistent with `chas` ranking last in
+distributions largely overlap, consistent with `chas` ranking last in
 both VIMP and minimal depth.
 
 ### Partial dependence
@@ -488,7 +486,7 @@ Median values decrease with `lstat` within every `rm` group, but the
 intercept shifts upward with more rooms. Smaller homes in low-`lstat`
 (high-status) neighborhoods still command high prices.
 
-The complement view — `medv` vs. `rm`, conditional on `lstat` groups —
+The complement view (`medv` vs. `rm`, conditional on `lstat` groups)
 completes the picture:
 
 ``` r
@@ -551,9 +549,9 @@ rm. Fill color is the predicted median value.
 
 The surface confirms the strong interaction: home values are highest
 when `lstat` is low and `rm` is high (upper-left corner), dropping
-steeply along both axes. The non-planar curvature — particularly the
-sharp step near `rm` = 7 — demonstrates the kind of complex, non-linear
-structure that random forests capture naturally.
+steeply along both axes. The non-planar curvature, particularly the
+sharp step near `rm` = 7, is the kind of non-linear structure that
+random forests capture naturally.
 
 ## Conclusion
 
@@ -561,7 +559,7 @@ We have walked a full random forest regression analysis with
 **randomForestSRC** and **ggRandomForests**, and the pieces line up:
 
 - [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
-  showed the OOB error settling well before 500 trees.
+  showed the OOB error settling by about 60 of the 100 trees.
 - VIMP
   ([`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md))
   and minimal depth

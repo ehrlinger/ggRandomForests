@@ -102,7 +102,7 @@ plots the cumulative hazard.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Cells the forest left undefined are dropped before drawing. From
 <span class="pkg">randomForestRHF</span> 2.0.0 the hazard is <code>NA</code> outside each case's observed
-<code>(start, stop]</code> path, so a hazard curve simply ends with that case's
+<code>(start, stop]</code> path, so a hazard curve ends with that case's
 follow-up, and a case whose hazard is masked throughout is left out of the
 legend rather than shown as an empty one. From 2.0.3 the cumulative hazard
 is masked too, though on a different rule: it is <code>NA</code> after each case's

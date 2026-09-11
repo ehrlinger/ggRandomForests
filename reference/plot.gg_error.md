@@ -38,8 +38,8 @@ per class.
 
 ## Details
 
-The gg_error plot is used to track the convergence of the randomForest.
-This figure is a reproduction of the error plot from the
+The gg_error plot tracks the convergence of the randomForest. It
+reproduces the error plot from the
 [`plot.rfsrc`](https://www.randomforestsrc.org//reference/plot.rfsrc.html)
 function.
 

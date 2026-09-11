@@ -42,7 +42,7 @@ variables are present the two panels are combined vertically via
 
 For a standard regression or classification forest, continuous
 predictors are drawn as line plots and categorical predictors as bar
-charts, both faceted by variable name – the same arrangement as
+charts, both faceted by variable name, the same arrangement as
 [`plot.gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md).
 
 For a survival forest, each call to `partial.rfsrc` returns a predicted

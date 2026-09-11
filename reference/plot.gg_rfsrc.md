@@ -2,9 +2,9 @@
 
 Visualizes the ensemble predictions extracted by
 [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
-By default those are out-of-bag (OOB) predictions – the forest's
-built-in cross-validation estimate, averaging only over the trees that
-left a given observation out of their bootstrap sample.
+By default those are out-of-bag (OOB) predictions, the forest's built-in
+cross-validation estimate, which averages only over the trees that left
+a given observation out of their bootstrap sample.
 
 ## Usage
 

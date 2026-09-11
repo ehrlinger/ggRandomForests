@@ -34,8 +34,8 @@ plot(x, which_outcome = NULL, ..., panel = c("overlay", "facet"))
   it calls
   [`gg_roc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   once per class and overlays the one-vs-rest curves, where `gg_roc(x)`
-  alone returns a single curve – a macro-average for `randomForest`, or
-  class 1 with a warning for `rfsrc`. Prefer
+  alone returns a single curve (a macro-average for `randomForest`, or
+  class 1 with a warning for `rfsrc`). Prefer
   `plot(gg_roc(x, which_outcome))`, which is explicit about both the
   class and the engine. Issue \#72 tracks reconciling the entry points.
 
