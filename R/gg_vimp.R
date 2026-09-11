@@ -75,10 +75,15 @@
 #' \code{positive} column and colored differently by
 #' \code{\link{plot.gg_vimp}}.
 #'
-#' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures, in rank
-#'   order, optionally containing class-specific scores and a relative importance
-#'   column. When \code{randomForest} objects lack stored importance values a
-#'   warning is issued and \code{NA} placeholders are returned so plots remain
+#' @return \code{gg_vimp} object. A \code{data.frame} of VIMP measures in rank
+#'   order, with columns \code{vars}, \code{set} (the importance measure),
+#'   \code{vimp} and \code{positive}. A classification forest with class-wise
+#'   permutation importance has one set per class plus the overall measure; a
+#'   \code{randomForest} classification fit grown with
+#'   \code{importance = FALSE} stores only node impurity, so it has a single
+#'   set. When \code{randomForest} objects lack stored
+#'   importance values a warning is issued and \code{NA} placeholders (columns
+#'   \code{vimp}, \code{vars} and \code{positive}) are returned so plots remain
 #'   reproducible.
 #'
 #' @seealso \code{\link{plot.gg_vimp}} \code{\link[randomForestSRC]{rfsrc}}
@@ -236,6 +241,8 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
 
   # Multi-class forests: $importance is a matrix (vars × classes).
   # Pivot to long form so each row is one (variable, class) combination.
+  # Single-outcome frames land here too: the `vars` column added above makes
+  # them two columns wide, and the pivot gives them set = "VIMP".
   if (ncol(gg_dta) > 1) {
     arg_set <- list(...)
 
@@ -307,17 +314,6 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
     )
     gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
     gg_dta$vars <- factor(gg_dta$vars)
-  } else {
-    # Single-outcome: compute relative VIMP (each value as a fraction of the
-    # top-ranked variable's importance).
-    cnms <- colnames(gg_dta)
-    gg_dta <- cbind(gg_dta, gg_dta / gg_dta[1, 1])
-    colnames(gg_dta) <- c(cnms, "rel_vimp")
-    # Patch any NA entries in the vars column that slipped through.
-    gg_dta$vars[which(is.na(gg_dta$vars))] <-
-      rownames(gg_dta)[which(is.na(gg_dta$vars))]
-
-    gg_dta <- gg_dta[seq_len(nvar), ]
   }
 
   # Convert vars to an ordered factor (reversed so the most important variable
@@ -433,8 +429,7 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
       )
       placeholder <- data.frame(
         vimp = rep(NA_real_, length(vars)),
-        vars = vars,
-        rel_vimp = NA_real_
+        vars = vars
       )
       placeholder$vars <- factor(placeholder$vars, levels = rev(unique(placeholder$vars)))
       placeholder$positive <- FALSE
@@ -543,10 +538,6 @@ gg_vimp.randomForest <- function(object, nvar, ...) {
     )
     gg_dta <- gg_dta[order(gg_dta$vimp, decreasing = TRUE), ]
     gg_dta$vars <- factor(gg_dta$vars)
-  } else {
-    gg_dta$vars[which(is.na(gg_dta$vars))] <-
-      rownames(gg_dta)[which(is.na(gg_dta$vars))]
-    gg_dta <- gg_dta[seq_len(nvar), ]
   }
 
   gg_dta$vars <-

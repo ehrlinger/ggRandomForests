@@ -3,6 +3,13 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `gg_vimp()` drops code that was meant to add a `rel_vimp` column but could
+  never run: every fit, single-outcome included, takes the pivot branch, so no
+  forest with stored importance ever returned it, and their output is
+  unchanged. The
+  `@return` now lists the columns actually returned (`vars`, `set`, `vimp`,
+  `positive`), and the `NA` placeholder for a `randomForest` fit without
+  stored importance no longer carries an all-`NA` `rel_vimp` column.
 * New `gg_ale_rfsrc()` computes Accumulated Local Effects (Apley and Zhu,
   2020) for regression and classification forests, as a counterpart to
   `gg_partial_rfsrc()`. Partial dependence averages the forest's prediction
