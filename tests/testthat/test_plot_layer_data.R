@@ -359,6 +359,50 @@ test_that("plot.gg_vimp(relative = TRUE) rescales to the largest VIMP", {
   expect_equal(sort(y), sort(c(1, 0.25, 1, 0.25)))
 })
 
+test_that("plot.gg_vimp(relative = TRUE) handles non-positive sets", {
+  # A set whose largest VIMP is zero or negative must not divide by zero:
+  # NaN / Inf bars are silently dropped by ggplot2.
+  gg <- structure(
+    data.frame(
+      vars     = factor(rep(c("a", "b"), 3), levels = c("b", "a")),
+      set      = rep(c("all", "zero", "neg"), each = 2),
+      vimp     = c(0.40, 0.10, 0, 0, -0.01, -0.04),
+      positive = c(TRUE, TRUE, FALSE, FALSE, FALSE, FALSE)
+    ),
+    class = c("gg_vimp", "data.frame")
+  )
+  # position_stack() leaves a negative bar's height in ymin, not y; one of
+  # ymin / ymax is always 0, so their sum is the signed bar height.
+  d <- ggplot2::layer_data(plot(gg, relative = TRUE), 1L)
+  h <- d$ymin + d$ymax
+  expect_true(all(is.finite(h)))
+  expect_equal(sort(h), sort(c(1, 0.25, 0, 0, -0.25, -1)))
+})
+
+test_that("plot.gg_vimp(nvar) trims variables, not rows of the long frame", {
+  # Sorted long frame, as gg_vimp() returns it. setosa's top variable, c,
+  # ranks third overall. A row trim to nvar = 2 kept only the two "all" rows
+  # and dropped the setosa panel.
+  gg_cls <- structure(
+    data.frame(
+      vars     = factor(c("a", "b", "c", "a", "b", "c"),
+                        levels = c("c", "b", "a")),
+      set      = c("all", "all", "setosa", "setosa", "setosa", "all"),
+      vimp     = c(0.40, 0.30, 0.20, 0.10, 0.05, 0.01),
+      positive = TRUE
+    ),
+    class = c("gg_vimp", "data.frame")
+  )
+  d <- ggplot2::layer_data(plot(gg_cls, nvar = 2), 1L)
+  expect_equal(nrow(d), 4L)
+  expect_equal(sort(d$y), sort(c(0.40, 0.30, 0.10, 0.05)))
+
+  # Relative scaling still divides setosa by its own maximum (c, 0.20), even
+  # though c is trimmed from the plot.
+  y <- ggplot2::layer_data(plot(gg_cls, nvar = 2, relative = TRUE), 1L)$y
+  expect_equal(sort(y), sort(c(1, 0.75, 0.5, 0.25)))
+})
+
 test_that("plot.gg_vimp produces filled bars even when all VIMP are positive", {
   # Regression: previously the all-positive branch mapped only `color`,
   # leaving the bars hollow / outline-only and emitting "Ignoring unknown

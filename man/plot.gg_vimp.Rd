@@ -13,8 +13,9 @@
 
 \item{relative}{If \code{TRUE}, plot relative VIMP: each variable's VIMP
 divided by the largest VIMP in its \code{set}, so the top variable reads
-1 (for classification, the top variable within each class).  Defaults to
-\code{FALSE}, raw VIMP.}
+1 (for classification, the top variable within each class).  A set with
+no positive VIMP is divided by its largest absolute VIMP instead, and an
+all-zero set stays at zero.  Defaults to \code{FALSE}, raw VIMP.}
 
 \item{lbls}{\emph{Deprecated} as of v4.0.0; use \code{labels}.  A named
 character vector of alternative variable labels.}

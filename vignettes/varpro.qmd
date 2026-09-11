@@ -719,7 +719,9 @@ Across `gg_vimp()`, `gg_varpro()`, `gg_beta_varpro()` and `gg_ivarpro()`,
 rows come most-important-first, but the variable column (`vars` in
 `gg_vimp()`, `variable` elsewhere) is a factor whose levels run the other
 way: the most important variable is the *last* level. For classification
-the ranking uses importance aggregated across classes. After
+the three varPro extractors rank on importance aggregated across classes,
+while `gg_vimp()` ranks each variable by its largest VIMP over the `all`
+and per-class columns. After
 `coord_flip()` the last level sits at the top of the plot, and faceted
 views share one row order across panels. If you re-shape the frame
 downstream and want the order preserved, keep the variable column as a
