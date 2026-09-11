@@ -5,13 +5,17 @@
 \title{Plot a \code{\link{gg_vimp}} object, extracted variable importance of a
 \code{\link[randomForestSRC]{rfsrc}} object}
 \usage{
-\method{plot}{gg_vimp}(x, relative, lbls, labels = NULL, ...)
+\method{plot}{gg_vimp}(x, relative = FALSE, lbls, labels = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_vimp}} object created from a
 \code{\link[randomForestSRC]{rfsrc}} object}
 
-\item{relative}{should we plot vimp or relative vimp. Defaults to vimp.}
+\item{relative}{If \code{TRUE}, plot relative VIMP: each variable's VIMP
+divided by the largest VIMP in its \code{set}, so the top variable reads
+1 (for classification, the top variable within each class).  A set with
+no positive VIMP is divided by its largest absolute VIMP instead, and an
+all-zero set stays at zero.  Defaults to \code{FALSE}, raw VIMP.}
 
 \item{lbls}{\emph{Deprecated} as of v4.0.0; use \code{labels}.  A named
 character vector of alternative variable labels.}
@@ -30,7 +34,7 @@ name.  Defaults to \code{NULL} (raw names).}
 \description{
 Draws a horizontal bar chart of the VIMP scores extracted by
 \code{\link{gg_vimp}}.  Each bar represents one predictor; bar length is
-proportional to its permutation VIMP -- the average rise in OOB prediction
+proportional to its permutation VIMP, the average rise in OOB prediction
 error when that predictor's OOB values are randomly shuffled.  Predictors
 are sorted in descending order of importance so the most influential
 variables appear at the top.
@@ -38,7 +42,7 @@ variables appear at the top.
 \details{
 Bars are colored by the \code{positive} flag: a bar at or below zero
 (non-positive VIMP) is color-coded differently to flag predictors that
-\emph{hurt} OOB accuracy when their signal is removed -- usually a sign of
+\emph{hurt} OOB accuracy when their signal is removed, usually a sign of
 collinearity or a very noisy variable.  In a well-behaved forest most bars
 are positive; the color distinction matters when a handful are not.
 }

@@ -24,12 +24,12 @@ apart. A \code{gg_*} function pulls a tidy data object out of the forest; its
 
 The data object stands on its own. It carries everything its plot needs, so
 you can save it, inspect it, or come back to it later without keeping the
-original forest -- which can be large -- in memory.
+original forest (which can be large) in memory.
 
 You are never locked into the default figure. Each \code{plot()} method
 returns a single plottable object: a \code{ggplot} you extend with \code{+},
 or a \code{patchwork} composite for the multi-panel methods. Add layers, swap
-scales, apply a theme -- or ignore the default entirely and build the figure
+scales, apply a theme, or ignore the default entirely and build the figure
 from the tidy data yourself. Every \code{gg_*} object also carries
 \code{print()} and \code{summary()} methods: \code{print()} shows a short
 header rather than dumping every row, and \code{summary()} returns a

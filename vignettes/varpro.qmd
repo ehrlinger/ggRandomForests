@@ -80,8 +80,8 @@ counterfactual, not a neutral baseline. Knockoff-style methods clean up
 some of that, but they introduce their own synthetic features and rely on
 explicit distributional assumptions about the predictors.
 
-varPro [@Lu2024varpro; @Ishwaran:varPro:software:2026] takes a different path:
-one grounded entirely in
+varPro [@Lu2024varpro; @Ishwaran:varPro:software:2026] takes a different path,
+grounded entirely in
 *observed* data. Think of each decision tree as a long chain of "if/then"
 clauses. varPro harvests those clauses as *rules*, and for each rule it
 identifies a specific region of the predictor space where a handful of
@@ -132,8 +132,8 @@ That core machinery feeds five supervised ggRandomForests wrappers.
 lasso. **`gg_partial_varpro()`** turns the release machinery into
 partial-dependence curves. **`gg_isopro()`** scores observations for anomaly
 using an isolation-forest variant. **`gg_ivarpro()`** computes per-observation
-local importance. A separate set of *unsupervised* wrappers —
-`gg_udependent()`, `gg_beta_uvarpro()`, and `gg_sdependent()` — reads structure
+local importance. A separate set of *unsupervised* wrappers
+(`gg_udependent()`, `gg_beta_uvarpro()`, and `gg_sdependent()`) reads structure
 off a `uvarpro()` fit that has no response at all; those get their own
 walk-through in the companion [uvarpro vignette](uvarpro.html).
 
@@ -189,7 +189,7 @@ The narrow boxes near the top are the variables varPro is confident
 about: every tree agrees they matter. Wide boxes that straddle the
 cutoff line are the ones to look at twice; the forest disagrees with
 itself. That disagreement isn't noise to suppress: it can mean the
-variable matters in some rule regions but not others, which is exactly
+variable matters in some rule regions but not others, which is
 the kind of structured heterogeneity that model-independent methods are
 built to detect. Variables that fall entirely below the cutoff are still
 drawn here, just not highlighted. That is the completeness fit at work:
@@ -242,7 +242,7 @@ linear effect *within that rule's neighborhood*, not globally. Aggregating
 regression-coefficient-flavoured importance, not a VIMP score, and not a
 global slope.
 
-That distinction matters in practice. A variable with a strong nonlinear
+A variable with a strong nonlinear
 global relationship may have locally small β values inside any single
 rule (the local-standardization step within each rule normalizes the
 scale), but many rules will fire on it, so the aggregated mean is still
@@ -276,7 +276,7 @@ contrast is modest.
 
 The wrappers so far all score variables against a response. varPro also has an
 unsupervised mode: `varPro::uvarpro()` grows a forest on the predictor matrix
-alone, and three more wrappers read off that fit — `gg_udependent()` draws the
+alone, and three more wrappers read off that fit: `gg_udependent()` draws the
 cross-variable dependency network, `gg_beta_uvarpro()` ranks the variables by
 their entropy contribution, and `gg_sdependent()` marks the cut between signal
 and noise. Because there is no outcome in play, they get their own short
@@ -314,7 +314,7 @@ because its feature combination is rare; it may or may not be an outlier
 in the response. Anomaly scoring and residual analysis answer different
 questions, and it's worth doing both.
 
-Note that `isopro()` scores are not calibrated to a universal scale: a
+`isopro()` scores are not calibrated to a universal scale: a
 score of 0.7 in one dataset is not comparable to 0.7 in another. What
 matters is the relative ordering within a dataset and the shape of the
 elbow: a sharp kink at a small number of observations is a cleaner
@@ -366,7 +366,7 @@ space.
 # Classification: iris
 
 Iris is a small data set (150 rows, four predictors, three response
-classes), and that's a feature here, not a flaw: every figure renders in
+classes), and here that is an advantage: every figure renders in
 under a second, and the structure is well-understood enough that any
 strange behavior stands out. It is also a good stress-test for the
 conditional importance path: petal length and petal width separate
@@ -424,13 +424,13 @@ plot(gg_varpro(v_iris_multi, conditional = TRUE))
 
 On a classification fit `gg_partial_varpro()` defaults to the
 **probability scale** (`scale = "auto"` resolves to `"prob"`): each
-predictor's curve is the predicted probability of the *target class* —
+predictor's curve is the predicted probability of the *target class*,
 by default the last factor level (here *virginica*), selectable with
 `target =`. `varPro::partialpro()` works internally on the log-odds of
 that class; the wrapper back-transforms each observation to a
 probability *before* averaging, so the curve is the mean predicted
 probability (not the probability of the mean log-odds). On this bounded
-$[0, 1]$ scale only the parametric and non-parametric curves are shown —
+$[0, 1]$ scale only the parametric and non-parametric curves are shown;
 the `causal` contrast is a log odds-ratio, not a level, so it cannot
 share the probability axis (use `scale = "logodds"` to see it).
 `scale = "odds"` and `"logodds"` give the same relationship on the odds
@@ -511,12 +511,13 @@ What does work is the core release-rule importance, partial dependence
 (survival probability $S(\tau)$ and RMST through the release-rule engine,
 plus cumulative hazard via the embedded `$rf` survival forest), and
 anomaly scoring on the predictor matrix. For many applied problems,
-those three views cover the questions you actually want to answer.
+those three views cover the questions you want to answer.
 
 The PBC (primary biliary cirrhosis) dataset from `randomForestSRC` has
-418 patients, seven predictors, and a Surv-encoded outcome of days to
-event (death or transplant, status ∈ {0, 1, 2}). We use a small
-seven-variable subset so the vignette fits quickly. For a full
+418 patients, 17 predictors, and a Surv-encoded outcome of days to
+death (`status` is 1 for death and 0 for censored; the 25 transplants are
+coded as censored). We use a five-predictor subset (`age`, `albumin`,
+`bili`, `edema`, `platelet`) so the vignette fits quickly. For a full
 analysis including time-dependent covariates, @Lee:2021 demonstrates the
 boosted nonparametric hazard framework that varPro's survival path draws
 on.
@@ -548,13 +549,13 @@ For survival `gg_partial_varpro()` defaults to **survival probability**
 (`scale = "auto"` resolves to `"surv"`): each curve is
 $S(\tau \mid x)$, the predicted probability of surviving past a horizon
 $\tau$, computed through `partialpro()` on the same release-rule (UVT)
-engine as the regression and classification fits — bounded in $[0, 1]$
+engine as the regression and classification fits. The curve is bounded in $[0, 1]$
 and read in the model's own time units.
 
 When you do not supply `time`, $\tau$ defaults to the **median follow-up
 time** of the fit. Because that horizon is derived from the data it is
 always in the model's units and cannot be mis-specified the way a
-hand-typed number can — a units mismatch (days vs. years) is the classic
+hand-typed number can. A units mismatch (days vs. years) is the classic
 survival partial-plot trap, and a data-driven default sidesteps it. The
 resolved $\tau$ is shown in the axis label and reported with a message;
 pass `time = tau` to choose another horizon. As on the classification
@@ -565,7 +566,7 @@ Other survival scales are explicit opt-ins: `scale = "rmst"` gives
 restricted mean survival time RMST$(\tau)$ (also on the release-rule
 engine, with the same median-follow-up default $\tau$), and
 `scale = "mortality"` keeps the unbounded ensemble-mortality score
-[@Ishwaran:2007a] — a relative-risk index, *not* a survival probability.
+[@Ishwaran:2007a]; it is a relative-risk index, *not* a survival probability.
 
 ```{r pbc-gg-partial-varpro}
 # Precomputed offline (see precompute_varpro.R); falls back to a live fit.
@@ -580,7 +581,8 @@ plot(gg_pd_pbc)
 ## Anomaly scoring: `gg_isopro()` on the X-matrix
 
 Because `isopro()` only sees the predictor matrix, it doesn't care
-about the family. The same call from section 3 works here.
+about the family. The same call from the Boston anomaly-scoring section
+works here.
 
 ```{r pbc-isopro, cache=TRUE}
 # Precomputed offline (see precompute_varpro.R); falls back to a live fit.
@@ -713,16 +715,17 @@ how much competes.
 
 ## Factor-level ordering
 
-Across `gg_beta_varpro()` and `gg_ivarpro()`, the `variable` column is
-stored as a factor whose levels are set by descending aggregate
-importance (`mean(|imp|)` summed across classes for classification).
-The default plot inherits that ordering, so faceted views show
-variables in the same row order across panels. If you re-shape the
-frame downstream and want the order preserved, keep `variable` as a
+Across `gg_vimp()`, `gg_varpro()`, `gg_beta_varpro()` and `gg_ivarpro()`,
+rows come most-important-first, but the variable column (`vars` in
+`gg_vimp()`, `variable` elsewhere) is a factor whose levels run the other
+way: the most important variable is the *last* level. For classification
+the three varPro extractors rank on importance aggregated across classes,
+while `gg_vimp()` ranks each variable by its largest VIMP over the `all`
+and per-class columns. After
+`coord_flip()` the last level sits at the top of the plot, and faceted
+views share one row order across panels. If you re-shape the frame
+downstream and want the order preserved, keep the variable column as a
 factor rather than coercing to character.
-
-This convention will be propagated to `gg_vimp` and
-`plot.gg_varpro(conditional = TRUE)` in a follow-up release.
 
 ## Caching the expensive calls
 
@@ -730,11 +733,15 @@ This convention will be propagated to `gg_vimp` and
 calls. Both wrappers accept a pre-computed fit (`beta_fit`,
 `ivarpro_fit`) so you can iterate on selection, observation index, or
 cutoff without re-fitting the lasso or the local-importance machinery.
-The vignette uses this throughout: every section computes the heavy
-fit once in a `cache: true` chunk and re-uses it for every figure.
+The vignette uses this throughout: each heavy fit is computed once and
+passed in for every figure. To keep the `R CMD check` rebuild fast, those
+fits are precomputed by `precompute_varpro.R` and loaded from
+`varpro_precomputed.rds`; when the file is absent, each chunk fits live
+instead.
 
-Provenance carries `precomputed = TRUE` when the cached path was used,
-so downstream tooling can tell the two paths apart.
+Provenance carries `precomputed = TRUE` when a fit was passed in through
+`beta_fit` or `ivarpro_fit`, so downstream tooling can tell the two paths
+apart.
 
 ## Provenance shape
 
@@ -763,8 +770,6 @@ varPro's survival path (including the treatment of time-dependent
 covariates) is in @Lee:2021.
 
 Each wrapper's help page carries a "What this is doing" section that
-goes one level deeper than this vignette. The cross-cutting reference at
-the end of this vignette maps each wrapper to the forest families it
-supports and notes which capabilities are deferred.
+goes one level deeper than this vignette.
 
 # References

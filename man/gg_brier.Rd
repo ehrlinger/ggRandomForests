@@ -33,9 +33,11 @@ per-subject Brier percentile, normalized by elapsed time.}
 The integrated CRPS is attached as \code{attr(., "crps_integrated")}.
 It is \code{get.brier.survival()$crps}, the raw area under the Brier
 curve, not normalized by time, so it is in the units of the time axis
-and grows with follow-up. Divide by \code{max(.$time)} for
-\code{get.brier.survival()$crps.std}; the last value of the \code{crps}
-column instead divides by the time elapsed since the first event time.
+and grows with follow-up. The time-normalized value,
+\code{get.brier.survival()$crps.std} (the raw integral divided by
+\code{max(.$time)}), is attached as \code{attr(., "crps_std")} and reads
+on the Brier scale. The last value of the \code{crps} column instead
+divides by the time elapsed since the first event time.
 }
 \description{
 The Brier score asks a familiar question of any probabilistic forecast:

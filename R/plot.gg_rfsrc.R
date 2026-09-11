@@ -15,8 +15,8 @@
 #' Predicted response plot from a \code{\link{gg_rfsrc}} object.
 #'
 #' Visualizes the ensemble predictions extracted by \code{\link{gg_rfsrc}}.
-#' By default those are out-of-bag (OOB) predictions -- the forest's built-in
-#' cross-validation estimate, averaging only over the trees that left a given
+#' By default those are out-of-bag (OOB) predictions, the forest's built-in
+#' cross-validation estimate, which averages only over the trees that left a given
 #' observation out of their bootstrap sample.
 #'
 #' The geometry adapts to the forest family.  For regression or

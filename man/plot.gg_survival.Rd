@@ -42,8 +42,8 @@ was called with a \code{by} argument, each group gets its own step function
 and the \code{label} argument renames the legend.
 }
 \details{
-The \code{type} argument selects which quantity to plot on the y-axis --
-survival probability (\code{"surv"}) is the default, but cumulative hazard,
+The \code{type} argument selects which quantity to plot on the y-axis.
+Survival probability (\code{"surv"}) is the default, but cumulative hazard,
 density, and several transformed scales are available for the cases where a
 linear scale reveals more about the tails.
 }

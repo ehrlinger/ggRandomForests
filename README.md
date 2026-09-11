@@ -77,15 +77,15 @@ the RHF vignette:
 vignette("rhf", package = "ggRandomForests")
 ```
 
-For variable importance with varPro — partial dependence, importance
+For variable importance with varPro (partial dependence, importance
 z-scores, beta importance, individual/local importance, and isolation
-forests — see the dedicated vignette:
+forests), see the dedicated vignette:
 ```r
 vignette("varpro", package = "ggRandomForests")
 ```
 
-The unsupervised varPro tools — `gg_udependent()`, `gg_beta_uvarpro()`, and
-`gg_sdependent()`, which read structure off a `varPro::uvarpro()` fit with no outcome —
+The unsupervised varPro tools, `gg_udependent()`, `gg_beta_uvarpro()`, and
+`gg_sdependent()`, read structure off a `varPro::uvarpro()` fit with no outcome. They
 have their own short vignette:
 ```r
 vignette("uvarpro", package = "ggRandomForests")
@@ -144,7 +144,7 @@ at a particular time.
 | `gg_rhf_importance()` | `rhf` fit | Variable-priority matrix across time windows |
 | `gg_tune_rhf()` | `tune.treesize.rhf` object | Inspected tree-size tuning path |
 
-### varPro — variable priority
+### varPro (variable priority)
 
 These read a `varpro` fit rather than a forest. `varPro::varpro()` is the
 supervised fit; `varPro::uvarpro()` is the unsupervised one, which needs no outcome.
@@ -182,7 +182,7 @@ functions pull a tidy data object out of the forest; the `plot()` methods turn t
 `ggplot2` figure. Two things follow from that split.
 
 First, the data object stands on its own. It carries everything its plot needs, so you can save it,
-inspect it, or come back to it later without keeping the original forest — which can be large —
+inspect it, or come back to it later without keeping the original forest (which can be large)
 in memory.
 
 Second, you are never locked into the default figure. Because a `plot()` method returns a single
@@ -198,7 +198,7 @@ See [NEWS.md](NEWS.md) for the full changelog. Recent highlights:
 - **v3.5.1** `gg_roc()` on an `rfsrc` forest now honors the documented `which_outcome = 0`, which had been returning an unusable two-row object; `gg_partial_rfsrc()` rejects a non-forest with a real error instead of "argument is of length zero". Also a test-only fix for the `gcc-UBSAN` report filed against 3.5.0.
 - **v3.5.0** varPro fixes: `plot.gg_varpro()` no longer draws a phantom "NA" category, `gg_partial_varpro()` warns when you name a variable the fit cannot reach, and `scale = "chf"` now honors `xvar.names` instead of computing every variable. Vignette figures render with `ragg`, which cut the source tarball from 4.7 MB to 2.3 MB.
 - **v3.4.0** Unsupervised varPro wrappers (`gg_beta_uvarpro()`, `gg_sdependent()`) with their own vignette; `gg_partial_rfsrc()` now handles factor predictors correctly.
-- **v3.3.0** varPro partial plots default to interpretable scales — probability for classification, survival S(&tau;) for survival.
+- **v3.3.0** varPro partial plots default to interpretable scales: probability for classification, survival S(&tau;) for survival.
 - **v3.1.0** varPro integration: release-rule importance, partial dependence, local importance, anomaly scores, and the dependency graph.
 
 ## References
