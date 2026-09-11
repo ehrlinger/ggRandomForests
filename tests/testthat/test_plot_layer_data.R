@@ -327,6 +327,38 @@ test_that("plot.gg_vimp produces a single merged 'VIMP > 0' legend", {
   expect_identical(p$labels$fill, p$labels$colour)
 })
 
+test_that("plot.gg_vimp(relative = TRUE) rescales to the largest VIMP", {
+  # Regression: `relative` was documented but never read, so relative = TRUE
+  # silently plotted raw VIMP.
+  gg <- structure(
+    data.frame(
+      vars     = factor(c("a", "b", "c"), levels = c("c", "b", "a")),
+      set      = "VIMP",
+      vimp     = c(0.30, 0.10, 0.05),
+      positive = c(TRUE, TRUE, TRUE)
+    ),
+    class = c("gg_vimp", "data.frame")
+  )
+  expect_equal(sort(ggplot2::layer_data(plot(gg), 1L)$y), sort(gg$vimp))
+
+  p_rel <- plot(gg, relative = TRUE)
+  expect_equal(sort(ggplot2::layer_data(p_rel, 1L)$y), sort(gg$vimp / 0.30))
+  expect_equal(p_rel$labels$y, "rel_vimp")
+
+  # Multi-outcome frames rescale within each set, so every class tops out at 1.
+  gg_cls <- structure(
+    data.frame(
+      vars     = factor(rep(c("a", "b"), 2), levels = c("b", "a")),
+      set      = rep(c("all", "setosa"), each = 2),
+      vimp     = c(0.40, 0.10, 0.08, 0.02),
+      positive = TRUE
+    ),
+    class = c("gg_vimp", "data.frame")
+  )
+  y <- ggplot2::layer_data(plot(gg_cls, relative = TRUE), 1L)$y
+  expect_equal(sort(y), sort(c(1, 0.25, 1, 0.25)))
+})
+
 test_that("plot.gg_vimp produces filled bars even when all VIMP are positive", {
   # Regression: previously the all-positive branch mapped only `color`,
   # leaving the bars hollow / outline-only and emitting "Ignoring unknown

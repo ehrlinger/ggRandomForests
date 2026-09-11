@@ -5,13 +5,16 @@
 \title{Plot a \code{\link{gg_vimp}} object, extracted variable importance of a
 \code{\link[randomForestSRC]{rfsrc}} object}
 \usage{
-\method{plot}{gg_vimp}(x, relative, lbls, labels = NULL, ...)
+\method{plot}{gg_vimp}(x, relative = FALSE, lbls, labels = NULL, ...)
 }
 \arguments{
 \item{x}{\code{\link{gg_vimp}} object created from a
 \code{\link[randomForestSRC]{rfsrc}} object}
 
-\item{relative}{should we plot vimp or relative vimp. Defaults to vimp.}
+\item{relative}{If \code{TRUE}, plot relative VIMP: each variable's VIMP
+divided by the largest VIMP in its \code{set}, so the top variable reads
+1 (for classification, the top variable within each class).  Defaults to
+\code{FALSE}, raw VIMP.}
 
 \item{lbls}{\emph{Deprecated} as of v4.0.0; use \code{labels}.  A named
 character vector of alternative variable labels.}

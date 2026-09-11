@@ -30,7 +30,10 @@
 #'
 #' @param x \code{\link{gg_vimp}} object created from a
 #' \code{\link[randomForestSRC]{rfsrc}} object
-#' @param relative should we plot vimp or relative vimp. Defaults to vimp.
+#' @param relative If \code{TRUE}, plot relative VIMP: each variable's VIMP
+#'   divided by the largest VIMP in its \code{set}, so the top variable reads
+#'   1 (for classification, the top variable within each class).  Defaults to
+#'   \code{FALSE}, raw VIMP.
 #' @param lbls \emph{Deprecated} as of v4.0.0; use \code{labels}.  A named
 #'   character vector of alternative variable labels.
 #' @param labels Optional variable labels for the variable axis.  One of: a named
@@ -73,7 +76,7 @@
 #'
 #'
 #' @export
-plot.gg_vimp <- function(x, relative, lbls, labels = NULL, ...) {
+plot.gg_vimp <- function(x, relative = FALSE, lbls, labels = NULL, ...) {
   gg_dta <- x
 
   # Accept raw rfsrc / randomForest objects and compute VIMP on the fly
@@ -96,14 +99,30 @@ plot.gg_vimp <- function(x, relative, lbls, labels = NULL, ...) {
     }
   }
 
-  gg_plt <- ggplot2::ggplot(gg_dta)
-
   # Use "vimp" as the bar-height column when it exists; fall back to the
   # first column name for objects that store a renamed importance measure.
   msr <- "vimp"
   if (!msr %in% colnames(gg_dta)) {
     msr <- colnames(gg_dta)[1]
   }
+
+  # relative = TRUE rescales each bar to a fraction of the largest VIMP in its
+  # set (per class for multi-outcome fits). gg_vimp() does not return a
+  # relative column, so it is computed here.
+  if (isTRUE(relative)) {
+    grp <- if (is.null(gg_dta$set)) {
+      rep("all", nrow(gg_dta))
+    } else {
+      as.character(gg_dta$set)
+    }
+    top <- tapply(gg_dta[[msr]], grp, function(v) {
+      if (all(is.na(v))) NA_real_ else max(v, na.rm = TRUE)
+    })
+    gg_dta$rel_vimp <- gg_dta[[msr]] / unname(top[grp])
+    msr <- "rel_vimp"
+  }
+
+  gg_plt <- ggplot2::ggplot(gg_dta)
 
   # Always map both `fill` and `color` to `positive` -- this gives filled bars
   # (rather than hollow outlines) and ensures the function-level
