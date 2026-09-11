@@ -85,7 +85,7 @@
       <h1>Random Forest Survival Analysis with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-09-10</p>
+      <p class="date">2026-09-11</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests-survival.qmd" class="external-link"><code>vignettes/ggRandomForests-survival.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -657,7 +657,7 @@
 </div>
 </div>
 </div>
-<p>The running CRPS (continuous ranked probability score) is the Brier score integrated over time and divided by elapsed time — the time-average of the curve above. It collapses the whole trajectory into one running number, which is handy when you want a single calibration figure rather than a curve to read. Like the Brier score, a CRPS near 0 is good and a value near 0.25 is the uninformative ceiling (the same constant-predictor reference as above). The final (integrated) value at the right edge of the plot is the one most often reported.</p>
+<p>The running CRPS (continuous ranked probability score) integrates the Brier score over time and divides by the time elapsed since the first event, so each point on the curve is the average of the Brier curve up to that time. It collapses the whole trajectory into one running number, which is handy when you want a single calibration figure rather than a curve to read. Because it is an average of Brier scores it reads on the same scale: near 0 is good, and 0.25 is the constant-predictor reference from above. The value at the right edge of the plot, the average over the whole follow-up, is the one to report.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_bs</span>, type <span class="op">=</span> <span class="st">"crps"</span><span class="op">)</span></span></code></pre></div>
@@ -668,14 +668,26 @@
 </div>
 </div>
 </div>
-<p>The integrated CRPS — a scalar summary of overall calibration — is stored as an attribute and can be retrieved with:</p>
+<p><code><a href="../reference/gg_brier.html">gg_brier()</a></code> also keeps the integrated CRPS that <code><a href="https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html" class="external-link">randomForestSRC::get.brier.survival()</a></code> returns, as the <code>crps_integrated</code> attribute. Be careful with it. That number is the raw area under the Brier curve, <em>not</em> divided by elapsed time, so it carries the units of the time axis (years here) and grows with the length of follow-up. It is not on the 0 to 0.25 scale, and you cannot compare it across studies with different follow-up. Divide it by the largest event time, <code>max(gg_bs$time)</code>, to put it back on the Brier scale:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_integrated"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">crps_raw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">gg_bs</span>, <span class="st">"crps_integrated"</span><span class="op">)</span></span>
+<span><span class="va">crps_raw</span>                     <span class="co"># area under the Brier curve, in years</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code><span><span class="co">#&gt; [1] 1.440241</span></span></code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">crps_raw</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">gg_bs</span><span class="op">$</span><span class="va">time</span><span class="op">)</span>   <span class="co"># get.brier.survival()'s crps.std</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code><span><span class="co">#&gt; [1] 0.1255185</span></span></code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">gg_bs</span><span class="op">$</span><span class="va">crps</span>, <span class="fl">1</span><span class="op">)</span>          <span class="co"># right edge of the running CRPS plot</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code><span><span class="co">#&gt; [1] 0.1267585</span></span></code></pre>
+</div>
+</div>
+<p>The last two differ slightly. <code>crps.std</code> divides by the largest event time, while the running curve divides by the time elapsed since the first one.</p>
 </section></section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
 <p>We have walked a full random survival forest analysis with <strong>randomForestSRC</strong> and <strong>ggRandomForests</strong>, and the results hang together:</p>

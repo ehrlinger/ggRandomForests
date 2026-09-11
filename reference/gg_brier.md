@@ -65,9 +65,12 @@ A `gg_brier` `data.frame` with columns
   running CRPS of the 15th / 85th per-subject Brier percentile,
   normalized by elapsed time.
 
-The integrated CRPS (a single scalar matching
-`get.brier.survival()$crps`) is attached as
-`attr(., "crps_integrated")`.
+The integrated CRPS is attached as `attr(., "crps_integrated")`. It is
+`get.brier.survival()$crps`, the raw area under the Brier curve, not
+normalized by time, so it is in the units of the time axis and grows
+with follow-up. Divide by `max(.$time)` for
+`get.brier.survival()$crps.std`; the last value of the `crps` column
+instead divides by the time elapsed since the first event time.
 
 ## Details
 

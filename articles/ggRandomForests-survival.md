@@ -754,14 +754,15 @@ plot(gg_bs, envelope = TRUE)
 
 Brier score with 15–85% per-subject envelope.
 
-The running CRPS (continuous ranked probability score) is the Brier
-score integrated over time and divided by elapsed time — the
-time-average of the curve above. It collapses the whole trajectory into
-one running number, which is handy when you want a single calibration
-figure rather than a curve to read. Like the Brier score, a CRPS near 0
-is good and a value near 0.25 is the uninformative ceiling (the same
-constant-predictor reference as above). The final (integrated) value at
-the right edge of the plot is the one most often reported.
+The running CRPS (continuous ranked probability score) integrates the
+Brier score over time and divides by the time elapsed since the first
+event, so each point on the curve is the average of the Brier curve up
+to that time. It collapses the whole trajectory into one running number,
+which is handy when you want a single calibration figure rather than a
+curve to read. Because it is an average of Brier scores it reads on the
+same scale: near 0 is good, and 0.25 is the constant-predictor reference
+from above. The value at the right edge of the plot, the average over
+the whole follow-up, is the one to report.
 
 ``` r
 
@@ -772,15 +773,42 @@ plot(gg_bs, type = "crps")
 
 Running CRPS for the PBC survival forest.
 
-The integrated CRPS — a scalar summary of overall calibration — is
-stored as an attribute and can be retrieved with:
+[`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
+also keeps the integrated CRPS that
+[`randomForestSRC::get.brier.survival()`](https://www.randomforestsrc.org//reference/plot.survival.rfsrc.html)
+returns, as the `crps_integrated` attribute. Be careful with it. That
+number is the raw area under the Brier curve, *not* divided by elapsed
+time, so it carries the units of the time axis (years here) and grows
+with the length of follow-up. It is not on the 0 to 0.25 scale, and you
+cannot compare it across studies with different follow-up. Divide it by
+the largest event time, `max(gg_bs$time)`, to put it back on the Brier
+scale:
 
 ``` r
 
-attr(gg_bs, "crps_integrated")
+crps_raw <- attr(gg_bs, "crps_integrated")
+crps_raw                     # area under the Brier curve, in years
 ```
 
     #> [1] 1.440241
+
+``` r
+
+crps_raw / max(gg_bs$time)   # get.brier.survival()'s crps.std
+```
+
+    #> [1] 0.1255185
+
+``` r
+
+tail(gg_bs$crps, 1)          # right edge of the running CRPS plot
+```
+
+    #> [1] 0.1267585
+
+The last two differ slightly. `crps.std` divides by the largest event
+time, while the running curve divides by the time elapsed since the
+first one.
 
 ## Conclusion
 
