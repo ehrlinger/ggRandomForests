@@ -155,19 +155,25 @@ entry point opens by growing a one-node stump through
 \code{randomForestSRC::rfsrc} to settle the family and hand back cleaned
 data, and that call takes \code{rfsrc}'s default \code{na.action =
 "na.omit"}.  Any case with a missing value, in a predictor or in the
-outcome, is deleted before the fit, with no warning and no message.
-Passing \code{na.action = "na.impute"} to \code{varPro::varpro} does not
-change this: it lands in \code{...}, never reaches the stump, and is
-discarded without remark (varPro 3.1.0).
+outcome, is deleted before the fit.  What you are told about it depends on
+the \pkg{varPro} version.  Before 3.2.2 the deletion is silent: no warning,
+no message, and \code{na.action = "na.impute"} passed to
+\code{varPro::varpro} lands in \code{...}, never reaches the stump, and is
+discarded without remark.  From 3.2.2, \code{varpro} warns with the input,
+omitted and retained counts, records them in
+\code{object$model.info$observations}, and stops with an error on
+\code{na.action} (or any other argument it does not recognise) instead of
+ignoring it.  The rows are deleted either way; 3.2.2 makes the deletion
+visible.
 
 The loss compounds across predictors rather than adding up.  At 5\% missing
 per column, independently, retention is \eqn{0.95^p}: 60\% of rows at 10
 predictors, 36\% at 20, 8\% at 50.  On a wide clinical frame a little
-missingness everywhere can delete most of the cohort.  Nothing in the fit
-records it: \code{object$rf$n} is the count \emph{after} deletion and no
-original is kept, so neither you nor this package can recover the number
-from the object.  Check before you fit: \code{nrow(dta)} against
-\code{sum(complete.cases(dta))}.
+missingness everywhere can delete most of the cohort.  Before 3.2.2 nothing
+in the fit records it: \code{object$rf$n} is the count \emph{after}
+deletion and no original is kept, so neither you nor this package can
+recover the number from the object.  On any version, check before you fit:
+\code{nrow(dta)} against \code{sum(complete.cases(dta))}.
 
 \strong{Imputing first, without inventing outcomes:} \code{varPro::roughfix}
 does mean and modal fill, \code{randomForestSRC::impute} does the
@@ -211,16 +217,18 @@ entries sort by importance rather than alphabetically.
 
 \strong{Scale detection:} with \code{scale = "auto"} and an \code{object} in
 hand, the scale resolves to \code{"mortality"} for a survival forest and
-\code{"generic"} for a regression or classification forest.  The RMST
-horizon \eqn{\tau} is \emph{not} stored in the \code{varpro} object
-(varPro 3.1.0), so RMST output requires you to pass
-\code{scale = "rmst", time = tau} explicitly.
+\code{"generic"} for a regression or classification forest.  We do not
+read an RMST horizon \eqn{\tau} off the \code{varpro} object.  Before
+\pkg{varPro} 3.2.2 there is none to read; from 3.2.2 one is recorded only
+when \code{varpro} itself was fit with an \code{rmst} horizon.  So RMST
+output requires you to pass \code{scale = "rmst", time = tau} explicitly.
 
 \strong{RMST partial dependence (scale = "rmst"):} \code{varPro::partialpro}
 has no time argument, so its default survival learner returns ensemble
-mortality at every horizon; passing a horizon through \code{...} is
-silently dropped, and multi-horizon plots built that way differ only by
-Monte-Carlo noise, not by \eqn{\tau}.  To get a genuine RMST(\eqn{\tau})
+mortality at every horizon.  Before \pkg{varPro} 3.2.2 a horizon passed
+through \code{...} is silently dropped, and multi-horizon plots built that
+way differ only by Monte-Carlo noise, not by \eqn{\tau}; from 3.2.2
+\code{partialpro} stops with an error instead.  To get a genuine RMST(\eqn{\tau})
 curve, \code{scale = "rmst"} supplies \code{partialpro} a \code{learner}
 that returns \eqn{\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,dt} from the
 survival forest, so the curve actually depends on \eqn{\tau}.  This path
