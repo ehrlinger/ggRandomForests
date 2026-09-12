@@ -13,7 +13,7 @@
     writing-voice.md               sha256:71b8ba2fc9b0
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:cc35f4c2e152
+    r-package-structure.md         sha256:df4944c1c71e
 -->
 
 # House Style — ggRandomForests
@@ -598,8 +598,8 @@ globs, they double every run.
 | `test-coverage.yaml` | How much of the code do the tests reach, and which way is it moving? | `push[main]`, `pull_request` | ubuntu·release |
 | `lint.yaml` | Does it match the style the rest of the portfolio is written in? | `push[main]`, `pull_request` | ubuntu·release |
 | `lint.yaml` → `docs-current` job | Do the generated `man/` files still match their roxygen sources? | `pull_request` | ubuntu·release |
-| `pkgdown.yaml` | Does the docs site still build, and does every exported topic still have a home? | `push[main]`, `pull_request`, `release`, `dispatch` | ubuntu·release |
-| `check-manual.yaml` | Does the PDF manual build, and is every `.Rd` free of raw Unicode? | `push[main]`, `release: published`, `workflow_dispatch` | ubuntu·release |
+| `pkgdown.yaml` | Does the docs site still build, and does every exported topic still have a home? | `push[main]`, `pull_request`, `workflow_dispatch` | ubuntu·release |
+| `check-manual.yaml` | Does the PDF manual build, and is every `.Rd` free of raw Unicode? | `push[main]`, `workflow_dispatch` | ubuntu·release |
 
 `R-CMD-check.yaml` runs `r-lib/actions/check-r-package@v2` and leaves `args`
 at its default, which is `c("--no-manual", "--as-cran")` — so the CRAN gate is
@@ -1002,9 +1002,20 @@ not yet been named:
 ```
 
 Every pull request adds its entry under that heading, a documentation-only
-change included. That case used to carry a bump of its own, which is the rule
-this replaces. When you want a marker, one commit renames the heading to the
-new version and moves `DESCRIPTION` to match.
+change included, unless it ships nothing. That case used to carry a bump of
+its own, which is the rule this replaces. When you want a marker, one commit
+renames the heading to the new version and moves `DESCRIPTION` to match.
+
+A change ships nothing when the base branch's `.Rbuildignore` excludes every
+file it touches: in most packages `.github/`, `AGENTS.md`, `CLAUDE.md` and
+`dev/`. A pull request that edits `.Rbuildignore` is judged by the file it
+started from, so it cannot exempt itself. Nothing it changes reaches the
+built package, so nothing a user installs has changed.
+`NEWS.md` is the changelog readers see on the pkgdown site, and an entry about
+a workflow trigger or an agent contract is noise there. The pull request and
+its commit message carry that record instead, and such a change carries no
+bump either. The list differs by package, so read `.Rbuildignore` rather than
+judging by feel; `hvtiRdatabuild`'s contract said so first.
 
 ### Heading level
 
@@ -1048,6 +1059,13 @@ most pull requests now look like. The defect it was built for is real, two
 branches claiming one number after a silent merge, so the rule becomes: the
 version must not go backwards, and when it moves it moves by a legal step. Not
 moving is no longer a failure.
+
+It also has to let a pull request that ships nothing through, since that
+change carries no entry and no bump. An unchanged version once passed only
+when the unreleased heading was present, so such a change that landed just
+after a bump, while the heading was gone, failed. The check now takes the pull
+request's changed files and accepts an unchanged version when the base
+branch's `.Rbuildignore` excludes every one (ehrlinger/hvtiR#69).
 
 The other nine packages have no such check. Adding one is worth doing, and the
 unreleased heading makes it easier to write than it was, since the test finally
