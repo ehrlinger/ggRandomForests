@@ -14,8 +14,10 @@ on:
     paths-ignore:
       - '.claude/**'
     branches: [main]
-  release:
-    types: [published]
+  # No `release:` trigger, deliberately. A release tags a commit already on
+  # main, and every push to main that can change the package has already run
+  # this check, so a release-triggered run only repeats it on the same code.
+  # The release gate is check-release.yaml, which builds the manual as well.
   workflow_dispatch:
 
 name: Check manual

@@ -16,12 +16,14 @@ on:
       - '.claude/**'
     branches: [main, dev]
   pull_request:
-  # No `release:` trigger, deliberately. A release here tags a commit that is
-  # already on main, and the push that merged it has already built and deployed
-  # it. A release-triggered run can only repeat that deploy or, when main has
-  # moved on, overwrite the site with an older commit: hvtiRlifetables v0.1.3
-  # (tagged at f024064) did that on 2026-09-11 and rolled the live help pages
-  # back past the ehrlinger/hvtiRlifetables#20 fix. The site documents main.
+  # No `release:` trigger, deliberately. A release of main tags a commit the
+  # merging push has already built and deployed, so a release-triggered run can
+  # only repeat that deploy or, when main has moved on, overwrite the site with
+  # an older commit: hvtiRlifetables v0.1.3 (tagged at f024064) did that on
+  # 2026-09-11 and rolled the live help pages back past the
+  # ehrlinger/hvtiRlifetables#20 fix. A release tagged on dev was worse: its
+  # ref is refs/tags/<tag>, not refs/heads/dev, so the deploy step below sent
+  # the dev docs to the root site. The site documents main.
   workflow_dispatch:
 
 name: pkgdown.yaml
