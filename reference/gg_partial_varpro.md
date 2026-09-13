@@ -174,20 +174,26 @@ point opens by growing a one-node stump through
 [`randomForestSRC::rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
 to settle the family and hand back cleaned data, and that call takes
 `rfsrc`'s default `na.action = "na.omit"`. Any case with a missing
-value, in a predictor or in the outcome, is deleted before the fit, with
-no warning and no message. Passing `na.action = "na.impute"` to
+value, in a predictor or in the outcome, is deleted before the fit. What
+you are told about it depends on the varPro version. Before 3.2.2 the
+deletion is silent: no warning, no message, and
+`na.action = "na.impute"` passed to
 [`varPro::varpro`](https://www.randomforestsrc.org/reference/varpro.html)
-does not change this: it lands in `...`, never reaches the stump, and is
-discarded without remark (varPro 3.1.0).
+lands in `...`, never reaches the stump, and is discarded without
+remark. From 3.2.2, `varpro` warns with the input, omitted and retained
+counts, records them in `object$model.info$observations`, and stops with
+an error on `na.action` (or any other argument it does not recognise)
+instead of ignoring it. The rows are deleted either way; 3.2.2 makes the
+deletion visible.
 
 The loss compounds across predictors rather than adding up. At 5%
 missing per column, independently, retention is \\0.95^p\\: 60% of rows
 at 10 predictors, 36% at 20, 8% at 50. On a wide clinical frame a little
-missingness everywhere can delete most of the cohort. Nothing in the fit
-records it: `object$rf$n` is the count *after* deletion and no original
-is kept, so neither you nor this package can recover the number from the
-object. Check before you fit: `nrow(dta)` against
-`sum(complete.cases(dta))`.
+missingness everywhere can delete most of the cohort. Before 3.2.2
+nothing in the fit records it: `object$rf$n` is the count *after*
+deletion and no original is kept, so neither you nor this package can
+recover the number from the object. On any version, check before you
+fit: `nrow(dta)` against `sum(complete.cases(dta))`.
 
 **Imputing first, without inventing outcomes:**
 [`varPro::roughfix`](https://www.randomforestsrc.org/reference/utilities_internal.html)
@@ -231,18 +237,21 @@ facet panels and legend entries sort by importance rather than
 alphabetically.
 
 **Scale detection:** with `scale = "auto"` and an `object` in hand, the
-scale resolves to `"mortality"` for a survival forest and `"generic"`
-for a regression or classification forest. The RMST horizon \\\tau\\ is
-*not* stored in the `varpro` object (varPro 3.1.0), so RMST output
-requires you to pass `scale = "rmst", time = tau` explicitly.
+scale resolves to `"surv"` for a survival forest, `"prob"` for a
+classification forest and `"generic"` for a regression forest. We do not
+read an RMST horizon \\\tau\\ off the `varpro` object. Before varPro
+3.2.2 there is none to read; from 3.2.2 one is recorded only when
+`varpro` itself was fit with an `rmst` horizon. So RMST output requires
+you to pass `scale = "rmst", time = tau` explicitly.
 
 **RMST partial dependence (scale = "rmst"):**
 [`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
 has no time argument, so its default survival learner returns ensemble
-mortality at every horizon; passing a horizon through `...` is silently
-dropped, and multi-horizon plots built that way differ only by
-Monte-Carlo noise, not by \\\tau\\. To get a genuine RMST(\\\tau\\)
-curve, `scale = "rmst"` supplies `partialpro` a `learner` that returns
+mortality at every horizon. Before varPro 3.2.2 a horizon passed through
+`...` is silently dropped, and multi-horizon plots built that way differ
+only by Monte-Carlo noise, not by \\\tau\\; from 3.2.2 `partialpro`
+stops with an error instead. To get a genuine RMST(\\\tau\\) curve,
+`scale = "rmst"` supplies `partialpro` a `learner` that returns
 \\\mathrm{RMST}(\tau)=\int_0^\tau S(t)\\dt\\ from the survival forest,
 so the curve actually depends on \\\tau\\. This path **recomputes** from
 `object`, so it needs `object` (a survival fit) with `part_dta = NULL`;
@@ -492,7 +501,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 8
+#> [1] 6
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
@@ -500,14 +509,14 @@ length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 ## reach before you spend the computation -- this is the habit worth having.
 wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
-#> [1] "qsec"
+#> [1] "vs"
 
 ## Ask anyway and we warn, naming what partialpro() would have dropped
 ## in silence.  (method = "rnd" is passed through to partialpro(); see
 ## the note on isolation-forest method in Details.)
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
                         method = "rnd")
-#> Warning: gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec. The fit reaches 8 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
+#> Warning: gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,

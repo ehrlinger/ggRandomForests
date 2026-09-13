@@ -245,18 +245,24 @@ entry point opens by growing a one-node stump through
 <code><a href="https://www.randomforestsrc.org//reference/rfsrc.html" class="external-link">randomForestSRC::rfsrc</a></code> to settle the family and hand back cleaned
 data, and that call takes <code>rfsrc</code>'s default <code>na.action =
 "na.omit"</code>.  Any case with a missing value, in a predictor or in the
-outcome, is deleted before the fit, with no warning and no message.
-Passing <code>na.action = "na.impute"</code> to <code><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varPro::varpro</a></code> does not
-change this: it lands in <code>...</code>, never reaches the stump, and is
-discarded without remark (varPro 3.1.0).</p>
+outcome, is deleted before the fit.  What you are told about it depends on
+the <span class="pkg">varPro</span> version.  Before 3.2.2 the deletion is silent: no warning,
+no message, and <code>na.action = "na.impute"</code> passed to
+<code><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varPro::varpro</a></code> lands in <code>...</code>, never reaches the stump, and is
+discarded without remark.  From 3.2.2, <code>varpro</code> warns with the input,
+omitted and retained counts, records them in
+<code>object$model.info$observations</code>, and stops with an error on
+<code>na.action</code> (or any other argument it does not recognise) instead of
+ignoring it.  The rows are deleted either way; 3.2.2 makes the deletion
+visible.</p>
 <p>The loss compounds across predictors rather than adding up.  At 5% missing
 per column, independently, retention is \(0.95^p\): 60% of rows at 10
 predictors, 36% at 20, 8% at 50.  On a wide clinical frame a little
-missingness everywhere can delete most of the cohort.  Nothing in the fit
-records it: <code>object$rf$n</code> is the count <em>after</em> deletion and no
-original is kept, so neither you nor this package can recover the number
-from the object.  Check before you fit: <code>nrow(dta)</code> against
-<code>sum(complete.cases(dta))</code>.</p>
+missingness everywhere can delete most of the cohort.  Before 3.2.2 nothing
+in the fit records it: <code>object$rf$n</code> is the count <em>after</em>
+deletion and no original is kept, so neither you nor this package can
+recover the number from the object.  On any version, check before you fit:
+<code>nrow(dta)</code> against <code>sum(complete.cases(dta))</code>.</p>
 <p><strong>Imputing first, without inventing outcomes:</strong> <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::roughfix</a></code>
 does mean and modal fill, <code><a href="https://www.randomforestsrc.org//reference/impute.rfsrc.html" class="external-link">randomForestSRC::impute</a></code> does the
 forest-based job, and varPro's own help pages use the latter.  Both fill
@@ -294,16 +300,19 @@ ever dropped from consideration, only reordered.  The returned
 order when no <code>object</code> was supplied), so facet panels and legend
 entries sort by importance rather than alphabetically.</p>
 <p><strong>Scale detection:</strong> with <code>scale = "auto"</code> and an <code>object</code> in
-hand, the scale resolves to <code>"mortality"</code> for a survival forest and
-<code>"generic"</code> for a regression or classification forest.  The RMST
-horizon \(\tau\) is <em>not</em> stored in the <code>varpro</code> object
-(varPro 3.1.0), so RMST output requires you to pass
-<code>scale = "rmst", time = tau</code> explicitly.</p>
+hand, the scale resolves to <code>"surv"</code> for a survival forest,
+<code>"prob"</code> for a classification forest and <code>"generic"</code> for a
+regression forest.  We do not
+read an RMST horizon \(\tau\) off the <code>varpro</code> object.  Before
+<span class="pkg">varPro</span> 3.2.2 there is none to read; from 3.2.2 one is recorded only
+when <code>varpro</code> itself was fit with an <code>rmst</code> horizon.  So RMST
+output requires you to pass <code>scale = "rmst", time = tau</code> explicitly.</p>
 <p><strong>RMST partial dependence (scale = "rmst"):</strong> <code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro</a></code>
 has no time argument, so its default survival learner returns ensemble
-mortality at every horizon; passing a horizon through <code>...</code> is
-silently dropped, and multi-horizon plots built that way differ only by
-Monte-Carlo noise, not by \(\tau\).  To get a genuine RMST(\(\tau\))
+mortality at every horizon.  Before <span class="pkg">varPro</span> 3.2.2 a horizon passed
+through <code>...</code> is silently dropped, and multi-horizon plots built that
+way differ only by Monte-Carlo noise, not by \(\tau\); from 3.2.2
+<code>partialpro</code> stops with an error instead.  To get a genuine RMST(\(\tau\))
 curve, <code>scale = "rmst"</code> supplies <code>partialpro</code> a <code>learner</code>
 that returns \(\mathrm{RMST}(\tau)=\int_0^\tau S(t)\,dt\) from the
 survival forest, so the curve actually depends on \(\tau\).  This path
@@ -543,7 +552,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>                    <span class="co"># predictors in the data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span>         <span class="co"># what the fit reaches</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.topvars</a></span><span class="op">(</span><span class="va">vp</span><span class="op">)</span><span class="op">)</span>   <span class="co"># the default when xvar.names is absent</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span></span></span>
@@ -551,14 +560,14 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="co">## reach before you spend the computation -- this is the habit worth having.</span></span></span>
 <span class="r-in"><span><span class="va">wanted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wt"</span>, <span class="st">"hp"</span>, <span class="st">"qsec"</span>, <span class="st">"vs"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">wanted</span>, <span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "qsec"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "vs"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Ask anyway and we warn, naming what partialpro() would have dropped</span></span></span>
 <span class="r-in"><span><span class="co">## in silence.  (method = "rnd" is passed through to partialpro(); see</span></span></span>
 <span class="r-in"><span><span class="co">## the note on isolation-forest method in Details.)</span></span></span>
 <span class="r-in"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span>object <span class="op">=</span> <span class="va">vp</span>, xvar.names <span class="op">=</span> <span class="va">wanted</span>,</span></span>
 <span class="r-in"><span>                        method <span class="op">=</span> <span class="st">"rnd"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec. The fit reaches 8 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 1 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Refitting without the split-weight screen reaches every predictor.</span></span></span>
 <span class="r-in"><span><span class="va">vp_all</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span>,</span></span>

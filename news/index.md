@@ -2,6 +2,17 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- [`?gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  now separates varPro versions in its missing-data and RMST-horizon
+  notes. Before varPro 3.2.2, `varpro()` deletes incomplete cases
+  silently and drops unrecognised arguments such as `na.action`, and
+  `partialpro()` drops a horizon passed through `...`. From 3.2.2
+  (kogalur/varPro#7), `varpro()` warns with the omitted count and
+  records it in `model.info$observations`, and both functions stop with
+  an error on an argument they do not recognise. `partialpro()` still
+  has no horizon argument, so `scale = "rmst"` keeps supplying its own
+  RMST(tau) learner. Documentation only; no function changed.
+
 - [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
   drops code that was meant to add a `rel_vimp` column but could never
   run: every fit, single-outcome included, takes the pivot branch, so no
