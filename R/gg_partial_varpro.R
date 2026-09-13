@@ -229,8 +229,9 @@
 #' entries sort by importance rather than alphabetically.
 #'
 #' **Scale detection:** with \code{scale = "auto"} and an \code{object} in
-#' hand, the scale resolves to \code{"mortality"} for a survival forest and
-#' \code{"generic"} for a regression or classification forest.  We do not
+#' hand, the scale resolves to \code{"surv"} for a survival forest,
+#' \code{"prob"} for a classification forest and \code{"generic"} for a
+#' regression forest.  We do not
 #' read an RMST horizon \eqn{\tau} off the \code{varpro} object.  Before
 #' \pkg{varPro} 3.2.2 there is none to read; from 3.2.2 one is recorded only
 #' when \code{varpro} itself was fit with an \code{rmst} horizon.  So RMST
