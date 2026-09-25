@@ -3,6 +3,16 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `Imports` now requires `varPro (>= 3.3.0)`. From that release
+  `partialpro()` warns and names any requested `xvar.names` the fit cannot
+  reach, so `gg_partial_varpro()` drops its own pre-call warning for the same
+  thing, which had started arriving twice and still called the loss silent.
+  `?gg_partial_varpro` and the varPro vignette now say the warning is
+  upstream's.
+* The survival vignette loses its "Known issue" callout saying
+  `partial.rfsrc()` fails for survival forests. That section renders live and
+  works on current `randomForestSRC`, and four `gg_partial_rfsrc()` survival
+  tests no longer turn an error into a skip, so a regression now fails.
 * `?gg_partial_varpro` now separates varPro versions in its missing-data and
   RMST-horizon notes. Before varPro 3.2.2, `varpro()` deletes incomplete cases
   silently and drops unrecognised arguments such as `na.action`, and
@@ -182,16 +192,6 @@ ggRandomForests v4.0.0 (development)
   resolves issue #229, where the earlier reading (a small negative hazard,
   specific to the macOS arm64 binary) was wrong on both counts, and
   kogalur/randomForestRHF#1, the inverted cumulative/dynamic AUC.
-* `gg_auct()` now errors rather than compute a cumulative/dynamic AUC it knows
-  to be wrong. `DESCRIPTION` asks for `randomForestRHF (>= 2.0.3)`, but R does
-  not enforce a `Suggests` version at run time, so a session still carrying
-  2.0.0 previously got the inverted curve with no warning. The check is
-  deliberately narrow: it applies only to `method = "cumulative"`, since the
-  incident definition never inherited the problem, and only when `gg_auct()`
-  does the computation. A supplied `auct_fit` is taken as given, because an
-  `auct.rhf` object records no version and may have been read from a file
-  built elsewhere. The message names the installed version and points at
-  `method = "incident"` as the alternative.
 * `gg_auct()` gains a `method` argument and now forwards `...` to
   `randomForestRHF::auct.rhf()`. `auct.rhf()` defaults `method` to
   `"cumulative"`, and `gg_auct()` previously passed only `marker`, so the

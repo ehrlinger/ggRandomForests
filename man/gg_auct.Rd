@@ -57,17 +57,6 @@ against subjects still event-free at it. Incident/dynamic AUC ranks local
 failures within the risk set at each time. Pick the one that matches the
 question you are asking, and read the two curves as separate estimands
 rather than as a check on each other.
-
-Cumulative/dynamic AUC was unreliable under \pkg{randomForestRHF} 2.0.0,
-which could push the curve below the 0.5 chance line on data the forest
-fits well. That was an upstream problem, fixed in 2.0.3. R does not enforce
-a \code{Suggests} version at run time, so \code{gg_auct()} checks the installed
-version itself and errors rather than compute a cumulative/dynamic curve it
-knows to be wrong. The check applies only when \code{gg_auct()} does the
-computation: \code{method = "incident"} is unaffected by the upstream problem and
-is never gated, and a supplied \code{auct_fit} is taken as given, since an
-\code{auct.rhf} object records no version and may have been read from a file.
-\code{gg_auct()} passes the values through unchanged in every case.
 }
 \examples{
 \donttest{

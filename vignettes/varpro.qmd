@@ -677,10 +677,10 @@ Four predictors go in and one of them never becomes a candidate. With p in the
 hundreds the gap is not small.
 
 One sharp edge. `partialpro()` matches your `xvar.names` against
-`object$xvar.names` and quietly drops whatever it cannot find. Ask for twelve
-variables and you may get ten back, with no error, no warning, and nothing on
-the returned object to say so. A misspelled name behaves the same way. When it
-matters, check:
+`object$xvar.names` and drops whatever it cannot find. Ask for twelve variables
+and you may get ten back. From varPro 3.3.0 it warns and names them, but only
+after the computation has run. A misspelled name behaves the same way. To find
+out before you spend the time, check:
 
 ```{r partialpro-check, eval=FALSE}
 pd <- varPro::partialpro(v_boston, xvar.names = my_vars)
