@@ -126,7 +126,7 @@ v_boston <- if (is.null(.vp$v_boston)) {
 str(v_boston, max.level = 1)
 ```
 
-    List of 13
+    List of 14
      $ rf              :List of 49
       ..- attr(*, "class")= chr [1:3] "rfsrc" "grow" "regr"
      $ split.weight    : NULL
@@ -140,9 +140,12 @@ str(v_boston, max.level = 1)
      $ x               :'data.frame':   506 obs. of  13 variables:
       ..- attr(*, "hotencode")= logi FALSE
       ..- attr(*, "xvar.names")= chr [1:13] "crim" "zn" "indus" "chas" ...
+      ..- attr(*, "xvar.map")= Named chr [1:13] "crim" "zn" "indus" "chas" ...
+      .. ..- attr(*, "names")= chr [1:13] "crim" "zn" "indus" "chas" ...
      $ y               : num [1:506] 24 21.6 34.7 33.4 36.2 28.7 22.9 27.1 16.5 18.9 ...
      $ y.org           : num [1:506] 24 21.6 34.7 33.4 36.2 28.7 22.9 27.1 16.5 18.9 ...
      $ family          : chr "regr"
+     $ model.info      :List of 6
      - attr(*, "class")= chr "varpro"
 
 `varpro()` builds the importance machinery (release rules, per-tree

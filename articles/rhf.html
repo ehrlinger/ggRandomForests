@@ -310,12 +310,12 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">rhf_curves</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code><span><span class="co">#&gt;   id       time    hazard         chf source</span></span>
-<span><span class="co">#&gt; 1  1 0.01055113 0.9265708 0.009776536    oob</span></span>
-<span><span class="co">#&gt; 2  2 0.01055113 0.1961717 0.002069869    oob</span></span>
-<span><span class="co">#&gt; 3  3 0.01055113 1.8109938 0.019108357    oob</span></span>
-<span><span class="co">#&gt; 4  4 0.01055113 0.7639137 0.008060290    oob</span></span>
-<span><span class="co">#&gt; 5  5 0.01055113 0.8986797 0.009482248    oob</span></span>
-<span><span class="co">#&gt; 6  6 0.01055113 3.5193765 0.037134033    oob</span></span></code></pre>
+<span><span class="co">#&gt; 1  1 0.01055113 0.9289604 0.009801750    oob</span></span>
+<span><span class="co">#&gt; 2  2 0.01055113 0.2031377 0.002143369    oob</span></span>
+<span><span class="co">#&gt; 3  3 0.01055113 1.8588153 0.019612936    oob</span></span>
+<span><span class="co">#&gt; 4  4 0.01055113 0.7833718 0.008265599    oob</span></span>
+<span><span class="co">#&gt; 5  5 0.01055113 0.9045407 0.009544090    oob</span></span>
+<span><span class="co">#&gt; 6  6 0.01055113 3.5659407 0.037625347    oob</span></span></code></pre>
 </div>
 </div>
 <p>The <code>source</code> column is <code>"oob"</code> here, so each displayed curve uses the trees for which that subject was out of bag. We select six subjects only to keep the lines readable; the extracted object contains all 500.</p>
@@ -374,7 +374,7 @@
 </div>
 </div>
 </div>
-<p>The saved curve has a Uno iAUC of 0.737. Its finite AUC values range from 0.684 to 0.903 over this fitted time grid. AUC is a ranking probability on a 0 to 1 scale, with 0.5 shown as the chance reference. The retained calculation did not use a bootstrap, so the plot has no confidence ribbon.</p>
+<p>The saved curve has a Uno iAUC of 0.737. Its finite AUC values range from 0.683 to 0.903 over this fitted time grid. AUC is a ranking probability on a 0 to 1 scale, with 0.5 shown as the chance reference. The retained calculation did not use a bootstrap, so the plot has no confidence ribbon.</p>
 <p>This curve needs <code>randomForestRHF</code> 2.0.3 or newer, which is why the package asks for that version. Before 2.0.3, <code>auct.rhf()</code> could put the cumulative/dynamic curve below the chance line on data the forest fits well. That was upstream rather than in <code><a href="../reference/gg_auct.html">gg_auct()</a></code>, which passes the values through unchanged either way.</p>
 </section><section class="level3"><h3 id="incidentdynamic-auc-uses-hazard">Incident/dynamic AUC uses hazard<a class="anchor" aria-label="anchor" href="#incidentdynamic-auc-uses-hazard"></a>
 </h3>
@@ -396,7 +396,7 @@
 </div>
 </div>
 </div>
-<p>Here the Uno iAUC is 0.531. The curve is more variable than the cumulative/dynamic curve, with finite AUC values from 0.244 to 0.867. These values do not show that one marker is a better version of the other. Cumulative/dynamic AUC ranks accumulated risk through a horizon, while incident/dynamic AUC ranks local failures within a risk set. They estimate different targets.</p>
+<p>Here the Uno iAUC is 0.532. The curve is more variable than the cumulative/dynamic curve, with finite AUC values from 0.243 to 0.867. These values do not show that one marker is a better version of the other. Cumulative/dynamic AUC ranks accumulated risk through a horizon, while incident/dynamic AUC ranks local failures within a risk set. They estimate different targets.</p>
 </section></section><section class="level2"><h2 id="which-variables-matter-and-when">Which variables matter, and when?<a class="anchor" aria-label="anchor" href="#which-variables-matter-and-when"></a>
 </h2>
 <p>The retained <code>importance.rhf</code> object is the starting point here. Its expensive upstream work was performed once: <code>varpro.cache.rhf()</code> collected the rule and near-miss information, then <code>importance.rhf()</code> evaluated five selected time windows. Supplying that result avoids repeating either calculation.</p>
@@ -583,7 +583,7 @@
 </tr>
 <tr class="odd">
 <td style="text-align: left;">randomForestRHF</td>
-<td style="text-align: left;">2.0.3</td>
+<td style="text-align: left;">2.1.0</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">ggplot2</td>

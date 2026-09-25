@@ -190,12 +190,12 @@ head(as.data.frame(rhf_curves))
 ```
 
     #>   id       time    hazard         chf source
-    #> 1  1 0.01055113 0.9265708 0.009776536    oob
-    #> 2  2 0.01055113 0.1961717 0.002069869    oob
-    #> 3  3 0.01055113 1.8109938 0.019108357    oob
-    #> 4  4 0.01055113 0.7639137 0.008060290    oob
-    #> 5  5 0.01055113 0.8986797 0.009482248    oob
-    #> 6  6 0.01055113 3.5193765 0.037134033    oob
+    #> 1  1 0.01055113 0.9289604 0.009801750    oob
+    #> 2  2 0.01055113 0.2031377 0.002143369    oob
+    #> 3  3 0.01055113 1.8588153 0.019612936    oob
+    #> 4  4 0.01055113 0.7833718 0.008265599    oob
+    #> 5  5 0.01055113 0.9045407 0.009544090    oob
+    #> 6  6 0.01055113 3.5659407 0.037625347    oob
 
 The `source` column is `"oob"` here, so each displayed curve uses the
 trees for which that subject was out of bag. We select six subjects only
@@ -307,7 +307,7 @@ plot(auct_cumulative)
 ![](rhf_files/figure-html/auct-cumulative-1.png)
 
 The saved curve has a Uno iAUC of 0.737. Its finite AUC values range
-from 0.684 to 0.903 over this fitted time grid. AUC is a ranking
+from 0.683 to 0.903 over this fitted time grid. AUC is a ranking
 probability on a 0 to 1 scale, with 0.5 shown as the chance reference.
 The retained calculation did not use a bootstrap, so the plot has no
 confidence ribbon.
@@ -342,8 +342,8 @@ plot(auct_incident)
 
 ![](rhf_files/figure-html/auct-incident-1.png)
 
-Here the Uno iAUC is 0.531. The curve is more variable than the
-cumulative/dynamic curve, with finite AUC values from 0.244 to 0.867.
+Here the Uno iAUC is 0.532. The curve is more variable than the
+cumulative/dynamic curve, with finite AUC values from 0.243 to 0.867.
 These values do not show that one marker is a better version of the
 other. Cumulative/dynamic AUC ranks accumulated risk through a horizon,
 while incident/dynamic AUC ranks local failures within a risk set. They
@@ -533,7 +533,7 @@ knitr::kable(
 |:----------------|:--------------|
 | R               | 4.6.1         |
 | ggRandomForests | 4.0.0         |
-| randomForestRHF | 2.0.3         |
+| randomForestRHF | 2.1.0         |
 | ggplot2         | 4.0.3         |
 
 Run `Rscript vignettes/precompute_rhf.R` from the package root to
