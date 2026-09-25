@@ -295,7 +295,7 @@ context. Read it before writing user-facing text.
 - `testthat` runs on **edition 2** here: `DESCRIPTION` has no
   `Config/testthat/edition` field. Do not assume 3rd-edition semantics.
 
-- `randomForestSRC` output structure varies by version (3.7.0 is
+- `randomForestSRC` output structure varies by version (3.9.0 is
   installed; `DESCRIPTION` requires `>= 3.4.0`). Never index its fields
   by position.
 
@@ -317,7 +317,16 @@ context. Read it before writing user-facing text.
   `packageVersion("randomForestSRC")` against the version named above.**
   Regenerating them is a change to what “correct output” means, so it
   belongs on its own branch with this line updated in the same commit —
-  never folded into a feature PR.
+  never folded into a feature PR. The 3.7.0 to 3.9.0 bump moved no
+  baseline.
+
+  `randomForestRHF` behaves the same way. 2.1.0 made
+  `coe.aggregate = "max.robust"` the default for new fits, which moved
+  `gg-auct-chf` and `gg-rhf-importance-priority`; refitting the fixture
+  with the old `"trimmed.mean"` reproduced both old baselines, so the
+  new default is the whole of the change. **Check
+  `packageVersion("randomForestRHF")` (2.1.0 here) before treating
+  failing RHF baselines as your bug.**
 
 - CRAN rejects a package whose overall `R CMD check` exceeds about 10
   minutes even at 0/0/0, and the rule bites at the **incoming pretest**,

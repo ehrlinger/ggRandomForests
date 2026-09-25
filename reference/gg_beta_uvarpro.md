@@ -1,7 +1,7 @@
 # Per-variable lasso-beta importance from an unsupervised varPro fit
 
 Tidy wrapper around
-[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 for a `uvarpro` object. Where
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md)
 refines the *supervised* release-rule contrast, `gg_beta_uvarpro()` does
@@ -28,7 +28,7 @@ gg_beta_uvarpro(object, ..., cutoff = NULL, beta_fit = NULL)
 - ...:
 
   Forwarded to
-  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   when `beta_fit = NULL` (e.g. `pre.filter`, `second.stage`, `use.cv`).
   Ignored, with a warning, when `beta_fit` is supplied.
 
@@ -41,7 +41,7 @@ gg_beta_uvarpro(object, ..., cutoff = NULL, beta_fit = NULL)
 - beta_fit:
 
   Optional pre-computed
-  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   matrix for `object`. When supplied, must be a numeric matrix with
   column names (the variables); `...` is then ignored.
 
@@ -94,7 +94,7 @@ the `beta_fit` argument of
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md)
 (supervised analogue),
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md),
-[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html),
+[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html),
 [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html).
 
 ## Examples

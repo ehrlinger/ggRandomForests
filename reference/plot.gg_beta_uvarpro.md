@@ -40,7 +40,7 @@ A `ggplot` object.
 
 Each bar is the average magnitude of a per-region lasso coefficient for
 that variable, computed by
-[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 over the unsupervised entropy regions of a
 [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 fit. There is no response: the score measures how strongly a variable is

@@ -931,7 +931,7 @@ CRAN release: 2026-07-02
   /
   [`plot.gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_uvarpro.md):
   tidy wrapper and bar chart for
-  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   – the unsupervised analogue of
   [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md).
   From a `uvarpro()` fit it aggregates the per-region lasso coefficients
@@ -943,7 +943,7 @@ CRAN release: 2026-07-02
   /
   [`plot.gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.md):
   tidy wrapper and ranked lollipop for
-  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   signal-variable detection. Returns one row per candidate variable
   (`imp_score`, graph `degree`, `signal` flag) ranked by `imp_score`.
   Complements
@@ -1137,7 +1137,7 @@ CRAN release: 2026-06-11
   fallback if the file is absent. The
   [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
   tests memoise the per-fit entropy matrix
-  ([`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html),
+  ([`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html),
   ~1.5 s and a pure function of the fit) instead of recomputing it once
   per test. No user-facing behavior change.
 
@@ -1347,9 +1347,9 @@ CRAN release: 2026-06-11
   varPro cross-variable dependency (Phase 3).
   - [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
     reads cross-variable dependency scores off a `uvarpro` fit, via
-    [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+    [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
     and
-    [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html).
+    [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html).
     It returns a tidy list: `$edges` (variable_from, variable_to,
     weight), `$nodes` (variable, degree, selected), and `$graph`, an
     igraph object.

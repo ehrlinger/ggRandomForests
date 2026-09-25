@@ -85,7 +85,7 @@
       <h1>Variable selection without an outcome: unsupervised varPro</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-09-13</p>
+      <p class="date">2026-09-25</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/uvarpro.qmd" class="external-link"><code>vignettes/uvarpro.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -129,7 +129,7 @@
 <p>Notice what <code>uvarpro()</code> was handed: the data frame, and nothing else. No formula, no outcome column singled out. All three views below read off this one fit. Two of them rest on the same <code>get.beta.entropy()</code> matrix, which is the only part worth caching, so we compute it once and pass it to both rather than paying for it twice:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">beta_fit</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.beta.entropy</a></span><span class="op">(</span><span class="va">u</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">beta_fit</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">get.beta.entropy</a></span><span class="op">(</span><span class="va">u</span><span class="op">)</span></span></code></pre></div>
 </div>
 <section class="level2"><h3 id="what-depends-on-what-gg_udependent">What depends on what: <code>gg_udependent()</code>
 <a class="anchor" aria-label="anchor" href="#what-depends-on-what-gg_udependent"></a>
@@ -164,7 +164,7 @@
 </section><section class="level2"><h3 id="where-to-draw-the-line-gg_sdependent">Where to draw the line: <code>gg_sdependent()</code>
 <a class="anchor" aria-label="anchor" href="#where-to-draw-the-line-gg_sdependent"></a>
 </h3>
-<p>A ranking invites the obvious next question: where is the cut? Which variables are signal, and which are noise? <code><a href="../reference/gg_sdependent.html">gg_sdependent()</a></code> answers that narrower question off the same fit. It wraps <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent()</a></code> and returns one row per candidate variable (an importance score, its degree in the dependency graph, and a <code>signal</code> flag), drawn as a ranked lollipop.</p>
+<p>A ranking invites the obvious next question: where is the cut? Which variables are signal, and which are noise? <code><a href="../reference/gg_sdependent.html">gg_sdependent()</a></code> answers that narrower question off the same fit. It wraps <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::sdependent()</a></code> and returns one row per candidate variable (an importance score, its degree in the dependency graph, and a <code>signal</code> flag), drawn as a ranked lollipop.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_sdependent.html">gg_sdependent</a></span><span class="op">(</span><span class="va">u</span>, beta_fit <span class="op">=</span> <span class="va">beta_fit</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>

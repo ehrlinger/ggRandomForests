@@ -70,7 +70,7 @@ detection threshold)."></head><body>
     </div>
 
     <div class="ref-description section level2">
-    <p>Tidy wrapper around <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent()</a></code> for a <code>uvarpro</code> object. Where
+    <p>Tidy wrapper around <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::sdependent()</a></code> for a <code>uvarpro</code> object. Where
 <code><a href="gg_udependent.html">gg_udependent()</a></code> draws the cross-variable dependency <em>graph</em>,
 <code>gg_sdependent()</code> surfaces <code>sdependent()</code>'s <em>signal-variable detection</em>: a
 ranked table of the per-variable signal score and graph degree, with the
@@ -100,17 +100,17 @@ detection threshold).</p>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Forwarded to <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code> when <code>beta_fit = NULL</code>;
+<dd><p>Forwarded to <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> when <code>beta_fit = NULL</code>;
 ignored, with a warning, when <code>beta_fit</code> is supplied.</p></dd>
 
 
 <dt id="arg-threshold-q-signal-directed-min-degree">threshold, q.signal, directed, min.degree<a class="anchor" aria-label="anchor" href="#arg-threshold-q-signal-directed-min-degree"></a></dt>
 <dd><p>Passed to
-<code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent()</a></code> (defaults match <code><a href="gg_udependent.html">gg_udependent()</a></code>).</p></dd>
+<code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::sdependent()</a></code> (defaults match <code><a href="gg_udependent.html">gg_udependent()</a></code>).</p></dd>
 
 
 <dt id="arg-beta-fit">beta_fit<a class="anchor" aria-label="anchor" href="#arg-beta-fit"></a></dt>
-<dd><p>Optional precomputed <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code> matrix.</p></dd>
+<dd><p>Optional precomputed <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> matrix.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -135,19 +135,19 @@ the top after <code><a href="https://ggplot2.tidyverse.org/reference/coord_flip.
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>sdependent()</code> runs on the <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code> lasso-coefficient
+    <p><code>sdependent()</code> runs on the <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> lasso-coefficient
 matrix and returns, with <code>plot = FALSE</code>, a list of <code>imp.score</code> (per-variable
 signal score), <code>degree</code> (node degree in the dependency graph), and
 <code>signal.vars</code> (the detected signal set). This wrapper tidies that into one
 row per candidate variable, ranked by <code>imp.score</code>. Because the entropy
 matrix is the expensive part, <code>beta_fit</code> accepts a precomputed
-<code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::get.beta.entropy()</a></code> matrix (shared with <code><a href="gg_beta_uvarpro.html">gg_beta_uvarpro()</a></code> and
+<code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> matrix (shared with <code><a href="gg_beta_uvarpro.html">gg_beta_uvarpro()</a></code> and
 <code><a href="gg_udependent.html">gg_udependent()</a></code>).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="gg_udependent.html">gg_udependent()</a></code> (the dependency graph), <code><a href="gg_beta_uvarpro.html">gg_beta_uvarpro()</a></code>
-(lasso importance), <code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::sdependent()</a></code>, <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code>.</p></div>
+(lasso importance), <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::sdependent()</a></code>, <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code>.</p></div>
     </div>
 
     <div class="section level2">

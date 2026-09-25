@@ -123,7 +123,7 @@ A ranking invites the obvious next question: where is the cut? Which
 variables are signal, and which are noise?
 [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
 answers that narrower question off the same fit. It wraps
-[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 and returns one row per candidate variable (an importance score, its
 degree in the dependency graph, and a `signal` flag), drawn as a ranked
 lollipop.

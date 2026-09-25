@@ -141,10 +141,10 @@ rfsrc_iris
     #> Confusion matrix:
     #>
     #>             predicted
-    #>   observed   setosa versicolor virginica class.error
-    #>   setosa         49          1         0        0.02
-    #>   versicolor      0         46         4        0.08
-    #>   virginica       0          3        47        0.06
+    #>   observed   setosa versicolor virginica class.error class.freq
+    #>   setosa         49          1         0        0.02         50
+    #>   versicolor      0         46         4        0.08         50
+    #>   virginica       0          3        47        0.06         50
     #>
     #>       (OOB) Misclassification rate: 0.05333333
     #>

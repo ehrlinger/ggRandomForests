@@ -38,7 +38,7 @@ A `ggplot` object.
 ## Reading the chart
 
 Each lollipop is a variable's signal score from
-[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/utilities_internal.html),
+[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html),
 computed on the unsupervised entropy-region lasso structure of a
 [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 fit. Blue variables cleared the detection threshold and are reported in
