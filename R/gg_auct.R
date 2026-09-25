@@ -45,17 +45,6 @@
 #' question you are asking, and read the two curves as separate estimands
 #' rather than as a check on each other.
 #'
-#' Cumulative/dynamic AUC was unreliable under \pkg{randomForestRHF} 2.0.0,
-#' which could push the curve below the 0.5 chance line on data the forest
-#' fits well. That was an upstream problem, fixed in 2.0.3. R does not enforce
-#' a `Suggests` version at run time, so `gg_auct()` checks the installed
-#' version itself and errors rather than compute a cumulative/dynamic curve it
-#' knows to be wrong. The check applies only when `gg_auct()` does the
-#' computation: `method = "incident"` is unaffected by the upstream problem and
-#' is never gated, and a supplied `auct_fit` is taken as given, since an
-#' `auct.rhf` object records no version and may have been read from a file.
-#' `gg_auct()` passes the values through unchanged in every case.
-#'
 #' @seealso [plot.gg_auct()], [randomForestRHF::auct.rhf()]
 #'
 #' @examples
@@ -74,33 +63,6 @@ gg_auct <- function(object, ...) {
   UseMethod("gg_auct", object)
 }
 
-# Cumulative/dynamic AUC is wrong before randomForestRHF 2.0.3: that release
-# corrected auct.rhf() to reconstruct common-time markers from the retained
-# tree-level arrays. Before it, the in-sample cumulative hazard was held flat
-# after follow-up, so the marker tracked observation length as well as risk and
-# the curve could sit below the chance line on data the forest fits well.
-#
-# DESCRIPTION asks for >= 2.0.3 in Suggests, but R does not enforce a Suggests
-# version at run time, so a session carrying an older build would otherwise get
-# the inverted curve with no warning.
-#
-# Only the cumulative definition is gated. Incident/dynamic compares subjects
-# within a risk set at t, before any has left follow-up, and is unaffected
-# (measured identical at 0.531 across 2.0.0 and 2.0.3).
-#
-# `version` is a parameter rather than read here so the guard is testable
-# without a downgraded install.
-.stop_if_auct_cumulative_unsupported <- function(method, version) {
-  if (identical(method, "cumulative") &&
-        version < package_version("2.0.3")) {
-    stop("gg_auct(method = \"cumulative\") needs randomForestRHF >= 2.0.3. ",
-         "Version ", version, " is installed, and returns an inverted ",
-         "cumulative/dynamic AUC. Update randomForestRHF, or use ",
-         "method = \"incident\", which is unaffected.", call. = FALSE)
-  }
-  invisible(NULL)
-}
-
 #' @rdname gg_auct
 #' @export
 gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL,
@@ -113,9 +75,6 @@ gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL,
       stop("Install the 'randomForestRHF' package to use gg_auct(): ",
            "install.packages('randomForestRHF')", call. = FALSE)
     }
-    .stop_if_auct_cumulative_unsupported(
-      method, utils::packageVersion("randomForestRHF")
-    )
     auct_fit <- randomForestRHF::auct.rhf(object, marker = marker,
                                           method = method, ...)
   }

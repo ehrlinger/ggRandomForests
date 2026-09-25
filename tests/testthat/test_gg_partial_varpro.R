@@ -612,70 +612,11 @@ test_that("gg_partial_varpro: C-path 'model' label is attached to the frames", {
     expect_equal(unique(result$continuous$model), "forestC")
 })
 
-## ── dropped xvar.names guard ─────────────────────────────────────────────────
-## varPro::partialpro() filters requested variables through
-## na.omit(match(xvar.names, object$xvar.names)), so any name outside the fit's
-## reachable set is discarded with no error, warning, or record on the return
-## value. These cover the guard that makes that loss loud.
-
-make_fake_varpro_fit <- function(reachable = c("wt", "hp", "drat"),
-                                 p = 10) {
-  structure(
-    list(xvar.names = reachable,
-         x = matrix(0, nrow = 2, ncol = p)),
-    class = "varpro"
-  )
-}
-
-test_that(".warn_varpro_dropped_xvars: warns and names unreachable variables", {
-  fake <- make_fake_varpro_fit()
-  expect_warning(
-    ggRandomForests:::.warn_varpro_dropped_xvars(
-      c("wt", "hp", "qsec", "vs"), fake),
-    regexp = "qsec"
-  )
-  # the warning names every dropped variable, not just the first
-  expect_warning(
-    ggRandomForests:::.warn_varpro_dropped_xvars(
-      c("wt", "hp", "qsec", "vs"), fake),
-    regexp = "vs"
-  )
-  # and reports the reachability ceiling (3 of 10 here)
-  expect_warning(
-    ggRandomForests:::.warn_varpro_dropped_xvars(
-      c("wt", "hp", "qsec", "vs"), fake),
-    regexp = "3 of 10|split\\.weight"
-  )
-})
-
-test_that(".warn_varpro_dropped_xvars: silent when every request is reachable", {
-  fake <- make_fake_varpro_fit()
-  expect_no_warning(
-    ggRandomForests:::.warn_varpro_dropped_xvars(c("wt", "hp"), fake)
-  )
-  expect_no_warning(
-    ggRandomForests:::.warn_varpro_dropped_xvars(c("wt", "hp", "drat"), fake)
-  )
-})
-
-test_that(".warn_varpro_dropped_xvars: silent when xvar.names is not supplied", {
-  # No xvar.names => partialpro falls back to get.topvars(), which is
-  # documented, expected behavior rather than a silent drop.
-  expect_no_warning(
-    ggRandomForests:::.warn_varpro_dropped_xvars(NULL, make_fake_varpro_fit())
-  )
-})
-
-test_that(".warn_varpro_dropped_xvars: silent when object is unusable", {
-  expect_no_warning(
-    ggRandomForests:::.warn_varpro_dropped_xvars(c("wt", "qsec"), NULL)
-  )
-  # a fit with no xvar.names gives nothing to compare against
-  expect_no_warning(
-    ggRandomForests:::.warn_varpro_dropped_xvars(
-      c("wt", "qsec"), structure(list(x = matrix(0, 2, 3)), class = "varpro"))
-  )
-})
+## ── unreachable xvar.names ──────────────────────────────────────────────────
+## varPro::partialpro() keeps only the requested names it finds in
+## object$xvar.names. From varPro 3.3.0 it warns and names the rest, so
+## gg_partial_varpro() no longer carries a warning of its own. This pins that
+## the loss still reaches the caller through the object path.
 
 test_that("gg_partial_varpro: object path warns on unreachable xvar.names", {
   skip_if_not_installed("varPro")

@@ -339,15 +339,7 @@ test_that("gg_partial_rfsrc survival: default partial.time uses quartiles", {
   # When partial.time = NULL, three quartile-snapped times are used.
   # We can verify this by inspecting how many distinct time values appear
   # in the output (should be 3 unless quartile snapping collapses duplicates).
-  result <- tryCatch(
-    gg_partial_rfsrc(rf, xvar.names = "karno"),
-    error = function(e) {
-      skip(paste(
-        "partial.rfsrc() failed for survival forest (upstream bug):",
-        conditionMessage(e)
-      ))
-    }
-  )
+  result <- gg_partial_rfsrc(rf, xvar.names = "karno")
 
   expect_type(result, "list")
   expect_named(result, c("continuous", "categorical"))
@@ -364,15 +356,7 @@ test_that("gg_partial_rfsrc survival: explicit partial.time is snapped and used"
   # Target the median event time
   t_med <- ti[which.min(abs(ti - median(ti)))]
 
-  result <- tryCatch(
-    gg_partial_rfsrc(rf, xvar.names = "karno", partial.time = t_med),
-    error = function(e) {
-      skip(paste(
-        "partial.rfsrc() failed for survival forest (upstream bug):",
-        conditionMessage(e)
-      ))
-    }
-  )
+  result <- gg_partial_rfsrc(rf, xvar.names = "karno", partial.time = t_med)
 
   expect_type(result, "list")
   expect_gt(nrow(result$continuous), 0)
@@ -389,15 +373,7 @@ test_that("gg_partial_rfsrc survival: multiple partial.time values produce one r
   # Ensure we actually have two distinct snapped times
   if (t1 == t2) skip("quartile times collapsed to same grid point")
 
-  result <- tryCatch(
-    gg_partial_rfsrc(rf, xvar.names = "karno", partial.time = c(t1, t2)),
-    error = function(e) {
-      skip(paste(
-        "partial.rfsrc() failed for survival forest (upstream bug):",
-        conditionMessage(e)
-      ))
-    }
-  )
+  result <- gg_partial_rfsrc(rf, xvar.names = "karno", partial.time = c(t1, t2))
 
   expect_type(result, "list")
   n_times <- length(unique(result$continuous$time))
@@ -409,15 +385,7 @@ test_that("gg_partial_rfsrc survival: returns correct column names", {
   ti <- rf$time.interest
   t_med <- ti[which.min(abs(ti - median(ti)))]
 
-  result <- tryCatch(
-    gg_partial_rfsrc(rf, xvar.names = "karno", partial.time = t_med),
-    error = function(e) {
-      skip(paste(
-        "partial.rfsrc() failed for survival forest (upstream bug):",
-        conditionMessage(e)
-      ))
-    }
-  )
+  result <- gg_partial_rfsrc(rf, xvar.names = "karno", partial.time = t_med)
 
   expect_true(all(c("x", "yhat", "name", "time") %in% colnames(result$continuous)))
 })

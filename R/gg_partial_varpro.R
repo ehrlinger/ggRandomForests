@@ -121,8 +121,8 @@
 #'   \code{varPro::get.topvars(object)}, which can return few or no variables
 #'   for some fits (yielding empty \code{continuous}/\code{categorical}
 #'   frames).  A name you pass in \code{xvar.names} that the fit cannot reach
-#'   is dropped by \code{partialpro} without comment, so you can ask for twelve
-#'   variables and get ten; we warn and name the missing ones.  See
+#'   is dropped by \code{partialpro}, so you can ask for twelve variables and
+#'   get ten; \code{partialpro} warns and names the missing ones.  See
 #'   \strong{Details}.  Ignored, with a warning, when \code{part_dta} is
 #'   supplied.  With \code{scale = "chf"} the work goes through
 #'   \code{\link{gg_partial_rfsrc}} rather than \code{partialpro}, so
@@ -143,13 +143,13 @@
 #'
 #' This bites when you bring a variable list in from somewhere else, say the
 #' top names off an \code{rfsrc} VIMP ranking.  \code{partialpro} intersects
-#' your \code{xvar.names} with what it can reach and keeps the overlap without
-#' remarking on it, so a request for twelve variables can come back with ten
-#' and nothing in the result says so.  It is the intermittent kind of trap: a
-#' top-10 list may come back whole while a top-12 list quietly loses two.  We
-#' compare the two sets before calling \code{partialpro} and warn, naming what
-#' was dropped.  A quick \code{setdiff(my_names, object$xvar.names)} answers
-#' the same question before you spend the computation.
+#' your \code{xvar.names} with what it can reach and keeps the overlap, so a
+#' request for twelve variables can come back with ten.  It is the
+#' intermittent kind of trap: a top-10 list may come back whole while a top-12
+#' list loses two.  \code{partialpro} warns and names what it dropped, but only
+#' after the isolation-forest work is done.  A quick
+#' \code{setdiff(my_names, object$xvar.names)} answers the same question
+#' before you spend the computation.
 #'
 #' For a complete view, fit with both screens off:
 #' \code{varPro::varpro(..., sparse = FALSE, split.weight = FALSE)}.
@@ -402,9 +402,9 @@
 #' wanted <- c("wt", "hp", "qsec", "vs")
 #' setdiff(wanted, vp$xvar.names)
 #'
-#' ## Ask anyway and we warn, naming what partialpro() would have dropped
-#' ## in silence.  (method = "rnd" is passed through to partialpro(); see
-#' ## the note on isolation-forest method in Details.)
+#' ## Ask anyway and partialpro() warns, naming what it dropped.
+#' ## (method = "rnd" is passed through to partialpro(); see the note on
+#' ## isolation-forest method in Details.)
 #' pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
 #'                         method = "rnd")
 #'
@@ -472,12 +472,6 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## object-driven path can select/limit variables the same way an explicit
   ## partialpro() call would -- otherwise it falls back to get.topvars(object).
   if (is.null(part_dta)) {
-    ## Before the expensive call: partialpro() silently discards any requested
-    ## name outside object$xvar.names, so flag it while we still know what was
-    ## asked for.  [["..."]] rather than $: `$` partial-matches on a list, so a
-    ## dots argument merely *starting* with "xvar.names" would be picked up as
-    ## the variable request.
-    .warn_varpro_dropped_xvars(list(...)[["xvar.names"]], object)
     learner <- switch(scale,
       rmst = .rmst_learner(object, time),
       surv = .surv_learner(object, time),
@@ -610,41 +604,6 @@ gg_partial_varpro <- function(part_dta  = NULL,
               "' (resolved to '", resolved, "').", call. = FALSE)
     }
   }
-  invisible(NULL)
-}
-
-## varPro::partialpro() selects variables with
-## object$xvar.names[na.omit(match(xvar.names, object$xvar.names))], so a
-## requested name outside the fit's reachable set is discarded with no error,
-## no warning, and nothing recorded on the return value -- asking for 12
-## variables can quietly return 10. varpro() screens in two stages, so
-## object$xvar.names is a strict subset of the design matrix, and an
-## externally-derived variable set (rfsrc VIMP names, say) can easily sit
-## outside it. Compare before calling partialpro(), so the warning arrives
-## ahead of the isolation-forest work rather than after it.
-##
-## Only meaningful when xvar.names was supplied: partialpro() applies its nvar
-## cap solely in the missing(xvar.names) branch, so a supplied vector is
-## filtered by reachability alone, and the get.topvars() fallback is documented
-## behavior rather than a silent drop.
-#' @keywords internal
-.warn_varpro_dropped_xvars <- function(requested, object) {
-  if (is.null(requested) || is.null(object) || is.null(object$xvar.names))
-    return(invisible(NULL))
-  dropped <- setdiff(as.character(requested), object$xvar.names)
-  if (length(dropped) == 0L) return(invisible(NULL))
-  ## NA rather than a hard failure if 'x' is absent: a guard that errors is a
-  ## worse failure mode than the one it reports.
-  n_pred <- if (is.null(object$x)) NA_integer_ else ncol(object$x)
-  warning(sprintf(paste0(
-    "gg_partial_varpro: %d of %d requested 'xvar.names' are not in the varpro ",
-    "fit's reachable set and are silently dropped by varPro::partialpro(): %s. ",
-    "The fit reaches %d of %d predictors (object$xvar.names); varpro() screens ",
-    "in two stages, so a variable can be in the data and still be unreachable. ",
-    "Refit with varPro::varpro(..., split.weight = FALSE) to reach every ",
-    "predictor."),
-    length(dropped), length(requested), paste(dropped, collapse = ", "),
-    length(object$xvar.names), n_pred), call. = FALSE)
   invisible(NULL)
 }
 

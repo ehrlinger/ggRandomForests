@@ -81,8 +81,8 @@ control which variables are computed (e.g. \code{xvar.names} or
 \code{varPro::get.topvars(object)}, which can return few or no variables
 for some fits (yielding empty \code{continuous}/\code{categorical}
 frames).  A name you pass in \code{xvar.names} that the fit cannot reach
-is dropped by \code{partialpro} without comment, so you can ask for twelve
-variables and get ten; we warn and name the missing ones.  See
+is dropped by \code{partialpro}, so you can ask for twelve variables and
+get ten; \code{partialpro} warns and names the missing ones.  See
 \strong{Details}.  Ignored, with a warning, when \code{part_dta} is
 supplied.  With \code{scale = "chf"} the work goes through
 \code{\link{gg_partial_rfsrc}} rather than \code{partialpro}, so
@@ -130,13 +130,13 @@ against \code{ncol(object$x)} tells you where you stand.
 
 This bites when you bring a variable list in from somewhere else, say the
 top names off an \code{rfsrc} VIMP ranking.  \code{partialpro} intersects
-your \code{xvar.names} with what it can reach and keeps the overlap without
-remarking on it, so a request for twelve variables can come back with ten
-and nothing in the result says so.  It is the intermittent kind of trap: a
-top-10 list may come back whole while a top-12 list quietly loses two.  We
-compare the two sets before calling \code{partialpro} and warn, naming what
-was dropped.  A quick \code{setdiff(my_names, object$xvar.names)} answers
-the same question before you spend the computation.
+your \code{xvar.names} with what it can reach and keeps the overlap, so a
+request for twelve variables can come back with ten.  It is the
+intermittent kind of trap: a top-10 list may come back whole while a top-12
+list loses two.  \code{partialpro} warns and names what it dropped, but only
+after the isolation-forest work is done.  A quick
+\code{setdiff(my_names, object$xvar.names)} answers the same question
+before you spend the computation.
 
 For a complete view, fit with both screens off:
 \code{varPro::varpro(..., sparse = FALSE, split.weight = FALSE)}.
@@ -437,9 +437,9 @@ length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
 
-## Ask anyway and we warn, naming what partialpro() would have dropped
-## in silence.  (method = "rnd" is passed through to partialpro(); see
-## the note on isolation-forest method in Details.)
+## Ask anyway and partialpro() warns, naming what it dropped.
+## (method = "rnd" is passed through to partialpro(); see the note on
+## isolation-forest method in Details.)
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
                         method = "rnd")
 
