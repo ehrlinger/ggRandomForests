@@ -10,8 +10,11 @@ ggRandomForests v4.0.0 (development)
   `?gg_partial_varpro` and the varPro vignette now say the warning is
   upstream's.
 * `gg_auct()` no longer checks for `randomForestRHF` older than 2.0.3 before
-  computing a cumulative/dynamic AUC. `Suggests` has asked for 2.0.3 since the
-  check was added, and the inverted curve it guarded against is fixed there.
+  computing a cumulative/dynamic AUC. The inverted curve it guarded against is
+  fixed in 2.0.3, which `Suggests` asks for, but R does not enforce a
+  `Suggests` version at run time. A session still carrying an older
+  `randomForestRHF` now gets that inverted curve with no error: upgrade it, or
+  use `method = "incident"`, which never had the problem.
 * The survival vignette loses its "Known issue" callout saying
   `partial.rfsrc()` fails for survival forests. That section renders live and
   works on current `randomForestSRC`, and four `gg_partial_rfsrc()` survival
