@@ -528,15 +528,6 @@ predicted survival.
 
 ### Partial dependence
 
-> **Warning**
->
-> **Known issue (draft):**
-> [`randomForestSRC::partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-> currently fails for survival forests in randomForestSRC ≥ 3.3. The
-> partial dependence and surface sections below will show an error until
-> this upstream bug is resolved. All other sections of this vignette are
-> fully functional.
-
 Partial dependence integrates out the effects of other covariates,
 giving a risk-adjusted view of how each predictor influences the
 response ([Friedman 2001](#ref-Friedman:2000)). We use

@@ -2,6 +2,23 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- `Imports` now requires `varPro (>= 3.3.0)`. From that release
+  `partialpro()` warns and names any requested `xvar.names` the fit
+  cannot reach, so
+  [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  drops its own pre-call warning for the same thing, which had started
+  arriving twice and still called the loss silent.
+  [`?gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  and the varPro vignette now say the warning is upstream’s.
+
+- The survival vignette loses its “Known issue” callout saying
+  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+  fails for survival forests. That section renders live and works on
+  current `randomForestSRC`, and four
+  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  survival tests no longer turn an error into a skip, so a regression
+  now fails.
+
 - [`?gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
   now separates varPro versions in its missing-data and RMST-horizon
   notes. Before varPro 3.2.2, `varpro()` deletes incomplete cases
@@ -276,20 +293,6 @@
   where the earlier reading (a small negative hazard, specific to the
   macOS arm64 binary) was wrong on both counts, and
   kogalur/randomForestRHF#1, the inverted cumulative/dynamic AUC.
-
-- [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
-  now errors rather than compute a cumulative/dynamic AUC it knows to be
-  wrong. `DESCRIPTION` asks for `randomForestRHF (>= 2.0.3)`, but R does
-  not enforce a `Suggests` version at run time, so a session still
-  carrying 2.0.0 previously got the inverted curve with no warning. The
-  check is deliberately narrow: it applies only to
-  `method = "cumulative"`, since the incident definition never inherited
-  the problem, and only when
-  [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
-  does the computation. A supplied `auct_fit` is taken as given, because
-  an `auct.rhf` object records no version and may have been read from a
-  file built elsewhere. The message names the installed version and
-  points at `method = "incident"` as the alternative.
 
 - [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
   gains a `method` argument and now forwards `...` to

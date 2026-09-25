@@ -74,17 +74,6 @@ ranks local failures within the risk set at each time. Pick the one that
 matches the question you are asking, and read the two curves as separate
 estimands rather than as a check on each other.
 
-Cumulative/dynamic AUC was unreliable under randomForestRHF 2.0.0, which
-could push the curve below the 0.5 chance line on data the forest fits
-well. That was an upstream problem, fixed in 2.0.3. R does not enforce a
-`Suggests` version at run time, so `gg_auct()` checks the installed
-version itself and errors rather than compute a cumulative/dynamic curve
-it knows to be wrong. The check applies only when `gg_auct()` does the
-computation: `method = "incident"` is unaffected by the upstream problem
-and is never gated, and a supplied `auct_fit` is taken as given, since
-an `auct.rhf` object records no version and may have been read from a
-file. `gg_auct()` passes the values through unchanged in every case.
-
 ## References
 
 Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.

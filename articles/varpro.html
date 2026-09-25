@@ -592,7 +592,7 @@
 </div>
 </div>
 <p>Four predictors go in and one of them never becomes a candidate. With p in the hundreds the gap is not small.</p>
-<p>One sharp edge. <code>partialpro()</code> matches your <code>xvar.names</code> against <code>object$xvar.names</code> and quietly drops whatever it cannot find. Ask for twelve variables and you may get ten back, with no error, no warning, and nothing on the returned object to say so. A misspelled name behaves the same way. When it matters, check:</p>
+<p>One sharp edge. <code>partialpro()</code> matches your <code>xvar.names</code> against <code>object$xvar.names</code> and drops whatever it cannot find. Ask for twelve variables and you may get ten back. From varPro 3.3.0 it warns and names them, but only after the computation has run. A misspelled name behaves the same way. To find out before you spend the time, check:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">partialpro</a></span><span class="op">(</span><span class="va">v_boston</span>, xvar.names <span class="op">=</span> <span class="va">my_vars</span><span class="op">)</span></span>

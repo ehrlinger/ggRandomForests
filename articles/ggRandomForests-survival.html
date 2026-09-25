@@ -496,12 +496,6 @@
 <p>Patients with edema = 1 (edema despite diuretics) have markedly lower predicted survival.</p>
 </section><section class="level2"><h3 id="partial-dependence">Partial dependence<a class="anchor" aria-label="anchor" href="#partial-dependence"></a>
 </h3>
-<div>
-<blockquote>
-<p><strong>Warning</strong></p>
-<p><strong>Known issue (draft):</strong> <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">randomForestSRC::partial.rfsrc()</a></code> currently fails for survival forests in randomForestSRC ≥ 3.3. The partial dependence and surface sections below will show an error until this upstream bug is resolved. All other sections of this vignette are fully functional.</p>
-</blockquote>
-</div>
 <p>Partial dependence integrates out the effects of other covariates, giving a risk-adjusted view of how each predictor influences the response <span class="citation" data-cites="Friedman:2000">(<a href="#ref-Friedman:2000" role="doc-biblioref">Friedman 2001</a>)</span>. We use <code><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc()</a></code> which calls <code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">randomForestSRC::partial.rfsrc()</a></code> directly and returns a <code>gg_partial_rfsrc</code> object. For survival forests, the result includes a <code>time</code> column so <code>plot(pd)</code> produces one curve per predictor value over time, faceted by variable name.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">

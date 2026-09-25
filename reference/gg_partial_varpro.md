@@ -103,8 +103,8 @@ gg_partialpro(
   `partialpro` falls back to `varPro::get.topvars(object)`, which can
   return few or no variables for some fits (yielding empty
   `continuous`/`categorical` frames). A name you pass in `xvar.names`
-  that the fit cannot reach is dropped by `partialpro` without comment,
-  so you can ask for twelve variables and get ten; we warn and name the
+  that the fit cannot reach is dropped by `partialpro`, so you can ask
+  for twelve variables and get ten; `partialpro` warns and names the
   missing ones. See **Details**. Ignored, with a warning, when
   `part_dta` is supplied. With `scale = "chf"` the work goes through
   [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
@@ -148,13 +148,13 @@ where you stand.
 
 This bites when you bring a variable list in from somewhere else, say
 the top names off an `rfsrc` VIMP ranking. `partialpro` intersects your
-`xvar.names` with what it can reach and keeps the overlap without
-remarking on it, so a request for twelve variables can come back with
-ten and nothing in the result says so. It is the intermittent kind of
-trap: a top-10 list may come back whole while a top-12 list quietly
-loses two. We compare the two sets before calling `partialpro` and warn,
-naming what was dropped. A quick `setdiff(my_names, object$xvar.names)`
-answers the same question before you spend the computation.
+`xvar.names` with what it can reach and keeps the overlap, so a request
+for twelve variables can come back with ten. It is the intermittent kind
+of trap: a top-10 list may come back whole while a top-12 list loses
+two. `partialpro` warns and names what it dropped, but only after the
+isolation-forest work is done. A quick
+`setdiff(my_names, object$xvar.names)` answers the same question before
+you spend the computation.
 
 For a complete view, fit with both screens off:
 `varPro::varpro(..., sparse = FALSE, split.weight = FALSE)`.
@@ -511,12 +511,11 @@ wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
 #> [1] "qsec" "vs"  
 
-## Ask anyway and we warn, naming what partialpro() would have dropped
-## in silence.  (method = "rnd" is passed through to partialpro(); see
-## the note on isolation-forest method in Details.)
+## Ask anyway and partialpro() warns, naming what it dropped.
+## (method = "rnd" is passed through to partialpro(); see the note on
+## isolation-forest method in Details.)
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
                         method = "rnd")
-#> Warning: gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.
 #> Warning: partialpro(): skipping xvar.names not found in object$xvar.names: qsec, vs
 
 ## Refitting without the split-weight screen reaches every predictor.

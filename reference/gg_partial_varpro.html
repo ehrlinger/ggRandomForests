@@ -181,8 +181,8 @@ control which variables are computed (e.g. <code>xvar.names</code> or
 <code>varPro::get.topvars(object)</code>, which can return few or no variables
 for some fits (yielding empty <code>continuous</code>/<code>categorical</code>
 frames).  A name you pass in <code>xvar.names</code> that the fit cannot reach
-is dropped by <code>partialpro</code> without comment, so you can ask for twelve
-variables and get ten; we warn and name the missing ones.  See
+is dropped by <code>partialpro</code>, so you can ask for twelve variables and
+get ten; <code>partialpro</code> warns and names the missing ones.  See
 <strong>Details</strong>.  Ignored, with a warning, when <code>part_dta</code> is
 supplied.  With <code>scale = "chf"</code> the work goes through
 <code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code> rather than <code>partialpro</code>, so
@@ -222,13 +222,13 @@ data and the fit, so check rather than assume: <code>length(object$xvar.names)</
 against <code>ncol(object$x)</code> tells you where you stand.</p>
 <p>This bites when you bring a variable list in from somewhere else, say the
 top names off an <code>rfsrc</code> VIMP ranking.  <code>partialpro</code> intersects
-your <code>xvar.names</code> with what it can reach and keeps the overlap without
-remarking on it, so a request for twelve variables can come back with ten
-and nothing in the result says so.  It is the intermittent kind of trap: a
-top-10 list may come back whole while a top-12 list quietly loses two.  We
-compare the two sets before calling <code>partialpro</code> and warn, naming what
-was dropped.  A quick <code>setdiff(my_names, object$xvar.names)</code> answers
-the same question before you spend the computation.</p>
+your <code>xvar.names</code> with what it can reach and keeps the overlap, so a
+request for twelve variables can come back with ten.  It is the
+intermittent kind of trap: a top-10 list may come back whole while a top-12
+list loses two.  <code>partialpro</code> warns and names what it dropped, but only
+after the isolation-forest work is done.  A quick
+<code>setdiff(my_names, object$xvar.names)</code> answers the same question
+before you spend the computation.</p>
 <p>For a complete view, fit with both screens off:
 <code>varPro::varpro(..., sparse = FALSE, split.weight = FALSE)</code>.
 <code>split.weight = FALSE</code> is the one that lifts the ceiling. It puts
@@ -562,12 +562,11 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="va">wanted</span>, <span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "qsec" "vs"  </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Ask anyway and we warn, naming what partialpro() would have dropped</span></span></span>
-<span class="r-in"><span><span class="co">## in silence.  (method = "rnd" is passed through to partialpro(); see</span></span></span>
-<span class="r-in"><span><span class="co">## the note on isolation-forest method in Details.)</span></span></span>
+<span class="r-in"><span><span class="co">## Ask anyway and partialpro() warns, naming what it dropped.</span></span></span>
+<span class="r-in"><span><span class="co">## (method = "rnd" is passed through to partialpro(); see the note on</span></span></span>
+<span class="r-in"><span><span class="co">## isolation-forest method in Details.)</span></span></span>
 <span class="r-in"><span><span class="va">pd</span> <span class="op">&lt;-</span> <span class="fu">gg_partial_varpro</span><span class="op">(</span>object <span class="op">=</span> <span class="va">vp</span>, xvar.names <span class="op">=</span> <span class="va">wanted</span>,</span></span>
 <span class="r-in"><span>                        method <span class="op">=</span> <span class="st">"rnd"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>gg_partial_varpro: 2 of 4 requested 'xvar.names' are not in the varpro fit's reachable set and are silently dropped by varPro::partialpro(): qsec, vs. The fit reaches 6 of 10 predictors (object$xvar.names); varpro() screens in two stages, so a variable can be in the data and still be unreachable. Refit with varPro::varpro(..., split.weight = FALSE) to reach every predictor.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>partialpro(): skipping xvar.names not found in object$xvar.names: qsec, vs</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Refitting without the split-weight screen reaches every predictor.</span></span></span>
