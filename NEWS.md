@@ -3,6 +3,18 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `gg_vimp(nvar = )` on a multi-class `rfsrc` forest now keeps the `nvar`
+  most important variables. The importance matrix arrives in predictor order
+  and was trimmed before it was sorted, so `nvar = 2` on `iris` returned
+  `Sepal.Length` and `Sepal.Width`, the two least important. Variables are now
+  ranked by the overall (`all`) column first, as `which.outcome = 0` selects.
+  The `randomForest` method already did this.
+* `plot.gg_partial_varpro()` now draws only the `parametric` and
+  `nonparametric` curves by default. `causal` is a centered contrast that
+  starts at zero, so on a shared axis with the level curves it squeezed them
+  into a thin band; on a regression fit the levels sat near the response mean
+  and the contrast near 0. Ask for it with `type = "causal"` (or include it in
+  `type`), on an unbounded scale as before.
 * `gg_partial_varpro(scale = "prob")` now restores each subject's level
   before averaging, so the curve is the expected proportion it is documented
   as. `partialpro()` fits each subject's curve separately but returns every
@@ -64,7 +76,11 @@ ggRandomForests v4.0.0 (development)
   those regions. Supplying `xvar2.name` returns the second-order (interaction)
   surface for a pair of continuous predictors, which is zero everywhere when
   the two act additively. Survival forests are not supported, the same
-  limitation `gg_shap()` carries.
+  limitation `gg_shap()` carries. For a categorical predictor each step from
+  one level to the next averages the prediction change over the observations
+  at both levels, as Apley and Zhu define it. All the modified frames for a
+  variable, or for an interaction surface, go to the forest in one `predict()`
+  call.
 
   `plot()` and `autoplot()` methods draw the first-order curves as lines and
   bars faceted by variable, matching `plot.gg_partial_rfsrc()`'s layout so the
@@ -181,8 +197,12 @@ ggRandomForests v4.0.0 (development)
   frame `time / auc / se / lower / upper / marker` with an `iauc`
   attribute (Uno + standardized integrated AUC); `plot.gg_auct()` draws
   AUC(t) with a bootstrap CI ribbon when available and a 0.5 reference
-  line. `gg_auct.rhf(object, marker, auct_fit = NULL)` computes
-  `auct.rhf()` internally or reuses a cached fit.
+  line. `gg_auct.rhf(object, marker, auct_fit = NULL, method)` computes
+  `auct.rhf()` internally or reuses a cached fit. `method` chooses the
+  cumulative/dynamic (default) or incident/dynamic AUC; the result records it
+  as `attr(, "method")` and the plot names it on the y axis, since the two
+  curves otherwise look alike. A cached `auct_fit` decides the method, and a
+  `method` that contradicts it now warns rather than being dropped.
 * `gg_rhf_importance()` / `plot.gg_rhf_importance()`: tidy wrapper and point
   matrix for time-localized variable priority from
   `randomForestRHF::importance.rhf()` (RHF Phase 3). It returns

@@ -324,3 +324,51 @@ test_that("gg_ale_rfsrc does not count NA toward the cat_limit cardinality", {
   expect_gt(nrow(g$categorical), 0L)
   expect_equal(nrow(g$continuous), 0L)
 })
+
+test_that("categorical ALE steps average over both adjacent levels", {
+  ## pred = z * level code, so the step k -> k+1 changes the prediction by z.
+  ## Averaging over cases at level k AND k+1 (Apley and Zhu) gives the mean z
+  ## of those two levels; the upper level alone gives only its own mean.
+  d <- data.frame(g = factor(c("a", "a", "a", "b", "c", "c")),
+                  z = c(1, 1, 1, 10, 2, 2))
+  pred_fun <- function(nd) nd$z * as.integer(nd$g)
+  out <- ggRandomForests:::.ale_categorical("g", d, pred_fun,
+                                            model_levels = c("a", "b", "c"))
+  step_ab <- mean(d$z[d$g %in% c("a", "b")])      # 13 / 4
+  step_bc <- mean(d$z[d$g %in% c("b", "c")])      # 14 / 3
+  expect_equal(diff(out$yhat), c(step_ab, step_bc))
+})
+
+test_that("ALE predicts once per variable and once per interaction surface", {
+  ## Each bin (and each interaction cell corner) used to be its own predict()
+  ## call: 2,500 of them for a default interaction surface. Stack the frames and
+  ## predict once; the values must not change.
+  set.seed(9)
+  d <- data.frame(x1 = stats::runif(200), x2 = stats::runif(200))
+  calls <- 0L
+  pred_fun <- function(nd) {
+    calls <<- calls + 1L
+    2 * nd$x1 + nd$x2 + 3 * nd$x1 * nd$x2
+  }
+  cont <- ggRandomForests:::.ale_continuous("x1", d, pred_fun, n_eval = 10)
+  expect_equal(calls, 1L)
+  ## Linear-plus-interaction: the first-order ALE slope for x1 is 2 + 3 E[x2|bin].
+  expect_true(all(diff(cont$yhat) > 0))
+  calls <- 0L
+  int <- ggRandomForests:::.ale_interaction(pred_fun, d, "x1", "x2",
+                                            cat_limit = 10, n_eval = 5)
+  expect_equal(calls, 1L)
+  expect_true(all(is.finite(int$ale)))
+})
+
+test_that("ALE keeps an NA prediction visible instead of zeroing its bin", {
+  ## Only an EMPTY bin contributes no local effect. A bin whose predictions
+  ## include NA must stay NA, as the per-bin loop left it, rather than be
+  ## reported as a flat step.
+  d <- data.frame(x1 = seq(0, 1, length.out = 40))
+  pred_fun <- function(nd) ifelse(nd$x1 > 0.9, NA_real_, nd$x1)
+  cont <- ggRandomForests:::.ale_continuous("x1", d, pred_fun, n_eval = 4)
+  expect_true(anyNA(cont$yhat))
+  expect_equal(ggRandomForests:::.ale_group_mean(c(1, NA, 3), c(1, 1, 3), 3),
+               c(NA, 0, 3))
+})

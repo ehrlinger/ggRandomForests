@@ -194,7 +194,7 @@ shift <- function(x, shift_by = 1) {
     return(nms)
   }
 
-  rank_key <- .varpro_rank_of(nms, ranked)
+  rank_key <- .varpro_rank_of(nms, ranked, xnames = colnames(object$x))
   ## seq_along() as the tiebreaker keeps incoming order stable among names that
   ## share a rank (in practice, all the unranked ones at Inf).
   nms[order(rank_key, seq_along(nms))]
@@ -203,12 +203,14 @@ shift <- function(x, shift_by = 1) {
 ## Position of each name in the ranked vector.  Exact match wins; failing that a
 ## one-hot level (name followed by digits, e.g. sex0/sex1) is accepted and the
 ## best -- lowest -- position across levels is taken.  Requiring digits keeps
-## 'age' from being captured by 'age_group'.
+## 'age' from being captured by 'age_group'.  The fallback is only for a name
+## that is not itself a column of the feature matrix ('xnames'): a real column
+## such as x1 must not borrow the rank of x10.
 #' @keywords internal
-.varpro_rank_of <- function(nms, ranked) {
+.varpro_rank_of <- function(nms, ranked, xnames = NULL) {
   vapply(nms, function(nm) {
     hit <- which(ranked == nm)
-    if (length(hit) == 0L) {
+    if (length(hit) == 0L && !(nm %in% xnames)) {
       pat <- paste0("^", .escape_regex(nm), "[0-9]+$")
       hit <- grep(pat, ranked)
     }

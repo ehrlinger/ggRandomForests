@@ -298,8 +298,12 @@ gg_vimp.rfsrc <- function(object, nvar, ...) {
       colnames(gg_v)[1] <- which_col
       gg_dta <- gg_v
     } else {
-      # No specific class requested: attach variable names and pivot.
+      # No specific class requested: attach variable names and pivot. rfsrc's
+      # importance matrix is in predictor order, so rank by the overall
+      # measure (column 1, "all") before the nvar trim below keeps the top
+      # nvar rather than the first nvar.
       gg_dta$vars <- rownames(gg_dta)
+      gg_dta <- gg_dta[order(gg_dta[[1]], decreasing = TRUE), , drop = FALSE]
     }
 
     gg_dta <- gg_dta[seq_len(nvar), ]
