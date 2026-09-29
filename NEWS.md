@@ -3,6 +3,21 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `gg_partial_varpro(scale = "prob")` now restores each subject's level
+  before averaging, so the curve is the expected proportion it is documented
+  as. `partialpro()` fits each subject's curve separately but returns every
+  row at the cohort-mean intercept, keeping only the subject's slope. That put
+  every subject at the average log-odds, so `"prob"` nearly matched
+  `"prob_typical"` and missed the proportion it claims to estimate. Each
+  subject's curve is now shifted to pass through its own out-of-bag log-odds
+  at its observed value, and the shape `partialpro()` fitted is kept. On
+  simulated data with widely spread subjects, this cut the error against the
+  true partial dependence from 0.105 to 0.033 (8 of 8 seeds). **`"prob"`
+  curves change**, most on heterogeneous cohorts. The restoration needs
+  `object`; without it `"prob"` warns and returns the old curve. It is also
+  skipped when `...` passes a custom `learner` or `newdata`, and for binary
+  variables, which `partialpro()` already returns per subject. The provenance
+  records `anchored`.
 * `gg_partial_varpro(scale = "surv")` no longer returns survival above 1.
   `partialpro()` smooths each case's S(tau) with an unbounded polynomial, so
   where survival is near 1 (early horizons, before most events) the averaged
@@ -71,11 +86,11 @@ ggRandomForests v4.0.0 (development)
 
   They are different estimands and they disagree. The inverse logit is concave
   above zero and convex below it, so by Jensen `"prob"` is pulled toward 0.5 at
-  both ends, by more the more heterogeneous the cohort. Where the per-subject
-  log-odds carry an SD near 4.5, a point reading 0.96 under `"prob_typical"`
-  reads 0.74 under `"prob"` -- large enough to change how a figure is read, so
-  the choice should be deliberate. A figure captioned as a percentage of
-  patients wants `"prob"`. `?gg_partial_varpro` sets out both.
+  both ends, by more the more heterogeneous the cohort. In a simulation with
+  per-subject log-odds SD near 4, a point reading 0.13 under `"prob_typical"`
+  reads 0.35 under `"prob"` (true value 0.38) -- large enough to change how a
+  figure is read, so the choice should be deliberate. A figure captioned as a
+  percentage of patients wants `"prob"`. `?gg_partial_varpro` sets out both.
 
   The distinction applies only to the `continuous` frame; the `categorical`
   frame keeps values unaveraged, so both scales return the same numbers there.

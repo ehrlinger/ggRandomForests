@@ -258,7 +258,28 @@
 #' back-transforms to probability \eqn{P(Y = \mathrm{target})}, \code{"odds"} to
 #' the odds, and \code{"logodds"} keeps the raw scale.  The back-transform is
 #' applied per observation \emph{before} averaging, so the curve is the mean
-#' predicted probability, not the probability of the mean log-odds.  The
+#' predicted probability, not the probability of the mean log-odds.
+#'
+#' **Restoring each subject's level (scale = "prob"):** \code{partialpro} fits
+#' each subject's curve separately but returns every row at the cohort-mean
+#' intercept, keeping only the subject's own slope. On the log-odds scale that
+#' sets every subject to the average log-odds, and averaging per-subject
+#' probabilities then no longer gives the expected proportion. So for
+#' \code{"prob"}, \code{gg_partial_varpro} shifts each subject's curve to pass
+#' through that subject's own out-of-bag log-odds at its observed value of the
+#' variable, and then back-transforms and averages. The shape
+#' \code{partialpro} fitted is unchanged. This needs \code{object}, the
+#' classification fit, and is recorded as \code{anchored} in the provenance.
+#' Without \code{object}, or when \code{...} passes \code{partialpro} a custom
+#' \code{learner} or \code{newdata}, the curve is left as \code{partialpro}
+#' returned it (with a warning when \code{object} is missing). A precomputed
+#' \code{part_dta} is anchored whenever \code{object} is supplied, which
+#' assumes it came from \code{partialpro(object)} with its default learner; a
+#' \code{part_dta} built with your own learner should be passed with
+#' \code{scale = "logodds"} instead. A subject that was never out of bag takes
+#' its in-bag prediction as its anchor. Binary variables
+#' are never shifted, because \code{partialpro} already returns per-subject
+#' levels for them.  The
 #' \code{causal} contrast is shown only on \code{"logodds"} (see
 #' \code{\link{plot.gg_partial_varpro}}).
 #'
@@ -285,9 +306,13 @@
 #' Jensen's inequality \code{"prob"} is pulled toward \eqn{0.5} relative to
 #' \code{"prob_typical"}, at both ends of the curve. The gap widens with the
 #' spread of per-subject log-odds, and on a heterogeneous cohort it is not
-#' small: where the per-subject log-odds carry an SD near 4.5, a point reading
-#' \eqn{0.96} under \code{"prob_typical"} reads \eqn{0.74} under
-#' \code{"prob"}.
+#' small. In a simulation where a second variable spreads the subjects'
+#' log-odds to an SD near 4, one point reads \eqn{0.13} under
+#' \code{"prob_typical"} and \eqn{0.35} under \code{"prob"}, against a true
+#' partial dependence of \eqn{0.38}. Before the level restoration described
+#' above, \code{"prob"} read \eqn{0.14} there: with every subject at the mean
+#' log-odds, the two scales nearly coincide. \code{"prob_typical"} uses
+#' \code{partialpro}'s values as returned.
 #'
 #' Which to report is a question about the claim, not about the code. If the
 #' sentence is "what fraction of these patients would wean", that is
@@ -381,7 +406,8 @@
 #' )
 #' ## The two probability scales differ by the ORDER of averaging and
 #' ## back-transform, and disagree whenever subjects are heterogeneous.
-#' pa <- gg_partial_varpro(mock_data, scale = "prob")
+#' ## Mock data has no fit, so "prob" cannot restore subject levels and warns.
+#' pa <- suppressWarnings(gg_partial_varpro(mock_data, scale = "prob"))
 #' pt <- gg_partial_varpro(mock_data, scale = "prob_typical")
 #' head(data.frame(prob = pa$continuous$parametric,
 #'                 prob_typical = pt$continuous$parametric))
@@ -479,6 +505,9 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## 'value_scale' differs from the reported 'scale' only for surv recomputed
   ## here: those values are S(tau) from our learner and get clamped to [0, 1].
   value_scale <- scale
+  ## '...' reaches partialpro() only when part_dta is computed here; otherwise
+  ## it is warned as ignored above and must not change the result.
+  pp_dots <- if (is.null(part_dta)) names(list(...)) else character(0)
   if (is.null(part_dta)) {
     if (scale == "surv") value_scale <- "surv_learner"
     learner <- switch(scale,
@@ -505,6 +534,10 @@ gg_partial_varpro <- function(part_dta  = NULL,
 
   prov <- .varpro_provenance(object, scale, time, path = "A",
                              target = .varpro_target(object, list(...)))
+
+  anc <- .anchor_prob_scale(part_dta, object, scale, prov$target, pp_dots)
+  part_dta      <- anc$part_dta
+  prov$anchored <- anc$anchored
 
   dfs <- .build_varpro_dfs(part_dta, nvars, cat_limit, value_scale)
   continuous  <- dfs$continuous
@@ -738,6 +771,76 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## Classification target class label: the `target` passed through ... if any,
 ## else the last factor level of the response (partialpro's default target).
 ## NA for non-classification fits or when only part_dta is supplied.
+## partialpro() fits each case's curve separately but returns every case at the
+## cohort-mean intercept (yhat.par = global.mean + B %*% x^k). On the log-odds
+## scale that pins every case to the mean log-odds, so "prob"'s per-case
+## plogis-then-average no longer gives the expected proportion of the cohort.
+## Put each case's level back: shift its curve so it passes through the case's
+## own OOB log-odds at its observed x. The shape (the slopes partialpro kept) is
+## untouched. Binary variables are skipped: partialpro returns per-case level
+## means for them, without the swap.
+#' @keywords internal
+.anchor_varpro_levels <- function(part_dta, anchor) {
+  for (k in seq_along(part_dta)) {
+    feat <- part_dta[[k]]
+    if (length(unique(feat$xorg)) == 2L || is.null(feat$case)) next
+    offset <- vapply(seq_along(feat$case), function(i) {
+      r <- feat$case[i]
+      anchor[r] - stats::approx(feat$xvirtual, feat$yhat.par[i, ], feat$xorg[r],
+                                rule = 2)$y
+    }, numeric(1))
+    feat$yhat.par    <- feat$yhat.par    + offset
+    feat$yhat.nonpar <- feat$yhat.nonpar + offset
+    part_dta[[k]] <- feat
+  }
+  part_dta
+}
+
+## "prob" averages per-case probabilities, which needs each case's own level;
+## see .anchor_varpro_levels(). The anchors are the forest's OOB predictions,
+## so a caller's own learner or newdata puts the curves on a footing the
+## anchors don't share, and those are left as partialpro returned them.
+#' @keywords internal
+.anchor_prob_scale <- function(part_dta, object, scale, target, dot_names) {
+  if (scale != "prob") return(list(part_dta = part_dta, anchored = FALSE))
+  if (!is.null(object$rf) && identical(object$family, "class") &&
+      !any(c("learner", "newdata") %in% dot_names)) {
+    return(list(part_dta = .anchor_varpro_levels(
+                  part_dta, .varpro_oob_logodds(object, target)),
+                anchored = TRUE))
+  }
+  if (is.null(object)) {
+    warning("gg_partial_varpro: scale = 'prob' without 'object' cannot ",
+            "restore each case's level, so the curve averages cases pinned ",
+            "to the cohort-mean log-odds and is not the expected ",
+            "proportion. Supply 'object' (the classification varpro fit).",
+            call. = FALSE)
+  }
+  list(part_dta = part_dta, anchored = FALSE)
+}
+
+## Per-row OOB log-odds of the target class, clamped at 0.001 as partialpro's
+## own mylogodds() is, so the anchor and the curves share a scale. A case that
+## was never out of bag (common with few trees) has no OOB prediction; it takes
+## its in-bag one instead, since an NA anchor would drop the case from the
+## average without saying so.
+#' @keywords internal
+.varpro_oob_logodds <- function(object, target) {
+  pr  <- randomForestSRC::predict.rfsrc(object$rf, perf.type = "none")
+  pick <- function(p) {
+    if (is.null(p) || is.null(dim(p))) return(p)
+    ## 'target' is a class label, or an index when passed as a number.
+    col <- if (target %in% colnames(p)) target else as.integer(target)
+    p[, col]
+  }
+  p   <- pick(pr$predicted.oob)
+  inb <- pick(pr$predicted)
+  if (is.null(p)) p <- inb
+  miss <- is.na(p)
+  p[miss] <- inb[miss]
+  stats::qlogis(pmin(pmax(p, 1e-3), 1 - 1e-3))
+}
+
 #' @keywords internal
 .varpro_target <- function(object, dots) {
   if (is.null(object) || !identical(object$family, "class"))
@@ -972,8 +1075,10 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## plogis is concave above 0 and convex below it, so by Jensen these are not
 ## the same curve: "prob" is pulled toward 0.5 relative to "prob_typical", and
 ## the gap widens with the spread of per-subject log-odds.  On a heterogeneous
-## cohort it is large -- a point where "prob_typical" reads 0.96 can read 0.74
-## under "prob" when the per-subject log-odds carry an SD near 4.5.
+## cohort it is large: 0.13 under "prob_typical" against 0.35 under "prob" at
+## a per-subject log-odds SD near 4 (see the roxygen). "prob" needs the
+## per-case levels .anchor_varpro_levels() restores, or it collapses toward
+## "prob_typical".
 #' @keywords internal
 .varpro_column_summary <- function(mat, scale) {
   if (identical(scale, "prob_typical")) {

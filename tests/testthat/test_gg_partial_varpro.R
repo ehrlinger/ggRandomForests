@@ -291,7 +291,7 @@ test_that(".is_bounded_scale flags prob/odds/surv only", {
 ## ── v3.3.0 conversion in the extractor (mean of probabilities) ───────────────
 test_that("gg_partial_varpro: scale='prob' is mean of plogis, causal NA", {
   d <- make_mock_vpro_data()
-  res <- gg_partial_varpro(d, scale = "prob")
+  res <- suppressWarnings(gg_partial_varpro(d, scale = "prob"))  # no object
   age <- res$continuous[res$continuous$name == "age", ]
   expected <- colMeans(stats::plogis(d$age$yhat.par), na.rm = TRUE)
   expect_equal(age$parametric, expected)
@@ -335,7 +335,7 @@ test_that(".partial_varpro_ylabel: prob/odds/logodds/surv labels", {
 ## ── v3.3.0 plot: causal hidden on bounded scales ─────────────────────────────
 test_that("plot.gg_partial_varpro: bounded scale drops causal, warns if asked", {
   d   <- make_mock_vpro_data()
-  res <- gg_partial_varpro(d, nvars = 1, scale = "prob")
+  res <- suppressWarnings(gg_partial_varpro(d, nvars = 1, scale = "prob"))
   expect_s3_class(plot(res), "ggplot")
   expect_warning(plot(res, type = "causal"), regexp = "causal")
 })
@@ -551,7 +551,7 @@ test_that("gg_partial_varpro: scale='surv' stays in [0,1] near S = 1", {
   r <- suppressWarnings(gg_partial_varpro(object = vp, scale = "surv",
                                           time = tau))
   vals <- c(r$continuous$parametric, r$continuous$nonparametric,
-            r$categorical$parametric, r$categorical$nonparametric)
+            r$categorical[["parametric"]], r$categorical[["nonparametric"]])
   expect_true(length(vals) > 0L)
   expect_true(all(vals >= 0 & vals <= 1))
 })
@@ -584,6 +584,118 @@ test_that("surv_learner: continuous curve is averaged, then clamped", {
   ## The categorical frame is unaveraged, so it clamps per value.
   sex <- dfs$categorical
   expect_equal(sex$parametric, pmin(pmax(as.vector(d$sex$yhat.par), 0), 1))
+})
+
+## ── 4.0.0 "prob" anchored at each case's own level ──────────────────────────
+## partialpro returns every case at the cohort-mean intercept; "prob" restores
+## each case's level from the forest's OOB log-odds before plogis-then-average.
+test_that(".anchor_varpro_levels passes each curve through its anchor", {
+  d <- make_mock_vpro_data()
+  d$age$case <- seq_len(nrow(d$age$yhat.par))
+  d$sex$case <- seq_len(nrow(d$sex$yhat.par))
+  anchor <- seq(-2, 2, length.out = nrow(d$age$yhat.par))
+  out <- ggRandomForests:::.anchor_varpro_levels(d, anchor)
+  at_obs <- vapply(seq_along(anchor), function(i) {
+    stats::approx(out$age$xvirtual, out$age$yhat.par[i, ], d$age$xorg[i],
+                  rule = 2)$y
+  }, numeric(1))
+  expect_equal(at_obs, anchor)
+  ## Shape is kept: each row moves by one constant.
+  shift <- out$age$yhat.par - d$age$yhat.par
+  expect_equal(apply(shift, 1, stats::sd), rep(0, nrow(shift)))
+  expect_equal(out$age$yhat.nonpar - d$age$yhat.nonpar, shift)
+  expect_equal(out$age$yhat.causal, d$age$yhat.causal)
+  ## Binary variables carry per-case levels already and are left alone.
+  expect_identical(out$sex, d$sex)
+})
+
+test_that("gg_partial_varpro: 'prob' is anchored and tracks the true PD", {
+  skip_on_cran()
+  skip_if_not_installed("varPro")
+  set.seed(3)
+  n <- 300
+  d <- data.frame(x1 = stats::rnorm(n), x2 = stats::rnorm(n),
+                  x3 = stats::rnorm(n))
+  ## x2 spreads the cases' levels widely; that is where the swap bites.
+  d$y <- factor(stats::rbinom(n, 1, stats::plogis(1.5 * d$x1 + 3 * d$x2)))
+  vp  <- varPro::varpro(y ~ ., d, ntree = 100)
+  set.seed(1)
+  pp  <- varPro::partialpro(vp, xvar.names = "x1")
+  r   <- gg_partial_varpro(part_dta = pp, object = vp, scale = "prob")
+  expect_true(attr(r, "provenance")$anchored)
+  un  <- suppressWarnings(gg_partial_varpro(part_dta = pp, scale = "prob"))
+  grid  <- stats::quantile(d$x1, seq(0.05, 0.95, by = 0.1))
+  truth <- vapply(grid, function(g) mean(stats::plogis(1.5 * g + 3 * d$x2)),
+                  numeric(1))
+  err <- function(res) {
+    cont <- res$continuous
+    mean(abs(stats::approx(cont$variable, cont$parametric, grid,
+                           rule = 2)$y - truth))
+  }
+  expect_lt(err(r), err(un))
+  expect_lt(err(r), 0.06)
+})
+
+test_that("gg_partial_varpro: 'prob' without object warns and is not anchored", {
+  expect_warning(res <- gg_partial_varpro(make_mock_vpro_data(),
+                                          scale = "prob"),
+                 "cannot restore each case's level")
+  expect_false(attr(res, "provenance")$anchored)
+})
+
+test_that("gg_partial_varpro: a custom learner in ... is not anchored", {
+  skip_on_cran()
+  skip_if_not_installed("varPro")
+  set.seed(4)
+  dat <- data.frame(y = factor(rep(c("a", "b"), 60)),
+                    x1 = stats::rnorm(120), x2 = stats::rnorm(120))
+  vp  <- varPro::varpro(y ~ ., dat, ntree = 40, nvar = 2)
+  lrn <- function(newx) {
+    if (missing(newx)) newx <- vp$x
+    randomForestSRC::predict.rfsrc(vp$rf, newx, perf.type = "none")$predicted
+  }
+  r <- suppressMessages(gg_partial_varpro(object = vp, scale = "prob",
+                                          nvars = 1, learner = lrn))
+  expect_false(attr(r, "provenance")$anchored)
+})
+
+test_that("gg_partial_varpro: ignored ... cannot switch anchoring off", {
+  skip_on_cran()
+  skip_if_not_installed("varPro")
+  set.seed(6)
+  ## x1 carries real signal, so partialpro() reliably returns it. On a pure
+  ## noise outcome it can come back empty (seen on R 4.5), and part_dta = NULL
+  ## would then mean "compute it", which is not the path under test.
+  x1  <- stats::rnorm(120)
+  dat <- data.frame(y = factor(stats::rbinom(120, 1, stats::plogis(2 * x1))),
+                    x1 = x1, x2 = stats::rnorm(120))
+  vp  <- varPro::varpro(y ~ ., dat, ntree = 40, nvar = 2)
+  set.seed(1)
+  pp  <- varPro::partialpro(vp, xvar.names = "x1")
+  expect_true("x1" %in% names(pp))
+  base <- gg_partial_varpro(part_dta = pp, object = vp, scale = "prob")
+  ## With part_dta supplied, '...' is reported as ignored, so it must be.
+  r <- suppressWarnings(gg_partial_varpro(part_dta = pp, object = vp,
+                                          scale = "prob",
+                                          learner = function(newx) 0))
+  expect_true(attr(r, "provenance")$anchored)
+  expect_equal(r$continuous, base$continuous)
+})
+
+test_that(".varpro_oob_logodds keeps never-OOB cases via in-bag predictions", {
+  skip_on_cran()
+  skip_if_not_installed("varPro")
+  set.seed(1)
+  d  <- data.frame(y = factor(stats::rbinom(200, 1, 0.5)),
+                   x1 = stats::rnorm(200), x2 = stats::rnorm(200))
+  vp <- varPro::varpro(y ~ ., d, ntree = 5)
+  pr <- randomForestSRC::predict.rfsrc(vp$rf, perf.type = "none")
+  expect_true(anyNA(pr$predicted.oob))       # the case being tested
+  a  <- ggRandomForests:::.varpro_oob_logodds(vp, "1")
+  expect_false(anyNA(a))
+  ok <- !is.na(pr$predicted.oob[, "1"])
+  expect_equal(stats::plogis(a[ok]),
+               pmin(pmax(pr$predicted.oob[ok, "1"], 1e-3), 1 - 1e-3))
 })
 
 test_that("gg_partial_varpro: precomputed part_dta on 'surv' is not clamped", {

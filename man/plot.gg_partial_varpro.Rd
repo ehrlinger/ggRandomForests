@@ -270,7 +270,8 @@ plot(pp, type = c("parametric", "nonparametric"))
 plot(pp, type = "parametric", panels = spec) & ggplot2::theme_minimal()
 
 ## complement = TRUE reads a failure model as its success probability.
-pp_prob <- gg_partial_varpro(mock_data, scale = "prob")
+## (Mock data has no fit to restore subject levels from, hence the warning.)
+pp_prob <- suppressWarnings(gg_partial_varpro(mock_data, scale = "prob"))
 plot(pp_prob, type = "parametric", complement = TRUE)
 
 }
