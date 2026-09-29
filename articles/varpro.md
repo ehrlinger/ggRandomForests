@@ -204,16 +204,19 @@ gg_pd <- if (is.null(.vp$pd_boston)) {
 } else {
   .vp$pd_boston
 }
-plot(gg_pd)
+plot(gg_pd, type = c("parametric", "nonparametric", "causal"))
 ```
 
 ![](varpro_files/figure-html/boston-gg-partial-varpro-1.png)
 
 Each panel is a single predictor. The three curves correspond to the
 three estimators varPro carries (parametric, non-parametric, and
-causal); read them as a sensitivity analysis. When all three agree, you
-have a stable signal; when the causal curve diverges from the others,
-that’s a hint that the variable’s observed relationship with the
+causal); read them as a sensitivity analysis.
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) draws only the
+first two by default, because `causal` is a contrast that starts at zero
+rather than a level, so we ask for all three here. When all three agree,
+you have a stable signal; when the causal curve diverges from the
+others, that’s a hint that the variable’s observed relationship with the
 response may be partly driven by its correlation with other predictors
 in the rule regions, not by a direct effect.
 

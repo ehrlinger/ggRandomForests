@@ -61,8 +61,11 @@ gg_auct(
 A `data.frame` of class `c("gg_auct", "data.frame")` with columns
 `time`, `auc`, `se`, `lower`, `upper`, `marker` (CI columns `NA` when no
 bootstrap), an `iauc` attribute (a list with `uno`, `std`, `uno.se`,
-`std.se`, `conf.level`), and a `provenance` attribute derived from
-`object` (source, family, ntree, n).
+`std.se`, `conf.level`), a `method` attribute (`"cumulative"` or
+`"incident"`, taken from the `auct.rhf` fit, which is what
+[`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md)
+names on its y axis), and a `provenance` attribute derived from `object`
+(source, family, ntree, n).
 
 ## Note
 

@@ -193,7 +193,7 @@
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
 <span>  <span class="va">.vp</span><span class="op">$</span><span class="va">pd_boston</span></span>
 <span><span class="op">}</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_pd</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg_pd</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parametric"</span>, <span class="st">"nonparametric"</span>, <span class="st">"causal"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="varpro_files/figure-html/boston-gg-partial-varpro-1.png"></p>
@@ -201,7 +201,7 @@
 </div>
 </div>
 </div>
-<p>Each panel is a single predictor. The three curves correspond to the three estimators varPro carries (parametric, non-parametric, and causal); read them as a sensitivity analysis. When all three agree, you have a stable signal; when the causal curve diverges from the others, that’s a hint that the variable’s observed relationship with the response may be partly driven by its correlation with other predictors in the rule regions, not by a direct effect.</p>
+<p>Each panel is a single predictor. The three curves correspond to the three estimators varPro carries (parametric, non-parametric, and causal); read them as a sensitivity analysis. <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> draws only the first two by default, because <code>causal</code> is a contrast that starts at zero rather than a level, so we ask for all three here. When all three agree, you have a stable signal; when the causal curve diverges from the others, that’s a hint that the variable’s observed relationship with the response may be partly driven by its correlation with other predictors in the rule regions, not by a direct effect.</p>
 <p>Because <code>partialpro()</code> operates within the <em>local</em> neighborhoods defined by the release rules, these curves reflect what happens in the part of the predictor space the forest actually visited, not a global extrapolation from a fitted model. That is both a strength (no out-of-distribution extrapolation) and a limit (sparse regions of the predictor space will have wider effective intervals, even if the plot doesn’t always show them explicitly).</p>
 </section><section class="level2"><h3 id="per-rule-lasso-refinement-with-gg_beta_varpro">Per-rule lasso refinement with <code>gg_beta_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#per-rule-lasso-refinement-with-gg_beta_varpro"></a>

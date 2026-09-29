@@ -113,8 +113,10 @@ handed off to <code><a href="plot.gg_partial_rfsrc.html">plot.gg_partial_rfsrc</
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>Character vector; one or more of <code>"parametric"</code>,
-<code>"nonparametric"</code>, <code>"causal"</code>.  Defaults to all three.
-Ignored for path-C objects.</p></dd>
+<code>"nonparametric"</code>, <code>"causal"</code>.  Defaults to the two level curves,
+<code>"parametric"</code> and <code>"nonparametric"</code>.  <code>"causal"</code> is a
+centered contrast rather than a level, so it has to be asked for, and it is
+shown only on an unbounded scale.  Ignored for path-C objects.</p></dd>
 
 
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>

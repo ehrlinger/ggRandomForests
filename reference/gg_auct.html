@@ -125,8 +125,10 @@ used when <code>auct_fit</code> is supplied, though the value is still validated
     <p>A <code>data.frame</code> of class <code>c("gg_auct", "data.frame")</code> with columns
 <code>time</code>, <code>auc</code>, <code>se</code>, <code>lower</code>, <code>upper</code>, <code>marker</code> (CI columns <code>NA</code> when no
 bootstrap), an <code>iauc</code> attribute (a list with <code>uno</code>, <code>std</code>, <code>uno.se</code>,
-<code>std.se</code>, <code>conf.level</code>), and a <code>provenance</code> attribute derived from
-<code>object</code> (source, family, ntree, n).</p>
+<code>std.se</code>, <code>conf.level</code>), a <code>method</code> attribute (<code>"cumulative"</code> or
+<code>"incident"</code>, taken from the <code>auct.rhf</code> fit, which is what
+<code><a href="plot.gg_auct.html">plot.gg_auct()</a></code> names on its y axis), and a <code>provenance</code> attribute
+derived from <code>object</code> (source, family, ntree, n).</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>

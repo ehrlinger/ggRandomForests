@@ -46,7 +46,10 @@ plot(
 - type:
 
   Character vector; one or more of `"parametric"`, `"nonparametric"`,
-  `"causal"`. Defaults to all three. Ignored for path-C objects.
+  `"causal"`. Defaults to the two level curves, `"parametric"` and
+  `"nonparametric"`. `"causal"` is a centered contrast rather than a
+  level, so it has to be asked for, and it is shown only on an unbounded
+  scale. Ignored for path-C objects.
 
 - labels:
 
