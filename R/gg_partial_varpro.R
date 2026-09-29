@@ -272,7 +272,12 @@
 #' classification fit, and is recorded as \code{anchored} in the provenance.
 #' Without \code{object}, or when \code{...} passes \code{partialpro} a custom
 #' \code{learner} or \code{newdata}, the curve is left as \code{partialpro}
-#' returned it (with a warning when \code{object} is missing). Binary variables
+#' returned it (with a warning when \code{object} is missing). A precomputed
+#' \code{part_dta} is anchored whenever \code{object} is supplied, which
+#' assumes it came from \code{partialpro(object)} with its default learner; a
+#' \code{part_dta} built with your own learner should be passed with
+#' \code{scale = "logodds"} instead. A subject that was never out of bag takes
+#' its in-bag prediction as its anchor. Binary variables
 #' are never shifted, because \code{partialpro} already returns per-subject
 #' levels for them.  The
 #' \code{causal} contrast is shown only on \code{"logodds"} (see
@@ -500,6 +505,9 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## 'value_scale' differs from the reported 'scale' only for surv recomputed
   ## here: those values are S(tau) from our learner and get clamped to [0, 1].
   value_scale <- scale
+  ## '...' reaches partialpro() only when part_dta is computed here; otherwise
+  ## it is warned as ignored above and must not change the result.
+  pp_dots <- if (is.null(part_dta)) names(list(...)) else character(0)
   if (is.null(part_dta)) {
     if (scale == "surv") value_scale <- "surv_learner"
     learner <- switch(scale,
@@ -527,8 +535,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
   prov <- .varpro_provenance(object, scale, time, path = "A",
                              target = .varpro_target(object, list(...)))
 
-  anc <- .anchor_prob_scale(part_dta, object, scale, prov$target,
-                            names(list(...)))
+  anc <- .anchor_prob_scale(part_dta, object, scale, prov$target, pp_dots)
   part_dta      <- anc$part_dta
   prov$anchored <- anc$anchored
 
@@ -813,17 +820,24 @@ gg_partial_varpro <- function(part_dta  = NULL,
 }
 
 ## Per-row OOB log-odds of the target class, clamped at 0.001 as partialpro's
-## own mylogodds() is, so the anchor and the curves share a scale.
+## own mylogodds() is, so the anchor and the curves share a scale. A case that
+## was never out of bag (common with few trees) has no OOB prediction; it takes
+## its in-bag one instead, since an NA anchor would drop the case from the
+## average without saying so.
 #' @keywords internal
 .varpro_oob_logodds <- function(object, target) {
-  pr <- randomForestSRC::predict.rfsrc(object$rf, perf.type = "none")
-  p  <- pr$predicted.oob
-  if (is.null(p)) p <- pr$predicted
-  if (!is.null(dim(p))) {
+  pr  <- randomForestSRC::predict.rfsrc(object$rf, perf.type = "none")
+  pick <- function(p) {
+    if (is.null(p) || is.null(dim(p))) return(p)
     ## 'target' is a class label, or an index when passed as a number.
     col <- if (target %in% colnames(p)) target else as.integer(target)
-    p <- p[, col]
+    p[, col]
   }
+  p   <- pick(pr$predicted.oob)
+  inb <- pick(pr$predicted)
+  if (is.null(p)) p <- inb
+  miss <- is.na(p)
+  p[miss] <- inb[miss]
   stats::qlogis(pmin(pmax(p, 1e-3), 1 - 1e-3))
 }
 

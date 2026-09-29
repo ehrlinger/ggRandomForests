@@ -259,7 +259,12 @@ variable, and then back-transforms and averages. The shape
 classification fit, and is recorded as \code{anchored} in the provenance.
 Without \code{object}, or when \code{...} passes \code{partialpro} a custom
 \code{learner} or \code{newdata}, the curve is left as \code{partialpro}
-returned it (with a warning when \code{object} is missing). Binary variables
+returned it (with a warning when \code{object} is missing). A precomputed
+\code{part_dta} is anchored whenever \code{object} is supplied, which
+assumes it came from \code{partialpro(object)} with its default learner; a
+\code{part_dta} built with your own learner should be passed with
+\code{scale = "logodds"} instead. A subject that was never out of bag takes
+its in-bag prediction as its anchor. Binary variables
 are never shifted, because \code{partialpro} already returns per-subject
 levels for them.  The
 \code{causal} contrast is shown only on \code{"logodds"} (see

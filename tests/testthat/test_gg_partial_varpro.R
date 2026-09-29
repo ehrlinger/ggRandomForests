@@ -659,6 +659,40 @@ test_that("gg_partial_varpro: a custom learner in ... is not anchored", {
   expect_false(attr(r, "provenance")$anchored)
 })
 
+test_that("gg_partial_varpro: ignored ... cannot switch anchoring off", {
+  skip_on_cran()
+  skip_if_not_installed("varPro")
+  set.seed(6)
+  dat <- data.frame(y = factor(rep(c("a", "b"), 60)),
+                    x1 = stats::rnorm(120), x2 = stats::rnorm(120))
+  vp  <- varPro::varpro(y ~ ., dat, ntree = 40, nvar = 2)
+  set.seed(1)
+  pp  <- varPro::partialpro(vp, xvar.names = "x1")
+  base <- gg_partial_varpro(part_dta = pp, object = vp, scale = "prob")
+  ## With part_dta supplied, '...' is reported as ignored, so it must be.
+  r <- suppressWarnings(gg_partial_varpro(part_dta = pp, object = vp,
+                                          scale = "prob",
+                                          learner = function(newx) 0))
+  expect_true(attr(r, "provenance")$anchored)
+  expect_equal(r$continuous, base$continuous)
+})
+
+test_that(".varpro_oob_logodds keeps never-OOB cases via in-bag predictions", {
+  skip_on_cran()
+  skip_if_not_installed("varPro")
+  set.seed(1)
+  d  <- data.frame(y = factor(stats::rbinom(200, 1, 0.5)),
+                   x1 = stats::rnorm(200), x2 = stats::rnorm(200))
+  vp <- varPro::varpro(y ~ ., d, ntree = 5)
+  pr <- randomForestSRC::predict.rfsrc(vp$rf, perf.type = "none")
+  expect_true(anyNA(pr$predicted.oob))       # the case being tested
+  a  <- ggRandomForests:::.varpro_oob_logodds(vp, "1")
+  expect_false(anyNA(a))
+  ok <- !is.na(pr$predicted.oob[, "1"])
+  expect_equal(stats::plogis(a[ok]),
+               pmin(pmax(pr$predicted.oob[ok, "1"], 1e-3), 1 - 1e-3))
+})
+
 test_that("gg_partial_varpro: precomputed part_dta on 'surv' is not clamped", {
   ## A precomputed part_dta carries only the label; its values may not be on
   ## the S scale at all, so they pass through untouched.
