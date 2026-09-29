@@ -309,8 +309,13 @@ scales return the same numbers there.
 
 **Survival probability (scale = "surv"):** `scale = "surv"` (the
 survival default) computes \\S(\tau \mid x)\\ through `partialpro` (the
-same UVT engine as mortality and RMST), bounded in \\\[0, 1\]\\. When
-`time` is not supplied, \\\tau\\ defaults to the **median follow-up
+same UVT engine as mortality and RMST), bounded in \\\[0, 1\]\\.
+`partialpro` smooths each case's \\S(\tau)\\ with an unbounded
+polynomial, so where survival is near 1 the averaged curve can run
+slightly past it; the curve is clamped to \\\[0, 1\]\\ after averaging,
+and the categorical frame per value. The curve is still the average of
+the smoothed per-case \\S(\tau)\\, with only impossible values changed.
+When `time` is not supplied, \\\tau\\ defaults to the **median follow-up
 time** of the fit, a data-driven horizon that is always in the model's
 own time units, so it cannot be mis-specified the way a hand-typed
 \\\tau\\ can. The resolved \\\tau\\ is reported in a message and the
@@ -501,7 +506,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 6
+#> [1] 7
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 

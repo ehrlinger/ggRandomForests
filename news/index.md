@@ -2,6 +2,18 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- `gg_partial_varpro(scale = "surv")` no longer returns survival
+  above 1. `partialpro()` smooths each case’s S(tau) with an unbounded
+  polynomial, so where survival is near 1 (early horizons, before most
+  events) the averaged curve ran up to about a percentage point past it.
+  The curve is now clamped to \[0, 1\] after averaging, and the
+  categorical frame per value. Only the impossible values change;
+  everything in range is exactly as before. Smoothing on the logit scale
+  was tried and rejected: `partialpro()` replaces each case’s intercept
+  with the cohort mean, so on that scale the curve’s level depends on
+  how S = 0 and S = 1 are clamped. A precomputed `part_dta` labelled
+  `"surv"` passes through unchanged.
+
 - `Imports` now requires `varPro (>= 3.3.0)`. From that release
   `partialpro()` warns and names any requested `xvar.names` the fit
   cannot reach, so

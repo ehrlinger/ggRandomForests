@@ -365,7 +365,12 @@ draw boxplots, so there is no averaging order to choose and the two scales
 return the same numbers there.</p>
 <p><strong>Survival probability (scale = "surv"):</strong> <code>scale = "surv"</code> (the
 survival default) computes \(S(\tau \mid x)\) through <code>partialpro</code>
-(the same UVT engine as mortality and RMST), bounded in \([0, 1]\).  When
+(the same UVT engine as mortality and RMST), bounded in \([0, 1]\).
+<code>partialpro</code> smooths each case's \(S(\tau)\) with an unbounded
+polynomial, so where survival is near 1 the averaged curve can run slightly
+past it; the curve is clamped to \([0, 1]\) after averaging, and the
+categorical frame per value.  The curve is still the average of the smoothed
+per-case \(S(\tau)\), with only impossible values changed.  When
 <code>time</code> is not supplied, \(\tau\) defaults to the <strong>median
 follow-up time</strong> of the fit, a data-driven horizon that is always in the
 model's own time units, so it cannot be mis-specified the way a hand-typed
@@ -552,7 +557,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>                    <span class="co"># predictors in the data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span>         <span class="co"># what the fit reaches</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.topvars</a></span><span class="op">(</span><span class="va">vp</span><span class="op">)</span><span class="op">)</span>   <span class="co"># the default when xvar.names is absent</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span></span></span>
