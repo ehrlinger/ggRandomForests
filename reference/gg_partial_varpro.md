@@ -266,8 +266,28 @@ returns classification effects as *log-odds* of the target class.
 probability \\P(Y = \mathrm{target})\\, `"odds"` to the odds, and
 `"logodds"` keeps the raw scale. The back-transform is applied per
 observation *before* averaging, so the curve is the mean predicted
-probability, not the probability of the mean log-odds. The `causal`
-contrast is shown only on `"logodds"` (see
+probability, not the probability of the mean log-odds.
+
+**Restoring each subject's level (scale = "prob"):** `partialpro` fits
+each subject's curve separately but returns every row at the cohort-mean
+intercept, keeping only the subject's own slope. On the log-odds scale
+that sets every subject to the average log-odds, and averaging
+per-subject probabilities then no longer gives the expected proportion.
+So for `"prob"`, `gg_partial_varpro` shifts each subject's curve to pass
+through that subject's own out-of-bag log-odds at its observed value of
+the variable, and then back-transforms and averages. The shape
+`partialpro` fitted is unchanged. This needs `object`, the
+classification fit, and is recorded as `anchored` in the provenance.
+Without `object`, or when `...` passes `partialpro` a custom `learner`
+or `newdata`, the curve is left as `partialpro` returned it (with a
+warning when `object` is missing). A precomputed `part_dta` is anchored
+whenever `object` is supplied, which assumes it came from
+`partialpro(object)` with its default learner; a `part_dta` built with
+your own learner should be passed with `scale = "logodds"` instead. A
+subject that was never out of bag takes its in-bag prediction as its
+anchor. Binary variables are never shifted, because `partialpro` already
+returns per-subject levels for them. The `causal` contrast is shown only
+on `"logodds"` (see
 [`plot.gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)).
 
 **Two probability scales, and why they disagree (scale = "prob" vs
@@ -292,8 +312,13 @@ These are different estimands and they do not agree.
 Jensen's inequality `"prob"` is pulled toward \\0.5\\ relative to
 `"prob_typical"`, at both ends of the curve. The gap widens with the
 spread of per-subject log-odds, and on a heterogeneous cohort it is not
-small: where the per-subject log-odds carry an SD near 4.5, a point
-reading \\0.96\\ under `"prob_typical"` reads \\0.74\\ under `"prob"`.
+small. In a simulation where a second variable spreads the subjects'
+log-odds to an SD near 4, one point reads \\0.13\\ under
+`"prob_typical"` and \\0.35\\ under `"prob"`, against a true partial
+dependence of \\0.38\\. Before the level restoration described above,
+`"prob"` read \\0.14\\ there: with every subject at the mean log-odds,
+the two scales nearly coincide. `"prob_typical"` uses `partialpro`'s
+values as returned.
 
 Which to report is a question about the claim, not about the code. If
 the sentence is "what fraction of these patients would wean", that is
@@ -461,7 +486,8 @@ mock_data <- list(
 )
 ## The two probability scales differ by the ORDER of averaging and
 ## back-transform, and disagree whenever subjects are heterogeneous.
-pa <- gg_partial_varpro(mock_data, scale = "prob")
+## Mock data has no fit, so "prob" cannot restore subject levels and warns.
+pa <- suppressWarnings(gg_partial_varpro(mock_data, scale = "prob"))
 pt <- gg_partial_varpro(mock_data, scale = "prob_typical")
 head(data.frame(prob = pa$continuous$parametric,
                 prob_typical = pt$continuous$parametric))

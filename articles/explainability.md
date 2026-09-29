@@ -331,10 +331,19 @@ choice:
   log-odds.
 
 They disagree, and by more the more heterogeneous your cohort is,
-because the inverse logit bends. On a real fit whose per-subject
-log-odds carried a standard deviation near 4.5, a point reading 0.96
-under `"prob_typical"` read 0.74 under `"prob"`. A figure captioned as a
-percentage of patients wants `"prob"`. See
+because the inverse logit bends. In a simulation where a second variable
+spreads the subjects’ log-odds to a standard deviation near 4, one point
+reads 0.13 under `"prob_typical"` and 0.35 under `"prob"`, against a
+true partial dependence of 0.38. A figure captioned as a percentage of
+patients wants `"prob"`.
+
+One catch makes `"prob"` depend on the fit. `partialpro()` returns every
+subject at the cohort-mean level and keeps only each subject’s slope,
+which on its own would put every subject at the average log-odds and
+make the two scales nearly agree.
+[`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+restores each subject’s level from the forest’s out-of-bag predictions,
+so pass `object =` whenever you want `"prob"`. See
 [`?gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
 for the full argument.
 

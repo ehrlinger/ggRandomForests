@@ -346,7 +346,8 @@ No. of variables tried at each split: 5
 <li>
 <code>scale = "prob_typical"</code> averages on the log-odds scale, then transforms once. That is the probability for a subject at the mean log-odds.</li>
 </ul>
-<p>They disagree, and by more the more heterogeneous your cohort is, because the inverse logit bends. On a real fit whose per-subject log-odds carried a standard deviation near 4.5, a point reading 0.96 under <code>"prob_typical"</code> read 0.74 under <code>"prob"</code>. A figure captioned as a percentage of patients wants <code>"prob"</code>. See <code><a href="../reference/gg_partial_varpro.html">?gg_partial_varpro</a></code> for the full argument.</p>
+<p>They disagree, and by more the more heterogeneous your cohort is, because the inverse logit bends. In a simulation where a second variable spreads the subjects’ log-odds to a standard deviation near 4, one point reads 0.13 under <code>"prob_typical"</code> and 0.35 under <code>"prob"</code>, against a true partial dependence of 0.38. A figure captioned as a percentage of patients wants <code>"prob"</code>.</p>
+<p>One catch makes <code>"prob"</code> depend on the fit. <code>partialpro()</code> returns every subject at the cohort-mean level and keeps only each subject’s slope, which on its own would put every subject at the average log-odds and make the two scales nearly agree. <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code> restores each subject’s level from the forest’s out-of-bag predictions, so pass <code>object =</code> whenever you want <code>"prob"</code>. See <code><a href="../reference/gg_partial_varpro.html">?gg_partial_varpro</a></code> for the full argument.</p>
 </section></section><section class="level2"><h2 id="which-one-do-you-reach-for">Which one do you reach for?<a class="anchor" aria-label="anchor" href="#which-one-do-you-reach-for"></a>
 </h2>
 <table class="table caption-top">
