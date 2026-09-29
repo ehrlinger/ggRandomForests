@@ -663,11 +663,16 @@ test_that("gg_partial_varpro: ignored ... cannot switch anchoring off", {
   skip_on_cran()
   skip_if_not_installed("varPro")
   set.seed(6)
-  dat <- data.frame(y = factor(rep(c("a", "b"), 60)),
-                    x1 = stats::rnorm(120), x2 = stats::rnorm(120))
+  ## x1 carries real signal, so partialpro() reliably returns it. On a pure
+  ## noise outcome it can come back empty (seen on R 4.5), and part_dta = NULL
+  ## would then mean "compute it", which is not the path under test.
+  x1  <- stats::rnorm(120)
+  dat <- data.frame(y = factor(stats::rbinom(120, 1, stats::plogis(2 * x1))),
+                    x1 = x1, x2 = stats::rnorm(120))
   vp  <- varPro::varpro(y ~ ., dat, ntree = 40, nvar = 2)
   set.seed(1)
   pp  <- varPro::partialpro(vp, xvar.names = "x1")
+  expect_true("x1" %in% names(pp))
   base <- gg_partial_varpro(part_dta = pp, object = vp, scale = "prob")
   ## With part_dta supplied, '...' is reported as ignored, so it must be.
   r <- suppressWarnings(gg_partial_varpro(part_dta = pp, object = vp,
