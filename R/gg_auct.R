@@ -25,8 +25,10 @@
 #' @return A `data.frame` of class `c("gg_auct", "data.frame")` with columns
 #'   `time`, `auc`, `se`, `lower`, `upper`, `marker` (CI columns `NA` when no
 #'   bootstrap), an `iauc` attribute (a list with `uno`, `std`, `uno.se`,
-#'   `std.se`, `conf.level`), and a `provenance` attribute derived from
-#'   `object` (source, family, ntree, n).
+#'   `std.se`, `conf.level`), a `method` attribute (`"cumulative"` or
+#'   `"incident"`, taken from the `auct.rhf` fit, which is what
+#'   [plot.gg_auct()] names on its y axis), and a `provenance` attribute
+#'   derived from `object` (source, family, ntree, n).
 #'
 #' @references
 #' Ishwaran H, Hsich EM, Kogalur UB, Lee DKK (2026). Random Hazard Forests.

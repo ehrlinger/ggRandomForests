@@ -276,11 +276,13 @@ gg_ale_rfsrc <- function(rf_model,
 }
 
 ## Mean of 'value' within each group 1..n_group; a group with no members is 0,
-## matching a bin that contributes no local effect.
+## matching a bin that contributes no local effect. Only EMPTY groups are
+## zeroed: an occupied group whose predictions include NA stays NA, so a
+## prediction failure is visible rather than reported as a flat step.
 .ale_group_mean <- function(value, group, n_group) {
   out <- tapply(value, factor(group, levels = seq_len(n_group)), mean)
   out <- as.numeric(out)
-  out[is.na(out)] <- 0
+  out[tabulate(group, nbins = n_group) == 0L] <- 0
   out
 }
 

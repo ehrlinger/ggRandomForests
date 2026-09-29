@@ -40,8 +40,10 @@ used when \code{auct_fit} is supplied, though the value is still validated.}
 A \code{data.frame} of class \code{c("gg_auct", "data.frame")} with columns
 \code{time}, \code{auc}, \code{se}, \code{lower}, \code{upper}, \code{marker} (CI columns \code{NA} when no
 bootstrap), an \code{iauc} attribute (a list with \code{uno}, \code{std}, \code{uno.se},
-\code{std.se}, \code{conf.level}), and a \code{provenance} attribute derived from
-\code{object} (source, family, ntree, n).
+\code{std.se}, \code{conf.level}), a \code{method} attribute (\code{"cumulative"} or
+\code{"incident"}, taken from the \code{auct.rhf} fit, which is what
+\code{\link[=plot.gg_auct]{plot.gg_auct()}} names on its y axis), and a \code{provenance} attribute
+derived from \code{object} (source, family, ntree, n).
 }
 \description{
 Extracts the time-dependent AUC curve from \code{\link[randomForestRHF:auct.rhf]{randomForestRHF::auct.rhf()}}

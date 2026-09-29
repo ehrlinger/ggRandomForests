@@ -360,3 +360,15 @@ test_that("ALE predicts once per variable and once per interaction surface", {
   expect_equal(calls, 1L)
   expect_true(all(is.finite(int$ale)))
 })
+
+test_that("ALE keeps an NA prediction visible instead of zeroing its bin", {
+  ## Only an EMPTY bin contributes no local effect. A bin whose predictions
+  ## include NA must stay NA, as the per-bin loop left it, rather than be
+  ## reported as a flat step.
+  d <- data.frame(x1 = seq(0, 1, length.out = 40))
+  pred_fun <- function(nd) ifelse(nd$x1 > 0.9, NA_real_, nd$x1)
+  cont <- ggRandomForests:::.ale_continuous("x1", d, pred_fun, n_eval = 4)
+  expect_true(anyNA(cont$yhat))
+  expect_equal(ggRandomForests:::.ale_group_mean(c(1, NA, 3), c(1, 1, 3), 3),
+               c(NA, 0, 3))
+})
