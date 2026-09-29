@@ -71,7 +71,7 @@
 <text x='427.52' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>2000</text>
 <text x='627.31' y='542.74' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='19.58px' lengthAdjust='spacingAndGlyphs'>3000</text>
 <text x='374.88' y='554.87' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='24.45px' lengthAdjust='spacingAndGlyphs'>Time</text>
-<text transform='translate(13.05,277.27) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='33.61px' lengthAdjust='spacingAndGlyphs'>AUC(t)</text>
+<text transform='translate(13.05,277.27) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='135.73px' lengthAdjust='spacingAndGlyphs'>Cumulative/dynamic AUC(t)</text>
 <text x='35.24' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='166.53px' lengthAdjust='spacingAndGlyphs'>Time-varying AUC (cumhaz)</text>
 <text x='714.52' y='568.69' text-anchor='end' style='font-size: 8.80px; font-family: sans;' textLength='200.41px' lengthAdjust='spacingAndGlyphs'>iAUC (Uno) = 0.818  |  iAUC (standardized) = 0.661</text>
 </g>

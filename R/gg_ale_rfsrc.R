@@ -265,6 +265,25 @@ gg_ale_rfsrc <- function(rf_model,
   fJ - avg
 }
 
+## Predict several frames of the same columns with one predict() call and hand
+## the predictions back per frame. Each call to a forest's predict() pays a
+## fixed dispatch cost, which dominated ALE when every bin (and every corner of
+## every interaction cell) was predicted separately.
+.ale_predict_stacked <- function(pred_fun, frames) {
+  sizes <- vapply(frames, nrow, integer(1))
+  pred  <- pred_fun(do.call(rbind, frames))
+  split(pred, factor(rep(seq_along(frames), sizes), levels = seq_along(frames)))
+}
+
+## Mean of 'value' within each group 1..n_group; a group with no members is 0,
+## matching a bin that contributes no local effect.
+.ale_group_mean <- function(value, group, n_group) {
+  out <- tapply(value, factor(group, levels = seq_len(n_group)), mean)
+  out <- as.numeric(out)
+  out[is.na(out)] <- 0
+  out
+}
+
 ## First-order ALE for one continuous predictor.
 .ale_continuous <- function(xname, newx, pred_fun, n_eval) {
   xval <- newx[[xname]]
@@ -276,18 +295,16 @@ gg_ale_rfsrc <- function(rf_model,
   n_bin     <- length(edges) - 1L
   bin   <- .ale_bin_index(xval, edges)
 
-  delta <- numeric(n_bin)
-  nk    <- numeric(n_bin)
-  for (k in seq_len(n_bin)) {
-    idx <- which(bin == k)
-    nk[k] <- length(idx)
-    if (nk[k] == 0L) next
-    dd_lo <- dd_all[idx, , drop = FALSE]
-    dd_hi <- dd_lo
-    dd_lo[[xname]] <- edges[k]
-    dd_hi[[xname]] <- edges[k + 1L]
-    delta[k] <- mean(pred_fun(dd_hi) - pred_fun(dd_lo))
-  }
+  ## Every observation sits in exactly one bin, so both edge frames can be
+  ## built for all rows at once and predicted in a single call, rather than two
+  ## predict() calls per bin.
+  dd_lo <- dd_all
+  dd_hi <- dd_all
+  dd_lo[[xname]] <- edges[bin]
+  dd_hi[[xname]] <- edges[bin + 1L]
+  pr    <- .ale_predict_stacked(pred_fun, list(dd_hi, dd_lo))
+  nk    <- tabulate(bin, nbins = n_bin)
+  delta <- .ale_group_mean(pr[[1]] - pr[[2]], bin, n_bin)
 
   ale <- .ale_accumulate(delta, nk)
   data.frame(x = edges, yhat = ale, name = xname, type = "continuous")
@@ -360,20 +377,21 @@ gg_ale_rfsrc <- function(rf_model,
   ## weighs on where the curve is centered.
   n_level <- tabulate(code, nbins = m)
 
-  n_bin <- m - 1L
-  delta <- numeric(n_bin)
-  for (k in seq_len(n_bin)) {
-    ## Bin k's members are observations at the UPPER level of the step, the
-    ## same convention as the continuous case (bin k = values up through
-    ## edge_k).
-    idx <- which(code == k + 1L)
-    if (length(idx) == 0L) next
-    dd_lo <- dd_all[idx, , drop = FALSE]
-    dd_hi <- dd_lo
-    dd_lo[[xname]] <- .ale_impose_level(dd_all[[xname]], fvalues[k])
-    dd_hi[[xname]] <- .ale_impose_level(dd_all[[xname]], fvalues[k + 1L])
-    delta[k] <- mean(pred_fun(dd_hi) - pred_fun(dd_lo))
-  }
+  ## Step k -> k+1 is averaged over the observations at BOTH levels, each moved
+  ## from level k to level k+1 (Apley and Zhu's categorical ALE, as ALEPlot
+  ## computes it). A continuous bin has observations on either side of its
+  ## edges; a level does not, so taking only the upper level's observations
+  ## would estimate a step from a handful of rows whenever that level is rare.
+  ## An observation at an interior level therefore serves two steps.
+  n_bin   <- m - 1L
+  members <- lapply(seq_len(n_bin), function(k) which(code %in% c(k, k + 1L)))
+  step    <- rep(seq_len(n_bin), lengths(members))
+  dd_lo   <- dd_all[unlist(members), , drop = FALSE]
+  dd_hi   <- dd_lo
+  dd_lo[[xname]] <- .ale_impose_level(dd_all[[xname]], fvalues[step])
+  dd_hi[[xname]] <- .ale_impose_level(dd_all[[xname]], fvalues[step + 1L])
+  pr    <- .ale_predict_stacked(pred_fun, list(dd_hi, dd_lo))
+  delta <- .ale_group_mean(pr[[1]] - pr[[2]], step, n_bin)
 
   ale <- .ale_accumulate_categorical(delta, n_level)
   data.frame(x = factor(flabels, levels = flabels), yhat = ale, name = xname,
@@ -439,30 +457,24 @@ gg_ale_rfsrc <- function(rf_model,
   b1 <- .ale_bin_index(x1, e1)
   b2 <- .ale_bin_index(x2, e2)
 
-  delta <- matrix(0, n_bin1, n_bin2)
-  cnt   <- matrix(0, n_bin1, n_bin2)
-  for (k in seq_len(n_bin1)) {
-    for (l in seq_len(n_bin2)) {
-      idx <- which(b1 == k & b2 == l)
-      cnt[k, l] <- length(idx)
-      if (cnt[k, l] == 0L) next
-      dd    <- dd_all[idx, , drop = FALSE]
-      dd_hh <- dd
-      dd_hh[[xname1]] <- e1[k + 1L]
-      dd_hh[[xname2]] <- e2[l + 1L]
-      dd_hl <- dd
-      dd_hl[[xname1]] <- e1[k + 1L]
-      dd_hl[[xname2]] <- e2[l]
-      dd_lh <- dd
-      dd_lh[[xname1]] <- e1[k]
-      dd_lh[[xname2]] <- e2[l + 1L]
-      dd_ll <- dd
-      dd_ll[[xname1]] <- e1[k]
-      dd_ll[[xname2]] <- e2[l]
-      delta[k, l] <- mean(pred_fun(dd_hh) - pred_fun(dd_hl) -
-                            pred_fun(dd_lh) + pred_fun(dd_ll))
-    }
+  ## Every observation sits in exactly one cell, so the four corner frames are
+  ## built for all rows at once and predicted in a single call; a default
+  ## 25 x 25 surface used to make up to 2,500 predict() calls. Cell (k, l) is
+  ## column-major index (l - 1) * n_bin1 + k, which is how delta is filled.
+  corner <- function(i1, i2) {
+    dd <- dd_all
+    dd[[xname1]] <- e1[i1]
+    dd[[xname2]] <- e2[i2]
+    dd
   }
+  pr <- .ale_predict_stacked(pred_fun, list(
+    corner(b1 + 1L, b2 + 1L), corner(b1 + 1L, b2),
+    corner(b1, b2 + 1L),      corner(b1, b2)))
+  cell  <- (b2 - 1L) * n_bin1 + b1
+  n_cel <- n_bin1 * n_bin2
+  delta <- matrix(.ale_group_mean(pr[[1]] - pr[[2]] - pr[[3]] + pr[[4]],
+                                  cell, n_cel), n_bin1, n_bin2)
+  cnt   <- matrix(tabulate(cell, nbins = n_cel), n_bin1, n_bin2)
 
   ## Double cumulative sum, down columns then across rows. Written as loops
   ## rather than nested apply(): apply() drops the dimension when an axis has a

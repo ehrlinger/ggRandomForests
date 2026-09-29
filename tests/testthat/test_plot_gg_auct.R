@@ -3,7 +3,7 @@ test_that("plot.gg_auct builds an AUC(t) ggplot with a 0.5 reference", {
   p  <- plot(gg)
   expect_s3_class(p, "ggplot")
   expect_gt(nrow(ggplot2::layer_data(p)), 0)
-  expect_equal(p$labels$y, "AUC(t)")
+  expect_equal(p$labels$y, "Cumulative/dynamic AUC(t)")
 })
 
 test_that("plot.gg_auct adds a ribbon when bootstrap CI is present (no warning)", {

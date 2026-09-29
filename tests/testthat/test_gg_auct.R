@@ -70,9 +70,26 @@ test_that("gg_auct passes ... through to auct.rhf", {
   expect_true(any(is.finite(gg$upper)))
 })
 
-test_that("gg_auct ignores method and ... when auct_fit is supplied", {
+test_that("gg_auct uses auct_fit as given, and warns when method disagrees", {
   o <- .rhf_pbc()
   fit <- .auct_pbc_noboot()
-  gg <- gg_auct(o, marker = "chf", method = "incident", auct_fit = fit)
+  ## The fit decides the curve. A method that contradicts it used to be
+  ## dropped in silence, leaving a cumulative curve behind an incident request.
+  expect_warning(
+    gg <- gg_auct(o, marker = "chf", method = "incident", auct_fit = fit),
+    "auct_fit was computed with method = 'cumulative'")
   expect_equal(attr(gg, "iauc")$uno, fit$iAUC.uno)
+  expect_equal(attr(gg, "method"), "cumulative")
+  ## Leaving method at its default raises nothing.
+  expect_no_warning(gg_auct(o, marker = "chf", auct_fit = fit))
+})
+
+test_that("gg_auct records the method and plot.gg_auct names it", {
+  o <- .rhf_pbc()
+  set.seed(20260828L)
+  inc <- gg_auct(o, marker = "haz", method = "incident")
+  expect_equal(attr(inc, "method"), "incident")
+  expect_match(plot(inc)$labels$y, "Incident/dynamic", fixed = TRUE)
+  cum <- gg_auct(o, marker = "chf", auct_fit = .auct_pbc_noboot())
+  expect_match(plot(cum)$labels$y, "Cumulative/dynamic", fixed = TRUE)
 })

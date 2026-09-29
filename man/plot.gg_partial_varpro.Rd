@@ -29,8 +29,10 @@
 \item{x}{A \code{\link{gg_partial_varpro}} object.}
 
 \item{type}{Character vector; one or more of \code{"parametric"},
-\code{"nonparametric"}, \code{"causal"}.  Defaults to all three.
-Ignored for path-C objects.}
+\code{"nonparametric"}, \code{"causal"}.  Defaults to the two level curves,
+\code{"parametric"} and \code{"nonparametric"}.  \code{"causal"} is a
+centered contrast rather than a level, so it has to be asked for, and it is
+shown only on an unbounded scale.  Ignored for path-C objects.}
 
 \item{labels}{Optional variable labels for the facet strips.  One of: a named
 character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,

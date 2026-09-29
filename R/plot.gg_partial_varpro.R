@@ -82,8 +82,10 @@
 #'
 #' @param x A \code{\link{gg_partial_varpro}} object.
 #' @param type Character vector; one or more of \code{"parametric"},
-#'   \code{"nonparametric"}, \code{"causal"}.  Defaults to all three.
-#'   Ignored for path-C objects.
+#'   \code{"nonparametric"}, \code{"causal"}.  Defaults to the two level curves,
+#'   \code{"parametric"} and \code{"nonparametric"}.  \code{"causal"} is a
+#'   centered contrast rather than a level, so it has to be asked for, and it is
+#'   shown only on an unbounded scale.  Ignored for path-C objects.
 #' @param labels Optional variable labels for the facet strips.  One of: a named
 #'   character vector (\code{c(bpd_last = "BP Diastole")}); a labelled data frame,
 #'   whose \code{attr(col, "label")} values are read; or a two-column
@@ -512,6 +514,11 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
 ## back to the level curves if causal was the only requested type.
 #' @keywords internal
 .partial_varpro_plot_type <- function(type, type_user, prov) {
+  ## By default draw the level curves only. The causal contrast starts at zero
+  ## by construction, so on a shared axis with the levels it compresses them
+  ## into a thin band (a regression on sale price put the levels near 200,000
+  ## and the contrast near 0). Asking for it keeps it, where the scale allows.
+  if (!type_user) type <- setdiff(type, "causal")
   if (is.null(prov) || !.is_bounded_scale(prov$scale %||% "generic"))
     return(type)
   if (type_user && "causal" %in% type) {

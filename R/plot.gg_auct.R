@@ -63,8 +63,19 @@ plot.gg_auct <- function(x, ...) {
     ggplot2::geom_line() +
     ggplot2::geom_hline(yintercept = 0.5, linetype = "dashed",
                         colour = "grey50") +
-    ggplot2::labs(x = "Time", y = "AUC(t)",
+    ggplot2::labs(x = "Time", y = .auct_ylabel(attr(x, "method")),
                   title = sprintf("Time-varying AUC (%s)", x$marker[1]),
                   caption = caption) +
     ggplot2::theme_bw()
+}
+
+## Name the AUC(t) estimand on the axis: a cumulative/dynamic and an
+## incident/dynamic curve otherwise render identically. A gg_auct object saved
+## before the method was recorded falls back to the bare label.
+#' @keywords internal
+.auct_ylabel <- function(method) {
+  switch(method %||% "",
+    cumulative = "Cumulative/dynamic AUC(t)",
+    incident   = "Incident/dynamic AUC(t)",
+    "AUC(t)")
 }

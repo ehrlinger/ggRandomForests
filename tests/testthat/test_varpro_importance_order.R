@@ -59,3 +59,13 @@ test_that(".varpro_importance_order keeps list order among unranked names", {
   local_mocked_bindings(get.topvars = function(...) c("y"), .package = "varPro")
   expect_equal(.varpro_importance_order(pd, fake), c("y", "z", "x"))
 })
+
+test_that(".varpro_rank_of does not let a real column borrow a longer name's rank", {
+  ## x1 is its own column of the feature matrix. When get.topvars() ranks x10
+  ## but not x1, the digit-suffix fallback matched '^x1[0-9]+$' to x10 and put
+  ## x1 at x10's rank. The fallback is for expanded factors, whose own name is
+  ## absent from the feature matrix, so it applies only to those.
+  xn <- c("x1", "x10", "sex0", "sex1")
+  expect_equal(unname(.varpro_rank_of("x1", c("x10"), xnames = xn)), Inf)
+  expect_equal(unname(.varpro_rank_of("sex", c("age", "sex1"), xnames = xn)), 2)
+})

@@ -536,6 +536,19 @@ test_that("gg_vimp: randomForest classification nvar counts variables, not rows"
   expect_setequal(unique(as.character(gg$vars)), top2)
 })
 
+test_that("gg_vimp: rfsrc classification nvar keeps the top nvar, not the first", {
+  set.seed(1)
+  rf <- randomForestSRC::rfsrc(Species ~ ., iris, ntree = 100,
+                               importance = TRUE)
+  gg <- as.data.frame(gg_vimp(rf, nvar = 2))
+  ## rfsrc's importance matrix is in predictor order, so trimming it unsorted
+  ## returned the two least important variables. Rank by the overall "all"
+  ## column, which is what which.outcome = 0 selects.
+  top2 <- names(sort(rf$importance[, "all"], decreasing = TRUE))[1:2]
+  expect_setequal(unique(as.character(gg$vars)), top2)
+  expect_equal(nrow(gg), 2L * ncol(rf$importance))
+})
+
 test_that("gg_vimp: randomForest classification importance=FALSE falls back to
           node purity", {
   skip_on_cran()

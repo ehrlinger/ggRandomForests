@@ -67,6 +67,7 @@ gg_auct <- function(object, ...) {
 #' @export
 gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL,
                         method = c("cumulative", "incident"), ...) {
+  method_given <- !missing(method)
   marker <- match.arg(marker)
   method <- match.arg(method)
 
@@ -81,6 +82,15 @@ gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL,
   if (!inherits(auct_fit, "auct.rhf")) {
     stop("auct_fit must be an 'auct.rhf' object from ",
          "randomForestRHF::auct.rhf().", call. = FALSE)
+  }
+  ## A supplied fit decides the curve. Say so when the caller asked for the
+  ## other method, rather than returning a cumulative curve for an incident
+  ## request with nothing to show for it.
+  fit_method <- auct_fit$method %||% method
+  if (method_given && !identical(fit_method, method)) {
+    warning("gg_auct: auct_fit was computed with method = '", fit_method,
+            "', so method = '", method, "' is ignored. Recompute auct_fit, ",
+            "or leave auct_fit = NULL.", call. = FALSE)
   }
 
   abt  <- auct_fit$AUC.by.time
@@ -103,6 +113,7 @@ gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL,
     std.se     = if (!is.null(boot)) boot$iAUC.std.se else NA_real_,
     conf.level = if (!is.null(boot)) boot$conf.level  else NA_real_
   )
+  attr(gg_dta, "method") <- fit_method
   class(gg_dta) <- c("gg_auct", class(gg_dta))
   gg_dta <- .set_provenance(gg_dta, object)
   invisible(gg_dta)
