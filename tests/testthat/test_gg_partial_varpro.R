@@ -573,6 +573,14 @@ test_that("surv_learner: continuous curve is averaged, then clamped", {
   expect_false(isTRUE(all.equal(age$parametric,
                                 colMeans(pmin(d$age$yhat.par, 1)))))
   expect_true(all(is.na(age$causal)))
+  ## And the lower bound: shift so some column means sit below 0.
+  lo <- make_mock_vpro_data()
+  lo$age$yhat.par <- 0.3 * lo$age$yhat.par + 0.05
+  lo_age <- ggRandomForests:::.build_varpro_dfs(lo, nvars = 1, cat_limit = 10,
+                                                scale = "surv_learner")
+  cm_lo <- colMeans(lo$age$yhat.par)
+  expect_true(any(cm_lo < 0) && any(cm_lo > 0))
+  expect_equal(lo_age$continuous$parametric, pmin(pmax(cm_lo, 0), 1))
   ## The categorical frame is unaveraged, so it clamps per value.
   sex <- dfs$categorical
   expect_equal(sex$parametric, pmin(pmax(as.vector(d$sex$yhat.par), 0), 1))
