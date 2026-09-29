@@ -290,7 +290,12 @@ return the same numbers there.
 
 \strong{Survival probability (scale = "surv"):} \code{scale = "surv"} (the
 survival default) computes \eqn{S(\tau \mid x)} through \code{partialpro}
-(the same UVT engine as mortality and RMST), bounded in \eqn{[0, 1]}.  When
+(the same UVT engine as mortality and RMST), bounded in \eqn{[0, 1]}.
+\code{partialpro} smooths each case's \eqn{S(\tau)} with an unbounded
+polynomial, so where survival is near 1 the averaged curve can run slightly
+past it; the curve is clamped to \eqn{[0, 1]} after averaging, and the
+categorical frame per value.  The curve is still the average of the smoothed
+per-case \eqn{S(\tau)}, with only impossible values changed.  When
 \code{time} is not supplied, \eqn{\tau} defaults to the \strong{median
 follow-up time} of the fit, a data-driven horizon that is always in the
 model's own time units, so it cannot be mis-specified the way a hand-typed

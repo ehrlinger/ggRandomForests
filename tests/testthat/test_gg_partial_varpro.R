@@ -530,6 +530,68 @@ test_that("gg_partial_varpro: scale='surv' via learner, in [0,1], default tau", 
   expect_equal(attr(ra, "provenance")$scale, "surv")
 })
 
+## ── 4.0.0 survival curve clamped to [0, 1] ───────────────────────────────────
+## partialpro smooths each case's S(tau) with an unbounded polynomial, so the
+## averaged curve overshoots 1 where survival is near 1 (an early horizon).
+test_that("gg_partial_varpro: scale='surv' stays in [0,1] near S = 1", {
+  skip_on_cran()
+  skip_if_not_installed("randomForestSRC")
+  skip_if_not_installed("varPro")
+  set.seed(7)
+  n <- 120
+  d <- data.frame(x1 = stats::runif(n), x2 = stats::rnorm(n),
+                  x3 = stats::rnorm(n))
+  t_ev <- stats::rexp(n, exp(-4 + 2.5 * d$x1))
+  cens <- stats::runif(n, 0, 40)
+  d$time   <- pmin(t_ev, cens)
+  d$status <- as.integer(t_ev <= cens)
+  vp  <- varPro::varpro(Surv(time, status) ~ ., d, ntree = 50, nvar = 3)
+  ## An early horizon (third event time): nearly every S(tau) is close to 1.
+  tau <- sort(unique(d$time[d$status == 1]))[3]
+  r <- suppressWarnings(gg_partial_varpro(object = vp, scale = "surv",
+                                          time = tau))
+  vals <- c(r$continuous$parametric, r$continuous$nonparametric,
+            r$categorical$parametric, r$categorical$nonparametric)
+  expect_true(length(vals) > 0L)
+  expect_true(all(vals >= 0 & vals <= 1))
+})
+
+test_that("surv_learner: continuous curve is averaged, then clamped", {
+  d <- make_mock_vpro_data()
+  ## Shift so some cases, and some column means, sit above 1.
+  d$age$yhat.par    <- 0.3 * d$age$yhat.par + 0.95
+  d$age$yhat.nonpar <- 0.3 * d$age$yhat.nonpar + 0.95
+  d$sex$yhat.par    <- 0.3 * d$sex$yhat.par + 0.95
+  dfs <- ggRandomForests:::.build_varpro_dfs(d, nvars = 2, cat_limit = 10,
+                                             scale = "surv_learner")
+  age <- dfs$continuous[dfs$continuous$name == "age", ]
+  cm  <- colMeans(d$age$yhat.par)
+  expect_true(any(cm > 1) && any(cm < 1))
+  expect_equal(age$parametric, pmin(cm, 1))
+  expect_equal(age$nonparametric, pmin(colMeans(d$age$yhat.nonpar), 1))
+  ## Not a per-case clamp: that would pull the in-range points down too.
+  expect_false(isTRUE(all.equal(age$parametric,
+                                colMeans(pmin(d$age$yhat.par, 1)))))
+  expect_true(all(is.na(age$causal)))
+  ## The categorical frame is unaveraged, so it clamps per value.
+  sex <- dfs$categorical
+  expect_equal(sex$parametric, pmin(pmax(as.vector(d$sex$yhat.par), 0), 1))
+})
+
+test_that("gg_partial_varpro: precomputed part_dta on 'surv' is not clamped", {
+  ## A precomputed part_dta carries only the label; its values may not be on
+  ## the S scale at all, so they pass through untouched.
+  d    <- make_mock_vpro_data()
+  fake <- structure(list(family = "surv", x = data.frame(a = 1),
+                         xvar.names = "a", max.tree = 1L,
+                         rf = list(time.interest = 1:10)),
+                    class = "varpro")
+  r <- suppressWarnings(gg_partial_varpro(part_dta = d, object = fake,
+                                          scale = "surv", time = 5))
+  age <- r$continuous[r$continuous$name == "age", ]
+  expect_equal(age$parametric, colMeans(d$age$yhat.par))
+})
+
 test_that("gg_partial_varpro: classification provenance records target class", {
   skip_on_cran()
   skip_if_not_installed("varPro")
