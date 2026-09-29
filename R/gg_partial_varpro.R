@@ -506,6 +506,11 @@ gg_partial_varpro <- function(part_dta  = NULL,
   prov <- .varpro_provenance(object, scale, time, path = "A",
                              target = .varpro_target(object, list(...)))
 
+  anc <- .anchor_prob_scale(part_dta, object, scale, prov$target,
+                            names(list(...)))
+  part_dta      <- anc$part_dta
+  prov$anchored <- anc$anchored
+
   dfs <- .build_varpro_dfs(part_dta, nvars, cat_limit, value_scale)
   continuous  <- dfs$continuous
   categorical <- dfs$categorical
@@ -738,6 +743,69 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## Classification target class label: the `target` passed through ... if any,
 ## else the last factor level of the response (partialpro's default target).
 ## NA for non-classification fits or when only part_dta is supplied.
+## partialpro() fits each case's curve separately but returns every case at the
+## cohort-mean intercept (yhat.par = global.mean + B %*% x^k). On the log-odds
+## scale that pins every case to the mean log-odds, so "prob"'s per-case
+## plogis-then-average no longer gives the expected proportion of the cohort.
+## Put each case's level back: shift its curve so it passes through the case's
+## own OOB log-odds at its observed x. The shape (the slopes partialpro kept) is
+## untouched. Binary variables are skipped: partialpro returns per-case level
+## means for them, without the swap.
+#' @keywords internal
+.anchor_varpro_levels <- function(part_dta, anchor) {
+  for (k in seq_along(part_dta)) {
+    feat <- part_dta[[k]]
+    if (length(unique(feat$xorg)) == 2L || is.null(feat$case)) next
+    offset <- vapply(seq_along(feat$case), function(i) {
+      r <- feat$case[i]
+      anchor[r] - stats::approx(feat$xvirtual, feat$yhat.par[i, ], feat$xorg[r],
+                                rule = 2)$y
+    }, numeric(1))
+    feat$yhat.par    <- feat$yhat.par    + offset
+    feat$yhat.nonpar <- feat$yhat.nonpar + offset
+    part_dta[[k]] <- feat
+  }
+  part_dta
+}
+
+## "prob" averages per-case probabilities, which needs each case's own level;
+## see .anchor_varpro_levels(). The anchors are the forest's OOB predictions,
+## so a caller's own learner or newdata puts the curves on a footing the
+## anchors don't share, and those are left as partialpro returned them.
+#' @keywords internal
+.anchor_prob_scale <- function(part_dta, object, scale, target, dot_names) {
+  if (scale != "prob") return(list(part_dta = part_dta, anchored = FALSE))
+  if (!is.null(object$rf) && identical(object$family, "class") &&
+      !any(c("learner", "newdata") %in% dot_names)) {
+    return(list(part_dta = .anchor_varpro_levels(
+                  part_dta, .varpro_oob_logodds(object, target)),
+                anchored = TRUE))
+  }
+  if (is.null(object)) {
+    warning("gg_partial_varpro: scale = 'prob' without 'object' cannot ",
+            "restore each case's level, so the curve averages cases pinned ",
+            "to the cohort-mean log-odds and is not the expected ",
+            "proportion. Supply 'object' (the classification varpro fit).",
+            call. = FALSE)
+  }
+  list(part_dta = part_dta, anchored = FALSE)
+}
+
+## Per-row OOB log-odds of the target class, clamped at 0.001 as partialpro's
+## own mylogodds() is, so the anchor and the curves share a scale.
+#' @keywords internal
+.varpro_oob_logodds <- function(object, target) {
+  pr <- randomForestSRC::predict.rfsrc(object$rf, perf.type = "none")
+  p  <- pr$predicted.oob
+  if (is.null(p)) p <- pr$predicted
+  if (!is.null(dim(p))) {
+    ## 'target' is a class label, or an index when passed as a number.
+    col <- if (target %in% colnames(p)) target else as.integer(target)
+    p <- p[, col]
+  }
+  stats::qlogis(pmin(pmax(p, 1e-3), 1 - 1e-3))
+}
+
 #' @keywords internal
 .varpro_target <- function(object, dots) {
   if (is.null(object) || !identical(object$family, "class"))
