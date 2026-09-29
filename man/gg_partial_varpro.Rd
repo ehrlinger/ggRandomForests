@@ -245,7 +245,23 @@ of the target class.  \code{scale = "prob"} (the classification default)
 back-transforms to probability \eqn{P(Y = \mathrm{target})}, \code{"odds"} to
 the odds, and \code{"logodds"} keeps the raw scale.  The back-transform is
 applied per observation \emph{before} averaging, so the curve is the mean
-predicted probability, not the probability of the mean log-odds.  The
+predicted probability, not the probability of the mean log-odds.
+
+\strong{Restoring each subject's level (scale = "prob"):} \code{partialpro} fits
+each subject's curve separately but returns every row at the cohort-mean
+intercept, keeping only the subject's own slope. On the log-odds scale that
+sets every subject to the average log-odds, and averaging per-subject
+probabilities then no longer gives the expected proportion. So for
+\code{"prob"}, \code{gg_partial_varpro} shifts each subject's curve to pass
+through that subject's own out-of-bag log-odds at its observed value of the
+variable, and then back-transforms and averages. The shape
+\code{partialpro} fitted is unchanged. This needs \code{object}, the
+classification fit, and is recorded as \code{anchored} in the provenance.
+Without \code{object}, or when \code{...} passes \code{partialpro} a custom
+\code{learner} or \code{newdata}, the curve is left as \code{partialpro}
+returned it (with a warning when \code{object} is missing). Binary variables
+are never shifted, because \code{partialpro} already returns per-subject
+levels for them.  The
 \code{causal} contrast is shown only on \code{"logodds"} (see
 \code{\link{plot.gg_partial_varpro}}).
 
@@ -272,9 +288,13 @@ These are different estimands and they do not agree.
 Jensen's inequality \code{"prob"} is pulled toward \eqn{0.5} relative to
 \code{"prob_typical"}, at both ends of the curve. The gap widens with the
 spread of per-subject log-odds, and on a heterogeneous cohort it is not
-small: where the per-subject log-odds carry an SD near 4.5, a point reading
-\eqn{0.96} under \code{"prob_typical"} reads \eqn{0.74} under
-\code{"prob"}.
+small. In a simulation where a second variable spreads the subjects'
+log-odds to an SD near 4, one point reads \eqn{0.13} under
+\code{"prob_typical"} and \eqn{0.35} under \code{"prob"}, against a true
+partial dependence of \eqn{0.38}. Before the level restoration described
+above, \code{"prob"} read \eqn{0.14} there: with every subject at the mean
+log-odds, the two scales nearly coincide. \code{"prob_typical"} uses
+\code{partialpro}'s values as returned.
 
 Which to report is a question about the claim, not about the code. If the
 sentence is "what fraction of these patients would wean", that is
@@ -416,7 +436,8 @@ mock_data <- list(
 )
 ## The two probability scales differ by the ORDER of averaging and
 ## back-transform, and disagree whenever subjects are heterogeneous.
-pa <- gg_partial_varpro(mock_data, scale = "prob")
+## Mock data has no fit, so "prob" cannot restore subject levels and warns.
+pa <- suppressWarnings(gg_partial_varpro(mock_data, scale = "prob"))
 pt <- gg_partial_varpro(mock_data, scale = "prob_typical")
 head(data.frame(prob = pa$continuous$parametric,
                 prob_typical = pt$continuous$parametric))
