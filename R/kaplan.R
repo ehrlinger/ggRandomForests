@@ -85,15 +85,24 @@ kaplan <- function(interval,
   )
 
   # When stratifying, stitch a "groups" label column onto the table.
-  if (!is.null(by)) tbl <- .label_strata(tbl, data, by) # nolint: object_usage_linter
+  if (!is.null(by)) {
+    tbl <- .label_strata(tbl, srv_tab, data[[by]][!is.na(srv)])
+  }
 
   # Keep only rows where at least one event occurred; censoring-only rows
   # do not contribute new KM estimates.
   gg_dta <- tbl[which(tbl[["dead"]] != 0), ]
 
-  # Derived quantities computed from interval-based lagged differences.
-  lag_s <- c(1, gg_dta$surv)[-(dim(gg_dta)[1] + 1)]
-  lag_t <- c(0, gg_dta$time)[-(dim(gg_dta)[1] + 1)]
+  # Derived quantities computed from interval-based lagged differences. The
+  # lags restart in every stratum: survfit() stacks the strata end to end, and
+  # a lag taken across that boundary measures a group's first interval from
+  # the last event time of the group before it.
+  grp <- if (is.null(by)) rep(1L, nrow(gg_dta)) else gg_dta$groups
+  lag_within <- function(val, start) {
+    stats::ave(val, grp, FUN = function(v) c(start, v[-length(v)]))
+  }
+  lag_s <- lag_within(gg_dta$surv, 1)
+  lag_t <- lag_within(gg_dta$time, 0)
 
   delta_t <- gg_dta$time - lag_t
   # Conditional hazard rate approximation: h(t) ≈ -log(S(t)/S(t-)) / Δt
@@ -102,16 +111,10 @@ kaplan <- function(interval,
   # Probability density: f(t) ≈ (S(t-) - S(t)) / Δt
   dnsty <- (lag_s - gg_dta$surv) / delta_t
   mid_int <- (gg_dta$time + lag_t) / 2
-  lag_l <- 0
 
   # Cumulative expected life in each interval (trapezoidal rule):
   # L(t_i) = L(t_{i-1}) + (S(t_{i-1}) + S(t_i)) / 2 * Δt_i
-  life <- vector("numeric", length = dim(gg_dta)[1])
-  for (ind in seq_len(dim(gg_dta)[1])) {
-    life[ind] <-
-      lag_l + (lag_s[ind] + gg_dta[ind, "surv"]) / 2 * delta_t[ind]
-    lag_l <- life[ind]
-  }
+  life <- stats::ave((lag_s + gg_dta$surv) / 2 * delta_t, grp, FUN = cumsum)
   prp_life <- life / gg_dta$time
   gg_dta <- data.frame(
     cbind(
