@@ -43,8 +43,9 @@ ggRandomForests v3.5.4
   scale and show how the prediction varies across the training data at each
   level. On a survival forest they are filled by time horizon and the axis
   carries the same `partial.type` label as the continuous panel; with
-  `xvar2.name` they are filled by its level, and in `plot.gg_partial()` by
-  `model` when one was given. The returned data are unchanged; average `yhat`
+  `xvar2.name` they are filled by its level (a survival forest with
+  `xvar2.name` keeps the time fill and gives each level its own panel), and in
+  `plot.gg_partial()` by `model` when one was given. The returned data are unchanged; average `yhat`
   within `x` for the partial dependence value itself (#299).
 
 ggRandomForests v3.5.3
