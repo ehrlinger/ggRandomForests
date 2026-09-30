@@ -47,6 +47,11 @@ ggRandomForests v4.0.0 (development)
   groups. A character or numeric `by` column whose first row was not its
   smallest value had its `groups` labels swapped. A factor `by` was labelled
   correctly unless it carried a level with no rows ahead of one with rows.
+  The labels are now read back from the fitted strata themselves, so an
+  option passed through `...` that drops a whole group, such as `subset` or
+  `start.time`, labels the groups that are left. Before this release such a
+  fit relabelled the remaining groups as the first ones in `data`; for a
+  while on the development line it stopped with an error instead.
 * `gg_vimp(nvar = )` on a multi-class `rfsrc` forest now keeps the `nvar`
   most important variables. The importance matrix arrives in predictor order
   and was trimmed before it was sorted, so `nvar = 2` on `iris` returned
