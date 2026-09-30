@@ -25,6 +25,30 @@ partial_surv_y_label <- function(partial.type) {
          "Predicted Survival")
 }
 
+# y-axis label for one panel of plot.gg_partial_rfsrc(). A survival object is
+# known by its partial.type attribute, or, for one built before the attribute
+# existed, by its time column. Mortality has the attribute and no time column.
+partial_rfsrc_y_label <- function(dta, partial.type) {
+  if (is.null(partial.type) && is.null(dta$time)) return("Partial Effect")
+  partial_surv_y_label(partial.type)
+}
+
+# Facets for one panel of plot.gg_partial_rfsrc(). When time already takes the
+# color or fill, each level of xvar2.name (grp) gets its own panel.
+partial_rfsrc_facet <- function(dta, strip_labeller) {
+  if (!is.null(dta$time) && !is.null(dta$grp)) {
+    ggplot2::facet_wrap(
+      ~name + grp, scales = "free_x",
+      labeller = ggplot2::labeller(
+        name = strip_labeller,
+        grp  = function(val) paste("Group", val)
+      )
+    )
+  } else {
+    ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller)
+  }
+}
+
 #' Plot a \code{\link{gg_partial}} object
 #'
 #' Turns a \code{\link{gg_partial}} object into a ggplot2 figure.  Each curve
@@ -158,13 +182,16 @@ plot.gg_partial <- function(x, labels = NULL, ...) {
 #' quantity (survival probability, cumulative hazard function, or mortality) at
 #' one or more chosen time horizons.  When a \code{time} column is present in
 #' the data, each horizon becomes a separate colored curve over the predictor's
-#' value, still faceted by variable.  The y-axis label (\dQuote{Predicted
+#' value, still faceted by variable.  Mortality has no time horizon, so it is
+#' drawn as a single curve.  The y-axis label (\dQuote{Predicted
 #' Survival}, \dQuote{Predicted CHF}, or \dQuote{Predicted Mortality}) tracks
 #' the \code{partial.type} attribute set by \code{gg_partial_rfsrc()}.
 #'
 #' For a two-variable interaction surface (when \code{xvar2.name} was supplied
 #' to \code{gg_partial_rfsrc}), the secondary variable's levels become
-#' separate colored lines, faceted by the primary predictor.
+#' separate colored lines, faceted by the primary predictor.  On a survival
+#' forest the color is already the time horizon, so each level of the secondary
+#' variable gets its own panel instead, as in the categorical panel.
 #'
 #' @param x A \code{\link{gg_partial_rfsrc}} object.
 #' @param labels Optional variable labels for the facet strips.  One of: a named
@@ -234,6 +261,7 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
   gg_cont <- NULL
   if (!is.null(gg_dta$continuous) && nrow(gg_dta$continuous) > 0) {
     cont <- gg_dta$continuous
+    y_lab <- partial_rfsrc_y_label(cont, attr(gg_dta, "partial.type"))
 
     if (!is.null(cont$time)) {
       ## Survival forest: predictor value on x-axis, one curve per time point.
@@ -243,7 +271,6 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
       time_levels <- sort(unique(cont$time))
       cont$.time_factor <- factor(cont$time, levels = time_levels)
       legend_labels <- format(round(time_levels, 2), trim = TRUE)
-      y_lab <- partial_surv_y_label(attr(gg_dta, "partial.type"))
       gg_cont <- ggplot2::ggplot(
         cont,
         ggplot2::aes(
@@ -254,7 +281,9 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
         )
       ) +
         ggplot2::geom_line() +
-        ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
+        ## With xvar2.name the lines of each of its levels go in their own
+        ## panel; in one panel they would join into a single zigzag per time.
+        partial_rfsrc_facet(cont, strip_labeller) +
         ggplot2::scale_color_discrete(labels = legend_labels) +
         ggplot2::labs(x = NULL, y = y_lab, color = "Time")
 
@@ -271,7 +300,7 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
       ) +
         ggplot2::geom_line() +
         ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
-        ggplot2::labs(x = NULL, y = "Partial Effect", color = "Group")
+        ggplot2::labs(x = NULL, y = y_lab, color = "Group")
 
     } else {
       ## Standard: one curve per variable
@@ -279,7 +308,7 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
                                  ggplot2::aes(x = .data$x, y = .data$yhat)) +
         ggplot2::geom_line() +
         ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
-        ggplot2::labs(x = NULL, y = "Partial Effect")
+        ggplot2::labs(x = NULL, y = y_lab)
     }
   }
 
@@ -290,7 +319,7 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
     ## them (and every time horizon with them), and the axis then reads as
     ## their sum.
     cat_dta <- gg_dta$categorical
-    cat_y_lab <- "Partial Effect"
+    cat_y_lab <- partial_rfsrc_y_label(cat_dta, attr(gg_dta, "partial.type"))
     by_time <- !is.null(cat_dta$time)
     if (by_time) {
       time_levels <- sort(unique(cat_dta$time))
@@ -305,7 +334,6 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
     if (by_time) {
       ## Survival forest: one box per level per time point, as the continuous
       ## panel draws one curve per time point.
-      cat_y_lab <- partial_surv_y_label(attr(gg_dta, "partial.type"))
       gg_cat <- gg_cat +
         ggplot2::aes(fill = .data$.time_factor) +
         ggplot2::scale_fill_discrete(
@@ -318,24 +346,12 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
         ggplot2::labs(fill = "Group")
     }
 
-    if (by_time && !is.null(cat_dta$grp)) {
-      ## Survival forest with xvar2.name: the fill is taken by the time point,
-      ## so each level of the second variable gets its own panel.  Without
-      ## this the boxes would pool every level of it.
-      gg_cat <- gg_cat +
-        ggplot2::facet_wrap(
-          ~name + grp, scales = "free_x",
-          labeller = ggplot2::labeller(
-            name = strip_labeller,
-            grp  = function(val) paste("Group", val)
-          )
-        )
-    } else {
-      gg_cat <- gg_cat +
-        ggplot2::facet_wrap(~name, scales = "free_x",
-                            labeller = strip_labeller)
-    }
-    gg_cat <- gg_cat + ggplot2::labs(x = NULL, y = cat_y_lab)
+    ## Survival forest with xvar2.name: the fill is taken by the time point,
+    ## so each level of the second variable gets its own panel.  Without
+    ## this the boxes would pool every level of it.
+    gg_cat <- gg_cat +
+      partial_rfsrc_facet(cat_dta, strip_labeller) +
+      ggplot2::labs(x = NULL, y = cat_y_lab)
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {
