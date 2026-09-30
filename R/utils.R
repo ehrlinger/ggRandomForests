@@ -63,13 +63,15 @@ shift <- function(x, shift_by = 1) {
 }
 
 # The rows a survfit() call on `srv` used: complete, and inside any `subset`
-# passed through `...` (a logical vector or row indices).
+# passed through `...`. The subscript is applied to the row numbers, so it
+# means what it means to survfit(): a logical vector, positive indices, or
+# negative ones that exclude rows.
 .fit_rows <- function(srv, subset = NULL) {
   kept <- !is.na(srv)
   if (is.logical(subset)) {
     kept <- kept & subset %in% TRUE
   } else if (!is.null(subset)) {
-    kept <- kept & seq_along(kept) %in% subset
+    kept <- kept & seq_along(kept) %in% seq_along(kept)[subset]
   }
   kept
 }
@@ -78,7 +80,8 @@ shift <- function(x, shift_by = 1) {
 # @param srv_tab the survfit object tbl was built from, fitted on `grp`
 # @param strat   the list .strata_factor() returned
 # @param kept    logical, the rows of the data that the fit used; read only
-#   when the fit kept a single stratum, which survfit() does not name
+#   when `subset` left a single stratum, which survfit() does not name (one
+#   left by start.time keeps its name)
 #
 # @return tbl with an additional $groups column containing the group label
 #   for each row, in the type of the `by` column (levels, for a factor).
