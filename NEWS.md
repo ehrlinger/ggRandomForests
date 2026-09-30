@@ -3,6 +3,23 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `kaplan(by = )` and `nelson(by = )` now restart `hazard`, `density`,
+  `mid_int`, `life` and `proplife` in every stratum. The lags behind those
+  columns were taken after the strata were stacked, so the first interval of
+  each later group was measured from the last event time of the group before
+  it, and `life` carried on from that group's total. On `survival::veteran`
+  by `trt`, the second arm's `life` started at -148.8 and ended at -16.9; it
+  now runs from 0.99 to 132.9, as it does when that arm is fitted alone. The
+  first stratum was always right, as were `surv`, `cum_haz` and the confidence
+  limits. This reaches `gg_survival(by = )` and `plot.gg_survival()` with any
+  of those five `type` values (#303).
+* `kaplan(by = )` and `nelson(by = )` now take the strata from the fit. They
+  were told apart by a drop in the stacked event times, so a group whose
+  times all followed the previous group's was folded into it, and the labels
+  were handed out in the row order of `data`, while `survfit()` sorts the
+  groups. A character or numeric `by` column whose first row was not its
+  smallest value had its `groups` labels swapped. A factor `by` was labelled
+  correctly unless it carried a level with no rows ahead of one with rows.
 * `gg_vimp(nvar = )` on a multi-class `rfsrc` forest now keeps the `nvar`
   most important variables. The importance matrix arrives in predictor order
   and was trimmed before it was sorted, so `nvar = 2` on `iris` returned
