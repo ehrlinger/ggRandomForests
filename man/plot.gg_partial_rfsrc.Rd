@@ -37,13 +37,16 @@ For a survival forest, each call to \code{partial.rfsrc} returns a predicted
 quantity (survival probability, cumulative hazard function, or mortality) at
 one or more chosen time horizons.  When a \code{time} column is present in
 the data, each horizon becomes a separate colored curve over the predictor's
-value, still faceted by variable.  The y-axis label (\dQuote{Predicted
+value, still faceted by variable.  Mortality has no time horizon, so it is
+drawn as a single curve.  The y-axis label (\dQuote{Predicted
 Survival}, \dQuote{Predicted CHF}, or \dQuote{Predicted Mortality}) tracks
 the \code{partial.type} attribute set by \code{gg_partial_rfsrc()}.
 
 For a two-variable interaction surface (when \code{xvar2.name} was supplied
 to \code{gg_partial_rfsrc}), the secondary variable's levels become
-separate colored lines, faceted by the primary predictor.
+separate colored lines, faceted by the primary predictor.  On a survival
+forest the color is already the time horizon, so each level of the secondary
+variable gets its own panel instead, as in the categorical panel.
 }
 \examples{
 ## ------------------------------------------------------------

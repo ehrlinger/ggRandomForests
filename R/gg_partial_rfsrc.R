@@ -20,7 +20,9 @@
 #' hazard function (\code{"chf"}), or expected mortality (\code{"mort"}).
 #' You can request the curve at one or more time horizons via
 #' \code{partial.time}; the resulting data have a \code{time} column so the
-#' plot layers them as separate colored lines.
+#' plot layers them as separate colored lines.  Mortality is the exception: it
+#' is summed over every event time, so \code{partial.time} has no effect on it
+#' and the data carry no \code{time} column.
 #'
 #' @section Survival forests and \code{partial.time}:
 #' \code{\link[randomForestSRC]{partial.rfsrc}} expects every value in
@@ -55,6 +57,8 @@
 #' @param xvar2.name Optional single character name of a grouping variable in
 #'   \code{newx}. When supplied, partial dependence is computed separately for
 #'   each unique level of this variable and a \code{grp} column is appended.
+#'   A factor keeps its level labels in \code{grp}, as a factor in the
+#'   model's level order.
 #' @param newx Optional \code{data.frame} of predictor values to evaluate
 #'   partial effects at. Defaults to the training data stored in
 #'   \code{rf_model$xvar}. All column names must match \code{rf_model$xvar.names}.
@@ -62,7 +66,8 @@
 #'   forests (ignored for regression/classification).  Values are automatically
 #'   snapped to the nearest entry in \code{rf_model$time.interest}; see the
 #'   \strong{Survival forests} section below.  When \code{NULL} (default),
-#'   three quartile points of \code{time.interest} are used.
+#'   three quartile points of \code{time.interest} are used.  Has no effect
+#'   with \code{partial.type = "mort"}.
 #' @param partial.type Character; type of predicted value for survival
 #'   forests, passed through to \code{\link[randomForestSRC]{partial.rfsrc}}.
 #'   One of \code{"surv"} (default), \code{"chf"}, or \code{"mort"}. Ignored
@@ -83,7 +88,8 @@
 #'     \item{continuous}{A \code{data.frame} with columns \code{x} (numeric),
 #'       \code{yhat}, \code{name} (variable name), and optionally \code{grp}
 #'       (the level of \code{xvar2.name}) and \code{time} (survival forests
-#'       only) for all continuous predictors.}
+#'       with \code{partial.type} \code{"surv"} or \code{"chf"}) for all
+#'       continuous predictors.}
 #'     \item{categorical}{A \code{data.frame} with the same columns but
 #'       \code{x} kept as a \code{factor} (levels in the model's level order,
 #'       not alphabetical), for low-cardinality predictors. Unlike
@@ -300,7 +306,10 @@ partial_one_var <- function(xname, newx, rf_model,
     )
   } else {
     out_dta <- data.frame(x = pout$x, yhat = pout$yhat)
-    if (!is.null(pout$partial.time)) {
+    # Mortality is summed over every event time, so it has no time point of
+    # its own: partial.rfsrc() returns one value per x and only echoes
+    # partial.time back. Leave the column off rather than stamp it on.
+    if (!is.null(pout$partial.time) && !identical(partial.type, "mort")) {
       out_dta$time <- pout$partial.time
     }
   }
@@ -327,13 +336,22 @@ partial_with_group <- function(xvar.names, xvar2.name, newx, rf_model,
                                partial.type) {
   xv2 <- unique(newx[[xvar2.name]])
   xv2 <- xv2[!is.na(xv2)]
+  grp_labels <- xv2
+  if (is.factor(xv2)) {
+    # As in make_eval_grid(): partial.rfsrc() imposes a factor level by its
+    # integer code, so pass the codes and label grp with the levels.
+    present    <- levels(droplevels(xv2))
+    grp_labels <- factor(present, levels = present)
+    xv2        <- match(present, levels(xv2))
+  }
   if (length(xv2) == 0L) {
     stop(sprintf(
       "Grouping variable '%s' contains only NA values in 'newx'; cannot compute surface partial dependence.",
       xvar2.name
     ), call. = FALSE)
   }
-  pdta <- lapply(xv2, function(x2val) {
+  pdta <- lapply(seq_along(xv2), function(i) {
+    x2val <- xv2[i]
     p1dta <- lapply(xvar.names, partial_one_var,
                     newx = newx, rf_model = rf_model,
                     cat_limit = cat_limit, n_eval = n_eval,
@@ -343,7 +361,7 @@ partial_with_group <- function(xvar.names, xvar2.name, newx, rf_model,
     p1dta <- Filter(Negate(is.null), p1dta)
     if (length(p1dta) == 0L) return(NULL)
     p1dta        <- do.call("rbind", p1dta)
-    p1dta$grp    <- x2val
+    p1dta$grp    <- grp_labels[i]
     p1dta
   })
   Filter(Negate(is.null), pdta)

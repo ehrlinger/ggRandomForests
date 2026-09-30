@@ -52,6 +52,20 @@ ggRandomForests v3.5.4
   `plot.gg_partial()` by `model` when one was given. The returned data are
   unchanged; average `yhat` within `x` for the partial dependence value
   itself (#299).
+* `gg_partial_rfsrc(partial.type = "mort")` no longer stops with
+  "replacement has 3 rows, data has 23" under the default `partial.time`.
+  Mortality is summed over every event time, so `partial.rfsrc()` returns one
+  value per `x` whatever `partial.time` holds; the returned data now carry no
+  `time` column for it, and `plot.gg_partial_rfsrc()` draws a single curve
+  labelled "Predicted Mortality" in both panels.
+* `plot.gg_partial_rfsrc()` on a survival forest with `xvar2.name` now gives
+  each level of the second variable its own panel in the continuous panel
+  too, one line per time horizon. The lines were grouped by time alone, which
+  joined every level into a single zigzag.
+* `gg_partial_rfsrc(xvar2.name = )` now accepts a factor. Its labels were
+  handed to `partial.rfsrc()`, which wants the integer codes and stopped with
+  "partial values for 'trt' must be a nonempty finite numeric vector". `grp`
+  comes back as a factor holding the labels, in the model's level order (#309).
 
 ggRandomForests v3.5.3
 ======================
