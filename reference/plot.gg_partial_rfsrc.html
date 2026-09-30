@@ -104,9 +104,15 @@ vertically via <code><a href="https://patchwork.data-imaginist.com/reference/wra
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>For a standard regression or classification forest, continuous predictors
-are drawn as line plots and categorical predictors as bar charts, both
+are drawn as line plots and categorical predictors as box plots, both
 faceted by variable name, the same arrangement as
-<code><a href="plot.gg_partial.html">plot.gg_partial</a></code>.</p>
+<code><a href="plot.gg_partial.html">plot.gg_partial</a></code>.  The categorical data hold one prediction
+per training observation per level, not their average, so each box shows
+the spread of the prediction at that level and its middle line the median.
+For a survival forest the boxes are filled by time horizon, and with
+<code>xvar2.name</code> by the level of the second variable.  When a survival
+forest has both, the fill is the time horizon and each level of the second
+variable gets its own panel.</p>
 <p>For a survival forest, each call to <code>partial.rfsrc</code> returns a predicted
 quantity (survival probability, cumulative hazard function, or mortality) at
 one or more chosen time horizons.  When a <code>time</code> column is present in

@@ -105,7 +105,12 @@ A named list with two elements:
 
   A `data.frame` with the same columns but `x` kept as a `factor`
   (levels in the model's level order, not alphabetical), for
-  low-cardinality predictors.
+  low-cardinality predictors. Unlike `continuous`, it is not averaged:
+  there is one row per training observation per level (and per time
+  point), so
+  [`plot.gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
+  draws it as box plots. Average `yhat` within `x` for the partial
+  dependence value.
 
 ## Details
 

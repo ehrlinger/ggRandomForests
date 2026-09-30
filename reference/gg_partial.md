@@ -46,7 +46,13 @@ A named list with two elements:
 - categorical:
 
   data.frame with the same columns but with `x` as a factor, for
-  low-cardinality / categorical variables
+  low-cardinality / categorical variables. Unlike `continuous`, it is
+  not averaged:
+  [`plot.variable()`](https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html)
+  returns one prediction per training observation per level, and
+  [`plot.gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md)
+  draws their spread as box plots. Average `yhat` within `x` for the
+  partial dependence value.
 
 ## Details
 
@@ -54,7 +60,7 @@ A named list with two elements:
 `randomForestSRC::plot.variable(partial = TRUE)`: it takes the list that
 function returns and separates the variables into two tidy data frames,
 one for continuous predictors (plotted as lines) and one for categorical
-predictors (plotted as bar charts). The split is controlled by
+predictors (plotted as box plots). The split is controlled by
 `cat_limit`: variables with more unique x-values than this threshold are
 treated as continuous; all others are categorical.
 

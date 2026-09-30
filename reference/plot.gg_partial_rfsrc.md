@@ -41,9 +41,15 @@ variables are present the two panels are combined vertically via
 ## Details
 
 For a standard regression or classification forest, continuous
-predictors are drawn as line plots and categorical predictors as bar
-charts, both faceted by variable name, the same arrangement as
+predictors are drawn as line plots and categorical predictors as box
+plots, both faceted by variable name, the same arrangement as
 [`plot.gg_partial`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md).
+The categorical data hold one prediction per training observation per
+level, not their average, so each box shows the spread of the prediction
+at that level and its middle line the median. For a survival forest the
+boxes are filled by time horizon, and with `xvar2.name` by the level of
+the second variable. When a survival forest has both, the fill is the
+time horizon and each level of the second variable gets its own panel.
 
 For a survival forest, each call to `partial.rfsrc` returns a predicted
 quantity (survival probability, cumulative hazard function, or

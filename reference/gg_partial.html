@@ -111,7 +111,12 @@ multiple partial plot objects in figures.</p></dd>
 
 <dt>categorical</dt>
 <dd><p>data.frame with the same columns but with <code>x</code>
-as a factor, for low-cardinality / categorical variables</p></dd>
+as a factor, for low-cardinality / categorical variables. Unlike
+<code>continuous</code>, it is not averaged: <code><a href="https://www.randomforestsrc.org//reference/plot.variable.rfsrc.html" class="external-link">plot.variable()</a></code> returns
+one prediction per training observation per level, and
+<code><a href="plot.gg_partial.html">plot.gg_partial</a></code> draws their spread as box plots.
+Average <code>yhat</code> within <code>x</code> for the partial dependence
+value.</p></dd>
 
 
 </dl></div>
@@ -121,7 +126,7 @@ as a factor, for low-cardinality / categorical variables</p></dd>
 <code>randomForestSRC::plot.variable(partial = TRUE)</code>: it takes the list
 that function returns and separates the variables into two tidy data frames,
 one for continuous predictors (plotted as lines) and one for categorical
-predictors (plotted as bar charts).  The split is controlled by
+predictors (plotted as box plots).  The split is controlled by
 <code>cat_limit</code>: variables with more unique x-values than this threshold
 are treated as continuous; all others are categorical.</p>
 <p>If you'd rather skip the <code>plot.variable</code> step and pass the fitted
