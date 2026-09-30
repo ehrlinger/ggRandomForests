@@ -221,8 +221,28 @@ snap_partial_time <- function(rf_model, partial.time) {
   unique(snapped)
 }
 
+## Integer codes for the factor levels present in `values`, in the fitted
+## model's coding. partial.rfsrc() imposes a level by its code in the model, so
+## the codes must come from the model's levels, not from newx's: newx is only
+## checked by column name, and a factor re-levelled there would otherwise pass
+## one level's code under another's label. Returns the codes and the labels
+## that go with them, in the model's level order.
+model_level_codes <- function(values, xname, rf_model) {
+  model_levels <- levels(rf_model$xvar[[xname]])
+  if (is.null(model_levels)) model_levels <- levels(values)
+  present <- as.character(unique(values[!is.na(values)]))
+  unknown <- setdiff(present, model_levels)
+  if (length(unknown) > 0L) {
+    stop(sprintf("'newx$%s' has level(s) the forest was not trained on: %s",
+                 xname, paste(unknown, collapse = ", ")), call. = FALSE)
+  }
+  present <- model_levels[model_levels %in% present]
+  list(codes = match(present, model_levels), labels = present,
+       levels = model_levels)
+}
+
 ## Build the evaluation grid (xval vector + categorical flag) for one variable.
-make_eval_grid <- function(xname, newx, cat_limit, n_eval) {
+make_eval_grid <- function(xname, newx, cat_limit, n_eval, rf_model) {
   # Use `[[` to preserve the column's class (factor, character, numeric, …).
   # unlist(dplyr::select(...)) would coerce factors to their integer codes,
   # losing the level labels we need for the cat_limit check and for mapping
@@ -244,9 +264,9 @@ make_eval_grid <- function(xname, newx, cat_limit, n_eval) {
     # levels ("No"/"Yes") to NA, or numeric-looking labels ("4"/"6"/"8") to
     # out-of-range codes, and every level collapses to a single value. Pass the
     # codes here and relabel get.partial.plot.data()'s output in partial_one_var().
-    flevels <- levels(xval)
-    present <- levels(droplevels(xval))       # levels actually present in newx
-    xval    <- match(present, flevels)        # codes in the model's factor coding
+    lv      <- model_level_codes(xval, xname, rf_model)
+    flevels <- lv$levels                      # the model's levels, by code
+    xval    <- lv$codes                       # codes in the model's factor coding
   } else if (!gr && length(unique(xval)) > n_eval) {
     xval <- quantile_pts(xval, groups = n_eval)
   } else {
@@ -280,7 +300,7 @@ partial_one_var <- function(xname, newx, rf_model,
                             cat_limit, n_eval, is_surv, partial.time,
                             partial.type,
                             xvar2.name = NULL, x2val = NULL) {
-  eg <- make_eval_grid(xname, newx, cat_limit, n_eval)
+  eg <- make_eval_grid(xname, newx, cat_limit, n_eval, rf_model)
   if (is.null(eg)) return(NULL)
   xval <- eg$xval
   gr   <- eg$categorical
@@ -339,10 +359,11 @@ partial_with_group <- function(xvar.names, xvar2.name, newx, rf_model,
   grp_labels <- xv2
   if (is.factor(xv2)) {
     # As in make_eval_grid(): partial.rfsrc() imposes a factor level by its
-    # integer code, so pass the codes and label grp with the levels.
-    present    <- levels(droplevels(xv2))
-    grp_labels <- factor(present, levels = present)
-    xv2        <- match(present, levels(xv2))
+    # integer code in the model, so pass those codes and label grp with the
+    # model's levels.
+    lv         <- model_level_codes(xv2, xvar2.name, rf_model)
+    grp_labels <- factor(lv$labels, levels = lv$labels)
+    xv2        <- lv$codes
   }
   if (length(xv2) == 0L) {
     stop(sprintf(
