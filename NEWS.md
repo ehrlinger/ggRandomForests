@@ -16,6 +16,26 @@ ggRandomForests v4.0.0 (development)
   `xvar2.name` keeps the time fill and gives each level its own panel), and in
   `plot.gg_partial()` by `model` when one was given. The returned data are unchanged; average `yhat`
   within `x` for the partial dependence value itself (#299).
+* `gg_partial_rfsrc(partial.type = "mort")` no longer stops with
+  "replacement has 3 rows, data has 23" under the default `partial.time`.
+  Mortality is summed over every event time, so `partial.rfsrc()` returns one
+  value per `x` whatever `partial.time` holds; the returned data now carry no
+  `time` column for it, and `plot.gg_partial_rfsrc()` draws a single curve
+  labelled "Predicted Mortality" in both panels.
+* `plot.gg_partial_rfsrc()` on a survival forest with `xvar2.name` now gives
+  each level of the second variable its own panel in the continuous panel
+  too, one line per time horizon. The lines were grouped by time alone, which
+  joined every level into a single zigzag.
+* `gg_partial_rfsrc(xvar2.name = )` now accepts a factor. Its labels were
+  handed to `partial.rfsrc()`, which wants the integer codes and stopped with
+  "partial values for 'trt' must be a nonempty finite numeric vector". `grp`
+  comes back as a factor holding the labels, in the model's level order.
+* `gg_partial_rfsrc()` now codes factor levels by the fitted forest, not by
+  `newx`. `partial.rfsrc()` imposes a level by its integer code in the model,
+  and the codes were taken from `newx`'s own levels, which are checked only by
+  column name. A factor re-levelled in `newx` therefore passed one level's code
+  under the other's label, for `xvar.names` and `xvar2.name` alike, with no
+  warning. A level the forest was not trained on is now an error.
 * `nelson()` now returns the Nelson-Aalen estimate in `cum_haz`, and its
   `weight` argument now does something. Until now `nelson()` returned
   `-log(S(t))` from the Kaplan-Meier fit, so it matched `kaplan()` column for
