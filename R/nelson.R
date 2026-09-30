@@ -13,11 +13,27 @@
 ####**********************************************************************
 #' nonparametric Nelson-Aalen estimates
 #'
+#' \code{cum_haz} is the Nelson-Aalen estimate of the cumulative hazard: at
+#' each event time the number of events is divided by the number at risk, and
+#' the ratios are summed. The \code{surv} column, its standard error and its
+#' confidence limits are the Kaplan-Meier estimates, as \code{\link{kaplan}}
+#' returns them, and \code{hazard}, \code{density}, \code{life} and
+#' \code{proplife} are derived from that \code{surv}. The two functions
+#' therefore differ only in \code{cum_haz}, where \code{kaplan} reports
+#' \eqn{-\log S(t)}. The two agree closely while the risk set is large and
+#' diverge in the tail; when the last observation is an event, \eqn{-\log S(t)}
+#' is infinite there and the Nelson-Aalen sum is not.
+#'
 #' @param data name of the survival training data.frame
 #' @param interval name of the interval variable in the training dataset.
 #' @param censor name of the censoring variable in the training dataset.
 #' @param by stratifying variable in the training dataset, defaults to NULL
-#' @param weight for each observation (default=NULL)
+#' @param weight optional numeric vector of event weights, one per row of
+#'   \code{data} (default \code{NULL}, every event counts once). The weights
+#'   apply to events only: each increment of \code{cum_haz} is the summed
+#'   weight of the events at that time over the unweighted number at risk, so
+#'   a censored observation's weight has no effect. Use it for
+#'   severity-weighted events. The Kaplan-Meier columns are not weighted.
 #' @param ... arguments passed to the \code{survfit} function
 #'
 #' @return \code{\link{gg_survival}} object
@@ -68,10 +84,12 @@ nelson <-
            by = NULL,
            weight = NULL,
            ...) {
-    # Incorporate observation weights: zero out weights for censored records
-    # so they do not contribute to the weighted hazard computation.
     if (!is.null(weight)) {
-      weight <- data[[censor]] * weight
+      if (!is.numeric(weight) || length(weight) != nrow(data) ||
+            anyNA(weight) || any(weight < 0)) {
+        stop("nelson: 'weight' must be a non-negative numeric vector with ",
+             "one value per row of 'data'.", call. = FALSE)
+      }
     }
 
     # Build the Surv object and fit the (possibly stratified) estimator.
@@ -84,8 +102,27 @@ nelson <-
         survival::survfit(srv ~ survival::strata(data[[by]]), ...)
     }
 
-    # Cumulative hazard H(t) = -log(S(t)), consistent with the KM estimator.
-    cum_hazard <- -log(srv_tab$surv)
+    # Events at each time. With a weight, a second fit hands back the weighted
+    # event totals on the same rows (same strata, same tie handling); only its
+    # n.event is used, so the risk set below stays the unweighted count.
+    events <- srv_tab$n.event
+    if (!is.null(weight)) {
+      if (is.null(by)) {
+        wtd_tab <- survival::survfit(srv ~ 1, weights = weight, ...)
+      } else {
+        wtd_tab <- survival::survfit(srv ~ survival::strata(data[[by]]),
+                                     weights = weight, ...)
+      }
+      if (length(wtd_tab$time) != length(srv_tab$time)) {
+        stop("nelson: the weighted and unweighted fits returned different ",
+             "event times.", call. = FALSE)
+      }
+      events <- wtd_tab$n.event
+    }
+
+    # Nelson-Aalen increment: events over the number at risk. It is summed
+    # within each stratum once the rows are labelled.
+    increment <- events / srv_tab$n.risk
 
     # Collect per-time-point statistics into a flat data frame.
     tbl <- data.frame(
@@ -98,7 +135,7 @@ nelson <-
         se = srv_tab$std.err,      # standard error of S(t)
         lower = srv_tab$lower,     # lower confidence bound
         upper = srv_tab$upper,     # upper confidence bound
-        cum_haz = cum_hazard
+        cum_haz = increment
       )
     )
 
@@ -106,6 +143,10 @@ nelson <-
     if (!is.null(by)) {
       tbl <- .label_strata(tbl, srv_tab, data[[by]][!is.na(srv)])
     }
+
+    # H(t) = sum over event times up to t, restarting in every stratum.
+    grp <- if (is.null(by)) rep(1L, nrow(tbl)) else tbl$groups
+    tbl$cum_haz <- stats::ave(tbl$cum_haz, grp, FUN = cumsum)
 
     # Retain only rows with at least one event.
     gg_dta <- tbl[which(tbl[["dead"]] != 0), ]
