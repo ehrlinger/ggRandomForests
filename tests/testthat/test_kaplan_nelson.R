@@ -85,6 +85,23 @@ test_that("kaplan plot with error = 'none' returns a ggplot", {
   expect_s3_class(plot(gg_dta, error = "none"), "ggplot")
 })
 
+test_that("kaplan and nelson restart the interval columns in every by= stratum", {
+  # Issue #303: the lags were taken across the stacked strata, so the first row
+  # of every later group lagged off the last row of the group before it, and
+  # life carried on from the previous group's total.
+  vet <- survival::veteran
+  lagged <- c("hazard", "density", "mid_int", "life", "proplife")
+  for (est in list(kaplan, nelson)) {
+    strat <- est(interval = "time", censor = "status", data = vet, by = "trt")
+    for (grp in unique(vet$trt)) {
+      alone <- est(interval = "time", censor = "status",
+                   data = vet[vet$trt == grp, ])
+      expect_equal(as.list(strat[strat$groups == grp, lagged]),
+                   as.list(alone[, lagged]))
+    }
+  }
+})
+
 ## ---- nelson() --------------------------------------------------------------
 
 test_that("nelson returns a gg_survival data frame", {
