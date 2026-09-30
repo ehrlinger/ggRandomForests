@@ -103,7 +103,9 @@ nelson <-
     )
 
     # Detect stratum boundaries and label each row with its group name.
-    if (!is.null(by)) tbl <- .label_strata(tbl, data, by) # nolint: object_usage_linter
+    if (!is.null(by)) {
+      tbl <- .label_strata(tbl, srv_tab, data[[by]][!is.na(srv)])
+    }
 
     # Retain only rows with at least one event.
     gg_dta <- tbl[which(tbl[["dead"]] != 0), ]

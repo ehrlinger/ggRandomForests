@@ -85,7 +85,9 @@ kaplan <- function(interval,
   )
 
   # When stratifying, stitch a "groups" label column onto the table.
-  if (!is.null(by)) tbl <- .label_strata(tbl, data, by) # nolint: object_usage_linter
+  if (!is.null(by)) {
+    tbl <- .label_strata(tbl, srv_tab, data[[by]][!is.na(srv)])
+  }
 
   # Keep only rows where at least one event occurred; censoring-only rows
   # do not contribute new KM estimates.
