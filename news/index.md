@@ -2,6 +2,26 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- [`nelson()`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md)
+  now returns the Nelson-Aalen estimate in `cum_haz`, and its `weight`
+  argument now does something. Until now
+  [`nelson()`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md)
+  returned `-log(S(t))` from the Kaplan-Meier fit, so it matched
+  [`kaplan()`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)
+  column for column, and `weight` was read and then dropped. `cum_haz`
+  is now the sum of events over the number at risk, restarting in each
+  `by =` stratum. `weight` weights the events over an unweighted risk
+  set, as `hzr_nelson(weight = )` does in ‘TemporalHazard’, so a
+  censored observation’s weight has no effect. The two estimates are
+  close while the risk set is large and diverge in the tail: on
+  [`survival::veteran`](https://rdrr.io/pkg/survival/man/veteran.html)
+  the last value was `Inf`, because the last observation is a death and
+  Kaplan-Meier reaches zero, and is now 5.29. `surv`, its standard error
+  and limits, and the columns derived from `surv` are still Kaplan-Meier
+  and do not move. This reaches `gg_survival(type = "nelson")` and
+  `plot.gg_survival(type = "cum_haz")`
+  ([\#304](https://github.com/ehrlinger/ggRandomForests/issues/304)).
+
 - `kaplan(by = )` and `nelson(by = )` now restart `hazard`, `density`,
   `mid_int`, `life` and `proplife` in every stratum. The lags behind
   those columns were taken after the strata were stacked, so the first

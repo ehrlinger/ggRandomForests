@@ -1,6 +1,16 @@
 # nonparametric Nelson-Aalen estimates
 
-nonparametric Nelson-Aalen estimates
+`cum_haz` is the Nelson-Aalen estimate of the cumulative hazard: at each
+event time the number of events is divided by the number at risk, and
+the ratios are summed. The `surv` column, its standard error and its
+confidence limits are the Kaplan-Meier estimates, as
+[`kaplan`](https://ehrlinger.github.io/ggRandomForests/reference/kaplan.md)
+returns them, and `hazard`, `density`, `life` and `proplife` are derived
+from that `surv`. The two functions therefore differ only in `cum_haz`,
+where `kaplan` reports \\-\log S(t)\\. The two agree closely while the
+risk set is large and diverge in the tail; when the last observation is
+an event, \\-\log S(t)\\ is infinite there and the Nelson-Aalen sum is
+not.
 
 ## Usage
 
@@ -28,7 +38,12 @@ nelson(interval, censor, data, by = NULL, weight = NULL, ...)
 
 - weight:
 
-  for each observation (default=NULL)
+  optional numeric vector of event weights, one per row of `data`
+  (default `NULL`, every event counts once). The weights apply to events
+  only: each increment of `cum_haz` is the summed weight of the events
+  at that time over the unweighted number at risk, so a censored
+  observation's weight has no effect. Use it for severity-weighted
+  events. The Kaplan-Meier columns are not weighted.
 
 - ...:
 
