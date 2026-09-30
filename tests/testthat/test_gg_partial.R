@@ -493,3 +493,56 @@ test_that("plot.gg_partial labels the categorical facet strips", {
   strips <- as.character(ggplot2::get_strip_labels(p)$facets$name)
   expect_true(all(c("Sex", "vis") %in% strips))
 })
+
+## ---- categorical panels draw the per-observation spread (issue #299) -------
+
+# The categorical frame holds one prediction per observation per level, so a
+# bar with stat = "identity" stacked them and the axis read as their sum.
+cat_mock <- function(cls) {
+  dta <- data.frame(
+    x    = factor(rep(c("a", "b"), each = 4)),
+    yhat = c(0.2, 0.4, 0.6, 0.8, 0.1, 0.2, 0.3, 0.4),
+    name = "g"
+  )
+  structure(list(continuous = NULL, categorical = dta), class = cls)
+}
+
+cat_mock_by <- function(cls, col, values) {
+  base <- cat_mock(cls)$categorical
+  dta <- do.call(rbind, lapply(values, function(val) {
+    base[[col]] <- val
+    base
+  }))
+  structure(list(continuous = NULL, categorical = dta), class = cls)
+}
+
+test_that("categorical partial panels are boxplots on the response scale", {
+  for (cls in c("gg_partial", "gg_partial_rfsrc")) {
+    gg <- plot(cat_mock(cls))
+    expect_s3_class(gg$layers[[1]]$geom, "GeomBoxplot")
+    built <- ggplot2::ggplot_build(gg)$data[[1]]
+    expect_equal(built$middle, c(0.5, 0.25))
+    # Nothing is drawn above the largest single prediction.
+    expect_lte(max(built$ymax_final), 0.8)
+  }
+})
+
+test_that("plot.gg_partial_rfsrc splits categorical boxes by time and by grp", {
+  by_time <- plot(cat_mock_by("gg_partial_rfsrc", "time", c(30, 90)))
+  built <- ggplot2::ggplot_build(by_time)$data[[1]]
+  expect_equal(nrow(built), 4L)
+  expect_equal(length(unique(built$fill)), 2L)
+  expect_equal(by_time$labels$fill, "Time")
+
+  by_grp <- plot(cat_mock_by("gg_partial_rfsrc", "grp", c(1, 2)))
+  built <- ggplot2::ggplot_build(by_grp)$data[[1]]
+  expect_equal(nrow(built), 4L)
+  expect_equal(by_grp$labels$fill, "Group")
+})
+
+test_that("plot.gg_partial splits categorical boxes by model", {
+  gg <- plot(cat_mock_by("gg_partial", "model", c("tuned", "default")))
+  built <- ggplot2::ggplot_build(gg)$data[[1]]
+  expect_equal(nrow(built), 4L)
+  expect_equal(length(unique(built$fill)), 2L)
+})

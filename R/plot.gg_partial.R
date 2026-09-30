@@ -30,8 +30,11 @@ partial_surv_y_label <- function(partial.type) {
 #' Turns a \code{\link{gg_partial}} object into a ggplot2 figure.  Each curve
 #' is a partial dependence trace, the forest's average prediction as one
 #' predictor is swept across its range while the rest are marginalized over the
-#' training data.  Continuous predictors appear as line plots; categorical
-#' predictors appear as bar charts.  Both panels are faceted by variable name
+#' training data.  Continuous predictors appear as line plots.  Categorical
+#' predictors appear as box plots, one box per level, drawn from the
+#' per-observation predictions that \code{plot.variable()} returns for them, so
+#' the box shows how the prediction varies across the training data at that
+#' level.  Both panels are faceted by variable name
 #' so you can compare the shape and scale of each variable's effect at a
 #' glance.
 #'
@@ -102,10 +105,21 @@ plot.gg_partial <- function(x, labels = NULL, ...) {
 
   gg_cat <- NULL
   if (!is.null(gg_dta$categorical) && nrow(gg_dta$categorical) > 0) {
+    ## The categorical frame carries one prediction per observation per level,
+    ## so the panel shows their spread.  A bar with stat = "identity" stacks
+    ## them, and the axis then reads as their sum.
     cat_dta <- gg_dta$categorical
-    gg_cat <- ggplot2::ggplot(cat_dta,
-                              ggplot2::aes(x = .data$x, y = .data$yhat)) +
-      ggplot2::geom_bar(stat = "identity", width = 0.5) +
+    gg_cat <- ggplot2::ggplot(
+      cat_dta,
+      ggplot2::aes(x = factor(.data$x), y = .data$yhat)
+    ) +
+      ggplot2::geom_boxplot()
+
+    if ("model" %in% colnames(cat_dta)) {
+      gg_cat <- gg_cat + ggplot2::aes(fill = .data$model)
+    }
+
+    gg_cat <- gg_cat +
       ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
       ggplot2::labs(x = NULL, y = y_lab)
   }
@@ -126,9 +140,13 @@ plot.gg_partial <- function(x, labels = NULL, ...) {
 #' contains.
 #'
 #' For a standard regression or classification forest, continuous predictors
-#' are drawn as line plots and categorical predictors as bar charts, both
+#' are drawn as line plots and categorical predictors as box plots, both
 #' faceted by variable name, the same arrangement as
-#' \code{\link{plot.gg_partial}}.
+#' \code{\link{plot.gg_partial}}.  The categorical data hold one prediction
+#' per training observation per level, not their average, so each box shows
+#' the spread of the prediction at that level and its middle line the median.
+#' For a survival forest the boxes are filled by time horizon, and with
+#' \code{xvar2.name} by the level of the second variable.
 #'
 #' For a survival forest, each call to \code{partial.rfsrc} returns a predicted
 #' quantity (survival probability, cumulative hazard function, or mortality) at
@@ -261,14 +279,42 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
 
   gg_cat <- NULL
   if (!is.null(gg_dta$categorical) && nrow(gg_dta$categorical) > 0) {
+    ## The categorical frame carries one prediction per observation per level,
+    ## so the panel shows their spread.  A bar with stat = "identity" stacks
+    ## them (and every time horizon with them), and the axis then reads as
+    ## their sum.
     cat_dta <- gg_dta$categorical
+    cat_y_lab <- "Partial Effect"
+    by_time <- !is.null(cat_dta$time)
+    if (by_time) {
+      time_levels <- sort(unique(cat_dta$time))
+      cat_dta$.time_factor <- factor(cat_dta$time, levels = time_levels)
+    }
     gg_cat <- ggplot2::ggplot(
       cat_dta,
       ggplot2::aes(x = factor(.data$x), y = .data$yhat)
     ) +
-      ggplot2::geom_bar(stat = "identity", width = 0.5) +
+      ggplot2::geom_boxplot()
+
+    if (by_time) {
+      ## Survival forest: one box per level per time point, as the continuous
+      ## panel draws one curve per time point.
+      cat_y_lab <- partial_surv_y_label(attr(gg_dta, "partial.type"))
+      gg_cat <- gg_cat +
+        ggplot2::aes(fill = .data$.time_factor) +
+        ggplot2::scale_fill_discrete(
+          labels = format(round(time_levels, 2), trim = TRUE)
+        ) +
+        ggplot2::labs(fill = "Time")
+    } else if (!is.null(cat_dta$grp)) {
+      gg_cat <- gg_cat +
+        ggplot2::aes(fill = factor(.data$grp)) +
+        ggplot2::labs(fill = "Group")
+    }
+
+    gg_cat <- gg_cat +
       ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
-      ggplot2::labs(x = NULL, y = "Partial Effect")
+      ggplot2::labs(x = NULL, y = cat_y_lab)
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {

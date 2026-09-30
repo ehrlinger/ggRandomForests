@@ -11,7 +11,7 @@
 #' \code{randomForestSRC::plot.variable(partial = TRUE)}: it takes the list
 #' that function returns and separates the variables into two tidy data frames,
 #' one for continuous predictors (plotted as lines) and one for categorical
-#' predictors (plotted as bar charts).  The split is controlled by
+#' predictors (plotted as box plots).  The split is controlled by
 #' \code{cat_limit}: variables with more unique x-values than this threshold
 #' are treated as continuous; all others are categorical.
 #'
