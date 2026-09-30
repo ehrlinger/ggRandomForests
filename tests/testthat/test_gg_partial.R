@@ -541,8 +541,27 @@ test_that("plot.gg_partial_rfsrc splits categorical boxes by time and by grp", {
 })
 
 test_that("plot.gg_partial splits categorical boxes by model", {
-  gg <- plot(cat_mock_by("gg_partial", "model", c("tuned", "default")))
-  built <- ggplot2::ggplot_build(gg)$data[[1]]
-  expect_equal(nrow(built), 4L)
+  # A numeric label is a continuous fill unless it is made a factor, and a
+  # continuous fill does not split the boxes.
+  for (models in list(c("tuned", "default"), c(1, 2))) {
+    gg <- plot(cat_mock_by("gg_partial", "model", models))
+    built <- ggplot2::ggplot_build(gg)$data[[1]]
+    expect_equal(nrow(built), 4L)
+    expect_equal(length(unique(built$fill)), 2L)
+  }
+})
+
+test_that("plot.gg_partial_rfsrc keeps time and grp apart when both are present", {
+  # A survival forest with xvar2.name carries both columns.
+  mock <- cat_mock_by("gg_partial_rfsrc", "time", c(30, 90))
+  both <- do.call(rbind, lapply(c(1, 2), function(val) {
+    mock$categorical$grp <- val
+    mock$categorical
+  }))
+  mock$categorical <- both
+  built <- ggplot2::ggplot_build(plot(mock))$data[[1]]
+  # 2 levels x 2 time points x 2 groups, the groups in separate panels.
+  expect_equal(nrow(built), 8L)
+  expect_equal(length(unique(built$PANEL)), 2L)
   expect_equal(length(unique(built$fill)), 2L)
 })

@@ -116,7 +116,11 @@ plot.gg_partial <- function(x, labels = NULL, ...) {
       ggplot2::geom_boxplot()
 
     if ("model" %in% colnames(cat_dta)) {
-      gg_cat <- gg_cat + ggplot2::aes(fill = .data$model)
+      ## factor(): a numeric model label would otherwise be a continuous fill,
+      ## which does not split the boxes.
+      gg_cat <- gg_cat +
+        ggplot2::aes(fill = factor(.data$model)) +
+        ggplot2::labs(fill = "model")
     }
 
     gg_cat <- gg_cat +
@@ -146,7 +150,9 @@ plot.gg_partial <- function(x, labels = NULL, ...) {
 #' per training observation per level, not their average, so each box shows
 #' the spread of the prediction at that level and its middle line the median.
 #' For a survival forest the boxes are filled by time horizon, and with
-#' \code{xvar2.name} by the level of the second variable.
+#' \code{xvar2.name} by the level of the second variable.  When a survival
+#' forest has both, the fill is the time horizon and each level of the second
+#' variable gets its own panel.
 #'
 #' For a survival forest, each call to \code{partial.rfsrc} returns a predicted
 #' quantity (survival probability, cumulative hazard function, or mortality) at
@@ -312,9 +318,24 @@ plot.gg_partial_rfsrc <- function(x, labels = NULL, ...) {
         ggplot2::labs(fill = "Group")
     }
 
-    gg_cat <- gg_cat +
-      ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
-      ggplot2::labs(x = NULL, y = cat_y_lab)
+    if (by_time && !is.null(cat_dta$grp)) {
+      ## Survival forest with xvar2.name: the fill is taken by the time point,
+      ## so each level of the second variable gets its own panel.  Without
+      ## this the boxes would pool every level of it.
+      gg_cat <- gg_cat +
+        ggplot2::facet_wrap(
+          ~name + grp, scales = "free_x",
+          labeller = ggplot2::labeller(
+            name = strip_labeller,
+            grp  = function(val) paste("Group", val)
+          )
+        )
+    } else {
+      gg_cat <- gg_cat +
+        ggplot2::facet_wrap(~name, scales = "free_x",
+                            labeller = strip_labeller)
+    }
+    gg_cat <- gg_cat + ggplot2::labs(x = NULL, y = cat_y_lab)
   }
 
   if (!is.null(gg_cont) && !is.null(gg_cat)) {

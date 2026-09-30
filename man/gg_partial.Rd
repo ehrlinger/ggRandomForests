@@ -24,7 +24,12 @@ A named list with two elements:
 \item{continuous}{data.frame with columns \code{x}, \code{yhat},
 \code{name} (and optionally \code{model}) for continuous variables}
 \item{categorical}{data.frame with the same columns but with \code{x}
-as a factor, for low-cardinality / categorical variables}
+as a factor, for low-cardinality / categorical variables. Unlike
+\code{continuous}, it is not averaged: \code{plot.variable()} returns
+one prediction per training observation per level, and
+\code{\link{plot.gg_partial}} draws their spread as box plots.
+Average \code{yhat} within \code{x} for the partial dependence
+value.}
 }
 }
 \description{
