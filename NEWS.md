@@ -3,6 +3,19 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `plot.gg_partial_rfsrc()` and `plot.gg_partial()` now draw a categorical
+  predictor as box plots, one box per level. The categorical data hold one
+  prediction per training observation per level, and the panel was a bar
+  chart with `stat = "identity"`, which stacks them: a class probability for
+  a 0/1 predictor on 400 rows read in the hundreds, and a survival forest
+  stacked every time horizon into the same bar. The boxes sit on the response
+  scale and show how the prediction varies across the training data at each
+  level. On a survival forest they are filled by time horizon and the axis
+  carries the same `partial.type` label as the continuous panel; with
+  `xvar2.name` they are filled by its level (a survival forest with
+  `xvar2.name` keeps the time fill and gives each level its own panel), and in
+  `plot.gg_partial()` by `model` when one was given. The returned data are unchanged; average `yhat`
+  within `x` for the partial dependence value itself (#299).
 * `nelson()` now returns the Nelson-Aalen estimate in `cum_haz`, and its
   `weight` argument now does something. Until now `nelson()` returned
   `-log(S(t))` from the Kaplan-Meier fit, so it matched `kaplan()` column for

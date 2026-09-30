@@ -650,6 +650,36 @@ local({
   })
 })
 
+# Categorical partial dependence panels. The objects are written out by hand:
+# the panel draws whatever per-observation predictions it is given, so a fit
+# would add nothing but a dependence on the installed randomForestSRC.
+local({
+  cat_dta <- data.frame(
+    x    = factor(rep(c("no", "yes"), each = 5)),
+    yhat = c(0.20, 0.35, 0.50, 0.65, 0.80, 0.10, 0.20, 0.30, 0.40, 0.50),
+    name = "treated"
+  )
+
+  test_that("snapshot: gg_partial categorical", {
+    gg_dta <- structure(list(continuous = NULL, categorical = cat_dta),
+                        class = "gg_partial")
+    vdiffr::expect_doppelganger("gg_partial categorical", plot(gg_dta))
+  })
+
+  test_that("snapshot: gg_partial_rfsrc categorical survival", {
+    later <- cat_dta
+    later$yhat <- later$yhat / 2
+    gg_dta <- structure(
+      list(continuous  = NULL,
+           categorical = rbind(cbind(cat_dta, time = 30),
+                               cbind(later, time = 90))),
+      class = "gg_partial_rfsrc", partial.type = "surv"
+    )
+    vdiffr::expect_doppelganger("gg_partial_rfsrc categorical survival",
+                                plot(gg_dta))
+  })
+})
+
 } else {
 
 ## ---- Preserve baselines when the vdiffr comparison is opted out ------------

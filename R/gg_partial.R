@@ -11,7 +11,7 @@
 #' \code{randomForestSRC::plot.variable(partial = TRUE)}: it takes the list
 #' that function returns and separates the variables into two tidy data frames,
 #' one for continuous predictors (plotted as lines) and one for categorical
-#' predictors (plotted as bar charts).  The split is controlled by
+#' predictors (plotted as box plots).  The split is controlled by
 #' \code{cat_limit}: variables with more unique x-values than this threshold
 #' are treated as continuous; all others are categorical.
 #'
@@ -32,7 +32,12 @@
 #'     \item{continuous}{data.frame with columns \code{x}, \code{yhat},
 #'       \code{name} (and optionally \code{model}) for continuous variables}
 #'     \item{categorical}{data.frame with the same columns but with \code{x}
-#'       as a factor, for low-cardinality / categorical variables}
+#'       as a factor, for low-cardinality / categorical variables. Unlike
+#'       \code{continuous}, it is not averaged: \code{plot.variable()} returns
+#'       one prediction per training observation per level, and
+#'       \code{\link{plot.gg_partial}} draws their spread as box plots.
+#'       Average \code{yhat} within \code{x} for the partial dependence
+#'       value.}
 #'   }
 #'
 #' @seealso \code{\link{gg_partial_rfsrc}} \code{\link{gg_partialpro}}
