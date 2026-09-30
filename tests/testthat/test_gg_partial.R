@@ -670,3 +670,38 @@ test_that("plot.gg_partial_rfsrc keeps time and grp apart when both are present"
   expect_equal(length(unique(built$PANEL)), 2L)
   expect_equal(length(unique(built$fill)), 2L)
 })
+
+test_that("gg_partial_rfsrc labels factor levels by the model's coding, not newx's", {
+  # partial.rfsrc() imposes a level by its code in the fitted model. Codes were
+  # taken from newx's levels, so re-levelling a factor in newx swapped the
+  # labels on both xvar.names and xvar2.name.
+  set.seed(42)
+  dta <- data.frame(x = rnorm(120), g = factor(rep(c("lo", "hi"), 60),
+                                               levels = c("lo", "hi")))
+  dta$y <- dta$x + 3 * (dta$g == "hi") + rnorm(120, sd = 0.1)
+  rf <- randomForestSRC::rfsrc(y ~ x + g, data = dta, ntree = 50)
+  swapped <- rf$xvar
+  swapped$g <- factor(as.character(swapped$g), levels = c("hi", "lo"))
+
+  by_level <- function(pd, frame, col) {
+    tapply(pd[[frame]]$yhat, as.character(pd[[frame]][[col]]), mean)
+  }
+  as_fit <- gg_partial_rfsrc(rf, xvar.names = "g")
+  as_new <- gg_partial_rfsrc(rf, xvar.names = "g", newx = swapped)
+  expect_equal(by_level(as_new, "categorical", "x"),
+               by_level(as_fit, "categorical", "x"))
+  expect_gt(by_level(as_fit, "categorical", "x")[["hi"]],
+            by_level(as_fit, "categorical", "x")[["lo"]])
+
+  grp_fit <- gg_partial_rfsrc(rf, xvar.names = "x", xvar2.name = "g", n_eval = 4)
+  grp_new <- gg_partial_rfsrc(rf, xvar.names = "x", xvar2.name = "g",
+                              newx = swapped, n_eval = 4)
+  expect_equal(by_level(grp_new, "continuous", "grp"),
+               by_level(grp_fit, "continuous", "grp"))
+
+  # A level the forest never saw is an error, not a silent relabel.
+  unseen <- rf$xvar
+  unseen$g <- factor(ifelse(unseen$g == "hi", "mid", "lo"))
+  expect_error(gg_partial_rfsrc(rf, xvar.names = "g", newx = unseen),
+               "not trained on")
+})
