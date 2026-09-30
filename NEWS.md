@@ -3,6 +3,20 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `nelson()` now returns the Nelson-Aalen estimate in `cum_haz`, and its
+  `weight` argument now does something. Until now `nelson()` returned
+  `-log(S(t))` from the Kaplan-Meier fit, so it matched `kaplan()` column for
+  column, and `weight` was read and then dropped. `cum_haz` is now the sum of
+  events over the number at risk, restarting in each `by =` stratum. `weight`
+  weights the events over an unweighted risk set, as `hzr_nelson(weight = )`
+  does in 'TemporalHazard', so a censored observation's weight has no effect.
+  The two estimates are close while the risk set is large and part in the
+  tail: on `survival::veteran` the last value was `Inf`, because the last
+  observation is a death and Kaplan-Meier reaches zero, and is now 5.29.
+  `surv`, its standard error and limits, and the columns derived from `surv`
+  are still Kaplan-Meier and do not move. This reaches
+  `gg_survival(type = "nelson")` and `plot.gg_survival(type = "cum_haz")`
+  (#304).
 * `gg_vimp(nvar = )` on a multi-class `rfsrc` forest now keeps the `nvar`
   most important variables. The importance matrix arrives in predictor order
   and was trimmed before it was sorted, so `nvar = 2` on `iris` returned

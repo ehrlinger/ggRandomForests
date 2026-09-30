@@ -15,7 +15,12 @@ nelson(interval, censor, data, by = NULL, weight = NULL, ...)
 
 \item{by}{stratifying variable in the training dataset, defaults to NULL}
 
-\item{weight}{for each observation (default=NULL)}
+\item{weight}{optional numeric vector of event weights, one per row of
+\code{data} (default \code{NULL}, every event counts once). The weights
+apply to events only: each increment of \code{cum_haz} is the summed
+weight of the events at that time over the unweighted number at risk, so
+a censored observation's weight has no effect. Use it for
+severity-weighted events. The Kaplan-Meier columns are not weighted.}
 
 \item{...}{arguments passed to the \code{survfit} function}
 }
@@ -23,7 +28,16 @@ nelson(interval, censor, data, by = NULL, weight = NULL, ...)
 \code{\link{gg_survival}} object
 }
 \description{
-nonparametric Nelson-Aalen estimates
+\code{cum_haz} is the Nelson-Aalen estimate of the cumulative hazard: at
+each event time the number of events is divided by the number at risk, and
+the ratios are summed. The \code{surv} column, its standard error and its
+confidence limits are the Kaplan-Meier estimates, as \code{\link{kaplan}}
+returns them, and \code{hazard}, \code{density}, \code{life} and
+\code{proplife} are derived from that \code{surv}. The two functions
+therefore differ only in \code{cum_haz}, where \code{kaplan} reports
+\eqn{-\log S(t)}. The two agree closely while the risk set is large and
+part in the tail; when the last observation is an event, \eqn{-\log S(t)}
+is infinite there and the Nelson-Aalen sum is not.
 }
 \examples{
 # These get run through the gg_survival examples.

@@ -226,3 +226,68 @@ test_that("bootstrap_survival time points match rfsrc$time.interest", {
 
   expect_equal(result$value, expected_times)
 })
+
+## ---- nelson(): the estimator and its event weights (issue #304) ------------
+
+test_that("nelson cum_haz is the Nelson-Aalen sum, not -log(KM)", {
+  vet <- survival::veteran
+  nel <- nelson(interval = "time", censor = "status", data = vet)
+  fit <- survival::survfit(survival::Surv(time, status) ~ 1, data = vet)
+  events <- fit$n.event > 0
+  expect_equal(nel$cum_haz, cumsum(fit$n.event / fit$n.risk)[events])
+  # The last death empties the risk set, so KM reaches 0 and -log(KM) is Inf.
+  # The Nelson-Aalen sum stays finite there.
+  expect_true(all(is.finite(nel$cum_haz)))
+  kap <- kaplan(interval = "time", censor = "status", data = vet)
+  expect_false(isTRUE(all.equal(nel$cum_haz, kap$cum_haz)))
+})
+
+test_that("nelson weight scales the events over an unweighted risk set", {
+  # Three deaths, no ties: the risk sets are 3, 2, 1 whatever the weights are.
+  toy <- data.frame(time = c(1, 2, 3), status = c(1, 1, 1))
+  nel <- nelson(interval = "time", censor = "status", data = toy,
+                weight = c(2, 1, 1))
+  expect_equal(nel$cum_haz, cumsum(c(2 / 3, 1 / 2, 1 / 1)))
+
+  vet <- survival::veteran
+  base <- nelson(interval = "time", censor = "status", data = vet)
+  tripled <- nelson(interval = "time", censor = "status", data = vet,
+                    weight = rep(3, nrow(vet)))
+  expect_equal(tripled$cum_haz, 3 * base$cum_haz)
+  # The weight leaves the Kaplan-Meier columns alone.
+  expect_equal(tripled$surv, base$surv)
+
+  # A censored observation carries no event, so its weight cannot matter.
+  cens_only <- ifelse(vet$status == 1, 1, 50)
+  expect_equal(
+    nelson(interval = "time", censor = "status", data = vet,
+           weight = cens_only)$cum_haz,
+    base$cum_haz
+  )
+})
+
+test_that("nelson weight is applied within each by= stratum", {
+  vet <- survival::veteran
+  vet$w <- ifelse(vet$celltype == "squamous", 2, 1)
+  strat <- nelson(interval = "time", censor = "status", data = vet,
+                  by = "trt", weight = vet$w)
+  for (grp in unique(vet$trt)) {
+    rows <- vet$trt == grp
+    alone <- nelson(interval = "time", censor = "status", data = vet[rows, ],
+                    weight = vet$w[rows])
+    expect_equal(strat$cum_haz[strat$groups == grp], alone$cum_haz)
+  }
+})
+
+test_that("nelson rejects a weight it cannot line up with the data", {
+  vet <- survival::veteran
+  expect_error(
+    nelson(interval = "time", censor = "status", data = vet, weight = 1:3),
+    "weight"
+  )
+  expect_error(
+    nelson(interval = "time", censor = "status", data = vet,
+           weight = rep(-1, nrow(vet))),
+    "weight"
+  )
+})
