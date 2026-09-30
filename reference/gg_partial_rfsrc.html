@@ -112,7 +112,9 @@ each unique value of this column in <code>newx</code>, with the variable held
 at that value for every training observation, and a <code>grp</code> column is
 appended. For a continuous variable, set <code>newx[[xvar2.name]]</code> to a
 short grid first, since every distinct value costs one more
-<code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> call for each variable in <code>xvar.names</code>.</p></dd>
+<code><a href="https://www.randomforestsrc.org//reference/partial.rfsrc.html" class="external-link">partial.rfsrc()</a></code> call for each variable in <code>xvar.names</code>. A
+factor keeps its level labels in <code>grp</code>, as a factor in the model's
+level order.</p></dd>
 
 
 <dt id="arg-newx">newx<a class="anchor" aria-label="anchor" href="#arg-newx"></a></dt>
@@ -133,7 +135,8 @@ variable fixed, pass it as <code>xvar2.name</code>. Defaults to
 forests (ignored for regression/classification).  Values are automatically
 snapped to the nearest entry in <code>rf_model$time.interest</code>; see the
 <strong>Survival forests</strong> section below.  When <code>NULL</code> (default),
-three quartile points of <code>time.interest</code> are used.</p></dd>
+three quartile points of <code>time.interest</code> are used.  Has no effect
+with <code>partial.type = "mort"</code>.</p></dd>
 
 
 <dt id="arg-partial-type">partial.type<a class="anchor" aria-label="anchor" href="#arg-partial-type"></a></dt>
@@ -165,7 +168,8 @@ Defaults to 25.</p></dd>
 <dd><p>A <code>data.frame</code> with columns <code>x</code> (numeric),
 <code>yhat</code>, <code>name</code> (variable name), and optionally <code>grp</code>
 (the level of <code>xvar2.name</code>) and <code>time</code> (survival forests
-only) for all continuous predictors.</p></dd>
+with <code>partial.type</code> <code>"surv"</code> or <code>"chf"</code>) for all
+continuous predictors.</p></dd>
 
 <dt>categorical</dt>
 <dd><p>A <code>data.frame</code> with the same columns but
@@ -191,7 +195,9 @@ pass the fitted <code>rfsrc</code> object directly, with no intermediate
 hazard function (<code>"chf"</code>), or expected mortality (<code>"mort"</code>).
 You can request the curve at one or more time horizons via
 <code>partial.time</code>; the resulting data have a <code>time</code> column so the
-plot layers them as separate colored lines.</p>
+plot layers them as separate colored lines.  Mortality is the exception: it
+is summed over every event time, so <code>partial.time</code> has no effect on it
+and the data carry no <code>time</code> column.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>

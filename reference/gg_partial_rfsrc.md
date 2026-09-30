@@ -44,7 +44,8 @@ gg_partial_rfsrc(
   continuous variable, set `newx[[xvar2.name]]` to a short grid first,
   since every distinct value costs one more
   [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-  call for each variable in `xvar.names`.
+  call for each variable in `xvar.names`. A factor keeps its level
+  labels in `grp`, as a factor in the model's level order.
 
 - newx:
 
@@ -64,7 +65,8 @@ gg_partial_rfsrc(
   for regression/classification). Values are automatically snapped to
   the nearest entry in `rf_model$time.interest`; see the **Survival
   forests** section below. When `NULL` (default), three quartile points
-  of `time.interest` are used.
+  of `time.interest` are used. Has no effect with
+  `partial.type = "mort"`.
 
 - partial.type:
 
@@ -99,7 +101,8 @@ A named list with two elements:
 
   A `data.frame` with columns `x` (numeric), `yhat`, `name` (variable
   name), and optionally `grp` (the level of `xvar2.name`) and `time`
-  (survival forests only) for all continuous predictors.
+  (survival forests with `partial.type` `"surv"` or `"chf"`) for all
+  continuous predictors.
 
 - categorical:
 
@@ -127,7 +130,9 @@ For survival forests, the marginalized quantity depends on
 function (`"chf"`), or expected mortality (`"mort"`). You can request
 the curve at one or more time horizons via `partial.time`; the resulting
 data have a `time` column so the plot layers them as separate colored
-lines.
+lines. Mortality is the exception: it is summed over every event time,
+so `partial.time` has no effect on it and the data carry no `time`
+column.
 
 ## Note
 

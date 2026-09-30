@@ -22,6 +22,37 @@
   average `yhat` within `x` for the partial dependence value itself
   ([\#299](https://github.com/ehrlinger/ggRandomForests/issues/299)).
 
+- `gg_partial_rfsrc(partial.type = "mort")` no longer stops with
+  “replacement has 3 rows, data has 23” under the default
+  `partial.time`. Mortality is summed over every event time, so
+  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+  returns one value per `x` whatever `partial.time` holds; the returned
+  data now carry no `time` column for it, and
+  [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
+  draws a single curve labelled “Predicted Mortality” in both panels.
+
+- [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
+  on a survival forest with `xvar2.name` now gives each level of the
+  second variable its own panel in the continuous panel too, one line
+  per time horizon. The lines were grouped by time alone, which joined
+  every level into a single zigzag.
+
+- `gg_partial_rfsrc(xvar2.name = )` now accepts a factor. Its labels
+  were handed to
+  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html),
+  which wants the integer codes and stopped with “partial values for
+  ‘trt’ must be a nonempty finite numeric vector”. `grp` comes back as a
+  factor holding the labels, in the model’s level order.
+
+- [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  now codes factor levels by the fitted forest, not by `newx`.
+  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
+  imposes a level by its integer code in the model, and the codes were
+  taken from `newx`’s own levels, which are checked only by column name.
+  A factor re-levelled in `newx` therefore passed one level’s code under
+  the other’s label, for `xvar.names` and `xvar2.name` alike, with no
+  warning. A level the forest was not trained on is now an error.
+
 - [`nelson()`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md)
   now returns the Nelson-Aalen estimate in `cum_haz`, and its `weight`
   argument now does something. Until now
