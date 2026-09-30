@@ -1,5 +1,51 @@
 Package: ggRandomForests
-Version: 3.5.3
+Version: 3.5.4
+
+ggRandomForests v3.5.4
+======================
+* `nelson()` now returns the Nelson-Aalen estimate in `cum_haz`, and its
+  `weight` argument now does something. Until now `nelson()` returned
+  `-log(S(t))` from the Kaplan-Meier fit, so it matched `kaplan()` column for
+  column, and `weight` was read and then dropped. `cum_haz` is now the sum of
+  events over the number at risk, restarting in each `by =` stratum. `weight`
+  weights the events over an unweighted risk set, as `hzr_nelson(weight = )`
+  does in 'TemporalHazard', so a censored observation's weight has no effect.
+  The two estimates are close while the risk set is large and diverge in the
+  tail: on `survival::veteran` the last value was `Inf`, because the last
+  observation is a death and Kaplan-Meier reaches zero, and is now 5.29.
+  `surv`, its standard error and limits, and the columns derived from `surv`
+  are still Kaplan-Meier and do not move. This reaches
+  `gg_survival(type = "nelson")` and `plot.gg_survival(type = "cum_haz")`
+  (#304).
+* `kaplan(by = )` and `nelson(by = )` now restart `hazard`, `density`,
+  `mid_int`, `life` and `proplife` in every stratum. The lags behind those
+  columns were taken after the strata were stacked, so the first interval of
+  each later group was measured from the last event time of the group before
+  it, and `life` carried on from that group's total. On `survival::veteran`
+  by `trt`, the second arm's `life` started at -148.8 and ended at -16.9; it
+  now runs from 0.99 to 132.9, as it does when that arm is fitted alone. The
+  first stratum was always right, as were `surv`, `cum_haz` and the confidence
+  limits. This reaches `gg_survival(by = )` and `plot.gg_survival()` with any
+  of those five `type` values (#303).
+* `kaplan(by = )` and `nelson(by = )` now take the strata from the fit. They
+  were told apart by a drop in the stacked event times, so a group whose
+  times all followed the previous group's was folded into it, and the labels
+  were handed out in the row order of `data`, while `survfit()` sorts the
+  groups. A character or numeric `by` column whose first row was not its
+  smallest value had its `groups` labels swapped. A factor `by` was labelled
+  correctly unless it carried a level with no rows ahead of one with rows.
+* `plot.gg_partial_rfsrc()` and `plot.gg_partial()` now draw a categorical
+  predictor as box plots, one box per level. The categorical data hold one
+  prediction per training observation per level, and the panel was a bar
+  chart with `stat = "identity"`, which stacks them: a class probability for
+  a 0/1 predictor on 400 rows read in the hundreds, and a survival forest
+  stacked every time horizon into the same bar. The boxes sit on the response
+  scale and show how the prediction varies across the training data at each
+  level. On a survival forest they are filled by time horizon and the axis
+  carries the same `partial.type` label as the continuous panel; with
+  `xvar2.name` they are filled by its level, and in `plot.gg_partial()` by
+  `model` when one was given. The returned data are unchanged; average `yhat`
+  within `x` for the partial dependence value itself (#299).
 
 ggRandomForests v3.5.3
 ======================

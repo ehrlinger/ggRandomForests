@@ -62,9 +62,9 @@ test_that("kaplan life column is non-decreasing and proplife is in [0, 1]", {
               info = "proplife must be <= 1 (area under S(t) <= t * 1)")
 })
 
-test_that("kaplan with character (non-factor) by uses unique() labels", {
-  # .label_strata() has two code paths: levels() for factors, unique() for
-  # character/numeric.  This test exercises the unique() path.
+test_that("kaplan with character (non-factor) by labels the groups", {
+  # .label_strata() has two code paths: levels() for factors, sorted unique
+  # values for character/numeric.  This test exercises the second.
   pbc_strat <- pbc_dta
   pbc_strat$trt_chr <- as.character(pbc_strat$treatment)
   pbc_strat <- pbc_strat[!is.na(pbc_strat$trt_chr), ]
@@ -83,6 +83,23 @@ test_that("kaplan plot returns a ggplot", {
 test_that("kaplan plot with error = 'none' returns a ggplot", {
   gg_dta <- kaplan(interval = "time", censor = "status", data = pbc_dta)
   expect_s3_class(plot(gg_dta, error = "none"), "ggplot")
+})
+
+test_that("kaplan and nelson restart the interval columns in every by= stratum", {
+  # Issue #303: the lags were taken across the stacked strata, so the first row
+  # of every later group lagged off the last row of the group before it, and
+  # life carried on from the previous group's total.
+  vet <- survival::veteran
+  lagged <- c("hazard", "density", "mid_int", "life", "proplife")
+  for (est in list(kaplan, nelson)) {
+    strat <- est(interval = "time", censor = "status", data = vet, by = "trt")
+    for (grp in unique(vet$trt)) {
+      alone <- est(interval = "time", censor = "status",
+                   data = vet[vet$trt == grp, ])
+      expect_equal(as.list(strat[strat$groups == grp, lagged]),
+                   as.list(alone[, lagged]))
+    }
+  }
 })
 
 ## ---- nelson() --------------------------------------------------------------
@@ -225,4 +242,113 @@ test_that("bootstrap_survival time points match rfsrc$time.interest", {
   result <- ggRandomForests:::bootstrap_survival(wide_dta, 50L, level_set)
 
   expect_equal(result$value, expected_times)
+})
+
+## ---- nelson(): the estimator and its event weights (issue #304) ------------
+
+test_that("nelson cum_haz is the Nelson-Aalen sum, not -log(KM)", {
+  vet <- survival::veteran
+  nel <- nelson(interval = "time", censor = "status", data = vet)
+  fit <- survival::survfit(survival::Surv(time, status) ~ 1, data = vet)
+  events <- fit$n.event > 0
+  expect_equal(nel$cum_haz, cumsum(fit$n.event / fit$n.risk)[events])
+  # The last death empties the risk set, so KM reaches 0 and -log(KM) is Inf.
+  # The Nelson-Aalen sum stays finite there.
+  expect_true(all(is.finite(nel$cum_haz)))
+  kap <- kaplan(interval = "time", censor = "status", data = vet)
+  expect_false(isTRUE(all.equal(nel$cum_haz, kap$cum_haz)))
+})
+
+test_that("nelson weight scales the events over an unweighted risk set", {
+  # Three deaths, no ties: the risk sets are 3, 2, 1 whatever the weights are.
+  toy <- data.frame(time = c(1, 2, 3), status = c(1, 1, 1))
+  nel <- nelson(interval = "time", censor = "status", data = toy,
+                weight = c(2, 1, 1))
+  expect_equal(nel$cum_haz, cumsum(c(2 / 3, 1 / 2, 1 / 1)))
+
+  vet <- survival::veteran
+  base <- nelson(interval = "time", censor = "status", data = vet)
+  tripled <- nelson(interval = "time", censor = "status", data = vet,
+                    weight = rep(3, nrow(vet)))
+  expect_equal(tripled$cum_haz, 3 * base$cum_haz)
+  # The weight leaves the Kaplan-Meier columns alone.
+  expect_equal(tripled$surv, base$surv)
+
+  # A censored observation carries no event, so its weight cannot matter.
+  cens_only <- ifelse(vet$status == 1, 1, 50)
+  expect_equal(
+    nelson(interval = "time", censor = "status", data = vet,
+           weight = cens_only)$cum_haz,
+    base$cum_haz
+  )
+})
+
+test_that("nelson weight is applied within each by= stratum", {
+  vet <- survival::veteran
+  vet$w <- ifelse(vet$celltype == "squamous", 2, 1)
+  strat <- nelson(interval = "time", censor = "status", data = vet,
+                  by = "trt", weight = vet$w)
+  for (grp in unique(vet$trt)) {
+    rows <- vet$trt == grp
+    alone <- nelson(interval = "time", censor = "status", data = vet[rows, ],
+                    weight = vet$w[rows])
+    expect_equal(strat$cum_haz[strat$groups == grp], alone$cum_haz)
+  }
+})
+
+test_that("nelson rejects a weight it cannot line up with the data", {
+  vet <- survival::veteran
+  expect_error(
+    nelson(interval = "time", censor = "status", data = vet, weight = 1:3),
+    "weight"
+  )
+  expect_error(
+    nelson(interval = "time", censor = "status", data = vet,
+           weight = rep(-1, nrow(vet))),
+    "weight"
+  )
+})
+
+## ---- by= strata are read from the fit, not inferred from the times ---------
+
+test_that("by= strata are separated when their event times do not overlap", {
+  # The strata used to be told apart by a drop in the stacked times, so an arm
+  # whose times all follow the previous arm's was folded into it.
+  dta <- data.frame(time = c(1, 2, 3, 4), status = 1,
+                    grp = c("a", "a", "b", "b"))
+  lagged <- c("cum_haz", "hazard", "density", "mid_int", "life", "proplife")
+  for (est in list(kaplan, nelson)) {
+    strat <- est(interval = "time", censor = "status", data = dta, by = "grp")
+    expect_equal(strat$groups, c("a", "a", "b", "b"))
+    for (grp in c("a", "b")) {
+      alone <- est(interval = "time", censor = "status",
+                   data = dta[dta$grp == grp, ])
+      expect_equal(as.list(strat[strat$groups == grp, lagged]),
+                   as.list(alone[, lagged]))
+    }
+  }
+})
+
+test_that("by= labels follow the fit's stratum order, not the row order", {
+  # survfit() sorts the strata; a character by= column whose first row is not
+  # the first stratum used to have its labels swapped.
+  dta <- data.frame(time = c(3, 4, 1, 2), status = 1,
+                    grp = c("b", "b", "a", "a"))
+  strat <- kaplan(interval = "time", censor = "status", data = dta, by = "grp")
+  expect_equal(strat$time[strat$groups == "a"], c(1, 2))
+  expect_equal(strat$time[strat$groups == "b"], c(3, 4))
+
+  # Rows survfit() drops, and factor levels nobody has, do not shift a label.
+  dta$grp <- factor(dta$grp, levels = c("z", "b", "a"))
+  dta <- rbind(dta, data.frame(time = NA, status = 1, grp = "z"))
+  strat <- kaplan(interval = "time", censor = "status", data = dta, by = "grp")
+  expect_equal(strat$time[strat$groups == "a"], c(1, 2))
+  expect_equal(strat$time[strat$groups == "b"], c(3, 4))
+
+  # A numeric by= column keeps its type in groups.
+  vet <- survival::veteran
+  expect_type(
+    kaplan(interval = "time", censor = "status", data = vet, by = "trt")$groups,
+    "double"
+  )
 })

@@ -22,8 +22,11 @@ satisfies \code{inherits(p, "ggplot")}.
 Turns a \code{\link{gg_partial}} object into a ggplot2 figure.  Each curve
 is a partial dependence trace -- the forest's average prediction as one
 predictor is swept across its range while the rest are marginalized over the
-training data.  Continuous predictors appear as line plots; categorical
-predictors appear as bar charts.  Both panels are faceted by variable name
+training data.  Continuous predictors appear as line plots.  Categorical
+predictors appear as box plots, one box per level, drawn from the
+per-observation predictions that \code{plot.variable()} returns for them, so
+the box shows how the prediction varies across the training data at that
+level.  Both panels are faceted by variable name
 so you can compare the shape and scale of each variable's effect at a
 glance.
 }
