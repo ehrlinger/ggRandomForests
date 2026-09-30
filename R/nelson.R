@@ -21,7 +21,7 @@
 #' \code{proplife} are derived from that \code{surv}. The two functions
 #' therefore differ only in \code{cum_haz}, where \code{kaplan} reports
 #' \eqn{-\log S(t)}. The two agree closely while the risk set is large and
-#' part in the tail; when the last observation is an event, \eqn{-\log S(t)}
+#' diverge in the tail; when the last observation is an event, \eqn{-\log S(t)}
 #' is infinite there and the Nelson-Aalen sum is not.
 #'
 #' @param data name of the survival training data.frame
@@ -140,7 +140,9 @@ nelson <-
     )
 
     # Detect stratum boundaries and label each row with its group name.
-    if (!is.null(by)) tbl <- .label_strata(tbl, data, by) # nolint: object_usage_linter
+    if (!is.null(by)) {
+      tbl <- .label_strata(tbl, srv_tab, data[[by]][!is.na(srv)])
+    }
 
     # H(t) = sum over event times up to t, restarting in every stratum.
     grp <- if (is.null(by)) rep(1L, nrow(tbl)) else tbl$groups
@@ -149,9 +151,14 @@ nelson <-
     # Retain only rows with at least one event.
     gg_dta <- tbl[which(tbl[["dead"]] != 0), ]
 
-    # Derived interval-based quantities (same as in kaplan.R).
-    lag_surv <- c(1, gg_dta$surv)[-(dim(gg_dta)[1] + 1)]
-    lag_time <- c(0, gg_dta$time)[-(dim(gg_dta)[1] + 1)]
+    # Derived interval-based quantities (same as in kaplan.R). The lags
+    # restart in every stratum; see the note there.
+    grp <- if (is.null(by)) rep(1L, nrow(gg_dta)) else gg_dta$groups
+    lag_within <- function(val, start) {
+      stats::ave(val, grp, FUN = function(v) c(start, v[-length(v)]))
+    }
+    lag_surv <- lag_within(gg_dta$surv, 1)
+    lag_time <- lag_within(gg_dta$time, 0)
 
     delta_t <- gg_dta$time - lag_time
     # h(t) ≈ -log(S(t)/S(t-)) / Δt
@@ -160,16 +167,11 @@ nelson <-
     # f(t) ≈ (S(t-) - S(t)) / Δt
     dnsty <- (lag_surv - gg_dta$surv) / delta_t
     mid_int <- (gg_dta$time + lag_time) / 2
-    lag_l <- 0
 
     # Cumulative expected life in each interval (trapezoidal rule):
     # L(t_i) = L(t_{i-1}) + (S(t_{i-1}) + S(t_i)) / 2 * Δt_i
-    life <- vector("numeric", length = dim(gg_dta)[1])
-    for (ind in seq_len(dim(gg_dta)[1])) {
-      life[ind] <-
-        lag_l + (lag_surv[ind] + gg_dta[ind, "surv"]) / 2 * delta_t[ind]
-      lag_l <- life[ind]
-    }
+    life <- stats::ave((lag_surv + gg_dta$surv) / 2 * delta_t, grp,
+                       FUN = cumsum)
     prp_life <- life / gg_dta$time
     gg_dta <- data.frame(
       cbind(

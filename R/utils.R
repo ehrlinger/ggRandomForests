@@ -48,39 +48,37 @@ shift <- function(x, shift_by = 1) {
 # --------------------------------------------------------------------------- #
 # Internal helper: label a survfit tbl with stratum group names.
 #
-# survfit() concatenates strata end-to-end in ascending-time order. Stratum
-# boundaries are detected by finding rows where the time column resets
-# (i.e. time[i] < time[i-1]).
+# survfit() concatenates strata end-to-end, in the sorted order of the `by`
+# values (level order, for a factor), and records how many rows each one owns
+# in $strata. The boundaries are read from those counts. Inferring a boundary
+# from a drop in the time column misses a stratum whose times all follow the
+# previous one's, and taking the labels from the row order of the data swaps
+# them whenever that order is not the sorted one.
 #
-# @param tbl     data.frame produced from survfit output (must have $time col)
-# @param data    original data.frame passed to kaplan()/nelson()
-# @param by      character; name of the grouping column in data
+# @param tbl     data.frame produced from survfit output, one row per time
+# @param srv_tab the stratified survfit object tbl was built from
+# @param by_col  the grouping column, restricted to the rows survfit() used
 #
 # @return tbl with an additional $groups column containing the group label
-#   for each row.
-.label_strata <- function(tbl, data, by) {
-  # Use levels() for factors to respect the existing ordering; fall back to
-  # unique() (in order of first appearance) for character/numeric vectors.
-  by_col <- data[[by]]
-  lbls <- if (is.factor(by_col)) levels(by_col) else unique(by_col)
-
-  # Single stratum or fewer than 2 rows: label everything with first group
-  if (nrow(tbl) < 2L) {
-    tbl$groups <- lbls[1L]
-    return(tbl)
+#   for each row, in the type of by_col (levels, for a factor).
+.label_strata <- function(tbl, srv_tab, by_col) {
+  by_col <- by_col[!is.na(by_col)]
+  lbls <- if (is.factor(by_col)) {
+    levels(droplevels(by_col))
+  } else {
+    sort(unique(by_col))
   }
 
-  # Detect stratum boundaries where the time column resets
-  tm_splits <- which(c(FALSE, sapply(seq(2L, nrow(tbl)), function(ind) {
-    tbl$time[ind] < tbl$time[ind - 1L]
-  })))
+  # A single stratum: survfit() returns no $strata.
+  counts <- srv_tab$strata
+  if (is.null(counts)) counts <- nrow(tbl)
 
-  tbl$groups <- lbls[1L]
-  if (length(tm_splits) > 0L) {
-    for (ind in seq_along(tm_splits)) {
-      tbl$groups[tm_splits[ind]:nrow(tbl)] <- lbls[ind + 1L]
-    }
+  if (length(lbls) != length(counts)) {
+    stop("the 'by' column has ", length(lbls), " groups but the fit has ",
+         length(counts), " strata.", call. = FALSE)
   }
+
+  tbl$groups <- rep(lbls, times = counts)
   tbl
 }
 

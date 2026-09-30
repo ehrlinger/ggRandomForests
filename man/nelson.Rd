@@ -36,7 +36,7 @@ returns them, and \code{hazard}, \code{density}, \code{life} and
 \code{proplife} are derived from that \code{surv}. The two functions
 therefore differ only in \code{cum_haz}, where \code{kaplan} reports
 \eqn{-\log S(t)}. The two agree closely while the risk set is large and
-part in the tail; when the last observation is an event, \eqn{-\log S(t)}
+diverge in the tail; when the last observation is an event, \eqn{-\log S(t)}
 is infinite there and the Nelson-Aalen sum is not.
 }
 \examples{

@@ -62,9 +62,9 @@ test_that("kaplan life column is non-decreasing and proplife is in [0, 1]", {
               info = "proplife must be <= 1 (area under S(t) <= t * 1)")
 })
 
-test_that("kaplan with character (non-factor) by uses unique() labels", {
-  # .label_strata() has two code paths: levels() for factors, unique() for
-  # character/numeric.  This test exercises the unique() path.
+test_that("kaplan with character (non-factor) by labels the groups", {
+  # .label_strata() has two code paths: levels() for factors, sorted unique
+  # values for character/numeric.  This test exercises the second.
   pbc_strat <- pbc_dta
   pbc_strat$trt_chr <- as.character(pbc_strat$treatment)
   pbc_strat <- pbc_strat[!is.na(pbc_strat$trt_chr), ]
@@ -83,6 +83,23 @@ test_that("kaplan plot returns a ggplot", {
 test_that("kaplan plot with error = 'none' returns a ggplot", {
   gg_dta <- kaplan(interval = "time", censor = "status", data = pbc_dta)
   expect_s3_class(plot(gg_dta, error = "none"), "ggplot")
+})
+
+test_that("kaplan and nelson restart the interval columns in every by= stratum", {
+  # Issue #303: the lags were taken across the stacked strata, so the first row
+  # of every later group lagged off the last row of the group before it, and
+  # life carried on from the previous group's total.
+  vet <- survival::veteran
+  lagged <- c("hazard", "density", "mid_int", "life", "proplife")
+  for (est in list(kaplan, nelson)) {
+    strat <- est(interval = "time", censor = "status", data = vet, by = "trt")
+    for (grp in unique(vet$trt)) {
+      alone <- est(interval = "time", censor = "status",
+                   data = vet[vet$trt == grp, ])
+      expect_equal(as.list(strat[strat$groups == grp, lagged]),
+                   as.list(alone[, lagged]))
+    }
+  }
 })
 
 ## ---- nelson() --------------------------------------------------------------
@@ -289,5 +306,49 @@ test_that("nelson rejects a weight it cannot line up with the data", {
     nelson(interval = "time", censor = "status", data = vet,
            weight = rep(-1, nrow(vet))),
     "weight"
+  )
+})
+
+## ---- by= strata are read from the fit, not inferred from the times ---------
+
+test_that("by= strata are separated when their event times do not overlap", {
+  # The strata used to be told apart by a drop in the stacked times, so an arm
+  # whose times all follow the previous arm's was folded into it.
+  dta <- data.frame(time = c(1, 2, 3, 4), status = 1,
+                    grp = c("a", "a", "b", "b"))
+  lagged <- c("cum_haz", "hazard", "density", "mid_int", "life", "proplife")
+  for (est in list(kaplan, nelson)) {
+    strat <- est(interval = "time", censor = "status", data = dta, by = "grp")
+    expect_equal(strat$groups, c("a", "a", "b", "b"))
+    for (grp in c("a", "b")) {
+      alone <- est(interval = "time", censor = "status",
+                   data = dta[dta$grp == grp, ])
+      expect_equal(as.list(strat[strat$groups == grp, lagged]),
+                   as.list(alone[, lagged]))
+    }
+  }
+})
+
+test_that("by= labels follow the fit's stratum order, not the row order", {
+  # survfit() sorts the strata; a character by= column whose first row is not
+  # the first stratum used to have its labels swapped.
+  dta <- data.frame(time = c(3, 4, 1, 2), status = 1,
+                    grp = c("b", "b", "a", "a"))
+  strat <- kaplan(interval = "time", censor = "status", data = dta, by = "grp")
+  expect_equal(strat$time[strat$groups == "a"], c(1, 2))
+  expect_equal(strat$time[strat$groups == "b"], c(3, 4))
+
+  # Rows survfit() drops, and factor levels nobody has, do not shift a label.
+  dta$grp <- factor(dta$grp, levels = c("z", "b", "a"))
+  dta <- rbind(dta, data.frame(time = NA, status = 1, grp = "z"))
+  strat <- kaplan(interval = "time", censor = "status", data = dta, by = "grp")
+  expect_equal(strat$time[strat$groups == "a"], c(1, 2))
+  expect_equal(strat$time[strat$groups == "b"], c(3, 4))
+
+  # A numeric by= column keeps its type in groups.
+  vet <- survival::veteran
+  expect_type(
+    kaplan(interval = "time", censor = "status", data = vet, by = "trt")$groups,
+    "double"
   )
 })
