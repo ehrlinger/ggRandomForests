@@ -61,7 +61,11 @@ A named list with two elements:
 only) for all continuous predictors.}
 \item{categorical}{A \code{data.frame} with the same columns but
 \code{x} kept as a \code{factor} (levels in the model's level order,
-not alphabetical), for low-cardinality predictors.}
+not alphabetical), for low-cardinality predictors. Unlike
+\code{continuous}, it is not averaged: there is one row per training
+observation per level (and per time point), so
+\code{\link{plot.gg_partial_rfsrc}} draws it as box plots. Average
+\code{yhat} within \code{x} for the partial dependence value.}
 }
 }
 \description{

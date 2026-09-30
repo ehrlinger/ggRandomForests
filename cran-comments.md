@@ -1,3 +1,28 @@
+## v3.5.4: three bug fixes
+
+This section is a draft. It records what changed and the one check run so far;
+the win-builder, reverse-dependency and URL checks have not been run for this
+version and must be added before it is submitted.
+
+* `kaplan(by = )` and `nelson(by = )` computed `hazard`, `density`, `mid_int`,
+  `life` and `proplife` across stratum boundaries, and could mislabel or merge
+  strata. The strata are now read from the `survfit` object.
+* `nelson()` returned `-log(S(t))` from the Kaplan-Meier fit as `cum_haz` and
+  ignored its `weight` argument. `cum_haz` is now the Nelson-Aalen sum and
+  `weight` weights the events.
+* `plot.gg_partial_rfsrc()` and `plot.gg_partial()` stacked per-observation
+  predictions into bars for categorical predictors. They now draw box plots.
+
+No exported function, argument or returned column was added or removed.
+
+### Test environments
+
+* **Local:** macOS (aarch64-apple-darwin), `R CMD check --as-cran` with the
+  manual, built from a clean export of the tree: **0 ERRORs, 0 WARNINGs,
+  1 NOTE** (CRAN incoming feasibility). The source tarball is 2.40 MB. Timed
+  steps: examples 16s, examples with `--run-donttest` 39s, vignette rebuild
+  48s.
+
 ## v3.5.3: test-only fix for the upcoming varPro 3.2.1
 
 varPro's maintainer, Udaya Kogalur, asked me to make this change ahead of his
