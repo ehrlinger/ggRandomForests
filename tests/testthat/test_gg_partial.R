@@ -390,6 +390,111 @@ test_that("gg_partial_rfsrc survival: returns correct column names", {
   expect_true(all(c("x", "yhat", "name", "time") %in% colnames(result$continuous)))
 })
 
+test_that("gg_partial_rfsrc survival: mortality carries no time column", {
+  # Mortality is summed over every event time, so partial.rfsrc() returns one
+  # value per x whatever partial.time holds. Stamping the (default three)
+  # time points onto it was an error: "replacement has 3 rows, data has 23".
+  rf <- make_veteran_rf()
+  ti <- rf$time.interest
+
+  result <- gg_partial_rfsrc(rf, xvar.names = c("age", "trt"),
+                             partial.type = "mort", n_eval = 6)
+
+  expect_false("time" %in% colnames(result$continuous))
+  expect_false("time" %in% colnames(result$categorical))
+  expect_equal(nrow(result$continuous), 6L)
+  # One prediction per training observation per level of trt.
+  expect_equal(nrow(result$categorical), 2L * rf$n)
+  expect_equal(attr(result, "partial.type"), "mort")
+
+  # The horizon asked for does not change the answer.
+  early <- gg_partial_rfsrc(rf, xvar.names = "age", partial.type = "mort",
+                            partial.time = ti[2], n_eval = 6)
+  expect_false("time" %in% colnames(early$continuous))
+  expect_equal(early$continuous$yhat, result$continuous$yhat)
+})
+
+test_that("plot.gg_partial_rfsrc labels mortality in both panels", {
+  rf <- make_veteran_rf()
+  result <- gg_partial_rfsrc(rf, xvar.names = c("age", "trt"),
+                             partial.type = "mort", n_eval = 6)
+
+  cont <- result
+  cont$categorical <- cont$categorical[0, ]
+  expect_equal(plot(cont)$labels$y, "Predicted Mortality")
+
+  cat_only <- result
+  cat_only$continuous <- cat_only$continuous[0, ]
+  expect_equal(plot(cat_only)$labels$y, "Predicted Mortality")
+
+  # With xvar2.name the panels take the grp branch; the label must follow.
+  grouped <- gg_partial_rfsrc(rf, xvar.names = "age", xvar2.name = "trt",
+                              partial.type = "mort", n_eval = 6)
+  gg <- plot(grouped)
+  expect_equal(gg$labels$y, "Predicted Mortality")
+  expect_equal(gg$labels$colour, "Group")
+})
+
+test_that("plot.gg_partial_rfsrc continuous panel keeps time and grp apart", {
+  # A survival forest with xvar2.name carries both columns. Grouping the lines
+  # by time alone joins every level of the second variable into one zigzag.
+  rf <- make_veteran_rf()
+  result <- gg_partial_rfsrc(rf, xvar.names = "age", xvar2.name = "trt",
+                             n_eval = 6)
+  n_time <- length(unique(result$continuous$time))
+
+  built <- ggplot2::ggplot_build(plot(result))$data[[1]]
+  # One panel per level of trt, one line per time point in each.
+  expect_equal(length(unique(built$PANEL)), 2L)
+  lines <- split(built, list(built$PANEL, built$group), drop = TRUE)
+  expect_equal(length(lines), 2L * n_time)
+  for (line in lines) {
+    expect_equal(nrow(line), 6L)
+    expect_false(anyDuplicated(line$x) > 0)
+  }
+})
+
+test_that("gg_partial_rfsrc accepts a factor xvar2.name", {
+  # partial.rfsrc() wants a factor's integer codes; the labels were passed,
+  # and it stopped with "partial values for 'trt' must be a nonempty finite
+  # numeric vector".
+  skip_if_not_installed("randomForestSRC")
+  skip_if_not_installed("survival")
+  veteran <- survival::veteran
+  Surv    <- survival::Surv # nolint: object_name_linter
+  veteran$trt_f <- factor(veteran$trt, labels = c("standard", "test"))
+  set.seed(42)
+  rf <- randomForestSRC::rfsrc(Surv(time, status) ~ trt_f + karno + age,
+                               data = veteran, ntree = 30, nsplit = 5)
+
+  result <- gg_partial_rfsrc(rf, xvar.names = "age", xvar2.name = "trt_f",
+                             partial.time = rf$time.interest[20], n_eval = 6)
+
+  grp <- result$continuous$grp
+  expect_s3_class(grp, "factor")
+  expect_equal(levels(grp), c("standard", "test"))
+  expect_equal(as.vector(table(grp)), c(6L, 6L))
+
+  # The codes reach partial.rfsrc() as the levels they stand for: each group
+  # matches a direct call holding trt_f at that code.
+  xval <- unique(result$continuous$x)
+  for (code in 1:2) {
+    direct <- randomForestSRC::get.partial.plot.data(
+      randomForestSRC::partial.rfsrc(
+        rf, partial.xvar = "age", partial.values = xval,
+        partial.xvar2 = "trt_f", partial.values2 = code,
+        partial.time = rf$time.interest[20], partial.type = "surv"
+      )
+    )
+    expect_equal(result$continuous$yhat[as.integer(grp) == code],
+                 as.numeric(direct$yhat))
+  }
+  expect_false(isTRUE(all.equal(result$continuous$yhat[grp == "standard"],
+                                result$continuous$yhat[grp == "test"])))
+
+  expect_s3_class(plot(result), "ggplot")
+})
+
 # ---- yhat scale / ylabel provenance (issue #15) ---------------------------
 
 test_that("gg_partial passes yhat through unscaled", {
