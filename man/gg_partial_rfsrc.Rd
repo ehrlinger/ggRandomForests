@@ -23,7 +23,9 @@ dependence should be computed. Must be a subset of \code{rf_model$xvar.names}.}
 
 \item{xvar2.name}{Optional single character name of a grouping variable in
 \code{newx}. When supplied, partial dependence is computed separately for
-each unique level of this variable and a \code{grp} column is appended.}
+each unique level of this variable and a \code{grp} column is appended.
+A factor keeps its level labels in \code{grp}, as a factor in the
+model's level order.}
 
 \item{newx}{Optional \code{data.frame} of predictor values to evaluate
 partial effects at. Defaults to the training data stored in
@@ -33,7 +35,8 @@ partial effects at. Defaults to the training data stored in
 forests (ignored for regression/classification).  Values are automatically
 snapped to the nearest entry in \code{rf_model$time.interest}; see the
 \strong{Survival forests} section below.  When \code{NULL} (default),
-three quartile points of \code{time.interest} are used.}
+three quartile points of \code{time.interest} are used.  Has no effect
+with \code{partial.type = "mort"}.}
 
 \item{partial.type}{Character; type of predicted value for survival
 forests, passed through to \code{\link[randomForestSRC]{partial.rfsrc}}.
@@ -58,7 +61,8 @@ A named list with two elements:
 \item{continuous}{A \code{data.frame} with columns \code{x} (numeric),
 \code{yhat}, \code{name} (variable name), and optionally \code{grp}
 (the level of \code{xvar2.name}) and \code{time} (survival forests
-only) for all continuous predictors.}
+with \code{partial.type} \code{"surv"} or \code{"chf"}) for all
+continuous predictors.}
 \item{categorical}{A \code{data.frame} with the same columns but
 \code{x} kept as a \code{factor} (levels in the model's level order,
 not alphabetical), for low-cardinality predictors. Unlike
@@ -89,7 +93,9 @@ For survival forests, the marginalized quantity depends on
 hazard function (\code{"chf"}), or expected mortality (\code{"mort"}).
 You can request the curve at one or more time horizons via
 \code{partial.time}; the resulting data have a \code{time} column so the
-plot layers them as separate colored lines.
+plot layers them as separate colored lines.  Mortality is the exception: it
+is summed over every event time, so \code{partial.time} has no effect on it
+and the data carry no \code{time} column.
 }
 \note{
 For survival forests this function defaults to

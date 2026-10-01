@@ -496,6 +496,19 @@ local({
     vdiffr::expect_doppelganger("gg_partial_rfsrc categorical survival",
                                 plot(gg_dta))
   })
+
+  test_that("snapshot: gg_partial_rfsrc continuous survival by group", {
+    # A survival forest with xvar2.name: time and grp together.
+    grid <- expand.grid(x = c(40, 50, 60, 70), time = c(30, 90), grp = c(1, 2))
+    grid$yhat <- 0.9 - grid$x / 200 - grid$time / 300 + grid$grp / 10
+    grid$name <- "age"
+    gg_dta <- structure(
+      list(continuous = grid, categorical = NULL),
+      class = "gg_partial_rfsrc", partial.type = "surv"
+    )
+    vdiffr::expect_doppelganger("gg_partial_rfsrc continuous survival by group",
+                                plot(gg_dta))
+  })
 })
 
 } # end CI guard
