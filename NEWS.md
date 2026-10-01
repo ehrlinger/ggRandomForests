@@ -66,6 +66,12 @@ ggRandomForests v3.5.4
   handed to `partial.rfsrc()`, which wants the integer codes and stopped with
   "partial values for 'trt' must be a nonempty finite numeric vector". `grp`
   comes back as a factor holding the labels, in the model's level order (#309).
+* `gg_partial_rfsrc()` now codes factor levels by the fitted forest, not by
+  `newx`. `partial.rfsrc()` imposes a level by its integer code in the model,
+  and the codes were taken from `newx`'s own levels, which are checked only by
+  column name. A factor re-levelled in `newx` therefore passed one level's code
+  under the other's label, for `xvar.names` and `xvar2.name` alike, with no
+  warning. A level the forest was not trained on is now an error.
 
 ggRandomForests v3.5.3
 ======================
