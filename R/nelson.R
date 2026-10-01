@@ -98,8 +98,9 @@ nelson <-
     if (is.null(by)) {
       srv_tab <- survival::survfit(srv ~ 1, ...)
     } else {
-      srv_tab <-
-        survival::survfit(srv ~ survival::strata(data[[by]]), ...)
+      strat <- .strata_factor(data[[by]])
+      grp <- strat$grp # nolint: object_usage_linter
+      srv_tab <- survival::survfit(srv ~ grp, ...)
     }
 
     # Events at each time. With a weight, a second fit hands back the weighted
@@ -110,8 +111,7 @@ nelson <-
       if (is.null(by)) {
         wtd_tab <- survival::survfit(srv ~ 1, weights = weight, ...)
       } else {
-        wtd_tab <- survival::survfit(srv ~ survival::strata(data[[by]]),
-                                     weights = weight, ...)
+        wtd_tab <- survival::survfit(srv ~ grp, weights = weight, ...)
       }
       if (length(wtd_tab$time) != length(srv_tab$time)) {
         stop("nelson: the weighted and unweighted fits returned different ",
@@ -141,7 +141,8 @@ nelson <-
 
     # Detect stratum boundaries and label each row with its group name.
     if (!is.null(by)) {
-      tbl <- .label_strata(tbl, srv_tab, data[[by]][!is.na(srv)])
+      tbl <- .label_strata(tbl, srv_tab, strat,
+                           .fit_rows(srv, list(...)$subset))
     }
 
     # H(t) = sum over event times up to t, restarting in every stratum.

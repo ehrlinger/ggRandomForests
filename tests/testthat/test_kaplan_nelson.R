@@ -352,3 +352,43 @@ test_that("by= labels follow the fit's stratum order, not the row order", {
     "double"
   )
 })
+
+test_that("by= labels follow the strata a survfit() option leaves in the fit", {
+  # subset and start.time are passed through ... and can drop a whole group.
+  # The labels used to be counted from the data, so a dropped group was an
+  # error, and before that it relabelled the groups that were left.
+  vet <- survival::veteran
+  for (est in list(kaplan, nelson)) {
+    one <- est(interval = "time", censor = "status", data = vet, by = "trt",
+               subset = vet$trt == 2)
+    expect_equal(unique(one$groups), 2)
+    expect_equal(one$surv,
+                 est(interval = "time", censor = "status",
+                     data = vet[vet$trt == 2, ])$surv)
+
+    # Negative indices exclude rows, as they do for survfit().
+    arm_2 <- which(vet$trt == 2)
+    excl <- est(interval = "time", censor = "status", data = vet, by = "trt",
+                subset = -arm_2)
+    expect_equal(unique(excl$groups), 1)
+
+    # start.time drops a group whose follow-up ends before it (adeno's last
+    # time is 186), and leaves a single, still named, stratum at 600.
+    late <- est(interval = "time", censor = "status", data = vet,
+                by = "celltype", start.time = 200)
+    expect_false("adeno" %in% late$groups)
+    expect_setequal(unique(late$groups), c("squamous", "smallcell", "large"))
+    only <- est(interval = "time", censor = "status", data = vet,
+                by = "celltype", start.time = 600)
+    expect_equal(unique(only$groups), "squamous")
+
+    by_cell <- est(interval = "time", censor = "status", data = vet,
+                   by = "celltype", subset = vet$celltype != "smallcell")
+    expect_equal(unique(by_cell$groups), c("squamous", "adeno", "large"))
+    for (grp in unique(by_cell$groups)) {
+      alone <- est(interval = "time", censor = "status",
+                   data = vet[vet$celltype == grp, ])
+      expect_equal(by_cell$surv[by_cell$groups == grp], alone$surv)
+    }
+  }
+})

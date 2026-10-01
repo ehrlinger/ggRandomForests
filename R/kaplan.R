@@ -62,8 +62,9 @@ kaplan <- function(interval,
   if (is.null(by)) {
     srv_tab <- survival::survfit(srv ~ 1, ...)
   } else {
-    srv_tab <-
-      survival::survfit(srv ~ survival::strata(data[[by]]), ...)
+    strat <- .strata_factor(data[[by]])
+    grp <- strat$grp # nolint: object_usage_linter
+    srv_tab <- survival::survfit(srv ~ grp, ...)
   }
 
   # Cumulative hazard H(t) = -log(S(t)) via the Nelson-Aalen transform.
@@ -86,7 +87,8 @@ kaplan <- function(interval,
 
   # When stratifying, stitch a "groups" label column onto the table.
   if (!is.null(by)) {
-    tbl <- .label_strata(tbl, srv_tab, data[[by]][!is.na(srv)])
+    tbl <- .label_strata(tbl, srv_tab, strat,
+                         .fit_rows(srv, list(...)$subset))
   }
 
   # Keep only rows where at least one event occurred; censoring-only rows
