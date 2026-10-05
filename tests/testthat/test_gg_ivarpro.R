@@ -101,9 +101,22 @@ test_that("gg_ivarpro binary: last level is the target's negated slopes", {
 
 test_that("gg_ivarpro binary: use.abs profiles are not negated", {
   v  <- .varpro_iris_binary_for_ivarpro()
+  set.seed(20261005L)
   iv <- varPro::ivarpro(v, use.abs = TRUE)
   out <- gg_ivarpro(v, ivarpro_fit = iv)
   expect_gt(nrow(out), 0L)
+  expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+})
+
+test_that("gg_ivarpro binary: a y.external target that is not a class is not mirrored", {
+  v <- .varpro_iris_binary_for_ivarpro()
+  p <- v$rf$predicted.oob
+  set.seed(20261005L)
+  iv <- varPro::ivarpro(v, y.external = matrix(p[, 2L], dimnames = list(NULL, "score")))
+  expect_equal(attr(iv, "target"), "score")
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  expect_gt(nrow(out), 0L)
+  expect_setequal(as.character(unique(out$class)), "virginica")
   expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
 })
 
