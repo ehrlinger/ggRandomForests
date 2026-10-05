@@ -2,6 +2,23 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
+  on a binary classification forest labelled its profile with the wrong
+  class.
+  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
+  explains one class there, the first factor level (its `target`
+  attribute says so), and
+  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
+  filed that profile under the last level, the default. Every binary
+  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
+  plot therefore showed the first class’s slopes, sign included, under
+  the second class’s name. Because the two class probabilities sum to
+  one, the second class’s slopes are the first’s negated, so
+  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
+  now derives it exactly and both levels are available through
+  `which_class`. The default stays the last level, now with the right
+  values. Under `use.abs = TRUE` the two profiles are equal.
+
 - `gg_varpro(conditional = TRUE)` on a binary classification forest now
   labels its classes with the outcome’s own level names. varPro recodes
   a binary outcome to 0/1 internally and names its conditional columns

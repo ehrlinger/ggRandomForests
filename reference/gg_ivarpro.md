@@ -169,14 +169,16 @@ Provenance carries `precomputed = TRUE` when `ivarpro_fit` was supplied.
 ## Classification
 
 For a classification fit, `ivarpro()` returns a list of K matrices (one
-per class) for multi-class, or a flat data.frame for binary
-(positive-class importances only; the wrapper normalizes this to a
-single-element list under the last factor level). The wrapper stacks
-per-class frames into a long-format frame with a `class` column.
-`which_class = NULL` returns all classes (binary defaults to the last
-factor level, the positive-class convention used by `glm` and `gg_roc`);
-`which_class = "<name>"` filters to a single class. `cutoff`
-polymorphism mirrors
+per class) for multi-class, or a flat data.frame for binary. The binary
+frame explains one class, named by its `target` attribute and by default
+the first factor level. Because the two class probabilities sum to one,
+the wrapper derives the other class exactly, as the negated local slopes
+(or the same values under `use.abs = TRUE`), so both levels are
+available. The wrapper stacks per-class frames into a long-format frame
+with a `class` column. `which_class = NULL` returns all classes (binary
+defaults to the last factor level, the positive-class convention used by
+`glm` and `gg_roc`); `which_class = "<name>"` filters to a single class.
+`cutoff` polymorphism mirrors
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md):
 `NULL` is per-class mean(\|local_imp\|), a scalar broadcasts, a named
 numeric vector overrides per class with fallback to that class's mean.
