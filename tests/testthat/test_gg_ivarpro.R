@@ -75,6 +75,51 @@ test_that("gg_ivarpro binary classification which_class = NULL defaults to last 
   expect_setequal(as.character(unique(out$class)), "virginica")
 })
 
+# varPro explains the FIRST level on a binary fit (attr "target"); the last
+# level is derived from it. Look up varPro's raw value for each output row.
+.raw_ivarpro_at <- function(iv, out) {
+  m <- as.matrix(iv)
+  m[cbind(out$obs, match(as.character(out$variable), colnames(m)))]
+}
+
+test_that("gg_ivarpro binary: first level is varPro's own target profile", {
+  v  <- .varpro_iris_binary_for_ivarpro()
+  iv <- .ivarpro_iris_binary()
+  expect_equal(attr(iv, "target"), "versicolor")
+  out <- gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")
+  expect_gt(nrow(out), 0L)
+  expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+})
+
+test_that("gg_ivarpro binary: last level is the target's negated slopes", {
+  v  <- .varpro_iris_binary_for_ivarpro()
+  iv <- .ivarpro_iris_binary()
+  out <- gg_ivarpro(v, ivarpro_fit = iv)   # default: virginica
+  expect_gt(nrow(out), 0L)
+  expect_equal(out$local_imp, -.raw_ivarpro_at(iv, out))
+})
+
+test_that("gg_ivarpro binary: use.abs profiles are not negated", {
+  v  <- .varpro_iris_binary_for_ivarpro()
+  set.seed(20261005L)
+  iv <- varPro::ivarpro(v, use.abs = TRUE)
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  expect_gt(nrow(out), 0L)
+  expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+})
+
+test_that("gg_ivarpro binary: a y.external target that is not a class is not mirrored", {
+  v <- .varpro_iris_binary_for_ivarpro()
+  p <- v$rf$predicted.oob
+  set.seed(20261005L)
+  iv <- varPro::ivarpro(v, y.external = matrix(p[, 2L], dimnames = list(NULL, "score")))
+  expect_equal(attr(iv, "target"), "score")
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  expect_gt(nrow(out), 0L)
+  expect_setequal(as.character(unique(out$class)), "virginica")
+  expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+})
+
 test_that("gg_ivarpro which_class explicit returns single class", {
   v  <- .varpro_iris_multiclass_for_ivarpro()
   iv <- .ivarpro_iris_multiclass()
