@@ -366,8 +366,8 @@ a forest with no outcome. \code{randomForestSRC} then passes a zero-length
 (\code{entry.c:184}), which is undefined behaviour and is reported by
 UBSAN builds. It is benign in practice (the pointer is formed but never
 dereferenced), and it is an upstream issue rather than one this package
-can fix (\code{ggRandomForests} is pure R); a one-line guard is proposed
-in \code{kogalur/randomForestSRC} PR #478. Passing \code{method = "rnd"}
+can fix (\code{ggRandomForests} is pure R); it is tracked as
+\code{kogalur/randomForestSRC} issue #477. Passing \code{method = "rnd"}
 through to \code{partialpro} avoids the unsupervised grow entirely, which
 is what this package's own tests and examples do.
 
