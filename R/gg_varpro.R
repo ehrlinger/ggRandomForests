@@ -107,7 +107,9 @@
 #'     plus \code{mean} (raw importance mean, always stored).}
 #'   \item{\code{$conditional}}{\code{NULL} when \code{conditional = FALSE};
 #'     otherwise a data frame with columns \code{variable}, \code{class},
-#'     \code{z} (one row per variable x class combination).}
+#'     \code{z} (one row per variable x class combination). \code{class} is
+#'     a factor of the outcome's own level names, also for a binary outcome,
+#'     which varPro recodes to 0/1 internally.}
 #' }
 #' A \code{"provenance"} attribute carries \code{family}, \code{local.std},
 #' \code{cutoff}, \code{faithful}, \code{conditional}, \code{xvar.names},
@@ -146,6 +148,16 @@ gg_varpro <- function(object,
   ## ---- Build tidy data structures ------------------------------------------
   dfs <- .build_varpro_imp_dfs(imp_out, imp_tree_mat, object$family,
                                 cutoff, nvar, faithful, local.std, conditional)
+
+  ## varPro recodes a binary outcome to 0/1 and names the conditional columns
+  ## after those codes; report the original class names, as gg_ivarpro() does.
+  if (!is.null(dfs$conditional)) {
+    lv    <- .ivarpro_class_levels(object)
+    codes <- as.character(seq_along(lv) - 1L)
+    cls   <- dfs$conditional$class
+    if (all(cls %in% codes)) cls <- lv[match(cls, codes)]
+    dfs$conditional$class <- factor(cls, levels = intersect(lv, cls))
+  }
 
   ## ---- Assemble result ------------------------------------------------------
   result <- structure(
