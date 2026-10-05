@@ -778,7 +778,9 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## Put each case's level back: shift its curve so it passes through the case's
 ## own OOB log-odds at its observed x. The shape (the slopes partialpro kept) is
 ## untouched. Binary variables are skipped: partialpro returns per-case level
-## means for them, without the swap.
+## means for them, without the swap. A case whose local fit failed comes back
+## from varPro >= 3.3.1 as an all-NA row; it has no level to restore, so it
+## stays NA and the column means leave it out.
 #' @keywords internal
 .anchor_varpro_levels <- function(part_dta, anchor) {
   for (k in seq_along(part_dta)) {
@@ -786,6 +788,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
     if (length(unique(feat$xorg)) == 2L || is.null(feat$case)) next
     offset <- vapply(seq_along(feat$case), function(i) {
       r <- feat$case[i]
+      if (sum(is.finite(feat$yhat.par[i, ])) < 2L) return(NA_real_)
       anchor[r] - stats::approx(feat$xvirtual, feat$yhat.par[i, ], feat$xorg[r],
                                 rule = 2)$y
     }, numeric(1))
@@ -876,6 +879,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
   bounded   <- .is_bounded_scale(scale)
   cont_list <- list()
   cat_list  <- list()
+  .warn_empty_varpro(part_dta, nvars)
   for (feature in seq_len(nvars)) {
     feat      <- part_dta[[feature]]
     feat_name <- names(part_dta)[[feature]]
@@ -905,6 +909,23 @@ gg_partial_varpro <- function(part_dta  = NULL,
     cats$name <- factor(cats$name, levels = lvls)
 
   list(continuous = cont, categorical = cats)
+}
+
+## varPro >= 3.3.1 marks failed fits NA rather than returning a flat curve; a
+## variable with none left would otherwise plot as a silent empty panel.
+#' @keywords internal
+.warn_empty_varpro <- function(part_dta, nvars) {
+  shown <- part_dta[seq_len(nvars)]
+  empty <- vapply(shown, function(feat) {
+    !any(is.finite(feat$yhat.par)) && !any(is.finite(feat$yhat.nonpar))
+  }, logical(1))
+  if (any(empty)) {
+    warning("gg_partial_varpro: no available partial curve for ",
+            paste(sQuote(names(shown)[empty], FALSE), collapse = ", "),
+            "; partialpro() could not fit it, so its panel will be empty.",
+            call. = FALSE)
+  }
+  invisible(NULL)
 }
 
 #' @keywords internal
