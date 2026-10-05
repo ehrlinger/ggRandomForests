@@ -386,10 +386,10 @@ whose `method` defaults to `"unsupv"`, a forest with no outcome.
 code and decrements that pointer (`entry.c:184`), which is undefined
 behaviour and is reported by UBSAN builds. It is benign in practice (the
 pointer is formed but never dereferenced), and it is an upstream issue
-rather than one this package can fix (`ggRandomForests` is pure R); a
-one-line guard is proposed in `kogalur/randomForestSRC` PR \#478.
-Passing `method = "rnd"` through to `partialpro` avoids the unsupervised
-grow entirely, which is what this package's own tests and examples do.
+rather than one this package can fix (`ggRandomForests` is pure R); it
+is tracked as `kogalur/randomForestSRC` issue \#477. Passing
+`method = "rnd"` through to `partialpro` avoids the unsupervised grow
+entirely, which is what this package's own tests and examples do.
 
 Second, `partialpro` fits a local polynomial model to the predicted
 values rather than just plotting their mean. That gives three parallel
@@ -532,7 +532,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 6
+#> [1] 8
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
@@ -540,14 +540,14 @@ length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 ## reach before you spend the computation -- this is the habit worth having.
 wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
-#> [1] "qsec" "vs"  
+#> [1] "qsec"
 
 ## Ask anyway and partialpro() warns, naming what it dropped.
 ## (method = "rnd" is passed through to partialpro(); see the note on
 ## isolation-forest method in Details.)
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
                         method = "rnd")
-#> Warning: partialpro(): skipping xvar.names not found in object$xvar.names: qsec, vs
+#> Warning: partialpro(): skipping xvar.names not found in object$xvar.names: qsec
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,
