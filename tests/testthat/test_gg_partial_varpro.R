@@ -609,6 +609,27 @@ test_that(".anchor_varpro_levels passes each curve through its anchor", {
   expect_identical(out$sex, d$sex)
 })
 
+## varPro 3.3.1 returns a case whose local fit failed as an all-NA row. It has
+## no level to restore, so it stays NA and colMeans(na.rm = TRUE) leaves it out.
+test_that(".anchor_varpro_levels leaves an unavailable case NA", {
+  d <- make_mock_vpro_data()
+  d$age$case <- seq_len(nrow(d$age$yhat.par))
+  d$age$yhat.par[1:3, ] <- NA
+  anchor <- seq(-2, 2, length.out = nrow(d$age$yhat.par))
+  out <- ggRandomForests:::.anchor_varpro_levels(d, anchor)
+  expect_true(all(is.na(out$age$yhat.par[1:3, ])))
+  expect_true(all(is.na(out$age$yhat.nonpar[1:3, ])))
+  expect_false(anyNA(out$age$yhat.par[-(1:3), ]))
+})
+
+test_that("gg_partial_varpro warns when a variable has no available curve", {
+  d <- make_mock_vpro_data()
+  d$age$yhat.par[]    <- NA
+  d$age$yhat.nonpar[] <- NA
+  expect_warning(gg_partial_varpro(d, scale = "logodds"),
+                 "no available partial curve.*age")
+})
+
 test_that("gg_partial_varpro: 'prob' is anchored and tracks the true PD", {
   skip_on_cran()
   skip_if_not_installed("varPro")

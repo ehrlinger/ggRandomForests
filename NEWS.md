@@ -3,6 +3,12 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `gg_partial_varpro()` accepts the unavailable fits that varPro 3.3.1
+  reports. `partialpro()` there returns a case whose local fit failed as a
+  row of `NA` instead of a flat curve; that case is left out of the
+  averaged curve on every scale. A variable with no available curve at all
+  now gets a warning naming it, rather than an empty panel that reads like
+  a flat effect.
 * `plot.gg_partial_rfsrc()` and `plot.gg_partial()` now draw a categorical
   predictor as box plots, one box per level. The categorical data hold one
   prediction per training observation per level, and the panel was a bar
