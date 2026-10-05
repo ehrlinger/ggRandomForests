@@ -89,9 +89,12 @@
 #'
 #' @section Classification:
 #' For a classification fit, `ivarpro()` returns a list of K matrices
-#' (one per class) for multi-class, or a flat data.frame for binary
-#' (positive-class importances only; the wrapper normalizes this to
-#' a single-element list under the last factor level). The wrapper
+#' (one per class) for multi-class, or a flat data.frame for binary.
+#' The binary frame explains one class, named by its `target`
+#' attribute and by default the first factor level. Because the two
+#' class probabilities sum to one, the wrapper derives the other class
+#' exactly, as the negated local slopes (or the same values under
+#' `use.abs = TRUE`), so both levels are available. The wrapper
 #' stacks per-class frames into a long-format frame with a `class`
 #' column. `which_class = NULL` returns all classes (binary defaults
 #' to the last factor level, the positive-class convention used by
@@ -224,12 +227,27 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
     }
     iv <- ivarpro_fit
   }
-  # varPro::ivarpro() returns a flat data.frame for binary classification
-  # (positive-class importances only). Normalize to the spec's list-of-K
-  # shape by wrapping under the last factor level (positive class).
+  # varPro::ivarpro() returns a flat data.frame for binary classification,
+  # explaining one class: attr "target" names it, and by default it is the
+  # FIRST level, the first column of the OOB probabilities. Normalize to the
+  # spec's list-of-K shape with both classes. Because P(other) = 1 - P(target),
+  # the other class's local slopes are the target's negated, or equal to them
+  # when ivarpro() was run with use.abs = TRUE.
   if (fam == "class" && is.data.frame(iv)) {
     cls_levels <- .ivarpro_class_levels(object)
-    iv <- stats::setNames(list(iv), cls_levels[length(cls_levels)])
+    target     <- attr(iv, "target")
+    if (length(target) == 1L && target %in% cls_levels &&
+        length(cls_levels) == 2L) {
+      other  <- setdiff(cls_levels, target)
+      flip   <- if (isTRUE(attr(iv, "ivarpro.path")$use.abs)) 1 else -1
+      iv_oth <- as.data.frame(lapply(iv, function(x) flip * x),
+                              check.names = FALSE)
+      iv <- stats::setNames(list(iv, iv_oth), c(target, other))[cls_levels]
+    } else {
+      # Target is not a response level (e.g. a y.external column): there is
+      # no class to mirror, so keep the single profile under the last level.
+      iv <- stats::setNames(list(iv), cls_levels[length(cls_levels)])
+    }
   }
   iv
 }
