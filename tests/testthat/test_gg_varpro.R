@@ -117,6 +117,21 @@ test_that("gg_varpro conditional keeps multiclass names unchanged", {
   expect_identical(levels(gg$conditional$class), levels(iris$Species))
 })
 
+test_that("gg_varpro conditional leaves multiclass labels that look like codes", {
+  skip_on_cran()
+  skip_if_not_installed("varPro")
+  set.seed(20261005L)
+  d <- iris
+  d$Species <- factor(as.integer(d$Species) - 1L, levels = c(2, 0, 1))
+  v <- varPro::varpro(Species ~ ., data = d, ntree = 30)
+  gg <- gg_varpro(v, conditional = TRUE)
+  z <- varPro::importance(v, local.std = FALSE)$conditional.z
+  for (k in c("2", "0", "1")) {
+    rows <- gg$conditional[gg$conditional$class == k, ]
+    expect_equal(rows$z, unname(z[as.character(rows$variable), k]))
+  }
+})
+
 ## ── Provenance attribute ─────────────────────────────────────────────────────
 
 test_that("gg_varpro provenance has all expected fields", {

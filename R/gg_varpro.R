@@ -151,11 +151,13 @@ gg_varpro <- function(object,
 
   ## varPro recodes a binary outcome to 0/1 and names the conditional columns
   ## after those codes; report the original class names, as gg_ivarpro() does.
+  ## Only binary outcomes are recoded, so only they are mapped: a multiclass
+  ## outcome whose own labels are "0", "1", ... must be left alone.
   if (!is.null(dfs$conditional)) {
     lv    <- .ivarpro_class_levels(object)
     codes <- as.character(seq_along(lv) - 1L)
     cls   <- dfs$conditional$class
-    if (all(cls %in% codes)) cls <- lv[match(cls, codes)]
+    if (length(lv) == 2L && all(cls %in% codes)) cls <- lv[match(cls, codes)]
     dfs$conditional$class <- factor(cls, levels = intersect(lv, cls))
   }
 
