@@ -3,6 +3,7 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+<<<<<<< HEAD
 * `gg_ivarpro()` on a binary classification forest labelled its profile
   with the wrong class. `varPro::ivarpro()` explains one class there, the
   first factor level (its `target` attribute says so), and `gg_ivarpro()`
@@ -13,6 +14,16 @@ ggRandomForests v4.0.0 (development)
   negated, so `gg_ivarpro()` now derives it exactly and both levels are
   available through `which_class`. The default stays the last level, now
   with the right values. Under `use.abs = TRUE` the two profiles are equal.
+=======
+* `gg_varpro(conditional = TRUE)` on a binary classification forest now
+  labels its classes with the outcome's own level names. varPro recodes a
+  binary outcome to 0/1 internally and names its conditional columns after
+  those codes, so the facets read `0` and `1` instead of, say, `N` and `R`.
+  `gg_ivarpro()` already mapped them back; `gg_varpro()` now does the same,
+  and `$conditional$class` is a factor in the outcome's level order.
+  Multiclass outcomes, which varPro does not recode, are unchanged, including
+  ones whose own labels are `"0"`, `"1"`, ...
+>>>>>>> origin/main
 * `plot.gg_partial_rfsrc()` and `plot.gg_partial()` now draw a categorical
   predictor as box plots, one box per level. The categorical data hold one
   prediction per training observation per level, and the panel was a bar

@@ -97,6 +97,41 @@ test_that("gg_varpro$conditional has variable, class, z when conditional=TRUE", 
   expect_true(all(c("variable", "class", "z") %in% names(gg$conditional)))
 })
 
+test_that("gg_varpro conditional names binary classes, not varPro's 0/1 codes", {
+  skip_on_cran()
+  vb <- .varpro_iris_binary()
+  # varPro recodes a binary outcome internally; y.org keeps the names.
+  expect_identical(levels(vb$y), c("0", "1"))
+  gg <- gg_varpro(vb, conditional = TRUE)
+  expect_identical(levels(gg$conditional$class), levels(vb$y.org))
+  # The recode is positional: code 0 is the first level of y.org.
+  z0 <- varPro::importance(vb, local.std = FALSE)$conditional.z[, "0"]
+  first <- gg$conditional[gg$conditional$class == levels(vb$y.org)[1], ]
+  expect_equal(first$z, unname(z0[as.character(first$variable)]))
+})
+
+test_that("gg_varpro conditional keeps multiclass names unchanged", {
+  skip_on_cran()
+  vm <- .varpro_iris_multiclass()
+  gg <- gg_varpro(vm, conditional = TRUE)
+  expect_identical(levels(gg$conditional$class), levels(iris$Species))
+})
+
+test_that("gg_varpro conditional leaves multiclass labels that look like codes", {
+  skip_on_cran()
+  skip_if_not_installed("varPro")
+  set.seed(20261005L)
+  d <- iris
+  d$Species <- factor(as.integer(d$Species) - 1L, levels = c(2, 0, 1))
+  v <- varPro::varpro(Species ~ ., data = d, ntree = 30)
+  gg <- gg_varpro(v, conditional = TRUE)
+  z <- varPro::importance(v, local.std = FALSE)$conditional.z
+  for (k in c("2", "0", "1")) {
+    rows <- gg$conditional[gg$conditional$class == k, ]
+    expect_equal(rows$z, unname(z[as.character(rows$variable), k]))
+  }
+})
+
 ## ── Provenance attribute ─────────────────────────────────────────────────────
 
 test_that("gg_varpro provenance has all expected fields", {
