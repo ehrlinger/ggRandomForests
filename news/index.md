@@ -2,6 +2,13 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  accepts the unavailable fits that varPro 3.3.1 reports. `partialpro()`
+  there returns a case whose local fit failed as a row of `NA` instead
+  of a flat curve; that case is left out of the averaged curve on every
+  scale. A variable with no available curve at all now gets a warning
+  naming it, rather than an empty panel that reads like a flat effect.
+
 - [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
   on a binary classification forest labelled its profile with the wrong
   class.
