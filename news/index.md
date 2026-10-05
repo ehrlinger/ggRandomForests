@@ -2,6 +2,19 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- `gg_varpro(conditional = TRUE)` on a binary classification forest now
+  labels its classes with the outcome’s own level names. varPro recodes
+  a binary outcome to 0/1 internally and names its conditional columns
+  after those codes, so the facets read `0` and `1` instead of, say, `N`
+  and `R`.
+  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
+  already mapped them back;
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  now does the same, and `$conditional$class` is a factor in the
+  outcome’s level order. Multiclass outcomes, which varPro does not
+  recode, are unchanged, including ones whose own labels are `"0"`,
+  `"1"`, …
+
 - [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
   and
   [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md)

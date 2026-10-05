@@ -157,7 +157,9 @@ plus <code>mean</code> (raw importance mean, always stored).</p></dd>
 <dt><code>$conditional</code></dt>
 <dd><p><code>NULL</code> when <code>conditional = FALSE</code>;
 otherwise a data frame with columns <code>variable</code>, <code>class</code>,
-<code>z</code> (one row per variable x class combination).</p></dd>
+<code>z</code> (one row per variable x class combination). <code>class</code> is
+a factor of the outcome's own level names, also for a binary outcome,
+which varPro recodes to 0/1 internally.</p></dd>
 
 
 </dl><p>A <code>"provenance"</code> attribute carries <code>family</code>, <code>local.std</code>,
