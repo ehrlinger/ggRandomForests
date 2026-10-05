@@ -150,9 +150,12 @@ Provenance carries \code{precomputed = TRUE} when \code{ivarpro_fit} was supplie
 \section{Classification}{
 
 For a classification fit, \code{ivarpro()} returns a list of K matrices
-(one per class) for multi-class, or a flat data.frame for binary
-(positive-class importances only; the wrapper normalizes this to
-a single-element list under the last factor level). The wrapper
+(one per class) for multi-class, or a flat data.frame for binary.
+The binary frame explains one class, named by its \code{target}
+attribute and by default the first factor level. Because the two
+class probabilities sum to one, the wrapper derives the other class
+exactly, as the negated local slopes (or the same values under
+\code{use.abs = TRUE}), so both levels are available. The wrapper
 stacks per-class frames into a long-format frame with a \code{class}
 column. \code{which_class = NULL} returns all classes (binary defaults
 to the last factor level, the positive-class convention used by
