@@ -10,6 +10,8 @@ gg_udependent(
   q.signal = 0.75,
   directed = TRUE,
   min.degree = NULL,
+  pre.filter = TRUE,
+  beta.mat = NULL,
   ...
 )
 }
@@ -29,6 +31,17 @@ variables; passed on to \code{sdependent()}.  Default \code{0.75}.}
 degree \eqn{\ge} \code{min.degree} are kept in \code{$nodes},
 \code{$edges}, and \code{$graph}.}
 
+\item{pre.filter}{Logical; forwarded to \code{varPro::get.beta.entropy()}.
+\code{TRUE} (default) restricts the lasso fits to the variables that pass
+varPro's importance pre-filter. \code{FALSE} uses every variable, so one
+the pre-filter drops (an outcome column, say) can still reach the graph.
+Ignored when \code{beta.mat} is supplied.}
+
+\item{beta.mat}{Optional precomputed dependency matrix, as returned by
+\code{varPro::get.beta.entropy(object, ...)}, with row and column names.
+Supply it to reuse one expensive computation across several calls.
+\code{NULL} (default) computes it from \code{object}.}
+
 \item{...}{Additional arguments forwarded to \code{varPro::sdependent()}.}
 }
 \value{
@@ -45,7 +58,9 @@ signal set).}
 detected.}
 }
 A \code{"provenance"} attribute carries \code{threshold}, \code{q.signal},
-\code{directed}, \code{min.degree}, \code{xvar.names}, and \code{n}.
+\code{directed}, \code{min.degree}, \code{pre.filter} (\code{NA} when
+\code{beta.mat} was supplied, since it was not used),
+\code{beta.mat.supplied}, \code{xvar.names}, and \code{n}.
 }
 \description{
 A \code{uvarpro} fit records how strongly each variable depends on the
@@ -83,6 +98,19 @@ setting \code{directed = FALSE} collapses each pair by taking the
 larger of the two, which is appropriate when you only want to see
 that two variables are dependent, not which way the dependency
 reads.
+}
+
+\section{Mixed-type data}{
+
+The matrix \code{get.beta.entropy()} returns is usually not square. Its
+rows are the variables that produced region releases; its columns are
+every one-hot-encoded predictor column, so factor levels that never
+released, and variables the pre-filter dropped, appear only as columns.
+We pad it to a square matrix over the union of the names, filling with 0
+(no release, no dependency). We also zero the entries between levels of
+the same factor (\code{cyl4} and \code{cyl8}, say): the levels are
+mutually exclusive by construction, so that edge says nothing about the
+data.
 }
 
 \section{What's in the output}{

@@ -3,6 +3,16 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* `gg_udependent()` no longer fails with "Adjacency matrices must be
+  square" on mixed-type data (#320). `varPro::get.beta.entropy()` returns
+  one row per variable that released but one column per one-hot predictor
+  column, so any factor level that never released, or any variable the
+  pre-filter dropped, made the matrix non-square. The matrix is now padded
+  to square with zeros, and edges between levels of the same factor are
+  dropped, since those levels are mutually exclusive by construction. Two
+  new arguments: `pre.filter` is passed to `get.beta.entropy()`, so a
+  variable the pre-filter would drop can reach the graph, and `beta.mat`
+  takes a precomputed matrix so repeated calls skip the computation.
 * `gg_partial_varpro()` accepts the unavailable fits that varPro 3.3.1
   reports. `partialpro()` there returns a case whose local fit failed as a
   row of `NA` instead of a flat curve; that case is left out of the

@@ -36,6 +36,17 @@
 #' that two variables are dependent, not which way the dependency
 #' reads.
 #'
+#' @section Mixed-type data:
+#' The matrix \code{get.beta.entropy()} returns is usually not square. Its
+#' rows are the variables that produced region releases; its columns are
+#' every one-hot-encoded predictor column, so factor levels that never
+#' released, and variables the pre-filter dropped, appear only as columns.
+#' We pad it to a square matrix over the union of the names, filling with 0
+#' (no release, no dependency). We also zero the entries between levels of
+#' the same factor (\code{cyl4} and \code{cyl8}, say): the levels are
+#' mutually exclusive by construction, so that edge says nothing about the
+#' data.
+#'
 #' @section What's in the output:
 #' \code{$edges} has one row per surviving edge with the raw weight
 #' \code{I[i, j]} (or, for undirected graphs, the max of the two
@@ -78,6 +89,15 @@
 #' @param min.degree Integer or \code{NULL}.  When set, only nodes with
 #'   degree \eqn{\ge} \code{min.degree} are kept in \code{$nodes},
 #'   \code{$edges}, and \code{$graph}.
+#' @param pre.filter Logical; forwarded to \code{varPro::get.beta.entropy()}.
+#'   \code{TRUE} (default) restricts the lasso fits to the variables that pass
+#'   varPro's importance pre-filter. \code{FALSE} uses every variable, so one
+#'   the pre-filter drops (an outcome column, say) can still reach the graph.
+#'   Ignored when \code{beta.mat} is supplied.
+#' @param beta.mat Optional precomputed dependency matrix, as returned by
+#'   \code{varPro::get.beta.entropy(object, ...)}, with row and column names.
+#'   Supply it to reuse one expensive computation across several calls.
+#'   \code{NULL} (default) computes it from \code{object}.
 #' @param ... Additional arguments forwarded to \code{varPro::sdependent()}.
 #'
 #' @return A named list of class \code{"gg_udependent"} with elements:
@@ -93,7 +113,9 @@
 #'     detected.}
 #' }
 #' A \code{"provenance"} attribute carries \code{threshold}, \code{q.signal},
-#' \code{directed}, \code{min.degree}, \code{xvar.names}, and \code{n}.
+#' \code{directed}, \code{min.degree}, \code{pre.filter} (\code{NA} when
+#' \code{beta.mat} was supplied, since it was not used),
+#' \code{beta.mat.supplied}, \code{xvar.names}, and \code{n}.
 #'
 #' @seealso \code{\link{plot.gg_udependent}}
 #'
@@ -113,11 +135,14 @@ gg_udependent <- function(object,
                            q.signal   = 0.75,
                            directed   = TRUE,
                            min.degree = NULL,
+                           pre.filter = TRUE,
+                           beta.mat   = NULL,
                            ...) {
   .validate_udep_inputs(object, threshold, directed)
 
   ## ---- Compute cross-variable dependency matrix ----------------------------
-  imp_mat <- varPro::get.beta.entropy(object)
+  imp_mat <- .udep_square(.udep_beta(object, beta.mat, pre.filter),
+                          attr(object$x, "xvar.map"))
 
   ## ---- Helper: build and return an empty gg_udependent result ---------------
   .empty_result <- function(msg) {
@@ -137,7 +162,8 @@ gg_udependent <- function(object,
       class = c("gg_udependent", "list")
     )
     attr(result, "provenance") <- .udep_provenance(object, threshold, q.signal,
-                                                     directed, min.degree)
+                                                     directed, min.degree,
+                                                     pre.filter, beta.mat)
     result
   }
 
@@ -253,7 +279,8 @@ gg_udependent <- function(object,
     class = c("gg_udependent", "list")
   )
   attr(result, "provenance") <- .udep_provenance(object, threshold, q.signal,
-                                                   directed, min.degree)
+                                                   directed, min.degree,
+                                                   pre.filter, beta.mat)
   result
 }
 
@@ -276,13 +303,47 @@ gg_udependent <- function(object,
   invisible(NULL)
 }
 
+## Return the user's precomputed matrix after checking it, or compute one.
 #' @keywords internal
-.udep_provenance <- function(object, threshold, q.signal, directed, min.degree) {
+.udep_beta <- function(object, beta_mat, pre_filter) {
+  if (is.null(beta_mat)) {
+    return(varPro::get.beta.entropy(object, pre.filter = pre_filter))
+  }
+  if (!is.matrix(beta_mat) || !is.numeric(beta_mat) ||
+      is.null(rownames(beta_mat)) || is.null(colnames(beta_mat))) {
+    stop("'beta.mat' must be a numeric matrix with row and column names, ",
+         "as returned by varPro::get.beta.entropy().", call. = FALSE)
+  }
+  beta_mat
+}
+
+## Pad the (usually non-square) get.beta.entropy() matrix to square over the
+## union of its row and column names, filling with 0, and zero the entries
+## between one-hot levels of the same factor. xvar.map maps each one-hot
+## column to its source variable; NULL leaves every pair distinct.
+#' @keywords internal
+.udep_square <- function(beta_mat, xvar_map) {
+  vars <- union(colnames(beta_mat), rownames(beta_mat))
+  sq <- matrix(0, length(vars), length(vars), dimnames = list(vars, vars))
+  sq[rownames(beta_mat), colnames(beta_mat)] <- beta_mat
+  sq[is.na(sq)] <- 0
+  src <- if (is.null(xvar_map)) vars else unname(xvar_map[vars])
+  src[is.na(src)] <- vars[is.na(src)]
+  sq[outer(src, src, "==")] <- 0
+  sq
+}
+
+#' @keywords internal
+.udep_provenance <- function(object, threshold, q.signal, directed, min.degree,
+                             pre_filter, beta_mat) {
+  supplied <- !is.null(beta_mat)
   list(
     threshold  = threshold,
     q.signal   = q.signal,
     directed   = directed,
     min.degree = min.degree,
+    pre.filter = if (supplied) NA else pre_filter,
+    beta.mat.supplied = supplied,
     xvar.names = object$xvar.names,
     n          = nrow(object$x)
   )
