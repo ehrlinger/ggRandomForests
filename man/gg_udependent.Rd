@@ -10,9 +10,9 @@ gg_udependent(
   q.signal = 0.75,
   directed = TRUE,
   min.degree = NULL,
+  ...,
   pre.filter = TRUE,
-  beta.mat = NULL,
-  ...
+  beta.mat = NULL
 )
 }
 \arguments{
@@ -31,6 +31,8 @@ variables; passed on to \code{sdependent()}.  Default \code{0.75}.}
 degree \eqn{\ge} \code{min.degree} are kept in \code{$nodes},
 \code{$edges}, and \code{$graph}.}
 
+\item{...}{Additional arguments forwarded to \code{varPro::sdependent()}.}
+
 \item{pre.filter}{Logical; forwarded to \code{varPro::get.beta.entropy()}.
 \code{TRUE} (default) restricts the lasso fits to the variables that pass
 varPro's importance pre-filter. \code{FALSE} uses every variable, so one
@@ -41,8 +43,6 @@ Ignored when \code{beta.mat} is supplied.}
 \code{varPro::get.beta.entropy(object, ...)}, with row and column names.
 Supply it to reuse one expensive computation across several calls.
 \code{NULL} (default) computes it from \code{object}.}
-
-\item{...}{Additional arguments forwarded to \code{varPro::sdependent()}.}
 }
 \value{
 A named list of class \code{"gg_udependent"} with elements:

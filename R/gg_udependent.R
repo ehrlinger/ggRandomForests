@@ -89,6 +89,7 @@
 #' @param min.degree Integer or \code{NULL}.  When set, only nodes with
 #'   degree \eqn{\ge} \code{min.degree} are kept in \code{$nodes},
 #'   \code{$edges}, and \code{$graph}.
+#' @param ... Additional arguments forwarded to \code{varPro::sdependent()}.
 #' @param pre.filter Logical; forwarded to \code{varPro::get.beta.entropy()}.
 #'   \code{TRUE} (default) restricts the lasso fits to the variables that pass
 #'   varPro's importance pre-filter. \code{FALSE} uses every variable, so one
@@ -98,7 +99,6 @@
 #'   \code{varPro::get.beta.entropy(object, ...)}, with row and column names.
 #'   Supply it to reuse one expensive computation across several calls.
 #'   \code{NULL} (default) computes it from \code{object}.
-#' @param ... Additional arguments forwarded to \code{varPro::sdependent()}.
 #'
 #' @return A named list of class \code{"gg_udependent"} with elements:
 #' \describe{
@@ -135,9 +135,9 @@ gg_udependent <- function(object,
                            q.signal   = 0.75,
                            directed   = TRUE,
                            min.degree = NULL,
+                           ...,
                            pre.filter = TRUE,
-                           beta.mat   = NULL,
-                           ...) {
+                           beta.mat   = NULL) {
   .validate_udep_inputs(object, threshold, directed)
 
   ## ---- Compute cross-variable dependency matrix ----------------------------
