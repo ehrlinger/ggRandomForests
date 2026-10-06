@@ -18,6 +18,8 @@ gg_udependent(
   q.signal = 0.75,
   directed = TRUE,
   min.degree = NULL,
+  pre.filter = TRUE,
+  beta.mat = NULL,
   ...
 )
 ```
@@ -48,6 +50,22 @@ gg_udependent(
   Integer or `NULL`. When set, only nodes with degree \\\ge\\
   `min.degree` are kept in `$nodes`, `$edges`, and `$graph`.
 
+- pre.filter:
+
+  Logical; forwarded to
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html).
+  `TRUE` (default) restricts the lasso fits to the variables that pass
+  varPro's importance pre-filter. `FALSE` uses every variable, so one
+  the pre-filter drops (an outcome column, say) can still reach the
+  graph. Ignored when `beta.mat` is supplied.
+
+- beta.mat:
+
+  Optional precomputed dependency matrix, as returned by
+  `varPro::get.beta.entropy(object, ...)`, with row and column names.
+  Supply it to reuse one expensive computation across several calls.
+  `NULL` (default) computes it from `object`.
+
 - ...:
 
   Additional arguments forwarded to
@@ -74,7 +92,8 @@ A named list of class `"gg_udependent"` with elements:
   igraph object. `NULL` if no dependencies detected.
 
 A `"provenance"` attribute carries `threshold`, `q.signal`, `directed`,
-`min.degree`, `xvar.names`, and `n`.
+`min.degree`, `pre.filter` (`NA` when `beta.mat` was supplied, since it
+was not used), `beta.mat.supplied`, `xvar.names`, and `n`.
 
 ## What cross-variable dependency is doing
 
@@ -105,6 +124,17 @@ are separate lasso coefficients and need not agree; setting
 `directed = FALSE` collapses each pair by taking the larger of the two,
 which is appropriate when you only want to see that two variables are
 dependent, not which way the dependency reads.
+
+## Mixed-type data
+
+The matrix `get.beta.entropy()` returns is usually not square. Its rows
+are the variables that produced region releases; its columns are every
+one-hot-encoded predictor column, so factor levels that never released,
+and variables the pre-filter dropped, appear only as columns. We pad it
+to a square matrix over the union of the names, filling with 0 (no
+release, no dependency). We also zero the entries between levels of the
+same factor (`cyl4` and `cyl8`, say): the levels are mutually exclusive
+by construction, so that edge says nothing about the data.
 
 ## What's in the output
 

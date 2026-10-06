@@ -83,6 +83,8 @@ the fit with <code><a href="https://www.randomforestsrc.org/reference/uvarpro.ht
 <span>  q.signal <span class="op">=</span> <span class="fl">0.75</span>,</span>
 <span>  directed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  min.degree <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pre.filter <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  beta.mat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -116,6 +118,21 @@ degree \(\ge\) <code>min.degree</code> are kept in <code>$nodes</code>,
 <code>$edges</code>, and <code>$graph</code>.</p></dd>
 
 
+<dt id="arg-pre-filter">pre.filter<a class="anchor" aria-label="anchor" href="#arg-pre-filter"></a></dt>
+<dd><p>Logical; forwarded to <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code>.
+<code>TRUE</code> (default) restricts the lasso fits to the variables that pass
+varPro's importance pre-filter. <code>FALSE</code> uses every variable, so one
+the pre-filter drops (an outcome column, say) can still reach the graph.
+Ignored when <code>beta.mat</code> is supplied.</p></dd>
+
+
+<dt id="arg-beta-mat">beta.mat<a class="anchor" aria-label="anchor" href="#arg-beta-mat"></a></dt>
+<dd><p>Optional precomputed dependency matrix, as returned by
+<code>varPro::get.beta.entropy(object, ...)</code>, with row and column names.
+Supply it to reuse one expensive computation across several calls.
+<code>NULL</code> (default) computes it from <code>object</code>.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional arguments forwarded to <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::sdependent()</a></code>.</p></dd>
 
@@ -139,7 +156,9 @@ detected.</p></dd>
 
 
 </dl><p>A <code>"provenance"</code> attribute carries <code>threshold</code>, <code>q.signal</code>,
-<code>directed</code>, <code>min.degree</code>, <code>xvar.names</code>, and <code>n</code>.</p>
+<code>directed</code>, <code>min.degree</code>, <code>pre.filter</code> (<code>NA</code> when
+<code>beta.mat</code> was supplied, since it was not used),
+<code>beta.mat.supplied</code>, <code>xvar.names</code>, and <code>n</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="what-cross-variable-dependency-is-doing">What cross-variable dependency is doing<a class="anchor" aria-label="anchor" href="#what-cross-variable-dependency-is-doing"></a></h2>
@@ -170,6 +189,20 @@ setting <code>directed = FALSE</code> collapses each pair by taking the
 larger of the two, which is appropriate when you only want to see
 that two variables are dependent, not which way the dependency
 reads.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="mixed-type-data">Mixed-type data<a class="anchor" aria-label="anchor" href="#mixed-type-data"></a></h2>
+
+
+<p>The matrix <code>get.beta.entropy()</code> returns is usually not square. Its
+rows are the variables that produced region releases; its columns are
+every one-hot-encoded predictor column, so factor levels that never
+released, and variables the pre-filter dropped, appear only as columns.
+We pad it to a square matrix over the union of the names, filling with 0
+(no release, no dependency). We also zero the entries between levels of
+the same factor (<code>cyl4</code> and <code>cyl8</code>, say): the levels are
+mutually exclusive by construction, so that edge says nothing about the
+data.</p>
     </div>
     <div class="section level2">
     <h2 id="what-s-in-the-output">What's in the output<a class="anchor" aria-label="anchor" href="#what-s-in-the-output"></a></h2>

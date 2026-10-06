@@ -532,7 +532,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 6
+#> [1] 5
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
