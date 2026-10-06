@@ -83,9 +83,9 @@ the fit with <code><a href="https://www.randomforestsrc.org/reference/uvarpro.ht
 <span>  q.signal <span class="op">=</span> <span class="fl">0.75</span>,</span>
 <span>  directed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  min.degree <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  pre.filter <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  beta.mat <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  beta.mat <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -118,6 +118,10 @@ degree \(\ge\) <code>min.degree</code> are kept in <code>$nodes</code>,
 <code>$edges</code>, and <code>$graph</code>.</p></dd>
 
 
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Additional arguments forwarded to <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::sdependent()</a></code>.</p></dd>
+
+
 <dt id="arg-pre-filter">pre.filter<a class="anchor" aria-label="anchor" href="#arg-pre-filter"></a></dt>
 <dd><p>Logical; forwarded to <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code>.
 <code>TRUE</code> (default) restricts the lasso fits to the variables that pass
@@ -131,10 +135,6 @@ Ignored when <code>beta.mat</code> is supplied.</p></dd>
 <code>varPro::get.beta.entropy(object, ...)</code>, with row and column names.
 Supply it to reuse one expensive computation across several calls.
 <code>NULL</code> (default) computes it from <code>object</code>.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments forwarded to <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::sdependent()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

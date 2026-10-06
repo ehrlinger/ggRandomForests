@@ -18,9 +18,9 @@ gg_udependent(
   q.signal = 0.75,
   directed = TRUE,
   min.degree = NULL,
+  ...,
   pre.filter = TRUE,
-  beta.mat = NULL,
-  ...
+  beta.mat = NULL
 )
 ```
 
@@ -50,6 +50,11 @@ gg_udependent(
   Integer or `NULL`. When set, only nodes with degree \\\ge\\
   `min.degree` are kept in `$nodes`, `$edges`, and `$graph`.
 
+- ...:
+
+  Additional arguments forwarded to
+  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html).
+
 - pre.filter:
 
   Logical; forwarded to
@@ -65,11 +70,6 @@ gg_udependent(
   `varPro::get.beta.entropy(object, ...)`, with row and column names.
   Supply it to reuse one expensive computation across several calls.
   `NULL` (default) computes it from `object`.
-
-- ...:
-
-  Additional arguments forwarded to
-  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html).
 
 ## Value
 
