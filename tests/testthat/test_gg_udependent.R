@@ -290,6 +290,13 @@ test_that("gg_udependent drops edges between levels of the same factor", {
   expect_false(any(same))
 })
 
+test_that("gg_udependent pre.filter and beta.mat are named-only", {
+  # After `...`, so a positional extra still reaches sdependent() as before.
+  f <- names(formals(gg_udependent))
+  dots <- which(f == "...")
+  expect_true(all(match(c("pre.filter", "beta.mat"), f) > dots))
+})
+
 test_that("gg_udependent beta.mat must be a named numeric matrix", {
   mx <- make_mixed_uvp()
   expect_error(gg_udependent(mx$fit, beta.mat = 1:4), "beta.mat")
