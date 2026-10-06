@@ -113,7 +113,9 @@
 #'     detected.}
 #' }
 #' A \code{"provenance"} attribute carries \code{threshold}, \code{q.signal},
-#' \code{directed}, \code{min.degree}, \code{xvar.names}, and \code{n}.
+#' \code{directed}, \code{min.degree}, \code{pre.filter} (\code{NA} when
+#' \code{beta.mat} was supplied, since it was not used),
+#' \code{beta.mat.supplied}, \code{xvar.names}, and \code{n}.
 #'
 #' @seealso \code{\link{plot.gg_udependent}}
 #'
@@ -160,7 +162,8 @@ gg_udependent <- function(object,
       class = c("gg_udependent", "list")
     )
     attr(result, "provenance") <- .udep_provenance(object, threshold, q.signal,
-                                                     directed, min.degree)
+                                                     directed, min.degree,
+                                                     pre.filter, beta.mat)
     result
   }
 
@@ -276,7 +279,8 @@ gg_udependent <- function(object,
     class = c("gg_udependent", "list")
   )
   attr(result, "provenance") <- .udep_provenance(object, threshold, q.signal,
-                                                   directed, min.degree)
+                                                   directed, min.degree,
+                                                   pre.filter, beta.mat)
   result
 }
 
@@ -330,12 +334,16 @@ gg_udependent <- function(object,
 }
 
 #' @keywords internal
-.udep_provenance <- function(object, threshold, q.signal, directed, min.degree) {
+.udep_provenance <- function(object, threshold, q.signal, directed, min.degree,
+                             pre_filter, beta_mat) {
+  supplied <- !is.null(beta_mat)
   list(
     threshold  = threshold,
     q.signal   = q.signal,
     directed   = directed,
     min.degree = min.degree,
+    pre.filter = if (supplied) NA else pre_filter,
+    beta.mat.supplied = supplied,
     xvar.names = object$xvar.names,
     n          = nrow(object$x)
   )

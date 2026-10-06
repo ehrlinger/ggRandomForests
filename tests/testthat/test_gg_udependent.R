@@ -118,6 +118,7 @@ test_that("gg_udependent provenance has all expected fields", {
   prov <- attr(gg, "provenance")
   expect_type(prov, "list")
   expect_true(all(c("threshold", "q.signal", "directed", "min.degree",
+                    "pre.filter", "beta.mat.supplied",
                     "xvar.names", "n") %in% names(prov)))
 })
 
@@ -305,6 +306,14 @@ test_that("gg_udependent forwards pre.filter to get.beta.entropy", {
 
   set.seed(1L)
   gg <- gg_udependent(mx$fit, threshold = 0.1, pre.filter = FALSE)
-  expect_equal(gg$edges,
-               gg_udependent(mx$fit, threshold = 0.1, beta.mat = unfiltered)$edges)
+  from_mat <- gg_udependent(mx$fit, threshold = 0.1, beta.mat = unfiltered)
+  expect_equal(gg$edges, from_mat$edges)
+
+  # Provenance tells the two routes apart, so a graph can be audited later.
+  prov <- attr(gg, "provenance")
+  expect_identical(prov$pre.filter, FALSE)
+  expect_false(prov$beta.mat.supplied)
+  prov_mat <- attr(from_mat, "provenance")
+  expect_identical(prov_mat$pre.filter, NA)
+  expect_true(prov_mat$beta.mat.supplied)
 })
