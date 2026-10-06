@@ -1,4 +1,4 @@
-## v3.5.4: three bug fixes
+## v3.5.4: four bug fixes
 
 This section is a draft. It records what changed and the one check run so far;
 the win-builder, reverse-dependency and URL checks have not been run for this
@@ -12,6 +12,12 @@ version and must be added before it is submitted.
   `weight` weights the events.
 * `plot.gg_partial_rfsrc()` and `plot.gg_partial()` stacked per-observation
   predictions into bars for categorical predictors. They now draw box plots.
+* `gg_partial_rfsrc()` coded factor levels by the levels of `newx` rather than
+  those of the fitted forest. `partial.rfsrc()` imposes a level by its integer
+  code in the model, so a factor re-levelled in `newx` returned one level's
+  partial dependence under another level's label, with no warning. Levels are
+  now coded by the forest, a level the forest was not trained on is an error,
+  and `xvar2.name` now accepts a factor.
 
 No exported function, argument or returned column was added or removed.
 
@@ -19,9 +25,11 @@ No exported function, argument or returned column was added or removed.
 
 * **Local:** macOS (aarch64-apple-darwin), `R CMD check --as-cran` with the
   manual, built from a clean export of the tree: **0 ERRORs, 0 WARNINGs,
-  1 NOTE** (CRAN incoming feasibility). The source tarball is 2.40 MB. Timed
-  steps: examples 16s, examples with `--run-donttest` 39s, vignette rebuild
-  48s.
+  1 NOTE** (CRAN incoming feasibility: 9 updates in the past 6 months).
+  Re-run 2026-10-06 on the `maint/v3` tree after the factor-level fix merged.
+  The source tarball is 2.38 MB. Timed steps: examples 12s, examples with
+  `--run-donttest` 30s, tests 15s, vignette rebuild 40s; 168s for the whole
+  check.
 
 ## v3.5.3: test-only fix for the upcoming varPro 3.2.1
 
