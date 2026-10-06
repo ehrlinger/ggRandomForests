@@ -1,8 +1,8 @@
 ## v3.5.4: four bug fixes
 
-This section is a draft. It records what changed and the one check run so far;
-the win-builder, reverse-dependency and URL checks have not been run for this
-version and must be added before it is submitted.
+This section is a draft. The local, reverse-dependency and URL checks are
+recorded below; the win-builder results have not been added yet and must be
+before it is submitted.
 
 * `kaplan(by = )` and `nelson(by = )` computed `hazard`, `density`, `mid_int`,
   `life` and `proplife` across stratum boundaries, and could mislabel or merge
@@ -30,6 +30,16 @@ No exported function, argument or returned column was added or removed.
   The source tarball is 2.38 MB. Timed steps: examples 12s, examples with
   `--run-donttest` 30s, tests 15s, vignette rebuild 40s; 168s for the whole
   check.
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
+* **URL check:** `urlchecker::url_check()` reports all URLs correct.
+
+### NOTE disposition
+
+The one NOTE is `Number of updates in past 6 months: 9`. 3.5.3 was published
+on 2026-09-11, and I would not otherwise submit this soon. 3.5.3 can label one
+factor level's partial dependence with another level's name, silently, and a
+plot that is wrong without saying so is the failure I least want to leave on
+CRAN. The release carries only the four fixes above, with no new features.
 
 ## v3.5.3: test-only fix for the upcoming varPro 3.2.1
 
