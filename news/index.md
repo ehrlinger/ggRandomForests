@@ -2,6 +2,12 @@
 
 ## ggRandomForests v4.0.0 (development)
 
+- Vignettes put the table of contents on the left and use the full width
+  of the window, the same layout as the HVTI Quarto books and the
+  hvtiRtemplates jobs. `vignettes/_quarto.yml` sets it once for every
+  vignette, and `pkgdown/extra.css` gives the pkgdown site’s articles
+  the same arrangement.
+
 - [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
   no longer fails with “Adjacency matrices must be square” on mixed-type
   data
