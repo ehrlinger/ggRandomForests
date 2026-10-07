@@ -1,0 +1,30 @@
+/* Articles: table of contents on the left, body across the window.
+   Matches the Quarto books and the hvtiRtemplates jobs (toc-location: left,
+   page-layout: full, sidebar 250px, body up to 2000px). Scoped to article
+   pages; the home and reference pages keep pkgdown's layout. Quarto vignettes
+   render as template-quarto, R Markdown ones as template-article. */
+@media (min-width: 768px) {
+  .template-quarto.container,
+  .template-article.container {
+    max-width: none;
+  }
+  .template-quarto .row,
+  .template-article .row {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+  .template-quarto .row > aside,
+  .template-article .row > aside {
+    order: -1;
+    flex: 0 0 250px;
+    max-width: 250px;
+    margin-left: 0;
+    margin-right: 1.5rem;
+  }
+  .template-quarto .row > main,
+  .template-article .row > main {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 2000px;
+  }
+}
