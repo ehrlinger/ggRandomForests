@@ -86,3 +86,4 @@ Rplots\.pdf$
 # registers nothing unless VDIFFR_RUN_TESTS is "true", which no check sets. They
 # stay in git; only the built tarball loses them.
 ^tests/testthat/_snaps$
+^news$
