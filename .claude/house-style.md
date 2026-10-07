@@ -13,7 +13,7 @@
     writing-voice.md               sha256:71b8ba2fc9b0
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:c8a21d9340c2
+    r-package-structure.md         sha256:220d86062254
 -->
 
 # House Style — ggRandomForests
@@ -507,6 +507,28 @@ the standard name — there's nothing to break.
 with `toc: true`, and the three `%\Vignette*` fields with
 `%\VignetteEngine{quarto::html}`.
 
+**Layout.** Table of contents on the left, body across the window: the same
+arrangement as the HVTI Quarto books and the hvtiRtemplates jobs
+(hvtiRtemplates#232). It is set once per package, not per vignette, in
+`vignettes/_quarto.yml`, which Quarto merges into each vignette's own
+`format:` block:
+
+```yaml
+format:
+  html:
+    toc: true
+    toc-location: left
+    page-layout: full
+    grid:
+      body-width: 2000px
+      sidebar-width: 250px
+```
+
+pkgdown replaces that format with its own template, which puts the table of
+contents on the right and caps the body at 50rem, so the site needs the same
+layout a second way; see pkgdown below. hvtiR#109 is the reference
+implementation of both halves.
+
 Vignette prose method — how to write the body once the role and front matter
 are settled — is owned by `vignette-clarity-pass.md` and isn't restated
 here.
@@ -520,6 +542,14 @@ Follows the hvtiPlotR model:
 - `articles:` grouped by vignette role.
 - `navbar:` cross-linking to related packages in the ecosystem.
 - `template:` bootstrap 5 with the light-switch enabled.
+- `pkgdown/extra.css` gives article pages the vignette layout above: the
+  sidebar moved left at 250px and the body cap lifted to 2000px, scoped to
+  `.template-quarto` and `.template-article` at 768px and wider, so the home
+  and reference pages keep pkgdown's own layout. List `^pkgdown$` in
+  `.Rbuildignore` so the stylesheet never ships. Copy hvtiR's
+  (hvtiR#109) rather than writing a new one: it was measured against a
+  deployed family article, moving the body from 800px to 1326px at a
+  1600px window and leaving a 700px window untouched.
 
 Every exported object appears in exactly one `reference:` section. pkgdown
 fails the build on an unreferenced topic, and that failure is the check that
