@@ -3,6 +3,13 @@ Version: 3.5.4
 
 ggRandomForests v3.5.4
 ======================
+* `gg_udependent()` no longer fails with "Adjacency matrices must be
+  square" on mixed-type data (#320). `varPro::get.beta.entropy()` returns
+  one row per variable that released but one column per one-hot predictor
+  column, so any factor level that never released, or any variable the
+  pre-filter dropped, made the matrix non-square. The matrix is now padded
+  to square with zeros, and edges between levels of the same factor are
+  dropped, since those levels are mutually exclusive by construction.
 * `nelson()` now returns the Nelson-Aalen estimate in `cum_haz`, and its
   `weight` argument now does something. Until now `nelson()` returned
   `-log(S(t))` from the Kaplan-Meier fit, so it matched `kaplan()` column for

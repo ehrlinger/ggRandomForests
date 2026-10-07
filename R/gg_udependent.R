@@ -36,6 +36,17 @@
 #' that two variables are dependent, not which way the dependency
 #' reads.
 #'
+#' @section Mixed-type data:
+#' The matrix \code{get.beta.entropy()} returns is usually not square. Its
+#' rows are the variables that produced region releases; its columns are
+#' every one-hot-encoded predictor column, so factor levels that never
+#' released, and variables the pre-filter dropped, appear only as columns.
+#' We pad it to a square matrix over the union of the names, filling with 0
+#' (no release, no dependency). We also zero the entries between levels of
+#' the same factor (\code{cyl4} and \code{cyl8}, say): the levels are
+#' mutually exclusive by construction, so that edge says nothing about the
+#' data.
+#'
 #' @section What's in the output:
 #' \code{$edges} has one row per surviving edge with the raw weight
 #' \code{I[i, j]} (or, for undirected graphs, the max of the two
@@ -117,7 +128,8 @@ gg_udependent <- function(object,
   .validate_udep_inputs(object, threshold, directed)
 
   ## ---- Compute cross-variable dependency matrix ----------------------------
-  imp_mat <- varPro::get.beta.entropy(object)
+  imp_mat <- .udep_square(varPro::get.beta.entropy(object),
+                          attr(object$x, "xvar.map"))
 
   ## ---- Helper: build and return an empty gg_udependent result ---------------
   .empty_result <- function(msg) {
@@ -274,6 +286,22 @@ gg_udependent <- function(object,
     stop("'directed' must be a single logical value.", call. = FALSE)
   }
   invisible(NULL)
+}
+
+## Pad the (usually non-square) get.beta.entropy() matrix to square over the
+## union of its row and column names, filling with 0, and zero the entries
+## between one-hot levels of the same factor. xvar.map maps each one-hot
+## column to its source variable; NULL leaves every pair distinct.
+#' @keywords internal
+.udep_square <- function(beta_mat, xvar_map) {
+  vars <- union(colnames(beta_mat), rownames(beta_mat))
+  sq <- matrix(0, length(vars), length(vars), dimnames = list(vars, vars))
+  sq[rownames(beta_mat), colnames(beta_mat)] <- beta_mat
+  sq[is.na(sq)] <- 0
+  src <- if (is.null(xvar_map)) vars else unname(xvar_map[vars])
+  src[is.na(src)] <- vars[is.na(src)]
+  sq[outer(src, src, "==")] <- 0
+  sq
 }
 
 #' @keywords internal

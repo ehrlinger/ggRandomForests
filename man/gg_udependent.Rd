@@ -85,6 +85,19 @@ that two variables are dependent, not which way the dependency
 reads.
 }
 
+\section{Mixed-type data}{
+
+The matrix \code{get.beta.entropy()} returns is usually not square. Its
+rows are the variables that produced region releases; its columns are
+every one-hot-encoded predictor column, so factor levels that never
+released, and variables the pre-filter dropped, appear only as columns.
+We pad it to a square matrix over the union of the names, filling with 0
+(no release, no dependency). We also zero the entries between levels of
+the same factor (\code{cyl4} and \code{cyl8}, say): the levels are
+mutually exclusive by construction, so that edge says nothing about the
+data.
+}
+
 \section{What's in the output}{
 
 \code{$edges} has one row per surviving edge with the raw weight
