@@ -5,3 +5,13 @@
 library(survival)
 library(randomForestSRC)
 library(randomForest)
+
+# Grow every forest single-threaded, as the vignettes already do. Under
+# OpenMP (Linux builds link libgomp; CRAN's macOS binary does not)
+# randomForestSRC ignores set.seed(): measured 2026-10-07 on the
+# test_snapshots.R fixtures, four threads moved Boston VIMP by about 2.0 and
+# swapped two variables' ranks between runs, while one thread on Linux matched
+# the macOS fits exactly. The vdiffr baselines are drawn single-threaded.
+# Scoped to the test run: teardown_env() restores the caller's value when the
+# suite finishes, so devtools::test() does not leave rf.cores = 1 behind.
+withr::local_options(rf.cores = 1L, .local_envir = testthat::teardown_env())
