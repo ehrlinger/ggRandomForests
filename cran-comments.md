@@ -1,4 +1,8 @@
-## v3.5.4: four bug fixes
+## v3.5.4: five bug fixes
+
+This section is a draft. The `gg_udependent()` fix below was added after the
+win-builder runs, so the win-builder table describes the previous tarball and
+must be replaced with runs on the current one before this is submitted.
 
 * `kaplan(by = )` and `nelson(by = )` computed `hazard`, `density`, `mid_int`,
   `life` and `proplife` across stratum boundaries, and could mislabel or merge
@@ -14,6 +18,11 @@
   partial dependence under another level's label, with no warning. Levels are
   now coded by the forest, a level the forest was not trained on is an error,
   and `xvar2.name` now accepts a factor.
+* `gg_udependent()` stopped with "Adjacency matrices must be square" on
+  mixed-type data. `varPro::get.beta.entropy()` returns one row per variable
+  that released but one column per one-hot predictor column, so the matrix is
+  usually not square. It is now padded to square with zeros, and edges between
+  levels of the same factor are dropped.
 
 No exported function, argument or returned column was added or removed.
 
@@ -22,10 +31,10 @@ No exported function, argument or returned column was added or removed.
 * **Local:** macOS (aarch64-apple-darwin), `R CMD check --as-cran` with the
   manual, built from a clean export of the tree: **0 ERRORs, 0 WARNINGs,
   1 NOTE** (CRAN incoming feasibility: 9 updates in the past 6 months).
-  Re-run 2026-10-06 on the `maint/v3` tree after the factor-level fix merged.
-  The source tarball is 2.38 MB. Timed steps: examples 12s, examples with
-  `--run-donttest` 30s, tests 15s, vignette rebuild 40s; 168s for the whole
-  check.
+  Re-run 2026-10-07 on the `maint/v3` tree after the `gg_udependent()` fix
+  merged. The source tarball is 2.40 MB. Timed steps: examples 12s, examples
+  with `--run-donttest` 30s, tests 16s, vignette rebuild 40s; 172s for the
+  whole check.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
 
@@ -65,7 +74,7 @@ The one NOTE is `Number of updates in past 6 months: 9`. 3.5.3 was published
 on 2026-09-11, and I would not otherwise submit this soon. 3.5.3 can label one
 factor level's partial dependence with another level's name, silently, and a
 plot that is wrong without saying so is the failure I least want to leave on
-CRAN. The release carries only the four fixes above, with no new features.
+CRAN. The release carries only the five fixes above, with no new features.
 
 ## v3.5.3: test-only fix for the upcoming varPro 3.2.1
 
