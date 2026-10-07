@@ -178,3 +178,45 @@ test_that("plot.gg_udependent empty graph -> stop with informative message", {
 ## ── vdiffr snapshots — see test_snapshots.R ──────────────────────────────────
 ## Visual regression tests for plot.gg_udependent are in test_snapshots.R
 ## (guarded by VDIFFR_RUN_TESTS=true), following the package convention.
+
+## ── Mixed-type data: non-square get.beta.entropy() (#320) ──────────────────────
+
+# mtcars with three factors. get.beta.entropy() on this fit is non-square:
+# rows are the variables that produced releases, columns every one-hot
+# predictor column. Memoised so the forest is grown once per file.
+.ggu_mixed <- new.env(parent = emptyenv())
+make_mixed_uvp <- function() {
+  if (is.null(.ggu_mixed$fit)) {
+    mt <- mtcars
+    mt$cyl  <- factor(mt$cyl)
+    mt$gear <- factor(mt$gear)
+    mt$am   <- factor(mt$am)
+    set.seed(1L)
+    .ggu_mixed$fit  <- varPro::uvarpro(mt, ntree = 50L)
+    .ggu_mixed$beta <- varPro::get.beta.entropy(.ggu_mixed$fit)
+  }
+  .ggu_mixed
+}
+
+test_that("gg_udependent handles a non-square dependency matrix", {
+  skip_on_cran()
+  set.seed(1L)
+  mx <- make_mixed_uvp()
+  # Precondition: the fixture really is non-square, or this test proves nothing.
+  expect_false(nrow(mx$beta) == ncol(mx$beta))
+
+  gg <- gg_udependent(mx$fit, threshold = 0.1)
+  expect_s3_class(gg, "gg_udependent")
+  expect_s3_class(gg$graph, "igraph")
+})
+
+test_that("gg_udependent drops edges between levels of the same factor", {
+  skip_on_cran()
+  set.seed(1L)
+  mx <- make_mixed_uvp()
+  # threshold so low that every non-zero entry would otherwise be an edge
+  gg <- gg_udependent(mx$fit, threshold = 1e-8)
+  vmap <- attr(mx$fit$x, "xvar.map")
+  same <- vmap[gg$edges$variable_from] == vmap[gg$edges$variable_to]
+  expect_false(any(same))
+})
