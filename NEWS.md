@@ -3,6 +3,12 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+* Vignettes put the table of contents on the left and use the full width
+  of the window, the same layout as the HVTI Quarto books and the
+  hvtiRtemplates jobs. `vignettes/_quarto.yml` sets it once for every
+  vignette, and `pkgdown/extra.css` gives the pkgdown site's articles the
+  same arrangement.
+
 * `gg_udependent()` no longer fails with "Adjacency matrices must be
   square" on mixed-type data (#320). `varPro::get.beta.entropy()` returns
   one row per variable that released but one column per one-hot predictor
