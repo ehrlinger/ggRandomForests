@@ -12,4 +12,6 @@ library(randomForest)
 # test_snapshots.R fixtures, four threads moved Boston VIMP by about 2.0 and
 # swapped two variables' ranks between runs, while one thread on Linux matched
 # the macOS fits exactly. The vdiffr baselines are drawn single-threaded.
-options(rf.cores = 1L)
+# Scoped to the test run: teardown_env() restores the caller's value when the
+# suite finishes, so devtools::test() does not leave rf.cores = 1 behind.
+withr::local_options(rf.cores = 1L, .local_envir = testthat::teardown_env())
