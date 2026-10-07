@@ -717,6 +717,10 @@
   on an `expect_equal()` of `p$labels$y`, which cannot see the rest of
   the panel. Tests only.
 
+- `DESCRIPTION` now declares the Quarto command line tool in
+  `SystemRequirements`. The vignettes have always needed it to build;
+  the field makes that visible to installers and to `R CMD check`.
+
 ## ggRandomForests v3.5.2
 
 CRAN release: 2026-08-21
