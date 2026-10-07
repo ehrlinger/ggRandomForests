@@ -1,9 +1,5 @@
 ## v3.5.4: four bug fixes
 
-This section is a draft. The local, reverse-dependency and URL checks are
-recorded below; the win-builder results have not been added yet and must be
-before it is submitted.
-
 * `kaplan(by = )` and `nelson(by = )` computed `hazard`, `density`, `mid_int`,
   `life` and `proplife` across stratum boundaries, and could mislabel or merge
   strata. The strata are now read from the `survfit` object.
@@ -32,6 +28,36 @@ No exported function, argument or returned column was added or removed.
   check.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** `urlchecker::url_check()` reports all URLs correct.
+
+**win-builder:** x86_64-w64-mingw32, Windows Server 2022, all three branches.
+Each returns **Status: 1 NOTE**, the same `Number of updates in past 6 months:
+9` reported locally, with no second NOTE and no ERRORs or WARNINGs.
+`checking for hidden files and directories` is OK on all three.
+
+| Step | R-devel (r90641) | R-release (4.6.1) | R-oldrelease (4.5.3) |
+|---|---|---|---|
+| CRAN incoming feasibility | 15s | 15s | 14s |
+| R code for possible problems | 41s | 32s | 24s |
+| examples | 48s | 49s | 36s |
+| tests | 69s | 59s | 44s |
+| re-building vignette outputs | 186s | 177s | 134s |
+| PDF version of manual | 25s | 24s | 13s |
+| HTML version of manual | | 20s | 13s |
+| **timed steps** | **384s** | **376s** | **278s** |
+
+The blank cell is a step that `00check.log` did not time on that branch.
+R-devel and R-oldrelease are re-runs from 2026-10-07; R-release is from
+2026-10-06.
+
+The first runs, on the afternoon of 2026-10-06, came back about 1.6 times
+slower than 3.5.3 on every branch, and the R-devel and R-release figures above
+are still well above 3.5.3's 223s and 229s. I do not read that as the package.
+The slowdown is spread evenly across steps, including `R code for possible
+problems`, which runs none of the package's code and grew as much as the
+vignette rebuild. The vignette sources are unchanged since 3.5.3 and still
+load their precomputed `varPro` results. The local check is slightly faster
+than 3.5.3's. The R-oldrelease re-run, at 278s against 286s for 3.5.3, is what
+an idle machine gives.
 
 ### NOTE disposition
 
