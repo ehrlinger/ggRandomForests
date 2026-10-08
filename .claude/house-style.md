@@ -13,7 +13,7 @@
     writing-voice.md               sha256:71b8ba2fc9b0
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:df4944c1c71e
+    r-package-structure.md         sha256:ced56db6e2dc
 -->
 
 # House Style — ggRandomForests
@@ -507,6 +507,28 @@ the standard name — there's nothing to break.
 with `toc: true`, and the three `%\Vignette*` fields with
 `%\VignetteEngine{quarto::html}`.
 
+**Layout.** Table of contents on the left, body across the window: the same
+arrangement as the HVTI Quarto books and the hvtiRtemplates jobs
+(hvtiRtemplates#232). It is set once per package, not per vignette, in
+`vignettes/_quarto.yml`, which Quarto merges into each vignette's own
+`format:` block:
+
+```yaml
+format:
+  html:
+    toc: true
+    toc-location: left
+    page-layout: full
+    grid:
+      body-width: 2000px
+      sidebar-width: 250px
+```
+
+pkgdown replaces that format with its own template, which puts the table of
+contents on the right and caps the body at 50rem, so the site needs the same
+layout a second way; see pkgdown below. hvtiR#109 is the reference
+implementation of both halves.
+
 Vignette prose method — how to write the body once the role and front matter
 are settled — is owned by `vignette-clarity-pass.md` and isn't restated
 here.
@@ -520,6 +542,14 @@ Follows the hvtiPlotR model:
 - `articles:` grouped by vignette role.
 - `navbar:` cross-linking to related packages in the ecosystem.
 - `template:` bootstrap 5 with the light-switch enabled.
+- `pkgdown/extra.css` gives article pages the vignette layout above: the
+  sidebar moved left at 250px and the body cap lifted to 2000px, scoped to
+  `.template-quarto` and `.template-article` at 768px and wider, so the home
+  and reference pages keep pkgdown's own layout. List `^pkgdown$` in
+  `.Rbuildignore` so the stylesheet never ships. Copy hvtiR's
+  (hvtiR#109) rather than writing a new one: it was measured against a
+  deployed family article, moving the body from 800px to 1326px at a
+  1600px window and leaving a 700px window untouched.
 
 Every exported object appears in exactly one `reference:` section. pkgdown
 fails the build on an unreferenced topic, and that failure is the check that
@@ -598,8 +628,22 @@ globs, they double every run.
 | `test-coverage.yaml` | How much of the code do the tests reach, and which way is it moving? | `push[main]`, `pull_request` | ubuntu·release |
 | `lint.yaml` | Does it match the style the rest of the portfolio is written in? | `push[main]`, `pull_request` | ubuntu·release |
 | `lint.yaml` → `docs-current` job | Do the generated `man/` files still match their roxygen sources? | `pull_request` | ubuntu·release |
+| `lint.yaml` → `news-fragment` job | Does a change that ships carry its NEWS entry? | `pull_request` | ubuntu·release |
 | `pkgdown.yaml` | Does the docs site still build, and does every exported topic still have a home? | `push[main]`, `pull_request`, `workflow_dispatch` | ubuntu·release |
 | `check-manual.yaml` | Does the PDF manual build, and is every `.Rd` free of raw Unicode? | `push[main]`, `workflow_dispatch` | ubuntu·release |
+
+**CI exemption.** TemporalHazard checks a pull request on Linux only. Its
+three ubuntu `R-CMD-check` jobs run on every pull request. The macos·release
+and windows·release jobs stay in the matrix, because they are required status
+checks, but on a pull request they skip every step and report "NOT CHECKED on
+pull requests"; they check in full on `push` to `main` and on
+`workflow_dispatch`. `test-coverage.yaml` runs on `push` to `main` only, and
+`pkgdown.yaml` on `push` to `main` and `workflow_dispatch`. Before a release is
+submitted, `check-release.yaml` is dispatched by hand, so macOS and Windows
+are checked again before CRAN sees the package. The package is used on Linux
+at HVTI, and a median fourteen- and forty-five-minute wait on every pull
+request bought nothing that use needs. TemporalHazard's `AGENTS.md` records
+what the trade costs. Every other package follows the table above.
 
 `R-CMD-check.yaml` runs `r-lib/actions/check-r-package@v2` and leaves `args`
 at its default, which is `c("--no-manual", "--as-cran")` — so the CRAN gate is
@@ -707,6 +751,24 @@ Two things make this reliable rather than flaky. `DESCRIPTION` pins
 author used and a version bump can't masquerade as drift. And it does **not**
 build the manual, so the check-time budget decision stands untouched — this is
 a `git diff`, not a LaTeX run.
+
+`lint.yaml` carries a **`news-fragment`** job beside it, also on `pull_request`
+only. It runs `python3 .github/scripts/news.py check` and fails a pull request
+that changes a file the package ships and adds no `news/` fragment (see "The
+bump is not part of the pull request"). Ships nothing is judged by the base
+branch's `.Rbuildignore`, and the bump consumes fragments rather than adding
+one, so a pull request that moves `Version:` passes too. So does one that
+deletes fragments and edits `NEWS.md` and otherwise ships nothing: a collect
+into a heading that already exists, as ggRandomForests' `(development)` section
+is, with `Version:` standing still. Nothing else may ride along with that
+collect, or a shipping change could skip its own entry (hvtiRtables#68).
+
+The question is one no other workflow asks: with entries in their own files, a
+forgotten one is no longer a missing line in a diff anyone reads. It needs no R at all, only the
+runner's own Python and a full-depth checkout, so it takes seconds.
+`.github/scripts/news.py` and its tests are the same file in every package;
+change them together. hvtiR is the exception: its `version` job already applies
+the same rule, so it has no separate one.
 
 **Set `dependencies: '"hard"'` on this job.** The action defaults to
 `dependencies: "all"`, which installs the package's entire `Suggests` tree and
@@ -994,32 +1056,71 @@ a branch log.
 So a pull request lands without touching `Version:`. The bump is a separate,
 deliberate act, at most once a day and only on a day the package changed.
 
-`NEWS.md` carries a standing heading at the top for work that has merged and
-not yet been named:
+Every pull request writes its entry to a file of its own, a documentation-only
+change included, unless it ships nothing in the sense defined below:
 
-```markdown
-# <package> (unreleased)
+```text
+news/<branch>.md
 ```
 
-Every pull request adds its entry under that heading, a documentation-only
-change included, unless it ships nothing. That case used to carry a bump of
-its own, which is the rule this replaces. When you want a marker, one commit
-renames the heading to the new version and moves `DESCRIPTION` to match.
+with `/` in the branch name replaced by `-`, since the branch is known before
+the pull request's number is. The file holds the bullet or bullets exactly as
+they will read in `NEWS.md`, and no heading. `news/` is listed in
+`.Rbuildignore` as `^news$`, because an unlisted top-level directory is an
+`R CMD check` NOTE.
+
+The entries used to go under a standing `# <package> (unreleased)` heading in
+`NEWS.md` itself. Every pull request then inserted at the same line, so any two
+open at once conflicted there, and every resolution reran the full CI matrix.
+Measured on hvtiRtemplates 2026-10-07: pull requests #250 to #256 all edited
+`NEWS.md` and all needed at least one merge from `main` before they could land;
+trial merges of the five then open conflicted in `NEWS.md` and in no other
+file. GitHub was not forcing those syncs, since that ruleset does not require
+a branch to be up to date. A file per pull request removes the conflict, so a
+green pull request whose code overlaps no other's merges with no sync and no
+rerun. ggRandomForests is the exception: its ruleset does require an
+up-to-date branch, so there fragments remove the conflict but not the sync. A merge queue would solve it outright, but GitHub offers one only to
+repositories an organization owns.
+
+When you want a marker, move `Version:` in `DESCRIPTION`, then run
+
+```sh
+python3 .github/scripts/news.py collect
+```
+
+It writes a `<package> X.Y.Z` heading above the newest release, in the file's
+own heading style, files the fragments under it in the order the commits that
+added them merged, deletes them, and updates the `Version:` line a `NEWS.md` with a DCF header carries. Where a
+heading for that version already exists, as ggRandomForests' `(development)`
+section does, the entries are appended to it instead. A legacy unreleased
+section is folded in ahead of the fragments wherever it sits, so the first
+bump after the change retires it. Commit the result, with `DESCRIPTION` and the
+deletions, as the bump.
+
+The cost is that unreleased work no longer shows on the pkgdown changelog until
+the bump, and that a forgotten entry no longer shows as a missing line in a
+diff. The second is covered by the `news-fragment` job in `lint.yaml`, described
+under Continuous integration.
 
 A change ships nothing when the base branch's `.Rbuildignore` excludes every
-file it touches: in most packages `.github/`, `AGENTS.md`, `CLAUDE.md` and
-`dev/`. A pull request that edits `.Rbuildignore` is judged by the file it
-started from, so it cannot exempt itself. Nothing it changes reaches the
-built package, so nothing a user installs has changed.
+file it touches: in most packages `.claude/`, `.github/`, `AGENTS.md`,
+`CLAUDE.md` and `dev/`. A pull request that edits `.Rbuildignore` is still
+judged by the base branch's copy, the one it started from, so it cannot exempt
+itself; hvtiR's `version-check` reads that copy for the same reason.
+`.Rbuildignore` itself never ships: `R CMD build` tests a built-in list of
+exclusions before the file's own patterns, and that list begins with it. So a
+change confined to `.Rbuildignore` ships nothing too. Nothing such a change
+touches reaches the built package, so nothing a user installs has changed.
+
 `NEWS.md` is the changelog readers see on the pkgdown site, and an entry about
 a workflow trigger or an agent contract is noise there. The pull request and
-its commit message carry that record instead, and such a change carries no
-bump either. The list differs by package, so read `.Rbuildignore` rather than
+its commit message carry that record instead, so such a change writes no
+fragment and carries no bump. The list differs by package, so read `.Rbuildignore` rather than
 judging by feel; `hvtiRdatabuild`'s contract said so first.
 
 ### Heading level
 
-Version headings are level one, and so is the unreleased heading. That is not
+Version headings are level one. That is not
 only tidiness. pkgdown reads the top heading level present in the file as the
 version level, so a `NEWS.md` opening with a bare `# <package>` title pushes
 its versions to level two, and pkgdown then reports no releases at all.
@@ -1044,14 +1145,13 @@ forces the second question to be answered every time the first one is.
 Three packages check the version against `NEWS.md` today, and they do not all
 need the same change.
 
-`hvtiRbootstrap` takes the first `# hvtiRbootstrap` heading in `NEWS.md` and
-requires it to equal the `DESCRIPTION` version. An unreleased heading now sits
-above that one and breaks it. Skip headings that carry no version, and compare
-against the first heading that does.
+`hvtiRbootstrap` compares the `DESCRIPTION` version with the first
+`# hvtiRbootstrap` heading in `NEWS.md` that carries a version, skipping any
+that does not. It was written that way for the unreleased heading, and it holds
+under fragments too, since a bump leaves the new version's heading on top.
 
 `ggRandomForests` asks only that the `DESCRIPTION` version appear somewhere in
-`NEWS.md`. An unreleased heading above it changes nothing, so that test is
-already correct.
+`NEWS.md`, which is true after every bump, so that test needs no change.
 
 `hvtiR` is the one that conflicts outright. `tools/check_version.py` fails a
 pull request whose version has not moved past the base branch, which is what
@@ -1060,16 +1160,14 @@ branches claiming one number after a silent merge, so the rule becomes: the
 version must not go backwards, and when it moves it moves by a legal step. Not
 moving is no longer a failure.
 
-It also has to let a pull request that ships nothing through, since that
-change carries no entry and no bump. An unchanged version once passed only
-when the unreleased heading was present, so such a change that landed just
-after a bump, while the heading was gone, failed. The check now takes the pull
-request's changed files and accepts an unchanged version when the base
-branch's `.Rbuildignore` excludes every one (ehrlinger/hvtiR#69).
+An unchanged version passes when the pull request adds a `news/` fragment or
+ships nothing, judged by the base branch's `.Rbuildignore`
+(ehrlinger/hvtiR#69). It first keyed on the unreleased heading, which a
+fragment replaces. That makes hvtiR's `version` job the fragment guard as well,
+so hvtiR carries no separate `news-fragment` job.
 
-The other nine packages have no such check. Adding one is worth doing, and the
-unreleased heading makes it easier to write than it was, since the test finally
-has something unambiguous to key on.
+The other packages have no such version check. The `news-fragment` job covers
+the forgotten entry, which is the half of it that matters day to day.
 
 What has to happen before a version actually ships — the CRAN Cookbook audit,
 `R CMD check --as-cran` with the manual built, the check-time budget, the

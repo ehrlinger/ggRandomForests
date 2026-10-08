@@ -26,6 +26,15 @@ name: Lint workflows
 permissions:
   contents: read
 
+concurrency:
+  # One in-flight run per workflow per ref. Without this every push starts a
+  # fresh run while the superseded one keeps holding a runner, and the queue
+  # grows faster than it drains -- one run sat queued for 410 minutes on
+  # 2026-08-17 behind work that had already been replaced. Protected branches
+  # are exempt, so a release run is never cancelled mid-flight.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !github.ref_protected }}
+
 jobs:
   workflow-order:
     runs-on: ubuntu-latest

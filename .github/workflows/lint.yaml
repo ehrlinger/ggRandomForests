@@ -9,6 +9,15 @@ name: lint.yaml
 
 permissions: read-all
 
+concurrency:
+  # One in-flight run per workflow per ref. Without this every push starts a
+  # fresh run while the superseded one keeps holding a runner, and the queue
+  # grows faster than it drains -- one run sat queued for 410 minutes on
+  # 2026-08-17 behind work that had already been replaced. Protected branches
+  # are exempt, so a release run is never cancelled mid-flight.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !github.ref_protected }}
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -106,3 +115,23 @@ jobs:
         run: |
           Rscript .house-style-tools/compose-house-style.R \
             --check --repo ggRandomForests
+
+  # A change that ships must carry its NEWS entry as a news/<branch>.md
+  # fragment. Entries live in their own files so open pull requests stop
+  # conflicting at the top of NEWS.md, which also means a forgotten one is no
+  # longer a missing line in a diff anyone reads. Ships nothing (the base
+  # branch's .Rbuildignore covers every file) and the bump (Version: moved, or
+  # fragments collected) both pass. Python only, no R, so it takes seconds.
+  news-fragment:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # the base branch, to diff against
+
+      - name: Test the fragment tooling
+        run: python3 -m unittest discover -s .github/scripts -p 'test_news.py'
+
+      - name: A change that ships carries a news/ fragment
+        run: python3 .github/scripts/news.py check --base "origin/${{ github.base_ref }}"
