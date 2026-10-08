@@ -13,7 +13,7 @@
     writing-voice.md               sha256:71b8ba2fc9b0
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:ced56db6e2dc
+    r-package-structure.md         sha256:672443d74683
 -->
 
 # House Style — ggRandomForests
@@ -507,27 +507,23 @@ the standard name — there's nothing to break.
 with `toc: true`, and the three `%\Vignette*` fields with
 `%\VignetteEngine{quarto::html}`.
 
-**Layout.** Table of contents on the left, body across the window: the same
-arrangement as the HVTI Quarto books and the hvtiRtemplates jobs
-(hvtiRtemplates#232). It is set once per package, not per vignette, in
-`vignettes/_quarto.yml`, which Quarto merges into each vignette's own
-`format:` block:
+**Layout.** On the pkgdown site, articles put the table of contents on the left
+and the body across the window: the same arrangement as the HVTI Quarto books
+and the hvtiRtemplates jobs (hvtiRtemplates#232). It is a **site** rule, set by
+`pkgdown/extra.css` (see pkgdown below). The installed vignettes keep the
+Quarto engine's own minimal format, and nothing in the package can change that.
 
-```yaml
-format:
-  html:
-    toc: true
-    toc-location: left
-    page-layout: full
-    grid:
-      body-width: 2000px
-      sidebar-width: 250px
-```
-
-pkgdown replaces that format with its own template, which puts the table of
-contents on the right and caps the body at 50rem, so the site needs the same
-layout a second way; see pkgdown below. hvtiR#109 is the reference
-implementation of both halves.
+Do not add a `vignettes/_quarto.yml` for layout. Its keys reach neither place
+a reader sees: the R Quarto vignette engine overrides the format of every
+installed vignette (`quarto:::get_meta_for_html()` sets `minimal = TRUE`,
+`theme = "none"` and `embed-resources = TRUE`, in quarto 1.5.1), and pkgdown
+renders articles through its own template, which is what places the table of
+contents (pkgdown 2.2.1). The family rolled such a file out in October 2026
+before this was measured, and is removing it; an existing `_quarto.yml` that
+sets something else, such as hvtiPlotR's `embed-resources: false`, is
+unaffected.
+The lesson generalises: check that the engine honours a configuration key
+before rolling it out across the family.
 
 Vignette prose method — how to write the body once the role and front matter
 are settled — is owned by `vignette-clarity-pass.md` and isn't restated
@@ -542,8 +538,8 @@ Follows the hvtiPlotR model:
 - `articles:` grouped by vignette role.
 - `navbar:` cross-linking to related packages in the ecosystem.
 - `template:` bootstrap 5 with the light-switch enabled.
-- `pkgdown/extra.css` gives article pages the vignette layout above: the
-  sidebar moved left at 250px and the body cap lifted to 2000px, scoped to
+- `pkgdown/extra.css` gives article pages the layout above: the sidebar
+  moved left at 250px and the body cap lifted to 2000px, scoped to
   `.template-quarto` and `.template-article` at 768px and wider, so the home
   and reference pages keep pkgdown's own layout. List `^pkgdown$` in
   `.Rbuildignore` so the stylesheet never ships. Copy hvtiR's
