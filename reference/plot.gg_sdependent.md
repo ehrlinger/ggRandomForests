@@ -9,7 +9,7 @@ otherwise.
 
 ``` r
 # S3 method for class 'gg_sdependent'
-plot(x, labels = NULL, ...)
+plot(x, ...)
 ```
 
 ## Arguments
@@ -18,14 +18,6 @@ plot(x, labels = NULL, ...)
 
   A `gg_sdependent` object from
   [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md).
-
-- labels:
-
-  Optional variable labels for the variable axis. One of: a named
-  character vector (`c(bpd = "BP Diastole")`); a labelled data frame,
-  whose `attr(col, "label")` values are read; or a two-column
-  `key`/`label` data frame. Variables with no label keep their raw name.
-  Defaults to `NULL` (raw names).
 
 - ...:
 

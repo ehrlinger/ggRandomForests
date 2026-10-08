@@ -9,7 +9,7 @@ numeric value and render as a neutral gray (no numeric value to scale).
 ## Usage
 
 ``` r
-shap_beeswarm(x, labels = NULL, ...)
+shap_beeswarm(x, ...)
 ```
 
 ## Arguments
@@ -19,14 +19,6 @@ shap_beeswarm(x, labels = NULL, ...)
   A
   [`gg_shap`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
   object.
-
-- labels:
-
-  Optional variable labels. One of: a named character vector
-  (`c(Temp = "Temperature")`); a labelled data frame, whose
-  `attr(col, "label")` values are read; or a two-column `key`/`label`
-  data frame. Variables with no label keep their raw name. Defaults to
-  `NULL` (raw names).
 
 - ...:
 

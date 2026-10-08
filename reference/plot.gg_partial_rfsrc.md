@@ -9,7 +9,7 @@ contains.
 
 ``` r
 # S3 method for class 'gg_partial_rfsrc'
-plot(x, labels = NULL, ...)
+plot(x, ...)
 ```
 
 ## Arguments
@@ -19,14 +19,6 @@ plot(x, labels = NULL, ...)
   A
   [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
   object.
-
-- labels:
-
-  Optional variable labels for the facet strips. One of: a named
-  character vector (`c(bpd_last = "BP Diastole")`); a labelled data
-  frame, whose `attr(col, "label")` values are read; or a two-column
-  `key`/`label` data frame. Variables with no label keep their raw name.
-  Defaults to `NULL` (raw names).
 
 - ...:
 

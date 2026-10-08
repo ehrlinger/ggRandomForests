@@ -3,7 +3,7 @@
 Pulls the per-tree importance scores out of a fitted `varpro` object and
 summarizes them into a data structure the plot method can draw as a
 boxplot. The box hinges are the 15th and 85th percentiles and the
-whiskers run to the 5th and 95th, not the usual Tukey 1.5 IQR whiskers.
+whiskers run to the 5th and 95th – not the usual Tukey 1.5 IQR whiskers.
 For a classification forest you can also keep the class-conditional
 importances.
 
@@ -87,8 +87,6 @@ A named list of class `"gg_varpro"` with elements:
 
   `NULL` when `conditional = FALSE`; otherwise a data frame with columns
   `variable`, `class`, `z` (one row per variable x class combination).
-  `class` is a factor of the outcome's own level names, also for a
-  binary outcome, which varPro recodes to 0/1 internally.
 
 A `"provenance"` attribute carries `family`, `local.std`, `cutoff`,
 `faithful`, `conditional`, `xvar.names`, and `n`.

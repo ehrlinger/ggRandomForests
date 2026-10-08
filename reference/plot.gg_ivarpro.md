@@ -10,7 +10,7 @@ faceted by class unless `which_class` collapses to a single class.
 
 ``` r
 # S3 method for class 'gg_ivarpro'
-plot(x, labels = NULL, ...)
+plot(x, ...)
 ```
 
 ## Arguments
@@ -19,14 +19,6 @@ plot(x, labels = NULL, ...)
 
   A `gg_ivarpro` object from
   [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md).
-
-- labels:
-
-  Optional variable labels for the variable axis. One of: a named
-  character vector (`c(wt = "Weight")`); a labelled data frame, whose
-  `attr(col, "label")` values are read; or a two-column `key`/`label`
-  data frame. Variables with no label keep their raw name. Defaults to
-  `NULL` (raw names).
 
 - ...:
 

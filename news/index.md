@@ -1,11 +1,6 @@
 # Changelog
 
-## ggRandomForests v4.0.0 (development)
-
-- Articles on the pkgdown site put the table of contents on the left and
-  use the full width of the window, through `pkgdown/extra.css`. The
-  installed vignettes are unchanged: the Quarto vignette engine renders
-  them in its own minimal format, which has no sidebar layout.
+## ggRandomForests v3.5.4
 
 - [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
   no longer fails with “Adjacency matrices must be square” on mixed-type
@@ -17,99 +12,7 @@
   variable the pre-filter dropped, made the matrix non-square. The
   matrix is now padded to square with zeros, and edges between levels of
   the same factor are dropped, since those levels are mutually exclusive
-  by construction. Two new arguments: `pre.filter` is passed to
-  `get.beta.entropy()`, so a variable the pre-filter would drop can
-  reach the graph, and `beta.mat` takes a precomputed matrix so repeated
-  calls skip the computation.
-
-- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  accepts the unavailable fits that varPro 3.3.1 reports. `partialpro()`
-  there returns a case whose local fit failed as a row of `NA` instead
-  of a flat curve; that case is left out of the averaged curve on every
-  scale. A variable with no available curve at all now gets a warning
-  naming it, rather than an empty panel that reads like a flat effect.
-
-- [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
-  on a binary classification forest labelled its profile with the wrong
-  class.
-  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
-  explains one class there, the first factor level (its `target`
-  attribute says so), and
-  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
-  filed that profile under the last level, the default. Every binary
-  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
-  plot therefore showed the first class’s slopes, sign included, under
-  the second class’s name. Because the two class probabilities sum to
-  one, the second class’s slopes are the first’s negated, so
-  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
-  now derives it exactly and both levels are available through
-  `which_class`. The default stays the last level, now with the right
-  values. Under `use.abs = TRUE` the two profiles are equal.
-
-- `gg_varpro(conditional = TRUE)` on a binary classification forest now
-  labels its classes with the outcome’s own level names. varPro recodes
-  a binary outcome to 0/1 internally and names its conditional columns
-  after those codes, so the facets read `0` and `1` instead of, say, `N`
-  and `R`.
-  [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
-  already mapped them back;
-  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
-  now does the same, and `$conditional$class` is a factor in the
-  outcome’s level order. Multiclass outcomes, which varPro does not
-  recode, are unchanged, including ones whose own labels are `"0"`,
-  `"1"`, …
-
-- [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
-  and
-  [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md)
-  now draw a categorical predictor as box plots, one box per level. The
-  categorical data hold one prediction per training observation per
-  level, and the panel was a bar chart with `stat = "identity"`, which
-  stacks them: a class probability for a 0/1 predictor on 400 rows read
-  in the hundreds, and a survival forest stacked every time horizon into
-  the same bar. The boxes sit on the response scale and show how the
-  prediction varies across the training data at each level. On a
-  survival forest they are filled by time horizon and the axis carries
-  the same `partial.type` label as the continuous panel; with
-  `xvar2.name` they are filled by its level (a survival forest with
-  `xvar2.name` keeps the time fill and gives each level its own panel),
-  and in
-  [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md)
-  by `model` when one was given. The returned data are unchanged;
-  average `yhat` within `x` for the partial dependence value itself
-  ([\#299](https://github.com/ehrlinger/ggRandomForests/issues/299)).
-
-- `gg_partial_rfsrc(partial.type = "mort")` no longer stops with
-  “replacement has 3 rows, data has 23” under the default
-  `partial.time`. Mortality is summed over every event time, so
-  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-  returns one value per `x` whatever `partial.time` holds; the returned
-  data now carry no `time` column for it, and
-  [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
-  draws a single curve labelled “Predicted Mortality” in both panels.
-
-- [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
-  on a survival forest with `xvar2.name` now gives each level of the
-  second variable its own panel in the continuous panel too, one line
-  per time horizon. The lines were grouped by time alone, which joined
-  every level into a single zigzag.
-
-- `gg_partial_rfsrc(xvar2.name = )` now accepts a factor. Its labels
-  were handed to
-  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html),
-  which wants the integer codes and stopped with “partial values for
-  ‘trt’ must be a nonempty finite numeric vector”. `grp` comes back as a
-  factor holding the labels, in the model’s level order.
-
-- [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-  now codes factor levels by the fitted forest, not by `newx`.
-  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-  imposes a level by its integer code in the model, and the codes were
-  taken from `newx`’s own levels, which are checked only by column name.
-  A factor re-levelled in `newx` therefore passed one level’s code under
-  the other’s label, for `xvar.names` and `xvar2.name` alike, with no
-  warning. A level the forest was not trained on is now an error.
-
+  by construction.
 - [`nelson()`](https://ehrlinger.github.io/ggRandomForests/reference/nelson.md)
   now returns the Nelson-Aalen estimate in `cum_haz`, and its `weight`
   argument now does something. Until now
@@ -129,7 +32,6 @@
   and do not move. This reaches `gg_survival(type = "nelson")` and
   `plot.gg_survival(type = "cum_haz")`
   ([\#304](https://github.com/ehrlinger/ggRandomForests/issues/304)).
-
 - `kaplan(by = )` and `nelson(by = )` now restart `hazard`, `density`,
   `mid_int`, `life` and `proplife` in every stratum. The lags behind
   those columns were taken after the strata were stacked, so the first
@@ -144,7 +46,6 @@
   [`plot.gg_survival()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_survival.md)
   with any of those five `type` values
   ([\#303](https://github.com/ehrlinger/ggRandomForests/issues/303)).
-
 - `kaplan(by = )` and `nelson(by = )` now take the strata from the fit.
   They were told apart by a drop in the stacked event times, so a group
   whose times all followed the previous group’s was folded into it, and
@@ -153,572 +54,70 @@
   groups. A character or numeric `by` column whose first row was not its
   smallest value had its `groups` labels swapped. A factor `by` was
   labelled correctly unless it carried a level with no rows ahead of one
-  with rows. The labels are now read back from the fitted strata
-  themselves, so an option passed through `...` that drops a whole
-  group, such as `subset` or `start.time`, labels the groups that are
-  left. Before this release such a fit relabelled the remaining groups
-  as the first ones in `data`; for a while on the development line it
-  stopped with an error instead.
-
-- `gg_vimp(nvar = )` on a multi-class `rfsrc` forest now keeps the
-  `nvar` most important variables. The importance matrix arrives in
-  predictor order and was trimmed before it was sorted, so `nvar = 2` on
-  `iris` returned `Sepal.Length` and `Sepal.Width`, the two least
-  important. Variables are now ranked by the overall (`all`) column
-  first, as `which.outcome = 0` selects. The `randomForest` method
-  already did this.
-
-- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
-  now draws only the `parametric` and `nonparametric` curves by default.
-  `causal` is a centered contrast that starts at zero, so on a shared
-  axis with the level curves it squeezed them into a thin band; on a
-  regression fit the levels sat near the response mean and the contrast
-  near 0. Ask for it with `type = "causal"` (or include it in `type`),
-  on an unbounded scale as before.
-
-- `gg_partial_varpro(scale = "prob")` now restores each subject’s level
-  before averaging, so the curve is the expected proportion it is
-  documented as. `partialpro()` fits each subject’s curve separately but
-  returns every row at the cohort-mean intercept, keeping only the
-  subject’s slope. That put every subject at the average log-odds, so
-  `"prob"` nearly matched `"prob_typical"` and missed the proportion it
-  claims to estimate. Each subject’s curve is now shifted to pass
-  through its own out-of-bag log-odds at its observed value, and the
-  shape `partialpro()` fitted is kept. On simulated data with widely
-  spread subjects, this cut the error against the true partial
-  dependence from 0.105 to 0.033 (8 of 8 seeds). **`"prob"` curves
-  change**, most on heterogeneous cohorts. The restoration needs
-  `object`; without it `"prob"` warns and returns the old curve. It is
-  also skipped when `...` passes a custom `learner` or `newdata`, and
-  for binary variables, which `partialpro()` already returns per
-  subject. The provenance records `anchored`.
-
-- `gg_partial_varpro(scale = "surv")` no longer returns survival
-  above 1. `partialpro()` smooths each case’s S(tau) with an unbounded
-  polynomial, so where survival is near 1 (early horizons, before most
-  events) the averaged curve ran up to about a percentage point past it.
-  The curve is now clamped to \[0, 1\] after averaging, and the
-  categorical frame per value. Only the impossible values change;
-  everything in range is exactly as before. Smoothing on the logit scale
-  was tried and rejected: `partialpro()` replaces each case’s intercept
-  with the cohort mean, so on that scale the curve’s level depends on
-  how S = 0 and S = 1 are clamped. A precomputed `part_dta` labelled
-  `"surv"` passes through unchanged.
-
-- `Imports` now requires `varPro (>= 3.3.0)`. From that release
-  `partialpro()` warns and names any requested `xvar.names` the fit
-  cannot reach, so
-  [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  drops its own pre-call warning for the same thing, which had started
-  arriving twice and still called the loss silent.
-  [`?gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  and the varPro vignette now say the warning is upstream’s.
-
-- The survival vignette loses its “Known issue” callout saying
+  with rows. The labels are read back from the fitted strata themselves,
+  so an option passed through `...` that drops a whole group, such as
+  `subset` or `start.time`, labels the groups that are left. 3.5.3
+  relabelled them as the first groups in `data`.
+- [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
+  and
+  [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md)
+  now draw a categorical predictor as box plots, one box per level. The
+  categorical data hold one prediction per training observation per
+  level, and the panel was a bar chart with `stat = "identity"`, which
+  stacks them: a class probability for a 0/1 predictor on 400 rows read
+  in the hundreds, and a survival forest stacked every time horizon into
+  the same bar. The boxes sit on the response scale and show how the
+  prediction varies across the training data at each level. On a
+  survival forest they are filled by time horizon and the axis carries
+  the same `partial.type` label as the continuous panel; with
+  `xvar2.name` they are filled by its level (a survival forest with
+  `xvar2.name` keeps the time fill and gives each level its own panel),
+  and in
+  [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md)
+  by `model` when one was given. The returned data are unchanged;
+  average `yhat` within `x` for the partial dependence value itself
+  ([\#299](https://github.com/ehrlinger/ggRandomForests/issues/299)).
+- `gg_partial_rfsrc(partial.type = "mort")` no longer stops with
+  “replacement has 3 rows, data has 23” under the default
+  `partial.time`. Mortality is summed over every event time, so
   [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-  fails for survival forests. That section renders live and works on
-  current `randomForestSRC`, and four
-  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-  survival tests no longer turn an error into a skip, so a regression
-  now fails.
-
-- [`?gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  now separates varPro versions in its missing-data and RMST-horizon
-  notes. Before varPro 3.2.2, `varpro()` deletes incomplete cases
-  silently and drops unrecognised arguments such as `na.action`, and
-  `partialpro()` drops a horizon passed through `...`. From 3.2.2
-  (kogalur/varPro#7), `varpro()` warns with the omitted count and
-  records it in `model.info$observations`, and both functions stop with
-  an error on an argument they do not recognise. `partialpro()` still
-  has no horizon argument, so `scale = "rmst"` keeps supplying its own
-  RMST(tau) learner. Documentation only; no function changed.
-
-- [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
-  drops code that was meant to add a `rel_vimp` column but could never
-  run: every fit, single-outcome included, takes the pivot branch, so no
-  forest with stored importance ever returned it, and their output is
-  unchanged. The `@return` now lists the columns actually returned
-  (`vars`, `set`, `vimp`, `positive`), and the `NA` placeholder for a
-  `randomForest` fit without stored importance no longer carries an
-  all-`NA` `rel_vimp` column.
-
-- New
-  [`gg_ale_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ale_rfsrc.md)
-  computes Accumulated Local Effects (Apley and Zhu,
-
-  2020. for regression and classification forests, as a counterpart to
-        [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md).
-        Partial dependence averages the forest’s prediction over the
-        joint distribution of the other predictors, which evaluates the
-        forest at predictor combinations that never occur together when
-        predictors are correlated. ALE only ever perturbs a predictor
-        inside local neighbourhoods of its own observed values, so it
-        does not extrapolate into those regions. Supplying `xvar2.name`
-        returns the second-order (interaction) surface for a pair of
-        continuous predictors, which is zero everywhere when the two act
-        additively. Survival forests are not supported, the same
-        limitation
-        [`gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
-        carries. For a categorical predictor each step from one level to
-        the next averages the prediction change over the observations at
-        both levels, as Apley and Zhu define it. All the modified frames
-        for a variable, or for an interaction surface, go to the forest
-        in one [`predict()`](https://rdrr.io/r/stats/predict.html) call.
-
-  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) and
-  [`autoplot()`](https://ggplot2.tidyverse.org/reference/autoplot.html)
-  methods draw the first-order curves as lines and bars faceted by
-  variable, matching
-  [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)’s
-  layout so the two can be read side by side, and the interaction
-  surface as a heatmap.
-
-- `plot.gg_vimp(relative = TRUE)` now plots relative VIMP: each
-  variable’s VIMP divided by the largest VIMP in its `set`, so the top
-  variable reads 1 (per class for classification). The argument was
-  documented but never read, so it silently plotted raw VIMP. It now
-  defaults to `FALSE`. A set with no positive VIMP is scaled by its
-  largest absolute VIMP, never divided by zero.
-
-- `plot.gg_vimp(nvar = )` now keeps the top `nvar` variables rather than
-  the top `nvar` rows, so a classification plot no longer loses class
-  panels.
-
-- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  gains `scale = "prob_typical"`. `partialpro()` returns per-subject
-  log-odds, and collapsing them to a curve takes an average and a
-  back-transform; the ORDER is a modelling choice. `"prob"` (unchanged,
-  still the classification default) transforms per observation then
-  averages, giving the mean predicted probability – the expected
-  proportion of the cohort. `"prob_typical"` averages on the log-odds
-  scale then transforms once, giving the probability for a subject at
-  the mean log-odds.
-
-  They are different estimands and they disagree. The inverse logit is
-  concave above zero and convex below it, so by Jensen `"prob"` is
-  pulled toward 0.5 at both ends, by more the more heterogeneous the
-  cohort. In a simulation with per-subject log-odds SD near 4, a point
-  reading 0.13 under `"prob_typical"` reads 0.35 under `"prob"` (true
-  value 0.38) – large enough to change how a figure is read, so the
-  choice should be deliberate. A figure captioned as a percentage of
-  patients wants `"prob"`.
-  [`?gg_partial_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  sets out both.
-
-  The distinction applies only to the `continuous` frame; the
-  `categorical` frame keeps values unaveraged, so both scales return the
-  same numbers there.
-
-- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
-  gains `ylim`, pinning the shared y range across panels. It could not
-  be set from outside: on the `panels` route a
-  [`coord_cartesian()`](https://ggplot2.tidyverse.org/reference/coord_cartesian.html)
-  added with `&` replaces the per-panel coordinate system and silently
-  takes the per-panel x ranges with it (0-50 collapsed to the data’s
-  0-46), while `scale_y_continuous(limits = )` is overridden by that
-  same coordinate system. `ylim = c(0, 1)` now pins a probability axis
-  so a flat curve reads as flat instead of filling the panel.
-
-- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
-  now defaults `palette` to `"black"`. These figures are made for
-  manuscripts, and `linetype` is mapped to the effect type as well, so
-  the three estimators stay legible as solid, dotted and dashed with no
-  colour at all. Pass any ColorBrewer name (`palette = "Set1"`) for the
-  colour scale, which separates two or three overlaid estimators faster
-  on screen. `"mono"` is a synonym for black and `"grey"`/`"gray"` give
-  a flat grey. **This changes rendered output**: five vdiffr baselines
-  were regenerated.
-
-- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
-  gains `complement`, plotting 1 - p and prefixing the y label with
-  `1 -`. It reads a fit that targets one class as the probability of the
-  other – a weaning-failure model shown as probability of successful
-  weaning – without recomputing `partialpro()` against the other target.
-  Requires a probability scale (`prob` or `surv`); on the additive,
-  multiplicative and unbounded scales 1 - x has no referent, so it
-  errors rather than drawing something unreadable.
-
-- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
-  now warns, naming them, when arguments reach `...` that it does not
-  use. Its own arguments sit after `...` and match by exact name, so a
-  typo (or an argument from a newer version than the one installed)
-  previously vanished without a word and left the default plot looking
-  like a correct answer.
-
-- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
-  gains per-panel scale control. `facet_wrap(scales = "free_x")` gives
-  each variable its own x *range* but a single shared x *scale*, so
-  per-panel breaks, limits and axis titles were unreachable and a
-  manuscript figure had to be hand-built one
-  [`ggplot()`](https://ggplot2.tidyverse.org/reference/ggplot.html) per
-  variable. A new `panels` data frame – one row per panel, keyed by
-  `name`, with optional `xlab`, `xmin`, `xmax`, `xby` and `span` columns
-  – switches rendering to patchwork, where the x scale can vary between
-  panels. `panels = NULL` (the default) is unchanged.
-
-- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
-  gains `which`, to return the continuous or categorical frame alone as
-  a bare `ggplot`. With both frames populated the method returns a
-  patchwork, where `+` reaches only the last panel, so adding a scale or
-  theme silently modified the categorical plot. `which` is the supported
-  way to get one plot to modify.
-
-- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
-  gains `points`, `smooth`, `palette`, `ncol`, `point_size`,
-  `point_alpha` and `linewidth`. `palette` takes a ColorBrewer name and
-  goes through ggplot2’s brewer scales, so `RColorBrewer` stays in
-  `Suggests`. All default to the previous rendering.
-
-- The survival vignette’s variable-dependence figure passed
-  `time.labels` where
-  [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md)
-  reads `time_labels`. The dotted name matched nothing and was dropped
-  without a warning, so the facet strips rendered as bare “1” and “3”
-  instead of the intended “1 Year” and “3 Years”. Corrected; the figure
-  now carries the labels its code always asked for.
-
-- The survival vignette described
-  `attr(gg_brier(rf), "crps_integrated")` as a time-normalised score on
-  the 0 to 0.25 Brier scale, then printed 1.44. The attribute is
-  `get.brier.survival()$crps`, the raw area under the Brier curve in
-  time units, and always has been. The vignette now says so and shows
-  the normalised value (`crps.std`, and the right edge of the running
-  CRPS curve); the
-  [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
-  help says the same. No change to any returned value.
-
-- [`gg_brier()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_brier.md)
-  gains a `crps_std` attribute, `get.brier.survival()$crps.std`: the
-  integrated CRPS divided by the largest event time, so it reads on the
-  Brier scale. [`print()`](https://rdrr.io/r/base/print.html) and
-  [`summary()`](https://rdrr.io/r/base/summary.html) now report it as
-  “CRPS (time-normalized)”, and
-  [`summary()`](https://rdrr.io/r/base/summary.html) labels the raw
-  `crps_integrated` as “integrated CRPS (time units)”. The value of
-  `crps_integrated` is unchanged.
-
-- The regression vignette’s partial dependence surface was flat in `rm`.
-  It overwrote `newx$rm` and called
-  [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
-  once per `rm` value, but `newx` only sets the evaluation grid and
+  returns one value per `x` whatever `partial.time` holds; the returned
+  data now carry no `time` column for it, and
+  [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
+  draws a single curve labelled “Predicted Mortality” in both panels.
+- [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md)
+  on a survival forest with `xvar2.name` now gives each level of the
+  second variable its own panel in the continuous panel too, one line
+  per time horizon. The lines were grouped by time alone, which joined
+  every level into a single zigzag.
+- `gg_partial_rfsrc(xvar2.name = )` now accepts a factor. Its labels
+  were handed to
+  [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html),
+  which wants the integer codes and stopped with “partial values for
+  ‘trt’ must be a nonempty finite numeric vector”. `grp` comes back as a
+  factor holding the labels, in the model’s level order
+  ([\#309](https://github.com/ehrlinger/ggRandomForests/issues/309)).
+- [`gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md)
+  now codes factor levels by the fitted forest, not by `newx`.
   [`partial.rfsrc()`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)
-  always averages over the training data, so all six curves were
-  identical. It now holds `rm` fixed through `xvar2.name`, and the prose
-  describes what the corrected figure shows: a modest interaction, not a
-  strong one. The `newx` and `xvar2.name` documentation now says what
-  `newx` does and does not control.
+  imposes a level by its integer code in the model, and the codes were
+  taken from `newx`’s own levels, which are checked only by column name.
+  A factor re-levelled in `newx` therefore passed one level’s code under
+  the other’s label, for `xvar.names` and `xvar2.name` alike, with no
+  warning. A level the forest was not trained on is now an error.
 
-- Development line opened after the v3.2.0 CRAN release (forward-merged
-  the v3.2.0 RMST/varPro fixes onto the dev line).
+## ggRandomForests v3.5.3
 
-- Begin the v4.0.0 development line: a Random Hazard Forests (RHF)
-  visualization layer wrapping the ‘randomForestRHF’ package (added to
-  Suggests). RHF support is gated — every gg_rhf\* entry point checks
-  [`requireNamespace("randomForestRHF")`](https://www.randomforestsrc.org/).
-  No change for users who do not install it.
+CRAN release: 2026-09-11
 
-- The consistency sweep distinguishes current CRAN software versions
-  from supported minimum versions and standardizes the three
-  package-qualified fit calls and object classes:
-  [`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html)
-  -\> `rfsrc`,
-  [`randomForestRHF::rhf()`](https://www.randomforestsrc.org//reference/rhf.html)
-  -\> `rhf`, and
-  [`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
-  -\> `varpro`.
-
-- Add a longitudinal RHF vignette covering
-  [`gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf.md),
-  [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md),
-  [`gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf_importance.md),
-  and
-  [`gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.md)
-  from one saved analysis.
-
-- [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
-  /
-  [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md):
-  tidy wrapper and plot for time-varying AUC from
-  [`randomForestRHF::auct.rhf()`](https://www.randomforestsrc.org//reference/auct.rhf.html)
-  (RHF Phase 2). Returns a long frame
-  `time / auc / se / lower / upper / marker` with an `iauc` attribute
-  (Uno + standardized integrated AUC);
-  [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md)
-  draws AUC(t) with a bootstrap CI ribbon when available and a 0.5
-  reference line. `gg_auct.rhf(object, marker, auct_fit = NULL, method)`
-  computes `auct.rhf()` internally or reuses a cached fit. `method`
-  chooses the cumulative/dynamic (default) or incident/dynamic AUC; the
-  result records it as `attr(, "method")` and the plot names it on the y
-  axis, since the two curves otherwise look alike. A cached `auct_fit`
-  decides the method, and a `method` that contradicts it now warns
-  rather than being dropped.
-
-- [`gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf_importance.md)
-  /
-  [`plot.gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf_importance.md):
-  tidy wrapper and point matrix for time-localized variable priority
-  from
-  [`randomForestRHF::importance.rhf()`](https://www.randomforestsrc.org//reference/importance.rhf.html)
-  (RHF Phase 3). It returns
-  `variable / time_window / time / time_index / start / stop / midpoint / n_risk / n_rules / priority`,
-  accepts a supplied `importance_fit` or calculates one when absent, and
-  orders variables by their q90 priority over time windows. Priority is
-  a ranking score, not a z-score; no selection cutoff is applied.
-
-- [`gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.md)
-  /
-  [`plot.gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_tune_rhf.md):
-  supplied-object-only inspection of a `tune.treesize.rhf` tree-size
-  tuning path. The five returned columns are
-  `treesize / metric / value / se / selected`; the plot marks the
-  selected size and draws an iAUC standard-error ribbon only when finite
-  supplied iAUC standard errors are available.
-  [`gg_tune_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_tune_rhf.md)
-  never recalculates tuning.
-
-- Require `randomForestRHF (>= 2.0.3)` in Suggests, and adopt its
-  revised hazard semantics. From 2.0.0 the pointwise hazard is defined
-  only where a grid point falls inside one of the case’s supplied
-  `(start, stop]` intervals, and is `NA` in gaps and after the final
-  stop. 2.0.0 left the cumulative hazard unmasked; 2.0.3 masks it as
-  well, on its own rule, setting it to `NA` after each case’s final stop
-  while still holding it flat through an internal gap. The two masks
-  therefore coincide on a fit whose cases carry a single interval each,
-  and come apart only with time-dependent covariates. `auct.rhf()` can
-  likewise return an `NA` AUC at the final grid time, where the
-  censoring-weight denominator is undefined once the control set is
-  nearly exhausted.
-  [`gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf.md)
-  passes both masks through unchanged, so `hazard` and `chf` may be `NA`
-  where they previously were not;
-  [`plot.gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md)
-  and
-  [`plot.gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_auct.md)
-  drop those cells before drawing, so a curve now ends with its case’s
-  follow-up instead of reporting removed missing values on every plot.
-  2.0.0 also changes the default hazard aggregation (`adaptive = TRUE`),
-  which shifts fitted values, and 2.0.3 corrects cumulative/dynamic
-  `auct.rhf()`, which had inverted that curve; the RHF vdiffr baselines
-  and the precomputed vignette analysis were regenerated against 2.0.3.
-  This resolves issue
-  [\#229](https://github.com/ehrlinger/ggRandomForests/issues/229),
-  where the earlier reading (a small negative hazard, specific to the
-  macOS arm64 binary) was wrong on both counts, and
-  kogalur/randomForestRHF#1, the inverted cumulative/dynamic AUC.
-
-- [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
-  gains a `method` argument and now forwards `...` to
-  [`randomForestRHF::auct.rhf()`](https://www.randomforestsrc.org//reference/auct.rhf.html).
-  `auct.rhf()` defaults `method` to `"cumulative"`, and
-  [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
-  previously passed only `marker`, so the incident/dynamic definition
-  could not be reached from
-  [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
-  at all: the only route was to call `auct.rhf()` directly and hand the
-  result back through `auct_fit`.
-  [`?gg_auct`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
-  now carries a note on choosing between the two definitions, which
-  estimate different targets rather than better and worse versions of
-  one. Forwarding `...` also makes `bootstrap.rep` reachable, so the
-  confidence ribbon no longer requires precomputing the fit. `method`
-  sits after `auct_fit` in the signature, so positional calls are
-  unchanged, and the default behavior is the same as before.
-
-- [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md),
-  [`plot.gg_partial()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial.md),
-  [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md)
-  and
-  [`plot.gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md)
-  gain a `labels` argument for human-readable variable names. It accepts
-  a named character vector, a labelled data frame (reading
-  `attr(col, "label")`), or a two-column `key`/`label` data frame.
-  Variables with no label keep their raw name. Labels apply at draw time
-  only — the returned object still carries raw variable names, so
-  downstream consumers are unaffected. The argument reaches every branch
-  of these methods, not just their default one:
-  [`plot.gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md)
-  honours it on both the main panel and the class-conditional panel, and
-  [`plot.gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_varpro.md)
-  honours it on survival path-C objects (those extracted with
-  `scale = "surv"` or `"chf"`), which are handed off to
-  [`plot.gg_partial_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_partial_rfsrc.md).
-
-- [`plot.gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf_importance.md)
-  also gains `labels`, so the RHF priority matrix can carry
-  human-readable variable names. It takes the same three shapes and
-  falls back to the raw name per variable. The variable axis here is
-  `y`, not a flipped `x`, so the labelled scale is the y scale. The q90
-  variable ordering and the raw names in the returned data are
-  untouched, and
-  [`autoplot.gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
-  forwards the argument. Previously `labels` fell through `...` into
-  [`ggplot2::geom_point()`](https://ggplot2.tidyverse.org/reference/geom_point.html)
-  and was dropped with only ggplot2’s generic “Ignoring unknown
-  parameters” warning, so the call looked accepted and did nothing.
-
-- [`plot.gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_varpro.md),
-  [`plot.gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_ivarpro.md)
-  and
-  [`plot.gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_uvarpro.md)
-  gain `labels` on the same terms, completing the varPro importance
-  family. These three had been dropping the argument in complete
-  silence: each declares `...` and does not use it, so `labels` was
-  absorbed with no warning, no error, and an unlabelled plot as the only
-  symptom. Their facets are per class rather than per variable, so the
-  class strips are left alone and only the variable axis is relabelled;
-  in a faceted plot every panel is relabelled.
-
-- [`plot.gg_shap()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_shap.md)
-  and the three exported mode functions it dispatches to,
-  [`shap_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_importance.md),
-  [`shap_beeswarm()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_beeswarm.md)
-  and
-  [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md),
-  gain `labels`. Each of the three puts variable names somewhere
-  different, so each honours the argument differently:
-  [`shap_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_importance.md)
-  labels a flipped discrete `x` scale,
-  [`shap_beeswarm()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_beeswarm.md)
-  labels `y` directly because it does not flip, and
-  [`shap_dependence()`](https://ehrlinger.github.io/ggRandomForests/reference/shap_dependence.md)
-  has no variable scale at all and substitutes the label into both axis
-  titles instead. In that last mode `xvar` still matches on raw variable
-  names, so the label is display only and passing a label where a
-  variable name belongs is still an error. As with the varPro methods
-  above, `labels` was previously accepted and discarded in silence.
-
-- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
-  no longer declares `time` and `time_labels`, two formals its body
-  never read. They are parameters of
-  [`gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_variable.md),
-  the extractor, which bakes the horizon into the object before
-  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) runs, so the
-  man page had been promising a horizon selection the method never
-  performed. Supplying either now warns and names the call that works.
-  ⚠️ `time_units` moved to **after** `...` in the signature as part of
-  this: R partial-matches argument names only before `...`, so with
-  `time_units` ahead of it a caller writing `time = 1191` bound silently
-  to `time_units` and died on its type check. Past the dots, matching is
-  exact. `time_units` always had to be named, so no working call
-  changes.
-
-- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
-  sanity-checks `time_units` against the data it describes. A year-like
-  unit supplied against values above 150 warns, because that is almost
-  always a forest fit on a smaller unit and produces an axis title wrong
-  by a factor of
-
-  365. It warns rather than errors, and only in that one direction:
-       small values labelled `"days"` is ordinary, so there is no signal
-       to check. The package still cannot derive the unit and does not
-       try to. Scoped to
-       [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
-       for now:
-       [`plot.gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md)
-       also takes `time_units`, but a `gg_rfsrc` object has no `time`
-       column (its time points live in `variable`, which holds class
-       names for a classification fit), so there is no unambiguous
-       column to check and extending it is not a one-line change.
-
-- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md),
-  [`plot.gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.md)
-  and
-  [`plot.gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.md)
-  gain `labels`, which completes the argument across every plot method
-  in the package that renders variable names.
-  [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
-  labels the facet strips in its panel plot, through all three faceting
-  branches, and the x axis title in its individual plot; the `time`
-  facet is untouched, because it facets by time rather than by variable,
-  and the multi-time survival panel scopes its labeller to the variable
-  dimension so a label key that collides with a time value cannot reach
-  the time strips.
-  [`plot.gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_udependent.md)
-  labels the node text of its dependency network. There the display
-  string is written to a separate vertex attribute and the igraph `name`
-  is left alone, because `name` is the key the edge-weight backfill
-  matches on and rewriting it would break edge weights on graphs saved
-  before those weights were stored.
-  [`plot.gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.md)
-  is the plain case, a flipped discrete axis like
-  [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md).
-
-- [`plot.gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md):
-  `lbls` is **deprecated** in favour of `labels` and will be removed in
-  a future release. Its old `length(lbls) >= length(vars)` gate is also
-  gone, so a partial label set is now honoured, falling back to the raw
-  name per variable. Previously supplying fewer labels than variables
-  silently applied none.
-
-- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  orders variables by varPro importance
-  ([`varPro::get.topvars()`](https://www.randomforestsrc.org/reference/utilities_internal.html))
-  when `object` is supplied, and `name` is now a **factor**, so facets
-  follow importance order instead of being re-sorted alphabetically.
-  Variables absent from the ranking keep their incoming order and are
-  appended after the ranked block; none are dropped.
-
-- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md):
-  **`nvars` now selects the top n by importance.** It previously took
-  the first n elements of the partial-dependence list before any ranking
-  was applied, returning an arbitrary subset with no symptom in the
-  output.
-
-- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  warns when `scale = "auto"` cannot be resolved because no `object` was
-  supplied, instead of silently falling back to the generic “Partial
-  Effect” axis. The fallback label itself was never wrong — it was
-  honest about an unknown scale — but the silence around it was, so the
-  fallback now says so.
-
-- The `labels` lookup now drops entries whose label or name is blank or
-  `NA`, so a variable given an empty label falls back to its raw name
-  rather than drawing blank axis or strip text. All three accepted input
-  shapes now agree on the same information; previously the
-  labelled-data-frame arm dropped blanks while a named vector or
-  `key`/`label` frame kept them.
-
-- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
-  now rejects an unnamed `part_dta` with a clear error instead of
-  accepting it. The names of that list *are* the variable identities;
-  without them the constructor cannot build a `name` column at all, and
-  the omission used to surface two calls later as an opaque
-  [`facet_wrap()`](https://ggplot2.tidyverse.org/reference/facet_wrap.html)
-  failure about a missing faceting variable. An empty `part_dta` remains
-  legal.
-
-- The package’s own vignettes (`ggRandomForests-regression.qmd`,
-  `ggRandomForests-survival.qmd`) are moved off the now-deprecated
-  `lbls` argument onto `labels`, so the shipped examples model the
-  current API rather than the one being phased out.
-
-- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
-  and
-  [`plot.gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md)
-  no longer hard-code a “year” time unit in survival axis titles. The
-  unit was never derived from the data, so a fit measured in days –
-  [`randomForestSRC::pbc`](https://www.randomforestsrc.org//reference/pbc.html),
-  this package’s own canonical survival example, among them – rendered
-  “Survival at 1191 year” for a horizon of 1191 days. The titles now
-  read “Survival at 1191” and “time” by default, and a new `time_units`
-  argument on both methods restores an explicit unit:
-  `time_units = "days"` gives “Survival at 1191 days” and “time (days)”.
-  Users whose data really is in years should pass `time_units = "years"`
-  to keep the word.
-
-- [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)’s
-  survival branch has visual regression cover for the first time. The
-  branch forks on `panel` and on whether the object carries one time or
-  several, and the four resulting paths differ in both faceting and
-  y-axis title; each now has a `vdiffr` baseline. The two single-time
-  paths are the ones that render a time unit into the axis title, so a
-  change to that title now surfaces as an SVG diff rather than resting
-  on an `expect_equal()` of `p$labels$y`, which cannot see the rest of
-  the panel. Tests only.
-
-- `DESCRIPTION` now declares the Quarto command line tool in
-  `SystemRequirements`. The vignettes have always needed it to build;
-  the field makes that visible to installers and to `R CMD check`.
+- The
+  [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
+  tests now pass against varPro 3.2.1. That release has `sdependent()`
+  reject non-finite input, and the tests’ mock importance matrix carried
+  `NA` on its diagonal, so six of them errored. Live
+  `get.beta.entropy()` output puts `0` there, and the mock now does too;
+  it gives identical scores and signal sets on varPro 3.2.0. Tests only:
+  no function, argument or returned object changed.
 
 ## ggRandomForests v3.5.2
 

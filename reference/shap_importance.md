@@ -1,12 +1,12 @@
 # SHAP global importance bar chart
 
-Bar chart of mean absolute SHAP value per variable, the SHAP analog of
+Bar chart of mean absolute SHAP value per variable – the SHAP analog of
 [`plot.gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_vimp.md).
 
 ## Usage
 
 ``` r
-shap_importance(x, labels = NULL, ...)
+shap_importance(x, ...)
 ```
 
 ## Arguments
@@ -16,14 +16,6 @@ shap_importance(x, labels = NULL, ...)
   A
   [`gg_shap`](https://ehrlinger.github.io/ggRandomForests/reference/gg_shap.md)
   object.
-
-- labels:
-
-  Optional variable labels. One of: a named character vector
-  (`c(Temp = "Temperature")`); a labelled data frame, whose
-  `attr(col, "label")` values are read; or a two-column `key`/`label`
-  data frame. Variables with no label keep their raw name. Defaults to
-  `NULL` (raw names).
 
 - ...:
 
