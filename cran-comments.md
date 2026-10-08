@@ -1,9 +1,5 @@
 ## v3.5.4: five bug fixes
 
-This section is a draft. The `gg_udependent()` fix below was added after the
-win-builder runs, so the win-builder table describes the previous tarball and
-must be replaced with runs on the current one before this is submitted.
-
 * `kaplan(by = )` and `nelson(by = )` computed `hazard`, `density`, `mid_int`,
   `life` and `proplife` across stratum boundaries, and could mislabel or merge
   strata. The strata are now read from the `survfit` object.
@@ -45,28 +41,28 @@ Each returns **Status: 1 NOTE**, the same `Number of updates in past 6 months:
 
 | Step | R-devel (r90641) | R-release (4.6.1) | R-oldrelease (4.5.3) |
 |---|---|---|---|
-| CRAN incoming feasibility | 15s | 15s | 14s |
-| R code for possible problems | 41s | 32s | 24s |
-| examples | 48s | 49s | 36s |
-| tests | 69s | 59s | 44s |
-| re-building vignette outputs | 186s | 177s | 134s |
-| PDF version of manual | 25s | 24s | 13s |
-| HTML version of manual | | 20s | 13s |
-| **timed steps** | **384s** | **376s** | **278s** |
+| CRAN incoming feasibility | 14s | 14s | 19s |
+| R code for possible problems | 35s | 30s | 44s |
+| examples | 45s | 44s | 68s |
+| tests | 57s | 55s | 77s |
+| re-building vignette outputs | 165s | 163s | 238s |
+| PDF version of manual | 23s | 23s | 22s |
+| HTML version of manual | | 19s | 15s |
+| **timed steps** | **339s** | **348s** | **483s** |
 
-The blank cell is a step that `00check.log` did not time on that branch.
-R-devel and R-oldrelease are re-runs from 2026-10-07; R-release is from
-2026-10-06.
+The blank cell is a step that `00check.log` did not time on that branch. All
+three runs are of the submitted tarball, on 2026-10-08.
 
-The first runs, on the afternoon of 2026-10-06, came back about 1.6 times
-slower than 3.5.3 on every branch, and the R-devel and R-release figures above
-are still well above 3.5.3's 223s and 229s. I do not read that as the package.
-The slowdown is spread evenly across steps, including `R code for possible
-problems`, which runs none of the package's code and grew as much as the
-vignette rebuild. The vignette sources are unchanged since 3.5.3 and still
-load their precomputed `varPro` results. The local check is slightly faster
-than 3.5.3's. The R-oldrelease re-run, at 278s against 286s for 3.5.3, is what
-an idle machine gives.
+These are slower than 3.5.3's runs (223s, 229s and 286s), and I do not read
+that as the package. The slowdown is spread evenly across steps, including
+`R code for possible problems`, which runs none of the package's code and grew
+as much as the vignette rebuild. The vignette sources are unchanged since 3.5.3
+and still load their precomputed `varPro` results, and the local check is no
+slower than 3.5.3's. win-builder's timings varied this much between runs of
+the same code: an R-oldrelease run of the 3.5.4 tree before the
+`gg_udependent()` fix, which adds about a second to the local tests, took 479s
+on the afternoon of 2026-10-06 and 278s the next morning, against 286s for
+3.5.3.
 
 ### NOTE disposition
 
