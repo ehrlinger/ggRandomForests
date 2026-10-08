@@ -205,6 +205,8 @@
 <li>
 <strong>Always a plain three-digit version.</strong> No <code>.9000</code> suffix, no fourth digit.</li>
 <li>Every version bump updates <strong>both</strong> <code>DESCRIPTION</code> and the <code>Version:</code> line in <code>NEWS.md</code>. A test greps <code>NEWS.md</code> for the exact <code>DESCRIPTION</code> version.</li>
+<li>
+<strong>A change that ships writes its NEWS entry to a file of its own,</strong> <code>news/&lt;branch&gt;.md</code> with <code>/</code> in the branch name replaced by <code>-</code>: the bullet or bullets exactly as they will read in <code>NEWS.md</code>, and no heading. Do not edit <code>NEWS.md</code> itself; two pull requests open at once would conflict there. The bump moves <code>Version:</code> in <code>DESCRIPTION</code>, then runs <code>python3 .github/scripts/news.py collect</code>, which files the fragments under that version’s heading (the <code>(development)</code> section while <code>Version:</code> stands still) in merge order and deletes them. The <code>news-fragment</code> job in <code>lint.yaml</code> fails a pull request that ships something and adds no fragment. A change <code>.Rbuildignore</code> excludes in full writes none.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="prose">Prose<a class="anchor" aria-label="anchor" href="#prose"></a></h2>

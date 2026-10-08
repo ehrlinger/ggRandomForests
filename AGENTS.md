@@ -278,6 +278,17 @@ A new dependency is a CRAN cost. Ask first.
 - Every version bump updates **both** `DESCRIPTION` and the `Version:`
   line in `NEWS.md`. A test greps `NEWS.md` for the exact `DESCRIPTION`
   version.
+- **A change that ships writes its NEWS entry to a file of its own,**
+  `news/<branch>.md` with `/` in the branch name replaced by `-`: the
+  bullet or bullets exactly as they will read in `NEWS.md`, and no
+  heading. Do not edit `NEWS.md` itself; two pull requests open at once
+  would conflict there. The bump moves `Version:` in `DESCRIPTION`, then
+  runs `python3 .github/scripts/news.py collect`, which files the
+  fragments under that version’s heading (the `(development)` section
+  while `Version:` stands still) in merge order and deletes them. The
+  `news-fragment` job in `lint.yaml` fails a pull request that ships
+  something and adds no fragment. A change `.Rbuildignore` excludes in
+  full writes none.
 
 ## Prose
 
