@@ -13,7 +13,7 @@
     writing-voice.md               sha256:71b8ba2fc9b0
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:220d86062254
+    r-package-structure.md         sha256:ced56db6e2dc
 -->
 
 # House Style — ggRandomForests
@@ -757,12 +757,14 @@ only. It runs `python3 .github/scripts/news.py check` and fails a pull request
 that changes a file the package ships and adds no `news/` fragment (see "The
 bump is not part of the pull request"). Ships nothing is judged by the base
 branch's `.Rbuildignore`, and the bump consumes fragments rather than adding
-one, so a pull request that moves `Version:`, or deletes fragments and edits
-`NEWS.md`, passes too.
-The second case is a collect into a heading that already exists, as
-ggRandomForests' `(development)` section is, with `Version:` standing still. The question is
-one no other workflow asks: with entries in their own files, a forgotten one is
-no longer a missing line in a diff anyone reads. It needs no R at all, only the
+one, so a pull request that moves `Version:` passes too. So does one that
+deletes fragments and edits `NEWS.md` and otherwise ships nothing: a collect
+into a heading that already exists, as ggRandomForests' `(development)` section
+is, with `Version:` standing still. Nothing else may ride along with that
+collect, or a shipping change could skip its own entry (hvtiRtables#68).
+
+The question is one no other workflow asks: with entries in their own files, a
+forgotten one is no longer a missing line in a diff anyone reads. It needs no R at all, only the
 runner's own Python and a full-depth checkout, so it takes seconds.
 `.github/scripts/news.py` and its tests are the same file in every package;
 change them together. hvtiR is the exception: its `version` job already applies
