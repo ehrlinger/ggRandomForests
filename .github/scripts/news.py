@@ -15,9 +15,10 @@ touch the same file, so the conflict is gone.
         exclusions or the base branch's `.Rbuildignore` cover every file it
         touches; the base's copy, so a pull request cannot exempt itself. The
         bump consumes fragments rather than adding one, so a pull request that
-        moves `Version:` in DESCRIPTION, or deletes fragments and edits NEWS.md,
-        passes too: some packages collect into a version heading that already
-        exists, without moving `Version:`.
+        moves `Version:` in DESCRIPTION passes too. So does one that deletes
+        fragments and edits NEWS.md and otherwise ships nothing: some packages
+        collect into a version heading that already exists, without moving
+        `Version:`.
 
     python3 .github/scripts/news.py collect
         The bump commit, after `Version:` in DESCRIPTION has moved. Writes the
@@ -91,8 +92,11 @@ def check(changed: list, added: dict, patterns: list,
     """
     if base_version and head_version and base_version != head_version:
         return []
-    if "NEWS.md" in changed and any(FRAGMENT_RE.match(p) for p in deleted):
-        return []
+    consumed = [p for p in deleted if FRAGMENT_RE.match(p)]
+    if "NEWS.md" in changed and consumed:
+        rest = [p for p in changed if p != "NEWS.md" and p not in consumed]
+        if not rest or ships_nothing(rest, patterns):
+            return []
     if ships_nothing(changed, patterns):
         return []
     fragments = {p: t for p, t in added.items() if FRAGMENT_RE.match(p)}

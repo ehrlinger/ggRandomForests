@@ -49,6 +49,11 @@ class Check(unittest.TestCase):
         self.assertEqual(check(["NEWS.md", "news/a.md"], {}, IGNORE,
                                "4.0.0", "4.0.0", ["news/a.md"]), [])
 
+    def test_collect_that_also_ships_code_still_needs_a_fragment(self):
+        # A collect passes on what it consumes, not on what rides along.
+        self.assertTrue(check(["NEWS.md", "news/a.md", "R/a.R"], {}, IGNORE,
+                              "4.0.0", "4.0.0", ["news/a.md"]))
+
     def test_deleting_a_fragment_without_touching_news_is_not_a_collect(self):
         # A stray deletion must not let a shipping change skip its own entry.
         self.assertTrue(check(["R/a.R", "news/b.md"], {}, IGNORE,
