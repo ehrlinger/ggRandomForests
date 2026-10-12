@@ -113,7 +113,11 @@ jobs:
       - name: Check URLs
         shell: Rscript {0}
         run: |
-          install.packages("urlchecker")
+          # url_check() refuses to scan vignettes unless the package's
+          # VignetteBuilder is installed, so install it from DESCRIPTION.
+          vb <- read.dcf("DESCRIPTION", fields = "VignetteBuilder")[1, 1]
+          vb <- if (is.na(vb)) character() else trimws(strsplit(vb, ",")[[1]])
+          install.packages(c("urlchecker", vb))
           res <- urlchecker::url_check()
           print(res)
           if (NROW(res) > 0) stop(NROW(res), " URL problem(s); see above.")
