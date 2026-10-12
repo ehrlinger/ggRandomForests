@@ -21,7 +21,10 @@ touch the same file, so the conflict is gone.
         `Version:`.
 
     python3 .github/scripts/news.py collect
-        The bump commit, after `Version:` in DESCRIPTION has moved. Writes the
+        The bump commit, after `Version:` in DESCRIPTION has moved. Refuses,
+        exit 1, when that version is already released: a tag `v<version>`
+        exists, or NEWS.md has a plain heading for it (not `(development)` or
+        `(unreleased)`). Writes the
         fragments into NEWS.md under that version's heading, in merge order,
         and deletes them. A legacy `(unreleased)` section is folded in ahead
         of them, and the DCF `Version:` line some NEWS.md files carry above
@@ -199,6 +202,10 @@ def collect(news: str, package: str, version: str, fragments: list) -> str:
                    if version_re.search(h[0])), None)
     if target is not None:
         heading, body = kept[target]
+        if not re.search(r"\((development|unreleased)\)", heading[0], re.I):
+            raise ValueError(
+                f"{version} is already released: NEWS.md has a plain heading "
+                f"for it. Bump Version: in DESCRIPTION first, then collect.")
         kept[target] = (heading, [""] + _trim(body) + [""] + block)
     else:
         title = f"{package} {version}"
@@ -248,9 +255,22 @@ def run_check(base: str) -> int:
     return 0
 
 
+def _tag_exists(tag: str) -> bool:
+    """True when git has `tag`; False outside a git repository."""
+    try:
+        return bool(_git("tag", "-l", tag).strip())
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return False
+
+
 def run_collect() -> int:
     desc = Path("DESCRIPTION").read_text()
     package, version = read_field(desc, "Package"), read_field(desc, "Version")
+    if _tag_exists(f"v{version}"):
+        print(f"news collect: tag v{version} exists, so {version} is already "
+              "released. Bump Version: in DESCRIPTION first, then collect.",
+              file=sys.stderr)
+        return 1
     paths = sorted(str(p) for p in Path("news").glob("*.md"))
     log = _git("log", "--diff-filter=A", "--format=", "--name-only",
                "--", "news/").split()

@@ -128,6 +128,58 @@ class Collect(unittest.TestCase):
         self.assertEqual(collect(news, "pkg", "1.0.1", ["* A.\n"]),
                          "# pkg 1.0.1\n\n* A.\n\n# pkg 1.0.0\n\n## Breaking changes\n\n* Old.\n")
 
+    def test_refuses_plain_released_heading(self):
+        with self.assertRaisesRegex(ValueError, "Bump Version"):
+            collect("# pkg 1.0.0\n\n* Old.\n", "pkg", "1.0.0", ["* A.\n"])
+
+    def test_allows_a_new_version(self):
+        self.assertTrue(collect("# pkg 1.0.0\n\n* Old.\n", "pkg", "1.0.1",
+                                ["* A.\n"]).startswith("# pkg 1.0.1\n"))
+
+    def test_allows_development_heading(self):
+        out = collect("# pkg 1.0.1 (development)\n\n* Earlier.\n", "pkg",
+                      "1.0.1", ["* A.\n"])
+        self.assertIn("* Earlier.\n\n* A.", out)
+
+
+class TaggedVersion(unittest.TestCase):
+    def test_refuses_a_tagged_version(self):
+        import os
+        import tempfile
+        import subprocess
+        from pathlib import Path
+        from unittest import mock
+        import news
+        with tempfile.TemporaryDirectory() as d:
+            run = lambda *a: subprocess.run(a, cwd=d, check=True, capture_output=True)
+            run("git", "init", "-q")
+            run("git", "-c", "user.name=t", "-c", "user.email=t@t", "commit",
+                "-q", "--allow-empty", "-m", "x")
+            run("git", "tag", "v1.0.0")
+            Path(d, "DESCRIPTION").write_text("Package: pkg\nVersion: 1.0.0\n")
+            Path(d, "NEWS.md").write_text("# pkg 0.9.0\n\n* Old.\n")
+            old = os.getcwd()
+            os.chdir(d)
+            try:
+                with mock.patch("sys.stderr"):
+                    self.assertEqual(news.run_collect(), 1)
+                self.assertTrue(news._tag_exists("v1.0.0"))
+                self.assertFalse(news._tag_exists("v1.0.1"))
+            finally:
+                os.chdir(old)
+
+    def test_no_git_repo_skips_the_tag_check(self):
+        import os
+        import tempfile
+        import news
+        with tempfile.TemporaryDirectory() as d:
+            old = os.getcwd()
+            os.chdir(d)
+            try:
+                self.assertFalse(news._tag_exists("v1.0.0"))
+            finally:
+                os.chdir(old)
+
 
 if __name__ == "__main__":
     unittest.main()
