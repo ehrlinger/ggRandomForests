@@ -48,6 +48,11 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
       _R_CHECK_CRAN_INCOMING_: true
+      # The root .Renviron defaults VDIFFR_RUN_TESTS to true, and R reads it
+      # from the checkout. This job checks the built tarball, which has no
+      # tests/testthat/_snaps (.Rbuildignore), so every vdiffr test would
+      # record a new snapshot and fail. The other workflows set it the same way.
+      VDIFFR_RUN_TESTS: "false"
       _R_CHECK_CRAN_INCOMING_REMOTE_: true
 
     steps:
@@ -64,6 +69,13 @@ jobs:
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-tinytex@v2
+
+      # TinyTeX's minimal scheme lacks the Courier metrics (pcrr8t) the manual
+      # needs under times/inconsolata; without them the PDF manual fails with
+      # "\textfont 0 is undefined" on Windows and R-devel (run 38269008793).
+      # makeindex is missing too. Same step as TemporalHazard's check-release.
+      - name: Install LaTeX packages the manual needs
+        run: tlmgr install courier makeindex
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
@@ -89,6 +101,10 @@ jobs:
     name: urlchecker
     steps:
       - uses: actions/checkout@v4
+
+      # url_check() renders README.md and the vignettes through pandoc to
+      # find their links; without it the job aborts before checking any.
+      - uses: r-lib/actions/setup-pandoc@v2
 
       - uses: r-lib/actions/setup-r@v2
         with:
