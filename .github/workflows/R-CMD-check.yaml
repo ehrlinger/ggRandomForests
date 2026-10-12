@@ -16,10 +16,8 @@ on:
       - '.claude/**'
     branches: [main, dev]
   pull_request:
-  # Weekly full sweep, Mondays 06:00 UTC: the only run that includes R-devel
-  # and Windows. workflow_dispatch runs the same sweep on demand.
-  schedule:
-    - cron: '0 6 * * 1'
+  # No schedule: check-release.yaml's weekly --as-cran sweep covers R-devel
+  # and Windows. workflow_dispatch runs the full matrix on demand.
   workflow_dispatch:
 
 name: R-CMD-check.yaml
@@ -47,8 +45,8 @@ jobs:
       # one required leg, ubuntu-latest (release). A push to main adds
       # macos-latest (release), windows-latest (release) and ubuntu-latest
       # (oldrel-1): CRAN checks Windows, so a CRAN-bound package hears about a
-      # Windows break on merge, not at release. The weekly sweep and
-      # workflow_dispatch add ubuntu-latest (devel).
+      # Windows break on merge, not at release. workflow_dispatch adds
+      # ubuntu-latest (devel); check-release.yaml runs devel weekly.
       # Leg names are unchanged. Only the PR leg may be a required check, or
       # a pull request waits on a check that never starts.
       matrix:
