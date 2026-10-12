@@ -16,6 +16,11 @@ on:
       - '.claude/**'
     branches: [main, dev]
   pull_request:
+  # Weekly full sweep, Mondays 06:00 UTC: the only run that includes R-devel
+  # and Windows. workflow_dispatch runs the same sweep on demand.
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
 
 name: R-CMD-check.yaml
 
@@ -38,13 +43,26 @@ jobs:
 
     strategy:
       fail-fast: false
+      # Linux-first, because production is Linux. A pull request runs the
+      # one required leg, ubuntu-latest (release). A push to main adds
+      # macos-latest (release), ubuntu-latest (oldrel-1); the weekly sweep
+      # and workflow_dispatch add windows-latest (release), ubuntu-latest (devel).
+      # Leg names are unchanged. Only the PR leg may be a required check, or
+      # a pull request waits on a check that never starts.
       matrix:
-        config:
-          - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel-1'}
+        config: ${{ fromJSON(
+          github.event_name == 'pull_request' && '[
+            {"os":"ubuntu-latest","r":"release"}]'
+          || github.event_name == 'push' && '[
+            {"os":"macos-latest","r":"release"},
+            {"os":"ubuntu-latest","r":"release"},
+            {"os":"ubuntu-latest","r":"oldrel-1"}]'
+          || '[
+            {"os":"macos-latest","r":"release"},
+            {"os":"windows-latest","r":"release"},
+            {"os":"ubuntu-latest","r":"devel","http-user-agent":"release"},
+            {"os":"ubuntu-latest","r":"release"},
+            {"os":"ubuntu-latest","r":"oldrel-1"}]') }}
     # R-devel may fail due to upstream packages not yet compatible with
     # the development version of R (e.g. lazyeval PREXPR removal).
     continue-on-error: ${{ matrix.config.r == 'devel' }}
