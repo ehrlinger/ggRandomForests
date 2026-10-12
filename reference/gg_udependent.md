@@ -18,7 +18,9 @@ gg_udependent(
   q.signal = 0.75,
   directed = TRUE,
   min.degree = NULL,
-  ...
+  ...,
+  pre.filter = TRUE,
+  beta.mat = NULL
 )
 ```
 
@@ -53,6 +55,22 @@ gg_udependent(
   Additional arguments forwarded to
   [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html).
 
+- pre.filter:
+
+  Logical; forwarded to
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html).
+  `TRUE` (default) restricts the lasso fits to the variables that pass
+  varPro's importance pre-filter. `FALSE` uses every variable, so one
+  the pre-filter drops (an outcome column, say) can still reach the
+  graph. Ignored when `beta.mat` is supplied.
+
+- beta.mat:
+
+  Optional precomputed dependency matrix, as returned by
+  `varPro::get.beta.entropy(object, ...)`, with row and column names.
+  Supply it to reuse one expensive computation across several calls.
+  `NULL` (default) computes it from `object`.
+
 ## Value
 
 A named list of class `"gg_udependent"` with elements:
@@ -74,7 +92,8 @@ A named list of class `"gg_udependent"` with elements:
   igraph object. `NULL` if no dependencies detected.
 
 A `"provenance"` attribute carries `threshold`, `q.signal`, `directed`,
-`min.degree`, `xvar.names`, and `n`.
+`min.degree`, `pre.filter` (`NA` when `beta.mat` was supplied, since it
+was not used), `beta.mat.supplied`, `xvar.names`, and `n`.
 
 ## What cross-variable dependency is doing
 

@@ -2,15 +2,15 @@
 
 Visualizes the ensemble predictions extracted by
 [`gg_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md).
-By default those are out-of-bag (OOB) predictions – the forest's
-built-in cross-validation estimate, averaging only over the trees that
-left a given observation out of their bootstrap sample.
+By default those are out-of-bag (OOB) predictions, the forest's built-in
+cross-validation estimate, which averages only over the trees that left
+a given observation out of their bootstrap sample.
 
 ## Usage
 
 ``` r
 # S3 method for class 'gg_rfsrc'
-plot(x, notch = TRUE, ...)
+plot(x, notch = TRUE, time_units = NULL, ...)
 ```
 
 ## Arguments
@@ -31,6 +31,15 @@ plot(x, notch = TRUE, ...)
   classification forests (default `TRUE`). Set `notch = FALSE` to
   suppress notches when sample sizes are too small for reliable
   confidence intervals on the median.
+
+- time_units:
+
+  Optional name of the time unit the forest was fit in, used only in the
+  survival x axis title. The default titles the axis `"time"`;
+  `time_units = "days"` makes that `"time (days)"`. Nothing on an
+  [`rfsrc`](https://www.randomforestsrc.org//reference/rfsrc.html)
+  object records the unit, so the package cannot infer it. Defaults to
+  `NULL` (no unit printed).
 
 - ...:
 
@@ -96,8 +105,8 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for
-Survival, Regression and Classification. R package version \>= 3.4.0.
+Ishwaran H, Kogalur U (2026). Fast Unified Random Forests for Survival,
+Regression, and Classification (RF-SRC). R package version 3.6.2.
 <https://cran.r-project.org/package=randomForestSRC>
 
 ## See also

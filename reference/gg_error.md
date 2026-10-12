@@ -36,12 +36,12 @@ additional `train` column is included.
 curve over is decided by
 [`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html),
 not here. Its `block.size` argument controls how often the error is
-recorded, and it defaults to `NULL` unless you request importance –
-which records the error at the *final tree only*. So a default fit gives
-`gg_error()` a single point, not a curve, and `tree.err = TRUE` on its
-own does not change that. Grow the forest with `block.size = 1` for an
-error recorded at every tree, or a larger `block.size` for every *n*th.
-If a
+recorded, and it defaults to `NULL` unless you request importance;
+`NULL` records the error at the *final tree only*. So a default fit
+gives `gg_error()` a single point, not a curve, and `tree.err = TRUE` on
+its own does not change that. Grow the forest with `block.size = 1` for
+an error recorded at every tree, or a larger `block.size` for every
+*n*th. If a
 [`plot.gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_error.md)
 figure comes back as one dot, this is why.
 
@@ -66,8 +66,8 @@ Breiman L. (2001). Random forests, Machine Learning, 45:5-32.
 Ishwaran H. and Kogalur U.B. (2007). Random survival forests for R,
 Rnews, 7(2):25-31.
 
-Ishwaran H. and Kogalur U.B. randomForestSRC: Random Forests for
-Survival, Regression and Classification. R package version \>= 3.4.0.
+Ishwaran H, Kogalur U (2026). Fast Unified Random Forests for Survival,
+Regression, and Classification (RF-SRC). R package version 3.6.2.
 <https://cran.r-project.org/package=randomForestSRC>
 
 ## See also

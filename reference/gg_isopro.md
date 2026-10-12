@@ -83,10 +83,12 @@ splits are chosen:
 
 - `"unsupv"`:
 
-  Unsupervised splitting from `randomForestSRC`: splits are chosen to
-  separate the data along the directions of highest variance. More
-  structured than `"rnd"`; sometimes more accurate, especially when the
-  anomalies follow a coherent direction.
+  Unsupervised splitting from `randomForestSRC`: at each split a random
+  subset of the features serves as pseudo-responses (`ytry` of them,
+  about the square root of the number of features by default) and the
+  split is chosen to separate those pseudo-responses. More structured
+  than `"rnd"`; sometimes more accurate, especially when the anomalies
+  follow a coherent direction.
 
 - `"auto"`:
 
@@ -110,7 +112,7 @@ CDF of `case.depth`. On the fit those two run the same way:
 We flip it. `gg_isopro()` returns `1 - object$howbad`, so the column you
 get is **higher = more anomalous** and reads the way a score should.
 That is our transformation, not the fit's, and it means `gg$howbad` is
-`1 - fit$howbad` rather than a copy of it – worth knowing if you compare
+`1 - fit$howbad` rather than a copy of it, worth knowing if you compare
 the two side by side. Both columns are kept so you can plot in either
 space and have the raw depth on hand for diagnostics; `howbad` is the
 canonical score and is what the plot method uses by default.
@@ -186,9 +188,9 @@ the results with a `method` label column. The plot method auto-detects
 Liu, F. T., Ting, K. M., and Zhou, Z. H. (2008). Isolation Forest.
 *Eighth IEEE International Conference on Data Mining*, 413-422.
 
-Ishwaran, H., Mantero, A., and Lu, M. (2025). varPro: Model-Independent
-Variable Selection via the Rule-Based Variable Priority Framework. *R
-package version 3.x*.
+Ishwaran H, Kogalur U (2026). *varPro: Model-Independent Variable
+Selection via the Rule-Based Variable Priority*. R package version
+3.2.0. <https://CRAN.R-project.org/package=varPro>
 
 ## See also
 
