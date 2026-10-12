@@ -7,6 +7,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+  # Weekly, Sundays 06:00 UTC, so R-devel changes, Windows breaks and creep
+  # toward CRAN's 10-minute check budget surface between releases, not on
+  # submission day.
+  schedule:
+    - cron: '0 6 * * 0'
 
 name: check-release.yaml
 
@@ -34,6 +39,7 @@ jobs:
           # Mirror the platforms CRAN actually checks
           - {os: windows-latest,  r: 'release'}
           - {os: windows-latest,  r: 'devel'}
+          - {os: windows-latest,  r: 'oldrel-1'}
           - {os: macos-latest,    r: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}

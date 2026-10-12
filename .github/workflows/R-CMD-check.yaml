@@ -45,8 +45,10 @@ jobs:
       fail-fast: false
       # Linux-first, because production is Linux. A pull request runs the
       # one required leg, ubuntu-latest (release). A push to main adds
-      # macos-latest (release), ubuntu-latest (oldrel-1); the weekly sweep
-      # and workflow_dispatch add windows-latest (release), ubuntu-latest (devel).
+      # macos-latest (release), windows-latest (release) and ubuntu-latest
+      # (oldrel-1): CRAN checks Windows, so a CRAN-bound package hears about a
+      # Windows break on merge, not at release. The weekly sweep and
+      # workflow_dispatch add ubuntu-latest (devel).
       # Leg names are unchanged. Only the PR leg may be a required check, or
       # a pull request waits on a check that never starts.
       matrix:
@@ -55,6 +57,7 @@ jobs:
             {"os":"ubuntu-latest","r":"release"}]'
           || github.event_name == 'push' && '[
             {"os":"macos-latest","r":"release"},
+            {"os":"windows-latest","r":"release"},
             {"os":"ubuntu-latest","r":"release"},
             {"os":"ubuntu-latest","r":"oldrel-1"}]'
           || '[
