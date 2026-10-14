@@ -1,1 +1,0 @@
-* Add `varpro_coverage()`: for each term (or variable) of a varpro fit, the share of trees holding a usable release rule next to its importance z, so a term that was tested and found unimportant can be told from one that was never or barely tested. Optional noise columns give a cutoff by variable kind that scales with the fit, unlike the fixed 0.79 (#340)

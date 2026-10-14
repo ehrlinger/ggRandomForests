@@ -160,6 +160,7 @@ supervised fit; `varPro::uvarpro()` is the unsupervised one, which needs no outc
 | `gg_beta_uvarpro()` | `uvarpro` fit | Per-variable lasso-beta importance |
 | `gg_sdependent()` | `uvarpro` fit | Signal-variable detection |
 | `varpro_feature_names()` | character vector | Original names behind one-hot encoded features |
+| `varpro_coverage()` | `varpro` fit | Share of trees that tested each variable, next to its z |
 
 ### SHAP
 
