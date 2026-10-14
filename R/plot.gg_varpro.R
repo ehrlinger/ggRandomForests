@@ -77,10 +77,12 @@
 #' (\code{$conditional}) are shown as a faceted bar chart
 #' (\code{facet_wrap(~class, nrow = 1)}).  Variables keep the sort order set
 #' by the unconditional median z in \code{$stats}, so the facets line up.
-#' A variable whose class-conditional z is undefined (tested in fewer than
-#' \code{trim} of the trees, possible only with \code{local.std = FALSE})
-#' gets no bar in that facet, and the caption says so; a zero bar would read
-#' as tested and found unimportant.
+#' A variable whose class-conditional z is undefined (0/0, possible only with
+#' \code{local.std = FALSE}) gets no bar in that facet, and the caption says
+#' so; a zero bar would read as a measured zero.  0/0 arises when too few
+#' trees tested the variable, but also when every tree scored it exactly 0,
+#' so the plot does not say which.  Every class keeps its facet, even one
+#' with no defined z.
 #'
 #' @return A \code{ggplot} object.
 #'
@@ -234,26 +236,32 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
   ## Class-conditional z-scores as faceted bar chart.
   cond_df   <- x$conditional
   cond_df$variable <- factor(cond_df$variable, levels = levels(x$imp$variable))
+  if (!is.factor(cond_df$class)) {
+    cond_df$class <- factor(cond_df$class, levels = unique(cond_df$class))
+  }
   ## Drop conditional rows for variables outside the displayed set (same
   ## truncation as the faithful overlay) so no phantom "NA" bar appears.
   cond_df <- cond_df[!is.na(cond_df$variable), , drop = FALSE]
-  ## An undefined z (0/0 for a variable tested in under `trim` of the trees,
-  ## local.std = FALSE only) gets no bar, rather than a zero bar that reads as
-  ## "tested and unimportant" (#344). Its row stays on the axis (drop = FALSE).
+  ## An undefined z (0/0, local.std = FALSE only) gets no bar rather than a
+  ## zero bar (#344). Its row stays on the axis (drop = FALSE) and its class
+  ## keeps its facet. 0/0 has more than one cause -- too few trees
+  ## tested, or every tree scoring exactly 0 -- so the plot does not name one.
   ## varPro leaves out a variable undefined for every class, so a variable
-  ## missing from the table is undefined too.
-  cond_df   <- cond_df[is.finite(cond_df$z), , drop = FALSE]
-  undefined <- nrow(cond_df) < length(levels(cond_df$variable)) *
-    length(unique(x$conditional$class))
+  ## missing from the table is undefined too. Undefined rows stay in the data
+  ## as NA, which geom_col(na.rm = TRUE) skips, so every class keeps a facet.
+  cond_df$z[!is.finite(cond_df$z)] <- NA_real_
+  undefined <- sum(!is.na(cond_df$z)) <
+    length(levels(cond_df$variable)) * nlevels(cond_df$class)
   cutoff    <- prov$cutoff %||% 0.79
 
   p <- ggplot2::ggplot(cond_df,
                        ggplot2::aes(x    = .data[["variable"]],
                                     y    = .data[["z"]],
                                     fill = .data[["z"]] > cutoff)) +
-    ggplot2::geom_col() +
+    ## position_identity: the default stacking turns an NA height into 0.
+    ggplot2::geom_col(position = "identity", na.rm = TRUE) +
     ggplot2::coord_flip() +
-    ggplot2::facet_wrap(~ class, nrow = 1L) +
+    ggplot2::facet_wrap(~ class, nrow = 1L, drop = FALSE) +
     ggplot2::scale_fill_manual(
       values = c("TRUE" = "#4e8fcd", "FALSE" = "#888888"),
       guide  = "none"
@@ -266,7 +274,7 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
                   caption = paste0("Dashed line at z = ", cutoff,
                                    ". Conditional class importance.",
                                    if (undefined) {
-                                     "\nNo bar: z undefined (untested for that class)."
+                                     "\nNo bar: z undefined for that class."
                                    })) +
     ggplot2::theme_minimal()
 

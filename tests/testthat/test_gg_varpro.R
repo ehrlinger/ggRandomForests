@@ -301,13 +301,27 @@ test_that("plot.gg_varpro conditional: an undefined z gets no bar, not a zero ba
   expect_true(any(!defined))
   expect_silent(p <- plot(gg))
   built <- ggplot2::ggplot_build(p)
-  ## one bar per defined z, and no zero-height bars
-  expect_equal(nrow(built$data[[1L]]), sum(defined))
-  expect_false(any(built$data[[1L]]$y == 0))
+  ## one drawn bar per defined z, and no zero-height bar standing in for NA
+  y <- built$data[[1L]]$y
+  expect_equal(sum(is.finite(y)), sum(defined))
+  expect_false(any(y[is.finite(y)] == 0))
+  expect_equal(sum(built$data[[1L]]$ymax != 0, na.rm = TRUE), sum(defined))
   ## every displayed variable keeps its row, including those varPro left out
   expect_setequal(built$layout$panel_params[[1L]]$y$get_labels(),
                   levels(gg$imp$variable))
   expect_match(p$labels$caption, "z undefined")
+})
+
+test_that("plot.gg_varpro conditional: a class with no defined z keeps its facet", {
+  skip_on_cran()
+  set.seed(42L)
+  vi <- varPro::varpro(Species ~ ., data = iris, ntree = 3, split.weight = FALSE)
+  gg <- gg_varpro(vi, conditional = TRUE, local.std = FALSE, nvar = 1)
+  shown <- gg$conditional[!is.na(gg$conditional$variable), ]
+  ## the fixture has a class whose only displayed z is undefined
+  expect_true(any(tapply(is.finite(shown$z), shown$class, function(v) !any(v))))
+  built <- ggplot2::ggplot_build(plot(gg))
+  expect_setequal(as.character(built$layout$layout$class), levels(iris$Species))
 })
 
 test_that("plot.gg_varpro conditional: no undefined-z caption when every z is defined", {
