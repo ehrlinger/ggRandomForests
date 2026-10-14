@@ -197,10 +197,12 @@ on varPro's defaults the weakest of them are screened out upstream, and
 the plot never shows they were candidates at all.
 
 An open box, usually a flat line at zero (here `chas` and `zn`), marks a
-variable with a usable release rule in fewer than 10% of the trees (the
-`trim` argument), so varPro barely tested it and its zero z says nothing
-about whether it matters; `varpro_coverage()` reports that coverage for
-every variable.
+variable that got an importance score in fewer than 10% of the trees (the
+`trim` argument). varPro barely tested it, so its zero z says nothing about
+whether it matters. `varpro_coverage()` gives a per-variable table with a
+noise-based cutoff, but it counts every usable release rule, including the
+few that return no importance score, so its coverage can run higher than
+the plot's and a variable near 10% can be open here and tested there.
 
 ## Partial dependence with `gg_partial_varpro()`
 

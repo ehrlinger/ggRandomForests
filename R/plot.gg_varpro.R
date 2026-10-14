@@ -154,7 +154,7 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
     "Hinges: 15th/85th percentiles; whiskers: 5th/95th. ",
     if (faithful) "Points show per-tree importance. " else "",
     "Not a Tukey boxplot.",
-    if (all(tested)) "" else paste0("\nOpen boxes: usable rule in fewer than ",
+    if (all(tested)) "" else paste0("\nOpen boxes: scored in fewer than ",
                                     100 * (prov$trim %||% 0.1),
                                     "% of trees (untested).")
   )
