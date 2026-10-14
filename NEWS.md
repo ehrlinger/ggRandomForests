@@ -519,6 +519,16 @@ ggRandomForests v4.0.0 (development)
 * The varPro vignette explains the open boxes `gg_varpro()` draws for
   untested variables (#340)
 
+* The README lists `varpro_coverage()` among the varPro functions
+* The `gg_varpro()` help page, its plot caption and the varPro vignette
+  say that coverage counts the trees in which a release rule for the
+  variable returned an importance value
+
+* `plot.gg_varpro()` draws no bar for an undefined class-conditional z
+  (0/0, possible only with `local.std = FALSE`) instead of a zero bar that
+  reads as a measured zero. The variable keeps its row and every class
+  keeps its facet, and the caption says the z is undefined (#344)
+
 ggRandomForests v3.5.2
 ======================
 * Three help pages no longer render a stray backslash where a percent sign
