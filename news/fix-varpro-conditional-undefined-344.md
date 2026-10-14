@@ -1,0 +1,1 @@
+* `plot.gg_varpro()` draws no bar for an undefined class-conditional z (0/0, possible only with `local.std = FALSE`) instead of a zero bar that reads as a measured zero. The variable keeps its row and every class keeps its facet, and the caption says the z is undefined (#344)
