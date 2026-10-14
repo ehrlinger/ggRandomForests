@@ -73,9 +73,13 @@ default z-score axis (`local.std = TRUE`) that line is a z; on the
 raw-importance axis (`local.std = FALSE`, `type = "raw"`) it is the same
 numeric value but in raw-importance units. Boxes whose aggregate value
 sits above the line are colored blue and flagged `selected = TRUE`, the
-rest are gray. A selected variable with a tight, high box is a variable
-the forest agrees on across trees. A selected variable with a wide box
-that straddles the cutoff is one to look at twice before relying on it.
+rest are gray. A variable with a usable release rule in fewer than
+`trim` of the trees (`tested = FALSE`) is drawn as an open box, usually
+a flat line at zero: it was barely tested, which is not the same as
+tested and found unimportant. A selected variable with a tight, high box
+is a variable the forest agrees on across trees. A selected variable
+with a wide box that straddles the cutoff is one to look at twice before
+relying on it.
 
 With `faithful = TRUE` the box is drawn faint and the per-tree values
 are jittered over it as semi-transparent points, on the same scale as

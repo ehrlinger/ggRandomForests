@@ -442,9 +442,14 @@ negative value for the others. The unconditional score in
 `$unconditional` is the average, and can mask class-specific effects,
 which is why the `conditional = TRUE` faceted view exists.
 
+This fit is cached without its forest to keep the package small, so the
+chunk scores the rules stored at fit time (`local.std = FALSE`). The
+default re-samples rules from the forest, which a cached fit no longer
+has.
+
 ``` r
 
-plot(gg_varpro(v_iris_multi, conditional = TRUE))
+plot(gg_varpro(v_iris_multi, conditional = TRUE, local.std = FALSE))
 ```
 
 ![](varpro_files/figure-html/iris-multi-gg-varpro-conditional-1.png)
@@ -582,9 +587,13 @@ v_pbc <- if (is.null(.vp$v_pbc)) {
 
 ### Variable importance: `gg_varpro()`
 
+As with the iris fit, the cached survival fit has no forest, so it is
+scored on its fit-time rules (`local.std = FALSE`). The axis is then raw
+importance rather than z.
+
 ``` r
 
-plot(gg_varpro(v_pbc))
+plot(gg_varpro(v_pbc, local.std = FALSE))
 ```
 
 ![](varpro_files/figure-html/pbc-gg-varpro-1.png)

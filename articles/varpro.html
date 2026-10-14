@@ -326,9 +326,10 @@
 </h3>
 <p>For a classification forest, <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> can split the importance view into one facet per class. Variables keep the unconditional sort order so rows line up across facets; read along a row to see which class a variable is informative for.</p>
 <p>The conditional importance uses <code>$conditional.z</code> from the varPro fit: per-class release-rule contrasts computed within the same rule regions as the unconditional score, but with the local estimator replaced by a per-class probability. A variable that separates one class from the rest will have a high <code>$conditional.z</code> for that class and a near-zero or even negative value for the others. The unconditional score in <code>$unconditional</code> is the average, and can mask class-specific effects, which is why the <code>conditional = TRUE</code> faceted view exists.</p>
+<p>This fit is cached without its forest to keep the package small, so the chunk scores the rules stored at fit time (<code>local.std = FALSE</code>). The default re-samples rules from the forest, which a cached fit no longer has.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_varpro.html">gg_varpro</a></span><span class="op">(</span><span class="va">v_iris_multi</span>, conditional <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_varpro.html">gg_varpro</a></span><span class="op">(</span><span class="va">v_iris_multi</span>, conditional <span class="op">=</span> <span class="cn">TRUE</span>, local.std <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="varpro_files/figure-html/iris-multi-gg-varpro-conditional-1.png"></p>
@@ -423,9 +424,10 @@
 <section class="level2"><h3 id="variable-importance-gg_varpro">Variable importance: <code>gg_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#variable-importance-gg_varpro"></a>
 </h3>
+<p>As with the iris fit, the cached survival fit has no forest, so it is scored on its fit-time rules (<code>local.std = FALSE</code>). The axis is then raw importance rather than z.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_varpro.html">gg_varpro</a></span><span class="op">(</span><span class="va">v_pbc</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_varpro.html">gg_varpro</a></span><span class="op">(</span><span class="va">v_pbc</span>, local.std <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
 <figure><p><img src="varpro_files/figure-html/pbc-gg-varpro-1.png"></p>

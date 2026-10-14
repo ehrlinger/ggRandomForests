@@ -532,7 +532,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 8
+#> [1] 6
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 
@@ -540,14 +540,14 @@ length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 ## reach before you spend the computation -- this is the habit worth having.
 wanted <- c("wt", "hp", "qsec", "vs")
 setdiff(wanted, vp$xvar.names)
-#> [1] "qsec"
+#> [1] "qsec" "vs"  
 
 ## Ask anyway and partialpro() warns, naming what it dropped.
 ## (method = "rnd" is passed through to partialpro(); see the note on
 ## isolation-forest method in Details.)
 pd <- gg_partial_varpro(object = vp, xvar.names = wanted,
                         method = "rnd")
-#> Warning: partialpro(): skipping xvar.names not found in object$xvar.names: qsec
+#> Warning: partialpro(): skipping xvar.names not found in object$xvar.names: qsec, vs
 
 ## Refitting without the split-weight screen reaches every predictor.
 vp_all <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50,

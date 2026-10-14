@@ -87,6 +87,9 @@ importances.</p>
 <span>  faithful <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  conditional <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  nvar <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  trim <span class="op">=</span> <span class="fl">0.1</span>,</span>
+<span>  max.tree <span class="op">=</span> <span class="va">object</span><span class="op">$</span><span class="va">max.tree</span>,</span>
+<span>  max.rules.tree <span class="op">=</span> <span class="va">object</span><span class="op">$</span><span class="va">max.rules.tree</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -100,10 +103,16 @@ importances.</p>
 
 
 <dt id="arg-local-std">local.std<a class="anchor" aria-label="anchor" href="#arg-local-std"></a></dt>
-<dd><p>Logical; default <code>TRUE</code>.  When <code>TRUE</code> the
-per-tree importances are put on the z-scale before the box statistics
-are computed.  Set it <code>FALSE</code> to keep the raw importance scale,
-which is what <code>type = "raw"</code> in <code>plot.gg_varpro</code> needs.</p></dd>
+<dd><p>Logical; default <code>TRUE</code>.  Passed to varPro's
+importance aggregation, with the same meaning as in
+<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>: <code>TRUE</code> re-samples the release rules,
+scores them by local importance and reports z as their winsorised mean,
+so the boxes are on z's scale.  <code>FALSE</code> uses the fit-time rules and
+standardises z by the winsorised standard deviation; the boxes are then
+on the raw importance scale, which is what <code>type = "raw"</code> in
+<code>plot.gg_varpro</code> needs.  With <code>TRUE</code> the result depends on
+the random number stream, so call <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> first for a
+reproducible z.</p></dd>
 
 
 <dt id="arg-cutoff">cutoff<a class="anchor" aria-label="anchor" href="#arg-cutoff"></a></dt>
@@ -130,8 +139,24 @@ median per-tree z, after the cutoff filter has been applied.
 <code>NULL</code> keeps all of them.</p></dd>
 
 
+<dt id="arg-trim">trim<a class="anchor" aria-label="anchor" href="#arg-trim"></a></dt>
+<dd><p>Winsorising fraction used for z, as in
+<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>; default <code>0.1</code>.  A variable is
+<code>tested</code> when its coverage is at least <code>trim</code>.</p></dd>
+
+
+<dt id="arg-max-tree-max-rules-tree">max.tree, max.rules.tree<a class="anchor" aria-label="anchor" href="#arg-max-tree-max-rules-tree"></a></dt>
+<dd><p>Number of trees, and release rules per
+tree, to score.  Default to the values stored in the fit.  Supplying
+either one re-samples the rules even with <code>local.std = FALSE</code>, as
+<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code> does.  The boxes, z and coverage are always
+computed from the same rules.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to <code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>.</p></dd>
+<dd><p>Not used.  Earlier versions passed it to
+<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>; <code>trim</code>, <code>max.tree</code> and
+<code>max.rules.tree</code> are now arguments, and anything else is an error.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -141,8 +166,10 @@ median per-tree z, after the cutoff filter has been applied.
 levels run least- to most-important by median per-tree z, so the
 most-important variable sits at the top of the plot after
 <code>coord_flip</code>), <code>z</code> (aggregate
-z-score from <code>importance()</code>), <code>selected</code> (logical,
-<code>z &gt; cutoff</code>).</p></dd>
+z-score, <code>NA</code> when it is undefined), <code>selected</code> (logical,
+<code>z &gt; cutoff</code>), <code>coverage</code> (share of scored trees with a
+usable release rule for the variable) and <code>tested</code>
+(<code>coverage &gt;= trim</code>).</p></dd>
 
 <dt><code>$imp.tree</code></dt>
 <dd><p><code>NULL</code> when <code>faithful = FALSE</code>;
@@ -151,8 +178,9 @@ otherwise an ntree x p matrix of per-tree importance values.</p></dd>
 <dt><code>$stats</code></dt>
 <dd><p>Per-variable summary: <code>variable</code>,
 <code>median</code>, <code>q05</code>, <code>q15</code>, <code>q85</code>, <code>q95</code>
-(on z-scale when <code>local.std = TRUE</code>, raw when <code>FALSE</code>),
-plus <code>mean</code> (raw importance mean, always stored).</p></dd>
+of the per-tree values (on z's scale when <code>local.std = TRUE</code>,
+raw when <code>FALSE</code>), <code>mean</code> (their plain mean), and
+<code>coverage</code> and <code>tested</code> as in <code>$imp</code>.</p></dd>
 
 <dt><code>$conditional</code></dt>
 <dd><p><code>NULL</code> when <code>conditional = FALSE</code>;
@@ -164,7 +192,7 @@ which varPro recodes to 0/1 internally.</p></dd>
 
 </dl><p>A <code>"provenance"</code> attribute carries <code>family</code>, <code>local.std</code>,
 <code>cutoff</code>, <code>faithful</code>, <code>conditional</code>, <code>xvar.names</code>,
-and <code>n</code>.</p>
+<code>n</code>, <code>trim</code>, <code>max.tree</code> and <code>max.rules.tree</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="what-varpro-is-doing">What varpro is doing<a class="anchor" aria-label="anchor" href="#what-varpro-is-doing"></a></h2>
@@ -184,12 +212,26 @@ No synthetic covariates, no permutation: the contrast is between two
 real subsets of the data.</p>
 <p>Because varpro builds importance from rules sampled over trees, every
 tree contributes its own importance value for each variable. Those are
-the per-tree scores we summarize here. With <code>local.std = TRUE</code>
-(the default) the per-tree values are standardized by their column
-standard deviation so the column mean equals the aggregate z-score
-returned by <code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>; that z-score is the canonical
-"is this variable in or out?" statistic, and <code>cutoff = 0.79</code> is
-varpro's default selection threshold.</p>
+the per-tree scores we summarize here, and the aggregate z comes from
+the same rules on the same trees, so the boxes and z always agree.
+<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code> takes a winsorised mean over trees (trimmed
+by <code>trim</code>), counting a tree with no usable release rule for the
+variable as 0. With <code>local.std = TRUE</code> (the default, as in varPro)
+the release rules are re-sampled and scored by their local importance,
+the standard deviation is fixed at 1, and z is that winsorised mean, so
+the per-tree values already sit on z's scale. With <code>local.std =
+FALSE</code> the fit-time rules are used and z is the winsorised mean divided
+by the winsorised standard deviation. <code>cutoff = 0.79</code> is varpro's
+default selection threshold, but the scale of z depends on how many
+variables share each tree, so the same cutoff does not mean the same
+thing across settings.</p>
+<p>A variable with a usable rule in fewer than about <code>trim</code> of the
+trees is <em>untested</em>: its z is 0 (or undefined with
+<code>local.std = FALSE</code>) because every non-zero tree is winsorised
+away, not because it was tested and found unimportant. <code>coverage</code>
+and <code>tested</code> in the output say which variables those are, and the
+plot draws them as open boxes. <code><a href="varpro_coverage.html">varpro_coverage</a></code> gives the
+fuller table, including a noise-based cutoff.</p>
 <p>For a classification forest, varpro also returns a class-conditional
 z table: the same importance computed restricting attention to rules
 relevant to each class. <code>conditional = TRUE</code> keeps that table so
@@ -201,8 +243,9 @@ rather than only in aggregate.</p>
 
 
 <p><code>$imp</code> is the one-row-per-variable summary: aggregate z from
-<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>, plus a <code>selected</code> flag for
-<code>z &gt; cutoff</code>. <code>$stats</code> holds the box quantiles
+varPro's importance aggregation, a <code>selected</code> flag for
+<code>z &gt; cutoff</code>, and the variable's <code>coverage</code> and
+<code>tested</code> flag. <code>$stats</code> holds the box quantiles
 (5/15/50/85/95 percentiles, plus the raw mean) computed from the
 per-tree matrix; these are what the boxplot draws. <code>$imp.tree</code>
 is the per-tree matrix itself, kept only when <code>faithful = TRUE</code>
@@ -238,7 +281,8 @@ via the rule-based variable priority framework. <em>arXiv preprint</em>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="plot.gg_varpro.html">plot.gg_varpro</a></code>, <code><a href="gg_vimp.html">gg_vimp</a></code></p></div>
+    <div class="dont-index"><p><code><a href="plot.gg_varpro.html">plot.gg_varpro</a></code>, <code><a href="varpro_coverage.html">varpro_coverage</a></code>,
+<code><a href="gg_vimp.html">gg_vimp</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -249,7 +293,7 @@ via the rule-based variable priority framework. <em>arXiv preprint</em>
 <span class="r-in"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu">gg_varpro</span><span class="op">(</span><span class="va">vp</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;gg_varpro&gt;  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2 of 4 variables selected (z &gt; 0.79)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3 of 4 variables selected (z &gt; 0.79)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gg_varpro-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
