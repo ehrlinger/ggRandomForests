@@ -163,6 +163,7 @@ reference:
     contents:
       - quantile_pts
       - varpro_feature_names
+      - varpro_coverage
 
   - title: "Package"
     contents:
