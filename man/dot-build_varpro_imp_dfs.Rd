@@ -11,8 +11,9 @@
   cutoff,
   nvar,
   faithful,
-  local.std,
-  conditional
+  conditional,
+  coverage = NULL,
+  trim = 0.1
 )
 }
 \description{

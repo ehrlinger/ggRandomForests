@@ -19,7 +19,10 @@
 #' axis (\code{local.std = FALSE}, \code{type = "raw"}) it is the same
 #' numeric value but in raw-importance units. Boxes whose aggregate
 #' value sits above the line are colored blue and flagged
-#' \code{selected = TRUE}, the rest are gray. A
+#' \code{selected = TRUE}, the rest are gray. A variable with a usable
+#' release rule in fewer than \code{trim} of the trees (\code{tested =
+#' FALSE}) is drawn as an open box, usually a flat line at zero: it was
+#' barely tested, which is not the same as tested and found unimportant. A
 #' selected variable with a tight, high box is a variable the forest
 #' agrees on across trees. A selected variable with a wide box that
 #' straddles the cutoff is one to look at twice before relying on it.
@@ -97,7 +100,9 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
   prov <- attr(x, "provenance")
 
   ## ---- Auto-detect type from provenance when not supplied ------------------
-  if (missing(type)) {
+  ## Recorded before the assignment below, after which missing() is FALSE.
+  type_given <- !missing(type)
+  if (!type_given) {
     type <- if (isTRUE(prov$local.std)) "z" else "raw"
   } else {
     type <- match.arg(type, c("z", "raw"))
@@ -118,7 +123,7 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
 
   ## ---- Conditional view ---------------------------------------------------
   if (!is.null(x$conditional)) {
-    if (!missing(type) && !identical(type, "z")) {
+    if (type_given && !identical(type, "z")) {
       message("Conditional plot ignores type = '", type,
               "'; showing class-conditional z scores.")
     }
@@ -136,15 +141,22 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
   stats_df <- x$stats
   # Merge selected flag
   sel_df <- unique(x$imp[, c("variable", "selected")])
-  stats_df <- merge(stats_df, sel_df, by = "variable", all.x = TRUE)
+  stats_df <- merge(stats_df[, setdiff(names(stats_df), "selected")], sel_df,
+                    by = "variable", all.x = TRUE)
+  ## Objects built before #340 carry no `tested` column; treat them as tested.
+  tested <- if (is.null(stats_df$tested)) TRUE else stats_df$tested
+  stats_df$box_fill <- ifelse(tested, as.character(stats_df$selected), "untested")
 
   faithful  <- isTRUE(prov$faithful)
   cutoff    <- prov$cutoff %||% 0.79
-  fill_vals <- c("TRUE" = "#4e8fcd", "FALSE" = "#888888")
+  fill_vals <- c("TRUE" = "#4e8fcd", "FALSE" = "#888888", "untested" = "white")
   cap_text  <- paste0(
     "Hinges: 15th/85th percentiles; whiskers: 5th/95th. ",
     if (faithful) "Points show per-tree importance. " else "",
-    "Not a Tukey boxplot."
+    "Not a Tukey boxplot.",
+    if (all(tested)) "" else paste0("\nOpen boxes: usable rule in fewer than ",
+                                    100 * (prov$trim %||% 0.1),
+                                    "% of trees (untested).")
   )
 
   p <- ggplot2::ggplot(stats_df,
@@ -154,7 +166,7 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
                       middle = .data[["median"]],
                       upper  = .data[["q85"]],
                       ymax   = .data[["q95"]],
-                      fill   = factor(.data[["selected"]]))) +
+                      fill   = .data[["box_fill"]])) +
     ggplot2::geom_boxplot(stat = "identity",
                           alpha = if (faithful) 0.4 else 0.85) +
     ggplot2::coord_flip() +
@@ -179,20 +191,11 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
     long_df <- long_df[!is.na(long_df$variable), , drop = FALSE]
 
     ## Overlay y-values match the box scale (type-aware) --------------------
-    if (identical(type, "z")) {
-      ## z_ij = imp_ij / sd_j  (same formula as .varpro_imp_stats)
-      sd_j <- tapply(long_df$imp_raw, long_df$variable,
-                     stats::sd, na.rm = TRUE)
-      sd_j[sd_j < .Machine$double.eps] <- 1
-      long_df$overlay  <- long_df$imp_raw / sd_j[long_df$variable]
-      mean_df          <- stats_df
-      mean_df$overlay_mean <- mean_df$mean / sd_j[as.character(mean_df$variable)]
-    } else {
-      ## raw scale: imp_raw as-is; mean column is already raw
-      long_df$overlay      <- long_df$imp_raw
-      mean_df              <- stats_df
-      mean_df$overlay_mean <- mean_df$mean
-    }
+    ## The box is drawn from the per-tree values as they are (z's scale with
+    ## local.std = TRUE, raw otherwise), so the overlay uses them unchanged.
+    long_df$overlay      <- long_df$imp_raw
+    mean_df              <- stats_df
+    mean_df$overlay_mean <- mean_df$mean
 
     p <- p +
       ggplot2::geom_jitter(data = long_df,

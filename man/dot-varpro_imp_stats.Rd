@@ -4,12 +4,11 @@
 \alias{.varpro_imp_stats}
 \title{Compute per-variable box statistics from a per-tree importance matrix}
 \usage{
-.varpro_imp_stats(mat, local.std = TRUE)
+.varpro_imp_stats(mat)
 }
 \description{
-When \code{local.std = TRUE} the columns of \code{mat} are standardized
-to unit variance before computing quantiles so that the display scale
-matches the aggregate z-score.  The \code{mean} column always stores raw
-(unstandardized) column means.
+Quantiles of the per-tree values as they are.  With varPro's
+\code{local.std = TRUE} those values are already on z's scale (z is their
+winsorised mean); with \code{FALSE} they are raw importances.
 }
 \keyword{internal}

@@ -50,11 +50,11 @@ test_that("gg_varpro returns gg_varpro class", {
   expect_s3_class(gg_varpro(vp), "gg_varpro")
 })
 
-test_that("gg_varpro$imp has variable, z, selected columns", {
+test_that("gg_varpro$imp has variable, z, selected, coverage, tested columns", {
   skip_on_cran()
   vp <- make_vp_regr()
   gg <- gg_varpro(vp)
-  expect_named(gg$imp, c("variable", "z", "selected"))
+  expect_named(gg$imp, c("variable", "z", "selected", "coverage", "tested"))
   expect_s3_class(gg$imp$variable, "factor")
   expect_type(gg$imp$z, "double")
   expect_type(gg$imp$selected, "logical")
@@ -102,7 +102,7 @@ test_that("gg_varpro conditional names binary classes, not varPro's 0/1 codes", 
   vb <- .varpro_iris_binary()
   # varPro recodes a binary outcome internally; y.org keeps the names.
   expect_identical(levels(vb$y), c("0", "1"))
-  gg <- gg_varpro(vb, conditional = TRUE)
+  gg <- gg_varpro(vb, conditional = TRUE, local.std = FALSE)
   expect_identical(levels(gg$conditional$class), levels(vb$y.org))
   # The recode is positional: code 0 is the first level of y.org.
   z0 <- varPro::importance(vb, local.std = FALSE)$conditional.z[, "0"]
@@ -124,7 +124,7 @@ test_that("gg_varpro conditional leaves multiclass labels that look like codes",
   d <- iris
   d$Species <- factor(as.integer(d$Species) - 1L, levels = c(2, 0, 1))
   v <- varPro::varpro(Species ~ ., data = d, ntree = 30)
-  gg <- gg_varpro(v, conditional = TRUE)
+  gg <- gg_varpro(v, conditional = TRUE, local.std = FALSE)
   z <- varPro::importance(v, local.std = FALSE)$conditional.z
   for (k in c("2", "0", "1")) {
     rows <- gg$conditional[gg$conditional$class == k, ]
@@ -191,53 +191,111 @@ test_that("gg_varpro nvar larger than p returns all variables", {
 
 test_that("gg_varpro local.std=FALSE stats equal raw-column medians", {
   skip_on_cran()
-  ## Mechanistic check: verify each path against the actual column computation.
-  ## faithful=TRUE forces local.std=FALSE (coercion tested above); imp.tree
-  ## gives the ground-truth raw importance matrix for both assertions.
+  set.seed(42L)
   vp <- make_vp_regr(ntree = 50L)
   suppressMessages(gg_raw <- gg_varpro(vp, local.std = FALSE, faithful = TRUE))
   mat   <- gg_raw$imp.tree          # ntree x p raw importance matrix
   vname <- colnames(mat)[[1L]]      # pick any variable by name, not position
-
-  ## local.std = FALSE: stats$median == median of raw column
   expect_equal(
     gg_raw$stats$median[as.character(gg_raw$stats$variable) == vname],
     stats::median(mat[, vname], na.rm = TRUE),
     tolerance = 1e-10
   )
-
-  ## local.std = TRUE: stats$median == median of z-normalized column
-  gg_z <- gg_varpro(vp, local.std = TRUE)
-  sd_j <- apply(mat, 2L, stats::sd, na.rm = TRUE)
-  sd_j[sd_j < .Machine$double.eps] <- 1
-  z_med <- stats::median(mat[, vname] / sd_j[[vname]], na.rm = TRUE)
-  expect_equal(
-    gg_z$stats$median[as.character(gg_z$stats$variable) == vname],
-    z_med,
-    tolerance = 1e-10
-  )
 })
 
-## ── Z-scale alignment ─────────────────────────────────────────────────────────
+## ── Same trees for boxes, z and coverage (#340) ──────────────────────────────
 
-test_that("gg_varpro: z-normalisation mean(z_ij) == aggregate z_j", {
+test_that("gg_varpro: default z is varPro::importance()'s default z", {
   skip_on_cran()
-  # varPro's importance() computes z_j = mean(imp_ij) / sd_j (no sqrt(ntree)).
-  # So .varpro_imp_stats uses z_ij = imp_ij / sd_j, giving mean(z_ij) == z_j.
-  # Verify by recomputing from imp.tree (faithful=TRUE).
   vp <- make_vp_regr(ntree = 50L)
-  gg <- gg_varpro(vp, faithful = TRUE)
-  mat <- gg$imp.tree  # ntree x p raw importance matrix
-  sd_j <- apply(mat, 2L, stats::sd, na.rm = TRUE)
-  sd_j[sd_j < .Machine$double.eps] <- 1
-  z_mat <- sweep(mat, 2L, sd_j, FUN = "/")  # z_ij = imp_ij / sd_j
-  z_means <- colMeans(z_mat, na.rm = TRUE)
-  # Column means should equal aggregate z from importance()
-  agg_z <- setNames(gg$imp$z, as.character(gg$imp$variable))
-  common <- intersect(names(z_means), names(agg_z))
-  expect_gt(length(common), 0L)
-  expect_equal(z_means[common], agg_z[common], tolerance = 0.1,
-               info = "mean per-tree z should approximate aggregate z within 0.1")
+  set.seed(1L)
+  gg <- gg_varpro(vp)
+  set.seed(1L)
+  imp <- varPro::importance(vp, plot.it = FALSE)
+  z <- stats::setNames(gg$imp$z, as.character(gg$imp$variable))
+  expect_equal(unname(z[rownames(imp)]), imp$z)
+})
+
+test_that("gg_varpro: local.std=FALSE z is varPro::importance(local.std=FALSE)'s z", {
+  skip_on_cran()
+  set.seed(42L)
+  vp <- make_vp_regr(ntree = 50L)
+  gg <- gg_varpro(vp, local.std = FALSE)
+  imp <- varPro::importance(vp, local.std = FALSE, plot.it = FALSE)
+  imp <- imp[is.finite(imp$z), , drop = FALSE]
+  z <- stats::setNames(gg$imp$z, as.character(gg$imp$variable))
+  expect_equal(unname(z[rownames(imp)]), imp$z)
+})
+
+test_that("gg_varpro: z is the winsorised mean of the boxed per-tree values", {
+  skip_on_cran()
+  set.seed(42L)
+  vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50L, max.tree = 20L)
+  for (args in list(list(), list(local.std = FALSE), list(local.std = FALSE, max.tree = 50L))) {
+    set.seed(7L)
+    gg <- do.call(gg_varpro, c(list(vp, faithful = TRUE), args))
+    mat <- gg$imp.tree
+    v <- as.character(gg$imp$variable)
+    wm <- apply(mat[, v, drop = FALSE], 2L, varPro:::winsorize.mean, trim = 0.1)
+    if (isFALSE(args$local.std)) {
+      wm <- wm / apply(mat[, v, drop = FALSE], 2L, varPro:::winsorize.sd, trim = 0.1)
+    }
+    ok <- is.finite(gg$imp$z)
+    expect_equal(gg$imp$z[ok], unname(wm[ok]))
+  }
+  ## max.tree reaches the rules the boxes are drawn from, not only z
+  expect_identical(attr(gg, "provenance")$max.tree, 50L)
+  expect_gt(nrow(mat), vp$max.tree)
+})
+
+test_that("gg_varpro: coverage and tested flag untested variables", {
+  skip_on_cran()
+  set.seed(20261014L)
+  d <- mtcars
+  for (j in 1:6) d[[paste0("noise", j)]] <- sample(d$wt)
+  set.seed(20261014L)
+  vp <- varPro::varpro(mpg ~ ., data = d, ntree = 50, split.weight = FALSE, mtry = 3)
+  set.seed(3L)
+  gg <- gg_varpro(vp)
+  expect_true(all(c("coverage", "tested") %in% names(gg$imp)))
+  expect_true(all(c("coverage", "tested") %in% names(gg$stats)))
+  expect_true(all(gg$imp$coverage >= 0 & gg$imp$coverage <= 1))
+  expect_identical(gg$imp$tested, gg$imp$coverage >= 0.1)
+  ## local.std = FALSE: an untested variable's z is 0/0, reported as NA, not 0
+  set.seed(3L)
+  gg_f <- gg_varpro(vp, local.std = FALSE, trim = 0.3)
+  expect_true(all(is.na(gg_f$imp$z) <= !gg_f$imp$tested))
+  expect_false(any(gg_f$imp$selected & is.na(gg_f$imp$z)))
+  p <- plot(gg_f)
+  expect_s3_class(p, "ggplot")
+  if (!all(gg_f$stats$tested)) expect_match(p$labels$caption, "untested")
+})
+
+test_that("gg_varpro: arguments varPro does not take are an error, not ignored", {
+  skip_on_cran()
+  set.seed(42L)
+  vp <- make_vp_regr()
+  expect_error(gg_varpro(vp, y.external = 1), "unused argument")
+  expect_error(gg_varpro(vp, trim = 0.6), "trim")
+})
+
+test_that("plot.gg_varpro conditional: no type message unless type was passed", {
+  skip_on_cran()
+  set.seed(42L)
+  vp <- make_vp_class()
+  gg <- gg_varpro(vp, conditional = TRUE, local.std = FALSE)
+  expect_silent(plot(gg))
+  expect_message(plot(gg, type = "raw"), "ignores type")
+})
+
+test_that("gg_varpro: a fit without its forest needs local.std = FALSE", {
+  skip_on_cran()
+  set.seed(42L)
+  vp <- make_vp_regr()
+  vp$rf <- NULL
+  expect_error(gg_varpro(vp), "no forest")
+  expect_error(gg_varpro(vp, local.std = FALSE, max.tree = 10L), "no forest")
+  expect_s3_class(gg_varpro(vp, local.std = FALSE), "gg_varpro")
 })
 
 ## ── Plot smoke tests ─────────────────────────────────────────────────────────
@@ -364,6 +422,16 @@ test_that("summary.gg_varpro returns summary.gg_varpro class", {
   gg <- gg_varpro(vp)
   s  <- summary(gg)
   expect_s3_class(s, "summary.gg_varpro")
+})
+
+test_that("summary.gg_varpro reports an unavailable z range when every z is NA", {
+  skip_if_not(exists("make_mock_gg_varpro"), "no gg_varpro fixture available")
+  obj <- make_mock_gg_varpro()
+  obj$imp$z <- NA_real_
+  obj$imp$selected <- FALSE
+  expect_silent(out <- capture.output(print(summary(obj))))
+  expect_true(any(grepl("z range: unavailable", out)))
+  expect_false(any(grepl("Inf", out)))
 })
 
 test_that("plot.gg_varpro labels the variable axis", {

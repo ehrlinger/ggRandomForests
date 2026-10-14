@@ -63,7 +63,10 @@ whiskers. The dashed vertical line is the selection \code{cutoff}
 axis (\code{local.std = FALSE}, \code{type = "raw"}) it is the same
 numeric value but in raw-importance units. Boxes whose aggregate
 value sits above the line are colored blue and flagged
-\code{selected = TRUE}, the rest are gray. A
+\code{selected = TRUE}, the rest are gray. A variable with a usable
+release rule in fewer than \code{trim} of the trees (\code{tested =
+FALSE}) is drawn as an open box, usually a flat line at zero: it was
+barely tested, which is not the same as tested and found unimportant. A
 selected variable with a tight, high box is a variable the forest
 agrees on across trees. A selected variable with a wide box that
 straddles the cutoff is one to look at twice before relying on it.

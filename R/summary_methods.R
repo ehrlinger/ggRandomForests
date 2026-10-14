@@ -242,9 +242,15 @@ summary.gg_survival <- function(object, ...) {
                           as.character(top_df$variable),
                           top_df$median),
                   collapse = ", ")),
-    sprintf("z range: [%.3g, %.3g]",
-            min(x$imp$z, na.rm = TRUE),
-            max(x$imp$z, na.rm = TRUE))
+    ## Every z can be undefined (NA), e.g. a fit too small for any variable
+    ## to be tested in trim of its trees.
+    if (any(!is.na(x$imp$z))) {
+      sprintf("z range: [%.3g, %.3g]",
+              min(x$imp$z, na.rm = TRUE),
+              max(x$imp$z, na.rm = TRUE))
+    } else {
+      "z range: unavailable (no variable has a defined z)"
+    }
   )
 }
 
