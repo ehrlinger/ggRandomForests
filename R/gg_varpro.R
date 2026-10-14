@@ -38,13 +38,15 @@
 #' variables share each tree, so the same cutoff does not mean the same
 #' thing across settings.
 #'
-#' A variable with a usable rule in fewer than about \code{trim} of the
-#' trees is \emph{untested}: its z is 0 (or undefined with
+#' A variable scored in fewer than about \code{trim} of the trees (a tree
+#' scores it when one of its release rules for the variable returns an
+#' importance value) is \emph{untested}: its z is 0 (or undefined with
 #' \code{local.std = FALSE}) because every non-zero tree is winsorised
 #' away, not because it was tested and found unimportant. \code{coverage}
 #' and \code{tested} in the output say which variables those are, and the
-#' plot draws them as open boxes. \code{\link{varpro_coverage}} gives the
-#' fuller table, including a noise-based cutoff.
+#' plot draws them as open boxes. \code{\link{varpro_coverage}} counts
+#' coverage the same way and adds a per-variable roll-up and a noise-based
+#' cutoff.
 #'
 #' For a classification forest, varpro also returns a class-conditional
 #' z table: the same importance computed restricting attention to rules
@@ -130,8 +132,9 @@
 #'     most-important variable sits at the top of the plot after
 #'     \code{coord_flip}), \code{z} (aggregate
 #'     z-score, \code{NA} when it is undefined), \code{selected} (logical,
-#'     \code{z > cutoff}), \code{coverage} (share of scored trees with a
-#'     usable release rule for the variable) and \code{tested}
+#'     \code{z > cutoff}), \code{coverage} (share of the scored trees in
+#'     which a release rule for the variable returned an importance value)
+#'     and \code{tested}
 #'     (\code{coverage >= trim}).}
 #'   \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
 #'     otherwise an ntree x p matrix of per-tree importance values.}

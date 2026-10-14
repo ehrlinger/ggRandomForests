@@ -30,9 +30,9 @@ test_that("term table has the documented shape and settings", {
                      "z", "tested"))
   expect_setequal(cv$term, colnames(vp$x))
   expect_identical(attr(cv, "by"), "term")
-  expect_identical(attr(cv, "trees"), vp$rf$ntree)
+  expect_lte(attr(cv, "trees"), vp$rf$ntree)
   expect_identical(attr(cv, "trim"), 0.1)
-  expect_equal(cv$coverage, cv$n_trees / vp$rf$ntree)
+  expect_equal(cv$coverage, cv$n_trees / attr(cv, "trees"))
   expect_identical(cv$tested, cv$coverage >= 0.1)
   expect_false(is.unsorted(rev(cv$coverage)))
 })
@@ -76,13 +76,16 @@ test_that("variable rows roll factor levels up", {
 
 test_that("coverage and z come from the same sampled rules (PR #341 review)", {
   ## One rule per tree out of 20 trees: rule sampling is heavy, so a second
-  ## extraction would disagree. A term has a z exactly when it has rules.
+  ## extraction would disagree. A term with a scored rule always has a z;
+  ## a term with none has no z, or z = 0 when its only rules came back
+  ## unscored.
   vp <- .coverage_fits()$unguided
   for (s in 1:5) {
     cv <- varpro_coverage(vp, max.tree = 20, max.rules.tree = 1, seed = -s)
     el <- cv[cv$eligible, ]
-    expect_identical(!is.na(el$z), el$n_rules > 0L)
-    expect_true(all(is.na(el$z[el$n_trees == 0L])))
+    expect_true(all(!is.na(el$z[el$n_rules > 0L])))
+    z0 <- el$z[el$n_rules == 0L]
+    expect_true(all(is.na(z0) | z0 == 0))
   }
 })
 
@@ -162,4 +165,18 @@ test_that("bad inputs fail early", {
   expect_error(varpro_coverage(list()), "must be a varpro fit")
   expect_error(varpro_coverage(vp, trim = 0.6), "'trim' must be")
   expect_error(varpro_coverage(vp, by = "tree"))
+})
+
+test_that("coverage and tested agree with gg_varpro() on the same rules", {
+  vp <- .coverage_fits()$unguided
+  set.seed(5)
+  cv <- varpro_coverage(vp)
+  set.seed(5)
+  gg <- gg_varpro(vp, max.tree = vp$rf$ntree)
+  imp <- gg$imp
+  hit <- match(as.character(imp$variable), cv$term)
+  expect_false(anyNA(hit))
+  expect_equal(cv$coverage[hit], imp$coverage)
+  expect_identical(cv$tested[hit], imp$tested)
+  expect_equal(cv$z[hit], imp$z)
 })

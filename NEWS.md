@@ -3,6 +3,7 @@ Version: 4.0.0
 
 ggRandomForests v4.0.0 (development)
 ====================================
+
 * Articles on the pkgdown site put the table of contents on the left and use
   the full width of the window, through `pkgdown/extra.css`. The installed
   vignettes are unchanged: the Quarto vignette engine renders them in its own
@@ -480,6 +481,43 @@ ggRandomForests v4.0.0 (development)
 * `DESCRIPTION` now declares the Quarto command line tool in
   `SystemRequirements`. The vignettes have always needed it to build; the
   field makes that visible to installers and to `R CMD check`.
+
+* Add `varpro_coverage()`: for each term (or variable) of a varpro fit,
+  the share of trees in which a release rule scored it, next to its
+  importance z, counted as `gg_varpro()` counts it, so a term that was
+  tested and found unimportant can be told from one that was never or
+  barely tested. Optional noise columns give a cutoff by variable kind
+  that scales with the fit, unlike the fixed 0.79 (#340)
+
+* `gg_varpro()` now scores the boxes, z and the new `coverage` column from
+  one set of release rules, the way `varPro::importance()` does, so they
+  always describe the same trees. Before, z followed `max.tree` passed
+  through `...` while the boxes stayed on the fit-time trees, and a
+  variable with rules only outside those trees was dropped without a
+  warning (#340)
+* `gg_varpro(local.std = )` now reaches varPro. It was always sent as
+  `FALSE`, so the default z was the winsorised mean over the winsorised SD
+  rather than `importance()`'s default. **The default z, and so the set of
+  variables above `cutoff = 0.79`, changes**, and with `local.std = TRUE`
+  it depends on the random number stream, as in varPro: call `set.seed()`
+  first. The boxes are no longer divided by a plain `sd()`; with
+  `local.std = TRUE` the per-tree values are already on z's scale. The
+  class-conditional z follows the same setting (#340)
+* `gg_varpro()` reports an undefined z (a variable tested in under `trim`
+  of the trees, with `local.std = FALSE`) as `NA` instead of 0, and adds
+  `coverage` and `tested` to `$imp` and `$stats`. `plot.gg_varpro()` draws
+  untested variables as open boxes with a caption, so a barely-tested
+  variable no longer reads as "no importance". `trim`, `max.tree` and
+  `max.rules.tree` are now arguments; any other argument in `...`, which
+  used to go to `importance()`, is an error (#340)
+* `plot.gg_varpro()` no longer says it "ignores type = 'raw'" on a
+  conditional plot when no `type` was passed
+* `summary()` of a `gg_varpro` object whose z values are all undefined
+  reports the z range as unavailable instead of `[Inf, -Inf]` with two
+  warnings (#340)
+
+* The varPro vignette explains the open boxes `gg_varpro()` draws for
+  untested variables (#340)
 
 ggRandomForests v3.5.2
 ======================
