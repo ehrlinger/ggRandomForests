@@ -424,6 +424,16 @@ test_that("summary.gg_varpro returns summary.gg_varpro class", {
   expect_s3_class(s, "summary.gg_varpro")
 })
 
+test_that("summary.gg_varpro reports an unavailable z range when every z is NA", {
+  skip_if_not(exists("make_mock_gg_varpro"), "no gg_varpro fixture available")
+  obj <- make_mock_gg_varpro()
+  obj$imp$z <- NA_real_
+  obj$imp$selected <- FALSE
+  expect_silent(out <- capture.output(print(summary(obj))))
+  expect_true(any(grepl("z range: unavailable", out)))
+  expect_false(any(grepl("Inf", out)))
+})
+
 test_that("plot.gg_varpro labels the variable axis", {
   skip_if_not(exists("make_mock_gg_varpro"), "no gg_varpro fixture available")
   obj <- make_mock_gg_varpro()
