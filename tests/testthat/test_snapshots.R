@@ -264,16 +264,19 @@ local({
     vp_class <- varPro::varpro(Species ~ ., data = iris, ntree = 50L)
 
     test_that("snapshot: gg-varpro-default", {
+      set.seed(42L)
       gg <- gg_varpro(vp_regr)
       vdiffr::expect_doppelganger("gg-varpro-default", plot(gg))
     })
 
     test_that("snapshot: gg-varpro-faithful", {
+      set.seed(42L)
       gg <- gg_varpro(vp_regr, faithful = TRUE)
       vdiffr::expect_doppelganger("gg-varpro-faithful", plot(gg))
     })
 
     test_that("snapshot: gg-varpro-conditional", {
+      set.seed(42L)
       gg <- gg_varpro(vp_class, conditional = TRUE)
       vdiffr::expect_doppelganger("gg-varpro-conditional", plot(gg))
     })

@@ -14,7 +14,7 @@ test_that("0-row importance table fails with the #118 message, not a cryptic one
   imp0 <- data.frame(mean = numeric(0), std = numeric(0), z = numeric(0))
   err <- tryCatch(
     ggRandomForests:::.build_varpro_imp_dfs(
-      imp0, .dummy_tree(), "surv", 0.79, NULL, FALSE, TRUE, FALSE),
+      imp0, .dummy_tree(), "surv", 0.79, NULL, FALSE, FALSE),
     error = function(e) conditionMessage(e))
   expect_match(err, "no usable importance")
   expect_match(err, "surv")
@@ -27,7 +27,7 @@ test_that("importance with p rows but no z column fails clearly (the real #118 s
                         row.names = c("age", "bili", "albumin"))
   err <- tryCatch(
     ggRandomForests:::.build_varpro_imp_dfs(
-      imp_noz, .dummy_tree(), "surv", 0.79, NULL, FALSE, TRUE, FALSE),
+      imp_noz, .dummy_tree(), "surv", 0.79, NULL, FALSE, FALSE),
     error = function(e) conditionMessage(e))
   expect_match(err, "no usable importance")
   expect_false(grepl("differing number of rows", err))
@@ -42,7 +42,7 @@ test_that("a well-formed importance table is NOT blocked (working path preserved
                  dimnames = list(c("t1", "t2", "t3"),
                                  c("age", "bili", "albumin")))
   dfs <- ggRandomForests:::.build_varpro_imp_dfs(
-    imp_ok, tree, "surv", 0.79, NULL, FALSE, FALSE, FALSE)
+    imp_ok, tree, "surv", 0.79, NULL, FALSE, FALSE)
   expect_named(dfs, c("imp", "imp_tree", "stats", "conditional"))
   expect_equal(nrow(dfs$imp), 3L)
   expect_setequal(as.character(dfs$imp$variable), c("age", "bili", "albumin"))

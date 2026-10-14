@@ -11,16 +11,25 @@ gg_varpro(
   faithful = FALSE,
   conditional = FALSE,
   nvar = NULL,
+  trim = 0.1,
+  max.tree = object$max.tree,
+  max.rules.tree = object$max.rules.tree,
   ...
 )
 }
 \arguments{
 \item{object}{A fitted \code{varpro} object (required).}
 
-\item{local.std}{Logical; default \code{TRUE}.  When \code{TRUE} the
-per-tree importances are put on the z-scale before the box statistics
-are computed.  Set it \code{FALSE} to keep the raw importance scale,
-which is what \code{type = "raw"} in \code{plot.gg_varpro} needs.}
+\item{local.std}{Logical; default \code{TRUE}.  Passed to varPro's
+importance aggregation, with the same meaning as in
+\code{varPro::importance()}: \code{TRUE} re-samples the release rules,
+scores them by local importance and reports z as their winsorised mean,
+so the boxes are on z's scale.  \code{FALSE} uses the fit-time rules and
+standardises z by the winsorised standard deviation; the boxes are then
+on the raw importance scale, which is what \code{type = "raw"} in
+\code{plot.gg_varpro} needs.  With \code{TRUE} the result depends on
+the random number stream, so call \code{set.seed()} first for a
+reproducible z.}
 
 \item{cutoff}{Numeric; the z-score above which a variable is treated as
 selected.  Default \code{0.79}.  A variable with aggregate z above the
@@ -38,7 +47,19 @@ extracted and stored as \code{$conditional}.}
 median per-tree z, after the cutoff filter has been applied.
 \code{NULL} keeps all of them.}
 
-\item{...}{Additional arguments passed to \code{varPro::importance()}.}
+\item{trim}{Winsorising fraction used for z, as in
+\code{varPro::importance()}; default \code{0.1}.  A variable is
+\code{tested} when its coverage is at least \code{trim}.}
+
+\item{max.tree, max.rules.tree}{Number of trees, and release rules per
+tree, to score.  Default to the values stored in the fit.  Supplying
+either one re-samples the rules even with \code{local.std = FALSE}, as
+\code{varPro::importance()} does.  The boxes, z and coverage are always
+computed from the same rules.}
+
+\item{...}{Not used.  Earlier versions passed it to
+\code{varPro::importance()}; \code{trim}, \code{max.tree} and
+\code{max.rules.tree} are now arguments, and anything else is an error.}
 }
 \value{
 A named list of class \code{"gg_varpro"} with elements:
@@ -47,14 +68,17 @@ A named list of class \code{"gg_varpro"} with elements:
 levels run least- to most-important by median per-tree z, so the
 most-important variable sits at the top of the plot after
 \code{coord_flip}), \code{z} (aggregate
-z-score from \code{importance()}), \code{selected} (logical,
-\code{z > cutoff}).}
+z-score, \code{NA} when it is undefined), \code{selected} (logical,
+\code{z > cutoff}), \code{coverage} (share of scored trees with a
+usable release rule for the variable) and \code{tested}
+(\code{coverage >= trim}).}
 \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
 otherwise an ntree x p matrix of per-tree importance values.}
 \item{\code{$stats}}{Per-variable summary: \code{variable},
 \code{median}, \code{q05}, \code{q15}, \code{q85}, \code{q95}
-(on z-scale when \code{local.std = TRUE}, raw when \code{FALSE}),
-plus \code{mean} (raw importance mean, always stored).}
+of the per-tree values (on z's scale when \code{local.std = TRUE},
+raw when \code{FALSE}), \code{mean} (their plain mean), and
+\code{coverage} and \code{tested} as in \code{$imp}.}
 \item{\code{$conditional}}{\code{NULL} when \code{conditional = FALSE};
 otherwise a data frame with columns \code{variable}, \code{class},
 \code{z} (one row per variable x class combination). \code{class} is
@@ -63,7 +87,7 @@ which varPro recodes to 0/1 internally.}
 }
 A \code{"provenance"} attribute carries \code{family}, \code{local.std},
 \code{cutoff}, \code{faithful}, \code{conditional}, \code{xvar.names},
-and \code{n}.
+\code{n}, \code{trim}, \code{max.tree} and \code{max.rules.tree}.
 }
 \description{
 Pulls the per-tree importance scores out of a fitted \code{varpro} object
@@ -90,12 +114,27 @@ real subsets of the data.
 
 Because varpro builds importance from rules sampled over trees, every
 tree contributes its own importance value for each variable. Those are
-the per-tree scores we summarize here. With \code{local.std = TRUE}
-(the default) the per-tree values are standardized by their column
-standard deviation so the column mean equals the aggregate z-score
-returned by \code{varPro::importance()}; that z-score is the canonical
-"is this variable in or out?" statistic, and \code{cutoff = 0.79} is
-varpro's default selection threshold.
+the per-tree scores we summarize here, and the aggregate z comes from
+the same rules on the same trees, so the boxes and z always agree.
+\code{varPro::importance()} takes a winsorised mean over trees (trimmed
+by \code{trim}), counting a tree with no usable release rule for the
+variable as 0. With \code{local.std = TRUE} (the default, as in varPro)
+the release rules are re-sampled and scored by their local importance,
+the standard deviation is fixed at 1, and z is that winsorised mean, so
+the per-tree values already sit on z's scale. With \code{local.std =
+FALSE} the fit-time rules are used and z is the winsorised mean divided
+by the winsorised standard deviation. \code{cutoff = 0.79} is varpro's
+default selection threshold, but the scale of z depends on how many
+variables share each tree, so the same cutoff does not mean the same
+thing across settings.
+
+A variable with a usable rule in fewer than about \code{trim} of the
+trees is \emph{untested}: its z is 0 (or undefined with
+\code{local.std = FALSE}) because every non-zero tree is winsorised
+away, not because it was tested and found unimportant. \code{coverage}
+and \code{tested} in the output say which variables those are, and the
+plot draws them as open boxes. \code{\link{varpro_coverage}} gives the
+fuller table, including a noise-based cutoff.
 
 For a classification forest, varpro also returns a class-conditional
 z table: the same importance computed restricting attention to rules
@@ -107,8 +146,9 @@ rather than only in aggregate.
 \section{What's in the output}{
 
 \code{$imp} is the one-row-per-variable summary: aggregate z from
-\code{varPro::importance()}, plus a \code{selected} flag for
-\code{z > cutoff}. \code{$stats} holds the box quantiles
+varPro's importance aggregation, a \code{selected} flag for
+\code{z > cutoff}, and the variable's \code{coverage} and
+\code{tested} flag. \code{$stats} holds the box quantiles
 (5/15/50/85/95 percentiles, plus the raw mean) computed from the
 per-tree matrix; these are what the boxplot draws. \code{$imp.tree}
 is the per-tree matrix itself, kept only when \code{faithful = TRUE}
@@ -154,5 +194,6 @@ via the rule-based variable priority framework. \emph{arXiv preprint}
 \href{https://arxiv.org/abs/2409.09003}{arXiv:2409.09003}.
 }
 \seealso{
-\code{\link{plot.gg_varpro}}, \code{\link{gg_vimp}}
+\code{\link{plot.gg_varpro}}, \code{\link{varpro_coverage}},
+\code{\link{gg_vimp}}
 }

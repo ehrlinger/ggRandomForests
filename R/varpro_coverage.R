@@ -185,6 +185,24 @@ varpro_coverage <- function(object,
 #' the usable rules and the importance table built from exactly those rules.
 #' @keywords internal
 .varpro_coverage_extract <- function(object, max.tree, max.rules.tree, trim, seed) {
+  ext <- .varpro_score_rules(object, max.tree, max.rules.tree, seed, local.std = TRUE)
+  importance <- varPro::importance.varpro.workhorse(ext$scored, cutoff = 0.79, trim = trim,
+                                                    plot.it = FALSE, conf = TRUE, sort = TRUE,
+                                                    ylab = "", local.std = TRUE)
+  list(rules = ext$rules, importance = importance)
+}
+
+#' Re-extract release rules and score them as importance() does
+#'
+#' The rule-sampling half of \code{varPro::importance()}.  With
+#' \code{local.std = TRUE} each usable rule (out-of-bag and complement cases
+#' both present) gets its local importance and only those rules are kept; with
+#' \code{FALSE} the strength array's own importance is used, unfiltered.
+#' Returns the usable rules and a copy of \code{object} whose \code{$results}
+#' holds the scored rules, ready for \code{importance.varpro.workhorse()}.
+#' @keywords internal
+.varpro_score_rules <- function(object, max.tree, max.rules.tree, seed = NULL,
+                                local.std = TRUE) {
   rf <- object$rf
   rf$x <- object$x
   rf$xvar.names <- object$xvar.names
@@ -194,26 +212,25 @@ varpro_coverage <- function(object,
   keep <- which(sa$oobCT > 0 & sa$compCT > 0)
 
   results <- varPro::get.varpro.strengthArray(sa, object$family, object$y)
-  imp_cols <- grepl("imp", colnames(results))
-  results[, imp_cols] <- NA
-  y <- object$y
-  attr(y, "y.org") <- object$y.org
-  attr(y, "family") <- object$family
-  if (length(keep) > 0L) {
-    imp <- lapply(keep, function(i) {
-      varPro::local.importance(y, oo$oobMembership[[i]], oo$compMembership[[i]])
-    })
-    results[keep, imp_cols] <- if (sum(imp_cols) == 1L) unlist(imp) else do.call(rbind, imp)
-    results <- results[keep, , drop = FALSE]
+  if (local.std) {
+    imp_cols <- grepl("imp", colnames(results))
+    results[, imp_cols] <- NA
+    y <- object$y
+    attr(y, "y.org") <- object$y.org
+    attr(y, "family") <- object$family
+    if (length(keep) > 0L) {
+      imp <- lapply(keep, function(i) {
+        varPro::local.importance(y, oo$oobMembership[[i]], oo$compMembership[[i]])
+      })
+      results[keep, imp_cols] <- if (sum(imp_cols) == 1L) unlist(imp) else do.call(rbind, imp)
+      results <- results[keep, , drop = FALSE]
+    }
   }
   scored <- object
   scored$results <- results
   scored$max.rules.tree <- max.rules.tree
   scored$max.tree <- max.tree
-  importance <- varPro::importance.varpro.workhorse(scored, cutoff = 0.79, trim = trim,
-                                                    plot.it = FALSE, conf = TRUE, sort = TRUE,
-                                                    ylab = "", local.std = TRUE)
-  list(rules = sa[keep, , drop = FALSE], importance = importance)
+  list(rules = sa[keep, , drop = FALSE], scored = scored)
 }
 
 #' Original variable of each encoded term, from varPro's stored map
