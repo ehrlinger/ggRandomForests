@@ -279,6 +279,25 @@ test_that("gg_varpro: arguments varPro does not take are an error, not ignored",
   expect_error(gg_varpro(vp, trim = 0.6), "trim")
 })
 
+test_that("plot.gg_varpro conditional: no type message unless type was passed", {
+  skip_on_cran()
+  set.seed(42L)
+  vp <- make_vp_class()
+  gg <- gg_varpro(vp, conditional = TRUE, local.std = FALSE)
+  expect_silent(plot(gg))
+  expect_message(plot(gg, type = "raw"), "ignores type")
+})
+
+test_that("gg_varpro: a fit without its forest needs local.std = FALSE", {
+  skip_on_cran()
+  set.seed(42L)
+  vp <- make_vp_regr()
+  vp$rf <- NULL
+  expect_error(gg_varpro(vp), "no forest")
+  expect_error(gg_varpro(vp, local.std = FALSE, max.tree = 10L), "no forest")
+  expect_s3_class(gg_varpro(vp, local.std = FALSE), "gg_varpro")
+})
+
 ## ── Plot smoke tests ─────────────────────────────────────────────────────────
 
 test_that("plot.gg_varpro default returns a ggplot", {

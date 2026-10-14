@@ -184,6 +184,12 @@ gg_varpro <- function(object,
   ## boxes and z describe the same trees.
   scored <- object
   if (local.std || !missing(max.tree) || !missing(max.rules.tree)) {
+    if (is.null(object$rf)) {
+      stop("gg_varpro(): this varpro fit has no forest ($rf), so its release ",
+           "rules cannot be re-sampled, which local.std = TRUE, max.tree and ",
+           "max.rules.tree all need. Use local.std = FALSE to score the ",
+           "fit-time rules.", call. = FALSE)
+    }
     scored <- .varpro_score_rules(object, max.tree, max.rules.tree,
                                   local.std = local.std)$scored
   }

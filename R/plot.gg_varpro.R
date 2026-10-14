@@ -100,7 +100,9 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
   prov <- attr(x, "provenance")
 
   ## ---- Auto-detect type from provenance when not supplied ------------------
-  if (missing(type)) {
+  ## Recorded before the assignment below, after which missing() is FALSE.
+  type_given <- !missing(type)
+  if (!type_given) {
     type <- if (isTRUE(prov$local.std)) "z" else "raw"
   } else {
     type <- match.arg(type, c("z", "raw"))
@@ -121,7 +123,7 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
 
   ## ---- Conditional view ---------------------------------------------------
   if (!is.null(x$conditional)) {
-    if (!missing(type) && !identical(type, "z")) {
+    if (type_given && !identical(type, "z")) {
       message("Conditional plot ignores type = '", type,
               "'; showing class-conditional z scores.")
     }
