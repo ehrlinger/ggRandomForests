@@ -176,6 +176,7 @@ export(shap_beeswarm)
 export(shap_dependence)
 export(shap_importance)
 export(surv_partial.rfsrc)
+export(varpro_coverage)
 export(varpro_feature_names)
 importFrom(dplyr,
   all_of,
@@ -259,5 +260,6 @@ importFrom(varPro,
   get.beta.entropy,
   importance,
   partialpro,
-  sdependent
+  sdependent,
+  varpro.strength
 )
