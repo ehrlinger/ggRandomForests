@@ -782,6 +782,23 @@
   draws for untested variables
   ([\#340](https://github.com/ehrlinger/ggRandomForests/issues/340))
 
+- The README lists
+  [`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
+  among the varPro functions
+
+- The
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  help page, its plot caption and the varPro vignette say that coverage
+  counts the trees in which a release rule for the variable returned an
+  importance value
+
+- [`plot.gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md)
+  draws no bar for an undefined class-conditional z (0/0, possible only
+  with `local.std = FALSE`) instead of a zero bar that reads as a
+  measured zero. The variable keeps its row and every class keeps its
+  facet, and the caption says the z is undefined
+  ([\#344](https://github.com/ehrlinger/ggRandomForests/issues/344))
+
 ## ggRandomForests v3.5.2
 
 CRAN release: 2026-08-21

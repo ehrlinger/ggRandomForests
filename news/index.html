@@ -140,6 +140,9 @@
 <li><p><code><a href="../reference/plot.gg_varpro.html">plot.gg_varpro()</a></code> no longer says it “ignores type = ‘raw’” on a conditional plot when no <code>type</code> was passed</p></li>
 <li><p><code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> of a <code>gg_varpro</code> object whose z values are all undefined reports the z range as unavailable instead of <code>[Inf, -Inf]</code> with two warnings (<a href="https://github.com/ehrlinger/ggRandomForests/issues/340" class="external-link">#340</a>)</p></li>
 <li><p>The varPro vignette explains the open boxes <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> draws for untested variables (<a href="https://github.com/ehrlinger/ggRandomForests/issues/340" class="external-link">#340</a>)</p></li>
+<li><p>The README lists <code><a href="../reference/varpro_coverage.html">varpro_coverage()</a></code> among the varPro functions</p></li>
+<li><p>The <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> help page, its plot caption and the varPro vignette say that coverage counts the trees in which a release rule for the variable returned an importance value</p></li>
+<li><p><code><a href="../reference/plot.gg_varpro.html">plot.gg_varpro()</a></code> draws no bar for an undefined class-conditional z (0/0, possible only with <code>local.std = FALSE</code>) instead of a zero bar that reads as a measured zero. The variable keeps its row and every class keeps its facet, and the caption says the z is undefined (<a href="https://github.com/ehrlinger/ggRandomForests/issues/344" class="external-link">#344</a>)</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.5.2" id="ggrandomforests-v352">ggRandomForests v3.5.2<a class="anchor" aria-label="anchor" href="#ggrandomforests-v352"></a></h2><p class="text-muted">CRAN release: 2026-08-21</p>
