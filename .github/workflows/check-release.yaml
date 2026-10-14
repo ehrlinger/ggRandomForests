@@ -114,6 +114,12 @@ jobs:
         with:
           use-public-rspm: true
 
+      # urlchecker needs curl. When a curl release has no Posit binary yet,
+      # install.packages() builds it from source, which needs the libcurl
+      # headers (v4.0.0-rc9's run failed on curl 8.1.0 for want of them).
+      - name: Install libcurl headers
+        run: sudo apt-get update && sudo apt-get install -y libcurl4-openssl-dev
+
       - name: Check URLs
         shell: Rscript {0}
         run: |
