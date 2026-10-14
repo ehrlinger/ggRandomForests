@@ -24,6 +24,11 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/calc_roc.rfsrc.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-build_varpro_imp_dfs.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-build_varpro_imp_tree.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-varpro_coverage_cut.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-varpro_coverage_extract.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-varpro_coverage_imp.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-varpro_coverage_kind.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-varpro_coverage_map.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/dot-varpro_imp_stats.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/ggRandomForests-package.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/gg_ale_rfsrc.html</loc></url>
@@ -84,6 +89,7 @@
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/shap_importance.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/surv_partial.rfsrc.html</loc></url>
+<url><loc>https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/release-checklist-v2.7.1.html</loc></url>
 <url><loc>https://ehrlinger.github.io/ggRandomForests/release-checklist-v4.0.0.html</loc></url>

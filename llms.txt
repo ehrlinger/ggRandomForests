@@ -635,6 +635,8 @@ Helper functions used internally and by users.
 - [`varpro_feature_names()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.md)
   : Recover original variable names from varpro one-hot encoded feature
   names
+- [`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
+  : How well a varpro fit tested each variable
 
 ## Package
 
