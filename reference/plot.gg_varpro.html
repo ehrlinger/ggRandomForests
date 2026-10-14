@@ -127,7 +127,13 @@ marks the mean.</p>
 <p><strong><code>conditional = TRUE</code>:</strong> the class-conditional importances
 (<code>$conditional</code>) are shown as a faceted bar chart
 (<code>facet_wrap(~class, nrow = 1)</code>).  Variables keep the sort order set
-by the unconditional median z in <code>$stats</code>, so the facets line up.</p>
+by the unconditional median z in <code>$stats</code>, so the facets line up.
+A variable whose class-conditional z is undefined (0/0, possible only with
+<code>local.std = FALSE</code>) gets no bar in that facet, and the caption says
+so; a zero bar would read as a measured zero.  0/0 arises when too few
+trees tested the variable, but also when every tree scored it exactly 0,
+so the plot does not say which.  Every class keeps its facet, even one
+with no defined z.</p>
     </div>
     <div class="section level2">
     <h2 id="reading-the-boxplot">Reading the boxplot<a class="anchor" aria-label="anchor" href="#reading-the-boxplot"></a></h2>
