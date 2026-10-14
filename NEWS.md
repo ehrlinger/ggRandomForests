@@ -483,10 +483,11 @@ ggRandomForests v4.0.0 (development)
   field makes that visible to installers and to `R CMD check`.
 
 * Add `varpro_coverage()`: for each term (or variable) of a varpro fit,
-  the share of trees holding a usable release rule next to its importance
-  z, so a term that was tested and found unimportant can be told from one
-  that was never or barely tested. Optional noise columns give a cutoff by
-  variable kind that scales with the fit, unlike the fixed 0.79 (#340)
+  the share of trees in which a release rule scored it, next to its
+  importance z, counted as `gg_varpro()` counts it, so a term that was
+  tested and found unimportant can be told from one that was never or
+  barely tested. Optional noise columns give a cutoff by variable kind
+  that scales with the fit, unlike the fixed 0.79 (#340)
 
 * `gg_varpro()` now scores the boxes, z and the new `coverage` column from
   one set of release rules, the way `varPro::importance()` does, so they

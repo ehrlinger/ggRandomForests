@@ -44,11 +44,9 @@
 #' \code{local.std = FALSE}) because every non-zero tree is winsorised
 #' away, not because it was tested and found unimportant. \code{coverage}
 #' and \code{tested} in the output say which variables those are, and the
-#' plot draws them as open boxes. \code{\link{varpro_coverage}} gives a
-#' per-term or per-variable table with a noise-based cutoff. It counts every
-#' usable release rule, including the few that return no importance value,
-#' so its coverage can run higher than \code{gg_varpro()}'s and the two
-#' \code{tested} flags can disagree near \code{trim}.
+#' plot draws them as open boxes. \code{\link{varpro_coverage}} counts
+#' coverage the same way and adds a per-variable roll-up and a noise-based
+#' cutoff.
 #'
 #' For a classification forest, varpro also returns a class-conditional
 #' z table: the same importance computed restricting attention to rules

@@ -2,7 +2,7 @@
 #' How well a varpro fit tested each variable
 #'
 #' Reports, for every term varpro could test, how many of the forest's trees
-#' hold a usable release rule for it, next to its importance z.  Use it to
+#' scored it with a release rule, next to its importance z.  Use it to
 #' tell a variable that was tested and found unimportant from one that was
 #' barely tested at all.
 #'
@@ -17,8 +17,12 @@
 #' on both sides of its release.  Neither is evidence of no effect.
 #'
 #' A rule is usable when its out-of-bag region and its released complement
-#' both hold cases.  Coverage is the share of scored trees with at least one
-#' usable rule for the term.
+#' both hold cases; it scores the term when its local importance also comes
+#' back as a value.  Coverage is the share of scored trees with at least one
+#' rule that scored the term, out of the trees z is averaged over (those
+#' holding any usable rule).  It counts exactly what \code{\link{gg_varpro}}
+#' counts, so on the same rules the two agree on \code{coverage} and
+#' \code{tested}.
 #'
 #' @section Noise reference:
 #' varpro's default cutoff (z > 0.79) does not carry from one fit to another
@@ -58,15 +62,18 @@
 #'   one row per term (or variable), most-covered first, with columns
 #'   \code{term} (term rows only), \code{variable}, \code{n_terms} (variable
 #'   rows only), \code{eligible} (varpro built rules for it; \code{FALSE}
-#'   when the split weights or \code{nvar} cut it first), \code{n_trees} (trees with a usable rule), \code{coverage}
-#'   (\code{n_trees} over trees scored), \code{n_rules} (usable rules),
+#'   when the split weights or \code{nvar} cut it first), \code{n_trees}
+#'   (trees with a rule that scored it), \code{coverage} (\code{n_trees}
+#'   over the trees z is averaged over), \code{n_rules} (rules that scored
+#'   it),
 #'   \code{z} (computed as \code{varPro::importance()} computes it, with
 #'   its default \code{local.std = TRUE}, from the same rules; \code{NA} when never
 #'   returned) and \code{tested} (\code{coverage >= trim}).  With
 #'   \code{noise} set it adds \code{noise} (logical), \code{kind},
 #'   \code{noise_cut} and \code{selected} (a tested real row whose z beats
-#'   \code{noise_cut}).  Attributes \code{by}, \code{trees}, \code{trim} and
-#'   \code{max.rules.tree} record the settings.
+#'   \code{noise_cut}).  Attributes \code{by}, \code{trees} (the coverage
+#'   denominator), \code{trim} and \code{max.rules.tree} record the
+#'   settings.
 #'
 #' @seealso \code{\link{gg_varpro}}, \code{\link{varpro_feature_names}}
 #'
@@ -105,10 +112,11 @@ varpro_coverage <- function(object,
   if (is.null(terms)) terms <- rule_terms
 
   ## One extraction of release rules feeds both coverage and z, so the two
-  ## always describe the same sampled rules.
+  ## always describe the same sampled rules, and coverage counts what z
+  ## averages: scored rules, over the trees z is averaged over.
   ext <- .varpro_coverage_extract(object, max.tree, max.rules.tree, trim, seed)
   sa <- ext$rules
-  trees <- min(max.tree, object$rf$ntree)
+  trees <- ext$trees
   rule_term <- rule_terms[sa$xReleaseID]
 
   imp <- .varpro_coverage_imp(ext$importance, object$family)
@@ -189,7 +197,14 @@ varpro_coverage <- function(object,
   importance <- varPro::importance.varpro.workhorse(ext$scored, cutoff = 0.79, trim = trim,
                                                     plot.it = FALSE, conf = TRUE, sort = TRUE,
                                                     ylab = "", local.std = TRUE)
-  list(rules = ext$rules, importance = importance)
+  ## Usable rules whose local importance came back NA add nothing to z, so
+  ## they do not count as testing the term (they still count as rows of the
+  ## scored table, so their trees stay in the denominator, as they do in z).
+  results <- ext$scored$results
+  scored  <- if (nrow(ext$rules) == nrow(results)) !is.na(results$imp) else
+    logical(nrow(ext$rules))
+  list(rules = ext$rules[scored, , drop = FALSE], importance = importance,
+       trees = length(unique(results$tree)))
 }
 
 #' Re-extract release rules and score them as importance() does
