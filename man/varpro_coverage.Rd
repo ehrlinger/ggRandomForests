@@ -23,12 +23,13 @@ levels separately) or \code{"variable"} (one-hot levels rolled up to
 their original variable: tested in a tree when any level is, z the
 largest level z).}
 
-\item{trim}{Coverage below which a term counts as untested.  Defaults to
-0.1, \code{varPro::importance()}'s winsorisation trim, the share below
-which z is exactly 0.}
+\item{trim}{Coverage below which a term counts as untested, and the
+winsorisation trim used for z.  Defaults to 0.1, as in
+\code{varPro::importance()}: the share of trees below which z is 0.}
 
-\item{max.tree}{Number of trees to score.  Defaults to every tree, so that
-the coverage counts and z describe the same trees.}
+\item{max.tree}{Number of trees to score.  Defaults to every tree, rather
+than varPro's sample of 150, so that coverage rests on all the evidence.
+Coverage and z always come from the same extracted rules.}
 
 \item{max.rules.tree}{Maximum release rules sampled per tree; defaults to
 the value stored in \code{object}.  Sampling only happens in trees with
@@ -40,8 +41,9 @@ noise variables (for example \code{"^noise"}).}
 \item{kind_values}{A numeric variable with at most this many distinct
 values counts as categorical for the noise comparison.}
 
-\item{seed}{Seed passed to \code{varPro::varpro.strength()}.  For the z
-column to be reproducible as well, call \code{set.seed()} first.}
+\item{seed}{Seed passed to \code{varPro::varpro.strength()}, which samples
+the release rules; with a seed (or a \code{set.seed()} call first) the
+table is reproducible.}
 }
 \value{
 A data frame of class \code{c("varpro_coverage", "data.frame")},
@@ -50,7 +52,8 @@ one row per term (or variable), most-covered first, with columns
 rows only), \code{eligible} (varpro built rules for it; \code{FALSE}
 when the split weights or \code{nvar} cut it first), \code{n_trees} (trees with a usable rule), \code{coverage}
 (\code{n_trees} over trees scored), \code{n_rules} (usable rules),
-\code{z} (from \code{varPro::importance()}; \code{NA} when never
+\code{z} (computed as \code{varPro::importance()} computes it, with
+its default \code{local.std = TRUE}, from the same rules; \code{NA} when never
 returned) and \code{tested} (\code{coverage >= trim}).  With
 \code{noise} set it adds \code{noise} (logical), \code{kind},
 \code{noise_cut} and \code{selected} (a tested real row whose z beats

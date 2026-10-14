@@ -74,6 +74,45 @@ test_that("variable rows roll factor levels up", {
   expect_equal(cyl$z, max(cyl_terms$z, na.rm = TRUE))
 })
 
+test_that("coverage and z come from the same sampled rules (PR #341 review)", {
+  ## One rule per tree out of 20 trees: rule sampling is heavy, so a second
+  ## extraction would disagree. A term has a z exactly when it has rules.
+  vp <- .coverage_fits()$unguided
+  for (s in 1:5) {
+    cv <- varpro_coverage(vp, max.tree = 20, max.rules.tree = 1, seed = -s)
+    el <- cv[cv$eligible, ]
+    expect_identical(!is.na(el$z), el$n_rules > 0L)
+    expect_true(all(is.na(el$z[el$n_trees == 0L])))
+  }
+})
+
+test_that("encoded-name collisions map through varPro's stored map (PR #341 review)", {
+  skip_if_not_installed("varPro")
+  set.seed(20261014L)
+  d <- data.frame(y = stats::rnorm(150),
+                  g = factor(sample(c("a", "b", "c"), 150, replace = TRUE)),
+                  ga = stats::rnorm(150), h = stats::rnorm(150))
+  set.seed(20261014L)
+  vp <- varPro::varpro(y ~ ., data = d, ntree = 30, split.weight = FALSE)
+  map <- attr(vp$x, "xvar.map")
+  skip_if(is.null(map) || !"ga.1" %in% names(map), "this varPro encodes without the collision")
+  set.seed(1)
+  tm <- varpro_coverage(vp)
+  expect_identical(tm$variable[tm$term == "ga.1"], "g")
+  expect_identical(tm$variable[tm$term == "ga"], "ga")
+  set.seed(1)
+  vr <- varpro_coverage(vp, by = "variable")
+  expect_identical(vr$n_terms[vr$variable == "g"], 3L)
+  expect_identical(vr$n_terms[vr$variable == "ga"], 1L)
+  expect_identical(vr$n_rules[vr$variable == "g"], sum(tm$n_rules[tm$variable == "g"]))
+})
+
+test_that("a hot-encoded fit without a stored map fails rather than guessing", {
+  vp <- .coverage_fits()$guided
+  attr(vp$x, "xvar.map") <- NULL
+  expect_error(varpro_coverage(vp), "no stored encoding map")
+})
+
 test_that("a fixed seed reproduces the table", {
   vp <- .coverage_fits()$unguided
   set.seed(7)

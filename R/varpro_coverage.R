@@ -37,11 +37,12 @@
 #'   levels separately) or \code{"variable"} (one-hot levels rolled up to
 #'   their original variable: tested in a tree when any level is, z the
 #'   largest level z).
-#' @param trim Coverage below which a term counts as untested.  Defaults to
-#'   0.1, \code{varPro::importance()}'s winsorisation trim, the share below
-#'   which z is exactly 0.
-#' @param max.tree Number of trees to score.  Defaults to every tree, so that
-#'   the coverage counts and z describe the same trees.
+#' @param trim Coverage below which a term counts as untested, and the
+#'   winsorisation trim used for z.  Defaults to 0.1, as in
+#'   \code{varPro::importance()}: the share of trees below which z is 0.
+#' @param max.tree Number of trees to score.  Defaults to every tree, rather
+#'   than varPro's sample of 150, so that coverage rests on all the evidence.
+#'   Coverage and z always come from the same extracted rules.
 #' @param max.rules.tree Maximum release rules sampled per tree; defaults to
 #'   the value stored in \code{object}.  Sampling only happens in trees with
 #'   more branches than this.
@@ -49,8 +50,9 @@
 #'   noise variables (for example \code{"^noise"}).
 #' @param kind_values A numeric variable with at most this many distinct
 #'   values counts as categorical for the noise comparison.
-#' @param seed Seed passed to \code{varPro::varpro.strength()}.  For the z
-#'   column to be reproducible as well, call \code{set.seed()} first.
+#' @param seed Seed passed to \code{varPro::varpro.strength()}, which samples
+#'   the release rules; with a seed (or a \code{set.seed()} call first) the
+#'   table is reproducible.
 #'
 #' @return A data frame of class \code{c("varpro_coverage", "data.frame")},
 #'   one row per term (or variable), most-covered first, with columns
@@ -58,7 +60,8 @@
 #'   rows only), \code{eligible} (varpro built rules for it; \code{FALSE}
 #'   when the split weights or \code{nvar} cut it first), \code{n_trees} (trees with a usable rule), \code{coverage}
 #'   (\code{n_trees} over trees scored), \code{n_rules} (usable rules),
-#'   \code{z} (from \code{varPro::importance()}; \code{NA} when never
+#'   \code{z} (computed as \code{varPro::importance()} computes it, with
+#'   its default \code{local.std = TRUE}, from the same rules; \code{NA} when never
 #'   returned) and \code{tested} (\code{coverage >= trim}).  With
 #'   \code{noise} set it adds \code{noise} (logical), \code{kind},
 #'   \code{noise_cut} and \code{selected} (a tested real row whose z beats
@@ -79,7 +82,8 @@
 #' }
 #' }
 #'
-#' @importFrom varPro importance varpro.strength
+#' @importFrom varPro varpro.strength get.varpro.strengthArray local.importance
+#' @importFrom varPro importance.varpro.workhorse
 #' @export
 varpro_coverage <- function(object,
                             by             = c("term", "variable"),
@@ -100,26 +104,18 @@ varpro_coverage <- function(object,
   terms <- colnames(object$x)
   if (is.null(terms)) terms <- rule_terms
 
-  ## Usable release rules per term: varpro.strength() on the rule forest,
-  ## exactly as importance() builds them.
-  rf <- object$rf
-  rf$x <- object$x
-  rf$xvar.names <- rule_terms
-  sa <- varPro::varpro.strength(rf, max.rules.tree = max.rules.tree,
-                                max.tree = max.tree, seed = seed)$strengthArray
-  sa <- sa[sa$oobCT > 0 & sa$compCT > 0, , drop = FALSE]
-  trees <- min(max.tree, rf$ntree)
+  ## One extraction of release rules feeds both coverage and z, so the two
+  ## always describe the same sampled rules.
+  ext <- .varpro_coverage_extract(object, max.tree, max.rules.tree, trim, seed)
+  sa <- ext$rules
+  trees <- min(max.tree, object$rf$ntree)
   rule_term <- rule_terms[sa$xReleaseID]
 
-  imp <- varPro::importance(object, plot.it = FALSE, max.tree = max.tree,
-                            max.rules.tree = max.rules.tree, trim = trim)
-  imp <- .varpro_coverage_imp(imp, object$family)
+  imp <- .varpro_coverage_imp(ext$importance, object$family)
   z_term <- imp$z[match(terms, rownames(imp))]
 
-  ## Term -> original variable, by the package's own suffix rule.
-  org <- object$xvar.org.names
-  ds <- stats::setNames(data.frame(matrix(nrow = 0L, ncol = length(org))), org)
-  term_var <- vapply(terms, function(t) varpro_feature_names(t, ds)[1L], character(1))
+  ## Term -> original variable, from varPro's stored hot-encoding map.
+  term_var <- .varpro_coverage_map(object, terms)
 
   count_by <- function(group, levels, what) {
     g <- factor(group, levels = levels)
@@ -179,6 +175,67 @@ varpro_coverage <- function(object,
 }
 
 ## ---- Internal helpers -------------------------------------------------------
+
+#' One release-rule extraction, scored as importance() scores it
+#'
+#' Mirrors the default (\code{local.std = TRUE}) path of
+#' \code{varPro::importance()}: rules from \code{varpro.strength()} with
+#' memberships, local importance for each usable rule (out-of-bag and
+#' complement cases both present), then varPro's own aggregation.  Returns
+#' the usable rules and the importance table built from exactly those rules.
+#' @keywords internal
+.varpro_coverage_extract <- function(object, max.tree, max.rules.tree, trim, seed) {
+  rf <- object$rf
+  rf$x <- object$x
+  rf$xvar.names <- object$xvar.names
+  oo <- varPro::varpro.strength(rf, max.rules.tree = max.rules.tree, max.tree = max.tree,
+                                membership = TRUE, seed = seed)
+  sa <- oo$strengthArray
+  keep <- which(sa$oobCT > 0 & sa$compCT > 0)
+
+  results <- varPro::get.varpro.strengthArray(sa, object$family, object$y)
+  imp_cols <- grepl("imp", colnames(results))
+  results[, imp_cols] <- NA
+  y <- object$y
+  attr(y, "y.org") <- object$y.org
+  attr(y, "family") <- object$family
+  if (length(keep) > 0L) {
+    imp <- lapply(keep, function(i) {
+      varPro::local.importance(y, oo$oobMembership[[i]], oo$compMembership[[i]])
+    })
+    results[keep, imp_cols] <- if (sum(imp_cols) == 1L) unlist(imp) else do.call(rbind, imp)
+    results <- results[keep, , drop = FALSE]
+  }
+  scored <- object
+  scored$results <- results
+  scored$max.rules.tree <- max.rules.tree
+  scored$max.tree <- max.tree
+  importance <- varPro::importance.varpro.workhorse(scored, cutoff = 0.79, trim = trim,
+                                                    plot.it = FALSE, conf = TRUE, sort = TRUE,
+                                                    ylab = "", local.std = TRUE)
+  list(rules = sa[keep, , drop = FALSE], importance = importance)
+}
+
+#' Original variable of each encoded term, from varPro's stored map
+#'
+#' varPro stores the term-to-variable map as the \code{"xvar.map"} attribute
+#' of \code{object$x}.  Suffix stripping cannot be trusted: a factor
+#' \code{g} with a level encoded \code{ga.1} and a numeric \code{ga} collide.
+#' @keywords internal
+.varpro_coverage_map <- function(object, terms) {
+  map <- attr(object$x, "xvar.map", exact = TRUE)
+  if (!is.null(map)) {
+    if (anyNA(match(terms, names(map)))) {
+      stop("varPro's stored encoding map does not cover every term of this fit.", call. = FALSE)
+    }
+    return(stats::setNames(unname(map[terms]), terms))
+  }
+  if (!isTRUE(attr(object$x, "hotencode", exact = TRUE))) {
+    return(stats::setNames(terms, terms))
+  }
+  stop("this varpro fit has one-hot encoded factors but no stored encoding map ",
+       "(attribute 'xvar.map'); refit it with varPro >= 3.3.0.", call. = FALSE)
+}
 
 #' Unconditional importance table from importance(), whatever the family
 #' @keywords internal

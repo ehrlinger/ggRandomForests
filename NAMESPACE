@@ -258,7 +258,10 @@ importFrom(utils,
 )
 importFrom(varPro,
   get.beta.entropy,
+  get.varpro.strengthArray,
   importance,
+  importance.varpro.workhorse,
+  local.importance,
   partialpro,
   sdependent,
   varpro.strength
