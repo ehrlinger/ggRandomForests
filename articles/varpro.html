@@ -182,6 +182,7 @@
 </div>
 </div>
 <p>The narrow boxes near the top are the variables varPro is confident about: every tree agrees they matter. Wide boxes that straddle the cutoff line are the ones to look at twice; the forest disagrees with itself. That disagreement isn’t noise to suppress: it can mean the variable matters in some rule regions but not others, which is the kind of structured heterogeneity that model-independent methods are built to detect. Variables that fall entirely below the cutoff are still drawn here, just not highlighted. That is the completeness fit at work: on varPro’s defaults the weakest of them are screened out upstream, and the plot never shows they were candidates at all.</p>
+<p>An open box, usually a flat line at zero (here <code>chas</code> and <code>zn</code>), marks a variable that got an importance score in fewer than 10% of the trees (the <code>trim</code> argument). varPro barely tested it, so its zero z says nothing about whether it matters. <code><a href="../reference/varpro_coverage.html">varpro_coverage()</a></code> reports the same coverage as a table, with a per-variable roll-up for one-hot factors and a noise-based cutoff.</p>
 </section><section class="level2"><h3 id="partial-dependence-with-gg_partial_varpro">Partial dependence with <code>gg_partial_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#partial-dependence-with-gg_partial_varpro"></a>
 </h3>

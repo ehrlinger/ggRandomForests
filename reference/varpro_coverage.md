@@ -1,9 +1,9 @@
 # How well a varpro fit tested each variable
 
 Reports, for every term varpro could test, how many of the forest's
-trees hold a usable release rule for it, next to its importance z. Use
-it to tell a variable that was tested and found unimportant from one
-that was barely tested at all.
+trees scored it with a release rule, next to its importance z. Use it to
+tell a variable that was tested and found unimportant from one that was
+barely tested at all.
 
 ## Usage
 
@@ -76,14 +76,16 @@ A data frame of class `c("varpro_coverage", "data.frame")`, one row per
 term (or variable), most-covered first, with columns `term` (term rows
 only), `variable`, `n_terms` (variable rows only), `eligible` (varpro
 built rules for it; `FALSE` when the split weights or `nvar` cut it
-first), `n_trees` (trees with a usable rule), `coverage` (`n_trees` over
-trees scored), `n_rules` (usable rules), `z` (computed as
+first), `n_trees` (trees with a rule that scored it), `coverage`
+(`n_trees` over the trees z is averaged over), `n_rules` (rules that
+scored it), `z` (computed as
 [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
 computes it, with its default `local.std = TRUE`, from the same rules;
 `NA` when never returned) and `tested` (`coverage >= trim`). With
 `noise` set it adds `noise` (logical), `kind`, `noise_cut` and
 `selected` (a tested real row whose z beats `noise_cut`). Attributes
-`by`, `trees`, `trim` and `max.rules.tree` record the settings.
+`by`, `trees` (the coverage denominator), `trim` and `max.rules.tree`
+record the settings.
 
 ## Why coverage matters
 
@@ -98,8 +100,12 @@ weights and `nvar`) or because no rule had cases on both sides of its
 release. Neither is evidence of no effect.
 
 A rule is usable when its out-of-bag region and its released complement
-both hold cases. Coverage is the share of scored trees with at least one
-usable rule for the term.
+both hold cases; it scores the term when its local importance also comes
+back as a value. Coverage is the share of scored trees with at least one
+rule that scored the term, out of the trees z is averaged over (those
+holding any usable rule). It counts exactly what
+[`gg_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+counts, so on the same rules the two agree on `coverage` and `tested`.
 
 ## Noise reference
 
@@ -132,26 +138,26 @@ if (requireNamespace("varPro", quietly = TRUE)) {
   varpro_coverage(vp, noise = "^noise")
 }
 #> Warning: no noise variable was tested (coverage >= trim), so the noise check is empty: noise_cut is 0 and every tested row is selected.
-#>        term variable eligible n_trees coverage n_rules          z tested noise
-#> 1        wt       wt     TRUE      35     0.70      88 1.65780251   TRUE FALSE
-#> 2        hp       hp     TRUE      22     0.44      52 1.04328247   TRUE FALSE
-#> 3       cyl      cyl     TRUE      17     0.34      35 1.01806876   TRUE FALSE
-#> 4      disp     disp     TRUE      10     0.20      21 0.08140523   TRUE FALSE
-#> 5        vs       vs     TRUE       1     0.02       2 0.00000000  FALSE FALSE
-#> 6      drat     drat     TRUE       0     0.00       0         NA  FALSE FALSE
-#> 7      qsec     qsec     TRUE       0     0.00       0         NA  FALSE FALSE
-#> 8        am       am    FALSE       0     0.00       0         NA  FALSE FALSE
-#> 9      gear     gear     TRUE       0     0.00       0         NA  FALSE FALSE
-#> 10     carb     carb     TRUE       0     0.00       0         NA  FALSE FALSE
-#> 11 noise_wt noise_wt     TRUE       0     0.00       0         NA  FALSE  TRUE
+#>        term variable eligible n_trees coverage n_rules         z tested noise
+#> 1        wt       wt     TRUE      32     0.64      70 1.6586694   TRUE FALSE
+#> 2        hp       hp     TRUE      22     0.44      48 1.0582091   TRUE FALSE
+#> 3       cyl      cyl     TRUE      16     0.32      33 0.9706391   TRUE FALSE
+#> 4      disp     disp     TRUE       7     0.14      13 0.1753188   TRUE FALSE
+#> 5      drat     drat     TRUE       0     0.00       0        NA  FALSE FALSE
+#> 6      qsec     qsec     TRUE       0     0.00       0        NA  FALSE FALSE
+#> 7        vs       vs     TRUE       0     0.00       0 0.0000000  FALSE FALSE
+#> 8        am       am    FALSE       0     0.00       0        NA  FALSE FALSE
+#> 9      gear     gear     TRUE       0     0.00       0        NA  FALSE FALSE
+#> 10     carb     carb     TRUE       0     0.00       0        NA  FALSE FALSE
+#> 11 noise_wt noise_wt     TRUE       0     0.00       0        NA  FALSE  TRUE
 #>           kind noise_cut selected
 #> 1   continuous         0     TRUE
 #> 2   continuous         0     TRUE
 #> 3  categorical         0     TRUE
 #> 4   continuous         0     TRUE
-#> 5  categorical         0    FALSE
+#> 5   continuous         0    FALSE
 #> 6   continuous         0    FALSE
-#> 7   continuous         0    FALSE
+#> 7  categorical         0    FALSE
 #> 8  categorical         0    FALSE
 #> 9  categorical         0    FALSE
 #> 10  continuous         0    FALSE

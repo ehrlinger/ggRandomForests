@@ -185,6 +185,14 @@ here, just not highlighted. That is the completeness fit at work: on
 varPro’s defaults the weakest of them are screened out upstream, and the
 plot never shows they were candidates at all.
 
+An open box, usually a flat line at zero (here `chas` and `zn`), marks a
+variable that got an importance score in fewer than 10% of the trees
+(the `trim` argument). varPro barely tested it, so its zero z says
+nothing about whether it matters.
+[`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
+reports the same coverage as a table, with a per-variable roll-up for
+one-hot factors and a noise-based cutoff.
+
 ### Partial dependence with `gg_partial_varpro()`
 
 The ranking view tells you *which* variables matter. Partial dependence

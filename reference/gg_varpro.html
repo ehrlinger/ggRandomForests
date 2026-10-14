@@ -167,8 +167,9 @@ levels run least- to most-important by median per-tree z, so the
 most-important variable sits at the top of the plot after
 <code>coord_flip</code>), <code>z</code> (aggregate
 z-score, <code>NA</code> when it is undefined), <code>selected</code> (logical,
-<code>z &gt; cutoff</code>), <code>coverage</code> (share of scored trees with a
-usable release rule for the variable) and <code>tested</code>
+<code>z &gt; cutoff</code>), <code>coverage</code> (share of the scored trees in
+which a release rule for the variable returned an importance value)
+and <code>tested</code>
 (<code>coverage &gt;= trim</code>).</p></dd>
 
 <dt><code>$imp.tree</code></dt>
@@ -225,13 +226,15 @@ by the winsorised standard deviation. <code>cutoff = 0.79</code> is varpro's
 default selection threshold, but the scale of z depends on how many
 variables share each tree, so the same cutoff does not mean the same
 thing across settings.</p>
-<p>A variable with a usable rule in fewer than about <code>trim</code> of the
-trees is <em>untested</em>: its z is 0 (or undefined with
+<p>A variable scored in fewer than about <code>trim</code> of the trees (a tree
+scores it when one of its release rules for the variable returns an
+importance value) is <em>untested</em>: its z is 0 (or undefined with
 <code>local.std = FALSE</code>) because every non-zero tree is winsorised
 away, not because it was tested and found unimportant. <code>coverage</code>
 and <code>tested</code> in the output say which variables those are, and the
-plot draws them as open boxes. <code><a href="varpro_coverage.html">varpro_coverage</a></code> gives the
-fuller table, including a noise-based cutoff.</p>
+plot draws them as open boxes. <code><a href="varpro_coverage.html">varpro_coverage</a></code> counts
+coverage the same way and adds a per-variable roll-up and a noise-based
+cutoff.</p>
 <p>For a classification forest, varpro also returns a class-conditional
 z table: the same importance computed restricting attention to rules
 relevant to each class. <code>conditional = TRUE</code> keeps that table so

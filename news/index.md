@@ -720,6 +720,68 @@
   `SystemRequirements`. The vignettes have always needed it to build;
   the field makes that visible to installers and to `R CMD check`.
 
+- Add
+  [`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md):
+  for each term (or variable) of a varpro fit, the share of trees in
+  which a release rule scored it, next to its importance z, counted as
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  counts it, so a term that was tested and found unimportant can be told
+  from one that was never or barely tested. Optional noise columns give
+  a cutoff by variable kind that scales with the fit, unlike the fixed
+  0.79
+  ([\#340](https://github.com/ehrlinger/ggRandomForests/issues/340))
+
+- [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  now scores the boxes, z and the new `coverage` column from one set of
+  release rules, the way
+  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
+  does, so they always describe the same trees. Before, z followed
+  `max.tree` passed through `...` while the boxes stayed on the fit-time
+  trees, and a variable with rules only outside those trees was dropped
+  without a warning
+  ([\#340](https://github.com/ehrlinger/ggRandomForests/issues/340))
+
+- `gg_varpro(local.std = )` now reaches varPro. It was always sent as
+  `FALSE`, so the default z was the winsorised mean over the winsorised
+  SD rather than
+  [`importance()`](https://rdrr.io/pkg/randomForest/man/importance.html)’s
+  default. **The default z, and so the set of variables above
+  `cutoff = 0.79`, changes**, and with `local.std = TRUE` it depends on
+  the random number stream, as in varPro: call
+  [`set.seed()`](https://rdrr.io/r/base/Random.html) first. The boxes
+  are no longer divided by a plain
+  [`sd()`](https://rdrr.io/r/stats/sd.html); with `local.std = TRUE` the
+  per-tree values are already on z’s scale. The class-conditional z
+  follows the same setting
+  ([\#340](https://github.com/ehrlinger/ggRandomForests/issues/340))
+
+- [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  reports an undefined z (a variable tested in under `trim` of the
+  trees, with `local.std = FALSE`) as `NA` instead of 0, and adds
+  `coverage` and `tested` to `$imp` and `$stats`.
+  [`plot.gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md)
+  draws untested variables as open boxes with a caption, so a
+  barely-tested variable no longer reads as “no importance”. `trim`,
+  `max.tree` and `max.rules.tree` are now arguments; any other argument
+  in `...`, which used to go to
+  [`importance()`](https://rdrr.io/pkg/randomForest/man/importance.html),
+  is an error
+  ([\#340](https://github.com/ehrlinger/ggRandomForests/issues/340))
+
+- [`plot.gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md)
+  no longer says it “ignores type = ‘raw’” on a conditional plot when no
+  `type` was passed
+
+- [`summary()`](https://rdrr.io/r/base/summary.html) of a `gg_varpro`
+  object whose z values are all undefined reports the z range as
+  unavailable instead of `[Inf, -Inf]` with two warnings
+  ([\#340](https://github.com/ehrlinger/ggRandomForests/issues/340))
+
+- The varPro vignette explains the open boxes
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  draws for untested variables
+  ([\#340](https://github.com/ehrlinger/ggRandomForests/issues/340))
+
 ## ggRandomForests v3.5.2
 
 CRAN release: 2026-08-21

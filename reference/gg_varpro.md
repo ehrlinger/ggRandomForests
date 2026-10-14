@@ -99,8 +99,9 @@ A named list of class `"gg_varpro"` with elements:
   most-important by median per-tree z, so the most-important variable
   sits at the top of the plot after `coord_flip`), `z` (aggregate
   z-score, `NA` when it is undefined), `selected` (logical,
-  `z > cutoff`), `coverage` (share of scored trees with a usable release
-  rule for the variable) and `tested` (`coverage >= trim`).
+  `z > cutoff`), `coverage` (share of the scored trees in which a
+  release rule for the variable returned an importance value) and
+  `tested` (`coverage >= trim`).
 
 - `$imp.tree`:
 
@@ -156,13 +157,15 @@ deviation. `cutoff = 0.79` is varpro's default selection threshold, but
 the scale of z depends on how many variables share each tree, so the
 same cutoff does not mean the same thing across settings.
 
-A variable with a usable rule in fewer than about `trim` of the trees is
-*untested*: its z is 0 (or undefined with `local.std = FALSE`) because
-every non-zero tree is winsorised away, not because it was tested and
-found unimportant. `coverage` and `tested` in the output say which
-variables those are, and the plot draws them as open boxes.
+A variable scored in fewer than about `trim` of the trees (a tree scores
+it when one of its release rules for the variable returns an importance
+value) is *untested*: its z is 0 (or undefined with `local.std = FALSE`)
+because every non-zero tree is winsorised away, not because it was
+tested and found unimportant. `coverage` and `tested` in the output say
+which variables those are, and the plot draws them as open boxes.
 [`varpro_coverage`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
-gives the fuller table, including a noise-based cutoff.
+counts coverage the same way and adds a per-variable roll-up and a
+noise-based cutoff.
 
 For a classification forest, varpro also returns a class-conditional z
 table: the same importance computed restricting attention to rules

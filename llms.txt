@@ -179,6 +179,7 @@ is the unsupervised one, which needs no outcome.
 | [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md) | `uvarpro` fit | Per-variable lasso-beta importance |
 | [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md) | `uvarpro` fit | Signal-variable detection |
 | [`varpro_feature_names()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_feature_names.md) | character vector | Original names behind one-hot encoded features |
+| [`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md) | `varpro` fit | Share of trees that tested each variable, next to its z |
 
 ### SHAP
 
