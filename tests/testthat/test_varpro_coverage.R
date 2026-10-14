@@ -180,3 +180,37 @@ test_that("coverage and tested agree with gg_varpro() on the same rules", {
   expect_identical(cv$tested[hit], imp$tested)
   expect_equal(cv$z[hit], imp$z)
 })
+
+## ---- Error and fallback branches ---------------------------------------------
+
+test_that("a stored map that misses a term fails rather than guessing", {
+  vp <- .coverage_fits()$guided
+  map <- attr(vp$x, "xvar.map")
+  skip_if(is.null(map), "this varPro stores no encoding map")
+  attr(vp$x, "xvar.map") <- map[-1L]
+  set.seed(1)
+  expect_error(varpro_coverage(vp), "does not cover every term")
+})
+
+test_that("a fit with no factors maps each term to itself", {
+  x <- data.frame(a = 1, b = 2)
+  attr(x, "hotencode") <- FALSE
+  expect_identical(.varpro_coverage_map(list(x = x), c("a", "b")),
+                   c(a = "a", b = "b"))
+})
+
+test_that("a multivariate regression fit is refused", {
+  imp <- list(y1 = data.frame(z = 1), y2 = data.frame(z = 2))
+  expect_error(.varpro_coverage_imp(imp, "regr+"), "multivariate regression")
+})
+
+test_that("a classification fit reports its unconditional z", {
+  set.seed(20261014L)
+  vp <- varPro::varpro(Species ~ ., data = iris, ntree = 30)
+  set.seed(1)
+  cv <- varpro_coverage(vp)
+  expect_setequal(cv$term, colnames(vp$x))
+  set.seed(1)
+  imp <- varPro::importance(vp, plot.it = FALSE, max.tree = vp$rf$ntree)$unconditional
+  expect_equal(cv$z[match(rownames(imp), cv$term)], imp$z)
+})
