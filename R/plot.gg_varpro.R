@@ -77,6 +77,10 @@
 #' (\code{$conditional}) are shown as a faceted bar chart
 #' (\code{facet_wrap(~class, nrow = 1)}).  Variables keep the sort order set
 #' by the unconditional median z in \code{$stats}, so the facets line up.
+#' A variable whose class-conditional z is undefined (tested in fewer than
+#' \code{trim} of the trees, possible only with \code{local.std = FALSE})
+#' gets no bar in that facet, and the caption says so; a zero bar would read
+#' as tested and found unimportant.
 #'
 #' @return A \code{ggplot} object.
 #'
@@ -229,12 +233,18 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
 .plot_varpro_conditional <- function(x, prov, lab_lookup = NULL) {
   ## Class-conditional z-scores as faceted bar chart.
   cond_df   <- x$conditional
-  ## Replace NA/NaN z with 0 to suppress geom_col remove_missing warnings
-  cond_df$z[!is.finite(cond_df$z)] <- 0
   cond_df$variable <- factor(cond_df$variable, levels = levels(x$imp$variable))
   ## Drop conditional rows for variables outside the displayed set (same
   ## truncation as the faithful overlay) so no phantom "NA" bar appears.
   cond_df <- cond_df[!is.na(cond_df$variable), , drop = FALSE]
+  ## An undefined z (0/0 for a variable tested in under `trim` of the trees,
+  ## local.std = FALSE only) gets no bar, rather than a zero bar that reads as
+  ## "tested and unimportant" (#344). Its row stays on the axis (drop = FALSE).
+  ## varPro leaves out a variable undefined for every class, so a variable
+  ## missing from the table is undefined too.
+  cond_df   <- cond_df[is.finite(cond_df$z), , drop = FALSE]
+  undefined <- nrow(cond_df) < length(levels(cond_df$variable)) *
+    length(unique(x$conditional$class))
   cutoff    <- prov$cutoff %||% 0.79
 
   p <- ggplot2::ggplot(cond_df,
@@ -254,17 +264,20 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
     ggplot2::labs(x = NULL,
                   y = "Variable importance (z)",
                   caption = paste0("Dashed line at z = ", cutoff,
-                                   ". Conditional class importance.")) +
+                                   ". Conditional class importance.",
+                                   if (undefined) {
+                                     "\nNo bar: z undefined (untested for that class)."
+                                   })) +
     ggplot2::theme_minimal()
 
   ## Variable names sit on a discrete x scale here (the plot coord_flip()s), so
   ## relabelling goes through scale_x_discrete, not a facet labeller.
-  if (!is.null(lab_lookup)) {
-    p <- p +
-      ggplot2::scale_x_discrete(
-        labels = function(v) .apply_forest_labels(v, lab_lookup)
-      )
-  }
+  p <- p +
+    ggplot2::scale_x_discrete(
+      drop   = FALSE,
+      labels = if (is.null(lab_lookup)) ggplot2::waiver() else
+        function(v) .apply_forest_labels(v, lab_lookup)
+    )
 
   p
 }

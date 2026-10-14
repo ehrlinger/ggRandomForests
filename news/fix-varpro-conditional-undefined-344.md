@@ -1,0 +1,1 @@
+* `plot.gg_varpro()` draws no bar for an undefined class-conditional z (possible only with `local.std = FALSE`) instead of a zero bar, keeps that variable on the axis, and says so in the caption, so a variable untested for a class no longer reads as tested and unimportant (#344)

@@ -49,6 +49,10 @@ marks the mean.
 (\code{$conditional}) are shown as a faceted bar chart
 (\code{facet_wrap(~class, nrow = 1)}).  Variables keep the sort order set
 by the unconditional median z in \code{$stats}, so the facets line up.
+A variable whose class-conditional z is undefined (tested in fewer than
+\code{trim} of the trees, possible only with \code{local.std = FALSE})
+gets no bar in that facet, and the caption says so; a zero bar would read
+as tested and found unimportant.
 }
 \section{Reading the boxplot}{
 

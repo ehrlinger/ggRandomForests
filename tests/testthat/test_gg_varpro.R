@@ -288,6 +288,36 @@ test_that("plot.gg_varpro conditional: no type message unless type was passed", 
   expect_message(plot(gg, type = "raw"), "ignores type")
 })
 
+test_that("plot.gg_varpro conditional: an undefined z gets no bar, not a zero bar (#344)", {
+  skip_on_cran()
+  set.seed(20261014L)
+  d <- iris
+  for (j in 1:4) d[[paste0("noise", j)]] <- sample(d$Sepal.Width)
+  set.seed(20261014L)
+  vp <- varPro::varpro(Species ~ ., data = d, ntree = 30, split.weight = FALSE, mtry = 2)
+  ## local.std = FALSE with a high trim leaves some class-conditional z at 0/0
+  gg <- gg_varpro(vp, conditional = TRUE, local.std = FALSE, trim = 0.3)
+  defined <- is.finite(gg$conditional$z)
+  expect_true(any(!defined))
+  expect_silent(p <- plot(gg))
+  built <- ggplot2::ggplot_build(p)
+  ## one bar per defined z, and no zero-height bars
+  expect_equal(nrow(built$data[[1L]]), sum(defined))
+  expect_false(any(built$data[[1L]]$y == 0))
+  ## every displayed variable keeps its row, including those varPro left out
+  expect_setequal(built$layout$panel_params[[1L]]$y$get_labels(),
+                  levels(gg$imp$variable))
+  expect_match(p$labels$caption, "z undefined")
+})
+
+test_that("plot.gg_varpro conditional: no undefined-z caption when every z is defined", {
+  skip_on_cran()
+  set.seed(42L)
+  gg <- gg_varpro(make_vp_class(), conditional = TRUE)
+  expect_true(all(is.finite(gg$conditional$z)))
+  expect_false(grepl("undefined", plot(gg)$labels$caption))
+})
+
 test_that("gg_varpro: a fit without its forest needs local.std = FALSE", {
   skip_on_cran()
   set.seed(42L)
