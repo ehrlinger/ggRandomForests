@@ -13,7 +13,7 @@
     writing-voice.md               sha256:71b8ba2fc9b0
     writing-reader-profile.md      sha256:5131ade189c9
     writing-context.md             sha256:51f197dc0c97
-    r-package-structure.md         sha256:672443d74683
+    r-package-structure.md         sha256:4839a19676d0
 -->
 
 # House Style — ggRandomForests
@@ -371,6 +371,34 @@ once it isn't. While a package is pre-1.0, the status block says which parts
 are implemented and which aren't, so a reader can judge readiness without
 going and reading the NEWS file. Once you cross 1.0.0 the block goes away —
 the version number is now doing that job.
+
+**Installation.** A `package-internal` README leads with `hvtiR`, the family
+installer, and only then offers the package on its own:
+
+```r
+# install.packages("pak")
+pak::pak("ehrlinger/hvtiR")
+hvtiR::install()   # every member of the family, in one pak call
+```
+
+Update later with `hvtiR::update()`, from a fresh R session: it will not
+overwrite a member that is already loaded. To install this package alone:
+
+```r
+pak::pak("ehrlinger/<pkg>")
+```
+
+`hvtiR::install()` comes first because it hands every member to pak in one
+call, so a floor one member declares on another resolves against that
+sibling's GitHub `main`. Installing members one at a time can fail on exactly
+that floor: `hvtiRlifetables` needs `TemporalHazard (>= 1.2.0)`, which CRAN
+does not carry. It takes no package argument; it installs the family. The
+single-package line uses `pak`, not `remotes::install_github()`, so every
+README names one tool. Anything else a package needs (a backend fork, a renv
+workflow) follows the two blocks. A `package-cran` README keeps
+`install.packages()` for the release and `pak::pak("ehrlinger/<pkg>")` for
+the development version, and does not mention `hvtiR`: a CRAN reader has not
+joined the family.
 
 **Badge tiers.** The order below is fixed; the contents are not. Include a
 badge when the thing it reports on exists, skip it when it doesn't, and don't
