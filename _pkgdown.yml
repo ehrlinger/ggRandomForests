@@ -184,6 +184,7 @@ articles:
       - ggRandomForests-classification
       - explainability
       - varpro
+      - varpro-small-data
       - uvarpro
 
 news:

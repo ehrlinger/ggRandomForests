@@ -68,9 +68,9 @@ some candidates are barely tested at all, and the output does not tell you
 which. This vignette shows how to find out, how much the defaults matter, and
 what the partial plots can and cannot say when the sample is small.
 
-The behaviours described here belong to varPro and randomForestSRC, not to
-ggRandomForests. Where that is so, we name the upstream function and the
-argument that changes it.
+Most of the behaviours described here belong to varPro and randomForestSRC;
+for those we name the upstream function and the argument that changes it.
+Where a behaviour is ggRandomForests' own, we say so.
 
 # The data
 

@@ -430,8 +430,8 @@ and to 1 on that level. \code{partialpro()} leaves the factor's other level
 columns as they were, so for a factor with three or more levels some of
 those cases hold two levels at once; this is upstream behaviour in
 \code{varPro::partialpro()}. Two-level factors, stored as a single 0/1
-column, are not affected, and \code{\link{gg_partial_rfsrc}}, which sets the
-factor itself to each level, is the check.
+column, are not affected. To check a multi-level factor, use
+\code{\link{gg_partial_rfsrc}}, which sets the factor itself to each level.
 
 The spread across cases is not a confidence interval. It shows how much
 cases differ under one fitted forest; varPro's is narrower still because
