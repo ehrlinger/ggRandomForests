@@ -138,6 +138,12 @@ ti  <- rf_model$time.interest
 t1  <- ti[which.min(abs(ti - 1))]   # nearest to 1 year
 pd  <- gg_partial_rfsrc(rf_model, xvar.names = "x", partial.time = t1)
 }
+
+The snap is silent, and it matters most before the first event: every
+request earlier than the first event time returns that first event's
+curve, so partials at, say, 10, 30 and 60 days come back identical in a
+sample whose first death is later. Check the \code{time} column of the
+result, and choose horizons after the first event.
 }
 
 \section{Logical predictor columns}{

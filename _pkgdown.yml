@@ -50,6 +50,8 @@ navbar:
           href: articles/ggRandomForests-classification.html
         - text: "Exploring variable importance with varPro"
           href: articles/varpro.html
+        - text: "varPro on small or sparse data"
+          href: articles/varpro-small-data.html
         - text: "Variable selection without an outcome: unsupervised varPro"
           href: articles/uvarpro.html
 
@@ -182,6 +184,7 @@ articles:
       - ggRandomForests-classification
       - explainability
       - varpro
+      - varpro-small-data
       - uvarpro
 
 news:
