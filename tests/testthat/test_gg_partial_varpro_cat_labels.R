@@ -10,7 +10,11 @@
     set.seed(20261015L)
     v <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50, split.weight = FALSE)
     set.seed(20261015L)
-    pp <- varPro::partialpro(v, xvar.names = c("am", "vs", "cyl"))
+    ## method = "rnd": partialpro()'s default ("unsupv") reaches an unsupervised
+    ## rfsrc() grow, the known gcc-UBSAN path (entry.c:184; see
+    ## helper-varpro-fixtures.R). The supervised route keeps CRAN's sanitizer
+    ## builds clean and changes nothing these tests check.
+    pp <- varPro::partialpro(v, xvar.names = c("am", "vs", "cyl"), method = "rnd")
     .varpro_cache$cat_labels <- list(v = v, pp = pp)
   }
   .varpro_cache$cat_labels
