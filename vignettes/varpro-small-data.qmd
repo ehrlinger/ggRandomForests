@@ -1,0 +1,351 @@
+---
+title: "varPro on small or sparse data"
+author: "John Ehrlinger"
+date: today
+format:
+  html:
+    fig-format: png
+    fig-dpi: 96
+    toc: true
+    toc-depth: 2
+    code-fold: false
+bibliography: ggRandomForests.bib
+vignette: >
+  %\VignetteIndexEntry{varPro on small or sparse data}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+.fo <- c("_fig_optim.R", file.path("vignettes", "_fig_optim.R"))
+if (any(file.exists(.fo))) source(.fo[file.exists(.fo)][1])
+knitr::opts_chunk$set(message = FALSE, warning = FALSE,
+                      fig.width = 7, fig.height = 4.5)
+options(mc.cores = 1, rf.cores = 1)
+```
+
+```{r libs}
+library(ggplot2)
+if (requireNamespace("ggRandomForests", quietly = TRUE)) {
+  library(ggRandomForests)
+} else if (requireNamespace("pkgload", quietly = TRUE)) {
+  pkgload::load_all(export_all = FALSE, helpers = FALSE,
+                    attach_testthat = FALSE)
+} else {
+  stop("Install ggRandomForests (or pkgload for dev builds) to render this vignette.")
+}
+```
+
+```{r precomputed, include=FALSE}
+# Every fit in this vignette is precomputed by precompute_varpro_small.R and
+# loaded here, so the R CMD check rebuild grows no forest. If the file is
+# missing, the script is sourced (without saving) and the fits run live.
+.cand <- c("varpro_small_precomputed.rds",
+           file.path("vignettes", "varpro_small_precomputed.rds"))
+.hit <- .cand[file.exists(.cand)]
+if (length(.hit)) {
+  vs <- readRDS(.hit[[1]])
+} else {
+  .scr <- c("precompute_varpro_small.R", file.path("vignettes", "precompute_varpro_small.R"))
+  .varpro_small_no_save <- TRUE
+  .env <- new.env()
+  sys.source(.scr[file.exists(.scr)][[1]], envir = .env)
+  vs <- .env$varpro_small_objects
+}
+cg <- vs$cov_guided_v
+cg_real <- cg[!cg$noise, ]
+co <- vs$cov_open_v
+co_real <- co[!co$noise, ]
+pct <- function(x) sprintf("%.1f%%", 100 * x)
+z2 <- function(x) sprintf("%.2f", x)
+```
+
+varPro [@Lu2024varpro] ranks variables by releasing the rules of a random
+forest one variable at a time and asking how much the outcome moves. Its
+defaults suit a large data set, where every candidate variable gets many
+chances to be tested. On a small one, or one with many rare factor levels,
+some candidates are barely tested at all, and the output does not tell you
+which. This vignette shows how to find out, how much the defaults matter, and
+what the partial plots can and cannot say when the sample is small.
+
+The behaviours described here belong to varPro and randomForestSRC, not to
+ggRandomForests. Where that is so, we name the upstream function and the
+argument that changes it.
+
+# The data
+
+We use the primary biliary cirrhosis data from `randomForestSRC`: the
+`r vs$n` complete cases, `r vs$deaths` deaths, and `r vs$n_real` predictors,
+with the yes/no and graded predictors stored as factors. To give the screen
+something it should reject, we add ten permuted copies of real columns: the
+same values shuffled between patients, so unrelated to survival by
+construction. Five copy continuous predictors and five copy factors, so each
+kind of variable has noise of its own kind. The fits are in
+`vignettes/precompute_varpro_small.R`. The two that matter are a varPro fit on
+its defaults and one with every variable offered to the forest:
+
+```{r data-sketch, eval=FALSE}
+library(survival)
+vp_guided <- varPro::varpro(Surv(days, status) ~ ., data = d, ntree = 1000)
+vp_open   <- varPro::varpro(Surv(days, status) ~ ., data = d, ntree = 1000,
+                            split.weight = FALSE, mtry = 4)
+```
+
+# Which variables did varPro test?
+
+A variable can drop out at three places, and it helps to name them.
+
+- **Eligible.** varPro first ranks the candidates quickly, by default with a
+  lasso and a shallow forest ("split weights"), and builds release rules only
+  for the top of that ranking (`nvar`). A factor enters as one term per level.
+  A term below that cut is *not eligible*: no rule is ever built for it, so
+  the screen says nothing about it, for or against.
+- **Tested.** An eligible term is scored tree by tree, by comparing the outcome
+  inside a rule with the outcome once the rule's condition on that term is
+  released. A term scored in at least 10% of the trees we call *tested*.
+- **Untested.** Everything else: terms that were not eligible, eligible terms
+  with no usable rule, and terms scored in too few trees.
+
+`varpro_coverage()` reports all three, per term or, with `by = "variable"`,
+per variable with factor levels rolled up. For the fit on varPro's defaults:
+
+```{r coverage-guided}
+cg_real[, c("variable", "eligible", "n_trees", "coverage", "z", "tested")]
+```
+
+Of `r nrow(cg_real)` predictors, `r sum(!cg_real$eligible)` was not eligible
+(`r paste(cg_real$variable[!cg_real$eligible], collapse = ", ")`),
+`r sum(cg_real$eligible & is.na(cg_real$z))` were eligible but never got a
+usable rule (`r paste(cg_real$variable[cg_real$eligible & is.na(cg_real$z)], collapse = ", ")`),
+and `r sum(!is.na(cg_real$z) & !cg_real$tested)` were returned but scored in
+too few trees to rank
+(`r paste(sprintf("%s in %s of trees", cg_real$variable[!is.na(cg_real$z) & !cg_real$tested], pct(cg_real$coverage[!is.na(cg_real$z) & !cg_real$tested])), collapse = "; ")`).
+That is `r sum(!cg_real$tested)` of `r nrow(cg_real)` predictors about which
+the screen has no evidence either way.
+
+# What does a z of zero mean?
+
+varPro's importance (z) is an average over the trees, and a tree with no rule
+for the term counts as zero. The average is winsorised: trees above the 90th
+percentile are pulled down to it and trees below the 10th pulled up, before
+averaging (`trim = 0.1` in `varPro::importance()`). Nothing is dropped; the
+clamping stops a few extreme trees from dominating.
+
+The side effect is the one to know about. For a term scored in fewer than one
+tree in ten, the 90th percentile is itself zero, so every non-zero tree is
+pulled down to zero and z comes back as exactly 0, whatever those trees found.
+**A z of 0 means "not tested enough to rank", not "tested and found
+unimportant".** Read coverage beside z, never z alone.
+
+# Reading the importance plot
+
+`gg_varpro()` draws each term's importance across the trees. Score all the
+trees: by default `varPro::importance()`, and `gg_varpro()` with it, scores a
+random sample of 150, so the answer can change from run to run. Here the
+default sample selects `r sum(vs$gg_guided_150$imp$selected)` terms and
+scoring all `r format(attr(vs$cov_guided_t, "trees"), big.mark = ",")` trees
+selects `r sum(vs$gg_guided_all$imp$selected)`.
+
+```{r importance-plot, fig.height = 5}
+plot(vs$gg_guided_all)
+# Live: plot(gg_varpro(vp_guided, max.tree = vp_guided$rf$ntree))
+```
+
+Three things are easy to misread.
+
+- **The boxes start at 0** for any term some trees never tested, because each
+  of those trees contributes a zero.
+- **Order and colour measure different things.** Rows are ordered by the
+  median tree, but coloured by z, the winsorised mean, against the cutoff
+  (dashed). A term that a few trees find very important and many find
+  unimportant has a long box and a low median; it can rank below a term with
+  steadier, smaller importance.
+- **A row with no box** is a term scored in too few trees; its z is 0 for the
+  reason above, and the caption calls these open boxes.
+
+# How much do the settings matter?
+
+Two settings turn the per-tree scores into a ranking and a selection: the
+winsorising `trim`, and the `cutoff` (0.79 by default) that colours a term as
+selected. We rescored the same fit with less winsorising.
+
+```{r trim-table}
+trim_tab <- data.frame(
+  trim = names(vs$trim_z),
+  terms_above_0 = vapply(vs$trim_z, function(t) sum(t$z > 0), integer(1)),
+  terms_above_0.79 = vapply(vs$trim_z, function(t) sum(t$z > 0.79), integer(1)),
+  rank_agreement = vapply(vs$trim_z, function(t) {
+    b <- vs$trim_z[[1]]
+    round(stats::cor(t$z, b$z[match(t$term, b$term)], method = "spearman"), 2)
+  }, numeric(1)))
+trim_tab
+```
+
+The trim matters little: the ranking holds, and the terms that gain a z above
+zero are the barely tested ones, at values close to zero. The cutoff matters a
+great deal. Here is how many variables each cutoff keeps.
+
+```{r cutoff-table}
+vz <- cg_real[!is.na(cg_real$z), ]
+cuts <- c(0, 0.5, 0.7, 0.79, 0.9, 1, 1.5)
+data.frame(cutoff = cuts,
+           variables_kept = vapply(cuts, function(k) sum(vz$z > k), integer(1)))
+band <- vz[vz$z > 0.5 & vz$z <= 1, ]
+band[order(-band$z), c("variable", "z", "coverage")]
+```
+
+`r nrow(band)` well-tested variables sit between z 0.5 and 1.0, one of them
+(prothrombin, z `r z2(vz$z[vz$variable == "prothrombin"])`) right on the
+default line. Anywhere in that range the "selected" set runs from
+`r sum(vz$z > 1)` to `r sum(vz$z > 0.5)` variables. varPro's own
+cross-validation, `varPro::cv.varpro()`, chooses a cutoff of
+`r z2(vs$cv_zcut)` for this fit. With varPro's default standardisation z also
+shrinks as more terms share each tree, so a cutoff does not carry from one fit
+to another. If you need a selection, tune the cutoff; do not take 0.79 as given.
+
+# Checking against noise
+
+The noise columns give a reference that moves with the fit.
+`varpro_coverage(noise = "^noise")` marks them, takes the largest z among the
+*tested* noise copies of each kind (categorical or continuous), and flags a
+real variable as `selected` when it beats that bar.
+
+On varPro's defaults the check is empty: the split weights kept every noise
+copy out (`r sum(cg$tested & cg$noise)` of `r sum(cg$noise)` tested), which is
+a useful filter but leaves nothing to compare against, and
+`varpro_coverage()` warns about it. With every variable offered
+(`split.weight = FALSE`), the noise is tested:
+
+```{r noise-open}
+co_noise <- co[co$noise, ]
+data.frame(kind = c("continuous", "categorical"),
+           noise_tested = c(sum(co_noise$tested & co_noise$kind == "continuous"),
+                            sum(co_noise$tested & co_noise$kind == "categorical")),
+           largest_noise_z = c(max(co_noise$z[co_noise$kind == "continuous"], na.rm = TRUE),
+                               max(co_noise$z[co_noise$kind == "categorical"], na.rm = TRUE)))
+```
+
+Continuous noise scores higher than categorical noise with no relation to the
+outcome at all. A forest favours variables with many split points, and a
+permuted continuous column still offers many. That is why the bar is set per
+kind. Against it, `r sum(co_real$selected)` of the `r nrow(co_real)` real
+variables beat the noise in this one fit: the screen tests everything, but it
+is not parsimonious.
+
+# A screen or a selection?
+
+A selection says the kept variables were compared with the rest and found to
+matter. One varPro fit on its defaults keeps everything it returns, including
+variables it never tested, with no comparison against noise and no check of
+its stability. That makes it a *screen*: it narrows the candidates to a list a
+model can use, and it does not establish which variables matter.
+
+If you need a selection, each step above is a lever:
+
+- offer every variable (`split.weight = FALSE`), so each one is tested;
+- report coverage beside z (`varpro_coverage()`), and score all trees
+  (`max.tree = ntree`);
+- set the cutoff by cross-validation (`varPro::cv.varpro()`) or by noise
+  copies of each kind, not by the default;
+- refit on subsamples and keep the variables selected in most of them;
+- and, if the selected variables feed a model you then evaluate, do the
+  selection inside the cross-validation, so the model is not judged on the
+  data that chose its variables.
+
+# Partial dependence on small data
+
+`gg_partial_varpro()` shows how the prediction moves with one variable
+*locally*: within the cases whose rules made the variable important, the rest
+of each case held as it is. `gg_partial_rfsrc()` shows it *marginally*: the
+variable is set to each value for every case and the predictions averaged.
+Here is bilirubin both ways, survival at `r vs$tau` days:
+
+```{r partial-local-marginal, fig.height = 3.8}
+one_var <- function(p, v) {
+  p$continuous <- p$continuous[p$continuous$name == v, , drop = FALSE]
+  p$categorical <- p$categorical[0, , drop = FALSE]
+  p
+}
+patchwork::wrap_plots(
+  plot(one_var(vs$pd_local, "bili")) + labs(title = "varPro (local)"),
+  plot(one_var(vs$pd_marginal, "bili")) + labs(title = "randomForestSRC (marginal)"),
+  nrow = 1)
+```
+
+When the two agree, the effect holds across the data. When they differ, the
+effect is confined to part of it, or the marginal curve is extrapolating where
+there are no cases. Four things matter more on small data.
+
+**The band is not a confidence interval.** Both plots summarise the cases of
+*one* fitted forest. The spread shows how much cases differ, not how
+uncertain the curve is; varPro's is narrower still, because
+`varPro::partialpro()` gives every case the same intercept. To see the
+uncertainty of the curve, refit on subsamples. Five refits on 63% of the cases
+move the marginal bilirubin curve this much:
+
+```{r partial-refits, fig.height = 3.6}
+refits <- do.call(rbind, lapply(vs$pd_refits, function(p) {
+  cbind(p$continuous, refit = factor(p$refit))
+}))
+full <- vs$pd_marginal$continuous
+full <- full[full$name == "bili", ]
+ggplot(refits, aes(x, yhat, group = refit)) +
+  geom_line(colour = "grey60") +
+  geom_line(data = full, aes(x, yhat), inherit.aes = FALSE, linewidth = 1) +
+  labs(x = "bili", y = sprintf("Survival at %d days", vs$tau),
+       title = "Marginal partial: full fit (black) and five subsample refits (grey)")
+```
+
+**Survival horizons snap to event times.** randomForestSRC estimates survival
+on the grid of observed event times, so a requested horizon is moved to an
+event time. A request for `r vs$tau` days returns day
+`r unique(vs$pd_marginal$continuous$time)`. Before the first event it is silent: requests at days 10, 30 and `r vs$first_death` (the
+first death) all return the same curve, at day
+`r min(vs$pd_early$continuous$time)`, and a request at day 365 returns day
+`r max(vs$pd_early$continuous$time)`. In a small arm with no early events, every
+early horizon is the same curve. Check the returned time, and choose horizons
+after the first event.
+
+**Factors are partialled level by level.** varPro one-hot encodes a factor, so
+`stage` becomes
+`r paste(grep("^stage", vs$fac_terms, value = TRUE), collapse = ", ")`, and
+`gg_partial_varpro()` (through `varPro::partialpro()`) looks terms up by those
+names: ask for `stage` and it is skipped with a warning. Each level is then
+partialled on its own, with every case set to 0 and to 1 on that level:
+
+```{r partial-factor}
+ct <- vs$pd_local$categorical
+lvl <- c("stage3", "stage4", "edema0", "edema1")
+level_median <- function(l, at) {
+  median(ct$parametric[ct$name == l & ct$variable == at], na.rm = TRUE)
+}
+data.frame(level = lvl,
+           partial_at_0 = vapply(lvl, level_median, numeric(1), at = 0),
+           partial_at_1 = vapply(lvl, level_median, numeric(1), at = 1),
+           row.names = NULL)
+```
+
+Stage 4 and severe edema (`edema1`) lower predicted survival, as the data say:
+Kaplan-Meier survival at `r vs$tau` days is
+`r z2(vs$km_stage4[["stage 4"]])` for stage 4 against
+`r z2(vs$km_stage4[["other stages"]])` for the other stages. Before
+ggRandomForests PR #350 (in releases up to 4.0.0-rc9), these columns could be
+labelled in the wrong order, swapping "0" and "1"; refit any factor partials
+made with an earlier build.
+
+One caveat remains, and it is varPro's. `partialpro()` sets the one level
+column and leaves the factor's other level columns as they were, so a stage 3
+case "set to stage4 = 1" is stage 3 and stage 4 at once, a case that cannot
+exist. Here it matters little: the forest's mean predicted survival for
+stage 4 is `r sprintf("%.3f", vs$sibling_check[["siblings_left"]])` with the
+other level columns left alone and
+`r sprintf("%.3f", vs$sibling_check[["valid_profile"]])` with the whole factor
+set to stage 4. On other data it could matter more; `gg_partial_rfsrc()` sets
+the factor itself to each level, and is the check.
+
+**Survival partials are clamped to [0, 1].** `varPro::partialpro()` smooths
+each case without a link function, so on the survival scale a curve can leave
+[0, 1]; `gg_partial_varpro()` clamps it. On a small arm, a curve sitting on 0
+or 1 is a sign of that clamp, not of certainty.
+
+# References

@@ -181,6 +181,29 @@ data-driven cutoff rather than the 0.79 default, see
 \code{varPro::cv.varpro}.
 }
 
+\section{Reading the plot}{
+
+Rows are ordered by the median tree, but the highlight follows z,
+varPro's winsorised mean across the trees, against \code{cutoff}. The
+two can disagree: a variable a few trees find very important and many
+find unimportant has a long box and a low median.
+
+A tree with no usable release rule for a variable contributes a zero, so
+boxes start at 0 for any variable some trees never tested. varPro
+winsorises the per-tree values (\code{trim = 0.1}: values beyond the 10th
+and 90th percentiles are pulled in to them), so a variable scored in fewer
+than about \code{trim} of the trees comes back with z exactly 0. That
+variable is untested, not unimportant; it is drawn as an open box, and
+\code{$imp$coverage} and \code{$imp$tested} say so.
+
+By default varPro scores a random sample of 150 trees, so on a large
+forest the plot can change from run to run. Pass
+\code{max.tree = object$rf$ntree} to score every tree. On small or sparse
+data the 0.79 cutoff decides a great deal; see
+\code{\link{varpro_coverage}} and
+\code{vignette("varpro-small-data", package = "ggRandomForests")}.
+}
+
 \examples{
 \donttest{
 set.seed(42)

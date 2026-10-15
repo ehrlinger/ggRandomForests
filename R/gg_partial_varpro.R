@@ -77,6 +77,24 @@
 #' estimator, not a structural causal claim about the data-generating
 #' process.
 #'
+#' @section Factors, bands and small data:
+#' varPro one-hot encodes a factor, so a factor \code{stage} becomes the
+#' terms \code{stage1}, \code{stage2}, ..., and \code{partialpro()} looks
+#' terms up by those names (pass \code{xvar.names = "stage4"}, not
+#' \code{"stage"}). Each level is partialled on its own, every case set to 0
+#' and to 1 on that level. \code{partialpro()} leaves the factor's other level
+#' columns as they were, so for a factor with three or more levels some of
+#' those cases hold two levels at once; this is upstream behaviour in
+#' \code{varPro::partialpro()}. Two-level factors, stored as a single 0/1
+#' column, are not affected, and \code{\link{gg_partial_rfsrc}}, which sets the
+#' factor itself to each level, is the check.
+#'
+#' The spread across cases is not a confidence interval. It shows how much
+#' cases differ under one fitted forest; varPro's is narrower still because
+#' \code{partialpro()} gives every case the cohort-mean intercept. To see
+#' how uncertain the curve is, refit on subsamples. The
+#' \code{varpro-small-data} vignette shows both.
+#'
 #' @param part_dta Partial plot data from \code{varPro::partialpro}.  Each
 #'   element must contain \code{xvirtual}, \code{xorg}, \code{yhat.par},
 #'   \code{yhat.nonpar}, and \code{yhat.causal}.  Supply at least one of
