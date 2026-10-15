@@ -37,6 +37,7 @@ importances."></head><body>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
+    <li><a class="dropdown-item" href="../articles/varpro-small-data.html">varPro on small or sparse data</a></li>
     <li><a class="dropdown-item" href="../articles/uvarpro.html">Variable selection without an outcome: unsupervised varPro</a></li>
   </ul></li>
 <li class="nav-item dropdown">
@@ -275,6 +276,29 @@ probability. Two variables with the same z are "similarly important
 by this method", not "equally likely to be true signal". For a
 data-driven cutoff rather than the 0.79 default, see
 <code><a href="https://www.randomforestsrc.org/reference/cv.varpro.html" class="external-link">varPro::cv.varpro</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="reading-the-plot">Reading the plot<a class="anchor" aria-label="anchor" href="#reading-the-plot"></a></h2>
+
+
+<p>Rows are ordered by the median tree, but the highlight follows z,
+varPro's winsorised mean across the trees, against <code>cutoff</code>. The
+two can disagree: a variable a few trees find very important and many
+find unimportant has a long box and a low median.</p>
+<p>A tree with no usable release rule for a variable contributes a zero, which
+pulls the lower whisker and box toward 0 as coverage falls; at high
+coverage the box need not reach 0. varPro
+winsorises the per-tree values (<code>trim = 0.1</code>: values beyond the 10th
+and 90th percentiles are pulled in to them), so a variable scored in fewer
+than about <code>trim</code> of the trees comes back with z exactly 0. That
+variable is untested, not unimportant; it is drawn as an open box, and
+<code>$imp$coverage</code> and <code>$imp$tested</code> say so.</p>
+<p>By default varPro scores a random sample of 150 trees, so on a large
+forest the plot can change from run to run. Pass
+<code>max.tree = object$rf$ntree</code> to score every tree. On small or sparse
+data the 0.79 cutoff decides a great deal; see
+<code><a href="varpro_coverage.html">varpro_coverage</a></code> and
+<code><a href="../articles/varpro-small-data.html">vignette("varpro-small-data", package = "ggRandomForests")</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

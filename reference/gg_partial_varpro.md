@@ -435,6 +435,27 @@ A varpro partial dependence curve is a description of the model, not a
 causal effect. The `causal` column is varpro's local estimator, not a
 structural causal claim about the data-generating process.
 
+## Factors, bands and small data
+
+varPro one-hot encodes a factor, so a factor `stage` becomes the terms
+`stage1`, `stage2`, ..., and `partialpro()` looks terms up by those
+names (pass `xvar.names = "stage4"`, not `"stage"`). Each level is
+partialled on its own, every case set to 0 and to 1 on that level.
+`partialpro()` leaves the factor's other level columns as they were, so
+for a factor with three or more levels some of those cases hold two
+levels at once; this is upstream behaviour in
+[`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html).
+Two-level factors, stored as a single 0/1 column, are not affected. To
+check a multi-level factor, use
+[`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md),
+which sets the factor itself to each level.
+
+The spread across cases is not a confidence interval. It shows how much
+cases differ under one fitted forest; varPro's is narrower still because
+`partialpro()` gives every case the cohort-mean intercept. To see how
+uncertain the curve is, refit on subsamples. The `varpro-small-data`
+vignette shows both.
+
 ## References
 
 von Hippel PT (2007). Regression with missing Ys: An improved strategy
@@ -532,7 +553,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 6
+#> [1] 5
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 

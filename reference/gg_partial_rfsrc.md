@@ -165,6 +165,12 @@ point yourself and pass it explicitly:
     t1  <- ti[which.min(abs(ti - 1))]   # nearest to 1 year
     pd  <- gg_partial_rfsrc(rf_model, xvar.names = "x", partial.time = t1)
 
+The snap is silent, and it matters most before the first event: every
+request earlier than the first event time returns that first event's
+curve, so partials at, say, 10, 30 and 60 days come back identical in a
+sample whose first death is later. Check the `time` column of the
+result, and choose horizons after the first event.
+
 ## Logical predictor columns
 
 [`partial.rfsrc`](https://www.randomforestsrc.org//reference/partial.rfsrc.html)

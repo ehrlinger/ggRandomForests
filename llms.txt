@@ -665,5 +665,7 @@ Helper functions used internally and by users.
   effect](https://ehrlinger.github.io/ggRandomForests/articles/explainability.md):
 - [Exploring variable importance with
   varPro](https://ehrlinger.github.io/ggRandomForests/articles/varpro.md):
+- [varPro on small or sparse
+  data](https://ehrlinger.github.io/ggRandomForests/articles/varpro-small-data.md):
 - [Variable selection without an outcome: unsupervised
   varPro](https://ehrlinger.github.io/ggRandomForests/articles/uvarpro.md):

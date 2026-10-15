@@ -162,10 +162,12 @@ The first question varPro answers is the same one permutation importance
 answers: which variables matter, ranked.
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
 extracts the per-tree importance scores and draws their distribution as
-a horizontal boxplot, one row per variable, sorted by median z-score,
-with the variables above a configurable cutoff (default 0.79)
-highlighted. Read the spread, not just the position: a tight box means
-every tree agrees on that variable.
+a horizontal boxplot, one row per variable. Rows are sorted by the
+median tree, but the highlight follows z, varPro’s winsorised mean
+across the trees, against a configurable cutoff (default 0.79), so a
+variable can be highlighted with its median left of the line, or the
+reverse. Read the spread, not just the position: a tight box means every
+tree agrees on that variable.
 
 ``` r
 
@@ -685,6 +687,22 @@ that do work:
 [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md),
 and
 [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md).
+
+## Small or sparse data
+
+varPro’s defaults suit a large data set, where every candidate variable
+gets many chances to be tested. On a small one, or one with many rare
+factor levels, some variables are barely tested and the output does not
+say which. The companion vignette, *varPro on small or sparse data*
+([`vignette("varpro-small-data", package = "ggRandomForests")`](https://ehrlinger.github.io/ggRandomForests/articles/varpro-small-data.md)),
+works through the full PBC data with permuted noise columns added. It
+covers which variables varPro actually tested
+([`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)),
+what a z of zero means, how much the `trim` and the 0.79 cutoff change
+the answer, checking a screen against noise, and what partial dependence
+can and cannot say on small data: the bands are not confidence
+intervals, survival horizons snap to event times, and a factor is
+partialled one level at a time.
 
 ## Cross-cutting reference
 

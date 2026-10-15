@@ -41,6 +41,7 @@ gg_partial_varpro() directly."></head><body>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
+    <li><a class="dropdown-item" href="../articles/varpro-small-data.html">varPro on small or sparse data</a></li>
     <li><a class="dropdown-item" href="../articles/uvarpro.html">Variable selection without an outcome: unsupervised varPro</a></li>
   </ul></li>
 <li class="nav-item dropdown">
@@ -490,6 +491,26 @@ estimator, not a structural causal claim about the data-generating
 process.</p>
     </div>
     <div class="section level2">
+    <h2 id="factors-bands-and-small-data">Factors, bands and small data<a class="anchor" aria-label="anchor" href="#factors-bands-and-small-data"></a></h2>
+
+
+<p>varPro one-hot encodes a factor, so a factor <code>stage</code> becomes the
+terms <code>stage1</code>, <code>stage2</code>, ..., and <code>partialpro()</code> looks
+terms up by those names (pass <code>xvar.names = "stage4"</code>, not
+<code>"stage"</code>). Each level is partialled on its own, every case set to 0
+and to 1 on that level. <code>partialpro()</code> leaves the factor's other level
+columns as they were, so for a factor with three or more levels some of
+those cases hold two levels at once; this is upstream behaviour in
+<code><a href="https://www.randomforestsrc.org/reference/partialpro.html" class="external-link">varPro::partialpro()</a></code>. Two-level factors, stored as a single 0/1
+column, are not affected. To check a multi-level factor, use
+<code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code>, which sets the factor itself to each level.</p>
+<p>The spread across cases is not a confidence interval. It shows how much
+cases differ under one fitted forest; varPro's is narrower still because
+<code>partialpro()</code> gives every case the cohort-mean intercept. To see
+how uncertain the curve is, refit on subsamples. The
+<code>varpro-small-data</code> vignette shows both.</p>
+    </div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>von Hippel PT (2007).
 Regression with missing Ys: An improved strategy for analyzing multiply
@@ -582,7 +603,7 @@ understanding patient and hospital differences.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>                    <span class="co"># predictors in the data</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">vp</span><span class="op">$</span><span class="va">xvar.names</span><span class="op">)</span>         <span class="co"># what the fit reaches</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">get.topvars</a></span><span class="op">(</span><span class="va">vp</span><span class="op">)</span><span class="op">)</span>   <span class="co"># the default when xvar.names is absent</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4</span>
 <span class="r-in"><span></span></span>

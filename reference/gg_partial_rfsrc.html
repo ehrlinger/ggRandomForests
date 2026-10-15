@@ -37,6 +37,7 @@ the variable carried no signal."></head><body>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
+    <li><a class="dropdown-item" href="../articles/varpro-small-data.html">varPro on small or sparse data</a></li>
     <li><a class="dropdown-item" href="../articles/uvarpro.html">Variable selection without an outcome: unsupervised varPro</a></li>
   </ul></li>
 <li class="nav-item dropdown">
@@ -230,6 +231,11 @@ explicitly:</p>
 <span><span class="va">t1</span>  <span class="op">&lt;-</span> <span class="va">ti</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.min</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">ti</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>   <span class="co"># nearest to 1 year</span></span>
 <span><span class="va">pd</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gg_partial_rfsrc.html">gg_partial_rfsrc</a></span><span class="op">(</span><span class="va">rf_model</span>, xvar.names <span class="op">=</span> <span class="st">"x"</span>, partial.time <span class="op">=</span> <span class="va">t1</span><span class="op">)</span></span></code></pre></div>
 
+<p>The snap is silent, and it matters most before the first event: every
+request earlier than the first event time returns that first event's
+curve, so partials at, say, 10, 30 and 60 days come back identical in a
+sample whose first death is later. Check the <code>time</code> column of the
+result, and choose horizons after the first event.</p>
     </div>
     <div class="section level2">
     <h2 id="logical-predictor-columns">Logical predictor columns<a class="anchor" aria-label="anchor" href="#logical-predictor-columns"></a></h2>

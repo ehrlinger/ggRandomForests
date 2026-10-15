@@ -47,6 +47,7 @@
     <li><a class="dropdown-item" href="../articles/ggRandomForests-regression.html">Random Forest Regression</a></li>
     <li><a class="dropdown-item" href="../articles/ggRandomForests-classification.html">Random Forest Classification</a></li>
     <li><a class="dropdown-item" href="../articles/varpro.html">Exploring variable importance with varPro</a></li>
+    <li><a class="dropdown-item" href="../articles/varpro-small-data.html">varPro on small or sparse data</a></li>
     <li><a class="dropdown-item" href="../articles/uvarpro.html">Variable selection without an outcome: unsupervised varPro</a></li>
   </ul>
 </li>
@@ -170,7 +171,7 @@
 <section class="level2"><h3 id="per-tree-importance-with-gg_varpro">Per-tree importance with <code>gg_varpro()</code>
 <a class="anchor" aria-label="anchor" href="#per-tree-importance-with-gg_varpro"></a>
 </h3>
-<p>The first question varPro answers is the same one permutation importance answers: which variables matter, ranked. <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> extracts the per-tree importance scores and draws their distribution as a horizontal boxplot, one row per variable, sorted by median z-score, with the variables above a configurable cutoff (default 0.79) highlighted. Read the spread, not just the position: a tight box means every tree agrees on that variable.</p>
+<p>The first question varPro answers is the same one permutation importance answers: which variables matter, ranked. <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code> extracts the per-tree importance scores and draws their distribution as a horizontal boxplot, one row per variable. Rows are sorted by the median tree, but the highlight follows z, varPro’s winsorised mean across the trees, against a configurable cutoff (default 0.79), so a variable can be highlighted with its median left of the line, or the reverse. Read the spread, not just the position: a tight box means every tree agrees on that variable.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/gg_varpro.html">gg_varpro</a></span><span class="op">(</span><span class="va">v_boston</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -482,7 +483,10 @@
 </h3>
 <p><code><a href="https://www.randomforestsrc.org/reference/utilities_internal.html" class="external-link">varPro::beta.varpro()</a></code> errors on survival fits in the current release (it only supports <code>regr</code> and <code>class</code>). <code><a href="../reference/gg_ivarpro.html">gg_ivarpro()</a></code> also supports only regression and classification fits. Neither wrapper computes local or lasso-beta importance for a survival outcome, where the response records an event time and whether the event was observed.</p>
 <p>If you call either wrapper on a survival fit, the error names the unsupported family. The family-support matrix in the closing reference section records this. For survival fits, use the parts of the toolkit that do work: <code><a href="../reference/gg_varpro.html">gg_varpro()</a></code>, <code><a href="../reference/gg_partial_varpro.html">gg_partial_varpro()</a></code>, and <code><a href="../reference/gg_isopro.html">gg_isopro()</a></code>.</p>
-</section></section><section class="section level2"><h2 id="cross-cutting-reference">Cross-cutting reference<a class="anchor" aria-label="anchor" href="#cross-cutting-reference"></a>
+</section></section><section class="section level2"><h2 id="small-or-sparse-data">Small or sparse data<a class="anchor" aria-label="anchor" href="#small-or-sparse-data"></a>
+</h2>
+<p>varPro’s defaults suit a large data set, where every candidate variable gets many chances to be tested. On a small one, or one with many rare factor levels, some variables are barely tested and the output does not say which. The companion vignette, <em>varPro on small or sparse data</em> (<code><a href="../articles/varpro-small-data.html">vignette("varpro-small-data", package = "ggRandomForests")</a></code>), works through the full PBC data with permuted noise columns added. It covers which variables varPro actually tested (<code><a href="../reference/varpro_coverage.html">varpro_coverage()</a></code>), what a z of zero means, how much the <code>trim</code> and the 0.79 cutoff change the answer, checking a screen against noise, and what partial dependence can and cannot say on small data: the bands are not confidence intervals, survival horizons snap to event times, and a factor is partialled one level at a time.</p>
+</section><section class="section level2"><h2 id="cross-cutting-reference">Cross-cutting reference<a class="anchor" aria-label="anchor" href="#cross-cutting-reference"></a>
 </h2>
 <section class="level2"><h3 id="family-support-matrix">Family-support matrix<a class="anchor" aria-label="anchor" href="#family-support-matrix"></a>
 </h3>
