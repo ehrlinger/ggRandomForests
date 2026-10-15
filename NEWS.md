@@ -529,6 +529,30 @@ ggRandomForests v4.0.0 (development)
   reads as a measured zero. The variable keeps its row and every class
   keeps its facet, and the caption says the z is undefined (#344)
 
+* `gg_partial_varpro()` labelled categorical partials in the wrong order.
+  Each column of `varPro::partialpro()`'s output belongs to one value of
+  `$xvirtual` (sorted values, or factor levels), but the labels were taken
+  from the order values first appear in the sampled cases, so a 0/1
+  variable could have "0" and "1" swapped and a multi-level variable had
+  its levels shifted, whenever the two orders differed. On the PBC data
+  this made stage 4 and severe edema look protective. Categorical partials
+  are now labelled by `$xvirtual`. The `$categorical$variable` column now
+  holds `$xvirtual` values; code that filtered it against values taken
+  from `$xorg` should be checked (#350)
+
+* Add the vignette "varPro on small or sparse data": which variables
+  varPro actually tested, what a z of zero means, how much the trim and
+  the 0.79 cutoff change the answer, checking a screen against noise, and
+  partial dependence on small data. Document the same points in
+  `?gg_varpro`, `?gg_partial_varpro` (a factor is partialled one level at
+  a time, by its one-hot names; the spread is not a confidence interval)
+  and `?gg_partial_rfsrc` (horizons before the first event all return the
+  first event's curve) (#351)
+
+* Tests now cover `varpro_coverage()` on a classification fit and its
+  error branches: an encoding map that misses a term, and a multivariate
+  regression fit (#347)
+
 ggRandomForests v3.5.2
 ======================
 * Three help pages no longer render a stray backslash where a percent sign
