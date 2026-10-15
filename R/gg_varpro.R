@@ -91,8 +91,9 @@
 #' two can disagree: a variable a few trees find very important and many
 #' find unimportant has a long box and a low median.
 #'
-#' A tree with no usable release rule for a variable contributes a zero, so
-#' boxes start at 0 for any variable some trees never tested. varPro
+#' A tree with no usable release rule for a variable contributes a zero, which
+#' pulls the lower whisker and box toward 0 as coverage falls; at high
+#' coverage the box need not reach 0. varPro
 #' winsorises the per-tree values (\code{trim = 0.1}: values beyond the 10th
 #' and 90th percentiles are pulled in to them), so a variable scored in fewer
 #' than about \code{trim} of the trees comes back with z exactly 0. That

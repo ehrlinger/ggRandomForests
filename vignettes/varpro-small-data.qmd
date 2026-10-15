@@ -134,8 +134,11 @@ clamping stops a few extreme trees from dominating.
 The side effect is the one to know about. For a term scored in fewer than one
 tree in ten, the 90th percentile is itself zero, so every non-zero tree is
 pulled down to zero and z comes back as exactly 0, whatever those trees found.
-**A z of 0 means "not tested enough to rank", not "tested and found
-unimportant".** Read coverage beside z, never z alone.
+The reverse does not hold: a term scored in every tree also gets z = 0 when
+the outcome means its rules compare agree. **A z of 0 is ambiguous, and
+coverage tells the two apart:** with low coverage it means "not tested enough
+to rank", with high coverage "tested and found unimportant". Read coverage
+beside z, never z alone.
 
 # Reading the importance plot
 
@@ -153,8 +156,10 @@ plot(vs$gg_guided_all)
 
 Three things are easy to misread.
 
-- **The boxes start at 0** for any term some trees never tested, because each
-  of those trees contributes a zero.
+- **Untested trees add zeros.** Each tree that never tested a term
+  contributes a 0, which pulls the lower whisker and box toward 0 as coverage
+  falls. At high coverage the box reflects the scored trees, and need not
+  reach 0.
 - **Order and colour measure different things.** Rows are ordered by the
   median tree, but coloured by z, the winsorised mean, against the cutoff
   (dashed). A term that a few trees find very important and many find
@@ -255,8 +260,10 @@ If you need a selection, each step above is a lever:
 # Partial dependence on small data
 
 `gg_partial_varpro()` shows how the prediction moves with one variable
-*locally*: within the cases whose rules made the variable important, the rest
-of each case held as it is. `gg_partial_rfsrc()` shows it *marginally*: the
+*locally*: it samples training cases at random, makes virtual twins of each
+by setting the variable to a grid of values with the rest of the case held as
+it is, and keeps only the twins that resemble the training data (an
+isolation-forest filter by default). `gg_partial_rfsrc()` shows it *marginally*: the
 variable is set to each value for every case and the predictions averaged.
 Here is bilirubin both ways, survival at `r vs$tau` days:
 
@@ -272,9 +279,13 @@ patchwork::wrap_plots(
   nrow = 1)
 ```
 
-When the two agree, the effect holds across the data. When they differ, the
-effect is confined to part of it, or the marginal curve is extrapolating where
-there are no cases. Four things matter more on small data.
+The two panels come from different forests: the varPro fit above (one-hot
+factors, the noise columns, guided splits) and a plain `rfsrc()` fit on the
+17 real predictors, which is how the two are usually produced. Agreement is
+reassuring. A difference can come from the methods (the local profile drops
+unsupported twins, so the marginal curve may be extrapolating where there are
+no cases) or simply from the two forests; to separate those, pass the varPro
+forest (`vp$rf`) to `gg_partial_rfsrc()`. Four things matter more on small data.
 
 **The band is not a confidence interval.** Both plots summarise the cases of
 *one* fitted forest. The spread shows how much cases differ, not how
