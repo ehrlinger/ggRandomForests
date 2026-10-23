@@ -549,8 +549,10 @@ test_that("gg_partial_varpro: scale='surv' stays in [0,1] near S = 1", {
   tau <- sort(unique(d$time[d$status == 1]))[3]
   r <- suppressWarnings(gg_partial_varpro(object = vp, scale = "surv",
                                           time = tau))
-  vals <- c(r$continuous$parametric, r$continuous$nonparametric,
-            r$categorical$parametric, r$categorical$nonparametric)
+  ## [[ ]], not $: on 3.5.x an empty $categorical is a 0-column tibble, and $
+  ## on a missing tibble column warns.
+  vals <- c(r$continuous[["parametric"]], r$continuous[["nonparametric"]],
+            r$categorical[["parametric"]], r$categorical[["nonparametric"]])
   expect_true(length(vals) > 0L)
   expect_true(all(vals >= 0 & vals <= 1))
 })
