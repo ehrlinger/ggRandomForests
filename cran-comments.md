@@ -20,6 +20,10 @@
 * `plot.gg_varpro()` drew an undefined class-conditional z (0/0) as a zero
   bar, which reads as a measured zero. It now draws no bar and says so in
   the caption.
+* `gg_partial_varpro(scale = "surv")` could return survival outside [0, 1]
+  (up to 1.01 on a simulated fit, down to -0.06 in the vignette's PBC
+  `edema` panel). It is now clamped after averaging; in-range values are
+  unchanged.
 
 No exported function, argument or returned column was added or removed.
 

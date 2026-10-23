@@ -43,6 +43,18 @@ ggRandomForests v3.5.5
   with `local.std = FALSE`. The variable keeps its row, including one varPro
   leaves out of every class, every class keeps its facet, and the caption
   says the z is undefined (#344).
+* `gg_partial_varpro(scale = "surv")` no longer returns survival above 1.
+  `partialpro()` smooths each case's S(tau) with an unbounded polynomial, so
+  where survival is near 1 (early horizons, before most events) the averaged
+  curve ran up to about a percentage point past it. The curve is now clamped
+  to [0, 1] after averaging, and the categorical frame per value. Only the
+  impossible values change; everything in range is exactly as before.
+  Smoothing on the logit scale was tried and rejected: `partialpro()` replaces
+  each case's intercept with the cohort mean, so on that scale the curve's
+  level depends on how S = 0 and S = 1 are clamped. A precomputed `part_dta`
+  labelled `"surv"` passes through unchanged.
+  The varpro vignette's precomputed PBC partial is rebuilt: its `edema`
+  panel had 60 values below 0, now 0.
 
 ggRandomForests v3.5.4
 ======================
