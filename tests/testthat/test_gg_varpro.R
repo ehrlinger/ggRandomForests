@@ -541,3 +541,17 @@ test_that("plot.gg_varpro conditional labels the variable axis", {
                               function(pp) as.character(pp$y$get_labels())))
   expect_true(any(grepl("BP Diastole", labels_all)))
 })
+
+test_that(".varpro_binary_code_map returns NULL unless the pairing is one-to-one", {
+  map <- ggRandomForests:::.varpro_binary_code_map
+  ok <- list(y.org = factor(c("a", "b", "b")), y = factor(c("1", "0", "0")))
+  expect_identical(map(ok), c("0" = "b", "1" = "a"))
+  ## a code paired with two labels
+  expect_null(map(list(y.org = factor(c("a", "b", "a")),
+                       y     = factor(c("1", "1", "0")))))
+  ## two codes paired with one label
+  expect_null(map(list(y.org = factor(c("a", "a")), y = factor(c("0", "1")))))
+  ## lengths differ, or a side is missing
+  expect_null(map(list(y.org = factor("a"), y = factor(c("0", "1")))))
+  expect_null(map(list(y = factor(c("0", "1")))))
+})
