@@ -16,7 +16,7 @@
 # depend on fitted values") needs a judgement call on every future test.
 
 rng_consumers <- paste0(
-  "^(rfsrc|randomForest|varpro|uvarpro|isopro|partialpro|beta\\.varpro|",
+  "^(rfsrc|randomForest|varpro|uvarpro|isopro|ivarpro|partialpro|beta\\.varpro|",
   "sample|sample\\.int|rnorm|runif|rbinom|rpois|rexp|rgamma|rbeta)$"
 )
 

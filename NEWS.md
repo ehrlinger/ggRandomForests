@@ -8,6 +8,16 @@ ggRandomForests v3.5.5
   per-class frame now takes its `class` column without error: a fit where
   every class is empty returns an empty `gg_ivarpro`, and one where only some
   are drops those classes. Reported by Udaya Kogalur.
+* `gg_ivarpro()` on a binary classification forest labelled its profile
+  with the wrong class. `varPro::ivarpro()` explains one class there, the
+  first factor level (its `target` attribute says so), and `gg_ivarpro()`
+  filed that profile under the last level, the default. Every binary
+  `gg_ivarpro()` plot therefore showed the first class's slopes, sign
+  included, under the second class's name. Because the two class
+  probabilities sum to one, the second class's slopes are the first's
+  negated, so `gg_ivarpro()` now derives it exactly and both levels are
+  available through `which_class`. The default stays the last level, now
+  with the right values. Under `use.abs = TRUE` the two profiles are equal.
 
 ggRandomForests v3.5.4
 ======================
