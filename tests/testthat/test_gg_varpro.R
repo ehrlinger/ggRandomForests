@@ -317,9 +317,9 @@ test_that("plot.gg_varpro conditional: a class with no defined z keeps its facet
   set.seed(42L)
   vi <- varPro::varpro(Species ~ ., data = iris, ntree = 3, split.weight = FALSE)
   gg <- gg_varpro(vi, conditional = TRUE, local.std = FALSE, nvar = 1)
-  shown <- gg$conditional[!is.na(gg$conditional$variable), ]
-  ## the fixture has a class whose only displayed z is undefined
-  expect_true(any(tapply(is.finite(shown$z), shown$class, function(v) !any(v))))
+  ## Make one class's z undefined by hand. Which class a seeded ntree = 3 fit
+  ## leaves undefined, if any, changes with the rfsrc RNG.
+  gg$conditional$z[gg$conditional$class == "virginica"] <- NaN
   built <- ggplot2::ggplot_build(plot(gg))
   expect_setequal(as.character(built$layout$layout$class), levels(iris$Species))
 })
