@@ -55,6 +55,10 @@ ggRandomForests v3.5.5
   labelled `"surv"` passes through unchanged.
   The varpro vignette's precomputed PBC partial is rebuilt: its `edema`
   panel had 60 values below 0, now 0.
+* `?gg_partial_varpro` no longer says that `scale = "surv"` is computed
+  through `gg_partial_rfsrc()`. Only `scale = "chf"` takes that route;
+  `"surv"` uses the `partialpro()` S(tau) learner, and its `time` is the
+  horizon tau, defaulting to the median follow-up time.
 
 ggRandomForests v3.5.4
 ======================
