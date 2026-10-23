@@ -42,3 +42,22 @@ test_that("the fixture exercises the bug: some first-seen order differs from xvi
   }, logical(1))
   expect_true(any(differs))
 })
+
+test_that("a factor-valued categorical keeps its level order and ordered status", {
+  x <- ordered(c("medium", "low", "high"), levels = c("medium", "low", "high"))
+  f <- list(xorg = x, xvirtual = levels(x),
+            yhat.par = matrix(1:9, 3), yhat.nonpar = matrix(1:9, 3),
+            yhat.causal = matrix(1:9, 3))
+  g <- gg_partial_varpro(list(stage = f))
+  v <- g$categorical$variable
+  expect_true(is.ordered(v))
+  expect_identical(levels(v), c("medium", "low", "high"))
+  ## column j of yhat.* still belongs to xvirtual[j]
+  for (j in seq_along(f$xvirtual)) {
+    expect_equal(g$categorical$parametric[as.character(v) == f$xvirtual[j]],
+                 f$yhat.par[, j])
+  }
+  built <- ggplot2::ggplot_build(plot(g))
+  expect_identical(built$layout$panel_params[[1L]]$x$get_labels(),
+                   c("medium", "low", "high"))
+})
