@@ -17,6 +17,9 @@
 * `gg_varpro(conditional = TRUE)` on a binary classification forest named
   its classes `0` and `1`, varPro's internal codes, instead of the outcome's
   levels.
+* `plot.gg_varpro()` drew an undefined class-conditional z (0/0) as a zero
+  bar, which reads as a measured zero. It now draws no bar and says so in
+  the caption.
 
 No exported function, argument or returned column was added or removed.
 
