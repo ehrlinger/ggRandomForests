@@ -144,6 +144,44 @@ test_that("gg_ivarpro binary: a y.external target that is not a class is not mir
   expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
 })
 
+# A y.external target may carry a class's name and still be any numeric
+# response, so it must not be mirrored into a second, complementary class.
+test_that("gg_ivarpro binary: y.external named after a class is not mirrored", {
+  v <- .varpro_iris_binary_for_ivarpro()
+  ext <- matrix(v$x[, 1L], dimnames = list(NULL, "versicolor"))
+  ## The default view is the last level whether or not iv was mirrored, so
+  ## probe the first level: a mirrored profile would have rows there.
+  ## gg_ivarpro() runs ivarpro() itself, so it sees y.external in '...'
+  set.seed(20261023L)
+  expect_equal(nrow(gg_ivarpro(v, y.external = ext, which_class = "versicolor")), 0L)
+  ## precomputed with save.data = TRUE: the saved response is not the OOB
+  ## probability of versicolor
+  set.seed(20261023L)
+  iv <- varPro::ivarpro(v, y.external = ext, save.data = TRUE)
+  expect_equal(nrow(gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")), 0L)
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  expect_gt(nrow(out), 0L)
+  expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+  ## precomputed, named after the second level: never what ivarpro() explains
+  set.seed(20261023L)
+  iv <- varPro::ivarpro(v, y.external = matrix(v$x[, 1L],
+                                               dimnames = list(NULL, "virginica")),
+                        save.data = FALSE)
+  expect_equal(nrow(gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")), 0L)
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  expect_gt(nrow(out), 0L)
+  expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+})
+
+test_that("gg_ivarpro binary: a saved internal target is still mirrored", {
+  v <- .varpro_iris_binary_for_ivarpro()
+  set.seed(20261023L)
+  iv <- varPro::ivarpro(v, save.data = TRUE)
+  out <- gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")
+  expect_gt(nrow(out), 0L)
+  expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+})
+
 test_that("gg_ivarpro which_class explicit returns single class", {
   v  <- .varpro_iris_multiclass_for_ivarpro()
   iv <- .ivarpro_iris_multiclass()
