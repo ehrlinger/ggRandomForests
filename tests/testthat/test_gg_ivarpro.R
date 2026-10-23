@@ -78,6 +78,16 @@ test_that("gg_ivarpro binary classification which_class = NULL defaults to last 
   expect_setequal(as.character(unique(out$class)), "virginica")
 })
 
+# Which cells ivarpro() leaves finite depends on the upstream RNG: on
+# randomForestSRC 3.9.3 the binary fixture comes back all NA. The binary
+# tests check ggRF's labelling and mirroring, not varPro's slopes, so they
+# fill every cell with a finite value and keep varPro's attributes (target,
+# ivarpro.path, data).
+.finite_ivarpro <- function(iv) {
+  iv[] <- lapply(seq_along(iv), function(j) (seq_len(nrow(iv)) + j) / nrow(iv) - 0.5)
+  iv
+}
+
 # varPro explains the FIRST level on a binary fit (attr "target"); the last
 # level is derived from it. Look up varPro's raw value for each output row.
 .raw_ivarpro_at <- function(iv, out) {
@@ -88,6 +98,7 @@ test_that("gg_ivarpro binary classification which_class = NULL defaults to last 
 test_that("gg_ivarpro binary: first level is varPro's own target profile", {
   v  <- .varpro_iris_binary_for_ivarpro()
   iv <- .ivarpro_iris_binary()
+  iv <- .finite_ivarpro(iv)
   expect_equal(attr(iv, "target"), "versicolor")
   out <- gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")
   expect_gt(nrow(out), 0L)
@@ -97,6 +108,7 @@ test_that("gg_ivarpro binary: first level is varPro's own target profile", {
 test_that("gg_ivarpro binary: last level is the target's negated slopes", {
   v  <- .varpro_iris_binary_for_ivarpro()
   iv <- .ivarpro_iris_binary()
+  iv <- .finite_ivarpro(iv)
   out <- gg_ivarpro(v, ivarpro_fit = iv)   # default: virginica
   expect_gt(nrow(out), 0L)
   expect_equal(out$local_imp, -.raw_ivarpro_at(iv, out))
@@ -106,6 +118,7 @@ test_that("gg_ivarpro binary: use.abs profiles are not negated", {
   v  <- .varpro_iris_binary_for_ivarpro()
   set.seed(20261005L)
   iv <- varPro::ivarpro(v, use.abs = TRUE)
+  iv <- .finite_ivarpro(iv)
   out <- gg_ivarpro(v, ivarpro_fit = iv)
   expect_gt(nrow(out), 0L)
   expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
@@ -116,6 +129,7 @@ test_that("gg_ivarpro binary: a y.external target that is not a class is not mir
   p <- v$rf$predicted.oob
   set.seed(20261005L)
   iv <- varPro::ivarpro(v, y.external = matrix(p[, 2L], dimnames = list(NULL, "score")))
+  iv <- .finite_ivarpro(iv)
   expect_equal(attr(iv, "target"), "score")
   out <- gg_ivarpro(v, ivarpro_fit = iv)
   expect_gt(nrow(out), 0L)
@@ -158,6 +172,7 @@ test_that("gg_ivarpro binary: y.external named after a class is not mirrored", {
   ## probability of versicolor
   set.seed(20261023L)
   iv <- varPro::ivarpro(v, y.external = ext, save.data = TRUE)
+  iv <- .finite_ivarpro(iv)
   expect_equal(nrow(gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")), 0L)
   out <- gg_ivarpro(v, ivarpro_fit = iv)
   expect_gt(nrow(out), 0L)
@@ -167,6 +182,7 @@ test_that("gg_ivarpro binary: y.external named after a class is not mirrored", {
   iv <- varPro::ivarpro(v, y.external = matrix(v$x[, 1L],
                                                dimnames = list(NULL, "virginica")),
                         save.data = FALSE)
+  iv <- .finite_ivarpro(iv)
   expect_equal(nrow(gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")), 0L)
   out <- gg_ivarpro(v, ivarpro_fit = iv)
   expect_gt(nrow(out), 0L)
@@ -177,6 +193,7 @@ test_that("gg_ivarpro binary: a saved internal target is still mirrored", {
   v <- .varpro_iris_binary_for_ivarpro()
   set.seed(20261023L)
   iv <- varPro::ivarpro(v, save.data = TRUE)
+  iv <- .finite_ivarpro(iv)
   out <- gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")
   expect_gt(nrow(out), 0L)
   expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
