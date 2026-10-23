@@ -57,7 +57,9 @@ otherwise an ntree x p matrix of per-tree importance values.}
 plus \code{mean} (raw importance mean, always stored).}
 \item{\code{$conditional}}{\code{NULL} when \code{conditional = FALSE};
 otherwise a data frame with columns \code{variable}, \code{class},
-\code{z} (one row per variable x class combination).}
+\code{z} (one row per variable x class combination). \code{class} is
+a factor of the outcome's own level names, also for a binary outcome,
+which varPro recodes to 0/1 internally.}
 }
 A \code{"provenance"} attribute carries \code{family}, \code{local.std},
 \code{cutoff}, \code{faithful}, \code{conditional}, \code{xvar.names},
