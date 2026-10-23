@@ -97,6 +97,20 @@ test_that("gg_varpro$conditional has variable, class, z when conditional=TRUE", 
   expect_true(all(c("variable", "class", "z") %in% names(gg$conditional)))
 })
 
+# varPro codes by frequency (minority = 1; a tie makes the first level the
+# minority), not by level position. Check every class's z against the
+# upstream column whose code the data pair with that class.
+.expect_conditional_matches_codes <- function(v, gg) {
+  z <- varPro::importance(v, local.std = FALSE)$conditional.z
+  for (lab in levels(v$y.org)) {
+    code <- unique(as.character(v$y[as.character(v$y.org) == lab]))
+    expect_length(code, 1L)
+    rows <- gg$conditional[gg$conditional$class == lab, ]
+    expect_gt(nrow(rows), 0L)
+    expect_equal(rows$z, unname(z[as.character(rows$variable), code]))
+  }
+}
+
 test_that("gg_varpro conditional names binary classes, not varPro's 0/1 codes", {
   skip_on_cran()
   vb <- .varpro_iris_binary()
@@ -104,10 +118,35 @@ test_that("gg_varpro conditional names binary classes, not varPro's 0/1 codes", 
   expect_identical(levels(vb$y), c("0", "1"))
   gg <- gg_varpro(vb, conditional = TRUE, local.std = FALSE)
   expect_identical(levels(gg$conditional$class), levels(vb$y.org))
-  # The recode is positional: code 0 is the first level of y.org.
-  z0 <- varPro::importance(vb, local.std = FALSE)$conditional.z[, "0"]
-  first <- gg$conditional[gg$conditional$class == levels(vb$y.org)[1], ]
-  expect_equal(first$z, unname(z0[as.character(first$variable)]))
+  .expect_conditional_matches_codes(vb, gg)
+})
+
+
+test_that("gg_varpro conditional binary: a tie codes the first level as 1", {
+  skip_on_cran()
+  vb <- .varpro_iris_binary()
+  expect_equal(as.vector(table(vb$y.org)), c(50L, 50L))
+  expect_identical(unique(as.character(vb$y[vb$y.org == "versicolor"])), "1")
+  .expect_conditional_matches_codes(vb, gg_varpro(vb, conditional = TRUE, local.std = FALSE))
+})
+
+test_that("gg_varpro conditional binary: a minority first level is coded 1", {
+  skip_on_cran()
+  set.seed(20261023L)
+  d <- iris[iris$Species != "setosa", ]
+  d$Species <- droplevels(d$Species)
+  d <- d[c(which(d$Species == "versicolor")[1:20], which(d$Species == "virginica")), ]
+  v <- varPro::varpro(Species ~ ., data = d, ntree = 30)
+  expect_identical(unique(as.character(v$y[v$y.org == "versicolor"])), "1")
+  .expect_conditional_matches_codes(v, gg_varpro(v, conditional = TRUE, local.std = FALSE))
+})
+
+test_that("gg_varpro conditional binary: no pairing keeps varPro's codes", {
+  skip_on_cran()
+  vb <- .varpro_iris_binary()
+  vb$y.org <- NULL
+  gg <- gg_varpro(vb, conditional = TRUE, local.std = FALSE)
+  expect_setequal(as.character(unique(gg$conditional$class)), c("0", "1"))
 })
 
 test_that("gg_varpro conditional keeps multiclass names unchanged", {
