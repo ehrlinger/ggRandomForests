@@ -766,7 +766,15 @@ gg_partial_varpro <- function(part_dta  = NULL,
 #' @keywords internal
 .process_cat_var <- function(feat, feat_name, scale = "generic") {
   bounded  <- .is_bounded_scale(scale)
-  n_cats   <- length(unique(feat$xorg))
+  ## Label each column of yhat.* by the value partialpro() evaluated it at:
+  ## $xvirtual, in partialpro()'s own order (sorted values, or factor levels).
+  ## unique(xorg) is the order values first appear in the sampled cases, which
+  ## swapped "0" and "1", or shifted the levels, whenever that differed.
+  levels_x <- feat$xvirtual
+  if (is.null(levels_x)) {
+    levels_x <- if (is.factor(feat$xorg)) levels(feat$xorg) else sort(unique(feat$xorg))
+  }
+  n_cats   <- length(levels_x)
   cat_feat <- list()
   for (ind in seq(n_cats)) {
     cat_feat[[ind]] <- dplyr::bind_cols(
@@ -774,7 +782,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
       nonparametric = .scale_transform(feat$yhat.nonpar[, ind], scale),
       causal        = if (bounded) NA_real_ else feat$yhat.causal[, ind]
     )
-    cat_feat[[ind]]$variable <- unique(feat$xorg)[ind]
+    cat_feat[[ind]]$variable <- levels_x[ind]
     plt.df <- if (ind == 1L) cat_feat[[ind]] else
       dplyr::bind_rows(plt.df, cat_feat[[ind]])
   }
