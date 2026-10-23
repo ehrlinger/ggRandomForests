@@ -1,3 +1,19 @@
+## v3.5.5: one bug fix
+
+* `gg_ivarpro()` stopped with "replacement has 1 row, data has 0" when every
+  local-importance value for a class was nonfinite, so the empty-result path
+  was never reached. Reported by Udaya Kogalur (`randomForestSRC` / `varPro`
+  maintainer), whose upcoming RNG change can produce such fits on the
+  package's own tests. The binary-classification test no longer depends on
+  which cells `varPro::ivarpro()` leaves finite.
+
+No exported function, argument or returned column was added or removed.
+
+### Test environments
+
+* Pending: `R CMD check --as-cran` with the manual, win-builder, and the
+  reverse-dependency check have not yet been run for 3.5.5.
+
 ## v3.5.4: five bug fixes
 
 * `kaplan(by = )` and `nelson(by = )` computed `hazard`, `density`, `mid_int`,
