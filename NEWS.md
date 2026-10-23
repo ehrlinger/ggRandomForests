@@ -18,6 +18,14 @@ ggRandomForests v3.5.5
   negated, so `gg_ivarpro()` now derives it exactly and both levels are
   available through `which_class`. The default stays the last level, now
   with the right values. Under `use.abs = TRUE` the two profiles are equal.
+* `gg_ivarpro()` mirrors a binary profile into the second class only when it
+  explains the forest's own probability of the first level. A `y.external`
+  target named after a class is any numeric response, not a class
+  probability, and is kept as a single profile, as before.
+* `varPro` (>= 3.3.0) is now required, up from 3.1.0. `ivarpro()` records
+  the class it explains (its `target` attribute) only from 3.2.1, and the
+  corrected binary `gg_ivarpro()` depends on it; 3.3.0 is the version tested
+  and the one on CRAN.
 * `gg_partial_varpro()` labelled categorical partials in the wrong order.
   Each column of `varPro::partialpro()`'s output belongs to one value of
   `$xvirtual` (sorted values, or factor levels), but the labels were taken

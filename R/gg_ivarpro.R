@@ -216,7 +216,9 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
 
 #' @noRd
 .resolve_ivarpro_fit <- function(ivarpro_fit, object, fam, dots) {
+  external <- NA
   if (is.null(ivarpro_fit)) {
+    external <- !is.null(dots[["y.external"]])
     iv <- do.call(varPro::ivarpro, c(list(object), dots))
   } else {
     .validate_ivarpro_fit(ivarpro_fit, object, fam)
@@ -237,20 +239,55 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
   if (fam == "class" && is.data.frame(iv)) {
     cls_levels <- .ivarpro_class_levels(object)
     target     <- attr(iv, "target")
-    if (length(target) == 1L && target %in% cls_levels &&
-        length(cls_levels) == 2L) {
+    if (.ivarpro_binary_target(iv, object, cls_levels, external)) {
       other  <- setdiff(cls_levels, target)
       flip   <- if (isTRUE(attr(iv, "ivarpro.path")$use.abs)) 1 else -1
       iv_oth <- as.data.frame(lapply(iv, function(x) flip * x),
                               check.names = FALSE)
       iv <- stats::setNames(list(iv, iv_oth), c(target, other))[cls_levels]
     } else {
-      # Target is not a response level (e.g. a y.external column): there is
-      # no class to mirror, so keep the single profile under the last level.
+      # Not the forest's own class probability (e.g. a y.external column):
+      # there is no class to mirror, so keep the single profile under the
+      # last level.
       iv <- stats::setNames(list(iv), cls_levels[length(cls_levels)])
     }
   }
   iv
+}
+
+#' @noRd
+.ivarpro_binary_target <- function(iv, object, cls_levels, external) {
+  # Mirroring is exact only when iv explains the forest's own probability of
+  # one class. A y.external target can carry a class's name and still be any
+  # numeric response, and an ivarpro() result does not record whether
+  # y.external was used, so require what we can check:
+  #   - a binary response and a single target naming its FIRST level, the
+  #     only class an internal binary ivarpro() explains;
+  #   - when gg_ivarpro() ran ivarpro() itself, no y.external in '...';
+  #   - when ivarpro() saved its data (save.data = TRUE), a saved response
+  #     equal to the forest's OOB probability for that level.
+  # A precomputed y.external named after the first level and saved without
+  # its data cannot be told apart; it is mirrored.
+  target <- attr(iv, "target")
+  if (length(cls_levels) != 2L || length(target) != 1L ||
+      !identical(target, cls_levels[1L]) || isTRUE(external)) {
+    return(FALSE)
+  }
+  .ivarpro_saved_is_oob(iv, object, target)
+}
+
+#' @noRd
+.ivarpro_saved_is_oob <- function(iv, object, target) {
+  # TRUE unless ivarpro() saved a response that is not the forest's OOB
+  # probability for `target`; with nothing saved there is nothing to refute.
+  saved <- attr(iv, "data")
+  col   <- attr(saved, "response.names")[[target]]
+  oob   <- object$rf$predicted.oob
+  if (is.null(saved) || is.null(col) || is.null(oob) ||
+      !target %in% colnames(oob)) {
+    return(TRUE)
+  }
+  isTRUE(all.equal(unname(saved[[col]]), unname(oob[, target])))
 }
 
 #' @noRd
