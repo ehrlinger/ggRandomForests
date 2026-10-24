@@ -69,6 +69,9 @@ test_that("gg_ivarpro which_obs out of range errors with valid range", {
 test_that("gg_ivarpro binary classification which_class = NULL defaults to last factor level", {
   v  <- .varpro_iris_binary_for_ivarpro()
   iv <- .ivarpro_iris_binary()
+  # Which cells ivarpro() leaves finite depends on the upstream RNG, so force
+  # them finite: this test is about the default class, not varPro's output.
+  iv[] <- lapply(iv, function(x) seq_along(x) / length(x))
   out <- gg_ivarpro(v, ivarpro_fit = iv)
   prov <- attr(out, "provenance")
   expect_equal(prov$which_class, "virginica")
@@ -118,6 +121,27 @@ test_that("gg_ivarpro binary: a y.external target that is not a class is not mir
   expect_gt(nrow(out), 0L)
   expect_setequal(as.character(unique(out$class)), "virginica")
   expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+})
+
+# A class whose every local-importance cell is nonfinite yields a 0-row
+# frame; tagging it with its class name must not fail R's row-count check.
+test_that("gg_ivarpro binary: all-nonfinite profile returns an empty gg_ivarpro", {
+  v  <- .varpro_iris_binary_for_ivarpro()
+  iv <- .ivarpro_iris_binary()
+  iv[] <- lapply(iv, function(x) rep(NaN, length(x)))
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  expect_s3_class(out, "gg_ivarpro")
+  expect_equal(nrow(out), 0L)
+  expect_true("class" %in% names(out))
+})
+
+test_that("gg_ivarpro multiclass: one all-nonfinite class drops out, the rest survive", {
+  v  <- .varpro_iris_multiclass_for_ivarpro()
+  iv <- .ivarpro_iris_multiclass()
+  iv[["setosa"]][] <- lapply(iv[["setosa"]], function(x) rep(NaN, length(x)))
+  out <- gg_ivarpro(v, ivarpro_fit = iv)
+  expect_gt(nrow(out), 0L)
+  expect_false("setosa" %in% as.character(out$class))
 })
 
 test_that("gg_ivarpro which_class explicit returns single class", {

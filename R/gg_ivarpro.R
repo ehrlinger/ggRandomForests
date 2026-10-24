@@ -438,7 +438,8 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
     mat <- iv[[c_name]]
     if (is.null(mat)) return(NULL)
     df <- .ivarpro_long(mat, xvars)
-    df$class <- c_name
+    # rep() keeps a 0-row frame (every cell nonfinite) assignable.
+    df$class <- rep(c_name, nrow(df))
     df
   })
   long <- do.call(rbind, per_class_long)
