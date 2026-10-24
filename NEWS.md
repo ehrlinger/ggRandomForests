@@ -553,6 +553,42 @@ ggRandomForests v4.0.0 (development)
   error branches: an encoding map that misses a term, and a multivariate
   regression fit (#347)
 
+* `gg_ivarpro()` no longer fails with "replacement has 1 row, data has 0"
+  when every local-importance value for a class is nonfinite. The empty
+  per-class frame now takes its `class` column without error: a fit where
+  every class is empty returns an empty `gg_ivarpro`, and one where only some
+  are drops those classes. Reported by Udaya Kogalur.
+
+* `?gg_partial_varpro` no longer says that `scale = "surv"` is computed
+  through `gg_partial_rfsrc()`. Only `scale = "chf"` takes that route;
+  `"surv"` uses the `partialpro()` S(tau) learner, and its `time` is the
+  horizon tau, defaulting to the median follow-up time.
+
+* `gg_varpro(conditional = TRUE)` on a binary classification forest now reads
+  which class each of varPro's 0/1 codes stands for from the data. varPro
+  codes by frequency, not level order: the minority class is `1`, and on a
+  tie the first level is. Mapping by position put each class's z-scores under
+  the other class's name whenever the first level was the minority or the
+  classes were tied, as on a balanced fit. When the codes cannot be paired
+  with the original labels, they are kept as `0` and `1` rather than guessed.
+
+* `gg_ivarpro()` mirrors a binary profile into the second class only when it
+  explains the forest's own probability of the first level. A `y.external`
+  target named after a class is any numeric response, not a class
+  probability, and is kept as a single profile.
+
+* `gg_partial_varpro()` keeps a factor's level order, and its ordered status,
+  in `$categorical$variable` when `part_dta` carries factor-valued `xorg`.
+  Labelling by `$xvirtual` had turned those labels into character, so the
+  plot listed the categories alphabetically.
+
+* Two tests no longer depend on the `randomForestSRC` random-number stream.
+  The live `gg_sdependent()` test computes its beta fit once and gives it to
+  both sides, and the `plot.gg_varpro()` test for a class with no defined z
+  sets that z by hand. Both failed against the `randomForestSRC` development
+  release, whose new seed generator grows a different forest from the same
+  seed.
+
 ggRandomForests v3.5.2
 ======================
 * Three help pages no longer render a stray backslash where a percent sign
