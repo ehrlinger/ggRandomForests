@@ -88,9 +88,12 @@
 #'
 #' @section Classification:
 #' For a classification fit, `ivarpro()` returns a list of K matrices
-#' (one per class) for multi-class, or a flat data.frame for binary
-#' (positive-class importances only - the wrapper normalizes this to
-#' a single-element list under the last factor level). The wrapper
+#' (one per class) for multi-class, or a flat data.frame for binary.
+#' The binary frame explains one class, named by its `target`
+#' attribute and by default the first factor level. Because the two
+#' class probabilities sum to one, the wrapper derives the other class
+#' exactly, as the negated local slopes (or the same values under
+#' `use.abs = TRUE`), so both levels are available. The wrapper
 #' stacks per-class frames into a long-format frame with a `class`
 #' column. `which_class = NULL` returns all classes (binary defaults
 #' to the last factor level, the positive-class convention used by
@@ -213,7 +216,9 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
 
 #' @noRd
 .resolve_ivarpro_fit <- function(ivarpro_fit, object, fam, dots) {
+  external <- NA
   if (is.null(ivarpro_fit)) {
+    external <- !is.null(dots[["y.external"]])
     iv <- do.call(varPro::ivarpro, c(list(object), dots))
   } else {
     .validate_ivarpro_fit(ivarpro_fit, object, fam)
@@ -225,14 +230,64 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
     }
     iv <- ivarpro_fit
   }
-  # varPro::ivarpro() returns a flat data.frame for binary classification
-  # (positive-class importances only). Normalize to the spec's list-of-K
-  # shape by wrapping under the last factor level (positive class).
+  # varPro::ivarpro() returns a flat data.frame for binary classification,
+  # explaining one class: attr "target" names it, and by default it is the
+  # FIRST level, the first column of the OOB probabilities. Normalize to the
+  # spec's list-of-K shape with both classes. Because P(other) = 1 - P(target),
+  # the other class's local slopes are the target's negated, or equal to them
+  # when ivarpro() was run with use.abs = TRUE.
   if (fam == "class" && is.data.frame(iv)) {
     cls_levels <- .ivarpro_class_levels(object)
-    iv <- stats::setNames(list(iv), cls_levels[length(cls_levels)])
+    target     <- attr(iv, "target")
+    if (.ivarpro_binary_target(iv, object, cls_levels, external)) {
+      other  <- setdiff(cls_levels, target)
+      flip   <- if (isTRUE(attr(iv, "ivarpro.path")$use.abs)) 1 else -1
+      iv_oth <- as.data.frame(lapply(iv, function(x) flip * x),
+                              check.names = FALSE)
+      iv <- stats::setNames(list(iv, iv_oth), c(target, other))[cls_levels]
+    } else {
+      # Not the forest's own class probability (e.g. a y.external column):
+      # there is no class to mirror, so keep the single profile under the
+      # last level.
+      iv <- stats::setNames(list(iv), cls_levels[length(cls_levels)])
+    }
   }
   iv
+}
+
+#' @noRd
+.ivarpro_binary_target <- function(iv, object, cls_levels, external) {
+  # Mirroring is exact only when iv explains the forest's own probability of
+  # one class. A y.external target can carry a class's name and still be any
+  # numeric response, and an ivarpro() result does not record whether
+  # y.external was used, so require what we can check:
+  #   - a binary response and a single target naming its FIRST level, the
+  #     only class an internal binary ivarpro() explains;
+  #   - when gg_ivarpro() ran ivarpro() itself, no y.external in '...';
+  #   - when ivarpro() saved its data (save.data = TRUE), a saved response
+  #     equal to the forest's OOB probability for that level.
+  # A precomputed y.external named after the first level and saved without
+  # its data cannot be told apart; it is mirrored.
+  target <- attr(iv, "target")
+  if (length(cls_levels) != 2L || length(target) != 1L ||
+      !identical(target, cls_levels[1L]) || isTRUE(external)) {
+    return(FALSE)
+  }
+  .ivarpro_saved_is_oob(iv, object, target)
+}
+
+#' @noRd
+.ivarpro_saved_is_oob <- function(iv, object, target) {
+  # TRUE unless ivarpro() saved a response that is not the forest's OOB
+  # probability for `target`; with nothing saved there is nothing to refute.
+  saved <- attr(iv, "data")
+  col   <- attr(saved, "response.names")[[target]]
+  oob   <- object$rf$predicted.oob
+  if (is.null(saved) || is.null(col) || is.null(oob) ||
+      !target %in% colnames(oob)) {
+    return(TRUE)
+  }
+  isTRUE(all.equal(unname(saved[[col]]), unname(oob[, target])))
 }
 
 #' @noRd

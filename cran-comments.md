@@ -1,4 +1,4 @@
-## v3.5.5: one bug fix
+## v3.5.5: bug fixes
 
 * `gg_ivarpro()` stopped with "replacement has 1 row, data has 0" when every
   local-importance value for a class was nonfinite, so the empty-result path
@@ -6,6 +6,12 @@
   maintainer), whose upcoming RNG change can produce such fits on the
   package's own tests. The binary-classification test no longer depends on
   which cells `varPro::ivarpro()` leaves finite.
+* `gg_ivarpro()` on a binary classification forest filed varPro's profile,
+  which explains the first factor level, under the last level's name, so
+  the slopes shown had the wrong sign for the class named. Both levels are
+  now derived exactly (the second is the first's negation).
+* `varPro` (>= 3.3.0) is now required, up from 3.1.0, for the `target`
+  attribute the binary `gg_ivarpro()` fix reads (added in 3.2.1).
 
 No exported function, argument or returned column was added or removed.
 
