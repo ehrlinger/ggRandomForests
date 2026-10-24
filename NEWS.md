@@ -26,6 +26,16 @@ ggRandomForests v3.5.5
   the class it explains (its `target` attribute) only from 3.2.1, and the
   corrected binary `gg_ivarpro()` depends on it; 3.3.0 is the version tested
   and the one on CRAN.
+* `gg_partial_varpro()` labelled categorical partials in the wrong order.
+  Each column of `varPro::partialpro()`'s output belongs to one value of
+  `$xvirtual` (sorted values, or factor levels), but the labels were taken
+  from the order values first appear in the sampled cases, so a 0/1 variable
+  could have "0" and "1" swapped and a multi-level variable had its levels
+  shifted, whenever the two orders differed. On the PBC data this made stage
+  4 and severe edema look protective. Categorical partials are now labelled
+  by `$xvirtual`.
+  The precomputed varpro vignette objects are rebuilt, so the Boston `rad`
+  and PBC `edema` panels now carry the right labels.
 
 ggRandomForests v3.5.4
 ======================
