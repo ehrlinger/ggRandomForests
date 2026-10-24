@@ -237,7 +237,12 @@
 #'
 #' **Survival probability (scale = "surv"):** \code{scale = "surv"} (the
 #' survival default) computes \eqn{S(\tau \mid x)} through \code{partialpro}
-#' (the same UVT engine as mortality and RMST), bounded in \eqn{[0, 1]}.  When
+#' (the same UVT engine as mortality and RMST), bounded in \eqn{[0, 1]}.
+#' \code{partialpro} smooths each case's \eqn{S(\tau)} with an unbounded
+#' polynomial, so where survival is near 1 the averaged curve can run slightly
+#' past it; the curve is clamped to \eqn{[0, 1]} after averaging, and the
+#' categorical frame per value.  The curve is still the average of the smoothed
+#' per-case \eqn{S(\tau)}, with only impossible values changed.  When
 #' \code{time} is not supplied, \eqn{\tau} defaults to the \strong{median
 #' follow-up time} of the fit -- a data-driven horizon that is always in the
 #' model's own time units, so it cannot be mis-specified the way a hand-typed
@@ -397,7 +402,11 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## '...' (e.g. xvar.names, nvar, cut) is forwarded to partialpro() so the
   ## object-driven path can select/limit variables the same way an explicit
   ## partialpro() call would -- otherwise it falls back to get.topvars(object).
+  ## 'value_scale' differs from the reported 'scale' only for surv recomputed
+  ## here: those values are S(tau) from our learner and get clamped to [0, 1].
+  value_scale <- scale
   if (is.null(part_dta)) {
+    if (scale == "surv") value_scale <- "surv_learner"
     ## Before the expensive call: partialpro() silently discards any requested
     ## name outside object$xvar.names, so flag it while we still know what was
     ## asked for.  [["..."]] rather than $: `$` partial-matches on a list, so a
@@ -421,7 +430,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
   prov <- .varpro_provenance(object, scale, time, path = "A",
                              target = .varpro_target(object, list(...)))
 
-  dfs <- .build_varpro_dfs(part_dta, nvars, cat_limit, scale)
+  dfs <- .build_varpro_dfs(part_dta, nvars, cat_limit, value_scale)
   continuous  <- dfs$continuous
   categorical <- dfs$categorical
 
@@ -707,6 +716,14 @@ gg_partial_varpro <- function(part_dta  = NULL,
 #' @keywords internal
 .build_varpro_dfs <- function(part_dta, nvars, cat_limit, scale = "generic") {
   bounded   <- .is_bounded_scale(scale)
+  ## Average, then clamp: clamping each case first would pull the mean down
+  ## wherever some cases overshoot. See .clamp_unit().
+  col_mean  <- function(mat) {
+    if (identical(scale, "surv_learner")) {
+      return(.clamp_unit(colMeans(mat, na.rm = TRUE)))
+    }
+    colMeans(.scale_transform(mat, scale), na.rm = TRUE)
+  }
   cont_list <- list()
   cat_list  <- list()
   for (feature in seq(nvars)) {
@@ -715,10 +732,8 @@ gg_partial_varpro <- function(part_dta  = NULL,
     if (length(feat$xvirtual) > cat_limit) {
       plt.df <- dplyr::bind_cols(
         variable      = feat$xvirtual,
-        parametric    = colMeans(.scale_transform(feat$yhat.par,    scale),
-                                 na.rm = TRUE),
-        nonparametric = colMeans(.scale_transform(feat$yhat.nonpar, scale),
-                                 na.rm = TRUE),
+        parametric    = col_mean(feat$yhat.par),
+        nonparametric = col_mean(feat$yhat.nonpar),
         # `causal` is a centered contrast: not shown on bounded scales
         causal        = if (bounded) NA_real_ else
           colMeans(feat$yhat.causal, na.rm = TRUE)
@@ -752,7 +767,22 @@ gg_partial_varpro <- function(part_dta  = NULL,
   switch(scale,
     prob = stats::plogis(z),
     odds = exp(z),
+    ## Internal: S(tau) from .surv_learner(), per value. Used on the
+    ## categorical frame; the continuous frame clamps after averaging, in
+    ## .build_varpro_dfs(). Plain "surv" stays the identity, because a
+    ## precomputed part_dta carries only the label.
+    surv_learner = .clamp_unit(z),
     z)
+}
+
+## partialpro smooths each case's S(tau) with an unbounded polynomial and swaps
+## in the cohort-mean intercept, so the averaged curve can run past 1 where
+## survival is near 1. Smoothing on the logit scale does not fix it: with the
+## per-case intercept gone, the curve level then depends on how S = 0 and
+## S = 1 are clamped. Clamping the result keeps the estimand.
+#' @keywords internal
+.clamp_unit <- function(z) {
+  pmin(pmax(z, 0), 1)
 }
 
 ## Bounded scales: probability (class), odds (class), survival probability.
@@ -760,7 +790,7 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## contrast is not shown (it cannot share the axis).
 #' @keywords internal
 .is_bounded_scale <- function(scale) {
-  scale %in% c("prob", "odds", "surv")
+  scale %in% c("prob", "odds", "surv", "surv_learner")
 }
 
 #' @keywords internal
