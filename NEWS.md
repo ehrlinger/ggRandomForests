@@ -44,6 +44,13 @@ ggRandomForests v3.5.5
   and `$conditional$class` is a factor in the outcome's level order.
   Multiclass outcomes, which varPro does not recode, are unchanged, including
   ones whose own labels are `"0"`, `"1"`, ...
+* `plot.gg_varpro()` draws no bar for an undefined class-conditional z
+  instead of a zero bar that reads as "tested and unimportant". The z is
+  0/0 when too few trees tested a variable for that class, which happens
+  with default settings because `gg_varpro()` calls `varPro::importance()`
+  with `local.std = FALSE`. The variable keeps its row, including one varPro
+  leaves out of every class, every class keeps its facet, and the caption
+  says the z is undefined (#344).
 
 ggRandomForests v3.5.4
 ======================
