@@ -235,11 +235,15 @@ gg_varpro <- function(object,
   ## Only binary outcomes are recoded, so only they are mapped: a multiclass
   ## outcome whose own labels are "0", "1", ... must be left alone.
   if (!is.null(dfs$conditional)) {
-    lv    <- .ivarpro_class_levels(object)
-    codes <- as.character(seq_along(lv) - 1L)
-    cls   <- dfs$conditional$class
-    if (length(lv) == 2L && all(cls %in% codes)) cls <- lv[match(cls, codes)]
-    dfs$conditional$class <- factor(cls, levels = intersect(lv, cls))
+    lv  <- .ivarpro_class_levels(object)
+    cls <- as.character(dfs$conditional$class)
+    map <- if (length(lv) == 2L) .varpro_binary_code_map(object) else NULL
+    if (!is.null(map) && all(cls %in% names(map))) {
+      cls <- unname(map[cls])
+      dfs$conditional$class <- factor(cls, levels = intersect(lv, cls))
+    } else {
+      dfs$conditional$class <- factor(cls, levels = unique(cls))
+    }
   }
 
   ## ---- Assemble result ------------------------------------------------------
@@ -270,6 +274,30 @@ gg_varpro <- function(object,
 }
 
 ## ---- Internal helpers -------------------------------------------------------
+
+## varPro codes a binary outcome by frequency, not by level: the minority
+## class is 1 and the majority 0, and on a tie which.min() makes the FIRST
+## level the minority. So read the map from the data, pairing each working
+## code in object$y with the original label in object$y.org. NULL when the
+## pairing is unavailable or not one-to-one; the caller then keeps the codes
+## rather than guess a name.
+#' @keywords internal
+.varpro_binary_code_map <- function(object) {
+  y_org  <- object$y.org
+  y_code <- object$y
+  if (is.null(y_org) || is.null(y_code) || length(y_org) != length(y_code)) {
+    return(NULL)
+  }
+  y_org  <- as.character(y_org)
+  y_code <- as.character(y_code)
+  codes  <- sort(unique(y_code))
+  map <- vapply(codes, function(cd) {
+    lab <- unique(y_org[y_code == cd])
+    if (length(lab) == 1L) lab else NA_character_
+  }, character(1))
+  if (length(map) != 2L || anyNA(map) || anyDuplicated(map)) return(NULL)
+  map
+}
 
 #' @keywords internal
 .validate_varpro_imp_inputs <- function(object, local.std, faithful, conditional,
