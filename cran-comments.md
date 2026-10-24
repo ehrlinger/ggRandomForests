@@ -49,8 +49,16 @@ No exported function, argument or returned column was added or removed.
 
 ### Test environments
 
-* Pending: `R CMD check --as-cran` with the manual, win-builder, and the
-  reverse-dependency check have not yet been run for 3.5.5.
+* **Local:** macOS (aarch64-apple-darwin), R 4.6.1, `R CMD check --as-cran`
+  with the manual, built from a clean export of the tree: **0 ERRORs,
+  0 WARNINGs, 1 NOTE** (CRAN incoming feasibility: 10 updates in the past 6
+  months). Run 2026-10-24. The source tarball is 2.42 MB. Timed steps on an
+  otherwise idle machine: examples 12s, examples with `--run-donttest` 32s,
+  tests 16s, vignette rebuild 40s.
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
+* **URL check:** the `--as-cran` remote URL check reports no problems.
+
+**win-builder:** pending.
 
 ## v3.5.4: five bug fixes
 
