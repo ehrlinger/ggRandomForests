@@ -33,7 +33,8 @@ ggRandomForests v3.5.5
   could have "0" and "1" swapped and a multi-level variable had its levels
   shifted, whenever the two orders differed. On the PBC data this made stage
   4 and severe edema look protective. Categorical partials are now labelled
-  by `$xvirtual`.
+  by `$xvirtual`, in the factor's own level order (and ordered status) when
+  `part_dta` carries factor-valued `xorg`.
   The precomputed varpro vignette objects are rebuilt, so the Boston `rad`
   and PBC `edema` panels now carry the right labels.
 * `gg_varpro(conditional = TRUE)` on a binary classification forest now
