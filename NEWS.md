@@ -67,6 +67,12 @@ ggRandomForests v3.5.5
   through `gg_partial_rfsrc()`. Only `scale = "chf"` takes that route;
   `"surv"` uses the `partialpro()` S(tau) learner, and its `time` is the
   horizon tau, defaulting to the median follow-up time.
+* Two tests no longer depend on the `randomForestSRC` random-number stream.
+  The live `gg_sdependent()` test computes its beta fit once and gives it to
+  both sides, and the `plot.gg_varpro()` test for a class with no defined z
+  sets that z by hand. Both failed against the `randomForestSRC` development
+  release, whose new seed generator grows a different forest from the same
+  seed.
 
 ggRandomForests v3.5.4
 ======================

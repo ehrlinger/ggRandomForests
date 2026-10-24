@@ -26,6 +26,9 @@
   (up to 1.01 on a simulated fit, down to -0.06 in the vignette's PBC
   `edema` panel). It is now clamped after averaging; in-range values are
   unchanged.
+* Two further tests (skipped on CRAN) no longer depend on the
+  `randomForestSRC` random-number stream, so they keep passing across that
+  package's coming seed-generator change.
 
 No exported function, argument or returned column was added or removed.
 
