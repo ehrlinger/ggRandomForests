@@ -1020,6 +1020,12 @@ gg_partial_varpro <- function(part_dta  = NULL,
   if (is.null(levels_x)) {
     levels_x <- if (is.factor(feat$xorg)) levels(feat$xorg) else sort(unique(feat$xorg))
   }
+  ## $xvirtual carries a factor's levels as character; keep xorg's level order
+  ## (and ordered status) so the plot does not alphabetise them.
+  if (is.factor(feat$xorg) && all(levels_x %in% levels(feat$xorg))) {
+    levels_x <- factor(levels_x, levels = levels(feat$xorg),
+                       ordered = is.ordered(feat$xorg))
+  }
   n_cats   <- length(levels_x)
   cat_feat <- list()
   for (ind in seq(n_cats)) {
