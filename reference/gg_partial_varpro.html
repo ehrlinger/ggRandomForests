@@ -147,11 +147,14 @@ or the survival scales <code>"rmst"</code> / <code>"surv"</code> / <code>"mortal
 <code>scale = "rmst"</code> (the RMST horizon \(\tau\)), where it now
 <em>drives</em> the partial computation through an RMST(\(\tau\))
 learner (see <strong>Details</strong>), not just the axis label.  Optional when
-<code>scale %in% c("surv","chf")</code>: if supplied it is snapped to the
-nearest value in <code>object\$rf\$time.interest</code> and used for both
-computation and axis labeling; if <code>NULL</code>, three quartile time
-points from <code>time.interest</code> are used (see
-<code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code>).</p></dd>
+<code>scale = "surv"</code>: it is the horizon \(\tau\) of the
+\(S(\tau)\) learner, read at the nearest value in
+<code>object\$rf\$time.interest</code>; if <code>NULL</code>, \(\tau\) defaults
+to the median follow-up time, with a message.  Optional when
+<code>scale = "chf"</code>: if supplied it is snapped to the nearest value in
+<code>object\$rf\$time.interest</code> and used for both computation and
+axis labeling; if <code>NULL</code>, three quartile time points from
+<code>time.interest</code> are used (see <code><a href="gg_partial_rfsrc.html">gg_partial_rfsrc</a></code>).</p></dd>
 
 
 <dt id="arg-nvars">nvars<a class="anchor" aria-label="anchor" href="#arg-nvars"></a></dt>
@@ -468,10 +471,11 @@ one row per grid point with the column means of <code>yhat.par</code>,
 variable at or below <code>cat_limit</code> goes into <code>$categorical</code>,
 one row per observation per category level, carrying the same three
 columns unaveraged so the plot method can draw boxplots. Path C
-(<code>scale %in% c("surv","chf")</code>) takes a different route: we
-hand the underlying <code>rfsrc</code> forest to <code>gg_partial_rfsrc</code> so
-you get a survival-probability or cumulative-hazard curve on the
-usual rfsrc scale instead.</p>
+(<code>scale = "chf"</code>) takes a different route: we hand the
+underlying <code>rfsrc</code> forest to <code>gg_partial_rfsrc</code> so you get a
+cumulative-hazard curve on the usual rfsrc scale instead.
+<code>scale = "surv"</code> stays on the <code>partialpro</code> path, through an
+\(S(\tau)\) learner (see <strong>Details</strong>).</p>
     </div>
     <div class="section level2">
     <h2 id="what-you-use-this-for">What you use this for<a class="anchor" aria-label="anchor" href="#what-you-use-this-for"></a></h2>

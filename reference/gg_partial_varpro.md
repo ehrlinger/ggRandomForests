@@ -69,8 +69,11 @@ gg_partialpro(
   Numeric; the evaluation time point. Required when `scale = "rmst"`
   (the RMST horizon \\\tau\\), where it now *drives* the partial
   computation through an RMST(\\\tau\\) learner (see **Details**), not
-  just the axis label. Optional when `scale %in% c("surv","chf")`: if
-  supplied it is snapped to the nearest value in
+  just the axis label. Optional when `scale = "surv"`: it is the horizon
+  \\\tau\\ of the \\S(\tau)\\ learner, read at the nearest value in
+  `object\$rf\$time.interest`; if `NULL`, \\\tau\\ defaults to the
+  median follow-up time, with a message. Optional when `scale = "chf"`:
+  if supplied it is snapped to the nearest value in
   `object\$rf\$time.interest` and used for both computation and axis
   labeling; if `NULL`, three quartile time points from `time.interest`
   are used (see
@@ -413,10 +416,11 @@ column means of `yhat.par`, `yhat.nonpar`, and `yhat.causal` stored as
 `parametric`, `nonparametric`, and `causal`. A variable at or below
 `cat_limit` goes into `$categorical`, one row per observation per
 category level, carrying the same three columns unaveraged so the plot
-method can draw boxplots. Path C (`scale %in% c("surv","chf")`) takes a
-different route: we hand the underlying `rfsrc` forest to
-`gg_partial_rfsrc` so you get a survival-probability or
-cumulative-hazard curve on the usual rfsrc scale instead.
+method can draw boxplots. Path C (`scale = "chf"`) takes a different
+route: we hand the underlying `rfsrc` forest to `gg_partial_rfsrc` so
+you get a cumulative-hazard curve on the usual rfsrc scale instead.
+`scale = "surv"` stays on the `partialpro` path, through an \\S(\tau)\\
+learner (see **Details**).
 
 ## What you use this for
 
