@@ -197,6 +197,14 @@ test_that("gg_ivarpro binary: a saved internal target is still mirrored", {
   out <- gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")
   expect_gt(nrow(out), 0L)
   expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+  ## saved without its data: nothing refutes the internal target, so mirrored
+  set.seed(20261023L)
+  iv <- varPro::ivarpro(v, save.data = FALSE)
+  expect_null(attr(iv, "data"))
+  iv <- .finite_ivarpro(iv)
+  out <- gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")
+  expect_gt(nrow(out), 0L)
+  expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
 })
 
 test_that("gg_ivarpro which_class explicit returns single class", {

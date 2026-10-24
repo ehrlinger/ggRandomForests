@@ -51,11 +51,14 @@ or the survival scales \code{"rmst"} / \code{"surv"} / \code{"mortality"} /
 \code{scale = "rmst"} (the RMST horizon \eqn{\tau}), where it now
 \emph{drives} the partial computation through an RMST(\eqn{\tau})
 learner (see \strong{Details}), not just the axis label.  Optional when
-\code{scale \%in\% c("surv","chf")}: if supplied it is snapped to the
-nearest value in \code{object\$rf\$time.interest} and used for both
-computation and axis labeling; if \code{NULL}, three quartile time
-points from \code{time.interest} are used (see
-\code{\link{gg_partial_rfsrc}}).}
+\code{scale = "surv"}: it is the horizon \eqn{\tau} of the
+\eqn{S(\tau)} learner, read at the nearest value in
+\code{object\$rf\$time.interest}; if \code{NULL}, \eqn{\tau} defaults
+to the median follow-up time, with a message.  Optional when
+\code{scale = "chf"}: if supplied it is snapped to the nearest value in
+\code{object\$rf\$time.interest} and used for both computation and
+axis labeling; if \code{NULL}, three quartile time points from
+\code{time.interest} are used (see \code{\link{gg_partial_rfsrc}}).}
 
 \item{nvars}{Integer; how many variables (list elements) to process.
 Defaults to every variable in \code{part_dta}.}
@@ -303,10 +306,11 @@ one row per grid point with the column means of \code{yhat.par},
 variable at or below \code{cat_limit} goes into \code{$categorical},
 one row per observation per category level, carrying the same three
 columns unaveraged so the plot method can draw boxplots. Path C
-(\code{scale \%in\% c("surv","chf")}) takes a different route: we
-hand the underlying \code{rfsrc} forest to \code{gg_partial_rfsrc} so
-you get a survival-probability or cumulative-hazard curve on the
-usual rfsrc scale instead.
+(\code{scale = "chf"}) takes a different route: we hand the
+underlying \code{rfsrc} forest to \code{gg_partial_rfsrc} so you get a
+cumulative-hazard curve on the usual rfsrc scale instead.
+\code{scale = "surv"} stays on the \code{partialpro} path, through an
+\eqn{S(\tau)} learner (see \strong{Details}).
 }
 
 \section{What you use this for}{
