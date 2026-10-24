@@ -104,9 +104,12 @@ test_that("gg_sdependent agrees with a live uvarpro + sdependent fit", {
   skip_if_not_installed("varPro")
   set.seed(1)
   o <- varPro::uvarpro(mtcars, ntree = 30)
-  out <- gg_sdependent(o)
-  expect_s3_class(out, "gg_sdependent")
+  ## One beta fit feeds both sides: get.beta.entropy() is not reproducible
+  ## across repeated calls on every rfsrc version, so two calls would compare
+  ## two different matrices rather than ggRF against varPro.
   b <- varPro::get.beta.entropy(o)
+  out <- gg_sdependent(o, beta_fit = b)
+  expect_s3_class(out, "gg_sdependent")
   s <- varPro::sdependent(b, plot = FALSE)
   expect_setequal(as.character(out$variable[out$signal]), s$signal.vars)
 })
