@@ -1,5 +1,20 @@
 ## v3.5.5: bug fixes
 
+### Why this follows 3.5.4 so closely
+
+3.5.4 was published on 2026-10-08, so this update arrives sooner than the
+one-to-two-month interval CRAN asks for, and the incoming check reports 10
+updates in the past 6 months. I would not send it now if it only tidied
+things. It corrects answers the varPro layer was showing users: binary
+`gg_ivarpro()` slopes carried the wrong sign for the class named,
+`gg_varpro(conditional = TRUE)` and `gg_partial_varpro()` labelled classes
+and categories wrongly (on the PBC data, stage 4 and severe edema looked
+protective), and survival partials ran outside [0, 1]. The `gg_ivarpro()`
+crash was reported by the `randomForestSRC` / `varPro` maintainer, whose
+coming seed-generator change produces fits that trigger it. Each of these
+bugs reaches a reader of the plot without an error or a warning, so I would
+rather not leave them on CRAN for another month or two.
+
 * `gg_ivarpro()` stopped with "replacement has 1 row, data has 0" when every
   local-importance value for a class was nonfinite, so the empty-result path
   was never reached. Reported by Udaya Kogalur (`randomForestSRC` / `varPro`
