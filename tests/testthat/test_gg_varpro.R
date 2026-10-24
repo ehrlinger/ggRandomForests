@@ -97,6 +97,80 @@ test_that("gg_varpro$conditional has variable, class, z when conditional=TRUE", 
   expect_true(all(c("variable", "class", "z") %in% names(gg$conditional)))
 })
 
+# varPro codes by frequency (minority = 1; a tie makes the first level the
+# minority), not by level position. Check every class's z against the
+# upstream column whose code the data pair with that class.
+.expect_conditional_matches_codes <- function(v, gg) {
+  z <- varPro::importance(v, local.std = FALSE)$conditional.z
+  for (lab in levels(v$y.org)) {
+    code <- unique(as.character(v$y[as.character(v$y.org) == lab]))
+    expect_length(code, 1L)
+    rows <- gg$conditional[gg$conditional$class == lab, ]
+    expect_gt(nrow(rows), 0L)
+    expect_equal(rows$z, unname(z[as.character(rows$variable), code]))
+  }
+}
+
+test_that("gg_varpro conditional names binary classes, not varPro's 0/1 codes", {
+  skip_on_cran()
+  vb <- .varpro_iris_binary()
+  # varPro recodes a binary outcome internally; y.org keeps the names.
+  expect_identical(levels(vb$y), c("0", "1"))
+  gg <- gg_varpro(vb, conditional = TRUE)
+  expect_identical(levels(gg$conditional$class), levels(vb$y.org))
+  .expect_conditional_matches_codes(vb, gg)
+})
+
+
+test_that("gg_varpro conditional binary: a tie codes the first level as 1", {
+  skip_on_cran()
+  vb <- .varpro_iris_binary()
+  expect_equal(as.vector(table(vb$y.org)), c(50L, 50L))
+  expect_identical(unique(as.character(vb$y[vb$y.org == "versicolor"])), "1")
+  .expect_conditional_matches_codes(vb, gg_varpro(vb, conditional = TRUE))
+})
+
+test_that("gg_varpro conditional binary: a minority first level is coded 1", {
+  skip_on_cran()
+  set.seed(20261023L)
+  d <- iris[iris$Species != "setosa", ]
+  d$Species <- droplevels(d$Species)
+  d <- d[c(which(d$Species == "versicolor")[1:20], which(d$Species == "virginica")), ]
+  v <- varPro::varpro(Species ~ ., data = d, ntree = 30)
+  expect_identical(unique(as.character(v$y[v$y.org == "versicolor"])), "1")
+  .expect_conditional_matches_codes(v, gg_varpro(v, conditional = TRUE))
+})
+
+test_that("gg_varpro conditional binary: no pairing keeps varPro's codes", {
+  skip_on_cran()
+  vb <- .varpro_iris_binary()
+  vb$y.org <- NULL
+  gg <- gg_varpro(vb, conditional = TRUE)
+  expect_setequal(as.character(unique(gg$conditional$class)), c("0", "1"))
+})
+
+test_that("gg_varpro conditional keeps multiclass names unchanged", {
+  skip_on_cran()
+  vm <- .varpro_iris_multiclass()
+  gg <- gg_varpro(vm, conditional = TRUE)
+  expect_identical(levels(gg$conditional$class), levels(iris$Species))
+})
+
+test_that("gg_varpro conditional leaves multiclass labels that look like codes", {
+  skip_on_cran()
+  skip_if_not_installed("varPro")
+  set.seed(20261005L)
+  d <- iris
+  d$Species <- factor(as.integer(d$Species) - 1L, levels = c(2, 0, 1))
+  v <- varPro::varpro(Species ~ ., data = d, ntree = 30)
+  gg <- gg_varpro(v, conditional = TRUE)
+  z <- varPro::importance(v, local.std = FALSE)$conditional.z
+  for (k in c("2", "0", "1")) {
+    rows <- gg$conditional[gg$conditional$class == k, ]
+    expect_equal(rows$z, unname(z[as.character(rows$variable), k]))
+  }
+})
+
 ## ── Provenance attribute ─────────────────────────────────────────────────────
 
 test_that("gg_varpro provenance has all expected fields", {
@@ -329,4 +403,18 @@ test_that("summary.gg_varpro returns summary.gg_varpro class", {
   gg <- gg_varpro(vp)
   s  <- summary(gg)
   expect_s3_class(s, "summary.gg_varpro")
+})
+
+test_that(".varpro_binary_code_map returns NULL unless the pairing is one-to-one", {
+  map <- ggRandomForests:::.varpro_binary_code_map
+  ok <- list(y.org = factor(c("a", "b", "b")), y = factor(c("1", "0", "0")))
+  expect_identical(map(ok), c("0" = "b", "1" = "a"))
+  ## a code paired with two labels
+  expect_null(map(list(y.org = factor(c("a", "b", "a")),
+                       y     = factor(c("1", "1", "0")))))
+  ## two codes paired with one label
+  expect_null(map(list(y.org = factor(c("a", "a")), y = factor(c("0", "1")))))
+  ## lengths differ, or a side is missing
+  expect_null(map(list(y.org = factor("a"), y = factor(c("0", "1")))))
+  expect_null(map(list(y = factor(c("0", "1")))))
 })

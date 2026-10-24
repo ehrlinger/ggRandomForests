@@ -16,6 +16,9 @@
   first appeared in the sampled cases instead of by `partialpro()`'s column
   order, which swapped or shifted levels (on PBC, stage 4 and severe edema
   looked protective). The varpro vignette's precomputed objects are rebuilt.
+* `gg_varpro(conditional = TRUE)` on a binary classification forest named
+  its classes `0` and `1`, varPro's internal codes, instead of the outcome's
+  levels.
 
 No exported function, argument or returned column was added or removed.
 

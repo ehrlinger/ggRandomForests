@@ -107,7 +107,9 @@
 #'     plus \code{mean} (raw importance mean, always stored).}
 #'   \item{\code{$conditional}}{\code{NULL} when \code{conditional = FALSE};
 #'     otherwise a data frame with columns \code{variable}, \code{class},
-#'     \code{z} (one row per variable x class combination).}
+#'     \code{z} (one row per variable x class combination). \code{class} is
+#'     a factor of the outcome's own level names, also for a binary outcome,
+#'     which varPro recodes to 0/1 internally.}
 #' }
 #' A \code{"provenance"} attribute carries \code{family}, \code{local.std},
 #' \code{cutoff}, \code{faithful}, \code{conditional}, \code{xvar.names},
@@ -147,6 +149,22 @@ gg_varpro <- function(object,
   dfs <- .build_varpro_imp_dfs(imp_out, imp_tree_mat, object$family,
                                 cutoff, nvar, faithful, local.std, conditional)
 
+  ## varPro recodes a binary outcome to 0/1 and names the conditional columns
+  ## after those codes; report the original class names, as gg_ivarpro() does.
+  ## Only binary outcomes are recoded, so only they are mapped: a multiclass
+  ## outcome whose own labels are "0", "1", ... must be left alone.
+  if (!is.null(dfs$conditional)) {
+    lv  <- .ivarpro_class_levels(object)
+    cls <- as.character(dfs$conditional$class)
+    map <- if (length(lv) == 2L) .varpro_binary_code_map(object) else NULL
+    if (!is.null(map) && all(cls %in% names(map))) {
+      cls <- unname(map[cls])
+      dfs$conditional$class <- factor(cls, levels = intersect(lv, cls))
+    } else {
+      dfs$conditional$class <- factor(cls, levels = unique(cls))
+    }
+  }
+
   ## ---- Assemble result ------------------------------------------------------
   result <- structure(
     list(
@@ -172,6 +190,30 @@ gg_varpro <- function(object,
 }
 
 ## ---- Internal helpers -------------------------------------------------------
+
+## varPro codes a binary outcome by frequency, not by level: the minority
+## class is 1 and the majority 0, and on a tie which.min() makes the FIRST
+## level the minority. So read the map from the data, pairing each working
+## code in object$y with the original label in object$y.org. NULL when the
+## pairing is unavailable or not one-to-one; the caller then keeps the codes
+## rather than guess a name.
+#' @keywords internal
+.varpro_binary_code_map <- function(object) {
+  y_org  <- object$y.org
+  y_code <- object$y
+  if (is.null(y_org) || is.null(y_code) || length(y_org) != length(y_code)) {
+    return(NULL)
+  }
+  y_org  <- as.character(y_org)
+  y_code <- as.character(y_code)
+  codes  <- sort(unique(y_code))
+  map <- vapply(codes, function(cd) {
+    lab <- unique(y_org[y_code == cd])
+    if (length(lab) == 1L) lab else NA_character_
+  }, character(1))
+  if (length(map) != 2L || anyNA(map) || anyDuplicated(map)) return(NULL)
+  map
+}
 
 #' @keywords internal
 .validate_varpro_imp_inputs <- function(object, local.std, faithful, conditional) {
