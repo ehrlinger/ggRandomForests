@@ -58,7 +58,25 @@ No exported function, argument or returned column was added or removed.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 * **URL check:** the `--as-cran` remote URL check reports no problems.
 
-**win-builder:** pending.
+**win-builder:** x86_64-w64-mingw32, Windows Server 2022, all three branches.
+Each returns **Status: 1 NOTE**, the same `Number of updates in past 6 months:
+10` reported locally, with no second NOTE and no ERRORs or WARNINGs.
+`checking for hidden files and directories` is OK on all three.
+
+| Step | R-devel (r90762) | R-release (4.6.1) | R-oldrelease (4.5.3) |
+|---|---|---|---|
+| CRAN incoming feasibility | 14s | 15s | 14s |
+| R code for possible problems | 36s | 33s | 24s |
+| examples | 47s | 46s | 35s |
+| tests | 60s | 56s | 45s |
+| re-building vignette outputs | 169s | 156s | 132s |
+| PDF version of manual | 23s | 22s | 13s |
+| HTML version of manual | | 18s | 13s |
+| **timed steps** | **349s** | **346s** | **276s** |
+
+The blank cell is a step that `00check.log` did not time on that branch. All
+three runs are of the submitted tarball, on 2026-10-24 and 2026-10-25 (UTC).
+They are in line with 3.5.4's runs (339s, 348s and 483s).
 
 ## v3.5.4: five bug fixes
 
