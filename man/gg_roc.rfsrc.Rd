@@ -7,6 +7,8 @@
 \title{ROC (Receiver Operating Characteristic) curve data from a classification forest.}
 \usage{
 \method{gg_roc}{rfsrc}(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
+
+gg_roc(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
 }
 \arguments{
 \item{object}{A classification \code{\link[randomForestSRC]{rfsrc}} or

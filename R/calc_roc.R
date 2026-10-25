@@ -157,6 +157,7 @@ calc_roc.rfsrc <-
     invisible(gg_dta)
   }
 
+#' @rdname calc_roc.rfsrc
 #' @export
 calc_roc <- function(object,
                      dta,
