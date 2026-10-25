@@ -54,7 +54,7 @@ those 37 tests. A green check is not evidence that they pass; only the
 ## The one thing that destroys work
 
 **A suite run with `VDIFFR_RUN_TESTS` unset deletes every vdiffr
-baseline as “unused.”** There are 58 of them under
+baseline as “unused.”** There are 49 of them under
 `tests/testthat/_snaps/snapshots/`, and they are the package’s only
 visual regression coverage.
 
@@ -95,23 +95,7 @@ Further notes, so nobody re-derives them:
 - If you regenerate a baseline, do it **last**. A later full-suite run
   deletes it, and a blanket `git checkout -- tests/testthat/_snaps/` to
   undo that silently reverts your regeneration along with the pruning.
-- **That rule is branch-local, and the merge case is the one it
-  misses.** A branch that adds baselines and a branch that changes what
-  those baselines render are both green on their own, and the files
-  never textually conflict, so nothing fails until the second one
-  merges. It happened on 2026-08-29: \#252 added four
-  [`plot.gg_variable()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_variable.md)
-  survival baselines while \#250, which removed the hard-coded `"year"`
-  from that same axis title, sat in review. Two of the four baked in
-  `Survival at 1 year`, and \#250 would have merged clean and left
-  `main` quietly wrong. CI would have stayed green, because it never
-  compares an SVG, and the mismatch would have surfaced only when
-  someone next ran the suite locally with the guard on. **Before merging
-  a PR that changes rendered output, re-check `main` for baselines added
-  since you branched**, then merge `main` in, regenerate, and push.
-  `git diff --stat <merge-commit>..HEAD` afterwards should name only the
-  baselines you meant to touch.
-- All 58 baselines are tracked today. That was not true on 2026-08-06,
+- All 49 baselines are tracked today. That was not true on 2026-08-06,
   when one unguarded run pruned 49 files and the 9 untracked ones
   survived only because a stale copy happened to remain in
   `ggRandomForests.Rcheck/00_pkg_src/`. That is not a backup and will
@@ -197,7 +181,7 @@ sources. Editing it reddens CI and the next recompose reverts you.
 - Every [`plot()`](https://rdrr.io/r/graphics/plot.default.html) /
   `autoplot()` method should have a
   [`vdiffr::expect_doppelganger()`](https://vdiffr.r-lib.org/reference/expect_doppelganger.html)
-  test in `test_snapshots.R`. There are 58 today against 38 methods;
+  test in `test_snapshots.R`. There are 49 today against 38 methods;
   coverage is broad but has not been audited per method.
 - **Tests are deterministic, and every `test_that()` block that touches
   the RNG calls [`set.seed()`](https://rdrr.io/r/base/Random.html)
@@ -278,17 +262,6 @@ A new dependency is a CRAN cost. Ask first.
 - Every version bump updates **both** `DESCRIPTION` and the `Version:`
   line in `NEWS.md`. A test greps `NEWS.md` for the exact `DESCRIPTION`
   version.
-- **A change that ships writes its NEWS entry to a file of its own,**
-  `news/<branch>.md` with `/` in the branch name replaced by `-`: the
-  bullet or bullets exactly as they will read in `NEWS.md`, and no
-  heading. Do not edit `NEWS.md` itself; two pull requests open at once
-  would conflict there. The bump moves `Version:` in `DESCRIPTION`, then
-  runs `python3 .github/scripts/news.py collect`, which files the
-  fragments under that version’s heading (the `(development)` section
-  while `Version:` stands still) in merge order and deletes them. The
-  `news-fragment` job in `lint.yaml` fails a pull request that ships
-  something and adds no fragment. A change `.Rbuildignore` excludes in
-  full writes none.
 
 ## Prose
 
@@ -306,7 +279,7 @@ context. Read it before writing user-facing text.
 - `testthat` runs on **edition 2** here: `DESCRIPTION` has no
   `Config/testthat/edition` field. Do not assume 3rd-edition semantics.
 
-- `randomForestSRC` output structure varies by version (3.9.0 is
+- `randomForestSRC` output structure varies by version (3.7.0 is
   installed; `DESCRIPTION` requires `>= 3.4.0`). Never index its fields
   by position.
 
@@ -328,16 +301,7 @@ context. Read it before writing user-facing text.
   `packageVersion("randomForestSRC")` against the version named above.**
   Regenerating them is a change to what “correct output” means, so it
   belongs on its own branch with this line updated in the same commit —
-  never folded into a feature PR. The 3.7.0 to 3.9.0 bump moved no
-  baseline.
-
-  `randomForestRHF` behaves the same way. 2.1.0 made
-  `coe.aggregate = "max.robust"` the default for new fits, which moved
-  `gg-auct-chf` and `gg-rhf-importance-priority`; refitting the fixture
-  with the old `"trimmed.mean"` reproduced both old baselines, so the
-  new default is the whole of the change. **Check
-  `packageVersion("randomForestRHF")` (2.1.0 here) before treating
-  failing RHF baselines as your bug.**
+  never folded into a feature PR.
 
 - CRAN rejects a package whose overall `R CMD check` exceeds about 10
   minutes even at 0/0/0, and the rule bites at the **incoming pretest**,

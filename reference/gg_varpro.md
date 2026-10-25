@@ -3,7 +3,7 @@
 Pulls the per-tree importance scores out of a fitted `varpro` object and
 summarizes them into a data structure the plot method can draw as a
 boxplot. The box hinges are the 15th and 85th percentiles and the
-whiskers run to the 5th and 95th, not the usual Tukey 1.5 IQR whiskers.
+whiskers run to the 5th and 95th – not the usual Tukey 1.5 IQR whiskers.
 For a classification forest you can also keep the class-conditional
 importances.
 
@@ -17,9 +17,6 @@ gg_varpro(
   faithful = FALSE,
   conditional = FALSE,
   nvar = NULL,
-  trim = 0.1,
-  max.tree = object$max.tree,
-  max.rules.tree = object$max.rules.tree,
   ...
 )
 ```
@@ -32,17 +29,10 @@ gg_varpro(
 
 - local.std:
 
-  Logical; default `TRUE`. Passed to varPro's importance aggregation,
-  with the same meaning as in
-  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html):
-  `TRUE` re-samples the release rules, scores them by local importance
-  and reports z as their winsorised mean, so the boxes are on z's scale.
-  `FALSE` uses the fit-time rules and standardises z by the winsorised
-  standard deviation; the boxes are then on the raw importance scale,
-  which is what `type = "raw"` in `plot.gg_varpro` needs. With `TRUE`
-  the result depends on the random number stream, so call
-  [`set.seed()`](https://rdrr.io/r/base/Random.html) first for a
-  reproducible z.
+  Logical; default `TRUE`. When `TRUE` the per-tree importances are put
+  on the z-scale before the box statistics are computed. Set it `FALSE`
+  to keep the raw importance scale, which is what `type = "raw"` in
+  `plot.gg_varpro` needs.
 
 - cutoff:
 
@@ -66,28 +56,10 @@ gg_varpro(
   Integer; keep only the top `nvar` variables, ranked by median per-tree
   z, after the cutoff filter has been applied. `NULL` keeps all of them.
 
-- trim:
-
-  Winsorising fraction used for z, as in
-  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html);
-  default `0.1`. A variable is `tested` when its coverage is at least
-  `trim`.
-
-- max.tree, max.rules.tree:
-
-  Number of trees, and release rules per tree, to score. Default to the
-  values stored in the fit. Supplying either one re-samples the rules
-  even with `local.std = FALSE`, as
-  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
-  does. The boxes, z and coverage are always computed from the same
-  rules.
-
 - ...:
 
-  Not used. Earlier versions passed it to
-  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html);
-  `trim`, `max.tree` and `max.rules.tree` are now arguments, and
-  anything else is an error.
+  Additional arguments passed to
+  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html).
 
 ## Value
 
@@ -98,10 +70,7 @@ A named list of class `"gg_varpro"` with elements:
   Summary data frame: `variable` (factor whose levels run least- to
   most-important by median per-tree z, so the most-important variable
   sits at the top of the plot after `coord_flip`), `z` (aggregate
-  z-score, `NA` when it is undefined), `selected` (logical,
-  `z > cutoff`), `coverage` (share of the scored trees in which a
-  release rule for the variable returned an importance value) and
-  `tested` (`coverage >= trim`).
+  z-score from `importance()`), `selected` (logical, `z > cutoff`).
 
 - `$imp.tree`:
 
@@ -111,9 +80,8 @@ A named list of class `"gg_varpro"` with elements:
 - `$stats`:
 
   Per-variable summary: `variable`, `median`, `q05`, `q15`, `q85`, `q95`
-  of the per-tree values (on z's scale when `local.std = TRUE`, raw when
-  `FALSE`), `mean` (their plain mean), and `coverage` and `tested` as in
-  `$imp`.
+  (on z-scale when `local.std = TRUE`, raw when `FALSE`), plus `mean`
+  (raw importance mean, always stored).
 
 - `$conditional`:
 
@@ -123,8 +91,7 @@ A named list of class `"gg_varpro"` with elements:
   binary outcome, which varPro recodes to 0/1 internally.
 
 A `"provenance"` attribute carries `family`, `local.std`, `cutoff`,
-`faithful`, `conditional`, `xvar.names`, `n`, `trim`, `max.tree` and
-`max.rules.tree`.
+`faithful`, `conditional`, `xvar.names`, and `n`.
 
 ## What varpro is doing
 
@@ -143,29 +110,12 @@ the data.
 
 Because varpro builds importance from rules sampled over trees, every
 tree contributes its own importance value for each variable. Those are
-the per-tree scores we summarize here, and the aggregate z comes from
-the same rules on the same trees, so the boxes and z always agree.
-[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
-takes a winsorised mean over trees (trimmed by `trim`), counting a tree
-with no usable release rule for the variable as 0. With
-`local.std = TRUE` (the default, as in varPro) the release rules are
-re-sampled and scored by their local importance, the standard deviation
-is fixed at 1, and z is that winsorised mean, so the per-tree values
-already sit on z's scale. With `local.std = FALSE` the fit-time rules
-are used and z is the winsorised mean divided by the winsorised standard
-deviation. `cutoff = 0.79` is varpro's default selection threshold, but
-the scale of z depends on how many variables share each tree, so the
-same cutoff does not mean the same thing across settings.
-
-A variable scored in fewer than about `trim` of the trees (a tree scores
-it when one of its release rules for the variable returns an importance
-value) is *untested*: its z is 0 (or undefined with `local.std = FALSE`)
-because every non-zero tree is winsorised away, not because it was
-tested and found unimportant. `coverage` and `tested` in the output say
-which variables those are, and the plot draws them as open boxes.
-[`varpro_coverage`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
-counts coverage the same way and adds a per-variable roll-up and a
-noise-based cutoff.
+the per-tree scores we summarize here. With `local.std = TRUE` (the
+default) the per-tree values are standardized by their column standard
+deviation so the column mean equals the aggregate z-score returned by
+[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html);
+that z-score is the canonical "is this variable in or out?" statistic,
+and `cutoff = 0.79` is varpro's default selection threshold.
 
 For a classification forest, varpro also returns a class-conditional z
 table: the same importance computed restricting attention to rules
@@ -175,9 +125,9 @@ only in aggregate.
 
 ## What's in the output
 
-`$imp` is the one-row-per-variable summary: aggregate z from varPro's
-importance aggregation, a `selected` flag for `z > cutoff`, and the
-variable's `coverage` and `tested` flag. `$stats` holds the box
+`$imp` is the one-row-per-variable summary: aggregate z from
+[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html),
+plus a `selected` flag for `z > cutoff`. `$stats` holds the box
 quantiles (5/15/50/85/95 percentiles, plus the raw mean) computed from
 the per-tree matrix; these are what the boxplot draws. `$imp.tree` is
 the per-tree matrix itself, kept only when `faithful = TRUE` so the plot
@@ -205,30 +155,6 @@ this method", not "equally likely to be true signal". For a data-driven
 cutoff rather than the 0.79 default, see
 [`varPro::cv.varpro`](https://www.randomforestsrc.org/reference/cv.varpro.html).
 
-## Reading the plot
-
-Rows are ordered by the median tree, but the highlight follows z,
-varPro's winsorised mean across the trees, against `cutoff`. The two can
-disagree: a variable a few trees find very important and many find
-unimportant has a long box and a low median.
-
-A tree with no usable release rule for a variable contributes a zero,
-which pulls the lower whisker and box toward 0 as coverage falls; at
-high coverage the box need not reach 0. varPro winsorises the per-tree
-values (`trim = 0.1`: values beyond the 10th and 90th percentiles are
-pulled in to them), so a variable scored in fewer than about `trim` of
-the trees comes back with z exactly 0. That variable is untested, not
-unimportant; it is drawn as an open box, and `$imp$coverage` and
-`$imp$tested` say so.
-
-By default varPro scores a random sample of 150 trees, so on a large
-forest the plot can change from run to run. Pass
-`max.tree = object$rf$ntree` to score every tree. On small or sparse
-data the 0.79 cutoff decides a great deal; see
-[`varpro_coverage`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
-and
-[`vignette("varpro-small-data", package = "ggRandomForests")`](https://ehrlinger.github.io/ggRandomForests/articles/varpro-small-data.md).
-
 ## References
 
 Lu, M. and Ishwaran, H. (2024). Model-independent variable selection via
@@ -238,7 +164,6 @@ the rule-based variable priority framework. *arXiv preprint*
 ## See also
 
 [`plot.gg_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_varpro.md),
-[`varpro_coverage`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md),
 [`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md)
 
 ## Examples

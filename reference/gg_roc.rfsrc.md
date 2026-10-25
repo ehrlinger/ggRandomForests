@@ -15,8 +15,6 @@ positive rate) against specificity (1 minus the false positive rate).
 ``` r
 # S3 method for class 'rfsrc'
 gg_roc(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
-
-gg_roc(object, which_outcome, oob = TRUE, per_class = FALSE, ...)
 ```
 
 ## Arguments

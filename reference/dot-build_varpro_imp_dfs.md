@@ -12,8 +12,7 @@ Build the tidy importance data structures from importance() output
   cutoff,
   nvar,
   faithful,
-  conditional,
-  coverage = NULL,
-  trim = 0.1
+  local.std,
+  conditional
 )
 ```

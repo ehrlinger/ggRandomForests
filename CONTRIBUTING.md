@@ -354,19 +354,14 @@ Then spot-check the result:
 
 ### Updating NEWS.md
 
-Every user-visible change needs a NEWS bullet, written to a file of its
-own rather than to `NEWS.md`: `news/<branch>.md`, with `/` in the branch
-name replaced by `-`. Two pull requests editing `NEWS.md` at once
-conflict there; separate files never do. The file holds the bullet
-exactly as it will read in `NEWS.md`, and no heading:
+Every user-visible change needs a bullet in `NEWS.md` under the
+appropriate version heading:
 
 ``` md
+ggRandomForests v2.7.0
+=====================
 * Add `gg_depth()` to visualize average tree depth per forest (#42)
 ```
-
-The maintainer files the fragments into `NEWS.md` with
-`python3 .github/scripts/news.py collect`. A pull request that changes a
-shipped file and adds no fragment fails the `news-fragment` check.
 
 ------------------------------------------------------------------------
 
@@ -494,7 +489,7 @@ rhub::rhub_check()
     - What problem does this solve or what feature does it add?
     - Which functions are new or changed?
     - Did you add or update tests?
-    - Did you add a `news/<branch>.md` fragment?
+    - Did you add a `NEWS.md` entry?
     - Does `devtools::check()` pass cleanly?
 
 5.  **CI will run automatically** across macOS, Windows, and Linux on R
