@@ -1,5 +1,20 @@
 ## v3.5.5: bug fixes
 
+### Why this follows 3.5.4 so closely
+
+3.5.4 was published on 2026-10-08, so this update arrives sooner than the
+one-to-two-month interval CRAN asks for, and the incoming check reports 10
+updates in the past 6 months. I would not send it now if it only tidied
+things. It corrects answers the varPro layer was showing users: binary
+`gg_ivarpro()` slopes carried the wrong sign for the class named,
+`gg_varpro(conditional = TRUE)` and `gg_partial_varpro()` labelled classes
+and categories wrongly (on the PBC data, stage 4 and severe edema looked
+protective), and survival partials ran outside [0, 1]. The `gg_ivarpro()`
+crash was reported by the `randomForestSRC` / `varPro` maintainer, whose
+coming seed-generator change produces fits that trigger it. Each of these
+bugs reaches a reader of the plot without an error or a warning, so I would
+rather not leave them on CRAN for another month or two.
+
 * `gg_ivarpro()` stopped with "replacement has 1 row, data has 0" when every
   local-importance value for a class was nonfinite, so the empty-result path
   was never reached. Reported by Udaya Kogalur (`randomForestSRC` / `varPro`
@@ -34,8 +49,16 @@ No exported function, argument or returned column was added or removed.
 
 ### Test environments
 
-* Pending: `R CMD check --as-cran` with the manual, win-builder, and the
-  reverse-dependency check have not yet been run for 3.5.5.
+* **Local:** macOS (aarch64-apple-darwin), R 4.6.1, `R CMD check --as-cran`
+  with the manual, built from a clean export of the tree: **0 ERRORs,
+  0 WARNINGs, 1 NOTE** (CRAN incoming feasibility: 10 updates in the past 6
+  months). Run 2026-10-24. The source tarball is 2.42 MB. Timed steps on an
+  otherwise idle machine: examples 12s, examples with `--run-donttest` 32s,
+  tests 16s, vignette rebuild 40s.
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
+* **URL check:** the `--as-cran` remote URL check reports no problems.
+
+**win-builder:** pending.
 
 ## v3.5.4: five bug fixes
 

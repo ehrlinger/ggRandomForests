@@ -23,7 +23,7 @@
 [randomForest](https://cran.r-project.org/package=randomForest).
 It keeps the data step apart from the figure step, so you can inspect, save, or reuse the tidy object on its own.
 
-It also covers [varPro](https://cran.r-project.org/package=varPro) (>= 3.1.0), which reaches the same
+It also covers [varPro](https://cran.r-project.org/package=varPro) (>= 3.3.0), which reaches the same
 questions by a different route: variable selection built from rules rather than permutation, importance
 for one observation rather than the whole fit, and dependency and signal detection on unsupervised fits.
 Eight of the nineteen `gg_*` families read a varPro object.

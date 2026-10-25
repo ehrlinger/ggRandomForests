@@ -2,9 +2,9 @@ Package: ggRandomForests
 Type: Package
 Title: Visually Exploring Random Forests
 Version: 3.5.5
-Date: 2026-09-30
+Date: 2026-10-24
 Authors@R: person("John", "Ehrlinger",
-  role = c("aut", "cre"),
+  role = c("aut", "cre", "cph"),
   email = "john.ehrlinger@gmail.com",
   comment = c(ORCID = "0000-0002-5340-5154"))
 License: MIT + file LICENSE

@@ -40,6 +40,8 @@ if (requireNamespace("ggRandomForests", quietly = TRUE)) {
 } else {
   stop("Install ggRandomForests (or pkgload for dev builds) to render this vignette.")
 }
+# MASS is in Suggests; the Boston chunks below run only when it is installed
+has_mass <- requireNamespace("MASS", quietly = TRUE)
 ```
 
 ## Error trajectories with `gg_error()`
@@ -65,7 +67,7 @@ plot(err_df)
 
 ## Marginal dependence via `gg_variable()`
 
-```{r variable-demo}
+```{r variable-demo, eval = has_mass}
 set.seed(99)
 boston <- MASS::Boston
 rf_boston <- randomForest(medv ~ ., data = boston, ntree = 100)
@@ -81,7 +83,7 @@ alongside the prediction: a single `yhat` column for regression, or one
 `yhat.<class>` column per class for classification. To plot one predictor,
 name it with `xvar`:
 
-```{r variable-plot, fig.height=4}
+```{r variable-plot, fig.height=4, eval = has_mass}
 plot(var_df, xvar = "lstat")
 ```
 
@@ -90,7 +92,7 @@ non-OOB predictions are available by setting `oob = FALSE`.
 
 ## Variable importance with `gg_vimp()`
 
-```{r vimp-demo}
+```{r vimp-demo, eval = has_mass}
 vimp_df <- ggRandomForests::gg_vimp(rf_boston)
 head(vimp_df)
 plot(vimp_df)
@@ -108,7 +110,7 @@ draws rather than failing outright.
 
 ## Balanced conditioning cuts with `quantile_pts()`
 
-```{r quantile-demo}
+```{r quantile-demo, eval = has_mass}
 rm_breaks <- ggRandomForests::quantile_pts(boston$rm, groups = 6, intervals = TRUE)
 rm_groups <- cut(boston$rm, breaks = rm_breaks)
 table(rm_groups)
