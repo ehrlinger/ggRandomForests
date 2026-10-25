@@ -14,6 +14,8 @@ plotting with
 ``` r
 # S3 method for class 'rfsrc'
 gg_rfsrc(object, oob = TRUE, by, ...)
+
+gg_rfsrc(object, oob = TRUE, by, ...)
 ```
 
 ## Arguments

@@ -4,7 +4,7 @@
 
 Extract and display data from random forest objects.
 
-- [`gg_rfsrc(`*`<rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+- [`gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
   : Predicted response data object
 
 - [`plot(`*`<gg_rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rfsrc.md)
@@ -188,7 +188,7 @@ Survival curves, ROC, and related diagnostics.
 
   Plot a `gg_survival` object.
 
-- [`gg_roc(`*`<rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+- [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
   : ROC (Receiver Operating Characteristic) curve data from a
   classification forest.
 
@@ -197,7 +197,7 @@ Survival curves, ROC, and related diagnostics.
 
   ROC plot generic function for a `gg_roc` object.
 
-- [`calc_roc(`*`<rfsrc>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/calc_roc.rfsrc.md)
+- [`calc_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/calc_roc.rfsrc.md)
   : Receiver Operator Characteristic calculator
 
 - [`calc_auc()`](https://ehrlinger.github.io/ggRandomForests/reference/calc_auc.md)

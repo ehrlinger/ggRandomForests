@@ -7,6 +7,8 @@ Receiver Operator Characteristic calculator
 ``` r
 # S3 method for class 'rfsrc'
 calc_roc(object, dta, which_outcome = "all", oob = TRUE, ...)
+
+calc_roc(object, dta, which_outcome = "all", oob = TRUE, ...)
 ```
 
 ## Arguments
