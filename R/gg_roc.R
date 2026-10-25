@@ -155,6 +155,7 @@ gg_roc.rfsrc <- function(object, which_outcome, oob = TRUE,
 
   invisible(gg_dta)
 }
+#' @rdname gg_roc.rfsrc
 #' @export
 gg_roc <- function(object, which_outcome, oob = TRUE, per_class = FALSE, ...) {
   UseMethod("gg_roc", object)

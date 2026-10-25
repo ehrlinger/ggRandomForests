@@ -447,6 +447,7 @@ bootstrap_survival <- function(gg_dta, bs_samples, level_set) {
   dta
 }
 
+#' @rdname gg_rfsrc.rfsrc
 #' @export
 gg_rfsrc <- function(object,
                      oob = TRUE,
