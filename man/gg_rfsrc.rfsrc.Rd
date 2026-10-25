@@ -6,6 +6,8 @@
 \title{Predicted response data object}
 \usage{
 \method{gg_rfsrc}{rfsrc}(object, oob = TRUE, by, ...)
+
+gg_rfsrc(object, oob = TRUE, by, ...)
 }
 \arguments{
 \item{object}{A fitted \code{\link[randomForestSRC]{rfsrc}} or
