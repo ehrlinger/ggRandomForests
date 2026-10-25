@@ -7,6 +7,8 @@
 \title{Receiver Operator Characteristic calculator}
 \usage{
 \method{calc_roc}{rfsrc}(object, dta, which_outcome = "all", oob = TRUE, ...)
+
+calc_roc(object, dta, which_outcome = "all", oob = TRUE, ...)
 }
 \arguments{
 \item{object}{A fitted \code{\link[randomForestSRC]{rfsrc}},
