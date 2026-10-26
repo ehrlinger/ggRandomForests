@@ -85,6 +85,10 @@ test_that("plot.gg_rhf colours each case only while there are few", {
   many <- plot(gg)
   expect_gt(length(unique(gg$id)), 10L)
   expect_false("colour" %in% names(many$mapping))
+  # a colour label with no colour mapping makes ggplot2 >= 4 message
+  # "Ignoring unknown labels" at draw time
+  expect_no_message(ggplot2::ggplotGrob(many))
+  expect_equal(few$labels$colour, "Case")
   ld <- ggplot2::layer_data(many)
   expect_equal(length(unique(ld$colour)), 1L)
   # cases whose hazard is masked throughout are dropped, as documented

@@ -94,7 +94,8 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
         group  = .data[["id"]]
       )
     ) +
-      ggplot2::geom_line()
+      ggplot2::geom_line() +
+      ggplot2::labs(colour = "Case")
   } else {
     p <- ggplot2::ggplot(
       dta,
@@ -107,6 +108,6 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
       ggplot2::geom_line(colour = "grey20", alpha = 0.2)
   }
   p +
-    ggplot2::labs(x = "Time", y = ylab, colour = "Case") +
+    ggplot2::labs(x = "Time", y = ylab) +
     ggplot2::theme_bw()
 }
