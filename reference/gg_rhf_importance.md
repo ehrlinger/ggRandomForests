@@ -11,6 +11,9 @@ involving a variable are released.
 ``` r
 gg_rhf_importance(object, ...)
 
+# S3 method for class 'importance.rhf'
+gg_rhf_importance(object, ...)
+
 # S3 method for class 'rhf'
 gg_rhf_importance(
   object,

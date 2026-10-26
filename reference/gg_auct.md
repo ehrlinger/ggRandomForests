@@ -11,6 +11,9 @@ attached as an attribute.
 ``` r
 gg_auct(object, ...)
 
+# S3 method for class 'auct.rhf'
+gg_auct(object, ...)
+
 # S3 method for class 'rhf'
 gg_auct(
   object,
