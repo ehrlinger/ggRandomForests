@@ -579,6 +579,36 @@ ggRandomForests v4.0.0 (development)
   release, whose new seed generator grows a different forest from the same
   seed.
 
+* The help pages for `calc_roc()`, `gg_rfsrc()` and `gg_roc()` now show the
+  generic call in their usage section, not only the `rfsrc` method. R-devel's
+  `R CMD check` reports exported functions with no usage line as "Exported
+  functions without usage information", and these three were the only ones.
+  No argument or return value changed.
+
+* `Depends` now reads `R (>= 4.3.0)`, down from `R (>= 4.4.0)`. The old floor
+  was the internal hvtiR family's policy, not anything ggRandomForests needs.
+  The new one is the floor of `randomForestSRC` and `varPro`, the strictest of
+  the `Imports`; the package code itself needs nothing past R 4.1. A new
+  `R CMD check` leg on R 4.3 tests the floor on every push to `main`
+  (#326).
+
+* `gg_ivarpro()` mirrors a binary profile into the second class only when it
+  explains the forest's own probability of the first level. A `y.external`
+  target named after a class is any numeric response, not a class
+  probability: it is kept as a single profile, filed under its target's name
+  when that is a response level and under the last level otherwise, and the
+  binary default view shows it. The one case that cannot be told apart is a
+  precomputed `y.external` fit named after the first level and run with
+  `save.data = FALSE`; it is mirrored.
+
+* `gg_partial_varpro()` keeps each categorical variable's level order in
+  `$categorical$variable` when `part_dta` carries factor-valued `xorg`, so the
+  plot no longer lists the categories alphabetically. The column is a factor
+  whose levels run through each variable's levels in turn, and it is ordered
+  when every categorical variable is an ordered factor. The plot keys each
+  panel's levels by their variable, so panels whose labels overlap, or whose
+  factors order the same labels differently, each keep their own order.
+
 ggRandomForests v3.5.2
 ======================
 * Three help pages no longer render a stray backslash where a percent sign
