@@ -351,15 +351,21 @@ plot.gg_partial_varpro <- function(x, # nolint: cyclocomp_linter
       values_to = "yhat"
     )
     if (isTRUE(complement)) cat_long$yhat <- 1 - cat_long$yhat
+    ## Key each level by its variable, in row order (each variable's own level
+    ## order), so panels whose labels overlap keep their own order; one shared
+    ## factor would impose a single pooled order on every panel.
+    cat_key <- paste(cat_long$name, cat_long$variable, sep = "\r")
+    cat_long$level_key <- factor(cat_key, levels = unique(cat_key))
     gg_cat <- ggplot2::ggplot(
       cat_long,
       ggplot2::aes(
-        x    = factor(.data$variable),
+        x    = .data$level_key,
         y    = .data$yhat,
         fill = .data$effect_type
       )
     ) +
       ggplot2::geom_boxplot() +
+      ggplot2::scale_x_discrete(labels = function(k) sub("^[^\r]*\r", "", k)) +
       ggplot2::facet_wrap(~name, scales = "free_x", labeller = strip_labeller) +
       ggplot2::labs(x = NULL, y = ylabel, fill = "Effect type")
     gg_cat <- gg_cat + .partial_varpro_fill_scale(palette)

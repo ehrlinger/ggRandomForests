@@ -924,13 +924,44 @@ gg_partial_varpro <- function(part_dta  = NULL,
   ## alphabetically and the importance order established above is discarded.
   lvls <- unique(names(part_dta)[seq_len(nvars)])
   cont <- dplyr::bind_rows(cont_list)
-  cats <- dplyr::bind_rows(cat_list)
+  cats <- .bind_cat_list(cat_list)
   if (nrow(cont) > 0L && !is.null(lvls) && length(lvls) > 0L)
     cont$name <- factor(cont$name, levels = lvls)
   if (nrow(cats) > 0L && !is.null(lvls) && length(lvls) > 0L)
     cats$name <- factor(cats$name, levels = lvls)
 
   list(continuous = cont, categorical = cats)
+}
+
+## Each variable's 'variable' column carries its own level order, and may be
+## an ordered or unordered factor or a plain vector; vctrs refuses to bind
+## mixed factor types. Bind as character, then restore one factor whose levels
+## run through each variable's levels in turn, ordered only when every
+## variable's was. Each variable's rows are bound in its own level order, which
+## is what the plot reads: pooled levels misorder overlapping labels (grids
+## c(2, 3) and c(1, 2) pool to 2, 3, 1).
+#' @keywords internal
+.bind_cat_list <- function(cat_list) {
+  ## cat_list is indexed by feature, so continuous variables leave NULLs
+  cat_list <- Filter(Negate(is.null), cat_list)
+  cat_list <- lapply(cat_list, function(x) {
+    if (is.factor(x$variable)) x[order(x$variable), , drop = FALSE] else x
+  })
+  cat_lvls <- unique(unlist(lapply(cat_list, function(x) {
+    if (is.factor(x$variable)) levels(x$variable) else
+      unique(as.character(x$variable))
+  })))
+  cat_ordered <- length(cat_list) > 0L &&
+    all(vapply(cat_list, function(x) is.ordered(x$variable), logical(1L)))
+  cat_list <- lapply(cat_list, function(x) {
+    x$variable <- as.character(x$variable)
+    x
+  })
+  cats <- dplyr::bind_rows(cat_list)
+  if (nrow(cats) > 0L)
+    cats$variable <- factor(cats$variable, levels = cat_lvls,
+                            ordered = cat_ordered)
+  cats
 }
 
 ## varPro >= 3.3.1 marks failed fits NA rather than returning a flat curve; a

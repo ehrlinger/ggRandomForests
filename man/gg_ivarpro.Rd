@@ -27,7 +27,8 @@ training data. \code{NULL} (default) returns the aggregate view.}
 
 \item{which_class}{Optional response level name. \code{NULL} default on a
 binary classification fit resolves to the last factor level
-(positive-class convention). Ignored with a warning on regression
+(positive-class convention), or to the one level that has a profile
+when the fit was not mirrored. Ignored with a warning on regression
 fits.}
 
 \item{cutoff}{Selection threshold on \verb{|local_imp|}. \code{NULL} (default)
@@ -155,7 +156,10 @@ The binary frame explains one class, named by its \code{target}
 attribute and by default the first factor level. Because the two
 class probabilities sum to one, the wrapper derives the other class
 exactly, as the negated local slopes (or the same values under
-\code{use.abs = TRUE}), so both levels are available. The wrapper
+\code{use.abs = TRUE}), so both levels are available. A \code{y.external}
+profile is not a class probability and is not mirrored: it is kept
+as a single class, under its target's name when that is a level and
+under the last level otherwise. The wrapper
 stacks per-class frames into a long-format frame with a \code{class}
 column. \code{which_class = NULL} returns all classes (binary defaults
 to the last factor level, the positive-class convention used by
