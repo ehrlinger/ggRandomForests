@@ -11,4 +11,6 @@
   `$categorical$variable` when `part_dta` carries factor-valued `xorg`, so the
   plot no longer lists the categories alphabetically. The column is a factor
   whose levels run through each variable's levels in turn, and it is ordered
-  when every categorical variable is an ordered factor.
+  when every categorical variable is an ordered factor. The plot keys each
+  panel's levels by their variable, so panels whose labels overlap, or whose
+  factors order the same labels differently, each keep their own order.

@@ -937,10 +937,16 @@ gg_partial_varpro <- function(part_dta  = NULL,
 ## an ordered or unordered factor or a plain vector; vctrs refuses to bind
 ## mixed factor types. Bind as character, then restore one factor whose levels
 ## run through each variable's levels in turn, ordered only when every
-## variable's was. Panels free their x scale, so each still shows only its own
-## levels, in its own order.
+## variable's was. Each variable's rows are bound in its own level order, which
+## is what the plot reads: pooled levels misorder overlapping labels (grids
+## c(2, 3) and c(1, 2) pool to 2, 3, 1).
 #' @keywords internal
 .bind_cat_list <- function(cat_list) {
+  ## cat_list is indexed by feature, so continuous variables leave NULLs
+  cat_list <- Filter(Negate(is.null), cat_list)
+  cat_list <- lapply(cat_list, function(x) {
+    if (is.factor(x$variable)) x[order(x$variable), , drop = FALSE] else x
+  })
   cat_lvls <- unique(unlist(lapply(cat_list, function(x) {
     if (is.factor(x$variable)) levels(x$variable) else
       unique(as.character(x$variable))

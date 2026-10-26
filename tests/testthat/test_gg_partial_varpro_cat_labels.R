@@ -58,7 +58,7 @@ test_that("a factor-valued categorical keeps its level order and ordered status"
                  f$yhat.par[, j])
   }
   built <- ggplot2::ggplot_build(plot(g))
-  expect_identical(built$layout$panel_params[[1L]]$x$get_labels(),
+  expect_identical(as.character(built$layout$panel_params[[1L]]$x$get_labels()),
                    c("medium", "low", "high"))
 })
 
@@ -77,7 +77,7 @@ test_that("categoricals of mixed factor types bind, each in its own level order"
   expect_s3_class(v, "factor")
   expect_false(is.ordered(v))
   built <- ggplot2::ggplot_build(plot(g))
-  labs <- lapply(built$layout$panel_params, function(p) p$x$get_labels())
+  labs <- lapply(built$layout$panel_params, function(p) as.character(p$x$get_labels()))
   expect_identical(labs, list(c("m", "l", "h"), c("z", "y", "x"),
                               c("1", "2", "10")))
   ## two ordered factors stay ordered
@@ -85,4 +85,36 @@ test_that("categoricals of mixed factor types bind, each in its own level order"
                                s2 = mk(ordered(c("b", "a", "c"),
                                                levels = c("b", "a", "c")))))
   expect_true(is.ordered(g2$categorical$variable))
+})
+
+test_that("a continuous variable ahead of ordered categoricals keeps them ordered", {
+  cont <- list(xorg = seq(0, 1, length.out = 20), xvirtual = seq(0, 1, length.out = 20),
+               yhat.par = matrix(1:60, 3), yhat.nonpar = matrix(1:60, 3),
+               yhat.causal = matrix(1:60, 3))
+  stage <- list(xorg = ordered(c("m", "l", "h"), levels = c("m", "l", "h")),
+                xvirtual = c("m", "l", "h"),
+                yhat.par = matrix(1:9, 3), yhat.nonpar = matrix(1:9, 3),
+                yhat.causal = matrix(1:9, 3))
+  g <- gg_partial_varpro(list(age = cont, stage = stage))
+  expect_gt(nrow(g$continuous), 0L)
+  expect_true(is.ordered(g$categorical$variable))
+  expect_identical(levels(g$categorical$variable), c("m", "l", "h"))
+})
+
+test_that("overlapping categorical labels keep each panel's own order", {
+  mk <- function(x, lv) {
+    list(xorg = factor(x, levels = lv), xvirtual = lv,
+         yhat.par = matrix(1:6, 3), yhat.nonpar = matrix(1:6, 3),
+         yhat.causal = matrix(1:6, 3))
+  }
+  ## pooled by first occurrence these would be 2, 3, 1, and the second panel
+  ## would read 2, 1; a conflicting factor order would also be overridden
+  g <- gg_partial_varpro(list(a = mk(c(2, 3, 2), c("2", "3")),
+                              b = mk(c(1, 2, 1), c("1", "2")),
+                              c = mk(c("y", "x", "y"), c("y", "x")),
+                              d = mk(c("x", "y", "x"), c("x", "y"))))
+  built <- ggplot2::ggplot_build(plot(g))
+  labs <- lapply(built$layout$panel_params, function(p) as.character(p$x$get_labels()))
+  expect_identical(unname(labs), list(c("2", "3"), c("1", "2"), c("y", "x"),
+                                      c("x", "y")))
 })
