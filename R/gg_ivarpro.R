@@ -94,7 +94,10 @@
 #' attribute and by default the first factor level. Because the two
 #' class probabilities sum to one, the wrapper derives the other class
 #' exactly, as the negated local slopes (or the same values under
-#' `use.abs = TRUE`), so both levels are available. The wrapper
+#' `use.abs = TRUE`), so both levels are available. A `y.external`
+#' profile is not a class probability and is not mirrored: it is kept
+#' as a single class, under its target's name when that is a level and
+#' under the last level otherwise. The wrapper
 #' stacks per-class frames into a long-format frame with a `class`
 #' column. `which_class = NULL` returns all classes (binary defaults
 #' to the last factor level, the positive-class convention used by
@@ -124,7 +127,8 @@
 #'   training data. `NULL` (default) returns the aggregate view.
 #' @param which_class Optional response level name. `NULL` default on a
 #'   binary classification fit resolves to the last factor level
-#'   (positive-class convention). Ignored with a warning on regression
+#'   (positive-class convention), or to the one level that has a profile
+#'   when the fit was not mirrored. Ignored with a warning on regression
 #'   fits.
 #' @param cutoff Selection threshold on `|local_imp|`. `NULL` (default)
 #'   resolves to the per-class `mean(|local_imp|)` (or per-frame mean
@@ -246,9 +250,11 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
       iv <- stats::setNames(list(iv, iv_oth), c(target, other))[cls_levels]
     } else {
       # Not the forest's own class probability (e.g. a y.external column):
-      # there is no class to mirror, so keep the single profile under the
-      # last level.
-      iv <- stats::setNames(list(iv), cls_levels[length(cls_levels)])
+      # there is no class to mirror, so keep the single profile under its
+      # target's name when that is a level, else under the last level.
+      key <- if (length(target) == 1L && target %in% cls_levels) target else
+        cls_levels[length(cls_levels)]
+      iv <- stats::setNames(list(iv), key)
     }
   }
   iv
@@ -502,7 +508,10 @@ gg_ivarpro.varpro <- function(object, ..., which_obs = NULL,
       ), call. = FALSE)
     }
   } else if (n_cls == 2L) {
-    which_class <- cls[n_cls]   # binary default = last factor level
+    # binary default = last factor level that has a profile (a y.external
+    # profile is filed under its own target and is not mirrored)
+    present <- cls[cls %in% long$class]
+    which_class <- present[length(present)]
   }
 
   # Per-class mean(|local_imp|) for cutoff resolution

@@ -572,16 +572,6 @@ ggRandomForests v4.0.0 (development)
   classes were tied, as on a balanced fit. When the codes cannot be paired
   with the original labels, they are kept as `0` and `1` rather than guessed.
 
-* `gg_ivarpro()` mirrors a binary profile into the second class only when it
-  explains the forest's own probability of the first level. A `y.external`
-  target named after a class is any numeric response, not a class
-  probability, and is kept as a single profile.
-
-* `gg_partial_varpro()` keeps a factor's level order, and its ordered status,
-  in `$categorical$variable` when `part_dta` carries factor-valued `xorg`.
-  Labelling by `$xvirtual` had turned those labels into character, so the
-  plot listed the categories alphabetically.
-
 * Two tests no longer depend on the `randomForestSRC` random-number stream.
   The live `gg_sdependent()` test computes its beta fit once and gives it to
   both sides, and the `plot.gg_varpro()` test for a class with no defined z

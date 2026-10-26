@@ -163,19 +163,16 @@ test_that("gg_ivarpro multiclass: one all-nonfinite class drops out, the rest su
 test_that("gg_ivarpro binary: y.external named after a class is not mirrored", {
   v <- .varpro_iris_binary_for_ivarpro()
   ext <- matrix(v$x[, 1L], dimnames = list(NULL, "versicolor"))
-  ## The default view is the last level whether or not iv was mirrored, so
-  ## probe the first level: a mirrored profile would have rows there.
-  ## gg_ivarpro() runs ivarpro() itself, so it sees y.external in '...'
-  set.seed(20261023L)
-  expect_equal(nrow(gg_ivarpro(v, y.external = ext, which_class = "versicolor")), 0L)
+  ## A y.external profile is kept as one class, under its own target, so the
+  ## other level has no rows and the default view is the profile's own level.
   ## precomputed with save.data = TRUE: the saved response is not the OOB
   ## probability of versicolor
   set.seed(20261023L)
-  iv <- varPro::ivarpro(v, y.external = ext, save.data = TRUE)
-  iv <- .finite_ivarpro(iv)
-  expect_equal(nrow(gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")), 0L)
+  iv <- .finite_ivarpro(varPro::ivarpro(v, y.external = ext, save.data = TRUE))
+  expect_equal(nrow(gg_ivarpro(v, ivarpro_fit = iv, which_class = "virginica")), 0L)
   out <- gg_ivarpro(v, ivarpro_fit = iv)
   expect_gt(nrow(out), 0L)
+  expect_true(all(out$class == "versicolor"))
   expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
   ## precomputed, named after the second level: never what ivarpro() explains
   set.seed(20261023L)
@@ -186,7 +183,18 @@ test_that("gg_ivarpro binary: y.external named after a class is not mirrored", {
   expect_equal(nrow(gg_ivarpro(v, ivarpro_fit = iv, which_class = "versicolor")), 0L)
   out <- gg_ivarpro(v, ivarpro_fit = iv)
   expect_gt(nrow(out), 0L)
+  expect_true(all(out$class == "virginica"))
   expect_equal(out$local_imp, .raw_ivarpro_at(iv, out))
+  ## gg_ivarpro() runs ivarpro() itself, so it sees y.external in '...'. The
+  ## mocked fit looks internal and saves no data, so only that check stops
+  ## the mirror.
+  iv_int <- .finite_ivarpro(.ivarpro_iris_binary())
+  local_mocked_bindings(ivarpro = function(...) iv_int, .package = "varPro")
+  expect_equal(nrow(gg_ivarpro(v, y.external = ext, which_class = "virginica")), 0L)
+  out <- gg_ivarpro(v, y.external = ext)
+  expect_gt(nrow(out), 0L)
+  expect_true(all(out$class == "versicolor"))
+  expect_equal(out$local_imp, .raw_ivarpro_at(iv_int, out))
 })
 
 test_that("gg_ivarpro binary: a saved internal target is still mirrored", {

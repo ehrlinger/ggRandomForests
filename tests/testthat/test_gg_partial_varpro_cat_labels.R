@@ -61,3 +61,28 @@ test_that("a factor-valued categorical keeps its level order and ordered status"
   expect_identical(built$layout$panel_params[[1L]]$x$get_labels(),
                    c("medium", "low", "high"))
 })
+
+test_that("categoricals of mixed factor types bind, each in its own level order", {
+  mk <- function(x) {
+    list(xorg = x, xvirtual = levels(x) %||% sort(unique(x)),
+         yhat.par = matrix(1:9, 3), yhat.nonpar = matrix(1:9, 3),
+         yhat.causal = matrix(1:9, 3))
+  }
+  stage <- mk(ordered(c("m", "l", "h"), levels = c("m", "l", "h")))
+  grp   <- mk(factor(c("z", "y", "x"), levels = c("z", "y", "x")))
+  code  <- mk(c(10, 2, 1))
+  g <- gg_partial_varpro(list(stage = stage, grp = grp, code = code))
+  v <- g$categorical$variable
+  ## an ordered factor cannot bind with an unordered one; this used to error
+  expect_s3_class(v, "factor")
+  expect_false(is.ordered(v))
+  built <- ggplot2::ggplot_build(plot(g))
+  labs <- lapply(built$layout$panel_params, function(p) p$x$get_labels())
+  expect_identical(labs, list(c("m", "l", "h"), c("z", "y", "x"),
+                              c("1", "2", "10")))
+  ## two ordered factors stay ordered
+  g2 <- gg_partial_varpro(list(stage = stage,
+                               s2 = mk(ordered(c("b", "a", "c"),
+                                               levels = c("b", "a", "c")))))
+  expect_true(is.ordered(g2$categorical$variable))
+})
