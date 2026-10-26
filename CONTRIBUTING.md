@@ -24,7 +24,7 @@ Thank you for your interest in contributing! This guide is written for R program
 
 | Tool | Why | Install |
 |------|-----|---------|
-| R >= 4.4.0 | Runtime | <https://cloud.r-project.org> |
+| R >= 4.3.0 | Runtime | <https://cloud.r-project.org> |
 | RStudio or Positron | IDE with R-aware tools | <https://posit.co/downloads> |
 | Git | Version control | <https://git-scm.com> |
 | Quarto | Builds the vignette | <https://quarto.org/docs/get-started> |

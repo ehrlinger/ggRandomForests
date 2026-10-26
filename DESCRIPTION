@@ -22,7 +22,7 @@ Description: Graphic elements for exploring Random Forests using
     <doi:10.48550/arXiv.2409.09003>, and Ishwaran, Hsich, Kogalur, and Lee (2026)
     <doi:10.48550/arXiv.2608.21597>.
 Depends:
-    R (>= 4.4.0)
+    R (>= 4.3.0)
 Imports:
     randomForestSRC (>= 3.4.0),
     randomForest,
