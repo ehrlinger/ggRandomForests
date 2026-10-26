@@ -22,6 +22,10 @@ test_that("gg_auct rejects non-rhf input and bad auct_fit", {
   expect_error(gg_auct(.rhf_pbc(), auct_fit = list(1)), "auct.rhf")
 })
 
+test_that("gg_auct on the auct.rhf result says to pass it as auct_fit", {
+  expect_error(gg_auct(.auct_pbc_noboot()), "auct_fit = ")
+})
+
 test_that("gg_auct S3 companions work", {
   gg <- gg_auct(.rhf_pbc(), auct_fit = .auct_pbc_boot())
   expect_output(print(gg), "gg_auct")

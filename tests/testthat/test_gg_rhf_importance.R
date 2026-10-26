@@ -192,3 +192,8 @@ test_that("gg_rhf_importance autoplot forwards variable filters", {
   expect_s3_class(p, "ggplot")
   expect_identical(unique(as.character(p$data$variable)), "x2")
 })
+
+test_that("gg_rhf_importance on the importance.rhf result points at importance_fit", {
+  f <- .fake_rhf_importance()
+  expect_error(gg_rhf_importance(f$fit), "importance_fit = ")
+})

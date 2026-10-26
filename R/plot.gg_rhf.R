@@ -14,6 +14,11 @@
 #' also ends each curve with that case's follow-up, but it keeps the grid
 #' points a gap would have cost the hazard panel.
 #'
+#' Each case gets its own colour and legend key only while there are at most
+#' 10 of them. Beyond that the colours stop being distinguishable and the
+#' legend would list every id, so the curves are drawn in a single translucent
+#' colour with no legend. To pick out individual cases, pass a short `idx`.
+#'
 #' @param x A `gg_rhf` object from [gg_rhf()].
 #' @param idx Integer vector of case ids (matched against the `id` column) to
 #'   draw. `NULL` (default) draws every case.
@@ -76,16 +81,33 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
   dta <- dta[!dropped, , drop = FALSE]
   dta$id <- factor(dta$id)
 
-  ggplot2::ggplot(
-    dta,
-    ggplot2::aes(
-      x      = .data[["time"]],
-      y      = .data[[yvar]],
-      colour = .data[["id"]],
-      group  = .data[["id"]]
-    )
-  ) +
-    ggplot2::geom_line() +
-    ggplot2::labs(x = "Time", y = ylab, colour = "Case") +
+  # A colour per case only reads while the cases are few; past that the hue
+  # palette blurs and the legend becomes a list of every id (2,386 keys on a
+  # full waiting-list cohort). Draw many cases as one translucent bundle.
+  if (nlevels(dta$id) <= 10L) {
+    p <- ggplot2::ggplot(
+      dta,
+      ggplot2::aes(
+        x      = .data[["time"]],
+        y      = .data[[yvar]],
+        colour = .data[["id"]],
+        group  = .data[["id"]]
+      )
+    ) +
+      ggplot2::geom_line() +
+      ggplot2::labs(colour = "Case")
+  } else {
+    p <- ggplot2::ggplot(
+      dta,
+      ggplot2::aes(
+        x     = .data[["time"]],
+        y     = .data[[yvar]],
+        group = .data[["id"]]
+      )
+    ) +
+      ggplot2::geom_line(colour = "grey20", alpha = 0.2)
+  }
+  p +
+    ggplot2::labs(x = "Time", y = ylab) +
     ggplot2::theme_bw()
 }

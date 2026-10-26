@@ -34,6 +34,11 @@ is masked too, though on a different rule: it is \code{NA} after each case's
 final stop, and stays flat through an internal gap. So \code{hazard.only = FALSE}
 also ends each curve with that case's follow-up, but it keeps the grid
 points a gap would have cost the hazard panel.
+
+Each case gets its own colour and legend key only while there are at most
+10 of them. Beyond that the colours stop being distinguishable and the
+legend would list every id, so the curves are drawn in a single translucent
+colour with no legend. To pick out individual cases, pass a short \code{idx}.
 }
 \examples{
 \donttest{
