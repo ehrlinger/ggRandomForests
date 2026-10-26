@@ -34,7 +34,7 @@ gg_varpro(
 
   Logical; default `TRUE`. Passed to varPro's importance aggregation,
   with the same meaning as in
-  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html):
+  [`varPro::importance()`](https://luminwin.github.io/reference/importance.html):
   `TRUE` re-samples the release rules, scores them by local importance
   and reports z as their winsorised mean, so the boxes are on z's scale.
   `FALSE` uses the fit-time rules and standardises z by the winsorised
@@ -69,7 +69,7 @@ gg_varpro(
 - trim:
 
   Winsorising fraction used for z, as in
-  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html);
+  [`varPro::importance()`](https://luminwin.github.io/reference/importance.html);
   default `0.1`. A variable is `tested` when its coverage is at least
   `trim`.
 
@@ -78,14 +78,14 @@ gg_varpro(
   Number of trees, and release rules per tree, to score. Default to the
   values stored in the fit. Supplying either one re-samples the rules
   even with `local.std = FALSE`, as
-  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
+  [`varPro::importance()`](https://luminwin.github.io/reference/importance.html)
   does. The boxes, z and coverage are always computed from the same
   rules.
 
 - ...:
 
   Not used. Earlier versions passed it to
-  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html);
+  [`varPro::importance()`](https://luminwin.github.io/reference/importance.html);
   `trim`, `max.tree` and `max.rules.tree` are now arguments, and
   anything else is an error.
 
@@ -145,7 +145,7 @@ Because varpro builds importance from rules sampled over trees, every
 tree contributes its own importance value for each variable. Those are
 the per-tree scores we summarize here, and the aggregate z comes from
 the same rules on the same trees, so the boxes and z always agree.
-[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
+[`varPro::importance()`](https://luminwin.github.io/reference/importance.html)
 takes a winsorised mean over trees (trimmed by `trim`), counting a tree
 with no usable release rule for the variable as 0. With
 `local.std = TRUE` (the default, as in varPro) the release rules are
@@ -203,7 +203,7 @@ The z-score is a standardized ranking statistic, not a p-value or a
 probability. Two variables with the same z are "similarly important by
 this method", not "equally likely to be true signal". For a data-driven
 cutoff rather than the 0.79 default, see
-[`varPro::cv.varpro`](https://www.randomforestsrc.org/reference/cv.varpro.html).
+[`varPro::cv.varpro`](https://luminwin.github.io/reference/cv.varpro.html).
 
 ## Reading the plot
 

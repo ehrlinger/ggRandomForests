@@ -75,7 +75,7 @@ lasso-flavoured importance."></head><body>
     </div>
 
     <div class="ref-description section level2">
-    <p>Tidy wrapper around <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> for a <code>uvarpro</code> object.
+    <p>Tidy wrapper around <code><a href="https://luminwin.github.io/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> for a <code>uvarpro</code> object.
 Where <code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code> refines the <em>supervised</em> release-rule contrast,
 <code>gg_beta_uvarpro()</code> does the unsupervised analogue: <code>uvarpro()</code> builds
 entropy regions with no response, and <code>get.beta.entropy()</code> fits a
@@ -95,11 +95,11 @@ lasso-flavoured importance.</p>
 
 
 <dl><dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
-<dd><p>A <code>uvarpro</code> object from <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code>.</p></dd>
+<dd><p>A <code>uvarpro</code> object from <code><a href="https://luminwin.github.io/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Forwarded to <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> when
+<dd><p>Forwarded to <code><a href="https://luminwin.github.io/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> when
 <code>beta_fit = NULL</code> (e.g. <code>pre.filter</code>, <code>second.stage</code>, <code>use.cv</code>).
 Ignored, with a warning, when <code>beta_fit</code> is supplied.</p></dd>
 
@@ -111,7 +111,7 @@ cutoff are flagged <code>selected</code>.</p></dd>
 
 
 <dt id="arg-beta-fit">beta_fit<a class="anchor" aria-label="anchor" href="#arg-beta-fit"></a></dt>
-<dd><p>Optional pre-computed <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> matrix
+<dd><p>Optional pre-computed <code><a href="https://luminwin.github.io/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code> matrix
 for <code>object</code>. When supplied, must be a numeric matrix with column names
 (the variables); <code>...</code> is then ignored.</p></dd>
 
@@ -145,7 +145,7 @@ coefficient for the variable.</p></dd>
 matrix of absolute lasso coefficients. The column mean (<code>na.rm = TRUE</code>) is
 the per-variable importance reported here, matching the canonical
 <code>sort(colMeans(beta, na.rm = TRUE), decreasing = TRUE)</code> idiom in the
-<code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code> help ("iowa housing - illustrates lasso importance").</p>
+<code><a href="https://luminwin.github.io/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code> help ("iowa housing - illustrates lasso importance").</p>
 <p>Because <code>get.beta.entropy()</code> is expensive (a cross-validated <code>glmnet</code> per
 region), the <code>beta_fit</code> argument accepts a pre-computed matrix so you can
 iterate on the cutoff without re-fitting. The pairing mirrors the
@@ -154,7 +154,7 @@ iterate on the cutoff without re-fitting. The pairing mirrors the
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="gg_beta_varpro.html">gg_beta_varpro()</a></code> (supervised analogue), <code><a href="gg_udependent.html">gg_udependent()</a></code>,
-<code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code>, <code><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code>.</p></div>
+<code><a href="https://luminwin.github.io/reference/uvarpro.html" class="external-link">varPro::get.beta.entropy()</a></code>, <code><a href="https://luminwin.github.io/reference/uvarpro.html" class="external-link">varPro::uvarpro()</a></code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -162,7 +162,7 @@ iterate on the cutoff without re-fitting. The pairing mirrors the
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"varPro"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">o</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/uvarpro.html" class="external-link">uvarpro</a></span><span class="op">(</span><span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">o</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/uvarpro.html" class="external-link">uvarpro</a></span><span class="op">(</span><span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu">gg_beta_uvarpro</span><span class="op">(</span><span class="va">o</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>

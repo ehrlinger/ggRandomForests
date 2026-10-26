@@ -290,7 +290,7 @@ varPro comes at the problem from a different direction ([Lu and Ishwaran
 space into local regions, then estimates effects inside them.
 [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
 wraps
-[`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
+[`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)
 and returns per-subject curves rather than one averaged curve.
 
 ``` r

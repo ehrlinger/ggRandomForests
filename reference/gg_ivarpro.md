@@ -1,7 +1,7 @@
 # Individual (local) variable importance from a varPro fit
 
 Tidy wrapper around
-[`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
+[`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
 for the regression or classification family. Returns one row per
 (observation, variable) pair where the local-importance cell is non-NA;
 classification adds a `class` column. `which_obs` collapses to a
@@ -27,13 +27,13 @@ gg_ivarpro(
 - object:
 
   A `varpro` fit from
-  [`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
+  [`varPro::varpro()`](https://luminwin.github.io/reference/varpro.html)
   (regression or classification family).
 
 - ...:
 
   Forwarded to
-  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
+  [`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
   when `ivarpro_fit = NULL`; ignored otherwise (with a warning).
   Documented forwardables: `adaptive`, `cut`, `cut.max`, `ncut`, `nmin`,
   `nmax`, `noise.na`, `max.rules.tree`, `max.tree`, `use.loo`,
@@ -48,7 +48,8 @@ gg_ivarpro(
 
   Optional response level name. `NULL` default on a binary
   classification fit resolves to the last factor level (positive-class
-  convention). Ignored with a warning on regression fits.
+  convention), or to the one level that has a profile when the fit was
+  not mirrored. Ignored with a warning on regression fits.
 
 - cutoff:
 
@@ -61,7 +62,7 @@ gg_ivarpro(
 - ivarpro_fit:
 
   Optional pre-computed
-  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
+  [`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
   result for the same `object`. Shape-validated.
 
 ## Value
@@ -174,11 +175,14 @@ frame explains one class, named by its `target` attribute and by default
 the first factor level. Because the two class probabilities sum to one,
 the wrapper derives the other class exactly, as the negated local slopes
 (or the same values under `use.abs = TRUE`), so both levels are
-available. The wrapper stacks per-class frames into a long-format frame
-with a `class` column. `which_class = NULL` returns all classes (binary
-defaults to the last factor level, the positive-class convention used by
-`glm` and `gg_roc`); `which_class = "<name>"` filters to a single class.
-`cutoff` polymorphism mirrors
+available. A `y.external` profile is not a class probability and is not
+mirrored: it is kept as a single class, under its target's name when
+that is a level and under the last level otherwise. The wrapper stacks
+per-class frames into a long-format frame with a `class` column.
+`which_class = NULL` returns all classes (binary defaults to the last
+factor level, the positive-class convention used by `glm` and `gg_roc`);
+`which_class = "<name>"` filters to a single class. `cutoff`
+polymorphism mirrors
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md):
 `NULL` is per-class mean(\|local_imp\|), a scalar broadcasts, a named
 numeric vector overrides per class with fallback to that class's mean.
@@ -196,7 +200,7 @@ calls. Reuse `ivarpro_fit` when reproducibility matters.
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
 [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md),
-[`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html).
+[`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html).
 
 ## Examples
 

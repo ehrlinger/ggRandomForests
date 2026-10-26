@@ -99,7 +99,7 @@ The unsupervised varPro tools,
 and
 [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md),
 read structure off a
-[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+[`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html)
 fit with no outcome. They have their own short vignette:
 
 ``` r
@@ -163,9 +163,9 @@ the event-risk rate at a particular time.
 ### varPro (variable priority)
 
 These read a `varpro` fit rather than a forest.
-[`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
+[`varPro::varpro()`](https://luminwin.github.io/reference/varpro.html)
 is the supervised fit;
-[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+[`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html)
 is the unsupervised one, which needs no outcome.
 
 | Function | Input | What you get |

@@ -106,7 +106,7 @@ importances.</p>
 <dt id="arg-local-std">local.std<a class="anchor" aria-label="anchor" href="#arg-local-std"></a></dt>
 <dd><p>Logical; default <code>TRUE</code>.  Passed to varPro's
 importance aggregation, with the same meaning as in
-<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>: <code>TRUE</code> re-samples the release rules,
+<code><a href="https://luminwin.github.io/reference/importance.html" class="external-link">varPro::importance()</a></code>: <code>TRUE</code> re-samples the release rules,
 scores them by local importance and reports z as their winsorised mean,
 so the boxes are on z's scale.  <code>FALSE</code> uses the fit-time rules and
 standardises z by the winsorised standard deviation; the boxes are then
@@ -142,7 +142,7 @@ median per-tree z, after the cutoff filter has been applied.
 
 <dt id="arg-trim">trim<a class="anchor" aria-label="anchor" href="#arg-trim"></a></dt>
 <dd><p>Winsorising fraction used for z, as in
-<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>; default <code>0.1</code>.  A variable is
+<code><a href="https://luminwin.github.io/reference/importance.html" class="external-link">varPro::importance()</a></code>; default <code>0.1</code>.  A variable is
 <code>tested</code> when its coverage is at least <code>trim</code>.</p></dd>
 
 
@@ -150,13 +150,13 @@ median per-tree z, after the cutoff filter has been applied.
 <dd><p>Number of trees, and release rules per
 tree, to score.  Default to the values stored in the fit.  Supplying
 either one re-samples the rules even with <code>local.std = FALSE</code>, as
-<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code> does.  The boxes, z and coverage are always
+<code><a href="https://luminwin.github.io/reference/importance.html" class="external-link">varPro::importance()</a></code> does.  The boxes, z and coverage are always
 computed from the same rules.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Not used.  Earlier versions passed it to
-<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>; <code>trim</code>, <code>max.tree</code> and
+<code><a href="https://luminwin.github.io/reference/importance.html" class="external-link">varPro::importance()</a></code>; <code>trim</code>, <code>max.tree</code> and
 <code>max.rules.tree</code> are now arguments, and anything else is an error.</p></dd>
 
 </dl></div>
@@ -216,7 +216,7 @@ real subsets of the data.</p>
 tree contributes its own importance value for each variable. Those are
 the per-tree scores we summarize here, and the aggregate z comes from
 the same rules on the same trees, so the boxes and z always agree.
-<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code> takes a winsorised mean over trees (trimmed
+<code><a href="https://luminwin.github.io/reference/importance.html" class="external-link">varPro::importance()</a></code> takes a winsorised mean over trees (trimmed
 by <code>trim</code>), counting a tree with no usable release rule for the
 variable as 0. With <code>local.std = TRUE</code> (the default, as in varPro)
 the release rules are re-sampled and scored by their local importance,
@@ -275,7 +275,7 @@ variables drive the model overall.</p></li>
 probability. Two variables with the same z are "similarly important
 by this method", not "equally likely to be true signal". For a
 data-driven cutoff rather than the 0.79 default, see
-<code><a href="https://www.randomforestsrc.org/reference/cv.varpro.html" class="external-link">varPro::cv.varpro</a></code>.</p>
+<code><a href="https://luminwin.github.io/reference/cv.varpro.html" class="external-link">varPro::cv.varpro</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="reading-the-plot">Reading the plot<a class="anchor" aria-label="anchor" href="#reading-the-plot"></a></h2>
@@ -316,7 +316,7 @@ via the rule-based variable priority framework. <em>arXiv preprint</em>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">vp</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">vp</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu">gg_varpro</span><span class="op">(</span><span class="va">vp</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;gg_varpro&gt;  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE</span>

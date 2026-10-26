@@ -38,9 +38,9 @@ A `ggplot` object.
 ## Reading the chart
 
 Each lollipop is a variable's signal score from
-[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html),
+[`varPro::sdependent()`](https://luminwin.github.io/reference/uvarpro.html),
 computed on the unsupervised entropy-region lasso structure of a
-[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+[`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html)
 fit. Blue variables cleared the detection threshold and are reported in
 `sdependent()$signal.vars`; gray ones did not. Pair with
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)

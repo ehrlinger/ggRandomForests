@@ -105,7 +105,7 @@ largest level z).</p></dd>
 <dt id="arg-trim">trim<a class="anchor" aria-label="anchor" href="#arg-trim"></a></dt>
 <dd><p>Coverage below which a term counts as untested, and the
 winsorisation trim used for z.  Defaults to 0.1, as in
-<code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>: the share of trees below which z is 0.</p></dd>
+<code><a href="https://luminwin.github.io/reference/importance.html" class="external-link">varPro::importance()</a></code>: the share of trees below which z is 0.</p></dd>
 
 
 <dt id="arg-max-tree">max.tree<a class="anchor" aria-label="anchor" href="#arg-max-tree"></a></dt>
@@ -131,7 +131,7 @@ values counts as categorical for the noise comparison.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>Seed passed to <code><a href="https://www.randomforestsrc.org/reference/varpro.strength.html" class="external-link">varPro::varpro.strength()</a></code>, which samples
+<dd><p>Seed passed to <code><a href="https://luminwin.github.io/reference/varpro.strength.html" class="external-link">varPro::varpro.strength()</a></code>, which samples
 the release rules; with a seed (or a <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> call first) the
 table is reproducible.</p></dd>
 
@@ -146,7 +146,7 @@ when the split weights or <code>nvar</code> cut it first), <code>n_trees</code>
 (trees with a rule that scored it), <code>coverage</code> (<code>n_trees</code>
 over the trees z is averaged over), <code>n_rules</code> (rules that scored
 it),
-<code>z</code> (computed as <code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code> computes it, with
+<code>z</code> (computed as <code><a href="https://luminwin.github.io/reference/importance.html" class="external-link">varPro::importance()</a></code> computes it, with
 its default <code>local.std = TRUE</code>, from the same rules; <code>NA</code> when never
 returned) and <code>tested</code> (<code>coverage &gt;= trim</code>).  With
 <code>noise</code> set it adds <code>noise</code> (logical), <code>kind</code>,
@@ -159,7 +159,7 @@ settings.</p>
     <h2 id="why-coverage-matters">Why coverage matters<a class="anchor" aria-label="anchor" href="#why-coverage-matters"></a></h2>
 
 
-<p><code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code> scores a term by a trimmed (winsorised) mean of
+<p><code><a href="https://luminwin.github.io/reference/importance.html" class="external-link">varPro::importance()</a></code> scores a term by a trimmed (winsorised) mean of
 its importance in each tree, and a tree without a usable release rule for
 the term counts as zero.  A term tested in fewer than about <code>trim</code> of
 the trees therefore has every non-zero value trimmed away and comes back
@@ -202,15 +202,15 @@ noise columns; do that before fitting.</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20261014</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">d</span> <span class="op">&lt;-</span> <span class="va">mtcars</span></span></span>
 <span class="r-in"><span>  <span class="va">d</span><span class="op">$</span><span class="va">noise_wt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">wt</span><span class="op">)</span>        <span class="co"># permuted copy: noise by construction</span></span></span>
-<span class="r-in"><span>  <span class="va">vp</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">d</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">vp</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://luminwin.github.io/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">d</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20261014</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">varpro_coverage</span><span class="op">(</span><span class="va">vp</span>, noise <span class="op">=</span> <span class="st">"^noise"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no noise variable was tested (coverage &gt;= trim), so the noise check is empty: noise_cut is 0 and every tested row is selected.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        term variable eligible n_trees coverage n_rules        z tested noise</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        wt       wt     TRUE      31     0.62      68 1.661644   TRUE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        hp       hp     TRUE      20     0.40      49 1.016610   TRUE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       cyl      cyl     TRUE      19     0.38      35 1.243276   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        wt       wt     TRUE      30     0.60      66 1.567988   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        hp       hp     TRUE      22     0.44      53 1.116700   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       cyl      cyl     TRUE      19     0.38      36 1.242159   TRUE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4      disp     disp     TRUE       2     0.04       4 0.000000  FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5      drat     drat     TRUE       0     0.00       0       NA  FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6      qsec     qsec     TRUE       0     0.00       0       NA  FALSE FALSE</span>

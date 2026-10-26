@@ -1,7 +1,7 @@
 # Signal-variable detection from an unsupervised varPro fit
 
 Tidy wrapper around
-[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+[`varPro::sdependent()`](https://luminwin.github.io/reference/uvarpro.html)
 for a `uvarpro` object. Where
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
 draws the cross-variable dependency *graph*, `gg_sdependent()` surfaces
@@ -29,26 +29,26 @@ gg_sdependent(
 - object:
 
   A `uvarpro` object from
-  [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html).
+  [`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html).
 
 - ...:
 
   Forwarded to
-  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+  [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
   when `beta_fit = NULL`; ignored, with a warning, when `beta_fit` is
   supplied.
 
 - threshold, q.signal, directed, min.degree:
 
   Passed to
-  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+  [`varPro::sdependent()`](https://luminwin.github.io/reference/uvarpro.html)
   (defaults match
   [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)).
 
 - beta_fit:
 
   Optional precomputed
-  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+  [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
   matrix.
 
 ## Value
@@ -79,14 +79,14 @@ The `provenance` attribute records `source`, `family` (`"unsupv"`),
 ## Details
 
 `sdependent()` runs on the
-[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+[`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
 lasso-coefficient matrix and returns, with `plot = FALSE`, a list of
 `imp.score` (per-variable signal score), `degree` (node degree in the
 dependency graph), and `signal.vars` (the detected signal set). This
 wrapper tidies that into one row per candidate variable, ranked by
 `imp.score`. Because the entropy matrix is the expensive part,
 `beta_fit` accepts a precomputed
-[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
+[`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
 matrix (shared with
 [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
 and
@@ -98,8 +98,8 @@ and
 (the dependency graph),
 [`gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_uvarpro.md)
 (lasso importance),
-[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html),
-[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html).
+[`varPro::sdependent()`](https://luminwin.github.io/reference/uvarpro.html),
+[`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html).
 
 ## Examples
 

@@ -1,6 +1,6 @@
 # Partial dependence data from a varPro model
 
-[`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+[`varPro::partialpro`](https://luminwin.github.io/reference/partialpro.html)
 returns one list, with continuous and categorical predictors mixed
 together. This function splits that list into two tidy data frames, one
 for each kind, and resolves the y-axis label the plot method will use.
@@ -42,7 +42,7 @@ gg_partialpro(
 - part_dta:
 
   Partial plot data from
-  [`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html).
+  [`varPro::partialpro`](https://luminwin.github.io/reference/partialpro.html).
   Each element must contain `xvirtual`, `xorg`, `yhat.par`,
   `yhat.nonpar`, and `yhat.causal`. Supply at least one of `part_dta` or
   `object`.
@@ -99,7 +99,7 @@ gg_partialpro(
 - ...:
 
   Forwarded to
-  [`partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+  [`partialpro`](https://luminwin.github.io/reference/partialpro.html)
   on the object-driven path (when `part_dta` is `NULL`). Use this to
   control which variables are computed (e.g. `xvar.names` or `nvar`) or
   to tune the isolation-forest UVT step (`cut`, `nsmp`). Without it,
@@ -140,7 +140,7 @@ A `gg_partial_varpro` object (see `gg_partial_varpro`).
 anything reaches partial dependence. The split-weight screen decides
 which predictors are worth guiding the trees with, and what survives it
 lands in `object$xvar.names`;
-[`varPro::get.topvars`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+[`varPro::get.topvars`](https://luminwin.github.io/reference/utilities_internal.html)
 then ranks a shorter list out of that. So the design matrix, the
 reachable set, and the default list are three different sizes; a fit on
 45 predictors might carry 26 in `object$xvar.names` and 15 in
@@ -165,7 +165,7 @@ For a complete view, fit with both screens off:
 predictor in `object$xvar.names`, so partial dependence can reach them
 all, and it leaves a strong variable's curve where it was.
 `sparse = FALSE` does the smaller thing, deepening
-[`varPro::get.topvars`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+[`varPro::get.topvars`](https://luminwin.github.io/reference/utilities_internal.html)
 so the reported ranking shows its tail rather than the screened top.
 Both are varPro's own arguments, and its defaults (both `TRUE`) go the
 other way, toward the screened set; keep the defaults when that sparser
@@ -181,7 +181,7 @@ value, in a predictor or in the outcome, is deleted before the fit. What
 you are told about it depends on the varPro version. Before 3.2.2 the
 deletion is silent: no warning, no message, and
 `na.action = "na.impute"` passed to
-[`varPro::varpro`](https://www.randomforestsrc.org/reference/varpro.html)
+[`varPro::varpro`](https://luminwin.github.io/reference/varpro.html)
 lands in `...`, never reaches the stump, and is discarded without
 remark. From 3.2.2, `varpro` warns with the input, omitted and retained
 counts, records them in `object$model.info$observations`, and stops with
@@ -199,7 +199,7 @@ recover the number from the object. On any version, check before you
 fit: `nrow(dta)` against `sum(complete.cases(dta))`.
 
 **Imputing first, without inventing outcomes:**
-[`varPro::roughfix`](https://www.randomforestsrc.org/reference/utilities_internal.html)
+[`varPro::roughfix`](https://luminwin.github.io/reference/utilities_internal.html)
 does mean and modal fill,
 [`randomForestSRC::impute`](https://www.randomforestsrc.org//reference/impute.rfsrc.html)
 does the forest-based job, and varPro's own help pages use the latter.
@@ -221,7 +221,7 @@ depends on having missing outcomes; the imputation matters whenever a
 *predictor* is missing. Two cautions. Imputing with the outcome stamps
 its signal into the filled predictor cells, which is right for a single
 fit but crosses fold boundaries in
-[`varPro::cv.varpro`](https://www.randomforestsrc.org/reference/cv.varpro.html);
+[`varPro::cv.varpro`](https://luminwin.github.io/reference/cv.varpro.html);
 impute inside the folds if the selection error has to mean anything. And
 a completed frame is one dataset, not many, so the curves here carry no
 uncertainty from the imputation; read them as conditional on it.
@@ -248,7 +248,7 @@ read an RMST horizon \\\tau\\ off the `varpro` object. Before varPro
 you to pass `scale = "rmst", time = tau` explicitly.
 
 **RMST partial dependence (scale = "rmst"):**
-[`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+[`varPro::partialpro`](https://luminwin.github.io/reference/partialpro.html)
 has no time argument, so its default survival learner returns ensemble
 mortality at every horizon. Before varPro 3.2.2 a horizon passed through
 `...` is silently dropped, and multi-horizon plots built that way differ
@@ -263,7 +263,7 @@ warns when you try. A \\\tau\\ beyond the model's largest event time is
 truncated there (with a warning), since \\S(t)\\ cannot be extrapolated.
 
 **Classification scale (scale = "prob"/"odds"/"logodds"):**
-[`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+[`varPro::partialpro`](https://luminwin.github.io/reference/partialpro.html)
 returns classification effects as *log-odds* of the target class.
 `scale = "prob"` (the classification default) back-transforms to
 probability \\P(Y = \mathrm{target})\\, `"odds"` to the odds, and
@@ -370,7 +370,7 @@ A partial dependence curve answers the question, "if I hold a single
 variable at a grid of values and average out everything else, how does
 the model's prediction move?" That is the same question `rfsrc` partial
 dependence answers. What
-[`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+[`varPro::partialpro`](https://luminwin.github.io/reference/partialpro.html)
 adds is two wrinkles that are worth understanding before you read the
 curves.
 
@@ -383,7 +383,7 @@ two methods can disagree, and `partialpro`'s curve is the one restricted
 to the data manifold.
 
 That isolation forest is worth one note. `partialpro` grows it with
-[`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html),
+[`varPro::isopro`](https://luminwin.github.io/reference/isopro.html),
 whose `method` defaults to `"unsupv"`, a forest with no outcome.
 `randomForestSRC` then passes a zero-length `yvar.wt` into its native
 code and decrements that pointer (`entry.c:184`), which is undefined
@@ -402,7 +402,7 @@ smooth parametric story and the raw forest predictions are telling you
 the same thing.
 
 Interpretation of the y-axis depends on the outcome (per
-[`varPro::partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)):
+[`varPro::partialpro`](https://luminwin.github.io/reference/partialpro.html)):
 response scale for regression, log-odds of the target class for
 classification, and either ensemble mortality (default) or RMST (if the
 original `varpro` call set `rmst`) for survival.
@@ -448,7 +448,7 @@ partialled on its own, every case set to 0 and to 1 on that level.
 `partialpro()` leaves the factor's other level columns as they were, so
 for a factor with three or more levels some of those cases hold two
 levels at once; this is upstream behaviour in
-[`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html).
+[`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html).
 Two-level factors, stored as a single 0/1 column, are not affected. To
 check a multi-level factor, use
 [`gg_partial_rfsrc`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_rfsrc.md),
@@ -538,13 +538,13 @@ head(result$continuous)
 head(result$categorical)
 #> # A tibble: 6 × 5
 #>   parametric nonparametric causal variable name 
-#>        <dbl>         <dbl>  <dbl>    <dbl> <fct>
-#> 1      0.850       -0.0338  0.751        0 sex  
-#> 2      1.76        -0.901  -0.829        0 sex  
-#> 3      0.846       -1.18    0.710        0 sex  
-#> 4     -0.545       -0.448   0.950        0 sex  
-#> 5      0.255        0.559  -0.579        0 sex  
-#> 6      0.299        0.0931 -1.23         0 sex  
+#>        <dbl>         <dbl>  <dbl> <fct>    <fct>
+#> 1      0.850       -0.0338  0.751 0        sex  
+#> 2      1.76        -0.901  -0.829 0        sex  
+#> 3      0.846       -1.18    0.710 0        sex  
+#> 4     -0.545       -0.448   0.950 0        sex  
+#> 5      0.255        0.559  -0.579 0        sex  
+#> 6      0.299        0.0931 -1.23  0        sex  
 
 # \donttest{
 ## The object-driven path: hand gg_partial_varpro() the varpro fit and let
@@ -557,7 +557,7 @@ vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 ncol(vp$x)                    # predictors in the data
 #> [1] 10
 length(vp$xvar.names)         # what the fit reaches
-#> [1] 7
+#> [1] 6
 length(varPro::get.topvars(vp))   # the default when xvar.names is absent
 #> [1] 4
 

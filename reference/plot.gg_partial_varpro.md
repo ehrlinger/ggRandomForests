@@ -166,7 +166,7 @@ plot(
   with `"1 - "`. Use it when the fit targets the class you do *not* want
   on the axis (a model of weaning failure read as the probability of
   weaning success, say), so you do not have to recompute
-  [`partialpro`](https://www.randomforestsrc.org/reference/partialpro.html)
+  [`partialpro`](https://luminwin.github.io/reference/partialpro.html)
   against the other target. Requires a probability scale
   (`scale = "prob"` or `"surv"`); on the additive, multiplicative and
   unbounded scales \\1 - x\\ has no referent and this is an error rather
