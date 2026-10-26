@@ -72,3 +72,22 @@ test_that("plot.gg_rhf filters on the column it draws, not on hazard", {
   expect_equal(nrow(ggplot2::layer_data(plot(gg))), 2L)
   expect_equal(nrow(ggplot2::layer_data(plot(gg, hazard.only = FALSE))), 3L)
 })
+
+test_that("plot.gg_rhf colours each case only while there are few", {
+  # A full cohort drew one colour and one legend key per case, so 2,386 ids
+  # filled the page. Up to 10 cases keep a legend; more become one bundle.
+  gg <- gg_rhf(.rhf_pbc())
+
+  few <- plot(gg, idx = c(1, 5, 10))
+  expect_equal(length(unique(ggplot2::layer_data(few)$colour)), 3L)
+  expect_true("colour" %in% names(few$mapping))
+
+  many <- plot(gg)
+  expect_gt(length(unique(gg$id)), 10L)
+  expect_false("colour" %in% names(many$mapping))
+  ld <- ggplot2::layer_data(many)
+  expect_equal(length(unique(ld$colour)), 1L)
+  # cases whose hazard is masked throughout are dropped, as documented
+  expect_equal(length(unique(ld$group)),
+               length(unique(gg$id[is.finite(gg$hazard)])))
+})

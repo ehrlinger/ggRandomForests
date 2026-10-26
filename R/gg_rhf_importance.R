@@ -81,6 +81,17 @@ gg_rhf_importance <- function(object, ...) {
 
 #' @rdname gg_rhf_importance
 #' @export
+gg_rhf_importance.importance.rhf <- function(object, ...) {
+  # The extractor needs the forest to validate the importance result against,
+  # so point at importance_fit rather than falling through to UseMethod().
+  stop("gg_rhf_importance() takes the 'rhf' forest, not the ",
+       "'importance.rhf' result. Call ",
+       "gg_rhf_importance(fit, importance_fit = <importance.rhf result>).",
+       call. = FALSE)
+}
+
+#' @rdname gg_rhf_importance
+#' @export
 gg_rhf_importance.rhf <- function(object, importance_fit = NULL, cache = NULL,
                                   time.index = NULL, ...) {
   if (!inherits(object, "rhf")) {

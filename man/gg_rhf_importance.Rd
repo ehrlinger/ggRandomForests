@@ -2,10 +2,13 @@
 % Please edit documentation in R/gg_rhf_importance.R
 \name{gg_rhf_importance}
 \alias{gg_rhf_importance}
+\alias{gg_rhf_importance.importance.rhf}
 \alias{gg_rhf_importance.rhf}
 \title{Tidy time-localized variable priority from a Random Hazard Forest}
 \usage{
 gg_rhf_importance(object, ...)
+
+\method{gg_rhf_importance}{importance.rhf}(object, ...)
 
 \method{gg_rhf_importance}{rhf}(
   object,

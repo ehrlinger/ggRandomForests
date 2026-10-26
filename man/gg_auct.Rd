@@ -2,10 +2,13 @@
 % Please edit documentation in R/gg_auct.R
 \name{gg_auct}
 \alias{gg_auct}
+\alias{gg_auct.auct.rhf}
 \alias{gg_auct.rhf}
 \title{Tidy time-varying AUC from a Random Hazard Forest}
 \usage{
 gg_auct(object, ...)
+
+\method{gg_auct}{auct.rhf}(object, ...)
 
 \method{gg_auct}{rhf}(
   object,

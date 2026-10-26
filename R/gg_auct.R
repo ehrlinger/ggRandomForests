@@ -67,6 +67,15 @@ gg_auct <- function(object, ...) {
 
 #' @rdname gg_auct
 #' @export
+gg_auct.auct.rhf <- function(object, ...) {
+  # Passing the auct.rhf result as the object is the natural first guess; say
+  # where it goes instead of falling through to "no applicable method".
+  stop("gg_auct() takes the 'rhf' forest, not the 'auct.rhf' result. ",
+       "Call gg_auct(fit, auct_fit = <auct.rhf result>).", call. = FALSE)
+}
+
+#' @rdname gg_auct
+#' @export
 gg_auct.rhf <- function(object, marker = c("chf", "haz"), auct_fit = NULL,
                         method = c("cumulative", "incident"), ...) {
   method_given <- !missing(method)
