@@ -9,7 +9,7 @@ selection cutoff, gray otherwise. Dashed red line marks the cutoff.
 
 ``` r
 # S3 method for class 'gg_beta_varpro'
-plot(x, ...)
+plot(x, labels = NULL, ...)
 ```
 
 ## Arguments
@@ -18,6 +18,14 @@ plot(x, ...)
 
   A `gg_beta_varpro` object from
   [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md).
+
+- labels:
+
+  Optional variable labels for the variable axis. One of: a named
+  character vector (`c(wt = "Weight")`); a labelled data frame, whose
+  `attr(col, "label")` values are read; or a two-column `key`/`label`
+  data frame. Variables with no label keep their raw name. Defaults to
+  `NULL` (raw names).
 
 - ...:
 

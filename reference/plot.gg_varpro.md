@@ -10,7 +10,7 @@ facet per class.
 
 ``` r
 # S3 method for class 'gg_varpro'
-plot(x, type, ...)
+plot(x, type, labels = NULL, ...)
 ```
 
 ## Arguments
@@ -26,6 +26,14 @@ plot(x, type, ...)
   `provenance$local.std`: `"z"` when `local.std = TRUE` (the default),
   `"raw"` when `local.std = FALSE`. Asking for a scale that the extract
   step did not prepare raises an error.
+
+- labels:
+
+  Optional variable labels for the variable axis. One of: a named
+  character vector (`c(bpd_last = "BP Diastole")`); a labelled data
+  frame, whose `attr(col, "label")` values are read; or a two-column
+  `key`/`label` data frame. Variables with no label keep their raw name.
+  Defaults to `NULL` (raw names).
 
 - ...:
 
@@ -52,15 +60,12 @@ mean.
 (`$conditional`) are shown as a faceted bar chart
 (`facet_wrap(~class, nrow = 1)`). Variables keep the sort order set by
 the unconditional median z in `$stats`, so the facets line up. A
-variable whose class-conditional z is undefined (0/0, which
-[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
-can return because
-[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
-calls it with `local.std = FALSE`) gets no bar in that facet, and the
-caption says so; a zero bar would read as a measured zero. 0/0 arises
-when too few trees tested the variable, but also when every tree scored
-it exactly 0, so the plot does not say which. Every class keeps its
-facet, even one with no defined z.
+variable whose class-conditional z is undefined (0/0, possible only with
+`local.std = FALSE`) gets no bar in that facet, and the caption says so;
+a zero bar would read as a measured zero. 0/0 arises when too few trees
+tested the variable, but also when every tree scored it exactly 0, so
+the plot does not say which. Every class keeps its facet, even one with
+no defined z.
 
 ## Reading the boxplot
 
@@ -74,9 +79,13 @@ default z-score axis (`local.std = TRUE`) that line is a z; on the
 raw-importance axis (`local.std = FALSE`, `type = "raw"`) it is the same
 numeric value but in raw-importance units. Boxes whose aggregate value
 sits above the line are colored blue and flagged `selected = TRUE`, the
-rest are gray. A selected variable with a tight, high box is a variable
-the forest agrees on across trees. A selected variable with a wide box
-that straddles the cutoff is one to look at twice before relying on it.
+rest are gray. A variable with a usable release rule in fewer than
+`trim` of the trees (`tested = FALSE`) is drawn as an open box, usually
+a flat line at zero: it was barely tested, which is not the same as
+tested and found unimportant. A selected variable with a tight, high box
+is a variable the forest agrees on across trees. A selected variable
+with a wide box that straddles the cutoff is one to look at twice before
+relying on it.
 
 With `faithful = TRUE` the box is drawn faint and the per-tree values
 are jittered over it as semi-transparent points, on the same scale as

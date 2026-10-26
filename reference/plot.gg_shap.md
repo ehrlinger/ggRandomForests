@@ -9,7 +9,13 @@ value.
 
 ``` r
 # S3 method for class 'gg_shap'
-plot(x, type = c("beeswarm", "importance", "dependence"), xvar = NULL, ...)
+plot(
+  x,
+  type = c("beeswarm", "importance", "dependence"),
+  xvar = NULL,
+  labels = NULL,
+  ...
+)
 ```
 
 ## Arguments
@@ -28,6 +34,15 @@ plot(x, type = c("beeswarm", "importance", "dependence"), xvar = NULL, ...)
 
   For `type = "dependence"`, the variable to plot. When `NULL`, the
   top-ranked variable is used.
+
+- labels:
+
+  Optional variable labels, forwarded to the mode function. One of: a
+  named character vector (`c(Temp = "Temperature")`); a labelled data
+  frame, whose `attr(col, "label")` values are read; or a two-column
+  `key`/`label` data frame. Variables with no label keep their raw name.
+  In `"dependence"` mode the label is substituted into the axis titles;
+  `xvar` still matches on raw names.
 
 - ...:
 
