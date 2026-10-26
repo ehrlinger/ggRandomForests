@@ -1,9 +1,9 @@
 # Tidy data from a varPro isolation-forest fit
 
 Pulls per-observation anomaly scores out of a
-[`isopro`](https://luminwin.github.io/reference/isopro.html) fit so you
-can plot them, sort them, or write them to disk without having to know
-the internal shape of the fit.
+[`isopro`](https://www.randomforestsrc.org/reference/isopro.html) fit so
+you can plot them, sort them, or write them to disk without having to
+know the internal shape of the fit.
 
 ## Usage
 
@@ -16,7 +16,7 @@ gg_isopro(object, ..., newdata = NULL)
 - object:
 
   An `isopro` fit returned by
-  [`isopro`](https://luminwin.github.io/reference/isopro.html).
+  [`isopro`](https://www.randomforestsrc.org/reference/isopro.html).
 
 - ...:
 
@@ -30,7 +30,7 @@ gg_isopro(object, ..., newdata = NULL)
   Must be passed by name. When `NULL` (default) the extractor returns
   the in-sample tidy frame from the fit's stored `$case.depth` and
   `$howbad`. When supplied, each row is scored via
-  [`predict.isopro`](https://luminwin.github.io/reference/predict.isopro.html)
+  [`predict.isopro`](https://www.randomforestsrc.org/reference/predict.isopro.html)
   and the same tidy shape is returned for the test data.
 
 ## Value
@@ -42,7 +42,7 @@ observation. Columns:
 
   Integer; observation index `1..n`, in the same order as the rows of
   the data passed to
-  [`isopro`](https://luminwin.github.io/reference/isopro.html).
+  [`isopro`](https://www.randomforestsrc.org/reference/isopro.html).
 
 - case.depth:
 
@@ -71,9 +71,9 @@ depth means anomalous, deep depth means ordinary. Average a single
 observation's depth across many trees and the noise washes out, leaving
 a stable per-observation rank.
 
-[`isopro`](https://luminwin.github.io/reference/isopro.html) supports
-three flavours of isolation forest, which differ in how the splits are
-chosen:
+[`isopro`](https://www.randomforestsrc.org/reference/isopro.html)
+supports three flavours of isolation forest, which differ in how the
+splits are chosen:
 
 - `"rnd"`:
 
@@ -106,7 +106,7 @@ The fit gives back two parallel per-observation vectors: `case.depth` is
 the raw mean isolation depth (units of "splits", lower = more anomalous)
 and `howbad` is the same information on a `[0, 1]` scale, the empirical
 CDF of `case.depth`. On the fit those two run the same way:
-[`varPro::isopro()`](https://luminwin.github.io/reference/isopro.html)'s
+[`varPro::isopro()`](https://www.randomforestsrc.org/reference/isopro.html)'s
 `howbad` is *lower* = more anomalous, like the depth it came from.
 
 We flip it. `gg_isopro()` returns `1 - object$howbad`, so the column you
@@ -144,7 +144,7 @@ for you.
 ## Scoring new data
 
 Pass a `data.frame` as `newdata` and the extractor calls
-[`predict.isopro`](https://luminwin.github.io/reference/predict.isopro.html)
+[`predict.isopro`](https://www.randomforestsrc.org/reference/predict.isopro.html)
 twice: once with `quantiles = FALSE` to get the raw mean case depth per
 row, and once with `quantiles = TRUE` to get the per-row quantile of
 that depth against the training-data depth distribution.
@@ -195,7 +195,7 @@ Selection via the Rule-Based Variable Priority*. R package version
 ## See also
 
 [`plot.gg_isopro`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md),
-[`isopro`](https://luminwin.github.io/reference/isopro.html)
+[`isopro`](https://www.randomforestsrc.org/reference/isopro.html)
 
 ## Examples
 

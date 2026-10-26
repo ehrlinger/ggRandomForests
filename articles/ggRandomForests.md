@@ -5,7 +5,7 @@
 -\> `rfsrc`,
 [`randomForestRHF::rhf()`](https://www.randomforestsrc.org//reference/rhf.html)
 -\> `rhf`, and
-[`varPro::varpro()`](https://luminwin.github.io/reference/varpro.html)
+[`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
 -\> `varpro`. It also reads `randomForest` fits. A fitted forest carries
 a lot of information, but getting at it usually means digging through
 list structures that were never meant to be plotted directly.

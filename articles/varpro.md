@@ -202,7 +202,7 @@ asks the next question: *how* does the response change with a variable,
 holding the others fixed?
 [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
 wraps
-[`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)
+[`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
 and returns a tidy frame of parametric, non-parametric, and causal
 partial-dependence curves.
 
@@ -289,7 +289,7 @@ real even when the release contrast is modest.
 
 The wrappers so far all score variables against a response. varPro also
 has an unsupervised mode:
-[`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html)
+[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 grows a forest on the predictor matrix alone, and three more wrappers
 read off that fit:
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
@@ -306,7 +306,7 @@ vignette](https://ehrlinger.github.io/ggRandomForests/articles/uvarpro.md).
 Variable importance is one axis; *observation* outlierness is another.
 [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
 wraps
-[`varPro::isopro()`](https://luminwin.github.io/reference/isopro.html)
+[`varPro::isopro()`](https://www.randomforestsrc.org/reference/isopro.html)
 (an isolation-forest variant that scores how anomalous each training row
 looks) and renders the result as a ranked elbow plus a density of the
 scores. The score is on `[0, 1]`; the wrapper’s convention is “higher =
@@ -472,7 +472,7 @@ defaults to the **probability scale** (`scale = "auto"` resolves to
 `"prob"`): each predictor’s curve is the predicted probability of the
 *target class*, by default the last factor level (here *virginica*),
 selectable with `target =`.
-[`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)
+[`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
 works internally on the log-odds of that class; the wrapper
 back-transforms each observation to a probability *before* averaging, so
 the curve is the mean predicted probability (not the probability of the
@@ -556,9 +556,9 @@ being explicit about those limits is more useful than pretending they
 don’t exist. The forest-fitting and the family-agnostic wrappers all
 work; the lasso-refined and individual-importance wrappers don’t,
 because the underlying
-[`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+[`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 and
-[`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+[`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
 calls don’t yet extend to right-censored outcomes. A per-rule local
 lasso for a censored response requires a local partial-likelihood or
 Nelson-Aalen estimator in place of the regression/classification local
@@ -671,7 +671,7 @@ plot(gg_isopro(iso_pbc))
 
 ### Not available for survival: `gg_beta_varpro`, `gg_ivarpro`
 
-[`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+[`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 errors on survival fits in the current release (it only supports `regr`
 and `class`).
 [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
@@ -730,7 +730,7 @@ Three components carry three different counts:
 | Component | What it holds |
 |----|----|
 | `object$x` | every predictor you handed to `varpro()` |
-| `object$xvar.names` | the variables [`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html) can reach |
+| `object$xvar.names` | the variables [`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html) can reach |
 | `varPro::get.topvars(object)` | the reported ranking, and the default for `xvar.names` |
 
 For the Boston fit above:
@@ -847,9 +847,9 @@ coercing to character.
 
 ### Caching the expensive calls
 
-[`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+[`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 and
-[`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+[`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
 are the two heavy calls. Both wrappers accept a pre-computed fit
 (`beta_fit`, `ivarpro_fit`) so you can iterate on selection, observation
 index, or cutoff without re-fitting the lasso or the local-importance

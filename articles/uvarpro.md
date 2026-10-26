@@ -33,7 +33,7 @@ But sometimes there is no `y`. You have a matrix of predictors and you
 want to know which columns carry the structure of the data: which
 variables define its shape, which travel together, and which are close
 to noise. That is the job of unsupervised varPro.
-[`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html)
+[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 grows a forest on the predictor matrix alone, with no response, and
 scores each variable by how much entropy it contributes to the regions
 the forest carves out ([Lu and Ishwaran 2024](#ref-Lu2024varpro);
@@ -123,7 +123,7 @@ A ranking invites the obvious next question: where is the cut? Which
 variables are signal, and which are noise?
 [`gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_sdependent.md)
 answers that narrower question off the same fit. It wraps
-[`varPro::sdependent()`](https://luminwin.github.io/reference/uvarpro.html)
+[`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 and returns one row per candidate variable (an importance score, its
 degree in the dependency graph, and a `signal` flag), drawn as a ranked
 lollipop.

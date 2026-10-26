@@ -1,7 +1,7 @@
 # Per-variable lasso-beta importance from a varPro fit
 
 Tidy wrapper around
-[`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+[`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
 for the regression or classification family. Aggregates the per-rule
 lasso coefficient \\\hat{\beta}\\ by variable into the mean absolute
 value \\\mathrm{mean}(\|\hat{\beta}\|)\\ and flags variables above a
@@ -19,13 +19,13 @@ gg_beta_varpro(object, ..., cutoff = NULL, beta_fit = NULL, which_class = NULL)
 - object:
 
   A `varpro` fit from
-  [`varPro::varpro()`](https://luminwin.github.io/reference/varpro.html)
+  [`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
   (regression or classification family).
 
 - ...:
 
   Forwarded to
-  [`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+  [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
   when `beta_fit = NULL`; ignored otherwise (with a warning). Documented
   forwardables: `use.cv`, `use.1se`, `nfolds`, `maxit`, `thresh`,
   `max.rules.tree`, `max.tree`.
@@ -38,7 +38,7 @@ gg_beta_varpro(object, ..., cutoff = NULL, beta_fit = NULL, which_class = NULL)
 - beta_fit:
 
   Optional pre-computed
-  [`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+  [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
   result for the same `object`. `NULL` (default) means the wrapper runs
   `beta.varpro()` itself. When supplied, must be a `varpro`-class object
   whose `$results` has columns `tree / branch / variable / n.oob / imp`.
@@ -103,7 +103,7 @@ regression coefficient. Specifically:
 
 - `imp` is the **absolute** fitted coefficient \\\|\hat{\beta}\|\\ at
   the chosen \\\lambda\\. **There is no direction here**:
-  [`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+  [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
   wraps every coefficient it returns in
   [`abs()`](https://rdrr.io/r/base/MathFun.html), so the sign is
   discarded upstream and never reaches us. Read `imp` as strength of
@@ -216,7 +216,7 @@ reproducibility matters.
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
 [`gg_vimp()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md),
 [`plot.gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_varpro.md),
-[`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html).
+[`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html).
 
 ## Examples
 

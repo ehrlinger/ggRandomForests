@@ -1,7 +1,7 @@
 # Per-variable lasso-beta importance from an unsupervised varPro fit
 
 Tidy wrapper around
-[`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
+[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 for a `uvarpro` object. Where
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md)
 refines the *supervised* release-rule contrast, `gg_beta_uvarpro()` does
@@ -23,12 +23,12 @@ gg_beta_uvarpro(object, ..., cutoff = NULL, beta_fit = NULL)
 - object:
 
   A `uvarpro` object from
-  [`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html).
+  [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html).
 
 - ...:
 
   Forwarded to
-  [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   when `beta_fit = NULL` (e.g. `pre.filter`, `second.stage`, `use.cv`).
   Ignored, with a warning, when `beta_fit` is supplied.
 
@@ -41,7 +41,7 @@ gg_beta_uvarpro(object, ..., cutoff = NULL, beta_fit = NULL)
 - beta_fit:
 
   Optional pre-computed
-  [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   matrix for `object`. When supplied, must be a numeric matrix with
   column names (the variables); `...` is then ignored.
 
@@ -80,7 +80,7 @@ The `provenance` attribute records `source`, `family` (`"unsupv"`),
 matrix of absolute lasso coefficients. The column mean (`na.rm = TRUE`)
 is the per-variable importance reported here, matching the canonical
 `sort(colMeans(beta, na.rm = TRUE), decreasing = TRUE)` idiom in the
-[`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html)
+[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 help ("iowa housing - illustrates lasso importance").
 
 Because `get.beta.entropy()` is expensive (a cross-validated `glmnet`
@@ -94,8 +94,8 @@ the `beta_fit` argument of
 [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md)
 (supervised analogue),
 [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md),
-[`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html),
-[`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html).
+[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html),
+[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html).
 
 ## Examples
 

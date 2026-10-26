@@ -11,7 +11,7 @@
   no longer fails with “Adjacency matrices must be square” on mixed-type
   data
   ([\#320](https://github.com/ehrlinger/ggRandomForests/issues/320)).
-  [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   returns one row per variable that released but one column per one-hot
   predictor column, so any factor level that never released, or any
   variable the pre-filter dropped, made the matrix non-square. The
@@ -32,7 +32,7 @@
 - [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
   on a binary classification forest labelled its profile with the wrong
   class.
-  [`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
   explains one class there, the first factor level (its `target`
   attribute says so), and
   [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
@@ -424,7 +424,7 @@
   -\> `rfsrc`,
   [`randomForestRHF::rhf()`](https://www.randomforestsrc.org//reference/rhf.html)
   -\> `rhf`, and
-  [`varPro::varpro()`](https://luminwin.github.io/reference/varpro.html)
+  [`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
   -\> `varpro`.
 
 - Add a longitudinal RHF vignette covering
@@ -652,7 +652,7 @@
 
 - [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
   orders variables by varPro importance
-  ([`varPro::get.topvars()`](https://luminwin.github.io/reference/utilities_internal.html))
+  ([`varPro::get.topvars()`](https://www.randomforestsrc.org/reference/utilities_internal.html))
   when `object` is supplied, and `name` is now a **factor**, so facets
   follow importance order instead of being re-sorted alphabetically.
   Variables absent from the ranking keep their incoming order and are
@@ -734,7 +734,7 @@
 - [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
   now scores the boxes, z and the new `coverage` column from one set of
   release rules, the way
-  [`varPro::importance()`](https://luminwin.github.io/reference/importance.html)
+  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
   does, so they always describe the same trees. Before, z followed
   `max.tree` passed through `...` while the boxes stayed on the fit-time
   trees, and a variable with rules only outside those trees was dropped
@@ -801,7 +801,7 @@
 
 - [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
   labelled categorical partials in the wrong order. Each column of
-  [`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)’s
+  [`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)’s
   output belongs to one value of `$xvirtual` (sorted values, or factor
   levels), but the labels were taken from the order values first appear
   in the sampled cases, so a 0/1 variable could have “0” and “1” swapped
@@ -861,6 +861,44 @@
   test for a class with no defined z sets that z by hand. Both failed
   against the `randomForestSRC` development release, whose new seed
   generator grows a different forest from the same seed.
+
+- The help pages for
+  [`calc_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/calc_roc.rfsrc.md),
+  [`gg_rfsrc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rfsrc.rfsrc.md)
+  and
+  [`gg_roc()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_roc.rfsrc.md)
+  now show the generic call in their usage section, not only the `rfsrc`
+  method. R-devel’s `R CMD check` reports exported functions with no
+  usage line as “Exported functions without usage information”, and
+  these three were the only ones. No argument or return value changed.
+
+- `Depends` now reads `R (>= 4.3.0)`, down from `R (>= 4.4.0)`. The old
+  floor was the internal hvtiR family’s policy, not anything
+  ggRandomForests needs. The new one is the floor of `randomForestSRC`
+  and `varPro`, the strictest of the `Imports`; the package code itself
+  needs nothing past R 4.1. A new `R CMD check` leg on R 4.3 tests the
+  floor on every push to `main`
+  ([\#326](https://github.com/ehrlinger/ggRandomForests/issues/326)).
+
+- [`gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_ivarpro.md)
+  mirrors a binary profile into the second class only when it explains
+  the forest’s own probability of the first level. A `y.external` target
+  named after a class is any numeric response, not a class probability:
+  it is kept as a single profile, filed under its target’s name when
+  that is a response level and under the last level otherwise, and the
+  binary default view shows it. The one case that cannot be told apart
+  is a precomputed `y.external` fit named after the first level and run
+  with `save.data = FALSE`; it is mirrored.
+
+- [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
+  keeps each categorical variable’s level order in
+  `$categorical$variable` when `part_dta` carries factor-valued `xorg`,
+  so the plot no longer lists the categories alphabetically. The column
+  is a factor whose levels run through each variable’s levels in turn,
+  and it is ordered when every categorical variable is an ordered
+  factor. The plot keys each panel’s levels by their variable, so panels
+  whose labels overlap, or whose factors order the same labels
+  differently, each keep their own order.
 
 ## ggRandomForests v3.5.2
 
@@ -925,7 +963,7 @@ CRAN release: 2026-08-21
   indirect:
   [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
   calls
-  [`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html),
+  [`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html),
   which grows its own `isopro()` forest and lets `method` default to
   `"unsupv"`. The other live-`partialpro()` tests were already
   `skip_on_cran()`’d, which left this one as the only one running on
@@ -1049,9 +1087,9 @@ CRAN release: 2026-08-04
 - The varPro vignette now documents which variables a `varpro` fit
   actually makes available. A fit narrows the predictors twice –
   `object$xvar.names` holds what
-  [`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)
+  [`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
   can reach,
-  [`varPro::get.topvars()`](https://luminwin.github.io/reference/utilities_internal.html)
+  [`varPro::get.topvars()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
   only the reported ranking – and `partialpro()` silently drops any
   requested name outside the first set. The new section covers naming
   `xvar.names` to get past the reported ranking, `split.weight = FALSE`
@@ -1170,7 +1208,7 @@ CRAN release: 2026-08-04
   The examples do this now; they had all been plotting one dot.
 - [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md):
   the `imp` column is documented as the *absolute* coefficient.
-  [`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+  [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
   wraps every coefficient it returns in
   [`abs()`](https://rdrr.io/r/base/MathFun.html), so the sign is
   discarded upstream and never reaches us – the docs had said “Sign is
@@ -1180,7 +1218,7 @@ CRAN release: 2026-08-04
   for a signed local estimator.
 - [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md):
   the “What’s in the output” section now says the polarity flip is ours.
-  [`varPro::isopro()`](https://luminwin.github.io/reference/isopro.html)’s
+  [`varPro::isopro()`](https://www.randomforestsrc.org/reference/isopro.html)’s
   `howbad` is *lower* = more anomalous; we return `1 - howbad` so that
   higher = more anomalous. The section had credited that to the fit,
   contradicting this function’s own `@return`.
@@ -1292,7 +1330,7 @@ CRAN release: 2026-07-02
   /
   [`plot.gg_beta_uvarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_uvarpro.md):
   tidy wrapper and bar chart for
-  [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   – the unsupervised analogue of
   [`gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_beta_varpro.md).
   From a `uvarpro()` fit it aggregates the per-region lasso coefficients
@@ -1304,7 +1342,7 @@ CRAN release: 2026-07-02
   /
   [`plot.gg_sdependent()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_sdependent.md):
   tidy wrapper and ranked lollipop for
-  [`varPro::sdependent()`](https://luminwin.github.io/reference/uvarpro.html)
+  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   signal-variable detection. Returns one row per candidate variable
   (`imp_score`, graph `degree`, `signal` flag) ranked by `imp_score`.
   Complements
@@ -1312,7 +1350,7 @@ CRAN release: 2026-07-02
   (the dependency graph) with the “which variables are signal” ranking;
   shares the `beta_fit` entropy matrix. Follows the `get.beta.entropy` +
   `sdependent` workflow from the
-  [`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html)
+  [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   help (iowa-housing example).
 - New `uvarpro` vignette: a short, focused walk-through of the
   unsupervised varPro wrappers
@@ -1372,7 +1410,7 @@ CRAN release: 2026-06-23
   rows:
 
   , 0” when
-  [`varPro::importance()`](https://luminwin.github.io/reference/importance.html)
+  [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
   returns a degenerate importance table (0 rows, or `p` variables with
   no usable `z` column) – observed intermittently on survival fits where
   the release-rule step selects no variables. It now stops with a clear,
@@ -1384,7 +1422,7 @@ CRAN release: 2026-06-23
 
 - Fix: `gg_partial_varpro(scale = "rmst", time = tau)` now *drives* the
   survival partial computation instead of only relabeling the y-axis.
-  [`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)
+  [`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
   has no time argument, so its default survival learner returns ensemble
   mortality at every horizon – multi-horizon RMST plots built that way
   differed only by Monte-Carlo noise, not by `tau`. `scale = "rmst"` now
@@ -1407,7 +1445,7 @@ CRAN release: 2026-06-23
   (and the
   [`gg_partialpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
   alias) now forward `...` to
-  [`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)
+  [`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
   on the object-driven path. This restores control over which variables
   are computed (`xvar.names`, `nvar`) and the UVT step (`cut`, `nsmp`,
   …) for the RMST path, which must recompute from `object` and so cannot
@@ -1498,7 +1536,7 @@ CRAN release: 2026-06-11
   fallback if the file is absent. The
   [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
   tests memoise the per-fit entropy matrix
-  ([`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html),
+  ([`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html),
   ~1.5 s and a pure function of the fit) instead of recomputing it once
   per test. No user-facing behavior change.
 
@@ -1552,7 +1590,7 @@ CRAN release: 2026-06-11
   [`plot.gg_ivarpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_ivarpro.md):
   tidy wrapper and per-variable-distribution / per-observation-profile
   plots for
-  [`varPro::ivarpro()`](https://luminwin.github.io/reference/ivarpro.html)
+  [`varPro::ivarpro()`](https://www.randomforestsrc.org/reference/ivarpro.html)
   (individual / local variable importance) across regression and
   classification (binary + multi-class) families. The long-format tidy
   frame is `(obs, variable, local_imp, selected)` for regression;
@@ -1586,7 +1624,7 @@ CRAN release: 2026-06-11
   and
   [`plot.gg_beta_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_beta_varpro.md):
   tidy wrapper and default horizontal bar chart for
-  [`varPro::beta.varpro()`](https://luminwin.github.io/reference/utilities_internal.html)
+  [`varPro::beta.varpro()`](https://www.randomforestsrc.org/reference/utilities_internal.html)
   — the per-rule lasso-β refinement of variable importance. Aggregates
   per-rule β̂ by variable into `beta_mean = mean(|β̂|)` and flags
   variables above a selection cutoff (default `mean(beta_mean)`).
@@ -1599,7 +1637,7 @@ CRAN release: 2026-06-11
   map). Third of three Phase 4 sub-projects.
 - [`gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_isopro.md)
   gains a `newdata` argument so a fitted
-  [`varPro::isopro`](https://luminwin.github.io/reference/isopro.html)
+  [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html)
   model can score new observations into the same tidy `gg_isopro` frame.
   Internally the wrapper calls `predict.isopro()` twice: with
   `quantiles = FALSE` to populate the `case.depth` column (varPro’s
@@ -1650,7 +1688,7 @@ CRAN release: 2026-06-11
   and
   [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md):
   tidy wrapper and ranked-elbow + density visualization for
-  [`varPro::isopro`](https://luminwin.github.io/reference/isopro.html)
+  [`varPro::isopro`](https://www.randomforestsrc.org/reference/isopro.html)
   isolation-forest anomaly scores.
   [`plot.gg_isopro()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_isopro.md)
   takes `panel = c("both", "elbow", "density")` and optional `threshold`
@@ -1708,9 +1746,9 @@ CRAN release: 2026-06-11
   varPro cross-variable dependency (Phase 3).
   - [`gg_udependent()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_udependent.md)
     reads cross-variable dependency scores off a `uvarpro` fit, via
-    [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
+    [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
     and
-    [`varPro::sdependent()`](https://luminwin.github.io/reference/uvarpro.html).
+    [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html).
     It returns a tidy list: `$edges` (variable_from, variable_to,
     weight), `$nodes` (variable, degree, selected), and `$graph`, an
     igraph object.

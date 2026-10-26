@@ -1,7 +1,7 @@
 # Re-extract release rules and score them as importance() does
 
 The rule-sampling half of
-[`varPro::importance()`](https://luminwin.github.io/reference/importance.html).
+[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html).
 With `local.std = TRUE` each usable rule (out-of-bag and complement
 cases both present) gets its local importance and only those rules are
 kept; with `FALSE` the strength array's own importance is used,

@@ -3,8 +3,9 @@
 A `uvarpro` fit records how strongly each variable depends on the
 others. This function pulls those cross-variable dependency scores from
 the fit with
-[`get.beta.entropy`](https://luminwin.github.io/reference/uvarpro.html)
-and [`sdependent`](https://luminwin.github.io/reference/uvarpro.html),
+[`get.beta.entropy`](https://www.randomforestsrc.org/reference/uvarpro.html)
+and
+[`sdependent`](https://www.randomforestsrc.org/reference/uvarpro.html),
 and returns them as a tidy list that `plot.gg_udependent` can draw as a
 network.
 
@@ -52,12 +53,12 @@ gg_udependent(
 - ...:
 
   Additional arguments forwarded to
-  [`varPro::sdependent()`](https://luminwin.github.io/reference/uvarpro.html).
+  [`varPro::sdependent()`](https://www.randomforestsrc.org/reference/uvarpro.html).
 
 - pre.filter:
 
   Logical; forwarded to
-  [`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html).
+  [`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html).
   `TRUE` (default) restricts the lasso fits to the variables that pass
   varPro's importance pre-filter. `FALSE` uses every variable, so one
   the pre-filter drops (an outcome column, say) can still reach the
@@ -106,13 +107,13 @@ release?) and fits a lasso logistic regression with the other variables
 as predictors. The coefficient on variable \\j\\ in the model for
 variable \\i\\'s region-release contrast is the entry \\I\[i, j\]\\ of
 the matrix
-[`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
+[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 returns.
 
 Read that entry as "how much does knowing \\j\\ help separate \\i\\'s
 region from its release". A large \\I\[i, j\]\\ says \\j\\ carries
 information about the structure varpro picked up in \\i\\.
-[`varPro::sdependent`](https://luminwin.github.io/reference/uvarpro.html)
+[`varPro::sdependent`](https://www.randomforestsrc.org/reference/uvarpro.html)
 thresholds that matrix at a user-chosen cut and returns the set of
 "signal" variables: the nodes with high enough out-degree to be worth
 keeping. We pass the threshold through to `sdependent` and use the same

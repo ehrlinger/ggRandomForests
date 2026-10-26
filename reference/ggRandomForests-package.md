@@ -6,7 +6,7 @@ exploration figures for fits from
 (`rfsrc` class; randomForestSRC \>= 3.4.0),
 [`randomForestRHF::rhf()`](https://www.randomforestsrc.org//reference/rhf.html)
 (`rhf` class; randomForestRHF \>= 2.0.0),
-[`varPro::varpro()`](https://luminwin.github.io/reference/varpro.html)
+[`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
 (`varpro` class; varPro \>= 3.1.0), or
 [`randomForest`](https://rdrr.io/pkg/randomForest/man/randomForest.html).
 

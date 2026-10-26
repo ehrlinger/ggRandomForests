@@ -104,7 +104,7 @@ varPro’s importance (z) is an average over the trees, and a tree with no
 rule for the term counts as zero. The average is winsorised: trees above
 the 90th percentile are pulled down to it and trees below the 10th
 pulled up, before averaging (`trim = 0.1` in
-[`varPro::importance()`](https://luminwin.github.io/reference/importance.html)).
+[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)).
 Nothing is dropped; the clamping stops a few extreme trees from
 dominating.
 
@@ -122,7 +122,7 @@ low coverage it means “not tested enough to rank”, with high coverage
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
 draws each term’s importance across the trees. Score all the trees: by
 default
-[`varPro::importance()`](https://luminwin.github.io/reference/importance.html),
+[`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html),
 and
 [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
 with it, scores a random sample of 150, so the answer can change from
@@ -218,7 +218,7 @@ band[order(-band$z), c("variable", "z", "coverage")]
 (prothrombin, z 0.79) right on the default line. Anywhere in that range
 the “selected” set runs from 3 to 7 variables. varPro’s own
 cross-validation,
-[`varPro::cv.varpro()`](https://luminwin.github.io/reference/cv.varpro.html),
+[`varPro::cv.varpro()`](https://www.randomforestsrc.org/reference/cv.varpro.html),
 chooses a cutoff of 0.72 for this fit. With varPro’s default
 standardisation z also shrinks as more terms share each tree, so a
 cutoff does not carry from one fit to another. If you need a selection,
@@ -276,7 +276,7 @@ If you need a selection, each step above is a lever:
   ([`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)),
   and score all trees (`max.tree = ntree`);
 - set the cutoff by cross-validation
-  ([`varPro::cv.varpro()`](https://luminwin.github.io/reference/cv.varpro.html))
+  ([`varPro::cv.varpro()`](https://www.randomforestsrc.org/reference/cv.varpro.html))
   or by noise copies of each kind, not by the default;
 - refit on subsamples and keep the variables selected in most of them;
 - and, if the selected variables feed a model you then evaluate, do the
@@ -325,7 +325,7 @@ Four things matter more on small data.
 **The band is not a confidence interval.** Both plots summarise the
 cases of *one* fitted forest. The spread shows how much cases differ,
 not how uncertain the curve is; varPro’s is narrower still, because
-[`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)
+[`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
 gives every case the same intercept. To see the uncertainty of the
 curve, refit on subsamples. Five refits on 63% of the cases move the
 marginal bilirubin curve this much:
@@ -359,7 +359,7 @@ after the first event.
 factor, so `stage` becomes stage1, stage2, stage3, stage4, and
 [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
 (through
-[`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html))
+[`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html))
 looks terms up by those names: ask for `stage` and it is skipped with a
 warning. Each level is then partialled on its own, with every case set
 to 0 and to 1 on that level:
@@ -401,7 +401,7 @@ it could matter more;
 sets the factor itself to each level, and is the check.
 
 **Survival partials are clamped to \[0, 1\].**
-[`varPro::partialpro()`](https://luminwin.github.io/reference/partialpro.html)
+[`varPro::partialpro()`](https://www.randomforestsrc.org/reference/partialpro.html)
 smooths each case without a link function, so on the survival scale a
 curve can leave \[0, 1\];
 [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)

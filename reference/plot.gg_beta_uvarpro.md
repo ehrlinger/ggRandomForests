@@ -40,9 +40,9 @@ A `ggplot` object.
 
 Each bar is the average magnitude of a per-region lasso coefficient for
 that variable, computed by
-[`varPro::get.beta.entropy()`](https://luminwin.github.io/reference/uvarpro.html)
+[`varPro::get.beta.entropy()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 over the unsupervised entropy regions of a
-[`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html)
+[`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
 fit. There is no response: the score measures how strongly a variable is
 reconstructed by the others within released regions, i.e. an
 unsupervised importance / redundancy signal rather than a predictive

@@ -28,7 +28,7 @@ total without invalidating the earlier evidence.
 |----|----|----|---:|---:|----|----|
 | `randomForestSRC` | [`randomForestSRC::rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html) | `rfsrc` | 3.6.2 | 3.4.0 | Ishwaran and Kogalur (2026), *Fast Unified Random Forests for Survival, Regression, and Classification (RF-SRC)* | Ishwaran and Kogalur (2007); Ishwaran et al. (2008) |
 | `randomForestRHF` | [`randomForestRHF::rhf()`](https://www.randomforestsrc.org//reference/rhf.html) | `rhf` | 1.0.1 | 1.0.1 | Ishwaran and Kogalur (2026), *Random Hazard Forests* | Ishwaran et al. (2026), arXiv:2608.21597 |
-| `varPro` | [`varPro::varpro()`](https://luminwin.github.io/reference/varpro.html) | `varpro` | 3.2.0 | 3.1.0 | Ishwaran and Kogalur (2026), *Model-Independent Variable Selection via the Rule-Based Variable Priority* | Lu and Ishwaran (2024), arXiv:2409.09003 |
+| `varPro` | [`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html) | `varpro` | 3.2.0 | 3.1.0 | Ishwaran and Kogalur (2026), *Model-Independent Variable Selection via the Rule-Based Variable Priority* | Lu and Ishwaran (2024), arXiv:2409.09003 |
 
 Zhou, Lu, and Ishwaran (2026) remains the specific method citation for
 unsupervised variable priority where that method is discussed.
@@ -262,7 +262,7 @@ unsupervised variable priority where that method is discussed.
 
 - `DESCRIPTION` now cites the varPro preprint as
   `<doi:10.48550/arXiv.2409.09003>`, and the README qualifies
-  [`varPro::uvarpro()`](https://luminwin.github.io/reference/uvarpro.html)
+  [`varPro::uvarpro()`](https://www.randomforestsrc.org/reference/uvarpro.html)
   at its first mention and in the varPro overview.
 - `devtools::document()`,
   [`lintr::lint_package()`](https://lintr.r-lib.org/reference/lint.html),
