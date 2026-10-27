@@ -66,15 +66,19 @@ rare_settings <- list(
                     ntree = 1000L, max.tree = 1000L, max.rules.tree = 300L)
 )
 
-# Share of the scored trees in which a release rule for the variable returned
-# an importance value, the coverage gg_varpro() reports. A variable is tested
-# when that share reaches 10%, gg_varpro()'s default trim.
-rare_coverage <- function(o) {
-  r <- o$results
-  n_tree <- tapply(r$tree, r$variable, function(t) length(unique(t)))
-  out <- stats::setNames(rep(0, length(o$xvar.names)), o$xvar.names)
-  out[o$xvar.names[as.integer(names(n_tree))]] <- n_tree
-  out / o$max.tree
+# z, coverage and the tested flag all come from gg_varpro(), which scores one
+# set of release rules and derives all three from it. (varPro::importance()
+# re-samples the rules on a copy of the fit, so counting coverage from the
+# fit's own $results would describe different rules from z.) A variable is
+# tested when its coverage reaches 10%, gg_varpro()'s default trim. One never
+# scored at all is given z = NA, as importance() would leave it out.
+rare_score <- function(o, max.tree = o$max.tree,
+                       max.rules.tree = o$max.rules.tree) {
+  imp <- ggRandomForests::gg_varpro(o, max.tree = max.tree,
+                                    max.rules.tree = max.rules.tree)$imp
+  z <- stats::setNames(ifelse(imp$coverage > 0, imp$z, NA_real_),
+                       as.character(imp$variable))
+  list(z = z, coverage = stats::setNames(imp$coverage, names(z)))
 }
 
 rare_run <- function(n, events, reps, settings) {
@@ -88,15 +92,19 @@ rare_run <- function(n, events, reps, settings) {
       # The extra setting also sizes the outcome forest's leaves for about
       # two events each
       if (s == "open_more") args$nodesize.external <- max(10L, round(2 * n / ev))
+      # Rule sampling draws on R's RNG, which varpro()'s seed does not cover.
+      # Seeding it per fit makes each result independent of the settings run
+      # before it, so the fallback reproduces the full run's first replicate.
+      set.seed(1000 + r)
       secs <- system.time({
         o <- do.call(varPro::varpro, args)
-        imp <- if (is.null(args$max.tree)) varPro::importance(o) else
-          varPro::importance(o, max.tree = args$max.tree,
-                             max.rules.tree = args$max.rules.tree)
+        sc <- if (is.null(args$max.tree)) rare_score(o) else
+          rare_score(o, args$max.tree, args$max.rules.tree)
       })[["elapsed"]]
-      cv <- rare_coverage(o)
+      cv <- stats::setNames(rep(0, ncol(d) - 2), names(d)[-(1:2)])
+      cv[names(sc$coverage)] <- sc$coverage
       z <- stats::setNames(rep(NA_real_, ncol(d) - 2), names(d)[-(1:2)])
-      z[rownames(imp)] <- imp$z
+      z[names(sc$z)] <- sc$z
       top6 <- names(sort(ifelse(is.na(z), -Inf, z), decreasing = TRUE))[1:6]
       rows[[length(rows) + 1L]] <- data.frame(
         n = n, events = ev, rep = r, setting = s, seconds = secs,

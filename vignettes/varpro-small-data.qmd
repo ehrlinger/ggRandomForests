@@ -357,8 +357,8 @@ rises from `r rv(rs, "defaults", "tested")` to
 `r rv(rs, "open_all", "cov_b1")` of the trees, and fewer of the true signals
 reach the top six than on the defaults. Passing a smaller `mtry`, about the
 square root of the number of predictors as `rfsrc()` uses by default, gives
-each variable its turn: the same variables are tested, the true signals
-recover, and the fit is faster, because each split searches fewer variables.
+each variable its turn: a few more variables are tested, some of the lost
+signals come back, and the fit is faster, because each split searches fewer variables.
 The guided defaults do well on recovery here for a related reason. With only a
 handful of variables left after the screen, each one gets more of the splits.
 On the larger data they do as well as any setting, and give `b1` its highest
@@ -371,8 +371,8 @@ favours, and says nothing about the rest.
 of the survival forest that varPro grows first, to turn the outcome into a
 mortality score (`nodesize.external`), for about two events per leaf. On the
 larger data that raised z for `b1` from `r rv(rl, "open_sqrtp", "z_b1")` to
-`r rv(rl, "open_more", "z_b1")` and the coverage of `b2` from
-`r rv(rl, "open_sqrtp", "cov_b2")` to `r rv(rl, "open_more", "cov_b2")`. On the
+`r rv(rl, "open_more", "z_b1")` and z for `x4` from
+`r rv(rl, "open_sqrtp", "z_x4")` to `r rv(rl, "open_more", "z_x4")`. On the
 smaller data it changed little. Either way it costs about three times as long.
 
 **At 60 events, a real rare effect can look like nothing.** `b1` has a hazard
@@ -380,17 +380,19 @@ ratio of about 2.7, and on the larger data every setting finds it, with z
 between `r if (nrow(rl)) min(rl$z_b1) else "(not computed)"` and `r if (nrow(rl)) max(rl$z_b1) else "(not computed)"`. On
 the smaller data its z stays near zero whenever every variable is offered, and
 the defaults screened it out altogether in two of the three data sets, which
-is why their `z_b1` reads `NA` and their `cov_b1` averages 0%, 89% and 0%. Only the events among
+is why their `z_b1` reads `NA` and their `cov_b1` averages 0%, 79% and 0%. Only the events among
 the 10% of cases with `b1 = 1` can show its effect, and at 60 events in all
-that is too few. Coverage does not warn you here: it says when a variable went
-untested, not when a tested variable had too few events behind it. Before you
+that is too few. Coverage does not warn you here. With `mtry = 6`, `b1` counts
+as tested in all three data sets, in 12% to 25% of the trees, and its z still
+stays below 0.25. Coverage says when a variable went untested, not when a
+tested variable had too few events behind it. Before you
 read a z of zero for a rare indicator as "no effect", count the events among
 the cases that have it.
 
 **A correlated stand-in scores like a signal.** `n1` has no effect on the
-outcome, but it is correlated with `x4`, and wherever it is tested its z is
-well above zero, if below `x4`'s. (The defaults screened it out in one of the
-three smaller data sets, hence the `NA`.) varPro measures how much the forest relies on a variable, and a
+outcome, but it is correlated with `x4`, and its z is above zero
+in 15 of the 16 fits, often close to `x4`'s, and in 2 of them the higher of
+the two. varPro measures how much the forest relies on a variable, and a
 forest relies on a stand-in. The permuted noise copies of the previous section
 do not catch this, because a permuted column is correlated with nothing; only
 knowing what the variables measure does.
