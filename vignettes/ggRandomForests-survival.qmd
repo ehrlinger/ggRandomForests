@@ -498,6 +498,53 @@ variable dependence findings and support the log-transforms used in the
 @fleming:1991 model for `bili`, `albumin`, and `prothrombin`. The divergence
 between time curves for `bili` and `copper` supports non-proportional hazards.
 
+## How far can these curves be trusted?
+
+Partial dependence curves are smooth enough to read like a fitted model, so it
+helps to remember what the forest had to work with. The PBC trial has
+`r nrow(pbc_trial)` patients and `r sum(pbc_trial$status)` deaths, and in
+a survival forest the events carry the information. Censored patients tell the
+forest who was still at risk, but every split and every terminal node estimate
+is built from the deaths. Three things follow when events are sparse.
+
+First, the tails are thin. Patients in the top tenth of bilirubin account for
+`r sum(pbc_trial$status[pbc_trial$bili >= quantile(pbc_trial$bili, 0.9)])`
+deaths, and the bottom tenth for
+`r sum(pbc_trial$status[pbc_trial$bili <= quantile(pbc_trial$bili, 0.1)])`.
+The low end of the bilirubin curve rests on a handful of events, and a cohort
+with fewer deaths overall would be thin at both ends.
+
+Second, trees cannot extrapolate. The terminal node that covers the far end of
+a predictor averages everyone beyond the last split point, so extreme values
+are pulled toward the middle of the range and the curves flatten at both ends.
+A flat stretch at the edge of a partial dependence plot is often an artefact of
+the method rather than a plateau in the risk, and a threshold or J-shaped
+effect at the extremes will be understated.
+
+Third, each tree is a step function. A tree's prediction changes only at a
+split, and the width of the steps is set by the terminal node size
+(`nodesize`, `r rfsrc_pbc$nodesize` here). Averaging over trees smooths the
+steps, but a bump narrower than about one node's worth of patients is noise.
+With few events per node, a larger `nodesize` steadies the estimates, and
+`randomForestSRC::tune.nodesize()` searches for one on out-of-bag error.
+
+In practice we read the shape where the data are dense, and we check the edges
+against the variable dependence plots above, where each point is a patient and
+gaps in the data are visible. A rug of the predictor (`geom_rug()` on the
+patient-level data) does the same job on a partial dependence plot. When the
+shape matters, fit a Cox model with a spline on the same predictor and compare
+the two at the same horizon. If they agree in the middle and part ways only in
+the tails, suspect the forest's boundary behaviour first.
+
+The same caution applies to a forest grown on a single predictor. With one
+variable, every split is on that variable, so the random selection of
+candidate variables that decorrelates the trees has nothing to choose from,
+and the forest reduces to bagged survival trees. There is also nothing to
+integrate over, so partial dependence and the forest's fitted curve are the
+same thing. The result is an unadjusted association, much like Kaplan--Meier
+curves split by that predictor. It can show the shape of the relationship, but
+it adjusts for nothing.
+
 ## Conditional dependence
 
 To investigate interactions, we can condition variable dependence on group
