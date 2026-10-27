@@ -527,10 +527,12 @@ controls how far a tree grows: a smaller value allows deeper trees whose leaves
 hold fewer patients, and so fewer events. Averaging over trees with different
 split points smooths the steps, so the averaged curve has no fixed step width.
 A narrow bump or dip can still be the work of a few patients, though, so before
-reading anything into one, check that it survives a different seed or a
-subsample (`randomForestSRC::subsample()`). With few events per node, a larger
-`nodesize` steadies the estimates, and `randomForestSRC::tune.nodesize()`
-searches for one on out-of-bag error.
+reading anything into one, refit the forest with a few different seeds, or on
+a few random subsamples of patients, and recompute the partial dependence on a
+common grid. A feature that comes and goes between refits is noise. With few
+events per node, a larger `nodesize` steadies the estimates, and
+`randomForestSRC::tune.nodesize()` searches for one on validation error (a
+holdout set by default at this sample size, out-of-bag error on larger data).
 
 In practice we read the shape where the data are dense, and we check the edges
 against the variable dependence plots above, where each point is a patient and
