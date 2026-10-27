@@ -522,19 +522,28 @@ the method rather than a plateau in the risk, and a threshold or J-shaped
 effect at the extremes will be understated.
 
 Third, each tree is a step function. A tree's prediction changes only at a
-split, and the width of the steps is set by the terminal node size
-(`nodesize`, `r rfsrc_pbc$nodesize` here). Averaging over trees smooths the
-steps, but a bump narrower than about one node's worth of patients is noise.
-With few events per node, a larger `nodesize` steadies the estimates, and
-`randomForestSRC::tune.nodesize()` searches for one on out-of-bag error.
+split, and the terminal node size (`nodesize`, `r rfsrc_pbc$nodesize` here)
+controls how far a tree grows: a smaller value allows deeper trees whose leaves
+hold fewer patients, and so fewer events. Averaging over trees with different
+split points smooths the steps, so the averaged curve has no fixed step width.
+A narrow bump or dip can still be the work of a few patients, though, so before
+reading anything into one, check that it survives a different seed or a
+subsample (`randomForestSRC::subsample()`). With few events per node, a larger
+`nodesize` steadies the estimates, and `randomForestSRC::tune.nodesize()`
+searches for one on out-of-bag error.
 
 In practice we read the shape where the data are dense, and we check the edges
 against the variable dependence plots above, where each point is a patient and
 gaps in the data are visible. A rug of the predictor (`geom_rug()` on the
 patient-level data) does the same job on a partial dependence plot. When the
-shape matters, fit a Cox model with a spline on the same predictor and compare
-the two at the same horizon. If they agree in the middle and part ways only in
-the tails, suspect the forest's boundary behaviour first.
+shape matters, a Cox model makes a useful cross-check, provided the comparison
+is like for like. Fit it with the same covariates as the forest and a spline on
+the predictor of interest. Then marginalise it the same way: set the predictor
+to each grid value for every patient, predict survival at the same horizon,
+and average over the same patients. If the two curves agree in the middle and
+part ways only in the tails, suspect the forest's boundary behaviour first. A
+Cox fit on the single predictor answers a different, unadjusted question, so
+disagreement with it says nothing about the forest's tails.
 
 The same caution applies to a forest grown on a single predictor. With one
 variable, every split is on that variable, so the random selection of
