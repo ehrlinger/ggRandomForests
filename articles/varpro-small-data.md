@@ -283,6 +283,136 @@ If you need a selection, each step above is a lever:
   selection inside the cross-validation, so the model is not judged on
   the data that chose its variables.
 
+## What if the events are rare?
+
+In a survival forest the events carry the information, and the PBC data
+above are generous: 111 deaths among 276 cases. Clinical cohorts are
+often much thinner, with a few dozen deaths among a couple of thousand
+patients. To see what varPro can test at that density, we simulated data
+where the answer is known, at two sizes: 1,900 cases with about 60
+events, and 12,000 cases with about 150. Each has 30 predictors, and six
+of them carry signal:
+
+- three continuous predictors, `x1` to `x3`, with hazard ratios of about
+  2.0, 1.6 and 1.4 per standard deviation;
+- two binary predictors, `b1` (present in 10% of cases, hazard ratio
+  about 2.7) and `b2` (20%, about 2.0);
+- `x4`, continuous, correlated 0.7 with the noise variable `n1`.
+
+The other 24 are noise, in correlated blocks of four, and four of them
+are binary. The simulation is in `vignettes/precompute_varpro_rare.R`.
+We fitted each data set on varPro’s defaults and with every variable
+offered, at three settings of the forest that builds the rules:
+
+``` r
+
+p <- 30
+defaults   <- varpro(Surv(time, status) ~ ., d)
+open_all   <- varpro(Surv(time, status) ~ ., d, split.weight = FALSE,
+                     sparse = FALSE)
+open_sqrtp <- varpro(Surv(time, status) ~ ., d, split.weight = FALSE,
+                     sparse = FALSE, mtry = ceiling(sqrt(p)))
+open_more  <- varpro(Surv(time, status) ~ ., d, split.weight = FALSE,
+                     sparse = FALSE, mtry = ceiling(sqrt(p)),
+                     ntree = 1000, max.tree = 1000, max.rules.tree = 300,
+                     nodesize.external = round(2 * nrow(d) / sum(d$status)))
+```
+
+For each fit the tables give the number of variables tested (scored in
+at least 10% of trees, as above), how many of the six true signals land
+in the top six by z, the coverage of the two binary signals, and z for
+`b1`, `x4` and its noise partner `n1`. The smaller size is averaged over
+three simulated data sets; the larger is one.
+
+``` r
+
+rs
+```
+
+         setting events seconds tested truth_top6 cov_b1 cov_b2 z_b1 z_x4 z_n1
+    1   defaults     60      13   10.7        4.0    26%    57%   NA 1.41 0.53
+    2   open_all     60      21   26.0        3.3     8%    31% 0.06 1.21 0.55
+    3 open_sqrtp     60       9   28.0        3.7    16%    43% 0.10 1.05 0.73
+    4  open_more     60      25   27.3        3.7    17%    38% 0.11 1.82 1.19
+
+``` r
+
+rl
+```
+
+         setting events seconds tested truth_top6 cov_b1 cov_b2 z_b1 z_x4 z_n1
+    1   defaults    150     196     10          5    99%    70% 7.37 4.38 2.86
+    2   open_all    150     309     26          5    74%    33% 5.78 2.25 1.92
+    3 open_sqrtp    150     132     30          5    85%    45% 5.06 2.77 2.80
+    4  open_more    150     456     30          5    84%    45% 6.86 3.83 3.07
+
+**Offering every variable is not enough on its own.** With
+`split.weight = FALSE`, varPro grows the rule forest with `mtry = Inf`,
+so every split considers every variable. The strongest continuous
+predictors win most of those contests, and a binary variable, which
+offers only one split point, rarely gets a split. On the smaller data
+the number of variables tested rises from 10.7 to 26, but `b1` is tested
+in only 8% of the trees, and fewer of the true signals reach the top six
+than on the defaults. Passing a smaller `mtry`, about the square root of
+the number of predictors as
+[`rfsrc()`](https://www.randomforestsrc.org//reference/rfsrc.html) uses
+by default, gives each variable its turn: a few more variables are
+tested, some of the lost signals come back, and the fit is faster,
+because each split searches fewer variables. The guided defaults do well
+on recovery here for a related reason. With only a handful of variables
+left after the screen, each one gets more of the splits. On the larger
+data they do as well as any setting, and give `b1` its highest z, while
+testing only 10 of the 30 variables. That is the trade: the screen
+spends the forest on the variables it already favours, and says nothing
+about the rest.
+
+**More trees and rules help when there are events for them to use.**
+`open_more` scores 1,000 trees with up to 300 rules each, and sizes the
+leaves of the survival forest that varPro grows first, to turn the
+outcome into a mortality score (`nodesize.external`), for about two
+events per leaf. On the larger data that raised z for `b1` from 5.06 to
+6.86 and z for `x4` from 2.77 to 3.83. On the smaller data it changed
+little. Either way it costs about three times as long.
+
+**At 60 events, a real rare effect can look like nothing.** `b1` has a
+hazard ratio of about 2.7, and on the larger data every setting finds
+it, with z between 5.06 and 7.37. On the smaller data its z stays near
+zero whenever every variable is offered, and the defaults screened it
+out altogether in two of the three data sets, which is why their `z_b1`
+reads `NA` and their `cov_b1` averages 0%, 79% and 0%. Only the events
+among the 10% of cases with `b1 = 1` can show its effect, and at 60
+events in all that is too few. Coverage does not warn you here. With
+`mtry = 6`, `b1` counts as tested in all three data sets, in 12% to 25%
+of the trees, and its z still stays below 0.25. Coverage says when a
+variable went untested, not when a tested variable had too few events
+behind it. Before you read a z of zero for a rare indicator as “no
+effect”, count the events among the cases that have it.
+
+**A correlated stand-in scores like a signal.** `n1` has no effect on
+the outcome, but it is correlated with `x4`, and its z is above zero in
+15 of the 16 fits, often close to `x4`’s, and in 2 of them the higher of
+the two. varPro measures how much the forest relies on a variable, and a
+forest relies on a stand-in. The permuted noise copies of the previous
+section do not catch this, because a permuted column is correlated with
+nothing; only knowing what the variables measure does.
+
+For an exploratory fit on sparse survival data, then, we start from:
+
+``` r
+
+p  <- ncol(d) - 2
+vp <- varpro(Surv(time, status) ~ ., d, split.weight = FALSE, sparse = FALSE,
+             mtry = ceiling(sqrt(p)))
+gg <- gg_varpro(vp, max.tree = vp$rf$ntree)
+varpro_coverage(vp, by = "variable")
+```
+
+and add `ntree`, `max.tree`, `max.rules.tree` and `nodesize.external`,
+as in `open_more`, once there are enough events for them to make a
+difference. These are our starting points from one simulation design,
+not settings varPro’s authors recommend; on your own data, the coverage
+table is the check.
+
 ## Partial dependence on small data
 
 [`gg_partial_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_partial_varpro.md)
