@@ -637,9 +637,11 @@ ggRandomForests v4.0.0 (development)
 
 * `varpro_coverage()` gains `max_untested`. Set it, and the call stops with an
   error when more than that share of the real variables went untested, so a
-  screen that tested too little cannot pass for one that found no effect. A
-  factor counts as tested only when a single level was, not when its levels
-  together reach `trim`. The default, `NULL`, only reports, as before. A new
+  screen that tested too little cannot pass for one that found no effect. For
+  the `max_untested` guard, a factor counts as tested only when a single level
+  was, not when its levels together reach `trim`; the returned `tested` column
+  for `by = "variable"` still pools the levels, so the two can disagree. The
+  default, `NULL`, only reports, as before. A new
   help section, "The first-pass filter", explains how `varpro()`'s default
   `split.weight = TRUE` and `nvar = 30` cut variables before any rule is
   built, and that `split.weight = FALSE`, without `split.weight.custom`, keeps
@@ -651,8 +653,9 @@ ggRandomForests v4.0.0 (development)
   caps which predictors compete, not just how many are reported. A factor with
   more than two levels takes one column per level, so it can fill several of
   those places. The vignette also says that `sparse` does nothing once
-  `split.weight = FALSE`, that custom `split.weight.custom` weights override
-  that switch, that unguided fits try every predictor at every split unless
+  `split.weight = FALSE` when no custom weights are given, that
+  `split.weight.custom` weights override that switch (and `sparse` then
+  reshapes them again), that unguided fits try every predictor at every split unless
   `mtry` is set, and that an eligible predictor is not necessarily a tested
   one (`varpro_coverage()` tells them apart).
 
@@ -672,6 +675,9 @@ ggRandomForests v4.0.0 (development)
   or selects an unscored variable. When one kind has no tested noise and
   borrows the other kind's bar, both now warn, a new `noise_ref` column records
   which kind set each bar, and the plot caption says "from continuous noise".
+  When no noise at all is tested, both warn and fall back to a bar at 0, with
+  `noise_ref` set to `NA`, so a variable selected then has beaten no observed
+  noise, only zero.
 
 * `print()` on a `gg_varpro` object names the forest family once. The header
   already carries it, and the method printed it a second time.
