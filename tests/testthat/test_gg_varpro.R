@@ -499,6 +499,15 @@ test_that("print.gg_varpro output contains selected/total counts", {
   expect_true(any(grepl("selected", out, ignore.case = TRUE)))
 })
 
+test_that("print.gg_varpro names the family once", {
+  skip_on_cran()
+  vp  <- make_vp_regr()
+  set.seed(1)
+  gg  <- gg_varpro(vp)
+  out <- paste(capture.output(print(gg)), collapse = "\n")
+  expect_identical(lengths(regmatches(out, gregexpr("family:", out))), 1L)
+})
+
 test_that("summary.gg_varpro returns summary.gg_varpro class", {
   skip_on_cran()
   vp <- make_vp_regr()
