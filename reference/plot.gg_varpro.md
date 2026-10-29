@@ -74,18 +74,25 @@ importance, so the eye lands on the most important variable first. For
 each variable the box spans the 15th to 85th percentile of the per-tree
 scores, the center line is the median, and the whiskers run out to the
 5th and 95th percentile, not the usual Tukey 1.5 IQR whiskers. The
-dashed vertical line is the selection `cutoff` (default `0.79`). On the
-default z-score axis (`local.std = TRUE`) that line is a z; on the
-raw-importance axis (`local.std = FALSE`, `type = "raw"`) it is the same
-numeric value but in raw-importance units. Boxes whose aggregate value
-sits above the line are colored blue and flagged `selected = TRUE`, the
-rest are gray. A variable with a usable release rule in fewer than
-`trim` of the trees (`tested = FALSE`) is drawn as an open box, usually
-a flat line at zero: it was barely tested, which is not the same as
-tested and found unimportant. A selected variable with a tight, high box
-is a variable the forest agrees on across trees. A selected variable
-with a wide box that straddles the cutoff is one to look at twice before
-relying on it.
+dashed vertical line is the selection `cutoff` (default `0.79`), or,
+when
+[`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+was given `noise`, the noise bar: the largest z among tested noise of
+the variable's kind, or of the other kind when its own has none (the
+caption then says “from continuous noise”, say). With both a categorical
+and a continuous bar each row gets its own dashed tick, and noise
+variables are drawn in orange. The conditional plot always draws
+`cutoff`. On the default z-score axis (`local.std = TRUE`) that line is
+a z; on the raw-importance axis (`local.std = FALSE`, `type = "raw"`) it
+is the same numeric value but in raw-importance units. Boxes whose
+aggregate value sits above the line are colored blue and flagged
+`selected = TRUE`, the rest are gray. A variable with a usable release
+rule in fewer than `trim` of the trees (`tested = FALSE`) is drawn as an
+open box, usually a flat line at zero: it was barely tested, which is
+not the same as tested and found unimportant. A selected variable with a
+tight, high box is a variable the forest agrees on across trees. A
+selected variable with a wide box that straddles the cutoff is one to
+look at twice before relying on it.
 
 With `faithful = TRUE` the box is drawn faint and the per-tree values
 are jittered over it as semi-transparent points, on the same scale as

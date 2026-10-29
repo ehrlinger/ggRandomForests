@@ -146,7 +146,12 @@ For each variable the box spans the 15th to 85th percentile of the
 per-tree scores, the center line is the median, and the whiskers run
 out to the 5th and 95th percentile, not the usual Tukey 1.5 IQR
 whiskers. The dashed vertical line is the selection <code>cutoff</code>
-(default <code>0.79</code>). On the default z-score axis
+(default <code>0.79</code>), or, when <code><a href="gg_varpro.html">gg_varpro()</a></code> was given
+<code>noise</code>, the noise bar: the largest z among tested noise of the
+variable's kind, or of the other kind when its own has none (the caption
+then says “from continuous noise”, say).  With both a categorical and a continuous bar each row
+gets its own dashed tick, and noise variables are drawn in orange.  The
+conditional plot always draws <code>cutoff</code>. On the default z-score axis
 (<code>local.std = TRUE</code>) that line is a z; on the raw-importance
 axis (<code>local.std = FALSE</code>, <code>type = "raw"</code>) it is the same
 numeric value but in raw-importance units. Boxes whose aggregate

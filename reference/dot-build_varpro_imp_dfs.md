@@ -14,6 +14,7 @@ Build the tidy importance data structures from importance() output
   faithful,
   conditional,
   coverage = NULL,
-  trim = 0.1
+  trim = 0.1,
+  annotate = NULL
 )
 ```

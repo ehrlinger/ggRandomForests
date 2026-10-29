@@ -162,8 +162,11 @@ it),
 its default <code>local.std = TRUE</code>, from the same rules; <code>NA</code> when never
 returned) and <code>tested</code> (<code>coverage &gt;= trim</code>).  With
 <code>noise</code> set it adds <code>noise</code> (logical), <code>kind</code>,
-<code>noise_cut</code> and <code>selected</code> (a tested real row whose z beats
-<code>noise_cut</code>).  Attributes <code>by</code>, <code>trees</code> (the coverage
+<code>noise_cut</code>, <code>noise_ref</code> (the kind of the noise that set
+<code>noise_cut</code>: the row's own kind, the other kind when its own has
+no tested noise, or <code>NA</code> when no noise was tested) and
+<code>selected</code> (a tested real row, scored in at least one tree, whose
+z beats <code>noise_cut</code>).  Attributes <code>by</code>, <code>trees</code> (the coverage
 denominator), <code>trim</code> and <code>max.rules.tree</code> record the
 settings.</p>
     </div>
@@ -198,8 +201,10 @@ permuted copies of real columns (noise by construction), name them with a
 common prefix and pass a pattern as <code>noise</code>.  Each real row is then
 compared with the largest z among <em>tested</em> noise rows of the same kind
 (categorical or continuous); an untested noise row has z = 0 by
-construction and sets no bar.  A kind with no tested noise falls back to
-the largest tested-noise z overall.  ggRandomForests does not add the
+construction and sets no bar.  Here tested also means scored in at least
+one tree, so <code>trim = 0</code> does not make unscored noise a bar at 0.  A
+kind with no tested noise falls back to the largest tested-noise z
+overall; <code>noise_ref</code> records it and a warning says so.  ggRandomForests does not add the
 noise columns; do that before fitting.</p>
     </div>
     <div class="section level2">
@@ -236,31 +241,31 @@ survive and does not change which terms are cut.</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">20261014</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu">varpro_coverage</span><span class="op">(</span><span class="va">vp</span>, noise <span class="op">=</span> <span class="st">"^noise"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no noise variable was tested (coverage &gt;= trim), so the noise check is empty: noise_cut is 0 and every tested row is selected.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        term variable eligible n_trees coverage n_rules        z tested noise</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        wt       wt     TRUE      30     0.60      66 1.568733   TRUE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        hp       hp     TRUE      22     0.44      53 1.116700   TRUE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       cyl      cyl     TRUE      19     0.38      36 1.242159   TRUE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      disp     disp     TRUE       2     0.04       4 0.000000  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      drat     drat     TRUE       0     0.00       0       NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      qsec     qsec     TRUE       0     0.00       0       NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7        vs       vs     TRUE       0     0.00       0 0.000000  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        am       am    FALSE       0     0.00       0       NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      gear     gear     TRUE       0     0.00       0       NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     carb     carb     TRUE       0     0.00       0       NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 noise_wt noise_wt     TRUE       0     0.00       0       NA  FALSE  TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           kind noise_cut selected</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   continuous         0     TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   continuous         0     TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  categorical         0     TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   continuous         0    FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   continuous         0    FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   continuous         0    FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  categorical         0    FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  categorical         0    FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  categorical         0    FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  continuous         0    FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11  continuous         0    FALSE</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no noise variable was tested (scored in at least trim of the trees, and in at least one), so the noise check is empty: noise_cut is 0 and every tested row is selected.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        term variable eligible n_trees coverage n_rules         z tested noise</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        wt       wt     TRUE      36     0.72      77 2.0068122   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        hp       hp     TRUE      19     0.38      41 0.8960447   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       cyl      cyl     TRUE      17     0.34      35 1.0570341   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      disp     disp     TRUE       7     0.14      13 0.1753188   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      drat     drat     TRUE       0     0.00       0        NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      qsec     qsec     TRUE       0     0.00       0        NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7        vs       vs     TRUE       0     0.00       0        NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        am       am    FALSE       0     0.00       0        NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      gear     gear     TRUE       0     0.00       0        NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     carb     carb     TRUE       0     0.00       0        NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 noise_wt noise_wt     TRUE       0     0.00       0        NA  FALSE  TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           kind noise_cut noise_ref selected</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   continuous         0      &lt;NA&gt;     TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   continuous         0      &lt;NA&gt;     TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  categorical         0      &lt;NA&gt;     TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   continuous         0      &lt;NA&gt;     TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   continuous         0      &lt;NA&gt;    FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   continuous         0      &lt;NA&gt;    FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  categorical         0      &lt;NA&gt;    FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  categorical         0      &lt;NA&gt;    FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  categorical         0      &lt;NA&gt;    FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  continuous         0      &lt;NA&gt;    FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11  continuous         0      &lt;NA&gt;    FALSE</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

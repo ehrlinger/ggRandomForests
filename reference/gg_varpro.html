@@ -91,6 +91,8 @@ importances.</p>
 <span>  trim <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  max.tree <span class="op">=</span> <span class="va">object</span><span class="op">$</span><span class="va">max.tree</span>,</span>
 <span>  max.rules.tree <span class="op">=</span> <span class="va">object</span><span class="op">$</span><span class="va">max.rules.tree</span>,</span>
+<span>  noise <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  kind_values <span class="op">=</span> <span class="fl">5L</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -119,7 +121,11 @@ reproducible z.</p></dd>
 <dt id="arg-cutoff">cutoff<a class="anchor" aria-label="anchor" href="#arg-cutoff"></a></dt>
 <dd><p>Numeric; the z-score above which a variable is treated as
 selected.  Default <code>0.79</code>.  A variable with aggregate z above the
-cutoff is flagged <code>selected = TRUE</code> in <code>$imp</code>.</p></dd>
+cutoff is flagged <code>selected = TRUE</code> in <code>$imp</code>.  varPro uses
+0.79 only to highlight its plot; it is not a selection rule that carries
+from one fit to another.  Prefer <code>noise</code>, or tune the cutoff with
+<code><a href="https://www.randomforestsrc.org/reference/cv.varpro.html" class="external-link">varPro::cv.varpro()</a></code>.  Ignored for selection when <code>noise</code> is
+set; the conditional plot still draws it.</p></dd>
 
 
 <dt id="arg-faithful">faithful<a class="anchor" aria-label="anchor" href="#arg-faithful"></a></dt>
@@ -154,6 +160,27 @@ either one re-samples the rules even with <code>local.std = FALSE</code>, as
 computed from the same rules.</p></dd>
 
 
+<dt id="arg-noise">noise<a class="anchor" aria-label="anchor" href="#arg-noise"></a></dt>
+<dd><p><code>NULL</code> (the default), or a regular expression matching
+the names of permuted noise columns in the fit's data (for example
+<code>"^noise"</code>).  Selection then replaces <code>cutoff</code>: a variable is
+selected when it is tested (and scored in at least one tree) and its z
+beats the largest z among <em>tested</em> noise of the same kind
+(categorical or continuous), as in <code><a href="varpro_coverage.html">varpro_coverage</a></code>.  A
+kind with no tested noise borrows the other kind's bar, with a warning,
+and <code>noise_ref</code> records which.  The plot draws that bar instead of
+the <code>cutoff</code> line.  The bar is computed from the same rules as the
+boxes and over every variable, before <code>nvar</code> truncation.  Needs
+<code>local.std = TRUE</code>.  ggRandomForests does not add noise columns;
+add them before fitting, and fit with <code>split.weight = FALSE</code> so
+that varPro's first-pass filter does not cut them.</p></dd>
+
+
+<dt id="arg-kind-values">kind_values<a class="anchor" aria-label="anchor" href="#arg-kind-values"></a></dt>
+<dd><p>With <code>noise</code>, a numeric variable with at most
+this many distinct values counts as categorical.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Not used.  Earlier versions passed it to
 <code><a href="https://www.randomforestsrc.org/reference/importance.html" class="external-link">varPro::importance()</a></code>; <code>trim</code>, <code>max.tree</code> and
@@ -171,7 +198,12 @@ z-score, <code>NA</code> when it is undefined), <code>selected</code> (logical,
 <code>z &gt; cutoff</code>), <code>coverage</code> (share of the scored trees in
 which a release rule for the variable returned an importance value)
 and <code>tested</code>
-(<code>coverage &gt;= trim</code>).</p></dd>
+(<code>coverage &gt;= trim</code>).  With <code>noise</code> set it adds
+<code>noise</code> (logical), <code>kind</code>, <code>noise_cut</code> and
+<code>noise_ref</code> (the kind of the noise that set <code>noise_cut</code>,
+<code>NA</code> when no noise was tested), and <code>selected</code> is a tested
+non-noise variable, scored in at least one tree, whose z beats
+<code>noise_cut</code>.</p></dd>
 
 <dt><code>$imp.tree</code></dt>
 <dd><p><code>NULL</code> when <code>faithful = FALSE</code>;
@@ -194,7 +226,8 @@ which varPro recodes to 0/1 internally.</p></dd>
 
 </dl><p>A <code>"provenance"</code> attribute carries <code>family</code>, <code>local.std</code>,
 <code>cutoff</code>, <code>faithful</code>, <code>conditional</code>, <code>xvar.names</code>,
-<code>n</code>, <code>trim</code>, <code>max.tree</code> and <code>max.rules.tree</code>.</p>
+<code>n</code>, <code>trim</code>, <code>max.tree</code> and <code>max.rules.tree</code>, and
+<code>noise</code> when it was set.</p>
     </div>
     <div class="section level2">
     <h2 id="what-varpro-is-doing">What varpro is doing<a class="anchor" aria-label="anchor" href="#what-varpro-is-doing"></a></h2>
@@ -319,7 +352,7 @@ via the rule-based variable priority framework. <em>arXiv preprint</em>
 <span class="r-in"><span><span class="va">vp</span> <span class="op">&lt;-</span> <span class="fu">varPro</span><span class="fu">::</span><span class="fu"><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varpro</a></span><span class="op">(</span><span class="va">mpg</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">mtcars</span>, ntree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">gg</span> <span class="op">&lt;-</span> <span class="fu">gg_varpro</span><span class="op">(</span><span class="va">vp</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;gg_varpro&gt;  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;gg_varpro&gt;  family: regr  |  n: 32  |  cutoff: 0.79  |  faithful: FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   2 of 4 variables selected (z &gt; 0.79)</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gg</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="gg_varpro-1.png" alt="" width="700" height="433"></span>

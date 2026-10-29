@@ -94,10 +94,12 @@ scored it), `z` (computed as
 [`varPro::importance()`](https://www.randomforestsrc.org/reference/importance.html)
 computes it, with its default `local.std = TRUE`, from the same rules;
 `NA` when never returned) and `tested` (`coverage >= trim`). With
-`noise` set it adds `noise` (logical), `kind`, `noise_cut` and
-`selected` (a tested real row whose z beats `noise_cut`). Attributes
-`by`, `trees` (the coverage denominator), `trim` and `max.rules.tree`
-record the settings.
+`noise` set it adds `noise` (logical), `kind`, `noise_cut`, `noise_ref`
+(the kind of the noise that set `noise_cut`: the row's own kind, the
+other kind when its own has no tested noise, or `NA` when no noise was
+tested) and `selected` (a tested real row, scored in at least one tree,
+whose z beats `noise_cut`). Attributes `by`, `trees` (the coverage
+denominator), `trim` and `max.rules.tree` record the settings.
 
 ## Why coverage matters
 
@@ -128,9 +130,11 @@ permuted copies of real columns (noise by construction), name them with
 a common prefix and pass a pattern as `noise`. Each real row is then
 compared with the largest z among *tested* noise rows of the same kind
 (categorical or continuous); an untested noise row has z = 0 by
-construction and sets no bar. A kind with no tested noise falls back to
-the largest tested-noise z overall. ggRandomForests does not add the
-noise columns; do that before fitting.
+construction and sets no bar. Here tested also means scored in at least
+one tree, so `trim = 0` does not make unscored noise a bar at 0. A kind
+with no tested noise falls back to the largest tested-noise z overall;
+`noise_ref` records it and a warning says so. ggRandomForests does not
+add the noise columns; do that before fitting.
 
 ## The first-pass filter
 
@@ -166,30 +170,30 @@ if (requireNamespace("varPro", quietly = TRUE)) {
   set.seed(20261014)
   varpro_coverage(vp, noise = "^noise")
 }
-#> Warning: no noise variable was tested (coverage >= trim), so the noise check is empty: noise_cut is 0 and every tested row is selected.
-#>        term variable eligible n_trees coverage n_rules        z tested noise
-#> 1        wt       wt     TRUE      30     0.60      66 1.568733   TRUE FALSE
-#> 2        hp       hp     TRUE      22     0.44      53 1.116700   TRUE FALSE
-#> 3       cyl      cyl     TRUE      19     0.38      36 1.242159   TRUE FALSE
-#> 4      disp     disp     TRUE       2     0.04       4 0.000000  FALSE FALSE
-#> 5      drat     drat     TRUE       0     0.00       0       NA  FALSE FALSE
-#> 6      qsec     qsec     TRUE       0     0.00       0       NA  FALSE FALSE
-#> 7        vs       vs     TRUE       0     0.00       0 0.000000  FALSE FALSE
-#> 8        am       am    FALSE       0     0.00       0       NA  FALSE FALSE
-#> 9      gear     gear     TRUE       0     0.00       0       NA  FALSE FALSE
-#> 10     carb     carb     TRUE       0     0.00       0       NA  FALSE FALSE
-#> 11 noise_wt noise_wt     TRUE       0     0.00       0       NA  FALSE  TRUE
-#>           kind noise_cut selected
-#> 1   continuous         0     TRUE
-#> 2   continuous         0     TRUE
-#> 3  categorical         0     TRUE
-#> 4   continuous         0    FALSE
-#> 5   continuous         0    FALSE
-#> 6   continuous         0    FALSE
-#> 7  categorical         0    FALSE
-#> 8  categorical         0    FALSE
-#> 9  categorical         0    FALSE
-#> 10  continuous         0    FALSE
-#> 11  continuous         0    FALSE
+#> Warning: no noise variable was tested (scored in at least trim of the trees, and in at least one), so the noise check is empty: noise_cut is 0 and every tested row is selected.
+#>        term variable eligible n_trees coverage n_rules         z tested noise
+#> 1        wt       wt     TRUE      36     0.72      77 2.0068122   TRUE FALSE
+#> 2        hp       hp     TRUE      19     0.38      41 0.8960447   TRUE FALSE
+#> 3       cyl      cyl     TRUE      17     0.34      35 1.0570341   TRUE FALSE
+#> 4      disp     disp     TRUE       7     0.14      13 0.1753188   TRUE FALSE
+#> 5      drat     drat     TRUE       0     0.00       0        NA  FALSE FALSE
+#> 6      qsec     qsec     TRUE       0     0.00       0        NA  FALSE FALSE
+#> 7        vs       vs     TRUE       0     0.00       0        NA  FALSE FALSE
+#> 8        am       am    FALSE       0     0.00       0        NA  FALSE FALSE
+#> 9      gear     gear     TRUE       0     0.00       0        NA  FALSE FALSE
+#> 10     carb     carb     TRUE       0     0.00       0        NA  FALSE FALSE
+#> 11 noise_wt noise_wt     TRUE       0     0.00       0        NA  FALSE  TRUE
+#>           kind noise_cut noise_ref selected
+#> 1   continuous         0      <NA>     TRUE
+#> 2   continuous         0      <NA>     TRUE
+#> 3  categorical         0      <NA>     TRUE
+#> 4   continuous         0      <NA>     TRUE
+#> 5   continuous         0      <NA>    FALSE
+#> 6   continuous         0      <NA>    FALSE
+#> 7  categorical         0      <NA>    FALSE
+#> 8  categorical         0      <NA>    FALSE
+#> 9  categorical         0      <NA>    FALSE
+#> 10  continuous         0      <NA>    FALSE
+#> 11  continuous         0      <NA>    FALSE
 # }
 ```

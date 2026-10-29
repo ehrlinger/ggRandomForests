@@ -20,6 +20,8 @@ gg_varpro(
   trim = 0.1,
   max.tree = object$max.tree,
   max.rules.tree = object$max.rules.tree,
+  noise = NULL,
+  kind_values = 5L,
   ...
 )
 ```
@@ -48,7 +50,12 @@ gg_varpro(
 
   Numeric; the z-score above which a variable is treated as selected.
   Default `0.79`. A variable with aggregate z above the cutoff is
-  flagged `selected = TRUE` in `$imp`.
+  flagged `selected = TRUE` in `$imp`. varPro uses 0.79 only to
+  highlight its plot; it is not a selection rule that carries from one
+  fit to another. Prefer `noise`, or tune the cutoff with
+  [`varPro::cv.varpro()`](https://www.randomforestsrc.org/reference/cv.varpro.html).
+  Ignored for selection when `noise` is set; the conditional plot still
+  draws it.
 
 - faithful:
 
@@ -82,6 +89,28 @@ gg_varpro(
   does. The boxes, z and coverage are always computed from the same
   rules.
 
+- noise:
+
+  `NULL` (the default), or a regular expression matching the names of
+  permuted noise columns in the fit's data (for example `"^noise"`).
+  Selection then replaces `cutoff`: a variable is selected when it is
+  tested (and scored in at least one tree) and its z beats the largest z
+  among *tested* noise of the same kind (categorical or continuous), as
+  in
+  [`varpro_coverage`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md).
+  A kind with no tested noise borrows the other kind's bar, with a
+  warning, and `noise_ref` records which. The plot draws that bar
+  instead of the `cutoff` line. The bar is computed from the same rules
+  as the boxes and over every variable, before `nvar` truncation. Needs
+  `local.std = TRUE`. ggRandomForests does not add noise columns; add
+  them before fitting, and fit with `split.weight = FALSE` so that
+  varPro's first-pass filter does not cut them.
+
+- kind_values:
+
+  With `noise`, a numeric variable with at most this many distinct
+  values counts as categorical.
+
 - ...:
 
   Not used. Earlier versions passed it to
@@ -101,7 +130,11 @@ A named list of class `"gg_varpro"` with elements:
   z-score, `NA` when it is undefined), `selected` (logical,
   `z > cutoff`), `coverage` (share of the scored trees in which a
   release rule for the variable returned an importance value) and
-  `tested` (`coverage >= trim`).
+  `tested` (`coverage >= trim`). With `noise` set it adds `noise`
+  (logical), `kind`, `noise_cut` and `noise_ref` (the kind of the noise
+  that set `noise_cut`, `NA` when no noise was tested), and `selected`
+  is a tested non-noise variable, scored in at least one tree, whose z
+  beats `noise_cut`.
 
 - `$imp.tree`:
 
@@ -124,7 +157,7 @@ A named list of class `"gg_varpro"` with elements:
 
 A `"provenance"` attribute carries `family`, `local.std`, `cutoff`,
 `faithful`, `conditional`, `xvar.names`, `n`, `trim`, `max.tree` and
-`max.rules.tree`.
+`max.rules.tree`, and `noise` when it was set.
 
 ## What varpro is doing
 
@@ -249,7 +282,7 @@ set.seed(42)
 vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 50)
 gg <- gg_varpro(vp)
 print(gg)
-#> <gg_varpro>  family: regr  |  n: 32  |  family: regr  |  cutoff: 0.79  |  faithful: FALSE
+#> <gg_varpro>  family: regr  |  n: 32  |  cutoff: 0.79  |  faithful: FALSE
 #>   2 of 4 variables selected (z > 0.79)
 plot(gg)
 
