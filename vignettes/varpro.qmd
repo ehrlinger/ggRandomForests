@@ -694,9 +694,15 @@ varPro::partialpro(v_boston, xvar.names = c("lstat", "age", "zn"))
 `xvar.names` yourself and the ranking is ignored.
 
 The second narrowing is the one that surprises people. Guided tree-splitting
-(`split.weight = TRUE`, the default) runs a preliminary lasso to decide which
-variables are worth splitting on, and a variable that never gets split on never
-lands in `object$xvar.names`. It is gone well before `partialpro()` sees it.
+(`split.weight = TRUE`, the default) weights every variable first, by a lasso
+and a preliminary forest. It drops any column whose weight is zero, keeps only
+the `nvar` heaviest (30 by default), and builds no rule for the rest, so they
+never land in `object$xvar.names`. They are gone well before `partialpro()`
+sees them. `nvar` counts encoded columns, not the variables you handed in: a
+factor with more than two levels enters as one column per level, so a
+four-level factor can fill several of the `nvar` places. With `nvar = 2` the
+two survivors can both be levels of one factor, leaving every other predictor
+without a rule.
 The binary iris fit, left on varPro's defaults so it has something to show,
 is this in miniature:
 
@@ -719,31 +725,42 @@ pd <- varPro::partialpro(v_boston, xvar.names = my_vars)
 setdiff(my_vars, names(pd))   # anything here was dropped
 ```
 
-For a complete view, where every predictor is reachable and the reported
-ranking shows its full tail, fit with both screens off:
+For a complete view, where every predictor is reachable, fit with the split
+weights off:
 
 ```{r both-off, eval=FALSE}
-varPro::varpro(medv ~ ., data = Boston, sparse = FALSE, split.weight = FALSE)
+varPro::varpro(medv ~ ., data = Boston, split.weight = FALSE)
 ```
 
 `split.weight = FALSE` is the one that lifts the ceiling. With guided splitting
-off, every predictor stays a candidate and lands in `object$xvar.names`, so
-`partialpro()` can reach them all. It is safer than it sounds: the partial
+off, and no custom weights, every predictor stays a candidate and lands in
+`object$xvar.names`, so `partialpro()` can reach them all. Eligible is not the
+same as tested. A predictor still needs release rules that score it, and with
+few trees, or a predictor the forest rarely splits on, it can come back with no
+score at all. `varpro_coverage()` tells the two apart. It is safer than it sounds: the partial
 curve of a variable that was already reachable barely moves, because you are
 changing which variables compete for splits, not the local effect the release
-rules estimate for a strong one. What changes is varPro's importance ranking,
-where the weak variables now earn nonzero scores, so read the ranking off a
-screened fit when a screened ranking is what you are after. `sparse = FALSE` is
-the smaller companion: it deepens the reported ranking so its tail shows, and
-leaves `object$xvar.names` alone.
+rules estimate for a strong one. What changes is varPro's importance ranking:
+the filter no longer stops the weak variables from earning a score, so read
+the ranking off a screened fit when a screened ranking is what you are after. With the weights
+off, varPro also tries every predictor at every split (`mtry = Inf`) unless you
+pass `mtry`; the "varPro on small or sparse data" vignette shows why you should
+lower it.
 
-Two ways to fit, then, for two questions. Keep varPro's defaults, both screens
-on, when you want the parsimonious set: the variables that carry the signal,
-ranked. Turn both off for the exploratory sweep, where you would rather see
-every predictor and filter by your own judgment than let the screen decide, and
-where a variable that scores weakly can still be the one that turns out to
-matter. `nvar` is a red herring either way; it caps how much gets reported, not
-how much competes.
+Two ways to fit, then, for two questions. Keep varPro's defaults when you want
+the parsimonious set: the variables that carry the signal, ranked. Turn the
+weights off for the exploratory sweep, where you would rather see every
+predictor and filter by your own judgment than let the screen decide, and where
+a variable that scores weakly can still be the one that turns out to matter.
+`nvar` is not a red herring. On a guided fit it is the ceiling on how many
+predictors compete at all, since no rule is built for a variable outside it.
+Raising it is the alternative to `split.weight = FALSE` when you want to keep
+the guidance. `sparse` only changes how strongly the weights favour the leaders,
+and with `split.weight = FALSE` no weights are computed, so it does nothing.
+The exception is `split.weight.custom`. Custom weights override
+`split.weight = FALSE`: columns they weight zero or leave out are cut, `nvar`
+applies, and `sparse` changes the weights again. Drop them too when you want
+every predictor eligible.
 
 ## Factor-level ordering
 
