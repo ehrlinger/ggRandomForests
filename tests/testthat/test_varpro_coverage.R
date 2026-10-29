@@ -165,6 +165,81 @@ test_that("bad inputs fail early", {
   expect_error(varpro_coverage(list()), "must be a varpro fit")
   expect_error(varpro_coverage(vp, trim = 0.6), "'trim' must be")
   expect_error(varpro_coverage(vp, by = "tree"))
+  expect_error(varpro_coverage(vp, max_untested = 2), "'max_untested' must be")
+  expect_error(varpro_coverage(vp, max_untested = c(0.1, 0.2)), "'max_untested' must be")
+  expect_error(varpro_coverage(vp, max_untested = NA_real_), "'max_untested' must be")
+})
+
+test_that("max_untested stops a screen that tested too little", {
+  vp <- .coverage_fits()$guided
+  set.seed(1)
+  cv <- varpro_coverage(vp)
+  share <- mean(!cv$tested)
+  expect_gt(share, 0)
+  set.seed(1)
+  expect_error(varpro_coverage(vp, max_untested = share / 2), "split.weight = FALSE")
+  set.seed(1)
+  expect_identical(varpro_coverage(vp, max_untested = share), cv)
+  set.seed(1)
+  expect_identical(varpro_coverage(vp, max_untested = NULL), cv)
+})
+
+test_that("max_untested counts real rows only, ineligible ones as untested", {
+  out <- data.frame(variable = c("a", "b", "c", "noise_a", "noise_b"),
+                    tested   = c(TRUE, FALSE, FALSE, FALSE, FALSE),
+                    noise    = c(FALSE, FALSE, FALSE, TRUE, TRUE))
+  term_var <- stats::setNames(out$variable, out$variable)
+  term_ok  <- stats::setNames(out$tested, out$variable)
+  ## 2 of 3 real rows untested; the untested noise rows do not count
+  expect_null(.varpro_coverage_guard(out, 2 / 3, 0.1, term_var, term_ok))
+  expect_error(.varpro_coverage_guard(out, 0.5, 0.1, term_var, term_ok), "2 of 3")
+  out$noise <- NULL
+  expect_error(.varpro_coverage_guard(out, 0.7, 0.1, term_var, term_ok), "4 of 5")
+  out$noise <- TRUE
+  expect_error(.varpro_coverage_guard(out, 1, 0.1, term_var, term_ok), "no real variables")
+})
+
+test_that("max_untested judges a factor by its levels, not their union (PR #379 review)", {
+  ## f's levels sit in different trees: the union passes trim, no level does
+  out <- data.frame(variable = c("a", "f"), tested = c(TRUE, TRUE))
+  term_var <- c(a = "a", f.1 = "f", f.2 = "f")
+  term_ok  <- c(a = TRUE, f.1 = FALSE, f.2 = FALSE)
+  expect_error(.varpro_coverage_guard(out, 0, 0.1, term_var, term_ok), "1 of 2")
+  term_ok["f.2"] <- TRUE
+  expect_null(.varpro_coverage_guard(out, 0, 0.1, term_var, term_ok))
+
+  vp <- .coverage_fits()$unguided
+  set.seed(1)
+  ct <- varpro_coverage(vp, trim = 0.25)
+  set.seed(1)
+  cv <- varpro_coverage(vp, trim = 0.25, by = "variable")
+  ## the fixture case: every cyl level untested, the rolled-up cyl row tested
+  expect_true(!any(ct$tested[ct$variable == "cyl"]) && cv$tested[cv$variable == "cyl"])
+  n_bad <- sum(!vapply(cv$variable, function(v) any(ct$tested[ct$variable == v]), logical(1)))
+  set.seed(1)
+  expect_error(varpro_coverage(vp, trim = 0.25, by = "variable",
+                               max_untested = mean(!cv$tested)),
+               paste(n_bad, "of", nrow(cv)))
+})
+
+test_that("max_untested still counts unscored rows as untested when trim = 0", {
+  vp <- .coverage_fits()$guided
+  set.seed(1)
+  cv <- varpro_coverage(vp, trim = 0)
+  expect_true(all(cv$tested))
+  expect_true(any(!cv$eligible))
+  set.seed(1)
+  expect_error(varpro_coverage(vp, trim = 0, max_untested = 0), "split.weight = FALSE")
+})
+
+test_that("max_untested names custom split weights in its advice (PR #379 review)", {
+  if (!requireNamespace("varPro", quietly = TRUE)) testthat::skip("varPro not installed")
+  set.seed(20261029L)
+  vp <- varPro::varpro(mpg ~ ., data = mtcars, ntree = 20, split.weight = FALSE,
+                       split.weight.custom = c(wt = 1, hp = 1))
+  expect_length(vp$xvar.names, 2L)
+  set.seed(1)
+  expect_error(varpro_coverage(vp, max_untested = 0.5), "without split.weight.custom")
 })
 
 test_that("coverage and tested agree with gg_varpro() on the same rules", {

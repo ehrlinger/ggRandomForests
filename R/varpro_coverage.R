@@ -36,6 +36,21 @@
 #' the largest tested-noise z overall.  ggRandomForests does not add the
 #' noise columns; do that before fitting.
 #'
+#' @section The first-pass filter:
+#' Before it builds any rules, \code{varPro::varpro()} screens the terms with
+#' split weights.  With its default \code{split.weight = TRUE} it weights
+#' every term (by lasso, variable importance or tree usage), drops any term
+#' whose weight is 0, and keeps only the \code{nvar} heaviest (30 by
+#' default).  Every other term is ineligible: no rule is ever built for it, so
+#' it is untested however strong its effect.  On wide data most terms can be
+#' cut here.  Fit with \code{split.weight = FALSE} to make every term eligible;
+#' \code{nvar} then has no effect.  Custom weights passed as
+#' \code{split.weight.custom} take precedence over that switch: terms they
+#' weight 0 or leave out, and terms beyond \code{nvar}, are still cut, so drop
+#' the custom weights too.  varPro's hidden
+#' \code{split.weight.tolerance} only floors the weights of the terms that
+#' survive and does not change which terms are cut.
+#'
 #' @param object A fitted \code{varpro} object.
 #' @param by \code{"term"} (one row per term in the fit's data, factor
 #'   levels separately) or \code{"variable"} (one-hot levels rolled up to
@@ -57,6 +72,14 @@
 #' @param seed Seed passed to \code{varPro::varpro.strength()}, which samples
 #'   the release rules; with a seed (or a \code{set.seed()} call first) the
 #'   table is reproducible.
+#' @param max_untested \code{NULL} (the default: report only), or the largest
+#'   share of real variables, from 0 to 1, that may be untested.  Rows are
+#'   counted as \code{by} lists them and noise rows are left out.  A row
+#'   counts as tested only when some term of it (for a factor, some single
+#'   level) was scored in at least \code{trim} of the trees and in at least
+#'   one, so ineligible rows always count as untested.  When the share is larger the call stops with an
+#'   error, so that a screen that tested too little cannot be read as one
+#'   that found no effect.
 #'
 #' @return A data frame of class \code{c("varpro_coverage", "data.frame")},
 #'   one row per term (or variable), most-covered first, with columns
@@ -99,7 +122,8 @@ varpro_coverage <- function(object,
                             max.rules.tree = object$max.rules.tree,
                             noise          = NULL,
                             kind_values    = 5L,
-                            seed           = NULL) {
+                            seed           = NULL,
+                            max_untested   = NULL) {
   if (!inherits(object, "varpro")) {
     stop("'object' must be a varpro fit (class \"varpro\").", call. = FALSE)
   }
@@ -107,6 +131,7 @@ varpro_coverage <- function(object,
   if (!is.numeric(trim) || length(trim) != 1L || trim < 0 || trim >= 0.5) {
     stop("'trim' must be a single number in [0, 0.5).", call. = FALSE)
   }
+  .varpro_coverage_check_max(max_untested)
   rule_terms <- object$xvar.names
   terms <- colnames(object$x)
   if (is.null(terms)) terms <- rule_terms
@@ -174,6 +199,11 @@ varpro_coverage <- function(object,
     out$kind <- .varpro_coverage_kind(object, out$variable, kind_values)
     out$noise_cut <- .varpro_coverage_cut(out)
     out$selected <- !out$noise & out$tested & !is.na(out$z) & out$z > out$noise_cut
+  }
+
+  if (!is.null(max_untested)) {
+    .varpro_coverage_guard(out, max_untested, trim, term_var,
+                           .varpro_coverage_term_ok(rule_term, sa$treeID, terms, trees, trim))
   }
 
   out <- out[order(-out$coverage), , drop = FALSE]
@@ -267,6 +297,61 @@ varpro_coverage <- function(object,
   }
   stop("this varpro fit has one-hot encoded factors but no stored encoding map ",
        "(attribute 'xvar.map'); refit it with varPro >= 3.3.0.", call. = FALSE)
+}
+
+#' Validate max_untested before the rules are extracted
+#' @keywords internal
+.varpro_coverage_check_max <- function(max_untested) {
+  if (is.null(max_untested)) return(invisible(NULL))
+  if (!is.numeric(max_untested) || length(max_untested) != 1L || is.na(max_untested) ||
+        max_untested < 0 || max_untested > 1) {
+    stop("'max_untested' must be NULL or a single number in [0, 1].", call. = FALSE)
+  }
+  invisible(NULL)
+}
+
+#' Which terms were scored often enough to be tested
+#'
+#' A term is tested when rules scored it in at least \code{trim} of the
+#' \code{trees} and in at least one tree, so that \code{trim = 0} does not
+#' make an unscored term tested.  Returns a logical vector named by term.
+#' @keywords internal
+.varpro_coverage_term_ok <- function(rule_term, tree_id, terms, trees, trim) {
+  n <- vapply(terms, function(t) length(unique(tree_id[rule_term %in% t])), integer(1))
+  n > 0L & n / trees >= trim
+}
+
+#' Stop when too many real variables went untested
+#'
+#' \code{out} is the coverage table before sorting, with \code{noise} only
+#' when a noise pattern was given.  Testedness is judged per term from
+#' \code{term_ok}, not from \code{out$tested}: a factor's rolled-up coverage
+#' is the union of its levels' trees, so it can pass \code{trim} while every
+#' level, and so every level's z, was trimmed away.  Returns
+#' \code{invisible(NULL)} when the screen passes.
+#' @keywords internal
+.varpro_coverage_guard <- function(out, max_untested, trim, term_var, term_ok) {
+  real <- if ("noise" %in% names(out)) !out$noise else rep(TRUE, nrow(out))
+  ## Nothing real to judge (the noise pattern matched every row) is not a pass.
+  if (!any(real)) {
+    stop("'max_untested' has no real variables to judge: 'noise' matches every row.",
+         call. = FALSE)
+  }
+  ok <- if ("term" %in% names(out)) {
+    unname(term_ok[out$term])
+  } else {
+    vapply(out$variable, function(v) any(term_ok[names(term_var)[term_var == v]]),
+           logical(1), USE.NAMES = FALSE)
+  }
+  n_untested <- sum(!ok[real])
+  if (n_untested / sum(real) > max_untested) {
+    stop(n_untested, " of ", sum(real), " real variables are untested (no term, or for a ",
+         "factor no single level, scored in at least trim = ", trim, " of the trees), more ",
+         "than max_untested = ", max_untested, " allows. Untested is not unimportant: refit ",
+         "with split.weight = FALSE and without split.weight.custom so every variable is ",
+         "eligible; see the \"first-pass filter\" section of ?varpro_coverage.", call. = FALSE)
+  }
+  invisible(NULL)
 }
 
 #' Unconditional importance table from importance(), whatever the family
