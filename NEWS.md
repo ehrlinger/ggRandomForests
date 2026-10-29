@@ -641,11 +641,11 @@ ggRandomForests v4.0.0 (development)
   the `max_untested` guard, a factor counts as tested only when a single level
   was, not when its levels together reach `trim`; the returned `tested` column
   for `by = "variable"` still pools the levels, so the two can disagree. The
-  default, `NULL`, only reports, as before. A new
-  help section, "The first-pass filter", explains how `varpro()`'s default
-  `split.weight = TRUE` and `nvar = 30` cut variables before any rule is
-  built, and that `split.weight = FALSE`, without `split.weight.custom`, keeps
-  every variable eligible.
+  default, `NULL`, only reports, as before. A new help section, "The
+  first-pass filter", explains how `varpro()`'s default `split.weight = TRUE`
+  and `nvar = 30` cut variables before any rule is built, and that
+  `split.weight = FALSE`, without `split.weight.custom`, keeps every variable
+  eligible.
 
 * The varPro vignette no longer calls `nvar` a red herring. On a guided fit
   (`split.weight = TRUE`, the default) varPro keeps only the `nvar` heaviest
@@ -655,9 +655,9 @@ ggRandomForests v4.0.0 (development)
   those places. The vignette also says that `sparse` does nothing once
   `split.weight = FALSE` when no custom weights are given, that
   `split.weight.custom` weights override that switch (and `sparse` then
-  reshapes them again), that unguided fits try every predictor at every split unless
-  `mtry` is set, and that an eligible predictor is not necessarily a tested
-  one (`varpro_coverage()` tells them apart).
+  reshapes them), that unguided fits try every predictor at every split
+  unless `mtry` is set, and that an eligible predictor is not necessarily a
+  tested one (`varpro_coverage()` tells them apart).
 
 * `gg_varpro()` gains `noise` and `kind_values`. Name the permuted noise
   columns you added before fitting (for example `noise = "^noise"`), and a
