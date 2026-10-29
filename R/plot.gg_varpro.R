@@ -14,7 +14,11 @@
 #' per-tree scores, the center line is the median, and the whiskers run
 #' out to the 5th and 95th percentile, not the usual Tukey 1.5 IQR
 #' whiskers. The dashed vertical line is the selection \code{cutoff}
-#' (default \code{0.79}). On the default z-score axis
+#' (default \code{0.79}), or, when \code{gg_varpro()} was given
+#' \code{noise}, the noise bar: the largest z among tested noise of the
+#' variable's kind.  With both a categorical and a continuous bar each row
+#' gets its own dashed tick, and noise variables are drawn in orange.  The
+#' conditional plot always draws \code{cutoff}. On the default z-score axis
 #' (\code{local.std = TRUE}) that line is a z; on the raw-importance
 #' axis (\code{local.std = FALSE}, \code{type = "raw"}) it is the same
 #' numeric value but in raw-importance units. Boxes whose aggregate
@@ -146,23 +150,28 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
 .plot_varpro_main <- function(x, type, prov, lab_lookup = NULL) {
   stats_df <- x$stats
   # Merge selected flag
-  sel_df <- unique(x$imp[, c("variable", "selected")])
+  sel_df <- unique(x$imp[, intersect(c("variable", "selected", "noise", "noise_cut"),
+                                     names(x$imp))])
   stats_df <- merge(stats_df[, setdiff(names(stats_df), "selected")], sel_df,
                     by = "variable", all.x = TRUE)
   ## Objects built before #340 carry no `tested` column; treat them as tested.
   tested <- if (is.null(stats_df$tested)) TRUE else stats_df$tested
   stats_df$box_fill <- ifelse(tested, as.character(stats_df$selected), "untested")
+  noise_bar <- !is.null(stats_df$noise_cut)
+  if (noise_bar) stats_df$box_fill[tested & stats_df$noise] <- "noise"
 
   faithful  <- isTRUE(prov$faithful)
   cutoff    <- prov$cutoff %||% 0.79
-  fill_vals <- c("TRUE" = "#4e8fcd", "FALSE" = "#888888", "untested" = "white")
+  fill_vals <- c("TRUE" = "#4e8fcd", "FALSE" = "#888888", "untested" = "white",
+                 "noise" = "#e8b58a")
   cap_text  <- paste0(
     "Hinges: 15th/85th percentiles; whiskers: 5th/95th. ",
     if (faithful) "Points show per-tree importance. " else "",
     "Not a Tukey boxplot.",
     if (all(tested)) "" else paste0("\nOpen boxes: scored in fewer than ",
                                     100 * (prov$trim %||% 0.1),
-                                    "% of trees (untested).")
+                                    "% of trees (untested)."),
+    if (noise_bar) .varpro_noise_caption(x$imp) else ""
   )
 
   p <- ggplot2::ggplot(stats_df,
@@ -177,8 +186,7 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
                           alpha = if (faithful) 0.4 else 0.85) +
     ggplot2::coord_flip() +
     ggplot2::scale_fill_manual(values = fill_vals, guide = "none") +
-    ggplot2::geom_hline(yintercept = cutoff,
-                        linetype = "dashed", color = "#e74c3c", linewidth = 0.7) +
+    .varpro_cut_layer(stats_df, cutoff, noise_bar) +
     ggplot2::labs(x = NULL,
                   y = .varpro_imp_ylabel(type, prov),
                   caption = cap_text) +
@@ -229,6 +237,35 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
   }
 
   p
+}
+
+#' The dashed selection line: the cutoff, or the noise bar
+#'
+#' One noise bar (a single kind, or both kinds at the same z) is a line
+#' across the plot; two are a dashed tick on each variable's row.
+#' @keywords internal
+.varpro_cut_layer <- function(stats_df, cutoff, noise_bar) {
+  cuts <- if (noise_bar) unique(stats_df$noise_cut) else cutoff
+  if (length(cuts) == 1L) {
+    return(ggplot2::geom_hline(yintercept = cuts, linetype = "dashed",
+                               color = "#e74c3c", linewidth = 0.7))
+  }
+  ggplot2::geom_errorbar(data = stats_df,
+                         ggplot2::aes(x = .data[["variable"]],
+                                      ymin = .data[["noise_cut"]],
+                                      ymax = .data[["noise_cut"]]),
+                         inherit.aes = FALSE, width = 0.9, linetype = "dashed",
+                         color = "#e74c3c", linewidth = 0.7)
+}
+
+#' Caption line naming the noise bar for each kind
+#' @keywords internal
+.varpro_noise_caption <- function(imp) {
+  bars <- unique(imp[, c("kind", "noise_cut")])
+  bars <- bars[order(bars$kind), , drop = FALSE]
+  paste0("\nDashed: best tested noise z of the same kind (",
+         paste(sprintf("%s %.3g", bars$kind, bars$noise_cut), collapse = ", "),
+         "). Orange boxes: noise.")
 }
 
 #' @keywords internal

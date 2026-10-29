@@ -125,7 +125,11 @@
 #'   reproducible z.
 #' @param cutoff Numeric; the z-score above which a variable is treated as
 #'   selected.  Default \code{0.79}.  A variable with aggregate z above the
-#'   cutoff is flagged \code{selected = TRUE} in \code{$imp}.
+#'   cutoff is flagged \code{selected = TRUE} in \code{$imp}.  varPro uses
+#'   0.79 only to highlight its plot; it is not a selection rule that carries
+#'   from one fit to another.  Prefer \code{noise}, or tune the cutoff with
+#'   \code{varPro::cv.varpro()}.  Ignored for selection when \code{noise} is
+#'   set; the conditional plot still draws it.
 #' @param faithful Logical; default \code{FALSE}.  When \code{TRUE},
 #'   \code{$imp.tree} is kept so \code{plot.gg_varpro} can scatter the
 #'   per-tree points over the box.
@@ -143,6 +147,19 @@
 #'   either one re-samples the rules even with \code{local.std = FALSE}, as
 #'   \code{varPro::importance()} does.  The boxes, z and coverage are always
 #'   computed from the same rules.
+#' @param noise \code{NULL} (the default), or a regular expression matching
+#'   the names of permuted noise columns in the fit's data (for example
+#'   \code{"^noise"}).  Selection then replaces \code{cutoff}: a variable is
+#'   selected when it is tested and its z beats the largest z among
+#'   \emph{tested} noise of the same kind (categorical or continuous), as in
+#'   \code{\link{varpro_coverage}}, and the plot draws that bar instead of
+#'   the \code{cutoff} line.  The bar is computed from the same rules as the
+#'   boxes and over every variable, before \code{nvar} truncation.  Needs
+#'   \code{local.std = TRUE}.  ggRandomForests does not add noise columns;
+#'   add them before fitting, and fit with \code{split.weight = FALSE} so
+#'   that varPro's first-pass filter does not cut them.
+#' @param kind_values With \code{noise}, a numeric variable with at most
+#'   this many distinct values counts as categorical.
 #' @param ... Not used.  Earlier versions passed it to
 #'   \code{varPro::importance()}; \code{trim}, \code{max.tree} and
 #'   \code{max.rules.tree} are now arguments, and anything else is an error.
@@ -157,7 +174,10 @@
 #'     \code{z > cutoff}), \code{coverage} (share of the scored trees in
 #'     which a release rule for the variable returned an importance value)
 #'     and \code{tested}
-#'     (\code{coverage >= trim}).}
+#'     (\code{coverage >= trim}).  With \code{noise} set it adds
+#'     \code{noise} (logical), \code{kind} and \code{noise_cut}, and
+#'     \code{selected} is a tested non-noise variable whose z beats
+#'     \code{noise_cut}.}
 #'   \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
 #'     otherwise an ntree x p matrix of per-tree importance values.}
 #'   \item{\code{$stats}}{Per-variable summary: \code{variable},
@@ -173,7 +193,8 @@
 #' }
 #' A \code{"provenance"} attribute carries \code{family}, \code{local.std},
 #' \code{cutoff}, \code{faithful}, \code{conditional}, \code{xvar.names},
-#' \code{n}, \code{trim}, \code{max.tree} and \code{max.rules.tree}.
+#' \code{n}, \code{trim}, \code{max.tree} and \code{max.rules.tree}, and
+#' \code{noise} when it was set.
 #'
 #' @seealso \code{\link{plot.gg_varpro}}, \code{\link{varpro_coverage}},
 #'   \code{\link{gg_vimp}}
@@ -198,11 +219,14 @@ gg_varpro <- function(object,
                       trim           = 0.1,
                       max.tree       = object$max.tree,
                       max.rules.tree = object$max.rules.tree,
+                      noise          = NULL,
+                      kind_values    = 5L,
                       ...) {
 
   ## ---- Validation + coercion ------------------------------------------------
   local.std <- .validate_varpro_imp_inputs(object, local.std, faithful, conditional,
                                            trim, ...)
+  annotate <- .varpro_noise_annotator(object, noise, kind_values, local.std)
 
   ## ---- Score one set of rules, as varPro::importance() would (#340) ---------
   ## z, the per-tree matrix and coverage all come from `scored$results`, so the
@@ -228,7 +252,8 @@ gg_varpro <- function(object,
   ## ---- Build tidy data structures ------------------------------------------
   dfs <- .build_varpro_imp_dfs(imp_out, imp_tree_mat, object$family,
                                 cutoff, nvar, faithful, conditional,
-                                coverage = coverage, trim = trim)
+                                coverage = coverage, trim = trim,
+                                annotate = annotate)
 
   ## varPro recodes a binary outcome to 0/1 and names the conditional columns
   ## after those codes; report the original class names, as gg_ivarpro() does.
@@ -269,11 +294,33 @@ gg_varpro <- function(object,
     max.tree       = scored$max.tree,
     max.rules.tree = scored$max.rules.tree
   )
+  if (!is.null(noise)) attr(result, "provenance")$noise <- noise
 
   result
 }
 
 ## ---- Internal helpers -------------------------------------------------------
+
+#' Check \code{noise} and build the step that judges \code{$imp} against it
+#'
+#' Returns \code{NULL} without \code{noise}; otherwise a function applied to
+#' the full importance table, before \code{nvar} truncation, so the noise bar
+#' is judged on every variable.
+#' @keywords internal
+.varpro_noise_annotator <- function(object, noise, kind_values, local.std) {
+  if (is.null(noise)) return(NULL)
+  if (!is.character(noise) || length(noise) != 1L || is.na(noise)) {
+    stop("'noise' must be NULL or a single regular expression.", call. = FALSE)
+  }
+  if (!isTRUE(local.std)) {
+    stop("'noise' needs local.std = TRUE: only then is z on the boxes' scale, ",
+         "so the noise bar can be drawn against them.", call. = FALSE)
+  }
+  function(d) {
+    vars <- unname(.varpro_coverage_map(object, d$variable))
+    .varpro_noise_judge(d, vars, object, noise, kind_values)
+  }
+}
 
 ## varPro codes a binary outcome by frequency, not by level: the minority
 ## class is 1 and the majority 0, and on a tie which.min() makes the FIRST
@@ -408,7 +455,7 @@ gg_varpro <- function(object,
 #' @keywords internal
 .build_varpro_imp_dfs <- function(imp_out, imp_tree_mat, family, cutoff, nvar,
                                    faithful, conditional, coverage = NULL,
-                                   trim = 0.1) {
+                                   trim = 0.1, annotate = NULL) {
   is_class <- identical(family, "class")
 
   ## Unpack importance() data frame: different shapes per family
@@ -456,6 +503,7 @@ gg_varpro <- function(object,
   cov_j           <- unname(coverage[vars_raw])
   imp_df$coverage <- if (is.null(coverage)) NA_real_ else ifelse(is.na(cov_j), 0, cov_j)
   imp_df$tested   <- imp_df$coverage >= trim
+  if (!is.null(annotate)) imp_df <- annotate(imp_df)
 
   ## Keep only columns present in both imp_df and imp_tree_mat
   keep_vars  <- imp_df$variable[imp_df$variable %in% colnames(imp_tree_mat)]

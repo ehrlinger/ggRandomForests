@@ -555,3 +555,98 @@ test_that(".varpro_binary_code_map returns NULL unless the pairing is one-to-one
   expect_null(map(list(y.org = factor("a"), y = factor(c("0", "1")))))
   expect_null(map(list(y = factor(c("0", "1")))))
 })
+
+## ── Noise bar ────────────────────────────────────────────────────────────────
+
+# Unguided fit on simulated data (signal x1, x2 and level b of g) with a
+# continuous and a categorical permuted copy. mtcars is too small: its
+# categorical noise is almost never tested. Here both kinds are, so the two
+# kinds get different bars and the plot draws one tick per row.
+make_vp_noise <- function() {
+  if (is.null(.varpro_cache$noise)) {
+    set.seed(20261029L)
+    d <- data.frame(x1 = rnorm(150), x2 = rnorm(150), x3 = rnorm(150),
+                    g = factor(sample(c("a", "b", "c"), 150, TRUE)))
+    d$y <- d$x1 + 0.5 * d$x2 + (d$g == "b") + rnorm(150)
+    d$noise_x1 <- sample(d$x1)
+    d$noise_g <- sample(d$g)
+    set.seed(20261029L)
+    .varpro_cache$noise <- varPro::varpro(y ~ ., data = d, ntree = 50L,
+                                          split.weight = FALSE, mtry = 2L)
+  }
+  .varpro_cache$noise
+}
+
+test_that("gg_varpro: noise selects against tested noise of the same kind", {
+  vp <- make_vp_noise()
+  set.seed(1)
+  gg <- gg_varpro(vp, noise = "^noise")
+  imp <- gg$imp
+  expect_true(all(c("noise", "kind", "noise_cut") %in% names(imp)))
+  expect_setequal(unique(imp$kind), c("categorical", "continuous"))
+  ## both kinds of noise were tested, so neither bar is a fallback
+  expect_setequal(unique(imp$kind[imp$noise & imp$tested]), c("categorical", "continuous"))
+  expect_true(all(c("x1", "x2") %in% as.character(imp$variable[imp$selected])))
+  expect_false(any(imp$selected & imp$noise))
+  expect_true(all(imp$tested[imp$selected]))
+  expect_true(all(imp$z[imp$selected] > imp$noise_cut[imp$selected]))
+  expect_identical(attr(gg, "provenance")$noise, "^noise")
+})
+
+test_that("gg_varpro: the noise bar matches varpro_coverage() on the same rules", {
+  vp <- make_vp_noise()
+  set.seed(2)
+  gg <- gg_varpro(vp, noise = "^noise")
+  set.seed(2)
+  cv <- varpro_coverage(vp, noise = "^noise")
+  imp <- gg$imp
+  m <- match(as.character(imp$variable), cv$term)
+  expect_false(anyNA(m))
+  expect_equal(imp$noise_cut, cv$noise_cut[m])
+  expect_identical(imp$selected, cv$selected[m])
+})
+
+test_that("gg_varpro: the noise bar is judged before nvar truncation", {
+  vp <- make_vp_noise()
+  set.seed(3)
+  full <- gg_varpro(vp, noise = "^noise")
+  set.seed(3)
+  top <- gg_varpro(vp, noise = "^noise", nvar = 3L)
+  expect_lte(nrow(top$imp), 3L)
+  m <- match(as.character(top$imp$variable), as.character(full$imp$variable))
+  expect_equal(top$imp$noise_cut, full$imp$noise_cut[m])
+})
+
+test_that("gg_varpro: noise draws a tick per row when the kinds differ", {
+  vp <- make_vp_noise()
+  set.seed(4)
+  gg <- gg_varpro(vp, noise = "^noise")
+  p <- plot(gg)
+  geoms <- vapply(p$layers, function(l) class(l$geom)[1], character(1))
+  expect_gt(length(unique(gg$imp$noise_cut)), 1L)
+  expect_true("GeomErrorbar" %in% geoms)
+  expect_false("GeomHline" %in% geoms)
+  expect_match(p$labels$caption, "best tested noise z")
+  expect_output(print(gg), "above tested noise")
+})
+
+test_that("gg_varpro: one noise bar is a line, and no noise keeps the cutoff line", {
+  stats_df <- data.frame(variable = factor(c("a", "b")), noise_cut = c(0.2, 0.2))
+  expect_s3_class(.varpro_cut_layer(stats_df, 0.79, TRUE)$geom, "GeomHline")
+  expect_identical(.varpro_cut_layer(stats_df, 0.79, TRUE)$data$yintercept, 0.2)
+  expect_identical(.varpro_cut_layer(stats_df, 0.79, FALSE)$data$yintercept, 0.79)
+  stats_df$noise_cut <- c(0.2, 0.05)
+  expect_s3_class(.varpro_cut_layer(stats_df, 0.79, TRUE)$geom, "GeomErrorbar")
+})
+
+test_that("gg_varpro: noise inputs are checked", {
+  vp <- make_vp_noise()
+  expect_error(gg_varpro(vp, noise = 1), "'noise' must be")
+  expect_error(gg_varpro(vp, noise = "^noise", local.std = FALSE), "local.std = TRUE")
+  set.seed(5)
+  expect_warning(gg_varpro(vp, noise = "^nothing_matches"), "no variable name matches")
+  set.seed(5)
+  gg <- gg_varpro(vp)
+  expect_false(any(c("noise", "kind", "noise_cut") %in% names(gg$imp)))
+  expect_null(attr(gg, "provenance")$noise)
+})

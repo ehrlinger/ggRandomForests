@@ -188,17 +188,7 @@ varpro_coverage <- function(object,
                            names(out)), "z", "tested")]
 
   if (!is.null(noise)) {
-    out$noise <- grepl(noise, out$variable)
-    if (!any(out$noise)) {
-      warning("no variable name matches 'noise' = \"", noise, "\".", call. = FALSE)
-    } else if (!any(out$noise & out$tested)) {
-      warning("no noise variable was tested (coverage >= trim), so the noise ",
-              "check is empty: noise_cut is 0 and every tested row is selected.",
-              call. = FALSE)
-    }
-    out$kind <- .varpro_coverage_kind(object, out$variable, kind_values)
-    out$noise_cut <- .varpro_coverage_cut(out)
-    out$selected <- !out$noise & out$tested & !is.na(out$z) & out$z > out$noise_cut
+    out <- .varpro_noise_judge(out, out$variable, object, noise, kind_values)
   }
 
   if (!is.null(max_untested)) {
@@ -375,6 +365,29 @@ varpro_coverage <- function(object,
     n <- length(unique(stats::na.omit(object$x[[v]])))
     if (n <= kind_values) "categorical" else "continuous"
   }, character(1), USE.NAMES = FALSE)
+}
+
+#' Judge each row against tested noise of its own kind
+#'
+#' Shared by \code{varpro_coverage()} and \code{gg_varpro()}.  \code{out}
+#' needs \code{z} and \code{tested}; \code{vars} gives each row's original
+#' variable, which the \code{noise} pattern and the kind are read from.  Adds
+#' \code{noise}, \code{kind} and \code{noise_cut}, and sets \code{selected}
+#' to a tested real row whose z beats \code{noise_cut}.
+#' @keywords internal
+.varpro_noise_judge <- function(out, vars, object, noise, kind_values) {
+  out$noise <- grepl(noise, vars)
+  if (!any(out$noise)) {
+    warning("no variable name matches 'noise' = \"", noise, "\".", call. = FALSE)
+  } else if (!any(out$noise & out$tested)) {
+    warning("no noise variable was tested (coverage >= trim), so the noise ",
+            "check is empty: noise_cut is 0 and every tested row is selected.",
+            call. = FALSE)
+  }
+  out$kind <- .varpro_coverage_kind(object, vars, kind_values)
+  out$noise_cut <- .varpro_coverage_cut(out)
+  out$selected <- !out$noise & out$tested & !is.na(out$z) & out$z > out$noise_cut
+  out
 }
 
 #' Largest tested-noise z of the same kind; falls back to all tested noise
