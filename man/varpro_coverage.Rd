@@ -12,7 +12,8 @@ varpro_coverage(
   max.rules.tree = object$max.rules.tree,
   noise = NULL,
   kind_values = 5L,
-  seed = NULL
+  seed = NULL,
+  max_untested = NULL
 )
 }
 \arguments{
@@ -44,6 +45,13 @@ values counts as categorical for the noise comparison.}
 \item{seed}{Seed passed to \code{varPro::varpro.strength()}, which samples
 the release rules; with a seed (or a \code{set.seed()} call first) the
 table is reproducible.}
+
+\item{max_untested}{\code{NULL} (the default: report only), or the largest
+share of real variables, from 0 to 1, that may be untested.  Rows are
+counted as \code{by} lists them, noise rows are left out, and ineligible
+rows count as untested.  When the share is larger the call stops with an
+error, so that a screen that tested too little cannot be read as one
+that found no effect.}
 }
 \value{
 A data frame of class \code{c("varpro_coverage", "data.frame")},
@@ -101,6 +109,20 @@ compared with the largest z among \emph{tested} noise rows of the same kind
 construction and sets no bar.  A kind with no tested noise falls back to
 the largest tested-noise z overall.  ggRandomForests does not add the
 noise columns; do that before fitting.
+}
+
+\section{The first-pass filter}{
+
+Before it builds any rules, \code{varPro::varpro()} screens the terms with
+split weights.  With its default \code{split.weight = TRUE} it weights
+every term (by lasso, variable importance or tree usage), drops any term
+whose weight is 0, and keeps only the \code{nvar} heaviest (30 by
+default).  Every other term is ineligible: no rule is ever built for it, so
+it is untested however strong its effect.  On wide data most terms can be
+cut here.  Fit with \code{split.weight = FALSE} to make every term eligible;
+\code{nvar} then has no effect.  varPro's hidden
+\code{split.weight.tolerance} only floors the weights of the terms that
+survive and does not change which terms are cut.
 }
 
 \examples{

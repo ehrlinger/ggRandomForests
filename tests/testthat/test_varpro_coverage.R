@@ -165,6 +165,37 @@ test_that("bad inputs fail early", {
   expect_error(varpro_coverage(list()), "must be a varpro fit")
   expect_error(varpro_coverage(vp, trim = 0.6), "'trim' must be")
   expect_error(varpro_coverage(vp, by = "tree"))
+  expect_error(varpro_coverage(vp, max_untested = 2), "'max_untested' must be")
+  expect_error(varpro_coverage(vp, max_untested = c(0.1, 0.2)), "'max_untested' must be")
+  expect_error(varpro_coverage(vp, max_untested = NA_real_), "'max_untested' must be")
+})
+
+test_that("max_untested stops a screen that tested too little", {
+  vp <- .coverage_fits()$guided
+  set.seed(1)
+  cv <- varpro_coverage(vp)
+  share <- mean(!cv$tested)
+  expect_gt(share, 0)
+  set.seed(1)
+  expect_error(varpro_coverage(vp, max_untested = share / 2), "split.weight = FALSE")
+  set.seed(1)
+  expect_identical(varpro_coverage(vp, max_untested = share), cv)
+  set.seed(1)
+  expect_identical(varpro_coverage(vp, max_untested = NULL), cv)
+})
+
+test_that("max_untested counts real rows only, ineligible ones as untested", {
+  out <- data.frame(variable = c("a", "b", "c", "noise_a", "noise_b"),
+                    eligible = c(TRUE, TRUE, FALSE, TRUE, TRUE),
+                    tested   = c(TRUE, FALSE, FALSE, FALSE, FALSE),
+                    noise    = c(FALSE, FALSE, FALSE, TRUE, TRUE))
+  ## 2 of 3 real rows untested; the untested noise rows do not count
+  expect_null(.varpro_coverage_guard(out, 2 / 3, 0.1))
+  expect_error(.varpro_coverage_guard(out, 0.5, 0.1), "2 of 3")
+  out$noise <- NULL
+  expect_error(.varpro_coverage_guard(out, 0.7, 0.1), "4 of 5")
+  out$noise <- TRUE
+  expect_error(.varpro_coverage_guard(out, 1, 0.1), "no real variables")
 })
 
 test_that("coverage and tested agree with gg_varpro() on the same rules", {
