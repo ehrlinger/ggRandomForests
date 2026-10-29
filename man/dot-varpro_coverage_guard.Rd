@@ -4,11 +4,14 @@
 \alias{.varpro_coverage_guard}
 \title{Stop when too many real variables went untested}
 \usage{
-.varpro_coverage_guard(out, max_untested, trim)
+.varpro_coverage_guard(out, max_untested, trim, term_var, term_ok)
 }
 \description{
-\code{out} is the coverage table before sorting; it has \code{tested},
-and \code{noise} only when a noise pattern was given.  Returns
+\code{out} is the coverage table before sorting, with \code{noise} only
+when a noise pattern was given.  Testedness is judged per term from
+\code{term_ok}, not from \code{out$tested}: a factor's rolled-up coverage
+is the union of its levels' trees, so it can pass \code{trim} while every
+level, and so every level's z, was trimmed away.  Returns
 \code{invisible(NULL)} when the screen passes.
 }
 \keyword{internal}

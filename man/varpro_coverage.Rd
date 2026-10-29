@@ -48,8 +48,10 @@ table is reproducible.}
 
 \item{max_untested}{\code{NULL} (the default: report only), or the largest
 share of real variables, from 0 to 1, that may be untested.  Rows are
-counted as \code{by} lists them, noise rows are left out, and ineligible
-rows count as untested.  When the share is larger the call stops with an
+counted as \code{by} lists them and noise rows are left out.  A row
+counts as tested only when some term of it (for a factor, some single
+level) was scored in at least \code{trim} of the trees and in at least
+one, so ineligible rows always count as untested.  When the share is larger the call stops with an
 error, so that a screen that tested too little cannot be read as one
 that found no effect.}
 }
@@ -120,7 +122,10 @@ whose weight is 0, and keeps only the \code{nvar} heaviest (30 by
 default).  Every other term is ineligible: no rule is ever built for it, so
 it is untested however strong its effect.  On wide data most terms can be
 cut here.  Fit with \code{split.weight = FALSE} to make every term eligible;
-\code{nvar} then has no effect.  varPro's hidden
+\code{nvar} then has no effect.  Custom weights passed as
+\code{split.weight.custom} take precedence over that switch: terms they
+weight 0 or leave out, and terms beyond \code{nvar}, are still cut, so drop
+the custom weights too.  varPro's hidden
 \code{split.weight.tolerance} only floors the weights of the terms that
 survive and does not change which terms are cut.
 }
