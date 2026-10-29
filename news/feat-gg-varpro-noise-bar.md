@@ -8,3 +8,8 @@
   two kinds differ. Noise boxes are orange. `print()` and `summary()` say how
   the selection was made. Without `noise`, nothing changes. The `cutoff` help
   now says that varPro uses 0.79 only to highlight its plot.
+* `varpro_coverage()` and `gg_varpro()` judge noise only on rows scored in at
+  least one tree, so `trim = 0` no longer turns unscored noise into a bar at 0
+  or selects an unscored variable. When one kind has no tested noise and
+  borrows the other kind's bar, both now warn, a new `noise_ref` column records
+  which kind set each bar, and the plot caption says "from continuous noise".

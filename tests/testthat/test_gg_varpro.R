@@ -603,7 +603,34 @@ test_that("gg_varpro: the noise bar matches varpro_coverage() on the same rules"
   m <- match(as.character(imp$variable), cv$term)
   expect_false(anyNA(m))
   expect_equal(imp$noise_cut, cv$noise_cut[m])
+  expect_identical(imp$noise_ref, cv$noise_ref[m])
   expect_identical(imp$selected, cv$selected[m])
+})
+
+test_that("gg_varpro: at trim = 0 unscored noise sets no bar and unscored rows are not selected (PR #381 review)", {
+  vp <- make_vp_noise()
+  set.seed(6)
+  expect_warning(gg <- gg_varpro(vp, noise = "^noise", trim = 0, max.tree = 3L,
+                                 max.rules.tree = 1L),
+                 "no noise variable was tested")
+  imp <- gg$imp
+  expect_true(all(imp$tested))                      # trim = 0: everything passes trim
+  expect_false(any(imp$noise & imp$coverage > 0))   # but no noise was scored
+  expect_true(all(is.na(imp$noise_ref)))
+  expect_true(any(!imp$noise & imp$coverage == 0))
+  expect_false(any(imp$selected & imp$coverage == 0))
+  expect_match(plot(gg)$labels$caption, "no noise tested")
+})
+
+test_that("gg_varpro: a bar borrowed from the other kind is reported (PR #381 review)", {
+  vp <- make_vp_noise()
+  set.seed(7)
+  expect_warning(gg <- gg_varpro(vp, noise = "^noise_x1$"),
+                 "categorical variables are judged against the continuous noise bar")
+  imp <- gg$imp
+  expect_true(all(imp$noise_ref[imp$kind == "categorical"] == "continuous"))
+  expect_true(all(imp$noise_ref[imp$kind == "continuous"] == "continuous"))
+  expect_match(plot(gg)$labels$caption, "categorical [0-9.]+ from continuous noise")
 })
 
 test_that("gg_varpro: the noise bar is judged before nvar truncation", {

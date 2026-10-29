@@ -32,8 +32,10 @@
 #' common prefix and pass a pattern as \code{noise}.  Each real row is then
 #' compared with the largest z among \emph{tested} noise rows of the same kind
 #' (categorical or continuous); an untested noise row has z = 0 by
-#' construction and sets no bar.  A kind with no tested noise falls back to
-#' the largest tested-noise z overall.  ggRandomForests does not add the
+#' construction and sets no bar.  Here tested also means scored in at least
+#' one tree, so \code{trim = 0} does not make unscored noise a bar at 0.  A
+#' kind with no tested noise falls back to the largest tested-noise z
+#' overall; \code{noise_ref} records it and a warning says so.  ggRandomForests does not add the
 #' noise columns; do that before fitting.
 #'
 #' @section The first-pass filter:
@@ -93,8 +95,11 @@
 #'   its default \code{local.std = TRUE}, from the same rules; \code{NA} when never
 #'   returned) and \code{tested} (\code{coverage >= trim}).  With
 #'   \code{noise} set it adds \code{noise} (logical), \code{kind},
-#'   \code{noise_cut} and \code{selected} (a tested real row whose z beats
-#'   \code{noise_cut}).  Attributes \code{by}, \code{trees} (the coverage
+#'   \code{noise_cut}, \code{noise_ref} (the kind of the noise that set
+#'   \code{noise_cut}: the row's own kind, the other kind when its own has
+#'   no tested noise, or \code{NA} when no noise was tested) and
+#'   \code{selected} (a tested real row, scored in at least one tree, whose
+#'   z beats \code{noise_cut}).  Attributes \code{by}, \code{trees} (the coverage
 #'   denominator), \code{trim} and \code{max.rules.tree} record the
 #'   settings.
 #'
@@ -370,24 +375,56 @@ varpro_coverage <- function(object,
 #' Judge each row against tested noise of its own kind
 #'
 #' Shared by \code{varpro_coverage()} and \code{gg_varpro()}.  \code{out}
-#' needs \code{z} and \code{tested}; \code{vars} gives each row's original
-#' variable, which the \code{noise} pattern and the kind are read from.  Adds
-#' \code{noise}, \code{kind} and \code{noise_cut}, and sets \code{selected}
-#' to a tested real row whose z beats \code{noise_cut}.
+#' needs \code{z}, \code{tested} and \code{coverage}; \code{vars} gives each
+#' row's original variable, which the \code{noise} pattern and the kind are
+#' read from.  A row counts as tested here only when at least one tree scored
+#' it as well as \code{coverage >= trim}, so \code{trim = 0} cannot make an
+#' unscored noise row a bar at 0.  Adds \code{noise}, \code{kind},
+#' \code{noise_cut} and \code{noise_ref} (the kind of the noise that set the
+#' bar, \code{NA} when none was tested), and sets \code{selected}.
 #' @keywords internal
 .varpro_noise_judge <- function(out, vars, object, noise, kind_values) {
   out$noise <- grepl(noise, vars)
+  out$kind <- .varpro_coverage_kind(object, vars, kind_values)
+  ref <- out
+  ref$tested <- out$tested & out$coverage > 0
+  out$noise_cut <- .varpro_coverage_cut(ref)
+  out$noise_ref <- .varpro_coverage_cut_ref(ref)
+  out$selected <- !out$noise & ref$tested & !is.na(out$z) & out$z > out$noise_cut
+  .varpro_noise_warn(out, ref$tested, noise)
+  out
+}
+
+#' Warn when the noise check is empty or borrows another kind's bar
+#' @keywords internal
+.varpro_noise_warn <- function(out, scored, noise) {
   if (!any(out$noise)) {
     warning("no variable name matches 'noise' = \"", noise, "\".", call. = FALSE)
-  } else if (!any(out$noise & out$tested)) {
-    warning("no noise variable was tested (coverage >= trim), so the noise ",
-            "check is empty: noise_cut is 0 and every tested row is selected.",
+    return(invisible(NULL))
+  }
+  if (!any(out$noise & scored)) {
+    warning("no noise variable was tested (scored in at least trim of the trees, ",
+            "and in at least one), so the noise check is empty: noise_cut is 0 ",
+            "and every tested row is selected.", call. = FALSE)
+    return(invisible(NULL))
+  }
+  real <- !out$noise & scored
+  for (k in unique(out$kind[real & out$noise_ref != out$kind])) {
+    warning("no ", k, " noise variable was tested, so ", k, " variables are judged ",
+            "against the ", out$noise_ref[real & out$kind == k][1], " noise bar.",
             call. = FALSE)
   }
-  out$kind <- .varpro_coverage_kind(object, vars, kind_values)
-  out$noise_cut <- .varpro_coverage_cut(out)
-  out$selected <- !out$noise & out$tested & !is.na(out$z) & out$z > out$noise_cut
-  out
+  invisible(NULL)
+}
+
+#' Kind of the noise that set each row's bar: its own, or the fallback's
+#' @keywords internal
+.varpro_coverage_cut_ref <- function(out) {
+  tn <- out$noise & out$tested & !is.na(out$z)
+  if (!any(tn)) return(rep(NA_character_, nrow(out)))
+  top <- out$kind[tn][which.max(out$z[tn])]
+  vapply(out$kind, function(k) if (any(tn & out$kind == k)) k else top,
+         character(1), USE.NAMES = FALSE)
 }
 
 #' Largest tested-noise z of the same kind; falls back to all tested noise

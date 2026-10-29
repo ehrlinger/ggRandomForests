@@ -66,9 +66,11 @@ computed from the same rules.}
 \item{noise}{\code{NULL} (the default), or a regular expression matching
 the names of permuted noise columns in the fit's data (for example
 \code{"^noise"}).  Selection then replaces \code{cutoff}: a variable is
-selected when it is tested and its z beats the largest z among
-\emph{tested} noise of the same kind (categorical or continuous), as in
-\code{\link{varpro_coverage}}, and the plot draws that bar instead of
+selected when it is tested (and scored in at least one tree) and its z
+beats the largest z among \emph{tested} noise of the same kind
+(categorical or continuous), as in \code{\link{varpro_coverage}}.  A
+kind with no tested noise borrows the other kind's bar, with a warning,
+and \code{noise_ref} records which.  The plot draws that bar instead of
 the \code{cutoff} line.  The bar is computed from the same rules as the
 boxes and over every variable, before \code{nvar} truncation.  Needs
 \code{local.std = TRUE}.  ggRandomForests does not add noise columns;
@@ -94,8 +96,10 @@ z-score, \code{NA} when it is undefined), \code{selected} (logical,
 which a release rule for the variable returned an importance value)
 and \code{tested}
 (\code{coverage >= trim}).  With \code{noise} set it adds
-\code{noise} (logical), \code{kind} and \code{noise_cut}, and
-\code{selected} is a tested non-noise variable whose z beats
+\code{noise} (logical), \code{kind}, \code{noise_cut} and
+\code{noise_ref} (the kind of the noise that set \code{noise_cut},
+\code{NA} when no noise was tested), and \code{selected} is a tested
+non-noise variable, scored in at least one tree, whose z beats
 \code{noise_cut}.}
 \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
 otherwise an ntree x p matrix of per-tree importance values.}

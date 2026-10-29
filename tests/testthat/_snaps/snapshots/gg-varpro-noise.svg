@@ -133,6 +133,6 @@
 <text x='380.33' y='545.37' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='113.72px' lengthAdjust='spacingAndGlyphs'>Variable importance (z)</text>
 <text x='46.14' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='92.46px' lengthAdjust='spacingAndGlyphs'>gg-varpro-noise</text>
 <text x='714.52' y='559.19' text-anchor='end' style='font-size: 8.80px; font-family: sans;' textLength='275.43px' lengthAdjust='spacingAndGlyphs'>Hinges: 15th/85th percentiles; whiskers: 5th/95th. Not a Tukey boxplot.</text>
-<text x='714.52' y='568.69' text-anchor='end' style='font-size: 8.80px; font-family: sans;' textLength='406.57px' lengthAdjust='spacingAndGlyphs'>Dashed: best tested noise z of the same kind (categorical 0.551, continuous 0.42). Orange boxes: noise.</text>
+<text x='714.52' y='568.69' text-anchor='end' style='font-size: 8.80px; font-family: sans;' textLength='373.30px' lengthAdjust='spacingAndGlyphs'>Dashed: best tested noise z per kind (categorical 0.551, continuous 0.42). Orange boxes: noise.</text>
 </g>
 </svg>

@@ -8,9 +8,12 @@
 }
 \description{
 Shared by \code{varpro_coverage()} and \code{gg_varpro()}.  \code{out}
-needs \code{z} and \code{tested}; \code{vars} gives each row's original
-variable, which the \code{noise} pattern and the kind are read from.  Adds
-\code{noise}, \code{kind} and \code{noise_cut}, and sets \code{selected}
-to a tested real row whose z beats \code{noise_cut}.
+needs \code{z}, \code{tested} and \code{coverage}; \code{vars} gives each
+row's original variable, which the \code{noise} pattern and the kind are
+read from.  A row counts as tested here only when at least one tree scored
+it as well as \code{coverage >= trim}, so \code{trim = 0} cannot make an
+unscored noise row a bar at 0.  Adds \code{noise}, \code{kind},
+\code{noise_cut} and \code{noise_ref} (the kind of the noise that set the
+bar, \code{NA} when none was tested), and sets \code{selected}.
 }
 \keyword{internal}

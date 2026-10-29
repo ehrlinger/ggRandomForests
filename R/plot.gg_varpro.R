@@ -16,7 +16,8 @@
 #' whiskers. The dashed vertical line is the selection \code{cutoff}
 #' (default \code{0.79}), or, when \code{gg_varpro()} was given
 #' \code{noise}, the noise bar: the largest z among tested noise of the
-#' variable's kind.  With both a categorical and a continuous bar each row
+#' variable's kind, or of the other kind when its own has none (the caption
+#' then says \dQuote{from continuous noise}, say).  With both a categorical and a continuous bar each row
 #' gets its own dashed tick, and noise variables are drawn in orange.  The
 #' conditional plot always draws \code{cutoff}. On the default z-score axis
 #' (\code{local.std = TRUE}) that line is a z; on the raw-importance
@@ -261,10 +262,13 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
 #' Caption line naming the noise bar for each kind
 #' @keywords internal
 .varpro_noise_caption <- function(imp) {
-  bars <- unique(imp[, c("kind", "noise_cut")])
+  bars <- unique(imp[, c("kind", "noise_cut", "noise_ref")])
   bars <- bars[order(bars$kind), , drop = FALSE]
-  paste0("\nDashed: best tested noise z of the same kind (",
-         paste(sprintf("%s %.3g", bars$kind, bars$noise_cut), collapse = ", "),
+  lab <- ifelse(is.na(bars$noise_ref), sprintf("%s 0, no noise tested", bars$kind),
+                sprintf("%s %.3g", bars$kind, bars$noise_cut))
+  borrowed <- !is.na(bars$noise_ref) & bars$noise_ref != bars$kind
+  lab[borrowed] <- paste0(lab[borrowed], " from ", bars$noise_ref[borrowed], " noise")
+  paste0("\nDashed: best tested noise z per kind (", paste(lab, collapse = ", "),
          "). Orange boxes: noise.")
 }
 
