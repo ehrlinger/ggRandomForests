@@ -83,7 +83,8 @@ barely tested at all.</p>
 <span>  max.rules.tree <span class="op">=</span> <span class="va">object</span><span class="op">$</span><span class="va">max.rules.tree</span>,</span>
 <span>  noise <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  kind_values <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_untested <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -134,6 +135,17 @@ values counts as categorical for the noise comparison.</p></dd>
 <dd><p>Seed passed to <code><a href="https://www.randomforestsrc.org/reference/varpro.strength.html" class="external-link">varPro::varpro.strength()</a></code>, which samples
 the release rules; with a seed (or a <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> call first) the
 table is reproducible.</p></dd>
+
+
+<dt id="arg-max-untested">max_untested<a class="anchor" aria-label="anchor" href="#arg-max-untested"></a></dt>
+<dd><p><code>NULL</code> (the default: report only), or the largest
+share of real variables, from 0 to 1, that may be untested.  Rows are
+counted as <code>by</code> lists them and noise rows are left out.  A row
+counts as tested only when some term of it (for a factor, some single
+level) was scored in at least <code>trim</code> of the trees and in at least
+one, so ineligible rows always count as untested.  When the share is larger the call stops with an
+error, so that a screen that tested too little cannot be read as one
+that found no effect.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -191,6 +203,24 @@ the largest tested-noise z overall.  ggRandomForests does not add the
 noise columns; do that before fitting.</p>
     </div>
     <div class="section level2">
+    <h2 id="the-first-pass-filter">The first-pass filter<a class="anchor" aria-label="anchor" href="#the-first-pass-filter"></a></h2>
+
+
+<p>Before it builds any rules, <code><a href="https://www.randomforestsrc.org/reference/varpro.html" class="external-link">varPro::varpro()</a></code> screens the terms with
+split weights.  With its default <code>split.weight = TRUE</code> it weights
+every term (by lasso, variable importance or tree usage), drops any term
+whose weight is 0, and keeps only the <code>nvar</code> heaviest (30 by
+default).  Every other term is ineligible: no rule is ever built for it, so
+it is untested however strong its effect.  On wide data most terms can be
+cut here.  Fit with <code>split.weight = FALSE</code> to make every term eligible;
+<code>nvar</code> then has no effect.  Custom weights passed as
+<code>split.weight.custom</code> take precedence over that switch: terms they
+weight 0 or leave out, and terms beyond <code>nvar</code>, are still cut, so drop
+the custom weights too.  varPro's hidden
+<code>split.weight.tolerance</code> only floors the weights of the terms that
+survive and does not change which terms are cut.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="gg_varpro.html">gg_varpro</a></code>, <code><a href="varpro_feature_names.html">varpro_feature_names</a></code></p></div>
     </div>
@@ -207,23 +237,23 @@ noise columns; do that before fitting.</p>
 <span class="r-in"><span>  <span class="fu">varpro_coverage</span><span class="op">(</span><span class="va">vp</span>, noise <span class="op">=</span> <span class="st">"^noise"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no noise variable was tested (coverage &gt;= trim), so the noise check is empty: noise_cut is 0 and every tested row is selected.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        term variable eligible n_trees coverage n_rules           z tested noise</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1        wt       wt     TRUE      33     0.66      72 1.675222762   TRUE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2        hp       hp     TRUE      20     0.40      43 0.971905847   TRUE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3       cyl      cyl     TRUE      17     0.34      35 1.030200228   TRUE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4      disp     disp     TRUE       5     0.10       9 0.005885882   TRUE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5      drat     drat     TRUE       0     0.00       0          NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6      qsec     qsec     TRUE       0     0.00       0          NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7        vs       vs     TRUE       0     0.00       0          NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8        am       am    FALSE       0     0.00       0          NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9      gear     gear     TRUE       0     0.00       0          NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10     carb     carb     TRUE       0     0.00       0          NA  FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 noise_wt noise_wt     TRUE       0     0.00       0          NA  FALSE  TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        term variable eligible n_trees coverage n_rules        z tested noise</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1        wt       wt     TRUE      30     0.60      65 1.562741   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        hp       hp     TRUE      22     0.44      52 1.091519   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       cyl      cyl     TRUE      19     0.38      36 1.242906   TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      disp     disp     TRUE       3     0.06       6 0.000000  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      drat     drat     TRUE       0     0.00       0       NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      qsec     qsec     TRUE       0     0.00       0       NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7        vs       vs     TRUE       0     0.00       0       NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8        am       am    FALSE       0     0.00       0       NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9      gear     gear     TRUE       0     0.00       0       NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10     carb     carb     TRUE       0     0.00       0       NA  FALSE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 noise_wt noise_wt     TRUE       0     0.00       0       NA  FALSE  TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           kind noise_cut selected</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   continuous         0     TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2   continuous         0     TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3  categorical         0     TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   continuous         0     TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   continuous         0    FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5   continuous         0    FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6   continuous         0    FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7  categorical         0    FALSE</span>

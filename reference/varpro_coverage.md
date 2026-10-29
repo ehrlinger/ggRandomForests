@@ -16,7 +16,8 @@ varpro_coverage(
   max.rules.tree = object$max.rules.tree,
   noise = NULL,
   kind_values = 5L,
-  seed = NULL
+  seed = NULL,
+  max_untested = NULL
 )
 ```
 
@@ -70,6 +71,17 @@ varpro_coverage(
   [`set.seed()`](https://rdrr.io/r/base/Random.html) call first) the
   table is reproducible.
 
+- max_untested:
+
+  `NULL` (the default: report only), or the largest share of real
+  variables, from 0 to 1, that may be untested. Rows are counted as `by`
+  lists them and noise rows are left out. A row counts as tested only
+  when some term of it (for a factor, some single level) was scored in
+  at least `trim` of the trees and in at least one, so ineligible rows
+  always count as untested. When the share is larger the call stops with
+  an error, so that a screen that tested too little cannot be read as
+  one that found no effect.
+
 ## Value
 
 A data frame of class `c("varpro_coverage", "data.frame")`, one row per
@@ -120,6 +132,23 @@ construction and sets no bar. A kind with no tested noise falls back to
 the largest tested-noise z overall. ggRandomForests does not add the
 noise columns; do that before fitting.
 
+## The first-pass filter
+
+Before it builds any rules,
+[`varPro::varpro()`](https://www.randomforestsrc.org/reference/varpro.html)
+screens the terms with split weights. With its default
+`split.weight = TRUE` it weights every term (by lasso, variable
+importance or tree usage), drops any term whose weight is 0, and keeps
+only the `nvar` heaviest (30 by default). Every other term is
+ineligible: no rule is ever built for it, so it is untested however
+strong its effect. On wide data most terms can be cut here. Fit with
+`split.weight = FALSE` to make every term eligible; `nvar` then has no
+effect. Custom weights passed as `split.weight.custom` take precedence
+over that switch: terms they weight 0 or leave out, and terms beyond
+`nvar`, are still cut, so drop the custom weights too. varPro's hidden
+`split.weight.tolerance` only floors the weights of the terms that
+survive and does not change which terms are cut.
+
 ## See also
 
 [`gg_varpro`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md),
@@ -138,23 +167,23 @@ if (requireNamespace("varPro", quietly = TRUE)) {
   varpro_coverage(vp, noise = "^noise")
 }
 #> Warning: no noise variable was tested (coverage >= trim), so the noise check is empty: noise_cut is 0 and every tested row is selected.
-#>        term variable eligible n_trees coverage n_rules           z tested noise
-#> 1        wt       wt     TRUE      33     0.66      72 1.675222762   TRUE FALSE
-#> 2        hp       hp     TRUE      20     0.40      43 0.971905847   TRUE FALSE
-#> 3       cyl      cyl     TRUE      17     0.34      35 1.030200228   TRUE FALSE
-#> 4      disp     disp     TRUE       5     0.10       9 0.005885882   TRUE FALSE
-#> 5      drat     drat     TRUE       0     0.00       0          NA  FALSE FALSE
-#> 6      qsec     qsec     TRUE       0     0.00       0          NA  FALSE FALSE
-#> 7        vs       vs     TRUE       0     0.00       0          NA  FALSE FALSE
-#> 8        am       am    FALSE       0     0.00       0          NA  FALSE FALSE
-#> 9      gear     gear     TRUE       0     0.00       0          NA  FALSE FALSE
-#> 10     carb     carb     TRUE       0     0.00       0          NA  FALSE FALSE
-#> 11 noise_wt noise_wt     TRUE       0     0.00       0          NA  FALSE  TRUE
+#>        term variable eligible n_trees coverage n_rules        z tested noise
+#> 1        wt       wt     TRUE      30     0.60      65 1.562741   TRUE FALSE
+#> 2        hp       hp     TRUE      22     0.44      52 1.091519   TRUE FALSE
+#> 3       cyl      cyl     TRUE      19     0.38      36 1.242906   TRUE FALSE
+#> 4      disp     disp     TRUE       3     0.06       6 0.000000  FALSE FALSE
+#> 5      drat     drat     TRUE       0     0.00       0       NA  FALSE FALSE
+#> 6      qsec     qsec     TRUE       0     0.00       0       NA  FALSE FALSE
+#> 7        vs       vs     TRUE       0     0.00       0       NA  FALSE FALSE
+#> 8        am       am    FALSE       0     0.00       0       NA  FALSE FALSE
+#> 9      gear     gear     TRUE       0     0.00       0       NA  FALSE FALSE
+#> 10     carb     carb     TRUE       0     0.00       0       NA  FALSE FALSE
+#> 11 noise_wt noise_wt     TRUE       0     0.00       0       NA  FALSE  TRUE
 #>           kind noise_cut selected
 #> 1   continuous         0     TRUE
 #> 2   continuous         0     TRUE
 #> 3  categorical         0     TRUE
-#> 4   continuous         0     TRUE
+#> 4   continuous         0    FALSE
 #> 5   continuous         0    FALSE
 #> 6   continuous         0    FALSE
 #> 7  categorical         0    FALSE
