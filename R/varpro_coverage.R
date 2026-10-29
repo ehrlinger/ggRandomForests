@@ -315,10 +315,13 @@ varpro_coverage <- function(object,
     stop("'max_untested' has no real variables to judge: 'noise' matches every row.",
          call. = FALSE)
   }
-  n_untested <- sum(!out$tested[real])
+  ## A row no tree scored (every ineligible row among them) is untested even
+  ## when trim = 0 makes `tested` TRUE for it.
+  untested <- !out$tested | out$n_trees == 0L
+  n_untested <- sum(untested[real])
   if (n_untested / sum(real) > max_untested) {
     stop(n_untested, " of ", sum(real), " real variables are untested (coverage < trim = ",
-         trim, "), more than max_untested = ", max_untested, " allows. Untested is not ",
+         trim, ", or no tree scored them), more than max_untested = ", max_untested, " allows. Untested is not ",
          "unimportant: refit with split.weight = FALSE so every variable is eligible; see ",
          "the \"first-pass filter\" section of ?varpro_coverage.", call. = FALSE)
   }

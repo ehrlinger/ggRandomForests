@@ -187,6 +187,7 @@ test_that("max_untested stops a screen that tested too little", {
 test_that("max_untested counts real rows only, ineligible ones as untested", {
   out <- data.frame(variable = c("a", "b", "c", "noise_a", "noise_b"),
                     eligible = c(TRUE, TRUE, FALSE, TRUE, TRUE),
+                    n_trees  = c(9L, 1L, 0L, 1L, 0L),
                     tested   = c(TRUE, FALSE, FALSE, FALSE, FALSE),
                     noise    = c(FALSE, FALSE, FALSE, TRUE, TRUE))
   ## 2 of 3 real rows untested; the untested noise rows do not count
@@ -196,6 +197,16 @@ test_that("max_untested counts real rows only, ineligible ones as untested", {
   expect_error(.varpro_coverage_guard(out, 0.7, 0.1), "4 of 5")
   out$noise <- TRUE
   expect_error(.varpro_coverage_guard(out, 1, 0.1), "no real variables")
+})
+
+test_that("max_untested still counts unscored rows as untested when trim = 0", {
+  vp <- .coverage_fits()$guided
+  set.seed(1)
+  cv <- varpro_coverage(vp, trim = 0)
+  expect_true(all(cv$tested))
+  expect_true(any(!cv$eligible))
+  set.seed(1)
+  expect_error(varpro_coverage(vp, trim = 0, max_untested = 0), "no tree scored them")
 })
 
 test_that("coverage and tested agree with gg_varpro() on the same rules", {
