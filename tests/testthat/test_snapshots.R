@@ -280,6 +280,21 @@ local({
       gg <- gg_varpro(vp_class, conditional = TRUE)
       vdiffr::expect_doppelganger("gg-varpro-conditional", plot(gg))
     })
+
+    test_that("snapshot: gg-varpro-noise", {
+      set.seed(20261029L)
+      d <- data.frame(x1 = rnorm(150), x2 = rnorm(150), x3 = rnorm(150),
+                      g = factor(sample(c("a", "b", "c"), 150, TRUE)))
+      d$y <- d$x1 + 0.5 * d$x2 + (d$g == "b") + rnorm(150)
+      d$noise_x1 <- sample(d$x1)
+      d$noise_g <- sample(d$g)
+      set.seed(20261029L)
+      vp_noise <- varPro::varpro(y ~ ., data = d, ntree = 50L,
+                                 split.weight = FALSE, mtry = 2L)
+      set.seed(42L)
+      gg <- gg_varpro(vp_noise, noise = "^noise")
+      vdiffr::expect_doppelganger("gg-varpro-noise", plot(gg))
+    })
   })
 
   ## ---- gg_udependent snapshots ---------------------------------------------

@@ -239,16 +239,15 @@ print.gg_varpro <- function(x, ...) {
   prov     <- attr(x, "provenance")
   cutoff   <- if (!is.null(prov)) prov$cutoff   %||% 0.79 else 0.79
   faithful <- if (!is.null(prov)) prov$faithful  %||% FALSE else FALSE
-  family   <- if (!is.null(prov)) prov$family    %||% NA_character_ else NA_character_
   n_total  <- nrow(x$imp)
   n_sel    <- sum(x$imp$selected, na.rm = TRUE)
   cat(.gg_header(x, "gg_varpro"),
-      sprintf("  |  family: %s", family),
-      sprintf("  |  cutoff: %.2g", cutoff),
+      if (is.null(prov$noise)) sprintf("  |  cutoff: %.2g", cutoff) else
+        sprintf("  |  noise: %s", prov$noise),
       sprintf("  |  faithful: %s", faithful),
       "\n",
-      sprintf("  %d of %d variables selected (z > %.2g)\n",
-              n_sel, n_total, cutoff),
+      sprintf("  %d of %d variables selected (%s)\n", n_sel, n_total,
+              .varpro_sel_rule(prov, cutoff)),
       sep = "")
   invisible(x)
 }

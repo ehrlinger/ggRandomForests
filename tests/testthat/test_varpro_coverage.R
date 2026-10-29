@@ -128,8 +128,12 @@ test_that("a fixed seed reproduces the table", {
 test_that("noise columns set a cutoff by kind", {
   vp <- .coverage_fits()$unguided
   set.seed(1)
-  cv <- varpro_coverage(vp, by = "variable", noise = "^noise")
-  expect_true(all(c("noise", "kind", "noise_cut", "selected") %in% names(cv)))
+  ## mtcars' categorical noise is not tested here, so categorical rows borrow
+  ## the continuous bar, and say so.
+  expect_warning(cv <- varpro_coverage(vp, by = "variable", noise = "^noise"),
+                 "judged against the continuous noise bar")
+  expect_true(all(c("noise", "kind", "noise_cut", "noise_ref", "selected") %in% names(cv)))
+  expect_identical(unique(cv$noise_ref[cv$kind == "categorical"]), "continuous")
   expect_identical(cv$kind[cv$variable == "cyl"], "categorical")
   expect_identical(cv$kind[cv$variable == "disp"], "continuous")
   expect_false(any(cv$selected & cv$noise))

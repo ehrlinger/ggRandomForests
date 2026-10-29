@@ -228,6 +228,12 @@ summary.gg_survival <- function(object, ...) {
   .summary_skel(object, "gg_survival", body)
 }
 
+#' How a gg_varpro selection was made, for print() and summary()
+#' @keywords internal
+.varpro_sel_rule <- function(prov, cutoff) {
+  if (is.null(prov$noise)) sprintf("z > %.2g", cutoff) else "z above tested noise of its kind"
+}
+
 .varpro_body <- function(x) {
   prov   <- attr(x, "provenance")
   cutoff <- if (!is.null(prov)) prov$cutoff %||% 0.79 else 0.79
@@ -235,8 +241,8 @@ summary.gg_survival <- function(object, ...) {
   top_n  <- min(5L, nrow(x$stats))
   top_df <- x$stats[order(-x$stats$median), ][seq_len(top_n), ]
   c(
-    sprintf("variables: %d total, %d selected (z > %.2g)",
-            nrow(x$imp), n_sel, cutoff),
+    sprintf("variables: %d total, %d selected (%s)",
+            nrow(x$imp), n_sel, .varpro_sel_rule(prov, cutoff)),
     sprintf("top %d by median z: %s", top_n,
             paste(sprintf("%s (%.3g)",
                           as.character(top_df$variable),

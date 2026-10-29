@@ -68,8 +68,11 @@ it),
 its default \code{local.std = TRUE}, from the same rules; \code{NA} when never
 returned) and \code{tested} (\code{coverage >= trim}).  With
 \code{noise} set it adds \code{noise} (logical), \code{kind},
-\code{noise_cut} and \code{selected} (a tested real row whose z beats
-\code{noise_cut}).  Attributes \code{by}, \code{trees} (the coverage
+\code{noise_cut}, \code{noise_ref} (the kind of the noise that set
+\code{noise_cut}: the row's own kind, the other kind when its own has
+no tested noise, or \code{NA} when no noise was tested) and
+\code{selected} (a tested real row, scored in at least one tree, whose
+z beats \code{noise_cut}).  Attributes \code{by}, \code{trees} (the coverage
 denominator), \code{trim} and \code{max.rules.tree} record the
 settings.
 }
@@ -108,8 +111,10 @@ permuted copies of real columns (noise by construction), name them with a
 common prefix and pass a pattern as \code{noise}.  Each real row is then
 compared with the largest z among \emph{tested} noise rows of the same kind
 (categorical or continuous); an untested noise row has z = 0 by
-construction and sets no bar.  A kind with no tested noise falls back to
-the largest tested-noise z overall.  ggRandomForests does not add the
+construction and sets no bar.  Here tested also means scored in at least
+one tree, so \code{trim = 0} does not make unscored noise a bar at 0.  A
+kind with no tested noise falls back to the largest tested-noise z
+overall; \code{noise_ref} records it and a warning says so.  ggRandomForests does not add the
 noise columns; do that before fitting.
 }
 

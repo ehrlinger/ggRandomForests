@@ -14,6 +14,8 @@ gg_varpro(
   trim = 0.1,
   max.tree = object$max.tree,
   max.rules.tree = object$max.rules.tree,
+  noise = NULL,
+  kind_values = 5L,
   ...
 )
 }
@@ -33,7 +35,11 @@ reproducible z.}
 
 \item{cutoff}{Numeric; the z-score above which a variable is treated as
 selected.  Default \code{0.79}.  A variable with aggregate z above the
-cutoff is flagged \code{selected = TRUE} in \code{$imp}.}
+cutoff is flagged \code{selected = TRUE} in \code{$imp}.  varPro uses
+0.79 only to highlight its plot; it is not a selection rule that carries
+from one fit to another.  Prefer \code{noise}, or tune the cutoff with
+\code{varPro::cv.varpro()}.  Ignored for selection when \code{noise} is
+set; the conditional plot still draws it.}
 
 \item{faithful}{Logical; default \code{FALSE}.  When \code{TRUE},
 \code{$imp.tree} is kept so \code{plot.gg_varpro} can scatter the
@@ -57,6 +63,23 @@ either one re-samples the rules even with \code{local.std = FALSE}, as
 \code{varPro::importance()} does.  The boxes, z and coverage are always
 computed from the same rules.}
 
+\item{noise}{\code{NULL} (the default), or a regular expression matching
+the names of permuted noise columns in the fit's data (for example
+\code{"^noise"}).  Selection then replaces \code{cutoff}: a variable is
+selected when it is tested (and scored in at least one tree) and its z
+beats the largest z among \emph{tested} noise of the same kind
+(categorical or continuous), as in \code{\link{varpro_coverage}}.  A
+kind with no tested noise borrows the other kind's bar, with a warning,
+and \code{noise_ref} records which.  The plot draws that bar instead of
+the \code{cutoff} line.  The bar is computed from the same rules as the
+boxes and over every variable, before \code{nvar} truncation.  Needs
+\code{local.std = TRUE}.  ggRandomForests does not add noise columns;
+add them before fitting, and fit with \code{split.weight = FALSE} so
+that varPro's first-pass filter does not cut them.}
+
+\item{kind_values}{With \code{noise}, a numeric variable with at most
+this many distinct values counts as categorical.}
+
 \item{...}{Not used.  Earlier versions passed it to
 \code{varPro::importance()}; \code{trim}, \code{max.tree} and
 \code{max.rules.tree} are now arguments, and anything else is an error.}
@@ -72,7 +95,12 @@ z-score, \code{NA} when it is undefined), \code{selected} (logical,
 \code{z > cutoff}), \code{coverage} (share of the scored trees in
 which a release rule for the variable returned an importance value)
 and \code{tested}
-(\code{coverage >= trim}).}
+(\code{coverage >= trim}).  With \code{noise} set it adds
+\code{noise} (logical), \code{kind}, \code{noise_cut} and
+\code{noise_ref} (the kind of the noise that set \code{noise_cut},
+\code{NA} when no noise was tested), and \code{selected} is a tested
+non-noise variable, scored in at least one tree, whose z beats
+\code{noise_cut}.}
 \item{\code{$imp.tree}}{\code{NULL} when \code{faithful = FALSE};
 otherwise an ntree x p matrix of per-tree importance values.}
 \item{\code{$stats}}{Per-variable summary: \code{variable},
@@ -88,7 +116,8 @@ which varPro recodes to 0/1 internally.}
 }
 A \code{"provenance"} attribute carries \code{family}, \code{local.std},
 \code{cutoff}, \code{faithful}, \code{conditional}, \code{xvar.names},
-\code{n}, \code{trim}, \code{max.tree} and \code{max.rules.tree}.
+\code{n}, \code{trim}, \code{max.tree} and \code{max.rules.tree}, and
+\code{noise} when it was set.
 }
 \description{
 Pulls the per-tree importance scores out of a fitted \code{varpro} object

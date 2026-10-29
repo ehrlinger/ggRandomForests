@@ -13,7 +13,8 @@
   faithful,
   conditional,
   coverage = NULL,
-  trim = 0.1
+  trim = 0.1,
+  annotate = NULL
 )
 }
 \description{
