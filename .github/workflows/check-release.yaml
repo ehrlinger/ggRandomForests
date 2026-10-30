@@ -142,8 +142,11 @@ jobs:
           print(res)
           # url_check() allows each host 5 seconds, and r-project.org can take
           # 15 (run 41039560804). A timeout says the host was slow, not that the
-          # link is dead, so it warns here; anything else still fails the job.
-          timed_out <- grepl("Timeout was reached", res$Message, fixed = TRUE)
+          # link is dead, so it warns here; anything else still fails the job,
+          # including a defect in the other columns of a row that timed out.
+          timed_out <- grepl("Timeout was reached", res$Message, fixed = TRUE) &
+            !nzchar(res$New) & !nzchar(res$CRAN) &
+            !nzchar(res$Spaces) & !nzchar(res$R)
           for (url in unique(res$URL[timed_out])) {
             cat("::warning::URL timed out, not verified:", url, "\n")
           }
