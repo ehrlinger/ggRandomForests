@@ -171,22 +171,22 @@ if (requireNamespace("varPro", quietly = TRUE)) {
   varpro_coverage(vp, noise = "^noise")
 }
 #> Warning: no noise variable was tested (scored in at least trim of the trees, and in at least one), so the noise check is empty: noise_cut is 0 and every tested row is selected.
-#>        term variable eligible n_trees coverage n_rules         z tested noise
-#> 1        wt       wt     TRUE      31     0.62      67 1.6556518   TRUE FALSE
-#> 2       cyl      cyl     TRUE      20     0.40      37 1.3485590   TRUE FALSE
-#> 3        hp       hp     TRUE      19     0.38      47 0.9587131   TRUE FALSE
-#> 4      disp     disp     TRUE       2     0.04       4 0.0000000  FALSE FALSE
-#> 5      drat     drat     TRUE       0     0.00       0        NA  FALSE FALSE
-#> 6      qsec     qsec     TRUE       0     0.00       0        NA  FALSE FALSE
-#> 7        vs       vs     TRUE       0     0.00       0        NA  FALSE FALSE
-#> 8        am       am    FALSE       0     0.00       0        NA  FALSE FALSE
-#> 9      gear     gear     TRUE       0     0.00       0        NA  FALSE FALSE
-#> 10     carb     carb     TRUE       0     0.00       0        NA  FALSE FALSE
-#> 11 noise_wt noise_wt     TRUE       0     0.00       0        NA  FALSE  TRUE
+#>        term variable eligible n_trees coverage n_rules        z tested noise
+#> 1        wt       wt     TRUE      31     0.62      68 1.660899   TRUE FALSE
+#> 2        hp       hp     TRUE      21     0.42      51 1.069400   TRUE FALSE
+#> 3       cyl      cyl     TRUE      18     0.36      34 1.106255   TRUE FALSE
+#> 4      disp     disp     TRUE       3     0.06       6 0.000000  FALSE FALSE
+#> 5      drat     drat     TRUE       0     0.00       0       NA  FALSE FALSE
+#> 6      qsec     qsec     TRUE       0     0.00       0       NA  FALSE FALSE
+#> 7        vs       vs     TRUE       0     0.00       0 0.000000  FALSE FALSE
+#> 8        am       am    FALSE       0     0.00       0       NA  FALSE FALSE
+#> 9      gear     gear     TRUE       0     0.00       0       NA  FALSE FALSE
+#> 10     carb     carb     TRUE       0     0.00       0       NA  FALSE FALSE
+#> 11 noise_wt noise_wt     TRUE       0     0.00       0       NA  FALSE  TRUE
 #>           kind noise_cut noise_ref selected
 #> 1   continuous         0      <NA>     TRUE
-#> 2  categorical         0      <NA>     TRUE
-#> 3   continuous         0      <NA>     TRUE
+#> 2   continuous         0      <NA>     TRUE
+#> 3  categorical         0      <NA>     TRUE
 #> 4   continuous         0      <NA>    FALSE
 #> 5   continuous         0      <NA>    FALSE
 #> 6   continuous         0      <NA>    FALSE
