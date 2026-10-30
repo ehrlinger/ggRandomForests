@@ -78,12 +78,21 @@ jobs:
       # bundled tlmgr, install refuses with "tlmgr itself needs to be updated"
       # (run 40987215523, every leg). On Windows that refusal still left the
       # step green, so the step checks for the files themselves rather than
-      # trusting tlmgr's exit status.
-      - name: Install LaTeX packages the manual needs
+      # trusting tlmgr's exit status. The self-update is its own step: on
+      # Windows it finishes after tlmgr exits, and an install run straight
+      # after it in the same step hung extracting courier (run 41012640623).
+      # The timeouts turn any hang into a failure in minutes, not six hours.
+      - name: Update tlmgr
         shell: pwsh
+        timeout-minutes: 5
         run: |
           tlmgr update --self
           if ($LASTEXITCODE -ne 0) { throw "tlmgr update --self failed ($LASTEXITCODE)" }
+
+      - name: Install LaTeX packages the manual needs
+        shell: pwsh
+        timeout-minutes: 10
+        run: |
           tlmgr install courier makeindex
           if ($LASTEXITCODE -ne 0) { throw "tlmgr install failed ($LASTEXITCODE)" }
           if (-not (kpsewhich pcrr8t.tfm)) { throw "Courier metrics (pcrr8t.tfm) not found after install" }
