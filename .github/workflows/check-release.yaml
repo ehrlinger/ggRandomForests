@@ -68,35 +68,24 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      # TinyTeX-1, the default bundle, lacks the Courier metrics (pcrr8t) the
+      # manual needs under times/inconsolata; without them the PDF manual fails
+      # with "\textfont 0 is undefined" on Windows and R-devel (run
+      # 38269008793). makeindex is missing too. The TinyTeX bundle carries both,
+      # so no leg needs tlmgr: installing them with tlmgr broke twice, first on
+      # "tlmgr itself needs to be updated" (run 40987215523, every leg), then
+      # with Windows hanging while extracting courier (run 41015118970).
       - uses: r-lib/actions/setup-tinytex@v2
+        env:
+          TINYTEX_INSTALLER: TinyTeX
 
-      # TinyTeX's minimal scheme lacks the Courier metrics (pcrr8t) the manual
-      # needs under times/inconsolata; without them the PDF manual fails with
-      # "\textfont 0 is undefined" on Windows and R-devel (run 38269008793).
-      # makeindex is missing too. Same step as TemporalHazard's check-release.
-      # tlmgr updates itself first: once the TinyTeX repository moves past the
-      # bundled tlmgr, install refuses with "tlmgr itself needs to be updated"
-      # (run 40987215523, every leg). On Windows that refusal still left the
-      # step green, so the step checks for the files themselves rather than
-      # trusting tlmgr's exit status. The self-update is its own step: on
-      # Windows it finishes after tlmgr exits, and an install run straight
-      # after it in the same step hung extracting courier (run 41012640623).
-      # The timeouts turn any hang into a failure in minutes, not six hours.
-      - name: Update tlmgr
+      # A missing file used to surface only as a manual failure much later, and
+      # on Windows a failed tlmgr left its step green, so check the files here.
+      - name: Check the LaTeX files the manual needs
         shell: pwsh
-        timeout-minutes: 5
         run: |
-          tlmgr update --self
-          if ($LASTEXITCODE -ne 0) { throw "tlmgr update --self failed ($LASTEXITCODE)" }
-
-      - name: Install LaTeX packages the manual needs
-        shell: pwsh
-        timeout-minutes: 10
-        run: |
-          tlmgr install courier makeindex
-          if ($LASTEXITCODE -ne 0) { throw "tlmgr install failed ($LASTEXITCODE)" }
-          if (-not (kpsewhich pcrr8t.tfm)) { throw "Courier metrics (pcrr8t.tfm) not found after install" }
-          if (-not (Get-Command makeindex -ErrorAction SilentlyContinue)) { throw "makeindex not found after install" }
+          if (-not (kpsewhich pcrr8t.tfm)) { throw "Courier metrics (pcrr8t.tfm) not found" }
+          if (-not (Get-Command makeindex -ErrorAction SilentlyContinue)) { throw "makeindex not found" }
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
