@@ -74,8 +74,13 @@ jobs:
       # needs under times/inconsolata; without them the PDF manual fails with
       # "\textfont 0 is undefined" on Windows and R-devel (run 38269008793).
       # makeindex is missing too. Same step as TemporalHazard's check-release.
+      # tlmgr updates itself first: once the TinyTeX repository moves past the
+      # bundled tlmgr, install refuses with "tlmgr itself needs to be updated"
+      # (run 40987215523, every leg).
       - name: Install LaTeX packages the manual needs
-        run: tlmgr install courier makeindex
+        run: |
+          tlmgr update --self
+          tlmgr install courier makeindex
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
