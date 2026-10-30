@@ -900,6 +900,96 @@
   whose labels overlap, or whose factors order the same labels
   differently, each keep their own order.
 
+- [`plot.gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md)
+  gives each case its own colour and legend key only while there are at
+  most 10 cases. With more, which includes the default of every case on
+  a real cohort, the curves are drawn as one translucent bundle with no
+  legend. Before this change a 2,386-patient fit drew a legend that
+  filled the page with record ids.
+
+- [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
+  and
+  [`gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf_importance.md)
+  called on the `auct.rhf` or `importance.rhf` result, rather than on
+  the forest, now say to pass that result as `auct_fit =` or
+  `importance_fit =`. They used to fail with “no applicable method”.
+
+- The survival vignette has a new section, “How far can these curves be
+  trusted?”, on reading partial dependence when events are sparse: thin
+  tails, flattening at the ends of a predictor’s range, how `nodesize`
+  affects tree growth, and what a forest grown on a single predictor
+  returns.
+
+- The “varPro on small or sparse data” vignette has a new section, “What
+  if the events are rare?”. A simulation with known signal, at 60 and
+  150 events, shows that offering every variable
+  (`split.weight = FALSE`) needs a smaller `mtry` before binary
+  predictors get tested, that more trees and rules pay off only when
+  there are events to use, that a real rare effect can score near zero
+  at 60 events while counting as tested, and that a noise variable
+  correlated with a signal scores like one. It ends with the settings we
+  start from on sparse survival data. The summaries are precomputed by
+  `vignettes/precompute_varpro_rare.R`.
+
+- [`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
+  gains `max_untested`. Set it, and the call stops with an error when
+  more than that share of the real variables went untested, so a screen
+  that tested too little cannot pass for one that found no effect. For
+  the `max_untested` guard, a factor counts as tested only when a single
+  level was, not when its levels together reach `trim`; the returned
+  `tested` column for `by = "variable"` still pools the levels, so the
+  two can disagree. The default, `NULL`, only reports, as before. A new
+  help section, “The first-pass filter”, explains how `varpro()`’s
+  default `split.weight = TRUE` and `nvar = 30` cut variables before any
+  rule is built, and that `split.weight = FALSE`, without
+  `split.weight.custom`, keeps every variable eligible.
+
+- The varPro vignette no longer calls `nvar` a red herring. On a guided
+  fit (`split.weight = TRUE`, the default) varPro keeps only the `nvar`
+  heaviest encoded columns, 30 by default, and builds no rule for the
+  rest, so `nvar` caps which predictors compete, not just how many are
+  reported. A factor with more than two levels takes one column per
+  level, so it can fill several of those places. The vignette also says
+  that `sparse` does nothing once `split.weight = FALSE` when no custom
+  weights are given, that `split.weight.custom` weights override that
+  switch (and `sparse` then reshapes them), that unguided fits try every
+  predictor at every split unless `mtry` is set, and that an eligible
+  predictor is not necessarily a tested one
+  ([`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
+  tells them apart).
+
+- [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  gains `noise` and `kind_values`. Name the permuted noise columns you
+  added before fitting (for example `noise = "^noise"`), and a variable
+  is selected when it is tested and its z beats the best tested noise of
+  its own kind, categorical or continuous, the rule
+  [`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
+  uses. The bar comes from the same rules as the boxes and is judged
+  before `nvar` truncation.
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) then draws
+  the noise bar in place of the 0.79 line: one line when there is a
+  single bar, a dashed tick on each row when the two kinds differ. Noise
+  boxes are orange. [`print()`](https://rdrr.io/r/base/print.html) and
+  [`summary()`](https://rdrr.io/r/base/summary.html) say how the
+  selection was made. Without `noise`, nothing changes. The `cutoff`
+  help now says that varPro uses 0.79 only to highlight its plot.
+
+- [`varpro_coverage()`](https://ehrlinger.github.io/ggRandomForests/reference/varpro_coverage.md)
+  and
+  [`gg_varpro()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_varpro.md)
+  judge noise only on rows scored in at least one tree, so `trim = 0` no
+  longer turns unscored noise into a bar at 0 or selects an unscored
+  variable. When one kind has no tested noise and borrows the other
+  kind’s bar, both now warn, a new `noise_ref` column records which kind
+  set each bar, and the plot caption says “from continuous noise”. When
+  no noise at all is tested, both warn and fall back to a bar at 0, with
+  `noise_ref` set to `NA`, so a variable selected then has beaten no
+  observed noise, only zero.
+
+- [`print()`](https://rdrr.io/r/base/print.html) on a `gg_varpro` object
+  names the forest family once. The header already carries it, and the
+  method printed it a second time.
+
 ## ggRandomForests v3.5.2
 
 CRAN release: 2026-08-21
