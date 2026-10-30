@@ -76,11 +76,18 @@ jobs:
       # makeindex is missing too. Same step as TemporalHazard's check-release.
       # tlmgr updates itself first: once the TinyTeX repository moves past the
       # bundled tlmgr, install refuses with "tlmgr itself needs to be updated"
-      # (run 40987215523, every leg).
+      # (run 40987215523, every leg). On Windows that refusal still left the
+      # step green, so the step checks for the files themselves rather than
+      # trusting tlmgr's exit status.
       - name: Install LaTeX packages the manual needs
+        shell: pwsh
         run: |
           tlmgr update --self
+          if ($LASTEXITCODE -ne 0) { throw "tlmgr update --self failed ($LASTEXITCODE)" }
           tlmgr install courier makeindex
+          if ($LASTEXITCODE -ne 0) { throw "tlmgr install failed ($LASTEXITCODE)" }
+          if (-not (kpsewhich pcrr8t.tfm)) { throw "Courier metrics (pcrr8t.tfm) not found after install" }
+          if (-not (Get-Command makeindex -ErrorAction SilentlyContinue)) { throw "makeindex not found after install" }
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
