@@ -138,6 +138,16 @@ jobs:
           vb <- read.dcf("DESCRIPTION", fields = "VignetteBuilder")[1, 1]
           vb <- if (is.na(vb)) character() else trimws(strsplit(vb, ",")[[1]])
           install.packages(c("urlchecker", vb))
-          res <- urlchecker::url_check()
+          res <- urlchecker::url_check(fail = FALSE)
           print(res)
-          if (NROW(res) > 0) stop(NROW(res), " URL problem(s); see above.")
+          # url_check() allows each host 5 seconds, and r-project.org can take
+          # 15 (run 41039560804). A timeout says the host was slow, not that the
+          # link is dead, so it warns here; anything else still fails the job,
+          # including a defect in the other columns of a row that timed out.
+          timed_out <- grepl("Timeout was reached", res$Message, fixed = TRUE) &
+            !nzchar(res$New) & !nzchar(res$CRAN) &
+            !nzchar(res$Spaces) & !nzchar(res$R)
+          for (url in unique(res$URL[timed_out])) {
+            cat("::warning::URL timed out, not verified:", url, "\n")
+          }
+          if (!all(timed_out)) stop(sum(!timed_out), " URL problem(s); see above.")
