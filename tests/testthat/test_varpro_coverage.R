@@ -128,16 +128,29 @@ test_that("a fixed seed reproduces the table", {
 test_that("noise columns set a cutoff by kind", {
   vp <- .coverage_fits()$unguided
   set.seed(1)
-  ## mtcars' categorical noise is not tested here, so categorical rows borrow
-  ## the continuous bar, and say so.
-  expect_warning(cv <- varpro_coverage(vp, by = "variable", noise = "^noise"),
-                 "judged against the continuous noise bar")
+  ## Which noise this draw tests moves with randomForestSRC, and the warning
+  ## moves with it; the borrowed bar is pinned on a constructed table below.
+  cv <- suppressWarnings(varpro_coverage(vp, by = "variable", noise = "^noise"))
   expect_true(all(c("noise", "kind", "noise_cut", "noise_ref", "selected") %in% names(cv)))
-  expect_identical(unique(cv$noise_ref[cv$kind == "categorical"]), "continuous")
   expect_identical(cv$kind[cv$variable == "cyl"], "categorical")
   expect_identical(cv$kind[cv$variable == "disp"], "continuous")
   expect_false(any(cv$selected & cv$noise))
   expect_true(all(!cv$selected[!cv$tested]))
+})
+
+test_that("untested categorical noise borrows the continuous bar, and says so", {
+  out <- data.frame(
+    variable = c("a", "b", "noise_a", "noise_b"),
+    z        = c(0.9, 0.2, 0.15, 0),
+    tested   = c(TRUE, TRUE, TRUE, TRUE),
+    coverage = c(1, 1, 1, 0))
+  object <- list(x = data.frame(a = 1:10, b = rep(1:2, 5), noise_a = 1:10, noise_b = rep(1:2, 5)))
+  expect_warning(cv <- .varpro_noise_judge(out, out$variable, object, "^noise", kind_values = 5L),
+                 "judged against the continuous noise bar")
+  expect_identical(cv$kind, c("continuous", "categorical", "continuous", "categorical"))
+  expect_identical(cv$noise_ref, rep("continuous", 4))
+  expect_identical(cv$noise_cut, rep(0.15, 4))
+  expect_identical(cv$selected, c(TRUE, TRUE, FALSE, FALSE))
 })
 
 test_that("the noise cutoff ignores untested noise and falls back across kinds", {
