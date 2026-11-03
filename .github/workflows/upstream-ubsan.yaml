@@ -1,7 +1,10 @@
 # Release-only sanitizer probe for native code in upstream forest engines.
-# This is intentionally manual: randomForestSRC has a known UBSAN defect in
-# unsupervised growth, so the workflow first confirms that calibration signal
-# and then requires the supported ggRandomForests paths to remain clean.
+# This is intentionally manual. randomForestSRC up to 3.9.0 has a known UBSAN
+# defect in unsupervised growth (kogalur/randomForestSRC#477), fixed in 3.10.0.
+# The workflow first confirms that calibration signal on 3.9.0, installed in a
+# library of its own, then requires the known probe and the supported
+# ggRandomForests paths to be clean on the CRAN release. Run 41707820974 was
+# the first to show 3.9.0 firing and 3.10.0 clean in the same container.
 #
 # Every install here pins repos= to CRAN. The gcc16 container defaults to an
 # r-hub binary repo whose PACKAGES index resolves but whose tarballs 404
@@ -125,11 +128,19 @@ jobs:
           Rscript -e 'install.packages("remotes", repos = "https://cloud.r-project.org", type = "source")'
           Rscript -e 'remotes::install_deps(dependencies = c("Depends", "Imports", "LinkingTo"), upgrade = "never", repos = "https://cloud.r-project.org")'
           Rscript -e 'install.packages(c("randomForestSRC", "randomForestRHF", "varPro"), repos = "https://cloud.r-project.org", type = "source")'
+          Rscript -e 'cat("randomForestSRC under test:", format(packageVersion("randomForestSRC")), "\\n")'
+          # The calibration control: 3.9.0, the last release with the #477
+          # defect, in a separate library so it never shadows the CRAN release.
+          mkdir -p "$GITHUB_WORKSPACE/.ubsan-control"
+          curl -fsSL -o /tmp/rfsrc-390.tar.gz https://cran.r-project.org/src/contrib/Archive/randomForestSRC/randomForestSRC_3.9.0.tar.gz
+          R CMD INSTALL -l "$GITHUB_WORKSPACE/.ubsan-control" /tmp/rfsrc-390.tar.gz
           R CMD INSTALL .
 
-      - name: Confirm the known randomForestSRC sanitizer signal
+      - name: Confirm the known randomForestSRC sanitizer signal on 3.9.0
         shell: bash
         run: |
+          export R_LIBS="$GITHUB_WORKSPACE/.ubsan-control"
+          Rscript -e 'cat("randomForestSRC under test:", format(packageVersion("randomForestSRC")), "\\n")'
           set +e
           Rscript tools/check-upstream-ubsan.R --known-rfsrc 2>&1 | tee known-rfsrc-ubsan.log
           probe_status=${PIPESTATUS[0]}
@@ -139,6 +150,28 @@ jobs:
             exit 1
           fi
           Rscript tools/check-upstream-ubsan.R --check-known known-rfsrc-ubsan.log
+
+      - name: Known probe must be clean on the CRAN randomForestSRC
+        shell: bash
+        run: |
+          # Clean means the probe exited 0 AND printed no diagnostic. The
+          # diagnostic check alone passes an R error before the native call.
+          gate() {
+            local log="$1"; shift
+            set +e
+            "$@" 2>&1 | tee "$log"
+            local status=${PIPESTATUS[0]}
+            set -e
+            [[ "$status" -eq 0 ]] || return 1
+            Rscript tools/check-upstream-ubsan.R --check-clean "$log"
+          }
+          # Self-test: the gate must reject a probe that fails before any
+          # native code runs.
+          if gate early-error-ubsan.log Rscript -e 'stop("early failure")'; then
+            echo "::error::The clean-probe gate accepted an early non-UBSAN error."
+            exit 1
+          fi
+          gate known-cran-ubsan.log Rscript tools/check-upstream-ubsan.R --clean-rfsrc
 
       - name: Run supported rfsrc, varpro, and RHF workflows
         shell: bash

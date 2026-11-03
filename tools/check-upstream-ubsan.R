@@ -47,6 +47,19 @@ run_known_rfsrc_probe <- function() {
        call. = FALSE)
 }
 
+## The same grow as run_known_rfsrc_probe(), for a release that has fixed
+## #477. It returns normally, so the caller can require exit status 0: a
+## missing diagnostic alone would also pass an R error before the native call.
+run_clean_rfsrc_probe <- function() {
+  randomForestSRC::rfsrc(
+    Unsupervised() ~ .,
+    data = mtcars,
+    ntree = 1L
+  )
+  cat("The randomForestSRC #477 probe returned from native code.\n")
+  invisible()
+}
+
 run_supported_workflows <- function() {
   set.seed(20260826L)
   rfsrc_fit <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 20L)
@@ -154,6 +167,8 @@ if (!identical(Sys.getenv("GGRF_UBSAN_SOURCE_ONLY"), "true")) {
   args <- commandArgs(trailingOnly = TRUE)
   if (identical(args, "--known-rfsrc")) {
     run_known_rfsrc_probe()
+  } else if (identical(args, "--clean-rfsrc")) {
+    run_clean_rfsrc_probe()
   } else if (length(args) == 2L && identical(args[[1L]], "--check-clean")) {
     assert_ubsan_clean(args[[2L]])
   } else if (length(args) == 2L && identical(args[[1L]], "--check-known")) {
