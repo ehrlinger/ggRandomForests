@@ -682,6 +682,18 @@ ggRandomForests v4.0.0 (development)
 * `print()` on a `gg_varpro` object names the forest family once. The header
   already carries it, and the method printed it a second time.
 
+* Two noise-bar tests no longer depend on which variables a seeded forest
+  happens to score. `randomForestSRC` 3.10.0 grows a different forest from the
+  same seed, which failed them on every platform.
+
+* The source tarball no longer carries `tests/testthat/_problems/` or
+  `tests/testthat/testthat-problems.rds`, leftovers from a failed local test run
+  that had been committed by accident. Both are now ignored by git and by the
+  package build.
+
+* The vignettes restore the `mc.cores` and `rf.cores` options they set to keep
+  their fits to one core, as CRAN asks of vignettes that change options.
+
 ggRandomForests v3.5.2
 ======================
 * Three help pages no longer render a stray backslash where a percent sign
