@@ -22,8 +22,9 @@ patch release.
   `gg_rhf_importance()` and `gg_tune_rhf()`, each with `plot()`, `autoplot()`,
   `print()` and `summary()` methods, plus a vignette. 'randomForestRHF'
   (>= 2.0.3) is in Suggests. The examples are guarded with
-  `requireNamespace()`, and the functions stop with an install message if it
-  is missing.
+  `requireNamespace()`. `gg_auct()` and `gg_rhf_importance()`, the two that
+  call into it when no precomputed fit is supplied, stop with an install
+  message if it is missing; the others only read the object they are given.
 * `gg_ale_rfsrc()` computes accumulated local effects (Apley and Zhu, 2020)
   for regression and classification forests, as a counterpart to
   `gg_partial_rfsrc()` that does not extrapolate when predictors are
@@ -78,10 +79,10 @@ so the vignette rebuild grows no hazard forest.
 * **Local:** macOS (aarch64-apple-darwin), R 4.6.1, `randomForestSRC` 3.10.0,
   `R CMD check --as-cran --run-donttest` with the manual, built from a clean
   `git archive` export: **0 ERRORs, 0 WARNINGs, 1 NOTE** (CRAN incoming
-  feasibility: 10 updates in the past 6 months). Run 2026-11-03. Timed steps:
-  examples with `--run-donttest` 34s, tests 29s, vignette rebuild 62s. The full test suite, run with
-  `NOT_CRAN=true` so the `skip_on_cran()` tests run too: 2589 passing,
-  0 failing.
+  feasibility: 10 updates in the past 6 months). Run 2026-11-03 on the
+  submitted tarball. Timed steps: examples with `--run-donttest` 43s, tests
+  30s, vignette rebuild 78s. The full test suite, run with `NOT_CRAN=true` so
+  the `skip_on_cran()` tests run too: 2700 passing, 0 failing.
 * **GitHub Actions:** `R CMD check --as-cran` on Linux, macOS and Windows
   (release and devel), plus `urlchecker::url_check()`: all pass, with the
   incoming-feasibility NOTE.
@@ -94,22 +95,22 @@ incoming-feasibility NOTE set out below, with no ERRORs or WARNINGs.
 
 | Step | R-devel (r90827) | R-release (4.6.2) | R-oldrelease (4.5.3) |
 |---|---|---|---|
-| CRAN incoming feasibility | 89s | 39s | 81s |
-| R code for possible problems | 27s | 24s | 28s |
-| examples | 37s | 36s | 42s |
-| tests | 65s | 65s | 75s |
-| re-building vignette outputs | 150s | 147s | 172s |
-| PDF version of manual | 15s | 15s | 14s |
-| HTML version of manual | | 22s | 16s |
-| **timed steps** | **383s** | **348s** | **428s** |
+| CRAN incoming feasibility | 37s | 56s | 64s |
+| R code for possible problems | 26s | 23s | 28s |
+| examples | 37s | 37s | 41s |
+| tests | 70s | 71s | 81s |
+| re-building vignette outputs | 150s | 156s | 170s |
+| PDF version of manual | 16s | 16s | 14s |
+| HTML version of manual | | 22s | 19s |
+| **timed steps** | **336s** | **381s** | **417s** |
 
 `00check.log` does not report an overall time, so these are sums of the timed
 steps; a blank cell is a step `00check.log` did not time on that branch. For
-comparison, 3.5.5's runs were 349s, 346s and 276s. Most of the difference is
-the incoming-feasibility step, which waits on CRAN's servers: 81s to 89s here
-against 14s for 3.5.5. Without it, R-devel is 294s against 335s for 3.5.5.
-R-oldrelease is the one that grew in its own right, by about 85s across the
-vignette rebuild (172s against 132s), tests and examples.
+comparison, 3.5.5's runs were 349s, 346s and 276s. The incoming-feasibility
+step waits on CRAN's servers and varies from run to run (37s to 64s here
+against 14s for 3.5.5). Without it, R-devel is 299s against 335s for 3.5.5.
+R-oldrelease is the one that grew in its own right, by about 80s across the
+vignette rebuild (170s against 132s), tests and examples.
 
 ### NOTE disposition
 
