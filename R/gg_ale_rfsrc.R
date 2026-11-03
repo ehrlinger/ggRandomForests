@@ -23,10 +23,10 @@
 #'
 #' For a categorical predictor, the model's own factor level order is used
 #' as the "grid": the local effect for the step from level \eqn{k} to level
-#' \eqn{k+1} is estimated only from observations actually at level
-#' \eqn{k+1}, comparing their prediction at that level against the
-#' counterfactual of level \eqn{k}. Relevel the predictor before fitting the
-#' forest to control this ordering.
+#' \eqn{k+1} is averaged over the observations at both levels, each predicted
+#' at level \eqn{k+1} and at level \eqn{k}, so an observation at an interior
+#' level serves two steps. Relevel the predictor before fitting the forest to
+#' control this ordering.
 #'
 #' Supplying \code{xvar2.name} switches to second-order (interaction) ALE
 #' between \code{xvar.names} and \code{xvar2.name}, isolating the part of

@@ -4,7 +4,7 @@ Title: Visually Exploring Random Forests
 Version: 4.0.0
 Date: 2026-11-02
 Authors@R: person("John", "Ehrlinger",
-  role = c("aut", "cre"),
+  role = c("aut", "cre", "cph"),
   email = "john.ehrlinger@gmail.com",
   comment = c(ORCID = "0000-0002-5340-5154"))
 License: MIT + file LICENSE
