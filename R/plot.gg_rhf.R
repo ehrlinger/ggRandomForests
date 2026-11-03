@@ -10,9 +10,11 @@
 #' follow-up, and a case whose hazard is masked throughout is left out of the
 #' legend rather than shown as an empty one. From 2.0.3 the cumulative hazard
 #' is masked too, though on a different rule: it is `NA` after each case's
-#' final stop, and stays flat through an internal gap. So `hazard.only = FALSE`
-#' also ends each curve with that case's follow-up, but it keeps the grid
-#' points a gap would have cost the hazard panel.
+#' final stop. It is documented upstream as flat through an internal gap, but
+#' \pkg{randomForestRHF} 2.1.0 returns `NA` from a case's first gap onward, so
+#' on 2.1.0 the `hazard.only = FALSE` curve of such a case ends where the gap
+#' begins. Either curve breaks at a masked run instead of being joined across
+#' it, so a gap shows as a gap.
 #'
 #' Each case gets its own colour and legend key only while there are at most
 #' 10 of them. Beyond that the colours stop being distinguishable and the
@@ -70,16 +72,27 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
   # identical either way, it simply ends with the case's follow-up. Filtering
   # before factor() also keeps a case whose hazard is entirely masked out of
   # the legend instead of leaving it there as an empty level. Since 2.0.3 chf
-  # is masked as well (NA after each case's final stop, flat through internal
-  # gaps), so this filter applies to both columns; it is not a no-op when
-  # hazard.only = FALSE, and it drops fewer rows there on a fit with gaps.
+  # is masked as well (NA after each case's final stop, and on 2.1.0 from a
+  # case's first internal gap onward, although upstream documents chf as flat
+  # through gaps), so this
+  # filter applies to both columns; it is not a no-op when hazard.only = FALSE.
+  #
+  # Dropping the cells must not join a case's curve across an internal gap,
+  # or geom_line() draws a straight line over time the case was not observed.
+  # So each run of finite values between masked cells becomes its own line
+  # group: the segment counter is the number of masked cells seen so far in
+  # that case, in time order.
+  dta <- dta[order(dta$id, dta$time), , drop = FALSE]
   dropped <- !is.finite(dta[[yvar]])
   if (all(dropped)) {
     warning("no finite ", yvar, " values remain for the requested idx.",
             call. = FALSE)
   }
+  dta$segment <- paste(dta$id, stats::ave(as.integer(dropped), dta$id,
+                                          FUN = cumsum))
   dta <- dta[!dropped, , drop = FALSE]
   dta$id <- factor(dta$id)
+  dta$segment <- factor(dta$segment, levels = unique(dta$segment))
 
   # A colour per case only reads while the cases are few; past that the hue
   # palette blurs and the legend becomes a list of every id (2,386 keys on a
@@ -91,7 +104,7 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
         x      = .data[["time"]],
         y      = .data[[yvar]],
         colour = .data[["id"]],
-        group  = .data[["id"]]
+        group  = .data[["segment"]]
       )
     ) +
       ggplot2::geom_line() +
@@ -102,7 +115,7 @@ plot.gg_rhf <- function(x, idx = NULL, hazard.only = TRUE, ...) {
       ggplot2::aes(
         x     = .data[["time"]],
         y     = .data[[yvar]],
-        group = .data[["id"]]
+        group = .data[["segment"]]
       )
     ) +
       ggplot2::geom_line(colour = "grey20", alpha = 0.2)
