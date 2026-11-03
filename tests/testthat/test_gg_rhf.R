@@ -29,7 +29,8 @@ test_that("gg_rhf carries both rhf NA masks through unchanged", {
   # point falls inside one of the case's supplied (start, stop] intervals, and
   # returns NA in gaps and after the final stop. From 2.0.3 chf is masked too,
   # but on its own rule: NA after each case's final stop, and documented as
-  # flat through internal gaps (2.1.0 returns NA there; see test_gg_rhf_tvc.R).
+  # flat through internal gaps (2.1.0 returns NA from the first gap onward;
+  # see test_gg_rhf_tvc.R).
   # The two masks coincide on this fixture, whose cases each carry a
   # single interval, and need not on a fit with real time-dependent
   # covariates. So assert each against its own source matrix rather than

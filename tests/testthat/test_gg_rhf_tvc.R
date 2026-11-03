@@ -55,12 +55,16 @@ test_that("gg_rhf keeps a multi-row case's chf flat across gaps", {
     g <- g[order(g$time), ]
     p <- .tvc_path(d, i, g$time)
     # ?rhf documents the cumulative hazard as flat through a gap, but
-    # randomForestRHF 2.1.0 returns NA there, as it does for the hazard. Accept
-    # either rule; what may not happen is a chf that moves inside a gap, or
-    # one that falls from one side of the gap to the other.
+    # randomForestRHF 2.1.0 returns NA from a case's first gap to the end of its
+    # follow-up. ggRF passes chf through, so accept either rule. Flat means
+    # carried forward: finite values in a gap must all equal the last value
+    # before it, so a chf that jumps on entering the gap
+    # fails here, and one that falls across the gap fails the diff() below.
     in_gap <- g$chf[p$gap]
-    expect_true(all(is.na(in_gap)) || length(unique(in_gap)) == 1L,
-                info = paste("id", i))
+    if (!all(is.na(in_gap))) {
+      before <- g$chf[which(p$gap)[1] - 1L]
+      expect_true(all(abs(in_gap - before) < 1e-12), info = paste("id", i))
+    }
     expect_true(all(is.na(g$chf[p$after])), info = paste("id", i))
     chf <- g$chf[!is.na(g$chf)]
     expect_true(all(diff(chf) >= -1e-12), info = paste("id", i))
@@ -74,6 +78,31 @@ test_that("plot.gg_rhf draws a multi-row case", {
   expect_s3_class(plot(gg, idx = attr(d, "gap_ids")[1:3]), "ggplot")
   expect_s3_class(plot(gg, idx = attr(d, "gap_ids")[1], hazard.only = FALSE),
                   "ggplot")
+})
+
+test_that("plot.gg_rhf does not draw a line across a gap", {
+  # A line group that has points on both sides of a gap and none inside it is
+  # a straight line over time the case was not observed. Each case is plotted
+  # alone, so every line group in the built plot belongs to it.
+  set.seed(20261103L)
+  d  <- .rhf_tvc_data()
+  gg <- gg_rhf(.rhf_tvc())
+  for (i in attr(d, "gap_ids")) {
+    r <- d[d$id == i, c("start", "stop")]
+    eps <- 1e-8 * max(gg$time)
+    for (haz in c(TRUE, FALSE)) {
+      # On 2.1.0 a case whose first stop precedes the first grid point has no
+      # finite chf at all, so it has no line to bridge.
+      if (!any(is.finite(gg[gg$id == i, if (haz) "hazard" else "chf"]))) next
+      built <- ggplot2::ggplot_build(plot(gg, idx = i, hazard.only = haz))
+      bridges <- vapply(split(built$data[[1]]$x, built$data[[1]]$group),
+                        function(x) {
+                          any(x <= r$stop[1] + eps) && any(x >= r$start[2] - eps) &&
+                            !any(x > r$stop[1] + eps & x < r$start[2] - eps)
+                        }, logical(1))
+      expect_false(any(bridges), info = paste("id", i, "hazard.only", haz))
+    }
+  }
 })
 
 test_that("gg_auct runs on a time-dependent fit", {
