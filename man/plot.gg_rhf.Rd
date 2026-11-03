@@ -31,9 +31,10 @@ Cells the forest left undefined are dropped before drawing. From
 follow-up, and a case whose hazard is masked throughout is left out of the
 legend rather than shown as an empty one. From 2.0.3 the cumulative hazard
 is masked too, though on a different rule: it is \code{NA} after each case's
-final stop, and stays flat through an internal gap. So \code{hazard.only = FALSE}
-also ends each curve with that case's follow-up, but it keeps the grid
-points a gap would have cost the hazard panel.
+final stop. It is documented upstream as flat through an internal gap, but
+\pkg{randomForestRHF} 2.1.0 returns \code{NA} there as well. So
+\code{hazard.only = FALSE} also ends each curve with that case's follow-up, and
+on 2.1.0 a gap removes the same grid points from both panels.
 
 Each case gets its own colour and legend key only while there are at most
 10 of them. Beyond that the colours stop being distinguishable and the

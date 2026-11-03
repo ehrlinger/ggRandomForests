@@ -28,9 +28,10 @@ test_that("gg_rhf carries both rhf NA masks through unchanged", {
   # randomForestRHF >= 2.0.0 defines the pointwise hazard only where the grid
   # point falls inside one of the case's supplied (start, stop] intervals, and
   # returns NA in gaps and after the final stop. From 2.0.3 chf is masked too,
-  # but on its own rule: NA after each case's final stop, flat through internal
-  # gaps. The two masks coincide on this fixture, whose cases each carry a
-  # single interval, and would differ on a fit with real time-dependent
+  # but on its own rule: NA after each case's final stop, and documented as
+  # flat through internal gaps (2.1.0 returns NA there; see test_gg_rhf_tvc.R).
+  # The two masks coincide on this fixture, whose cases each carry a
+  # single interval, and need not on a fit with real time-dependent
   # covariates. So assert each against its own source matrix rather than
   # against the other. gg_rhf is a passthrough, so both masks have to arrive in
   # the frame unrepaired, undropped and in column-major order.

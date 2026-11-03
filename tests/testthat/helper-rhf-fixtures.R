@@ -180,3 +180,41 @@
   }
   .rhf_cache$tune_iauc
 }
+
+# A genuine time-dependent fit: several start-stop rows per case, with
+# internal gaps. Every other rhf fixture above is either one interval per case
+# (.rhf_pbc) or a tuning result, so without this one the multi-row path never
+# reaches gg_rhf(), gg_auct() or gg_rhf_importance() at fit time. 150 cases of
+# hazard.simulation(1); the first 15 with five or more rows keep only their
+# first and last rows, which opens a gap between them. ntime = 0 puts every
+# event time on the grid, so grid points fall inside those gaps. Measured
+# 0.07 seconds for the fit locally on 2026-11-03.
+.rhf_tvc_data <- function() {
+  if (is.null(.rhf_cache$tvc_data)) {
+    if (!requireNamespace("randomForestRHF", quietly = TRUE)) {
+      testthat::skip("randomForestRHF not installed")
+    }
+    set.seed(20261103L)
+    s <- randomForestRHF::hazard.simulation(1)$dta
+    d <- s[s$id %in% sort(unique(s$id))[1:150], ]
+    n_rows <- table(d$id)
+    gap_ids <- as.integer(names(n_rows)[n_rows >= 5])[1:15]
+    keep <- !(d$id %in% gap_ids) | !duplicated(d$id) |
+      !duplicated(d$id, fromLast = TRUE)
+    d <- d[keep, ]
+    attr(d, "gap_ids") <- gap_ids
+    .rhf_cache$tvc_data <- d
+  }
+  .rhf_cache$tvc_data
+}
+
+.rhf_tvc <- function() {
+  if (is.null(.rhf_cache$tvc)) {
+    d <- .rhf_tvc_data()
+    set.seed(20261103L)
+    .rhf_cache$tvc <- randomForestRHF::rhf(
+      "Surv(id, start, stop, event) ~ .", d, ntree = 30, seed = -1L, ntime = 0
+    )
+  }
+  .rhf_cache$tvc
+}
