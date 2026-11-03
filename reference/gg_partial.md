@@ -117,12 +117,12 @@ head(result$continuous)
 #> # A tibble: 6 × 3
 #>       x  yhat name   
 #>   <dbl> <dbl> <chr>  
-#> 1     7  30.3 Solar.R
-#> 2    14  30.4 Solar.R
-#> 3    25  30.8 Solar.R
-#> 4    44  31.3 Solar.R
+#> 1     7  30.2 Solar.R
+#> 2    14  30.6 Solar.R
+#> 3    25  30.4 Solar.R
+#> 4    44  30.9 Solar.R
 #> 5    65  32.7 Solar.R
-#> 6    81  36.0 Solar.R
+#> 6    81  36.3 Solar.R
 
 ## Label this model for later comparison with a second forest
 result_labeled <- gg_partial(pv, model = "airq_model")

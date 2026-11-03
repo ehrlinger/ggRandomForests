@@ -121,12 +121,12 @@ rf <- randomForestSRC::rfsrc(Ozone ~ ., data = airq, ntree = 50)
 summary(gg_error(rf))
 #> <gg_error>  from randomForestSRC  |  family: regr  |  ntree: 50  |  n: 111
 #>   ntree: 50
-#>   final OOB error: error=338.7
-#>   min OOB error:   error=338.7
+#>   final OOB error: error=348.3
+#>   min OOB error:   error=348.3
 summary(gg_vimp(rf))
 #> Warning: rfsrc object does not contain VIMP information. Calculating...
 #> <gg_vimp>  from randomForestSRC  |  family: regr  |  ntree: 50  |  n: 111
 #>   variables: 5
 #>   positive VIMP: 5 / negative: 0
-#>   top 5: Wind (1774), Temp (1289), Solar.R (237.6), Day (193), Month (72.42)
+#>   top 5: Wind (2160), Temp (1338), Solar.R (280.2), Day (140.1), Month (74.21)
 ```

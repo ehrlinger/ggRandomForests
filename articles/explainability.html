@@ -87,7 +87,7 @@
       <h1>Explaining a forest: five views of a variable’s effect</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-10-30</p>
+      <p class="date">2026-11-03</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/explainability.qmd" class="external-link"><code>vignettes/explainability.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -162,7 +162,7 @@
 <pre><code>                         Sample size: 506
                      Number of trees: 500
            Forest terminal node size: 5
-       Average no. of terminal nodes: 66.736
+       Average no. of terminal nodes: 67.068
 No. of variables tried at each split: 5
               Total no. of variables: 13
        Resampling used to grow trees: swor
@@ -171,8 +171,8 @@ No. of variables tried at each split: 5
                               Family: regr
                       Splitting rule: mse *random*
        Number of random split points: 10
-                     (OOB) R squared: 0.86046646
-   (OOB) Requested performance error: 11.80268521</code></pre>
+                     (OOB) R squared: 0.8662281
+   (OOB) Requested performance error: 11.31532636</code></pre>
 </div>
 </div>
 <p>Before going further, look at how tangled the predictors are. This is the fact the rest of the vignette hangs on.</p>
@@ -266,9 +266,9 @@ No. of variables tried at each split: 5
 <span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"crim"</span>, <span class="st">"lstat"</span>, <span class="st">"ptratio"</span><span class="op">)</span>, <span class="va">compare</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  variable ale_range pd_range pd_over_ale
-1     crim      3.06     1.17        0.38
-2    lstat     10.77    12.12        1.12
-3  ptratio      2.69     2.41        0.90</code></pre>
+1     crim      3.06     1.08        0.35
+2    lstat     10.65    12.18        1.14
+3  ptratio      2.52     2.12        0.84</code></pre>
 </div>
 </div>
 <p>On <code>crim</code> the two disagree by a lot, and they disagree in a consistent direction: partial dependence reports the smaller effect. That is not an accident of this fit. Across all eleven continuous predictors in Boston, averaged over three forests, ALE’s range exceeds partial dependence’s in nine of them, with a median ratio near 0.6.</p>
@@ -428,7 +428,8 @@ Lu, M., and H. Ishwaran. 2024. <span>“Model-Independent Variable Selection via
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -437,8 +438,69 @@ Lu, M., and H. Ishwaran. 2024. <span>“Model-Independent Variable Selection via
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -452,6 +514,7 @@ Lu, M., and H. Ishwaran. 2024. <span>“Model-Independent Variable Selection via
         interactiveBorder: 10,
         theme: 'light-border',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;

@@ -87,7 +87,7 @@
       <h1>Random Forest Classification with ggRandomForests</h1>
 
       <p class="author">John Ehrlinger</p>
-      <p class="date">2026-10-30</p>
+      <p class="date">2026-11-03</p>
 
       <small class="dont-index">Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/vignettes/ggRandomForests-classification.qmd" class="external-link"><code>vignettes/ggRandomForests-classification.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
@@ -192,7 +192,7 @@
 <span><span class="co">#&gt;            Frequency of class labels: setosa=50, versicolor=50, virginica=50</span></span>
 <span><span class="co">#&gt;                      Number of trees: 100</span></span>
 <span><span class="co">#&gt;            Forest terminal node size: 1</span></span>
-<span><span class="co">#&gt;        Average no. of terminal nodes: 9.41</span></span>
+<span><span class="co">#&gt;        Average no. of terminal nodes: 9.56</span></span>
 <span><span class="co">#&gt; No. of variables tried at each split: 2</span></span>
 <span><span class="co">#&gt;               Total no. of variables: 4</span></span>
 <span><span class="co">#&gt;        Resampling used to grow trees: swor</span></span>
@@ -201,10 +201,10 @@
 <span><span class="co">#&gt;                               Family: class</span></span>
 <span><span class="co">#&gt;                       Splitting rule: gini *random*</span></span>
 <span><span class="co">#&gt;        Number of random split points: 10</span></span>
-<span><span class="co">#&gt;                    (OOB) Brier score: 0.02572345</span></span>
-<span><span class="co">#&gt;         (OOB) Normalized Brier score: 0.11575554</span></span>
-<span><span class="co">#&gt;                            (OOB) AUC: 0.9928</span></span>
-<span><span class="co">#&gt;                       (OOB) Log-loss: 0.13208151</span></span>
+<span><span class="co">#&gt;                    (OOB) Brier score: 0.02525167</span></span>
+<span><span class="co">#&gt;         (OOB) Normalized Brier score: 0.11363252</span></span>
+<span><span class="co">#&gt;                            (OOB) AUC: 0.99393333</span></span>
+<span><span class="co">#&gt;                       (OOB) Log-loss: 0.12176564</span></span>
 <span><span class="co">#&gt;    (OOB) Requested performance error: 0.05333333, 0.02, 0.08, 0.06</span></span>
 <span><span class="co">#&gt;</span></span>
 <span><span class="co">#&gt; Confusion matrix:</span></span>
@@ -271,7 +271,7 @@
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md_iris</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html" class="external-link">max.subtree</a></span><span class="op">(</span><span class="va">rfsrc_iris</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The threshold is 1.91, selecting 2 variables: Petal.Length, Petal.Width. VIMP and minimal depth agree.</p>
+<p>The threshold is 1.86, selecting 2 variables: Petal.Length, Petal.Width. VIMP and minimal depth agree.</p>
 </section></section><section class="section level2"><h2 id="shap-analysis">SHAP Analysis<a class="anchor" aria-label="anchor" href="#shap-analysis"></a>
 </h2>
 <p>VIMP ranks importance averaged over the whole forest, and it does not change with the question you ask. SHAP does: a classification forest predicts one probability per class, and <code><a href="../reference/gg_shap.html">gg_shap()</a></code> explains exactly one of those probabilities at a time, chosen with the <code>which.class</code> argument. Ask for class 1 (<em>setosa</em>) and you get contributions to the <em>setosa</em> probability; switch to class 3 (<em>virginica</em>) and every contribution is recomputed for <em>virginica</em> instead. Nothing else about the method changes: same players, same game, different payout to split.</p>
@@ -371,10 +371,10 @@
 <div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/calc_auc.html">calc_auc</a></span><span class="op">(</span><span class="va">roc_virginica</span><span class="op">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code><span><span class="co">#&gt; [1] 0.991</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; [1] 0.9926</span></span></code></pre>
 </div>
 </div>
-<p>An AUC of 0.991 for <em>virginica</em> confirms the forest separates it well, even given its overlap with <em>versicolor</em>. <em>setosa</em>’s ROC curve is not worth plotting. It is a right angle, AUC 1, the geometric version of the confusion matrix’s perfect row.</p>
+<p>An AUC of 0.993 for <em>virginica</em> confirms the forest separates it well, even given its overlap with <em>versicolor</em>. <em>setosa</em>’s ROC curve is not worth plotting. It is a right angle, AUC 1, the geometric version of the confusion matrix’s perfect row.</p>
 </section><section class="section level2"><h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
 </h2>
 <p>We have walked a full random forest classification analysis with <strong>randomForestSRC</strong> and <strong>ggRandomForests</strong>, and the pieces line up:</p>
@@ -421,7 +421,8 @@ Wickham, Hadley. 2016. <em><span class="nocase">ggplot2</span>: Elegant Graphics
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -430,8 +431,69 @@ Wickham, Hadley. 2016. <em><span class="nocase">ggplot2</span>: Elegant Graphics
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -445,6 +507,7 @@ Wickham, Hadley. 2016. <em><span class="nocase">ggplot2</span>: Elegant Graphics
         interactiveBorder: 10,
         theme: 'light-border',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;

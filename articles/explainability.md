@@ -57,7 +57,7 @@ rfsrc_boston
                              Sample size: 506
                          Number of trees: 500
                Forest terminal node size: 5
-           Average no. of terminal nodes: 66.736
+           Average no. of terminal nodes: 67.068
     No. of variables tried at each split: 5
                   Total no. of variables: 13
            Resampling used to grow trees: swor
@@ -66,8 +66,8 @@ rfsrc_boston
                                   Family: regr
                           Splitting rule: mse *random*
            Number of random split points: 10
-                         (OOB) R squared: 0.86046646
-       (OOB) Requested performance error: 11.80268521
+                         (OOB) R squared: 0.8662281
+       (OOB) Requested performance error: 11.31532636
 
 Before going further, look at how tangled the predictors are. This is
 the fact the rest of the vignette hangs on.
@@ -193,9 +193,9 @@ do.call(rbind, lapply(c("crim", "lstat", "ptratio"), compare))
 ```
 
       variable ale_range pd_range pd_over_ale
-    1     crim      3.06     1.17        0.38
-    2    lstat     10.77    12.12        1.12
-    3  ptratio      2.69     2.41        0.90
+    1     crim      3.06     1.08        0.35
+    2    lstat     10.65    12.18        1.14
+    3  ptratio      2.52     2.12        0.84
 
 On `crim` the two disagree by a lot, and they disagree in a consistent
 direction: partial dependence reports the smaller effect. That is not an

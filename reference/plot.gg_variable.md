@@ -157,8 +157,6 @@ plot(gg_dta, xvar = "Solar.R")
 # Factor variable uses notched boxplots
 plot(gg_dta, xvar = "Month", notch = TRUE)
 #> Warning: Ignoring unknown parameters: `notch`
-#> Notch went outside hinges
-#> ℹ Do you want `notch = FALSE`?
 
 
 # \donttest{

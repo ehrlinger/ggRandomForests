@@ -123,7 +123,7 @@ rfsrc_iris
     #>            Frequency of class labels: setosa=50, versicolor=50, virginica=50
     #>                      Number of trees: 100
     #>            Forest terminal node size: 1
-    #>        Average no. of terminal nodes: 9.41
+    #>        Average no. of terminal nodes: 9.56
     #> No. of variables tried at each split: 2
     #>               Total no. of variables: 4
     #>        Resampling used to grow trees: swor
@@ -132,10 +132,10 @@ rfsrc_iris
     #>                               Family: class
     #>                       Splitting rule: gini *random*
     #>        Number of random split points: 10
-    #>                    (OOB) Brier score: 0.02572345
-    #>         (OOB) Normalized Brier score: 0.11575554
-    #>                            (OOB) AUC: 0.9928
-    #>                       (OOB) Log-loss: 0.13208151
+    #>                    (OOB) Brier score: 0.02525167
+    #>         (OOB) Normalized Brier score: 0.11363252
+    #>                            (OOB) AUC: 0.99393333
+    #>                       (OOB) Log-loss: 0.12176564
     #>    (OOB) Requested performance error: 0.05333333, 0.02, 0.08, 0.06
     #>
     #> Confusion matrix:
@@ -235,7 +235,7 @@ variables by how close to the root node they first split, on average.
 md_iris <- max.subtree(rfsrc_iris)
 ```
 
-The threshold is 1.91, selecting 2 variables: Petal.Length, Petal.Width.
+The threshold is 1.86, selecting 2 variables: Petal.Length, Petal.Width.
 VIMP and minimal depth agree.
 
 ## SHAP Analysis
@@ -403,9 +403,9 @@ ROC curve for virginica vs. the rest.
 calc_auc(roc_virginica)
 ```
 
-    #> [1] 0.991
+    #> [1] 0.9926
 
-An AUC of 0.991 for *virginica* confirms the forest separates it well,
+An AUC of 0.993 for *virginica* confirms the forest separates it well,
 even given its overlap with *versicolor*. *setosa*’s ROC curve is not
 worth plotting. It is a right angle, AUC 1, the geometric version of the
 confusion matrix’s perfect row.

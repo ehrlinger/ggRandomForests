@@ -181,6 +181,6 @@ uv <- varPro::uvarpro(iris[, -5], ntree = 50)
 gg <- gg_udependent(uv)
 print(gg)
 #> <gg_udependent>  n=150  p=4  threshold=0.25
-#>   Edges: 6  Nodes in graph: 3  Selected: 1/3
+#>   Edges: 5  Nodes in graph: 3  Selected: 1/3
 # }
 ```

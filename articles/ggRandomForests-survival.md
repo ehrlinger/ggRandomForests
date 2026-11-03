@@ -441,9 +441,9 @@ md_pbc <- max.subtree(rfsrc_pbc)
 
 The
 [`max.subtree()`](https://www.randomforestsrc.org//reference/max.subtree.rfsrc.html)
-function computes minimal depth for each variable. The threshold is
-5.81, selecting 8 variables: age, ascites, edema, bili, chol, albumin,
-copper, prothrombin.
+function computes minimal depth for each variable. The threshold is 5.8,
+selecting 8 variables: age, ascites, edema, bili, chol, albumin, copper,
+prothrombin.
 
 Both selection methods agree on the key continuous predictors: `bili`,
 `albumin`, `copper`, `prothrombin`, and `age`. Both also rank the
@@ -846,21 +846,21 @@ number to report, use the `crps_std` attribute instead. It is upstream’s
 attr(gg_bs, "crps_integrated")  # area under the Brier curve, in years
 ```
 
-    #> [1] 1.440241
+    #> [1] 1.429645
 
 ``` r
 
 attr(gg_bs, "crps_std")         # divided by max(gg_bs$time)
 ```
 
-    #> [1] 0.1255185
+    #> [1] 0.124595
 
 ``` r
 
 tail(gg_bs$crps, 1)             # right edge of the running CRPS plot
 ```
 
-    #> [1] 0.1267585
+    #> [1] 0.125826
 
 The last two differ slightly. `crps_std` divides by the largest event
 time, while the running curve divides by the time elapsed since the
