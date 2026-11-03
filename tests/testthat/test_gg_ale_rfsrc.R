@@ -372,3 +372,81 @@ test_that("ALE keeps an NA prediction visible instead of zeroing its bin", {
   expect_equal(ggRandomForests:::.ale_group_mean(c(1, NA, 3), c(1, 1, 3), 3),
                c(NA, 0, 3))
 })
+
+## Cell counts and the (n_bin1 + 1) x (n_bin2 + 1) surface for the checks below.
+.ale2_parts <- function(pred_fun, d, n_eval) {
+  e1 <- ggRandomForests:::.ale_bin_edges(d$x1, n_eval)
+  e2 <- ggRandomForests:::.ale_bin_edges(d$x2, n_eval)
+  k1 <- length(e1) - 1L
+  k2 <- length(e2) - 1L
+  b  <- table(factor(ggRandomForests:::.ale_bin_index(d$x1, e1), 1:k1),
+              factor(ggRandomForests:::.ale_bin_index(d$x2, e2), 1:k2))
+  int <- ggRandomForests:::.ale_interaction(pred_fun, d, "x1", "x2",
+                                            cat_limit = 10, n_eval = n_eval)
+  list(f = matrix(int$ale, k1 + 1L), b = matrix(b, k1, k2), e1 = e1, e2 = e2)
+}
+
+test_that("interaction ALE is zero for an additive function", {
+  set.seed(20261103L)
+  d <- data.frame(x1 = stats::rnorm(2000), x2 = stats::rnorm(2000))
+  p <- .ale2_parts(function(nd) sin(nd$x1) + nd$x2^2, d, n_eval = 5)
+  expect_lt(max(abs(p$f)), 1e-10)
+})
+
+test_that("interaction ALE removes main effects as Apley and Zhu do", {
+  ## Apley and Zhu (2020) estimate each main effect of the accumulated surface
+  ## by accumulating its local differences along that axis, weighted by cell
+  ## counts, and centre on the count-weighted mean of each cell's four corners.
+  ## What is left therefore has, along each axis, a zero count-weighted local
+  ## effect in every bin, and a zero weighted mean. Subtracting row and column
+  ## means instead (an ANOVA decomposition) leaves an additive term that grows
+  ## with the correlation between the two predictors, so the design is
+  ## correlated on purpose.
+  set.seed(20261103L)
+  n  <- 5000
+  z1 <- stats::rnorm(n)
+  d  <- data.frame(x1 = z1, x2 = 0.7 * z1 + sqrt(1 - 0.49) * stats::rnorm(n))
+  p  <- .ale2_parts(function(nd) nd$x1 * nd$x2, d, n_eval = 5)
+  f  <- p$f
+  b  <- p$b
+  k1 <- nrow(b)
+  k2 <- ncol(b)
+  expect_true(all(b > 0))  # no empty cell, so imputation plays no part
+
+  d1 <- f[-1, , drop = FALSE] - f[-(k1 + 1L), , drop = FALSE]
+  row_effect <- rowSums(b * (d1[, -1] + d1[, -(k2 + 1L)]) / 2)
+  d2 <- f[, -1, drop = FALSE] - f[, -(k2 + 1L), drop = FALSE]
+  col_effect <- colSums(b * (d2[-1, ] + d2[-(k1 + 1L), ]) / 2)
+  centre <- sum(b * (f[-(k1 + 1L), -(k2 + 1L)] + f[-(k1 + 1L), -1] +
+                       f[-1, -(k2 + 1L)] + f[-1, -1]) / 4)
+  expect_lt(max(abs(row_effect)), 1e-8)
+  expect_lt(max(abs(col_effect)), 1e-8)
+  expect_lt(abs(centre), 1e-8)
+
+  ## The pure interaction is kept: the second difference of x1 * x2 over a
+  ## cell is the product of the cell's widths.
+  dd <- f[-1, -1] - f[-1, -(k2 + 1L)] - f[-(k1 + 1L), -1] +
+    f[-(k1 + 1L), -(k2 + 1L)]
+  expect_equal(dd, outer(diff(p$e1), diff(p$e2)), tolerance = 1e-8)
+})
+
+test_that("interaction ALE fills an empty cell from its nearest occupied cell", {
+  ## Strongly correlated predictors leave off-diagonal cells empty. Apley and
+  ## Zhu (and ALEPlot) give an empty cell the local effect of the nearest
+  ## occupied cell, measured between cell centres on range-scaled axes, rather
+  ## than treating it as no effect. For x1 * x2 the local effect of a cell is
+  ## the product of its widths, so an empty cell whose effect were zeroed
+  ## would show as a second difference of 0.
+  set.seed(20261103L)
+  n  <- 400
+  z1 <- stats::rnorm(n)
+  d  <- data.frame(x1 = z1, x2 = z1 + stats::rnorm(n, sd = 0.05))
+  p  <- .ale2_parts(function(nd) nd$x1 * nd$x2, d, n_eval = 5)
+  f  <- p$f
+  k1 <- nrow(p$b)
+  k2 <- ncol(p$b)
+  expect_true(any(p$b == 0))
+  dd <- f[-1, -1] - f[-1, -(k2 + 1L)] - f[-(k1 + 1L), -1] +
+    f[-(k1 + 1L), -(k2 + 1L)]
+  expect_true(all(abs(dd[p$b == 0]) > 0))
+})

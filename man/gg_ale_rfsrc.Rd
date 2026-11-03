@@ -84,19 +84,22 @@ combinations.
 
 For a categorical predictor, the model's own factor level order is used
 as the "grid": the local effect for the step from level \eqn{k} to level
-\eqn{k+1} is estimated only from observations actually at level
-\eqn{k+1}, comparing their prediction at that level against the
-counterfactual of level \eqn{k}. Relevel the predictor before fitting the
-forest to control this ordering.
+\eqn{k+1} is averaged over the observations at both levels, each predicted
+at level \eqn{k+1} and at level \eqn{k}, so an observation at an interior
+level serves two steps. Relevel the predictor before fitting the forest to
+control this ordering.
 
 Supplying \code{xvar2.name} switches to second-order (interaction) ALE
 between \code{xvar.names} and \code{xvar2.name}, isolating the part of
 their joint effect that is not explained by either variable's own main
 effect. It is the ALE analogue of an interaction term, computed on a
-2-D grid of bins using the same local-perturbation idea, with the main
-effects removed via a row/column/grand weighted-mean decomposition (the
-same device used to isolate an interaction term in a two-way ANOVA). A
-purely additive forest returns an all-zero surface.
+2-D grid of bins using the same local-perturbation idea. Following Apley
+and Zhu, each variable's main effect is estimated from the accumulated
+surface by accumulating its local differences along that variable's axis,
+weighted by the observations in each cell, and subtracted; the surface is
+then centred to a weighted mean of zero. A cell with no observations takes
+the local effect of the nearest cell that has some. A purely additive
+forest returns an all-zero surface.
 }
 \examples{
 ## ------------------------------------------------------------

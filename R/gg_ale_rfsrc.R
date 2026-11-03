@@ -23,19 +23,22 @@
 #'
 #' For a categorical predictor, the model's own factor level order is used
 #' as the "grid": the local effect for the step from level \eqn{k} to level
-#' \eqn{k+1} is estimated only from observations actually at level
-#' \eqn{k+1}, comparing their prediction at that level against the
-#' counterfactual of level \eqn{k}. Relevel the predictor before fitting the
-#' forest to control this ordering.
+#' \eqn{k+1} is averaged over the observations at both levels, each predicted
+#' at level \eqn{k+1} and at level \eqn{k}, so an observation at an interior
+#' level serves two steps. Relevel the predictor before fitting the forest to
+#' control this ordering.
 #'
 #' Supplying \code{xvar2.name} switches to second-order (interaction) ALE
 #' between \code{xvar.names} and \code{xvar2.name}, isolating the part of
 #' their joint effect that is not explained by either variable's own main
 #' effect. It is the ALE analogue of an interaction term, computed on a
-#' 2-D grid of bins using the same local-perturbation idea, with the main
-#' effects removed via a row/column/grand weighted-mean decomposition (the
-#' same device used to isolate an interaction term in a two-way ANOVA). A
-#' purely additive forest returns an all-zero surface.
+#' 2-D grid of bins using the same local-perturbation idea. Following Apley
+#' and Zhu, each variable's main effect is estimated from the accumulated
+#' surface by accumulating its local differences along that variable's axis,
+#' weighted by the observations in each cell, and subtracted; the surface is
+#' then centred to a weighted mean of zero. A cell with no observations takes
+#' the local effect of the nearest cell that has some. A purely additive
+#' forest returns an all-zero surface.
 #'
 #' @param rf_model A fitted \code{\link[randomForestSRC]{rfsrc}} object.
 #'   Regression and classification forests only; survival is not yet
@@ -428,17 +431,40 @@ gg_ale_rfsrc <- function(rf_model,
   result
 }
 
+## An empty interaction cell has no observations to measure a local effect on.
+## Apley and Zhu (and ALEPlot) give it the effect of the nearest occupied cell,
+## measured between cell centres with each axis scaled by its range, rather
+## than zero: correlated predictors leave many off-diagonal cells empty, and
+## zeroing them would bend the accumulated surface wherever the data are thin.
+.ale_fill_empty_cells <- function(delta, cnt, e1, e2) {
+  empty <- which(cnt == 0L, arr.ind = TRUE)
+  if (nrow(empty) == 0L) return(delta)
+  full  <- which(cnt > 0L, arr.ind = TRUE)
+  mid1  <- (e1[-1] + e1[-length(e1)]) / 2 / diff(range(e1))
+  mid2  <- (e2[-1] + e2[-length(e2)]) / 2 / diff(range(e2))
+  for (r in seq_len(nrow(empty))) {
+    dist <- (mid1[full[, 1]] - mid1[empty[r, 1]])^2 +
+      (mid2[full[, 2]] - mid2[empty[r, 2]])^2
+    delta[empty[r, , drop = FALSE]] <- delta[full[which.min(dist), , drop = FALSE]]
+  }
+  delta
+}
+
 ## ---------------------------------------------------------------------------
 ## Internal: second-order (interaction) ALE, continuous x continuous only.
 ## ---------------------------------------------------------------------------
 
-## Isolates the pure interaction effect between two continuous predictors.
-## The joint second-difference surface is double-accumulated (analogous to
-## .ale_accumulate(), but over a 2-D grid), then the row-weighted,
-## column-weighted, and grand-weighted means are subtracted -- the same
-## two-way decomposition used to isolate an interaction term in ANOVA. A
-## purely additive f(x1, x2) = g(x1) + h(x2) returns an all-zero surface;
-## see tests/testthat/test_gg_ale_rfsrc.R for the numerical check.
+## Isolates the pure interaction effect between two continuous predictors, as
+## Apley and Zhu (2020) define it and ALEPlot computes it. The joint
+## second-difference surface is double-accumulated (analogous to
+## .ale_accumulate(), but over a 2-D grid). Each main effect of that surface is
+## then estimated the way a first-order ALE is, by accumulating its local
+## differences along one axis weighted by cell counts, and subtracted, and the
+## result is centred on the count-weighted mean of each cell's four corners.
+## Subtracting row and column means instead, as an ANOVA decomposition would,
+## leaves an additive term that grows with the predictors' correlation. A
+## purely additive f(x1, x2) = g(x1) + h(x2) returns an all-zero surface; see
+## tests/testthat/test_gg_ale_rfsrc.R for both checks.
 .ale_interaction <- function(pred_fun, newx, xname1, xname2, cat_limit, n_eval) {
   x1 <- newx[[xname1]]
   x2 <- newx[[xname2]]
@@ -477,6 +503,7 @@ gg_ale_rfsrc <- function(rf_model,
   delta <- matrix(.ale_group_mean(pr[[1]] - pr[[2]] - pr[[3]] + pr[[4]],
                                   cell, n_cel), n_bin1, n_bin2)
   cnt   <- matrix(tabulate(cell, nbins = n_cel), n_bin1, n_bin2)
+  delta <- .ale_fill_empty_cells(delta, cnt, e1, e2)
 
   ## Double cumulative sum, down columns then across rows. Written as loops
   ## rather than nested apply(): apply() drops the dimension when an axis has a
@@ -494,17 +521,28 @@ gg_ale_rfsrc <- function(rf_model,
   g <- rbind(0, g)
   g <- cbind(0, g)
 
-  w <- matrix(0, n_bin1 + 1L, n_bin2 + 1L)
-  w[-1, -1] <- cnt
-  n_row <- rowSums(w)
-  n_col <- colSums(w)
-  n_tot <- sum(w)
-  row_mean   <- ifelse(n_row > 0, rowSums(w * g) / n_row, 0)
-  col_mean   <- ifelse(n_col > 0, colSums(w * g) / n_col, 0)
-  grand_mean <- sum(w * g) / n_tot
-
-  interaction <- sweep(g, 1, row_mean, "-")
-  interaction <- sweep(interaction, 2, col_mean, "-") + grand_mean
+  ## Main effect of x1: the local difference of g across each x1 bin, averaged
+  ## over that bin's observations (each at the mean of its cell's two x2
+  ## edges), then accumulated. Every quantile bin holds at least one
+  ## observation, so the row and column counts are never zero.
+  i1 <- seq_len(n_bin1)
+  i2 <- seq_len(n_bin2)
+  d1 <- g[i1 + 1L, , drop = FALSE] - g[i1, , drop = FALSE]
+  f1 <- c(0, cumsum(rowSums(cnt * (d1[, i2, drop = FALSE] +
+                                     d1[, i2 + 1L, drop = FALSE]) / 2) /
+                      rowSums(cnt)))
+  d2 <- g[, i2 + 1L, drop = FALSE] - g[, i2, drop = FALSE]
+  f2 <- c(0, cumsum(colSums(cnt * (d2[i1, , drop = FALSE] +
+                                     d2[i1 + 1L, , drop = FALSE]) / 2) /
+                      colSums(cnt)))
+  interaction <- g - outer(f1, rep(1, n_bin2 + 1L)) -
+    outer(rep(1, n_bin1 + 1L), f2)
+  centre <- sum(cnt * (interaction[i1, i2, drop = FALSE] +
+                         interaction[i1, i2 + 1L, drop = FALSE] +
+                         interaction[i1 + 1L, i2, drop = FALSE] +
+                         interaction[i1 + 1L, i2 + 1L, drop = FALSE]) / 4) /
+    sum(cnt)
+  interaction <- interaction - centre
 
   out <- expand.grid(x = e1, y = e2)
   out$ale   <- as.vector(interaction)
