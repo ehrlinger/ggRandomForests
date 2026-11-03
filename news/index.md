@@ -1003,6 +1003,26 @@
   to keep their fits to one core, as CRAN asks of vignettes that change
   options.
 
+- [`plot.gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md)
+  no longer draws a straight line across an internal gap in a case’s
+  start-stop path. Each run of defined values is now drawn as its own
+  line, so a gap shows as a gap.
+
+- [`?gg_rhf`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf.md)
+  and
+  [`?plot.gg_rhf`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md)
+  no longer say the cumulative hazard stays flat through an internal
+  gap. `randomForestRHF` documents it that way, but 2.1.0 returns `chf`
+  as `NA` from a case’s first gap to the end of its follow-up, even
+  where the hazard is defined. The tests now fit a forest whose cases
+  have several start-stop rows with gaps between them, and check
+  [`gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf.md),
+  [`plot.gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md),
+  [`gg_auct()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_auct.md)
+  and
+  [`gg_rhf_importance()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_rhf_importance.md)
+  on it.
+
 ## ggRandomForests v3.5.2
 
 CRAN release: 2026-08-21
