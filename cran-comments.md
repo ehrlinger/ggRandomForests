@@ -87,13 +87,39 @@ so the vignette rebuild grows no hazard forest.
   incoming-feasibility NOTE.
 * **Reverse-dependency check:** 0 reverse dependencies on CRAN.
 
-**win-builder:** TODO (R-devel, R-release, R-oldrelease, with timed steps).
+**win-builder:** x86_64-w64-mingw32, Windows Server 2022, all three branches
+run against the submitted tarball. Each returns **Status: 1 NOTE**, the
+incoming-feasibility NOTE set out below, with no ERRORs or WARNINGs.
+`checking for hidden files and directories` is OK on all three.
+
+| Step | R-devel (r90827) | R-release (4.6.2) | R-oldrelease (4.5.3) |
+|---|---|---|---|
+| CRAN incoming feasibility | 89s | 39s | 81s |
+| R code for possible problems | 27s | 24s | 28s |
+| examples | 37s | 36s | 42s |
+| tests | 65s | 65s | 75s |
+| re-building vignette outputs | 150s | 147s | 172s |
+| PDF version of manual | 15s | 15s | 14s |
+| HTML version of manual | | 22s | 16s |
+| **timed steps** | **383s** | **348s** | **428s** |
+
+`00check.log` does not report an overall time, so these are sums of the timed
+steps; a blank cell is a step `00check.log` did not time on that branch. For
+comparison, 3.5.5's runs were 349s, 346s and 276s. Most of the difference is
+the incoming-feasibility step, which waits on CRAN's servers: 81s to 89s here
+against 14s for 3.5.5. Without it, R-devel is 294s against 335s for 3.5.5.
+R-oldrelease is the one that grew in its own right, by about 85s across the
+vignette rebuild (172s against 132s), tests and examples.
 
 ### NOTE disposition
 
-The one local NOTE is `Number of updates in past 6 months: 10`, which the
-first section of this note explains. TODO: confirm win-builder reports no
-second NOTE.
+The incoming-feasibility NOTE has two parts.
+
+* `Number of updates in past 6 months: 10`, which the first section of this
+  note explains.
+* `Possibly misspelled words in DESCRIPTION: Hsich`. That is a surname, from
+  the citation for Random Hazard Forests (Ishwaran, Hsich, Kogalur and Lee,
+  2026) that 4.0.0 adds to the Description. It is spelled correctly.
 
 ---
 
