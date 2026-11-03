@@ -266,7 +266,7 @@ project context. Read it before writing user-facing text.
   `packageVersion("randomForestSRC")` against the version named above.** Regenerating them
   is a change to what "correct output" means, so it belongs on its own branch with this
   line updated in the same commit — never folded into a feature PR. The 3.7.0 to 3.9.0 bump
-  moved no baseline. The 3.9.0 to 3.10.0 bump moved 40, across every `randomForestSRC` family,
+  moved no baseline. The 3.9.0 to 3.10.0 bump moved 40 of 66, in most `randomForestSRC`-fitted families (the `gg_partial` ones held),
   because 3.10.0 grows a different forest from the same seed; no `randomForest` or RHF baseline
   moved. **A machine still on 3.9.0 now fails those 40.**
 
