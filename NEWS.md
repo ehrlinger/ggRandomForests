@@ -505,6 +505,14 @@ ggRandomForests v4.0.0 (development)
 * The vignettes restore the `mc.cores` and `rf.cores` options they set to keep
   their fits to one core, as CRAN asks of vignettes that change options.
 
+* Two plot methods take their arguments in a new order, which matters only to
+  a call that passes them by position. In `plot.gg_variable()` the third
+  argument is now `panel`, where in 3.5.5 it was `time` and `panel` was fifth;
+  `oob` and `points` move up two places with it. In
+  `plot.gg_partial_varpro()` the third argument is now `labels`, where in 3.5.5
+  it fell into `...`. Calls that name their arguments, as the examples do, are
+  unchanged.
+
 ggRandomForests v3.5.5
 ======================
 * `gg_ivarpro()` no longer fails with "replacement has 1 row, data has 0"
