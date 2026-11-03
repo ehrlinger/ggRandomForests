@@ -1,6 +1,6 @@
 # Changelog
 
-## ggRandomForests v4.0.0 (development)
+## ggRandomForests v4.0.0
 
 - Articles on the pkgdown site put the table of contents on the left and
   use the full width of the window, through `pkgdown/extra.css`. The
