@@ -20,3 +20,8 @@ unfiltered. Returns the usable rules and a copy of `object` whose
   local.std = TRUE
 )
 ```
+
+## Value
+
+A list: `rules` (the usable rows of the strength array) and `scored` (a
+copy of `object` holding the scored rules).

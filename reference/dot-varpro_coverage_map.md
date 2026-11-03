@@ -9,3 +9,7 @@ level encoded `ga.1` and a numeric `ga` collide.
 ``` r
 .varpro_coverage_map(object, terms)
 ```
+
+## Value
+
+A character vector of original variable names, named by term.

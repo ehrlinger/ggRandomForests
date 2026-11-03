@@ -9,3 +9,7 @@ Reconstructs the ntree x p per-tree importance matrix from
 ``` r
 .build_varpro_imp_tree(object)
 ```
+
+## Value
+
+A numeric matrix of per-tree importance, trees by variables.

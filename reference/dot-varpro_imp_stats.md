@@ -9,3 +9,8 @@ winsorised mean); with `FALSE` they are raw importances.
 ``` r
 .varpro_imp_stats(mat)
 ```
+
+## Value
+
+A data frame with one row per variable: `variable`, `median`, `q05`,
+`q15`, `q85`, `q95` and `mean`.

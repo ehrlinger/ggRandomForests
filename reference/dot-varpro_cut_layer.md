@@ -8,3 +8,11 @@ across the plot; two are a dashed tick on each variable's row.
 ``` r
 .varpro_cut_layer(stats_df, cutoff, noise_bar)
 ```
+
+## Value
+
+A ggplot2 layer:
+[`geom_hline()`](https://ggplot2.tidyverse.org/reference/geom_abline.html)
+for one bar,
+[`geom_errorbar()`](https://ggplot2.tidyverse.org/reference/geom_linerange.html)
+for one per row.

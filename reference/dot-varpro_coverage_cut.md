@@ -7,3 +7,7 @@ Largest tested-noise z of the same kind; falls back to all tested noise
 ``` r
 .varpro_coverage_cut(out)
 ```
+
+## Value
+
+A numeric vector of noise bars, one per row.

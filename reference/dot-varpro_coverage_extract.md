@@ -12,3 +12,8 @@ table built from exactly those rules.
 ``` r
 .varpro_coverage_extract(object, max.tree, max.rules.tree, trim, seed)
 ```
+
+## Value
+
+A list: `rules` (the scored release rules), `importance` (varPro's
+importance table) and `trees` (the number of trees scored).

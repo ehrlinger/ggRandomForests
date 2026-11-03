@@ -7,3 +7,7 @@ Caption line naming the noise bar for each kind
 ``` r
 .varpro_noise_caption(imp)
 ```
+
+## Value
+
+A single character string.

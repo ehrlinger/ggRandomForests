@@ -9,3 +9,7 @@ term tested. Returns a logical vector named by term.
 ``` r
 .varpro_coverage_term_ok(rule_term, tree_id, terms, trees, trim)
 ```
+
+## Value
+
+A logical vector named by term.

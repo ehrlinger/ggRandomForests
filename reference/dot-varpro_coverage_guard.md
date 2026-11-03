@@ -12,3 +12,7 @@ passes.
 ``` r
 .varpro_coverage_guard(out, max_untested, trim, term_var, term_ok)
 ```
+
+## Value
+
+`invisible(NULL)`; called for its error.

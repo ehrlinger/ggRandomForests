@@ -9,3 +9,7 @@ on every variable.
 ``` r
 .varpro_noise_annotator(object, noise, kind_values, local.std)
 ```
+
+## Value
+
+`NULL`, or a function that takes and returns the importance data frame.

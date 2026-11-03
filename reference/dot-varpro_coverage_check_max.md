@@ -7,3 +7,7 @@ Validate max_untested before the rules are extracted
 ``` r
 .varpro_coverage_check_max(max_untested)
 ```
+
+## Value
+
+`invisible(NULL)`; called for its error.

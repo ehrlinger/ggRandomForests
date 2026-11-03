@@ -7,3 +7,7 @@ Unconditional importance table from importance(), whatever the family
 ``` r
 .varpro_coverage_imp(imp, family)
 ```
+
+## Value
+
+The unconditional importance data frame.

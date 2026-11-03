@@ -7,3 +7,7 @@ Warn when the noise check is empty or borrows another kind's bar
 ``` r
 .varpro_noise_warn(out, scored, noise)
 ```
+
+## Value
+
+`invisible(NULL)`; called for its warnings.

@@ -17,3 +17,8 @@ kind of the noise that set the bar, `NA` when none was tested), and sets
 ``` r
 .varpro_noise_judge(out, vars, object, noise, kind_values)
 ```
+
+## Value
+
+`out` with the `noise`, `kind`, `noise_cut`, `noise_ref` and `selected`
+columns set.

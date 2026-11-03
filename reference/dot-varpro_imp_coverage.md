@@ -9,3 +9,7 @@ per-tree matrix and z are built from.
 ``` r
 .varpro_imp_coverage(scored, trees)
 ```
+
+## Value
+
+A numeric vector of coverage shares, named by variable.

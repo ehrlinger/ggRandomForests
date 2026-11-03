@@ -18,3 +18,7 @@ Build the tidy importance data structures from importance() output
   annotate = NULL
 )
 ```
+
+## Value
+
+A list with elements `imp`, `imp_tree`, `stats` and `conditional`.
