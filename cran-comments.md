@@ -1,3 +1,128 @@
+## v4.0.0: major release (Random Hazard Forests, accumulated local effects, varPro coverage)
+
+### Why this follows 3.5.5 so closely
+
+3.5.5 was published on 2026-10-25. It was a bug-fix release cut from the 3.x
+maintenance branch, and this is the release those fixes were kept separate
+from. The incoming check reports 10 updates in the past 6 months. I know that
+is more than CRAN wants. If you would rather this waited until 3.5.5 has been
+up for a month or two, say so and I will hold it. The cost of holding it is
+that the corrections listed under "Changed results" stay off CRAN until then.
+
+### Why a major version
+
+The 4.0.0 line adds three groups of functions and changes what some existing
+calls return. No exported function, argument or returned class is removed, but
+the changes listed below alter results, so I did not want to ship them in a
+patch release.
+
+**New functions**
+
+* Random Hazard Forests from 'randomForestRHF': `gg_rhf()`, `gg_auct()`,
+  `gg_rhf_importance()` and `gg_tune_rhf()`, each with `plot()`, `autoplot()`,
+  `print()` and `summary()` methods, plus a vignette. 'randomForestRHF'
+  (>= 2.0.3) is in Suggests. The examples are guarded with
+  `requireNamespace()`, and the functions stop with an install message if it
+  is missing.
+* `gg_ale_rfsrc()` computes accumulated local effects (Apley and Zhu, 2020)
+  for regression and classification forests, as a counterpart to
+  `gg_partial_rfsrc()` that does not extrapolate when predictors are
+  correlated.
+* `varpro_coverage()` reports, for each variable of a 'varPro' fit, how many
+  of the release-rule tests that variable was scored in, so that an
+  importance of zero can be told apart from a variable that was never tested.
+  It comes with a second new vignette, on small or sparse data.
+
+**Changed results for existing calls**
+
+* `gg_partial_varpro(scale = "prob")` now restores each subject's own level
+  before averaging, so the curve is the expected proportion it is documented
+  as. 'varPro''s `partialpro()` returns every subject at the cohort-mean
+  intercept, which made `"prob"` nearly the probability for a typical
+  subject. Those curves change, most on heterogeneous cohorts. The typical
+  subject's curve is still available as the new `scale = "prob_typical"`.
+* `gg_partial_varpro(nvars = )` now keeps the `nvars` most important
+  variables. It used to keep the first `nvars` in list order.
+* `gg_vimp(nvar = )` on a multi-class 'randomForestSRC' forest now keeps the
+  most important variables. It trimmed before sorting, so `nvar = 2` on `iris`
+  returned the two least important.
+* `plot.gg_vimp(relative = TRUE)` now plots relative importance. The argument
+  was documented but never read.
+* `plot.gg_partial_varpro()` draws the `causal` curve only when asked for,
+  because on a shared axis it flattened the other two.
+* `plot.gg_vimp()`'s `lbls` argument is deprecated in favour of `labels`. It
+  still works, with a warning.
+
+The 3.5.x releases since 3.5.0 were cut from a maintenance branch, and
+`NEWS.md` repeats their fixes under 4.0.0. The list above is only what
+changes relative to 3.5.5.
+
+**DESCRIPTION**
+
+* `Depends` is now `R (>= 4.3.0)`, down from 4.4.0. The old floor was a
+  house policy, not a need of this package. The new one is the floor of
+  'randomForestSRC' and 'varPro', the strictest of the Imports, and a CI leg
+  on R 4.3 tests it.
+* `SystemRequirements` now names the Quarto command line tool, which the
+  vignettes have needed since they moved to the Quarto engine.
+
+### Source tarball size
+
+The tarball is 4.18 MB, up from 2.42 MB for 3.5.5. Most of the increase is
+`vignettes/rhf_precomputed.rds` (1.5 MB), the fits behind the RHF vignette.
+They are grown offline by `vignettes/precompute_rhf.R` and read at build time,
+so the vignette rebuild grows no hazard forest.
+
+### Test environments
+
+* **Local:** macOS (aarch64-apple-darwin), R 4.6.1, `randomForestSRC` 3.10.0,
+  `R CMD check --as-cran --run-donttest` with the manual, built from a clean
+  `git archive` export: **0 ERRORs, 0 WARNINGs, 1 NOTE** (CRAN incoming
+  feasibility: 10 updates in the past 6 months). Run 2026-11-03. Timed steps:
+  examples with `--run-donttest` 34s, tests 29s, vignette rebuild 62s. The full test suite, run with
+  `NOT_CRAN=true` so the `skip_on_cran()` tests run too: 2589 passing,
+  0 failing.
+* **GitHub Actions:** `R CMD check --as-cran` on Linux, macOS and Windows
+  (release and devel), plus `urlchecker::url_check()`: all pass, with the
+  incoming-feasibility NOTE.
+* **Reverse-dependency check:** 0 reverse dependencies on CRAN.
+
+**win-builder:** x86_64-w64-mingw32, Windows Server 2022, all three branches
+run against the submitted tarball. Each returns **Status: 1 NOTE**, the
+incoming-feasibility NOTE set out below, with no ERRORs or WARNINGs.
+`checking for hidden files and directories` is OK on all three.
+
+| Step | R-devel (r90827) | R-release (4.6.2) | R-oldrelease (4.5.3) |
+|---|---|---|---|
+| CRAN incoming feasibility | 89s | 39s | 81s |
+| R code for possible problems | 27s | 24s | 28s |
+| examples | 37s | 36s | 42s |
+| tests | 65s | 65s | 75s |
+| re-building vignette outputs | 150s | 147s | 172s |
+| PDF version of manual | 15s | 15s | 14s |
+| HTML version of manual | | 22s | 16s |
+| **timed steps** | **383s** | **348s** | **428s** |
+
+`00check.log` does not report an overall time, so these are sums of the timed
+steps; a blank cell is a step `00check.log` did not time on that branch. For
+comparison, 3.5.5's runs were 349s, 346s and 276s. Most of the difference is
+the incoming-feasibility step, which waits on CRAN's servers: 81s to 89s here
+against 14s for 3.5.5. Without it, R-devel is 294s against 335s for 3.5.5.
+R-oldrelease is the one that grew in its own right, by about 85s across the
+vignette rebuild (172s against 132s), tests and examples.
+
+### NOTE disposition
+
+The incoming-feasibility NOTE has two parts.
+
+* `Number of updates in past 6 months: 10`, which the first section of this
+  note explains.
+* `Possibly misspelled words in DESCRIPTION: Hsich`. That is a surname, from
+  the citation for Random Hazard Forests (Ishwaran, Hsich, Kogalur and Lee,
+  2026) that 4.0.0 adds to the Description. It is spelled correctly.
+
+---
+
 ## v3.5.2: resubmission, check time back under ten minutes
 
 This replaces the 3.5.1 submission of 2026-08-19, which the incoming pretest
