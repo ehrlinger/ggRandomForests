@@ -154,10 +154,24 @@ jobs:
       - name: Known probe must be clean on the CRAN randomForestSRC
         shell: bash
         run: |
-          set +e
-          Rscript tools/check-upstream-ubsan.R --known-rfsrc 2>&1 | tee known-cran-ubsan.log
-          set -e
-          Rscript tools/check-upstream-ubsan.R --check-clean known-cran-ubsan.log
+          # Clean means the probe exited 0 AND printed no diagnostic. The
+          # diagnostic check alone passes an R error before the native call.
+          gate() {
+            local log="$1"; shift
+            set +e
+            "$@" 2>&1 | tee "$log"
+            local status=${PIPESTATUS[0]}
+            set -e
+            [[ "$status" -eq 0 ]] || return 1
+            Rscript tools/check-upstream-ubsan.R --check-clean "$log"
+          }
+          # Self-test: the gate must reject a probe that fails before any
+          # native code runs.
+          if gate early-error-ubsan.log Rscript -e 'stop("early failure")'; then
+            echo "::error::The clean-probe gate accepted an early non-UBSAN error."
+            exit 1
+          fi
+          gate known-cran-ubsan.log Rscript tools/check-upstream-ubsan.R --clean-rfsrc
 
       - name: Run supported rfsrc, varpro, and RHF workflows
         shell: bash
