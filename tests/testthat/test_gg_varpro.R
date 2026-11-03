@@ -618,8 +618,18 @@ test_that("gg_varpro: the noise bar matches varpro_coverage() on the same rules"
 
 test_that("gg_varpro: at trim = 0 unscored noise sets no bar and unscored rows are not selected (PR #381 review)", {
   vp <- make_vp_noise()
+  ## Which variables a seeded draw scores moves with randomForestSRC, so drop
+  ## the scores of the noise columns and of x3 rather than hunt for a seed.
+  real_score <- .varpro_score_rules
+  local_mocked_bindings(.varpro_score_rules = function(object, ...) {
+    ext <- real_score(object, ...)
+    res <- ext$scored$results
+    res$imp[grepl("^noise|^x3$", object$xvar.names[res$variable])] <- NA
+    ext$scored$results <- res
+    ext
+  })
   set.seed(6)
-  expect_warning(gg <- gg_varpro(vp, noise = "^noise", trim = 0, max.tree = 3L,
+  expect_warning(gg <- gg_varpro(vp, noise = "^noise", trim = 0, max.tree = 20L,
                                  max.rules.tree = 1L),
                  "no noise variable was tested")
   imp <- gg$imp
