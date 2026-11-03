@@ -6,6 +6,9 @@
 \usage{
 .varpro_coverage_kind(object, vars, kind_values)
 }
+\value{
+A character vector, \code{"categorical"} or \code{"continuous"}, one per variable.
+}
 \description{
 Categorical or continuous, per original variable
 }

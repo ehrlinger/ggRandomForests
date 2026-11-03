@@ -6,6 +6,9 @@
 \usage{
 .varpro_noise_annotator(object, noise, kind_values, local.std)
 }
+\value{
+\code{NULL}, or a function that takes and returns the importance data frame.
+}
 \description{
 Returns \code{NULL} without \code{noise}; otherwise a function applied to
 the full importance table, before \code{nvar} truncation, so the noise bar

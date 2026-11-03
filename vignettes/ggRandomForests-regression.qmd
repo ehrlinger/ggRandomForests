@@ -35,7 +35,7 @@ knitr::opts_chunk$set(
   warning = FALSE,
   comment = "#>"
 )
-options(mc.cores = 1, rf.cores = 1)
+old_opts <- options(mc.cores = 1, rf.cores = 1)
 ```
 
 # Introduction
@@ -502,5 +502,12 @@ object (often a data frame, sometimes a small list of data frames); the
 plotting is a separate step. Use the package's `plot()`
 methods when the default figure is what you want, and reach for `ggplot2`
 directly when it is not.
+
+```{r}
+#| label: restore-options
+#| include: false
+#| cache: false
+options(old_opts)
+```
 
 # References

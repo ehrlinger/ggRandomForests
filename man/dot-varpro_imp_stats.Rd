@@ -6,6 +6,10 @@
 \usage{
 .varpro_imp_stats(mat)
 }
+\value{
+A data frame with one row per variable: \code{variable},
+\code{median}, \code{q05}, \code{q15}, \code{q85}, \code{q95} and \code{mean}.
+}
 \description{
 Quantiles of the per-tree values as they are.  With varPro's
 \code{local.std = TRUE} those values are already on z's scale (z is their

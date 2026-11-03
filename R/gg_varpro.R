@@ -310,6 +310,7 @@ gg_varpro <- function(object,
 #' Returns \code{NULL} without \code{noise}; otherwise a function applied to
 #' the full importance table, before \code{nvar} truncation, so the noise bar
 #' is judged on every variable.
+#' @return \code{NULL}, or a function that takes and returns the importance data frame.
 #' @keywords internal
 .varpro_noise_annotator <- function(object, noise, kind_values, local.std) {
   if (is.null(noise)) return(NULL)
@@ -380,6 +381,7 @@ gg_varpro <- function(object,
 #' Reconstructs the ntree x p per-tree importance matrix from
 #' \code{object$results}, replicating the aggregation performed internally
 #' by \code{varPro:::.importance.varpro.workhorse}.
+#' @return A numeric matrix of per-tree importance, trees by variables.
 #' @keywords internal
 .build_varpro_imp_tree <- function(object) {
   dta        <- object$results
@@ -421,6 +423,7 @@ gg_varpro <- function(object,
 #' A rule is usable when varPro scored it (non-missing \code{imp}).  The
 #' denominator is the trees in \code{scored$results}, the same trees the
 #' per-tree matrix and z are built from.
+#' @return A numeric vector of coverage shares, named by variable.
 #' @keywords internal
 .varpro_imp_coverage <- function(scored, trees) {
   dta  <- scored$results
@@ -435,6 +438,8 @@ gg_varpro <- function(object,
 #' Quantiles of the per-tree values as they are.  With varPro's
 #' \code{local.std = TRUE} those values are already on z's scale (z is their
 #' winsorised mean); with \code{FALSE} they are raw importances.
+#' @return A data frame with one row per variable: \code{variable},
+#'   \code{median}, \code{q05}, \code{q15}, \code{q85}, \code{q95} and \code{mean}.
 #' @keywords internal
 .varpro_imp_stats <- function(mat) {
   data.frame(
@@ -456,6 +461,7 @@ gg_varpro <- function(object,
 }
 
 #' Build the tidy importance data structures from importance() output
+#' @return A list with elements \code{imp}, \code{imp_tree}, \code{stats} and \code{conditional}.
 #' @keywords internal
 .build_varpro_imp_dfs <- function(imp_out, imp_tree_mat, family, cutoff, nvar,
                                    faithful, conditional, coverage = NULL,

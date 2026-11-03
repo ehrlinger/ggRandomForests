@@ -21,7 +21,7 @@ vignette: >
 if (any(file.exists(.fo))) source(.fo[file.exists(.fo)][1])
 knitr::opts_chunk$set(message = FALSE, warning = FALSE,
                       fig.width = 7, fig.height = 4.5)
-options(mc.cores = 1, rf.cores = 1)
+old_opts <- options(mc.cores = 1, rf.cores = 1)
 ```
 
 ```{r libs}
@@ -513,5 +513,12 @@ the factor itself to each level, and is the check.
 each case without a link function, so on the survival scale a curve can leave
 [0, 1]; `gg_partial_varpro()` clamps it. On a small arm, a curve sitting on 0
 or 1 is a sign of that clamp, not of certainty.
+
+```{r}
+#| label: restore-options
+#| include: false
+#| cache: false
+options(old_opts)
+```
 
 # References

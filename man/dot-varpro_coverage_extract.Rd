@@ -6,6 +6,10 @@
 \usage{
 .varpro_coverage_extract(object, max.tree, max.rules.tree, trim, seed)
 }
+\value{
+A list: \code{rules} (the scored release rules), \code{importance}
+(varPro's importance table) and \code{trees} (the number of trees scored).
+}
 \description{
 Mirrors the default (\code{local.std = TRUE}) path of
 \code{varPro::importance()}: rules from \code{varpro.strength()} with

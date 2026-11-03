@@ -6,6 +6,9 @@
 \usage{
 .varpro_coverage_cut_ref(out)
 }
+\value{
+A character vector, one kind per row, \code{NA} when no noise was tested.
+}
 \description{
 Kind of the noise that set each row's bar: its own, or the fallback's
 }

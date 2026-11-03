@@ -6,6 +6,9 @@
 \usage{
 .varpro_coverage_imp(imp, family)
 }
+\value{
+The unconditional importance data frame.
+}
 \description{
 Unconditional importance table from importance(), whatever the family
 }

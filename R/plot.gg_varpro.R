@@ -244,6 +244,7 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
 #'
 #' One noise bar (a single kind, or both kinds at the same z) is a line
 #' across the plot; two are a dashed tick on each variable's row.
+#' @return A ggplot2 layer: \code{geom_hline()} for one bar, \code{geom_errorbar()} for one per row.
 #' @keywords internal
 .varpro_cut_layer <- function(stats_df, cutoff, noise_bar) {
   cuts <- if (noise_bar) unique(stats_df$noise_cut) else cutoff
@@ -260,6 +261,7 @@ plot.gg_varpro <- function(x, type, labels = NULL, ...) {
 }
 
 #' Caption line naming the noise bar for each kind
+#' @return A single character string.
 #' @keywords internal
 .varpro_noise_caption <- function(imp) {
   bars <- unique(imp[, c("kind", "noise_cut", "noise_ref")])

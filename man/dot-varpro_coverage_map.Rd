@@ -6,6 +6,9 @@
 \usage{
 .varpro_coverage_map(object, terms)
 }
+\value{
+A character vector of original variable names, named by term.
+}
 \description{
 varPro stores the term-to-variable map as the \code{"xvar.map"} attribute
 of \code{object$x}.  Suffix stripping cannot be trusted: a factor

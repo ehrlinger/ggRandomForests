@@ -229,6 +229,7 @@ summary.gg_survival <- function(object, ...) {
 }
 
 #' How a gg_varpro selection was made, for print() and summary()
+#' @return A single character string.
 #' @keywords internal
 .varpro_sel_rule <- function(prov, cutoff) {
   if (is.null(prov$noise)) sprintf("z > %.2g", cutoff) else "z above tested noise of its kind"

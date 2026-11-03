@@ -6,6 +6,9 @@
 \usage{
 .varpro_coverage_cut(out)
 }
+\value{
+A numeric vector of noise bars, one per row.
+}
 \description{
 Largest tested-noise z of the same kind; falls back to all tested noise
 }

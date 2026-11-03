@@ -6,6 +6,9 @@
 \usage{
 .varpro_cut_layer(stats_df, cutoff, noise_bar)
 }
+\value{
+A ggplot2 layer: \code{geom_hline()} for one bar, \code{geom_errorbar()} for one per row.
+}
 \description{
 One noise bar (a single kind, or both kinds at the same z) is a line
 across the plot; two are a dashed tick on each variable's row.

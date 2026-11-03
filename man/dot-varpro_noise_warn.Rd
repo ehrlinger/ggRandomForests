@@ -6,6 +6,9 @@
 \usage{
 .varpro_noise_warn(out, scored, noise)
 }
+\value{
+\code{invisible(NULL)}; called for its warnings.
+}
 \description{
 Warn when the noise check is empty or borrows another kind's bar
 }

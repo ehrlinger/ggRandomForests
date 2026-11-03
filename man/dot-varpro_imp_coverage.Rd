@@ -6,6 +6,9 @@
 \usage{
 .varpro_imp_coverage(scored, trees)
 }
+\value{
+A numeric vector of coverage shares, named by variable.
+}
 \description{
 A rule is usable when varPro scored it (non-missing \code{imp}).  The
 denominator is the trees in \code{scored$results}, the same trees the
