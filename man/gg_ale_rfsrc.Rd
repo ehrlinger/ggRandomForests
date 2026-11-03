@@ -93,10 +93,13 @@ Supplying \code{xvar2.name} switches to second-order (interaction) ALE
 between \code{xvar.names} and \code{xvar2.name}, isolating the part of
 their joint effect that is not explained by either variable's own main
 effect. It is the ALE analogue of an interaction term, computed on a
-2-D grid of bins using the same local-perturbation idea, with the main
-effects removed via a row/column/grand weighted-mean decomposition (the
-same device used to isolate an interaction term in a two-way ANOVA). A
-purely additive forest returns an all-zero surface.
+2-D grid of bins using the same local-perturbation idea. Following Apley
+and Zhu, each variable's main effect is estimated from the accumulated
+surface by accumulating its local differences along that variable's axis,
+weighted by the observations in each cell, and subtracted; the surface is
+then centred to a weighted mean of zero. A cell with no observations takes
+the local effect of the nearest cell that has some. A purely additive
+forest returns an all-zero surface.
 }
 \examples{
 ## ------------------------------------------------------------
