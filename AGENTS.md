@@ -249,7 +249,7 @@ project context. Read it before writing user-facing text.
   undefined symbol or an unused local. Do not rely on a green lint for that class of error.
 - `testthat` runs on **edition 2** here: `DESCRIPTION` has no `Config/testthat/edition` field.
   Do not assume 3rd-edition semantics.
-- `randomForestSRC` output structure varies by version (3.9.0 is installed; `DESCRIPTION`
+- `randomForestSRC` output structure varies by version (the baselines are drawn with 3.10.0; `DESCRIPTION`
   requires `>= 3.4.0`). Never index its fields by position.
 - **A `randomForestSRC` upgrade can move rendered output, and CI will not tell you.** The
   3.6.2 to 3.7.0 bump shifted five survival vdiffr baselines — `gg_vimp survival`,
@@ -266,7 +266,9 @@ project context. Read it before writing user-facing text.
   `packageVersion("randomForestSRC")` against the version named above.** Regenerating them
   is a change to what "correct output" means, so it belongs on its own branch with this
   line updated in the same commit — never folded into a feature PR. The 3.7.0 to 3.9.0 bump
-  moved no baseline.
+  moved no baseline. The 3.9.0 to 3.10.0 bump moved 40, across every `randomForestSRC` family,
+  because 3.10.0 grows a different forest from the same seed; no `randomForest` or RHF baseline
+  moved. **A machine still on 3.9.0 now fails those 40.**
 
   `randomForestRHF` behaves the same way. 2.1.0 made `coe.aggregate = "max.robust"` the
   default for new fits, which moved `gg-auct-chf` and `gg-rhf-importance-priority`; refitting
