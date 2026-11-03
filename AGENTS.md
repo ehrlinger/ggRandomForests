@@ -306,9 +306,9 @@ context. Read it before writing user-facing text.
 - `testthat` runs on **edition 2** here: `DESCRIPTION` has no
   `Config/testthat/edition` field. Do not assume 3rd-edition semantics.
 
-- `randomForestSRC` output structure varies by version (3.9.0 is
-  installed; `DESCRIPTION` requires `>= 3.4.0`). Never index its fields
-  by position.
+- `randomForestSRC` output structure varies by version (the baselines
+  are drawn with 3.10.0; `DESCRIPTION` requires `>= 3.4.0`). Never index
+  its fields by position.
 
 - **A `randomForestSRC` upgrade can move rendered output, and CI will
   not tell you.** The 3.6.2 to 3.7.0 bump shifted five survival vdiffr
@@ -329,7 +329,11 @@ context. Read it before writing user-facing text.
   Regenerating them is a change to what “correct output” means, so it
   belongs on its own branch with this line updated in the same commit —
   never folded into a feature PR. The 3.7.0 to 3.9.0 bump moved no
-  baseline.
+  baseline. The 3.9.0 to 3.10.0 bump moved 40 of 66, in most
+  `randomForestSRC`-fitted families (the `gg_partial` ones held),
+  because 3.10.0 grows a different forest from the same seed; no
+  `randomForest` or RHF baseline moved. **A machine still on 3.9.0 now
+  fails those 40.**
 
   `randomForestRHF` behaves the same way. 2.1.0 made
   `coe.aggregate = "max.robust"` the default for new fits, which moved
