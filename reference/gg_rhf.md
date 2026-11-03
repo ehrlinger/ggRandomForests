@@ -42,12 +42,15 @@ be `NA`, and they are masked on different rules. From randomForestRHF
 2.0.0 the pointwise hazard is defined only where a grid point falls
 inside one of the case's supplied `(start, stop]` intervals, and is `NA`
 in gaps and after the final stop time. From 2.0.3 the cumulative hazard
-is `NA` after each case's final stop, but stays flat through an internal
-gap rather than going missing there. So on a fit whose cases each have a
-single interval the two masks look the same, and with time-dependent
-covariates they do not. Earlier versions carried `chf` across the whole
-grid. The values are passed through unchanged; use `na.rm = TRUE` when
-summarising either column, or see
+is `NA` after each case's final stop. randomForestRHF documents it as
+flat through an internal gap, but 2.1.0 returns `NA` from the start of a
+case's first gap to the end of its follow-up, including the observed
+interval after the gap, where the hazard is defined. So do not rely on
+`chf` for a case with a gap in its path. On a fit whose cases each have
+a single interval the two masks look the same; with time-dependent
+covariates they need not. Earlier versions carried `chf` across the
+whole grid. The values are passed through unchanged; use `na.rm = TRUE`
+when summarising either column, or see
 [`plot.gg_rhf()`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_rhf.md),
 which drops the masked cells before drawing.
 

@@ -172,11 +172,11 @@ if (requireNamespace("varPro", quietly = TRUE)) {
 }
 #> Warning: no noise variable was tested (scored in at least trim of the trees, and in at least one), so the noise check is empty: noise_cut is 0 and every tested row is selected.
 #>        term variable eligible n_trees coverage n_rules         z tested noise
-#> 1       cyl      cyl     TRUE      34     0.68      74 2.2088051   TRUE FALSE
-#> 2        wt       wt     TRUE      19     0.38      40 0.9322123   TRUE FALSE
-#> 3      disp     disp     TRUE       9     0.18      19 0.2653033   TRUE FALSE
-#> 4        hp       hp     TRUE       7     0.14      14 0.2806418   TRUE FALSE
-#> 5      drat     drat    FALSE       0     0.00       0        NA  FALSE FALSE
+#> 1       cyl      cyl     TRUE      35     0.70      76 2.2808599   TRUE FALSE
+#> 2        wt       wt     TRUE      20     0.40      42 1.0076535   TRUE FALSE
+#> 3      disp     disp     TRUE       8     0.16      17 0.1831216   TRUE FALSE
+#> 4        hp       hp     TRUE       6     0.12      12 0.2366239   TRUE FALSE
+#> 5      drat     drat     TRUE       0     0.00       0        NA  FALSE FALSE
 #> 6      qsec     qsec     TRUE       0     0.00       0        NA  FALSE FALSE
 #> 7        vs       vs     TRUE       0     0.00       0        NA  FALSE FALSE
 #> 8        am       am    FALSE       0     0.00       0        NA  FALSE FALSE
