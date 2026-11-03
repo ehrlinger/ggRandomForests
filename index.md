@@ -22,8 +22,8 @@ fits from
 [randomForestRHF::rhf()](https://cran.r-project.org/package=randomForestRHF),
 a random-hazard forest for time-to-event data whose predictor values can
 change during follow-up. It also supports `randomForest` fits. Supported
-minimum versions are randomForestSRC 3.4.0, varPro 3.1.0, and
-randomForestRHF 2.0.0. The package keeps the data step apart from the
+minimum versions are randomForestSRC 3.4.0, varPro 3.3.0, and
+randomForestRHF 2.0.3. The package keeps the data step apart from the
 figure step, so you can inspect, save, or reuse the tidy object on its
 own.
 
