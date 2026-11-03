@@ -87,3 +87,7 @@ Rplots\.pdf$
 # stay in git; only the built tarball loses them.
 ^tests/testthat/_snaps$
 ^news$
+
+# testthat failure leftovers, in case a local run left some behind.
+^tests/testthat/_problems$
+^tests/testthat/testthat-problems\.rds$
