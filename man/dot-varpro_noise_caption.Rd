@@ -6,6 +6,9 @@
 \usage{
 .varpro_noise_caption(imp)
 }
+\value{
+A single character string.
+}
 \description{
 Caption line naming the noise bar for each kind
 }

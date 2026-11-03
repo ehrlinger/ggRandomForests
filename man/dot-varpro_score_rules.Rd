@@ -12,6 +12,10 @@
   local.std = TRUE
 )
 }
+\value{
+A list: \code{rules} (the usable rows of the strength array) and
+\code{scored} (a copy of \code{object} holding the scored rules).
+}
 \description{
 The rule-sampling half of \code{varPro::importance()}.  With
 \code{local.std = TRUE} each usable rule (out-of-bag and complement cases

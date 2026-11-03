@@ -6,6 +6,9 @@
 \usage{
 .varpro_sel_rule(prov, cutoff)
 }
+\value{
+A single character string.
+}
 \description{
 How a gg_varpro selection was made, for print() and summary()
 }

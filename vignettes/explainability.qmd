@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
   cache      = TRUE,
   cache.path = "explainability_cache/"
 )
-options(mc.cores = 1, rf.cores = 1)
+old_opts <- options(mc.cores = 1, rf.cores = 1)
 ```
 
 ```{r libs}
@@ -371,6 +371,13 @@ fit and are covered in the unsupervised varPro vignette.
 **Choosing variables.** Everything here assumes you already know which variable
 you care about. For getting to that shortlist, see `gg_vimp()`,
 `gg_minimal_depth()` and the varPro vignette.
+
+```{r}
+#| label: restore-options
+#| include: false
+#| cache: false
+options(old_opts)
+```
 
 ## References
 

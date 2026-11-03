@@ -216,6 +216,8 @@ varpro_coverage <- function(object,
 #' memberships, local importance for each usable rule (out-of-bag and
 #' complement cases both present), then varPro's own aggregation.  Returns
 #' the usable rules and the importance table built from exactly those rules.
+#' @return A list: \code{rules} (the scored release rules), \code{importance}
+#'   (varPro's importance table) and \code{trees} (the number of trees scored).
 #' @keywords internal
 .varpro_coverage_extract <- function(object, max.tree, max.rules.tree, trim, seed) {
   ext <- .varpro_score_rules(object, max.tree, max.rules.tree, seed, local.std = TRUE)
@@ -240,6 +242,8 @@ varpro_coverage <- function(object,
 #' \code{FALSE} the strength array's own importance is used, unfiltered.
 #' Returns the usable rules and a copy of \code{object} whose \code{$results}
 #' holds the scored rules, ready for \code{importance.varpro.workhorse()}.
+#' @return A list: \code{rules} (the usable rows of the strength array) and
+#'   \code{scored} (a copy of \code{object} holding the scored rules).
 #' @keywords internal
 .varpro_score_rules <- function(object, max.tree, max.rules.tree, seed = NULL,
                                 local.std = TRUE) {
@@ -278,6 +282,7 @@ varpro_coverage <- function(object,
 #' varPro stores the term-to-variable map as the \code{"xvar.map"} attribute
 #' of \code{object$x}.  Suffix stripping cannot be trusted: a factor
 #' \code{g} with a level encoded \code{ga.1} and a numeric \code{ga} collide.
+#' @return A character vector of original variable names, named by term.
 #' @keywords internal
 .varpro_coverage_map <- function(object, terms) {
   map <- attr(object$x, "xvar.map", exact = TRUE)
@@ -295,6 +300,7 @@ varpro_coverage <- function(object,
 }
 
 #' Validate max_untested before the rules are extracted
+#' @return \code{invisible(NULL)}; called for its error.
 #' @keywords internal
 .varpro_coverage_check_max <- function(max_untested) {
   if (is.null(max_untested)) return(invisible(NULL))
@@ -310,6 +316,7 @@ varpro_coverage <- function(object,
 #' A term is tested when rules scored it in at least \code{trim} of the
 #' \code{trees} and in at least one tree, so that \code{trim = 0} does not
 #' make an unscored term tested.  Returns a logical vector named by term.
+#' @return A logical vector named by term.
 #' @keywords internal
 .varpro_coverage_term_ok <- function(rule_term, tree_id, terms, trees, trim) {
   n <- vapply(terms, function(t) length(unique(tree_id[rule_term %in% t])), integer(1))
@@ -324,6 +331,7 @@ varpro_coverage <- function(object,
 #' is the union of its levels' trees, so it can pass \code{trim} while every
 #' level, and so every level's z, was trimmed away.  Returns
 #' \code{invisible(NULL)} when the screen passes.
+#' @return \code{invisible(NULL)}; called for its error.
 #' @keywords internal
 .varpro_coverage_guard <- function(out, max_untested, trim, term_var, term_ok) {
   real <- if ("noise" %in% names(out)) !out$noise else rep(TRUE, nrow(out))
@@ -350,6 +358,7 @@ varpro_coverage <- function(object,
 }
 
 #' Unconditional importance table from importance(), whatever the family
+#' @return The unconditional importance data frame.
 #' @keywords internal
 .varpro_coverage_imp <- function(imp, family) {
   if (identical(family, "class") && is.list(imp) && !is.data.frame(imp)) {
@@ -362,6 +371,7 @@ varpro_coverage <- function(object,
 }
 
 #' Categorical or continuous, per original variable
+#' @return A character vector, \code{"categorical"} or \code{"continuous"}, one per variable.
 #' @keywords internal
 .varpro_coverage_kind <- function(object, vars, kind_values) {
   factors <- names(attr(object$x, "levels", exact = TRUE))
@@ -382,6 +392,8 @@ varpro_coverage <- function(object,
 #' unscored noise row a bar at 0.  Adds \code{noise}, \code{kind},
 #' \code{noise_cut} and \code{noise_ref} (the kind of the noise that set the
 #' bar, \code{NA} when none was tested), and sets \code{selected}.
+#' @return \code{out} with the \code{noise}, \code{kind}, \code{noise_cut},
+#'   \code{noise_ref} and \code{selected} columns set.
 #' @keywords internal
 .varpro_noise_judge <- function(out, vars, object, noise, kind_values) {
   out$noise <- grepl(noise, vars)
@@ -396,6 +408,7 @@ varpro_coverage <- function(object,
 }
 
 #' Warn when the noise check is empty or borrows another kind's bar
+#' @return \code{invisible(NULL)}; called for its warnings.
 #' @keywords internal
 .varpro_noise_warn <- function(out, scored, noise) {
   if (!any(out$noise)) {
@@ -418,6 +431,7 @@ varpro_coverage <- function(object,
 }
 
 #' Kind of the noise that set each row's bar: its own, or the fallback's
+#' @return A character vector, one kind per row, \code{NA} when no noise was tested.
 #' @keywords internal
 .varpro_coverage_cut_ref <- function(out) {
   tn <- out$noise & out$tested & !is.na(out$z)
@@ -428,6 +442,7 @@ varpro_coverage <- function(object,
 }
 
 #' Largest tested-noise z of the same kind; falls back to all tested noise
+#' @return A numeric vector of noise bars, one per row.
 #' @keywords internal
 .varpro_coverage_cut <- function(out) {
   tn <- out$noise & out$tested & !is.na(out$z)

@@ -6,6 +6,9 @@
 \usage{
 .varpro_coverage_term_ok(rule_term, tree_id, terms, trees, trim)
 }
+\value{
+A logical vector named by term.
+}
 \description{
 A term is tested when rules scored it in at least \code{trim} of the
 \code{trees} and in at least one tree, so that \code{trim = 0} does not

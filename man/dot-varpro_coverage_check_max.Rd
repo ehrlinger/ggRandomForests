@@ -6,6 +6,9 @@
 \usage{
 .varpro_coverage_check_max(max_untested)
 }
+\value{
+\code{invisible(NULL)}; called for its error.
+}
 \description{
 Validate max_untested before the rules are extracted
 }

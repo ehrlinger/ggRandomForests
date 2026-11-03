@@ -6,6 +6,9 @@
 \usage{
 .build_varpro_imp_tree(object)
 }
+\value{
+A numeric matrix of per-tree importance, trees by variables.
+}
 \description{
 Reconstructs the ntree x p per-tree importance matrix from
 \code{object$results}, replicating the aggregation performed internally

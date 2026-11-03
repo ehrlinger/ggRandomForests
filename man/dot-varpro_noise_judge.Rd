@@ -6,6 +6,10 @@
 \usage{
 .varpro_noise_judge(out, vars, object, noise, kind_values)
 }
+\value{
+\code{out} with the \code{noise}, \code{kind}, \code{noise_cut},
+\code{noise_ref} and \code{selected} columns set.
+}
 \description{
 Shared by \code{varpro_coverage()} and \code{gg_varpro()}.  \code{out}
 needs \code{z}, \code{tested} and \code{coverage}; \code{vars} gives each

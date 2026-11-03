@@ -6,6 +6,9 @@
 \usage{
 .varpro_coverage_guard(out, max_untested, trim, term_var, term_ok)
 }
+\value{
+\code{invisible(NULL)}; called for its error.
+}
 \description{
 \code{out} is the coverage table before sorting, with \code{noise} only
 when a noise pattern was given.  Testedness is judged per term from
