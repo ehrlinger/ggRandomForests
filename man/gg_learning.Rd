@@ -11,7 +11,10 @@ gg_learning(subsamples, top_k = 5L, min_events = 50, ...)
 \code{\link[randomForestSRC:subsample]{randomForestSRC::subsample()}}, one per subsampling fraction, all from
 the same forest and all run with \code{performance = TRUE}. A double-bootstrap
 result (\code{subsample(bootstrap = TRUE, performance = TRUE)}) may be
-included and is placed at fraction 1. A single result is also accepted.}
+included and is placed at fraction 1. A plain subsample with
+\code{subratio = 1} is refused: it refits the same cases every time, so its
+agreement measures forest randomness, not resampling stability. A single
+result is also accepted.}
 
 \item{top_k}{Positive integer; the number of top-ranked variables compared
 between replicates. Defaults to 5, or the number of predictors if fewer.}
@@ -58,8 +61,14 @@ because the long tail of noise variables would otherwise dominate.
 
 \strong{Events.} The x axis counts events for survival (deaths, or whatever the
 status codes as 1), the size of the smallest class for classification, and
-observations for regression. \code{subsample()} stratifies on the outcome by
-default, so each count is the full-cohort count times the fraction.
+observations for regression. The counts are computed, not observed:
+\code{subsample()} keeps no record of which cases it drew. With its default
+\code{stratify = TRUE} it takes the whole part of each class (or status) count
+times the fraction, so the counts here are exact. With \code{stratify = FALSE}
+the counts vary from refit to refit and the ones reported are what a
+stratified draw would give, so treat \code{low_events} as approximate. The
+double bootstrap draws as many cases as the cohort holds, with
+replacement, and is reported at the cohort's counts.
 
 \strong{Caveats.} Subsamples at large fractions share most of their cases:
 any two at 0.75 share about three quarters of each other's. Between-replicate

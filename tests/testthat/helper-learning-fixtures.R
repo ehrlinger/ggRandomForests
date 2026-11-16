@@ -4,12 +4,13 @@
 # as an "err" row when performance = TRUE. No forest is grown, so the vdiffr
 # baselines do not move with randomForestSRC.
 .fake_learning_one <- function(fraction, n_rep = 3L, performance = TRUE,
-                               family = "surv") {
+                               family = "surv", events = 100L) {
   xvars <- paste0("x", 1:6)
   rf <- list(
     family = family, n = 400L, ntree = 100L, xvar.names = xvars,
     yvar = if (family == "surv") {
-      data.frame(time = seq_len(400), status = rep(c(1L, 0L, 0L, 0L), 100))
+      data.frame(time = seq_len(400),
+                 status = rep(c(1L, 0L), c(events, 400L - events)))
     } else if (family == "class") {
       factor(rep(c("a", "b", "b"), length.out = 400))
     } else {

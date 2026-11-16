@@ -37,6 +37,28 @@ test_that("gg_learning counts the smallest class and regression n", {
   expect_equal(attr(rg, "provenance")$metric, "OOB mean squared error")
 })
 
+test_that("counts follow randomForestSRC's stratified draw: floored per stratum", {
+  # 99 events and 301 censored at 0.5: 49 + 150, not round(99 / 2) = 50.
+  x <- gg_learning(.fake_learning(c(0.5, 1), events = 99L), min_events = 50)
+  st <- attr(x, "stability")
+  expect_equal(st$events, c(49, 99))
+  expect_equal(st$n, c(199, 400))
+  expect_equal(st$low_events, c(TRUE, FALSE))
+  # Classes of 134 and 266 at 0.25: 33 and 66.
+  cl <- attr(gg_learning(.fake_learning(0.25, family = "class")), "stability")
+  expect_equal(c(cl$n, cl$events), c(99, 33))
+  rg <- attr(gg_learning(.fake_learning(0.125, family = "regr")), "stability")
+  expect_equal(c(rg$n, rg$events), c(50, 50))
+})
+
+test_that("gg_learning refuses results from different forests of the same shape", {
+  mixed <- c(.fake_learning(0.25), .fake_learning(0.5, events = 75L))
+  expect_error(gg_learning(mixed), "same forest")
+  other_trees <- .fake_learning(c(0.25, 0.5))
+  other_trees[[2]]$rf$ntree <- 500L
+  expect_error(gg_learning(other_trees), "same forest")
+})
+
 test_that("gg_learning accepts a single result and caps top_k at p", {
   x <- gg_learning(.fake_learning_one(0.5), top_k = 50)
   expect_equal(attr(x, "provenance")$top_k, 6L)
@@ -132,4 +154,42 @@ test_that("gg_learning reads real subsample() output in every family", {
   no_perf <- randomForestSRC::subsample(fits$regr, B = 2, subratio = 0.5,
                                         verbose = FALSE)
   expect_error(gg_learning(no_perf), "performance = TRUE")
+
+  # subratio = 1 refits the same cases; only the double bootstrap may stand
+  # for the whole cohort.
+  whole <- randomForestSRC::subsample(fits$regr, B = 2, subratio = 1,
+                                      performance = TRUE, verbose = FALSE)
+  expect_error(gg_learning(whole), "bootstrap = TRUE")
+
+  # The reported counts are the ones a stratified draw takes, checked against
+  # randomForestSRC's own sampler on an odd event count.
+  status <- fits$surv$yvar[[2L]]
+  for (f in c(0.25, 0.5)) {
+    pt <- randomForestSRC:::make.strat.sample(status, f)
+    s <- randomForestSRC::subsample(fits$surv, B = 2, subratio = f,
+                                    performance = TRUE, verbose = FALSE)
+    st <- attr(gg_learning(s, min_events = 0), "stability")
+    expect_equal(st$n, length(pt), info = f)
+    expect_equal(st$events, sum(status[pt] == 1), info = f)
+  }
+  # Unstratified draws are accepted and reported at the stratified counts,
+  # as documented: the result keeps no record of what was drawn.
+  un <- randomForestSRC::subsample(fits$surv, B = 2, subratio = 0.5,
+                                   stratify = FALSE, performance = TRUE,
+                                   verbose = FALSE)
+  expect_equal(attr(gg_learning(un, min_events = 0), "stability")$events,
+               as.integer(sum(status == 1) * 0.5))
+
+  # Two real forests with the same dimensions but different data.
+  shuffled <- mtcars
+  shuffled$mpg <- rev(shuffled$mpg)
+  other <- randomForestSRC::rfsrc(mpg ~ ., shuffled, ntree = 25,
+                                  importance = "permute", seed = -1)
+  pair <- list(
+    randomForestSRC::subsample(fits$regr, B = 2, subratio = 0.5,
+                               performance = TRUE, verbose = FALSE),
+    randomForestSRC::subsample(other, B = 2, subratio = 0.25,
+                               performance = TRUE, verbose = FALSE)
+  )
+  expect_error(gg_learning(pair), "same forest")
 })

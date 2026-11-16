@@ -17,7 +17,10 @@
 #'   [randomForestSRC::subsample()], one per subsampling fraction, all from
 #'   the same forest and all run with `performance = TRUE`. A double-bootstrap
 #'   result (`subsample(bootstrap = TRUE, performance = TRUE)`) may be
-#'   included and is placed at fraction 1. A single result is also accepted.
+#'   included and is placed at fraction 1. A plain subsample with
+#'   `subratio = 1` is refused: it refits the same cases every time, so its
+#'   agreement measures forest randomness, not resampling stability. A single
+#'   result is also accepted.
 #' @param top_k Positive integer; the number of top-ranked variables compared
 #'   between replicates. Defaults to 5, or the number of predictors if fewer.
 #' @param min_events Non-negative number; fractions with fewer events than
@@ -40,8 +43,14 @@
 #'
 #' **Events.** The x axis counts events for survival (deaths, or whatever the
 #' status codes as 1), the size of the smallest class for classification, and
-#' observations for regression. `subsample()` stratifies on the outcome by
-#' default, so each count is the full-cohort count times the fraction.
+#' observations for regression. The counts are computed, not observed:
+#' `subsample()` keeps no record of which cases it drew. With its default
+#' `stratify = TRUE` it takes the whole part of each class (or status) count
+#' times the fraction, so the counts here are exact. With `stratify = FALSE`
+#' the counts vary from refit to refit and the ones reported are what a
+#' stratified draw would give, so treat `low_events` as approximate. The
+#' double bootstrap draws as many cases as the cohort holds, with
+#' replacement, and is reported at the cohort's counts.
 #'
 #' **Caveats.** Subsamples at large fractions share most of their cases:
 #' any two at 0.75 share about three quarters of each other's. Between-replicate
@@ -167,11 +176,14 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
     stop("'subsamples' must be a list of randomForestSRC::subsample() ",
          "results.", call. = FALSE)
   }
-  first <- subsamples[[1L]]$rf
-  same <- vapply(subsamples, function(s) {
-    identical(s$rf$family, first$family) && identical(s$rf$n, first$n) &&
-      identical(s$rf$xvar.names, first$xvar.names)
-  }, logical(1))
+  # subsample() keeps the parent forest in $rf, so results from one forest
+  # carry identical data and settings. Shape alone (family, n, names) would
+  # pass two different cohorts of the same size.
+  keys <- c("family", "n", "xvar.names", "yvar", "xvar", "ntree", "mtry",
+            "nodesize", "splitrule")
+  first <- subsamples[[1L]]$rf[keys]
+  same <- vapply(subsamples, function(s) identical(s$rf[keys], first),
+                 logical(1))
   if (!all(same)) {
     stop("All 'subsamples' must come from the same forest.", call. = FALSE)
   }
@@ -186,9 +198,16 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
          call. = FALSE)
   }
   y <- fit$yvar
+  # The strata subsample() samples within when stratify = TRUE: the classes,
+  # or the survival status. Regression is not stratified.
+  strata <- switch(family,
+    regr = NULL,
+    class = table(y),
+    surv = table(y[[2L]])
+  )
   events <- switch(family,
     regr = fit$n,
-    class = min(table(y)),
+    class = min(strata),
     surv = sum(y[[2L]] == 1)
   )
   metric <- switch(family,
@@ -197,13 +216,19 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
     surv = "OOB error (1 - C-index)"
   )
   list(family = family, n = fit$n, events = events, ntree = fit$ntree,
-       metric = metric)
+       metric = metric, strata = strata)
 }
 
 .learning_piece <- function(s, info) {
   boot <- inherits(s, "bootsample")
   reps <- if (boot) s$vmpB else s$vmpS
   fraction <- if (boot) 1 else as.numeric(s$subratio)
+  if (!boot && fraction >= 1) {
+    stop("A subsample() with subratio = 1 refits the same cases every time, ",
+         "so its agreement is not resampling stability. For the whole ",
+         "cohort use subsample(bootstrap = TRUE, performance = TRUE).",
+         call. = FALSE)
+  }
   tabs <- lapply(reps, function(r) {
     tab <- r[[1L]]
     stats::setNames(tab[[1L]], rownames(tab))
@@ -212,13 +237,32 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
     stop("Run randomForestSRC::subsample() with performance = TRUE; ",
          "the result has no OOB error.", call. = FALSE)
   }
+  counts <- .learning_counts(fraction, boot, info)
   list(
     fraction = fraction,
-    n = round(fraction * info$n),
-    events = round(fraction * info$events),
+    n = counts[["n"]],
+    events = counts[["events"]],
     error = vapply(tabs, function(v) v[["err"]], numeric(1)),
     vimp = lapply(tabs, function(v) v[names(v) != "err"])
   )
+}
+
+# Cases and events in each refit. A subsample takes as.integer(count * fraction)
+# from each stratum, as randomForestSRC 3.10.0's make.strat.sample() does, and
+# regression takes as.integer(n * fraction). Exact under the default
+# stratify = TRUE; with stratify = FALSE they are expected counts, because the
+# result keeps no record of the draw. The double bootstrap draws n cases with
+# replacement, so its counts are the cohort's.
+.learning_counts <- function(fraction, boot, info) {
+  if (boot) return(c(n = info$n, events = info$events))
+  if (is.null(info$strata)) {
+    n <- as.integer(info$n * fraction)
+    return(c(n = n, events = n))
+  }
+  per <- as.integer(as.numeric(info$strata) * fraction)
+  names(per) <- names(info$strata)
+  events <- if (info$family == "surv") per[["1"]] else min(per)
+  c(n = sum(per), events = events)
 }
 
 .learning_stability <- function(vimp, k) {
