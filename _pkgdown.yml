@@ -68,6 +68,7 @@ reference:
       - gg_error
       - plot.gg_error
       - gg_learning
+      - learning_subsample
       - plot.gg_learning
 
   - title: "Variable Importance"

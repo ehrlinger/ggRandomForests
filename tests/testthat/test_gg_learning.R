@@ -12,7 +12,7 @@ test_that("gg_learning tidies replicates, stability and provenance", {
   st <- attr(x, "stability")
   expect_named(st, c("fraction", "n", "events", "B", "jaccard", "kendall",
                      "counts", "low_events", "optimistic"))
-  expect_equal(st$counts, c("exact", "exact", "exact", "expected"))
+  expect_equal(st$counts, c("declared", "declared", "declared", "expected"))
   expect_true(all(st$jaccard >= 0 & st$jaccard <= 1))
   expect_true(all(st$kendall >= -1 & st$kendall <= 1))
   # Fraction 1 replicates have no added noise: identical rankings.
@@ -63,6 +63,23 @@ test_that("gg_learning refuses results from different forests of the same shape"
   other_split[[1]]$rf$nsplit <- 1L
   other_split[[2]]$rf$nsplit <- 20L
   expect_error(gg_learning(other_split), "same forest")
+})
+
+test_that("a recorded stratify setting overrides the declaration", {
+  tag <- function(x, value) {
+    lapply(x, function(s) {
+      attr(s, "stratify") <- value
+      s
+    })
+  }
+  st <- attr(gg_learning(tag(.fake_learning(c(0.5, 1)), TRUE)), "stability")
+  expect_equal(st$counts, c("exact", "expected"))
+  expect_equal(st$low_events, c(FALSE, FALSE))
+  # Recorded as unstratified: unknown, whatever the caller declares.
+  st <- attr(gg_learning(tag(.fake_learning(c(0.5, 1)), FALSE),
+                         stratified = TRUE), "stability")
+  expect_equal(st$counts, c("expected", "expected"))
+  expect_equal(st$low_events, c(NA, FALSE))
 })
 
 test_that("unstratified refits report expected counts and no event verdict", {
@@ -216,6 +233,24 @@ test_that("gg_learning reads real subsample() output in every family", {
   )
   expect_error(gg_learning(pair), "same forest")
 
+  # learning_subsample() records the draw.
+  set.seed(20261116L)
+  ls <- learning_subsample(fits$surv, fractions = c(0.5, 0.25),
+                           replicates = 2)
+  expect_length(ls, 3L)
+  expect_equal(vapply(ls[1:2], function(s) s$subratio, numeric(1)),
+               c(0.25, 0.5))
+  expect_s3_class(ls[[3]], "bootsample")
+  expect_true(all(vapply(ls, attr, logical(1), which = "stratify")))
+  st <- attr(gg_learning(ls, min_events = 0), "stability")
+  expect_equal(st$counts, c("exact", "exact", "expected"))
+  ls_un <- learning_subsample(fits$surv, fractions = 0.5, replicates = 2,
+                              bootstrap = FALSE, stratify = FALSE)
+  expect_length(ls_un, 1L)
+  st <- attr(gg_learning(ls_un, min_events = 0), "stability")
+  expect_equal(st$counts, "expected")
+  expect_true(is.na(st$low_events))
+
   # Same data, one setting apart.
   coarse <- randomForestSRC::rfsrc(mpg ~ ., mtcars, ntree = 25, nsplit = 1,
                                    importance = "permute", seed = -1)
@@ -226,4 +261,14 @@ test_that("gg_learning reads real subsample() output in every family", {
                                performance = TRUE, verbose = FALSE)
   )
   expect_error(gg_learning(pair), "same forest")
+})
+
+test_that("learning_subsample rejects bad arguments before fitting", {
+  fit <- structure(list(), class = "rfsrc")
+  expect_error(learning_subsample(list()), "randomForestSRC forest")
+  expect_error(learning_subsample(fit, fractions = 1), "less than 1")
+  expect_error(learning_subsample(fit, fractions = c(0.5, NA)), "fractions")
+  expect_error(learning_subsample(fit, replicates = 0), "'replicates'")
+  expect_error(learning_subsample(fit, bootstrap = NA), "'bootstrap'")
+  expect_error(learning_subsample(fit, stratify = "yes"), "'stratify'")
 })

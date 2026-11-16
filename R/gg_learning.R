@@ -9,8 +9,9 @@
 #' trust the VIMP ranking and the partial plots drawn from it. A cohort can
 #' pass the first and fail the second.
 #'
-#' The expensive step is the refitting inside `subsample()`. Run it once per
-#' fraction, keep the results, and supply the list to `gg_learning()`.
+#' The expensive step is the refitting inside `subsample()`.
+#' [learning_subsample()] runs it for every fraction and records how each
+#' draw was made; keep its result and supply it to `gg_learning()`.
 #' `gg_learning()` only tidies those results; it never fits a forest.
 #'
 #' @param subsamples A list of objects returned by
@@ -25,9 +26,10 @@
 #'   between replicates. Defaults to 5, or the number of predictors if fewer.
 #' @param min_events Non-negative number; fractions with fewer events than
 #'   this are flagged in `low_events`. Defaults to 50.
-#' @param stratified Logical; how the subsamples were drawn, as passed to
-#'   `subsample(stratify = )`. Defaults to `TRUE`, `subsample()`'s own
-#'   default. The results do not record it, so it cannot be checked here.
+#' @param stratified Logical; for results that do not record it, how the
+#'   subsamples were drawn, as passed to `subsample(stratify = )`. Defaults
+#'   to `TRUE`, `subsample()`'s own default. Results from
+#'   [learning_subsample()] record the setting, and it is used instead.
 #' @param ... Not used.
 #'
 #' @details
@@ -49,13 +51,15 @@
 #' observations for regression. The counts are computed, not observed:
 #' `subsample()` keeps no record of which cases it drew. With its default
 #' `stratify = TRUE` it takes the whole part of each class (or status) count
-#' times the fraction, so the counts here are exact (`counts = "exact"`).
-#' With `stratify = FALSE` (say so with `stratified = FALSE`) the counts vary
-#' from refit to refit: the ones reported are what a stratified draw would
-#' give, `counts` is `"expected"`, and `low_events` is `NA`, because whether a
-#' refit fell short is unknown. The double bootstrap draws as many cases as
-#' the cohort holds, with replacement; it is reported at the cohort's counts,
-#' `counts = "expected"`.
+#' times the fraction. `counts` says how far that can be trusted:
+#' `"exact"` when [learning_subsample()] recorded a stratified draw;
+#' `"declared"` when the results came from `subsample()` directly, which keeps
+#' no record, and `stratified = TRUE` vouches for them; and `"expected"` for
+#' an unstratified draw, whose counts vary from refit to refit. For those,
+#' the reported counts are what a stratified draw would give and `low_events`
+#' is `NA`, because whether a refit fell short is unknown. The double
+#' bootstrap draws as many cases as the cohort holds, with replacement; it is
+#' reported at the cohort's counts, `counts = "expected"`.
 #'
 #' **Caveats.** Subsamples at large fractions share most of their cases:
 #' any two at 0.75 share about three quarters of each other's. Between-replicate
@@ -78,7 +82,8 @@
 #'   `fraction`, `n`, `events`, `B`, `jaccard`, `kendall`, `counts`,
 #'   `low_events` and `optimistic`.
 #'
-#' @seealso [plot.gg_learning()], [randomForestSRC::subsample()],
+#' @seealso [learning_subsample()], [plot.gg_learning()],
+#'   [randomForestSRC::subsample()],
 #'   [gg_error()] for convergence in the number of trees.
 #'
 #' @references
@@ -92,13 +97,8 @@
 #' ## Calculate the subsamples once and keep them for reuse.
 #' fit <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50,
 #'                               importance = "permute", seed = -1)
-#' subsamples <- lapply(c(0.25, 0.5), function(f) {
-#'   randomForestSRC::subsample(fit, B = 5, subratio = f,
-#'                              performance = TRUE, verbose = FALSE)
-#' })
-#' subsamples$full <- randomForestSRC::subsample(fit, B = 5, bootstrap = TRUE,
-#'                                               performance = TRUE,
-#'                                               verbose = FALSE)
+#' set.seed(1)
+#' subsamples <- learning_subsample(fit, fractions = c(0.25, 0.5), B = 5)
 #' curve <- gg_learning(subsamples, top_k = 3, min_events = 10)
 #' summary(curve)
 #' plot(curve)
@@ -112,13 +112,11 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50,
     subsamples <- list(subsamples)
   }
   .validate_learning_args(subsamples, top_k, min_events)
-  if (!is.logical(stratified) || length(stratified) != 1L ||
-      is.na(stratified)) {
-    stop("'stratified' must be TRUE or FALSE.", call. = FALSE)
-  }
+  .validate_learning_flag(stratified, "stratified")
   info <- .learning_outcome(subsamples[[1L]]$rf)
 
-  pieces <- lapply(subsamples, .learning_piece, info = info)
+  pieces <- lapply(subsamples, .learning_piece, info = info,
+                   stratified = stratified)
   fractions <- vapply(pieces, function(p) p$fraction, numeric(1))
   if (anyDuplicated(fractions)) {
     stop("Each subsampling fraction may appear only once.", call. = FALSE)
@@ -128,17 +126,18 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50,
 
   rows <- lapply(pieces, function(p) {
     data.frame(fraction = p$fraction, n = p$n, events = p$events,
-               replicate = seq_along(p$error), error = p$error)
+               replicate = seq_along(p$error), error = p$error,
+               counts = p$counts)
   })
-  out <- .learning_flag(do.call(rbind, rows), min_events, stratified)
+  out <- .learning_flag(do.call(rbind, rows), min_events)
 
   stab <- lapply(pieces, function(p) {
     s <- .learning_stability(p$vimp, k)
     data.frame(fraction = p$fraction, n = p$n, events = p$events,
                B = length(p$vimp), jaccard = s[["jaccard"]],
-               kendall = s[["kendall"]])
+               kendall = s[["kendall"]], counts = p$counts)
   })
-  stab <- .learning_flag(do.call(rbind, stab), min_events, stratified)
+  stab <- .learning_flag(do.call(rbind, stab), min_events)
   rownames(out) <- rownames(stab) <- NULL
 
   class(out) <- c("gg_learning", "data.frame")
@@ -234,8 +233,18 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50,
        metric = metric, strata = strata)
 }
 
-.learning_piece <- function(s, info) {
+.learning_piece <- function(s, info, stratified) {
   boot <- inherits(s, "bootsample")
+  # learning_subsample() records the setting; subsample() alone does not, and
+  # then the caller's declaration stands in for it.
+  captured <- attr(s, "stratify", exact = TRUE)
+  counts <- if (boot) {
+    "expected"
+  } else if (!is.null(captured)) {
+    if (isTRUE(captured)) "exact" else "expected"
+  } else {
+    if (stratified) "declared" else "expected"
+  }
   reps <- if (boot) s$vmpB else s$vmpS
   fraction <- if (boot) 1 else as.numeric(s$subratio)
   if (!boot && fraction >= 1) {
@@ -252,11 +261,12 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50,
     stop("Run randomForestSRC::subsample() with performance = TRUE; ",
          "the result has no OOB error.", call. = FALSE)
   }
-  counts <- .learning_counts(fraction, boot, info)
+  sizes <- .learning_counts(fraction, boot, info)
   list(
     fraction = fraction,
-    n = counts[["n"]],
-    events = counts[["events"]],
+    n = sizes[["n"]],
+    events = sizes[["events"]],
+    counts = counts,
     error = vapply(tabs, function(v) v[["err"]], numeric(1)),
     vimp = lapply(tabs, function(v) v[names(v) != "err"])
   )
@@ -301,14 +311,12 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50,
   c(jaccard = mean(jac), kendall = tau)
 }
 
-# counts is "exact" for a stratified subsample and "expected" otherwise (an
-# unstratified subsample, or the double bootstrap, whose draws vary). An
-# unstratified subsample's count is unknown, so its low_events verdict is NA
-# rather than a guess; the bootstrap's expected count is the cohort's.
-.learning_flag <- function(d, min_events, stratified) {
-  boot <- d$fraction == 1
-  d$counts <- ifelse(stratified & !boot, "exact", "expected")
-  d$low_events <- ifelse(!stratified & !boot, NA, d$events < min_events)
+# An unstratified subsample's event count is unknown, so its low_events
+# verdict is NA rather than a guess. The bootstrap's expected count is the
+# cohort's, and is judged.
+.learning_flag <- function(d, min_events) {
+  unknown <- d$counts == "expected" & d$fraction < 1
+  d$low_events <- ifelse(unknown, NA, d$events < min_events)
   d$optimistic <- d$fraction > 0.5 & d$fraction < 1
   d
 }

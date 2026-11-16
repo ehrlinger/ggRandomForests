@@ -22,9 +22,10 @@ between replicates. Defaults to 5, or the number of predictors if fewer.}
 \item{min_events}{Non-negative number; fractions with fewer events than
 this are flagged in \code{low_events}. Defaults to 50.}
 
-\item{stratified}{Logical; how the subsamples were drawn, as passed to
-\code{subsample(stratify = )}. Defaults to \code{TRUE}, \code{subsample()}'s own
-default. The results do not record it, so it cannot be checked here.}
+\item{stratified}{Logical; for results that do not record it, how the
+subsamples were drawn, as passed to \code{subsample(stratify = )}. Defaults
+to \code{TRUE}, \code{subsample()}'s own default. Results from
+\code{\link[=learning_subsample]{learning_subsample()}} record the setting, and it is used instead.}
 
 \item{...}{Not used.}
 }
@@ -47,8 +48,9 @@ trust the VIMP ranking and the partial plots drawn from it. A cohort can
 pass the first and fail the second.
 }
 \details{
-The expensive step is the refitting inside \code{subsample()}. Run it once per
-fraction, keep the results, and supply the list to \code{gg_learning()}.
+The expensive step is the refitting inside \code{subsample()}.
+\code{\link[=learning_subsample]{learning_subsample()}} runs it for every fraction and records how each
+draw was made; keep its result and supply it to \code{gg_learning()}.
 \code{gg_learning()} only tidies those results; it never fits a forest.
 
 \strong{Error.} Each replicate's OOB error is the \code{"err"} row that
@@ -69,13 +71,15 @@ status codes as 1), the size of the smallest class for classification, and
 observations for regression. The counts are computed, not observed:
 \code{subsample()} keeps no record of which cases it drew. With its default
 \code{stratify = TRUE} it takes the whole part of each class (or status) count
-times the fraction, so the counts here are exact (\code{counts = "exact"}).
-With \code{stratify = FALSE} (say so with \code{stratified = FALSE}) the counts vary
-from refit to refit: the ones reported are what a stratified draw would
-give, \code{counts} is \code{"expected"}, and \code{low_events} is \code{NA}, because whether a
-refit fell short is unknown. The double bootstrap draws as many cases as
-the cohort holds, with replacement; it is reported at the cohort's counts,
-\code{counts = "expected"}.
+times the fraction. \code{counts} says how far that can be trusted:
+\code{"exact"} when \code{\link[=learning_subsample]{learning_subsample()}} recorded a stratified draw;
+\code{"declared"} when the results came from \code{subsample()} directly, which keeps
+no record, and \code{stratified = TRUE} vouches for them; and \code{"expected"} for
+an unstratified draw, whose counts vary from refit to refit. For those,
+the reported counts are what a stratified draw would give and \code{low_events}
+is \code{NA}, because whether a refit fell short is unknown. The double
+bootstrap draws as many cases as the cohort holds, with replacement; it is
+reported at the cohort's counts, \code{counts = "expected"}.
 
 \strong{Caveats.} Subsamples at large fractions share most of their cases:
 any two at 0.75 share about three quarters of each other's. Between-replicate
@@ -96,13 +100,8 @@ replicates per fraction (\code{B}), the error \code{metric}, and the installed
 ## Calculate the subsamples once and keep them for reuse.
 fit <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50,
                               importance = "permute", seed = -1)
-subsamples <- lapply(c(0.25, 0.5), function(f) {
-  randomForestSRC::subsample(fit, B = 5, subratio = f,
-                             performance = TRUE, verbose = FALSE)
-})
-subsamples$full <- randomForestSRC::subsample(fit, B = 5, bootstrap = TRUE,
-                                              performance = TRUE,
-                                              verbose = FALSE)
+set.seed(1)
+subsamples <- learning_subsample(fit, fractions = c(0.25, 0.5), B = 5)
 curve <- gg_learning(subsamples, top_k = 3, min_events = 10)
 summary(curve)
 plot(curve)
@@ -117,6 +116,7 @@ survival. \emph{Statistics in Medicine}, 38(4), 558--582.
 \doi{10.1002/sim.7803}.
 }
 \seealso{
-\code{\link[=plot.gg_learning]{plot.gg_learning()}}, \code{\link[randomForestSRC:subsample]{randomForestSRC::subsample()}},
+\code{\link[=learning_subsample]{learning_subsample()}}, \code{\link[=plot.gg_learning]{plot.gg_learning()}},
+\code{\link[randomForestSRC:subsample]{randomForestSRC::subsample()}},
 \code{\link[=gg_error]{gg_error()}} for convergence in the number of trees.
 }

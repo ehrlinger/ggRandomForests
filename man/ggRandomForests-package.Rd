@@ -40,7 +40,8 @@ diagnostics object.
 \item \code{\link{gg_rfsrc}}: predicted versus observed values.
 \item \code{\link{gg_error}}: OOB error against the number of trees.
 \item \code{\link{gg_learning}}: OOB error and VIMP-ranking stability
-against the number of events, from saved subsamples.
+against the number of events, from subsamples saved by
+\code{\link{learning_subsample}}.
 \item \code{\link{gg_vimp}}: variable importance ranking
 (Ishwaran et al. 2010).
 \item \code{\link{gg_variable}}: marginal variable dependence.
