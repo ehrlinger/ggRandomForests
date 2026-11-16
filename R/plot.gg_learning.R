@@ -7,7 +7,8 @@
 #' replicates; the `"error"` panel shows each replicate's OOB error with the
 #' mean at each fraction. Points flagged `low_events` or `optimistic` are drawn
 #' open, because both make the curve look worse or better than a fresh cohort
-#' of that size would.
+#' of that size would. Unstratified refits, whose counts are unknown, are
+#' drawn as crosses and the axis says their counts are expected.
 #'
 #' @param x A `gg_learning` object from [gg_learning()].
 #' @param panel Which curve to draw: `"stability"` (default) or `"error"`.
@@ -33,7 +34,11 @@ plot.gg_learning <- function(x, panel = c("stability", "error"), ...) {
     class = "Cases in the smallest class",
     surv = "Events"
   )
-  shapes <- c(ok = 16, `few events` = 1, `optimistic` = 2)
+  shapes <- c(ok = 16, `few events` = 1, `optimistic` = 2,
+              `count unknown` = 4)
+  if (any(x$counts == "expected" & x$fraction < 1)) {
+    xlab <- paste(xlab, "(expected; refits not stratified)")
+  }
 
   if (panel == "stability") {
     st <- attr(x, "stability")
@@ -86,7 +91,8 @@ plot.gg_learning <- function(x, panel = c("stability", "error"), ...) {
 }
 
 .learning_flag_label <- function(d) {
-  flag <- ifelse(d$low_events, "few events",
-                 ifelse(d$optimistic, "optimistic", "ok"))
-  factor(flag, levels = c("ok", "few events", "optimistic"))
+  flag <- ifelse(is.na(d$low_events), "count unknown",
+                 ifelse(d$low_events, "few events",
+                        ifelse(d$optimistic, "optimistic", "ok")))
+  factor(flag, levels = c("ok", "few events", "optimistic", "count unknown"))
 }

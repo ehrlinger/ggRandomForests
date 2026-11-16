@@ -25,6 +25,9 @@
 #'   between replicates. Defaults to 5, or the number of predictors if fewer.
 #' @param min_events Non-negative number; fractions with fewer events than
 #'   this are flagged in `low_events`. Defaults to 50.
+#' @param stratified Logical; how the subsamples were drawn, as passed to
+#'   `subsample(stratify = )`. Defaults to `TRUE`, `subsample()`'s own
+#'   default. The results do not record it, so it cannot be checked here.
 #' @param ... Not used.
 #'
 #' @details
@@ -46,11 +49,13 @@
 #' observations for regression. The counts are computed, not observed:
 #' `subsample()` keeps no record of which cases it drew. With its default
 #' `stratify = TRUE` it takes the whole part of each class (or status) count
-#' times the fraction, so the counts here are exact. With `stratify = FALSE`
-#' the counts vary from refit to refit and the ones reported are what a
-#' stratified draw would give, so treat `low_events` as approximate. The
-#' double bootstrap draws as many cases as the cohort holds, with
-#' replacement, and is reported at the cohort's counts.
+#' times the fraction, so the counts here are exact (`counts = "exact"`).
+#' With `stratify = FALSE` (say so with `stratified = FALSE`) the counts vary
+#' from refit to refit: the ones reported are what a stratified draw would
+#' give, `counts` is `"expected"`, and `low_events` is `NA`, because whether a
+#' refit fell short is unknown. The double bootstrap draws as many cases as
+#' the cohort holds, with replacement; it is reported at the cohort's counts,
+#' `counts = "expected"`.
 #'
 #' **Caveats.** Subsamples at large fractions share most of their cases:
 #' any two at 0.75 share about three quarters of each other's. Between-replicate
@@ -68,9 +73,10 @@
 #'
 #' @return A `data.frame` with class `c("gg_learning", "data.frame")`, one row
 #'   per replicate, with columns `fraction`, `n`, `events`, `replicate`,
-#'   `error`, `low_events` and `optimistic`. The `stability` attribute is a
-#'   `data.frame` with one row per fraction and columns `fraction`, `n`,
-#'   `events`, `B`, `jaccard`, `kendall`, `low_events` and `optimistic`.
+#'   `error`, `counts`, `low_events` and `optimistic`. The `stability`
+#'   attribute is a `data.frame` with one row per fraction and columns
+#'   `fraction`, `n`, `events`, `B`, `jaccard`, `kendall`, `counts`,
+#'   `low_events` and `optimistic`.
 #'
 #' @seealso [plot.gg_learning()], [randomForestSRC::subsample()],
 #'   [gg_error()] for convergence in the number of trees.
@@ -100,11 +106,16 @@
 #' }
 #'
 #' @export
-gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
+gg_learning <- function(subsamples, top_k = 5L, min_events = 50,
+                        stratified = TRUE, ...) {
   if (inherits(subsamples, c("subsample", "bootsample"))) {
     subsamples <- list(subsamples)
   }
   .validate_learning_args(subsamples, top_k, min_events)
+  if (!is.logical(stratified) || length(stratified) != 1L ||
+      is.na(stratified)) {
+    stop("'stratified' must be TRUE or FALSE.", call. = FALSE)
+  }
   info <- .learning_outcome(subsamples[[1L]]$rf)
 
   pieces <- lapply(subsamples, .learning_piece, info = info)
@@ -119,7 +130,7 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
     data.frame(fraction = p$fraction, n = p$n, events = p$events,
                replicate = seq_along(p$error), error = p$error)
   })
-  out <- .learning_flag(do.call(rbind, rows), min_events)
+  out <- .learning_flag(do.call(rbind, rows), min_events, stratified)
 
   stab <- lapply(pieces, function(p) {
     s <- .learning_stability(p$vimp, k)
@@ -127,7 +138,7 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
                B = length(p$vimp), jaccard = s[["jaccard"]],
                kendall = s[["kendall"]])
   })
-  stab <- .learning_flag(do.call(rbind, stab), min_events)
+  stab <- .learning_flag(do.call(rbind, stab), min_events, stratified)
   rownames(out) <- rownames(stab) <- NULL
 
   class(out) <- c("gg_learning", "data.frame")
@@ -140,6 +151,7 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
     ntree = info$ntree,
     top_k = k,
     min_events = min_events,
+    stratified = stratified,
     fractions = stab$fraction,
     B = stab$B,
     metric = info$metric,
@@ -179,11 +191,14 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
   # subsample() keeps the parent forest in $rf, so results from one forest
   # carry identical data and settings. Shape alone (family, n, names) would
   # pass two different cohorts of the same size.
-  keys <- c("family", "n", "xvar.names", "yvar", "xvar", "ntree", "mtry",
-            "nodesize", "splitrule")
-  first <- subsamples[[1L]]$rf[keys]
-  same <- vapply(subsamples, function(s) identical(s$rf[keys], first),
-                 logical(1))
+  # The whole forest is compared: subsample() refits with every setting the
+  # parent carries (nsplit, weights, sampling and so on), and a list of named
+  # fields would miss whichever was left out. Environments are ignored, so a
+  # list saved and read back still matches itself.
+  first <- subsamples[[1L]]$rf
+  same <- vapply(subsamples, function(s) {
+    identical(s$rf, first, ignore.environment = TRUE)
+  }, logical(1))
   if (!all(same)) {
     stop("All 'subsamples' must come from the same forest.", call. = FALSE)
   }
@@ -286,8 +301,14 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50, ...) {
   c(jaccard = mean(jac), kendall = tau)
 }
 
-.learning_flag <- function(d, min_events) {
-  d$low_events <- d$events < min_events
+# counts is "exact" for a stratified subsample and "expected" otherwise (an
+# unstratified subsample, or the double bootstrap, whose draws vary). An
+# unstratified subsample's count is unknown, so its low_events verdict is NA
+# rather than a guess; the bootstrap's expected count is the cohort's.
+.learning_flag <- function(d, min_events, stratified) {
+  boot <- d$fraction == 1
+  d$counts <- ifelse(stratified & !boot, "exact", "expected")
+  d$low_events <- ifelse(!stratified & !boot, NA, d$events < min_events)
   d$optimistic <- d$fraction > 0.5 & d$fraction < 1
   d
 }

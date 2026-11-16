@@ -4,7 +4,7 @@
 \alias{gg_learning}
 \title{Tidy a random forest learning curve}
 \usage{
-gg_learning(subsamples, top_k = 5L, min_events = 50, ...)
+gg_learning(subsamples, top_k = 5L, min_events = 50, stratified = TRUE, ...)
 }
 \arguments{
 \item{subsamples}{A list of objects returned by
@@ -22,14 +22,19 @@ between replicates. Defaults to 5, or the number of predictors if fewer.}
 \item{min_events}{Non-negative number; fractions with fewer events than
 this are flagged in \code{low_events}. Defaults to 50.}
 
+\item{stratified}{Logical; how the subsamples were drawn, as passed to
+\code{subsample(stratify = )}. Defaults to \code{TRUE}, \code{subsample()}'s own
+default. The results do not record it, so it cannot be checked here.}
+
 \item{...}{Not used.}
 }
 \value{
 A \code{data.frame} with class \code{c("gg_learning", "data.frame")}, one row
 per replicate, with columns \code{fraction}, \code{n}, \code{events}, \code{replicate},
-\code{error}, \code{low_events} and \code{optimistic}. The \code{stability} attribute is a
-\code{data.frame} with one row per fraction and columns \code{fraction}, \code{n},
-\code{events}, \code{B}, \code{jaccard}, \code{kendall}, \code{low_events} and \code{optimistic}.
+\code{error}, \code{counts}, \code{low_events} and \code{optimistic}. The \code{stability}
+attribute is a \code{data.frame} with one row per fraction and columns
+\code{fraction}, \code{n}, \code{events}, \code{B}, \code{jaccard}, \code{kendall}, \code{counts},
+\code{low_events} and \code{optimistic}.
 }
 \description{
 Extracts learning curves from a set of already calculated
@@ -64,11 +69,13 @@ status codes as 1), the size of the smallest class for classification, and
 observations for regression. The counts are computed, not observed:
 \code{subsample()} keeps no record of which cases it drew. With its default
 \code{stratify = TRUE} it takes the whole part of each class (or status) count
-times the fraction, so the counts here are exact. With \code{stratify = FALSE}
-the counts vary from refit to refit and the ones reported are what a
-stratified draw would give, so treat \code{low_events} as approximate. The
-double bootstrap draws as many cases as the cohort holds, with
-replacement, and is reported at the cohort's counts.
+times the fraction, so the counts here are exact (\code{counts = "exact"}).
+With \code{stratify = FALSE} (say so with \code{stratified = FALSE}) the counts vary
+from refit to refit: the ones reported are what a stratified draw would
+give, \code{counts} is \code{"expected"}, and \code{low_events} is \code{NA}, because whether a
+refit fell short is unknown. The double bootstrap draws as many cases as
+the cohort holds, with replacement; it is reported at the cohort's counts,
+\code{counts = "expected"}.
 
 \strong{Caveats.} Subsamples at large fractions share most of their cases:
 any two at 0.75 share about three quarters of each other's. Between-replicate

@@ -338,7 +338,7 @@ summary.gg_learning <- function(object, ...) {
   st$error_mean <- vapply(err, mean, numeric(1))[as.character(st$fraction)]
   st$error_sd <- vapply(err, stats::sd, numeric(1))[as.character(st$fraction)]
   rownames(st) <- NULL
-  st[c("fraction", "n", "events", "B", "error_mean", "error_sd",
+  st[c("fraction", "n", "events", "counts", "B", "error_mean", "error_sd",
        "jaccard", "kendall", "low_events", "optimistic")]
 }
 

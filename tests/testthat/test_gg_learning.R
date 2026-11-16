@@ -2,7 +2,7 @@ test_that("gg_learning tidies replicates, stability and provenance", {
   x <- gg_learning(.fake_learning(c(0.5, 0.25, 1, 0.75)), top_k = 3)
   expect_s3_class(x, c("gg_learning", "data.frame"))
   expect_named(x, c("fraction", "n", "events", "replicate", "error",
-                    "low_events", "optimistic"))
+                    "counts", "low_events", "optimistic"))
   expect_equal(unique(x$fraction), c(0.25, 0.5, 0.75, 1))  # sorted
   expect_equal(nrow(x), 12L)
   # 100 events in 400 cases.
@@ -11,7 +11,8 @@ test_that("gg_learning tidies replicates, stability and provenance", {
 
   st <- attr(x, "stability")
   expect_named(st, c("fraction", "n", "events", "B", "jaccard", "kendall",
-                     "low_events", "optimistic"))
+                     "counts", "low_events", "optimistic"))
+  expect_equal(st$counts, c("exact", "exact", "exact", "expected"))
   expect_true(all(st$jaccard >= 0 & st$jaccard <= 1))
   expect_true(all(st$kendall >= -1 & st$kendall <= 1))
   # Fraction 1 replicates have no added noise: identical rankings.
@@ -57,6 +58,26 @@ test_that("gg_learning refuses results from different forests of the same shape"
   other_trees <- .fake_learning(c(0.25, 0.5))
   other_trees[[2]]$rf$ntree <- 500L
   expect_error(gg_learning(other_trees), "same forest")
+  # A setting that is not one of the obvious fields still counts.
+  other_split <- .fake_learning(c(0.25, 0.5))
+  other_split[[1]]$rf$nsplit <- 1L
+  other_split[[2]]$rf$nsplit <- 20L
+  expect_error(gg_learning(other_split), "same forest")
+})
+
+test_that("unstratified refits report expected counts and no event verdict", {
+  x <- gg_learning(.fake_learning(c(0.125, 0.5, 1)), stratified = FALSE)
+  st <- attr(x, "stability")
+  expect_equal(st$counts, c("expected", "expected", "expected"))
+  # Unknown for the subsamples; the bootstrap is judged at the cohort count.
+  expect_equal(st$low_events, c(NA, NA, FALSE))
+  expect_true(all(is.na(x$low_events[x$fraction < 1])))
+  expect_true(attr(x, "provenance")$stratified == FALSE)
+  p <- plot(x)
+  expect_match(p$labels$x, "expected; refits not stratified", fixed = TRUE)
+  built <- ggplot2::ggplot_build(p)$data[[2]]
+  expect_true(4 %in% built$shape)
+  expect_error(gg_learning(.fake_learning(0.5), stratified = NA), "stratified")
 })
 
 test_that("gg_learning accepts a single result and caps top_k at p", {
@@ -177,8 +198,10 @@ test_that("gg_learning reads real subsample() output in every family", {
   un <- randomForestSRC::subsample(fits$surv, B = 2, subratio = 0.5,
                                    stratify = FALSE, performance = TRUE,
                                    verbose = FALSE)
-  expect_equal(attr(gg_learning(un, min_events = 0), "stability")$events,
-               as.integer(sum(status == 1) * 0.5))
+  un_st <- attr(gg_learning(un, min_events = 0, stratified = FALSE),
+                "stability")
+  expect_equal(un_st$events, as.integer(sum(status == 1) * 0.5))
+  expect_true(is.na(un_st$low_events))
 
   # Two real forests with the same dimensions but different data.
   shuffled <- mtcars
@@ -189,6 +212,17 @@ test_that("gg_learning reads real subsample() output in every family", {
     randomForestSRC::subsample(fits$regr, B = 2, subratio = 0.5,
                                performance = TRUE, verbose = FALSE),
     randomForestSRC::subsample(other, B = 2, subratio = 0.25,
+                               performance = TRUE, verbose = FALSE)
+  )
+  expect_error(gg_learning(pair), "same forest")
+
+  # Same data, one setting apart.
+  coarse <- randomForestSRC::rfsrc(mpg ~ ., mtcars, ntree = 25, nsplit = 1,
+                                   importance = "permute", seed = -1)
+  pair <- list(
+    randomForestSRC::subsample(fits$regr, B = 2, subratio = 0.5,
+                               performance = TRUE, verbose = FALSE),
+    randomForestSRC::subsample(coarse, B = 2, subratio = 0.25,
                                performance = TRUE, verbose = FALSE)
   )
   expect_error(gg_learning(pair), "same forest")

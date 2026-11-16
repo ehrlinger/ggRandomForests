@@ -23,7 +23,8 @@ top-k Jaccard index and Kendall rank correlation of the VIMP ranking across
 replicates; the \code{"error"} panel shows each replicate's OOB error with the
 mean at each fraction. Points flagged \code{low_events} or \code{optimistic} are drawn
 open, because both make the curve look worse or better than a fresh cohort
-of that size would.
+of that size would. Unstratified refits, whose counts are unknown, are
+drawn as crosses and the axis says their counts are expected.
 }
 \seealso{
 \code{\link[=gg_learning]{gg_learning()}}.
