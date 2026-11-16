@@ -528,6 +528,17 @@ test_that("snapshot: gg_tune_rhf iAUC path", {
   vdiffr::expect_doppelganger("gg-tune-rhf-iauc", plot(x))
 })
 
+test_that("snapshot: gg_learning stability and error panels", {
+  skip_if_not_installed("vdiffr")
+  skip_on_cran()
+  if (!identical(Sys.getenv("VDIFFR_RUN_TESTS", "false"), "true")) {
+    skip("vdiffr snapshots skipped (set VDIFFR_RUN_TESTS=true to run)")
+  }
+  x <- gg_learning(.fake_learning(), top_k = 3)
+  vdiffr::expect_doppelganger("gg-learning-stability", plot(x))
+  vdiffr::expect_doppelganger("gg-learning-error", plot(x, panel = "error"))
+})
+
 test_that("snapshot: gg_rhf_importance priority matrix", {
   skip_if_not_installed("vdiffr")
   skip_if_not_installed("randomForestRHF")

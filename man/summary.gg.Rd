@@ -21,6 +21,7 @@
 \alias{summary.gg_brier}
 \alias{summary.gg_rhf}
 \alias{summary.gg_tune_rhf}
+\alias{summary.gg_learning}
 \alias{summary.gg_rhf_importance}
 \alias{summary.gg_isopro}
 \alias{summary.gg_beta_varpro}
@@ -66,6 +67,8 @@
 \method{summary}{gg_rhf}(object, ...)
 
 \method{summary}{gg_tune_rhf}(object, ...)
+
+\method{summary}{gg_learning}(object, ...)
 
 \method{summary}{gg_rhf_importance}(object, ...)
 

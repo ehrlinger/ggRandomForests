@@ -63,10 +63,12 @@ reference:
       - plot.gg_rfsrc
 
   - title: "Training Error"
-    desc: "Visualize forest convergence and training error."
+    desc: "Visualize forest convergence, training error and cohort sufficiency."
     contents:
       - gg_error
       - plot.gg_error
+      - gg_learning
+      - plot.gg_learning
 
   - title: "Variable Importance"
     desc: "Assess and plot variable importance (VIMP)."

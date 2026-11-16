@@ -186,6 +186,17 @@ print.gg_tune_rhf <- function(x, ...) {
 
 #' @rdname print.gg
 #' @export
+print.gg_learning <- function(x, ...) {
+  prov <- attr(x, "provenance")
+  cat(.gg_header(x, "gg_learning"),
+      sprintf("  |  fractions: %s  top_k: %d",
+              paste(format(prov$fractions), collapse = ", "), prov$top_k),
+      "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print.gg
+#' @export
 print.gg_auct <- function(x, ...) {
   iauc <- attr(x, "iauc")
   cat(.gg_header(x, "gg_auct"),

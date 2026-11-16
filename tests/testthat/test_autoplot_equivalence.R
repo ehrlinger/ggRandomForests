@@ -113,6 +113,7 @@ test_that("autoplot() equals plot() for every cheaply constructible gg_* class",
     )
   )
   objects[["gg_tune_rhf (iAUC)"]] <- gg_tune_rhf(.fake_rhf_tune_iauc())
+  objects[["gg_learning"]] <- gg_learning(.fake_learning(), top_k = 3)
 
   # ALE, both classes. Continuous predictors only: with a categorical variable
   # in the mix plot.gg_ale_rfsrc() returns a patchwork rather than a ggplot,
