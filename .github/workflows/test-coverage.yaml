@@ -52,10 +52,14 @@ jobs:
         with:
           extra-packages: any::covr, any::xml2
           needs: coverage
-          cache-version: 2
+          cache-version: 4
 
       - name: Test coverage
         run: |
+          # covr >= 4.0.0 required; a cached 3.6.5 would otherwise run silently.
+          # Posit's CRAN mirror lagged CRAN on 4.0.0's release day, so fall back to CRAN itself.
+          if (packageVersion("covr") < "4.0.0") install.packages("covr", repos = "https://cloud.r-project.org")
+          stopifnot(packageVersion("covr") >= "4.0.0")
           cov <- covr::package_coverage(
             quiet = FALSE,
             clean = FALSE,
