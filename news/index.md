@@ -2,6 +2,8 @@
 
 ## ggRandomForests v4.0.0
 
+CRAN release: 2026-11-03
+
 - Articles on the pkgdown site put the table of contents on the left and
   use the full width of the window, through `pkgdown/extra.css`. The
   installed vignettes are unchanged: the Quarto vignette engine renders
