@@ -195,14 +195,29 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50,
   # parent carries (nsplit, weights, sampling and so on), and a list of named
   # fields would miss whichever was left out. Environments are ignored, so a
   # list saved and read back still matches itself.
-  first <- subsamples[[1L]]$rf
+  first <- .learning_parent(subsamples[[1L]]$rf)
   same <- vapply(subsamples, function(s) {
-    identical(s$rf, first, ignore.environment = TRUE)
+    identical(.learning_parent(s$rf), first, ignore.environment = TRUE)
   }, logical(1))
   if (!all(same)) {
     stop("All 'subsamples' must come from the same forest.", call. = FALSE)
   }
   invisible(TRUE)
+}
+
+# The parent forest less what subsample() derives on each call. Grown without
+# VIMP, the forest is run again inside every subsample() to compute it, so
+# its timings and recorded call differ from call to call (the bootstrap
+# records a different one) and it gains error and VIMP output. The data,
+# settings and grown trees still have to match, and the trees are what tell
+# two forests on the same data apart.
+.learning_derived <- c("call", "ctime.internal", "ctime.external",
+                       "importance",
+                       "err.rate", "err.block.rate", "perf.type",
+                       "ptn.membership", "uno.weights")
+
+.learning_parent <- function(rf) {
+  rf[setdiff(names(rf), .learning_derived)]
 }
 
 .learning_outcome <- function(fit) {

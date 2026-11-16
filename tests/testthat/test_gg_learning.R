@@ -251,6 +251,22 @@ test_that("gg_learning reads real subsample() output in every family", {
   expect_equal(st$counts, "expected")
   expect_true(is.na(st$low_events))
 
+  # A forest grown without VIMP (the default): subsample() recomputes it on
+  # every call, so each result's copy of the forest differs in timings and
+  # derived output, and must still count as one forest.
+  plain <- randomForestSRC::rfsrc(mpg ~ ., mtcars, ntree = 15, seed = -1)
+  set.seed(20261116L)
+  ls_plain <- learning_subsample(plain, fractions = c(0.5, 0.7),
+                                 replicates = 2)
+  x <- gg_learning(ls_plain, top_k = 3, min_events = 0)
+  expect_equal(attr(x, "stability")$fraction, c(0.5, 0.7, 1))
+  # ... while a different parent grown the same way is still refused.
+  plain2 <- randomForestSRC::rfsrc(mpg ~ ., mtcars, ntree = 15, seed = -2)
+  mixed <- c(ls_plain[1L], learning_subsample(plain2, fractions = 0.25,
+                                              replicates = 2,
+                                              bootstrap = FALSE))
+  expect_error(gg_learning(mixed), "same forest")
+
   # Same data, one setting apart.
   coarse <- randomForestSRC::rfsrc(mpg ~ ., mtcars, ntree = 25, nsplit = 1,
                                    importance = "permute", seed = -1)
