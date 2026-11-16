@@ -17,8 +17,8 @@
 #'
 #' @seealso [gg_learning()].
 #'
-#' @importFrom ggplot2 aes geom_line geom_point ggplot labs scale_shape_manual
-#'   theme_bw
+#' @importFrom ggplot2 aes geom_line geom_point ggplot guide_legend guides labs
+#'   scale_shape_manual theme_bw
 #' @name plot.gg_learning
 #' @export
 plot.gg_learning <- function(x, panel = c("stability", "error"), ...) {
@@ -55,6 +55,12 @@ plot.gg_learning <- function(x, panel = c("stability", "error"), ...) {
         ggplot2::geom_point(ggplot2::aes(shape = .data[["flag"]]),
                             size = 2.5, na.rm = TRUE) +
         ggplot2::scale_shape_manual(values = shapes, drop = TRUE) +
+        # Both legends are untitled, so ggplot2 has no stable order for them
+        # and swaps them between sessions. Pin it.
+        ggplot2::guides(
+          colour = ggplot2::guide_legend(order = 1),
+          shape = ggplot2::guide_legend(order = 2)
+        ) +
         ggplot2::labs(
           x = xlab,
           y = sprintf("Agreement of top-%d VIMP rankings", prov$top_k),
