@@ -332,6 +332,18 @@ summary.gg_tune_rhf <- function(object, ...) {
 
 #' @rdname summary.gg
 #' @export
+summary.gg_learning <- function(object, ...) {
+  st <- attr(object, "stability")
+  err <- split(object$error, object$fraction)
+  st$error_mean <- vapply(err, mean, numeric(1))[as.character(st$fraction)]
+  st$error_sd <- vapply(err, stats::sd, numeric(1))[as.character(st$fraction)]
+  rownames(st) <- NULL
+  st[c("fraction", "n", "events", "counts", "B", "error_mean", "error_sd",
+       "jaccard", "kendall", "low_events", "optimistic")]
+}
+
+#' @rdname summary.gg
+#' @export
 summary.gg_rhf_importance <- function(object, ...) {
   .rhf_priority_summary(object)
 }
