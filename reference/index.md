@@ -14,7 +14,7 @@ Extract and display data from random forest objects.
 
 ## Training Error
 
-Visualize forest convergence and training error.
+Visualize forest convergence, training error and cohort sufficiency.
 
 - [`gg_error()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md)
   : Random forest error trajectory data object
@@ -23,6 +23,15 @@ Visualize forest convergence and training error.
   :
 
   Plot a `gg_error` object
+
+- [`gg_learning()`](https://ehrlinger.github.io/ggRandomForests/reference/gg_learning.md)
+  : Tidy a random forest learning curve
+
+- [`learning_subsample()`](https://ehrlinger.github.io/ggRandomForests/reference/learning_subsample.md)
+  : Run the subsamples for a learning curve
+
+- [`plot(`*`<gg_learning>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/plot.gg_learning.md)
+  : Plot a random forest learning curve
 
 ## Variable Importance
 
@@ -258,6 +267,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`autoplot(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_tune_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
+  [`autoplot(`*`<gg_learning>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_auct>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_rhf_importance>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
   [`autoplot(`*`<gg_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/autoplot.gg.md)
@@ -285,6 +295,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`print(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_tune_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
+  [`print(`*`<gg_learning>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_auct>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_rhf_importance>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
   [`print(`*`<gg_udependent>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/print.gg.md)
@@ -316,6 +327,7 @@ Standard R generics implemented for all gg\_\* data objects.
   [`summary(`*`<gg_brier>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_tune_rhf>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
+  [`summary(`*`<gg_learning>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_rhf_importance>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_isopro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)
   [`summary(`*`<gg_beta_varpro>`*`)`](https://ehrlinger.github.io/ggRandomForests/reference/summary.gg.md)

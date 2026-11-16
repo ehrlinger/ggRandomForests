@@ -47,6 +47,11 @@ object.
 - [`gg_error`](https://ehrlinger.github.io/ggRandomForests/reference/gg_error.md):
   OOB error against the number of trees.
 
+- [`gg_learning`](https://ehrlinger.github.io/ggRandomForests/reference/gg_learning.md):
+  OOB error and VIMP-ranking stability against the number of events,
+  from subsamples saved by
+  [`learning_subsample`](https://ehrlinger.github.io/ggRandomForests/reference/learning_subsample.md).
+
 - [`gg_vimp`](https://ehrlinger.github.io/ggRandomForests/reference/gg_vimp.md):
   variable importance ranking (Ishwaran et al. 2010).
 

@@ -49,6 +49,9 @@ autoplot(object, ...)
 # S3 method for class 'gg_tune_rhf'
 autoplot(object, ...)
 
+# S3 method for class 'gg_learning'
+autoplot(object, ...)
+
 # S3 method for class 'gg_auct'
 autoplot(object, ...)
 
@@ -147,6 +150,10 @@ The following `gg_*` classes are supported:
 - `gg_tune_rhf`:
 
   Random Hazard Forest tuning path
+
+- `gg_learning`:
+
+  Learning curves for error and VIMP stability
 
 - `gg_auct`:
 

@@ -53,6 +53,9 @@ print(x, ...)
 # S3 method for class 'gg_tune_rhf'
 print(x, ...)
 
+# S3 method for class 'gg_learning'
+print(x, ...)
+
 # S3 method for class 'gg_auct'
 print(x, ...)
 
