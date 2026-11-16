@@ -49,6 +49,15 @@ learning_subsample <- function(object, fractions = c(0.125, 0.25, 0.5),
                                stratify = TRUE, ...) {
   .validate_learning_subsample(object, fractions, replicates, bootstrap,
                                stratify)
+  # These are set here; passed again through `...` they would reach
+  # subsample() twice, or quietly change what the curve measures.
+  taken <- intersect(names(list(...)), c("obj", "B", "subratio", "bootstrap",
+                                         "performance", "stratify", "verbose"))
+  if (length(taken)) {
+    stop("learning_subsample() sets ", paste0("'", taken, "'", collapse = ", "),
+         " itself; use 'replicates', 'fractions', 'bootstrap' or 'stratify'.",
+         call. = FALSE)
+  }
   refit <- function(...) {
     s <- randomForestSRC::subsample(object, B = replicates, performance = TRUE,
                                     stratify = stratify, verbose = FALSE, ...)

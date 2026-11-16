@@ -101,7 +101,8 @@ replicates per fraction (\code{B}), the error \code{metric}, and the installed
 fit <- randomForestSRC::rfsrc(mpg ~ ., data = mtcars, ntree = 50,
                               importance = "permute", seed = -1)
 set.seed(1)
-subsamples <- learning_subsample(fit, fractions = c(0.25, 0.5), B = 5)
+subsamples <- learning_subsample(fit, fractions = c(0.25, 0.5),
+                                 replicates = 5)
 curve <- gg_learning(subsamples, top_k = 3, min_events = 10)
 summary(curve)
 plot(curve)

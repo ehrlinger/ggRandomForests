@@ -271,4 +271,7 @@ test_that("learning_subsample rejects bad arguments before fitting", {
   expect_error(learning_subsample(fit, replicates = 0), "'replicates'")
   expect_error(learning_subsample(fit, bootstrap = NA), "'bootstrap'")
   expect_error(learning_subsample(fit, stratify = "yes"), "'stratify'")
+  expect_error(learning_subsample(fit, B = 5), "sets 'B' itself")
+  expect_error(learning_subsample(fit, subratio = 0.5, verbose = TRUE),
+               "sets 'subratio', 'verbose' itself")
 })
