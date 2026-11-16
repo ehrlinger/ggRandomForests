@@ -78,6 +78,16 @@ test_that("plot.gg_learning returns a ggplot for each panel", {
   expect_equal(p1$labels$x, "Events")
   expect_error(plot(x, panel = "bogus"), "should be one of")
   expect_silent(ggplot2::ggplot_build(p1))
+  expect_error(plot.gg_learning(data.frame()), "requires a 'gg_learning'")
+})
+
+test_that("plot.gg_learning labels the x axis by family", {
+  rg <- gg_learning(.fake_learning(0.5, family = "regr"))
+  cl <- gg_learning(.fake_learning(0.5, family = "class"))
+  expect_equal(plot(rg)$labels$x, "Observations")
+  expect_equal(plot(cl, panel = "error")$labels$x,
+               "Cases in the smallest class")
+  expect_equal(plot(cl, panel = "error")$labels$y, "OOB error rate")
 })
 
 test_that("summary and print describe each fraction", {
