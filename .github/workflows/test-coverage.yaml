@@ -48,9 +48,10 @@ jobs:
         with:
           use-public-rspm: true
 
+      # covr 4.0.0 pinned to the CRAN source: the PPM mirror lagged CRAN on release day.
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::covr, any::xml2
+          extra-packages: url::https://cran.r-project.org/src/contrib/covr_4.0.0.tar.gz, any::xml2
           needs: coverage
           cache-version: 3
 
