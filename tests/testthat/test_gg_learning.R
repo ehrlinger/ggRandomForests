@@ -98,9 +98,64 @@ test_that("unstratified refits report expected counts and no event verdict", {
 })
 
 test_that("gg_learning accepts a single result and caps top_k at p", {
-  x <- gg_learning(.fake_learning_one(0.5), top_k = 50)
+  expect_warning(x <- gg_learning(.fake_learning_one(0.5), top_k = 50),
+                 "covers all 6 predictors")
   expect_equal(attr(x, "provenance")$top_k, 6L)
   expect_equal(nrow(attr(x, "stability")), 1L)
+})
+
+test_that("a top set of every predictor gives no Jaccard score", {
+  # Fully reversed rankings: the whole set scores Jaccard 1 regardless.
+  reversed <- list(c(a = 3, b = 2, c = 1), c(a = 1, b = 2, c = 3))
+  expect_equal(.learning_stability(reversed, 3L)[["jaccard"]], 1)
+  expect_lt(.learning_stability(reversed, 2L)[["jaccard"]], 1)
+  expect_warning(st <- attr(gg_learning(.fake_learning(), top_k = 6),
+                            "stability"), "top_k")
+  expect_true(all(is.na(st$jaccard)))
+  expect_true(all(is.finite(st$kendall)))
+  expect_silent(st <- attr(gg_learning(.fake_learning(), top_k = 5),
+                           "stability"))
+  expect_true(all(is.finite(st$jaccard)))
+})
+
+test_that("the whole-cohort bootstrap is drawn as a square, open below min_events", {
+  x <- gg_learning(.fake_learning(c(0.5, 1)), top_k = 3)
+  flags <- .learning_flag_label(attr(x, "stability"))
+  expect_equal(as.character(flags), c("ok", "whole cohort (expected)"))
+  for (panel in c("stability", "error")) {
+    shapes <- ggplot2::ggplot_build(plot(x, panel = panel))$data
+    expect_true(15 %in% unlist(lapply(shapes, `[[`, "shape")))
+  }
+  few <- gg_learning(.fake_learning(c(0.5, 1)), top_k = 3, min_events = 500)
+  expect_equal(as.character(.learning_flag_label(attr(few, "stability")))[2],
+               "whole cohort (expected), few events")
+  built <- ggplot2::ggplot_build(plot(few))$data[[2]]
+  expect_true(0 %in% built$shape)
+})
+
+test_that("the error panel's mean keeps its fraction's marker", {
+  # One replicate: the mean sits exactly on the refit, so a plain mean
+  # circle drawn on top would hide the bootstrap square.
+  x <- gg_learning(.fake_learning(c(0.5, 1), n_rep = 1L), top_k = 3)
+  built <- ggplot2::ggplot_build(plot(x, panel = "error"))$data
+  expect_length(built, 3L)
+  refits <- built[[1L]]
+  means <- built[[3L]]
+  expect_equal(means$x, refits$x)
+  expect_equal(means$y, refits$y)
+  expect_equal(means$shape, refits$shape)
+  expect_equal(means$shape, c(16, 15))
+  # The open marker survives as well.
+  few <- gg_learning(.fake_learning(c(0.5, 1), n_rep = 1L), top_k = 3,
+                     min_events = 500)
+  means <- ggplot2::ggplot_build(plot(few, panel = "error"))$data[[3L]]
+  expect_equal(means$shape, c(1, 0))
+  # Several replicates: one mean per fraction, still in order of events.
+  means <- ggplot2::ggplot_build(plot(gg_learning(.fake_learning(),
+                                                  top_k = 3),
+                                      panel = "error"))$data[[3L]]
+  expect_equal(nrow(means), 4L)
+  expect_false(is.unsorted(means$x))
 })
 
 test_that("stability is NA with a single replicate", {

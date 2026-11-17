@@ -23,7 +23,11 @@
 #'   agreement measures forest randomness, not resampling stability. A single
 #'   result is also accepted.
 #' @param top_k Positive integer; the number of top-ranked variables compared
-#'   between replicates. Defaults to 5, or the number of predictors if fewer.
+#'   between replicates. Defaults to 5. It must leave at least one predictor
+#'   out: a top set of every predictor is the same in every replicate, so
+#'   `top_k` at or above the number of predictors warns, is capped at that
+#'   number, and gives `jaccard` as `NA` rather than a perfect score that says
+#'   nothing.
 #' @param min_events Non-negative number; fractions with fewer events than
 #'   this are flagged in `low_events`. Defaults to 50.
 #' @param stratified Logical; for results that do not record it, how the
@@ -123,7 +127,16 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50,
     stop("Each subsampling fraction may appear only once.", call. = FALSE)
   }
   pieces <- pieces[order(fractions)]
-  k <- min(as.integer(top_k), length(pieces[[1L]]$vimp[[1L]]))
+  p_vars <- length(pieces[[1L]]$vimp[[1L]])
+  k <- min(as.integer(top_k), p_vars)
+  # A top set holding every predictor is identical in every replicate, so its
+  # Jaccard index is 1 however the ranking moves.
+  whole_set <- k >= p_vars
+  if (whole_set) {
+    warning("'top_k' (", top_k, ") covers all ", p_vars, " predictors, so the ",
+            "top sets cannot differ and 'jaccard' is NA. Use 'top_k' below ",
+            p_vars, ".", call. = FALSE)
+  }
 
   rows <- lapply(pieces, function(p) {
     data.frame(fraction = p$fraction, n = p$n, events = p$events,
@@ -134,6 +147,7 @@ gg_learning <- function(subsamples, top_k = 5L, min_events = 50,
 
   stab <- lapply(pieces, function(p) {
     s <- .learning_stability(p$vimp, k)
+    if (whole_set) s[["jaccard"]] <- NA_real_
     data.frame(fraction = p$fraction, n = p$n, events = p$events,
                B = length(p$vimp), jaccard = s[["jaccard"]],
                kendall = s[["kendall"]], counts = p$counts)

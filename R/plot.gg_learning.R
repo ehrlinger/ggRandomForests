@@ -8,7 +8,11 @@
 #' mean at each fraction. Points flagged `low_events` or `optimistic` are drawn
 #' open, because both make the curve look worse or better than a fresh cohort
 #' of that size would. Unstratified refits, whose counts are unknown, are
-#' drawn as crosses and the axis says their counts are expected.
+#' drawn as crosses and the axis says their counts are expected. The double
+#' bootstrap of the whole cohort is drawn as a square: it draws with
+#' replacement, so its x value is the cohort's count, the number expected in
+#' each draw rather than an exact one, and the square is open when that count
+#' is below `min_events`.
 #'
 #' @param x A `gg_learning` object from [gg_learning()].
 #' @param panel Which curve to draw: `"stability"` (default) or `"error"`.
@@ -35,7 +39,8 @@ plot.gg_learning <- function(x, panel = c("stability", "error"), ...) {
     surv = "Events"
   )
   shapes <- c(ok = 16, `few events` = 1, `optimistic` = 2,
-              `count unknown` = 4)
+              `count unknown` = 4, `whole cohort (expected)` = 15,
+              `whole cohort (expected), few events` = 0)
   if (any(x$counts == "expected" & x$fraction < 1)) {
     xlab <- paste(xlab, "(expected; refits not stratified)")
   }
@@ -77,14 +82,19 @@ plot.gg_learning <- function(x, panel = c("stability", "error"), ...) {
 
   pts <- as.data.frame(x)
   pts$flag <- .learning_flag_label(pts)
-  means <- stats::aggregate(error ~ events, data = pts, FUN = mean)
+  # The flags belong to a fraction, not a replicate, so the mean carries its
+  # fraction's shape. Drawn last and larger, it would otherwise cover the
+  # flagged marker whenever it sits on a refit, as it does with one replicate.
+  means <- stats::aggregate(error ~ events + flag, data = pts, FUN = mean)
+  means <- means[order(means$events), ]
   ggplot2::ggplot(pts, ggplot2::aes(
     x = .data[["events"]], y = .data[["error"]]
   )) +
     ggplot2::geom_point(ggplot2::aes(shape = .data[["flag"]]),
                         colour = "grey55", size = 1.8) +
     ggplot2::geom_line(data = means, colour = "black") +
-    ggplot2::geom_point(data = means, colour = "black", size = 2.5) +
+    ggplot2::geom_point(data = means, ggplot2::aes(shape = .data[["flag"]]),
+                        colour = "black", size = 2.5) +
     ggplot2::scale_shape_manual(values = shapes, drop = TRUE) +
     ggplot2::labs(x = xlab, y = prov$metric, shape = NULL) +
     ggplot2::theme_bw()
@@ -94,5 +104,12 @@ plot.gg_learning <- function(x, panel = c("stability", "error"), ...) {
   flag <- ifelse(is.na(d$low_events), "count unknown",
                  ifelse(d$low_events, "few events",
                         ifelse(d$optimistic, "optimistic", "ok")))
-  factor(flag, levels = c("ok", "few events", "optimistic", "count unknown"))
+  # The double bootstrap: fraction 1 with an expected count.
+  whole <- d$fraction == 1 & d$counts == "expected"
+  flag[whole] <- ifelse(d$low_events[whole] %in% TRUE,
+                        "whole cohort (expected), few events",
+                        "whole cohort (expected)")
+  factor(flag, levels = c("ok", "few events", "optimistic", "count unknown",
+                          "whole cohort (expected)",
+                          "whole cohort (expected), few events"))
 }

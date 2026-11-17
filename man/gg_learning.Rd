@@ -17,7 +17,11 @@ agreement measures forest randomness, not resampling stability. A single
 result is also accepted.}
 
 \item{top_k}{Positive integer; the number of top-ranked variables compared
-between replicates. Defaults to 5, or the number of predictors if fewer.}
+between replicates. Defaults to 5. It must leave at least one predictor
+out: a top set of every predictor is the same in every replicate, so
+\code{top_k} at or above the number of predictors warns, is capped at that
+number, and gives \code{jaccard} as \code{NA} rather than a perfect score that says
+nothing.}
 
 \item{min_events}{Non-negative number; fractions with fewer events than
 this are flagged in \code{low_events}. Defaults to 50.}
