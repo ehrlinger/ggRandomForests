@@ -33,7 +33,11 @@ gg_learning(subsamples, top_k = 5L, min_events = 50, stratified = TRUE, ...)
 - top_k:
 
   Positive integer; the number of top-ranked variables compared between
-  replicates. Defaults to 5, or the number of predictors if fewer.
+  replicates. Defaults to 5. It must leave at least one predictor out: a
+  top set of every predictor is the same in every replicate, so `top_k`
+  at or above the number of predictors warns, is capped at that number,
+  and gives `jaccard` as `NA` rather than a perfect score that says
+  nothing.
 
 - min_events:
 
@@ -149,9 +153,9 @@ subsamples <- learning_subsample(fit, fractions = c(0.25, 0.5),
 curve <- gg_learning(subsamples, top_k = 3, min_events = 10)
 summary(curve)
 #>   fraction  n events   counts B error_mean  error_sd jaccard     kendall
-#> 1     0.25  8      8    exact 5   35.78079 22.852897    0.68          NA
-#> 2     0.50 16     16    exact 5   13.80185  4.501053    0.40  0.04000000
-#> 3     1.00 32     32 expected 5   10.88033  1.889053    0.65 -0.06666667
+#> 1     0.25  8      8    exact 5   35.78079 22.852897    0.36 -0.44721360
+#> 2     0.50 16     16    exact 5   13.80185  4.501053    0.46  0.11333333
+#> 3     1.00 32     32 expected 5   10.88033  1.889053    0.62 -0.02666667
 #>   low_events optimistic
 #> 1       TRUE      FALSE
 #> 2      FALSE      FALSE

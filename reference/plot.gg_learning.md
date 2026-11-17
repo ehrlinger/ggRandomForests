@@ -9,7 +9,11 @@ panel shows each replicate's OOB error with the mean at each fraction.
 Points flagged `low_events` or `optimistic` are drawn open, because both
 make the curve look worse or better than a fresh cohort of that size
 would. Unstratified refits, whose counts are unknown, are drawn as
-crosses and the axis says their counts are expected.
+crosses and the axis says their counts are expected. The double
+bootstrap of the whole cohort is drawn as a square: it draws with
+replacement, so its x value is the cohort's count, the number expected
+in each draw rather than an exact one, and the square is open when that
+count is below `min_events`.
 
 ## Usage
 
