@@ -18,7 +18,10 @@
 #' @param replicates Positive whole number; refits per fraction, passed to
 #'   `subsample()` as `B`.
 #' @param bootstrap Logical; also run the double bootstrap for the whole
-#'   cohort (fraction 1). Defaults to `TRUE`.
+#'   cohort (fraction 1). Defaults to `TRUE`. Left out, with a warning, when
+#'   `object` imputed missing values (`na.action = "na.impute"` on data with
+#'   any missing value): `randomForestSRC` crashes R double-bootstrapping such
+#'   a forest. The subsamples are unaffected.
 #' @param stratify Logical; passed to `subsample()`, which samples within each
 #'   class (or survival status) when `TRUE`, its default.
 #' @param ... Further arguments to `subsample()`, such as `importance`.
@@ -28,7 +31,8 @@
 #' the seed before calling this function for a reproducible curve.
 #'
 #' @return A list of `subsample()` results, one per fraction in increasing
-#'   order and the bootstrap last, each carrying a `stratify` attribute.
+#'   order and the bootstrap last (when it is run), each carrying a
+#'   `stratify` attribute.
 #'
 #' @seealso [gg_learning()], [randomForestSRC::subsample()].
 #'
@@ -57,6 +61,16 @@ learning_subsample <- function(object, fractions = c(0.125, 0.25, 0.5),
     stop("learning_subsample() sets ", paste0("'", taken, "'", collapse = ", "),
          " itself; use 'replicates', 'fractions', 'bootstrap' or 'stratify'.",
          call. = FALSE)
+  }
+  # randomForestSRC 3.10.0 aborts R in subsample(bootstrap = TRUE) on a forest
+  # that imputed missing values, in every family; na.omit, na.impute on
+  # complete data, and the plain subsamples are all fine.
+  if (bootstrap && length(object$imputed.indv)) {
+    warning("The double bootstrap is left out: 'object' imputed missing ",
+            "values, and randomForestSRC crashes R double-bootstrapping ",
+            "such a forest. The curve stops at the largest fraction.",
+            call. = FALSE)
+    bootstrap <- FALSE
   }
   refit <- function(...) {
     s <- randomForestSRC::subsample(object, B = replicates, performance = TRUE,
