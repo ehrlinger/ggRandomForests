@@ -133,6 +133,31 @@ test_that("the whole-cohort bootstrap is drawn as a square, open below min_event
   expect_true(0 %in% built$shape)
 })
 
+test_that("the error panel's mean keeps its fraction's marker", {
+  # One replicate: the mean sits exactly on the refit, so a plain mean
+  # circle drawn on top would hide the bootstrap square.
+  x <- gg_learning(.fake_learning(c(0.5, 1), n_rep = 1L), top_k = 3)
+  built <- ggplot2::ggplot_build(plot(x, panel = "error"))$data
+  expect_length(built, 3L)
+  refits <- built[[1L]]
+  means <- built[[3L]]
+  expect_equal(means$x, refits$x)
+  expect_equal(means$y, refits$y)
+  expect_equal(means$shape, refits$shape)
+  expect_equal(means$shape, c(16, 15))
+  # The open marker survives as well.
+  few <- gg_learning(.fake_learning(c(0.5, 1), n_rep = 1L), top_k = 3,
+                     min_events = 500)
+  means <- ggplot2::ggplot_build(plot(few, panel = "error"))$data[[3L]]
+  expect_equal(means$shape, c(1, 0))
+  # Several replicates: one mean per fraction, still in order of events.
+  means <- ggplot2::ggplot_build(plot(gg_learning(.fake_learning(),
+                                                  top_k = 3),
+                                      panel = "error"))$data[[3L]]
+  expect_equal(nrow(means), 4L)
+  expect_false(is.unsorted(means$x))
+})
+
 test_that("stability is NA with a single replicate", {
   st <- attr(gg_learning(.fake_learning(0.5, n_rep = 1L)), "stability")
   expect_true(is.na(st$jaccard))

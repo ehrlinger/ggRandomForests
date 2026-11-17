@@ -82,14 +82,19 @@ plot.gg_learning <- function(x, panel = c("stability", "error"), ...) {
 
   pts <- as.data.frame(x)
   pts$flag <- .learning_flag_label(pts)
-  means <- stats::aggregate(error ~ events, data = pts, FUN = mean)
+  # The flags belong to a fraction, not a replicate, so the mean carries its
+  # fraction's shape. Drawn last and larger, it would otherwise cover the
+  # flagged marker whenever it sits on a refit, as it does with one replicate.
+  means <- stats::aggregate(error ~ events + flag, data = pts, FUN = mean)
+  means <- means[order(means$events), ]
   ggplot2::ggplot(pts, ggplot2::aes(
     x = .data[["events"]], y = .data[["error"]]
   )) +
     ggplot2::geom_point(ggplot2::aes(shape = .data[["flag"]]),
                         colour = "grey55", size = 1.8) +
     ggplot2::geom_line(data = means, colour = "black") +
-    ggplot2::geom_point(data = means, colour = "black", size = 2.5) +
+    ggplot2::geom_point(data = means, ggplot2::aes(shape = .data[["flag"]]),
+                        colour = "black", size = 2.5) +
     ggplot2::scale_shape_manual(values = shapes, drop = TRUE) +
     ggplot2::labs(x = xlab, y = prov$metric, shape = NULL) +
     ggplot2::theme_bw()
