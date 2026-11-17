@@ -334,6 +334,34 @@ test_that("gg_learning reads real subsample() output in every family", {
   expect_error(gg_learning(pair), "same forest")
 })
 
+test_that("learning_subsample leaves out the bootstrap for an imputed forest", {
+  skip_on_cran()
+  set.seed(20261117L)
+  aq <- datasets::airquality[!is.na(datasets::airquality$Ozone), ]
+  imputed <- randomForestSRC::rfsrc(Ozone ~ ., aq, ntree = 10,
+                                    na.action = "na.impute",
+                                    importance = "permute", seed = -1)
+  expect_gt(length(imputed$imputed.indv), 0L)
+  # Run, the double bootstrap would abort R, not raise an error.
+  expect_warning(ls <- learning_subsample(imputed, fractions = 0.5,
+                                          replicates = 2),
+                 "double bootstrap is left out")
+  expect_length(ls, 1L)
+  expect_false(inherits(ls[[1L]], "bootsample"))
+  st <- attr(gg_learning(ls, top_k = 3, min_events = 0), "stability")
+  expect_equal(st$fraction, 0.5)
+  # Asked for no bootstrap, there is nothing to warn about.
+  expect_silent(learning_subsample(imputed, fractions = 0.5, replicates = 2,
+                                   bootstrap = FALSE))
+  # na.impute on complete data imputes nothing, and keeps the bootstrap.
+  complete <- randomForestSRC::rfsrc(Ozone ~ ., stats::na.omit(aq),
+                                     ntree = 10, na.action = "na.impute",
+                                     importance = "permute", seed = -1)
+  expect_length(complete$imputed.indv, 0L)
+  ls <- learning_subsample(complete, fractions = 0.5, replicates = 2)
+  expect_s3_class(ls[[2L]], "bootsample")
+})
+
 test_that("learning_subsample rejects bad arguments before fitting", {
   fit <- structure(list(), class = "rfsrc")
   expect_error(learning_subsample(list()), "randomForestSRC forest")

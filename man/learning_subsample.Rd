@@ -24,7 +24,10 @@ and less than 1.}
 \code{subsample()} as \code{B}.}
 
 \item{bootstrap}{Logical; also run the double bootstrap for the whole
-cohort (fraction 1). Defaults to \code{TRUE}.}
+cohort (fraction 1). Defaults to \code{TRUE}. Left out, with a warning, when
+\code{object} imputed missing values (\code{na.action = "na.impute"} on data with
+any missing value): \code{randomForestSRC} crashes R double-bootstrapping such
+a forest. The subsamples are unaffected.}
 
 \item{stratify}{Logical; passed to \code{subsample()}, which samples within each
 class (or survival status) when \code{TRUE}, its default.}
@@ -33,7 +36,8 @@ class (or survival status) when \code{TRUE}, its default.}
 }
 \value{
 A list of \code{subsample()} results, one per fraction in increasing
-order and the bootstrap last, each carrying a \code{stratify} attribute.
+order and the bootstrap last (when it is run), each carrying a
+\code{stratify} attribute.
 }
 \description{
 Calls \code{\link[randomForestSRC:subsample]{randomForestSRC::subsample()}} once per fraction, with
