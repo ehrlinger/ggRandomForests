@@ -24,7 +24,11 @@ replicates; the \code{"error"} panel shows each replicate's OOB error with the
 mean at each fraction. Points flagged \code{low_events} or \code{optimistic} are drawn
 open, because both make the curve look worse or better than a fresh cohort
 of that size would. Unstratified refits, whose counts are unknown, are
-drawn as crosses and the axis says their counts are expected.
+drawn as crosses and the axis says their counts are expected. The double
+bootstrap of the whole cohort is drawn as a square: it draws with
+replacement, so its x value is the cohort's count, the number expected in
+each draw rather than an exact one, and the square is open when that count
+is below \code{min_events}.
 }
 \seealso{
 \code{\link[=gg_learning]{gg_learning()}}.
