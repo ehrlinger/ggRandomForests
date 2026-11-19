@@ -17,7 +17,7 @@ refit as exact rather than assumed."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -157,9 +157,9 @@ the seed before calling this function for a reproducible curve.</p>
 <span class="r-in"><span><span class="va">curve</span> <span class="op">&lt;-</span> <span class="fu"><a href="gg_learning.html">gg_learning</a></span><span class="op">(</span><span class="va">subsamples</span>, top_k <span class="op">=</span> <span class="fl">3</span>, min_events <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">curve</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   fraction  n events   counts B error_mean  error_sd jaccard     kendall</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     0.25  8      8    exact 5   35.78079 22.852897    0.68          NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     0.50 16     16    exact 5   13.80185  4.501053    0.38  0.03333333</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1.00 32     32 expected 5   10.88033  1.889053    0.49 -0.06000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     0.25  8      8    exact 5   35.78079 22.852897    0.68 -0.63951955</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     0.50 16     16    exact 5   13.80185  4.501053    0.38 -0.02000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1.00 32     32 expected 5   10.88033  1.889053    0.49  0.02666667</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   low_events optimistic</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1       TRUE      FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2      FALSE      FALSE</span>

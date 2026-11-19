@@ -152,10 +152,10 @@ subsamples <- learning_subsample(fit, fractions = c(0.25, 0.5),
                                  replicates = 5)
 curve <- gg_learning(subsamples, top_k = 3, min_events = 10)
 summary(curve)
-#>   fraction  n events   counts B error_mean  error_sd jaccard     kendall
-#> 1     0.25  8      8    exact 5   35.78079 22.852897    0.35 -0.44721360
-#> 2     0.50 16     16    exact 5   13.80185  4.501053    0.38 -0.01333333
-#> 3     1.00 32     32 expected 5   10.88033  1.889053    0.49 -0.03333333
+#>   fraction  n events   counts B error_mean  error_sd jaccard      kendall
+#> 1     0.25  8      8    exact 5   35.78079 22.852897    0.60 -0.447213595
+#> 2     0.50 16     16    exact 5   13.80185  4.501053    0.46 -0.126666667
+#> 3     1.00 32     32 expected 5   10.88033  1.889053    0.49  0.006666667
 #>   low_events optimistic
 #> 1       TRUE      FALSE
 #> 2      FALSE      FALSE

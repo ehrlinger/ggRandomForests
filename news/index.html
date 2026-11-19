@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggRandomForests</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">4.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,12 @@
       <small>Source: <a href="https://github.com/ehrlinger/ggRandomForests/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="4.0.1" id="ggrandomforests-401">ggRandomForests 4.0.1<a class="anchor" aria-label="anchor" href="#ggrandomforests-401"></a></h2>
+<ul><li><p>New <code><a href="../reference/gg_learning.html">gg_learning()</a></code> and <code><a href="../reference/plot.gg_learning.html">plot.gg_learning()</a></code> draw learning curves from saved <code><a href="https://www.randomforestsrc.org//reference/subsample.rfsrc.html" class="external-link">randomForestSRC::subsample()</a></code> results: OOB error, and the stability of the top-k VIMP ranking (Jaccard index and Kendall’s tau across replicates), against the number of events (<a href="https://github.com/ehrlinger/ggRandomForests/issues/402" class="external-link">#402</a>). <code><a href="../reference/gg_error.html">gg_error()</a></code> says whether there are enough trees; <code><a href="../reference/gg_learning.html">gg_learning()</a></code> says whether there is enough data, for prediction and, separately, for the variable ranking. In simulation the second needed several times the events of the first. Like <code><a href="../reference/gg_tune_rhf.html">gg_tune_rhf()</a></code>, it only tidies. New <code><a href="../reference/learning_subsample.html">learning_subsample()</a></code> runs the refits once per fraction, plus a double bootstrap for the whole cohort, and records whether each draw was stratified, which <code><a href="https://www.randomforestsrc.org//reference/subsample.rfsrc.html" class="external-link">subsample()</a></code> does not; that is what lets <code><a href="../reference/gg_learning.html">gg_learning()</a></code> report the events in each refit as exact. Fractions with fewer than <code>min_events</code> events, and those above 0.5, are flagged and drawn open, because both distort the curve.</p></li>
+<li><p><code><a href="../reference/plot.gg_learning.html">plot.gg_learning()</a></code> draws the whole-cohort double bootstrap as a square, labeled “whole cohort (expected)”: it draws with replacement, so its event count is the number expected in each draw, not an exact one. The square is open when that count is below <code>min_events</code>. <code><a href="../reference/gg_learning.html">gg_learning()</a></code> now warns when <code>top_k</code> covers every predictor and gives <code>jaccard</code> as <code>NA</code> there, since a top set of all the predictors is the same in every replicate and would score a perfect 1 however the ranking moved.</p></li>
+<li><p><code><a href="../reference/learning_subsample.html">learning_subsample()</a></code> leaves out the whole-cohort double bootstrap, with a warning, when the forest imputed missing values (<code>na.action = "na.impute"</code> on data with any missing value). <code>randomForestSRC</code> 3.10.0 crashes R double-bootstrapping such a forest, in every family; the subsamples are unaffected, and <code><a href="../reference/gg_learning.html">gg_learning()</a></code> draws the curve without the whole-cohort point.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="4.0.0" id="ggrandomforests-v400">ggRandomForests v4.0.0<a class="anchor" aria-label="anchor" href="#ggrandomforests-v400"></a></h2><p class="text-muted">CRAN release: 2026-11-03</p>
 <ul><li><p>Articles on the pkgdown site put the table of contents on the left and use the full width of the window, through <code>pkgdown/extra.css</code>. The installed vignettes are unchanged: the Quarto vignette engine renders them in its own minimal format, which has no sidebar layout.</p></li>
