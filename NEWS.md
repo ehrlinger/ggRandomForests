@@ -1,5 +1,37 @@
 Package: ggRandomForests
-Version: 4.0.0
+Version: 4.0.1
+
+ggRandomForests 4.0.1
+=====================
+
+* New `gg_learning()` and `plot.gg_learning()` draw learning curves from saved
+  `randomForestSRC::subsample()` results: OOB error, and the stability of the
+  top-k VIMP ranking (Jaccard index and Kendall's tau across replicates),
+  against the number of events (#402). `gg_error()` says whether there are
+  enough trees; `gg_learning()` says whether there is enough data, for
+  prediction and, separately, for the variable ranking. In simulation the
+  second needed several times the events of the first. Like `gg_tune_rhf()`,
+  it only tidies. New `learning_subsample()` runs the refits once per
+  fraction, plus a double bootstrap for the whole cohort, and records whether
+  each draw was stratified, which `subsample()` does not; that is what lets
+  `gg_learning()` report the events in each refit as exact. Fractions with
+  fewer than `min_events` events, and those above 0.5, are flagged and drawn
+  open, because both distort the curve.
+
+* `plot.gg_learning()` draws the whole-cohort double bootstrap as a square,
+  labeled "whole cohort (expected)": it draws with replacement, so its event
+  count is the number expected in each draw, not an exact one. The square is
+  open when that count is below `min_events`. `gg_learning()` now warns when
+  `top_k` covers every predictor and gives `jaccard` as `NA` there, since a
+  top set of all the predictors is the same in every replicate and would
+  score a perfect 1 however the ranking moved.
+
+* `learning_subsample()` leaves out the whole-cohort double bootstrap, with a
+  warning, when the forest imputed missing values (`na.action =
+  "na.impute"` on data with any missing value). `randomForestSRC` 3.10.0
+  crashes R double-bootstrapping such a forest, in every family; the
+  subsamples are unaffected, and `gg_learning()` draws the curve without the
+  whole-cohort point.
 
 ggRandomForests v4.0.0
 ======================
